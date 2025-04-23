@@ -53,12 +53,9 @@
 			  ColumnDefinitions="auto,auto">
 			<controls:SvgButton
 				Grid.Row="0" Grid.Column="0"
-				HorizontalOptions="Center"
 				Command="{Binding OpenFlyoutCommand}"
 				SvgSource="hamburger.svg"
-				SvgAspect="AspectFill"
-				BorderStyle="{StaticResource IconButtonBorder}"
-				SvgTintColor="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}"/>
+				Style="{StaticResource IconButton}"/>
 
 			<!-- TODO: Enable when implemented. Change to SvgButton
 			<controls:ImageButton

@@ -1,10 +1,14 @@
-﻿using NeuroAccessMaui.UI.Core;
+﻿using System.Runtime.CompilerServices;
+using NeuroAccessMaui.UI.Core;
+using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
+using Waher.Script.Functions.Runtime;
 
 namespace NeuroAccessMaui.UI.Controls
 {
-    class SvgButton : TemplatedButton , IDisposable
+	class SvgButton : TemplatedButton, IDisposable
 	{
 		private readonly SvgView innerSvg;
+		private readonly Label innerLabel;
 		private readonly Border innerBorder;
 
 		/// <summary>Bindable property for <see cref="SvgSource"/>.</summary>
@@ -28,6 +32,27 @@ namespace NeuroAccessMaui.UI.Controls
 			typeof(SvgButton),
 			propertyChanged: OnSvgTintColorChanged);
 
+		public static readonly BindableProperty LabelTextProperty = BindableProperty.Create(
+			nameof(LabelText),
+			typeof(string),
+			typeof(SvgButton),
+			defaultValue: string.Empty,
+			propertyChanged: OnLabelTextChanged);
+
+		public static readonly BindableProperty LabelStyleProperty = BindableProperty.Create(
+			nameof(LabelStyle),
+			typeof(Style),
+			typeof(SvgButton),
+			propertyChanged: OnLabelTextChanged);
+
+		/// <summary>Bindable property for <see cref="LabelPosition"/>.</summary>
+		public static readonly BindableProperty LabelPositionProperty = BindableProperty.Create(
+			nameof(LabelPosition),
+			typeof(LabelPosition),
+			typeof(SvgButton),
+			defaultValue: LabelPosition.Left,
+			propertyChanged: OnLabelPositionChanged);
+
 		/// <summary>Bindable property for <see cref="BorderStyle"/>.</summary>
 		public static readonly BindableProperty BorderStyleProperty = BindableProperty.Create(
 				nameof(BorderStyle),
@@ -48,6 +73,75 @@ namespace NeuroAccessMaui.UI.Controls
 		public static void OnSvgTintColorChanged(BindableObject Bindable, object OldValue, object NewValue)
 		{
 			((SvgButton)Bindable).innerSvg.TintColor = (Color)NewValue;
+		}
+
+		public static void OnLabelTextChanged(BindableObject Bindable, object OldValue, object NewValue)
+		{
+			((SvgButton)Bindable).innerLabel.Text = (string)NewValue;
+		}
+
+		public static void OnLabelStyleChanged(BindableObject Bindable, object OldValue, object NewValue)
+		{
+			((SvgButton)Bindable).innerLabel.Style = (Style)NewValue;
+		}
+
+		public static void OnLabelPositionChanged(BindableObject Bindable, object OldValue, object NewValue)
+		{
+			SvgButton Button = (SvgButton)Bindable;
+			if (Button.LabelText == string.Empty) return;
+
+			LabelPosition NewPosition = (LabelPosition)NewValue;
+			switch (NewPosition)
+			{
+				case LabelPosition.Top:
+					Button.innerBorder.Content = new StackLayout
+					{
+						Orientation = StackOrientation.Vertical,
+						Children =
+						{
+							Button.innerLabel,
+							Button.innerSvg
+						},
+						Spacing = 8
+					};
+					break;
+				case LabelPosition.Bottom:
+					Button.innerBorder.Content = new StackLayout
+					{
+						Orientation = StackOrientation.Vertical,
+						Children =
+						{
+							Button.innerSvg,
+							Button.innerLabel
+						},
+						Spacing = 8
+					};
+					break;
+				case LabelPosition.Left:
+					Button.innerBorder.Content = new StackLayout
+					{
+						Orientation = StackOrientation.Horizontal,
+						Children =
+						{
+							Button.innerLabel,
+							Button.innerSvg
+						},
+						Spacing = 8
+					};
+					break;
+				case LabelPosition.Right:
+					Button.innerBorder.Content = new StackLayout
+					{
+						Orientation = StackOrientation.Horizontal,
+						Children =
+						{
+							Button.innerSvg,
+							Button.innerLabel
+						},
+						Spacing = 8
+					};
+					break;
+			}
 		}
 
 		public static void OnBorderStyleChanged(BindableObject Bindable, object OldValue, object NewValue)
@@ -73,6 +167,24 @@ namespace NeuroAccessMaui.UI.Controls
 			set => this.SetValue(SvgTintColorProperty, value);
 		}
 
+		public string LabelText
+		{
+			get => (string)this.GetValue(LabelTextProperty);
+			set => this.SetValue(LabelTextProperty, value);
+		}
+
+		public Style LabelStyle
+		{
+			get => (Style)this.GetValue(LabelStyleProperty);
+			set => this.SetValue(LabelStyleProperty, value);
+		}
+
+		public LabelPosition LabelPosition
+		{
+			get => (LabelPosition)this.GetValue(LabelPositionProperty);
+			set => this.SetValue(LabelPositionProperty, value);
+		}
+
 		public Style BorderStyle
 		{
 			get => (Style)this.GetValue(BorderDataElement.BorderStyleProperty);
@@ -92,11 +204,66 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 			this.innerBorder = new()
 			{
-				Content = this.innerSvg,
-				WidthRequest = 40,
-				HeightRequest = 40,
 				Style = this.BorderStyle
 			};
+			this.innerLabel = new()
+			{
+				Text = this.LabelText,
+				Style = this.LabelStyle
+			};
+
+			switch (this.LabelPosition)
+			{
+				case LabelPosition.Top:
+					this.innerBorder.Content = new StackLayout
+					{
+						Orientation = StackOrientation.Vertical,
+						Children =
+						{
+							this.innerLabel,
+							this.innerSvg
+						},
+						Spacing = 8
+					};
+					break;
+				case LabelPosition.Bottom:
+					this.innerBorder.Content = new StackLayout
+					{
+						Orientation = StackOrientation.Vertical,
+						Children =
+						{
+							this.innerSvg,
+							this.innerLabel
+						},
+						Spacing = 8
+					};
+					break;
+				case LabelPosition.Left:
+					this.innerBorder.Content = new StackLayout
+					{
+						Orientation = StackOrientation.Horizontal,
+						Children =
+						{
+							this.innerLabel,
+							this.innerSvg
+						},
+						Spacing = 8
+					};
+					break;
+				case LabelPosition.Right:
+					this.innerBorder.Content = new StackLayout
+					{
+						Orientation = StackOrientation.Horizontal,
+						Children =
+						{
+							this.innerSvg,
+							this.innerLabel
+						},
+						Spacing = 8
+					};
+					break;
+			}
+
 			this.Content = this.innerBorder;
 		}
 
@@ -108,5 +275,13 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerSvg.Dispose();
 			GC.SuppressFinalize(this);
 		}
+	}
+
+	public enum LabelPosition
+	{
+		Top,
+		Bottom,
+		Left,
+		Right
 	}
 }
