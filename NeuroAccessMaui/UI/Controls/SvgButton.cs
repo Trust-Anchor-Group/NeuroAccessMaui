@@ -1,7 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
+using CommunityToolkit.Maui.Markup;
 using NeuroAccessMaui.UI.Core;
 using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
 using Waher.Script.Functions.Runtime;
+using Waher.Things.ControlParameters;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -10,6 +12,7 @@ namespace NeuroAccessMaui.UI.Controls
 		private readonly SvgView innerSvg;
 		private readonly Label innerLabel;
 		private readonly Border innerBorder;
+		private readonly Grid innerGrid;
 
 		/// <summary>Bindable property for <see cref="SvgSource"/>.</summary>
 		public static readonly BindableProperty SvgSourceProperty = BindableProperty.Create(
@@ -77,7 +80,19 @@ namespace NeuroAccessMaui.UI.Controls
 
 		public static void OnLabelTextChanged(BindableObject Bindable, object OldValue, object NewValue)
 		{
-			((SvgButton)Bindable).innerLabel.Text = (string)NewValue;
+			SvgButton Button = (SvgButton)Bindable;
+			Button.innerLabel.Text = (string)NewValue;
+
+			if (Button.innerLabel.Text == string.Empty)
+			{
+				Button.innerGrid.RowSpacing = 0;
+				Button.innerGrid.ColumnSpacing = 0;
+				Button.innerLabel.IsVisible = false;
+			}
+			else
+			{
+				Button.innerLabel.IsVisible = true;
+			}
 		}
 
 		public static void OnLabelStyleChanged(BindableObject Bindable, object OldValue, object NewValue)
@@ -91,55 +106,41 @@ namespace NeuroAccessMaui.UI.Controls
 			if (Button.LabelText == string.Empty) return;
 
 			LabelPosition NewPosition = (LabelPosition)NewValue;
+			Button.LabelPosition = NewPosition;
+
 			switch (NewPosition)
 			{
 				case LabelPosition.Top:
-					Button.innerBorder.Content = new StackLayout
-					{
-						Orientation = StackOrientation.Vertical,
-						Children =
-						{
-							Button.innerLabel,
-							Button.innerSvg
-						},
-						Spacing = 8
-					};
+					Button.innerLabel.Row(0);
+					Button.innerLabel.Column(0);
+					Button.innerSvg.Row(1);
+					Button.innerSvg.Column(0);
+					Button.innerGrid.ColumnSpacing = 0;
+					Button.innerGrid.RowSpacing = 8;
 					break;
 				case LabelPosition.Bottom:
-					Button.innerBorder.Content = new StackLayout
-					{
-						Orientation = StackOrientation.Vertical,
-						Children =
-						{
-							Button.innerSvg,
-							Button.innerLabel
-						},
-						Spacing = 8
-					};
+					Button.innerLabel.Row(1);
+					Button.innerLabel.Column(0);
+					Button.innerSvg.Row(0);
+					Button.innerSvg.Column(0);
+					Button.innerGrid.ColumnSpacing = 0;
+					Button.innerGrid.RowSpacing = 8;
 					break;
 				case LabelPosition.Left:
-					Button.innerBorder.Content = new StackLayout
-					{
-						Orientation = StackOrientation.Horizontal,
-						Children =
-						{
-							Button.innerLabel,
-							Button.innerSvg
-						},
-						Spacing = 8
-					};
+					Button.innerLabel.Column(0);
+					Button.innerLabel.Row(0);
+					Button.innerSvg.Column(1);
+					Button.innerSvg.Row(0);
+					Button.innerGrid.ColumnSpacing = 8;
+					Button.innerGrid.RowSpacing = 0;
 					break;
 				case LabelPosition.Right:
-					Button.innerBorder.Content = new StackLayout
-					{
-						Orientation = StackOrientation.Horizontal,
-						Children =
-						{
-							Button.innerSvg,
-							Button.innerLabel
-						},
-						Spacing = 8
-					};
+					Button.innerLabel.Column(1);
+					Button.innerLabel.Row(0);
+					Button.innerSvg.Column(0);
+					Button.innerSvg.Row(0);
+					Button.innerGrid.ColumnSpacing = 8;
+					Button.innerGrid.RowSpacing = 0;
 					break;
 			}
 		}
@@ -202,67 +203,70 @@ namespace NeuroAccessMaui.UI.Controls
 				TintColor = this.SvgTintColor,
 				Source = this.SvgSource
 			};
-			this.innerBorder = new()
-			{
-				Style = this.BorderStyle
-			};
 			this.innerLabel = new()
 			{
 				Text = this.LabelText,
-				Style = this.LabelStyle
+				Style = this.LabelStyle,
+				IsVisible = this.LabelText != string.Empty
 			};
+			this.innerGrid = new()
+			{
+				ColumnDefinitions =
+				{
+					new ColumnDefinition(width: GridLength.Auto),
+					new ColumnDefinition(width: GridLength.Auto)
+				},
+				RowDefinitions =
+				{
+					new RowDefinition(height: GridLength.Auto),
+					new RowDefinition(height: GridLength.Auto)
+				},
+			};
+
+			this.innerGrid.Add(this.innerSvg);
+			this.innerGrid.Add(this.innerLabel);
 
 			switch (this.LabelPosition)
 			{
 				case LabelPosition.Top:
-					this.innerBorder.Content = new StackLayout
-					{
-						Orientation = StackOrientation.Vertical,
-						Children =
-						{
-							this.innerLabel,
-							this.innerSvg
-						},
-						Spacing = 8
-					};
+					this.innerLabel.Row(0);
+					this.innerLabel.Column(0);
+					this.innerSvg.Row(1);
+					this.innerSvg.Column(0);
+					this.innerGrid.ColumnSpacing = 0;
+					this.innerGrid.RowSpacing = 8;
 					break;
 				case LabelPosition.Bottom:
-					this.innerBorder.Content = new StackLayout
-					{
-						Orientation = StackOrientation.Vertical,
-						Children =
-						{
-							this.innerSvg,
-							this.innerLabel
-						},
-						Spacing = 8
-					};
+					this.innerLabel.Row(1);
+					this.innerLabel.Column(0);
+					this.innerSvg.Row(0);
+					this.innerSvg.Column(0);
+					this.innerGrid.ColumnSpacing = 0;
+					this.innerGrid.RowSpacing = 8;
 					break;
 				case LabelPosition.Left:
-					this.innerBorder.Content = new StackLayout
-					{
-						Orientation = StackOrientation.Horizontal,
-						Children =
-						{
-							this.innerLabel,
-							this.innerSvg
-						},
-						Spacing = 8
-					};
+					this.innerLabel.Column(0);
+					this.innerLabel.Row(0);
+					this.innerSvg.Column(1);
+					this.innerSvg.Row(0);
+					this.innerGrid.ColumnSpacing = 8;
+					this.innerGrid.RowSpacing = 0;
 					break;
 				case LabelPosition.Right:
-					this.innerBorder.Content = new StackLayout
-					{
-						Orientation = StackOrientation.Horizontal,
-						Children =
-						{
-							this.innerSvg,
-							this.innerLabel
-						},
-						Spacing = 8
-					};
+					this.innerLabel.Column(1);
+					this.innerLabel.Row(0);
+					this.innerSvg.Column(0);
+					this.innerSvg.Row(0);
+					this.innerGrid.ColumnSpacing = 8;
+					this.innerGrid.RowSpacing = 0;
 					break;
 			}
+
+			this.innerBorder = new()
+			{
+				Style = this.BorderStyle,
+				Content = this.innerGrid
+			};
 
 			this.Content = this.innerBorder;
 		}
