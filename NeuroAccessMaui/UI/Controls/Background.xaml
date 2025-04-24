@@ -12,6 +12,7 @@
 				<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource CurvedLinesLight}, Dark={StaticResource CurvedLinesDark}}" />
 				<Setter Property="StrokeMiterLimit" Value="10" />
 				<Setter Property="StrokeThickness" Value="{StaticResource MediumStrokeThickness}" />
+				<Setter Property="Opacity" Value="0.5"/>
 			</Style>
 		</ResourceDictionary>
 	</VisualElement.Resources>

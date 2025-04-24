@@ -46,7 +46,7 @@ namespace NeuroAccessMaui.Services
 		private static INfcService? nfcService;
 		private static INotificationService? notificationService;
 		private static IPushNotificationService? pushNotificationService;
-		private static IStringLocalizer? localizer;
+		private static IReportingStringLocalizer? localizer;
 		private static IPlatformSpecific? platformSpecific;
 		private static IBarcodeReader? barcodeReader;
 		private static IPermissionService? permissionService;
@@ -247,7 +247,7 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Localization service
 		/// </summary>
-		public static IStringLocalizer Localizer
+		public static IReportingStringLocalizer Localizer
 		{
 			get
 			{
@@ -256,15 +256,29 @@ namespace NeuroAccessMaui.Services
 			}
 		}
 
+		public interface IReportingStringLocalizer : IStringLocalizer
+		{
+
+			LocalizedString this[string Name, bool ShouldReport] { get; }
+
+			LocalizedString this[string Name, bool ShouldReport, params object[] Arguments] { get; }
+		}
+
 		/// <summary>
 		/// Localizer, that reports missing strings to the operator of the corrected broker, via the event log.
 		/// </summary>
 		/// <param name="Localizer">Base localizer.</param>
-		private class LocalizerReportingMissingStrings(IStringLocalizer Localizer) : IStringLocalizer
+		private class LocalizerReportingMissingStrings(IStringLocalizer Localizer) : IReportingStringLocalizer
 		{
 			private readonly IStringLocalizer localizer = Localizer;
 
 			public LocalizedString this[string Name]
+				=> ((IReportingStringLocalizer)this)[Name, true];
+
+			public LocalizedString this[string Name, params object[] Arguments]
+				=> ((IReportingStringLocalizer)this)[Name, true, Arguments];
+
+			LocalizedString IReportingStringLocalizer.this[string Name, bool ShouldReport]
 			{
 				get
 				{
@@ -296,13 +310,14 @@ namespace NeuroAccessMaui.Services
 						}
 					}
 
-					LocalizeExtension.ReportMissingString(Name, Caller);
+					if(ShouldReport)
+						LocalizeExtension.ReportMissingString(Name, Caller);
 
 					return new LocalizedString(Name, Name, true);
 				}
 			}
 
-			public LocalizedString this[string Name, params object[] Arguments]
+			LocalizedString IReportingStringLocalizer.this[string Name, bool ShouldReport, params object[] Arguments]
 			{
 				get
 				{
