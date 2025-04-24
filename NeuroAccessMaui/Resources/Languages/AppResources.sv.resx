@@ -2597,4 +2597,181 @@
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Sekunder</value>
   </data>
+  <data name="ClientMessageMissingCountry" xml:space="preserve">
+    <value>Ansökan saknar landinformation</value>
+  </data>
+  <data name="ClientMessageMissingPNr" xml:space="preserve">
+    <value>Ansökan saknar personnummerinformation</value>
+  </data>
+  <data name="ClientMessageManualReview" xml:space="preserve">
+    <value>Det gick inte att validera ansökan automatiskt. Ansökan måste valideras manuellt eller genom Peer-review</value>
+  </data>
+  <data name="ClientMessageUnableReview" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageInvalidType" xml:space="preserve">
+    <value>En parameter gavs i ett ogiltigt format</value>
+  </data>
+  <data name="ClientMessageIdMismatch" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageJidMismatch" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageAccountMismatch" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageProviderMismatch" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageStateMismatch" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageCreatedMismatch" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageUpdatedMismatch" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageFromMismatch" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageToMismatch" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageNoClientURL" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageReviewerExternal" xml:space="preserve">
+    <value>Peer-review granskare är extern. Begäran om Peer-review bör skickas direkt till granskaren</value>
+  </data>
+  <data name="ClientMessageServiceNotConfigured" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageCountryNotSupported" xml:space="preserve">
+    <value>Tjänsten är inte tillgänglig i det valda landet</value>
+  </data>
+  <data name="ClientMessageNoCompanyId" xml:space="preserve">
+    <value>Tjänsten kan inte användas för att granska företags-ID</value>
+  </data>
+  <data name="ClientMessageServiceClientTimeout" xml:space="preserve">
+    <value>Tjänsten tog för lång tid att vänta på användarens godkännande av begäran</value>
+  </data>
+  <data name="ClientMessageServiceFailed" xml:space="preserve">
+    <value>Tjänsten misslyckades med att behandla begäran</value>
+  </data>
+  <data name="ClientMessagePNrMismatch" xml:space="preserve">
+    <value>Personnumret matchar inte de angivna dokumenten</value>
+  </data>
+  <data name="ClientMessageFirstNameMismatch" xml:space="preserve">
+    <value>Förnamnet matchar inte de angivna dokumenten</value>
+  </data>
+  <data name="ClientMessageLastNameMismatch" xml:space="preserve">
+    <value>Efternamnet matchar inte de angivna dokumenten</value>
+  </data>
+  <data name="ClientMessageNameMismatch" xml:space="preserve">
+    <value>Namnet matchar inte de angivna dokumenten</value>
+  </data>
+  <data name="ClientMessageInvalidJid" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageNoLogin" xml:space="preserve">
+    <value>Ett oväntat fel inträffade</value>
+  </data>
+  <data name="ClientMessageUnexpectedOnboardingServer" xml:space="preserve">
+    <value>Oväntat svar mottogs från onboarding-servern</value>
+  </data>
+  <data name="ClientMessagePersonDead" xml:space="preserve">
+    <value>Det gick inte att verifiera att identiteten matchar en levande person</value>
+  </data>
+  <data name="ClientMessageBirthDateMismatch" xml:space="preserve">
+    <value>Födelsedatumet matchar inte de angivna dokumenten</value>
+  </data>
+  <data name="ClientMessageAddressMismatch" xml:space="preserve">
+    <value>Adressen matchar inte de angivna dokumenten</value>
+  </data>
+  <data name="ClientMessageZipMismatch" xml:space="preserve">
+    <value>Postnumret matchar inte de angivna dokumenten</value>
+  </data>
+  <data name="ClientMessageAreaMismatch" xml:space="preserve">
+    <value>Området matchar inte de angivna dokumenten</value>
+  </data>
+  <data name="ClientMessageCityMismatch" xml:space="preserve">
+    <value>Staden matchar inte de angivna dokumenten</value>
+  </data>
+  <data name="ClientMessageRegionMismatch" xml:space="preserve">
+    <value>Regionen matchar inte de angivna dokumenten</value>
+  </data>
+  <data name="ClientMessageLivenessFailed" xml:space="preserve">
+    <value>Levande kontroll misslyckades</value>
+  </data>
+  <data name="ClientMessagePhotoFake" xml:space="preserve">
+    <value>Det gick inte att verifiera fotoautenticitet</value>
+  </data>
+  <data name="ClientMessagePhotoPoor" xml:space="preserve">
+    <value>Foto-kvalitet för låg</value>
+  </data>
+  <data name="ClientMessageBankIdRFA1" xml:space="preserve">
+    <value>Starta din BankID-app</value>
+  </data>
+  <data name="ClientMessageBandIdRFA2" xml:space="preserve">
+    <value>BankID-appen är inte installerad. Vänligen kontakta din internetbank</value>
+  </data>
+  <data name="ClientMessageBankIdRFA3" xml:space="preserve">
+    <value>Åtgärden avbröts. Försök igen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA4" xml:space="preserve">
+    <value>En identifiering eller signering för detta personnummer har redan startats. Försök igen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA5" xml:space="preserve">
+    <value>Internt fel. Försök igen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA6" xml:space="preserve">
+    <value>Åtgärden avbröts</value>
+  </data>
+  <data name="ClientMessageBankIdRFA8" xml:space="preserve">
+    <value>BankID-appen svarar inte. Kontrollera att programmet är startat och att du har internetåtkomst. Om du inte har ett giltigt BankID kan du skaffa ett från din bank. Försök igen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA9" xml:space="preserve">
+    <value>Ange din säkerhetskod i BankID-appen och välj Identifiera eller Signera</value>
+  </data>
+  <data name="ClientMessageBankIdRFA13" xml:space="preserve">
+    <value>Försöker starta din BankID-app</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14A" xml:space="preserve">
+    <value>Letar efter BankID:n, det kan ta en liten stund... Om några sekunder har gått och inget BankID har hittats, har du troligen inget BankID som kan användas för denna identifiering/signering på denna dator. Om du har ett BankID-kort, sätt in det i kortläsaren. Om du inte har BankID kan du beställa ett från din internetbank. Om du har ett BankID på en annan enhet kan du starta BankID-appen på den enheten</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14B" xml:space="preserve">
+    <value>Letar efter BankID:n, det kan ta en liten stund... Om några sekunder har gått och inget BankID har hittats, har du troligen inget BankID som kan användas för denna identifiering/signering på denna enhet. Om du inte har BankID kan du beställa ett från din internetbank. Om du har BankID på en annan enhet kan du starta BankID-appen på den enheten</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15A" xml:space="preserve">
+    <value>Letar efter BankID:n, det kan ta en liten stund... Om några sekunder har gått och inget BankID har hittats, har du troligen inget BankID som kan användas för denna identifiering/signering på denna dator. Om du har ett BankID-kort, sätt in det i kortläsaren. Om du inte har BankID kan du beställa ett från din internetbank</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15B" xml:space="preserve">
+    <value>Letar efter BankID:n, det kan ta en liten stund... Om några sekunder har gått och inget BankID har hittats, har du troligen inget BankID som kan användas för denna identifiering/signering på denna enhet. Om du inte har BankID kan du beställa ett från din internetbank</value>
+  </data>
+  <data name="ClientMessageBankIdRFA16" xml:space="preserve">
+    <value>BankID:t du försöker använda är återkallat eller för gammalt. Vänligen använd ett annat BankID eller beställ ett nytt från din internetbank</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17A" xml:space="preserve">
+    <value>BankID-appen kunde inte hittas på din dator eller mobila enhet. Vänligen installera den och beställ ett BankID från din internetbank. Installera appen från din appbutik eller https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17B" xml:space="preserve">
+    <value>Misslyckades med att skanna QR-koden. Starta BankID-appen och skanna QR-koden. Kontrollera att BankID-appen är uppdaterad. Om du inte har BankID-appen måste du installera den och beställa ett BankID från din internetbank. Installera appen från din appbutik eller https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA18" xml:space="preserve">
+    <value>Starta BankID-appen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA19" xml:space="preserve">
+    <value>Vill du identifiera dig eller signera med BankID på denna dator eller med ett MobilBankID?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA20" xml:space="preserve">
+    <value>Vill du identifiera dig eller signera med BankID på denna enhet eller med ett BankID på en annan enhet?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA21" xml:space="preserve">
+    <value>Identifiering eller signering pågår</value>
+  </data>
+  <data name="ClientMessageBankIdRFA22" xml:space="preserve">
+    <value>Okänt fel. Försök igen</value>
+  </data>
 </root>
