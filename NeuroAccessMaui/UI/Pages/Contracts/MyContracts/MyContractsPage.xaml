@@ -45,7 +45,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="ContractModelTemplate" x:DataType="objectmodel:ContractModel">
-			<Grid ColumnDefinitions="auto,*" RowDefinitions="auto,auto" Padding="5,5,5,5">
+			<Grid ColumnDefinitions="auto,*" RowDefinitions="auto,auto" Padding="5,5,5,5" IsVisible="{Binding Path=IsVisible}">
 				<Label Grid.Column="0" Grid.Row="0" LineBreakMode="NoWrap" Padding="5,2,5,0"
 					   Text="{Binding Path=Timestamp, Converter={converters:DateToString}}"
 					   HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -109,6 +109,11 @@
 						<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
 												 HorizontalOptions="Center" VerticalOptions="Center" Margin="{StaticResource SmallMargins}"
 												 Color="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
+
+						<controls:CompositeEntry
+							Style="{StaticResource RegularCompositeEntry}"
+							Placeholder="Search"
+						    TextChanged="ContractsSearchChanged"/>
 
 						<!-- CollectionView's IsVisible used to be bound to IsIdle, but there seems to be a race condition somewhere because this led
 		the CollectionView not appearing sometimes on iOS. Always showing it seems to be OK because it is empty before contracts are loaded anyway. -->

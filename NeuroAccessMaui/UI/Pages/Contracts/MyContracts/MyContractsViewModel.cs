@@ -14,6 +14,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.UI;
 using Microsoft.Maui.Controls.Shapes;
 using Waher.Networking.XMPP.StanzaErrors;
+using Waher.Script.Constants;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -155,6 +156,41 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				}
 			});
 		}
+
+		/// <summary>
+		/// Add or remove the contracts from the collection
+		/// </summary>
+		public void AddOrRemoveContracts(HeaderModel Category, bool Expanded, string SearchString)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				if (Expanded)
+				{
+					int Index = this.Categories.IndexOf(Category);
+
+					foreach (ContractModel Contract in Category.Contracts)
+					{
+						if (Contract.Category.Contains(SearchString, StringComparison.OrdinalIgnoreCase) ||
+							Contract.Name.Contains(SearchString, StringComparison.OrdinalIgnoreCase))
+						{
+							this.Categories.Insert(++Index, Contract);
+						}
+					}
+				}
+				else
+				{
+					foreach (ContractModel Contract in Category.Contracts)
+					{
+						if (!Contract.Category.Contains(SearchString, StringComparison.OrdinalIgnoreCase) &&
+							!Contract.Name.Contains(SearchString, StringComparison.OrdinalIgnoreCase))
+						{
+							this.Categories.Remove(Contract);
+						}
+					}
+				}
+			});
+		}
+
 		/// <summary>
 		/// Add or remove the contracts from the collection
 		/// </summary>

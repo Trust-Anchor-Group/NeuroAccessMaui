@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services;
+﻿using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
@@ -43,6 +44,40 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					Event.Clicked();
 
 				this.Contracts.SelectedItem = null;
+			}
+		}
+
+		private void ContractsSearchChanged(object? Sender, TextChangedEventArgs e)
+		{
+			if (this.ContentPageModel is MyContractsViewModel MyContractsViewModel)
+			{
+				if (e.NewTextValue is not null)
+				{
+					foreach (IUniqueItem Category in MyContractsViewModel.Categories)
+					{
+						if (Category is HeaderModel Category2)
+						{
+							foreach (ContractModel Contract in Category2.Contracts)
+							{
+								
+							}
+						}
+					}
+				}
+				else // Search removed
+				{
+					foreach (IUniqueItem Category in MyContractsViewModel.Categories)
+					{
+						if (Category is HeaderModel Category2)
+						{
+							if (Category2.Expanded)
+							{
+								Category2.Expanded = false;
+								MyContractsViewModel.AddOrRemoveContracts(Category2, false);
+							}
+						}
+					}
+				}
 			}
 		}
 	}
