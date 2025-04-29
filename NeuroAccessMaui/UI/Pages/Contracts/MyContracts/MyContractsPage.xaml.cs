@@ -1,4 +1,6 @@
-﻿using NeuroAccessMaui.Services;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
@@ -44,6 +46,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 				this.Contracts.SelectedItem = null;
 			}
+		}
+
+		private void ContractsSearchChanged(object? Sender, TextChangedEventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				if (this.ContentPageModel is MyContractsViewModel MyContractsViewModel)
+				{
+					ObservableCollection<IUniqueItem> CategoryCopy = new(MyContractsViewModel.Categories); 
+
+					foreach (IUniqueItem Category in CategoryCopy)
+					{
+						if (Category is HeaderModel Category2)
+						{
+							MyContractsViewModel.SearchContracts(Category2, e.NewTextValue);
+						}
+					}
+				}
+			});
 		}
 	}
 }
