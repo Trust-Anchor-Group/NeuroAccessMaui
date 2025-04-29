@@ -23,7 +23,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		private readonly DateTime timestamp;
 		private readonly Contract contract;
 		private NotificationEvent[] events;
-		private bool isVisible;
 
 		private ContractModel(string ContractId, DateTime Timestamp, Contract Contract, string Category, string Name, NotificationEvent[] Events)
 		{
@@ -33,7 +32,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			this.category = Category;
 			this.name = Name;
 			this.events = Events;
-			this.isVisible = true;
 		}
 
 		/// <summary>
@@ -65,7 +63,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 				return string.Empty;
 
 			Dictionary<string, ClientSignature> Signatures = [];
-			StringBuilder? sb = null;
+			StringBuilder? StringBuilder = null;
 
 			if (Contract.ClientSignatures is not null)
 			{
@@ -84,16 +82,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 
 				string FriendlyName = await ContactInfo.GetFriendlyName(Part.LegalId);
 
-				if (sb is null)
-					sb = new StringBuilder(FriendlyName);
+				if (StringBuilder is null)
+					StringBuilder = new StringBuilder(FriendlyName);
 				else
 				{
-					sb.Append(", ");
-					sb.Append(FriendlyName);
+					StringBuilder.Append(", ");
+					StringBuilder.Append(FriendlyName);
 				}
 			}
 
-			return sb?.ToString() ?? string.Empty;
+			return StringBuilder?.ToString() ?? string.Empty;
 		}
 
 		/// <summary>
@@ -179,25 +177,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		public NotificationEvent[] Events => this.events;
 
 		/// <summary>
-		/// If the contract is visible in the list of contracts.
-		/// </summary>
-		public bool IsVisible
-		{
-			get => this.isVisible;
-			set
-			{
-				if (this.isVisible != value)
-				{
-					MainThread.BeginInvokeOnMainThread(() =>
-					{
-						this.isVisible = value;
-						this.OnPropertyChanged(nameof(this.IsVisible));
-					});
-				}
-			}
-		}
-
-		/// <summary>
 		/// Called when a property has changed.
 		/// </summary>
 		/// <param name="PropertyName">Name of property</param>
@@ -207,9 +186,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			{
 				this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 
