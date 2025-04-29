@@ -2597,4 +2597,7 @@
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Sekunder</value>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Sök</value>
+  </data>
 </root>

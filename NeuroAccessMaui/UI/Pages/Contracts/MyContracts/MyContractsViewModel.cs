@@ -20,6 +20,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
 	/// <summary>
 	/// The view model to bind to when displaying 'my' contracts.
+	/// TODO: This page and ViewModel should be refactored
 	/// </summary>
 	public partial class MyContractsViewModel : BaseViewModel
 	{
@@ -158,36 +159,39 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		/// <summary>
-		/// Add or remove the contracts from the collection
+		/// Add or remove the contracts from the collection based on a search
 		/// </summary>
-		public void AddOrRemoveContracts(HeaderModel Category, bool Expanded, string SearchString)
+		public void SearchContracts(HeaderModel Category, string SearchString)
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				if (Expanded)
-				{
-					int Index = this.Categories.IndexOf(Category);
+				int Index = this.Categories.IndexOf(Category);
 
-					foreach (ContractModel Contract in Category.Contracts)
-					{
-						if (Contract.Category.Contains(SearchString, StringComparison.OrdinalIgnoreCase) ||
-							Contract.Name.Contains(SearchString, StringComparison.OrdinalIgnoreCase))
-						{
-							this.Categories.Insert(++Index, Contract);
-						}
-					}
-				}
-				else
+				bool MatchFound = false;
+
+				foreach (ContractModel Contract in Category.Contracts)
 				{
-					foreach (ContractModel Contract in Category.Contracts)
+					if (string.IsNullOrEmpty(SearchString))
 					{
-						if (!Contract.Category.Contains(SearchString, StringComparison.OrdinalIgnoreCase) &&
-							!Contract.Name.Contains(SearchString, StringComparison.OrdinalIgnoreCase))
-						{
-							this.Categories.Remove(Contract);
-						}
+						this.Categories.Remove(Contract);
+						continue;
+					}
+
+					if (Contract.Category.Contains(SearchString, StringComparison.OrdinalIgnoreCase) ||
+						Contract.Name.Contains(SearchString, StringComparison.OrdinalIgnoreCase))
+					{
+						if (!this.Categories.Contains(Contract))
+							this.Categories.Insert(++Index, Contract);
+
+						MatchFound = true;
+					}
+					else
+					{
+						this.Categories.Remove(Contract);
 					}
 				}
+
+				Category.Expanded = MatchFound;
 			});
 		}
 

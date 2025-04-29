@@ -112,7 +112,7 @@
 
 						<controls:CompositeEntry
 							Style="{StaticResource RegularCompositeEntry}"
-							Placeholder="Search"
+							Placeholder="{l:Localize Search}"
 						    TextChanged="ContractsSearchChanged"/>
 
 						<!-- CollectionView's IsVisible used to be bound to IsIdle, but there seems to be a race condition somewhere because this led
