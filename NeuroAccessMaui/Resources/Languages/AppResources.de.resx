@@ -2597,4 +2597,22 @@
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Nachschlag</value>
   </data>
+  <data name="ExpiresFormat" xml:space="preserve">
+    <value>Läuft ab: {0:d}</value>
+  </data>
+  <data name="Issued" xml:space="preserve">
+    <value>Ausgestellt</value>
+  </data>
+  <data name="OtherInformation" xml:space="preserve">
+    <value>Sonstige Informationen</value>
+  </data>
+  <data name="SwipeForDetails" xml:space="preserve">
+    <value>Wischen für Details</value>
+  </data>
+  <data name="ApplyIdInfoMainPage" xml:space="preserve">
+    <value>Beantragen Sie eine persönliche ID, um alles aus Neuro Access herauszuholen</value>
+  </data>
+  <data name="CompleteIdButton" xml:space="preserve">
+    <value>Vervollständigen Sie Ihre persönliche ID</value>
+  </data>
 </root>

@@ -1,19 +1,28 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Text;
 using NeuroAccessMaui.Resources.Languages;
 using Waher.Events;
+using Waher.Events.Files;
 using Waher.Events.Filter;
 using Waher.Events.XMPP;
+using Waher.Networking.XMPP.Contracts.HumanReadable.InlineElements;
 using Waher.Persistence.Exceptions;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.EventLog
 {
 	[Singleton]
-	internal sealed class LogService : ILogService
+	internal sealed class LogService : LoadableService, ILogService
 	{
 		private const string startupCrashFileName = "CrashDump.txt";
+		private const string debugLogFileName = "Log.txt";
 		private string bareJid = string.Empty;
 		private bool repairRequested = false;
+
+		private TextWriterEventSink? debugSink;
+		private TextWriter? debugTextWriter;
+		private FileStream? debugFileStream;
 
 		/// <summary>
 		/// Adds an <see cref="IEventSink"/> to the log service. Any listeners will be called
@@ -30,7 +39,6 @@ namespace NeuroAccessMaui.Services.EventLog
 				if (Sink == EventSink)
 					return;
 			}
-
 			Log.Register(EventSink);
 		}
 
@@ -42,6 +50,39 @@ namespace NeuroAccessMaui.Services.EventLog
 		{
 			if (EventSink is not null)
 				Log.Unregister(EventSink);
+		}
+
+		/// <summary>
+		/// Invoke this method to add a debug statement to the log.
+		/// </summary>
+		/// <param name="Message">Debug message.</param>
+		/// <param name="LineNumber">The line of code of the caller</param>
+		/// <param name="Tags">Tags to log together with message.</param>
+		/// <param name="MemberName">The name of the caller method or property</param>
+		/// <param name="FilePath">THe file of the caller</param>
+		public void LogDebug(string Message,
+			params KeyValuePair<string, object?>[] Tags)
+		{
+			Log.Debug(Message,
+				string.Empty,
+				this.bareJid,
+				Tags);
+		}
+
+		/// <summary>
+		/// Invoke this method to add a debug statement to the log.
+		/// </summary>
+		/// <param name="Message">Debug message.</param>
+		/// <param name="LineNumber">The line of code of the caller</param>
+		/// <param name="FilePath">THe file of the caller</param>
+		public void LogDebug(string Message,
+			[CallerFilePath] string FilePath = "",
+			[CallerLineNumber] int LineNumber = 0)
+		{
+			Log.Debug($"{Message} (File: {FilePath}, Line: {LineNumber})",
+				string.Empty,
+				this.bareJid,
+				[]);
 		}
 
 		/// <summary>
@@ -119,15 +160,15 @@ namespace NeuroAccessMaui.Services.EventLog
 		{
 			StackTrace = Log.CleanStackTrace(StackTrace);
 
-			string Contents;
-			string FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
+			string contents;
+			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
 
-			if (File.Exists(FileName))
-				Contents = File.ReadAllText(FileName);
+			if (File.Exists(fileName))
+				contents = File.ReadAllText(fileName);
 			else
-				Contents = string.Empty;
+				contents = string.Empty;
 
-			File.WriteAllText(FileName, Title + Environment.NewLine + StackTrace + Environment.NewLine + Contents);
+			File.WriteAllText(fileName, Title + Environment.NewLine + StackTrace + Environment.NewLine + contents);
 		}
 
 		/// <summary>
@@ -183,5 +224,55 @@ namespace NeuroAccessMaui.Services.EventLog
 
 			return Result;
 		}
+
+		public override Task Load(bool isResuming, CancellationToken cancellationToken)
+		{
+#if DEBUG
+			this.AddListener(new DebugEventSink());
+#endif
+			return Task.CompletedTask;
+		}
+    public async Task StartDebugLogSessionAsync()
+    {
+        string FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), debugLogFileName);
+
+        // If an old session is still open, end it first
+        if (this.debugSink != null)
+				await this.EndDebugLogSessionAsync();
+
+        if (File.Exists(FileName))
+            File.Delete(FileName);
+
+        // Create and keep references
+        this.debugFileStream = new FileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+        this.debugTextWriter = new StreamWriter(this.debugFileStream, Encoding.UTF8)
+        {
+            AutoFlush = true
+        };
+        this.debugSink = new TextWriterEventSink(debugLogFileName, this.debugTextWriter);
+
+        this.AddListener(this.debugSink);
+    }
+
+    public async Task EndDebugLogSessionAsync()
+    {
+        if (this.debugSink is null)
+            return;
+
+			// Unregister the sink so no more events are written
+			this.RemoveListener(this.debugSink);
+
+        // Dispose the sink (it doesn't own the writer, so no-op, but good practice)
+        await this.debugSink.DisposeAsync();
+        this.debugSink = null;
+
+        // Dispose the writer and the file stream
+        this.debugTextWriter?.Dispose();
+        this.debugTextWriter = null;
+
+        this.debugFileStream?.Dispose();
+        this.debugFileStream = null;
+    }
+
 	}
 }

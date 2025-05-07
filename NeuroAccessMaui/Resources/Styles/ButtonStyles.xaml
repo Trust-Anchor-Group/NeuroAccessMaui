@@ -339,6 +339,7 @@
 		<Setter Property="PathStyle" Value="{StaticResource TransparentImageButtonPath}" />
 	</Style>
 
+	<!-- Filled Image Button -->
 	<Style x:Key="FilledImageButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
 		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
@@ -378,6 +379,33 @@
 	<Style x:Key="FilledImageButton" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
 		<Setter Property="BorderStyle" Value="{StaticResource FilledImageButtonBorder}" />
 		<Setter Property="PathStyle" Value="{StaticResource FilledImageButtonPath}" />
+	</Style>
+
+	<!-- Back Button -->
+	<Style x:Key="IconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border" BasedOn="{StaticResource BorderSet}">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundLight}, Dark={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundDark}}"/>
+		<Setter Property="Padding" Value="{StaticResource MediumMargins}"/>
+		<Setter Property="Margin"
+				Value="0" />
+		<Setter Property="WidthRequest" Value="40"/>
+		<Setter Property="HeightRequest" Value="40"/>
+		<Setter Property="HorizontalOptions" Value="Start"/>
+		<Setter Property="StrokeShape">
+			<RoundRectangle CornerRadius="8" />
+		</Setter>
+
+	</Style>
+
+	<Style x:Key="IconButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
+		<Setter Property="Fill"
+				Value="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}"/>
+		<Setter Property="WidthRequest" Value="24"/>
+		<Setter Property="HeightRequest" Value="24"/>
+	</Style>
+
+	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
+		<Setter Property="BorderStyle" Value="{StaticResource IconButtonBorder}" />
+		<Setter Property="PathStyle" Value="{StaticResource IconButtonPath}" />
 	</Style>
 
 	<!-- Expander Button Styles -->

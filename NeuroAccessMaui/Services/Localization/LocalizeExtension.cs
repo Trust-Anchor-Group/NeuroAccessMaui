@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.UI.Converters;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
@@ -15,6 +16,7 @@ namespace NeuroAccessMaui.Services.Localization
 	[ContentProperty(nameof(Path))]
 	public class LocalizeExtension : IMarkupExtension<BindingBase>, INotifyPropertyChanged, IDisposable
 	{
+		private static readonly IMultiValueConverter formatConverter = new FormatStringConverter();
 		private static readonly Dictionary<Type, SortedDictionary<string, bool>> missingStrings = [];
 		private static Timer? timer = null;
 
@@ -53,22 +55,71 @@ namespace NeuroAccessMaui.Services.Localization
 		public string? StringFormat { get; set; } = null;
 		public Type? StringResource { get; set; } = null;
 
+		/// <summary>
+		/// ()
+		/// </summary>
+		public BindingBase? Arg { get; set; }
+
 		public object ProvideValue(IServiceProvider ServiceProvider)
 		{
 			return (this as IMarkupExtension<BindingBase>).ProvideValue(ServiceProvider);
 		}
 
-		BindingBase IMarkupExtension<BindingBase>.ProvideValue(IServiceProvider ServiceProvider)
+		BindingBase IMarkupExtension<BindingBase>.ProvideValue(IServiceProvider serviceProvider)
 		{
 			Type ResourcesType = this.StringResource ?? typeof(AppResources);
 
-			if (ResourcesType.GetRuntimeProperties().FirstOrDefault(pi => pi.Name == this.Path) is null)
+			// Validate that the Path actually exists on the .resx-backed class
+			if (ResourcesType
+				  .GetRuntimeProperties()
+				  .FirstOrDefault(pi => pi.Name == this.Path) is null)
 			{
 				ReportMissingString(this.Path, ResourcesType);
-				return new Binding("Localizer[STRINGNOTDEFINED]", this.Mode, this.Converter, this.ConverterParameter, this.StringFormat, this);
+				return new Binding(
+					"Localizer[STRINGNOTDEFINED]",
+					this.Mode,
+					this.Converter,
+					this.ConverterParameter,
+					this.StringFormat,
+					this
+				);
 			}
 
-			return new Binding($"Localizer[{this.Path}]", this.Mode, this.Converter, this.ConverterParameter, this.StringFormat, this);
+			// If the user supplied an Arg binding, build a MultiBinding to format it
+			if (this.Arg is not null)
+			{
+				MultiBinding Multi = new()
+				{
+					Mode = this.Mode,
+					Converter = formatConverter,
+					// No need to set ConverterParameter here—the format string comes from the Localizer
+				};
+
+				// 1️⃣ the format string from your resource
+				Multi.Bindings.Add(new Binding(
+				$"Localizer[{this.Path}]",
+				this.Mode,
+				this.Converter,
+				this.ConverterParameter,
+				this.StringFormat,
+				this
+					   ));
+
+				// the actual argument
+				Multi.Bindings.Add(this.Arg);
+
+				return Multi;
+			}
+
+			// Otherwise just a normal single Binding to Localizer[Path]
+			return new Binding(
+				$"Localizer[{this.Path}]",
+				this.Mode,
+				this.Converter,
+				this.ConverterParameter,
+				this.StringFormat,
+				this
+			);
 		}
 
 		/// <summary>
@@ -126,7 +177,8 @@ namespace NeuroAccessMaui.Services.Localization
 
 		public LocalizeExtension()
 		{
-			LocalizationManager.CurrentCultureChanged += this.OnCurrentCultureChanged;
+			if (!DesignMode.IsDesignModeEnabled)
+				LocalizationManager.CurrentCultureChanged += this.OnCurrentCultureChanged;
 		}
 
 		~LocalizeExtension()
@@ -163,4 +215,6 @@ namespace NeuroAccessMaui.Services.Localization
 
 		public event PropertyChangedEventHandler? PropertyChanged;
 	}
+
+
 }

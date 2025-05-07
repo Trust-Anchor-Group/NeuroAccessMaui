@@ -21,8 +21,8 @@
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2.4.2</ApplicationDisplayVersion>
-		<ApplicationVersion>168</ApplicationVersion>
+		<ApplicationDisplayVersion>2.4.3</ApplicationDisplayVersion>
+		<ApplicationVersion>171</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
@@ -294,6 +294,7 @@
 		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
 		<PackageReference Include="SkiaSharp" Version="2.88.9" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.9" />
+		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0" />
 		<PackageReference Include="Plugin.Firebase.Core" Version="3.1.1" />
 		<PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.2" />
 		<PackageReference Include="Svg.Skia" Version="2.0.0.1" />
@@ -305,6 +306,7 @@
 		<PackageReference Include="Waher.Content.QR" Version="2.1.2" />
 		<PackageReference Include="Waher.Content.Xml" Version="3.1.1" />
 		<PackageReference Include="Waher.Events" Version="1.4.3" />
+		<PackageReference Include="Waher.Events.Files" Version="1.2.0" />
 		<PackageReference Include="Waher.Events.Filter" Version="1.1.0" />
 		<PackageReference Include="Waher.Events.Persistence" Version="1.2.1" />
 		<PackageReference Include="Waher.Events.XMPP" Version="2.1.1" />

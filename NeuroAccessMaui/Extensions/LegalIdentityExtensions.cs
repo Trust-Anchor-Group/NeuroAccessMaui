@@ -37,6 +37,9 @@ namespace NeuroAccessMaui.Extensions
 		/// <returns>If an approved identity with personal information.</returns>
 		public static bool HasApprovedPersonalInformation(this LegalIdentity? Identity)
 		{
+			if (Identity is null)
+				return false;
+
 			if (Identity?.Attachments is null)
 				return false;
 

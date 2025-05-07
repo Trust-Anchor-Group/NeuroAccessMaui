@@ -14,6 +14,8 @@ using ZXing.Net.Maui.Controls;
 using Microsoft.Maui.Platform;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls;
+using NeuroAccessMaui.UI.Controls;
+
 #if DEBUG
 using DotNet.Meteor.HotReload.Plugin;
 #endif
@@ -38,6 +40,11 @@ namespace NeuroAccessMaui
 			MauiAppBuilder Builder = MauiApp.CreateBuilder();
 
 			Builder.UseMauiApp<App>();
+
+			Builder.ConfigureMauiHandlers(handlers =>
+			{
+				handlers.AddHandler(typeof(AutoHeightSKCanvasView), typeof(AutoHeightSKCanvasViewHandler));
+			});
 
 			Builder.ConfigureLifecycleEvents(lifecycle =>
 			{

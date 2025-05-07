@@ -1,4 +1,5 @@
-﻿using Waher.Events;
+﻿using System.Runtime.CompilerServices;
+using Waher.Events;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.EventLog
@@ -7,8 +8,18 @@ namespace NeuroAccessMaui.Services.EventLog
 	/// A log implementation for logging warnings, exceptions and events.
 	/// </summary>
 	[DefaultImplementation(typeof(LogService))]
-	public interface ILogService
+	public interface ILogService : ILoadableService
 	{
+		/// <summary>
+		/// Starts a debug log session. This log all events to a file
+		/// </summary>
+		Task StartDebugLogSessionAsync();
+
+		/// <summary>
+		/// Ends a debug log session. This Stops all events from being logged to a file.
+		/// </summary>
+		Task EndDebugLogSessionAsync();
+
 		/// <summary>
 		/// Adds an <see cref="IEventSink"/> to the log service. Any listeners will be called
 		/// whenever any log event occurs.
@@ -21,6 +32,24 @@ namespace NeuroAccessMaui.Services.EventLog
 		/// </summary>
 		/// <param name="EventSink">The listener to remove.</param>
 		void RemoveListener(IEventSink EventSink);
+
+		/// <summary>
+		/// Invoke this method to add a debug statement to the log.
+		/// </summary>
+		/// <param name="Message">Debug message.</param>
+		/// <param name="Tags">Tags to log together with message.</param>
+		public void LogDebug(string Message,
+			params KeyValuePair<string, object?>[] Tags);
+
+		/// <summary>
+		/// Invoke this method to add a debug statement to the log.
+		/// </summary>
+		/// <param name="Message">Debug message.</param>
+		/// <param name="LineNumber">The line of code of the caller</param>
+		/// <param name="FilePath">THe file of the caller</param>
+		public void LogDebug(string Message,
+			[CallerFilePath] string FilePath = "",
+			[CallerLineNumber] int LineNumber = 0);
 
 		/// <summary>
 		/// Invoke this method to add a warning statement to the log.

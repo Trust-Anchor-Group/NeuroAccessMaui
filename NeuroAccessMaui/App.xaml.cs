@@ -426,6 +426,8 @@ namespace NeuroAccessMaui
 					Token.ThrowIfCancellationRequested();
 				}
 
+				await ServiceRef.LogService.Load(isResuming, Token);
+
 				await ServiceRef.StorageService.Init(Token);
 				if (!configLoaded)
 				{
