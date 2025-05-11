@@ -280,9 +280,9 @@ namespace NeuroAccessMaui.Services.UI.QR
 		private static readonly SKColor bgDark = SKColors.Black;          //       fail to decode such codes. You can make it less bright however.
 
 		private static readonly CustomColoring userCodeLight = new(userPath,
-			256, 256, SKColors.Red, fgLight, bgLight, fgLight,
-			SKColors.DarkRed, SKColors.Red, fgLight,
-			SKColors.DarkSlateGray, SKColors.SlateGray, fgLight);
+			256, 256, SKColors.Red, SKColors.Transparent, bgLight, SKColors.Transparent,
+			SKColors.DarkRed, SKColors.Red, SKColors.Transparent,
+			SKColors.DarkSlateGray, SKColors.SlateGray, SKColors.Transparent);
 
 		private static readonly CustomColoring userCodeDark = new(userPath,
 			256, 256, SKColors.Red, fgDark, bgDark, fgDark,

@@ -2597,4 +2597,22 @@
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Sekundi</value>
   </data>
+  <data name="ExpiresFormat" xml:space="preserve">
+    <value>Ističe: {0:d}</value>
+  </data>
+  <data name="Issued" xml:space="preserve">
+    <value>Izdao</value>
+  </data>
+  <data name="OtherInformation" xml:space="preserve">
+    <value>Ostale informacije</value>
+  </data>
+  <data name="SwipeForDetails" xml:space="preserve">
+    <value>Prevucite za detalje</value>
+  </data>
+  <data name="ApplyIdInfoMainPage" xml:space="preserve">
+    <value>Prijavite se za ličnu kartu da biste dobili sve od Neuro Access-a</value>
+  </data>
+  <data name="CompleteIdButton" xml:space="preserve">
+    <value>Popunite svoj lični ID</value>
+  </data>
 </root>
