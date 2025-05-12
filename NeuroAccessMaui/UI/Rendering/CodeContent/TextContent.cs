@@ -1,4 +1,5 @@
-﻿using Waher.Content.Markdown;
+﻿using System.Xml;
+using Waher.Content.Markdown; 
 
 namespace NeuroAccessMaui.UI.Rendering.CodeContent
 {
@@ -26,32 +27,45 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 		/// <param name="Indent">Code block indentation.</param>
 		/// <param name="Document">Markdown document containing element.</param>
 		/// <returns>If renderer was able to generate output.</returns>
-		public async Task<bool> RenderMauiXaml(MauiXamlRenderer Renderer, string[] Rows, string Language, int Indent, 
+		public Task<bool> RenderMauiXaml(
+			MauiXamlRenderer Renderer,
+			string[] Rows,
+			string Language,
+			int Indent,
 			MarkdownDocument Document)
 		{
+			// Decode and prettify
 			string Text = Waher.Content.Markdown.Rendering.CodeContent.TextContent.DecodeBase64EncodedText(Rows, ref Language);
-			Text = Rendering.CodeContent.TextContent.MakePretty(Text, Language);
-
+			Text = Waher.Content.Markdown.Rendering.CodeContent.TextContent.MakePretty(Text, Language);
 			Rows = Text.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
 
-			ContentView Bakup = (ContentView)this.currentElement;
-			VerticalStackLayout BlockStackLayout = new();
-			int i, c = Rows.Length;
+			XmlWriter Output = Renderer.XmlOutput;
 
-			for (i = 0; i < c; i++)
+			Output.WriteStartElement("VerticalStackLayout");
+
+			// Emit each line as a Label
+			foreach (string Row in Rows)
 			{
-				Label ContentLabel = new Label
+				// Map Markdown alignment to MAUI HorizontalTextAlignment
+				string Alignment = Renderer.Alignment switch
 				{
-					LineBreakMode = LineBreakMode.NoWrap,
-					HorizontalTextAlignment = this.LabelAlignment(),
-					FontFamily = "SpaceGroteskRegular",
-					Text = Rows[i]
+					Waher.Content.Markdown.Model.TextAlignment.Center => "Center",
+					Waher.Content.Markdown.Model.TextAlignment.Right => "End",
+					_ => "Start",
 				};
 
-				BlockStackLayout.Add(ContentLabel);
+				Output.WriteStartElement("Label");
+				Output.WriteAttributeString("LineBreakMode", "NoWrap");
+				Output.WriteAttributeString("HorizontalTextAlignment", Alignment);
+				Output.WriteAttributeString("FontFamily", "SpaceGroteskRegular");
+				// If you want to preserve leading spaces, you may need to wrap with a Span or encode them
+				Output.WriteAttributeString("Text", Row);
+				Output.WriteEndElement();
 			}
 
-			return true;
+			Output.WriteEndElement();
+
+			return Task.FromResult(true);
 		}
 	}
 }
