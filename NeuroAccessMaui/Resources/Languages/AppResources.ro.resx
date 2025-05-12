@@ -2597,4 +2597,22 @@
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Secunde</value>
   </data>
+  <data name="ExpiresFormat" xml:space="preserve">
+    <value>Expiră: {0:d}</value>
+  </data>
+  <data name="Issued" xml:space="preserve">
+    <value>Emise</value>
+  </data>
+  <data name="OtherInformation" xml:space="preserve">
+    <value>Alte informații</value>
+  </data>
+  <data name="SwipeForDetails" xml:space="preserve">
+    <value>Glisați pentru detalii</value>
+  </data>
+  <data name="ApplyIdInfoMainPage" xml:space="preserve">
+    <value>Solicitați un act de identitate personal pentru a obține totul din Neuro Access</value>
+  </data>
+  <data name="CompleteIdButton" xml:space="preserve">
+    <value>Completează-ți ID-ul personal</value>
+  </data>
 </root>
