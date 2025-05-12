@@ -2597,4 +2597,22 @@
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Товары второго сорта</value>
   </data>
+  <data name="ExpiresFormat" xml:space="preserve">
+    <value>Истекает: {0:d}</value>
+  </data>
+  <data name="Issued" xml:space="preserve">
+    <value>Выдан</value>
+  </data>
+  <data name="OtherInformation" xml:space="preserve">
+    <value>Прочая информация</value>
+  </data>
+  <data name="SwipeForDetails" xml:space="preserve">
+    <value>Проведите пальцем для получения подробной информации</value>
+  </data>
+  <data name="ApplyIdInfoMainPage" xml:space="preserve">
+    <value>Подайте заявку на получение удостоверения личности, чтобы получить все преимущества Neuro Access</value>
+  </data>
+  <data name="CompleteIdButton" xml:space="preserve">
+    <value>Заполните свой личный ID</value>
+  </data>
 </root>

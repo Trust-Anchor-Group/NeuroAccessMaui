@@ -1740,7 +1740,7 @@
     <value>Tjänst</value>
   </data>
   <data name="Share" xml:space="preserve">
-    <value>Andel</value>
+    <value>Dela</value>
   </data>
   <data name="StateDiagram" xml:space="preserve">
     <value>Tillståndsdiagram</value>
@@ -2596,6 +2596,18 @@
   </data>
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Sekunder</value>
+  </data>
+  <data name="ExpiresFormat" xml:space="preserve">
+    <value>Utgår: {0:d}</value>
+  </data>
+  <data name="Issued" xml:space="preserve">
+    <value>Utfärdad</value>
+  </data>
+  <data name="OtherInformation" xml:space="preserve">
+    <value>Övrig information</value>
+  </data>
+  <data name="SwipeForDetails" xml:space="preserve">
+    <value>Svep för detaljer</value>
   </data>
   <data name="ClientMessageMissingCountry" xml:space="preserve">
     <value>Ansökan saknar landinformation</value>

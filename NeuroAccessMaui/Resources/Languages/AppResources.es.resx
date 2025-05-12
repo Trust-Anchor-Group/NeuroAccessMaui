@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2596,6 +2596,18 @@
   </data>
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Segundos</value>
+  </data>
+  <data name="ExpiresFormat" xml:space="preserve">
+    <value>Caduca: {0:d}</value>
+  </data>
+  <data name="Issued" xml:space="preserve">
+    <value>Emitido</value>
+  </data>
+  <data name="OtherInformation" xml:space="preserve">
+    <value>Otra información</value>
+  </data>
+  <data name="SwipeForDetails" xml:space="preserve">
+    <value>Desliza para ver detalles</value>
   </data>
   <data name="ClientMessageMissingCountry" xml:space="preserve">
     <value>La solicitud no contiene información sobre el país</value>

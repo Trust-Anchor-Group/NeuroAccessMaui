@@ -2597,6 +2597,24 @@
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Seconds</value>
   </data>
+  <data name="ExpiresFormat" xml:space="preserve">
+    <value>Expires: {0:d}</value>
+  </data>
+  <data name="Issued" xml:space="preserve">
+    <value>Issued</value>
+  </data>
+  <data name="OtherInformation" xml:space="preserve">
+    <value>Other information</value>
+  </data>
+  <data name="SwipeForDetails" xml:space="preserve">
+    <value>Swipe for details</value>
+  </data>
+  <data name="ApplyIdInfoMainPage" xml:space="preserve">
+    <value>Apply for a personal ID to get everything out of Neuro Access</value>
+  </data>
+  <data name="CompleteIdButton" xml:space="preserve">
+    <value>Complete your personal ID</value>
+  </data>
   <data name="ClientMessageMissingCountry" xml:space="preserve">
     <value>Application does not contain country information</value>
   </data>
@@ -2775,3 +2793,5 @@
     <value>Unknown error. Please try again</value>
   </data>
 </root>
+
+
