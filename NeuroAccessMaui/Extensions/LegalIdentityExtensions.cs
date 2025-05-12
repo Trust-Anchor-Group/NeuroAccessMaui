@@ -95,6 +95,22 @@ namespace NeuroAccessMaui.Extensions
 		}
 
 		/// <summary>
+		/// Returns the domain if the <see cref="LegalIdentity"/> has one, or the empty string otherwise.
+		/// </summary>
+		/// <param name="legalIdentity"></param>
+		/// <param name="defaultValueIfNotFound"></param>
+		/// <returns></returns>
+		public static string GetDomain(this LegalIdentity legalIdentity, string defaultValueIfNotFound = "")
+		{
+			string? Domain = null;
+
+			if (legalIdentity is not null && legalIdentity.Properties?.Length > 0)
+				Domain = legalIdentity.Properties.FirstOrDefault(x => x.Name == Constants.XmppProperties.Domain)?.Value;
+
+			return !string.IsNullOrWhiteSpace(Domain) ? Domain : defaultValueIfNotFound;
+		}
+
+		/// <summary>
 		/// Returns <c>true</c> if the legal identity has organizational properties.
 		/// </summary>
 		/// <param name="Identity">The legal identity whose state to check.</param>
