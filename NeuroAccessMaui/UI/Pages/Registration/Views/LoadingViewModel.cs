@@ -2,6 +2,7 @@
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Services.Theme;
 using Waher.Networking.XMPP;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
@@ -22,6 +23,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				if(App.Current is not null)
 					await App.Current.InitCompleted;
+
+				IThemeService s = App.Instantiate<IThemeService>();
+
+				await s.ApplyProviderTheme();
 			}
 			catch (Exception)
 			{
