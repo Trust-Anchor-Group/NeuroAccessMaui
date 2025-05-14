@@ -24,6 +24,8 @@ using Waher.Networking.XMPP.PEP.Events;
 using Waher.Networking.XMPP.Provisioning;
 using Waher.Networking.XMPP.Provisioning.Events;
 using Waher.Networking.XMPP.Provisioning.SearchOperators;
+using Waher.Networking.XMPP.PubSub.Events;
+using Waher.Networking.XMPP.PubSub;
 using Waher.Networking.XMPP.Push;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
@@ -1642,6 +1644,79 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Namespace">Namespace</param>
 		Task DeletePrivateXml(string LocalName, string Namespace);
 
+		#endregion
+
+		#region PubSub
+
+		/// <summary>
+		/// Gets all items from a node (or from the service’s root if nodeId is null).
+		/// Returns null on error.
+		/// </summary>
+		Task<PubSubItem[]?> GetItemsAsync(string? NodeId = null);
+
+		/// <summary>
+		/// Gets the latest N items from a node.
+		/// </summary>
+		Task<PubSubItem[]?> GetLatestItemsAsync(string NodeId, int count);
+
+		/// <summary>
+		/// Creates a new node. Optionally takes a <see cref="NodeConfiguration"/>.
+		/// </summary>
+		Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> CreateNodeAsync(string NodeId, NodeConfiguration? Config = null);
+
+		/// <summary>
+		/// Deletes an existing node.
+		/// </summary>
+		Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> DeleteNodeAsync(string NodeId, string? RedirectUri = null);
+
+		/// <summary>
+		/// Subscribes the current user (or specified JID) to a node, optionally with <see cref="SubscriptionOptions"/>.
+		/// </summary>
+		Task<SubscriptionEventArgs> SubscribeAsync(
+			string NodeId,
+			string? Jid = null,
+			SubscriptionOptions? Options = null);
+
+		/// <summary>
+		/// Unsubscribes the current user (or specified JID/subId) from a node.
+		/// </summary>
+		Task<SubscriptionEventArgs> UnsubscribeAsync(
+			string NodeId,
+			string? Jid = null,
+			string? SubscriptionId = null);
+
+		/// <summary>
+		/// Publishes an item (with optional itemId for updates) and returns the assigned itemId.
+		/// </summary>
+		Task<ItemResultEventArgs> PublishAsync(
+			string NodeId,
+			string? ItemId = null,
+			string PayloadXml = "");
+
+		/// <summary>
+		/// Retracts (deletes) a specific item from a node.
+		/// </summary>
+		Task<IqResultEventArgs> RetractAsync(string NodeId, string ItemId);
+
+		/// <summary>
+		/// Purges a node (deletes all persisted items).
+		/// </summary>
+		Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> PurgeNodeAsync(string NodeId);
+		/*
+		// Server-pushed events:
+		/// <summary>Raised when a new item is published to a PubSub node.</summary>
+		event EventHandlerAsync<ItemNotificationEventArgs> ItemNotification;
+		/// <summary>Raised when an item is retracted from a PubSub node.</summary>
+		event EventHandlerAsync<ItemNotificationEventArgs> ItemRetracted;
+		/// <summary>Raised when a PubSub node is purged.</summary>
+		event EventHandlerAsync<NodeNotificationEventArgs> NodePurged;
+		/// <summary>Raised when your subscription status changes for a node.</summary>
+		event EventHandlerAsync<SubscriptionNotificationEventArgs> SubscriptionStatusChanged;
+		/// <summary>Raised when a subscription request arrives for a node you own.</summary>
+		event EventHandlerAsync<SubscriptionRequestEventArgs> SubscriptionRequest;
+		/// <summary>Raised when your affiliation status changes on a node.</summary>
+		event EventHandlerAsync<AffiliationNotificationEventArgs> AffiliationNotification;
+		*/
 		#endregion
 	}
 }
