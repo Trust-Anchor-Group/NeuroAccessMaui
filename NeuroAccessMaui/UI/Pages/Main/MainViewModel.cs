@@ -12,6 +12,7 @@ using Waher.Networking.XMPP.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Services.Theme;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -36,6 +37,16 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			await base.OnAppearing();
 			try
 			{
+				var items = await ServiceRef.XmppService.GetItemsAsync();
+
+				if (items != null)
+				{
+					foreach (var item in items)
+					{
+						ServiceRef.LogService.LogDebug($"Item: {item.ItemId} - {item.Item}");
+					}
+				}
+
 				/*
 				try
 				{
