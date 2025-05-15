@@ -461,7 +461,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 									throw new Exception("Invalid account.");
 								}
 
-								LegalIdDefinition = null;
 								AccountDone = true;
 								break;
 
@@ -490,7 +489,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 					if (AccountDone && LegalIdDefinition is not null)
 					{
-						await ServiceRef.XmppService.ImportSigningKeys(LegalIdDefinition);
 						GoToRegistrationStep(RegistrationStep.Finalize);
 					}
 					else if (AccountDone)
