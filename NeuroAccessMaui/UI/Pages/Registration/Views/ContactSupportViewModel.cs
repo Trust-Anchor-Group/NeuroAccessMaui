@@ -669,7 +669,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ErrorMessage ?? string.Empty,
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				} else if (LegalIdDefinition is not null)
+				{
+					//Update the network password
+					string NewNetworkPassword = ServiceRef.CryptoService.CreateRandomPassword();
+					await ServiceRef.XmppService.ChangePassword(NewNetworkPassword);
+					ServiceRef.TagProfile?.SetAccount(ServiceRef.TagProfile.Account!, NewNetworkPassword, string.Empty);
 				}
+
 				return Succeeded;
 			}
 			catch (Exception ex)
