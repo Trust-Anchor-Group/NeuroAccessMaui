@@ -22,6 +22,7 @@ using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
@@ -346,8 +347,10 @@ namespace NeuroAccessMaui
 			Types.InstantiateDefault<INfcService>(false);
 			Types.InstantiateDefault<INotificationService>(false);
 			Types.InstantiateDefault<IIntentService>(false);
+			Types.InstantiateDefault<IThemeService>(false);
 
 			defaultInstantiatedSource.TrySetResult(true);
+
 
 			// Set dependency resolver.
 			DependencyResolver.ResolveUsing(type =>
