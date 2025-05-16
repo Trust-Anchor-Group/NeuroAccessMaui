@@ -673,8 +673,17 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				{
 					//Update the network password
 					string NewNetworkPassword = ServiceRef.CryptoService.CreateRandomPassword();
-					await ServiceRef.XmppService.ChangePassword(NewNetworkPassword);
-					ServiceRef.TagProfile?.SetAccount(ServiceRef.TagProfile.Account!, NewNetworkPassword, string.Empty);
+					if (await ServiceRef.XmppService.ChangePassword(NewNetworkPassword))
+					{
+						ServiceRef.TagProfile?.SetAccount(ServiceRef.TagProfile.Account!, NewNetworkPassword, string.Empty);
+					}
+					else
+					{
+						await ServiceRef.UiService.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+							ServiceRef.Localizer[nameof(AppResources.UnableToChangePassword)]
+						);
+					}
 				}
 
 				return Succeeded;
