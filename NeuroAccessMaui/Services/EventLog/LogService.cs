@@ -160,15 +160,15 @@ namespace NeuroAccessMaui.Services.EventLog
 		{
 			StackTrace = Log.CleanStackTrace(StackTrace);
 
-			string contents;
-			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
+			string Contents;
+			string FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
 
-			if (File.Exists(fileName))
-				contents = File.ReadAllText(fileName);
+			if (File.Exists(FileName))
+				Contents = File.ReadAllText(FileName);
 			else
-				contents = string.Empty;
+				Contents = string.Empty;
 
-			File.WriteAllText(fileName, Title + Environment.NewLine + StackTrace + Environment.NewLine + contents);
+			File.WriteAllText(FileName, Title + Environment.NewLine + StackTrace + Environment.NewLine + Contents);
 		}
 
 		/// <summary>

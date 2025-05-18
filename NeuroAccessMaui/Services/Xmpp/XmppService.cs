@@ -185,6 +185,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.Add(LocalSniffer);
 #endif
 
+					this.xmppClient.Add(LocalSniffer);
+#endif
+
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 					if (!string.IsNullOrEmpty(debugRecipient))
 					{
