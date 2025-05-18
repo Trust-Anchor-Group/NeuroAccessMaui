@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2596,5 +2596,23 @@
   </data>
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Sekuntia</value>
+  </data>
+  <data name="ExpiresFormat" xml:space="preserve">
+    <value>Vanhenee: {0:d}</value>
+  </data>
+  <data name="Issued" xml:space="preserve">
+    <value>Myönnetty</value>
+  </data>
+  <data name="OtherInformation" xml:space="preserve">
+    <value>Muut tiedot</value>
+  </data>
+  <data name="SwipeForDetails" xml:space="preserve">
+    <value>Pyyhkäise saadaksesi lisätietoja</value>
+  </data>
+  <data name="ApplyIdInfoMainPage" xml:space="preserve">
+    <value>Hae henkilötunnusta saadaksesi kaiken irti Neuro Accessista</value>
+  </data>
+  <data name="CompleteIdButton" xml:space="preserve">
+    <value>Täytä henkilötunnuksesi</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2596,5 +2596,194 @@
   </data>
   <data name="SecondsCapitalized" xml:space="preserve">
     <value>Segundos</value>
+  </data>
+  <data name="ExpiresFormat" xml:space="preserve">
+    <value>Expira: {0:d}</value>
+  </data>
+  <data name="Issued" xml:space="preserve">
+    <value>Emitido</value>
+  </data>
+  <data name="OtherInformation" xml:space="preserve">
+    <value>Outras informações</value>
+  </data>
+  <data name="SwipeForDetails" xml:space="preserve">
+    <value>Deslize para ver detalhes</value>
+  </data>
+  <data name="ClientMessageMissingCountry" xml:space="preserve">
+    <value>A solicitação não contém informações sobre o país</value>
+  </data>
+  <data name="ClientMessageMissingPNr" xml:space="preserve">
+    <value>A solicitação não contém informações sobre o número de identificação pessoal</value>
+  </data>
+  <data name="ClientMessageManualReview" xml:space="preserve">
+    <value>Não foi possível validar a solicitação automaticamente. A solicitação precisa ser validada manualmente ou por revisão de pares</value>
+  </data>
+  <data name="ClientMessageUnableReview" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageInvalidType" xml:space="preserve">
+    <value>Um parâmetro foi fornecido em formato inválido</value>
+  </data>
+  <data name="ClientMessageIdMismatch" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageJidMismatch" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageAccountMismatch" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageProviderMismatch" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageStateMismatch" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageCreatedMismatch" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageUpdatedMismatch" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageFromMismatch" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageToMismatch" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageNoClientURL" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageReviewerExternal" xml:space="preserve">
+    <value>O revisor é externo. A solicitação de revisão por pares deve ser enviada diretamente ao revisor</value>
+  </data>
+  <data name="ClientMessageServiceNotConfigured" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageCountryNotSupported" xml:space="preserve">
+    <value>Serviço não disponível no país selecionado</value>
+  </data>
+  <data name="ClientMessageNoCompanyId" xml:space="preserve">
+    <value>O serviço não pode ser usado para revisar IDs de empresa</value>
+  </data>
+  <data name="ClientMessageServiceClientTimeout" xml:space="preserve">
+    <value>O serviço excedeu o tempo limite aguardando a aprovação do usuário</value>
+  </data>
+  <data name="ClientMessageServiceFailed" xml:space="preserve">
+    <value>O serviço falhou ao processar a solicitação</value>
+  </data>
+  <data name="ClientMessagePNrMismatch" xml:space="preserve">
+    <value>O número de identificação pessoal não corresponde aos documentos fornecidos</value>
+  </data>
+  <data name="ClientMessageFirstNameMismatch" xml:space="preserve">
+    <value>O primeiro nome não corresponde aos documentos fornecidos</value>
+  </data>
+  <data name="ClientMessageLastNameMismatch" xml:space="preserve">
+    <value>O sobrenome não corresponde aos documentos fornecidos</value>
+  </data>
+  <data name="ClientMessageNameMismatch" xml:space="preserve">
+    <value>O nome não corresponde aos documentos fornecidos</value>
+  </data>
+  <data name="ClientMessageInvalidJid" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageNoLogin" xml:space="preserve">
+    <value>Ocorreu um erro inesperado</value>
+  </data>
+  <data name="ClientMessageUnexpectedOnboardingServer" xml:space="preserve">
+    <value>Resposta inesperada recebida do servidor de onboarding</value>
+  </data>
+  <data name="ClientMessagePersonDead" xml:space="preserve">
+    <value>Não foi possível verificar se a identidade corresponde a uma pessoa viva</value>
+  </data>
+  <data name="ClientMessageBirthDateMismatch" xml:space="preserve">
+    <value>A data de nascimento não corresponde aos documentos fornecidos</value>
+  </data>
+  <data name="ClientMessageAddressMismatch" xml:space="preserve">
+    <value>O endereço não corresponde aos documentos fornecidos</value>
+  </data>
+  <data name="ClientMessageZipMismatch" xml:space="preserve">
+    <value>O código postal não corresponde aos documentos fornecidos</value>
+  </data>
+  <data name="ClientMessageAreaMismatch" xml:space="preserve">
+    <value>A área não corresponde aos documentos fornecidos</value>
+  </data>
+  <data name="ClientMessageCityMismatch" xml:space="preserve">
+    <value>A cidade não corresponde aos documentos fornecidos</value>
+  </data>
+  <data name="ClientMessageRegionMismatch" xml:space="preserve">
+    <value>A região não corresponde aos documentos fornecidos</value>
+  </data>
+  <data name="ClientMessageLivenessFailed" xml:space="preserve">
+    <value>Falha na verificação de vivacidade</value>
+  </data>
+  <data name="ClientMessagePhotoFake" xml:space="preserve">
+    <value>Não foi possível verificar a autenticidade da foto</value>
+  </data>
+  <data name="ClientMessagePhotoPoor" xml:space="preserve">
+    <value>A qualidade da foto é muito baixa</value>
+  </data>
+  <data name="ClientMessageBankIdRFA1" xml:space="preserve">
+    <value>Inicie seu aplicativo BankID</value>
+  </data>
+  <data name="ClientMessageBandIdRFA2" xml:space="preserve">
+    <value>O aplicativo BankID não está instalado. Por favor, entre em contato com seu banco online</value>
+  </data>
+  <data name="ClientMessageBankIdRFA3" xml:space="preserve">
+    <value>Ação cancelada. Por favor, tente novamente</value>
+  </data>
+  <data name="ClientMessageBankIdRFA4" xml:space="preserve">
+    <value>Uma identificação ou assinatura já foi iniciada para este número de identificação pessoal. Tente novamente</value>
+  </data>
+  <data name="ClientMessageBankIdRFA5" xml:space="preserve">
+    <value>Erro interno. Por favor, tente novamente</value>
+  </data>
+  <data name="ClientMessageBankIdRFA6" xml:space="preserve">
+    <value>Ação cancelada</value>
+  </data>
+  <data name="ClientMessageBankIdRFA8" xml:space="preserve">
+    <value>O aplicativo BankID não está respondendo. Verifique se o programa está iniciado e se você tem acesso à Internet. Se você não tiver um BankID válido, pode obter um no seu banco online. Tente novamente</value>
+  </data>
+  <data name="ClientMessageBankIdRFA9" xml:space="preserve">
+    <value>Digite seu código de segurança no aplicativo BankID e selecione Identificar ou Assinar</value>
+  </data>
+  <data name="ClientMessageBankIdRFA13" xml:space="preserve">
+    <value>Tentando iniciar seu aplicativo BankID</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14A" xml:space="preserve">
+    <value>Procurando por BankID, pode demorar um pouco... Se alguns segundos se passaram e nenhum BankID foi encontrado, provavelmente você não tem um BankID que possa ser usado para esta identificação/assinatura neste computador. Se você tem um cartão BankID, insira-o no leitor de cartões. Se você não tem um BankID, pode solicitar um no seu banco online. Se você tem um BankID em outro dispositivo, pode iniciar o aplicativo BankID nesse dispositivo</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14B" xml:space="preserve">
+    <value>Procurando por BankID, pode demorar um pouco... Se alguns segundos se passaram e nenhum BankID foi encontrado, provavelmente você não tem um BankID que possa ser usado para esta identificação/assinatura neste dispositivo. Se você não tem um BankID, pode solicitar um no seu banco online. Se você tem um BankID em outro dispositivo, pode iniciar o aplicativo BankID nesse dispositivo</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15A" xml:space="preserve">
+    <value>Procurando por BankID, pode demorar um pouco... Se alguns segundos se passaram e nenhum BankID foi encontrado, provavelmente você não tem um BankID que possa ser usado para esta identificação/assinatura neste computador. Se você tem um cartão BankID, insira-o no leitor de cartões. Se você não tem um BankID, pode solicitar um no seu banco online</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15B" xml:space="preserve">
+    <value>Procurando por BankID, pode demorar um pouco... Se alguns segundos se passaram e nenhum BankID foi encontrado, provavelmente você não tem um BankID que possa ser usado para esta identificação/assinatura neste dispositivo. Se você não tem um BankID, pode solicitar um no seu banco online</value>
+  </data>
+  <data name="ClientMessageBankIdRFA16" xml:space="preserve">
+    <value>O BankID que você está tentando usar foi revogado ou é muito antigo. Por favor, use outro BankID ou solicite um novo no seu banco online</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17A" xml:space="preserve">
+    <value>Não foi possível encontrar o aplicativo BankID no seu computador ou dispositivo móvel. Por favor, instale-o e solicite um BankID no seu banco online. Instale o aplicativo na sua loja de aplicativos ou em https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17B" xml:space="preserve">
+    <value>Falha ao escanear o código QR. Inicie o aplicativo BankID e escaneie o código QR. Verifique se o aplicativo BankID está atualizado. Se você não tem o aplicativo BankID, você precisa instalá-lo e solicitar um BankID no seu banco online. Instale o aplicativo na sua loja de aplicativos ou em https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA18" xml:space="preserve">
+    <value>Inicie o aplicativo BankID</value>
+  </data>
+  <data name="ClientMessageBankIdRFA19" xml:space="preserve">
+    <value>Você gostaria de se identificar ou assinar com um BankID neste computador ou com um Mobile BankID?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA20" xml:space="preserve">
+    <value>Você gostaria de se identificar ou assinar com um BankID neste dispositivo ou com um BankID em outro dispositivo?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA21" xml:space="preserve">
+    <value>Identificação ou assinatura em progresso</value>
+  </data>
+  <data name="ClientMessageBankIdRFA22" xml:space="preserve">
+    <value>Erro desconhecido. Por favor, tente novamente</value>
   </data>
 </root>

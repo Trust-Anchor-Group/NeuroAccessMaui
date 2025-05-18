@@ -1,18 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Main.MainPage"
-							 x:DataType="viewmodel:MainViewModel"
-							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
-							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
-							 Shell.FlyoutBehavior="Flyout"
-							 Shell.NavBarIsVisible="True">
+						x:Class="NeuroAccessMaui.UI.Pages.Main.MainPage"
+						x:DataType="viewmodel:MainViewModel"
+						xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+						xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+						xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+						xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+						xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+						xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+						xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
+						xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+						xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+						xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+						Shell.FlyoutBehavior="Flyout"
+						Shell.NavBarIsVisible="False">
 <!--
 	<Shell.TitleView>
 		<Grid Padding="10">
@@ -38,30 +39,91 @@
 		</Grid>
 	</Shell.TitleView> -->
 	<Grid x:Name="TheMainGrid"
-		  RowDefinitions="*, auto"
+		  RowDefinitions="auto, *, auto"
 		  ColumnDefinitions="*"
 		  BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundLight}, Dark={StaticResource SurfaceBackgroundDark}}">
 
-		<controls:Background/>
+		<controls:Background Grid.RowSpan="3"/>
 
+		<!-- Top Buttons -->
+		<Grid Grid.Row="0"
+			  Margin="{StaticResource MediumMargins}"
+			  RowSpacing="{StaticResource MediumSpacing}"
+			  RowDefinitions="auto,auto"
+			  ColumnDefinitions="auto,auto">
+			<controls:ImageButton
+				Grid.Row="0" Grid.Column="0"
+				HorizontalOptions="Center"
+				Clicked="OnFlyoutButtonClicked"
+				PathData="{x:Static ui:Geometries.HamburgerIconPath}"
+				Style="{StaticResource IconButton}"/>
 
+			<!-- TODO: Enable when implemented
+			<controls:ImageButton
+				Grid.Row="0"
+				Grid.Column="1"
+				HorizontalOptions="End"
+				PathData="{x:Static ui:Geometries.NotificationIconPath}"
+				Style="{StaticResource IconButton}"/>
 
-		<!-- Main Content -->
-		<VerticalStackLayout Grid.Row="0"
-			  Padding="{StaticResource LargeMargins}"
-			  Spacing="{StaticResource LargeSpacing}"
-			  VerticalOptions="Fill" >
+			<controls:ImageButton
+				Grid.Row="1"
+				Grid.Column="1"
+				HorizontalOptions="End"
+				PathData="{x:Static ui:Geometries.HistoryIconPath}"
+				Style="{StaticResource IconButton}"/>
+			-->
+		</Grid>
 
-			<Image VerticalOptions="Center" HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" WidthRequest="240" />
+		<!-- Logo and Missing ID Box-->
+		<Grid Grid.Row="1"
+			  RowDefinitions="*, auto"
+			  Margin="30,100,30,100">
 
-			<VerticalStackLayout.GestureRecognizers>
-				<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
-			</VerticalStackLayout.GestureRecognizers>
-		</VerticalStackLayout>
+			<Image
+				Grid.Row="0"
+				VerticalOptions="Start"
+				HorizontalOptions="Center"
+				Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
+				WidthRequest="240"/>
+
+			<!-- Missing Neuro ID Box-->
+			<Grid Grid.Row="1"
+				  IsVisible="{Binding HasPersonalIdentity, Converter={StaticResource InvertedBoolConverter}}"
+				  RowDefinitions="*, *">
+				
+				<Border Grid.Row="0"
+						BackgroundColor="{AppThemeBinding Light={StaticResource FiguresStrokesBluea20Light}, Dark={StaticResource FiguresStrokesBluea20Dark}}"
+						Padding="{StaticResource MediumMargins}"
+						StrokeShape="RoundRectangle 8">
+					<Border.Shadow>
+						<Shadow Brush="{StaticResource ButtonBWContentWBvLight}" Offset="0,4" Radius="10" Opacity="0.05" />
+					</Border.Shadow>
+					<Grid ColumnSpacing="{StaticResource SmallSpacing}"
+						  ColumnDefinitions="auto, *">
+						<Path
+							Grid.Column="0"
+							Data="{x:Static ui:Geometries.InfoCirclePath}"
+							Fill="{AppThemeBinding Light={StaticResource ContentBlueLight}, Dark={StaticResource ContentBlueDark}}"/>
+						<Label
+							Grid.Column="1"
+							Text="{l:Localize ApplyIdInfoMainPage}"
+							TextColor="{AppThemeBinding Light={StaticResource ContentBlueLight}, Dark={StaticResource ContentBlueDark}}"/>
+					</Grid>
+				</Border>
+				<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">
+					<Grid Padding="{StaticResource MediumMargins}"
+						  ColumnDefinitions="*, auto">
+						<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{StaticResource SecondaryButtonActiveLabel}"/>
+						<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{StaticResource ButtonGreenContentGreenfLight}"/>
+					</Grid>
+				</controls:TemplatedButton>
+			</Grid>
+		</Grid>
 
 		<!-- Bottom Bar -->
-		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
-			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+		<Border Grid.Row="2" Style="{StaticResource BottomBarBorder}" VerticalOptions="End">
+			<Grid HorizontalOptions="FillAndExpand" >
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
@@ -90,8 +152,6 @@
 							</Grid>
 						</Border>
 					</controls:TemplatedButton>
-
-
 				</Grid>
 
 
@@ -102,6 +162,7 @@
 							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
 								  Data="{x:Static ui:Geometries.ShowIdIconPath}"
 								  Style="{StaticResource FilledTemplateButtonPath}"
+								  Grid.Column="0"
 							/>
 							<Label Grid.Column="1" Style="{StaticResource FilledTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
 						</Grid>
@@ -109,5 +170,10 @@
 				</controls:TemplatedButton>
 			</Grid>
 		</Border>
+
+		<Grid.GestureRecognizers>
+			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
+		</Grid.GestureRecognizers>
+
 	</Grid>
 </base:BaseContentPage>
