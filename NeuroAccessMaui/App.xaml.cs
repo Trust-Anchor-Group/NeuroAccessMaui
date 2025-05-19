@@ -466,6 +466,12 @@ namespace NeuroAccessMaui
 			finally
 			{
 				this.startupWorker.Release();
+
+				if(ServiceRef.XmppService.State == XmppState.Connected)
+				{
+					if (ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating())
+						await ServiceRef.XmppService.TryGenerateAndChangePassword();
+				}
 			}
 		}
 
