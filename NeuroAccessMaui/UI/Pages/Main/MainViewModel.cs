@@ -37,16 +37,24 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			await base.OnAppearing();
 			try
 			{
-				var items = await ServiceRef.XmppService.GetItemsAsync();
+				var Items = await ServiceRef.XmppService.GetAllNodeIdsAsync();
 
-				if (items != null)
+				if (Items != null)
 				{
-					foreach (var item in items)
+					foreach (var item in Items)
 					{
-						ServiceRef.LogService.LogDebug($"Item: {item.ItemId} - {item.Item}");
+						ServiceRef.LogService.LogDebug($"Item: {item.Name} - {item.Node}");
 					}
 				}
-
+				ServiceRef.LogService.LogDebug($"Is valid: {Waher.Content.Xml.XML.IsValidXml("<Tes>Test</Test>", true, true, true, true, false, false)}");
+				var Items2 = await ServiceRef.XmppService.GetLatestItemsAsync("MilleTest01", 2);
+				if (Items2 != null)
+				{
+					foreach (var item in Items2)
+					{
+						ServiceRef.LogService.LogDebug($"Item: {item.Node} --- \n {item.Payload} --- \n {item.Item.InnerText}");
+					}
+				}
 				/*
 				try
 				{
