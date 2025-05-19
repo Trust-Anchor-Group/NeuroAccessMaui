@@ -669,28 +669,17 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ErrorMessage ?? string.Empty,
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				} else if (LegalIdDefinition is not null)
+				}
+				else if (LegalIdDefinition is not null)
 				{
-					//Update the network password
-					string NewNetworkPassword = ServiceRef.CryptoService.CreateRandomPassword();
-					if (await ServiceRef.XmppService.ChangePassword(NewNetworkPassword))
-					{
-						ServiceRef.TagProfile?.SetAccount(ServiceRef.TagProfile.Account!, NewNetworkPassword, string.Empty);
-					}
-					else
-					{
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-							ServiceRef.Localizer[nameof(AppResources.UnableToChangePassword)]
-						);
-					}
+					await ServiceRef.XmppService.TryGenerateAndChangePassword();
 				}
 
 				return Succeeded;
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],

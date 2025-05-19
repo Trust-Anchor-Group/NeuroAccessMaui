@@ -67,6 +67,7 @@ using Waher.Persistence.Filters;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Temporary;
+using Waher.Script.Constants;
 using Waher.Security.JWT;
 using Waher.Things;
 using Waher.Things.SensorData;
@@ -1216,6 +1217,40 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}, null);
 
 			return PasswordChanged.Task;
+		}
+
+		/// <summary>
+		/// Generates and changes the password of the account. This method is safe to use but does not guarantee that the password is changed.
+		/// Should the change fail, a flag will be set in the tagprofile, which is checked when an xmpp connection is established.
+		/// If the flag is set, the app will try to update the xmpp password again.
+		/// </summary>
+		/// <returns>If change was successful</returns>
+		public async Task<bool> TryGenerateAndChangePassword()
+		{
+			TaskCompletionSource<bool> PasswordChanged = new();
+			try
+			{
+				string NewNetworkPassword = ServiceRef.CryptoService.CreateRandomPassword();
+				if (await this.ChangePassword(NewNetworkPassword))
+				{
+					ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewNetworkPassword, string.Empty);
+
+					ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(false);
+					PasswordChanged.TrySetResult(true);
+				}
+				else
+				{
+					ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
+					PasswordChanged.TrySetResult(false);
+				}
+			}
+			catch (Exception)
+			{
+				ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
+				PasswordChanged.TrySetResult(false);
+			}
+
+			return PasswordChanged.Task.Result;
 		}
 
 		#endregion
