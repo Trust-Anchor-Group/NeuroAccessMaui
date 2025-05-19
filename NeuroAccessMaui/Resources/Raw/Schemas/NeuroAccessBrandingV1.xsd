@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ba="urn:neuroaccess:branding:1.0"
+    xmlns:maui="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    targetNamespace="urn:neuroaccess:branding:1.0"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+  <!--
+    NeuroAccess branding schema. Defines versioning, images, and color resources.
+    Colors can be specified via external XAML URI or inline list of <Color> entries.
+  -->
+  <xs:annotation>
+    <xs:documentation>
+      NeuroAccess branding schema. Contains version info, image definitions,
+      and color resources via URI or inline color definitions.
+    </xs:documentation>
+  </xs:annotation>
+
+  <!-- Root branding container -->
+  <xs:complexType name="NeuroAccessBrandingType">
+    <xs:annotation>
+      <xs:documentation>
+        Container for all NeuroAccess branding settings.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <!-- Versioning -->
+      <xs:element name="Version">
+        <xs:annotation>
+          <xs:documentation>
+            Semantic version: major (required), minor (required), patch (default=0).
+          </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:attribute name="major" type="xs:nonNegativeInteger" use="required"/>
+          <xs:attribute name="minor" type="xs:nonNegativeInteger" use="required"/>
+          <xs:attribute name="patch" type="xs:nonNegativeInteger" use="optional" default="0"/>
+        </xs:complexType>
+      </xs:element>
+
+      <!-- Banner and Logo Images -->
+      <xs:element name="BannerImage" type="ba:ImageType"/>
+      <xs:element name="LogoImage"   type="ba:ImageType"/>
+
+      <!-- Color resource definitions -->
+      <xs:element name="Colors">
+        <xs:annotation>
+          <xs:documentation>
+            Color definitions: either reference an external ResourceDictionary XAML file
+            or provide an inline list of Color entries with x:Key attributes.
+          </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:choice>
+            <!-- External XAML reference -->
+            <xs:element name="ResourceDictionaryUri" type="ba:XamlUriType"/>
+            <!-- Inline color definitions -->
+            <xs:sequence>
+              <xs:element name="Color" maxOccurs="unbounded">
+                <xs:complexType mixed="true">
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute name="Key" use="required"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <!-- Allow future extensions via other attributes -->
+    <xs:anyAttribute namespace="##other" processContents="lax"/>
+  </xs:complexType>
+
+  <!-- Global root element -->
+  <xs:element name="NeuroAccessBranding" type="ba:NeuroAccessBrandingType"/>
+
+  <!-- Reusable image type -->
+  <xs:complexType name="ImageType">
+    <xs:annotation>
+      <xs:documentation>
+        Image data for banners or logos. Provide either a URI or embedded binary content.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="Uri"    type="xs:anyURI"/>
+        <xs:element name="Binary" type="xs:base64Binary"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="contentType" type="ba:ImageMimeType" use="optional"/>
+    <xs:attribute name="width"       type="xs:positiveInteger" use="optional"/>
+    <xs:attribute name="height"      type="xs:positiveInteger" use="optional"/>
+    <xs:anyAttribute namespace="##other" processContents="lax"/>
+  </xs:complexType>
+
+  <!-- Restrict contentType to known image MIME types -->
+  <xs:simpleType name="ImageMimeType">
+    <xs:annotation>
+      <xs:documentation>
+        Allowed image MIME types for BannerImage and LogoImage.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="image/png"/>
+      <xs:enumeration value="image/jpeg"/>
+      <xs:enumeration value="image/svg+xml"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Ensure ResourceDictionaryUri ends with .xaml -->
+  <xs:simpleType name="XamlUriType">
+    <xs:annotation>
+      <xs:documentation>
+        URI to a MAUI ResourceDictionary (.xaml) file for color resources.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:anyURI">
+      <xs:pattern value=".*\.xaml$"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>
