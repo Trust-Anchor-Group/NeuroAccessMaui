@@ -79,7 +79,7 @@ namespace NeuroAccessMaui.Services.EventLog
 			[CallerFilePath] string FilePath = "",
 			[CallerLineNumber] int LineNumber = 0)
 		{
-			Log.Debug($"{Message} (File: {FilePath}, Line: {LineNumber})",
+			Log.Debug($"{Message} \n (File: {FilePath}, Line: {LineNumber})",
 				string.Empty,
 				this.bareJid,
 				[]);
