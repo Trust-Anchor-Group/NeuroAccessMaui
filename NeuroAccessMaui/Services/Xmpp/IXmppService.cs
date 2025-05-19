@@ -1648,16 +1648,18 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#region PubSub
 
+		Task<Item[]> GetAllNodeIdsAsync();
+
 		/// <summary>
 		/// Gets all items from a node (or from the service’s root if nodeId is null).
 		/// Returns null on error.
 		/// </summary>
-		Task<PubSubItem[]?> GetItemsAsync(string? NodeId = null);
+		Task<PubSubItem[]> GetItemsAsync(string NodeId);
 
 		/// <summary>
 		/// Gets the latest N items from a node.
 		/// </summary>
-		Task<PubSubItem[]?> GetLatestItemsAsync(string NodeId, int count);
+		Task<PubSubItem[]> GetLatestItemsAsync(string NodeId, int Count);
 
 		/// <summary>
 		/// Creates a new node. Optionally takes a <see cref="NodeConfiguration"/>.

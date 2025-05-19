@@ -2792,6 +2792,7 @@
   <data name="ClientMessageBankIdRFA22" xml:space="preserve">
     <value>Unknown error. Please try again</value>
   </data>
+  <data name="PubSubServiceNotFound" xml:space="preserve">
+    <value>Publish-subcribe service not found</value>
+  </data>
 </root>
-
-
