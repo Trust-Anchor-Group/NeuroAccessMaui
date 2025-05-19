@@ -185,9 +185,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 					}
 #if DEBUG_XMPP_LOCAL
 					DebugSniffer LocalSniffer = new(BinaryPresentationMethod.Hexadecimal);
+<<<<<<< HEAD
 					this.xmppClient.Add(LocalSniffer);
 #endif
 
+=======
+>>>>>>> origin/feature/branding
 					this.xmppClient.Add(LocalSniffer);
 #endif
 
