@@ -600,15 +600,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								}
 							}
 
-							/*
-							if (approvedIdentity is not null)
-							{
-								this.LegalIdentity = approvedIdentity;
-							}
-							else if (createdIdentity is not null)
-							{
-								this.LegalIdentity = createdIdentity;
-							}*/
 							LegalIdentity? SelectedIdentity = ApprovedIdentity ?? CreatedIdentity;
 
 							string SelectedId;
@@ -617,6 +608,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 							{
 								await ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, SelectedIdentity);
 								SelectedId = SelectedIdentity.Id;
+
+								ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
 							}
 							else
 							{
@@ -669,10 +662,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ErrorMessage ?? string.Empty,
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				}
-				else if (LegalIdDefinition is not null)
-				{
-					await ServiceRef.XmppService.TryGenerateAndChangePassword();
 				}
 
 				return Succeeded;

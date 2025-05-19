@@ -939,6 +939,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 							this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
 					}
 
+					Console.WriteLine("Xmpp password needs updating flag before startup" + ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating());
+
+					// Check is xmpp password needs updating.
+					if (ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating())
+						await ServiceRef.XmppService.TryGenerateAndChangePassword();
+					Console.WriteLine("Xmpp password needs updating flag after startup" + ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating());
+
+
 					ServiceRef.LogService.AddListener(this.xmppFilteredEventSink!);
 
 					await ServiceRef.PushNotificationService.CheckPushNotificationToken();
@@ -1227,6 +1235,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>If change was successful</returns>
 		public async Task<bool> TryGenerateAndChangePassword()
 		{
+			Console.WriteLine("Xmpp password needs updating flag before func" + ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating());
+
 			TaskCompletionSource<bool> PasswordChanged = new();
 			try
 			{
@@ -1250,6 +1260,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				PasswordChanged.TrySetResult(false);
 			}
 
+			Console.WriteLine("Xmpp password needs updating flag after func" + ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating());
 			return PasswordChanged.Task.Result;
 		}
 
