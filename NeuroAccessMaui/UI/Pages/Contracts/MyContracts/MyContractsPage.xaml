@@ -110,6 +110,11 @@
 												 HorizontalOptions="Center" VerticalOptions="Center" Margin="{StaticResource SmallMargins}"
 												 Color="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
 
+						<controls:CompositeEntry
+							Style="{StaticResource RegularCompositeEntry}"
+							Placeholder="{l:Localize Search}"
+						    TextChanged="ContractsSearchChanged"/>
+
 						<!-- CollectionView's IsVisible used to be bound to IsIdle, but there seems to be a race condition somewhere because this led
 		the CollectionView not appearing sometimes on iOS. Always showing it seems to be OK because it is empty before contracts are loaded anyway. -->
 						<CollectionView x:Name="Contracts" VerticalOptions="StartAndExpand"
