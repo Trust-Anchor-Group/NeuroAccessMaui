@@ -8,7 +8,7 @@ namespace NeuroAccessMaui.Services.EventLog
 	/// A log implementation for logging warnings, exceptions and events.
 	/// </summary>
 	[DefaultImplementation(typeof(LogService))]
-	public interface ILogService : ILoadableService
+	public interface ILogService : ILoadableService, IDisposable
 	{
 		/// <summary>
 		/// Starts a debug log session. This log all events to a file

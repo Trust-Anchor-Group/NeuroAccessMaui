@@ -2618,6 +2618,181 @@
   <data name="Search" xml:space="preserve">
     <value>Search</value>
   </data>
+  <data name="ClientMessageMissingCountry" xml:space="preserve">
+    <value>Application does not contain country information</value>
+  </data>
+  <data name="ClientMessageMissingPNr" xml:space="preserve">
+    <value>Application does not contain personal number information</value>
+  </data>
+  <data name="ClientMessageManualReview" xml:space="preserve">
+    <value>Unable to validate application automatically. The application needs to be validated manually, or by peer review</value>
+  </data>
+  <data name="ClientMessageUnableReview" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageInvalidType" xml:space="preserve">
+    <value>A parameter was given in an invalid format</value>
+  </data>
+  <data name="ClientMessageIdMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageJidMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageAccountMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageProviderMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageStateMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageCreatedMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageUpdatedMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageFromMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageToMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageNoClientURL" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageReviewerExternal" xml:space="preserve">
+    <value>Peer reviewer is external. Peer-review request should be sent directly to reviewer</value>
+  </data>
+  <data name="ClientMessageServiceNotConfigured" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageCountryNotSupported" xml:space="preserve">
+    <value>Service not available in selected country</value>
+  </data>
+  <data name="ClientMessageNoCompanyId" xml:space="preserve">
+    <value>Service cannot be used to review company IDs</value>
+  </data>
+  <data name="ClientMessageServiceClientTimeout" xml:space="preserve">
+    <value>Service timed out waiting for user to approve request</value>
+  </data>
+  <data name="ClientMessageServiceFailed" xml:space="preserve">
+    <value>Service failed to process request</value>
+  </data>
+  <data name="ClientMessagePNrMismatch" xml:space="preserve">
+    <value>Personal number does not match provided documents</value>
+  </data>
+  <data name="ClientMessageFirstNameMismatch" xml:space="preserve">
+    <value>First name does not match provided documents</value>
+  </data>
+  <data name="ClientMessageLastNameMismatch" xml:space="preserve">
+    <value>Last name does not match provided documents</value>
+  </data>
+  <data name="ClientMessageNameMismatch" xml:space="preserve">
+    <value>Name does not match provided documents</value>
+  </data>
+  <data name="ClientMessageInvalidJid" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageNoLogin" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageUnexpectedOnboardingServer" xml:space="preserve">
+    <value>Unexpected response received from onboarding server</value>
+  </data>
+  <data name="ClientMessagePersonDead" xml:space="preserve">
+    <value>Could not verify that the identity matches a living person</value>
+  </data>
+  <data name="ClientMessageBirthDateMismatch" xml:space="preserve">
+    <value>Birth date does not match provided documents</value>
+  </data>
+  <data name="ClientMessageAddressMismatch" xml:space="preserve">
+    <value>Address does not match provided documents</value>
+  </data>
+  <data name="ClientMessageZipMismatch" xml:space="preserve">
+    <value>Zip-code does not match provided documents</value>
+  </data>
+  <data name="ClientMessageAreaMismatch" xml:space="preserve">
+    <value>Area does not match provided documents</value>
+  </data>
+  <data name="ClientMessageCityMismatch" xml:space="preserve">
+    <value>City does not match provided documents</value>
+  </data>
+  <data name="ClientMessageRegionMismatch" xml:space="preserve">
+    <value>Region does not match provided documents</value>
+  </data>
+  <data name="ClientMessageLivenessFailed" xml:space="preserve">
+    <value>Liveness check failed</value>
+  </data>
+  <data name="ClientMessagePhotoFake" xml:space="preserve">
+    <value>Could not verify photo authenticity</value>
+  </data>
+  <data name="ClientMessagePhotoPoor" xml:space="preserve">
+    <value>Photo quality too low</value>
+  </data>
+  <data name="ClientMessageBankIdRFA1" xml:space="preserve">
+    <value>Start your BankID app</value>
+  </data>
+  <data name="ClientMessageBandIdRFA2" xml:space="preserve">
+    <value>The BankID app is not installed. Please contact your internet bank</value>
+  </data>
+  <data name="ClientMessageBankIdRFA3" xml:space="preserve">
+    <value>Action cancelled. Please try again</value>
+  </data>
+  <data name="ClientMessageBankIdRFA4" xml:space="preserve">
+    <value>An identification or signing for this personal number is already started. Please try again</value>
+  </data>
+  <data name="ClientMessageBankIdRFA5" xml:space="preserve">
+    <value>Internal error. Please try again</value>
+  </data>
+  <data name="ClientMessageBankIdRFA6" xml:space="preserve">
+    <value>Action cancelled</value>
+  </data>
+  <data name="ClientMessageBankIdRFA8" xml:space="preserve">
+    <value>The BankID app is not responding. Please check that the program is started and that you have internet access. If you do not have a valid BankID you can get one from your bank. Try again</value>
+  </data>
+  <data name="ClientMessageBankIdRFA9" xml:space="preserve">
+    <value>Enter your security code in the BankID app and select Identify or Sign</value>
+  </data>
+  <data name="ClientMessageBankIdRFA13" xml:space="preserve">
+    <value>Trying to start your BankID app</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14A" xml:space="preserve">
+    <value>Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably do not have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you do not have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14B" xml:space="preserve">
+    <value>Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably do not have a BankID which can be used for this identification/signing on this device. If you do not have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15A" xml:space="preserve">
+    <value>Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably do not have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you do not have a BankID you can order one from your internet bank</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15B" xml:space="preserve">
+    <value> Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably do not have a BankID which can be used for this identification/signing on this device. If you do not have a BankID you can order one from your internet bank</value>
+  </data>
+  <data name="ClientMessageBankIdRFA16" xml:space="preserve">
+    <value>The BankID you are trying to use is revoked or too old. Please use another BankID or order a new one from your internet bank</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17A" xml:space="preserve">
+    <value>The BankID app could not be found on your computer or mobile device. Please install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17B" xml:space="preserve">
+    <value>Failed to scan the QR code. Start the BankID app and scan the QR code. Check that the BankID app is up to date. If you don't have the BankID app, you need to install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA18" xml:space="preserve">
+    <value>Start the BankID app</value>
+  </data>
+  <data name="ClientMessageBankIdRFA19" xml:space="preserve">
+    <value>Would you like to identify yourself or sign with a BankID on this computer or with a Mobile BankID?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA20" xml:space="preserve">
+    <value>Would you like to identify yourself or sign with a BankID on this device or with a BankID on another device?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA21" xml:space="preserve">
+    <value>Identification or signing in progress</value>
+  </data>
+  <data name="ClientMessageBankIdRFA22" xml:space="preserve">
+    <value>Unknown error. Please try again</value>
+  </data>
 </root>
-
-

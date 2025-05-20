@@ -185,6 +185,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.Add(LocalSniffer);
 #endif
 
+					this.xmppClient.Add(LocalSniffer);
+#endif
+
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 					if (!string.IsNullOrEmpty(debugRecipient))
 					{
@@ -1899,7 +1902,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				try
 				{
 					string Key = "ClientMessage" + e.Code;
-					string LocalizedMessage = ServiceRef.Localizer[Key];
+					string LocalizedMessage = ServiceRef.Localizer[Key, false];
 
 					// TODO: Make sure this does not generate logs or errors, as the app
 					// does not control future error codes that can be returned.
