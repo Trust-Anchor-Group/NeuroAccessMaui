@@ -1052,7 +1052,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				*/
 				if (e is ObjectDisposedException)
 					ConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
-				if (e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
+				else if (e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
 				{
 					this.reconnectTimer?.Dispose();
 					this.reconnectTimer = null;
