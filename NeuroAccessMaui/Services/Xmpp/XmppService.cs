@@ -99,6 +99,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private PepClient? pepClient;
 		private HttpxClient? httpxClient;
 		private Timer? reconnectTimer;
+		private Timer? updatePasswordTimer;
 		private string? domainName;
 		private string? accountName;
 		private string? passwordHash;
@@ -1235,33 +1236,58 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>If change was successful</returns>
 		public async Task<bool> TryGenerateAndChangePassword()
 		{
-			Console.WriteLine("Xmpp password needs updating flag before func" + ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating());
-
 			TaskCompletionSource<bool> PasswordChanged = new();
+
+			bool ChangeFailed = true;
+
 			try
 			{
 				string NewNetworkPassword = ServiceRef.CryptoService.CreateRandomPassword();
 				if (await this.ChangePassword(NewNetworkPassword))
 				{
 					ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewNetworkPassword, string.Empty);
-
-					ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(false);
-					PasswordChanged.TrySetResult(true);
-				}
-				else
-				{
-					ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
-					PasswordChanged.TrySetResult(false);
+					ChangeFailed = false;
 				}
 			}
 			catch (Exception)
 			{
-				ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
-				PasswordChanged.TrySetResult(false);
+				// Change was failed
 			}
 
-			Console.WriteLine("Xmpp password needs updating flag after func" + ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating());
+			if (ChangeFailed)
+			{
+				ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
+				PasswordChanged.TrySetResult(false);
+
+				this.RecreateUpdatePasswordTimer();
+			}
+			else
+			{
+				ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(false);
+				PasswordChanged.TrySetResult(true);
+
+				this.updatePasswordTimer?.Dispose();
+				this.updatePasswordTimer = null;
+			}
+
 			return PasswordChanged.Task.Result;
+		}
+
+		private async void UpdatePasswordTimer_Tick(object? _)
+		{
+			if (this.xmppClient is null)
+				return;
+
+			if (!ServiceRef.NetworkService.IsOnline)
+				return;
+
+			await this.TryGenerateAndChangePassword();
+		}
+
+		private void RecreateUpdatePasswordTimer()
+		{
+			this.updatePasswordTimer?.Dispose();
+			this.updatePasswordTimer = new Timer(this.UpdatePasswordTimer_Tick, null, Constants.Intervals.Reconnect, Constants.Intervals.Reconnect);
 		}
 
 		#endregion
