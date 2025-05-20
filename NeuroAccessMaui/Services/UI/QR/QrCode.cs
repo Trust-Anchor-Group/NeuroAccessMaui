@@ -33,11 +33,11 @@ namespace NeuroAccessMaui.Services.UI.QR
 				AllowedSchemas.Add(Constants.UriSchemes.IotSc);
 				AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
 				AllowedSchemas.Add(Constants.UriSchemes.Xmpp);
-				AllowedSchemas.Add(Constants.UriSchemes.EDaler);
+				
 				// TODO:
 				// AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
 				// AllowedSchemas.Add(Constants.UriSchemes.NeuroFeature);
-				// 
+				// AllowedSchemas.Add(Constants.UriSchemes.EDaler);
 			}
 
 			return [.. AllowedSchemas];
