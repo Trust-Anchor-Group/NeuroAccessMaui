@@ -12,7 +12,10 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace NeuroAccessMaui.UI.Controls
 {
-	public partial class ContractSelector : ContentView
+	/// <summary>
+	/// A custom control for selecting a contract
+	/// </summary>
+	public partial class ContractSelector : VerticalStackLayout
 	{
 		#region Constructor
 
@@ -62,11 +65,10 @@ namespace NeuroAccessMaui.UI.Controls
 			ButtonGrid.Add(ScanQrButton, 0, 0);
 			ButtonGrid.Add(ChooseContractButton, 1, 0);
 
-			this.Content = new VerticalStackLayout
-			{
-				Children = { TitleLabel, Entry, ButtonGrid },
-				Spacing = AppStyles.SmallSpacing
-			};
+			this.Add(TitleLabel);
+			this.Add(Entry);
+			this.Add(ButtonGrid);
+			this.Spacing = AppStyles.SmallSpacing;
 		}
 
 		#endregion
