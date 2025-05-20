@@ -14,12 +14,6 @@ namespace NeuroAccessMaui.UI.Controls
 {
 	public partial class ContractSelector : ContentView
 	{
-		#region Fields
-
-		private readonly VerticalStackLayout mainLayout;
-
-		#endregion
-
 		#region Constructor
 
 		/// <summary>
@@ -44,13 +38,15 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				PathData = Geometries.ScanQrIconPath,
 				Style = AppStyles.SecondaryImageButton,
-				Command = new AsyncRelayCommand(() => ScanQrCommand(Entry))
+				Command = new AsyncRelayCommand(() => this.ScanQr(Entry))
 			};
 
 			TextButton ChooseContractButton = new()
 			{
 				Style = AppStyles.SecondaryButton
 			};
+			// Add in the ctor:
+			ChooseContractButton.SetBinding(TextButton.StyleProperty, new Binding(nameof(this.ButtonStyle), source: this));
 			ChooseContractButton.SetBinding(TextButton.LabelDataProperty, new Binding(nameof(this.ButtonText), source: this));
 			ChooseContractButton.SetBinding(TextButton.CommandProperty, new Binding(nameof(this.ButtonCommand), source: this));
 
@@ -66,13 +62,11 @@ namespace NeuroAccessMaui.UI.Controls
 			ButtonGrid.Add(ScanQrButton, 0, 0);
 			ButtonGrid.Add(ChooseContractButton, 1, 0);
 
-			this.mainLayout = new VerticalStackLayout
+			this.Content = new VerticalStackLayout
 			{
 				Children = { TitleLabel, Entry, ButtonGrid },
 				Spacing = AppStyles.SmallSpacing
 			};
-
-			this.Content = this.mainLayout;
 		}
 
 		#endregion
@@ -206,7 +200,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <summary>
 		/// Command that opens the ScanQrPage. And gets the url from the QR code.
 		/// </summary>
-		static async Task ScanQrCommand(CompositeEntry Entry)
+		[RelayCommand]
+		public async Task ScanQr(CompositeEntry Entry)
 		{
 			string[] AllowedSchemas = [Constants.UriSchemes.IotSc];
 
