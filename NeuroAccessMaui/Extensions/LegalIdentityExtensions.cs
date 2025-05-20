@@ -37,6 +37,9 @@ namespace NeuroAccessMaui.Extensions
 		/// <returns>If an approved identity with personal information.</returns>
 		public static bool HasApprovedPersonalInformation(this LegalIdentity? Identity)
 		{
+			if (Identity is null)
+				return false;
+
 			if (Identity?.Attachments is null)
 				return false;
 
@@ -89,6 +92,22 @@ namespace NeuroAccessMaui.Extensions
 				Jid = legalIdentity.Properties.FirstOrDefault(x => x.Name == Constants.XmppProperties.Jid)?.Value;
 
 			return !string.IsNullOrWhiteSpace(Jid) ? Jid : defaultValueIfNotFound;
+		}
+
+		/// <summary>
+		/// Returns the domain if the <see cref="LegalIdentity"/> has one, or the empty string otherwise.
+		/// </summary>
+		/// <param name="legalIdentity"></param>
+		/// <param name="defaultValueIfNotFound"></param>
+		/// <returns></returns>
+		public static string GetDomain(this LegalIdentity legalIdentity, string defaultValueIfNotFound = "")
+		{
+			string? Domain = null;
+
+			if (legalIdentity is not null && legalIdentity.Properties?.Length > 0)
+				Domain = legalIdentity.Properties.FirstOrDefault(x => x.Name == Constants.XmppProperties.Domain)?.Value;
+
+			return !string.IsNullOrWhiteSpace(Domain) ? Domain : defaultValueIfNotFound;
 		}
 
 		/// <summary>
