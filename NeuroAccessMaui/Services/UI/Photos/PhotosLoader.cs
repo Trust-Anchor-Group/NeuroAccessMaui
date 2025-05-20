@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.Services.AttachmentCache;
 using SkiaSharp;
@@ -131,7 +131,7 @@ namespace NeuroAccessMaui.Services.UI.Photos
 					if (Bin is null)
 						continue;
 
-					Photo Photo = new(Bin, Rotation);
+					Photo Photo = new(Bin, Rotation, Attachment);
 					First ??= Photo;
 
 					if (Bin is not null)

@@ -73,7 +73,7 @@ namespace NeuroAccessMaui.UI.Controls
 			propertyName: nameof(OutputMaxResolution),
 			returnType: typeof(Size),
 			declaringType: typeof(ImageCropperView),
-			defaultValue: new Size(800, 800));
+			defaultValue: new Size(1280, 1280));
 
 		/// <summary>
 		/// Gets or sets the maximum resolution for the cropped output image.
@@ -408,12 +408,17 @@ namespace NeuroAccessMaui.UI.Controls
 				}
 
 				// Extract the bounding box of the crop area.
-				SKRectI boundingBox = SKRectI.Round(cropRect);
-				using SKBitmap cropped = new SKBitmap(boundingBox.Width, boundingBox.Height);
+				int left = (int)Math.Floor(cropRect.Left);
+				int top = (int)Math.Floor(cropRect.Top);
+				int right = (int)Math.Ceiling(cropRect.Right);
+				int bottom = (int)Math.Ceiling(cropRect.Bottom);
+
+				SKRectI BoundingBox = new SKRectI(left, top, right, bottom);
+				using SKBitmap cropped = new SKBitmap(BoundingBox.Width, BoundingBox.Height);
 				using (SKCanvas croppedCanvas = new SKCanvas(cropped))
 				{
-					SKRect dst = new SKRect(0, 0, boundingBox.Width, boundingBox.Height);
-					croppedCanvas.DrawBitmap(maskedBitmap, boundingBox, dst);
+					SKRect dst = new SKRect(0, 0, BoundingBox.Width, BoundingBox.Height);
+					croppedCanvas.DrawBitmap(maskedBitmap, BoundingBox, dst);
 				}
 
 				// Resize the cropped bitmap if needed.

@@ -182,9 +182,9 @@ namespace NeuroAccessMaui.Services.Contracts
 					if (Identity is not null)
 					{
 						RequestIdentityNotificationEvent Event = new(e);
-						await ServiceRef.NotificationService.NewEvent(Event);
-						//await ServiceRef.UiService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
-						//	Identity, e.RequestorFullJid, e.RequestedIdentityId, e.PetitionId, e.Purpose));
+						//await ServiceRef.NotificationService.NewEvent(Event);
+						await ServiceRef.UiService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
+							Identity, e.RequestorFullJid, e.RequestedIdentityId, e.PetitionId, e.Purpose));
 					}
 				}
 			}

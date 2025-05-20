@@ -8,11 +8,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			this.InitializeComponent();
 			this.ContentPageModel = ViewModel;
-
-			ServiceRef.PlatformSpecific.ShowIdentitiesNotification("Test", "Hello world", new Dictionary<string, string>
-			{
-				{ "Test", "Value" }
-			});
 		}
 
 		private async void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
@@ -26,6 +21,11 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
+		}
+
+		private void OnFlyoutButtonClicked(object sender, EventArgs e)
+		{
+			Shell.Current.FlyoutIsPresented = true;
 		}
 	}
 }

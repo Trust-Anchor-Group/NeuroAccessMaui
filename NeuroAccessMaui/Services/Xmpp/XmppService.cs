@@ -1,4 +1,4 @@
-﻿//#define DEBUG_XMPP_REMOTE
+//#define DEBUG_XMPP_REMOTE
 #define DEBUG_XMPP_LOCAL
 //#define DEBUG_LOG_REMOTE
 //#define DEBUG_DB_REMOTE
@@ -182,6 +182,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 					}
 #if DEBUG_XMPP_LOCAL
 					DebugSniffer LocalSniffer = new DebugSniffer(BinaryPresentationMethod.Hexadecimal);
+					this.xmppClient.Add(LocalSniffer);
+#endif
 
 					this.xmppClient.Add(LocalSniffer);
 #endif
@@ -256,7 +258,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.OnPresence += this.XmppClient_OnPresence;
 
 					this.xmppClient.RegisterMessageHandler("Delivered", ContractsClient.NamespaceOnboarding, this.TransferIdDelivered, true);
-					this.xmppClient.RegisterMessageHandler("clientMessage", ContractsClient.NamespaceLegalIdentitiesCurrent, this.ClientMessage, true);
 
 					this.xmppFilteredEventSink = new EventFilter("XMPP Event Filter",
 						new XmppEventSink("XMPP Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false),
@@ -1892,18 +1893,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 			});
 		}
 
-		private Task ClientMessage(object? Sender, MessageEventArgs e)
+		private Task ContractsClient_ClientMessage(object? Sender, ClientMessageEventArgs e)
 		{
-			string Code = XML.Attribute(e.Content, "code");
-			string Type = XML.Attribute(e.Content, "type");
 			string Message = e.Body;
 
-			if (!string.IsNullOrEmpty(Code))
+			if (!string.IsNullOrEmpty(e.Code))
 			{
 				try
 				{
-					string Key = "ClientMessage" + Code;
-					string LocalizedMessage = ServiceRef.Localizer[Key];
+					string Key = "ClientMessage" + e.Code;
+					string LocalizedMessage = ServiceRef.Localizer[Key, false];
+
+					// TODO: Make sure this does not generate logs or errors, as the app
+					// does not control future error codes that can be returned.
 
 					if (!string.IsNullOrEmpty(LocalizedMessage) && !LocalizedMessage.Equals(Key, StringComparison.Ordinal))
 						Message = LocalizedMessage;
@@ -1914,26 +1916,81 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 
+			// TODO: Event arguments contain more detailed information about:
+			//
+			//	Properties & attachments that have been validated: e.ValidClaims, e.ValidPhotos
+			//	Properties & attachments that have been invalidated: e.InvalidClaims, e.InvalidPhotos
+			//	Properties & attachments that are still unvalidated: e.UnvalidatedClaims, e.UnvalidatedPhotos
+			//
+			// Body message only contains first message reported.
+			//
+			// Codes that need localized messages (defined in broker & services):
+			//
+			// ManualReview: Unable to validate application automatically. The application needs to be validated manually, or by peer review.
+			// UnableReview: Unable to validate the review.
+			// InvalidType: "Expected value of type " + typeof(T).FullName + "."
+			// IdMismatch: Identifier does not correspond to created identifier.
+			// JidMismatch: JID does not correspond to client JID.
+			// AccountMismatch: Account name does not match account.
+			// ProviderMismatch: Provider does not match legal component address.
+			// StateMismatch: State does not match identity state.
+			// CreatedMismatch: Created does not match identity creation timestamp.
+			// UpdatedMismatch: Updated does not match identity update timestamp.
+			// FromMismatch: From does not match identity creation timestamp.
+			// ToMismatch: To does not match identity creation timestamp.
+			// NoClientURL: No Client URL provided.
+			// ReviewerExternal: Peer reviewer is external. Peer-review request should be sent directly to reviewer.
+			// ServiceNotConfigured: Service not configured correctly. Please contact operator.
+			// MissingCountry: Application does not contain country information.
+			// CountryNotSupported: Service not available in your country.
+			// MissingPNr: Application does not contain a personal number.
+			// NoCompanyId: Service cannot be used to review company IDs.
+			// ServiceClientTimeout: Service timed out waiting for user to approve request.
+			// ServiceFailed: Service failed to process request.
+			// PNrMismatch: Personal number mismatch.
+			// FirstNameMismatch: First name mismatch.
+			// LastNameMismatch: Last name mismatch.
+			// NameMismatch: Name mismatch.
+			// InvalidJid: Invalid JID.
+			// NoLogin: No login registered on Neuron.
+			// UnexpectedOnboardingServer: Unexpected response received from onboarding server.
+			// PersonDead: Person is dead.
+			// BirthDateMismatch: Birth date mismatch.
+			// AddressMismatch: Address mismatch.
+			// ZipMismatch: Postal Code mismatch.
+			// AreaMismatch: Area mismatch.
+			// CityMismatch: City mismatch.
+			// RegionMismatch: Region mismatch.
+			// LivenessFailed: Liveness check failed.
+			// PhotoFake: Photo is fake.
+			// PhotoPoor: Photo has poor quality.
+			// BankIdRFA1: Start your BankID app.
+			// BankIdRFA2: The BankID app is not installed. Please contact your internet bank.
+			// BankIdRFA3: Action cancelled. Please try again.
+			// BankIdRFA4: An identification or signing for this personal number is already started. Please try again.
+			// BankIdRFA5: Internal error. Please try again.
+			// BankIdRFA6: Action cancelled.
+			// BankIdRFA8: The BankID app is not responding. Please check that the program is started and that you have internet access. If you don�t have a valid BankID you can get one from your bank. Try again.
+			// BankIdRFA9: Enter your security code in the BankID app and select Identify or Sign.
+			// BankIdRFA13: Trying to start your BankID app.
+			// BankIdRFA14A: Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably don�t have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you don�t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device.
+			// BankIdRFA14B: Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably don�t have a BankID which can be used for this identification/signing on this device. If you don�t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device.
+			// BankIdRFA15A: Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably don�t have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you don�t have a BankID you can order one from your internet bank.
+			// BankIdRFA15B: Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably don�t have a BankID which can be used for this identification/signing on this device. If you don�t have a BankID you can order one from your internet bank
+			// BankIdRFA16: The BankID you are trying to use is revoked or too old. Please use another BankID or order a new one from your internet bank.
+			// BankIdRFA17A: The BankID app couldn�t be found on your computer or mobile device. Please install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com.
+			// BankIdRFA17B: Failed to scan the QR code. Start the BankID app and scan the QR code. Check that the BankID app is up to date. If you don't have the BankID app, you need to install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com.
+			// BankIdRFA18: Start the BankID app
+			// BankIdRFA19: Would you like to identify yourself or sign with a BankID on this computer or with a Mobile BankID?
+			// BankIdRFA20: Would you like to identify yourself or sign with a BankID on this device or with a BankID on another device?
+			// BankIdRFA21: Identification or signing in progress.
+			// BankIdRFA22: Unknown error. Please try again.
+
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				switch (Type.ToUpperInvariant())
-				{
-					case "NONE":
-					default:
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.Information)], Message,
-							ServiceRef.Localizer[nameof(AppResources.Ok)]);
-						break;
-
-					case "CLIENT":
-					case "SERVER":
-					case "SERVICE":
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
-							ServiceRef.Localizer[nameof(AppResources.Ok)]);
-						break;
-
-				}
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			});
 
 			return Task.CompletedTask;
@@ -2992,6 +3049,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.ContractsClient.ContractProposalReceived += this.ContractsClient_ContractProposalReceived;
 			this.ContractsClient.ContractUpdated += this.ContractsClient_ContractUpdated;
 			this.ContractsClient.ContractSigned += this.ContractsClient_ContractSigned;
+			this.ContractsClient.ClientMessage += this.ContractsClient_ClientMessage;
 		}
 
 		/// <summary>
@@ -3363,7 +3421,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>Available service providers for peer review of identity applications.</returns>
 		public async Task<ServiceProviderWithLegalId[]> GetServiceProvidersForPeerReviewAsync()
 		{
-			return await this.ContractsClient.GetPeerReviewIdServiceProvidersAsync();
+			try
+			{
+				return await this.ContractsClient.GetPeerReviewIdServiceProvidersAsync();
+			}
+			catch(Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			return [];
 		}
 
 		/// <summary>
