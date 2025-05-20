@@ -62,6 +62,7 @@ using Waher.Networking.XMPP.Push;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Networking.XMPP.StanzaErrors;
+using Waher.Networking.XMPP.StreamErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using Waher.Runtime.Inventory;
@@ -1042,9 +1043,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			Task OnConnectionError(object _, Exception e)
 			{
+				//TODO: Handle stream error not authenticated
+				/* if(e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
+				if (e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException NotAuthor)
+				{
+					Go to page / open popup with info and actions
+				}
+				*/
 				if (e is ObjectDisposedException)
 					ConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
-				else if (e is ConflictException ConflictInfo)
+				else if (e is Waher.Networking.XMPP.StanzaErrors.ConflictException ConflictInfo)
 					Alternatives = ConflictInfo.Alternatives;
 				else
 					ConnectionError = e.Message;
