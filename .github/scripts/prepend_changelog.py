@@ -57,7 +57,7 @@ def extract_categorized_changelog(pr_body: str) -> Dict[str, List[str]]:
         if header_match:
             current_cat = header_match.group(1)
             categorized.setdefault(current_cat, [])
-        elif current_cat and line.strip().startswith('-'):
+        elif current_cat and (line.strip().startswith('-') or line.strip().startswith('*')):
             # strip leading '-' and any whitespace
             categorized[current_cat].append(line.strip()[1:].strip())
 
@@ -102,7 +102,7 @@ def prepend_to_category(changelog_text: str, category: str, items: List[str]) ->
     else:
         # Create new subheader at end of Unreleased block
         trimmed = re.sub(r"[\r\n]+$", "", unrel_block)
-        new_unrel = f"{trimmed}\n\n### {category}\n\n{bullets}\n"  # blank lines before header & list
+        new_unrel = f"{trimmed}\n\n### {category}\n\n{bullets}\n\n"  # blank lines before header & list
 
     return changelog_text[:m.start(1)] + new_unrel + changelog_text[m.end(1):]
 
