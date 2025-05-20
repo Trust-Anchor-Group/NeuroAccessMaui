@@ -472,7 +472,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 									throw new Exception("Invalid account.");
 								}
 
-								LegalIdDefinition = null;
 								AccountDone = true;
 								break;
 
@@ -501,7 +500,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 					if (AccountDone && LegalIdDefinition is not null)
 					{
-						await ServiceRef.XmppService.ImportSigningKeys(LegalIdDefinition);
 						GoToRegistrationStep(RegistrationStep.Finalize);
 					}
 					else if (AccountDone)
@@ -613,15 +611,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								}
 							}
 
-							/*
-							if (approvedIdentity is not null)
-							{
-								this.LegalIdentity = approvedIdentity;
-							}
-							else if (createdIdentity is not null)
-							{
-								this.LegalIdentity = createdIdentity;
-							}*/
 							LegalIdentity? SelectedIdentity = ApprovedIdentity ?? CreatedIdentity;
 
 							string SelectedId;
@@ -630,6 +619,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 							{
 								await ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, SelectedIdentity);
 								SelectedId = SelectedIdentity.Id;
+
+								ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
 							}
 							else
 							{
@@ -683,11 +674,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						ErrorMessage ?? string.Empty,
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
+
 				return Succeeded;
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
