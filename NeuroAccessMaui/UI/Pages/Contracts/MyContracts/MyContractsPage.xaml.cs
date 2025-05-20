@@ -50,21 +50,28 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 		private void ContractsSearchChanged(object? Sender, TextChangedEventArgs e)
 		{
-			MainThread.BeginInvokeOnMainThread(() =>
+			try
 			{
-				if (this.ContentPageModel is MyContractsViewModel MyContractsViewModel)
+				MainThread.BeginInvokeOnMainThread(() =>
 				{
-					ObservableCollection<IUniqueItem> CategoryCopy = new(MyContractsViewModel.Categories); 
-
-					foreach (IUniqueItem Category in CategoryCopy)
+					if (this.ContentPageModel is MyContractsViewModel MyContractsViewModel)
 					{
-						if (Category is HeaderModel Category2)
+						ObservableCollection<IUniqueItem> CategoryCopy = new(MyContractsViewModel.Categories); 
+
+						foreach (IUniqueItem Category in CategoryCopy)
 						{
-							MyContractsViewModel.SearchContracts(Category2, e.NewTextValue);
+							if (Category is HeaderModel Category2)
+							{
+								MyContractsViewModel.SearchContracts(Category2, e.NewTextValue);
+							}
 						}
 					}
-				}
-			});
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 	}
 }
