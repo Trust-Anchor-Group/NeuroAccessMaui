@@ -213,8 +213,17 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			this.FriendlyName = Jid[0];
 			this.SubText = Jid[1];
 			// Friendly name
-			PersonalInformation? PInfo = Identity.GetPersonalInformation();
-			if(PInfo is not null)
+			PersonalInformation? PInfo = null;
+			try
+			{
+				PInfo = Identity.GetPersonalInfo();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			} 
+			
+			if (PInfo is not null)
 			{
 				if (!string.IsNullOrEmpty(PInfo.FullName))
 				{
