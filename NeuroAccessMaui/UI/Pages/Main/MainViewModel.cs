@@ -153,5 +153,18 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			);
 
 		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		public async Task GoToApplyIdentity()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 	}
 }

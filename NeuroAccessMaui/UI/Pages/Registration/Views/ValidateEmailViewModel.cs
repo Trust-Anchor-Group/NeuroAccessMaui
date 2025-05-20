@@ -144,7 +144,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						{ "EMail", this.EmailText },
 						{ "AppName", Constants.Application.Name },
 						{ "Language", CultureInfo.CurrentCulture.TwoLetterISOLanguageName }
-					}, new KeyValuePair<string, string>("Accept", "application/json"));
+					},
+					null,                               // Certificate
+					App.ValidateCertificateCallback,          // RemoteCertificateValidator
+					new KeyValuePair<string, string>("Accept", "application/json"));
 
 				SendResult.AssertOk();
 
@@ -167,7 +170,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 							{
 								{ "EMail", this.EmailText },
 								{ "Code", int.Parse(Code, NumberStyles.None, CultureInfo.InvariantCulture) }
-							}, new KeyValuePair<string, string>("Accept", "application/json"));
+							},
+							null,                               // Certificate
+							App.ValidateCertificateCallback,          // RemoteCertificateValidator
+							new KeyValuePair<string, string>("Accept", "application/json"));
 
 						VerifyResult.AssertOk();
 
@@ -233,7 +239,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						{ "EMail", this.EmailText },
 						{ "AppName", Constants.Application.Name },
 						{ "Language", CultureInfo.CurrentCulture.TwoLetterISOLanguageName }
-					}, new KeyValuePair<string, string>("Accept", "application/json"));
+					},
+					null,                               // Certificate
+					App.ValidateCertificateCallback,          // RemoteCertificateValidator
+					new KeyValuePair<string, string>("Accept", "application/json"));
 
 				SendResult.AssertOk();
 
