@@ -323,14 +323,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.controlClient = new ControlClient(this.xmppClient);
 					this.concentratorClient = new ConcentratorClient(this.xmppClient);
 
-					//this.pepClient = new PepClient(this.xmppClient);
-					//this.ReregisterPepEventHandlers(this.pepClient);
+					if(string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
+						this.pepClient = new PepClient(this.xmppClient);
+					else
+						this.pepClient = new PepClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
+					this.ReregisterPepEventHandlers(this.pepClient);
 
 					this.httpxClient = new HttpxClient(this.xmppClient, 8192);
 					Types.SetModuleParameter("XMPP", this.xmppClient);      // Makes the XMPP Client the default XMPP client, when resolving HTTP over XMPP requests.
 
-					if(this.pubSubClient is null && !string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
-						this.pubSubClient = new PubSubClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
+					//if(this.pubSubClient is null && !string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
+					//	this.pubSubClient = new PubSubClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
 
 					this.IsLoggedOut = false;
 					await this.xmppClient.Connect(IsIpAddress ? string.Empty : this.domainName);
@@ -942,9 +945,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 						if (this.pushNotificationClient is null && ServiceRef.TagProfile.SupportsPushNotification)
 							this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
 
-						if (this.pubSubClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
+						if (this.pepClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
 						{
-							this.pubSubClient = new PubSubClient(this.xmppClient,ServiceRef.TagProfile.PubSubJid);
+							this.pepClient = new PepClient(this.xmppClient,ServiceRef.TagProfile.PubSubJid);
+							this.ReregisterPepEventHandlers(this.pepClient);
 							//this.RegisterPubSubEventHandlers(this.pubSubClient);
 						}
 					}
@@ -5126,12 +5130,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			get
 			{
-				if (this.pubSubClient is null)
+				if (this.pepClient is null)
 				{
 					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.PubSubServiceNotFound)]);
 				}
 
-				return this.pubSubClient;
+				return this.pepClient.PubSubClient;
 			}
 		}
 
@@ -5198,6 +5202,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				(cb, state) => this.PubSubClient.GetLatestItems(NodeId, Count, cb, state),
 				$"Failed to get latest {Count} items from node '{NodeId}'.");
 			return Result.Items;
+
 		}
 
 		/// <summary>
