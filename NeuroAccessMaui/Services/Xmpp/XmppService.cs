@@ -1096,7 +1096,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					case XmppState.Error:
 						// When State = Error, wait for the OnConnectionError event to arrive also, as it holds more/direct information.
-						// Just in case it never would - set state error and result.
+						// Just in case it never would - set state error and Result.
 						await Task.Delay(Constants.Timeouts.XmppConnect);
 						Connected.TrySetResult(false);
 						break;
@@ -5123,7 +5123,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#region PubSub
 
-
+		/// <summary>
 		/// Reference to the PubSub client implementing the PubSub XMPP extension
 		/// </summary>
 		private PubSubClient PubSubClient
@@ -5139,150 +5139,208 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}
 		}
 
-		/// <summary>
-		/// Returns the list of all node‐IDs published by the PubSub service.
-		/// </summary>
-		public async Task<Item[]> GetAllNodeIdsAsync()
+		/// <inheritdoc />
+		public async Task<Item[]?> GetAllNodeIdsAsync()
 		{
-			// Ask the XMPP client for the disco#items of the PubSub component
-			TaskCompletionSource<ServiceItemsDiscoveryEventArgs> Result = new();
-
-			await this.XmppClient.SendServiceItemsDiscoveryRequest(this.PubSubClient.ComponentAddress, (_, e) =>
+			try
 			{
-				Result.TrySetResult(e);
-				return Task.CompletedTask;
-			}, null);
-
-			ServiceItemsDiscoveryEventArgs Items = await Result.Task;
-			// Each DiscoItem.Node (or .Name) is the node id
-			return Items.Items;
-		}
-
-
-		/// <summary>
-		/// Common wrapper around PubSubClient calls.
-		/// </summary>
-		private Task<T> WrapPubSub<T>(Action<EventHandlerAsync<T>, object?> PubSubCall, string FailureMessage) where T : IqResultEventArgs
-		{
-			TaskCompletionSource<T> Tcs = new TaskCompletionSource<T>();
-
-			// Kick off the XMPP request:
-			PubSubCall((sender, e) =>
+				TaskCompletionSource<ServiceItemsDiscoveryEventArgs> Tcs = new();
+				await this.XmppClient.SendServiceItemsDiscoveryRequest(
+					this.PubSubClient.ComponentAddress,
+					(s, e) => { Tcs.TrySetResult(e); return Task.CompletedTask; },
+					null);
+				ServiceItemsDiscoveryEventArgs Result = await Tcs.Task;
+				return Result.Items;
+			}
+			catch
 			{
-				if (e.Ok)
-					Tcs.TrySetResult(e);
-				else if (e.StanzaError != null)
-					Tcs.TrySetException(e.StanzaError);
-				else
-					Tcs.TrySetException(new Exception(FailureMessage));
-
-				return Task.CompletedTask;
-			}, null);
-
-			return Tcs.Task;
+				return null;
+			}
 		}
 
-		/// <summary>
-		/// Fetches *all* items from the given node.
-		/// </summary>
-		public async Task<PubSubItem[]> GetItemsAsync(string NodeId)
+		/// <inheritdoc />
+		public async Task<PubSubItem[]?> GetItemsAsync(string NodeId)
 		{
-			ItemsEventArgs Result = await this.WrapPubSub<ItemsEventArgs>(
-				(cb, state) => this.PubSubClient.GetItems(NodeId, cb, state),
-				$"Failed to get items from node '{NodeId}'.");
-			return Result.Items;
+			try
+			{
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				await this.PubSubClient.GetItems(NodeId, (s, e) => HandleResult(e, Tcs), null);
+				ItemsEventArgs Result = await Tcs.Task;
+				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
-		/// <summary>
-		/// Fetches the latest <paramref name="Count"/> items from the given node.
-		/// </summary>
-		public async Task<PubSubItem[]> GetLatestItemsAsync(string NodeId, int Count)
+		/// <inheritdoc />
+		public async Task<PubSubItem[]?> GetItemsAsync(string NodeId, string[] ItemIds)
 		{
-			ItemsEventArgs Result = await this.WrapPubSub<ItemsEventArgs>(
-				(cb, state) => this.PubSubClient.GetLatestItems(NodeId, Count, cb, state),
-				$"Failed to get latest {Count} items from node '{NodeId}'.");
-			return Result.Items;
-
+			try
+			{
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				await this.PubSubClient.GetItems(NodeId, ItemIds, (s, e) => HandleResult(e, Tcs), null);
+				ItemsEventArgs Result = await Tcs.Task;
+				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
-		/// <summary>
-		/// Creates a new node (with optional configuration).
-		/// </summary>
-		public Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> CreateNodeAsync(string NodeId, NodeConfiguration? Config = null)
+		/// <inheritdoc />
+		public async Task<PubSubItem?> GetItemAsync(string NodeId, string ItemId)
 		{
-			return Config is null
-				? this.WrapPubSub<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs>(
-					(cb, state) => this.PubSubClient.CreateNode(NodeId, cb, state),
-					$"Failed to create node '{NodeId}'.")
-				: this.WrapPubSub<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs>(
-					(cb, state) => this.PubSubClient.CreateNode(NodeId, Config, cb, state),
-					$"Failed to create node '{NodeId}'.");
+			try
+			{
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				await this.PubSubClient.GetItems(NodeId, new[] { ItemId }, (s, e) => HandleResult(e, Tcs), null);
+				ItemsEventArgs Result = await Tcs.Task;
+				return Result.Items.FirstOrDefault();
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
-		/// <summary>
-		/// Deletes an existing node (optionally redirecting subscribers).
-		/// </summary>
-		public Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> DeleteNodeAsync(string NodeId, string? RedirectUri = null)
-			=> this.WrapPubSub<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs>(
-				   (cb, state) => this.PubSubClient.DeleteNode(NodeId, RedirectUri, cb, state),
-				   $"Failed to delete node '{NodeId}'.");
-
-		/// <summary>
-		/// Subscribes the current user (or specified JID) to a node, optionally with options.
-		/// </summary>
-		public Task<SubscriptionEventArgs> SubscribeAsync(
-			string NodeId,
-			string? Jid = null,
-			SubscriptionOptions? Options = null)
+		/// <inheritdoc />
+		public async Task<PubSubItem[]?> GetLatestItemsAsync(string NodeId, int Count)
 		{
-			return Options is null
-				? this.WrapPubSub<SubscriptionEventArgs>(
-					(cb, state) => this.PubSubClient.Subscribe(NodeId, Jid, cb, state),
-					$"Failed to subscribe to '{NodeId}'.")
-				: this.WrapPubSub<SubscriptionEventArgs>(
-					(cb, state) => this.PubSubClient.Subscribe(NodeId, Jid, Options, cb, state),
-					$"Failed to subscribe to '{NodeId}'.");
+			try
+			{
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				await this.PubSubClient.GetLatestItems(NodeId, Count, (s, e) => HandleResult(e, Tcs), null);
+				ItemsEventArgs Result = await Tcs.Task;
+				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
-		/// <summary>
-		/// Unsubscribes the current user (or specified JID/subId) from a node.
-		/// </summary>
-		public Task<SubscriptionEventArgs> UnsubscribeAsync(
-			string NodeId,
-			string? Jid = null,
-			string? SubId = null)
-			=> this.WrapPubSub<SubscriptionEventArgs>(
-				   (cb, state) => this.PubSubClient.Unsubscribe(NodeId, Jid, SubId, cb, state),
-				   $"Failed to unsubscribe from '{NodeId}'.");
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> CreateNodeAsync(string NodeId, NodeConfiguration? Config = null)
+		{
+			TaskCompletionSource<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> Tcs = new();
+			if (Config is null)
+				await this.PubSubClient.CreateNode(NodeId, (s, e) => HandleResult(e, Tcs), null);
+			else
+				await this.PubSubClient.CreateNode(NodeId, Config, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
 
-		/// <summary>
-		/// Publishes an item (with optional itemId for updates) and returns the result (including the assigned ItemId).
-		/// </summary>
-		public Task<ItemResultEventArgs> PublishAsync(
-			string NodeId,
-			string? ItemId = null,
-			string PayloadXml = "")
-			=> this.WrapPubSub<ItemResultEventArgs>(
-				   (cb, state) => this.PubSubClient.Publish(NodeId, ItemId ?? string.Empty, PayloadXml, cb, state),
-				   $"Failed to publish to '{NodeId}'.");
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> TryCreateNodeAsync(string NodeId, NodeConfiguration? Config = null)
+		{
+			try { return await this.CreateNodeAsync(NodeId, Config); }
+			catch { return null; }
+		}
 
-		/// <summary>
-		/// Retracts (deletes) a specific item from a node.
-		/// </summary>
-		public Task<IqResultEventArgs> RetractAsync(string NodeId, string ItemId)
-			=> this.WrapPubSub<IqResultEventArgs>(
-				   (cb, state) => this.PubSubClient.Retract(NodeId, ItemId, cb, state),
-				   $"Failed to retract item '{ItemId}' from '{NodeId}'.");
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> DeleteNodeAsync(string NodeId, string? RedirectUri = null)
+		{
+			TaskCompletionSource<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> Tcs = new();
+			await this.PubSubClient.DeleteNode(NodeId, RedirectUri, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
 
-		/// <summary>
-		/// Purges a node (deletes all persisted items).
-		/// </summary>
-		public Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> PurgeNodeAsync(string NodeId)
-			=> this.WrapPubSub<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs>(
-				   (cb, state) => this.PubSubClient.PurgeNode(NodeId, cb, state),
-				   $"Failed to purge node '{NodeId}'.");
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> TryDeleteNodeAsync(string NodeId, string? RedirectUri = null)
+		{
+			try { return await this.DeleteNodeAsync(NodeId, RedirectUri); }
+			catch { return null; }
+		}
 
+		/// <inheritdoc />
+		public async Task<SubscriptionEventArgs> SubscribeAsync(string NodeId, string? Jid = null, SubscriptionOptions? Options = null)
+		{
+			TaskCompletionSource<SubscriptionEventArgs> Tcs = new();
+			if (Options is null)
+				await this.PubSubClient.Subscribe(NodeId, Jid, (s, e) => HandleResult(e, Tcs), null);
+			else
+				await this.PubSubClient.Subscribe(NodeId, Jid, Options, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
 
+		/// <inheritdoc />
+		public async Task<SubscriptionEventArgs?> TrySubscribeAsync(string NodeId, string? Jid = null, SubscriptionOptions? Options = null)
+		{
+			try { return await this.SubscribeAsync(NodeId, Jid, Options); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<SubscriptionEventArgs> UnsubscribeAsync(string NodeId, string? Jid = null, string? SubscriptionId = null)
+		{
+			TaskCompletionSource<SubscriptionEventArgs> Tcs = new();
+			await this.PubSubClient.Unsubscribe(NodeId, Jid, SubscriptionId, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<SubscriptionEventArgs?> TryUnsubscribeAsync(string NodeId, string? Jid = null, string? SubscriptionId = null)
+		{
+			try { return await this.UnsubscribeAsync(NodeId, Jid, SubscriptionId); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<ItemResultEventArgs> PublishAsync(string NodeId, string? ItemId = null, string PayloadXml = "")
+		{
+			TaskCompletionSource<ItemResultEventArgs> Tcs = new();
+			await this.PubSubClient.Publish(NodeId, ItemId ?? string.Empty, PayloadXml, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<ItemResultEventArgs?> TryPublishAsync(string NodeId, string? ItemId = null, string PayloadXml = "")
+		{
+			try { return await this.PublishAsync(NodeId, ItemId, PayloadXml); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<IqResultEventArgs> RetractAsync(string NodeId, string ItemId)
+		{
+			TaskCompletionSource<IqResultEventArgs> Tcs = new();
+			await this.PubSubClient.Retract(NodeId, ItemId, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<IqResultEventArgs?> TryRetractAsync(string NodeId, string ItemId)
+		{
+			try { return await this.RetractAsync(NodeId, ItemId); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> PurgeNodeAsync(string NodeId)
+		{
+			TaskCompletionSource<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> Tcs = new();
+			await this.PubSubClient.PurgeNode(NodeId, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> TryPurgeNodeAsync(string NodeId)
+		{
+			try { return await this.PurgeNodeAsync(NodeId); }
+			catch { return null; }
+		}
+
+		private static Task HandleResult<T>(T e, TaskCompletionSource<T> Tcs) where T : IqResultEventArgs
+		{
+			if (e.Ok)
+				Tcs.TrySetResult(e);
+			else
+				Tcs.TrySetException(e.StanzaError ?? new Exception());
+			return Task.CompletedTask;
+		}
 		#endregion
 	}
 }
