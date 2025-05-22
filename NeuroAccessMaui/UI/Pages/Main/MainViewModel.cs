@@ -13,6 +13,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services.Theme;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -37,6 +38,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			await base.OnAppearing();
 			try
 			{
+				
 				var Items = await ServiceRef.XmppService.GetAllNodeIdsAsync();
 
 				if (Items != null)
@@ -52,7 +54,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				{
 					foreach (var item in Items2)
 					{
-						ServiceRef.LogService.LogDebug($"Item: {item.Node} --- \n {item.Payload} --- \n {item.Item.InnerText}");
+						ServiceRef.LogService.LogDebug($"Item: {item.Node} --- \n {item.Payload} --- \n {item.Item}");
 					}
 				}
 				/*
