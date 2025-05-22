@@ -1,4 +1,4 @@
-﻿using EDaler;
+using EDaler;
 using EDaler.Events;
 using EDaler.Uris;
 using NeuroAccessMaui.Services.Push;
