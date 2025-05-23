@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NeuroAccessMaui.Services.UI.Photos;
-using Waher.Networking.XMPP.Contracts;
+using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.UI.Popups.Image;
 using NeuroAccessMaui.UI.Pages.Identity.ObjectModel;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.Services;
@@ -12,6 +12,11 @@ using NeuroAccessMaui.Resources.Languages;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.Popups.Image;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.UI.Photos;
+using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Persistence;
 using Waher.Networking.XMPP;
 
@@ -21,11 +26,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 	public partial class ViewIdentityViewModel : QrXmppViewModel
 	{
-		private readonly PhotosLoader photosLoader;
-		private readonly ViewIdentityNavigationArgs? args;
-		private readonly IDispatcherTimer? timer;
-		private readonly IDispatcherTimer? qrTimer;
-
 		private LegalIdentity? identity = null;
 
 		private bool hasAppeared;
@@ -35,7 +35,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		/// </summary>
 		[ObservableProperty]
 		private bool shouldCelebrate = false;
-
+		/// <param name="Args">Navigation arguments.</param>
 		[ObservableProperty]
 		private bool canAddContact = false;
 		[ObservableProperty]
@@ -278,7 +278,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					Constants.XmppProperties.OrgCountry,
 					Constants.XmppProperties.OrgNumber
 				};
-
+			if (this.LegalIdentity is null)
 				// Classification sets using Constants
 				HashSet<string> PersonalKeys = new(StringComparer.OrdinalIgnoreCase)
 				{
@@ -303,7 +303,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					Constants.XmppProperties.EMail
 
 				};
-
+			return MainThread.InvokeOnMainThreadAsync(async () =>
 				HashSet<string> OrgKeys = new(StringComparer.OrdinalIgnoreCase)
 				{
 					Constants.XmppProperties.OrgName,
@@ -331,7 +331,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					Constants.CustomXmppProperties.To,
 					Constants.XmppProperties.DeviceId
 				};
-
+		}
 				// Label map for display names (We should localize based on the key, but this is done so we don't need to refactor the localization fornow)
 				// TODO: Localize based on the key
 				Dictionary<string, LocalizedString> LabelMap = new(StringComparer.OrdinalIgnoreCase)
@@ -366,10 +366,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				   {Constants.XmppProperties.Jid,   ServiceRef.Localizer[nameof(AppResources.NetworkID)]},
 				   {Constants.XmppProperties.DeviceId,   ServiceRef.Localizer[nameof(AppResources.DeviceID)]}
 				};
-
-
-
-
+				this.photosLoader.CancelLoadPhotos();
+				if (this.requestorIdentity?.Attachments is not null)
+				else
+					Attachments = this.LegalIdentity?.Attachments;
 				// Handle custom fields first
 				HashSet<string> UsedKeys = new(StringComparer.OrdinalIgnoreCase);
 				// Now iterate raw properties
@@ -381,7 +381,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					string? Key = null;
 					LocalizedString? Label = null;
 					string? ValueOverride = null;
-
+			}
 					// Handle custom definitions
 					CustomFieldDefinition? CustomDef = customFields.Find(CustomFieldDefinition => CustomFieldDefinition.Keys.Contains(Prop.Name, StringComparer.OrdinalIgnoreCase));
 					if (CustomDef is not null)
@@ -402,7 +402,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 								ValueOverride = null;
 						}
 					}
-
+		private void TagProfile_Changed(object? Sender, PropertyChangedEventArgs e)
 					// Create a new field item
 					Key ??= Prop.Name;
 					Label ??= LabelMap.TryGetValue(Prop.Name, out LocalizedString? L) ? L : new LocalizedString(Prop.Name, Prop.Name);
@@ -412,14 +412,14 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					}
 					bool IsReviewable = ReviewableKeys.Contains(Prop.Name);
 					ObservableFieldItem Item = new(Key, Label, Identity, IsReviewable, ValueOverride);
-
+			MainThread.BeginInvokeOnMainThread(() =>
 					if (PersonalKeys.Contains(Prop.Name)) PersonalList.Add(Item);
 					else if (OrgKeys.Contains(Prop.Name)) OrganizationList.Add(Item);
 					else if (TechnicalKeys.Contains(Prop.Name)) TechnicalList.Add(Item);
 					else OtherList.Add(Item);
-
+					this.AssignProperties();
 					UsedKeys.Add(Key);
-
+			return Task.CompletedTask;
 				}
 
 				// Handle custom fields that are not part of the identity model
@@ -438,15 +438,15 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 						else if (TechnicalKeys.Contains(CustomFieldDefinition.NewKey)) TechnicalList.Add(Item);
 						else OtherList.Add(Item);
 					});
-
-
+		public ObservableCollection<Photo> Photos { get; } = [];
+		/// <summary>
 				bool ShouldCelebrate = PersonalList.Any(Item => Item.Key == Constants.CustomXmppProperties.BirthDate &&
 																!string.IsNullOrEmpty(Item.Value) &&
 																DateTime.TryParse(Item.Value, out DateTime BirthDate) &&
 																BirthDate == DateTime.Today);
-
+		/// <summary>
 				// Check if we can add or remove contact and update contact info
-
+		/// </summary>
 				bool CanAddContact = false;
 				bool CanRemoveContact = false;
 
@@ -469,7 +469,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 							await Database.Update(Info);
 							await Database.Provider.Flush();
 						}
-
+		[ObservableProperty]
 						CanAddContact = Info is null;
 						CanRemoveContact = Info is not null;
 					}
@@ -477,9 +477,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					{
 						ServiceRef.LogService.LogException(Ex);
 					}
-
+		[ObservableProperty]
 				}
-
+		[ObservableProperty]
 				// Apply to UI on main thread
 				await MainThread.InvokeOnMainThreadAsync(async () =>
 				{
@@ -501,6 +501,143 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					this.OnPropertyChanged(nameof(this.HasOtherFields));
 					this.OnPropertyChanged(nameof(this.HasAge));
 
+		private bool regionIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="CountryCode"/> property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool countryCodeIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="OrgName"/> property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool orgNameIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="OrgDepartment"/> property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool orgDepartmentIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="OrgRole"/> property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool orgRoleIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="OrgNumber"/> property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool orgNumberIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="OrgAddress"/> property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool orgAddressIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="OrgAddress2"/> property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool orgAddress2IsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="OrgZipCode"/> property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool orgZipCodeIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="OrgArea"/> property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool orgAreaIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="OrgCity"/> property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool orgCityIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="OrgRegion"/> property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool orgRegionIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="OrgCountryCode"/> property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool orgCountryCodeIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the Careful Review property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool carefulReviewIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the ApprovePii property is checked (when being reviewed)
+		/// </summary>
+		[ObservableProperty]
+		private bool approvePiiIsChecked;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="FirstName"/> property is for review.
+		/// </summary>
+		[ObservableProperty]
+		private bool isForReviewFirstName;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="MiddleNames"/> property is for review.
+		/// </summary>
+		[ObservableProperty]
+		private bool isForReviewMiddleNames;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="LastNames"/> property is for review.
+		/// </summary>
+		[ObservableProperty]
+		private bool isForReviewLastNames;
+		/// Gets or sets whether the <see cref="FirstName"/> property is for review.
+		/// <summary>
+		/// Gets or sets whether the <see cref="PersonalNumber"/> property is for review.
+		/// </summary>
+		[ObservableProperty]
+		private bool isForReviewPersonalNumber;
+		/// Gets or sets whether the <see cref="MiddleNames"/> property is for review.
+		/// <summary>
+		/// Gets or sets whether the <see cref="Address"/> property is for review.
+		/// </summary>
+		[ObservableProperty]
+		private bool isForReviewAddress;
+		/// Gets or sets whether the <see cref="LastNames"/> property is for review.
+		/// <summary>
+		/// Gets or sets whether the <see cref="Address2"/> property is for review.
+		/// </summary>
+		[ObservableProperty]
+		private bool isForReviewAddress2;
+		/// Gets or sets whether the <see cref="PersonalNumber"/> property is for review.
+		/// </summary>
+		[ObservableProperty]
+		private bool isForReviewPersonalNumber;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="Address"/> property is for review.
+		/// </summary>
+		[ObservableProperty]
+		private bool isForReviewAddress;
+
+		/// <summary>
+		/// Gets or sets whether the <see cref="Address2"/> property is for review.
+		/// </summary>
+		[ObservableProperty]
+		private bool isForReviewAddress2;
 
 					this.timer?.Start();
 					this.OnPropertyChanged(nameof(this.HasTimer));

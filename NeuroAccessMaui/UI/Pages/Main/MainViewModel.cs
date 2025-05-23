@@ -144,5 +144,27 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				ServiceRef.LogService.LogException(Ex);
 			}
 		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		public static async Task OpenFlyout()
+		{
+			await MainThread.InvokeOnMainThreadAsync(() =>
+				Shell.Current.FlyoutIsPresented = true
+			);
+
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		public async Task GoToApplyIdentity()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 	}
 }

@@ -61,6 +61,18 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			}
 		}
 
+			// Bottom‑right rectangle:
+			Rect BottomRightRect = new Rect(
+				x: width - BandWidth,
+				y: height - BandHeight,
+				width: BandWidth,
+				height: BandHeight);
+
+			this.ConfettiView.Systems?.Add(this.CreateSideSystem(SKConfettiEmitterSide.Left, BottomLeftRect));
+			this.ConfettiView.Systems?.Add(this.CreateSideSystem(SKConfettiEmitterSide.Right, BottomRightRect));
+
+		}
+
 		/// <inheritdoc/>
 		protected override Task OnDisappearingAsync()
 		{
