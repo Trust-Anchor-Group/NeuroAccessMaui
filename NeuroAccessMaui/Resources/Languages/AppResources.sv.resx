@@ -2786,4 +2786,10 @@
   <data name="ClientMessageBankIdRFA22" xml:space="preserve">
     <value>Okänt fel. Försök igen</value>
   </data>
+  <data name="SelectContract" xml:space="preserve">
+    <value>Välj ett kontrakt</value>
+  </data>
+  <data name="SelectContractEntryDescription" xml:space="preserve">
+    <value>Klistra in kontrakt ID eller välj från listan</value>
+  </data>
 </root>
