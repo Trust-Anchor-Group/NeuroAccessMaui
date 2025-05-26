@@ -65,7 +65,6 @@ namespace NeuroAccessMaui.UI
 		private static Color? blue20AffirmDark;
 		private static Color? blueLight;
 		private static Color? blueDark;
-		private static Color? strokeGrey;
 		private static Color? offBlack;
 
 		/// <summary>
@@ -725,18 +724,6 @@ namespace NeuroAccessMaui.UI
 					blueLight ??= AppStyles.TryGetResource<Color>("BlueLight");
 					return blueLight!;
 				}
-			}
-		}
-
-		/// <summary>
-		/// Stroke grey color.
-		/// </summary>
-		public static Color StrokeGrey
-		{
-			get
-			{
-				strokeGrey ??= AppStyles.TryGetResource<Color>("StrokeGrey");
-				return strokeGrey!;
 			}
 		}
 
