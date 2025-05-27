@@ -41,7 +41,7 @@
 	<Grid x:Name="TheMainGrid"
 		  RowDefinitions="auto, *, auto"
 		  ColumnDefinitions="*"
-		  BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundLight}, Dark={StaticResource SurfaceBackgroundDark}}">
+		  BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background Grid.RowSpan="3"/>
 
@@ -93,29 +93,29 @@
 				  RowDefinitions="*, *">
 				
 				<Border Grid.Row="0"
-						BackgroundColor="{AppThemeBinding Light={StaticResource FiguresStrokesBluea20Light}, Dark={StaticResource FiguresStrokesBluea20Dark}}"
+						BackgroundColor="{AppThemeBinding Light={DynamicResource WLToastsAndPillsbgInfoWLLight}, Dark={DynamicResource WLToastsAndPillsbgInfoWLDark}}"
 						Padding="{StaticResource MediumMargins}"
-						StrokeShape="RoundRectangle 8">
+						StrokeShape="RoundRectangle 8,8,8,0">
 					<Border.Shadow>
-						<Shadow Brush="{StaticResource ButtonBWContentWBvLight}" Offset="0,4" Radius="10" Opacity="0.05" />
+						<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
 					</Border.Shadow>
 					<Grid ColumnSpacing="{StaticResource SmallSpacing}"
 						  ColumnDefinitions="auto, *">
 						<Path
 							Grid.Column="0"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={StaticResource ContentBlueLight}, Dark={StaticResource ContentBlueDark}}"/>
+							Fill="{AppThemeBinding Light={DynamicResource WLToastsAndPillsContentInfoWLLight}, Dark={DynamicResource WLToastsAndPillsContentInfoWLDark}}"/>
 						<Label
 							Grid.Column="1"
 							Text="{l:Localize ApplyIdInfoMainPage}"
-							TextColor="{AppThemeBinding Light={StaticResource ContentBlueLight}, Dark={StaticResource ContentBlueDark}}"/>
+							TextColor="{AppThemeBinding Light={DynamicResource WLToastsAndPillsContentInfoWLLight}, Dark={DynamicResource WLToastsAndPillsContentInfoWLDark}}"/>
 					</Grid>
 				</Border>
 				<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">
 					<Grid Padding="{StaticResource MediumMargins}"
 						  ColumnDefinitions="*, auto">
 						<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{StaticResource SecondaryButtonActiveLabel}"/>
-						<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{StaticResource ButtonGreenContentGreenfLight}"/>
+						<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}"/>
 					</Grid>
 				</controls:TemplatedButton>
 			</Grid>
