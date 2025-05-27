@@ -861,6 +861,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			if (e is ObjectDisposedException)
 				this.LatestConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
+			else if (e is Waher.Networking.XMPP.AuthenticationErrors.NotAuthorizedException || e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
+			{
+				this.reconnectTimer?.Dispose();
+				this.reconnectTimer = null;
+				this.LatestConnectionError = e.Message;
+			}
 			else
 				this.LatestConnectionError = e.Message;
 
@@ -941,13 +947,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 							this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
 					}
 
-					Console.WriteLine("Xmpp password needs updating flag before startup" + ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating());
-
 					// Check is xmpp password needs updating.
 					if (ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating())
 						await ServiceRef.XmppService.TryGenerateAndChangePassword();
-					Console.WriteLine("Xmpp password needs updating flag after startup" + ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating());
-
 
 					ServiceRef.LogService.AddListener(this.xmppFilteredEventSink!);
 
