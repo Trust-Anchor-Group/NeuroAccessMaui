@@ -41,7 +41,7 @@
 								Data="{x:Static ui:Geometries.InfoCirclePath}"
 								Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 
-					<Label Grid.Column="1" Grid.Row="0" VerticalOptions="Center" Text="{Binding LocalizedValidationMessage}"
+					<Label AutomationId="NameEntryView_NameInvalidWarningLabel" Grid.Column="1" Grid.Row="0" VerticalOptions="Center" Text="{Binding LocalizedValidationMessage}"
 									TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
 					<Grid  Grid.Row="1" Grid.Column="1" ColumnDefinitions="auto, *" IsVisible="{Binding AlternativeName, Converter={StaticResource OnlyShowNonEmpty}}">
 						<Label HorizontalOptions="Start" Text="{l:Localize Alternative}" Grid.Column="0"
@@ -49,7 +49,7 @@
 
 
 
-						<Label Grid.Column="1" Text="{Binding AlternativeName}" TextDecorations="Underline" LineBreakMode="CharacterWrap" TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}">
+						<Label AutomationId="NameEntryView_AlternativeNameLabel" Grid.Column="1" Text="{Binding AlternativeName}" TextDecorations="Underline" LineBreakMode="CharacterWrap" TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}">
 							<Label.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding SelectNameCommand}"
 								                      CommandParameter="{Binding AlternativeName}" />

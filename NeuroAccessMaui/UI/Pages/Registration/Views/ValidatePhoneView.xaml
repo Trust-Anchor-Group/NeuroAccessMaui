@@ -49,6 +49,7 @@
 							</HorizontalStackLayout.GestureRecognizers>
 
 							<Label
+								AutomationId="ValidatePhoneView_SelectPhoneCodeLabel"
 								VerticalOptions="Center"
 								Text="{Binding SelectedCountry.DialCode}" />
 

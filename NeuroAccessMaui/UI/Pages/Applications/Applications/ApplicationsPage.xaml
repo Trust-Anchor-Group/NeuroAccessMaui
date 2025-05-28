@@ -19,7 +19,7 @@
 		<ScrollView>
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
-				<controls:ImageButton AutomationId="BackButtonApplication" HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+				<controls:ImageButton AutomationId="ApplicationsPage_GoBackImageButton" HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize Applications}"/>
@@ -33,7 +33,7 @@
 							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}"/>
 
 							<!-- Apply for Personal ID -->
-							<controls:TemplatedButton AutomationId="PersonalIdButton" HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyPersonalIdCommand}">
+							<controls:TemplatedButton AutomationId="ApplicationsPage_PersonalIdTemplatedButton" HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyPersonalIdCommand}">
 								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalId}" InputTransparent="True"
@@ -45,7 +45,7 @@
 							</controls:TemplatedButton>
 
 							<!-- Apply for Organizational ID -->
-							<controls:TemplatedButton AutomationId="OrganizationalIdButton" HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyOrganizationalIdCommand}">
+							<controls:TemplatedButton AutomationId="ApplicationsPage_OrganizationalIdTemplatedButton" HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyOrganizationalIdCommand}">
 								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OrganizationalId}" InputTransparent="True"
@@ -62,7 +62,7 @@
 							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}"/>
 
 							<!-- View Identity Application -->
-							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ViewIdApplicationCommand}">
+							<controls:TemplatedButton AutomationId="ApplicationsPage_ViewIdApplicationTemplatedButton" HorizontalOptions="FillAndExpand" Command="{x:Binding ViewIdApplicationCommand}">
 								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"
@@ -85,7 +85,7 @@
 							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Wallet}"/>
 
 							<!-- Apply for a wallet -->
-							<controls:TemplatedButton AutomationId="WalletButton" HorizontalOptions="FillAndExpand" Command="{x:Binding BuyEDalerCommand}"
+							<controls:TemplatedButton AutomationId="ApplicationsPage_WalletTemplatedButton" HorizontalOptions="FillAndExpand" Command="{x:Binding BuyEDalerCommand}"
 																		IsVisible="{Binding HasWallet, Converter={StaticResource InvertedBoolConverter}}">
 								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
@@ -98,7 +98,7 @@
 							</controls:TemplatedButton>
 
 							<!-- Go to wallet -->
-							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding OpenWalletCommand}"
+							<controls:TemplatedButton AutomationId="ApplicationsPage_OpenWalletTemplatedButton" HorizontalOptions="FillAndExpand" Command="{x:Binding OpenWalletCommand}"
 																		IsVisible="{Binding HasWallet}">
 								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">

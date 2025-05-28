@@ -5,16 +5,17 @@ using OpenQA.Selenium.Interactions;
 using System;
 using System.Threading;
 
-namespace NeuroAccess.UiTests
-{
+namespace NeuroAccess.UiTests {
 	[TestClass]
 
-	public class MainPageNavigationTest : BaseTest
-	{
+	public class MainPageNavigationTest : BaseTest {
+
+		private static bool reset = false;
+		public MainPageNavigationTest() : base(reset, nameof(MainPageNavigationTest)) { }
+
 		[TestMethod]
 		[Priority(1)]
-		public void TestScanQRButtonNavigation()
-		{
+		public void TestScanQRButtonNavigation() {
 			AutoFindElement("MainPage");
 
 			var ScanQrButton = AutoFindElement("MainPage_ScanQRTemplatedButton");
@@ -34,8 +35,7 @@ namespace NeuroAccess.UiTests
 		// Navigate and click the Show ID Button, and enter PIN code
 		[TestMethod]
 		[Priority(2)]
-		public void TestViewIdentyButton()
-		{
+		public void TestViewIdentyButton() {
 			var showIdButton = AutoFindElement("MainPage_ShowIDTemplatedButton");
 			showIdButton.Click();
 
@@ -66,15 +66,14 @@ namespace NeuroAccess.UiTests
 			goBackButton.Click();
 
 			AutoFindElement("MainPage");
-		
+
 		}
 
 
 		// Navigate and click the Show ID Settings Button, and enter PIN code
 		[TestMethod]
 		[Priority(3)]
-		public void TestViewSettingsIdMenu()
-		{
+		public void TestViewSettingsIdMenu() {
 			AutoFindElement("MainPage");
 			AppiumElement flyoutIcon = App.FindElement(By.XPath("//*[@content-desc='Open navigation drawer']"));
 			flyoutIcon.Click();
@@ -109,6 +108,6 @@ namespace NeuroAccess.UiTests
 
 			AutoFindElement("MainPage");
 		}
-	
+
 	}
 }

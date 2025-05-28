@@ -32,7 +32,7 @@
 		<ScrollView>
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+				<controls:ImageButton AutomationId="ApplyIdPage_GoBackImageButton" HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize PersonalId}" IsVisible="{Binding Organizational, Converter={StaticResource InvertedBoolConverter}}"/>
@@ -62,13 +62,13 @@
 													 IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
 
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-								<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButton}"
+								<controls:TextButton AutomationId="ApplyIdPage_FirstScanQrCodeTextButton" Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButton}"
 															LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />
 
-								<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButton}"
+								<controls:TextButton AutomationId="ApplyIdPage_FirstRequestReviewTextButton" Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButton}"
 															LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding FeaturedPeerReviewers}" />
 
-								<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButton}"
+								<controls:TextButton AutomationId="ApplyIdPage_FirstRevokeApplicationTextButton" Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButton}"
 															LabelData="{l:Localize RevokeApplication}" />
 							</VerticalStackLayout>
 						</VerticalStackLayout>
@@ -91,7 +91,7 @@
 									  Padding="0"
 									  VerticalOptions="Start"
 									  BackgroundColor="{Binding HasPhoto, Converter={converters:ControlBgColor}}">
-								<Image Aspect="AspectFill">
+								<Image Aspect="AspectFill" AutomationId="ApplyIdPage_UserImageImage">
 									<Image.Triggers>
 										<DataTrigger TargetType="Image" Binding="{Binding HasPhoto}" Value="True">
 											<Setter Property="Source" Value="{Binding Image}" />
@@ -106,13 +106,13 @@
 								</Image>
 							</Border>
 
-							<controls:ImageButton Grid.Column="2" Grid.Row="0" Command="{Binding TakePhotoCommand}"
+							<controls:ImageButton AutomationId="ApplyIdPage_TakeCameraPhotoImageButton" Grid.Column="2" Grid.Row="0" Command="{Binding TakePhotoCommand}"
 														 Style="{StaticResource OutlinedImageButton}" PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}" />
 
-							<controls:ImageButton Grid.Column="2" Grid.Row="1" Command="{Binding PickPhotoCommand}"
+							<controls:ImageButton AutomationId="ApplyIdPage_ChoosePhotoImageButton" Grid.Column="2" Grid.Row="1" Command="{Binding PickPhotoCommand}"
 														 Style="{StaticResource OutlinedImageButton}" PathData="{x:Static ui:Geometries.CameraImageButtonPath}" />
 
-							<controls:ImageButton Grid.Column="2" Grid.Row="2" Command="{Binding RemovePhotoCommand}"
+							<controls:ImageButton AutomationId="ApplyIdPage_RemovePhotoImageButton" Grid.Column="2" Grid.Row="2" Command="{Binding RemovePhotoCommand}"
 														 Style="{StaticResource OutlinedImageButton}" IsVisible="{Binding Path=HasPhoto}"
 														 PathData="{x:Static ui:Geometries.TrashCanButtonPath}" />
 
@@ -134,12 +134,12 @@
 								<Label Text="{l:Localize FirstName}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresFirstName}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=FirstName}"
+							<controls:CompositeEntry AutomationId="ApplyIdPage_FirstNameCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=FirstName}"
 															 IsValid="{Binding FirstNameOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															 LabelText="{l:Localize FirstName}"
 															 Required="{Binding RequiresFirstName}"/>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=FirstName, Converter={converters:HyphenIfEmpty}}"
+							<Label AutomationId="ApplyIdPage_FirstNameLabel" Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=FirstName, Converter={converters:HyphenIfEmpty}}"
 									 IsVisible="{Binding ApplicationSent}"/>
 						</VerticalStackLayout>
 
@@ -148,7 +148,7 @@
 								<Label Text="{l:Localize MiddleNames}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresMiddleNames}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=MiddleNames}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_MiddleNamesCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=MiddleNames}" 
 															 IsValid="{Binding MiddleNamesOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															 LabelText="{l:Localize MiddleNames}"
@@ -162,7 +162,7 @@
 								<Label Text="{l:Localize LastNames}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresLastNames}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=LastNames}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_LastNamesCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=LastNames}" 
 															 IsValid="{Binding LastNamesOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															 LabelText="{l:Localize LastNames}"
@@ -176,7 +176,7 @@
 								<Label Text="{l:Localize PersonalNumber}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresPersonalNumber}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=PersonalNumber}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_PersonalNumberCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=PersonalNumber}" 
 															 IsValid="{Binding PersonalNumberOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															 LabelText="{l:Localize PersonalNumber}"
@@ -190,7 +190,7 @@
 								<Label Text="{l:Localize Address}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresAddress}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=Address}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_AddressCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=Address}" 
 															 IsValid="{Binding AddressOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															 LabelText="{l:Localize Address}"
@@ -204,7 +204,7 @@
 								<Label Text="{l:Localize Address2}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresAddress2}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=Address2}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_Address2CompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=Address2}" 
 															 IsValid="{Binding Address2Ok}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															 LabelText="{l:Localize Address2}"
@@ -218,7 +218,7 @@
 								<Label Text="{l:Localize ZipCode}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresZipCode}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=ZipCode}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_ZipCodeCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=ZipCode}" 
 															 IsValid="{Binding ZipCodeOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															 LabelText="{l:Localize ZipCode}"
@@ -232,7 +232,7 @@
 								<Label Text="{l:Localize Area}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresArea}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=Area}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_AreaCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=Area}" 
 															 IsValid="{Binding AreaOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															 LabelText="{l:Localize Area}"
@@ -246,7 +246,7 @@
 								<Label Text="{l:Localize City}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresCity}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=City}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_CityCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=City}" 
 															 IsValid="{Binding CityOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															 LabelText="{l:Localize City}"
@@ -260,7 +260,7 @@
 								<Label Text="{l:Localize Region}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresRegion}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=Region}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_RegionCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=Region}" 
 															 IsValid="{Binding RegionOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															 LabelText="{l:Localize Region}"
@@ -278,11 +278,11 @@
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-							<HorizontalStackLayout>
+							<HorizontalStackLayout AutomationId="{l:Localize Nationality, StringFormat='ApplyIdPage_ChosenNationalityLabel{0}'}">
 								<Label Text="{l:Localize Nationality}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresNationality}"/>
 							</HorizontalStackLayout>
-							<controls:CompositePicker
+							<controls:CompositePicker AutomationId="ApplyIdPage_SelectNationalityCompositePicker"
 										HorizontalOptions="FillAndExpand"
 										Style="{StaticResource RegularCompositePicker}"
 										Placeholder="{l:Localize SelectNationality}"
@@ -294,7 +294,8 @@
 									<Binding Path="Alpha2" Converter="{converters:CountryCodeToFlagAndName}"/>
 								</controls:CompositePicker.ItemDisplayBinding>
 							</controls:CompositePicker>
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=NationalityCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}"
+							<Label AutomationId="{Binding Path=NationalityCode, StringFormat='ApplyIdPage_NationalityCardLabel{0}'}"
+									 Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=NationalityCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}"
 									 IsVisible="{Binding ApplicationSent}"/>
 						</VerticalStackLayout>
 
@@ -304,7 +305,7 @@
 								<Label Text="{l:Localize Gender}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresGender}"/>
 							</HorizontalStackLayout>
-							<controls:CompositePicker
+							<controls:CompositePicker AutomationId="ApplyIdPage_SelectGenderCompositePicker"
 										  HorizontalOptions="FillAndExpand"
 										  Placeholder="{l:Localize SelectGender}"
 										  IsValid="{Binding GenderOk}"
@@ -325,7 +326,7 @@
 								<Label Text="{l:Localize BirthDate}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresBirthDate}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeDatePicker
+							<controls:CompositeDatePicker AutomationId="ApplyIdPage_SelectBirthDateCompositePicker"
 											HorizontalOptions="FillAndExpand"
 											IsValid="{Binding BirthDateOk}"
 											NullableDate="{Binding BirthDate}"
@@ -333,7 +334,8 @@
 											MinimumDate="{Binding MinBirthDate}"
 											MaximumDate="{Binding MaxBirthDate}"
 											Style="{StaticResource RegularCompositeDatePicker}" />
-							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=BirthDate, Converter={converters:DateToString}}"
+							<Label 
+										 Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=BirthDate, Converter={converters:DateToString}}"
 									 IsVisible="{Binding ApplicationSent}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
@@ -353,7 +355,7 @@
 								<Label Text="{l:Localize OrgName}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgName}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgName}"
+							<controls:CompositeEntry AutomationId="ApplyIdPage_OrganizationNameCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgName}"
 															 IsValid="{Binding OrgNameOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
 							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgName, Converter={converters:HyphenIfEmpty}}"
@@ -365,7 +367,7 @@
 								<Label Text="{l:Localize OrgDepartment}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgDepartment}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgDepartment}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_OrganizationDepartmentCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgDepartment}" 
 															 IsValid="{Binding OrgDepartmentOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
 							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgDepartment, Converter={converters:HyphenIfEmpty}}"
@@ -377,7 +379,7 @@
 								<Label Text="{l:Localize OrgRole}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgRole}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgRole}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_OrganizationRoleCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgRole}" 
 															 IsValid="{Binding OrgRoleOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
 							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgRole, Converter={converters:HyphenIfEmpty}}"
@@ -389,7 +391,7 @@
 								<Label Text="{l:Localize OrgNumber}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgNumber}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgNumber}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_OrganizationNumberCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgNumber}" 
 															 IsValid="{Binding OrgNumberOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
 							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgNumber, Converter={converters:HyphenIfEmpty}}"
@@ -401,7 +403,7 @@
 								<Label Text="{l:Localize OrgAddress}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgAddress}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgAddress}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_OrganizationAddressCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgAddress}" 
 															 IsValid="{Binding OrgAddressOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
 							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgAddress, Converter={converters:HyphenIfEmpty}}"
@@ -413,7 +415,7 @@
 								<Label Text="{l:Localize OrgAddress2}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgAddress2}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgAddress2}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_OrganizationAddress2CompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgAddress2}" 
 															 IsValid="{Binding OrgAddress2Ok}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
 							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgAddress2, Converter={converters:HyphenIfEmpty}}"
@@ -425,7 +427,7 @@
 								<Label Text="{l:Localize OrgZipCode}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgZipCode}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgZipCode}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_OrganizationZipCodeCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgZipCode}" 
 															 IsValid="{Binding OrgZipCodeOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
 							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgZipCode, Converter={converters:HyphenIfEmpty}}"
@@ -437,7 +439,7 @@
 								<Label Text="{l:Localize OrgArea}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgArea}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgArea}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_OrganizationAreaCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgArea}" 
 															 IsValid="{Binding OrgAreaOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
 							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgArea, Converter={converters:HyphenIfEmpty}}"
@@ -449,7 +451,7 @@
 								<Label Text="{l:Localize OrgCity}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgCity}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgCity}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_OrganizationCityCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgCity}" 
 															 IsValid="{Binding OrgCityOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"/>
 							<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding Path=OrgCity, Converter={converters:HyphenIfEmpty}}"
@@ -461,7 +463,7 @@
 								<Label Text="{l:Localize OrgRegion}" HorizontalOptions="FillAndExpand"/>
 								<Label Style="{StaticResource RequiredFieldMarker}" IsVisible="{Binding RequiresOrgRegion}"/>
 							</HorizontalStackLayout>
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgRegion}" 
+							<controls:CompositeEntry AutomationId="ApplyIdPage_OrganizationRegionCompositeEntry" Style="{StaticResource RegularCompositeEntry}" EntryData="{Binding Path=OrgRegion}" 
 															 IsValid="{Binding OrgRegionOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
 								<controls:CompositeEntry.Behaviors>
@@ -521,16 +523,16 @@
 							<Label Style="{StaticResource InfoLabel}" Text="{l:Localize IdApplicationDescription}"/>
 
 							<Grid ColumnDefinitions="auto,*" RowDefinitions="auto,auto" RowSpacing="{StaticResource SmallSpacing}">
-								<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Consent}" Margin="{StaticResource SmallMargins}"/>
-								<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize ConsentDescription}" HorizontalOptions="FillAndExpand"
+								<CheckBox AutomationId="ApplyIdPage_PersonalInformationUseConsentCheckBox" Grid.Column="0" Grid.Row="0" IsChecked="{Binding Consent}" Margin="{StaticResource SmallMargins}"/>
+								<Label AutomationId="ApplyIdPage_PersonalInformationUseConsentLabel" Grid.Column="1" Grid.Row="0" Text="{l:Localize ConsentDescription}" HorizontalOptions="FillAndExpand"
 										 Margin="{StaticResource SmallLeftMargins}">
 									<Label.GestureRecognizers>
 										<TapGestureRecognizer Command="{Binding ToggleConsentCommand}"/>
 									</Label.GestureRecognizers>
 								</Label>
 
-								<CheckBox Grid.Column="0" Grid.Row="1" IsChecked="{Binding Correct}" Margin="{StaticResource SmallMargins}"/>
-								<Label Grid.Column="1" Grid.Row="1" Text="{l:Localize CorrectDescription}" HorizontalOptions="FillAndExpand"
+								<CheckBox AutomationId="ApplyIdPage_IsInformationCorrectCheckBox" Grid.Column="0" Grid.Row="1" IsChecked="{Binding Correct}" Margin="{StaticResource SmallMargins}"/>
+								<Label AutomationId="ApplyIdPage_IsInformationCorrectLabel" Grid.Column="1" Grid.Row="1" Text="{l:Localize CorrectDescription}" HorizontalOptions="FillAndExpand"
 										 Margin="{StaticResource SmallLeftMargins}">
 									<Label.GestureRecognizers>
 										<TapGestureRecognizer Command="{Binding ToggleCorrectCommand}"/>
@@ -541,7 +543,7 @@
 							<ActivityIndicator VerticalOptions="Center" HorizontalOptions="Center"
 													 IsVisible="{Binding IsApplying}" IsRunning="{Binding IsApplying}" />
 
-							<controls:TextButton x:Name="ApplyButton" Command="{Binding ApplyCommand}"
+							<controls:TextButton AutomationId="ApplyIdPage_SendApplicationButton" x:Name="ApplyButton" Command="{Binding ApplyCommand}"
 														Style="{StaticResource FilledTextButton}"
 														IsVisible="{Binding IsApplying, Converter={StaticResource InvertedBoolConverter}}"
 														LabelData="{l:Localize SendApplication}" />
@@ -566,13 +568,13 @@
 													 IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" />
 
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-								<controls:TextButton Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButton}"
+								<controls:TextButton AutomationId="ApplyIdPage_SecondScanQrCodeTextButton" Command="{Binding ScanQrCodeCommand}" Style="{StaticResource FilledTextButton}"
 															LabelData="{l:Localize QrScanCode}" IsVisible="{Binding PeerReview}" />
 
-								<controls:TextButton Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButton}"
+								<controls:TextButton AutomationId="ApplyIdPage_SecondRequestReviewTextButton" Command="{Binding RequestReviewCommand}" Style="{StaticResource FilledTextButton}"
 															LabelData="{l:Localize FeaturedReviewers}" IsVisible="{Binding FeaturedPeerReviewers}" />
 
-								<controls:TextButton Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButton}"
+								<controls:TextButton AutomationId="ApplyIdPage_SecondRevokeApplicationTextButton" Command="{Binding RevokeApplicationCommand}" Style="{StaticResource FilledTextButton}"
 															LabelData="{l:Localize RevokeApplication}" />
 							</VerticalStackLayout>
 						</VerticalStackLayout>
