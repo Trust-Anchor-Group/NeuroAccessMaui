@@ -26,8 +26,8 @@ This documentation provides information you need to get started with the project
 - [Deployment](deployment.md) Coming Soon
   - [Build and Release Process](deployment.md#build-and-release-process)
   - [Publishing to App Stores](deployment.md#publishing-to-app-stores)
-- [Troubleshooting](troubleshooting.md) Coming Soon
-  - [Common Issues](troubleshooting.md#common-issues)
+- [Troubleshooting](Content/troubleshooting.md)
+  - [Common Issues](troubleshooting.md#usual-errors-that-happen)
   - [Debugging Tips](troubleshooting.md#debugging-tips)
   - [FAQ](troubleshooting.md#faq)
 - [Contributing](Content/contributing.md)
