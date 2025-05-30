@@ -631,14 +631,14 @@
 	<Style x:Key="BottomBarBorder" TargetType="Border">
 		<Setter Property="VerticalOptions" Value="End" />
 		<Setter Property="HorizontalOptions" Value="Fill" />
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource NavMenuBody1WLLight}, Dark={DynamicResource NavMenuBody1WLDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource NavMenuBody1WLLight}, Dark={StaticResource NavMenuBody1WLDark}}" />
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="StrokeShape">
 			<Setter.Value>
 				<RoundRectangle CornerRadius="20,20,0,0" />
 			</Setter.Value>
 		</Setter>
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={DynamicResource NavMenuStroke1WLLight}, Dark={DynamicResource NavMenuStroke1WLDark}}" />
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource NavMenuStroke1WLLight}, Dark={StaticResource NavMenuStroke1WLDark}}" />
 		<Setter Property="StrokeThickness" Value="1"/>
 	</Style>
 
