@@ -57,6 +57,10 @@ namespace NeuroAccessMaui.UI.Pages.Main
 						ServiceRef.LogService.LogDebug($"Item: {item.Node} --- \n {item.Payload} --- \n {item.Item}");
 					}
 				}
+				await Task.Delay(10000); // Simulate some delay for loading
+				IThemeService s = App.Instantiate<IThemeService>();
+
+				await s.ApplyProviderTheme2();
 				/*
 				try
 				{

@@ -13,7 +13,8 @@ namespace NeuroAccessMaui.Services.Theme
 		/// </summary>
 		Task ApplyProviderTheme();
 
-		
+				Task ApplyProviderTheme2();
+
 
 		/// <summary>
 		/// Sets the theme for the app.
