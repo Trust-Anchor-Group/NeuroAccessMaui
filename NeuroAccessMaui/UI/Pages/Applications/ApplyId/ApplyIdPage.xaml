@@ -143,8 +143,9 @@
 				</Border>
 
 				<Border Style="{StaticResource BorderSet}"
+						Margin="{StaticResource SmallLeftRightTopMargins}"
 				        IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
 							   Text="{l:Localize Photo}" />
 						<Label Style="{StaticResource InfoLabel}"
@@ -152,8 +153,7 @@
 						<Grid ColumnDefinitions="*,auto,auto,*"
 							  ColumnSpacing="{StaticResource SmallSpacing}"
 							  RowDefinitions="auto,auto,auto,*"
-							  RowSpacing="{StaticResource SmallSpacing}"
-							  Margin="{StaticResource SmallTopMargins}">
+							  RowSpacing="{StaticResource SmallSpacing}">
 							<Border Grid.Row="0"
 									  Grid.RowSpan="4"
 									  Grid.Column="1"
@@ -213,7 +213,7 @@
 				<!-- Identity Document Section -->
 				<Border Style="{StaticResource BorderSet}"
 						IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
 							   Text="{l:Localize IdentityDocumentTitle}" />
 						<Label Style="{StaticResource InfoLabel}"
@@ -382,7 +382,7 @@
 
 				<Border Style="{StaticResource BorderSet}"
 						IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-					<Grid RowSpacing="{StaticResource SmallSpacing}">
+					<Grid RowSpacing="{StaticResource MediumSpacing}">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
@@ -461,8 +461,7 @@
 					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}"
 										 Padding="{StaticResource SmallMargins}">
 						<Label Style="{StaticResource SectionTitleLabel}"
-							   Text="{l:Localize PersonalInformation}"
-							   Margin="0"/>
+							   Text="{l:Localize PersonalInformation}"/>
 						<Label IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 								 Style="{StaticResource InfoLabel}"
 								 Text="{l:Localize PersonalInformationDescription}" />
@@ -926,7 +925,6 @@
 					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}"
 										 Padding="{StaticResource SmallMargins}">
 						<Label Style="{StaticResource SectionTitleLabel}"
-							   Margin="0"
 							   Text="{l:Localize ContactInformation}" />
 						<Label IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 							   Style="{StaticResource InfoLabel}"
@@ -971,8 +969,7 @@
 						<VerticalStackLayout IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 											 Spacing="{StaticResource MediumSpacing}">
 							<Label Style="{StaticResource SectionTitleLabel}"
-								   Text="{l:Localize Application}"
-								   Margin="0"/>
+								   Text="{l:Localize Application}"/>
 							<Label Style="{StaticResource InfoLabel}"
 									 Text="{l:Localize IdApplicationDescription}" />
 
@@ -1019,9 +1016,10 @@
 														LabelData="{l:Localize SendApplication}"
 														Style="{StaticResource FilledTextButton}" />
 						</VerticalStackLayout>
-						<VerticalStackLayout IsVisible="{Binding ApplicationSent}">
+						<VerticalStackLayout IsVisible="{Binding ApplicationSent}"
+											 Spacing="{StaticResource MediumSpacing}">
 							<Label Style="{StaticResource SectionTitleLabel}"
-									 Text="{l:Localize Application}" />
+								   Text="{l:Localize Application}"/>
 							<Label Style="{StaticResource InfoLabel}"
 									 Text="{l:Localize IdApplicationSentDescription}" />
 							<Label IsVisible="{Binding PeerReview}"
@@ -1046,8 +1044,7 @@
 													 IsVisible="{Binding IsBusy}"
 													 VerticalOptions="Center" />
 
-							<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
-														Spacing="{StaticResource SmallSpacing}">
+							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<controls:TextButton Command="{Binding ScanQrCodeCommand}"
 															IsVisible="{Binding PeerReview}"
 															LabelData="{l:Localize QrScanCode}"
