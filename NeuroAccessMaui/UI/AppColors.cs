@@ -5,6 +5,12 @@ namespace NeuroAccessMaui.UI
 	/// </summary>
 	public static class AppColors
 	{
+		// New
+		private static Color? wLToastsAndPillsFigureDangerLightWLLight;
+		private static Color? wLToastsAndPillsFigureDangerLightWLDark;
+		private static Color? surfaceElevation1WLLight;
+		private static Color? surfaceElevation1WLDark;
+
 		private static Color? primaryForegroundDark;
 		private static Color? primaryForegroundLight;
 		private static Color? primaryBackgroundDark;
@@ -66,6 +72,48 @@ namespace NeuroAccessMaui.UI
 		private static Color? blueLight;
 		private static Color? blueDark;
 		private static Color? offBlack;
+
+		// New colors
+
+		/// <summary>
+		/// Light Danger
+		/// </summary>
+		public static Color WLToastsAndPillsFigureDangerLightWL
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
+					wLToastsAndPillsFigureDangerLightWLLight ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsFigureDangerDark");
+					return wLToastsAndPillsFigureDangerLightWLLight!;
+				}
+				else
+				{
+					wLToastsAndPillsFigureDangerLightWLDark ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsFigureDangerLight");
+					return wLToastsAndPillsFigureDangerLightWLDark!;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Surface Elevation 1 color
+		/// </summary>
+		public static Color SurfaceElevation1WL
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
+					surfaceElevation1WLLight ??= AppStyles.TryGetResource<Color>("SurfaceElevation1Dark");
+					return surfaceElevation1WLLight!;
+				}
+				else
+				{
+					surfaceElevation1WLDark ??= AppStyles.TryGetResource<Color>("SurfaceElevation1Light");
+					return surfaceElevation1WLDark!;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Primary foreground color.
