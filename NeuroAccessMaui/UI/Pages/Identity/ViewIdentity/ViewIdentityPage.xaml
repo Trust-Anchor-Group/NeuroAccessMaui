@@ -22,8 +22,6 @@
 		<Style x:Key="CardBorder"
 			   TargetType="Border"
 			   BasedOn="{StaticResource BorderSet}">
-			<Setter Property="Background"
-					Value="{AppThemeBinding Light={StaticResource SurfaceElevation1Light}, Dark={StaticResource SurfaceElevation1Dark}}" />
 			<Setter Property="StrokeShape"
 					Value="RoundRectangle 16" />
 		</Style>
@@ -31,7 +29,7 @@
 			   TargetType="Border"
 			   BasedOn="{StaticResource BorderSubSet}">
 			<Setter Property="Background"
-					Value="{AppThemeBinding Light={StaticResource SurfaceElevation2GreyLight}, Dark={StaticResource SurfaceElevation2GreyDark}}" />
+					Value="{AppThemeBinding Light={StaticResource SurfaceElevation2WLLight}, Dark={StaticResource SurfaceElevation2WLDark}}" />
 			<Setter Property="StrokeShape"
 					Value="RoundRectangle 16" />
 			<Setter Property="Margin"
@@ -42,8 +40,6 @@
 		<Style x:Key="QrBorder"
 			   TargetType="Border"
 			   BasedOn="{StaticResource BorderSet}">
-			<Setter Property="Background"
-					Value="{AppThemeBinding Light={StaticResource SurfaceElevation1Light}, Dark={StaticResource SurfaceElevation1Dark}}" />
 			<Setter Property="Shadow"
 					Value="{x:Null}" />
 			<Setter Property="Padding"
@@ -72,7 +68,7 @@
 			<Setter Property="HorizontalTextAlignment"
 					Value="Center" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
+					Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 		</Style>
 		<Style x:Key="SubTextLabel"
 			   BasedOn="{StaticResource FriendlyNameLabel}"
@@ -87,7 +83,7 @@
 			<Setter Property="HorizontalTextAlignment"
 					Value="Center" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentSecondaryLight}, Dark={StaticResource ContentSecondaryDark}}" />
+					Value="{AppThemeBinding Light={StaticResource ContentSecondaryWLLight}, Dark={StaticResource ContentSecondaryWLDark}}" />
 		</Style>
 		<Style x:Key="AgeLabel"
 			   BasedOn="{StaticResource FriendlyNameLabel}"
@@ -106,42 +102,39 @@
 		<Style x:Key="StatusPillBorder"
 			   TargetType="Border">
 			<Setter Property="BackgroundColor"
-					Value="{AppThemeBinding Light={StaticResource FiguresStrokesGreyScalesGreyv100Light}, Dark={StaticResource FiguresStrokesGreyScalesGreyv100Dark}}" />
+					Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgNeutralv300WLLight}, Dark={StaticResource WLToastsAndPillsbgNeutralv300WLDark}}" />
 			<Setter Property="VisualStateManager.VisualStateGroups">
 				<VisualStateGroupList>
 					<VisualStateGroup Name="StatusStates">
-
+						
 						<VisualState Name="Created">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource FiguresStrokesOrangea20Light}, Dark={StaticResource FiguresStrokesOrangea20Dark}}" />
-
+										Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgWarningWLLight}, Dark={StaticResource WLToastsAndPillsbgWarningWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 						<VisualState Name="Compromised">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource FiguresStrokesOrangea20Light}, Dark={StaticResource FiguresStrokesOrangea20Dark}}" />
-
+										Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgWarningWLLight}, Dark={StaticResource WLToastsAndPillsbgWarningWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 						<VisualState Name="Approved">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource FiguresStrokesGreena20Light}, Dark={StaticResource FiguresStrokesGreena20Dark}}" />
+										Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgSuccessWLLight}, Dark={StaticResource WLToastsAndPillsbgSuccessWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
-
 						<VisualState Name="Rejected">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource FiguresStrokesReda20Light}, Dark={StaticResource FiguresStrokesReda20Dark}}" />
+										Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 						<VisualState Name="Obsoleted">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource FiguresStrokesReda20Light}, Dark={StaticResource FiguresStrokesReda20Dark}}" />
+										Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>
@@ -156,8 +149,8 @@
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskBold" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentSecondaryLight},
-                                       Dark={StaticResource ContentSecondaryDark}}" />
+					Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentNeutralv300WLLight},
+                                       Dark={StaticResource WLToastsAndPillsContentNeutralv300WLDark}}" />
 			<Setter Property="Text"
 					Value="{l:Localize NotAvailable}" />
 			<Style.Triggers>
@@ -167,8 +160,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Created}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource ContentOrangeLight},
-                                       Dark={StaticResource ContentOrangeDark}}" />
+							Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentWarningWLLight},
+                                       Dark={StaticResource WLToastsAndPillsContentWarningWLDark}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -176,8 +169,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Compromised}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource ContentOrangeLight},
-                                       Dark={StaticResource ContentOrangeDark}}" />
+							Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentWarningWLLight},
+                                       Dark={StaticResource WLToastsAndPillsContentWarningWLDark}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -185,8 +178,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Approved}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource ContentGreenLight},
-                                       Dark={StaticResource ContentGreenDark}}" />
+							Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentSuccessWLLight},
+                                       Dark={StaticResource WLToastsAndPillsContentSuccessWLLight}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -194,8 +187,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Rejected}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource ContentRedLight},
-                                       Dark={StaticResource ContentRedDark}}" />
+							Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentDangerWLLight},
+                                       Dark={StaticResource WLToastsAndPillsContentDangerWLDark}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -203,8 +196,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Obsoleted}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource ContentRedLight},
-                                       Dark={StaticResource ContentRedDark}}" />
+							Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentDangerWLLight},
+                                       Dark={StaticResource WLToastsAndPillsContentDangerWLDark}}" />
 				</DataTrigger>
 			</Style.Triggers>
 		</Style>
@@ -217,7 +210,7 @@
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskRegular" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentSecondaryLight}, Dark={StaticResource ContentSecondaryDark}}" />
+					Value="{AppThemeBinding Light={StaticResource ContentSecondaryWLLight}, Dark={StaticResource ContentSecondaryWLDark}}" />
 		</Style>
 		<Style x:Key="FieldValueLabel"
 			   TargetType="Label">
@@ -226,7 +219,7 @@
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskRegular" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
+					Value="{AppThemeBinding Light={StaticResource ContentSecondaryWLLight}, Dark={StaticResource ContentSecondaryWLDark}}" />
 		</Style>
 		<Style x:Key="FieldTitleLabel"
 			   TargetType="Label">
@@ -235,7 +228,7 @@
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskBold" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentSecondaryLight}, Dark={StaticResource ContentSecondaryDark}}" />
+					Value="{AppThemeBinding Light={StaticResource ContentSecondaryWLLight}, Dark={StaticResource ContentSecondaryWLDark}}" />
 		</Style>
 
 		<DataTemplate x:Key="DefaultFieldTemplate"
@@ -264,7 +257,7 @@
 				<controls:SvgView Grid.Row="0"
 								  Grid.Column="1"
 								  Source="content_copy.svg"
-								  TintColor="{AppThemeBinding Light={StaticResource ContentSecondaryLight}, Dark={StaticResource ContentSecondaryDark}}"
+								  TintColor="{AppThemeBinding Light={StaticResource ContentSecondaryWLLight}, Dark={StaticResource ContentSecondaryWLDark}}"
 								  WidthRequest="16"
 								  HeightRequest="16"
 								  Aspect="AspectFit" />
@@ -272,7 +265,7 @@
 					   Grid.ColumnSpan="2"
 					   Text="{Binding Value}"
 					   Style="{StaticResource FieldValueLabel}"
-					   TextColor="{AppThemeBinding Light={StaticResource ContentBlueLight}, Dark={StaticResource ContentBlueDark}}" />
+					   TextColor="{AppThemeBinding Light={StaticResource ContentLinkWLLight}, Dark={StaticResource ContentLinkWLDark}}" />
 			</Grid>
 		</DataTemplate>
 
@@ -320,7 +313,7 @@
 			   TargetType="Border"
 			   BasedOn="{StaticResource BorderSet}">
 			<Setter Property="BackgroundColor"
-					Value="{AppThemeBinding Light={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundLight}, Dark={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundDark}}" />
+					Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsbgActiveWLDark}}" />
 			<Setter Property="Padding"
 					Value="{StaticResource MediumMargins}" />
 			<Setter Property="Margin"
@@ -379,7 +372,7 @@
 									  HeightRequest="24"
 									  Source="close.svg"
 									  Aspect="AspectFit"
-									  TintColor="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
+									  TintColor="{AppThemeBinding Light={StaticResource ButtonNeutralContentPressedLight}, Dark={StaticResource ButtonNeutralContentPressedDark}}" />
 				</Border>
 			</controls:TemplatedButton>
 			<Image Grid.Column="1"
@@ -396,15 +389,12 @@
 									  HeightRequest="24"
 									  Source="share.svg"
 									  Aspect="AspectFit"
-									  TintColor="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
+									  TintColor="{AppThemeBinding Light={StaticResource ButtonNeutralContentPressedLight}, Dark={StaticResource ButtonNeutralContentPressedDark}}" />
 
 				</Border>
 			</controls:TemplatedButton>
 
 		</Grid>
-
-
-
 
 		<!-- QR Code Shadow-->
 		<Border Grid.Row="2"
@@ -414,8 +404,6 @@
 				BackgroundColor="Transparent"
 				Style="{StaticResource BorderSet}"
 				StrokeShape="RoundRectangle 16" />
-
-
 
 		<!-- ID CARD -->
 		<Grid Grid.Row="1"
@@ -431,6 +419,7 @@
 											  Scale="1.1" />
 						</AbsoluteLayout>
 					</ContentView>
+					
 					<!-- TIMER -->
 					<Border IsVisible="{Binding HasTimer}"
 							VerticalOptions="End"
@@ -439,7 +428,7 @@
 							WidthRequest="50"
 							HeightRequest="38"
 							Margin="16"
-							BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceElevation2GreyLight}, Dark={StaticResource Elevation2BackgroundDark}}">
+							BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}">
 						<Label Text="{Binding TimerSeconds}"
 							   Margin="8,4,8,4"
 							   Style="{StaticResource SubTextLabel}"
@@ -454,8 +443,7 @@
 							StrokeShape="RoundRectangle 16"
 							Margin="16"
 							helpers:VisualStateProperties.State="{Binding IdentityState}"
-							Style="{StaticResource StatusPillBorder}"
-							>
+							Style="{StaticResource StatusPillBorder}">
 
 						<Label Style="{StaticResource StatusPillLabel}" Margin="4,2"
 								HorizontalOptions="Center"
@@ -464,7 +452,6 @@
 				</Grid>
 			</Border>
 		</Grid>
-
 
 		<!-- CARD CONTENT -->
 		<Grid Grid.Row="1"
@@ -479,7 +466,6 @@
 								  Margin="0">
 				<Grid WidthRequest="200"
 					  HeightRequest="200">
-
 					<controls:ConditionView Condition="{Binding LoadPhotosTask.IsRunning}">
 						<controls:ConditionView.True>
 							<ActivityIndicator IsRunning="True"
@@ -490,7 +476,7 @@
 						</controls:ConditionView.True>
 						<controls:ConditionView.False>
 							<Border StrokeShape="RoundRectangle 16"
-									Background="{AppThemeBinding Light={StaticResource SurfaceElevation2GreyLight}, Dark={StaticResource SurfaceElevation2GreyDark}}">
+									Background="{AppThemeBinding Light={StaticResource SurfaceElevation2WLLight}, Dark={StaticResource SurfaceElevation2WLDark}}">
 								<controls:ConditionView Condition="{Binding HasProfilePhoto}">
 									<controls:ConditionView.True>
 										<Image Source="{Binding ProfilePhoto}"
@@ -525,7 +511,7 @@
 						  WidthRequest="50"
 						  HeightRequest="50"
 						  IsVisible="{Binding HasAge}">
-						<Border Background="{AppThemeBinding Light={StaticResource SurfaceElevation1Light}, Dark={StaticResource SurfaceElevation1Dark}}"
+						<Border Background="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}"
 								StrokeShape="RoundRectangle 16 0 0 0">
 							<Label Style="{StaticResource AgeLabel}"
 								   Text="{Binding AgeText}"
@@ -542,13 +528,11 @@
 					   Text="{Binding SubText}" />
 
 			</VerticalStackLayout>
-
-
-				<VerticalStackLayout Grid.Row="1" Margin="0, 0, 0, 4" VerticalOptions="End">
-					<Label Style="{StaticResource SubTextLabel}"
-						   FontSize="14"
-						   Text="{l:Localize Path=ExpiresFormat, Arg={Binding ExpireDate}}" />
-				</VerticalStackLayout>
+			<VerticalStackLayout Grid.Row="1" Margin="0, 0, 0, 4" VerticalOptions="End">
+				<Label Style="{StaticResource SubTextLabel}"
+						FontSize="14"
+						Text="{l:Localize Path=ExpiresFormat, Arg={Binding ExpireDate}}" />
+			</VerticalStackLayout>
 		</Grid>
 
 		<!-- QR Code -->
@@ -572,21 +556,22 @@
 								   IsAnimationEnabled="{Binding ShouldCelebrate}"
 								   HorizontalOptions="Fill"
 								   VerticalOptions="Fill" />
+		
 		<Grid Grid.Row="1"
 			  Grid.RowSpan="4">
 			<controls:BottomSheetView x:Name="BottomSheet"
 									  VerticalOptions="End"
 									  MaxExpandedHeight="-1">
 				<controls:BottomSheetView.HeaderContent>
-					<VerticalStackLayout Background="{AppThemeBinding Light={StaticResource SurfaceElevation1Light}, Dark={StaticResource SurfaceElevation1Dark}}"
+					<VerticalStackLayout Background="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}"
 										 Padding="2">
 						<controls:SvgView Source="swipe_up.svg"
 										  Aspect="Fill"
 										  HeightRequest="24"
 										  WidthRequest="24"
-										  TintColor="{AppThemeBinding Light={StaticResource ContentGreenLight}, Dark={StaticResource ContentGreenDark}}" />
+										  TintColor="{AppThemeBinding Light={StaticResource ContentAccessWLLight}, Dark={StaticResource ContentAccessWLDark}}" />
 						<Label Text="{l:Localize SwipeForDetails}"
-							   TextColor="{AppThemeBinding Light={StaticResource ContentGreenLight}, Dark={StaticResource ContentGreenDark}}"
+							   TextColor="{AppThemeBinding Light={StaticResource ContentAccessWLLight}, Dark={StaticResource ContentAccessWLDark}}"
 							   FontSize="16"
 							   HorizontalOptions="Center"
 							   FontFamily="SpaceGroteskBold"
@@ -598,12 +583,12 @@
 						<ScrollView VerticalOptions="Fill"
 									HorizontalOptions="Fill">
 							<VerticalStackLayout>
-
 								<controls:TextButton Style="{StaticResource FilledTextButton}"
 													 LabelData="{l:Localize AddContact}"
 													 Command="{Binding AddContactCommand}"
 													 IsVisible="{Binding CanAddContact}"
 													 HorizontalOptions="Fill" Margin="16" />
+								
 								<controls:TextButton Style="{StaticResource FilledTextButton}"
 													 LabelData="{l:Localize RemoveContact}"
 													 Command="{Binding RemoveContactCommand}"
@@ -670,7 +655,6 @@
 															 BindableLayout.ItemsSource="{Binding OrganizationFields}"
 															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
 									</VerticalStackLayout>
-
 								</Border>
 
 								<Border Style="{StaticResource FieldGroupBorder}"
@@ -683,8 +667,6 @@
 															 Spacing="16"
 															 BindableLayout.ItemsSource="{Binding TechnicalFields}"
 															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
-
-
 									</VerticalStackLayout>
 								</Border>
 
@@ -706,8 +688,5 @@
 				</controls:BottomSheetView.MainContent>
 			</controls:BottomSheetView>
 		</Grid>
-
-
-
 	</Grid>
 </base:BaseContentPage>
