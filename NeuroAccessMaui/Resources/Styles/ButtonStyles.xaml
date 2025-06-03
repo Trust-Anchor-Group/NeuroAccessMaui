@@ -69,7 +69,7 @@
 	</Style>
 
 	<Style x:Key="SecondaryButtonActiveLabel" TargetType="Label" BasedOn="{StaticResource ButtonLabelBase}">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessTertiaryContentWLLight}, Dark={StaticResource ButtonAccessTertiaryContentWLDark}}" />
 	</Style>
 
 	<Style x:Key="SecondaryPath" TargetType="Path">
@@ -224,7 +224,7 @@
 	<!-- Old -->
 	<!-- Template Styles -->
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="FilledTemplateButtonBorder">
-		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonGreenbgPrimaryfLight}, Dark={StaticResource ButtonGreenbgPrimaryfDark}}" />
+		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimarybgWLLight}, Dark={StaticResource ButtonAccessPrimarybgWLDark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
@@ -243,7 +243,7 @@
 	</Style>
 
 	<Style x:Key="FilledTemplateButtonLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonContentWhitefLight}, Dark={StaticResource ButtonContentWhitefDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
@@ -262,13 +262,12 @@
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="StrokeMiterLimit" Value="10" />
 		<Setter Property="StrokeThickness" Value="{StaticResource ThinStrokeThickness}" />
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonContentWhitefLight}, Dark={StaticResource ButtonContentWhitefDark}}"></Setter>
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="TransparentTemplateButtonBorder">
-		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonGreenbgSecondaryvLight}, Dark={StaticResource ButtonGreenbgSecondaryvDark}}" />
+		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondarybgWLLight}, Dark={StaticResource ButtonAccessSecondarybgWLDark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}"/>
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
@@ -287,7 +286,7 @@
 	</Style>
 
 	<Style x:Key="TransparentTemplateButtonLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonGreenContentGreenfLight}, Dark={StaticResource ButtonGreenContentGreenfDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryContentWLLight}, Dark={StaticResource ButtonAccessSecondaryContentWLDark}}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
@@ -306,7 +305,7 @@
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="StrokeMiterLimit" Value="10" />
 		<Setter Property="StrokeThickness" Value="{StaticResource ThinStrokeThickness}" />
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonGreenContentGreenfLight}, Dark={StaticResource ButtonGreenContentGreenfDark}}"></Setter>
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryContentWLLight}, Dark={StaticResource ButtonAccessSecondaryContentWLDark}}"/>
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
@@ -403,23 +402,25 @@
 	</Style>
 
 	<!-- Back Button -->
-	<Style x:Key="IconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border" BasedOn="{StaticResource BorderSet}">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundLight}, Dark={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundDark}}"/>
+	<Style x:Key="IconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsbgActiveWLDark}}"/>
 		<Setter Property="Padding" Value="{StaticResource MediumMargins}"/>
 		<Setter Property="Margin"
 				Value="0" />
 		<Setter Property="WidthRequest" Value="40"/>
 		<Setter Property="HeightRequest" Value="40"/>
 		<Setter Property="HorizontalOptions" Value="Start"/>
-		<Setter Property="StrokeShape">
-			<RoundRectangle CornerRadius="8" />
+		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
+		<Setter Property="Shadow">
+			<Setter.Value>
+				<Shadow Brush="{AppThemeBinding Light={StaticResource SurfaceShadowColorWLLight}, Dark={StaticResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+			</Setter.Value>
 		</Setter>
-
 	</Style>
 
 	<Style x:Key="IconButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
 		<Setter Property="Fill"
-				Value="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}"/>
+				Value="{AppThemeBinding Light={StaticResource ButtonNeutralContentPressedLight}, Dark={StaticResource ButtonNeutralContentPressedDark}}"/>
 		<Setter Property="WidthRequest" Value="24"/>
 		<Setter Property="HeightRequest" Value="24"/>
 	</Style>

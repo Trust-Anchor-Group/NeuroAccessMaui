@@ -9,7 +9,7 @@
                        x:DataType="viewmodel:ImageViewModel"
                        x:Class="NeuroAccessMaui.UI.Popups.Photos.Image.ImageView">
 	<Frame Style="{StaticResource PopupFrame}" x:Name="PhotoViewer" HasShadow="true"
-			 BackgroundColor="{DynamicResource HeadingBackgroundTranslucent}"
+			 BackgroundColor="{StaticResource HeadingBackgroundTranslucent}"
 			 Opacity="0" HorizontalOptions="Center" VerticalOptions="Center">
 		<Grid>
 			<VerticalStackLayout Margin="0">

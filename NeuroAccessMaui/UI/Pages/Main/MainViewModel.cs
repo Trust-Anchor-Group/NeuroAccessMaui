@@ -101,7 +101,10 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		[RelayCommand(CanExecute = nameof(CanScanQrCode))]
 		private async Task ScanQrCode()
 		{
-			await Services.UI.QR.QrCode.ScanQrCodeAndHandleResult();
+			await MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				await Services.UI.QR.QrCode.ScanQrCodeAndHandleResult();
+			});
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
