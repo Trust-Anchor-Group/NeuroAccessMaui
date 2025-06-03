@@ -13,7 +13,7 @@
         </Style>
 
         <Style x:Key="ButtonIconBorder" TargetType="Border">
-            <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource Accent20Light}, Dark={StaticResource Accent20Dark}}" />
+			<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgSuccessWLLight}, Dark={StaticResource WLToastsAndPillsbgSuccessWLDark}}" />
             <Setter Property="StrokeShape" Value="RoundRectangle 8" />
             <Setter Property="Stroke" Value="Transparent"/>
             <Setter Property="WidthRequest" Value="48"/>
@@ -21,7 +21,7 @@
         </Style>
 
         <Style x:Key="ButtonIconPath" TargetType="Path">
-            <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+			<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentSuccessWLLight}, Dark={StaticResource WLToastsAndPillsContentSuccessWLDark}}" />
             <Setter Property="Aspect" Value="Uniform" />
             <Setter Property="WidthRequest" Value="24"/>
             <Setter Property="HeightRequest" Value="24"/>

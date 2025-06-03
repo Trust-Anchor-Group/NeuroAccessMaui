@@ -462,9 +462,9 @@
 	<!-- TextButton Styles -->
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="TransparentTextButtonBorder">
-		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}" />
+		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondarybgWLLight}, Dark={StaticResource ButtonAccessSecondarybgWLDark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}"/>
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryStrokeWLLight}, Dark={StaticResource ButtonAccessSecondarybgWLDark}}"/>
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
@@ -472,7 +472,7 @@
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource DisabledTransparentButtonBackgroundLight}, Dark={StaticResource DisabledTransparentButtonBackgroundDark}}" />
+							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}" />
 							<Setter Property="Stroke" Value="Transparent"/>
 						</VisualState.Setters>
 					</VisualState>
@@ -482,7 +482,7 @@
 	</Style>
 
 	<Style x:Key="TransparentTextButtonLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource EnabledTransparentButtonForegroundLight}, Dark={StaticResource EnabledTransparentButtonForegroundDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryContentWLLight}, Dark={StaticResource ButtonAccessSecondaryContentWLDark}}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">

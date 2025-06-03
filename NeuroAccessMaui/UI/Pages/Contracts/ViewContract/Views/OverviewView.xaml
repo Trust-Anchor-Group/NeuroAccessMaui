@@ -22,7 +22,7 @@
 					 TargetType="Label"
 					 BasedOn="{StaticResource BoldItemTitleLabel}">
 				<Setter Property="TextColor"
-						  Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhiteDark}}" />
+						  Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 				<Setter Property="FontSize"
 						  Value="15" />
 				<Setter Property="FontFamily"
@@ -40,7 +40,7 @@
 			<Style x:Key="ItemValueLabel"
 					 TargetType="Label">
 				<Setter Property="TextColor"
-						  Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+						  Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 				<Setter Property="FontSize"
 						  Value="15" />
 				<Setter Property="FontFamily"
@@ -117,10 +117,10 @@
 						HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource Accent20Light}, Dark={StaticResource Accent20Dark}}">
+							  BackgroundColor="{AppThemeBinding Light={StaticResource BrandColorsNeuroAccessa20WLLight}, Dark={StaticResource BrandColorsNeuroAccessa20WLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource Accent2Hold}, Dark={StaticResource Accent2HoldDark}}" />
+								 TextColor="{AppThemeBinding Light={StaticResource ContentAccessWLLight}, Dark={StaticResource ContentAccessWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>

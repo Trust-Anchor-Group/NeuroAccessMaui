@@ -444,7 +444,7 @@
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="RoundedBorder">
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}"/>
+		<Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource ButtonNeutralSecondaryStrokeDark}}"/>
 	</Style>
 
 	<Style ApplyToDerivedTypes="True"
@@ -517,7 +517,7 @@
 		<Setter Property="Shadow.Radius" Value="8" />
 		<Setter Property="Shadow.Opacity" Value="0.8" />
 		<Setter Property="Shadow.Brush" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundDark}, Dark={StaticResource PrimaryBackgroundLight}}" />
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}" />
 		<Setter Property="CornerRadius" Value="8" />
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
@@ -559,7 +559,7 @@
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="AlertFrame">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AlertLight}, Dark={StaticResource AlertDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsFigureDangerWLLight}, Dark={StaticResource WLToastsAndPillsFigureDangerWLDark}}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="ShellFrame">
