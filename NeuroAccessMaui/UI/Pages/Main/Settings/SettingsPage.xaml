@@ -63,7 +63,7 @@
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangeLanguageCommand}">
 							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SubSectionTitleLabel}" Text="{l:Localize LanguageOptions}" InputTransparent="True"/>
+									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize LanguageOptions}" InputTransparent="True"/>
 									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize LanguageOptionsDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Border>
@@ -80,7 +80,7 @@
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding CompromiseCommand}">
 							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SubSectionTitleLabel}" Text="{l:Localize ReportAsCompromized}" InputTransparent="True"/>
+									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ReportAsCompromized}" InputTransparent="True"/>
 									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize ReportAsCompromizedDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Border>
@@ -90,7 +90,7 @@
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding RevokeCommand}">
 							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SubSectionTitleLabel}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
+									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
 									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize RevokeIdentityDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Border>
@@ -100,7 +100,7 @@
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding TransferCommand}">
 							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SubSectionTitleLabel}" Text="{l:Localize TransferIdentity}" InputTransparent="True"/>
+									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize TransferIdentity}" InputTransparent="True"/>
 									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize TransferIdentityDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Border>
@@ -118,7 +118,7 @@
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangePasswordCommand}">
 							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SubSectionTitleLabel}" Text="{l:Localize ChangePassword}" InputTransparent="True"/>
+									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ChangePassword}" InputTransparent="True"/>
 									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize ChangePasswordDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Border>
@@ -178,18 +178,18 @@
 						<Border Style="{StaticResource BorderSubSet}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<VerticalStackLayout>
-									<Label Style="{StaticResource SubSectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize AppVersion}"/>
+									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize AppVersion}"/>
 									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding VersionNumber}"/>
 								</VerticalStackLayout>
 								<VerticalStackLayout>
-									<Label Style="{StaticResource SubSectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize BuildNumber}"/>
+									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize BuildNumber}"/>
 									<HorizontalStackLayout>
 										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding BuildNumber}"/>
 										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding BuildTime}"/>
 									</HorizontalStackLayout>
 								</VerticalStackLayout>
 								<VerticalStackLayout>
-									<Label Style="{StaticResource SubSectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize Platform}"/>
+									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize Platform}"/>
 									<HorizontalStackLayout>
 										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DevicePlatform}"/>
 										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DeviceVersion}"/>

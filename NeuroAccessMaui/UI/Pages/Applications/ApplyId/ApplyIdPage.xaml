@@ -35,8 +35,8 @@
 
 		<ScrollView>
 			<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
-										Spacing="{StaticResource SmallSpacing}">
-				<Grid ColumnDefinitions="Auto, *, Auto">
+								 Spacing="{StaticResource SmallSpacing}">
+				<Grid ColumnDefinitions="Auto, *, Auto" Margin="{StaticResource SmallLeftRightMargins}">
 					<controls:ImageButton Command="{Binding GoBackCommand}"
 										  HorizontalOptions="Start"
 										  PathData="{x:Static ui:Geometries.BackButtonPath}"
@@ -59,7 +59,7 @@
 				<Border IsVisible="{Binding ApplicationSent}"
 						  Style="{StaticResource BorderSet}">
 					<Grid>
-						<VerticalStackLayout>
+						<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 							<Label Style="{StaticResource SectionTitleLabel}"
 									 Text="{l:Localize Application}" />
 							<Label Style="{StaticResource InfoLabel}"
@@ -86,7 +86,7 @@
 													 IsVisible="{Binding IsBusy}"
 													 VerticalOptions="Center" />
 
-							<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
+							<VerticalStackLayout
 														Spacing="{StaticResource SmallSpacing}">
 								<controls:TextButton Command="{Binding ScanQrCodeCommand}"
 															IsVisible="{Binding PeerReview}"
