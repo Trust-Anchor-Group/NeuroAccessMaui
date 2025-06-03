@@ -95,7 +95,7 @@
 				<Border Grid.Row="0"
 						BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgInfoWLLight}, Dark={StaticResource WLToastsAndPillsbgInfoWLDark}}"
 						Padding="{StaticResource MediumMargins}"
-						StrokeShape="RoundRectangle 8,8,8,0">
+						StrokeShape="RoundRectangle 8,8,0,8">
 					<Border.Shadow>
 						<Shadow Brush="{AppThemeBinding Light={StaticResource SurfaceShadowColorWLLight}, Dark={StaticResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
 					</Border.Shadow>
