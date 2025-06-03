@@ -405,6 +405,7 @@
 						<!-- CarouselView for Additional Photos -->
 						<CarouselView Grid.Row="2"
 									ItemsSource="{Binding AdditionalPhotos}"
+									IsVisible="{Binding AdditionalPhotos.Count}"
 									PeekAreaInsets="25"
 									IndicatorView="AdditionalPhotosIndicator"
 									Loop="False" HeightRequest="200">
