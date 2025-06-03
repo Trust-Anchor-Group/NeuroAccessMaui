@@ -36,19 +36,24 @@
 		<ScrollView>
 			<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
 										Spacing="{StaticResource SmallSpacing}">
+				<Grid ColumnDefinitions="Auto, *, Auto">
+					<controls:ImageButton Command="{Binding GoBackCommand}"
+										  HorizontalOptions="Start"
+										  PathData="{x:Static ui:Geometries.BackButtonPath}"
+										  Style="{StaticResource ImageOnlyButton}"
+										  Grid.Column="0"/>
 
-				<controls:ImageButton Command="{Binding GoBackCommand}"
-											 HorizontalOptions="Start"
-											 PathData="{x:Static ui:Geometries.BackButtonPath}"
-											 Style="{StaticResource ImageOnlyButton}" />
-
-				<Label IsVisible="{Binding Organizational, Converter={StaticResource InvertedBoolConverter}}"
-						 Style="{StaticResource PageTitleLabel}"
-						 Text="{l:Localize PersonalId}" />
-				<Label IsVisible="{Binding Organizational}"
-						 Style="{StaticResource PageTitleLabel}"
-						 Text="{l:Localize OrganizationalId}" />
-
+					<Label IsVisible="{Binding Organizational, Converter={StaticResource InvertedBoolConverter}}"
+						   Style="{StaticResource PageTitleLabel}"
+						   Text="{l:Localize PersonalId}"
+						   Grid.Column="1"
+						   HorizontalOptions="End"/>
+					<Label IsVisible="{Binding Organizational}"
+						   Style="{StaticResource PageTitleLabel}"
+						   Text="{l:Localize OrganizationalId}"
+						   Grid.Column="2"
+						   HorizontalOptions="End"/>
+				</Grid>
 
 				<!--  Application Sent  -->
 				<Border IsVisible="{Binding ApplicationSent}"
@@ -102,10 +107,9 @@
 				</Border>
 
 				<!--  Photos  -->
-
-				<Border Style="{StaticResource BorderSet}" IsVisible="{Binding ApplicationSent}">
-					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
-					                     Spacing="{StaticResource SmallSpacing}">
+				<Border Style="{StaticResource BorderSet}"
+						IsVisible="{Binding ApplicationSent}">
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
 								 Text="{l:Localize Photo}" />
 						<Label Style="{StaticResource InfoLabel}"
@@ -140,26 +144,22 @@
 
 				<Border Style="{StaticResource BorderSet}"
 				        IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
-					                     Spacing="{StaticResource SmallSpacing}">
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
-								 Text="{l:Localize Photo}" />
-						<Label IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-								 Style="{StaticResource InfoLabel}"
-								 Text="{l:Localize PhotosDescription}" />
-						<Label IsVisible="{Binding ApplicationSent}"
-								 Style="{StaticResource InfoLabel}"
-								 Text="{l:Localize PhotosSentDescription}" />
+							   Text="{l:Localize Photo}" />
+						<Label Style="{StaticResource InfoLabel}"
+							   Text="{l:Localize PhotosDescription}" />
 						<Grid ColumnDefinitions="*,auto,auto,*"
-								ColumnSpacing="{StaticResource SmallSpacing}"
-								RowDefinitions="auto,auto,auto,*"
-								RowSpacing="{StaticResource SmallSpacing}">
+							  ColumnSpacing="{StaticResource SmallSpacing}"
+							  RowDefinitions="auto,auto,auto,*"
+							  RowSpacing="{StaticResource SmallSpacing}"
+							  Margin="{StaticResource SmallTopMargins}">
 							<Border Grid.Row="0"
 									  Grid.RowSpan="4"
 									  Grid.Column="1"
 									  Margin="0"
 									  Padding="0"
-									  BackgroundColor="{Binding HasPhoto, Converter={converters:ControlBgColor}}"
+									  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}"
 									  HeightRequest="200"
 									  Style="{StaticResource OutlinedImageButtonBorder}"
 									  VerticalOptions="Start"
@@ -212,20 +212,19 @@
 
 				<!-- Identity Document Section -->
 				<Border Style="{StaticResource BorderSet}"
-						  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-					<VerticalStackLayout Margin="{StaticResource MediumSpacing}"
-												Spacing="{StaticResource SmallSpacing}">
+						IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
+					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
-								 Text="{l:Localize IdentityDocumentTitle}" />
+							   Text="{l:Localize IdentityDocumentTitle}" />
 						<Label Style="{StaticResource InfoLabel}"
-								 Text="{l:Localize IdentityDocumentDescription}" />
+							   Text="{l:Localize IdentityDocumentDescription}" />
 
 						<!-- Document Type Picker -->
 						<controls:CompositePicker Style="{StaticResource RegularCompositePicker}"
-														  LabelText="{l:Localize SelectTypeOfDocument}"
-														  ItemsSource="{Binding DocumentTypes}"
-														  SelectedItem="{Binding DocumentType}"
-														  ItemDisplayBinding="{Binding ., Converter={StaticResource IdentityDocumentTypeConverter}}" />
+												  LabelText="{l:Localize SelectTypeOfDocument}"
+												  ItemsSource="{Binding DocumentTypes}"
+												  SelectedItem="{Binding DocumentType}"
+												  ItemDisplayBinding="{Binding ., Converter={StaticResource IdentityDocumentTypeConverter}}" />
 
 						<!-- Front Image Section -->
 						<StackLayout IsVisible="{Binding DocumentType, Converter={StaticResource IdentityDocumentTypeToFrontVisibilityConverter}}">
@@ -275,7 +274,7 @@
 								<Border Grid.Column="0"
 										  Margin="0"
 										  Padding="0"
-										  BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight},Dark={StaticResource SecondaryBackgroundDark}}"
+										  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight},Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}"
 										  HeightRequest="200"
 										  WidthRequest="200"
 										  Style="{StaticResource OutlinedImageButtonBorder}">
@@ -344,7 +343,7 @@
 								<Border Grid.Column="0"
 										  Margin="0"
 										  Padding="0"
-										  BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight},Dark={StaticResource SecondaryBackgroundDark}}"
+										  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight},Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}"
 										  HeightRequest="200"
 										  WidthRequest="200"
 										  Style="{StaticResource OutlinedImageButtonBorder}">
@@ -383,8 +382,7 @@
 
 				<Border Style="{StaticResource BorderSet}"
 						IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-					<Grid Margin="{StaticResource MediumSpacing}"
-						RowSpacing="{StaticResource SmallSpacing}">
+					<Grid RowSpacing="{StaticResource SmallSpacing}">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
@@ -460,9 +458,11 @@
 
 				<!--  Personal Information  -->
 				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}"
+										 Padding="{StaticResource SmallMargins}">
 						<Label Style="{StaticResource SectionTitleLabel}"
-								 Text="{l:Localize PersonalInformation}" />
+							   Text="{l:Localize PersonalInformation}"
+							   Margin="0"/>
 						<Label IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 								 Style="{StaticResource InfoLabel}"
 								 Text="{l:Localize PersonalInformationDescription}" />
@@ -923,21 +923,23 @@
 
 				<!--  Contact Information  -->
 				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}"
+										 Padding="{StaticResource SmallMargins}">
 						<Label Style="{StaticResource SectionTitleLabel}"
-								 Text="{l:Localize ContactInformation}" />
+							   Margin="0"
+							   Text="{l:Localize ContactInformation}" />
 						<Label IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-								 Style="{StaticResource InfoLabel}"
-								 Text="{l:Localize ContactInformationDescription}" />
+							   Style="{StaticResource InfoLabel}"
+							   Text="{l:Localize ContactInformationDescription}" />
 						<Label IsVisible="{Binding ApplicationSent}"
-								 Style="{StaticResource InfoLabel}"
-								 Text="{l:Localize ContactInformationSentDescription}" />
+							   Style="{StaticResource InfoLabel}"
+							   Text="{l:Localize ContactInformationSentDescription}" />
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 							<Label HorizontalOptions="FillAndExpand"
-									 Text="{l:Localize EMail}" />
+								   Text="{l:Localize EMail}" />
 							<Label Style="{StaticResource BoldItemTitleLabel}"
-									 Text="{Binding Path=EMail, Converter={converters:HyphenIfEmpty}}" />
+								   Text="{Binding Path=EMail, Converter={converters:HyphenIfEmpty}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -965,17 +967,18 @@
 
 				<!--  Apply  -->
 				<Frame Style="{StaticResource FrameSet}">
-					<Grid>
+					<Grid Padding="{StaticResource SmallMargins}">
 						<VerticalStackLayout IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-													Spacing="{StaticResource LargeSpacing}">
+											 Spacing="{StaticResource MediumSpacing}">
 							<Label Style="{StaticResource SectionTitleLabel}"
-									 Text="{l:Localize Application}" />
+								   Text="{l:Localize Application}"
+								   Margin="0"/>
 							<Label Style="{StaticResource InfoLabel}"
 									 Text="{l:Localize IdApplicationDescription}" />
 
 							<Grid ColumnDefinitions="auto,*"
-									RowDefinitions="auto,auto"
-									RowSpacing="{StaticResource SmallSpacing}">
+								  RowDefinitions="auto,auto"
+								  RowSpacing="{StaticResource MediumSpacing}">
 								<CheckBox Grid.Row="0"
 											 Grid.Column="0"
 											 Margin="{StaticResource SmallMargins}"
