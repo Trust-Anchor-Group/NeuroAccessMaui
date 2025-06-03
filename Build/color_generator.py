@@ -1,4 +1,5 @@
 import json
+import argparse
 from collections.abc import Generator
 
 """
@@ -46,11 +47,15 @@ xaml_doc_start = """
 
 xaml_doc_end = "</ResourceDictionary>"
 
-def create_xaml_file() -> str:
+def create_xaml_file(alternative: bool) -> str:
     with open("colors.json") as f:
         data = json.load(f)[0]["values"]
-        formatted_light_colors = list(json_color_list_xaml_list(data[0]["color"], False))
-        formatted_dark_colors = list(json_color_list_xaml_list(data[1]["color"], True))
+        if alternative:
+            formatted_light_colors = list(json_color_list_xaml_list(data[3]["color"], False))
+            formatted_dark_colors = list(json_color_list_xaml_list(data[2]["color"], True))
+        else:
+            formatted_light_colors = list(json_color_list_xaml_list(data[0]["color"], False))
+            formatted_dark_colors = list(json_color_list_xaml_list(data[1]["color"], True))
 
     result = "\n".join([xaml_doc_start] + formatted_light_colors + formatted_dark_colors + [xaml_doc_end])
     
@@ -59,7 +64,18 @@ def create_xaml_file() -> str:
 
     return result
 
-result = create_xaml_file()
+
+parser = argparse.ArgumentParser(
+    prog='ColorConverter',
+    description='Converts JSON colors from figma to colors.xaml, usable in a C# MAUI app',
+    epilog='Wow you actually read documentation, good for you. Happy easter (Egg)'
+)
+
+parser.add_argument("-a", "--alternative", action="store_true", help="If flag is set, creates the xaml file used for second light/dark pair of themes")
+
+args = parser.parse_args()
+
+result = create_xaml_file(args.alternative)
 
 # Check if there is a file containing the old colors and print information of what colors have changed
 try:
