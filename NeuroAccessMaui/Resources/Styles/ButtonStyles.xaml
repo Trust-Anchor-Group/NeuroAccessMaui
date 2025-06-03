@@ -323,16 +323,24 @@
 
 	<!-- ImageOnly Styles -->
 	<Style x:Key="ImageOnlyButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="Transparent" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsbgActiveWLDark}}" />
 		<Setter Property="Padding" Value="{StaticResource SmallSpacing}"/>
 		<Setter Property="HorizontalOptions" Value="Center"/>
 		<Setter Property="VerticalOptions" Value="Center"/>
+		<Setter Property="StrokeShape" Value="RoundRectangle 8"/>
+		<Setter Property="HeightRequest" Value="40"/>
+		<Setter Property="WidthRequest" Value="40"/>
+		<Setter Property="Shadow">
+			<Setter.Value>
+				<Shadow Brush="{AppThemeBinding Light={StaticResource SurfaceShadowColorWLLight}, Dark={StaticResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+			</Setter.Value>
+		</Setter>
 	</Style>
 
 	<Style x:Key="ImageOnlyButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsContentActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsContentActiveWLDark}}" />
 		<Setter Property="WidthRequest" Value="24" />
 		<Setter Property="HeightRequest" Value="24" />
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 	</Style>
 
 	<Style x:Key="ImageOnlyButton" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
@@ -405,8 +413,7 @@
 	<Style x:Key="IconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsbgActiveWLDark}}"/>
 		<Setter Property="Padding" Value="{StaticResource MediumMargins}"/>
-		<Setter Property="Margin"
-				Value="0" />
+		<Setter Property="Margin" Value="0" />
 		<Setter Property="WidthRequest" Value="40"/>
 		<Setter Property="HeightRequest" Value="40"/>
 		<Setter Property="HorizontalOptions" Value="Start"/>
@@ -419,8 +426,7 @@
 	</Style>
 
 	<Style x:Key="IconButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
-		<Setter Property="Fill"
-				Value="{AppThemeBinding Light={StaticResource ButtonNeutralContentPressedLight}, Dark={StaticResource ButtonNeutralContentPressedDark}}"/>
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonNeutralContentPressedLight}, Dark={StaticResource ButtonNeutralContentPressedDark}}"/>
 		<Setter Property="WidthRequest" Value="24"/>
 		<Setter Property="HeightRequest" Value="24"/>
 	</Style>
