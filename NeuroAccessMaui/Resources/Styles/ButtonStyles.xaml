@@ -496,7 +496,7 @@
 	</Style>
 
 	<Style x:Key="FilledTextButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimarybgWLLight}, Dark={StaticResource ButtonAccessPrimarybgWLDark}}" />
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="StrokeShape">
@@ -517,7 +517,7 @@
 	</Style>
 
 	<Style x:Key="FilledTextButtonLabel" ApplyToDerivedTypes="False" BasedOn="{StaticResource BoldItemTitleLabel}" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
