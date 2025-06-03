@@ -655,13 +655,13 @@
 				<RoundRectangle CornerRadius="8" />
 			</Setter.Value>
 		</Setter>
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentBackgroundLight}, Dark={StaticResource AccentBackgroundDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgInfoWLLight}, Dark={StaticResource WLToastsAndPillsbgInfoWLDark}}" />
 	</Style>
 
 	<Style x:Key="AccentInfoLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular"/>
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
 	</Style>
 
 
