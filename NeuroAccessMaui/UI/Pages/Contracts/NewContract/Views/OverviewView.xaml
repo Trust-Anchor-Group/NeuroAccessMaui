@@ -29,7 +29,6 @@
 					<controls:CompositePicker
 									LabelText="{l:Localize SelectWhoShouldHaveAccessToThisContract }"
 									Style="{StaticResource RegularCompositePicker}"
-									Margin="{StaticResource SmallMargins}"
 									Placeholder="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
 									ItemsSource="{Binding Path=ContractVisibilityItems}"
 									SelectedItem="{Binding Path=SelectedContractVisibilityItem}" />

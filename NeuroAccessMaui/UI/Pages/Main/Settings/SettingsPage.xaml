@@ -40,7 +40,7 @@
 						<!-- Display Mode -->
 						<Border Style="{StaticResource BorderSubSet}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-								<Label Style="{StaticResource SubSectionTitleLabel}" Text="{l:Localize SelectDisplayMode}"/>
+								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize SelectDisplayMode}"/>
 								<Grid RowDefinitions="auto,auto"
 									  ColumnDefinitions="auto,*,auto"
 									  RadioButtonGroup.GroupName="DisplayMode"
@@ -127,7 +127,7 @@
 						<!-- Local Authentication -->
 						<Border Style="{StaticResource BorderSubSet}" IsVisible="{Binding CanUseAlternativeAuthenticationMethods}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-								<Label Style="{StaticResource SubSectionTitleLabel}" Text="{l:Localize AuthenticationMethod}"/>
+								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize AuthenticationMethod}"/>
 								<Grid RowDefinitions="auto,auto"
 									  ColumnDefinitions="auto,*,auto"
 									  RadioButtonGroup.GroupName="AuthenticationMethod"
@@ -152,7 +152,7 @@
 						<!-- Screen Capture -->
 						<Border Style="{StaticResource BorderSubSet}" IsVisible="{Binding CanProhibitScreenCapture}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-								<Label Style="{StaticResource SubSectionTitleLabel}" Text="{l:Localize ScreenRecording}"/>
+								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ScreenRecording}"/>
 								<Grid RowDefinitions="auto,auto"
 									  ColumnDefinitions="*,auto"
 									  RadioButtonGroup.GroupName="ScreenRecording"
@@ -196,7 +196,7 @@
 									</HorizontalStackLayout>
 								</VerticalStackLayout>
 								<VerticalStackLayout>
-									<Label Style="{StaticResource SubSectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize HardwareInfo}"/>
+									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize HardwareInfo}"/>
 									<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
 										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DeviceManufactorer}"/>
 										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DeviceModel}"/>

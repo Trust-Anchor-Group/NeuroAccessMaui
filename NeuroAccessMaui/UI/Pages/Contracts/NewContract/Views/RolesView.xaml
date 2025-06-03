@@ -85,7 +85,7 @@
 																				 CommandParameter="{Binding .}">
 													<Border WidthRequest="48" HeightRequest="48"  Style="{StaticResource TransparentTemplateButtonBorder}" Padding="{StaticResource SmallMargins}" Margin="0" Background="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}" >
 														<Path WidthRequest="24" HeightRequest="24"
-															Fill="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}"				  
+															Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentDangerWLLight}, Dark={StaticResource WLToastsAndPillsContentDangerWLDark}}"				  
 															Data="{x:Static ui:Geometries.CancelPath}"
 															VerticalOptions="Center" HorizontalOptions="Center"/>
 													</Border>

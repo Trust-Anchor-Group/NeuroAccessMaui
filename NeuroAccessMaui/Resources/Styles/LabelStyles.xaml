@@ -24,12 +24,6 @@
 	<Style x:Key="SectionTitleLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
 		<Setter Property="FontSize" Value="18" />
-		<Setter Property="Margin" Value="{StaticResource SmallBottomMargins}"/>
-	</Style>
-
-	<Style x:Key="SubSectionTitleLabel" ApplyToDerivedTypes="False" TargetType="Label">
-		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
-		<Setter Property="FontSize" Value="16" />
 	</Style>
 
 	<Style x:Key="Header1" ApplyToDerivedTypes="False" TargetType="Label">
@@ -84,7 +78,7 @@
 	<Style x:Key="KeyLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="Margin" Value="10" />
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource MutedTextLight}, Dark={StaticResource MutedTextDark}}"/>
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ContentSecondaryWLLight}, Dark={StaticResource ContentSecondaryWLDark}}"/>
 		<Setter Property="FontFamily" Value="HaasGroteskBold"/>
 	</Style>
 
@@ -110,7 +104,7 @@
 		<Setter Property="Margin" Value="10" />
 		<Setter Property="FontAttributes" Value="Bold" />
 		<Setter Property="HorizontalTextAlignment" Value="End" />
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ClickableLight}, Dark={StaticResource ClickableDark}}"/>
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
 	</Style>
 
 	<Style x:Key="RegularItemTitleLabel" ApplyToDerivedTypes="False" TargetType="Label">
