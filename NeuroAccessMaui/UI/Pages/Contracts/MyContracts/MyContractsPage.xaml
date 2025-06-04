@@ -77,7 +77,7 @@
 					   Text="{Binding Path=Description}" Style="{StaticResource ClickableValueLabel}"/>
 				<Path Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
 						Data="{Binding Icon}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
-						Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}"/>
+						Fill="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"/>
 				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
 					   Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
 					   Style="{StaticResource AlertLabel}"/>

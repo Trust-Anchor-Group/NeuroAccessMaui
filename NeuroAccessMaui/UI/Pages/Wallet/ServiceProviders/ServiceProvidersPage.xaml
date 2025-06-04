@@ -23,7 +23,7 @@
 						</Border>
 						<Label Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="WordWrap"
 							    TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+								 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 					</Grid>
 				</Frame>
 			</controls:TemplatedButton>
@@ -45,7 +45,7 @@
 					<Label HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="CharacterWrap"
 							 TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabel}"
 							 HeightRequest="150" MinimumHeightRequest="150"
-							 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+							 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 				</Frame>
 			</controls:TemplatedButton>
 		</DataTemplate>
@@ -61,7 +61,7 @@
 													  DefaultTemplate="{StaticResource ShowNothing}"/>
 
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 

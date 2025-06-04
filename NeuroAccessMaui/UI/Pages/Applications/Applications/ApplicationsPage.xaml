@@ -12,7 +12,7 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.Applications">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
@@ -37,9 +37,9 @@
 								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalId}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+												 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize PersonalIdDescription}" InputTransparent="True"
-											    TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+											    TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>
@@ -49,9 +49,9 @@
 								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OrganizationalId}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+												 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize OrganizationalIdDescription}" InputTransparent="True"
-											    TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+											    TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>
@@ -66,9 +66,9 @@
 								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+												 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ViewIdApplicationDescription}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+												 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>
@@ -90,9 +90,9 @@
 								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize CreateWallet}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+												 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize CreateWalletDescription}" InputTransparent="True"
-											    TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+											    TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>
@@ -103,17 +103,15 @@
 								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OpenWallet}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+												 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize CreateWalletDescription}" InputTransparent="True"
-											    TextColor="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}"/>
+											    TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>
-
 						</VerticalStackLayout>
 					</Grid>
 				</Frame>
-
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

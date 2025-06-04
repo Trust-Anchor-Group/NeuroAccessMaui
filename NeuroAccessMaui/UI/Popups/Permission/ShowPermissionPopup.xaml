@@ -41,7 +41,7 @@
 							WidthRequest="{Binding CameraIconBackgroundSize}"
 							HeightRequest="{Binding CameraIconBackgroundSize}"
 							CornerRadius="{Binding CameraIconBackgroundCornerRadius}"
-							BackgroundColor="{AppThemeBinding Light={StaticResource Accent20Light}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}">
+							BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgSuccessWLLight}, Dark={StaticResource WLToastsAndPillsbgSuccessWLDark}}">
 							<Path
 								VerticalOptions="Center"
 								HorizontalOptions="Center"
@@ -49,7 +49,7 @@
 								WidthRequest="{Binding CameraIconSize}"
 								Aspect="Uniform"
 								Data="{Binding IconGeometry}"
-								Fill="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+								Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentSuccessWLLight}, Dark={StaticResource WLToastsAndPillsContentSuccessWLDark}}" />
 						</Frame>
 
 						<Label

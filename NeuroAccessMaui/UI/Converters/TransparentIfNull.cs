@@ -16,7 +16,7 @@ namespace NeuroAccessMaui.UI.Converters
 
 			try
 			{
-				string Key = SettingsViewModel.CurrentDisplayMode == AppTheme.Light ? "NormalEditForegroundLight" : "NormalEditForegroundDark";
+				string Key = SettingsViewModel.CurrentDisplayMode == AppTheme.Light ? "InputFieldsContentPrimaryLight" : "InputFieldsContentPrimaryDark";
 				if (!(App.Current?.Resources.TryGetValue(Key, out object Obj) ?? false))
 					return Colors.Transparent;
 

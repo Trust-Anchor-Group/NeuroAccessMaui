@@ -9,7 +9,7 @@
                        x:DataType="viewmodel:ImageViewModel"
                        x:Class="NeuroAccessMaui.UI.Popups.Photos.Image.ImageView">
 	<Frame Style="{StaticResource PopupFrame}" x:Name="PhotoViewer" HasShadow="true"
-			 BackgroundColor="{StaticResource HeadingBackgroundTranslucent}"
+			 BackgroundColor="{StaticResource SurfaceBackgroundWLDarkTranslucent}"
 			 Opacity="0" HorizontalOptions="Center" VerticalOptions="Center">
 		<Grid>
 			<VerticalStackLayout Margin="0">
@@ -27,9 +27,9 @@
 				</CarouselView>
 				<IndicatorView x:Name="IndicatorView"
                                    HorizontalOptions="Center"
-                                   IndicatorColor="{StaticResource HeadingForeground}"
+                                   IndicatorColor="{StaticResource SurfaceBackgroundWLLight}"
                                    Padding="0,0,0,0"
-                                   BackgroundColor="{StaticResource HeadingBackground}"
+                                   BackgroundColor="{StaticResource SurfaceBackgroundWLDark}"
                                    Style="{StaticResource IndicatorViewStyle}">
 					<IndicatorView.Margin>
 						<OnPlatform x:TypeArguments="Thickness">
@@ -45,10 +45,10 @@
 				</Grid.GestureRecognizers>
 				<Ellipse StrokeThickness="2" WidthRequest="32" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
 					<Ellipse.Fill>
-						<SolidColorBrush Color="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}"/>
+						<SolidColorBrush Color="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}"/>
 					</Ellipse.Fill>
 					<Ellipse.Stroke>
-						<SolidColorBrush Color="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}"/>
+						<SolidColorBrush Color="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}"/>
 					</Ellipse.Stroke>
 				</Ellipse>
 				<Label Style="{StaticResource PopupCloseButton}"/>

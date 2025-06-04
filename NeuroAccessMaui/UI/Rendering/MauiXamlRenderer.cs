@@ -170,7 +170,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.XmlOutput.WriteStartElement("BoxView");
 			this.XmlOutput.WriteAttributeString("HeightRequest", "1");
-			this.XmlOutput.WriteAttributeString("BackgroundColor", "{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}");
+			this.XmlOutput.WriteAttributeString("BackgroundColor", "{AppThemeBinding Light={StaticResource InputFieldsContentSecondaryLight}, Dark={StaticResource InputFieldsContentSecondaryDark}}");
 			this.XmlOutput.WriteAttributeString("HorizontalOptions", "FillAndExpand");
 			this.XmlOutput.WriteAttributeString("Margin", SmallMargins(false, false, true, true));
 			this.XmlOutput.WriteEndElement();
@@ -777,7 +777,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.XmlOutput.WriteStartElement("Frame");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
-			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}");
+			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1115,7 +1115,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.XmlOutput.WriteStartElement("Frame");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
-			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource DeletedBorderLight}, Dark={StaticResource DeletedBorderDark}}");
+			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1197,7 +1197,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			this.XmlOutput.WriteStartElement("BoxView");
 			this.XmlOutput.WriteAttributeString("HeightRequest", "1");
-			this.XmlOutput.WriteAttributeString("BackgroundColor", "{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}");
+			this.XmlOutput.WriteAttributeString("BackgroundColor", "{AppThemeBinding Light={StaticResource InputFieldsContentSecondaryLight}, Dark={StaticResource InputFieldsContentSecondaryDark}}");
 			this.XmlOutput.WriteAttributeString("HorizontalOptions", "FillAndExpand");
 			this.XmlOutput.WriteAttributeString("Margin", SmallMargins(false, false, true, true));
 			this.XmlOutput.WriteEndElement();
@@ -1242,7 +1242,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.XmlOutput.WriteStartElement("Frame");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
-			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource InsertedBorderLight}, Dark={StaticResource InsertedBorderDark}}");
+			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource WLToastsAndPillsbgSuccessWLLight}, Dark={StaticResource WLToastsAndPillsbgSuccessWLDark}}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1564,7 +1564,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			if (this.Hyperlink is not null)
 			{
-				this.XmlOutput.WriteAttributeString("TextColor", "{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}");
+				this.XmlOutput.WriteAttributeString("TextColor", "{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}");
 
 				this.XmlOutput.WriteStartElement("Span.GestureRecognizers");
 				this.XmlOutput.WriteStartElement("TapGestureRecognizer");
@@ -1659,7 +1659,7 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			this.XmlOutput.WriteStartElement("BoxView");
 			this.XmlOutput.WriteAttributeString("HeightRequest", "1");
-			this.XmlOutput.WriteAttributeString("BackgroundColor", "{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}");
+			this.XmlOutput.WriteAttributeString("BackgroundColor", "{AppThemeBinding Light={StaticResource InputFieldsContentSecondaryLight}, Dark={StaticResource InputFieldsContentSecondaryDark}}");
 			this.XmlOutput.WriteAttributeString("HorizontalOptions", "FillAndExpand");
 			this.XmlOutput.WriteAttributeString("Margin", SmallMargins(false, false, true, true));
 			this.XmlOutput.WriteEndElement();

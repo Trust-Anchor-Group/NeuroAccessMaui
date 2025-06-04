@@ -12,7 +12,7 @@
 							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Chat">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
@@ -38,7 +38,7 @@
 					Grid.ColumnSpan="2" Grid.Row="2">
 
 				<Frame Grid.Column="0" Grid.Row="0" CornerRadius="5" Padding="0"
-						 BorderColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}">
+						 BorderColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}">
 					<Frame.Behaviors>
 						<behaviors:SetFocusOnTappedBehavior SetFocusTo="EditorControl"/>
 					</Frame.Behaviors>
@@ -46,8 +46,8 @@
 						<Grid ColumnDefinitions="*,auto" ColumnSpacing="0"
 								IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
 							<Editor x:Name="EditorControl" HorizontalOptions="FillAndExpand" MinimumHeightRequest="40"
-									  IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}" BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight}, Dark={StaticResource NormalEditBackgroundDark}}"
-									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges" TextColor="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}"/>
+									  IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}" BackgroundColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"
+									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges" TextColor="{AppThemeBinding Light={StaticResource InputFieldsContentPrimaryLight}, Dark={StaticResource InputFieldsContentPrimaryDark}}"/>
 
 							<controls:ImageButton Grid.Column="1" Margin="{StaticResource SmallLeftMargins}"
 														 PathData="{x:Static ui:Geometries.CancelPath}" Style="{StaticResource ImageOnlyButton}"
@@ -68,9 +68,9 @@
 							   xct:TouchEffect.Command="{Binding Path=PauseResumeCommand}">
 
 								<Grid WidthRequest="35" HeightRequest="35" BackgroundColor="Transparent">
-									<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
+									<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLDarkLightTheme}, Dark={StaticResource SurfaceBackgroundWLDarkDarkTheme}}"
 										Source="{x:Static resx:Svgs.Pause}" IsVisible="{Binding IsRecordingPaused, Converter={StaticResource InvertedBoolConverter}}" />
-									<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
+									<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLDarkLightTheme}, Dark={StaticResource SurfaceBackgroundWLDarkDarkTheme}}"
 										Source="{x:Static resx:Svgs.Play}" IsVisible="{Binding IsRecordingPaused}" />
 								</Grid>
 							</Frame>
@@ -84,7 +84,7 @@
 							   xct:TouchEffect.PressedOpacity="0.75"
 							   xct:TouchEffect.Command="{Binding Path=CancelCommand}">
 
-								<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource HeadingBackgroundLightTheme}, Dark={StaticResource HeadingBackgroundDarkTheme}}"
+								<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLDarkLightTheme}, Dark={StaticResource SurfaceBackgroundWLDarkDarkTheme}}"
 									Source="{x:Static resx:Svgs.Trash}" WidthRequest="35" HeightRequest="35" />
 							</Frame>
 						</Grid>

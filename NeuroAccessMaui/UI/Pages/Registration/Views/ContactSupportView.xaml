@@ -145,7 +145,7 @@
 	                            WidthRequest="10"
 	                            Aspect="Uniform"
 	                            Data="{x:Static ui:Geometries.DropDownArrowPath}"
-	                            Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+	                            Fill="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight},
 	                                                    Dark={StaticResource PrimaryForegroundDark}}" />
 						</HorizontalStackLayout>
 
