@@ -3,13 +3,13 @@
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns="urn:neuroaccess:branding:1.0"
     targetNamespace="urn:neuroaccess:branding:1.0"
-    elementFormDefault="unqualified"
+    elementFormDefault="qualified"
     attributeFormDefault="unqualified">
 
 	<!--
-    NeuroAccess THEMES schema.
-    Describes versioned theme descriptors that point at XAML dictionaries,
-    inline colors, and references to HTTP-hosted image items with metadata.
+    NeuroAccess BRANDING schema.
+    Describes versioned branding descriptors that point at color palettes
+    (via URI) and references HTTP-hosted image items with metadata.
   -->
 
 	<!-- VersionType: semantic versioning -->
@@ -28,7 +28,7 @@
 	<xs:simpleType name="ImageMimeType">
 		<xs:annotation>
 			<xs:documentation>
-				Common HTTP image MIME types for BannerImage and LogoImage.
+				Common HTTP image MIME types for banners, logos, etc.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
@@ -42,7 +42,7 @@
 	<xs:simpleType name="ImageRole">
 		<xs:annotation>
 			<xs:documentation>
-				Predefined roles for theme images.
+				Predefined roles for branding images.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:string">
@@ -53,74 +53,22 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<!-- XAML URI type -->
-	<xs:simpleType name="XamlUriType">
+	<!-- BrandingDescriptorType -->
+	<xs:complexType name="BrandingDescriptorType">
 		<xs:annotation>
 			<xs:documentation>
-				URI to a MAUI ResourceDictionary (.xaml) file for color resources.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base="xs:anyURI">
-			<xs:pattern value=".*\.xaml$"/>
-		</xs:restriction>
-	</xs:simpleType>
-
-	<!-- Inline ColorsType -->
-	<xs:complexType name="ColorsType">
-		<xs:annotation>
-			<xs:documentation>
-				Color definitions: either reference an external ResourceDictionary XAML file
-				or provide an inline list of Color entries with x:Key attributes.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:choice>
-			<xs:element name="ResourceDictionaryUri" type="XamlUriType"/>
-			<xs:sequence>
-				<xs:element name="Color" maxOccurs="unbounded">
-					<xs:complexType mixed="true">
-						<xs:simpleContent>
-							<xs:extension base="xs:string">
-								<xs:attribute name="Key" use="required"/>
-							</xs:extension>
-						</xs:simpleContent>
-					</xs:complexType>
-				</xs:element>
-			</xs:sequence>
-		</xs:choice>
-	</xs:complexType>
-
-	<!-- ImageRefType: references a PubSub asset item plus metadata -->
-	<xs:complexType name="ImageRefType">
-		<xs:annotation>
-			<xs:documentation>
-				Reference to a previously-published image asset,
-				with required URI, optional role, dimensions, MIME type,
-				and a local XML ID.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:attribute name="uri"         type="xs:anyURI"        use="required"/>
-		<xs:attribute name="role"        type="ImageRole"        use="optional"/>
-		<xs:attribute name="width"       type="xs:positiveInteger" use="optional"/>
-		<xs:attribute name="height"      type="xs:positiveInteger" use="optional"/>
-		<xs:attribute name="contentType" type="ImageMimeType"     use="optional"/>
-		<xs:attribute name="id"          type="xs:ID"              use="optional"/>
-		<xs:anyAttribute namespace="##other" processContents="lax"/>
-	</xs:complexType>
-
-	<!-- ThemeDescriptorType -->
-	<xs:complexType name="ThemeDescriptorType">
-		<xs:annotation>
-			<xs:documentation>
-				Points at a versioned ResourceDictionary or inline colors and references
-				zero-or-more image items with metadata for logos/banners/etc.
+				Versioned branding descriptor. Contains a URI for the color palette
+				and zero-or-more image references (logos, banners, etc.) with metadata.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="Version"               type="VersionType"/>
-			<xs:choice>
-				<xs:element name="ResourceDictionaryUri" type="XamlUriType"/>
-				<xs:element name="InlineColors"         type="ColorsType"/>
-			</xs:choice>
+			<!-- Semantic version -->
+			<xs:element name="Version" type="VersionType"/>
+
+			<!-- Colors palette via HTTP URI -->
+			<xs:element name="ColorsUri" type="xs:anyURI"/>
+
+			<!-- References to previously-published image assets -->
 			<xs:element name="Images" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
@@ -131,11 +79,28 @@
 				</xs:complexType>
 			</xs:element>
 		</xs:sequence>
-		<xs:attribute name="useFallbackColors" type="xs:boolean" use="optional" default="false"/>
+
+		<!-- Allow vendor- or future-specific attributes in other namespaces -->
 		<xs:anyAttribute namespace="##other" processContents="lax"/>
 	</xs:complexType>
 
-	<!-- Global root -->
-	<xs:element name="ThemeDescriptor" type="ThemeDescriptorType"/>
+	<!-- ImageRefType: references an image asset plus metadata -->
+	<xs:complexType name="ImageRefType">
+		<xs:annotation>
+			<xs:documentation>
+				Reference to a previously-published image asset via URI,
+				with required ID (xs:ID), optional role, dimensions, and MIME type.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="id"          type="xs:ID"              use="required"/>
+		<xs:attribute name="uri"         type="xs:anyURI"          use="required"/>
+		<xs:attribute name="role"        type="ImageRole"          use="optional"/>
+		<xs:attribute name="width"       type="xs:positiveInteger" use="optional"/>
+		<xs:attribute name="height"      type="xs:positiveInteger" use="optional"/>
+		<xs:attribute name="contentType" type="ImageMimeType"      use="optional"/>
+	</xs:complexType>
+
+	<!-- Global root element -->
+	<xs:element name="BrandingDescriptor" type="BrandingDescriptorType"/>
 
 </xs:schema>
