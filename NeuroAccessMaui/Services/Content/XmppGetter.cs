@@ -81,16 +81,16 @@ namespace NeuroAccessMaui.Services.Content
 			// Split on the first '/' to separate "node@domain" from "resource"
 			string NodeAtDomain;
 			string Resource;
-			int slashIndex = WithoutScheme.IndexOf('/');
-			if (slashIndex < 0)
+			int SlashIndex = WithoutScheme.IndexOf('/');
+			if (SlashIndex < 0)
 			{
 				NodeAtDomain = WithoutScheme;
 				Resource = string.Empty;
 			}
 			else
 			{
-				NodeAtDomain = WithoutScheme.Substring(0, slashIndex);
-				Resource = WithoutScheme.Substring(slashIndex + 1);
+				NodeAtDomain = WithoutScheme.Substring(0, SlashIndex);
+				Resource = WithoutScheme.Substring(SlashIndex + 1);
 			}
 
 			// Split node@domain into node and domain
@@ -108,7 +108,10 @@ namespace NeuroAccessMaui.Services.Content
 				Domain = NodeAtDomain.Substring(AtIndex + 1);
 			}
 			/*
-			//
+			// DNS LOOKUPS To determine if it is an xmpp component or a server account:
+			// Currently disabled, as Androids MONO runtime is missing a correct implemention of unix getaddrinfo(),
+			// 
+			// 
 			// 2. DNS SRV Lookup for _xmpp-server._tcp.DOMAIN
 			//
 			string srvName = $"_xmpp-server._tcp.{domain}";
@@ -132,7 +135,7 @@ namespace NeuroAccessMaui.Services.Content
 
 			if (SrvRecords.Length == 0)
 			{
-				// No SRV records found—cannot locate XMPP server
+				// No SRV records foundï¿½cannot locate XMPP server
 				InvalidOperationException ex = new InvalidOperationException($"No SRV records found for {srvName}");
 				return new ContentResponse(ex);
 			}
