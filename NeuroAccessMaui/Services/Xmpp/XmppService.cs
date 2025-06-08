@@ -951,7 +951,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 					if (ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating())
 						await ServiceRef.XmppService.TryGenerateAndChangePassword();
 
-					ServiceRef.LogService.AddListener(this.xmppFilteredEventSink!);
+					if(this.xmppFilteredEventSink is not null)
+						ServiceRef.LogService.AddListener(this.xmppFilteredEventSink);
 
 					await ServiceRef.PushNotificationService.CheckPushNotificationToken();
 					break;
