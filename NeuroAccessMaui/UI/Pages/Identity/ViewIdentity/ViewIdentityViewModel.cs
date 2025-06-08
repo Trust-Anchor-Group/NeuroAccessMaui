@@ -238,8 +238,20 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			}
 
 			// Friendly name
-			PersonalInformation? PInfo = Identity.GetPersonalInformation();
-			if(PInfo is not null && !this.HasDomainProperty)
+			PersonalInformation? PInfo = null;
+			try
+			{
+				if (!this.HasDomainProperty)
+				{
+					PInfo = Identity.GetPersonalInfo();
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			} 
+			
+			if (PInfo is not null)
 			{
 				if (!string.IsNullOrEmpty(PInfo.FullName))
 				{

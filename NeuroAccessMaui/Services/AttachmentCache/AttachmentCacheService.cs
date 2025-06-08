@@ -53,8 +53,7 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 				if (string.IsNullOrWhiteSpace(Url) || !Uri.IsWellFormedUriString(Url, UriKind.RelativeOrAbsolute))
 					return (null, string.Empty);
 
-				CacheEntry Entry = await Database.FindFirstDeleteRest<CacheEntry>(new FilterFieldEqualTo("Url", Url));
-
+				CacheEntry? Entry = await Database.FindFirstDeleteRest<CacheEntry>(new FilterFieldEqualTo("Url", Url));
 				if (Entry is null)
 					return (null, string.Empty);
 
@@ -118,13 +117,24 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 			}
 			else
 			{
+				try
+				{
+					if (Entry.LocalFileName is not null && File.Exists(Entry.LocalFileName))
+						File.Delete(Entry.LocalFileName);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+
 				Entry.Expires = Expires;
 				Entry.ParentId = ParentId;
+				Entry.LocalFileName = Path.Combine(CacheFolder, Guid.NewGuid().ToString() + ".bin");
+				Entry.Url = Url;
 				Entry.ContentType = ContentType;
 
 				await Database.Update(Entry);
 			}
-
 			File.WriteAllBytes(Entry.LocalFileName, Data);
 
 			await Database.Provider.Flush();
@@ -195,7 +205,9 @@ namespace NeuroAccessMaui.Services.AttachmentCache
 
 		private static string GetCacheFolder()
 		{
-			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), cacheFolderName);
+			string OsCacheFolder = FileSystem.CacheDirectory;
+			string CacheFolder = Path.Combine(OsCacheFolder, cacheFolderName);
+			return CacheFolder;
 		}
 
 		private static async Task EvictOldEntries()

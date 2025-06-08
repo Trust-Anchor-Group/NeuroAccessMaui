@@ -185,9 +185,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.Add(LocalSniffer);
 #endif
 
-					this.xmppClient.Add(LocalSniffer);
-#endif
-
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 					if (!string.IsNullOrEmpty(debugRecipient))
 					{
@@ -1359,9 +1356,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task TransferIdDelivered(object? Sender, MessageEventArgs e)
 		{
 			if (e.From != Constants.Domains.OnboardingDomain)
-			{
 				return;
-			}
 
 			string Code = XML.Attribute(e.Content, "code");
 			bool Deleted = XML.Attribute(e.Content, "deleted", false);

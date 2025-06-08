@@ -2795,4 +2795,10 @@
   <data name="ClientMessageBankIdRFA22" xml:space="preserve">
     <value>Erro desconhecido. Por favor, tente novamente</value>
   </data>
+  <data name="SelectContract" xml:space="preserve">
+    <value>Selecione um contrato</value>
+  </data>
+  <data name="SelectContractEntryDescription" xml:space="preserve">
+    <value>Cole o ID do contrato ou escolha da lista</value>
+  </data>
 </root>

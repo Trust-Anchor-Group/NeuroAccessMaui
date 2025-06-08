@@ -33,11 +33,11 @@ namespace NeuroAccessMaui.Services.UI.QR
 				AllowedSchemas.Add(Constants.UriSchemes.IotSc);
 				AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
 				AllowedSchemas.Add(Constants.UriSchemes.Xmpp);
-				AllowedSchemas.Add(Constants.UriSchemes.EDaler);
+				
 				// TODO:
 				// AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
 				// AllowedSchemas.Add(Constants.UriSchemes.NeuroFeature);
-				// 
+				// AllowedSchemas.Add(Constants.UriSchemes.EDaler);
 			}
 
 			return [.. AllowedSchemas];
@@ -280,9 +280,9 @@ namespace NeuroAccessMaui.Services.UI.QR
 		private static readonly SKColor bgDark = SKColors.Black;          //       fail to decode such codes. You can make it less bright however.
 
 		private static readonly CustomColoring userCodeLight = new(userPath,
-			256, 256, SKColors.Red, SKColors.Transparent, bgLight, SKColors.Transparent,
-			SKColors.DarkRed, SKColors.Red, SKColors.Transparent,
-			SKColors.DarkSlateGray, SKColors.SlateGray, SKColors.Transparent);
+			256, 256, SKColors.Red, fgLight, bgLight, fgLight,
+			SKColors.DarkRed, SKColors.Red, fgLight,
+			SKColors.DarkSlateGray, SKColors.SlateGray, fgLight);
 
 		private static readonly CustomColoring userCodeDark = new(userPath,
 			256, 256, SKColors.Red, fgDark, bgDark, fgDark,
