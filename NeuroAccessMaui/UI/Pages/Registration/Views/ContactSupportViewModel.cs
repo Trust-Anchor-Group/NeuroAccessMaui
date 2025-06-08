@@ -75,7 +75,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			try
 			{
 				ContentResponse Result = await InternetContent.PostAsync(
-					new Uri("https://" + Constants.Domains.IdDomain + "/ID/CountryCode.ws"), string.Empty,
+					new Uri("https://" + Constants.Domains.IdDomain + "/ID/CountryCode.ws"), 
+					string.Empty,
+					null,                               // Certificate
+					App.ValidateCertificateCallback,          // RemoteCertificateValidator
 					new KeyValuePair<string, string>("Accept", "application/json"));
 
 				if (Result.HasError)
@@ -213,7 +216,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						 { "Nr", FullPhoneNumber },
 						 { "AppName", Constants.Application.Name },
 						 { "Language", CultureInfo.CurrentCulture.TwoLetterISOLanguageName }
-					 }, new KeyValuePair<string, string>("Accept", "application/json"));
+					 },
+					null,                               // Certificate
+					App.ValidateCertificateCallback,          // RemoteCertificateValidator
+					 new KeyValuePair<string, string>("Accept", "application/json"));
 
 				PhoneSendResult.AssertOk();
 
@@ -272,7 +278,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 				ContentResponse Response = await InternetContent.PostAsync(
 					new Uri("https://" + Constants.Domains.IdDomain + "/ID/VerifyNumber.ws"),
-					parameters, new KeyValuePair<string, string>("Accept", "application/json"));
+					parameters,
+					null,                               // Certificate
+					App.ValidateCertificateCallback,          // RemoteCertificateValidator
+					new KeyValuePair<string, string>("Accept", "application/json"));
 
 				Response.AssertOk();
 
@@ -369,6 +378,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				try
 				{
 					ContentBinaryResponse Response = await InternetContent.PostAsync(Uri, Encoding.ASCII.GetBytes(Code), "text/plain",
+						null,                               // Certificate
+						App.ValidateCertificateCallback,          // RemoteCertificateValidator
 						new KeyValuePair<string, string>("Accept", "text/plain"));
 					Response.AssertOk();
 

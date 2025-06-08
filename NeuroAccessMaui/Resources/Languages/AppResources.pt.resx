@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2609,6 +2609,15 @@
   <data name="SwipeForDetails" xml:space="preserve">
     <value>Deslize para ver detalhes</value>
   </data>
+  <data name="ApplyIdInfoMainPage" xml:space="preserve">
+    <value>Solicite um ID pessoal para aproveitar ao máximo o Neuro Access</value>
+  </data>
+  <data name="CompleteIdButton" xml:space="preserve">
+    <value>Complete seu ID pessoal</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
   <data name="ClientMessageMissingCountry" xml:space="preserve">
     <value>A solicitação não contém informações sobre o país</value>
   </data>
@@ -2785,5 +2794,11 @@
   </data>
   <data name="ClientMessageBankIdRFA22" xml:space="preserve">
     <value>Erro desconhecido. Por favor, tente novamente</value>
+  </data>
+  <data name="SelectContract" xml:space="preserve">
+    <value>Selecione um contrato</value>
+  </data>
+  <data name="SelectContractEntryDescription" xml:space="preserve">
+    <value>Cole o ID do contrato ou escolha da lista</value>
   </data>
 </root>

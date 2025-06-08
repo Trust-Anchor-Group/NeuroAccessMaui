@@ -163,6 +163,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					AcceptLanguage += ";q=1,en;q=0.9";
 
 				ContentResponse Result = await InternetContent.GetAsync(DomainInfo,
+					null,                               // Certificate
+					App.ValidateCertificateCallback,          // RemoteCertificateValidator
 					new KeyValuePair<string, string>("Accept", "application/json"),
 					new KeyValuePair<string, string>("Accept-Language", AcceptLanguage),
 					new KeyValuePair<string, string>("Accept-Encoding", "0"));
@@ -387,9 +389,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								foreach (XmlNode N in E.ChildNodes)
 								{
 									if (N is XmlElement E2)
-									{
 										ToProcess.AddLast(E2);
-									}
 								}
 								break;
 

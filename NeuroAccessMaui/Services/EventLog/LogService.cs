@@ -160,15 +160,15 @@ namespace NeuroAccessMaui.Services.EventLog
 		{
 			StackTrace = Log.CleanStackTrace(StackTrace);
 
-			string contents;
-			string fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
+			string Contents;
+			string FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), startupCrashFileName);
 
-			if (File.Exists(fileName))
-				contents = File.ReadAllText(fileName);
+			if (File.Exists(FileName))
+				Contents = File.ReadAllText(FileName);
 			else
-				contents = string.Empty;
+				Contents = string.Empty;
 
-			File.WriteAllText(fileName, Title + Environment.NewLine + StackTrace + Environment.NewLine + contents);
+			File.WriteAllText(FileName, Title + Environment.NewLine + StackTrace + Environment.NewLine + Contents);
 		}
 
 		/// <summary>
@@ -232,47 +232,62 @@ namespace NeuroAccessMaui.Services.EventLog
 #endif
 			return Task.CompletedTask;
 		}
-    public async Task StartDebugLogSessionAsync()
-    {
-        string FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), debugLogFileName);
+		public async Task StartDebugLogSessionAsync()
+		{
+			string FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), debugLogFileName);
 
-        // If an old session is still open, end it first
-        if (this.debugSink != null)
+			// If an old session is still open, end it first
+			if (this.debugSink != null)
 				await this.EndDebugLogSessionAsync();
 
-        if (File.Exists(FileName))
-            File.Delete(FileName);
+			if (File.Exists(FileName))
+				File.Delete(FileName);
 
-        // Create and keep references
-        this.debugFileStream = new FileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.Read);
-        this.debugTextWriter = new StreamWriter(this.debugFileStream, Encoding.UTF8)
-        {
-            AutoFlush = true
-        };
-        this.debugSink = new TextWriterEventSink(debugLogFileName, this.debugTextWriter);
+			// Create and keep references
+			this.debugFileStream = new FileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+			this.debugTextWriter = new StreamWriter(this.debugFileStream, Encoding.UTF8)
+			{
+				AutoFlush = true
+			};
+			this.debugSink = new TextWriterEventSink(debugLogFileName, this.debugTextWriter);
 
-        this.AddListener(this.debugSink);
-    }
+			this.AddListener(this.debugSink);
+		}
 
-    public async Task EndDebugLogSessionAsync()
-    {
-        if (this.debugSink is null)
-            return;
+		public async Task EndDebugLogSessionAsync()
+		{
+			if (this.debugSink is null)
+				return;
 
 			// Unregister the sink so no more events are written
 			this.RemoveListener(this.debugSink);
 
-        // Dispose the sink (it doesn't own the writer, so no-op, but good practice)
-        await this.debugSink.DisposeAsync();
-        this.debugSink = null;
+			// Dispose the sink (it doesn't own the writer, so no-op, but good practice)
+			await this.debugSink.DisposeAsync();
+			this.debugSink = null;
 
-        // Dispose the writer and the file stream
-        this.debugTextWriter?.Dispose();
-        this.debugTextWriter = null;
+			// Dispose the writer and the file stream
+			this.debugTextWriter?.Dispose();
+			this.debugTextWriter = null;
 
-        this.debugFileStream?.Dispose();
-        this.debugFileStream = null;
-    }
+			this.debugFileStream?.Dispose();
+			this.debugFileStream = null;
+		}
 
+        /// <summary>
+        /// Disposes any active debug log session and suppresses finalization.
+        /// </summary>
+        public void Dispose()
+        {
+            // If a debug session is still open, clean it up synchronously
+            if (this.debugSink is not null || this.debugTextWriter is not null || this.debugFileStream is not null)
+            {
+                // Block on the async cleanup
+                this.EndDebugLogSessionAsync().GetAwaiter().GetResult();
+            }
+
+            // Suppress finalization if a finalizer is ever added
+            GC.SuppressFinalize(this);
+        }
 	}
 }

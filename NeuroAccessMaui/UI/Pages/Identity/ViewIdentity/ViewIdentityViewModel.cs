@@ -42,6 +42,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		private bool canRemoveContact = false;
 
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(HasPersonalFields))]
+		private bool hasDomainProperty = false;
+
+		[ObservableProperty]
 		private string friendlyName = string.Empty;
 		[ObservableProperty]
 		private string subText = string.Empty;
@@ -71,7 +75,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		public ObservableCollection<ObservableFieldItem> TechnicalFields { get; } = [];
 		public ObservableCollection<ObservableFieldItem> OtherFields { get; } = [];
 
-		public bool HasPersonalFields => this.PersonalFields.Count > 0;
+		public bool HasPersonalFields => this.PersonalFields.Count > 0 && !this.HasDomainProperty;
 		public bool HasOrganizationFields => this.OrganizationFields.Count > 0;
 		public bool HasTechnicalFields => this.TechnicalFields.Count > 0;
 		public bool HasOtherFields => this.OtherFields.Count > 0;
@@ -207,14 +211,47 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 			this.IdentityState = Identity.State;
 
+			string Domain = Identity.GetDomain();
+
 			string FullJid = Identity.GetJid();
-			string[] Jid =  FullJid.Split('@');
-			Jid[1] = "@" + Jid[1];
-			this.FriendlyName = Jid[0];
-			this.SubText = Jid[1];
+			string[]? Jid = null;
+
+
+			if (!string.IsNullOrEmpty(FullJid))
+			{
+				Jid =  FullJid.Split('@');
+				Jid[1] = "@" + Jid[1];
+				this.FriendlyName = Jid.Length > 0 ? Jid[0] : FullJid;
+				this.SubText = Jid.Length > 1 ? Jid[1] : string.Empty;
+			}
+			else
+			{
+				this.FriendlyName = Identity.Id;
+			}
+
+			if(!string.IsNullOrEmpty(Domain))
+			{
+				this.FriendlyName = Domain;
+				this.SubText = Identity.Id;
+
+				this.HasDomainProperty = true;
+			}
+
 			// Friendly name
-			PersonalInformation? PInfo = Identity.GetPersonalInformation();
-			if(PInfo is not null)
+			PersonalInformation? PInfo = null;
+			try
+			{
+				if (!this.HasDomainProperty)
+				{
+					PInfo = Identity.GetPersonalInfo();
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			} 
+			
+			if (PInfo is not null)
 			{
 				if (!string.IsNullOrEmpty(PInfo.FullName))
 				{
@@ -222,7 +259,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					if (PInfo.HasBirthDate)
 						this.SubText = PInfo.BirthDate!.Value.ToShortDateString();
 					else
-						this.SubText = Jid[1];
+						this.SubText = Jid is not null ? Jid[1] : string.Empty;
 				}
 				if (PInfo.HasBirthDate && PInfo.Age > 0)
 					this.AgeText = PInfo.Age.ToString(CultureInfo.InvariantCulture);

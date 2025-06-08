@@ -2609,6 +2609,15 @@
   <data name="SwipeForDetails" xml:space="preserve">
     <value>Svep för detaljer</value>
   </data>
+  <data name="ApplyIdInfoMainPage" xml:space="preserve">
+    <value>Ansök om ett personligt ID för att få tillgång till alla funktioner i Neuro Access</value>
+  </data>
+  <data name="CompleteIdButton" xml:space="preserve">
+    <value>Slutför ditt personliga ID</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Sök</value>
+  </data>
   <data name="ClientMessageMissingCountry" xml:space="preserve">
     <value>Ansökan saknar landinformation</value>
   </data>
@@ -2785,5 +2794,11 @@
   </data>
   <data name="ClientMessageBankIdRFA22" xml:space="preserve">
     <value>Okänt fel. Försök igen</value>
+  </data>
+  <data name="SelectContract" xml:space="preserve">
+    <value>Välj ett kontrakt</value>
+  </data>
+  <data name="SelectContractEntryDescription" xml:space="preserve">
+    <value>Klistra in kontrakt ID eller välj från listan</value>
   </data>
 </root>
