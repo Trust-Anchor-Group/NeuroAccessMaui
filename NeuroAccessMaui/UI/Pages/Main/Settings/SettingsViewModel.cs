@@ -335,8 +335,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 					return;
 
 				//Update the network password
-				if (!await ServiceRef.XmppService.TryGenerateAndChangePassword())
-					return;
+				await ServiceRef.XmppService.TryGenerateAndChangePassword();
 
 				//Update the local password
 				GoToRegistrationStep(RegistrationStep.DefinePassword);
