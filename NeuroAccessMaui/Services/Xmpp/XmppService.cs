@@ -1251,42 +1251,37 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>If change was successful</returns>
 		public async Task<bool> TryGenerateAndChangePassword()
 		{
-			TaskCompletionSource<bool> PasswordChanged = new();
-
-			bool ChangeFailed = true;
+			bool ChangeSucceeded = false;
 
 			try
 			{
-				string NewNetworkPassword = ServiceRef.CryptoService.CreateRandomPassword();
-				if (await this.ChangePassword(NewNetworkPassword))
+				string NewPassword = ServiceRef.CryptoService.CreateRandomPassword();
+				if (await this.ChangePassword(NewPassword))
 				{
-					ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewNetworkPassword, string.Empty);
-					ChangeFailed = false;
+					ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewPassword, string.Empty);
+					ChangeSucceeded = true;
 				}
 			}
-			catch (Exception)
+			catch (Exception Ex)
 			{
-				// Change was failed
+				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 			}
 
-			if (ChangeFailed)
+			// Update the profile & timer based on success/failure:
+			ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(!ChangeSucceeded);
+			if (ChangeSucceeded)
 			{
-				ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
-				PasswordChanged.TrySetResult(false);
-
-				this.RecreateUpdatePasswordTimer();
-			}
-			else
-			{
-				ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(false);
-				PasswordChanged.TrySetResult(true);
-
 				this.updatePasswordTimer?.Dispose();
 				this.updatePasswordTimer = null;
 			}
+			else
+			{
+				this.RecreateUpdatePasswordTimer();
+			}
 
-			return PasswordChanged.Task.Result;
+			return ChangeSucceeded;
 		}
+
 
 		private async void UpdatePasswordTimer_Tick(object? _)
 		{
