@@ -2609,6 +2609,15 @@
   <data name="SwipeForDetails" xml:space="preserve">
     <value>Desliza para ver detalles</value>
   </data>
+  <data name="ApplyIdInfoMainPage" xml:space="preserve">
+    <value>Solicite una identificación personal para aprovechar al máximo Neuro Access</value>
+  </data>
+  <data name="CompleteIdButton" xml:space="preserve">
+    <value>Complete su identificación personal</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
   <data name="ClientMessageMissingCountry" xml:space="preserve">
     <value>La solicitud no contiene información sobre el país</value>
   </data>

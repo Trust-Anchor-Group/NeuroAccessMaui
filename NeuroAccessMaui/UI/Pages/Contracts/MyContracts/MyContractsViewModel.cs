@@ -14,11 +14,13 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.UI;
 using Microsoft.Maui.Controls.Shapes;
 using Waher.Networking.XMPP.StanzaErrors;
+using Waher.Script.Constants;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
 	/// <summary>
 	/// The view model to bind to when displaying 'my' contracts.
+	/// TODO: This page and ViewModel should be refactored
 	/// </summary>
 	public partial class MyContractsViewModel : BaseViewModel
 	{
@@ -155,6 +157,44 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				}
 			});
 		}
+
+		/// <summary>
+		/// Add or remove the contracts from the collection based on a search
+		/// </summary>
+		public void SearchContracts(HeaderModel Category, string SearchString)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				int Index = this.Categories.IndexOf(Category);
+
+				bool MatchFound = false;
+
+				foreach (ContractModel Contract in Category.Contracts)
+				{
+					if (string.IsNullOrEmpty(SearchString))
+					{
+						this.Categories.Remove(Contract);
+						continue;
+					}
+
+					if (Contract.Category.Contains(SearchString, StringComparison.OrdinalIgnoreCase) ||
+						Contract.Name.Contains(SearchString, StringComparison.OrdinalIgnoreCase))
+					{
+						if (!this.Categories.Contains(Contract))
+							this.Categories.Insert(++Index, Contract);
+
+						MatchFound = true;
+					}
+					else
+					{
+						this.Categories.Remove(Contract);
+					}
+				}
+
+				Category.Expanded = MatchFound;
+			});
+		}
+
 		/// <summary>
 		/// Add or remove the contracts from the collection
 		/// </summary>
