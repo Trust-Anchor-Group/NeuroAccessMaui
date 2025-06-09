@@ -20,12 +20,13 @@
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
 
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+									  Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}"
+									  Margin="{StaticResource SmallLeftMargins}"/>
 
 				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize Applications}"/>
 
 				<!-- Identity Applications -->
-				<Frame Style="{StaticResource FrameSet}">
+				<Border Style="{StaticResource BorderSet}">
 					<Grid>
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}"
 												IsVisible="{Binding IdentityApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
@@ -75,10 +76,10 @@
 
 						</VerticalStackLayout>
 					</Grid>
-				</Frame>
+				</Border>
 
 				<!-- Wallet -->
-				<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding HasLegalIdentity}">
+				<Border Style="{StaticResource BorderSet}" IsVisible="{Binding HasLegalIdentity}">
 					<Grid>
 						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 
@@ -111,7 +112,7 @@
 							</controls:TemplatedButton>
 						</VerticalStackLayout>
 					</Grid>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>
