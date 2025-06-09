@@ -331,7 +331,7 @@
 		</Style>
 	</VisualElement.Resources>
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundLight}, Dark={StaticResource SurfaceBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 		<Grid.RowDefinitions>
 			<!-- top bar -->
 			<RowDefinition Height="auto" />

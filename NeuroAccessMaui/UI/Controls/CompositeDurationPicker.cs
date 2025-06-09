@@ -151,7 +151,7 @@ namespace NeuroAccessMaui.UI.Controls
 				IsChecked = false,
 				HorizontalOptions = LayoutOptions.Center,
 				VerticalOptions = LayoutOptions.Center,
-				Color = AppColors.EnabledFilledButtonBackground
+				Color = AppColors.ButtonAccessPrimarybg
 			};
 
 			this.negateCheckBox.CheckedChanged += (sender, args) => this.UpdateDuration();

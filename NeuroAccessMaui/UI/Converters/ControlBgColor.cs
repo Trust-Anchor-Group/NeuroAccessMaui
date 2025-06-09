@@ -25,7 +25,7 @@ namespace NeuroAccessMaui.UI.Converters
 		/// <returns>Color</returns>
 		public static Color? ToColor(bool Ok)
 		{
-			return Ok ? AppColors.SurfaceElevation1WL : AppColors.WLToastsAndPillsFigureDangerLightWL;
+			return Ok ? AppColors.SecondaryBackground : AppColors.ErrorBackground;
 		}
 
 		/// <inheritdoc/>
