@@ -183,7 +183,7 @@
 
 	<Grid RowDefinitions="*, auto"
 			ColumnDefinitions="*">
-		<ScrollView Grid.Row="0">
+		<ScrollView Grid.Row="0" Padding="{StaticResource MediumBottomMargins}">
 			<VerticalStackLayout Padding="{StaticResource MediumLeftRightMargins}"
 								 Spacing="{StaticResource MediumSpacing}">
 				<!-- TOP Set, name of contract etc -->
