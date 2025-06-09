@@ -39,9 +39,9 @@
 		</Grid>
 	</Shell.TitleView> -->
 	<Grid x:Name="TheMainGrid"
-		  RowDefinitions="auto, *, auto"
+		  RowDefinitions="auto, *, auto, auto"
 		  ColumnDefinitions="*"
-		  BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundLight}, Dark={StaticResource SurfaceBackgroundDark}}">
+		  BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background Grid.RowSpan="3"/>
 
@@ -51,11 +51,10 @@
 			  RowSpacing="{StaticResource MediumSpacing}"
 			  RowDefinitions="auto,auto"
 			  ColumnDefinitions="auto,auto">
-			<controls:ImageButton
+			<controls:SvgButton
 				Grid.Row="0" Grid.Column="0"
-				HorizontalOptions="Center"
-				Clicked="OnFlyoutButtonClicked"
-				PathData="{x:Static ui:Geometries.HamburgerIconPath}"
+				Command="{Binding OpenFlyoutCommand}"
+				SvgSource="hamburger.svg"
 				Style="{StaticResource IconButton}"/>
 
 			<!-- TODO: Enable when implemented
@@ -74,18 +73,16 @@
 				Style="{StaticResource IconButton}"/>
 			-->
 		</Grid>
-
+		
 		<!-- Logo and Missing ID Box-->
 		<Grid Grid.Row="1"
-			  RowDefinitions="*, auto"
+			  RowDefinitions="auto, auto"
 			  Margin="30,100,30,100">
 
-			<Image
-				Grid.Row="0"
-				VerticalOptions="Start"
-				HorizontalOptions="Center"
-				Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
-				WidthRequest="240"/>
+			<Image Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
+				   Grid.Row="0"
+				   HeightRequest="230"
+				   WidthRequest="230"/>
 
 			<!-- Missing Neuro ID Box-->
 			<Grid Grid.Row="1"
@@ -93,41 +90,48 @@
 				  RowDefinitions="*, *">
 				
 				<Border Grid.Row="0"
-						BackgroundColor="{AppThemeBinding Light={StaticResource FiguresStrokesBluea20Light}, Dark={StaticResource FiguresStrokesBluea20Dark}}"
+						BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgInfoWLLight}, Dark={StaticResource WLToastsAndPillsbgInfoWLDark}}"
 						Padding="{StaticResource MediumMargins}"
-						StrokeShape="RoundRectangle 8">
+						StrokeShape="RoundRectangle 8,8,0,8">
 					<Border.Shadow>
-						<Shadow Brush="{StaticResource ButtonBWContentWBvLight}" Offset="0,4" Radius="10" Opacity="0.05" />
+						<Shadow Brush="{AppThemeBinding Light={StaticResource SurfaceShadowColorWLLight}, Dark={StaticResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
 					</Border.Shadow>
 					<Grid ColumnSpacing="{StaticResource SmallSpacing}"
 						  ColumnDefinitions="auto, *">
 						<Path
 							Grid.Column="0"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={StaticResource ContentBlueLight}, Dark={StaticResource ContentBlueDark}}"/>
+							Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
 						<Label
 							Grid.Column="1"
 							Text="{l:Localize ApplyIdInfoMainPage}"
-							TextColor="{AppThemeBinding Light={StaticResource ContentBlueLight}, Dark={StaticResource ContentBlueDark}}"/>
+							TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
 					</Grid>
 				</Border>
 				<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">
 					<Grid Padding="{StaticResource MediumMargins}"
 						  ColumnDefinitions="*, auto">
 						<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{StaticResource SecondaryButtonActiveLabel}"/>
-						<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{StaticResource ButtonGreenContentGreenfLight}"/>
+						<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{AppThemeBinding Light={StaticResource ButtonAccessTertiaryContentWLLight}, Dark={StaticResource ButtonAccessTertiaryContentWLDark}}"/>
 					</Grid>
 				</controls:TemplatedButton>
 			</Grid>
 		</Grid>
 
+		<controls:SvgView Source="banner.svg"
+						  HorizontalOptions="Center"
+						  VerticalOptions="End"
+						  Grid.Row="2"
+						  WidthRequest="88"
+						  HeightRequest="35"
+						  TintColor="{StaticResource BrandColorsGreyScalesGreyv250Light}"
+						  Margin="{StaticResource MediumBottomMargins}"
+						  IsVisible="False"/> <!-- TODO: Bind to HasBranding-->
+
 		<!-- Bottom Bar -->
-		<Border Grid.Row="2" Style="{StaticResource BottomBarBorder}" VerticalOptions="End">
-			<Grid HorizontalOptions="FillAndExpand" >
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
+		<Border Grid.Row="3" Style="{StaticResource BottomBarBorder}" VerticalOptions="End" Stroke="{x:Null}">
+			<Grid HorizontalOptions="FillAndExpand"
+				  ColumnDefinitions="*, *">
 
 				<!-- Scan QR Button -->
 				<Grid Grid.Column="0">

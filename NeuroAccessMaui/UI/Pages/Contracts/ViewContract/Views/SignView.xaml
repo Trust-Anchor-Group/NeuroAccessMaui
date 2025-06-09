@@ -89,7 +89,7 @@
 																 Style="{StaticResource RoleDescriptionLabel}"
 																 VerticalOptions="Center"
 																 HorizontalOptions="Center"
-																 TextColor="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+																 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessTertiaryContentWLLight}, Dark={StaticResource ButtonAccessTertiaryContentWLDark}}" />
 													</controls:TemplatedButton>
 													<Grid ColumnDefinitions="*, auto, *"
 															Grid.Column="0"
@@ -97,11 +97,11 @@
 														<Border Grid.Column="1"
 																  Padding="{StaticResource SmallLeftRightMargins}"
 																  Style="{StaticResource RoundedBorder}"
-																  BackgroundColor="{StaticResource Orange20Light}"
+																  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgWarningWLLight}, Dark={StaticResource WLToastsAndPillsbgWarningWLDark}}"
 																  IsVisible="{Binding HasIdentity, Converter={StaticResource InvertedBoolConverter}}">
 															<Label Style="{StaticResource RoleDescriptionLabel}"
 																	 Text="{l:Localize IDRequestSent}"
-																	 TextColor="{StaticResource OrangeLight}"
+																	 TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentWarningWLLight}, Dark={StaticResource WLToastsAndPillsContentWarningWLDark}}"
 																	 VerticalOptions="Center" />
 														</Border>
 													</Grid>
@@ -115,7 +115,7 @@
 										  IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
 									<Label Text="{l:Localize None}"
 											 Style="{StaticResource RoleDescriptionLabel}"
-											 TextColor="{StaticResource AccentActiveLight}"
+											 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessTertiaryContentWLLight}, Dark={StaticResource ButtonAccessTertiaryContentWLDark}}"
 											 HorizontalTextAlignment="Center"
 											 VerticalTextAlignment="Center" />
 								</Border>
@@ -141,7 +141,7 @@
 
 					<CheckBox Grid.Column="0"
 								 IsChecked="{Binding IsContractOk}"
-								 Color="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+								 Color="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 					<Label Grid.Column="1"
 							 Text="{l:Localize IHaveReadAndUnderstoodTheContract}"
 							 Style="{StaticResource BottomBarLabel}" />

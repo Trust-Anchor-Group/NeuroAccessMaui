@@ -15,7 +15,7 @@
 	<Grid x:Name="TheMainGrid"
 			RowDefinitions="*, auto"
 			ColumnDefinitions="*"
-			BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+			BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 
 		<controls:Background />

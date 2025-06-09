@@ -12,15 +12,11 @@
 		</Style>
 
 		<Style x:Key="ButtonIconBorder" TargetType="Border">
-			<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource Accent20Light}, Dark={StaticResource Accent20Dark}}" />
+			<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgSuccessWLLight}, Dark={StaticResource WLToastsAndPillsbgSuccessWLDark}}" />
 			<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 			<Setter Property="Stroke" Value="Transparent"/>
 			<Setter Property="WidthRequest" Value="48"/>
 			<Setter Property="HeightRequest" Value="48"/>
-		</Style>
-
-		<Style x:Key="ButtonIconBorderOk" TargetType="Border" BasedOn="{StaticResource ButtonIconBorder}">
-			<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
 		</Style>
 
 		<Style x:Key="CheckBoxBorder" TargetType="Border" BasedOn="{StaticResource ButtonIconBorder}">
@@ -28,14 +24,10 @@
 		</Style>
 
 		<Style x:Key="ButtonIconPath" TargetType="Path">
-			<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+			<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentSuccessWLLight}, Dark={StaticResource WLToastsAndPillsContentSuccessWLDark}}" />
 			<Setter Property="Aspect" Value="Uniform" />
 			<Setter Property="WidthRequest" Value="24"/>
 			<Setter Property="HeightRequest" Value="24"/>
-		</Style>
-
-		<Style x:Key="ButtonIconPathOk" TargetType="Path" BasedOn="{StaticResource ButtonIconPath}">
-			<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
 		</Style>
 
 		<Style x:Key="ButtonTopLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
@@ -51,11 +43,11 @@
 		<Style x:Key="ButtonCheckBox" TargetType="CheckBox">
 			<Setter Property="VerticalOptions" Value="Center"/>
 			<Setter Property="HorizontalOptions" Value="Center" />
-			<Setter Property="Color" Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffBlackDark}}"/>
+			<Setter Property="Color" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"/>
 		</Style>
 
 		<Style x:Key="ButtonCheckBoxOk" TargetType="CheckBox" BasedOn="{StaticResource ButtonCheckBox}">
-			<Setter Property="Color" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}"/>
+			<Setter Property="Color" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentSuccessWLLight}, Dark={StaticResource WLToastsAndPillsContentSuccessWLDark}}"/>
 		</Style>
 	</ContentView.Resources>
 
@@ -67,7 +59,7 @@
 					<Border.Triggers>
 						<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Border" Value="True">
 							<!-- Set the properties that need to change -->
-							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentSuccessWLLight}, Dark={StaticResource WLToastsAndPillsbgSuccessWLDark}}" />
 						</DataTrigger>
 					</Border.Triggers>
 					<!-- Icon Path -->
@@ -76,7 +68,7 @@
                           Style="{StaticResource ButtonIconPath}">
 						<Path.Triggers>
 							<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Path" Value="True">
-								<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
+								<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ContentWhitefixedLight}, Dark={StaticResource ContentWhitefixedDark}}" />
 							</DataTrigger>
 						</Path.Triggers>
 					</Path>
@@ -90,11 +82,6 @@
 
 				<!-- CheckBox Border -->
 				<Border Grid.Column="2" VerticalOptions="Center" HorizontalOptions="Center" Style="{StaticResource CheckBoxBorder}">
-					<Border.Triggers>
-						<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Border" Value="True">
-							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
-						</DataTrigger>
-					</Border.Triggers>
 					<!-- CheckBox -->
 					<CheckBox HorizontalOptions="Center"
                               VerticalOptions="Center"

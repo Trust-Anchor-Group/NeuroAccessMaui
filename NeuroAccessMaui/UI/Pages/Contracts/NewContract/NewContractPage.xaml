@@ -30,7 +30,7 @@
 	<Grid x:Name="TheMainGrid"
 	  RowDefinitions="auto, *"
 	  ColumnDefinitions="*"
-	  BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	  BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background Grid.Row ="1"/>
 
@@ -105,7 +105,7 @@
 		</Border>
 
 	
-<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
     <controls:Background/>
 
     <ScrollView>

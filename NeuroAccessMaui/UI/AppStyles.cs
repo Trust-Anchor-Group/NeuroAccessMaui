@@ -34,7 +34,6 @@ namespace NeuroAccessMaui.UI
 		private static Style? regularCompositeEntry;
 		private static Style? regularCompositeEntryBorder;
 		private static Style? regularCompositeDatePicker;
-		private static Style? unicodeCharacterButton;
 		private static Style? imageOnlyButton;
 		private static Style? sendFrame;
 		private static Style? receiveFrame;
@@ -349,18 +348,6 @@ namespace NeuroAccessMaui.UI
 			{
 				regularCompositeDatePicker ??= TryGetResource<Style>("RegularCompositeDatePicker");
 				return regularCompositeDatePicker!;
-			}
-		}
-
-		/// <summary>
-		/// Style for buttons containing a single Unicode character.
-		/// </summary>
-		public static Style UnicodeCharacterButton
-		{
-			get
-			{
-				unicodeCharacterButton ??= TryGetResource<Style>("UnicodeCharacterButtonNoRoundedCorners");  // TODO: Remove NoRoundedCorners
-				return unicodeCharacterButton!;
 			}
 		}
 

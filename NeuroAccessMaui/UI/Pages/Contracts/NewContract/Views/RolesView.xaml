@@ -67,25 +67,25 @@
 																	Style="{StaticResource RoleDescriptionLabel}"
 																	VerticalOptions="Center"
 																	HorizontalOptions="Center"
-																	TextColor="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}"
+																	TextColor="{AppThemeBinding Light={StaticResource ButtonAccessTertiaryContentWLLight}, Dark={StaticResource ButtonAccessTertiaryContentWLDark}}"
 																	/>
 												</controls:TemplatedButton>
 												<Grid ColumnDefinitions="*, auto, *" Grid.Column="0" Grid.Row="1">
 													<Border Grid.Column="1"
 																Padding="{StaticResource SmallLeftRightMargins}"
 																Style="{StaticResource RoundedBorder}"
-																BackgroundColor="{StaticResource Orange20Light}"
+																BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgWarningWLLight}, Dark={StaticResource WLToastsAndPillsbgWarningWLDark}}"
 																IsVisible="{Binding HasIdentity, Converter={StaticResource InvertedBoolConverter}}">
-														<Label Style="{StaticResource RoleDescriptionLabel}" Text="{l:Localize IDRequestSent}" TextColor="{StaticResource OrangeLight}" VerticalOptions="Center"/>
+														<Label Style="{StaticResource RoleDescriptionLabel}" Text="{l:Localize IDRequestSent}" TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentWarningWLLight}, Dark={StaticResource WLToastsAndPillsContentWarningWLDark}}" VerticalOptions="Center"/>
 													</Border>
 												</Grid>
 												<controls:TemplatedButton Grid.Column="1" Grid.RowSpan="2"
 																				  IsVisible="{Binding IsThirdParty}"
 																				  Command="{Binding Source={RelativeSource AncestorType={x:Type objectModel:ObservableRole}}, Path=RemovePartCommand}"
 																				 CommandParameter="{Binding .}">
-													<Border WidthRequest="48" HeightRequest="48"  Style="{StaticResource TransparentTemplateButtonBorder}" Padding="{StaticResource SmallMargins}" Margin="0" Background="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}" >
+													<Border WidthRequest="48" HeightRequest="48"  Style="{StaticResource TransparentTemplateButtonBorder}" Padding="{StaticResource SmallMargins}" Margin="0" Background="{AppThemeBinding Light={StaticResource ButtonDangerSecondarybgWLLight}, Dark={StaticResource ButtonDangerSecondarybgWLDark}}" >
 														<Path WidthRequest="24" HeightRequest="24"
-															Fill="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}"				  
+															Fill="{AppThemeBinding Light={StaticResource ButtonDangerSecondaryContentWLLight}, Dark={StaticResource ButtonDangerSecondaryContentWLDark}}"				  
 															Data="{x:Static ui:Geometries.CancelPath}"
 															VerticalOptions="Center" HorizontalOptions="Center"/>
 													</Border>

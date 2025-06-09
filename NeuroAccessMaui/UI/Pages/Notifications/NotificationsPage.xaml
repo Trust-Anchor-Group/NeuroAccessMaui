@@ -24,7 +24,7 @@
 			ColumnDefinitions="*"
 			Margin="0"
 			Padding="0"
-			BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+			BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background Grid.Row="1" />
 
@@ -94,11 +94,11 @@
 										<Border Grid.Column="0"
 												  WidthRequest="48"
 												  HeightRequest="48" Margin="0"
-												  Background="{StaticResource AccentBackgroundLight}"
+												  Background="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgInfoWLLight}, Dark={StaticResource WLToastsAndPillsbgInfoWLDark}}"
 												  Style="{StaticResource RoundedBorder}">
 											<Path Data="{Binding Icon}"
 													Aspect="Uniform"
-													Fill="{StaticResource AccentForegroundLight}"
+													Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"
 													VerticalOptions="Center"
 													HorizontalOptions="Center"
 													WidthRequest="32"

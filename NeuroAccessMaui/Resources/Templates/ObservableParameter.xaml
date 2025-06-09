@@ -13,7 +13,7 @@
 			 TargetType="Label"
 			 BasedOn="{StaticResource BoldItemTitleLabel}">
 		<Setter Property="TextColor"
-				  Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhiteDark}}" />
+				  Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 		<Setter Property="FontSize"
 				  Value="15" />
 		<Setter Property="FontFamily"
@@ -29,7 +29,7 @@
 	<Style x:Key="ParameterItemValueLabel"
 			 TargetType="Label">
 		<Setter Property="TextColor"
-				  Value="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+				  Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 		<Setter Property="FontSize"
 				  Value="15" />
 		<Setter Property="FontFamily"
@@ -50,12 +50,12 @@
 							 IsChecked="{Binding BooleanValue, Mode=TwoWay}"
 							 VerticalOptions="Center"
 							 HorizontalOptions="Start"
-							 Color="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}"
+							 Color="{AppThemeBinding Light={StaticResource ButtonAccessPrimarybgWLLight}, Dark={StaticResource ButtonAccessPrimarybgWLDark}}"
 							 Margin="{StaticResource SmallRightMargins}" />
 					<Label Grid.Column="1"
 						 Text="{Binding Label}"
 						 Style="{StaticResource ParameterItemTitleLabel}"
-						 TextColor="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}" />
+						 TextColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 				</Grid>
 				<!-- Added Protection Indicator here -->
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -80,7 +80,7 @@
 							 IsChecked="{Binding BooleanValue, Mode=OneTime}"
 							 VerticalOptions="Center"
 							 HorizontalOptions="Start"
-							 Color="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}"
+							 Color="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"
 							 InputTransparent="True" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -214,7 +214,7 @@
 					<controls:CompositeInputView.CenterView>
 						<TimePicker Time="{Binding TimeSpanValue, Mode=TwoWay}"
 									BackgroundColor="Transparent"
-									TextColor="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}"
+									TextColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"
 									VerticalOptions="Center"
 									FontFamily="HaasGroteskRegular"
 									FontSize="18" />
@@ -302,10 +302,10 @@
 					 Style="{StaticResource ParameterItemTitleLabel}"
 					 HorizontalTextAlignment="Start" />
 				<controls:ParameterProtectionIndicator Grid.Row="1"
-																IsTransient="{Binding IsTransient}"
-																IsEncrypted="{Binding IsEncrypted}"
-																TransientText="{l:Localize NotAvailable}"
-																IsVisible="{Binding IsProtected}" />
+														IsTransient="{Binding IsTransient}"
+														IsEncrypted="{Binding IsEncrypted}"
+														TransientText="{l:Localize NotAvailable}"
+														IsVisible="{Binding IsProtected}" />
 			</Grid>
 		</Border>
 	</DataTemplate>
@@ -374,7 +374,7 @@
 						<controls:CompositeInputView.CenterView>
 							<TimePicker Time="{Binding SelectedTime, Mode=TwoWay}"
 										BackgroundColor="Transparent"
-										TextColor="{AppThemeBinding Light={StaticResource OffBlackLight}, Dark={StaticResource OffWhiteDark}}"
+										TextColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"
 										VerticalOptions="Center"
 										FontFamily="HaasGroteskRegular"
 										FontSize="18" />
@@ -416,12 +416,12 @@
 		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 				<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}"
-											 EntryData="{Binding CalcString, Mode=TwoWay}"
-											 Keyboard="Text"
-											 Placeholder="{Binding Guide}"
-											 VerticalOptions="Center"
-											 LabelText="{Binding Label}"
-											 IsValid="{Binding IsValid}" />
+											EntryData="{Binding CalcString, Mode=TwoWay}"
+											Keyboard="Text"
+											Placeholder="{Binding Guide}"
+											VerticalOptions="Center"
+											LabelText="{Binding Label}"
+											IsValid="{Binding IsValid}" />
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 																IsEncrypted="{Binding IsEncrypted}"
 																IsVisible="{Binding IsProtected}" />
@@ -456,17 +456,17 @@
 		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
 			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 				<controls:ContractSelector
-										 EntryData="{Binding ContractReferenceValue, Mode=TwoWay}"
-										 EntryPlaceholderText="{Binding Guide}"
-										 EntryStyle="{StaticResource OutlinedCompositeEntry}"
-										 TopText="{l:Localize SelectContractEntryDescription}"
-										 TopTextStyle="{StaticResource ParameterItemTitleLabel}"
-										 VerticalOptions="Center"
-										 TitleLabelText="{Binding Label}"
-										 TitleLabelStyle="{StaticResource RegularCompositeEntryLabel}"
-										 IsValid="{Binding IsValid}"
-					                ButtonCommand="{Binding PickContractReferenceCommand}"
-					                ButtonText="{l:Localize SelectContract}"/>
+										EntryData="{Binding ContractReferenceValue, Mode=TwoWay}"
+										EntryPlaceholderText="{Binding Guide}"
+										EntryStyle="{StaticResource RegularCompositeEntry}"
+										TopText="{l:Localize SelectContractEntryDescription}"
+										TopTextStyle="{StaticResource ParameterItemTitleLabel}"
+										VerticalOptions="Center"
+										TitleLabelText="{Binding Label}"
+										TitleLabelStyle="{StaticResource RegularCompositeEntryLabel}"
+										IsValid="{Binding IsValid}"
+										ButtonCommand="{Binding PickContractReferenceCommand}"
+										ButtonText="{l:Localize SelectContract}"/>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 															IsEncrypted="{Binding IsEncrypted}"
 															IsVisible="{Binding IsProtected}" />

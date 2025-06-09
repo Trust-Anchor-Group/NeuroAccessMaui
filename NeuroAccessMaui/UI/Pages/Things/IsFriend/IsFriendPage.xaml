@@ -12,7 +12,7 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Things.IsFriend"
 							 xmlns:things="clr-namespace:NeuroAccessMaui.UI.Pages.Things">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
@@ -93,8 +93,8 @@
 					   HorizontalOptions="Start"/>
 						<Picker SelectedIndex="{Binding SelectedRuleRangeIndex}" ItemsSource="{Binding RuleRanges}"
 						Margin="{StaticResource SmallBottomMargins}"
-						BackgroundColor="{AppThemeBinding Dark={StaticResource PrimaryBackgroundDark}, Light={StaticResource PrimaryBackgroundLight}}"
-						TextColor="{AppThemeBinding Dark={StaticResource NormalEditForegroundDark}, Light={StaticResource NormalEditForegroundLight}}"/>
+						BackgroundColor="{AppThemeBinding Dark={StaticResource SurfaceBackgroundWLDark}, Light={StaticResource SurfaceBackgroundWLLight}}"
+						TextColor="{AppThemeBinding Dark={StaticResource InputFieldsContentPrimaryDark}, Light={StaticResource InputFieldsContentPrimaryLight}}"/>
 						<!-- BUTTONS -->
 						<Label Text="{l:Localize Options}" Margin="{StaticResource SmallTopMargins}"
 					   VerticalOptions="Start"/>

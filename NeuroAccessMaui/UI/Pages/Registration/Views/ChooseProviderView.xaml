@@ -107,8 +107,8 @@
 						FontSize="24"
 						LineBreakMode="WordWrap"
 						Text="{x:Binding LocalizedName}"
-						TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight},
-													Dark={StaticResource AccentForegroundDark}}" />
+						TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight},
+													Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
 
 					<Path
 						VerticalOptions="Center"
@@ -116,8 +116,8 @@
 						WidthRequest="20"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
-											   Dark={StaticResource NormalInfoForegroundDark}}" />
+						Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight},
+											   Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
 					<HorizontalStackLayout.GestureRecognizers>
 						<TapGestureRecognizer
 							Command="{x:Binding SelectedServiceProviderInfoCommand}" />
@@ -135,8 +135,8 @@
 				<Label
 					HorizontalOptions="Center"
 					Text="{x:Binding DomainName}"
-					TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight},
-												Dark={StaticResource AccentForegroundDark}}" />
+					TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight},
+												Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
 			</VerticalStackLayout>
 
 			<Label
@@ -193,16 +193,16 @@
 						WidthRequest="20"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
-											Dark={StaticResource NormalInfoForegroundDark}}" />
+						Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight},
+											Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
 
 					<Label
 						VerticalOptions="Center"
 						FontFamily="HaasGroteskRegular"
 						FontSize="14"
 						Text="{l:Localize WhatIsAServiceProvider}"
-						TextColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
-													Dark={StaticResource NormalInfoForegroundDark}}" />
+						TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight},
+													Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 				
@@ -215,8 +215,8 @@
 						FontFamily="HaasGroteskRegular"
 						FontSize="18"
 						Text="{l:Localize Change}"
-						TextColor="{AppThemeBinding Light={StaticResource AccentForegroundLight},
-													Dark={StaticResource AccentForegroundDark}}" />
+						TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight},
+													Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 

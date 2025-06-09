@@ -20,7 +20,7 @@
 					Text="{l:Localize OnboardingContactSupportTitle}" />
 				<!-- Part 1 -->
 				<Label
-                Text="{l:Localize OnboardingContactSupportDetailsPart1}" />
+					Text="{l:Localize OnboardingContactSupportDetailsPart1}" />
 
 				<!-- Bullet Points -->
 				<StackLayout Spacing="{StaticResource SmallSpacing}">
@@ -145,7 +145,7 @@
 	                            WidthRequest="10"
 	                            Aspect="Uniform"
 	                            Data="{x:Static ui:Geometries.DropDownArrowPath}"
-	                            Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
+	                            Fill="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight},
 	                                                    Dark={StaticResource PrimaryForegroundDark}}" />
 						</HorizontalStackLayout>
 
@@ -200,7 +200,7 @@
 					<Grid ColumnDefinitions="auto, *">
 						<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
 						      Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-						      Fill="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
+						      Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
 						<Label Grid.Column="1" Style ="{StaticResource AccentInfoLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize OnboardingGetStartedQrInfo}" />
 
 					</Grid>

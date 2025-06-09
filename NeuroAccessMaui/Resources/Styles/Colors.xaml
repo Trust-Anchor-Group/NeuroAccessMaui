@@ -4,460 +4,343 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-	<Color x:Key="StrokeGrey">#B3B6B8</Color>
-
-	<!-- New Colors -->
-	<Color x:Key="ButtonContentGreyLight">#80181f25</Color>
-	<Color x:Key="ButtonContentWhitefLight">#f5f6f7</Color>
-	<Color x:Key="ButtonbgAllButtonsHoldLight">#2f353a</Color>
-	<Color x:Key="ButtonbgAllButtonsInactiveLight">#dfe1e3</Color>
-	<Color x:Key="ButtonbgAllButtonsPressedLight">#f5f6f7</Color>
-	<Color x:Key="ButtonbgTertiaryLight">#f5f6f7</Color>
-	<Color x:Key="ButtonBWContentBWvLight">#f5f6f7</Color>
-	<Color x:Key="ButtonBWContentWBvLight">#181f25</Color>
-	<Color x:Key="ButtonBWContentWhitefLight">#f5f6f7</Color>
-	<Color x:Key="ButtonBWBlackWhitebgBWActiveLight">#181f25</Color>
-	<Color x:Key="ButtonBWGreybgTireteryActiveLight">#33181f25</Color>
-	<Color x:Key="ButtonBWWhiteBlackbgWBActiveLight">#f5f6f7</Color>
-	<Color x:Key="ButtonBWWhiteBlackbgWBHoldLight">#2f353a</Color>
-	<Color x:Key="ButtonBWWhiteBlackbgWBOnBackgroundLight">#fcfcfc</Color>
-	<Color x:Key="ButtonBlueContentAccentfLight">#24519c</Color>
-	<Color x:Key="ButtonBlueContentBWvLight">#24519c</Color>
-	<Color x:Key="ButtonBlueContentWBvLight">#f5f6f7</Color>
-	<Color x:Key="ButtonBluebgPrimaryfLight">#2756a6</Color>
-	<Color x:Key="ButtonBluebgSecondaryvLight">#334375b0</Color>
-	<Color x:Key="ButtonGreenContentGWvLight">#085e50</Color>
-	<Color x:Key="ButtonGreenContentGreenfLight">#085e50</Color>
-	<Color x:Key="ButtonGreenContentWGvLight">#f5f6f7</Color>
-	<Color x:Key="ButtonGreenbgPrimaryfLight">#0a715f</Color>
-	<Color x:Key="ButtonGreenbgSecondaryvLight">#330a715f</Color>
-	<Color x:Key="ButtonPurpleContentPWvLight">#722fad</Color>
-	<Color x:Key="ButtonPurpleContentPurplefLight">#722fad</Color>
-	<Color x:Key="ButtonPurpleContentWPvLight">#f5f6f7</Color>
-	<Color x:Key="ButtonPurplebgPrimaryfLight">#8f40d4</Color>
-	<Color x:Key="ButtonPurplebgSecondaryvLight">#268f40d4</Color>
-	<Color x:Key="ButtonRedContentRWvLight">#a81123</Color>
-	<Color x:Key="ButtonRedContentRedfLight">#a81123</Color>
-	<Color x:Key="ButtonRedContentWRvLight">#f5f6f7</Color>
-	<Color x:Key="ButtonRedbgPrimaryfLight">#f2495c</Color>
-	<Color x:Key="ButtonRedbgSecondaryvLight">#33f2495c</Color>
-	<Color x:Key="ButtonYellowContentAccentfLight">#181f25</Color>
-	<Color x:Key="ButtonYellowContentBWvLight">#181f25</Color>
-	<Color x:Key="ButtonYellowContentBYvLight">#181f25</Color>
-	<Color x:Key="ButtonYellowbgPrimaryfLight">#ffbb00</Color>
-	<Color x:Key="ButtonYellowbgSecondaryvLight">#33ffbb00</Color>
-	<Color x:Key="ContentBlueLight">#24519c</Color>
-	<Color x:Key="ContentBlueLightLight">#4995f2</Color>
-	<Color x:Key="ContentGreenLight">#085e50</Color>
-	<Color x:Key="ContentOrangeLight">#a84700</Color>
-	<Color x:Key="ContentPrimaryLight">#181f25</Color>
+	<Color x:Key="BrandColorsGreyScalesBlackfLight">#181f25</Color>
+	<Color x:Key="BrandColorsGreyScalesGreyv100Light">#dfe1e3</Color>
+	<Color x:Key="BrandColorsGreyScalesGreyv250Light">#b3b6b8</Color>
+	<Color x:Key="BrandColorsGreyScalesGreyv500Light">#80181f25</Color>
+	<Color x:Key="BrandColorsGreyScalesGreyv750Light">#444a4f</Color>
+	<Color x:Key="BrandColorsGreyScalesGreyv900Light">#2f353a</Color>
+	<Color x:Key="BrandColorsGreyScalesPrimaryvLight">#181f25</Color>
+	<Color x:Key="BrandColorsGreyScalesWhitefLight">#f5f6f7</Color>
+	<Color x:Key="BrandColorsNeuroAccessWLLight">#29bf86</Color>
+	<Color x:Key="BrandColorsNeuroAccessa20WLLight">#330a715f</Color>
+	<Color x:Key="BrandColorsNeuroAccessa30WLLight">#4d0a715f</Color>
+	<Color x:Key="BrandColorsNeuroAccessv500WLLight">#0a715f</Color>
+	<Color x:Key="BrandColorsNeuroAccessv800WLLight">#002a22</Color>
+	<Color x:Key="BrandColorsNeuroAdminLight">#8f40d4</Color>
+	<Color x:Key="BrandColorsNeuroAdmina15ToastLight">#268f40d4</Color>
+	<Color x:Key="BrandColorsNeuroAdminv300Light">#ab8ce4</Color>
+	<Color x:Key="BrandColorsNeuroAdminv800Light">#231636</Color>
+	<Color x:Key="BrandColorsNeuroAssetsWLLight">#4995f2</Color>
+	<Color x:Key="BrandColorsNeuroAssetsa20WLLight">#334375b0</Color>
+	<Color x:Key="BrandColorsNeuroAssetsv500WLLight">#2756a6</Color>
+	<Color x:Key="BrandColorsNeuroAssetsv800WLLight">#051d46</Color>
+	<Color x:Key="BrandColorsNeuroOrangeLight">#f18334</Color>
+	<Color x:Key="BrandColorsNeuroOrangea20Light">#33f18334</Color>
+	<Color x:Key="BrandColorsNeuroPayLight">#ffbb00</Color>
+	<Color x:Key="BrandColorsNeuroPaya20Light">#33ffbb00</Color>
+	<Color x:Key="BrandColorsNeuroPayv100Light">#f8d624</Color>
+	<Color x:Key="BrandColorsNeuroPayv800Light">#a84700</Color>
+	<Color x:Key="BrandColorsNeuroRedLight">#f2495c</Color>
+	<Color x:Key="BrandColorsNeuroReda20Light">#33f2495c</Color>
+	<Color x:Key="BrandColorsNeuroReda50Light">#80f2495c</Color>
+	<Color x:Key="BrandColorsNeuroRedv200Light">#f1bfb9</Color>
+	<Color x:Key="BrandColorsNeuroRedv900Light">#262020</Color>
+	<Color x:Key="BrandColorsSpecialGreena20(NoOpacity)Light">#cce1dd</Color>
+	<Color x:Key="BrandColorsSpecialWaveColorLight">#40ffffff</Color>
+	<Color x:Key="ButtonUniversalContentInactiveWLLight">#80181f25</Color>
+	<Color x:Key="ButtonUniversalbgHoldWLLight">#80181f25</Color>
+	<Color x:Key="ButtonUniversalbgInactiveWLLight">#dfe1e3</Color>
+	<Color x:Key="ButtonUniversalbgPressedWLLight">#f5f6f7</Color>
+	<Color x:Key="ButtonAccessContentHoldWLLight">#f5f6f7</Color>
+	<Color x:Key="ButtonAccessContentPressedWLLight">#085e50</Color>
+	<Color x:Key="ButtonAccessPrimaryContentWLLight">#f5f6f7</Color>
+	<Color x:Key="ButtonAccessPrimaryStrokeWLLight">#00f5f6f7</Color>
+	<Color x:Key="ButtonAccessPrimarybgWLLight">#0a715f</Color>
+	<Color x:Key="ButtonAccessSecondaryContentWLLight">#085e50</Color>
+	<Color x:Key="ButtonAccessSecondaryStrokeWLLight">#00f5f6f7</Color>
+	<Color x:Key="ButtonAccessSecondarybgWLLight">#330a715f</Color>
+	<Color x:Key="ButtonAccessTertiaryContentWLLight">#085e50</Color>
+	<Color x:Key="ButtonAccessTertiaryStrokeWLLight">#00f5f6f7</Color>
+	<Color x:Key="ButtonAccessTertiarybgWLLight">#f5f6f7</Color>
+	<Color x:Key="ButtonAssetsContentHoldLight">#f5f6f7</Color>
+	<Color x:Key="ButtonAssetsContentPressedLight">#24519c</Color>
+	<Color x:Key="ButtonAssetsPrimaryContentLight">#f5f6f7</Color>
+	<Color x:Key="ButtonAssetsPrimaryStrokeLight">#00ffffff</Color>
+	<Color x:Key="ButtonAssetsPrimarybgLight">#2756a6</Color>
+	<Color x:Key="ButtonAssetsSecondaryContentLight">#24519c</Color>
+	<Color x:Key="ButtonAssetsSecondaryStrokeLight">#00ffffff</Color>
+	<Color x:Key="ButtonAssetsSecondarybgLight">#334375b0</Color>
+	<Color x:Key="ButtonAssetsTertiaryContentLight">#24519c</Color>
+	<Color x:Key="ButtonAssetsTertiaryStrokeLight">#00ffffff</Color>
+	<Color x:Key="ButtonAssetsTertiarybgLight">#f5f6f7</Color>
+	<Color x:Key="ButtonDangerContentHoldWLLight">#f5f6f7</Color>
+	<Color x:Key="ButtonDangerContentPressedWLLight">#a81123</Color>
+	<Color x:Key="ButtonDangerPrimaryContentWLLight">#f5f6f7</Color>
+	<Color x:Key="ButtonDangerPrimaryStrokeWLLight">#00f5f6f7</Color>
+	<Color x:Key="ButtonDangerPrimarybgWLLight">#f2495c</Color>
+	<Color x:Key="ButtonDangerSecondaryContentWLLight">#a81123</Color>
+	<Color x:Key="ButtonDangerSecondaryStrokeWLLight">#00f5f6f7</Color>
+	<Color x:Key="ButtonDangerSecondarybgWLLight">#33f2495c</Color>
+	<Color x:Key="ButtonDangerTertiaryContentWLLight">#a81123</Color>
+	<Color x:Key="ButtonDangerTertiaryStrokeWLLight">#00f5f6f7</Color>
+	<Color x:Key="ButtonDangerTertiarybgWLLight">#f5f6f7</Color>
+	<Color x:Key="ButtonNeuroContentHoldLight">#f5f6f7</Color>
+	<Color x:Key="ButtonNeuroContentPressedLight">#722fad</Color>
+	<Color x:Key="ButtonNeuroPrimaryContentLight">#f5f6f7</Color>
+	<Color x:Key="ButtonNeuroPrimaryStrokeLight">#00ffffff</Color>
+	<Color x:Key="ButtonNeuroPrimarybgLight">#8f40d4</Color>
+	<Color x:Key="ButtonNeuroSecondaryContentLight">#722fad</Color>
+	<Color x:Key="ButtonNeuroSecondaryStrokeLight">#00ffffff</Color>
+	<Color x:Key="ButtonNeuroSecondarybgLight">#268f40d4</Color>
+	<Color x:Key="ButtonNeuroTertiaryContentLight">#722fad</Color>
+	<Color x:Key="ButtonNeuroTertiaryStrokeLight">#00ffffff</Color>
+	<Color x:Key="ButtonNeuroTertiarybgLight">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralContentHoldLight">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralContentPressedLight">#181f25</Color>
+	<Color x:Key="ButtonNeutralContentWhitefDELLight">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralbgTertiaryDELLight">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralGreyContentLight">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralGreyStrokeLight">#00ffffff</Color>
+	<Color x:Key="ButtonNeutralGreybgLight">#33181f25</Color>
+	<Color x:Key="ButtonNeutralNavButtonsContentActiveWLLight">#181f25</Color>
+	<Color x:Key="ButtonNeutralNavButtonsOnContainerbgActiveWLLight">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralNavButtonsbgActiveWLLight">#fcfcfc</Color>
+	<Color x:Key="ButtonNeutralPrimaryContentLight">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralPrimaryStrokeLight">#00ffffff</Color>
+	<Color x:Key="ButtonNeutralPrimarybgLight">#181f25</Color>
+	<Color x:Key="ButtonNeutralSecondaryContentLight">#181f25</Color>
+	<Color x:Key="ButtonNeutralSecondaryStrokeLight">#181f25</Color>
+	<Color x:Key="ButtonNeutralSecondarybgLight">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralTertiaryContentLight">#181f25</Color>
+	<Color x:Key="ButtonNeutralTertiaryStrokeLight">#00ffffff</Color>
+	<Color x:Key="ButtonNeutralTertiarybgLight">#f5f6f7</Color>
+	<Color x:Key="ButtonPayContentHoldLight">#f5f6f7</Color>
+	<Color x:Key="ButtonPayContentPressedLight">#181f25</Color>
+	<Color x:Key="ButtonPayPrimaryContentLight">#181f25</Color>
+	<Color x:Key="ButtonPayPrimaryStrokeLight">#00ffffff</Color>
+	<Color x:Key="ButtonPayPrimarybgLight">#ffbb00</Color>
+	<Color x:Key="ButtonPaySecondaryContentLight">#181f25</Color>
+	<Color x:Key="ButtonPaySecondaryStrokeLight">#00ffffff</Color>
+	<Color x:Key="ButtonPaySecondarybgLight">#33ffbb00</Color>
+	<Color x:Key="ButtonPayTertiaryContentLight">#181f25</Color>
+	<Color x:Key="ButtonPayTertiaryStrokeLight">#00ffffff</Color>
+	<Color x:Key="ButtonPayTertiarybgLight">#f5f6f7</Color>
+	<Color x:Key="ContentAccessWLLight">#085e50</Color>
+	<Color x:Key="ContentAssetsWLLight">#24519c</Color>
+	<Color x:Key="ContentLinkWLLight">#24519c</Color>
+	<Color x:Key="ContentNeuroLight">#722fad</Color>
+	<Color x:Key="ContentPayLight">#a84700</Color>
+	<Color x:Key="ContentPrimaryWLLight">#181f25</Color>
 	<Color x:Key="ContentPrimaryInvertedLight">#f5f6f7</Color>
-	<Color x:Key="ContentPurpleLight">#722fad</Color>
-	<Color x:Key="ContentRedLight">#a81123</Color>
-	<Color x:Key="ContentRedLightLight">#f2495c</Color>
-	<Color x:Key="ContentSecondaryLight">#80181f25</Color>
+	<Color x:Key="ContentSecondaryWLLight">#9e181f25</Color>
 	<Color x:Key="ContentWhitefixedLight">#f5f6f7</Color>
-	<Color x:Key="ContentYellowLight">#a84700</Color>
-	<Color x:Key="FiguresStrokesBluea20Light">#334375b0</Color>
-	<Color x:Key="FiguresStrokesBluev500Light">#2756a6</Color>
-	<Color x:Key="FiguresStrokesBluev800Light">#051d46</Color>
-	<Color x:Key="FiguresStrokesGreena20Light">#330a715f</Color>
-	<Color x:Key="FiguresStrokesGreena30Light">#4d0a715f</Color>
-	<Color x:Key="FiguresStrokesGreenv500Light">#0a715f</Color>
-	<Color x:Key="FiguresStrokesGreenv800Light">#002a22</Color>
-	<Color x:Key="FiguresStrokesNBlueLight">#4995f2</Color>
-	<Color x:Key="FiguresStrokesNGreenLight">#29bf86</Color>
-	<Color x:Key="FiguresStrokesNPurpleLight">#8f40d4</Color>
-	<Color x:Key="FiguresStrokesNRedLight">#f2495c</Color>
-	<Color x:Key="FiguresStrokesNYellowLight">#ffbb00</Color>
-	<Color x:Key="FiguresStrokesOrangeLight">#f18334</Color>
-	<Color x:Key="FiguresStrokesOrangea20Light">#33f18334</Color>
-	<Color x:Key="FiguresStrokesPurplea15Light">#268f40d4</Color>
-	<Color x:Key="FiguresStrokesPurplev300Light">#ab8ce4</Color>
-	<Color x:Key="FiguresStrokesPurplev800Light">#231636</Color>
-	<Color x:Key="FiguresStrokesReda20Light">#33f2495c</Color>
-	<Color x:Key="FiguresStrokesReda50Light">#80f2495c</Color>
-	<Color x:Key="FiguresStrokesRedv200Light">#f1bfb9</Color>
-	<Color x:Key="FiguresStrokesRedv900Light">#262020</Color>
-	<Color x:Key="FiguresStrokesYellowa20Light">#33ffbb00</Color>
-	<Color x:Key="FiguresStrokesYellowv100Light">#f8d624</Color>
-	<Color x:Key="FiguresStrokesYellowv800Light">#a84700</Color>
-	<Color x:Key="FiguresStrokesGreyScalesBlackfLight">#181f25</Color>
-	<Color x:Key="FiguresStrokesGreyScalesGreyv100Light">#dfe1e3</Color>
-	<Color x:Key="FiguresStrokesGreyScalesGreyv250Light">#b3b6b8</Color>
-	<Color x:Key="FiguresStrokesGreyScalesGreyv500Light">#80181f25</Color>
-	<Color x:Key="FiguresStrokesGreyScalesGreyv750Light">#444a4f</Color>
-	<Color x:Key="FiguresStrokesGreyScalesGreyv900Light">#2f353a</Color>
-	<Color x:Key="FiguresStrokesGreyScalesPrimaryvLight">#181f25</Color>
-	<Color x:Key="FiguresStrokesGreyScalesWhitefLight">#f5f6f7</Color>
-	<Color x:Key="FiguresStrokesSpecialGreena20(NoOpacity)Light">#cce1dd</Color>
-	<Color x:Key="FiguresStrokesSpecialWaveColorLight">#40ffffff</Color>
-	<Color x:Key="InputfieldsAccentContentBlueLight">#2756a6</Color>
-	<Color x:Key="InputfieldsAccentContentGreenLight">#0a715f</Color>
-	<Color x:Key="InputfieldsAccentContentPurpleLight">#8f40d4</Color>
-	<Color x:Key="InputfieldsAccentContentYellowLight">#f18334</Color>
-	<Color x:Key="InputfieldsContentContentPrimaryLight">#181f25</Color>
-	<Color x:Key="InputfieldsContentContentRedv500Light">#f2495c</Color>
-	<Color x:Key="InputfieldsContentContentRedv800Light">#a81123</Color>
-	<Color x:Key="InputfieldsContentContentSecondaryLight">#80181f25</Color>
-	<Color x:Key="InputfieldsSurfaceBackgroundActiveLight">#f5f6f7</Color>
-	<Color x:Key="InputfieldsSurfaceBackgroundInactiveLight">#dfe1e3</Color>
-	<Color x:Key="InputfieldsSurfaceStrokeGreyLight">#b3b6b8</Color>
-	<Color x:Key="SurfaceBackgroundLight">#f5f6f7</Color>
-	<Color x:Key="SurfaceElevation1Light">#fcfcfc</Color>
-	<Color x:Key="SurfaceElevation2GreyLight">#f5f6f7</Color>
-	<Color x:Key="SurfaceElevation3Light">#fcfcfc</Color>
-	<Color x:Key="SurfaceSpecialNavMenuLight">#f5f6f7</Color>
-	<Color x:Key="SurfaceSpecialOverlayLight">#33181f25</Color>
-	<Color x:Key="ButtonContentGreyDark">#80f5f6f7</Color>
-	<Color x:Key="ButtonContentWhitefDark">#f5f6f7</Color>
-	<Color x:Key="ButtonbgAllButtonsHoldDark">#252526</Color>
-	<Color x:Key="ButtonbgAllButtonsInactiveDark">#313133</Color>
-	<Color x:Key="ButtonbgAllButtonsPressedDark">#313133</Color>
-	<Color x:Key="ButtonbgTertiaryDark">#1a313133</Color>
-	<Color x:Key="ButtonBWContentBWvDark">#161617</Color>
-	<Color x:Key="ButtonBWContentWBvDark">#f5f6f7</Color>
-	<Color x:Key="ButtonBWContentWhitefDark">#f5f6f7</Color>
-	<Color x:Key="ButtonBWBlackWhitebgBWActiveDark">#f5f6f7</Color>
-	<Color x:Key="ButtonBWGreybgTireteryActiveDark">#8039393a</Color>
-	<Color x:Key="ButtonBWWhiteBlackbgWBActiveDark">#313133</Color>
-	<Color x:Key="ButtonBWWhiteBlackbgWBHoldDark">#252526</Color>
-	<Color x:Key="ButtonBWWhiteBlackbgWBOnBackgroundDark">#252526</Color>
-	<Color x:Key="ButtonBlueContentAccentfDark">#64a5f5</Color>
-	<Color x:Key="ButtonBlueContentBWvDark">#f5f6f7</Color>
-	<Color x:Key="ButtonBlueContentWBvDark">#64a5f5</Color>
-	<Color x:Key="ButtonBluebgPrimaryfDark">#2756a6</Color>
-	<Color x:Key="ButtonBluebgSecondaryvDark">#313133</Color>
-	<Color x:Key="ButtonGreenContentGWvDark">#f5f6f7</Color>
-	<Color x:Key="ButtonGreenContentGreenfDark">#29bf86</Color>
-	<Color x:Key="ButtonGreenContentWGvDark">#29bf86</Color>
-	<Color x:Key="ButtonGreenbgPrimaryfDark">#0a715f</Color>
-	<Color x:Key="ButtonGreenbgSecondaryvDark">#313133</Color>
-	<Color x:Key="ButtonPurpleContentPWvDark">#f5f6f7</Color>
-	<Color x:Key="ButtonPurpleContentPurplefDark">#b295e8</Color>
-	<Color x:Key="ButtonPurpleContentWPvDark">#b295e8</Color>
-	<Color x:Key="ButtonPurplebgPrimaryfDark">#8f40d4</Color>
-	<Color x:Key="ButtonPurplebgSecondaryvDark">#313133</Color>
-	<Color x:Key="ButtonRedContentRWvDark">#f5f6f7</Color>
-	<Color x:Key="ButtonRedContentRedfDark">#f25567</Color>
-	<Color x:Key="ButtonRedContentWRvDark">#f25567</Color>
-	<Color x:Key="ButtonRedbgPrimaryfDark">#f2495c</Color>
-	<Color x:Key="ButtonRedbgSecondaryvDark">#313133</Color>
-	<Color x:Key="ButtonYellowContentAccentfDark">#161617</Color>
-	<Color x:Key="ButtonYellowContentBWvDark">#f5f6f7</Color>
-	<Color x:Key="ButtonYellowContentBYvDark">#ffbb00</Color>
-	<Color x:Key="ButtonYellowbgPrimaryfDark">#ffbb00</Color>
-	<Color x:Key="ButtonYellowbgSecondaryvDark">#313133</Color>
-	<Color x:Key="ContentBlueDark">#4995f2</Color>
-	<Color x:Key="ContentBlueLightDark">#64a5f5</Color>
-	<Color x:Key="ContentGreenDark">#29bf86</Color>
-	<Color x:Key="ContentOrangeDark">#f18334</Color>
-	<Color x:Key="ContentPrimaryDark">#f5f6f7</Color>
+	<Color x:Key="InputFieldsAccentContentAccessWLLight">#0a715f</Color>
+	<Color x:Key="InputFieldsAccentContentAssetsLight">#2756a6</Color>
+	<Color x:Key="InputFieldsAccentContentNeuroLight">#8f40d4</Color>
+	<Color x:Key="InputFieldsAccentContentYellowLight">#f18334</Color>
+	<Color x:Key="InputFieldsContentDangerv500Light">#f2495c</Color>
+	<Color x:Key="InputFieldsContentDangerv800Light">#a81123</Color>
+	<Color x:Key="InputFieldsContentPrimaryLight">#181f25</Color>
+	<Color x:Key="InputFieldsContentSecondaryLight">#80181f25</Color>
+	<Color x:Key="InputFieldsContentSubheadLight">#9e181f25</Color>
+	<Color x:Key="InputFieldsSurfaceBackgroundActiveLight">#f5f6f7</Color>
+	<Color x:Key="InputFieldsSurfaceBackgroundInactiveLight">#dfe1e3</Color>
+	<Color x:Key="InputFieldsSurfaceStrokeLight">#dfe1e3</Color>
+	<Color x:Key="InputFieldsSurfaceStrokeInactiveLight">#b3b6b8</Color>
+	<Color x:Key="NavMenuBody1WLLight">#f5f6f7</Color>
+	<Color x:Key="NavMenuBody2WLLight">#f5f6f7</Color>
+	<Color x:Key="NavMenuContentActiveWLLight">#085e50</Color>
+	<Color x:Key="NavMenuContentInactiveWLLight">#9e181f25</Color>
+	<Color x:Key="NavMenuStroke1WLLight">#dfe1e3</Color>
+	<Color x:Key="NavMenuStroke2WLLight">#dfe1e3</Color>
+	<Color x:Key="NavMenubgActiveWLLight">#330a715f</Color>
+	<Color x:Key="SurfaceBackgroundWLLight">#f5f6f7</Color>
+	<Color x:Key="SurfaceDividerWLLight">#dfe1e3</Color>
+	<Color x:Key="SurfaceElevation1WLLight">#fcfcfc</Color>
+	<Color x:Key="SurfaceElevation2WLLight">#f5f6f7</Color>
+	<Color x:Key="SurfaceElevation3WLLight">#fcfcfc</Color>
+	<Color x:Key="SurfaceShadowColorWLLight">#0f181f25</Color>
+	<Color x:Key="SurfaceStrokeWLLight">#00dfe1e3</Color>
+	<Color x:Key="SurfaceSpecialScrimLight">#33181f25</Color>
+	<Color x:Key="WLToastsAndPillsContentAccent2WLLight">#722fad</Color>
+	<Color x:Key="WLToastsAndPillsContentDangerWLLight">#a81123</Color>
+	<Color x:Key="WLToastsAndPillsContentInfoWLLight">#24519c</Color>
+	<Color x:Key="WLToastsAndPillsContentNeutralv300WLLight">#9e181f25</Color>
+	<Color x:Key="WLToastsAndPillsContentNeutralv750WLLight">#f5f6f7</Color>
+	<Color x:Key="WLToastsAndPillsContentSuccessWLLight">#085e50</Color>
+	<Color x:Key="WLToastsAndPillsContentWarningWLLight">#a84700</Color>
+	<Color x:Key="WLToastsAndPillsFigureAccent2WLLight">#8f40d4</Color>
+	<Color x:Key="WLToastsAndPillsFigureDangerLightWLLight">#f2495c</Color>
+	<Color x:Key="WLToastsAndPillsFigureDangerWLLight">#f2495c</Color>
+	<Color x:Key="WLToastsAndPillsFigureInfoWLLight">#4995f2</Color>
+	<Color x:Key="WLToastsAndPillsFigureSuccessWLLight">#29bf86</Color>
+	<Color x:Key="WLToastsAndPillsFigureWarningWLLight">#f18334</Color>
+	<Color x:Key="WLToastsAndPillsbgAccent2WLLight">#268f40d4</Color>
+	<Color x:Key="WLToastsAndPillsbgDangerWLLight">#33f2495c</Color>
+	<Color x:Key="WLToastsAndPillsbgInfoWLLight">#334375b0</Color>
+	<Color x:Key="WLToastsAndPillsbgNeutralv300WLLight">#dfe1e3</Color>
+	<Color x:Key="WLToastsAndPillsbgNeutralv750WLLight">#444a4f</Color>
+	<Color x:Key="WLToastsAndPillsbgSuccessWLLight">#330a715f</Color>
+	<Color x:Key="WLToastsAndPillsbgWarningWLLight">#33f18334</Color>
+	<Color x:Key="BrandColorsGreyScalesBlackfDark">#161617</Color>
+	<Color x:Key="BrandColorsGreyScalesGreyv100Dark">#313133</Color>
+	<Color x:Key="BrandColorsGreyScalesGreyv250Dark">#595a5c</Color>
+	<Color x:Key="BrandColorsGreyScalesGreyv500Dark">#80f5f6f7</Color>
+	<Color x:Key="BrandColorsGreyScalesGreyv750Dark">#c9cacb</Color>
+	<Color x:Key="BrandColorsGreyScalesGreyv900Dark">#dedfe1</Color>
+	<Color x:Key="BrandColorsGreyScalesPrimaryvDark">#f5f6f7</Color>
+	<Color x:Key="BrandColorsGreyScalesWhitefDark">#f5f6f7</Color>
+	<Color x:Key="BrandColorsNeuroAccessWLDark">#29bf86</Color>
+	<Color x:Key="BrandColorsNeuroAccessa20WLDark">#3329bf86</Color>
+	<Color x:Key="BrandColorsNeuroAccessa30WLDark">#4d29bf86</Color>
+	<Color x:Key="BrandColorsNeuroAccessv500WLDark">#0a715f</Color>
+	<Color x:Key="BrandColorsNeuroAccessv800WLDark">#002a22</Color>
+	<Color x:Key="BrandColorsNeuroAdminDark">#8f40d4</Color>
+	<Color x:Key="BrandColorsNeuroAdmina15ToastDark">#268f40d4</Color>
+	<Color x:Key="BrandColorsNeuroAdminv300Dark">#231636</Color>
+	<Color x:Key="BrandColorsNeuroAdminv800Dark">#ab8ce4</Color>
+	<Color x:Key="BrandColorsNeuroAssetsWLDark">#4995f2</Color>
+	<Color x:Key="BrandColorsNeuroAssetsa20WLDark">#334995f2</Color>
+	<Color x:Key="BrandColorsNeuroAssetsv500WLDark">#2756a6</Color>
+	<Color x:Key="BrandColorsNeuroAssetsv800WLDark">#051d46</Color>
+	<Color x:Key="BrandColorsNeuroOrangeDark">#f18334</Color>
+	<Color x:Key="BrandColorsNeuroOrangea20Dark">#33f18334</Color>
+	<Color x:Key="BrandColorsNeuroPayDark">#ffbb00</Color>
+	<Color x:Key="BrandColorsNeuroPaya20Dark">#33ffbb00</Color>
+	<Color x:Key="BrandColorsNeuroPayv100Dark">#a84700</Color>
+	<Color x:Key="BrandColorsNeuroPayv800Dark">#f8d624</Color>
+	<Color x:Key="BrandColorsNeuroRedDark">#f2495c</Color>
+	<Color x:Key="BrandColorsNeuroReda20Dark">#33f2495c</Color>
+	<Color x:Key="BrandColorsNeuroReda50Dark">#80f2495c</Color>
+	<Color x:Key="BrandColorsNeuroRedv200Dark">#262020</Color>
+	<Color x:Key="BrandColorsNeuroRedv900Dark">#f1bfb9</Color>
+	<Color x:Key="BrandColorsSpecialGreena20(NoOpacity)Dark">#264439</Color>
+	<Color x:Key="BrandColorsSpecialWaveColorDark">#40252526</Color>
+	<Color x:Key="ButtonUniversalContentInactiveWLDark">#80f5f6f7</Color>
+	<Color x:Key="ButtonUniversalbgHoldWLDark">#252526</Color>
+	<Color x:Key="ButtonUniversalbgInactiveWLDark">#80313133</Color>
+	<Color x:Key="ButtonUniversalbgPressedWLDark">#313133</Color>
+	<Color x:Key="ButtonAccessContentHoldWLDark">#29bf86</Color>
+	<Color x:Key="ButtonAccessContentPressedWLDark">#f5f6f7</Color>
+	<Color x:Key="ButtonAccessPrimaryContentWLDark">#f5f6f7</Color>
+	<Color x:Key="ButtonAccessPrimaryStrokeWLDark">#00f5f6f7</Color>
+	<Color x:Key="ButtonAccessPrimarybgWLDark">#0a715f</Color>
+	<Color x:Key="ButtonAccessSecondaryContentWLDark">#29bf86</Color>
+	<Color x:Key="ButtonAccessSecondaryStrokeWLDark">#00f5f6f7</Color>
+	<Color x:Key="ButtonAccessSecondarybgWLDark">#313133</Color>
+	<Color x:Key="ButtonAccessTertiaryContentWLDark">#29bf86</Color>
+	<Color x:Key="ButtonAccessTertiaryStrokeWLDark">#00f5f6f7</Color>
+	<Color x:Key="ButtonAccessTertiarybgWLDark">#1a313133</Color>
+	<Color x:Key="ButtonAssetsContentHoldDark">#64a5f5</Color>
+	<Color x:Key="ButtonAssetsContentPressedDark">#f5f6f7</Color>
+	<Color x:Key="ButtonAssetsPrimaryContentDark">#f5f6f7</Color>
+	<Color x:Key="ButtonAssetsPrimaryStrokeDark">#00ffffff</Color>
+	<Color x:Key="ButtonAssetsPrimarybgDark">#2756a6</Color>
+	<Color x:Key="ButtonAssetsSecondaryContentDark">#64a5f5</Color>
+	<Color x:Key="ButtonAssetsSecondaryStrokeDark">#00ffffff</Color>
+	<Color x:Key="ButtonAssetsSecondarybgDark">#313133</Color>
+	<Color x:Key="ButtonAssetsTertiaryContentDark">#64a5f5</Color>
+	<Color x:Key="ButtonAssetsTertiaryStrokeDark">#00ffffff</Color>
+	<Color x:Key="ButtonAssetsTertiarybgDark">#1a313133</Color>
+	<Color x:Key="ButtonDangerContentHoldWLDark">#f25567</Color>
+	<Color x:Key="ButtonDangerContentPressedWLDark">#f5f6f7</Color>
+	<Color x:Key="ButtonDangerPrimaryContentWLDark">#f5f6f7</Color>
+	<Color x:Key="ButtonDangerPrimaryStrokeWLDark">#00f5f6f7</Color>
+	<Color x:Key="ButtonDangerPrimarybgWLDark">#f2495c</Color>
+	<Color x:Key="ButtonDangerSecondaryContentWLDark">#f25567</Color>
+	<Color x:Key="ButtonDangerSecondaryStrokeWLDark">#00f25567</Color>
+	<Color x:Key="ButtonDangerSecondarybgWLDark">#313133</Color>
+	<Color x:Key="ButtonDangerTertiaryContentWLDark">#f25567</Color>
+	<Color x:Key="ButtonDangerTertiaryStrokeWLDark">#00f5f6f7</Color>
+	<Color x:Key="ButtonDangerTertiarybgWLDark">#1a313133</Color>
+	<Color x:Key="ButtonNeuroContentHoldDark">#b295e8</Color>
+	<Color x:Key="ButtonNeuroContentPressedDark">#f5f6f7</Color>
+	<Color x:Key="ButtonNeuroPrimaryContentDark">#f5f6f7</Color>
+	<Color x:Key="ButtonNeuroPrimaryStrokeDark">#00ffffff</Color>
+	<Color x:Key="ButtonNeuroPrimarybgDark">#8f40d4</Color>
+	<Color x:Key="ButtonNeuroSecondaryContentDark">#b295e8</Color>
+	<Color x:Key="ButtonNeuroSecondaryStrokeDark">#00ffffff</Color>
+	<Color x:Key="ButtonNeuroSecondarybgDark">#313133</Color>
+	<Color x:Key="ButtonNeuroTertiaryContentDark">#b295e8</Color>
+	<Color x:Key="ButtonNeuroTertiaryStrokeDark">#00ffffff</Color>
+	<Color x:Key="ButtonNeuroTertiarybgDark">#1a313133</Color>
+	<Color x:Key="ButtonNeutralContentHoldDark">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralContentPressedDark">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralContentWhitefDELDark">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralbgTertiaryDELDark">#1a313133</Color>
+	<Color x:Key="ButtonNeutralGreyContentDark">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralGreyStrokeDark">#00ffffff</Color>
+	<Color x:Key="ButtonNeutralGreybgDark">#8039393a</Color>
+	<Color x:Key="ButtonNeutralNavButtonsContentActiveWLDark">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralNavButtonsOnContainerbgActiveWLDark">#313133</Color>
+	<Color x:Key="ButtonNeutralNavButtonsbgActiveWLDark">#252526</Color>
+	<Color x:Key="ButtonNeutralPrimaryContentDark">#161617</Color>
+	<Color x:Key="ButtonNeutralPrimaryStrokeDark">#00ffffff</Color>
+	<Color x:Key="ButtonNeutralPrimarybgDark">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralSecondaryContentDark">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralSecondaryStrokeDark">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralSecondarybgDark">#1a313133</Color>
+	<Color x:Key="ButtonNeutralTertiaryContentDark">#f5f6f7</Color>
+	<Color x:Key="ButtonNeutralTertiaryStrokeDark">#00ffffff</Color>
+	<Color x:Key="ButtonNeutralTertiarybgDark">#1a313133</Color>
+	<Color x:Key="ButtonPayContentHoldDark">#a84700</Color>
+	<Color x:Key="ButtonPayContentPressedDark">#f5f6f7</Color>
+	<Color x:Key="ButtonPayPrimaryContentDark">#161617</Color>
+	<Color x:Key="ButtonPayPrimaryStrokeDark">#00ffffff</Color>
+	<Color x:Key="ButtonPayPrimarybgDark">#ffbb00</Color>
+	<Color x:Key="ButtonPaySecondaryContentDark">#ffbb00</Color>
+	<Color x:Key="ButtonPaySecondaryStrokeDark">#00ffffff</Color>
+	<Color x:Key="ButtonPaySecondarybgDark">#313133</Color>
+	<Color x:Key="ButtonPayTertiaryContentDark">#ffbb00</Color>
+	<Color x:Key="ButtonPayTertiaryStrokeDark">#00ffffff</Color>
+	<Color x:Key="ButtonPayTertiarybgDark">#1a313133</Color>
+	<Color x:Key="ContentAccessWLDark">#29bf86</Color>
+	<Color x:Key="ContentAssetsWLDark">#4995f2</Color>
+	<Color x:Key="ContentLinkWLDark">#64a5f5</Color>
+	<Color x:Key="ContentNeuroDark">#b295e8</Color>
+	<Color x:Key="ContentPayDark">#ffbb00</Color>
+	<Color x:Key="ContentPrimaryWLDark">#f5f6f7</Color>
 	<Color x:Key="ContentPrimaryInvertedDark">#161617</Color>
-	<Color x:Key="ContentPurpleDark">#b295e8</Color>
-	<Color x:Key="ContentRedDark">#f25567</Color>
-	<Color x:Key="ContentRedLightDark">#ff8f9c</Color>
-	<Color x:Key="ContentSecondaryDark">#80f5f6f7</Color>
+	<Color x:Key="ContentSecondaryWLDark">#87f5f6f7</Color>
 	<Color x:Key="ContentWhitefixedDark">#f5f6f7</Color>
-	<Color x:Key="ContentYellowDark">#ffbb00</Color>
-	<Color x:Key="FiguresStrokesBluea20Dark">#334995f2</Color>
-	<Color x:Key="FiguresStrokesBluev500Dark">#051d46</Color>
-	<Color x:Key="FiguresStrokesBluev800Dark">#2756a6</Color>
-	<Color x:Key="FiguresStrokesGreena20Dark">#3329bf86</Color>
-	<Color x:Key="FiguresStrokesGreena30Dark">#4d29bf86</Color>
-	<Color x:Key="FiguresStrokesGreenv500Dark">#002a22</Color>
-	<Color x:Key="FiguresStrokesGreenv800Dark">#0a715f</Color>
-	<Color x:Key="FiguresStrokesNBlueDark">#4995f2</Color>
-	<Color x:Key="FiguresStrokesNGreenDark">#29bf86</Color>
-	<Color x:Key="FiguresStrokesNPurpleDark">#8f40d4</Color>
-	<Color x:Key="FiguresStrokesNRedDark">#f25567</Color>
-	<Color x:Key="FiguresStrokesNYellowDark">#ffbb00</Color>
-	<Color x:Key="FiguresStrokesOrangeDark">#f18334</Color>
-	<Color x:Key="FiguresStrokesOrangea20Dark">#33f18334</Color>
-	<Color x:Key="FiguresStrokesPurplea15Dark">#268f40d4</Color>
-	<Color x:Key="FiguresStrokesPurplev300Dark">#231636</Color>
-	<Color x:Key="FiguresStrokesPurplev800Dark">#ab8ce4</Color>
-	<Color x:Key="FiguresStrokesReda20Dark">#33f2495c</Color>
-	<Color x:Key="FiguresStrokesReda50Dark">#80f2495c</Color>
-	<Color x:Key="FiguresStrokesRedv200Dark">#262020</Color>
-	<Color x:Key="FiguresStrokesRedv900Dark">#f1bfb9</Color>
-	<Color x:Key="FiguresStrokesYellowa20Dark">#33ffbb00</Color>
-	<Color x:Key="FiguresStrokesYellowv100Dark">#a84700</Color>
-	<Color x:Key="FiguresStrokesYellowv800Dark">#f8d624</Color>
-	<Color x:Key="FiguresStrokesGreyScalesBlackfDark">#161617</Color>
-	<Color x:Key="FiguresStrokesGreyScalesGreyv100Dark">#313133</Color>
-	<Color x:Key="FiguresStrokesGreyScalesGreyv250Dark">#595a5c</Color>
-	<Color x:Key="FiguresStrokesGreyScalesGreyv500Dark">#80f5f6f7</Color>
-	<Color x:Key="FiguresStrokesGreyScalesGreyv750Dark">#c9cacb</Color>
-	<Color x:Key="FiguresStrokesGreyScalesGreyv900Dark">#dedfe1</Color>
-	<Color x:Key="FiguresStrokesGreyScalesPrimaryvDark">#f5f6f7</Color>
-	<Color x:Key="FiguresStrokesGreyScalesWhitefDark">#f5f6f7</Color>
-	<Color x:Key="FiguresStrokesSpecialGreena20(NoOpacity)Dark">#264439</Color>
-	<Color x:Key="FiguresStrokesSpecialWaveColorDark">#14252526</Color>
-	<Color x:Key="InputfieldsAccentContentBlueDark">#2756a6</Color>
-	<Color x:Key="InputfieldsAccentContentGreenDark">#29bf86</Color>
-	<Color x:Key="InputfieldsAccentContentPurpleDark">#ab8ce4</Color>
-	<Color x:Key="InputfieldsAccentContentYellowDark">#ffbb00</Color>
-	<Color x:Key="InputfieldsContentContentPrimaryDark">#f5f6f7</Color>
-	<Color x:Key="InputfieldsContentContentRedv500Dark">#f25567</Color>
-	<Color x:Key="InputfieldsContentContentRedv800Dark">#ff8f9c</Color>
-	<Color x:Key="InputfieldsContentContentSecondaryDark">#80f5f6f7</Color>
-	<Color x:Key="InputfieldsSurfaceBackgroundActiveDark">#313133</Color>
-	<Color x:Key="InputfieldsSurfaceBackgroundInactiveDark">#595a5c</Color>
-	<Color x:Key="InputfieldsSurfaceStrokeGreyDark">#595a5c</Color>
-	<Color x:Key="SurfaceBackgroundDark">#161617</Color>
-	<Color x:Key="SurfaceElevation1Dark">#252526</Color>
-	<Color x:Key="SurfaceElevation2GreyDark">#313133</Color>
-	<Color x:Key="SurfaceElevation3Dark">#313133</Color>
-	<Color x:Key="SurfaceSpecialNavMenuDark">#252526</Color>
-	<Color x:Key="SurfaceSpecialOverlayDark">#33f5f6f7</Color>
-
-	<!-- Old Colors -->
-	<!-- Light Mode-->
-	<!-- Stroke, Icons, and Text-->
-	<Color x:Key="OffBlackLight">#181f25</Color>
-	<Color x:Key="OffBlack50Light">#80181f25</Color>
-	<Color x:Key="OffWhiteLight">#f5f6f7</Color>
-	<Color x:Key="AccentActiveLight">#3e776d</Color>
-	<Color x:Key="RedErrorLight">#F2495c</Color>
-	<Color x:Key="BlueLink">#4f7eac</Color>
-
-	<!-- Body, Backgrounds-->
-	<Color x:Key="BackgroundOffWhiteLight">#F5f6f7</Color>
-	<Color x:Key="BodyWhiteLight">#Fcfcfc</Color>
-	<Color x:Key="BodyContrastGrayLight">#e9ebed</Color>
-
-	<!-- Fill -->
-	<Color x:Key="AccentActiveFillLight">#3e776d</Color>
-	<Color x:Key="Accent20Light">#333E776D</Color>
-	<Color x:Key="Accent2Hold">#0B6858</Color>
-	<Color x:Key="GrayInactiveLight">#DEE0E2</Color>
-	<Color x:Key="Blue20AffirmLight">#334375B0</Color>
-	<Color x:Key="BlueLight">#4375B0</Color>
-	<Color x:Key="BlueDarkLight">#1E4E86</Color>
-	<Color x:Key="OrangeLight">#DD7C35</Color>
-	<Color x:Key="Orange20Light">#33DD7C35</Color>
-	<Color x:Key="Red20WarningLight">#33FF7585</Color>
-	<Color x:Key="RedWarningLight">#F2495C</Color>
-	<Color x:Key="WhiteLight">#F5F6F7</Color>
-	<Color x:Key="ButtonBackgroundLight">#33F4F5F7</Color>
-	<Color x:Key="Purple15Light">#268F40D4</Color>
-	<Color x:Key="PurpleLight">#8F40D4</Color>
-
-	<!-- Pop ups -->
-	<Color x:Key="PopUpBodyWhiteLight">#FCFCFC</Color>
-	<Color x:Key="PopUpBackgroundLight">#DFE6E6E8</Color>
-
-	<!-- Dark Mode -->
-	<!-- Stroke, Icons, and Text-->
-	<Color x:Key="OffWhiteDark">#e5FFFFFF</Color>
-	<Color x:Key="OffWhite50Dark">#80FFFFFF</Color>
-	<Color x:Key="OffWhite30Dark">#4DFFFFFF</Color>
-	<Color x:Key="OffBlackDark">#181F25</Color>
-	<Color x:Key="AccentActiveDark">#50998C</Color>
-	<Color x:Key="RedErrorDark">#F2495C</Color>
-	<Color x:Key="BlueLinkDark">#8FADCC</Color>
-	<Color x:Key="BlueDarkDark">#5F8AB6</Color>
-
-	<!-- Body, Backgrounds-->
-	<Color x:Key="BackgroundOffBlackDark">#161617</Color>
-
-	<!-- Fill -->
-	<Color x:Key="AccentActiveFillDark">#0B6858</Color>
-	<Color x:Key="Accent20Dark">#3350998C</Color>
-	<Color x:Key="Accent2HoldDark">#628C85</Color>
-	<Color x:Key="GrayInactiveDark">#DEE0E2</Color>
-	<Color x:Key="Blue20AffirmDark">#338FADCC</Color>
-	<Color x:Key="BlueDark">#8FADCC</Color>
-	<Color x:Key="Red20WarningDark">#33FF7585</Color>
-	<Color x:Key="RedWarningDark">#F2495C</Color>
-	<Color x:Key="ButtonBackgroundDark">#33F4F5F7</Color>
-	<Color x:Key="Purple15Dark">#268F40D4</Color>
-	<Color x:Key="PurpleDark">#8F40D4</Color>
-
-	<!-- Pop ups -->
-	<Color x:Key="PopUpElevation1Dark">#252526</Color>
-	<Color x:Key="PopUpElevation2Dark">#313133</Color>
-	<Color x:Key="PopUpElevation3Dark">#3E3E40</Color>
-	<Color x:Key="PopUpElevation4Dark">#4A4A4D</Color>
-	<Color x:Key="PopUpBackgroundDark">#DFE6E6E8</Color>
-
-	<!-- Neuro Colors -->
-	<!-- Light Mode -->
-	<Color x:Key="NeuroBlackLight">#181F25</Color>
-	<Color x:Key="NeuroGreenLight">#3E776D</Color>
-	<Color x:Key="NeuroBlueLight">#4375B0</Color>
-	<Color x:Key="NeuroPurpleLight">#A87AB0</Color>
-	<Color x:Key="NeuroOrangeLight">#F75606</Color>
-	<Color x:Key="NeuroYellowLight">#FFBB00</Color>
-
-	<!-- Dark Mode -->
-	<Color x:Key="NeuroWhiteDark">#E7E7E7</Color>
-	<Color x:Key="NeuroGreenDark">#50998C</Color>
-	<Color x:Key="NeuroBlueDark">#5F8AB6</Color>
-	<Color x:Key="NeuroPurleDark">#A87AB0</Color>
-	<Color x:Key="NeuroOrangeDark">#F75606</Color>
-	<Color x:Key="NeuroYellowDark">#FFBB00</Color>
-
-
-	<!-- Old -->
-	<!-- Pages -->
-	<Color x:Key="PrimaryBackgroundLight">#FFF5F6F7</Color>
-	<Color x:Key="PrimaryForegroundLight">#FF181F25</Color>
-	<Color x:Key="SecondaryBackgroundLight">#FFFCFCFC</Color>
-	<Color x:Key="SecondaryForegroundLight">#FF181F25</Color>
-
-	<Color x:Key="PrimaryBackgroundDark">#FF161617</Color>
-	<Color x:Key="PrimaryForegroundDark">#E5FFFFFF</Color>
-	<Color x:Key="SecondaryBackgroundDark">#3E3E40</Color>
-	<Color x:Key="SecondaryForegroundDark">#EBEBEC</Color>
-
-	<Color x:Key="Elevation1BackgroundLight">#FFFCFCFC</Color>
-	<Color x:Key="Elevation2BackgroundLight">#FFF5F6F7</Color>
-	<Color x:Key="Elevation1ForegroundLight">#FF181F25</Color>
-	<Color x:Key="Elevation2ForegroundLight">#FF181F25</Color>
-
-	<Color x:Key="Elevation1BackgroundDark">#FF313133</Color>
-	<Color x:Key="Elevation2BackgroundDark">#FF3E3E40</Color>
-	<Color x:Key="Elevation1ForegroundDark">#E5FFFFFF</Color>
-	<Color x:Key="Elevation2ForegroundDark">#E5FFFFFF</Color>
-
-
-	<Color x:Key="AccentBackgroundLight">#1A4375B0</Color>
-	<Color x:Key="AccentBackgroundDark">#338FADCC</Color>
-
-	<Color x:Key="AccentForegroundLight">#4F7EAC</Color>
-	<Color x:Key="AccentForegroundDark">#8FADCC</Color>
-
-	<Color x:Key="InsertedBorderLight">#4000A000</Color>
-	<Color x:Key="InsertedBackgroundLight">#2000A000</Color>
-	<Color x:Key="DeletedBorderLight">#40A00000</Color>
-	<Color x:Key="DeletedBackgroundLight">#20A00000</Color>
-
-	<Color x:Key="InsertedBorderDark">#4000A000</Color>
-	<Color x:Key="InsertedBackgroundDark">#2000A000</Color>
-	<Color x:Key="DeletedBorderDark">#40A00000</Color>
-	<Color x:Key="DeletedBackgroundDark">#20A00000</Color>
-
-	<!-- Text -->
-	<Color x:Key="MutedTextLight">#80181F25</Color>
-	<Color x:Key="MutedTextDark">#80FFFFFF</Color>
-
-	<!-- List Items -->
-	<Color x:Key="NormalBackgroundLight">#F5F6F7</Color>
-	<Color x:Key="NormalForegroundLight">#181F25</Color>
-	<Color x:Key="SelectedBackgroundLight">#181F25</Color>
-	<Color x:Key="SelectedForegroundLight">#F5F6F7</Color>
-
-	<Color x:Key="NormalBackgroundDark">#3E3E40</Color>
-	<Color x:Key="NormalForegroundDark">#EBEBEC</Color>
-	<Color x:Key="SelectedBackgroundDark">#E0E4E7</Color>
-	<Color x:Key="SelectedForegroundDark">#161617</Color>
-
-	<Color x:Key="NormalInfoForegroundLight">#878A8E</Color>
-	<Color x:Key="SelectedInfoForegroundLight">#F5F6F7</Color>
-
-	<Color x:Key="NormalInfoForegroundDark">#787879</Color>
-	<Color x:Key="SelectedInfoForegroundDark">#161617</Color>
-
-	<!-- Transparent Buttons -->
-	<Color x:Key="EnabledTransparentButtonBackgroundLight">#333E776D</Color>
-	<Color x:Key="EnabledTransparentButtonForegroundLight">#3E776D</Color>
-	<Color x:Key="DisabledTransparentButtonBackgroundLight">#DEE0E2</Color>
-	<Color x:Key="DisabledTransparentButtonForegroundLight">#7B7F83</Color>
-
-	<Color x:Key="EnabledTransparentButtonBackgroundDark">#FF313133</Color>
-	<Color x:Key="EnabledTransparentButtonForegroundDark">#E5FFFFFF</Color>
-	<Color x:Key="DisabledTransparentButtonBackgroundDark">#252526</Color>
-	<Color x:Key="DisabledTransparentButtonForegroundDark">#666667</Color>
-
-	<!-- Filled Buttons -->
-	<Color x:Key="EnabledFilledButtonBackgroundLight">#3E776D</Color>
-	<Color x:Key="EnabledFilledButtonForegroundLight">#F5F6F7</Color>
-	<Color x:Key="DisabledFilledButtonBackgroundLight">#DEE0E2</Color>
-	<Color x:Key="DisabledFilledButtonForegroundLight">#7B7F83</Color>
-
-	<Color x:Key="EnabledFilledButtonBackgroundDark">#50998C</Color>
-	<Color x:Key="EnabledFilledButtonForegroundDark">#F5F6F7</Color>
-	<Color x:Key="DisabledFilledButtonBackgroundDark">#252526</Color>
-	<Color x:Key="DisabledFilledButtonForegroundDark">#666667</Color>
-
-
-	<!-- Outlined Buttons -->
-	<Color x:Key="EnabledOutlinedButtonBackgroundLight">Transparent</Color>
-	<Color x:Key="EnabledOutlinedButtonForegroundLight">#181F25</Color>
-	<Color x:Key="DisabledOutlinedButtonBackgroundLight">Transparent</Color>
-	<Color x:Key="DisabledOutlinedButtonForegroundLight">#878A8E</Color>
-
-	<Color x:Key="EnabledOutlinedButtonBackgroundDark">Transparent</Color>
-	<Color x:Key="EnabledOutlinedButtonForegroundDark">#E7E7E7</Color>
-	<Color x:Key="DisabledOutlinedButtonBackgroundDark">Transparent</Color>
-	<Color x:Key="DisabledOutlinedButtonForegroundDark">#5B5B5C</Color>
-
-	<!-- Edits -->
-	<Color x:Key="NormalEditBackgroundLight">#F5F6F7</Color>
-	<Color x:Key="NormalEditForegroundLight">#181F25</Color>
-	<Color x:Key="NormalEditPlaceholderLight">#878A8E</Color>
-
-	<Color x:Key="NormalEditBackgroundDark">#3E3E40</Color>
-	<Color x:Key="NormalEditForegroundDark">#EBEBEC</Color>
-	<Color x:Key="NormalEditPlaceholderDark">#787879</Color>
-
-	<Color x:Key="ValidatedEditLight">#3E776D</Color>
-	<Color x:Key="ValidatedEditDark">#50998C</Color>
-
-	<Color x:Key="InvalidatedEditLight">#F2495C</Color>
-	<Color x:Key="InvalidatedEditDark">#FF7585</Color>
-
-	<!-- Paths -->
-	<Color x:Key="CurvedLinesLight">#FCFCFD</Color>
-	<Color x:Key="CurvedLinesDark">#0F0F10</Color>
-
-	<!-- Alerts -->
-	<Color x:Key="AlertLight">Red</Color>
-	<Color x:Key="AlertDark">#ff453a</Color>
-
-	<!-- Error Background -->
-	<Color x:Key="ErrorBackgroundLight">Salmon</Color>
-	<Color x:Key="ErrorBackgroundDark">LightSalmon</Color>
-
-	<!-- Links -->
-	<Color x:Key="ClickableLight">Blue</Color>
-	<Color x:Key="ClickableDark">#4ac4ff</Color>
-
-	<!-- Chat -->
-
-	<Color x:Key="SendMessageBackgroundLight">LightYellow</Color>
-	<Color x:Key="SendMessageBorderLight">Yellow</Color>
-
-	<Color x:Key="ReceiveMessageBackgroundLight">LightBlue</Color>
-	<Color x:Key="ReceiveMessageBorderLight">SkyBlue</Color>
-
-	<Color x:Key="SendMessageBackgroundDark">#606020</Color>
-	<Color x:Key="SendMessageBorderDark">#808030</Color>
-
-	<Color x:Key="ReceiveMessageBackgroundDark">#206060</Color>
-	<Color x:Key="ReceiveMessageBorderDark">#308080</Color>
-
-	<!-- Password -->
-	<Color x:Key="WeakPasswordBarBackgroundLight">#33F2495C</Color>
-	<Color x:Key="WeakPasswordBarBackgroundDark">#55FF7585</Color>
-	<Color x:Key="WeakPasswordBarForegroundLight">#F2495C</Color>
-	<Color x:Key="WeakPasswordBarForegroundDark">#FF7585</Color>
-
-	<Color x:Key="MediumPasswordBarBackgroundLight">#33F75606</Color>
-	<Color x:Key="MediumPasswordBarBackgroundDark">#55FFA172</Color>
-	<Color x:Key="MediumPasswordBarForegroundLight">#F98317</Color>
-	<Color x:Key="MediumPasswordBarForegroundDark">#FFA172</Color>
-
-	<Color x:Key="StrongPasswordBarBackgroundLight">#333E776D</Color>
-	<Color x:Key="StrongPasswordBarBackgroundDark">#5550998C</Color>
-	<Color x:Key="StrongPasswordBarForegroundLight">#3E776D</Color>
-	<Color x:Key="StrongPasswordBarForegroundDark">#50998C</Color>
-
-	<Color x:Key="HeadingForeground">White</Color>
-	<Color x:Key="HeadingBackground">#202E40</Color>
-	<Color x:Key="PendingColor">Salmon</Color>
-
-
+	<Color x:Key="InputFieldsAccentContentAccessWLDark">#29bf86</Color>
+	<Color x:Key="InputFieldsAccentContentAssetsDark">#64a5f5</Color>
+	<Color x:Key="InputFieldsAccentContentNeuroDark">#ab8ce4</Color>
+	<Color x:Key="InputFieldsAccentContentYellowDark">#ffbb00</Color>
+	<Color x:Key="InputFieldsContentDangerv500Dark">#f25567</Color>
+	<Color x:Key="InputFieldsContentDangerv800Dark">#ff8f9c</Color>
+	<Color x:Key="InputFieldsContentPrimaryDark">#f5f6f7</Color>
+	<Color x:Key="InputFieldsContentSecondaryDark">#80f5f6f7</Color>
+	<Color x:Key="InputFieldsContentSubheadDark">#80f5f6f7</Color>
+	<Color x:Key="InputFieldsSurfaceBackgroundActiveDark">#313133</Color>
+	<Color x:Key="InputFieldsSurfaceBackgroundInactiveDark">#595a5c</Color>
+	<Color x:Key="InputFieldsSurfaceStrokeDark">#595a5c</Color>
+	<Color x:Key="InputFieldsSurfaceStrokeInactiveDark">#595a5c</Color>
+	<Color x:Key="NavMenuBody1WLDark">#252526</Color>
+	<Color x:Key="NavMenuBody2WLDark">#252526</Color>
+	<Color x:Key="NavMenuContentActiveWLDark">#29bf86</Color>
+	<Color x:Key="NavMenuContentInactiveWLDark">#87f5f6f7</Color>
+	<Color x:Key="NavMenuStroke1WLDark">#313133</Color>
+	<Color x:Key="NavMenuStroke2WLDark">#313133</Color>
+	<Color x:Key="NavMenubgActiveWLDark">#3329bf86</Color>
+	<Color x:Key="SurfaceBackgroundWLDark">#161617</Color>
+	<Color x:Key="SurfaceDividerWLDark">#313133</Color>
+	<Color x:Key="SurfaceElevation1WLDark">#252526</Color>
+	<Color x:Key="SurfaceElevation2WLDark">#313133</Color>
+	<Color x:Key="SurfaceElevation3WLDark">#313133</Color>
+	<Color x:Key="SurfaceShadowColorWLDark">#00ffffff</Color>
+	<Color x:Key="SurfaceStrokeWLDark">#00313133</Color>
+	<Color x:Key="SurfaceSpecialScrimDark">#33f5f6f7</Color>
+	<Color x:Key="WLToastsAndPillsContentAccent2WLDark">#b295e8</Color>
+	<Color x:Key="WLToastsAndPillsContentDangerWLDark">#f25567</Color>
+	<Color x:Key="WLToastsAndPillsContentInfoWLDark">#4995f2</Color>
+	<Color x:Key="WLToastsAndPillsContentNeutralv300WLDark">#87f5f6f7</Color>
+	<Color x:Key="WLToastsAndPillsContentNeutralv750WLDark">#87f5f6f7</Color>
+	<Color x:Key="WLToastsAndPillsContentSuccessWLDark">#29bf86</Color>
+	<Color x:Key="WLToastsAndPillsContentWarningWLDark">#f18334</Color>
+	<Color x:Key="WLToastsAndPillsFigureAccent2WLDark">#8f40d4</Color>
+	<Color x:Key="WLToastsAndPillsFigureDangerLightWLDark">#ff8f9c</Color>
+	<Color x:Key="WLToastsAndPillsFigureDangerWLDark">#f2495c</Color>
+	<Color x:Key="WLToastsAndPillsFigureInfoWLDark">#4995f2</Color>
+	<Color x:Key="WLToastsAndPillsFigureSuccessWLDark">#29bf86</Color>
+	<Color x:Key="WLToastsAndPillsFigureWarningWLDark">#f18334</Color>
+	<Color x:Key="WLToastsAndPillsbgAccent2WLDark">#268f40d4</Color>
+	<Color x:Key="WLToastsAndPillsbgDangerWLDark">#33f2495c</Color>
+	<Color x:Key="WLToastsAndPillsbgInfoWLDark">#4d609be3</Color>
+	<Color x:Key="WLToastsAndPillsbgNeutralv300WLDark">#313133</Color>
+	<Color x:Key="WLToastsAndPillsbgNeutralv750WLDark">#313133</Color>
+	<Color x:Key="WLToastsAndPillsbgSuccessWLDark">#3329bf86</Color>
+	<Color x:Key="WLToastsAndPillsbgWarningWLDark">#33f18334</Color>
+	
 </ResourceDictionary>

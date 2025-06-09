@@ -13,7 +13,7 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Things.ViewThing"
 							 xmlns:things="clr-namespace:NeuroAccessMaui.UI.Pages.Things"
 							 xmlns:model2="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
@@ -85,7 +85,7 @@
 												 Text="{Binding Path=Description}" Style="{StaticResource ClickableValueLabel}"/>
 										<Path Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
 												Data="{Binding Icon}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
-												Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}"/>
+												Fill="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"/>
 										<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
 												 Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
 												 Style="{StaticResource AlertLabel}"/>
@@ -110,7 +110,7 @@
 							<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Padding="8,3,8,3" IsVisible="{Binding HasPendingChatMessages}"
 						   HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource SmallLeftRightMargins}"
 						   Style="{StaticResource AlertFrame}">
-								<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}" Text="{Binding NrPendingChatMessages}" Padding="1"/>
+								<Label FontSize="Caption" TextColor="{StaticResource SurfaceBackgroundWLLight}" Text="{Binding NrPendingChatMessages}" Padding="1"/>
 							</Frame>
 						</Grid>
 						<controls:TextButton LabelData="{l:Localize ConnectToDevice}" Command="{Binding Path=AddToListCommand}"

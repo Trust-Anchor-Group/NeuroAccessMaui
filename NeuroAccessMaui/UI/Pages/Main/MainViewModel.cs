@@ -101,7 +101,10 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		[RelayCommand(CanExecute = nameof(CanScanQrCode))]
 		private async Task ScanQrCode()
 		{
-			await Services.UI.QR.QrCode.ScanQrCodeAndHandleResult();
+			await MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				await Services.UI.QR.QrCode.ScanQrCodeAndHandleResult();
+			});
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
@@ -143,6 +146,15 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		public static async Task OpenFlyout()
+		{
+			await MainThread.InvokeOnMainThreadAsync(() =>
+				Shell.Current.FlyoutIsPresented = true
+			);
+
 		}
 	}
 }

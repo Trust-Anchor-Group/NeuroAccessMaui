@@ -12,7 +12,7 @@
 							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
 
 	<Grid x:Name="TheMainGrid" RowDefinitions="auto,*" ColumnDefinitions="*" 
-		BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+		BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background Grid.RowSpan="2" />
 
@@ -28,7 +28,7 @@
 			<controls:TemplatedButton x:Name="LanguageButton" VerticalOptions="Start" HorizontalOptions="End" Command="{Binding ChangeLanguageCommand}">
 				<VerticalStackLayout>
 					<Path x:Name="InnerPath" Grid.Row="0" HorizontalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-							Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" 
+							Fill="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" 
 							Data="{x:Static ui:Geometries.LanguageSelectButtonPath}"/>
 
 					<Label x:Name="InnerLabel" Grid.Row="1" Text="{Binding SelectedLanguage.MyNativeName}" />
@@ -39,8 +39,8 @@
 						<VisualState Name="Normal" />
 						<VisualState Name="Disabled">
 							<VisualState.Setters>
-								<Setter Property="Label.TextColor" TargetName="InnerLabel" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
-								<Setter Property="Path.Fill" TargetName="InnerPath" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+								<Setter Property="Label.TextColor" TargetName="InnerLabel" Value="{AppThemeBinding Light={StaticResource ButtonUniversalContentInactiveWLLight}, Dark={StaticResource ButtonUniversalContentInactiveWLDark}}" />
+								<Setter Property="Path.Fill" TargetName="InnerPath" Value="{AppThemeBinding Light={StaticResource ButtonUniversalContentInactiveWLLight}, Dark={StaticResource ButtonUniversalContentInactiveWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>

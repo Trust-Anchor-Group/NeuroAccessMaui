@@ -27,7 +27,7 @@
 						HeightRequest="{Binding CheckmarkBackgroundSize}"
 						HasShadow="False"
 						CornerRadius="{Binding CheckmarkBackgroundCornerRadius}"
-						BackgroundColor="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}"
+						BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgSuccessWLLight}, Dark={StaticResource WLToastsAndPillsbgSuccessWLDark}}"
 						HorizontalOptions="Center"
 						Margin="{StaticResource LargeBottomMargins}">
 						<Path
@@ -37,7 +37,7 @@
 							WidthRequest="{Binding CheckmarkIconSize}"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
-							Fill="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+							Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentSuccessWLLight}, Dark={StaticResource WLToastsAndPillsContentSuccessWLLight}}" />
 					</Frame>
 					
 				</VerticalStackLayout>

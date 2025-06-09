@@ -305,7 +305,7 @@
 														 ExternalNoteXmlTemplate="{StaticResource ExternalNoteXml}"
 														 DefaultTemplate="{StaticResource OtherEvents}"/>
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
