@@ -335,15 +335,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 					return;
 
 				//Update the network password
-				string NewNetworkPassword = ServiceRef.CryptoService.CreateRandomPassword();
-				if (!await ServiceRef.XmppService.ChangePassword(NewNetworkPassword))
-				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.UnableToChangePassword)]);
-					return;
-				}
-				ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewNetworkPassword, string.Empty);
+				await ServiceRef.XmppService.TryGenerateAndChangePassword();
 
 				//Update the local password
 				GoToRegistrationStep(RegistrationStep.DefinePassword);
@@ -352,10 +344,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				//Listen for completed event
 				WeakReferenceMessenger.Default.Register<RegistrationPageMessage>(this, this.HandleRegistrationPageMessage);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 

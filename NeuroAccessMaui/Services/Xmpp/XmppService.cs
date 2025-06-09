@@ -62,11 +62,13 @@ using Waher.Networking.XMPP.Push;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Networking.XMPP.StanzaErrors;
+using Waher.Networking.XMPP.StreamErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Temporary;
+using Waher.Script.Constants;
 using Waher.Security.JWT;
 using Waher.Things;
 using Waher.Things.SensorData;
@@ -98,6 +100,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private PepClient? pepClient;
 		private HttpxClient? httpxClient;
 		private Timer? reconnectTimer;
+		private Timer? updatePasswordTimer;
 		private string? domainName;
 		private string? accountName;
 		private string? passwordHash;
@@ -858,6 +861,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			if (e is ObjectDisposedException)
 				this.LatestConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
+			else if (e is Waher.Networking.XMPP.AuthenticationErrors.NotAuthorizedException || e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
+			{
+				this.reconnectTimer?.Dispose();
+				this.reconnectTimer = null;
+				this.LatestConnectionError = e.Message;
+			}
 			else
 				this.LatestConnectionError = e.Message;
 
@@ -938,7 +947,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 							this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
 					}
 
-					ServiceRef.LogService.AddListener(this.xmppFilteredEventSink!);
+					// Check is xmpp password needs updating.
+					if (ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating())
+						await ServiceRef.XmppService.TryGenerateAndChangePassword();
+
+					if(this.xmppFilteredEventSink is not null)
+						ServiceRef.LogService.AddListener(this.xmppFilteredEventSink);
 
 					await ServiceRef.PushNotificationService.CheckPushNotificationToken();
 					break;
@@ -1032,9 +1046,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			Task OnConnectionError(object _, Exception e)
 			{
+				//TODO: Handle stream error not authenticated
+				/* if(e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
+				if (e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException NotAuthor)
+				{
+					Go to page / open popup with info and actions
+				}
+				*/
 				if (e is ObjectDisposedException)
 					ConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
-				else if (e is ConflictException ConflictInfo)
+				else if (e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
+				{
+					this.reconnectTimer?.Dispose();
+					this.reconnectTimer = null;
+				}
+				else if (e is Waher.Networking.XMPP.StanzaErrors.ConflictException ConflictInfo)
 					Alternatives = ConflictInfo.Alternatives;
 				else
 					ConnectionError = e.Message;
@@ -1216,6 +1242,63 @@ namespace NeuroAccessMaui.Services.Xmpp
 			}, null);
 
 			return PasswordChanged.Task;
+		}
+
+		/// <summary>
+		/// Generates and changes the password of the account. This method is safe to use but does not guarantee that the password is changed.
+		/// Should the change fail, a flag will be set in the tagprofile, which is checked when an xmpp connection is established.
+		/// If the flag is set, the app will try to update the xmpp password again.
+		/// </summary>
+		/// <returns>If change was successful</returns>
+		public async Task<bool> TryGenerateAndChangePassword()
+		{
+			bool ChangeSucceeded = false;
+
+			try
+			{
+				string NewPassword = ServiceRef.CryptoService.CreateRandomPassword();
+				if (await this.ChangePassword(NewPassword))
+				{
+					ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewPassword, string.Empty);
+					ChangeSucceeded = true;
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+			}
+
+			// Update the profile & timer based on success/failure:
+			ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(!ChangeSucceeded);
+			if (ChangeSucceeded)
+			{
+				this.updatePasswordTimer?.Dispose();
+				this.updatePasswordTimer = null;
+			}
+			else
+			{
+				this.RecreateUpdatePasswordTimer();
+			}
+
+			return ChangeSucceeded;
+		}
+
+
+		private async void UpdatePasswordTimer_Tick(object? _)
+		{
+			if (this.xmppClient is null)
+				return;
+
+			if (!ServiceRef.NetworkService.IsOnline)
+				return;
+
+			await this.TryGenerateAndChangePassword();
+		}
+
+		private void RecreateUpdatePasswordTimer()
+		{
+			this.updatePasswordTimer?.Dispose();
+			this.updatePasswordTimer = new Timer(this.UpdatePasswordTimer_Tick, null, Constants.Intervals.Reconnect, Constants.Intervals.Reconnect);
 		}
 
 		#endregion
