@@ -51,11 +51,10 @@
 			  RowSpacing="{StaticResource MediumSpacing}"
 			  RowDefinitions="auto,auto"
 			  ColumnDefinitions="auto,auto">
-			<controls:ImageButton
+			<controls:SvgButton
 				Grid.Row="0" Grid.Column="0"
-				HorizontalOptions="Center"
-				Clicked="OnFlyoutButtonClicked"
-				PathData="{x:Static ui:Geometries.HamburgerIconPath}"
+				Command="{Binding OpenFlyoutCommand}"
+				SvgSource="hamburger.svg"
 				Style="{StaticResource IconButton}"/>
 
 			<!-- TODO: Enable when implemented
