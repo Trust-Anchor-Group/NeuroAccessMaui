@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui.Markup;
 using NeuroAccessMaui.UI.Core;
+using Waher.Script.Functions.Strings;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -35,7 +36,6 @@ namespace NeuroAccessMaui.UI.Controls
 			nameof(LabelText),
 			typeof(string),
 			typeof(SvgButton),
-			defaultValue: string.Empty,
 			propertyChanged: OnLabelTextChanged);
 
 		public static readonly BindableProperty LabelStyleProperty = BindableProperty.Create(
@@ -203,7 +203,7 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				Text = this.LabelText,
 				Style = this.LabelStyle,
-				IsVisible = this.LabelText != string.Empty
+				IsVisible = !string.IsNullOrEmpty(this.LabelText)
 			};
 			this.innerGrid = new()
 			{
@@ -219,8 +219,8 @@ namespace NeuroAccessMaui.UI.Controls
 				},
 			};
 
-			this.innerGrid.Add(this.innerSvg);
 			this.innerGrid.Add(this.innerLabel);
+			this.innerGrid.Add(this.innerSvg);
 
 			switch (this.LabelPosition)
 			{
@@ -263,6 +263,12 @@ namespace NeuroAccessMaui.UI.Controls
 				Style = this.BorderStyle,
 				Content = this.innerGrid
 			};
+
+			// For some reason the grid calculates its layout as if is-visible was true, even it is not.
+			// This forces the grid to re-evaluate its layout and take is-visible into account properly.
+			string Bak = this.LabelText;
+			this.LabelText = "";
+			this.LabelText = Bak;
 
 			this.Content = this.innerBorder;
 		}
