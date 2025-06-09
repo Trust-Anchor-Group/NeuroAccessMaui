@@ -79,7 +79,7 @@ namespace NeuroAccessMaui.UI.Controls
 			SvgButton Button = (SvgButton)Bindable;
 			Button.innerLabel.Text = (string)NewValue;
 
-			if (Button.innerLabel.Text == string.Empty)
+			if (string.IsNullOrEmpty(Button.innerLabel.Text))
 			{
 				Button.innerGrid.RowSpacing = 0;
 				Button.innerGrid.ColumnSpacing = 0;
@@ -88,6 +88,41 @@ namespace NeuroAccessMaui.UI.Controls
 			else
 			{
 				Button.innerLabel.IsVisible = true;
+				switch (Button.LabelPosition)
+				{
+					case LabelPosition.Top:
+						Button.innerLabel.Row(0);
+						Button.innerLabel.Column(0);
+						Button.innerSvg.Row(1);
+						Button.innerSvg.Column(0);
+						Button.innerGrid.ColumnSpacing = 0;
+						Button.innerGrid.RowSpacing = 8;
+						break;
+					case LabelPosition.Bottom:
+						Button.innerLabel.Row(1);
+						Button.innerLabel.Column(0);
+						Button.innerSvg.Row(0);
+						Button.innerSvg.Column(0);
+						Button.innerGrid.ColumnSpacing = 0;
+						Button.innerGrid.RowSpacing = 8;
+						break;
+					case LabelPosition.Left:
+						Button.innerLabel.Column(0);
+						Button.innerLabel.Row(0);
+						Button.innerSvg.Column(1);
+						Button.innerSvg.Row(0);
+						Button.innerGrid.ColumnSpacing = 8;
+						Button.innerGrid.RowSpacing = 0;
+						break;
+					case LabelPosition.Right:
+						Button.innerLabel.Column(1);
+						Button.innerLabel.Row(0);
+						Button.innerSvg.Column(0);
+						Button.innerSvg.Row(0);
+						Button.innerGrid.ColumnSpacing = 8;
+						Button.innerGrid.RowSpacing = 0;
+						break;
+				}
 			}
 		}
 
@@ -99,7 +134,6 @@ namespace NeuroAccessMaui.UI.Controls
 		public static void OnLabelPositionChanged(BindableObject Bindable, object OldValue, object NewValue)
 		{
 			SvgButton Button = (SvgButton)Bindable;
-			if (Button.LabelText == string.Empty) return;
 
 			LabelPosition NewPosition = (LabelPosition)NewValue;
 			Button.LabelPosition = NewPosition;
@@ -138,6 +172,12 @@ namespace NeuroAccessMaui.UI.Controls
 					Button.innerGrid.ColumnSpacing = 8;
 					Button.innerGrid.RowSpacing = 0;
 					break;
+			}
+
+			if (string.IsNullOrEmpty(Button.LabelText))
+			{
+				Button.innerGrid.ColumnSpacing = 0;
+				Button.innerGrid.RowSpacing = 0;
 			}
 		}
 
@@ -202,8 +242,7 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerLabel = new()
 			{
 				Text = this.LabelText,
-				Style = this.LabelStyle,
-				IsVisible = !string.IsNullOrEmpty(this.LabelText)
+				Style = this.LabelStyle
 			};
 			this.innerGrid = new()
 			{
@@ -222,40 +261,49 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerGrid.Add(this.innerLabel);
 			this.innerGrid.Add(this.innerSvg);
 
-			switch (this.LabelPosition)
+			if (string.IsNullOrEmpty(this.LabelText))
 			{
-				case LabelPosition.Top:
-					this.innerLabel.Row(0);
-					this.innerLabel.Column(0);
-					this.innerSvg.Row(1);
-					this.innerSvg.Column(0);
-					this.innerGrid.ColumnSpacing = 0;
-					this.innerGrid.RowSpacing = 8;
-					break;
-				case LabelPosition.Bottom:
-					this.innerLabel.Row(1);
-					this.innerLabel.Column(0);
-					this.innerSvg.Row(0);
-					this.innerSvg.Column(0);
-					this.innerGrid.ColumnSpacing = 0;
-					this.innerGrid.RowSpacing = 8;
-					break;
-				case LabelPosition.Left:
-					this.innerLabel.Column(0);
-					this.innerLabel.Row(0);
-					this.innerSvg.Column(1);
-					this.innerSvg.Row(0);
-					this.innerGrid.ColumnSpacing = 8;
-					this.innerGrid.RowSpacing = 0;
-					break;
-				case LabelPosition.Right:
-					this.innerLabel.Column(1);
-					this.innerLabel.Row(0);
-					this.innerSvg.Column(0);
-					this.innerSvg.Row(0);
-					this.innerGrid.ColumnSpacing = 8;
-					this.innerGrid.RowSpacing = 0;
-					break;
+				this.innerGrid.RowSpacing = 0;
+				this.innerGrid.ColumnSpacing = 0;
+				this.innerLabel.IsVisible = false;
+			}
+			else
+			{
+				switch (this.LabelPosition)
+				{
+					case LabelPosition.Top:
+						this.innerLabel.Row(0);
+						this.innerLabel.Column(0);
+						this.innerSvg.Row(1);
+						this.innerSvg.Column(0);
+						this.innerGrid.ColumnSpacing = 0;
+						this.innerGrid.RowSpacing = 8;
+						break;
+					case LabelPosition.Bottom:
+						this.innerLabel.Row(1);
+						this.innerLabel.Column(0);
+						this.innerSvg.Row(0);
+						this.innerSvg.Column(0);
+						this.innerGrid.ColumnSpacing = 0;
+						this.innerGrid.RowSpacing = 8;
+						break;
+					case LabelPosition.Left:
+						this.innerLabel.Column(0);
+						this.innerLabel.Row(0);
+						this.innerSvg.Column(1);
+						this.innerSvg.Row(0);
+						this.innerGrid.ColumnSpacing = 8;
+						this.innerGrid.RowSpacing = 0;
+						break;
+					case LabelPosition.Right:
+						this.innerLabel.Column(1);
+						this.innerLabel.Row(0);
+						this.innerSvg.Column(0);
+						this.innerSvg.Row(0);
+						this.innerGrid.ColumnSpacing = 8;
+						this.innerGrid.RowSpacing = 0;
+						break;
+				}
 			}
 
 			this.innerBorder = new()
@@ -263,12 +311,6 @@ namespace NeuroAccessMaui.UI.Controls
 				Style = this.BorderStyle,
 				Content = this.innerGrid
 			};
-
-			// For some reason the grid calculates its layout as if is-visible was true, even it is not.
-			// This forces the grid to re-evaluate its layout and take is-visible into account properly.
-			string Bak = this.LabelText;
-			this.LabelText = "";
-			this.LabelText = Bak;
 
 			this.Content = this.innerBorder;
 		}

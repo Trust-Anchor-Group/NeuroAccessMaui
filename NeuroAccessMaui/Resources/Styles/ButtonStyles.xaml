@@ -394,7 +394,7 @@
 
 	<!-- Icon Button -->
 	<Style x:Key="IconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border" BasedOn="{StaticResource BorderSet}">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundLight}, Dark={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundDark}}"/>
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsbgActiveWLDark}}"/>
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}"/>
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="StrokeShape">
@@ -404,7 +404,7 @@
 
 	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
 		<Setter Property="BorderStyle" Value="{StaticResource IconButtonBorder}" />
-		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
+		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsContentActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsContentActiveWLDark}}" />
 		<Setter Property="SvgAspect" Value="AspectFit"/>
 	</Style>
 
