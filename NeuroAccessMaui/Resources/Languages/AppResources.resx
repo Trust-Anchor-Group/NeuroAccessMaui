@@ -2615,6 +2615,9 @@
   <data name="CompleteIdButton" xml:space="preserve">
     <value>Complete your personal ID</value>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
   <data name="ClientMessageMissingCountry" xml:space="preserve">
     <value>Application does not contain country information</value>
   </data>
