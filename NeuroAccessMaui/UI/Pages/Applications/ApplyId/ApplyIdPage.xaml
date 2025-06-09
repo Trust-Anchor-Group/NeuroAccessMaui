@@ -458,9 +458,8 @@
 
 
 				<!--  Personal Information  -->
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}"
-										 Padding="{StaticResource SmallMargins}">
+				<Border Style="{StaticResource BorderSet}">
+					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
 							   Text="{l:Localize PersonalInformation}"/>
 						<Label IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
@@ -729,11 +728,11 @@
 									 Text="{Binding Path=BirthDate, Converter={converters:DateToString}}" />
 						</VerticalStackLayout>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 				<!--  Organizational Information  -->
-				<Frame IsVisible="{Binding Organizational}"
-						 Style="{StaticResource FrameSet}">
+				<Border IsVisible="{Binding Organizational}"
+						Style="{StaticResource BorderSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
 								 Text="{l:Localize OrganizationalInformation}" />
@@ -919,12 +918,11 @@
 									 Text="{Binding Path=OrgCountryCode, Converter={StaticResource CountryCodeToFlagAndNameHyphenIfEmpty}}" />
 						</VerticalStackLayout>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 				<!--  Contact Information  -->
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}"
-										 Padding="{StaticResource SmallMargins}">
+				<Border Style="{StaticResource BorderSet}">
+					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}"
 							   Text="{l:Localize ContactInformation}" />
 						<Label IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
@@ -962,11 +960,11 @@
 									 Text="{Binding Path=DeviceId, Converter={converters:HyphenIfEmpty}}" />
 						</VerticalStackLayout>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 				<!--  Apply  -->
-				<Frame Style="{StaticResource FrameSet}">
-					<Grid Padding="{StaticResource SmallMargins}">
+				<Border Style="{StaticResource BorderSet}">
+					<Grid>
 						<VerticalStackLayout IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 											 Spacing="{StaticResource MediumSpacing}">
 							<Label Style="{StaticResource SectionTitleLabel}"
@@ -1062,7 +1060,7 @@
 							</VerticalStackLayout>
 						</VerticalStackLayout>
 					</Grid>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>
