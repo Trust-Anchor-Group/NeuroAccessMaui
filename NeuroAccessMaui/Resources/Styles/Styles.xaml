@@ -504,14 +504,15 @@
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="FrameSet">
-		<Setter Property="HasShadow" Value="True" />
-		<Setter Property="Shadow.Radius" Value="8" />
-		<Setter Property="Shadow.Offset" Value="0,4" />
-		<Setter Property="Shadow.Brush" Value="{AppThemeBinding Light={StaticResource SurfaceShadowColorWLLight}, Dark={StaticResource SurfaceShadowColorWLDark}}" />
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}" />
 		<Setter Property="CornerRadius" Value="8" />
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
+		<Setter Property="Shadow">
+			<Setter.Value>
+				<Shadow Brush="{AppThemeBinding Light={StaticResource SurfaceShadowColorWLLight}, Dark={StaticResource SurfaceShadowColorWLDark}}" Offset="0,4" />
+			</Setter.Value>
+		</Setter>
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="FrameSubSet">
