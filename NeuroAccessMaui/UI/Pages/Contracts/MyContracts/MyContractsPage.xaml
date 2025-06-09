@@ -19,16 +19,16 @@
 
 		<DataTemplate x:Key="HeaderModelTemplate" x:DataType="objectmodel:HeaderModel">
 			<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="5,5,5,5"
-					BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceElevation3WLLight}, Dark={StaticResource SurfaceElevation3WLDark}}">
+					BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceElevation3WLDark}, Dark={StaticResource SurfaceElevation3WLLight}}">
 				<Label Grid.Column="0" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center" LineBreakMode="CharacterWrap" TextType="Text"
-						 TextColor="{AppThemeBinding Light={StaticResource ButtonNeutralSecondaryContentLight}, Dark={StaticResource ButtonNeutralSecondaryContentDark}}">
+						 TextColor="{AppThemeBinding Light={StaticResource ButtonNeutralSecondaryContentDark}, Dark={StaticResource ButtonNeutralSecondaryContentLight}}">
 					<Label.FormattedText>
 						<FormattedString>
-							<Span Text="{Binding Path=Category}" TextColor="{AppThemeBinding Light={StaticResource ButtonNeutralSecondaryContentLight}, Dark={StaticResource ButtonNeutralSecondaryContentDark}}"/>
-							<Span Text=" (" TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
+							<Span Text="{Binding Path=Category}" TextColor="{AppThemeBinding Light={StaticResource ButtonNeutralSecondaryContentDark}, Dark={StaticResource ButtonNeutralSecondaryContentLight}}"/>
+							<Span Text=" (" TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLDark}, Dark={StaticResource WLToastsAndPillsContentInfoWLLight}}"/>
 							<Span Text="{Binding Path=NrContracts}"
-									TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
-							<Span Text=")" TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
+									TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLDark}, Dark={StaticResource WLToastsAndPillsContentInfoWLLight}}"/>
+							<Span Text=")" TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLDark}, Dark={StaticResource WLToastsAndPillsContentInfoWLLight}}"/>
 						</FormattedString>
 					</Label.FormattedText>
 				</Label>
@@ -40,7 +40,7 @@
 				</Frame>
 				<Path Grid.Column="1" Grid.Row="0" HorizontalOptions="End" VerticalOptions="Center"
 						Data="{Binding Symbol}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
-						Fill="{AppThemeBinding Light={StaticResource ButtonNeutralSecondaryContentLight}, Dark={StaticResource ButtonNeutralSecondaryContentDark}}"/>
+						Fill="{AppThemeBinding Light={StaticResource ButtonNeutralSecondaryContentDark}, Dark={StaticResource ButtonNeutralSecondaryContentLight}}"/>
 			</Grid>
 		</DataTemplate>
 
@@ -101,7 +101,7 @@
 
 				<Label Text="{Binding Path=Title}" Style="{StaticResource PageTitleLabel}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
+				<Border Style="{StaticResource BorderSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 						<Label Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
 						<Label Style="{StaticResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"
@@ -123,7 +123,7 @@
 							</CollectionView.ItemsLayout>
 						</CollectionView>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

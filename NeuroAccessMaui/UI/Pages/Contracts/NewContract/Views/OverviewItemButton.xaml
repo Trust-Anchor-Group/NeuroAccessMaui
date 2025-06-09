@@ -68,7 +68,7 @@
                           Style="{StaticResource ButtonIconPath}">
 						<Path.Triggers>
 							<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Path" Value="True">
-								<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentSuccessWLLight}, Dark={StaticResource WLToastsAndPillsContentSuccessWLDark}}" />
+								<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ContentWhitefixedLight}, Dark={StaticResource ContentWhitefixedDark}}" />
 							</DataTrigger>
 						</Path.Triggers>
 					</Path>
