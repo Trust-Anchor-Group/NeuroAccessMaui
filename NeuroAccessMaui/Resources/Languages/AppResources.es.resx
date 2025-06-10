@@ -2801,4 +2801,7 @@
   <data name="SelectContractEntryDescription" xml:space="preserve">
     <value>Pegue el ID del contrato o elija de la lista</value>
   </data>
+  <data name="ScanInvitationInfo" xml:space="preserve">
+    <value>Escanea la invitación si ya has creado una cuenta por separado</value>
+  </data>
 </root>

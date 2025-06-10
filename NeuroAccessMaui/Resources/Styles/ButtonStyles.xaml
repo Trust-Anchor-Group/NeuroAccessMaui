@@ -30,6 +30,7 @@
 	</Style>
 
 	<!-- Primary -->
+	<!-- Access Button -->
 	<Style x:Key="PrimaryButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimarybgWLLight}, Dark={StaticResource ButtonAccessPrimarybgWLDark}}" />
 	</Style>
@@ -61,6 +62,31 @@
 				</VisualStateGroup>
 			</VisualStateGroupList>
 		</Setter>
+	</Style>
+
+	<!-- Svg Button -->
+	<Style x:Key="PrimaryIconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimarybgWLLight}, Dark={StaticResource ButtonAccessPrimarybgWLDark}}"/>
+		<Setter Property="Padding" Value="{StaticResource SmallMargins}"/>
+		<Setter Property="StrokeThickness" Value="{StaticResource MediumStrokeThickness}"/>
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryStrokeWLLight}, Dark={StaticResource ButtonAccessPrimaryStrokeWLDark}}"/>
+		<Setter Property="StrokeShape">
+			<RoundRectangle CornerRadius="8" />
+		</Setter>
+		<Setter Property="HorizontalOptions" Value="Fill"/>
+	</Style>
+
+	<Style x:Key="PrimaryIconButtonSvg" ApplyToDerivedTypes="False" TargetType="controls:SvgView">
+		<Setter Property="HeightRequest" Value="20"/>
+		<Setter Property="WidthRequest" Value="20"/>
+	</Style>
+
+	<Style x:Key="PrimaryIconButton" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
+		<Setter Property="BorderStyle" Value="{StaticResource PrimaryIconButtonBorder}" />
+		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
+		<Setter Property="SvgStyle" Value="{StaticResource PrimaryIconButtonSvg}"/>
+		<Setter Property="LabelStyle" Value="{StaticResource PrimaryButtonActiveLabel}"/>
+		<Setter Property="SvgAspect" Value="AspectFit"/>
 	</Style>
 
 	<!-- Secondary -->
@@ -119,18 +145,19 @@
 	</Style>
 
 	<!-- Tertiary -->
+	<!-- Access Button -->
 	<Style x:Key="TertiaryButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessTertiarybgWLLight}, Dark={StaticResource ButtonAccessTertiarybgWLDark}}" />
 	</Style>
 
-	<Style x:Key="TertiaryButtonActiveLabel" TargetType="Label">
+	<Style x:Key="TertiaryButtonActiveLabel" TargetType="Label" BasedOn="{StaticResource ButtonLabelBase}">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessTertiaryContentWLLight}, Dark={StaticResource ButtonAccessTertiaryContentWLDark}}" />
 	</Style>
 
 	<Style x:Key="TertiaryPath" TargetType="Path">
 		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonAccessTertiaryContentWLLight}, Dark={StaticResource ButtonAccessTertiaryContentWLLight}}" />
 	</Style>
-	
+
 	<Style x:Key="TertiaryButton" TargetType="controls:TextButton">
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
@@ -402,10 +429,16 @@
 		</Setter>
 	</Style>
 
+	<Style x:Key="IconButtonSvg" ApplyToDerivedTypes="False" TargetType="controls:SvgView">
+		<Setter Property="HeightRequest" Value="24"/>
+		<Setter Property="WidthRequest" Value="24"/>
+	</Style>
+
 	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
 		<Setter Property="BorderStyle" Value="{StaticResource IconButtonBorder}" />
 		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsContentActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsContentActiveWLDark}}" />
 		<Setter Property="SvgAspect" Value="AspectFit"/>
+		<Setter Property="SvgStyle" Value="{StaticResource IconButtonSvg}" />
 	</Style>
 
 	<!-- Expander Button Styles -->

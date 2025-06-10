@@ -2801,4 +2801,7 @@
   <data name="SelectContractEntryDescription" xml:space="preserve">
     <value>Paste contract ID or choose from list</value>
   </data>
+  <data name="ScanInvitationInfo" xml:space="preserve">
+    <value>Scan invitation if you have already created an account separately</value>
+  </data>
 </root>
