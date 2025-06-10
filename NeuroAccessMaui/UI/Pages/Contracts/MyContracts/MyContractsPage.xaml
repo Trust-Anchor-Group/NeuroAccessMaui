@@ -25,10 +25,10 @@
 					<Label.FormattedText>
 						<FormattedString>
 							<Span Text="{Binding Path=Category}" TextColor="{AppThemeBinding Light={StaticResource ButtonNeutralSecondaryContentDark}, Dark={StaticResource ButtonNeutralSecondaryContentLight}}"/>
-							<Span Text=" (" TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLDark}, Dark={StaticResource WLToastsAndPillsContentInfoWLLight}}"/>
+							<Span Text=" (" TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLDark}, Dark={StaticResource TnPInfoContentWLLight}}"/>
 							<Span Text="{Binding Path=NrContracts}"
-									TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLDark}, Dark={StaticResource WLToastsAndPillsContentInfoWLLight}}"/>
-							<Span Text=")" TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLDark}, Dark={StaticResource WLToastsAndPillsContentInfoWLLight}}"/>
+									TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLDark}, Dark={StaticResource TnPInfoContentWLLight}}"/>
+							<Span Text=")" TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLDark}, Dark={StaticResource TnPInfoContentWLLight}}"/>
 						</FormattedString>
 					</Label.FormattedText>
 				</Label>
@@ -108,7 +108,7 @@
 								 VerticalOptions="Start" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" />
 						<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
 												 HorizontalOptions="Center" VerticalOptions="Center" Margin="{StaticResource SmallMargins}"
-												 Color="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
+												 Color="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}"/>
 
 						<controls:CompositeEntry
 							Style="{StaticResource RegularCompositeEntry}"

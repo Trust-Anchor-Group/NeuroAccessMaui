@@ -94,11 +94,11 @@
 										<Border Grid.Column="0"
 												  WidthRequest="48"
 												  HeightRequest="48" Margin="0"
-												  Background="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgInfoWLLight}, Dark={StaticResource WLToastsAndPillsbgInfoWLDark}}"
+												  Background="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}"
 												  Style="{StaticResource RoundedBorder}">
 											<Path Data="{Binding Icon}"
 													Aspect="Uniform"
-													Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"
+													Fill="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}"
 													VerticalOptions="Center"
 													HorizontalOptions="Center"
 													WidthRequest="32"

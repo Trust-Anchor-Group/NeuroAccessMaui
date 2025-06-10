@@ -60,10 +60,10 @@
 							WidthRequest="20"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsContentDangerv800Dark}}" />
+							Fill="{AppThemeBinding Light={StaticResource InputFieldsDangerContentv800Light}, Dark={StaticResource InputFieldsDangerContentv800Dark}}" />
 
 					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding LocalizedValidationError}"
-							 TextColor="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsContentDangerv800Dark}}" />
+							 TextColor="{AppThemeBinding Light={StaticResource InputFieldsDangerContentv800Light}, Dark={StaticResource InputFieldsDangerContentv800Dark}}" />
 				</Grid>
 
 			</VerticalStackLayout>

@@ -1115,7 +1115,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.XmlOutput.WriteStartElement("Frame");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
-			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}");
+			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1242,7 +1242,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.XmlOutput.WriteStartElement("Frame");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
-			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource WLToastsAndPillsbgSuccessWLLight}, Dark={StaticResource WLToastsAndPillsbgSuccessWLDark}}");
+			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={StaticResource TnPSuccessbgWLLight}, Dark={StaticResource TnPSuccessbgWLDark}}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1564,7 +1564,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			if (this.Hyperlink is not null)
 			{
-				this.XmlOutput.WriteAttributeString("TextColor", "{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}");
+				this.XmlOutput.WriteAttributeString("TextColor", "{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}");
 
 				this.XmlOutput.WriteStartElement("Span.GestureRecognizers");
 				this.XmlOutput.WriteStartElement("TapGestureRecognizer");

@@ -90,7 +90,7 @@
 				  RowDefinitions="*, *">
 				
 				<Border Grid.Row="0"
-						BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgInfoWLLight}, Dark={StaticResource WLToastsAndPillsbgInfoWLDark}}"
+						BackgroundColor="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}"
 						Padding="{StaticResource MediumMargins}"
 						StrokeShape="RoundRectangle 8,8,0,8">
 					<Border.Shadow>
@@ -101,11 +101,11 @@
 						<Path
 							Grid.Column="0"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
+							Fill="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}"/>
 						<Label
 							Grid.Column="1"
 							Text="{l:Localize ApplyIdInfoMainPage}"
-							TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
+							TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}"/>
 					</Grid>
 				</Border>
 				<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">

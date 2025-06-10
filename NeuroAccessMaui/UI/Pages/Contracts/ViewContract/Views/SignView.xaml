@@ -97,11 +97,11 @@
 														<Border Grid.Column="1"
 																  Padding="{StaticResource SmallLeftRightMargins}"
 																  Style="{StaticResource RoundedBorder}"
-																  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgWarningWLLight}, Dark={StaticResource WLToastsAndPillsbgWarningWLDark}}"
+																  BackgroundColor="{AppThemeBinding Light={StaticResource TnPWarningbgWLLight}, Dark={StaticResource TnPWarningbgWLDark}}"
 																  IsVisible="{Binding HasIdentity, Converter={StaticResource InvertedBoolConverter}}">
 															<Label Style="{StaticResource RoleDescriptionLabel}"
 																	 Text="{l:Localize IDRequestSent}"
-																	 TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentWarningWLLight}, Dark={StaticResource WLToastsAndPillsContentWarningWLDark}}"
+																	 TextColor="{AppThemeBinding Light={StaticResource TnPWarningContentWLLight}, Dark={StaticResource TnPWarningContentWLDark}}"
 																	 VerticalOptions="Center" />
 														</Border>
 													</Grid>

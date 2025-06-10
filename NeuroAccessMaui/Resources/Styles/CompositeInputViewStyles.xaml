@@ -16,7 +16,7 @@
 	<Style x:Key="BaseCompositeInputView" TargetType="controls:CompositeInputView" ApplyToDerivedTypes="True">
 		<!-- Common defaults -->
 		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositeInputViewValidationLabel}"/>
-		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsContentDangerv500Dark}}" />
+		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource InputFieldsDangerContentv500Light}, Dark={StaticResource InputFieldsDangerContentv500Dark}}" />
 		<Setter Property="BorderPadding" Value="{StaticResource SmallLeftRightMargins}"/>
 		<Setter Property="BorderBackground" Value="{AppThemeBinding Light={StaticResource InputFieldsSurfaceBackgroundActiveLight}, Dark={StaticResource InputFieldsSurfaceBackgroundActiveDark}}" />
 		<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsSurfaceStrokeLight}, Dark={StaticResource InputFieldsSurfaceStrokeDark}}" />
@@ -32,7 +32,7 @@
 			<Trigger TargetType="controls:CompositeInputView"
                      Property="IsValid"
                      Value="False">
-				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsContentDangerv500Dark}}" />
+				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsDangerContentv500Light}, Dark={StaticResource InputFieldsDangerContentv500Dark}}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

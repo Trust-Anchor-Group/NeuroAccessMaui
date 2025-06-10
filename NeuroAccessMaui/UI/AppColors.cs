@@ -7,47 +7,14 @@ namespace NeuroAccessMaui.UI
 	{
 		private static Color? primaryForegroundDark;
 		private static Color? primaryForegroundLight;
-
 		private static Color? primaryBackgroundDark;
 		private static Color? primaryBackgroundLight;
-		private static Color? secondaryForegroundDark;
-		private static Color? secondaryForegroundLight;
 		private static Color? secondaryBackgroundDark;
 		private static Color? secondaryBackgroundLight;
-		private static Color? accentForegroundDark;
-		private static Color? accentForegroundLight;
-		private static Color? normalForegroundDark;
-		private static Color? normalForegroundLight;
-		private static Color? normalBackgroundDark;
-		private static Color? normalBackgroundLight;
-		private static Color? selectedForegroundDark;
-		private static Color? selectedForegroundLight;
-		private static Color? selectedBackgroundDark;
-		private static Color? selectedBackgroundLight;
 		private static Color? buttonAccessPrimarybgDark;
 		private static Color? buttonAccessPrimarybgLight;
-
-		private static Color? enabledFilledButtonBackgroundDark;
-		private static Color? enabledFilledButtonBackgroundLight;
-		private static Color? disabledFilledButtonForegroundDark;
-		private static Color? disabledFilledButtonForegroundLight;
 		private static Color? buttonUniversalbgInactiveWLDark;
 		private static Color? buttonUniversalbgInactiveWLLight;
-
-		private static Color? enabledOutlinedButtonForegroundDark;
-		private static Color? enabledOutlinedButtonForegroundLight;
-		private static Color? enabledOutlinedButtonBackgroundDark;
-		private static Color? enabledOutlinedButtonBackgroundLight;
-		private static Color? disabledOutlinedButtonForegroundDark;
-		private static Color? disabledOutlinedButtonForegroundLight;
-		private static Color? disabledOutlinedButtonBackgroundDark;
-		private static Color? disabledOutlinedButtonBackgroundLight;
-		private static Color? normalEditForegroundDark;
-		private static Color? normalEditForegroundLight;
-		private static Color? normalEditBackgroundDark;
-		private static Color? normalEditBackgroundLight;
-		private static Color? normalEditPlaceholderDark;
-		private static Color? normalEditPlaceholderLight;
 		private static Color? alertDark;
 		private static Color? alertLight;
 		private static Color? errorBackgroundDark;
@@ -68,8 +35,6 @@ namespace NeuroAccessMaui.UI
 		private static Color? blue20AffirmDark;
 		private static Color? blueLight;
 		private static Color? blueDark;
-		private static Color? strokeGrey;
-		private static Color? offBlack;
 
 		/// <summary>
 		/// Primary foreground color.
@@ -180,12 +145,12 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					alertDark ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Dark");
+					alertDark ??= AppStyles.TryGetResource<Color>("InputFieldsDangerContentv800Dark");
 					return alertDark!;
 				}
 				else
 				{
-					alertLight ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Light");
+					alertLight ??= AppStyles.TryGetResource<Color>("InputFieldsDangerContentv800Light");
 					return alertLight!;
 				}
 			}
@@ -200,12 +165,12 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					errorBackgroundDark ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Dark");
+					errorBackgroundDark ??= AppStyles.TryGetResource<Color>("InputFieldsDangerContentv800Dark");
 					return errorBackgroundDark!;
 				}
 				else
 				{
-					errorBackgroundLight ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Light");
+					errorBackgroundLight ??= AppStyles.TryGetResource<Color>("InputFieldsDangerContentv800Light");
 					return errorBackgroundLight!;
 				}
 			}
@@ -240,12 +205,12 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					weakPasswordForeground ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsFigureDangerWLDark");
+					weakPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPDangerFigureWLDark");
 					return weakPasswordForeground!;
 				}
 				else
 				{
-					weakPasswordForeground ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsFigureDangerWLLight");
+					weakPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPDangerFigureWLLight");
 					return weakPasswordForeground!;
 				}
 			}
@@ -260,12 +225,12 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					mediumPasswordForeground ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsFigureWarningWLDark");
+					mediumPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPWarningContentWLDark");
 					return mediumPasswordForeground!;
 				}
 				else
 				{
-					mediumPasswordForeground ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsFigureWarningWLLight");
+					mediumPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPWarningContentWLLight");
 					return mediumPasswordForeground!;
 				}
 			}
@@ -280,12 +245,12 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsFigureSuccessWLDark");
+					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPSuccessFigureWLDark");
 					return strongPasswordForeground!;
 				}
 				else
 				{
-					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsFigureSuccessWLLight");
+					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPSuccessFigureWLLight");
 					return strongPasswordForeground!;
 				}
 			}
@@ -311,6 +276,7 @@ namespace NeuroAccessMaui.UI
 			}
 		}
 
+		/// <summary>
 		/// Purple color with 15% transparency.
 		/// </summary>
 		public static Color Purple15
@@ -319,12 +285,12 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					purple15Dark ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsbgAccent2WLDark");
+					purple15Dark ??= AppStyles.TryGetResource<Color>("TnPAccent2bgWLDark");
 					return purple15Dark!;
 				}
 				else
 				{
-					purple15Light ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsbgAccent2WLLight");
+					purple15Light ??= AppStyles.TryGetResource<Color>("TnPAccent2bgWLLight");
 					return purple15Light!;
 				}
 			}
@@ -339,18 +305,18 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Light)
 				{
-					insertedBorder ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsbgSuccessWLLight");
+					insertedBorder ??= AppStyles.TryGetResource<Color>("TnPSuccessbgWLLight");
 					return insertedBorder!;
 				}
 				else
 				{
-					insertedBorder ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsbgSuccessWLDark");
+					insertedBorder ??= AppStyles.TryGetResource<Color>("TnPSuccessbgWLDark");
 					return insertedBorder!;
 				}
 			}
 		}
 
-
+		/// <summary>
 		/// Purple color
 		/// </summary>
 		public static Color Purple
@@ -359,12 +325,12 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					purpleDark ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsContentAccent2WLDark");
+					purpleDark ??= AppStyles.TryGetResource<Color>("TnPAccent2ContentWLDark");
 					return purpleDark!;
 				}
 				else
 				{
-					purpleLight ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsContentAccent2WLLight");
+					purpleLight ??= AppStyles.TryGetResource<Color>("TnPAccent2ContentWLLight");
 					return purpleLight!;
 				}
 			}
@@ -379,17 +345,18 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Light)
 				{
-					deletedBorder ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsbgDangerWLLight");
+					deletedBorder ??= AppStyles.TryGetResource<Color>("TnPDangerbgWLLight");
 					return deletedBorder!;
 				}
 				else
 				{
-					deletedBorder ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsbgDangerWLDark");
+					deletedBorder ??= AppStyles.TryGetResource<Color>("TnPDangerbgWLDark");
 					return deletedBorder!;
 				}
 			}
 		}
 
+		/// <summary>
 		/// Blue affirm color with 20% transparency.
 		/// </summary>
 		public static Color Blue20Affirm
@@ -398,12 +365,12 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					blue20AffirmDark ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsbgInfoWLDark");
+					blue20AffirmDark ??= AppStyles.TryGetResource<Color>("TnPInfobgWLDark");
 					return blue20AffirmDark!;
 				}
 				else
 				{
-					blue20AffirmLight ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsbgInfoWLLight");
+					blue20AffirmLight ??= AppStyles.TryGetResource<Color>("TnPInfobgWLLight");
 					return blue20AffirmLight!;
 				}
 			}
@@ -418,12 +385,12 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					blueDark ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsContentInfoWLDark");
+					blueDark ??= AppStyles.TryGetResource<Color>("TnPInfoContentWLDark");
 					return blueDark!;
 				}
 				else
 				{
-					blueLight ??= AppStyles.TryGetResource<Color>("WLToastsAndPillsContentInfoWLLight");
+					blueLight ??= AppStyles.TryGetResource<Color>("TnPInfoContentWLLight");
 					return blueLight!;
 				}
 			}

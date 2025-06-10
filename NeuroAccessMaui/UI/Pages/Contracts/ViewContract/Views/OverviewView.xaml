@@ -61,10 +61,10 @@
 						HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgInfoWLLight}, Dark={StaticResource WLToastsAndPillsbgInfoWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLLight}}" />
+								 TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLLight}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -75,10 +75,10 @@
 						HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentDangerWLLight}, Dark={StaticResource WLToastsAndPillsContentDangerWLDark}}" />
+								 TextColor="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight}, Dark={StaticResource TnPDangerContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -89,10 +89,10 @@
 						HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgInfoWLLight}, Dark={StaticResource WLToastsAndPillsbgInfoWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
+								 TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -103,10 +103,10 @@
 						HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgInfoWLLight}, Dark={StaticResource WLToastsAndPillsbgInfoWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
+								 TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -117,10 +117,10 @@
 						HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgSuccessWLLight}, Dark={StaticResource WLToastsAndPillsbgSuccessWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPSuccessbgWLLight}, Dark={StaticResource TnPSuccessbgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentSuccessWLLight}, Dark={StaticResource WLToastsAndPillsContentSuccessWLDark}}" />
+								 TextColor="{AppThemeBinding Light={StaticResource TnPSuccessContentWLLight}, Dark={StaticResource TnPSuccessContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -131,10 +131,10 @@
 						HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentDangerWLLight}, Dark={StaticResource WLToastsAndPillsContentDangerWLDark}}" />
+								 TextColor="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight}, Dark={StaticResource TnPDangerContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -145,10 +145,10 @@
 						HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentDangerWLLight}, Dark={StaticResource WLToastsAndPillsContentDangerWLDark}}" />
+								 TextColor="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight}, Dark={StaticResource TnPDangerContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -159,10 +159,10 @@
 						HorizontalOptions="End">
 					<Border Style="{StaticResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentDangerWLLight}, Dark={StaticResource WLToastsAndPillsContentDangerWLDark}}" />
+								 TextColor="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight}, Dark={StaticResource TnPDangerContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -201,7 +201,7 @@
 										HeightRequest="16"
 										WidthRequest="16"
 										Aspect="Uniform"
-										Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
+										Fill="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}" />
 								<Label Grid.Column="1"
 										 Style="{StaticResource AccentInfoLabel}"
 										 VerticalOptions="Start"
