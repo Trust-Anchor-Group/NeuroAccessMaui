@@ -996,5 +996,22 @@
 
 			// Add additional intent actions as needed.
 		}
+
+		/// <summary>
+		/// Image identifiers for branding.
+		/// </summary>
+		public static class Branding
+		{
+			/// <summary>
+			/// The default branding image.
+			/// </summary>
+			public const string BannerLight = "banner_light";
+			public const string BannerDark = "banner_dark";
+			public const string LogoLight = "logo_light";
+			public const string LogoDark = "logo_dark";
+
+
+
+		}
 	}
 }
