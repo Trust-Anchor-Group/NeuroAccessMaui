@@ -20,7 +20,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 	public partial class MainViewModel : QrXmppViewModel
 	{
 
-		public ImageSource TestImage => ServiceRef.ThemeService.Images["banner"];
+		[ObservableProperty]
+		private ImageSource? testImage;
 		public MainViewModel()
 			: base()
 		{
@@ -33,6 +34,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
+				if(ServiceRef.ThemeService.Images.TryGetValue("Try", out ImageSource? Image))
+					this.TestImage = Image;
 			});
 
 			await base.OnAppearing();
