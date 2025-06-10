@@ -2801,4 +2801,7 @@
   <data name="SelectContractEntryDescription" xml:space="preserve">
     <value>Klistra in kontrakt ID eller välj från listan</value>
   </data>
+  <data name="ScanInvitationInfo" xml:space="preserve">
+    <value>Skanna inbjudan om du redan har skapat ett konto separat</value>
+  </data>
 </root>

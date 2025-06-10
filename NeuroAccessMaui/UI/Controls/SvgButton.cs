@@ -32,6 +32,13 @@ namespace NeuroAccessMaui.UI.Controls
 			typeof(SvgButton),
 			propertyChanged: OnSvgTintColorChanged);
 
+		/// <summary>Bindable property for <see cref="SvgSource"/>.</summary>
+		public static readonly BindableProperty SvgStyleProperty = BindableProperty.Create(
+			nameof(SvgStyle),
+			typeof(Style),
+			typeof(SvgButton),
+			propertyChanged: OnSvgStyleChanged);
+
 		public static readonly BindableProperty LabelTextProperty = BindableProperty.Create(
 			nameof(LabelText),
 			typeof(string),
@@ -42,7 +49,7 @@ namespace NeuroAccessMaui.UI.Controls
 			nameof(LabelStyle),
 			typeof(Style),
 			typeof(SvgButton),
-			propertyChanged: OnLabelTextChanged);
+			propertyChanged: OnLabelStyleChanged);
 
 		/// <summary>Bindable property for <see cref="LabelPosition"/>.</summary>
 		public static readonly BindableProperty LabelPositionProperty = BindableProperty.Create(
@@ -72,6 +79,11 @@ namespace NeuroAccessMaui.UI.Controls
 		public static void OnSvgTintColorChanged(BindableObject Bindable, object OldValue, object NewValue)
 		{
 			((SvgButton)Bindable).innerSvg.TintColor = (Color)NewValue;
+		}
+
+		public static void OnSvgStyleChanged(BindableObject Bindable, object OldValue, object NewValue)
+		{
+			((SvgButton)Bindable).innerSvg.Style = (Style)NewValue;
 		}
 
 		public static void OnLabelTextChanged(BindableObject Bindable, object OldValue, object NewValue)
@@ -204,6 +216,12 @@ namespace NeuroAccessMaui.UI.Controls
 			set => this.SetValue(SvgTintColorProperty, value);
 		}
 
+		public Style SvgStyle
+		{
+			get => (Style)this.GetValue(SvgStyleProperty);
+			set => this.SetValue(SvgStyleProperty, value);
+		}
+
 		public string LabelText
 		{
 			get => (string)this.GetValue(LabelTextProperty);
@@ -234,8 +252,7 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerSvg = new()
 			{
 				Aspect = this.SvgAspect,
-				WidthRequest = 24,
-				HeightRequest = 24,
+				Style = this.SvgStyle,
 				TintColor = this.SvgTintColor,
 				Source = this.SvgSource
 			};
@@ -256,6 +273,7 @@ namespace NeuroAccessMaui.UI.Controls
 					new RowDefinition(height: GridLength.Auto),
 					new RowDefinition(height: GridLength.Auto)
 				},
+				HorizontalOptions = LayoutOptions.Center
 			};
 
 			this.innerGrid.Add(this.innerLabel);
