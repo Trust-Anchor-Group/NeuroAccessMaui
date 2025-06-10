@@ -191,7 +191,7 @@ namespace NeuroAccessMaui.Services.Content
 				string ItemXml = Item.Item.InnerXml ?? string.Empty;
 				byte[] ItemBytes = Encoding.UTF8.GetBytes(Item.Item.InnerXml ?? string.Empty);
 
-				// 3a. Validate that the XML is well-formed
+				// Validate that the XML is well-formed
 				XmlDocument XmlDoc = new XmlDocument();
 				try
 				{
@@ -203,34 +203,8 @@ namespace NeuroAccessMaui.Services.Content
 						new InvalidOperationException("PubSub payload is not well-formed XML.", XmlEx));
 				}
 
-				// 3b. Load the embedded schema (MauiAsset) and validate against it
-				XmlSchema Schema;
-				try
-				{
-					// Assumes the schema is placed in Resources/Raw/Schemas/PubSubItem.xsd
-					// at build time, and is included as a MauiAsset.
-					// At runtime, we open it via FileSystem.OpenAppPackageFileAsync("Schemas/PubSubItem.xsd").
-					using Stream SchemaStream = await FileSystem.OpenAppPackageFileAsync("NeuroAccessBrandingV1.xsd");
-					Schema = XSL.LoadSchema(SchemaStream, "NeuroAccessBrandingV1.xsd");
-				}
-				catch (Exception SchemaEx)
-				{
-					return new ContentResponse(
-						new InvalidOperationException("Unable to load PubSubItem XML schema for validation.", SchemaEx));
-				}
 
-				// Perform schema validation; if invalid, XSL.Validate will throw XmlSchemaException
-				try
-				{
-					XSL.Validate($"PubSubItem:{Resource}", XmlDoc, Schema);
-				}
-				catch (Exception ValEx)
-				{
-					return new ContentResponse(
-						new InvalidOperationException("PubSub payload failed XML schema validation.", ValEx));
-				}
-
-				// 3c. If valid, return the XML payload
+				//  If valid, return the XML payload
 				//     ContentType = "application/xml"; Decoded = itemXml; Encoded = itemBytes
 				return new ContentResponse("application/xml", ItemXml, ItemBytes);
 			}
@@ -255,14 +229,14 @@ namespace NeuroAccessMaui.Services.Content
 			EventHandler<RemoteCertificateEventArgs> remoteCertificateValidator,
 			params KeyValuePair<string, string>[] headers)
 		{
-			ContentResponse r = await this.GetAsync(uri, certificate, remoteCertificateValidator, headers);
-			if (r.Error is not null)
-				return new ContentStreamResponse(r.Error);
+			ContentResponse Response = await this.GetAsync(uri, certificate, remoteCertificateValidator, headers);
+			if (Response.Error is not null)
+				return new ContentStreamResponse(Response.Error);
 
-			TemporaryStream temp = new TemporaryStream();
-			await temp.WriteAsync(r.Encoded, 0, r.Encoded.Length);
-			temp.Position = 0;
-			return new ContentStreamResponse(r.ContentType, temp);
+			TemporaryStream Temp = new TemporaryStream();
+			await Temp.WriteAsync(Response.Encoded, 0, Response.Encoded.Length);
+			Temp.Position = 0;
+			return new ContentStreamResponse(Response.ContentType, Temp);
 		}
 
 		/// <summary>
@@ -275,14 +249,14 @@ namespace NeuroAccessMaui.Services.Content
 			int timeoutMs,
 			params KeyValuePair<string, string>[] headers)
 		{
-			ContentResponse r = await this.GetAsync(uri, certificate, remoteCertificateValidator, timeoutMs, headers);
-			if (r.Error is not null)
-				return new ContentStreamResponse(r.Error);
+			ContentResponse Response = await this.GetAsync(uri, certificate, remoteCertificateValidator, timeoutMs, headers);
+			if (Response.Error is not null)
+				return new ContentStreamResponse(Response.Error);
 
-			TemporaryStream temp = new TemporaryStream();
-			await temp.WriteAsync(r.Encoded, 0, r.Encoded.Length);
-			temp.Position = 0;
-			return new ContentStreamResponse(r.ContentType, temp);
+			TemporaryStream Temp = new TemporaryStream();
+			await Temp.WriteAsync(Response.Encoded, 0, Response.Encoded.Length);
+			Temp.Position = 0;
+			return new ContentStreamResponse(Response.ContentType, Temp);
 		}
 
 		/// <summary>
