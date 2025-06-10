@@ -3,31 +3,32 @@
 namespace NeuroAccessMaui.Services.Theme
 {
 	/// <summary>
-	/// Service for loading and applying themes/branding in the app.
+	/// Service for loading, applying, and retrieving themes and branding in the application.
 	/// </summary>
 	[DefaultImplementation(typeof(ThemeService))]
 	public interface IThemeService
 	{
 		/// <summary>
-		/// Loads and applies the provider theme (if exists).
+		/// Loads and applies the provider-supplied theme, if available.
 		/// </summary>
 		Task ApplyProviderTheme();
 
-				Task ApplyProviderTheme2();
-
+		/// <summary>
+		/// Retrieves the current application theme.
+		/// </summary>
+		/// <returns>The current <see cref="AppTheme"/>.</returns>
+		Task<AppTheme> GetTheme();
 
 		/// <summary>
-		/// Sets the theme for the app.
+		/// Sets the application theme.
 		/// </summary>
-		/// <param name="Type">The theme type</param>
+		/// <param name="Type">The <see cref="AppTheme"/> to apply.</param>
 		Task SetTheme(AppTheme Type);
 
 		/// <summary>
-		/// Gets the current theme for the app.
+		/// Exposes image resources loaded as part of the branding payload.
 		/// </summary>
-		/// <returns></returns>
-		Task<AppTheme> GetTheme();
-
+		IReadOnlyDictionary<string, ImageSource> Images { get; }
 	}
 
 }
