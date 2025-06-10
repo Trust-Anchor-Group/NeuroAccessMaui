@@ -44,7 +44,7 @@
 		<Setter Property="PickerStyle" Value="{StaticResource RegularCompositeDatePickerPicker}" />
 		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositePickerLabel}" />
 		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewLabel}" />
-		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}" />
+		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}" />
 		<Setter Property="BorderPadding" Value="{StaticResource EditMediumMargins}" />
 		<Setter Property="BorderBackground" Value="{AppThemeBinding Light={StaticResource InputFieldsSurfaceBackgroundActiveLight}, Dark={StaticResource InputFieldsSurfaceBackgroundActiveDark}}" />
 		<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsSurfaceStrokeLight}, Dark={StaticResource InputFieldsSurfaceStrokeDark}}" />
@@ -56,8 +56,8 @@
 		<Setter Property="BorderShadow" Value="{x:Null}"/>
 		<Style.Triggers>
 			<Trigger TargetType="controls:CompositeDatePicker" Property="IsValid" Value="False">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsContentDangerv500Dark}}" />
-				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsContentDangerv500Dark}}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InputFieldsDangerContentv500Light}, Dark={StaticResource InputFieldsDangerContentv500Dark}}" />
+				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsDangerContentv500Light}, Dark={StaticResource InputFieldsDangerContentv500Dark}}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>
@@ -68,7 +68,7 @@
 		<Setter Property="PickerStyle" Value="{StaticResource RegularCompositePickerPicker}" />
 		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositePickerLabel}" />
 		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewLabel}" />
-		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}" />
+		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}" />
 		<Setter Property="BorderBackground" Value="{AppThemeBinding Light={StaticResource InputFieldsSurfaceBackgroundActiveLight}, Dark={StaticResource InputFieldsSurfaceBackgroundActiveDark}}" />
 		<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsSurfaceStrokeLight}, Dark={StaticResource InputFieldsSurfaceStrokeDark}}" />
 		<Setter Property="BorderShadow" Value="{x:Null}"/>
@@ -79,8 +79,8 @@
 		</Setter>
 		<Style.Triggers>
 			<Trigger TargetType="controls:CompositePicker" Property="IsValid" Value="False">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}" />
-				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsContentDangerv500Dark}}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}" />
+				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsDangerContentv500Light}, Dark={StaticResource InputFieldsDangerContentv500Dark}}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

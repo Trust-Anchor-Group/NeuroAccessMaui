@@ -94,10 +94,10 @@
 							WidthRequest="20"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsFigureDangerWLLight}, Dark={StaticResource WLToastsAndPillsFigureDangerWLLight}}" />
+							Fill="{AppThemeBinding Light={StaticResource TnPDangerFigureWLLight}, Dark={StaticResource TnPDangerFigureWLLight}}" />
 
 					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding LocalizedValidationError}"
-							 TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsFigureDangerWLLight}, Dark={StaticResource WLToastsAndPillsFigureDangerWLDark}}" />
+							 TextColor="{AppThemeBinding Light={StaticResource TnPDangerFigureWLLight}, Dark={StaticResource TnPDangerFigureWLDark}}" />
 				</Grid>
 
 			</VerticalStackLayout>

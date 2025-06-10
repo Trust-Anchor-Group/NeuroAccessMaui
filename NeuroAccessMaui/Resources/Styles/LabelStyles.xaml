@@ -104,7 +104,7 @@
 		<Setter Property="Margin" Value="10" />
 		<Setter Property="FontAttributes" Value="Bold" />
 		<Setter Property="HorizontalTextAlignment" Value="End" />
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}"/>
 	</Style>
 
 	<Style x:Key="RegularItemTitleLabel" ApplyToDerivedTypes="False" TargetType="Label">
@@ -126,17 +126,17 @@
 	</Style>
 
 	<Style x:Key="RequiredFieldMarker" ApplyToDerivedTypes="False" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentDangerWLLight}, Dark={StaticResource WLToastsAndPillsContentDangerWLDark}}"/>
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight}, Dark={StaticResource TnPDangerContentWLDark}}"/>
 		<Setter Property="Text" Value="*"/>
 	</Style>
 
 	<Style x:Key="RequiredFieldMarkerSpan" ApplyToDerivedTypes="False" TargetType="Span">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentDangerWLLight}, Dark={StaticResource WLToastsAndPillsContentDangerWLDark}}"/>
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight}, Dark={StaticResource TnPDangerContentWLDark}}"/>
 		<Setter Property="Text" Value="*"/>
 	</Style>
 
 	<Style x:Key="AlertLabel" TargetType="Label">
-		<Setter Property="TextColor"  Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentDangerWLLight}, Dark={StaticResource WLToastsAndPillsContentDangerWLDark}}" />
+		<Setter Property="TextColor"  Value="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight}, Dark={StaticResource TnPDangerContentWLDark}}" />
 	</Style>
 
 </ResourceDictionary>

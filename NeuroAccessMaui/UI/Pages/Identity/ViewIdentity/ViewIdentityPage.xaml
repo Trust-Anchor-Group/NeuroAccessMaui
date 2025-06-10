@@ -102,7 +102,7 @@
 		<Style x:Key="StatusPillBorder"
 			   TargetType="Border">
 			<Setter Property="BackgroundColor"
-					Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgNeutralv300WLLight}, Dark={StaticResource WLToastsAndPillsbgNeutralv300WLDark}}" />
+					Value="{AppThemeBinding Light={StaticResource TnPNeutralv300bgWLLight}, Dark={StaticResource TnPNeutralv300bgWLDark}}" />
 			<Setter Property="VisualStateManager.VisualStateGroups">
 				<VisualStateGroupList>
 					<VisualStateGroup Name="StatusStates">
@@ -110,31 +110,31 @@
 						<VisualState Name="Created">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgWarningWLLight}, Dark={StaticResource WLToastsAndPillsbgWarningWLDark}}" />
+										Value="{AppThemeBinding Light={StaticResource TnPWarningbgWLLight}, Dark={StaticResource TnPWarningbgWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 						<VisualState Name="Compromised">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgWarningWLLight}, Dark={StaticResource WLToastsAndPillsbgWarningWLDark}}" />
+										Value="{AppThemeBinding Light={StaticResource TnPWarningbgWLLight}, Dark={StaticResource TnPWarningbgWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 						<VisualState Name="Approved">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgSuccessWLLight}, Dark={StaticResource WLToastsAndPillsbgSuccessWLDark}}" />
+										Value="{AppThemeBinding Light={StaticResource TnPSuccessbgWLLight}, Dark={StaticResource TnPSuccessbgWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 						<VisualState Name="Rejected">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}" />
+										Value="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 						<VisualState Name="Obsoleted">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}" />
+										Value="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>
@@ -149,8 +149,8 @@
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskBold" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentNeutralv300WLLight},
-                                       Dark={StaticResource WLToastsAndPillsContentNeutralv300WLDark}}" />
+					Value="{AppThemeBinding Light={StaticResource TnPNeutralv300ContentWLLight},
+                                       Dark={StaticResource TnPNeutralv300ContentWLDark}}" />
 			<Setter Property="Text"
 					Value="{l:Localize NotAvailable}" />
 			<Style.Triggers>
@@ -160,8 +160,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Created}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentWarningWLLight},
-                                       Dark={StaticResource WLToastsAndPillsContentWarningWLDark}}" />
+							Value="{AppThemeBinding Light={StaticResource TnPWarningContentWLLight},
+                                       Dark={StaticResource TnPWarningContentWLDark}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -169,8 +169,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Compromised}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentWarningWLLight},
-                                       Dark={StaticResource WLToastsAndPillsContentWarningWLDark}}" />
+							Value="{AppThemeBinding Light={StaticResource TnPWarningContentWLLight},
+                                       Dark={StaticResource TnPWarningContentWLDark}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -178,8 +178,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Approved}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentSuccessWLLight},
-                                       Dark={StaticResource WLToastsAndPillsContentSuccessWLLight}}" />
+							Value="{AppThemeBinding Light={StaticResource TnPSuccessContentWLLight},
+                                       Dark={StaticResource TnPSuccessContentWLLight}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -187,8 +187,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Rejected}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentDangerWLLight},
-                                       Dark={StaticResource WLToastsAndPillsContentDangerWLDark}}" />
+							Value="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight},
+                                       Dark={StaticResource TnPDangerContentWLDark}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -196,8 +196,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Obsoleted}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentDangerWLLight},
-                                       Dark={StaticResource WLToastsAndPillsContentDangerWLDark}}" />
+							Value="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight},
+                                       Dark={StaticResource TnPDangerContentWLDark}}" />
 				</DataTrigger>
 			</Style.Triggers>
 		</Style>

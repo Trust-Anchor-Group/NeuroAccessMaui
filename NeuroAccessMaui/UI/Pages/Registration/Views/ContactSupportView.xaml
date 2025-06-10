@@ -200,7 +200,7 @@
 					<Grid ColumnDefinitions="auto, *">
 						<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
 						      Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-						      Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
+						      Fill="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}"/>
 						<Label Grid.Column="1" Style ="{StaticResource AccentInfoLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize OnboardingGetStartedQrInfo}" />
 
 					</Grid>

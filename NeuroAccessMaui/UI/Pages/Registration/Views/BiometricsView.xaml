@@ -87,16 +87,16 @@
 						WidthRequest="20"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight},
-											Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
+						Fill="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight},
+											Dark={StaticResource TnPInfoContentWLDark}}" />
 
 					<Label
 						VerticalOptions="Center"
 						FontFamily="HaasGroteskRegular"
 						FontSize="14"
 						Text="{Binding WhatIsX}"
-						TextColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight},
-													Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
+						TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight},
+													Dark={StaticResource TnPInfoContentWLDark}}" />
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 

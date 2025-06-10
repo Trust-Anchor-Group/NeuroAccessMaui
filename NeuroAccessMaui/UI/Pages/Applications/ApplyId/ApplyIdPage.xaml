@@ -159,7 +159,7 @@
 									  Grid.Column="1"
 									  Margin="0"
 									  Padding="0"
-									  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight}, Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}"
+									  BackgroundColor="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}"
 									  HeightRequest="200"
 									  Style="{StaticResource OutlinedImageButtonBorder}"
 									  VerticalOptions="Start"
@@ -274,7 +274,7 @@
 								<Border Grid.Column="0"
 										  Margin="0"
 										  Padding="0"
-										  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight},Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}"
+										  BackgroundColor="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight},Dark={StaticResource TnPDangerbgWLDark}}"
 										  HeightRequest="200"
 										  WidthRequest="200"
 										  Style="{StaticResource OutlinedImageButtonBorder}">
@@ -343,7 +343,7 @@
 								<Border Grid.Column="0"
 										  Margin="0"
 										  Padding="0"
-										  BackgroundColor="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgDangerWLLight},Dark={StaticResource WLToastsAndPillsbgDangerWLDark}}"
+										  BackgroundColor="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight},Dark={StaticResource TnPDangerbgWLDark}}"
 										  HeightRequest="200"
 										  WidthRequest="200"
 										  Style="{StaticResource OutlinedImageButtonBorder}">

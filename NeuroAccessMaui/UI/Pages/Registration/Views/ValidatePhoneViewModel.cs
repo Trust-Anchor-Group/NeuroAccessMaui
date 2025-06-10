@@ -229,7 +229,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				}
 				string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
 
-				if (this.SelectedCountry.DialCode == "46") ///TODO: Make this more generic for other countries
+				if (this.SelectedCountry.DialCode == "46") //TODO: Make this more generic for other countries
 					FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber.TrimStart('0')}";
 
 				ContentResponse SendResult = await InternetContent.PostAsync(

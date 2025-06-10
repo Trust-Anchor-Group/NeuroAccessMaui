@@ -551,7 +551,7 @@
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="AlertFrame">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsFigureDangerWLLight}, Dark={StaticResource WLToastsAndPillsFigureDangerWLDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource TnPDangerFigureWLLight}, Dark={StaticResource TnPDangerFigureWLDark}}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="ShellFrame">
@@ -612,8 +612,8 @@
 	</Style>
 
 	<Style x:Key="ReceiveFrame" ApplyToDerivedTypes="True" TargetType="Frame">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgInfoWLLight}, Dark={StaticResource WLToastsAndPillsbgInfoWLDark}}" />
-		<Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}"/>
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}" />
+		<Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}"/>
 		<Setter Property="HorizontalOptions" Value="End"/>
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}"/>
 		<Setter Property="Padding" Value="{StaticResource SmallLeftRightMargins}"/>
@@ -647,19 +647,19 @@
 				<RoundRectangle CornerRadius="8" />
 			</Setter.Value>
 		</Setter>
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgInfoWLLight}, Dark={StaticResource WLToastsAndPillsbgInfoWLDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}" />
 	</Style>
 
 	<Style x:Key="AccentInfoLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular"/>
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsContentInfoWLLight}, Dark={StaticResource WLToastsAndPillsContentInfoWLDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}" />
 	</Style>
 
 
 	<!-- TEMPORARY FOR PORTING FROM ID APP-->
 	<Style x:Key="IndicatorViewStyle" ApplyToDerivedTypes="False" TargetType="IndicatorView">
-		<Setter Property="SelectedIndicatorColor"  Value="{AppThemeBinding Light={StaticResource WLToastsAndPillsbgInfoWLLight}, Dark={StaticResource WLToastsAndPillsbgInfoWLDark}}" />
+		<Setter Property="SelectedIndicatorColor"  Value="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}" />
 
 	</Style>
 
