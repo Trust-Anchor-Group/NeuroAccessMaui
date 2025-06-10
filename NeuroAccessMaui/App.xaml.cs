@@ -10,7 +10,8 @@ using Microsoft.Maui.Controls.Internals;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.AttachmentCache;
+using NeuroAccessMaui.Services.Cache.AttachmentCache;
+using NeuroAccessMaui.Services.Cache.InternetCache;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
@@ -343,6 +344,7 @@ namespace NeuroAccessMaui
 			Types.InstantiateDefault<ISettingsService>(false);
 			Types.InstantiateDefault<IXmppService>(false);
 			Types.InstantiateDefault<IAttachmentCacheService>(false);
+			Types.InstantiateDefault<IInternetCacheService>(false);
 			Types.InstantiateDefault<IContractOrchestratorService>(false);
 			Types.InstantiateDefault<INfcService>(false);
 			Types.InstantiateDefault<INotificationService>(false);
@@ -452,6 +454,7 @@ namespace NeuroAccessMaui
 
 				await ServiceRef.UiService.Load(isResuming, Token);
 				await ServiceRef.AttachmentCacheService.Load(isResuming, Token);
+				await ServiceRef.InternetCacheService.Load(isResuming, Token);
 				await ServiceRef.ContractOrchestratorService.Load(isResuming, Token);
 				await ServiceRef.ThingRegistryOrchestratorService.Load(isResuming, Token);
 				await ServiceRef.NeuroWalletOrchestratorService.Load(isResuming, Token);
