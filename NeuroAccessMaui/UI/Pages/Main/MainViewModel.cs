@@ -20,7 +20,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 	public partial class MainViewModel : QrXmppViewModel
 	{
 
-
+		public ImageSource TestImage => ServiceRef.ThemeService.Images["banner"];
 		public MainViewModel()
 			: base()
 		{
@@ -39,28 +39,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			try
 			{
 				
-				var Items = await ServiceRef.XmppService.GetAllNodeIdsAsync();
-
-				if (Items != null)
-				{
-					foreach (var item in Items)
-					{
-						ServiceRef.LogService.LogDebug($"Item: {item.Name} - {item.Node}");
-					}
-				}
-				ServiceRef.LogService.LogDebug($"Is valid: {Waher.Content.Xml.XML.IsValidXml("<Tes>Test</Test>", true, true, true, true, false, false)}");
-				var Items2 = await ServiceRef.XmppService.GetLatestItemsAsync("MilleTest01", 2);
-				if (Items2 != null)
-				{
-					foreach (var item in Items2)
-					{
-						ServiceRef.LogService.LogDebug($"Item: {item.Node} --- \n {item.Payload} --- \n {item.Item}");
-					}
-				}
-				await Task.Delay(10000); // Simulate some delay for loading
-				IThemeService s = App.Instantiate<IThemeService>();
-
-				await s.ApplyProviderTheme2();
 				/*
 				try
 				{

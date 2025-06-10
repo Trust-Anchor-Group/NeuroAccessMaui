@@ -24,9 +24,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				if(App.Current is not null)
 					await App.Current.InitCompleted;
 
-				IThemeService s = App.Instantiate<IThemeService>();
+				//Load the theme for the provider, if it exists.
+				IThemeService ThemeService = App.Instantiate<IThemeService>();
 
-				await s.ApplyProviderTheme();
+				await ThemeService.ApplyProviderTheme();
 			}
 			catch (Exception)
 			{

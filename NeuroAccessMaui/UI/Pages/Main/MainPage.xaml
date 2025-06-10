@@ -84,7 +84,7 @@
 				Grid.Row="0"
 				VerticalOptions="Start"
 				HorizontalOptions="Center"
-				Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
+				Source="{Binding TestImage}"
 				WidthRequest="240"/>
 
 			<!-- Missing Neuro ID Box-->
