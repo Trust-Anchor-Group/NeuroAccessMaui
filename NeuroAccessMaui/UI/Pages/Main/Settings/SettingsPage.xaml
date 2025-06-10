@@ -12,18 +12,26 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Settings">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Margin="{StaticResource SmallMargins}">
+				<Grid ColumnDefinitions="Auto, *" Margin="{StaticResource SmallMargins}">
+					<controls:ImageButton
+						Grid.Column="0"
+						Command="{Binding GoBackCommand}"
+						Style="{StaticResource ImageOnlyButton}"
+						PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
-
-				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize Settings}"/>
-
+					<Label
+						Grid.Column="1"
+						HorizontalOptions="End"
+						Style="{StaticResource PageTitleLabel}"
+						Text="{l:Localize Settings}"/>
+				</Grid>
+				
 				<!-- Display Settings -->
 				<Border Style="{StaticResource BorderSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
@@ -33,9 +41,13 @@
 						<Border Style="{StaticResource BorderSubSet}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize SelectDisplayMode}"/>
-								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto"
-										RadioButtonGroup.GroupName="DisplayMode"
-										RadioButtonGroup.SelectedValue="{Binding DisplayMode}">
+								<Grid RowDefinitions="auto,auto"
+									  ColumnDefinitions="auto,*,auto"
+									  RadioButtonGroup.GroupName="DisplayMode"
+									  RadioButtonGroup.SelectedValue="{Binding DisplayMode}"
+									  ColumnSpacing="{StaticResource SmallSpacing}"
+									  RowSpacing="{StaticResource SmallSpacing}">
+
 									<Image Grid.Column="0" Grid.Row="0" Source="{AppThemeBinding Light=light_mode_light, Dark=light_mode_dark}"/>
 									<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize LightMode}"/>
 									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="LightMode" Value="Light"/>
@@ -116,9 +128,13 @@
 						<Border Style="{StaticResource BorderSubSet}" IsVisible="{Binding CanUseAlternativeAuthenticationMethods}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize AuthenticationMethod}"/>
-								<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*,auto"
-										RadioButtonGroup.GroupName="AuthenticationMethod"
-										RadioButtonGroup.SelectedValue="{Binding AuthenticationMethod}">
+								<Grid RowDefinitions="auto,auto"
+									  ColumnDefinitions="auto,*,auto"
+									  RadioButtonGroup.GroupName="AuthenticationMethod"
+									  RadioButtonGroup.SelectedValue="{Binding AuthenticationMethod}"
+									  RowSpacing="{StaticResource SmallSpacing}"
+									  ColumnSpacing="{StaticResource SmallSpacing}">
+									
 									<Image Grid.Column="0" Grid.Row="0" Source="{AppThemeBinding Light=pin_code_light, Dark=pin_code_dark}"/>
 									<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize Password}"/>
 									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="UsePassword" x:FieldModifier="public" Value="Password"/>
@@ -137,9 +153,13 @@
 						<Border Style="{StaticResource BorderSubSet}" IsVisible="{Binding CanProhibitScreenCapture}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ScreenRecording}"/>
-								<Grid RowDefinitions="auto,auto" ColumnDefinitions="*,auto"
-										RadioButtonGroup.GroupName="ScreenRecording"
-										RadioButtonGroup.SelectedValue="{Binding ScreenCaptureMode}">
+								<Grid RowDefinitions="auto,auto"
+									  ColumnDefinitions="*,auto"
+									  RadioButtonGroup.GroupName="ScreenRecording"
+									  RadioButtonGroup.SelectedValue="{Binding ScreenCaptureMode}"
+									  RowSpacing="{StaticResource SmallSpacing}"
+									  ColumnSpacing="{StaticResource SmallSpacing}">
+
 									<Label Grid.Column="0" Grid.Row="0" Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize AllowRecording}"/>
 									<RadioButton Grid.Column="1" Grid.Row="0" x:Name="AllowRecording" Value="Allowed"/>
 
@@ -148,7 +168,6 @@
 								</Grid>
 							</VerticalStackLayout>
 						</Border>
-
 					</VerticalStackLayout>
 				</Border>
 
@@ -156,14 +175,12 @@
 				<Border Style="{StaticResource BorderSet}">
 					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 						<Label Style="{StaticResource SectionTitleLabel}" Text="Version"/>
-
 						<Border Style="{StaticResource BorderSubSet}">
 							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 								<VerticalStackLayout>
 									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize AppVersion}"/>
 									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding VersionNumber}"/>
 								</VerticalStackLayout>
-
 								<VerticalStackLayout>
 									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize BuildNumber}"/>
 									<HorizontalStackLayout>
@@ -171,7 +188,6 @@
 										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding BuildTime}"/>
 									</HorizontalStackLayout>
 								</VerticalStackLayout>
-
 								<VerticalStackLayout>
 									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize Platform}"/>
 									<HorizontalStackLayout>
@@ -179,20 +195,17 @@
 										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DeviceVersion}"/>
 									</HorizontalStackLayout>
 								</VerticalStackLayout>
-
 								<VerticalStackLayout>
 									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize HardwareInfo}"/>
-									<HorizontalStackLayout>
+									<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
 										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DeviceManufactorer}"/>
 										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DeviceModel}"/>
 									</HorizontalStackLayout>
 								</VerticalStackLayout>
 							</VerticalStackLayout>
 						</Border>
-							  
 					</VerticalStackLayout>
 				</Border>
-
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

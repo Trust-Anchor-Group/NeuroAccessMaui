@@ -13,7 +13,7 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionContract"
 							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 

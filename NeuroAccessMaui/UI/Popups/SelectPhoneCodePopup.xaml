@@ -19,27 +19,27 @@
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="SelectPhoneCodeTemplate" x:DataType="data:ISO_3166_Country">
-			<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}"
+			<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}"
 					ColumnDefinitions="35,auto,*" ColumnSpacing="{StaticResource SmallSpacing}" RowDefinitions="auto"
 					Padding="{StaticResource SmallMargins}">
 					
 				<Label Grid.Column="0" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="End" FontAutoScalingEnabled="False"
 						 LineBreakMode="NoWrap" Style="{StaticResource RegularItemTitleLabel}" Text="{Binding DialCode}"
-						 TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+						 TextColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 
 				<Label Grid.Column="1" Style="{StaticResource RegularItemTitleLabel}" Text="{Binding EmojiInfo.Unicode}"
-						 TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+						 TextColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 
 				<Label Grid.Column="2" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" LineBreakMode="NoWrap"
 						 Style="{StaticResource RegularItemTitleLabel}" Text="{Binding Name}"
-						 TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+						 TextColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 
 				<VisualStateManager.VisualStateGroups>
 					<VisualStateGroup Name="CommonStates">
 						<VisualState Name="Normal" />
 						<VisualState Name="Selected">
 							<VisualState.Setters>
-								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>

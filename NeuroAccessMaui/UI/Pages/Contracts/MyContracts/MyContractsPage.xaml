@@ -19,16 +19,16 @@
 
 		<DataTemplate x:Key="HeaderModelTemplate" x:DataType="objectmodel:HeaderModel">
 			<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="5,5,5,5"
-					BackgroundColor="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}">
+					BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceElevation3WLDark}, Dark={StaticResource SurfaceElevation3WLLight}}">
 				<Label Grid.Column="0" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center" LineBreakMode="CharacterWrap" TextType="Text"
-						 TextColor="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}">
+						 TextColor="{AppThemeBinding Light={StaticResource ButtonNeutralSecondaryContentDark}, Dark={StaticResource ButtonNeutralSecondaryContentLight}}">
 					<Label.FormattedText>
 						<FormattedString>
-							<Span Text="{Binding Path=Category}" TextColor="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}"/>
-							<Span Text=" (" TextColor="{AppThemeBinding Light={StaticResource ClickableDark}, Dark={StaticResource ClickableLight}}"/>
+							<Span Text="{Binding Path=Category}" TextColor="{AppThemeBinding Light={StaticResource ButtonNeutralSecondaryContentDark}, Dark={StaticResource ButtonNeutralSecondaryContentLight}}"/>
+							<Span Text=" (" TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLDark}, Dark={StaticResource TnPInfoContentWLLight}}"/>
 							<Span Text="{Binding Path=NrContracts}"
-									TextColor="{AppThemeBinding Light={StaticResource ClickableDark}, Dark={StaticResource ClickableLight}}"/>
-							<Span Text=")" TextColor="{AppThemeBinding Light={StaticResource ClickableDark}, Dark={StaticResource ClickableLight}}"/>
+									TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLDark}, Dark={StaticResource TnPInfoContentWLLight}}"/>
+							<Span Text=")" TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLDark}, Dark={StaticResource TnPInfoContentWLLight}}"/>
 						</FormattedString>
 					</Label.FormattedText>
 				</Label>
@@ -36,11 +36,11 @@
 						 IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
 						 Style="{StaticResource AlertFrame}">
 					<Label FontSize="Caption" Text="{Binding NrEvents}" Padding="1"
-							 TextColor="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
+							 TextColor="{AppThemeBinding Light={StaticResource ContentWhitefixedLight}, Dark={StaticResource ContentWhitefixedDark}}" />
 				</Frame>
 				<Path Grid.Column="1" Grid.Row="0" HorizontalOptions="End" VerticalOptions="Center"
 						Data="{Binding Symbol}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
-						Fill="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}"/>
+						Fill="{AppThemeBinding Light={StaticResource ButtonNeutralSecondaryContentDark}, Dark={StaticResource ButtonNeutralSecondaryContentLight}}"/>
 			</Grid>
 		</DataTemplate>
 
@@ -58,7 +58,7 @@
 				<Frame Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" CornerRadius="12" Margin="2" Padding="8,3,8,3"
 					   IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
 					   Style="{StaticResource AlertFrame}">
-					<Label FontSize="Caption" TextColor="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}"
+					<Label FontSize="Caption" TextColor="{AppThemeBinding Light={StaticResource ContentWhitefixedLight}, Dark={StaticResource ContentWhitefixedDark}}"
 						   Text="{Binding NrEvents}" Padding="1"/>
 				</Frame>
 			</Grid>
@@ -77,7 +77,7 @@
 					   Text="{Binding Path=Description}" Style="{StaticResource ClickableValueLabel}"/>
 				<Path Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
 						Data="{Binding Icon}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
-						Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}"/>
+						Fill="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"/>
 				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
 					   Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
 					   Style="{StaticResource AlertLabel}"/>
@@ -90,7 +90,7 @@
 														EventTemplate="{StaticResource EventModelTemplate}"
 														ContractTemplate="{StaticResource ContractModelTemplate}"/>
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
@@ -101,14 +101,19 @@
 
 				<Label Text="{Binding Path=Title}" Style="{StaticResource PageTitleLabel}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
+				<Border Style="{StaticResource BorderSet}">
 					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
 						<Label Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
 						<Label Style="{StaticResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"
 								 VerticalOptions="Start" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" />
 						<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
 												 HorizontalOptions="Center" VerticalOptions="Center" Margin="{StaticResource SmallMargins}"
-												 Color="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
+												 Color="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}"/>
+
+						<controls:CompositeEntry
+							Style="{StaticResource RegularCompositeEntry}"
+							Placeholder="{l:Localize Search}"
+						    TextChanged="ContractsSearchChanged"/>
 
 						<!-- CollectionView's IsVisible used to be bound to IsIdle, but there seems to be a race condition somewhere because this led
 		the CollectionView not appearing sometimes on iOS. Always showing it seems to be OK because it is empty before contracts are loaded anyway. -->
@@ -123,7 +128,7 @@
 							</CollectionView.ItemsLayout>
 						</CollectionView>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

@@ -39,6 +39,7 @@
 	<Thickness x:Key="LargeTopBottomMargins">0,24,0,24</Thickness>
 	<Thickness x:Key="ButtonThinMargins">16,8</Thickness>
 	<Thickness x:Key="ButtonMediumMargins">24,12</Thickness>
+	<Thickness x:Key="MediumLeftRightMargins">16,0,16,0</Thickness>
 
 	<OnPlatform x:Key="EditMediumMargins" x:TypeArguments="Thickness">
 		<On Platform="Android" Value="16,0" />
@@ -282,14 +283,14 @@
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="ActivityIndicator">
-		<Setter Property="Color" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+		<Setter Property="Color" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="SearchBar">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalEditForegroundLight}, Dark={StaticResource NormalEditForegroundDark}}" />
-		<Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" />
-		<Setter Property="CancelButtonColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
+		<Setter Property="PlaceholderColor" Value="{AppThemeBinding Light={StaticResource ContentSecondaryWLLight}, Dark={StaticResource ContentSecondaryWLDark}}" />
+		<Setter Property="CancelButtonColor" Value="{AppThemeBinding Light={StaticResource ContentAccessWLLight}, Dark={StaticResource ContentAccessWLDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
 		<Setter Property="FontSize" Value="18" />
 		<!--
@@ -313,7 +314,7 @@
 
 	<Style ApplyToDerivedTypes="True" TargetType="Page">
 		<Setter Property="Padding" Value="0" />
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="ContentPage">
@@ -375,28 +376,20 @@
 		<Setter Property="FlyoutBehavior" Value="Disabled" />
 		<Setter Property="NavBarIsVisible" Value="False" />
 		<Setter Property="NavBarHasShadow" Value="False" />
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
-		<Setter Property="ForegroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
-		<Setter Property="TitleColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
-		<!--
-		<Setter Property="DisabledColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
-		<Setter Property="UnselectedColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
-		<Setter Property="TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
-		<Setter Property="TabBarForegroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
-		<Setter Property="TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
-		<Setter Property="TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
-		-->
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}" />
+		<Setter Property="ForegroundColor" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
+		<Setter Property="TitleColor" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="NavigationPage">
-		<Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
-		<Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
-		<Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+		<Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}" />
+		<Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
+		<Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="TabbedPage">
-		<Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
-		<Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+		<Setter Property="BarBackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}" />
+		<Setter Property="BarTextColor" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 		<!--
 		<Setter Property="UnselectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray950}}" />
 		<Setter Property="SelectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
@@ -443,7 +436,7 @@
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="RoundedBorder">
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}"/>
+		<Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource ButtonNeutralSecondaryStrokeDark}}"/>
 	</Style>
 
 	<Style ApplyToDerivedTypes="True"
@@ -452,7 +445,7 @@
 		<Setter Property="StrokeShape"
 		        Value="RoundRectangle 8" />
 		<Setter Property="Stroke"
-		        Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}" />
+		        Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryStrokeWLLight}, Dark={StaticResource ButtonAccessSecondaryStrokeWLDark}}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True"
@@ -461,7 +454,7 @@
 		<Setter Property="StrokeShape"
 		        Value="RoundRectangle 8" />
 		<Setter Property="Stroke"
-		        Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}" />
+		        Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryStrokeWLLight}, Dark={StaticResource ButtonAccessSecondaryStrokeWLDark}}" />
 	</Style>
 
 	<Style x:Key="PopupGrid" ApplyToDerivedTypes="False" TargetType="Grid">
@@ -472,14 +465,14 @@
 	</Style>
 
 	<Style x:Key="PopupBorder" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource PopUpElevation1Dark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}" />
 		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
 		<Setter Property="StrokeShape">
 			<RoundRectangle CornerRadius="{StaticResource MediumCornerRadius}" />
 		</Setter>
 		<Setter Property="Shadow">
 			<Setter.Value>
-				<Shadow Brush="{AppThemeBinding Light={StaticResource PrimaryBackgroundDark}, Dark={StaticResource PrimaryBackgroundLight}}" Offset="0,0" Radius="10" Opacity=".25" />
+				<Shadow Brush="{AppThemeBinding Light={StaticResource SurfaceShadowColorWLLight}, Dark={StaticResource SurfaceShadowColorWLDark}}" Offset="0,4" Radius="10"/>
 			</Setter.Value>
 		</Setter>
 	</Style>
@@ -501,30 +494,30 @@
 
 	<Style ApplyToDerivedTypes="True" TargetType="Shadow">
 		<Setter Property="Radius" Value="8" />
-		<Setter Property="Opacity" Value="0.8" />
-		<Setter Property="Brush" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundDark}, Dark={StaticResource PrimaryBackgroundLight}}" />
-		<Setter Property="Offset" Value="0,0" />
+		<Setter Property="Brush" Value="{AppThemeBinding Light={StaticResource SurfaceShadowColorWLLight}, Dark={StaticResource SurfaceShadowColorWLDark}}" />
+		<Setter Property="Offset" Value="0,4" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="False" TargetType="Frame">
 		<Setter Property="HasShadow" Value="False" />
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="FrameSet">
-		<Setter Property="HasShadow" Value="True" />
-		<Setter Property="Shadow.Radius" Value="8" />
-		<Setter Property="Shadow.Opacity" Value="0.8" />
-		<Setter Property="Shadow.Brush" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundDark}, Dark={StaticResource PrimaryBackgroundLight}}" />
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}" />
 		<Setter Property="CornerRadius" Value="8" />
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
+		<Setter Property="Shadow">
+			<Setter.Value>
+				<Shadow Brush="{AppThemeBinding Light={StaticResource SurfaceShadowColorWLLight}, Dark={StaticResource SurfaceShadowColorWLDark}}" Offset="0,4" />
+			</Setter.Value>
+		</Setter>
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="FrameSubSet">
 		<Setter Property="HasShadow" Value="False" />
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceElevation2WLLight}, Dark={StaticResource SurfaceElevation2WLDark}}" />
 		<Setter Property="CornerRadius" Value="8" />
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
@@ -532,35 +525,33 @@
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="ClickableFrameSubSet">
 		<Setter Property="HasShadow" Value="False" />
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimarybgWLLight}, Dark={StaticResource ButtonAccessPrimarybgWLLight}}" />
 		<Setter Property="CornerRadius" Value="8" />
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="BorderSet">
-
-		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}" />
+		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}" />
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SurfaceStrokeWLLight}, Dark={StaticResource SurfaceStrokeWLDark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
-		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
+		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Shadow">
 			<Setter.Value>
-				<Shadow Brush="{AppThemeBinding Light={StaticResource PrimaryBackgroundDark}, Dark={x:Null}}" Offset="0,0" Radius="10" Opacity=".25" />
+				<Shadow Brush="{AppThemeBinding Light={StaticResource SurfaceShadowColorWLLight}, Dark={StaticResource SurfaceShadowColorWLDark}}" Offset="0,4" />
 			</Setter.Value>
 		</Setter>
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="BorderSubSet">
-		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource SurfaceElevation2WLLight}, Dark={StaticResource SurfaceElevation2WLDark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
-		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="AlertFrame">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AlertLight}, Dark={StaticResource AlertDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource TnPDangerFigureWLLight}, Dark={StaticResource TnPDangerFigureWLDark}}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="ShellFrame">
@@ -602,27 +593,27 @@
 
 	<Style x:Key="TableCellEven" ApplyToDerivedTypes="True" TargetType="Frame">
 		<Setter Property="Padding" Value="0" />
-		<Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" />
+		<Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource InputFieldsContentSecondaryLight}, Dark={StaticResource InputFieldsContentSecondaryDark}}" />
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#20404040, Dark=#20c0c0c0}" />
 	</Style>
 
 	<Style x:Key="TableCellOdd" ApplyToDerivedTypes="True" TargetType="Frame">
 		<Setter Property="Padding" Value="0" />
-		<Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource NormalEditPlaceholderLight}, Dark={StaticResource NormalEditPlaceholderDark}}" />
+		<Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource InputFieldsContentSecondaryLight}, Dark={StaticResource InputFieldsContentSecondaryDark}}" />
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#10808080, Dark=#10808080}" />
 	</Style>
 
 	<Style x:Key="SendFrame" ApplyToDerivedTypes="True" TargetType="Frame">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SendMessageBackgroundLight}, Dark={StaticResource SendMessageBackgroundDark}}" />
-		<Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource SendMessageBorderLight}, Dark={StaticResource SendMessageBorderDark}}"/>
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource BrandColorsNeuroPayv100Light}, Dark={StaticResource BrandColorsNeuroPayv100Dark}}" />
+		<Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource BrandColorsNeuroPayLight}, Dark={StaticResource BrandColorsNeuroPayDark}}"/>
 		<Setter Property="HorizontalOptions" Value="Start"/>
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}"/>
 		<Setter Property="Padding" Value="{StaticResource SmallLeftRightMargins}"/>
 	</Style>
 
 	<Style x:Key="ReceiveFrame" ApplyToDerivedTypes="True" TargetType="Frame">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ReceiveMessageBackgroundLight}, Dark={StaticResource ReceiveMessageBackgroundDark}}" />
-		<Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource ReceiveMessageBorderLight}, Dark={StaticResource ReceiveMessageBorderDark}}"/>
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}" />
+		<Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}"/>
 		<Setter Property="HorizontalOptions" Value="End"/>
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}"/>
 		<Setter Property="Padding" Value="{StaticResource SmallLeftRightMargins}"/>
@@ -631,22 +622,15 @@
 	<Style x:Key="BottomBarBorder" TargetType="Border">
 		<Setter Property="VerticalOptions" Value="End" />
 		<Setter Property="HorizontalOptions" Value="Fill" />
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SurfaceSpecialNavMenuLight}, Dark={StaticResource SurfaceSpecialNavMenuDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource NavMenuBody1WLLight}, Dark={StaticResource NavMenuBody1WLDark}}" />
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="StrokeShape">
 			<Setter.Value>
 				<RoundRectangle CornerRadius="20,20,0,0" />
 			</Setter.Value>
 		</Setter>
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource NavMenuStroke1WLLight}, Dark={StaticResource NavMenuStroke1WLDark}}" />
 		<Setter Property="StrokeThickness" Value="1"/>
-		<Setter Property="Shadow">
-			<Setter.Value>
-				<Shadow Brush="{AppThemeBinding Light={StaticResource FiguresStrokesGreyScalesGreyv100Light}, Dark={StaticResource FiguresStrokesGreyScalesGreyv100Dark}}"
-						Opacity="1"
-						Offset="0,-1"
-						Radius="0"/>
-			</Setter.Value>
-		</Setter>
 	</Style>
 
 	<Style x:Key="BottomBarLabel" TargetType="Label">
@@ -663,27 +647,27 @@
 				<RoundRectangle CornerRadius="8" />
 			</Setter.Value>
 		</Setter>
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentBackgroundLight}, Dark={StaticResource AccentBackgroundDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}" />
 	</Style>
 
 	<Style x:Key="AccentInfoLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular"/>
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}" />
 	</Style>
 
 
 	<!-- TEMPORARY FOR PORTING FROM ID APP-->
 	<Style x:Key="IndicatorViewStyle" ApplyToDerivedTypes="False" TargetType="IndicatorView">
-		<Setter Property="SelectedIndicatorColor"  Value="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentBackgroundDark}}" />
+		<Setter Property="SelectedIndicatorColor"  Value="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}" />
 
 	</Style>
 
 	<Style x:Key="MyWalletView" TargetType="BoxView">
-		<Setter Property="BackgroundColor"  Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+		<Setter Property="BackgroundColor"  Value="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}" />
 	</Style>
 	<Style x:Key="MyWalletFrame" TargetType="Frame">
-		<Setter Property="BorderColor"  Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+		<Setter Property="BorderColor"  Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 		<Setter Property="CornerRadius"  Value="6" />
 		<Setter Property="Margin"  Value="5" />
 	</Style>

@@ -157,6 +157,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>If change was successful.</returns>
 		Task<bool> ChangePassword(string NewPassword);
 
+
+		/// <summary>
+		/// Generates and changes the password of the account.
+		/// </summary>
+		/// <returns>If change was successful</returns>
+		Task<bool> TryGenerateAndChangePassword();
+
 		#endregion
 
 		#region Components & Services

@@ -48,7 +48,7 @@
 			<DataTemplate x:DataType="objectModel:ObservableRole">
 				<Grid>
 					<Border Style="{StaticResource BorderSet}">
-						<VerticalStackLayout>
+						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
 							<Label Text="{Binding Name}"
 									 Style="{StaticResource RoleTitleLabel}" />
 							<Label Text="{Binding Description}"
@@ -66,7 +66,7 @@
 															 Style="{StaticResource RoleDescriptionLabel}"
 															 VerticalOptions="Center"
 															 HorizontalOptions="Center"
-															 TextColor="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+															 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessContentHoldWLLight}, Dark={StaticResource ButtonAccessContentHoldWLDark}}" />
 												</controls:TemplatedButton>
 												<Grid ColumnDefinitions="auto,*">
 													<VerticalStackLayout Grid.Column="0"
@@ -78,10 +78,10 @@
 															<Border Padding="{StaticResource SmallLeftRightMargins}"
 																	  Style="{StaticResource RoundedBorder}"
 																	  Stroke="Transparent"
-																	  BackgroundColor="{StaticResource Orange20Light}">
+																	  BackgroundColor="{StaticResource BrandColorsNeuroOrangea20Light}">
 																<Label Style="{StaticResource RoleDescriptionLabel}"
 																		 Text="{l:Localize IDRequestSent}"
-																		 TextColor="{StaticResource OrangeLight}"
+																		 TextColor="{StaticResource BrandColorsNeuroOrangeLight}"
 																		 VerticalOptions="Center" />
 															</Border>
 														</Grid>
@@ -92,10 +92,10 @@
 															<Border Padding="{StaticResource SmallLeftRightMargins}"
 																	  Style="{StaticResource RoundedBorder}"
 																	  Stroke="Transparent"
-																	  BackgroundColor="{StaticResource Orange20Light}">
+																	  BackgroundColor="{StaticResource BrandColorsNeuroOrangea20Light}">
 																<Label Style="{StaticResource RoleDescriptionLabel}"
 																		 Text="{l:Localize PendingSignature}"
-																		 TextColor="{StaticResource OrangeLight}"
+																		 TextColor="{StaticResource BrandColorsNeuroOrangeLight}"
 																		 HorizontalOptions="End"
 																		 VerticalOptions="Center"
 																		 HorizontalTextAlignment="End" />
@@ -132,7 +132,7 @@
 									  IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
 								<Label Text="{l:Localize None}"
 										 Style="{StaticResource RoleDescriptionLabel}"
-										 TextColor="{StaticResource AccentActiveLight}"
+										 TextColor="{StaticResource ButtonAccessPrimarybgWLLight}"
 										 HorizontalTextAlignment="Center"
 										 VerticalTextAlignment="Center" />
 							</Border>

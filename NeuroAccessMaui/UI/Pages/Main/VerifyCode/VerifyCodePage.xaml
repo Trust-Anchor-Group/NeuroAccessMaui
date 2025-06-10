@@ -18,7 +18,7 @@
 				ApplyToDerivedTypes="False"
 				BasedOn="{StaticResource PageTitleLabel}"
 				TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 				<Setter Property="FontFamily" Value="SpaceGroteskBold" />
 				<Setter Property="FontSize" Value="32" />
 			</Style>
@@ -26,21 +26,21 @@
 			<Style x:Key="PopupDetailsLabelStyle"
 				ApplyToDerivedTypes="False"
 				TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 			</Style>
 
 			<Style x:Key="PopupSectionTitleLabel"
 				ApplyToDerivedTypes="False"
 				BasedOn="{StaticResource SectionTitleLabel}"
 				TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 			</Style>
 
 			<Style x:Key="PopupOutlinedBorderStyle"
 				ApplyToDerivedTypes="False"
 				TargetType="Border">
 				<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
-				<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 				<Setter Property="StrokeShape">
 					<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
 				</Setter>
@@ -49,7 +49,7 @@
 			<Style x:Key="PopupOutlinedLabelStyle"
 				ApplyToDerivedTypes="False"
 				TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 				<Setter Property="HorizontalOptions" Value="Center" />
 				<Setter Property="HorizontalTextAlignment" Value="Center" />
 				<Setter Property="FontFamily" Value="SpaceGroteskMedium" />
@@ -61,7 +61,7 @@
 							<VisualState x:Name="Normal" />
 							<VisualState x:Name="Disabled">
 								<VisualState.Setters>
-									<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight}, Dark={StaticResource NormalInfoForegroundDark}}" />
+									<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}" />
 								</VisualState.Setters>
 							</VisualState>
 						</VisualStateGroup>

@@ -33,10 +33,10 @@
 
 					<controls:CompositeEntry.LeftView>
 						<Path
-								  HeightRequest="24" WidthRequest="24"
-								  Aspect="Uniform"
-								  Data="{x:Static ui:Geometries.EmailIconPath}"
-								  Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}"/>
+							HeightRequest="24" WidthRequest="24"
+							Aspect="Uniform"
+							Data="{x:Static ui:Geometries.EmailIconPath}"
+							Fill="{AppThemeBinding Light={StaticResource InputFieldsContentPrimaryLight}, Dark={StaticResource InputFieldsContentPrimaryDark}}"/>
 					</controls:CompositeEntry.LeftView>
 					<controls:CompositeEntry.Behaviors>
 						<mct:TextValidationBehavior x:Name="EmailValidator"
@@ -60,10 +60,10 @@
 							WidthRequest="20"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+							Fill="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsDangerContentv800Dark}}" />
 
 					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding LocalizedValidationError}"
-							 TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+							 TextColor="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsDangerContentv800Dark}}" />
 				</Grid>
 
 			</VerticalStackLayout>

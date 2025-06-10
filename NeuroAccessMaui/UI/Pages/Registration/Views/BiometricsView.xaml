@@ -25,7 +25,7 @@
 					HeightRequest="{Binding AuthenticationBackgroundSize}"
 					HasShadow="False"
 					CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
-					BackgroundColor="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}"
+					BackgroundColor="{AppThemeBinding Light={StaticResource ButtonAccessSecondarybgWLLight}, Dark={StaticResource ButtonAccessSecondarybgWLDark}}"
 					HorizontalOptions="Center"
 					IsVisible="{Binding IsFingerprint}">
 					<Path
@@ -35,7 +35,7 @@
 						WidthRequest="{Binding AuthenticationIconSize}"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.FingerprintPath}"
-						Fill="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+						Fill="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryContentWLLight}, Dark={StaticResource ButtonAccessSecondaryContentWLDark}}" />
 				</Frame>
 
 				<Frame
@@ -43,7 +43,7 @@
 					HeightRequest="{Binding AuthenticationBackgroundSize}"
 					HasShadow="False"
 					CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
-					BackgroundColor="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}"
+					BackgroundColor="{AppThemeBinding Light={StaticResource ButtonAccessSecondarybgWLLight}, Dark={StaticResource ButtonAccessSecondarybgWLDark}}"
 					HorizontalOptions="Center"
 					IsVisible="{Binding IsFace}">
 					<Path
@@ -53,7 +53,7 @@
 						WidthRequest="{Binding AuthenticationIconSize}"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.FacePath}"
-						Fill="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+						Fill="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryContentWLLight}, Dark={StaticResource ButtonAccessSecondaryContentWLDark}}" />
 				</Frame>
 			</HorizontalStackLayout>
 
@@ -87,16 +87,16 @@
 						WidthRequest="20"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
-											Dark={StaticResource NormalInfoForegroundDark}}" />
+						Fill="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight},
+											Dark={StaticResource TnPInfoContentWLDark}}" />
 
 					<Label
 						VerticalOptions="Center"
 						FontFamily="HaasGroteskRegular"
 						FontSize="14"
 						Text="{Binding WhatIsX}"
-						TextColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
-													Dark={StaticResource NormalInfoForegroundDark}}" />
+						TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight},
+													Dark={StaticResource TnPInfoContentWLDark}}" />
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 

@@ -14,15 +14,15 @@
 	</Style>
 
 	<Style x:Key="ButtonDisabledBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource GrayInactiveLight}, Dark={StaticResource GrayInactiveDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}" />
 	</Style>
 
 	<Style x:Key="ButtonDisabledLabel" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalContentInactiveWLLight}, Dark={StaticResource ButtonUniversalContentInactiveWLDark}}" />
 	</Style>
 
 	<Style x:Key="PathDisabled" TargetType="Path">
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource OffBlack50Light}, Dark={StaticResource OffWhite30Dark}}" />
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 	</Style>
 
 	<Style x:Key="ButtonLabelBase" ApplyToDerivedTypes="True" TargetType="Label">
@@ -30,16 +30,17 @@
 	</Style>
 
 	<!-- Primary -->
+	<!-- Access Button -->
 	<Style x:Key="PrimaryButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimarybgWLLight}, Dark={StaticResource ButtonAccessPrimarybgWLDark}}" />
 	</Style>
 
 	<Style x:Key="PrimaryButtonActiveLabel" TargetType="Label" BasedOn="{StaticResource ButtonLabelBase}">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}" />
 	</Style>
 
 	<Style x:Key="PrimaryPath" TargetType="Path">
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}" />
 	</Style>
 
 	<Style x:Key="PrimaryButton" TargetType="controls:TextButton">
@@ -63,17 +64,42 @@
 		</Setter>
 	</Style>
 
+	<!-- Svg Button -->
+	<Style x:Key="PrimaryIconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimarybgWLLight}, Dark={StaticResource ButtonAccessPrimarybgWLDark}}"/>
+		<Setter Property="Padding" Value="{StaticResource SmallMargins}"/>
+		<Setter Property="StrokeThickness" Value="{StaticResource MediumStrokeThickness}"/>
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryStrokeWLLight}, Dark={StaticResource ButtonAccessPrimaryStrokeWLDark}}"/>
+		<Setter Property="StrokeShape">
+			<RoundRectangle CornerRadius="8" />
+		</Setter>
+		<Setter Property="HorizontalOptions" Value="Fill"/>
+	</Style>
+
+	<Style x:Key="PrimaryIconButtonSvg" ApplyToDerivedTypes="False" TargetType="controls:SvgView">
+		<Setter Property="HeightRequest" Value="20"/>
+		<Setter Property="WidthRequest" Value="20"/>
+	</Style>
+
+	<Style x:Key="PrimaryIconButton" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
+		<Setter Property="BorderStyle" Value="{StaticResource PrimaryIconButtonBorder}" />
+		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
+		<Setter Property="SvgStyle" Value="{StaticResource PrimaryIconButtonSvg}"/>
+		<Setter Property="LabelStyle" Value="{StaticResource PrimaryButtonActiveLabel}"/>
+		<Setter Property="SvgAspect" Value="AspectFit"/>
+	</Style>
+
 	<!-- Secondary -->
 	<Style x:Key="SecondaryButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Accent20Light}, Dark={StaticResource Elevation1BackgroundDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondarybgWLLight}, Dark={StaticResource ButtonAccessSecondarybgWLDark}}" />
 	</Style>
 
 	<Style x:Key="SecondaryButtonActiveLabel" TargetType="Label" BasedOn="{StaticResource ButtonLabelBase}">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryContentWLLight}, Dark={StaticResource ButtonAccessSecondaryContentWLDark}}" />
 	</Style>
 
 	<Style x:Key="SecondaryPath" TargetType="Path">
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryContentWLLight}, Dark={StaticResource ButtonAccessSecondaryContentWLDark}}" />
 	</Style>
 
 	<Style x:Key="SecondaryButton" TargetType="controls:TextButton">
@@ -97,19 +123,41 @@
 		</Setter>
 	</Style>
 
-	<!-- Tertiary -->
-	<Style x:Key="TertiaryButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource WhiteLight}, Dark={StaticResource BackgroundOffBlackDark}}" />
+	<Style x:Key="SecondaryImageButton" TargetType="controls:ImageButton">
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource SecondaryButtonActiveBorder}" />
+							<Setter Property="PathStyle" Value="{StaticResource SecondaryPath}" />
+						</VisualState.Setters>
+					</VisualState>
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="BorderStyle" Value="{StaticResource ButtonDisabledBorder}" />
+							<Setter Property="PathStyle" Value="{StaticResource SecondaryPath}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
 	</Style>
 
-	<Style x:Key="TertiaryButtonActiveLabel" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+	<!-- Tertiary -->
+	<!-- Access Button -->
+	<Style x:Key="TertiaryButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessTertiarybgWLLight}, Dark={StaticResource ButtonAccessTertiarybgWLDark}}" />
+	</Style>
+
+	<Style x:Key="TertiaryButtonActiveLabel" TargetType="Label" BasedOn="{StaticResource ButtonLabelBase}">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessTertiaryContentWLLight}, Dark={StaticResource ButtonAccessTertiaryContentWLDark}}" />
 	</Style>
 
 	<Style x:Key="TertiaryPath" TargetType="Path">
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonAccessTertiaryContentWLLight}, Dark={StaticResource ButtonAccessTertiaryContentWLLight}}" />
 	</Style>
-	
+
 	<Style x:Key="TertiaryButton" TargetType="controls:TextButton">
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
@@ -133,15 +181,15 @@
 
 	<!-- Gray -->
 	<Style x:Key="GrayButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonBackgroundLight}, Dark={StaticResource ButtonBackgroundDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralGreybgLight}, Dark={StaticResource ButtonNeutralGreybgDark}}" />
 	</Style>
 
 	<Style x:Key="GrayButtonActiveLabel" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralGreyContentLight}, Dark={StaticResource ButtonNeutralGreyContentDark}}" />
 	</Style>
 
 	<Style x:Key="GrayPath" TargetType="Path">
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource OffWhiteLight}, Dark={StaticResource OffWhiteDark}}" />
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonNeutralGreyContentLight}, Dark={StaticResource ButtonNeutralGreyContentDark}}" />
 	</Style>
 	
 	<Style x:Key="GrayButton" TargetType="controls:TextButton">
@@ -167,16 +215,16 @@
 
 	<!-- Red -->
 	<Style x:Key="RedButtonActiveBorder" TargetType="Border" BasedOn="{StaticResource ButtonBorderBase}">
-		<Setter Property="Stroke" Value="{AppThemeBinding Light='Transparent', Dark={StaticResource RedErrorDark}}"/>
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Elevation2BackgroundDark}}" />
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource ButtonDangerPrimaryContentWLLight}, Dark={StaticResource ButtonDangerPrimaryContentWLDark}}"/>
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonDangerPrimarybgWLLight}, Dark={StaticResource ButtonDangerPrimarybgWLDark}}" />
 	</Style>
 
 	<Style x:Key="RedButtonActiveLabel" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedErrorDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonDangerPrimaryContentWLLight}, Dark={StaticResource ButtonDangerPrimaryContentWLDark}}" />
 	</Style>
 
 	<Style x:Key="RedPath" TargetType="Path">
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedErrorDark}}" />
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonDangerPrimaryContentWLLight}, Dark={StaticResource ButtonDangerPrimaryContentWLDark}}" />
 	</Style>
 	
 	<Style x:Key="RedButton" TargetType="controls:TextButton">
@@ -203,7 +251,7 @@
 	<!-- Old -->
 	<!-- Template Styles -->
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="FilledTemplateButtonBorder">
-		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonGreenbgPrimaryfLight}, Dark={StaticResource ButtonGreenbgPrimaryfDark}}" />
+		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimarybgWLLight}, Dark={StaticResource ButtonAccessPrimarybgWLDark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
@@ -213,7 +261,7 @@
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}" />
+							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -222,14 +270,14 @@
 	</Style>
 
 	<Style x:Key="FilledTemplateButtonLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonContentWhitefLight}, Dark={StaticResource ButtonContentWhitefDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalContentInactiveWLLight}, Dark={StaticResource ButtonUniversalContentInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -241,13 +289,12 @@
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="StrokeMiterLimit" Value="10" />
 		<Setter Property="StrokeThickness" Value="{StaticResource ThinStrokeThickness}" />
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonContentWhitefLight}, Dark={StaticResource ButtonContentWhitefDark}}"></Setter>
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="TransparentTemplateButtonBorder">
-		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonGreenbgSecondaryvLight}, Dark={StaticResource ButtonGreenbgSecondaryvDark}}" />
+		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondarybgWLLight}, Dark={StaticResource ButtonAccessSecondarybgWLDark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}"/>
 		<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
 		<Setter Property="Margin" Value="{StaticResource SmallMargins}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
@@ -256,7 +303,7 @@
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource DisabledTransparentButtonBackgroundLight}, Dark={StaticResource DisabledTransparentButtonBackgroundDark}}" />
+							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}" />
 							<Setter Property="Stroke" Value="Transparent"/>
 						</VisualState.Setters>
 					</VisualState>
@@ -266,14 +313,14 @@
 	</Style>
 
 	<Style x:Key="TransparentTemplateButtonLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonGreenContentGreenfLight}, Dark={StaticResource ButtonGreenContentGreenfDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryContentWLLight}, Dark={StaticResource ButtonAccessSecondaryContentWLDark}}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource DisabledTransparentButtonForegroundLight}, Dark={StaticResource DisabledTransparentButtonForegroundDark}}" />
+							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalContentInactiveWLLight}, Dark={StaticResource ButtonUniversalContentInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -285,14 +332,14 @@
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="StrokeMiterLimit" Value="10" />
 		<Setter Property="StrokeThickness" Value="{StaticResource ThinStrokeThickness}" />
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonGreenContentGreenfLight}, Dark={StaticResource ButtonGreenContentGreenfDark}}"></Setter>
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryContentWLLight}, Dark={StaticResource ButtonAccessSecondaryContentWLDark}}"/>
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource DisabledTransparentButtonForegroundLight}, Dark={StaticResource DisabledTransparentButtonForegroundDark}}" />
+							<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonUniversalContentInactiveWLLight}, Dark={StaticResource ButtonUniversalContentInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -303,16 +350,24 @@
 
 	<!-- ImageOnly Styles -->
 	<Style x:Key="ImageOnlyButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="Transparent" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsbgActiveWLDark}}" />
 		<Setter Property="Padding" Value="{StaticResource SmallSpacing}"/>
 		<Setter Property="HorizontalOptions" Value="Center"/>
 		<Setter Property="VerticalOptions" Value="Center"/>
+		<Setter Property="StrokeShape" Value="RoundRectangle 8"/>
+		<Setter Property="HeightRequest" Value="40"/>
+		<Setter Property="WidthRequest" Value="40"/>
+		<Setter Property="Shadow">
+			<Setter.Value>
+				<Shadow Brush="{AppThemeBinding Light={StaticResource SurfaceShadowColorWLLight}, Dark={StaticResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+			</Setter.Value>
+		</Setter>
 	</Style>
 
 	<Style x:Key="ImageOnlyButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsContentActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsContentActiveWLDark}}" />
 		<Setter Property="WidthRequest" Value="24" />
 		<Setter Property="HeightRequest" Value="24" />
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
 	</Style>
 
 	<Style x:Key="ImageOnlyButton" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
@@ -322,26 +377,9 @@
 		<Setter Property="PathStyle" Value="{StaticResource ImageOnlyButtonPath}" />
 	</Style>
 
-	<Style x:Key="TransparentImageButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="#33F5F6F7" />
-		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
-		<Setter Property="StrokeShape">
-			<RoundRectangle CornerRadius="{StaticResource MediumCornerRadius}" />
-		</Setter>
-	</Style>
-
-	<Style x:Key="TransparentImageButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
-		<Setter Property="Fill" Value="{StaticResource PrimaryBackgroundLight}" />
-	</Style>
-
-	<Style x:Key="TransparentImageButton" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
-		<Setter Property="BorderStyle" Value="{StaticResource TransparentImageButtonBorder}" />
-		<Setter Property="PathStyle" Value="{StaticResource TransparentImageButtonPath}" />
-	</Style>
-
 	<!-- Filled Image Button -->
 	<Style x:Key="FilledImageButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimarybgWLLight}, Dark={StaticResource ButtonAccessPrimarybgWLDark}}" />
 		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
 		<Setter Property="StrokeShape">
 			<RoundRectangle CornerRadius="{StaticResource MediumCornerRadius}" />
@@ -352,7 +390,7 @@
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}" />
+							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -361,14 +399,14 @@
 	</Style>
 
 	<Style x:Key="FilledImageButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
-		<Setter Property="Fill" Value="{StaticResource PrimaryBackgroundLight}" />
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+							<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonUniversalContentInactiveWLLight}, Dark={StaticResource ButtonUniversalContentInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -381,31 +419,26 @@
 		<Setter Property="PathStyle" Value="{StaticResource FilledImageButtonPath}" />
 	</Style>
 
-	<!-- Back Button -->
+	<!-- Icon Button -->
 	<Style x:Key="IconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border" BasedOn="{StaticResource BorderSet}">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundLight}, Dark={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundDark}}"/>
-		<Setter Property="Padding" Value="{StaticResource MediumMargins}"/>
-		<Setter Property="Margin"
-				Value="0" />
-		<Setter Property="WidthRequest" Value="40"/>
-		<Setter Property="HeightRequest" Value="40"/>
-		<Setter Property="HorizontalOptions" Value="Start"/>
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsbgActiveWLDark}}"/>
+		<Setter Property="Padding" Value="{StaticResource SmallMargins}"/>
+		<Setter Property="Margin" Value="0" />
 		<Setter Property="StrokeShape">
 			<RoundRectangle CornerRadius="8" />
 		</Setter>
-
 	</Style>
 
-	<Style x:Key="IconButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
-		<Setter Property="Fill"
-				Value="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}"/>
-		<Setter Property="WidthRequest" Value="24"/>
+	<Style x:Key="IconButtonSvg" ApplyToDerivedTypes="False" TargetType="controls:SvgView">
 		<Setter Property="HeightRequest" Value="24"/>
+		<Setter Property="WidthRequest" Value="24"/>
 	</Style>
 
-	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
+	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
 		<Setter Property="BorderStyle" Value="{StaticResource IconButtonBorder}" />
-		<Setter Property="PathStyle" Value="{StaticResource IconButtonPath}" />
+		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsContentActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsContentActiveWLDark}}" />
+		<Setter Property="SvgAspect" Value="AspectFit"/>
+		<Setter Property="SvgStyle" Value="{StaticResource IconButtonSvg}" />
 	</Style>
 
 	<!-- Expander Button Styles -->
@@ -420,7 +453,7 @@
 	<Style x:Key="ExpanderButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
 		<Setter Property="WidthRequest" Value="12" />
 		<Setter Property="HeightRequest" Value="12" />
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
 	</Style>
 
 	<Style x:Key="ExpanderButton" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
@@ -434,9 +467,9 @@
 	<!-- TextButton Styles -->
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="TransparentTextButtonBorder">
-		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource EnabledTransparentButtonBackgroundLight}, Dark={StaticResource EnabledTransparentButtonBackgroundDark}}" />
+		<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondarybgWLLight}, Dark={StaticResource ButtonAccessSecondarybgWLDark}}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light=Transparent, Dark={StaticResource EnabledTransparentButtonForegroundDark}}"/>
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryStrokeWLLight}, Dark={StaticResource ButtonAccessSecondarybgWLDark}}"/>
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
@@ -444,7 +477,7 @@
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource DisabledTransparentButtonBackgroundLight}, Dark={StaticResource DisabledTransparentButtonBackgroundDark}}" />
+							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}" />
 							<Setter Property="Stroke" Value="Transparent"/>
 						</VisualState.Setters>
 					</VisualState>
@@ -454,14 +487,14 @@
 	</Style>
 
 	<Style x:Key="TransparentTextButtonLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource EnabledTransparentButtonForegroundLight}, Dark={StaticResource EnabledTransparentButtonForegroundDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryContentWLLight}, Dark={StaticResource ButtonAccessSecondaryContentWLDark}}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource DisabledTransparentButtonForegroundLight}, Dark={StaticResource DisabledTransparentButtonForegroundDark}}" />
+							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalContentInactiveWLLight}, Dark={StaticResource ButtonUniversalContentInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -474,7 +507,7 @@
 	</Style>
 
 	<Style x:Key="FilledTextButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimarybgWLLight}, Dark={StaticResource ButtonAccessPrimarybgWLDark}}" />
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="StrokeShape">
@@ -486,7 +519,7 @@
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}" />
+							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -495,14 +528,14 @@
 	</Style>
 
 	<Style x:Key="FilledTextButtonLabel" ApplyToDerivedTypes="False" BasedOn="{StaticResource BoldItemTitleLabel}" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonForegroundLight}, Dark={StaticResource EnabledFilledButtonForegroundDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalContentInactiveWLLight}, Dark={StaticResource ButtonUniversalContentInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -516,8 +549,8 @@
 	</Style>
 
 	<Style x:Key="OutlinedTextButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonBackgroundLight}, Dark={StaticResource EnabledOutlinedButtonBackgroundDark}}" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralSecondarybgLight}, Dark={StaticResource ButtonNeutralSecondarybgDark}}" />
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource ButtonNeutralSecondaryStrokeLight}, Dark={StaticResource ButtonNeutralSecondaryStrokeDark}}" />
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="StrokeShape">
 			<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
@@ -528,8 +561,8 @@
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledOutlinedButtonBackgroundLight}, Dark={StaticResource DisabledOutlinedButtonBackgroundDark}}" />
-							<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource DisabledOutlinedButtonForegroundLight}, Dark={StaticResource DisabledOutlinedButtonForegroundDark}}" />
+							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}" />
+							<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -539,7 +572,7 @@
 
 	<!-- Filled Decline Button -->
 	<Style x:Key="FilledTextButtonDeclineBorder" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Red20WarningLight}, Dark={StaticResource Red20WarningDark}}" />
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonDangerPrimarybgWLLight}, Dark={StaticResource ButtonDangerPrimarybgWLDark}}" />
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
 		<Setter Property="StrokeShape">
@@ -551,7 +584,7 @@
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -560,14 +593,14 @@
 	</Style>
 
 	<Style x:Key="FilledTextButtonDeclineLabel" ApplyToDerivedTypes="False" BasedOn="{StaticResource BoldItemTitleLabel}" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource RedWarningLight}, Dark={StaticResource RedWarningDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonDangerPrimaryContentWLLight}, Dark={StaticResource ButtonDangerPrimaryContentWLDark}}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalContentInactiveWLLight}, Dark={StaticResource ButtonUniversalContentInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -582,14 +615,14 @@
 	<!-- End -->
 	
 	<Style x:Key="OutlinedTextButtonLabel" ApplyToDerivedTypes="False" BasedOn="{StaticResource BoldItemTitleLabel}" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonNeutralSecondaryContentLight}, Dark={StaticResource ButtonNeutralSecondaryContentDark}}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
 					<VisualState x:Name="Normal" />
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
-							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource DisabledOutlinedButtonForegroundLight}, Dark={StaticResource DisabledOutlinedButtonForegroundDark}}" />
+							<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ButtonUniversalContentInactiveWLLight}, Dark={StaticResource ButtonUniversalContentInactiveWLDark}}" />
 						</VisualState.Setters>
 					</VisualState>
 				</VisualStateGroup>
@@ -604,74 +637,17 @@
 
 	<Style x:Key="OutlinedImageButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="Transparent" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
+		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource ButtonNeutralPrimarybgLight}, Dark={StaticResource ButtonNeutralPrimarybgDark}}" />
 		<Setter Property="StrokeThickness" Value="{StaticResource MediumStrokeThickness}" />
 		<Setter Property="Padding" Value="{StaticResource MediumMargins}" />
 	</Style>
 
 	<Style x:Key="OutlinedImageButtonPath" ApplyToDerivedTypes="False" TargetType="Path">
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
+		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonNeutralPrimarybgLight}, Dark={StaticResource ButtonNeutralPrimarybgDark}}" />
 	</Style>
 
 	<Style x:Key="OutlinedImageButton" ApplyToDerivedTypes="False" TargetType="controls:ImageButton">
 		<Setter Property="BorderStyle" Value="{StaticResource OutlinedImageButtonBorder}" />
 		<Setter Property="PathStyle" Value="{StaticResource OutlinedImageButtonPath}" />
-	</Style>
-
-	<Style x:Key="FilledTextButtonBorderNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
-		<Setter Property="Stroke" Value="Transparent" />
-		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
-		<Setter Property="VisualStateManager.VisualStateGroups">
-			<VisualStateGroupList>
-				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
-					<VisualState x:Name="Disabled">
-						<VisualState.Setters>
-							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}" />
-						</VisualState.Setters>
-					</VisualState>
-				</VisualStateGroup>
-			</VisualStateGroupList>
-		</Setter>
-	</Style>
-
-	<Style x:Key="FilledTextButtonNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="controls:TextButton">
-		<Setter Property="BorderStyle" Value="{StaticResource FilledTextButtonBorderNoRoundedCorners}" />
-		<Setter Property="LabelStyle" Value="{StaticResource FilledTextButtonLabel}" />
-	</Style>
-
-	<Style x:Key="OutlinedTextButtonBorderNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="Border">
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonBackgroundLight}, Dark={StaticResource EnabledOutlinedButtonBackgroundDark}}" />
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource EnabledOutlinedButtonForegroundLight}, Dark={StaticResource EnabledOutlinedButtonForegroundDark}}" />
-		<Setter Property="Padding" Value="{StaticResource ButtonMediumMargins}" />
-		<Setter Property="VisualStateManager.VisualStateGroups">
-			<VisualStateGroupList>
-				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
-					<VisualState x:Name="Disabled">
-						<VisualState.Setters>
-							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource DisabledOutlinedButtonBackgroundLight}, Dark={StaticResource DisabledOutlinedButtonBackgroundDark}}" />
-							<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource DisabledOutlinedButtonForegroundLight}, Dark={StaticResource DisabledOutlinedButtonForegroundDark}}" />
-						</VisualState.Setters>
-					</VisualState>
-				</VisualStateGroup>
-			</VisualStateGroupList>
-		</Setter>
-	</Style>
-
-	<Style x:Key="OutlinedTextButtonNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="controls:TextButton">
-		<Setter Property="BorderStyle" Value="{StaticResource OutlinedTextButtonBorderNoRoundedCorners}" />
-		<Setter Property="LabelStyle" Value="{StaticResource OutlinedTextButtonLabel}" />
-	</Style>
-
-	<Style x:Key="UnicodeCharacterButtonNoRoundedCorners" ApplyToDerivedTypes="False" TargetType="Button">
-		<Setter Property="WidthRequest" Value="40" />
-		<Setter Property="HeightRequest" Value="40" />
-		<Setter Property="HorizontalOptions" Value="Center" />
-		<Setter Property="VerticalOptions" Value="Center" />
-		<Setter Property="CornerRadius" Value="0" />
-		<Setter Property="Padding" Value="0" />
-		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource EnabledFilledButtonBackgroundLight}, Dark={StaticResource EnabledFilledButtonBackgroundDark}}" />
 	</Style>
 </ResourceDictionary>

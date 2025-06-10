@@ -28,7 +28,7 @@
 			<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
 				<Label Text="{l:Localize SeeInformationAgain}" />
 				<Path VerticalOptions="Center" HeightRequest="12" WidthRequest="12" Aspect="Uniform"
-							Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" 
+							Fill="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark }}" 
 							Data="{x:Static ui:Geometries.ArrowDownPath}"/>
 			</HorizontalStackLayout>
 		</controls:TemplatedButton>
@@ -38,7 +38,7 @@
 			<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
 				<Label Text="{l:Localize HideInformation}" />
 				<Path VerticalOptions="Center" HeightRequest="12" WidthRequest="12" Aspect="Uniform"
-							Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" 
+							Fill="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" 
 							Data="{x:Static ui:Geometries.ArrowUpPath}"/>
 			</HorizontalStackLayout>
 		</controls:TemplatedButton>
@@ -203,7 +203,7 @@
 
 		<VerticalStackLayout HeightRequest="{StaticResource MediumSpacing}"/>
 
-		<Rectangle BackgroundColor="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}"
+		<Rectangle BackgroundColor="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}"
 					  WidthRequest="250" HeightRequest="2"/>
 
 		<Grid ColumnDefinitions="auto,*" RowDefinitions="auto,auto,auto, auto" ColumnSpacing="{StaticResource SmallSpacing}"

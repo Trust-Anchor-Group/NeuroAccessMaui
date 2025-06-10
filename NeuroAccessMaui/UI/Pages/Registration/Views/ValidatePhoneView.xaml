@@ -29,10 +29,10 @@
 				<Border
 					Padding="{StaticResource EditMediumMargins}"
 					Style="{StaticResource ItemOuterBorder}"
-					BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight},
-													  Dark={StaticResource NormalEditBackgroundDark}}"
-					Stroke="{AppThemeBinding Light={StaticResource NormalEditForegroundLight},
-											 Dark={StaticResource NormalEditForegroundDark}}">
+					BackgroundColor="{AppThemeBinding Light={StaticResource InputFieldsSurfaceBackgroundActiveLight},
+													  Dark={StaticResource InputFieldsSurfaceBackgroundActiveDark}}"
+					Stroke="{AppThemeBinding Light={StaticResource InputFieldsSurfaceStrokeLight},
+											 Dark={StaticResource InputFieldsSurfaceStrokeDark}}">
 
 					<Grid
 						RowDefinitions="auto"
@@ -48,7 +48,7 @@
 
 							<Label
 								VerticalOptions="Center"
-								Text="{Binding SelectedCountry.DialCode}" />
+								Text="{Binding SelectedCountry.DialCode}"/>
 
 							<Path
 								VerticalOptions="Center"
@@ -56,8 +56,8 @@
 								WidthRequest="10"
 								Aspect="Uniform"
 								Data="{x:Static ui:Geometries.DropDownArrowPath}"
-								Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-													   Dark={StaticResource PrimaryForegroundDark}}" />
+								Fill="{AppThemeBinding Light={StaticResource InputFieldsContentPrimaryLight},
+													   Dark={StaticResource InputFieldsContentPrimaryDark}}" />
 						</HorizontalStackLayout>
 						<Entry
 							Grid.Column="1"
@@ -94,10 +94,10 @@
 							WidthRequest="20"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+							Fill="{AppThemeBinding Light={StaticResource TnPDangerFigureWLLight}, Dark={StaticResource TnPDangerFigureWLLight}}" />
 
 					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding LocalizedValidationError}"
-							 TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+							 TextColor="{AppThemeBinding Light={StaticResource TnPDangerFigureWLLight}, Dark={StaticResource TnPDangerFigureWLDark}}" />
 				</Grid>
 
 			</VerticalStackLayout>

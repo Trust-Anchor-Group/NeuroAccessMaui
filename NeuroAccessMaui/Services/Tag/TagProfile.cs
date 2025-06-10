@@ -62,6 +62,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? account;
 		private string? xmppPasswordHash;
 		private string? xmppPasswordHashMethod;
+		private bool? xmppPasswordNeedsUpdate;
 		private string? legalJid;
 		private string? registryJid;
 		private string? provisioningJid;
@@ -143,6 +144,7 @@ namespace NeuroAccessMaui.Services.Tag
 				Account = this.Account,
 				PasswordHash = this.XmppPasswordHash,
 				PasswordHashMethod = this.XmppPasswordHashMethod,
+				PasswordNeedsUpdate = this.xmppPasswordNeedsUpdate,
 				LegalJid = this.LegalJid,
 				RegistryJid = this.RegistryJid,
 				ProvisioningJid = this.ProvisioningJid,
@@ -205,6 +207,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.Account = Configuration.Account;
 				this.XmppPasswordHash = Configuration.PasswordHash;
 				this.XmppPasswordHashMethod = Configuration.PasswordHashMethod;
+				this.xmppPasswordNeedsUpdate = Configuration.PasswordNeedsUpdate;
 				this.LegalJid = Configuration.LegalJid;
 				this.RegistryJid = Configuration.RegistryJid;
 				this.ProvisioningJid = Configuration.ProvisioningJid;
@@ -279,6 +282,22 @@ namespace NeuroAccessMaui.Services.Tag
 		public virtual bool LegalIdentityNeedsRefreshing()
 		{
 			return (DateTime.UtcNow - this.LastIdentityUpdate) > Constants.Intervals.ForceRefresh;
+		}
+
+		/// <summary>
+		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> needs to have its Xmpp Password updated, <c>false</c> otherwise.
+		/// </summary>
+		public bool GetXmppPasswordNeedsUpdating()
+		{
+			return this.xmppPasswordNeedsUpdate ?? false;
+		}
+
+		/// <summary>
+		/// Sets the local flag for if xmpp password needs updating.
+		/// </summary>
+		public void SetXmppPasswordNeedsUpdating(bool Value)
+		{
+			this.xmppPasswordNeedsUpdate = Value;
 		}
 
 		/// <summary>
