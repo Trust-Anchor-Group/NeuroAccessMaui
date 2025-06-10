@@ -1,12 +1,12 @@
 ﻿using Waher.Persistence;
 using Waher.Persistence.Attributes;
 
-namespace NeuroAccessMaui.Services.AttachmentCache
+namespace NeuroAccessMaui.Services.Cache
 {
 	/// <summary>
 	/// Contains information about a file in the local cache.
 	/// </summary>
-	[CollectionName("AttachmentCache")]
+	[CollectionName("FileCache")]
 	[TypeName(TypeNameSerialization.FullName)]
 	[Index("Expires")]
 	[Index("Url")]
