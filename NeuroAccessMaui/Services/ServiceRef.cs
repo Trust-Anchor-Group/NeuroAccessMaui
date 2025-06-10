@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Reflection;
 using Microsoft.Extensions.Localization;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.AttachmentCache;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
@@ -23,6 +22,10 @@ using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.Services.Xmpp;
 using ZXing;
 using NeuroAccessMaui.Services.Intents;
+using Waher.Content;
+using NeuroAccessMaui.Services.Cache.AttachmentCache;
+using NeuroAccessMaui.Services.Cache.InternetCache;
+using NeuroAccessMaui.Services.Theme;
 
 namespace NeuroAccessMaui.Services
 {
@@ -51,6 +54,8 @@ namespace NeuroAccessMaui.Services
 		private static IBarcodeReader? barcodeReader;
 		private static IPermissionService? permissionService;
 		private static IIntentService? intentService;
+		private static IInternetCacheService? internetCacheService;
+		private static IThemeService? themeService;
 
 		/// <summary>
 		/// Service serializing and managing UI-related tasks.
@@ -310,7 +315,7 @@ namespace NeuroAccessMaui.Services
 						}
 					}
 
-					if(ShouldReport)
+					if (ShouldReport)
 						LocalizeExtension.ReportMissingString(Name, Caller);
 
 					return new LocalizedString(Name, Name, true);
@@ -366,6 +371,24 @@ namespace NeuroAccessMaui.Services
 			{
 				intentService ??= App.Instantiate<IIntentService>();
 				return intentService;
+			}
+		}
+
+		public static IInternetCacheService InternetCacheService
+		{
+			get
+			{
+				internetCacheService ??= App.Instantiate<IInternetCacheService>();
+				return internetCacheService;
+			}
+		}
+
+		public static IThemeService ThemeService
+		{
+			get
+			{
+				themeService ??= App.Instantiate<IThemeService>();
+				return themeService;
 			}
 		}
 	}
