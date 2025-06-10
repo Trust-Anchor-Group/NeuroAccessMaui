@@ -1,6 +1,5 @@
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.UI.Pages;
-using NeuroAccessMaui.Services.AttachmentCache;
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography;
@@ -10,6 +9,7 @@ using Waher.Content.Images.Exif;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Temporary;
+using NeuroAccessMaui.Services.Cache.AttachmentCache;
 
 namespace NeuroAccessMaui.Services.UI.Photos
 {
