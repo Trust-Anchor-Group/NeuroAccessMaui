@@ -42,14 +42,14 @@
 		<Setter Property="EntryStyle" Value="{StaticResource RegularCompositeEntryEntry}" />
 		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositeEntryLabel}" />
 		<Setter Property="ValidationLabelStyle" Value="{StaticResource RegularCompositeInputViewValidationLabel}"/>
-		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsDangerContentv500Dark}}" />
+		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsContentDangerv500Dark}}" />
 		<!-- Border properties are inherited from BaseCompositeInputView -->
 
 		<Style.Triggers>
 			<Trigger TargetType="controls:CompositeEntry"
                      Property="IsValid"
                      Value="False">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsDangerContentv500Dark}}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsContentDangerv500Dark}}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

@@ -56,8 +56,8 @@
 		<Setter Property="BorderShadow" Value="{x:Null}"/>
 		<Style.Triggers>
 			<Trigger TargetType="controls:CompositeDatePicker" Property="IsValid" Value="False">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsDangerContentv500Dark}}" />
-				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsDangerContentv500Dark}}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsContentDangerv500Dark}}" />
+				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsContentDangerv500Dark}}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>
@@ -80,7 +80,7 @@
 		<Style.Triggers>
 			<Trigger TargetType="controls:CompositePicker" Property="IsValid" Value="False">
 				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}" />
-				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsDangerContentv500Dark}}" />
+				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsContentDangerv500Dark}}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

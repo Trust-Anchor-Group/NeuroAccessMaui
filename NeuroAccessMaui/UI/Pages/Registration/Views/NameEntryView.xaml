@@ -38,13 +38,13 @@
 								WidthRequest="20"
 								Aspect="Uniform"
 								Data="{x:Static ui:Geometries.InfoCirclePath}"
-								Fill="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsDangerContentv800Dark}}" />
+								Fill="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsContentDangerv800Dark}}" />
 
 					<Label Grid.Column="1" Grid.Row="0" VerticalOptions="Center" Text="{Binding LocalizedValidationMessage}"
-									TextColor="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsDangerContentv800Dark}}" />
+									TextColor="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsContentDangerv800Dark}}" />
 					<Grid  Grid.Row="1" Grid.Column="1" ColumnDefinitions="auto, *" IsVisible="{Binding AlternativeName, Converter={StaticResource OnlyShowNonEmpty}}">
 						<Label HorizontalOptions="Start" Text="{l:Localize Alternative}" Grid.Column="0"
-						       TextColor="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsDangerContentv800Dark}}" />
+						       TextColor="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsContentDangerv800Dark}}" />
 
 
 

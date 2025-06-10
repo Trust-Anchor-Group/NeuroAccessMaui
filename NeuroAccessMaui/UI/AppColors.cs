@@ -145,7 +145,7 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					alertDark ??= AppStyles.TryGetResource<Color>("InputFieldsDangerContentv800Dark");
+					alertDark ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Dark");
 					return alertDark!;
 				}
 				else
@@ -165,7 +165,7 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					errorBackgroundDark ??= AppStyles.TryGetResource<Color>("InputFieldsDangerContentv800Dark");
+					errorBackgroundDark ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Dark");
 					return errorBackgroundDark!;
 				}
 				else
