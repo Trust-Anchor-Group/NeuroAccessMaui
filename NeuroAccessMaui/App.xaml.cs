@@ -244,7 +244,7 @@ namespace NeuroAccessMaui
 
 		private static void InitLocalizationResource()
 		{
-			LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
+		//	LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
 			LocalizationManager.Current.CurrentCulture = SelectedLanguage;
 		}
 
