@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Cache;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Popups.Settings;
@@ -16,6 +17,8 @@ using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
+using Waher.Persistence;
+using Waher.Persistence.Filters;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -589,6 +592,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			this.DisplayMode = "Dark";
 		}
 
+		[RelayCommand]
+		private async Task ClearCacheAsync()
+		{
+			await Database.FindDelete<CacheEntry>(
+			new FilterFieldGreaterOrEqualTo("Url", string.Empty));
+			await Database.Provider.Flush();
+		}
 		#endregion
 	}
 }

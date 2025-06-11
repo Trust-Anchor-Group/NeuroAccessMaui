@@ -168,6 +168,22 @@
 								</Grid>
 							</VerticalStackLayout>
 						</Border>
+
+						<controls:TemplatedButton HorizontalOptions="FillAndExpand"
+												  Command="{x:Binding ClearCacheCommand}">
+							<Border Style="{DynamicResource BorderSubSet}"
+									InputTransparent="True">
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
+													 InputTransparent="True">
+									<Label Style="{DynamicResource SectionTitleLabel}"
+										   Text="{l:Localize ClearCache}"
+										   InputTransparent="True" />
+									<Label Style="{DynamicResource ItemDescriptionLabel}"
+										   Text="{l:Localize ClearCacheDescription}"
+										   InputTransparent="True" />
+								</VerticalStackLayout>
+							</Border>
+						</controls:TemplatedButton>
 					</VerticalStackLayout>
 				</Border>
 
