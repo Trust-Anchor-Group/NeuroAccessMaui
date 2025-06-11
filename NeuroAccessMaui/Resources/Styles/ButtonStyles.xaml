@@ -8,7 +8,7 @@
 	<!-- Common -->
 	<Style x:Key="ButtonBorderBase" ApplyToDerivedTypes="True" TargetType="Border">
 		<Setter Property="Stroke" Value="Transparent"/>
-		<Setter Property="Padding" Value="{DynamicResource ButtonMediumMargins}" />
+		<Setter Property="Padding" Value="16,8" />
 		<Setter Property="StrokeShape">
 			<RoundRectangle CornerRadius="{DynamicResource MediumCornerRadius}" />
 		</Setter>
@@ -97,6 +97,10 @@
 
 	<Style x:Key="SecondaryButtonActiveLabel" TargetType="Label" BasedOn="{StaticResource ButtonLabelBase}">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ButtonAccessSecondaryContentWLLight}, Dark={DynamicResource ButtonAccessSecondaryContentWLDark}}" />
+		<Setter Property="VerticalOptions"
+				Value="Center" />
+		<Setter Property="VerticalTextAlignment"
+				Value="Center" />
 	</Style>
 
 	<Style x:Key="SecondaryPath" TargetType="Path">
@@ -104,6 +108,10 @@
 	</Style>
 
 	<Style x:Key="SecondaryButton" TargetType="controls:TextButton">
+		<Setter Property="BorderStyle"
+				Value="{DynamicResource SecondaryButtonActiveBorder}" />
+		<Setter Property="LabelStyle"
+				Value="{DynamicResource SecondaryButtonActiveLabel}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
@@ -125,6 +133,10 @@
 	</Style>
 
 	<Style x:Key="SecondaryImageButton" TargetType="controls:ImageButton">
+		<Setter Property="BorderStyle"
+				Value="{DynamicResource SecondaryButtonActiveBorder}" />
+		<Setter Property="PathStyle"
+				Value="{DynamicResource SecondaryPath}" />
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
