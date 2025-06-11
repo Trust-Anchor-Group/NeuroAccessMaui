@@ -306,7 +306,26 @@
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="StrokeMiterLimit" Value="10" />
 		<Setter Property="StrokeThickness" Value="{StaticResource ThinStrokeThickness}" />
-		<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
+		<Setter Property="Fill"
+				Value="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
+		<Setter Property="VisualStateManager.VisualStateGroups">
+			<VisualStateGroupList>
+				<VisualStateGroup x:Name="CommonStates">
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="Fill"
+									Value="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
+					<VisualState x:Name="Disabled">
+						<VisualState.Setters>
+							<Setter Property="Fill"
+									Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
+				</VisualStateGroup>
+			</VisualStateGroupList>
+		</Setter>
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="TransparentTemplateButtonBorder">
@@ -318,7 +337,12 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="Background"
+									Value="{AppThemeBinding Light={DynamicResource ButtonAccessSecondarybgWLLight}, Dark={DynamicResource ButtonAccessSecondarybgWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="Background"
@@ -337,7 +361,12 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="TextColor"
+									Value="{AppThemeBinding Light={DynamicResource ButtonAccessSecondaryContentWLLight}, Dark={DynamicResource ButtonAccessSecondaryContentWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="TextColor"
@@ -358,7 +387,12 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="Fill"
+									Value="{AppThemeBinding Light={DynamicResource ButtonAccessSecondaryContentWLLight}, Dark={DynamicResource ButtonAccessSecondaryContentWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="Fill"
@@ -410,7 +444,12 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="BackgroundColor"
+									Value="{AppThemeBinding Light={DynamicResource ButtonAccessPrimarybgWLLight}, Dark={DynamicResource ButtonAccessPrimarybgWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}" />
@@ -426,7 +465,12 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="Fill"
+									Value="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="Fill" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}" />
@@ -498,7 +542,14 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="Background"
+									Value="{AppThemeBinding Light={DynamicResource ButtonAccessSecondarybgWLLight}, Dark={DynamicResource ButtonAccessSecondarybgWLDark}}" />
+							<Setter Property="Stroke"
+									Value="{AppThemeBinding Light={DynamicResource ButtonAccessSecondaryStrokeWLLight}, Dark={DynamicResource ButtonAccessSecondarybgWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="Background" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}" />
@@ -515,7 +566,12 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="TextColor"
+									Value="{AppThemeBinding Light={DynamicResource ButtonAccessSecondaryContentWLLight}, Dark={DynamicResource ButtonAccessSecondaryContentWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}" />
@@ -540,7 +596,12 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="BackgroundColor"
+									Value="{AppThemeBinding Light={DynamicResource ButtonAccessPrimarybgWLLight}, Dark={DynamicResource ButtonAccessPrimarybgWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}" />
@@ -556,7 +617,12 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="TextColor"
+									Value="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}" />
@@ -582,7 +648,14 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="BackgroundColor"
+									Value="{AppThemeBinding Light={DynamicResource ButtonNeutralSecondarybgLight}, Dark={DynamicResource ButtonNeutralSecondarybgDark}}" />
+							<Setter Property="Stroke"
+									Value="{AppThemeBinding Light={DynamicResource ButtonNeutralSecondaryStrokeLight}, Dark={DynamicResource ButtonNeutralSecondaryStrokeDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}" />
@@ -605,7 +678,12 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="BackgroundColor"
+									Value="{AppThemeBinding Light={DynamicResource ButtonDangerPrimarybgWLLight}, Dark={DynamicResource ButtonDangerPrimarybgWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}" />
@@ -621,7 +699,12 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="TextColor"
+									Value="{AppThemeBinding Light={DynamicResource ButtonDangerPrimaryContentWLLight}, Dark={DynamicResource ButtonDangerPrimaryContentWLDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}" />
@@ -643,7 +726,12 @@
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
 				<VisualStateGroup x:Name="CommonStates">
-					<VisualState x:Name="Normal" />
+					<VisualState x:Name="Normal">
+						<VisualState.Setters>
+							<Setter Property="TextColor"
+									Value="{AppThemeBinding Light={DynamicResource ButtonNeutralSecondaryContentLight}, Dark={DynamicResource ButtonNeutralSecondaryContentDark}}" />
+						</VisualState.Setters>
+					</VisualState>
 					<VisualState x:Name="Disabled">
 						<VisualState.Setters>
 							<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}" />
