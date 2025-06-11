@@ -20,6 +20,7 @@
 			StringTemplate="{StaticResource StringParameterTemplate}"
 			TimeTemplate="{StaticResource TimeParameterTemplate}"
 			DurationTemplate="{StaticResource DurationParameterTemplate}"
+			ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
 			DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 	</ContentView.Resources>
 
@@ -30,7 +31,7 @@
 								ItemTemplate="{StaticResource ParameterTemplateSelector}"
 								SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
 			<CollectionView.ItemsLayout>
-				<LinearItemsLayout Orientation="Vertical" ItemSpacing="{DynamicResource SmallSpacing}" />
+				<LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
 			</CollectionView.ItemsLayout>
 			<CollectionView.EmptyView>
 				<Label Text="{l:Localize SomethingWentWrong}" />

@@ -24,6 +24,7 @@
 		                                 StringTemplate="{StaticResource StringParameterTemplate}"
 		                                 TimeTemplate="{StaticResource TimeParameterTemplate}"
 		                                 DurationTemplate="{StaticResource DurationParameterTemplate}"
+										 ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
 		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 	</ContentPage.Resources>
 
