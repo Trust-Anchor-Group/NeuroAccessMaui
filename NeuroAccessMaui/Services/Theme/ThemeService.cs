@@ -1,31 +1,31 @@
 ﻿using System.Text;
 using System.Xml;
-using Waher.Runtime.Inventory;
-using NeuroAccessMaui.Services.Cache;
 using System.Xml.Schema;
+using NeuroAccessMaui.Services.Cache;
 using Waher.Content.Xsl;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Theme
 {
 	/// <summary>
 	/// Default implementation of <see cref="IThemeService"/>.
-	/// Loads branding over XMPP, caches it, and applies resource dictionaries and images.
+	/// Loads branding over XMPP, caches it, and exposes image URIs and resource dictionaries.
 	/// </summary>
 	[Singleton]
 	public sealed class ThemeService : IThemeService
 	{
 		private const string providerFlagKey = "IsServerThemeDictionary";
 		private static readonly TimeSpan themeExpiry = TimeSpan.FromDays(7);
-		private static readonly Lazy<XmlSchema> brandingSchemaLazy = new Lazy<XmlSchema>(() =>
+		private static readonly Lazy<XmlSchema> brandingSchemaLazy = new(() =>
 		{
 			using Stream SchemaStream = FileSystem.OpenAppPackageFileAsync("NeuroAccessBrandingV1.xsd").GetAwaiter().GetResult();
 			return XSL.LoadSchema(SchemaStream, "NeuroAccessBrandingV1.xsd");
 		});
 
 		private readonly FileCacheManager cacheManager;
-		private readonly Dictionary<string, ImageSource> imagesMap;
+		private readonly Dictionary<string, Uri> imageUrisMap;
 
 		/// <summary>
 		/// Initializes a new instance of <see cref="ThemeService"/>.
@@ -33,249 +33,137 @@ namespace NeuroAccessMaui.Services.Theme
 		public ThemeService()
 		{
 			this.cacheManager = new FileCacheManager("BrandingThemes", themeExpiry);
-			this.imagesMap = new Dictionary<string, ImageSource>(StringComparer.OrdinalIgnoreCase);
+			this.imageUrisMap = new(StringComparer.OrdinalIgnoreCase);
 		}
 
-		/// <inheritdoc/>
-		public IReadOnlyDictionary<string, ImageSource> Images => new Dictionary<string, ImageSource>(this.imagesMap);
+		/// <inheritdoc />
+		public IReadOnlyDictionary<string, Uri> ImageUris => new Dictionary<string, Uri>(this.imageUrisMap);
 
-		/// <inheritdoc/>
+		/// <inheritdoc />
 		public async Task ApplyProviderTheme()
 		{
+				string? PubSubJid = ServiceRef.TagProfile.PubSubJid;
+			if (string.IsNullOrEmpty(PubSubJid))
+				return;
+
+			// Load branding descriptor XML
+			Uri BrandingUri = new($"xmpp:NeuroAccessBranding@{PubSubJid}/Branding");
+			string BrandingKey = BrandingUri.AbsoluteUri;
+
+			byte[]? XmlBytes = await this.FetchOrGetCachedAsync(BrandingUri, BrandingKey);
+			if (XmlBytes is null)
+				return;
+
+			XmlDocument XmlDoc = new();
 			try
 			{
-				/* Here is how to clear cache if needed:*/
-				await Database.FindDelete<CacheEntry>(
-	new FilterFieldGreaterOrEqualTo("Url", string.Empty));
-				await Database.Provider.Flush();
-
-				string? PubSubJid = ServiceRef.TagProfile.PubSubJid;
-				if (string.IsNullOrEmpty(PubSubJid))
-					return;
-
-				Uri ThemeUri = new Uri($"xmpp:NeuroAccessBranding@{PubSubJid}/Branding");
-				string CacheKey = ThemeUri.AbsoluteUri;
-
-				// Attempt to load cached XML (never expires)
-				(byte[]? XmlBytes, string XmlType) = await this.cacheManager.TryGet(CacheKey);
-
-				if (XmlBytes is null)
-				{
-					// First load: fetch and cache as permanent
-					(byte[]? FetchedBytes, string FetchedType) =
-						await ServiceRef.InternetCacheService.GetOrFetch(ThemeUri, PubSubJid, true);
-
-					if (FetchedBytes is null)
-						return;
-
-					XmlBytes = FetchedBytes;
-					await this.cacheManager.AddOrUpdate(CacheKey, PubSubJid, true, XmlBytes, FetchedType);
-				}
-				else
-				{
-					// Already cached: check age and refresh if older than ThemeExpiry
-					CacheEntry? Entry = await Database.FindFirstDeleteRest<CacheEntry>(
-						new FilterFieldEqualTo("Url", CacheKey));
-
-					if (Entry is not null)
-					{
-						DateTime LastWrite = File.GetLastWriteTimeUtc(Entry.LocalFileName);
-						if (DateTime.UtcNow - LastWrite > themeExpiry)
-						{
-							try
-							{
-								(byte[]? FetchedBytes2, string FetchedType2) =
-									await ServiceRef.InternetCacheService.GetOrFetch(ThemeUri, PubSubJid, true);
-
-								if (FetchedBytes2 is not null)
-								{
-									XmlBytes = FetchedBytes2;
-									await this.cacheManager.AddOrUpdate(CacheKey, PubSubJid, true, XmlBytes, FetchedType2);
-								}
-							}
-							catch (Exception ExRefresh)
-							{
-								ServiceRef.LogService.LogException(ExRefresh);
-								// Offline or fetch failure: continue with stale cache
-							}
-						}
-					}
-				}
-
-				string XmlContent = Encoding.UTF8.GetString(XmlBytes);
-				XmlDocument XmlDoc = new XmlDocument();
-
-				try
-				{
-					XmlDoc.LoadXml(XmlContent);
-				}
-				catch (Exception Ex)
-				{
-					ServiceRef.LogService.LogException(Ex);
-					return;
-				}
-
-				// Validate against schema
-				try
-				{
-					XmlSchema Schema = brandingSchemaLazy.Value;
-					XSL.Validate("BrandingDescriptor", XmlDoc, Schema);
-				}
-				catch (Exception Ex)
-				{
-					ServiceRef.LogService.LogException(Ex);
-					return;
-				}
-
-				XmlElement? Root = XmlDoc.DocumentElement;
-				if (Root is null || Root.LocalName != "BrandingDescriptor")
-					return;
-
-				// Find ColorsUri element ignoring namespace
-				XmlNode? ColorsNode = Root.SelectSingleNode("//*[local-name()='ColorsUri']");
-				if (ColorsNode is not XmlElement)
-					return;
-
-				Uri ColorsUri = new Uri(ColorsNode.InnerText.Trim());
-				string ColorsKey = ColorsUri.AbsoluteUri;
-
-				// Load or fetch colors XAML with same logic
-				byte[]? XamlBytes;
-				(XamlBytes, _) = await this.cacheManager.TryGet(ColorsKey);
-
-				if (XamlBytes is null)
-				{
-					(byte[]? FetchedXaml, string FetchedXamlType) =
-						await ServiceRef.InternetCacheService.GetOrFetch(ColorsUri, PubSubJid, true);
-
-					if (FetchedXaml is null)
-						return;
-
-					XamlBytes = FetchedXaml;
-					await this.cacheManager.AddOrUpdate(ColorsKey, PubSubJid, true, XamlBytes, FetchedXamlType);
-				}
-				else
-				{
-					CacheEntry? Entry = await Database.FindFirstDeleteRest<CacheEntry>(
-						new FilterFieldEqualTo("Url", ColorsKey));
-					if (Entry is not null)
-					{
-						DateTime LastWrite = File.GetLastWriteTimeUtc(Entry.LocalFileName);
-						if (DateTime.UtcNow - LastWrite > themeExpiry)
-						{
-							try
-							{
-								(byte[]? FetchedXaml2, string FetchedXamlType2) =
-									await ServiceRef.InternetCacheService.GetOrFetch(ColorsUri, PubSubJid, true);
-
-								if (FetchedXaml2 is not null)
-								{
-									XamlBytes = FetchedXaml2;
-									await this.cacheManager.AddOrUpdate(ColorsKey, PubSubJid, true, XamlBytes, FetchedXamlType2);
-								}
-							}
-							catch (Exception ExRefresh)
-							{
-								ServiceRef.LogService.LogException(ExRefresh);
-							}
-						}
-					}
-				}
-
-				string XamlContent = Encoding.UTF8.GetString(XamlBytes);
-				ResourceDictionary Dict;
-
-				try
-				{
-					Dict = new ResourceDictionary().LoadFromXaml(XamlContent);
-				}
-				catch (Exception Ex)
-				{
-					ServiceRef.LogService.LogException(Ex);
-					return;
-				}
-
-				// Merge ResourceDictionary
-				ResourceDictionary? AppResources = Application.Current?.Resources;
-				if (AppResources is not null)
-				{
-					ResourceDictionary? ExistingDict = AppResources.MergedDictionaries
-						.FirstOrDefault(rd => rd.ContainsKey(providerFlagKey));
-
-					if (ExistingDict is not null)
-						AppResources.MergedDictionaries.Remove(ExistingDict);
-
-					Dict.Add(providerFlagKey, true);
-					await MainThread.InvokeOnMainThreadAsync(() =>
-						AppResources.MergedDictionaries.Add(Dict));
-				}
-
-				// Process ImageRef entries
-				this.imagesMap.Clear();
-				XmlNodeList ImageRefs = Root.SelectNodes("//*[local-name()='ImageRef']")
-					?? XmlDoc.CreateNode(XmlNodeType.Element, "tmp", "").ChildNodes;
-
-				foreach (XmlNode Node in ImageRefs)
-				{
-					if (Node is not XmlElement ImageRef)
-						continue;
-
-					string Id = ImageRef.GetAttribute("id");
-					string UriText = ImageRef.GetAttribute("uri");
-					if (string.IsNullOrEmpty(Id) || string.IsNullOrEmpty(UriText))
-						continue;
-
-					Uri ImgUri = new Uri(UriText);
-					string FallbackType = ImageRef.GetAttribute("contentType");
-					if (string.IsNullOrEmpty(FallbackType))
-						FallbackType = "application/octet-stream";
-
-					// Try cache
-					(byte[]? ImgBytes, string CachedType) = await this.cacheManager.TryGet(ImgUri.AbsoluteUri);
-
-					string UseType;
-					if (ImgBytes is null)
-					{
-						// Fetch (permanent) and cache
-						(byte[]? FetchedImage, string FetchedType) =
-							await ServiceRef.InternetCacheService.GetOrFetch(ImgUri, PubSubJid, true);
-
-						if (FetchedImage is null)
-							continue;
-
-						ImgBytes = FetchedImage;
-						UseType = !string.IsNullOrEmpty(FetchedType) ? FetchedType : FallbackType;
-
-						await this.cacheManager.AddOrUpdate(ImgUri.AbsoluteUri, PubSubJid, true, ImgBytes, UseType);
-					}
-					else
-					{
-						UseType = !string.IsNullOrEmpty(CachedType) ? CachedType : FallbackType;
-					}
-
-					ImageSource Source = ImageSource.FromStream(() => new MemoryStream(ImgBytes!));
-					this.imagesMap[Id] = Source;
-				}
+				XmlDoc.LoadXml(Encoding.UTF8.GetString(XmlBytes));
+				XSL.Validate("BrandingDescriptor", XmlDoc, brandingSchemaLazy.Value);
 			}
-			catch (Exception Ex)
+			catch
 			{
-				ServiceRef.LogService.LogException(Ex);
+				return;
+			}
+
+			XmlElement? Root = XmlDoc.DocumentElement;
+			if (Root?.LocalName != "BrandingDescriptor")
+				return;
+
+			// Merge resource dictionary
+			XmlElement? ColorsNode = Root.SelectSingleNode("//*[local-name()='ColorsUri']") as XmlElement;
+			if (ColorsNode is not null)
+			{
+				Uri ColorsUri = new(ColorsNode.InnerText.Trim());
+				await this.LoadAndMergeDictionaryAsync(ColorsUri, PubSubJid);
+			}
+
+			// Expose image URIs
+			this.imageUrisMap.Clear();
+
+			XmlNodeList? ImageRefNodes = Root.SelectNodes("//*[local-name()='ImageRef']");
+			if (ImageRefNodes is null)
+				return;
+
+			foreach (XmlElement Node in ImageRefNodes.OfType<XmlElement>())
+			{
+				string Id = Node.GetAttribute("id");
+				string UriText = Node.GetAttribute("uri");
+				if (string.IsNullOrEmpty(Id) || string.IsNullOrEmpty(UriText))
+					continue;
+
+				if (Uri.TryCreate(UriText, UriKind.Absolute, out Uri? ImgUri))
+					this.imageUrisMap[Id] = ImgUri;
 			}
 		}
 
-		/// <inheritdoc/>
-		public Task<AppTheme> GetTheme()
+		private async Task<byte[]?> FetchOrGetCachedAsync(Uri Uri, string Key)
 		{
-			return Task.FromResult(App.Current?.UserAppTheme ?? AppTheme.Unspecified);
+			(byte[]? Cached, string _) = await this.cacheManager.TryGet(Key);
+			if (Cached is not null)
+				return Cached;
+
+			(byte[]? Fetched, string _) = await ServiceRef.InternetCacheService.GetOrFetch(Uri, ServiceRef.TagProfile.PubSubJid!, true);
+			if (Fetched is not null)
+			{
+				await this.cacheManager.AddOrUpdate(Key, ServiceRef.TagProfile.PubSubJid!, true, Fetched, "application/xml");
+			}
+
+			return Fetched;
 		}
 
-		/// <inheritdoc/>
-		public Task SetTheme(AppTheme Type)
+		private async Task LoadAndMergeDictionaryAsync(Uri Uri, string ParentId)
 		{
-			if (App.Current is not null)
-				App.Current.UserAppTheme = Type;
+			string Key = Uri.AbsoluteUri;
+			byte[]? XamlBytes = await this.FetchOrGetCachedAsync(Uri, Key);
+			if (XamlBytes is null)
+				return;
 
+			ResourceDictionary Dict;
+			try
+			{
+				Dict = new ResourceDictionary().LoadFromXaml(Encoding.UTF8.GetString(XamlBytes));
+			}
+			catch
+			{
+				return;
+			}
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				ResourceDictionary? AppRes = Application.Current?.Resources;
+				if (AppRes is null)
+					return;
+
+				ResourceDictionary? Existing = AppRes.MergedDictionaries.FirstOrDefault(rd => rd.ContainsKey(providerFlagKey));
+				if (Existing is not null)
+					AppRes.MergedDictionaries.Remove(Existing);
+
+				Dict.Add(providerFlagKey, true);
+				AppRes.MergedDictionaries.Add(Dict);
+			});
+		}
+
+		/// <inheritdoc />
+		public Task<AppTheme> GetTheme()
+			=> Task.FromResult(Application.Current?.UserAppTheme ?? AppTheme.Unspecified);
+
+		/// <inheritdoc />
+		public Task SetTheme(AppTheme Theme)
+		{
+			if (Application.Current is not null)
+				Application.Current.UserAppTheme = Theme;
 			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Returns the image URI for the given ID, or empty string if not found.
+		/// </summary>
+		/// <param name="Id">The image identifier.</param>
+		public string GetImageUri(string Id)
+		{
+			return this.imageUrisMap.TryGetValue(Id, out Uri? UriVal)
+				? UriVal!.AbsoluteUri
+				: string.Empty;
 		}
 	}
 }
