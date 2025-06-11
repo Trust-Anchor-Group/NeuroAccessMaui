@@ -19,13 +19,25 @@ namespace NeuroAccessMaui.UI.Pages.Main
 {
 	public partial class MainViewModel : QrXmppViewModel
 	{
+		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri("banner");
+		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri("banner");
 
-		public ImageSource? TestImage => ServiceRef.ThemeService.Images.GetValueOrDefault("banner");
+		public string BannerUri =>
+			Application.Current.RequestedTheme switch
+			{
+				AppTheme.Dark => this.BannerUriDark,
+				AppTheme.Light => this.BannerUriLight,
+				_ => this.BannerUriLight
+			};
+
 		public MainViewModel()
 			: base()
 		{
-		}
 
+			Application.Current.RequestedThemeChanged += (_, __) =>
+				OnPropertyChanged(nameof(BannerUri));
+		}
+	
 		public override Task<string> Title => Task.FromResult(ContactInfo.GetFriendlyName(ServiceRef.TagProfile.LegalIdentity));
 
 		protected override async Task OnAppearing()
@@ -33,12 +45,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
-				//	if(ServiceRef.ThemeService.Images.TryGetValue("try", out ImageSource? Image))
-				//		this.TestImage = Image;
-
-				ImageSource? test = ServiceRef.ThemeService.Images.GetValueOrDefault("banner");
-
-				Console.WriteLine($"IS NULL: {test is null}");
+				Console.WriteLine("TEST: " + BannerUriLight);
 			});
 
 			await base.OnAppearing();

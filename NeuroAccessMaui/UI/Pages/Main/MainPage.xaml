@@ -79,11 +79,17 @@
 			  RowDefinitions="auto, auto"
 			  Margin="30,100,30,100">
 
-			<Image Source="{Binding TestImage, TargetNullValue={AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}}"
+			<!-- <Image Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
 				   Grid.Row="0"
 				   HeightRequest="230"
 				   WidthRequest="230" Aspect="AspectFit"/>
-
+-->
+			<controls:UriImage Source="{Binding BannerUri}"
+							   ErrorPlaceholder="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
+							   Grid.Row="0"
+							   HeightRequest="230"
+							   WidthRequest="230"
+							   Aspect="AspectFit" />
 			<!-- Missing Neuro ID Box-->
 			<Grid Grid.Row="1"
 				  IsVisible="{Binding HasPersonalIdentity, Converter={StaticResource InvertedBoolConverter}}"
