@@ -15,11 +15,11 @@
 	<!-- Base style for all CompositeInputView-based controls -->
 	<Style x:Key="BaseCompositeInputView" TargetType="controls:CompositeInputView" ApplyToDerivedTypes="True">
 		<!-- Common defaults -->
-		<Setter Property="LabelStyle" Value="{StaticResource RegularCompositeInputViewValidationLabel}"/>
-		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsContentDangerv500Dark}}" />
-		<Setter Property="BorderPadding" Value="{StaticResource SmallLeftRightMargins}"/>
-		<Setter Property="BorderBackground" Value="{AppThemeBinding Light={StaticResource InputFieldsSurfaceBackgroundActiveLight}, Dark={StaticResource InputFieldsSurfaceBackgroundActiveDark}}" />
-		<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsSurfaceStrokeLight}, Dark={StaticResource InputFieldsSurfaceStrokeDark}}" />
+		<Setter Property="LabelStyle" Value="{DynamicResource RegularCompositeInputViewValidationLabel}"/>
+		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
+		<Setter Property="BorderPadding" Value="{DynamicResource SmallLeftRightMargins}"/>
+		<Setter Property="BorderBackground" Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceBackgroundActiveLight}, Dark={DynamicResource InputFieldsSurfaceBackgroundActiveDark}}" />
+		<Setter Property="BorderStroke" Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceStrokeLight}, Dark={DynamicResource InputFieldsSurfaceStrokeDark}}" />
 		<Setter Property="BorderStrokeShape">
 			<Setter.Value>
 				<RoundRectangle CornerRadius="8" />
@@ -32,7 +32,7 @@
 			<Trigger TargetType="controls:CompositeInputView"
                      Property="IsValid"
                      Value="False">
-				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv500Light}, Dark={StaticResource InputFieldsContentDangerv500Dark}}" />
+				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

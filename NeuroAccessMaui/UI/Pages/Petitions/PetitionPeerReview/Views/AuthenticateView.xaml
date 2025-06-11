@@ -9,32 +9,32 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
 	<VerticalStackLayout>
-		<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" ColumnSpacing="{StaticResource MediumSpacing}" Margin="{StaticResource LargeMargins}"
+		<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" ColumnSpacing="{DynamicResource MediumSpacing}" Margin="{DynamicResource LargeMargins}"
 				HorizontalOptions="Center" VerticalOptions="Center">
-			<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0" Grid.Column="0">
+			<Border Style="{DynamicResource OutlinedImageButtonBorder}" Padding="0" Grid.Column="0">
 				<Image Source="{Binding MyFirstPhotoSource}" Rotation="{Binding MyFirstPhotoRotation}"
 						 WidthRequest="75" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
 			</Border>
 			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0" Grid.Column="1">
-				<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding MyFullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
-				<Label Style="{StaticResource InfoLabel}" Text="{Binding MyPersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{DynamicResource BoldItemTitleLabel}" Text="{Binding MyFullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{DynamicResource InfoLabel}" Text="{Binding MyPersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
 			</VerticalStackLayout>
 		</Grid>
 
-		<Label HorizontalOptions="Center" Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ConcludeReview}"/>
+		<Label HorizontalOptions="Center" Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ConcludeReview}"/>
 		<Label HorizontalOptions="Center" Text="{Binding FullName}"/>
-		<Label HorizontalOptions="Center" Text="{Binding PeerReviewAuthenticationText}" Margin="{StaticResource MediumMargins}"/>
+		<Label HorizontalOptions="Center" Text="{Binding PeerReviewAuthenticationText}" Margin="{DynamicResource MediumMargins}"/>
 
-		<Rectangle BackgroundColor="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}"
+		<Rectangle BackgroundColor="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}"
 					  WidthRequest="250" HeightRequest="2"/>
 
-		<VerticalStackLayout HeightRequest="{StaticResource MediumSpacing}"/>
+		<VerticalStackLayout HeightRequest="{DynamicResource MediumSpacing}"/>
 
-		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}">
-			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonNoRoundedCorners}"
+		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{DynamicResource SmallSpacing}">
+			<controls:TextButton Command="{Binding DeclineCommand}" Style="{DynamicResource OutlinedTextButtonNoRoundedCorners}"
 										LabelData="{l:Localize Reject}" Grid.Column="0" />
 
-			<controls:TextButton Command="{Binding AuthenticateReviewerCommand}" Style="{StaticResource FilledTextButton}"
+			<controls:TextButton Command="{Binding AuthenticateReviewerCommand}" Style="{DynamicResource FilledTextButton}"
 										LabelData="{l:Localize AuthenticateAndSign}" Grid.Column="1"/>
 		</Grid>
 	</VerticalStackLayout>

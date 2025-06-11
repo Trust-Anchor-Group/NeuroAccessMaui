@@ -17,31 +17,31 @@
 	</mopups:PopupPage.Animation>
 
 	<Grid
-		Style="{StaticResource PopupGrid}">
+		Style="{DynamicResource PopupGrid}">
 
 		<Border
 			WidthRequest="{Binding ViewWidthRequest}"
 			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-			Style="{StaticResource PopupBorder}">
+			Style="{DynamicResource PopupBorder}">
 
 			<ScrollView
 				VerticalOptions="Center">
 				<VerticalStackLayout
-					Spacing="{StaticResource LargeSpacing}">
+					Spacing="{DynamicResource LargeSpacing}">
 
 					<VerticalStackLayout
-						Spacing="{StaticResource MediumSpacing}">
+						Spacing="{DynamicResource MediumSpacing}">
 
 						<Label
 							HorizontalTextAlignment="Center"
-							Style="{StaticResource PageTitleLabel}"
+							Style="{DynamicResource PageTitleLabel}"
 							Text="{Binding Title}" />
 
 						<Frame
 							WidthRequest="{Binding CameraIconBackgroundSize}"
 							HeightRequest="{Binding CameraIconBackgroundSize}"
 							CornerRadius="{Binding CameraIconBackgroundCornerRadius}"
-							BackgroundColor="{AppThemeBinding Light={StaticResource TnPSuccessbgWLLight}, Dark={StaticResource TnPSuccessbgWLDark}}">
+							BackgroundColor="{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}">
 							<Path
 								VerticalOptions="Center"
 								HorizontalOptions="Center"
@@ -49,35 +49,35 @@
 								WidthRequest="{Binding CameraIconSize}"
 								Aspect="Uniform"
 								Data="{Binding IconGeometry}"
-								Fill="{AppThemeBinding Light={StaticResource TnPSuccessContentWLLight}, Dark={StaticResource TnPSuccessContentWLDark}}" />
+								Fill="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLDark}}" />
 						</Frame>
 
 						<Label
 							HorizontalTextAlignment="Start"
-							Style="{StaticResource ItemDescriptionLabel}"
+							Style="{DynamicResource ItemDescriptionLabel}"
 							Text="{Binding Description}"
 							FontSize="15"
-							Margin="{StaticResource SmallLeftRightMargins}"/>
+							Margin="{DynamicResource SmallLeftRightMargins}"/>
 
 						<Label
 							HorizontalTextAlignment="Start"
-							Style="{StaticResource ItemDescriptionLabel}"
+							Style="{DynamicResource ItemDescriptionLabel}"
 							Text="{Binding DescriptionSecondary}"
 							FontSize="15"
-							Margin="{StaticResource SmallLeftRightMargins}"/>
+							Margin="{DynamicResource SmallLeftRightMargins}"/>
 							  
 					</VerticalStackLayout>
 
-					<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+					<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 						<controls:TextButton
 							Command="{Binding GoToSettingsCommand}"
 							LabelData="{l:Localize GoToSettings}"
-							Style="{StaticResource PrimaryButton}" />
+							Style="{DynamicResource PrimaryButton}" />
 
 						<controls:TextButton
 							Command="{Binding CloseCommand}"
 							LabelData="{l:Localize Skip}"
-							Style="{StaticResource SecondaryButton}" />
+							Style="{DynamicResource SecondaryButton}" />
 					</VerticalStackLayout>
 				</VerticalStackLayout>
 			</ScrollView>

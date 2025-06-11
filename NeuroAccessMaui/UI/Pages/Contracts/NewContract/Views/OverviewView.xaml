@@ -17,18 +17,18 @@
 
 	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
 		<ScrollView Grid.Row="0">
-			<VerticalStackLayout Padding="{StaticResource MediumMargins}" Spacing="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Padding="{DynamicResource MediumMargins}" Spacing="{DynamicResource MediumSpacing}">
 				<!-- TOP Set, name of contract etc -->
-				<Border Style="{StaticResource BorderSet}" Margin="0">
+				<Border Style="{DynamicResource BorderSet}" Margin="0">
 						<Label Text="{Binding Path=Contract.Category}"
-										 Margin="{StaticResource SmallSpacing}"
-										 Style="{StaticResource PageTitleLabel}"
+										 Margin="{DynamicResource SmallSpacing}"
+										 Style="{DynamicResource PageTitleLabel}"
 										 HorizontalTextAlignment="Center"/>
 				</Border>
-				<Border Style="{StaticResource BorderSet}" Margin="0">
+				<Border Style="{DynamicResource BorderSet}" Margin="0">
 					<controls:CompositePicker
 									LabelText="{l:Localize SelectWhoShouldHaveAccessToThisContract }"
-									Style="{StaticResource RegularCompositePicker}"
+									Style="{DynamicResource RegularCompositePicker}"
 									Placeholder="{l:Localize SelectWhoShouldHaveAccessToThisContract}"
 									ItemsSource="{Binding Path=ContractVisibilityItems}"
 									SelectedItem="{Binding Path=SelectedContractVisibilityItem}" />
@@ -58,15 +58,15 @@
 		</ScrollView>
 
 		<!-- BOTTOM BAR -->
-		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
-			<Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}" Padding="{StaticResource SmallMargins}">
+		<Border Grid.Row="1" Style="{DynamicResource BottomBarBorder}">
+			<Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 
-				<controls:TextButton Style="{StaticResource TransparentTextButton}" Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding BackCommand}" />
-				<controls:TextButton Style="{StaticResource FilledTextButton}" Grid.Column="1" LabelData="{l:Localize Create}" Command="{Binding CreateCommand}" />
+				<controls:TextButton Style="{DynamicResource TransparentTextButton}" Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding BackCommand}" />
+				<controls:TextButton Style="{DynamicResource FilledTextButton}" Grid.Column="1" LabelData="{l:Localize Create}" Command="{Binding CreateCommand}" />
 
 			</Grid>
 		</Border>

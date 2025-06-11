@@ -26,20 +26,20 @@
 		<DataTemplate x:Key="SelectLanguageDataTemplate"
 						  x:DataType="viewModel:ObservableLanguage">
 			<Border x:Name="ItemBorder"
-			        BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight},
-                                              Dark={StaticResource SurfaceBackgroundWLDark}}"
-			        Stroke="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight},
-                                     Dark={StaticResource SurfaceBackgroundWLDark}}"
-			        Style="{StaticResource ItemOuterBorder}">
+			        BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight},
+                                              Dark={DynamicResource SurfaceBackgroundWLDark}}"
+			        Stroke="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight},
+                                     Dark={DynamicResource SurfaceBackgroundWLDark}}"
+			        Style="{DynamicResource ItemOuterBorder}">
 				<Border.Triggers>
 					<!-- When IsSelected is true, update appearance -->
 					<DataTrigger TargetType="Border"
 					             Binding="{Binding IsSelected}"
 					             Value="True">
 						<Setter Property="BackgroundColor"
-						        Value="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLDark}, Dark={StaticResource SurfaceBackgroundWLLight}}" />
+						        Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLDark}, Dark={DynamicResource SurfaceBackgroundWLLight}}" />
 						<Setter Property="Stroke"
-						        Value="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLDark}, Dark={StaticResource SurfaceBackgroundWLLight}}" />
+						        Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLDark}, Dark={DynamicResource SurfaceBackgroundWLLight}}" />
 					</DataTrigger>
 				</Border.Triggers>
 				<Border.GestureRecognizers>
@@ -48,16 +48,16 @@
 				</Border.GestureRecognizers>
 				<Label x:Name="InnerLabel"
 						 HorizontalOptions="Center"
-						 Style="{StaticResource BoldItemTitleLabel}"
+						 Style="{DynamicResource BoldItemTitleLabel}"
 						 Text="{Binding Language.MyNativeName}"
-						 TextColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLDark},
-                                           Dark={StaticResource SurfaceBackgroundWLLight}}">
+						 TextColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLDark},
+                                           Dark={DynamicResource SurfaceBackgroundWLLight}}">
 					<Label.Triggers>
 						<DataTrigger TargetType="Label"
 						             Binding="{Binding IsSelected}"
 						             Value="True">
 							<Setter Property="TextColor"
-									  Value="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}" />
+									  Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}" />
 						</DataTrigger>
 					</Label.Triggers>
 				</Label>
@@ -66,16 +66,16 @@
 
 	</VisualElement.Resources>
 
-	<Grid Style="{StaticResource PopupGrid}">
+	<Grid Style="{DynamicResource PopupGrid}">
 		<Border WidthRequest="{Binding ViewWidthRequest}"
 				  MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-				  Style="{StaticResource PopupBorder}">
+				  Style="{DynamicResource PopupBorder}">
 			<ScrollView x:Name="InnerScrollView"
 							VerticalOptions="Center">
 				<VerticalStackLayout x:Name="LanguagesContainer"
 											BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
 											BindableLayout.ItemsSource="{Binding Languages}"
-											Spacing="{StaticResource MediumSpacing}" />
+											Spacing="{DynamicResource MediumSpacing}" />
 			</ScrollView>
 		</Border>
 	</Grid>

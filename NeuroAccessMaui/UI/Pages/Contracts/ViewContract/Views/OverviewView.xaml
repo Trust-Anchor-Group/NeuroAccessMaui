@@ -22,7 +22,7 @@
 					 TargetType="Label"
 					 BasedOn="{StaticResource BoldItemTitleLabel}">
 				<Setter Property="TextColor"
-						  Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
+						  Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 				<Setter Property="FontSize"
 						  Value="15" />
 				<Setter Property="FontFamily"
@@ -40,7 +40,7 @@
 			<Style x:Key="ItemValueLabel"
 					 TargetType="Label">
 				<Setter Property="TextColor"
-						  Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
+						  Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 				<Setter Property="FontSize"
 						  Value="15" />
 				<Setter Property="FontFamily"
@@ -59,12 +59,12 @@
 			<DataTemplate x:Key="ProposedTemplate">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}"
+					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLLight}}" />
+								 Style="{DynamicResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLLight}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -73,12 +73,12 @@
 			<DataTemplate x:Key="RejectedTemplate">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}"
+					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight}, Dark={StaticResource TnPDangerContentWLDark}}" />
+								 Style="{DynamicResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -87,12 +87,12 @@
 			<DataTemplate x:Key="ApprovedTemplate">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}"
+					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}" />
+								 Style="{DynamicResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -101,12 +101,12 @@
 			<DataTemplate x:Key="BeingSignedTemplate">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}"
+					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}" />
+								 Style="{DynamicResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -115,12 +115,12 @@
 			<DataTemplate x:Key="SignedTemplate">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}"
+					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPSuccessbgWLLight}, Dark={StaticResource TnPSuccessbgWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource TnPSuccessContentWLLight}, Dark={StaticResource TnPSuccessContentWLDark}}" />
+								 Style="{DynamicResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -129,12 +129,12 @@
 			<DataTemplate x:Key="FailedTemplate">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}"
+					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight}, Dark={StaticResource TnPDangerContentWLDark}}" />
+								 Style="{DynamicResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -143,12 +143,12 @@
 			<DataTemplate x:Key="ObsoletedTemplate">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}"
+					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight}, Dark={StaticResource TnPDangerContentWLDark}}" />
+								 Style="{DynamicResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -157,12 +157,12 @@
 			<DataTemplate x:Key="DeletedTemplate">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
-					<Border Style="{StaticResource RoundedBorder}"
+					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}">
+							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
-								 Style="{StaticResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight}, Dark={StaticResource TnPDangerContentWLDark}}" />
+								 Style="{DynamicResource ItemValueLabel}"
+								 TextColor="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -183,15 +183,15 @@
 
 	<Grid RowDefinitions="*, auto"
 			ColumnDefinitions="*">
-		<ScrollView Grid.Row="0" Padding="{StaticResource MediumBottomMargins}">
-			<VerticalStackLayout Padding="{StaticResource MediumLeftRightMargins}"
-								 Spacing="{StaticResource MediumSpacing}">
+		<ScrollView Grid.Row="0" Padding="{DynamicResource MediumBottomMargins}">
+			<VerticalStackLayout Padding="{DynamicResource MediumLeftRightMargins}"
+								 Spacing="{DynamicResource MediumSpacing}">
 				<!-- TOP Set, name of contract etc -->
-				<Border Style="{StaticResource BorderSet}"
+				<Border Style="{DynamicResource BorderSet}"
 						  Margin="0">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Border Style="{StaticResource AccentInfoBorder}"
-								  Padding="{StaticResource SmallMargins}"
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Border Style="{DynamicResource AccentInfoBorder}"
+								  Padding="{DynamicResource SmallMargins}"
 								  IsVisible="{Binding IsProposal}">
 							<Grid ColumnDefinitions="auto, *">
 								<Path Grid.Column="0"
@@ -201,20 +201,20 @@
 										HeightRequest="16"
 										WidthRequest="16"
 										Aspect="Uniform"
-										Fill="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}" />
+										Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}" />
 								<Label Grid.Column="1"
-										 Style="{StaticResource AccentInfoLabel}"
+										 Style="{DynamicResource AccentInfoLabel}"
 										 VerticalOptions="Start"
 										 VerticalTextAlignment="Start"
-										 Margin="{StaticResource SmallLeftMargins}"
+										 Margin="{DynamicResource SmallLeftMargins}"
 										 Text="{l:Localize InvitationToSign}" />
 
 							</Grid>
 						</Border>
 						<!--
 						<Label Text="{Binding Path=Contract.Category}"
-								Margin="{StaticResource SmallSpacing}"
-								Style="{StaticResource PageTitleLabel}"
+								Margin="{DynamicResource SmallSpacing}"
+								Style="{DynamicResource PageTitleLabel}"
 								HorizontalTextAlignment="Center"/>
 -->
 						<Image x:Name="QrCode"
@@ -229,35 +229,35 @@
 							</Image.GestureRecognizers>
 						</Image>
 
-						<Border Style="{StaticResource BorderSubSet}"
+						<Border Style="{DynamicResource BorderSubSet}"
 								  Margin="0">
-							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+							<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 								<Grid ColumnDefinitions="auto, *"
-										ColumnSpacing="{StaticResource MediumSpacing}">
+										ColumnSpacing="{DynamicResource MediumSpacing}">
 									<Label Grid.Column="0"
 											 Text="{l:Localize Title}"
-											 Style="{StaticResource ItemTitleLabel}" />
+											 Style="{DynamicResource ItemTitleLabel}" />
 									<Label Grid.Column="1"
 											 Text="{Binding Path=Contract.Category}"
-											 Style="{StaticResource ItemValueLabel}" />
+											 Style="{DynamicResource ItemValueLabel}" />
 								</Grid>
 
 								<Grid ColumnDefinitions="auto, *">
 									<Label Grid.Column="0"
 											 Text="{l:Localize Status}"
-											 Style="{StaticResource ItemTitleLabel}" />
+											 Style="{DynamicResource ItemTitleLabel}" />
 									<controls:TemplateSelectorContentView Grid.Column="1"
 																					  Item="{Binding Contract}"
-																					  TemplateSelector="{StaticResource ContractStateSelector}" />
+																					  TemplateSelector="{DynamicResource ContractStateSelector}" />
 								</Grid>
 
 								<Grid ColumnDefinitions="auto, *">
 									<Label Grid.Column="0"
 											 Text="{l:Localize Visibility}"
-											 Style="{StaticResource ItemTitleLabel}" />
+											 Style="{DynamicResource ItemTitleLabel}" />
 									<Label Grid.Column="1"
 											 Text="{Binding Visibility}"
-											 Style="{StaticResource ItemValueLabel}" />
+											 Style="{DynamicResource ItemValueLabel}" />
 								</Grid>
 							</VerticalStackLayout>
 
@@ -289,15 +289,15 @@
 												  Command="{Binding OpenServerSignatureCommand}" />
 
 				<controls:TextButton LabelData="{l:Localize ObsoleteContract}"
-				                     Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+				                     Style="{DynamicResource FilledTextButtonNoRoundedCorners}"
 				                     Command="{Binding Path=ObsoleteContractCommand}"
 				                     IsVisible="{Binding Path=CanObsoleteContract}"
-				                     Margin="{StaticResource SmallTopBottomMargins}" />
+				                     Margin="{DynamicResource SmallTopBottomMargins}" />
 				<controls:TextButton LabelData="{l:Localize DeleteContract}"
-				                     Style="{StaticResource FilledTextButtonNoRoundedCorners}"
+				                     Style="{DynamicResource FilledTextButtonNoRoundedCorners}"
 				                     Command="{Binding Path=DeleteContractCommand}"
 				                     IsVisible="{Binding Path=CanDeleteContract}"
-				                     Margin="{StaticResource SmallBottomMargins}" />
+				                     Margin="{DynamicResource SmallBottomMargins}" />
 
 			</VerticalStackLayout>
 		</ScrollView>
@@ -305,22 +305,22 @@
 		<!-- BOTTOM BAR -->
 		<Grid Grid.Row="1"
 				RowDefinitions="*">
-			<Border Style="{StaticResource BottomBarBorder}"
+			<Border Style="{DynamicResource BottomBarBorder}"
 					  IsVisible="{Binding CanSign}">
 				<Grid HorizontalOptions="Fill"
 						VerticalOptions="Center"
-						ColumnSpacing="{StaticResource SmallSpacing}"
-						Padding="{StaticResource SmallMargins}">
+						ColumnSpacing="{DynamicResource SmallSpacing}"
+						Padding="{DynamicResource SmallMargins}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 
-					<controls:TextButton Style="{StaticResource TransparentTextButton}"
+					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
 												Grid.Column="0"
 												LabelData="{l:Localize Back}"
 												Command="{Binding BackCommand}" />
-					<controls:TextButton Style="{StaticResource FilledTextButton}"
+					<controls:TextButton Style="{DynamicResource FilledTextButton}"
 												Grid.Column="1"
 												LabelData="{l:Localize Sign}"
 												Command="{Binding GoToSignCommand}" />

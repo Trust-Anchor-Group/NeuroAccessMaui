@@ -300,10 +300,10 @@
 
 	<!-- Old -->
 	<!-- Pages -->
-	<Color x:Key="PrimaryBackgroundLight">#FFF5F6F7</Color>
-	<Color x:Key="PrimaryForegroundLight">#FF181F25</Color>
-	<Color x:Key="SecondaryBackgroundLight">#FFFCFCFC</Color>
-	<Color x:Key="SecondaryForegroundLight">#FF181F25</Color>
+	<Color x:Key="PrimaryBackgroundLight">Green</Color>
+	<Color x:Key="PrimaryForegroundLight">Green</Color>
+	<Color x:Key="SecondaryBackgroundLight">Orange</Color>
+	<Color x:Key="SecondaryForegroundLight">Orange</Color>
 
 	<Color x:Key="PrimaryBackgroundDark">#FF161617</Color>
 	<Color x:Key="PrimaryForegroundDark">#E5FFFFFF</Color>

@@ -13,21 +13,21 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.TransferIdentity"
 							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{DynamicResource ImageOnlyButton}"
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize TransferIdentity}"/>
+				<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize TransferIdentity}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
+				<Frame Style="{DynamicResource FrameSet}">
 					<VerticalStackLayout>
-						<Label Text="{l:Localize TransferIdentityPageDetails}" Style="{StaticResource InfoLabel}" Margin="{StaticResource SmallBottomMargins}" />
+						<Label Text="{l:Localize TransferIdentityPageDetails}" Style="{DynamicResource InfoLabel}" Margin="{DynamicResource SmallBottomMargins}" />
 						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" HorizontalOptions="CenterAndExpand" Margin="0"
                        WidthRequest="240" HeightRequest="240">
 							<Image.GestureRecognizers>

@@ -17,26 +17,26 @@
 	</mopups:PopupPage.Animation>
 
 	<Grid
-		Style="{StaticResource PopupGrid}">
+		Style="{DynamicResource PopupGrid}">
 
 		<Border
 			WidthRequest="{Binding ViewWidthRequest}"
 			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-			Style="{StaticResource PopupBorder}">
+			Style="{DynamicResource PopupBorder}">
 
 			<ScrollView
 				VerticalOptions="Center">
-				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+				<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 					<Label
 							  HorizontalTextAlignment="Center"
-							  Style="{StaticResource PageTitleLabel}"
+							  Style="{DynamicResource PageTitleLabel}"
 							  Text="{l:Localize SelectUnit}"/>
 
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<BindableLayout.ItemTemplate>
 							<DataTemplate x:DataType="controls:TextButton">
 								<controls:TextButton 
-                           Style="{StaticResource TertiaryButton}" 
+                           Style="{DynamicResource TertiaryButton}" 
                            LabelData="{Binding LabelData}"
 									Command="{Binding Command}"/>
 							</DataTemplate>

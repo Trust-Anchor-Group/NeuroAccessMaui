@@ -19,9 +19,9 @@
 
 		<DataTemplate x:Key="PendingPaymentTemplate" x:DataType="objectmodel:PendingPaymentItem">
 			<Grid ColumnDefinitions="2*,*" RowDefinitions="auto,auto">
-				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="18"/>
-				<Label Grid.Column="0" Grid.Row="1" Text="{Binding Path=ExpiresStr}" Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Italic"/>
-				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="TailTruncation" TextColor="{StaticResource InputFieldsContentDangerv500Light}" HorizontalTextAlignment="End">
+				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="18"/>
+				<Label Grid.Column="0" Grid.Row="1" Text="{Binding Path=ExpiresStr}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Italic"/>
+				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="TailTruncation" TextColor="{DynamicResource InputFieldsContentDangerv500Light}" HorizontalTextAlignment="End">
 					<Label.FormattedText>
 						<FormattedString>
 							<Span Text="-" FontSize="30" FontAttributes="Bold"/>
@@ -39,11 +39,11 @@
 
 		<DataTemplate x:Key="AccountEventTemplate" x:DataType="objectmodel:AccountEventItem">
 			<Grid ColumnDefinitions="2*,*" RowDefinitions="auto,auto,auto">
-				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="18"/>
+				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="18"/>
 				<Label Grid.Row="0" Grid.Column="1" FontSize="50" Padding="0,-25,0,-25"
 					   Text="•"  HorizontalOptions="Start" VerticalOptions="Center" IsVisible="{Binding New}"
-					   Style="{StaticResource AlertLabel}"/>
-				<Label Grid.Column="0" Grid.Row="1" Text="{Binding Path=TimestampStr}" Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation"/>
+					   Style="{DynamicResource AlertLabel}"/>
+				<Label Grid.Column="0" Grid.Row="1" Text="{Binding Path=TimestampStr}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation"/>
 				<Label Grid.Column="1" Grid.Row="0" LineBreakMode="TailTruncation" HorizontalTextAlignment="End">
 					<Label.FormattedText>
 						<FormattedString>
@@ -58,7 +58,7 @@
 						<FormattedString>
 							<Span Text=" ("/>
 							<Span Text="{Binding Path=Balance, Converter={converters:MoneyToString}}" FontSize="14"/>
-							<Span Text="{Binding Path=ReservedSuffix}" FontSize="14" TextColor="{StaticResource InputFieldsContentDangerv500Light}"/>
+							<Span Text="{Binding Path=ReservedSuffix}" FontSize="14" TextColor="{DynamicResource InputFieldsContentDangerv500Light}"/>
 							<Span Text=" "/>
 							<Span Text="{Binding Path=Currency}" FontSize="12"/>
 							<Span Text=" ) "/>
@@ -77,19 +77,19 @@
 																 PendingPaymentTemplate="{StaticResource PendingPaymentTemplate}"
 																 AccountEventTemplate="{StaticResource AccountEventTemplate}"/>
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
 			<Grid RowDefinitions="auto,*,auto">
-				<Frame Grid.Row="0" HeightRequest="150" BorderColor="Black" CornerRadius="6" HasShadow="True" Margin="{StaticResource SmallMargins}"
-                       BackgroundColor="{StaticResource SurfaceBackgroundWLDark}">
+				<Frame Grid.Row="0" HeightRequest="150" BorderColor="Black" CornerRadius="6" HasShadow="True" Margin="{DynamicResource SmallMargins}"
+                       BackgroundColor="{DynamicResource SurfaceBackgroundWLDark}">
 					<Grid HeightRequest="150" RowDefinitions="25,100,25" BackgroundColor="Transparent">
 						<Image x:Name="ImgFront" Grid.Row="0" Grid.RowSpan="3" Source="{Binding Path=EDalerFrontGlyph}" Opacity="0.5"/>
 						<Label Grid.Row="0" Text="{Binding Path=Timestamp, Converter={converters:DateTimeToString}}" HorizontalOptions="StartAndExpand"
-                               TextColor="{StaticResource SurfaceBackgroundWLLight}" BackgroundColor="Transparent"/>
-						<Label Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{StaticResource SurfaceBackgroundWLLight}" BackgroundColor="Transparent">
+                               TextColor="{DynamicResource SurfaceBackgroundWLLight}" BackgroundColor="Transparent"/>
+						<Label Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{DynamicResource SurfaceBackgroundWLLight}" BackgroundColor="Transparent">
 							<Label.FormattedText>
 								<FormattedString>
 									<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}" FontSize="50" FontAttributes="Bold"/>
@@ -98,7 +98,7 @@
 								</FormattedString>
 							</Label.FormattedText>
 						</Label>
-						<Label Grid.Row="2" HorizontalOptions="Start" TextColor="{StaticResource InputFieldsContentDangerv500Light}"
+						<Label Grid.Row="2" HorizontalOptions="Start" TextColor="{DynamicResource InputFieldsContentDangerv500Light}"
                                IsVisible="{Binding Path=PendingAmount, Converter={converters:GreaterThanZero}}" BackgroundColor="Transparent">
 							<Label.FormattedText>
 								<FormattedString>
@@ -110,7 +110,7 @@
 								</FormattedString>
 							</Label.FormattedText>
 						</Label>
-						<Label Grid.Row="2" HorizontalOptions="End" TextColor="{StaticResource InputFieldsContentDangerv500Light}"
+						<Label Grid.Row="2" HorizontalOptions="End" TextColor="{DynamicResource InputFieldsContentDangerv500Light}"
                                IsVisible="{Binding Path=ReservedAmount, Converter={converters:GreaterThanZero}}" BackgroundColor="Transparent">
 							<Label.FormattedText>
 								<FormattedString>
@@ -125,10 +125,10 @@
 					</Grid>
 				</Frame>
 
-				<VerticalStackLayout Grid.Row="1" Margin="{StaticResource SmallMargins}">
+				<VerticalStackLayout Grid.Row="1" Margin="{DynamicResource SmallMargins}">
 					<controls:LoadingCollectionView x:Name="PaymentItemsCollection" IsGrouped="True"
 															  VerticalOptions="StartAndExpand" SelectionMode="Single"
-                                               Style="{StaticResource MyWalletView}"
+                                               Style="{DynamicResource MyWalletView}"
                                                ItemSizingStrategy="MeasureAllItems"
                                                RemainingItemsThreshold="1"
 															  ItemsSource="{Binding Path=PaymentItems}"
@@ -136,8 +136,8 @@
                                                LoadMoreCommand="{Binding LoadMoreAccountEventsCommand}">
 						<CollectionView.GroupHeaderTemplate>
 							<DataTemplate x:DataType="base:IUniqueItem">
-								<Frame BackgroundColor="{AppThemeBinding Light={StaticResource InputFieldsContentSecondaryLight}, Dark={StaticResource InputFieldsContentSecondaryDark}}" CornerRadius="8" Padding="5" Margin="0" HasShadow="False">
-									<Label Text="{Binding LocalisedName}" Style="{StaticResource KeyLabel}"
+								<Frame BackgroundColor="{AppThemeBinding Light={DynamicResource InputFieldsContentSecondaryLight}, Dark={DynamicResource InputFieldsContentSecondaryDark}}" CornerRadius="8" Padding="5" Margin="0" HasShadow="False">
+									<Label Text="{Binding LocalisedName}" Style="{DynamicResource KeyLabel}"
 									   HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"
 									   LineBreakMode="TailTruncation" FontSize="18" />
 								</Frame>

@@ -11,23 +11,23 @@
 									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
-	<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+	<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+		<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 
 			<Label
-				Style="{StaticResource PageTitleLabel}"
+				Style="{DynamicResource PageTitleLabel}"
 				Text="{l:Localize OnboardingEmailPageTitle}" />
 
 			<Label Text="{l:Localize OnboardingEmailPageDetails}" />
 
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 
 				<Label
-					Style="{StaticResource SectionTitleLabel}"
+					Style="{DynamicResource SectionTitleLabel}"
 					Text="{l:Localize EmailSectionTitle}" />
 
 				<controls:CompositeEntry x:Name="EmailEntry"
-					Style="{StaticResource RegularCompositeEntry}"
+					Style="{DynamicResource RegularCompositeEntry}"
 					EntryData="{Binding EmailText}"
 					IsValid="{Binding EmailIsValid}">
 
@@ -36,7 +36,7 @@
 							HeightRequest="24" WidthRequest="24"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.EmailIconPath}"
-							Fill="{AppThemeBinding Light={StaticResource InputFieldsContentPrimaryLight}, Dark={StaticResource InputFieldsContentPrimaryDark}}"/>
+							Fill="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}"/>
 					</controls:CompositeEntry.LeftView>
 					<controls:CompositeEntry.Behaviors>
 						<mct:TextValidationBehavior x:Name="EmailValidator"
@@ -51,7 +51,7 @@
 					RowDefinitions="auto"
 					ColumnDefinitions="auto,*"
 					HorizontalOptions="Center"
-					ColumnSpacing="{StaticResource SmallSpacing}"
+					ColumnSpacing="{DynamicResource SmallSpacing}"
 					IsVisible="{Binding IsNotValid, Source={x:Reference EmailValidator}}">
 
 					<Path Grid.Column="0"
@@ -60,10 +60,10 @@
 							WidthRequest="20"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsContentDangerv800Dark}}" />
+							Fill="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
 
 					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding LocalizedValidationError}"
-							 TextColor="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsContentDangerv800Dark}}" />
+							 TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
 				</Grid>
 
 			</VerticalStackLayout>
@@ -71,7 +71,7 @@
 
 		<controls:TextButton
 			Command="{Binding SendCodeCommand}"
-			Style="{StaticResource FilledTextButton}"
+			Style="{DynamicResource FilledTextButton}"
 			LabelData="{Binding LocalizedSendCodeText}" />
 	</VerticalStackLayout>
 </base:BaseRegistrationView>

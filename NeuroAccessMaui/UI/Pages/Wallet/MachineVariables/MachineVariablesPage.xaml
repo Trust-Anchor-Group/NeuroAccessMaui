@@ -11,33 +11,33 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MachineVariables">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize Variables}" Style="{StaticResource PageTitleLabel}"/>
+				<Label Text="{l:Localize Variables}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
-					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,auto,*" Margin="{StaticResource SmallMargins}">
-						<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CurrentState}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
-						<Label Grid.Column="0" Grid.Row="1" Text="{Binding CurrentState}" Margin="{StaticResource SmallMargins}" VerticalOptions="Start"
-								 HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Style="{StaticResource ValueLabel}"
+				<Frame Style="{DynamicResource FrameSet}">
+					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,auto,*" Margin="{DynamicResource SmallMargins}">
+						<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CurrentState}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
+						<Label Grid.Column="0" Grid.Row="1" Text="{Binding CurrentState}" Margin="{DynamicResource SmallMargins}" VerticalOptions="Start"
+								 HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Style="{DynamicResource ValueLabel}"
 								 IsVisible="{Binding Running}"/>
-						<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize MachineHasEnded}" Margin="{StaticResource SmallMargins}" VerticalOptions="Start"
-								 HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Style="{StaticResource ValueLabel}"
+						<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize MachineHasEnded}" Margin="{DynamicResource SmallMargins}" VerticalOptions="Start"
+								 HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Style="{DynamicResource ValueLabel}"
 								 IsVisible="{Binding Ended}"/>
-						<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize CurrentVariables}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
+						<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize CurrentVariables}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="3" BindableLayout.ItemsSource="{Binding Path=Variables}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="viewmodel:VariableModel">
 									<VerticalStackLayout>
-										<Label Text="{Binding Path=Name}" Style="{StaticResource KeyLabel}"/>
-										<Label LineBreakMode="NoWrap" Text="{Binding Path=AsScript}" Style="{StaticResource ValueLabel}">
+										<Label Text="{Binding Path=Name}" Style="{DynamicResource KeyLabel}"/>
+										<Label LineBreakMode="NoWrap" Text="{Binding Path=AsScript}" Style="{DynamicResource ValueLabel}">
 											<Label.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}"/>
 											</Label.GestureRecognizers>

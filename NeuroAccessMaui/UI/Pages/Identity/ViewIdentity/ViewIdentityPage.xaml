@@ -29,7 +29,7 @@
 			   TargetType="Border"
 			   BasedOn="{StaticResource BorderSubSet}">
 			<Setter Property="Background"
-					Value="{AppThemeBinding Light={StaticResource SurfaceElevation2WLLight}, Dark={StaticResource SurfaceElevation2WLDark}}" />
+					Value="{AppThemeBinding Light={DynamicResource SurfaceElevation2WLLight}, Dark={DynamicResource SurfaceElevation2WLDark}}" />
 			<Setter Property="StrokeShape"
 					Value="RoundRectangle 16" />
 			<Setter Property="Margin"
@@ -68,7 +68,7 @@
 			<Setter Property="HorizontalTextAlignment"
 					Value="Center" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
+					Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 		</Style>
 		<Style x:Key="SubTextLabel"
 			   BasedOn="{StaticResource FriendlyNameLabel}"
@@ -83,7 +83,7 @@
 			<Setter Property="HorizontalTextAlignment"
 					Value="Center" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentSecondaryWLLight}, Dark={StaticResource ContentSecondaryWLDark}}" />
+					Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
 		</Style>
 		<Style x:Key="AgeLabel"
 			   BasedOn="{StaticResource FriendlyNameLabel}"
@@ -102,7 +102,7 @@
 		<Style x:Key="StatusPillBorder"
 			   TargetType="Border">
 			<Setter Property="BackgroundColor"
-					Value="{AppThemeBinding Light={StaticResource TnPNeutralv300bgWLLight}, Dark={StaticResource TnPNeutralv300bgWLDark}}" />
+					Value="{AppThemeBinding Light={DynamicResource TnPNeutralv300bgWLLight}, Dark={DynamicResource TnPNeutralv300bgWLDark}}" />
 			<Setter Property="VisualStateManager.VisualStateGroups">
 				<VisualStateGroupList>
 					<VisualStateGroup Name="StatusStates">
@@ -110,31 +110,31 @@
 						<VisualState Name="Created">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource TnPWarningbgWLLight}, Dark={StaticResource TnPWarningbgWLDark}}" />
+										Value="{AppThemeBinding Light={DynamicResource TnPWarningbgWLLight}, Dark={DynamicResource TnPWarningbgWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 						<VisualState Name="Compromised">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource TnPWarningbgWLLight}, Dark={StaticResource TnPWarningbgWLDark}}" />
+										Value="{AppThemeBinding Light={DynamicResource TnPWarningbgWLLight}, Dark={DynamicResource TnPWarningbgWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 						<VisualState Name="Approved">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource TnPSuccessbgWLLight}, Dark={StaticResource TnPSuccessbgWLDark}}" />
+										Value="{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 						<VisualState Name="Rejected">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}" />
+										Value="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 						<VisualState Name="Obsoleted">
 							<VisualState.Setters>
 								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource TnPDangerbgWLLight}, Dark={StaticResource TnPDangerbgWLDark}}" />
+										Value="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>
@@ -149,8 +149,8 @@
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskBold" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource TnPNeutralv300ContentWLLight},
-                                       Dark={StaticResource TnPNeutralv300ContentWLDark}}" />
+					Value="{AppThemeBinding Light={DynamicResource TnPNeutralv300ContentWLLight},
+                                       Dark={DynamicResource TnPNeutralv300ContentWLDark}}" />
 			<Setter Property="Text"
 					Value="{l:Localize NotAvailable}" />
 			<Style.Triggers>
@@ -160,8 +160,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Created}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource TnPWarningContentWLLight},
-                                       Dark={StaticResource TnPWarningContentWLDark}}" />
+							Value="{AppThemeBinding Light={DynamicResource TnPWarningContentWLLight},
+                                       Dark={DynamicResource TnPWarningContentWLDark}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -169,8 +169,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Compromised}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource TnPWarningContentWLLight},
-                                       Dark={StaticResource TnPWarningContentWLDark}}" />
+							Value="{AppThemeBinding Light={DynamicResource TnPWarningContentWLLight},
+                                       Dark={DynamicResource TnPWarningContentWLDark}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -178,8 +178,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Approved}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource TnPSuccessContentWLLight},
-                                       Dark={StaticResource TnPSuccessContentWLLight}}" />
+							Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight},
+                                       Dark={DynamicResource TnPSuccessContentWLLight}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -187,8 +187,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Rejected}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight},
-                                       Dark={StaticResource TnPDangerContentWLDark}}" />
+							Value="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight},
+                                       Dark={DynamicResource TnPDangerContentWLDark}}" />
 				</DataTrigger>
 				<DataTrigger TargetType="Label"
 							 Binding="{Binding IdentityState}"
@@ -196,8 +196,8 @@
 					<Setter Property="Text"
 							Value="{l:Localize IdentityState_Obsoleted}" />
 					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource TnPDangerContentWLLight},
-                                       Dark={StaticResource TnPDangerContentWLDark}}" />
+							Value="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight},
+                                       Dark={DynamicResource TnPDangerContentWLDark}}" />
 				</DataTrigger>
 			</Style.Triggers>
 		</Style>
@@ -210,7 +210,7 @@
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskRegular" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentSecondaryWLLight}, Dark={StaticResource ContentSecondaryWLDark}}" />
+					Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
 		</Style>
 		<Style x:Key="FieldValueLabel"
 			   TargetType="Label">
@@ -219,7 +219,7 @@
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskRegular" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentSecondaryWLLight}, Dark={StaticResource ContentSecondaryWLDark}}" />
+					Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
 		</Style>
 		<Style x:Key="FieldTitleLabel"
 			   TargetType="Label">
@@ -228,16 +228,16 @@
 			<Setter Property="FontFamily"
 					Value="SpaceGroteskBold" />
 			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentSecondaryWLLight}, Dark={StaticResource ContentSecondaryWLDark}}" />
+					Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
 		</Style>
 
 		<DataTemplate x:Key="DefaultFieldTemplate"
 					  x:DataType="objectModel:ObservableFieldItem">
 			<VerticalStackLayout>
 				<Label Text="{Binding  Label}"
-					   Style="{StaticResource FieldKeyLabel}" />
+					   Style="{DynamicResource FieldKeyLabel}" />
 				<Label Text="{Binding Value}"
-					   Style="{StaticResource FieldValueLabel}" />
+					   Style="{DynamicResource FieldValueLabel}" />
 			</VerticalStackLayout>
 		</DataTemplate>
 
@@ -253,19 +253,19 @@
 				<Label Grid.Row="0"
 					   Grid.Column="0"
 					   Text="{Binding  Label}"
-					   Style="{StaticResource FieldKeyLabel}" />
+					   Style="{DynamicResource FieldKeyLabel}" />
 				<controls:SvgView Grid.Row="0"
 								  Grid.Column="1"
 								  Source="content_copy.svg"
-								  TintColor="{AppThemeBinding Light={StaticResource ContentSecondaryWLLight}, Dark={StaticResource ContentSecondaryWLDark}}"
+								  TintColor="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}"
 								  WidthRequest="16"
 								  HeightRequest="16"
 								  Aspect="AspectFit" />
 				<Label Grid.Row="1"
 					   Grid.ColumnSpan="2"
 					   Text="{Binding Value}"
-					   Style="{StaticResource FieldValueLabel}"
-					   TextColor="{AppThemeBinding Light={StaticResource ContentLinkWLLight}, Dark={StaticResource ContentLinkWLDark}}" />
+					   Style="{DynamicResource FieldValueLabel}"
+					   TextColor="{AppThemeBinding Light={DynamicResource ContentLinkWLLight}, Dark={DynamicResource ContentLinkWLDark}}" />
 			</Grid>
 		</DataTemplate>
 
@@ -273,9 +273,9 @@
 					  x:DataType="objectModel:ObservableFieldItem">
 			<VerticalStackLayout>
 				<Label Text="{Binding  Label}"
-					   Style="{StaticResource FieldKeyLabel}" />
+					   Style="{DynamicResource FieldKeyLabel}" />
 				<Label Text="{Binding Value, Converter={converters:CountryCodeToFlagAndName}}"
-					   Style="{StaticResource FieldValueLabel}" />
+					   Style="{DynamicResource FieldValueLabel}" />
 			</VerticalStackLayout>
 		</DataTemplate>
 
@@ -283,9 +283,9 @@
 					  x:DataType="objectModel:ObservableFieldItem">
 			<VerticalStackLayout>
 				<Label Text="{Binding  Label}"
-					   Style="{StaticResource FieldKeyLabel}" />
+					   Style="{DynamicResource FieldKeyLabel}" />
 				<Label Text="{Binding Value, Converter={converters:GenderCodeToSymbolAndLabel}}"
-					   Style="{StaticResource FieldValueLabel}" />
+					   Style="{DynamicResource FieldValueLabel}" />
 			</VerticalStackLayout>
 		</DataTemplate>
 
@@ -313,9 +313,9 @@
 			   TargetType="Border"
 			   BasedOn="{StaticResource BorderSet}">
 			<Setter Property="BackgroundColor"
-					Value="{AppThemeBinding Light={StaticResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={StaticResource ButtonNeutralNavButtonsbgActiveWLDark}}" />
+					Value="{AppThemeBinding Light={DynamicResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={DynamicResource ButtonNeutralNavButtonsbgActiveWLDark}}" />
 			<Setter Property="Padding"
-					Value="{StaticResource MediumMargins}" />
+					Value="{DynamicResource MediumMargins}" />
 			<Setter Property="Margin"
 					Value="0" />
 			<Setter Property="WidthRequest"
@@ -331,7 +331,7 @@
 		</Style>
 	</VisualElement.Resources>
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 		<Grid.RowDefinitions>
 			<!-- top bar -->
 			<RowDefinition Height="auto" />
@@ -367,12 +367,12 @@
 			<controls:TemplatedButton Grid.Column="0"
 									  HorizontalOptions="Start"
 									  Command="{Binding GoBackCommand}">
-				<Border Style="{StaticResource IconBorder}">
+				<Border Style="{DynamicResource IconBorder}">
 					<controls:SvgView WidthRequest="24"
 									  HeightRequest="24"
 									  Source="close.svg"
 									  Aspect="AspectFit"
-									  TintColor="{AppThemeBinding Light={StaticResource ButtonNeutralContentPressedLight}, Dark={StaticResource ButtonNeutralContentPressedDark}}" />
+									  TintColor="{AppThemeBinding Light={DynamicResource ButtonNeutralContentPressedLight}, Dark={DynamicResource ButtonNeutralContentPressedDark}}" />
 				</Border>
 			</controls:TemplatedButton>
 			<Image Grid.Column="1"
@@ -384,12 +384,12 @@
 			<controls:TemplatedButton Grid.Column="2"
 									  Command="{Binding ShareCommand}"
 									  HorizontalOptions="End">
-				<Border Style="{StaticResource IconBorder}">
+				<Border Style="{DynamicResource IconBorder}">
 					<controls:SvgView WidthRequest="24"
 									  HeightRequest="24"
 									  Source="share.svg"
 									  Aspect="AspectFit"
-									  TintColor="{AppThemeBinding Light={StaticResource ButtonNeutralContentPressedLight}, Dark={StaticResource ButtonNeutralContentPressedDark}}" />
+									  TintColor="{AppThemeBinding Light={DynamicResource ButtonNeutralContentPressedLight}, Dark={DynamicResource ButtonNeutralContentPressedDark}}" />
 
 				</Border>
 			</controls:TemplatedButton>
@@ -402,13 +402,13 @@
 				HeightRequest="150"
 				TranslationY="0"
 				BackgroundColor="Transparent"
-				Style="{StaticResource BorderSet}"
+				Style="{DynamicResource BorderSet}"
 				StrokeShape="RoundRectangle 16" />
 
 		<!-- ID CARD -->
 		<Grid Grid.Row="1"
 			  Grid.RowSpan="2">
-			<Border Style="{StaticResource CardBorder}"
+			<Border Style="{DynamicResource CardBorder}"
 					Margin="16,8,16,8"
 					Padding="0">
 				<Grid>
@@ -428,10 +428,10 @@
 							WidthRequest="50"
 							HeightRequest="38"
 							Margin="16"
-							BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}">
+							BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}">
 						<Label Text="{Binding TimerSeconds}"
 							   Margin="8,4,8,4"
-							   Style="{StaticResource SubTextLabel}"
+							   Style="{DynamicResource SubTextLabel}"
 							   VerticalOptions="Start"
 							   HorizontalOptions="Center"
 							   HorizontalTextAlignment="Center"
@@ -443,9 +443,9 @@
 							StrokeShape="RoundRectangle 16"
 							Margin="16"
 							helpers:VisualStateProperties.State="{Binding IdentityState}"
-							Style="{StaticResource StatusPillBorder}">
+							Style="{DynamicResource StatusPillBorder}">
 
-						<Label Style="{StaticResource StatusPillLabel}" Margin="4,2"
+						<Label Style="{DynamicResource StatusPillLabel}" Margin="4,2"
 								HorizontalOptions="Center"
 								VerticalOptions="Center" />
 					</Border>
@@ -456,12 +456,12 @@
 		<!-- CARD CONTENT -->
 		<Grid Grid.Row="1"
 			  Padding="0,16, 0, 8"
-			  Margin="{StaticResource MediumMargins}"
+			  Margin="{DynamicResource MediumMargins}"
 			  WidthRequest="250"
 			  RowDefinitions="auto, *">
 			<VerticalStackLayout  Grid.Row="0"
 								  HorizontalOptions="Center"
-								  Spacing="{StaticResource SmallSpacing}"
+								  Spacing="{DynamicResource SmallSpacing}"
 								  Padding="0"
 								  Margin="0">
 				<Grid WidthRequest="200"
@@ -476,7 +476,7 @@
 						</controls:ConditionView.True>
 						<controls:ConditionView.False>
 							<Border StrokeShape="RoundRectangle 16"
-									Background="{AppThemeBinding Light={StaticResource SurfaceElevation2WLLight}, Dark={StaticResource SurfaceElevation2WLDark}}">
+									Background="{AppThemeBinding Light={DynamicResource SurfaceElevation2WLLight}, Dark={DynamicResource SurfaceElevation2WLDark}}">
 								<controls:ConditionView Condition="{Binding HasProfilePhoto}">
 									<controls:ConditionView.True>
 										<Image Source="{Binding ProfilePhoto}"
@@ -501,7 +501,7 @@
 						  WidthRequest="50"
 						  HeightRequest="50"
 						  IsVisible="{Binding HasProfilePhoto}">
-						<Border Background="{AppThemeBinding Light={StaticResource SurfaceElevation1Light}, Dark={StaticResource SurfaceElevation1Dark}}"
+						<Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1Light}, Dark={DynamicResource SurfaceElevation1Dark}}"
 								StrokeShape="RoundRectangle 0 16 0 0">
 
 						</Border>
@@ -511,9 +511,9 @@
 						  WidthRequest="50"
 						  HeightRequest="50"
 						  IsVisible="{Binding HasAge}">
-						<Border Background="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}"
+						<Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}"
 								StrokeShape="RoundRectangle 16 0 0 0">
-							<Label Style="{StaticResource AgeLabel}"
+							<Label Style="{DynamicResource AgeLabel}"
 								   Text="{Binding AgeText}"
 								   VerticalOptions="Center"
 								   HorizontalOptions="Center" />
@@ -522,14 +522,14 @@
 
 				</Grid>
 
-				<Label Style="{StaticResource FriendlyNameLabel}"
+				<Label Style="{DynamicResource FriendlyNameLabel}"
 					   Text="{Binding FriendlyName}" />
-				<Label Style="{StaticResource SubTextLabel}"
+				<Label Style="{DynamicResource SubTextLabel}"
 					   Text="{Binding SubText}" />
 
 			</VerticalStackLayout>
 			<VerticalStackLayout Grid.Row="1" Margin="0, 0, 0, 4" VerticalOptions="End">
-				<Label Style="{StaticResource SubTextLabel}"
+				<Label Style="{DynamicResource SubTextLabel}"
 						FontSize="14"
 						Text="{l:Localize Path=ExpiresFormat, Arg={Binding ExpireDate}}" />
 			</VerticalStackLayout>
@@ -540,7 +540,7 @@
 				WidthRequest="150"
 				HeightRequest="150"
 				TranslationY="0"
-				Style="{StaticResource QrBorder}">
+				Style="{DynamicResource QrBorder}">
 			<Image HorizontalOptions="Center"
 				   TranslationX="0"
 				   Source="{Binding QrCode}">
@@ -563,15 +563,15 @@
 									  VerticalOptions="End"
 									  MaxExpandedHeight="-1">
 				<controls:BottomSheetView.HeaderContent>
-					<VerticalStackLayout Background="{AppThemeBinding Light={StaticResource SurfaceElevation1WLLight}, Dark={StaticResource SurfaceElevation1WLDark}}"
+					<VerticalStackLayout Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}"
 										 Padding="2">
 						<controls:SvgView Source="swipe_up.svg"
 										  Aspect="Fill"
 										  HeightRequest="24"
 										  WidthRequest="24"
-										  TintColor="{AppThemeBinding Light={StaticResource ContentAccessWLLight}, Dark={StaticResource ContentAccessWLDark}}" />
+										  TintColor="{AppThemeBinding Light={DynamicResource ContentAccessWLLight}, Dark={DynamicResource ContentAccessWLDark}}" />
 						<Label Text="{l:Localize SwipeForDetails}"
-							   TextColor="{AppThemeBinding Light={StaticResource ContentAccessWLLight}, Dark={StaticResource ContentAccessWLDark}}"
+							   TextColor="{AppThemeBinding Light={DynamicResource ContentAccessWLLight}, Dark={DynamicResource ContentAccessWLDark}}"
 							   FontSize="16"
 							   HorizontalOptions="Center"
 							   FontFamily="SpaceGroteskBold"
@@ -583,13 +583,13 @@
 						<ScrollView VerticalOptions="Fill"
 									HorizontalOptions="Fill">
 							<VerticalStackLayout>
-								<controls:TextButton Style="{StaticResource FilledTextButton}"
+								<controls:TextButton Style="{DynamicResource FilledTextButton}"
 													 LabelData="{l:Localize AddContact}"
 													 Command="{Binding AddContactCommand}"
 													 IsVisible="{Binding CanAddContact}"
 													 HorizontalOptions="Fill" Margin="16" />
 								
-								<controls:TextButton Style="{StaticResource FilledTextButton}"
+								<controls:TextButton Style="{DynamicResource FilledTextButton}"
 													 LabelData="{l:Localize RemoveContact}"
 													 Command="{Binding RemoveContactCommand}"
 													 IsVisible="{Binding CanRemoveContact}"
@@ -597,13 +597,13 @@
 													 Margin="16" />
 
 								<!-- Photos -->
-								<Border Style="{StaticResource FieldGroupBorder}"
+								<Border Style="{DynamicResource FieldGroupBorder}"
 										IsVisible="{Binding HasPhotos}">
 									<Grid RowDefinitions="auto, auto"
 										  RowSpacing="16">
 										<Label Text="{l:Localize Photos}"
 											   Grid.Row="0"
-											   Style="{StaticResource FieldTitleLabel}" />
+											   Style="{DynamicResource FieldTitleLabel}" />
 										<FlexLayout Grid.Row="1"
 													AlignContent="Center"
 													BindableLayout.ItemsSource="{Binding Photos}"
@@ -631,55 +631,55 @@
 
 								<!-- FIELDS -->
 								<!-- Should probably be virtualized with collectionview -->
-								<Border Style="{StaticResource FieldGroupBorder}"
+								<Border Style="{DynamicResource FieldGroupBorder}"
 										IsVisible="{Binding HasPersonalFields}">
 									<!-- Title + BindableLayout-->
 									<VerticalStackLayout Spacing="16">
 										<Label Text="{l:Localize PersonalInformation}"
-											   Style="{StaticResource FieldTitleLabel}" />
+											   Style="{DynamicResource FieldTitleLabel}" />
 										<VerticalStackLayout HorizontalOptions="Fill"
 															 Spacing="16"
 															 BindableLayout.ItemsSource="{Binding PersonalFields}"
-															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
+															 BindableLayout.ItemTemplateSelector="{DynamicResource FieldSelector}" />
 									</VerticalStackLayout>
 								</Border>
 
-								<Border Style="{StaticResource FieldGroupBorder}"
+								<Border Style="{DynamicResource FieldGroupBorder}"
 										IsVisible="{Binding HasOrganizationFields}">
 									<!-- Title + BindableLayout-->
 									<VerticalStackLayout Spacing="16">
 										<Label Text="{l:Localize OrganizationalInformation}"
-											   Style="{StaticResource FieldTitleLabel}" />
+											   Style="{DynamicResource FieldTitleLabel}" />
 										<VerticalStackLayout HorizontalOptions="Fill"
 															 Spacing="16"
 															 BindableLayout.ItemsSource="{Binding OrganizationFields}"
-															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
+															 BindableLayout.ItemTemplateSelector="{DynamicResource FieldSelector}" />
 									</VerticalStackLayout>
 								</Border>
 
-								<Border Style="{StaticResource FieldGroupBorder}"
+								<Border Style="{DynamicResource FieldGroupBorder}"
 										IsVisible="{Binding HasTechnicalFields}">
 									<!-- Title + BindableLayout-->
 									<VerticalStackLayout Spacing="16">
 										<Label Text="{l:Localize Technical}"
-											   Style="{StaticResource FieldTitleLabel}" />
+											   Style="{DynamicResource FieldTitleLabel}" />
 										<VerticalStackLayout HorizontalOptions="Fill"
 															 Spacing="16"
 															 BindableLayout.ItemsSource="{Binding TechnicalFields}"
-															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
+															 BindableLayout.ItemTemplateSelector="{DynamicResource FieldSelector}" />
 									</VerticalStackLayout>
 								</Border>
 
-								<Border Style="{StaticResource FieldGroupBorder}"
+								<Border Style="{DynamicResource FieldGroupBorder}"
 										IsVisible="{Binding HasOtherFields}">
 									<!-- Title + BindableLayout-->
 									<VerticalStackLayout Spacing="16">
 										<Label Text="{l:Localize OtherInformation}"
-											   Style="{StaticResource FieldTitleLabel}" />
+											   Style="{DynamicResource FieldTitleLabel}" />
 										<VerticalStackLayout HorizontalOptions="Fill"
 															 Spacing="16"
 															 BindableLayout.ItemsSource="{Binding OtherFields}"
-															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
+															 BindableLayout.ItemTemplateSelector="{DynamicResource FieldSelector}" />
 									</VerticalStackLayout>
 								</Border>
 							</VerticalStackLayout>

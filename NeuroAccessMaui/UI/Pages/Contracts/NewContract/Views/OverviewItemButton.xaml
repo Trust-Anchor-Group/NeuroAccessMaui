@@ -8,11 +8,11 @@
 	<ContentView.Resources>
 		<Style x:Key="ButtonBorder" TargetType="Border" BasedOn="{StaticResource BorderSet}">
 			<Setter Property="Margin" Value="0"/>
-			<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
+			<Setter Property="Padding" Value="{DynamicResource SmallMargins}" />
 		</Style>
 
 		<Style x:Key="ButtonIconBorder" TargetType="Border">
-			<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource TnPSuccessbgWLLight}, Dark={StaticResource TnPSuccessbgWLDark}}" />
+			<Setter Property="Background" Value="{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}" />
 			<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 			<Setter Property="Stroke" Value="Transparent"/>
 			<Setter Property="WidthRequest" Value="48"/>
@@ -24,7 +24,7 @@
 		</Style>
 
 		<Style x:Key="ButtonIconPath" TargetType="Path">
-			<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource TnPSuccessContentWLLight}, Dark={StaticResource TnPSuccessContentWLDark}}" />
+			<Setter Property="Fill" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLDark}}" />
 			<Setter Property="Aspect" Value="Uniform" />
 			<Setter Property="WidthRequest" Value="24"/>
 			<Setter Property="HeightRequest" Value="24"/>
@@ -43,32 +43,32 @@
 		<Style x:Key="ButtonCheckBox" TargetType="CheckBox">
 			<Setter Property="VerticalOptions" Value="Center"/>
 			<Setter Property="HorizontalOptions" Value="Center" />
-			<Setter Property="Color" Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"/>
+			<Setter Property="Color" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"/>
 		</Style>
 
 		<Style x:Key="ButtonCheckBoxOk" TargetType="CheckBox" BasedOn="{StaticResource ButtonCheckBox}">
-			<Setter Property="Color" Value="{AppThemeBinding Light={StaticResource TnPSuccessContentWLLight}, Dark={StaticResource TnPSuccessContentWLDark}}"/>
+			<Setter Property="Color" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLDark}}"/>
 		</Style>
 	</ContentView.Resources>
 
 	<controls:TemplatedButton VerticalOptions="Start" Command="{Binding Command, Source={x:Reference This}}">
-		<Border Style="{StaticResource ButtonBorder}" VerticalOptions="Center">
-			<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="{StaticResource SmallSpacing}" HeightRequest="80">
+		<Border Style="{DynamicResource ButtonBorder}" VerticalOptions="Center">
+			<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="{DynamicResource SmallSpacing}" HeightRequest="80">
 				<!-- Icon Border -->
-				<Border Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center" Style="{StaticResource ButtonIconBorder}">
+				<Border Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Center" Style="{DynamicResource ButtonIconBorder}">
 					<Border.Triggers>
 						<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Border" Value="True">
 							<!-- Set the properties that need to change -->
-							<Setter Property="Background" Value="{AppThemeBinding Light={StaticResource TnPSuccessContentWLLight}, Dark={StaticResource TnPSuccessbgWLDark}}" />
+							<Setter Property="Background" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}" />
 						</DataTrigger>
 					</Border.Triggers>
 					<!-- Icon Path -->
 					<Path VerticalOptions="Center"
                           Data="{Binding IconData, Source={x:Reference This}}"
-                          Style="{StaticResource ButtonIconPath}">
+                          Style="{DynamicResource ButtonIconPath}">
 						<Path.Triggers>
 							<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Path" Value="True">
-								<Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource ContentWhitefixedLight}, Dark={StaticResource ContentWhitefixedDark}}" />
+								<Setter Property="Fill" Value="{AppThemeBinding Light={DynamicResource ContentWhitefixedLight}, Dark={DynamicResource ContentWhitefixedDark}}" />
 							</DataTrigger>
 						</Path.Triggers>
 					</Path>
@@ -76,12 +76,12 @@
 
 				<!-- Labels -->
 				<VerticalStackLayout Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center">
-					<Label Style="{StaticResource ButtonTopLabel}" Text="{Binding TopLabelText, Source={x:Reference This}}"/>
-					<Label Style="{StaticResource ButtonBottomLabel}" Text="{Binding BottomLabelText, Source={x:Reference This}}"/>
+					<Label Style="{DynamicResource ButtonTopLabel}" Text="{Binding TopLabelText, Source={x:Reference This}}"/>
+					<Label Style="{DynamicResource ButtonBottomLabel}" Text="{Binding BottomLabelText, Source={x:Reference This}}"/>
 				</VerticalStackLayout>
 
 				<!-- CheckBox Border -->
-				<Border Grid.Column="2" VerticalOptions="Center" HorizontalOptions="Center" Style="{StaticResource CheckBoxBorder}">
+				<Border Grid.Column="2" VerticalOptions="Center" HorizontalOptions="Center" Style="{DynamicResource CheckBoxBorder}">
 					<!-- CheckBox -->
 					<CheckBox HorizontalOptions="Center"
                               VerticalOptions="Center"
@@ -89,10 +89,10 @@
                               IsChecked="{Binding IsOk, Source={x:Reference This}}">
 						<CheckBox.Triggers>
 							<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="CheckBox" Value="True">
-								<Setter Property="Style" Value="{StaticResource ButtonCheckBoxOk}" />
+								<Setter Property="Style" Value="{DynamicResource ButtonCheckBoxOk}" />
 							</DataTrigger>
 							<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="CheckBox" Value="False">
-								<Setter Property="Style" Value="{StaticResource ButtonCheckBox}" />
+								<Setter Property="Style" Value="{DynamicResource ButtonCheckBox}" />
 							</DataTrigger>
 						</CheckBox.Triggers>
 					</CheckBox>

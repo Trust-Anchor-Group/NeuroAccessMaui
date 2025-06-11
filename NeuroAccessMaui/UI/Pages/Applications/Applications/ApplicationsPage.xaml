@@ -12,64 +12,64 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.Applications">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-									  Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}"
-									  Margin="{StaticResource SmallLeftMargins}"/>
+									  Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}"
+									  Margin="{DynamicResource SmallLeftMargins}"/>
 
-				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize Applications}"/>
+				<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Applications}"/>
 
 				<!-- Identity Applications -->
-				<Border Style="{StaticResource BorderSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<Grid>
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}"
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
 												IsVisible="{Binding IdentityApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
 
-							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}"/>
+							<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}"/>
 
 							<!-- Apply for Personal ID -->
 							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyPersonalIdCommand}">
-								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize PersonalId}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
-										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize PersonalIdDescription}" InputTransparent="True"
-											    TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
+								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
+										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize PersonalId}" InputTransparent="True"
+												 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
+										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize PersonalIdDescription}" InputTransparent="True"
+											    TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>
 
 							<!-- Apply for Organizational ID -->
 							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyOrganizationalIdCommand}">
-								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OrganizationalId}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
-										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize OrganizationalIdDescription}" InputTransparent="True"
-											    TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
+								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
+										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize OrganizationalId}" InputTransparent="True"
+												 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
+										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize OrganizationalIdDescription}" InputTransparent="True"
+											    TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>
 
 						</VerticalStackLayout>
 
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" IsVisible="{Binding IdentityApplicationSent}">
-							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}"/>
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" IsVisible="{Binding IdentityApplicationSent}">
+							<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}"/>
 
 							<!-- View Identity Application -->
 							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ViewIdApplicationCommand}">
-								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
-										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize ViewIdApplicationDescription}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
+								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
+										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"
+												 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
+										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize ViewIdApplicationDescription}" InputTransparent="True"
+												 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>
@@ -79,21 +79,21 @@
 				</Border>
 
 				<!-- Wallet -->
-				<Border Style="{StaticResource BorderSet}" IsVisible="{Binding HasLegalIdentity}">
+				<Border Style="{DynamicResource BorderSet}" IsVisible="{Binding HasLegalIdentity}">
 					<Grid>
-						<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 
-							<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Wallet}"/>
+							<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Wallet}"/>
 
 							<!-- Apply for a wallet -->
 							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding BuyEDalerCommand}"
 																		IsVisible="{Binding HasWallet, Converter={StaticResource InvertedBoolConverter}}">
-								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize CreateWallet}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
-										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize CreateWalletDescription}" InputTransparent="True"
-											    TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
+								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
+										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize CreateWallet}" InputTransparent="True"
+												 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
+										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize CreateWalletDescription}" InputTransparent="True"
+											    TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>
@@ -101,12 +101,12 @@
 							<!-- Go to wallet -->
 							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding OpenWalletCommand}"
 																		IsVisible="{Binding HasWallet}">
-								<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize OpenWallet}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
-										<Label Style="{StaticResource KeyLabel}" Text="{l:Localize CreateWalletDescription}" InputTransparent="True"
-											    TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
+								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
+										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize OpenWallet}" InputTransparent="True"
+												 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
+										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize CreateWalletDescription}" InputTransparent="True"
+											    TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>

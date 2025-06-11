@@ -17,14 +17,14 @@
 <!--
 	<Shell.TitleView>
 		<Grid Padding="10">
-			<controls:TemplatedButton Padding="{StaticResource SmallSpacing}" Margin="0" Command="{Binding OpenNotificationsCommand}"
+			<controls:TemplatedButton Padding="{DynamicResource SmallSpacing}" Margin="0" Command="{Binding OpenNotificationsCommand}"
 											  HorizontalOptions="End"
 											  VerticalOptions="Center">
 				<Border
-						Style="{StaticResource BorderSet}" Margin="0"
+						Style="{DynamicResource BorderSet}" Margin="0"
 						  WidthRequest="38" HeightRequest="38" Padding="4">
 					<Path Data="{x:Static ui:Geometries.ContractEditPath}" Fill="Black"
-							Style="{StaticResource FilledTemplateButtonPath}" Aspect="Uniform"/>
+							Style="{DynamicResource FilledTemplateButtonPath}" Aspect="Uniform"/>
 				</Border>		
 			</controls:TemplatedButton>
 			<controls:Badge Text="1"
@@ -41,21 +41,21 @@
 	<Grid x:Name="TheMainGrid"
 		  RowDefinitions="auto, *, auto, auto"
 		  ColumnDefinitions="*"
-		  BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+		  BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background Grid.RowSpan="3"/>
 
 		<!-- Top Buttons -->
 		<Grid Grid.Row="0"
-			  Margin="{StaticResource MediumMargins}"
-			  RowSpacing="{StaticResource MediumSpacing}"
+			  Margin="{DynamicResource MediumMargins}"
+			  RowSpacing="{DynamicResource MediumSpacing}"
 			  RowDefinitions="auto,auto"
 			  ColumnDefinitions="auto,auto">
 			<controls:SvgButton
 				Grid.Row="0" Grid.Column="0"
 				Command="{Binding OpenFlyoutCommand}"
 				SvgSource="hamburger.svg"
-				Style="{StaticResource IconButton}"/>
+				Style="{DynamicResource IconButton}"/>
 
 			<!-- TODO: Enable when implemented
 			<controls:ImageButton
@@ -63,14 +63,14 @@
 				Grid.Column="1"
 				HorizontalOptions="End"
 				PathData="{x:Static ui:Geometries.NotificationIconPath}"
-				Style="{StaticResource IconButton}"/>
+				Style="{DynamicResource IconButton}"/>
 
 			<controls:ImageButton
 				Grid.Row="1"
 				Grid.Column="1"
 				HorizontalOptions="End"
 				PathData="{x:Static ui:Geometries.HistoryIconPath}"
-				Style="{StaticResource IconButton}"/>
+				Style="{DynamicResource IconButton}"/>
 			-->
 		</Grid>
 		
@@ -79,10 +79,10 @@
 			  RowDefinitions="auto, auto"
 			  Margin="30,100,30,100">
 
-			<Image Source="{Binding TestImage}"
+			<Image Source="{Binding TestImage, TargetNullValue={AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}}"
 				   Grid.Row="0"
 				   HeightRequest="230"
-				   WidthRequest="230"/>
+				   WidthRequest="230" Aspect="AspectFit"/>
 
 			<!-- Missing Neuro ID Box-->
 			<Grid Grid.Row="1"
@@ -90,29 +90,29 @@
 				  RowDefinitions="*, *">
 				
 				<Border Grid.Row="0"
-						BackgroundColor="{AppThemeBinding Light={StaticResource TnPInfobgWLLight}, Dark={StaticResource TnPInfobgWLDark}}"
-						Padding="{StaticResource MediumMargins}"
+						BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
+						Padding="{DynamicResource MediumMargins}"
 						StrokeShape="RoundRectangle 8,8,0,8">
 					<Border.Shadow>
-						<Shadow Brush="{AppThemeBinding Light={StaticResource SurfaceShadowColorWLLight}, Dark={StaticResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+						<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
 					</Border.Shadow>
-					<Grid ColumnSpacing="{StaticResource SmallSpacing}"
+					<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
 						  ColumnDefinitions="auto, *">
 						<Path
 							Grid.Column="0"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}"/>
+							Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
 						<Label
 							Grid.Column="1"
 							Text="{l:Localize ApplyIdInfoMainPage}"
-							TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}"/>
+							TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
 					</Grid>
 				</Border>
 				<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">
-					<Grid Padding="{StaticResource MediumMargins}"
+					<Grid Padding="{DynamicResource MediumMargins}"
 						  ColumnDefinitions="*, auto">
-						<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{StaticResource SecondaryButtonActiveLabel}"/>
-						<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{AppThemeBinding Light={StaticResource ButtonAccessTertiaryContentWLLight}, Dark={StaticResource ButtonAccessTertiaryContentWLDark}}"/>
+						<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{DynamicResource SecondaryButtonActiveLabel}"/>
+						<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}"/>
 					</Grid>
 				</controls:TemplatedButton>
 			</Grid>
@@ -124,12 +124,12 @@
 						  Grid.Row="2"
 						  WidthRequest="88"
 						  HeightRequest="35"
-						  TintColor="{StaticResource BrandColorsGreyScalesGreyv250Light}"
-						  Margin="{StaticResource MediumBottomMargins}"
+						  TintColor="{DynamicResource BrandColorsGreyScalesGreyv250Light}"
+						  Margin="{DynamicResource MediumBottomMargins}"
 						  IsVisible="False"/> <!-- TODO: Bind to HasBranding-->
 
 		<!-- Bottom Bar -->
-		<Border Grid.Row="3" Style="{StaticResource BottomBarBorder}" VerticalOptions="End" Stroke="{x:Null}">
+		<Border Grid.Row="3" Style="{DynamicResource BottomBarBorder}" VerticalOptions="End" Stroke="{x:Null}">
 			<Grid HorizontalOptions="FillAndExpand"
 				  ColumnDefinitions="*, *">
 
@@ -137,7 +137,7 @@
 				<Grid Grid.Column="0">
 					<!-- Main content -->
 					<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
-						<Border Style="{StaticResource TransparentTemplateButtonBorder}"
+						<Border Style="{DynamicResource TransparentTemplateButtonBorder}"
 								  InputTransparent="True"
 								  HorizontalOptions="Fill">
 							<Grid ColumnDefinitions="Auto,*"
@@ -148,10 +148,10 @@
 										WidthRequest="24"
 										Aspect="Uniform"
 										Data="{x:Static ui:Geometries.ScanQrIconPath}"
-										Style="{StaticResource TransparentTemplateButtonPath}" />
+										Style="{DynamicResource TransparentTemplateButtonPath}" />
 								<Label Grid.Column="1"
-										 Style="{StaticResource TransparentTemplateButtonLabel}"
-										 Margin="{StaticResource SmallLeftMargins}"
+										 Style="{DynamicResource TransparentTemplateButtonLabel}"
+										 Margin="{DynamicResource SmallLeftMargins}"
 										 Text="{l:Localize ScanQRShort}" />
 							</Grid>
 						</Border>
@@ -161,14 +161,14 @@
 
 				<!-- Show ID Button -->
 				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding ViewIdCommand}">
-					<Border Style="{StaticResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
+					<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
 						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
 								  Data="{x:Static ui:Geometries.ShowIdIconPath}"
-								  Style="{StaticResource FilledTemplateButtonPath}"
+								  Style="{DynamicResource FilledTemplateButtonPath}"
 								  Grid.Column="0"
 							/>
-							<Label Grid.Column="1" Style="{StaticResource FilledTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
+							<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
 						</Grid>
 					</Border>
 				</controls:TemplatedButton>

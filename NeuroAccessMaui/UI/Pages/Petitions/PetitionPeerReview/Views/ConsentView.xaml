@@ -11,39 +11,39 @@
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
 	<VerticalStackLayout>
-		<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" ColumnSpacing="{StaticResource MediumSpacing}" Margin="{StaticResource LargeMargins}"
+		<Grid ColumnDefinitions="auto,auto" RowDefinitions="auto" ColumnSpacing="{DynamicResource MediumSpacing}" Margin="{DynamicResource LargeMargins}"
 				HorizontalOptions="Center" VerticalOptions="Center">
-			<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0" Grid.Column="0">
+			<Border Style="{DynamicResource OutlinedImageButtonBorder}" Padding="0" Grid.Column="0">
 				<Image Source="{Binding FirstPhotoSource}" Rotation="{Binding FirstPhotoRotation}"
 						 WidthRequest="75" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
 			</Border>
 			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0" Grid.Column="1">
-				<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
-				<Label Style="{StaticResource InfoLabel}" Text="{Binding PersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{DynamicResource BoldItemTitleLabel}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{DynamicResource InfoLabel}" Text="{Binding PersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
 			</VerticalStackLayout>
 		</Grid>
 
 		<controls:TemplatedButton VerticalOptions="Center" HorizontalOptions="Center" Command="{Binding ToggleShowDetailsCommand}"
 										  IsVisible="{Binding ShowDetails, Converter={StaticResource InvertedBoolConverter}}">
-			<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
+			<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
 				<Label Text="{l:Localize SeeInformationAgain}" />
 				<Path VerticalOptions="Center" HeightRequest="12" WidthRequest="12" Aspect="Uniform"
-							Fill="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark }}" 
+							Fill="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark }}" 
 							Data="{x:Static ui:Geometries.ArrowDownPath}"/>
 			</HorizontalStackLayout>
 		</controls:TemplatedButton>
 
 		<controls:TemplatedButton VerticalOptions="Center" HorizontalOptions="Center" Command="{Binding ToggleShowDetailsCommand}"
 										  IsVisible="{Binding ShowDetails}">
-			<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
+			<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
 				<Label Text="{l:Localize HideInformation}" />
 				<Path VerticalOptions="Center" HeightRequest="12" WidthRequest="12" Aspect="Uniform"
-							Fill="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" 
+							Fill="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" 
 							Data="{x:Static ui:Geometries.ArrowUpPath}"/>
 			</HorizontalStackLayout>
 		</controls:TemplatedButton>
 
-		<Grid ColumnDefinitions="*,*" IsVisible="{Binding ShowDetails}" ColumnSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource SmallMargins}">
+		<Grid ColumnDefinitions="*,*" IsVisible="{Binding ShowDetails}" ColumnSpacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource SmallMargins}">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="{Binding FirstName, Converter={converters:AutoIfNonEmpty}}"/>
 				<RowDefinition Height="{Binding MiddleNames, Converter={converters:AutoIfNonEmpty}}"/>
@@ -72,145 +72,145 @@
 				<RowDefinition Height="{Binding OrgCountryCode, Converter={converters:AutoIfNonEmpty}}"/>
 			</Grid.RowDefinitions>
 
-			<Label Grid.Column="0" Grid.Row="0" Style="{StaticResource KeyLabel}" Text="{l:Localize FirstName}"
+			<Label Grid.Column="0" Grid.Row="0" Style="{DynamicResource KeyLabel}" Text="{l:Localize FirstName}"
 					 IsVisible="{Binding FirstName, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource ValueLabel}" Text="{Binding FirstName}"
+			<Label Grid.Column="1" Grid.Row="0" Style="{DynamicResource ValueLabel}" Text="{Binding FirstName}"
 					 IsVisible="{Binding FirstName, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="1" Style="{StaticResource KeyLabel}" Text="{l:Localize MiddleNames}"
+			<Label Grid.Column="0" Grid.Row="1" Style="{DynamicResource KeyLabel}" Text="{l:Localize MiddleNames}"
 					 IsVisible="{Binding MiddleNames, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="1" Style="{StaticResource ValueLabel}" Text="{Binding MiddleNames}"
+			<Label Grid.Column="1" Grid.Row="1" Style="{DynamicResource ValueLabel}" Text="{Binding MiddleNames}"
 					 IsVisible="{Binding MiddleNames, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="2" Style="{StaticResource KeyLabel}" Text="{l:Localize LastNames}"
+			<Label Grid.Column="0" Grid.Row="2" Style="{DynamicResource KeyLabel}" Text="{l:Localize LastNames}"
 					 IsVisible="{Binding LastNames, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="2" Style="{StaticResource ValueLabel}" Text="{Binding LastNames}"
+			<Label Grid.Column="1" Grid.Row="2" Style="{DynamicResource ValueLabel}" Text="{Binding LastNames}"
 					 IsVisible="{Binding LastNames, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="3" Style="{StaticResource KeyLabel}" Text="{l:Localize PersonalNumber}"
+			<Label Grid.Column="0" Grid.Row="3" Style="{DynamicResource KeyLabel}" Text="{l:Localize PersonalNumber}"
 					 IsVisible="{Binding PersonalNumber, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="3" Style="{StaticResource ValueLabel}" Text="{Binding PersonalNumber}"
+			<Label Grid.Column="1" Grid.Row="3" Style="{DynamicResource ValueLabel}" Text="{Binding PersonalNumber}"
 					 IsVisible="{Binding PersonalNumber, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="4" Style="{StaticResource KeyLabel}" Text="{l:Localize Nationality}"
+			<Label Grid.Column="0" Grid.Row="4" Style="{DynamicResource KeyLabel}" Text="{l:Localize Nationality}"
 					 IsVisible="{Binding NationalityCode, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="4" Style="{StaticResource ValueLabel}" Text="{Binding NationalityCode, Converter={converters:CountryCodeToFlagAndName}}"
+			<Label Grid.Column="1" Grid.Row="4" Style="{DynamicResource ValueLabel}" Text="{Binding NationalityCode, Converter={converters:CountryCodeToFlagAndName}}"
 					 IsVisible="{Binding NationalityCode, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="5" Style="{StaticResource KeyLabel}" Text="{l:Localize BirthDate}"
+			<Label Grid.Column="0" Grid.Row="5" Style="{DynamicResource KeyLabel}" Text="{l:Localize BirthDate}"
 					 IsVisible="{Binding BirthDate, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="5" Style="{StaticResource ValueLabel}" Text="{Binding BirthDate, Converter={converters:DateToString}}"
+			<Label Grid.Column="1" Grid.Row="5" Style="{DynamicResource ValueLabel}" Text="{Binding BirthDate, Converter={converters:DateToString}}"
 					 IsVisible="{Binding BirthDate, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="6" Style="{StaticResource KeyLabel}" Text="{l:Localize Gender}"
+			<Label Grid.Column="0" Grid.Row="6" Style="{DynamicResource KeyLabel}" Text="{l:Localize Gender}"
 					 IsVisible="{Binding Gender, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="6" Style="{StaticResource ValueLabel}" Text="{Binding Gender, Converter={converters:GenderCodeToSymbolAndLabel}}"
+			<Label Grid.Column="1" Grid.Row="6" Style="{DynamicResource ValueLabel}" Text="{Binding Gender, Converter={converters:GenderCodeToSymbolAndLabel}}"
 					 IsVisible="{Binding Gender, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="7" Style="{StaticResource KeyLabel}" Text="{l:Localize Address}"
+			<Label Grid.Column="0" Grid.Row="7" Style="{DynamicResource KeyLabel}" Text="{l:Localize Address}"
 						 IsVisible="{Binding Address, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="7" Style="{StaticResource ValueLabel}" Text="{Binding Address}"
+			<Label Grid.Column="1" Grid.Row="7" Style="{DynamicResource ValueLabel}" Text="{Binding Address}"
 						 IsVisible="{Binding Address, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="8" Style="{StaticResource KeyLabel}" Text="{l:Localize Address2}"
+			<Label Grid.Column="0" Grid.Row="8" Style="{DynamicResource KeyLabel}" Text="{l:Localize Address2}"
 						 IsVisible="{Binding Address2, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="8" Style="{StaticResource ValueLabel}" Text="{Binding Address2}"
+			<Label Grid.Column="1" Grid.Row="8" Style="{DynamicResource ValueLabel}" Text="{Binding Address2}"
 						 IsVisible="{Binding Address2, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="9" Style="{StaticResource KeyLabel}" Text="{l:Localize Area}"
+			<Label Grid.Column="0" Grid.Row="9" Style="{DynamicResource KeyLabel}" Text="{l:Localize Area}"
 					    IsVisible="{Binding Area, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="9" Style="{StaticResource ValueLabel}" Text="{Binding Area}"
+			<Label Grid.Column="1" Grid.Row="9" Style="{DynamicResource ValueLabel}" Text="{Binding Area}"
 						 IsVisible="{Binding Area, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="10" Style="{StaticResource KeyLabel}" Text="{l:Localize ZipCode}"
+			<Label Grid.Column="0" Grid.Row="10" Style="{DynamicResource KeyLabel}" Text="{l:Localize ZipCode}"
 						 IsVisible="{Binding ZipCode, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="10" Style="{StaticResource ValueLabel}" Text="{Binding ZipCode}"
+			<Label Grid.Column="1" Grid.Row="10" Style="{DynamicResource ValueLabel}" Text="{Binding ZipCode}"
 						 IsVisible="{Binding ZipCode, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="11" Style="{StaticResource KeyLabel}" Text="{l:Localize City}"
+			<Label Grid.Column="0" Grid.Row="11" Style="{DynamicResource KeyLabel}" Text="{l:Localize City}"
 						 IsVisible="{Binding City, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="11" Style="{StaticResource ValueLabel}" Text="{Binding City}"
+			<Label Grid.Column="1" Grid.Row="11" Style="{DynamicResource ValueLabel}" Text="{Binding City}"
 						 IsVisible="{Binding City, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="12" Style="{StaticResource KeyLabel}" Text="{l:Localize Region}"
+			<Label Grid.Column="0" Grid.Row="12" Style="{DynamicResource KeyLabel}" Text="{l:Localize Region}"
 						 IsVisible="{Binding Region, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="12" Style="{StaticResource ValueLabel}" Text="{Binding Region}"
+			<Label Grid.Column="1" Grid.Row="12" Style="{DynamicResource ValueLabel}" Text="{Binding Region}"
 						 IsVisible="{Binding Region, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="13" Style="{StaticResource KeyLabel}" Text="{l:Localize Country}"
+			<Label Grid.Column="0" Grid.Row="13" Style="{DynamicResource KeyLabel}" Text="{l:Localize Country}"
 						 IsVisible="{Binding CountryCode, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="13" Style="{StaticResource ValueLabel}"
+			<Label Grid.Column="1" Grid.Row="13" Style="{DynamicResource ValueLabel}"
 						 Text="{Binding CountryCode, Converter={converters:CountryCodeToFlagAndName}}"
 						 IsVisible="{Binding CountryCode, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="14" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgName}"
+			<Label Grid.Column="0" Grid.Row="14" Style="{DynamicResource KeyLabel}" Text="{l:Localize OrgName}"
 						 IsVisible="{Binding OrgName, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="14" Style="{StaticResource ValueLabel}" Text="{Binding OrgName}"
+			<Label Grid.Column="1" Grid.Row="14" Style="{DynamicResource ValueLabel}" Text="{Binding OrgName}"
 						 IsVisible="{Binding OrgName, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="15" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgNumber}"
+			<Label Grid.Column="0" Grid.Row="15" Style="{DynamicResource KeyLabel}" Text="{l:Localize OrgNumber}"
 						 IsVisible="{Binding OrgNumber, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="15" Style="{StaticResource ValueLabel}" Text="{Binding OrgNumber}"
+			<Label Grid.Column="1" Grid.Row="15" Style="{DynamicResource ValueLabel}" Text="{Binding OrgNumber}"
 						 IsVisible="{Binding OrgNumber, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="16" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgRole}"
+			<Label Grid.Column="0" Grid.Row="16" Style="{DynamicResource KeyLabel}" Text="{l:Localize OrgRole}"
 						 IsVisible="{Binding OrgRole, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="16" Style="{StaticResource ValueLabel}" Text="{Binding OrgRole}"
+			<Label Grid.Column="1" Grid.Row="16" Style="{DynamicResource ValueLabel}" Text="{Binding OrgRole}"
 						 IsVisible="{Binding OrgRole, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="17" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgDepartment}"
+			<Label Grid.Column="0" Grid.Row="17" Style="{DynamicResource KeyLabel}" Text="{l:Localize OrgDepartment}"
 						 IsVisible="{Binding OrgDepartment, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="17" Style="{StaticResource ValueLabel}" Text="{Binding OrgDepartment}"
+			<Label Grid.Column="1" Grid.Row="17" Style="{DynamicResource ValueLabel}" Text="{Binding OrgDepartment}"
 						 IsVisible="{Binding OrgDepartment, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="18" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgAddress}"
+			<Label Grid.Column="0" Grid.Row="18" Style="{DynamicResource KeyLabel}" Text="{l:Localize OrgAddress}"
 						 IsVisible="{Binding OrgAddress, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="18" Style="{StaticResource ValueLabel}" Text="{Binding OrgAddress}"
+			<Label Grid.Column="1" Grid.Row="18" Style="{DynamicResource ValueLabel}" Text="{Binding OrgAddress}"
 						 IsVisible="{Binding OrgAddress, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="19" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgAddress2}"
+			<Label Grid.Column="0" Grid.Row="19" Style="{DynamicResource KeyLabel}" Text="{l:Localize OrgAddress2}"
 						 IsVisible="{Binding OrgAddress2, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="19" Style="{StaticResource ValueLabel}" Text="{Binding OrgAddress2}"
+			<Label Grid.Column="1" Grid.Row="19" Style="{DynamicResource ValueLabel}" Text="{Binding OrgAddress2}"
 						 IsVisible="{Binding OrgAddress2, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="20" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgArea}"
+			<Label Grid.Column="0" Grid.Row="20" Style="{DynamicResource KeyLabel}" Text="{l:Localize OrgArea}"
 					    IsVisible="{Binding OrgArea, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="20" Style="{StaticResource ValueLabel}" Text="{Binding OrgArea}"
+			<Label Grid.Column="1" Grid.Row="20" Style="{DynamicResource ValueLabel}" Text="{Binding OrgArea}"
 						 IsVisible="{Binding OrgArea, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="21" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgZipCode}"
+			<Label Grid.Column="0" Grid.Row="21" Style="{DynamicResource KeyLabel}" Text="{l:Localize OrgZipCode}"
 						 IsVisible="{Binding OrgZipCode, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="21" Style="{StaticResource ValueLabel}" Text="{Binding OrgZipCode}"
+			<Label Grid.Column="1" Grid.Row="21" Style="{DynamicResource ValueLabel}" Text="{Binding OrgZipCode}"
 						 IsVisible="{Binding OrgZipCode, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="22" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgCity}"
+			<Label Grid.Column="0" Grid.Row="22" Style="{DynamicResource KeyLabel}" Text="{l:Localize OrgCity}"
 						 IsVisible="{Binding OrgCity, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="22" Style="{StaticResource ValueLabel}" Text="{Binding OrgCity}"
+			<Label Grid.Column="1" Grid.Row="22" Style="{DynamicResource ValueLabel}" Text="{Binding OrgCity}"
 						 IsVisible="{Binding OrgCity, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="23" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgRegion}"
+			<Label Grid.Column="0" Grid.Row="23" Style="{DynamicResource KeyLabel}" Text="{l:Localize OrgRegion}"
 						 IsVisible="{Binding OrgRegion, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="23" Style="{StaticResource ValueLabel}" Text="{Binding OrgRegion}"
+			<Label Grid.Column="1" Grid.Row="23" Style="{DynamicResource ValueLabel}" Text="{Binding OrgRegion}"
 						 IsVisible="{Binding OrgRegion, Converter={converters:OnlyShowNonEmpty}}"/>
 
-			<Label Grid.Column="0" Grid.Row="24" Style="{StaticResource KeyLabel}" Text="{l:Localize OrgCountry}"
+			<Label Grid.Column="0" Grid.Row="24" Style="{DynamicResource KeyLabel}" Text="{l:Localize OrgCountry}"
 						 IsVisible="{Binding OrgCountryCode, Converter={converters:OnlyShowNonEmpty}}"/>
-			<Label Grid.Column="1" Grid.Row="24" Style="{StaticResource ValueLabel}"
+			<Label Grid.Column="1" Grid.Row="24" Style="{DynamicResource ValueLabel}"
 						 Text="{Binding OrgCountryCode, Converter={converters:CountryCodeToFlagAndName}}"
 						 IsVisible="{Binding OrgCountryCode, Converter={converters:OnlyShowNonEmpty}}"/>
 
 		</Grid>
 
-		<VerticalStackLayout HeightRequest="{StaticResource MediumSpacing}"/>
+		<VerticalStackLayout HeightRequest="{DynamicResource MediumSpacing}"/>
 
-		<Rectangle BackgroundColor="{AppThemeBinding Light={StaticResource ButtonUniversalbgInactiveWLLight}, Dark={StaticResource ButtonUniversalbgInactiveWLDark}}"
+		<Rectangle BackgroundColor="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}"
 					  WidthRequest="250" HeightRequest="2"/>
 
-		<Grid ColumnDefinitions="auto,*" RowDefinitions="auto,auto,auto, auto" ColumnSpacing="{StaticResource SmallSpacing}"
-				RowSpacing="{StaticResource MediumSpacing}" Margin="{StaticResource MediumMargins}">
+		<Grid ColumnDefinitions="auto,*" RowDefinitions="auto,auto,auto, auto" ColumnSpacing="{DynamicResource SmallSpacing}"
+				RowSpacing="{DynamicResource MediumSpacing}" Margin="{DynamicResource MediumMargins}">
 			<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding AcknowledgeResponsibility}" VerticalOptions="Center"/>
 			<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize PeerReviewAcknowledgeResponsibilityText}" VerticalOptions="Center"
-					 LineBreakMode="WordWrap" Margin="{StaticResource SmallLeftMargins}">
+					 LineBreakMode="WordWrap" Margin="{DynamicResource SmallLeftMargins}">
 				<Label.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding ToggleAcknowledgeResponsibilityCommand}"/>
 				</Label.GestureRecognizers>
@@ -218,7 +218,7 @@
 
 			<CheckBox Grid.Column="0" Grid.Row="1" IsChecked="{Binding ConfirmCorrect}" VerticalOptions="Center"/>
 			<Label Grid.Column="1" Grid.Row="1" Text="{Binding PeerReviewConfirmCorrectText}" VerticalOptions="Center" LineBreakMode="WordWrap"
-					 Margin="{StaticResource SmallLeftMargins}">
+					 Margin="{DynamicResource SmallLeftMargins}">
 				<Label.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding ToggleConfirmCorrectCommand}"/>
 				</Label.GestureRecognizers>
@@ -226,7 +226,7 @@
 
 			<CheckBox Grid.Column="0" Grid.Row="2" IsChecked="{Binding ConsentProcessing}" VerticalOptions="Center"/>
 			<Label Grid.Column="1" Grid.Row="2" Text="{l:Localize PeerReviewConsentProcessingText}" VerticalOptions="Center" LineBreakMode="WordWrap"
-					 Margin="{StaticResource SmallLeftMargins}">
+					 Margin="{DynamicResource SmallLeftMargins}">
 				<Label.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding ToggleConsentProcessingCommand}"/>
 				</Label.GestureRecognizers>
@@ -245,11 +245,11 @@
 			</Label>
 		</Grid>
 
-		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}">
-			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonNoRoundedCorners}"
+		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{DynamicResource SmallSpacing}">
+			<controls:TextButton Command="{Binding DeclineCommand}" Style="{DynamicResource OutlinedTextButtonNoRoundedCorners}"
 										LabelData="{l:Localize Reject}" Grid.Column="0" />
 
-			<controls:TextButton Command="{Binding AcceptConsentCommand}" Style="{StaticResource FilledTextButton}"
+			<controls:TextButton Command="{Binding AcceptConsentCommand}" Style="{DynamicResource FilledTextButton}"
 										LabelData="{l:Localize Continue}" Grid.Column="1" />
 		</Grid>
 	</VerticalStackLayout>

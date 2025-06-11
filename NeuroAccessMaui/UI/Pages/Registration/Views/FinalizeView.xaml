@@ -10,13 +10,13 @@
 									xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
-	<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
-		<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
+	<Grid RowSpacing="{DynamicResource LargeSpacing}" RowDefinitions="*, auto">
+		<Grid RowSpacing="{DynamicResource LargeSpacing}" RowDefinitions="*, auto">
 
-			<VerticalStackLayout Grid.Row="0" VerticalOptions="Center"  Spacing="{StaticResource LargeSpacing}">
-				<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+			<VerticalStackLayout Grid.Row="0" VerticalOptions="Center"  Spacing="{DynamicResource LargeSpacing}">
+				<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 					<Label
-						Style="{StaticResource PageTitleLabel}"
+						Style="{DynamicResource PageTitleLabel}"
 						Text="{l:Localize OnboardingFinalizePageTitle}"
 						HorizontalTextAlignment="Center"
 						/>
@@ -27,9 +27,9 @@
 						HeightRequest="{Binding CheckmarkBackgroundSize}"
 						HasShadow="False"
 						CornerRadius="{Binding CheckmarkBackgroundCornerRadius}"
-						BackgroundColor="{AppThemeBinding Light={StaticResource TnPSuccessbgWLLight}, Dark={StaticResource TnPSuccessbgWLDark}}"
+						BackgroundColor="{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}"
 						HorizontalOptions="Center"
-						Margin="{StaticResource LargeBottomMargins}">
+						Margin="{DynamicResource LargeBottomMargins}">
 						<Path
 							VerticalOptions="Center"
 							HorizontalOptions="Center"
@@ -37,7 +37,7 @@
 							WidthRequest="{Binding CheckmarkIconSize}"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
-							Fill="{AppThemeBinding Light={StaticResource TnPSuccessContentWLLight}, Dark={StaticResource TnPSuccessContentWLLight}}" />
+							Fill="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLLight}}" />
 					</Frame>
 					
 				</VerticalStackLayout>
@@ -46,7 +46,7 @@
         <controls:TextButton
             VerticalOptions="End"
             Command="{Binding ContinueCommand}"
-            Style="{StaticResource FilledTextButton}"
+            Style="{DynamicResource FilledTextButton}"
             LabelData="{l:Localize Continue}"
             Grid.Row="1" />
 	</Grid>

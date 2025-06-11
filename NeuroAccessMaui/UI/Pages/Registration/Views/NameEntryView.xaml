@@ -16,20 +16,20 @@
 		<mct:IsStringNotNullOrEmptyConverter x:Key="OnlyShowNonEmpty" />
 	</base:BaseRegistrationView.Resources>
 
-	<Grid RowDefinitions="*, auto" RowSpacing="{StaticResource LargeSpacing}">
-		<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center" Grid.Row="0">
+	<Grid RowDefinitions="*, auto" RowSpacing="{DynamicResource LargeSpacing}">
+		<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" VerticalOptions="Center" Grid.Row="0">
 			<!-- Title and Detail -->
-			<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize OnboardingNameEntryTitle}" />
+			<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize OnboardingNameEntryTitle}" />
 
 
-			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 				<!-- Input 
-				<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize Nickname}" />-->
-				<controls:CompositeEntry x:Name="NicknameEntry" Style="{StaticResource RegularCompositeEntry}"
+				<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Nickname}" />-->
+				<controls:CompositeEntry x:Name="NicknameEntry" Style="{DynamicResource RegularCompositeEntry}"
                                              EntryData="{Binding Username}" Placeholder="{l:Localize Username}" />
 				<!-- Validation -->
 				<Grid RowDefinitions="*,*" ColumnDefinitions="auto,*" HorizontalOptions="Center" 
-						ColumnSpacing="{StaticResource SmallSpacing}"
+						ColumnSpacing="{DynamicResource SmallSpacing}"
 						IsVisible="{Binding LocalizedValidationMessage, Converter={StaticResource OnlyShowNonEmpty}}">
 
 					<Path Grid.Column="0"  Grid.Row="0"
@@ -38,17 +38,17 @@
 								WidthRequest="20"
 								Aspect="Uniform"
 								Data="{x:Static ui:Geometries.InfoCirclePath}"
-								Fill="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsContentDangerv800Dark}}" />
+								Fill="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
 
 					<Label Grid.Column="1" Grid.Row="0" VerticalOptions="Center" Text="{Binding LocalizedValidationMessage}"
-									TextColor="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsContentDangerv800Dark}}" />
+									TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
 					<Grid  Grid.Row="1" Grid.Column="1" ColumnDefinitions="auto, *" IsVisible="{Binding AlternativeName, Converter={StaticResource OnlyShowNonEmpty}}">
 						<Label HorizontalOptions="Start" Text="{l:Localize Alternative}" Grid.Column="0"
-						       TextColor="{AppThemeBinding Light={StaticResource InputFieldsContentDangerv800Light}, Dark={StaticResource InputFieldsContentDangerv800Dark}}" />
+						       TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
 
 
 
-						<Label Grid.Column="1" Text="{Binding AlternativeName}" TextDecorations="Underline" LineBreakMode="CharacterWrap" TextColor="{AppThemeBinding Light={StaticResource ContentLinkWLLight}, Dark={StaticResource ContentLinkWLDark}}">
+						<Label Grid.Column="1" Text="{Binding AlternativeName}" TextDecorations="Underline" LineBreakMode="CharacterWrap" TextColor="{AppThemeBinding Light={DynamicResource ContentLinkWLLight}, Dark={DynamicResource ContentLinkWLDark}}">
 							<Label.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding SelectNameCommand}"
 								                      CommandParameter="{Binding AlternativeName}" />
@@ -62,17 +62,17 @@
 		</VerticalStackLayout>
 
 		<!-- Continue Button -->
-		<VerticalStackLayout Grid.Row="1" Spacing="{StaticResource MediumSpacing}">
-			<Border Style="{StaticResource AccentInfoBorder}" Padding="{StaticResource SmallMargins}">
+		<VerticalStackLayout Grid.Row="1" Spacing="{DynamicResource MediumSpacing}">
+			<Border Style="{DynamicResource AccentInfoBorder}" Padding="{DynamicResource SmallMargins}">
 				<Grid ColumnDefinitions="auto, *">
 					<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
 					      Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-					      Fill="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight}, Dark={StaticResource TnPInfoContentWLDark}}"/>
-					<Label Grid.Column="1" Style ="{StaticResource AccentInfoLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize OnboardingNameEntryDetails}" />
+					      Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+					<Label Grid.Column="1" Style ="{DynamicResource AccentInfoLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize OnboardingNameEntryDetails}" />
 
 				</Grid>
 			</Border>
-			<controls:TextButton Command="{Binding CreateAccountCommand}" Style="{StaticResource FilledTextButton}"
+			<controls:TextButton Command="{Binding CreateAccountCommand}" Style="{DynamicResource FilledTextButton}"
 			                     LabelData="{l:Localize Continue}" />
 		</VerticalStackLayout>
 	</Grid>

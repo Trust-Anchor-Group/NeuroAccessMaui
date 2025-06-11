@@ -15,11 +15,11 @@
 		<DataTemplate x:Key="SelectButtonDataTemplate" x:DataType="viewmodel:ButtonInfo">
 			<Border
 				Padding="0"
-				Style="{StaticResource ItemOuterBorder}"
-				BackgroundColor="{AppThemeBinding Light={StaticResource NormalBackgroundLight},
-												  Dark={StaticResource NormalBackgroundDark}}"
-				Stroke="{AppThemeBinding Light={StaticResource NormalForegroundLight},
-										 Dark={StaticResource NormalBackgroundDark}}">
+				Style="{DynamicResource ItemOuterBorder}"
+				BackgroundColor="{AppThemeBinding Light={DynamicResource NormalBackgroundLight},
+												  Dark={DynamicResource NormalBackgroundDark}}"
+				Stroke="{AppThemeBinding Light={DynamicResource NormalForegroundLight},
+										 Dark={DynamicResource NormalBackgroundDark}}">
 				<Border.GestureRecognizers>
 					<TapGestureRecognizer
 						Command="{Binding SelectButtonCommand, Source={x:Reference ThisPage}}"
@@ -33,12 +33,12 @@
 					<Border
 						Grid.Column="0"
 						VerticalOptions="FillAndExpand"
-						Style="{StaticResource InnerFrameBorder}">
+						Style="{DynamicResource InnerFrameBorder}">
 
 						<Border.Padding>
 							<Thickness
-								Left="{StaticResource MediumSpacing}"
-								Right="{StaticResource MediumSpacing}" />
+								Left="{DynamicResource MediumSpacing}"
+								Right="{DynamicResource MediumSpacing}" />
 						</Border.Padding>
 
 						<Path x:Name="InnerPath"
@@ -52,17 +52,17 @@
 
 					<Label x:Name="InnerLabel"
 						Grid.Column="1"
-						Style="{StaticResource BoldItemTitleLabel}"
+						Style="{DynamicResource BoldItemTitleLabel}"
 						LineBreakMode="WordWrap"
 						Text="{Binding LocalizedName}"
-						TextColor="{AppThemeBinding Light={StaticResource NormalForegroundLight},
-													Dark={StaticResource NormalForegroundDark}}">
+						TextColor="{AppThemeBinding Light={DynamicResource NormalForegroundLight},
+													Dark={DynamicResource NormalForegroundDark}}">
 
 						<Label.Padding>
 							<Thickness
-								Top="{StaticResource MediumSpacing}"
-								Right="{StaticResource MediumSpacing}"
-								Bottom="{StaticResource MediumSpacing}" />
+								Top="{DynamicResource MediumSpacing}"
+								Right="{DynamicResource MediumSpacing}"
+								Bottom="{DynamicResource MediumSpacing}" />
 						</Label.Padding>
 					</Label>
 				</Grid>
@@ -72,10 +72,10 @@
 						<VisualState Name="Normal" />
 						<VisualState Name="Selected">
 							<VisualState.Setters>
-								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
-								<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SelectedBackgroundLight}, Dark={StaticResource SelectedBackgroundDark}}" />
-								<Setter Property="Label.TextColor" TargetName="InnerLabel" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
-								<Setter Property="Path.Fill" TargetName="InnerPath" Value="{AppThemeBinding Light={StaticResource SelectedForegroundLight}, Dark={StaticResource SelectedForegroundDark}}" />
+								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource SelectedBackgroundLight}, Dark={DynamicResource SelectedBackgroundDark}}" />
+								<Setter Property="Stroke" Value="{AppThemeBinding Light={DynamicResource SelectedBackgroundLight}, Dark={DynamicResource SelectedBackgroundDark}}" />
+								<Setter Property="Label.TextColor" TargetName="InnerLabel" Value="{AppThemeBinding Light={DynamicResource SelectedForegroundLight}, Dark={DynamicResource SelectedForegroundDark}}" />
+								<Setter Property="Path.Fill" TargetName="InnerPath" Value="{AppThemeBinding Light={DynamicResource SelectedForegroundLight}, Dark={DynamicResource SelectedForegroundDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>
@@ -89,16 +89,16 @@
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
-		<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" VerticalOptions="Center" Grid.Row="0">
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+		<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" VerticalOptions="Center" Grid.Row="0">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 				<Label
 					HorizontalOptions="Center"
-					Style="{StaticResource PageTitleLabel}"
+					Style="{DynamicResource PageTitleLabel}"
 					Text="{l:Localize OnboardingProviderPageTitle}" />
 
 				<HorizontalStackLayout
 					HorizontalOptions="Center"
-					Spacing="{StaticResource SmallSpacing}"
+					Spacing="{DynamicResource SmallSpacing}"
 					IsVisible="{x:Binding HasLocalizedName}">
 
 					<Label
@@ -107,8 +107,8 @@
 						FontSize="24"
 						LineBreakMode="WordWrap"
 						Text="{x:Binding LocalizedName}"
-						TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight},
-													Dark={StaticResource TnPInfoContentWLDark}}" />
+						TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
+													Dark={DynamicResource TnPInfoContentWLDark}}" />
 
 					<Path
 						VerticalOptions="Center"
@@ -116,8 +116,8 @@
 						WidthRequest="20"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight},
-											   Dark={StaticResource TnPInfoContentWLDark}}" />
+						Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
+											   Dark={DynamicResource TnPInfoContentWLDark}}" />
 					<HorizontalStackLayout.GestureRecognizers>
 						<TapGestureRecognizer
 							Command="{x:Binding SelectedServiceProviderInfoCommand}" />
@@ -135,8 +135,8 @@
 				<Label
 					HorizontalOptions="Center"
 					Text="{x:Binding DomainName}"
-					TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight},
-												Dark={StaticResource TnPInfoContentWLDark}}" />
+					TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
+												Dark={DynamicResource TnPInfoContentWLDark}}" />
 			</VerticalStackLayout>
 
 			<Label
@@ -147,82 +147,82 @@
 		</VerticalStackLayout>
 <!--	
 
-		<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+		<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 			<Label
-				Style="{StaticResource SectionTitleLabel}"
+				Style="{DynamicResource SectionTitleLabel}"
 				Text="{l:Localize ProviderSectionTitle}" />
 
 			<VerticalStackLayout x:Name="PurposesContainer"
-				Spacing="{StaticResource MediumSpacing}"
+				Spacing="{DynamicResource MediumSpacing}"
 				BindableLayout.ItemTemplate="{StaticResource SelectButtonDataTemplate}"
 				BindableLayout.ItemsSource="{Binding Buttons}" />
 
 			<controls:TemplatedButton
 				HorizontalOptions="Center"
 				Command="{x:Binding ServiceProviderInfoCommand}">
-				<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
+				<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
 					<Path
 						VerticalOptions="Center"
 						HeightRequest="20"
 						WidthRequest="20"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
-											   Dark={StaticResource NormalInfoForegroundDark}}" />
+						Fill="{AppThemeBinding Light={DynamicResource NormalInfoForegroundLight},
+											   Dark={DynamicResource NormalInfoForegroundDark}}" />
 
 					<Label
 						VerticalOptions="Center"
 						FontFamily="HaasGroteskRegular"
 						FontSize="14"
 						Text="{l:Localize WhatIsAServiceProvider}"
-						TextColor="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight},
-													Dark={StaticResource NormalInfoForegroundDark}}" />
+						TextColor="{AppThemeBinding Light={DynamicResource NormalInfoForegroundLight},
+													Dark={DynamicResource NormalInfoForegroundDark}}" />
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 		</VerticalStackLayout>
 -->
-		<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center" Grid.Row="1">
+		<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" VerticalOptions="Center" Grid.Row="1">
 
 			<controls:TemplatedButton
 				HorizontalOptions="Center"
 				Command="{x:Binding ServiceProviderInfoCommand}">
-				<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
+				<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
 					<Path
 						VerticalOptions="Center"
 						HeightRequest="20"
 						WidthRequest="20"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight},
-											Dark={StaticResource TnPInfoContentWLDark}}" />
+						Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
+											Dark={DynamicResource TnPInfoContentWLDark}}" />
 
 					<Label
 						VerticalOptions="Center"
 						FontFamily="HaasGroteskRegular"
 						FontSize="14"
 						Text="{l:Localize WhatIsAServiceProvider}"
-						TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight},
-													Dark={StaticResource TnPInfoContentWLDark}}" />
+						TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
+													Dark={DynamicResource TnPInfoContentWLDark}}" />
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 				
 			<controls:TemplatedButton
 				HorizontalOptions="Center"
 				Command="{x:Binding ScanQrCodeCommand}">
-				<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
+				<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
 					<Label
 						VerticalOptions="Center"
 						FontFamily="HaasGroteskRegular"
 						FontSize="18"
 						Text="{l:Localize Change}"
-						TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight},
-													Dark={StaticResource TnPInfoContentWLDark}}" />
+						TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
+													Dark={DynamicResource TnPInfoContentWLDark}}" />
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 
 			<controls:TextButton
 				Command="{Binding ContinueCommand}"
-				Style="{StaticResource FilledTextButton}"
+				Style="{DynamicResource FilledTextButton}"
 				LabelData="{l:Localize Continue}" />
 		</VerticalStackLayout>
 	</Grid>

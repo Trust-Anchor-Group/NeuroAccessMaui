@@ -11,19 +11,19 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MachineReport">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{Binding Title}" Style="{StaticResource PageTitleLabel}"/>
+				<Label Text="{Binding Title}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Frame Style="{DynamicResource FrameSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<ContentView Content="{Binding Report}"/>
 					</VerticalStackLayout>
 				</Frame>

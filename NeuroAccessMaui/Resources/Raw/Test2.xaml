@@ -15,17 +15,17 @@
 	<Images>
 		<!-- Logo image -->
 		<ImageRef id="logo"
-				  uri="https://cdn.example.com/branding/images/logo-v1.2.3.svg"
+				  uri="https://picsum.photos/200/200"
 				  role="logo"
 				  width="200"
-				  height="100"
-				  contentType="image/svg+xml" />
+				  height="200"
+				  contentType="Image/jpeg" />
 		<!-- Banner image -->
 		<ImageRef id="banner"
-				  uri="https://cdn.example.com/branding/images/banner-v1.2.3.png"
+				  uri="https://picsum.photos/200/200"
 				  role="banner"
-				  width="1024"
-				  height="256"
-				  contentType="image/png" />
+				  width="200"
+				  height="200"
+				  contentType="Image/jpeg" />
 	</Images>
 </BrandingDescriptor>

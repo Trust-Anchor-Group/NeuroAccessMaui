@@ -59,7 +59,10 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 			if (Data is not null)
 				return (Data, ContentType);
 
-			ContentResponse Response = await InternetContent.GetAsync(Uri);
+			ContentResponse Response = await InternetContent.GetAsync(
+				Uri,
+				null,                               // Certificate
+				App.ValidateCertificateCallback);
 			Response.AssertOk();
 
 			if (Response.Encoded is null || string.IsNullOrEmpty(Response.ContentType))

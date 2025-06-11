@@ -44,11 +44,11 @@ namespace NeuroAccessMaui.Services.Theme
 		{
 			try
 			{
-				/* Here is how to clear cache if needed:
+				/* Here is how to clear cache if needed:*/
 				await Database.FindDelete<CacheEntry>(
 	new FilterFieldGreaterOrEqualTo("Url", string.Empty));
 				await Database.Provider.Flush();
-*/
+
 				string? PubSubJid = ServiceRef.TagProfile.PubSubJid;
 				if (string.IsNullOrEmpty(PubSubJid))
 					return;
