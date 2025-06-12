@@ -51,6 +51,11 @@
                      Value="False">
 				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
 			</Trigger>
+			<Trigger TargetType="controls:CompositeEntry"
+                     Property="IsValid"
+                     Value="True">
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+			</Trigger>
 		</Style.Triggers>
 	</Style>
 </ResourceDictionary>
