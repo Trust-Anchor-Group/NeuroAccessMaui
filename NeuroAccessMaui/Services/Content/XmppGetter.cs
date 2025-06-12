@@ -172,9 +172,14 @@ namespace NeuroAccessMaui.Services.Content
 				PubSubItem? Item;
 				try
 				{
+					Item = await ServiceRef.XmppService.GetItemAsync(Node, Resource);
+
 					// ServiceRef.XmppService.GetItemAsync(node, resource) should connect,
 					// authenticate, discover the pubsub component (domain) and retrieve the item.
-					Item = await ServiceRef.XmppService.GetItemAsync(Node, Resource);
+					if (await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect))
+						Item = await ServiceRef.XmppService.GetItemAsync(Node, Resource);
+					else
+						throw new InvalidOperationException("XMPP service is not connected. Cannot fetch PubSub item.");
 				}
 				catch (Exception ex)
 				{

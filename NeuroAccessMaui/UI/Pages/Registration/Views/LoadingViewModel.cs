@@ -14,6 +14,27 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 		}
 
+		protected override async Task OnAppearing()
+		{
+			await base.OnAppearing();
+
+			try
+			{
+				if (App.Current is not null)
+					await App.Current.InitCompleted;
+
+				// Wait for 3 seconds to allow the theme to be applied. otherwise continue with the default theme.
+				await Task.WhenAny(ServiceRef.ThemeService.ApplyProviderTheme(), Task.Delay(3000));
+			}
+			catch (Exception)
+			{
+			}
+			finally
+			{
+				GoToRegistrationStep(ServiceRef.TagProfile.Step);
+			}
+		}
+/*
 		/// <inheritdoc />
 		protected override async Task OnInitialize()
 		{
@@ -21,7 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 			try
 			{
-				if(App.Current is not null)
+				if (App.Current is not null)
 					await App.Current.InitCompleted;
 
 				//Load the theme for the provider, if it exists.
@@ -39,7 +60,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			//	ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
 			//	ServiceRef.XmppService.Loaded += this.XmppService_Loaded;
 		}
-
+*/
 		/// <inheritdoc />
 		protected override async Task OnDispose()
 		{

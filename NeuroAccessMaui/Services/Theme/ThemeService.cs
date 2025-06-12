@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.Services.Theme
 		/// <inheritdoc />
 		public async Task ApplyProviderTheme()
 		{
-				string? PubSubJid = ServiceRef.TagProfile.PubSubJid;
+			string? PubSubJid = ServiceRef.TagProfile.PubSubJid;
 			if (string.IsNullOrEmpty(PubSubJid))
 				return;
 
