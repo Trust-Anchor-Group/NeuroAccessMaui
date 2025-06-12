@@ -63,8 +63,8 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 				Uri,
 				null,                               // Certificate
 				App.ValidateCertificateCallback);
-			Response.AssertOk();
-
+			if(Response.HasError)
+				return (null, string.Empty);
 			if (Response.Encoded is null || string.IsNullOrEmpty(Response.ContentType))
 				return (null, string.Empty);
 
