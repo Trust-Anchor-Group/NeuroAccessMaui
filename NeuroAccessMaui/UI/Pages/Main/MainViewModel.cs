@@ -14,13 +14,14 @@ using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services.Theme;
 using Waher.Runtime.Inventory;
+using System.Reflection.Metadata;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
 	public partial class MainViewModel : QrXmppViewModel
 	{
-		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri("banner");
-		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri("banner");
+		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeLight);
+		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeDark);
 
 		public string BannerUri =>
 			Application.Current.RequestedTheme switch
