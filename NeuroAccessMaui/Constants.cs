@@ -1005,8 +1005,10 @@
 			/// <summary>
 			/// The default branding image.
 			/// </summary>
-			public const string BannerLight = "banner_light";
-			public const string BannerDark = "banner_dark";
+			public const string BannerLargeLight = "banner_large_light";
+			public const string BannerLargeDark = "banner_large_dark";
+			public const string BannerSmallLight = "banner_small_light";
+			public const string BannerSmallDark = "banner_small_dark";
 			public const string LogoLight = "logo_light";
 			public const string LogoDark = "logo_dark";
 
