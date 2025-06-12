@@ -361,39 +361,26 @@
 								 HorizontalOptions="Center" />
 		<!-- TOP BAR -->
 		<Grid Grid.Row="0"
-			  ColumnDefinitions="*,*,*"
+			  ColumnDefinitions="auto,*,auto"
 			  RowDefinitions="auto"
 			  Margin="16,16,16,8">
-			<controls:TemplatedButton Grid.Column="0"
-									  HorizontalOptions="Start"
-									  Command="{Binding GoBackCommand}">
-				<Border Style="{DynamicResource IconBorder}">
-					<controls:SvgView WidthRequest="24"
-									  HeightRequest="24"
-									  Source="close.svg"
-									  Aspect="AspectFit"
-									  TintColor="{AppThemeBinding Light={DynamicResource ButtonNeutralContentPressedLight}, Dark={DynamicResource ButtonNeutralContentPressedDark}}" />
-				</Border>
-			</controls:TemplatedButton>
+			<controls:SvgButton
+				Grid.Row="0" Grid.Column="0"
+				Command="{Binding GoBackCommand}"
+				SvgSource="close.svg"
+				Style="{DynamicResource IconButton}"/>
+			
 			<Image Grid.Column="1"
 				   HorizontalOptions="Center"
 				   Source="neuro_b"
 				   MaximumHeightRequest="24"
 				   Aspect="AspectFit" />
 
-			<controls:TemplatedButton Grid.Column="2"
-									  Command="{Binding ShareCommand}"
-									  HorizontalOptions="End">
-				<Border Style="{DynamicResource IconBorder}">
-					<controls:SvgView WidthRequest="24"
-									  HeightRequest="24"
-									  Source="share.svg"
-									  Aspect="AspectFit"
-									  TintColor="{AppThemeBinding Light={DynamicResource ButtonNeutralContentPressedLight}, Dark={DynamicResource ButtonNeutralContentPressedDark}}" />
-
-				</Border>
-			</controls:TemplatedButton>
-
+			<controls:SvgButton
+				Grid.Row="0" Grid.Column="2"
+				Command="{Binding ShareCommand}"
+				SvgSource="share.svg"
+				Style="{DynamicResource IconButton}"/>
 		</Grid>
 
 		<!-- QR Code Shadow-->

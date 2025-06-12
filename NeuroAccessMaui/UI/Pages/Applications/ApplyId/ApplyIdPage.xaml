@@ -37,12 +37,11 @@
 			<VerticalStackLayout Margin="{DynamicResource MediumSpacing}"
 								 Spacing="{DynamicResource SmallSpacing}">
 				<Grid ColumnDefinitions="Auto, *, Auto" Margin="{DynamicResource SmallLeftRightMargins}">
-					<controls:ImageButton Command="{Binding GoBackCommand}"
-										  HorizontalOptions="Start"
-										  PathData="{x:Static ui:Geometries.BackButtonPath}"
-										  Style="{DynamicResource ImageOnlyButton}"
-										  Grid.Column="0"/>
-
+					<controls:SvgButton
+							Grid.Row="0" Grid.Column="0"
+							Command="{Binding GoBackCommand}"
+							SvgSource="close.svg"
+							Style="{DynamicResource IconButton}"/>
 					<Label IsVisible="{Binding Organizational, Converter={StaticResource InvertedBoolConverter}}"
 						   Style="{DynamicResource PageTitleLabel}"
 						   Text="{l:Localize PersonalId}"

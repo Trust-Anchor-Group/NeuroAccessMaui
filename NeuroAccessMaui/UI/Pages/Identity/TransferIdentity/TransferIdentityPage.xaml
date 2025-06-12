@@ -19,9 +19,14 @@
 
 		<ScrollView>
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{DynamicResource ImageOnlyButton}"
-											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
+				<controls:SvgButton
+					Grid.Row="0" Grid.Column="0"
+					Command="{Binding GoBackCommand}"
+					SvgSource="close.svg"
+					Style="{DynamicResource IconButton}"
+					HorizontalOptions="Start"
+					WidthRequest="44"
+					HeightRequest="44"/>
 
 				<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize TransferIdentity}"/>
 

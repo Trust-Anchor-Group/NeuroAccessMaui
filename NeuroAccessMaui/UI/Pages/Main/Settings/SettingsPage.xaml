@@ -19,11 +19,11 @@
 		<ScrollView>
 			<VerticalStackLayout Margin="{DynamicResource SmallMargins}">
 				<Grid ColumnDefinitions="Auto, *" Margin="{DynamicResource SmallMargins}">
-					<controls:ImageButton
-						Grid.Column="0"
+					<controls:SvgButton
+						Grid.Row="0" Grid.Column="0"
 						Command="{Binding GoBackCommand}"
-						Style="{DynamicResource ImageOnlyButton}"
-						PathData="{x:Static ui:Geometries.BackButtonPath}" />
+						SvgSource="close.svg"
+						Style="{DynamicResource IconButton}"/>
 
 					<Label
 						Grid.Column="1"
