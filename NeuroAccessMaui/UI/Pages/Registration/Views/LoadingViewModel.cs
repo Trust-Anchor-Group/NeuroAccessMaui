@@ -23,8 +23,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				if (App.Current is not null)
 					await App.Current.InitCompleted;
 
-				// Wait for 3 seconds to allow the theme to be applied. otherwise continue with the default theme.
-				await Task.WhenAny(ServiceRef.ThemeService.ApplyProviderTheme(), Task.Delay(3000));
 			}
 			catch (Exception)
 			{
