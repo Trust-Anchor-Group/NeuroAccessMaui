@@ -45,6 +45,7 @@ jobs:
                     git switch -c changelog/pr-#${{ github.event.pull_request.number }}
                     git add CHANGELOG.md
                     git commit -m "chore: update changelog from PR #${{ github.event.pull_request.number }}" || echo "No changes to commit"
+                    git push -u origin changelog/pr-#${{ github.event.pull_request.number }}
                     gh pr create -B dev -H changelog/pr-#${{ github.event.pull_request.number }} --title 'Changelog from branch #${{ github.event.pull_request.number }}' --body 'Created by Github Actions'
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
