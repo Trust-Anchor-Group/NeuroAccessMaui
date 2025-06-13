@@ -10,8 +10,7 @@ jobs:
         if: ${{ github.event.pull_request.merged && contains(github.event.pull_request.body, 'Changelog') }}
         runs-on: ubuntu-latest
 
-        permissions:
-            pull-requests: write
+        permissions: write-all
 
         steps:
             -   name: Checkout dev branch
