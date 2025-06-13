@@ -4,14 +4,15 @@ on:
         types: [closed]
         branches:
             - dev
-
-permissions:
-pull-requests: read|write|none
 jobs:
     update-changelog:
         # Only run on merged PRs whose body contains a Changelog section
         if: ${{ github.event.pull_request.merged && contains(github.event.pull_request.body, 'Changelog') }}
         runs-on: ubuntu-latest
+
+        permissions:
+            pull-requests: read|write|none
+
         steps:
             -   name: Checkout dev branch
                 uses: actions/checkout@v4
