@@ -4,6 +4,9 @@ on:
         types: [closed]
         branches:
             - dev
+
+permissions:
+pull-requests: read|write|none
 jobs:
     update-changelog:
         # Only run on merged PRs whose body contains a Changelog section
@@ -34,10 +37,13 @@ jobs:
                     --pr-body-file pr_body.txt \
                     --changelog CHANGELOG.md
 
-            -   name: Commit updated CHANGELOG
+            -   name: Create Pull Request
                 run: |
                     git config user.name "github-actions[bot]"
                     git config user.email "github-actions[bot]@users.noreply.github.com"
+                    git switch -c changelog/pr-#${{ github.event.pull_request.number }}
                     git add CHANGELOG.md
                     git commit -m "chore: update changelog from PR #${{ github.event.pull_request.number }}" || echo "No changes to commit"
-                    git push origin dev
+                    gh pr create -B dev -H changelog/pr-#${{ github.event.pull_request.number }} --title 'Merge changelog/pr-#${{ github.event.pull_request.number }} into dev' --body 'Created by Github action'
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
