@@ -52,6 +52,14 @@ namespace NeuroAccessMaui.Services.EventLog
 			[CallerLineNumber] int LineNumber = 0);
 
 		/// <summary>
+		/// Invoke this method to add an informational statement to the log.
+		/// </summary>
+		/// <param name="Message">Info message</param>
+		/// <param name="Tags">Tags to log together with message</param>
+		public void LogInformational(string Message,
+			params KeyValuePair<string, object?>[] Tags);
+
+		/// <summary>
 		/// Invoke this method to add a warning statement to the log.
 		/// </summary>
 		/// <param name="Message">Warning message.</param>
