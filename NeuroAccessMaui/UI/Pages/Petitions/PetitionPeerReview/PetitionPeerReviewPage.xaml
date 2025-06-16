@@ -13,19 +13,19 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview"
 							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview.Views">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize RequestForReview}"/>
+				<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize RequestForReview}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
+				<Frame Style="{DynamicResource FrameSet}">
 					<Grid x:Name="GridWithAnimation" AnchorX="0.5" AnchorY="0.5">
 						<mct:StateContainer.StateViews>
 							<views:PhotoView x:Name="PhotoView" x:FactoryMethod="Create" mct:StateView.StateKey="Photo" />

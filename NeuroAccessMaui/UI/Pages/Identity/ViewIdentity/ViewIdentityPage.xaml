@@ -1,713 +1,630 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage"
-					  x:Class="NeuroAccessMaui.UI.Pages.Identity.ViewIdentity.ViewIdentityPage"
-					  x:DataType="viewmodel:ViewIdentityViewModel"
-					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-					  xmlns:helpers="clr-namespace:NeuroAccessMaui.Helpers"
-					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ViewIdentity"
-					  xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
-					  xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ObjectModel"
-					  xmlns:root="clr-namespace:NeuroAccessMaui"
-					  xmlns:skiaLottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
-					  xmlns:res="clr-namespace:NeuroAccessMaui.Resources.Languages;assembly=NeuroAccessMaui">
+<base:BaseContentPage
+    x:Class="NeuroAccessMaui.UI.Pages.Identity.ViewIdentity.ViewIdentityPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+    xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+    xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+    xmlns:helpers="clr-namespace:NeuroAccessMaui.Helpers"
+    xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ObjectModel"
+    xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
+    xmlns:res="clr-namespace:NeuroAccessMaui.Resources.Languages;assembly=NeuroAccessMaui"
+    xmlns:root="clr-namespace:NeuroAccessMaui"
+    xmlns:skiaLottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
+    xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+    xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ViewIdentity"
+    x:Name="ThisPage"
+    x:DataType="viewmodel:ViewIdentityViewModel">
 
-	<VisualElement.Resources>
-		<Style x:Key="CardBorder"
-			   TargetType="Border"
-			   BasedOn="{StaticResource BorderSet}">
-			<Setter Property="Background"
-					Value="{AppThemeBinding Light={StaticResource SurfaceElevation1Light}, Dark={StaticResource SurfaceElevation1Dark}}" />
-			<Setter Property="StrokeShape"
-					Value="RoundRectangle 16" />
-		</Style>
-		<Style x:Key="FieldGroupBorder"
-			   TargetType="Border"
-			   BasedOn="{StaticResource BorderSubSet}">
-			<Setter Property="Background"
-					Value="{AppThemeBinding Light={StaticResource SurfaceElevation2GreyLight}, Dark={StaticResource SurfaceElevation2GreyDark}}" />
-			<Setter Property="StrokeShape"
-					Value="RoundRectangle 16" />
-			<Setter Property="Margin"
-					Value="16" />
-			<Setter Property="Padding"
-					Value="16" />
-		</Style>
-		<Style x:Key="QrBorder"
-			   TargetType="Border"
-			   BasedOn="{StaticResource BorderSet}">
-			<Setter Property="Background"
-					Value="{AppThemeBinding Light={StaticResource SurfaceElevation1Light}, Dark={StaticResource SurfaceElevation1Dark}}" />
-			<Setter Property="Shadow"
-					Value="{x:Null}" />
-			<Setter Property="Padding"
-					Value="0" />
-			<Setter Property="Margin"
-					Value="0" />
-			<Setter Property="StrokeShape"
-					Value="RoundRectangle 16" />
-			<Setter Property="WidthRequest"
-					Value="175" />
-			<Setter Property="HeightRequest"
-					Value="175" />
-			<Setter Property="TranslationY"
-					Value="-85" />
-		</Style>
+    <VisualElement.Resources>
+        <Style
+            x:Key="CardBorder"
+            BasedOn="{StaticResource BorderSet}"
+            TargetType="Border">
+            <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+        </Style>
+        <Style
+            x:Key="FieldGroupBorder"
+            BasedOn="{StaticResource BorderSubSet}"
+            TargetType="Border">
+            <Setter Property="Background" Value="{AppThemeBinding Light={DynamicResource SurfaceElevation2WLLight}, Dark={DynamicResource SurfaceElevation2WLDark}}" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+            <Setter Property="Margin" Value="16" />
+            <Setter Property="Padding" Value="16" />
+        </Style>
+        <Style
+            x:Key="QrBorder"
+            BasedOn="{StaticResource BorderSet}"
+            TargetType="Border">
+            <Setter Property="Shadow" Value="{x:Null}" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+            <Setter Property="WidthRequest" Value="175" />
+            <Setter Property="HeightRequest" Value="175" />
+            <Setter Property="TranslationY" Value="-85" />
+        </Style>
 
-		<Style x:Key="FriendlyNameLabel"
-			   ApplyToDerivedTypes="False"
-			   TargetType="Label">
-			<Setter Property="FontFamily"
-					Value="SpaceGroteskBold" />
-			<Setter Property="FontSize"
-					Value="26" />
-			<Setter Property="LineBreakMode"
-					Value="WordWrap" />
-			<Setter Property="HorizontalTextAlignment"
-					Value="Center" />
-			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
-		</Style>
-		<Style x:Key="SubTextLabel"
-			   BasedOn="{StaticResource FriendlyNameLabel}"
-			   ApplyToDerivedTypes="False"
-			   TargetType="Label">
-			<Setter Property="FontFamily"
-					Value="SpaceGroteskMedium" />
-			<Setter Property="FontSize"
-					Value="18" />
-			<Setter Property="LineBreakMode"
-					Value="WordWrap" />
-			<Setter Property="HorizontalTextAlignment"
-					Value="Center" />
-			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentSecondaryLight}, Dark={StaticResource ContentSecondaryDark}}" />
-		</Style>
-		<Style x:Key="AgeLabel"
-			   BasedOn="{StaticResource FriendlyNameLabel}"
-			   ApplyToDerivedTypes="False"
-			   TargetType="Label">
-			<Setter Property="FontFamily"
-					Value="SpaceGroteskBold" />
-			<Setter Property="FontSize"
-					Value="27" />
-			<Setter Property="LineBreakMode"
-					Value="WordWrap" />
-			<Setter Property="HorizontalTextAlignment"
-					Value="Center" />
-		</Style>
+        <Style
+            x:Key="FriendlyNameLabel"
+            ApplyToDerivedTypes="False"
+            TargetType="Label">
+            <Setter Property="FontFamily" Value="SpaceGroteskBold" />
+            <Setter Property="FontSize" Value="26" />
+            <Setter Property="LineBreakMode" Value="WordWrap" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+        </Style>
+        <Style
+            x:Key="SubTextLabel"
+            ApplyToDerivedTypes="False"
+            BasedOn="{StaticResource FriendlyNameLabel}"
+            TargetType="Label">
+            <Setter Property="FontFamily" Value="SpaceGroteskMedium" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="LineBreakMode" Value="WordWrap" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
+        </Style>
+        <Style
+            x:Key="AgeLabel"
+            ApplyToDerivedTypes="False"
+            BasedOn="{StaticResource FriendlyNameLabel}"
+            TargetType="Label">
+            <Setter Property="FontFamily" Value="SpaceGroteskBold" />
+            <Setter Property="FontSize" Value="27" />
+            <Setter Property="LineBreakMode" Value="WordWrap" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+        </Style>
 
-		<Style x:Key="StatusPillBorder"
-			   TargetType="Border">
-			<Setter Property="BackgroundColor"
-					Value="{AppThemeBinding Light={StaticResource FiguresStrokesGreyScalesGreyv100Light}, Dark={StaticResource FiguresStrokesGreyScalesGreyv100Dark}}" />
-			<Setter Property="VisualStateManager.VisualStateGroups">
-				<VisualStateGroupList>
-					<VisualStateGroup Name="StatusStates">
+        <Style x:Key="StatusPillBorder" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource TnPNeutralv300bgWLLight}, Dark={DynamicResource TnPNeutralv300bgWLDark}}" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup Name="StatusStates">
 
-						<VisualState Name="Created">
-							<VisualState.Setters>
-								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource FiguresStrokesOrangea20Light}, Dark={StaticResource FiguresStrokesOrangea20Dark}}" />
+                        <VisualState Name="Created">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource TnPWarningbgWLLight}, Dark={DynamicResource TnPWarningbgWLDark}}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState Name="Compromised">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource TnPWarningbgWLLight}, Dark={DynamicResource TnPWarningbgWLDark}}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState Name="Approved">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState Name="Rejected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState Name="Obsoleted">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
 
-							</VisualState.Setters>
-						</VisualState>
-						<VisualState Name="Compromised">
-							<VisualState.Setters>
-								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource FiguresStrokesOrangea20Light}, Dark={StaticResource FiguresStrokesOrangea20Dark}}" />
+            </Setter>
+        </Style>
+        <Style x:Key="StatusPillLabel" TargetType="Label">
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontFamily" Value="SpaceGroteskBold" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPNeutralv300ContentWLLight}, Dark={DynamicResource TnPNeutralv300ContentWLDark}}" />
+            <Setter Property="Text" Value="{l:Localize NotAvailable}" />
+            <Style.Triggers>
+                <DataTrigger
+                    Binding="{Binding IdentityState}"
+                    TargetType="Label"
+                    Value="Created">
+                    <Setter Property="Text" Value="{l:Localize IdentityState_Created}" />
+                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPWarningContentWLLight}, Dark={DynamicResource TnPWarningContentWLDark}}" />
+                </DataTrigger>
+                <DataTrigger
+                    Binding="{Binding IdentityState}"
+                    TargetType="Label"
+                    Value="Compromised">
+                    <Setter Property="Text" Value="{l:Localize IdentityState_Compromised}" />
+                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPWarningContentWLLight}, Dark={DynamicResource TnPWarningContentWLDark}}" />
+                </DataTrigger>
+                <DataTrigger
+                    Binding="{Binding IdentityState}"
+                    TargetType="Label"
+                    Value="Approved">
+                    <Setter Property="Text" Value="{l:Localize IdentityState_Approved}" />
+                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLLight}}" />
+                </DataTrigger>
+                <DataTrigger
+                    Binding="{Binding IdentityState}"
+                    TargetType="Label"
+                    Value="Rejected">
+                    <Setter Property="Text" Value="{l:Localize IdentityState_Rejected}" />
+                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
+                </DataTrigger>
+                <DataTrigger
+                    Binding="{Binding IdentityState}"
+                    TargetType="Label"
+                    Value="Obsoleted">
+                    <Setter Property="Text" Value="{l:Localize IdentityState_Obsoleted}" />
+                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
 
-							</VisualState.Setters>
-						</VisualState>
-						<VisualState Name="Approved">
-							<VisualState.Setters>
-								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource FiguresStrokesGreena20Light}, Dark={StaticResource FiguresStrokesGreena20Dark}}" />
-							</VisualState.Setters>
-						</VisualState>
+        <!--  Field Styles  -->
+        <Style x:Key="FieldKeyLabel" TargetType="Label">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontFamily" Value="SpaceGroteskRegular" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
+        </Style>
+        <Style x:Key="FieldValueLabel" TargetType="Label">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontFamily" Value="SpaceGroteskRegular" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
+        </Style>
+        <Style x:Key="FieldTitleLabel" TargetType="Label">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontFamily" Value="SpaceGroteskBold" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
+        </Style>
 
-						<VisualState Name="Rejected">
-							<VisualState.Setters>
-								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource FiguresStrokesReda20Light}, Dark={StaticResource FiguresStrokesReda20Dark}}" />
-							</VisualState.Setters>
-						</VisualState>
-						<VisualState Name="Obsoleted">
-							<VisualState.Setters>
-								<Setter Property="BackgroundColor"
-										Value="{AppThemeBinding Light={StaticResource FiguresStrokesReda20Light}, Dark={StaticResource FiguresStrokesReda20Dark}}" />
-							</VisualState.Setters>
-						</VisualState>
-					</VisualStateGroup>
-				</VisualStateGroupList>
+        <DataTemplate x:Key="DefaultFieldTemplate" x:DataType="objectModel:ObservableFieldItem">
+            <VerticalStackLayout>
+                <Label Style="{DynamicResource FieldKeyLabel}" Text="{Binding Label}" />
+                <Label Style="{DynamicResource FieldValueLabel}" Text="{Binding Value}" />
+            </VerticalStackLayout>
+        </DataTemplate>
 
-			</Setter>
-		</Style>
-		<Style x:Key="StatusPillLabel"
-			   TargetType="Label">
-			<Setter Property="FontSize"
-					Value="10" />
-			<Setter Property="FontFamily"
-					Value="SpaceGroteskBold" />
-			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentSecondaryLight},
-                                       Dark={StaticResource ContentSecondaryDark}}" />
-			<Setter Property="Text"
-					Value="{l:Localize NotAvailable}" />
-			<Style.Triggers>
-				<DataTrigger TargetType="Label"
-							 Binding="{Binding IdentityState}"
-							 Value="Created">
-					<Setter Property="Text"
-							Value="{l:Localize IdentityState_Created}" />
-					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource ContentOrangeLight},
-                                       Dark={StaticResource ContentOrangeDark}}" />
-				</DataTrigger>
-				<DataTrigger TargetType="Label"
-							 Binding="{Binding IdentityState}"
-							 Value="Compromised">
-					<Setter Property="Text"
-							Value="{l:Localize IdentityState_Compromised}" />
-					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource ContentOrangeLight},
-                                       Dark={StaticResource ContentOrangeDark}}" />
-				</DataTrigger>
-				<DataTrigger TargetType="Label"
-							 Binding="{Binding IdentityState}"
-							 Value="Approved">
-					<Setter Property="Text"
-							Value="{l:Localize IdentityState_Approved}" />
-					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource ContentGreenLight},
-                                       Dark={StaticResource ContentGreenDark}}" />
-				</DataTrigger>
-				<DataTrigger TargetType="Label"
-							 Binding="{Binding IdentityState}"
-							 Value="Rejected">
-					<Setter Property="Text"
-							Value="{l:Localize IdentityState_Rejected}" />
-					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource ContentRedLight},
-                                       Dark={StaticResource ContentRedDark}}" />
-				</DataTrigger>
-				<DataTrigger TargetType="Label"
-							 Binding="{Binding IdentityState}"
-							 Value="Obsoleted">
-					<Setter Property="Text"
-							Value="{l:Localize IdentityState_Obsoleted}" />
-					<Setter Property="TextColor"
-							Value="{AppThemeBinding Light={StaticResource ContentRedLight},
-                                       Dark={StaticResource ContentRedDark}}" />
-				</DataTrigger>
-			</Style.Triggers>
-		</Style>
+        <DataTemplate x:Key="ClickableFieldTemplate" x:DataType="objectModel:ObservableFieldItem">
+            <Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.FieldTappedCommand}" CommandParameter="{Binding Value}" />
+                </Grid.GestureRecognizers>
 
-		<!-- Field Styles -->
-		<Style x:Key="FieldKeyLabel"
-			   TargetType="Label">
-			<Setter Property="FontSize"
-					Value="14" />
-			<Setter Property="FontFamily"
-					Value="SpaceGroteskRegular" />
-			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentSecondaryLight}, Dark={StaticResource ContentSecondaryDark}}" />
-		</Style>
-		<Style x:Key="FieldValueLabel"
-			   TargetType="Label">
-			<Setter Property="FontSize"
-					Value="16" />
-			<Setter Property="FontFamily"
-					Value="SpaceGroteskRegular" />
-			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
-		</Style>
-		<Style x:Key="FieldTitleLabel"
-			   TargetType="Label">
-			<Setter Property="FontSize"
-					Value="14" />
-			<Setter Property="FontFamily"
-					Value="SpaceGroteskBold" />
-			<Setter Property="TextColor"
-					Value="{AppThemeBinding Light={StaticResource ContentSecondaryLight}, Dark={StaticResource ContentSecondaryDark}}" />
-		</Style>
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{DynamicResource FieldKeyLabel}"
+                    Text="{Binding Label}" />
+                <controls:SvgView
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Aspect="AspectFit"
+                    HeightRequest="16"
+                    Source="content_copy.svg"
+                    TintColor="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight},
+                                                Dark={DynamicResource ContentSecondaryWLDark}}"
+                    WidthRequest="16" />
+                <Label
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Style="{DynamicResource FieldValueLabel}"
+                    Text="{Binding Value}"
+                    TextColor="{AppThemeBinding Light={DynamicResource ContentLinkWLLight},
+                                                Dark={DynamicResource ContentLinkWLDark}}" />
+            </Grid>
+        </DataTemplate>
 
-		<DataTemplate x:Key="DefaultFieldTemplate"
-					  x:DataType="objectModel:ObservableFieldItem">
-			<VerticalStackLayout>
-				<Label Text="{Binding  Label}"
-					   Style="{StaticResource FieldKeyLabel}" />
-				<Label Text="{Binding Value}"
-					   Style="{StaticResource FieldValueLabel}" />
-			</VerticalStackLayout>
-		</DataTemplate>
+        <DataTemplate x:Key="CountryFieldTemplate" x:DataType="objectModel:ObservableFieldItem">
+            <VerticalStackLayout>
+                <Label Style="{DynamicResource FieldKeyLabel}" Text="{Binding Label}" />
+                <Label Style="{DynamicResource FieldValueLabel}" Text="{Binding Value, Converter={converters:CountryCodeToFlagAndName}}" />
+            </VerticalStackLayout>
+        </DataTemplate>
 
-		<DataTemplate x:Key="ClickableFieldTemplate"
-					  x:DataType="objectModel:ObservableFieldItem">
-			<Grid RowDefinitions="auto, auto"
-				  ColumnDefinitions="*, auto">
-				<Grid.GestureRecognizers>
-					<TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.FieldTappedCommand}"
-										  CommandParameter="{Binding Value}" />
-				</Grid.GestureRecognizers>
+        <DataTemplate x:Key="GenderFieldTemplate" x:DataType="objectModel:ObservableFieldItem">
+            <VerticalStackLayout>
+                <Label Style="{DynamicResource FieldKeyLabel}" Text="{Binding Label}" />
+                <Label Style="{DynamicResource FieldValueLabel}" Text="{Binding Value, Converter={converters:GenderCodeToSymbolAndLabel}}" />
+            </VerticalStackLayout>
+        </DataTemplate>
 
-				<Label Grid.Row="0"
-					   Grid.Column="0"
-					   Text="{Binding  Label}"
-					   Style="{StaticResource FieldKeyLabel}" />
-				<controls:SvgView Grid.Row="0"
-								  Grid.Column="1"
-								  Source="content_copy.svg"
-								  TintColor="{AppThemeBinding Light={StaticResource ContentSecondaryLight}, Dark={StaticResource ContentSecondaryDark}}"
-								  WidthRequest="16"
-								  HeightRequest="16"
-								  Aspect="AspectFit" />
-				<Label Grid.Row="1"
-					   Grid.ColumnSpan="2"
-					   Text="{Binding Value}"
-					   Style="{StaticResource FieldValueLabel}"
-					   TextColor="{AppThemeBinding Light={StaticResource ContentBlueLight}, Dark={StaticResource ContentBlueDark}}" />
-			</Grid>
-		</DataTemplate>
+        <viewmodel:ObservableFieldItemDictionarySelector x:Key="FieldSelector" DefaultTemplate="{StaticResource DefaultFieldTemplate}">
+            <viewmodel:ObservableFieldItemDictionarySelector.Templates>
+                <viewmodel:TemplateMapping Key="{x:Static root:Constants+CustomXmppProperties.Neuro_Id}" Template="{StaticResource ClickableFieldTemplate}" />
+                <viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.Jid}" Template="{StaticResource ClickableFieldTemplate}" />
+                <viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.DeviceId}" Template="{StaticResource ClickableFieldTemplate}" />
+                <viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.Country}" Template="{StaticResource CountryFieldTemplate}" />
+                <viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.Nationality}" Template="{StaticResource CountryFieldTemplate}" />
+                <viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.Gender}" Template="{StaticResource GenderFieldTemplate}" />
+            </viewmodel:ObservableFieldItemDictionarySelector.Templates>
 
-		<DataTemplate x:Key="CountryFieldTemplate"
-					  x:DataType="objectModel:ObservableFieldItem">
-			<VerticalStackLayout>
-				<Label Text="{Binding  Label}"
-					   Style="{StaticResource FieldKeyLabel}" />
-				<Label Text="{Binding Value, Converter={converters:CountryCodeToFlagAndName}}"
-					   Style="{StaticResource FieldValueLabel}" />
-			</VerticalStackLayout>
-		</DataTemplate>
+        </viewmodel:ObservableFieldItemDictionarySelector>
 
-		<DataTemplate x:Key="GenderFieldTemplate"
-					  x:DataType="objectModel:ObservableFieldItem">
-			<VerticalStackLayout>
-				<Label Text="{Binding  Label}"
-					   Style="{StaticResource FieldKeyLabel}" />
-				<Label Text="{Binding Value, Converter={converters:GenderCodeToSymbolAndLabel}}"
-					   Style="{StaticResource FieldValueLabel}" />
-			</VerticalStackLayout>
-		</DataTemplate>
+        <Style
+            x:Key="IconBorder"
+            ApplyToDerivedTypes="False"
+            BasedOn="{StaticResource BorderSet}"
+            TargetType="Border">
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={DynamicResource ButtonNeutralNavButtonsbgActiveWLDark}}" />
+            <Setter Property="Padding" Value="{DynamicResource MediumMargins}" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="WidthRequest" Value="40" />
+            <Setter Property="HeightRequest" Value="40" />
+            <Setter Property="HorizontalOptions" Value="Start" />
+            <Setter Property="StrokeShape">
+                <RoundRectangle CornerRadius="8" />
+            </Setter>
 
-		<viewmodel:ObservableFieldItemDictionarySelector x:Key="FieldSelector"
-														 DefaultTemplate="{StaticResource DefaultFieldTemplate}">
-			<viewmodel:ObservableFieldItemDictionarySelector.Templates>
-				<viewmodel:TemplateMapping Key="{x:Static root:Constants+CustomXmppProperties.Neuro_Id}"
-										   Template="{StaticResource ClickableFieldTemplate}" />
-				<viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.Jid}"
-										   Template="{StaticResource ClickableFieldTemplate}" />
-				<viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.DeviceId}"
-										   Template="{StaticResource ClickableFieldTemplate}" />
-				<viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.Country}"
-										   Template="{StaticResource CountryFieldTemplate}" />
-				<viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.Nationality}"
-										   Template="{StaticResource CountryFieldTemplate}" />
-				<viewmodel:TemplateMapping Key="{x:Static root:Constants+XmppProperties.Gender}"
-										   Template="{StaticResource GenderFieldTemplate}" />
-			</viewmodel:ObservableFieldItemDictionarySelector.Templates>
+        </Style>
+    </VisualElement.Resources>
 
-		</viewmodel:ObservableFieldItemDictionarySelector>
+    <Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+        <Grid.RowDefinitions>
+            <!--  top bar  -->
+            <RowDefinition Height="auto" />
+            <!--  ID CARD  -->
+            <RowDefinition Height="*" />
+            <RowDefinition Height="90" />
+            <!--  Padding between Card and bottom  -->
+            <RowDefinition Height="50" />
+            <!--  Bottom sheet  -->
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <controls:Background Grid.Row="1" Grid.RowSpan="3" />
 
-		<Style x:Key="IconBorder"
-			   ApplyToDerivedTypes="False"
-			   TargetType="Border"
-			   BasedOn="{StaticResource BorderSet}">
-			<Setter Property="BackgroundColor"
-					Value="{AppThemeBinding Light={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundLight}, Dark={StaticResource ButtonBWWhiteBlackbgWBOnBackgroundDark}}" />
-			<Setter Property="Padding"
-					Value="{StaticResource MediumMargins}" />
-			<Setter Property="Margin"
-					Value="0" />
-			<Setter Property="WidthRequest"
-					Value="40" />
-			<Setter Property="HeightRequest"
-					Value="40" />
-			<Setter Property="HorizontalOptions"
-					Value="Start" />
-			<Setter Property="StrokeShape">
-				<RoundRectangle CornerRadius="8" />
-			</Setter>
+        <skiaLottie:SKLottieView
+            x:Name="RainbowView"
+            Grid.Row="0"
+            Grid.RowSpan="5"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            HorizontalOptions="Center"
+            IsVisible="{Binding IsApproved}"
+            RepeatCount="-1"
+            Rotation="90"
+            Source="background.json" />
+        <!--  TOP BAR  -->
+        <Grid
+            Grid.Row="0"
+            Margin="16,16,16,8"
+            ColumnDefinitions="auto,*,auto"
+            RowDefinitions="auto">
+            <controls:SvgButton
+                Grid.Row="0"
+                Grid.Column="0"
+                Command="{Binding GoBackCommand}"
+                Style="{DynamicResource IconButton}"
+                SvgSource="close.svg" />
 
-		</Style>
-	</VisualElement.Resources>
+            <controls:UriImage
+                Grid.Row="0"
+                Grid.Column="1"
+                Aspect="AspectFit"
+                ErrorPlaceholder="neuro_b"
+                HorizontalOptions="Center"
+                Source="{Binding BannerUri}"
+                WidthRequest="100"
+				HeightRequest="24" />
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundLight}, Dark={StaticResource SurfaceBackgroundDark}}">
-		<Grid.RowDefinitions>
-			<!-- top bar -->
-			<RowDefinition Height="auto" />
-			<!-- ID CARD -->
-			<RowDefinition Height="*" />
-			<RowDefinition Height="90" />
-			<!-- Padding between Card and bottom -->
-			<RowDefinition Height="50" />
-			<!-- Bottom sheet -->
-			<RowDefinition Height="50" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<controls:Background Grid.Row="1"
-							 Grid.RowSpan="3" />
+            <controls:SvgButton
+                Grid.Row="0"
+                Grid.Column="2"
+                Command="{Binding ShareCommand}"
+                Style="{DynamicResource IconButton}"
+                SvgSource="share.svg" />
+        </Grid>
 
-		<skiaLottie:SKLottieView Grid.Row="0"
-								 Grid.RowSpan="5"
-								 IsVisible="{Binding IsApproved}"
-								 Source="background.json"
-								 x:Name="RainbowView"
-								 AbsoluteLayout.LayoutBounds="0,0,1,1"
-								 AbsoluteLayout.LayoutFlags="All"
-								 Rotation="90"
-								 RepeatCount="-1"
-								 HorizontalOptions="Center" />
-		<!-- TOP BAR -->
-		<Grid Grid.Row="0"
-			  ColumnDefinitions="*,*,*"
-			  RowDefinitions="auto"
-			  Margin="16,16,16,8">
-			<controls:TemplatedButton Grid.Column="0"
-									  HorizontalOptions="Start"
-									  Command="{Binding GoBackCommand}">
-				<Border Style="{StaticResource IconBorder}">
-					<controls:SvgView WidthRequest="24"
-									  HeightRequest="24"
-									  Source="close.svg"
-									  Aspect="AspectFit"
-									  TintColor="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
-				</Border>
-			</controls:TemplatedButton>
-			<Image Grid.Column="1"
-				   HorizontalOptions="Center"
-				   Source="neuro_b"
-				   MaximumHeightRequest="24"
-				   Aspect="AspectFit" />
+        <!--  QR Code Shadow  -->
+        <Border
+            Grid.Row="2"
+            BackgroundColor="Transparent"
+            HeightRequest="150"
+            StrokeShape="RoundRectangle 16"
+            Style="{DynamicResource BorderSet}"
+            TranslationY="0"
+            WidthRequest="150" />
 
-			<controls:TemplatedButton Grid.Column="2"
-									  Command="{Binding ShareCommand}"
-									  HorizontalOptions="End">
-				<Border Style="{StaticResource IconBorder}">
-					<controls:SvgView WidthRequest="24"
-									  HeightRequest="24"
-									  Source="share.svg"
-									  Aspect="AspectFit"
-									  TintColor="{AppThemeBinding Light={StaticResource ContentPrimaryLight}, Dark={StaticResource ContentPrimaryDark}}" />
+        <!--  ID CARD  -->
+        <Grid Grid.Row="1" Grid.RowSpan="2">
+            <Border
+                Margin="16,8,16,8"
+                Padding="0"
+                Style="{DynamicResource CardBorder}">
+                <Grid>
+                    <!--  BG  -->
+                    <ContentView>
+                        <AbsoluteLayout>
+                            <controls:SvgView Scale="1.1" Source="id_background.svg" />
+                        </AbsoluteLayout>
+                    </ContentView>
 
-				</Border>
-			</controls:TemplatedButton>
+                    <!--  TIMER  -->
+                    <Border
+                        Margin="16"
+                        BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight},
+                                                          Dark={DynamicResource SurfaceElevation1WLDark}}"
+                        HeightRequest="38"
+                        HorizontalOptions="End"
+                        IsVisible="{Binding HasTimer}"
+                        StrokeShape="RoundRectangle 8"
+                        VerticalOptions="End"
+                        WidthRequest="50">
+                        <Label
+                            Margin="8,4,8,4"
+                            FontFamily="SpaceGroteskBold"
+                            HorizontalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            Style="{DynamicResource SubTextLabel}"
+                            Text="{Binding TimerSeconds}"
+                            VerticalOptions="Start" />
+                    </Border>
 
-		</Grid>
+                    <Border
+                        Margin="16"
+                        helpers:VisualStateProperties.State="{Binding IdentityState}"
+                        HorizontalOptions="Start"
+                        StrokeShape="RoundRectangle 16"
+                        Style="{DynamicResource StatusPillBorder}"
+                        VerticalOptions="End">
 
+                        <Label
+                            Margin="4,2"
+                            HorizontalOptions="Center"
+                            Style="{DynamicResource StatusPillLabel}"
+                            VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
 
+        <!--  CARD CONTENT  -->
+        <Grid
+            Grid.Row="1"
+            Margin="{DynamicResource MediumMargins}"
+            Padding="0,16,0,8"
+            RowDefinitions="auto, *"
+            WidthRequest="250">
+            <VerticalStackLayout
+                Grid.Row="0"
+                Margin="0"
+                Padding="0"
+                HorizontalOptions="Center"
+                Spacing="{DynamicResource SmallSpacing}">
+                <Grid HeightRequest="200" WidthRequest="200">
+                    <controls:ConditionView Condition="{Binding LoadPhotosTask.IsRunning}">
+                        <controls:ConditionView.True>
+                            <ActivityIndicator
+                                HeightRequest="50"
+                                HorizontalOptions="Center"
+                                IsRunning="True"
+                                VerticalOptions="Center"
+                                WidthRequest="50" />
+                        </controls:ConditionView.True>
+                        <controls:ConditionView.False>
+                            <Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation2WLLight}, Dark={DynamicResource SurfaceElevation2WLDark}}" StrokeShape="RoundRectangle 16">
+                                <controls:ConditionView Condition="{Binding HasProfilePhoto}">
+                                    <controls:ConditionView.True>
+                                        <Image
+                                            Aspect="AspectFit"
+                                            HeightRequest="200"
+                                            Source="{Binding ProfilePhoto}"
+                                            WidthRequest="200" />
+                                    </controls:ConditionView.True>
+                                    <controls:ConditionView.False>
+                                        <controls:SvgView
+                                            Aspect="AspectFit"
+                                            HeightRequest="70"
+                                            Source="person.svg"
+                                            WidthRequest="70" />
+                                    </controls:ConditionView.False>
+                                </controls:ConditionView>
 
-
-		<!-- QR Code Shadow-->
-		<Border Grid.Row="2"
-				WidthRequest="150"
-				HeightRequest="150"
-				TranslationY="0"
-				BackgroundColor="Transparent"
-				Style="{StaticResource BorderSet}"
-				StrokeShape="RoundRectangle 16" />
-
-
-
-		<!-- ID CARD -->
-		<Grid Grid.Row="1"
-			  Grid.RowSpan="2">
-			<Border Style="{StaticResource CardBorder}"
-					Margin="16,8,16,8"
-					Padding="0">
-				<Grid>
-					<!-- BG -->
-					<ContentView>
-						<AbsoluteLayout>
-							<controls:SvgView Source="id_background.svg"
-											  Scale="1.1" />
-						</AbsoluteLayout>
-					</ContentView>
-					<!-- TIMER -->
-					<Border IsVisible="{Binding HasTimer}"
-							VerticalOptions="End"
-							HorizontalOptions="End"
-							StrokeShape="RoundRectangle 8"
-							WidthRequest="50"
-							HeightRequest="38"
-							Margin="16"
-							BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceElevation2GreyLight}, Dark={StaticResource Elevation2BackgroundDark}}">
-						<Label Text="{Binding TimerSeconds}"
-							   Margin="8,4,8,4"
-							   Style="{StaticResource SubTextLabel}"
-							   VerticalOptions="Start"
-							   HorizontalOptions="Center"
-							   HorizontalTextAlignment="Center"
-							   FontFamily="SpaceGroteskBold" />
-					</Border>
-
-					<Border VerticalOptions="End"
-							HorizontalOptions="Start"
-							StrokeShape="RoundRectangle 16"
-							Margin="16"
-							helpers:VisualStateProperties.State="{Binding IdentityState}"
-							Style="{StaticResource StatusPillBorder}"
-							>
-
-						<Label Style="{StaticResource StatusPillLabel}" Margin="4,2"
-								HorizontalOptions="Center"
-								VerticalOptions="Center" />
-					</Border>
-				</Grid>
-			</Border>
-		</Grid>
-
-
-		<!-- CARD CONTENT -->
-		<Grid Grid.Row="1"
-			  Padding="0,16, 0, 8"
-			  Margin="{StaticResource MediumMargins}"
-			  WidthRequest="250"
-			  RowDefinitions="auto, *">
-			<VerticalStackLayout  Grid.Row="0"
-								  HorizontalOptions="Center"
-								  Spacing="{StaticResource SmallSpacing}"
-								  Padding="0"
-								  Margin="0">
-				<Grid WidthRequest="200"
-					  HeightRequest="200">
-
-					<controls:ConditionView Condition="{Binding LoadPhotosTask.IsRunning}">
-						<controls:ConditionView.True>
-							<ActivityIndicator IsRunning="True"
-											   WidthRequest="50"
-											   HeightRequest="50"
-											   VerticalOptions="Center"
-											   HorizontalOptions="Center" />
-						</controls:ConditionView.True>
-						<controls:ConditionView.False>
-							<Border StrokeShape="RoundRectangle 16"
-									Background="{AppThemeBinding Light={StaticResource SurfaceElevation2GreyLight}, Dark={StaticResource SurfaceElevation2GreyDark}}">
-								<controls:ConditionView Condition="{Binding HasProfilePhoto}">
-									<controls:ConditionView.True>
-										<Image Source="{Binding ProfilePhoto}"
-											   WidthRequest="200"
-											   HeightRequest="200"
-											   Aspect="AspectFit" />
-									</controls:ConditionView.True>
-									<controls:ConditionView.False>
-										<controls:SvgView Source="person.svg"
-														  WidthRequest="70"
-														  HeightRequest="70"
-														  Aspect="AspectFit" />
-									</controls:ConditionView.False>
-								</controls:ConditionView>
-
-							</Border>
-						</controls:ConditionView.False>
-					</controls:ConditionView>
-					<!-- Water mark
+                            </Border>
+                        </controls:ConditionView.False>
+                    </controls:ConditionView>
+                    <!-- Water mark
 					<Grid VerticalOptions="End"
 						  HorizontalOptions="Start"
 						  WidthRequest="50"
 						  HeightRequest="50"
 						  IsVisible="{Binding HasProfilePhoto}">
-						<Border Background="{AppThemeBinding Light={StaticResource SurfaceElevation1Light}, Dark={StaticResource SurfaceElevation1Dark}}"
+						<Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1Light}, Dark={DynamicResource SurfaceElevation1Dark}}"
 								StrokeShape="RoundRectangle 0 16 0 0">
 
 						</Border>
-					</Grid> -->
-					<Grid VerticalOptions="End"
-						  HorizontalOptions="End"
-						  WidthRequest="50"
-						  HeightRequest="50"
-						  IsVisible="{Binding HasAge}">
-						<Border Background="{AppThemeBinding Light={StaticResource SurfaceElevation1Light}, Dark={StaticResource SurfaceElevation1Dark}}"
-								StrokeShape="RoundRectangle 16 0 0 0">
-							<Label Style="{StaticResource AgeLabel}"
-								   Text="{Binding AgeText}"
-								   VerticalOptions="Center"
-								   HorizontalOptions="Center" />
-						</Border>
-					</Grid>
+					</Grid>-->
+                    <Grid
+                        HeightRequest="50"
+                        HorizontalOptions="End"
+                        IsVisible="{Binding HasAge}"
+                        VerticalOptions="End"
+                        WidthRequest="50">
+                        <Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}" StrokeShape="RoundRectangle 16 0 0 0">
+                            <Label
+                                HorizontalOptions="Center"
+                                Style="{DynamicResource AgeLabel}"
+                                Text="{Binding AgeText}"
+                                VerticalOptions="Center" />
+                        </Border>
+                    </Grid>
 
-				</Grid>
+                </Grid>
 
-				<Label Style="{StaticResource FriendlyNameLabel}"
-					   Text="{Binding FriendlyName}" />
-				<Label Style="{StaticResource SubTextLabel}"
-					   Text="{Binding SubText}" />
+                <Label Style="{DynamicResource FriendlyNameLabel}" Text="{Binding FriendlyName}" />
+                <Label Style="{DynamicResource SubTextLabel}" Text="{Binding SubText}" />
 
-			</VerticalStackLayout>
+            </VerticalStackLayout>
+            <VerticalStackLayout
+                Grid.Row="1"
+                Margin="0,0,0,4"
+                VerticalOptions="End">
+                <Label
+                    FontSize="14"
+                    Style="{DynamicResource SubTextLabel}"
+                    Text="{l:Localize Path=ExpiresFormat,
+                                      Arg={Binding ExpireDate}}" />
+            </VerticalStackLayout>
+        </Grid>
 
+        <!--  QR Code  -->
+        <Border
+            Grid.Row="2"
+            HeightRequest="150"
+            Style="{DynamicResource QrBorder}"
+            TranslationY="0"
+            WidthRequest="150">
+            <Image
+                HorizontalOptions="Center"
+                Source="{Binding QrCode}"
+                TranslationX="0">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding QrTappedCommand}" NumberOfTapsRequired="1" />
+                </Image.GestureRecognizers>
+            </Image>
+        </Border>
 
-				<VerticalStackLayout Grid.Row="1" Margin="0, 0, 0, 4" VerticalOptions="End">
-					<Label Style="{StaticResource SubTextLabel}"
-						   FontSize="14"
-						   Text="{l:Localize Path=ExpiresFormat, Arg={Binding ExpireDate}}" />
-				</VerticalStackLayout>
-		</Grid>
+        <skiaLottie:SKConfettiView
+            x:Name="ConfettiView"
+            Grid.RowSpan="5"
+            HorizontalOptions="Fill"
+            InputTransparent="True"
+            IsAnimationEnabled="{Binding ShouldCelebrate}"
+            VerticalOptions="Fill" />
 
-		<!-- QR Code -->
-		<Border Grid.Row="2"
-				WidthRequest="150"
-				HeightRequest="150"
-				TranslationY="0"
-				Style="{StaticResource QrBorder}">
-			<Image HorizontalOptions="Center"
-				   TranslationX="0"
-				   Source="{Binding QrCode}">
-				<Image.GestureRecognizers>
-					<TapGestureRecognizer Command="{Binding QrTappedCommand}"
-										  NumberOfTapsRequired="1" />
-				</Image.GestureRecognizers>
-			</Image>
-		</Border>
+        <Grid Grid.Row="1" Grid.RowSpan="4">
+            <controls:BottomSheetView
+                x:Name="BottomSheet"
+                MaxExpandedHeight="-1"
+                VerticalOptions="End">
+                <controls:BottomSheetView.HeaderContent>
+                    <VerticalStackLayout Padding="2" Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}">
+                        <controls:SvgView
+                            Aspect="Fill"
+                            HeightRequest="24"
+                            Source="swipe_up.svg"
+                            TintColor="{AppThemeBinding Light={DynamicResource ContentAccessWLLight},
+                                                        Dark={DynamicResource ContentAccessWLDark}}"
+                            WidthRequest="24" />
+                        <Label
+                            FontFamily="SpaceGroteskBold"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            Text="{l:Localize SwipeForDetails}"
+                            TextColor="{AppThemeBinding Light={DynamicResource ContentAccessWLLight},
+                                                        Dark={DynamicResource ContentAccessWLDark}}" />
+                    </VerticalStackLayout>
+                </controls:BottomSheetView.HeaderContent>
+                <controls:BottomSheetView.MainContent>
+                    <ContentView>
+                        <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
+                            <VerticalStackLayout>
+                                <controls:TextButton
+                                    Margin="16"
+                                    Command="{Binding AddContactCommand}"
+                                    HorizontalOptions="Fill"
+                                    IsVisible="{Binding CanAddContact}"
+                                    LabelData="{l:Localize AddContact}"
+                                    Style="{DynamicResource FilledTextButton}" />
 
-		<skiaLottie:SKConfettiView x:Name="ConfettiView" InputTransparent="True"
-								   Grid.RowSpan="5"
-								   IsAnimationEnabled="{Binding ShouldCelebrate}"
-								   HorizontalOptions="Fill"
-								   VerticalOptions="Fill" />
-		<Grid Grid.Row="1"
-			  Grid.RowSpan="4">
-			<controls:BottomSheetView x:Name="BottomSheet"
-									  VerticalOptions="End"
-									  MaxExpandedHeight="-1">
-				<controls:BottomSheetView.HeaderContent>
-					<VerticalStackLayout Background="{AppThemeBinding Light={StaticResource SurfaceElevation1Light}, Dark={StaticResource SurfaceElevation1Dark}}"
-										 Padding="2">
-						<controls:SvgView Source="swipe_up.svg"
-										  Aspect="Fill"
-										  HeightRequest="24"
-										  WidthRequest="24"
-										  TintColor="{AppThemeBinding Light={StaticResource ContentGreenLight}, Dark={StaticResource ContentGreenDark}}" />
-						<Label Text="{l:Localize SwipeForDetails}"
-							   TextColor="{AppThemeBinding Light={StaticResource ContentGreenLight}, Dark={StaticResource ContentGreenDark}}"
-							   FontSize="16"
-							   HorizontalOptions="Center"
-							   FontFamily="SpaceGroteskBold"
-							   HorizontalTextAlignment="Center" />
-					</VerticalStackLayout>
-				</controls:BottomSheetView.HeaderContent>
-				<controls:BottomSheetView.MainContent>
-					<ContentView>
-						<ScrollView VerticalOptions="Fill"
-									HorizontalOptions="Fill">
-							<VerticalStackLayout>
+                                <controls:TextButton
+                                    Margin="16"
+                                    Command="{Binding RemoveContactCommand}"
+                                    HorizontalOptions="Fill"
+                                    IsVisible="{Binding CanRemoveContact}"
+                                    LabelData="{l:Localize RemoveContact}"
+                                    Style="{DynamicResource FilledTextButton}" />
 
-								<controls:TextButton Style="{StaticResource FilledTextButton}"
-													 LabelData="{l:Localize AddContact}"
-													 Command="{Binding AddContactCommand}"
-													 IsVisible="{Binding CanAddContact}"
-													 HorizontalOptions="Fill" Margin="16" />
-								<controls:TextButton Style="{StaticResource FilledTextButton}"
-													 LabelData="{l:Localize RemoveContact}"
-													 Command="{Binding RemoveContactCommand}"
-													 IsVisible="{Binding CanRemoveContact}"
-													 HorizontalOptions="Fill"
-													 Margin="16" />
+                                <!--  Photos  -->
+                                <Border IsVisible="{Binding HasPhotos}" Style="{DynamicResource FieldGroupBorder}">
+                                    <Grid RowDefinitions="auto, auto" RowSpacing="16">
+                                        <Label
+                                            Grid.Row="0"
+                                            Style="{DynamicResource FieldTitleLabel}"
+                                            Text="{l:Localize Photos}" />
+                                        <FlexLayout
+                                            Grid.Row="1"
+                                            AlignContent="Center"
+                                            BindableLayout.ItemsSource="{Binding Photos}"
+                                            Direction="Row"
+                                            JustifyContent="Start"
+                                            Wrap="Wrap">
+                                            <BindableLayout.ItemTemplate>
+                                                <DataTemplate x:DataType="photos:Photo">
+                                                    <Image
+                                                        Margin="2"
+                                                        Aspect="Fill"
+                                                        HeightRequest="64"
+                                                        Rotation="{Binding Rotation}"
+                                                        Source="{Binding Source}"
+                                                        WidthRequest="64">
+                                                        <Image.GestureRecognizers>
+                                                            <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ImageTappedCommand}" CommandParameter="{Binding Attachment}" />
+                                                        </Image.GestureRecognizers>
+                                                    </Image>
+                                                </DataTemplate>
+                                            </BindableLayout.ItemTemplate>
+                                        </FlexLayout>
+                                    </Grid>
+                                </Border>
 
-								<!-- Photos -->
-								<Border Style="{StaticResource FieldGroupBorder}"
-										IsVisible="{Binding HasPhotos}">
-									<Grid RowDefinitions="auto, auto"
-										  RowSpacing="16">
-										<Label Text="{l:Localize Photos}"
-											   Grid.Row="0"
-											   Style="{StaticResource FieldTitleLabel}" />
-										<FlexLayout Grid.Row="1"
-													AlignContent="Center"
-													BindableLayout.ItemsSource="{Binding Photos}"
-													Direction="Row"
-													Wrap="Wrap"
-													JustifyContent="Start">
-											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="photos:Photo">
-													<Image Margin="2"
-														   Aspect="Fill"
-														   WidthRequest="64"
-														   HeightRequest="64"
-														   Rotation="{Binding Rotation}"
-														   Source="{Binding Source}">
-														<Image.GestureRecognizers>
-															<TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ImageTappedCommand}"
-																				  CommandParameter="{Binding Attachment}" />
-														</Image.GestureRecognizers>
-													</Image>
-												</DataTemplate>
-											</BindableLayout.ItemTemplate>
-										</FlexLayout>
-									</Grid>
-								</Border>
+                                <!--  FIELDS  -->
+                                <!--  Should probably be virtualized with collectionview  -->
+                                <Border IsVisible="{Binding HasPersonalFields}" Style="{DynamicResource FieldGroupBorder}">
+                                    <!--  Title + BindableLayout  -->
+                                    <VerticalStackLayout Spacing="16">
+                                        <Label Style="{DynamicResource FieldTitleLabel}" Text="{l:Localize PersonalInformation}" />
+                                        <VerticalStackLayout
+                                            BindableLayout.ItemTemplateSelector="{DynamicResource FieldSelector}"
+                                            BindableLayout.ItemsSource="{Binding PersonalFields}"
+                                            HorizontalOptions="Fill"
+                                            Spacing="16" />
+                                    </VerticalStackLayout>
+                                </Border>
 
-								<!-- FIELDS -->
-								<!-- Should probably be virtualized with collectionview -->
-								<Border Style="{StaticResource FieldGroupBorder}"
-										IsVisible="{Binding HasPersonalFields}">
-									<!-- Title + BindableLayout-->
-									<VerticalStackLayout Spacing="16">
-										<Label Text="{l:Localize PersonalInformation}"
-											   Style="{StaticResource FieldTitleLabel}" />
-										<VerticalStackLayout HorizontalOptions="Fill"
-															 Spacing="16"
-															 BindableLayout.ItemsSource="{Binding PersonalFields}"
-															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
-									</VerticalStackLayout>
-								</Border>
+                                <Border IsVisible="{Binding HasOrganizationFields}" Style="{DynamicResource FieldGroupBorder}">
+                                    <!--  Title + BindableLayout  -->
+                                    <VerticalStackLayout Spacing="16">
+                                        <Label Style="{DynamicResource FieldTitleLabel}" Text="{l:Localize OrganizationalInformation}" />
+                                        <VerticalStackLayout
+                                            BindableLayout.ItemTemplateSelector="{DynamicResource FieldSelector}"
+                                            BindableLayout.ItemsSource="{Binding OrganizationFields}"
+                                            HorizontalOptions="Fill"
+                                            Spacing="16" />
+                                    </VerticalStackLayout>
+                                </Border>
 
-								<Border Style="{StaticResource FieldGroupBorder}"
-										IsVisible="{Binding HasOrganizationFields}">
-									<!-- Title + BindableLayout-->
-									<VerticalStackLayout Spacing="16">
-										<Label Text="{l:Localize OrganizationalInformation}"
-											   Style="{StaticResource FieldTitleLabel}" />
-										<VerticalStackLayout HorizontalOptions="Fill"
-															 Spacing="16"
-															 BindableLayout.ItemsSource="{Binding OrganizationFields}"
-															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
-									</VerticalStackLayout>
+                                <Border IsVisible="{Binding HasTechnicalFields}" Style="{DynamicResource FieldGroupBorder}">
+                                    <!--  Title + BindableLayout  -->
+                                    <VerticalStackLayout Spacing="16">
+                                        <Label Style="{DynamicResource FieldTitleLabel}" Text="{l:Localize Technical}" />
+                                        <VerticalStackLayout
+                                            BindableLayout.ItemTemplateSelector="{DynamicResource FieldSelector}"
+                                            BindableLayout.ItemsSource="{Binding TechnicalFields}"
+                                            HorizontalOptions="Fill"
+                                            Spacing="16" />
+                                    </VerticalStackLayout>
+                                </Border>
 
-								</Border>
-
-								<Border Style="{StaticResource FieldGroupBorder}"
-										IsVisible="{Binding HasTechnicalFields}">
-									<!-- Title + BindableLayout-->
-									<VerticalStackLayout Spacing="16">
-										<Label Text="{l:Localize Technical}"
-											   Style="{StaticResource FieldTitleLabel}" />
-										<VerticalStackLayout HorizontalOptions="Fill"
-															 Spacing="16"
-															 BindableLayout.ItemsSource="{Binding TechnicalFields}"
-															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
-
-
-									</VerticalStackLayout>
-								</Border>
-
-								<Border Style="{StaticResource FieldGroupBorder}"
-										IsVisible="{Binding HasOtherFields}">
-									<!-- Title + BindableLayout-->
-									<VerticalStackLayout Spacing="16">
-										<Label Text="{l:Localize OtherInformation}"
-											   Style="{StaticResource FieldTitleLabel}" />
-										<VerticalStackLayout HorizontalOptions="Fill"
-															 Spacing="16"
-															 BindableLayout.ItemsSource="{Binding OtherFields}"
-															 BindableLayout.ItemTemplateSelector="{StaticResource FieldSelector}" />
-									</VerticalStackLayout>
-								</Border>
-							</VerticalStackLayout>
-						</ScrollView>
-					</ContentView>
-				</controls:BottomSheetView.MainContent>
-			</controls:BottomSheetView>
-		</Grid>
-
-
-
-	</Grid>
+                                <Border IsVisible="{Binding HasOtherFields}" Style="{DynamicResource FieldGroupBorder}">
+                                    <!--  Title + BindableLayout  -->
+                                    <VerticalStackLayout Spacing="16">
+                                        <Label Style="{DynamicResource FieldTitleLabel}" Text="{l:Localize OtherInformation}" />
+                                        <VerticalStackLayout
+                                            BindableLayout.ItemTemplateSelector="{DynamicResource FieldSelector}"
+                                            BindableLayout.ItemsSource="{Binding OtherFields}"
+                                            HorizontalOptions="Fill"
+                                            Spacing="16" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+                        </ScrollView>
+                    </ContentView>
+                </controls:BottomSheetView.MainContent>
+            </controls:BottomSheetView>
+        </Grid>
+    </Grid>
 </base:BaseContentPage>

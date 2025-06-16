@@ -12,7 +12,7 @@
                            xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views"
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ViewContract">
 	<Grid RowDefinitions="*" ColumnDefinitions="*">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumMargins}">
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumMargins}">
 			<ScrollView >
 				<ContentView Content="{Binding HumanReadableText}" />
 			</ScrollView>

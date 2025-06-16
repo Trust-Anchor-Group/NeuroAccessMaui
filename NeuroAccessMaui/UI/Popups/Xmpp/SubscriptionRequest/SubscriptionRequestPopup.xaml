@@ -17,13 +17,13 @@
 											PositionIn="Center" PositionOut="Center" />
 	</mopups:PopupPage.Animation>
 
-	<Grid Style="{StaticResource PopupGrid}">
+	<Grid Style="{DynamicResource PopupGrid}">
 
-		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorder}">
+		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{DynamicResource PopupBorder}">
 			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
-				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+				<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 
-					<Label Text="{l:Localize PresenceSubscriptionRequest}" Style="{StaticResource SectionTitleLabel}" />
+					<Label Text="{l:Localize PresenceSubscriptionRequest}" Style="{DynamicResource SectionTitleLabel}" />
 
 					<Image HorizontalOptions="Center" Source="{Binding PhotoUrl}" WidthRequest="{Binding PhotoWidth}"
                        HeightRequest="{Binding PhotoHeight}" IsVisible="{Binding HasPhoto}"/>
@@ -48,11 +48,11 @@
 					</Label>
 
 					<controls:TextButton Command="{Binding AcceptCommand}"
-												Style="{StaticResource FilledTextButton}"
+												Style="{DynamicResource FilledTextButton}"
 												LabelData="{l:Localize Accept}" />
 
 					<controls:TextButton Command="{Binding RejectCommand}"
-												Style="{StaticResource OutlinedTextButton}"
+												Style="{DynamicResource OutlinedTextButton}"
 												LabelData="{l:Localize Reject}" />
 
 				</VerticalStackLayout>

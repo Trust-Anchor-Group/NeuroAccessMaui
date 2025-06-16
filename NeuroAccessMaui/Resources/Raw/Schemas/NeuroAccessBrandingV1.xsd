@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="urn:neuroaccess:branding:1.0"
+    targetNamespace="urn:neuroaccess:branding:1.0"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+	<!--
+    NeuroAccess BRANDING schema.
+    Describes versioned branding descriptors that point at color palettes
+    (via URI) and references HTTP-hosted image items with metadata.
+  -->
+
+	<!-- VersionType: semantic versioning -->
+	<xs:complexType name="VersionType">
+		<xs:annotation>
+			<xs:documentation>
+				Semantic version: major (required), minor (required), patch (optional, default=0).
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="major" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="minor" type="xs:nonNegativeInteger" use="required"/>
+		<xs:attribute name="patch" type="xs:nonNegativeInteger" use="optional" default="0"/>
+	</xs:complexType>
+
+	<!-- Allowed image MIME types -->
+	<xs:simpleType name="ImageMimeType">
+		<xs:annotation>
+			<xs:documentation>
+				Common HTTP image MIME types for banners, logos, etc.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="image/png"/>
+			<xs:enumeration value="image/jpeg"/>
+			<xs:enumeration value="image/svg+xml"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- Enumerated roles for images -->
+	<xs:simpleType name="ImageRole">
+		<xs:annotation>
+			<xs:documentation>
+				Predefined roles for branding images.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="logo"/>
+			<xs:enumeration value="banner"/>
+			<xs:enumeration value="icon"/>
+			<xs:enumeration value="splash"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- BrandingDescriptorType -->
+	<xs:complexType name="BrandingDescriptorType">
+		<xs:annotation>
+			<xs:documentation>
+				Versioned branding descriptor. Contains a URI for the color palette
+				and zero-or-more image references (logos, banners, etc.) with metadata.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<!-- Semantic version -->
+			<xs:element name="Version" type="VersionType"/>
+
+			<!-- Colors palette via HTTP URI -->
+			<xs:element name="ColorsUri" type="xs:anyURI"/>
+
+			<!-- References to previously-published image assets -->
+			<xs:element name="Images" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="ImageRef"
+									type="ImageRefType"
+									maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+
+		<!-- Allow vendor- or future-specific attributes in other namespaces -->
+		<xs:anyAttribute namespace="##other" processContents="lax"/>
+	</xs:complexType>
+
+	<!-- ImageRefType: references an image asset plus metadata -->
+	<xs:complexType name="ImageRefType">
+		<xs:annotation>
+			<xs:documentation>
+				Reference to a previously-published image asset via URI,
+				with required ID (xs:ID), optional role, dimensions, and MIME type.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="id"          type="xs:ID"              use="required"/>
+		<xs:attribute name="uri"         type="xs:anyURI"          use="required"/>
+		<xs:attribute name="role"        type="ImageRole"          use="optional"/>
+		<xs:attribute name="width"       type="xs:positiveInteger" use="optional"/>
+		<xs:attribute name="height"      type="xs:positiveInteger" use="optional"/>
+		<xs:attribute name="contentType" type="ImageMimeType"      use="optional"/>
+	</xs:complexType>
+
+	<!-- Global root element -->
+	<xs:element name="BrandingDescriptor" type="BrandingDescriptorType"/>
+
+</xs:schema>

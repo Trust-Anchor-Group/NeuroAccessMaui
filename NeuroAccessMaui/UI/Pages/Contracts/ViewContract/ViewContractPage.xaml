@@ -18,7 +18,7 @@
 	<Grid x:Name="TheMainGrid"
 			RowDefinitions="auto, *"
 			ColumnDefinitions="*"
-			BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+			BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background Grid.Row="1" />
 
@@ -26,24 +26,19 @@
 		<Grid Grid.Row="0"
 				RowDefinitions="*"
 				ColumnDefinitions="auto,*"
-				Margin="{StaticResource SmallBottomMargins}">
-			<Grid.Padding>
-				<Thickness Left="{StaticResource LargeSpacing}"
-							  Top="{StaticResource LargeSpacing}"
-							  Right="{StaticResource LargeSpacing}" />
-			</Grid.Padding>
+				Margin="{DynamicResource MediumMargins}">
 
 			<controls:ImageButton Grid.Row="0"
-										 Grid.Column="0"
-										 IsVisible="{Binding CanStateChange}"
-										 Command="{Binding BackCommand}"
-										 Style="{StaticResource ImageOnlyButton}"
-										 PathData="{x:Static ui:Geometries.BackButtonPath}" />
+									Grid.Column="0"
+									IsVisible="{Binding CanStateChange}"
+									Command="{Binding BackCommand}"
+									Style="{DynamicResource ImageOnlyButton}"
+									PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 			<!--	<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />-->
 			<Label Grid.Row="0"
 					 Grid.Column="1"
-					 Style="{StaticResource PageTitleLabel}"
+					 Style="{DynamicResource PageTitleLabel}"
 					 Text="{l:Localize ViewContract}"
 					 HorizontalTextAlignment="End" />
 		</Grid>

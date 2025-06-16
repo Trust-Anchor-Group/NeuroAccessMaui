@@ -19,27 +19,27 @@
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="SelectPhoneCodeTemplate" x:DataType="data:ISO_3166_Country">
-			<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}"
-					ColumnDefinitions="35,auto,*" ColumnSpacing="{StaticResource SmallSpacing}" RowDefinitions="auto"
-					Padding="{StaticResource SmallMargins}">
+			<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}"
+					ColumnDefinitions="35,auto,*" ColumnSpacing="{DynamicResource SmallSpacing}" RowDefinitions="auto"
+					Padding="{DynamicResource SmallMargins}">
 					
 				<Label Grid.Column="0" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="End" FontAutoScalingEnabled="False"
-						 LineBreakMode="NoWrap" Style="{StaticResource RegularItemTitleLabel}" Text="{Binding DialCode}"
-						 TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+						 LineBreakMode="NoWrap" Style="{DynamicResource RegularItemTitleLabel}" Text="{Binding DialCode}"
+						 TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 
-				<Label Grid.Column="1" Style="{StaticResource RegularItemTitleLabel}" Text="{Binding EmojiInfo.Unicode}"
-						 TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+				<Label Grid.Column="1" Style="{DynamicResource RegularItemTitleLabel}" Text="{Binding EmojiInfo.Unicode}"
+						 TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 
 				<Label Grid.Column="2" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" LineBreakMode="NoWrap"
-						 Style="{StaticResource RegularItemTitleLabel}" Text="{Binding Name}"
-						 TextColor="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" />
+						 Style="{DynamicResource RegularItemTitleLabel}" Text="{Binding Name}"
+						 TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 
 				<VisualStateManager.VisualStateGroups>
 					<VisualStateGroup Name="CommonStates">
 						<VisualState Name="Normal" />
 						<VisualState Name="Selected">
 							<VisualState.Setters>
-								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}" />
+								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>
@@ -48,9 +48,9 @@
 		</DataTemplate>
 	</VisualElement.Resources>
 
-	<Grid Style="{StaticResource PopupGrid}">
-		<Border HeightRequest="{Binding MaximumViewHeightRequest}" WidthRequest="{Binding ViewWidthRequest}" Style="{StaticResource PopupBorder}">
-			<Grid VerticalOptions="Fill" RowDefinitions="auto,*" RowSpacing="{StaticResource SmallSpacing}">
+	<Grid Style="{DynamicResource PopupGrid}">
+		<Border HeightRequest="{Binding MaximumViewHeightRequest}" WidthRequest="{Binding ViewWidthRequest}" Style="{DynamicResource PopupBorder}">
+			<Grid VerticalOptions="Fill" RowDefinitions="auto,*" RowSpacing="{DynamicResource SmallSpacing}">
 				<SearchBar x:Name="InnerSearchBar" Grid.Row="0" Placeholder="{l:Localize SearchByCountry}" TextChanged="SearchBar_TextChanged" />
 				<CollectionView x:Name="InnerListView" Grid.Row="1" VerticalOptions="Fill" ItemSizingStrategy="MeasureFirstItem"
 									 ItemTemplate="{StaticResource SelectPhoneCodeTemplate}" SelectionChanged="InnerListView_SelectionChanged" />

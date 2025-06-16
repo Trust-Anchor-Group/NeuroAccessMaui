@@ -205,8 +205,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							|| p.Parameter is DateParameter
 							|| p.Parameter is DateTimeParameter
 							|| p.Parameter is TimeParameter
-							|| p.Parameter is DurationParameter)
+							|| p.Parameter is DurationParameter
+							|| p.Parameter is ContractReferenceParameter)
 						{
+							Console.WriteLine("Adding parameter: +" + p.Parameter.GetType().Name);
 							this.EditableParameters.Add(p);
 						}
 					}
@@ -329,6 +331,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 								p.IsValid = false;
 							else
 								p.IsValid = await p.Parameter.IsParameterValid(v, client);
+
+							bool ValidateAnyway = p.Parameter.ErrorReason switch
+							{
+								ParameterErrorReason.UnableToGetContract => true,
+								_ => false
+							};
+
+							p.IsValid = p.IsValid || ValidateAnyway;
 							p.ValidationText = p.Parameter.ErrorText;
 						}
 					}

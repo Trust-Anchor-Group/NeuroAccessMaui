@@ -81,7 +81,8 @@ namespace NeuroAccessMaui.UI.Controls
 					new ColumnDefinition { Width = GridLength.Star }, // CenterView
 					new ColumnDefinition { Width = GridLength.Auto }  // RightView
 				},
-				ColumnSpacing = AppStyles.SmallSpacing
+				ColumnSpacing = AppStyles.SmallSpacing,
+				Margin = 0
 			};
 
 			// LeftView
@@ -101,12 +102,14 @@ namespace NeuroAccessMaui.UI.Controls
 
 			this.border = new Border()
 			{
-				Content = contentGrid
+				Content = contentGrid,
+				StrokeThickness = 0.5f,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Margin = 0
 			};
 			this.border.PropertyChanged += this.OnBorderPropertyChanged;
 			this.border.SetBinding(Border.StrokeProperty, new Binding(nameof(this.BorderStroke), source: this));
 			this.border.SetBinding(Border.StrokeShapeProperty, new Binding(nameof(this.BorderStrokeShape), source: this));
-			this.border.SetBinding(Border.ShadowProperty, new Binding(nameof(this.BorderShadow), source: this));
 			this.border.SetBinding(Border.BackgroundColorProperty, new Binding(nameof(this.BorderBackground), source: this));
 			this.border.SetBinding(Border.PaddingProperty, new Binding(nameof(this.BorderPadding), source: this));
 			mainGrid.Add(this.border, 0, 1);
@@ -122,17 +125,17 @@ namespace NeuroAccessMaui.UI.Controls
 			};
 
 			// ValidationIcon
-			Path validationIcon = new();
-			validationIcon.SetBinding(Path.DataProperty, new Binding(nameof(this.ValidationIcon), source: this));
-			validationIcon.SetBinding(Path.FillProperty, new Binding(nameof(this.ValidationColor), source: this));
-			validationIcon.VerticalOptions = LayoutOptions.Center;
-			this.validationGrid.Add(validationIcon, 0, 0);
+			Path ValidationIcon = new();
+			ValidationIcon.SetBinding(Path.DataProperty, new Binding(nameof(this.ValidationIcon), source: this));
+			ValidationIcon.SetBinding(Path.FillProperty, new Binding(nameof(this.ValidationColor), source: this));
+			ValidationIcon.VerticalOptions = LayoutOptions.Center;
+			this.validationGrid.Add(ValidationIcon, 0, 0);
 
 			// ValidationText
-			Label validationLabel = new Label();
-			validationLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.ValidationText), source: this));
-			validationLabel.SetBinding(Label.TextColorProperty, new Binding(nameof(this.ValidationColor), source: this));
-			this.validationGrid.Add(validationLabel, 1, 0);
+			Label ValidationLabel = new Label();
+			ValidationLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.ValidationText), source: this));
+			ValidationLabel.SetBinding(Label.TextColorProperty, new Binding(nameof(this.ValidationColor), source: this));
+			this.validationGrid.Add(ValidationLabel, 1, 0);
 
 			this.validationGrid.SetBinding(Grid.IsVisibleProperty, new Binding(nameof(this.CanShowValidation), source: this));
 
@@ -379,33 +382,15 @@ namespace NeuroAccessMaui.UI.Controls
 
 		private void OnBorderPropertyChanged(Object? sender, PropertyChangedEventArgs e)
 		{
-			// WORKAROUND FOR ClIPPED SHADOW in certain views
-			if (e.PropertyName == nameof(Border.Shadow))
-			{
-				if (this.BorderShadow is null)
-					return;
 
-				double blurRadius = this.BorderShadow.Radius;
-				double offsetX = this.BorderShadow?.Offset.X ?? 0;
-				double offsetY = this.BorderShadow?.Offset.Y ?? 0;
-
-				// Calculate padding for each side
-				double paddingLeft = blurRadius + (offsetX < 0 ? Math.Abs(offsetX) : 0);
-				double paddingRight = blurRadius + (offsetX > 0 ? offsetX : 0);
-				double paddingTop = blurRadius + (offsetY < 0 ? Math.Abs(offsetY) : 0);
-				double paddingBottom = blurRadius + (offsetY > 0 ? offsetY : 0);
-
-				// Apply the calculated padding
-				this.border.Margin = new Thickness(paddingLeft, paddingTop, paddingRight, paddingBottom);
-			}
 		}
+
 		private static void OnValidationChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			CompositeInputView control = (CompositeInputView)bindable;
 
 			// Update CanShowValidation
 			control.OnPropertyChanged(nameof(CanShowValidation));
-
 		}
 
 		private static void OnLabelChanged(BindableObject bindable, object oldValue, object newValue)
@@ -413,6 +398,5 @@ namespace NeuroAccessMaui.UI.Controls
 			CompositeInputView control = (CompositeInputView)bindable;
 			control.OnPropertyChanged(nameof(CanShowLabel));
 		}
-
 	}
 }

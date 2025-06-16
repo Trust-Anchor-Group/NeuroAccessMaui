@@ -13,20 +13,20 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Things.ViewThing"
 							 xmlns:things="clr-namespace:NeuroAccessMaui.UI.Pages.Things"
 							 xmlns:model2="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize Thing}" Style="{StaticResource PageTitleLabel}"/>
+				<Label Text="{l:Localize Thing}" Style="{DynamicResource PageTitleLabel}"/>
 					
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Text="{Binding FriendlyName}" HorizontalTextAlignment="Center" Style="{StaticResource BoldItemTitleLabel}" MaxLines="3" LineBreakMode="TailTruncation"/>
+				<Frame Style="{DynamicResource FrameSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+						<Label Text="{Binding FriendlyName}" HorizontalTextAlignment="Center" Style="{DynamicResource BoldItemTitleLabel}" MaxLines="3" LineBreakMode="TailTruncation"/>
 						<Image x:Name="QrCode" Source="{Binding QrCode}" IsVisible="{Binding HasQrCode}" WidthRequest="{Binding QrCodeWidth}"
 							 HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
 							<Image.GestureRecognizers>
@@ -36,22 +36,22 @@
 					</VerticalStackLayout>
 				</Frame>
 					
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Frame Style="{DynamicResource FrameSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<!-- TAGS 
-						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/> -->
-						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource BoldItemTitleLabel}" LineBreakMode="WordWrap" HorizontalTextAlignment="Start"/>
-						<Frame Style="{StaticResource FrameSubSet}" Margin="0" Padding="0">
-							<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallMargins}">
+						<Label Text="{l:Localize InformationAboutThing}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/> -->
+						<Label Text="{l:Localize InformationAboutThingText}" Style="{DynamicResource BoldItemTitleLabel}" LineBreakMode="WordWrap" HorizontalTextAlignment="Start"/>
+						<Frame Style="{DynamicResource FrameSubSet}" Margin="0" Padding="0">
+							<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{DynamicResource SmallMargins}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate x:DataType="things:HumanReadableTag">
 										<Grid ColumnDefinitions="120, *">
 											<Label Grid.Column="0"
 													Text="{Binding Path=LocalizedName}"
-													Style="{StaticResource KeyLabel}"
+													Style="{DynamicResource KeyLabel}"
 													LineBreakMode="WordWrap"/>
 											<Label Grid.Column="1"
-													Style="{StaticResource ClickableValueLabel}"
+													Style="{DynamicResource ClickableValueLabel}"
 													LineBreakMode="TailTruncation"
 													Text="{Binding Path=LocalizedValue}">
 												<Label.GestureRecognizers>
@@ -66,11 +66,11 @@
 						</Frame>
 
 						<!-- NOTIFICATIONS -->
-						<Label Text="{l:Localize Notifications}" Margin="{StaticResource SmallTopMargins}"
+						<Label Text="{l:Localize Notifications}" Margin="{DynamicResource SmallTopMargins}"
 					   VerticalOptions="Start" IsVisible="{Binding HasNotifications}"/>
-						<Label Text="{l:Localize NotificationsText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
+						<Label Text="{l:Localize NotificationsText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"
 					   IsVisible="{Binding HasNotifications}"/>
-						<VerticalStackLayout x:Name="Notifications" BindableLayout.ItemsSource="{Binding Path=Notifications}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallMargins}">
+						<VerticalStackLayout x:Name="Notifications" BindableLayout.ItemsSource="{Binding Path=Notifications}" VerticalOptions="StartAndExpand" Margin="{DynamicResource SmallMargins}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="model2:EventModel">
 									<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto" Padding="5,5,5,5">
@@ -82,13 +82,13 @@
 												 HorizontalOptions="Center" VerticalOptions="Center"/>
 										<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="CharacterWrap" TextType="Text"
 												 HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,2,5,2"
-												 Text="{Binding Path=Description}" Style="{StaticResource ClickableValueLabel}"/>
+												 Text="{Binding Path=Description}" Style="{DynamicResource ClickableValueLabel}"/>
 										<Path Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
 												Data="{Binding Icon}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
-												Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}"/>
+												Fill="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"/>
 										<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
 												 Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
-												 Style="{StaticResource AlertLabel}"/>
+												 Style="{DynamicResource AlertLabel}"/>
 										<Grid.GestureRecognizers>
 											<TapGestureRecognizer Command="{Binding ClickedCommand}" CommandParameter="{Binding .}"/>
 										</Grid.GestureRecognizers>
@@ -99,32 +99,32 @@
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize ReadSensor}" Command="{Binding Path=ReadSensorCommand}"
 													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsSensor}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize ControlActuator}" Command="{Binding Path=ControlActuatorCommand}"
 													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsActuator}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<Grid ColumnDefinitions="*" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
 							<controls:TextButton LabelData="{l:Localize Chat}" Command="{Binding Path=ChatCommand}" IsEnabled="{Binding Path=IsConnected}"
 														IsVisible="{Binding IsNodeInConcentrator, Converter={StaticResource InvertedBoolConverter}}"
-														Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+														Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 							<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Padding="8,3,8,3" IsVisible="{Binding HasPendingChatMessages}"
-						   HorizontalOptions="End" VerticalOptions="Center" Margin="{StaticResource SmallLeftRightMargins}"
-						   Style="{StaticResource AlertFrame}">
-								<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}" Text="{Binding NrPendingChatMessages}" Padding="1"/>
+						   HorizontalOptions="End" VerticalOptions="Center" Margin="{DynamicResource SmallLeftRightMargins}"
+						   Style="{DynamicResource AlertFrame}">
+								<Label FontSize="Caption" TextColor="{DynamicResource SurfaceBackgroundWLLight}" Text="{Binding NrPendingChatMessages}" Padding="1"/>
 							</Frame>
 						</Grid>
 						<controls:TextButton LabelData="{l:Localize ConnectToDevice}" Command="{Binding Path=AddToListCommand}"
 													IsVisible="{Binding InContacts, Converter={StaticResource InvertedBoolConverter}}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize DisconnectFromDevice}" Command="{Binding Path=RemoveFromListCommand}"
-													IsVisible="{Binding InContactsAndNotOwner}" Margin="{StaticResource SmallBottomMargins}"
-													Style="{StaticResource FilledTextButton}"/>
+													IsVisible="{Binding InContactsAndNotOwner}" Margin="{DynamicResource SmallBottomMargins}"
+													Style="{DynamicResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize DeleteRules}" Command="{Binding Path=DeleteRulesCommand}"
 													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsOwner}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize DisownThing}" Command="{Binding Path=DisownThingCommand}"
 													IsEnabled="{Binding Path=IsConnected}" IsVisible="{Binding IsOwner}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

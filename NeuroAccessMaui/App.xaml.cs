@@ -10,7 +10,8 @@ using Microsoft.Maui.Controls.Internals;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.AttachmentCache;
+using NeuroAccessMaui.Services.Cache.AttachmentCache;
+using NeuroAccessMaui.Services.Cache.InternetCache;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
@@ -22,6 +23,7 @@ using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
@@ -242,7 +244,7 @@ namespace NeuroAccessMaui
 
 		private static void InitLocalizationResource()
 		{
-			LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
+		//	LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
 			LocalizationManager.Current.CurrentCulture = SelectedLanguage;
 		}
 
@@ -342,12 +344,15 @@ namespace NeuroAccessMaui
 			Types.InstantiateDefault<ISettingsService>(false);
 			Types.InstantiateDefault<IXmppService>(false);
 			Types.InstantiateDefault<IAttachmentCacheService>(false);
+			Types.InstantiateDefault<IInternetCacheService>(false);
 			Types.InstantiateDefault<IContractOrchestratorService>(false);
 			Types.InstantiateDefault<INfcService>(false);
 			Types.InstantiateDefault<INotificationService>(false);
 			Types.InstantiateDefault<IIntentService>(false);
+			Types.InstantiateDefault<IThemeService>(false);
 
 			defaultInstantiatedSource.TrySetResult(true);
+
 
 			// Set dependency resolver.
 			DependencyResolver.ResolveUsing(type =>
@@ -449,6 +454,7 @@ namespace NeuroAccessMaui
 
 				await ServiceRef.UiService.Load(isResuming, Token);
 				await ServiceRef.AttachmentCacheService.Load(isResuming, Token);
+				await ServiceRef.InternetCacheService.Load(isResuming, Token);
 				await ServiceRef.ContractOrchestratorService.Load(isResuming, Token);
 				await ServiceRef.ThingRegistryOrchestratorService.Load(isResuming, Token);
 				await ServiceRef.NeuroWalletOrchestratorService.Load(isResuming, Token);

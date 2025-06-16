@@ -12,23 +12,25 @@
 							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
 
 	<Grid x:Name="TheMainGrid" RowDefinitions="auto,*" ColumnDefinitions="*" 
-		BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+		BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background Grid.RowSpan="2" />
 
 		<Grid Grid.Row="0" RowDefinitions="auto" ColumnDefinitions="*">
 			<Grid.Padding>
-				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
+				<Thickness Left="{StaticResource LargeSpacing}"
+						   Top="{StaticResource LargeSpacing}"
+						   Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
 
-			<controls:ImageButton IsVisible="{Binding CanGoToPrev}" Command="{Binding GoToPrevCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<controls:ImageButton IsVisible="{Binding CanGoToPrev}" Command="{Binding GoToPrevCommand}" Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 			<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />
 
 			<controls:TemplatedButton x:Name="LanguageButton" VerticalOptions="Start" HorizontalOptions="End" Command="{Binding ChangeLanguageCommand}">
 				<VerticalStackLayout>
 					<Path x:Name="InnerPath" Grid.Row="0" HorizontalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-							Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}" 
+							Fill="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" 
 							Data="{x:Static ui:Geometries.LanguageSelectButtonPath}"/>
 
 					<Label x:Name="InnerLabel" Grid.Row="1" Text="{Binding SelectedLanguage.MyNativeName}" />
@@ -39,8 +41,8 @@
 						<VisualState Name="Normal" />
 						<VisualState Name="Disabled">
 							<VisualState.Setters>
-								<Setter Property="Label.TextColor" TargetName="InnerLabel" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
-								<Setter Property="Path.Fill" TargetName="InnerPath" Value="{AppThemeBinding Light={StaticResource DisabledFilledButtonForegroundLight}, Dark={StaticResource DisabledFilledButtonForegroundDark}}" />
+								<Setter Property="Label.TextColor" TargetName="InnerLabel" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}" />
+								<Setter Property="Path.Fill" TargetName="InnerPath" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>
@@ -49,10 +51,10 @@
 		</Grid>
 
 		<ScrollView Grid.Row="1" x:Name="TheMainScrollView">
-			<Grid RowDefinitions="auto,*" Padding="{StaticResource LargeMargins}" RowSpacing="{StaticResource LargeSpacing}">
+			<Grid RowDefinitions="auto,*" Padding="{DynamicResource LargeMargins}" RowSpacing="{DynamicResource LargeSpacing}">
 
 				<!-- OLD LOGO on top of page
-				<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource LargeSpacing}">
+				<VerticalStackLayout Grid.Row="0" Spacing="{DynamicResource LargeSpacing}">
 					<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}" />
 				</VerticalStackLayout>
 				-->

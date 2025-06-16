@@ -16,13 +16,13 @@
 		<DataTemplate x:Key="ContactTemplate" x:DataType="viewmodel:ContactInfoModel">
 			<Grid ColumnDefinitions="*,30" RowDefinitions="auto" ColumnSpacing="2">
 
-				<Label Grid.Column="0" Grid.Row="0" Margin="{StaticResource SmallTopBottomMargins}" 
+				<Label Grid.Column="0" Grid.Row="0" Margin="{DynamicResource SmallTopBottomMargins}" 
 								   HorizontalOptions="Start" VerticalTextAlignment="Center" LineBreakMode="CharacterWrap"
-								   TextType="Text" Text="{Binding Path=FriendlyName}" Style="{StaticResource ClickableValueLabel}"/>
+								   TextType="Text" Text="{Binding Path=FriendlyName}" Style="{DynamicResource ClickableValueLabel}"/>
 
 				<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding HasEvents}"
-								   HorizontalOptions="End" VerticalOptions="Center" Style="{StaticResource AlertFrame}">
-					<Label Style="{StaticResource AlertLabel}" Text="{Binding NrEvents}" Padding="1"/>
+								   HorizontalOptions="End" VerticalOptions="Center" Style="{DynamicResource AlertFrame}">
+					<Label Style="{DynamicResource AlertLabel}" Text="{Binding NrEvents}" Padding="1"/>
 				</Frame>
 
 				<Ellipse Grid.Column="1" Grid.Row="0" WidthRequest="25" HeightRequest="25"
@@ -36,23 +36,29 @@
 		</DataTemplate>
 	</VisualElement.Resources>
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
+				<controls:SvgButton
+					Grid.Row="0" Grid.Column="0"
+					Command="{Binding GoBackCommand}"
+					SvgSource="close.svg"
+					Style="{DynamicResource IconButton}"
+					HorizontalOptions="Start"
+					WidthRequest="44"
+					HeightRequest="44"/>
 
-				<Label Text="{l:Localize Contacts}" Style="{StaticResource PageTitleLabel}"/>
+				<Label Text="{l:Localize Contacts}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Frame Style="{DynamicResource FrameSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{Binding Description}" HorizontalOptions="Center" VerticalOptions="Start"
 								 IsVisible="{Binding Description, Converter={converters:OnlyShowNonEmpty}}"/>
 
-						<Label Style="{StaticResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"
+						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"
 								 VerticalOptions="Start" IsVisible="{Binding Path=ShowContactsMissing}" Text="{l:Localize NoContactsFound}" />
 
 						<CollectionView x:Name="Contacts" VerticalOptions="StartAndExpand" ItemSizingStrategy="MeasureAllItems"
@@ -62,9 +68,9 @@
 									
 						</CollectionView>
 							  
-						<controls:TextButton LabelData="{Binding AnonymousText}" Style="{StaticResource FilledTextButton}"
+						<controls:TextButton LabelData="{Binding AnonymousText}" Style="{DynamicResource FilledTextButton}"
 													Command="{Binding AnonymousCommand}" IsVisible="{Binding AllowAnonymous}"/>
-						<controls:TextButton LabelData="{l:Localize ScanQRCode}" Style="{StaticResource FilledTextButton}"
+						<controls:TextButton LabelData="{l:Localize ScanQRCode}" Style="{DynamicResource FilledTextButton}"
 													Command="{Binding ScanQrCodeCommand}" IsVisible="{Binding CanScanQrCode}"/>
 					</VerticalStackLayout>
 				</Frame>

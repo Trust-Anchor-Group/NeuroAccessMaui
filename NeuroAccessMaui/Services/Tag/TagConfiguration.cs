@@ -121,6 +121,12 @@ namespace NeuroAccessMaui.Services
 		public string? PasswordHashMethod { get; set; }
 
 		/// <summary>
+		/// Password needs update
+		/// </summary>
+		[DefaultValue(false)]
+		public bool? PasswordNeedsUpdate { get; set; }
+
+		/// <summary>
 		/// Is the password numeric?
 		/// </summary>
 		[DefaultValueNull]
@@ -173,6 +179,12 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		[DefaultValueStringEmpty]
 		public string? NeuroFeaturesJid { get; set; }
+
+		/// <summary>
+		/// PubSub Service JID
+		/// </summary>
+		[DefaultValueStringEmpty]
+		public string? PubSubJid { get; set; }
 
 		/// <summary>
 		/// Trust Provider Id

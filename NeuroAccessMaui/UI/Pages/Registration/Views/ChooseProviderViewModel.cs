@@ -389,9 +389,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								foreach (XmlNode N in E.ChildNodes)
 								{
 									if (N is XmlElement E2)
-									{
 										ToProcess.AddLast(E2);
-									}
 								}
 								break;
 

@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Reflection;
 using Microsoft.Extensions.Localization;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services.AttachmentCache;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
@@ -23,6 +22,10 @@ using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.Services.Xmpp;
 using ZXing;
 using NeuroAccessMaui.Services.Intents;
+using Waher.Content;
+using NeuroAccessMaui.Services.Cache.AttachmentCache;
+using NeuroAccessMaui.Services.Cache.InternetCache;
+using NeuroAccessMaui.Services.Theme;
 
 namespace NeuroAccessMaui.Services
 {
@@ -51,6 +54,8 @@ namespace NeuroAccessMaui.Services
 		private static IBarcodeReader? barcodeReader;
 		private static IPermissionService? permissionService;
 		private static IIntentService? intentService;
+		private static IInternetCacheService? internetCacheService;
+		private static IThemeService? themeService;
 
 		/// <summary>
 		/// Service serializing and managing UI-related tasks.
@@ -251,89 +256,11 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				localizer ??= new LocalizerReportingMissingStrings(LocalizationManager.GetStringLocalizer<AppResources>());
+				localizer ??= new ReportingStringLocalizer(LocalizationManager.GetStringLocalizer<AppResources>());
 				return localizer;
 			}
 		}
 
-		public interface IReportingStringLocalizer : IStringLocalizer
-		{
-
-			LocalizedString this[string Name, bool ShouldReport] { get; }
-
-			LocalizedString this[string Name, bool ShouldReport, params object[] Arguments] { get; }
-		}
-
-		/// <summary>
-		/// Localizer, that reports missing strings to the operator of the corrected broker, via the event log.
-		/// </summary>
-		/// <param name="Localizer">Base localizer.</param>
-		private class LocalizerReportingMissingStrings(IStringLocalizer Localizer) : IReportingStringLocalizer
-		{
-			private readonly IStringLocalizer localizer = Localizer;
-
-			public LocalizedString this[string Name]
-				=> ((IReportingStringLocalizer)this)[Name, true];
-
-			public LocalizedString this[string Name, params object[] Arguments]
-				=> ((IReportingStringLocalizer)this)[Name, true, Arguments];
-
-			LocalizedString IReportingStringLocalizer.this[string Name, bool ShouldReport]
-			{
-				get
-				{
-					LocalizedString Result = this.localizer[Name];
-					if (Result is not null && !Result.ResourceNotFound)
-						return Result;
-
-					StackTrace Trace = new();
-					Type Caller = typeof(ServiceRef);
-					int i, c = Trace.FrameCount;
-					Assembly ThisAssembly = typeof(App).Assembly;
-
-					for (i = 1; i < c; i++)
-					{
-						Type? T = Trace.GetFrame(i)?.GetMethod()?.DeclaringType;
-						if (T is null)
-							continue;
-
-						if (T.Assembly.FullName == ThisAssembly.FullName)
-						{
-							if (T == typeof(LocalizerReportingMissingStrings))
-								continue;
-
-							if (T.IsConstructedGenericType)
-								T = T.GetGenericTypeDefinition();
-
-							Caller = T;
-							break;
-						}
-					}
-
-					if(ShouldReport)
-						LocalizeExtension.ReportMissingString(Name, Caller);
-
-					return new LocalizedString(Name, Name, true);
-				}
-			}
-
-			LocalizedString IReportingStringLocalizer.this[string Name, bool ShouldReport, params object[] Arguments]
-			{
-				get
-				{
-					LocalizedString Result = this[Name];
-					if (Result.ResourceNotFound)
-						return Result;
-
-					return new LocalizedString(Name, string.Format(CultureInfo.CurrentCulture, Result.Value, Arguments));
-				}
-			}
-
-			public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
-			{
-				return this.localizer.GetAllStrings(includeParentCultures);
-			}
-		}
 
 		/// <summary>
 		/// Localization service
@@ -366,6 +293,24 @@ namespace NeuroAccessMaui.Services
 			{
 				intentService ??= App.Instantiate<IIntentService>();
 				return intentService;
+			}
+		}
+
+		public static IInternetCacheService InternetCacheService
+		{
+			get
+			{
+				internetCacheService ??= App.Instantiate<IInternetCacheService>();
+				return internetCacheService;
+			}
+		}
+
+		public static IThemeService ThemeService
+		{
+			get
+			{
+				themeService ??= App.Instantiate<IThemeService>();
+				return themeService;
 			}
 		}
 	}

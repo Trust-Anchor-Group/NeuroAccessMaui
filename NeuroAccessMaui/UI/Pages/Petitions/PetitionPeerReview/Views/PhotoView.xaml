@@ -9,35 +9,35 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview">
 	<VerticalStackLayout>
-		<VerticalStackLayout Margin="{StaticResource LargeMargins}" HorizontalOptions="Center" VerticalOptions="Center" Spacing="{StaticResource SmallSpacing}">
-			<Border Style="{StaticResource OutlinedImageButtonBorder}" Padding="0">
+		<VerticalStackLayout Margin="{DynamicResource LargeMargins}" HorizontalOptions="Center" VerticalOptions="Center" Spacing="{DynamicResource SmallSpacing}">
+			<Border Style="{DynamicResource OutlinedImageButtonBorder}" Padding="0">
 				<Image Source="{Binding FirstPhotoSource}" Rotation="{Binding FirstPhotoRotation}"
 						 WidthRequest="250" Aspect="AspectFit" HorizontalOptions="Center" Margin="0"/>
 			</Border>
 			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
-				<Label Style="{StaticResource BoldItemTitleLabel}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
-				<Label Style="{StaticResource InfoLabel}" Text="{Binding PersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{DynamicResource BoldItemTitleLabel}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
+				<Label Style="{DynamicResource InfoLabel}" Text="{Binding PersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
 			</VerticalStackLayout>
 		</VerticalStackLayout>
 
-		<Rectangle BackgroundColor="{AppThemeBinding Light={StaticResource DisabledFilledButtonBackgroundLight}, Dark={StaticResource DisabledFilledButtonBackgroundDark}}"
+		<Rectangle BackgroundColor="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}"
 					  WidthRequest="250" HeightRequest="2"/>
 
-		<Grid ColumnDefinitions="auto,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumMargins}">
+		<Grid ColumnDefinitions="auto,*" RowDefinitions="auto" ColumnSpacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumMargins}">
 			<CheckBox Grid.Column="0" IsChecked="{Binding IsPhotoOk}" VerticalOptions="Center"/>
 			<Label Grid.Column="1" Text="{Binding PhotoReviewText}" VerticalOptions="Center" LineBreakMode="WordWrap"
-					 Margin="{StaticResource SmallLeftMargins}">
+					 Margin="{DynamicResource SmallLeftMargins}">
 				<Label.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding ToggleIsPhotoOkCommand}"/>
 				</Label.GestureRecognizers>
 			</Label>
 		</Grid>
 
-		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{StaticResource SmallSpacing}">
-			<controls:TextButton Command="{Binding DeclineCommand}" Style="{StaticResource OutlinedTextButtonNoRoundedCorners}"
+		<Grid ColumnDefinitions="*,*" RowDefinitions="auto" ColumnSpacing="{DynamicResource SmallSpacing}">
+			<controls:TextButton Command="{Binding DeclineCommand}" Style="{DynamicResource OutlinedTextButtonNoRoundedCorners}"
 										LabelData="{l:Localize Reject}" Grid.Column="0" />
 
-			<controls:TextButton Command="{Binding AcceptPhotoCommand}" Style="{StaticResource FilledTextButton}"
+			<controls:TextButton Command="{Binding AcceptPhotoCommand}" Style="{DynamicResource FilledTextButton}"
 										LabelData="{l:Localize Continue}" Grid.Column="1" />
 		</Grid>
 	</VerticalStackLayout>

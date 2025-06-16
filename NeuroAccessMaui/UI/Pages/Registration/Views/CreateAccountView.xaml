@@ -12,11 +12,11 @@
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
 	<Grid VerticalOptions="Center">
-		<VerticalStackLayout Spacing="{StaticResource LargeSpacing}" VerticalOptions="Center">
+		<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" VerticalOptions="Center">
 
-			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 
-				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize OnboardingAccountPageTitle}" />
+				<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize OnboardingAccountPageTitle}" />
 				<Label Text="{l:Localize OnboardingAccountPageDetails}" />
 
 			</VerticalStackLayout>

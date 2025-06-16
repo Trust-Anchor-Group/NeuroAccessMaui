@@ -61,7 +61,8 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -114,10 +115,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>STRÄNG HAR INTE DEFINIERATS</value>
@@ -2609,6 +2612,15 @@
   <data name="SwipeForDetails" xml:space="preserve">
     <value>Svep för detaljer</value>
   </data>
+  <data name="ApplyIdInfoMainPage" xml:space="preserve">
+    <value>Ansök om ett personligt ID för att få tillgång till alla funktioner i Neuro Access</value>
+  </data>
+  <data name="CompleteIdButton" xml:space="preserve">
+    <value>Slutför ditt personliga ID</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Sök</value>
+  </data>
   <data name="ClientMessageMissingCountry" xml:space="preserve">
     <value>Ansökan saknar landinformation</value>
   </data>
@@ -2785,5 +2797,23 @@
   </data>
   <data name="ClientMessageBankIdRFA22" xml:space="preserve">
     <value>Okänt fel. Försök igen</value>
+  </data>
+  <data name="SelectContract" xml:space="preserve">
+    <value>Välj ett kontrakt</value>
+  </data>
+  <data name="SelectContractEntryDescription" xml:space="preserve">
+    <value>Klistra in kontrakt ID eller välj från listan</value>
+  </data>
+  <data name="ScanInvitationInfo" xml:space="preserve">
+    <value>Skanna inbjudan om du redan har skapat ett konto separat</value>
+  </data>
+  <data name="PubSubServiceNotFound" xml:space="preserve">
+    <value>Meddelandetjänst är inte tillgänglig</value>
+  </data>
+  <data name="ClearCache" xml:space="preserve">
+    <value>Rensa cache</value>
+  </data>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Tar bort tillfälliga data som bilder och bilagor för att frigöra utrymme</value>
   </data>
 </root>

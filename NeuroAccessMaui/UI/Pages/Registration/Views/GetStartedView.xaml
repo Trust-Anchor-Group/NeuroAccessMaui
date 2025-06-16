@@ -11,24 +11,49 @@
 									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
-	<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
-		<VerticalStackLayout Spacing="{StaticResource MediumSpacing}" Grid.Row="0" VerticalOptions="Center">
-			<Label
-				Style="{StaticResource PageTitleLabel}"
+	<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}" VerticalOptions="End">
+		<Label
+				Style="{DynamicResource PageTitleLabel}"
 				Text="{l:Localize OnboardingGetStartedTitle}" />
 
-			<controls:TextButton
-				Command="{Binding NewAccountCommand}"
-				Style="{StaticResource FilledTextButton}"
-				LabelData="{l:Localize CreateNewAccount}" />
-			
-			<controls:TextButton
-				Command="{Binding ExistingAccountCommand}"
-				Style="{StaticResource  TransparentTextButton}"
-				LabelData="{l:Localize IAlreadyHaveAnAccount}" />
-		
-		</VerticalStackLayout>
-		
+		<!-- Info Bubble-->
+		<Border Grid.Row="0"
+					BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
+					Padding="{DynamicResource MediumMargins}"
+					StrokeShape="RoundRectangle 8,8,0,8">
+			<Border.Shadow>
+				<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+			</Border.Shadow>
+			<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+					ColumnDefinitions="auto, *">
+				<Path
+						Grid.Column="0"
+						Data="{x:Static ui:Geometries.InfoCirclePath}"
+						Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+				<Label
+						Grid.Column="1"
+						Text="{l:Localize ScanInvitationInfo}"
+						TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+			</Grid>
+		</Border>
 
-	</Grid>
+		<!-- Buttons -->
+		<controls:SvgButton
+				Command="{Binding ScanQrCodeCommand}"
+				Style="{DynamicResource PrimaryIconButton}"
+				LabelText="{l:Localize QrPageTitleScanInvitation}"
+				SvgSource="scan_qr.svg"
+				LabelPosition="Right"/>
+
+		<controls:TextButton
+				Command="{Binding NewAccountCommand}"
+				Style="{DynamicResource TertiaryButton}"
+				LabelData="{l:Localize CreateNewAccount}" />
+
+		<controls:TextButton
+				Command="{Binding ExistingAccountCommand}"
+				Style="{DynamicResource TertiaryButton}"
+				LabelData="{l:Localize IAlreadyHaveAnAccount}" />
+
+	</VerticalStackLayout>
 </base:BaseRegistrationView>

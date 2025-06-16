@@ -1,4 +1,6 @@
 import json
+import argparse
+import pathlib
 from collections.abc import Generator
 
 """
@@ -13,6 +15,11 @@ print to terminal, telling what files are added or missing from the new colors.
 > Note: The diff is generated on a per-line basis, meaning it will show a change even if it was just
 fixing a spelling error or one letter/digit in the hex-code changed.
 """
+
+p = pathlib.Path(__file__).parent.resolve()
+json_path = p / pathlib.Path("colors.json")
+new_colors_path = p / ("../NeuroAccessMaui/Resources/Styles/colors.xaml")
+old_colors_path = p / ("old_colors.xaml")
 
 # Converts hex color from figma to one supported by maui
 # Change #XXXXXXAA -> #AAXXXXXX Where A is alpha value
@@ -46,24 +53,39 @@ xaml_doc_start = """
 
 xaml_doc_end = "</ResourceDictionary>"
 
-def create_xaml_file() -> str:
-    with open("colors.json") as f:
+def create_xaml_file(alternative: bool) -> str:
+    with open(json_path) as f:
         data = json.load(f)[0]["values"]
-        formatted_light_colors = list(json_color_list_xaml_list(data[0]["color"], False))
-        formatted_dark_colors = list(json_color_list_xaml_list(data[1]["color"], True))
+        if alternative:
+            formatted_light_colors = list(json_color_list_xaml_list(data[3]["color"], False))
+            formatted_dark_colors = list(json_color_list_xaml_list(data[2]["color"], True))
+        else:
+            formatted_light_colors = list(json_color_list_xaml_list(data[0]["color"], False))
+            formatted_dark_colors = list(json_color_list_xaml_list(data[1]["color"], True))
 
     result = "\n".join([xaml_doc_start] + formatted_light_colors + formatted_dark_colors + [xaml_doc_end])
     
-    with open("colors.xaml", "w") as f:
-        f.write(result)
+    with open(new_colors_path, "w") as f:
+        f.write(result[1:])
 
     return result
 
-result = create_xaml_file()
+
+parser = argparse.ArgumentParser(
+    prog='ColorConverter',
+    description='Converts JSON colors from figma to colors.xaml, usable in a C# MAUI app',
+    epilog='Wow you actually read documentation, good for you. Happy easter (Egg)'
+)
+
+parser.add_argument("-a", "--alternative", action="store_true", help="If flag is set, creates the xaml file used for second light/dark pair of themes")
+
+args = parser.parse_args()
+
+result = create_xaml_file(args.alternative)
 
 # Check if there is a file containing the old colors and print information of what colors have changed
 try:
-    with open("old_colors.xaml", "rt") as f:
+    with open(old_colors_path, "rt") as f:
         f = f.read()
         
         print("Added lines in new file:")

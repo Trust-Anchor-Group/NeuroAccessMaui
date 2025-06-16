@@ -8,40 +8,35 @@
                            xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
                            xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
                            xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
-						   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls" 
-						   xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls" 
+									xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                            xmlns:ui="clr-namespace:NeuroAccessMaui.UI" >
 	<ContentView.Resources>
 		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
-		                                 BooleanTemplate="{StaticResource BooleanParameterTemplate}"
-		                                 DateTemplate="{StaticResource DateParameterTemplate}"
-										 DateTimeTemplate="{StaticResource DateTimeParameterTemplate}"
-		                                 NumericalTemplate="{StaticResource NumericalParameterTemplate}"
-		                                 StringTemplate="{StaticResource StringParameterTemplate}"
-		                                 TimeTemplate="{StaticResource TimeParameterTemplate}"
-		                                 DurationTemplate="{StaticResource DurationParameterTemplate}"
-		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
+			BooleanTemplate="{StaticResource BooleanParameterTemplate}"
+			DateTemplate="{StaticResource DateParameterTemplate}"
+			DateTimeTemplate="{StaticResource DateTimeParameterTemplate}"
+			NumericalTemplate="{StaticResource NumericalParameterTemplate}"
+			StringTemplate="{StaticResource StringParameterTemplate}"
+			TimeTemplate="{StaticResource TimeParameterTemplate}"
+			DurationTemplate="{StaticResource DurationParameterTemplate}"
+			ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
+			DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 	</ContentView.Resources>
-
 
 	<!-- Parameters -->
 	<Grid>
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumMargins}" >
-			<CollectionView HorizontalOptions="Center"
+		<CollectionView HorizontalOptions="Center"
 								ItemsSource="{Binding EditableParameters}"
 								ItemTemplate="{StaticResource ParameterTemplateSelector}"
-								SelectionMode="None" ItemSizingStrategy="MeasureAllItems"
-								>
-				<CollectionView.ItemsLayout>
-					<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource MediumSpacing}" />
-				</CollectionView.ItemsLayout>
-				<CollectionView.EmptyView>
-					<Label Text="{l:Localize SomethingWentWrong}" />
-				</CollectionView.EmptyView>
-			</CollectionView>
-		</Border>
+								SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
+			<CollectionView.ItemsLayout>
+				<LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+			</CollectionView.ItemsLayout>
+			<CollectionView.EmptyView>
+				<Label Text="{l:Localize SomethingWentWrong}" />
+			</CollectionView.EmptyView>
+		</CollectionView>
 	</Grid>
-
-
-
+	
 </views:BaseNewContractView>

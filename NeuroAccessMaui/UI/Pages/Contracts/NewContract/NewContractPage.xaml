@@ -24,26 +24,29 @@
 		                                 StringTemplate="{StaticResource StringParameterTemplate}"
 		                                 TimeTemplate="{StaticResource TimeParameterTemplate}"
 		                                 DurationTemplate="{StaticResource DurationParameterTemplate}"
+										 ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
 		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 	</ContentPage.Resources>
 
 	<Grid x:Name="TheMainGrid"
 	  RowDefinitions="auto, *"
 	  ColumnDefinitions="*"
-	  BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	  BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background Grid.Row ="1"/>
 
 		<!-- Top Bar -->
-		<Grid Grid.Row="0" RowDefinitions="*" ColumnDefinitions="auto,*" Margin="{StaticResource SmallBottomMargins}">
+		<Grid Grid.Row="0" RowDefinitions="*" ColumnDefinitions="auto,*" Margin="{DynamicResource SmallBottomMargins}">
 			<Grid.Padding>
-				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
+				<Thickness Left="{StaticResource LargeSpacing}"
+						   Top="{StaticResource LargeSpacing}"
+						   Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
 
-			<controls:ImageButton Grid.Row="0" Grid.Column="0" IsVisible="{Binding CanStateChange}" Command="{Binding BackCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<controls:ImageButton Grid.Row="0" Grid.Column="0" IsVisible="{Binding CanStateChange}" Command="{Binding BackCommand}" Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 			<!--	<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />-->
-			<Label Grid.Row="0" Grid.Column="1" Style="{StaticResource PageTitleLabel}" Text="{l:Localize NewContract}" HorizontalTextAlignment="End"/>
+			<Label Grid.Row="0" Grid.Column="1" Style="{DynamicResource PageTitleLabel}" Text="{l:Localize NewContract}" HorizontalTextAlignment="End"/>
 		</Grid>
 		<!-- Main Content -->
 		<Grid x:Name="StateGrid"
@@ -71,7 +74,7 @@
 
 
 		<!-- 
-		<Border Grid.Row="1" Style="{StaticResource BottomBarBorder}">
+		<Border Grid.Row="1" Style="{DynamicResource BottomBarBorder}">
 			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
@@ -79,25 +82,25 @@
 				</Grid.ColumnDefinitions>
 
 				<controls:TemplatedButton Grid.Column="0" Command="{x:Binding BackCommand}">
-					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
+					<Border Style="{DynamicResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
 						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
 							  Data="{x:Static ui:Geometries.ScanQrIconPath}"
-							  Style="{StaticResource TransparentTemplateButtonPath}"
+							  Style="{DynamicResource TransparentTemplateButtonPath}"
 							  />
-							<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
+							<Label Grid.Column="1" Style="{DynamicResource TransparentTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
 						</Grid>
 					</Border>
 				</controls:TemplatedButton>
 
 				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding TestCommand}">
-					<Border Style="{StaticResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
+					<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
 						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
 							  Data="{x:Static ui:Geometries.ShowIdIconPath}"
-							  Style="{StaticResource FilledTemplateButtonPath}"
+							  Style="{DynamicResource FilledTemplateButtonPath}"
 						/>
-							<Label Grid.Column="1" Style="{StaticResource FilledTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
+							<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
 						</Grid>
 					</Border>
 				</controls:TemplatedButton>
@@ -105,7 +108,7 @@
 		</Border>
 
 	
-<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
     <controls:Background/>
 
     <ScrollView>
@@ -114,7 +117,7 @@
                             ItemTemplate="{StaticResource ParameterTemplateSelector}"
                             VerticalOptions="FillAndExpand"
                             HorizontalOptions="FillAndExpand" />
-            <ContentView Content="{Binding Path=HumanReadableText}" Margin="{StaticResource SmallTopMargins}" />
+            <ContentView Content="{Binding Path=HumanReadableText}" Margin="{DynamicResource SmallTopMargins}" />
         </VerticalStackLayout>
     </ScrollView>
 </Grid>

@@ -26,18 +26,18 @@
 					   HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}"
 					   VerticalOptions="Center" HorizontalOptions="Center" />
 				<Label Grid.Column="1" Grid.Row="0" Text="{Binding Path=FriendlyName}"
-					   Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation"
+					   Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation"
 					   FontAttributes="Bold" FontSize="18" HorizontalTextAlignment="Start"
 					   BackgroundColor="Transparent" VerticalOptions="Center"/>
 				<Frame Grid.Row="0" Grid.Column="2" CornerRadius="12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding New}"
-					   HorizontalOptions="Start" VerticalOptions="Center" Style="{StaticResource AlertFrame}">
-					<Label FontSize="Caption" TextColor="{StaticResource HeadingForeground}" Text="{Binding NrEvents}" Padding="1"/>
+					   HorizontalOptions="Start" VerticalOptions="Center" Style="{DynamicResource AlertFrame}">
+					<Label FontSize="Caption" TextColor="{DynamicResource SurfaceBackgroundWLLight}" Text="{Binding NrEvents}" Padding="1"/>
 				</Frame>
 				<Label Grid.Column="2" Grid.Row="0" Text="{Binding Path=Value, Converter={converters:MoneyToString}}"
-					   Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" FontSize="18"
+					   Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontSize="18"
 					   BackgroundColor="Transparent" HorizontalTextAlignment="End" VerticalOptions="Center"/>
 				<Label Grid.Column="3" Grid.Row="0" Text="{Binding Path=Currency}" FontSize="18"
-					   Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation"
+					   Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation"
 					   BackgroundColor="Transparent" HorizontalTextAlignment="Start" VerticalOptions="Center"/>
 				<Grid.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding ClickedCommand}" CommandParameter="{Binding .}"/>
@@ -55,13 +55,13 @@
 					    HorizontalOptions="Center" VerticalOptions="Center"/>
 				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="CharacterWrap" TextType="Text"
 					    HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,2,5,2"
-					    Text="{Binding Path=Description}" Style="{StaticResource ClickableValueLabel}"/>
+					    Text="{Binding Path=Description}" Style="{DynamicResource ClickableValueLabel}"/>
 				<Path Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
 						Data="{Binding Icon}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
-						Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}"/>
+						Fill="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"/>
 				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
 					    Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
-					    Style="{StaticResource AlertLabel}"/>
+					    Style="{DynamicResource AlertLabel}"/>
 				<Grid.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding ClickedCommand}" CommandParameter="{Binding .}"/>
 				</Grid.GestureRecognizers>
@@ -73,18 +73,18 @@
 															  TokenTemplate="{StaticResource TokenTemplate}"
 															  NotificationTemplate="{StaticResource EventTemplate}"/>
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
 			<Grid RowDefinitions="auto,*,auto">
-				<Frame Grid.Row="0"  Style="{StaticResource MyWalletFrame}" HeightRequest="150" HasShadow="True"
-                       BackgroundColor="{StaticResource HeadingBackground}">
+				<Frame Grid.Row="0"  Style="{DynamicResource MyWalletFrame}" HeightRequest="150" HasShadow="True"
+                       BackgroundColor="{DynamicResource SurfaceBackgroundWLDark}">
 					<Grid HeightRequest="150" RowDefinitions="25,125" BackgroundColor="Transparent">
 						<Image x:Name="ImgBack" Grid.RowSpan="2" Source="{Binding Path=EDalerBackGlyph}" Opacity="0.5"/>
 						<Label Grid.Row="0" Text="{Binding Path=Timestamp, Converter={converters:DateTimeToString}}" HorizontalOptions="StartAndExpand"
-                               TextColor="{StaticResource HeadingForeground}" BackgroundColor="Transparent"/>
+                               TextColor="{DynamicResource SurfaceBackgroundWLLight}" BackgroundColor="Transparent"/>
 
 						<CollectionView Grid.Row="1" VerticalOptions="StartAndExpand"
                                         RemainingItemsThreshold="1" SelectionMode="None"
@@ -96,9 +96,9 @@
 							<CollectionView.ItemTemplate>
 								<DataTemplate x:DataType="objectmodel:TokenTotalItem">
 									<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto" BackgroundColor="Transparent">
-										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Total, Converter={converters:MoneyToString}}" Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="24" TextColor="{StaticResource HeadingForeground}" BackgroundColor="Transparent"/>
-										<Label Grid.Column="1" Grid.Row="0" Text="{Binding Path=Currency}" Style="{StaticResource KeyLabel}" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" FontAttributes="Bold" FontSize="24" TextColor="{StaticResource HeadingForeground}" BackgroundColor="Transparent"/>
-										<Label Grid.Column="2" Grid.Row="0" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" FontSize="24" TextColor="{StaticResource HeadingForeground}" BackgroundColor="Transparent">
+										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Total, Converter={converters:MoneyToString}}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="24" TextColor="{DynamicResource SurfaceBackgroundWLLight}" BackgroundColor="Transparent"/>
+										<Label Grid.Column="1" Grid.Row="0" Text="{Binding Path=Currency}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" FontAttributes="Bold" FontSize="24" TextColor="{DynamicResource SurfaceBackgroundWLLight}" BackgroundColor="Transparent"/>
+										<Label Grid.Column="2" Grid.Row="0" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" FontSize="24" TextColor="{DynamicResource SurfaceBackgroundWLLight}" BackgroundColor="Transparent">
 											<Label.FormattedText>
 												<FormattedString>
 													<Span Text="("/>
@@ -114,10 +114,10 @@
 					</Grid>
 				</Frame>
 
-				<VerticalStackLayout Grid.Row="1" Margin="{StaticResource SmallMargins}">
+				<VerticalStackLayout Grid.Row="1" Margin="{DynamicResource SmallMargins}">
 					<controls:LoadingCollectionView VerticalOptions="StartAndExpand" SelectionMode="Single"
                                                RemainingItemsThreshold="1" ItemSizingStrategy="MeasureFirstItem"
-                                               Style="{StaticResource MyWalletView}"
+                                               Style="{DynamicResource MyWalletView}"
                                                ItemsSource="{Binding Path=Tokens}"
 															  ItemTemplate="{StaticResource TokenItemStyleSelector}"
 															  LoadMoreCommand="{Binding LoadMoreTokensCommand}">

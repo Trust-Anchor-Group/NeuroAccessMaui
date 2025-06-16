@@ -9,16 +9,16 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 	<Grid
-		Padding="{StaticResource LargeMargins}"
-		RowSpacing="{StaticResource LargeSpacing}">
+		Padding="{DynamicResource LargeMargins}"
+		RowSpacing="{DynamicResource LargeSpacing}">
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 				<Label VerticalOptions="Start" FontFamily="HaasGroteskBold" Text="{Binding TraceTitle}" />
 				<Label FontSize="14" Text="{Binding TraceText}" />
 			</VerticalStackLayout>
 		</ScrollView>
 
-		<controls:TextButton VerticalOptions="End" Command="{Binding CopyToClipboardCommand}" Style="{StaticResource FilledTextButton}"
+		<controls:TextButton VerticalOptions="End" Command="{Binding CopyToClipboardCommand}" Style="{DynamicResource FilledTextButton}"
 									LabelData="{l:Localize CopyToClipboard}" />
 	</Grid>
 </base:BaseContentPage>

@@ -43,30 +43,30 @@
 						 SelectionMode="None"
 						 IsGrouped="False"
 						 ItemSizingStrategy="MeasureAllItems"
-						 Margin="{StaticResource SmallMargins}">
+						 Margin="{DynamicResource SmallMargins}">
 		<CollectionView.ItemTemplate>
 			<DataTemplate x:DataType="objectModel:ObservableRole">
 				<Grid>
-					<Border Style="{StaticResource BorderSet}">
-						<VerticalStackLayout>
+					<Border Style="{DynamicResource BorderSet}">
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<Label Text="{Binding Name}"
-									 Style="{StaticResource RoleTitleLabel}" />
+									 Style="{DynamicResource RoleTitleLabel}" />
 							<Label Text="{Binding Description}"
-									 Style="{StaticResource RoleDescriptionLabel}" />
+									 Style="{DynamicResource RoleDescriptionLabel}" />
 							<!-- Part Collection -->
 							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate x:DataType="objectModel:ObservablePart">
-										<Border Style="{AppThemeBinding Light={StaticResource BorderSet}, Dark={StaticResource BorderSubSet}}">
-											<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+										<Border Style="{AppThemeBinding Light={DynamicResource BorderSet}, Dark={DynamicResource BorderSubSet}}">
+											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 												<!-- Friendly name (clickable) -->
 												<controls:TemplatedButton Command="{Binding OpenIdentityCommand}"
 																				  Grid.Column="0">
 													<Label Text="{Binding FriendlyName}"
-															 Style="{StaticResource RoleDescriptionLabel}"
+															 Style="{DynamicResource RoleDescriptionLabel}"
 															 VerticalOptions="Center"
 															 HorizontalOptions="Center"
-															 TextColor="{AppThemeBinding Light={StaticResource AccentActiveLight}, Dark={StaticResource AccentActiveDark}}" />
+															 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessContentHoldWLLight}, Dark={DynamicResource ButtonAccessContentHoldWLDark}}" />
 												</controls:TemplatedButton>
 												<Grid ColumnDefinitions="auto,*">
 													<VerticalStackLayout Grid.Column="0"
@@ -75,13 +75,13 @@
 														<!-- "ID request sent" (only visible if identity not retrieved) -->
 														<Grid ColumnDefinitions="auto"
 																IsVisible="{Binding HasSentPetition}">
-															<Border Padding="{StaticResource SmallLeftRightMargins}"
-																	  Style="{StaticResource RoundedBorder}"
+															<Border Padding="{DynamicResource SmallLeftRightMargins}"
+																	  Style="{DynamicResource RoundedBorder}"
 																	  Stroke="Transparent"
-																	  BackgroundColor="{StaticResource Orange20Light}">
-																<Label Style="{StaticResource RoleDescriptionLabel}"
+																	  BackgroundColor="{DynamicResource BrandColorsNeuroOrangea20Light}">
+																<Label Style="{DynamicResource RoleDescriptionLabel}"
 																		 Text="{l:Localize IDRequestSent}"
-																		 TextColor="{StaticResource OrangeLight}"
+																		 TextColor="{DynamicResource BrandColorsNeuroOrangeLight}"
 																		 VerticalOptions="Center" />
 															</Border>
 														</Grid>
@@ -89,13 +89,13 @@
 														<!-- Pending signature (if not signed) -->
 														<Grid ColumnDefinitions="auto"
 																IsVisible="{Binding HasSigned, Converter={StaticResource InvertedBoolConverter}}">
-															<Border Padding="{StaticResource SmallLeftRightMargins}"
-																	  Style="{StaticResource RoundedBorder}"
+															<Border Padding="{DynamicResource SmallLeftRightMargins}"
+																	  Style="{DynamicResource RoundedBorder}"
 																	  Stroke="Transparent"
-																	  BackgroundColor="{StaticResource Orange20Light}">
-																<Label Style="{StaticResource RoleDescriptionLabel}"
+																	  BackgroundColor="{DynamicResource BrandColorsNeuroOrangea20Light}">
+																<Label Style="{DynamicResource RoleDescriptionLabel}"
 																		 Text="{l:Localize PendingSignature}"
-																		 TextColor="{StaticResource OrangeLight}"
+																		 TextColor="{DynamicResource BrandColorsNeuroOrangeLight}"
 																		 HorizontalOptions="End"
 																		 VerticalOptions="Center"
 																		 HorizontalTextAlignment="End" />
@@ -109,10 +109,10 @@
 																					  IsVisible="true"
 																					  Grid.Column="1"
 																					  HorizontalOptions="End">
-														<Border Style="{StaticResource FilledTemplateButtonBorder}"
+														<Border Style="{DynamicResource FilledTemplateButtonBorder}"
 																  Margin="0">
 															<Label Text="{l:Localize ViewSignature}"
-																	 Style="{StaticResource FilledTemplateButtonLabel}"
+																	 Style="{DynamicResource FilledTemplateButtonLabel}"
 																	 HorizontalTextAlignment="Center"
 																	 VerticalTextAlignment="Center" />
 														</Border>
@@ -128,11 +128,11 @@
 								</BindableLayout.ItemTemplate>
 							</VerticalStackLayout>
 
-							<Border Style="{StaticResource BorderSet}"
+							<Border Style="{DynamicResource BorderSet}"
 									  IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
 								<Label Text="{l:Localize None}"
-										 Style="{StaticResource RoleDescriptionLabel}"
-										 TextColor="{StaticResource AccentActiveLight}"
+										 Style="{DynamicResource RoleDescriptionLabel}"
+										 TextColor="{DynamicResource ButtonAccessPrimarybgWLLight}"
 										 HorizontalTextAlignment="Center"
 										 VerticalTextAlignment="Center" />
 							</Border>
