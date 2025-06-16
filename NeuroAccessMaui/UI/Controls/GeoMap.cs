@@ -4,12 +4,13 @@ using Mapsui.Layers;
 using Mapsui.Projections;
 using Mapsui.Tiling;
 using Mapsui.UI.Maui;
+using NeuroAccessMaui.UI.Controls.Geo;
 using Waher.Runtime.Geo;
 
 
 using Map = Mapsui.Map;                  // for Mapsui.Map
 
-namespace NeuroAccessMaui.UI.Controls.Geo
+namespace NeuroAccessMaui.UI.Controls
 {
 	public partial class GeoMap : ContentView, IDisposable
 	{
@@ -56,8 +57,8 @@ namespace NeuroAccessMaui.UI.Controls.Geo
 		{
 			// Convert lon/lat → spherical mercator MPoint
 			var merc = SphericalMercator.FromLonLat(pos.Longitude, pos.Latitude)
-										.ToMPoint();                     // :contentReference[oaicite:6]{index=6}
-			Map.Navigator.CenterOn(merc);                                     // :contentReference[oaicite:7]{index=7}
+										.ToMPoint();                  
+			Map.Navigator.CenterOnAndZoomTo(merc, 10, 1000);
 		}
 
 		#endregion
@@ -88,8 +89,8 @@ namespace NeuroAccessMaui.UI.Controls.Geo
 		{
 			// A) Remove any existing ItemsLayer
 			var old = Map.Layers.FirstOrDefault(l => l.Name == "ItemsLayer");
-			if (old != null)
-				Map.Layers.Remove(old);                                       
+			if (old is not null)
+				Map.Layers.Remove(old);
 
 			// B) Build new MemoryLayer with a MemoryProvider
 			var features = Items.Select(item =>
@@ -97,8 +98,8 @@ namespace NeuroAccessMaui.UI.Controls.Geo
 				// Convert each GeoPosition → MPoint → PointFeature
 				var worldPoint = SphericalMercator
 					.FromLonLat(item.Location.Longitude, item.Location.Latitude);
-				var pf = new PointFeature(worldPoint.ToMPoint());                     
-																		   // Tag your data URI for renderer lookup
+				var pf = new PointFeature(worldPoint.ToMPoint());
+				// Tag your data URI for renderer lookup
 				pf["DataUri"] = item.Uri.ToString();
 				// Attach placeholder style
 				pf.Styles.Add(new DataUriStyle());
