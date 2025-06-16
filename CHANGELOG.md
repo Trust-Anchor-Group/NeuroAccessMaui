@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.1] - 2025-06-16
+
 ### Added
 
-- PubSub Support
-- Fetching of dynamic branding material
+- PubSub Support in XmppService
+- Fetching of dynamic branding material, colors & images
 - InternetContentService, to easily cache files fetched from the web
 - XmppGetter, A InternetContentGetter for xmpp items (Currently only PubSub)
 - ThemeService to handle loading of branding and themes
@@ -20,7 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored AttachmentCacheService
 - Updated .NET sdk to 8.0.411
 
-### Removed
+### Fixed
+
+- Updated all localization resources
 
 ## [2.4.1] - 2025-04-16
 
