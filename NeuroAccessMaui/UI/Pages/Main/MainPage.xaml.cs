@@ -8,10 +8,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			this.InitializeComponent();
 			this.ContentPageModel = ViewModel;
-
-			  var mapControl = new Mapsui.UI.Maui.MapControl();
-  mapControl.Map?.Layers.Add(Mapsui.Tiling.OpenStreetMap.CreateTileLayer());
-  Content = mapControl;
 		}
 
 		private async void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)

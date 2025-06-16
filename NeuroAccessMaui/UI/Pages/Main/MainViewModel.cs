@@ -15,6 +15,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services.Theme;
 using Waher.Runtime.Inventory;
 using System.Reflection.Metadata;
+using NeuroAccessMaui.UI.Popups.Password;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -46,7 +47,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
-				Console.WriteLine("TEST: " + BannerUriLight);
+
 			});
 
 			await base.OnAppearing();
@@ -65,6 +66,12 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				*/
 				_ = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
 				await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
+
+
+				GeoMapViewModel vm = new(59.638346832492765,11.879682074310969);
+				await ServiceRef.UiService.PushAsync(new GeoMapPopup(vm));
+				Console.WriteLine($"GeoMap result: {await vm.Result}");
+
 			}
 			catch (Exception Ex)
 			{
