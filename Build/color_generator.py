@@ -16,7 +16,7 @@ print to terminal, telling what files are added or missing from the new colors.
 fixing a spelling error or one letter/digit in the hex-code changed.
 """
 
-p = pathlib.Path(".").absolute()
+p = pathlib.Path(__file__).parent.resolve()
 json_path = p / pathlib.Path("colors.json")
 new_colors_path = p / ("../NeuroAccessMaui/Resources/Styles/colors.xaml")
 old_colors_path = p / ("old_colors.xaml")
