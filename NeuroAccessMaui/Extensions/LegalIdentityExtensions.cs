@@ -1,4 +1,4 @@
-﻿using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 
 namespace NeuroAccessMaui.Extensions
