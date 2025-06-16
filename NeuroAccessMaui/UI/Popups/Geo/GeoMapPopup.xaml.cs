@@ -1,4 +1,9 @@
-﻿using NeuroAccessMaui.Services;
+﻿using Mapsui;
+using Mapsui.Extensions;
+using Mapsui.Projections;
+using Mapsui.Tiling;
+using NeuroAccessMaui.Services;
+using Waher.Runtime.Geo;
 
 namespace NeuroAccessMaui.UI.Popups.Password
 {
@@ -7,42 +12,30 @@ namespace NeuroAccessMaui.UI.Popups.Password
 	/// </summary>
 	public partial class GeoMapPopup
 	{
-        public GeoMapPopup(double? latitude = null, double? longitude = null)
-        {
-            InitializeComponent();
+		public GeoMapPopup(GeoMapViewModel ViewModel)
+		{
+			InitializeComponent();
 
-            // Create and bind ViewModel with optional initial coordinate
-            var viewModel = new GeoMapViewModel(latitude, longitude);
-            BindingContext = viewModel;
+		
+			ViewModel.MapControl = GeoMapControl;
+			BindingContext = ViewModel;
+			GeoMapControl.Map.Navigator.RotationLock = true;
+			// Add OpenStreetMap tile layer
+			GeoMapControl.Map?.Layers.Add(OpenStreetMap.CreateTileLayer());
 
-            // Add OSM tile layer
-            var tileLayer = Mapsui.Tiling.OpenStreetMap.CreateTileLayer();
-            GeoMapControl.Map?.Layers.Add(tileLayer);
+		}
 
-            // If initial coordinate provided, center map and set zoom
-            if (viewModel.InitialCoordinate is { } init)
-            {
-                GeoMapControl.Map?.Navigator.CenterOn(init.Longitude, init.Latitude);
-                GeoMapControl.Map?.Navigator.ZoomTo(10000); // adjust resolution as needed
-            }
+		protected override void OnAppearing()
+		{
+			base.OnAppearing();
 
-            // Subscribe to map click
-            GeoMapControl. += GeoMapControl_MapClicked;
-        }
+			if (this.BindingContext is GeoMapViewModel Vm && Vm.InitialCoordinate is not null)
+			{
+				var mercator = SphericalMercator.FromLonLat(Vm.InitialCoordinate.Longitude, Vm.InitialCoordinate.Latitude).ToMPoint();
+				GeoMapControl.Map?.Navigator.CenterOn(mercator);
+				GeoMapControl.Map?.Navigator.ZoomTo(1000);
+			}
+		}
 
-        private async void GeoMapControl_MapClicked(object sender, MapClickedEventArgs e)
-        {
-            // Get world position from event
-            var world = e.WorldPosition;
-            double lat = world.Y;
-            double lon = world.X;
-
-            if (BindingContext is GeoMapViewModel viewModel)
-            {
-                viewModel.SetSelectedCoordinate(lat, lon);
-                viewModel.Submit();
-            }
-
-        }
-    }
+	}
 }

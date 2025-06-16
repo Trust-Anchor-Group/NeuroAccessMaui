@@ -3,51 +3,42 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.Popups;
 using Waher.Runtime.Geo;
 using System;
+using Mapsui.Projections;
+using Mapsui.UI.Maui;
+using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Popups.Password
 {
-    public partial class GeoMapViewModel : ReturningPopupViewModel<string>
-    {
-		
-        /// <summary>
+	public partial class GeoMapViewModel : ReturningPopupViewModel<string>
+	{
+		// Expose the MapControl so we can read the viewport center
+		public MapControl? MapControl { get; set; }
+
+		/// <summary>
 		/// Optional initial coordinate to center the map on.
 		/// </summary>
 		public GeoPosition? InitialCoordinate { get; }
 
-        private GeoPosition? _selectedCoordinate;
+		public GeoMapViewModel(double? Latitude = null, double? Longitude = null)
+		{
+			if (Latitude.HasValue && Longitude.HasValue)
+				InitialCoordinate = new GeoPosition(Latitude.Value, Longitude.Value);
+		}
 
-        /// <summary>
-        /// Constructor accepting optional latitude and longitude.
-        /// </summary>
-        /// <param name="Latitude">Initial latitude, if any.</param>
-        /// <param name="Longitude">Initial longitude, if any.</param>
-        public GeoMapViewModel(double? Latitude = null, double? Longitude = null)
-        {
-            if (Latitude.HasValue && Longitude.HasValue)
-                InitialCoordinate = new GeoPosition(Latitude.Value, Longitude.Value);
-        }
+		[RelayCommand]
+		public void Confirm()
+		{
+			if (MapControl?.Map?.Navigator.Viewport is null)
+			{
+				result.SetResult(null);
+				return;
+			}
 
-        /// <summary>
-        /// Sets the user-selected coordinate.
-        /// </summary>
-        /// <param name="Latitude">Selected latitude</param>
-        /// <param name="Longitude">Selected longitude</param>
-        public void SetSelectedCoordinate(double Latitude, double Longitude)
-        {
-
-            _selectedCoordinate = new GeoPosition(Latitude, Longitude);
-        }
-
-        /// <summary>
-        /// Returns the selected coordinate as "lat,lon" when submitting.
-        /// </summary>
-        [RelayCommand]
-        public void Submit()
-        {
-            if (_selectedCoordinate is GeoPosition coord)
-                result.SetResult($"{coord.Latitude},{coord.Longitude}");
-            else
-                result.SetResult(null);
-        }
-    }
+			var vp = MapControl.Map.Navigator.Viewport;
+			// Convert world (Mercator) to lon/lat
+			var (lon, lat) = SphericalMercator.ToLonLat(vp.CenterX, vp.CenterY);
+			result.SetResult($"{lon},{lat}");
+			ServiceRef.UiService.PopAsync();
+		}
+	}
 }
