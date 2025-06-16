@@ -151,6 +151,11 @@ namespace NeuroAccessMaui.Services.Tag
 		string? NeuroFeaturesJid { get; set; }
 
 		/// <summary>
+		/// The XMPP server's PubSub JID.
+		/// </summary>
+		string? PubSubJid { get; set; }
+
+		/// <summary>
 		/// The XMPP server's Trust Provider ID, if any.
 		/// </summary>
 		string? TrustProviderId { get; set; }

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+  <!--
     Microsoft ResX Schema 
     
     Version 2.0
@@ -114,10 +114,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>ȘIR NEDEFINIT</value>
@@ -2614,5 +2616,203 @@
   </data>
   <data name="CompleteIdButton" xml:space="preserve">
     <value>Completează-ți ID-ul personal</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Căutare</value>
+  </data>
+  <data name="ClientMessageMissingCountry" xml:space="preserve">
+    <value>Cererea nu conține informații despre țară</value>
+  </data>
+  <data name="ClientMessageMissingPNr" xml:space="preserve">
+    <value>Aplicația nu conține informații despre numărul personal</value>
+  </data>
+  <data name="ClientMessageManualReview" xml:space="preserve">
+    <value>Nu se poate valida automat aplicația. Cererea trebuie validată manual sau prin evaluare inter pares</value>
+  </data>
+  <data name="ClientMessageUnableReview" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageInvalidType" xml:space="preserve">
+    <value>Un parametru a fost dat într-un format nevalid</value>
+  </data>
+  <data name="ClientMessageIdMismatch" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageJidMismatch" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageAccountMismatch" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageProviderMismatch" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageStateMismatch" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageCreatedMismatch" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageUpdatedMismatch" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageFromMismatch" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageToMismatch" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageNoClientURL" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageReviewerExternal" xml:space="preserve">
+    <value>Peer reviewer este extern. Cererea de evaluare inter pares trebuie trimisă direct recenzorului</value>
+  </data>
+  <data name="ClientMessageServiceNotConfigured" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageCountryNotSupported" xml:space="preserve">
+    <value>Serviciul nu este disponibil în țara selectată</value>
+  </data>
+  <data name="ClientMessageNoCompanyId" xml:space="preserve">
+    <value>Serviciul nu poate fi utilizat pentru a revizui ID-urile companiei</value>
+  </data>
+  <data name="ClientMessageServiceClientTimeout" xml:space="preserve">
+    <value>Serviciul a expirat așteptând ca utilizatorul să aprobe cererea</value>
+  </data>
+  <data name="ClientMessageServiceFailed" xml:space="preserve">
+    <value>Serviciul nu a reușit să proceseze cererea</value>
+  </data>
+  <data name="ClientMessagePNrMismatch" xml:space="preserve">
+    <value>Numărul personal nu se potrivește cu documentele furnizate</value>
+  </data>
+  <data name="ClientMessageFirstNameMismatch" xml:space="preserve">
+    <value>Prenumele nu se potrivește cu documentele furnizate</value>
+  </data>
+  <data name="ClientMessageLastNameMismatch" xml:space="preserve">
+    <value>Numele de familie nu se potrivește cu documentele furnizate</value>
+  </data>
+  <data name="ClientMessageNameMismatch" xml:space="preserve">
+    <value>Numele nu se potrivește cu documentele furnizate</value>
+  </data>
+  <data name="ClientMessageInvalidJid" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageNoLogin" xml:space="preserve">
+    <value>A apărut o eroare neașteptată</value>
+  </data>
+  <data name="ClientMessageUnexpectedOnboardingServer" xml:space="preserve">
+    <value>Răspuns neașteptat primit de la serverul de integrare</value>
+  </data>
+  <data name="ClientMessagePersonDead" xml:space="preserve">
+    <value>Nu s-a putut verifica dacă identitatea se potrivește cu o persoană în viață</value>
+  </data>
+  <data name="ClientMessageBirthDateMismatch" xml:space="preserve">
+    <value>Data nașterii nu se potrivește cu documentele furnizate</value>
+  </data>
+  <data name="ClientMessageAddressMismatch" xml:space="preserve">
+    <value>Adresa nu corespunde documentelor furnizate</value>
+  </data>
+  <data name="ClientMessageZipMismatch" xml:space="preserve">
+    <value>Codul poștal nu se potrivește cu documentele furnizate</value>
+  </data>
+  <data name="ClientMessageAreaMismatch" xml:space="preserve">
+    <value>Zona nu corespunde documentelor furnizate</value>
+  </data>
+  <data name="ClientMessageCityMismatch" xml:space="preserve">
+    <value>Orașul nu se potrivește cu documentele furnizate</value>
+  </data>
+  <data name="ClientMessageRegionMismatch" xml:space="preserve">
+    <value>Regiunea nu corespunde documentelor furnizate</value>
+  </data>
+  <data name="ClientMessageLivenessFailed" xml:space="preserve">
+    <value>Verificarea liveness a eșuat</value>
+  </data>
+  <data name="ClientMessagePhotoFake" xml:space="preserve">
+    <value>Nu s-a putut verifica autenticitatea fotografiei</value>
+  </data>
+  <data name="ClientMessagePhotoPoor" xml:space="preserve">
+    <value>Calitate foto prea scăzută</value>
+  </data>
+  <data name="ClientMessageBankIdRFA1" xml:space="preserve">
+    <value>Porniți aplicația BankID</value>
+  </data>
+  <data name="ClientMessageBandIdRFA2" xml:space="preserve">
+    <value>Aplicația BankID nu este instalată. Vă rugăm să contactați banca de internet</value>
+  </data>
+  <data name="ClientMessageBankIdRFA3" xml:space="preserve">
+    <value>Acțiune anulată. Vă rugăm să încercați din nou</value>
+  </data>
+  <data name="ClientMessageBankIdRFA4" xml:space="preserve">
+    <value>O identificare sau semnare pentru acest număr personal este deja începută. Vă rugăm să încercați din nou</value>
+  </data>
+  <data name="ClientMessageBankIdRFA5" xml:space="preserve">
+    <value>Eroare internă. Vă rugăm să încercați din nou</value>
+  </data>
+  <data name="ClientMessageBankIdRFA6" xml:space="preserve">
+    <value>Acțiune anulată</value>
+  </data>
+  <data name="ClientMessageBankIdRFA8" xml:space="preserve">
+    <value>Aplicația BankID nu răspunde. Vă rugăm să verificați dacă programul este pornit și dacă aveți acces la internet. Dacă nu aveți un BankID valid, puteți obține unul de la banca dvs. Încearcă din nou</value>
+  </data>
+  <data name="ClientMessageBankIdRFA9" xml:space="preserve">
+    <value>Introduceți codul de securitate în aplicația BankID și selectați Identificați sau Semnați</value>
+  </data>
+  <data name="ClientMessageBankIdRFA13" xml:space="preserve">
+    <value>Încercarea de a porni aplicația BankID</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14A" xml:space="preserve">
+    <value>Căutarea BankID:s, poate dura puțin timp... Dacă au trecut câteva secunde și tot nu a fost găsit niciun BankID, probabil că nu aveți un BankID care să poată fi utilizat pentru această identificare/semnare pe acest computer. Dacă aveți un card BankID, vă rugăm să îl introduceți în cititorul de carduri. Dacă nu aveți un BankID, puteți comanda unul de la banca dvs. Dacă aveți un BankID pe un alt dispozitiv, puteți porni aplicația BankID pe acel dispozitiv</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14B" xml:space="preserve">
+    <value>Căutarea BankID:s, poate dura puțin timp... Dacă au trecut câteva secunde și tot nu a fost găsit niciun BankID, probabil că nu aveți un BankID care poate fi folosit pentru această identificare/semnare pe acest dispozitiv. Dacă nu aveți un BankID, puteți comanda unul de la banca dvs. Dacă aveți un BankID pe un alt dispozitiv, puteți porni aplicația BankID pe acel dispozitiv</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15A" xml:space="preserve">
+    <value>Căutarea BankID:s, poate dura puțin timp... Dacă au trecut câteva secunde și tot nu a fost găsit niciun BankID, probabil că nu aveți un BankID care să poată fi utilizat pentru această identificare/semnare pe acest computer. Dacă aveți un card BankID, vă rugăm să îl introduceți în cititorul de carduri. Dacă nu aveți un BankID, puteți comanda unul de la banca dvs.</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15B" xml:space="preserve">
+    <value> Căutarea BankID:s, poate dura puțin timp... Dacă au trecut câteva secunde și tot nu a fost găsit niciun BankID, probabil că nu aveți un BankID care poate fi folosit pentru această identificare/semnare pe acest dispozitiv. Dacă nu aveți un BankID, puteți comanda unul de la banca dvs.</value>
+  </data>
+  <data name="ClientMessageBankIdRFA16" xml:space="preserve">
+    <value>BankID-ul pe care încercați să-l utilizați este revocat sau prea vechi. Vă rugăm să utilizați un alt BankID sau să comandați unul nou de la banca dvs.</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17A" xml:space="preserve">
+    <value>Aplicația BankID nu a putut fi găsită pe computer sau pe dispozitivul mobil. Vă rugăm să-l instalați și să comandați un BankID de la banca dvs. Instalați aplicația din magazinul de aplicații sau din https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17B" xml:space="preserve">
+    <value>Nu s-a putut scana codul QR. Porniți aplicația BankID și scanați codul QR. Verificați dacă aplicația BankID este actualizată. Dacă nu aveți aplicația BankID, trebuie să o instalați și să comandați un BankID de la banca dvs. Instalați aplicația din magazinul de aplicații sau din https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA18" xml:space="preserve">
+    <value>Porniți aplicația BankID</value>
+  </data>
+  <data name="ClientMessageBankIdRFA19" xml:space="preserve">
+    <value>Doriți să vă identificați sau să semnați cu un BankID pe acest computer sau cu un Mobile BankID?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA20" xml:space="preserve">
+    <value>Doriți să vă identificați sau să semnați cu un BankID pe acest dispozitiv sau cu un BankID pe alt dispozitiv?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA21" xml:space="preserve">
+    <value>Identificare sau semnare în curs</value>
+  </data>
+  <data name="ClientMessageBankIdRFA22" xml:space="preserve">
+    <value>Eroare necunoscută. Vă rugăm să încercați din nou</value>
+  </data>
+  <data name="SelectContract" xml:space="preserve">
+    <value>Selectează un contract</value>
+  </data>
+  <data name="SelectContractEntryDescription" xml:space="preserve">
+    <value>Lipiți ID-ul contractului sau alegeți din listă</value>
+  </data>
+  <data name="ScanInvitationInfo" xml:space="preserve">
+    <value>Scanați invitația dacă ați creat deja un cont separat</value>
+  </data>
+  <data name="PubSubServiceNotFound" xml:space="preserve">
+    <value>Serviciul de mesagerie nu este disponibil</value>
+  </data>
+  <data name="ClearCache" xml:space="preserve">
+    <value>Ștergeți memoria cache</value>
+  </data>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Elimină datele temporare, cum ar fi imaginile și atașamentele, pentru a elibera spațiu</value>
   </data>
 </root>

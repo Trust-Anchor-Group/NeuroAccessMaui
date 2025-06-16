@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+  <!--
     Microsoft ResX Schema 
     
     Version 2.0
@@ -114,10 +114,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>STRENG IKKE DEFINERT</value>
@@ -2614,5 +2616,203 @@
   </data>
   <data name="CompleteIdButton" xml:space="preserve">
     <value>Fyll ut din personlige ID</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Søke</value>
+  </data>
+  <data name="ClientMessageMissingCountry" xml:space="preserve">
+    <value>Søknaden inneholder ikke landinformasjon</value>
+  </data>
+  <data name="ClientMessageMissingPNr" xml:space="preserve">
+    <value>Applikasjonen inneholder ikke personlig nummerinformasjon</value>
+  </data>
+  <data name="ClientMessageManualReview" xml:space="preserve">
+    <value>Kan ikke validere søknaden automatisk. Søknaden må valideres manuelt eller ved fagfellevurdering</value>
+  </data>
+  <data name="ClientMessageUnableReview" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageInvalidType" xml:space="preserve">
+    <value>En parameter ble gitt i et ugyldig format</value>
+  </data>
+  <data name="ClientMessageIdMismatch" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageJidMismatch" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageAccountMismatch" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageProviderMismatch" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageStateMismatch" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageCreatedMismatch" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageUpdatedMismatch" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageFromMismatch" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageToMismatch" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageNoClientURL" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageReviewerExternal" xml:space="preserve">
+    <value>Fagfellevurderer er ekstern. Forespørsel om fagfellevurdering skal sendes direkte til korrekturleseren</value>
+  </data>
+  <data name="ClientMessageServiceNotConfigured" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageCountryNotSupported" xml:space="preserve">
+    <value>Tjenesten er ikke tilgjengelig i valgt land</value>
+  </data>
+  <data name="ClientMessageNoCompanyId" xml:space="preserve">
+    <value>Tjenesten kan ikke brukes til å gjennomgå firma-ID-er</value>
+  </data>
+  <data name="ClientMessageServiceClientTimeout" xml:space="preserve">
+    <value>Tjenesten ble tidsavbrutt mens hun ventet på at brukeren skulle godkjenne forespørselen</value>
+  </data>
+  <data name="ClientMessageServiceFailed" xml:space="preserve">
+    <value>Tjenesten kunne ikke behandle forespørselen</value>
+  </data>
+  <data name="ClientMessagePNrMismatch" xml:space="preserve">
+    <value>Personnummer samsvarer ikke med oppgitte dokumenter</value>
+  </data>
+  <data name="ClientMessageFirstNameMismatch" xml:space="preserve">
+    <value>Fornavn samsvarer ikke med oppgitte dokumenter</value>
+  </data>
+  <data name="ClientMessageLastNameMismatch" xml:space="preserve">
+    <value>Etternavnet samsvarer ikke med oppgitte dokumenter</value>
+  </data>
+  <data name="ClientMessageNameMismatch" xml:space="preserve">
+    <value>Navnet samsvarer ikke med de angitte dokumentene</value>
+  </data>
+  <data name="ClientMessageInvalidJid" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageNoLogin" xml:space="preserve">
+    <value>Det oppstod en uventet feil</value>
+  </data>
+  <data name="ClientMessageUnexpectedOnboardingServer" xml:space="preserve">
+    <value>Uventet svar mottatt fra onboarding-serveren</value>
+  </data>
+  <data name="ClientMessagePersonDead" xml:space="preserve">
+    <value>Kunne ikke bekrefte at identiteten samsvarer med en levende person</value>
+  </data>
+  <data name="ClientMessageBirthDateMismatch" xml:space="preserve">
+    <value>Fødselsdatoen samsvarer ikke med oppgitte dokumenter</value>
+  </data>
+  <data name="ClientMessageAddressMismatch" xml:space="preserve">
+    <value>Adressen samsvarer ikke med oppgitte dokumenter</value>
+  </data>
+  <data name="ClientMessageZipMismatch" xml:space="preserve">
+    <value>Postnummer samsvarer ikke med oppgitte dokumenter</value>
+  </data>
+  <data name="ClientMessageAreaMismatch" xml:space="preserve">
+    <value>Området samsvarer ikke med de angitte dokumentene</value>
+  </data>
+  <data name="ClientMessageCityMismatch" xml:space="preserve">
+    <value>By samsvarer ikke med oppgitte dokumenter</value>
+  </data>
+  <data name="ClientMessageRegionMismatch" xml:space="preserve">
+    <value>Region samsvarer ikke med oppgitte dokumenter</value>
+  </data>
+  <data name="ClientMessageLivenessFailed" xml:space="preserve">
+    <value>Liveness-sjekk mislyktes</value>
+  </data>
+  <data name="ClientMessagePhotoFake" xml:space="preserve">
+    <value>Kan ikke bekrefte bildets autentisitet</value>
+  </data>
+  <data name="ClientMessagePhotoPoor" xml:space="preserve">
+    <value>Bildekvaliteten er for lav</value>
+  </data>
+  <data name="ClientMessageBankIdRFA1" xml:space="preserve">
+    <value>Start BankID-appen din</value>
+  </data>
+  <data name="ClientMessageBandIdRFA2" xml:space="preserve">
+    <value>BankID-appen er ikke installert. Ta kontakt med nettbanken din</value>
+  </data>
+  <data name="ClientMessageBankIdRFA3" xml:space="preserve">
+    <value>Handling kansellert. Vennligst prøv igjen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA4" xml:space="preserve">
+    <value>En identifikasjon eller signering for dette personnummeret er allerede startet. Vennligst prøv igjen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA5" xml:space="preserve">
+    <value>Intern feil. Vennligst prøv igjen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA6" xml:space="preserve">
+    <value>Handling avbrutt</value>
+  </data>
+  <data name="ClientMessageBankIdRFA8" xml:space="preserve">
+    <value>BankID-appen svarer ikke. Vennligst sjekk at programmet er startet og at du har internettilgang. Hvis du ikke har gyldig BankID, kan du få det fra banken din. Prøv igjen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA9" xml:space="preserve">
+    <value>Skriv inn sikkerhetskoden din i BankID-appen og velg Identifiser eller signer</value>
+  </data>
+  <data name="ClientMessageBankIdRFA13" xml:space="preserve">
+    <value>Prøver å starte BankID-appen din</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14A" xml:space="preserve">
+    <value>Søker du etter BankID-er, kan det ta litt tid... Hvis det har gått noen sekunder og fortsatt ikke er funnet BankID, har du sannsynligvis ikke BankID som kan brukes til denne identifikasjonen/signeringen på denne datamaskinen. Hvis du har et BankID-kort, må du sette det inn i kortleseren. Hvis du ikke har BankID, kan du bestille det fra nettbanken din. Hvis du har BankID på en annen enhet, kan du starte BankID-appen på den enheten</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14B" xml:space="preserve">
+    <value>Søker du etter BankID-er, kan det ta litt tid... Hvis det har gått noen sekunder og fortsatt ikke er funnet BankID, har du sannsynligvis ikke en BankID som kan brukes til denne identifikasjonen/signeringen på denne enheten. Hvis du ikke har BankID, kan du bestille det fra nettbanken din. Hvis du har BankID på en annen enhet, kan du starte BankID-appen på den enheten</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15A" xml:space="preserve">
+    <value>Søker du etter BankID-er, kan det ta litt tid... Hvis det har gått noen sekunder og fortsatt ikke er funnet BankID, har du sannsynligvis ikke BankID som kan brukes til denne identifikasjonen/signeringen på denne datamaskinen. Hvis du har et BankID-kort, må du sette det inn i kortleseren. Hvis du ikke har BankID, kan du bestille en fra nettbanken din</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15B" xml:space="preserve">
+    <value> Søker du etter BankID-er, kan det ta litt tid... Hvis det har gått noen sekunder og fortsatt ikke er funnet BankID, har du sannsynligvis ikke en BankID som kan brukes til denne identifikasjonen/signeringen på denne enheten. Hvis du ikke har BankID, kan du bestille en fra nettbanken din</value>
+  </data>
+  <data name="ClientMessageBankIdRFA16" xml:space="preserve">
+    <value>BankID-en du prøver å bruke er tilbakekalt eller for gammel. Bruk en annen BankID eller bestill en ny fra nettbanken din</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17A" xml:space="preserve">
+    <value>BankID-appen ble ikke funnet på datamaskinen eller mobilen din. Installer den og bestill BankID fra nettbanken din. Installer appen fra appbutikken eller https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17B" xml:space="preserve">
+    <value>Kunne ikke skanne QR-koden. Start BankID-appen og skann QR-koden. Sjekk at BankID-appen er oppdatert. Hvis du ikke har BankID-appen, må du installere den og bestille BankID fra nettbanken din. Installer appen fra appbutikken eller https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA18" xml:space="preserve">
+    <value>Start BankID-appen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA19" xml:space="preserve">
+    <value>Ønsker du å identifisere deg eller signere med BankID på denne datamaskinen eller med Mobil BankID?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA20" xml:space="preserve">
+    <value>Ønsker du å identifisere deg eller signere med BankID på denne enheten eller med BankID på en annen enhet?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA21" xml:space="preserve">
+    <value>Identifikasjon eller signering pågår</value>
+  </data>
+  <data name="ClientMessageBankIdRFA22" xml:space="preserve">
+    <value>Ukjent feil. Vennligst prøv igjen</value>
+  </data>
+  <data name="SelectContract" xml:space="preserve">
+    <value>Velg en kontrakt</value>
+  </data>
+  <data name="SelectContractEntryDescription" xml:space="preserve">
+    <value>Lim inn kontrakt-ID eller velg fra listen</value>
+  </data>
+  <data name="ScanInvitationInfo" xml:space="preserve">
+    <value>Skann invitasjonen hvis du allerede har opprettet en konto separat</value>
+  </data>
+  <data name="PubSubServiceNotFound" xml:space="preserve">
+    <value>Meldingstjenesten er ikke tilgjengelig</value>
+  </data>
+  <data name="ClearCache" xml:space="preserve">
+    <value>Tøm hurtigbufferen</value>
+  </data>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Fjerner midlertidige data som bilder og vedlegg for å frigjøre plass</value>
   </data>
 </root>

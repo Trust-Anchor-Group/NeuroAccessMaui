@@ -17,14 +17,14 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-			<controls:ImageButton Grid.Column="0" HorizontalOptions="Start" Command="{Binding CancelCommand }" Style="{StaticResource FilledImageButton}"
+			<controls:ImageButton Grid.Column="0" HorizontalOptions="Start" Command="{Binding CancelCommand }" Style="{DynamicResource FilledImageButton}"
 								PathData="{x:Static ui:Geometries.BackButtonPath}" />
             <!--  rotation button -->
 			<controls:ImageButton
 				AutomationId="RotateImageButton"
                 Grid.Column="2"
 				Command="{Binding RotateCommand}"
-				Style="{StaticResource FilledImageButton}"
+				Style="{DynamicResource FilledImageButton}"
 				PathData="{x:Static ui:Geometries.FlipCameraPath}" />
 		</Grid>
 
@@ -35,8 +35,8 @@
             CropMode="Aspect"
             OutputMaxResolution="1280,1280" />
 
-        <Border Grid.Row="2" Style="{StaticResource BottomBarBorder}">
-            <Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{StaticResource SmallSpacing}">
+        <Border Grid.Row="2" Style="{DynamicResource BottomBarBorder}">
+            <Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{DynamicResource SmallSpacing}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -45,12 +45,12 @@
                     Grid.Column="0"
                     Command="{Binding CancelCommand}"
                     LabelData="{l:Localize Cancel}"
-                    Style="{StaticResource FilledTextButton}" />
+                    Style="{DynamicResource FilledTextButton}" />
                 <controls:TextButton
                     Grid.Column="1"
                     Command="{Binding CropCommand}"
                     LabelData="{l:Localize Continue}"
-                    Style="{StaticResource FilledTextButton}" />
+                    Style="{DynamicResource FilledTextButton}" />
             </Grid>
         </Border>
     </Grid>

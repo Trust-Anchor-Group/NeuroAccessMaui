@@ -14,24 +14,24 @@
 	<VisualElement.Resources>
 		<DataTemplate x:Key="ShowImageAndText" x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True">
+				<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
 					<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
-						<Border Grid.Column="0" Style="{StaticResource OutlinedImageButtonBorder}" Padding="0">
+						<Border Grid.Column="0" Style="{DynamicResource OutlinedImageButtonBorder}" Padding="0">
 							<Image Source="{Binding IconUrlSource}" Aspect="AspectFill"
 									 HeightRequest="{Binding IconHeight}" WidthRequest="{Binding IconWidth}"
 									 MinimumHeightRequest="{Binding IconHeight}" MinimumWidthRequest="{Binding IconWidth}"/>
 						</Border>
 						<Label Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="WordWrap"
-							    TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabel}"
-								 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
+							    TextType="Text" Text="{Binding Path=Name}" Style="{DynamicResource InfoLabel}"
+								 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
 					</Grid>
 				</Frame>
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<DataTemplate x:Key="ShowImage" x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
-					<Border Grid.Column="0" Style="{StaticResource OutlinedImageButtonBorder}" Padding="0">
+				<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
+					<Border Grid.Column="0" Style="{DynamicResource OutlinedImageButtonBorder}" Padding="0">
 						<Image Source="{Binding IconUrlSource}" Aspect="AspectFill"
 								 HeightRequest="{Binding IconHeight}" WidthRequest="{Binding IconWidth}" 
 								 MinimumHeightRequest="{Binding IconHeight}" MinimumWidthRequest="{Binding IconWidth}"/>
@@ -41,17 +41,17 @@
 		</DataTemplate>
 		<DataTemplate x:Key="ShowText" x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
+				<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
 					<Label HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="CharacterWrap"
-							 TextType="Text" Text="{Binding Path=Name}" Style="{StaticResource InfoLabel}"
+							 TextType="Text" Text="{Binding Path=Name}" Style="{DynamicResource InfoLabel}"
 							 HeightRequest="150" MinimumHeightRequest="150"
-							 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessPrimaryContentWLLight}, Dark={StaticResource ButtonAccessPrimaryContentWLDark}}"/>
+							 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
 				</Frame>
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<DataTemplate x:Key="ShowNothing" x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True"/>
+				<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True"/>
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<viewmodel:ServiceTemplateSelector x:Key="TemplateSelector"
@@ -61,23 +61,23 @@
 													  DefaultTemplate="{StaticResource ShowNothing}"/>
 
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{Binding Path=Title}" Style="{StaticResource PageTitleLabel}"/>
+				<Label Text="{Binding Path=Title}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Frame Style="{DynamicResource FrameSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
 
 						<VerticalStackLayout BindableLayout.ItemsSource="{Binding ServiceProviders}"
-													BindableLayout.ItemTemplateSelector="{StaticResource TemplateSelector}"/>
+													BindableLayout.ItemTemplateSelector="{DynamicResource TemplateSelector}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

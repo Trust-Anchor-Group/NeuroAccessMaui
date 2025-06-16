@@ -166,6 +166,17 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				GetValue: identity => identity.To.ToString("d", CultureInfo.CurrentCulture)),
 		];
 
+		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
+		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
+
+		public string BannerUri =>
+			Application.Current.RequestedTheme switch
+			{
+				AppTheme.Dark => this.BannerUriDark,
+				AppTheme.Light => this.BannerUriLight,
+				_ => this.BannerUriLight
+			};
+
 
 		public ViewIdentityViewModel(ViewIdentityNavigationArgs? args)
 			: base()
@@ -175,6 +186,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 			this.LoadIdentityTask = new ObservableTask<bool>();
 			this.LoadPhotosTask = new ObservableTask<int>();
+
+			Application.Current.RequestedThemeChanged += (_, __) =>
+				OnPropertyChanged(nameof(BannerUri));
 
 			this.timer = Application.Current?.Dispatcher.CreateTimer();
 			if (this.timer is null)

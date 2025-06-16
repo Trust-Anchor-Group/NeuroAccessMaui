@@ -61,7 +61,8 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -114,10 +115,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>STRING NOT DEFINED</value>
@@ -2381,7 +2384,7 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Momentary Values</value>
   </data>
-    <data name="None" xml:space="preserve">
+  <data name="None" xml:space="preserve">
     <value>None</value>
   </data>
   <data name="PeakValues" xml:space="preserve">
@@ -2803,5 +2806,14 @@
   </data>
   <data name="ScanInvitationInfo" xml:space="preserve">
     <value>Scan invitation if you have already created an account separately</value>
+  </data>
+  <data name="PubSubServiceNotFound" xml:space="preserve">
+    <value>Messaging service not available</value>
+  </data>
+  <data name="ClearCache" xml:space="preserve">
+    <value>Clear cache</value>
+  </data>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Removes temporary data like images and attachments to free up space</value>
   </data>
 </root>

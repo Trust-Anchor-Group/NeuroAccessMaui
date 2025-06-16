@@ -12,21 +12,21 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Things.MyThings"
 							 xmlns:contacts="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.MyContacts">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize Things}" Style="{StaticResource PageTitleLabel}"/>
+				<Label Text="{l:Localize Things}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Frame Style="{DynamicResource FrameSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{l:Localize ThingsDescription}" HorizontalOptions="Center" VerticalOptions="Start"/>
-						<Label Style="{StaticResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalOptions="Start" IsVisible="{Binding Path=ShowThingsMissing}" Text="{l:Localize NoThingsFound}" />
+						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalOptions="Start" IsVisible="{Binding Path=ShowThingsMissing}" Text="{l:Localize NoThingsFound}" />
 
 						<CollectionView x:Name="Things" VerticalOptions="StartAndExpand"
                                          ItemSizingStrategy="MeasureAllItems" SelectionMode="Single"
@@ -40,13 +40,13 @@
 								<DataTemplate x:DataType="contacts:ContactInfoModel">
 									<Grid ColumnDefinitions="*,30" RowDefinitions="auto" ColumnSpacing="2">
 
-										<Label Grid.Column="0" Grid.Row="0" Margin="{StaticResource SmallTopBottomMargins}" 
+										<Label Grid.Column="0" Grid.Row="0" Margin="{DynamicResource SmallTopBottomMargins}" 
 									   HorizontalOptions="Start" VerticalTextAlignment="Center" LineBreakMode="CharacterWrap"
-									   TextType="Text" Text="{Binding Path=FriendlyName}" Style="{StaticResource ClickableValueLabel}"/>
+									   TextType="Text" Text="{Binding Path=FriendlyName}" Style="{DynamicResource ClickableValueLabel}"/>
 
 										<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding HasEvents}"
-									   HorizontalOptions="End" VerticalOptions="Center" Style="{StaticResource AlertFrame}">
-											<Label FontSize="Caption" TextColor="{StaticResource SurfaceBackgroundWLLight}" Text="{Binding NrEvents}" Padding="1"/>
+									   HorizontalOptions="End" VerticalOptions="Center" Style="{DynamicResource AlertFrame}">
+											<Label FontSize="Caption" TextColor="{DynamicResource SurfaceBackgroundWLLight}" Text="{Binding NrEvents}" Padding="1"/>
 										</Frame>
 
 										<Ellipse Grid.Column="1" Grid.Row="0" WidthRequest="25" HeightRequest="25"

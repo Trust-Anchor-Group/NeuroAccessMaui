@@ -49,7 +49,6 @@ namespace NeuroAccessMaui.UI.Controls
 				Style = AppStyles.SecondaryButton
 			};
 			// Add in the ctor:
-			ChooseContractButton.SetBinding(TextButton.StyleProperty, new Binding(nameof(this.ButtonStyle), source: this));
 			ChooseContractButton.SetBinding(TextButton.LabelDataProperty, new Binding(nameof(this.ButtonText), source: this));
 			ChooseContractButton.SetBinding(TextButton.CommandProperty, new Binding(nameof(this.ButtonCommand), source: this));
 
@@ -58,7 +57,7 @@ namespace NeuroAccessMaui.UI.Controls
 				ColumnDefinitions = new ColumnDefinitionCollection
 				{
 					new ColumnDefinition { Width = GridLength.Star },
-					new ColumnDefinition { Width = GridLength.Auto }
+					new ColumnDefinition { Width = GridLength.Star }
 				},
 				ColumnSpacing = AppStyles.SmallSpacing
 			};
@@ -210,6 +209,9 @@ namespace NeuroAccessMaui.UI.Controls
 			try
 			{
 				string Url = await QrCode.ScanQrCode(nameof(AppResources.QrScanCode), AllowedSchemas) ?? string.Empty;
+				if (string.IsNullOrEmpty(Url))
+					return;
+
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					Entry.EntryData = Url;

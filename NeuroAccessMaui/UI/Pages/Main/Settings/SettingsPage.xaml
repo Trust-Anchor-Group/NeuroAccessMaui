@@ -12,48 +12,48 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Settings">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Margin="{StaticResource SmallMargins}">
-				<Grid ColumnDefinitions="Auto, *" Margin="{StaticResource SmallMargins}">
-					<controls:ImageButton
-						Grid.Column="0"
+			<VerticalStackLayout Margin="{DynamicResource SmallMargins}">
+				<Grid ColumnDefinitions="Auto, *" Margin="{DynamicResource SmallMargins}">
+					<controls:SvgButton
+						Grid.Row="0" Grid.Column="0"
 						Command="{Binding GoBackCommand}"
-						Style="{StaticResource ImageOnlyButton}"
-						PathData="{x:Static ui:Geometries.BackButtonPath}" />
+						SvgSource="close.svg"
+						Style="{DynamicResource IconButton}"/>
 
 					<Label
 						Grid.Column="1"
 						HorizontalOptions="End"
-						Style="{StaticResource PageTitleLabel}"
+						Style="{DynamicResource PageTitleLabel}"
 						Text="{l:Localize Settings}"/>
 				</Grid>
 				
 				<!-- Display Settings -->
-				<Border Style="{StaticResource BorderSet}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize DisplaySettings}"/>
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize DisplaySettings}"/>
 
 						<!-- Display Mode -->
-						<Border Style="{StaticResource BorderSubSet}">
-							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize SelectDisplayMode}"/>
+						<Border Style="{DynamicResource BorderSubSet}">
+							<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+								<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize SelectDisplayMode}"/>
 								<Grid RowDefinitions="auto,auto"
 									  ColumnDefinitions="auto,*,auto"
 									  RadioButtonGroup.GroupName="DisplayMode"
 									  RadioButtonGroup.SelectedValue="{Binding DisplayMode}"
-									  ColumnSpacing="{StaticResource SmallSpacing}"
-									  RowSpacing="{StaticResource SmallSpacing}">
+									  ColumnSpacing="{DynamicResource SmallSpacing}"
+									  RowSpacing="{DynamicResource SmallSpacing}">
 
 									<Image Grid.Column="0" Grid.Row="0" Source="{AppThemeBinding Light=light_mode_light, Dark=light_mode_dark}"/>
-									<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize LightMode}"/>
+									<Label Grid.Column="1" Grid.Row="0" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize LightMode}"/>
 									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="LightMode" Value="Light"/>
 
 									<Image Grid.Column="0" Grid.Row="1" Source="{AppThemeBinding Light=dark_mode_light, Dark=dark_mode_dark}"/>
-									<Label Grid.Column="1" Grid.Row="1" Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize DarkMode}"/>
+									<Label Grid.Column="1" Grid.Row="1" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize DarkMode}"/>
 									<RadioButton Grid.Column="2" Grid.Row="1" x:Name="DarkMode" Value="Dark"/>
 								</Grid>
 							</VerticalStackLayout>
@@ -61,10 +61,10 @@
 
 						<!-- Language options -->
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangeLanguageCommand}">
-							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
-								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize LanguageOptions}" InputTransparent="True"/>
-									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize LanguageOptionsDescription}" InputTransparent="True"/>
+							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize LanguageOptions}" InputTransparent="True"/>
+									<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize LanguageOptionsDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Border>
 						</controls:TemplatedButton>
@@ -72,36 +72,36 @@
 				</Border>
 
 				<!-- Identity Settings -->
-				<Border Style="{StaticResource BorderSet}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize IdentitySettings}"/>
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentitySettings}"/>
 
 						<!-- Compromized -->
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding CompromiseCommand}">
-							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
-								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ReportAsCompromized}" InputTransparent="True"/>
-									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize ReportAsCompromizedDescription}" InputTransparent="True"/>
+							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ReportAsCompromized}" InputTransparent="True"/>
+									<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize ReportAsCompromizedDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Border>
 						</controls:TemplatedButton>
 
 						<!-- Revoke -->
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding RevokeCommand}">
-							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
-								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
-									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize RevokeIdentityDescription}" InputTransparent="True"/>
+							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
+									<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize RevokeIdentityDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Border>
 						</controls:TemplatedButton>
 
 						<!-- Transfer -->
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding TransferCommand}">
-							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
-								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize TransferIdentity}" InputTransparent="True"/>
-									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize TransferIdentityDescription}" InputTransparent="True"/>
+							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize TransferIdentity}" InputTransparent="True"/>
+									<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize TransferIdentityDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Border>
 						</controls:TemplatedButton>
@@ -110,38 +110,38 @@
 				</Border>
 
 				<!-- Security Settings -->
-				<Border Style="{StaticResource BorderSet}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize SecuritySettings}"/>
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize SecuritySettings}"/>
 
 						<!-- Change Password -->
 						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangePasswordCommand}">
-							<Border Style="{StaticResource BorderSubSet}" InputTransparent="True">
-								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ChangePassword}" InputTransparent="True"/>
-									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize ChangePasswordDescription}" InputTransparent="True"/>
+							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ChangePassword}" InputTransparent="True"/>
+									<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize ChangePasswordDescription}" InputTransparent="True"/>
 								</VerticalStackLayout>
 							</Border>
 						</controls:TemplatedButton>
 
 						<!-- Local Authentication -->
-						<Border Style="{StaticResource BorderSubSet}" IsVisible="{Binding CanUseAlternativeAuthenticationMethods}">
-							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize AuthenticationMethod}"/>
+						<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding CanUseAlternativeAuthenticationMethods}">
+							<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+								<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize AuthenticationMethod}"/>
 								<Grid RowDefinitions="auto,auto"
 									  ColumnDefinitions="auto,*,auto"
 									  RadioButtonGroup.GroupName="AuthenticationMethod"
 									  RadioButtonGroup.SelectedValue="{Binding AuthenticationMethod}"
-									  RowSpacing="{StaticResource SmallSpacing}"
-									  ColumnSpacing="{StaticResource SmallSpacing}">
+									  RowSpacing="{DynamicResource SmallSpacing}"
+									  ColumnSpacing="{DynamicResource SmallSpacing}">
 									
 									<Image Grid.Column="0" Grid.Row="0" Source="{AppThemeBinding Light=pin_code_light, Dark=pin_code_dark}"/>
-									<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize Password}"/>
+									<Label Grid.Column="1" Grid.Row="0" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize Password}"/>
 									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="UsePassword" x:FieldModifier="public" Value="Password"/>
 
 									<Image Grid.Column="0" Grid.Row="1" Source="{AppThemeBinding Light=fingerprint_light, Dark=fingerprint_dark}"
 											 IsVisible="{Binding CanUseFingerprint}"/>
-									<Label Grid.Column="1" Grid.Row="1" Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize Fingerprint}"
+									<Label Grid.Column="1" Grid.Row="1" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize Fingerprint}"
 											 IsVisible="{Binding CanUseFingerprint}"/>
 									<RadioButton Grid.Column="2" Grid.Row="1" x:Name="Fingerprint" Value="Fingerprint" x:FieldModifier="public"
 													 IsVisible="{Binding CanUseFingerprint}"/>
@@ -150,56 +150,72 @@
 						</Border>
 
 						<!-- Screen Capture -->
-						<Border Style="{StaticResource BorderSubSet}" IsVisible="{Binding CanProhibitScreenCapture}">
-							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-								<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ScreenRecording}"/>
+						<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding CanProhibitScreenCapture}">
+							<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+								<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ScreenRecording}"/>
 								<Grid RowDefinitions="auto,auto"
 									  ColumnDefinitions="*,auto"
 									  RadioButtonGroup.GroupName="ScreenRecording"
 									  RadioButtonGroup.SelectedValue="{Binding ScreenCaptureMode}"
-									  RowSpacing="{StaticResource SmallSpacing}"
-									  ColumnSpacing="{StaticResource SmallSpacing}">
+									  RowSpacing="{DynamicResource SmallSpacing}"
+									  ColumnSpacing="{DynamicResource SmallSpacing}">
 
-									<Label Grid.Column="0" Grid.Row="0" Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize AllowRecording}"/>
+									<Label Grid.Column="0" Grid.Row="0" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize AllowRecording}"/>
 									<RadioButton Grid.Column="1" Grid.Row="0" x:Name="AllowRecording" Value="Allowed"/>
 
-									<Label Grid.Column="0" Grid.Row="1" Style="{StaticResource ItemDescriptionLabel}" Text="{l:Localize ProhibitRecording}"/>
+									<Label Grid.Column="0" Grid.Row="1" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize ProhibitRecording}"/>
 									<RadioButton Grid.Column="1" Grid.Row="1" x:Name="ProhibitRecording" Value="Prohibited"/>
 								</Grid>
 							</VerticalStackLayout>
 						</Border>
+
+						<controls:TemplatedButton HorizontalOptions="FillAndExpand"
+												  Command="{x:Binding ClearCacheCommand}">
+							<Border Style="{DynamicResource BorderSubSet}"
+									InputTransparent="True">
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
+													 InputTransparent="True">
+									<Label Style="{DynamicResource SectionTitleLabel}"
+										   Text="{l:Localize ClearCache}"
+										   InputTransparent="True" />
+									<Label Style="{DynamicResource ItemDescriptionLabel}"
+										   Text="{l:Localize ClearCacheDescription}"
+										   InputTransparent="True" />
+								</VerticalStackLayout>
+							</Border>
+						</controls:TemplatedButton>
 					</VerticalStackLayout>
 				</Border>
 
 				<!-- Version Information -->
-				<Border Style="{StaticResource BorderSet}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="Version"/>
-						<Border Style="{StaticResource BorderSubSet}">
-							<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="Version"/>
+						<Border Style="{DynamicResource BorderSubSet}">
+							<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 								<VerticalStackLayout>
-									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize AppVersion}"/>
-									<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding VersionNumber}"/>
+									<Label Style="{DynamicResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize AppVersion}"/>
+									<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding VersionNumber}"/>
 								</VerticalStackLayout>
 								<VerticalStackLayout>
-									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize BuildNumber}"/>
+									<Label Style="{DynamicResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize BuildNumber}"/>
 									<HorizontalStackLayout>
-										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding BuildNumber}"/>
-										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding BuildTime}"/>
+										<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding BuildNumber}"/>
+										<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding BuildTime}"/>
 									</HorizontalStackLayout>
 								</VerticalStackLayout>
 								<VerticalStackLayout>
-									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize Platform}"/>
+									<Label Style="{DynamicResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize Platform}"/>
 									<HorizontalStackLayout>
-										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DevicePlatform}"/>
-										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DeviceVersion}"/>
+										<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding DevicePlatform}"/>
+										<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding DeviceVersion}"/>
 									</HorizontalStackLayout>
 								</VerticalStackLayout>
 								<VerticalStackLayout>
-									<Label Style="{StaticResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize HardwareInfo}"/>
-									<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
-										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DeviceManufactorer}"/>
-										<Label Style="{StaticResource ItemDescriptionLabel}" Text="{Binding DeviceModel}"/>
+									<Label Style="{DynamicResource SectionTitleLabel}" VerticalOptions="Center" Text="{l:Localize HardwareInfo}"/>
+									<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
+										<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding DeviceManufactorer}"/>
+										<Label Style="{DynamicResource ItemDescriptionLabel}" Text="{Binding DeviceModel}"/>
 									</HorizontalStackLayout>
 								</VerticalStackLayout>
 							</VerticalStackLayout>

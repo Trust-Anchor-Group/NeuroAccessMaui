@@ -11,21 +11,21 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize SendPayment}" Style="{StaticResource PageTitleLabel}"/>
+				<Label Text="{l:Localize SendPayment}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Text="{l:Localize Payment}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize PaymentDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
+				<Frame Style="{DynamicResource FrameSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+						<Label Text="{l:Localize Payment}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize PaymentDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
 						<!-- Note -->
 						<Label Text="{l:Localize To}"/>
 						<Entry Text="{Binding Path=To}" IsReadOnly="{Binding Path=ToPreset}"/>
@@ -37,7 +37,7 @@
 							<controls:ImageButton Grid.Column="1" Grid.Row="0" IsEnabled="{Binding Path=AmountPreset}"
 														 PathData="{x:Static ui:Geometries.CalculatorPath}"
 														 Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText"
-														 Style="{StaticResource ImageOnlyButton}"/>
+														 Style="{DynamicResource ImageOnlyButton}"/>
 						</Grid>
 						<Label Text="{l:Localize AmountExtra}" IsVisible="{Binding Path=AmountPreset}"/>
 						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0" IsVisible="{Binding Path=AmountPreset}">
@@ -45,17 +45,17 @@
 									 Placeholder="{Binding Path=Currency}" IsVisible="{Binding Path=AmountPreset}"/>
 							<controls:ImageButton IsEnabled="{Binding Path=AmountPreset}" PathData="{x:Static ui:Geometries.CalculatorPath}"
 														 Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountExtraText"
-														 Style="{StaticResource ImageOnlyButton}"/>
+														 Style="{DynamicResource ImageOnlyButton}"/>
 						</Grid>
 						<Label Text="{l:Localize Message}"/>
 						<Entry Text="{Binding Path=Message}" IsReadOnly="{Binding Path=MessagePreset}"/>
-						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto" Margin="{StaticResource SmallTopBottomMargins}">
+						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto" Margin="{DynamicResource SmallTopBottomMargins}">
 							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Path=EncryptMessage, Mode=TwoWay}" VerticalOptions="Center" IsEnabled="{Binding CanEncryptMessage}"/>
-							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize EncryptMessage}" VerticalOptions="Center" Margin="{StaticResource SmallLeftMargins}"/>
+							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize EncryptMessage}" VerticalOptions="Center" Margin="{DynamicResource SmallLeftMargins}"/>
 						</Grid>
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize Send}" Command="{Binding Path=SendPaymentCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

@@ -20,13 +20,13 @@
 
 		<DataTemplate x:Key="HeaderModelTemplate" x:DataType="model:HeaderModel">
 			<Label Text="{Binding Path=Label}" HorizontalOptions="Center"
-				   Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
+				   Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 		</DataTemplate>
 
 		<DataTemplate x:Key="TagTemplate" x:DataType="things:HumanReadableTag">
 			<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
-				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap"/>
-				<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{StaticResource ClickableValueLabel}">
+				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{DynamicResource KeyLabel}" LineBreakMode="WordWrap"/>
+				<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{DynamicResource ClickableValueLabel}">
 					<Label.GestureRecognizers>
 						<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference SensorData}}" CommandParameter="{Binding}" />
 					</Label.GestureRecognizers>
@@ -36,8 +36,8 @@
 
 		<DataTemplate x:Key="FieldModelTemplate" x:DataType="model:FieldModel">
 			<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
-				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Name}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap"/>
-				<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=ValueString}" Style="{StaticResource ClickableValueLabel}"
+				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Name}" Style="{DynamicResource KeyLabel}" LineBreakMode="WordWrap"/>
+				<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=ValueString}" Style="{DynamicResource ClickableValueLabel}"
 					   HorizontalTextAlignment="{Binding HorizontalAlignment}">
 					<Label.GestureRecognizers>
 						<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference SensorData}}" CommandParameter="{Binding}" />
@@ -47,7 +47,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="ErrorModelTemplate" x:DataType="model:ErrorModel">
-			<Label LineBreakMode="WordWrap" Text="{Binding Path=ErrorMessage}" Style="{StaticResource AlertLabel}">
+			<Label LineBreakMode="WordWrap" Text="{Binding Path=ErrorMessage}" Style="{DynamicResource AlertLabel}">
 				<Label.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference SensorData}}" CommandParameter="{Binding}" />
 				</Label.GestureRecognizers>
@@ -69,27 +69,27 @@
 														  ErrorTemplate="{StaticResource ErrorModelTemplate}"
 														  TagTemplate="{StaticResource TagTemplate}"/>
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
-		<Grid RowDefinitions="auto, *" Margin="{StaticResource MediumMargins}"> 
+		<Grid RowDefinitions="auto, *" Margin="{DynamicResource MediumMargins}"> 
 			<controls:ImageButton Grid.Row="0" Grid.Column="0" HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-			<Label Grid.Row="0" Grid.Column="1" Text="{l:Localize SensorData}" Style="{StaticResource PageTitleLabel}" HorizontalOptions="End" HorizontalTextAlignment="End"/>
-			<Frame Style="{StaticResource FrameSet}" Grid.Row="1">
-				<Grid RowDefinitions="auto, auto, *" RowSpacing="{StaticResource SmallSpacing}" >
-					<Label Grid.Row="0"  Text="{l:Localize SensorDataText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
-					<Label Grid.Row="1" Text="{Binding Path=Status}" Style="{StaticResource InfoLabel}" VerticalOptions="Center" IsVisible="{Binding Path=HasStatus}"/>
-					<Frame Style="{StaticResource FrameSubSet}" Grid.Row="2">
+			<Label Grid.Row="0" Grid.Column="1" Text="{l:Localize SensorData}" Style="{DynamicResource PageTitleLabel}" HorizontalOptions="End" HorizontalTextAlignment="End"/>
+			<Frame Style="{DynamicResource FrameSet}" Grid.Row="1">
+				<Grid RowDefinitions="auto, auto, *" RowSpacing="{DynamicResource SmallSpacing}" >
+					<Label Grid.Row="0"  Text="{l:Localize SensorDataText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
+					<Label Grid.Row="1" Text="{Binding Path=Status}" Style="{DynamicResource InfoLabel}" VerticalOptions="Center" IsVisible="{Binding Path=HasStatus}"/>
+					<Frame Style="{DynamicResource FrameSubSet}" Grid.Row="2">
 					<CollectionView x:Name="SensorData"
 											 ItemsSource="{Binding SensorData}"
 											 ItemTemplate="{StaticResource ItemStyleSelector}"
 											 ItemSizingStrategy="MeasureAllItems"
 											 SelectionMode="None" VerticalScrollBarVisibility="Always">
 						<CollectionView.ItemsLayout>
-							<LinearItemsLayout Orientation="Vertical" ItemSpacing="{StaticResource SmallSpacing}"/>
+							<LinearItemsLayout Orientation="Vertical" ItemSpacing="{DynamicResource SmallSpacing}"/>
 						</CollectionView.ItemsLayout>
 						</CollectionView>
 					</Frame>

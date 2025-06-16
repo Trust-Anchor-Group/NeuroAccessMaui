@@ -18,16 +18,16 @@
 											PositionIn="Center" PositionOut="Center" />
 	</mopups:PopupPage.Animation>
 
-	<Grid Style="{StaticResource PopupGrid}">
+	<Grid Style="{DynamicResource PopupGrid}">
 
-		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{StaticResource PopupBorder}">
+		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{DynamicResource PopupBorder}">
 			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
-				<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
+				<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 
-					<Label Text="{l:Localize TextNote}" Style="{StaticResource SectionTitleLabel}" />
+					<Label Text="{l:Localize TextNote}" Style="{DynamicResource SectionTitleLabel}" />
 
 					<controls:CompositeEntry x:Name="NoteEntry"
-													 Style="{StaticResource RegularCompositeEntry}"
+													 Style="{DynamicResource RegularCompositeEntry}"
 													 EntryData="{Binding TextNote}" >
 						<controls:CompositeEntry.Behaviors>
 							<mct:EventToCommandBehavior EventName="Completed" Command="{Binding AddNoteCommand}" />
@@ -36,15 +36,15 @@
 
 					<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
 						<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Personal}" VerticalOptions="Center"/>
-						<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize NoteIsPersonal}" VerticalOptions="Center" Margin="{StaticResource SmallLeftMargins}"/>
+						<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize NoteIsPersonal}" VerticalOptions="Center" Margin="{DynamicResource SmallLeftMargins}"/>
 					</Grid>
 
 					<controls:TextButton Command="{Binding AddNoteCommand}"
-												Style="{StaticResource FilledTextButton}"
+												Style="{DynamicResource FilledTextButton}"
 												LabelData="{l:Localize Add}" />
 
 					<controls:TextButton Command="{Binding CancelCommand}"
-												Style="{StaticResource OutlinedTextButton}"
+												Style="{DynamicResource OutlinedTextButton}"
 												LabelData="{l:Localize Cancel}" />
 
 				</VerticalStackLayout>

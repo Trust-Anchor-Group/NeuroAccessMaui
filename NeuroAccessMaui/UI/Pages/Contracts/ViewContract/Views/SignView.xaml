@@ -47,14 +47,14 @@
 							 SelectionMode="None"
 							 IsGrouped="False"
 							 ItemSizingStrategy="MeasureAllItems"
-							 Margin="{StaticResource SmallMargins}">
+							 Margin="{DynamicResource SmallMargins}">
 			<CollectionView.Header>
 				<Grid>
-					<Border Style="{StaticResource BorderSet}">
+					<Border Style="{DynamicResource BorderSet}">
 						<VerticalStackLayout>
 							<Label Text="{l:Localize SelectYourRole}"
-									 Style="{StaticResource RoleTitleLabel}" />
-							<controls:CompositePicker Style="{StaticResource RegularCompositePicker}"
+									 Style="{DynamicResource RoleTitleLabel}" />
+							<controls:CompositePicker Style="{DynamicResource RegularCompositePicker}"
 															  Placeholder="{l:Localize SelectYourRoleInThisContract}"
 															  ItemsSource="{Binding SignableRoles}"
 															  SelectedItem="{Binding SelectedRole}">
@@ -69,39 +69,39 @@
 			<CollectionView.ItemTemplate>
 				<DataTemplate x:DataType="objectModel:ObservableRole">
 					<Grid>
-						<Border Style="{StaticResource BorderSet}">
+						<Border Style="{DynamicResource BorderSet}">
 							<VerticalStackLayout>
 								<Label Text="{Binding Name}"
-										 Style="{StaticResource RoleTitleLabel}" />
+										 Style="{DynamicResource RoleTitleLabel}" />
 								<Label Text="{Binding Description}"
-										 Style="{StaticResource RoleDescriptionLabel}" />
+										 Style="{DynamicResource RoleDescriptionLabel}" />
 								<!-- Part Collection -->
 								<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">
 									<BindableLayout.ItemTemplate>
 										<DataTemplate x:DataType="objectModel:ObservablePart">
-											<Border Style="{StaticResource BorderSet}">
+											<Border Style="{DynamicResource BorderSet}">
 												<Grid ColumnDefinitions="*, auto"
 														RowDefinitions="auto,auto">
 													<controls:TemplatedButton Grid.Column="0"
 																					  Grid.Row="0"
 																					  Command="{Binding OpenIdentityCommand}">
 														<Label Text="{Binding FriendlyName}"
-																 Style="{StaticResource RoleDescriptionLabel}"
+																 Style="{DynamicResource RoleDescriptionLabel}"
 																 VerticalOptions="Center"
 																 HorizontalOptions="Center"
-																 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessTertiaryContentWLLight}, Dark={StaticResource ButtonAccessTertiaryContentWLDark}}" />
+																 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}" />
 													</controls:TemplatedButton>
 													<Grid ColumnDefinitions="*, auto, *"
 															Grid.Column="0"
 															Grid.Row="1">
 														<Border Grid.Column="1"
-																  Padding="{StaticResource SmallLeftRightMargins}"
-																  Style="{StaticResource RoundedBorder}"
-																  BackgroundColor="{AppThemeBinding Light={StaticResource TnPWarningbgWLLight}, Dark={StaticResource TnPWarningbgWLDark}}"
+																  Padding="{DynamicResource SmallLeftRightMargins}"
+																  Style="{DynamicResource RoundedBorder}"
+																  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPWarningbgWLLight}, Dark={DynamicResource TnPWarningbgWLDark}}"
 																  IsVisible="{Binding HasIdentity, Converter={StaticResource InvertedBoolConverter}}">
-															<Label Style="{StaticResource RoleDescriptionLabel}"
+															<Label Style="{DynamicResource RoleDescriptionLabel}"
 																	 Text="{l:Localize IDRequestSent}"
-																	 TextColor="{AppThemeBinding Light={StaticResource TnPWarningContentWLLight}, Dark={StaticResource TnPWarningContentWLDark}}"
+																	 TextColor="{AppThemeBinding Light={DynamicResource TnPWarningContentWLLight}, Dark={DynamicResource TnPWarningContentWLDark}}"
 																	 VerticalOptions="Center" />
 														</Border>
 													</Grid>
@@ -111,11 +111,11 @@
 									</BindableLayout.ItemTemplate>
 								</VerticalStackLayout>
 
-								<Border Style="{StaticResource BorderSet}"
+								<Border Style="{DynamicResource BorderSet}"
 										  IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
 									<Label Text="{l:Localize None}"
-											 Style="{StaticResource RoleDescriptionLabel}"
-											 TextColor="{AppThemeBinding Light={StaticResource ButtonAccessTertiaryContentWLLight}, Dark={StaticResource ButtonAccessTertiaryContentWLDark}}"
+											 Style="{DynamicResource RoleDescriptionLabel}"
+											 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}"
 											 HorizontalTextAlignment="Center"
 											 VerticalTextAlignment="Center" />
 								</Border>
@@ -129,11 +129,11 @@
 		<Grid RowDefinitions="auto,auto"
 				Grid.Row="1">
 			<Border Grid.Row="0"
-					  Style="{StaticResource BottomBarBorder}">
+					  Style="{DynamicResource BottomBarBorder}">
 				<Grid HorizontalOptions="Center"
 						VerticalOptions="Center"
-						ColumnSpacing="{StaticResource SmallSpacing}"
-						Padding="{StaticResource SmallMargins}">
+						ColumnSpacing="{DynamicResource SmallSpacing}"
+						Padding="{DynamicResource SmallMargins}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="auto" />
 						<ColumnDefinition Width="*" />
@@ -141,29 +141,29 @@
 
 					<CheckBox Grid.Column="0"
 								 IsChecked="{Binding IsContractOk}"
-								 Color="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
+								 Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 					<Label Grid.Column="1"
 							 Text="{l:Localize IHaveReadAndUnderstoodTheContract}"
-							 Style="{StaticResource BottomBarLabel}" />
+							 Style="{DynamicResource BottomBarLabel}" />
 				</Grid>
 			</Border>
 
 			<Border Grid.Row="1"
-					  Style="{StaticResource BottomBarBorder}">
+					  Style="{DynamicResource BottomBarBorder}">
 				<Grid HorizontalOptions="Fill"
 						VerticalOptions="Center"
-						ColumnSpacing="{StaticResource SmallSpacing}"
-						Padding="{StaticResource SmallMargins}">
+						ColumnSpacing="{DynamicResource SmallSpacing}"
+						Padding="{DynamicResource SmallMargins}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 
-					<controls:TextButton Style="{StaticResource TransparentTextButton}"
+					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
 												Grid.Column="0"
 												LabelData="{l:Localize Back}"
 												Command="{Binding BackCommand}" />
-					<controls:TextButton Style="{StaticResource FilledTextButton}"
+					<controls:TextButton Style="{DynamicResource FilledTextButton}"
 												Grid.Column="1"
 												LabelData="Sign"
 												Command="{Binding SignCommand}" />

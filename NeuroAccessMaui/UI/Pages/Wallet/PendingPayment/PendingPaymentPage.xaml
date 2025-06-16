@@ -11,21 +11,21 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView x:Name="ScrollView">
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize PendingPayment}" Style="{StaticResource PageTitleLabel}"/>
+				<Label Text="{l:Localize PendingPayment}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Text="{l:Localize PendingPayment}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize PendingPaymentDescription}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
+				<Frame Style="{DynamicResource FrameSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+						<Label Text="{l:Localize PendingPayment}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize PendingPaymentDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
 						<!-- Note -->
 						<Label Text="{l:Localize To}"/>
 						<Entry Text="{Binding Path=FriendlyName}" IsReadOnly="True"/>
@@ -39,16 +39,16 @@
 						<Entry Text="{Binding Path=ExpiresStr}" IsReadOnly="True"/>
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize Submit}" Command="{Binding Path=SubmitCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize ShowCode}" Command="{Binding Path=ShowCodeCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
-						<Image x:Name="QrCode" BackgroundColor="{StaticResource SurfaceBackgroundWLLight}" Source="{Binding Path=QrCode}" 
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
+						<Image x:Name="QrCode" BackgroundColor="{DynamicResource SurfaceBackgroundWLLight}" Source="{Binding Path=QrCode}" 
                        IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
                        HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
                        Margin="0" />
 						<controls:TextButton x:Name="ShareButton" LabelData="{l:Localize Share}" Command="{Binding Path=ShareCommand}"
-													IsVisible="{Binding Path=HasQrCode}" Margin="{StaticResource SmallBottomMargins}"
-													Style="{StaticResource FilledTextButton}"/>
+													IsVisible="{Binding Path=HasQrCode}" Margin="{DynamicResource SmallBottomMargins}"
+													Style="{DynamicResource FilledTextButton}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

@@ -12,20 +12,20 @@
 							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Chat">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
-		<Grid RowDefinitions="auto, *, auto" ColumnDefinitions="auto, *" Padding="{StaticResource MediumMargins}">
+		<Grid RowDefinitions="auto, *, auto" ColumnDefinitions="auto, *" Padding="{DynamicResource MediumMargins}">
 			<controls:ImageButton Grid.Column="0" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-			<Label Grid.Column="1" Grid.Row="0" Style="{StaticResource PageTitleLabel}" FontSize="24" Text="{Binding FriendlyName}" MaxLines="2" LineBreakMode="TailTruncation" />
+			<Label Grid.Column="1" Grid.Row="0" Style="{DynamicResource PageTitleLabel}" FontSize="24" Text="{Binding FriendlyName}" MaxLines="2" LineBreakMode="TailTruncation" />
 
 			<ScrollView Grid.ColumnSpan="2" Grid.Row="1" x:Name="ScrollView" x:FieldModifier="public" Orientation="Vertical">
-				<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}" HorizontalOptions="Fill">
+				<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}" HorizontalOptions="Fill">
 					
-					<Frame Style="{StaticResource FrameSet}" IsVisible="{Binding HasMessages}">
+					<Frame Style="{DynamicResource FrameSet}" IsVisible="{Binding HasMessages}">
 						<VerticalStackLayout x:Name="Messages" x:FieldModifier="public" VerticalOptions="Fill" HorizontalOptions="Fill">
 						</VerticalStackLayout>
 					</Frame>
@@ -34,11 +34,11 @@
 				</VerticalStackLayout>
 			</ScrollView>
 
-			<Grid x:Name="ControlGrid" ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="{StaticResource SmallMargins}"
+			<Grid x:Name="ControlGrid" ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="{DynamicResource SmallMargins}"
 					Grid.ColumnSpan="2" Grid.Row="2">
 
 				<Frame Grid.Column="0" Grid.Row="0" CornerRadius="5" Padding="0"
-						 BorderColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}">
+						 BorderColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}">
 					<Frame.Behaviors>
 						<behaviors:SetFocusOnTappedBehavior SetFocusTo="EditorControl"/>
 					</Frame.Behaviors>
@@ -46,11 +46,11 @@
 						<Grid ColumnDefinitions="*,auto" ColumnSpacing="0"
 								IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
 							<Editor x:Name="EditorControl" HorizontalOptions="FillAndExpand" MinimumHeightRequest="40"
-									  IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}" BackgroundColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"
-									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges" TextColor="{AppThemeBinding Light={StaticResource InputFieldsContentPrimaryLight}, Dark={StaticResource InputFieldsContentPrimaryDark}}"/>
+									  IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}" BackgroundColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges" TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}"/>
 
-							<controls:ImageButton Grid.Column="1" Margin="{StaticResource SmallLeftMargins}"
-														 PathData="{x:Static ui:Geometries.CancelPath}" Style="{StaticResource ImageOnlyButton}"
+							<controls:ImageButton Grid.Column="1" Margin="{DynamicResource SmallLeftMargins}"
+														 PathData="{x:Static ui:Geometries.CancelPath}" Style="{DynamicResource ImageOnlyButton}"
 														 IsVisible="{Binding Path=IsWriting}" Command="{Binding CancelCommand}">
 								<controls:ImageButton.Behaviors>
 									<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
@@ -68,14 +68,14 @@
 							   xct:TouchEffect.Command="{Binding Path=PauseResumeCommand}">
 
 								<Grid WidthRequest="35" HeightRequest="35" BackgroundColor="Transparent">
-									<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLDarkLightTheme}, Dark={StaticResource SurfaceBackgroundWLDarkDarkTheme}}"
+									<controls:TintedImage TintColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLDarkLightTheme}, Dark={DynamicResource SurfaceBackgroundWLDarkDarkTheme}}"
 										Source="{x:Static resx:Svgs.Pause}" IsVisible="{Binding IsRecordingPaused, Converter={StaticResource InvertedBoolConverter}}" />
-									<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLDarkLightTheme}, Dark={StaticResource SurfaceBackgroundWLDarkDarkTheme}}"
+									<controls:TintedImage TintColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLDarkLightTheme}, Dark={DynamicResource SurfaceBackgroundWLDarkDarkTheme}}"
 										Source="{x:Static resx:Svgs.Play}" IsVisible="{Binding IsRecordingPaused}" />
 								</Grid>
 							</Frame>
 
-							<Label Grid.Column="1" Style="{StaticResource ValueLabel}" FontSize="Medium"
+							<Label Grid.Column="1" Style="{DynamicResource ValueLabel}" FontSize="Medium"
 								   Text="{Binding RecordingTime}" HorizontalOptions="Center" VerticalOptions="Center"/>
 
 							<Frame Grid.Column="2" CornerRadius="8" VerticalOptions="Center" Padding="5" Margin="0" HasShadow="False">
@@ -84,7 +84,7 @@
 							   xct:TouchEffect.PressedOpacity="0.75"
 							   xct:TouchEffect.Command="{Binding Path=CancelCommand}">
 
-								<controls:TintedImage TintColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLDarkLightTheme}, Dark={StaticResource SurfaceBackgroundWLDarkDarkTheme}}"
+								<controls:TintedImage TintColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLDarkLightTheme}, Dark={DynamicResource SurfaceBackgroundWLDarkDarkTheme}}"
 									Source="{x:Static resx:Svgs.Trash}" WidthRequest="35" HeightRequest="35" />
 							</Frame>
 						</Grid>
@@ -100,35 +100,35 @@
 								<VerticalStackLayout BackgroundColor="Transparent">
 									<controls:ImageButton PathData="{x:Static ui:Geometries.EllipsisPath}"
                                           Command="{Binding ExpandButtonsCommand}"
-                                          Style="{StaticResource ImageOnlyButton}"
+                                          Style="{DynamicResource ImageOnlyButton}"
                                           IsVisible="{Binding IsButtonExpanded, Converter={StaticResource InvertedBoolConverter}}"/>
 								</VerticalStackLayout>
 							</mct:Expander.Header>
-							<VerticalStackLayout Spacing="5" Margin="{StaticResource SmallBottomMargins}" IsVisible="{Binding IsButtonExpanded}">
+							<VerticalStackLayout Spacing="5" Margin="{DynamicResource SmallBottomMargins}" IsVisible="{Binding IsButtonExpanded}">
 								<controls:ImageButton PathData="{x:Static ui:Geometries.MicrophonePath}"
                                       Command="{Binding RecordAudioCommand}"
-                                      Style="{StaticResource ImageOnlyButton}"/>
+                                      Style="{DynamicResource ImageOnlyButton}"/>
 								<controls:ImageButton PathData="{x:Static ui:Geometries.CameraPath}"
                                       Command="{Binding TakePhotoCommand}"
-                                      Style="{StaticResource ImageOnlyButton}"/>
+                                      Style="{DynamicResource ImageOnlyButton}"/>
 								<controls:ImageButton PathData="{x:Static ui:Geometries.AttachmentPath}"
                                       Command="{Binding EmbedFileCommand}"
-                                      Style="{StaticResource ImageOnlyButton}"/>
+                                      Style="{DynamicResource ImageOnlyButton}"/>
 								<controls:ImageButton PathData="{x:Static ui:Geometries.PersonPath}"
                                       Command="{Binding EmbedIdCommand}"
-                                      Style="{StaticResource ImageOnlyButton}"/>
+                                      Style="{DynamicResource ImageOnlyButton}"/>
 								<controls:ImageButton PathData="{x:Static ui:Geometries.ContractPath}"
                                       Command="{Binding EmbedContractCommand}"
-                                      Style="{StaticResource ImageOnlyButton}"/>
+                                      Style="{DynamicResource ImageOnlyButton}"/>
 								<controls:ImageButton PathData="{x:Static ui:Geometries.MoneyPath}"
                                       Command="{Binding EmbedMoneyCommand}"
-                                      Style="{StaticResource ImageOnlyButton}"/>
+                                      Style="{DynamicResource ImageOnlyButton}"/>
 								<controls:ImageButton PathData="{x:Static ui:Geometries.TokenPath}"
                                       Command="{Binding EmbedTokenCommand}"
-                                      Style="{StaticResource ImageOnlyButton}"/>
+                                      Style="{DynamicResource ImageOnlyButton}"/>
 								<controls:ImageButton PathData="{x:Static ui:Geometries.ThingPath}"
                                       Command="{Binding EmbedThingCommand}"
-                                      Style="{StaticResource ImageOnlyButton}"/>
+                                      Style="{DynamicResource ImageOnlyButton}"/>
 							</VerticalStackLayout>
 						</mct:Expander>
 					</ContentView>
@@ -137,7 +137,7 @@
 					<ContentView IsVisible="{Binding Path=IsWriting}">
 						<controls:ImageButton PathData="{x:Static ui:Geometries.SendPath}"
                               Command="{Binding SendCommand}"
-                              Style="{StaticResource ImageOnlyButton}">
+                              Style="{DynamicResource ImageOnlyButton}">
 							<controls:ImageButton.Behaviors>
 								<behaviors:UnfocusOnClickedBehavior UnfocusControl="EditorControl"/>
 							</controls:ImageButton.Behaviors>

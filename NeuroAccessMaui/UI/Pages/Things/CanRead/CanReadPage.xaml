@@ -12,48 +12,48 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Things.CanRead"
 							 xmlns:things="clr-namespace:NeuroAccessMaui.UI.Pages.Things">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource SurfaceBackgroundWLLight}, Dark={StaticResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize ReadRequest}" Style="{StaticResource PageTitleLabel}"/>
+				<Label Text="{l:Localize ReadRequest}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Label Text="{l:Localize ReadRequest}" Margin="{StaticResource SmallTopMargins}"
+				<Frame Style="{DynamicResource FrameSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+						<Label Text="{l:Localize ReadRequest}" Margin="{DynamicResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
-						<Label Text="{l:Localize ReadoutRequestText2}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
+						<Label Text="{l:Localize ReadoutRequestText2}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
 						<!-- Caller -->
-						<Label Text="{l:Localize Caller}" Margin="{StaticResource SmallTopMargins}"
+						<Label Text="{l:Localize Caller}" Margin="{DynamicResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
-						<Label Text="{l:Localize InformationAboutCallerText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
+						<Label Text="{l:Localize InformationAboutCallerText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
 						<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto">
-							<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CallerAddress}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" />
-							<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=RemoteJid}" Style="{StaticResource ClickableValueLabel}">
+							<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CallerAddress}" Style="{DynamicResource KeyLabel}" LineBreakMode="WordWrap" />
+							<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=RemoteJid}" Style="{DynamicResource ClickableValueLabel}">
 								<Label.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding Path=ClickCommand}" CommandParameter="{Binding RemoteJid}" />
 								</Label.GestureRecognizers>
 							</Label>
-							<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize FriendlyName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap" />
-							<Label Grid.Column="1" Grid.Row="1" LineBreakMode="WordWrap" Text="{Binding Path=RemoteFriendlyName}" Style="{StaticResource ClickableValueLabel}">
+							<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize FriendlyName}" Style="{DynamicResource KeyLabel}" LineBreakMode="WordWrap" />
+							<Label Grid.Column="1" Grid.Row="1" LineBreakMode="WordWrap" Text="{Binding Path=RemoteFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
 								<Label.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding Path=ClickCommand}" CommandParameter="{Binding RemoteFriendlyName}" />
 								</Label.GestureRecognizers>
 							</Label>
 						</Grid>
-						<VerticalStackLayout x:Name="CallerLayout" BindableLayout.ItemsSource="{Binding Path=CallerTags}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallMargins}">
+						<VerticalStackLayout x:Name="CallerLayout" BindableLayout.ItemsSource="{Binding Path=CallerTags}" VerticalOptions="StartAndExpand" Margin="{DynamicResource SmallMargins}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="things:HumanReadableTag">
 									<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
-										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap"/>
-										<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{StaticResource ClickableValueLabel}">
+										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{DynamicResource KeyLabel}" LineBreakMode="WordWrap"/>
+										<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{DynamicResource ClickableValueLabel}">
 											<Label.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference CallerLayout}}" CommandParameter="{Binding}" />
 											</Label.GestureRecognizers>
@@ -64,20 +64,20 @@
 						</VerticalStackLayout>
 						<controls:TextButton LabelData="{l:Localize AddContact}" Command="{Binding Path=AddContactCommand}"
 													IsVisible="{Binding CallerInContactsList, Converter={StaticResource InvertedBoolConverter}}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize RemoveContact}" Command="{Binding Path=RemoveContactCommand}"
-													IsVisible="{Binding CallerInContactsList}" Margin="{StaticResource SmallBottomMargins}"
-													Style="{StaticResource FilledTextButton}"/>
+													IsVisible="{Binding CallerInContactsList}" Margin="{DynamicResource SmallBottomMargins}"
+													Style="{DynamicResource FilledTextButton}"/>
 						<!-- Thing -->
-						<Label Text="{l:Localize InformationAboutThing}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize InformationAboutThingText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
+						<Label Text="{l:Localize InformationAboutThing}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize InformationAboutThingText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
-						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{StaticResource SmallMargins}">
+						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{DynamicResource SmallMargins}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="things:HumanReadableTag">
 									<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
-										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{StaticResource KeyLabel}" LineBreakMode="WordWrap"/>
-										<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{StaticResource ClickableValueLabel}">
+										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{DynamicResource KeyLabel}" LineBreakMode="WordWrap"/>
+										<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{DynamicResource ClickableValueLabel}">
 											<Label.GestureRecognizers>
 												<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference TagLayout}}" CommandParameter="{Binding}" />
 											</Label.GestureRecognizers>
@@ -87,78 +87,78 @@
 							</BindableLayout.ItemTemplate>
 						</VerticalStackLayout>
 						<!-- Field Types -->
-						<Label Text="{l:Localize FieldTypes}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize PermitFieldTypesText}" LineBreakMode="WordWrap" Style="{StaticResource InfoLabel}"/>
+						<Label Text="{l:Localize FieldTypes}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize PermitFieldTypesText}" LineBreakMode="WordWrap" Style="{DynamicResource InfoLabel}"/>
 						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
 							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding PermitMomentary}" VerticalOptions="Center"/>
 							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize MomentaryValues}" VerticalOptions="Center" LineBreakMode="WordWrap"
-									 Margin="{StaticResource SmallLeftMargins}"/>
+									 Margin="{DynamicResource SmallLeftMargins}"/>
 						</Grid>
 						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
 							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding PermitIdentity}" VerticalOptions="Center"/>
 							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize IdentityValues}" VerticalOptions="Center" LineBreakMode="WordWrap"
-									 Margin="{StaticResource SmallLeftMargins}"/>
+									 Margin="{DynamicResource SmallLeftMargins}"/>
 						</Grid>
 						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
 							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding PermitStatus}" VerticalOptions="Center"/>
 							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize StatusValues}" VerticalOptions="Center" LineBreakMode="WordWrap"
-									 Margin="{StaticResource SmallLeftMargins}"/>
+									 Margin="{DynamicResource SmallLeftMargins}"/>
 						</Grid>
 						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
 							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding PermitComputed}" VerticalOptions="Center"/>
 							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize ComputedValues}" VerticalOptions="Center" LineBreakMode="WordWrap"
-									 Margin="{StaticResource SmallLeftMargins}"/>
+									 Margin="{DynamicResource SmallLeftMargins}"/>
 						</Grid>
 						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
 							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding PermitPeak}" VerticalOptions="Center"/>
 							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize PeakValues}" VerticalOptions="Center" LineBreakMode="WordWrap"
-									 Margin="{StaticResource SmallLeftMargins}"/>
+									 Margin="{DynamicResource SmallLeftMargins}"/>
 						</Grid>
 						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
 							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding PermitHistorical}" VerticalOptions="Center"/>
 							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize HistoricalValues}" VerticalOptions="Center" LineBreakMode="WordWrap"
-									 Margin="{StaticResource SmallLeftMargins}"/>
+									 Margin="{DynamicResource SmallLeftMargins}"/>
 						</Grid>
 						<controls:TextButton LabelData="{l:Localize All}" Command="{Binding Path=AllFieldTypesCommand}"
-													Margin="{StaticResource SmallTopBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallTopBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize None}" Command="{Binding Path=NoFieldTypesCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<!-- Field Names -->
-						<Label Text="{l:Localize Fields}" Margin="{StaticResource SmallTopMargins}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize PermitFieldsText}" LineBreakMode="WordWrap" Style="{StaticResource InfoLabel}"/>
+						<Label Text="{l:Localize Fields}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
+						<Label Text="{l:Localize PermitFieldsText}" LineBreakMode="WordWrap" Style="{DynamicResource InfoLabel}"/>
 						<VerticalStackLayout x:Name="FieldLayout" BindableLayout.ItemsSource="{Binding Path=Fields}" VerticalOptions="StartAndExpand">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="viewmodel:FieldReference">
 									<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
 										<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Permitted}" VerticalOptions="Center"/>
 										<Label Grid.Column="1" Grid.Row="0" Text="{Binding Name}" VerticalOptions="Center" LineBreakMode="WordWrap"
-												 Margin="{StaticResource SmallLeftMargins}"/>
+												 Margin="{DynamicResource SmallLeftMargins}"/>
 									</Grid>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</VerticalStackLayout>
 						<controls:TextButton LabelData="{l:Localize All}" Command="{Binding Path=AllFieldsCommand}"
-													Margin="{StaticResource SmallTopBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallTopBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize None}" Command="{Binding Path=NoFieldsCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<!-- Range -->
-						<Label Text="{l:Localize Range}" Margin="{StaticResource SmallTopMargins}"
+						<Label Text="{l:Localize Range}" Margin="{DynamicResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
-						<Label Text="{l:Localize RangeText}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"
+						<Label Text="{l:Localize RangeText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
 						<Picker SelectedIndex="{Binding SelectedRuleRangeIndex}" ItemsSource="{Binding RuleRanges}"
-						Margin="{StaticResource SmallBottomMargins}"
-						BackgroundColor="{AppThemeBinding Dark={StaticResource SurfaceBackgroundWLDark}, Light={StaticResource SurfaceBackgroundWLLight}}"
-						TextColor="{AppThemeBinding Dark={StaticResource InputFieldsContentPrimaryDark}, Light={StaticResource InputFieldsContentPrimaryLight}}"/>
+						Margin="{DynamicResource SmallBottomMargins}"
+						BackgroundColor="{AppThemeBinding Dark={DynamicResource SurfaceBackgroundWLDark}, Light={DynamicResource SurfaceBackgroundWLLight}}"
+						TextColor="{AppThemeBinding Dark={DynamicResource InputFieldsContentPrimaryDark}, Light={DynamicResource InputFieldsContentPrimaryLight}}"/>
 						<!-- BUTTONS -->
-						<Label Text="{l:Localize Options}" Margin="{StaticResource SmallTopMargins}"
+						<Label Text="{l:Localize Options}" Margin="{DynamicResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
 						<controls:TextButton LabelData="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize Reject}" Command="{Binding Path=RejectCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize Ignore}" Command="{Binding Path=IgnoreCommand}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

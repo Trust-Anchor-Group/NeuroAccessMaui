@@ -181,6 +181,12 @@ namespace NeuroAccessMaui.Services
 		public string? NeuroFeaturesJid { get; set; }
 
 		/// <summary>
+		/// PubSub Service JID
+		/// </summary>
+		[DefaultValueStringEmpty]
+		public string? PubSubJid { get; set; }
+
+		/// <summary>
 		/// Trust Provider Id
 		/// </summary>
 		[DefaultValueStringEmpty]

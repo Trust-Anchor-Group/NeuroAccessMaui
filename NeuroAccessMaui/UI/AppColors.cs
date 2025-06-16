@@ -145,12 +145,12 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					alertDark ??= AppStyles.TryGetResource<Color>("InputFieldsDangerContentv800Dark");
+					alertDark ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Dark");
 					return alertDark!;
 				}
 				else
 				{
-					alertLight ??= AppStyles.TryGetResource<Color>("InputFieldsDangerContentv800Light");
+					alertLight ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Light");
 					return alertLight!;
 				}
 			}
@@ -165,12 +165,12 @@ namespace NeuroAccessMaui.UI
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					errorBackgroundDark ??= AppStyles.TryGetResource<Color>("InputFieldsDangerContentv800Dark");
+					errorBackgroundDark ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Dark");
 					return errorBackgroundDark!;
 				}
 				else
 				{
-					errorBackgroundLight ??= AppStyles.TryGetResource<Color>("InputFieldsDangerContentv800Light");
+					errorBackgroundLight ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Light");
 					return errorBackgroundLight!;
 				}
 			}

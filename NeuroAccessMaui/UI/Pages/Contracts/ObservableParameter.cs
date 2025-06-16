@@ -424,9 +424,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				MyContractsNavigationArgs Args = new MyContractsNavigationArgs(ContractsListMode.Contracts, TaskCompletionSource);
 				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args);
 				Contract? Contract = await TaskCompletionSource.Task;
-				Console.WriteLine("Contract selected: " + Contract?.ContractId ?? String.Empty);
 
 				MainThread.BeginInvokeOnMainThread(() => {
+					if (Contract is null)
+						return;
 					this.ContractReferenceValue = Contract?.ContractId;
 				   this.OnPropertyChanged(nameof(this.ContractReferenceValue));
 				});

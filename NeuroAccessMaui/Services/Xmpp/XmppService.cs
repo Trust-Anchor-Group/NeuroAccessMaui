@@ -31,6 +31,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using Waher.Content;
@@ -58,6 +59,7 @@ using Waher.Networking.XMPP.Provisioning;
 using Waher.Networking.XMPP.Provisioning.Events;
 using Waher.Networking.XMPP.Provisioning.SearchOperators;
 using Waher.Networking.XMPP.PubSub;
+using Waher.Networking.XMPP.PubSub.Events;
 using Waher.Networking.XMPP.Push;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
@@ -99,6 +101,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private AbuseClient? abuseClient;
 		private PepClient? pepClient;
 		private HttpxClient? httpxClient;
+		private PubSubClient? pubSubClient;
 		private Timer? reconnectTimer;
 		private Timer? updatePasswordTimer;
 		private string? domainName;
@@ -184,7 +187,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
 					}
 #if DEBUG_XMPP_LOCAL
-					DebugSniffer LocalSniffer = new DebugSniffer(BinaryPresentationMethod.Hexadecimal);
+					DebugSniffer LocalSniffer = new(BinaryPresentationMethod.Hexadecimal);
 					this.xmppClient.Add(LocalSniffer);
 #endif
 
@@ -323,11 +326,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.controlClient = new ControlClient(this.xmppClient);
 					this.concentratorClient = new ConcentratorClient(this.xmppClient);
 
-					this.pepClient = new PepClient(this.xmppClient);
+					if(string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
+						this.pepClient = new PepClient(this.xmppClient);
+					else
+						this.pepClient = new PepClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
 					this.ReregisterPepEventHandlers(this.pepClient);
 
 					this.httpxClient = new HttpxClient(this.xmppClient, 8192);
 					Types.SetModuleParameter("XMPP", this.xmppClient);      // Makes the XMPP Client the default XMPP client, when resolving HTTP over XMPP requests.
+
+					//if(this.pubSubClient is null && !string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
+					//	this.pubSubClient = new PubSubClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
 
 					this.IsLoggedOut = false;
 					await this.xmppClient.Connect(IsIpAddress ? string.Empty : this.domainName);
@@ -898,7 +907,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 							this.xmppClient?.PasswordHash ?? string.Empty,
 							this.xmppClient?.PasswordHashMethod ?? string.Empty);
 					}
-
 					if (ServiceRef.TagProfile.NeedsUpdating() && await this.DiscoverServices())
 					{
 						if (this.contractsClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
@@ -945,6 +953,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 						if (this.pushNotificationClient is null && ServiceRef.TagProfile.SupportsPushNotification)
 							this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
+
+						if (this.pepClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
+						{
+							this.pepClient = new PepClient(this.xmppClient,ServiceRef.TagProfile.PubSubJid);
+							this.ReregisterPepEventHandlers(this.pepClient);
+							//this.RegisterPubSubEventHandlers(this.pubSubClient);
+						}
 					}
 
 					// Check is xmpp password needs updating.
@@ -1107,7 +1122,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					case XmppState.Error:
 						// When State = Error, wait for the OnConnectionError event to arrive also, as it holds more/direct information.
-						// Just in case it never would - set state error and result.
+						// Just in case it never would - set state error and Result.
 						await Task.Delay(Constants.Timeouts.XmppConnect);
 						Connected.TrySetResult(false);
 						break;
@@ -1429,6 +1444,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 				if (ItemResponse.HasFeature(NeuroFeaturesClient.NamespaceNeuroFeatures))
 					ServiceRef.TagProfile.NeuroFeaturesJid = Item.JID;
+
+				if (ItemResponse.HasFeature(PubSubClient.NamespacePubSub))
+					ServiceRef.TagProfile.PubSubJid = Item.JID;
 			}
 		}
 
@@ -5184,5 +5202,226 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#endregion
 
+		#region PubSub
+
+		/// <summary>
+		/// Reference to the PubSub client implementing the PubSub XMPP extension
+		/// </summary>
+		private PubSubClient PubSubClient
+		{
+			get
+			{
+				if (this.pepClient is null)
+				{
+					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.PubSubServiceNotFound)]);
+				}
+
+				return this.pepClient.PubSubClient;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<Item[]?> GetAllNodeIdsAsync()
+		{
+			try
+			{
+				TaskCompletionSource<ServiceItemsDiscoveryEventArgs> Tcs = new();
+				await this.XmppClient.SendServiceItemsDiscoveryRequest(
+					this.PubSubClient.ComponentAddress,
+					(s, e) => { Tcs.TrySetResult(e); return Task.CompletedTask; },
+					null);
+				ServiceItemsDiscoveryEventArgs Result = await Tcs.Task;
+				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<PubSubItem[]?> GetItemsAsync(string NodeId)
+		{
+			try
+			{
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				await this.PubSubClient.GetItems(NodeId, (s, e) => HandleResult(e, Tcs), null);
+				ItemsEventArgs Result = await Tcs.Task;
+				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<PubSubItem[]?> GetItemsAsync(string NodeId, string[] ItemIds)
+		{
+			try
+			{
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				await this.PubSubClient.GetItems(NodeId, ItemIds, (s, e) => HandleResult(e, Tcs), null);
+				ItemsEventArgs Result = await Tcs.Task;
+				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<PubSubItem?> GetItemAsync(string NodeId, string ItemId)
+		{
+			try
+			{
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				await this.PubSubClient.GetItems(NodeId, new[] { ItemId }, (s, e) => HandleResult(e, Tcs), null);
+				ItemsEventArgs Result = await Tcs.Task;
+				return Result.Items.FirstOrDefault();
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<PubSubItem[]?> GetLatestItemsAsync(string NodeId, int Count)
+		{
+			try
+			{
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				await this.PubSubClient.GetLatestItems(NodeId, Count, (s, e) => HandleResult(e, Tcs), null);
+				ItemsEventArgs Result = await Tcs.Task;
+				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> CreateNodeAsync(string NodeId, NodeConfiguration? Config = null)
+		{
+			TaskCompletionSource<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> Tcs = new();
+			if (Config is null)
+				await this.PubSubClient.CreateNode(NodeId, (s, e) => HandleResult(e, Tcs), null);
+			else
+				await this.PubSubClient.CreateNode(NodeId, Config, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> TryCreateNodeAsync(string NodeId, NodeConfiguration? Config = null)
+		{
+			try { return await this.CreateNodeAsync(NodeId, Config); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> DeleteNodeAsync(string NodeId, string? RedirectUri = null)
+		{
+			TaskCompletionSource<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> Tcs = new();
+			await this.PubSubClient.DeleteNode(NodeId, RedirectUri, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> TryDeleteNodeAsync(string NodeId, string? RedirectUri = null)
+		{
+			try { return await this.DeleteNodeAsync(NodeId, RedirectUri); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<SubscriptionEventArgs> SubscribeAsync(string NodeId, string? Jid = null, SubscriptionOptions? Options = null)
+		{
+			TaskCompletionSource<SubscriptionEventArgs> Tcs = new();
+			if (Options is null)
+				await this.PubSubClient.Subscribe(NodeId, Jid, (s, e) => HandleResult(e, Tcs), null);
+			else
+				await this.PubSubClient.Subscribe(NodeId, Jid, Options, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<SubscriptionEventArgs?> TrySubscribeAsync(string NodeId, string? Jid = null, SubscriptionOptions? Options = null)
+		{
+			try { return await this.SubscribeAsync(NodeId, Jid, Options); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<SubscriptionEventArgs> UnsubscribeAsync(string NodeId, string? Jid = null, string? SubscriptionId = null)
+		{
+			TaskCompletionSource<SubscriptionEventArgs> Tcs = new();
+			await this.PubSubClient.Unsubscribe(NodeId, Jid, SubscriptionId, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<SubscriptionEventArgs?> TryUnsubscribeAsync(string NodeId, string? Jid = null, string? SubscriptionId = null)
+		{
+			try { return await this.UnsubscribeAsync(NodeId, Jid, SubscriptionId); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<ItemResultEventArgs> PublishAsync(string NodeId, string? ItemId = null, string PayloadXml = "")
+		{
+			TaskCompletionSource<ItemResultEventArgs> Tcs = new();
+			await this.PubSubClient.Publish(NodeId, ItemId ?? string.Empty, PayloadXml, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<ItemResultEventArgs?> TryPublishAsync(string NodeId, string? ItemId = null, string PayloadXml = "")
+		{
+			try { return await this.PublishAsync(NodeId, ItemId, PayloadXml); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<IqResultEventArgs> RetractAsync(string NodeId, string ItemId)
+		{
+			TaskCompletionSource<IqResultEventArgs> Tcs = new();
+			await this.PubSubClient.Retract(NodeId, ItemId, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<IqResultEventArgs?> TryRetractAsync(string NodeId, string ItemId)
+		{
+			try { return await this.RetractAsync(NodeId, ItemId); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> PurgeNodeAsync(string NodeId)
+		{
+			TaskCompletionSource<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> Tcs = new();
+			await this.PubSubClient.PurgeNode(NodeId, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> TryPurgeNodeAsync(string NodeId)
+		{
+			try { return await this.PurgeNodeAsync(NodeId); }
+			catch { return null; }
+		}
+
+		private static Task HandleResult<T>(T e, TaskCompletionSource<T> Tcs) where T : IqResultEventArgs
+		{
+			if (e.Ok)
+				Tcs.TrySetResult(e);
+			else
+				Tcs.TrySetException(e.StanzaError ?? new Exception());
+			return Task.CompletedTask;
+		}
+		#endregion
 	}
 }

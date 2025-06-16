@@ -70,6 +70,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? logJid;
 		private string? eDalerJid;
 		private string? neuroFeaturesJid;
+		private string? pubSubJid;
 		private string? trustProviderId;
 		private string? localPasswordHash;
 		private long httpFileUploadMaxSize;
@@ -152,6 +153,7 @@ namespace NeuroAccessMaui.Services.Tag
 				LogJid = this.LogJid,
 				EDalerJid = this.EDalerJid,
 				NeuroFeaturesJid = this.NeuroFeaturesJid,
+				PubSubJid = this.PubSubJid,
 				TrustProviderId = this.TrustProviderId,
 				SupportsPushNotification = this.SupportsPushNotification,
 				PinHash = this.LocalPasswordHash,
@@ -214,6 +216,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.LogJid = Configuration.LogJid;
 				this.EDalerJid = Configuration.EDalerJid;
 				this.NeuroFeaturesJid = Configuration.NeuroFeaturesJid;
+				this.PubSubJid = Configuration.PubSubJid;
 				this.TrustProviderId = Configuration.TrustProviderId;
 				this.SupportsPushNotification = Configuration.SupportsPushNotification;
 				this.LocalPasswordHash = Configuration.PinHash;
@@ -259,7 +262,8 @@ namespace NeuroAccessMaui.Services.Tag
 					string.IsNullOrWhiteSpace(this.httpFileUploadJid) ||
 					string.IsNullOrWhiteSpace(this.logJid) ||
 					string.IsNullOrWhiteSpace(this.eDalerJid) ||
-					string.IsNullOrWhiteSpace(this.neuroFeaturesJid);
+					string.IsNullOrWhiteSpace(this.neuroFeaturesJid) ||
+					string.IsNullOrWhiteSpace(this.pubSubJid);
 		}
 
 		/// <summary>
@@ -722,6 +726,22 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.neuroFeaturesJid = value;
 					this.FlagAsDirty(nameof(this.NeuroFeaturesJid));
+				}
+			}
+		}
+
+		/// <summary>
+		/// The XMPP server's PubSub JID.
+		/// </summary>
+		public string? PubSubJid
+		{
+			get => this.pubSubJid;
+			set
+			{
+				if (!string.Equals(this.pubSubJid, value, StringComparison.Ordinal))
+				{
+					this.pubSubJid = value;
+					this.FlagAsDirty(nameof(this.PubSubJid));
 				}
 			}
 		}
@@ -1268,6 +1288,7 @@ namespace NeuroAccessMaui.Services.Tag
 			this.ProvisioningJid = null;
 			this.EDalerJid = null;
 			this.NeuroFeaturesJid = null;
+			this.PubSubJid = null;
 			this.SupportsPushNotification = false;
 
 			// It's important for this to be the last, since it will fire the account change notification.

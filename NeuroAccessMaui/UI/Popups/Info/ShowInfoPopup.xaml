@@ -16,24 +16,24 @@
 	</mopups:PopupPage.Animation>
 
 	<Grid
-		Style="{StaticResource PopupGrid}">
+		Style="{DynamicResource PopupGrid}">
 
 		<Border
 			WidthRequest="{Binding ViewWidthRequest}"
 			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-			Style="{StaticResource PopupBorder}">
+			Style="{DynamicResource PopupBorder}">
 
 			<ScrollView
 				VerticalOptions="Center">
 				<VerticalStackLayout
-					Spacing="{StaticResource LargeSpacing}">
+					Spacing="{DynamicResource LargeSpacing}">
 
 					<VerticalStackLayout
-						Spacing="{StaticResource SmallSpacing}">
+						Spacing="{DynamicResource SmallSpacing}">
 
 						<Label
 							HorizontalTextAlignment="Center"
-							Style="{StaticResource PageTitleLabel}"
+							Style="{DynamicResource PageTitleLabel}"
 							Text="{Binding InfoTitle}" />
 
 						<Label
@@ -43,7 +43,7 @@
 					<controls:TextButton
 						Command="{Binding CloseCommand}"
 						LabelData="{l:Localize Close}"
-						Style="{StaticResource FilledTextButton}" />
+						Style="{DynamicResource FilledTextButton}" />
 				</VerticalStackLayout>
 			</ScrollView>
 		</Border>

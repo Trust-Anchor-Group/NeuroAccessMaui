@@ -10,22 +10,22 @@
 									xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
-	<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
-		<VerticalStackLayout Grid.Row="0" VerticalOptions="Center"  Spacing="{StaticResource LargeSpacing}">
+	<Grid RowSpacing="{DynamicResource LargeSpacing}" RowDefinitions="*, auto">
+		<VerticalStackLayout Grid.Row="0" VerticalOptions="Center"  Spacing="{DynamicResource LargeSpacing}">
 			<Label
-				Style="{StaticResource PageTitleLabel}"
+				Style="{DynamicResource PageTitleLabel}"
 				Text="{l:Localize OnboardingBiometricsPageTitle}"
 				HorizontalTextAlignment="Center"
-				Margin="{StaticResource LargeBottomMargins}"/>
+				Margin="{DynamicResource LargeBottomMargins}"/>
 
 			<!-- Touch Circle -->
-			<HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="{StaticResource LargeSpacing}" Margin="{StaticResource LargeBottomMargins}">
+			<HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="{DynamicResource LargeSpacing}" Margin="{DynamicResource LargeBottomMargins}">
 				<Frame
 					WidthRequest="{Binding AuthenticationBackgroundSize}"
 					HeightRequest="{Binding AuthenticationBackgroundSize}"
 					HasShadow="False"
 					CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
-					BackgroundColor="{AppThemeBinding Light={StaticResource ButtonAccessSecondarybgWLLight}, Dark={StaticResource ButtonAccessSecondarybgWLDark}}"
+					BackgroundColor="{AppThemeBinding Light={DynamicResource ButtonAccessSecondarybgWLLight}, Dark={DynamicResource ButtonAccessSecondarybgWLDark}}"
 					HorizontalOptions="Center"
 					IsVisible="{Binding IsFingerprint}">
 					<Path
@@ -35,7 +35,7 @@
 						WidthRequest="{Binding AuthenticationIconSize}"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.FingerprintPath}"
-						Fill="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryContentWLLight}, Dark={StaticResource ButtonAccessSecondaryContentWLDark}}" />
+						Fill="{AppThemeBinding Light={DynamicResource ButtonAccessSecondaryContentWLLight}, Dark={DynamicResource ButtonAccessSecondaryContentWLDark}}" />
 				</Frame>
 
 				<Frame
@@ -43,7 +43,7 @@
 					HeightRequest="{Binding AuthenticationBackgroundSize}"
 					HasShadow="False"
 					CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
-					BackgroundColor="{AppThemeBinding Light={StaticResource ButtonAccessSecondarybgWLLight}, Dark={StaticResource ButtonAccessSecondarybgWLDark}}"
+					BackgroundColor="{AppThemeBinding Light={DynamicResource ButtonAccessSecondarybgWLLight}, Dark={DynamicResource ButtonAccessSecondarybgWLDark}}"
 					HorizontalOptions="Center"
 					IsVisible="{Binding IsFace}">
 					<Path
@@ -53,13 +53,13 @@
 						WidthRequest="{Binding AuthenticationIconSize}"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.FacePath}"
-						Fill="{AppThemeBinding Light={StaticResource ButtonAccessSecondaryContentWLLight}, Dark={StaticResource ButtonAccessSecondaryContentWLDark}}" />
+						Fill="{AppThemeBinding Light={DynamicResource ButtonAccessSecondaryContentWLLight}, Dark={DynamicResource ButtonAccessSecondaryContentWLDark}}" />
 				</Frame>
 			</HorizontalStackLayout>
 
 
 			<!-- Text -->
-			<Label Style="{StaticResource SectionTitleLabel}"
+			<Label Style="{DynamicResource SectionTitleLabel}"
 					Text="{Binding DetailText}" 
 					FontSize="16"
 					HorizontalOptions="Center"
@@ -77,40 +77,40 @@
 
 			<controls:TemplatedButton
 				Grid.Row ="0" Grid.ColumnSpan="2"
-				Margin="{StaticResource LargeBottomMargins}"
+				Margin="{DynamicResource LargeBottomMargins}"
 				HorizontalOptions="Center"
 				Command="{x:Binding ShowBiometricsInfoCommand}">
-				<HorizontalStackLayout Spacing="{StaticResource SmallSpacing}">
+				<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
 					<Path
 						VerticalOptions="Center"
 						HeightRequest="20"
 						WidthRequest="20"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight},
-											Dark={StaticResource TnPInfoContentWLDark}}" />
+						Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
+											Dark={DynamicResource TnPInfoContentWLDark}}" />
 
 					<Label
 						VerticalOptions="Center"
 						FontFamily="HaasGroteskRegular"
 						FontSize="14"
 						Text="{Binding WhatIsX}"
-						TextColor="{AppThemeBinding Light={StaticResource TnPInfoContentWLLight},
-													Dark={StaticResource TnPInfoContentWLDark}}" />
+						TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
+													Dark={DynamicResource TnPInfoContentWLDark}}" />
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 
 			<!-- Later Button -->
 			<controls:TemplatedButton Grid.Row ="1" Grid.Column="0" Command="{x:Binding LaterCommand}" VerticalOptions="End">
-				<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
-					<Label Style="{StaticResource TransparentTemplateButtonLabel}" HorizontalOptions="Center" Text="{l:Localize Later}"/>
+				<Border Style="{DynamicResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
+					<Label Style="{DynamicResource TransparentTemplateButtonLabel}" HorizontalOptions="Center" Text="{l:Localize Later}"/>
 				</Border>
 			</controls:TemplatedButton>
 
 			<!-- Enable button -->
 			<controls:TemplatedButton Grid.Row ="1" Grid.Column="1" Command="{x:Binding EnableCommand}" VerticalOptions="End">
-				<Border Style="{StaticResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
-					<Label Style="{StaticResource FilledTemplateButtonLabel}" HorizontalOptions="Center"  Text="{l:Localize Enable}" />
+				<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
+					<Label Style="{DynamicResource FilledTemplateButtonLabel}" HorizontalOptions="Center"  Text="{l:Localize Enable}" />
 				</Border>
 			</controls:TemplatedButton>
 		</Grid>

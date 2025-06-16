@@ -104,7 +104,7 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 				Output.WriteAttributeString("HeightRequest", "16");
 				Output.WriteAttributeString("WidthRequest", "16");
 				Output.WriteAttributeString("Aspect", "Uniform");
-				Output.WriteAttributeString("Fill", "{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}");
+				Output.WriteAttributeString("Fill", "{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}");
 				Output.WriteAttributeString("Data", "{x:Static ui:Geometries.ContractPath}");
 				Output.WriteEndElement();
 			}

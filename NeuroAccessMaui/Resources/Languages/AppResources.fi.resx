@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+  <!--
     Microsoft ResX Schema 
     
     Version 2.0
@@ -114,10 +114,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>MERKKIJONOA EI OLE MÄÄRITETTY</value>
@@ -2614,5 +2616,203 @@
   </data>
   <data name="CompleteIdButton" xml:space="preserve">
     <value>Täytä henkilötunnuksesi</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Etsiä</value>
+  </data>
+  <data name="ClientMessageMissingCountry" xml:space="preserve">
+    <value>Hakemus ei sisällä maatietoja</value>
+  </data>
+  <data name="ClientMessageMissingPNr" xml:space="preserve">
+    <value>Sovellus ei sisällä henkilönumerotietoja</value>
+  </data>
+  <data name="ClientMessageManualReview" xml:space="preserve">
+    <value>Hakemusta ei voi vahvistaa automaattisesti. Hakemus on validoitava manuaalisesti tai vertaisarvioinnin avulla</value>
+  </data>
+  <data name="ClientMessageUnableReview" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageInvalidType" xml:space="preserve">
+    <value>Parametri annettiin virheellisessä muodossa</value>
+  </data>
+  <data name="ClientMessageIdMismatch" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageJidMismatch" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageAccountMismatch" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageProviderMismatch" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageStateMismatch" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageCreatedMismatch" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageUpdatedMismatch" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageFromMismatch" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageToMismatch" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageNoClientURL" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageReviewerExternal" xml:space="preserve">
+    <value>Vertaisarvioija on ulkopuolinen. Vertaisarviointipyyntö tulee lähettää suoraan arvioijalle</value>
+  </data>
+  <data name="ClientMessageServiceNotConfigured" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageCountryNotSupported" xml:space="preserve">
+    <value>Palvelu ei ole saatavilla valitussa maassa</value>
+  </data>
+  <data name="ClientMessageNoCompanyId" xml:space="preserve">
+    <value>Palvelussa ei voi tarkistaa yritystunnuksia</value>
+  </data>
+  <data name="ClientMessageServiceClientTimeout" xml:space="preserve">
+    <value>Palvelu aikakatkaistiin odottaessaan, että käyttäjä hyväksyy pyynnön</value>
+  </data>
+  <data name="ClientMessageServiceFailed" xml:space="preserve">
+    <value>Palvelu ei pystynyt käsittelemään pyyntöä</value>
+  </data>
+  <data name="ClientMessagePNrMismatch" xml:space="preserve">
+    <value>Henkilönumero ei vastaa toimitettuja asiakirjoja</value>
+  </data>
+  <data name="ClientMessageFirstNameMismatch" xml:space="preserve">
+    <value>Etunimi ei vastaa toimitettuja asiakirjoja</value>
+  </data>
+  <data name="ClientMessageLastNameMismatch" xml:space="preserve">
+    <value>Sukunimi ei vastaa toimitettuja asiakirjoja</value>
+  </data>
+  <data name="ClientMessageNameMismatch" xml:space="preserve">
+    <value>Nimi ei vastaa toimitettuja asiakirjoja</value>
+  </data>
+  <data name="ClientMessageInvalidJid" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageNoLogin" xml:space="preserve">
+    <value>Tapahtui odottamaton virhe</value>
+  </data>
+  <data name="ClientMessageUnexpectedOnboardingServer" xml:space="preserve">
+    <value>Odottamaton vastaus perehdytyspalvelimelta</value>
+  </data>
+  <data name="ClientMessagePersonDead" xml:space="preserve">
+    <value>Ei voitu varmistaa, että henkilöllisyys vastaa elävää henkilöä</value>
+  </data>
+  <data name="ClientMessageBirthDateMismatch" xml:space="preserve">
+    <value>Syntymäaika ei vastaa toimitettuja asiakirjoja</value>
+  </data>
+  <data name="ClientMessageAddressMismatch" xml:space="preserve">
+    <value>Osoite ei vastaa toimitettuja asiakirjoja</value>
+  </data>
+  <data name="ClientMessageZipMismatch" xml:space="preserve">
+    <value>Postinumero ei vastaa toimitettuja asiakirjoja</value>
+  </data>
+  <data name="ClientMessageAreaMismatch" xml:space="preserve">
+    <value>Alue ei vastaa toimitettuja asiakirjoja</value>
+  </data>
+  <data name="ClientMessageCityMismatch" xml:space="preserve">
+    <value>Kaupunki ei vastaa toimitettuja asiakirjoja</value>
+  </data>
+  <data name="ClientMessageRegionMismatch" xml:space="preserve">
+    <value>Alue ei vastaa toimitettuja asiakirjoja</value>
+  </data>
+  <data name="ClientMessageLivenessFailed" xml:space="preserve">
+    <value>Elävyyden tarkistus epäonnistui</value>
+  </data>
+  <data name="ClientMessagePhotoFake" xml:space="preserve">
+    <value>Valokuvan aitoutta ei voitu varmistaa</value>
+  </data>
+  <data name="ClientMessagePhotoPoor" xml:space="preserve">
+    <value>Valokuvan laatu liian alhainen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA1" xml:space="preserve">
+    <value>Käynnistä BankID-sovellus</value>
+  </data>
+  <data name="ClientMessageBandIdRFA2" xml:space="preserve">
+    <value>BankID-sovellusta ei ole asennettu. Ota yhteyttä verkkopankkiisi</value>
+  </data>
+  <data name="ClientMessageBankIdRFA3" xml:space="preserve">
+    <value>Toiminto peruttu. Yritä uudelleen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA4" xml:space="preserve">
+    <value>Tämän henkilökohtaisen numeron tunnistaminen tai allekirjoittaminen on jo aloitettu. Yritä uudelleen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA5" xml:space="preserve">
+    <value>Sisäinen virhe. Yritä uudelleen</value>
+  </data>
+  <data name="ClientMessageBankIdRFA6" xml:space="preserve">
+    <value>Toiminto peruttu</value>
+  </data>
+  <data name="ClientMessageBankIdRFA8" xml:space="preserve">
+    <value>BankID-sovellus ei vastaa. Tarkista, että ohjelma on käynnistetty ja että sinulla on Internet-yhteys. Jos sinulla ei ole voimassa olevaa pankkitunnusta, voit hankkia sen pankistasi. Yritä uudestaan</value>
+  </data>
+  <data name="ClientMessageBankIdRFA9" xml:space="preserve">
+    <value>Syötä turvakoodisi BankID-sovellukseen ja valitse Tunnista tai Allekirjoita</value>
+  </data>
+  <data name="ClientMessageBankIdRFA13" xml:space="preserve">
+    <value>Yrität käynnistää BankID-sovellusta</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14A" xml:space="preserve">
+    <value>BankID:n etsiminen voi kestää hetken... Jos muutama sekunti on kulunut, eikä pankkitunnusta vieläkään löydy, sinulla ei todennäköisesti ole pankkitunnusta, jota voitaisiin käyttää tähän tunnistamiseen/allekirjoittamiseen tällä tietokoneella. Jos sinulla on BankID-kortti, aseta se kortinlukijaan. Jos sinulla ei ole pankkitunnusta, voit tilata sen verkkopankistasi. Jos sinulla on BankID toisella laitteella, voit käynnistää BankID-sovelluksen kyseisellä laitteella</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14B" xml:space="preserve">
+    <value>BankID:n etsiminen voi kestää hetken... Jos muutama sekunti on kulunut, eikä BankID:tä vieläkään ole löydetty, sinulla ei todennäköisesti ole BankID:tä, jota voitaisiin käyttää tähän tunnistamiseen/allekirjoittamiseen tällä laitteella. Jos sinulla ei ole pankkitunnusta, voit tilata sen verkkopankistasi. Jos sinulla on BankID toisella laitteella, voit käynnistää BankID-sovelluksen kyseisellä laitteella</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15A" xml:space="preserve">
+    <value>BankID:n etsiminen voi kestää hetken... Jos muutama sekunti on kulunut, eikä pankkitunnusta vieläkään löydy, sinulla ei todennäköisesti ole pankkitunnusta, jota voitaisiin käyttää tähän tunnistamiseen/allekirjoittamiseen tällä tietokoneella. Jos sinulla on BankID-kortti, aseta se kortinlukijaan. Jos sinulla ei ole pankkitunnusta, voit tilata sen verkkopankistasi</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15B" xml:space="preserve">
+    <value> BankID:n etsiminen voi kestää hetken... Jos muutama sekunti on kulunut, eikä BankID:tä vieläkään ole löydetty, sinulla ei todennäköisesti ole BankID:tä, jota voitaisiin käyttää tähän tunnistamiseen/allekirjoittamiseen tällä laitteella. Jos sinulla ei ole pankkitunnusta, voit tilata sen verkkopankistasi</value>
+  </data>
+  <data name="ClientMessageBankIdRFA16" xml:space="preserve">
+    <value>Pankkitunnus, jota yrität käyttää, on kumottu tai liian vanha. Käytä toista pankkitunnusta tai tilaa uusi verkkopankistasi</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17A" xml:space="preserve">
+    <value>BankID-sovellusta ei löytynyt tietokoneeltasi tai mobiililaitteeltasi. Asenna se ja tilaa BankID verkkopankistasi. Asenna sovellus sovelluskaupasta tai https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17B" xml:space="preserve">
+    <value>QR-koodin skannaus epäonnistui. Käynnistä BankID-sovellus ja skannaa QR-koodi. Tarkista, että BankID-sovellus on ajan tasalla. Jos sinulla ei ole BankID-sovellusta, sinun on asennettava se ja tilattava BankID verkkopankistasi. Asenna sovellus sovelluskaupasta tai https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA18" xml:space="preserve">
+    <value>Käynnistä BankID-sovellus</value>
+  </data>
+  <data name="ClientMessageBankIdRFA19" xml:space="preserve">
+    <value>Haluatko tunnistautua tai allekirjoittaa pankkitunnuksilla tällä tietokoneella tai mobiilipankkitunnuksilla?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA20" xml:space="preserve">
+    <value>Haluatko tunnistautua tai allekirjoittaa pankkitunnuksilla tällä laitteella tai pankkitunnuksilla toisella laitteella?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA21" xml:space="preserve">
+    <value>Tunnistautuminen tai allekirjoittaminen käynnissä</value>
+  </data>
+  <data name="ClientMessageBankIdRFA22" xml:space="preserve">
+    <value>Tuntematon virhe. Yritä uudelleen</value>
+  </data>
+  <data name="SelectContract" xml:space="preserve">
+    <value>Valitse sopimus</value>
+  </data>
+  <data name="SelectContractEntryDescription" xml:space="preserve">
+    <value>Liitä sopimustunnus tai valitse luettelosta</value>
+  </data>
+  <data name="ScanInvitationInfo" xml:space="preserve">
+    <value>Skannaa kutsu, jos olet jo luonut tilin erikseen</value>
+  </data>
+  <data name="PubSubServiceNotFound" xml:space="preserve">
+    <value>Viestipalvelu ei ole käytettävissä</value>
+  </data>
+  <data name="ClearCache" xml:space="preserve">
+    <value>Tyhjennä välimuisti</value>
+  </data>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Poistaa väliaikaiset tiedot, kuten kuvat ja liitteet, vapauttaakseen tilaa</value>
   </data>
 </root>

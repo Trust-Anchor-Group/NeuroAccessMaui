@@ -13,7 +13,7 @@
 			 TargetType="Label"
 			 BasedOn="{StaticResource BoldItemTitleLabel}">
 		<Setter Property="TextColor"
-				  Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
+				  Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 		<Setter Property="FontSize"
 				  Value="15" />
 		<Setter Property="FontFamily"
@@ -29,7 +29,7 @@
 	<Style x:Key="ParameterItemValueLabel"
 			 TargetType="Label">
 		<Setter Property="TextColor"
-				  Value="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
+				  Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 		<Setter Property="FontSize"
 				  Value="15" />
 		<Setter Property="FontFamily"
@@ -43,19 +43,19 @@
 	<!-- BooleanParameterTemplate -->
 	<DataTemplate x:Key="BooleanParameterTemplate"
 					  x:DataType="objectModel:ObservableBooleanParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 				<Grid ColumnDefinitions="Auto, *">
 					<CheckBox Grid.Column="0"
 							 IsChecked="{Binding BooleanValue, Mode=TwoWay}"
 							 VerticalOptions="Center"
 							 HorizontalOptions="Start"
-							 Color="{AppThemeBinding Light={StaticResource ButtonAccessPrimarybgWLLight}, Dark={StaticResource ButtonAccessPrimarybgWLDark}}"
-							 Margin="{StaticResource SmallRightMargins}" />
+							 Color="{AppThemeBinding Light={DynamicResource ButtonAccessPrimarybgWLLight}, Dark={DynamicResource ButtonAccessPrimarybgWLDark}}"
+							 Margin="{DynamicResource SmallRightMargins}" />
 					<Label Grid.Column="1"
 						 Text="{Binding Label}"
-						 Style="{StaticResource ParameterItemTitleLabel}"
-						 TextColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}" />
+						 Style="{DynamicResource ParameterItemTitleLabel}"
+						 TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 				</Grid>
 				<!-- Added Protection Indicator here -->
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -68,19 +68,19 @@
 	<!-- Read-only BooleanParameterTemplate -->
 	<DataTemplate x:Key="BooleanParameterReadOnlyTemplate"
 					  x:DataType="objectModel:ObservableBooleanParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 				<Grid RowDefinitions="*,*"
 					Margin="0">
 					<Label Grid.Row="0"
 						 Text="{Binding Label}"
-						 Style="{StaticResource ParameterItemTitleLabel}"
+						 Style="{DynamicResource ParameterItemTitleLabel}"
 						 HorizontalTextAlignment="Start" />
 					<CheckBox Grid.Row="1"
 							 IsChecked="{Binding BooleanValue, Mode=OneTime}"
 							 VerticalOptions="Center"
 							 HorizontalOptions="Start"
-							 Color="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"
+							 Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
 							 InputTransparent="True" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -93,9 +93,9 @@
 	<!-- DateParameterTemplate -->
 	<DataTemplate x:Key="DateParameterTemplate"
 					  x:DataType="objectModel:ObservableDateParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-				<controls:CompositeDatePicker Style="{StaticResource RegularCompositeDatePicker}"
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				<controls:CompositeDatePicker Style="{DynamicResource RegularCompositeDatePicker}"
 													IsValid="{Binding IsValid}"
 													LabelText="{Binding Label}"
 													NullableDate="{Binding DateValue}"
@@ -111,17 +111,17 @@
 	<!-- Read-only DateParameterTemplate -->
 	<DataTemplate x:Key="DateParameterReadOnlyTemplate"
 					  x:DataType="objectModel:ObservableDateParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
 			<VerticalStackLayout>
 				<Grid RowDefinitions="*,*"
-					ColumnSpacing="{StaticResource SmallSpacing}">
+					ColumnSpacing="{DynamicResource SmallSpacing}">
 					<Label Grid.Row="0"
 						 Text="{Binding Label}"
-						 Style="{StaticResource ParameterItemTitleLabel}"
+						 Style="{DynamicResource ParameterItemTitleLabel}"
 						 HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
 						 Text="{Binding DateValue, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=true}"
-						 Style="{StaticResource ParameterItemValueLabel}" />
+						 Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 																IsEncrypted="{Binding IsEncrypted}"
@@ -133,9 +133,9 @@
 	<!-- NumericalParameterTemplate -->
 	<DataTemplate x:Key="NumericalParameterTemplate"
 					  x:DataType="objectModel:ObservableNumericalParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
 			<VerticalStackLayout>
-				<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}"
+				<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
 											 EntryData="{Binding DecimalValue, Converter={StaticResource StringToDecimalConverter}}"
 											 Keyboard="Numeric"
 											 Placeholder="{Binding Guide}"
@@ -152,15 +152,15 @@
 	<!-- Read-only NumericalParameterTemplate -->
 	<DataTemplate x:Key="NumericalParameterReadOnlyTemplate"
 					  x:DataType="objectModel:ObservableNumericalParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
 			<VerticalStackLayout>
 				<Grid RowDefinitions="*, *">
 					<Label Grid.Row="0"
 						 Text="{Binding Label}"
-						 Style="{StaticResource ParameterItemTitleLabel}" />
+						 Style="{DynamicResource ParameterItemTitleLabel}" />
 					<Label Grid.Row="1"
 						 Text="{Binding DecimalValue}"
-						 Style="{StaticResource ParameterItemValueLabel}" />
+						 Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 																IsEncrypted="{Binding IsEncrypted}"
@@ -172,9 +172,9 @@
 	<!-- StringParameterTemplate -->
 	<DataTemplate x:Key="StringParameterTemplate"
 					  x:DataType="objectModel:ObservableStringParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
 			<VerticalStackLayout>
-				<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}"
+				<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
 											 EntryData="{Binding StringValue, Mode=TwoWay}"
 											 Keyboard="Text"
 											 Placeholder="{Binding Guide}"
@@ -191,10 +191,10 @@
 	<!-- Read-only StringParameterTemplate -->
 	<DataTemplate x:Key="StringParameterReadOnlyTemplate"
 					  x:DataType="objectModel:ObservableStringParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
 			<VerticalStackLayout>
 				<Label Text="{Binding Label}"
-					 Style="{StaticResource ParameterItemTitleLabel}" />
+					 Style="{DynamicResource ParameterItemTitleLabel}" />
 				<Label Text="{Binding StringValue}" />
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 																IsEncrypted="{Binding IsEncrypted}"
@@ -206,15 +206,15 @@
 	<!-- TimeParameterTemplate -->
 	<DataTemplate x:Key="TimeParameterTemplate"
 					  x:DataType="objectModel:ObservableTimeParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
 			<VerticalStackLayout>
-				<controls:CompositeInputView Style="{StaticResource BaseCompositeInputView}"
+				<controls:CompositeInputView Style="{DynamicResource BaseCompositeInputView}"
 												  IsValid="{Binding IsValid}"
 												  LabelText="{Binding Label}">
 					<controls:CompositeInputView.CenterView>
 						<TimePicker Time="{Binding TimeSpanValue, Mode=TwoWay}"
 									BackgroundColor="Transparent"
-									TextColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"
+									TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
 									VerticalOptions="Center"
 									FontFamily="HaasGroteskRegular"
 									FontSize="18" />
@@ -230,17 +230,17 @@
 	<!-- Read-only TimeParameterTemplate -->
 	<DataTemplate x:Key="TimeParameterReadOnlyTemplate"
 					  x:DataType="objectModel:ObservableTimeParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
 			<VerticalStackLayout>
 				<Grid RowDefinitions="*,*"
-					ColumnSpacing="{StaticResource SmallSpacing}">
+					ColumnSpacing="{DynamicResource SmallSpacing}">
 					<Label Grid.Row="0"
 						 Text="{Binding Label}"
-						 Style="{StaticResource ParameterItemTitleLabel}"
+						 Style="{DynamicResource ParameterItemTitleLabel}"
 						 HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
 						 Text="{Binding TimeSpanValue, StringFormat='{}{0:hh\\:mm\\:ss}'}"
-						 Style="{StaticResource ParameterItemValueLabel}" />
+						 Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 																IsEncrypted="{Binding IsEncrypted}"
@@ -252,12 +252,12 @@
 	<!-- DurationParameterTemplate -->
 	<DataTemplate x:Key="DurationParameterTemplate"
 					  x:DataType="objectModel:ObservableDurationParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
 			<VerticalStackLayout>
 			<controls:CompositeDurationPicker	TitleLabelText="{l:Localize DurationPickerTitle}"
-															TitleLabelStyle="{StaticResource DurationLabel}"
+															TitleLabelStyle="{DynamicResource DurationLabel}"
 															DescriptionLabelText="{l:Localize DurationPickerDescription}"
-															DescriptionLabelStyle="{StaticResource ParameterItemValueLabel}"
+															DescriptionLabelStyle="{DynamicResource ParameterItemValueLabel}"
 															DurationValue="{Binding DurationValue, Mode=TwoWay}"
 															IsValid="{Binding IsValid}"/>
 			<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -270,17 +270,17 @@
 	<!-- Read-only DurationParameterTemplate -->
 	<DataTemplate x:Key="DurationParameterReadOnlyTemplate"
 					  x:DataType="objectModel:ObservableDurationParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
 			<VerticalStackLayout>
 				<Grid RowDefinitions="*,*"
-						ColumnSpacing="{StaticResource SmallSpacing}">
+						ColumnSpacing="{DynamicResource SmallSpacing}">
 					<Label Grid.Row="0"
 							 Text="{Binding Label}"
-							 Style="{StaticResource ParameterItemTitleLabel}"
+							 Style="{DynamicResource ParameterItemTitleLabel}"
 							 HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
 							 Text="{Binding DurationValue}"
-							 Style="{StaticResource ParameterItemValueLabel}" />
+							 Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 														IsEncrypted="{Binding IsEncrypted}"
@@ -294,12 +294,12 @@
          so you can leave it or adjust it similarly if you want a consistent layout. -->
 	<DataTemplate x:Key="ProtectedParameterTemplate"
 					  x:DataType="objectModel:ObservableParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
 			<Grid RowDefinitions="Auto,Auto"
-				ColumnSpacing="{StaticResource SmallSpacing}">
+				ColumnSpacing="{DynamicResource SmallSpacing}">
 				<Label Grid.Row="0"
 					 Text="{Binding Label}"
-					 Style="{StaticResource ParameterItemTitleLabel}"
+					 Style="{DynamicResource ParameterItemTitleLabel}"
 					 HorizontalTextAlignment="Start" />
 				<controls:ParameterProtectionIndicator Grid.Row="1"
 														IsTransient="{Binding IsTransient}"
@@ -313,12 +313,12 @@
 	<!-- DefaultParameterTemplate -->
 	<DataTemplate x:Key="DefaultParameterTemplate"
 					  x:DataType="objectModel:ObservableParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
 			<VerticalStackLayout>
 				<Grid RowDefinitions="Auto, Auto">
 					<Label Text="{Binding Name}"
 						 Grid.Row="0"
-						 Style="{StaticResource ParameterItemTitleLabel}"
+						 Style="{DynamicResource ParameterItemTitleLabel}"
 						 VerticalOptions="Center"
 						 VerticalTextAlignment="Center" />
 					<Label Text="{Binding Value}"
@@ -334,17 +334,17 @@
 	<!-- Read-only DefaultParameterTemplate -->
 	<DataTemplate x:Key="DefaultParameterReadOnlyTemplate"
 					  x:DataType="objectModel:ObservableParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
 			<VerticalStackLayout>
 				<Grid RowDefinitions="*,*"
-					ColumnSpacing="{StaticResource SmallSpacing}">
+					ColumnSpacing="{DynamicResource SmallSpacing}">
 					<Label Grid.Row="0"
 						 Text="{Binding Label}"
-						 Style="{StaticResource ParameterItemTitleLabel}"
+						 Style="{DynamicResource ParameterItemTitleLabel}"
 						 HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
 						 Text="{Binding Value}"
-						 Style="{StaticResource ParameterItemValueLabel}" />
+						 Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 																IsEncrypted="{Binding IsEncrypted}"
@@ -356,12 +356,12 @@
 	<!-- DateTimeParameterTemplate -->
 	<DataTemplate x:Key="DateTimeParameterTemplate"
 					  x:DataType="objectModel:ObservableDateTimeParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 				<Grid RowDefinitions="*,*"
-					RowSpacing="{StaticResource SmallSpacing}">
+					RowSpacing="{DynamicResource SmallSpacing}">
 					<controls:CompositeDatePicker Grid.Row="0"
-														Style="{StaticResource RegularCompositeDatePicker}"
+														Style="{DynamicResource RegularCompositeDatePicker}"
 														IsValid="{Binding IsValid}"
 														LabelText="{Binding Label}"
 														NullableDate="{Binding SelectedDate}"
@@ -369,12 +369,12 @@
 														VerticalOptions="Center" />
 
 					<controls:CompositeInputView Grid.Row="1"
-													  Style="{StaticResource BaseCompositeInputView}"
+													  Style="{DynamicResource BaseCompositeInputView}"
 													  IsValid="{Binding IsValid}">
 						<controls:CompositeInputView.CenterView>
 							<TimePicker Time="{Binding SelectedTime, Mode=TwoWay}"
 										BackgroundColor="Transparent"
-										TextColor="{AppThemeBinding Light={StaticResource ContentPrimaryWLLight}, Dark={StaticResource ContentPrimaryWLDark}}"
+										TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
 										VerticalOptions="Center"
 										FontFamily="HaasGroteskRegular"
 										FontSize="18" />
@@ -391,17 +391,17 @@
 	<!-- DateTimeParameterReadOnlyTemplate -->
 	<DataTemplate x:Key="DateTimeParameterReadOnlyTemplate"
 					  x:DataType="objectModel:ObservableDateTimeParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 				<Grid RowDefinitions="*,*"
-					ColumnSpacing="{StaticResource SmallSpacing}">
+					ColumnSpacing="{DynamicResource SmallSpacing}">
 					<Label Grid.Row="0"
 						 Text="{Binding Label}"
-						 Style="{StaticResource ParameterItemTitleLabel}"
+						 Style="{DynamicResource ParameterItemTitleLabel}"
 						 HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
 						 Text="{Binding DateTimeValue, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=false}"
-						 Style="{StaticResource ParameterItemValueLabel}" />
+						 Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 																IsEncrypted="{Binding IsEncrypted}"
@@ -413,9 +413,9 @@
 	<!-- CalcParameterTemplate -->
 	<DataTemplate x:Key="CalcParameterTemplate"
 					  x:DataType="objectModel:ObservableCalcParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-				<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}"
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
 											EntryData="{Binding CalcString, Mode=TwoWay}"
 											Keyboard="Text"
 											Placeholder="{Binding Guide}"
@@ -432,17 +432,17 @@
 	<!-- Read-only CalcParameterTemplate -->
 	<DataTemplate x:Key="CalcParameterReadOnlyTemplate"
 					  x:DataType="objectModel:ObservableCalcParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 				<Grid RowDefinitions="*,*"
-					ColumnSpacing="{StaticResource SmallSpacing}">
+					ColumnSpacing="{DynamicResource SmallSpacing}">
 					<Label Grid.Row="0"
 						 Text="{Binding Label}"
-						 Style="{StaticResource ParameterItemTitleLabel}"
+						 Style="{DynamicResource ParameterItemTitleLabel}"
 						 HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
 						 Text="{Binding CalcString}"
-						 Style="{StaticResource ParameterItemValueLabel}" />
+						 Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 																IsEncrypted="{Binding IsEncrypted}"
@@ -453,17 +453,17 @@
 
 	<DataTemplate x:Key="ContractReferenceParameterTemplate"
 				  x:DataType="objectModel:ObservableContractReferenceParameter">
-		<Border Style="{StaticResource BorderSet}" Margin="{StaticResource MediumLeftRightMargins}" >
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
+		<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}" >
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 				<controls:ContractSelector
 										EntryData="{Binding ContractReferenceValue, Mode=TwoWay}"
 										EntryPlaceholderText="{Binding Guide}"
-										EntryStyle="{StaticResource RegularCompositeEntry}"
+										EntryStyle="{DynamicResource RegularCompositeEntry}"
 										TopText="{l:Localize SelectContractEntryDescription}"
-										TopTextStyle="{StaticResource ParameterItemTitleLabel}"
+										TopTextStyle="{DynamicResource ParameterItemTitleLabel}"
 										VerticalOptions="Center"
 										TitleLabelText="{Binding Label}"
-										TitleLabelStyle="{StaticResource RegularCompositeEntryLabel}"
+										TitleLabelStyle="{DynamicResource RegularCompositeEntryLabel}"
 										IsValid="{Binding IsValid}"
 										ButtonCommand="{Binding PickContractReferenceCommand}"
 										ButtonText="{l:Localize SelectContract}"/>
