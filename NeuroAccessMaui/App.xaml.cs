@@ -43,6 +43,7 @@ using Waher.Networking.XMPP.Avatar;
 using Waher.Networking.XMPP.Concentrator;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Control;
+using Waher.Networking.XMPP.Geo;
 using Waher.Networking.XMPP.HTTPX;
 using Waher.Networking.XMPP.Mail;
 using Waher.Networking.XMPP.P2P;
@@ -55,6 +56,7 @@ using Waher.Networking.XMPP.Sensor;
 using Waher.Persistence;
 using Waher.Persistence.Files;
 using Waher.Persistence.Serialization;
+using Waher.Runtime.Geo;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Text;
@@ -315,6 +317,8 @@ namespace NeuroAccessMaui
 					typeof(AvatarClient).Assembly,
 					typeof(PushNotificationClient).Assembly,
 					typeof(MailClient).Assembly,
+					typeof(GeoClient).Assembly,
+					typeof(GeoPosition).Assembly,
 					typeof(ThingReference).Assembly,
 					typeof(JwtFactory).Assembly,
 					typeof(JwsAlgorithm).Assembly,
