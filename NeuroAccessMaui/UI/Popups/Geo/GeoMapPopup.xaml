@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Password.GeoMapPopup"
+					 x:DataType="viewmodel:CheckPasswordViewModel"
+					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Password"
+					 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+					 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+					 xmlns:maps="clr-namespace:Mapsui.UI.Maui;assembly=Mapsui.UI.Maui">
+
+	<mopups:PopupPage.Animation>
+		<animations:FadeAnimation DurationIn="500"
+		                          DurationOut="500"
+		                          EasingIn="CubicIn"
+		                          EasingOut="CubicOut"
+		                          HasBackgroundAnimation="True" />
+	</mopups:PopupPage.Animation>
+	<base:BasePopup.CustomContent>
+		<Grid Style="{DynamicResource PopupGrid}">
+
+			<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{DynamicResource PopupBorder}">
+				<maps:MapControl x:Name="GeoMapControl">
+				</maps:MapControl> 
+			</Border>
+		</Grid>
+	</base:BasePopup.CustomContent>
+</base:BasePopup>
