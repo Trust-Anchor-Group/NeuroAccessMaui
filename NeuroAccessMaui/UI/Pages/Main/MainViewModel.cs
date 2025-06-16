@@ -68,9 +68,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
 
 
-				GeoMapViewModel vm = new(59.638346832492765,11.879682074310969);
-				await ServiceRef.UiService.PushAsync(new GeoMapPopup(vm));
-				Console.WriteLine($"GeoMap result: {await vm.Result}");
+		//		GeoMapViewModel vm = new(59.638346832492765,11.879682074310969);
+		//		await ServiceRef.UiService.PushAsync(new GeoMapPopup(vm));
+		//		Console.WriteLine($"GeoMap result: {await vm.Result}");
 
 			}
 			catch (Exception Ex)
