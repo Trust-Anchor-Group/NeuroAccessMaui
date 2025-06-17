@@ -499,12 +499,17 @@
 	</Style>
 
 	<!-- Icon Button -->
-	<Style x:Key="IconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border" BasedOn="{StaticResource BorderSet}">
+	<Style x:Key="IconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={DynamicResource ButtonNeutralNavButtonsbgActiveWLDark}}"/>
 		<Setter Property="Padding" Value="{DynamicResource SmallMargins}"/>
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="StrokeShape">
 			<RoundRectangle CornerRadius="8" />
+		</Setter>
+		<Setter Property="Shadow">
+			<Setter.Value>
+				<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4" />
+			</Setter.Value>
 		</Setter>
 	</Style>
 

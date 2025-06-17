@@ -39,7 +39,7 @@
 		</Grid>
 	</Shell.TitleView> -->
 	<Grid x:Name="TheMainGrid"
-		  RowDefinitions="auto, *, auto, auto"
+		  RowDefinitions="auto, *, auto, auto, auto"
 		  ColumnDefinitions="*"
 		  BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
@@ -134,52 +134,59 @@
 						  Margin="{DynamicResource MediumBottomMargins}"
 						  IsVisible="False"/> <!-- TODO: Bind to HasBranding-->
 
+
+		<Grid HorizontalOptions="FillAndExpand"
+				ColumnDefinitions="*, *"
+				Grid.Row="3">
+			
+			<!-- Scan QR Button -->
+			<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
+				<Border Style="{DynamicResource TransparentTemplateButtonBorder}"
+								InputTransparent="True"
+								HorizontalOptions="Fill">
+					<Grid ColumnDefinitions="Auto,*"
+								HorizontalOptions="Center"
+								VerticalOptions="Center">
+						<Path VerticalOptions="Center"
+									HeightRequest="24"
+									WidthRequest="24"
+									Aspect="Uniform"
+									Data="{x:Static ui:Geometries.ScanQrIconPath}"
+									Style="{DynamicResource TransparentTemplateButtonPath}" />
+						<Label Grid.Column="1"
+										Style="{DynamicResource TransparentTemplateButtonLabel}"
+										Margin="{DynamicResource SmallLeftMargins}"
+										Text="{l:Localize ScanQRShort}" />
+					</Grid>
+				</Border>
+			</controls:TemplatedButton>
+
+
+			<!-- Show ID Button -->
+			<controls:TemplatedButton Grid.Column="1" Command="{x:Binding ViewIdCommand}">
+				<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
+					<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
+						<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
+								Data="{x:Static ui:Geometries.ShowIdIconPath}"
+								Style="{DynamicResource FilledTemplateButtonPath}"
+								Grid.Column="0"
+						/>
+						<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
+					</Grid>
+				</Border>
+			</controls:TemplatedButton>
+		</Grid>
+		
 		<!-- Bottom Bar -->
-		<Border Grid.Row="3" Style="{DynamicResource BottomBarBorder}" VerticalOptions="End" Stroke="{x:Null}">
-			<Grid HorizontalOptions="FillAndExpand"
-				  ColumnDefinitions="*, *">
-
-				<!-- Scan QR Button -->
-				<Grid Grid.Column="0">
-					<!-- Main content -->
-					<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
-						<Border Style="{DynamicResource TransparentTemplateButtonBorder}"
-								  InputTransparent="True"
-								  HorizontalOptions="Fill">
-							<Grid ColumnDefinitions="Auto,*"
-									HorizontalOptions="Center"
-									VerticalOptions="Center">
-								<Path VerticalOptions="Center"
-										HeightRequest="24"
-										WidthRequest="24"
-										Aspect="Uniform"
-										Data="{x:Static ui:Geometries.ScanQrIconPath}"
-										Style="{DynamicResource TransparentTemplateButtonPath}" />
-								<Label Grid.Column="1"
-										 Style="{DynamicResource TransparentTemplateButtonLabel}"
-										 Margin="{DynamicResource SmallLeftMargins}"
-										 Text="{l:Localize ScanQRShort}" />
-							</Grid>
-						</Border>
-					</controls:TemplatedButton>
-				</Grid>
-
-
-				<!-- Show ID Button -->
-				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding ViewIdCommand}">
-					<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
-						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-								  Data="{x:Static ui:Geometries.ShowIdIconPath}"
-								  Style="{DynamicResource FilledTemplateButtonPath}"
-								  Grid.Column="0"
-							/>
-							<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
-			</Grid>
-		</Border>
+		<controls:BottomBar Grid.Row="4"
+							Style="{DynamicResource BottomBar}"
+							SelectedIcon="Left"
+							LeftIcon="home.svg"
+							CenterIcon="wallet.svg"
+							RightIcon="apps.svg"
+							LeftLabelText="Home"
+							CenterLabelText="Wallet"
+							RightLabelText="Apps"/>
 
 		<Grid.GestureRecognizers>
 			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
