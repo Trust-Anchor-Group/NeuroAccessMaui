@@ -18,24 +18,24 @@ namespace NeuroAccessMaui.UI.Controls
 
 		public GeoMap()
 		{
-			mapControl = new MapControl();
-			Content = mapControl;
+			this.mapControl = new MapControl();
+			this.Content = this.mapControl;
 
 			// 1) Create underlying Map and add OSM raster tile layer
-			var map = new Map();
+			Map map = new Map();
 			map.Layers.Add(OpenStreetMap.CreateTileLayer());                   // :contentReference[oaicite:4]{index=4}
 
 			// 2) Register custom style renderer
-			mapControl.Renderer.StyleRenderers
+			this.mapControl.Renderer.StyleRenderers
 					  .Add(typeof(DataUriStyle), new DataUriStyleRenderer()); // :contentReference[oaicite:5]{index=5}
 
-			mapControl.Map = map;
+			this.mapControl.Map = map;
 
 			// 3) React to bindable property changes
-			PropertyChanged += OnPropertyChanged;
+			PropertyChanged += this.OnPropertyChanged;
 		}
 
-		Map Map => mapControl.Map!;
+		Map Map => this.mapControl.Map!;
 
 		#region CurrentCoordinate
 
@@ -49,16 +49,16 @@ namespace NeuroAccessMaui.UI.Controls
 
 		public GeoPosition CurrentCoordinate
 		{
-			get => (GeoPosition)GetValue(CurrentCoordinateProperty);
-			set => SetValue(CurrentCoordinateProperty, value);
+			get => (GeoPosition)this.GetValue(CurrentCoordinateProperty);
+			set => this.SetValue(CurrentCoordinateProperty, value);
 		}
 
 		void CenterOn(GeoPosition pos)
 		{
 			// Convert lon/lat → spherical mercator MPoint
-			var merc = SphericalMercator.FromLonLat(pos.Longitude, pos.Latitude)
-										.ToMPoint();                  
-			Map.Navigator.CenterOnAndZoomTo(merc, 10, 1000);
+			Mapsui.MPoint merc = SphericalMercator.FromLonLat(pos.Longitude, pos.Latitude)
+										.ToMPoint();
+			this.Map.Navigator.CenterOnAndZoomTo(merc, 10, 1000);
 		}
 
 		#endregion
@@ -75,30 +75,30 @@ namespace NeuroAccessMaui.UI.Controls
 
 		public ObservableCollection<MapItem> Items
 		{
-			get => (ObservableCollection<MapItem>)GetValue(ItemsProperty);
-			set => SetValue(ItemsProperty, value);
+			get => (ObservableCollection<MapItem>)this.GetValue(ItemsProperty);
+			set => this.SetValue(ItemsProperty, value);
 		}
 
-		static void OnItemsChanged(BindableObject b, object oldVal, object newVal)
+		static void OnItemsChanged(BindableObject Bindable, object OldVal, object NewVal)
 		{
-			if (b is GeoMap gm)
-				gm.RebuildItemsLayer();
+			if (Bindable is GeoMap GeoMap)
+				GeoMap.RebuildItemsLayer();
 		}
 
 		void RebuildItemsLayer()
 		{
 			// A) Remove any existing ItemsLayer
-			var old = Map.Layers.FirstOrDefault(l => l.Name == "ItemsLayer");
+			ILayer? old = this.Map.Layers.FirstOrDefault(l => l.Name == "ItemsLayer");
 			if (old is not null)
-				Map.Layers.Remove(old);
+				this.Map.Layers.Remove(old);
 
 			// B) Build new MemoryLayer with a MemoryProvider
-			var features = Items.Select(item =>
+			List<PointFeature> features = this.Items.Select(item =>
 			{
 				// Convert each GeoPosition → MPoint → PointFeature
-				var worldPoint = SphericalMercator
+				(double x, double y) worldPoint = SphericalMercator
 					.FromLonLat(item.Location.Longitude, item.Location.Latitude);
-				var pf = new PointFeature(worldPoint.ToMPoint());
+				PointFeature pf = new PointFeature(worldPoint.ToMPoint());
 				// Tag your data URI for renderer lookup
 				pf["DataUri"] = item.Uri.ToString();
 				// Attach placeholder style
@@ -106,13 +106,13 @@ namespace NeuroAccessMaui.UI.Controls
 				return pf;
 			}).ToList();
 
-			var layer = new MemoryLayer
+			MemoryLayer layer = new MemoryLayer
 			{
 				Name = "ItemsLayer",
 				IsMapInfoLayer = true,
 				Features = features
 			};
-			Map.Layers.Add(layer);
+			this.Map.Layers.Add(layer);
 		}
 
 		#endregion
@@ -126,45 +126,45 @@ namespace NeuroAccessMaui.UI.Controls
 		public static readonly BindableProperty LockZoomProperty =
 			BindableProperty.Create(nameof(LockZoom), typeof(bool), typeof(GeoMap), false);
 
-		public bool LockRotation { get => (bool)GetValue(LockRotationProperty); set => SetValue(LockRotationProperty, value); }
-		public bool LockPan { get => (bool)GetValue(LockPanProperty); set => SetValue(LockPanProperty, value); }
-		public bool LockZoom { get => (bool)GetValue(LockZoomProperty); set => SetValue(LockZoomProperty, value); }
+		public bool LockRotation { get => (bool)this.GetValue(LockRotationProperty); set => this.SetValue(LockRotationProperty, value); }
+		public bool LockPan { get => (bool)this.GetValue(LockPanProperty); set => this.SetValue(LockPanProperty, value); }
+		public bool LockZoom { get => (bool)this.GetValue(LockZoomProperty); set => this.SetValue(LockZoomProperty, value); }
 
 		void ApplyLocks()
 		{
-			Map.Navigator.RotationLock = LockRotation;
-			Map.Navigator.PanLock = LockPan;
-			Map.Navigator.ZoomLock = LockZoom;                         // :contentReference[oaicite:11]{index=11}
+			this.Map.Navigator.RotationLock = this.LockRotation;
+			this.Map.Navigator.PanLock = this.LockPan;
+			this.Map.Navigator.ZoomLock = this.LockZoom;                         // :contentReference[oaicite:11]{index=11}
 		}
 
 		#endregion
 
-		void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		void OnPropertyChanged(object? Sender, System.ComponentModel.PropertyChangedEventArgs Event)
 		{
-			switch (e.PropertyName)
+			switch (Event.PropertyName)
 			{
-				case nameof(CurrentCoordinate):
-					CenterOn(CurrentCoordinate);
+				case nameof(this.CurrentCoordinate):
+					this.CenterOn(this.CurrentCoordinate);
 					break;
-				case nameof(Items):
-					RebuildItemsLayer();
+				case nameof(this.Items):
+					this.RebuildItemsLayer();
 					break;
-				case nameof(LockRotation):
-				case nameof(LockPan):
-				case nameof(LockZoom):
-					ApplyLocks();
+				case nameof(this.LockRotation):
+				case nameof(this.LockPan):
+				case nameof(this.LockZoom):
+					this.ApplyLocks();
 					break;
 			}
 		}
 
-		private bool _disposed;
+		private bool disposed;
 
 		/// <summary>  
 		/// Dispose the underlying MapControl when the GeoMap is disposed.  
 		/// </summary>  
 		public void Dispose()
 		{
-			Dispose(true);
+			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
@@ -174,25 +174,24 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <param name="disposing">True if called from Dispose, false if called from finalizer.</param>  
 		protected virtual void Dispose(bool disposing)
 		{
-			if (_disposed)
+			if (this.disposed)
 				return;
 
 			if (disposing)
 			{
 				// Dispose managed resources  
-				PropertyChanged -= OnPropertyChanged;
-				mapControl.Map = null;
-				mapControl.Dispose();
+				PropertyChanged -= this.OnPropertyChanged;
+				this.mapControl.Dispose();
 			}
 
 			// Clean up unmanaged resources here if any  
 
-			_disposed = true;
+			this.disposed = true;
 		}
 
 		~GeoMap()
 		{
-			Dispose(false);
+			this.Dispose(false);
 		}
 	}
 
