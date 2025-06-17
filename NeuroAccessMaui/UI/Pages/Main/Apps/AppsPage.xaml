@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+						x:Class="NeuroAccessMaui.UI.Pages.Main.Apps.AppsPage"
+						x:DataType="viewmodel:AppsViewModel"
+						xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+						xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+						xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+						xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+						xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+						xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+						xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Apps"
+						xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+						xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
+	<!-- Main Grid-->
+	<Grid>
+		<ScrollView Margin="{DynamicResource SmallLeftRightTopMargins}">
+			<VerticalStackLayout>
+				<Grid Margin="{DynamicResource SmallMargins}">
+					<controls:SvgButton
+						Command="{Binding GoBackCommand}"
+						SvgSource="close.svg"
+						Style="{DynamicResource IconButton}"
+						HorizontalOptions="Start"/>
+
+					<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Apps}" HorizontalOptions="End"/>
+				</Grid>
+
+				<!-- Apps -->
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout>
+						<Label Style="{DynamicResource SectionTitleLabel}"
+							   Text="Apps"
+							   Margin="{DynamicResource MediumBottomMargins}"/>
+
+						<!-- Common apps -->
+						<Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="{DynamicResource MediumSpacing}" RowSpacing="{StaticResource MediumSpacing}">
+							<VerticalStackLayout Grid.Column="0">
+								<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+													SvgSource="wallet.svg"/>
+								<Label Style="{StaticResource ParameterItemTitleLabel}" Text="Assets" HorizontalOptions="Center"/>
+							</VerticalStackLayout>
+							<VerticalStackLayout Grid.Column="1">
+								<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+													SvgSource="home.svg"/>
+								<Label Style="{StaticResource ParameterItemTitleLabel}" Text="Home" HorizontalOptions="Center"/>
+							</VerticalStackLayout>
+							<VerticalStackLayout Grid.Column="2">
+								<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+													SvgSource="close.svg"/>
+								<Label Style="{StaticResource ParameterItemTitleLabel}" Text="Contracts" HorizontalOptions="Center"/>
+							</VerticalStackLayout>
+							<VerticalStackLayout Grid.Column="3">
+								<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+													SvgSource="hamburger.svg"/>
+								<Label Style="{StaticResource ParameterItemTitleLabel}" Text="Contacts" HorizontalOptions="Center"/>
+							</VerticalStackLayout>
+						</Grid>
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Beta -->
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout>
+						<Label Style="{DynamicResource SectionTitleLabel}"
+							   Text="Beta"/>
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Coming soon -->
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout>
+						<Label Style="{DynamicResource SectionTitleLabel}"
+							   Text="Coming soon"/>
+					</VerticalStackLayout>
+				</Border>
+
+
+			</VerticalStackLayout>
+		</ScrollView>
+
+		<!-- Bottom Bar -->
+		<controls:BottomBar Style="{DynamicResource BottomBar}"
+							SelectedIcon="Right"
+							LeftIcon="home.svg"
+							CenterIcon="wallet.svg"
+							RightIcon="apps.svg"
+							LeftLabelText="{l:Localize Home}"
+							CenterLabelText="{l:Localize Wallet}"
+							RightLabelText="{l:Localize Apps}"
+							LeftCommand="{Binding GoBackCommand}"/>
+	</Grid>
+</base:BaseContentPage>

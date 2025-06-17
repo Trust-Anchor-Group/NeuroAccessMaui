@@ -521,8 +521,28 @@
 	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
 		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonBorder}" />
 		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={DynamicResource ButtonNeutralNavButtonsContentActiveWLLight}, Dark={DynamicResource ButtonNeutralNavButtonsContentActiveWLDark}}" />
-		<Setter Property="SvgAspect" Value="AspectFit"/>
+		<Setter Property="SvgAspect" Value="AspectFill"/>
 		<Setter Property="SvgStyle" Value="{DynamicResource IconButtonSvg}" />
+	</Style>
+
+	<Style x:Key="NeuroIconButton" ApplyToDerivedTypes="True" TargetType="controls:SvgButton">
+		<Setter Property="BorderStyle" Value="{DynamicResource NeuroIconButtonBorder}"/>
+		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={DynamicResource ContentAccessWLLight}, Dark={DynamicResource ContentAccessWLDark}}"/>
+		<Setter Property="SvgStyle" Value="{DynamicResource NeuroIconButtonSvg}"/>
+	</Style>
+
+	<Style x:Key="NeuroIconButtonSvg" ApplyToDerivedTypes="False" TargetType="controls:SvgView">
+		<Setter Property="HeightRequest" Value="32"/>
+		<Setter Property="WidthRequest" Value="32"/>
+		<Setter Property="HorizontalOptions" Value="Center"/>
+		<Setter Property="VerticalOptions" Value="Center"/>
+	</Style>
+
+	<Style x:Key="NeuroIconButtonBorder" ApplyToDerivedTypes="True" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource BrandColorsNeuroAccessa20WLLight}, Dark={DynamicResource BrandColorsNeuroAccessa20WLDark}}"/>
+		<Setter Property="HeightRequest" Value="64"/>
+		<Setter Property="WidthRequest" Value="64"/>
+		<Setter Property="StrokeShape" Value="RoundRectangle 8"/>
 	</Style>
 
 	<!-- Expander Button Styles -->

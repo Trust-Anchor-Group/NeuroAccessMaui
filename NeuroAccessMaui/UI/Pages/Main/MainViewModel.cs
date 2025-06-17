@@ -15,6 +15,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services.Theme;
 using Waher.Runtime.Inventory;
 using System.Reflection.Metadata;
+using NeuroAccessMaui.UI.Pages.Main.Apps;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -158,6 +159,20 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			try
 			{
 				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		// Go to Apps page
+		[RelayCommand]
+		public async Task ViewApps()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(AppsPage));
 			}
 			catch (Exception Ex)
 			{
