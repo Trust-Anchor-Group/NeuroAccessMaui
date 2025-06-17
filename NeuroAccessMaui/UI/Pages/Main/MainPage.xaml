@@ -184,9 +184,10 @@
 							LeftIcon="home.svg"
 							CenterIcon="wallet.svg"
 							RightIcon="apps.svg"
-							LeftLabelText="Home"
-							CenterLabelText="Wallet"
-							RightLabelText="Apps"/>
+							LeftLabelText="{l:Localize Home}"
+							CenterLabelText="{l:Localize Wallet}"
+							RightLabelText="{l:Localize Apps}"
+							RightCommand="{Binding ViewAppsCommand}"/>
 
 		<Grid.GestureRecognizers>
 			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>

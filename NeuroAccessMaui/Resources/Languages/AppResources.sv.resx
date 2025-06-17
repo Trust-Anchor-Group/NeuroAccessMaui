@@ -2816,4 +2816,7 @@
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Tar bort tillfälliga data som bilder och bilagor för att frigöra utrymme</value>
   </data>
+  <data name="Apps" xml:space="preserve">
+      <value>Appar</value>
+  </data>
 </root>
