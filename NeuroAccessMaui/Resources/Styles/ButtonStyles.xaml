@@ -531,6 +531,11 @@
 		<Setter Property="SvgStyle" Value="{DynamicResource NeuroIconButtonSvg}"/>
 	</Style>
 
+	<Style x:Key="NeuroIconButtonDisabled" BasedOn="{StaticResource NeuroIconButton}" TargetType="controls:SvgButton">
+		<Setter Property="BorderStyle" Value="{DynamicResource NeuroIconButtonBorderDisabled}"/>
+		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}"/>
+	</Style>
+
 	<Style x:Key="NeuroIconButtonSvg" ApplyToDerivedTypes="False" TargetType="controls:SvgView">
 		<Setter Property="HeightRequest" Value="32"/>
 		<Setter Property="WidthRequest" Value="32"/>
@@ -543,6 +548,10 @@
 		<Setter Property="HeightRequest" Value="64"/>
 		<Setter Property="WidthRequest" Value="64"/>
 		<Setter Property="StrokeShape" Value="RoundRectangle 8"/>
+	</Style>
+
+	<Style x:Key="NeuroIconButtonBorderDisabled" TargetType="Border" BasedOn="{StaticResource NeuroIconButtonBorder}">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}"/>
 	</Style>
 
 	<!-- Expander Button Styles -->

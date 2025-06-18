@@ -12,69 +12,105 @@
 						xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 						xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 	<!-- Main Grid-->
-	<Grid>
-		<ScrollView Margin="{DynamicResource SmallLeftRightTopMargins}">
+	<Grid RowDefinitions="*, auto">
+		<ScrollView Margin="{DynamicResource SmallLeftRightTopMargins}" VerticalOptions="FillAndExpand" Grid.Row="0">
 			<VerticalStackLayout>
-				<Grid Margin="{DynamicResource SmallMargins}">
+				<Grid Margin="{DynamicResource SmallMargins}" ColumnDefinitions="*, *">
 					<controls:SvgButton
 						Command="{Binding GoBackCommand}"
 						SvgSource="close.svg"
 						Style="{DynamicResource IconButton}"
 						HorizontalOptions="Start"/>
 
-					<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Apps}" HorizontalOptions="End"/>
+					<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Apps}" HorizontalOptions="End" Grid.Column="1"/>
 				</Grid>
 
 				<!-- Apps -->
 				<Border Style="{DynamicResource BorderSet}">
-					<VerticalStackLayout>
+					<!-- Common apps -->
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *" RowSpacing="{DynamicResource MediumSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}"
-							   Text="Apps"
-							   Margin="{DynamicResource MediumBottomMargins}"/>
-
-						<!-- Common apps -->
-						<Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="{DynamicResource MediumSpacing}" RowSpacing="{StaticResource MediumSpacing}">
-							<VerticalStackLayout Grid.Column="0">
-								<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+							   Text="Apps"/>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
 													SvgSource="wallet.svg"/>
-								<Label Style="{StaticResource ParameterItemTitleLabel}" Text="Assets" HorizontalOptions="Center"/>
-							</VerticalStackLayout>
-							<VerticalStackLayout Grid.Column="1">
-								<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+							<Label Style="{StaticResource AppCardLabel}" Text="Contacts" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
 													SvgSource="home.svg"/>
-								<Label Style="{StaticResource ParameterItemTitleLabel}" Text="Home" HorizontalOptions="Center"/>
-							</VerticalStackLayout>
-							<VerticalStackLayout Grid.Column="2">
-								<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+							<Label Style="{StaticResource AppCardLabel}" Text="My Contracts" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
 													SvgSource="close.svg"/>
-								<Label Style="{StaticResource ParameterItemTitleLabel}" Text="Contracts" HorizontalOptions="Center"/>
-							</VerticalStackLayout>
-							<VerticalStackLayout Grid.Column="3">
-								<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
-													SvgSource="hamburger.svg"/>
-								<Label Style="{StaticResource ParameterItemTitleLabel}" Text="Contacts" HorizontalOptions="Center"/>
-							</VerticalStackLayout>
-						</Grid>
-					</VerticalStackLayout>
+							<Label Style="{StaticResource AppCardLabel}" Text="Assets" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+					</Grid>
 				</Border>
 
 				<!-- Beta -->
 				<Border Style="{DynamicResource BorderSet}">
-					<VerticalStackLayout>
+					<!-- Common apps -->
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, *" RowSpacing="{DynamicResource MediumSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}"
 							   Text="Beta"/>
-					</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+													SvgSource="wallet.svg"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="New Contracts" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+													SvgSource="home.svg"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="New Token" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+													SvgSource="close.svg"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="Applications" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+													SvgSource="hamburger.svg"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="Things" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+					</Grid>
 				</Border>
 
 				<!-- Coming soon -->
 				<Border Style="{DynamicResource BorderSet}">
-					<VerticalStackLayout>
+					<!-- Common apps -->
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, *" RowSpacing="{DynamicResource MediumSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}"
-							   Text="Coming soon"/>
-					</VerticalStackLayout>
+							   Text="Coming soon"
+							   Grid.ColumnSpan="2"/>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
+												SvgSource="wallet.svg"
+												IsEnabled="False"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="Invoices" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
+												SvgSource="home.svg"
+												IsEnabled="False"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="NFC" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
+												SvgSource="close.svg"
+												IsEnabled="False"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="Assets" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
+												SvgSource="hamburger.svg"
+												IsEnabled="False"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="Things" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+					</Grid>
 				</Border>
-
-
 			</VerticalStackLayout>
 		</ScrollView>
 
@@ -87,6 +123,7 @@
 							LeftLabelText="{l:Localize Home}"
 							CenterLabelText="{l:Localize Wallet}"
 							RightLabelText="{l:Localize Apps}"
-							LeftCommand="{Binding GoBackCommand}"/>
+							LeftCommand="{Binding GoBackCommand}"
+							Grid.Row="1"/>
 	</Grid>
 </base:BaseContentPage>
