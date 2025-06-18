@@ -16,7 +16,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	/// An observable object that wraps a <see cref="Waher.Networking.XMPP.Contracts.Parameter"/> object.
 	/// This allows for easier binding in the UI. Must be instantiated with <see cref="CreateAsync"/>.
 	/// </summary>
-	public class ObservableParameter : ObservableObject
+	public partial class ObservableParameter : ObservableObject
 	{
 		#region Constructor
 		protected ObservableParameter(Parameter parameter)
@@ -194,7 +194,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	}
 
 	#region ObservableParameter Subclasses
-	public sealed class ObservableBooleanParameter : ObservableParameter
+	public partial class ObservableBooleanParameter : ObservableParameter
 	{
 		public ObservableBooleanParameter(BooleanParameter parameter) : base(parameter)
 		{
@@ -205,6 +205,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			get => this.Value as bool? ?? false;
 			set => this.Value = value;
+		}
+
+		[RelayCommand]
+		private void ToggleBooleanValue()
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.BooleanValue = !this.BooleanValue;
+				this.OnPropertyChanged(nameof(this.BooleanValue));
+			});
 		}
 	}
 
