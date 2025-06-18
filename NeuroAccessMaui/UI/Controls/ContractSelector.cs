@@ -56,7 +56,7 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				ColumnDefinitions = new ColumnDefinitionCollection
 				{
-					new ColumnDefinition { Width = GridLength.Star },
+					new ColumnDefinition { Width = GridLength.Auto },
 					new ColumnDefinition { Width = GridLength.Star }
 				},
 				ColumnSpacing = AppStyles.SmallSpacing
