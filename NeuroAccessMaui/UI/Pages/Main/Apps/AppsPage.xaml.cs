@@ -14,5 +14,5 @@
 			this.InitializeComponent();
 			this.ContentPageModel = ViewModel;
 		}
-	}
+    }
 }

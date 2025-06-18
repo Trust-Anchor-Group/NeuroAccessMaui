@@ -12,21 +12,21 @@
 						xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 						xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 	<!-- Main Grid-->
-	<Grid RowDefinitions="*, auto">
-		<ScrollView Margin="{DynamicResource SmallLeftRightTopMargins}" VerticalOptions="FillAndExpand" Grid.Row="0">
-			<VerticalStackLayout>
-				<Grid Margin="{DynamicResource SmallMargins}" ColumnDefinitions="*, *">
-					<controls:SvgButton
-						Command="{Binding GoBackCommand}"
-						SvgSource="close.svg"
-						Style="{DynamicResource IconButton}"
-						HorizontalOptions="Start"/>
+	<Grid RowDefinitions="auto, *, auto">
+		<Grid Margin="{DynamicResource MediumMargins}" ColumnDefinitions="*, *">
+			<controls:SvgButton
+					Command="{Binding GoBackCommand}"
+					SvgSource="close.svg"
+					Style="{DynamicResource IconButton}"
+					HorizontalOptions="Start"/>
 
-					<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Apps}" HorizontalOptions="End" Grid.Column="1"/>
-				</Grid>
-
+			<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Apps}" HorizontalOptions="End" Grid.Column="1"/>
+		</Grid>
+		
+		<ScrollView Margin="{DynamicResource SmallLeftRightMargins}" VerticalOptions="FillAndExpand" Grid.Row="1">
+			<VerticalStackLayout Margin="0">
 				<!-- Apps -->
-				<Border Style="{DynamicResource BorderSet}">
+				<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource SmallLeftRightBottomMargins}">
 					<!-- Common apps -->
 					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *" RowSpacing="{DynamicResource MediumSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}"
@@ -51,36 +51,39 @@
 
 				<!-- Beta -->
 				<Border Style="{DynamicResource BorderSet}">
-					<!-- Common apps -->
-					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, *" RowSpacing="{DynamicResource MediumSpacing}">
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, *, auto" RowSpacing="{DynamicResource MediumSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}"
 							   Text="Beta"/>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
-							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+							<controls:SvgButton Style="{Binding BetaButtonStyle}"
 													SvgSource="wallet.svg"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="New Contracts" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
-							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+							<controls:SvgButton Style="{Binding BetaButtonStyle}"
 													SvgSource="home.svg"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="New Token" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
-							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+							<controls:SvgButton Style="{Binding BetaButtonStyle}"
 													SvgSource="close.svg"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="Applications" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
-							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+							<controls:SvgButton Style="{Binding BetaButtonStyle}"
 													SvgSource="hamburger.svg"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="Things" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
+						<Label Text="To enable Beta features, go to the Home screen and open the settings page"
+							   Grid.Row="4"
+							   Grid.ColumnSpan="3"
+							   IsVisible="{Binding HasBetaFeatures, Converter={mct:InvertedBoolConverter}}"
+							   Style="{DynamicResource AppCardLabel}"/>
 					</Grid>
 				</Border>
 
 				<!-- Coming soon -->
 				<Border Style="{DynamicResource BorderSet}">
-					<!-- Common apps -->
 					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, *" RowSpacing="{DynamicResource MediumSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}"
 							   Text="Coming soon"
@@ -124,6 +127,6 @@
 							CenterLabelText="{l:Localize Wallet}"
 							RightLabelText="{l:Localize Apps}"
 							LeftCommand="{Binding GoBackCommand}"
-							Grid.Row="1"/>
+							Grid.Row="2"/>
 	</Grid>
 </base:BaseContentPage>

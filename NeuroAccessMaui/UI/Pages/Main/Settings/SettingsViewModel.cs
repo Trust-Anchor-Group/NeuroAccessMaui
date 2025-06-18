@@ -106,13 +106,25 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			this.ChangePasswordCommand.NotifyCanExecuteChanged();
 		}
 
+		public bool IsBetaEnabled
+		{
+			get => ServiceRef.TagProfile.HasBetaFeatures;
+			set
+			{
+				if (value != ServiceRef.TagProfile.HasBetaFeatures)
+				{
+					ServiceRef.TagProfile.HasBetaFeatures = value;
+				}
+			}
+		}
+
 		#region Properties
 
-		/// <summary>
-		/// If screen capture prohibition can be controlled
-		/// </summary>
-		[ObservableProperty]
-		private bool canProhibitScreenCapture;
+			/// <summary>
+			/// If screen capture prohibition can be controlled
+			/// </summary>
+			[ObservableProperty]
+			private bool canProhibitScreenCapture;
 
 		/// <summary>
 		/// Screen capture mode.
@@ -600,5 +612,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			await Database.Provider.Flush();
 		}
 		#endregion
+
+		public void SetBetaFeaturesEnabled(bool Enabled)
+		{
+			this.IsBetaEnabled = Enabled;
+		}
 	}
 }
