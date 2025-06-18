@@ -13,7 +13,7 @@
 	</Style>
 
 	<!-- Styles for CompositeInputView label and validation when used with entries -->
-	<Style x:Key="RegularCompositeInputViewValidationLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+	<Style x:Key="RegularCompositeInputViewValidationLabel" TargetType="Label" BaseResourceKey="BoldItemTitleLabel">
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
 		<Setter Property="LineBreakMode" Value="WordWrap" />
@@ -21,7 +21,7 @@
 		<Setter Property="HorizontalTextAlignment" Value="Start" />
 	</Style>
 
-	<Style x:Key="RegularCompositeEntryLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+	<Style x:Key="RegularCompositeEntryLabel" TargetType="Label" BaseResourceKey="BoldItemTitleLabel">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
 		<Setter Property="FontSize" Value="15" />
 		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
@@ -37,7 +37,7 @@
 	</Style>
 
 	<!-- Regular CompositeEntry style, based on BaseCompositeInputView -->
-	<Style x:Key="RegularCompositeEntry" TargetType="controls:CompositeEntry" BasedOn="{StaticResource BaseCompositeInputView}">
+	<Style x:Key="RegularCompositeEntry" TargetType="controls:CompositeEntry" BaseResourceKey="BaseCompositeInputView">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
 		<Setter Property="EntryStyle" Value="{DynamicResource RegularCompositeEntryEntry}" />
 		<Setter Property="LabelStyle" Value="{DynamicResource RegularCompositeEntryLabel}" />
@@ -47,14 +47,10 @@
 
 		<Style.Triggers>
 			<Trigger TargetType="controls:CompositeEntry"
-                     Property="IsValid"
-                     Value="False">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
-			</Trigger>
-			<Trigger TargetType="controls:CompositeEntry"
-                     Property="IsValid"
-                     Value="True">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+					 Property="IsValid"
+					 Value="False">
+				<Setter Property="TextColor"
+						Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

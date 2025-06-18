@@ -20,7 +20,7 @@
 			<converters:ContractStateToString x:Key="ContractStateToStringConverter" />
 			<Style x:Key="ItemTitleLabel"
 					 TargetType="Label"
-					 BasedOn="{StaticResource BoldItemTitleLabel}">
+					 BaseResourceKey="BoldItemTitleLabel">
 				<Setter Property="TextColor"
 						  Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 				<Setter Property="FontSize"

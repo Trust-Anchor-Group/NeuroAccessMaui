@@ -1,43 +1,56 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                    xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
-	
-	<Style x:Key="RegularCompositeInputViewValidationLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
-		<Setter Property="FontSize" Value="15" />
-		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
-		<Setter Property="LineBreakMode" Value="WordWrap" />
-		<Setter Property="VerticalTextAlignment" Value="Center" />
-		<Setter Property="HorizontalTextAlignment" Value="Start" />
+					xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+
+	<Style x:Key="RegularCompositeInputViewValidationLabel"
+		   TargetType="Label"
+		   BaseResourceKey="BoldItemTitleLabel">
+		<Setter Property="FontSize"
+				Value="15" />
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskSemiBold" />
+		<Setter Property="LineBreakMode"
+				Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment"
+				Value="Center" />
+		<Setter Property="HorizontalTextAlignment"
+				Value="Start" />
 	</Style>
 
 	<!-- Base style for all CompositeInputView-based controls -->
-	<Style x:Key="BaseCompositeInputView" TargetType="controls:CompositeInputView" ApplyToDerivedTypes="True">
+	<Style x:Key="BaseCompositeInputView"
+		   TargetType="controls:CompositeInputView"
+		   ApplyToDerivedTypes="True">
 		<!-- Common defaults -->
-		<Setter Property="LabelStyle" Value="{DynamicResource RegularCompositeInputViewValidationLabel}"/>
-		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
-		<Setter Property="BorderPadding" Value="{DynamicResource EditMediumMargins}"/>
-		<Setter Property="BorderBackground" Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceBackgroundActiveLight}, Dark={DynamicResource InputFieldsSurfaceBackgroundActiveDark}}" />
-		<Setter Property="BorderStroke" Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceStrokeLight}, Dark={DynamicResource InputFieldsSurfaceStrokeDark}}" />
+		<Setter Property="LabelStyle"
+				Value="{DynamicResource RegularCompositeInputViewValidationLabel}" />
+		<Setter Property="ValidationColor"
+				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
+		<Setter Property="ValidationLabelStyle"
+				Value="{DynamicResource RegularCompositeInputViewLabel}" />
+		<Setter Property="BorderPadding"
+				Value="{DynamicResource EditMediumMargins}" />
+		<Setter Property="BorderBackground"
+				Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceBackgroundActiveLight}, Dark={DynamicResource InputFieldsSurfaceBackgroundActiveDark}}" />
+		<Setter Property="BorderStroke"
+				Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceStrokeLight}, Dark={DynamicResource InputFieldsSurfaceStrokeDark}}" />
 		<Setter Property="BorderStrokeShape">
 			<Setter.Value>
 				<RoundRectangle CornerRadius="8" />
 			</Setter.Value>
 		</Setter>
-		<Setter Property="BorderShadow" Value="{x:Null}"/>
+		<Setter Property="BorderShadow"
+				Value="{x:Null}" />
 
 		<!-- Common triggers for validation -->
 		<Style.Triggers>
 			<Trigger TargetType="controls:CompositeInputView"
-                     Property="IsValid"
-                     Value="False">
-				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
-			</Trigger>
-						<Trigger TargetType="controls:CompositeInputView"
-                     Property="IsValid"
-                     Value="True">
-				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+					 Property="IsValid"
+					 Value="False">
+				<Setter Property="BorderStroke"
+						Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>
