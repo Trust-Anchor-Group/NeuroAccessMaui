@@ -41,6 +41,7 @@
 	<Thickness x:Key="ButtonThinMargins">16,8</Thickness>
 	<Thickness x:Key="ButtonMediumMargins">24,12</Thickness>
 	<Thickness x:Key="MediumLeftRightMargins">16,0,16,0</Thickness>
+	<Thickness x:Key="MediumLeftRightBottomMargins">16,0,16,16</Thickness>
 
 	<OnPlatform x:Key="EditMediumMargins" x:TypeArguments="Thickness">
 		<On Platform="Android" Value="16,0" />
@@ -641,7 +642,10 @@
 			</Setter.Value>
 		</Setter>
 		<Setter Property="Stroke" Value="{AppThemeBinding Light={DynamicResource NavMenuStroke1WLLight}, Dark={DynamicResource NavMenuStroke1WLDark}}" />
-		<Setter Property="StrokeThickness" Value="1"/>
+	</Style>
+
+	<Style x:Key="BottomBarBorder2" BasedOn="{StaticResource BottomBarBorder}" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource NavMenuBody2WLLight}, Dark={DynamicResource NavMenuBody2WLDark}}" />
 	</Style>
 
 	<Style x:Key="BottomBarLabel" ApplyToDerivedTypes="True" TargetType="Label">
