@@ -302,5 +302,11 @@ namespace NeuroAccessMaui.Services
 
 		[DefaultValueNull]
 		public DateTime? LastIdentityUpdate { get; set; }
+
+		/// <summary>
+		/// If the user has enabled Beta Features
+		/// </summary>
+		[DefaultValue(false)]
+		public bool HasBetaFeatures { get; set; }
 	}
 }

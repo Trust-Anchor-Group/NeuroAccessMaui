@@ -77,13 +77,26 @@
 																 PendingPaymentTemplate="{StaticResource PendingPaymentTemplate}"
 																 AccountEventTemplate="{StaticResource AccountEventTemplate}"/>
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid RowDefinitions="auto, *, auto" BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+		<controls:Background Grid.RowSpan="2" Grid.ColumnSpan="2"/>
 
-		<controls:Background/>
+		<Grid ColumnDefinitions="*, *" Margin="{DynamicResource MediumMargins}">
+			<controls:SvgButton
+					Command="{Binding GoBackCommand}"
+					SvgSource="close.svg"
+					Style="{DynamicResource IconButton}"
+					HorizontalOptions="Start"/>
 
-		<ScrollView>
+			<Label Text="{l:Localize Wallet}"
+				   HorizontalOptions="End"
+				   Grid.Row="0"
+				   Grid.Column="1"
+				   Style="{DynamicResource PageTitleLabel}"/>
+		</Grid>
+
+		<ScrollView Grid.Row="1" Grid.ColumnSpan="2" Margin="{DynamicResource SmallLeftRightMargins}">
 			<Grid RowDefinitions="auto,*,auto">
-				<Frame Grid.Row="0" HeightRequest="150" BorderColor="Black" CornerRadius="6" HasShadow="True" Margin="{DynamicResource SmallMargins}"
+				<Frame Grid.Row="0" HeightRequest="150" BorderColor="Black" CornerRadius="6" HasShadow="True" Margin="{DynamicResource SmallLeftRightBottomMargins}"
                        BackgroundColor="{DynamicResource SurfaceBackgroundWLDark}">
 					<Grid HeightRequest="150" RowDefinitions="25,100,25" BackgroundColor="Transparent">
 						<Image x:Name="ImgFront" Grid.Row="0" Grid.RowSpan="3" Source="{Binding Path=EDalerFrontGlyph}" Opacity="0.5"/>
@@ -150,5 +163,18 @@
 				</VerticalStackLayout>
 			</Grid>
 		</ScrollView>
+
+		<controls:BottomBar Grid.Row="4"
+							Style="{DynamicResource BottomBar}"
+							SelectedIcon="Center"
+							LeftIcon="home.svg"
+							CenterIcon="wallet.svg"
+							RightIcon="apps.svg"
+							LeftLabelText="{l:Localize Home}"
+							CenterLabelText="{l:Localize Wallet}"
+							RightLabelText="{l:Localize Apps}"
+							LeftCommand="{Binding ViewMainPageCommand}"
+							RightCommand="{Binding ViewAppsCommand}"/>
+		
 	</Grid>
 </base:BaseContentPage>

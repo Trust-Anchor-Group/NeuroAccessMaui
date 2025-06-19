@@ -398,6 +398,9 @@
 		<Compile Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml.cs">
 		  <DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Pages\Main\Apps\AppsPage.xaml.cs">
+		  <DependentUpon>AppsPage.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="UI\Pages\Main\ChangePassword\ChangePasswordPage.xaml.cs">
 			<DependentUpon>ChangePasswordPage.xaml</DependentUpon>
 		</Compile>
@@ -574,6 +577,9 @@
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Main\Apps\AppsPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Main\Calculator\CalculatorPage.xaml">

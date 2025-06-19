@@ -16,6 +16,8 @@ using NeuroAccessMaui.UI.Pages.Contracts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
+using NeuroAccessMaui.UI.Pages.Main;
+using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.RequestPayment;
@@ -993,5 +995,34 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			return Task.CompletedTask;
 		}
 
+		// Go to Apps page
+		[RelayCommand]
+		public async Task ViewApps()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(AppsPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		public async Task ViewMainPage()
+		{
+			try
+			{
+				if (Application.Current?.MainPage?.Navigation != null)
+				{
+					await Application.Current.MainPage.Navigation.PopToRootAsync();
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 	}
 }

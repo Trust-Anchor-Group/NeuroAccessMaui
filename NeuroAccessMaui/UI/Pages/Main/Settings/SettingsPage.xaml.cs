@@ -15,5 +15,10 @@
 			this.ContentPageModel = ViewModel;
 			ViewModel.Page = this;
 		}
-	}
+
+		private void BetaEnabled_CheckedChanged(object sender, CheckedChangedEventArgs e)
+		{
+			((SettingsViewModel)this.ContentPageModel).SetBetaFeaturesEnabled(e.Value);
+		}
+    }
 }

@@ -52,6 +52,8 @@ namespace NeuroAccessMaui.UI
 		private static Style? transparentTemplateButtonPath;
 		private static Style? secondaryButton;
 		private static Style? secondaryImageButton;
+		private static Style? neuroIconButton;
+		private static Style? neuroIconButtonDisabled;
 
 		static AppStyles()
 		{
@@ -571,6 +573,30 @@ namespace NeuroAccessMaui.UI
 			{
 				secondaryButton ??= TryGetResource<Style>("SecondaryButton");
 				return secondaryButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for NeuroIconButton
+		/// </summary>
+		public static Style NeuroIconButton
+		{
+			get
+			{
+				neuroIconButton ??= TryGetResource<Style>("NeuroIconButton");
+				return neuroIconButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for NeuroIconButtonDisabled
+		/// </summary>
+		public static Style NeuroIconButtonDisabled
+		{
+			get
+			{
+				neuroIconButtonDisabled ??= TryGetResource<Style>("NeuroIconButtonDisabled");
+				return neuroIconButtonDisabled!;
 			}
 		}
 	}

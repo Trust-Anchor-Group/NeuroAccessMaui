@@ -18,10 +18,14 @@
 
 		<ScrollView>
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+				<Grid ColumnDefinitions="*, *" Margin="{DynamicResource SmallLeftRightMargins}">
+					<controls:ImageButton HorizontalOptions="Start"
+										  Command="{Binding GoBackCommand}"
+										  Style="{DynamicResource ImageOnlyButton}"
+										  PathData="{x:Static ui:Geometries.BackButtonPath}"/>
 
-				<Label Text="{l:Localize Things}" Style="{DynamicResource PageTitleLabel}"/>
+					<Label Text="{l:Localize Things}" Style="{DynamicResource PageTitleLabel}" Grid.Column="1" HorizontalOptions="End"/>
+				</Grid>
 
 				<Frame Style="{DynamicResource FrameSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">

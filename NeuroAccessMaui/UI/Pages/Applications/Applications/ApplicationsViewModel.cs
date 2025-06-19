@@ -9,6 +9,7 @@ using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI.Pages.Contracts;
 using NeuroAccessMaui.UI.Pages.Main;
+using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Wallet;
 using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
@@ -304,17 +305,17 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					}
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
 		private Task OpenWallet()
 		{
-			return AppShellViewModel.ShowWallet();
+			return AppsViewModel.ShowWallet();
 		}
 
 		#endregion

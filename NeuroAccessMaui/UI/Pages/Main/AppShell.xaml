@@ -25,42 +25,6 @@
 					  FlyoutItemIsVisible="false"
 					  Route="MainPage" />
 
-	<MenuItem Text="{l:Localize ViewId}" Command="{Binding ViewIdCommand}" StyleId="MenuItemLabel"
-				 IconImageSource="{AppThemeBinding Light=view_id_light, Dark=view_id_dark}"/>
-
-	<MenuItem Text="{l:Localize MyContracts}" Command="{Binding ShowMyContractsCommand}" StyleId="MenuItemLabel"
-				 Shell.FlyoutItemIsVisible="{Binding CanShowMyContractsCommand, Mode=TwoWay}"
-				 IconImageSource="{AppThemeBinding Light=contract_light, Dark=contract_dark}"/>
-
-	<MenuItem Text="{l:Localize NewContract}" Command="{Binding CreateContractCommand}" StyleId="MenuItemLabel"
-				 Shell.FlyoutItemIsVisible="{Binding CanShowCreateContractCommand, Mode=TwoWay}"
-				 IconImageSource="{AppThemeBinding Light=create_contract_light, Dark=create_contract_dark}"/>
-
-	<MenuItem Text="{l:Localize NewToken}" Command="{Binding CreateTokenCommand}" StyleId="MenuItemLabel"
-				 Shell.FlyoutItemIsVisible="{Binding CanShowCreateTokenCommand, Mode=TwoWay}"
-				 IconImageSource="{AppThemeBinding Light=create_token_light, Dark=create_token_dark}"/>
-
-	<MenuItem Text="{l:Localize Contacts}" Command="{Binding ShowContactsCommand}" StyleId="MenuItemLabel"
-				 Shell.FlyoutItemIsVisible="{Binding CanShowContactsCommand, Mode=TwoWay}"
-				 IconImageSource="{AppThemeBinding Light=person_light, Dark=person_dark}"/>
-
-	<MenuItem Text="{l:Localize Wallet}" Command="{Binding ShowWalletCommand}" StyleId="MenuItemLabel"
-				 Shell.FlyoutItemIsVisible="{Binding CanShowWalletCommand, Mode=TwoWay}"
-				 IconImageSource="{AppThemeBinding Light=money_light, Dark=money_dark}"/>
-
-	<MenuItem Text="{l:Localize Things}" Command="{Binding ShowThingsCommand}" StyleId="MenuItemLabel"
-				 Shell.FlyoutItemIsVisible="{Binding CanShowThingsCommand, Mode=TwoWay}"
-				 IconImageSource="{AppThemeBinding Light=thing_light, Dark=thing_dark}"/>
-
-	<MenuItem Text="{l:Localize Applications}" Command="{Binding ShowApplicationsCommand}" StyleId="MenuItemLabel"
-				 IconImageSource="{AppThemeBinding Light=neuro_access_light, Dark=neuro_access_dark}"/>
-
-	<MenuItem Text="{l:Localize Settings}" Command="{Binding ShowSettingsCommand}" StyleId="MenuItemLabel"
-				 IconImageSource="{AppThemeBinding Light=settings_light, Dark=settings_dark}"/>
-
-	<MenuItem Text="{l:Localize Close}" Command="{Binding CloseCommand}" StyleId="MenuItemLabel"
-				 IconImageSource="{AppThemeBinding Light=close_light, Dark=close_dark}" />
-
 	<Shell.Resources>
 		<ResourceDictionary>
 			<Style x:Key="BaseStyle" TargetType="Element">

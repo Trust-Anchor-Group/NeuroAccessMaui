@@ -256,6 +256,11 @@ namespace NeuroAccessMaui.Services.Tag
 		bool HasWallet { get; set; }
 
 		/// <summary>
+		/// If the user has Beta features enabled
+		/// </summary>
+		bool HasBetaFeatures { get; set; }
+
+		/// <summary>
 		/// If the user has a thing.
 		/// </summary>
 		bool HasThing { get; set; }

@@ -102,10 +102,9 @@
 					SvgSource="close.svg"
 					Style="{DynamicResource IconButton}"
 					HorizontalOptions="Start"
-					WidthRequest="44"
-					HeightRequest="44"/>
+					Margin="{DynamicResource SmallLeftMargins}"/>
 
-				<Label Text="{Binding Path=Title}" Style="{DynamicResource PageTitleLabel}"/>
+				<Label Text="{Binding Path=Title}" Style="{DynamicResource PageTitleLabel}" Margin="{DynamicResource SmallLeftMargins}"/>
 
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">

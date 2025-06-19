@@ -29,7 +29,7 @@
 	</ContentView.Resources>
 
 	<!-- Roles Collection -->
-	<CollectionView ItemsSource="{Binding Contract.Roles}" SelectionMode="None" IsGrouped="False" ItemSizingStrategy="MeasureAllItems" Margin="{DynamicResource SmallMargins}">
+	<CollectionView ItemsSource="{Binding Contract.Roles}" SelectionMode="None" IsGrouped="False" ItemSizingStrategy="MeasureAllItems" Margin="{DynamicResource SmallLeftRightMargins}">
 		<CollectionView.Header>
 			<Grid>
 				<Border Style="{DynamicResource BorderSet}" >
