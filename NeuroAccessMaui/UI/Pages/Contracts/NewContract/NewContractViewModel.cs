@@ -311,10 +311,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			if (this.Contract is null)
 				return;
 
-			ContractsClient client = ServiceRef.XmppService.ContractsClient;
 
 			try
 			{
+				ContractsClient Client = ServiceRef.XmppService.ContractsClient;
+
 				// Populate the parameters
 				Variables v = [];
 
@@ -330,7 +331,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							if (p.Value is null)
 								p.IsValid = false;
 							else
-								p.IsValid = await p.Parameter.IsParameterValid(v, client);
+								p.IsValid = await p.Parameter.IsParameterValid(v, Client);
 
 							bool ValidateAnyway = p.Parameter.ErrorReason switch
 							{
@@ -371,7 +372,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				return;
 			}
 
-			ContractsClient client = ServiceRef.XmppService.ContractsClient;
+			ContractsClient Client = ServiceRef.XmppService.ContractsClient;
 
 			Contract? CreatedContract = null;
 			List<Part> Parts = [];
@@ -385,7 +386,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			try
 			{
-				CreatedContract = await client.CreateContractAsync(
+				CreatedContract = await Client.CreateContractAsync(
 					this.Contract.Contract.ContractId,
 					[.. Parts],
 					this.Contract.Contract.Parameters,
@@ -402,10 +403,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					if (this.args?.SuppressedProposalLegalIds is not null && Array.IndexOf<CaseInsensitiveString>(this.args.SuppressedProposalLegalIds, Part.LegalId) >= 0)
 						continue;
 
+					if(Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id)
+						continue;
+
 					ContactInfo Info = await ContactInfo.FindByLegalId(Part.LegalId);
 					if (Info is null || string.IsNullOrEmpty(Info.BareJid))
 						continue;
-
 					await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(CreatedContract.ContractId, Info.BareJid, true);
 
 					string? Proposal = await ServiceRef.UiService.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
@@ -447,9 +450,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			try
 			{
-				NewContractStep currentStep = (NewContractStep)Enum.Parse(typeof(NewContractStep), this.CurrentState);
+				NewContractStep CurrentStep = (NewContractStep)Enum.Parse(typeof(NewContractStep), this.CurrentState);
 
-				switch (currentStep)
+				switch (CurrentStep)
 				{
 					case NewContractStep.Loading:
 					case NewContractStep.Overview:
