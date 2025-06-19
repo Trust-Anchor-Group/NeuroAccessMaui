@@ -2816,4 +2816,10 @@
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Tar bort tillfälliga data som bilder och bilagor för att frigöra utrymme</value>
   </data>
+  <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
+    <value>Behörighet krävs</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
+    <value>Vi kunde inte hämta den senaste versionen av detta kontrakt. Uppgifterna du ser kan vara inaktuella. Begär åtkomst nu?</value>
+  </data>
 </root>

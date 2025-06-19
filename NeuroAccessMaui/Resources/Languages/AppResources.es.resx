@@ -2816,4 +2816,10 @@
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Elimina datos temporales como imágenes y archivos adjuntos para liberar espacio</value>
   </data>
+  <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
+    <value>Permiso requerido</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
+    <value>No pudimos cargar la versión más reciente de este contrato. Los detalles que ves podrían estar desactualizados. ¿Solicitar acceso ahora?</value>
+  </data>
 </root>
