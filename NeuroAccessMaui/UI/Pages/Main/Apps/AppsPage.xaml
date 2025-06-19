@@ -13,17 +13,24 @@
 						xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 	<!-- Main Grid-->
 	<Grid RowDefinitions="auto, *, auto">
-		<Grid Margin="{DynamicResource MediumMargins}" ColumnDefinitions="*, *">
+		<Grid Margin="{DynamicResource MediumMargins}" ColumnDefinitions="*, auto, *">
 			<controls:SvgButton
 					Command="{Binding GoBackCommand}"
 					SvgSource="close.svg"
 					Style="{DynamicResource IconButton}"
 					HorizontalOptions="Start"/>
 
-			<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Apps}" HorizontalOptions="End" Grid.Column="1"/>
+			<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Apps}" HorizontalOptions="Center" Grid.Column="1"/>
+
+			<controls:SvgButton
+				Command="{Binding ShowIdCommand}"
+				Grid.Column="2"
+				SvgSource="id_icon.svg"
+				Style="{DynamicResource IconButton}"
+				HorizontalOptions="End"/>
 		</Grid>
 		
-		<ScrollView Margin="{DynamicResource SmallLeftRightMargins}" VerticalOptions="FillAndExpand" Grid.Row="1">
+		<ScrollView Margin="{DynamicResource SmallLeftRightMargins}" Grid.Row="1">
 			<VerticalStackLayout Margin="0">
 				<!-- Apps -->
 				<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource SmallLeftRightBottomMargins}">
@@ -33,17 +40,20 @@
 							   Text="Apps"/>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
-												SvgSource="contacts.svg"/>
+												SvgSource="contacts.svg"
+												Command="{Binding ShowContactsCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Contacts}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
-												SvgSource="contracts.svg"/>
+												SvgSource="my_contracts.svg"
+												Command="{Binding ShowMyContractsCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize MyContracts}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
-													SvgSource="neuro_grey.svg"/>
+												SvgSource="applications.svg"
+												Command="{Binding ShowApplicationsCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Applications}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 					</Grid>
@@ -51,35 +61,32 @@
 
 				<!-- Beta -->
 				<Border Style="{DynamicResource BorderSet}">
-					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, *, auto" RowSpacing="{DynamicResource MediumSpacing}">
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, auto" RowSpacing="{DynamicResource MediumSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}"
 							   Text="Beta"/>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
-												SvgSource="wallet.svg"
-												IsEnabled="{Binding HasBetaFeatures}"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="New Contracts" HorizontalOptions="Center"/>
+												SvgSource="new_contracts.svg"
+												IsEnabled="{Binding HasBetaFeatures}"
+												Command="{Binding ShowNewContractCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize NewContract}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
-												SvgSource="home.svg"
-												IsEnabled="{Binding HasBetaFeatures}"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="New Token" HorizontalOptions="Center"/>
+												SvgSource="new_token.svg"
+												IsEnabled="{Binding HasBetaFeatures}"
+												Command="{Binding ShowNewTokenCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize NewToken}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
-												SvgSource="close.svg"
-												IsEnabled="{Binding HasBetaFeatures}"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="Applications" HorizontalOptions="Center"/>
-						</VerticalStackLayout>
-						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
-							<controls:SvgButton Style="{Binding BetaButtonStyle}"
-												SvgSource="hamburger.svg"
-												IsEnabled="{Binding HasBetaFeatures}"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="Things" HorizontalOptions="Center"/>
+												SvgSource="thing.svg"
+												IsEnabled="{Binding HasBetaFeatures}"
+												Command="{Binding ShowThingsCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize SmartThings}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<Label Text="To enable Beta features, go to the Home screen and open the settings page"
-							   Grid.Row="4"
+							   Grid.Row="2"
 							   Grid.ColumnSpan="3"
 							   IsVisible="{Binding HasBetaFeatures, Converter={mct:InvertedBoolConverter}}"
 							   Style="{DynamicResource AppCardLabel}"/>
@@ -94,27 +101,27 @@
 							   Grid.ColumnSpan="2"/>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
-												SvgSource="wallet.svg"
+												SvgSource="assets.svg"
 												IsEnabled="False"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="Invoices" HorizontalOptions="Center"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Assets}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
-												SvgSource="home.svg"
+												SvgSource="microloan.svg"
 												IsEnabled="False"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="NFC" HorizontalOptions="Center"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize MicroLoan}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
-												SvgSource="close.svg"
+												SvgSource="nfc.svg"
 												IsEnabled="False"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="Assets" HorizontalOptions="Center"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize NFC}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
-												SvgSource="hamburger.svg"
+												SvgSource="sign.svg"
 												IsEnabled="False"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="Things" HorizontalOptions="Center"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Sign}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 					</Grid>
 				</Border>
@@ -130,7 +137,8 @@
 							LeftLabelText="{l:Localize Home}"
 							CenterLabelText="{l:Localize Wallet}"
 							RightLabelText="{l:Localize Apps}"
-							LeftCommand="{Binding GoBackCommand}"
+							LeftCommand="{Binding ViewMainPageCommand}"
+							CenterCommand="{Binding ShowWalletCommand}"
 							Grid.Row="2"/>
 	</Grid>
 </base:BaseContentPage>

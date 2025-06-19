@@ -2822,4 +2822,16 @@
   <data name="BetaFeaturesDescription" xml:space="preserve">
     <value>Betafunktioner är under utveckling och kan sakna fullständig funktionalitet eller design. Vissa av deras kärnfunktioner är dock redan tillgängliga.</value>
   </data>
+  <data name="SmartThings" xml:space="preserve">
+    <value>Smarta saker</value>
+  </data>
+  <data name="Assets" xml:space="preserve">
+    <value>Tillgångar</value>
+  </data>
+  <data name="MicroLoan" xml:space="preserve">
+    <value>Mikrolån</value>
+  </data>
+  <data name="NFC" xml:space="preserve">
+    <value>NFC</value>
+  </data>
 </root>

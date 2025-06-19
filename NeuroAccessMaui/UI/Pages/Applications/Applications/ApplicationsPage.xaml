@@ -18,7 +18,7 @@
 
 		<ScrollView>
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource SmallSpacing}">
-				<Grid Margin="{StaticResource SmallLeftRightMargins}">
+				<Grid Margin="{StaticResource SmallLeftRightTopMargins}">
 					<controls:SvgButton
 						Command="{Binding GoBackCommand}"
 						SvgSource="close.svg"

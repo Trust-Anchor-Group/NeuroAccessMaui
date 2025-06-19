@@ -53,8 +53,8 @@
 			  ColumnDefinitions="auto,auto">
 			<controls:SvgButton
 				Grid.Row="0" Grid.Column="0"
-				Command="{Binding OpenFlyoutCommand}"
-				SvgSource="hamburger.svg"
+				Command="{Binding ShowSettingsCommand}"
+				SvgSource="cog.svg"
 				Style="{DynamicResource IconButton}"/>
 
 			<!-- TODO: Enable when implemented
@@ -136,8 +136,9 @@
 
 
 		<Grid HorizontalOptions="FillAndExpand"
-				ColumnDefinitions="*, *"
-				Grid.Row="3">
+			  ColumnDefinitions="*, *"
+			  Grid.Row="3"
+			  Margin="{DynamicResource SmallMargins}">
 			
 			<!-- Scan QR Button -->
 			<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
@@ -187,6 +188,7 @@
 							LeftLabelText="{l:Localize Home}"
 							CenterLabelText="{l:Localize Wallet}"
 							RightLabelText="{l:Localize Apps}"
+							CenterCommand="{Binding ShowWalletCommand}"
 							RightCommand="{Binding ViewAppsCommand}"/>
 
 		<Grid.GestureRecognizers>
