@@ -196,7 +196,7 @@
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Enable}"/>
 									<Label Style="{DynamicResource ItemDescriptionLabel}"
 										   LineBreakMode="WordWrap"
-										   Text="Beta features are currently under development and could lack functionality or design, however, some of their core features are available"
+										   Text="{l:Localize BetaFeaturesDescription}"
 										   Grid.Row="1"/>
 									<CheckBox IsChecked="{Binding IsBetaEnabled, Mode=TwoWay}"
 											  Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
