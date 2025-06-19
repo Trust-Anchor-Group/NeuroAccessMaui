@@ -33,18 +33,18 @@
 							   Text="Apps"/>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
-													SvgSource="wallet.svg"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="Contacts" HorizontalOptions="Center"/>
+												SvgSource="contacts.svg"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Contacts}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
-													SvgSource="home.svg"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="My Contracts" HorizontalOptions="Center"/>
+												SvgSource="contracts.svg"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize MyContracts}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
-													SvgSource="close.svg"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="Assets" HorizontalOptions="Center"/>
+													SvgSource="neuro_grey.svg"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Applications}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 					</Grid>
 				</Border>
@@ -56,22 +56,26 @@
 							   Text="Beta"/>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
-													SvgSource="wallet.svg"/>
+												SvgSource="wallet.svg"
+												IsEnabled="{Binding HasBetaFeatures}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="New Contracts" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
-													SvgSource="home.svg"/>
+												SvgSource="home.svg"
+												IsEnabled="{Binding HasBetaFeatures}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="New Token" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
-													SvgSource="close.svg"/>
+												SvgSource="close.svg"
+												IsEnabled="{Binding HasBetaFeatures}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="Applications" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
-													SvgSource="hamburger.svg"/>
+												SvgSource="hamburger.svg"
+												IsEnabled="{Binding HasBetaFeatures}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="Things" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<Label Text="To enable Beta features, go to the Home screen and open the settings page"

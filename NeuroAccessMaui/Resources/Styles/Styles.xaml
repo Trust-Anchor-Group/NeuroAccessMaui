@@ -683,7 +683,7 @@
 	</Style>
 
 	<Style x:Key="BottomBarUnelectedIconBorder" ApplyToDerivedTypes="True" TargetType="Border" BasedOn="{StaticResource BottomBarIconBorder}">
-		<Setter Property="BackgroundColor" Value="Transparent"/>
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource NavMenuBody1WLLight}, Dark={DynamicResource NavMenuBody1WLDark}}"/>
 	</Style>
 	
 	<Style x:Key="AccentInfoBorder" ApplyToDerivedTypes="False" TargetType="Border">
