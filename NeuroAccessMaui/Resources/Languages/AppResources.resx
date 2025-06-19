@@ -2819,4 +2819,7 @@
   <data name="Apps" xml:space="preserve">
     <value>Apps</value>
   </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Beta features are under development and could lack functionality or design. However, some of their core features are available</value>
+  </data>
 </root>

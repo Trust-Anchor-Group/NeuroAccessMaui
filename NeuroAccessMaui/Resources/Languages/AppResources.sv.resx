@@ -2819,4 +2819,7 @@
   <data name="Apps" xml:space="preserve">
       <value>Appar</value>
   </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Betafunktioner är under utveckling och kan sakna fullständig funktionalitet eller design. Vissa av deras kärnfunktioner är dock redan tillgängliga.</value>
+  </data>
 </root>

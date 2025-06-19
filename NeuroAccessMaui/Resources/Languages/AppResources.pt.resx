@@ -2819,4 +2819,7 @@
   <data name="Apps" xml:space="preserve">
       <value>Aplicativos</value>
   </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Os recursos beta estão em desenvolvimento e podem não ter funcionalidade ou design completos. No entanto, alguns de seus recursos principais já estão disponíveis.</value>
+  </data>
 </root>

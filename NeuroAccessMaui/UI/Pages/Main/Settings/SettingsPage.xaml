@@ -193,12 +193,12 @@
 						<Border Style="{DynamicResource BorderSubSet}">
 							<VerticalStackLayout>
 								<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto" RowSpacing="{DynamicResource SmallSpacing}">
-									<Label Style="{DynamicResource SectionTitleLabel}" Text="Enable beta features"/>
+									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Enable}"/>
 									<Label Style="{DynamicResource ItemDescriptionLabel}"
 										   LineBreakMode="WordWrap"
-										   Text="Beta features are currently under development and could lack some functionality or design, however, some of their core feature are available"
+										   Text="Beta features are currently under development and could lack functionality or design, however, some of their core features are available"
 										   Grid.Row="1"/>
-									<CheckBox IsChecked="{Binding IsBetaEnabled}"
+									<CheckBox IsChecked="{Binding IsBetaEnabled, Mode=TwoWay}"
 											  Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
 											  CheckedChanged="BetaEnabled_CheckedChanged"
 											  VerticalOptions="Center"
