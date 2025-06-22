@@ -4,9 +4,12 @@
 					xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
 					xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 					xmlns:extended="clr-namespace:NeuroAccessMaui.UI.Controls.Extended"
 					xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization">
+	
+	<converters:HyphenIfEmpty x:Key="HyphenIfEmptyConverter" />
 
 	<!-- Styles -->
 	<Style x:Key="ParameterItemTitleLabel"
@@ -369,7 +372,7 @@
 						   Style="{DynamicResource ParameterItemTitleLabel}"
 						   HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
-						   Text="{Binding Value}"
+						   Text="{Binding Value, Converter={StaticResource HyphenIfEmptyConverter }}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -507,6 +510,19 @@
 										   IsValid="{Binding IsValid}"
 										   ButtonCommand="{Binding PickContractReferenceCommand}"
 										   ButtonText="{l:Localize SelectContract}" />
+				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
+													   IsEncrypted="{Binding IsEncrypted}"
+													   IsVisible="{Binding IsProtected}" />
+			</VerticalStackLayout>
+		</Border>
+	</DataTemplate>
+	<DataTemplate x:Key="ContractReferenceParameterReadOnlyTemplate"
+				  x:DataType="objectModel:ObservableContractReferenceParameter">
+		<Border Style="{DynamicResource BorderSet}"
+				Margin="{DynamicResource MediumLeftRightMargins}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				<Label Text="{Binding ContractReferenceValue}"/>
+				<controls:TextButton Style="{DynamicResource SecondaryButton}" Command="{Binding OpenContractCommand}" LabelData="{l:Localize Open}" />
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
