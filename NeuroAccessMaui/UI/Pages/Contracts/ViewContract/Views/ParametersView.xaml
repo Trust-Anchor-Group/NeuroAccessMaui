@@ -22,6 +22,7 @@
 															DurationTemplate="{StaticResource DurationParameterReadOnlyTemplate}"
 															ProtectedTemplate="{StaticResource ProtectedParameterTemplate}"
 															CalcTemplate="{StaticResource CalcParameterReadOnlyTemplate}"
+															ContractReferenceTemplate="{StaticResource ContractReferenceParameterReadOnlyTemplate}"
 															DefaultTemplate="{StaticResource DefaultParameterReadOnlyTemplate}" />
 	</ContentView.Resources>
 
