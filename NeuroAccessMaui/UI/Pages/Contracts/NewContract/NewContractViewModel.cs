@@ -314,7 +314,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			try
 			{
-				ContractsClient Client = ServiceRef.XmppService.ContractsClient;
+				ContractsClient? Client = null;
+				try
+				{
+					Client = ServiceRef.XmppService.ContractsClient;
+				}
+				catch (Exception)
+				{ // Ignore, OK if not connected
+				}
 
 				// Populate the parameters
 				Variables v = [];
@@ -328,19 +335,29 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					{
 						foreach (ObservableParameter p in this.EditableParameters)
 						{
-							if (p.Value is null)
-								p.IsValid = false;
-							else
-								p.IsValid = await p.Parameter.IsParameterValid(v, Client);
-
-							bool ValidateAnyway = p.Parameter.ErrorReason switch
+							try
 							{
-								ParameterErrorReason.UnableToGetContract => true,
-								_ => false
-							};
+								if (p.Value is null)
+									p.IsValid = false;
+								else
+									p.IsValid = await p.Parameter.IsParameterValid(v, Client);
 
-							p.IsValid = p.IsValid || ValidateAnyway;
-							p.ValidationText = p.Parameter.ErrorText;
+								bool ValidateAnyway = p.Parameter.ErrorReason switch //In case we ever need to deactivate certain errors
+								{
+									//ParameterErrorReason.UnableToGetContract => true,
+									_ => false
+								};
+
+								p.IsValid = p.IsValid || ValidateAnyway;
+								p.ValidationText = p.Parameter.ErrorText;
+
+								//ServiceRef.LogService.LogDebug($"Parameter '{p.Parameter.Name}' validation result: {p.IsValid}, Error: {p.Parameter.ErrorReason} - {p.ValidationText}");
+							}
+							catch (Exception ex)
+							{
+								ServiceRef.LogService.LogException(ex);
+								p.IsValid = true; // If an error occurs, we assume the parameter is valid, but log the error.
+							}
 						}
 					}
 					catch (Exception ex)
@@ -366,7 +383,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
-			if(!await App.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
+			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
 			{
 				await this.GoToOverview();
 				return;
@@ -403,7 +420,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					if (this.args?.SuppressedProposalLegalIds is not null && Array.IndexOf<CaseInsensitiveString>(this.args.SuppressedProposalLegalIds, Part.LegalId) >= 0)
 						continue;
 
-					if(Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id)
+					if (Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id)
 						continue;
 
 					ContactInfo Info = await ContactInfo.FindByLegalId(Part.LegalId);
