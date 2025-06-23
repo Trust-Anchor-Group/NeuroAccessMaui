@@ -15,7 +15,7 @@
 	<Grid RowDefinitions="auto, *, auto">
 		<Grid Margin="{DynamicResource MediumMargins}" ColumnDefinitions="*, auto, *">
 			<controls:SvgButton
-					Command="{Binding GoBackCommand}"
+					Command="{Binding ViewMainPageCommand}"
 					SvgSource="close.svg"
 					Style="{DynamicResource IconButton}"
 					HorizontalOptions="Start"/>
