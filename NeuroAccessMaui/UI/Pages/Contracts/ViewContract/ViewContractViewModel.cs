@@ -183,7 +183,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private bool IsInSigningState => this.Contract?.ContractState is ContractState.Approved or ContractState.BeingSigned;
 		private bool AlreadySigned => this.Contract?.Roles.Any(r => r.Parts.Any(p => p.IsMe && p.HasSigned)) == true;
 
-		public bool CanSign => !this.IsBusy && this.HasSignableRoles && this.IsInSigningState && !this.AlreadySigned;
+		public bool CanSign => this.HasSignableRoles && this.IsInSigningState && !this.AlreadySigned;
 
 		public bool ReadyToSign => this.SelectedRole is not null && this.IsContractOk;
 
@@ -212,12 +212,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			this.SetIsBusy(true);
 			try
 			{
-				await this.GoToStateAsync(ViewContractStep.Overview);
 				await ServiceRef.XmppService.SignContract(this.Contract.Contract, this.SelectedRole.Name, false);
+				await this.GoToStateAsync(ViewContractStep.Overview);
 				await this.RefreshContractAsync(null);
 			}
-			catch
+			catch (Exception Ex)
 			{
+				ServiceRef.LogService.LogException(Ex);
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)]);
@@ -507,6 +508,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			await MainThread.InvokeOnMainThreadAsync(this.PrepareDisplayableParameters);
 			await MainThread.InvokeOnMainThreadAsync(this.PrepareSignableRoles);
 			await MainThread.InvokeOnMainThreadAsync(this.PreparePropertiesAsync);
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.OnPropertyChanged(nameof(this.CanSign));
+				this.OnPropertyChanged(nameof(this.ReadyToSign));
+
+			});
 		}
 
 		private async Task<string> ResolveProposalFriendlyNameAsync()
@@ -546,7 +554,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 
 			foreach (ObservableParameter p in this.DisplayableParameters)
+			{
 				p.Parameter.IsParameterValid(Vars, ServiceRef.XmppService.ContractsClient);
+				ServiceRef.LogService.LogDebug($"Parameter '{p.Parameter.Name}' validation result: {p.IsValid}, Error: {p.Parameter.ErrorReason} - {p.ValidationText}");
+			}
 		}
 
 		private void PrepareSignableRoles()
