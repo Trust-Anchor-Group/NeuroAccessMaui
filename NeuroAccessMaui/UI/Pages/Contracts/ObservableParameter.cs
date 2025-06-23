@@ -416,16 +416,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	{
 		public ObservableContractReferenceParameter(ContractReferenceParameter parameter) : base(parameter)
 		{
-			if (parameter.ObjectValue is CaseInsensitiveString Str)
-				this.Value = Str.Value;
+			ServiceRef.LogService.LogDebug($"{this.Value} - {this.Parameter.ObjectValue}");
+			this.Value = this.Parameter.ObjectValue;
 			//this.Value = parameter.ObjectValue as string ?? string.Empty;
-
 		}
 
 		public string ContractReferenceValue
 		{
 			get => this.Value?.ToString() ?? string.Empty;
-			set => this.Value = new CaseInsensitiveString(value);
+			set => this.Value = value;
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
