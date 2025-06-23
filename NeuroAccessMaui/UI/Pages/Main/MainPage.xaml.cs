@@ -12,12 +12,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		protected override async Task OnAppearingAsync()
 		{
-			await Task.Delay(3000);
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.deez.CurrentCoordinate = new Waher.Runtime.Geo.GeoPosition(59.3293, 18.0686); // Stockholm, Sweden
-
-			});
 			await base.OnAppearingAsync();
 
 			
