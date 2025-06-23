@@ -47,7 +47,7 @@
 		<!-- Common triggers for validation -->
 		<Style.Triggers>
 			<Trigger TargetType="controls:CompositeInputView"
-					 Property="IsValid"
+					 Property="IsValid" 
 					 Value="False">
 				<Setter Property="BorderStroke"
 						Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
