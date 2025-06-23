@@ -511,6 +511,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
+				if (!string.IsNullOrEmpty(this.ProposalRole))
+					this.SelectedRole = this.SignableRoles.FirstOrDefault(r => r.Name == this.ProposalRole);
+				else if (this.SignableRoles.Count == 1)
+					this.SelectedRole = this.SignableRoles[0];
 				this.OnPropertyChanged(nameof(this.CanSign));
 				this.OnPropertyChanged(nameof(this.ReadyToSign));
 
@@ -569,7 +573,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (!string.IsNullOrEmpty(this.ProposalRole))
 			{
 				ObservableRole? Role = this.Contract.Roles.FirstOrDefault(r => r.Name == this.ProposalRole);
-				if (Role is not null && !Role.HasReachedMaxCount)
+				if (Role is not null)
 					this.SignableRoles.Add(Role);
 			}
 			else if (this.Contract.Contract.PartsMode == ContractParts.Open)
