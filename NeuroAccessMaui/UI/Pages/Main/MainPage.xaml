@@ -180,11 +180,6 @@
 				</controls:TemplatedButton>
 			</Grid>
 		</Border>
-
-		<controls:GeoMap Grid.RowSpan="4" LockRotation="True" x:Name="deez">
-			
-		</controls:GeoMap>
-
 		<Grid.GestureRecognizers>
 			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
 		</Grid.GestureRecognizers>
