@@ -11,6 +11,7 @@ using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
+using NeuroAccessMaui.Resources.Languages;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Apps
 {
@@ -39,7 +40,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		{
 			try
 			{
-				ContactListNavigationArgs Args = new();
+				ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.ContactsDescription)], SelectContactAction.ViewIdentity);
 				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception Ex)

@@ -139,7 +139,25 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 			});
 
 			if (Succeeded)
+			{
+				bool AddContact = false;
+
+				if (!this.ThirdPartyInContacts)
+				{
+					// If the identity is not in contacts, push a popup asking if you would like to add it.
+					AddContact = await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.AddContact)],
+						ServiceRef.Localizer[nameof(AppResources.WouldYouLikeToAddThisIdentityToYourContacts)],
+						ServiceRef.Localizer[nameof(AppResources.Yes)], ServiceRef.Localizer[nameof(AppResources.No)]);
+
+					if (AddContact)
+					{
+						await this.AddContact();
+					}
+
+				}
 				await ServiceRef.UiService.GoBackAsync();
+			}
 		}
 
 		[RelayCommand]

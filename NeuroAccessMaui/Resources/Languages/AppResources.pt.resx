@@ -2834,4 +2834,7 @@
   <data name="NFC" xml:space="preserve">
     <value>NFC</value>
   </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Gostaria de adicionar esta identidade aos seus contatos?</value>
+  </data>
 </root>
