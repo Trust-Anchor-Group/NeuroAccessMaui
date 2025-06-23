@@ -28,8 +28,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public Microsoft.Maui.Font Font
 		{
-			get => (Microsoft.Maui.Font)GetValue(FontProperty);
-			set => SetValue(FontProperty, value);
+			get => (Microsoft.Maui.Font)this.GetValue(FontProperty);
+			set => this.SetValue(FontProperty, value);
 		}
 
 		/// <summary>
@@ -46,8 +46,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public TextAlignment XAlign
 		{
-			get => (TextAlignment)GetValue(XAlignProperty);
-			set => SetValue(XAlignProperty, value);
+			get => (TextAlignment)this.GetValue(XAlignProperty);
+			set => this.SetValue(XAlignProperty, value);
 		}
 
 		/// <summary>
@@ -64,8 +64,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public bool HasBorder
 		{
-			get => (bool)GetValue(HasBorderProperty);
-			set => SetValue(HasBorderProperty, value);
+			get => (bool)this.GetValue(HasBorderProperty);
+			set => this.SetValue(HasBorderProperty, value);
 		}
 
 		/// <summary>
@@ -83,8 +83,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public string Placeholder
 		{
-			get => (string)GetValue(PlaceholderProperty);
-			set => SetValue(PlaceholderProperty, value);
+			get => (string)this.GetValue(PlaceholderProperty);
+			set => this.SetValue(PlaceholderProperty, value);
 		}
 
 		/// <summary>
@@ -101,8 +101,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public Color PlaceholderTextColor
 		{
-			get => (Color)GetValue(PlaceholderTextColorProperty);
-			set => SetValue(PlaceholderTextColorProperty, value);
+			get => (Color)this.GetValue(PlaceholderTextColorProperty);
+			set => this.SetValue(PlaceholderTextColorProperty, value);
 		}
 
 		/// <summary>
@@ -119,8 +119,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public Color TextColor
 		{
-			get => (Color)GetValue(TextColorProperty);
-			set => SetValue(TextColorProperty, value);
+			get => (Color)this.GetValue(TextColorProperty);
+			set => this.SetValue(TextColorProperty, value);
 		}
 
 		/// <summary>
@@ -137,8 +137,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public Style PickerStyle
 		{
-			get => (Style)GetValue(PickerStyleProperty);
-			set => SetValue(PickerStyleProperty, value);
+			get => (Style)this.GetValue(PickerStyleProperty);
+			set => this.SetValue(PickerStyleProperty, value);
 		}
 
 		/// <summary>
@@ -156,8 +156,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public DateTime? NullableDate
 		{
-			get => (DateTime?)GetValue(NullableDateProperty);
-			set => SetValue(NullableDateProperty, value);
+			get => (DateTime?)this.GetValue(NullableDateProperty);
+			set => this.SetValue(NullableDateProperty, value);
 		}
 
 		/// <summary>
@@ -174,8 +174,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public DateTime MinimumDate
 		{
-			get => (DateTime)GetValue(MinimumDateProperty);
-			set => SetValue(MinimumDateProperty, value);
+			get => (DateTime)this.GetValue(MinimumDateProperty);
+			set => this.SetValue(MinimumDateProperty, value);
 		}
 
 		/// <summary>
@@ -192,8 +192,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public DateTime MaximumDate
 		{
-			get => (DateTime)GetValue(MaximumDateProperty);
-			set => SetValue(MaximumDateProperty, value);
+			get => (DateTime)this.GetValue(MaximumDateProperty);
+			set => this.SetValue(MaximumDateProperty, value);
 		}
 
 		/// <summary>
@@ -201,36 +201,38 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		public event EventHandler<NullableDateChangedEventArgs>? NullableDateSelected;
 
-		private readonly DatePicker Picker;
+		private readonly WrappedDatePicker picker;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CompositeDatePicker"/> class.
 		/// </summary>
 		public CompositeDatePicker()
 		{
-			Picker = new DatePicker();
-			SetDefaultDate();
+			this.picker = new WrappedDatePicker();
+			this.SetDefaultDate();
 
 			// Bind internal properties to this control
-			Picker.SetBinding(DatePicker.DateProperty,
-				new Binding(nameof(NullableDate), source: this, mode: BindingMode.TwoWay, converter: new NullableDateTimeConverter()));
-			Picker.SetBinding(DatePicker.MinimumDateProperty,
-				new Binding(nameof(MinimumDate), source: this));
-			Picker.SetBinding(DatePicker.MaximumDateProperty,
-				new Binding(nameof(MaximumDate), source: this));
-			Picker.SetBinding(DatePicker.TextColorProperty,
-				new Binding(nameof(TextColor), source: this));
-			Picker.SetBinding(DatePicker.StyleProperty,
-				new Binding(nameof(PickerStyle), source: this));
+			this.picker.SetBinding(DatePicker.DateProperty,
+				new Binding(nameof(this.NullableDate), source: this, mode: BindingMode.TwoWay, converter: new NullableDateTimeConverter()));
+			this.picker.SetBinding(DatePicker.MinimumDateProperty,
+				new Binding(nameof(this.MinimumDate), source: this));
+			this.picker.SetBinding(DatePicker.MaximumDateProperty,
+				new Binding(nameof(this.MaximumDate), source: this));
+			this.picker.SetBinding(DatePicker.TextColorProperty,
+				new Binding(nameof(this.TextColor), source: this));
+			this.picker.SetBinding(DatePicker.StyleProperty,
+				new Binding(nameof(this.PickerStyle), source: this));
 
 			// Apply initial format (placeholder or date)
-			UpdateFormat();
+			this.UpdateFormat();
 
 			// Handle user changes and property updates
-			Picker.DateSelected += OnPickerDateSelected;
-			this.PropertyChanged += OnControlPropertyChanged;
+			this.picker.DateSelected += this.OnPickerDateSelected;
+			if(this.picker is VisualElement E)
+				E.Focused += this.OnPickerUnfocused;
+			this.PropertyChanged += this.OnControlPropertyChanged;
 
-			CenterView = Picker;
+			this.CenterView = this.picker;
 		}
 
 		/// <summary>
@@ -238,8 +240,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private void OnControlPropertyChanged(object? Sender, PropertyChangedEventArgs E)
 		{
-			if (E.PropertyName == nameof(Placeholder) || E.PropertyName == nameof(NullableDate))
-				UpdateFormat();
+			if (E.PropertyName == nameof(this.Placeholder) || E.PropertyName == nameof(this.NullableDate))
+				this.UpdateFormat();
 		}
 
 		/// <summary>
@@ -248,9 +250,20 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private void OnPickerDateSelected(object? Sender, DateChangedEventArgs E)
 		{
-			var OldDate = NullableDate;
-			NullableDate = E.NewDate;
-			NullableDateSelected?.Invoke(this, new NullableDateChangedEventArgs(OldDate, NullableDate));
+			var OldDate = this.NullableDate;
+			this.NullableDate = E.NewDate;
+			NullableDateSelected?.Invoke(this, new NullableDateChangedEventArgs(OldDate, this.NullableDate));
+		}
+
+		private void OnPickerUnfocused(object? sender, FocusEventArgs e)
+		{
+			if (!this.NullableDate.HasValue)
+			{
+				var Picked = this.picker.Date;
+				this.NullableDate = Picked;
+				NullableDateSelected?.Invoke(this,
+					new NullableDateChangedEventArgs(null, Picked));
+			}
 		}
 
 		/// <summary>
@@ -258,17 +271,17 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private void UpdateFormat()
 		{
-			if (NullableDate.HasValue)
+			if (this.NullableDate.HasValue)
 			{
 				// Use the current culture's short date pattern once a date is chosen.
-				Picker.Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
+				this.picker.Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern;
 			}
 			else
 			{
 				// Escape any single-quotes in the placeholder,
 				// then wrap the whole thing in single-quotes.
-				string escaped = Placeholder.Replace("'", "''");
-				Picker.Format = $"'{escaped}'";
+				string escaped = this.Placeholder.Replace("'", "''");
+				this.picker.Format = $"'{escaped}'";
 			}
 		}
 
@@ -277,8 +290,7 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private void SetDefaultDate()
 		{
-			var Now = DateTime.Now;
-			Picker.Date = new DateTime(Now.Year, Now.Month, Now.Day);
+			this.picker.Date = DateTime.Today.Date;
 		}
 	}
 }
