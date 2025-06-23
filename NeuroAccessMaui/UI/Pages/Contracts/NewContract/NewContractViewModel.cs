@@ -335,23 +335,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					{
 						foreach (ObservableParameter p in this.EditableParameters)
 						{
-							try
+							try 
 							{
-								if (p.Value is null)
+								if(p is ObservableContractReferenceParameter && !string.IsNullOrEmpty(p.Parameter.StringValue))
+									p.IsValid = true; //TODO: Remove
+								else if (p.Value is null)
 									p.IsValid = false;
 								else
-									p.IsValid = await p.Parameter.IsParameterValid(v, Client);
-
-								bool ValidateAnyway = p.Parameter.ErrorReason switch //In case we ever need to deactivate certain errors
+									p.IsValid = await p.Parameter.IsParameterValid(v, ServiceRef.XmppService.ContractsClient);
+/*
+								bool ValidateAnyway = p.Parameter.ErrorText switch //In case we ever need to deactivate certain errors
 								{
+									//ParameterErrorReason.ContractNotValid => true,
 									//ParameterErrorReason.UnableToGetContract => true,
 									_ => false
 								};
+*/
 
-								p.IsValid = p.IsValid || ValidateAnyway;
+								p.IsValid = p.IsValid || p.Parameter.ErrorText == ContractStatus.ClientIdentityInvalid.ToString();
 								p.ValidationText = p.Parameter.ErrorText;
-
-								//ServiceRef.LogService.LogDebug($"Parameter '{p.Parameter.Name}' validation result: {p.IsValid}, Error: {p.Parameter.ErrorReason} - {p.ValidationText}");
+								ServiceRef.LogService.LogDebug($"Parameter '{p.Parameter.Name}' validation result: {p.IsValid}, Error: {p.Parameter.ErrorReason} - {p.ValidationText}");
 							}
 							catch (Exception ex)
 							{
@@ -423,7 +426,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					if (Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id)
 						continue;
 
-					ContactInfo Info = await ContactInfo.FindByLegalId(Part.LegalId);
+					ContactInfo? Info = await ContactInfo.FindByLegalId(Part.LegalId);
 					if (Info is null || string.IsNullOrEmpty(Info.BareJid))
 						continue;
 					await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(CreatedContract.ContractId, Info.BareJid, true);
@@ -437,9 +440,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, Proposal);
 				}
 			}
-			catch (Exception ex)
+			catch (Waher.Networking.XMPP.XmppException Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					Ex.Message,
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+
+				//Todo: display contract errors
+
 			}
 
 			if (CreatedContract is null)
