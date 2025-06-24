@@ -652,8 +652,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					if (this.identity is null)
 						return;
 					this.GenerateQrCode(Constants.UriSchemes.CreateIdUri(this.identity.Id));
-
-
 				}
 				catch (Exception Ex)
 				{
