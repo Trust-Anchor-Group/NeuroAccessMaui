@@ -111,6 +111,7 @@
 						<Label
 							Grid.Column="1"
 							Text="{l:Localize ApplyIdInfoMainPage}"
+							Style="{DynamicResource InfoLabel}"
 							TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
 					</Grid>
 				</Border>
@@ -134,6 +135,36 @@
 						  Margin="{DynamicResource MediumBottomMargins}"
 						  IsVisible="False"/> <!-- TODO: Bind to HasBranding-->
 
+		<!-- Info Toast for missing wallet -->
+		<Border Grid.Row="2"
+				VerticalOptions="End"
+				BackgroundColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750bgWLLight}, Dark={DynamicResource TnPNeutralv750bgWLDark}}"
+				Padding="{DynamicResource MediumMargins}"
+				Margin="{DynamicResource LargeMargins}"
+				StrokeShape="RoundRectangle 16,16,0,16">
+			<Border.Shadow>
+				<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+			</Border.Shadow>
+			<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+				  ColumnDefinitions="auto, *"
+				  RowDefinitions="auto, *"
+				  RowSpacing="{DynamicResource SmallSpacing}">
+				<controls:SvgView
+					Source="wallet.svg"
+					TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+				<Label
+					Grid.Column="1"
+					Text="You do not have a wallet."
+					Style="{DynamicResource InfoLabel}"
+					TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+				<Label
+					Grid.Column="1"
+					Grid.Row="1"
+					Text="{l:Localize ApplyIdInfoMainPage}"
+					Style="{DynamicResource InfoLabel}"
+					TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+			</Grid>
+		</Border>
 
 		<Grid HorizontalOptions="FillAndExpand"
 			  ColumnDefinitions="*, *"
