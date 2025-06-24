@@ -638,10 +638,18 @@
 		<Setter Property="Padding" Value="{DynamicResource SmallMargins}" />
 		<Setter Property="StrokeShape">
 			<Setter.Value>
-				<RoundRectangle CornerRadius="20,20,0,0" />
+				<RoundRectangle CornerRadius="16,16,0,0" />
 			</Setter.Value>
 		</Setter>
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={DynamicResource NavMenuStroke1WLLight}, Dark={DynamicResource NavMenuStroke1WLDark}}" />
+		<Setter Property="Stroke">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,1">
+					<GradientStop Color="{AppThemeBinding Light={DynamicResource NavMenuStroke1WLLight}, Dark={DynamicResource NavMenuStroke1WLDark}}" Offset="0.1" />
+					<GradientStop Color="Transparent" Offset="0.3" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="StrokeThickness" Value="1"/>
 	</Style>
 
 	<Style x:Key="BottomBarBorder2" BasedOn="{StaticResource BottomBarBorder}" TargetType="Border">

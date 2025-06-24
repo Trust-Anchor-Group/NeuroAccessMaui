@@ -46,6 +46,7 @@ namespace NeuroAccessMaui.UI
 		private static Style? roundedBorder;
 		private static Style? baseCompositeInputView;
 		private static Style? borderSet;
+		private static Style? bottomBarBorder;
 		private static Style? tertiaryButton;
 		private static Style? transparentTemplateButtonBorder;
 		private static Style? transparentTemplateButtonLabel;
@@ -513,6 +514,18 @@ namespace NeuroAccessMaui.UI
 			{
 				borderSet ??= TryGetResource<Style>("BorderSet");
 				return borderSet!;
+			}
+		}
+
+		/// <summary>
+		/// Style for bottom bar border
+		/// </summary>
+		public static Style BottomBarBorder
+		{
+			get
+			{
+				bottomBarBorder ??= TryGetResource<Style>("BottomBarBorder");
+				return bottomBarBorder!;
 			}
 		}
 
