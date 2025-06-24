@@ -14,6 +14,8 @@ using NeuroAccessMaui.UI.Popups.Image;
 using NeuroAccessMaui.Extensions;
 using Waher.Persistence;
 using Waher.Networking.XMPP;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 {
@@ -40,6 +42,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		private bool canAddContact = false;
 		[ObservableProperty]
 		private bool canRemoveContact = false;
+
+		[ObservableProperty]
+		private bool isThirdPartyIdentity = false;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(HasPersonalFields))]
@@ -491,6 +496,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 				bool CanAddContact = false;
 				bool CanRemoveContact = false;
+				bool IsThirdPartyIdentity = false;
 
 				string Jid = ServiceRef.TagProfile.Account + "@" + ServiceRef.TagProfile.Domain;
 				if (!this.identity.GetJid().Equals(Jid, StringComparison.OrdinalIgnoreCase))
@@ -514,6 +520,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 						CanAddContact = Info is null;
 						CanRemoveContact = Info is not null;
+
+						IsThirdPartyIdentity = true;
 					}
 					catch (Exception Ex)
 					{
@@ -536,6 +544,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					this.ShouldCelebrate = ShouldCelebrate;
 					this.CanAddContact = CanAddContact;
 					this.CanRemoveContact = CanRemoveContact;
+
+					this.IsThirdPartyIdentity = IsThirdPartyIdentity;
 
 					this.OnPropertyChanged(nameof(this.HasPersonalFields));
 					this.OnPropertyChanged(nameof(this.HasOrganizationFields));
@@ -804,7 +814,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			if (this.identity is null)
 				return;
 
-
 			try
 			{
 
@@ -852,12 +861,34 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			}
 		}
 
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task OpenChat()
+		{
+			if (this.identity is null)
+				return;
+			try
+			{
+				string? Jid = this.identity.GetJid();
+				PersonalInformation? PersonalInfo = this.identity.GetPersonalInfo();
+
+				if (string.IsNullOrEmpty(Jid))
+					return;
+
+				ChatNavigationArgs ChatArgs = new(this.identity.Id, Jid, PersonalInfo.FullName);
+				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Jid);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
 		#region ILinkableView
 
-		/// <summary>
-		/// Title of the current view
-		/// </summary>
-		///
+			/// <summary>
+			/// Title of the current view
+			/// </summary>
+			///
 		public override Task<string> Title => Task.FromResult("Test");//Task.FromResult<string>(ContactInfo.GetFriendlyName(this.LegalIdentity!));
 
 		#endregion

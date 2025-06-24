@@ -538,6 +538,14 @@
                                     LabelData="{l:Localize RemoveContact}"
                                     Style="{DynamicResource FilledTextButton}" />
 
+								<controls:TextButton
+									Margin="16,0,16,8"
+									Command="{Binding OpenChatCommand}"
+									IsVisible="{Binding IsThirdPartyIdentity}"
+									HorizontalOptions="Fill"
+									LabelData="Open Chat"
+									Style="{DynamicResource FilledTextButton}" />
+
                                 <!--  Photos  -->
                                 <Border IsVisible="{Binding HasPhotos}" Style="{DynamicResource FieldGroupBorder}">
                                     <Grid RowDefinitions="auto, auto" RowSpacing="16">
