@@ -193,7 +193,6 @@
 				</Border>
 			</controls:TemplatedButton>
 
-
 			<!-- Show ID Button -->
 			<controls:TemplatedButton Grid.Column="1" Command="{x:Binding ViewIdCommand}">
 				<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
