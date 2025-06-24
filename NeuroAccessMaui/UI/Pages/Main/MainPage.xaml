@@ -43,7 +43,7 @@
 		  ColumnDefinitions="*"
 		  BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
-		<controls:Background Grid.RowSpan="3"/>
+		<controls:Background Grid.RowSpan="4"/>
 
 		<!-- Top Buttons -->
 		<Grid Grid.Row="0"
@@ -90,39 +90,74 @@
 							   HeightRequest="230"
 							   WidthRequest="230"
 							   Aspect="AspectFit"  Margin="0,0,0,16"/>
+			
 			<!-- Missing Neuro ID Box-->
-			<Grid Grid.Row="1"
-				  IsVisible="{Binding HasPersonalIdentity, Converter={StaticResource InvertedBoolConverter}}"
-				  RowDefinitions="*, *">
-				
-				<Border Grid.Row="0"
-						BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
-						Padding="{DynamicResource MediumMargins}"
-						StrokeShape="RoundRectangle 8,8,0,8">
-					<Border.Shadow>
-						<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
-					</Border.Shadow>
-					<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-						  ColumnDefinitions="auto, *">
-						<Path
-							Grid.Column="0"
-							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
-						<Label
-							Grid.Column="1"
-							Text="{l:Localize ApplyIdInfoMainPage}"
-							Style="{DynamicResource InfoLabel}"
-							TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
-					</Grid>
-				</Border>
-				<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">
-					<Grid Padding="{DynamicResource MediumMargins}"
-						  ColumnDefinitions="*, auto">
-						<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{DynamicResource SecondaryButtonActiveLabel}"/>
-						<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}"/>
-					</Grid>
-				</controls:TemplatedButton>
-			</Grid>
+			<ContentView Grid.Row="1"
+						 x:Name="NoIDPopup">
+				<Grid RowDefinitions="auto, *"
+					  IsVisible="{Binding HasPersonalIdentity, Converter={StaticResource InvertedBoolConverter}}">
+					<Border Grid.Row="0"
+							BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
+							Padding="{DynamicResource MediumMargins}"
+							StrokeShape="RoundRectangle 16,16,0,16">
+						<Border.Shadow>
+							<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+						</Border.Shadow>
+						<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+							  ColumnDefinitions="auto, *">
+							<Path
+								Grid.Column="0"
+								Data="{x:Static ui:Geometries.InfoCirclePath}"
+								Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+							<Label
+								Grid.Column="1"
+								Text="{l:Localize ApplyIdInfoMainPage}"
+								Style="{DynamicResource InfoLabel}"
+								TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+						</Grid>
+					</Border>
+					<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">
+						<Grid Padding="{DynamicResource MediumMargins}"
+							  ColumnDefinitions="*, auto">
+							<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{DynamicResource SecondaryButtonActiveLabel}"/>
+							<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}"/>
+						</Grid>
+					</controls:TemplatedButton>
+				</Grid>
+			</ContentView>
+
+			<!-- Info Toast for missing wallet -->
+			<!-- TODO Remove this once wallet functionality is improved -->
+			<Border x:Name="NoWalletPopup"
+					Grid.Row="1"
+					VerticalOptions="Start"
+					BackgroundColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750bgWLLight}, Dark={DynamicResource TnPNeutralv750bgWLDark}}"
+					Padding="{DynamicResource MediumMargins}"
+					StrokeShape="RoundRectangle 16,16,0,16"
+					IsVisible="False">
+				<Border.Shadow>
+					<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+				</Border.Shadow>
+				<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+					  ColumnDefinitions="auto, *"
+					  RowDefinitions="auto, *"
+					  RowSpacing="{DynamicResource SmallSpacing}">
+					<controls:SvgView
+						Source="wallet.svg"
+						TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+					<Label
+						Grid.Column="1"
+						Text="You do not have a wallet."
+						Style="{DynamicResource InfoLabel}"
+						TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+					<Label
+						Grid.Column="1"
+						Grid.Row="1"
+						Text="{l:Localize ApplyIdInfoMainPage}"
+						Style="{DynamicResource InfoLabel}"
+						TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+				</Grid>
+			</Border>
 		</Grid>
 
 		<controls:SvgView Source="banner.svg"
@@ -134,37 +169,6 @@
 						  TintColor="{DynamicResource BrandColorsGreyScalesGreyv250Light}"
 						  Margin="{DynamicResource MediumBottomMargins}"
 						  IsVisible="False"/> <!-- TODO: Bind to HasBranding-->
-
-		<!-- Info Toast for missing wallet -->
-		<Border Grid.Row="2"
-				VerticalOptions="End"
-				BackgroundColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750bgWLLight}, Dark={DynamicResource TnPNeutralv750bgWLDark}}"
-				Padding="{DynamicResource MediumMargins}"
-				Margin="{DynamicResource LargeMargins}"
-				StrokeShape="RoundRectangle 16,16,0,16">
-			<Border.Shadow>
-				<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
-			</Border.Shadow>
-			<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-				  ColumnDefinitions="auto, *"
-				  RowDefinitions="auto, *"
-				  RowSpacing="{DynamicResource SmallSpacing}">
-				<controls:SvgView
-					Source="wallet.svg"
-					TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
-				<Label
-					Grid.Column="1"
-					Text="You do not have a wallet."
-					Style="{DynamicResource InfoLabel}"
-					TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
-				<Label
-					Grid.Column="1"
-					Grid.Row="1"
-					Text="{l:Localize ApplyIdInfoMainPage}"
-					Style="{DynamicResource InfoLabel}"
-					TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
-			</Grid>
-		</Border>
 
 		<Grid HorizontalOptions="FillAndExpand"
 			  ColumnDefinitions="*, *"
@@ -218,12 +222,11 @@
 							LeftLabelText="{l:Localize Home}"
 							CenterLabelText="{l:Localize Wallet}"
 							RightLabelText="{l:Localize Apps}"
-							CenterCommand="{Binding ShowWalletCommand}"
+							CenterCommand="{Binding OpenWalletCommand}"
 							RightCommand="{Binding ViewAppsCommand}"/>
 
 		<Grid.GestureRecognizers>
 			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
 		</Grid.GestureRecognizers>
-
 	</Grid>
 </base:BaseContentPage>

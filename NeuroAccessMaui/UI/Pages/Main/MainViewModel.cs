@@ -20,6 +20,7 @@ using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
+using System.Runtime.CompilerServices;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -181,6 +182,37 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[ObservableProperty]
+		private bool showingNoWalletPopup = false;
+
+		partial void OnShowingNoWalletPopupChanged(bool value)
+		{
+			if (value)
+			{
+				_ = HideNoWalletPopupAfterDelay();
+			}
+		}
+
+		private async Task HideNoWalletPopupAfterDelay()
+		{
+			await Task.Delay(2000);
+			await MainThread.InvokeOnMainThreadAsync(() => this.ShowingNoWalletPopup = false);
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		public async Task OpenWallet()
+		{
+			if (ServiceRef.TagProfile.HasWallet)
+			{
+				await ShowWallet();
+				return;
+			}
+			else
+			{
+				this.ShowingNoWalletPopup = true;
 			}
 		}
 
