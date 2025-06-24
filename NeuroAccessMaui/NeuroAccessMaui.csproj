@@ -1,7 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
+		<!-- Default to Android only -->
+		<TargetFrameworks>net8.0-android</TargetFrameworks>
+	</PropertyGroup>
+
+	<!-- If on Mac, add iOS as well -->
+	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
 		<TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
+	</PropertyGroup>
+	
+	<PropertyGroup>
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-maccatalyst</TargetFrameworks> -->
 		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks> -->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
