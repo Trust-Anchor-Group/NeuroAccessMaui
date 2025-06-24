@@ -9,19 +9,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			this.InitializeComponent();
 			this.ContentPageModel = ViewModel;
-			this.BindingContext = ViewModel;
 
-			this.BindingContextChanged += this.OnBindingContextChanged;
-
-			// Subscribe for the initial BindingContext
-			if (this.BindingContext is MainViewModel vm)
-				vm.PropertyChanged += this.Vm_PropertyChanged;
-		}
-
-		private void OnBindingContextChanged(object? sender, EventArgs e)
-		{
-			if (this.BindingContext is MainViewModel vm)
-				vm.PropertyChanged += this.Vm_PropertyChanged;
+			if (this.BindingContext is MainViewModel Model) 
+				Model.PropertyChanged += this.Vm_PropertyChanged;
 		}
 
 		private async void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
