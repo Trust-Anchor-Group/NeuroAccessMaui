@@ -54,7 +54,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 						this.NoIDPopup.Opacity = 1;
 						this.NoIDPopup.Scale = 1;
-						this.NoIDPopup.IsVisible = true;
+						this.NoIDPopup.IsVisible = !Vm.HasPersonalIdentity;
 
 						_ = this.NoWalletPopup.FadeTo(1, 500, Easing.CubicIn);
 						_ = this.NoWalletPopup.ScaleTo(1, 500, Easing.CubicIn);
@@ -68,7 +68,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 					{
 						this.NoIDPopup.Opacity = 0;
 						this.NoIDPopup.Scale = 0.8;
-						this.NoIDPopup.IsVisible = true;
+						this.NoIDPopup.IsVisible = !Vm.HasPersonalIdentity;
 
 						this.NoWalletPopup.Opacity = 1;
 						this.NoWalletPopup.Scale = 1;

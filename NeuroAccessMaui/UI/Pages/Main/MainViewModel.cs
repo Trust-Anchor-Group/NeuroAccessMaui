@@ -198,7 +198,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		private async Task HideNoWalletPopupAfterDelay()
 		{
-			await Task.Delay(2000);
+			await Task.Delay(3000);
 			await MainThread.InvokeOnMainThreadAsync(() => this.ShowingNoWalletPopup = false);
 		}
 
