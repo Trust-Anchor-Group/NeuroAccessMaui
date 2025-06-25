@@ -5,7 +5,6 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
@@ -15,7 +14,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Text;
-using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.HttpFileUpload;
@@ -464,10 +462,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (e.ContractId != this.Contract?.ContractId || e.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id)
 				return;
 
-			while (!this.RefreshContractCommand.CanExecute(null))
+			Contract? SignedContract = e.Contract;
+
+			while (!this.RefreshContractCommand.CanExecute(SignedContract))
 				await Task.Delay(100);
 
-			await this.RefreshContractCommand.ExecuteAsync(null);
+			await this.RefreshContractCommand.ExecuteAsync(SignedContract);
 		}
 
 		private async Task OnContractUpdatedAsync(object? sender, ContractReferenceEventArgs e)
