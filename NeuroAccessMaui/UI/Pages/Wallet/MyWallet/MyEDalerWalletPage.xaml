@@ -82,7 +82,7 @@
 
 		<Grid ColumnDefinitions="*, *" Margin="{DynamicResource MediumMargins}">
 			<controls:SvgButton
-					Command="{Binding ViewMainPageCommand}"
+					Command="{Binding GoBackCommand}"
 					SvgSource="close.svg"
 					Style="{DynamicResource IconButton}"
 					HorizontalOptions="Start"/>
