@@ -97,28 +97,28 @@
 				  Grid.Row="1"
 				  x:Name="NoIDPopup">
 				<Border Grid.Row="0"
-							BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
-							Padding="{DynamicResource MediumMargins}"
-							StrokeShape="RoundRectangle 16,16,0,16">
+						BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
+						Padding="{DynamicResource MediumMargins}"
+						StrokeShape="RoundRectangle 16,16,0,16">
 					<Border.Shadow>
 						<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
 					</Border.Shadow>
 					<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-							  ColumnDefinitions="auto, *">
+						  ColumnDefinitions="auto, *">
 						<Path
-								Grid.Column="0"
-								Data="{x:Static ui:Geometries.InfoCirclePath}"
-								Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+							Grid.Column="0"
+							Data="{x:Static ui:Geometries.InfoCirclePath}"
+							Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
 						<Label
-								Grid.Column="1"
-								Text="{l:Localize ApplyIdInfoMainPage}"
-								Style="{DynamicResource InfoLabel}"
-								TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+							Grid.Column="1"
+							Text="{l:Localize ApplyIdInfoMainPage}"
+							Style="{DynamicResource InfoLabel}"
+							TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
 					</Grid>
 				</Border>
 				<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">
 					<Grid Padding="{DynamicResource MediumMargins}"
-							  ColumnDefinitions="*, auto">
+						  ColumnDefinitions="*, auto">
 						<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{DynamicResource SecondaryButtonActiveLabel}"/>
 						<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}"/>
 					</Grid>
