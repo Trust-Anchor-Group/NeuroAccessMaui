@@ -38,6 +38,7 @@
 	<Thickness x:Key="LargeBottomMargins">0,0,0,24</Thickness>
 	<Thickness x:Key="LargeTopMargins">0,24,0,0</Thickness>
 	<Thickness x:Key="LargeTopBottomMargins">0,24,0,24</Thickness>
+	<Thickness x:Key="LargeLeftRightMargins">24,0,24,0</Thickness>
 	<Thickness x:Key="ButtonThinMargins">16,8</Thickness>
 	<Thickness x:Key="ButtonMediumMargins">24,12</Thickness>
 	<Thickness x:Key="MediumLeftRightMargins">16,0,16,0</Thickness>

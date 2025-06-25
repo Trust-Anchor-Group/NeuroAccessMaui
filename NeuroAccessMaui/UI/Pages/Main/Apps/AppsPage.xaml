@@ -133,7 +133,7 @@
 				VerticalOptions="Center"
 				BackgroundColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750bgWLLight}, Dark={DynamicResource TnPNeutralv750bgWLDark}}"
 				Padding="{DynamicResource MediumMargins}"
-				Margin="{DynamicResource MediumMargins}"
+				Margin="{DynamicResource LargeLeftRightMargins}"
 				StrokeShape="RoundRectangle 16,16,16,16"
 				IsVisible="False">
 			<Border.Shadow>

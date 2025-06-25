@@ -76,8 +76,7 @@
 		
 		<!-- Logo and Missing ID Box-->
 		<Grid Grid.Row="1"
-			  RowDefinitions="auto, auto"
-			  Margin="30,100,30,100">
+			  RowDefinitions="*, *">
 
 			<!-- <Image Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
 				   Grid.Row="0"
@@ -89,13 +88,16 @@
 							   Grid.Row="0"
 							   HeightRequest="230"
 							   WidthRequest="230"
-							   Aspect="AspectFit"  Margin="0,0,0,16"/>
+							   Aspect="AspectFit"
+							   VerticalOptions="End"/>
 			
 			<!-- Missing Neuro ID Box-->
 			<Grid RowDefinitions="auto, *"
 				  IsVisible="{Binding HasPersonalIdentity, Converter={StaticResource InvertedBoolConverter}}"
 				  Grid.Row="1"
-				  x:Name="NoIDPopup">
+				  x:Name="NoIDPopup"
+				  VerticalOptions="Center"
+				  Margin="{DynamicResource LargeLeftRightMargins}">
 				<Border Grid.Row="0"
 						BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
 						Padding="{DynamicResource MediumMargins}"
@@ -129,10 +131,11 @@
 			<!-- TODO Remove this once wallet functionality is improved -->
 			<Border x:Name="NoWalletPopup"
 					Grid.Row="1"
-					VerticalOptions="Start"
+					VerticalOptions="Center"
 					BackgroundColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750bgWLLight}, Dark={DynamicResource TnPNeutralv750bgWLDark}}"
 					Padding="{DynamicResource MediumMargins}"
 					StrokeShape="RoundRectangle 16,16,0,16"
+					Margin="{DynamicResource LargeLeftRightMargins}"
 					IsVisible="False">
 				<Border.Shadow>
 					<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
