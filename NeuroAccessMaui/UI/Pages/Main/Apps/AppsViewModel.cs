@@ -12,6 +12,7 @@ using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Resources.Languages;
+using System.Runtime.CompilerServices;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Apps
 {
@@ -64,34 +65,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		}
 
 		[RelayCommand]
-		private static async Task ShowNewContract()
-		{
-			try
-			{
-				MyContractsNavigationArgs Args = new(ContractsListMode.ContractTemplates);
-				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		[RelayCommand]
-		private static async Task ShowNewToken()
-		{
-			try
-			{
-				MyContractsNavigationArgs Args = new(ContractsListMode.TokenCreationTemplates);
-				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		[RelayCommand]
 		private static async Task ShowApplications()
 		{
 			try
@@ -104,12 +77,70 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 			}
 		}
 
+		[ObservableProperty]
+		private bool betaFeaturePressed = false;
+
 		[RelayCommand]
-		private static async Task ShowThings()
+		private async Task ShowThings()
 		{
 			try
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(MyThingsPage));
+				if(!ServiceRef.TagProfile.HasBetaFeatures)
+				{
+					this.BetaFeaturePressed = true;
+					await Task.Delay(100);
+					this.BetaFeaturePressed = false;
+				}
+				else
+				{
+					await ServiceRef.UiService.GoToAsync(nameof(MyThingsPage));
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private async Task ShowNewContract()
+		{
+			try
+			{
+				if (!ServiceRef.TagProfile.HasBetaFeatures)
+				{
+					this.BetaFeaturePressed = true;
+					await Task.Delay(100);
+					this.BetaFeaturePressed = false;
+				}
+				else
+				{
+					MyContractsNavigationArgs Args = new(ContractsListMode.ContractTemplates);
+					await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private async Task ShowNewToken()
+		{
+			try
+			{
+				if (!ServiceRef.TagProfile.HasBetaFeatures)
+				{
+					this.BetaFeaturePressed = true;
+					await Task.Delay(100);
+					this.BetaFeaturePressed = false;
+				}
+				else
+				{
+					MyContractsNavigationArgs Args = new(ContractsListMode.TokenCreationTemplates);
+					await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+				}
 			}
 			catch (Exception Ex)
 			{
@@ -132,22 +163,44 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		}
 
 		[RelayCommand]
-		internal static async Task ShowWallet()
+		private async Task ShowWallet()
 		{
 			try
 			{
-				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
-				(decimal PendingAmount, string PendingCurrency, PendingPayment[] PendingPayments) = await ServiceRef.XmppService.GetPendingEDalerPayments();
-				(AccountEvent[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize);
+				if (!ServiceRef.TagProfile.HasBetaFeatures)
+				{
+					this.BetaFeaturePressed = true;
+					await Task.Delay(100);
+					this.BetaFeaturePressed = false;
+				}
+				else
+				{
+					Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+					(decimal PendingAmount, string PendingCurrency, PendingPayment[] PendingPayments) = await ServiceRef.XmppService.GetPendingEDalerPayments();
+					(AccountEvent[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize);
 
-				WalletNavigationArgs Args = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
+					WalletNavigationArgs Args = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
 
-				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), Args, BackMethod.Pop);
+					await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), Args, BackMethod.Pop);
+				}
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private async Task ShowWalletBottombar()
+		{
+			if (!ServiceRef.TagProfile.HasBetaFeatures)
+			{
+				await this.ShowComingSoonPopup();
+			}
+			else
+			{
+				await this.ShowWallet();
 			}
 		}
 
@@ -166,7 +219,20 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
                 ServiceRef.LogService.LogException(Ex);
             }
         }
-    
+
+		// Code used for displayig the coming soon popup
+
+		[ObservableProperty]
+		private bool showingComingSoonPopup = false;
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		public async Task ShowComingSoonPopup()
+		{
+			this.ShowingComingSoonPopup = true;
+			await Task.Delay(3000);
+			this.ShowingComingSoonPopup = false;
+		}
+
 		#endregion
 	}
 }

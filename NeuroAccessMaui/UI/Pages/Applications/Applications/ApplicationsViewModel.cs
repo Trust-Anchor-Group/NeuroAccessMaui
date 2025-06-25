@@ -313,9 +313,23 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		}
 
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-		private Task OpenWallet()
+		private async Task OpenWallet()
 		{
-			return AppsViewModel.ShowWallet();
+			try
+			{
+				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+				(decimal PendingAmount, string PendingCurrency, PendingPayment[] PendingPayments) = await ServiceRef.XmppService.GetPendingEDalerPayments();
+				(AccountEvent[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize);
+
+				WalletNavigationArgs Args = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
+
+				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), Args, BackMethod.Pop);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
 		}
 
 		#endregion

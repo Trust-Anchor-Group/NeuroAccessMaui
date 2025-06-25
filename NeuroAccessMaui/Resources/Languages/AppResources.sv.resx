@@ -2837,4 +2837,19 @@
   <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
     <value>Vill du lägga till denna identitet i dina kontakter?</value>
   </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>Kommer snart!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+    <value>Vi arbetar för närvarande på detta</value>
+  </data>
+  <data name="BetaFeature" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>För att aktivera betafunktioner, gå till hemskärmen och öppna inställningssidan</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>Denna funktion är för närvarande i betastadiet. För att aktivera betafunktioner, öppna inställningssidan och aktivera betafunktioner</value>
+  </data>
 </root>

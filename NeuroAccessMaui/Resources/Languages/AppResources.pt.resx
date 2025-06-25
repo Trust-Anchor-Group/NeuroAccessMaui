@@ -2837,4 +2837,19 @@
   <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
     <value>Gostaria de adicionar esta identidade aos seus contatos?</value>
   </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>Em breve!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+    <value>Atualmente estamos trabalhando nisso</value>
+  </data>
+  <data name="BetaFeature" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>Para ativar os recursos beta, vá para a tela inicial e abra a página de configurações</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>Este recurso está atualmente em estado beta. Para ativar os recursos beta, abra a página de configurações e ative os recursos beta</value>
+  </data>
 </root>

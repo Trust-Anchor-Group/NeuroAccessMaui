@@ -70,7 +70,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 			this.cardBorder = new Border
 			{
-				Style = AppStyles.BorderSet,
+				Style = AppStyles.BottomBarBorder,
 				Margin = new Thickness(0, 0, 0, 0),
 				Padding = new Thickness(0, 0, 0, 0),
 				StrokeShape = new RoundRectangle { CornerRadius = new CornerRadius(16, 16, 0, 0) },

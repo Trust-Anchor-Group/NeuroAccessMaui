@@ -335,7 +335,7 @@
 	<Color x:Key="TnPNeutralv300ContentWLDark">#87f5f6f7</Color>
 	<Color x:Key="TnPNeutralv300bgWLDark">#313133</Color>
 	<Color x:Key="TnPNeutralv750ContentWLDark">#252526</Color>
-	<Color x:Key="TnPNeutralv750bgWLDark">#80f5f6f7</Color>
+	<Color x:Key="TnPNeutralv750bgWLDark">#858686</Color>
 	<Color x:Key="TnPSuccessContentWLDark">#29bf86</Color>
 	<Color x:Key="TnPSuccessFigureWLDark">#29bf86</Color>
 	<Color x:Key="TnPSuccessbgWLDark">#3329bf86</Color>
