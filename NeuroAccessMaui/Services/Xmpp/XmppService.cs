@@ -326,7 +326,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.controlClient = new ControlClient(this.xmppClient);
 					this.concentratorClient = new ConcentratorClient(this.xmppClient);
 
-					if(string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
+					if (string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
 						this.pepClient = new PepClient(this.xmppClient);
 					else
 						this.pepClient = new PepClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
@@ -956,7 +956,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 						if (this.pepClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
 						{
-							this.pepClient = new PepClient(this.xmppClient,ServiceRef.TagProfile.PubSubJid);
+							this.pepClient = new PepClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
 							this.ReregisterPepEventHandlers(this.pepClient);
 							//this.RegisterPubSubEventHandlers(this.pubSubClient);
 						}
@@ -966,7 +966,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					if (ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating())
 						await ServiceRef.XmppService.TryGenerateAndChangePassword();
 
-					if(this.xmppFilteredEventSink is not null)
+					if (this.xmppFilteredEventSink is not null)
 						ServiceRef.LogService.AddListener(this.xmppFilteredEventSink);
 
 					await ServiceRef.PushNotificationService.CheckPushNotificationToken();
@@ -1526,7 +1526,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 					{
 						FriendlyName = ContactInfo.GetFriendlyName(RemoteIdentity);
 
-						IdentityStatus Status = await this.ContractsClient.ValidateAsync(RemoteIdentity);
+						IdentityValidationEventArgs IdentityValidationEventArgs = await this.ContractsClient.ValidateAsync(RemoteIdentity);
+						IdentityStatus Status = IdentityValidationEventArgs.Status;
 						if (Status != IdentityStatus.Valid)
 						{
 							await e.Decline();
@@ -3102,9 +3103,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		/// <param name="Identity">Legal Identity</param>
 		/// <returns>The validity of the identity.</returns>
-		public Task<IdentityStatus> ValidateIdentity(LegalIdentity Identity)
+		public async Task<IdentityStatus> ValidateIdentity(LegalIdentity Identity)
 		{
-			return this.ContractsClient.ValidateAsync(Identity, true);
+			IdentityValidationEventArgs Result = await this.ContractsClient.ValidateAsync(Identity, true);
+			return Result.Status;
 		}
 
 		#endregion
@@ -3521,7 +3523,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			{
 				return await this.ContractsClient.GetPeerReviewIdServiceProvidersAsync();
 			}
-			catch(Exception Ex)
+			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
