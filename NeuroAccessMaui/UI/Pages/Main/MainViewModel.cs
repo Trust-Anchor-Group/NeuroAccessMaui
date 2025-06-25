@@ -191,7 +191,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		public async Task OpenWallet()
 		{
-			if (ServiceRef.TagProfile.HasWallet)
+			if (ServiceRef.TagProfile.HasBetaFeatures)
 			{
 				await ShowWallet();
 				return;

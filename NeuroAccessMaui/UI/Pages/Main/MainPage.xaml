@@ -142,20 +142,15 @@
 				</Border.Shadow>
 				<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
 					  ColumnDefinitions="auto, *"
-					  RowDefinitions="auto, *"
 					  RowSpacing="{DynamicResource SmallSpacing}">
 					<controls:SvgView
 						Source="wallet.svg"
+						WidthRequest="24"
+						VerticalOptions="Start"
 						TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
 					<Label
 						Grid.Column="1"
-						Text="{l:Localize ComingSoon}"
-						Style="{DynamicResource InfoLabel}"
-						TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
-					<Label
-						Grid.Column="1"
-						Grid.Row="1"
-						Text="{l:Localize ComingSoonInfo}"
+						Text="{l:Localize BetaFeatureMainPage}"
 						Style="{DynamicResource InfoLabel}"
 						TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
 				</Grid>

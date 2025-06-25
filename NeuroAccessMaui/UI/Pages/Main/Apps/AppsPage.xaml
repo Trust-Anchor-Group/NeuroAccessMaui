@@ -37,7 +37,7 @@
 					<!-- Common apps -->
 					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *" RowSpacing="{DynamicResource MediumSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}"
-							   Text="Apps"/>
+							   Text="{l:Localize Apps}"/>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
 												SvgSource="contacts.svg"
@@ -61,9 +61,9 @@
 
 				<!-- Beta -->
 				<Border Style="{DynamicResource BorderSet}">
-					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, auto" RowSpacing="{DynamicResource MediumSpacing}">
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, *, auto" RowSpacing="{DynamicResource MediumSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}"
-							   Text="Beta"/>
+							   Text="{l:Localize BetaFeature}"/>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
 												SvgSource="new_contracts.svg"
@@ -82,9 +82,15 @@
 												Command="{Binding ShowThingsCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize SmartThings}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
+							<controls:SvgButton Style="{Binding BetaButtonStyle}"
+												SvgSource="wallet.svg"
+												Command="{Binding ShowWalletCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Wallet}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
 						<Label x:Name="BetaText"
-							   Text="To enable Beta features, go to the Home screen and open the settings page"
-							   Grid.Row="2"
+							   Text="{l:Localize BetaFeatureInfo}"
+							   Grid.Row="3"
 							   Grid.ColumnSpan="3"
 							   IsVisible="{Binding HasBetaFeatures, Converter={mct:InvertedBoolConverter}}"
 							   Style="{DynamicResource AppCardLabel}"/>
@@ -95,7 +101,7 @@
 				<Border Style="{DynamicResource BorderSet}">
 					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, *" RowSpacing="{DynamicResource MediumSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}"
-							   Text="Coming soon"
+							   Text="{l:Localize ComingSoon}"
 							   Grid.ColumnSpan="2"/>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
@@ -168,7 +174,7 @@
 							CenterLabelText="{l:Localize Wallet}"
 							RightLabelText="{l:Localize Apps}"
 							LeftCommand="{Binding ViewMainPageCommand}"
-							CenterCommand="{Binding ShowWalletCommand}"
+							CenterCommand="{Binding ShowWalletBottombarCommand}"
 							Grid.Row="2"/>
 	</Grid>
 </base:BaseContentPage>

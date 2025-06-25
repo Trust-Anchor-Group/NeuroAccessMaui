@@ -2843,4 +2843,13 @@
   <data name="ComingSoonInfo" xml:space="preserve">
    <value>We are currently working on this</value>
   </data>
+  <data name="BetaFeature" xml:space="preserve">
+   <value>Beta</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>To enable Beta features, go to the Home screen and open the settings page</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>This feature is currently in a Beta state. To enable Beta features, open the settings page and enable beta features</value>
+  </data>
 </root>

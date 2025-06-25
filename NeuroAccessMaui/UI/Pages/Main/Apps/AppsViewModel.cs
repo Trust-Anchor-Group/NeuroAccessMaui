@@ -167,9 +167,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		{
 			try
 			{
-				if (!ServiceRef.TagProfile.HasWallet)
+				if (!ServiceRef.TagProfile.HasBetaFeatures)
 				{
-					await this.ShowComingSoonPopup();
+					this.BetaFeaturePressed = true;
+					await Task.Delay(100);
+					this.BetaFeaturePressed = false;
 				}
 				else
 				{
@@ -186,6 +188,19 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 			{
 				ServiceRef.LogService.LogException(Ex);
 				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private async Task ShowWalletBottombar()
+		{
+			if (!ServiceRef.TagProfile.HasBetaFeatures)
+			{
+				await this.ShowComingSoonPopup();
+			}
+			else
+			{
+				await this.ShowWallet();
 			}
 		}
 
