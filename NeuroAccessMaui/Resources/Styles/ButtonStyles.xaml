@@ -657,18 +657,17 @@
 	</Style>
 
 	<!-- Icon Button -->
-	<Style x:Key="IconButtonBorder"
-		   ApplyToDerivedTypes="False"
-		   TargetType="Border"
-		   BaseResourceKey="BorderSet">
-		<Setter Property="BackgroundColor"
-				Value="{AppThemeBinding Light={DynamicResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={DynamicResource ButtonNeutralNavButtonsbgActiveWLDark}}" />
-		<Setter Property="Padding"
-				Value="{DynamicResource SmallMargins}" />
-		<Setter Property="Margin"
-				Value="0" />
+	<Style x:Key="IconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={DynamicResource ButtonNeutralNavButtonsbgActiveWLDark}}"/>
+		<Setter Property="Padding" Value="{DynamicResource SmallMargins}"/>
+		<Setter Property="Margin" Value="0" />
 		<Setter Property="StrokeShape">
 			<RoundRectangle CornerRadius="8" />
+		</Setter>
+		<Setter Property="Shadow">
+			<Setter.Value>
+				<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4" />
+			</Setter.Value>
 		</Setter>
 	</Style>
 
@@ -681,17 +680,40 @@
 				Value="24" />
 	</Style>
 
-	<Style x:Key="IconButton"
-		   ApplyToDerivedTypes="False"
-		   TargetType="controls:SvgButton">
-		<Setter Property="BorderStyle"
-				Value="{DynamicResource IconButtonBorder}" />
-		<Setter Property="SvgTintColor"
-				Value="{AppThemeBinding Light={DynamicResource ButtonNeutralNavButtonsContentActiveWLLight}, Dark={DynamicResource ButtonNeutralNavButtonsContentActiveWLDark}}" />
-		<Setter Property="SvgAspect"
-				Value="AspectFit" />
-		<Setter Property="SvgStyle"
-				Value="{DynamicResource IconButtonSvg}" />
+	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
+		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonBorder}" />
+		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={DynamicResource ButtonNeutralNavButtonsContentActiveWLLight}, Dark={DynamicResource ButtonNeutralNavButtonsContentActiveWLDark}}" />
+		<Setter Property="SvgAspect" Value="AspectFill"/>
+		<Setter Property="SvgStyle" Value="{DynamicResource IconButtonSvg}" />
+	</Style>
+
+	<Style x:Key="NeuroIconButton" ApplyToDerivedTypes="True" TargetType="controls:SvgButton">
+		<Setter Property="BorderStyle" Value="{DynamicResource NeuroIconButtonBorder}"/>
+		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={DynamicResource ContentAccessWLLight}, Dark={DynamicResource ContentAccessWLDark}}"/>
+		<Setter Property="SvgStyle" Value="{DynamicResource NeuroIconButtonSvg}"/>
+	</Style>
+
+	<Style x:Key="NeuroIconButtonDisabled" BasedOn="{StaticResource NeuroIconButton}" TargetType="controls:SvgButton">
+		<Setter Property="BorderStyle" Value="{DynamicResource NeuroIconButtonBorderDisabled}"/>
+		<Setter Property="SvgTintColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}"/>
+	</Style>
+
+	<Style x:Key="NeuroIconButtonSvg" ApplyToDerivedTypes="False" TargetType="controls:SvgView">
+		<Setter Property="HeightRequest" Value="32"/>
+		<Setter Property="WidthRequest" Value="32"/>
+		<Setter Property="HorizontalOptions" Value="Center"/>
+		<Setter Property="VerticalOptions" Value="Center"/>
+	</Style>
+
+	<Style x:Key="NeuroIconButtonBorder" ApplyToDerivedTypes="True" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource BrandColorsNeuroAccessa20WLLight}, Dark={DynamicResource BrandColorsNeuroAccessa20WLDark}}"/>
+		<Setter Property="HeightRequest" Value="64"/>
+		<Setter Property="WidthRequest" Value="64"/>
+		<Setter Property="StrokeShape" Value="RoundRectangle 8"/>
+	</Style>
+
+	<Style x:Key="NeuroIconButtonBorderDisabled" TargetType="Border" BasedOn="{StaticResource NeuroIconButtonBorder}">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}"/>
 	</Style>
 
 	<!-- Expander Button Styles -->

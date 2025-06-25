@@ -12,24 +12,17 @@
 						   xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
 						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
 
-	<Grid RowDefinitions="*, auto"
-		  ColumnDefinitions="*">
-		<Border  Grid.Row="0"
-				 Style="{DynamicResource BorderSet}"
-				 Margin="{DynamicResource MediumMargins}">
-			<ScrollView>
+	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
+		<Border  Grid.Row="0" Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}">
+			<ScrollView >
 				<ContentView Content="{Binding HumanReadableText}" />
 			</ScrollView>
 		</Border>
 
 
 		<!-- BOTTOM BAR -->
-		<Border Grid.Row="1"
-				Style="{DynamicResource BottomBarBorder}">
-			<Grid HorizontalOptions="Center"
-				  VerticalOptions="Center"
-				  ColumnSpacing="{DynamicResource SmallSpacing}"
-				  Padding="{DynamicResource SmallMargins}">
+		<Border Grid.Row="1" Style="{DynamicResource BottomBarBorder2}" Margin="{DynamicResource MediumTopMargins}">
+			<Grid HorizontalOptions="Center" VerticalOptions="Center" ColumnSpacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="auto" />
 					<ColumnDefinition Width="*" />

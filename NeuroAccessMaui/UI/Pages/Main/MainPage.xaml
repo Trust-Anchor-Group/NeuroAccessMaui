@@ -39,11 +39,11 @@
 		</Grid>
 	</Shell.TitleView> -->
 	<Grid x:Name="TheMainGrid"
-		  RowDefinitions="auto, *, auto, auto"
+		  RowDefinitions="auto, *, auto, auto, auto"
 		  ColumnDefinitions="*"
 		  BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
-		<controls:Background Grid.RowSpan="3"/>
+		<controls:Background Grid.RowSpan="4"/>
 
 		<!-- Top Buttons -->
 		<Grid Grid.Row="0"
@@ -53,8 +53,8 @@
 			  ColumnDefinitions="auto,auto">
 			<controls:SvgButton
 				Grid.Row="0" Grid.Column="0"
-				Command="{Binding OpenFlyoutCommand}"
-				SvgSource="hamburger.svg"
+				Command="{Binding ShowSettingsCommand}"
+				SvgSource="cog.svg"
 				Style="{DynamicResource IconButton}"/>
 
 			<!-- TODO: Enable when implemented
@@ -76,8 +76,7 @@
 		
 		<!-- Logo and Missing ID Box-->
 		<Grid Grid.Row="1"
-			  RowDefinitions="auto, auto"
-			  Margin="30,100,30,100">
+			  RowDefinitions="*, *">
 
 			<!-- <Image Source="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
 				   Grid.Row="0"
@@ -89,16 +88,20 @@
 							   Grid.Row="0"
 							   HeightRequest="230"
 							   WidthRequest="230"
-							   Aspect="AspectFit"  Margin="0,0,0,16"/>
+							   Aspect="AspectFit"
+							   VerticalOptions="End"/>
+			
 			<!-- Missing Neuro ID Box-->
-			<Grid Grid.Row="1"
+			<Grid RowDefinitions="auto, *"
 				  IsVisible="{Binding HasPersonalIdentity, Converter={StaticResource InvertedBoolConverter}}"
-				  RowDefinitions="*, *">
-				
+				  Grid.Row="1"
+				  x:Name="NoIDPopup"
+				  VerticalOptions="Center"
+				  Margin="{DynamicResource LargeLeftRightMargins}">
 				<Border Grid.Row="0"
 						BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
 						Padding="{DynamicResource MediumMargins}"
-						StrokeShape="RoundRectangle 8,8,0,8">
+						StrokeShape="RoundRectangle 16,16,0,16">
 					<Border.Shadow>
 						<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
 					</Border.Shadow>
@@ -111,6 +114,7 @@
 						<Label
 							Grid.Column="1"
 							Text="{l:Localize ApplyIdInfoMainPage}"
+							Style="{DynamicResource InfoLabel}"
 							TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
 					</Grid>
 				</Border>
@@ -122,6 +126,35 @@
 					</Grid>
 				</controls:TemplatedButton>
 			</Grid>
+
+			<!-- Info Toast for missing wallet -->
+			<!-- TODO Remove this once wallet functionality is improved -->
+			<Border x:Name="NoWalletPopup"
+					Grid.Row="1"
+					VerticalOptions="Center"
+					BackgroundColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750bgWLLight}, Dark={DynamicResource TnPNeutralv750bgWLDark}}"
+					Padding="{DynamicResource MediumMargins}"
+					StrokeShape="RoundRectangle 16,16,0,16"
+					Margin="{DynamicResource LargeLeftRightMargins}"
+					IsVisible="False">
+				<Border.Shadow>
+					<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+				</Border.Shadow>
+				<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+					  ColumnDefinitions="auto, *"
+					  RowSpacing="{DynamicResource SmallSpacing}">
+					<controls:SvgView
+						Source="wallet.svg"
+						WidthRequest="24"
+						VerticalOptions="Start"
+						TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+					<Label
+						Grid.Column="1"
+						Text="{l:Localize BetaFeatureMainPage}"
+						Style="{DynamicResource InfoLabel}"
+						TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+				</Grid>
+			</Border>
 		</Grid>
 
 		<controls:SvgView Source="banner.svg"
@@ -134,55 +167,63 @@
 						  Margin="{DynamicResource MediumBottomMargins}"
 						  IsVisible="False"/> <!-- TODO: Bind to HasBranding-->
 
+		<Grid HorizontalOptions="FillAndExpand"
+			  ColumnDefinitions="*, *"
+			  Grid.Row="3"
+			  Margin="{DynamicResource SmallMargins}">
+			
+			<!-- Scan QR Button -->
+			<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
+				<Border Style="{DynamicResource TransparentTemplateButtonBorder}"
+								InputTransparent="True"
+								HorizontalOptions="Fill">
+					<Grid ColumnDefinitions="Auto,*"
+								HorizontalOptions="Center"
+								VerticalOptions="Center">
+						<Path VerticalOptions="Center"
+									HeightRequest="24"
+									WidthRequest="24"
+									Aspect="Uniform"
+									Data="{x:Static ui:Geometries.ScanQrIconPath}"
+									Style="{DynamicResource TransparentTemplateButtonPath}" />
+						<Label Grid.Column="1"
+										Style="{DynamicResource TransparentTemplateButtonLabel}"
+										Margin="{DynamicResource SmallLeftMargins}"
+										Text="{l:Localize ScanQRShort}" />
+					</Grid>
+				</Border>
+			</controls:TemplatedButton>
+
+			<!-- Show ID Button -->
+			<controls:TemplatedButton Grid.Column="1" Command="{x:Binding ViewIdCommand}">
+				<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
+					<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
+						<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
+								Data="{x:Static ui:Geometries.ShowIdIconPath}"
+								Style="{DynamicResource FilledTemplateButtonPath}"
+								Grid.Column="0"
+						/>
+						<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
+					</Grid>
+				</Border>
+			</controls:TemplatedButton>
+		</Grid>
+		
 		<!-- Bottom Bar -->
-		<Border Grid.Row="3" Style="{DynamicResource BottomBarBorder}" VerticalOptions="End" Stroke="{x:Null}">
-			<Grid HorizontalOptions="FillAndExpand"
-				  ColumnDefinitions="*, *">
+		<controls:BottomBar Grid.Row="4"
+							Style="{DynamicResource BottomBar}"
+							SelectedIcon="Left"
+							LeftIcon="home.svg"
+							CenterIcon="wallet.svg"
+							RightIcon="apps.svg"
+							LeftLabelText="{l:Localize Home}"
+							CenterLabelText="{l:Localize Wallet}"
+							RightLabelText="{l:Localize Apps}"
+							CenterCommand="{Binding OpenWalletCommand}"
+							RightCommand="{Binding ViewAppsCommand}"/>
 
-				<!-- Scan QR Button -->
-				<Grid Grid.Column="0">
-					<!-- Main content -->
-					<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
-						<Border Style="{DynamicResource TransparentTemplateButtonBorder}"
-								  InputTransparent="True"
-								  HorizontalOptions="Fill">
-							<Grid ColumnDefinitions="Auto,*"
-									HorizontalOptions="Center"
-									VerticalOptions="Center">
-								<Path VerticalOptions="Center"
-										HeightRequest="24"
-										WidthRequest="24"
-										Aspect="Uniform"
-										Data="{x:Static ui:Geometries.ScanQrIconPath}"
-										Style="{DynamicResource TransparentTemplateButtonPath}" />
-								<Label Grid.Column="1"
-										 Style="{DynamicResource TransparentTemplateButtonLabel}"
-										 Margin="{DynamicResource SmallLeftMargins}"
-										 Text="{l:Localize ScanQRShort}" />
-							</Grid>
-						</Border>
-					</controls:TemplatedButton>
-				</Grid>
-
-
-				<!-- Show ID Button -->
-				<controls:TemplatedButton Grid.Column="1" Command="{x:Binding ViewIdCommand}">
-					<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
-						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-								  Data="{x:Static ui:Geometries.ShowIdIconPath}"
-								  Style="{DynamicResource FilledTemplateButtonPath}"
-								  Grid.Column="0"
-							/>
-							<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
-			</Grid>
-		</Border>
 		<Grid.GestureRecognizers>
 			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
 		</Grid.GestureRecognizers>
-
 	</Grid>
 </base:BaseContentPage>

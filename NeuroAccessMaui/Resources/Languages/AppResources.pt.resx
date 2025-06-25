@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2815,6 +2815,42 @@
   </data>
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Remove dados temporários como imagens e anexos para liberar espaço</value>
+  </data>
+  <data name="Apps" xml:space="preserve">
+      <value>Aplicativos</value>
+  </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Os recursos beta estão em desenvolvimento e podem não ter funcionalidade ou design completos. No entanto, alguns de seus recursos principais já estão disponíveis.</value>
+  </data>
+  <data name="SmartThings" xml:space="preserve">
+    <value>Coisas inteligentes</value>
+  </data>
+  <data name="Assets" xml:space="preserve">
+    <value>Ativos</value>
+  </data>
+  <data name="MicroLoan" xml:space="preserve">
+    <value>Microempréstimo</value>
+  </data>
+  <data name="NFC" xml:space="preserve">
+    <value>NFC</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Gostaria de adicionar esta identidade aos seus contatos?</value>
+  </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>Em breve!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+    <value>Atualmente estamos trabalhando nisso</value>
+  </data>
+  <data name="BetaFeature" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>Para ativar os recursos beta, vá para a tela inicial e abra a página de configurações</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>Este recurso está atualmente em estado beta. Para ativar os recursos beta, abra a página de configurações e ative os recursos beta</value>
   </data>
   <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
     <value>Permissão necessária</value>

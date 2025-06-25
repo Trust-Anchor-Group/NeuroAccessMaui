@@ -16,6 +16,12 @@ using NeuroAccessMaui.Services.Theme;
 using Waher.Runtime.Inventory;
 using System.Reflection.Metadata;
 using NeuroAccessMaui.UI.Popups.Password;
+using NeuroAccessMaui.UI.Pages.Main.Apps;
+using EDaler;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
+using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Pages.Main.Settings;
+using System.Runtime.CompilerServices;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -172,13 +178,73 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			}
 		}
 
-		[RelayCommand(AllowConcurrentExecutions = false)]
-		public static async Task OpenFlyout()
+		// Go to Apps page
+		[RelayCommand]
+		public async Task ViewApps()
 		{
-			await MainThread.InvokeOnMainThreadAsync(() =>
-				Shell.Current.FlyoutIsPresented = true
-			);
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(AppsPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
+		[ObservableProperty]
+		private bool showingNoWalletPopup = false;
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		public async Task OpenWallet()
+		{
+			if (ServiceRef.TagProfile.HasBetaFeatures)
+			{
+				await ShowWallet();
+				return;
+			}
+			else
+			{
+				this.ShowingNoWalletPopup = true;
+				await Task.Delay(5000);
+				this.ShowingNoWalletPopup = false;
+			}
+		}
+
+		[RelayCommand]
+		internal static async Task ShowWallet()
+		{
+			try
+			{
+				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+				(decimal PendingAmount, string PendingCurrency, PendingPayment[] PendingPayments) = await ServiceRef.XmppService.GetPendingEDalerPayments();
+				(AccountEvent[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize);
+
+				WalletNavigationArgs Args = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
+
+				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), Args, BackMethod.Pop);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Shows the settings page.
+		/// </summary>
+		[RelayCommand]
+		private static async Task ShowSettings()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(SettingsPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 	}
 }
