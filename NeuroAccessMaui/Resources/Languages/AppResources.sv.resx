@@ -2841,6 +2841,6 @@
     <value>Kommer snart!</value>
   </data>
   <data name="ComingSoonInfo" xml:space="preserve">
-    <value>Vi arbetar för närvarande på detta. Kommer snart!</value>
+    <value>Vi arbetar för närvarande på detta</value>
   </data>
 </root>
