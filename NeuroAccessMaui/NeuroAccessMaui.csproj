@@ -290,7 +290,7 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 		<PackageReference Include="Mopups" Version="1.3.2" />
-		<PackageReference Include="NeuroFeatures" Version="2.1.3" />
+		<PackageReference Include="NeuroFeatures" Version="2.1.4" />
 		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
 		<PackageReference Include="SkiaSharp" Version="2.88.9" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.9" />
@@ -300,7 +300,7 @@
 		<PackageReference Include="Svg.Skia" Version="2.0.0.1" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-		<PackageReference Include="Waher.Content" Version="3.3.3" />
+		<PackageReference Include="Waher.Content" Version="3.3.4" />
 		<PackageReference Include="Waher.Content.Images" Version="3.0.2" />
 		<PackageReference Include="Waher.Content.Markdown" Version="6.1.1" />
 		<PackageReference Include="Waher.Content.QR" Version="2.1.2" />
@@ -317,9 +317,9 @@
 		<PackageReference Include="Waher.Networking.XMPP" Version="4.1.5" />
 		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="3.1.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="4.2.2" />
-		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.4.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.5.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Control" Version="4.1.1" />
-		<PackageReference Include="Waher.Networking.XMPP.Geo" Version="1.0.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Geo" Version="1.0.1" />
 		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.2.6" />
 		<PackageReference Include="Waher.Networking.XMPP.Mail" Version="3.1.0" />
 		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="4.1.4" />
@@ -340,7 +340,7 @@
 		<PackageReference Include="Waher.Runtime.Settings" Version="1.2.0" />
 		<PackageReference Include="Waher.Runtime.Temporary" Version="1.1.0" />
 		<PackageReference Include="Waher.Runtime.Text" Version="1.2.0" />
-		<PackageReference Include="Waher.Script" Version="2.12.0" />
+		<PackageReference Include="Waher.Script" Version="2.13.0" />
 		<PackageReference Include="Waher.Script.Content" Version="2.2.3" />
 		<PackageReference Include="Waher.Security" Version="1.0.13" />
 		<PackageReference Include="Waher.Security.JWS" Version="1.1.4" />

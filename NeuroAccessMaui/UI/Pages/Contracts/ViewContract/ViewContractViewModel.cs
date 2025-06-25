@@ -5,22 +5,15 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.Services.UI.Photos;
-using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
-using NeuroAccessMaui.UI.Pages.Main.QR;
-using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Globalization;
-using System.Reflection;
 using System.Text;
-using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.HttpFileUpload;
@@ -666,13 +659,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (e.ContractId != this.Contract?.ContractId || e.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id)
 				return;
 
-			//Wait for RefreshContractCommand to finish, before calling it
-			while (!this.RefreshContractCommand.CanExecute(null))
+			if (e.Contract is null)
 			{
-				await Task.Delay(100);
-			}
+				//Wait for RefreshContractCommand to finish, before calling it
+				while (!this.RefreshContractCommand.CanExecute(null))
+				{
+					await Task.Delay(100);
+				}
 
-			await this.RefreshContractCommand.ExecuteAsync(null);
+				await this.RefreshContractCommand.ExecuteAsync(null);
+			}
+			else
+				await this.RefreshContract(e.Contract);
 		}
 
 		private async Task ContractsClient_ContractUpdated(object Sender, ContractReferenceEventArgs e)
