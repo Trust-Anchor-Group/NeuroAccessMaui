@@ -337,9 +337,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						{
 							try 
 							{
-								if(p is ObservableContractReferenceParameter && !string.IsNullOrEmpty(p.Parameter.StringValue))
-									p.IsValid = true; //TODO: Remove
-								else if (p.Value is null)
+								if (p.Value is null)
 									p.IsValid = false;
 								else
 									p.IsValid = await p.Parameter.IsParameterValid(v, ServiceRef.XmppService.ContractsClient);
