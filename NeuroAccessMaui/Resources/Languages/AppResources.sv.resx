@@ -2837,4 +2837,10 @@
   <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
     <value>Vill du lägga till denna identitet i dina kontakter?</value>
   </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>Kommer snart!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+    <value>Vi arbetar för närvarande på detta. Kommer snart!</value>
+  </data>
 </root>

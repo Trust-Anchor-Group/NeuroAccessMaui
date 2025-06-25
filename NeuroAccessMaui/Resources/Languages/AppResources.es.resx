@@ -2837,4 +2837,10 @@
   <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
     <value>¿Te gustaría añadir esta identidad a tus contactos?</value>
   </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>¡Próximamente!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+    <value>Actualmente estamos trabajando en esto. ¡Próximamente!</value>
+  </data>
 </root>

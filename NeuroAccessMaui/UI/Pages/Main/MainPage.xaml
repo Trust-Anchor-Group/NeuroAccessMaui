@@ -146,13 +146,13 @@
 						TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
 					<Label
 						Grid.Column="1"
-						Text="{l:Localize NoWallet}"
+						Text="{l:Localize ComingSoon}"
 						Style="{DynamicResource InfoLabel}"
 						TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
 					<Label
 						Grid.Column="1"
 						Grid.Row="1"
-						Text="{l:Localize NoWalletInfo}"
+						Text="{l:Localize ComingSoonInfo}"
 						Style="{DynamicResource InfoLabel}"
 						TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
 				</Grid>

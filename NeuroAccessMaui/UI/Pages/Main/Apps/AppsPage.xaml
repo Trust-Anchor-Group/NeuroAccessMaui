@@ -147,12 +147,12 @@
 					Source="info.svg"
 					TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
 				<Label Grid.Column="1"
-					   Text="Coming soon!"
+					   Text="{l:Localize ComingSoon}"
 					   Style="{DynamicResource InfoLabel}"
 					   TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
 				<Label Grid.Column="1"
 					   Grid.Row="1"
-					   Text="We are currently working on this"
+					   Text="{l:Localize ComingSoonInfo}"
 					   Style="{DynamicResource InfoLabel}"
 					   TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
 			</Grid>

@@ -2837,10 +2837,10 @@
   <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
    <value>Would you like to add this identity to your contacts?</value>
   </data>
-  <data name="NoWallet" xml:space="preserve">
-   <value>You do not have a wallet</value>
+  <data name="ComingSoon" xml:space="preserve">
+   <value>Coming soon!</value>
   </data>
-  <data name="NoWalletInfo" xml:space="preserve">
-   <value>You create a wallet by putting some money in it. This money can be transferred from others or added by signing a Smart Contract</value>
+  <data name="ComingSoonInfo" xml:space="preserve">
+   <value>We are currently working on this. Coming soon!</value>
   </data>
 </root>
