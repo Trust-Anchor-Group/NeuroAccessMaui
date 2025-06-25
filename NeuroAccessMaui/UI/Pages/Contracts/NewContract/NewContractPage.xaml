@@ -36,12 +36,7 @@
 		<controls:Background Grid.Row ="1"/>
 
 		<!-- Top Bar -->
-		<Grid Grid.Row="0" RowDefinitions="*" ColumnDefinitions="auto,*" Margin="{DynamicResource SmallBottomMargins}">
-			<Grid.Padding>
-				<Thickness Left="{StaticResource LargeSpacing}"
-						   Top="{StaticResource LargeSpacing}"
-						   Right="{StaticResource LargeSpacing}" />
-			</Grid.Padding>
+		<Grid Grid.Row="0" RowDefinitions="*" ColumnDefinitions="auto,*" Margin="{DynamicResource MediumMargins}">
 
 			<controls:ImageButton Grid.Row="0" Grid.Column="0" IsVisible="{Binding CanStateChange}" Command="{Binding BackCommand}" Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 

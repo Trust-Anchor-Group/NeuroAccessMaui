@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+						x:Class="NeuroAccessMaui.UI.Pages.Main.Apps.AppsPage"
+						x:DataType="viewmodel:AppsViewModel"
+						xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+						xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+						xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+						xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+						xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+						xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+						xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Apps"
+						xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+						xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
+	<!-- Main Grid-->
+	<Grid RowDefinitions="auto, *, auto">
+		<Grid Margin="{DynamicResource MediumMargins}" ColumnDefinitions="*, auto, *">
+			<controls:SvgButton
+					Command="{Binding ViewMainPageCommand}"
+					SvgSource="close.svg"
+					Style="{DynamicResource IconButton}"
+					HorizontalOptions="Start"/>
+
+			<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Apps}" HorizontalOptions="Center" Grid.Column="1"/>
+
+			<controls:SvgButton
+				Command="{Binding ShowIdCommand}"
+				Grid.Column="2"
+				SvgSource="id_icon.svg"
+				Style="{DynamicResource IconButton}"
+				HorizontalOptions="End"/>
+		</Grid>
+		
+		<ScrollView x:Name="MainContent" Margin="{DynamicResource SmallLeftRightMargins}" Grid.Row="1">
+			<VerticalStackLayout Margin="0">
+				<!-- Apps -->
+				<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource SmallLeftRightBottomMargins}">
+					<!-- Common apps -->
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *" RowSpacing="{DynamicResource MediumSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}"
+							   Text="{l:Localize Apps}"/>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+												SvgSource="contacts.svg"
+												Command="{Binding ShowContactsCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Contacts}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+												SvgSource="my_contracts.svg"
+												Command="{Binding ShowMyContractsCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize MyContracts}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+												SvgSource="applications.svg"
+												Command="{Binding ShowApplicationsCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Applications}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+					</Grid>
+				</Border>
+
+				<!-- Beta -->
+				<Border Style="{DynamicResource BorderSet}">
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, *, auto" RowSpacing="{DynamicResource MediumSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}"
+							   Text="{l:Localize BetaFeature}"/>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
+							<controls:SvgButton Style="{Binding BetaButtonStyle}"
+												SvgSource="new_contracts.svg"
+												Command="{Binding ShowNewContractCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize NewContract}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
+							<controls:SvgButton Style="{Binding BetaButtonStyle}"
+												SvgSource="new_token.svg"
+												Command="{Binding ShowNewTokenCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize NewToken}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
+							<controls:SvgButton Style="{Binding BetaButtonStyle}"
+												SvgSource="thing.svg"
+												Command="{Binding ShowThingsCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize SmartThings}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
+							<controls:SvgButton Style="{Binding BetaButtonStyle}"
+												SvgSource="wallet.svg"
+												Command="{Binding ShowWalletCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Wallet}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<Label x:Name="BetaText"
+							   Text="{l:Localize BetaFeatureInfo}"
+							   Grid.Row="3"
+							   Grid.ColumnSpan="3"
+							   IsVisible="{Binding HasBetaFeatures, Converter={mct:InvertedBoolConverter}}"
+							   Style="{DynamicResource AppCardLabel}"/>
+					</Grid>
+				</Border>
+
+				<!-- Coming soon -->
+				<Border Style="{DynamicResource BorderSet}">
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, *" RowSpacing="{DynamicResource MediumSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}"
+							   Text="{l:Localize ComingSoon}"
+							   Grid.ColumnSpan="2"/>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
+												SvgSource="assets.svg"
+												Command="{Binding ShowComingSoonPopupCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Assets}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
+												SvgSource="microloan.svg"
+												Command="{Binding ShowComingSoonPopupCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize MicroLoan}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
+												SvgSource="nfc.svg"
+												Command="{Binding ShowComingSoonPopupCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize NFC}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
+												SvgSource="sign.svg"
+												Command="{Binding ShowComingSoonPopupCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Sign}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+					</Grid>
+				</Border>
+			</VerticalStackLayout>
+		</ScrollView>
+
+		<!-- Info Toast for missing wallet -->
+		<!-- TODO Remove this once wallet functionality is improved -->
+		<Border x:Name="ComingSoonPopup"
+				Grid.RowSpan="3"
+				VerticalOptions="Center"
+				BackgroundColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750bgWLLight}, Dark={DynamicResource TnPNeutralv750bgWLDark}}"
+				Padding="{DynamicResource MediumMargins}"
+				Margin="{DynamicResource LargeLeftRightMargins}"
+				StrokeShape="RoundRectangle 16,16,16,16"
+				IsVisible="False">
+			<Border.Shadow>
+				<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+			</Border.Shadow>
+			<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+				  ColumnDefinitions="auto, *"
+				  RowDefinitions="auto, *"
+				  RowSpacing="{DynamicResource SmallSpacing}">
+				<controls:SvgView
+					Source="info.svg"
+					TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+				<Label Grid.Column="1"
+					   Text="{l:Localize ComingSoon}"
+					   Style="{DynamicResource InfoLabel}"
+					   TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+				<Label Grid.Column="1"
+					   Grid.Row="1"
+					   Text="{l:Localize ComingSoonInfo}"
+					   Style="{DynamicResource InfoLabel}"
+					   TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+			</Grid>
+		</Border>
+
+		<!-- Bottom Bar -->
+		<controls:BottomBar Style="{DynamicResource BottomBar}"
+							SelectedIcon="Right"
+							LeftIcon="home.svg"
+							CenterIcon="wallet.svg"
+							RightIcon="apps.svg"
+							LeftLabelText="{l:Localize Home}"
+							CenterLabelText="{l:Localize Wallet}"
+							RightLabelText="{l:Localize Apps}"
+							LeftCommand="{Binding ViewMainPageCommand}"
+							CenterCommand="{Binding ShowWalletBottombarCommand}"
+							Grid.Row="2"/>
+	</Grid>
+</base:BaseContentPage>

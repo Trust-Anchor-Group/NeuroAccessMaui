@@ -2816,4 +2816,40 @@
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Removes temporary data like images and attachments to free up space</value>
   </data>
+  <data name="Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Beta features are under development and could lack functionality or design. However, some of their core features are available</value>
+  </data>
+  <data name="SmartThings" xml:space="preserve">
+    <value>Smart Things</value>
+  </data>
+  <data name="Assets" xml:space="preserve">
+    <value>Assets</value>
+  </data>
+  <data name="MicroLoan" xml:space="preserve">
+    <value>MicroLoan</value>
+  </data>
+  <data name="NFC" xml:space="preserve">
+    <value>NFC</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+   <value>Would you like to add this identity to your contacts?</value>
+  </data>
+  <data name="ComingSoon" xml:space="preserve">
+   <value>Coming soon!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+   <value>We are currently working on this</value>
+  </data>
+  <data name="BetaFeature" xml:space="preserve">
+   <value>Beta</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>To enable Beta features, go to the Home screen and open the settings page</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>This feature is currently in a Beta state. To enable Beta features, open the settings page and enable beta features</value>
+  </data>
 </root>
