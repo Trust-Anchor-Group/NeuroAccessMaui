@@ -199,7 +199,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			else
 			{
 				this.ShowingNoWalletPopup = true;
-				await Task.Delay(3000);
+				await Task.Delay(5000);
 				this.ShowingNoWalletPopup = false;
 			}
 		}

@@ -229,7 +229,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		public async Task ShowComingSoonPopup()
 		{
 			this.ShowingComingSoonPopup = true;
-			await Task.Delay(2000);
+			await Task.Delay(3000);
 			this.ShowingComingSoonPopup = false;
 		}
 
