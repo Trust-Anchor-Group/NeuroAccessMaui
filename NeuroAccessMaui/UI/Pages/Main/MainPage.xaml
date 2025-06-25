@@ -146,13 +146,13 @@
 						TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
 					<Label
 						Grid.Column="1"
-						Text="You do not have a wallet."
+						Text="{l:Localize NoWallet}"
 						Style="{DynamicResource InfoLabel}"
 						TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
 					<Label
 						Grid.Column="1"
 						Grid.Row="1"
-						Text="{l:Localize ApplyIdInfoMainPage}"
+						Text="{l:Localize NoWalletInfo}"
 						Style="{DynamicResource InfoLabel}"
 						TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
 				</Grid>

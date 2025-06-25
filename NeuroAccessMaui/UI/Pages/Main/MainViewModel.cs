@@ -188,20 +188,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		[ObservableProperty]
 		private bool showingNoWalletPopup = false;
 
-		partial void OnShowingNoWalletPopupChanged(bool value)
-		{
-			if (value)
-			{
-				_ = HideNoWalletPopupAfterDelay();
-			}
-		}
-
-		private async Task HideNoWalletPopupAfterDelay()
-		{
-			await Task.Delay(3000);
-			await MainThread.InvokeOnMainThreadAsync(() => this.ShowingNoWalletPopup = false);
-		}
-
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		public async Task OpenWallet()
 		{
@@ -213,6 +199,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			else
 			{
 				this.ShowingNoWalletPopup = true;
+				await Task.Delay(3000);
+				this.ShowingNoWalletPopup = false;
 			}
 		}
 

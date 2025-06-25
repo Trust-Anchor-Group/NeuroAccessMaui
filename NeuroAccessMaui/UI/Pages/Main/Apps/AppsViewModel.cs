@@ -166,7 +166,20 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
                 ServiceRef.LogService.LogException(Ex);
             }
         }
-    
+
+		// Code used for displayig the coming soon popup
+
+		[ObservableProperty]
+		private bool showingComingSoonPopup = false;
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		public async Task ShowComingSoonPopup()
+		{
+			this.ShowingComingSoonPopup = true;
+			await Task.Delay(2000);
+			this.ShowingComingSoonPopup = false;
+		}
+
 		#endregion
 	}
 }

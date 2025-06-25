@@ -30,7 +30,7 @@
 				HorizontalOptions="End"/>
 		</Grid>
 		
-		<ScrollView Margin="{DynamicResource SmallLeftRightMargins}" Grid.Row="1">
+		<ScrollView x:Name="MainContent" Margin="{DynamicResource SmallLeftRightMargins}" Grid.Row="1">
 			<VerticalStackLayout Margin="0">
 				<!-- Apps -->
 				<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource SmallLeftRightBottomMargins}">
@@ -102,31 +102,63 @@
 						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
 												SvgSource="assets.svg"
-												IsEnabled="False"/>
+												Command="{Binding ShowComingSoonPopupCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Assets}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
 												SvgSource="microloan.svg"
-												IsEnabled="False"/>
+												Command="{Binding ShowComingSoonPopupCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize MicroLoan}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
 												SvgSource="nfc.svg"
-												IsEnabled="False"/>
+												Command="{Binding ShowComingSoonPopupCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize NFC}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
 												SvgSource="sign.svg"
-												IsEnabled="False"/>
+												Command="{Binding ShowComingSoonPopupCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Sign}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 					</Grid>
 				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
+
+		<!-- Info Toast for missing wallet -->
+		<!-- TODO Remove this once wallet functionality is improved -->
+		<Border x:Name="ComingSoonPopup"
+				Grid.RowSpan="3"
+				VerticalOptions="Center"
+				BackgroundColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750bgWLLight}, Dark={DynamicResource TnPNeutralv750bgWLDark}}"
+				Padding="{DynamicResource MediumMargins}"
+				Margin="{DynamicResource MediumMargins}"
+				StrokeShape="RoundRectangle 16,16,16,16"
+				IsVisible="False">
+			<Border.Shadow>
+				<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+			</Border.Shadow>
+			<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+				  ColumnDefinitions="auto, *"
+				  RowDefinitions="auto, *"
+				  RowSpacing="{DynamicResource SmallSpacing}">
+				<controls:SvgView
+					Source="wallet.svg"
+					TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+				<Label Grid.Column="1"
+					   Text="Coming soon!"
+					   Style="{DynamicResource InfoLabel}"
+					   TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+				<Label Grid.Column="1"
+					   Grid.Row="1"
+					   Text="We are currently working on this"
+					   Style="{DynamicResource InfoLabel}"
+					   TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+			</Grid>
+		</Border>
 
 		<!-- Bottom Bar -->
 		<controls:BottomBar Style="{DynamicResource BottomBar}"
