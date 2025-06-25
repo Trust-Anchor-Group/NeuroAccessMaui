@@ -67,25 +67,23 @@
 						<VerticalStackLayout Grid.Column="0" Grid.Row="1">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
 												SvgSource="new_contracts.svg"
-												IsEnabled="{Binding HasBetaFeatures}"
 												Command="{Binding ShowNewContractCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize NewContract}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="1" Grid.Row="1">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
 												SvgSource="new_token.svg"
-												IsEnabled="{Binding HasBetaFeatures}"
 												Command="{Binding ShowNewTokenCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize NewToken}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
 												SvgSource="thing.svg"
-												IsEnabled="{Binding HasBetaFeatures}"
 												Command="{Binding ShowThingsCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize SmartThings}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
-						<Label Text="To enable Beta features, go to the Home screen and open the settings page"
+						<Label x:Name="BetaText"
+							   Text="To enable Beta features, go to the Home screen and open the settings page"
 							   Grid.Row="2"
 							   Grid.ColumnSpan="3"
 							   IsVisible="{Binding HasBetaFeatures, Converter={mct:InvertedBoolConverter}}"
@@ -146,7 +144,7 @@
 				  RowDefinitions="auto, *"
 				  RowSpacing="{DynamicResource SmallSpacing}">
 				<controls:SvgView
-					Source="wallet.svg"
+					Source="info.svg"
 					TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
 				<Label Grid.Column="1"
 					   Text="Coming soon!"

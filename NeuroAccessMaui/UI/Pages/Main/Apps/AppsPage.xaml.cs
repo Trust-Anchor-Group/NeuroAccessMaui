@@ -59,6 +59,26 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 					}
 				}
 			}
+			else if (e.PropertyName == nameof(AppsViewModel.BetaFeaturePressed))
+			{
+				if (this.BindingContext is AppsViewModel Vm)
+				{
+					this.BetaText.CancelAnimations();
+
+					if (Vm.BetaFeaturePressed)
+					{
+						this.BetaText.Scale = 1;
+
+						await this.BetaText.ScaleTo(1.05, 100, Easing.CubicOut);
+					}
+					else
+					{
+						this.BetaText.Scale = 1.05;
+
+						await this.BetaText.ScaleTo(1, 100, Easing.CubicIn);
+					}
+				}
+			}
 		}
 	}
 }
