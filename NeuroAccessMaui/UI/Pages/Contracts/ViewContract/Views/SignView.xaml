@@ -89,7 +89,7 @@
 																 Style="{DynamicResource RoleDescriptionLabel}"
 																 VerticalOptions="Center"
 																 HorizontalOptions="Center"
-																 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}" />
+																 TextColor="{DynamicResource ButtonAccessTertiaryContentWL}" />
 													</controls:TemplatedButton>
 													<Grid ColumnDefinitions="*, auto, *"
 															Grid.Column="0"
@@ -97,11 +97,11 @@
 														<Border Grid.Column="1"
 																  Padding="{DynamicResource SmallLeftRightMargins}"
 																  Style="{DynamicResource RoundedBorder}"
-																  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPWarningbgWLLight}, Dark={DynamicResource TnPWarningbgWLDark}}"
+																  BackgroundColor="{DynamicResource TnPWarningbgWL}"
 																  IsVisible="{Binding HasIdentity, Converter={StaticResource InvertedBoolConverter}}">
 															<Label Style="{DynamicResource RoleDescriptionLabel}"
 																	 Text="{l:Localize IDRequestSent}"
-																	 TextColor="{AppThemeBinding Light={DynamicResource TnPWarningContentWLLight}, Dark={DynamicResource TnPWarningContentWLDark}}"
+																	 TextColor="{DynamicResource TnPWarningContentWL}"
 																	 VerticalOptions="Center" />
 														</Border>
 													</Grid>
@@ -115,7 +115,7 @@
 										  IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
 									<Label Text="{l:Localize None}"
 											 Style="{DynamicResource RoleDescriptionLabel}"
-											 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}"
+											 TextColor="{DynamicResource ButtonAccessTertiaryContentWL}"
 											 HorizontalTextAlignment="Center"
 											 VerticalTextAlignment="Center" />
 								</Border>
@@ -141,7 +141,7 @@
 
 					<CheckBox Grid.Column="0"
 								 IsChecked="{Binding IsContractOk}"
-								 Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+								 Color="{DynamicResource ContentPrimaryWL}" />
 					<Label Grid.Column="1"
 							 Text="{l:Localize IHaveReadAndUnderstoodTheContract}"
 							 Style="{DynamicResource BottomBarLabel}" />

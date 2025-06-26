@@ -18,7 +18,7 @@
 				ApplyToDerivedTypes="False"
 				BasedOn="{StaticResource PageTitleLabel}"
 				TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+				<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}" />
 				<Setter Property="FontFamily" Value="SpaceGroteskBold" />
 				<Setter Property="FontSize" Value="32" />
 			</Style>
@@ -26,21 +26,21 @@
 			<Style x:Key="PopupDetailsLabelStyle"
 				ApplyToDerivedTypes="False"
 				TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+				<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}" />
 			</Style>
 
 			<Style x:Key="PopupSectionTitleLabel"
 				ApplyToDerivedTypes="False"
 				BasedOn="{StaticResource SectionTitleLabel}"
 				TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+				<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}" />
 			</Style>
 
 			<Style x:Key="PopupOutlinedBorderStyle"
 				ApplyToDerivedTypes="False"
 				TargetType="Border">
 				<Setter Property="Padding" Value="{DynamicResource SmallMargins}" />
-				<Setter Property="Stroke" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+				<Setter Property="Stroke" Value="{DynamicResource ContentPrimaryWL}" />
 				<Setter Property="StrokeShape">
 					<RoundRectangle CornerRadius="{DynamicResource SmallCornerRadius}" />
 				</Setter>
@@ -49,7 +49,7 @@
 			<Style x:Key="PopupOutlinedLabelStyle"
 				ApplyToDerivedTypes="False"
 				TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+				<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}" />
 				<Setter Property="HorizontalOptions" Value="Center" />
 				<Setter Property="HorizontalTextAlignment" Value="Center" />
 				<Setter Property="FontFamily" Value="SpaceGroteskMedium" />
@@ -61,7 +61,7 @@
 							<VisualState x:Name="Normal" />
 							<VisualState x:Name="Disabled">
 								<VisualState.Setters>
-									<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}" />
+									<Setter Property="TextColor" Value="{DynamicResource ButtonUniversalbgInactiveWL}" />
 								</VisualState.Setters>
 							</VisualState>
 						</VisualStateGroup>

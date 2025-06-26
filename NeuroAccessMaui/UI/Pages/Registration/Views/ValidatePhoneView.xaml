@@ -29,10 +29,8 @@
 				<Border
 					Padding="{DynamicResource EditMediumMargins}"
 					Style="{DynamicResource ItemOuterBorder}"
-					BackgroundColor="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceBackgroundActiveLight},
-													  Dark={DynamicResource InputFieldsSurfaceBackgroundActiveDark}}"
-					Stroke="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceStrokeLight},
-											 Dark={DynamicResource InputFieldsSurfaceStrokeDark}}">
+					BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
+					Stroke="{DynamicResource InputFieldsSurfaceStroke}">
 
 					<Grid
 						RowDefinitions="auto"
@@ -56,8 +54,7 @@
 								WidthRequest="10"
 								Aspect="Uniform"
 								Data="{x:Static ui:Geometries.DropDownArrowPath}"
-								Fill="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight},
-													   Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+								Fill="{DynamicResource InputFieldsContentPrimary}" />
 						</HorizontalStackLayout>
 						<Entry
 							Grid.Column="1"
@@ -94,10 +91,10 @@
 							WidthRequest="20"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={DynamicResource TnPDangerFigureWLLight}, Dark={DynamicResource TnPDangerFigureWLLight}}" />
+							Fill="{DynamicResource TnPDangerFigureWL}" />
 
 					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding LocalizedValidationError}"
-							 TextColor="{AppThemeBinding Light={DynamicResource TnPDangerFigureWLLight}, Dark={DynamicResource TnPDangerFigureWLDark}}" />
+							 TextColor="{DynamicResource TnPDangerFigureWL}" />
 				</Grid>
 
 			</VerticalStackLayout>

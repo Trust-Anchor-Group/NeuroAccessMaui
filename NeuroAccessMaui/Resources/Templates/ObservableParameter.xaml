@@ -17,7 +17,7 @@
 		   TargetType="Label"
 		   BaseResourceKey="BoldItemTitleLabel">
 		<Setter Property="TextColor"
-				Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+				Value="{DynamicResource ContentPrimaryWL}" />
 		<Setter Property="FontSize"
 				Value="15" />
 		<Setter Property="FontFamily"
@@ -33,7 +33,7 @@
 	<Style x:Key="ParameterItemValueLabel"
 		   TargetType="Label">
 		<Setter Property="TextColor"
-				Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+				Value="{DynamicResource ContentPrimaryWL}" />
 		<Setter Property="FontSize"
 				Value="15" />
 		<Setter Property="FontFamily"
@@ -64,12 +64,12 @@
 									  IsChecked="{Binding BooleanValue, Mode=TwoWay}"
 									  VerticalOptions="Center"
 									  HorizontalOptions="Start"
-									  Color="{AppThemeBinding Light={DynamicResource ButtonAccessPrimarybgWLLight}, Dark={DynamicResource ButtonAccessPrimarybgWLDark}}"
+									  Color="{DynamicResource ButtonAccessPrimarybgWL}"
 									  Margin="{DynamicResource SmallRightMargins}" />
 							<Label Grid.Column="1"
 								   Text="{Binding Guide}"
 								   Style="{DynamicResource ParameterItemTitleLabel}"
-								   TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+								   TextColor="{DynamicResource ContentPrimaryWL}" />
 						</Grid>
 					</controls:CompositeInputView.CenterView>
 				</controls:CompositeInputView>
@@ -105,7 +105,7 @@
 							  IsChecked="{Binding BooleanValue, Mode=OneTime}"
 							  VerticalOptions="Center"
 							  HorizontalOptions="Start"
-							  Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+							  Color="{DynamicResource ContentPrimaryWL}"
 							  InputTransparent="True" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -266,7 +266,7 @@
 					<controls:CompositeInputView.CenterView>
 						<TimePicker Time="{Binding TimeSpanValue, Mode=TwoWay}"
 									BackgroundColor="Transparent"
-									TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+									TextColor="{DynamicResource ContentPrimaryWL}"
 									VerticalOptions="Center"
 									FontFamily="HaasGroteskRegular"
 									FontSize="18" />
@@ -457,7 +457,7 @@
 						<controls:CompositeInputView.CenterView>
 							<TimePicker Time="{Binding SelectedTime, Mode=TwoWay}"
 										BackgroundColor="Transparent"
-										TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+										TextColor="{DynamicResource ContentPrimaryWL}"
 										VerticalOptions="Center"
 										FontFamily="HaasGroteskRegular"
 										FontSize="18">
@@ -466,7 +466,7 @@
 												 Binding="{Binding IsValid}"
 												 Value="False">
 										<Setter Property="TextColor"
-												Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
+												Value="{DynamicResource InputFieldsContentDangerv500}" />
 
 									</DataTrigger>
 								</TimePicker.Triggers>

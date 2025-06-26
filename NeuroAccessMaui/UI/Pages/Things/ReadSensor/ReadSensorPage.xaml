@@ -69,7 +69,7 @@
 														  ErrorTemplate="{StaticResource ErrorModelTemplate}"
 														  TagTemplate="{StaticResource TagTemplate}"/>
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 

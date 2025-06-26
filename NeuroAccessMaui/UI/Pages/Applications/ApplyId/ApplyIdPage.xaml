@@ -29,7 +29,7 @@
 		<viewmodel:IdentityDocumentTypeToBackVisibilityConverter x:Key="IdentityDocumentTypeToBackVisibilityConverter" />
 	</VisualElement.Resources>
 
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background />
 
@@ -158,7 +158,7 @@
 									  Grid.Column="1"
 									  Margin="0"
 									  Padding="0"
-									  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}"
+									  BackgroundColor="{DynamicResource TnPDangerbgWL}"
 									  HeightRequest="200"
 									  Style="{DynamicResource OutlinedImageButtonBorder}"
 									  VerticalOptions="Start"
@@ -273,7 +273,7 @@
 								<Border Grid.Column="0"
 										  Margin="0"
 										  Padding="0"
-										  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight},Dark={DynamicResource TnPDangerbgWLDark}}"
+										  BackgroundColor="{DynamicResource TnPDangerbgWL}"
 										  HeightRequest="200"
 										  WidthRequest="200"
 										  Style="{DynamicResource OutlinedImageButtonBorder}">
@@ -295,7 +295,7 @@
 										      IsVisible="False" Aspect="Uniform"
 												HeightRequest="64" WidthRequest="64">
 											<Path.Fill>
-												<SolidColorBrush Color="{AppThemeBinding Light={DynamicResource InputFieldsContentSecondaryLight},Dark={DynamicResource InputFieldsContentSecondaryLight}}" />
+												<SolidColorBrush Color="{DynamicResource InputFieldsContentSecondary}" />
 											</Path.Fill>
 											<Path.Triggers>
 												<MultiTrigger TargetType="Path">
@@ -342,7 +342,7 @@
 								<Border Grid.Column="0"
 										  Margin="0"
 										  Padding="0"
-										  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight},Dark={DynamicResource TnPDangerbgWLDark}}"
+										  BackgroundColor="{DynamicResource TnPDangerbgWL}"
 										  HeightRequest="200"
 										  WidthRequest="200"
 										  Style="{DynamicResource OutlinedImageButtonBorder}">

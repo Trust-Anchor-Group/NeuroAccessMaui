@@ -11,7 +11,7 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -24,7 +24,7 @@
 
 				<Frame Style="{DynamicResource FrameSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-						<Frame HeightRequest="150" BorderColor="{DynamicResource ForegroundColor}" CornerRadius="6" HasShadow="True" BackgroundColor="{DynamicResource SurfaceBackgroundWLDark}">
+						<Frame HeightRequest="150" BorderColor="{DynamicResource ForegroundColor}" CornerRadius="6" HasShadow="True" BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 							<Grid HeightRequest="150" WidthRequest="10000" BackgroundColor="Transparent">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
@@ -35,8 +35,8 @@
 									<RowDefinition Height="25"/>
 								</Grid.RowDefinitions>
 								<Image x:Name="Img" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Source="{Binding Path=EDalerFrontGlyph}" Opacity="0.5"/>
-								<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Created}" HorizontalOptions="StartAndExpand" TextColor="{DynamicResource SurfaceBackgroundWLLight}"/>
-								<Label Grid.Column="0" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{DynamicResource SurfaceBackgroundWLLight}">
+								<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Created}" HorizontalOptions="StartAndExpand" TextColor="{DynamicResource SurfaceBackgroundWL}"/>
+								<Label Grid.Column="0" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{DynamicResource SurfaceBackgroundWL}">
 									<Label.FormattedText>
 										<FormattedString>
 											<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}" FontSize="50" FontAttributes="Bold"/>
@@ -45,7 +45,7 @@
 										</FormattedString>
 									</Label.FormattedText>
 								</Label>
-								<Label Grid.Column="0" Grid.Row="2" Text="{Binding Path=From}" HorizontalOptions="Start" Style="{DynamicResource ClickableValueLabel}" TextColor="{DynamicResource SurfaceBackgroundWLLight}">
+								<Label Grid.Column="0" Grid.Row="2" Text="{Binding Path=From}" HorizontalOptions="Start" Style="{DynamicResource ClickableValueLabel}" TextColor="{DynamicResource SurfaceBackgroundWL}">
 									<Label.GestureRecognizers>
 										<TapGestureRecognizer Command="{Binding Path=BindingContext.FromClickCommand, Source={x:Reference MainStackLayout}}" />
 									</Label.GestureRecognizers>

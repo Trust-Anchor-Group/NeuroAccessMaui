@@ -25,7 +25,7 @@
 				<Label.FormattedText>
 					<FormattedString>
 						<Span Text="{Binding Value}"/>
-						<Span Text="|" TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentSecondaryLight}, Dark={DynamicResource InputFieldsContentSecondaryDark}}" FontSize="35"/>
+						<Span Text="|" TextColor="{DynamicResource InputFieldsContentSecondary}" FontSize="35"/>
 					</FormattedString>
 				</Label.FormattedText>
 			</Label>

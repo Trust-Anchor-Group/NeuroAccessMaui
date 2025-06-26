@@ -41,7 +41,7 @@
 							WidthRequest="{Binding CameraIconBackgroundSize}"
 							HeightRequest="{Binding CameraIconBackgroundSize}"
 							CornerRadius="{Binding CameraIconBackgroundCornerRadius}"
-							BackgroundColor="{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}">
+							BackgroundColor="{DynamicResource TnPSuccessbgWL}">
 							<Path
 								VerticalOptions="Center"
 								HorizontalOptions="Center"
@@ -49,7 +49,7 @@
 								WidthRequest="{Binding CameraIconSize}"
 								Aspect="Uniform"
 								Data="{Binding IconGeometry}"
-								Fill="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLDark}}" />
+								Fill="{DynamicResource TnPSuccessContentWL}" />
 						</Frame>
 
 						<Label

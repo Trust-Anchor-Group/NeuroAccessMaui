@@ -12,7 +12,7 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.Applications">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -43,10 +43,10 @@
 								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize PersonalId}" InputTransparent="True"
-											   TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"
+											   TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
 											   Margin="{StaticResource SmallLeftMargins}"/>
 										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize PersonalIdDescription}" InputTransparent="True"
-											    TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"
+											    TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
 />
 									</VerticalStackLayout>
 								</Frame>
@@ -57,10 +57,10 @@
 								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize OrganizationalId}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"
+												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
 											   Margin="{StaticResource SmallLeftMargins}"/>
 										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize OrganizationalIdDescription}" InputTransparent="True"
-											    TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
+											    TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
 									</VerticalStackLayout>
 								</Frame>
 							</controls:TemplatedButton>
@@ -75,9 +75,9 @@
 								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
+												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
 										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize ViewIdApplicationDescription}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"
+												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
 											   Margin="{StaticResource SmallLeftMargins}"/>
 									</VerticalStackLayout>
 								</Frame>
@@ -100,9 +100,9 @@
 								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize CreateWallet}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
+												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
 										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize CreateWalletDescription}" InputTransparent="True"
-											    TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"
+											    TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
 											   Margin="{StaticResource SmallLeftMargins}"/>
 									</VerticalStackLayout>
 								</Frame>
@@ -114,9 +114,9 @@
 								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize OpenWallet}" InputTransparent="True"
-												 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
+												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
 										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize CreateWalletDescription}" InputTransparent="True"
-											    TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"
+											    TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
 											   Margin="{StaticResource SmallLeftMargins}"/>
 									</VerticalStackLayout>
 								</Frame>

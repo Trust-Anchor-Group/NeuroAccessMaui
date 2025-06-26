@@ -67,25 +67,25 @@
 																	Style="{DynamicResource RoleDescriptionLabel}"
 																	VerticalOptions="Center"
 																	HorizontalOptions="Center"
-																	TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}"
+																	TextColor="{DynamicResource ButtonAccessTertiaryContentWL}"
 																	/>
 												</controls:TemplatedButton>
 												<Grid ColumnDefinitions="*, auto, *" Grid.Column="0" Grid.Row="1">
 													<Border Grid.Column="1"
 																Padding="{DynamicResource SmallLeftRightMargins}"
 																Style="{DynamicResource RoundedBorder}"
-																BackgroundColor="{AppThemeBinding Light={DynamicResource TnPWarningbgWLLight}, Dark={DynamicResource TnPWarningbgWLDark}}"
+																BackgroundColor="{DynamicResource TnPWarningbgWL}"
 																IsVisible="{Binding HasIdentity, Converter={StaticResource InvertedBoolConverter}}">
-														<Label Style="{DynamicResource RoleDescriptionLabel}" Text="{l:Localize IDRequestSent}" TextColor="{AppThemeBinding Light={DynamicResource TnPWarningContentWLLight}, Dark={DynamicResource TnPWarningContentWLDark}}" VerticalOptions="Center"/>
+														<Label Style="{DynamicResource RoleDescriptionLabel}" Text="{l:Localize IDRequestSent}" TextColor="{DynamicResource TnPWarningContentWL}" VerticalOptions="Center"/>
 													</Border>
 												</Grid>
 												<controls:TemplatedButton Grid.Column="1" Grid.RowSpan="2"
 																				  IsVisible="{Binding IsThirdParty}"
 																				  Command="{Binding Source={RelativeSource AncestorType={x:Type objectModel:ObservableRole}}, Path=RemovePartCommand}"
 																				 CommandParameter="{Binding .}">
-													<Border WidthRequest="48" HeightRequest="48"  Style="{DynamicResource TransparentTemplateButtonBorder}" Padding="{DynamicResource SmallMargins}" Margin="0" Background="{AppThemeBinding Light={DynamicResource ButtonDangerSecondarybgWLLight}, Dark={DynamicResource ButtonDangerSecondarybgWLDark}}" >
+													<Border WidthRequest="48" HeightRequest="48"  Style="{DynamicResource TransparentTemplateButtonBorder}" Padding="{DynamicResource SmallMargins}" Margin="0" Background="{DynamicResource ButtonDangerSecondarybgWL}" >
 														<Path WidthRequest="24" HeightRequest="24"
-															Fill="{AppThemeBinding Light={DynamicResource ButtonDangerSecondaryContentWLLight}, Dark={DynamicResource ButtonDangerSecondaryContentWLDark}}"				  
+															Fill="{DynamicResource ButtonDangerSecondaryContentWL}"				  
 															Data="{x:Static ui:Geometries.CancelPath}"
 															VerticalOptions="Center" HorizontalOptions="Center"/>
 													</Border>

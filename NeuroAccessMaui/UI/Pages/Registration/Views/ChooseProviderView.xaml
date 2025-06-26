@@ -16,10 +16,9 @@
 			<Border
 				Padding="0"
 				Style="{DynamicResource ItemOuterBorder}"
-				BackgroundColor="{AppThemeBinding Light={DynamicResource NormalBackgroundLight},
-												  Dark={DynamicResource NormalBackgroundDark}}"
-				Stroke="{AppThemeBinding Light={DynamicResource NormalForegroundLight},
-										 Dark={DynamicResource NormalBackgroundDark}}">
+				BackgroundColor="{DynamicResource NormalBackground}"
+				Stroke="{AppThemeBinding Light={DynamicResource NormalForeground},
+										 Dark={DynamicResource NormalBackground}}">
 				<Border.GestureRecognizers>
 					<TapGestureRecognizer
 						Command="{Binding SelectButtonCommand, Source={x:Reference ThisPage}}"
@@ -55,8 +54,7 @@
 						Style="{DynamicResource BoldItemTitleLabel}"
 						LineBreakMode="WordWrap"
 						Text="{Binding LocalizedName}"
-						TextColor="{AppThemeBinding Light={DynamicResource NormalForegroundLight},
-													Dark={DynamicResource NormalForegroundDark}}">
+						TextColor="{DynamicResource NormalForeground}">
 
 						<Label.Padding>
 							<Thickness
@@ -72,10 +70,10 @@
 						<VisualState Name="Normal" />
 						<VisualState Name="Selected">
 							<VisualState.Setters>
-								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource SelectedBackgroundLight}, Dark={DynamicResource SelectedBackgroundDark}}" />
-								<Setter Property="Stroke" Value="{AppThemeBinding Light={DynamicResource SelectedBackgroundLight}, Dark={DynamicResource SelectedBackgroundDark}}" />
-								<Setter Property="Label.TextColor" TargetName="InnerLabel" Value="{AppThemeBinding Light={DynamicResource SelectedForegroundLight}, Dark={DynamicResource SelectedForegroundDark}}" />
-								<Setter Property="Path.Fill" TargetName="InnerPath" Value="{AppThemeBinding Light={DynamicResource SelectedForegroundLight}, Dark={DynamicResource SelectedForegroundDark}}" />
+								<Setter Property="BackgroundColor" Value="{DynamicResource SelectedBackground}" />
+								<Setter Property="Stroke" Value="{DynamicResource SelectedBackground}" />
+								<Setter Property="Label.TextColor" TargetName="InnerLabel" Value="{DynamicResource SelectedForeground}" />
+								<Setter Property="Path.Fill" TargetName="InnerPath" Value="{DynamicResource SelectedForeground}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>
@@ -107,8 +105,7 @@
 						FontSize="24"
 						LineBreakMode="WordWrap"
 						Text="{x:Binding LocalizedName}"
-						TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
-													Dark={DynamicResource TnPInfoContentWLDark}}" />
+						TextColor="{DynamicResource TnPInfoContentWL}" />
 
 					<Path
 						VerticalOptions="Center"
@@ -116,8 +113,7 @@
 						WidthRequest="20"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
-											   Dark={DynamicResource TnPInfoContentWLDark}}" />
+						Fill="{DynamicResource TnPInfoContentWL}" />
 					<HorizontalStackLayout.GestureRecognizers>
 						<TapGestureRecognizer
 							Command="{x:Binding SelectedServiceProviderInfoCommand}" />
@@ -135,8 +131,7 @@
 				<Label
 					HorizontalOptions="Center"
 					Text="{x:Binding DomainName}"
-					TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
-												Dark={DynamicResource TnPInfoContentWLDark}}" />
+					TextColor="{DynamicResource TnPInfoContentWL}" />
 			</VerticalStackLayout>
 
 			<Label
@@ -167,16 +162,14 @@
 						WidthRequest="20"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={DynamicResource NormalInfoForegroundLight},
-											   Dark={DynamicResource NormalInfoForegroundDark}}" />
+						Fill="{DynamicResource NormalInfoForeground}" />
 
 					<Label
 						VerticalOptions="Center"
 						FontFamily="HaasGroteskRegular"
 						FontSize="14"
 						Text="{l:Localize WhatIsAServiceProvider}"
-						TextColor="{AppThemeBinding Light={DynamicResource NormalInfoForegroundLight},
-													Dark={DynamicResource NormalInfoForegroundDark}}" />
+						TextColor="{DynamicResource NormalInfoForeground}" />
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 		</VerticalStackLayout>
@@ -193,16 +186,14 @@
 						WidthRequest="20"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
-											Dark={DynamicResource TnPInfoContentWLDark}}" />
+						Fill="{DynamicResource TnPInfoContentWL}" />
 
 					<Label
 						VerticalOptions="Center"
 						FontFamily="HaasGroteskRegular"
 						FontSize="14"
 						Text="{l:Localize WhatIsAServiceProvider}"
-						TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
-													Dark={DynamicResource TnPInfoContentWLDark}}" />
+						TextColor="{DynamicResource TnPInfoContentWL}" />
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 				
@@ -215,8 +206,7 @@
 						FontFamily="HaasGroteskRegular"
 						FontSize="18"
 						Text="{l:Localize Change}"
-						TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
-													Dark={DynamicResource TnPInfoContentWLDark}}" />
+						TextColor="{DynamicResource TnPInfoContentWL}" />
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 

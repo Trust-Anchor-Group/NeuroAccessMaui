@@ -13,7 +13,7 @@
         </Style>
 
         <Style x:Key="ButtonIconBorder" TargetType="Border">
-			<Setter Property="Background" Value="{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}" />
+			<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
             <Setter Property="StrokeShape" Value="RoundRectangle 8" />
             <Setter Property="Stroke" Value="Transparent"/>
             <Setter Property="WidthRequest" Value="48"/>
@@ -21,7 +21,7 @@
         </Style>
 
         <Style x:Key="ButtonIconPath" TargetType="Path">
-			<Setter Property="Fill" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLDark}}" />
+			<Setter Property="Fill" Value="{DynamicResource TnPSuccessContentWL}" />
             <Setter Property="Aspect" Value="Uniform" />
             <Setter Property="WidthRequest" Value="24"/>
             <Setter Property="HeightRequest" Value="24"/>

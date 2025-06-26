@@ -22,7 +22,7 @@
 					 TargetType="Label"
 					 BaseResourceKey="BoldItemTitleLabel">
 				<Setter Property="TextColor"
-						  Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+						  Value="{DynamicResource ContentPrimaryWL}" />
 				<Setter Property="FontSize"
 						  Value="15" />
 				<Setter Property="FontFamily"
@@ -40,7 +40,7 @@
 			<Style x:Key="ItemValueLabel"
 					 TargetType="Label">
 				<Setter Property="TextColor"
-						  Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+						  Value="{DynamicResource ContentPrimaryWL}" />
 				<Setter Property="FontSize"
 						  Value="15" />
 				<Setter Property="FontFamily"
@@ -61,10 +61,10 @@
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}">
+							  BackgroundColor="{DynamicResource TnPInfobgWL}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLLight}}" />
+								 TextColor="{DynamicResource TnPInfoContentWL}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -75,10 +75,10 @@
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}">
+							  BackgroundColor="{DynamicResource TnPDangerbgWL}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
+								 TextColor="{DynamicResource TnPDangerContentWL}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -89,10 +89,10 @@
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}">
+							  BackgroundColor="{DynamicResource TnPInfobgWL}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}" />
+								 TextColor="{DynamicResource TnPInfoContentWL}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -103,10 +103,10 @@
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}">
+							  BackgroundColor="{DynamicResource TnPInfobgWL}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}" />
+								 TextColor="{DynamicResource TnPInfoContentWL}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -117,10 +117,10 @@
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}">
+							  BackgroundColor="{DynamicResource TnPSuccessbgWL}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLDark}}" />
+								 TextColor="{DynamicResource TnPSuccessContentWL}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -131,10 +131,10 @@
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}">
+							  BackgroundColor="{DynamicResource TnPDangerbgWL}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
+								 TextColor="{DynamicResource TnPDangerContentWL}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -145,10 +145,10 @@
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}">
+							  BackgroundColor="{DynamicResource TnPDangerbgWL}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
+								 TextColor="{DynamicResource TnPDangerContentWL}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -159,10 +159,10 @@
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
 							  Padding="8,4,8,4"
-							  BackgroundColor="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}">
+							  BackgroundColor="{DynamicResource TnPDangerbgWL}">
 						<Label Text="{Binding Contract.ContractState, Converter={StaticResource ContractStateToStringConverter}}"
 								 Style="{DynamicResource ItemValueLabel}"
-								 TextColor="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
+								 TextColor="{DynamicResource TnPDangerContentWL}" />
 					</Border>
 				</Grid>
 			</DataTemplate>
@@ -204,7 +204,7 @@
 										  HeightRequest="16"
 										  WidthRequest="16"
 										  Aspect="Uniform"
-										  Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}" />
+										  Fill="{DynamicResource TnPInfoContentWL}" />
 									<Label Grid.Column="1"
 										   Style="{DynamicResource AccentInfoLabel}"
 										   VerticalOptions="Start"

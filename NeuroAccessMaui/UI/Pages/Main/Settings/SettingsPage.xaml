@@ -12,7 +12,7 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Settings">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -199,7 +199,7 @@
 										   Text="{l:Localize BetaFeaturesDescription}"
 										   Grid.Row="1"/>
 									<CheckBox IsChecked="{Binding IsBetaEnabled, Mode=TwoWay}"
-											  Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+											  Color="{DynamicResource ContentPrimaryWL}"
 											  CheckedChanged="BetaEnabled_CheckedChanged"
 											  VerticalOptions="Center"
 											  Grid.Column="1"
