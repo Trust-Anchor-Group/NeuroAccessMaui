@@ -15,8 +15,8 @@
 			<VerticalStackLayout Margin="0">
 				<CarouselView x:Name="CarouselView"
                                   IsSwipeEnabled="{Binding Path=IsSwipeEnabled}"
-                                  HorizontalOptions="FillAndExpand"
-                                  VerticalOptions="FillAndExpand"
+                                  HorizontalOptions="Fill"
+                                  VerticalOptions="Fill"
                                   ItemsSource="{Binding Path=Photos}"
                                   IndicatorView="IndicatorView">
 					<CarouselView.ItemTemplate>

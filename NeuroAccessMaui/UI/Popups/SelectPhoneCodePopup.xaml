@@ -23,14 +23,14 @@
 					ColumnDefinitions="35,auto,*" ColumnSpacing="{DynamicResource SmallSpacing}" RowDefinitions="auto"
 					Padding="{DynamicResource SmallMargins}">
 					
-				<Label Grid.Column="0" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="End" FontAutoScalingEnabled="False"
+				<Label Grid.Column="0" HorizontalOptions="Fill" HorizontalTextAlignment="End" FontAutoScalingEnabled="False"
 						 LineBreakMode="NoWrap" Style="{DynamicResource RegularItemTitleLabel}" Text="{Binding DialCode}"
 						 TextColor="{DynamicResource ContentPrimaryWL}" />
 
 				<Label Grid.Column="1" Style="{DynamicResource RegularItemTitleLabel}" Text="{Binding EmojiInfo.Unicode}"
 						 TextColor="{DynamicResource ContentPrimaryWL}" />
 
-				<Label Grid.Column="2" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" LineBreakMode="NoWrap"
+				<Label Grid.Column="2" HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="NoWrap"
 						 Style="{DynamicResource RegularItemTitleLabel}" Text="{Binding Name}"
 						 TextColor="{DynamicResource ContentPrimaryWL}" />
 

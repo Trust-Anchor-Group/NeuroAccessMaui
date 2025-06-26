@@ -24,7 +24,7 @@
 				<Label Text="{l:Localize MyTokens}" Style="{DynamicResource PageTitleLabel}"/>
 
 				<Frame Style="{DynamicResource FrameSet}">
-					<controls:LoadingCollectionView VerticalOptions="StartAndExpand" SelectionMode="Single" RemainingItemsThreshold="1"
+					<controls:LoadingCollectionView VerticalOptions="Start" SelectionMode="Single" RemainingItemsThreshold="1"
                                        ItemSizingStrategy="MeasureFirstItem" BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
                                        ItemsSource="{Binding Path=Tokens}" LoadMoreCommand="{Binding LoadMoreTokensCommand}">
 						<CollectionView.ItemsLayout>

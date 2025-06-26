@@ -28,7 +28,7 @@
 						<Label Text="{l:Localize InformationAboutThing}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize InformationAboutClaimedThingText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
 						<Frame Style="{DynamicResource FrameSubSet}" Margin="0" Padding="0">
-							<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{DynamicResource SmallMargins}">
+							<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="Start" Margin="{DynamicResource SmallMargins}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate x:DataType="things:HumanReadableTag">
 										<Grid ColumnDefinitions="120, *">

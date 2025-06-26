@@ -70,7 +70,7 @@
 
 		<!-- 
 		<Border Grid.Row="1" Style="{DynamicResource BottomBarBorder}">
-			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+			<Grid HorizontalOptions="Fill" VerticalOptions="Center">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
@@ -110,8 +110,8 @@
         <VerticalStackLayout>
             <CollectionView ItemsSource="{Binding Parameters}"
                             ItemTemplate="{StaticResource ParameterTemplateSelector}"
-                            VerticalOptions="FillAndExpand"
-                            HorizontalOptions="FillAndExpand" />
+                            VerticalOptions="Fill"
+                            HorizontalOptions="Fill" />
             <ContentView Content="{Binding Path=HumanReadableText}" Margin="{DynamicResource SmallTopMargins}" />
         </VerticalStackLayout>
     </ScrollView>

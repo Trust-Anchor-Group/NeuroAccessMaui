@@ -35,7 +35,7 @@
 									<RowDefinition Height="25"/>
 								</Grid.RowDefinitions>
 								<Image x:Name="Img" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Source="{Binding Path=EDalerFrontGlyph}" Opacity="0.5"/>
-								<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Created}" HorizontalOptions="StartAndExpand" TextColor="{DynamicResource SurfaceBackgroundWL}"/>
+								<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Created}" HorizontalOptions="Start" TextColor="{DynamicResource SurfaceBackgroundWL}"/>
 								<Label Grid.Column="0" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{DynamicResource SurfaceBackgroundWL}">
 									<Label.FormattedText>
 										<FormattedString>

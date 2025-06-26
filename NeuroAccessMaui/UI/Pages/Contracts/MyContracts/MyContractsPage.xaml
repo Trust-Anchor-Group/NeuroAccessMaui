@@ -109,7 +109,7 @@
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
-						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"
+						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
 								 VerticalOptions="Start" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" />
 						<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
 												 HorizontalOptions="Center" VerticalOptions="Center" Margin="{DynamicResource SmallMargins}"
@@ -122,7 +122,7 @@
 
 						<!-- CollectionView's IsVisible used to be bound to IsIdle, but there seems to be a race condition somewhere because this led
 		the CollectionView not appearing sometimes on iOS. Always showing it seems to be OK because it is empty before contracts are loaded anyway. -->
-						<CollectionView x:Name="Contracts" VerticalOptions="StartAndExpand"
+						<CollectionView x:Name="Contracts" VerticalOptions="Start"
 											 ItemSizingStrategy="MeasureAllItems" SelectionMode="Single"
 											 IsVisible="True"
 											 ItemsSource="{Binding Path=Categories}"

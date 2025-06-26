@@ -26,10 +26,10 @@
 					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,auto,*" Margin="{DynamicResource SmallMargins}">
 						<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CurrentState}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Grid.Column="0" Grid.Row="1" Text="{Binding CurrentState}" Margin="{DynamicResource SmallMargins}" VerticalOptions="Start"
-								 HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Style="{DynamicResource ValueLabel}"
+								 HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{DynamicResource ValueLabel}"
 								 IsVisible="{Binding Running}"/>
 						<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize MachineHasEnded}" Margin="{DynamicResource SmallMargins}" VerticalOptions="Start"
-								 HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Style="{DynamicResource ValueLabel}"
+								 HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{DynamicResource ValueLabel}"
 								 IsVisible="{Binding Ended}"/>
 						<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize CurrentVariables}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="3" BindableLayout.ItemsSource="{Binding Path=Variables}">

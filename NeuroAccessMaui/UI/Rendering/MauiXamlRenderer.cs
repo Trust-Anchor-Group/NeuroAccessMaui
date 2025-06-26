@@ -171,7 +171,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteStartElement("BoxView");
 			this.XmlOutput.WriteAttributeString("HeightRequest", "1");
 			this.XmlOutput.WriteAttributeString("BackgroundColor", "{DynamicResource InputFieldsContentSecondary}");
-			this.XmlOutput.WriteAttributeString("HorizontalOptions", "FillAndExpand");
+			this.XmlOutput.WriteAttributeString("HorizontalOptions", "Fill");
 			this.XmlOutput.WriteAttributeString("Margin", SmallMargins(false, false, true, true));
 			this.XmlOutput.WriteEndElement();
 
@@ -1198,7 +1198,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteStartElement("BoxView");
 			this.XmlOutput.WriteAttributeString("HeightRequest", "1");
 			this.XmlOutput.WriteAttributeString("BackgroundColor", "{DynamicResource InputFieldsContentSecondary}");
-			this.XmlOutput.WriteAttributeString("HorizontalOptions", "FillAndExpand");
+			this.XmlOutput.WriteAttributeString("HorizontalOptions", "Fill");
 			this.XmlOutput.WriteAttributeString("Margin", SmallMargins(false, false, true, true));
 			this.XmlOutput.WriteEndElement();
 
@@ -1660,7 +1660,7 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteStartElement("BoxView");
 			this.XmlOutput.WriteAttributeString("HeightRequest", "1");
 			this.XmlOutput.WriteAttributeString("BackgroundColor", "{DynamicResource InputFieldsContentSecondary}");
-			this.XmlOutput.WriteAttributeString("HorizontalOptions", "FillAndExpand");
+			this.XmlOutput.WriteAttributeString("HorizontalOptions", "Fill");
 			this.XmlOutput.WriteAttributeString("Margin", SmallMargins(false, false, true, true));
 			this.XmlOutput.WriteEndElement();
 

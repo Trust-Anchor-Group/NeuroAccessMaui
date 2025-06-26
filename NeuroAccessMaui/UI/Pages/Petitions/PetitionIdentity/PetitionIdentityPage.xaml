@@ -29,15 +29,15 @@
 				<Frame Style="{DynamicResource FrameSet}">
 					<VerticalStackLayout>
 
-						<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Text="{l:Localize PetitionIdentityInformationText}"
+						<Label HorizontalOptions="Center" VerticalOptions="Center" Text="{l:Localize PetitionIdentityInformationText}"
 								 Style="{DynamicResource InfoLabel}" />
 
-						<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" Text="{l:Localize Purpose}"
+						<Label HorizontalOptions="Center" VerticalOptions="Center" FontSize="Large" Text="{l:Localize Purpose}"
 								 Style="{DynamicResource SectionTitleLabel}" />
 
 						<Label Style="{DynamicResource InfoLabel}" Text="{Binding Path=Purpose}" />
 
-						<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" Text="{l:Localize LegalId}"
+						<Label HorizontalOptions="Center" VerticalOptions="Center" FontSize="Large" Text="{l:Localize LegalId}"
 								 Style="{DynamicResource SectionTitleLabel}" />
 
 						<VerticalStackLayout Margin="{DynamicResource LargeMargins}" Spacing="{DynamicResource SmallSpacing}"
@@ -68,7 +68,7 @@
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize PersonalInformation}"/>
 
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
+						<Grid VerticalOptions="Start" RowSpacing="0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />
@@ -140,7 +140,7 @@
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize OrganizationalInformation}"/>
 
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
+						<Grid VerticalOptions="Start" RowSpacing="0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />
@@ -200,7 +200,7 @@
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Technical}"/>
 
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
+						<Grid VerticalOptions="Start" RowSpacing="0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />
@@ -251,7 +251,7 @@
 				</Frame>
 
 				<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource SmallSpacing}">
-					<Label HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Text="{l:Localize Options}"
+					<Label HorizontalOptions="Center" VerticalOptions="Center" Text="{l:Localize Options}"
 							 FontSize="Large" Style="{DynamicResource SectionTitleLabel}"/>
 
 					<controls:TextButton x:Name="AcceptButton" LabelData="{l:Localize Accept}" Command="{Binding AcceptCommand}"

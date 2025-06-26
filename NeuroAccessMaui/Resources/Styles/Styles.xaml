@@ -80,14 +80,14 @@
 	<Style ApplyToDerivedTypes="True" TargetType="ContentView">
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
-		<Setter Property="VerticalOptions" Value="FillAndExpand" />
-		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="VerticalOptions" Value="Fill" />
+		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="AbsoluteLayout">
-		<Setter Property="VerticalOptions" Value="FillAndExpand" />
-		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="VerticalOptions" Value="Fill" />
+		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
@@ -96,8 +96,8 @@
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="RowSpacing" Value="0" />
 		<Setter Property="ColumnSpacing" Value="0" />
-		<Setter Property="VerticalOptions" Value="FillAndExpand" />
-		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="VerticalOptions" Value="Fill" />
+		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
@@ -105,8 +105,8 @@
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="Spacing" Value="0" />
-		<Setter Property="VerticalOptions" Value="FillAndExpand" />
-		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="VerticalOptions" Value="Fill" />
+		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
@@ -114,16 +114,16 @@
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="Spacing" Value="0" />
-		<Setter Property="VerticalOptions" Value="FillAndExpand" />
-		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="VerticalOptions" Value="Fill" />
+		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="HorizontalStackLayout">
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="Margin" Value="0" />
-		<Setter Property="VerticalOptions" Value="FillAndExpand" />
-		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="VerticalOptions" Value="Fill" />
+		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
@@ -156,8 +156,8 @@
 		<Setter Property="SelectionMode" Value="Single" />
 		<Setter Property="VerticalScrollBarVisibility" Value="Never" />
 		<Setter Property="HorizontalScrollBarVisibility" Value="Never" />
-		<Setter Property="VerticalOptions" Value="FillAndExpand" />
-		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="VerticalOptions" Value="Fill" />
+		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
@@ -167,8 +167,8 @@
 		<Setter Property="SelectionMode" Value="Single" />
 		<Setter Property="VerticalScrollBarVisibility" Value="Never" />
 		<Setter Property="HorizontalScrollBarVisibility" Value="Never" />
-		<Setter Property="VerticalOptions" Value="FillAndExpand" />
-		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="VerticalOptions" Value="Fill" />
+		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
@@ -176,16 +176,16 @@
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="VerticalScrollBarVisibility" Value="Never" />
 		<Setter Property="HorizontalScrollBarVisibility" Value="Never" />
-		<Setter Property="VerticalOptions" Value="FillAndExpand" />
-		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="VerticalOptions" Value="Fill" />
+		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Border">
 		<Setter Property="Stroke" Value="Transparent" />
 		<Setter Property="StrokeThickness" Value="{DynamicResource MediumStrokeThickness}" />
-		<Setter Property="VerticalOptions" Value="FillAndExpand" />
-		<Setter Property="HorizontalOptions" Value="FillAndExpand" />
+		<Setter Property="VerticalOptions" Value="Fill" />
+		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 	</Style>
 

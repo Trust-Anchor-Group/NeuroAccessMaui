@@ -127,7 +127,7 @@
 	                    ColumnSpacing="{DynamicResource MediumSpacing}">
 						<HorizontalStackLayout
 	                        Grid.Column="0"
-	                        VerticalOptions="FillAndExpand"
+	                        VerticalOptions="Fill"
 	                        Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding SelectPhoneCodeCommand}" />

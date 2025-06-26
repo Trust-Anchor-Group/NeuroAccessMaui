@@ -30,7 +30,7 @@
 
 						<Label Text="{l:Localize ServerSignatureInformationInfoText}"/>
 
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
+						<Grid VerticalOptions="Start" RowSpacing="0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />

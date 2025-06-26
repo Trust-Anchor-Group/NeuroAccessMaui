@@ -30,9 +30,9 @@
 				<Frame Style="{DynamicResource FrameSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{l:Localize ThingsDescription}" HorizontalOptions="Center" VerticalOptions="Start"/>
-						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalOptions="Start" IsVisible="{Binding Path=ShowThingsMissing}" Text="{l:Localize NoThingsFound}" />
+						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" IsVisible="{Binding Path=ShowThingsMissing}" Text="{l:Localize NoThingsFound}" />
 
-						<CollectionView x:Name="Things" VerticalOptions="StartAndExpand"
+						<CollectionView x:Name="Things" VerticalOptions="Start"
                                          ItemSizingStrategy="MeasureAllItems" SelectionMode="Single"
                                          ItemsSource="{Binding Path=Things}"
                                          SelectedItem="{Binding Path=SelectedThing, Mode=TwoWay}">
