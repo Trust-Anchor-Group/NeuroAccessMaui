@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
+using Waher.Script.Content.Functions.InputOutput;
 using Waher.Security;
 
 namespace NeuroAccessMaui.Services.Tag
@@ -92,6 +93,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool hasWallet;
 		private bool hasThing;
 		private DateTime? lastIdentityUpdate;
+		private bool hasBetaFeatures;
 
 		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
@@ -172,7 +174,8 @@ namespace NeuroAccessMaui.Services.Tag
 				HasContractTokenCreationTemplatesReferences = this.HasContractTokenCreationTemplatesReferences,
 				HasWallet = this.HasWallet,
 				HasThing = this.HasThing,
-				LastIdentityUpdate = this.LastIdentityUpdate
+				LastIdentityUpdate = this.LastIdentityUpdate,
+				HasBetaFeatures = this.HasBetaFeatures
 			};
 
 			return Clone;
@@ -234,6 +237,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasWallet = Configuration.HasWallet;
 				this.HasThing = Configuration.HasThing;
 				this.LastIdentityUpdate = Configuration.LastIdentityUpdate ?? DateTime.MinValue;
+				this.HasBetaFeatures = Configuration.HasBetaFeatures;
 
 				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
@@ -835,6 +839,22 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.hasWallet = value;
 					this.FlagAsDirty(nameof(this.HasWallet));
+				}
+			}
+		}
+
+		/// <summary>
+		/// If the user has enabled Beta features
+		/// </summary>
+		public bool HasBetaFeatures
+		{
+			get => this.hasBetaFeatures;
+			set
+			{
+				if (this.hasBetaFeatures != value)
+				{
+					this.hasBetaFeatures = value;
+					this.FlagAsDirty(nameof(this.HasBetaFeatures));
 				}
 			}
 		}

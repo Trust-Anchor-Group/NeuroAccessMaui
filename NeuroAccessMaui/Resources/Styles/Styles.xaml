@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-						  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-						  xmlns:s="clr-namespace:System;assembly=mscorlib">
+					xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					xmlns:s="clr-namespace:System;assembly=mscorlib"
+					xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
 	<s:Double x:Key="SmallSpacing">8</s:Double>
 	<s:Double x:Key="MediumSpacing">16</s:Double>
@@ -37,9 +38,11 @@
 	<Thickness x:Key="LargeBottomMargins">0,0,0,24</Thickness>
 	<Thickness x:Key="LargeTopMargins">0,24,0,0</Thickness>
 	<Thickness x:Key="LargeTopBottomMargins">0,24,0,24</Thickness>
+	<Thickness x:Key="LargeLeftRightMargins">24,0,24,0</Thickness>
 	<Thickness x:Key="ButtonThinMargins">16,8</Thickness>
 	<Thickness x:Key="ButtonMediumMargins">24,12</Thickness>
 	<Thickness x:Key="MediumLeftRightMargins">16,0,16,0</Thickness>
+	<Thickness x:Key="MediumLeftRightBottomMargins">16,0,16,16</Thickness>
 
 	<OnPlatform x:Key="EditMediumMargins" x:TypeArguments="Thickness">
 		<On Platform="Android" Value="16,0" />
@@ -619,28 +622,85 @@
 		<Setter Property="Padding" Value="{DynamicResource SmallLeftRightMargins}"/>
 	</Style>
 
-	<Style x:Key="BottomBarBorder" TargetType="Border">
+	<Style x:Key="BottomBar" ApplyToDerivedTypes="True" TargetType="controls:BottomBar">
+		<Setter Property="BorderStyle" Value="{DynamicResource BottomBarBorder}"/>
+		<Setter Property="SelectedLabelStyle" Value="{DynamicResource BottomBarSelectedLabel}"/>
+		<Setter Property="UnselectedLabelStyle" Value="{DynamicResource BottomBarUnselectedLabel}"/>
+		<Setter Property="SelectedIconStyle" Value="{DynamicResource BottomBarSelectedIcon}"/>
+		<Setter Property="UnselectedIconStyle" Value="{DynamicResource BottomBarUnselectedIcon}"/>
+		<Setter Property="SelectedIconBorderStyle" Value="{DynamicResource BottomBarSelectedIconBorder}"/>
+		<Setter Property="UnselectedIconBorderStyle" Value="{DynamicResource BottomBarUnselectedIconBorder}"/>
+	</Style>
+
+	<Style x:Key="BottomBarBorder" ApplyToDerivedTypes="True" TargetType="Border">
 		<Setter Property="VerticalOptions" Value="End" />
 		<Setter Property="HorizontalOptions" Value="Fill" />
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource NavMenuBody1WLLight}, Dark={DynamicResource NavMenuBody1WLDark}}" />
 		<Setter Property="Padding" Value="{DynamicResource SmallMargins}" />
 		<Setter Property="StrokeShape">
 			<Setter.Value>
-				<RoundRectangle CornerRadius="20,20,0,0" />
+				<RoundRectangle CornerRadius="16,16,0,0" />
 			</Setter.Value>
 		</Setter>
-		<Setter Property="Stroke" Value="{AppThemeBinding Light={DynamicResource NavMenuStroke1WLLight}, Dark={DynamicResource NavMenuStroke1WLDark}}" />
+		<Setter Property="Stroke">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,1">
+					<GradientStop Color="{AppThemeBinding Light={DynamicResource NavMenuStroke1WLLight}, Dark={DynamicResource NavMenuStroke1WLDark}}" Offset="0.1" />
+					<GradientStop Color="Transparent" Offset="0.3" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
 		<Setter Property="StrokeThickness" Value="1"/>
 	</Style>
 
-	<Style x:Key="BottomBarLabel" TargetType="Label">
+	<Style x:Key="BottomBarBorder2" BasedOn="{StaticResource BottomBarBorder}" TargetType="Border">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource NavMenuBody2WLLight}, Dark={DynamicResource NavMenuBody2WLDark}}" />
+	</Style>
+
+	<Style x:Key="BottomBarLabel" ApplyToDerivedTypes="True" TargetType="Label">
 		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
 		<Setter Property="HorizontalTextAlignment" Value="Start"/>
+		<Setter Property="HorizontalOptions" Value="Center"/>
 		<Setter Property="VerticalTextAlignment" Value="Center"/>
 		<Setter Property="FontSize" Value="14"/>
 		<Setter Property="LineBreakMode" Value="WordWrap"/>
+		<Setter Property="TextColor"
+				Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
 	</Style>
 
+	<Style x:Key="BottomBarSelectedLabel" TargetType="Label" BasedOn="{StaticResource BottomBarLabel}">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource NavMenuContentActiveWLLight}, Dark={DynamicResource NavMenuContentActiveWLDark}}"/>
+	</Style>
+	<Style x:Key="BottomBarUnselectedLabel" TargetType="Label" BasedOn="{StaticResource BottomBarLabel}">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource NavMenuContentInactiveWLLight}, Dark={DynamicResource NavMenuContentInactiveWLDark}}"/>
+	</Style>
+
+	<Style x:Key="BottomBarSelectedIcon" ApplyToDerivedTypes="True" TargetType="controls:SvgView">
+		<Setter Property="HeightRequest" Value="24"/>
+		<Setter Property="WidthRequest" Value="24"/>
+		<Setter Property="TintColor" Value="{AppThemeBinding Light={DynamicResource NavMenuContentActiveWLLight}, Dark={DynamicResource NavMenuContentActiveWLDark}}"/>
+	</Style>
+	
+	<Style x:Key="BottomBarUnselectedIcon" ApplyToDerivedTypes="True" TargetType="controls:SvgView">
+		<Setter Property="HeightRequest" Value="24"/>
+		<Setter Property="WidthRequest" Value="24"/>
+		<Setter Property="TintColor" Value="{AppThemeBinding Light={DynamicResource NavMenuContentInactiveWLLight}, Dark={DynamicResource NavMenuContentInactiveWLDark}}"/>
+	</Style>
+
+	<Style x:Key="BottomBarIconBorder" ApplyToDerivedTypes="True" TargetType="Border">
+		<Setter Property="HeightRequest" Value="32"/>
+		<Setter Property="WidthRequest" Value="56"/>
+		<Setter Property="StrokeShape" Value="RoundRectangle 16"/>
+	</Style>
+
+	<Style x:Key="BottomBarSelectedIconBorder" ApplyToDerivedTypes="True" TargetType="Border" BasedOn="{StaticResource BottomBarIconBorder}">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource NavMenubgActiveWLLight}, Dark={DynamicResource NavMenubgActiveWLDark}}"/>
+	</Style>
+
+	<Style x:Key="BottomBarUnelectedIconBorder" ApplyToDerivedTypes="True" TargetType="Border" BasedOn="{StaticResource BottomBarIconBorder}">
+		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource NavMenuBody1WLLight}, Dark={DynamicResource NavMenuBody1WLDark}}"/>
+	</Style>
+	
 	<Style x:Key="AccentInfoBorder" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="StrokeShape">
 			<Setter.Value>

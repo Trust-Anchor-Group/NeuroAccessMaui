@@ -46,12 +46,15 @@ namespace NeuroAccessMaui.UI
 		private static Style? roundedBorder;
 		private static Style? baseCompositeInputView;
 		private static Style? borderSet;
+		private static Style? bottomBarBorder;
 		private static Style? tertiaryButton;
 		private static Style? transparentTemplateButtonBorder;
 		private static Style? transparentTemplateButtonLabel;
 		private static Style? transparentTemplateButtonPath;
 		private static Style? secondaryButton;
 		private static Style? secondaryImageButton;
+		private static Style? neuroIconButton;
+		private static Style? neuroIconButtonDisabled;
 
 		static AppStyles()
 		{
@@ -515,6 +518,18 @@ namespace NeuroAccessMaui.UI
 		}
 
 		/// <summary>
+		/// Style for bottom bar border
+		/// </summary>
+		public static Style BottomBarBorder
+		{
+			get
+			{
+				bottomBarBorder ??= TryGetResource<Style>("BottomBarBorder");
+				return bottomBarBorder!;
+			}
+		}
+
+		/// <summary>
 		/// Style for Tertiary Button
 		/// </summary>
 		public static Style TertiaryButton
@@ -571,6 +586,30 @@ namespace NeuroAccessMaui.UI
 			{
 				secondaryButton ??= TryGetResource<Style>("SecondaryButton");
 				return secondaryButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for NeuroIconButton
+		/// </summary>
+		public static Style NeuroIconButton
+		{
+			get
+			{
+				neuroIconButton ??= TryGetResource<Style>("NeuroIconButton");
+				return neuroIconButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for NeuroIconButtonDisabled
+		/// </summary>
+		public static Style NeuroIconButtonDisabled
+		{
+			get
+			{
+				neuroIconButtonDisabled ??= TryGetResource<Style>("NeuroIconButtonDisabled");
+				return neuroIconButtonDisabled!;
 			}
 		}
 	}

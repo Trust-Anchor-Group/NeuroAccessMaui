@@ -492,8 +492,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				bool CanAddContact = false;
 				bool CanRemoveContact = false;
 
-				string Jid = ServiceRef.TagProfile.Account + "@" + ServiceRef.TagProfile.Domain;
-				if (!this.identity.GetJid().Equals(Jid, StringComparison.OrdinalIgnoreCase))
+				string MyJid = ServiceRef.TagProfile.Account + "@" + ServiceRef.TagProfile.Domain;
+				string Jid = this.identity.GetJid();
+				if (!Jid.Equals(MyJid, StringComparison.OrdinalIgnoreCase))
 				{
 					try
 					{

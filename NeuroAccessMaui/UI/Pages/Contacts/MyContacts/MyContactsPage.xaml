@@ -42,16 +42,18 @@
 
 		<ScrollView>
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:SvgButton
-					Grid.Row="0" Grid.Column="0"
-					Command="{Binding GoBackCommand}"
-					SvgSource="close.svg"
-					Style="{DynamicResource IconButton}"
-					HorizontalOptions="Start"
-					WidthRequest="44"
-					HeightRequest="44"/>
+				<Grid ColumnDefinitions="*, auto" Margin="{DynamicResource SmallLeftRightMargins}">
+					<controls:SvgButton
+						Grid.Row="0" Grid.Column="0"
+						Command="{Binding GoBackCommand}"
+						SvgSource="close.svg"
+						Style="{DynamicResource IconButton}"
+						HorizontalOptions="Start"
+						WidthRequest="44"
+						HeightRequest="44"/>
 
-				<Label Text="{l:Localize Contacts}" Style="{DynamicResource PageTitleLabel}"/>
+					<Label Text="{l:Localize Contacts}" Style="{DynamicResource PageTitleLabel}" Grid.Column="1"/>
+				</Grid>
 
 				<Frame Style="{DynamicResource FrameSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">

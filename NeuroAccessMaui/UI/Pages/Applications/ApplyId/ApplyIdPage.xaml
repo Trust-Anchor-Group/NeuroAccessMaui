@@ -295,7 +295,7 @@
 										      IsVisible="False" Aspect="Uniform"
 												HeightRequest="64" WidthRequest="64">
 											<Path.Fill>
-												<SolidColorBrush Color="LightGrey" />
+												<SolidColorBrush Color="{AppThemeBinding Light={DynamicResource InputFieldsContentSecondaryLight},Dark={DynamicResource InputFieldsContentSecondaryLight}}" />
 											</Path.Fill>
 											<Path.Triggers>
 												<MultiTrigger TargetType="Path">
@@ -720,7 +720,8 @@
 																	IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 																	MaximumDate="{Binding MaxBirthDate}"
 																	MinimumDate="{Binding MinBirthDate}"
-																	NullableDate="{Binding BirthDate}"
+														  NullableDate="{Binding NullIfInvalidBirthDate}"
+																	Placeholder="-"
 																	Style="{DynamicResource RegularCompositeDatePicker}" />
 							<Label IsVisible="{Binding ApplicationSent}"
 									 Style="{DynamicResource BoldItemTitleLabel}"

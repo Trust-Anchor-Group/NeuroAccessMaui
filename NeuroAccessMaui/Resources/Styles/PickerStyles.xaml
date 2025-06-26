@@ -1,86 +1,122 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                    xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-                    xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+					xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
 
 	<!-- Validation Label style common to composite input views -->
-	<Style x:Key="RegularCompositeInputViewLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
-		<Setter Property="FontSize" Value="14" />
-		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold" />
-		<Setter Property="LineBreakMode" Value="WordWrap" />
-		<Setter Property="VerticalTextAlignment" Value="Center" />
-		<Setter Property="HorizontalTextAlignment" Value="Start" />
+	<Style x:Key="RegularCompositeInputViewLabel"
+		   TargetType="Label"
+		   BaseResourceKey="BoldItemTitleLabel">
+		<Setter Property="FontSize"
+				Value="14" />
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskSemiBold" />
+		<Setter Property="LineBreakMode"
+				Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment"
+				Value="Center" />
+		<Setter Property="HorizontalTextAlignment"
+				Value="Start" />
 	</Style>
 
 	<!-- DatePicker style used within CompositeDatePicker -->
-	<Style x:Key="RegularCompositeDatePickerPicker" TargetType="DatePicker">
-		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
-		<Setter Property="FontSize" Value="18" />
-		<Setter Property="BackgroundColor" Value="Transparent" />
+	<Style x:Key="RegularCompositeDatePickerPicker"
+		   TargetType="DatePicker">
+		<Setter Property="FontFamily"
+				Value="HaasGroteskRegular" />
+		<Setter Property="FontSize"
+				Value="18" />
+		<Setter Property="BackgroundColor"
+				Value="Transparent" />
 	</Style>
 
 	<!-- Picker style used within CompositePicker -->
-	<Style x:Key="RegularCompositePickerPicker" TargetType="Picker">
-		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
-		<Setter Property="FontSize" Value="18" />
-		<Setter Property="BackgroundColor" Value="Transparent" />
+	<Style x:Key="RegularCompositePickerPicker"
+		   TargetType="Picker">
+		<Setter Property="FontFamily"
+				Value="HaasGroteskRegular" />
+		<Setter Property="FontSize"
+				Value="18" />
+		<Setter Property="BackgroundColor"
+				Value="Transparent" />
 	</Style>
 
 	<!-- Label style used by CompositePicker and CompositeDatePicker -->
-	<Style x:Key="RegularCompositePickerLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentSubheadLight}, Dark={DynamicResource InputFieldsContentSubheadDark}}" />
-		<Setter Property="FontSize" Value="15" />
-		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold" />
-		<Setter Property="LineBreakMode" Value="WordWrap" />
-		<Setter Property="VerticalTextAlignment" Value="Center" />
-		<Setter Property="HorizontalTextAlignment" Value="Start" />
+	<Style x:Key="RegularCompositePickerLabel"
+		   TargetType="Label"
+		   BaseResourceKey="BoldItemTitleLabel">
+		<Setter Property="TextColor"
+				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentSubheadLight}, Dark={DynamicResource InputFieldsContentSubheadDark}}" />
+		<Setter Property="FontSize"
+				Value="15" />
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskSemiBold" />
+		<Setter Property="LineBreakMode"
+				Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment"
+				Value="Center" />
+		<Setter Property="HorizontalTextAlignment"
+				Value="Start" />
 	</Style>
 
 	<!-- CompositeDatePicker style -->
-	<Style x:Key="RegularCompositeDatePicker" TargetType="controls:CompositeDatePicker" ApplyToDerivedTypes="True">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
-		<Setter Property="PickerStyle" Value="{DynamicResource RegularCompositeDatePickerPicker}" />
-		<Setter Property="LabelStyle" Value="{DynamicResource RegularCompositePickerLabel}" />
-		<Setter Property="ValidationLabelStyle" Value="{DynamicResource RegularCompositeInputViewLabel}" />
-		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}" />
-		<Setter Property="BorderPadding" Value="{DynamicResource EditMediumMargins}" />
-		<Setter Property="BorderBackground" Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceBackgroundActiveLight}, Dark={DynamicResource InputFieldsSurfaceBackgroundActiveDark}}" />
-		<Setter Property="BorderStroke" Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceStrokeLight}, Dark={DynamicResource InputFieldsSurfaceStrokeDark}}" />
-		<Setter Property="BorderStrokeShape">
-			<Setter.Value>
-				<RoundRectangle CornerRadius="8" />
-			</Setter.Value>
-		</Setter>
-		<Setter Property="BorderShadow" Value="{x:Null}"/>
+	<Style x:Key="RegularCompositeDatePicker"
+		   TargetType="controls:CompositeDatePicker"
+		   ApplyToDerivedTypes="True"
+		   BaseResourceKey="BaseCompositeInputView">
+		<Setter Property="TextColor"
+				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+		<Setter Property="PickerStyle"
+				Value="{DynamicResource RegularCompositeDatePickerPicker}" />
+		<Setter Property="LabelStyle"
+				Value="{DynamicResource RegularCompositePickerLabel}" />
+		<Setter Property="ValidationLabelStyle"
+				Value="{DynamicResource RegularCompositeInputViewLabel}" />
 		<Style.Triggers>
-			<Trigger TargetType="controls:CompositeDatePicker" Property="IsValid" Value="False">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
-				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
+			<Trigger TargetType="controls:CompositeDatePicker"
+					 Property="IsValid"
+					 Value="False">
+				<Setter Property="TextColor"
+						Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>
 
 	<!-- CompositePicker style -->
-	<Style x:Key="RegularCompositePicker" TargetType="controls:CompositePicker" ApplyToDerivedTypes="True">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
-		<Setter Property="PickerStyle" Value="{DynamicResource RegularCompositePickerPicker}" />
-		<Setter Property="LabelStyle" Value="{DynamicResource RegularCompositePickerLabel}" />
-		<Setter Property="ValidationLabelStyle" Value="{DynamicResource RegularCompositeInputViewLabel}" />
-		<Setter Property="ValidationColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}" />
-		<Setter Property="BorderBackground" Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceBackgroundActiveLight}, Dark={DynamicResource InputFieldsSurfaceBackgroundActiveDark}}" />
-		<Setter Property="BorderStroke" Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceStrokeLight}, Dark={DynamicResource InputFieldsSurfaceStrokeDark}}" />
-		<Setter Property="BorderShadow" Value="{x:Null}"/>
+	<Style x:Key="RegularCompositePicker"
+		   TargetType="controls:CompositePicker"
+		   ApplyToDerivedTypes="True">
+		<Setter Property="TextColor"
+				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+		<Setter Property="PickerStyle"
+				Value="{DynamicResource RegularCompositePickerPicker}" />
+		<Setter Property="LabelStyle"
+				Value="{DynamicResource RegularCompositePickerLabel}" />
+		<Setter Property="ValidationLabelStyle"
+				Value="{DynamicResource RegularCompositeInputViewLabel}" />
+		<Setter Property="ValidationColor"
+				Value="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}" />
+		<Setter Property="BorderBackground"
+				Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceBackgroundActiveLight}, Dark={DynamicResource InputFieldsSurfaceBackgroundActiveDark}}" />
+		<Setter Property="BorderStroke"
+				Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceStrokeLight}, Dark={DynamicResource InputFieldsSurfaceStrokeDark}}" />
+		<Setter Property="BorderShadow"
+				Value="{x:Null}" />
 		<Setter Property="BorderStrokeShape">
 			<Setter.Value>
 				<RoundRectangle CornerRadius="8" />
 			</Setter.Value>
 		</Setter>
 		<Style.Triggers>
-			<Trigger TargetType="controls:CompositePicker" Property="IsValid" Value="False">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}" />
-				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
+			<Trigger TargetType="controls:CompositePicker"
+					 Property="IsValid"
+					 Value="False">
+				<Setter Property="TextColor"
+						Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
+				<Setter Property="BorderStroke"
+						Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

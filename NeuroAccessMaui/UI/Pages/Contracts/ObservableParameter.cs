@@ -5,10 +5,10 @@ using NeuroAccessMaui.Services;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using System.Globalization;
-using System.Text;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
-using System.Xml;
+using NeuroAccessMaui.Resources.Languages;
+using Waher.Persistence;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
@@ -16,7 +16,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	/// An observable object that wraps a <see cref="Waher.Networking.XMPP.Contracts.Parameter"/> object.
 	/// This allows for easier binding in the UI. Must be instantiated with <see cref="CreateAsync"/>.
 	/// </summary>
-	public class ObservableParameter : ObservableObject
+	public partial class ObservableParameter : ObservableObject
 	{
 		#region Constructor
 		protected ObservableParameter(Parameter parameter)
@@ -194,7 +194,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	}
 
 	#region ObservableParameter Subclasses
-	public sealed class ObservableBooleanParameter : ObservableParameter
+	public partial class ObservableBooleanParameter : ObservableParameter
 	{
 		public ObservableBooleanParameter(BooleanParameter parameter) : base(parameter)
 		{
@@ -205,6 +205,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			get => this.Value as bool? ?? false;
 			set => this.Value = value;
+		}
+
+		[RelayCommand]
+		private void ToggleBooleanValue()
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.BooleanValue = !this.BooleanValue;
+				this.OnPropertyChanged(nameof(this.BooleanValue));
+			});
 		}
 	}
 
@@ -406,16 +416,35 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	{
 		public ObservableContractReferenceParameter(ContractReferenceParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue as string ?? string.Empty;
+			ServiceRef.LogService.LogDebug($"{this.Value} - {this.Parameter.ObjectValue}");
+			this.Value = this.Parameter.ObjectValue;
+			//this.Value = parameter.ObjectValue as string ?? string.Empty;
 		}
 
-		public string? ContractReferenceValue
+		public string ContractReferenceValue
 		{
-			get => this.Value as string ?? string.Empty;
+			get => this.Value?.ToString() ?? string.Empty;
 			set => this.Value = value;
 		}
 
-		[RelayCommand]
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task OpenContract()
+		{
+			if (string.IsNullOrEmpty(this.ContractReferenceValue))
+			{
+				return;
+			}
+			try
+			{
+				await ServiceRef.ContractOrchestratorService.OpenContract(this.ContractReferenceValue, ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)], null);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task PickContractReferenceAsync()
 		{
 			try
@@ -428,7 +457,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				MainThread.BeginInvokeOnMainThread(() => {
 					if (Contract is null)
 						return;
-					this.ContractReferenceValue = Contract?.ContractId;
+					this.ContractReferenceValue = Contract?.ContractId ?? string.Empty;
 				   this.OnPropertyChanged(nameof(this.ContractReferenceValue));
 				});
 			}

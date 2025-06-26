@@ -7,6 +7,7 @@ using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using NeuroAccessMaui.UI.Pages.Main.ChangePassword;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
@@ -98,6 +99,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
 			Routing.RegisterRoute(nameof(VerifyCodePage), typeof(VerifyCodePage));
 			Routing.RegisterRoute(nameof(XmppFormPage), typeof(XmppFormPage));
+			Routing.RegisterRoute(nameof(AppsPage), typeof(AppsPage));
 
 			//Notifications
 			Routing.RegisterRoute(nameof(NotificationsPage), typeof(NotificationsPage));

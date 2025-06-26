@@ -141,7 +141,7 @@
                     TargetType="Label"
                     Value="Approved">
                     <Setter Property="Text" Value="{l:Localize IdentityState_Approved}" />
-                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLLight}}" />
+                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLDark}}" />
                 </DataTrigger>
                 <DataTrigger
                     Binding="{Binding IdentityState}"

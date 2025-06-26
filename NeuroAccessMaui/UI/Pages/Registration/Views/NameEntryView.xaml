@@ -1,57 +1,80 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseRegistrationView x:Name="ThisPage"
-                           x:Class="NeuroAccessMaui.UI.Pages.Registration.Views.NameEntryView"
-                           x:DataType="viewmodel:NameEntryViewModel"
-                           xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                           xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-                           xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-                           xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
-                           xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
-                           xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-                           xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
+						   x:Class="NeuroAccessMaui.UI.Pages.Registration.Views.NameEntryView"
+						   x:DataType="viewmodel:NameEntryViewModel"
+						   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+						   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+						   xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+						   xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+						   xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
+						   xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+						   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+						   xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 
 	<base:BaseRegistrationView.Resources>
 		<mct:IsStringNotNullOrEmptyConverter x:Key="OnlyShowNonEmpty" />
+		<mct:IsStringNullOrEmptyConverter x:Key="OnlyShowEmpty" />
 	</base:BaseRegistrationView.Resources>
 
-	<Grid RowDefinitions="*, auto" RowSpacing="{DynamicResource LargeSpacing}">
-		<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" VerticalOptions="Center" Grid.Row="0">
+	<Grid RowDefinitions="*, auto"
+		  RowSpacing="{DynamicResource LargeSpacing}">
+		<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}"
+							 VerticalOptions="Center"
+							 Grid.Row="0">
 			<!-- Title and Detail -->
-			<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize OnboardingNameEntryTitle}" />
+			<Label Style="{DynamicResource PageTitleLabel}"
+				   Text="{l:Localize OnboardingNameEntryTitle}" />
 
 
 			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 				<!-- Input 
 				<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Nickname}" />-->
-				<controls:CompositeEntry x:Name="NicknameEntry" Style="{DynamicResource RegularCompositeEntry}"
-                                             EntryData="{Binding Username}" Placeholder="{l:Localize Username}" />
+				<controls:CompositeEntry x:Name="NicknameEntry"
+										 Style="{DynamicResource RegularCompositeEntry}"
+										 EntryData="{Binding Username}"
+										 Placeholder="{l:Localize Username}"
+										 IsValid="{Binding LocalizedValidationMessage, Converter={StaticResource OnlyShowEmpty}}"/>
 				<!-- Validation -->
-				<Grid RowDefinitions="*,*" ColumnDefinitions="auto,*" HorizontalOptions="Center" 
-						ColumnSpacing="{DynamicResource SmallSpacing}"
-						IsVisible="{Binding LocalizedValidationMessage, Converter={StaticResource OnlyShowNonEmpty}}">
+				<Grid RowDefinitions="*,*"
+					  ColumnDefinitions="auto,*"
+					  HorizontalOptions="Center"
+					  ColumnSpacing="{DynamicResource SmallSpacing}"
+					  IsVisible="{Binding LocalizedValidationMessage, Converter={StaticResource OnlyShowNonEmpty}}">
 
-					<Path Grid.Column="0"  Grid.Row="0"
-								VerticalOptions="Center"
-								HeightRequest="20"
-								WidthRequest="20"
-								Aspect="Uniform"
-								Data="{x:Static ui:Geometries.InfoCirclePath}"
-								Fill="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
+					<Path Grid.Column="0"
+						  Grid.Row="0"
+						  VerticalOptions="Center"
+						  HeightRequest="20"
+						  WidthRequest="20"
+						  Aspect="Uniform"
+						  Data="{x:Static ui:Geometries.InfoCirclePath}"
+						  Fill="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
 
-					<Label Grid.Column="1" Grid.Row="0" VerticalOptions="Center" Text="{Binding LocalizedValidationMessage}"
-									TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
-					<Grid  Grid.Row="1" Grid.Column="1" ColumnDefinitions="auto, *" IsVisible="{Binding AlternativeName, Converter={StaticResource OnlyShowNonEmpty}}">
-						<Label HorizontalOptions="Start" Text="{l:Localize Alternative}" Grid.Column="0"
-						       TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
+					<Label Grid.Column="1"
+						   Grid.Row="0"
+						   VerticalOptions="Center"
+						   Text="{Binding LocalizedValidationMessage}"
+						   TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
+					<Grid  Grid.Row="1"
+						   Grid.Column="1"
+						   ColumnDefinitions="auto, *"
+						   IsVisible="{Binding AlternativeName, Converter={StaticResource OnlyShowNonEmpty}}">
+						<Label HorizontalOptions="Start"
+							   Text="{l:Localize Alternative}"
+							   Grid.Column="0"
+							   TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
 
 
 
-						<Label Grid.Column="1" Text="{Binding AlternativeName}" TextDecorations="Underline" LineBreakMode="CharacterWrap" TextColor="{AppThemeBinding Light={DynamicResource ContentLinkWLLight}, Dark={DynamicResource ContentLinkWLDark}}">
+						<Label Grid.Column="1"
+							   Text="{Binding AlternativeName}"
+							   TextDecorations="Underline"
+							   LineBreakMode="CharacterWrap"
+							   TextColor="{AppThemeBinding Light={DynamicResource ContentLinkWLLight}, Dark={DynamicResource ContentLinkWLDark}}">
 							<Label.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding SelectNameCommand}"
-								                      CommandParameter="{Binding AlternativeName}" />
+													  CommandParameter="{Binding AlternativeName}" />
 							</Label.GestureRecognizers>
 						</Label>
 					</Grid>
@@ -62,18 +85,29 @@
 		</VerticalStackLayout>
 
 		<!-- Continue Button -->
-		<VerticalStackLayout Grid.Row="1" Spacing="{DynamicResource MediumSpacing}">
-			<Border Style="{DynamicResource AccentInfoBorder}" Padding="{DynamicResource SmallMargins}">
+		<VerticalStackLayout Grid.Row="1"
+							 Spacing="{DynamicResource MediumSpacing}">
+			<Border Style="{DynamicResource AccentInfoBorder}"
+					Padding="{DynamicResource SmallMargins}">
 				<Grid ColumnDefinitions="auto, *">
-					<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
-					      Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-					      Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
-					<Label Grid.Column="1" Style ="{DynamicResource AccentInfoLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize OnboardingNameEntryDetails}" />
+					<Path Grid.Column="0"
+						  HorizontalOptions="Center"
+						  VerticalOptions="Center"
+						  Data="{x:Static ui:Geometries.InfoCirclePath}"
+						  HeightRequest="24"
+						  WidthRequest="24"
+						  Aspect="Uniform"
+						  Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}" />
+					<Label Grid.Column="1"
+						   Style="{DynamicResource AccentInfoLabel}"
+						   Margin="{DynamicResource SmallLeftMargins}"
+						   Text="{l:Localize OnboardingNameEntryDetails}" />
 
 				</Grid>
 			</Border>
-			<controls:TextButton Command="{Binding CreateAccountCommand}" Style="{DynamicResource FilledTextButton}"
-			                     LabelData="{l:Localize Continue}" />
+			<controls:TextButton Command="{Binding CreateAccountCommand}"
+								 Style="{DynamicResource FilledTextButton}"
+								 LabelData="{l:Localize Continue}" />
 		</VerticalStackLayout>
 	</Grid>
 </base:BaseRegistrationView>

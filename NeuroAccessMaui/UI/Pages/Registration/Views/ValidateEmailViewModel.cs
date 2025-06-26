@@ -78,7 +78,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
 		[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]
-		bool emailIsValid;
+		bool emailIsValid = true;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(LocalizedSendCodeText))]

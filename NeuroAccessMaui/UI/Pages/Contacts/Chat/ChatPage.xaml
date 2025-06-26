@@ -46,7 +46,8 @@
 						<Grid ColumnDefinitions="*,auto" ColumnSpacing="0"
 								IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
 							<Editor x:Name="EditorControl" HorizontalOptions="FillAndExpand" MinimumHeightRequest="40"
-									  IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}" BackgroundColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+									IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
+									BackgroundColor="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceBackgroundActiveLight}, Dark={DynamicResource InputFieldsSurfaceBackgroundActiveDark}}"
 									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges" TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}"/>
 
 							<controls:ImageButton Grid.Column="1" Margin="{DynamicResource SmallLeftMargins}"

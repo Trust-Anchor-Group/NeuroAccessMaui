@@ -59,6 +59,7 @@ namespace NeuroAccessMaui.Services.Contracts
 				ServiceRef.XmppService.PetitionForPeerReviewIdReceived -= this.Contracts_PetitionForPeerReviewIdReceived;
 				ServiceRef.XmppService.PetitionForIdentityReceived -= this.Contracts_PetitionForIdentityReceived;
 				ServiceRef.XmppService.PetitionForSignatureReceived -= this.Contracts_PetitionForSignatureReceived;
+				//ServiceRef.XmppService.PetitionForContractReceived -= this.Contract_Pe
 				ServiceRef.XmppService.PetitionedIdentityResponseReceived -= this.Contracts_PetitionedIdentityResponseReceived;
 				ServiceRef.XmppService.PetitionedPeerReviewIdResponseReceived -= this.Contracts_PetitionedPeerReviewResponseReceived;
 				ServiceRef.XmppService.SignaturePetitionResponseReceived -= this.Contracts_SignaturePetitionResponseReceived;
@@ -567,8 +568,8 @@ namespace NeuroAccessMaui.Services.Contracts
 				// This happens if you try to view someone else's legal identity.
 				// When this happens, try to send a petition to view it instead.
 				// Normal operation. Should not be logged.
-
-				await ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose);
+				if(!string.IsNullOrEmpty(Purpose))
+					await ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose);
 				return null;
 			}
 			catch (Exception ex)

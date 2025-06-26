@@ -12,6 +12,13 @@
 		<Setter Property="LineHeight" Value="1" />
 	</Style>
 
+	<Style x:Key="AppCardLabel" ApplyToDerivedTypes="True" TargetType="Label">
+		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
+		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
+		<Setter Property="FontSize" Value="14"/>
+		<Setter Property="HorizontalTextAlignment" Value="Center"/>
+	</Style>
+
 	<Style x:Key="MenuItemLabel" TargetType="Label">
 		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 	</Style>
@@ -117,11 +124,11 @@
 
 	</Style>
 
-	<Style x:Key="BoldItemTitleLabel" ApplyToDerivedTypes="False" BasedOn="{StaticResource RegularItemTitleLabel}" TargetType="Label">
+	<Style x:Key="BoldItemTitleLabel" ApplyToDerivedTypes="False" BaseResourceKey="RegularItemTitleLabel" TargetType="Label">
 		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
 	</Style>
 
-	<Style x:Key="DurationLabel" ApplyToDerivedTypes="False" BasedOn="{StaticResource RegularItemTitleLabel}" TargetType="Label">
+	<Style x:Key="DurationLabel" ApplyToDerivedTypes="False" BaseResourceKey="RegularItemTitleLabel" TargetType="Label">
 		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
 	</Style>
 

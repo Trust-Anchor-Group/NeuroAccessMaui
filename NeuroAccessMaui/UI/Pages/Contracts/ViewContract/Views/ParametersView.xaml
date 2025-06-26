@@ -22,6 +22,7 @@
 															DurationTemplate="{StaticResource DurationParameterReadOnlyTemplate}"
 															ProtectedTemplate="{StaticResource ProtectedParameterTemplate}"
 															CalcTemplate="{StaticResource CalcParameterReadOnlyTemplate}"
+															ContractReferenceTemplate="{StaticResource ContractReferenceParameterReadOnlyTemplate}"
 															DefaultTemplate="{StaticResource DefaultParameterReadOnlyTemplate}" />
 	</ContentView.Resources>
 
@@ -35,7 +36,7 @@
 								 ItemSizingStrategy="MeasureAllItems">
 			<CollectionView.ItemsLayout>
 				<LinearItemsLayout Orientation="Vertical"
-											 ItemSpacing="{DynamicResource SmallSpacing}" />
+											 ItemSpacing="{DynamicResource MediumSpacing}" />
 			</CollectionView.ItemsLayout>
 			<CollectionView.EmptyView>
 				<Label Text="{l:Localize SomethingWentWrong}" />
