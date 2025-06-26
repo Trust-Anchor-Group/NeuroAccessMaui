@@ -610,6 +610,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			await Database.FindDelete<CacheEntry>(
 			new FilterFieldGreaterOrEqualTo("Url", string.Empty));
 			await Database.Provider.Flush();
+
+			await ServiceRef.UiService.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+				ServiceRef.Localizer[nameof(AppResources.CacheCleared)],
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
 		}
 		#endregion
 

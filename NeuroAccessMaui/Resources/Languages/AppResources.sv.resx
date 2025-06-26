@@ -2858,6 +2858,9 @@
   <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
     <value>Vi kunde inte hämta den senaste versionen av detta kontrakt. Uppgifterna du ser kan vara inaktuella. Begär åtkomst nu?</value>
   </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Cache rensad</value>
+  </data>
   <data name="LanguageChangedTitle" xml:space="preserve">
     <value>Språk ändrat</value>
   </data>
