@@ -47,7 +47,7 @@
 
 		<controls:TextButton
 				Command="{Binding NewAccountCommand}"
-				Style="{DynamicResource SecondaryButton}"
+				Style="{DynamicResource TertiaryButton}"
 				LabelData="{l:Localize CreateNewAccount}" />
 
 		<controls:TextButton

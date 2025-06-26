@@ -488,9 +488,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 			try
 			{
-				string? Password = await App.InputPasswordAsync(AuthenticationPurpose.TransferIdentity);
-				if (Password is null)
-					return;
+
 
 				if (!await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.Confirm)],
@@ -500,6 +498,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				{
 					return;
 				}
+
+				string? Password = await App.InputPasswordAsync(AuthenticationPurpose.TransferIdentity);
+				if (Password is null)
+					return;
 
 				this.SetIsBusy(true);
 
