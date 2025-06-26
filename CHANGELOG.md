@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added Open Chat button when viewing an identity
 - Added popup explaing that app might need to be restarted after changing language
 - Added Popup if cache is cleared successfully
 
 ### Changed
 
+- Make Share QR popup automatically close after a set interval
 - 
 
 ### Fixed
