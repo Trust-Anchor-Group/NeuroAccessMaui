@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -124,8 +125,9 @@ namespace NeuroAccessMaui.UI.Popups.QR
 		#region Commands
 
 		[RelayCommand]
-		private static async Task Close()
+		private async Task Close()
 		{
+			this.timer?.Stop();
 			await ServiceRef.UiService.PopAsync();
 		}
 
@@ -221,6 +223,12 @@ namespace NeuroAccessMaui.UI.Popups.QR
 					}
 				}
 			});
+		}
+
+		public override Task OnPop()
+		{
+			this.timer?.Stop();
+			return base.OnPop();
 		}
 
 		#endregion
