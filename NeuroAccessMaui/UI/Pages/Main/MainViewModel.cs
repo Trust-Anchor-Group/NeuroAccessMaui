@@ -1,27 +1,18 @@
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.CustomPermissions;
-using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Notifications;
 using Waher.Networking.XMPP.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.Services.Theme;
-using Waher.Runtime.Inventory;
-using System.Reflection.Metadata;
-using NeuroAccessMaui.UI.Popups.Password;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
-using System.Runtime.CompilerServices;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
