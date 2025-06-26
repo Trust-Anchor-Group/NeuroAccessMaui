@@ -39,7 +39,7 @@
 							<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}" Margin="{StaticResource SmallLeftMargins}"/>
 
 							<!-- Apply for Personal ID -->
-							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyPersonalIdCommand}">
+							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ApplyPersonalIdCommand}">
 								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize PersonalId}" InputTransparent="True"
@@ -53,7 +53,7 @@
 							</controls:TemplatedButton>
 
 							<!-- Apply for Organizational ID -->
-							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ApplyOrganizationalIdCommand}">
+							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ApplyOrganizationalIdCommand}">
 								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize OrganizationalId}" InputTransparent="True"
@@ -71,7 +71,7 @@
 							<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}" />
 
 							<!-- View Identity Application -->
-							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ViewIdApplicationCommand}">
+							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ViewIdApplicationCommand}">
 								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"
@@ -95,7 +95,7 @@
 							<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Wallet}" Margin="{StaticResource SmallLeftMargins}"/>
 
 							<!-- Apply for a wallet -->
-							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding BuyEDalerCommand}"
+							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding BuyEDalerCommand}"
 																		IsVisible="{Binding HasWallet, Converter={StaticResource InvertedBoolConverter}}">
 								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
@@ -109,7 +109,7 @@
 							</controls:TemplatedButton>
 
 							<!-- Go to wallet -->
-							<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding OpenWalletCommand}"
+							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding OpenWalletCommand}"
 																		IsVisible="{Binding HasWallet}">
 								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">

@@ -31,7 +31,7 @@
 
 					<Border
 						Grid.Column="0"
-						VerticalOptions="FillAndExpand"
+						VerticalOptions="Fill"
 						Style="{DynamicResource InnerFrameBorder}">
 
 						<Border.Padding>
@@ -82,7 +82,7 @@
 		</DataTemplate>
 	</VisualElement.Resources>
 -->
-	<Grid VerticalOptions="FillAndExpand">
+	<Grid VerticalOptions="Fill">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
@@ -269,8 +269,8 @@
 	<!--
 	<ScrollView>
 		<Grid
-			HorizontalOptions="FillAndExpand"
-			VerticalOptions="CenterAndExpand"
+			HorizontalOptions="Fill"
+			VerticalOptions="Center"
 			ColumnDefinitions="*,auto,*"
 			RowDefinitions="auto,auto">
 			<RadioButton

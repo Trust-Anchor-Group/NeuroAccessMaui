@@ -45,7 +45,7 @@
 					<Grid ColumnDefinitions="*" RowDefinitions="auto">
 						<Grid ColumnDefinitions="*,auto" ColumnSpacing="0"
 								IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
-							<Editor x:Name="EditorControl" HorizontalOptions="FillAndExpand" MinimumHeightRequest="40"
+							<Editor x:Name="EditorControl" HorizontalOptions="Fill" MinimumHeightRequest="40"
 									IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
 									BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
 									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges" TextColor="{DynamicResource InputFieldsContentPrimary}"/>

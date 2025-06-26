@@ -60,7 +60,7 @@
 						</Border>
 
 						<!-- Language options -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangeLanguageCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ChangeLanguageCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize LanguageOptions}" InputTransparent="True"/>
@@ -77,7 +77,7 @@
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentitySettings}"/>
 
 						<!-- Compromized -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding CompromiseCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding CompromiseCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ReportAsCompromized}" InputTransparent="True"/>
@@ -87,7 +87,7 @@
 						</controls:TemplatedButton>
 
 						<!-- Revoke -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding RevokeCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding RevokeCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
@@ -97,7 +97,7 @@
 						</controls:TemplatedButton>
 
 						<!-- Transfer -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding TransferCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding TransferCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize TransferIdentity}" InputTransparent="True"/>
@@ -115,7 +115,7 @@
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize SecuritySettings}"/>
 
 						<!-- Change Password -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangePasswordCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ChangePasswordCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ChangePassword}" InputTransparent="True"/>
@@ -169,7 +169,7 @@
 							</VerticalStackLayout>
 						</Border>
 
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand"
+						<controls:TemplatedButton HorizontalOptions="Fill"
 												  Command="{x:Binding ClearCacheCommand}">
 							<Border Style="{DynamicResource BorderSubSet}"
 									InputTransparent="True">

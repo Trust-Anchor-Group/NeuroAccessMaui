@@ -40,7 +40,7 @@
 						</Image.GestureRecognizers>
 					</Image>
 
-					<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+					<Grid HorizontalOptions="Fill" VerticalOptions="Center">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="*" />

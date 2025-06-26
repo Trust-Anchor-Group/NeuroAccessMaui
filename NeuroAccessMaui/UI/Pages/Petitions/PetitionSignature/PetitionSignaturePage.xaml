@@ -118,7 +118,7 @@
 										<Label Style="{DynamicResource SectionTitleLabel}"
 												 Text="{l:Localize PersonalInformation}" />
 
-										<Grid VerticalOptions="StartAndExpand"
+										<Grid VerticalOptions="Start"
 												RowSpacing="0">
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition Width="Auto" />
@@ -299,7 +299,7 @@
 											<Label Grid.Row="14"
 													 Grid.Column="0"
 													 Margin="{DynamicResource SmallRightTopMargins}"
-													 HorizontalOptions="StartAndExpand"
+													 HorizontalOptions="Start"
 													 Text="{l:Localize Photos}"
 													 Style="{DynamicResource KeyLabel}"
 													 IsVisible="{Binding HasPhotos}" />
@@ -342,7 +342,7 @@
 										<Label Style="{DynamicResource SectionTitleLabel}"
 												 Text="{l:Localize OrganizationalInformation}" />
 
-										<Grid VerticalOptions="StartAndExpand"
+										<Grid VerticalOptions="Start"
 												RowSpacing="0">
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition Width="Auto" />
@@ -492,7 +492,7 @@
 										<Label Style="{DynamicResource SectionTitleLabel}"
 												 Text="{l:Localize Technical}" />
 
-										<Grid VerticalOptions="StartAndExpand"
+										<Grid VerticalOptions="Start"
 												RowSpacing="0">
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition Width="Auto" />
@@ -597,8 +597,8 @@
 		<Border Grid.Row="1"
 				  Style="{DynamicResource BottomBarBorder}">
 			<!-- Bottom Buttons -->
-			<Grid HorizontalOptions="FillAndExpand"
-					VerticalOptions="CenterAndExpand"
+			<Grid HorizontalOptions="Fill"
+					VerticalOptions="Center"
 					ColumnSpacing="{DynamicResource SmallSpacing}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />

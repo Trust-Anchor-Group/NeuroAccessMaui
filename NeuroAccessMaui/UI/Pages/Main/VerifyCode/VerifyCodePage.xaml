@@ -136,10 +136,10 @@
 					</VerticalStackLayout>
 
 					<VerticalStackLayout Grid.Row="1" Spacing="{DynamicResource MediumSpacing}">
-						<controls:TextButton HorizontalOptions="FillAndExpand" Command="{Binding VerifyCommand}"
+						<controls:TextButton HorizontalOptions="Fill" Command="{Binding VerifyCommand}"
 													Style="{DynamicResource FilledTextButton}" LabelData="{l:Localize Verify}" />
 
-						<controls:TextButton HorizontalOptions="FillAndExpand" Command="{Binding CodeVerification.ResendCodeCommand}"
+						<controls:TextButton HorizontalOptions="Fill" Command="{Binding CodeVerification.ResendCodeCommand}"
 													Style="{DynamicResource OutlinedTextButton}" LabelData="{Binding LocalizedResendCodeText}" />
 					</VerticalStackLayout>
 				</Grid>

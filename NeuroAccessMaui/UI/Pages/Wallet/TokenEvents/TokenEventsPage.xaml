@@ -320,7 +320,7 @@
 					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,*,auto" Margin="{DynamicResource SmallMargins}">
 						<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize TokenEvents}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize TokenEventsDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
-						<ListView Grid.Column="0" Grid.Row="2" HasUnevenRows="True" SeparatorVisibility="None" VerticalOptions="StartAndExpand"
+						<ListView Grid.Column="0" Grid.Row="2" HasUnevenRows="True" SeparatorVisibility="None" VerticalOptions="Start"
                     ItemsSource="{Binding Path=Events}" ItemTemplate="{StaticResource EventStyleSelector}"/>
 						<controls:TextButton Grid.Column="0" Grid.Row="3" LabelData="{l:Localize AddNote}" Margin="{DynamicResource SmallBottomMargins}"
 													Command="{Binding Path=AddNoteCommand}" Style="{DynamicResource FilledTextButton}"

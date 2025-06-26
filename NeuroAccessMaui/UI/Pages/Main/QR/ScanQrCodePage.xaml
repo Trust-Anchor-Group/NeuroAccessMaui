@@ -15,7 +15,7 @@
 	<Grid x:Name="GridWithAnimation">
 		<mct:StateContainer.StateViews>
 			<Grid mct:StateView.StateKey="AutomaticScan">
-				<zxing:CameraBarcodeReaderView x:Name="CameraBarcodeReaderView" x:FieldModifier="public" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
+				<zxing:CameraBarcodeReaderView x:Name="CameraBarcodeReaderView" x:FieldModifier="public" VerticalOptions="Fill" HorizontalOptions="Fill"
 														 BarcodesDetected="CameraBarcodeReaderView_BarcodesDetected" />
 
 				<Grid Padding="{DynamicResource LargeMargins}">
@@ -90,7 +90,7 @@
 					<Grid RowDefinitions="auto,auto" Padding="{DynamicResource LargeMargins}" RowSpacing="{DynamicResource LargeSpacing}">
 
 						<VerticalStackLayout Grid.Row="0" Spacing="{DynamicResource SmallSpacing}">
-							<Label HorizontalOptions="FillAndExpand" Text="{l:Localize QrScanUri}" />
+							<Label HorizontalOptions="Fill" Text="{l:Localize QrScanUri}" />
 							<controls:CompositeEntry x:Name="LinkEntry" Style="{DynamicResource RegularCompositeEntry}" EntryData="{Binding Path=ManualText}" />
 						</VerticalStackLayout>
 

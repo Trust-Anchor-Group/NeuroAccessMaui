@@ -167,7 +167,7 @@
 						  Margin="{DynamicResource MediumBottomMargins}"
 						  IsVisible="False"/> <!-- TODO: Bind to HasBranding-->
 
-		<Grid HorizontalOptions="FillAndExpand"
+		<Grid HorizontalOptions="Fill"
 			  ColumnDefinitions="*, *"
 			  Grid.Row="3"
 			  Margin="{DynamicResource SmallMargins}">

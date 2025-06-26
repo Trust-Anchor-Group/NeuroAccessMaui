@@ -79,7 +79,7 @@ namespace NeuroAccessMaui.UI.Controls
 			//{
 			//	LabelData = "Add Duration",
 			//	Style = AppStyles.TertiaryButton,
-			//	HorizontalOptions = LayoutOptions.FillAndExpand,
+			//	HorizontalOptions = LayoutOptions.Fill,
 			//	VerticalOptions = LayoutOptions.Center
 			//};
 

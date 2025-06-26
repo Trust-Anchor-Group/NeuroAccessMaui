@@ -470,7 +470,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize FirstName}" />
 								<Label IsVisible="{Binding RequiresFirstName}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -488,7 +488,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize MiddleNames}" />
 								<Label IsVisible="{Binding RequiresMiddleNames}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -506,7 +506,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize LastNames}" />
 								<Label IsVisible="{Binding RequiresLastNames}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -524,7 +524,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize PersonalNumber}" />
 								<Label IsVisible="{Binding RequiresPersonalNumber}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -542,7 +542,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize Address}" />
 								<Label IsVisible="{Binding RequiresAddress}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -560,7 +560,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize Address2}" />
 								<Label IsVisible="{Binding RequiresAddress2}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -578,7 +578,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize ZipCode}" />
 								<Label IsVisible="{Binding RequiresZipCode}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -596,7 +596,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize Area}" />
 								<Label IsVisible="{Binding RequiresArea}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -614,7 +614,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize City}" />
 								<Label IsVisible="{Binding RequiresCity}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -632,7 +632,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout IsVisible="{Binding ApplicationSent}">
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize Region}" />
 								<Label IsVisible="{Binding RequiresRegion}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -650,7 +650,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize Country}" />
 								<Label IsVisible="{Binding RequiresCountry}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -661,12 +661,12 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize Nationality}" />
 								<Label IsVisible="{Binding RequiresNationality}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
 							</HorizontalStackLayout>
-							<controls:CompositePicker HorizontalOptions="FillAndExpand"
+							<controls:CompositePicker HorizontalOptions="Fill"
 															  IsValid="{Binding NationalityOk}"
 															  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															  ItemsSource="{Binding Path=Countries}"
@@ -686,12 +686,12 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize Gender}" />
 								<Label IsVisible="{Binding RequiresGender}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
 							</HorizontalStackLayout>
-							<controls:CompositePicker HorizontalOptions="FillAndExpand"
+							<controls:CompositePicker HorizontalOptions="Fill"
 															  IsValid="{Binding GenderOk}"
 															  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															  ItemsSource="{Binding Path=Genders}"
@@ -710,12 +710,12 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize BirthDate}" />
 								<Label IsVisible="{Binding RequiresBirthDate}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
 							</HorizontalStackLayout>
-							<controls:CompositeDatePicker HorizontalOptions="FillAndExpand"
+							<controls:CompositeDatePicker HorizontalOptions="Fill"
 																	IsValid="{Binding BirthDateOk}"
 																	IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 																	MaximumDate="{Binding MaxBirthDate}"
@@ -745,7 +745,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize OrgName}" />
 								<Label IsVisible="{Binding RequiresOrgName}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -761,7 +761,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize OrgDepartment}" />
 								<Label IsVisible="{Binding RequiresOrgDepartment}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -777,7 +777,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize OrgRole}" />
 								<Label IsVisible="{Binding RequiresOrgRole}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -793,7 +793,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize OrgNumber}" />
 								<Label IsVisible="{Binding RequiresOrgNumber}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -809,7 +809,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize OrgAddress}" />
 								<Label IsVisible="{Binding RequiresOrgAddress}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -825,7 +825,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize OrgAddress2}" />
 								<Label IsVisible="{Binding RequiresOrgAddress2}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -841,7 +841,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize OrgZipCode}" />
 								<Label IsVisible="{Binding RequiresOrgZipCode}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -857,7 +857,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize OrgArea}" />
 								<Label IsVisible="{Binding RequiresOrgArea}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -873,7 +873,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize OrgCity}" />
 								<Label IsVisible="{Binding RequiresOrgCity}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -889,7 +889,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize OrgRegion}" />
 								<Label IsVisible="{Binding RequiresOrgRegion}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -909,7 +909,7 @@
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout>
-								<Label HorizontalOptions="FillAndExpand"
+								<Label HorizontalOptions="Fill"
 										 Text="{l:Localize OrgCountry}" />
 								<Label IsVisible="{Binding RequiresOrgCountry}"
 										 Style="{DynamicResource RequiredFieldMarker}" />
@@ -933,28 +933,28 @@
 							   Text="{l:Localize ContactInformationSentDescription}" />
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-							<Label HorizontalOptions="FillAndExpand"
+							<Label HorizontalOptions="Fill"
 								   Text="{l:Localize EMail}" />
 							<Label Style="{DynamicResource BoldItemTitleLabel}"
 								   Text="{Binding Path=EMail, Converter={converters:HyphenIfEmpty}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-							<Label HorizontalOptions="FillAndExpand"
+							<Label HorizontalOptions="Fill"
 									 Text="{l:Localize PhoneNr}" />
 							<Label Style="{DynamicResource BoldItemTitleLabel}"
 									 Text="{Binding Path=PhoneNr, Converter={converters:HyphenIfEmpty}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-							<Label HorizontalOptions="FillAndExpand"
+							<Label HorizontalOptions="Fill"
 									 Text="{l:Localize NeuroAccessAccount}" />
 							<Label Style="{DynamicResource BoldItemTitleLabel}"
 									 Text="{Binding Path=Jid, Converter={converters:HyphenIfEmpty}}" />
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-							<Label HorizontalOptions="FillAndExpand"
+							<Label HorizontalOptions="Fill"
 									 Text="{l:Localize DeviceID}" />
 							<Label Style="{DynamicResource BoldItemTitleLabel}"
 									 Text="{Binding Path=DeviceId, Converter={converters:HyphenIfEmpty}}" />
@@ -982,7 +982,7 @@
 								<Label Grid.Row="0"
 										 Grid.Column="1"
 										 Margin="{DynamicResource SmallLeftMargins}"
-										 HorizontalOptions="FillAndExpand"
+										 HorizontalOptions="Fill"
 										 Text="{l:Localize ConsentDescription}">
 									<Label.GestureRecognizers>
 										<TapGestureRecognizer Command="{Binding ToggleConsentCommand}" />
@@ -996,7 +996,7 @@
 								<Label Grid.Row="1"
 										 Grid.Column="1"
 										 Margin="{DynamicResource SmallLeftMargins}"
-										 HorizontalOptions="FillAndExpand"
+										 HorizontalOptions="Fill"
 										 Text="{l:Localize CorrectDescription}">
 									<Label.GestureRecognizers>
 										<TapGestureRecognizer Command="{Binding ToggleCorrectCommand}" />
