@@ -2858,4 +2858,7 @@
   <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
     <value>Não foi possível carregar a versão mais recente deste contrato. Os detalhes exibidos podem estar desatualizados. Solicitar acesso agora?</value>
   </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Cache limpa</value>
+  </data>
 </root>
