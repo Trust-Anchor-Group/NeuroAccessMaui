@@ -38,6 +38,8 @@ namespace NeuroAccessMaui.UI.Controls
 				}
 			};
 
+			mainGrid.RowSpacing = 2;
+
 			// Row 1: Single Label with FormattedText
 			this.label = new Label();
 			FormattedString formattedString = new FormattedString();

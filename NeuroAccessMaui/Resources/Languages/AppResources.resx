@@ -2852,4 +2852,10 @@
   <data name="BetaFeatureMainPage" xml:space="preserve">
     <value>This feature is currently in a Beta state. To enable Beta features, open the settings page and enable beta features</value>
   </data>
+  <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
+    <value>Permission Required</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
+    <value>We couldn’t load the latest version of this contract. The details you see may be out of date. Request access now?</value>
+  </data>
 </root>

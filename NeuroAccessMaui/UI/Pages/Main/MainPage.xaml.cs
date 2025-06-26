@@ -14,6 +14,13 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				Model.PropertyChanged += this.Vm_PropertyChanged;
 		}
 
+		protected override async Task OnAppearingAsync()
+		{
+			await base.OnAppearingAsync();
+
+			
+		}
+
 		private async void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
 		{
 			try

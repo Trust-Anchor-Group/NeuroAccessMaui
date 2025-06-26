@@ -1,26 +1,18 @@
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.CustomPermissions;
-using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Notifications;
 using Waher.Networking.XMPP.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.Services.Theme;
-using Waher.Runtime.Inventory;
-using System.Reflection.Metadata;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
-using System.Runtime.CompilerServices;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -52,7 +44,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
-				Console.WriteLine("TEST: " + BannerUriLight);
+
 			});
 
 			await base.OnAppearing();
@@ -71,6 +63,12 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				*/
 				_ = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
 				await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
+
+
+		//		GeoMapViewModel vm = new(59.638346832492765,11.879682074310969);
+		//		await ServiceRef.UiService.PushAsync(new GeoMapPopup(vm));
+		//		Console.WriteLine($"GeoMap result: {await vm.Result}");
+
 			}
 			catch (Exception Ex)
 			{

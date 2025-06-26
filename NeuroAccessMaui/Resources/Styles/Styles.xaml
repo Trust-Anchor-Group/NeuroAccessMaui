@@ -664,6 +664,8 @@
 		<Setter Property="VerticalTextAlignment" Value="Center"/>
 		<Setter Property="FontSize" Value="14"/>
 		<Setter Property="LineBreakMode" Value="WordWrap"/>
+		<Setter Property="TextColor"
+				Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
 	</Style>
 
 	<Style x:Key="BottomBarSelectedLabel" TargetType="Label" BasedOn="{StaticResource BottomBarLabel}">

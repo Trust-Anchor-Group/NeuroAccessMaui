@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2851,5 +2851,11 @@
   </data>
   <data name="BetaFeatureMainPage" xml:space="preserve">
     <value>Esta función se encuentra actualmente en estado beta. Para habilitar las funciones beta, abre la página de configuración y habilita las funciones beta</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
+    <value>Permiso requerido</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
+    <value>No pudimos cargar la versión más reciente de este contrato. Los detalles que ves podrían estar desactualizados. ¿Solicitar acceso ahora?</value>
   </data>
 </root>

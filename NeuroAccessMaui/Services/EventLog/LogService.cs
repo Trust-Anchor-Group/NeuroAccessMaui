@@ -56,10 +56,7 @@ namespace NeuroAccessMaui.Services.EventLog
 		/// Invoke this method to add a debug statement to the log.
 		/// </summary>
 		/// <param name="Message">Debug message.</param>
-		/// <param name="LineNumber">The line of code of the caller</param>
 		/// <param name="Tags">Tags to log together with message.</param>
-		/// <param name="MemberName">The name of the caller method or property</param>
-		/// <param name="FilePath">THe file of the caller</param>
 		public void LogDebug(string Message,
 			params KeyValuePair<string, object?>[] Tags)
 		{
@@ -83,6 +80,17 @@ namespace NeuroAccessMaui.Services.EventLog
 				string.Empty,
 				this.bareJid,
 				[]);
+		}
+
+
+		/// <summary>
+		/// Invoke this method to add an informational statement to the log.
+		/// </summary>
+		/// <param name="Message">Info message</param>
+		/// <param name="Tags">Tags to log together with message</param>
+		public void LogInformational(string Message, params KeyValuePair<string, object?>[] Tags)
+		{
+			Log.Informational(Message, string.Empty, this.bareJid, [.. this.GetParameters(Tags)]);
 		}
 
 		/// <summary>
@@ -286,7 +294,6 @@ namespace NeuroAccessMaui.Services.EventLog
                 this.EndDebugLogSessionAsync().GetAwaiter().GetResult();
             }
 
-            // Suppress finalization if a finalizer is ever added
             GC.SuppressFinalize(this);
         }
 	}

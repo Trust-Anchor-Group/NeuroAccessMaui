@@ -16,7 +16,7 @@
                            xmlns:xmpp="clr-namespace:Waher.Networking.XMPP.Contracts;assembly=Waher.Networking.XMPP.Contracts">
 
 	<ContentView.Resources>
-		<Style x:Key="RoleTitleLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+		<Style x:Key="RoleTitleLabel" TargetType="Label" BaseResourceKey="BoldItemTitleLabel">
 			<Setter Property="FontSize" Value="18"/>
 			<Setter Property="HorizontalTextAlignment" Value="Start"/>
 		</Style>

@@ -146,17 +146,35 @@ namespace NeuroAccessMaui
 				string? LanguageName = Preferences.Get("user_selected_language", null);
 				LanguageInfo SelectedLanguage = SupportedLanguages[0];
 
-				if (LanguageName is not null)
+				if (LanguageName is null)
+				{
+					// Get the system's two-letter ISO language name
+					string SystemLanguage = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+					// Try to find a supported language matching the system language
+					LanguageInfo? SystemLanguageInfo = SupportedLanguages
+						.FirstOrDefault(el =>
+							string.Equals(el.TwoLetterISOLanguageName, SystemLanguage, StringComparison.OrdinalIgnoreCase));
+
+					if (SystemLanguageInfo is not null)
+					{
+						SelectedLanguage = SystemLanguageInfo;
+					}
+
+					// Save the selected language for next time
+					Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
+				}
+				else
 				{
 					SelectedLanguage = SupportedLanguages.FirstOrDefault(
 						el => string.Equals(el.TwoLetterISOLanguageName, LanguageName, StringComparison.OrdinalIgnoreCase),
 						SelectedLanguage);
-				}
 
-				if (LanguageName is null ||
-					!string.Equals(SelectedLanguage.TwoLetterISOLanguageName, LanguageName, StringComparison.OrdinalIgnoreCase))
-				{
-					Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
+					// Ensure stored value matches a real supported language
+					if (!string.Equals(SelectedLanguage.TwoLetterISOLanguageName, LanguageName, StringComparison.OrdinalIgnoreCase))
+					{
+						Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
+					}
 				}
 
 				return SelectedLanguage;

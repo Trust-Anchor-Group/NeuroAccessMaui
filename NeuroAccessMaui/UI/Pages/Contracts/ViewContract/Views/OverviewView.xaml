@@ -20,7 +20,7 @@
 			<converters:ContractStateToString x:Key="ContractStateToStringConverter" />
 			<Style x:Key="ItemTitleLabel"
 					 TargetType="Label"
-					 BasedOn="{StaticResource BoldItemTitleLabel}">
+					 BaseResourceKey="BoldItemTitleLabel">
 				<Setter Property="TextColor"
 						  Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 				<Setter Property="FontSize"
@@ -183,124 +183,130 @@
 
 	<Grid RowDefinitions="*, auto"
 			ColumnDefinitions="*">
-		<ScrollView Grid.Row="0" Padding="{DynamicResource MediumBottomMargins}">
-			<VerticalStackLayout Padding="{DynamicResource MediumLeftRightMargins}"
-								 Spacing="{DynamicResource MediumSpacing}">
-				<!-- TOP Set, name of contract etc -->
-				<Border Style="{DynamicResource BorderSet}"
-						  Margin="0">
-					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-						<Border Style="{DynamicResource AccentInfoBorder}"
-								  Padding="{DynamicResource SmallMargins}"
-								  IsVisible="{Binding IsProposal}">
-							<Grid ColumnDefinitions="auto, *">
-								<Path Grid.Column="0"
-										HorizontalOptions="Center"
-										VerticalOptions="Center"
-										Data="{x:Static ui:Geometries.InfoCirclePath}"
-										HeightRequest="16"
-										WidthRequest="16"
-										Aspect="Uniform"
-										Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}" />
-								<Label Grid.Column="1"
-										 Style="{DynamicResource AccentInfoLabel}"
-										 VerticalOptions="Start"
-										 VerticalTextAlignment="Start"
-										 Margin="{DynamicResource SmallLeftMargins}"
-										 Text="{l:Localize InvitationToSign}" />
+		<RefreshView IsRefreshing="{Binding IsRefreshing}"
+					 Command="{Binding RefreshContractCommand}">
+			<ScrollView Grid.Row="0"
+						Padding="{DynamicResource MediumBottomMargins}">
+				<VerticalStackLayout Padding="{DynamicResource MediumLeftRightMargins}"
+									 Spacing="{DynamicResource MediumSpacing}">
+					<!-- TOP Set, name of contract etc -->
+					<Border Style="{DynamicResource BorderSet}"
+							Margin="0">
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+							<Border Style="{DynamicResource AccentInfoBorder}"
+									Padding="{DynamicResource SmallMargins}"
+									IsVisible="{Binding IsProposal}">
+								<Grid ColumnDefinitions="auto, *">
+									<Path Grid.Column="0"
+										  HorizontalOptions="Center"
+										  VerticalOptions="Center"
+										  Data="{x:Static ui:Geometries.InfoCirclePath}"
+										  HeightRequest="16"
+										  WidthRequest="16"
+										  Aspect="Uniform"
+										  Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}" />
+									<Label Grid.Column="1"
+										   Style="{DynamicResource AccentInfoLabel}"
+										   VerticalOptions="Start"
+										   VerticalTextAlignment="Start"
+										   Margin="{DynamicResource SmallLeftMargins}"
+										   Text="{l:Localize InvitationToSign}" />
 
-							</Grid>
-						</Border>
-						<!--
+								</Grid>
+							</Border>
+							<!--
 						<Label Text="{Binding Path=Contract.Category}"
 								Margin="{DynamicResource SmallSpacing}"
 								Style="{DynamicResource PageTitleLabel}"
 								HorizontalTextAlignment="Center"/>
 -->
-						<Image x:Name="QrCode"
-								 Source="{Binding QrCode}"
-								 IsVisible="{Binding HasQrCode}"
-								 WidthRequest="{Binding QrCodeWidth}"
-								 HeightRequest="{Binding QrCodeHeight}"
-								 HorizontalOptions="Center">
-							<Image.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding CopyCommand}"
-															 CommandParameter="{Binding Contract.ContractId}" />
-							</Image.GestureRecognizers>
-						</Image>
 
-						<Border Style="{DynamicResource BorderSubSet}"
-								  Margin="0">
-							<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-								<Grid ColumnDefinitions="auto, *"
-										ColumnSpacing="{DynamicResource MediumSpacing}">
-									<Label Grid.Column="0"
-											 Text="{l:Localize Title}"
-											 Style="{DynamicResource ItemTitleLabel}" />
-									<Label Grid.Column="1"
-											 Text="{Binding Path=Contract.Category}"
-											 Style="{DynamicResource ItemValueLabel}" />
-								</Grid>
 
-								<Grid ColumnDefinitions="auto, *">
-									<Label Grid.Column="0"
-											 Text="{l:Localize Status}"
-											 Style="{DynamicResource ItemTitleLabel}" />
-									<controls:TemplateSelectorContentView Grid.Column="1"
-																					  Item="{Binding Contract}"
-																					  TemplateSelector="{DynamicResource ContractStateSelector}" />
-								</Grid>
+							<Border Style="{DynamicResource BorderSubSet}"
+									Margin="0">
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+									<Grid ColumnDefinitions="auto, *"
+										  ColumnSpacing="{DynamicResource MediumSpacing}">
+										<Label Grid.Column="0"
+											   Text="{l:Localize Title}"
+											   Style="{DynamicResource ItemTitleLabel}" />
+										<Label Grid.Column="1"
+											   Text="{Binding Path=Contract.Category}"
+											   Style="{DynamicResource ItemValueLabel}" />
+									</Grid>
 
-								<Grid ColumnDefinitions="auto, *">
-									<Label Grid.Column="0"
-											 Text="{l:Localize Visibility}"
-											 Style="{DynamicResource ItemTitleLabel}" />
-									<Label Grid.Column="1"
-											 Text="{Binding Visibility}"
-											 Style="{DynamicResource ItemValueLabel}" />
-								</Grid>
-							</VerticalStackLayout>
+									<Grid ColumnDefinitions="auto, *">
+										<Label Grid.Column="0"
+											   Text="{l:Localize Status}"
+											   Style="{DynamicResource ItemTitleLabel}" />
+										<controls:TemplateSelectorContentView Grid.Column="1"
+																			  Item="{Binding Contract}"
+																			  TemplateSelector="{DynamicResource ContractStateSelector}" />
+									</Grid>
 
-						</Border>
-					</VerticalStackLayout>
+									<Grid ColumnDefinitions="auto, *">
+										<Label Grid.Column="0"
+											   Text="{l:Localize Visibility}"
+											   Style="{DynamicResource ItemTitleLabel}" />
+										<Label Grid.Column="1"
+											   Text="{Binding Visibility}"
+											   Style="{DynamicResource ItemValueLabel}" />
+									</Grid>
+								</VerticalStackLayout>
 
-				</Border>
+							</Border>
 
-				<!-- Parameters Button -->
-				<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractEditPath}"
-												  TopLabelText="{l:Localize ViewParametersTitle}"
-												  BottomLabelText="{l:Localize ViewParametersDescription}"
-												  Command="{Binding GoToParametersCommand}" />
+							<Image x:Name="QrCode"
+								   Source="{Binding QrCode}"
+								   IsVisible="{Binding HasQrCode}"
+								   WidthRequest="{Binding QrCodeWidth}"
+								   HeightRequest="{Binding QrCodeHeight}"
+								   HorizontalOptions="Center">
+								<Image.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyCommand}"
+														  CommandParameter="{Binding Contract.ContractId}" />
+								</Image.GestureRecognizers>
+							</Image>
+						</VerticalStackLayout>
 
-				<!-- Roles Button -->
-				<views:OverviewItemButton IconData="{x:Static ui:Geometries.RolesPath}"
-												  TopLabelText="{l:Localize ViewRolesTitle}"
-												  BottomLabelText="{l:Localize ViewRolesDescription}"
-												  Command="{Binding GoToRolesCommand}" />
+					</Border>
 
-				<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractPath}"
-												  TopLabelText="{l:Localize ReviewContractTitle}"
-												  BottomLabelText="{l:Localize ReviewContractDescription2}"
-												  Command="{Binding GoToReviewCommand}" />
+					<!-- Parameters Button -->
+					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractEditPath}"
+											  TopLabelText="{l:Localize ViewParametersTitle}"
+											  BottomLabelText="{l:Localize ViewParametersDescription}"
+											  Command="{Binding GoToParametersCommand}" />
 
-				<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractIconPath}"
-												  TopLabelText="{l:Localize ServerSignatureButtonTitle}"
-												  BottomLabelText="{l:Localize ServerSignatureButtonDescription}"
-												  Command="{Binding OpenServerSignatureCommand}" />
+					<!-- Roles Button -->
+					<views:OverviewItemButton IconData="{x:Static ui:Geometries.RolesPath}"
+											  TopLabelText="{l:Localize ViewRolesTitle}"
+											  BottomLabelText="{l:Localize ViewRolesDescription}"
+											  Command="{Binding GoToRolesCommand}" />
 
-				<controls:TextButton LabelData="{l:Localize ObsoleteContract}"
-				                     Style="{DynamicResource FilledTextButtonNoRoundedCorners}"
-				                     Command="{Binding Path=ObsoleteContractCommand}"
-				                     IsVisible="{Binding Path=CanObsoleteContract}"
-				                     Margin="{DynamicResource SmallTopBottomMargins}" />
-				<controls:TextButton LabelData="{l:Localize DeleteContract}"
-				                     Style="{DynamicResource FilledTextButtonNoRoundedCorners}"
-				                     Command="{Binding Path=DeleteContractCommand}"
-				                     IsVisible="{Binding Path=CanDeleteContract}"
-				                     Margin="{DynamicResource SmallBottomMargins}" />
+					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractPath}"
+											  TopLabelText="{l:Localize ReviewContractTitle}"
+											  BottomLabelText="{l:Localize ReviewContractDescription2}"
+											  Command="{Binding GoToReviewCommand}" />
 
-			</VerticalStackLayout>
-		</ScrollView>
+					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractIconPath}"
+											  TopLabelText="{l:Localize ServerSignatureButtonTitle}"
+											  BottomLabelText="{l:Localize ServerSignatureButtonDescription}"
+											  Command="{Binding OpenServerSignatureCommand}" />
+
+					<controls:TextButton LabelData="{l:Localize ObsoleteContract}"
+										 Style="{DynamicResource FilledTextButtonNoRoundedCorners}"
+										 Command="{Binding Path=ObsoleteContractCommand}"
+										 IsVisible="{Binding Path=CanObsoleteContract}"
+										 Margin="{DynamicResource SmallTopBottomMargins}" />
+					<controls:TextButton LabelData="{l:Localize DeleteContract}"
+										 Style="{DynamicResource FilledTextButtonDecline}"
+										 Command="{Binding Path=DeleteContractCommand}"
+										 IsVisible="{Binding Path=CanDeleteContract}"
+										 Margin="{DynamicResource SmallBottomMargins}" />
+
+				</VerticalStackLayout>
+			</ScrollView>
+		</RefreshView>
 
 		<!-- BOTTOM BAR -->
 		<Grid Grid.Row="1"
