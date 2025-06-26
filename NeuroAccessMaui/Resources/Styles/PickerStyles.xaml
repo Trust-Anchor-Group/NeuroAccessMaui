@@ -48,7 +48,7 @@
 		   TargetType="Label"
 		   BaseResourceKey="BoldItemTitleLabel">
 		<Setter Property="TextColor"
-				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentSubheadLight}, Dark={DynamicResource InputFieldsContentSubheadDark}}" />
+				Value="{DynamicResource InputFieldsContentSubhead}" />
 		<Setter Property="FontSize"
 				Value="15" />
 		<Setter Property="FontFamily"
@@ -67,7 +67,7 @@
 		   ApplyToDerivedTypes="True"
 		   BaseResourceKey="BaseCompositeInputView">
 		<Setter Property="TextColor"
-				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+				Value="{DynamicResource InputFieldsContentPrimary}" />
 		<Setter Property="PickerStyle"
 				Value="{DynamicResource RegularCompositeDatePickerPicker}" />
 		<Setter Property="LabelStyle"
@@ -79,7 +79,7 @@
 					 Property="IsValid"
 					 Value="False">
 				<Setter Property="TextColor"
-						Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
+						Value="{DynamicResource InputFieldsContentDangerv500}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>
@@ -89,7 +89,7 @@
 		   TargetType="controls:CompositePicker"
 		   ApplyToDerivedTypes="True">
 		<Setter Property="TextColor"
-				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+				Value="{DynamicResource InputFieldsContentPrimary}" />
 		<Setter Property="PickerStyle"
 				Value="{DynamicResource RegularCompositePickerPicker}" />
 		<Setter Property="LabelStyle"
@@ -97,11 +97,11 @@
 		<Setter Property="ValidationLabelStyle"
 				Value="{DynamicResource RegularCompositeInputViewLabel}" />
 		<Setter Property="ValidationColor"
-				Value="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}" />
+				Value="{DynamicResource TnPDangerbgWL}" />
 		<Setter Property="BorderBackground"
-				Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceBackgroundActiveLight}, Dark={DynamicResource InputFieldsSurfaceBackgroundActiveDark}}" />
+				Value="{DynamicResource InputFieldsSurfaceBackgroundActive}" />
 		<Setter Property="BorderStroke"
-				Value="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceStrokeLight}, Dark={DynamicResource InputFieldsSurfaceStrokeDark}}" />
+				Value="{DynamicResource InputFieldsSurfaceStroke}" />
 		<Setter Property="BorderShadow"
 				Value="{x:Null}" />
 		<Setter Property="BorderStrokeShape">
@@ -114,9 +114,9 @@
 					 Property="IsValid"
 					 Value="False">
 				<Setter Property="TextColor"
-						Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
+						Value="{DynamicResource InputFieldsContentDangerv500}" />
 				<Setter Property="BorderStroke"
-						Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
+						Value="{DynamicResource InputFieldsContentDangerv500}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

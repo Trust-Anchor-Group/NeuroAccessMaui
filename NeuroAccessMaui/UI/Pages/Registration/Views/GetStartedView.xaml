@@ -18,22 +18,22 @@
 
 		<!-- Info Bubble-->
 		<Border Grid.Row="0"
-					BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
+					BackgroundColor="{DynamicResource TnPInfobgWL}"
 					Padding="{DynamicResource MediumMargins}"
 					StrokeShape="RoundRectangle 8,8,0,8">
 			<Border.Shadow>
-				<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+				<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
 			</Border.Shadow>
 			<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
 					ColumnDefinitions="auto, *">
 				<Path
 						Grid.Column="0"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+						Fill="{DynamicResource TnPInfoContentWL}"/>
 				<Label
 						Grid.Column="1"
 						Text="{l:Localize ScanInvitationInfo}"
-						TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+						TextColor="{DynamicResource TnPInfoContentWL}"/>
 			</Grid>
 		</Border>
 

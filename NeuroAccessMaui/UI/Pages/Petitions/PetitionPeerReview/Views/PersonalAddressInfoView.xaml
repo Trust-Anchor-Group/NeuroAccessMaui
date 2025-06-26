@@ -74,7 +74,7 @@
 
 		<VerticalStackLayout HeightRequest="{DynamicResource MediumSpacing}"/>
 
-		<Rectangle BackgroundColor="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}"
+		<Rectangle BackgroundColor="{DynamicResource ButtonUniversalbgInactiveWL}"
 					  WidthRequest="250" HeightRequest="2"/>
 
 		<Grid ColumnDefinitions="auto,*" RowDefinitions="auto" ColumnSpacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumMargins}">

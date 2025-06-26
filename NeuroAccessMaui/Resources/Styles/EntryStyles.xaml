@@ -8,9 +8,9 @@
 	<Style ApplyToDerivedTypes="True"
 		   TargetType="Entry">
 		<Setter Property="TextColor"
-				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+				Value="{DynamicResource InputFieldsContentPrimary}" />
 		<Setter Property="PlaceholderColor"
-				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentSecondaryLight}, Dark={DynamicResource InputFieldsContentSecondaryDark}}" />
+				Value="{DynamicResource InputFieldsContentSecondary}" />
 		<Setter Property="FontFamily"
 				Value="HaasGroteskRegular" />
 		<Setter Property="FontSize"
@@ -37,7 +37,7 @@
 		   TargetType="Label"
 		   BaseResourceKey="BoldItemTitleLabel">
 		<Setter Property="TextColor"
-				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+				Value="{DynamicResource InputFieldsContentPrimary}" />
 		<Setter Property="FontSize"
 				Value="15" />
 		<Setter Property="FontFamily"
@@ -53,7 +53,7 @@
 	<Style x:Key="RegularCompositeEntryEntry"
 		   TargetType="Entry">
 		<Setter Property="PlaceholderColor"
-				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentSecondaryLight}, Dark={DynamicResource InputFieldsContentSecondaryDark}}" />
+				Value="{DynamicResource InputFieldsContentSecondary}" />
 		<Setter Property="FontFamily"
 				Value="HaasGroteskRegular" />
 		<Setter Property="FontSize"
@@ -65,7 +65,7 @@
 		   TargetType="controls:CompositeEntry"
 		   BaseResourceKey="BaseCompositeInputView">
 		<Setter Property="TextColor"
-				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+				Value="{DynamicResource InputFieldsContentPrimary}" />
 		<Setter Property="EntryStyle"
 				Value="{DynamicResource RegularCompositeEntryEntry}" />
 		<Setter Property="LabelStyle"
@@ -73,7 +73,7 @@
 		<Setter Property="ValidationLabelStyle"
 				Value="{DynamicResource RegularCompositeInputViewValidationLabel}" />
 		<Setter Property="ValidationColor"
-				Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
+				Value="{DynamicResource InputFieldsContentDangerv500}" />
 		<!-- Border properties are inherited from BaseCompositeInputView -->
 
 		<Style.Triggers>
@@ -81,13 +81,13 @@
 					 Property="IsValid"
 					 Value="False">
 				<Setter Property="TextColor"
-						Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
+						Value="{DynamicResource InputFieldsContentDangerv500}" />
 			</Trigger>
 			<Trigger TargetType="controls:CompositeEntry"
 					 Property="IsValid"
 					 Value="True">
 				<Setter Property="TextColor"
-						Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+						Value="{DynamicResource InputFieldsContentPrimary}" />
 			</Trigger>
 		</Style.Triggers>
 	</Style>

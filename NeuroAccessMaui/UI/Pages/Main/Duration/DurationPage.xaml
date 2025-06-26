@@ -13,7 +13,7 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Duration"
 							 xmlns:data="clr-namespace:NeuroAccessMaui.Services.Data"
 							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 

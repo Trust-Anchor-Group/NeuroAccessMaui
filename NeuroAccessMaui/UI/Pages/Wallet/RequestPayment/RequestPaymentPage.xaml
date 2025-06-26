@@ -11,7 +11,7 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.RequestPayment">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -25,7 +25,7 @@
 				<Frame Style="{DynamicResource FrameSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<VerticalStackLayout Margin="{DynamicResource SmallMargins}"
-                         BackgroundColor="{AppThemeBinding Light={DynamicResource PageBackgroundColorLightTheme}, Dark={DynamicResource PageBackgroundColorDarkTheme}}">
+                         BackgroundColor="{DynamicResource PageBackgroundColorLightTheme}">
 							<Label Text="{l:Localize RequestPayment}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize RequestPaymentDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
 							<!-- Note -->
@@ -56,7 +56,7 @@
 							<!-- BUTTONS -->
 							<controls:TextButton LabelData="{l:Localize GenerateQrCode}" Command="{Binding Path=GenerateQrCodeCommand}"
 														Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
-							<Image x:Name="QrCode" BackgroundColor="{DynamicResource SurfaceBackgroundWLLight}" Source="{Binding Path=QrCode}" 
+							<Image x:Name="QrCode" BackgroundColor="{DynamicResource SurfaceBackgroundWL}" Source="{Binding Path=QrCode}" 
                        IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
                        HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
                        Margin="0" />

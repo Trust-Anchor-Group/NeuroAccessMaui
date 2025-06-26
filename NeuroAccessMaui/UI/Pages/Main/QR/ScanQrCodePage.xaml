@@ -23,7 +23,7 @@
 						<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{DynamicResource FilledImageButton}"
 													 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 						<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{DynamicResource PageTitleLabel}"
-								 Text="{Binding LocalizedQrPageTitle}" TextColor="{DynamicResource SurfaceBackgroundWLLight}" />
+								 Text="{Binding LocalizedQrPageTitle}" TextColor="{DynamicResource SurfaceBackgroundWL}" />
 					</VerticalStackLayout>
 
 					<VerticalStackLayout VerticalOptions="End" Spacing="{DynamicResource LargeSpacing}">
@@ -42,11 +42,11 @@
 							</FlexLayout>
 
 							<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{DynamicResource SectionTitleLabel}"
-									 Text="{l:Localize QrSectionTitleSingular}" TextColor="{DynamicResource SurfaceBackgroundWLLight}"
+									 Text="{l:Localize QrSectionTitleSingular}" TextColor="{DynamicResource SurfaceBackgroundWL}"
 									 IsVisible="{Binding SingleIcon}"/>
 
 							<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{DynamicResource SectionTitleLabel}"
-									 Text="{l:Localize QrSectionTitlePlural}" TextColor="{DynamicResource SurfaceBackgroundWLLight}"
+									 Text="{l:Localize QrSectionTitlePlural}" TextColor="{DynamicResource SurfaceBackgroundWL}"
 									 IsVisible="{Binding MultipleIcons}"/>
 						</VerticalStackLayout>
 

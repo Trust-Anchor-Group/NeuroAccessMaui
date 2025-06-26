@@ -26,10 +26,8 @@
 		<DataTemplate x:Key="SelectLanguageDataTemplate"
 						  x:DataType="viewModel:ObservableLanguage">
 			<Border x:Name="ItemBorder"
-			        BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight},
-                                              Dark={DynamicResource SurfaceBackgroundWLDark}}"
-			        Stroke="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight},
-                                     Dark={DynamicResource SurfaceBackgroundWLDark}}"
+			        BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+			        Stroke="{DynamicResource SurfaceBackgroundWL}"
 			        Style="{DynamicResource ItemOuterBorder}">
 				<Border.Triggers>
 					<!-- When IsSelected is true, update appearance -->
@@ -37,9 +35,9 @@
 					             Binding="{Binding IsSelected}"
 					             Value="True">
 						<Setter Property="BackgroundColor"
-						        Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLDark}, Dark={DynamicResource SurfaceBackgroundWLLight}}" />
+						        Value="{DynamicResource SurfaceBackgroundWL}" />
 						<Setter Property="Stroke"
-						        Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLDark}, Dark={DynamicResource SurfaceBackgroundWLLight}}" />
+						        Value="{DynamicResource SurfaceBackgroundWL}" />
 					</DataTrigger>
 				</Border.Triggers>
 				<Border.GestureRecognizers>
@@ -50,14 +48,13 @@
 						 HorizontalOptions="Center"
 						 Style="{DynamicResource BoldItemTitleLabel}"
 						 Text="{Binding Language.MyNativeName}"
-						 TextColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLDark},
-                                           Dark={DynamicResource SurfaceBackgroundWLLight}}">
+						 TextColor="{DynamicResource SurfaceBackgroundWL}">
 					<Label.Triggers>
 						<DataTrigger TargetType="Label"
 						             Binding="{Binding IsSelected}"
 						             Value="True">
 							<Setter Property="TextColor"
-									  Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}" />
+									  Value="{DynamicResource SurfaceBackgroundWL}" />
 						</DataTrigger>
 					</Label.Triggers>
 				</Label>
