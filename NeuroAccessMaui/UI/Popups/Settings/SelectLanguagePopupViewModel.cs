@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 
@@ -58,6 +59,13 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 				Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
 				LocalizationManager.Current.CurrentCulture = SelectedLanguage;
 			}
+
+			// Display an alert that the language has been changed. And app should be restarted to make sure the changes are applied properly
+			await ServiceRef.UiService.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.LanguageChangedTitle)],
+				ServiceRef.Localizer[nameof(AppResources.LanguageChangedMessage)],
+				ServiceRef.Localizer[nameof(AppResources.Ok)]
+			);
 
 			// Dismiss the popup via the UI service.
 			await ServiceRef.UiService.PopAsync();

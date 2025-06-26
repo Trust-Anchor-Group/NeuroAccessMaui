@@ -2816,4 +2816,10 @@
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Tar bort tillfälliga data som bilder och bilagor för att frigöra utrymme</value>
   </data>
+  <data name="LanguageChangedTitle" xml:space="preserve">
+    <value>Språk ändrat</value>
+  </data>
+  <data name="LanguageChangedMessage" xml:space="preserve">
+    <value>Språket har ändrats. Starta om appen för att säkerställa att alla ändringar tillämpas.</value>
+  </data>
 </root>

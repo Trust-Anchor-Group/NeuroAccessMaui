@@ -2816,4 +2816,10 @@
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Elimina datos temporales como imágenes y archivos adjuntos para liberar espacio</value>
   </data>
+  <data name="LanguageChangedTitle" xml:space="preserve">
+    <value>Idioma cambiado</value>
+  </data>
+  <data name="LanguageChangedMessage" xml:space="preserve">
+    <value>El idioma ha sido cambiado. Por favor, reinicie la aplicación para asegurarse de que se apliquen todos los cambios.</value>
+  </data>
 </root>
