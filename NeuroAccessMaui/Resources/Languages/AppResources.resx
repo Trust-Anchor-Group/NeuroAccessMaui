@@ -2861,4 +2861,10 @@
   <data name="CacheCleared" xml:space="preserve">
     <value>Cache cleared</value>
   </data>
+  <data name="LanguageChangedTitle" xml:space="preserve">
+   <value>Language changed</value>
+  </data>
+  <data name="LanguageChangedMessage" xml:space="preserve">
+   <value>Please restart the app to ensure all text changes language properly</value>
+  </data>
 </root>
