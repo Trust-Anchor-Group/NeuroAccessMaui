@@ -7,7 +7,8 @@
 					xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 					xmlns:extended="clr-namespace:NeuroAccessMaui.UI.Controls.Extended"
 					xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-					xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization">
+					xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
 	
 	<converters:HyphenIfEmpty x:Key="HyphenIfEmptyConverter" />
 
@@ -76,6 +77,14 @@
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
+				<controls:TemplatedButton Command="{Binding ShowErrorCommand}"
+										  IsVisible="{Binding CanShowError}"
+										  HeightRequest="24"
+										  WidthRequest="24"
+										  HorizontalOptions="End">
+					<controls:SvgView Source="help.svg"
+									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -121,6 +130,10 @@
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
+				<controls:TemplatedButton Command="{Binding ShowErrorCommand}" IsVisible="{Binding CanShowError}" HeightRequest="24" WidthRequest="24" HorizontalOptions="End">
+					<controls:SvgView Source="help.svg"
+									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -164,6 +177,14 @@
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
+				<controls:TemplatedButton Command="{Binding ShowErrorCommand}"
+										  IsVisible="{Binding CanShowError}"
+										  HeightRequest="24"
+										  WidthRequest="24"
+										  HorizontalOptions="End">
+					<controls:SvgView Source="help.svg"
+									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -205,6 +226,14 @@
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
+				<controls:TemplatedButton Command="{Binding ShowErrorCommand}"
+										  IsVisible="{Binding CanShowError}"
+										  HeightRequest="24"
+										  WidthRequest="24"
+										  HorizontalOptions="End">
+					<controls:SvgView Source="help.svg"
+									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -246,6 +275,14 @@
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
+				<controls:TemplatedButton Command="{Binding ShowErrorCommand}"
+										  IsVisible="{Binding CanShowError}"
+										  HeightRequest="24"
+										  WidthRequest="24"
+										  HorizontalOptions="End">
+					<controls:SvgView Source="help.svg"
+									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -288,6 +325,14 @@
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
+				<controls:TemplatedButton Command="{Binding ShowErrorCommand}"
+										  IsVisible="{Binding CanShowError}"
+										  HeightRequest="24"
+										  WidthRequest="24"
+										  HorizontalOptions="End">
+					<controls:SvgView Source="help.svg"
+									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -355,6 +400,14 @@
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
+				<controls:TemplatedButton Command="{Binding ShowErrorCommand}"
+										  IsVisible="{Binding CanShowError}"
+										  HeightRequest="24"
+										  WidthRequest="24"
+										  HorizontalOptions="End">
+					<controls:SvgView Source="help.svg"
+									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -424,6 +477,14 @@
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
+				<controls:TemplatedButton Command="{Binding ShowErrorCommand}"
+										  IsVisible="{Binding CanShowError}"
+										  HeightRequest="24"
+										  WidthRequest="24"
+										  HorizontalOptions="End">
+					<controls:SvgView Source="help.svg"
+									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -467,6 +528,14 @@
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
+				<controls:TemplatedButton Command="{Binding ShowErrorCommand}"
+										  IsVisible="{Binding CanShowError}"
+										  HeightRequest="24"
+										  WidthRequest="24"
+										  HorizontalOptions="End">
+					<controls:SvgView Source="help.svg"
+									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
@@ -513,6 +582,16 @@
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
+				<controls:TemplatedButton Command="{Binding ShowErrorCommand}"
+										  IsVisible="{Binding CanShowError}"
+										  HeightRequest="24"
+										  WidthRequest="24"
+										  HorizontalOptions="End">
+					<controls:SvgView Source="help.svg"
+									  HeightRequest="24"
+									  WidthRequest="24"
+									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
