@@ -393,7 +393,7 @@
                 Padding="0"
                 HorizontalOptions="Center"
                 Spacing="{DynamicResource SmallSpacing}">
-                <Grid HeightRequest="200" WidthRequest="200">
+                <Grid HeightRequest="{Binding ProfileImageSideLength}" WidthRequest="{Binding ProfileImageSideLength}">
                     <controls:ConditionView Condition="{Binding LoadPhotosTask.IsRunning}">
                         <controls:ConditionView.True>
                             <ActivityIndicator
@@ -409,9 +409,9 @@
                                     <controls:ConditionView.True>
                                         <Image
                                             Aspect="AspectFit"
-                                            HeightRequest="200"
+                                            HeightRequest="{Binding ProfileImageSideLength}"
                                             Source="{Binding ProfilePhoto}"
-                                            WidthRequest="200" />
+                                            WidthRequest="{Binding ProfileImageSideLength}" />
                                     </controls:ConditionView.True>
                                     <controls:ConditionView.False>
                                         <controls:SvgView
