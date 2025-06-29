@@ -1,6 +1,7 @@
-﻿using System.Text;
+using System.Text;
 using NeuroAccessMaui.Services;
 using Waher.Events;
+using Waher.Script.Content.Functions.InputOutput;
 
 namespace NeuroAccessMaui.UI
 {
@@ -18,6 +19,7 @@ namespace NeuroAccessMaui.UI
 		private static Thickness? smallTopMargins;
 		private static Thickness? smallLeftMargins;
 		private static Thickness? smallRightMargins;
+		private static Thickness? smallMargins;
 		private static Style? sectionTitleLabelStyle;
 		private static Style? keyLabel;
 		private static Style? valueLabel;
@@ -28,22 +30,36 @@ namespace NeuroAccessMaui.UI
 		private static Style? frameSet;
 		private static Style? frameSubSet;
 		private static Style? clickableFrameSubSet;
+		private static Style? regularCompositePicker;
 		private static Style? regularCompositeEntry;
 		private static Style? regularCompositeEntryBorder;
 		private static Style? regularCompositeDatePicker;
-		private static Style? unicodeCharacterButton;
 		private static Style? imageOnlyButton;
-		private static Style? transparentImageButton;
 		private static Style? sendFrame;
 		private static Style? receiveFrame;
 		private static Style? requiredFieldMarker;
 		private static Style? requiredFieldMarkerSpan;
+		private static Style? tableCellEven;
+		private static Style? tableCellOdd;
+		private static Style? tableCell;
+		private static Style?[] headers;
 		private static Style? roundedBorder;
-
+		private static Style? baseCompositeInputView;
+		private static Style? borderSet;
+		private static Style? bottomBarBorder;
+		private static Style? tertiaryButton;
+		private static Style? transparentTemplateButtonBorder;
+		private static Style? transparentTemplateButtonLabel;
+		private static Style? transparentTemplateButtonPath;
+		private static Style? secondaryButton;
+		private static Style? secondaryImageButton;
+		private static Style? neuroIconButton;
+		private static Style? neuroIconButtonDisabled;
 
 		static AppStyles()
 		{
 			Log.Terminating += Log_Terminating;
+			headers = new Style[9];
 		}
 
 		private static Task Log_Terminating(object? sender, EventArgs e)
@@ -167,6 +183,18 @@ namespace NeuroAccessMaui.UI
 			{
 				smallRightMargins ??= TryGetResource<Thickness>("SmallRightMargins");
 				return smallRightMargins.Value;
+			}
+		}
+
+		/// <summary>
+		/// Small margins
+		/// </summary>
+		public static Thickness SmallMargins
+		{
+			get
+			{
+				smallMargins ??= TryGetResource<Thickness>("SmallMargins");
+				return smallMargins.Value;
 			}
 		}
 
@@ -327,18 +355,6 @@ namespace NeuroAccessMaui.UI
 		}
 
 		/// <summary>
-		/// Style for buttons containing a single Unicode character.
-		/// </summary>
-		public static Style UnicodeCharacterButton
-		{
-			get
-			{
-				unicodeCharacterButton ??= TryGetResource<Style>("UnicodeCharacterButtonNoRoundedCorners");  // TODO: Remove NoRoundedCorners
-				return unicodeCharacterButton!;
-			}
-		}
-
-		/// <summary>
 		/// Style for buttons containing only an image.
 		/// </summary>
 		public static Style ImageOnlyButton
@@ -351,14 +367,14 @@ namespace NeuroAccessMaui.UI
 		}
 
 		/// <summary>
-		/// Style for transparent image buttons.
+		/// Style for secondary image buttons.
 		/// </summary>
-		public static Style TransparentImageButton
+		public static Style SecondaryImageButton
 		{
 			get
 			{
-				transparentImageButton ??= TryGetResource<Style>("TransparentImageButton");
-				return transparentImageButton!;
+				secondaryImageButton ??= TryGetResource<Style>("SecondaryImageButton");
+				return secondaryImageButton!;
 			}
 		}
 
@@ -410,12 +426,190 @@ namespace NeuroAccessMaui.UI
 			}
 		}
 
+		/// <summary>
+		/// Style for even table cells
+		/// </summary>
+		public static Style TableCellEven
+		{
+			get
+			{
+				tableCellEven ??= TryGetResource<Style>("TableCellEven");
+				return tableCellEven!;
+			}
+		}
+
+		/// <summary>
+		/// Style for odd table cells
+		/// </summary>
+		public static Style TableCellOdd
+		{
+			get
+			{
+				tableCellOdd ??= TryGetResource<Style>("TableCellOdd");
+				return tableCellOdd!;
+			}
+		}
+
+		/// <summary>
+		/// Style for table cells
+		/// </summary>
+		public static Style TableCell
+		{
+			get
+			{
+				tableCell ??= TryGetResource<Style>("TableCell");
+				return tableCell!;
+			}
+		}
+
+		/// <summary>
+		/// Get style for header of certain size
+		/// </summary>
+		public static Style GetHeaderStyle(int x)
+		{
+			headers[x - 1] ??= TryGetResource<Style>($"Header{x}");
+
+			return headers[x - 1]!;
+		}
+
 		public static Style RoundedBorder
 		{
 			get
 			{
 				roundedBorder ??= TryGetResource<Style>("RoundedBorder");
 				return roundedBorder!;
+			}
+		}
+
+		/// <summary>
+		/// Style for regular composite pickers
+		/// </summary>
+		public static Style RegularCompositePicker
+		{
+			get
+			{
+				regularCompositePicker ??= TryGetResource<Style>("RegularCompositePicker");
+				return regularCompositePicker!;
+			}
+		}
+
+		/// <summary>
+		/// Style for base composite input view
+		/// </summary>
+		public static Style BaseCompositeInputView
+		{
+			get
+			{
+				baseCompositeInputView ??= TryGetResource<Style>("BaseCompositeInputView");
+				return baseCompositeInputView!;
+			}
+		}
+
+		/// <summary>
+		/// Style for border set
+		/// </summary>
+		public static Style BorderSet
+		{
+			get
+			{
+				borderSet ??= TryGetResource<Style>("BorderSet");
+				return borderSet!;
+			}
+		}
+
+		/// <summary>
+		/// Style for bottom bar border
+		/// </summary>
+		public static Style BottomBarBorder
+		{
+			get
+			{
+				bottomBarBorder ??= TryGetResource<Style>("BottomBarBorder");
+				return bottomBarBorder!;
+			}
+		}
+
+		/// <summary>
+		/// Style for Tertiary Button
+		/// </summary>
+		public static Style TertiaryButton
+		{
+			get
+			{
+				tertiaryButton ??= TryGetResource<Style>("TertiaryButton");
+				return tertiaryButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for transparent template button border
+		/// </summary>
+		public static Style TransparentTemplateButtonBorder
+		{
+			get
+			{
+				transparentTemplateButtonBorder ??= TryGetResource<Style>("TransparentTemplateButtonBorder");
+				return transparentTemplateButtonBorder!;
+			}
+		}
+
+		/// <summary>
+		/// Style for transparent template button label
+		/// </summary>
+		public static Style TransparentTemplateButtonLabel
+		{
+			get
+			{
+				transparentTemplateButtonLabel ??= TryGetResource<Style>("TransparentTemplateButtonLabel");
+				return transparentTemplateButtonLabel!;
+			}
+		}
+
+		/// <summary>
+		/// Style for transparent template button path
+		/// </summary>
+		public static Style TransparentTemplateButtonPath
+		{
+			get
+			{
+				transparentTemplateButtonPath ??= TryGetResource<Style>("TransparentTemplateButtonPath");
+				return transparentTemplateButtonPath!;
+			}
+		}
+
+		/// <summary>
+		/// Style for secondary button
+		/// </summary>
+		public static Style SecondaryButton
+		{
+			get
+			{
+				secondaryButton ??= TryGetResource<Style>("SecondaryButton");
+				return secondaryButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for NeuroIconButton
+		/// </summary>
+		public static Style NeuroIconButton
+		{
+			get
+			{
+				neuroIconButton ??= TryGetResource<Style>("NeuroIconButton");
+				return neuroIconButton!;
+			}
+		}
+
+		/// <summary>
+		/// Style for NeuroIconButtonDisabled
+		/// </summary>
+		public static Style NeuroIconButtonDisabled
+		{
+			get
+			{
+				neuroIconButtonDisabled ??= TryGetResource<Style>("NeuroIconButtonDisabled");
+				return neuroIconButtonDisabled!;
 			}
 		}
 	}

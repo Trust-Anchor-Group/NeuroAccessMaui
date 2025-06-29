@@ -16,7 +16,7 @@ namespace NeuroAccessMaui.Extensions
 		{
 			if (attachments is null)
 			{
-				return Enumerable.Empty<Attachment>();
+				return [];
 			}
 			return attachments.Where(x => x.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase));
 		}

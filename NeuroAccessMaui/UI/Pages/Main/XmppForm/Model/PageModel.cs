@@ -311,7 +311,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 			if (F.HasError)
 				return AppColors.ErrorBackground;
 			else if (F.NotSame)
-				return AppColors.DisabledFilledButtonBackground;
+				return AppColors.ButtonUniversalbgInactiveWL;
 			else
 				return null;
 		}

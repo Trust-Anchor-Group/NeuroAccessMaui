@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui
+namespace NeuroAccessMaui
 {
 	/// <summary>
 	/// A set of never changing property constants and helpful values.
@@ -257,6 +257,57 @@
 			/// </summary>
 			public const string OnboardingDomain = "onboarding.id.tagroot.io";
 		}
+
+		/// <summary>
+		/// Custom XMPP Protocol Properties.
+		/// </summary>
+		/// <remarks>
+		/// These are not standardized, but can be used for fully custom or conjugated properties (BDAY + BMONTH + BYEAR => BDATE)
+		/// </remarks>
+		public static class CustomXmppProperties
+		{
+			/// <summary>
+			/// Full birthday  
+			/// </summary>
+			public const string BirthDate = "BDATE";
+
+			/// <summary>
+			/// Identity ID
+			/// </summary>
+			public const string Neuro_Id = "IDENTITY_ID";
+
+			/// <summary>
+			/// Issuer / Provider
+			/// </summary>
+			public const string Provider = "IDENTITY_PROVIDER";
+
+			/// <summary>
+			/// Current state (Approved, Rejected, …)
+			/// </summary>
+			public const string State = "IDENTITY_STATE";
+
+			/// <summary>
+			/// When it was created
+			/// </summary>
+			public const string Created = "IDENTITY_CREATED";
+
+			/// <summary>
+			/// When it was last updated
+			/// </summary>
+			public const string Updated = "IDENTITY_UPDATED";
+
+			/// <summary>
+			/// “From” date
+			/// </summary>
+			public const string From = "IDENTITY_FROM";
+
+			/// <summary>
+			/// “To” / expiry date
+			/// </summary>
+			public const string To = "IDENTITY_TO";
+
+		}
+
 
 		/// <summary>
 		/// XMPP Protocol Properties.
@@ -535,6 +586,17 @@
 		}
 
 		/// <summary>
+		/// Generic delay intervals
+		/// </summary>
+		public static class Delays
+		{
+			/// <summary>
+			/// Default delay interval if waiting for something
+			/// </summary>
+			public static readonly TimeSpan Default = TimeSpan.FromMilliseconds(50);
+		}
+
+		/// <summary>
 		/// Timer Intervals
 		/// </summary>
 		public static class Intervals
@@ -548,6 +610,11 @@
 			/// Reconnect interval
 			/// </summary>
 			public static readonly TimeSpan Reconnect = TimeSpan.FromSeconds(10);
+
+			/// <summary>
+			/// Qr interval
+			/// </summary>
+			public static readonly TimeSpan Qr = TimeSpan.FromSeconds(5);
 
 			/// <summary>
 			/// Refresh interval for potentially missed messages
@@ -589,6 +656,12 @@
 			/// Download file timeout
 			/// </summary>
 			public static readonly TimeSpan DownloadFile = TimeSpan.FromSeconds(10);
+
+			/// <summary>
+			/// Allowed time to watch an Identity
+			/// </summary>
+			public static readonly TimeSpan IdentityAllowedWatch = TimeSpan.FromSeconds(60);
+
 		}
 
 		/// <summary>
@@ -901,6 +974,47 @@
 			public const string TransferIdCodeSent = "TransferId.CodesSent";
 		}
 
+		/// <summary>
+		/// Contains intent action constants used for inter-component communication within the app.
+		/// </summary>
+		public static class IntentActions
+		{
+			/// <summary>
+			/// Action used to open a URL, typically triggered by deep linking.
+			/// </summary>
+			public const string OpenUrl = "OpenUrl";
+
+			/// <summary>
+			/// Action triggered when an NFC tag is discovered.
+			/// </summary>
+			public const string NfcTagDiscovered = "NfcTagDiscovered";
+
+			/// <summary>
+			/// Action triggered when the app needs to navigate to a specific page.
+			/// </summary>
+			public const string Navigate = "Navigate";
+
+			// Add additional intent actions as needed.
+		}
+
+		/// <summary>
+		/// Image identifiers for branding.
+		/// </summary>
+		public static class Branding
+		{
+			/// <summary>
+			/// The default branding image.
+			/// </summary>
+			public const string BannerLargeLight = "banner_large_light";
+			public const string BannerLargeDark = "banner_large_dark";
+			public const string BannerSmallLight = "banner_small_light";
+			public const string BannerSmallDark = "banner_small_dark";
+			public const string LogoLight = "logo_light";
+			public const string LogoDark = "logo_dark";
+
+
+
+		}
 		public static class Debug
 		{
 			public const string LocalIpAddress = "10.0.2.2";

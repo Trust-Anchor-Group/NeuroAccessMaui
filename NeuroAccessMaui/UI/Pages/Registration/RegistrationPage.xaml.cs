@@ -80,8 +80,21 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 			{
 				if (ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 					ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;   // Prohibut screen capture in normal operation.
+				try
+				{
+					if (App.Current is not null)
+						await App.Current.InitCompleted;
 
-				await App.SetMainPageAsync();
+					// Wait for 3 seconds to allow the theme to be applied. otherwise continue with the default theme.
+					await Task.WhenAny(ServiceRef.ThemeService.ApplyProviderTheme(), Task.Delay(3000));
+				}
+				catch (Exception)
+				{
+				}
+				finally
+				{
+					await App.SetMainPageAsync();
+				}
 				return;
 			}
 

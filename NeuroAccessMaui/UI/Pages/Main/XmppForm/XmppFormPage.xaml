@@ -14,16 +14,16 @@
                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Main.XmppForm"
                       xmlns:model2="clr-namespace:NeuroAccessMaui.UI.Pages.Main.XmppForm.Model">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
-			<Grid RowDefinitions="auto, auto, *" RowSpacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<Grid RowDefinitions="auto, auto, *" RowSpacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 
-				<controls:ImageButton Grid.Row="0" HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
+				<controls:ImageButton Grid.Row="0" HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{DynamicResource ImageOnlyButton}"
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Grid.Row="1" Style="{StaticResource PageTitleLabel}" Text="{Binding Title}"/>
-				<Frame Grid.Row="2" Style="{StaticResource FrameSet}">
+				<Label Grid.Row="1" Style="{DynamicResource PageTitleLabel}" Text="{Binding Title}"/>
+				<Frame Grid.Row="2" Style="{DynamicResource FrameSet}">
 						<Grid RowDefinitions="auto,*,auto" HorizontalOptions="Fill" >
 							<VerticalStackLayout Grid.Row="0" BindableLayout.ItemsSource="{Binding Instructions}">
 								<BindableLayout.ItemTemplate>
@@ -53,8 +53,8 @@
 								</CollectionView.ItemTemplate>
 							</CollectionView>
 
-							<controls:TextButton Grid.Row="3" LabelData="{l:Localize Submit}" Style="{StaticResource FilledTextButton}"
-														Command="{Binding SubmitCommand}" IsEnabled="{Binding IsFormOk}" Margin="{StaticResource SmallMargins}"/>
+							<controls:TextButton Grid.Row="3" LabelData="{l:Localize Submit}" Style="{DynamicResource FilledTextButton}"
+														Command="{Binding SubmitCommand}" IsEnabled="{Binding IsFormOk}" Margin="{DynamicResource SmallMargins}"/>
 						</Grid>
 				</Frame>
 

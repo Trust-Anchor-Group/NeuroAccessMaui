@@ -1,6 +1,5 @@
-﻿using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.UI.Pages;
-using NeuroAccessMaui.Services.AttachmentCache;
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography;
@@ -10,6 +9,7 @@ using Waher.Content.Images.Exif;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Temporary;
+using NeuroAccessMaui.Services.Cache.AttachmentCache;
 
 namespace NeuroAccessMaui.Services.UI.Photos
 {
@@ -91,10 +91,10 @@ namespace NeuroAccessMaui.Services.UI.Photos
 				return null;
 			}
 
-			List<Attachment> attachmentsList = Attachments.GetImageAttachments().ToList();
-			List<string> newAttachmentIds = attachmentsList.Select(x => x.Id).ToList();
+			List<Attachment> AttachmentsList = Attachments.GetImageAttachments().ToList();
+			List<string> NewAttachmentIds = AttachmentsList.Select(x => x.Id).ToList();
 
-			if (this.attachmentIds.HasSameContentAs(newAttachmentIds))
+			if (this.attachmentIds.HasSameContentAs(NewAttachmentIds))
 			{
 				WhenDoneAction?.Invoke();
 
@@ -105,13 +105,13 @@ namespace NeuroAccessMaui.Services.UI.Photos
 			}
 
 			this.attachmentIds.Clear();
-			this.attachmentIds.AddRange(newAttachmentIds);
+			this.attachmentIds.AddRange(NewAttachmentIds);
 
 			Photo? First = null;
 
-			foreach (Attachment attachment in attachmentsList)
+			foreach (Attachment Attachment in AttachmentsList)
 			{
-				if (Array.IndexOf(ImageCodec.ImageContentTypes, attachment.ContentType) < 0)
+				if (Array.IndexOf(ImageCodec.ImageContentTypes, Attachment.ContentType) < 0)
 					continue;
 
 				if (this.loadPhotosTimestamp > Now)
@@ -126,12 +126,12 @@ namespace NeuroAccessMaui.Services.UI.Photos
 
 				try
 				{
-					(byte[]? Bin, string ContentType, int Rotation) = await this.GetPhoto(attachment, SignWith, Now);
+					(byte[]? Bin, string ContentType, int Rotation) = await this.GetPhoto(Attachment, SignWith, Now);
 
 					if (Bin is null)
 						continue;
 
-					Photo Photo = new(Bin, Rotation);
+					Photo Photo = new(Bin, Rotation, Attachment);
 					First ??= Photo;
 
 					if (Bin is not null)

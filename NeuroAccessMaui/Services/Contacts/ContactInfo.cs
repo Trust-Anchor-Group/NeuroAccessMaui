@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Resources.Languages;
+﻿using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using System.Globalization;
 using System.Text;
 using Waher.Networking.XMPP;
@@ -244,9 +245,9 @@ namespace NeuroAccessMaui.Services.Contacts
 		/// </summary>
 		/// <param name="LegalId">Legal ID</param>
 		/// <returns>Contact information, if found.</returns>
-		public static Task<ContactInfo> FindByLegalId(string LegalId)
+		public static async Task<ContactInfo?> FindByLegalId(string LegalId)
 		{
-			return Database.FindFirstIgnoreRest<ContactInfo>(new FilterFieldEqualTo("LegalId", LegalId));
+			return await Database.FindFirstIgnoreRest<ContactInfo>(new FilterFieldEqualTo("LegalId", LegalId));
 		}
 
 		/// <summary>
@@ -265,7 +266,7 @@ namespace NeuroAccessMaui.Services.Contacts
 				return ServiceRef.Localizer[nameof(AppResources.Me)];
 
 			string Account = RemoteId.Substring(0, i);
-			ContactInfo Info;
+			ContactInfo? Info;
 			bool AccountIsGuid;
 
 			if (AccountIsGuid = Guid.TryParse(Account, out Guid _))

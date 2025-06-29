@@ -18,7 +18,7 @@
 				ApplyToDerivedTypes="False"
 				BasedOn="{StaticResource PageTitleLabel}"
 				TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 				<Setter Property="FontFamily" Value="SpaceGroteskBold" />
 				<Setter Property="FontSize" Value="32" />
 			</Style>
@@ -26,30 +26,30 @@
 			<Style x:Key="PopupDetailsLabelStyle"
 				ApplyToDerivedTypes="False"
 				TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 			</Style>
 
 			<Style x:Key="PopupSectionTitleLabel"
 				ApplyToDerivedTypes="False"
 				BasedOn="{StaticResource SectionTitleLabel}"
 				TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 			</Style>
 
 			<Style x:Key="PopupOutlinedBorderStyle"
 				ApplyToDerivedTypes="False"
 				TargetType="Border">
-				<Setter Property="Padding" Value="{StaticResource SmallMargins}" />
-				<Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="Padding" Value="{DynamicResource SmallMargins}" />
+				<Setter Property="Stroke" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 				<Setter Property="StrokeShape">
-					<RoundRectangle CornerRadius="{StaticResource SmallCornerRadius}" />
+					<RoundRectangle CornerRadius="{DynamicResource SmallCornerRadius}" />
 				</Setter>
 			</Style>
 
 			<Style x:Key="PopupOutlinedLabelStyle"
 				ApplyToDerivedTypes="False"
 				TargetType="Label">
-				<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SecondaryForegroundLight}, Dark={StaticResource SecondaryForegroundDark}}" />
+				<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
 				<Setter Property="HorizontalOptions" Value="Center" />
 				<Setter Property="HorizontalTextAlignment" Value="Center" />
 				<Setter Property="FontFamily" Value="SpaceGroteskMedium" />
@@ -61,7 +61,7 @@
 							<VisualState x:Name="Normal" />
 							<VisualState x:Name="Disabled">
 								<VisualState.Setters>
-									<Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource NormalInfoForegroundLight}, Dark={StaticResource NormalInfoForegroundDark}}" />
+									<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}" />
 								</VisualState.Setters>
 							</VisualState>
 						</VisualStateGroup>
@@ -76,52 +76,54 @@
 
 		<Grid Grid.Row="0" RowDefinitions="auto" ColumnDefinitions="*">
 			<Grid.Padding>
-				<Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
+				<Thickness Left="{StaticResource LargeSpacing}"
+						   Top="{StaticResource LargeSpacing}"
+						   Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
-			<controls:ImageButton Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<controls:ImageButton Command="{Binding GoBackCommand}" Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 			<Image HorizontalOptions="Center" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />
 
 		</Grid>
 
 		<ScrollView Grid.Row="1">
-			<Grid RowDefinitions="auto,auto" Padding="{StaticResource LargeMargins}" RowSpacing="{StaticResource LargeSpacing}">
+			<Grid RowDefinitions="auto,auto" Padding="{DynamicResource LargeMargins}" RowSpacing="{DynamicResource LargeSpacing}">
 
-				<Grid Grid.Row="1" RowDefinitions="auto,auto" RowSpacing="{StaticResource LargeSpacing}">
-					<VerticalStackLayout Grid.Row="0" Spacing="{StaticResource LargeSpacing}">
-						<VerticalStackLayout Spacing="{StaticResource MediumSpacing}">
-							<Label Style="{StaticResource PopupTitleLabelStyle}" Text="{l:Localize OnboardingVerifyCodePageTitle}" />
-							<Label Style="{StaticResource PopupDetailsLabelStyle}" Text="{Binding LocalizedVerifyCodePageDetails}" />
+				<Grid Grid.Row="1" RowDefinitions="auto,auto" RowSpacing="{DynamicResource LargeSpacing}">
+					<VerticalStackLayout Grid.Row="0" Spacing="{DynamicResource LargeSpacing}">
+						<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+							<Label Style="{DynamicResource PopupTitleLabelStyle}" Text="{l:Localize OnboardingVerifyCodePageTitle}" />
+							<Label Style="{DynamicResource PopupDetailsLabelStyle}" Text="{Binding LocalizedVerifyCodePageDetails}" />
 							<Grid>
-								<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-									<Label Style="{StaticResource PopupSectionTitleLabel}" Text="{l:Localize VerifyCodeSectionTitle}" />
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+									<Label Style="{DynamicResource PopupSectionTitleLabel}" Text="{l:Localize VerifyCodeSectionTitle}" />
 									<Grid RowDefinitions="auto" ColumnDefinitions="auto,*,auto,*,auto,*,auto,*,auto,*,auto" ColumnSpacing="0">
 										<Grid.GestureRecognizers>
 											<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
 										</Grid.GestureRecognizers>
-										<Border Grid.Column="0" Style="{StaticResource PopupOutlinedBorderStyle}">
-											<Label x:Name="InnerCode1" Style="{StaticResource PopupOutlinedLabelStyle}" />
+										<Border Grid.Column="0" Style="{DynamicResource PopupOutlinedBorderStyle}">
+											<Label x:Name="InnerCode1" Style="{DynamicResource PopupOutlinedLabelStyle}" />
 										</Border>
-										<Border Grid.Column="2" Style="{StaticResource PopupOutlinedBorderStyle}">
-											<Label x:Name="InnerCode2" Style="{StaticResource PopupOutlinedLabelStyle}" />
+										<Border Grid.Column="2" Style="{DynamicResource PopupOutlinedBorderStyle}">
+											<Label x:Name="InnerCode2" Style="{DynamicResource PopupOutlinedLabelStyle}" />
 										</Border>
-										<Border Grid.Column="4" Style="{StaticResource PopupOutlinedBorderStyle}">
-											<Label x:Name="InnerCode3" Style="{StaticResource PopupOutlinedLabelStyle}" />
+										<Border Grid.Column="4" Style="{DynamicResource PopupOutlinedBorderStyle}">
+											<Label x:Name="InnerCode3" Style="{DynamicResource PopupOutlinedLabelStyle}" />
 										</Border>
-										<Border Grid.Column="6" Style="{StaticResource PopupOutlinedBorderStyle}">
-											<Label x:Name="InnerCode4" Style="{StaticResource PopupOutlinedLabelStyle}" />
+										<Border Grid.Column="6" Style="{DynamicResource PopupOutlinedBorderStyle}">
+											<Label x:Name="InnerCode4" Style="{DynamicResource PopupOutlinedLabelStyle}" />
 										</Border>
-										<Border Grid.Column="8" Style="{StaticResource PopupOutlinedBorderStyle}">
-											<Label x:Name="InnerCode5" Style="{StaticResource PopupOutlinedLabelStyle}" />
+										<Border Grid.Column="8" Style="{DynamicResource PopupOutlinedBorderStyle}">
+											<Label x:Name="InnerCode5" Style="{DynamicResource PopupOutlinedLabelStyle}" />
 										</Border>
-										<Border Grid.Column="10" Style="{StaticResource PopupOutlinedBorderStyle}">
-											<Label x:Name="InnerCode6" Style="{StaticResource PopupOutlinedLabelStyle}" />
+										<Border Grid.Column="10" Style="{DynamicResource PopupOutlinedBorderStyle}">
+											<Label x:Name="InnerCode6" Style="{DynamicResource PopupOutlinedLabelStyle}" />
 										</Border>
 									</Grid>
 								</VerticalStackLayout>
 
 								<Entry x:Name="InnerCodeEntry"
 										 VerticalOptions="End"
-										 HeightRequest="{StaticResource SmallSpacing}"
+										 HeightRequest="{DynamicResource SmallSpacing}"
 										 ClearButtonVisibility="Never"
 										 IsSpellCheckEnabled="False"
 										 IsTextPredictionEnabled="False"
@@ -133,12 +135,12 @@
 						</VerticalStackLayout>
 					</VerticalStackLayout>
 
-					<VerticalStackLayout Grid.Row="1" Spacing="{StaticResource MediumSpacing}">
+					<VerticalStackLayout Grid.Row="1" Spacing="{DynamicResource MediumSpacing}">
 						<controls:TextButton HorizontalOptions="FillAndExpand" Command="{Binding VerifyCommand}"
-													Style="{StaticResource FilledTextButton}" LabelData="{l:Localize Verify}" />
+													Style="{DynamicResource FilledTextButton}" LabelData="{l:Localize Verify}" />
 
 						<controls:TextButton HorizontalOptions="FillAndExpand" Command="{Binding CodeVerification.ResendCodeCommand}"
-													Style="{StaticResource OutlinedTextButton}" LabelData="{Binding LocalizedResendCodeText}" />
+													Style="{DynamicResource OutlinedTextButton}" LabelData="{Binding LocalizedResendCodeText}" />
 					</VerticalStackLayout>
 				</Grid>
 			</Grid>

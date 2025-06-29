@@ -1,7 +1,11 @@
+using Firebase.CloudMessaging;
 using Foundation;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.UI;
+using Plugin.Firebase.Core.Platforms.iOS;
 using UIKit;
+using UserNotifications;
 
 
 namespace NeuroAccessMaui
@@ -22,6 +26,75 @@ namespace NeuroAccessMaui
 			return app;
 		}
 
+		[Export("application:didReceiveRemoteNotification:fetchCompletionHandler:")]
+		public static void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
+		{
+			Console.WriteLine("Silent data notification received: " + userInfo);
+
+			// Extract values from the NSDictionary.
+			string? Title = userInfo["myTitle"]?.ToString();
+			string? Body = userInfo["myBody"]?.ToString();
+			string? ChannelId = userInfo["channelId"]?.ToString();
+
+			if (Title == null || Body == null)
+			{
+				ServiceRef.LogService.LogWarning("NotificationDelegate, Received notification with missing title or body.");
+				return;
+			}
+
+			// Convert the NSDictionary to an IDictionary<string, string>
+			Dictionary<string, string> Payload = new Dictionary<string, string>();
+			foreach (NSObject Key in userInfo.Keys)
+			{
+				Payload[Key.ToString()] = userInfo[Key]?.ToString() ?? string.Empty;
+			}
+
+
+			// Switch based on channelId to handle different types of notifications.
+			switch (ChannelId)
+			{
+				case Constants.PushChannels.Messages:
+					ServiceRef.PlatformSpecific.ShowMessageNotification(Title, Body, Payload);
+					break;
+
+				case Constants.PushChannels.Petitions:
+					ServiceRef.PlatformSpecific.ShowPetitionNotification(Title, Body, Payload);
+					break;
+
+				case Constants.PushChannels.Identities:
+					ServiceRef.PlatformSpecific.ShowIdentitiesNotification(Title, Body, Payload);
+					break;
+
+				case Constants.PushChannels.Contracts:
+					ServiceRef.PlatformSpecific.ShowContractsNotification(Title, Body, Payload);
+					break;
+
+				case Constants.PushChannels.EDaler:
+					ServiceRef.PlatformSpecific.ShowEDalerNotification(Title, Body, Payload);
+					break;
+
+				case Constants.PushChannels.Tokens:
+					ServiceRef.PlatformSpecific.ShowTokenNotification(Title, Body, Payload);
+					break;
+
+				case Constants.PushChannels.Provisioning:
+					ServiceRef.PlatformSpecific.ShowProvisioningNotification(Title, Body, Payload);
+					break;
+
+				default:
+					// ignore
+					break;
+			}
+
+			completionHandler(UIBackgroundFetchResult.NewData);
+		}
+
+		[Export("application:didRegisterForRemoteNotificationsWithDeviceToken:")]
+		public static void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+		{
+			Messaging.SharedInstance.ApnsToken = deviceToken;
+		}
+
 		/// <summary>
 		/// Method is called when an URL with a registered schema is being opened.
 		/// </summary>
@@ -36,11 +109,20 @@ namespace NeuroAccessMaui
 
 			try
 			{
-				App.OpenUrlSync(Url.AbsoluteString);
+				// Create a deep link intent.
+				AppIntent AppIntent = new()
+				{
+					Action = Constants.IntentActions.OpenUrl,
+					Data = Url.AbsoluteString
+				};
+
+				// Retrieve the shared intent service and queue the intent.
+				IIntentService IntentService = App.Instantiate<IIntentService>();
+				IntentService.QueueIntent(AppIntent);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 				return false;
 			}
 			return true;
@@ -70,21 +152,21 @@ namespace NeuroAccessMaui
 			if (GetKeyWindow() is null)
 				return;
 
-			UIWindow? window = null;
+			UIWindow? Window = null;
 			if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
 			{
-				window = UIApplication.SharedApplication.ConnectedScenes
+				Window = UIApplication.SharedApplication.ConnectedScenes
 					 .OfType<UIWindowScene>()
 					 .SelectMany(s => s.Windows)
 					 .FirstOrDefault();
 			}
 			else
-				window = UIApplication.SharedApplication.Windows.FirstOrDefault();
+				Window = UIApplication.SharedApplication.Windows.FirstOrDefault();
 
-			if (window is null)
+			if (Window is null)
 				return;
-			if (!window!.IsKeyWindow)
-				window!.MakeKeyWindow();
+			if (!Window!.IsKeyWindow)
+				Window!.MakeKeyWindow();
 
 		}
 
@@ -111,15 +193,17 @@ namespace NeuroAccessMaui
 		{
 			Microsoft.Maui.Handlers.RadioButtonHandler.Mapper.AppendToMapping("TemplateWorkaround", (h, v) =>
 			{
-				if (h.PlatformView.CrossPlatformLayout is RadioButton radioButton)
+				if (h.PlatformView.CrossPlatformLayout is RadioButton RadioButton)
 				{
-					radioButton.IsEnabled = false;
-					radioButton.ControlTemplate = RadioButton.DefaultTemplate;
-					radioButton.IsEnabled = true;
-					radioButton.ControlTemplate = AppStyles.RadioButtonTemplate;
+					RadioButton.IsEnabled = false;
+					RadioButton.ControlTemplate = RadioButton.DefaultTemplate;
+					RadioButton.IsEnabled = true;
+					RadioButton.ControlTemplate = AppStyles.RadioButtonTemplate;
 				}
 			});
 		}
+
+
 
 		/*
 		Not needed anymore as we have a new way to handle keyboard events in PlatformSpecific.cs, keeping this until new implementation has been tested

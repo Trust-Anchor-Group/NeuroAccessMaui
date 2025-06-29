@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Handlers.Items;
@@ -9,10 +9,14 @@ using NeuroAccessMaui.UI;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.Services.Push;
 using ZXing.Net.Maui.Controls;
 using Microsoft.Maui.Platform;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls;
+using NeuroAccessMaui.UI.Controls;
+
+
 #if DEBUG
 using DotNet.Meteor.HotReload.Plugin;
 #endif
@@ -21,6 +25,8 @@ using DotNet.Meteor.HotReload.Plugin;
 #if ANDROID
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
+
+
 
 namespace NeuroAccessMaui
 {
@@ -35,6 +41,11 @@ namespace NeuroAccessMaui
 			MauiAppBuilder Builder = MauiApp.CreateBuilder();
 
 			Builder.UseMauiApp<App>();
+
+			Builder.ConfigureMauiHandlers(handlers =>
+			{
+				handlers.AddHandler(typeof(AutoHeightSKCanvasView), typeof(AutoHeightSKCanvasViewHandler));
+			});
 
 			Builder.ConfigureLifecycleEvents(lifecycle =>
 			{
@@ -56,6 +67,7 @@ namespace NeuroAccessMaui
 			});
 
 			Builder.UseSkiaSharp();
+			//Builder.RegisterFirebaseServices();
 #if DEBUG
 			Builder.EnableHotReload();
 #endif
@@ -72,7 +84,16 @@ namespace NeuroAccessMaui
 
 			// NuGets
 			Builder.ConfigureMopups();
+#if DEBUG
 			Builder.UseMauiCommunityToolkit();
+#else
+			Builder.UseMauiCommunityToolkit(Options =>
+			{
+				Options.SetShouldSuppressExceptionsInAnimations(true);
+				Options.SetShouldSuppressExceptionsInBehaviors(true);
+				Options.SetShouldSuppressExceptionsInConverters(true);
+			});
+#endif
 			Builder.UseMauiCommunityToolkitMarkup();
 			Builder.UseBarcodeReader();
 
@@ -89,7 +110,6 @@ namespace NeuroAccessMaui
 #if DEBUG
 			Builder.Logging.AddDebug();
 #endif
-
 			instance = Builder.Build();
 
 			return instance;
@@ -134,6 +154,10 @@ namespace NeuroAccessMaui
 				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
 			});
 			PickerHandler.Mapper.AppendToMapping("NoUnderlinePickerHandler", (handler, view) =>
+			{
+				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
+			});
+			TimePickerHandler.Mapper.AppendToMapping("NoUnderlineTimePickerHandler", (handler, view) =>
 			{
 				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
 			});

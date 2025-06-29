@@ -180,13 +180,13 @@
 			this.FrontView!.Opacity = 1;
 			this.BackView!.Opacity = 0;
 
-			List<Task> tasks = 
+			List<Task> Tasks = 
 			[
 				Task.Run(async () => await this.FrontView.FadeTo(0.5, durationInMs, this.easingType)),
 				Task.Run(async () => await this.BackView.FadeTo(0.5, durationInMs, this.easingType))
 			];
 
-			await Task.WhenAll(tasks);
+			await Task.WhenAll(Tasks);
 		}
 
 		private async Task FadeFrontToBack2()
@@ -197,13 +197,13 @@
 			this.FrontView!.Opacity = 0.5;
 			this.BackView!.Opacity = 0.5;
 
-			List<Task> tasks = 
+			List<Task> Tasks = 
 			[
 				Task.Run(async () => await this.FrontView.FadeTo(0, durationInMs, this.easingType)),
 				Task.Run(async () => await this.BackView.FadeTo(1, durationInMs, this.easingType))
 			];
 
-			await Task.WhenAll(tasks);
+			await Task.WhenAll(Tasks);
 		}
 
 
@@ -215,13 +215,13 @@
 			this.FrontView!.Opacity = 0;
 			this.BackView!.Opacity = 1;
 
-			List<Task> tasks = 
+			List<Task> Tasks = 
 			[
 				Task.Run(async () => await this.FrontView.FadeTo(0.5, durationInMs, this.easingType)),
 				Task.Run(async () => await this.BackView.FadeTo(0.5, durationInMs, this.easingType))
 			];
 
-			await Task.WhenAll(tasks);
+			await Task.WhenAll(Tasks);
 		}
 
 		private async Task FadeBackToFront2()
@@ -232,13 +232,13 @@
 			this.FrontView!.Opacity = 0.5;
 			this.BackView!.Opacity = 0.5;
 
-			List<Task> tasks =
+			List<Task> Tasks =
 			[
 				Task.Run(async () => await this.FrontView.FadeTo(1, durationInMs, this.easingType)),
 				Task.Run(async () => await this.BackView.FadeTo(0, durationInMs, this.easingType))
 			];
 
-			await Task.WhenAll(tasks);
+			await Task.WhenAll(Tasks);
 		}
 
 		#endregion

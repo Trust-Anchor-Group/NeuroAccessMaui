@@ -11,20 +11,20 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize EDalerNote}" Style="{StaticResource PageTitleLabel}"/>
+				<Label Text="{l:Localize EDalerNote}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
-						<Frame HeightRequest="150" BorderColor="{StaticResource ForegroundColor}" CornerRadius="6" HasShadow="True" BackgroundColor="{StaticResource HeadingBackground}">
+				<Frame Style="{DynamicResource FrameSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+						<Frame HeightRequest="150" BorderColor="{DynamicResource ForegroundColor}" CornerRadius="6" HasShadow="True" BackgroundColor="{DynamicResource SurfaceBackgroundWLDark}">
 							<Grid HeightRequest="150" WidthRequest="10000" BackgroundColor="Transparent">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
@@ -35,8 +35,8 @@
 									<RowDefinition Height="25"/>
 								</Grid.RowDefinitions>
 								<Image x:Name="Img" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Source="{Binding Path=EDalerFrontGlyph}" Opacity="0.5"/>
-								<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Created}" HorizontalOptions="StartAndExpand" TextColor="{StaticResource HeadingForeground}"/>
-								<Label Grid.Column="0" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{StaticResource HeadingForeground}">
+								<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Created}" HorizontalOptions="StartAndExpand" TextColor="{DynamicResource SurfaceBackgroundWLLight}"/>
+								<Label Grid.Column="0" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{DynamicResource SurfaceBackgroundWLLight}">
 									<Label.FormattedText>
 										<FormattedString>
 											<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}" FontSize="50" FontAttributes="Bold"/>
@@ -45,17 +45,17 @@
 										</FormattedString>
 									</Label.FormattedText>
 								</Label>
-								<Label Grid.Column="0" Grid.Row="2" Text="{Binding Path=From}" HorizontalOptions="Start" Style="{StaticResource ClickableValueLabel}" TextColor="{StaticResource HeadingForeground}">
+								<Label Grid.Column="0" Grid.Row="2" Text="{Binding Path=From}" HorizontalOptions="Start" Style="{DynamicResource ClickableValueLabel}" TextColor="{DynamicResource SurfaceBackgroundWLLight}">
 									<Label.GestureRecognizers>
 										<TapGestureRecognizer Command="{Binding Path=BindingContext.FromClickCommand, Source={x:Reference MainStackLayout}}" />
 									</Label.GestureRecognizers>
 								</Label>
 							</Grid>
 						</Frame>
-						<Label Text="{Binding Path=Message}" IsVisible="{Binding Path=HasMessage}" Style="{StaticResource InfoLabel}" VerticalOptions="Start"/>
+						<Label Text="{Binding Path=Message}" IsVisible="{Binding Path=HasMessage}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}" IsEnabled="{Binding Path=IsConnected}"
-													Margin="{StaticResource SmallBottomMargins}" Style="{StaticResource FilledTextButton}"/>
+													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

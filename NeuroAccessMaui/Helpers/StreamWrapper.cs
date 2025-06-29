@@ -44,16 +44,16 @@ namespace NeuroAccessMaui.Helpers
 
 		public static async Task<Stream?> GetStreamAsync(Uri uri, HttpClient client, CancellationToken cancellationToken)
 		{
-			HttpResponseMessage response = await client.GetAsync(uri, cancellationToken).ConfigureAwait(false);
+			HttpResponseMessage Response = await client.GetAsync(uri, cancellationToken).ConfigureAwait(false);
 
-			if (!response.IsSuccessStatusCode)
+			if (!Response.IsSuccessStatusCode)
 			{
 				return null;
 			}
 
 			// it needs to be disposed after the calling code is done with the stream
 			// otherwise the stream may get disposed before the caller can use it
-			return new StreamWrapper(await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false), response);
+			return new StreamWrapper(await Response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false), Response);
 		}
 	}
 }

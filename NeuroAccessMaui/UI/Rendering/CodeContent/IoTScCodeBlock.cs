@@ -66,7 +66,7 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 			{
 				Output.WriteStartElement("Label");
 				Output.WriteAttributeString("Text", ex.Message);
-				Output.WriteAttributeString("FontFamily", "Courier New");
+				Output.WriteAttributeString("FontFamily", "SpaceGroteskRegular");
 				Output.WriteAttributeString("TextColor", "Red");
 				Output.WriteAttributeString("LineBreakMode", "WordWrap");
 				Output.WriteEndElement();
@@ -104,7 +104,7 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 				Output.WriteAttributeString("HeightRequest", "16");
 				Output.WriteAttributeString("WidthRequest", "16");
 				Output.WriteAttributeString("Aspect", "Uniform");
-				Output.WriteAttributeString("Fill", "{AppThemeBinding Light={StaticResource PrimaryForegroundLight}, Dark={StaticResource PrimaryForegroundDark}}");
+				Output.WriteAttributeString("Fill", "{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}");
 				Output.WriteAttributeString("Data", "{x:Static ui:Geometries.ContractPath}");
 				Output.WriteEndElement();
 			}

@@ -182,6 +182,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		{
 			await base.XmppService_ConnectionStateChanged(Sender, NewState);
 			this.OnPropertyChanged(nameof(this.ApplicationSentAndConnected));
+			this.NotifyCommandsCanExecuteChanged();
 		}
 
 		/// <inheritdoc/>
@@ -191,6 +192,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 			if (!this.HasApplicationAttributes && this.IsConnected)
 				await Task.Run(this.LoadApplicationAttributes);
+
+			this.NotifyCommandsCanExecuteChanged();
 		}
 
 		/// <inheritdoc/>
@@ -979,12 +982,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				// 2. Proof of ID Front (if available)
 				// 3. Proof of ID Back (if available)
 				// 4. Additional Photos (if any)
-				List<LegalIdentityAttachment> Attachments = [];
+				List<LegalIdentityAttachment> LocalAttachments = new();
 
 				if (this.photo is not null)
-					Attachments.Add(this.photo);
+					LocalAttachments.Add(this.photo);
 
-				// Only add attachments if a document type other than None is selected.
+				// Only add document attachments if a document type other than None is selected.
 				if (this.DocumentType != IdentityDocumentType.None)
 				{
 					if (this.HasProofOfIdFront && this.ProofOfIdFrontImageBin is not null)
@@ -998,11 +1001,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 						};
 
 						LegalIdentityAttachment FrontAttachment = new(FrontFileName, "image/jpeg", this.ProofOfIdFrontImageBin);
-						Attachments.Add(FrontAttachment);
+						LocalAttachments.Add(FrontAttachment);
 					}
 
 					if ((this.DocumentType == IdentityDocumentType.NationalId || this.DocumentType == IdentityDocumentType.DriverLicense) &&
-					    this.HasProofOfIdBack && this.ProofOfIdBackImageBin is not null)
+						 this.HasProofOfIdBack && this.ProofOfIdBackImageBin is not null)
 					{
 						string BackFileName = this.DocumentType switch
 						{
@@ -1012,7 +1015,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 						};
 
 						LegalIdentityAttachment BackAttachment = new(BackFileName, "image/jpeg", this.ProofOfIdBackImageBin);
-						Attachments.Add(BackAttachment);
+						LocalAttachments.Add(BackAttachment);
 					}
 				}
 
@@ -1021,10 +1024,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					int Index = 1;
 					foreach (ObservableAttachmentCard Additional in this.AdditionalPhotos)
 					{
-						// Assuming each additional photo card has a valid ImageBin property.
 						if (Additional.ImageBin == null)
 							continue;
-						Attachments.Add(new LegalIdentityAttachment($"AdditionalPhoto{Index}.jpg", "image/jpeg", Additional.ImageBin));
+						LocalAttachments.Add(new LegalIdentityAttachment($"AdditionalPhoto{Index}.jpg", "image/jpeg", Additional.ImageBin));
 						Index++;
 					}
 				}
@@ -1035,10 +1037,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.PersonalNumber = Info.PersonalNumber;
 
 				bool HasIdWithPrivateKey = ServiceRef.TagProfile.LegalIdentity is not null &&
-					 await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
+					  await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
 
 				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
-					 ServiceRef.XmppService.AddLegalIdentity(this, !HasIdWithPrivateKey, Attachments.ToArray()));
+					 ServiceRef.XmppService.AddLegalIdentity(this, !HasIdWithPrivateKey, LocalAttachments.ToArray()));
 
 				if (Succeeded && AddedIdentity is not null)
 				{
@@ -1048,11 +1050,22 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 					await Task.Run(this.LoadFeaturedPeerReviewers);
 
-					if (this.HasPhoto)
+					// Loop through each local attachment and add it to the cache.
+					// We assume the server returns attachments with the same FileName as those we built.
+					foreach (LegalIdentityAttachment LocalAttachment in LocalAttachments)
 					{
-						Attachment? FirstImage = AddedIdentity.Attachments.GetFirstImageAttachment();
-						if (FirstImage is not null && this.ImageBin is not null)
-							await ServiceRef.AttachmentCacheService.Add(FirstImage.Url, AddedIdentity.Id, true, this.ImageBin, FirstImage.ContentType);
+						// Find the matching attachment in the returned identity by filename.
+						Attachment? MatchingAttachment = AddedIdentity.Attachments
+							 .FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
+						if (MatchingAttachment != null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
+						{
+							await ServiceRef.AttachmentCacheService.Add(
+								 MatchingAttachment.Url,
+								 AddedIdentity.Id,
+								 true,
+								 LocalAttachment.Data, // from our local attachment
+								 LocalAttachment.ContentType);
+						}
 					}
 
 					// Load all attachment images immediately after applying.
@@ -1070,6 +1083,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.IsApplying = false;
 			}
 		}
+
 
 		/// <summary>
 		/// Revokes the current application.

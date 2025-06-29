@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ThemeDescriptor xmlns="urn:neuroaccess:branding:1.0">
+
+	<!-- Semantic version for this theme bundle -->
+	<Version major="2" minor="0" patch="1"/>
+
+	<!-- Load the main color palette & styles from a XAML ResourceDictionary -->
+	<ResourceDictionaryUri>https://cdn.example.com/na/themes/v2.0.1/Colors.xaml</ResourceDictionaryUri>
+
+	<!-- Reference the logo image asset published in the assets node -->
+	<ImageRef
+	  filename="https://cdn.example.com/na/logo-1.2.svg"
+	  width="200"
+	  height="100"
+	  contentType="image/svg+xml"
+	  id="img-logo"/>
+
+	<!-- Reference the banner image asset published in the assets node -->
+	<ImageRef
+	  filename="https://cdn.example.com/na/banner-1.2.png"
+	  width="1024"
+	  height="256"
+	  contentType="image/png"
+	  id="img-banner"/>
+
+</ThemeDescriptor>
+
+
+
+<AccessConfig xmlns="urn:neuroaccess:config:1.0">
+	<ThemeDescriptor xmlns="urn:neuroaccess:config-ext:branding:1.0">...</ThemeDescriptor>
+	<ThemeDescriptor xmlns="urn:neuroaccess:config-ext:branding:1.1">...</ThemeDescriptor>
+	<DefaultContracts xmlns="urn:neuroaccess:config-ext:contract-references:1.0"></DefaultContracts>
+	<FeatureFlags xmlns="urn:neuroaccess:config-ext:feature-flags:1.0">...</FeatureFlags>
+	<Experiments xmlns="urn:neuroaccess:config-ext:experiments:1.0">...</Experiments>
+</AccessConfig>

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Cache;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Popups.Settings;
@@ -16,6 +17,8 @@ using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
+using Waher.Persistence;
+using Waher.Persistence.Filters;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -103,13 +106,25 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			this.ChangePasswordCommand.NotifyCanExecuteChanged();
 		}
 
+		public bool IsBetaEnabled
+		{
+			get => ServiceRef.TagProfile.HasBetaFeatures;
+			set
+			{
+				if (value != ServiceRef.TagProfile.HasBetaFeatures)
+				{
+					ServiceRef.TagProfile.HasBetaFeatures = value;
+				}
+			}
+		}
+
 		#region Properties
 
-		/// <summary>
-		/// If screen capture prohibition can be controlled
-		/// </summary>
-		[ObservableProperty]
-		private bool canProhibitScreenCapture;
+			/// <summary>
+			/// If screen capture prohibition can be controlled
+			/// </summary>
+			[ObservableProperty]
+			private bool canProhibitScreenCapture;
 
 		/// <summary>
 		/// Screen capture mode.
@@ -299,21 +314,21 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// <returns> Build time excrated from assembly data </returns>
 		private static string GetBuildTime()
 		{
-			Assembly assembly = Assembly.GetExecutingAssembly();
+			Assembly Assembly = Assembly.GetExecutingAssembly();
 
 			const string BuildVersionMetadataPrefix = "+build";
 
-			AssemblyInformationalVersionAttribute? attribute = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-			if (attribute?.InformationalVersion != null)
+			AssemblyInformationalVersionAttribute? Attribute = Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+			if (Attribute?.InformationalVersion is not null)
 			{
-				string value = attribute.InformationalVersion;
+				string Value = Attribute.InformationalVersion;
 
-				int datePosition = value.IndexOf(BuildVersionMetadataPrefix, System.StringComparison.OrdinalIgnoreCase);
-				if (datePosition > 0)
+				int DatePosition = Value.IndexOf(BuildVersionMetadataPrefix, System.StringComparison.OrdinalIgnoreCase);
+				if (DatePosition > 0)
 				{
-					value = value.Substring(datePosition + BuildVersionMetadataPrefix.Length);
+					Value = Value[(DatePosition + BuildVersionMetadataPrefix.Length)..];
 
-					return value;
+					return Value;
 				}
 			}
 
@@ -335,15 +350,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 					return;
 
 				//Update the network password
-				string NewNetworkPassword = ServiceRef.CryptoService.CreateRandomPassword();
-				if (!await ServiceRef.XmppService.ChangePassword(NewNetworkPassword))
-				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.UnableToChangePassword)]);
-					return;
-				}
-				ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewNetworkPassword, string.Empty);
+				await ServiceRef.XmppService.TryGenerateAndChangePassword();
 
 				//Update the local password
 				GoToRegistrationStep(RegistrationStep.DefinePassword);
@@ -352,10 +359,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				//Listen for completed event
 				WeakReferenceMessenger.Default.Register<RegistrationPageMessage>(this, this.HandleRegistrationPageMessage);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
@@ -481,9 +488,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 			try
 			{
-				string? Password = await App.InputPasswordAsync(AuthenticationPurpose.TransferIdentity);
-				if (Password is null)
-					return;
+
 
 				if (!await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.Confirm)],
@@ -493,6 +498,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				{
 					return;
 				}
+
+				string? Password = await App.InputPasswordAsync(AuthenticationPurpose.TransferIdentity);
+				if (Password is null)
+					return;
 
 				this.SetIsBusy(true);
 
@@ -597,6 +606,23 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			this.DisplayMode = "Dark";
 		}
 
+		[RelayCommand]
+		private async Task ClearCacheAsync()
+		{
+			await Database.FindDelete<CacheEntry>(
+			new FilterFieldGreaterOrEqualTo("Url", string.Empty));
+			await Database.Provider.Flush();
+
+			await ServiceRef.UiService.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+				ServiceRef.Localizer[nameof(AppResources.CacheCleared)],
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+		}
 		#endregion
+
+		public void SetBetaFeaturesEnabled(bool Enabled)
+		{
+			this.IsBetaEnabled = Enabled;
+		}
 	}
 }

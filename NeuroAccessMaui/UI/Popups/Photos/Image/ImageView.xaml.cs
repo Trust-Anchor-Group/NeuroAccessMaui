@@ -29,8 +29,8 @@ namespace NeuroAccessMaui.UI.Popups.Photos.Image
 			if (attachments is null || attachments.Length <= 0)
 				return;
 
-			Attachment[] imageAttachments = attachments.GetImageAttachments().ToArray();
-			if (imageAttachments.Length <= 0)
+			Attachment[] ImageAttachments = attachments.GetImageAttachments().ToArray();
+			if (ImageAttachments.Length <= 0)
 				return;
 
 			this.IsVisible = true;

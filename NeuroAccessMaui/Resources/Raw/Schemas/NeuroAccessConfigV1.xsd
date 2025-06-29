@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="urn:neuroaccess:config:1.0"
+    targetNamespace="urn:neuroaccess:config:1.0"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+  <xs:annotation>
+    <xs:documentation>
+      Core envelope for NeuroAccess client configuration.
+      All real payloads live in extension namespaces.
+    </xs:documentation>
+  </xs:annotation>
+
+
+	<!-- Global root -->
+  <xs:element name="AccessConfig">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- Should this contain known extension? 
+        <xs:element ref="branding:ThemeDescriptor"
+                    minOccurs="0"
+                    xmlns:branding="urn:neuroaccess:config-ext:branding:1.0"/>
+        -->
+                    
+        <!-- Wild-card for any other future extensions -->
+        <xs:any
+          namespace="##other"
+          processContents="lax"
+          minOccurs="0"
+          maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

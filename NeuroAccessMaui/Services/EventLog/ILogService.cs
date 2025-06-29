@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using Waher.Events;
 using Waher.Runtime.Inventory;
 
@@ -8,8 +8,18 @@ namespace NeuroAccessMaui.Services.EventLog
 	/// A log implementation for logging warnings, exceptions and events.
 	/// </summary>
 	[DefaultImplementation(typeof(LogService))]
-	public interface ILogService : ILoadableService
+	public interface ILogService : ILoadableService, IDisposable
 	{
+		/// <summary>
+		/// Starts a debug log session. This log all events to a file
+		/// </summary>
+		Task StartDebugLogSessionAsync();
+
+		/// <summary>
+		/// Ends a debug log session. This Stops all events from being logged to a file.
+		/// </summary>
+		Task EndDebugLogSessionAsync();
+
 		/// <summary>
 		/// Adds an <see cref="IEventSink"/> to the log service. Any listeners will be called
 		/// whenever any log event occurs.
@@ -40,6 +50,14 @@ namespace NeuroAccessMaui.Services.EventLog
 		public void LogDebug(string Message,
 			[CallerFilePath] string FilePath = "",
 			[CallerLineNumber] int LineNumber = 0);
+
+		/// <summary>
+		/// Invoke this method to add an informational statement to the log.
+		/// </summary>
+		/// <param name="Message">Info message</param>
+		/// <param name="Tags">Tags to log together with message</param>
+		public void LogInformational(string Message,
+			params KeyValuePair<string, object?>[] Tags);
 
 		/// <summary>
 		/// Invoke this method to add a warning statement to the log.

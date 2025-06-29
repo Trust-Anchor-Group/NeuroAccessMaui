@@ -8,8 +8,8 @@
                        xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Photos.Image"
                        x:DataType="viewmodel:ImageViewModel"
                        x:Class="NeuroAccessMaui.UI.Popups.Photos.Image.ImageView">
-	<Frame Style="{StaticResource PopupFrame}" x:Name="PhotoViewer" HasShadow="true"
-			 BackgroundColor="{DynamicResource HeadingBackgroundTranslucent}"
+	<Frame Style="{DynamicResource PopupFrame}" x:Name="PhotoViewer" HasShadow="true"
+			 BackgroundColor="{DynamicResource SurfaceBackgroundWLDarkTranslucent}"
 			 Opacity="0" HorizontalOptions="Center" VerticalOptions="Center">
 		<Grid>
 			<VerticalStackLayout Margin="0">
@@ -27,10 +27,10 @@
 				</CarouselView>
 				<IndicatorView x:Name="IndicatorView"
                                    HorizontalOptions="Center"
-                                   IndicatorColor="{StaticResource HeadingForeground}"
+                                   IndicatorColor="{DynamicResource SurfaceBackgroundWLLight}"
                                    Padding="0,0,0,0"
-                                   BackgroundColor="{StaticResource HeadingBackground}"
-                                   Style="{StaticResource IndicatorViewStyle}">
+                                   BackgroundColor="{DynamicResource SurfaceBackgroundWLDark}"
+                                   Style="{DynamicResource IndicatorViewStyle}">
 					<IndicatorView.Margin>
 						<OnPlatform x:TypeArguments="Thickness">
 							<On Platform="iOS" Value="0,-1,0,0"/>
@@ -39,19 +39,19 @@
 				</IndicatorView>
 			</VerticalStackLayout>
 			<!-- Close button -->
-			<Grid Style="{StaticResource PopupGrid}">
+			<Grid Style="{DynamicResource PopupGrid}">
 				<Grid.GestureRecognizers>
 					<TapGestureRecognizer Tapped="CloseIcon_Tapped"/>
 				</Grid.GestureRecognizers>
 				<Ellipse StrokeThickness="2" WidthRequest="32" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
 					<Ellipse.Fill>
-						<SolidColorBrush Color="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}"/>
+						<SolidColorBrush Color="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}"/>
 					</Ellipse.Fill>
 					<Ellipse.Stroke>
-						<SolidColorBrush Color="{AppThemeBinding Light={StaticResource SecondaryBackgroundLight}, Dark={StaticResource SecondaryBackgroundDark}}"/>
+						<SolidColorBrush Color="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}"/>
 					</Ellipse.Stroke>
 				</Ellipse>
-				<Label Style="{StaticResource PopupCloseButton}"/>
+				<Label Style="{DynamicResource PopupCloseButton}"/>
 			</Grid>
 		</Grid>
 	</Frame>

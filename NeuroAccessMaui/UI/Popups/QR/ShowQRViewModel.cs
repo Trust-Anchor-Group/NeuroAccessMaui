@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -16,6 +17,9 @@ namespace NeuroAccessMaui.UI.Popups.QR
 		#region Private Properties
 
 		private byte[] qrCodeBin = [];
+		private readonly IDispatcherTimer? timer;
+
+		private int timerSeconds = 60;
 
 		/// <summary>
 		/// Legal ID
@@ -95,7 +99,7 @@ namespace NeuroAccessMaui.UI.Popups.QR
 		public ShowQRViewModel(byte[] QrCodeBin)
 		{
 			this.QrCodeBin = QrCodeBin;
-			this.LegalId = ServiceRef.TagProfile.LegalIdentity.Id;
+			this.LegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
 
 			if (this.QrCodeWidth == 0 || this.QrCodeHeight == 0)
 			{
@@ -107,13 +111,23 @@ namespace NeuroAccessMaui.UI.Popups.QR
 				this.QrResolutionScale = Constants.QrCode.DefaultResolutionScale;
 
 			this.QrCode = ImageSource.FromStream(() => new MemoryStream(QrCodeBin));
+
+			this.timerSeconds = Convert.ToInt32(Constants.Timeouts.IdentityAllowedWatch.TotalSeconds);
+
+			this.timer = Application.Current?.Dispatcher.CreateTimer();
+			if (this.timer is null)
+				return;
+			this.timer.Interval = TimeSpan.FromSeconds(1);
+			this.timer.Tick += this.OnTimerTick;
+			this.timer.Start();
 		}
 
 		#region Commands
 
 		[RelayCommand]
-		private static async Task Close()
+		private async Task Close()
 		{
+			this.timer?.Stop();
 			await ServiceRef.UiService.PopAsync();
 		}
 
@@ -126,19 +140,19 @@ namespace NeuroAccessMaui.UI.Popups.QR
 			try
 			{
 				// Generate a random filename with a suitable extension (e.g., ".tmp", ".dat")
-				string fileName = $"{Guid.NewGuid()}.png";
+				string FileName = $"{Guid.NewGuid()}.png";
 
 				// Define the path to save the file in the cache directory
-				string filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
+				string FilePath = Path.Combine(FileSystem.CacheDirectory, FileName);
 
 				// Save the byte array as a file
-				await File.WriteAllBytesAsync(filePath, this.QrCodeBin);
+				await File.WriteAllBytesAsync(FilePath, this.QrCodeBin);
 
 				// Share the file
 				await Share.Default.RequestAsync(new ShareFileRequest
 				{
 					Title = "QR Code",
-					File = new ShareFile(filePath, "image/png")
+					File = new ShareFile(FilePath, "image/png")
 				});
 
 			}
@@ -186,6 +200,35 @@ namespace NeuroAccessMaui.UI.Popups.QR
 			{
 				this.SetIsBusy(false);
 			}
+		}
+
+		private void OnTimerTick(object? sender, EventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				if (this.timerSeconds > 0)
+				{
+					this.timerSeconds--;
+				}
+				else
+				{
+					try
+					{
+						this.timer?.Stop();
+						await this.CloseCommand.ExecuteAsync(null);
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+					}
+				}
+			});
+		}
+
+		public override Task OnPop()
+		{
+			this.timer?.Stop();
+			return base.OnPop();
 		}
 
 		#endregion

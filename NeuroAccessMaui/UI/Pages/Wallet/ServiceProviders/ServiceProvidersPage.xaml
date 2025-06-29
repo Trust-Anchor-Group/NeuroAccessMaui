@@ -92,7 +92,7 @@
 
 		<DataTemplate x:Key="ShowNothing" x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{StaticResource ClickableFrameSubSet}" InputTransparent="True"/>
+				<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True"/>
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<viewmodel:ServiceTemplateSelector x:Key="TemplateSelector"
@@ -102,7 +102,7 @@
 													  DefaultTemplate="{StaticResource ShowNothing}"/>
 
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
@@ -127,7 +127,7 @@
 						<Label Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
 
 						<VerticalStackLayout BindableLayout.ItemsSource="{Binding ServiceProviders}"
-													BindableLayout.ItemTemplateSelector="{StaticResource TemplateSelector}"/>
+													BindableLayout.ItemTemplateSelector="{DynamicResource TemplateSelector}"/>
 					</VerticalStackLayout>
 				</Border>
 			</VerticalStackLayout>

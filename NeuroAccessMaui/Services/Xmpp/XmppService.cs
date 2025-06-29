@@ -1,4 +1,5 @@
 //#define DEBUG_XMPP_REMOTE
+#define DEBUG_XMPP_LOCAL
 //#define DEBUG_LOG_REMOTE
 //#define DEBUG_DB_REMOTE
 
@@ -30,6 +31,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
 using Waher.Content;
@@ -57,15 +59,18 @@ using Waher.Networking.XMPP.Provisioning;
 using Waher.Networking.XMPP.Provisioning.Events;
 using Waher.Networking.XMPP.Provisioning.SearchOperators;
 using Waher.Networking.XMPP.PubSub;
+using Waher.Networking.XMPP.PubSub.Events;
 using Waher.Networking.XMPP.Push;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Networking.XMPP.StanzaErrors;
+using Waher.Networking.XMPP.StreamErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Temporary;
+using Waher.Script.Constants;
 using Waher.Security.JWT;
 using Waher.Things;
 using Waher.Things.SensorData;
@@ -96,7 +101,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private AbuseClient? abuseClient;
 		private PepClient? pepClient;
 		private HttpxClient? httpxClient;
+		private PubSubClient? pubSubClient;
 		private Timer? reconnectTimer;
+		private Timer? updatePasswordTimer;
 		private string? domainName;
 		private string? accountName;
 		private string? passwordHash;
@@ -179,6 +186,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 						this.xmppClient = new XmppClient(HostName, PortNumber, this.accountName, this.passwordHash, this.passwordHashMethod,
 							Constants.LanguageCodes.Default, AppAssembly, this.sniffer);
 					}
+#if DEBUG_XMPP_LOCAL
+					DebugSniffer LocalSniffer = new(BinaryPresentationMethod.Hexadecimal);
+					this.xmppClient.Add(LocalSniffer);
+#endif
 
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 					if (!string.IsNullOrEmpty(debugRecipient))
@@ -250,7 +261,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.OnPresence += this.XmppClient_OnPresence;
 
 					this.xmppClient.RegisterMessageHandler("Delivered", ContractsClient.NamespaceOnboarding, this.TransferIdDelivered, true);
-					this.xmppClient.RegisterMessageHandler("clientMessage", ContractsClient.NamespaceLegalIdentitiesCurrent, this.ClientMessage, true);
 
 					this.xmppFilteredEventSink = new EventFilter("XMPP Event Filter",
 						new XmppEventSink("XMPP Event Sink", this.xmppClient, ServiceRef.TagProfile.LogJid, false),
@@ -316,11 +326,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.controlClient = new ControlClient(this.xmppClient);
 					this.concentratorClient = new ConcentratorClient(this.xmppClient);
 
-					this.pepClient = new PepClient(this.xmppClient);
+					if (string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
+						this.pepClient = new PepClient(this.xmppClient);
+					else
+						this.pepClient = new PepClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
 					this.ReregisterPepEventHandlers(this.pepClient);
 
 					this.httpxClient = new HttpxClient(this.xmppClient, 8192);
 					Types.SetModuleParameter("XMPP", this.xmppClient);      // Makes the XMPP Client the default XMPP client, when resolving HTTP over XMPP requests.
+
+					//if(this.pubSubClient is null && !string.IsNullOrEmpty(ServiceRef.TagProfile.PubSubJid))
+					//	this.pubSubClient = new PubSubClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
 
 					this.IsLoggedOut = false;
 					await this.xmppClient.Connect(IsIpAddress ? string.Empty : this.domainName);
@@ -717,7 +733,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return i >= 0;
 		}
 
-		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)
+		public override Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
 			if (this.BeginLoad(IsResuming, CancellationToken))
 			{
@@ -726,25 +742,39 @@ namespace NeuroAccessMaui.Services.Xmpp
 					ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
 					ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
 
-					if (ServiceRef.TagProfile.ShouldCreateClient() && !this.XmppParametersCurrent())
-						await this.CreateXmppClient();
-
-					if ((this.xmppClient is not null) &&
-						this.xmppClient.State == XmppState.Connected &&
-						ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
-					{
-						// Don't await this one, just fire and forget, to improve startup time.
-						_ = this.xmppClient.SetPresenceAsync(Availability.Online);
-					}
+					_ = this.CreateClientAsync();
 
 					this.EndLoad(true);
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					ex = Log.UnnestException(ex);
-					ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+					Ex = Log.UnnestException(Ex);
+					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 					this.EndLoad(false);
 				}
+			}
+			return Task.CompletedTask;
+		}
+
+		private async Task CreateClientAsync()
+		{
+			try
+			{
+				if (ServiceRef.TagProfile.ShouldCreateClient() && !this.XmppParametersCurrent())
+					await this.CreateXmppClient();
+
+				if ((this.xmppClient is not null) &&
+					this.xmppClient.State == XmppState.Connected &&
+					ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
+				{
+					// Don't await this one, just fire and forget, to improve startup time.
+					_ = this.xmppClient.SetPresenceAsync(Availability.Online);
+				}
+			}
+			catch (Exception ex)
+			{
+				ex = Log.UnnestException(ex);
+				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 			}
 		}
 
@@ -840,6 +870,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			if (e is ObjectDisposedException)
 				this.LatestConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
+			else if (e is Waher.Networking.XMPP.AuthenticationErrors.NotAuthorizedException || e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
+			{
+				this.reconnectTimer?.Dispose();
+				this.reconnectTimer = null;
+				this.LatestConnectionError = e.Message;
+			}
 			else
 				this.LatestConnectionError = e.Message;
 
@@ -871,7 +907,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 							this.xmppClient?.PasswordHash ?? string.Empty,
 							this.xmppClient?.PasswordHashMethod ?? string.Empty);
 					}
-
 					if (ServiceRef.TagProfile.NeedsUpdating() && await this.DiscoverServices())
 					{
 						if (this.contractsClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
@@ -918,9 +953,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 						if (this.pushNotificationClient is null && ServiceRef.TagProfile.SupportsPushNotification)
 							this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
+
+						if (this.pepClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
+						{
+							this.pepClient = new PepClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
+							this.ReregisterPepEventHandlers(this.pepClient);
+							//this.RegisterPubSubEventHandlers(this.pubSubClient);
+						}
 					}
 
-					ServiceRef.LogService.AddListener(this.xmppFilteredEventSink!);
+					// Check is xmpp password needs updating.
+					if (ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating())
+						await ServiceRef.XmppService.TryGenerateAndChangePassword();
+
+					if (this.xmppFilteredEventSink is not null)
+						ServiceRef.LogService.AddListener(this.xmppFilteredEventSink);
 
 					await ServiceRef.PushNotificationService.CheckPushNotificationToken();
 					break;
@@ -1014,9 +1061,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			Task OnConnectionError(object _, Exception e)
 			{
+				//TODO: Handle stream error not authenticated
+				/* if(e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
+				if (e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException NotAuthor)
+				{
+					Go to page / open popup with info and actions
+				}
+				*/
 				if (e is ObjectDisposedException)
 					ConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
-				else if (e is ConflictException ConflictInfo)
+				else if (e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
+				{
+					this.reconnectTimer?.Dispose();
+					this.reconnectTimer = null;
+				}
+				else if (e is Waher.Networking.XMPP.StanzaErrors.ConflictException ConflictInfo)
 					Alternatives = ConflictInfo.Alternatives;
 				else
 					ConnectionError = e.Message;
@@ -1063,7 +1122,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					case XmppState.Error:
 						// When State = Error, wait for the OnConnectionError event to arrive also, as it holds more/direct information.
-						// Just in case it never would - set state error and result.
+						// Just in case it never would - set state error and Result.
 						await Task.Delay(Constants.Timeouts.XmppConnect);
 						Connected.TrySetResult(false);
 						break;
@@ -1200,6 +1259,63 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return PasswordChanged.Task;
 		}
 
+		/// <summary>
+		/// Generates and changes the password of the account. This method is safe to use but does not guarantee that the password is changed.
+		/// Should the change fail, a flag will be set in the tagprofile, which is checked when an xmpp connection is established.
+		/// If the flag is set, the app will try to update the xmpp password again.
+		/// </summary>
+		/// <returns>If change was successful</returns>
+		public async Task<bool> TryGenerateAndChangePassword()
+		{
+			bool ChangeSucceeded = false;
+
+			try
+			{
+				string NewPassword = ServiceRef.CryptoService.CreateRandomPassword();
+				if (await this.ChangePassword(NewPassword))
+				{
+					ServiceRef.TagProfile.SetAccount(ServiceRef.TagProfile.Account!, NewPassword, string.Empty);
+					ChangeSucceeded = true;
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+			}
+
+			// Update the profile & timer based on success/failure:
+			ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(!ChangeSucceeded);
+			if (ChangeSucceeded)
+			{
+				this.updatePasswordTimer?.Dispose();
+				this.updatePasswordTimer = null;
+			}
+			else
+			{
+				this.RecreateUpdatePasswordTimer();
+			}
+
+			return ChangeSucceeded;
+		}
+
+
+		private async void UpdatePasswordTimer_Tick(object? _)
+		{
+			if (this.xmppClient is null)
+				return;
+
+			if (!ServiceRef.NetworkService.IsOnline)
+				return;
+
+			await this.TryGenerateAndChangePassword();
+		}
+
+		private void RecreateUpdatePasswordTimer()
+		{
+			this.updatePasswordTimer?.Dispose();
+			this.updatePasswordTimer = new Timer(this.UpdatePasswordTimer_Tick, null, Constants.Intervals.Reconnect, Constants.Intervals.Reconnect);
+		}
+
 		#endregion
 
 		#region Components & Services
@@ -1234,11 +1350,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (Client is null)
 				return false;
 
-			ServiceItemsDiscoveryEventArgs response;
+			ServiceItemsDiscoveryEventArgs Response;
 
 			try
 			{
-				response = await Client.ServiceItemsDiscoveryAsync(null, string.Empty, string.Empty);
+				Response = await Client.ServiceItemsDiscoveryAsync(null, string.Empty, string.Empty);
 			}
 			catch (Exception ex)
 			{
@@ -1256,7 +1372,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			Tasks.Add(CheckFeatures(Client, SynchObject));
 
-			foreach (Item Item in response.Items)
+			foreach (Item Item in Response.Items)
 				Tasks.Add(CheckComponent(Client, Item, SynchObject));
 
 			await Task.WhenAll([.. Tasks]);
@@ -1294,40 +1410,43 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private static async Task CheckComponent(XmppClient Client, Item Item, object SynchObject)
 		{
-			ServiceDiscoveryEventArgs itemResponse = await Client.ServiceDiscoveryAsync(null, Item.JID, Item.Node);
+			ServiceDiscoveryEventArgs ItemResponse = await Client.ServiceDiscoveryAsync(null, Item.JID, Item.Node);
 
 			lock (SynchObject)
 			{
-				if (itemResponse.HasAnyFeature(ContractsClient.NamespacesLegalIdentities))
+				if (ItemResponse.HasAnyFeature(ContractsClient.NamespacesLegalIdentities))
 					ServiceRef.TagProfile.LegalJid = Item.JID;
 
-				if (itemResponse.HasAnyFeature(ThingRegistryClient.NamespacesDiscovery))
+				if (ItemResponse.HasAnyFeature(ThingRegistryClient.NamespacesDiscovery))
 					ServiceRef.TagProfile.RegistryJid = Item.JID;
 
-				if (itemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningDevice) &&
-					itemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningOwner) &&
-					itemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningToken))
+				if (ItemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningDevice) &&
+					ItemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningOwner) &&
+					ItemResponse.HasAnyFeature(ProvisioningClient.NamespacesProvisioningToken))
 				{
 					ServiceRef.TagProfile.ProvisioningJid = Item.JID;
 				}
 
-				if (itemResponse.HasFeature(HttpFileUploadClient.Namespace))
+				if (ItemResponse.HasFeature(HttpFileUploadClient.Namespace))
 				{
-					long maxSize = HttpFileUploadClient.FindMaxFileSize(Client, itemResponse) ?? 0;
-					ServiceRef.TagProfile.SetFileUploadParameters(Item.JID, maxSize);
+					long MaxSize = HttpFileUploadClient.FindMaxFileSize(Client, ItemResponse) ?? 0;
+					ServiceRef.TagProfile.SetFileUploadParameters(Item.JID, MaxSize);
 				}
 
-				if (itemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
+				if (ItemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
 					ServiceRef.TagProfile.LogJid = Item.JID;
 
-				if (itemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
+				if (ItemResponse.HasFeature(XmppEventSink.NamespaceEventLogging))
 					ServiceRef.TagProfile.LogJid = Item.JID;
 
-				if (itemResponse.HasFeature(EDalerClient.NamespaceEDaler))
+				if (ItemResponse.HasFeature(EDalerClient.NamespaceEDaler))
 					ServiceRef.TagProfile.EDalerJid = Item.JID;
 
-				if (itemResponse.HasFeature(NeuroFeaturesClient.NamespaceNeuroFeatures))
+				if (ItemResponse.HasFeature(NeuroFeaturesClient.NamespaceNeuroFeatures))
 					ServiceRef.TagProfile.NeuroFeaturesJid = Item.JID;
+
+				if (ItemResponse.HasFeature(PubSubClient.NamespacePubSub))
+					ServiceRef.TagProfile.PubSubJid = Item.JID;
 			}
 		}
 
@@ -1338,9 +1457,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task TransferIdDelivered(object? Sender, MessageEventArgs e)
 		{
 			if (e.From != Constants.Domains.OnboardingDomain)
-			{
 				return;
-			}
 
 			string Code = XML.Attribute(e.Content, "code");
 			bool Deleted = XML.Attribute(e.Content, "deleted", false);
@@ -1409,7 +1526,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 					{
 						FriendlyName = ContactInfo.GetFriendlyName(RemoteIdentity);
 
-						IdentityStatus Status = await this.ContractsClient.ValidateAsync(RemoteIdentity);
+						IdentityValidationEventArgs IdentityValidationEventArgs = await this.ContractsClient.ValidateAsync(RemoteIdentity);
+						IdentityStatus Status = IdentityValidationEventArgs.Status;
 						if (Status != IdentityStatus.Valid)
 						{
 							await e.Decline();
@@ -1872,20 +1990,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 			});
 		}
 
-		private Task ClientMessage(object? Sender, MessageEventArgs e)
+		private Task ContractsClient_ClientMessage(object? Sender, ClientMessageEventArgs e)
 		{
-			string Code = XML.Attribute(e.Content, "code");
-			string Type = XML.Attribute(e.Content, "type");
 			string Message = e.Body;
 
-			if (!string.IsNullOrEmpty(Code))
+			if (!string.IsNullOrEmpty(e.Code))
 			{
 				try
 				{
-					string Key = "ClientMessage" + Code;
-					string LocalizedMessage = ServiceRef.Localizer[Key];
+					string Key = "ClientMessage" + e.Code;
+					string LocalizedMessage = ServiceRef.Localizer[Key, false];
 
-					if (!string.IsNullOrEmpty(LocalizedMessage) && !LocalizedMessage.Equals(Key))
+					// TODO: Make sure this does not generate logs or errors, as the app
+					// does not control future error codes that can be returned.
+
+					if (!string.IsNullOrEmpty(LocalizedMessage) && !LocalizedMessage.Equals(Key, StringComparison.Ordinal))
 						Message = LocalizedMessage;
 				}
 				catch (Exception)
@@ -1894,26 +2013,81 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 
+			// TODO: Event arguments contain more detailed information about:
+			//
+			//	Properties & attachments that have been validated: e.ValidClaims, e.ValidPhotos
+			//	Properties & attachments that have been invalidated: e.InvalidClaims, e.InvalidPhotos
+			//	Properties & attachments that are still unvalidated: e.UnvalidatedClaims, e.UnvalidatedPhotos
+			//
+			// Body message only contains first message reported.
+			//
+			// Codes that need localized messages (defined in broker & services):
+			//
+			// ManualReview: Unable to validate application automatically. The application needs to be validated manually, or by peer review.
+			// UnableReview: Unable to validate the review.
+			// InvalidType: "Expected value of type " + typeof(T).FullName + "."
+			// IdMismatch: Identifier does not correspond to created identifier.
+			// JidMismatch: JID does not correspond to client JID.
+			// AccountMismatch: Account name does not match account.
+			// ProviderMismatch: Provider does not match legal component address.
+			// StateMismatch: State does not match identity state.
+			// CreatedMismatch: Created does not match identity creation timestamp.
+			// UpdatedMismatch: Updated does not match identity update timestamp.
+			// FromMismatch: From does not match identity creation timestamp.
+			// ToMismatch: To does not match identity creation timestamp.
+			// NoClientURL: No Client URL provided.
+			// ReviewerExternal: Peer reviewer is external. Peer-review request should be sent directly to reviewer.
+			// ServiceNotConfigured: Service not configured correctly. Please contact operator.
+			// MissingCountry: Application does not contain country information.
+			// CountryNotSupported: Service not available in your country.
+			// MissingPNr: Application does not contain a personal number.
+			// NoCompanyId: Service cannot be used to review company IDs.
+			// ServiceClientTimeout: Service timed out waiting for user to approve request.
+			// ServiceFailed: Service failed to process request.
+			// PNrMismatch: Personal number mismatch.
+			// FirstNameMismatch: First name mismatch.
+			// LastNameMismatch: Last name mismatch.
+			// NameMismatch: Name mismatch.
+			// InvalidJid: Invalid JID.
+			// NoLogin: No login registered on Neuron.
+			// UnexpectedOnboardingServer: Unexpected response received from onboarding server.
+			// PersonDead: Person is dead.
+			// BirthDateMismatch: Birth date mismatch.
+			// AddressMismatch: Address mismatch.
+			// ZipMismatch: Postal Code mismatch.
+			// AreaMismatch: Area mismatch.
+			// CityMismatch: City mismatch.
+			// RegionMismatch: Region mismatch.
+			// LivenessFailed: Liveness check failed.
+			// PhotoFake: Photo is fake.
+			// PhotoPoor: Photo has poor quality.
+			// BankIdRFA1: Start your BankID app.
+			// BankIdRFA2: The BankID app is not installed. Please contact your internet bank.
+			// BankIdRFA3: Action cancelled. Please try again.
+			// BankIdRFA4: An identification or signing for this personal number is already started. Please try again.
+			// BankIdRFA5: Internal error. Please try again.
+			// BankIdRFA6: Action cancelled.
+			// BankIdRFA8: The BankID app is not responding. Please check that the program is started and that you have internet access. If you don�t have a valid BankID you can get one from your bank. Try again.
+			// BankIdRFA9: Enter your security code in the BankID app and select Identify or Sign.
+			// BankIdRFA13: Trying to start your BankID app.
+			// BankIdRFA14A: Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably don�t have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you don�t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device.
+			// BankIdRFA14B: Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably don�t have a BankID which can be used for this identification/signing on this device. If you don�t have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device.
+			// BankIdRFA15A: Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably don�t have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you don�t have a BankID you can order one from your internet bank.
+			// BankIdRFA15B: Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably don�t have a BankID which can be used for this identification/signing on this device. If you don�t have a BankID you can order one from your internet bank
+			// BankIdRFA16: The BankID you are trying to use is revoked or too old. Please use another BankID or order a new one from your internet bank.
+			// BankIdRFA17A: The BankID app couldn�t be found on your computer or mobile device. Please install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com.
+			// BankIdRFA17B: Failed to scan the QR code. Start the BankID app and scan the QR code. Check that the BankID app is up to date. If you don't have the BankID app, you need to install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com.
+			// BankIdRFA18: Start the BankID app
+			// BankIdRFA19: Would you like to identify yourself or sign with a BankID on this computer or with a Mobile BankID?
+			// BankIdRFA20: Would you like to identify yourself or sign with a BankID on this device or with a BankID on another device?
+			// BankIdRFA21: Identification or signing in progress.
+			// BankIdRFA22: Unknown error. Please try again.
+
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				switch (Type.ToUpperInvariant())
-				{
-					case "NONE":
-					default:
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.Information)], Message,
-							ServiceRef.Localizer[nameof(AppResources.Ok)]);
-						break;
-
-					case "CLIENT":
-					case "SERVER":
-					case "SERVICE":
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
-							ServiceRef.Localizer[nameof(AppResources.Ok)]);
-						break;
-
-				}
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			});
 
 			return Task.CompletedTask;
@@ -2817,7 +2991,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					await ServiceRef.TagProfile.SetLegalIdentity(e.Identity, true);
 					await this.LegalIdentityChanged.Raise(this, e);
 
-					if (e.Identity.IsDiscarded() && Shell.Current.CurrentState.Location.OriginalString != Constants.Pages.RegistrationPage)
+					if (e.Identity.IsDiscarded() && !e.Identity.IsPersonal() && !e.Identity.IsOrganizational() && Shell.Current.CurrentState.Location.OriginalString != Constants.Pages.RegistrationPage)
 					{
 						MainThread.BeginInvokeOnMainThread(async () =>
 						{
@@ -2933,9 +3107,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		/// <param name="Identity">Legal Identity</param>
 		/// <returns>The validity of the identity.</returns>
-		public Task<IdentityStatus> ValidateIdentity(LegalIdentity Identity)
+		public async Task<IdentityStatus> ValidateIdentity(LegalIdentity Identity)
 		{
-			return this.ContractsClient.ValidateAsync(Identity, true);
+			IdentityValidationEventArgs Result = await this.ContractsClient.ValidateAsync(Identity, true);
+			return Result.Status;
 		}
 
 		#endregion
@@ -2976,6 +3151,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.ContractsClient.ContractProposalReceived += this.ContractsClient_ContractProposalReceived;
 			this.ContractsClient.ContractUpdated += this.ContractsClient_ContractUpdated;
 			this.ContractsClient.ContractSigned += this.ContractsClient_ContractSigned;
+			this.ContractsClient.ClientMessage += this.ContractsClient_ClientMessage;
 		}
 
 		/// <summary>
@@ -3347,7 +3523,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>Available service providers for peer review of identity applications.</returns>
 		public async Task<ServiceProviderWithLegalId[]> GetServiceProvidersForPeerReviewAsync()
 		{
-			return await this.ContractsClient.GetPeerReviewIdServiceProvidersAsync();
+			try
+			{
+				return await this.ContractsClient.GetPeerReviewIdServiceProvidersAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			return [];
 		}
 
 		/// <summary>
@@ -5023,5 +5208,226 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		#endregion
 
+		#region PubSub
+
+		/// <summary>
+		/// Reference to the PubSub client implementing the PubSub XMPP extension
+		/// </summary>
+		private PubSubClient PubSubClient
+		{
+			get
+			{
+				if (this.pepClient is null)
+				{
+					throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.PubSubServiceNotFound)]);
+				}
+
+				return this.pepClient.PubSubClient;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<Item[]?> GetAllNodeIdsAsync()
+		{
+			try
+			{
+				TaskCompletionSource<ServiceItemsDiscoveryEventArgs> Tcs = new();
+				await this.XmppClient.SendServiceItemsDiscoveryRequest(
+					this.PubSubClient.ComponentAddress,
+					(s, e) => { Tcs.TrySetResult(e); return Task.CompletedTask; },
+					null);
+				ServiceItemsDiscoveryEventArgs Result = await Tcs.Task;
+				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<PubSubItem[]?> GetItemsAsync(string NodeId)
+		{
+			try
+			{
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				await this.PubSubClient.GetItems(NodeId, (s, e) => HandleResult(e, Tcs), null);
+				ItemsEventArgs Result = await Tcs.Task;
+				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<PubSubItem[]?> GetItemsAsync(string NodeId, string[] ItemIds)
+		{
+			try
+			{
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				await this.PubSubClient.GetItems(NodeId, ItemIds, (s, e) => HandleResult(e, Tcs), null);
+				ItemsEventArgs Result = await Tcs.Task;
+				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<PubSubItem?> GetItemAsync(string NodeId, string ItemId)
+		{
+			try
+			{
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				await this.PubSubClient.GetItems(NodeId, new[] { ItemId }, (s, e) => HandleResult(e, Tcs), null);
+				ItemsEventArgs Result = await Tcs.Task;
+				return Result.Items.FirstOrDefault();
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<PubSubItem[]?> GetLatestItemsAsync(string NodeId, int Count)
+		{
+			try
+			{
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				await this.PubSubClient.GetLatestItems(NodeId, Count, (s, e) => HandleResult(e, Tcs), null);
+				ItemsEventArgs Result = await Tcs.Task;
+				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> CreateNodeAsync(string NodeId, NodeConfiguration? Config = null)
+		{
+			TaskCompletionSource<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> Tcs = new();
+			if (Config is null)
+				await this.PubSubClient.CreateNode(NodeId, (s, e) => HandleResult(e, Tcs), null);
+			else
+				await this.PubSubClient.CreateNode(NodeId, Config, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> TryCreateNodeAsync(string NodeId, NodeConfiguration? Config = null)
+		{
+			try { return await this.CreateNodeAsync(NodeId, Config); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> DeleteNodeAsync(string NodeId, string? RedirectUri = null)
+		{
+			TaskCompletionSource<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> Tcs = new();
+			await this.PubSubClient.DeleteNode(NodeId, RedirectUri, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> TryDeleteNodeAsync(string NodeId, string? RedirectUri = null)
+		{
+			try { return await this.DeleteNodeAsync(NodeId, RedirectUri); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<SubscriptionEventArgs> SubscribeAsync(string NodeId, string? Jid = null, SubscriptionOptions? Options = null)
+		{
+			TaskCompletionSource<SubscriptionEventArgs> Tcs = new();
+			if (Options is null)
+				await this.PubSubClient.Subscribe(NodeId, Jid, (s, e) => HandleResult(e, Tcs), null);
+			else
+				await this.PubSubClient.Subscribe(NodeId, Jid, Options, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<SubscriptionEventArgs?> TrySubscribeAsync(string NodeId, string? Jid = null, SubscriptionOptions? Options = null)
+		{
+			try { return await this.SubscribeAsync(NodeId, Jid, Options); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<SubscriptionEventArgs> UnsubscribeAsync(string NodeId, string? Jid = null, string? SubscriptionId = null)
+		{
+			TaskCompletionSource<SubscriptionEventArgs> Tcs = new();
+			await this.PubSubClient.Unsubscribe(NodeId, Jid, SubscriptionId, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<SubscriptionEventArgs?> TryUnsubscribeAsync(string NodeId, string? Jid = null, string? SubscriptionId = null)
+		{
+			try { return await this.UnsubscribeAsync(NodeId, Jid, SubscriptionId); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<ItemResultEventArgs> PublishAsync(string NodeId, string? ItemId = null, string PayloadXml = "")
+		{
+			TaskCompletionSource<ItemResultEventArgs> Tcs = new();
+			await this.PubSubClient.Publish(NodeId, ItemId ?? string.Empty, PayloadXml, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<ItemResultEventArgs?> TryPublishAsync(string NodeId, string? ItemId = null, string PayloadXml = "")
+		{
+			try { return await this.PublishAsync(NodeId, ItemId, PayloadXml); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<IqResultEventArgs> RetractAsync(string NodeId, string ItemId)
+		{
+			TaskCompletionSource<IqResultEventArgs> Tcs = new();
+			await this.PubSubClient.Retract(NodeId, ItemId, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<IqResultEventArgs?> TryRetractAsync(string NodeId, string ItemId)
+		{
+			try { return await this.RetractAsync(NodeId, ItemId); }
+			catch { return null; }
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> PurgeNodeAsync(string NodeId)
+		{
+			TaskCompletionSource<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs> Tcs = new();
+			await this.PubSubClient.PurgeNode(NodeId, (s, e) => HandleResult(e, Tcs), null);
+			return await Tcs.Task;
+		}
+
+		/// <inheritdoc />
+		public async Task<Waher.Networking.XMPP.PubSub.Events.NodeEventArgs?> TryPurgeNodeAsync(string NodeId)
+		{
+			try { return await this.PurgeNodeAsync(NodeId); }
+			catch { return null; }
+		}
+
+		private static Task HandleResult<T>(T e, TaskCompletionSource<T> Tcs) where T : IqResultEventArgs
+		{
+			if (e.Ok)
+				Tcs.TrySetResult(e);
+			else
+				Tcs.TrySetException(e.StanzaError ?? new Exception());
+			return Task.CompletedTask;
+		}
+		#endregion
 	}
 }

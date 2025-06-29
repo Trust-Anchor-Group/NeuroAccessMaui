@@ -1,16 +1,21 @@
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Net.Http.Headers;
+using System.Net.Security;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using EDaler;
 using Microsoft.Maui.Controls.Internals;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.AttachmentCache;
+using NeuroAccessMaui.Services.Cache.AttachmentCache;
+using NeuroAccessMaui.Services.Cache.InternetCache;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
+using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
@@ -18,6 +23,7 @@ using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
@@ -37,6 +43,7 @@ using Waher.Networking.XMPP.Avatar;
 using Waher.Networking.XMPP.Concentrator;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Control;
+using Waher.Networking.XMPP.Geo;
 using Waher.Networking.XMPP.HTTPX;
 using Waher.Networking.XMPP.Mail;
 using Waher.Networking.XMPP.P2P;
@@ -49,6 +56,7 @@ using Waher.Networking.XMPP.Sensor;
 using Waher.Persistence;
 using Waher.Persistence.Files;
 using Waher.Persistence.Serialization;
+using Waher.Runtime.Geo;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Runtime.Text;
@@ -82,22 +90,23 @@ namespace NeuroAccessMaui
 		private static bool configLoaded;
 		private static bool defaultInstantiated;
 		private static DateTime savedStartTime = DateTime.MinValue;
+		private static DateTime lastAuthenticationTime = DateTime.MinValue;
 		private static bool displayedPasswordPopup;
 		private static int startupCounter;
 
 		private static readonly TaskCompletionSource<bool> servicesSetup = new();
 		private static readonly TaskCompletionSource<bool> defaultInstantiatedSource = new();
 
-        /// <summary>
-        /// Flag indicating if this instance is “resuming” an already-started app.
-        /// 
-        /// The App class is not actually a singleton. Each time Android MainActivity is destroyed and then created again, a new instance
-        /// of the App class will be created, its OnStart method will be called and its OnResume method will not be called. This happens,
-        /// for example, on Android when the user presses the back button and then navigates to the app again. However, the App class
-        /// doesn't seem to work properly (should it?) when this happens (some chaos happens here and there), so we pretend that
-        /// there is only one instance (see the references to onStartResumesApplication).
-        /// </summary>
-        private bool onStartResumesApplication;
+		/// <summary>
+		/// Flag indicating if this instance is “resuming” an already-started app.
+		/// 
+		/// The App class is not actually a singleton. Each time Android MainActivity is destroyed and then created again, a new instance
+		/// of the App class will be created, its OnStart method will be called and its OnResume method will not be called. This happens,
+		/// for example, on Android when the user presses the back button and then navigates to the app again. However, the App class
+		/// doesn't seem to work properly (should it?) when this happens (some chaos happens here and there), so we pretend that
+		/// there is only one instance (see the references to onStartResumesApplication).
+		/// </summary>
+		private bool onStartResumesApplication;
 
 		#endregion
 
@@ -137,17 +146,35 @@ namespace NeuroAccessMaui
 				string? LanguageName = Preferences.Get("user_selected_language", null);
 				LanguageInfo SelectedLanguage = SupportedLanguages[0];
 
-				if (LanguageName is not null)
+				if (LanguageName is null)
+				{
+					// Get the system's two-letter ISO language name
+					string SystemLanguage = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+					// Try to find a supported language matching the system language
+					LanguageInfo? SystemLanguageInfo = SupportedLanguages
+						.FirstOrDefault(el =>
+							string.Equals(el.TwoLetterISOLanguageName, SystemLanguage, StringComparison.OrdinalIgnoreCase));
+
+					if (SystemLanguageInfo is not null)
+					{
+						SelectedLanguage = SystemLanguageInfo;
+					}
+
+					// Save the selected language for next time
+					Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
+				}
+				else
 				{
 					SelectedLanguage = SupportedLanguages.FirstOrDefault(
 						el => string.Equals(el.TwoLetterISOLanguageName, LanguageName, StringComparison.OrdinalIgnoreCase),
 						SelectedLanguage);
-				}
 
-				if (LanguageName is null ||
-					!string.Equals(SelectedLanguage.TwoLetterISOLanguageName, LanguageName, StringComparison.OrdinalIgnoreCase))
-				{
-					Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
+					// Ensure stored value matches a real supported language
+					if (!string.Equals(SelectedLanguage.TwoLetterISOLanguageName, LanguageName, StringComparison.OrdinalIgnoreCase))
+					{
+						Preferences.Set("user_selected_language", SelectedLanguage.TwoLetterISOLanguageName);
+					}
 				}
 
 				return SelectedLanguage;
@@ -163,6 +190,8 @@ namespace NeuroAccessMaui
 		/// Define a static event to notify when the app enters the foreground.
 		/// </summary>
 		public static event EventHandler? AppActivated;
+
+		public Task<bool> InitCompleted => this.initCompleted;
 
 
 		#endregion
@@ -211,7 +240,6 @@ namespace NeuroAccessMaui
 				this.InitializeComponent();
 				AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
 				ServiceRef.TagProfile.SetTheme(CurrentTheme ?? AppTheme.Light);
-
 				try
 				{
 					this.MainPage = ServiceHelper.GetService<AppShell>();
@@ -222,14 +250,21 @@ namespace NeuroAccessMaui
 				}
 			}
 		}
-
+		/*
+		protected override Window CreateWindow(IActivationState? activationState)
+		{
+			if(this.Windows.Any())
+				return this.Windows[0];
+			return new Window(ServiceHelper.GetService<AppShell>());
+		}
+		*/
 		#endregion
 
 		#region Initialization
 
 		private static void InitLocalizationResource()
 		{
-			LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
+		//	LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
 			LocalizationManager.Current.CurrentCulture = SelectedLanguage;
 		}
 
@@ -260,7 +295,7 @@ namespace NeuroAccessMaui
 
 		private void HandleStartupException(Exception Ex)
 		{
-            Ex = Log.UnnestException(Ex);
+			Ex = Log.UnnestException(Ex);
 			ServiceRef.LogService.SaveExceptionDump("StartPage", Ex.ToString());
 			this.DisplayBootstrapErrorPage(Ex.Message, Ex.StackTrace ?? string.Empty);
 			return;
@@ -300,6 +335,8 @@ namespace NeuroAccessMaui
 					typeof(AvatarClient).Assembly,
 					typeof(PushNotificationClient).Assembly,
 					typeof(MailClient).Assembly,
+					typeof(GeoClient).Assembly,
+					typeof(GeoPosition).Assembly,
 					typeof(ThingReference).Assembly,
 					typeof(JwtFactory).Assembly,
 					typeof(JwsAlgorithm).Assembly,
@@ -329,11 +366,15 @@ namespace NeuroAccessMaui
 			Types.InstantiateDefault<ISettingsService>(false);
 			Types.InstantiateDefault<IXmppService>(false);
 			Types.InstantiateDefault<IAttachmentCacheService>(false);
+			Types.InstantiateDefault<IInternetCacheService>(false);
 			Types.InstantiateDefault<IContractOrchestratorService>(false);
 			Types.InstantiateDefault<INfcService>(false);
 			Types.InstantiateDefault<INotificationService>(false);
+			Types.InstantiateDefault<IIntentService>(false);
+			Types.InstantiateDefault<IThemeService>(false);
 
 			defaultInstantiatedSource.TrySetResult(true);
+
 
 			// Set dependency resolver.
 			DependencyResolver.ResolveUsing(type =>
@@ -355,38 +396,38 @@ namespace NeuroAccessMaui
 			servicesSetup.TrySetResult(true);
 		}
 
-        #endregion
+		#endregion
 
-        #region Startup / Resume
+		#region Startup / Resume
 
-        public async Task OnBackgroundStart()
-        {
-            if (this.onStartResumesApplication)
-            {
-                this.onStartResumesApplication = false;
-                await this.ResumeAsync(isBackground: true);
-                return;
-            }
+		public async Task OnBackgroundStart()
+		{
+			if (this.onStartResumesApplication)
+			{
+				this.onStartResumesApplication = false;
+				await this.ResumeAsync(isBackground: true);
+				return;
+			}
 
-            // Asynchronously wait up to 60 seconds.
-            if (!await this.initCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
-                throw new Exception("Initialization did not complete in time.");
-        }
+			// Asynchronously wait up to 60 seconds.
+			if (!await this.initCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
+				throw new Exception("Initialization did not complete in time.");
+		}
 
-        protected override async void OnStart()
-        {
-            if (this.onStartResumesApplication)
-            {
-                this.onStartResumesApplication = false;
-                this.OnResume();
-                return;
-            }
+		protected override async void OnStart()
+		{
+			if (this.onStartResumesApplication)
+			{
+				this.onStartResumesApplication = false;
+				this.OnResume();
+				return;
+			}
 
-            if (!await this.initCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
-                throw new Exception("Initialization did not complete in time.");
-        }
+			if (!await this.initCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
+				throw new Exception("Initialization did not complete in time.");
+		}
 
-        public async Task ResumeAsync(bool isBackground)
+		public async Task ResumeAsync(bool isBackground)
 		{
 			appInstance = this;
 			this.startupCancellation = new CancellationTokenSource();
@@ -435,6 +476,7 @@ namespace NeuroAccessMaui
 
 				await ServiceRef.UiService.Load(isResuming, Token);
 				await ServiceRef.AttachmentCacheService.Load(isResuming, Token);
+				await ServiceRef.InternetCacheService.Load(isResuming, Token);
 				await ServiceRef.ContractOrchestratorService.Load(isResuming, Token);
 				await ServiceRef.ThingRegistryOrchestratorService.Load(isResuming, Token);
 				await ServiceRef.NeuroWalletOrchestratorService.Load(isResuming, Token);
@@ -763,9 +805,9 @@ namespace NeuroAccessMaui
 
 				await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				Log.Exception(ex);
+				Log.Exception(Ex);
 			}
 		}
 
@@ -881,13 +923,13 @@ namespace NeuroAccessMaui
 
 		public static Task<bool> AuthenticateUserAsync(AuthenticationPurpose purpose, bool force = false)
 		{
-			if (MainThread.IsMainThread)
-				return AuthenticateUserOnMainThreadAsync(purpose, force);
-
 			TaskCompletionSource<bool> Tcs = new();
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				Tcs.TrySetResult(await AuthenticateUserOnMainThreadAsync(purpose, force));
+				bool Result = await AuthenticateUserOnMainThreadAsync(purpose, force);
+				if (Result)
+					lastAuthenticationTime = DateTime.Now;
+				Tcs.TrySetResult(Result);
 			});
 			return Tcs.Task;
 		}
@@ -998,7 +1040,8 @@ namespace NeuroAccessMaui
 
 		private static void SetStartInactivityTime() => savedStartTime = DateTime.Now;
 
-		private static bool IsInactivitySafeIntervalPassed() => DateTime.Now.Subtract(savedStartTime).TotalMinutes > Constants.Password.PossibleInactivityInMinutes;
+		private static bool IsInactivitySafeIntervalPassed() => DateTime.Compare(DateTime.Now,
+			lastAuthenticationTime.AddMinutes(Constants.Password.PossibleInactivityInMinutes)) > 0; // T1 is Later than T2;
 
 		internal static async Task<long> GetCurrentPasswordCounterAsync() => await ServiceRef.SettingsService.RestoreLongState(Constants.Password.CurrentPasswordAttemptCounter);
 
@@ -1057,6 +1100,123 @@ namespace NeuroAccessMaui
 			AppActivated?.Invoke(Current, EventArgs.Empty);
 		}
 
+		/// <summary>
+		/// Callback for validating SSL certificates.
+		/// This method is called when a remote certificate is received during HTTPS communication.
+		/// Fixed an issue with incomplete revocation check in the chain on iOS devices.
+		/// </summary>
+		public static void ValidateCertificateCallback(object? Sender, RemoteCertificateEventArgs Args)
+		{
+			Args.IsValid = true; // Accept certificate
+
+			// Check for incomplete revocation check in the chain
+			if ((Args.SslPolicyErrors & SslPolicyErrors.RemoteCertificateChainErrors) != 0 && Args.Chain is not null)
+			{
+				foreach (X509ChainStatus Status in Args.Chain.ChainStatus)
+				{
+					// Apple-specific error code for incomplete revocation check
+					if (Status.Status == X509ChainStatusFlags.RevocationStatusUnknown ||
+						Status.Status == X509ChainStatusFlags.OfflineRevocation)
+					{
+						continue; // Ignore this error
+					}
+					if (Status.Status != X509ChainStatusFlags.NoError)
+						Args.IsValid = false; // Reject certificate
+				}
+			}
+			else if (Args.SslPolicyErrors != SslPolicyErrors.None)
+				Args.IsValid = false; // Reject certificate
+
+			if (Args.IsValid is not null && Args.IsValid == true)
+				return; // Accept certificate
+
+			try
+			{
+
+				StringBuilder SniffMsg = new StringBuilder();
+
+				SniffMsg.AppendLine("Invalid certificate received (and rejected).");
+
+				SniffMsg.AppendLine();
+				SniffMsg.Append("sslPolicyErrors: ");
+				SniffMsg.AppendLine(Args.SslPolicyErrors.ToString());
+				SniffMsg.Append("Subject: ");
+				SniffMsg.AppendLine(Args.Certificate?.Subject);
+				SniffMsg.Append("Issuer: ");
+				SniffMsg.AppendLine(Args.Certificate?.Issuer);
+				// Log the certificate details
+				byte[]? Cert = Args.Certificate?.Export(X509ContentType.Cert);    // Avoids SafeHandle exception when accessing certificate later.
+
+				if (Cert is not null)
+				{
+					StringBuilder Base64 = new StringBuilder();
+					string s;
+					int c = Cert?.Length ?? 0;
+					int i = 0;
+					int j;
+
+					while (i < c)
+					{
+						j = Math.Min(57, c - i);
+						s = Convert.ToBase64String(Cert!, i, j);
+						i += j;
+
+						Base64.Append(s);
+
+						if (i < c)
+							Base64.AppendLine();
+					}
+
+					SniffMsg.Append("BASE64(Cert): ");
+					SniffMsg.Append(Base64);
+				}
+				SniffMsg.AppendLine();
+
+				SniffMsg.AppendLine("Nr of elements in chain: ");
+				SniffMsg.Append(Args.Chain?.ChainElements.Count ?? 0);
+				SniffMsg.AppendLine();
+				SniffMsg.AppendLine("Chain status: ");
+				foreach (X509ChainStatus Status in Args.Chain?.ChainStatus ?? [])
+				{
+					SniffMsg.Append("Status: ");
+					SniffMsg.AppendLine(Status.Status.ToString());
+					SniffMsg.Append("StatusInformation: ");
+					SniffMsg.AppendLine(Status.StatusInformation);
+					SniffMsg.AppendLine();
+				}
+
+
+				SniffMsg.AppendLine("Chain elements:");
+				if (Args.Chain is not null)
+				{
+					foreach (X509ChainElement Element in Args.Chain.ChainElements)
+					{
+						SniffMsg.Append("Certificate: ");
+						SniffMsg.AppendLine(Element.Certificate.GetNameInfo(X509NameType.SimpleName, false));
+						SniffMsg.Append("Certificate: ");
+						SniffMsg.AppendLine(Element.Certificate.GetNameInfo(X509NameType.DnsName, false));
+						SniffMsg.Append("Certificate: ");
+						SniffMsg.AppendLine(Element.Certificate.GetNameInfo(X509NameType.EmailName, false));
+						SniffMsg.Append("Certificate: ");
+						SniffMsg.AppendLine(Element.Certificate.GetNameInfo(X509NameType.UpnName, false));
+						SniffMsg.Append("Subject: ");
+						SniffMsg.AppendLine(Element.Certificate.Subject);
+						SniffMsg.Append("Issuer: ");
+						SniffMsg.AppendLine(Element.Certificate.Issuer);
+						SniffMsg.AppendLine("Info: ");
+						SniffMsg.Append(Element.Information);
+						SniffMsg.AppendLine();
+					}
+				}
+
+
+				ServiceRef.LogService.LogWarning(SniffMsg.ToString());
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
 		#endregion
 	}

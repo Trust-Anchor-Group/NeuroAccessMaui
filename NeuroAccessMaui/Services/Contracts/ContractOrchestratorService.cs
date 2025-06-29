@@ -1,5 +1,6 @@
-﻿using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Notification.Identities;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
@@ -58,6 +59,7 @@ namespace NeuroAccessMaui.Services.Contracts
 				ServiceRef.XmppService.PetitionForPeerReviewIdReceived -= this.Contracts_PetitionForPeerReviewIdReceived;
 				ServiceRef.XmppService.PetitionForIdentityReceived -= this.Contracts_PetitionForIdentityReceived;
 				ServiceRef.XmppService.PetitionForSignatureReceived -= this.Contracts_PetitionForSignatureReceived;
+				//ServiceRef.XmppService.PetitionForContractReceived -= this.Contract_Pe
 				ServiceRef.XmppService.PetitionedIdentityResponseReceived -= this.Contracts_PetitionedIdentityResponseReceived;
 				ServiceRef.XmppService.PetitionedPeerReviewIdResponseReceived -= this.Contracts_PetitionedPeerReviewResponseReceived;
 				ServiceRef.XmppService.SignaturePetitionResponseReceived -= this.Contracts_SignaturePetitionResponseReceived;
@@ -183,6 +185,8 @@ namespace NeuroAccessMaui.Services.Contracts
 
 					if (Identity is not null)
 					{
+						RequestIdentityNotificationEvent Event = new(e);
+						//await ServiceRef.NotificationService.NewEvent(Event);
 						await ServiceRef.UiService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
 							Identity, e.RequestorFullJid, e.RequestedIdentityId, e.PetitionId, e.Purpose));
 					}
@@ -261,7 +265,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						ServiceRef.Localizer[nameof(AppResources.SignaturePetitionDenied)],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
-				else
+				else if(ServiceRef.UiService.CurrentPage is not (NewContractPage or ViewContractPage))
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 			}
 			catch (Exception ex)
@@ -430,20 +434,20 @@ namespace NeuroAccessMaui.Services.Contracts
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					string? userMessage = null;
-					bool gotoRegistrationPage = false;
+					string? UserMessage = null;
+					bool GotoRegistrationPage = false;
 
 					if (Identity.State == IdentityState.Compromised)
 					{
-						userMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
+						UserMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
 						await ServiceRef.TagProfile.CompromiseLegalIdentity(Identity);
-						gotoRegistrationPage = true;
+						GotoRegistrationPage = true;
 					}
 					else if (Identity.State == IdentityState.Obsoleted)
 					{
-						userMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
+						UserMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
 						await ServiceRef.TagProfile.RevokeLegalIdentity(Identity);
-						gotoRegistrationPage = true;
+						GotoRegistrationPage = true;
 					}
 					else if (Identity.State == IdentityState.Approved && !await ServiceRef.XmppService!.HasPrivateKey(Identity.Id))
 					{
@@ -474,12 +478,12 @@ namespace NeuroAccessMaui.Services.Contracts
 					else
 						await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
 
-					if (gotoRegistrationPage)
+					if (GotoRegistrationPage)
 					{
 						await App.SetRegistrationPageAsync();
 
 						// After navigating to the registration page, show the user why this happened.
-						if (!string.IsNullOrWhiteSpace(userMessage))
+						if (!string.IsNullOrWhiteSpace(UserMessage))
 						{
 							// Do a begin invoke here so the page animation has time to finish,
 							// and the view model loads state et.c. before showing the alert.
@@ -487,7 +491,7 @@ namespace NeuroAccessMaui.Services.Contracts
 							MainThread.BeginInvokeOnMainThread(async () =>
 							{
 								await ServiceRef.UiService.DisplayAlert(
-									ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)], userMessage);
+									ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)], UserMessage);
 							});
 						}
 					}
@@ -504,10 +508,15 @@ namespace NeuroAccessMaui.Services.Contracts
 		{
 			try
 			{
-				LegalIdentity identity = await ServiceRef.XmppService.GetLegalIdentity(LegalId);
+				bool Connected = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
+
+				if (!Connected)
+					throw new TimeoutException();
+
+				LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(LegalId);
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(identity));
+					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 				});
 			}
 			catch (ForbiddenException)
@@ -518,8 +527,8 @@ namespace NeuroAccessMaui.Services.Contracts
 
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					bool succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose));
-					if (succeeded)
+					bool Succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose));
+					if (Succeeded)
 					{
 						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
@@ -527,10 +536,20 @@ namespace NeuroAccessMaui.Services.Contracts
 					}
 				});
 			}
+			catch (TimeoutException)
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.AppNotConnected)],
+					ServiceRef.Localizer[nameof(AppResources.PleaseTryAgain)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-				await ServiceRef.UiService.DisplayException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+					ServiceRef.Localizer[nameof(AppResources.PleaseTryAgain)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 		}
 
@@ -552,8 +571,8 @@ namespace NeuroAccessMaui.Services.Contracts
 				// This happens if you try to view someone else's legal identity.
 				// When this happens, try to send a petition to view it instead.
 				// Normal operation. Should not be logged.
-
-				await ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose);
+				if(!string.IsNullOrEmpty(Purpose))
+					await ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose);
 				return null;
 			}
 			catch (Exception ex)
@@ -608,10 +627,10 @@ namespace NeuroAccessMaui.Services.Contracts
 						if (Contract.ForMachinesNamespace == NeuroFeaturesClient.NamespaceNeuroFeatures
 						|| Contract.ForMachinesNamespace == Constants.ContractMachineNames.PaymentInstructionsNamespace)
 						{
-							CreationAttributesEventArgs creationAttr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
-							ServiceRef.TagProfile.TrustProviderId = creationAttr.TrustProviderId;
+							CreationAttributesEventArgs CreationAttr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
+							ServiceRef.TagProfile.TrustProviderId = CreationAttr.TrustProviderId;
 							ParameterValues ??= [];
-							ParameterValues.TryAdd(new CaseInsensitiveString("TrustProvider"), creationAttr.TrustProviderId);
+							ParameterValues.Add(new CaseInsensitiveString("TrustProvider"), CreationAttr.TrustProviderId);
 						}
 
 						NewContractNavigationArgs e = new(Contract, ParameterValues);
@@ -634,10 +653,10 @@ namespace NeuroAccessMaui.Services.Contracts
 
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					bool succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+					bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
 						ServiceRef.XmppService.PetitionContract(ContractId, Guid.NewGuid().ToString(), Purpose));
 
-					if (succeeded)
+					if (Succeeded)
 					{
 						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
 							ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheContract)]);

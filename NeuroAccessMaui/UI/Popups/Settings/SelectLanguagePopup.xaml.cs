@@ -31,10 +31,9 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 					{
 						try
 						{
-							Console.WriteLine("TESTETESTT");
 							await this.InnerScrollView.ScrollToAsync(Element, ScrollToPosition.MakeVisible, true);
 						}
-						catch (Exception e)
+						catch (Exception)
 						{
 							return; // Ignore, not muy importante.
 						}

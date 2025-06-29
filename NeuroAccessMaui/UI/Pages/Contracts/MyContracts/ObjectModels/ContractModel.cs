@@ -63,7 +63,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 				return string.Empty;
 
 			Dictionary<string, ClientSignature> Signatures = [];
-			StringBuilder? sb = null;
+			StringBuilder? StringBuilder = null;
 
 			if (Contract.ClientSignatures is not null)
 			{
@@ -82,16 +82,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 
 				string FriendlyName = await ContactInfo.GetFriendlyName(Part.LegalId);
 
-				if (sb is null)
-					sb = new StringBuilder(FriendlyName);
+				if (StringBuilder is null)
+					StringBuilder = new StringBuilder(FriendlyName);
 				else
 				{
-					sb.Append(", ");
-					sb.Append(FriendlyName);
+					StringBuilder.Append(", ");
+					StringBuilder.Append(FriendlyName);
 				}
 			}
 
-			return sb?.ToString() ?? string.Empty;
+			return StringBuilder?.ToString() ?? string.Empty;
 		}
 
 		/// <summary>
@@ -186,9 +186,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 			{
 				this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 

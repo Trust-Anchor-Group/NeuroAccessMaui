@@ -32,16 +32,16 @@ namespace NeuroAccessMaui.UI.Controls
 
 		public IconEntry() : base()
 		{
-			Path iconPath = new Path();
-			iconPath.SetBinding(Path.DataProperty, new Binding(nameof(this.IconPath), source: this));
-			iconPath.SetBinding(Path.FillProperty, new Binding(nameof(this.TextColor), source: this));
+			Path IconPath = new Path();
+			IconPath.SetBinding(Path.DataProperty, new Binding(nameof(this.IconPath), source: this));
+			IconPath.SetBinding(Path.FillProperty, new Binding(nameof(this.TextColor), source: this));
 
-			iconPath.VerticalOptions = LayoutOptions.Center;
-			iconPath.HorizontalOptions = LayoutOptions.Center;
-			iconPath.WidthRequest = 24;
-			iconPath.HeightRequest = 24;
-			iconPath.Aspect = Microsoft.Maui.Controls.Stretch.Fill;
-			this.LeftView = iconPath;
+			IconPath.VerticalOptions = LayoutOptions.Center;
+			IconPath.HorizontalOptions = LayoutOptions.Center;
+			IconPath.WidthRequest = 24;
+			IconPath.HeightRequest = 24;
+			IconPath.Aspect = Microsoft.Maui.Controls.Stretch.Fill;
+			this.LeftView = IconPath;
 		}
 	}
 }

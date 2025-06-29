@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+  <!--
     Microsoft ResX Schema 
     
     Version 2.0
@@ -22,8 +22,10 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
+  mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -59,7 +61,8 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -112,10 +115,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>STRING NOT DEFINED</value>
@@ -2150,7 +2155,7 @@
   </data>
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
     <value>Welcome to Neuro-Access</value>
-  </data> 
+  </data>
   <data name="CreateNewAccount">
     <value>Create new account</value>
   </data>
@@ -2162,7 +2167,7 @@
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
     <value>Choose Your Username</value>
-  </data> 
+  </data>
   <data name="OnboardingNameEntryDetails" xml:space="preserve">
     <value>Your username is permanent and cannot be changed later</value>
   </data>
@@ -2379,6 +2384,9 @@
   <data name="MomentaryValues" xml:space="preserve">
     <value>Momentary Values</value>
   </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
   <data name="PeakValues" xml:space="preserve">
     <value>Peak Values</value>
   </data>
@@ -2496,13 +2504,13 @@
   <data name="GenerateQrCode" xml:space="preserve">
     <value>Generate QR Code</value>
   </data>
-	<data name="CameraPermissionTitle" xml:space="preserve">
+  <data name="CameraPermissionTitle" xml:space="preserve">
 		<value>Camera</value>
 	</data>
-	<data name="CameraPermissionDescription" xml:space="preserve">
+  <data name="CameraPermissionDescription" xml:space="preserve">
 		<value>To use this feature, please enable camera access in your settings.</value>
 	</data>
-	<data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
+  <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
 		<value>Open settings - Click on "Permissions" - Enable Camera Permissions</value>
 	</data>
   <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
@@ -2535,9 +2543,6 @@
   <data name="AdditionalPhotosDescription" xml:space="preserve">
     <value>You may include additional photos to further support your identity verification.</value>
   </data>
-  <data name="None" xml:space="preserve">
-    <value>None</value>
-  </data>
   <data name="Passport" xml:space="preserve">
     <value>Passport</value>
   </data>
@@ -2550,7 +2555,7 @@
   <data name="SelectTypeOfDocument" xml:space="preserve">
     <value>Select type of document</value>
   </data>
-    <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
+  <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
     <value>Please upload a photo that clearly shows both pages of your passport's data section, including the page with your photo</value>
   </data>
   <data name="FrontOfDocument_Passport" xml:space="preserve">
@@ -2558,5 +2563,308 @@
   </data>
   <data name="PleaseTryAgain" xml:space="preserve">
     <value>Please Try Again</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="DurationPickerTitle" xml:space="preserve">
+    <value>Validity Time</value> 
+  </data>
+  <data name="DurationPickerDescription" xml:space="preserve">
+    <value>Specify the lifetime of the contract</value> 
+  </data>
+  <data name="NegateDuration" xml:space="preserve">
+    <value>Negative duration: </value> 
+  </data>
+  <data name="AddDuration" xml:space="preserve">
+    <value>Add duration</value> 
+  </data>
+  <data name="SelectUnit" xml:space="preserve">
+    <value>Select unit</value>
+  </data>
+  <data name="YearsCapitalized" xml:space="preserve">
+    <value>Years</value>
+  </data>
+  <data name="MonthsCapitalized" xml:space="preserve">
+    <value>Months</value>
+  </data>
+  <data name="DaysCapitalized" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="HoursCapitalized" xml:space="preserve">
+    <value>Hours</value>
+  </data>
+  <data name="MinutesCapitalized" xml:space="preserve">
+    <value>Minutes</value>
+  </data>
+  <data name="SecondsCapitalized" xml:space="preserve">
+    <value>Seconds</value>
+  </data>
+  <data name="ExpiresFormat" xml:space="preserve">
+    <value>Expires: {0:d}</value>
+  </data>
+  <data name="Issued" xml:space="preserve">
+    <value>Issued</value>
+  </data>
+  <data name="OtherInformation" xml:space="preserve">
+    <value>Other information</value>
+  </data>
+  <data name="SwipeForDetails" xml:space="preserve">
+    <value>Swipe for details</value>
+  </data>
+  <data name="ApplyIdInfoMainPage" xml:space="preserve">
+    <value>Apply for a personal ID to get everything out of Neuro Access</value>
+  </data>
+  <data name="CompleteIdButton" xml:space="preserve">
+    <value>Complete your personal ID</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="ClientMessageMissingCountry" xml:space="preserve">
+    <value>Application does not contain country information</value>
+  </data>
+  <data name="ClientMessageMissingPNr" xml:space="preserve">
+    <value>Application does not contain personal number information</value>
+  </data>
+  <data name="ClientMessageManualReview" xml:space="preserve">
+    <value>Unable to validate application automatically. The application needs to be validated manually, or by peer review</value>
+  </data>
+  <data name="ClientMessageUnableReview" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageInvalidType" xml:space="preserve">
+    <value>A parameter was given in an invalid format</value>
+  </data>
+  <data name="ClientMessageIdMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageJidMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageAccountMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageProviderMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageStateMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageCreatedMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageUpdatedMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageFromMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageToMismatch" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageNoClientURL" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageReviewerExternal" xml:space="preserve">
+    <value>Peer reviewer is external. Peer-review request should be sent directly to reviewer</value>
+  </data>
+  <data name="ClientMessageServiceNotConfigured" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageCountryNotSupported" xml:space="preserve">
+    <value>Service not available in selected country</value>
+  </data>
+  <data name="ClientMessageNoCompanyId" xml:space="preserve">
+    <value>Service cannot be used to review company IDs</value>
+  </data>
+  <data name="ClientMessageServiceClientTimeout" xml:space="preserve">
+    <value>Service timed out waiting for user to approve request</value>
+  </data>
+  <data name="ClientMessageServiceFailed" xml:space="preserve">
+    <value>Service failed to process request</value>
+  </data>
+  <data name="ClientMessagePNrMismatch" xml:space="preserve">
+    <value>Personal number does not match provided documents</value>
+  </data>
+  <data name="ClientMessageFirstNameMismatch" xml:space="preserve">
+    <value>First name does not match provided documents</value>
+  </data>
+  <data name="ClientMessageLastNameMismatch" xml:space="preserve">
+    <value>Last name does not match provided documents</value>
+  </data>
+  <data name="ClientMessageNameMismatch" xml:space="preserve">
+    <value>Name does not match provided documents</value>
+  </data>
+  <data name="ClientMessageInvalidJid" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageNoLogin" xml:space="preserve">
+    <value>An unexpected error occurred</value>
+  </data>
+  <data name="ClientMessageUnexpectedOnboardingServer" xml:space="preserve">
+    <value>Unexpected response received from onboarding server</value>
+  </data>
+  <data name="ClientMessagePersonDead" xml:space="preserve">
+    <value>Could not verify that the identity matches a living person</value>
+  </data>
+  <data name="ClientMessageBirthDateMismatch" xml:space="preserve">
+    <value>Birth date does not match provided documents</value>
+  </data>
+  <data name="ClientMessageAddressMismatch" xml:space="preserve">
+    <value>Address does not match provided documents</value>
+  </data>
+  <data name="ClientMessageZipMismatch" xml:space="preserve">
+    <value>Zip-code does not match provided documents</value>
+  </data>
+  <data name="ClientMessageAreaMismatch" xml:space="preserve">
+    <value>Area does not match provided documents</value>
+  </data>
+  <data name="ClientMessageCityMismatch" xml:space="preserve">
+    <value>City does not match provided documents</value>
+  </data>
+  <data name="ClientMessageRegionMismatch" xml:space="preserve">
+    <value>Region does not match provided documents</value>
+  </data>
+  <data name="ClientMessageLivenessFailed" xml:space="preserve">
+    <value>Liveness check failed</value>
+  </data>
+  <data name="ClientMessagePhotoFake" xml:space="preserve">
+    <value>Could not verify photo authenticity</value>
+  </data>
+  <data name="ClientMessagePhotoPoor" xml:space="preserve">
+    <value>Photo quality too low</value>
+  </data>
+  <data name="ClientMessageBankIdRFA1" xml:space="preserve">
+    <value>Start your BankID app</value>
+  </data>
+  <data name="ClientMessageBandIdRFA2" xml:space="preserve">
+    <value>The BankID app is not installed. Please contact your internet bank</value>
+  </data>
+  <data name="ClientMessageBankIdRFA3" xml:space="preserve">
+    <value>Action cancelled. Please try again</value>
+  </data>
+  <data name="ClientMessageBankIdRFA4" xml:space="preserve">
+    <value>An identification or signing for this personal number is already started. Please try again</value>
+  </data>
+  <data name="ClientMessageBankIdRFA5" xml:space="preserve">
+    <value>Internal error. Please try again</value>
+  </data>
+  <data name="ClientMessageBankIdRFA6" xml:space="preserve">
+    <value>Action cancelled</value>
+  </data>
+  <data name="ClientMessageBankIdRFA8" xml:space="preserve">
+    <value>The BankID app is not responding. Please check that the program is started and that you have internet access. If you do not have a valid BankID you can get one from your bank. Try again</value>
+  </data>
+  <data name="ClientMessageBankIdRFA9" xml:space="preserve">
+    <value>Enter your security code in the BankID app and select Identify or Sign</value>
+  </data>
+  <data name="ClientMessageBankIdRFA13" xml:space="preserve">
+    <value>Trying to start your BankID app</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14A" xml:space="preserve">
+    <value>Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably do not have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you do not have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14B" xml:space="preserve">
+    <value>Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably do not have a BankID which can be used for this identification/signing on this device. If you do not have a BankID you can order one from your internet bank. If you have a BankID on another device you can start the BankID app on that device</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15A" xml:space="preserve">
+    <value>Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably do not have a BankID which can be used for this identification/signing on this computer. If you have a BankID card, please insert it into your card reader. If you do not have a BankID you can order one from your internet bank</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15B" xml:space="preserve">
+    <value> Searching for BankID:s, it may take a little while... If a few seconds have passed and still no BankID has been found, you probably do not have a BankID which can be used for this identification/signing on this device. If you do not have a BankID you can order one from your internet bank</value>
+  </data>
+  <data name="ClientMessageBankIdRFA16" xml:space="preserve">
+    <value>The BankID you are trying to use is revoked or too old. Please use another BankID or order a new one from your internet bank</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17A" xml:space="preserve">
+    <value>The BankID app could not be found on your computer or mobile device. Please install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17B" xml:space="preserve">
+    <value>Failed to scan the QR code. Start the BankID app and scan the QR code. Check that the BankID app is up to date. If you don't have the BankID app, you need to install it and order a BankID from your internet bank. Install the app from your app store or https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA18" xml:space="preserve">
+    <value>Start the BankID app</value>
+  </data>
+  <data name="ClientMessageBankIdRFA19" xml:space="preserve">
+    <value>Would you like to identify yourself or sign with a BankID on this computer or with a Mobile BankID?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA20" xml:space="preserve">
+    <value>Would you like to identify yourself or sign with a BankID on this device or with a BankID on another device?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA21" xml:space="preserve">
+    <value>Identification or signing in progress</value>
+  </data>
+  <data name="ClientMessageBankIdRFA22" xml:space="preserve">
+    <value>Unknown error. Please try again</value>
+  </data>
+  <data name="SelectContract" xml:space="preserve">
+    <value>Select a contract</value>
+  </data>
+  <data name="SelectContractEntryDescription" xml:space="preserve">
+    <value>Paste contract ID or choose from list</value>
+  </data>
+  <data name="ScanInvitationInfo" xml:space="preserve">
+    <value>Scan invitation if you have already created an account separately</value>
+  </data>
+  <data name="PubSubServiceNotFound" xml:space="preserve">
+    <value>Messaging service not available</value>
+  </data>
+  <data name="ClearCache" xml:space="preserve">
+    <value>Clear cache</value>
+  </data>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Removes temporary data like images and attachments to free up space</value>
+  </data>
+  <data name="Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Beta features are under development and could lack functionality or design. However, some of their core features are available</value>
+  </data>
+  <data name="SmartThings" xml:space="preserve">
+    <value>Smart Things</value>
+  </data>
+  <data name="Assets" xml:space="preserve">
+    <value>Assets</value>
+  </data>
+  <data name="MicroLoan" xml:space="preserve">
+    <value>MicroLoan</value>
+  </data>
+  <data name="NFC" xml:space="preserve">
+    <value>NFC</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+   <value>Would you like to add this identity to your contacts?</value>
+  </data>
+  <data name="ComingSoon" xml:space="preserve">
+   <value>Coming soon!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+   <value>We are currently working on this</value>
+  </data>
+  <data name="BetaFeature" xml:space="preserve">
+   <value>Beta</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>To enable Beta features, go to the Home screen and open the settings page</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>This feature is currently in a Beta state. To enable Beta features, open the settings page and enable beta features</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
+    <value>Permission Required</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
+    <value>We couldn’t load the latest version of this contract. The details you see may be out of date. Request access now?</value>
+  </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Cache cleared</value>
+  </data>
+  <data name="LanguageChangedTitle" xml:space="preserve">
+   <value>Language changed</value>
+  </data>
+  <data name="LanguageChangedMessage" xml:space="preserve">
+   <value>Please restart the app to ensure all text changes language properly</value>
   </data>
 </root>

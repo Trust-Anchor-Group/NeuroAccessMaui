@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +10,10 @@ namespace NeuroAccessMaui.UI.Popups.QR
 	{
 		public ShowQRPopup(byte[] QrCodeBin)
 		{
-			BasePopupViewModel viewModel = new ShowQRViewModel(QrCodeBin);
+			BasePopupViewModel ViewModel = new ShowQRViewModel(QrCodeBin);
 
 			this.InitializeComponent();
-			this.BindingContext = viewModel;
+			this.BindingContext = ViewModel;
 		}
 
 		public ShowQRPopup()

@@ -58,6 +58,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					AcceptLanguage += ";q=1,en;q=0.9";
 
 				ContentResponse Result = await InternetContent.GetAsync(DomainInfo,
+					null,                               // Certificate
+					App.ValidateCertificateCallback,          // RemoteCertificateValidator
 					new KeyValuePair<string, string>("Accept", "application/json"),
 					new KeyValuePair<string, string>("Accept-Language", AcceptLanguage),
 					new KeyValuePair<string, string>("Accept-Encoding", "0"));
@@ -152,10 +154,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand]
 		private async Task ServiceProviderInfo()
 		{
-			string title = this.LocalizedDomainName;
-			string message = this.LocalizedDomainDescription;
-			ShowInfoPopup infoPage = new(title, message);
-			await ServiceRef.UiService.PushAsync(infoPage);
+			string Title = this.LocalizedDomainName;
+			string Message = this.LocalizedDomainDescription;
+			ShowInfoPopup InfoPage = new(Title, Message);
+			await ServiceRef.UiService.PushAsync(InfoPage);
 		}
     }
 }

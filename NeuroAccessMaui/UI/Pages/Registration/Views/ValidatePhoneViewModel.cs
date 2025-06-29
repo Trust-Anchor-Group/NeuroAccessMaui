@@ -41,9 +41,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				try
 				{
 					ContentResponse Result = await InternetContent.PostAsync(
-						new Uri("https://" + Constants.Domains.IdDomain + "/ID/CountryCode.ws"), string.Empty,
-						new KeyValuePair<string, string>("Accept", "application/json"));
-
+						new Uri("https://" + Constants.Domains.IdDomain + "/ID/CountryCode.ws"),
+						string.Empty,                       // Data
+						null,                               // Certificate
+						App.ValidateCertificateCallback,          // RemoteCertificateValidator
+						new KeyValuePair<string, string>("Accept", "application/json")  // Headers
+					);
 					Result.AssertOk();
 
 					if ((Result.Decoded is Dictionary<string, object> Response) &&
@@ -60,6 +63,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				}
 			}
 		}
+
 
 		/// <inheritdoc/>
 		protected override async Task OnDispose()
@@ -89,6 +93,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				{
 					ContentResponse Result = await InternetContent.PostAsync(
 						new Uri("https://" + Constants.Domains.IdDomain + "/ID/CountryCode.ws"), string.Empty,
+						null,                               // Certificate
+						App.ValidateCertificateCallback,          // RemoteCertificateValidator
 						new KeyValuePair<string, string>("Accept", "application/json"));
 
 					Result.AssertOk();
@@ -223,7 +229,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				}
 				string FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber}";
 
-				if (this.SelectedCountry.DialCode == "46") ///TODO: Make this more generic for other countries
+				if (this.SelectedCountry.DialCode == "46") //TODO: Make this more generic for other countries
 					FullPhoneNumber = $"+{this.SelectedCountry.DialCode}{this.PhoneNumber.TrimStart('0')}";
 
 				ContentResponse SendResult = await InternetContent.PostAsync(
@@ -233,7 +239,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						{ "Nr", FullPhoneNumber },
 						{ "AppName", Constants.Application.Name },
 						{ "Language", CultureInfo.CurrentCulture.TwoLetterISOLanguageName }
-					}, new KeyValuePair<string, string>("Accept", "application/json"));
+					},
+					null,                               // Certificate
+					App.ValidateCertificateCallback,          // RemoteCertificateValidator
+					new KeyValuePair<string, string>("Accept", "application/json"));
 
 				SendResult.AssertOk();
 
@@ -271,7 +280,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 									{ "Nr", FullPhoneNumber },
 									{ "Code", int.Parse(Code, NumberStyles.None, CultureInfo.InvariantCulture) },
 									{ "Test", IsTest }
-								}, new KeyValuePair<string, string>("Accept", "application/json"));
+								},
+								null,                               // Certificate
+								App.ValidateCertificateCallback,          // RemoteCertificateValidator
+								new KeyValuePair<string, string>("Accept", "application/json"));
 
 							VerifyResult.AssertOk();
 
@@ -351,8 +363,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				ServiceRef.LogService.LogException(ex);
 
 				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrongWhenSendingPhoneCode)]);
 			}
 			finally
 			{
@@ -385,7 +397,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						{ "Nr", FullPhoneNumber },
 						{ "AppName", Constants.Application.Name },
 						{ "Language", CultureInfo.CurrentCulture.TwoLetterISOLanguageName }
-					}, new KeyValuePair<string, string>("Accept", "application/json"));
+					},
+					null,                               // Certificate
+					App.ValidateCertificateCallback,          // RemoteCertificateValidator
+					new KeyValuePair<string, string>("Accept", "application/json"));
 
 				SendResult.AssertOk();
 
@@ -408,8 +423,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				ServiceRef.LogService.LogException(ex);
 
 				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrongWhenSendingPhoneCode)]);
 			}
 		}
 
@@ -417,7 +432,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			if (this.CountDownTimer is not null)
 			{
+#if DEBUG
+				this.CountDownSeconds = 10;
+
+#else
 				this.CountDownSeconds = 300;
+#endif
 
 				if (!this.CountDownTimer.IsRunning)
 					this.CountDownTimer.Start();

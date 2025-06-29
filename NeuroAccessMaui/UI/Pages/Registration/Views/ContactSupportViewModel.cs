@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
@@ -36,14 +36,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand]
 		private async Task ContactSupport()
 		{
-			string email = this.SupportEmail;
-			string subject = ServiceRef.Localizer[nameof(AppResources.SupportEmailSubject)];
+			string Email = this.SupportEmail;
+			string Subject = ServiceRef.Localizer[nameof(AppResources.SupportEmailSubject)];
 
-			string mailtoUri = $"mailto:{email}?subject={Uri.EscapeDataString(subject)}";
+			string MailtoUri = $"mailto:{Email}?subject={Uri.EscapeDataString(Subject)}";
 
 			try
 			{
-				if (!await Launcher.OpenAsync(new Uri(mailtoUri)))
+				if (!await Launcher.OpenAsync(new Uri(MailtoUri)))
 				{
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -74,7 +74,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 			if (string.IsNullOrEmpty(ServiceRef.TagProfile.PhoneNumber))
 			{
-				try
+				ContentResponse Result = await InternetContent.PostAsync(
+					new Uri("https://" + Constants.Domains.IdDomain + "/ID/CountryCode.ws"), 
+					string.Empty,
+					null,                               // Certificate
+					App.ValidateCertificateCallback,          // RemoteCertificateValidator
+					new KeyValuePair<string, string>("Accept", "application/json"));
+
+				if (Result.HasError)
 				{
 					ContentResponse Result = await InternetContent.PostAsync(
 						new Uri("https://" + Constants.Domains.IdDomain + "/ID/CountryCode.ws"), string.Empty,
@@ -212,7 +219,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						 { "Nr", FullPhoneNumber },
 						 { "AppName", Constants.Application.Name },
 						 { "Language", CultureInfo.CurrentCulture.TwoLetterISOLanguageName }
-					 }, new KeyValuePair<string, string>("Accept", "application/json"));
+					 },
+					null,                               // Certificate
+					App.ValidateCertificateCallback,          // RemoteCertificateValidator
+					 new KeyValuePair<string, string>("Accept", "application/json"));
 
 				PhoneSendResult.AssertOk();
 
@@ -257,21 +267,24 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		private async Task<bool> VerifyCodeAsync(string Identifier, bool IsEmail)
 		{
-			VerifyCodeNavigationArgs navigationArgs = new(this, Identifier);
-			await ServiceRef.UiService.GoToAsync(nameof(VerifyCodePage), navigationArgs, BackMethod.Pop);
-			string? code = await navigationArgs.VarifyCode!.Task;
+			VerifyCodeNavigationArgs NavigationArgs = new(this, Identifier);
+			await ServiceRef.UiService.GoToAsync(nameof(VerifyCodePage), NavigationArgs, BackMethod.Pop);
+			string? Code = await NavigationArgs.VarifyCode!.Task;
 
-			if (!string.IsNullOrEmpty(code))
+			if (!string.IsNullOrEmpty(Code))
 			{
 				Dictionary<string, object> parameters = new()
 				{
 					{ IsEmail ? "EMail" : "Nr", Identifier },
-					{ "Code", int.Parse(code, NumberStyles.None, CultureInfo.InvariantCulture) }
+					{ "Code", int.Parse(Code, NumberStyles.None, CultureInfo.InvariantCulture) }
 				};
 
 				ContentResponse Response = await InternetContent.PostAsync(
 					new Uri("https://" + Constants.Domains.IdDomain + "/ID/VerifyNumber.ws"),
-					parameters, new KeyValuePair<string, string>("Accept", "application/json"));
+					parameters,
+					null,                               // Certificate
+					App.ValidateCertificateCallback,          // RemoteCertificateValidator
+					new KeyValuePair<string, string>("Accept", "application/json"));
 
 				Response.AssertOk();
 
@@ -368,6 +381,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				try
 				{
 					ContentBinaryResponse Response = await InternetContent.PostAsync(Uri, Encoding.ASCII.GetBytes(Code), "text/plain",
+						null,                               // Certificate
+						App.ValidateCertificateCallback,          // RemoteCertificateValidator
 						new KeyValuePair<string, string>("Accept", "text/plain"));
 					Response.AssertOk();
 
@@ -468,7 +483,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 									throw new Exception("Invalid account.");
 								}
 
-								LegalIdDefinition = null;
 								AccountDone = true;
 								break;
 
@@ -497,7 +511,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 					if (AccountDone && LegalIdDefinition is not null)
 					{
-						await ServiceRef.XmppService.ImportSigningKeys(LegalIdDefinition);
 						GoToRegistrationStep(RegistrationStep.Finalize);
 					}
 					else if (AccountDone)
@@ -548,22 +561,22 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				async Task OnConnected(XmppClient client)
 				{
-					DateTime now = DateTime.Now;
-					LegalIdentity? createdIdentity = null;
-					LegalIdentity? approvedIdentity = null;
+					DateTime Now = DateTime.Now;
+					LegalIdentity? CreatedIdentity = null;
+					LegalIdentity? ApprovedIdentity = null;
 
-					bool serviceDiscoverySucceeded;
+					bool ServiceDiscoverySucceeded;
 
 					if (ServiceRef.TagProfile.NeedsUpdating())
 					{
-						serviceDiscoverySucceeded = await ServiceRef.XmppService.DiscoverServices(client);
+						ServiceDiscoverySucceeded = await ServiceRef.XmppService.DiscoverServices(client);
 					}
 					else
 					{
-						serviceDiscoverySucceeded = true;
+						ServiceDiscoverySucceeded = true;
 					}
 
-					if (serviceDiscoverySucceeded && !string.IsNullOrEmpty(ServiceRef.TagProfile.LegalJid))
+					if (ServiceDiscoverySucceeded && !string.IsNullOrEmpty(ServiceRef.TagProfile.LegalJid))
 					{
 						bool DestroyContractsClient = false;
 
@@ -588,19 +601,19 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 									if ((string.IsNullOrEmpty(LegalIdentityJid) || string.Compare(LegalIdentityJid, Identity.Id, StringComparison.OrdinalIgnoreCase) == 0) &&
 										Identity.HasClientSignature &&
 										Identity.HasClientPublicKey &&
-										Identity.From <= now &&
-										Identity.To >= now &&
+										Identity.From <= Now &&
+										Identity.To >= Now &&
 										(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created) &&
 										Identity.ValidateClientSignature() &&
 										await ContractsClient.HasPrivateKey(Identity))
 									{
 										if (Identity.State == IdentityState.Approved)
 										{
-											approvedIdentity = Identity;
+											ApprovedIdentity = Identity;
 											break;
 										}
 
-										createdIdentity ??= Identity;
+										CreatedIdentity ??= Identity;
 									}
 								}
 								catch (Exception)
@@ -609,23 +622,16 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								}
 							}
 
-							/*
-							if (approvedIdentity is not null)
-							{
-								this.LegalIdentity = approvedIdentity;
-							}
-							else if (createdIdentity is not null)
-							{
-								this.LegalIdentity = createdIdentity;
-							}*/
-							LegalIdentity? selectedIdentity = approvedIdentity ?? createdIdentity;
+							LegalIdentity? SelectedIdentity = ApprovedIdentity ?? CreatedIdentity;
 
 							string SelectedId;
 
-							if (selectedIdentity is not null)
+							if (SelectedIdentity is not null)
 							{
-								await ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, selectedIdentity);
-								SelectedId = selectedIdentity.Id;
+								await ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, client.PasswordHash, client.PasswordHashMethod, SelectedIdentity);
+								SelectedId = SelectedIdentity.Id;
+
+								ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
 							}
 							else
 							{
@@ -664,26 +670,27 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					}
 				}
 
-				(string hostName, int portNumber, bool isIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(
+				(string HostName, int PortNumber, bool IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(
 					ServiceRef.TagProfile?.Domain ?? string.Empty);
 
-				(bool succeeded, string? errorMessage, string[]? alternatives) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(
+				(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(
 					ServiceRef.TagProfile?.Domain ?? string.Empty,
-					isIpAddress, hostName, portNumber, AccountName, Password, PasswordMethod, Constants.LanguageCodes.Default,
+					IsIpAddress, HostName, PortNumber, AccountName, Password, PasswordMethod, Constants.LanguageCodes.Default,
 					typeof(App).Assembly, OnConnected);
 
-				if (!succeeded)
+				if (!Succeeded)
 				{
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						errorMessage ?? string.Empty,
+						ErrorMessage ?? string.Empty,
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
-				return succeeded;
+
+				return Succeeded;
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],

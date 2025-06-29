@@ -32,14 +32,14 @@ namespace NeuroAccessMaui.Links
 		/// <inheritdoc/>
 		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
 		{
-			bool canOpen = false;
+			bool CanOpen = false;
 
 			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
-				canOpen = await Browser.Default.OpenAsync(Link);
+				CanOpen = await Browser.Default.OpenAsync(Link);
 			});
 
-			if (canOpen)
+			if (CanOpen)
 				return true;
 			else
 			{

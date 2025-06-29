@@ -18,19 +18,19 @@
 	</mopups:PopupPage.Animation>
 
 	<Grid
-		Style="{StaticResource PopupGrid}">
+		Style="{DynamicResource PopupGrid}">
 
 		<Border
 			WidthRequest="{Binding ViewWidthRequest}"
 			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-			Style="{StaticResource PopupBorder}">
+			Style="{DynamicResource PopupBorder}">
 
 			<ScrollView
 				VerticalOptions="Center">
 				<VerticalStackLayout>
 					<Label
 							  HorizontalTextAlignment="Center"
-							  Style="{StaticResource PageTitleLabel}"
+							  Style="{DynamicResource PageTitleLabel}"
 							  Text="{l:Localize PersonalId}"/>
 						 
 					<Image x:Name="QrCode" Source="{Binding QrCode}" WidthRequest="{Binding QrCodeWidth}"
@@ -48,24 +48,24 @@
 
 						<!-- Share ID Button -->
 						<controls:TemplatedButton Grid.Column="0" Command="{Binding ShareQRCommand}">
-							<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
+							<Border Style="{DynamicResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
 								<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 									<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
 											Data="{x:Static ui:Geometries.ShareIconPath}"
-											Style="{StaticResource TransparentTemplateButtonPath}"/>
-									<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize Share}"/>
+											Style="{DynamicResource TransparentTemplateButtonPath}"/>
+									<Label Grid.Column="1" Style="{DynamicResource TransparentTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}"  Text="{l:Localize Share}"/>
 								</Grid>
 							</Border>
 						</controls:TemplatedButton>
 
 						<!-- Copy Link Button -->
 						<controls:TemplatedButton Grid.Column="1" Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}">
-							<Border Style="{StaticResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
+							<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
 								<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 									<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
 											Data="{x:Static ui:Geometries.ClipboardIconPath}"
-											Style="{StaticResource FilledTemplateButtonPath}"/>
-									<Label Grid.Column="1" Style="{StaticResource FilledTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize CopyLink}"/>
+											Style="{DynamicResource FilledTemplateButtonPath}"/>
+									<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize CopyLink}"/>
 								</Grid>
 							</Border>
 						</controls:TemplatedButton>

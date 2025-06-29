@@ -14,11 +14,11 @@
 		/// <returns>Task waiting for the original task to complete, or a timeout to occur.</returns>
 		public static async Task<TResult> TimeoutAfter<TResult>(this Task<TResult> task, TimeSpan timeout)
 		{
-			using CancellationTokenSource tcs = new();
-			Task completedTask = await Task.WhenAny(task, Task.Delay(timeout, tcs.Token));
-			if (completedTask == task)
+			using CancellationTokenSource Tcs = new();
+			Task CompletedTask = await Task.WhenAny(task, Task.Delay(timeout, Tcs.Token));
+			if (CompletedTask == task)
 			{
-				tcs.Cancel();
+				Tcs.Cancel();
 				return await task;  // Very important in order to propagate exceptions
 			}
 			throw new TimeoutException();

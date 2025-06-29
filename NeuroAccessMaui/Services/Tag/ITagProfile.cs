@@ -151,6 +151,11 @@ namespace NeuroAccessMaui.Services.Tag
 		string? NeuroFeaturesJid { get; set; }
 
 		/// <summary>
+		/// The XMPP server's PubSub JID.
+		/// </summary>
+		string? PubSubJid { get; set; }
+
+		/// <summary>
 		/// The XMPP server's Trust Provider ID, if any.
 		/// </summary>
 		string? TrustProviderId { get; set; }
@@ -251,6 +256,11 @@ namespace NeuroAccessMaui.Services.Tag
 		bool HasWallet { get; set; }
 
 		/// <summary>
+		/// If the user has Beta features enabled
+		/// </summary>
+		bool HasBetaFeatures { get; set; }
+
+		/// <summary>
 		/// If the user has a thing.
 		/// </summary>
 		bool HasThing { get; set; }
@@ -302,6 +312,15 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <returns>Returns <c>true</c> if the current <see cref="ITagProfile"/> needs to have its legal identity refreshed, <c>false</c> otherwise.</returns>
 		bool LegalIdentityNeedsRefreshing();
 
+		/// <summary>
+		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> needs to have its Xmpp Password updated, <c>false</c> otherwise.
+		/// </summary>
+		public bool GetXmppPasswordNeedsUpdating();
+
+		/// <summary>
+		/// Sets the local flag for if xmpp password needs updating.
+		/// </summary>
+		public void SetXmppPasswordNeedsUpdating(bool Value);
 
 		/// <summary>
 		/// Returns <c>true</c> if the registration process for this <see cref="ITagProfile"/> has an account but not a legal id,

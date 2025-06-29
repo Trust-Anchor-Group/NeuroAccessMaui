@@ -2,6 +2,7 @@
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Services.Theme;
 using Waher.Networking.XMPP;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
@@ -13,21 +14,56 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 		}
 
+		protected override async Task OnAppearing()
+		{
+			await base.OnAppearing();
+
+			try
+			{
+				if (App.Current is not null)
+					await App.Current.InitCompleted;
+
+			}
+			catch (Exception)
+			{
+			}
+			finally
+			{
+				GoToRegistrationStep(ServiceRef.TagProfile.Step);
+			}
+		}
+/*
 		/// <inheritdoc />
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
 
-			this.IsBusy = true;
-			ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
-			ServiceRef.XmppService.Loaded += this.XmppService_Loaded;
-		}
+			try
+			{
+				if (App.Current is not null)
+					await App.Current.InitCompleted;
 
+				//Load the theme for the provider, if it exists.
+				await ServiceRef.ThemeService.ApplyProviderTheme();
+			}
+			catch (Exception)
+			{
+			}
+			finally
+			{
+				GoToRegistrationStep(ServiceRef.TagProfile.Step);
+			}
+
+			//	this.IsBusy = true;
+			//	ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
+			//	ServiceRef.XmppService.Loaded += this.XmppService_Loaded;
+		}
+*/
 		/// <inheritdoc />
 		protected override async Task OnDispose()
 		{
-			ServiceRef.XmppService.Loaded -= this.XmppService_Loaded;
-			ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
+		//	ServiceRef.XmppService.Loaded -= this.XmppService_Loaded;
+		//	ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
 
 			await base.OnDispose();
 		}

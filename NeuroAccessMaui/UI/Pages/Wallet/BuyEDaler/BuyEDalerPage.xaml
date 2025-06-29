@@ -11,35 +11,35 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{StaticResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize BuyEDaler}" Style="{StaticResource PageTitleLabel}"/>
+				<Label Text="{l:Localize BuyEDaler}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Frame Style="{DynamicResource FrameSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{l:Localize BuyEDalerDescription}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize Amount}"/>
 						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
 
-							<controls:CompositeEntry Style="{StaticResource RegularCompositeEntry}"
+							<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
 							                         Grid.Column="0" Grid.Row="0" Keyboard="Numeric"
 							                         EntryData="{Binding Path=AmountText}"
 							                         BackgroundColor="{Binding AmountEntryValid, Converter={converters:ControlBgColor}}"
 							                         Placeholder="{Binding Path=Currency}"/>
 
 							<controls:ImageButton Grid.Column="1" Grid.Row="0" PathData="{x:Static ui:Geometries.CalculatorPath}"
-														 Style="{StaticResource ImageOnlyButton}" Command="{Binding OpenCalculatorCommand}"
+														 Style="{DynamicResource ImageOnlyButton}" Command="{Binding OpenCalculatorCommand}"
 														 CommandParameter="AmountText" />
 						</Grid>
-						<controls:TextButton LabelData="{l:Localize Buy}" Command="{Binding Path=BuyCommand}" Style="{StaticResource FilledTextButton}"
-													Margin="{StaticResource SmallBottomMargins}"/>
+						<controls:TextButton LabelData="{l:Localize Buy}" Command="{Binding Path=BuyCommand}" Style="{DynamicResource FilledTextButton}"
+													Margin="{DynamicResource SmallBottomMargins}"/>
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>

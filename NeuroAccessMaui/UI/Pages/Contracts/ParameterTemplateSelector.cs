@@ -16,6 +16,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public DataTemplate? NumericalTemplate { get; set; }
 		public DataTemplate? TimeTemplate { get; set; }
 		public DataTemplate? CalcTemplate { get; set; }
+		public DataTemplate? ContractReferenceTemplate { get; set; }
 		public DataTemplate? ProtectedTemplate { get; set; }
 		public DataTemplate? DefaultTemplate { get; set; }
 
@@ -23,10 +24,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		protected override DataTemplate? OnSelectTemplate(object item, BindableObject container)
 		{
-			ObservableParameter? parameter = item as ObservableParameter;
-			if (parameter is not null && this.ProtectedTemplate is not null)
+			ObservableParameter? Parameter = item as ObservableParameter;
+			if (Parameter is not null && this.ProtectedTemplate is not null)
 			{
-				if (parameter.IsProtected && !parameter.CanReadValue)
+				if (Parameter.IsProtected && !Parameter.CanReadValue)
 				{
 					return this.ProtectedTemplate ?? this.DefaultTemplate;
 				}
@@ -42,6 +43,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				ObservableNumericalParameter => this.NumericalTemplate ?? this.DefaultTemplate,
 				ObservableTimeParameter => this.TimeTemplate ?? this.DefaultTemplate,
 				ObservableCalcParameter => this.CalcTemplate ?? this.DefaultTemplate,
+				ObservableContractReferenceParameter => this.ContractReferenceTemplate ?? this.DefaultTemplate,
 				_ => this.DefaultTemplate
 			};
 		}

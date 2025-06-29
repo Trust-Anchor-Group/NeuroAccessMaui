@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BrandingDescriptor xmlns="urn:neuroaccess:branding:1.0">
+
+	<!-- Semantic version for this branding payload -->
+	<Version major="1"
+			 minor="2"
+			 patch="3" />
+
+	<!-- HTTP URI pointing to the color palette ResourceDictionary -->
+	<ColorsUri>
+		https://cdn.example.com/branding/colors/v1.2.3/Colors.xaml
+	</ColorsUri>
+
+	<!-- Optional images container -->
+	<Images>
+		<!-- Logo image -->
+		<ImageRef id="logo"
+				  uri="https://picsum.photos/200/200"
+				  role="logo"
+				  width="200"
+				  height="200"
+				  contentType="Image/jpeg" />
+		<!-- Banner image -->
+		<ImageRef id="banner"
+				  uri="https://picsum.photos/200/200"
+				  role="banner"
+				  width="200"
+				  height="200"
+				  contentType="Image/jpeg" />
+	</Images>
+</BrandingDescriptor>

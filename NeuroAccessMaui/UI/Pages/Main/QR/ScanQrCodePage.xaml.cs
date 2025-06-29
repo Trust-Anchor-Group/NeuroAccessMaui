@@ -121,15 +121,15 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			if (status == PermissionStatus.Denied)
 				return null;
 
-			BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
-			PropertyInfo? strongHandlerProperty = typeof(CameraBarcodeReaderView).GetProperty("StrongHandler", bindingFlags);
-			CameraBarcodeReaderViewHandler? cameraBarcodeReaderViewHandler = strongHandlerProperty?.GetValue(cameraBarcodeReaderView) as CameraBarcodeReaderViewHandler;
-			FieldInfo? manageField = typeof(CameraBarcodeReaderViewHandler).GetField("cameraManager", bindingFlags);
-			object? cameraManager = manageField?.GetValue(cameraBarcodeReaderViewHandler);
-			FieldInfo? cameraPreviewField = typeof(CameraBarcodeReaderViewHandler).Assembly.GetType("ZXing.Net.Maui.CameraManager")?.GetField("cameraPreview", bindingFlags);
-			Preview? preview = cameraPreviewField?.GetValue(cameraManager) as Preview;
+			BindingFlags BindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
+			PropertyInfo? StrongHandlerProperty = typeof(CameraBarcodeReaderView).GetProperty("StrongHandler", BindingFlags);
+			CameraBarcodeReaderViewHandler? CameraBarcodeReaderViewHandler = StrongHandlerProperty?.GetValue(cameraBarcodeReaderView) as CameraBarcodeReaderViewHandler;
+			FieldInfo? ManageField = typeof(CameraBarcodeReaderViewHandler).GetField("cameraManager", BindingFlags);
+			object? CameraManager = ManageField?.GetValue(CameraBarcodeReaderViewHandler);
+			FieldInfo? CameraPreviewField = typeof(CameraBarcodeReaderViewHandler).Assembly.GetType("ZXing.Net.Maui.CameraManager")?.GetField("cameraPreview", BindingFlags);
+			Preview? Preview = CameraPreviewField?.GetValue(CameraManager) as Preview;
 
-			return preview?.Camera;
+			return Preview?.Camera;
 		}
 #endif
 

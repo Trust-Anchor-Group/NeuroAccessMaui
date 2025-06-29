@@ -12,21 +12,21 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Signatures.ServerSignature"
 							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
-	<Grid BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
+	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{StaticResource ImageOnlyButton}"
+				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{DynamicResource ImageOnlyButton}"
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Style="{StaticResource PageTitleLabel}" Text="{l:Localize SignatureInformation}"/>
+				<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize SignatureInformation}"/>
 
-				<Frame Style="{StaticResource FrameSet}">
-					<VerticalStackLayout Spacing="{StaticResource SmallSpacing}">
-						<Label Style="{StaticResource SectionTitleLabel}" Text="{l:Localize ServerInformation}"/>
+				<Frame Style="{DynamicResource FrameSet}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ServerInformation}"/>
 
 						<Label Text="{l:Localize ServerSignatureInformationInfoText}"/>
 
@@ -40,14 +40,14 @@
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="Auto" />
 							</Grid.RowDefinitions>
-							<Label Grid.Row="0" Grid.Column="0" Style="{StaticResource KeyLabel}" Text="{l:Localize Provider}" />
-							<Label Grid.Row="0" Grid.Column="1" Style="{StaticResource ValueLabel}" Text="{Binding Path=Provider}" />
+							<Label Grid.Row="0" Grid.Column="0" Style="{DynamicResource KeyLabel}" Text="{l:Localize Provider}" />
+							<Label Grid.Row="0" Grid.Column="1" Style="{DynamicResource ValueLabel}" Text="{Binding Path=Provider}" />
 
-							<Label Grid.Row="1" Grid.Column="0" Style="{StaticResource KeyLabel}" Text="{l:Localize Timestamp}" />
-							<Label Grid.Row="1" Grid.Column="1" Style="{StaticResource ValueLabel}" Text="{Binding Path=Timestamp}" />
+							<Label Grid.Row="1" Grid.Column="0" Style="{DynamicResource KeyLabel}" Text="{l:Localize Timestamp}" />
+							<Label Grid.Row="1" Grid.Column="1" Style="{DynamicResource ValueLabel}" Text="{Binding Path=Timestamp}" />
 
-							<Label Grid.Row="2" Grid.Column="0" Style="{StaticResource KeyLabel}" Text="{l:Localize Signature}" />
-							<Label Grid.Row="2" Grid.Column="1" Style="{StaticResource ClickableValueLabel}" Text="{Binding Path=Signature}">
+							<Label Grid.Row="2" Grid.Column="0" Style="{DynamicResource KeyLabel}" Text="{l:Localize Signature}" />
+							<Label Grid.Row="2" Grid.Column="1" Style="{DynamicResource ClickableValueLabel}" Text="{Binding Path=Signature}">
 								<Label.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding Signature}" />
 								</Label.GestureRecognizers>

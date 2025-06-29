@@ -1,0 +1,50 @@
+name: "Aggregate Changelog"
+on:
+    pull_request:
+        types: [closed]
+        branches:
+            - dev
+jobs:
+    update-changelog:
+        # Only run on merged PRs whose body contains a Changelog section
+        if: ${{ github.event.pull_request.merged && contains(github.event.pull_request.body, 'Changelog') }}
+        runs-on: ubuntu-latest
+
+        permissions: write-all
+
+        steps:
+            -   name: Checkout dev branch
+                uses: actions/checkout@v4
+                with:
+                    ref: dev
+
+            -   name: Set up Python
+                uses: actions/setup-python@v4
+                with:
+                    python-version: '3.x'
+            -   name: Install dependencies
+                run: |
+                    python -m pip install --upgrade pip
+                #add any required pip installs here
+
+            -   name: Write PR body to file
+                run: |
+                    echo "${{ github.event.pull_request.body }}" > pr_body.txt
+
+            -   name: Extract and prepend changelog entries
+                run: |
+                    python .github/scripts/prepend_changelog.py \
+                    --pr-body-file pr_body.txt \
+                    --changelog CHANGELOG.md
+
+            - name: Create Pull Request
+              run: |
+                git config user.name "github-actions[bot]"
+                git config user.email "github-actions[bot]@users.noreply.github.com"
+                git switch -c changelog/pr-#${{ github.event.pull_request.number }}
+                git add CHANGELOG.md
+                git commit -m "chore: update changelog from PR #${{ github.event.pull_request.number }}" || echo "No changes to commit"
+                git push -u origin changelog/pr-#${{ github.event.pull_request.number }}
+                gh pr create -B dev -H changelog/pr-#${{ github.event.pull_request.number }} --title 'Merge changelog/pr-#${{ github.event.pull_request.number }} into dev' --body 'Created by Github action'
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

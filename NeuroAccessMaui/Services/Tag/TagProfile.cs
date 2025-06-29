@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
+using Waher.Script.Content.Functions.InputOutput;
 using Waher.Security;
 
 namespace NeuroAccessMaui.Services.Tag
@@ -62,6 +63,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? account;
 		private string? xmppPasswordHash;
 		private string? xmppPasswordHashMethod;
+		private bool? xmppPasswordNeedsUpdate;
 		private string? legalJid;
 		private string? registryJid;
 		private string? provisioningJid;
@@ -69,6 +71,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private string? logJid;
 		private string? eDalerJid;
 		private string? neuroFeaturesJid;
+		private string? pubSubJid;
 		private string? trustProviderId;
 		private string? localPasswordHash;
 		private long httpFileUploadMaxSize;
@@ -90,6 +93,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool hasWallet;
 		private bool hasThing;
 		private DateTime? lastIdentityUpdate;
+		private bool hasBetaFeatures;
 
 		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
@@ -142,6 +146,7 @@ namespace NeuroAccessMaui.Services.Tag
 				Account = this.Account,
 				PasswordHash = this.XmppPasswordHash,
 				PasswordHashMethod = this.XmppPasswordHashMethod,
+				PasswordNeedsUpdate = this.xmppPasswordNeedsUpdate,
 				LegalJid = this.LegalJid,
 				RegistryJid = this.RegistryJid,
 				ProvisioningJid = this.ProvisioningJid,
@@ -150,6 +155,7 @@ namespace NeuroAccessMaui.Services.Tag
 				LogJid = this.LogJid,
 				EDalerJid = this.EDalerJid,
 				NeuroFeaturesJid = this.NeuroFeaturesJid,
+				PubSubJid = this.PubSubJid,
 				TrustProviderId = this.TrustProviderId,
 				SupportsPushNotification = this.SupportsPushNotification,
 				PinHash = this.LocalPasswordHash,
@@ -168,7 +174,8 @@ namespace NeuroAccessMaui.Services.Tag
 				HasContractTokenCreationTemplatesReferences = this.HasContractTokenCreationTemplatesReferences,
 				HasWallet = this.HasWallet,
 				HasThing = this.HasThing,
-				LastIdentityUpdate = this.LastIdentityUpdate
+				LastIdentityUpdate = this.LastIdentityUpdate,
+				HasBetaFeatures = this.HasBetaFeatures
 			};
 
 			return Clone;
@@ -203,6 +210,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.Account = Configuration.Account;
 				this.XmppPasswordHash = Configuration.PasswordHash;
 				this.XmppPasswordHashMethod = Configuration.PasswordHashMethod;
+				this.xmppPasswordNeedsUpdate = Configuration.PasswordNeedsUpdate;
 				this.LegalJid = Configuration.LegalJid;
 				this.RegistryJid = Configuration.RegistryJid;
 				this.ProvisioningJid = Configuration.ProvisioningJid;
@@ -211,6 +219,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.LogJid = Configuration.LogJid;
 				this.EDalerJid = Configuration.EDalerJid;
 				this.NeuroFeaturesJid = Configuration.NeuroFeaturesJid;
+				this.PubSubJid = Configuration.PubSubJid;
 				this.TrustProviderId = Configuration.TrustProviderId;
 				this.SupportsPushNotification = Configuration.SupportsPushNotification;
 				this.LocalPasswordHash = Configuration.PinHash;
@@ -228,6 +237,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasWallet = Configuration.HasWallet;
 				this.HasThing = Configuration.HasThing;
 				this.LastIdentityUpdate = Configuration.LastIdentityUpdate ?? DateTime.MinValue;
+				this.HasBetaFeatures = Configuration.HasBetaFeatures;
 
 				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
@@ -256,7 +266,8 @@ namespace NeuroAccessMaui.Services.Tag
 					string.IsNullOrWhiteSpace(this.httpFileUploadJid) ||
 					string.IsNullOrWhiteSpace(this.logJid) ||
 					string.IsNullOrWhiteSpace(this.eDalerJid) ||
-					string.IsNullOrWhiteSpace(this.neuroFeaturesJid);
+					string.IsNullOrWhiteSpace(this.neuroFeaturesJid) ||
+					string.IsNullOrWhiteSpace(this.pubSubJid);
 		}
 
 		/// <summary>
@@ -275,6 +286,22 @@ namespace NeuroAccessMaui.Services.Tag
 		public virtual bool LegalIdentityNeedsRefreshing()
 		{
 			return (DateTime.UtcNow - this.LastIdentityUpdate) > Constants.Intervals.ForceRefresh;
+		}
+
+		/// <summary>
+		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> needs to have its Xmpp Password updated, <c>false</c> otherwise.
+		/// </summary>
+		public bool GetXmppPasswordNeedsUpdating()
+		{
+			return this.xmppPasswordNeedsUpdate ?? false;
+		}
+
+		/// <summary>
+		/// Sets the local flag for if xmpp password needs updating.
+		/// </summary>
+		public void SetXmppPasswordNeedsUpdating(bool Value)
+		{
+			this.xmppPasswordNeedsUpdate = Value;
 		}
 
 		/// <summary>
@@ -707,6 +734,22 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
+		/// <summary>
+		/// The XMPP server's PubSub JID.
+		/// </summary>
+		public string? PubSubJid
+		{
+			get => this.pubSubJid;
+			set
+			{
+				if (!string.Equals(this.pubSubJid, value, StringComparison.Ordinal))
+				{
+					this.pubSubJid = value;
+					this.FlagAsDirty(nameof(this.PubSubJid));
+				}
+			}
+		}
+
 		public string? TrustProviderId
 		{
 			get => this.trustProviderId;
@@ -796,6 +839,22 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.hasWallet = value;
 					this.FlagAsDirty(nameof(this.HasWallet));
+				}
+			}
+		}
+
+		/// <summary>
+		/// If the user has enabled Beta features
+		/// </summary>
+		public bool HasBetaFeatures
+		{
+			get => this.hasBetaFeatures;
+			set
+			{
+				if (this.hasBetaFeatures != value)
+				{
+					this.hasBetaFeatures = value;
+					this.FlagAsDirty(nameof(this.HasBetaFeatures));
 				}
 			}
 		}
@@ -1249,6 +1308,7 @@ namespace NeuroAccessMaui.Services.Tag
 			this.ProvisioningJid = null;
 			this.EDalerJid = null;
 			this.NeuroFeaturesJid = null;
+			this.PubSubJid = null;
 			this.SupportsPushNotification = false;
 
 			// It's important for this to be the last, since it will fire the account change notification.

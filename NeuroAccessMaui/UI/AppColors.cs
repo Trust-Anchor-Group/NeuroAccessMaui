@@ -1,4 +1,4 @@
-﻿namespace NeuroAccessMaui.UI
+namespace NeuroAccessMaui.UI
 {
 	/// <summary>
 	/// Static class that gives access to app-specific themed colors
@@ -9,40 +9,12 @@
 		private static Color? primaryForegroundLight;
 		private static Color? primaryBackgroundDark;
 		private static Color? primaryBackgroundLight;
-		private static Color? secondaryForegroundDark;
-		private static Color? secondaryForegroundLight;
 		private static Color? secondaryBackgroundDark;
 		private static Color? secondaryBackgroundLight;
-		private static Color? accentForegroundDark;
-		private static Color? accentForegroundLight;
-		private static Color? normalForegroundDark;
-		private static Color? normalForegroundLight;
-		private static Color? normalBackgroundDark;
-		private static Color? normalBackgroundLight;
-		private static Color? selectedForegroundDark;
-		private static Color? selectedForegroundLight;
-		private static Color? selectedBackgroundDark;
-		private static Color? selectedBackgroundLight;
-		private static Color? enabledFilledButtonForegroundDark;
-		private static Color? enabledFilledButtonForegroundLight;
-		private static Color? enabledFilledButtonBackgroundDark;
-		private static Color? enabledFilledButtonBackgroundLight;
-		private static Color? disabledFilledButtonForegroundDark;
-		private static Color? disabledFilledButtonForegroundLight;
-		private static Color? disabledFilledButtonBackgroundDark;
-		private static Color? disabledFilledButtonBackgroundLight;
-		private static Color? enabledOutlinedButtonForegroundDark;
-		private static Color? enabledOutlinedButtonForegroundLight;
-		private static Color? enabledOutlinedButtonBackgroundDark;
-		private static Color? enabledOutlinedButtonBackgroundLight;
-		private static Color? disabledOutlinedButtonForegroundDark;
-		private static Color? disabledOutlinedButtonForegroundLight;
-		private static Color? disabledOutlinedButtonBackgroundDark;
-		private static Color? disabledOutlinedButtonBackgroundLight;
-		private static Color? normalEditForegroundDark;
-		private static Color? normalEditForegroundLight;
-		private static Color? normalEditBackgroundDark;
-		private static Color? normalEditBackgroundLight;
+		private static Color? buttonAccessPrimarybgDark;
+		private static Color? buttonAccessPrimarybgLight;
+		private static Color? buttonUniversalbgInactiveWLDark;
+		private static Color? buttonUniversalbgInactiveWLLight;
 		private static Color? alertDark;
 		private static Color? alertLight;
 		private static Color? errorBackgroundDark;
@@ -52,6 +24,9 @@
 		private static Color? weakPasswordForeground;
 		private static Color? mediumPasswordForeground;
 		private static Color? strongPasswordForeground;
+		private static Color? blueLink;
+		private static Color? insertedBorder;
+		private static Color? deletedBorder;
 		private static Color? purple15Light;
 		private static Color? purple15Dark;
 		private static Color? purpleLight;
@@ -60,8 +35,6 @@
 		private static Color? blue20AffirmDark;
 		private static Color? blueLight;
 		private static Color? blueDark;
-
-		
 
 		/// <summary>
 		/// Primary foreground color.
@@ -72,12 +45,12 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					primaryForegroundDark ??= AppStyles.TryGetResource<Color>("PrimaryForegroundDark");
+					primaryForegroundDark ??= AppStyles.TryGetResource<Color>("ContentPrimaryWLDark");
 					return primaryForegroundDark!;
 				}
 				else
 				{
-					primaryForegroundLight ??= AppStyles.TryGetResource<Color>("PrimaryForegroundLight");
+					primaryForegroundLight ??= AppStyles.TryGetResource<Color>("ContentPrimaryWLLight");
 					return primaryForegroundLight!;
 				}
 			}
@@ -92,39 +65,19 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					primaryBackgroundDark ??= AppStyles.TryGetResource<Color>("PrimaryBackgroundDark");
+					primaryBackgroundDark ??= AppStyles.TryGetResource<Color>("SurfaceBackgroundWLDark");
 					return primaryBackgroundDark!;
 				}
 				else
 				{
-					primaryBackgroundLight ??= AppStyles.TryGetResource<Color>("PrimaryBackgroundLight");
+					primaryBackgroundLight ??= AppStyles.TryGetResource<Color>("SurfaceBackgroundWLLight");
 					return primaryBackgroundLight!;
 				}
 			}
 		}
 
 		/// <summary>
-		/// Secondary foreground color.
-		/// </summary>
-		public static Color SecondaryForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					secondaryForegroundDark ??= AppStyles.TryGetResource<Color>("SecondaryForegroundDark");
-					return secondaryForegroundDark!;
-				}
-				else
-				{
-					secondaryForegroundLight ??= AppStyles.TryGetResource<Color>("SecondaryForegroundLight");
-					return secondaryForegroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Secondary background color.
+		/// Secondary Background Color
 		/// </summary>
 		public static Color SecondaryBackground
 		{
@@ -132,133 +85,13 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					secondaryBackgroundDark ??= AppStyles.TryGetResource<Color>("SecondaryBackgroundDark");
+					secondaryBackgroundDark ??= AppStyles.TryGetResource<Color>("SurfaceElevation1WLDark");
 					return secondaryBackgroundDark!;
 				}
 				else
 				{
-					secondaryBackgroundLight ??= AppStyles.TryGetResource<Color>("SecondaryBackgroundLight");
+					secondaryBackgroundLight ??= AppStyles.TryGetResource<Color>("SurfaceElevation1WLLight");
 					return secondaryBackgroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Accent foreground color.
-		/// </summary>
-		public static Color AccentForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					accentForegroundDark ??= AppStyles.TryGetResource<Color>("AccentForegroundDark");
-					return accentForegroundDark!;
-				}
-				else
-				{
-					accentForegroundLight ??= AppStyles.TryGetResource<Color>("AccentForegroundLight");
-					return accentForegroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Normal foreground color.
-		/// </summary>
-		public static Color NormalForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					normalForegroundDark ??= AppStyles.TryGetResource<Color>("NormalForegroundDark");
-					return normalForegroundDark!;
-				}
-				else
-				{
-					normalForegroundLight ??= AppStyles.TryGetResource<Color>("NormalForegroundLight");
-					return normalForegroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Normal background color.
-		/// </summary>
-		public static Color NormalBackground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					normalBackgroundDark ??= AppStyles.TryGetResource<Color>("NormalBackgroundDark");
-					return normalBackgroundDark!;
-				}
-				else
-				{
-					normalBackgroundLight ??= AppStyles.TryGetResource<Color>("NormalBackgroundLight");
-					return normalBackgroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Selected foreground color.
-		/// </summary>
-		public static Color SelectedForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					selectedForegroundDark ??= AppStyles.TryGetResource<Color>("SelectedForegroundDark");
-					return selectedForegroundDark!;
-				}
-				else
-				{
-					selectedForegroundLight ??= AppStyles.TryGetResource<Color>("SelectedForegroundLight");
-					return selectedForegroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Selected background color.
-		/// </summary>
-		public static Color SelectedBackground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					selectedBackgroundDark ??= AppStyles.TryGetResource<Color>("SelectedBackgroundDark");
-					return selectedBackgroundDark!;
-				}
-				else
-				{
-					selectedBackgroundLight ??= AppStyles.TryGetResource<Color>("SelectedBackgroundLight");
-					return selectedBackgroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// EnabledFilledButton foreground color.
-		/// </summary>
-		public static Color EnabledFilledButtonForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					enabledFilledButtonForegroundDark ??= AppStyles.TryGetResource<Color>("EnabledFilledButtonForegroundDark");
-					return enabledFilledButtonForegroundDark!;
-				}
-				else
-				{
-					enabledFilledButtonForegroundLight ??= AppStyles.TryGetResource<Color>("EnabledFilledButtonForegroundLight");
-					return enabledFilledButtonForegroundLight!;
 				}
 			}
 		}
@@ -266,39 +99,19 @@
 		/// <summary>
 		/// EnabledFilledButton background color.
 		/// </summary>
-		public static Color EnabledFilledButtonBackground
+		public static Color ButtonAccessPrimarybg
 		{
 			get
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					enabledFilledButtonBackgroundDark ??= AppStyles.TryGetResource<Color>("EnabledFilledButtonBackgroundDark");
-					return enabledFilledButtonBackgroundDark!;
+					buttonAccessPrimarybgDark ??= AppStyles.TryGetResource<Color>("ButtonAccessPrimarybgWLDark");
+					return buttonAccessPrimarybgDark!;
 				}
 				else
 				{
-					enabledFilledButtonBackgroundLight ??= AppStyles.TryGetResource<Color>("EnabledFilledButtonBackgroundLight");
-					return enabledFilledButtonBackgroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// DisabledFilledButton foreground color.
-		/// </summary>
-		public static Color DisabledFilledButtonForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					disabledFilledButtonForegroundDark ??= AppStyles.TryGetResource<Color>("DisabledFilledButtonForegroundDark");
-					return disabledFilledButtonForegroundDark!;
-				}
-				else
-				{
-					disabledFilledButtonForegroundLight ??= AppStyles.TryGetResource<Color>("DisabledFilledButtonForegroundLight");
-					return disabledFilledButtonForegroundLight!;
+					buttonAccessPrimarybgLight ??= AppStyles.TryGetResource<Color>("ButtonAccessPrimarybgWLLight");
+					return buttonAccessPrimarybgLight!;
 				}
 			}
 		}
@@ -306,139 +119,19 @@
 		/// <summary>
 		/// DisabledFilledButton background color.
 		/// </summary>
-		public static Color DisabledFilledButtonBackground
+		public static Color ButtonUniversalbgInactiveWL
 		{
 			get
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					disabledFilledButtonBackgroundDark ??= AppStyles.TryGetResource<Color>("DisabledFilledButtonBackgroundDark");
-					return disabledFilledButtonBackgroundDark!;
+					buttonUniversalbgInactiveWLDark ??= AppStyles.TryGetResource<Color>("ButtonUniversalbgInactiveWLDark");
+					return buttonUniversalbgInactiveWLDark!;
 				}
 				else
 				{
-					disabledFilledButtonBackgroundLight ??= AppStyles.TryGetResource<Color>("DisabledFilledButtonBackgroundLight");
-					return disabledFilledButtonBackgroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// EnabledOutlinedButton foreground color.
-		/// </summary>
-		public static Color EnabledOutlinedButtonForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					enabledOutlinedButtonForegroundDark ??= AppStyles.TryGetResource<Color>("EnabledOutlinedButtonForegroundDark");
-					return enabledOutlinedButtonForegroundDark!;
-				}
-				else
-				{
-					enabledOutlinedButtonForegroundLight ??= AppStyles.TryGetResource<Color>("EnabledOutlinedButtonForegroundLight");
-					return enabledOutlinedButtonForegroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// EnabledOutlinedButton background color.
-		/// </summary>
-		public static Color EnabledOutlinedButtonBackground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					enabledOutlinedButtonBackgroundDark ??= AppStyles.TryGetResource<Color>("EnabledOutlinedButtonBackgroundDark");
-					return enabledOutlinedButtonBackgroundDark!;
-				}
-				else
-				{
-					enabledOutlinedButtonBackgroundLight ??= AppStyles.TryGetResource<Color>("EnabledOutlinedButtonBackgroundLight");
-					return enabledOutlinedButtonBackgroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// DisabledOutlinedButton foreground color.
-		/// </summary>
-		public static Color DisabledOutlinedButtonForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					disabledOutlinedButtonForegroundDark ??= AppStyles.TryGetResource<Color>("DisabledOutlinedButtonForegroundDark");
-					return disabledOutlinedButtonForegroundDark!;
-				}
-				else
-				{
-					disabledOutlinedButtonForegroundLight ??= AppStyles.TryGetResource<Color>("DisabledOutlinedButtonForegroundLight");
-					return disabledOutlinedButtonForegroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// DisabledOutlinedButton background color.
-		/// </summary>
-		public static Color DisabledOutlinedButtonBackground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					disabledOutlinedButtonBackgroundDark ??= AppStyles.TryGetResource<Color>("DisabledOutlinedButtonBackgroundDark");
-					return disabledOutlinedButtonBackgroundDark!;
-				}
-				else
-				{
-					disabledOutlinedButtonBackgroundLight ??= AppStyles.TryGetResource<Color>("DisabledOutlinedButtonBackgroundLight");
-					return disabledOutlinedButtonBackgroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// NormalEdit foreground color.
-		/// </summary>
-		public static Color NormalEditForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					normalEditForegroundDark ??= AppStyles.TryGetResource<Color>("NormalEditForegroundDark");
-					return normalEditForegroundDark!;
-				}
-				else
-				{
-					normalEditForegroundLight ??= AppStyles.TryGetResource<Color>("NormalEditForegroundLight");
-					return normalEditForegroundLight!;
-				}
-			}
-		}
-
-		/// <summary>
-		/// NormalEdit background color.
-		/// </summary>
-		public static Color NormalEditBackground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					normalEditBackgroundDark ??= AppStyles.TryGetResource<Color>("NormalEditBackgroundDark");
-					return normalEditBackgroundDark!;
-				}
-				else
-				{
-					normalEditBackgroundLight ??= AppStyles.TryGetResource<Color>("NormalEditBackgroundLight");
-					return normalEditBackgroundLight!;
+					buttonUniversalbgInactiveWLLight ??= AppStyles.TryGetResource<Color>("ButtonUniversalbgInactiveWLLight");
+					return buttonUniversalbgInactiveWLLight!;
 				}
 			}
 		}
@@ -452,12 +145,12 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					alertDark ??= AppStyles.TryGetResource<Color>("AlertDark");
+					alertDark ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Dark");
 					return alertDark!;
 				}
 				else
 				{
-					alertLight ??= AppStyles.TryGetResource<Color>("AlertLight");
+					alertLight ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Light");
 					return alertLight!;
 				}
 			}
@@ -472,12 +165,12 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					errorBackgroundDark ??= AppStyles.TryGetResource<Color>("ErrorBackgroundDark");
+					errorBackgroundDark ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Dark");
 					return errorBackgroundDark!;
 				}
 				else
 				{
-					errorBackgroundLight ??= AppStyles.TryGetResource<Color>("ErrorBackgroundLight");
+					errorBackgroundLight ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Light");
 					return errorBackgroundLight!;
 				}
 			}
@@ -492,12 +185,12 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					clickableDark ??= AppStyles.TryGetResource<Color>("ClickableDark");
+					clickableDark ??= AppStyles.TryGetResource<Color>("InputFieldsAccentContentAssetsDark");
 					return clickableDark!;
 				}
 				else
 				{
-					clickableLight ??= AppStyles.TryGetResource<Color>("ClickableLight");
+					clickableLight ??= AppStyles.TryGetResource<Color>("InputFieldsAccentContentAssetsLight");
 					return clickableLight!;
 				}
 			}
@@ -512,12 +205,12 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					weakPasswordForeground ??= AppStyles.TryGetResource<Color>("WeakPasswordBarForegroundDark");
+					weakPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPDangerFigureWLDark");
 					return weakPasswordForeground!;
 				}
 				else
 				{
-					weakPasswordForeground ??= AppStyles.TryGetResource<Color>("WeakPasswordBarForegroundLight");
+					weakPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPDangerFigureWLLight");
 					return weakPasswordForeground!;
 				}
 			}
@@ -532,12 +225,12 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					mediumPasswordForeground ??= AppStyles.TryGetResource<Color>("MediumPasswordBarForegroundDark");
+					mediumPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPWarningContentWLDark");
 					return mediumPasswordForeground!;
 				}
 				else
 				{
-					mediumPasswordForeground ??= AppStyles.TryGetResource<Color>("MediumPasswordBarForegroundLight");
+					mediumPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPWarningContentWLLight");
 					return mediumPasswordForeground!;
 				}
 			}
@@ -552,13 +245,33 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("StrongPasswordBarForegroundDark");
+					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPSuccessFigureWLDark");
 					return strongPasswordForeground!;
 				}
 				else
 				{
-					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("StrongPasswordBarForegroundLight");
+					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPSuccessFigureWLLight");
 					return strongPasswordForeground!;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Blue link color
+		/// </summary>
+		public static Color BlueLink
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Dark)
+				{
+					blueLink ??= AppStyles.TryGetResource<Color>("ContentLinkWLDark");
+					return blueLink!;
+				}
+				else
+				{
+					blueLink ??= AppStyles.TryGetResource<Color>("ContentLinkWLLight");
+					return blueLink!;
 				}
 			}
 		}
@@ -572,13 +285,33 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					purple15Dark ??= AppStyles.TryGetResource<Color>("Purple15Dark");
+					purple15Dark ??= AppStyles.TryGetResource<Color>("TnPAccent2bgWLDark");
 					return purple15Dark!;
 				}
 				else
 				{
-					purple15Light ??= AppStyles.TryGetResource<Color>("Purple15Light");
+					purple15Light ??= AppStyles.TryGetResource<Color>("TnPAccent2bgWLLight");
 					return purple15Light!;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Inserted Border color
+		/// </summary>
+		public static Color InsertedBorder
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Light)
+				{
+					insertedBorder ??= AppStyles.TryGetResource<Color>("TnPSuccessbgWLLight");
+					return insertedBorder!;
+				}
+				else
+				{
+					insertedBorder ??= AppStyles.TryGetResource<Color>("TnPSuccessbgWLDark");
+					return insertedBorder!;
 				}
 			}
 		}
@@ -592,13 +325,33 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					purpleDark ??= AppStyles.TryGetResource<Color>("PurpleDark");
+					purpleDark ??= AppStyles.TryGetResource<Color>("TnPAccent2ContentWLDark");
 					return purpleDark!;
 				}
 				else
 				{
-					purpleLight ??= AppStyles.TryGetResource<Color>("PurpleLight");
+					purpleLight ??= AppStyles.TryGetResource<Color>("TnPAccent2ContentWLLight");
 					return purpleLight!;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Deleted Border color
+		/// </summary>
+		public static Color DeletedBorder
+		{
+			get
+			{
+				if (Application.Current?.RequestedTheme == AppTheme.Light)
+				{
+					deletedBorder ??= AppStyles.TryGetResource<Color>("TnPDangerbgWLLight");
+					return deletedBorder!;
+				}
+				else
+				{
+					deletedBorder ??= AppStyles.TryGetResource<Color>("TnPDangerbgWLDark");
+					return deletedBorder!;
 				}
 			}
 		}
@@ -612,12 +365,12 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					blue20AffirmDark ??= AppStyles.TryGetResource<Color>("Blue20AffirmDark");
+					blue20AffirmDark ??= AppStyles.TryGetResource<Color>("TnPInfobgWLDark");
 					return blue20AffirmDark!;
 				}
 				else
 				{
-					blue20AffirmLight ??= AppStyles.TryGetResource<Color>("Blue20AffirmLight");
+					blue20AffirmLight ??= AppStyles.TryGetResource<Color>("TnPInfobgWLLight");
 					return blue20AffirmLight!;
 				}
 			}
@@ -632,12 +385,12 @@
 			{
 				if (Application.Current?.RequestedTheme == AppTheme.Dark)
 				{
-					blueDark ??= AppStyles.TryGetResource<Color>("BlueDark");
+					blueDark ??= AppStyles.TryGetResource<Color>("TnPInfoContentWLDark");
 					return blueDark!;
 				}
 				else
 				{
-					blueLight ??= AppStyles.TryGetResource<Color>("BlueLight");
+					blueLight ??= AppStyles.TryGetResource<Color>("TnPInfoContentWLLight");
 					return blueLight!;
 				}
 			}

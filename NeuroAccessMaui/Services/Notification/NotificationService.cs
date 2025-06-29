@@ -2,6 +2,7 @@
 using Waher.Events;
 using Waher.Persistence;
 using Waher.Runtime.Inventory;
+using Waher.Script.Functions.Strings;
 
 namespace NeuroAccessMaui.Services.Notification
 {
@@ -14,7 +15,7 @@ namespace NeuroAccessMaui.Services.Notification
 		private const int nrTypes = 4;
 
 		private readonly SortedDictionary<CaseInsensitiveString, List<NotificationEvent>>[] events;
-		private readonly LinkedList<KeyValuePair<Type, DateTime>> expected;
+		private readonly LinkedList<ExpectedEvent> expected;
 
 		/// <summary>
 		/// Notification service
@@ -24,7 +25,7 @@ namespace NeuroAccessMaui.Services.Notification
 			int i;
 
 			this.events = new SortedDictionary<CaseInsensitiveString, List<NotificationEvent>>[nrTypes];
-			this.expected = new LinkedList<KeyValuePair<Type, DateTime>>();
+			this.expected = new LinkedList<ExpectedEvent>();
 
 			for (i = 0; i < nrTypes; i++)
 				this.events[i] = [];
@@ -104,12 +105,68 @@ namespace NeuroAccessMaui.Services.Notification
 		/// </summary>
 		/// <typeparam name="T">Type of event to expect.</typeparam>
 		/// <param name="Before">If event is received before this time, it is opened automatically.</param>
-		public void ExpectEvent<T>(DateTime Before)
-			where T : NotificationEvent
+		public void ExpectEvent<T>(DateTime Before, Predicate<T> Predicate)
+			 where T : NotificationEvent
 		{
-			lock (this.expected)
+			// First, look for an existing event of type T matching the predicate.
+			NotificationEvent? MatchingEvent = null;
+			int NrFound = 0;
+
+			lock (this.events)
 			{
-				this.expected.AddLast(new KeyValuePair<Type, DateTime>(typeof(T), Before));
+				// Iterate over all types stored in the array.
+				// (You might also restrict the search if you know a priori the type’s index.)
+				for (int i = 0; i < nrTypes; i++)
+				{
+					SortedDictionary<CaseInsensitiveString, List<NotificationEvent>> ByCategory = this.events[i];
+					foreach (List<NotificationEvent> EventsList in ByCategory.Values)
+					{
+						foreach (NotificationEvent Evt in EventsList)
+						{
+							if (Evt is T TypedEvent && Predicate(TypedEvent))
+							{
+								MatchingEvent = Evt;
+								NrFound++;
+								break;
+							}
+						}
+						if (MatchingEvent is not null)
+							break;
+					}
+					if (MatchingEvent is not null)
+						break;
+				}
+			}
+
+			if (MatchingEvent is not null)
+			{
+				// Optionally remove the event from the in-memory collection
+				//RemoveEvent(matchingEvent);
+
+				// Run the event immediately on the main thread.
+				MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					try
+					{
+						await MatchingEvent.Open();
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+					}
+				});
+			}
+			else
+			{
+				// Otherwise, add an expectation for a future event.
+				lock (this.expected)
+				{
+					this.expected.AddLast(new ExpectedEvent(
+						 typeof(T),
+						 Before,
+						 (NotificationEvent e) => e is T t && Predicate(t)
+					));
+				}
 			}
 		}
 
@@ -123,32 +180,31 @@ namespace NeuroAccessMaui.Services.Notification
 				return;
 
 			DateTime Now = DateTime.Now;
-			bool Expected = false;
+			bool IsExpected = false;
 
 			lock (this.expected)
 			{
-				LinkedListNode<KeyValuePair<Type, DateTime>>? Loop = this.expected.First;
-				LinkedListNode<KeyValuePair<Type, DateTime>>? Next;
-				Type EventType = Event.GetType();
-
-				while (Loop is not null)
+				LinkedListNode<ExpectedEvent>? Node = this.expected.First;
+				while (Node is not null)
 				{
-					Next = Loop.Next;
-
-					if (Loop.Value.Value < Now)
-						this.expected.Remove(Loop);
-					else if (Loop.Value.Key == EventType)
+					LinkedListNode<ExpectedEvent>? Next = Node.Next;
+					// Remove expired expectations.
+					if (Node.Value.Before < Now)
 					{
-						this.expected.Remove(Loop);
-						Expected = true;
+						this.expected.Remove(Node);
+					}
+					else if (Node.Value.EventType == Event.GetType() &&
+								(Node.Value.Predicate == null || Node.Value.Predicate(Event)))
+					{
+						this.expected.Remove(Node);
+						IsExpected = true;
 						break;
 					}
-
-					Loop = Next;
+					Node = Next;
 				}
 			}
 
-			if (Expected)
+			if (IsExpected)
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
@@ -156,48 +212,48 @@ namespace NeuroAccessMaui.Services.Notification
 					{
 						await Event.Open();
 					}
-					catch (Exception ex)
+					catch (Exception Ex)
 					{
-						ServiceRef.LogService.LogException(ex);
+						ServiceRef.LogService.LogException(Ex);
 					}
 				});
 			}
 			else
 			{
+				// Existing behavior: insert into database, add to events list, etc.
 				await Database.Insert(Event);
-
 				int Type = (int)Event.Type;
 				if (Type >= 0 && Type < nrTypes)
 				{
 					lock (this.events)
 					{
 						SortedDictionary<CaseInsensitiveString, List<NotificationEvent>> ByCategory = this.events[Type];
-
 						if (!ByCategory.TryGetValue(Event.Category, out List<NotificationEvent>? Events))
 						{
-							Events = [];
+							Events = new List<NotificationEvent>();
 							ByCategory[Event.Category] = Events;
 						}
-
 						Events.Add(Event);
 					}
 
 					await this.OnNewNotification.Raise(this, new NotificationEventArgs(Event));
 				}
 
+				// Prepare the event asynchronously.
 				Task _ = Task.Run(async () =>
 				{
 					try
 					{
 						await Event.Prepare();
 					}
-					catch (Exception ex)
+					catch (Exception Ex)
 					{
-						ServiceRef.LogService.LogException(ex);
+						ServiceRef.LogService.LogException(Ex);
 					}
 				});
 			}
 		}
+
 
 		/// <summary>
 		/// Deletes events for a given button and category.
@@ -428,6 +484,31 @@ namespace NeuroAccessMaui.Services.Notification
 				return true;
 			}
 		}
+
+		/// <summary>
+		/// Gets all notification events across all types and categories.
+		/// </summary>
+		/// <returns>All recorded notification events.</returns>
+		public NotificationEvent[] GetAllEvents()
+		{
+			List<NotificationEvent> AllEvents = [];
+
+			lock (this.events)
+			{
+				// Loop through each event type.
+				foreach (SortedDictionary<CaseInsensitiveString, List<NotificationEvent>> ByCategory in this.events)
+				{
+					// Loop through each category list.
+					foreach (List<NotificationEvent> EventsList in ByCategory.Values)
+					{
+						AllEvents.AddRange(EventsList);
+					}
+				}
+			}
+
+			return [.. AllEvents];
+		}
+
 
 		/// <summary>
 		/// Event raised when a new notification has been logged.

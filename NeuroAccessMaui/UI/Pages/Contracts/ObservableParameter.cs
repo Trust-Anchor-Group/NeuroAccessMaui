@@ -1,11 +1,16 @@
 ﻿using System.ComponentModel;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Mopups.Services;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
+using NeuroAccessMaui.UI.Popups.Info;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
-using System.Globalization;
-using System.Text;
+using Waher.Persistence;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
@@ -13,7 +18,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	/// An observable object that wraps a <see cref="Waher.Networking.XMPP.Contracts.Parameter"/> object.
 	/// This allows for easier binding in the UI. Must be instantiated with <see cref="CreateAsync"/>.
 	/// </summary>
-	public class ObservableParameter : ObservableObject
+	public partial class ObservableParameter : ObservableObject
 	{
 		#region Constructor
 		protected ObservableParameter(Parameter parameter)
@@ -33,9 +38,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				string UntrimmedDescription = await contract.ToPlainText(this.Parameter.Descriptions, contract.DeviceLanguage());
 				this.Description = UntrimmedDescription.Trim();
 			}
-			catch (Exception e)
+			catch (Exception E)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(E);
 			}
 		}
 
@@ -47,22 +52,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <returns></returns>
 		public static async Task<ObservableParameter> CreateAsync(Parameter parameter, Contract contract)
 		{
-			ObservableParameter parameterInfo = parameter switch
+			ObservableParameter ParameterInfo = parameter switch
 			{
-				BooleanParameter booleanParameter => new ObservableBooleanParameter(booleanParameter),
-				DateParameter dateParameter => new ObservableDateParameter(dateParameter),
-				DateTimeParameter dateTimeParameter => new ObservableDateTimeParameter(dateTimeParameter),
-				NumericalParameter numericalParameter => new ObservableNumericalParameter(numericalParameter),
-				StringParameter stringParameter => new ObservableStringParameter(stringParameter),
-				TimeParameter timeParameter => new ObservableTimeParameter(timeParameter),
-				DurationParameter durationParameter => new ObservableDurationParameter(durationParameter),
-				RoleParameter roleParameter => new ObservableRoleParameter(roleParameter),
-				CalcParameter calcParameter => new ObservableCalcParameter(calcParameter),
+				BooleanParameter BooleanParameter => new ObservableBooleanParameter(BooleanParameter),
+				DateParameter DateParameter => new ObservableDateParameter(DateParameter),
+				DateTimeParameter DateTimeParameter => new ObservableDateTimeParameter(DateTimeParameter),
+				NumericalParameter NumericalParameter => new ObservableNumericalParameter(NumericalParameter),
+				StringParameter StringParameter => new ObservableStringParameter(StringParameter),
+				TimeParameter TimeParameter => new ObservableTimeParameter(TimeParameter),
+				DurationParameter DurationParameter => new ObservableDurationParameter(DurationParameter),
+				RoleParameter RoleParameter => new ObservableRoleParameter(RoleParameter),
+				CalcParameter CalcParameter => new ObservableCalcParameter(CalcParameter),
+				ContractReferenceParameter ContractReferenceParameter => new ObservableContractReferenceParameter(ContractReferenceParameter),
 				_ => new ObservableParameter(parameter)
 			};
 
-			await parameterInfo.InitializeAsync(contract);
-			return parameterInfo;
+			await ParameterInfo.InitializeAsync(contract);
+			return ParameterInfo;
 		}
 		#endregion
 
@@ -131,7 +137,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public string ValidationText
 		{
 			get => this.validationText;
-			set => this.SetProperty(ref this.validationText, value);
+			set
+			{
+				this.SetProperty(ref this.validationText, value);
+				this.OnPropertyChanged(nameof(this.CanShowError));
+				this.ShowErrorCommand.NotifyCanExecuteChanged();
+			}
 		}
 		private string validationText = string.Empty;
 
@@ -144,17 +155,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.value;
 			set
 			{
+				if (value is null)
+					return;
 				try
 				{
-					if (value is not null)
-						this.Parameter.SetValue(value);
+					this.Parameter.SetValue(value);
 				}
-				catch (Exception e)
+				catch (Exception E)
 				{
-					ServiceRef.LogService.LogException(e);
+					ServiceRef.LogService.LogException(E);
 				}
-
-				this.SetProperty(ref this.@value, value);
+				this.value = value;
+				this.OnPropertyChanged(nameof(this.Value));
 				this.OnPropertyChanged(nameof(this.CanReadValue));
 			}
 		}
@@ -181,6 +193,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public bool CanReadValue => this.IsProtected ? this.Parameter.ObjectValue is not null : this.Parameter.CanSerializeValue;
 		#endregion
 
+		public bool CanShowError => !string.IsNullOrEmpty(this.ValidationText);
+		#region Commands
+
+
+		[RelayCommand(CanExecute = nameof(CanShowError), AllowConcurrentExecutions = false)]
+		private async Task ShowError()
+		{
+			if (string.IsNullOrEmpty(this.ValidationText))
+				return;
+			ShowInfoPopup Popup = new ShowInfoPopup(this.Parameter.ErrorReason?.ToString() ?? ServiceRef.Localizer[nameof(AppResources.Error)], this.ValidationText);
+			await ServiceRef.UiService.PushAsync(Popup);
+		}
+		#endregion
+
 		#region Property Change Handling
 		protected override void OnPropertyChanged(PropertyChangedEventArgs e)
 		{
@@ -190,7 +216,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	}
 
 	#region ObservableParameter Subclasses
-	public sealed class ObservableBooleanParameter : ObservableParameter
+	public partial class ObservableBooleanParameter : ObservableParameter
 	{
 		public ObservableBooleanParameter(BooleanParameter parameter) : base(parameter)
 		{
@@ -201,6 +227,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			get => this.Value as bool? ?? false;
 			set => this.Value = value;
+		}
+
+		[RelayCommand]
+		private void ToggleBooleanValue()
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.BooleanValue = !this.BooleanValue;
+				this.OnPropertyChanged(nameof(this.BooleanValue));
+			});
 		}
 	}
 
@@ -222,7 +258,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	{
 		public ObservableNumericalParameter(NumericalParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue is decimal decimalValue ? decimalValue : null;
+			this.Value = parameter.ObjectValue is decimal DecimalValue ? DecimalValue : null;
 		}
 
 		public decimal? DecimalValue
@@ -250,7 +286,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	{
 		public ObservableTimeParameter(TimeParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue is TimeSpan timeSpan ? timeSpan : TimeSpan.Zero;
+			this.Value = parameter.ObjectValue is TimeSpan TimeSpan ? TimeSpan : TimeSpan.Zero;
 		}
 
 		public TimeSpan TimeSpanValue
@@ -264,7 +300,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 	{
 		public ObservableDurationParameter(DurationParameter parameter) : base(parameter)
 		{
-			this.Value = parameter.ObjectValue is Duration duration ? duration : Duration.Zero;
+			this.Value = parameter.ObjectValue is Duration Duration ? Duration : Duration.Zero;
 		}
 
 		public string StringValue
@@ -272,8 +308,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.Value?.ToString() ?? string.Empty;
 			set
 			{
-				if (Duration.TryParse(value, out Duration duration))
-					this.Value = duration;
+				if (Duration.TryParse(value, out Duration DurationValue))
+					this.Value = DurationValue;
 				else
 					this.Value = null;
 			}
@@ -284,8 +320,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.Value as Duration? ?? Duration.Zero;
 			set
 			{
-				if (Duration.TryParse(value.ToString(), out Duration duration))
-					this.Value = duration;
+				if (Duration.TryParse(value.ToString(), out Duration DurationValue))
+					this.Value = DurationValue;
 				else
 					this.Value = null;
 
@@ -327,16 +363,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				if (this.Value is null)
 					this.Value = this.Parameter.StringValue;
 
-				CultureInfo culture = CultureInfo.CurrentCulture;
+				CultureInfo Culture = CultureInfo.CurrentCulture;
 
 				Console.WriteLine(this.Value.GetType().Name);
 
 				return this.Value switch
 				{
-					decimal decimalValue => decimalValue.ToString("N", culture), // Number format with localization
-					DateTime dateTimeValue => dateTimeValue.ToString("G", culture), // Localized date format
-					TimeSpan timeSpanValue => timeSpanValue.ToString(@"hh\:mm\:ss", culture), // Time format
-					string stringValue => string.IsNullOrEmpty(stringValue) ? "-" : stringValue,
+					decimal DecimalValue => DecimalValue.ToString("N", Culture), // Number format with localization
+					DateTime DateTimeValue => DateTimeValue.ToString("G", Culture), // Localized date format
+					TimeSpan TimeSpanValue => TimeSpanValue.ToString(@"hh\:mm\:ss", Culture), // Time format
+					string StringValue => string.IsNullOrEmpty(StringValue) ? "-" : StringValue,
 					_ => this.Value.ToString() ?? string.Empty // Fallback for unknown types
 				};
 			}
@@ -348,8 +384,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public ObservableDateTimeParameter(DateTimeParameter parameter) : base(parameter)
 		{
 			// Extract initial value from parameter
-			if (parameter.ObjectValue is DateTime dt)
-				this.Value = dt;
+			if (parameter.ObjectValue is DateTime Dt)
+				this.Value = Dt;
 			else
 				this.Value = parameter.Min;  // or DateTime.MinValue as a fallback
 		}
@@ -374,8 +410,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				if (value.HasValue)
 				{
-					DateTime current = this.DateTimeValue ?? DateTime.MinValue;
-					this.DateTimeValue = new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, current.Hour, current.Minute, current.Second);
+					DateTime Current = this.DateTimeValue ?? DateTime.MinValue;
+					this.DateTimeValue = new DateTime(value.Value.Year, value.Value.Month, value.Value.Day, Current.Hour, Current.Minute, Current.Second);
 				}
 				else
 				{
@@ -392,10 +428,66 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			get => this.DateTimeValue?.TimeOfDay ?? TimeSpan.Zero;
 			set
 			{
-				DateTime current = this.DateTimeValue ?? DateTime.MinValue;
-				this.DateTimeValue = current.Date + value;
+				DateTime Current = this.DateTimeValue ?? DateTime.MinValue;
+				this.DateTimeValue = Current.Date + value;
 			}
 		}
+	}
+
+	public partial class ObservableContractReferenceParameter : ObservableParameter
+	{
+		public ObservableContractReferenceParameter(ContractReferenceParameter parameter) : base(parameter)
+		{
+			ServiceRef.LogService.LogDebug($"{this.Value} - {this.Parameter.ObjectValue}");
+			this.Value = this.Parameter.ObjectValue;
+			//this.Value = parameter.ObjectValue as string ?? string.Empty;
+		}
+
+		public string ContractReferenceValue
+		{
+			get => this.Value?.ToString() ?? string.Empty;
+			set => this.Value = value;
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task OpenContract()
+		{
+			if (string.IsNullOrEmpty(this.ContractReferenceValue))
+			{
+				return;
+			}
+			try
+			{
+				await ServiceRef.ContractOrchestratorService.OpenContract(this.ContractReferenceValue, ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)], null);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task PickContractReferenceAsync()
+		{
+			try
+			{
+				TaskCompletionSource<Contract?> TaskCompletionSource = new();
+				MyContractsNavigationArgs Args = new MyContractsNavigationArgs(ContractsListMode.Contracts, TaskCompletionSource);
+				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args);
+				Contract? Contract = await TaskCompletionSource.Task;
+
+				MainThread.BeginInvokeOnMainThread(() => {
+					if (Contract is null)
+						return;
+					this.ContractReferenceValue = Contract?.ContractId ?? string.Empty;
+				   this.OnPropertyChanged(nameof(this.ContractReferenceValue));
+				});
+			}
+			catch (Exception E)
+			{
+				ServiceRef.LogService.LogException(E);
+			}
+		} 
 	}
 
 }

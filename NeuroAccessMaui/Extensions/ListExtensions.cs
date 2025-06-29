@@ -17,9 +17,9 @@
 			if (list.Count != other.Count)
 				return false;
 
-			List<T> firstNotSecond = list.Except(other).ToList();
-			List<T> secondNotFirst = other.Except(list).ToList();
-			return firstNotSecond.Count == 0 && secondNotFirst.Count == 0;
+			List<T> FirstNotSecond = list.Except(other).ToList();
+			List<T> SecondNotFirst = other.Except(list).ToList();
+			return FirstNotSecond.Count == 0 && SecondNotFirst.Count == 0;
 		}
 	}
 }

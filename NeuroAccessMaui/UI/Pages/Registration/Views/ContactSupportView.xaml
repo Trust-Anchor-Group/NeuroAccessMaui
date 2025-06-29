@@ -13,17 +13,17 @@
                            xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 
 	<Grid>
-		<Grid RowSpacing="{StaticResource LargeSpacing}" RowDefinitions="*, auto">
-			<VerticalStackLayout Spacing="{StaticResource MediumSpacing}" Grid.Row="0" VerticalOptions="Center">
+		<Grid RowSpacing="{DynamicResource LargeSpacing}" RowDefinitions="*, auto">
+			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}" Grid.Row="0" VerticalOptions="Center">
 				<Label
-					Style="{StaticResource PageTitleLabel}"
+					Style="{DynamicResource PageTitleLabel}"
 					Text="{l:Localize OnboardingContactSupportTitle}" />
 				<!-- Part 1 -->
 				<Label
-                Text="{l:Localize OnboardingContactSupportDetailsPart1}" />
+					Text="{l:Localize OnboardingContactSupportDetailsPart1}" />
 
 				<!-- Bullet Points -->
-				<StackLayout Spacing="{StaticResource SmallSpacing}">
+				<StackLayout Spacing="{DynamicResource SmallSpacing}">
 					<Label>
 						<Label.FormattedText>
 							<FormattedString>
@@ -76,11 +76,11 @@
 
 				<!-- Email Section 
 				<Label
-	                Style="{StaticResource SectionTitleLabel}"
+	                Style="{DynamicResource SectionTitleLabel}"
 	                Text="{l:Localize EmailSectionTitle}" />
 
 				<controls:CompositeEntry x:Name="EmailEntry"
-	                                     Style="{StaticResource RegularCompositeEntry}"
+	                                     Style="{DynamicResource RegularCompositeEntry}"
 	                                     EntryData="{Binding EmailText}"
 	                                     PathData="{x:Static ui:Geometries.EmailIconPath}">
 					<controls:CompositeEntry.Behaviors>
@@ -96,7 +96,7 @@
 	                RowDefinitions="auto"
 	                ColumnDefinitions="auto,*"
 	                HorizontalOptions="Center"
-	                ColumnSpacing="{StaticResource SmallSpacing}"
+	                ColumnSpacing="{DynamicResource SmallSpacing}"
 	                IsVisible="{Binding EmailValidationError, Converter={StaticResource OnlyShowNonEmpty}}">
 
 					<Path Grid.Column="0"
@@ -105,32 +105,32 @@
 	                      WidthRequest="20"
 	                      Aspect="Uniform"
 	                      Data="{x:Static ui:Geometries.InfoCirclePath}"
-	                      Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+	                      Fill="{AppThemeBinding Light={DynamicResource InvalidatedEditLight}, Dark={DynamicResource InvalidatedEditDark}}" />
 
 					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding EmailValidationError}"
-	                       TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+	                       TextColor="{AppThemeBinding Light={DynamicResource InvalidatedEditLight}, Dark={DynamicResource InvalidatedEditDark}}" />
 				</Grid>
 
 				<Label
-	                Style="{StaticResource SectionTitleLabel}"
+	                Style="{DynamicResource SectionTitleLabel}"
 	                Text="{l:Localize PhoneSectionTitle}" />
 
 				<Border
-	                Padding="{StaticResource EditMediumMargins}"
-	                Style="{StaticResource ItemOuterBorder}"
-	                BackgroundColor="{AppThemeBinding Light={StaticResource NormalEditBackgroundLight},
-	                                                    Dark={StaticResource NormalEditBackgroundDark}}"
-	                Stroke="{AppThemeBinding Light={StaticResource NormalEditForegroundLight},
-	                                          Dark={StaticResource NormalEditForegroundDark}}">
+	                Padding="{DynamicResource EditMediumMargins}"
+	                Style="{DynamicResource ItemOuterBorder}"
+	                BackgroundColor="{AppThemeBinding Light={DynamicResource NormalEditBackgroundLight},
+	                                                    Dark={DynamicResource NormalEditBackgroundDark}}"
+	                Stroke="{AppThemeBinding Light={DynamicResource NormalEditForegroundLight},
+	                                          Dark={DynamicResource NormalEditForegroundDark}}">
 
 					<Grid
 	                    RowDefinitions="auto"
 	                    ColumnDefinitions="auto,*"
-	                    ColumnSpacing="{StaticResource MediumSpacing}">
+	                    ColumnSpacing="{DynamicResource MediumSpacing}">
 						<HorizontalStackLayout
 	                        Grid.Column="0"
 	                        VerticalOptions="FillAndExpand"
-	                        Spacing="{StaticResource SmallSpacing}">
+	                        Spacing="{DynamicResource SmallSpacing}">
 							<HorizontalStackLayout.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding SelectPhoneCodeCommand}" />
 							</HorizontalStackLayout.GestureRecognizers>
@@ -145,8 +145,8 @@
 	                            WidthRequest="10"
 	                            Aspect="Uniform"
 	                            Data="{x:Static ui:Geometries.DropDownArrowPath}"
-	                            Fill="{AppThemeBinding Light={StaticResource PrimaryForegroundLight},
-	                                                    Dark={StaticResource PrimaryForegroundDark}}" />
+	                            Fill="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight},
+	                                                    Dark={DynamicResource PrimaryForegroundDark}}" />
 						</HorizontalStackLayout>
 
 						<Entry
@@ -173,7 +173,7 @@
 	                RowDefinitions="auto"
 	                ColumnDefinitions="auto,*"
 	                HorizontalOptions="Center"
-	                ColumnSpacing="{StaticResource SmallSpacing}"
+	                ColumnSpacing="{DynamicResource SmallSpacing}"
 	                IsVisible="{Binding PhoneValidationError, Converter={StaticResource OnlyShowNonEmpty}}">
 
 					<Path Grid.Column="0"
@@ -182,38 +182,38 @@
 	                      WidthRequest="20"
 	                      Aspect="Uniform"
 	                      Data="{x:Static ui:Geometries.InfoCirclePath}"
-	                      Fill="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+	                      Fill="{AppThemeBinding Light={DynamicResource InvalidatedEditLight}, Dark={DynamicResource InvalidatedEditDark}}" />
 
 					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding PhoneValidationError}"
-	                       TextColor="{AppThemeBinding Light={StaticResource InvalidatedEditLight}, Dark={StaticResource InvalidatedEditDark}}" />
+	                       TextColor="{AppThemeBinding Light={DynamicResource InvalidatedEditLight}, Dark={DynamicResource InvalidatedEditDark}}" />
 				</Grid>
 				<controls:TextButton
 		            Command="{Binding SendCommand}"
-		            Style="{StaticResource FilledTextButton}"
+		            Style="{DynamicResource FilledTextButton}"
 		            LabelData="{Binding LocalizedSendCodeText}" />
 -->
 			</VerticalStackLayout>
 
 			<!-- Scan QR Button -->
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Grid.Row="1">
-				<Border Style="{StaticResource AccentInfoBorder}" Padding="{StaticResource SmallMargins}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Grid.Row="1">
+				<Border Style="{DynamicResource AccentInfoBorder}" Padding="{DynamicResource SmallMargins}">
 					<Grid ColumnDefinitions="auto, *">
 						<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
 						      Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-						      Fill="{AppThemeBinding Light={StaticResource AccentForegroundLight}, Dark={StaticResource AccentForegroundDark}}"/>
-						<Label Grid.Column="1" Style ="{StaticResource AccentInfoLabel}" Margin="{StaticResource SmallLeftMargins}" Text="{l:Localize OnboardingGetStartedQrInfo}" />
+						      Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+						<Label Grid.Column="1" Style ="{DynamicResource AccentInfoLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize OnboardingGetStartedQrInfo}" />
 
 					</Grid>
 				</Border>
 
 				<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
-					<Border Style="{StaticResource TransparentTemplateButtonBorder}" InputTransparent="True" Margin="0">
+					<Border Style="{DynamicResource TransparentTemplateButtonBorder}" InputTransparent="True" Margin="0">
 						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
 							      Data="{x:Static ui:Geometries.ScanQrIconPath}"
-							      Style="{StaticResource TransparentTemplateButtonPath}"
+							      Style="{DynamicResource TransparentTemplateButtonPath}"
 							/>
-							<Label Grid.Column="1" Style="{StaticResource TransparentTemplateButtonLabel}" Margin="{StaticResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
+							<Label Grid.Column="1" Style="{DynamicResource TransparentTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
 						</Grid>
 					</Border>
 				</controls:TemplatedButton>

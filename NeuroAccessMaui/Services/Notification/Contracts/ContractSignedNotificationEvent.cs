@@ -37,6 +37,7 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		{
 			this.LegalId = e.LegalId;
 			this.Role = e.Role;
+			this.Contract = e.Contract;
 		}
 
 		/// <summary>
@@ -50,12 +51,17 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		public string? Role { get; set; }
 
 		/// <summary>
+		/// Contract that was signed.
+		/// </summary>
+		public Contract? Contract { get; set; }
+
+		/// <summary>
 		/// Opens the event.
 		/// </summary>
 		public override async Task Open()
 		{
-			Contract? Contract = await this.GetContract();
-			ViewContractNavigationArgs Args = new(Contract, false);
+			this.Contract ??= await this.GetContract();
+			ViewContractNavigationArgs Args = new(this.Contract, false);
 
 			await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 		}
@@ -65,12 +71,12 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 		/// </summary>
 		public override async Task<string> GetDescription()
 		{
-			Contract? Contract = await this.GetContract();
+			this.Contract ??= await this.GetContract();
 			StringBuilder Result = new();
 
-			if (Contract is not null)
+			if (this.Contract is not null)
 			{
-				Result.Append(await ContractModel.GetCategory(Contract));
+				Result.Append(await ContractModel.GetCategory(this.Contract));
 				Result.Append(": ");
 			}
 

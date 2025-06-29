@@ -11,6 +11,7 @@ using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main;
+using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using NeuroAccessMaui.UI.Pages.Main.ChangePassword;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
@@ -18,6 +19,7 @@ using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using NeuroAccessMaui.UI.Pages.Main.XmppForm;
+using NeuroAccessMaui.UI.Pages.Notifications;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionContract;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
@@ -94,6 +96,11 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<SettingsPage, SettingsViewModel>();
 			Builder.Services.AddTransient<VerifyCodePage, VerifyCodeViewModel>();
 			Builder.Services.AddTransient<XmppFormPage, XmppViewModel>();
+			Builder.Services.AddTransient<AppsPage,  AppsViewModel>();
+
+			//Notification
+			Builder.Services.AddTransient<NotificationsPage, NotificationsViewModel>();
+
 
 			// Petitions
 			Builder.Services.AddTransient<PetitionContractPage, PetitionContractViewModel>();

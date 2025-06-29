@@ -12,8 +12,8 @@
 		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
 											PositionIn="Center" PositionOut="Center" />
 	</mopups:PopupPage.Animation>
-	<Grid RowDefinitions="*" ColumnDefinitions="*" Margin="0" Padding="0" BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryBackgroundLight}, Dark={StaticResource PrimaryBackgroundDark}}">
-		<Image x:Name="CustomBackgroundImage" Aspect="AspectFill" Margin="{StaticResource SmallSpacing}"/>
+	<Grid RowDefinitions="*" ColumnDefinitions="*" Margin="0" Padding="0" BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+		<Image x:Name="CustomBackgroundImage" Aspect="AspectFill" Margin="{DynamicResource SmallSpacing}"/>
 		<ContentView x:Name="ContentSlot"
                    VerticalOptions="Center"
                    HorizontalOptions="Center" />
