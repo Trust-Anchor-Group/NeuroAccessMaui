@@ -68,7 +68,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 					return 0;
 
 				double s = ((double)this.IconHeight) / this.serviceProvider.IconHeight;
-				
+
 				return (int)(this.serviceProvider.IconWidth * s + 0.5);
 			}
 		}
@@ -105,14 +105,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 					this.iconSource = ImageSource.FromResource(this.IconUrl[11..]);
 				else if (this.IconUrl.StartsWith("file://", StringComparison.Ordinal))
 				{
-					if(isSvg)
+					if (isSvg)
 						this.iconSource = this.IconUrl[7..^4];
 					else
 						this.iconSource = this.IconUrl[7..];
 				}
 				else if (Uri.TryCreate(this.IconUrl, UriKind.Absolute, out Uri? ParsedUri))
 				{
-					if(isSvg)
+					if (isSvg)
 						this.iconSource = await ServiceRef.UiService.ConvertSvgUriToImageSource(this.IconUrl);
 					else
 						this.iconSource = ImageSource.FromUri(ParsedUri);
@@ -121,7 +121,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 				{
 					//if it is an SVG, remove the extension
 					//Maui does not inheritly support SVGs, but can implicitly convert them to png
-					if(isSvg)
+					if (isSvg)
 						this.iconSource = ImageSource.FromFile(this.IconUrl[..^4]);
 					else
 						this.iconSource = ImageSource.FromFile(this.IconUrl);
