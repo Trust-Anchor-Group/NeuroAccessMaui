@@ -48,13 +48,13 @@
 						 HorizontalOptions="Center"
 						 Style="{DynamicResource BoldItemTitleLabel}"
 						 Text="{Binding Language.MyNativeName}"
-						 TextColor="{DynamicResource SurfaceBackgroundWL}">
+						 TextColor="{DynamicResource ContentPrimaryWL}">
 					<Label.Triggers>
 						<DataTrigger TargetType="Label"
 						             Binding="{Binding IsSelected}"
 						             Value="True">
 							<Setter Property="TextColor"
-									  Value="{DynamicResource SurfaceBackgroundWL}" />
+									  Value="{DynamicResource ButtonNeutralContentPressed}" />
 						</DataTrigger>
 					</Label.Triggers>
 				</Label>
