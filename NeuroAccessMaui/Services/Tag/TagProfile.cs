@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Extensions;
+﻿using EDaler;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Storage;
@@ -94,7 +95,8 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool hasThing;
 		private DateTime? lastIdentityUpdate;
 		private bool hasBetaFeatures;
-
+		private decimal lastEDalerBalanceDecimal;
+		private DateTime? lastEDalerBalanceUpdate;
 		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
 		/// </summary>
@@ -175,7 +177,9 @@ namespace NeuroAccessMaui.Services.Tag
 				HasWallet = this.HasWallet,
 				HasThing = this.HasThing,
 				LastIdentityUpdate = this.LastIdentityUpdate,
-				HasBetaFeatures = this.HasBetaFeatures
+				HasBetaFeatures = this.HasBetaFeatures,
+				LastEDalerBalanceDecimal = this.LastEDalerBalanceDecimal,
+				LastEDalerBalanceUpdate = this.LastEDalerBalanceUpdate
 			};
 
 			return Clone;
@@ -238,6 +242,8 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasThing = Configuration.HasThing;
 				this.LastIdentityUpdate = Configuration.LastIdentityUpdate ?? DateTime.MinValue;
 				this.HasBetaFeatures = Configuration.HasBetaFeatures;
+				this.LastEDalerBalanceDecimal = Configuration.LastEDalerBalanceDecimal;
+				this.LastEDalerBalanceUpdate = Configuration.LastEDalerBalanceUpdate;
 
 				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
@@ -880,6 +886,32 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.lastIdentityUpdate = value;
 					this.FlagAsDirty(nameof(this.LastIdentityUpdate));
+				}
+			}
+		}
+
+		public decimal LastEDalerBalanceDecimal
+		{
+			get => this.lastEDalerBalanceDecimal;
+			set
+			{
+				if (this.lastEDalerBalanceDecimal != value)
+				{
+					this.lastEDalerBalanceDecimal = value;
+					this.FlagAsDirty(nameof(this.LastEDalerBalanceDecimal));
+				}
+			}
+		}
+
+		public DateTime? LastEDalerBalanceUpdate
+		{
+			get => this.lastEDalerBalanceUpdate;
+			set
+			{
+				if (this.lastEDalerBalanceUpdate != value)
+				{
+					this.lastEDalerBalanceUpdate = value;
+					this.FlagAsDirty(nameof(this.LastEDalerBalanceUpdate));
 				}
 			}
 		}
