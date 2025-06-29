@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui
+﻿using Waher.Events.Statistics;
+
+namespace NeuroAccessMaui
 {
 	/// <summary>
 	/// A set of never changing property constants and helpful values.
@@ -662,6 +664,11 @@
 			/// </summary>
 			public static readonly TimeSpan IdentityAllowedWatch = TimeSpan.FromSeconds(60);
 
+		}
+
+		public static class Cache
+		{
+			public static readonly TimeSpan DefaultImageCache = TimeSpan.FromDays(7);
 		}
 
 		/// <summary>
