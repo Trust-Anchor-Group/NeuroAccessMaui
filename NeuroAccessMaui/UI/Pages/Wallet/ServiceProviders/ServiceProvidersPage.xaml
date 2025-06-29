@@ -24,16 +24,16 @@
 
 		<Style TargetType="Border"
 		       x:Key="ServiceProviderCardBorder"
-		       BasedOn="{StaticResource BorderSet}">
+		       BasedOn="{DynamicResource BorderSet}">
 		</Style>
 
 		<Style TargetType="Border"
 		       x:Key="ServiceProviderImageBorder"
-		       BasedOn="{StaticResource RoundedBorder}">
-			<Setter Property="Padding" Value="{StaticResource SmallMargins}"></Setter>
+		       BasedOn="{DynamicResource RoundedBorder}">
+			<Setter Property="Padding" Value="{DynamicResource SmallMargins}"></Setter>
 			<Setter Property="Stroke">
 				<Setter.Value>
-					<SolidColorBrush Color="{AppThemeBinding Light={StaticResource PrimaryBackgroundDark}, Dark={StaticResource PrimaryBackgroundLight}}"/>
+					<SolidColorBrush Color="{AppThemeBinding Light={DynamicResource PrimaryBackgroundDark}, Dark={DynamicResource PrimaryBackgroundLight}}"/>
 				</Setter.Value>
 			</Setter>
 			<Setter Property="StrokeThickness"
@@ -41,12 +41,12 @@
 		</Style>
 		<DataTemplate x:Key="ShowImageAndText" x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton Command="{x:Binding SelectServiceProviderCommand}">
-				<Border Style="{StaticResource ServiceProviderCardBorder}" Padding="0">
+				<Border Style="{DynamicResource ServiceProviderCardBorder}" Padding="0">
 					<Grid ColumnDefinitions="128,*"
 					      RowDefinitions="128"
-					      ColumnSpacing="{StaticResource SmallSpacing}">
+					      ColumnSpacing="{DynamicResource SmallSpacing}">
 						<Border Grid.Column="0"
-								  Style="{StaticResource ServiceProviderImageBorder}" HeightRequest="100" WidthRequest="100">
+								  Style="{DynamicResource ServiceProviderImageBorder}" HeightRequest="100" WidthRequest="100">
 							<Image 
 							       Source="{Binding IconUrlSource}"
 							       Aspect="AspectFit" />
@@ -54,15 +54,15 @@
 
 						<Label Grid.Column="1"
 						       Text="{Binding Path=Name}"
-						       Style="{StaticResource ServiceProviderTitleLabel}"/>
+						       Style="{DynamicResource ServiceProviderTitleLabel}"/>
 					</Grid>
 				</Border>
 			</controls:TemplatedButton>
 		</DataTemplate>
 
 		<DataTemplate x:Key="ShowImage" x:DataType="viewmodel:ServiceProviderViewModel">
-			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Border Style="{StaticResource ServiceProviderCardBorder}"
+			<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding SelectServiceProviderCommand}">
+				<Border Style="{DynamicResource ServiceProviderCardBorder}"
 				        Padding="0">
 					<Grid ColumnDefinitions="*"
 							RowDefinitions="128">
@@ -77,13 +77,13 @@
 
 		<DataTemplate x:Key="ShowText" x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton Command="{x:Binding SelectServiceProviderCommand}">
-				<Border Style="{StaticResource ServiceProviderCardBorder}"
+				<Border Style="{DynamicResource ServiceProviderCardBorder}"
 				        Padding="0">
 					<Grid ColumnDefinitions="*"
 					      RowDefinitions="128"
-					      ColumnSpacing="{StaticResource SmallSpacing}">
+					      ColumnSpacing="{DynamicResource SmallSpacing}">
 						<Label Text="{Binding Path=Name}"
-						       Style="{StaticResource ServiceProviderTitleLabel}"
+						       Style="{DynamicResource ServiceProviderTitleLabel}"
 						       HorizontalOptions="Center"/>
 					</Grid>
 				</Border>
@@ -96,10 +96,10 @@
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<viewmodel:ServiceTemplateSelector x:Key="TemplateSelector"
-													  ImageAndTextTemplate="{StaticResource ShowImageAndText}"
-													  ImageOnlyTemplate="{StaticResource ShowImage}"
-													  TextOnlyTemplate="{StaticResource ShowText}"
-													  DefaultTemplate="{StaticResource ShowNothing}"/>
+													  ImageAndTextTemplate="{DynamicResource ShowImageAndText}"
+													  ImageOnlyTemplate="{DynamicResource ShowImage}"
+													  TextOnlyTemplate="{DynamicResource ShowText}"
+													  DefaultTemplate="{DynamicResource ShowNothing}"/>
 
 	</VisualElement.Resources>
 	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
@@ -107,23 +107,23 @@
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{StaticResource SmallSpacing}" Margin="{StaticResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
 				<Grid ColumnDefinitions="auto,*">
 					<controls:ImageButton Grid.Column="0"
 												HorizontalOptions="Start"
 					                      Command="{Binding GoBackCommand}"
-					                      Style="{StaticResource ImageOnlyButton}"
+					                      Style="{DynamicResource ImageOnlyButton}"
 					                      PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 					<Label Grid.Column="1"
 							 HorizontalOptions="End"
 					       Text="{Binding Path=Title}"
-					       Style="{StaticResource PageTitleLabel}" />
+					       Style="{DynamicResource PageTitleLabel}" />
 				</Grid>
 
 
-				<Border Style="{StaticResource BorderSet}">
-					<VerticalStackLayout Spacing="{StaticResource LargeSpacing}">
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
 
 						<VerticalStackLayout BindableLayout.ItemsSource="{Binding ServiceProviders}"
