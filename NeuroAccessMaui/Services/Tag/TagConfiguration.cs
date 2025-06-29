@@ -308,5 +308,18 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		[DefaultValue(false)]
 		public bool HasBetaFeatures { get; set; }
+
+
+		/// <summary>
+		/// How many eDaler the user has in their wallet. At the last update.
+		/// </summary>
+		[DefaultValue(0)]
+		public decimal LastEDalerBalanceDecimal { get; set; }
+
+		/// <summary>
+		/// The timestamp of the last update to the user's eDaler balance.
+		/// </summary>
+		[DefaultValueNull]
+		public DateTime? LastEDalerBalanceUpdate { get; set; }
 	}
 }
