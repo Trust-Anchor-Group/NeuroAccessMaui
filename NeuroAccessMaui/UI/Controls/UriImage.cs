@@ -1,11 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.ApplicationModel;
-using NeuroAccessMaui.Services.Cache.InternetCache;
+﻿using System.ComponentModel;
 using NeuroAccessMaui.Services;
-using System.ComponentModel;
+using NeuroAccessMaui.Services.Cache.InternetCache;
+using SkiaSharp;
+using Svg.Skia;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -64,7 +61,7 @@ namespace NeuroAccessMaui.UI.Controls
 				nameof(CacheDuration),
 				typeof(TimeSpan?),
 				typeof(UriImage),
-				default(TimeSpan?));
+				Constants.Cache.DefaultImageCache);
 
 		// Read-only IsLoading property to indicate loading state.
 		private static readonly BindablePropertyKey IsLoadingPropertyKey =
@@ -203,19 +200,68 @@ namespace NeuroAccessMaui.UI.Controls
 
 			try
 			{
-				string Key = !string.IsNullOrEmpty(this.ParentId) ? this.ParentId : this.Source;
-				IInternetCacheService CacheService = ServiceRef.InternetCacheService;
-				(byte[]? ImageBytes, string _) = await CacheService.GetOrFetch(UriVal, Key, this.Permanent);
+				bool IsSvgUri = this.Source.EndsWith(".svg", StringComparison.OrdinalIgnoreCase);
+				ImageSource? NewImage = null;
+
+				if (this.Source.StartsWith("resource://", StringComparison.Ordinal))
+					NewImage = ImageSource.FromResource(this.Source[11..]);
+				else if (this.Source.StartsWith("file://", StringComparison.Ordinal))
+				{
+					if (IsSvgUri)
+						NewImage = this.Source[7..^4];
+					else
+						NewImage = this.Source[7..];
+				}
+
+				// IF not local, fetch
+				if (NewImage is null)
+				{
+
+					string Key = !string.IsNullOrEmpty(this.ParentId) ? this.ParentId : this.Source;
+					IInternetCacheService CacheService = ServiceRef.InternetCacheService;
+					(byte[]? ImageBytes, string _) = await CacheService.GetOrFetch(UriVal, Key, this.Permanent);
+
+					if (ImageBytes is not null)
+					{
+						try
+						{
+							SKSvg Svg = new();
+							using (MemoryStream Stream = new(ImageBytes))
+							{
+								Svg.Load(Stream);
+							}
+
+							//Check that the svg was parsed correct
+							if (Svg.Picture is not null)
+							{
+								using MemoryStream Stream = new();
+								if (Svg.Picture.ToImage(Stream, SKColor.Parse("#00FFFFFF"), SKEncodedImageFormat.Png, 100, 1, 1, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb()))
+									ImageBytes = Stream.ToArray();
+							}
+						}
+						catch
+						{
+							//Silent failure
+						}
+					}
+
+					if (ImageBytes is not null)
+						NewImage = ImageSource.FromStream(() => new MemoryStream(ImageBytes));
+				}
 
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
-					this.isErrorDisplayed = false;
-					this.imageView.Source = ImageBytes is not null
-						? ImageSource.FromStream(() => new MemoryStream(ImageBytes))
-						: this.ErrorPlaceholder;
+					if (NewImage is null)
+						this.ShowError();
+					else
+					{
+
+						this.isErrorDisplayed = false;
+						this.imageView.Source = NewImage;
+					}
 				});
 			}
-			catch
+			catch (Exception Ex)
 			{
 				this.ShowError();
 			}
@@ -240,6 +286,16 @@ namespace NeuroAccessMaui.UI.Controls
 				this.spinner.IsVisible = false;
 				this.imageView.Source = this.ErrorPlaceholder;
 			});
+		}
+
+		private static bool IsSvg(byte[] imageBytes)
+		{
+			if (imageBytes == null || imageBytes.Length < 5)
+				return false;
+
+			// Check if it starts with "<svg" (ignoring whitespace)
+			string Header = System.Text.Encoding.UTF8.GetString(imageBytes, 0, Math.Min(imageBytes.Length, 256));
+			return Header.TrimStart().StartsWith("<svg", StringComparison.OrdinalIgnoreCase);
 		}
 	}
 }
