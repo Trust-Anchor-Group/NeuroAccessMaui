@@ -72,10 +72,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				this.CountDownTimer.Tick += this.CountDownEventHandler;
 			}
 
-			if (string.IsNullOrEmpty(ServiceRef.TagProfile.PhoneNumber))
+			try
 			{
 				ContentResponse Result = await InternetContent.PostAsync(
-					new Uri("https://" + Constants.Domains.IdDomain + "/ID/CountryCode.ws"), 
+					new Uri("https://" + Constants.Domains.IdDomain + "/ID/CountryCode.ws"),
 					string.Empty,
 					null,                               // Certificate
 					App.ValidateCertificateCallback,          // RemoteCertificateValidator
@@ -83,24 +83,21 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 				if (Result.HasError)
 				{
-					ContentResponse Result = await InternetContent.PostAsync(
-						new Uri("https://" + Constants.Domains.IdDomain + "/ID/CountryCode.ws"), string.Empty,
-						new KeyValuePair<string, string>("Accept", "application/json"));
-
-					Result.AssertOk();
-
-					if ((Result.Decoded is Dictionary<string, object> Response) &&
-						Response.TryGetValue("CountryCode", out object? cc) &&
-						cc is string CountryCode &&
-						ISO_3166_1.TryGetCountryByCode(CountryCode, out ISO_3166_Country? Country))
-					{
-						this.SelectedCountry = Country;
-					}
+					ServiceRef.LogService.LogException(Result.Error);
+					return;
 				}
-				catch (Exception ex)
+
+				if ((Result.Decoded is Dictionary<string, object> Response) &&
+					 Response.TryGetValue("CountryCode", out object? cc) &&
+					 (cc is string CountryCode))
 				{
-					ServiceRef.LogService.LogException(ex);
+					if (ISO_3166_1.TryGetCountryByCode(CountryCode, out ISO_3166_Country? Country))
+						this.SelectedCountry = Country;
 				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
@@ -448,9 +445,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								string Secret = XML.Attribute(E, "secret");
 								Domain = XML.Attribute(E, "domain");
 
-								if (string.IsNullOrEmpty(Domain) || Domain == "localhost")
-									Domain = Constants.Debug.LocalIpAddress;
-
 								await SelectDomain(Domain, KeyStr, Secret);
 
 								await ServiceRef.UiService.DisplayAlert(
@@ -465,15 +459,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								string PasswordMethod = XML.Attribute(E, "passwordMethod");
 								Domain = XML.Attribute(E, "domain");
 
-								if (string.IsNullOrEmpty(Domain) || Domain == "localhost")
-									Domain = Constants.Debug.LocalIpAddress;
-
 								string DomainBak = ServiceRef.TagProfile?.Domain ?? string.Empty;
 								bool DefaultConnectivityBak = ServiceRef.TagProfile?.DefaultXmppConnectivity ?? false;
 								string ApiKeyBak = ServiceRef.TagProfile?.ApiKey ?? string.Empty;
 								string ApiSecretBak = ServiceRef.TagProfile?.ApiSecret ?? string.Empty;
-
-
 
 								await SelectDomain(Domain, string.Empty, string.Empty);
 
