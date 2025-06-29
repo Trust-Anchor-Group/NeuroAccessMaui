@@ -2867,4 +2867,19 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
    <value>Please restart the app to ensure all text changes language properly</value>
   </data>
+  <data name="Never" xml:space="preserve">
+   <value>Never</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+   <value>Now</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>{0} minutes ago</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>{0} hours ago</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Last updated: {0}</value>
+  </data>
 </root>
