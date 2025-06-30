@@ -236,19 +236,19 @@
 										 Style="{DynamicResource FilledTextButton}" />
 				</VerticalStackLayout>
 			</Border>
-
-			<!-- Bottom Bar -->
-			<controls:BottomBar Grid.Row="1"
-								Style="{DynamicResource BottomBar}"
-								SelectedIcon="Center"
-								LeftIcon="home.svg"
-								CenterIcon="wallet.svg"
-								RightIcon="apps.svg"
-								LeftLabelText="{l:Localize Home}"
-								CenterLabelText="{l:Localize Wallet}"
-								RightLabelText="{l:Localize Apps}"
-								LeftCommand="{Binding ViewMainPageCommand}"
-								RightCommand="{Binding ViewAppsCommand}"/>
 		</Grid>
+
+		<!-- Bottom Bar -->
+		<controls:BottomBar Grid.Row="2"
+							Style="{DynamicResource BottomBar}"
+							SelectedIcon="Center"
+							LeftIcon="home.svg"
+							CenterIcon="wallet.svg"
+							RightIcon="apps.svg"
+							LeftLabelText="{l:Localize Home}"
+							CenterLabelText="{l:Localize Wallet}"
+							RightLabelText="{l:Localize Apps}"
+							LeftCommand="{Binding ViewMainPageCommand}"
+							RightCommand="{Binding ViewAppsCommand}"/>
 	</Grid>
 </base:BaseContentPage>
