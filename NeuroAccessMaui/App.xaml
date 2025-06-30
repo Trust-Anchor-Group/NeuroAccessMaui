@@ -6,7 +6,6 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<!-- The order of the inclusion does matter -->
-				<ResourceDictionary Source="Resources/Styles/Colors.xaml" />
 				<ResourceDictionary Source="Resources/Styles/Converters.xaml" />
 				<ResourceDictionary Source="Resources/Styles/Styles.xaml" />
 				<ResourceDictionary Source="Resources/Styles/LabelStyles.xaml" />
