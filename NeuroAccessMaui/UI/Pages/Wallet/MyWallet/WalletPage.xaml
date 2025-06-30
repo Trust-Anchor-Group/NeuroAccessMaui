@@ -192,8 +192,8 @@
 										  HeightRequest="24" />
 						<Label Grid.Column="1" Grid.Row="0"
 							   VerticalOptions="Start" HorizontalOptions="Start"
-							   Text="Neuro-Credits Balance"
-							   FontSize="26"
+							   Text="Credit Balance"
+							   FontSize="20"
 							   LineHeight="0.8"
 							   Style="{DynamicResource PageTitleLabel}"
 							   Margin="0" Padding="0" VerticalTextAlignment="Start" />
@@ -202,11 +202,12 @@
 												  Grid.Column="2"
 												  WidthRequest="24"
 												  HeightRequest="24"
-												  HorizontalOptions="Center" VerticalOptions="Start"
+												  HorizontalOptions="Center" VerticalOptions="Center"
 												  IsVisible="{Binding GetBalanceTask.IsNotRunning}">
 
 							<controls:SvgView Source="refresh.svg"
-									   TintColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+									   TintColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+									   />
 						</controls:TemplatedButton>
 						<ActivityIndicator IsRunning="True"
 										   VerticalOptions="Start"
