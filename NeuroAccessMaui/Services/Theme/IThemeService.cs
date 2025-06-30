@@ -23,7 +23,13 @@ namespace NeuroAccessMaui.Services.Theme
 		/// Sets the application theme.
 		/// </summary>
 		/// <param name="Theme">The <see cref="AppTheme"/> to apply.</param>
-		Task SetTheme(AppTheme Theme);
+		void SetTheme(AppTheme Theme);
+
+		/// <summary>
+		/// Sets the active theme
+		/// </summary>
+		/// <param name="theme"></param>
+		void SetLocalTheme(AppTheme theme);
 
 		/// <summary>
 		/// Gets the mapping of image identifiers to their URIs.
