@@ -282,7 +282,7 @@
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             HorizontalOptions="Center"
-            IsVisible="{Binding IsApproved}"
+            IsVisible="{Binding ShowBackground}"
             RepeatCount="-1"
             Rotation="90"
             Source="background.json" />
@@ -317,176 +317,261 @@
                 SvgSource="share.svg" />
         </Grid>
 
-        <!--  QR Code Shadow  -->
-        <Border
-            Grid.Row="2"
-            BackgroundColor="Transparent"
-            HeightRequest="150"
-            StrokeShape="RoundRectangle 16"
-            Style="{DynamicResource BorderSet}"
-            TranslationY="0"
-            WidthRequest="150" />
+		<Grid Grid.Row="1"
+			  Grid.RowSpan="2"
+			  mct:StateContainer.CurrentState="{Binding CurrentState}">
 
-        <!--  ID CARD  -->
-        <Grid Grid.Row="1" Grid.RowSpan="2">
-            <Border
-                Margin="16,8,16,8"
-                Padding="0"
-                Style="{DynamicResource CardBorder}">
-                <Grid>
-                    <!--  BG  -->
-                    <ContentView>
-                        <AbsoluteLayout>
-                            <controls:SvgView Scale="1.1" Source="id_background.svg" />
-                        </AbsoluteLayout>
-                    </ContentView>
+			<mct:StateContainer.StateViews>
+				<!-- HAS ID VIEW-->
+				<Grid mct:StateView.StateKey="HasID"
+					  RowDefinitions="*,90">
+					<!--  QR Code Shadow  -->
+					<Border
+						Grid.Row="2"
+						BackgroundColor="Transparent"
+						HeightRequest="150"
+						StrokeShape="RoundRectangle 16"
+						Style="{DynamicResource BorderSet}"
+						TranslationY="0"
+						WidthRequest="150" />
 
-                    <!--  TIMER  -->
-                    <Border
-                        Margin="16"
-                        BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight},
-                                                          Dark={DynamicResource SurfaceElevation1WLDark}}"
-                        HeightRequest="38"
-                        HorizontalOptions="End"
-                        IsVisible="{Binding HasTimer}"
-                        StrokeShape="RoundRectangle 8"
-                        VerticalOptions="End"
-                        WidthRequest="50">
-                        <Label
-                            Margin="8,4,8,4"
-                            FontFamily="SpaceGroteskBold"
-                            HorizontalOptions="Center"
-                            HorizontalTextAlignment="Center"
-                            Style="{DynamicResource SubTextLabel}"
-                            Text="{Binding TimerSeconds}"
-                            VerticalOptions="Start" />
-                    </Border>
+					<!--  ID CARD  -->
+					<Grid Grid.Row="0" Grid.RowSpan="2">
+						<Border
+							Margin="16,8,16,8"
+							Padding="0"
+							Style="{DynamicResource CardBorder}">
+							<Grid>
+								<!--  BG  -->
+								<ContentView>
+									<AbsoluteLayout>
+										<controls:SvgView Scale="1.1" Source="id_background.svg" />
+									</AbsoluteLayout>
+								</ContentView>
 
-                    <Border
-                        Margin="16"
-                        helpers:VisualStateProperties.State="{Binding IdentityState}"
-                        HorizontalOptions="Start"
-                        StrokeShape="RoundRectangle 16"
-                        Style="{DynamicResource StatusPillBorder}"
-                        VerticalOptions="End">
+								<!--  TIMER  -->
+								<Border
+									Margin="16"
+									BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight},
+																	  Dark={DynamicResource SurfaceElevation1WLDark}}"
+									HeightRequest="38"
+									HorizontalOptions="End"
+									IsVisible="{Binding HasTimer}"
+									StrokeShape="RoundRectangle 8"
+									VerticalOptions="End"
+									WidthRequest="50">
+									<Label
+										Margin="8,4,8,4"
+										FontFamily="SpaceGroteskBold"
+										HorizontalOptions="Center"
+										HorizontalTextAlignment="Center"
+										Style="{DynamicResource SubTextLabel}"
+										Text="{Binding TimerSeconds}"
+										VerticalOptions="Start" />
+								</Border>
 
-                        <Label
-                            Margin="4,2"
-                            HorizontalOptions="Center"
-                            Style="{DynamicResource StatusPillLabel}"
-                            VerticalOptions="Center" />
-                    </Border>
-                </Grid>
-            </Border>
-        </Grid>
+								<Border
+									Margin="16"
+									helpers:VisualStateProperties.State="{Binding IdentityState}"
+									HorizontalOptions="Start"
+									StrokeShape="RoundRectangle 16"
+									Style="{DynamicResource StatusPillBorder}"
+									VerticalOptions="End">
 
-        <!--  CARD CONTENT  -->
-        <Grid
-            Grid.Row="1"
-            Margin="{DynamicResource MediumMargins}"
-            Padding="0,16,0,8"
-            RowDefinitions="auto, *"
-            WidthRequest="250">
-            <VerticalStackLayout
-                Grid.Row="0"
-                Margin="0"
-                Padding="0"
-                HorizontalOptions="Center"
-                Spacing="{DynamicResource SmallSpacing}">
-                <Grid HeightRequest="200" WidthRequest="200">
-                    <controls:ConditionView Condition="{Binding LoadPhotosTask.IsRunning}">
-                        <controls:ConditionView.True>
-                            <ActivityIndicator
-                                HeightRequest="50"
-                                HorizontalOptions="Center"
-                                IsRunning="True"
-                                VerticalOptions="Center"
-                                WidthRequest="50" />
-                        </controls:ConditionView.True>
-                        <controls:ConditionView.False>
-                            <Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation2WLLight}, Dark={DynamicResource SurfaceElevation2WLDark}}" StrokeShape="RoundRectangle 16">
-                                <controls:ConditionView Condition="{Binding HasProfilePhoto}">
-                                    <controls:ConditionView.True>
-                                        <Image
-                                            Aspect="AspectFit"
-                                            HeightRequest="200"
-                                            Source="{Binding ProfilePhoto}"
-                                            WidthRequest="200" />
-                                    </controls:ConditionView.True>
-                                    <controls:ConditionView.False>
-                                        <controls:SvgView
-                                            Aspect="AspectFit"
-                                            HeightRequest="70"
-                                            Source="person.svg"
-                                            WidthRequest="70" />
-                                    </controls:ConditionView.False>
-                                </controls:ConditionView>
-
-                            </Border>
-                        </controls:ConditionView.False>
-                    </controls:ConditionView>
-                    <!-- Water mark
-					<Grid VerticalOptions="End"
-						  HorizontalOptions="Start"
-						  WidthRequest="50"
-						  HeightRequest="50"
-						  IsVisible="{Binding HasProfilePhoto}">
-						<Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1Light}, Dark={DynamicResource SurfaceElevation1Dark}}"
-								StrokeShape="RoundRectangle 0 16 0 0">
-
+									<Label
+										Margin="4,2"
+										HorizontalOptions="Center"
+										Style="{DynamicResource StatusPillLabel}"
+										VerticalOptions="Center" />
+								</Border>
+							</Grid>
 						</Border>
-					</Grid>-->
-                    <Grid
-                        HeightRequest="50"
-                        HorizontalOptions="End"
-                        IsVisible="{Binding HasAge}"
-                        VerticalOptions="End"
-                        WidthRequest="50">
-                        <Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}" StrokeShape="RoundRectangle 16 0 0 0">
-                            <Label
-                                HorizontalOptions="Center"
-                                Style="{DynamicResource AgeLabel}"
-                                Text="{Binding AgeText}"
-                                VerticalOptions="Center" />
-                        </Border>
-                    </Grid>
+					</Grid>
 
-                </Grid>
+					<!--  CARD CONTENT  -->
+					<Grid
+						Grid.Row="0"
+						Margin="{DynamicResource MediumMargins}"
+						Padding="0,16,0,8"
+						RowDefinitions="auto, *"
+						WidthRequest="250">
+						<VerticalStackLayout
+							Grid.Row="0"
+							Margin="0"
+							Padding="0"
+							HorizontalOptions="Center"
+							Spacing="{DynamicResource SmallSpacing}">
+							<Grid HeightRequest="200" WidthRequest="200">
+								<controls:ConditionView Condition="{Binding LoadPhotosTask.IsRunning}">
+									<controls:ConditionView.True>
+										<ActivityIndicator
+											HeightRequest="50"
+											HorizontalOptions="Center"
+											IsRunning="True"
+											VerticalOptions="Center"
+											WidthRequest="50" />
+									</controls:ConditionView.True>
+									<controls:ConditionView.False>
+										<Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation2WLLight}, Dark={DynamicResource SurfaceElevation2WLDark}}" StrokeShape="RoundRectangle 16">
+											<controls:ConditionView Condition="{Binding HasProfilePhoto}">
+												<controls:ConditionView.True>
+													<Image
+														Aspect="AspectFit"
+														HeightRequest="200"
+														Source="{Binding ProfilePhoto}"
+														WidthRequest="200" />
+												</controls:ConditionView.True>
+												<controls:ConditionView.False>
+													<controls:SvgView
+														Aspect="AspectFit"
+														HeightRequest="70"
+														Source="person.svg"
+														WidthRequest="70" />
+												</controls:ConditionView.False>
+											</controls:ConditionView>
 
-                <Label Style="{DynamicResource FriendlyNameLabel}" Text="{Binding FriendlyName}" />
-                <Label Style="{DynamicResource SubTextLabel}" Text="{Binding SubText}" />
+										</Border>
+									</controls:ConditionView.False>
+								</controls:ConditionView>
+								<!-- Water mark
+									<Grid VerticalOptions="End"
+										  HorizontalOptions="Start"
+										  WidthRequest="50"
+										  HeightRequest="50"
+										  IsVisible="{Binding HasProfilePhoto}">
+										<Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1Light}, Dark={DynamicResource SurfaceElevation1Dark}}"
+												StrokeShape="RoundRectangle 0 16 0 0">
 
-            </VerticalStackLayout>
-            <VerticalStackLayout
-                Grid.Row="1"
-                Margin="0,0,0,4"
-                VerticalOptions="End">
-                <Label
-                    FontSize="14"
-                    Style="{DynamicResource SubTextLabel}"
-                    Text="{l:Localize Path=ExpiresFormat,
-                                      Arg={Binding ExpireDate}}" />
-            </VerticalStackLayout>
-        </Grid>
+										</Border>
+									</Grid>-->
+								<Grid
+									HeightRequest="50"
+									HorizontalOptions="End"
+									IsVisible="{Binding HasAge}"
+									VerticalOptions="End"
+									WidthRequest="50">
+									<Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}" StrokeShape="RoundRectangle 16 0 0 0">
+										<Label
+											HorizontalOptions="Center"
+											Style="{DynamicResource AgeLabel}"
+											Text="{Binding AgeText}"
+											VerticalOptions="Center" />
+									</Border>
+								</Grid>
 
-        <!--  QR Code  -->
-        <Border
-            Grid.Row="2"
-            HeightRequest="150"
-            Style="{DynamicResource QrBorder}"
-            TranslationY="0"
-            WidthRequest="150">
-            <Image
-                HorizontalOptions="Center"
-                Source="{Binding QrCode}"
-                TranslationX="0">
-                <Image.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding QrTappedCommand}" NumberOfTapsRequired="1" />
-                </Image.GestureRecognizers>
-            </Image>
-        </Border>
+							</Grid>
 
-        <skiaLottie:SKConfettiView
+							<Label Style="{DynamicResource FriendlyNameLabel}" Text="{Binding FriendlyName}" />
+							<Label Style="{DynamicResource SubTextLabel}" Text="{Binding SubText}" />
+
+						</VerticalStackLayout>
+						<VerticalStackLayout
+								Grid.Row="1"
+								Margin="0,0,0,4"	
+								VerticalOptions="End">
+							<Label
+								FontSize="14"
+								Style="{DynamicResource SubTextLabel}"
+								Text="{l:Localize Path=ExpiresFormat, Arg={Binding ExpireDate}}" />
+						</VerticalStackLayout>
+					</Grid>
+
+					<!--  QR Code  -->
+					<Border
+						Grid.Row="2"
+						HeightRequest="150"
+						Style="{DynamicResource QrBorder}"
+						TranslationY="0"
+						WidthRequest="150">
+						<Image
+							HorizontalOptions="Center"
+							Source="{Binding QrCode}"
+							TranslationX="0">
+							<Image.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding QrTappedCommand}" NumberOfTapsRequired="1" />
+							</Image.GestureRecognizers>
+						</Image>
+					</Border>
+				</Grid>
+				<!-- NO ID VIEW-->
+				<Grid mct:StateView.StateKey="NoID"
+					  RowDefinitions="auto, auto">
+					<Grid RowDefinitions="auto, *"
+						  IsVisible="{Binding HasLegalIdentity, Converter={StaticResource InvertedBoolConverter}}"
+						  Grid.Row="0"
+						  x:Name="NoIDPopup"
+						  Margin="{DynamicResource SmallLeftRightMargins}">
+						<Border Grid.Row="0"
+								BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
+								Padding="{DynamicResource MediumMargins}"
+								StrokeShape="RoundRectangle 16,16,0,16">
+							<Border.Shadow>
+								<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+							</Border.Shadow>
+							<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+								  ColumnDefinitions="auto, *">
+								<Path
+									Grid.Column="0"
+									Data="{x:Static ui:Geometries.InfoCirclePath}"
+									Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+								<Label
+									Grid.Column="1"
+									Text="{l:Localize ApplyIdInfoMainPage}"
+									Style="{DynamicResource InfoLabel}"
+									TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+							</Grid>
+						</Border>
+						<controls:TemplatedButton Grid.Row="1">
+							<Grid Padding="{DynamicResource MediumMargins}"
+								  ColumnDefinitions="*, auto">
+								<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{DynamicResource SecondaryButtonActiveLabel}"/>
+								<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}"/>
+							</Grid>
+						</controls:TemplatedButton>
+					</Grid>
+					<Border Style="{DynamicResource BorderSet}"
+							Grid.Row="1">
+						<Grid RowDefinitions="auto, auto, auto"
+							  ColumnDefinitions="*, *">
+							<controls:UriImage
+								Aspect="AspectFit"
+								ErrorPlaceholder="neuro_b"
+								HorizontalOptions="Center"
+								Source="{Binding BannerUri}"
+								WidthRequest="100"
+								HeightRequest="24"/>
+							<Label Text="Account information" Style="{DynamicResource InfoLabel}" Grid.Column="1"/>
+							<Border Grid.Row="1" Grid.ColumnSpan="2"
+									Style="{DynamicResource BorderSubSet}">
+								<Grid RowDefinitions="auto, auto, auto, auto">
+									<Label Text="Data text" Grid.Row="0"/>
+									<Label Text="Data text" Grid.Row="1"/>
+									<Label Text="Data text" Grid.Row="2"/>
+									<Label Text="Data text" Grid.Row="3"/>
+								</Grid>
+							</Border>
+							<Border
+								Grid.Row="2"
+								HeightRequest="150"
+								Style="{DynamicResource QrBorder}"
+								TranslationY="0"
+								WidthRequest="150">
+								<Image
+									HorizontalOptions="Center"
+									Source="{Binding QrCode}"
+									TranslationX="0">
+									<Image.GestureRecognizers>
+										<TapGestureRecognizer Command="{Binding QrTappedCommand}" NumberOfTapsRequired="1" />
+									</Image.GestureRecognizers>
+								</Image>
+							</Border>
+						</Grid>
+					</Border>
+				</Grid>
+			</mct:StateContainer.StateViews>
+		</Grid>
+
+		<skiaLottie:SKConfettiView
             x:Name="ConfettiView"
             Grid.RowSpan="5"
             HorizontalOptions="Fill"
@@ -494,6 +579,7 @@
             IsAnimationEnabled="{Binding ShouldCelebrate}"
             VerticalOptions="Fill" />
 
+		<!-- BOTTOM SHEET -->
         <Grid Grid.Row="1" Grid.RowSpan="4">
             <controls:BottomSheetView
                 x:Name="BottomSheet"

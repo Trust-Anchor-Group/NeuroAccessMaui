@@ -62,6 +62,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(IsApproved))]
+		[NotifyPropertyChangedFor(nameof(ShowBackground))]
 		private IdentityState? identityState = Waher.Networking.XMPP.Contracts.IdentityState.Created;
 
 		public bool IsApproved => this.IdentityState is not null && this.IdentityState == Waher.Networking.XMPP.Contracts.IdentityState.Approved;
@@ -882,12 +883,25 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			}
 		}
 
+		public bool HasLegalIdentity => ServiceRef.TagProfile.LegalIdentity.HasApprovedPersonalInformation();
+
+		public bool ShowBackground => this.HasLegalIdentity && this.IsApproved;
+
+		public string CurrentState => this.HasLegalIdentity ? States.HasID : States.NoID;
+
+		static class States
+		{
+			public const string HasID = "HasID";
+			public const string NoID = "NoID";
+		}
+
+
 		#region ILinkableView
 
-			/// <summary>
-			/// Title of the current view
-			/// </summary>
-			///
+		/// <summary>
+		/// Title of the current view
+		/// </summary>
+		///
 		public override Task<string> Title => Task.FromResult("Test");//Task.FromResult<string>(ContactInfo.GetFriendlyName(this.LegalIdentity!));
 
 		#endregion
