@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Maui.Core;
 using Microsoft.Maui.Controls.Shapes;
 
-
 namespace NeuroAccessMaui.UI.Controls
 {
 	public class BottomSheetView : Grid
@@ -15,10 +14,9 @@ namespace NeuroAccessMaui.UI.Controls
 		private readonly Border cardBorder;
 		private readonly ContentView headerContainer;
 		private readonly ContentView contentPresenter;
-		private readonly RowDefinition contentRow;
 
 		// Fields for layout calculations.
-		private double maxContentHeight;
+		private double sheetHeight;
 		private bool isExpanded = false;
 
 		// Bindable property for the header background color (still available if needed).
@@ -36,7 +34,7 @@ namespace NeuroAccessMaui.UI.Controls
 			BindableProperty.Create(nameof(MaxExpandedHeight), typeof(double), typeof(BottomSheetView), -1.0);
 
 		/// <summary>
-		/// If set (> 0), this value determines the maximum overall height (header + content).
+		/// If set (&gt; 0), this value determines the maximum overall height (header + content).
 		/// If left at or below 0, the control uses the available height.
 		/// </summary>
 		public double MaxExpandedHeight
@@ -67,7 +65,6 @@ namespace NeuroAccessMaui.UI.Controls
 			this.BackgroundColor = Colors.Transparent;
 
 			// Initialize the Border that holds the entire bottom sheet content
-
 			this.cardBorder = new Border
 			{
 				Style = AppStyles.BottomBarBorder,
@@ -77,16 +74,13 @@ namespace NeuroAccessMaui.UI.Controls
 				VerticalOptions = LayoutOptions.End
 			};
 
-
 			// Create a grid with two rows.
 			// Row 0 for the header is now Auto sized.
 			Grid SheetGrid = [];
 			SheetGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-			this.contentRow = new RowDefinition { Height = new GridLength(0, GridUnitType.Absolute) };
-			SheetGrid.RowDefinitions.Add(this.contentRow);
+			SheetGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
 			SheetGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
 
 			// Header container: a ContentView whose Content is bound to HeaderContent.
 			this.headerContainer = new ContentView();
@@ -115,7 +109,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 			this.Add(this.cardBorder);
 
-			// Update available content height when the frame size changes.
+			// Update sheet height and set collapsed position when the frame size changes.
 			this.cardBorder.SizeChanged += this.OnFrameSizeChanged;
 		}
 
@@ -152,22 +146,29 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
-		/// When the frame's size changes, calculate the maximum available height for the main content.
+		/// When the frame's size changes, calculate the total height of the sheet and set its translation accordingly.
 		/// </summary>
 		private void OnFrameSizeChanged(object? sender, EventArgs e)
 		{
 			double AllowedHeight = this.MaxExpandedHeight > 0 ? this.MaxExpandedHeight : this.GetAllowedHeight();
 
-			// Get header height using the header container's current height.
-			double HeaderHeight = this.headerContainer.Height;
-			if (HeaderHeight <= 0)
+			// If the allowed height is set, constrain the cardBorder height.
+			if (AllowedHeight > 0)
 			{
-				// If not yet measured, fallback to default header height.
-				HeaderHeight = defaultHeaderHeight;
+				this.cardBorder.HeightRequest = AllowedHeight;
+				this.sheetHeight = AllowedHeight;
+			}
+			else
+			{
+				this.cardBorder.HeightRequest = -1;
+				this.sheetHeight = this.cardBorder.Height;
 			}
 
-			double EffectiveTotalHeight = AllowedHeight;
-			this.maxContentHeight = Math.Max(0, EffectiveTotalHeight - HeaderHeight);
+			// Move to correct initial position
+			if (!this.isExpanded)
+				this.SetTranslationToCollapsed();
+			else
+				this.SetTranslationToExpanded();
 		}
 
 		/// <summary>
@@ -205,6 +206,9 @@ namespace NeuroAccessMaui.UI.Controls
 
 		private double lastHeightConstraint;
 
+		/// <summary>
+		/// Saves the last height constraint provided during measure pass. Used for calculating available height.
+		/// </summary>
 		protected override Size MeasureOverride(double widthConstraint, double heightConstraint)
 		{
 			this.lastHeightConstraint = heightConstraint;
@@ -213,9 +217,17 @@ namespace NeuroAccessMaui.UI.Controls
 			return base.MeasureOverride(widthConstraint, heightConstraint);
 		}
 
+		private double initialPanY = 0;
+		private double initialTranslationY = 0;
 		private double previousPanY = 0;
-		private double accumulatedTranslation = 0;
+
 		private DateTime panStartTime;
+
+		/// <summary>
+		/// Handles pan gestures by updating the sheet's TranslationY property, 
+		/// which slides the sheet without triggering layout calculations.
+		/// </summary>
+
 
 		private void OnPanUpdated(object? sender, PanUpdatedEventArgs e)
 		{
@@ -223,92 +235,136 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				case GestureStatus.Started:
 					this.panStartTime = DateTime.UtcNow;
-					this.accumulatedTranslation = 0;
-					// Store the initial value (works for both platforms)
 					this.previousPanY = e.TotalY;
+					this.initialTranslationY = this.cardBorder.TranslationY;
 					break;
 
 				case GestureStatus.Running:
-					double DeltaY = 0;
+					double DeltaY;
+
 					if (DeviceInfo.Platform == DevicePlatform.iOS)
 					{
-						// iOS: TotalY is cumulative so we compute the delta.
+						// iOS: TotalY is cumulative, so we compute delta from last event.
 						DeltaY = e.TotalY - this.previousPanY;
 						this.previousPanY = e.TotalY;
 					}
 					else
 					{
-						// Android: TotalY is already incremental.
+						// Android: TotalY is incremental (already a delta).
 						DeltaY = e.TotalY;
 					}
 
-					this.accumulatedTranslation += DeltaY;
-					this.UpdateSheetPosition(DeltaY);
+					double TargetY = this.cardBorder.TranslationY + DeltaY;
+					double HeaderHeight = this.headerContainer.Height > 0 ? this.headerContainer.Height : defaultHeaderHeight;
+					double CollapsedY = this.sheetHeight - HeaderHeight;
+					TargetY = Math.Max(0, Math.Min(TargetY, CollapsedY));
+					this.cardBorder.TranslationY = TargetY;
 					break;
 
 				case GestureStatus.Completed:
 				case GestureStatus.Canceled:
-					double ElapsedMs = (DateTime.UtcNow - this.panStartTime).TotalMilliseconds;
-					double Velocity = ElapsedMs > 0 ? this.accumulatedTranslation / ElapsedMs : 0;
-					this.FinalizeSheetPosition(Velocity);
+					double HeaderHeightEnd = this.headerContainer.Height > 0 ? this.headerContainer.Height : defaultHeaderHeight;
+					double CollapsedYEnd = this.sheetHeight - HeaderHeightEnd;
+					double MidPoint = CollapsedYEnd / 2;
+					double CurrentY = this.cardBorder.TranslationY;
+
+					if (CurrentY >= MidPoint)
+					{
+						this.AnimateToCollapsed();
+						this.isExpanded = false;
+					}
+					else
+					{
+						this.AnimateToExpanded();
+						this.isExpanded = true;
+					}
 					break;
 			}
 		}
 
+		/// <summary>
+		/// Handles tap on header to toggle expand/collapse. 
+		/// Uses the translation-based logic.
+		/// </summary>
 		private void OnHeaderTapped(object? sender, EventArgs e)
 		{
-			// If already expanded, collapse to zero; otherwise expand fully
-			this.FinalizeSheetPosition(this.isExpanded ? (flickVelocityThreshold + 1) : -(flickVelocityThreshold + 1));
+			// If already expanded, collapse; otherwise expand fully.
+			this.FinalizeSheetPositionTranslation(this.isExpanded ? (flickVelocityThreshold + 1) : -(flickVelocityThreshold + 1));
 		}
 
-
 		/// <summary>
-		/// Updates the main content row height based on the incremental pan gesture translation.
-		/// Dragging upward (negative deltaY) will increase the height.
+		/// Animates the TranslationY of the bottom sheet to the collapsed position.
 		/// </summary>
-		private void UpdateSheetPosition(double deltaY)
+		private void AnimateToCollapsed()
 		{
-			double NewHeight = this.contentRow.Height.Value - deltaY;
-			NewHeight = Math.Max(0, Math.Min(NewHeight, this.maxContentHeight));
-			this.contentRow.Height = new GridLength(NewHeight, GridUnitType.Absolute);
+			double HeaderHeight = this.headerContainer.Height > 0 ? this.headerContainer.Height : defaultHeaderHeight;
+			double CollapsedY = this.sheetHeight - HeaderHeight;
+			this.cardBorder.TranslateTo(0, CollapsedY, animationDuration, Easing.SinOut);
 		}
 
 		/// <summary>
-		/// When the gesture is completed, determine whether to fully expand or collapse the sheet.
+		/// Animates the TranslationY of the bottom sheet to the expanded position (fully visible).
+		/// </summary>
+		private void AnimateToExpanded()
+		{
+			this.cardBorder.TranslateTo(0, 0, animationDuration, Easing.SinOut);
+		}
+
+		/// <summary>
+		/// Sets the sheet position to collapsed state without animation.
+		/// </summary>
+		private void SetTranslationToCollapsed()
+		{
+			double HeaderHeight = this.headerContainer.Height > 0 ? this.headerContainer.Height : defaultHeaderHeight;
+			double CollapsedY = this.sheetHeight - HeaderHeight;
+			this.cardBorder.TranslationY = CollapsedY;
+		}
+
+		/// <summary>
+		/// Sets the sheet position to expanded state without animation.
+		/// </summary>
+		private void SetTranslationToExpanded()
+		{
+			this.cardBorder.TranslationY = 0;
+		}
+
+		/// <summary>
+		/// When the gesture is completed, determine whether to fully expand or collapse the sheet using translation.
 		/// </summary>
 		/// <param name="velocity">The average velocity of the pan gesture (pixels/ms).</param>
-		private void FinalizeSheetPosition(double velocity)
+		private void FinalizeSheetPositionTranslation(double velocity)
 		{
+			double HeaderHeight = this.headerContainer.Height > 0 ? this.headerContainer.Height : defaultHeaderHeight;
+			double CollapsedY = this.sheetHeight - HeaderHeight;
+			double MidPoint = CollapsedY / 2;
+			double CurrentY = this.cardBorder.TranslationY;
+
 			if (Math.Abs(velocity) > flickVelocityThreshold)
 			{
 				if (velocity < 0)
-					this.AnimateSheet(this.maxContentHeight);
+				{
+					this.AnimateToExpanded();
+					this.isExpanded = true;
+				}
 				else
-					this.AnimateSheet(0);
-				this.isExpanded = velocity < 0;
+				{
+					this.AnimateToCollapsed();
+					this.isExpanded = false;
+				}
 			}
 			else
 			{
-				double CurrentHeight = this.contentRow.Height.Value;
-				double MidPoint = this.maxContentHeight / 2;
-				this.AnimateSheet(CurrentHeight >= MidPoint ? this.maxContentHeight : 0);
-				this.isExpanded = CurrentHeight >= MidPoint;
-
+				if (CurrentY >= MidPoint)
+				{
+					this.AnimateToCollapsed();
+					this.isExpanded = false;
+				}
+				else
+				{
+					this.AnimateToExpanded();
+					this.isExpanded = true;
+				}
 			}
-		}
-
-		/// <summary>
-		/// Animates the main content row's height from its current value to the target value.
-		/// </summary>
-		private void AnimateSheet(double targetHeight)
-		{
-			double StartingHeight = this.contentRow.Height.Value;
-			Animation Animation = new(v =>
-			{
-				this.contentRow.Height = new GridLength(v, GridUnitType.Absolute);
-			}, StartingHeight, targetHeight);
-
-			Animation.Commit(this, "SheetAnimation", 16, animationDuration, Easing.SinOut);
 		}
 	}
 }
