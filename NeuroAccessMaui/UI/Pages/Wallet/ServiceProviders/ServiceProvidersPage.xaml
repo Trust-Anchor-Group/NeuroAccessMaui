@@ -130,13 +130,11 @@
 			<Grid RowSpacing="{DynamicResource SmallSpacing}" RowDefinitions="auto,*"
 								 Margin="{DynamicResource MediumSpacing}">
 				<Grid ColumnDefinitions="auto,*" Grid.Row="0">
-					<controls:ImageButton Grid.Column="0"
-										  HorizontalOptions="Start"
-										  Command="{Binding GoBackCommand}"
-										  Style="{DynamicResource ImageOnlyButton}"
-										  PathData="{x:Static ui:Geometries.BackButtonPath}" />
+				<controls:SvgButton Command="{Binding GoBackCommand}"
+										Style="{DynamicResource IconButton}"
+										SvgSource="close.svg"/>
 
-					<Label Grid.Column="1"
+				<Label Grid.Column="1"
 						   HorizontalOptions="End"
 						   Text="{Binding Path=Title}"
 						   Style="{DynamicResource PageTitleLabel}" />

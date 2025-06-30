@@ -154,12 +154,9 @@
 			  Margin="16,16,16,8"
 			  ColumnDefinitions="auto,*">
 
-
-			<controls:ImageButton Grid.Row="0"
-								  Grid.Column="0"
-								  Command="{Binding GoBackCommand}"
-								  Style="{DynamicResource ImageOnlyButton}"
-								  PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<controls:SvgButton Command="{Binding GoBackCommand}"
+								SvgSource="close.svg"
+								Style="{DynamicResource IconButton}"/>
 
 			<Label Grid.Row="0"
 				   Grid.Column="1"
@@ -240,17 +237,18 @@
 				</VerticalStackLayout>
 			</Border>
 
-			<Border Grid.Row="1"
-					Style="{DynamicResource BorderSet}"
-					Margin="0">
-				<CollectionView>
-					<CollectionView.Header>
-						<VerticalStackLayout>
-
-						</VerticalStackLayout>
-					</CollectionView.Header>
-				</CollectionView>
-			</Border>
+			<!-- Bottom Bar -->
+			<controls:BottomBar Grid.Row="1"
+								Style="{DynamicResource BottomBar}"
+								SelectedIcon="Center"
+								LeftIcon="home.svg"
+								CenterIcon="wallet.svg"
+								RightIcon="apps.svg"
+								LeftLabelText="{l:Localize Home}"
+								CenterLabelText="{l:Localize Wallet}"
+								RightLabelText="{l:Localize Apps}"
+								LeftCommand="{Binding ViewMainPageCommand}"
+								RightCommand="{Binding ViewAppsCommand}"/>
 		</Grid>
 	</Grid>
 </base:BaseContentPage>
