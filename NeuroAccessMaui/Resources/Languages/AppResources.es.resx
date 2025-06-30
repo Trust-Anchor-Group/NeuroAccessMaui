@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2815,5 +2815,56 @@
   </data>
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Elimina datos temporales como imágenes y archivos adjuntos para liberar espacio</value>
+  </data>
+  <data name="Apps" xml:space="preserve">
+      <value>Aplicaciones</value>
+  </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Las funciones beta están en desarrollo y podrían carecer de funcionalidad o diseño. Sin embargo, algunas de sus funciones principales ya están disponibles.</value>
+  </data>
+  <data name="SmartThings" xml:space="preserve">
+    <value>Cosas inteligentes</value>
+  </data>
+  <data name="Assets" xml:space="preserve">
+    <value>Activos</value>
+  </data>
+  <data name="MicroLoan" xml:space="preserve">
+    <value>Micropréstamo</value>
+  </data>
+  <data name="NFC" xml:space="preserve">
+    <value>NFC</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>¿Te gustaría añadir esta identidad a tus contactos?</value>
+  </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>¡Próximamente!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+    <value>Actualmente estamos trabajando en esto</value>
+  </data>
+  <data name="BetaFeature" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>Para habilitar las funciones beta, ve a la pantalla de inicio y abre la página de configuración</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>Esta función se encuentra actualmente en estado beta. Para habilitar las funciones beta, abre la página de configuración y habilita las funciones beta</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
+    <value>Permiso requerido</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
+    <value>No pudimos cargar la versión más reciente de este contrato. Los detalles que ves podrían estar desactualizados. ¿Solicitar acceso ahora?</value>
+  </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Cache borrada</value>
+  </data>
+  <data name="LanguageChangedTitle" xml:space="preserve">
+    <value>Idioma cambiado</value>
+  </data>
+  <data name="LanguageChangedMessage" xml:space="preserve">
+    <value>El idioma ha sido cambiado. Por favor, reinicie la aplicación para asegurarse de que se apliquen todos los cambios.</value>
   </data>
 </root>

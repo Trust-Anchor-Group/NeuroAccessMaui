@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.Services.Network
 		{
 			if (this.BeginUnload())
 			{
-				if (DeviceInfo.Platform != DevicePlatform.Unknown)
+				if (DeviceInfo.Platform != DevicePlatform.Unknown && !DesignMode.IsDesignModeEnabled)
 					Connectivity.ConnectivityChanged -= this.Connectivity_ConnectivityChanged;
 
 				this.EndUnload();

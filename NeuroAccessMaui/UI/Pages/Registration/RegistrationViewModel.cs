@@ -58,8 +58,11 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(CanGoToPrev))]
+		[NotifyPropertyChangedFor(nameof(IsOnGetStartedView))]
 		[NotifyCanExecuteChangedFor(nameof(GoToPrevCommand))]
 		RegistrationStep currentStep = RegistrationStep.Complete;
+
+		public bool IsOnGetStartedView => this.CurrentStep == RegistrationStep.GetStarted;
 
 		/// <summary>
 		/// The list of steps needed to register a digital identity.

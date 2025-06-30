@@ -16,6 +16,7 @@ using SkiaSharp.Views.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls;
 using NeuroAccessMaui.UI.Controls;
 
+
 #if DEBUG
 using DotNet.Meteor.HotReload.Plugin;
 #endif
@@ -153,6 +154,10 @@ namespace NeuroAccessMaui
 				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
 			});
 			PickerHandler.Mapper.AppendToMapping("NoUnderlinePickerHandler", (handler, view) =>
+			{
+				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
+			});
+			TimePickerHandler.Mapper.AppendToMapping("NoUnderlineTimePickerHandler", (handler, view) =>
 			{
 				handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Colors.Transparent.ToAndroid());
 			});

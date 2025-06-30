@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
 							 x:Class="NeuroAccessMaui.UI.Pages.Applications.Applications.ApplicationsPage"
 							 x:DataType="viewmodel:ApplicationsViewModel"
@@ -18,7 +18,7 @@
 
 		<ScrollView>
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource SmallSpacing}">
-				<Grid Margin="{StaticResource SmallLeftRightMargins}">
+				<Grid Margin="{StaticResource SmallLeftRightTopMargins}">
 					<controls:SvgButton
 						Command="{Binding GoBackCommand}"
 						SvgSource="close.svg"

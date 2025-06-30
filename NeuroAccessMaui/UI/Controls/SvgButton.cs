@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Markup;
+using CommunityToolkit.Maui.Markup;
 using NeuroAccessMaui.UI.Core;
 using Waher.Script.Functions.Strings;
 
@@ -273,7 +273,8 @@ namespace NeuroAccessMaui.UI.Controls
 					new RowDefinition(height: GridLength.Auto),
 					new RowDefinition(height: GridLength.Auto)
 				},
-				HorizontalOptions = LayoutOptions.Center
+				HorizontalOptions = LayoutOptions.Center,
+				VerticalOptions = LayoutOptions.Center
 			};
 
 			this.innerGrid.Add(this.innerLabel);

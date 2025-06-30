@@ -1,7 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
+		<!-- Default to Android only -->
+		<TargetFrameworks>net8.0-android</TargetFrameworks>
+	</PropertyGroup>
+
+	<!-- If on Mac, add iOS as well -->
+	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
 		<TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
+	</PropertyGroup>
+	
+	<PropertyGroup>
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-maccatalyst</TargetFrameworks> -->
 		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks> -->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
@@ -21,8 +29,8 @@
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2.4.4</ApplicationDisplayVersion>
-		<ApplicationVersion>176</ApplicationVersion>
+		<ApplicationDisplayVersion>2.6.1</ApplicationDisplayVersion>
+		<ApplicationVersion>245</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
@@ -37,7 +45,7 @@
 		<Company>Trust Anchor Group AB</Company>
 		<Product>Neuro-Access</Product>
 		<Description>Maui App giving users access to Neuro-services, such as quick-login, digital identities, smart contracts, Neuro-Feature tokens and eDaler.</Description>
-		<Copyright>Copyright © Trust Anchor Group 2018-2024. All rights reserved.</Copyright>
+		<Copyright>Copyright © Trust Anchor Group 2018-2025. All rights reserved.</Copyright>
 		<PackageProjectUrl></PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Trust-Anchor-Group/NeuroAccessMaui</RepositoryUrl>
 
@@ -282,15 +290,17 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
 		<PackageReference Include="DotNetMeteor.HotReload.Plugin" Version="3.*" />
 		<PackageReference Include="EDaler" Version="3.1.1" />
+		<PackageReference Include="Mapsui.Maui" Version="4.1.9" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.92" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.100" />
 		<PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.12.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 		<PackageReference Include="Mopups" Version="1.3.2" />
-		<PackageReference Include="NeuroFeatures" Version="2.1.2" />
+		<PackageReference Include="NeuroFeatures" Version="2.1.4" />
 		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
 		<PackageReference Include="SkiaSharp" Version="2.88.9" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.9" />
@@ -300,49 +310,51 @@
 		<PackageReference Include="Svg.Skia" Version="2.0.0.1" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-		<PackageReference Include="Waher.Content" Version="3.3.2" />
-		<PackageReference Include="Waher.Content.Images" Version="3.0.1" />
-		<PackageReference Include="Waher.Content.Markdown" Version="6.0.2" />
+		<PackageReference Include="Waher.Content" Version="3.3.4" />
+		<PackageReference Include="Waher.Content.Images" Version="3.0.2" />
+		<PackageReference Include="Waher.Content.Markdown" Version="6.1.1" />
 		<PackageReference Include="Waher.Content.QR" Version="2.1.2" />
-		<PackageReference Include="Waher.Content.Xml" Version="3.1.1" />
+		<PackageReference Include="Waher.Content.Xml" Version="3.1.2" />
 		<PackageReference Include="Waher.Events" Version="1.4.3" />
 		<PackageReference Include="Waher.Events.Files" Version="1.2.0" />
 		<PackageReference Include="Waher.Events.Filter" Version="1.1.0" />
 		<PackageReference Include="Waher.Events.Persistence" Version="1.2.1" />
 		<PackageReference Include="Waher.Events.XMPP" Version="2.1.1" />
-		<PackageReference Include="Waher.Networking" Version="4.5.0" />
+		<PackageReference Include="Waher.Networking" Version="4.5.1" />
 		<PackageReference Include="Waher.Networking.DNS" Version="3.1.3" />
 		<PackageReference Include="Waher.Networking.PeerToPeer" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.UPnP" Version="3.1.0" />
-		<PackageReference Include="Waher.Networking.XMPP" Version="4.1.4" />
+		<PackageReference Include="Waher.Networking.XMPP" Version="4.1.5" />
 		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="3.1.0" />
-		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="4.2.1" />
-		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.3.1" />
-		<PackageReference Include="Waher.Networking.XMPP.Control" Version="4.1.0" />
-		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.2.5" />
+		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="4.2.2" />
+		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.5.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Control" Version="4.1.1" />
+		<PackageReference Include="Waher.Networking.XMPP.Geo" Version="1.0.1" />
+		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.2.6" />
 		<PackageReference Include="Waher.Networking.XMPP.Mail" Version="3.1.0" />
-		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="4.1.3" />
+		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="4.1.4" />
 		<PackageReference Include="Waher.Networking.XMPP.PEP" Version="3.1.0" />
-		<PackageReference Include="Waher.Networking.XMPP.Provisioning" Version="4.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Provisioning" Version="4.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.PubSub" Version="3.1.0" />
-		<PackageReference Include="Waher.Networking.XMPP.Push" Version="3.1.1" />
-		<PackageReference Include="Waher.Networking.XMPP.Sensor" Version="4.1.2" />
-		<PackageReference Include="Waher.Persistence" Version="1.15.1" />
+		<PackageReference Include="Waher.Networking.XMPP.Push" Version="3.1.2" />
+		<PackageReference Include="Waher.Networking.XMPP.Sensor" Version="4.1.3" />
+		<PackageReference Include="Waher.Persistence" Version="1.15.2" />
 		<PackageReference Include="Waher.Persistence.FilesLW" Version="1.15.1" />
 		<PackageReference Include="Waher.Persistence.XmlLedger" Version="1.2.2" />
 		<PackageReference Include="Waher.Runtime.Collections" Version="1.0.3" />
-		<PackageReference Include="Waher.Runtime.Inventory" Version="1.4.2" />
+		<PackageReference Include="Waher.Runtime.Geo" Version="1.0.0" />
+		<PackageReference Include="Waher.Runtime.Inventory" Version="1.4.3" />
 		<PackageReference Include="Waher.Runtime.IO" Version="1.0.4" />
-		<PackageReference Include="Waher.Runtime.Profiling" Version="1.1.0" />
+		<PackageReference Include="Waher.Runtime.Profiling" Version="1.1.1" />
 		<PackageReference Include="Waher.Runtime.Queue" Version="3.2.1" />
 		<PackageReference Include="Waher.Runtime.Settings" Version="1.2.0" />
 		<PackageReference Include="Waher.Runtime.Temporary" Version="1.1.0" />
 		<PackageReference Include="Waher.Runtime.Text" Version="1.2.0" />
-		<PackageReference Include="Waher.Script" Version="2.11.1" />
+		<PackageReference Include="Waher.Script" Version="2.13.0" />
 		<PackageReference Include="Waher.Script.Content" Version="2.2.3" />
 		<PackageReference Include="Waher.Security" Version="1.0.13" />
 		<PackageReference Include="Waher.Security.JWS" Version="1.1.4" />
-		<PackageReference Include="Waher.Security.JWT" Version="1.5.2" />
+		<PackageReference Include="Waher.Security.JWT" Version="1.5.4" />
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
 	</ItemGroup>
 	<ItemGroup>
@@ -395,6 +407,9 @@
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml.cs">
 		  <DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Pages\Main\Apps\AppsPage.xaml.cs">
+		  <DependentUpon>AppsPage.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Main\ChangePassword\ChangePasswordPage.xaml.cs">
 			<DependentUpon>ChangePasswordPage.xaml</DependentUpon>
@@ -572,6 +587,9 @@
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Main\Apps\AppsPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Main\Calculator\CalculatorPage.xaml">
@@ -754,10 +772,6 @@
 		<MauiXaml Update="UI\Popups\Xmpp\SubscriptionRequest\SubscriptionRequestPopup.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.92" />
 	</ItemGroup>
 
 	<ItemGroup>

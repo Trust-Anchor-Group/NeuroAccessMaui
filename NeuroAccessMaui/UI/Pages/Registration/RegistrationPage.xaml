@@ -27,10 +27,10 @@
 
 			<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />
 
-			<controls:TemplatedButton x:Name="LanguageButton" VerticalOptions="Start" HorizontalOptions="End" Command="{Binding ChangeLanguageCommand}">
+			<controls:TemplatedButton x:Name="LanguageButton" VerticalOptions="Start" HorizontalOptions="End" Command="{Binding ChangeLanguageCommand}" IsVisible="{Binding IsOnGetStartedView}">
 				<VerticalStackLayout>
 					<Path x:Name="InnerPath" Grid.Row="0" HorizontalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-							Fill="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" 
+							Fill="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
 							Data="{x:Static ui:Geometries.LanguageSelectButtonPath}"/>
 
 					<Label x:Name="InnerLabel" Grid.Row="1" Text="{Binding SelectedLanguage.MyNativeName}" />

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
 							 x:Class="NeuroAccessMaui.UI.Pages.Contracts.MyContracts.MyContractsPage"
 							 x:DataType="viewmodel:MyContractsViewModel"
@@ -102,10 +102,9 @@
 					SvgSource="close.svg"
 					Style="{DynamicResource IconButton}"
 					HorizontalOptions="Start"
-					WidthRequest="44"
-					HeightRequest="44"/>
+					Margin="{DynamicResource SmallLeftMargins}"/>
 
-				<Label Text="{Binding Path=Title}" Style="{DynamicResource PageTitleLabel}"/>
+				<Label Text="{Binding Path=Title}" Style="{DynamicResource PageTitleLabel}" Margin="{DynamicResource SmallLeftMargins}"/>
 
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">

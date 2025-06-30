@@ -29,6 +29,7 @@
 		/// <summary>
 		/// Pop 3 pages
 		/// </summary>
-		Pop3 = 4
+		Pop3 = 4,
+		PopToRoot = 5
 	}
 }

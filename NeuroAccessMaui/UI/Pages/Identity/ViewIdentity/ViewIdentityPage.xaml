@@ -141,7 +141,7 @@
                     TargetType="Label"
                     Value="Approved">
                     <Setter Property="Text" Value="{l:Localize IdentityState_Approved}" />
-                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLLight}}" />
+                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLDark}}" />
                 </DataTrigger>
                 <DataTrigger
                     Binding="{Binding IdentityState}"
@@ -537,6 +537,14 @@
                                     IsVisible="{Binding CanRemoveContact}"
                                     LabelData="{l:Localize RemoveContact}"
                                     Style="{DynamicResource FilledTextButton}" />
+
+								<controls:TextButton
+									Margin="16,0,16,8"
+									Command="{Binding OpenChatCommand}"
+									IsVisible="{Binding IsThirdPartyIdentity}"
+									HorizontalOptions="Fill"
+									LabelData="{l:Localize Chat}"
+									Style="{DynamicResource FilledTextButton}" />
 
                                 <!--  Photos  -->
                                 <Border IsVisible="{Binding HasPhotos}" Style="{DynamicResource FieldGroupBorder}">

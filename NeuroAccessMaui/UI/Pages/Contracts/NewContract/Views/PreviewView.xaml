@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <views:BaseNewContractView x:Name="ThisPage"
-                           x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.PreviewView"
-                           x:DataType="base:NewContractViewModel"
-                           xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                           xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-                           xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-                           xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-                           xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
-                           xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-                           xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
-                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
+						   x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.PreviewView"
+						   x:DataType="base:NewContractViewModel"
+						   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+						   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+						   xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+						   xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+						   xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+						   xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+						   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+						   xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
+						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
 
 	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
-		<Border  Grid.Row="0" Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumMargins}">
+		<Border  Grid.Row="0" Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}">
 			<ScrollView >
 				<ContentView Content="{Binding HumanReadableText}" />
 			</ScrollView>
@@ -21,15 +21,19 @@
 
 
 		<!-- BOTTOM BAR -->
-		<Border Grid.Row="1" Style="{DynamicResource BottomBarBorder}">
+		<Border Grid.Row="1" Style="{DynamicResource BottomBarBorder2}" Margin="{DynamicResource MediumTopMargins}">
 			<Grid HorizontalOptions="Center" VerticalOptions="Center" ColumnSpacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="auto" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
 
-				<CheckBox Grid.Column="0" IsChecked="{Binding IsContractOk}" Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
-				<Label Grid.Column="1" Text="{l:Localize IHaveReadAndUnderstoodTheContract}" Style="{DynamicResource BottomBarLabel}" />
+				<CheckBox Grid.Column="0"
+						  IsChecked="{Binding IsContractOk}"
+						  Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+				<Label Grid.Column="1"
+					   Text="{l:Localize IHaveReadAndUnderstoodTheContract}"
+					   Style="{DynamicResource BottomBarLabel}" />
 			</Grid>
 		</Border>
 	</Grid>

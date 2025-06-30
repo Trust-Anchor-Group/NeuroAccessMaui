@@ -8,7 +8,7 @@
 		public object Convert(object? value, Type targetType, object? parameter, System.Globalization.CultureInfo culture)
 		{
 			// Ensure value is DateTime? and provide DateTime.Now if null
-			return (value as DateTime?) ?? DateTime.Now;
+			return (value as DateTime?) ?? DateTime.Today.Date;
 		}
 
 		public object? ConvertBack(object? value, Type targetType, object? parameter, System.Globalization.CultureInfo culture)

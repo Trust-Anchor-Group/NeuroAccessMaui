@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <views:BaseNewContractView x:Name="ThisPage"
                            x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.RolesView"
@@ -16,7 +16,7 @@
                            xmlns:xmpp="clr-namespace:Waher.Networking.XMPP.Contracts;assembly=Waher.Networking.XMPP.Contracts">
 
 	<ContentView.Resources>
-		<Style x:Key="RoleTitleLabel" TargetType="Label" BasedOn="{StaticResource BoldItemTitleLabel}">
+		<Style x:Key="RoleTitleLabel" TargetType="Label" BaseResourceKey="BoldItemTitleLabel">
 			<Setter Property="FontSize" Value="18"/>
 			<Setter Property="HorizontalTextAlignment" Value="Start"/>
 		</Style>
@@ -29,7 +29,7 @@
 	</ContentView.Resources>
 
 	<!-- Roles Collection -->
-	<CollectionView ItemsSource="{Binding Contract.Roles}" SelectionMode="None" IsGrouped="False" ItemSizingStrategy="MeasureAllItems" Margin="{DynamicResource SmallMargins}">
+	<CollectionView ItemsSource="{Binding Contract.Roles}" SelectionMode="None" IsGrouped="False" ItemSizingStrategy="MeasureAllItems" Margin="{DynamicResource SmallLeftRightMargins}">
 		<CollectionView.Header>
 			<Grid>
 				<Border Style="{DynamicResource BorderSet}" >

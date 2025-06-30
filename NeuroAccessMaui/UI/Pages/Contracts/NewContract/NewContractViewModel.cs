@@ -18,12 +18,14 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Script;
 using Waher.Persistence;
 
+using Timer = System.Timers.Timer;
+
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
 	/// <summary>
 	/// The view model to bind to when displaying a new contract view or page.
 	/// </summary>
-	public partial class NewContractViewModel : BaseViewModel, ILinkableView
+	public partial class NewContractViewModel : BaseViewModel, ILinkableView, IDisposable
 	{
 		#region Constructors
 
@@ -42,6 +44,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		#region Fields
 
 		private readonly NewContractNavigationArgs? args;
+
+		private System.Timers.Timer? debounceValidationTimer;
+		private readonly object debounceLock = new(); // To prevent race conditions
+		private Task? latestValidationTask;
+
 
 		#endregion
 
@@ -182,18 +189,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						// Set the parameter values
 						foreach (ObservableParameter p in this.Contract.Parameters)
 						{
-							if (this.args.ParameterValues.TryGetValue(p.Parameter.Name, out object? value))
-								p.Value = value;
-
-
+							if (this.args.ParameterValues.TryGetValue(p.Parameter.Name, out object? Value))
+								p.Value = Value;
 						}
-						// Set Role values
+
+						lock (this.debounceLock)
+						{
+							if (this.debounceValidationTimer is not null)
+							{
+								this.debounceValidationTimer.Stop();
+								this.debounceValidationTimer.Dispose();
+								this.debounceValidationTimer = null;
+							}
+						}
+							// Set Role values
 						foreach (ObservableRole r in this.Contract.Roles)
 						{
-							if (this.args.ParameterValues.TryGetValue(r.Role.Name, out object? roleValue))
+							if (this.args.ParameterValues.TryGetValue(r.Role.Name, out object? RoleValue))
 							{
-								if (roleValue is string legalID)
-									await r.AddPart(legalID);
+								if (RoleValue is string LegalID)
+									await r.AddPart(LegalID);
 							}
 						}
 					}
@@ -218,8 +233,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					HasInitializedParameters.SetResult(true);
 				});
 				await HasInitializedParameters.Task;
-				await this.ValidateParametersAsync();
+				//await this.ValidateParametersAsync();
 				await this.GoToState(NewContractStep.Overview);
+				//await GoToOverview();
 			}
 			catch (Exception ex)
 			{
@@ -271,10 +287,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <summary>
 		/// Checks if the contract can be created based on the validity of parameters and roles.
 		/// </summary>
-		private void CheckCanCreate()
+		public async Task<bool> CheckCanCreateAsync()
 		{
 			if (this.Contract is null)
-				return;
+				return false;
+
+			await this.FlushValidationAsync();
 
 			bool ParametersOk = true;
 			foreach (ObservableParameter p in this.EditableParameters)
@@ -287,9 +305,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 
 			bool RolesOk = true;
-			foreach (ObservableRole role in this.Contract.Roles)
+			foreach (ObservableRole Role in this.Contract.Roles)
 			{
-				if (role.Parts.Count < role.MinCount)
+				if (Role.Parts.Count < Role.MinCount)
 				{
 					RolesOk = false;
 					break;
@@ -301,6 +319,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				this.IsParametersOk = ParametersOk;
 				this.IsRolesOk = RolesOk;
 			});
+			return this.CanCreate;
 		}
 
 		/// <summary>
@@ -311,48 +330,138 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			if (this.Contract is null)
 				return;
 
-			ContractsClient client = ServiceRef.XmppService.ContractsClient;
-
 			try
 			{
-				// Populate the parameters
-				Variables v = [];
+				// Step 1: Get the variables and prepare the parameters to validate
+				Variables Variables = [];
+				foreach (ObservableParameter p in this.Contract.Parameters)
+					p.Parameter.Populate(Variables);
 
-				foreach (ObservableParameter p in this.EditableParameters)
-					p.Parameter.Populate(v);
+				// Step 2: Prepare to collect validation results
+				List<(ObservableParameter Param, bool IsValid, string ValidationText)> ValidationResults = [];
 
-				await MainThread.InvokeOnMainThreadAsync(async () =>
+				ContractsClient? ContractsClient = null;
+				try
 				{
+					ContractsClient = ServiceRef.XmppService.ContractsClient;
+				}
+				catch (Exception)
+				{
+					// Ignore, client might not be available currently
+				}
+
+				Task<(ObservableParameter Param, bool IsValid, string ValidationText)>[] ValidationTasks = this.EditableParameters.Select(async p =>
+				{
+					bool IsValid = false;
+					string ValidationText = string.Empty;
 					try
 					{
-						foreach (ObservableParameter p in this.EditableParameters)
+						if (p.Value is null)
 						{
-							if (p.Value is null)
-								p.IsValid = false;
-							else
-								p.IsValid = await p.Parameter.IsParameterValid(v, client);
-
-							bool ValidateAnyway = p.Parameter.ErrorReason switch
-							{
-								ParameterErrorReason.UnableToGetContract => true,
-								_ => false
-							};
-
-							p.IsValid = p.IsValid || ValidateAnyway;
-							p.ValidationText = p.Parameter.ErrorText;
+							IsValid = false;
+							ValidationText = string.Empty;
 						}
+						else
+						{
+							IsValid = await p.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient).ConfigureAwait(false);
+							IsValid = IsValid || p.Parameter.ErrorText == ContractStatus.ClientIdentityInvalid.ToString();
+							ValidationText = p.Parameter.ErrorText;
+						}
+						ServiceRef.LogService.LogDebug($"Parameter '{p.Parameter.Name}' validation result: {IsValid}, Error: {p.Parameter.ErrorReason} - {ValidationText}");
 					}
 					catch (Exception ex)
 					{
 						ServiceRef.LogService.LogException(ex);
+						IsValid = true;
+					}
+					return (Param: p, IsValid, ValidationText);
+				}).ToArray();
+
+				(ObservableParameter Param, bool IsValid, string ValidationText)[] Results = await Task.WhenAll(ValidationTasks);
+
+				// Update UI in a batch on the main thread:
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					foreach (var Result in Results)
+					{
+						Result.Param.IsValid = Result.IsValid;
+						Result.Param.ValidationText = Result.ValidationText;
 					}
 				});
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
+
+		private void DebounceValidateParameters()
+		{
+			lock (this.debounceLock)
+			{
+				if (this.debounceValidationTimer is not null)
+				{
+					this.debounceValidationTimer.Stop();
+					this.debounceValidationTimer.Dispose();
+					this.debounceValidationTimer = null;
+				}
+
+				this.debounceValidationTimer = new Timer(1500); // e.g., 1.5 seconds
+				this.debounceValidationTimer.Elapsed += async (s, e) =>
+				{
+					lock (this.debounceLock)
+					{
+						this.debounceValidationTimer?.Stop();
+						this.debounceValidationTimer?.Dispose();
+						this.debounceValidationTimer = null;
+					}
+
+					// Run and store validation task
+					Task ValidationTask = MainThread.InvokeOnMainThreadAsync(async () =>
+					{
+						await this.ValidateParametersAsync();
+					});
+
+					// Store the task for possible awaiting later
+					this.latestValidationTask = ValidationTask;
+					await ValidationTask;
+				};
+				this.debounceValidationTimer.AutoReset = false;
+				this.debounceValidationTimer.Start();
+			}
+		}
+
+		private async Task FlushValidationAsync()
+		{
+			Task? ValidationTask = null;
+
+			lock (this.debounceLock)
+			{
+				if (this.debounceValidationTimer is not null)
+				{
+					this.debounceValidationTimer.Stop();
+					this.debounceValidationTimer.Dispose();
+					this.debounceValidationTimer = null;
+					ValidationTask = MainThread.InvokeOnMainThreadAsync(this.ValidateParametersAsync);
+					this.latestValidationTask = ValidationTask;
+				}
+				else if (this.latestValidationTask is not null)
+				{
+					ValidationTask = this.latestValidationTask;
+				}
+				else
+				{
+					ValidationTask = MainThread.InvokeOnMainThreadAsync(this.ValidateParametersAsync);
+					this.latestValidationTask = ValidationTask;
+				}
+			}
+
+			if (ValidationTask is not null)
+				await ValidationTask;
+		}
+
+
+
 		#endregion
 
 		#region Commands
@@ -365,13 +474,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
-			if(!await App.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
+			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
 			{
 				await this.GoToOverview();
 				return;
 			}
 
-			ContractsClient client = ServiceRef.XmppService.ContractsClient;
+			ContractsClient Client = ServiceRef.XmppService.ContractsClient;
 
 			Contract? CreatedContract = null;
 			List<Part> Parts = [];
@@ -385,7 +494,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			try
 			{
-				CreatedContract = await client.CreateContractAsync(
+				CreatedContract = await Client.CreateContractAsync(
 					this.Contract.Contract.ContractId,
 					[.. Parts],
 					this.Contract.Contract.Parameters,
@@ -402,10 +511,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					if (this.args?.SuppressedProposalLegalIds is not null && Array.IndexOf<CaseInsensitiveString>(this.args.SuppressedProposalLegalIds, Part.LegalId) >= 0)
 						continue;
 
-					ContactInfo Info = await ContactInfo.FindByLegalId(Part.LegalId);
-					if (Info is null || string.IsNullOrEmpty(Info.BareJid))
+					if (Part.LegalId == ServiceRef.TagProfile.LegalIdentity?.Id)
 						continue;
 
+					ContactInfo? Info = await ContactInfo.FindByLegalId(Part.LegalId);
+					if (Info is null || string.IsNullOrEmpty(Info.BareJid))
+						continue;
 					await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(CreatedContract.ContractId, Info.BareJid, true);
 
 					string? Proposal = await ServiceRef.UiService.DisplayPrompt(ServiceRef.Localizer[nameof(AppResources.Proposal)],
@@ -417,9 +528,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, Proposal);
 				}
 			}
-			catch (Exception ex)
+			catch (Waher.Networking.XMPP.XmppException Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					Ex.Message,
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+
+				//Todo: display contract errors
+
 			}
 
 			if (CreatedContract is null)
@@ -447,9 +568,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			try
 			{
-				NewContractStep currentStep = (NewContractStep)Enum.Parse(typeof(NewContractStep), this.CurrentState);
+				NewContractStep CurrentStep = (NewContractStep)Enum.Parse(typeof(NewContractStep), this.CurrentState);
 
-				switch (currentStep)
+				switch (CurrentStep)
 				{
 					case NewContractStep.Loading:
 					case NewContractStep.Overview:
@@ -461,7 +582,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						break;
 					default:
 						await this.GoToState(NewContractStep.Overview);
-						this.CheckCanCreate();
+						await this.CheckCanCreateAsync();
 						break;
 				}
 			}
@@ -516,7 +637,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private async Task GoToOverview()
 		{
 			await this.GoToState(NewContractStep.Loading);
-			this.CheckCanCreate();
+			await this.CheckCanCreateAsync();
 			await this.GoToState(NewContractStep.Overview);
 		}
 
@@ -550,9 +671,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// Event handler for when a parameter changes.
 		/// Validates the parameter.
 		/// </summary>
-		private async void Parameter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		private void Parameter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
-			await this.ValidateParametersAsync();
+			if(e.PropertyName == nameof(ObservableParameter.Value))
+				this.DebounceValidateParameters();
 		}
 
 		partial void OnSelectedRoleChanged(ObservableRole? oldValue, ObservableRole? newValue)
@@ -677,6 +799,35 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		/// <inheritdoc/>
 		public string? MediaContentType => null;
+
+
+		private bool disposedValue;
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!this.disposedValue)
+			{
+				if (disposing)
+				{
+					// Dispose managed state (managed objects)
+					lock (this.debounceLock)
+					{
+						this.debounceValidationTimer?.Stop();
+						this.debounceValidationTimer?.Dispose();
+						this.debounceValidationTimer = null;
+					}
+				}
+
+				this.disposedValue = true;
+			}
+		}
+
+		public void Dispose()
+		{
+			// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+			this.Dispose(disposing: true);
+			GC.SuppressFinalize(this);
+		}
 
 		#endregion
 	}

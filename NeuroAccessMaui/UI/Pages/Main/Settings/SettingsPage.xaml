@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
 							 x:Class="NeuroAccessMaui.UI.Pages.Main.Settings.SettingsPage"
 							 x:DataType="viewmodel:SettingsViewModel"
@@ -184,6 +184,29 @@
 								</VerticalStackLayout>
 							</Border>
 						</controls:TemplatedButton>
+					</VerticalStackLayout>
+				</Border>
+
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="Beta Features"/>
+						<Border Style="{DynamicResource BorderSubSet}">
+							<VerticalStackLayout>
+								<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto" RowSpacing="{DynamicResource SmallSpacing}">
+									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Enable}"/>
+									<Label Style="{DynamicResource ItemDescriptionLabel}"
+										   LineBreakMode="WordWrap"
+										   Text="{l:Localize BetaFeaturesDescription}"
+										   Grid.Row="1"/>
+									<CheckBox IsChecked="{Binding IsBetaEnabled, Mode=TwoWay}"
+											  Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+											  CheckedChanged="BetaEnabled_CheckedChanged"
+											  VerticalOptions="Center"
+											  Grid.Column="1"
+											  Grid.RowSpan="2"/>
+								</Grid>
+							</VerticalStackLayout>
+						</Border>
 					</VerticalStackLayout>
 				</Border>
 

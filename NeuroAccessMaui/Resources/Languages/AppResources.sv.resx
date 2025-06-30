@@ -2816,4 +2816,55 @@
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Tar bort tillfälliga data som bilder och bilagor för att frigöra utrymme</value>
   </data>
+  <data name="Apps" xml:space="preserve">
+      <value>Appar</value>
+  </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Betafunktioner är under utveckling och kan sakna fullständig funktionalitet eller design. Vissa av deras kärnfunktioner är dock redan tillgängliga.</value>
+  </data>
+  <data name="SmartThings" xml:space="preserve">
+    <value>Smarta saker</value>
+  </data>
+  <data name="Assets" xml:space="preserve">
+    <value>Tillgångar</value>
+  </data>
+  <data name="MicroLoan" xml:space="preserve">
+    <value>Mikrolån</value>
+  </data>
+  <data name="NFC" xml:space="preserve">
+    <value>NFC</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Vill du lägga till denna identitet i dina kontakter?</value>
+  </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>Kommer snart!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+    <value>Vi arbetar för närvarande på detta</value>
+  </data>
+  <data name="BetaFeature" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>För att aktivera betafunktioner, gå till hemskärmen och öppna inställningssidan</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>Denna funktion är för närvarande i betastadiet. För att aktivera betafunktioner, öppna inställningssidan och aktivera betafunktioner</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
+    <value>Behörighet krävs</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
+    <value>Vi kunde inte hämta den senaste versionen av detta kontrakt. Uppgifterna du ser kan vara inaktuella. Begär åtkomst nu?</value>
+  </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Cache rensad</value>
+  </data>
+  <data name="LanguageChangedTitle" xml:space="preserve">
+    <value>Språk ändrat</value>
+  </data>
+  <data name="LanguageChangedMessage" xml:space="preserve">
+    <value>Språket har ändrats. Starta om appen för att säkerställa att alla ändringar tillämpas.</value>
+  </data>
 </root>

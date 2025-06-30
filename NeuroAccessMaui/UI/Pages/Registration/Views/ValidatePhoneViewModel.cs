@@ -346,8 +346,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				ServiceRef.LogService.LogException(ex);
 
 				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrongWhenSendingPhoneCode)]);
 			}
 			finally
 			{
@@ -406,8 +406,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				ServiceRef.LogService.LogException(ex);
 
 				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrongWhenSendingPhoneCode)]);
 			}
 		}
 
@@ -415,7 +415,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			if (this.CountDownTimer is not null)
 			{
+#if DEBUG
+				this.CountDownSeconds = 10;
+
+#else
 				this.CountDownSeconds = 300;
+#endif
 
 				if (!this.CountDownTimer.IsRunning)
 					this.CountDownTimer.Start();

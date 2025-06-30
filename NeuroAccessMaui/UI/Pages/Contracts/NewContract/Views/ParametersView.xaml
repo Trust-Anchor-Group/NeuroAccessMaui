@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <views:BaseNewContractView x:Name="ThisPage"
                            x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.ParametersView"
@@ -31,7 +31,7 @@
 								ItemTemplate="{StaticResource ParameterTemplateSelector}"
 								SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
 			<CollectionView.ItemsLayout>
-				<LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+				<LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
 			</CollectionView.ItemsLayout>
 			<CollectionView.EmptyView>
 				<Label Text="{l:Localize SomethingWentWrong}" />

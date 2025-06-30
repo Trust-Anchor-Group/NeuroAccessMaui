@@ -106,13 +106,25 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			this.ChangePasswordCommand.NotifyCanExecuteChanged();
 		}
 
+		public bool IsBetaEnabled
+		{
+			get => ServiceRef.TagProfile.HasBetaFeatures;
+			set
+			{
+				if (value != ServiceRef.TagProfile.HasBetaFeatures)
+				{
+					ServiceRef.TagProfile.HasBetaFeatures = value;
+				}
+			}
+		}
+
 		#region Properties
 
-		/// <summary>
-		/// If screen capture prohibition can be controlled
-		/// </summary>
-		[ObservableProperty]
-		private bool canProhibitScreenCapture;
+			/// <summary>
+			/// If screen capture prohibition can be controlled
+			/// </summary>
+			[ObservableProperty]
+			private bool canProhibitScreenCapture;
 
 		/// <summary>
 		/// Screen capture mode.
@@ -476,9 +488,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 			try
 			{
-				string? Password = await App.InputPasswordAsync(AuthenticationPurpose.TransferIdentity);
-				if (Password is null)
-					return;
+
 
 				if (!await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.Confirm)],
@@ -488,6 +498,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				{
 					return;
 				}
+
+				string? Password = await App.InputPasswordAsync(AuthenticationPurpose.TransferIdentity);
+				if (Password is null)
+					return;
 
 				this.SetIsBusy(true);
 
@@ -598,7 +612,17 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			await Database.FindDelete<CacheEntry>(
 			new FilterFieldGreaterOrEqualTo("Url", string.Empty));
 			await Database.Provider.Flush();
+
+			await ServiceRef.UiService.DisplayAlert(
+				ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+				ServiceRef.Localizer[nameof(AppResources.CacheCleared)],
+				ServiceRef.Localizer[nameof(AppResources.Ok)]);
 		}
 		#endregion
+
+		public void SetBetaFeaturesEnabled(bool Enabled)
+		{
+			this.IsBetaEnabled = Enabled;
+		}
 	}
 }

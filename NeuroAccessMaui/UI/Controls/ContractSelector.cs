@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +44,13 @@ namespace NeuroAccessMaui.UI.Controls
 				Command = new AsyncRelayCommand(() => this.ScanQr(Entry))
 			};
 
+			ImageButton OpenButton = new()
+			{
+				PathData = Geometries.VisibilityOnPath,
+				Style = AppStyles.SecondaryImageButton,
+				Command = new AsyncRelayCommand(() => this.OpenContract(Entry))
+			};
+
 			TextButton ChooseContractButton = new()
 			{
 				Style = AppStyles.SecondaryButton
@@ -56,7 +63,7 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				ColumnDefinitions = new ColumnDefinitionCollection
 				{
-					new ColumnDefinition { Width = GridLength.Star },
+					new ColumnDefinition { Width = GridLength.Auto },
 					new ColumnDefinition { Width = GridLength.Star }
 				},
 				ColumnSpacing = AppStyles.SmallSpacing
@@ -64,6 +71,7 @@ namespace NeuroAccessMaui.UI.Controls
 			ButtonGrid.Add(ScanQrButton, 0, 0);
 			ButtonGrid.Add(ChooseContractButton, 1, 0);
 
+			Entry.RightView = OpenButton;
 			this.Add(TitleLabel);
 			this.Add(Entry);
 			this.Add(ButtonGrid);
@@ -223,6 +231,22 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 		}
 
+
+		public async Task OpenContract(CompositeEntry Entry)
+		{
+			if (string.IsNullOrEmpty(Entry.EntryData))
+			{
+				return;
+			}
+			try
+			{
+				await ServiceRef.ContractOrchestratorService.OpenContract(Entry.EntryData, ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)], null);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 		#endregion
 	}
 }
