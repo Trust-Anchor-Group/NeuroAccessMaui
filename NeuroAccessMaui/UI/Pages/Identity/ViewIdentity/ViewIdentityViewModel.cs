@@ -1,21 +1,22 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NeuroAccessMaui.Services.UI.Photos;
-using Waher.Networking.XMPP.Contracts;
-using NeuroAccessMaui.UI.Pages.Identity.ObjectModel;
-using NeuroAccessMaui.UI.MVVM;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Localization;
+using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
-using Microsoft.Extensions.Localization;
-using System.Globalization;
-using NeuroAccessMaui.Resources.Languages;
-using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.UI.Popups.Image;
-using NeuroAccessMaui.Extensions;
-using Waher.Persistence;
-using Waher.Networking.XMPP;
-using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.Photos;
+using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Identity.ObjectModel;
+using NeuroAccessMaui.UI.Popups.Image;
+using Waher.Networking.XMPP;
+using Waher.Networking.XMPP.Contracts;
+using Waher.Persistence;
 
 namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 {
@@ -895,6 +896,18 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			public const string NoID = "NoID";
 		}
 
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		public async Task GoToApplyIdentity()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
 		#region ILinkableView
 

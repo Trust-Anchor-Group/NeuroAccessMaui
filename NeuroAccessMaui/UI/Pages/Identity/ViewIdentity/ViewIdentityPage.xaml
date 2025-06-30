@@ -495,11 +495,9 @@
 				</Grid>
 				<!-- NO ID VIEW-->
 				<Grid mct:StateView.StateKey="NoID"
-					  RowDefinitions="auto, auto">
+					  RowDefinitions="auto, auto"
+					  Margin="{DynamicResource SmallMargins}">
 					<Grid RowDefinitions="auto, *"
-						  IsVisible="{Binding HasLegalIdentity, Converter={StaticResource InvertedBoolConverter}}"
-						  Grid.Row="0"
-						  x:Name="NoIDPopup"
 						  Margin="{DynamicResource SmallLeftRightMargins}">
 						<Border Grid.Row="0"
 								BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
@@ -521,7 +519,7 @@
 									TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
 							</Grid>
 						</Border>
-						<controls:TemplatedButton Grid.Row="1">
+						<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">
 							<Grid Padding="{DynamicResource MediumMargins}"
 								  ColumnDefinitions="*, auto">
 								<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{DynamicResource SecondaryButtonActiveLabel}"/>
@@ -532,34 +530,36 @@
 					<Border Style="{DynamicResource BorderSet}"
 							Grid.Row="1">
 						<Grid RowDefinitions="auto, auto, auto"
-							  ColumnDefinitions="*, *">
+							  ColumnDefinitions="*, *"
+							  RowSpacing="{DynamicResource MediumSpacing}">
 							<controls:UriImage
 								Aspect="AspectFit"
 								ErrorPlaceholder="neuro_b"
-								HorizontalOptions="Center"
+								HorizontalOptions="Start"
 								Source="{Binding BannerUri}"
 								WidthRequest="100"
 								HeightRequest="24"/>
-							<Label Text="Account information" Style="{DynamicResource InfoLabel}" Grid.Column="1"/>
+							<Label Text="Account information" Style="{DynamicResource FieldTitleLabel}" Grid.Column="1" VerticalOptions="Center"/>
 							<Border Grid.Row="1" Grid.ColumnSpan="2"
 									Style="{DynamicResource BorderSubSet}">
-								<Grid RowDefinitions="auto, auto, auto, auto">
-									<Label Text="Data text" Grid.Row="0"/>
-									<Label Text="Data text" Grid.Row="1"/>
-									<Label Text="Data text" Grid.Row="2"/>
-									<Label Text="Data text" Grid.Row="3"/>
+								<Grid RowDefinitions="auto, auto, auto, auto"
+									  RowSpacing="{DynamicResource SmallSpacing}">
+									<Label Text="Wagtest" Grid.Row="0" Style="{DynamicResource FieldKeyLabel}"/>
+									<Label Text="+46 76 349 93 56" Grid.Row="1" Style="{DynamicResource FieldKeyLabel}"/>
+									<Label Text="tobias.hansson@trustanchorgroup.com" Grid.Row="2" Style="{DynamicResource FieldKeyLabel}"/>
+									<Label Text="Created: 06/30/2025" Grid.Row="3" Style="{DynamicResource FieldKeyLabel}"/>
 								</Grid>
 							</Border>
 							<Border
 								Grid.Row="2"
 								HeightRequest="150"
+								Grid.ColumnSpan="2"
 								Style="{DynamicResource QrBorder}"
 								TranslationY="0"
-								WidthRequest="150">
+								WidthRequest="150"
+								HorizontalOptions="Center">
 								<Image
-									HorizontalOptions="Center"
-									Source="{Binding QrCode}"
-									TranslationX="0">
+									Source="{Binding QrCode}">
 									<Image.GestureRecognizers>
 										<TapGestureRecognizer Command="{Binding QrTappedCommand}" NumberOfTapsRequired="1" />
 									</Image.GestureRecognizers>
