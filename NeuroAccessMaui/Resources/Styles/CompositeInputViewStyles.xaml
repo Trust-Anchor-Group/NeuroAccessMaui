@@ -52,6 +52,11 @@
 				<Setter Property="BorderStroke"
 						Value="{DynamicResource InputFieldsContentDangerv500}" />
 			</Trigger>
+						<Trigger TargetType="controls:CompositeInputView"
+                     Property="IsValid"
+                     Value="True">
+				<Setter Property="BorderStroke" Value="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}" />
+			</Trigger>
 		</Style.Triggers>
 	</Style>
 

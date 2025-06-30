@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Markup;
+using CommunityToolkit.Maui.Markup;
 using NeuroAccessMaui.UI.Core;
 using Waher.Script.Functions.Strings;
 

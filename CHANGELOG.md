@@ -7,24 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.1] - 2025/06/30
+
 ### Added
 
 - Added Open Chat button when viewing an identity
 - Added popup explaing that app might need to be restarted after changing language
 - Added Popup if cache is cleared successfully
+- Added Bottom bar with navigation options
+- Added Apps page
+- Added a toggle in settings for beta features
+- Added button on main page to open Settings
+- Added Info popups when clicking a disabled or beta app
+- Added a way to open contracts refrenced in a contract reference parameter
 
 ### Changed
 
 - Make Share QR popup automatically close after a set interval
-- 
+- Moved wallet to bottom bar
+- Moved flyout menu contents to new app page
+- Fixed various layout issues
+- Fixed some wrong colors
+- Updated Waher nugets to latest version
+- On windows machines only .net8.0-Android is targeted
+- Improved date handling
+- Fixes style inheritance and triggers.
+- Fixed chat input background color.
 
 ### Fixed
 
-- 
+- Fixed contacts not being added properly
+- Fixed various bugs and errors regarding contract creation, signing and validation.
+- Removed underlines from picker controls on Android devices
 
 ### Removed
 
-- 
+- Removed flyout menu
 
 ## [2.5.1] - 2025-06-16
 
