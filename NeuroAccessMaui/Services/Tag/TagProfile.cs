@@ -241,7 +241,6 @@ namespace NeuroAccessMaui.Services.Tag
 
 				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
-				ServiceRef.ThemeService.SetTheme(this.Theme ?? AppTheme.Light);
 				// Do this last, as listeners will read the other properties when the event is fired.
 				if (Configuration.Step > RegistrationStep.GetStarted && Configuration.Step <= RegistrationStep.CreateAccount)
 					this.GoToStep(RegistrationStep.ValidatePhone);
