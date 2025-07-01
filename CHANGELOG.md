@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New theme resources (Light.xaml, Dark.xaml)
+- NeuroAccessBranding version 2.0 (Version 1.0 is still compatible)
+
+### Changed
+
+- AppColors are now always looked up and not cached
+
+### Fixed
+
+- Dangerous setting of properties in ViewContract which are not marshalled to Main Thread
+- Bottom sheet in ViewId page is now more performant on most devices
+- Improved visibility on text when scanning QR codes
+
+### Removed
+
+- Usage of AppThemeBinding, except for images
+- --
+
 ## [2.6.1] - 2025/06/30
 
 ### Added
