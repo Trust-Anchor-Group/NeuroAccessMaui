@@ -21,37 +21,37 @@ namespace NeuroAccessMaui.Services.Theme
 	{
 		private const string providerFlagKey = "IsServerThemeDictionary";
 		private const string localFlagKey = "IsLocalThemeDictionary";
-		private static readonly TimeSpan ThemeExpiry = TimeSpan.FromDays(7);
+		private static readonly TimeSpan themeExpiry = TimeSpan.FromDays(7);
 
-		private static readonly Lazy<XmlSchema> BrandingSchemaV1Lazy = new(() =>
+		private static readonly Lazy<Task<XmlSchema>> brandingSchemaV1Lazy = new(async () =>
 		{
-			using Stream Stream = FileSystem.OpenAppPackageFileAsync("NeuroAccessBrandingV1.xsd").GetAwaiter().GetResult();
+			using Stream Stream = await FileSystem.OpenAppPackageFileAsync("NeuroAccessBrandingV1.xsd");
 			return XSL.LoadSchema(Stream, "NeuroAccessBrandingV1.xsd");
 		});
-		private static readonly Lazy<XmlSchema> BrandingSchemaV2Lazy = new(() =>
+		private static readonly Lazy<Task<XmlSchema>> brandingSchemaV2Lazy = new(async () =>
 		{
-			using Stream Stream = FileSystem.OpenAppPackageFileAsync("NeuroAccessBrandingV2.xsd").GetAwaiter().GetResult();
+			using Stream Stream = await FileSystem.OpenAppPackageFileAsync("NeuroAccessBrandingV2.xsd");
 			return XSL.LoadSchema(Stream, "NeuroAccessBrandingV2.xsd");
 		});
 
-		private readonly FileCacheManager CacheManager;
-		private readonly Dictionary<string, Uri> ImageUrisMap;
+		private readonly FileCacheManager cacheManager;
+		private readonly Dictionary<string, Uri> imageUrisMap;
 
 		private ResourceDictionary? localLightDict = new Light();
 		private ResourceDictionary? localDarkDict = new Dark();
-		private AppTheme? LastAppliedLocalTheme;
+		private AppTheme? lastAppliedLocalTheme;
 
 		/// <summary>
 		/// Initializes a new instance of <see cref="ThemeService"/>.
 		/// </summary>
 		public ThemeService()
 		{
-			this.CacheManager = new FileCacheManager("BrandingThemes", ThemeExpiry);
-			this.ImageUrisMap = new(StringComparer.OrdinalIgnoreCase);
+			this.cacheManager = new FileCacheManager("BrandingThemes", themeExpiry);
+			this.imageUrisMap = new(StringComparer.OrdinalIgnoreCase);
 		}
 
 		/// <inheritdoc />
-		public IReadOnlyDictionary<string, Uri> ImageUris => new Dictionary<string, Uri>(this.ImageUrisMap);
+		public IReadOnlyDictionary<string, Uri> ImageUris => new Dictionary<string, Uri>(this.imageUrisMap);
 
 		/// <inheritdoc />
 		public Task<AppTheme> GetTheme()
@@ -91,9 +91,9 @@ namespace NeuroAccessMaui.Services.Theme
 					ICollection<ResourceDictionary> MergedDictionaries = Application.Current!.Resources.MergedDictionaries;
 
 					// Remove old dictionaries if present
-					if (this.localLightDict != null)
+					if (this.localLightDict is not null)
 						MergedDictionaries.Remove(this.localLightDict);
-					if (this.localDarkDict != null)
+					if (this.localDarkDict is not null)
 						MergedDictionaries.Remove(this.localDarkDict);
 
 					this.localLightDict ??= new Light();
@@ -105,7 +105,7 @@ namespace NeuroAccessMaui.Services.Theme
 					else
 						MergedDictionaries.Add(this.localLightDict);
 
-					this.LastAppliedLocalTheme = Theme;
+					this.lastAppliedLocalTheme = Theme;
 				}
 				catch (Exception Ex)
 				{
@@ -115,7 +115,7 @@ namespace NeuroAccessMaui.Services.Theme
 		}
 
 		/// <summary>
-		/// Loads and applies the provider-supplied branding (v1 or v2).
+		/// Loads and applies the provider-supplied branding (v1 or v2), with XSD validation.
 		/// </summary>
 		public async Task ApplyProviderTheme()
 		{
@@ -123,34 +123,41 @@ namespace NeuroAccessMaui.Services.Theme
 			if (string.IsNullOrEmpty(PubSubJid))
 				return;
 
-			Uri V2Uri = new Uri($"xmpp:NeuroAccessBranding@{PubSubJid}/BrandingV2");
+			Uri V2Uri = new($"xmpp:NeuroAccessBranding@{PubSubJid}/BrandingV2");
 			string V2Key = V2Uri.AbsoluteUri;
 			byte[]? V2Bytes = await this.FetchOrGetCachedAsync(V2Uri, V2Key);
 
-			if (V2Bytes != null)
+			if (V2Bytes is not null)
 			{
 				try
 				{
-					XmlDocument Doc = new XmlDocument();
+					XmlDocument Doc = new();
 					Doc.LoadXml(Encoding.UTF8.GetString(V2Bytes));
+					bool IsValid = await this.ValidateBrandingXmlAsync(Doc, true);
+					if (!IsValid)
+						throw new XmlSchemaValidationException("BrandingV2.xml failed schema validation.");
 					await this.ApplyV2Async(Doc);
 					return;
 				}
-				catch
+				catch (Exception Ex)
 				{
+					ServiceRef.LogService.LogException(Ex);
 					// Ignore and fallback to v1
 				}
 			}
 
 			// Fallback to v1
-			Uri V1Uri = new Uri($"xmpp:NeuroAccessBranding@{PubSubJid}/Branding");
+			Uri V1Uri = new($"xmpp:NeuroAccessBranding@{PubSubJid}/Branding");
 			string V1Key = V1Uri.AbsoluteUri;
 			byte[]? V1Bytes = await this.FetchOrGetCachedAsync(V1Uri, V1Key);
 
-			if (V1Bytes != null)
+			if (V1Bytes is not null)
 			{
-				XmlDocument Doc = new XmlDocument();
+				XmlDocument Doc = new();
 				Doc.LoadXml(Encoding.UTF8.GetString(V1Bytes));
+				bool IsValid = await this.ValidateBrandingXmlAsync(Doc, false);
+				if (!IsValid)
+					return;
 				await this.ApplyV1Async(Doc);
 			}
 			// else: No branding found
@@ -162,21 +169,9 @@ namespace NeuroAccessMaui.Services.Theme
 		/// <param name="Id">The image identifier.</param>
 		public string GetImageUri(string Id)
 		{
-			return this.ImageUrisMap.TryGetValue(Id, out Uri? UriVal)
+			return this.imageUrisMap.TryGetValue(Id, out Uri? UriVal)
 				? UriVal.AbsoluteUri
 				: string.Empty;
-		}
-
-		private void RemoveLocalDictionaries(ICollection<ResourceDictionary> MergedDictionaries)
-		{
-			foreach (ResourceDictionary Dict in MergedDictionaries.Where(D => D.ContainsKey(localFlagKey)).ToList())
-				MergedDictionaries.Remove(Dict);
-		}
-
-		private void RemoveProviderDictionaries(ICollection<ResourceDictionary> MergedDictionaries)
-		{
-			foreach (ResourceDictionary Dict in MergedDictionaries.Where(D => D.ContainsKey(providerFlagKey)).ToList())
-				MergedDictionaries.Remove(Dict);
 		}
 
 		private async Task ApplyV2Async(XmlDocument Doc)
@@ -185,16 +180,16 @@ namespace NeuroAccessMaui.Services.Theme
 			if (Root is null || Root.NamespaceURI != "urn:neuroaccess:branding:2.0")
 				return;
 
-			this.ImageUrisMap.Clear();
+			this.imageUrisMap.Clear();
 			XmlNodeList? Images = Root.SelectNodes("//*[local-name()='ImageRef']");
-			if (Images != null)
+			if (Images is not null)
 			{
 				foreach (XmlElement Node in Images.OfType<XmlElement>())
 				{
 					string Id = Node.GetAttribute("id");
 					string UriText = Node.GetAttribute("uri");
 					if (!string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(UriText) && Uri.TryCreate(UriText, UriKind.Absolute, out Uri? ImgUri))
-						this.ImageUrisMap[Id] = ImgUri;
+						this.imageUrisMap[Id] = ImgUri;
 				}
 			}
 
@@ -202,7 +197,7 @@ namespace NeuroAccessMaui.Services.Theme
 			XmlNodeList? ColorUris = Root.SelectNodes("//*[local-name()='ColorsUri']");
 			Uri? LightUri = null;
 			Uri? DarkUri = null;
-			foreach (XmlElement Node in ColorUris?.OfType<XmlElement>() ?? Enumerable.Empty<XmlElement>())
+			foreach (XmlElement Node in ColorUris?.OfType<XmlElement>() ?? [])
 			{
 				string Theme = Node.GetAttribute("theme").ToLowerInvariant();
 				string UriText = Node.InnerText.Trim();
@@ -215,32 +210,32 @@ namespace NeuroAccessMaui.Services.Theme
 
 			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
-				ICollection<ResourceDictionary> MergedDictionaries = Application.Current?.Resources.MergedDictionaries;
-				if (MergedDictionaries == null)
+				ICollection<ResourceDictionary>? MergedDictionaries = Application.Current?.Resources.MergedDictionaries;
+				if (MergedDictionaries is null)
 					return;
 
 				// Remove both local from merged dicts
-				if (this.localLightDict != null) MergedDictionaries.Remove(this.localLightDict);
-				if (this.localDarkDict != null) MergedDictionaries.Remove(this.localDarkDict);
+				if (this.localLightDict is not null) MergedDictionaries.Remove(this.localLightDict);
+				if (this.localDarkDict is not null) MergedDictionaries.Remove(this.localDarkDict);
 
 				this.localLightDict ??= new Light();
 				this.localDarkDict ??= new Dark();
 				this.localLightDict.Clear();
 				this.localDarkDict.Clear();
 
-				if (LightUri != null)
+				if (LightUri is not null)
 				{
 					ResourceDictionary? ProviderLightDict = await this.LoadProviderDictionaryAsync(LightUri, "Light");
-					if (ProviderLightDict != null)
+					if (ProviderLightDict is not null)
 					{
 						foreach (string Key in ProviderLightDict.Keys.OfType<string>())
 							this.localLightDict[Key] = ProviderLightDict[Key];
 					}
 				}
-				if (DarkUri != null)
+				if (DarkUri is not null)
 				{
 					ResourceDictionary? ProviderDarkDict = await this.LoadProviderDictionaryAsync(DarkUri, "Dark");
-					if (ProviderDarkDict != null)
+					if (ProviderDarkDict is not null)
 					{
 						foreach (string Key in ProviderDarkDict.Keys.OfType<string>())
 							this.localDarkDict[Key] = ProviderDarkDict[Key];
@@ -256,7 +251,7 @@ namespace NeuroAccessMaui.Services.Theme
 				else
 					MergedDictionaries.Add(this.localLightDict);
 
-				this.LastAppliedLocalTheme = CurrentTheme;
+				this.lastAppliedLocalTheme = CurrentTheme;
 			});
 		}
 
@@ -266,38 +261,37 @@ namespace NeuroAccessMaui.Services.Theme
 			if (Root is null)
 				return;
 
-			this.ImageUrisMap.Clear();
+			this.imageUrisMap.Clear();
 			XmlNodeList? Images = Root.SelectNodes("//*[local-name()='ImageRef']");
-			if (Images != null)
+			if (Images is not null)
 			{
 				foreach (XmlElement Node in Images.OfType<XmlElement>())
 				{
 					string Id = Node.GetAttribute("id");
 					string UriText = Node.GetAttribute("uri");
 					if (!string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(UriText) && Uri.TryCreate(UriText, UriKind.Absolute, out Uri? ImgUri))
-						this.ImageUrisMap[Id] = ImgUri;
+						this.imageUrisMap[Id] = ImgUri;
 				}
 			}
 
-			XmlElement? ColorsNode = Root.SelectSingleNode("//*[local-name()='ColorsUri']") as XmlElement;
-			if (ColorsNode is null)
+			if (Root.SelectSingleNode("//*[local-name()='ColorsUri']") is not XmlElement ColorsNode)
 				return;
 
-			Uri ColorsUri = new Uri(ColorsNode.InnerText.Trim());
+			Uri ColorsUri = new(ColorsNode.InnerText.Trim());
 
 			ResourceDictionary? OrigDict = await this.LoadProviderDictionaryAsync(ColorsUri, "V1");
-			if (OrigDict == null)
+			if (OrigDict is null)
 				return;
 
-			Dictionary<string, object> LightDict = new Dictionary<string, object>();
-			Dictionary<string, object> DarkDict = new Dictionary<string, object>();
+			Dictionary<string, object> LightDict = [];
+			Dictionary<string, object> DarkDict = [];
 
 			foreach (string Key in OrigDict.Keys.OfType<string>())
 			{
 				if (Key.EndsWith("Light", StringComparison.OrdinalIgnoreCase))
-					LightDict[Key.Substring(0, Key.Length - 5)] = OrigDict[Key];
+					LightDict[Key[..^5]] = OrigDict[Key];
 				else if (Key.EndsWith("Dark", StringComparison.OrdinalIgnoreCase))
-					DarkDict[Key.Substring(0, Key.Length - 4)] = OrigDict[Key];
+					DarkDict[Key[..^4]] = OrigDict[Key];
 				else
 				{
 					LightDict[Key] = OrigDict[Key];
@@ -307,13 +301,13 @@ namespace NeuroAccessMaui.Services.Theme
 
 			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
-				ICollection<ResourceDictionary> MergedDictionaries = Application.Current?.Resources.MergedDictionaries;
-				if (MergedDictionaries == null)
+				ICollection<ResourceDictionary>? MergedDictionaries = Application.Current?.Resources.MergedDictionaries;
+				if (MergedDictionaries is null)
 					return;
 
 				// Remove both local from merged dicts
-				if (this.localLightDict != null) MergedDictionaries.Remove(this.localLightDict);
-				if (this.localDarkDict != null) MergedDictionaries.Remove(this.localDarkDict);
+				if (this.localLightDict is not null) MergedDictionaries.Remove(this.localLightDict);
+				if (this.localDarkDict is not null) MergedDictionaries.Remove(this.localDarkDict);
 
 				this.localLightDict ??= new Light();
 				this.localDarkDict ??= new Dark();
@@ -334,7 +328,7 @@ namespace NeuroAccessMaui.Services.Theme
 				else
 					MergedDictionaries.Add(this.localLightDict);
 
-				this.LastAppliedLocalTheme = CurrentTheme;
+				this.lastAppliedLocalTheme = CurrentTheme;
 			});
 		}
 
@@ -342,14 +336,14 @@ namespace NeuroAccessMaui.Services.Theme
 		{
 			string Key = Uri.AbsoluteUri;
 			byte[]? XamlBytes = await this.FetchOrGetCachedAsync(Uri, Key);
-			if (XamlBytes == null)
+			if (XamlBytes is null)
 				return null;
 
 			try
 			{
 				ResourceDictionary Dict = new ResourceDictionary().LoadFromXaml(Encoding.UTF8.GetString(XamlBytes));
-				Dict.Add(providerFlagKey, true);
-				Dict.Add("Theme", ThemeTag); // Optional: for debugging
+				Dict.TryAdd(providerFlagKey, true);
+				Dict.TryAdd("Theme", ThemeTag); // Optional: for debugging
 				return Dict;
 			}
 			catch
@@ -361,17 +355,32 @@ namespace NeuroAccessMaui.Services.Theme
 
 		private async Task<byte[]?> FetchOrGetCachedAsync(Uri Uri, string Key)
 		{
-			(byte[]? Cached, string _) = await this.CacheManager.TryGet(Key);
-			if (Cached != null)
+			(byte[]? Cached, string _) = await this.cacheManager.TryGet(Key);
+			if (Cached is not null)
 				return Cached;
 
 			(byte[]? Fetched, string _) = await ServiceRef.InternetCacheService.GetOrFetch(Uri, ServiceRef.TagProfile.PubSubJid!, true);
-			if (Fetched != null)
+			if (Fetched is not null)
 			{
-				await this.CacheManager.AddOrUpdate(Key, ServiceRef.TagProfile.PubSubJid!, true, Fetched, "application/xml");
+				await this.cacheManager.AddOrUpdate(Key, ServiceRef.TagProfile.PubSubJid!, true, Fetched, "application/xml");
 			}
 
 			return Fetched;
+		}
+
+		private async Task<bool> ValidateBrandingXmlAsync(XmlDocument Doc, bool UseV2)
+		{
+			try
+			{
+				XmlSchema Schema = UseV2 ? await brandingSchemaV2Lazy.Value : await brandingSchemaV1Lazy.Value;
+				XSL.Validate("BrandingDescriptor", Doc, Schema);
+				return true;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return false;
+			}
 		}
 	}
 }
