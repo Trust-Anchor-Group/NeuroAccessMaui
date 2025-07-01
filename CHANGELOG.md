@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- New wallet page
 - New theme resources (Light.xaml, Dark.xaml)
 - NeuroAccessBranding version 2.0 (Version 1.0 is still compatible)
 
@@ -18,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- A bug which could cause a crash when opening a contract from the Wallet page
 - Dangerous setting of properties in ViewContract which are not marshalled to Main Thread
 - Bottom sheet in ViewId page is now more performant on most devices
 - Improved visibility on text when scanning QR codes
