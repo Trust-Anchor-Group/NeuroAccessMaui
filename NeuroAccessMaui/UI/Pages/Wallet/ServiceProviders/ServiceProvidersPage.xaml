@@ -44,7 +44,7 @@
 					Value="{DynamicResource SmallMargins}"></Setter>
 			<Setter Property="Stroke">
 				<Setter.Value>
-					<SolidColorBrush Color="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceStrokeLight}, Dark={DynamicResource InputFieldsSurfaceStrokeDark}}" />
+					<SolidColorBrush Color="{DynamicResource InputFieldsSurfaceStroke}" />
 				</Setter.Value>
 			</Setter>
 			<Setter Property="StrokeThickness"
