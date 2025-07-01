@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Xml;
 using System.Xml.Schema;
+using System.Threading;
 using CommunityToolkit.Maui.Core;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
@@ -17,7 +18,7 @@ namespace NeuroAccessMaui.Services.Theme
 	/// Handles dynamic swapping of local and provider color dictionaries (supports v1 and v2 branding schemas).
 	/// </summary>
 	[Singleton]
-	public sealed class ThemeService : IThemeService
+	public sealed class ThemeService : IThemeService, IDisposable
 	{
 		private const string providerFlagKey = "IsServerThemeDictionary";
 		private const string localFlagKey = "IsLocalThemeDictionary";
@@ -36,10 +37,12 @@ namespace NeuroAccessMaui.Services.Theme
 
 		private readonly FileCacheManager cacheManager;
 		private readonly Dictionary<string, Uri> imageUrisMap;
+		private readonly SemaphoreSlim themeSemaphore = new(1, 1); // Prevent race conditions on theme switching
 
 		private ResourceDictionary? localLightDict = new Light();
 		private ResourceDictionary? localDarkDict = new Dark();
 		private AppTheme? lastAppliedLocalTheme;
+		private bool disposedValue;
 
 		/// <summary>
 		/// Initializes a new instance of <see cref="ThemeService"/>.
@@ -72,7 +75,7 @@ namespace NeuroAccessMaui.Services.Theme
 				}
 				catch (Exception Ex)
 				{
-					ServiceRef.LogService.LogException(Ex);
+					ServiceRef.LogService.LogException(new Exception($"SetTheme failed for theme {Theme}.", Ex));
 				}
 			});
 		}
@@ -90,77 +93,97 @@ namespace NeuroAccessMaui.Services.Theme
 				{
 					ICollection<ResourceDictionary> MergedDictionaries = Application.Current!.Resources.MergedDictionaries;
 
-					// Remove old dictionaries if present
-					if (this.localLightDict is not null)
-						MergedDictionaries.Remove(this.localLightDict);
-					if (this.localDarkDict is not null)
-						MergedDictionaries.Remove(this.localDarkDict);
+					// Remove ALL old theme dictionaries of the same type, just to be safe.
+					this.RemoveAllThemeDictionaries(MergedDictionaries, this.localLightDict);
+					this.RemoveAllThemeDictionaries(MergedDictionaries, this.localDarkDict);
 
 					this.localLightDict ??= new Light();
 					this.localDarkDict ??= new Dark();
 
-					// Add only the relevant dictionary
-					if (Theme == AppTheme.Dark)
+					// Only add if not already present (avoid double add, rare Maui bug).
+					if (Theme == AppTheme.Dark && !MergedDictionaries.Contains(this.localDarkDict))
 						MergedDictionaries.Add(this.localDarkDict);
-					else
+					else if (Theme != AppTheme.Dark && !MergedDictionaries.Contains(this.localLightDict))
 						MergedDictionaries.Add(this.localLightDict);
 
 					this.lastAppliedLocalTheme = Theme;
 				}
 				catch (Exception Ex)
 				{
-					ServiceRef.LogService.LogException(Ex);
+					ServiceRef.LogService.LogException(new Exception($"SetLocalTheme failed for theme {Theme}.", Ex));
 				}
 			});
 		}
 
 		/// <summary>
 		/// Loads and applies the provider-supplied branding (v1 or v2), with XSD validation.
+		/// Uses a semaphore to prevent race conditions on concurrent applies.
 		/// </summary>
 		public async Task ApplyProviderTheme()
 		{
-			string? PubSubJid = ServiceRef.TagProfile.PubSubJid;
-			if (string.IsNullOrEmpty(PubSubJid))
-				return;
-
-			Uri V2Uri = new($"xmpp:NeuroAccessBranding@{PubSubJid}/BrandingV2");
-			string V2Key = V2Uri.AbsoluteUri;
-			byte[]? V2Bytes = await this.FetchOrGetCachedAsync(V2Uri, V2Key);
-
-			if (V2Bytes is not null)
+			await this.themeSemaphore.WaitAsync();
+			try
 			{
-				try
-				{
-					XmlDocument Doc = new();
-					Doc.LoadXml(Encoding.UTF8.GetString(V2Bytes));
-					bool IsValid = await this.ValidateBrandingXmlAsync(Doc, true);
-					if (!IsValid)
-						throw new XmlSchemaValidationException("BrandingV2.xml failed schema validation.");
-					await this.ApplyV2Async(Doc);
+				string? PubSubJid = ServiceRef.TagProfile.PubSubJid;
+				if (string.IsNullOrEmpty(PubSubJid))
 					return;
-				}
-				catch (Exception Ex)
+
+				Uri V2Uri = new($"xmpp:NeuroAccessBranding@{PubSubJid}/BrandingV2");
+				string V2Key = V2Uri.AbsoluteUri;
+				byte[]? V2Bytes = await this.FetchOrGetCachedAsync(V2Uri, V2Key);
+
+				if (V2Bytes is not null)
 				{
-					ServiceRef.LogService.LogException(Ex);
-					// Ignore and fallback to v1
+					try
+					{
+						XmlDocument Doc = new();
+						Doc.LoadXml(Encoding.UTF8.GetString(V2Bytes));
+						bool IsValid = await this.ValidateBrandingXmlAsync(Doc, true);
+						if (!IsValid)
+							throw new XmlSchemaValidationException("BrandingV2.xml failed schema validation.");
+						await this.ApplyV2Async(Doc);
+						return;
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(new Exception($"ApplyProviderTheme: V2 load/validation failed. Uri={V2Uri}", Ex));
+						// Ignore and fallback to v1
+					}
+				}
+
+				// Fallback to v1
+				Uri V1Uri = new($"xmpp:NeuroAccessBranding@{PubSubJid}/Branding");
+				string V1Key = V1Uri.AbsoluteUri;
+				byte[]? V1Bytes = await this.FetchOrGetCachedAsync(V1Uri, V1Key);
+
+				if (V1Bytes is not null)
+				{
+					try
+					{
+						XmlDocument Doc = new();
+						Doc.LoadXml(Encoding.UTF8.GetString(V1Bytes));
+						bool IsValid = await this.ValidateBrandingXmlAsync(Doc, false);
+						if (!IsValid)
+							throw new XmlSchemaValidationException("BrandingV1.xml failed schema validation.");
+						await this.ApplyV1Async(Doc);
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(new Exception($"ApplyProviderTheme: V1 load/validation failed. Uri={V1Uri}", Ex));
+						// Try fallback to local theme as last resort
+						this.SetLocalTheme(await this.GetTheme());
+					}
+				}
+				else
+				{
+					// No branding found, fallback to local theme
+					this.SetLocalTheme(await this.GetTheme());
 				}
 			}
-
-			// Fallback to v1
-			Uri V1Uri = new($"xmpp:NeuroAccessBranding@{PubSubJid}/Branding");
-			string V1Key = V1Uri.AbsoluteUri;
-			byte[]? V1Bytes = await this.FetchOrGetCachedAsync(V1Uri, V1Key);
-
-			if (V1Bytes is not null)
+			finally
 			{
-				XmlDocument Doc = new();
-				Doc.LoadXml(Encoding.UTF8.GetString(V1Bytes));
-				bool IsValid = await this.ValidateBrandingXmlAsync(Doc, false);
-				if (!IsValid)
-					return;
-				await this.ApplyV1Async(Doc);
+				this.themeSemaphore.Release();
 			}
-			// else: No branding found
 		}
 
 		/// <summary>
@@ -214,9 +237,9 @@ namespace NeuroAccessMaui.Services.Theme
 				if (MergedDictionaries is null)
 					return;
 
-				// Remove both local from merged dicts
-				if (this.localLightDict is not null) MergedDictionaries.Remove(this.localLightDict);
-				if (this.localDarkDict is not null) MergedDictionaries.Remove(this.localDarkDict);
+				// Remove ALL old theme dictionaries of the same type, just to be safe.
+				this.RemoveAllThemeDictionaries(MergedDictionaries, this.localLightDict);
+				this.RemoveAllThemeDictionaries(MergedDictionaries, this.localDarkDict);
 
 				this.localLightDict ??= new Light();
 				this.localDarkDict ??= new Dark();
@@ -246,9 +269,9 @@ namespace NeuroAccessMaui.Services.Theme
 				this.localDarkDict[localFlagKey] = true;
 
 				AppTheme CurrentTheme = await this.GetTheme();
-				if (CurrentTheme == AppTheme.Dark)
+				if (CurrentTheme == AppTheme.Dark && !MergedDictionaries.Contains(this.localDarkDict))
 					MergedDictionaries.Add(this.localDarkDict);
-				else
+				else if (CurrentTheme != AppTheme.Dark && !MergedDictionaries.Contains(this.localLightDict))
 					MergedDictionaries.Add(this.localLightDict);
 
 				this.lastAppliedLocalTheme = CurrentTheme;
@@ -305,9 +328,8 @@ namespace NeuroAccessMaui.Services.Theme
 				if (MergedDictionaries is null)
 					return;
 
-				// Remove both local from merged dicts
-				if (this.localLightDict is not null) MergedDictionaries.Remove(this.localLightDict);
-				if (this.localDarkDict is not null) MergedDictionaries.Remove(this.localDarkDict);
+				this.RemoveAllThemeDictionaries(MergedDictionaries, this.localLightDict);
+				this.RemoveAllThemeDictionaries(MergedDictionaries, this.localDarkDict);
 
 				this.localLightDict ??= new Light();
 				this.localDarkDict ??= new Dark();
@@ -323,9 +345,9 @@ namespace NeuroAccessMaui.Services.Theme
 				this.localDarkDict[localFlagKey] = true;
 
 				AppTheme CurrentTheme = await this.GetTheme();
-				if (CurrentTheme == AppTheme.Dark)
+				if (CurrentTheme == AppTheme.Dark && !MergedDictionaries.Contains(this.localDarkDict))
 					MergedDictionaries.Add(this.localDarkDict);
-				else
+				else if (CurrentTheme != AppTheme.Dark && !MergedDictionaries.Contains(this.localLightDict))
 					MergedDictionaries.Add(this.localLightDict);
 
 				this.lastAppliedLocalTheme = CurrentTheme;
@@ -346,9 +368,9 @@ namespace NeuroAccessMaui.Services.Theme
 				Dict.TryAdd("Theme", ThemeTag); // Optional: for debugging
 				return Dict;
 			}
-			catch
+			catch (Exception Ex)
 			{
-				// Log or handle error loading provider dictionary
+				ServiceRef.LogService.LogException(new Exception($"Failed to load provider ResourceDictionary from {Uri}", Ex));
 				return null;
 			}
 		}
@@ -378,9 +400,46 @@ namespace NeuroAccessMaui.Services.Theme
 			}
 			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(Ex);
+				ServiceRef.LogService.LogException(new Exception($"XSD validation failed for schema version {(UseV2 ? "V2" : "V1")}.", Ex));
 				return false;
 			}
+		}
+
+		/// <summary>
+		/// Removes all dictionaries matching the specified instance or with the theme flag key.
+		/// </summary>
+		private void RemoveAllThemeDictionaries(ICollection<ResourceDictionary> MergedDictionaries, ResourceDictionary? DictInstance)
+		{
+			if (DictInstance != null)
+			{
+				while (MergedDictionaries.Contains(DictInstance))
+					MergedDictionaries.Remove(DictInstance);
+			}
+			// Additionally, ensure no duplicates of our custom theme flag
+			foreach (ResourceDictionary Dict in MergedDictionaries.Where(d => d.ContainsKey(localFlagKey) || d.ContainsKey(providerFlagKey)).ToList())
+			{
+				MergedDictionaries.Remove(Dict);
+			}
+		}
+
+		private void Dispose(bool disposing)
+		{
+			if (!this.disposedValue)
+			{
+				if (disposing)
+				{
+					this.themeSemaphore?.Dispose();
+				}
+
+				this.disposedValue = true;
+			}
+		}
+
+		public void Dispose()
+		{
+			// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+			this.Dispose(disposing: true);
+			GC.SuppressFinalize(this);
 		}
 	}
 }
