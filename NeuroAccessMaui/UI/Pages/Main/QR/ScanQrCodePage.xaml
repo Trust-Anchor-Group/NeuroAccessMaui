@@ -15,15 +15,26 @@
 	<Grid x:Name="GridWithAnimation">
 		<mct:StateContainer.StateViews>
 			<Grid mct:StateView.StateKey="AutomaticScan">
-				<zxing:CameraBarcodeReaderView x:Name="CameraBarcodeReaderView" x:FieldModifier="public" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"
+				<zxing:CameraBarcodeReaderView x:Name="CameraBarcodeReaderView" x:FieldModifier="public" VerticalOptions="Fill" HorizontalOptions="Fill"
 														 BarcodesDetected="CameraBarcodeReaderView_BarcodesDetected" />
 
 				<Grid Padding="{DynamicResource LargeMargins}">
 					<VerticalStackLayout VerticalOptions="Start" Spacing="{DynamicResource LargeSpacing}">
 						<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{DynamicResource FilledImageButton}"
 													 PathData="{x:Static ui:Geometries.BackButtonPath}" />
-						<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{DynamicResource PageTitleLabel}"
-								 Text="{Binding LocalizedQrPageTitle}" TextColor="{DynamicResource SurfaceBackgroundWLLight}" />
+						<Grid ColumnDefinitions="auto" HorizontalOptions="Center">
+							<Border Style="{DynamicResource RoundedBorder}"
+									BackgroundColor="Black"
+									Opacity="0.2"
+									/>
+							<Label HorizontalOptions="Center"
+								   HorizontalTextAlignment="Center"
+								   Style="{DynamicResource PageTitleLabel}"
+								   Text="{Binding LocalizedQrPageTitle}"
+								   Margin="8,0,8,0"
+								   TextColor="{DynamicResource ContentWhitefixed}"
+								   />
+						</Grid>
 					</VerticalStackLayout>
 
 					<VerticalStackLayout VerticalOptions="End" Spacing="{DynamicResource LargeSpacing}">
@@ -41,13 +52,28 @@
 								</BindableLayout.ItemTemplate>
 							</FlexLayout>
 
-							<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{DynamicResource SectionTitleLabel}"
-									 Text="{l:Localize QrSectionTitleSingular}" TextColor="{DynamicResource SurfaceBackgroundWLLight}"
-									 IsVisible="{Binding SingleIcon}"/>
 
-							<Label HorizontalOptions="Center" HorizontalTextAlignment="Center" Style="{DynamicResource SectionTitleLabel}"
-									 Text="{l:Localize QrSectionTitlePlural}" TextColor="{DynamicResource SurfaceBackgroundWLLight}"
-									 IsVisible="{Binding MultipleIcons}"/>
+							<Grid 
+								  HorizontalOptions="Center">
+								<Border Style="{DynamicResource RoundedBorder}"
+										BackgroundColor="Black"
+										Opacity="0.2" />
+								<Label HorizontalOptions="Center"
+									   HorizontalTextAlignment="Center"
+									   Style="{DynamicResource SectionTitleLabel}"
+									   Text="{l:Localize QrSectionTitleSingular}"
+									   IsVisible="{Binding SingleIcon}"
+									   TextColor="{DynamicResource ContentWhitefixed}"
+									   Margin="8,0,8,0" />
+
+								<Label HorizontalOptions="Center"
+									   HorizontalTextAlignment="Center"
+									   Style="{DynamicResource SectionTitleLabel}"
+									   Text="{l:Localize QrSectionTitlePlural}"
+									   IsVisible="{Binding MultipleIcons}"
+									   TextColor="{DynamicResource ContentWhitefixed}"
+									   Margin="8,0,8,0" />
+							</Grid>
 						</VerticalStackLayout>
 
 						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{DynamicResource LargeSpacing}">
@@ -90,7 +116,7 @@
 					<Grid RowDefinitions="auto,auto" Padding="{DynamicResource LargeMargins}" RowSpacing="{DynamicResource LargeSpacing}">
 
 						<VerticalStackLayout Grid.Row="0" Spacing="{DynamicResource SmallSpacing}">
-							<Label HorizontalOptions="FillAndExpand" Text="{l:Localize QrScanUri}" />
+							<Label HorizontalOptions="Fill" Text="{l:Localize QrScanUri}" />
 							<controls:CompositeEntry x:Name="LinkEntry" Style="{DynamicResource RegularCompositeEntry}" EntryData="{Binding Path=ManualText}" />
 						</VerticalStackLayout>
 

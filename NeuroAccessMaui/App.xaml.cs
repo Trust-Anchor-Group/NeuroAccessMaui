@@ -6,9 +6,11 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using EDaler;
+using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls.Internals;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Resources.Styles;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Cache.AttachmentCache;
 using NeuroAccessMaui.Services.Cache.InternetCache;
@@ -67,6 +69,7 @@ using Waher.Security.JWS;
 using Waher.Security.JWT;
 using Waher.Security.LoginMonitor;
 using Waher.Things;
+using static Microsoft.Maui.Controls.Device;
 
 namespace NeuroAccessMaui
 {
@@ -239,7 +242,8 @@ namespace NeuroAccessMaui
 			{
 				this.InitializeComponent();
 				AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
-				ServiceRef.TagProfile.SetTheme(CurrentTheme ?? AppTheme.Light);
+				this.SetTheme(CurrentTheme ?? AppTheme.Light);
+				ServiceRef.ThemeService.SetTheme(CurrentTheme ?? AppTheme.Light);
 				try
 				{
 					this.MainPage = ServiceHelper.GetService<AppShell>();
@@ -250,6 +254,22 @@ namespace NeuroAccessMaui
 				}
 			}
 		}
+
+		void SetTheme(AppTheme theme)
+		{
+			ICollection<ResourceDictionary> Merged = this.Resources.MergedDictionaries;
+
+			// Remove only our color theme dictionaries
+			foreach (ResourceDictionary? Dict in Merged.Where(d => d.ContainsKey("IsLocalThemeDictionary")).ToList())
+				Merged.Remove(Dict);
+
+			// Add correct one
+			if (theme == AppTheme.Dark)
+				Merged.Add(new Dark());
+			else
+				Merged.Add(new Light());
+		}
+
 		/*
 		protected override Window CreateWindow(IActivationState? activationState)
 		{

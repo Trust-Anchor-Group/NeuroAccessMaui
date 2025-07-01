@@ -26,8 +26,8 @@
 					
 				<CarouselView x:Name="CarouselView"
                                   IsSwipeEnabled="{Binding Path=IsSwipeEnabled}"
-                                  HorizontalOptions="FillAndExpand"
-                                  VerticalOptions="FillAndExpand"
+                                  HorizontalOptions="Fill"
+                                  VerticalOptions="Fill"
                                   ItemsSource="{Binding Photos}"
                                   IndicatorView="{x:Reference IndicatorView}">
 					<CarouselView.ItemTemplate>

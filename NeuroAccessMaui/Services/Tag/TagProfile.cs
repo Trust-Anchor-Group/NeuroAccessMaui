@@ -241,7 +241,6 @@ namespace NeuroAccessMaui.Services.Tag
 
 				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
-				this.SetTheme();
 				// Do this last, as listeners will read the other properties when the event is fired.
 				if (Configuration.Step > RegistrationStep.GetStarted && Configuration.Step <= RegistrationStep.CreateAccount)
 					this.GoToStep(RegistrationStep.ValidatePhone);
@@ -1142,7 +1141,7 @@ namespace NeuroAccessMaui.Services.Tag
 		public AppTheme? Theme
 		{
 			get => this.theme;
-			private set
+			set
 			{
 				if (!Equals(this.theme, value))
 				{
@@ -1362,37 +1361,6 @@ namespace NeuroAccessMaui.Services.Tag
 		{
 			this.HttpFileUploadJid = HttpFileUploadJid;
 			this.HttpFileUploadMaxSize = MaxSize;
-		}
-
-		/// <summary>
-		/// Sets the preferred theme.
-		/// </summary>
-		/// <param name="Theme">Theme</param>
-		public void SetTheme(AppTheme Theme)
-		{
-			this.Theme = Theme;
-			this.SetTheme();
-		}
-
-		/// <summary>
-		/// Sets the preferred theme.
-		/// </summary>
-		public void SetTheme()
-		{
-			if (Application.Current is null || !this.Theme.HasValue)
-				return;
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				try
-				{
-					Application.Current.UserAppTheme = this.Theme.Value;
-				}
-				catch (Exception)
-				{
-					return;
-				}
-
-			});
 		}
 
 		#endregion

@@ -15,8 +15,8 @@
 			<VerticalStackLayout Margin="0">
 				<CarouselView x:Name="CarouselView"
                                   IsSwipeEnabled="{Binding Path=IsSwipeEnabled}"
-                                  HorizontalOptions="FillAndExpand"
-                                  VerticalOptions="FillAndExpand"
+                                  HorizontalOptions="Fill"
+                                  VerticalOptions="Fill"
                                   ItemsSource="{Binding Path=Photos}"
                                   IndicatorView="IndicatorView">
 					<CarouselView.ItemTemplate>
@@ -27,9 +27,9 @@
 				</CarouselView>
 				<IndicatorView x:Name="IndicatorView"
                                    HorizontalOptions="Center"
-                                   IndicatorColor="{DynamicResource SurfaceBackgroundWLLight}"
+                                   IndicatorColor="{DynamicResource SurfaceBackgroundWL}"
                                    Padding="0,0,0,0"
-                                   BackgroundColor="{DynamicResource SurfaceBackgroundWLDark}"
+                                   BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
                                    Style="{DynamicResource IndicatorViewStyle}">
 					<IndicatorView.Margin>
 						<OnPlatform x:TypeArguments="Thickness">
@@ -45,10 +45,10 @@
 				</Grid.GestureRecognizers>
 				<Ellipse StrokeThickness="2" WidthRequest="32" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
 					<Ellipse.Fill>
-						<SolidColorBrush Color="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}"/>
+						<SolidColorBrush Color="{DynamicResource SurfaceBackgroundWL}"/>
 					</Ellipse.Fill>
 					<Ellipse.Stroke>
-						<SolidColorBrush Color="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}"/>
+						<SolidColorBrush Color="{DynamicResource SurfaceElevation1WL}"/>
 					</Ellipse.Stroke>
 				</Ellipse>
 				<Label Style="{DynamicResource PopupCloseButton}"/>

@@ -12,7 +12,7 @@
 							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Chat">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -38,17 +38,17 @@
 					Grid.ColumnSpan="2" Grid.Row="2">
 
 				<Frame Grid.Column="0" Grid.Row="0" CornerRadius="5" Padding="0"
-						 BorderColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}">
+						 BorderColor="{DynamicResource ContentPrimaryWL}">
 					<Frame.Behaviors>
 						<behaviors:SetFocusOnTappedBehavior SetFocusTo="EditorControl"/>
 					</Frame.Behaviors>
 					<Grid ColumnDefinitions="*" RowDefinitions="auto">
 						<Grid ColumnDefinitions="*,auto" ColumnSpacing="0"
 								IsVisible="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}">
-							<Editor x:Name="EditorControl" HorizontalOptions="FillAndExpand" MinimumHeightRequest="40"
+							<Editor x:Name="EditorControl" HorizontalOptions="Fill" MinimumHeightRequest="40"
 									IsEnabled="{Binding IsRecordingAudio, Converter={StaticResource InvertedBoolConverter}}"
-									BackgroundColor="{AppThemeBinding Light={DynamicResource InputFieldsSurfaceBackgroundActiveLight}, Dark={DynamicResource InputFieldsSurfaceBackgroundActiveDark}}"
-									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges" TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}"/>
+									BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
+									  Text="{Binding MarkdownInput}" Keyboard="Chat" AutoSize="TextChanges" TextColor="{DynamicResource InputFieldsContentPrimary}"/>
 
 							<controls:ImageButton Grid.Column="1" Margin="{DynamicResource SmallLeftMargins}"
 														 PathData="{x:Static ui:Geometries.CancelPath}" Style="{DynamicResource ImageOnlyButton}"
@@ -58,38 +58,6 @@
 								</controls:ImageButton.Behaviors>
 							</controls:ImageButton>
 						</Grid>
-						<!--
-						<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="0"
-							  IsVisible="{Binding IsRecordingAudio}">
-
-							<Frame Grid.Column="0" CornerRadius="8" VerticalOptions="Center" Padding="5" Margin="0" HasShadow="False">
-								xct:TouchEffect.AnimationDuration="100"
-							   xct:TouchEffect.AnimationEasing="{x:Static Easing.CubicInOut}"
-							   xct:TouchEffect.PressedOpacity="0.75"
-							   xct:TouchEffect.Command="{Binding Path=PauseResumeCommand}">
-
-								<Grid WidthRequest="35" HeightRequest="35" BackgroundColor="Transparent">
-									<controls:TintedImage TintColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLDarkLightTheme}, Dark={DynamicResource SurfaceBackgroundWLDarkDarkTheme}}"
-										Source="{x:Static resx:Svgs.Pause}" IsVisible="{Binding IsRecordingPaused, Converter={StaticResource InvertedBoolConverter}}" />
-									<controls:TintedImage TintColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLDarkLightTheme}, Dark={DynamicResource SurfaceBackgroundWLDarkDarkTheme}}"
-										Source="{x:Static resx:Svgs.Play}" IsVisible="{Binding IsRecordingPaused}" />
-								</Grid>
-							</Frame>
-
-							<Label Grid.Column="1" Style="{DynamicResource ValueLabel}" FontSize="Medium"
-								   Text="{Binding RecordingTime}" HorizontalOptions="Center" VerticalOptions="Center"/>
-
-							<Frame Grid.Column="2" CornerRadius="8" VerticalOptions="Center" Padding="5" Margin="0" HasShadow="False">
-								xct:TouchEffect.AnimationDuration="100"
-							   xct:TouchEffect.AnimationEasing="{x:Static Easing.CubicInOut}"
-							   xct:TouchEffect.PressedOpacity="0.75"
-							   xct:TouchEffect.Command="{Binding Path=CancelCommand}">
-
-								<controls:TintedImage TintColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLDarkLightTheme}, Dark={DynamicResource SurfaceBackgroundWLDarkDarkTheme}}"
-									Source="{x:Static resx:Svgs.Trash}" WidthRequest="35" HeightRequest="35" />
-							</Frame>
-						</Grid>
-						-->
 					</Grid>
 				</Frame>
 

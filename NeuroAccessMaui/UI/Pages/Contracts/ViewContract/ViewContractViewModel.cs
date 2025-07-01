@@ -190,14 +190,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[ObservableProperty]
 		private ObservableRole? selectedRole;
 
-		partial void OnSelectedRoleChanged(ObservableRole? OldValue, ObservableRole? NewValue)
+		partial void OnSelectedRoleChanged(ObservableRole? oldValue, ObservableRole? newValue)
 		{
 			var MyLegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
 			if (string.IsNullOrEmpty(MyLegalId))
 				return;
 
-			OldValue?.RemovePart(MyLegalId);
-			_ = NewValue?.AddPart(MyLegalId);
+			oldValue?.RemovePart(MyLegalId);
+			_ = newValue?.AddPart(MyLegalId);
 
 			OnPropertyChanged(nameof(ReadyToSign));
 			SignCommand.NotifyCanExecuteChanged();
@@ -209,12 +209,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract is null || this.SelectedRole is null)
 				return;
 
-			this.SetIsBusy(true);
+			await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(true));
 			try
 			{
-				await ServiceRef.XmppService.SignContract(this.Contract.Contract, this.SelectedRole.Name, false);
+				Contract SignedContract = await ServiceRef.XmppService.SignContract(this.Contract.Contract, this.SelectedRole.Name, false);
 				await this.GoToStateAsync(ViewContractStep.Overview);
-				await this.RefreshContractAsync(null);
+				await this.RefreshContractAsync(SignedContract);
 			}
 			catch (Exception Ex)
 			{
@@ -225,7 +225,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 			finally
 			{
-				this.SetIsBusy(false);
+				await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(false));
 			}
 		}
 
@@ -253,10 +253,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private async Task GoToSignAsync()
 		{
 			await this.GoToStepAsync(ViewContractStep.Sign);
-			if (!string.IsNullOrEmpty(this.ProposalRole))
-				this.SelectedRole = this.SignableRoles.FirstOrDefault(r => r.Name == this.ProposalRole);
-			else if (this.SignableRoles.Count == 1)
-				this.SelectedRole = this.SignableRoles[0];
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				if (!string.IsNullOrEmpty(this.ProposalRole))
+					this.SelectedRole = this.SignableRoles.FirstOrDefault(r => r.Name == this.ProposalRole);
+				else if (this.SignableRoles.Count == 1)
+					this.SelectedRole = this.SignableRoles[0];
+			});
 		}
 
 		[RelayCommand(CanExecute = nameof(CanStateChange))]

@@ -10,10 +10,10 @@
 		 xmlns:registration="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 		 FlyoutBehavior="Flyout"
 		 FlyoutHeaderBehavior="Scroll"
-		 FlyoutBackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+		 FlyoutBackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 	<Shell.Behaviors>
-		<mct:StatusBarBehavior StatusBarColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}"
+		<mct:StatusBarBehavior StatusBarColor="{DynamicResource SurfaceBackgroundWL}"
 									  StatusBarStyle="{AppThemeBinding Light='DarkContent', Dark='LightContent'}" />
 	 </Shell.Behaviors>
 
@@ -28,15 +28,15 @@
 	<Shell.Resources>
 		<ResourceDictionary>
 			<Style x:Key="BaseStyle" TargetType="Element">
-				<Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}" />
-				<Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}" />
-				<Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
-				<Setter Property="Shell.DisabledColor" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}" />
-				<Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
-				<Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}" />
-				<Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Light={DynamicResource SurfaceElevation3WLLight}, Dark={DynamicResource SurfaceElevation3WLDark}}"/>
-				<Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"/>
-				<Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"/>
+				<Setter Property="Shell.BackgroundColor" Value="{DynamicResource SurfaceBackgroundWL}" />
+				<Setter Property="Shell.ForegroundColor" Value="{DynamicResource SurfaceBackgroundWL}" />
+				<Setter Property="Shell.TitleColor" Value="{DynamicResource ContentPrimaryWL}" />
+				<Setter Property="Shell.DisabledColor" Value="{DynamicResource ButtonUniversalContentInactiveWL}" />
+				<Setter Property="Shell.UnselectedColor" Value="{DynamicResource ContentPrimaryWL}" />
+				<Setter Property="Shell.TabBarBackgroundColor" Value="{DynamicResource SurfaceBackgroundWL}" />
+				<Setter Property="Shell.TabBarForegroundColor" Value="{DynamicResource SurfaceElevation3WL}"/>
+				<Setter Property="Shell.TabBarUnselectedColor" Value="{DynamicResource ContentPrimaryWL}"/>
+				<Setter Property="Shell.TabBarTitleColor" Value="{DynamicResource ContentPrimaryWL}"/>
 			</Style>
 			<Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
 			<Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseStyle}" />
@@ -47,14 +47,14 @@
 						<VisualStateGroup x:Name="CommonStates">
 							<VisualState x:Name="Normal">
 								<VisualState.Setters>
-									<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}" />
-									<Setter TargetName="FlyoutItemLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+									<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceBackgroundWL}" />
+									<Setter TargetName="FlyoutItemLabel" Property="Label.TextColor" Value="{DynamicResource ContentPrimaryWL}" />
 								</VisualState.Setters>
 							</VisualState>
 							<VisualState x:Name="Selected">
 								<VisualState.Setters>
-									<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}" />
-									<Setter TargetName="FlyoutItemLabel" Property="Label.TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+									<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceBackgroundWL}" />
+									<Setter TargetName="FlyoutItemLabel" Property="Label.TextColor" Value="{DynamicResource ContentPrimaryWL}" />
 								</VisualState.Setters>
 							</VisualState>
 						</VisualStateGroup>

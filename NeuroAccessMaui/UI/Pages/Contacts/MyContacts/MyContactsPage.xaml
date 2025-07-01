@@ -36,7 +36,7 @@
 		</DataTemplate>
 	</VisualElement.Resources>
 
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -60,10 +60,10 @@
 						<Label Text="{Binding Description}" HorizontalOptions="Center" VerticalOptions="Start"
 								 IsVisible="{Binding Description, Converter={converters:OnlyShowNonEmpty}}"/>
 
-						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"
+						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
 								 VerticalOptions="Start" IsVisible="{Binding Path=ShowContactsMissing}" Text="{l:Localize NoContactsFound}" />
 
-						<CollectionView x:Name="Contacts" VerticalOptions="StartAndExpand" ItemSizingStrategy="MeasureAllItems"
+						<CollectionView x:Name="Contacts" VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems"
 											 SelectionMode="Single" ItemsSource="{Binding Path=Contacts}"
 											 SelectedItem="{Binding Path=SelectedContact, Mode=TwoWay}"
 											 ItemTemplate="{StaticResource ContactTemplate}">

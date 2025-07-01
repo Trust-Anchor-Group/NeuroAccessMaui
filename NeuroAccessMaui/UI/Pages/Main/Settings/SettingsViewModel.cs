@@ -243,7 +243,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 					case nameof(this.DisplayMode):
 						if (!this.initializing && Enum.TryParse(this.DisplayMode, out AppTheme Theme) && Theme != CurrentDisplayMode)
 						{
-							ServiceRef.TagProfile.SetTheme(Theme);
+							ServiceRef.ThemeService.SetTheme(Theme);
 						}
 						break;
 

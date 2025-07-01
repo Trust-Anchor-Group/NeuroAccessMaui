@@ -137,13 +137,13 @@
 		<Border x:Name="ComingSoonPopup"
 				Grid.RowSpan="3"
 				VerticalOptions="Center"
-				BackgroundColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750bgWLLight}, Dark={DynamicResource TnPNeutralv750bgWLDark}}"
+				BackgroundColor="{DynamicResource TnPNeutralv750bgWL}"
 				Padding="{DynamicResource MediumMargins}"
 				Margin="{DynamicResource LargeLeftRightMargins}"
 				StrokeShape="RoundRectangle 16,16,16,16"
 				IsVisible="False">
 			<Border.Shadow>
-				<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+				<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
 			</Border.Shadow>
 			<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
 				  ColumnDefinitions="auto, *"
@@ -151,16 +151,16 @@
 				  RowSpacing="{DynamicResource SmallSpacing}">
 				<controls:SvgView
 					Source="info.svg"
-					TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+					TintColor="{DynamicResource TnPNeutralv750ContentWL}"/>
 				<Label Grid.Column="1"
 					   Text="{l:Localize ComingSoon}"
 					   Style="{DynamicResource InfoLabel}"
-					   TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+					   TextColor="{DynamicResource TnPNeutralv750ContentWL}"/>
 				<Label Grid.Column="1"
 					   Grid.Row="1"
 					   Text="{l:Localize ComingSoonInfo}"
 					   Style="{DynamicResource InfoLabel}"
-					   TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+					   TextColor="{DynamicResource TnPNeutralv750ContentWL}"/>
 			</Grid>
 		</Border>
 

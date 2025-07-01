@@ -12,7 +12,7 @@
 		</Style>
 
 		<Style x:Key="ButtonIconBorder" TargetType="Border">
-			<Setter Property="Background" Value="{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}" />
+			<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
 			<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 			<Setter Property="Stroke" Value="Transparent"/>
 			<Setter Property="WidthRequest" Value="48"/>
@@ -24,7 +24,7 @@
 		</Style>
 
 		<Style x:Key="ButtonIconPath" TargetType="Path">
-			<Setter Property="Fill" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLDark}}" />
+			<Setter Property="Fill" Value="{DynamicResource TnPSuccessContentWL}" />
 			<Setter Property="Aspect" Value="Uniform" />
 			<Setter Property="WidthRequest" Value="24"/>
 			<Setter Property="HeightRequest" Value="24"/>
@@ -43,11 +43,11 @@
 		<Style x:Key="ButtonCheckBox" TargetType="CheckBox">
 			<Setter Property="VerticalOptions" Value="Center"/>
 			<Setter Property="HorizontalOptions" Value="Center" />
-			<Setter Property="Color" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"/>
+			<Setter Property="Color" Value="{DynamicResource ContentPrimaryWL}"/>
 		</Style>
 
 		<Style x:Key="ButtonCheckBoxOk" TargetType="CheckBox" BasedOn="{StaticResource ButtonCheckBox}">
-			<Setter Property="Color" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLDark}}"/>
+			<Setter Property="Color" Value="{DynamicResource TnPSuccessContentWL}"/>
 		</Style>
 	</ContentView.Resources>
 
@@ -59,7 +59,7 @@
 					<Border.Triggers>
 						<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Border" Value="True">
 							<!-- Set the properties that need to change -->
-							<Setter Property="Background" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}" />
+							<Setter Property="Background" Value="{DynamicResource TnPSuccessContentWL}" />
 						</DataTrigger>
 					</Border.Triggers>
 					<!-- Icon Path -->
@@ -68,7 +68,7 @@
                           Style="{DynamicResource ButtonIconPath}">
 						<Path.Triggers>
 							<DataTrigger Binding="{Binding IsOk, Source={x:Reference This}}" TargetType="Path" Value="True">
-								<Setter Property="Fill" Value="{AppThemeBinding Light={DynamicResource ContentWhitefixedLight}, Dark={DynamicResource ContentWhitefixedDark}}" />
+								<Setter Property="Fill" Value="{DynamicResource ContentWhitefixed}" />
 							</DataTrigger>
 						</Path.Triggers>
 					</Path>

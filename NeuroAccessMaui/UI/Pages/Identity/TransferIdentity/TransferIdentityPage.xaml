@@ -13,7 +13,7 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.TransferIdentity"
 							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -33,7 +33,7 @@
 				<Frame Style="{DynamicResource FrameSet}">
 					<VerticalStackLayout>
 						<Label Text="{l:Localize TransferIdentityPageDetails}" Style="{DynamicResource InfoLabel}" Margin="{DynamicResource SmallBottomMargins}" />
-						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" HorizontalOptions="CenterAndExpand" Margin="0"
+						<Image x:Name="QrCode" Source="{Binding Path=QrCode}" HorizontalOptions="Center" Margin="0"
                        WidthRequest="240" HeightRequest="240">
 							<Image.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding CopyUriToClipboardCommand}"/>

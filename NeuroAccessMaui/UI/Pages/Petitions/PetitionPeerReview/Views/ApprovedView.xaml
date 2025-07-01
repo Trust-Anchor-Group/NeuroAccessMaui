@@ -16,14 +16,14 @@
 			</Border>
 			<VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
 				<Border Style="{DynamicResource OutlinedImageButtonBorder}" Padding="{DynamicResource SmallSpacing}"
-						  Stroke="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}">
+						  Stroke="{DynamicResource TnPInfoContentWL}">
 					<Label Style="{DynamicResource BoldItemTitleLabel}" Text="{Binding FullName}" HorizontalOptions="Center" Margin="0" Padding="0" />
 				</Border>
 				<Label Style="{DynamicResource InfoLabel}" Text="{Binding PersonalNumberWithFlag}" HorizontalOptions="Center" Margin="0" Padding="0" />
 			</VerticalStackLayout>
 		</VerticalStackLayout>
 
-		<Rectangle BackgroundColor="{AppThemeBinding Light={DynamicResource ButtonUniversalbgInactiveWLLight}, Dark={DynamicResource ButtonUniversalbgInactiveWLDark}}"
+		<Rectangle BackgroundColor="{DynamicResource ButtonUniversalbgInactiveWL}"
 					  WidthRequest="250" HeightRequest="2"/>
 
 		<Label HorizontalOptions="Center" Text="{Binding ReviewApproved}" Margin="{DynamicResource MediumMargins}"/>

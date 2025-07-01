@@ -21,7 +21,7 @@
 			<Grid ColumnDefinitions="2*,*" RowDefinitions="auto,auto">
 				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=FriendlyName}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Bold" FontSize="18"/>
 				<Label Grid.Column="0" Grid.Row="1" Text="{Binding Path=ExpiresStr}" Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontAttributes="Italic"/>
-				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="TailTruncation" TextColor="{DynamicResource InputFieldsContentDangerv500Light}" HorizontalTextAlignment="End">
+				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="TailTruncation" TextColor="{DynamicResource InputFieldsContentDangerv500}" HorizontalTextAlignment="End">
 					<Label.FormattedText>
 						<FormattedString>
 							<Span Text="-" FontSize="30" FontAttributes="Bold"/>
@@ -58,7 +58,7 @@
 						<FormattedString>
 							<Span Text=" ("/>
 							<Span Text="{Binding Path=Balance, Converter={converters:MoneyToString}}" FontSize="14"/>
-							<Span Text="{Binding Path=ReservedSuffix}" FontSize="14" TextColor="{DynamicResource InputFieldsContentDangerv500Light}"/>
+							<Span Text="{Binding Path=ReservedSuffix}" FontSize="14" TextColor="{DynamicResource InputFieldsContentDangerv500}"/>
 							<Span Text=" "/>
 							<Span Text="{Binding Path=Currency}" FontSize="12"/>
 							<Span Text=" ) "/>
@@ -77,7 +77,7 @@
 																 PendingPaymentTemplate="{StaticResource PendingPaymentTemplate}"
 																 AccountEventTemplate="{StaticResource AccountEventTemplate}"/>
 	</VisualElement.Resources>
-	<Grid RowDefinitions="auto, *, auto" BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid RowDefinitions="auto, *, auto" BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 		<controls:Background Grid.RowSpan="2" Grid.ColumnSpan="2"/>
 
 		<Grid ColumnDefinitions="*, *" Margin="{DynamicResource MediumMargins}">
@@ -97,12 +97,12 @@
 		<ScrollView Grid.Row="1" Grid.ColumnSpan="2" Margin="{DynamicResource SmallLeftRightMargins}">
 			<Grid RowDefinitions="auto,*,auto">
 				<Frame Grid.Row="0" HeightRequest="150" BorderColor="Black" CornerRadius="6" HasShadow="True" Margin="{DynamicResource SmallLeftRightBottomMargins}"
-                       BackgroundColor="{DynamicResource SurfaceBackgroundWLDark}">
+                       BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 					<Grid HeightRequest="150" RowDefinitions="25,100,25" BackgroundColor="Transparent">
 						<Image x:Name="ImgFront" Grid.Row="0" Grid.RowSpan="3" Source="{Binding Path=EDalerFrontGlyph}" Opacity="0.5"/>
-						<Label Grid.Row="0" Text="{Binding Path=Timestamp, Converter={converters:DateTimeToString}}" HorizontalOptions="StartAndExpand"
-                               TextColor="{DynamicResource SurfaceBackgroundWLLight}" BackgroundColor="Transparent"/>
-						<Label Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{DynamicResource SurfaceBackgroundWLLight}" BackgroundColor="Transparent">
+						<Label Grid.Row="0" Text="{Binding Path=Timestamp, Converter={converters:DateTimeToString}}" HorizontalOptions="Start"
+                               TextColor="{DynamicResource SurfaceBackgroundWL}" BackgroundColor="Transparent"/>
+						<Label Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{DynamicResource SurfaceBackgroundWL}" BackgroundColor="Transparent">
 							<Label.FormattedText>
 								<FormattedString>
 									<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}" FontSize="50" FontAttributes="Bold"/>
@@ -111,7 +111,7 @@
 								</FormattedString>
 							</Label.FormattedText>
 						</Label>
-						<Label Grid.Row="2" HorizontalOptions="Start" TextColor="{DynamicResource InputFieldsContentDangerv500Light}"
+						<Label Grid.Row="2" HorizontalOptions="Start" TextColor="{DynamicResource InputFieldsContentDangerv500}"
                                IsVisible="{Binding Path=PendingAmount, Converter={converters:GreaterThanZero}}" BackgroundColor="Transparent">
 							<Label.FormattedText>
 								<FormattedString>
@@ -123,7 +123,7 @@
 								</FormattedString>
 							</Label.FormattedText>
 						</Label>
-						<Label Grid.Row="2" HorizontalOptions="End" TextColor="{DynamicResource InputFieldsContentDangerv500Light}"
+						<Label Grid.Row="2" HorizontalOptions="End" TextColor="{DynamicResource InputFieldsContentDangerv500}"
                                IsVisible="{Binding Path=ReservedAmount, Converter={converters:GreaterThanZero}}" BackgroundColor="Transparent">
 							<Label.FormattedText>
 								<FormattedString>
@@ -140,7 +140,7 @@
 
 				<VerticalStackLayout Grid.Row="1" Margin="{DynamicResource SmallMargins}">
 					<controls:LoadingCollectionView x:Name="PaymentItemsCollection" IsGrouped="True"
-															  VerticalOptions="StartAndExpand" SelectionMode="Single"
+															  VerticalOptions="Start" SelectionMode="Single"
                                                Style="{DynamicResource MyWalletView}"
                                                ItemSizingStrategy="MeasureAllItems"
                                                RemainingItemsThreshold="1"
@@ -149,9 +149,9 @@
                                                LoadMoreCommand="{Binding LoadMoreAccountEventsCommand}">
 						<CollectionView.GroupHeaderTemplate>
 							<DataTemplate x:DataType="base:IUniqueItem">
-								<Frame BackgroundColor="{AppThemeBinding Light={DynamicResource InputFieldsContentSecondaryLight}, Dark={DynamicResource InputFieldsContentSecondaryDark}}" CornerRadius="8" Padding="5" Margin="0" HasShadow="False">
+								<Frame BackgroundColor="{DynamicResource InputFieldsContentSecondary}" CornerRadius="8" Padding="5" Margin="0" HasShadow="False">
 									<Label Text="{Binding LocalisedName}" Style="{DynamicResource KeyLabel}"
-									   HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"
+									   HorizontalOptions="Fill" HorizontalTextAlignment="Center"
 									   LineBreakMode="TailTruncation" FontSize="18" />
 								</Frame>
 							</DataTemplate>

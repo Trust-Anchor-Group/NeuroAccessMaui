@@ -13,7 +13,7 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Signatures.ClientSignature"
 							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
 	
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -31,7 +31,7 @@
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize PersonalInformation}"/>
 						<Label Text="{l:Localize IdentityInformationInfoText}"/>
 
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
+						<Grid VerticalOptions="Start" RowSpacing="0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />
@@ -103,7 +103,7 @@
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize OrganizationalInformation}"/>
 
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
+						<Grid VerticalOptions="Start" RowSpacing="0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />
@@ -164,7 +164,7 @@
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Signature}"/>
 						<Label Text="{l:Localize ClientSignatureInformationInfoText}"/>
 
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
+						<Grid VerticalOptions="Start" RowSpacing="0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />

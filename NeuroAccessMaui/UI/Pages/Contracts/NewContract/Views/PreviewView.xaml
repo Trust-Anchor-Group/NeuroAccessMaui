@@ -30,7 +30,7 @@
 
 				<CheckBox Grid.Column="0"
 						  IsChecked="{Binding IsContractOk}"
-						  Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+						  Color="{DynamicResource ContentPrimaryWL}" />
 				<Label Grid.Column="1"
 					   Text="{l:Localize IHaveReadAndUnderstoodTheContract}"
 					   Style="{DynamicResource BottomBarLabel}" />

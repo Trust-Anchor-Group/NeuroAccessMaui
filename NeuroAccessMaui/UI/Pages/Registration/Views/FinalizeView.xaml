@@ -27,7 +27,7 @@
 						HeightRequest="{Binding CheckmarkBackgroundSize}"
 						HasShadow="False"
 						CornerRadius="{Binding CheckmarkBackgroundCornerRadius}"
-						BackgroundColor="{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}"
+						BackgroundColor="{DynamicResource TnPSuccessbgWL}"
 						HorizontalOptions="Center"
 						Margin="{DynamicResource LargeBottomMargins}">
 						<Path
@@ -37,7 +37,7 @@
 							WidthRequest="{Binding CheckmarkIconSize}"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
-							Fill="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLLight}}" />
+							Fill="{DynamicResource TnPSuccessContentWL}" />
 					</Frame>
 					
 				</VerticalStackLayout>

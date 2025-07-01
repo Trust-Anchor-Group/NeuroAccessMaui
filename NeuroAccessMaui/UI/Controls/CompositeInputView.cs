@@ -106,7 +106,7 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				Content = contentGrid,
 				StrokeThickness = 0.5f,
-				HorizontalOptions = LayoutOptions.FillAndExpand,
+				HorizontalOptions = LayoutOptions.Fill,
 				Margin = 0
 			};
 			this.border.PropertyChanged += this.OnBorderPropertyChanged;

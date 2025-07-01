@@ -170,8 +170,8 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.XmlOutput.WriteStartElement("BoxView");
 			this.XmlOutput.WriteAttributeString("HeightRequest", "1");
-			this.XmlOutput.WriteAttributeString("BackgroundColor", "{AppThemeBinding Light={DynamicResource InputFieldsContentSecondaryLight}, Dark={DynamicResource InputFieldsContentSecondaryDark}}");
-			this.XmlOutput.WriteAttributeString("HorizontalOptions", "FillAndExpand");
+			this.XmlOutput.WriteAttributeString("BackgroundColor", "{DynamicResource InputFieldsContentSecondary}");
+			this.XmlOutput.WriteAttributeString("HorizontalOptions", "Fill");
 			this.XmlOutput.WriteAttributeString("Margin", SmallMargins(false, false, true, true));
 			this.XmlOutput.WriteEndElement();
 
@@ -777,7 +777,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.XmlOutput.WriteStartElement("Frame");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
-			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}");
+			this.XmlOutput.WriteAttributeString("BorderColor", "{DynamicResource ContentPrimaryWL}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1115,7 +1115,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.XmlOutput.WriteStartElement("Frame");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
-			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}");
+			this.XmlOutput.WriteAttributeString("BorderColor", "{DynamicResource TnPDangerbgWL}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1197,8 +1197,8 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			this.XmlOutput.WriteStartElement("BoxView");
 			this.XmlOutput.WriteAttributeString("HeightRequest", "1");
-			this.XmlOutput.WriteAttributeString("BackgroundColor", "{AppThemeBinding Light={DynamicResource InputFieldsContentSecondaryLight}, Dark={DynamicResource InputFieldsContentSecondaryDark}}");
-			this.XmlOutput.WriteAttributeString("HorizontalOptions", "FillAndExpand");
+			this.XmlOutput.WriteAttributeString("BackgroundColor", "{DynamicResource InputFieldsContentSecondary}");
+			this.XmlOutput.WriteAttributeString("HorizontalOptions", "Fill");
 			this.XmlOutput.WriteAttributeString("Margin", SmallMargins(false, false, true, true));
 			this.XmlOutput.WriteEndElement();
 
@@ -1242,7 +1242,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.XmlOutput.WriteStartElement("Frame");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
-			this.XmlOutput.WriteAttributeString("BorderColor", "{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}");
+			this.XmlOutput.WriteAttributeString("BorderColor", "{DynamicResource TnPSuccessbgWL}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1564,7 +1564,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			if (this.Hyperlink is not null)
 			{
-				this.XmlOutput.WriteAttributeString("TextColor", "{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}");
+				this.XmlOutput.WriteAttributeString("TextColor", "{DynamicResource TnPInfoContentWL}");
 
 				this.XmlOutput.WriteStartElement("Span.GestureRecognizers");
 				this.XmlOutput.WriteStartElement("TapGestureRecognizer");
@@ -1659,8 +1659,8 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			this.XmlOutput.WriteStartElement("BoxView");
 			this.XmlOutput.WriteAttributeString("HeightRequest", "1");
-			this.XmlOutput.WriteAttributeString("BackgroundColor", "{AppThemeBinding Light={DynamicResource InputFieldsContentSecondaryLight}, Dark={DynamicResource InputFieldsContentSecondaryDark}}");
-			this.XmlOutput.WriteAttributeString("HorizontalOptions", "FillAndExpand");
+			this.XmlOutput.WriteAttributeString("BackgroundColor", "{DynamicResource InputFieldsContentSecondary}");
+			this.XmlOutput.WriteAttributeString("HorizontalOptions", "Fill");
 			this.XmlOutput.WriteAttributeString("Margin", SmallMargins(false, false, true, true));
 			this.XmlOutput.WriteEndElement();
 
