@@ -169,6 +169,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ServiceProvidersPage, ServiceProvidersViewModel>();
 			Builder.Services.AddTransient<TokenDetailsPage, TokenDetailsViewModel>();
 			Builder.Services.AddTransient<TokenEventsPage, TokenEventsViewModel>();
+			Builder.Services.AddTransient<WalletPage, WalletViewModel>();
 
 			// Popups
 			Builder.Services.AddTransient<ImageView, ImageViewModel>();

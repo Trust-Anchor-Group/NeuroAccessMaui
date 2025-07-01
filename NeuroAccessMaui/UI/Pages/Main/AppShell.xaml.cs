@@ -142,7 +142,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(ServiceProvidersPage), typeof(ServiceProvidersPage));
 			Routing.RegisterRoute(nameof(TokenDetailsPage), typeof(TokenDetailsPage));
 			Routing.RegisterRoute(nameof(TokenEventsPage), typeof(TokenEventsPage));
-
+			Routing.RegisterRoute(nameof(WalletPage), typeof(WalletPage));
 			// Utility
 			Routing.RegisterRoute(nameof(ImageCroppingPage), typeof(ImageCroppingPage));
 		}

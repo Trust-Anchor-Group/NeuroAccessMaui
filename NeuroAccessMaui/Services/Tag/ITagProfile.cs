@@ -271,6 +271,16 @@ namespace NeuroAccessMaui.Services.Tag
 		DateTime LastIdentityUpdate { get; set; }
 
 		/// <summary>
+		/// The cached eDaler balance.
+		/// </summary>
+		decimal LastEDalerBalanceDecimal { get; set; }
+
+		/// <summary>
+		/// Last time the eDaler balance was updated.
+		/// </summary>
+		DateTime? LastEDalerBalanceUpdate { get; set; }
+
+		/// <summary>
 		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> has changed values and need saving, <c>false</c> otherwise.
 		/// </summary>
 		bool IsDirty { get; }

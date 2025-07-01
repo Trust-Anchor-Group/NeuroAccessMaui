@@ -52,7 +52,6 @@
 			  RowDefinitions="auto,auto"
 			  ColumnDefinitions="auto,auto">
 			<controls:SvgButton
-				Grid.Row="0" Grid.Column="0"
 				Command="{Binding ShowSettingsCommand}"
 				SvgSource="cog.svg"
 				Style="{DynamicResource IconButton}"/>

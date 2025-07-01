@@ -83,7 +83,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -132,7 +132,7 @@
 													   IsVisible="{Binding IsProtected}" />
 				<controls:TemplatedButton Command="{Binding ShowErrorCommand}" IsVisible="{Binding CanShowError}" HeightRequest="24" WidthRequest="24" HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -183,7 +183,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -232,7 +232,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -281,7 +281,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -331,7 +331,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -406,7 +406,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -483,7 +483,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -534,7 +534,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -590,7 +590,7 @@
 					<controls:SvgView Source="help.svg"
 									  HeightRequest="24"
 									  WidthRequest="24"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>

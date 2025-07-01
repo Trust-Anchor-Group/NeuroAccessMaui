@@ -163,26 +163,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		}
 
 		[RelayCommand]
-		private async Task ShowWallet()
+		public async Task ShowWallet()
 		{
 			try
 			{
-				if (!ServiceRef.TagProfile.HasBetaFeatures)
-				{
-					this.BetaFeaturePressed = true;
-					await Task.Delay(100);
-					this.BetaFeaturePressed = false;
-				}
-				else
-				{
-					Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
-					(decimal PendingAmount, string PendingCurrency, PendingPayment[] PendingPayments) = await ServiceRef.XmppService.GetPendingEDalerPayments();
-					(AccountEvent[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize);
+				WalletNavigationArgs Args = new();
 
-					WalletNavigationArgs Args = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
-
-					await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), Args, BackMethod.Pop);
-				}
+				await ServiceRef.UiService.GoToAsync(nameof(WalletPage), Args, BackMethod.Pop);
 			}
 			catch (Exception Ex)
 			{

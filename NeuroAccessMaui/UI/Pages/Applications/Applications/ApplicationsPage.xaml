@@ -86,44 +86,6 @@
 						</VerticalStackLayout>
 					</Grid>
 				</Border>
-
-				<!-- Wallet -->
-				<Border Style="{DynamicResource BorderSet}" IsVisible="{Binding HasLegalIdentity}">
-					<Grid>
-						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-
-							<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Wallet}" Margin="{StaticResource SmallLeftMargins}"/>
-
-							<!-- Apply for a wallet -->
-							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding BuyEDalerCommand}"
-																		IsVisible="{Binding HasWallet, Converter={StaticResource InvertedBoolConverter}}">
-								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize CreateWallet}" InputTransparent="True"
-												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
-										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize CreateWalletDescription}" InputTransparent="True"
-											    TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
-											   Margin="{StaticResource SmallLeftMargins}"/>
-									</VerticalStackLayout>
-								</Frame>
-							</controls:TemplatedButton>
-
-							<!-- Go to wallet -->
-							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding OpenWalletCommand}"
-																		IsVisible="{Binding HasWallet}">
-								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize OpenWallet}" InputTransparent="True"
-												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
-										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize CreateWalletDescription}" InputTransparent="True"
-											    TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
-											   Margin="{StaticResource SmallLeftMargins}"/>
-									</VerticalStackLayout>
-								</Frame>
-							</controls:TemplatedButton>
-						</VerticalStackLayout>
-					</Grid>
-				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>
