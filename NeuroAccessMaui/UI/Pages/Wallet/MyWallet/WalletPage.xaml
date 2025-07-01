@@ -144,7 +144,7 @@
 		  Padding="0"
 		  Margin="0"
 		  ColumnDefinitions="*"
-		  BackgroundColor="{AppThemeBinding Light={DynamicResource PrimaryBackgroundLight}, Dark={DynamicResource PrimaryBackgroundDark}}">
+		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background Grid.Row="0"
 							 Grid.RowSpan="2" />
@@ -183,7 +183,7 @@
 						  Padding="0">
 						<controls:SvgView Source="wallet.svg" VerticalOptions="Center"
 										  Grid.Column="0"
-										  TintColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+										  TintColor="{DynamicResource ContentPrimaryWL}"
 										  Aspect="AspectFit"
 										  WidthRequest="24"
 										  HeightRequest="24" />
@@ -203,7 +203,7 @@
 												  IsVisible="{Binding GetBalanceTask.IsNotRunning}">
 
 							<controls:SvgView Source="refresh.svg"
-									   TintColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+									   TintColor="{DynamicResource ContentPrimaryWL}"
 									   />
 						</controls:TemplatedButton>
 						<ActivityIndicator IsRunning="True"

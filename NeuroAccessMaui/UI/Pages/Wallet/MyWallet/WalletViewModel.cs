@@ -313,38 +313,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 				return;
 
 		}
-
-		[RelayCommand]
-		public async Task ViewMainPage()
-		{
-			try
-			{
-				if (Application.Current?.MainPage?.Navigation != null)
-				{
-					await Application.Current.MainPage.Navigation.PopToRootAsync();
-				}
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		// Go to Apps page
-		[RelayCommand]
-		public async Task ViewApps()
-		{
-			try
-			{
-				await ServiceRef.UiService.GoToAsync(nameof(AppsPage));
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		#endregion
 		#endregion
 	}
 }
