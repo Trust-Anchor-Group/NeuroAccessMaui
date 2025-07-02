@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<!-- Default to Android only -->
-		<TargetFrameworks>net8.0-android</TargetFrameworks>
+		<TargetFrameworks>net9.0-android</TargetFrameworks>
 	</PropertyGroup>
 
 	<!-- If on Mac, add iOS as well -->
 	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-		<TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
+		<TargetFrameworks>net9.0-ios;net9.0-android</TargetFrameworks>
 	</PropertyGroup>
 	
 	<PropertyGroup>
-		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-maccatalyst</TargetFrameworks> -->
-		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks> -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-maccatalyst</TargetFrameworks> -->
+		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks> -->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
 		<RootNamespace>NeuroAccessMaui</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -24,8 +24,8 @@
 		<ApplicationTitle>Neuro-Access</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId Condition="$(TargetFramework) == 'net8.0-android'">com.tag.NeuroAccess</ApplicationId>
-		<ApplicationId Condition="$(TargetFramework) != 'net8.0-android'">com.trustanchorgroup.NeuroAccess</ApplicationId>
+		<ApplicationId Condition="$(TargetFramework) == 'net9.0-android'">com.tag.NeuroAccess</ApplicationId>
+		<ApplicationId Condition="$(TargetFramework) != 'net9.0-android'">com.trustanchorgroup.NeuroAccess</ApplicationId>
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
@@ -51,7 +51,7 @@
 
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
 		<ProvisioningType>manual</ProvisioningType>
 		<CodesignKey>iPhone Developer: Maximiliam Berggren (6C6VB862B9)</CodesignKey>
 		<CodesignProvision>Maximiliam Dev</CodesignProvision>
@@ -62,21 +62,21 @@
 		<MtouchExtraArgs>--optimize:-static-block-to-delegate-lookup</MtouchExtraArgs>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
 		<PublishTrimmed>True</PublishTrimmed> 
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
 		<PublishTrimmed>True</PublishTrimmed> 
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>True</UseInterpreter>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
 		<PublishTrimmed>True</PublishTrimmed> 
 		<RunAOTCompilation>True</RunAOTCompilation>
@@ -84,7 +84,7 @@
 	</PropertyGroup>
 
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
 		<RunAOTCompilation>False</RunAOTCompilation>
 		<PublishTrimmed>False</PublishTrimmed> 
 		<DebugSymbols>True</DebugSymbols>
@@ -106,11 +106,11 @@
 	</PropertyGroup>
 
 	<!-- Firebase -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android' and Exists('google-services.json')">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android' and Exists('google-services.json')">
 		<GoogleServicesJson Include="google-services.json" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios' and Exists('GoogleService-Info.plist')">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-ios' and Exists('GoogleService-Info.plist')">
 		<BundleResource Include="GoogleService-Info.plist" />
 	</ItemGroup>
 
