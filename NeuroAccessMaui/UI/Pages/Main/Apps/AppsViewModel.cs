@@ -167,9 +167,17 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		{
 			try
 			{
-				WalletNavigationArgs Args = new();
-
-				await ServiceRef.UiService.GoToAsync(nameof(WalletPage), Args, BackMethod.Pop);
+				if (!ServiceRef.TagProfile.HasBetaFeatures)
+				{
+					this.BetaFeaturePressed = true;
+					await Task.Delay(100);
+					this.BetaFeaturePressed = false;
+				}
+				else
+				{
+					WalletNavigationArgs Args = new();
+					await ServiceRef.UiService.GoToAsync(nameof(WalletPage), Args, BackMethod.Pop);
+				}
 			}
 			catch (Exception Ex)
 			{
