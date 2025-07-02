@@ -1007,6 +1007,47 @@ namespace NeuroAccessMaui.Services
 			NotificationManagerCompat NotificationManager = NotificationManagerCompat.From(Context);
 			NotificationManager.Notify(106, Builder.Build());
 		}
+
+		public Thickness GetInsets()
+		{
+			Activity? Activity = Platform.CurrentActivity;
+			if (Activity?.Window?.DecorView is not Android.Views.View DecorView)
+				return new Thickness(0);
+
+			float Density = Activity.Resources?.DisplayMetrics?.Density ?? 1f;
+
+
+			if (OperatingSystem.IsAndroidVersionAtLeast(30)) // API 30+
+			{
+				WindowInsets? WindowInsets = DecorView.RootWindowInsets;
+				if (WindowInsets is not null)
+				{
+					Android.Graphics.Insets Insets = WindowInsets.GetInsets(Android.Views.WindowInsets.Type.SystemBars());
+					return new Thickness(
+						Insets.Left / Density,
+						Insets.Top / Density,
+						Insets.Right / Density,
+						Insets.Bottom / Density
+					);
+				}
+			}
+			else if (OperatingSystem.IsAndroidVersionAtLeast(23)) // API 23-29
+			{
+				WindowInsets? WindowInsets = DecorView.RootWindowInsets;
+				if (WindowInsets is not null)
+				{
+					return new Thickness(
+						WindowInsets.SystemWindowInsetLeft / Density,
+						WindowInsets.SystemWindowInsetTop / Density,
+						WindowInsets.SystemWindowInsetRight / Density,
+						WindowInsets.SystemWindowInsetBottom / Density
+					);
+				}
+			}
+
+			return new Thickness(0);
+		}
+
 		#endregion
 	}
 }
