@@ -16,6 +16,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		protected override async Task OnAppearingAsync()
 		{
+			this.Padding = ServiceRef.PlatformSpecific.GetInsets();
+
 			await base.OnAppearingAsync();
 
 			

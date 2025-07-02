@@ -42,14 +42,13 @@
 	</Shell.TitleView> -->
 	<Grid x:Name="TheMainGrid"
 		  RowDefinitions="auto, *, auto, auto, auto"
-		  ColumnDefinitions="*"
 		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}" >
 
 		<controls:Background Grid.RowSpan="4"/>
 
 		<!-- Top Buttons -->
 		<Grid Grid.Row="0"
-			  Margin="{DynamicResource MediumMargins}"
+			  Margin="16,0,16,0"
 			  RowSpacing="{DynamicResource MediumSpacing}"
 			  RowDefinitions="auto,auto"
 			  ColumnDefinitions="auto,auto">
