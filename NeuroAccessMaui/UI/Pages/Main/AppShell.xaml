@@ -10,10 +10,10 @@
 		 xmlns:registration="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 		 FlyoutBehavior="Flyout"
 		 FlyoutHeaderBehavior="Scroll"
-		 FlyoutBackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+		 FlyoutBackgroundColor="{DynamicResource SurfaceBackgroundWL}" Padding="0,32,0,32">
 
 	<Shell.Behaviors>
-		<mct:StatusBarBehavior StatusBarColor="{DynamicResource SurfaceBackgroundWL}"
+		<mct:StatusBarBehavior 
 									  StatusBarStyle="{AppThemeBinding Light='DarkContent', Dark='LightContent'}" />
 	 </Shell.Behaviors>
 
@@ -23,7 +23,7 @@
 
 	<ShellContent ContentTemplate="{DataTemplate main:MainPage}"
 					  FlyoutItemIsVisible="false"
-					  Route="MainPage" />
+					  Route="MainPage"/>
 
 	<Shell.Resources>
 		<ResourceDictionary>
