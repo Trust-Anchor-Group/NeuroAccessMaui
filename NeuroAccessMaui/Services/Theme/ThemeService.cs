@@ -73,7 +73,7 @@ namespace NeuroAccessMaui.Services.Theme
 					ServiceRef.TagProfile.Theme = Theme;
 					Application.Current!.UserAppTheme = Theme;
 					this.SetLocalTheme(Theme);
-					CommunityToolkit.Maui.Core.Platform.StatusBar.SetColor(AppColors.PrimaryBackground);
+					//CommunityToolkit.Maui.Core.Platform.StatusBar.SetColor(AppColors.PrimaryBackground);
 					CommunityToolkit.Maui.Core.Platform.StatusBar.SetStyle(Theme == AppTheme.Dark ? StatusBarStyle.LightContent : StatusBarStyle.DarkContent);
 				}
 				catch (Exception Ex)
