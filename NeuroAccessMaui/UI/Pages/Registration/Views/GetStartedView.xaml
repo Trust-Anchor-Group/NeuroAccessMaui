@@ -10,50 +10,54 @@
 									xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+	<controls:ConditionView Condition="{Binding IsLoading}">
+		<controls:ConditionView.True>
+			<ActivityIndicator IsRunning="True"
+							   VerticalOptions="Center" />
+		</controls:ConditionView.True>
+		<controls:ConditionView.False>
+			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}"
+								 VerticalOptions="End">
+				<Label Style="{DynamicResource PageTitleLabel}"
+					   Text="{l:Localize OnboardingGetStartedTitle}" />
 
-	<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}" VerticalOptions="End">
-		<Label
-				Style="{DynamicResource PageTitleLabel}"
-				Text="{l:Localize OnboardingGetStartedTitle}" />
+				<!-- Info Bubble-->
+				<Border Grid.Row="0"
+						BackgroundColor="{DynamicResource TnPInfobgWL}"
+						Padding="{DynamicResource MediumMargins}"
+						StrokeShape="RoundRectangle 8,8,0,8">
+					<Border.Shadow>
+						<Shadow Brush="{DynamicResource SurfaceShadowColorWL}"
+								Offset="0,4" />
+					</Border.Shadow>
+					<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+						  ColumnDefinitions="auto, *">
+						<Path Grid.Column="0"
+							  Data="{x:Static ui:Geometries.InfoCirclePath}"
+							  Fill="{DynamicResource TnPInfoContentWL}" />
+						<Label Grid.Column="1"
+							   Text="{l:Localize ScanInvitationInfo}"
+							   TextColor="{DynamicResource TnPInfoContentWL}" />
+					</Grid>
+				</Border>
 
-		<!-- Info Bubble-->
-		<Border Grid.Row="0"
-					BackgroundColor="{DynamicResource TnPInfobgWL}"
-					Padding="{DynamicResource MediumMargins}"
-					StrokeShape="RoundRectangle 8,8,0,8">
-			<Border.Shadow>
-				<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
-			</Border.Shadow>
-			<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-					ColumnDefinitions="auto, *">
-				<Path
-						Grid.Column="0"
-						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{DynamicResource TnPInfoContentWL}"/>
-				<Label
-						Grid.Column="1"
-						Text="{l:Localize ScanInvitationInfo}"
-						TextColor="{DynamicResource TnPInfoContentWL}"/>
-			</Grid>
-		</Border>
+				<!-- Buttons -->
+				<controls:SvgButton Command="{Binding ScanQrCodeCommand}"
+									Style="{DynamicResource PrimaryIconButton}"
+									LabelText="{l:Localize QrPageTitleScanInvitation}"
+									SvgSource="scan_qr.svg"
+									LabelPosition="Right" />
 
-		<!-- Buttons -->
-		<controls:SvgButton
-				Command="{Binding ScanQrCodeCommand}"
-				Style="{DynamicResource PrimaryIconButton}"
-				LabelText="{l:Localize QrPageTitleScanInvitation}"
-				SvgSource="scan_qr.svg"
-				LabelPosition="Right"/>
+				<controls:TextButton Command="{Binding NewAccountCommand}"
+									 Style="{DynamicResource TertiaryButton}"
+									 LabelData="{l:Localize CreateNewAccount}" />
 
-		<controls:TextButton
-				Command="{Binding NewAccountCommand}"
-				Style="{DynamicResource TertiaryButton}"
-				LabelData="{l:Localize CreateNewAccount}" />
+				<controls:TextButton Command="{Binding ExistingAccountCommand}"
+									 Style="{DynamicResource TertiaryButton}"
+									 LabelData="{l:Localize IAlreadyHaveAnAccount}" />
 
-		<controls:TextButton
-				Command="{Binding ExistingAccountCommand}"
-				Style="{DynamicResource TertiaryButton}"
-				LabelData="{l:Localize IAlreadyHaveAnAccount}" />
+			</VerticalStackLayout>
+		</controls:ConditionView.False>
+	</controls:ConditionView>
 
-	</VerticalStackLayout>
 </base:BaseRegistrationView>

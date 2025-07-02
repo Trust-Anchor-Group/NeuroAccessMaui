@@ -202,8 +202,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
             {
                 if (LegalIdentity.State == IdentityState.Approved)
                 {
-                    if (Shell.Current.CurrentState.Location.OriginalString == Constants.Pages.RegistrationPage)
-                        GoToRegistrationStep(RegistrationStep.DefinePassword);
+					if (Shell.Current.CurrentState.Location.OriginalString == Constants.Pages.RegistrationPage &&
+						ServiceRef.TagProfile.Step != RegistrationStep.DefinePassword &&
+						ServiceRef.TagProfile.Step != RegistrationStep.Biometrics &&
+						ServiceRef.TagProfile.Step != RegistrationStep.Complete
+						)
+					{
+						GoToRegistrationStep(RegistrationStep.DefinePassword);
+					}
                 }
                 else if (LegalIdentity.IsDiscarded())
                 {

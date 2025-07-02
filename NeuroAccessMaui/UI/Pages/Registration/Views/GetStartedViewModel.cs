@@ -18,6 +18,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
 	public partial class GetStartedViewModel() : BaseRegistrationViewModel(RegistrationStep.GetStarted)
 	{
+		[ObservableProperty]
+		private bool isLoading = false;
+
 		[RelayCommand]
 		private void NewAccount()
 		{
@@ -33,6 +36,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand]
 		private async Task ScanQrCode()
 		{
+
 			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanInvitation),
 				[Constants.UriSchemes.Onboarding]);
 
@@ -56,6 +60,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				return;
 			}
 
+			await MainThread.InvokeOnMainThreadAsync(() => this.IsLoading = true);
+
+
 			string Domain = Parts[1];
 			string Code = Parts[2];
 			string KeyStr = Parts[3];
@@ -75,6 +82,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				await MainThread.InvokeOnMainThreadAsync(() => this.IsLoading = false);
 
 				return;
 			}
@@ -105,6 +113,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						ServiceRef.Localizer[nameof(AppResources.UnableToAccessInvitation)],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 					this.IsBusy = false;
+					await MainThread.InvokeOnMainThreadAsync(() => this.IsLoading = false);
+
 					return;
 				}
 
@@ -188,7 +198,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								break;
 
 							case "Pin":
-								Pin = XML.Attribute(E, "pin");
+								//Pin = XML.Attribute(E, "pin");
 								break;
 
 							case "Transfer":
@@ -208,7 +218,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 					if (AccountDone && LegalIdDefinition is not null)
 					{
-						GoToRegistrationStep(RegistrationStep.Finalize);
+						GoToRegistrationStep(RegistrationStep.DefinePassword);
 					}
 					else if (AccountDone)
 					{
@@ -230,6 +240,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			finally
 			{
 				this.IsBusy = false;
+				await MainThread.InvokeOnMainThreadAsync(() => this.IsLoading = false);
 			}
 		}
 

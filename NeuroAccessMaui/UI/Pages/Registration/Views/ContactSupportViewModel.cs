@@ -480,7 +480,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 								break;
 
 							case "Pin":
-								Pin = XML.Attribute(E, "pin");
+								//Pin = XML.Attribute(E, "pin");
 								break;
 
 							case "Transfer":
@@ -500,7 +500,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 					if (AccountDone && LegalIdDefinition is not null)
 					{
-						GoToRegistrationStep(RegistrationStep.Finalize);
+						GoToRegistrationStep(RegistrationStep.DefinePassword);
 					}
 					else if (AccountDone)
 					{
