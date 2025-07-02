@@ -106,5 +106,12 @@ namespace NeuroAccessMaui.Services
 
 
 		#endregion
+
+		/// <summary>
+		/// Gets the safe area insets for the device (top, bottom, left, right).
+		/// </summary>
+		/// <returns>Device safe insets as a Thickness (in device-independent units).</returns>
+		Thickness GetInsets();
+
 	}
 }
