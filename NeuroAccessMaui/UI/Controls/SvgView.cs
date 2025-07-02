@@ -28,11 +28,11 @@ namespace NeuroAccessMaui.UI.Controls
 			AutoHeightSKCanvasView? AutoHeightSKCanvasView = this.VirtualView as AutoHeightSKCanvasView;
             if (AutoHeightSKCanvasView is not null)
             {
-                SizeRequest Custom = AutoHeightSKCanvasView.Measure(widthConstraint, heightConstraint);
-                if (Custom.Request == Size.Zero)
+                Size Custom = AutoHeightSKCanvasView.Measure(widthConstraint, heightConstraint);
+                if (Custom == Size.Zero)
                     return base.GetDesiredSize(widthConstraint, heightConstraint);
                 else
-                    return Custom.Request;
+                    return Custom;
             }
             return base.GetDesiredSize(widthConstraint, heightConstraint);
         }
