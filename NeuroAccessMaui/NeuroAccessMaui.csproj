@@ -284,30 +284,31 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Common" Version="8.3.2" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
-		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.2.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+		<PackageReference Include="CommunityToolkit.Common" Version="8.4.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="12.0.0" />
+		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="6.0.1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="DotNetMeteor.HotReload.Plugin" Version="3.*" />
 		<PackageReference Include="EDaler" Version="3.1.1" />
-		<PackageReference Include="Mapsui.Maui" Version="4.1.9" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.10" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.100" />
-		<PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.12.0">
+		<PackageReference Include="Mapsui" Version="5.0.0-beta.18" />
+		<PackageReference Include="Mapsui.Maui" Version="5.0.0-beta.18" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.6" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.6" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.81" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.81" />
+		<PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.14.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-		<PackageReference Include="Mopups" Version="1.3.2" />
+		<PackageReference Include="Mopups" Version="1.3.4" />
 		<PackageReference Include="NeuroFeatures" Version="2.1.4" />
 		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
-		<PackageReference Include="SkiaSharp" Version="2.88.9" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.9" />
+		<PackageReference Include="SkiaSharp" Version="3.119.0" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.0" />
 		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0" />
 		<PackageReference Include="Plugin.Firebase.Core" Version="3.1.1" />
 		<PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.2" />
-		<PackageReference Include="Svg.Skia" Version="2.0.0.1" />
+		<PackageReference Include="Svg.Skia" Version="3.0.3" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 		<PackageReference Include="Waher.Content" Version="3.3.4" />
