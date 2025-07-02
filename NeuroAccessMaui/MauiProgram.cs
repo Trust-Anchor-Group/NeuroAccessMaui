@@ -19,6 +19,9 @@ using NeuroAccessMaui.UI.Controls;
 
 #if DEBUG
 using DotNet.Meteor.HotReload.Plugin;
+using SkiaSharp.Views.Maui.Handlers;
+
+
 #endif
 
 
@@ -44,7 +47,7 @@ namespace NeuroAccessMaui
 
 			Builder.ConfigureMauiHandlers(handlers =>
 			{
-				handlers.AddHandler(typeof(AutoHeightSKCanvasView), typeof(AutoHeightSKCanvasViewHandler));
+				handlers.AddHandler<AutoHeightSKCanvasView, SKCanvasViewHandler>();
 			});
 
 			Builder.ConfigureLifecycleEvents(lifecycle =>
