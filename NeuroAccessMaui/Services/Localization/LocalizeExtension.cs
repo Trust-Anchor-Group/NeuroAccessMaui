@@ -13,6 +13,7 @@ namespace NeuroAccessMaui.Services.Localization
 	/// <summary>
 	/// Access to localized strings.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	[ContentProperty(nameof(Path))]
 	public class LocalizeExtension : IMarkupExtension<BindingBase>, INotifyPropertyChanged, IDisposable
 	{
