@@ -2,6 +2,7 @@
 using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Rendering;
+using Mapsui.Rendering.Skia.Cache;
 using Mapsui.Rendering.Skia.SkiaStyles;
 using Mapsui.Styles;
 using SkiaSharp;
@@ -20,7 +21,7 @@ namespace NeuroAccessMaui.UI.Controls.Geo
 			ILayer Layer,
 			IFeature Feature,
 			IStyle Style,
-			IRenderCache RenderCache, long Iteration)
+			RenderService renderService, long iteration)
 		{
 			if (Style is not DataUriStyle CustomStyle)
 				return false;
