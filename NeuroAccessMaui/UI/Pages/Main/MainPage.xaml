@@ -82,13 +82,23 @@
 				   HeightRequest="230"
 				   WidthRequest="230" Aspect="AspectFit"/>
 -->
-			<controls:UriImage Source="{Binding BannerUri}"
-							   ErrorPlaceholder="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
-							   Grid.Row="0"
-							   HeightRequest="230"
-							   WidthRequest="230"
-							   Aspect="AspectFit"
-							   VerticalOptions="End"/>
+			<controls:ConditionView Condition="{Binding ThemeLoaded}"
+									VerticalOptions="End">
+				<controls:ConditionView.True>
+					<controls:UriImage Source="{Binding BannerUri}"
+									   ErrorPlaceholder="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
+									   Grid.Row="0"
+									   HeightRequest="230"
+									   WidthRequest="230"
+									   Aspect="AspectFit"
+									   VerticalOptions="Center" />
+				</controls:ConditionView.True>
+				<controls:ConditionView.False>
+					<ActivityIndicator IsRunning="True"
+									   VerticalOptions="Center" />
+				</controls:ConditionView.False>
+			</controls:ConditionView>
+
 			
 			<!-- Missing Neuro ID Box-->
 			<Grid RowDefinitions="auto, *"

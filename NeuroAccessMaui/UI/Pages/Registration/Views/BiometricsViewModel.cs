@@ -119,6 +119,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[RelayCommand]
 		private void Later()
 		{
+			ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod.Password;
 			GoToRegistrationStep(RegistrationStep.Finalize);
 		}
 

@@ -21,13 +21,16 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeDark);
 
+		[ObservableProperty]
+		bool themeLoaded = false;
+
 		public string BannerUri =>
-			Application.Current.RequestedTheme switch
+			Application.Current?.UserAppTheme switch
 			{
 				AppTheme.Dark => this.BannerUriDark,
 				AppTheme.Light => this.BannerUriLight,
 				_ => this.BannerUriLight
-			};
+			} ?? this.BannerUriLight;
 
 		public MainViewModel()
 			: base()
@@ -62,6 +65,12 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				}
 				*/
 				_ = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
+				await ServiceRef.ThemeService.ThemeLoaded.Task;
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.ThemeLoaded = true;
+					this.OnPropertyChanged(nameof(this.BannerUri));
+				});
 				await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
 
 

@@ -60,6 +60,8 @@ namespace NeuroAccessMaui.Services.Theme
 		public Task<AppTheme> GetTheme()
 			=> Task.FromResult(Application.Current?.UserAppTheme ?? AppTheme.Unspecified);
 
+		public TaskCompletionSource ThemeLoaded { get; } = new();
+
 		/// <inheritdoc />
 		public void SetTheme(AppTheme Theme)
 		{
@@ -183,6 +185,7 @@ namespace NeuroAccessMaui.Services.Theme
 			finally
 			{
 				this.themeSemaphore.Release();
+				this.ThemeLoaded.TrySetResult();
 			}
 		}
 
