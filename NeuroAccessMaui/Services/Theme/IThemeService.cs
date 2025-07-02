@@ -37,6 +37,11 @@ namespace NeuroAccessMaui.Services.Theme
 		IReadOnlyDictionary<string, Uri> ImageUris { get; }
 
 		/// <summary>
+		/// If the theme has been loaded.
+		/// </summary>
+		TaskCompletionSource ThemeLoaded { get; }
+
+		/// <summary>
 		/// Returns the image URI for the given identifier, or empty string if not found.
 		/// </summary>
 		/// <param name="Id">The image identifier.</param>
