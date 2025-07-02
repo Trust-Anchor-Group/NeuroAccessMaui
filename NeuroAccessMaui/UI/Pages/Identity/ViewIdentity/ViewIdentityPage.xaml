@@ -16,8 +16,10 @@
     xmlns:skiaLottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
     xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
     xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ViewIdentity"
-    x:Name="ThisPage"
-    x:DataType="viewmodel:ViewIdentityViewModel">
+	xmlns:ext="clr-namespace:NeuroAccessMaui.MarkupExtensions"
+	x:Name="ThisPage"
+    x:DataType="viewmodel:ViewIdentityViewModel"
+	Padding="{ext:SafeInsets Type=Top}">
 
     <VisualElement.Resources>
         <Style
@@ -132,7 +134,7 @@
                 <DataTrigger
                     Binding="{Binding IdentityState}"
                     TargetType="Label"
-                    Value="Compromised">
+                    Value="Compromised"> 
                     <Setter Property="Text" Value="{l:Localize IdentityState_Compromised}" />
                     <Setter Property="TextColor" Value="{DynamicResource TnPWarningContentWL}" />
                 </DataTrigger>
@@ -510,7 +512,8 @@
                             HorizontalOptions="Center"
                             HorizontalTextAlignment="Center"
                             Text="{l:Localize SwipeForDetails}"
-                            TextColor="{DynamicResource ContentAccessWL}" />
+							   TextColor="{DynamicResource ContentAccessWL}"
+							   Margin="{ext:SafeInsets Type=Bottom}" />
                     </VerticalStackLayout>
                 </controls:BottomSheetView.HeaderContent>
                 <controls:BottomSheetView.MainContent>
