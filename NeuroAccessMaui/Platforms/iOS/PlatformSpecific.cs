@@ -524,5 +524,28 @@ namespace NeuroAccessMaui.Services
 			this.ShowLocalNotification(Title, MessageBody, Data);
         }
 		#endregion
+
+		public Thickness GetInsets()
+		{
+
+			// Try to get the current UIWindow.
+
+			UIWindow? Window = AppDelegate.GetKeyWindow();
+			if (Window is null)
+				return new Thickness(0);
+
+
+
+			// Get the safe area insets from the UIWindow.
+			UIEdgeInsets Insets = Window.SafeAreaInsets;
+
+			// Convert from native (nfloat) to double as needed for Thickness.
+			return new Thickness(
+				(double)Insets.Left,
+				(double)Insets.Top,
+				(double)Insets.Right,
+				(double)Insets.Bottom
+			);
+		}
 	}
 }
