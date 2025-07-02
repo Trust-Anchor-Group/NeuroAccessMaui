@@ -289,7 +289,7 @@
         <!--  TOP BAR  -->
         <Grid
             Grid.Row="0"
-            Margin="16,16,16,8"
+            Margin="16,0,16,8"
             ColumnDefinitions="auto,*,auto"
             RowDefinitions="auto">
             <controls:SvgButton
