@@ -101,15 +101,11 @@ namespace NeuroAccessMaui
 #endif
 			Builder.UseMauiCommunityToolkitMarkup();
 			Builder.UseBarcodeReader();
-
-			// Localization service
 			Builder.UseLocalizationManager<AppResources>();
-
-			// Singleton app's services
 			Builder.Services.AddSingleton<IPlatformSpecific, PlatformSpecific>();
 
-			// Apps pages & models
-			Builder.RegisterPagesManager();
+			Builder.RegisterTypes();
+			Builder.RegisterPages();
 
 			//Builder.Services.AddLogging();
 #if DEBUG
