@@ -22,7 +22,7 @@ namespace NeuroAccessMaui.Services.Theme
 	{
 		private const string providerFlagKey = "IsServerThemeDictionary";
 		private const string localFlagKey = "IsLocalThemeDictionary";
-		private static readonly TimeSpan themeExpiry = TimeSpan.FromDays(7);
+		private static readonly TimeSpan themeExpiry = Constants.Cache.DefaultImageCache;
 
 		private static readonly Lazy<Task<XmlSchema>> brandingSchemaV1Lazy = new(async () =>
 		{
