@@ -37,7 +37,7 @@ namespace NeuroAccessMaui.Services.Theme
 
 		private readonly FileCacheManager cacheManager;
 		private readonly Dictionary<string, Uri> imageUrisMap;
-		private readonly SemaphoreSlim themeSemaphore = new(1, 1); // Prevent race conditions on theme switching
+		private SemaphoreSlim? themeSemaphore; // Prevent race conditions on theme switching
 
 		private ResourceDictionary? localLightDict = new Light();
 		private ResourceDictionary? localDarkDict = new Dark();
@@ -49,6 +49,7 @@ namespace NeuroAccessMaui.Services.Theme
 		/// </summary>
 		public ThemeService()
 		{
+			this.themeSemaphore = new SemaphoreSlim(1, 1);
 			this.cacheManager = new FileCacheManager("BrandingThemes", themeExpiry);
 			this.imageUrisMap = new(StringComparer.OrdinalIgnoreCase);
 		}
@@ -123,6 +124,8 @@ namespace NeuroAccessMaui.Services.Theme
 		/// </summary>
 		public async Task ApplyProviderTheme()
 		{
+			if (this.themeSemaphore is null)
+				return; // Already disposed
 			await this.themeSemaphore.WaitAsync();
 			try
 			{
@@ -432,6 +435,7 @@ namespace NeuroAccessMaui.Services.Theme
 				if (disposing)
 				{
 					this.themeSemaphore?.Dispose();
+					this.themeSemaphore = null;
 				}
 
 				this.disposedValue = true;
