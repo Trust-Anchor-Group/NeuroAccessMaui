@@ -383,17 +383,25 @@ namespace NeuroAccessMaui.Services.Theme
 
 		private async Task<byte[]?> FetchOrGetCachedAsync(Uri Uri, string Key)
 		{
-			(byte[]? Cached, string _) = await this.cacheManager.TryGet(Key);
-			if (Cached is not null)
-				return Cached;
-
-			(byte[]? Fetched, string _) = await ServiceRef.InternetCacheService.GetOrFetch(Uri, ServiceRef.TagProfile.PubSubJid!, true);
-			if (Fetched is not null)
+			try
 			{
-				await this.cacheManager.AddOrUpdate(Key, ServiceRef.TagProfile.PubSubJid!, true, Fetched, "application/xml");
-			}
+				(byte[]? Cached, string _) = await this.cacheManager.TryGet(Key);
+				if (Cached is not null)
+					return Cached;
 
-			return Fetched;
+				(byte[]? Fetched, string _) = await ServiceRef.InternetCacheService.GetOrFetch(Uri, ServiceRef.TagProfile.PubSubJid!, true);
+				if (Fetched is not null)
+				{
+					await this.cacheManager.AddOrUpdate(Key, ServiceRef.TagProfile.PubSubJid!, true, Fetched, "application/xml");
+				}
+
+				return Fetched;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(new Exception($"FetchOrGetCachedAsync failed for {Uri}", Ex));
+				return null;
+			}
 		}
 
 		private async Task<bool> ValidateBrandingXmlAsync(XmlDocument Doc, bool UseV2)
