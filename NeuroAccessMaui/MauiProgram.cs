@@ -20,11 +20,13 @@ using NeuroAccessMaui.UI.Controls;
 #if DEBUG
 using DotNet.Meteor.HotReload.Plugin;
 using SkiaSharp.Views.Maui.Handlers;
+using Microsoft.Maui.Hosting;
+
+
+
 
 
 #endif
-
-
 #if ANDROID
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
@@ -114,6 +116,10 @@ namespace NeuroAccessMaui
 			Builder.Logging.AddDebug();
 #endif
 			instance = Builder.Build();
+
+			// Setup the service provider
+			ServiceRef.Provider = new HybridServiceProvider(instance.Services);
+
 
 			return instance;
 		}
