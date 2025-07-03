@@ -416,7 +416,7 @@ namespace NeuroAccessMaui.Services.Theme
 		/// </summary>
 		private void RemoveAllThemeDictionaries(ICollection<ResourceDictionary> MergedDictionaries, ResourceDictionary? DictInstance)
 		{
-			if (DictInstance != null)
+			if (DictInstance is not null)
 			{
 				while (MergedDictionaries.Contains(DictInstance))
 					MergedDictionaries.Remove(DictInstance);
