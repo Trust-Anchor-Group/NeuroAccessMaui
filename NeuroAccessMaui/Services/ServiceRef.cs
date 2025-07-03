@@ -34,6 +34,12 @@ namespace NeuroAccessMaui.Services
 	/// </summary>
 	public static class ServiceRef
 	{
+		/// <summary>
+		/// The service provider for the app.
+		/// This is set before the app is started, and will be used to resolve services
+		/// </summary>
+		public static IServiceProvider Provider { get; set; } = null!;
+
 		private static IXmppService? xmppService;
 		private static IUiService? uiService;
 		private static ITagProfile? tagProfile;
