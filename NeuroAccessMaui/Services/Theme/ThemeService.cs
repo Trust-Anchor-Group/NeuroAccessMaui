@@ -187,7 +187,7 @@ namespace NeuroAccessMaui.Services.Theme
 			}
 			finally
 			{
-				this.themeSemaphore.Release();
+				this.themeSemaphore?.Release();
 				this.ThemeLoaded.TrySetResult();
 			}
 		}
