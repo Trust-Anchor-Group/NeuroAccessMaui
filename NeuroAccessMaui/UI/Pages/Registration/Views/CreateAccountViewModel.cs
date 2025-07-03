@@ -28,8 +28,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
         {
             await base.OnInitialize();
 
-            ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
-            ServiceRef.XmppService.LegalIdentityChanged += this.XmppContracts_LegalIdentityChanged;
         }
 
         /// <inheritdoc />
@@ -41,13 +39,20 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
             await base.OnDispose();
         }
 
-        /// <inheritdoc />
-        public override async Task DoAssignProperties()
+		private bool hasInitializedCallbacks = false;
+
+		/// <inheritdoc />
+		public override async Task DoAssignProperties()
         {
             await base.DoAssignProperties();
 
-            // Only try to create the identity if we haven't already applied
-            if (!this.hasAppliedForIdentity && this.CreateIdentityCommand.CanExecute(null))
+			if (!this.hasInitializedCallbacks)
+			{
+				ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
+				ServiceRef.XmppService.LegalIdentityChanged += this.XmppContracts_LegalIdentityChanged;
+			}
+			// Only try to create the identity if we haven't already applied
+			if (!this.hasAppliedForIdentity && this.CreateIdentityCommand.CanExecute(null))
                 await this.CreateIdentityCommand.ExecuteAsync(null);
             if (ServiceRef.TagProfile.Step != RegistrationStep.Complete)
                 await this.CheckAndHandleIdentityApplicationAsync();
