@@ -87,8 +87,6 @@ namespace NeuroAccessMaui
 		private CancellationTokenSource startupCancellation;
 		private bool isDisposed;
 
-		private readonly LoginAuditor loginAuditor;
-
 		private static App? appInstance;
 		private static bool configLoaded;
 		private static bool defaultInstantiated;
@@ -217,22 +215,12 @@ namespace NeuroAccessMaui
 				AppDomain.CurrentDomain.UnhandledException += this.CurrentDomain_UnhandledException;
 				TaskScheduler.UnobservedTaskException += this.TaskScheduler_UnobservedTaskException;
 
-				// Initialize the login auditor.
-				LoginInterval[] LoginIntervals =
-				[
-					new(Constants.Password.FirstMaxPasswordAttempts, TimeSpan.FromHours(Constants.Password.FirstBlockInHours)),
-					new(Constants.Password.SecondMaxPasswordAttempts, TimeSpan.FromHours(Constants.Password.SecondBlockInHours)),
-					new(Constants.Password.ThirdMaxPasswordAttempts, TimeSpan.FromHours(Constants.Password.ThirdBlockInHours))
-				];
-
-				this.loginAuditor = new LoginAuditor(Constants.Password.LogAuditorObjectID, LoginIntervals);
 				this.startupCancellation = new CancellationTokenSource();
 				this.initCompleted = this.InitializeAppAsync(backgroundStart);
 			}
 			else
 			{
 				// Reuse state from the previous instance.
-				this.loginAuditor = PreviousInstance.loginAuditor;
 				this.autoSaveTimer = PreviousInstance.autoSaveTimer;
 				this.initCompleted = PreviousInstance.initCompleted;
 				this.startupCancellation = PreviousInstance.startupCancellation;
@@ -241,6 +229,7 @@ namespace NeuroAccessMaui
 			if (!backgroundStart)
 			{
 				this.InitializeComponent();
+
 				AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
 				this.SetTheme(CurrentTheme ?? AppTheme.Light);
 				ServiceRef.ThemeService.SetTheme(CurrentTheme ?? AppTheme.Light);
@@ -466,7 +455,6 @@ namespace NeuroAccessMaui
 				await Vm.Shutdown();
 
 			await this.ShutdownAsync(inPanic: false);
-			SetStartInactivityTime();
 		}
 
 		internal static async Task StopAsync()
@@ -754,7 +742,7 @@ namespace NeuroAccessMaui
 					Headers = { ContentType = MediaTypeHeaderValue.Parse(contentType) }
 				};
 
-				await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
+				//await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
 			}
 			catch (Exception Ex)
 			{
@@ -838,167 +826,7 @@ namespace NeuroAccessMaui
 
 		#endregion
 
-		#region Authentication
 
-		public static async Task<string?> InputPasswordAsync(AuthenticationPurpose purpose)
-		{
-			ITagProfile Profile = ServiceRef.TagProfile;
-			if (!Profile.HasLocalPassword)
-				return string.Empty;
-
-			return await InputPasswordInternalAsync(purpose, Profile);
-		}
-
-		private static async Task<string?> InputPasswordInternalAsync(AuthenticationPurpose purpose, ITagProfile profile)
-		{
-			displayedPasswordPopup = true;
-			try
-			{
-				if (!profile.HasLocalPassword)
-					return string.Empty;
-
-				CheckPasswordViewModel ViewModel = new(purpose);
-				string? Result = await ServiceRef.UiService.PushAsync<CheckPasswordPopup, CheckPasswordViewModel, string>(ViewModel);
-				await CheckUserBlockingAsync();
-				return Result;
-			}
-			catch
-			{
-				return null;
-			}
-			finally
-			{
-				displayedPasswordPopup = false;
-			}
-		}
-
-		public static Task<bool> AuthenticateUserAsync(AuthenticationPurpose purpose, bool force = false)
-		{
-			TaskCompletionSource<bool> Tcs = new();
-			MainThread.BeginInvokeOnMainThread(async () =>
-			{
-				bool Result = await AuthenticateUserOnMainThreadAsync(purpose, force);
-				if (Result)
-					lastAuthenticationTime = DateTime.Now;
-				Tcs.TrySetResult(Result);
-			});
-			return Tcs.Task;
-		}
-
-		private static async Task<bool> AuthenticateUserOnMainThreadAsync(AuthenticationPurpose purpose, bool force = false)
-		{
-			bool NeedToVerifyPassword = IsInactivitySafeIntervalPassed();
-			if (!force && !NeedToVerifyPassword)
-				return true;
-
-			switch (ServiceRef.TagProfile.AuthenticationMethod)
-			{
-				case AuthenticationMethod.Fingerprint:
-					if (!ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication)
-						ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod.Password;
-
-					if (await ServiceRef.PlatformSpecific.AuthenticateUserFingerprint(
-						ServiceRef.Localizer[nameof(AppResources.FingerprintTitle)],
-						null,
-						ServiceRef.Localizer[nameof(AppResources.FingerprintDescription)],
-						ServiceRef.Localizer[nameof(AppResources.Cancel)],
-						null))
-					{
-						await UserAuthenticationSuccessfulAsync();
-						return true;
-					}
-					goto case AuthenticationMethod.Password;
-
-				case AuthenticationMethod.Password:
-					if (!ServiceRef.TagProfile.HasLocalPassword)
-						return true;
-
-					if (displayedPasswordPopup)
-						return false;
-
-					return await InputPasswordInternalAsync(purpose, ServiceRef.TagProfile) is not null;
-
-				default:
-					return false;
-			}
-		}
-
-		public static async Task CheckUserBlockingAsync()
-		{
-			DateTime? NextLoginTime = await appInstance!.loginAuditor.GetEarliestLoginOpportunity(Constants.Password.RemoteEndpoint, Constants.Password.Protocol);
-			if (NextLoginTime.HasValue)
-			{
-				IUiService Ui = ServiceRef.UiService;
-				string MessageAlert;
-				if (NextLoginTime == DateTime.MaxValue)
-					MessageAlert = ServiceRef.Localizer[nameof(AppResources.PasswordIsInvalidAplicationBlockedForever)];
-				else
-				{
-					DateTime LocalDateTime = NextLoginTime.Value.ToLocalTime();
-					if (NextLoginTime.Value.ToShortDateString() == DateTime.Today.ToShortDateString())
-					{
-						string DateString = LocalDateTime.ToShortTimeString();
-						MessageAlert = ServiceRef.Localizer[nameof(AppResources.PasswordIsInvalidAplicationBlocked), DateString];
-					}
-					else if (NextLoginTime.Value.ToShortDateString() == DateTime.Today.AddDays(1).ToShortDateString())
-					{
-						string DateString = LocalDateTime.ToShortTimeString();
-						MessageAlert = ServiceRef.Localizer[nameof(AppResources.PasswordIsInvalidAplicationBlockedTillTomorrow), DateString];
-					}
-					else
-					{
-						string DateString = LocalDateTime.ToString("yyyy-MM-dd, 'at' HH:mm", CultureInfo.InvariantCulture);
-						MessageAlert = ServiceRef.Localizer[nameof(AppResources.PasswordIsInvalidAplicationBlocked), DateString];
-					}
-				}
-
-				await Ui.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], MessageAlert);
-				await StopAsync();
-			}
-		}
-
-		public static async Task<bool> CheckPasswordAndUnblockUserAsync(string password)
-		{
-			if (password is null)
-				return false;
-
-			if (ServiceRef.TagProfile.ComputePasswordHash(password) == ServiceRef.TagProfile.LocalPasswordHash)
-			{
-				await UserAuthenticationSuccessfulAsync();
-				return true;
-			}
-			else
-			{
-				await UserAuthenticationFailedAsync();
-				return false;
-			}
-		}
-
-		private static async Task UserAuthenticationSuccessfulAsync()
-		{
-			SetStartInactivityTime();
-			SetCurrentPasswordCounter(0);
-			await appInstance!.loginAuditor.UnblockAndReset(Constants.Password.RemoteEndpoint);
-		}
-
-		private static async Task UserAuthenticationFailedAsync()
-		{
-			await appInstance!.loginAuditor.ProcessLoginFailure(Constants.Password.RemoteEndpoint, Constants.Password.Protocol, DateTime.Now, Constants.Password.Reason);
-			long CurrentCounter = await GetCurrentPasswordCounterAsync();
-			CurrentCounter++;
-			SetCurrentPasswordCounter(CurrentCounter);
-		}
-
-		private static void SetStartInactivityTime() => savedStartTime = DateTime.Now;
-
-		private static bool IsInactivitySafeIntervalPassed() => DateTime.Compare(DateTime.Now,
-			lastAuthenticationTime.AddMinutes(Constants.Password.PossibleInactivityInMinutes)) > 0; // T1 is Later than T2;
-
-		internal static async Task<long> GetCurrentPasswordCounterAsync() => await ServiceRef.SettingsService.RestoreLongState(Constants.Password.CurrentPasswordAttemptCounter);
-
-		private static async void SetCurrentPasswordCounter(long counter) => await ServiceRef.SettingsService.SaveState(Constants.Password.CurrentPasswordAttemptCounter, counter);
-
-		#endregion
 
 		#region IDisposable Implementation
 
@@ -1025,7 +853,6 @@ namespace NeuroAccessMaui
 			if (this.isDisposed)
 				return;
 
-			await this.loginAuditor.DisposeAsync();
 			this.autoSaveTimer?.Dispose();
 			this.initCompleted.Dispose();
 			this.startupWorker.Dispose();

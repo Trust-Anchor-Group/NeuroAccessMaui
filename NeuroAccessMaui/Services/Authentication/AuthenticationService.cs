@@ -11,12 +11,14 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Popups.Password;
 using Waher.Events;
+using Waher.Runtime.Inventory;
 using Waher.Security;
 using Waher.Security.LoginMonitor;
 
 namespace NeuroAccessMaui.Services.Authentication
 {
-	public class AuthenticationService : IDisposableAsync
+	[Singleton]
+	public class AuthenticationService : IAuthenticationService, IDisposable, IAsyncDisposable
 	{
 		private readonly ITagProfile tagProfile;
 		private readonly IUiService uiService;
@@ -44,7 +46,7 @@ namespace NeuroAccessMaui.Services.Authentication
 			this.platformSpecific = ServiceRef.Provider.GetRequiredService<IPlatformSpecific>();
 			this.loginAuditor = new LoginAuditor(Constants.Password.LogAuditorObjectID, loginIntervals);
 			this.settingsService = ServiceRef.Provider.GetRequiredService<ISettingsService>();
-			this.localizer = ServiceRef.Provider.GetRequiredService<IStringLocalizer>();
+			this.localizer = ServiceRef.Localizer;
 		}
 
 		/// <summary>
@@ -224,7 +226,7 @@ namespace NeuroAccessMaui.Services.Authentication
 				this.lastAuthenticationTime.AddMinutes(Constants.Password.PossibleInactivityInMinutes)) > 0;
 		}
 
-		private async Task<long> GetCurrentPasswordCounterAsync()
+		public async Task<long> GetCurrentPasswordCounterAsync()
 		{
 			return await this.settingsService.RestoreLongState(Constants.Password.CurrentPasswordAttemptCounter);
 		}
@@ -262,14 +264,14 @@ namespace NeuroAccessMaui.Services.Authentication
 		protected virtual void Dispose(bool disposing)
 		{
 			if (disposing)
-				this.DisposeAsync().Wait();
+				this.DisposeAsync().AsTask().Wait();
 		}
 
 
 		/// <summary>
 		/// <see cref="IDisposableAsync.Dispose"/>
 		/// </summary>
-		public virtual async Task DisposeAsync()
+		public virtual async ValueTask DisposeAsync()
 		{
 			if (this.isDisposed)
 				return;
