@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using CommunityToolkit.Maui;
 using EDaler;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Cache.AttachmentCache;
 using NeuroAccessMaui.Services.Cache.InternetCache;
 using NeuroAccessMaui.Services.Contracts;
@@ -179,6 +180,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<INetworkService>((_)=>Types.InstantiateDefault<INetworkService>(false));
 			Builder.Services.AddSingleton<IStorageService>((_)=>Types.InstantiateDefault<IStorageService>(false));
 			Builder.Services.AddSingleton<ISettingsService>((_)=>Types.InstantiateDefault<ISettingsService>(false));
+			Builder.Services.AddSingleton<IAuthenticationService>((_)=>Types.InstantiateDefault<IAuthenticationService>(false));
 			Builder.Services.AddSingleton<IXmppService>((_)=>Types.InstantiateDefault<IXmppService>(false));
 			Builder.Services.AddSingleton<IAttachmentCacheService>((_)=>Types.InstantiateDefault<IAttachmentCacheService>(false));
 			Builder.Services.AddSingleton<IInternetCacheService>((_)=>Types.InstantiateDefault<IInternetCacheService>(false));
