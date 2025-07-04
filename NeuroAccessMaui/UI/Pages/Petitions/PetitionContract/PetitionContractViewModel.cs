@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
@@ -15,6 +16,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 	/// </summary>
 	public partial class PetitionContractViewModel : BaseViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		private readonly string? requestorFullJid;
 		private readonly string? petitionId;
 		private readonly PhotosLoader photosLoader;
@@ -96,7 +99,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		[RelayCommand]
 		private async Task Accept()
 		{
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.AcceptPetitionRequest, true))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.AcceptPetitionRequest, true))
 				return;
 
 			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendPetitionContractResponse(

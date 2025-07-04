@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Registration.Views;
 using Waher.Networking.XMPP;
@@ -13,6 +14,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePassword
 	/// </summary>
 	public partial class ChangePasswordViewModel : XmppViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		/// <summary>
 		/// View model for the <see cref="ChangePasswordPage"/> page.
 		/// </summary>
@@ -127,7 +130,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePassword
 		{
 			if (!string.IsNullOrEmpty(this.OldPassword) && this.CanChangePassword)
 			{
-				if (await App.CheckPasswordAndUnblockUserAsync(this.OldPassword))
+				if (await this.authenticationService.CheckPasswordAndUnblockUserAsync(this.OldPassword))
 				{
 					try
 					{
@@ -160,14 +163,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePassword
 				{
 					this.OldPassword = string.Empty;
 
-					long PasswordAttemptCounter = await App.GetCurrentPasswordCounterAsync();
+					long PasswordAttemptCounter = await this.authenticationService.GetCurrentPasswordCounterAsync();
 					long RemainingAttempts = Math.Max(0, Constants.Password.FirstMaxPasswordAttempts - PasswordAttemptCounter);
 
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PasswordIsInvalid), RemainingAttempts]);
 
-					await App.CheckUserBlockingAsync();
+					await this.authenticationService.CheckUserBlockingAsync();
 				}
 			}
 		}

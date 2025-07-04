@@ -1,5 +1,6 @@
 ﻿using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Notification.Identities;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
@@ -28,6 +29,9 @@ namespace NeuroAccessMaui.Services.Contracts
 	[Singleton]
 	internal class ContractOrchestratorService : LoadableService, IContractOrchestratorService
 	{
+
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		public ContractOrchestratorService()
 		{
 		}
@@ -235,7 +239,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 					if (Identity is not null)
 					{
-						if (!await App.AuthenticateUserAsync(AuthenticationPurpose.PetitionForSignatureReceived))
+						if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.PetitionForSignatureReceived))
 							return;
 
 						await ServiceRef.UiService.GoToAsync(nameof(PetitionSignaturePage), new PetitionSignatureNavigationArgs(
@@ -689,7 +693,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 			string IdRef = ServiceRef.TagProfile.LegalIdentity?.Id ?? string.Empty;
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.TagSignature))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.TagSignature))
 				return;
 
 			StringBuilder Xml = new();

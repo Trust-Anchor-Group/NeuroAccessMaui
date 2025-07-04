@@ -13,6 +13,7 @@ using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Resources.Languages;
 using System.Runtime.CompilerServices;
+using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Apps
 {
@@ -153,7 +154,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		{
 			try
 			{
-				if (await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
+				if (await ServiceRef.Provider.GetRequiredService<IAuthenticationService>().AuthenticateUserAsync(AuthenticationPurpose.ViewId))
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception Ex)

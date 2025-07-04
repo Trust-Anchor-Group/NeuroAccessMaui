@@ -33,14 +33,17 @@ using Waher.Persistence;
 using Waher.Script.Constants;
 using Waher.Script.Functions.ComplexNumbers;
 using System.Collections.ObjectModel;
+using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 {
 	/// <summary>
 	/// ViewModel for the Wallet page, handling balance display, buy flow, and related navigation.
 	/// </summary>
-	public partial class WalletViewModel() : XmppViewModel()
+	public partial class WalletViewModel : XmppViewModel
 	{
+		private readonly IAuthenticationService authenticationService;
+
 		#region Observable Properties
 
 		/// <summary>
@@ -84,6 +87,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		#endregion
 
 		#region Lifecycle
+
+		WalletViewModel() : base()
+		{
+			this.authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+		}
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
@@ -176,7 +184,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 					return;
 
 				// 4. User authentication if required.
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ApplyForOrganizationalId))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ApplyForOrganizationalId))
 					return;
 
 				// 5. No ID: go to RequestPaymentPage.

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.UI;
@@ -38,6 +39,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 	/// </summary>
 	public partial class ApplyIdViewModel : RegisterIdentityModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		private const string profilePhotoFileName = "ProfilePhoto.jpg";
 		private readonly string localPhotoFileName;
 		private readonly PhotosLoader photosLoader;
@@ -972,7 +975,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
 				return;
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true))
 				return;
 
 			try
@@ -1103,7 +1106,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeTheCurrentIdApplication)]))
 				return;
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
 				return;
 
 			try
