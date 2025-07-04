@@ -151,20 +151,42 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		public string? GetDeviceId()
 		{
-			ContentResolver? ContentResolver = Android.App.Application.Context.ContentResolver;
-
-			if (ContentResolver is not null)
-			{
-				return Android.Provider.Settings.Secure.GetString(ContentResolver, Android.Provider.Settings.Secure.AndroidId);
-			}
 			try
 			{
-				App.SendAlertAsync("Unable to get AndroidID, ContentResolver was null", "text/plain").Wait();
-				this.CloseApplication().Wait();
+				// Try to get the device ID from SecureStorage first
+				string? DeviceId = SecureStorage.GetAsync("DeviceIdentifier").Result;
+
+				if (!string.IsNullOrEmpty(DeviceId))
+				{
+					return DeviceId; // Already stored, return it
+				}
+
+				// Otherwise, generate a new device ID
+				string? AndroidId = Android.Provider.Settings.Secure.GetString(
+					Android.App.Application.Context.ContentResolver,
+					Android.Provider.Settings.Secure.AndroidId);
+
+				// Optional: In rare cases, AndroidId can be null or unreliable on emulators. Fallback to a GUID if you prefer:
+				if (string.IsNullOrEmpty(AndroidId) || AndroidId == "9774d56d682e549c") // old bug: default bad ID
+				{
+					AndroidId = Guid.NewGuid().ToString();
+				}
+				// Store the device ID in SecureStorage for future use
+				SecureStorage.SetAsync("DeviceIdentifier", AndroidId).Wait();
+				return AndroidId;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				System.Environment.Exit(0);
+				// You may want to log ex.Message and ex.StackTrace here
+				try
+				{
+					App.SendAlertAsync($"Unable to get or store device ID: {ex.Message}", "text/plain").Wait();
+					this.CloseApplication().Wait();
+				}
+				catch (Exception)
+				{
+					System.Environment.Exit(0);
+				}
 			}
 
 			return null;
