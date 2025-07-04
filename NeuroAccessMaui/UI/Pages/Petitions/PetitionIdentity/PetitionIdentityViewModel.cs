@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
@@ -17,6 +18,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 	/// </summary>
 	public partial class PetitionIdentityViewModel : BaseViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		private readonly PhotosLoader photosLoader;
 		private readonly string? requestorFullJid;
 		private readonly string? requestedIdentityId;
@@ -129,7 +132,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 		[RelayCommand]
 		private async Task Accept()
 		{
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.PetitionIdentity))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.PetitionIdentity))
 				return;
 
 			bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>

@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
@@ -34,6 +35,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 	{
 		#region Fields
 
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
 		private readonly ViewContractNavigationArgs? args;
 
 		#endregion
@@ -734,7 +736,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			if (!await AreYouSure(ServiceRef.Localizer[resourceKey]))
 				return false;
-			return await App.AuthenticateUserAsync(purpose, true);
+			return await authenticationService.AuthenticateUserAsync(purpose, true);
 		}
 
 		#endregion

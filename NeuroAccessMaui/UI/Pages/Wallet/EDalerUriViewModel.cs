@@ -4,6 +4,7 @@ using EDaler;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
@@ -21,6 +22,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 	/// </summary>
 	public partial class EDalerUriViewModel : QrXmppViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		private readonly EDalerUriNavigationArgs? navigationArguments;
 		private readonly IShareQrCode? shareQrCode;
 		private readonly TaskCompletionSource<string?>? uriToSend = null;
@@ -415,7 +418,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (this.Uri is null)
 					return;
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.AcceptEDalerUri, true))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.AcceptEDalerUri, true))
 					return;
 
 				Transaction? Transaction = await ServiceRef.XmppService.SendEDalerUri(this.Uri);
@@ -456,7 +459,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					return;
 				}
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.PayOnline, true))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.PayOnline, true))
 					return;
 
 				string Uri;
@@ -540,7 +543,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				return;
 			}
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.PayOffline, true))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.PayOffline, true))
 				return;
 
 			try
@@ -618,7 +621,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 
 			try
 			{
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SubmitEDalerUri))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.SubmitEDalerUri))
 					return;
 
 				(bool Succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendEDalerUri(this.Uri));
@@ -648,7 +651,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			if (this.Uri is null)
 				return;
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ShowUriAsQr, true))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ShowUriAsQr, true))
 				return;
 
 			try
@@ -689,7 +692,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				return;
 			}
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SendPayment, true))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.SendPayment, true))
 				return;
 
 			try
