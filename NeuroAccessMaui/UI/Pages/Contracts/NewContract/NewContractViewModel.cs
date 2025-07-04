@@ -19,6 +19,7 @@ using Waher.Script;
 using Waher.Persistence;
 
 using Timer = System.Timers.Timer;
+using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -42,6 +43,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		#endregion
 
 		#region Fields
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
 
 		private readonly NewContractNavigationArgs? args;
 
@@ -474,7 +476,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
 			{
 				await this.GoToOverview();
 				return;

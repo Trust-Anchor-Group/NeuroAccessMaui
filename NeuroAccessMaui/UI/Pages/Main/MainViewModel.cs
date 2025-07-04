@@ -13,11 +13,14 @@ using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
+using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
 	public partial class MainViewModel : QrXmppViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeDark);
 
@@ -35,7 +38,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		public MainViewModel()
 			: base()
 		{
-
 			Application.Current.RequestedThemeChanged += (_, __) =>
 				OnPropertyChanged(nameof(BannerUri));
 		}
@@ -142,7 +144,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				if(await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
+				if(await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception Ex)
@@ -156,7 +158,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				if (await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
+				if (await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
 					await ServiceRef.UiService.GoToAsync(nameof(NotificationsPage));
 			}
 			catch (Exception Ex)

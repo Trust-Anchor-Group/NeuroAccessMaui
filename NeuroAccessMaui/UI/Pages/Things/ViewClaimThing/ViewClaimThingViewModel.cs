@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
@@ -24,6 +25,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 	/// </summary>
 	public partial class ViewClaimThingViewModel : XmppViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		/// <summary>
 		/// Creates an instance of the <see cref="ViewClaimThingViewModel"/> class.
 		/// </summary>
@@ -258,7 +261,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 				if (string.IsNullOrEmpty(this.Uri))
 					return;
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ClaimThing, true))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ClaimThing, true))
 					return;
 
 				(bool Succeeded, NodeResultEventArgs? e) = await ServiceRef.NetworkService.TryRequest(() =>

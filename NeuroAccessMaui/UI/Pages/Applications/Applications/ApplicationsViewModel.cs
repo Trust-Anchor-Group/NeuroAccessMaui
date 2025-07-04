@@ -4,6 +4,7 @@ using EDaler;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
@@ -29,6 +30,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 	/// </summary>
 	public partial class ApplicationsViewModel : XmppViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		/// <summary>
 		/// Creates an instance of the <see cref="ApplicationsViewModel"/> class.
 		/// </summary>
@@ -161,7 +164,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				if (ServiceRef.TagProfile.IdentityApplication is null)
 					return;
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
 					return;
 
 				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage));
@@ -178,7 +181,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			try
 			{
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ApplyForPersonalId))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ApplyForPersonalId))
 					return;
 
 				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage), new ApplyIdNavigationArgs(true, false));
@@ -195,7 +198,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			try
 			{
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ApplyForOrganizationalId))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ApplyForOrganizationalId))
 					return;
 
 				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage), new ApplyIdNavigationArgs(false, false));
