@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Notification;
@@ -33,6 +34,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 	/// </summary>
 	public partial class ViewThingViewModel : QrXmppViewModel
 	{
+
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
 		private readonly Dictionary<string, PresenceEventArgs> presences = new(StringComparer.InvariantCultureIgnoreCase);
 		private readonly ViewThingNavigationArgs? navigationArguments;
 		private readonly ContactInfo? thing;
@@ -533,7 +536,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					return;
 				}
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.DeleteRules, true))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.DeleteRules, true))
 					return;
 
 				TaskCompletionSource<bool> Result = new();
@@ -583,7 +586,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					return;
 				}
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.DisownThing, true))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.DisownThing, true))
 					return;
 
 				(bool Succeeded, bool Done) = await ServiceRef.NetworkService.TryRequest(() =>
@@ -629,7 +632,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				return;
 			try
 			{
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.AddToListOfThings))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.AddToListOfThings))
 					return;
 
 				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.thing.BareJid);
@@ -681,7 +684,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 			try
 			{
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.RemoveFromListOfThings))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.RemoveFromListOfThings))
 					return;
 
 				if (this.InContacts)
