@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 	/// </summary>
 	public partial class WalletViewModel : XmppViewModel
 	{
-		private readonly IAuthenticationService authenticationService;
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
 
 		#region Observable Properties
 
@@ -87,11 +87,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		#endregion
 
 		#region Lifecycle
-
-		WalletViewModel() : base()
-		{
-			this.authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
-		}
 
 		/// <inheritdoc/>
 		protected override async Task OnInitialize()
