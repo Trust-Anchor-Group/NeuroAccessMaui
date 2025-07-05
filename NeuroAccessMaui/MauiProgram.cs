@@ -71,10 +71,13 @@ namespace NeuroAccessMaui
 #endif
 			});
 
+
 			Builder.UseSkiaSharp();
 			//Builder.RegisterFirebaseServices();
 #if DEBUG
 			Builder.EnableHotReload();
+			Builder.Logging.AddDebug();
+
 #endif
 
 			Builder.ConfigureFonts(fonts =>
@@ -108,9 +111,7 @@ namespace NeuroAccessMaui
 			Builder.RegisterPages();
 
 			//Builder.Services.AddLogging();
-#if DEBUG
-			Builder.Logging.AddDebug();
-#endif
+
 			instance = Builder.Build();
 
 			// Setup the service provider
