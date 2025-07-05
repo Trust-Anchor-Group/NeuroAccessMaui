@@ -28,6 +28,7 @@ using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.Events;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
@@ -274,19 +275,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 					{
 						this.contractsClient = new ContractsClient(this.xmppClient, ServiceRef.TagProfile.LegalJid);
 						this.RegisterContractsEventHandlers();
-
-						if (!await this.contractsClient.LoadKeys(false))
-						{
-							if (ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
-							{
-								Log.Alert("Regeneration of keys not permitted at this time.",
-									string.Empty, string.Empty, string.Empty, EventLevel.Major, string.Empty, string.Empty, Environment.StackTrace);
-
-								throw new Exception("Regeneration of keys not permitted at this time.");
-							}
-
-							await this.GenerateNewKeys();
-						}
 					}
 
 					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
@@ -341,6 +329,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.IsLoggedOut = false;
 					await this.xmppClient.Connect(IsIpAddress ? string.Empty : this.domainName);
 					this.RecreateReconnectTimer();
+
+					if (this.contractsClient is not null && !await this.contractsClient.LoadKeys(false))
+					{
+						if (ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
+						{
+							Log.Alert("Regeneration of keys not permitted at this time.",
+								string.Empty, string.Empty, string.Empty, EventLevel.Major, string.Empty, string.Empty, Environment.StackTrace);
+
+							throw new Exception("Regeneration of keys not permitted at this time.");
+						}
+
+						await this.GenerateNewKeys();
+					}
 
 					// Await connected state during registration or user initiated log in, but not otherwise.
 					if (!ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
