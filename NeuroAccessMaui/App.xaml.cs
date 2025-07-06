@@ -29,6 +29,7 @@ using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
+using NeuroAccessMaui.Test;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Popups.Password;
@@ -232,7 +233,7 @@ namespace NeuroAccessMaui
 
 				try
 				{
-					this.MainPage = ServiceHelper.GetService<AppShell>();
+					this.MainPage = ServiceHelper.GetService<CustomShell>();
 					this.SetTheme(CurrentTheme);
 					ServiceRef.ThemeService.SetTheme(CurrentTheme);
 				}
@@ -426,7 +427,10 @@ namespace NeuroAccessMaui
 				await ServiceRef.NeuroWalletOrchestratorService.Load(isResuming, Token);
 				await ServiceRef.NotificationService.Load(isResuming, Token);
 
-				AppShell.AppLoaded();
+
+				var navigationService = ServiceRef.Provider.GetRequiredService<NavigationService>();
+				await navigationService.NavigateToAsync(nameof(NeuroAccessMaui.UI.Pages.Main.MainPage));
+			//	AppShell.AppLoaded();
 			}
 			catch (OperationCanceledException)
 			{
