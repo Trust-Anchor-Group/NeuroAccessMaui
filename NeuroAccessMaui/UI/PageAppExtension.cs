@@ -17,6 +17,7 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Xmpp;
+using NeuroAccessMaui.Test;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
@@ -189,6 +190,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<INotificationService>((_) => Types.InstantiateDefault<INotificationService>(false));
 			Builder.Services.AddSingleton<IIntentService>((_) => Types.InstantiateDefault<IIntentService>(false));
 			Builder.Services.AddSingleton<IThemeService>((_) => Types.InstantiateDefault<IThemeService>(false));
+			Builder.Services.AddSingleton<INavigationService>((_) => Types.InstantiateDefault<NavigationService>(false));
 
 			return Builder;
 		}
@@ -213,6 +215,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ViewIdentityPage, ViewIdentityViewModel>();
 
 			// Main
+			Builder.Services.AddTransient<CustomShell>();
 			Builder.Services.AddTransient<AppShell>();
 			Builder.Services.AddTransient<CalculatorPage, CalculatorViewModel>();
 			Builder.Services.AddTransient<ChangePasswordPage, ChangePasswordViewModel>();
