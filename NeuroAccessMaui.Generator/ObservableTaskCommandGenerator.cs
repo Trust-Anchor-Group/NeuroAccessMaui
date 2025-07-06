@@ -35,7 +35,7 @@ namespace NeuroAccessMaui.Generator
 						 predicate: static (node, _) =>
 							 node is MethodDeclarationSyntax M && M.AttributeLists.Count > 0,
 						 transform: static (ctx, _) => (MethodDeclarationSyntax)ctx.Node)
-				  .Where(method => method != null);
+				  .Where(method => method is not null);
 
 			// Combine the methods with the Compilation.
 			IncrementalValueProvider<(Compilation, ImmutableArray<MethodDeclarationSyntax>)> CompilationAndMethods =
@@ -47,7 +47,7 @@ namespace NeuroAccessMaui.Generator
 				(Compilation Compilation, ImmutableArray<MethodDeclarationSyntax> Methods) = source;
 				// Get the attribute symbol.
 				INamedTypeSymbol? AttributeSymbol = Compilation.GetTypeByMetadataName("NeuroAccessMaui.UI.MVVM.ObservableTaskCommandAttribute");
-				if (AttributeSymbol == null)
+				if (AttributeSymbol is null)
 				{
 					// If the attribute isn’t found, report an informational diagnostic.
 					spc.ReportDiagnostic(Diagnostic.Create(
@@ -71,7 +71,7 @@ namespace NeuroAccessMaui.Generator
 					// Check if the method is decorated with our attribute.
 					AttributeData? AttrData = MethodSymbol.GetAttributes()
 						  .FirstOrDefault(attr => SymbolEqualityComparer.Default.Equals(attr.AttributeClass, AttributeSymbol));
-					if (AttrData == null)
+					if (AttrData is null)
 						continue;
 
 					// Get containing type info.
