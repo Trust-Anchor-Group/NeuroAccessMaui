@@ -14,9 +14,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 		}
 
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 
 			try
 			{
@@ -36,9 +36,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 /*
 		/// <inheritdoc />
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			try
 			{
@@ -62,12 +62,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 */
 		/// <inheritdoc />
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 		//	ServiceRef.XmppService.Loaded -= this.XmppService_Loaded;
 		//	ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		#region Properties

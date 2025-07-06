@@ -89,9 +89,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		#region Lifecycle
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 			this.GetBalanceTask.Load(this.LoadBalanceAsync);
 
 			// Uncomment if event handlers are needed
@@ -102,14 +102,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 			// Place for page appearing logic if needed.
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			// Uncomment if event handlers are subscribed in OnInitialize.
 			// ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
@@ -117,7 +117,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			// ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
 			// ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		#endregion
@@ -253,7 +253,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		{
 			try
 			{
-				if (Application.Current?.MainPage?.Navigation != null)
+				if (Application.Current?.MainPage?.Navigation is not null)
 				{
 					await Application.Current.MainPage.Navigation.PopToRootAsync();
 				}

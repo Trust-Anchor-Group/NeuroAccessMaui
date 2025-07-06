@@ -76,9 +76,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (this.navigationArguments?.Events is not null)
 			{
@@ -173,7 +173,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.OnPresence -= this.Xmpp_OnPresence;
 			ServiceRef.XmppService.OnRosterItemAdded -= this.Xmpp_OnRosterItemAdded;
@@ -183,7 +183,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
 			ServiceRef.NotificationService.OnNotificationsDeleted -= this.NotificationService_OnNotificationsDeleted;
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		private async Task Xmpp_OnPresence(object? Sender, PresenceEventArgs e)

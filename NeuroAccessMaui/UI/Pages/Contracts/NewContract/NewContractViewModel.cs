@@ -250,10 +250,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		#region Methods
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
 
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (this.args is null || this.args?.Template is null)
 			{
@@ -358,13 +358,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			if (this.Contract is not null)
 			{
 				this.Contract.ParameterChanged -= this.Parameter_PropertyChanged;
 			}
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		/// <summary>

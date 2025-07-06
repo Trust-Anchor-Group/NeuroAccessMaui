@@ -31,11 +31,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			this.result?.TrySetResult(this.buyButtonPressed ? this.Amount : null);
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		partial void OnAmountTextChanged(string? value)

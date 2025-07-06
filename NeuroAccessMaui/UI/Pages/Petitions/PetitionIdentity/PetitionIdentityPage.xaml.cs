@@ -19,7 +19,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDisappearingAsync()
+		public override Task OnDisappearingAsync()
 		{
 			return base.OnDisappearingAsync();
 		}

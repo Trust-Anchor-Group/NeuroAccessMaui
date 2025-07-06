@@ -14,6 +14,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.Services.Authentication;
+using NeuroAccessMaui.Test;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -44,7 +45,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 	
 		public override Task<string> Title => Task.FromResult(ContactInfo.GetFriendlyName(ServiceRef.TagProfile.LegalIdentity));
 
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
@@ -52,7 +53,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 			});
 
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 			try
 			{
 				
@@ -87,9 +88,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			}
 		}
 
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			await this.OnIsConnectedChanged(); // Call this method in case the connection state has already changed before the view model was initialized.
 		}
@@ -144,7 +145,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				if(await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
+				await ServiceRef.Provider.GetRequiredService<INavigationService>().NavigateToAsync(nameof(ViewIdentityPage));
+
+				if (await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception Ex)

@@ -28,9 +28,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 		private TaskCompletionSource<ContactInfoModel?>? result = Args?.ThingToShare;
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			ServiceRef.XmppService.OnPresence += this.Xmpp_OnPresence;
 			ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
@@ -38,9 +38,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 			this.SelectedThing = null;
 
 			if (this.result is not null && this.result.Task.IsCompleted)
@@ -196,7 +196,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.OnPresence -= this.Xmpp_OnPresence;
 			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
@@ -207,7 +207,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 
 			this.result?.TrySetResult(null);
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		/// <summary>

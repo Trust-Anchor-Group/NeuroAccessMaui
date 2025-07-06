@@ -77,9 +77,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// </summary>
 		internal SettingsPage? Page { get; set; }
 
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 			this.NotifyCommandsCanExecuteChanged();
 		}
 

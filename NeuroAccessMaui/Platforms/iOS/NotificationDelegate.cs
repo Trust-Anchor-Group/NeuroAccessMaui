@@ -42,7 +42,7 @@ namespace NeuroAccessMaui
             string? Body = userInfo["myBody"]?.ToString();
             string? ChannelId = userInfo["channelId"]?.ToString();
 
-            if(Title == null || Body == null)
+            if(Title is null || Body is null)
             {
                 ServiceRef.LogService.LogWarning("NotificationDelegate, Received notification with missing title or body.");
                 return;

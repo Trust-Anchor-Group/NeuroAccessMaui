@@ -220,9 +220,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 
 
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 
 			bool IsRefresh = this.hasAppeared;
 			this.hasAppeared = true;
@@ -617,7 +617,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			});
 		}
 
-		protected override Task OnDisappearing()
+		public override Task OnDisappearingAsync()
 		{
 			try
 			{
@@ -627,7 +627,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			{
 				//Ignore, timer might already been stopped (not sure if it throws when already stopped)
 			}
-			return base.OnDisappearing();
+			return base.OnDisappearingAsync();
 		}
 
 		private void OnTimerTick(object? sender, EventArgs e)

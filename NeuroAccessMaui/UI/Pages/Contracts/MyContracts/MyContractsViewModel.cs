@@ -65,9 +65,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			this.IsBusy = true;
 			this.ShowContractsMissing = false;
@@ -79,9 +79,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 
 			if (this.selection is not null && this.selection.Task.IsCompleted)
 			{
@@ -91,7 +91,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
 			ServiceRef.NotificationService.OnNotificationsDeleted -= this.NotificationService_OnNotificationsDeleted;
@@ -104,7 +104,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			this.selection?.TrySetResult(this.selectedContract);
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		/// <summary>

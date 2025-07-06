@@ -65,9 +65,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		#region Initialization and Disposal
 
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (!this.ValidateArgs())
 				return;
@@ -95,10 +95,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 		}
 
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			this.UnsubscribeFromEvents();
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		#endregion

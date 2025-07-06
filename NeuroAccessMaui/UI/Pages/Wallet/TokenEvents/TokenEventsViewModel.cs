@@ -31,9 +31,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (this.navigationArguments is not null)
 			{
@@ -52,11 +52,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			this.Events.Clear();
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		#region Properties

@@ -344,7 +344,7 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			try
 			{
-				if (this.bitmap == null)
+				if (this.bitmap is null)
 					return null;
 
 				int viewWidth = (int)this.canvasView.CanvasSize.Width;
@@ -533,7 +533,7 @@ namespace NeuroAccessMaui.UI.Controls
 			SKCanvas canvas = e.Surface.Canvas;
 			canvas.Clear(SKColors.Transparent);
 
-			if (this.bitmap == null)
+			if (this.bitmap is null)
 				return;
 
 			float centerX = e.Info.Width / 2f;
@@ -600,7 +600,7 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			base.OnSizeAllocated(width, height);
 
-			if (!this.initialPositionSet && width > 0 && height > 0 && this.bitmap != null)
+			if (!this.initialPositionSet && width > 0 && height > 0 && this.bitmap is not null)
 			{
 				this.SetInitialImagePosition(width, height);
 				this.initialPositionSet = true;
@@ -772,11 +772,11 @@ namespace NeuroAccessMaui.UI.Controls
 						break;
 				}
 
-				if (streamImageSource == null)
+				if (streamImageSource is null)
 					return null;
 
 				Stream stream = await streamImageSource.Stream(CancellationToken.None).ConfigureAwait(false);
-				if (stream == null)
+				if (stream is null)
 					return null;
 
 				using MemoryStream managedStream = new MemoryStream();
@@ -784,7 +784,7 @@ namespace NeuroAccessMaui.UI.Controls
 				managedStream.Position = 0;
 
 				SKBitmap loadedBitmap = SKBitmap.Decode(managedStream);
-				if (loadedBitmap == null)
+				if (loadedBitmap is null)
 					return null;
 
 				SKBitmap resized = ResizeBitmapIfNeeded(loadedBitmap,
@@ -856,7 +856,7 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private void ClampTransformations()
 		{
-			if (!this.LimitToBounds || this.bitmap == null)
+			if (!this.LimitToBounds || this.bitmap is null)
 				return;
 
 			SKSize canvasSize = this.canvasView.CanvasSize;

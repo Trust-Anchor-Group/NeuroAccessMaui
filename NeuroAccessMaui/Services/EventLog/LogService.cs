@@ -245,7 +245,7 @@ namespace NeuroAccessMaui.Services.EventLog
 			string FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), debugLogFileName);
 
 			// If an old session is still open, end it first
-			if (this.debugSink != null)
+			if (this.debugSink is not null)
 				await this.EndDebugLogSessionAsync();
 
 			if (File.Exists(FileName))

@@ -27,21 +27,21 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 		/// <inheritdoc />
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
 			LocalizationManager.Current.PropertyChanged += this.Localization_Changed;
 		}
 
 		/// <inheritdoc />
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			ServiceRef.TagProfile.Changed -= this.TagProfile_Changed;
 			LocalizationManager.Current.PropertyChanged -= this.Localization_Changed;
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		/// <inheritdoc />

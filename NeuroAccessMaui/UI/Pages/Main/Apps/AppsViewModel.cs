@@ -205,7 +205,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
         {
             try
             {
-                if (Application.Current?.MainPage?.Navigation != null)
+                if (Application.Current?.MainPage?.Navigation is not null)
                 {
                     await Application.Current.MainPage.Navigation.PopToRootAsync();
                 }

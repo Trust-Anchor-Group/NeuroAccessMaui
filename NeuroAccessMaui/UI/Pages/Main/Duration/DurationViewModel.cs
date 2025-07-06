@@ -28,11 +28,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.Duration
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			this.EvaluateDuration();
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		#region Properties
