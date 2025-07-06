@@ -45,9 +45,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		private bool hasTokens;
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			this.EDalerFrontGlyph = "https://" + ServiceRef.TagProfile.Domain + "/Images/eDalerFront200.png";
 			this.EDalerBackGlyph = "https://" + ServiceRef.TagProfile.Domain + "/Images/eDalerBack200.png";
@@ -68,9 +68,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 
 			if (((this.Balance is not null) && (ServiceRef.XmppService.LastEDalerBalance is not null) &&
 				(this.Balance.Amount != ServiceRef.XmppService.LastEDalerBalance.Amount ||
@@ -87,14 +87,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
 			ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
 			ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
 			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		private SortedDictionary<CaseInsensitiveString, NotificationEvent[]> GetNotificationEvents()
@@ -1014,7 +1014,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		{
 			try
 			{
-				if (Application.Current?.MainPage?.Navigation != null)
+				if (Application.Current?.MainPage?.Navigation is not null)
 				{
 					await Application.Current.MainPage.Navigation.PopToRootAsync();
 				}

@@ -294,10 +294,10 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private View? GetContent(View inlineView, DataTemplate? template, ControlTemplate? controlTemplate)
 		{
-			if (inlineView != null)
+			if (inlineView is not null)
 				return inlineView;
 
-			if (template != null)
+			if (template is not null)
 			{
 				object Content = template.CreateContent();
 				if (Content is View View)

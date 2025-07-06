@@ -194,7 +194,7 @@ namespace NeuroAccessMaui.Services.Notification
 						this.expected.Remove(Node);
 					}
 					else if (Node.Value.EventType == Event.GetType() &&
-								(Node.Value.Predicate == null || Node.Value.Predicate(Event)))
+								(Node.Value.Predicate is null || Node.Value.Predicate(Event)))
 					{
 						this.expected.Remove(Node);
 						IsExpected = true;

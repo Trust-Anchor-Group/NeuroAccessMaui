@@ -365,7 +365,7 @@ namespace NeuroAccessMaui.UI.Controls
 		protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
 		{
 			// If the SVG is not loaded yet, fall back to the default measurement.
-			if (this.svg?.Picture == null)
+			if (this.svg?.Picture is null)
 			{
 				return base.OnMeasure(widthConstraint, heightConstraint);
 			}

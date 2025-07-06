@@ -9,22 +9,22 @@
 		/// Method called when view is initialized for the first time. Use this method to implement registration
 		/// of event handlers, processing navigation arguments, etc.
 		/// </summary>
-		Task DoInitialize();
+		Task OnInitializeAsync();
 
 		/// <summary>
 		/// Method called when the view is disposed, and will not be used more. Use this method to unregister
 		/// event handlers, etc.
 		/// </summary>
-		Task DoDispose();
+		Task OnDisposeAsync();
 
 		/// <summary>
 		/// Method called when view is appearing on the screen.
 		/// </summary>
-		Task DoAppearing();
+		Task OnAppearingAsync();
 
 		/// <summary>
 		/// Method called when view is disappearing from the screen.
 		/// </summary>
-		Task DoDisappearing();
+		Task OnDisappearingAsync();
 	}
 }

@@ -52,9 +52,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (!string.IsNullOrEmpty(this.bareJid))
 			{
@@ -108,11 +108,11 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			this.photosLoader.CancelLoadPhotos();
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		private static void EvaluateAllCommands()

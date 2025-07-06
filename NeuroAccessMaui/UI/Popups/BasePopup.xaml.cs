@@ -93,12 +93,12 @@ namespace NeuroAccessMaui.UI.Popups
 				if (this.Parent is null)
 				{
 					if (this.ViewModel is ILifeCycleView LifeCycleView)
-						await LifeCycleView.DoDispose();
+						await LifeCycleView.OnDisposeAsync();
 				}
 				else
 				{
 					if (this.ViewModel is ILifeCycleView LifeCycleView)
-						await LifeCycleView.DoInitialize();
+						await LifeCycleView.OnInitializeAsync();
 				}
 			}
 			catch (Exception Ex)
@@ -119,7 +119,7 @@ namespace NeuroAccessMaui.UI.Popups
 				// Call the view model's appearing logic.
 				if (this.BindingContext is BaseViewModel Vm)
 				{
-					await Vm.DoAppearing();
+					await Vm.OnAppearingAsync();
 				}
 
 				if (this.useDefaultBackground)
@@ -143,7 +143,7 @@ namespace NeuroAccessMaui.UI.Popups
 				// Call the view model's disappearing logic.
 				if (this.BindingContext is BasePopupViewModel Vm)
 				{
-					await Vm.DoDisappearing();
+					await Vm.OnDisappearingAsync();
 				}
 
 				base.OnDisappearing();

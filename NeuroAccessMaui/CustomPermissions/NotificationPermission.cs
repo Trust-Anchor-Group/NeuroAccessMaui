@@ -67,7 +67,7 @@ namespace NeuroAccessMaui.CustomPermissions
 
 				PackageInfo PackageInfo = PackageManager.GetPackageInfo(PackageName ?? string.Empty, PackageInfoFlags.Permissions) ?? throw new Exception();
 				IList<string>? DeclaredPermissions = PackageInfo.RequestedPermissions;
-				if (DeclaredPermissions == null || !DeclaredPermissions.Contains(Manifest.Permission.PostNotifications))
+				if (DeclaredPermissions is null || !DeclaredPermissions.Contains(Manifest.Permission.PostNotifications))
 				{
 					throw new PermissionException($"The Android manifest does not declare the required permission: {Manifest.Permission.PostNotifications}");
 				}

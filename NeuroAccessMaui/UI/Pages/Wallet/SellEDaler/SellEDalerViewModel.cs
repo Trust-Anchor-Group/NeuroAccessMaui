@@ -32,11 +32,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.SellEDaler
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			this.result?.TrySetResult(this.sellButtonPressed ? this.Amount : null);
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		#region Properties

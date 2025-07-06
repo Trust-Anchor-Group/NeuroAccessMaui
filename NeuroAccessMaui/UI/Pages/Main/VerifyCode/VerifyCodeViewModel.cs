@@ -27,9 +27,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 		}
 
 		/// <inheritdoc />
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
 
@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
 
@@ -50,7 +50,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 			if (this.navigationArgs?.VarifyCode is TaskCompletionSource<string> TaskSource)
 				TaskSource.TrySetResult(string.Empty);
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		public void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)

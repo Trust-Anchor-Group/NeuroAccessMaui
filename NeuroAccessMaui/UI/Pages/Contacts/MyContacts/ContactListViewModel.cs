@@ -60,9 +60,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			await this.UpdateContactList(this.navigationArguments?.Contacts);
 
@@ -72,9 +72,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 
 			if (this.selection is not null && this.selection.Task.IsCompleted)
 			{
@@ -234,7 +234,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.OnPresence -= this.Xmpp_OnPresence;
 			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
@@ -248,7 +248,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 			this.selection?.TrySetResult(this.SelectedContact);
 
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		/// <summary>

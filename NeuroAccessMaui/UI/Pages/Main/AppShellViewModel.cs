@@ -28,15 +28,15 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnInitialize()
+		public override Task OnInitializeAsync()
 		{
-			return base.OnInitialize();
+			return base.OnInitializeAsync();
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 	}
 }
