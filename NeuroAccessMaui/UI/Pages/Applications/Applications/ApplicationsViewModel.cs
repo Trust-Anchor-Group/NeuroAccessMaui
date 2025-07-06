@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 		}
 
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
 			if (ServiceRef.TagProfile.IdentityApplication is not null)
 			{
@@ -57,17 +57,17 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			ServiceRef.XmppService.LegalIdentityChanged += this.XmppService_LegalIdentityChanged;
 			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
 
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 			this.NotifyCommandsCanExecuteChanged();
 		}
 
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
 			ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
 			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
 
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		private Task XmppService_IdentityApplicationChanged(object? Sender, LegalIdentityEventArgs e)
@@ -96,9 +96,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 		}
 
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 
 			// Page is not correctly updated if changes has happened when viewing a sub-view. Fix by resending notification.
 

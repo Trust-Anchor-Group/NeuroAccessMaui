@@ -82,7 +82,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		{
 			get
 			{
-				if (this.iconSource == null && !this.hasRun)
+				if (this.iconSource is null && !this.hasRun)
 				{
 					//Load the icon
 					Task.Run(this.UpdateIconUrlSourceAsync);
@@ -94,7 +94,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 
 		public async Task UpdateIconUrlSourceAsync()
 		{
-			if (this.iconSource != null) return; // Already loaded or loading
+			if (this.iconSource is not null) return; // Already loaded or loading
 
 			try
 			{

@@ -62,7 +62,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDisappearingAsync()
+		public override Task OnDisappearingAsync()
 		{
 			//!!! this.PhotoViewer.HidePhotos();
 			return base.OnDisappearingAsync();

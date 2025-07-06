@@ -105,7 +105,7 @@ namespace NeuroAccessMaui.UI.Pages
 		public async Task Shutdown()
 		{
 			await this.SaveState();
-			await this.DoDisappearing();
+			await this.OnDisposeAsync();
 		}
 
 		/// <summary>
@@ -186,107 +186,6 @@ namespace NeuroAccessMaui.UI.Pages
 			}
 		}
 
-		/// <summary>
-		/// Method called when view is initialized for the first time. Use this method to implement registration
-		/// of event handlers, processing navigation arguments, etc.
-		/// </summary>
-		public async Task DoInitialize()
-		{
-			if (!this.IsInitialized)
-			{
-				this.IsInitialized = true;
-
-				await this.OnInitialize();
-			}
-		}
-
-		/// <summary>
-		/// Method called when view is initialized for the first time. Use this method to implement registration
-		/// of event handlers, processing navigation arguments, etc.
-		/// </summary>
-		protected virtual Task OnInitialize()
-		{
-			return Task.CompletedTask;  // Do nothing by default.
-		}
-
-		/// <summary>
-		/// Method called when the view is disposed, and will not be used more. Use this method to unregister
-		/// event handlers, etc.
-		/// </summary>
-		public async Task DoDispose()
-		{
-			if (this.IsAppearing)
-				await this.DoDisappearing();
-
-			if (this.IsInitialized)
-			{
-				this.IsInitialized = false;
-
-				await this.OnDispose();
-			}
-		}
-
-		/// <summary>
-		/// Method called when the view is disposed, and will not be used more. Use this method to unregister
-		/// event handlers, etc.
-		/// </summary>
-		protected virtual Task OnDispose()
-		{
-			return Task.CompletedTask;  // Do nothing by default.
-		}
-
-		/// <summary>
-		/// Method called when view is appearing on the screen.
-		/// </summary>
-		public virtual async Task DoAppearing()
-		{
-			if (!this.IsInitialized)
-				await this.DoInitialize();
-
-			if (!this.IsAppearing)
-			{
-				DeviceDisplay.KeepScreenOn = true;
-
-				await this.OnAppearing();
-
-				foreach (BaseViewModel ChildViewModel in this.childViewModels)
-					await ChildViewModel.DoAppearing();
-
-				this.IsAppearing = true;
-			}
-		}
-
-		/// <summary>
-		/// Method called when view is appearing on the screen.
-		/// </summary>
-		protected virtual Task OnAppearing()
-		{
-			return Task.CompletedTask;  // Do nothing by default.
-		}
-
-		/// <summary>
-		/// Method called when view is disappearing from the screen.
-		/// </summary>
-		public async Task DoDisappearing()
-		{
-			if (this.IsAppearing)
-			{
-				foreach (BaseViewModel ChildViewModel in this.childViewModels)
-					await ChildViewModel.DoDisappearing();
-
-				await this.OnDisappearing();
-
-				this.IsAppearing = false;
-			}
-		}
-
-		/// <summary>
-		/// Method called when view is disappearing from the screen.
-		/// </summary>
-		protected virtual Task OnDisappearing()
-		{
-			return Task.CompletedTask;  // Do nothing by default.
-		}
 
 		/// <summary>
 		/// Asks the user to confirm an action.
@@ -336,5 +235,28 @@ namespace NeuroAccessMaui.UI.Pages
 			PI.SetValue(this, Value);
 		}
 
+		public virtual async Task OnInitializeAsync()
+		{
+			foreach (BaseViewModel ChildViewModel in this.childViewModels)
+				await ChildViewModel.OnInitializeAsync();
+		}
+
+		public virtual async Task OnDisposeAsync()
+		{
+			foreach (BaseViewModel ChildViewModel in this.childViewModels)
+				await ChildViewModel.OnDisposeAsync();
+		}
+
+		public virtual async Task OnAppearingAsync()
+		{
+			foreach (BaseViewModel ChildViewModel in this.childViewModels)
+				await ChildViewModel.OnAppearingAsync();
+		}
+
+		public virtual async Task OnDisappearingAsync()
+		{
+			foreach (BaseViewModel ChildViewModel in this.childViewModels)
+				await ChildViewModel.OnDisappearingAsync();
+		}
 	}
 }

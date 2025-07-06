@@ -57,7 +57,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 
 
 		/// <inheritdoc/>
-		protected override async Task OnAppearingAsync()
+		public override async Task OnAppearingAsync()
 		{
 			await base.OnAppearingAsync();
 
@@ -69,7 +69,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDisappearingAsync()
+		public override async Task OnDisappearingAsync()
 		{
 			await MainThread.InvokeOnMainThreadAsync(this.CloseCamera);
 
@@ -247,7 +247,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 			Bitmap? bitmap = await BitmapFactory.DecodeStreamAsync(stream);
 			Console.WriteLine($"Loaded photo {result.FullPath}");
 
-			if (bitmap != null)
+			if (bitmap is not null)
 			{
 				int width = bitmap.Width;
 				int height = bitmap.Height;
@@ -279,7 +279,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				reader.Options = options;
 
 				BarcodeResult[]? scanned = reader.Decode(data);
-				if (scanned != null)
+				if (scanned is not null)
 				{
 					foreach (BarcodeResult item in scanned)
 					{

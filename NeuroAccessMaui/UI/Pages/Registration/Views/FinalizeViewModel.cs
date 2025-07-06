@@ -17,19 +17,19 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 		}
 
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			LocalizationManager.Current.PropertyChanged += this.Localization_Changed;
 		}
 
 		/// <inheritdoc />
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			LocalizationManager.Current.PropertyChanged -= this.Localization_Changed;
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 

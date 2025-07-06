@@ -33,7 +33,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnAppearingAsync()
+		public override async Task OnAppearingAsync()
 		{
 			await base.OnAppearingAsync();
 
@@ -41,7 +41,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDisappearingAsync()
+		public override async Task OnDisappearingAsync()
 		{
 			WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
 

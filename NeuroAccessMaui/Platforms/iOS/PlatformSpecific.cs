@@ -460,7 +460,7 @@ namespace NeuroAccessMaui.Services
 				};
 
 				// Add any additional data as UserInfo
-				if (data != null)
+				if (data is not null)
 				{
 					NSMutableDictionary UserInfo = new();
 					foreach (KeyValuePair<string, string> Pair in data)

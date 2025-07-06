@@ -25,7 +25,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDisappearingAsync()
+		public override Task OnDisappearingAsync()
 		{
 			return base.OnDisappearingAsync();
 		}

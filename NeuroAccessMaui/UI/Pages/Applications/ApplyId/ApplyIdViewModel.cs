@@ -65,7 +65,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.genders = new ObservableCollection<ISO_5218_Gender>(ISO_5218.Genders);
 		}
 
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
 			this.ApplicationId = null;
 
@@ -131,19 +131,19 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				await this.LoadAllAttachmentPhotos(IdentityReference);
 			}
 
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (!this.HasApplicationAttributes && this.IsConnected)
 				await Task.Run(this.LoadApplicationAttributes);
 		}
 
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
 			this.photosLoader.CancelLoadPhotos();
 
 			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
 
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		private Task XmppService_IdentityApplicationChanged(object? Sender, LegalIdentityEventArgs e)
@@ -1027,7 +1027,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					int Index = 1;
 					foreach (ObservableAttachmentCard Additional in this.AdditionalPhotos)
 					{
-						if (Additional.ImageBin == null)
+						if (Additional.ImageBin is null)
 							continue;
 						LocalAttachments.Add(new LegalIdentityAttachment($"AdditionalPhoto{Index}.jpg", "image/jpeg", Additional.ImageBin));
 						Index++;
@@ -1060,7 +1060,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 						// Find the matching attachment in the returned identity by filename.
 						Attachment? MatchingAttachment = AddedIdentity.Attachments
 							 .FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
-						if (MatchingAttachment != null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
+						if (MatchingAttachment is not null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
 						{
 							await ServiceRef.AttachmentCacheService.Add(
 								 MatchingAttachment.Url,
@@ -1617,7 +1617,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			using MemoryStream Ms = new MemoryStream(OutputBin);
 
 			ObservableAttachmentCard? AdditionalPhoto = await CreateObservableAttachmentCardFromStream(Ms, result.FullPath, true);
-			if (AdditionalPhoto != null)
+			if (AdditionalPhoto is not null)
 			{
 				MainThread.BeginInvokeOnMainThread(() => this.AdditionalPhotos.Add(AdditionalPhoto));
 			}

@@ -23,20 +23,20 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
         {
         }
 
-        /// <inheritdoc />
-        protected override async Task OnInitialize()
+		/// <inheritdoc />
+		public override async Task OnInitializeAsync()
         {
-            await base.OnInitialize();
+            await base.OnInitializeAsync();
 
         }
 
         /// <inheritdoc />
-        protected override async Task OnDispose()
+        public override async Task OnDisposeAsync()
         {
             ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
             ServiceRef.XmppService.LegalIdentityChanged -= this.XmppContracts_LegalIdentityChanged;
 
-            await base.OnDispose();
+            await base.OnDisposeAsync();
         }
 
 		private bool hasInitializedCallbacks = false;

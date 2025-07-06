@@ -290,7 +290,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		private static bool IsSvg(byte[] imageBytes)
 		{
-			if (imageBytes == null || imageBytes.Length < 5)
+			if (imageBytes is null || imageBytes.Length < 5)
 				return false;
 
 			// Check if it starts with "<svg" (ignoring whitespace)

@@ -60,7 +60,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				this.InitializeComponent();
 				this.BindingContext = new AppShellViewModel();
 
-				this.RegisterRoutes();
+				RegisterRoutes();
 			}
 			catch (Exception ex)
 			{
@@ -72,8 +72,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			}
 		}
 
-		private void RegisterRoutes()
+		internal static void RegisterRoutes()
 		{
+			Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
 			// Applications:
 			Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
 			Routing.RegisterRoute(nameof(ApplyIdPage), typeof(ApplyIdPage));
@@ -156,7 +157,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ViewModel.DoInitialize();
+					await ViewModel.OnInitializeAsync();
 				});
 			}
 		}

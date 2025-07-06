@@ -73,9 +73,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (this.navigationArguments is not null)
 			{
