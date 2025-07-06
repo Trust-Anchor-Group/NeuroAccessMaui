@@ -21,7 +21,7 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		private ObservableCollection<ObservableNotification> notifications = new();
 
 
-		protected override Task OnAppearing()
+		public override Task OnAppearingAsync()
 		{
 			ServiceRef.NotificationService.OnNewNotification += this.OnNotificationEvent;
 			//Load notifications
@@ -35,14 +35,14 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 						this.Notifications.Add(new ObservableNotification(Event));
 				});
 			});
-			return base.OnAppearing();
+			return base.OnAppearingAsync();
 		}
 
-		protected override Task OnDisappearing()
+		public override async Task OnDisappearingAsync()
 		{
 			ServiceRef.NotificationService.OnNewNotification -= this.OnNotificationEvent;
 
-			return base.OnDisappearing();
+			await base.OnDisappearingAsync();
 		}
 
 		//On notification event

@@ -1832,7 +1832,7 @@ namespace NeuroAccessMaui.UI.Rendering
 				this.currentElement = MainLabel;
 			}
 
-			if (MainLabel.FormattedText == null)
+			if (MainLabel.FormattedText is null)
 			{
 				FormattedString = new();
 			}

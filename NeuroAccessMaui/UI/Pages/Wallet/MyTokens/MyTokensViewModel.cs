@@ -19,9 +19,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		private readonly MyTokensNavigationArgs? navigationArgs = Args;
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			try
 			{
@@ -64,7 +64,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
 			ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
@@ -72,7 +72,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 			if (this.navigationArgs?.TokenItemProvider is TaskCompletionSource<TokenItem?> TaskSource)
 				TaskSource.TrySetResult(null);
 
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		private Task Wallet_TokenAdded(object? Sender, TokenEventArgs e)

@@ -25,9 +25,9 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ServerSignature
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			this.AssignProperties();
 		}

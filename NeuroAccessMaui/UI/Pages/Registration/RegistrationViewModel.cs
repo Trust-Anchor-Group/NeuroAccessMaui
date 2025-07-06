@@ -17,9 +17,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
 			ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
@@ -28,12 +28,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
 			ServiceRef.TagProfile.StepChanged -= this.TagProfile_StepChanged;
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		/// <summary>

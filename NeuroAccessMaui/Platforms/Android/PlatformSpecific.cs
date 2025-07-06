@@ -266,7 +266,7 @@ namespace NeuroAccessMaui.Services
 
 					Bitmap? Blurred = null;
 
-					if (Activity != null && (int)Android.OS.Build.VERSION.SdkInt >= 17)
+					if (Activity is not null && (int)Android.OS.Build.VERSION.SdkInt >= 17)
 						Blurred = ToBlurred(Screenshot, Activity, blurRadius);
 					else
 						Blurred = ToLegacyBlurred(Screenshot, blurRadius);

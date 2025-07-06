@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Core
 
 		public static bool GetCanExecute(ICommandElement CommandElement)
 		{
-			if (CommandElement.Command == null)
+			if (CommandElement.Command is null)
 				return true;
 
 			return CommandElement.Command.CanExecute(CommandElement.CommandParameter);

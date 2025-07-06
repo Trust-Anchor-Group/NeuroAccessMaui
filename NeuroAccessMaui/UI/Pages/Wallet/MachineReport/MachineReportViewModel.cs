@@ -22,9 +22,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (this.TokenReport is null)
 				this.Title = string.Empty;
@@ -39,14 +39,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.NeuroFeatureVariablesUpdated -= this.Wallet_VariablesUpdated;
 			ServiceRef.XmppService.NeuroFeatureStateUpdated -= this.Wallet_StateUpdated;
 
 			this.DeleteTemporaryFiles();
 
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		private Task Wallet_StateUpdated(object? Sender, NeuroFeatures.EventArguments.NewStateEventArgs e)

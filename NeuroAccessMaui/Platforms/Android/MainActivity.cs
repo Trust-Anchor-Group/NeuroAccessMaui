@@ -6,6 +6,7 @@ using Android.Content.PM;
 using Android.Nfc;
 using Android.Nfc.Tech;
 using Android.OS;
+using AndroidX.Core.View;
 using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using NeuroAccess.Nfc;
 using NeuroAccessMaui.AndroidPlatform.Nfc;
@@ -104,7 +105,15 @@ namespace NeuroAccessMaui
 			}
 
 			App.Current?.On<Microsoft.Maui.Controls.PlatformConfiguration.Android>().UseWindowSoftInputModeAdjust(WindowSoftInputModeAdjust.Resize);
-
+			if (this.Window is null)
+				return;
+			WindowCompat.SetDecorFitsSystemWindows(this.Window, false);
+			if (OperatingSystem.IsAndroidVersionAtLeast(23) && !OperatingSystem.IsAndroidVersionAtLeast(35))
+			{
+				// Optionally, set transparent nav/status bars
+				this.Window.SetStatusBarColor(Android.Graphics.Color.Transparent);
+				this.Window.SetNavigationBarColor(Android.Graphics.Color.Transparent);
+			}
 		}
 
 		protected override void OnResume()

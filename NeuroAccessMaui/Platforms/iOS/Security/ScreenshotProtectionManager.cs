@@ -26,7 +26,7 @@ namespace Plugin.Maui.ScreenSecurity.Platforms.iOS
 			{
 				try
 				{
-					if (window != null)
+					if (window is not null)
 					{
 						_secureTextField ??= new()
 						{
@@ -43,7 +43,7 @@ namespace Plugin.Maui.ScreenSecurity.Platforms.iOS
 						_secureTextField.Layer.Sublayers?[0].AddSublayer(window.Layer);
 					}
 
-					if (_secureTextField != null)
+					if (_secureTextField is not null)
 					{
 						if (preventScreenshot)
 							_secureTextField.SecureTextEntry = preventScreenshot;
@@ -65,7 +65,7 @@ namespace Plugin.Maui.ScreenSecurity.Platforms.iOS
 		{
 			UIViewController? viewController = window.RootViewController;
 
-			while (viewController?.PresentedViewController != null)
+			while (viewController?.PresentedViewController is not null)
 			{
 				viewController = viewController.PresentedViewController;
 			}

@@ -134,7 +134,7 @@ namespace NeuroAccessMaui.UI.Behaviors
 
 		private void UpdateWidth()
 		{
-			if (this.associatedObject == null || this.associatedObject.Parent == null) return;
+			if (this.associatedObject is null || this.associatedObject.Parent is null) return;
 
 			double ParentWidth = 0;
 			double HorizontalPadding = 0;

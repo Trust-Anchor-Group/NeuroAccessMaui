@@ -36,7 +36,7 @@
 		{
 			Console.WriteLine($"New state for {Bindable.GetType().Name} : Value: {NewValue}");
 			// If you want controls to transition VisualState, uncomment below:
-			// if (bindable is VisualElement ve && newValue != null)
+			// if (bindable is VisualElement ve && newValue is not null)
 			//     VisualStateManager.GoToState(ve, newValue.ToString());
 
 			// Else, this attached property solely reflects state for DataTriggers.

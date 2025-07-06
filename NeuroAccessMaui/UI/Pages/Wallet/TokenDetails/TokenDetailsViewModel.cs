@@ -41,9 +41,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		private readonly TokenDetailsPage page = Page;
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (this.navigationArguments is not null)
 			{

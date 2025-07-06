@@ -26,9 +26,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (this.Uri is not null)
 			{
@@ -52,12 +52,12 @@ namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
 			this.timer?.Dispose();
 			this.timer = null;
 
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		#region Properties

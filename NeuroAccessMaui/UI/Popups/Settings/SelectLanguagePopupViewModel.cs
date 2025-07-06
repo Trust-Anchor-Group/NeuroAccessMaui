@@ -34,12 +34,12 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 		}
 
 
-		protected override Task OnAppearing()
+		public override Task OnAppearingAsync()
 		{
 			if(this.SelectedLanguageName is not null)
 				WeakReferenceMessenger.Default.Send(new ScrollToLanguageMessage(this.SelectedLanguageName));
 
-			return base.OnAppearing();
+			return base.OnAppearingAsync();
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]

@@ -59,9 +59,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					 ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 		}
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
 

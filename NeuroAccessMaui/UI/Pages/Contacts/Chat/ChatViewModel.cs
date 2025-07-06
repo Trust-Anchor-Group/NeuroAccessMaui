@@ -77,8 +77,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.FriendlyName = Args?.FriendlyName ?? string.Empty;
 			this.UniqueId = Args?.UniqueId;
 
-			this.page.OnAfterAppearing += this.Page_OnAfterAppearing;
-
 			this.XmppUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.Xmpp));
 			this.IotIdUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotId));
 			this.IotScUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotSc));
@@ -133,9 +131,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			this.scrollTo = await this.LoadMessagesAsync(false);
 
@@ -146,9 +144,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 
 			this.waitUntilBound = new TaskCompletionSource<bool>();
 		}

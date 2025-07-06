@@ -66,7 +66,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			if (this.form is not null && this.form.CanCancel && !this.responseSent)
 			{
@@ -74,7 +74,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm
 				this.responseSent = true;
 			}
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		#region Properties
