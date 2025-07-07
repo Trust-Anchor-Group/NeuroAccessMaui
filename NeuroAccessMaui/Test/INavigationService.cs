@@ -12,10 +12,25 @@ namespace NeuroAccessMaui.Test
 	{
 
 		/// <summary>
-		/// Navigates to the specified route and pushes the page onto the navigation stack.
-		/// </summary>
-		/// <param name="Route">The route string.</param>
-		Task NavigateToAsync(string Route);
+               /// Navigates to the specified route and pushes the page onto the navigation stack.
+               /// </summary>
+               /// <param name="Route">The route string.</param>
+               Task GoToAsync(string Route);
+
+               /// <summary>
+               /// Navigates to the specified route and pushes the page onto the navigation stack with navigation arguments.
+               /// </summary>
+               /// <typeparam name="TArgs">The navigation arguments type.</typeparam>
+               /// <param name="Route">The route string.</param>
+               /// <param name="Args">Optional navigation arguments.</param>
+               Task GoToAsync<TArgs>(string Route, TArgs? Args)
+                       where TArgs : Services.UI.NavigationArgs, new();
+
+               /// <summary>
+               /// Navigates directly to a page instance.
+               /// </summary>
+               /// <param name="Page">The page to navigate to.</param>
+               Task GoToAsync(ContentPage Page);
 
 		/// <summary>
 		/// Pops the current page from the navigation stack and displays the previous page.
@@ -41,6 +56,13 @@ namespace NeuroAccessMaui.Test
 		/// <summary>
 		/// Gets the current visible page.
 		/// </summary>
-		ContentPage CurrentPage { get; }
-	}
+        ContentPage CurrentPage { get; }
+
+               /// <summary>
+               /// Pops the latest navigation arguments if any.
+               /// </summary>
+               /// <typeparam name="TArgs">The navigation arguments type.</typeparam>
+               /// <returns>Navigation arguments or null.</returns>
+               TArgs? PopLatestArgs<TArgs>() where TArgs : Services.UI.NavigationArgs, new();
+        }
 }
