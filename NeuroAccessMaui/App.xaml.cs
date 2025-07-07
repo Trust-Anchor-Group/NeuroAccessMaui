@@ -428,8 +428,8 @@ namespace NeuroAccessMaui
 				await ServiceRef.NotificationService.Load(isResuming, Token);
 
 
-				var navigationService = ServiceRef.Provider.GetRequiredService<NavigationService>();
-				await navigationService.NavigateToAsync(nameof(NeuroAccessMaui.UI.Pages.Main.MainPage));
+                                var navigationService = ServiceRef.Provider.GetRequiredService<NavigationService>();
+                                await navigationService.GoToAsync(nameof(NeuroAccessMaui.UI.Pages.Main.MainPage));
 			//	AppShell.AppLoaded();
 			}
 			catch (OperationCanceledException)
