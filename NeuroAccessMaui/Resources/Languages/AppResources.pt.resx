@@ -681,7 +681,7 @@
     <value>Endereço (linha 2)</value>
   </data>
   <data name="Area" xml:space="preserve">
-    <value>Área</value>
+    <value>Bairro</value>
   </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancelar</value>
@@ -702,10 +702,10 @@
     <value>Entrar</value>
   </data>
   <data name="EnterPassword" xml:space="preserve">
-    <value>Digite o alfinete</value>
+    <value>Digite o PIN</value>
   </data>
   <data name="FirstName" xml:space="preserve">
-    <value>Nome próprio</value>
+    <value>Primeiro nome</value>
   </data>
   <data name="Ignore" xml:space="preserve">
     <value>Ignorar</value>
@@ -897,7 +897,7 @@
     <value>Biométrico</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>ALFINETE</value>
+    <value>PIN</value>
   </data>
   <data name="Application" xml:space="preserve">
     <value>Aplicação</value>
@@ -1050,13 +1050,13 @@
     <value>Data de Nascimento</value>
   </data>
   <data name="Female" xml:space="preserve">
-    <value>Fêmea</value>
+    <value>Feminino</value>
   </data>
   <data name="Gender" xml:space="preserve">
     <value>Gênero</value>
   </data>
   <data name="Male" xml:space="preserve">
-    <value>Macho</value>
+    <value>Masculino</value>
   </data>
   <data name="Nationality" xml:space="preserve">
     <value>Nacionalidade</value>
