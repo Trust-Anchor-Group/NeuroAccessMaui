@@ -1,6 +1,7 @@
 using Microsoft.Maui.Controls;
 using NeuroAccessMaui.Services;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Test
@@ -9,12 +10,16 @@ namespace NeuroAccessMaui.Test
 	/// Default implementation of <see cref="INavigationService"/> that uses MAUI Routing for route-based page instantiation.
 	/// </summary>
 	[Singleton]
-	public class NavigationService : INavigationService
-	{
-		private readonly Stack<ContentPage> navigationStack = new();
+        public class NavigationService : INavigationService
+        {
+                private readonly Stack<ContentPage> navigationStack = new();
+                private readonly Stack<ContentPage> modalStack = new();
 
 		/// <inheritdoc/>
-		public ContentPage CurrentPage => this.navigationStack.Count > 0 ? this.navigationStack.Peek() : null;
+                public ContentPage CurrentPage => this.navigationStack.Count > 0 ? this.navigationStack.Peek() : null;
+
+                /// <inheritdoc/>
+                public ContentPage CurrentModalPage => this.modalStack.Count > 0 ? this.modalStack.Peek() : null;
 
 		/// <inheritdoc/>
 		public async Task NavigateToAsync(string Route)
@@ -40,10 +45,10 @@ namespace NeuroAccessMaui.Test
 		}
 
 		/// <inheritdoc/>
-		public async Task GoBackAsync()
-		{
-			if (this.navigationStack.Count > 1)
-			{
+                public async Task GoBackAsync()
+                {
+                        if (this.navigationStack.Count > 1)
+                        {
 				// Pop current
 				this.navigationStack.Pop();
 				var previous = this.navigationStack.Peek();
@@ -58,8 +63,49 @@ namespace NeuroAccessMaui.Test
 					{
 						Application.Current.MainPage = previous;
 					}
-				});
-			}
-		}
-	}
+                                });
+                        }
+                }
+
+                /// <inheritdoc/>
+                public async Task PushModalAsync(string Route)
+                {
+                        await MainThread.InvokeOnMainThreadAsync(async () =>
+                        {
+                                var page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as ContentPage;
+                                if (page is null)
+                                        throw new InvalidOperationException($"No page registered for route '{Route}'.");
+
+                                this.modalStack.Push(page);
+                                if (Application.Current.MainPage is CustomShell customShell)
+                                {
+                                        await customShell.PushModalAsync(page);
+                                }
+                                else
+                                {
+                                        await Application.Current.MainPage.Navigation.PushModalAsync(page);
+                                }
+                        });
+                }
+
+                /// <inheritdoc/>
+                public async Task PopModalAsync()
+                {
+                        if (this.modalStack.Count == 0)
+                                return;
+
+                        this.modalStack.Pop();
+                        await MainThread.InvokeOnMainThreadAsync(async () =>
+                        {
+                                if (Application.Current.MainPage is CustomShell customShell)
+                                {
+                                        await customShell.PopModalAsync();
+                                }
+                                else
+                                {
+                                        await Application.Current.MainPage.Navigation.PopModalAsync();
+                                }
+                        });
+                }
+        }
 }
