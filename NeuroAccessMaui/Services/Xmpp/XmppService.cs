@@ -1392,6 +1392,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.NeuroFeaturesJid))
 				return false;
 
+			if(string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
+				return false;
+
 			if (!ServiceRef.TagProfile.SupportsPushNotification)
 				return false;
 
