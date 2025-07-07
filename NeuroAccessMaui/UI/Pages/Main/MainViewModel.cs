@@ -21,13 +21,16 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeDark);
 
+		[ObservableProperty]
+		bool themeLoaded = false;
+
 		public string BannerUri =>
-			Application.Current.RequestedTheme switch
+			Application.Current?.UserAppTheme switch
 			{
 				AppTheme.Dark => this.BannerUriDark,
 				AppTheme.Light => this.BannerUriLight,
 				_ => this.BannerUriLight
-			};
+			} ?? this.BannerUriLight;
 
 		public MainViewModel()
 			: base()
@@ -62,6 +65,12 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				}
 				*/
 				_ = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
+				await ServiceRef.ThemeService.ThemeLoaded.Task;
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.ThemeLoaded = true;
+					this.OnPropertyChanged(nameof(this.BannerUri));
+				});
 				await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
 
 
@@ -207,13 +216,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
-				(decimal PendingAmount, string PendingCurrency, PendingPayment[] PendingPayments) = await ServiceRef.XmppService.GetPendingEDalerPayments();
-				(AccountEvent[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize);
+				WalletNavigationArgs Args = new();
 
-				WalletNavigationArgs Args = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
-
-				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), Args, BackMethod.Pop);
+				await ServiceRef.UiService.GoToAsync(nameof(WalletPage), Args, BackMethod.Pop);
 			}
 			catch (Exception Ex)
 			{

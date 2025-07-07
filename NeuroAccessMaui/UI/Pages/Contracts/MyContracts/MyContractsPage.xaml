@@ -19,16 +19,16 @@
 
 		<DataTemplate x:Key="HeaderModelTemplate" x:DataType="objectmodel:HeaderModel">
 			<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="5,5,5,5"
-					BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceElevation3WLDark}, Dark={DynamicResource SurfaceElevation3WLLight}}">
+					BackgroundColor="{DynamicResource SurfaceElevation3WL}">
 				<Label Grid.Column="0" Grid.Row="0" HorizontalOptions="Start" VerticalOptions="Center" LineBreakMode="CharacterWrap" TextType="Text"
-						 TextColor="{AppThemeBinding Light={DynamicResource ButtonNeutralSecondaryContentDark}, Dark={DynamicResource ButtonNeutralSecondaryContentLight}}">
+						 TextColor="{DynamicResource ButtonNeutralSecondaryContent}">
 					<Label.FormattedText>
 						<FormattedString>
-							<Span Text="{Binding Path=Category}" TextColor="{AppThemeBinding Light={DynamicResource ButtonNeutralSecondaryContentDark}, Dark={DynamicResource ButtonNeutralSecondaryContentLight}}"/>
-							<Span Text=" (" TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLDark}, Dark={DynamicResource TnPInfoContentWLLight}}"/>
+							<Span Text="{Binding Path=Category}" TextColor="{DynamicResource ButtonNeutralSecondaryContent}"/>
+							<Span Text=" (" TextColor="{DynamicResource TnPInfoContentWL}"/>
 							<Span Text="{Binding Path=NrContracts}"
-									TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLDark}, Dark={DynamicResource TnPInfoContentWLLight}}"/>
-							<Span Text=")" TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLDark}, Dark={DynamicResource TnPInfoContentWLLight}}"/>
+									TextColor="{DynamicResource TnPInfoContentWL}"/>
+							<Span Text=")" TextColor="{DynamicResource TnPInfoContentWL}"/>
 						</FormattedString>
 					</Label.FormattedText>
 				</Label>
@@ -36,11 +36,11 @@
 						 IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
 						 Style="{DynamicResource AlertFrame}">
 					<Label FontSize="Caption" Text="{Binding NrEvents}" Padding="1"
-							 TextColor="{AppThemeBinding Light={DynamicResource ContentWhitefixedLight}, Dark={DynamicResource ContentWhitefixedDark}}" />
+							 TextColor="{DynamicResource ContentWhitefixed}" />
 				</Frame>
 				<Path Grid.Column="1" Grid.Row="0" HorizontalOptions="End" VerticalOptions="Center"
 						Data="{Binding Symbol}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
-						Fill="{AppThemeBinding Light={DynamicResource ButtonNeutralSecondaryContentDark}, Dark={DynamicResource ButtonNeutralSecondaryContentLight}}"/>
+						Fill="{DynamicResource ButtonNeutralSecondaryContent}"/>
 			</Grid>
 		</DataTemplate>
 
@@ -58,7 +58,7 @@
 				<Frame Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" CornerRadius="12" Margin="2" Padding="8,3,8,3"
 					   IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
 					   Style="{DynamicResource AlertFrame}">
-					<Label FontSize="Caption" TextColor="{AppThemeBinding Light={DynamicResource ContentWhitefixedLight}, Dark={DynamicResource ContentWhitefixedDark}}"
+					<Label FontSize="Caption" TextColor="{DynamicResource ContentWhitefixed}"
 						   Text="{Binding NrEvents}" Padding="1"/>
 				</Frame>
 			</Grid>
@@ -77,7 +77,7 @@
 					   Text="{Binding Path=Description}" Style="{DynamicResource ClickableValueLabel}"/>
 				<Path Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
 						Data="{Binding Icon}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
-						Fill="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"/>
+						Fill="{DynamicResource ContentPrimaryWL}"/>
 				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
 					   Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
 					   Style="{DynamicResource AlertLabel}"/>
@@ -90,7 +90,7 @@
 														EventTemplate="{StaticResource EventModelTemplate}"
 														ContractTemplate="{StaticResource ContractModelTemplate}"/>
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -109,11 +109,11 @@
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
-						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"
+						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
 								 VerticalOptions="Start" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" />
 						<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
 												 HorizontalOptions="Center" VerticalOptions="Center" Margin="{DynamicResource SmallMargins}"
-												 Color="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+												 Color="{DynamicResource TnPInfoContentWL}"/>
 
 						<controls:CompositeEntry
 							Style="{DynamicResource RegularCompositeEntry}"
@@ -122,7 +122,7 @@
 
 						<!-- CollectionView's IsVisible used to be bound to IsIdle, but there seems to be a race condition somewhere because this led
 		the CollectionView not appearing sometimes on iOS. Always showing it seems to be OK because it is empty before contracts are loaded anyway. -->
-						<CollectionView x:Name="Contracts" VerticalOptions="StartAndExpand"
+						<CollectionView x:Name="Contracts" VerticalOptions="Start"
 											 ItemSizingStrategy="MeasureAllItems" SelectionMode="Single"
 											 IsVisible="True"
 											 ItemsSource="{Binding Path=Categories}"

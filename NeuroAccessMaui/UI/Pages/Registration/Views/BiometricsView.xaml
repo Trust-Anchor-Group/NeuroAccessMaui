@@ -25,7 +25,7 @@
 					HeightRequest="{Binding AuthenticationBackgroundSize}"
 					HasShadow="False"
 					CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
-					BackgroundColor="{AppThemeBinding Light={DynamicResource ButtonAccessSecondarybgWLLight}, Dark={DynamicResource ButtonAccessSecondarybgWLDark}}"
+					BackgroundColor="{DynamicResource ButtonAccessSecondarybgWL}"
 					HorizontalOptions="Center"
 					IsVisible="{Binding IsFingerprint}">
 					<Path
@@ -35,7 +35,7 @@
 						WidthRequest="{Binding AuthenticationIconSize}"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.FingerprintPath}"
-						Fill="{AppThemeBinding Light={DynamicResource ButtonAccessSecondaryContentWLLight}, Dark={DynamicResource ButtonAccessSecondaryContentWLDark}}" />
+						Fill="{DynamicResource ButtonAccessSecondaryContentWL}" />
 				</Frame>
 
 				<Frame
@@ -43,7 +43,7 @@
 					HeightRequest="{Binding AuthenticationBackgroundSize}"
 					HasShadow="False"
 					CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
-					BackgroundColor="{AppThemeBinding Light={DynamicResource ButtonAccessSecondarybgWLLight}, Dark={DynamicResource ButtonAccessSecondarybgWLDark}}"
+					BackgroundColor="{DynamicResource ButtonAccessSecondarybgWL}"
 					HorizontalOptions="Center"
 					IsVisible="{Binding IsFace}">
 					<Path
@@ -53,7 +53,7 @@
 						WidthRequest="{Binding AuthenticationIconSize}"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.FacePath}"
-						Fill="{AppThemeBinding Light={DynamicResource ButtonAccessSecondaryContentWLLight}, Dark={DynamicResource ButtonAccessSecondaryContentWLDark}}" />
+						Fill="{DynamicResource ButtonAccessSecondaryContentWL}" />
 				</Frame>
 			</HorizontalStackLayout>
 
@@ -87,16 +87,14 @@
 						WidthRequest="20"
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.InfoCirclePath}"
-						Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
-											Dark={DynamicResource TnPInfoContentWLDark}}" />
+						Fill="{DynamicResource TnPInfoContentWL}" />
 
 					<Label
 						VerticalOptions="Center"
 						FontFamily="HaasGroteskRegular"
 						FontSize="14"
 						Text="{Binding WhatIsX}"
-						TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight},
-													Dark={DynamicResource TnPInfoContentWLDark}}" />
+						TextColor="{DynamicResource TnPInfoContentWL}" />
 				</HorizontalStackLayout>
 			</controls:TemplatedButton>
 

@@ -85,18 +85,10 @@ namespace NeuroAccessMaui.UI.Pages
 		/// <param name="NewState">New XMPP State.</param>
 		protected virtual Task XmppService_ConnectionStateChanged(object? _, XmppState NewState)
 		{
-			if (MainThread.IsMainThread)
+			return MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				this.SetConnectionStateAndText(NewState);
-				return Task.CompletedTask;
-			}
-			else
-			{
-				return MainThread.InvokeOnMainThreadAsync(() =>
-				{
-					this.SetConnectionStateAndText(NewState);
-				});
-			}
+			});
 		}
 	}
 }

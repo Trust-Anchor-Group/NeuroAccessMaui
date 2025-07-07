@@ -14,7 +14,7 @@
                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Main.XmppForm"
                       xmlns:model2="clr-namespace:NeuroAccessMaui.UI.Pages.Main.XmppForm.Model">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 			<Grid RowDefinitions="auto, auto, *" RowSpacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">

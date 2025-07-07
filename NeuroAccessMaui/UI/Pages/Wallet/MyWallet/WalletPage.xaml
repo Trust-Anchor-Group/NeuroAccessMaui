@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+					  x:Class="NeuroAccessMaui.UI.Pages.Wallet.MyWallet.WalletPage"
+					  x:DataType="viewmodel:WalletViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+					  xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet">
+	<VisualElement.Resources>
+		<DataTemplate x:Key="DefaultTemplate">
+			<Grid />
+		</DataTemplate>
+
+		<DataTemplate x:Key="PendingPaymentTemplate"
+					  x:DataType="objectmodel:PendingPaymentItem">
+			<Grid ColumnDefinitions="2*,*"
+				  RowDefinitions="auto,auto">
+				<Label Grid.Column="0"
+					   Grid.Row="0"
+					   Text="{Binding Path=FriendlyName}"
+					   Style="{DynamicResource KeyLabel}"
+					   LineBreakMode="TailTruncation"
+					   FontAttributes="Bold"
+					   FontSize="18" />
+				<Label Grid.Column="0"
+					   Grid.Row="1"
+					   Text="{Binding Path=ExpiresStr}"
+					   Style="{DynamicResource KeyLabel}"
+					   LineBreakMode="TailTruncation"
+					   FontAttributes="Italic" />
+				<Label Grid.Column="1"
+					   Grid.Row="0"
+					   Grid.RowSpan="2"
+					   LineBreakMode="TailTruncation"
+					   TextColor="{DynamicResource PendingColor}"
+					   HorizontalTextAlignment="End">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="-"
+								  FontSize="30"
+								  FontAttributes="Bold" />
+							<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}"
+								  FontSize="30"
+								  FontAttributes="Bold" />
+							<Span Text=" " />
+							<Span Text="{Binding Path=Currency}"
+								  FontSize="20" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+				<Grid.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding Path=BindingContext.ShowPaymentItemCommand, Source={x:Reference ThisPage}}"
+										  CommandParameter="{Binding}" />
+				</Grid.GestureRecognizers>
+			</Grid>
+		</DataTemplate>
+
+		<DataTemplate x:Key="AccountEventTemplate"
+					  x:DataType="objectmodel:AccountEventItem">
+			<Grid ColumnDefinitions="2*,*"
+				  RowDefinitions="auto,auto,auto">
+				<Label Grid.Column="0"
+					   Grid.Row="0"
+					   Text="{Binding Path=FriendlyName}"
+					   Style="{DynamicResource KeyLabel}"
+					   LineBreakMode="TailTruncation"
+					   FontAttributes="Bold"
+					   FontSize="18" />
+				<Label Grid.Row="0"
+					   Grid.Column="1"
+					   FontSize="50"
+					   Padding="0,-25,0,-25"
+					   Text="•"
+					   HorizontalOptions="Start"
+					   VerticalOptions="Center"
+					   IsVisible="{Binding New}"
+					   Style="{DynamicResource AlertLabel}" />
+				<Label Grid.Column="0"
+					   Grid.Row="1"
+					   Text="{Binding Path=TimestampStr}"
+					   Style="{DynamicResource KeyLabel}"
+					   LineBreakMode="TailTruncation" />
+				<Label Grid.Column="1"
+					   Grid.Row="0"
+					   LineBreakMode="TailTruncation"
+					   HorizontalTextAlignment="End">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Path=Change, Converter={converters:MoneyToString}}"
+								  FontSize="18"
+								  FontAttributes="Bold"
+								  TextColor="{Binding Path=TextColor}" />
+							<Span Text=" " />
+							<Span Text="{Binding Path=Currency}"
+								  FontSize="16"
+								  TextColor="{Binding Path=TextColor}" />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+				<Label Grid.Column="1"
+					   Grid.Row="1"
+					   LineBreakMode="TailTruncation"
+					   HorizontalTextAlignment="End">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text=" (" />
+							<Span Text="{Binding Path=Balance, Converter={converters:MoneyToString}}"
+								  FontSize="14" />
+							<Span Text="{Binding Path=ReservedSuffix}"
+								  FontSize="14"
+								  TextColor="{DynamicResource PendingColor}" />
+							<Span Text=" " />
+							<Span Text="{Binding Path=Currency}"
+								  FontSize="12" />
+							<Span Text=" ) " />
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+				<Label Grid.Column="0"
+					   Grid.Row="2"
+					   Text="{Binding Path=Message}"
+					   IsVisible="{Binding Path=HasMessage}"
+					   LineBreakMode="TailTruncation" />
+				<Grid.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding Path=BindingContext.ShowPaymentItemCommand, Source={x:Reference ThisPage}}"
+										  CommandParameter="{Binding}" />
+				</Grid.GestureRecognizers>
+			</Grid>
+		</DataTemplate>
+
+		<viewmodel:AccountItemTypeTemplateSelector x:Key="AccountItemStyleSelector"
+												   DefaultTemplate="{StaticResource DefaultTemplate}"
+												   PendingPaymentTemplate="{StaticResource PendingPaymentTemplate}"
+												   AccountEventTemplate="{StaticResource AccountEventTemplate}" />
+	</VisualElement.Resources>
+	<Grid x:Name="TheMainGrid"
+		  RowDefinitions="auto, *"
+		  Padding="0"
+		  Margin="0"
+		  ColumnDefinitions="*"
+		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+
+		<controls:Background Grid.Row="0"
+							 Grid.RowSpan="2" />
+		<!-- Top Bar -->
+		<Grid Grid.Row="0"
+			  RowDefinitions="*"
+			  Margin="16,16,16,8"
+			  ColumnDefinitions="auto,*">
+
+			<controls:SvgButton Command="{Binding GoBackCommand}"
+								SvgSource="close.svg"
+								Style="{DynamicResource IconButton}"/>
+
+			<Label Grid.Row="0"
+				   Grid.Column="1"
+				   Style="{DynamicResource PageTitleLabel}"
+				   Text="{l:Localize Wallet}"
+				   HorizontalTextAlignment="End" />
+		</Grid>
+		<!-- Main content -->
+		<Grid RowDefinitions="auto, *"
+			  Padding="16,8,16,8"
+			  RowSpacing="16"
+			  Grid.Row="1">
+			<!-- Balance card -->
+			<Border Style="{DynamicResource BorderSet}"
+					Margin="0"
+					Grid.Row="0">
+				<VerticalStackLayout Spacing="8">
+					<!-- Balance title-->
+					<Grid Grid.Row="0"
+						  ColumnDefinitions="auto, *, auto"
+						  RowDefinitions="*,*"
+						  ColumnSpacing="16"
+						  Margin="0"
+						  Padding="0">
+						<controls:SvgView Source="wallet.svg" VerticalOptions="Center"
+										  Grid.Column="0"
+										  TintColor="{DynamicResource ContentPrimaryWL}"
+										  Aspect="AspectFit"
+										  WidthRequest="24"
+										  HeightRequest="24" />
+						<Label Grid.Column="1" Grid.Row="0"
+							   VerticalOptions="Start" HorizontalOptions="Start"
+							   Text="Credit Balance"
+							   FontSize="20"
+							   LineHeight="0.8"
+							   Style="{DynamicResource PageTitleLabel}"
+							   Margin="0" Padding="0" VerticalTextAlignment="Start" />
+
+						<controls:TemplatedButton Command="{Binding GetBalanceTask.RefreshCommand}"
+												  Grid.Column="2"
+												  WidthRequest="24"
+												  HeightRequest="24"
+												  HorizontalOptions="Center" VerticalOptions="Center"
+												  IsVisible="{Binding GetBalanceTask.IsNotRunning}">
+
+							<controls:SvgView Source="refresh.svg"
+									   TintColor="{DynamicResource ContentPrimaryWL}"
+									   />
+						</controls:TemplatedButton>
+						<ActivityIndicator IsRunning="True"
+										   VerticalOptions="Start"
+										   Grid.Column="2"
+										   WidthRequest="24"
+										   HeightRequest="24"
+										   HorizontalOptions="Center"
+										   IsVisible="{Binding GetBalanceTask.IsRunning}" />
+
+
+					</Grid>
+					<!-- Balance -->
+					<Grid Grid.Row="1"
+						  RowDefinitions="auto, auto">
+
+						<Label Grid.Row="0"
+							   Text="{Binding Path=BalanceDecimal}"
+							   Style="{DynamicResource PageTitleLabel}" />
+						<Label Grid.Row="1"
+							   Text="{Binding BalanceUpdated, Converter={converters:DateTimeToLastUpdatedConverter}}"
+							   Style="{DynamicResource KeyLabel}"
+							   FontSize="12"
+							   Margin="0"
+							   FontFamily="HaasGroteskRegular" />
+					</Grid>
+
+					<controls:TextButton LabelData="Buy Neuro-Credits"
+										 Command="{Binding BuyEdalerCommand}"
+										 Style="{DynamicResource FilledTextButton}" />
+				</VerticalStackLayout>
+			</Border>
+		</Grid>
+
+		<!-- Bottom Bar -->
+		<controls:BottomBar Grid.Row="2"
+							Style="{DynamicResource BottomBar}"
+							SelectedIcon="Center"
+							LeftIcon="home.svg"
+							CenterIcon="wallet.svg"
+							RightIcon="apps.svg"
+							LeftLabelText="{l:Localize Home}"
+							CenterLabelText="{l:Localize Wallet}"
+							RightLabelText="{l:Localize Apps}"
+							LeftCommand="{Binding ViewMainPageCommand}"
+							RightCommand="{Binding ViewAppsCommand}"/>
+	</Grid>
+</base:BaseContentPage>

@@ -36,7 +36,7 @@
 							HeightRequest="24" WidthRequest="24"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.EmailIconPath}"
-							Fill="{AppThemeBinding Light={DynamicResource InputFieldsContentPrimaryLight}, Dark={DynamicResource InputFieldsContentPrimaryDark}}"/>
+							Fill="{DynamicResource InputFieldsContentPrimary}"/>
 					</controls:CompositeEntry.LeftView>
 					<controls:CompositeEntry.Behaviors>
 						<mct:TextValidationBehavior x:Name="EmailValidator"
@@ -60,10 +60,10 @@
 							WidthRequest="20"
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
+							Fill="{DynamicResource InputFieldsContentDangerv800}" />
 
 					<Label Grid.Column="1" VerticalOptions="Center" Text="{Binding LocalizedValidationError}"
-							 TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
+							 TextColor="{DynamicResource InputFieldsContentDangerv800}" />
 				</Grid>
 
 			</VerticalStackLayout>

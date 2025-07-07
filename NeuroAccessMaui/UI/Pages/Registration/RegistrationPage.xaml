@@ -12,7 +12,7 @@
 							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
 
 	<Grid x:Name="TheMainGrid" RowDefinitions="auto,*" ColumnDefinitions="*" 
-		BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+		BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background Grid.RowSpan="2" />
 
@@ -30,7 +30,7 @@
 			<controls:TemplatedButton x:Name="LanguageButton" VerticalOptions="Start" HorizontalOptions="End" Command="{Binding ChangeLanguageCommand}" IsVisible="{Binding IsOnGetStartedView}">
 				<VerticalStackLayout>
 					<Path x:Name="InnerPath" Grid.Row="0" HorizontalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-							Fill="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+							Fill="{DynamicResource ContentPrimaryWL}" 
 							Data="{x:Static ui:Geometries.LanguageSelectButtonPath}"/>
 
 					<Label x:Name="InnerLabel" Grid.Row="1" Text="{Binding SelectedLanguage.MyNativeName}" />
@@ -41,8 +41,8 @@
 						<VisualState Name="Normal" />
 						<VisualState Name="Disabled">
 							<VisualState.Setters>
-								<Setter Property="Label.TextColor" TargetName="InnerLabel" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}" />
-								<Setter Property="Path.Fill" TargetName="InnerPath" Value="{AppThemeBinding Light={DynamicResource ButtonUniversalContentInactiveWLLight}, Dark={DynamicResource ButtonUniversalContentInactiveWLDark}}" />
+								<Setter Property="Label.TextColor" TargetName="InnerLabel" Value="{DynamicResource ButtonUniversalContentInactiveWL}" />
+								<Setter Property="Path.Fill" TargetName="InnerPath" Value="{DynamicResource ButtonUniversalContentInactiveWL}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>

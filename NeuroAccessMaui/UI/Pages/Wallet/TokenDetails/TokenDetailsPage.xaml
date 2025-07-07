@@ -11,7 +11,7 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenDetails">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -30,7 +30,7 @@
 							<Label Text="{l:Localize TokenDetailsDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize Description}" Margin="{DynamicResource SmallTopMargins}"
 									 VerticalOptions="Start"/>
-							<ContentView Content="{Binding Description}" VerticalOptions="StartAndExpand" Margin="{DynamicResource SmallLeftRightBottomMargins}"/>
+							<ContentView Content="{Binding Description}" VerticalOptions="Start" Margin="{DynamicResource SmallLeftRightBottomMargins}"/>
 							<Grid x:Name="GeneralInfoGrid">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
@@ -116,7 +116,7 @@
 
 							<Image Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" 
                        WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" 
-                       VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" Margin="{DynamicResource SmallTopMargins}" />
+                       VerticalOptions="Start" HorizontalOptions="Center" Margin="{DynamicResource SmallTopMargins}" />
 
 							<Label Text="{l:Localize Reports}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"
 									 IsVisible="{Binding HasStateMachine}"/>

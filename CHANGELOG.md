@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- ThemeLoaded property to IThemeService and implementation in ThemeService
+- Conditional loading indicators in MainPage.xaml and GetStartedView.xaml
+- IsLoading property to GetStartedViewModel
+- New wallet page
+- New theme resources (Light.xaml, Dark.xaml)
+- NeuroAccessBranding version 2.0 (Version 1.0 is still compatible)
+
+### Changed
+
+- Registration workflow to direct users based on registration state (e.g., password/biometrics steps)
+- ProfilePhoto logic in ViewIdentityViewModel to prioritize photos named ProfilePhoto
+- AppColors are now always looked up and not cached
+
+### Fixed
+
+- Ensured authentication method set to Password when Later is selected in biometrics step
+- --
+- A bug which could cause a crash when opening a contract from the Wallet page
+- Dangerous setting of properties in ViewContract which are not marshalled to Main Thread
+- Bottom sheet in ViewId page is now more performant on most devices
+- Improved visibility on text when scanning QR codes
+
+### Removed
+
+- Usage of AppThemeBinding, except for images
+- --
+
 ## [2.6.1] - 2025/06/30
 
 ### Added

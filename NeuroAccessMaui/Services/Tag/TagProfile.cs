@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Extensions;
+﻿using EDaler;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Storage;
@@ -94,7 +95,8 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool hasThing;
 		private DateTime? lastIdentityUpdate;
 		private bool hasBetaFeatures;
-
+		private decimal lastEDalerBalanceDecimal;
+		private DateTime? lastEDalerBalanceUpdate;
 		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
 		/// </summary>
@@ -175,7 +177,9 @@ namespace NeuroAccessMaui.Services.Tag
 				HasWallet = this.HasWallet,
 				HasThing = this.HasThing,
 				LastIdentityUpdate = this.LastIdentityUpdate,
-				HasBetaFeatures = this.HasBetaFeatures
+				HasBetaFeatures = this.HasBetaFeatures,
+				LastEDalerBalanceDecimal = this.LastEDalerBalanceDecimal,
+				LastEDalerBalanceUpdate = this.LastEDalerBalanceUpdate
 			};
 
 			return Clone;
@@ -238,10 +242,11 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasThing = Configuration.HasThing;
 				this.LastIdentityUpdate = Configuration.LastIdentityUpdate ?? DateTime.MinValue;
 				this.HasBetaFeatures = Configuration.HasBetaFeatures;
+				this.LastEDalerBalanceDecimal = Configuration.LastEDalerBalanceDecimal;
+				this.LastEDalerBalanceUpdate = Configuration.LastEDalerBalanceUpdate;
 
 				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
-				this.SetTheme();
 				// Do this last, as listeners will read the other properties when the event is fired.
 				if (Configuration.Step > RegistrationStep.GetStarted && Configuration.Step <= RegistrationStep.CreateAccount)
 					this.GoToStep(RegistrationStep.ValidatePhone);
@@ -885,6 +890,32 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
+		public decimal LastEDalerBalanceDecimal
+		{
+			get => this.lastEDalerBalanceDecimal;
+			set
+			{
+				if (this.lastEDalerBalanceDecimal != value)
+				{
+					this.lastEDalerBalanceDecimal = value;
+					this.FlagAsDirty(nameof(this.LastEDalerBalanceDecimal));
+				}
+			}
+		}
+
+		public DateTime? LastEDalerBalanceUpdate
+		{
+			get => this.lastEDalerBalanceUpdate;
+			set
+			{
+				if (this.lastEDalerBalanceUpdate != value)
+				{
+					this.lastEDalerBalanceUpdate = value;
+					this.FlagAsDirty(nameof(this.LastEDalerBalanceUpdate));
+				}
+			}
+		}
+
 		/// <summary>
 		/// This profile's current registration step.
 		/// </summary>
@@ -1142,7 +1173,7 @@ namespace NeuroAccessMaui.Services.Tag
 		public AppTheme? Theme
 		{
 			get => this.theme;
-			private set
+			set
 			{
 				if (!Equals(this.theme, value))
 				{
@@ -1362,37 +1393,6 @@ namespace NeuroAccessMaui.Services.Tag
 		{
 			this.HttpFileUploadJid = HttpFileUploadJid;
 			this.HttpFileUploadMaxSize = MaxSize;
-		}
-
-		/// <summary>
-		/// Sets the preferred theme.
-		/// </summary>
-		/// <param name="Theme">Theme</param>
-		public void SetTheme(AppTheme Theme)
-		{
-			this.Theme = Theme;
-			this.SetTheme();
-		}
-
-		/// <summary>
-		/// Sets the preferred theme.
-		/// </summary>
-		public void SetTheme()
-		{
-			if (Application.Current is null || !this.Theme.HasValue)
-				return;
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				try
-				{
-					Application.Current.UserAppTheme = this.Theme.Value;
-				}
-				catch (Exception)
-				{
-					return;
-				}
-
-			});
 		}
 
 		#endregion

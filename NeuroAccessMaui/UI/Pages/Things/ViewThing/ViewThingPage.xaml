@@ -13,7 +13,7 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Things.ViewThing"
 							 xmlns:things="clr-namespace:NeuroAccessMaui.UI.Pages.Things"
 							 xmlns:model2="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -42,7 +42,7 @@
 						<Label Text="{l:Localize InformationAboutThing}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/> -->
 						<Label Text="{l:Localize InformationAboutThingText}" Style="{DynamicResource BoldItemTitleLabel}" LineBreakMode="WordWrap" HorizontalTextAlignment="Start"/>
 						<Frame Style="{DynamicResource FrameSubSet}" Margin="0" Padding="0">
-							<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{DynamicResource SmallMargins}">
+							<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="Start" Margin="{DynamicResource SmallMargins}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate x:DataType="things:HumanReadableTag">
 										<Grid ColumnDefinitions="120, *">
@@ -70,7 +70,7 @@
 					   VerticalOptions="Start" IsVisible="{Binding HasNotifications}"/>
 						<Label Text="{l:Localize NotificationsText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"
 					   IsVisible="{Binding HasNotifications}"/>
-						<VerticalStackLayout x:Name="Notifications" BindableLayout.ItemsSource="{Binding Path=Notifications}" VerticalOptions="StartAndExpand" Margin="{DynamicResource SmallMargins}">
+						<VerticalStackLayout x:Name="Notifications" BindableLayout.ItemsSource="{Binding Path=Notifications}" VerticalOptions="Start" Margin="{DynamicResource SmallMargins}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="model2:EventModel">
 									<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto" Padding="5,5,5,5">
@@ -85,7 +85,7 @@
 												 Text="{Binding Path=Description}" Style="{DynamicResource ClickableValueLabel}"/>
 										<Path Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Center" VerticalOptions="Center"
 												Data="{Binding Icon}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
-												Fill="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"/>
+												Fill="{DynamicResource ContentPrimaryWL}"/>
 										<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="NoWrap" Padding="5,2,5,0"
 												 Text="•" FontSize="50" HorizontalOptions="End" VerticalOptions="Center"
 												 Style="{DynamicResource AlertLabel}"/>
@@ -110,7 +110,7 @@
 							<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Padding="8,3,8,3" IsVisible="{Binding HasPendingChatMessages}"
 						   HorizontalOptions="End" VerticalOptions="Center" Margin="{DynamicResource SmallLeftRightMargins}"
 						   Style="{DynamicResource AlertFrame}">
-								<Label FontSize="Caption" TextColor="{DynamicResource SurfaceBackgroundWLLight}" Text="{Binding NrPendingChatMessages}" Padding="1"/>
+								<Label FontSize="Caption" TextColor="{DynamicResource SurfaceBackgroundWL}" Text="{Binding NrPendingChatMessages}" Padding="1"/>
 							</Frame>
 						</Grid>
 						<controls:TextButton LabelData="{l:Localize ConnectToDevice}" Command="{Binding Path=AddToListCommand}"

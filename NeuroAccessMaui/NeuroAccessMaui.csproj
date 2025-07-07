@@ -29,8 +29,8 @@
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2.6.1</ApplicationDisplayVersion>
-		<ApplicationVersion>245</ApplicationVersion>
+		<ApplicationDisplayVersion>2.6.5</ApplicationDisplayVersion>
+		<ApplicationVersion>255</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
@@ -327,7 +327,7 @@
 		<PackageReference Include="Waher.Networking.XMPP" Version="4.1.5" />
 		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="3.1.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="4.2.2" />
-		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.5.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.5.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Control" Version="4.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Geo" Version="1.0.1" />
 		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.2.6" />
@@ -363,6 +363,9 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>AppResources.resx</DependentUpon>
 		</Compile>-->
+		<Compile Update="Resources\Styles\Dark.xaml.cs">
+		  <DependentUpon>Dark.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml.cs">
 			<DependentUpon>ApplyIdPage.xaml</DependentUpon>
 		</Compile>
@@ -521,6 +524,12 @@
 
 	<ItemGroup>
 		<MauiXaml Update="Resources\Styles\CompositeInputViewStyles.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Resources\Styles\Dark.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Resources\Styles\Light.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\PickerStyles.xaml">

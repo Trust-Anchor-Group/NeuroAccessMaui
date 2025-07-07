@@ -91,7 +91,17 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		public ObservableTask<int> LoadPhotosTask { get; }
 		public ObservableCollection<Photo> Photos { get; } = [];
 
-		public ImageSource? ProfilePhoto => this.Photos.Count > 0 ? this.Photos[0].Source : null;
+		public ImageSource? ProfilePhoto
+		{
+			get
+			{
+				// Look for a photo named "ProfilePhoto" (adjust property as needed)
+				Photo? Profile = this.Photos.FirstOrDefault(p => p.Attachment?.FileName.StartsWith("ProfilePhoto", StringComparison.OrdinalIgnoreCase) ?? false);
+
+				// If not found, fallback to first photo
+				return (Profile ?? this.Photos.FirstOrDefault())?.Source;
+			}
+		}
 
 		public bool HasProfilePhoto => this.ProfilePhoto is not null;
 

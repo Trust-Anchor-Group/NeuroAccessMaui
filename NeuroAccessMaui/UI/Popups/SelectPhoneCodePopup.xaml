@@ -19,27 +19,27 @@
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="SelectPhoneCodeTemplate" x:DataType="data:ISO_3166_Country">
-			<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}"
+			<Grid BackgroundColor="{DynamicResource SurfaceElevation1WL}"
 					ColumnDefinitions="35,auto,*" ColumnSpacing="{DynamicResource SmallSpacing}" RowDefinitions="auto"
 					Padding="{DynamicResource SmallMargins}">
 					
-				<Label Grid.Column="0" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="End" FontAutoScalingEnabled="False"
+				<Label Grid.Column="0" HorizontalOptions="Fill" HorizontalTextAlignment="End" FontAutoScalingEnabled="False"
 						 LineBreakMode="NoWrap" Style="{DynamicResource RegularItemTitleLabel}" Text="{Binding DialCode}"
-						 TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+						 TextColor="{DynamicResource ContentPrimaryWL}" />
 
 				<Label Grid.Column="1" Style="{DynamicResource RegularItemTitleLabel}" Text="{Binding EmojiInfo.Unicode}"
-						 TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+						 TextColor="{DynamicResource ContentPrimaryWL}" />
 
-				<Label Grid.Column="2" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Start" LineBreakMode="NoWrap"
+				<Label Grid.Column="2" HorizontalOptions="Fill" HorizontalTextAlignment="Start" LineBreakMode="NoWrap"
 						 Style="{DynamicResource RegularItemTitleLabel}" Text="{Binding Name}"
-						 TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+						 TextColor="{DynamicResource ContentPrimaryWL}" />
 
 				<VisualStateManager.VisualStateGroups>
 					<VisualStateGroup Name="CommonStates">
 						<VisualState Name="Normal" />
 						<VisualState Name="Selected">
 							<VisualState.Setters>
-								<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}" />
+								<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceBackgroundWL}" />
 							</VisualState.Setters>
 						</VisualState>
 					</VisualStateGroup>

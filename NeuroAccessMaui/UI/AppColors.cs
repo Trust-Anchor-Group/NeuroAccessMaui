@@ -1,399 +1,117 @@
 namespace NeuroAccessMaui.UI
 {
 	/// <summary>
-	/// Static class that gives access to app-specific themed colors
+	/// Static class that gives access to app-specific themed colors.
+	/// All colors are fetched directly from the current resources; there are no separate dark/light variants.
 	/// </summary>
 	public static class AppColors
 	{
-		private static Color? primaryForegroundDark;
-		private static Color? primaryForegroundLight;
-		private static Color? primaryBackgroundDark;
-		private static Color? primaryBackgroundLight;
-		private static Color? secondaryBackgroundDark;
-		private static Color? secondaryBackgroundLight;
-		private static Color? buttonAccessPrimarybgDark;
-		private static Color? buttonAccessPrimarybgLight;
-		private static Color? buttonUniversalbgInactiveWLDark;
-		private static Color? buttonUniversalbgInactiveWLLight;
-		private static Color? alertDark;
-		private static Color? alertLight;
-		private static Color? errorBackgroundDark;
-		private static Color? errorBackgroundLight;
-		private static Color? clickableDark;
-		private static Color? clickableLight;
-		private static Color? weakPasswordForeground;
-		private static Color? mediumPasswordForeground;
-		private static Color? strongPasswordForeground;
-		private static Color? blueLink;
-		private static Color? insertedBorder;
-		private static Color? deletedBorder;
-		private static Color? purple15Light;
-		private static Color? purple15Dark;
-		private static Color? purpleLight;
-		private static Color? purpleDark;
-		private static Color? blue20AffirmLight;
-		private static Color? blue20AffirmDark;
-		private static Color? blueLight;
-		private static Color? blueDark;
-
 		/// <summary>
 		/// Primary foreground color.
 		/// </summary>
-		public static Color PrimaryForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					primaryForegroundDark ??= AppStyles.TryGetResource<Color>("ContentPrimaryWLDark");
-					return primaryForegroundDark!;
-				}
-				else
-				{
-					primaryForegroundLight ??= AppStyles.TryGetResource<Color>("ContentPrimaryWLLight");
-					return primaryForegroundLight!;
-				}
-			}
-		}
+		public static Color PrimaryForeground =>
+			AppStyles.TryGetResource<Color>("ContentPrimaryWL");
 
 		/// <summary>
 		/// Primary background color.
 		/// </summary>
-		public static Color PrimaryBackground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					primaryBackgroundDark ??= AppStyles.TryGetResource<Color>("SurfaceBackgroundWLDark");
-					return primaryBackgroundDark!;
-				}
-				else
-				{
-					primaryBackgroundLight ??= AppStyles.TryGetResource<Color>("SurfaceBackgroundWLLight");
-					return primaryBackgroundLight!;
-				}
-			}
-		}
+		public static Color PrimaryBackground =>
+			AppStyles.TryGetResource<Color>("SurfaceBackgroundWL");
 
 		/// <summary>
-		/// Secondary Background Color
+		/// Secondary Background Color.
 		/// </summary>
-		public static Color SecondaryBackground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					secondaryBackgroundDark ??= AppStyles.TryGetResource<Color>("SurfaceElevation1WLDark");
-					return secondaryBackgroundDark!;
-				}
-				else
-				{
-					secondaryBackgroundLight ??= AppStyles.TryGetResource<Color>("SurfaceElevation1WLLight");
-					return secondaryBackgroundLight!;
-				}
-			}
-		}
+		public static Color SecondaryBackground =>
+			AppStyles.TryGetResource<Color>("SurfaceElevation1WL");
 
 		/// <summary>
 		/// EnabledFilledButton background color.
 		/// </summary>
-		public static Color ButtonAccessPrimarybg
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					buttonAccessPrimarybgDark ??= AppStyles.TryGetResource<Color>("ButtonAccessPrimarybgWLDark");
-					return buttonAccessPrimarybgDark!;
-				}
-				else
-				{
-					buttonAccessPrimarybgLight ??= AppStyles.TryGetResource<Color>("ButtonAccessPrimarybgWLLight");
-					return buttonAccessPrimarybgLight!;
-				}
-			}
-		}
+		public static Color ButtonAccessPrimarybg =>
+			AppStyles.TryGetResource<Color>("ButtonAccessPrimarybgWL");
 
 		/// <summary>
 		/// DisabledFilledButton background color.
 		/// </summary>
-		public static Color ButtonUniversalbgInactiveWL
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					buttonUniversalbgInactiveWLDark ??= AppStyles.TryGetResource<Color>("ButtonUniversalbgInactiveWLDark");
-					return buttonUniversalbgInactiveWLDark!;
-				}
-				else
-				{
-					buttonUniversalbgInactiveWLLight ??= AppStyles.TryGetResource<Color>("ButtonUniversalbgInactiveWLLight");
-					return buttonUniversalbgInactiveWLLight!;
-				}
-			}
-		}
+		public static Color ButtonUniversalbgInactiveWL =>
+			AppStyles.TryGetResource<Color>("ButtonUniversalbgInactiveWL");
 
 		/// <summary>
 		/// Alert color.
 		/// </summary>
-		public static Color Alert
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					alertDark ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Dark");
-					return alertDark!;
-				}
-				else
-				{
-					alertLight ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Light");
-					return alertLight!;
-				}
-			}
-		}
+		public static Color Alert =>
+			AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800");
 
 		/// <summary>
 		/// Error Background Color.
 		/// </summary>
-		public static Color ErrorBackground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					errorBackgroundDark ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Dark");
-					return errorBackgroundDark!;
-				}
-				else
-				{
-					errorBackgroundLight ??= AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800Light");
-					return errorBackgroundLight!;
-				}
-			}
-		}
+		public static Color ErrorBackground =>
+			AppStyles.TryGetResource<Color>("InputFieldsContentDangerv800");
 
 		/// <summary>
 		/// Clickable color.
 		/// </summary>
-		public static Color Clickable
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					clickableDark ??= AppStyles.TryGetResource<Color>("InputFieldsAccentContentAssetsDark");
-					return clickableDark!;
-				}
-				else
-				{
-					clickableLight ??= AppStyles.TryGetResource<Color>("InputFieldsAccentContentAssetsLight");
-					return clickableLight!;
-				}
-			}
-		}
+		public static Color Clickable =>
+			AppStyles.TryGetResource<Color>("InputFieldsAccentContentAssets");
 
 		/// <summary>
 		/// Weak password foreground color.
 		/// </summary>
-		public static Color WeakPasswordForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					weakPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPDangerFigureWLDark");
-					return weakPasswordForeground!;
-				}
-				else
-				{
-					weakPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPDangerFigureWLLight");
-					return weakPasswordForeground!;
-				}
-			}
-		}
+		public static Color WeakPasswordForeground =>
+			AppStyles.TryGetResource<Color>("TnPDangerFigureWL");
 
 		/// <summary>
 		/// Medium password foreground color.
 		/// </summary>
-		public static Color MediumPasswordForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					mediumPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPWarningContentWLDark");
-					return mediumPasswordForeground!;
-				}
-				else
-				{
-					mediumPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPWarningContentWLLight");
-					return mediumPasswordForeground!;
-				}
-			}
-		}
+		public static Color MediumPasswordForeground =>
+			AppStyles.TryGetResource<Color>("TnPWarningContentWL");
 
 		/// <summary>
 		/// Strong password foreground color.
 		/// </summary>
-		public static Color StrongPasswordForeground
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPSuccessFigureWLDark");
-					return strongPasswordForeground!;
-				}
-				else
-				{
-					strongPasswordForeground ??= AppStyles.TryGetResource<Color>("TnPSuccessFigureWLLight");
-					return strongPasswordForeground!;
-				}
-			}
-		}
+		public static Color StrongPasswordForeground =>
+			AppStyles.TryGetResource<Color>("TnPSuccessFigureWL");
 
 		/// <summary>
-		/// Blue link color
+		/// Blue link color.
 		/// </summary>
-		public static Color BlueLink
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					blueLink ??= AppStyles.TryGetResource<Color>("ContentLinkWLDark");
-					return blueLink!;
-				}
-				else
-				{
-					blueLink ??= AppStyles.TryGetResource<Color>("ContentLinkWLLight");
-					return blueLink!;
-				}
-			}
-		}
+		public static Color BlueLink =>
+			AppStyles.TryGetResource<Color>("ContentLinkWL");
 
 		/// <summary>
 		/// Purple color with 15% transparency.
 		/// </summary>
-		public static Color Purple15
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					purple15Dark ??= AppStyles.TryGetResource<Color>("TnPAccent2bgWLDark");
-					return purple15Dark!;
-				}
-				else
-				{
-					purple15Light ??= AppStyles.TryGetResource<Color>("TnPAccent2bgWLLight");
-					return purple15Light!;
-				}
-			}
-		}
+		public static Color Purple15 =>
+			AppStyles.TryGetResource<Color>("TnPAccent2bgWL");
 
 		/// <summary>
-		/// Inserted Border color
+		/// Inserted Border color.
 		/// </summary>
-		public static Color InsertedBorder
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Light)
-				{
-					insertedBorder ??= AppStyles.TryGetResource<Color>("TnPSuccessbgWLLight");
-					return insertedBorder!;
-				}
-				else
-				{
-					insertedBorder ??= AppStyles.TryGetResource<Color>("TnPSuccessbgWLDark");
-					return insertedBorder!;
-				}
-			}
-		}
+		public static Color InsertedBorder =>
+			AppStyles.TryGetResource<Color>("TnPSuccessbgWL");
 
 		/// <summary>
-		/// Purple color
+		/// Purple color.
 		/// </summary>
-		public static Color Purple
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					purpleDark ??= AppStyles.TryGetResource<Color>("TnPAccent2ContentWLDark");
-					return purpleDark!;
-				}
-				else
-				{
-					purpleLight ??= AppStyles.TryGetResource<Color>("TnPAccent2ContentWLLight");
-					return purpleLight!;
-				}
-			}
-		}
+		public static Color Purple =>
+			AppStyles.TryGetResource<Color>("TnPAccent2ContentWL");
 
 		/// <summary>
-		/// Deleted Border color
+		/// Deleted Border color.
 		/// </summary>
-		public static Color DeletedBorder
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Light)
-				{
-					deletedBorder ??= AppStyles.TryGetResource<Color>("TnPDangerbgWLLight");
-					return deletedBorder!;
-				}
-				else
-				{
-					deletedBorder ??= AppStyles.TryGetResource<Color>("TnPDangerbgWLDark");
-					return deletedBorder!;
-				}
-			}
-		}
+		public static Color DeletedBorder =>
+			AppStyles.TryGetResource<Color>("TnPDangerbgWL");
 
 		/// <summary>
 		/// Blue affirm color with 20% transparency.
 		/// </summary>
-		public static Color Blue20Affirm
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					blue20AffirmDark ??= AppStyles.TryGetResource<Color>("TnPInfobgWLDark");
-					return blue20AffirmDark!;
-				}
-				else
-				{
-					blue20AffirmLight ??= AppStyles.TryGetResource<Color>("TnPInfobgWLLight");
-					return blue20AffirmLight!;
-				}
-			}
-		}
+		public static Color Blue20Affirm =>
+			AppStyles.TryGetResource<Color>("TnPInfobgWL");
 
 		/// <summary>
-		/// Blue color
+		/// Blue color.
 		/// </summary>
-		public static Color Blue
-		{
-			get
-			{
-				if (Application.Current?.RequestedTheme == AppTheme.Dark)
-				{
-					blueDark ??= AppStyles.TryGetResource<Color>("TnPInfoContentWLDark");
-					return blueDark!;
-				}
-				else
-				{
-					blueLight ??= AppStyles.TryGetResource<Color>("TnPInfoContentWLLight");
-					return blueLight!;
-				}
-			}
-		}
+		public static Color Blue =>
+			AppStyles.TryGetResource<Color>("TnPInfoContentWL");
 	}
 }

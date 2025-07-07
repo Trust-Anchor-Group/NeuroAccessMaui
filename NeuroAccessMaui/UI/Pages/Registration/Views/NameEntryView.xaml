@@ -49,13 +49,13 @@
 						  WidthRequest="20"
 						  Aspect="Uniform"
 						  Data="{x:Static ui:Geometries.InfoCirclePath}"
-						  Fill="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
+						  Fill="{DynamicResource InputFieldsContentDangerv800}" />
 
 					<Label Grid.Column="1"
 						   Grid.Row="0"
 						   VerticalOptions="Center"
 						   Text="{Binding LocalizedValidationMessage}"
-						   TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
+						   TextColor="{DynamicResource InputFieldsContentDangerv800}" />
 					<Grid  Grid.Row="1"
 						   Grid.Column="1"
 						   ColumnDefinitions="auto, *"
@@ -63,7 +63,7 @@
 						<Label HorizontalOptions="Start"
 							   Text="{l:Localize Alternative}"
 							   Grid.Column="0"
-							   TextColor="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv800Light}, Dark={DynamicResource InputFieldsContentDangerv800Dark}}" />
+							   TextColor="{DynamicResource InputFieldsContentDangerv800}" />
 
 
 
@@ -71,7 +71,7 @@
 							   Text="{Binding AlternativeName}"
 							   TextDecorations="Underline"
 							   LineBreakMode="CharacterWrap"
-							   TextColor="{AppThemeBinding Light={DynamicResource ContentLinkWLLight}, Dark={DynamicResource ContentLinkWLDark}}">
+							   TextColor="{DynamicResource ContentLinkWL}">
 							<Label.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding SelectNameCommand}"
 													  CommandParameter="{Binding AlternativeName}" />
@@ -97,7 +97,7 @@
 						  HeightRequest="24"
 						  WidthRequest="24"
 						  Aspect="Uniform"
-						  Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}" />
+						  Fill="{DynamicResource TnPInfoContentWL}" />
 					<Label Grid.Column="1"
 						   Style="{DynamicResource AccentInfoLabel}"
 						   Margin="{DynamicResource SmallLeftMargins}"

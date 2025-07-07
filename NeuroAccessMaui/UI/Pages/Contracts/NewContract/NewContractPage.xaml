@@ -31,7 +31,7 @@
 	<Grid x:Name="TheMainGrid"
 	  RowDefinitions="auto, *"
 	  ColumnDefinitions="*"
-	  BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background Grid.Row ="1"/>
 
@@ -70,7 +70,7 @@
 
 		<!-- 
 		<Border Grid.Row="1" Style="{DynamicResource BottomBarBorder}">
-			<Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+			<Grid HorizontalOptions="Fill" VerticalOptions="Center">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
@@ -103,15 +103,15 @@
 		</Border>
 
 	
-<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
     <controls:Background/>
 
     <ScrollView>
         <VerticalStackLayout>
             <CollectionView ItemsSource="{Binding Parameters}"
                             ItemTemplate="{StaticResource ParameterTemplateSelector}"
-                            VerticalOptions="FillAndExpand"
-                            HorizontalOptions="FillAndExpand" />
+                            VerticalOptions="Fill"
+                            HorizontalOptions="Fill" />
             <ContentView Content="{Binding Path=HumanReadableText}" Margin="{DynamicResource SmallTopMargins}" />
         </VerticalStackLayout>
     </ScrollView>

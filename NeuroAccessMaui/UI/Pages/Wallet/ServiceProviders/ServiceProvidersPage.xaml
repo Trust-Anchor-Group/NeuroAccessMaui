@@ -1,86 +1,165 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders.ServiceProvidersPage"
-							 x:DataType="viewmodel:ServiceProvidersViewModel"
-							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders">
+					  x:Class="NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders.ServiceProvidersPage"
+					  x:DataType="viewmodel:ServiceProvidersViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:root="clr-namespace:NeuroAccessMaui"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders">
 	<VisualElement.Resources>
-		<DataTemplate x:Key="ShowImageAndText" x:DataType="viewmodel:ServiceProviderViewModel">
-			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
-					<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
-						<Border Grid.Column="0" Style="{DynamicResource OutlinedImageButtonBorder}" Padding="0">
-							<Image Source="{Binding IconUrlSource}" Aspect="AspectFill"
-									 HeightRequest="{Binding IconHeight}" WidthRequest="{Binding IconWidth}"
-									 MinimumHeightRequest="{Binding IconHeight}" MinimumWidthRequest="{Binding IconWidth}"/>
+		<Style TargetType="Label"
+			   ApplyToDerivedTypes="True"
+			   x:Key="ServiceProviderTitleLabel">
+			<Setter Property="HorizontalOptions"
+					Value="Start" />
+			<Setter Property="VerticalOptions"
+					Value="Center" />
+			<Setter Property="FontFamily"
+					Value="HaasGroteskBold" />
+			<Setter Property="FontSize"
+					Value="14" />
+			<Setter Property="LineBreakMode"
+					Value="WordWrap" />
+		</Style>
+
+
+		<Style TargetType="Border"
+			   x:Key="ServiceProviderCardBorder"
+			   BaseResourceKey="BorderSet">
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 16" />
+
+		</Style>
+
+		<Style TargetType="Border"
+			   x:Key="ServiceProviderImageBorder"
+			   BaseResourceKey="RoundedBorder">
+			<Setter Property="Padding"
+					Value="{DynamicResource SmallMargins}"></Setter>
+			<Setter Property="Stroke">
+				<Setter.Value>
+					<SolidColorBrush Color="{DynamicResource InputFieldsSurfaceStroke}" />
+				</Setter.Value>
+			</Setter>
+			<Setter Property="StrokeThickness"
+					Value="1"></Setter>
+		</Style>
+		<DataTemplate x:Key="ShowImageAndText"
+					  x:DataType="viewmodel:ServiceProviderViewModel">
+			<controls:TemplatedButton Command="{x:Binding SelectServiceProviderCommand}">
+				<Border Style="{DynamicResource ServiceProviderCardBorder}"
+						Padding="0">
+					<Grid ColumnDefinitions="128,*"
+						  RowDefinitions="128"
+						  ColumnSpacing="{DynamicResource SmallSpacing}">
+						<Border Grid.Column="0"
+								Style="{DynamicResource ServiceProviderImageBorder}"
+								HeightRequest="100"
+								WidthRequest="100">
+							<controls:UriImage Source="{Binding IconUrl}"
+											   Aspect="AspectFit"/>
+
 						</Border>
-						<Label Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="WordWrap"
-							    TextType="Text" Text="{Binding Path=Name}" Style="{DynamicResource InfoLabel}"
-								 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
+
+						<Label Grid.Column="1"
+							   Text="{Binding Path=Name}"
+							   Style="{DynamicResource ServiceProviderTitleLabel}" />
 					</Grid>
-				</Frame>
+				</Border>
 			</controls:TemplatedButton>
 		</DataTemplate>
-		<DataTemplate x:Key="ShowImage" x:DataType="viewmodel:ServiceProviderViewModel">
-			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
-					<Border Grid.Column="0" Style="{DynamicResource OutlinedImageButtonBorder}" Padding="0">
-						<Image Source="{Binding IconUrlSource}" Aspect="AspectFill"
-								 HeightRequest="{Binding IconHeight}" WidthRequest="{Binding IconWidth}" 
-								 MinimumHeightRequest="{Binding IconHeight}" MinimumWidthRequest="{Binding IconWidth}"/>
-					</Border>
-				</Frame>
+
+		<DataTemplate x:Key="ShowImage"
+					  x:DataType="viewmodel:ServiceProviderViewModel">
+			<controls:TemplatedButton HorizontalOptions="Fill"
+									  Command="{x:Binding SelectServiceProviderCommand}">
+				<Border Style="{DynamicResource ServiceProviderCardBorder}"
+						Padding="0">
+					<Grid ColumnDefinitions="*"
+						  RowDefinitions="128">
+						<Border>
+							<Image Source="{Binding IconUrlSource}"
+								   Aspect="AspectFit" />
+						</Border>
+					</Grid>
+				</Border>
 			</controls:TemplatedButton>
 		</DataTemplate>
-		<DataTemplate x:Key="ShowText" x:DataType="viewmodel:ServiceProviderViewModel">
-			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True" HorizontalOptions="Center">
-					<Label HorizontalOptions="Center" VerticalOptions="Center" LineBreakMode="CharacterWrap"
-							 TextType="Text" Text="{Binding Path=Name}" Style="{DynamicResource InfoLabel}"
-							 HeightRequest="150" MinimumHeightRequest="150"
-							 TextColor="{AppThemeBinding Light={DynamicResource ButtonAccessPrimaryContentWLLight}, Dark={DynamicResource ButtonAccessPrimaryContentWLDark}}"/>
-				</Frame>
+
+		<DataTemplate x:Key="ShowText"
+					  x:DataType="viewmodel:ServiceProviderViewModel">
+			<controls:TemplatedButton Command="{x:Binding SelectServiceProviderCommand}">
+				<Border Style="{DynamicResource ServiceProviderCardBorder}"
+						Padding="0">
+					<Grid ColumnDefinitions="*"
+						  RowDefinitions="128"
+						  ColumnSpacing="{DynamicResource SmallSpacing}">
+						<Label Text="{Binding Path=Name}"
+							   Style="{DynamicResource ServiceProviderTitleLabel}"
+							   HorizontalOptions="Center" />
+					</Grid>
+				</Border>
 			</controls:TemplatedButton>
 		</DataTemplate>
-		<DataTemplate x:Key="ShowNothing" x:DataType="viewmodel:ServiceProviderViewModel">
-			<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True"/>
+
+		<DataTemplate x:Key="ShowNothing"
+					  x:DataType="viewmodel:ServiceProviderViewModel">
+			<controls:TemplatedButton HorizontalOptions="Fill"
+									  Command="{x:Binding SelectServiceProviderCommand}">
+				<Frame Style="{DynamicResource ClickableFrameSubSet}"
+					   InputTransparent="True" />
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<viewmodel:ServiceTemplateSelector x:Key="TemplateSelector"
-													  ImageAndTextTemplate="{StaticResource ShowImageAndText}"
-													  ImageOnlyTemplate="{StaticResource ShowImage}"
-													  TextOnlyTemplate="{StaticResource ShowText}"
-													  DefaultTemplate="{StaticResource ShowNothing}"/>
+										   ImageAndTextTemplate="{StaticResource ShowImageAndText}"
+										   ImageOnlyTemplate="{StaticResource ShowImage}"
+										   TextOnlyTemplate="{StaticResource ShowText}"
+										   DefaultTemplate="{StaticResource ShowNothing}" />
 
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
-		<controls:Background/>
+		<controls:Background />
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<Grid RowSpacing="{DynamicResource SmallSpacing}" RowDefinitions="auto,*"
+								 Margin="{DynamicResource MediumSpacing}">
+				<Grid ColumnDefinitions="auto,*" Grid.Row="0">
+				<controls:SvgButton Command="{Binding GoBackCommand}"
+										Style="{DynamicResource IconButton}"
+										SvgSource="close.svg"/>
 
-				<Label Text="{Binding Path=Title}" Style="{DynamicResource PageTitleLabel}"/>
+				<Label Grid.Column="1"
+						   HorizontalOptions="End"
+						   Text="{Binding Path=Title}"
+						   Style="{DynamicResource PageTitleLabel}" />
+				</Grid>
 
-				<Frame Style="{DynamicResource FrameSet}">
+			<CollectionView ItemsSource="{Binding ServiceProviders}"
+							ItemTemplate="{DynamicResource TemplateSelector}"
+							Grid.Row="1">
+				<CollectionView.Header>
+					<Label Text="{Binding Path=Description}" Style="{DynamicResource AppCardLabel}" HorizontalTextAlignment="Start" 
+						   HorizontalOptions="Start"
+						   VerticalOptions="Start" />
+				</CollectionView.Header>
+			</CollectionView>
+			<!--
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-						<Label Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
+						<Label Text="{Binding Path=Description}"
+							   HorizontalOptions="Center"
+							   VerticalOptions="Start" />
 
 						<VerticalStackLayout BindableLayout.ItemsSource="{Binding ServiceProviders}"
-													BindableLayout.ItemTemplateSelector="{DynamicResource TemplateSelector}"/>
+											 BindableLayout.ItemTemplateSelector="{DynamicResource TemplateSelector}" />
 					</VerticalStackLayout>
-				</Frame>
-			</VerticalStackLayout>
-		</ScrollView>
+				</Border> -->
+			</Grid>
 	</Grid>
 </base:BaseContentPage>

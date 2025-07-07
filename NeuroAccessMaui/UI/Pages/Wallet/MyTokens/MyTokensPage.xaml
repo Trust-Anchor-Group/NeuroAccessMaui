@@ -12,7 +12,7 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -24,8 +24,8 @@
 				<Label Text="{l:Localize MyTokens}" Style="{DynamicResource PageTitleLabel}"/>
 
 				<Frame Style="{DynamicResource FrameSet}">
-					<controls:LoadingCollectionView VerticalOptions="StartAndExpand" SelectionMode="Single" RemainingItemsThreshold="1"
-                                       ItemSizingStrategy="MeasureFirstItem" BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}"
+					<controls:LoadingCollectionView VerticalOptions="Start" SelectionMode="Single" RemainingItemsThreshold="1"
+                                       ItemSizingStrategy="MeasureFirstItem" BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
                                        ItemsSource="{Binding Path=Tokens}" LoadMoreCommand="{Binding LoadMoreTokensCommand}">
 						<CollectionView.ItemsLayout>
 							<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="12"/>
@@ -44,7 +44,7 @@
                                             VerticalOptions="Center"/>
 									<Frame Grid.Row="0" Grid.Column="2" CornerRadius="12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding New}"
 							   HorizontalOptions="Start" VerticalOptions="Center" Style="{DynamicResource AlertFrame}">
-										<Label FontSize="Caption" TextColor="{DynamicResource SurfaceBackgroundWLLight}" Text="{Binding NrEvents}" Padding="1"/>
+										<Label FontSize="Caption" TextColor="{DynamicResource SurfaceBackgroundWL}" Text="{Binding NrEvents}" Padding="1"/>
 									</Frame>
 									<Label Grid.Column="2" Grid.Row="0" Text="{Binding Path=Value, Converter={converters:MoneyToString}}"
                                             Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontSize="18"

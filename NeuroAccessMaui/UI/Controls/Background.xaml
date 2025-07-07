@@ -9,7 +9,7 @@
 			<Style x:Key="CurvedLinesStyle"
 				ApplyToDerivedTypes="False"
 				TargetType="Path">
-				<Setter Property="Stroke" Value="{AppThemeBinding Light={DynamicResource BrandColorsSpecialWaveColorLight}, Dark={DynamicResource BrandColorsSpecialWaveColorDark}}" />
+				<Setter Property="Stroke" Value="{DynamicResource BrandColorsSpecialWaveColor}" />
 				<Setter Property="StrokeMiterLimit" Value="10" />
 				<Setter Property="StrokeThickness" Value="{DynamicResource MediumStrokeThickness}" />
 			</Style>

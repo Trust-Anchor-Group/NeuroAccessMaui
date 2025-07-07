@@ -41,7 +41,7 @@
 	<Grid x:Name="TheMainGrid"
 		  RowDefinitions="auto, *, auto, auto, auto"
 		  ColumnDefinitions="*"
-		  BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background Grid.RowSpan="4"/>
 
@@ -52,7 +52,6 @@
 			  RowDefinitions="auto,auto"
 			  ColumnDefinitions="auto,auto">
 			<controls:SvgButton
-				Grid.Row="0" Grid.Column="0"
 				Command="{Binding ShowSettingsCommand}"
 				SvgSource="cog.svg"
 				Style="{DynamicResource IconButton}"/>
@@ -83,13 +82,23 @@
 				   HeightRequest="230"
 				   WidthRequest="230" Aspect="AspectFit"/>
 -->
-			<controls:UriImage Source="{Binding BannerUri}"
-							   ErrorPlaceholder="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
-							   Grid.Row="0"
-							   HeightRequest="230"
-							   WidthRequest="230"
-							   Aspect="AspectFit"
-							   VerticalOptions="End"/>
+			<controls:ConditionView Condition="{Binding ThemeLoaded}"
+									VerticalOptions="End">
+				<controls:ConditionView.True>
+					<controls:UriImage Source="{Binding BannerUri}"
+									   ErrorPlaceholder="{AppThemeBinding Light=neuro_access_logo_light.png, Dark=neuro_access_logo_dark.png}"
+									   Grid.Row="0"
+									   HeightRequest="230"
+									   WidthRequest="230"
+									   Aspect="AspectFit"
+									   VerticalOptions="Center" />
+				</controls:ConditionView.True>
+				<controls:ConditionView.False>
+					<ActivityIndicator IsRunning="True"
+									   VerticalOptions="Center" />
+				</controls:ConditionView.False>
+			</controls:ConditionView>
+
 			
 			<!-- Missing Neuro ID Box-->
 			<Grid RowDefinitions="auto, *"
@@ -99,30 +108,30 @@
 				  VerticalOptions="Center"
 				  Margin="{DynamicResource LargeLeftRightMargins}">
 				<Border Grid.Row="0"
-						BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
+						BackgroundColor="{DynamicResource TnPInfobgWL}"
 						Padding="{DynamicResource MediumMargins}"
 						StrokeShape="RoundRectangle 16,16,0,16">
 					<Border.Shadow>
-						<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+						<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
 					</Border.Shadow>
 					<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
 						  ColumnDefinitions="auto, *">
 						<Path
 							Grid.Column="0"
 							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+							Fill="{DynamicResource TnPInfoContentWL}"/>
 						<Label
 							Grid.Column="1"
 							Text="{l:Localize ApplyIdInfoMainPage}"
 							Style="{DynamicResource InfoLabel}"
-							TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+							TextColor="{DynamicResource TnPInfoContentWL}"/>
 					</Grid>
 				</Border>
 				<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">
 					<Grid Padding="{DynamicResource MediumMargins}"
 						  ColumnDefinitions="*, auto">
 						<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{DynamicResource SecondaryButtonActiveLabel}"/>
-						<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}"/>
+						<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{DynamicResource ButtonAccessTertiaryContentWL}"/>
 					</Grid>
 				</controls:TemplatedButton>
 			</Grid>
@@ -132,13 +141,13 @@
 			<Border x:Name="NoWalletPopup"
 					Grid.Row="1"
 					VerticalOptions="Center"
-					BackgroundColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750bgWLLight}, Dark={DynamicResource TnPNeutralv750bgWLDark}}"
+					BackgroundColor="{DynamicResource TnPNeutralv750bgWL}"
 					Padding="{DynamicResource MediumMargins}"
 					StrokeShape="RoundRectangle 16,16,0,16"
 					Margin="{DynamicResource LargeLeftRightMargins}"
 					IsVisible="False">
 				<Border.Shadow>
-					<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+					<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
 				</Border.Shadow>
 				<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
 					  ColumnDefinitions="auto, *"
@@ -147,12 +156,12 @@
 						Source="wallet.svg"
 						WidthRequest="24"
 						VerticalOptions="Start"
-						TintColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+						TintColor="{DynamicResource TnPNeutralv750ContentWL}"/>
 					<Label
 						Grid.Column="1"
 						Text="{l:Localize BetaFeatureMainPage}"
 						Style="{DynamicResource InfoLabel}"
-						TextColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"/>
+						TextColor="{DynamicResource TnPNeutralv750ContentWL}"/>
 				</Grid>
 			</Border>
 		</Grid>
@@ -163,11 +172,11 @@
 						  Grid.Row="2"
 						  WidthRequest="88"
 						  HeightRequest="35"
-						  TintColor="{DynamicResource BrandColorsGreyScalesGreyv250Light}"
+						  TintColor="{DynamicResource BrandColorsGreyScalesGreyv250}"
 						  Margin="{DynamicResource MediumBottomMargins}"
 						  IsVisible="False"/> <!-- TODO: Bind to HasBranding-->
 
-		<Grid HorizontalOptions="FillAndExpand"
+		<Grid HorizontalOptions="Fill"
 			  ColumnDefinitions="*, *"
 			  Grid.Row="3"
 			  Margin="{DynamicResource SmallMargins}">
