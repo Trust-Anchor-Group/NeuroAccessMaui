@@ -19,15 +19,14 @@ namespace NeuroAccessMaui.Test
 		/// <inheritdoc/>
 		public async Task NavigateToAsync(string Route)
 		{
-			var page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as ContentPage;
-			if (page is null)
-				throw new InvalidOperationException($"No page registered for route '{Route}'.");
-
-			this.navigationStack.Push(page);
-
 			// Set in your CustomShell
 			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
+				var page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as ContentPage;
+				if (page is null)
+					throw new InvalidOperationException($"No page registered for route '{Route}'.");
+
+				this.navigationStack.Push(page);
 				if (Application.Current.MainPage is CustomShell customShell)
 				{
 					await customShell.SetPageAsync(page);
