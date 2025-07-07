@@ -20,7 +20,23 @@ namespace NeuroAccessMaui.Test
 		/// <summary>
 		/// Pops the current page from the navigation stack and displays the previous page.
 		/// </summary>
-		Task GoBackAsync();
+                Task GoBackAsync();
+
+                /// <summary>
+                /// Presents a page modally.
+                /// </summary>
+                /// <param name="Route">The route string.</param>
+                Task PushModalAsync(string Route);
+
+                /// <summary>
+                /// Pops the top modal page.
+                /// </summary>
+                Task PopModalAsync();
+
+                /// <summary>
+                /// Gets the current modal page if any.
+                /// </summary>
+                ContentPage CurrentModalPage { get; }
 
 		/// <summary>
 		/// Gets the current visible page.
