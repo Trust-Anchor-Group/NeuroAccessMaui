@@ -536,7 +536,7 @@
 								Source="{Binding BannerUri}"
 								WidthRequest="100"
 								HeightRequest="24"/>
-							<Label Text="{l:Localize AccountDetails}" Style="{DynamicResource FieldTitleLabel}" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="End"/>
+							<Label Text="{l:Localize MyAccount}" Style="{DynamicResource FieldTitleLabel}" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="End"/>
 							<Border Grid.Row="1" Grid.ColumnSpan="2"
 									Style="{DynamicResource BorderSubSet}">
 								<Grid RowDefinitions="auto, auto, auto">
