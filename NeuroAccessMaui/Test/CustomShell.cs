@@ -17,18 +17,18 @@ namespace NeuroAccessMaui.Test
 		private readonly Grid layout;
 		private readonly ContentView topBar;
 		private readonly ContentView navBar;
-                private readonly ContentView contentHost;  // For hosting page content
-                private readonly Grid modalOverlay;
-                private readonly ContentView modalHost;
-                private readonly Stack<ContentPage> modalStack = new();
-                private ContentPage currentPage;
+		private readonly ContentView contentHost;  // For hosting page content
+		private readonly Grid modalOverlay;
+		private readonly ContentView modalHost;
+		private readonly Stack<ContentPage> modalStack = new();
+		private ContentPage currentPage;
 
 		/// <summary>
 		/// Initializes a new instance of <see cref="CustomShell"/>.
 		/// </summary>
 		public CustomShell()
 		{
-			layout = new Grid
+			this.layout = new Grid
 			{
 				RowDefinitions =
 				{
@@ -38,23 +38,23 @@ namespace NeuroAccessMaui.Test
                 }
 			};
 
-                        topBar = new ContentView { IsVisible = false };
-                        navBar = new ContentView { IsVisible = false };
-                        contentHost = new ContentView();
-                        modalHost = new ContentView { IsVisible = false, BackgroundColor = Color.FromArgb("#80000000") };
-                        modalOverlay = new Grid { IsVisible = false, InputTransparent = false };
-                        modalOverlay.Add(modalHost);
+			this.topBar = new ContentView { IsVisible = false };
+			this.navBar = new ContentView { IsVisible = false };
+			this.contentHost = new ContentView();
+			this.modalHost = new ContentView { IsVisible = false, BackgroundColor = Color.FromArgb("#80000000") };
+			this.modalOverlay = new Grid { IsVisible = false, InputTransparent = false };
+			this.modalOverlay.Add(this.modalHost);
 
 
-                        layout.Add(topBar, 0, 0);
-                        layout.Add(contentHost, 0, 1);
-                        layout.Add(navBar, 0, 2);
-                        layout.Add(modalOverlay);
-                        Grid.SetRowSpan(modalOverlay, 3);
+			this.layout.Add(this.topBar, 0, 0);
+			this.layout.Add(this.contentHost, 0, 1);
+			this.layout.Add(this.navBar, 0, 2);
+			this.layout.Add(this.modalOverlay);
+			Grid.SetRowSpan(this.modalOverlay, 3);
 
-			Content = layout;
-			Padding = 0;
-			On<iOS>().SetUseSafeArea(false);
+			this.Content = this.layout;
+			this.Padding = 0;
+			this.On<iOS>().SetUseSafeArea(false);
 
 			AppShell.RegisterRoutes();
 		}
@@ -62,7 +62,7 @@ namespace NeuroAccessMaui.Test
 		/// <summary>
 		/// The currently displayed page.
 		/// </summary>
-		public ContentPage CurrentPage => currentPage;
+		public ContentPage CurrentPage => this.currentPage;
 
 		/// <summary>
 		/// Swaps in a new page, with optional transition, updating bars and lifecycle events.
@@ -70,23 +70,23 @@ namespace NeuroAccessMaui.Test
 		/// </summary>
 		/// <param name="Page">The new page to show.</param>
 		/// <param name="Transition">Transition type (fade, etc).</param>
-        public async Task SetPageAsync(ContentPage Page, TransitionType Transition = TransitionType.None)
-        {
+		public async Task SetPageAsync(ContentPage Page, TransitionType Transition = TransitionType.None)
+		{
 			// Remove previous page (disappearing, dispose)
-			if (currentPage is not null)
+			if (this.currentPage is not null)
 			{
-				if (currentPage is ILifeCycleView oldLifeCycle)
+				if (this.currentPage is ILifeCycleView oldLifeCycle)
 					await oldLifeCycle.OnDisappearingAsync();
 				else
-					currentPage.SendDisappearing();
+					this.currentPage.SendDisappearing();
 
-				if (currentPage is ILifeCycleView oldDispose) await oldDispose.OnDisposeAsync();
+				if (this.currentPage is ILifeCycleView oldDispose) await oldDispose.OnDisposeAsync();
 			}
 
 			// Add new page as a child to the layout, in content slot
-			contentHost.Content = Page.Content;
-			contentHost.BindingContext = Page.BindingContext;
-			currentPage = Page;
+			this.contentHost.Content = Page.Content;
+			this.contentHost.BindingContext = Page.BindingContext;
+			this.currentPage = Page;
 
 			// LifeCycle: OnInitializeAsync (once), then Appearing
 			if (Page is ILifeCycleView newLifeCycle)
@@ -101,91 +101,91 @@ namespace NeuroAccessMaui.Test
 			}
 
 			// Manage bar visibility/content
-			topBar.IsVisible = NavigationBars.GetTopBarVisible(Page);
-			navBar.IsVisible = NavigationBars.GetNavBarVisible(Page);
+			this.topBar.IsVisible = NavigationBars.GetTopBarVisible(Page);
+			this.navBar.IsVisible = NavigationBars.GetNavBarVisible(Page);
 
 			if (Page is IBarContentProvider barProvider)
 			{
-				topBar.Content = barProvider.TopBarContent;
-				navBar.Content = barProvider.NavBarContent;
+				this.topBar.Content = barProvider.TopBarContent;
+				this.navBar.Content = barProvider.NavBarContent;
 			}
 			else
 			{
-				topBar.Content = null;
-				navBar.Content = null;
+				this.topBar.Content = null;
+				this.navBar.Content = null;
 			}
 
 			// Transition (fade in)
-                        if (Transition == TransitionType.Fade)
-                        {
-                                Page.Opacity = 0;
-                                await Page.FadeTo(1, 150, Easing.CubicOut);
-                        }
-                }
+			if (Transition == TransitionType.Fade)
+			{
+				Page.Opacity = 0;
+				await Page.FadeTo(1, 150, Easing.CubicOut);
+			}
+		}
 
-                /// <summary>
-                /// Displays a page modally on top of the current page.
-                /// </summary>
-                /// <param name="Page">The modal page to show.</param>
-                /// <param name="Transition">Optional transition.</param>
-                public async Task PushModalAsync(ContentPage Page, TransitionType Transition = TransitionType.Fade)
-                {
-                        modalHost.Content = Page.Content;
-                        modalHost.BindingContext = Page.BindingContext;
-                        modalStack.Push(Page);
+		/// <summary>
+		/// Displays a page modally on top of the current page.
+		/// </summary>
+		/// <param name="Page">The modal page to show.</param>
+		/// <param name="Transition">Optional transition.</param>
+		public async Task PushModalAsync(ContentPage Page, TransitionType Transition = TransitionType.Fade)
+		{
+			this.modalHost.Content = Page.Content;
+			this.modalHost.BindingContext = Page.BindingContext;
+			this.modalStack.Push(Page);
 
-                        modalHost.IsVisible = true;
-                        modalOverlay.IsVisible = true;
+			this.modalHost.IsVisible = true;
+			this.modalOverlay.IsVisible = true;
 
-                        if (Page is ILifeCycleView lifeCycle)
-                        {
-                                await lifeCycle.OnInitializeAsync();
-                                await lifeCycle.OnAppearingAsync();
-                        }
-                        else
-                                Page.SendAppearing();
+			if (Page is ILifeCycleView lifeCycle)
+			{
+				await lifeCycle.OnInitializeAsync();
+				await lifeCycle.OnAppearingAsync();
+			}
+			else
+				Page.SendAppearing();
 
-                        if (Transition == TransitionType.Fade)
-                        {
-                                modalOverlay.Opacity = 0;
-                                await modalOverlay.FadeTo(1, 150, Easing.CubicOut);
-                        }
-                }
+			if (Transition == TransitionType.Fade)
+			{
+				this.modalOverlay.Opacity = 0;
+				await this.modalOverlay.FadeTo(1, 150, Easing.CubicOut);
+			}
+		}
 
-                /// <summary>
-                /// Pops the top most modal page.
-                /// </summary>
-                public async Task PopModalAsync()
-                {
-                        if (modalStack.Count == 0)
-                                return;
+		/// <summary>
+		/// Pops the top most modal page.
+		/// </summary>
+		public async Task PopModalAsync()
+		{
+			if (this.modalStack.Count == 0)
+				return;
 
-                        ContentPage Page = modalStack.Pop();
+			ContentPage Page = this.modalStack.Pop();
 
-                        if (Page is ILifeCycleView lifeCycle)
-                                await lifeCycle.OnDisappearingAsync();
-                        else
-                                Page.SendDisappearing();
+			if (Page is ILifeCycleView lifeCycle)
+				await lifeCycle.OnDisappearingAsync();
+			else
+				Page.SendDisappearing();
 
-                        if (Page is ILifeCycleView dispose)
-                                await dispose.OnDisposeAsync();
+			if (Page is ILifeCycleView dispose)
+				await dispose.OnDisposeAsync();
 
-                        modalHost.Content = null;
-                        modalHost.BindingContext = null;
+			this.modalHost.Content = null;
+			this.modalHost.BindingContext = null;
 
-                        if (modalStack.Count == 0)
-                        {
-                                modalHost.IsVisible = false;
-                                modalOverlay.IsVisible = false;
-                        }
-                        else
-                        {
-                                var next = modalStack.Peek();
-                                modalHost.Content = next.Content;
-                                modalHost.BindingContext = next.BindingContext;
-                        }
-                }
-        }
+			if (this.modalStack.Count == 0)
+			{
+				this.modalHost.IsVisible = false;
+				this.modalOverlay.IsVisible = false;
+			}
+			else
+			{
+				ContentPage next = this.modalStack.Peek();
+				this.modalHost.Content = next.Content;
+				this.modalHost.BindingContext = next.BindingContext;
+			}
+		}
+	}
 
 	/// <summary>
 	/// Transition types for page navigation in CustomShell.
