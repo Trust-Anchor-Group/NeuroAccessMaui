@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages;
@@ -120,6 +121,21 @@ namespace NeuroAccessMaui.UI.Popups.QR
 			this.timer.Interval = TimeSpan.FromSeconds(1);
 			this.timer.Tick += this.OnTimerTick;
 			this.timer.Start();
+		}
+
+		public string QrPopUpTitle
+		{
+			get
+			{
+				if (ServiceRef.TagProfile.LegalIdentity.HasApprovedPersonalInformation())
+				{
+					return ServiceRef.Localizer[nameof(AppResources.PersonalId)];
+				}
+				else
+				{
+					return ServiceRef.Localizer[nameof(AppResources.MyAccount)];
+				}
+			}
 		}
 
 		#region Commands

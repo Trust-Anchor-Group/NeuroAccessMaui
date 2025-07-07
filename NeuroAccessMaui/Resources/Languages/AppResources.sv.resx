@@ -2867,4 +2867,22 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
     <value>Språket har ändrats. Starta om appen för att säkerställa att alla ändringar tillämpas.</value>
   </data>
+  <data name="Never" xml:space="preserve">
+  <value>Aldrig</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Nu</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>för {0} minuter sedan</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>för {0} timmar sedan</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Senast uppdaterad: {0}</value>
+  </data>
+  <data name="MyAccount" xml:space="preserve">
+    <value>Mitt konto</value>
+  </data>
 </root>

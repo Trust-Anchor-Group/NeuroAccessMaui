@@ -350,8 +350,7 @@
 								<!--  TIMER  -->
 								<Border
 									Margin="16"
-									BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight},
-																	  Dark={DynamicResource SurfaceElevation1WLDark}}"
+									BackgroundColor="{DynamicResource SurfaceElevation1WL}"
 									HeightRequest="38"
 									HorizontalOptions="End"
 									IsVisible="{Binding HasTimer}"
@@ -410,7 +409,7 @@
 											WidthRequest="50" />
 									</controls:ConditionView.True>
 									<controls:ConditionView.False>
-										<Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation2WLLight}, Dark={DynamicResource SurfaceElevation2WLDark}}" StrokeShape="RoundRectangle 16">
+										<Border Background="{DynamicResource SurfaceElevation2WL}" StrokeShape="RoundRectangle 16">
 											<controls:ConditionView Condition="{Binding HasProfilePhoto}">
 												<controls:ConditionView.True>
 													<Image
@@ -448,7 +447,7 @@
 									IsVisible="{Binding HasAge}"
 									VerticalOptions="End"
 									WidthRequest="50">
-									<Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}" StrokeShape="RoundRectangle 16 0 0 0">
+									<Border Background="{DynamicResource SurfaceElevation1WL}" StrokeShape="RoundRectangle 16 0 0 0">
 										<Label
 											HorizontalOptions="Center"
 											Style="{DynamicResource AgeLabel}"
@@ -498,30 +497,30 @@
 					<Grid RowDefinitions="auto, *"
 						  Margin="{DynamicResource SmallLeftRightMargins}">
 						<Border Grid.Row="0"
-								BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
+								BackgroundColor="{DynamicResource TnPInfobgWL}"
 								Padding="{DynamicResource MediumMargins}"
 								StrokeShape="RoundRectangle 16,16,0,16">
 							<Border.Shadow>
-								<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+								<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
 							</Border.Shadow>
 							<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
 								  ColumnDefinitions="auto, *">
 								<Path
 									Grid.Column="0"
 									Data="{x:Static ui:Geometries.InfoCirclePath}"
-									Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+									Fill="{DynamicResource TnPInfoContentWL}"/>
 								<Label
 									Grid.Column="1"
 									Text="{l:Localize ApplyIdInfoMainPage}"
 									Style="{DynamicResource InfoLabel}"
-									TextColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+									TextColor="{DynamicResource TnPInfoContentWL}"/>
 							</Grid>
 						</Border>
 						<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">
-							<Grid Padding="{DynamicResource MediumMargins}"
+							<Grid Padding="{DynamicResource SmallMargins}"
 								  ColumnDefinitions="*, auto">
 								<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{DynamicResource SecondaryButtonActiveLabel}"/>
-								<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{AppThemeBinding Light={DynamicResource ButtonAccessTertiaryContentWLLight}, Dark={DynamicResource ButtonAccessTertiaryContentWLDark}}"/>
+								<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{DynamicResource ButtonAccessTertiaryContentWL}"/>
 							</Grid>
 						</controls:TemplatedButton>
 					</Grid>
@@ -537,15 +536,18 @@
 								Source="{Binding BannerUri}"
 								WidthRequest="100"
 								HeightRequest="24"/>
-							<Label Text="Account information" Style="{DynamicResource FieldTitleLabel}" Grid.Column="1" VerticalOptions="Center"/>
+							<Label Text="{l:Localize AccountDetails}" Style="{DynamicResource FieldTitleLabel}" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="End"/>
 							<Border Grid.Row="1" Grid.ColumnSpan="2"
 									Style="{DynamicResource BorderSubSet}">
-								<Grid RowDefinitions="auto, auto, auto, auto"
-									  RowSpacing="{DynamicResource SmallSpacing}">
-									<Label Text="Wagtest" Grid.Row="0" Style="{DynamicResource FieldKeyLabel}"/>
-									<Label Text="+46 76 349 93 56" Grid.Row="1" Style="{DynamicResource FieldKeyLabel}"/>
-									<Label Text="tobias.hansson@trustanchorgroup.com" Grid.Row="2" Style="{DynamicResource FieldKeyLabel}"/>
-									<Label Text="Created: 06/30/2025" Grid.Row="3" Style="{DynamicResource FieldKeyLabel}"/>
+								<Grid RowDefinitions="auto, auto, auto">
+									<Label Text="{l:Localize Username}" Style="{DynamicResource FieldKeyLabel}"/>
+									<Label Text="{Binding FriendlyName}" Grid.Row="1" Style="{DynamicResource FieldValueLabel}" Margin="{DynamicResource MediumBottomMargins}"/>
+									<VerticalStackLayout
+                                            BindableLayout.ItemTemplateSelector="{DynamicResource FieldSelector}"
+                                            BindableLayout.ItemsSource="{Binding PersonalFields}"
+                                            HorizontalOptions="Fill"
+                                            Spacing="16"
+											Grid.Row="2"/>
 								</Grid>
 							</Border>
 							<Border
@@ -562,6 +564,26 @@
 										<TapGestureRecognizer Command="{Binding QrTappedCommand}" NumberOfTapsRequired="1" />
 									</Image.GestureRecognizers>
 								</Image>
+							</Border>
+							<!--  TIMER  -->
+							<Border Grid.Row="2"
+									Grid.Column="1"
+									Margin="0,0,0,10"
+									BackgroundColor="{DynamicResource SurfaceElevation2WL}"
+									HeightRequest="38"
+									HorizontalOptions="End"
+									VerticalOptions="End"
+									IsVisible="{Binding HasTimer}"
+									StrokeShape="RoundRectangle 8"
+									WidthRequest="50">
+								<Label
+									Margin="8,4,8,4"
+									FontFamily="SpaceGroteskBold"
+									HorizontalOptions="Center"
+									HorizontalTextAlignment="Center"
+									Style="{DynamicResource SubTextLabel}"
+									Text="{Binding TimerSeconds}"
+									VerticalOptions="Start" />
 							</Border>
 						</Grid>
 					</Border>

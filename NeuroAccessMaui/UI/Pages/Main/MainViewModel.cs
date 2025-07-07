@@ -13,6 +13,8 @@ using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
+using Microsoft.Extensions.Localization;
+using NeuroAccessMaui.Resources.Languages;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -125,6 +127,16 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		}
 
 		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
+
+		public string IdButtonText
+		{
+			get {
+				if (this.HasPersonalIdentity)
+					return ServiceRef.Localizer[nameof(AppResources.ShowIDShort)];
+				else
+					return ServiceRef.Localizer[nameof(AppResources.MyAccount)];
+			}
+		}
 
 		public bool CanScanQrCode => true;
 

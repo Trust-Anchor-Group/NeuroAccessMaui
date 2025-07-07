@@ -2882,4 +2882,7 @@
   <data name="LastUpdatedFormat" xml:space="preserve">
     <value>Last updated: {0}</value>
   </data>
+  <data name="MyAccount" xml:space="preserve">
+   <value>My Account</value>
+  </data>
 </root>
