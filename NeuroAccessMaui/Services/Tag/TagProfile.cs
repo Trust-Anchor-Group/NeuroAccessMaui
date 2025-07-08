@@ -326,9 +326,9 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <returns><c>true</c> if the registration process for this <see cref="ITagProfile"/> is either fully complete or is just awaiting validation, <c>false</c> otherwise.</returns>
 		public virtual bool IsCompleteOrWaitingForValidation()
 		{
-			return this.Step >= RegistrationStep.CreateAccount &&
-				this.LegalIdentity is not null &&
-				this.LegalIdentity.State == IdentityState.Created;
+			return this.Step >= RegistrationStep.CreateAccount ||
+				(this.LegalIdentity is not null &&
+				this.LegalIdentity.State == IdentityState.Created);
 		}
 
 		/// <summary>
