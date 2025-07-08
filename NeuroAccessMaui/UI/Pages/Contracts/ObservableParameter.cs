@@ -11,6 +11,7 @@ using NeuroAccessMaui.UI.Popups.Info;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
+using Waher.Runtime.Geo;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
@@ -64,6 +65,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				RoleParameter RoleParameter => new ObservableRoleParameter(RoleParameter),
 				CalcParameter CalcParameter => new ObservableCalcParameter(CalcParameter),
 				ContractReferenceParameter ContractReferenceParameter => new ObservableContractReferenceParameter(ContractReferenceParameter),
+				GeoParameter GeoParameter => new ObservableGeoParameter(GeoParameter),
 				_ => new ObservableParameter(parameter)
 			};
 
@@ -476,19 +478,74 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args);
 				Contract? Contract = await TaskCompletionSource.Task;
 
-				MainThread.BeginInvokeOnMainThread(() => {
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
 					if (Contract is null)
 						return;
 					this.ContractReferenceValue = Contract?.ContractId ?? string.Empty;
-				   this.OnPropertyChanged(nameof(this.ContractReferenceValue));
+					this.OnPropertyChanged(nameof(this.ContractReferenceValue));
 				});
 			}
 			catch (Exception E)
 			{
 				ServiceRef.LogService.LogException(E);
 			}
-		} 
+		}
 	}
 
+	// Class for ObservableGeoParameter
+	public partial class ObservableGeoParameter : ObservableParameter
+	{
+		public ObservableGeoParameter(GeoParameter parameter) : base(parameter)
+		{
+			this.Value = parameter.ObjectValue;
+		}
+
+		public GeoPosition? GeoValue
+		{
+			get => this.Value as GeoPosition;
+			set => this.Value = value;
+		}
+
+		public string GeoString
+		{
+			get => this.GeoValue?.ToString() ?? string.Empty;
+			set
+			{
+				if (GeoPosition.TryParse(value, out GeoPosition? GeoValue))
+					this.Value = GeoValue;
+				else
+					this.Value = null;
+			}
+		}
+
+		[ObservableProperty]
+		bool isCheckinglocation;
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task SetCurrentLocationAsync()
+		{
+			try
+			{
+				MainThread.BeginInvokeOnMainThread(() => { this.IsCheckinglocation = true; });
+
+				GeolocationRequest Request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+				Location? Location = await Geolocation.Default.GetLocationAsync(Request);
+
+				if (Location != null)
+				{
+					this.GeoValue = new GeoPosition(Location.Latitude, Location.Longitude, Location.Altitude);
+				}
+			}
+			catch
+			{
+
+			}
+			finally
+			{
+				MainThread.BeginInvokeOnMainThread(() => { this.IsCheckinglocation = false; });
+			}
+		}
+	}
 }
 #endregion
