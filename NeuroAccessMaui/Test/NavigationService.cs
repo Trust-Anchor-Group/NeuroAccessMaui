@@ -87,8 +87,8 @@ namespace NeuroAccessMaui.Test
         {
             return this.Enqueue(async () =>
             {
-				ContentPage? Page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as ContentPage ?? throw new InvalidOperationException($"No page registered for route '{Route}'.");
-				NavigationArgs NavigationArgs = Args ?? new();
+                ContentPage? Page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as ContentPage ?? throw new InvalidOperationException($"No page registered for route '{Route}'.");
+                NavigationArgs NavigationArgs = Args ?? new();
                 NavigationArgs.SetBackArguments(this.navigationArgsStack.Count > 0 ? this.navigationArgsStack.Peek() : null);
 
                 this.latestArguments = NavigationArgs;
@@ -127,7 +127,7 @@ namespace NeuroAccessMaui.Test
                 {
                     this.navigationStack.Pop();
                     this.navigationArgsStack.Pop();
-					ContentPage previous = this.navigationStack.Peek();
+                    ContentPage previous = this.navigationStack.Peek();
 
                     if (Application.Current.MainPage is CustomShell customShell)
                         await customShell.SetPageAsync(previous);
@@ -142,7 +142,7 @@ namespace NeuroAccessMaui.Test
         {
             return this.Enqueue(async () =>
             {
-				ContentPage? page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as ContentPage;
+                ContentPage? page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as ContentPage;
                 if (page is null)
                     throw new InvalidOperationException($"No page registered for route '{Route}'.");
 
@@ -153,6 +153,63 @@ namespace NeuroAccessMaui.Test
                 else
                     await Application.Current.MainPage.Navigation.PushModalAsync(page);
             });
+        }
+
+        /// <inheritdoc/>
+        public async Task PushModalAsync<TPage>() where TPage : ContentPage
+        {
+            TPage Page = ServiceRef.Provider.GetRequiredService<TPage>();
+            await this.Enqueue(async () =>
+            {
+                this.modalStack.Push(Page);
+                if (Application.Current.MainPage is CustomShell customShell)
+                    await customShell.PushModalAsync(Page);
+                else
+                    await Application.Current.MainPage.Navigation.PushModalAsync(Page);
+            });
+
+            if (Page.BindingContext is BaseModalViewModel Vm)
+                await Vm.Popped;
+        }
+
+        /// <inheritdoc/>
+        public async Task PushModalAsync<TPage, TViewModel>()
+            where TPage : ContentPage
+            where TViewModel : BaseModalViewModel
+        {
+            TPage Page = ServiceRef.Provider.GetRequiredService<TPage>();
+            TViewModel ViewModel = ServiceRef.Provider.GetRequiredService<TViewModel>();
+            Page.BindingContext = ViewModel;
+            await this.Enqueue(async () =>
+            {
+                this.modalStack.Push(Page);
+                if (Application.Current.MainPage is CustomShell customShell)
+                    await customShell.PushModalAsync(Page);
+                else
+                    await Application.Current.MainPage.Navigation.PushModalAsync(Page);
+            });
+
+            await ViewModel.Popped;
+        }
+
+        /// <inheritdoc/>
+        public async Task<TReturn?> PushModalAsync<TPage, TViewModel, TReturn>()
+            where TPage : ContentPage
+            where TViewModel : ReturningModalViewModel<TReturn>
+        {
+            TPage Page = ServiceRef.Provider.GetRequiredService<TPage>();
+            TViewModel ViewModel = ServiceRef.Provider.GetRequiredService<TViewModel>();
+            Page.BindingContext = ViewModel;
+            await this.Enqueue(async () =>
+            {
+                this.modalStack.Push(Page);
+                if (Application.Current.MainPage is CustomShell customShell)
+                    await customShell.PushModalAsync(Page);
+                else
+                    await Application.Current.MainPage.Navigation.PushModalAsync(Page);
+            });
+
+            return await ViewModel.Result;
         }
 
         /// <inheritdoc/>
