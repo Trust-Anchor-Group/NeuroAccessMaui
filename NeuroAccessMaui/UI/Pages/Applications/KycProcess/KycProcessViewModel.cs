@@ -142,8 +142,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 			this.DirectFields = page.Fields.Where(f => f.IsVisible).ToList();
 
 			// Sections
-			this.CurrentPageSections = page.Sections;
+			this.CurrentPageSections = [.. page.Sections];
 			this.HasSections = this.CurrentPageSections.Count > 0;
+
 
 			int nextIndex = GetNextPageIndex(this.currentPageIndex + 1);
 			this.NextButtonText = nextIndex >= this.pages.Count ? "Apply" : "Next";
