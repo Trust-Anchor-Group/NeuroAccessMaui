@@ -6,6 +6,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
+using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI.Pages.Applications.KycProcess;
 using NeuroAccessMaui.UI.Pages.Contracts;
 using NeuroAccessMaui.UI.Pages.Main;
@@ -164,7 +165,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
 					return;
 
-                               await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage));
+				await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage));
 			}
 			catch (Exception ex)
 			{
@@ -181,7 +182,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ApplyForPersonalId))
 					return;
 
-                               await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new ApplyIdNavigationArgs(true, false));
+				await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new ApplyIdNavigationArgs(true, false));
 			}
 			catch (Exception ex)
 			{
@@ -198,7 +199,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ApplyForOrganizationalId))
 					return;
 
-                               await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new ApplyIdNavigationArgs(false, false));
+				await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new ApplyIdNavigationArgs(false, false));
 			}
 			catch (Exception ex)
 			{
