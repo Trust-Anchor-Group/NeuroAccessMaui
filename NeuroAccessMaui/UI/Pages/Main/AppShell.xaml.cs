@@ -1,5 +1,6 @@
 ﻿using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
+using NeuroAccessMaui.UI.Pages.Applications.KycProcess;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
@@ -75,8 +76,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		private void RegisterRoutes()
 		{
 			// Applications:
-			Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
-			Routing.RegisterRoute(nameof(ApplyIdPage), typeof(ApplyIdPage));
+                       Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
+                       Routing.RegisterRoute(nameof(KycProcessPage), typeof(KycProcessPage));
 
 			// Contacts
 			Routing.RegisterRoute(nameof(ChatPage), typeof(ChatPage));
