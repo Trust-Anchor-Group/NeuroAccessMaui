@@ -23,6 +23,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 
 			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
 			ServiceRef.TagProfile.StepChanged += this.TagProfile_StepChanged;
+
+			await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
 		}
 
 		/// <inheritdoc/>
