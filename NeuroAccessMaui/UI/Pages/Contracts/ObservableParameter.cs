@@ -532,14 +532,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				GeolocationRequest Request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
 				Location? Location = await Geolocation.Default.GetLocationAsync(Request);
 
-				if (Location != null)
+				if (Location is not null)
 				{
 					this.GeoValue = new GeoPosition(Location.Latitude, Location.Longitude, Location.Altitude);
 				}
 			}
 			catch
 			{
-
+				// Ignore this case
 			}
 			finally
 			{
