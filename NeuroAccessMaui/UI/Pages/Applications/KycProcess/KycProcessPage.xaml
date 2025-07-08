@@ -4,15 +4,121 @@
 					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.KycProcess"
+					  xmlns:models="clr-namespace:NeuroAccessMaui.Services.Kyc.Models"
+					  xmlns:local="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.KycProcess"
+					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 					  x:DataType="viewmodel:KycProcessViewModel">
-	<Grid RowDefinitions="Auto,* ,Auto"
+
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<!-- Text field template -->
+			<DataTemplate x:Key="TextFieldTemplate"
+						  x:DataType="models:KycField">
+				<VerticalStackLayout Spacing="2">
+					<Label Text="{Binding Label.Text}"
+						   FontAttributes="Bold" />
+					<Entry Text="{Binding Value, Mode=TwoWay}"
+						   Placeholder="{Binding Placeholder.Text}" />
+					<Label Text="{Binding Hint.Text}"
+						   FontSize="Small"
+						   TextColor="Gray" />
+				</VerticalStackLayout>
+			</DataTemplate>
+			<!-- Date field template -->
+			<DataTemplate x:Key="DateFieldTemplate"
+						  x:DataType="models:KycField">
+				<VerticalStackLayout Spacing="2">
+					<Label Text="{Binding Label.Text}"
+						   FontAttributes="Bold" />
+					<DatePicker Date="{Binding DateValue, Mode=TwoWay}" />
+					<Label Text="{Binding Hint.Text}"
+						   FontSize="Small"
+						   TextColor="Gray" />
+				</VerticalStackLayout>
+			</DataTemplate>
+			<!-- Picker field template -->
+			<DataTemplate x:Key="PickerFieldTemplate"
+						  x:DataType="models:KycField">
+				<VerticalStackLayout Spacing="2">
+					<Label Text="{Binding Label.Text}"
+						   FontAttributes="Bold" />
+					<Picker ItemsSource="{Binding Options}"
+							ItemDisplayBinding="{Binding Label.Text}"
+							SelectedItem="{Binding SelectedOption, Mode=TwoWay}" />
+					<Label Text="{Binding Hint.Text}"
+						   FontSize="Small"
+						   TextColor="Gray" />
+				</VerticalStackLayout>
+			</DataTemplate>
+			<!-- Boolean (switch) field template -->
+			<DataTemplate x:Key="BooleanFieldTemplate"
+						  x:DataType="models:KycField">
+				<HorizontalStackLayout Spacing="8">
+					<Switch IsToggled="{Binding BoolValue, Mode=TwoWay}" />
+					<Label Text="{Binding Label.Text}"
+						   VerticalOptions="Center" />
+				</HorizontalStackLayout>
+			</DataTemplate>
+			<!-- Add file field template or others as needed -->
+
+			<local:KycFieldTemplateSelector x:Key="KycFieldTemplateSelector"
+											TextFieldTemplate="{StaticResource TextFieldTemplate}"
+											DateFieldTemplate="{StaticResource DateFieldTemplate}"
+											PickerFieldTemplate="{StaticResource PickerFieldTemplate}"
+											BooleanFieldTemplate="{StaticResource BooleanFieldTemplate}" />
+		</ResourceDictionary>
+	</ContentPage.Resources>
+
+
+	<Grid RowDefinitions="Auto,*,Auto"
 		  Padding="{DynamicResource MediumSpacing}">
-		<Label Text="{Binding PageTitle}"
+		<!-- Page title -->
+		<Label Grid.Row="0"
+			   Text="{Binding CurrentPageTitle}"
 			   Style="{DynamicResource PageTitleLabel}" />
+
+		<!-- Form content -->
 		<ScrollView Grid.Row="1">
-			<VerticalStackLayout x:Name="FieldsLayout"
-								 Spacing="{DynamicResource SmallSpacing}" />
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				<!-- Page description -->
+				<Label Text="{Binding CurrentPageDescription}"
+					   Style="{DynamicResource FieldHintLabel}"
+					   IsVisible="{Binding HasCurrentPageDescription}" />
+
+				<!-- Direct fields (no section) -->
+				<CollectionView ItemsSource="{Binding CurrentPage.VisibleFields}"
+								ItemTemplate="{StaticResource KycFieldTemplateSelector}"
+								SelectionMode="None"
+								ItemSizingStrategy="MeasureAllItems"
+								Margin="0,0,0,8"
+								IsVisible="{Binding CurrentPage.VisibleFields.Count, Converter={converters:GreaterThanZero}}" />
+
+				<!-- Sections -->
+				<CollectionView ItemsSource="{Binding CurrentPageSections}"
+								IsVisible="{Binding HasSections}"
+								SelectionMode="None"
+								ItemSizingStrategy="MeasureAllItems">
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="models:KycSection">
+							<VerticalStackLayout Spacing="6">
+								<Label Text="{Binding Label.Text}"
+									   FontAttributes="Bold"
+									   FontSize="Medium"
+									   Style="{DynamicResource SectionHeaderLabel}"
+									   IsVisible="{Binding Label, Converter={mct:IsNotNullConverter}}" />
+								<CollectionView ItemsSource="{Binding VisibleFields}"
+												ItemTemplate="{StaticResource KycFieldTemplateSelector}"
+												SelectionMode="None"
+												ItemSizingStrategy="MeasureAllItems" />
+							</VerticalStackLayout>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+			</VerticalStackLayout>
 		</ScrollView>
+
+		<!-- Navigation bar -->
 		<Grid Grid.Row="2"
 			  ColumnDefinitions="*,Auto"
 			  Margin="{DynamicResource SmallSpacing}">
