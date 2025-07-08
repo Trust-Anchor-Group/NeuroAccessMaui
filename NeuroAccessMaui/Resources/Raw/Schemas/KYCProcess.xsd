@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<!-- Root Element -->
+	<xs:element name="KYCProcess">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Page" maxOccurs="unbounded" minOccurs="1" type="PageType"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Page Element -->
+	<xs:complexType name="PageType">
+		<xs:sequence>
+			<xs:element name="Title" type="LocalizedTextType" minOccurs="0"/>
+			<xs:element name="Description" type="LocalizedTextType" minOccurs="0"/>
+			<xs:element name="Field" type="FieldType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Section" type="SectionType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Condition" type="ConditionType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required"/>
+		<!-- title attribute optional now since localizable title element exists -->
+		<xs:attribute name="title" type="xs:string" use="optional"/>
+	</xs:complexType>
+
+	<!-- Section Element -->
+	<xs:complexType name="SectionType">
+		<xs:sequence>
+			<xs:element name="Label" type="LocalizedTextType" minOccurs="0"/>
+			<xs:element name="Description" type="LocalizedTextType" minOccurs="0"/>
+			<xs:element name="Field" type="FieldType" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="label" type="xs:string" use="optional"/>
+	</xs:complexType>
+
+	<!-- Field Element -->
+	<xs:complexType name="FieldType">
+		<xs:sequence>
+			<xs:element name="Label" type="LocalizedTextType" minOccurs="0"/>
+			<xs:element name="Hint" type="LocalizedTextType" minOccurs="0"/>
+			<xs:element name="Placeholder" type="LocalizedTextType" minOccurs="0"/>
+			<xs:element name="Description" type="LocalizedTextType" minOccurs="0"/>
+			<xs:element name="Default" type="xs:string" minOccurs="0"/>
+			<xs:element name="Mapping" type="MappingType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Validation" type="ValidationType" minOccurs="0"/>
+			<xs:element name="Options" type="OptionsType" minOccurs="0"/>
+			<xs:element name="Condition" type="ConditionType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="xs:string" use="required"/>
+		<!-- label attribute optional now since localizable Label element exists -->
+		<xs:attribute name="label" type="xs:string" use="optional"/>
+		<xs:attribute name="mapping" type="xs:string" use="optional"/>
+		<xs:attribute name="specialType" type="xs:string" use="optional"/>
+	</xs:complexType>
+
+	<!-- Mapping Element -->
+	<xs:complexType name="MappingType">
+		<xs:sequence>
+			<xs:element name="Transform" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="key" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<!-- Validation Element -->
+	<xs:complexType name="ValidationType">
+		<xs:sequence>
+			<xs:element name="Regex" type="xs:string" minOccurs="0"/>
+			<xs:element name="FileTypes" type="FileTypesType" minOccurs="0"/>
+			<xs:element name="Message" type="LocalizedTextType" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="required" type="xs:boolean" use="optional"/>
+		<xs:attribute name="minLength" type="xs:integer" use="optional"/>
+		<xs:attribute name="maxLength" type="xs:integer" use="optional"/>
+		<xs:attribute name="min" type="xs:string" use="optional"/>
+		<xs:attribute name="max" type="xs:string" use="optional"/>
+		<xs:attribute name="maxFileSizeMB" type="xs:integer" use="optional"/>
+	</xs:complexType>
+
+	<!-- FileTypes for Validation -->
+	<xs:complexType name="FileTypesType">
+		<xs:sequence>
+			<xs:element name="FileType" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Options for Picker Fields -->
+	<xs:complexType name="OptionsType">
+		<xs:sequence>
+			<xs:element name="Option" type="OptionType" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="OptionType">
+		<xs:sequence>
+			<xs:element name="Text" type="LangStringType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="value" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<!-- LocalizedTextType for Label, Hint, Placeholder, Description, Message, etc. -->
+	<xs:complexType name="LocalizedTextType">
+		<xs:sequence>
+			<xs:element name="Text" type="LangStringType" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Simple lang-tagged string -->
+	<xs:complexType name="LangStringType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="lang" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<!-- Condition -->
+	<xs:complexType name="ConditionType">
+		<xs:sequence>
+			<xs:element name="FieldRef" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="Equals" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>
