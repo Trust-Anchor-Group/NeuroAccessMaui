@@ -8,233 +8,271 @@ using NeuroAccessMaui.UI.Pages.Main; // For ILifeCycleView
 
 namespace NeuroAccessMaui.Test
 {
-	/// <summary>
-	/// Custom shell with edge-to-edge layout, dynamic top/nav bars, and transition support.
-	/// Handles both normal ContentPage and ILifeCycleView pages.
-	/// </summary>
-	public class CustomShell : ContentPage
-	{
-		private readonly Grid layout;
-		private readonly ContentView topBar;
-		private readonly ContentView navBar;
-		private readonly ContentView contentHost;  // For hosting page content
-		private readonly Grid modalOverlay;
-		private readonly ContentView modalHost;
-		private readonly Stack<ContentPage> modalStack = new();
-		private ContentPage currentPage;
+    /// <summary>
+    /// Custom shell with edge-to-edge layout, dynamic top/nav bars, and transition support.
+    /// Handles both normal ContentPage and ILifeCycleView pages.
+    /// </summary>
+    public class CustomShell : ContentPage
+    {
+        private readonly Grid layout;
+        private readonly ContentView topBar;
+        private readonly ContentView navBar;
+        private readonly ContentView contentHost;  // For hosting page content
+        private readonly Grid modalOverlay;
+        private readonly BoxView modalBackground;
+        private readonly ContentView modalHost;
+        private readonly Stack<ContentPage> modalStack = new();
+        private ContentPage currentPage;
 
-		/// <summary>
-		/// Initializes a new instance of <see cref="CustomShell"/>.
-		/// </summary>
-		public CustomShell()
-		{
-			this.layout = new Grid
-			{
-				RowDefinitions =
-				{
-					new RowDefinition { Height = GridLength.Auto },  // TopBar
+        /// <summary>
+        /// Initializes a new instance of <see cref="CustomShell"/>.
+        /// </summary>
+        public CustomShell()
+        {
+            this.layout = new Grid
+            {
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Auto },  // TopBar
                     new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }, // Page
                     new RowDefinition { Height = GridLength.Auto }   // NavBar
                 }
-			};
+            };
 
-			this.topBar = new ContentView { IsVisible = false };
-			this.navBar = new ContentView { IsVisible = false };
-			this.contentHost = new ContentView();
-			this.modalHost = new ContentView { IsVisible = false, BackgroundColor = Color.FromArgb("#80000000") };
-			this.modalOverlay = new Grid { IsVisible = false, InputTransparent = false };
-			this.modalOverlay.Add(this.modalHost);
+            this.topBar = new ContentView { IsVisible = false };
+            this.navBar = new ContentView { IsVisible = false };
+            this.contentHost = new ContentView();
+            this.modalHost = new ContentView { IsVisible = false };
+            this.modalBackground = new BoxView { Opacity = 0 };
+            this.modalOverlay = new Grid { IsVisible = false, InputTransparent = false };
+            this.modalOverlay.Add(this.modalBackground);
+            this.modalOverlay.Add(this.modalHost);
+
+            TapGestureRecognizer BackgroundTap = new();
+            BackgroundTap.Tapped += async (_, _) =>
+            {
+                if (this.modalStack.Count == 0)
+                    return;
+
+                ContentPage TopPage = this.modalStack.Peek();
+                if (BaseModalPage.GetPopOnBackgroundPress(TopPage))
+                    await this.PopModalAsync();
+            };
+
+            this.modalBackground.GestureRecognizers.Add(BackgroundTap);
 
 
-			this.layout.Add(this.topBar, 0, 0);
-			this.layout.Add(this.contentHost, 0, 1);
-			this.layout.Add(this.navBar, 0, 2);
-			this.layout.Add(this.modalOverlay);
-			Grid.SetRowSpan(this.modalOverlay, 3);
+            this.layout.Add(this.topBar, 0, 0);
+            this.layout.Add(this.contentHost, 0, 1);
+            this.layout.Add(this.navBar, 0, 2);
+            this.layout.Add(this.modalOverlay);
+            Grid.SetRowSpan(this.modalOverlay, 3);
 
-			this.Content = this.layout;
-			this.Padding = 0;
-			this.On<iOS>().SetUseSafeArea(false);
+            this.Content = this.layout;
+            this.Padding = 0;
+            this.On<iOS>().SetUseSafeArea(false);
 
-			AppShell.RegisterRoutes();
-		}
+            AppShell.RegisterRoutes();
+        }
 
-		/// <summary>
-		/// The currently displayed page.
-		/// </summary>
-		public ContentPage CurrentPage => this.currentPage;
+        /// <summary>
+        /// The currently displayed page.
+        /// </summary>
+        public ContentPage CurrentPage => this.currentPage;
 
-		/// <summary>
-		/// Swaps in a new page, with optional transition, updating bars and lifecycle events.
-		/// Handles custom lifecycle interface if present.
-		/// </summary>
-		/// <param name="Page">The new page to show.</param>
-		/// <param name="Transition">Transition type (fade, etc).</param>
-		public async Task SetPageAsync(ContentPage Page, TransitionType Transition = TransitionType.None)
-		{
-			// Remove previous page (disappearing, dispose)
-			if (this.currentPage is not null)
-			{
-				if (this.currentPage is ILifeCycleView oldLifeCycle)
-					await oldLifeCycle.OnDisappearingAsync();
-				else
-					this.currentPage.SendDisappearing();
+        /// <summary>
+        /// Swaps in a new page, with optional transition, updating bars and lifecycle events.
+        /// Handles custom lifecycle interface if present.
+        /// </summary>
+        /// <param name="Page">The new page to show.</param>
+        /// <param name="Transition">Transition type (fade, etc).</param>
+        public async Task SetPageAsync(ContentPage Page, TransitionType Transition = TransitionType.None)
+        {
+            // Remove previous page (disappearing, dispose)
+            if (this.currentPage is not null)
+            {
+                if (this.currentPage is ILifeCycleView oldLifeCycle)
+                    await oldLifeCycle.OnDisappearingAsync();
+                else
+                    this.currentPage.SendDisappearing();
 
-				if (this.currentPage is ILifeCycleView oldDispose) await oldDispose.OnDisposeAsync();
-			}
+                if (this.currentPage is ILifeCycleView oldDispose) 
+                    await oldDispose.OnDisposeAsync();
 
-			// Add new page as a child to the layout, in content slot
-			this.contentHost.Content = Page.Content;
-			this.contentHost.BindingContext = Page.BindingContext;
-			this.currentPage = Page;
+                if (this.currentPage is IAsyncDisposable AsyncDisposable)
+                    await AsyncDisposable.DisposeAsync();
+                else if (this.currentPage is IDisposable Disposable)
+                    Disposable.Dispose();
+            }
 
-			// LifeCycle: OnInitializeAsync (once), then Appearing
-			if (Page is ILifeCycleView newLifeCycle)
-			{
-				// Optionally track if OnInitializeAsync already called if you wish; for demo just call.
-				await newLifeCycle.OnInitializeAsync();
-				await newLifeCycle.OnAppearingAsync();
-			}
-			else
-			{
-				Page.SendAppearing();
-			}
+            // Add new page as a child to the layout, in content slot
+            this.contentHost.Content = Page.Content;
+            this.contentHost.BindingContext = Page.BindingContext;
+            this.currentPage = Page;
 
-			// Manage bar visibility/content
-			this.topBar.IsVisible = NavigationBars.GetTopBarVisible(Page);
-			this.navBar.IsVisible = NavigationBars.GetNavBarVisible(Page);
+            // LifeCycle: OnInitializeAsync (once), then Appearing
+            if (Page is ILifeCycleView newLifeCycle)
+            {
+                // Optionally track if OnInitializeAsync already called if you wish; for demo just call.
+                await newLifeCycle.OnInitializeAsync();
+                await newLifeCycle.OnAppearingAsync();
+            }
+            else
+            {
+                Page.SendAppearing();
+            }
 
-			if (Page is IBarContentProvider barProvider)
-			{
-				this.topBar.Content = barProvider.TopBarContent;
-				this.navBar.Content = barProvider.NavBarContent;
-			}
-			else
-			{
-				this.topBar.Content = null;
-				this.navBar.Content = null;
-			}
+            // Manage bar visibility/content
+            this.topBar.IsVisible = NavigationBars.GetTopBarVisible(Page);
+            this.navBar.IsVisible = NavigationBars.GetNavBarVisible(Page);
 
-			// Transition (fade in)
-			if (Transition == TransitionType.Fade)
-			{
-				Page.Opacity = 0;
-				await Page.FadeTo(1, 150, Easing.CubicOut);
-			}
-		}
+            if (Page is IBarContentProvider barProvider)
+            {
+                this.topBar.Content = barProvider.TopBarContent;
+                this.navBar.Content = barProvider.NavBarContent;
+            }
+            else
+            {
+                this.topBar.Content = null;
+                this.navBar.Content = null;
+            }
 
-		/// <summary>
-		/// Displays a page modally on top of the current page.
-		/// </summary>
-		/// <param name="Page">The modal page to show.</param>
-		/// <param name="Transition">Optional transition.</param>
-		public async Task PushModalAsync(ContentPage Page, TransitionType Transition = TransitionType.Fade)
-		{
-			this.modalHost.Content = Page.Content;
-			this.modalHost.BindingContext = Page.BindingContext;
-			this.modalStack.Push(Page);
+            // Transition (fade in)
+            if (Transition == TransitionType.Fade)
+            {
+                Page.Opacity = 0;
+                await Page.FadeTo(1, 150, Easing.CubicOut);
+            }
+        }
 
-			this.modalHost.IsVisible = true;
-			this.modalOverlay.IsVisible = true;
+        /// <summary>
+        /// Displays a page modally on top of the current page.
+        /// </summary>
+        /// <param name="Page">The modal page to show.</param>
+        /// <param name="Transition">Optional transition.</param>
+        public async Task PushModalAsync(ContentPage Page, TransitionType Transition = TransitionType.Fade)
+        {
+            this.modalHost.Content = Page.Content;
+            this.modalHost.BindingContext = Page.BindingContext;
+            this.modalStack.Push(Page);
 
-			if (Page is ILifeCycleView lifeCycle)
-			{
-				await lifeCycle.OnInitializeAsync();
-				await lifeCycle.OnAppearingAsync();
-			}
-			else
-				Page.SendAppearing();
+            this.modalBackground.BackgroundColor = BaseModalPage.GetOverlayColor(Page);
 
-			if (Transition == TransitionType.Fade)
-			{
-				this.modalOverlay.Opacity = 0;
-				await this.modalOverlay.FadeTo(1, 150, Easing.CubicOut);
-			}
-		}
+            this.modalHost.IsVisible = true;
+            this.modalOverlay.IsVisible = true;
 
-		/// <summary>
-		/// Pops the top most modal page.
-		/// </summary>
-		public async Task PopModalAsync()
-		{
-			if (this.modalStack.Count == 0)
-				return;
+            if (Page is ILifeCycleView lifeCycle)
+            {
+                await lifeCycle.OnInitializeAsync();
+                await lifeCycle.OnAppearingAsync();
+            }
+            else
+                Page.SendAppearing();
 
-			ContentPage Page = this.modalStack.Pop();
+            if (Transition == TransitionType.Fade)
+            {
+                this.modalBackground.Opacity = 0;
+                await this.modalBackground.FadeTo(1, 150, Easing.CubicOut);
+            }
+            else
+            {
+                this.modalBackground.Opacity = 1;
+            }
+        }
 
-			if (Page is ILifeCycleView lifeCycle)
-				await lifeCycle.OnDisappearingAsync();
-			else
-				Page.SendDisappearing();
+        /// <summary>
+        /// Pops the top most modal page.
+        /// </summary>
+        public async Task PopModalAsync()
+        {
+            if (this.modalStack.Count == 0)
+                return;
 
-			if (Page is ILifeCycleView dispose)
-				await dispose.OnDisposeAsync();
+            ContentPage Page = this.modalStack.Pop();
 
-			this.modalHost.Content = null;
-			this.modalHost.BindingContext = null;
+            if (Page is ILifeCycleView lifeCycle)
+                await lifeCycle.OnDisappearingAsync();
+            else
+                Page.SendDisappearing();
 
-			if (this.modalStack.Count == 0)
-			{
-				this.modalHost.IsVisible = false;
-				this.modalOverlay.IsVisible = false;
-			}
-			else
-			{
-				ContentPage next = this.modalStack.Peek();
-				this.modalHost.Content = next.Content;
-				this.modalHost.BindingContext = next.BindingContext;
-			}
-		}
-	}
+            if (Page.BindingContext is BaseModalViewModel vm)
+                await vm.OnPopInternal();
 
-	/// <summary>
-	/// Transition types for page navigation in CustomShell.
-	/// </summary>
-	public enum TransitionType
-	{
-		None,
-		Fade,
-		// Extend: SlideLeft, SlideRight, Scale, etc.
-	}
+            if (Page is ILifeCycleView dispose)
+                await dispose.OnDisposeAsync();
 
-	/// <summary>
-	/// Optional interface for pages that provide their own bar content.
-	/// </summary>
-	public interface IBarContentProvider
-	{
-		View TopBarContent { get; }
-		View NavBarContent { get; }
-	}
+            if(Page is IAsyncDisposable AsyncDisposable)
+                await AsyncDisposable.DisposeAsync();
+            else if (Page is IDisposable Disposable)
+                Disposable.Dispose();
 
-	/// <summary>
-	/// Helper class for attached properties to show/hide bars.
-	/// </summary>
-	public static class NavigationBars
-	{
-		public static readonly BindableProperty TopBarVisibleProperty =
-			BindableProperty.CreateAttached(
-				"TopBarVisible",
-				typeof(bool),
-				typeof(NavigationBars),
-				false);
+            this.modalHost.Content = null;
+            this.modalHost.BindingContext = null;
 
-		public static readonly BindableProperty NavBarVisibleProperty =
-			BindableProperty.CreateAttached(
-				"NavBarVisible",
-				typeof(bool),
-				typeof(NavigationBars),
-				false);
+            if (this.modalStack.Count == 0)
+            {
+                await this.modalBackground.FadeTo(0, 150, Easing.CubicOut);
+                this.modalHost.IsVisible = false;
+                this.modalOverlay.IsVisible = false;
+            }
+            else
+            {
+                ContentPage Next = this.modalStack.Peek();
+                this.modalHost.Content = Next.Content;
+                this.modalHost.BindingContext = Next.BindingContext;
+                this.modalBackground.BackgroundColor = BaseModalPage.GetOverlayColor(Next);
+            }
+        }
+    }
 
-		public static bool GetTopBarVisible(BindableObject view) =>
-			(bool)view.GetValue(TopBarVisibleProperty);
+    /// <summary>
+    /// Transition types for page navigation in CustomShell.
+    /// </summary>
+    public enum TransitionType
+    {
+        None,
+        Fade,
+        // Extend: SlideLeft, SlideRight, Scale, etc.
+    }
 
-		public static void SetTopBarVisible(BindableObject view, bool value) =>
-			view.SetValue(TopBarVisibleProperty, value);
+    /// <summary>
+    /// Optional interface for pages that provide their own bar content.
+    /// </summary>
+    public interface IBarContentProvider
+    {
+        View TopBarContent { get; }
+        View NavBarContent { get; }
+    }
 
-		public static bool GetNavBarVisible(BindableObject view) =>
-			(bool)view.GetValue(NavBarVisibleProperty);
+    /// <summary>
+    /// Helper class for attached properties to show/hide bars.
+    /// </summary>
+    public static class NavigationBars
+    {
+        public static readonly BindableProperty TopBarVisibleProperty =
+            BindableProperty.CreateAttached(
+                "TopBarVisible",
+                typeof(bool),
+                typeof(NavigationBars),
+                false);
 
-		public static void SetNavBarVisible(BindableObject view, bool value) =>
-			view.SetValue(NavBarVisibleProperty, value);
-	}
+        public static readonly BindableProperty NavBarVisibleProperty =
+            BindableProperty.CreateAttached(
+                "NavBarVisible",
+                typeof(bool),
+                typeof(NavigationBars),
+                false);
+
+        public static bool GetTopBarVisible(BindableObject view) =>
+            (bool)view.GetValue(TopBarVisibleProperty);
+
+        public static void SetTopBarVisible(BindableObject view, bool value) =>
+            view.SetValue(TopBarVisibleProperty, value);
+
+        public static bool GetNavBarVisible(BindableObject view) =>
+            (bool)view.GetValue(NavBarVisibleProperty);
+
+        public static void SetNavBarVisible(BindableObject view, bool value) =>
+            view.SetValue(NavBarVisibleProperty, value);
+    }
 }
