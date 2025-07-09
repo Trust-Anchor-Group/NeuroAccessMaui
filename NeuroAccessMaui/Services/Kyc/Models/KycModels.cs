@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
-using Xamarin.Google.Crypto.Tink.Shaded.Protobuf;
 
 namespace NeuroAccessMaui.Services.Kyc.Models
 {
