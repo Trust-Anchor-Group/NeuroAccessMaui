@@ -277,7 +277,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 						if (!await this.contractsClient.LoadKeys(false))
 						{
-							if (ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
+							if (ServiceRef.TagProfile.LegalIdentity is not null && ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
 							{
 								Log.Alert("Regeneration of keys not permitted at this time.",
 									string.Empty, string.Empty, string.Empty, EventLevel.Major, string.Empty, string.Empty, Environment.StackTrace);
