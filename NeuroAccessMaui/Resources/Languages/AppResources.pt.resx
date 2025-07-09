@@ -2867,4 +2867,22 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
     <value>O idioma foi alterado. Por favor, reinicie o aplicativo para garantir que todas as alterações sejam aplicadas.</value>
   </data>
+  <data name="Never" xml:space="preserve">
+    <value>Nunca</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Agora</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>há {0} minutos</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>há {0} horas</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Última atualização: {0}</value>
+  </data>
+  <data name="MyAccount" xml:space="preserve">
+    <value>Minha conta</value>
+  </data>
 </root>

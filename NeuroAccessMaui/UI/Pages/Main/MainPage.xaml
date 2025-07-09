@@ -212,7 +212,7 @@
 								Style="{DynamicResource FilledTemplateButtonPath}"
 								Grid.Column="0"
 						/>
-						<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize ShowIDShort}" />
+						<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{Binding IdButtonText}" />
 					</Grid>
 				</Border>
 			</controls:TemplatedButton>
