@@ -241,6 +241,9 @@ namespace NeuroAccessMaui
 			{
 				this.InitializeComponent();
 				AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
+
+				if (CurrentTheme is AppTheme.Unspecified) CurrentTheme = Application.Current?.RequestedTheme;
+
 				this.SetTheme(CurrentTheme ?? AppTheme.Light);
 				ServiceRef.ThemeService.SetTheme(CurrentTheme ?? AppTheme.Light);
 				try

@@ -83,7 +83,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private PurposeUse purpose;
 		private DateTime? testOtpTimestamp;
 		private RegistrationStep step;
-		private AppTheme? theme;
+		private AppTheme theme;
 		private AuthenticationMethod authenticationMethod;
 		private bool loadingProperties;
 		private bool initialDefaultXmppConnectivity;
@@ -1170,7 +1170,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Currently selected theme.
 		/// </summary>
-		public AppTheme? Theme
+		public AppTheme Theme
 		{
 			get => this.theme;
 			set
