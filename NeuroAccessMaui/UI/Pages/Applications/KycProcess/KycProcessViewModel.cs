@@ -135,6 +135,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 			this.NextButtonText = NextIndex >= this.pages.Count ? "Apply" : "Next";
 
 			OnPropertyChanged(nameof(this.Progress));
+			this.NextCommand.NotifyCanExecuteChanged();
 		}
 
 		private int GetNextPageIndex(int start)
@@ -186,12 +187,22 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 				{
 					this.UpdateCurrentPage();
 				}
+
+				this.NextCommand.NotifyCanExecuteChanged();
 			}
 		}
 
-		[RelayCommand]
+		// True if all fields in the current page and sections are valid
+		public bool CanGoNext => (this.CurrentPage?.VisibleFields
+			.Concat(this.CurrentPageSections.SelectMany(s => s.VisibleFields))
+			.All(f => f.IsValid) ?? true);
+
+		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(CanGoNext))]
 		private async Task Next()
 		{
+			ServiceRef.PlatformSpecific.HideKeyboard();
+			await Task.Delay(150);
+
 			if (!await this.ValidateCurrentPage())
 				return;
 
@@ -232,7 +243,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 
 				// Progress is how many pages completed (including current), divided by total
 				// E.g. on first page: (1/total), on last page: 1.0
-				double progress = (visibleIndex + 1.0) / visiblePages.Count;
+				double progress = ((double)visibleIndex) / (double)visiblePages.Count;
 				return Math.Min(1.0, Math.Max(0.0, progress));
 			}
 		}

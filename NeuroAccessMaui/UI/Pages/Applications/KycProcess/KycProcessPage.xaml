@@ -9,15 +9,17 @@
 					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 					  xmlns:models="clr-namespace:NeuroAccessMaui.Services.Kyc.Models"
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.KycProcess"
+					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					  x:DataType="viewmodel:KycProcessViewModel">
 
 	<ContentPage.Resources>
 		<ResourceDictionary>
 			<Style TargetType="Label"
 				   x:Key="SectionHeaderLabel">
-				<Setter Property="FontSize" Value="24"/>
+				<Setter Property="FontSize"
+						Value="24" />
 			</Style>
-			
+
 			<!--  Text field template  -->
 			<DataTemplate x:Key="TextFieldTemplate"
 						  x:DataType="models:KycField">
@@ -83,23 +85,69 @@
 					</controls:CompositeInputView.CenterView>
 				</controls:CompositeInputView>
 			</DataTemplate>
+
+			<!-- File upload field template -->
+			<DataTemplate x:Key="FileUploadFieldTemplate"
+						  x:DataType="models:KycField">
+				<Grid ColumnDefinitions="*,auto,auto,*"
+					  ColumnSpacing="{DynamicResource SmallSpacing}"
+					  RowDefinitions="auto,auto,auto,*"
+					  RowSpacing="{DynamicResource SmallSpacing}">
+					<Border Grid.Row="0"
+							Grid.RowSpan="4"
+							Grid.Column="1"
+							Margin="0"
+							Padding="0"
+							BackgroundColor="{DynamicResource TnPDangerbgWL}"
+							HeightRequest="200"
+							Style="{DynamicResource OutlinedImageButtonBorder}"
+							VerticalOptions="Start"
+							WidthRequest="200">
+						<Image Aspect="AspectFill"
+							   Source="photo_placeholder">
+
+						</Image>
+					</Border>
+
+					<controls:ImageButton Grid.Row="0"
+										  Grid.Column="2"
+										  PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
+										  Style="{DynamicResource OutlinedImageButton}" />
+
+					<controls:ImageButton Grid.Row="1"
+										  Grid.Column="2"
+										  PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
+										  Style="{DynamicResource OutlinedImageButton}" />
+
+					<controls:ImageButton Grid.Row="2"
+										  Grid.Column="2"
+										  PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
+										  Style="{DynamicResource OutlinedImageButton}" />
+
+				</Grid>
+			</DataTemplate>
 			<!--  Add file field template or others as needed  -->
 
 			<local:KycFieldTemplateSelector x:Key="KycFieldTemplateSelector"
 											BooleanFieldTemplate="{StaticResource BooleanFieldTemplate}"
 											DateFieldTemplate="{StaticResource DateFieldTemplate}"
 											PickerFieldTemplate="{StaticResource PickerFieldTemplate}"
-											TextFieldTemplate="{StaticResource TextFieldTemplate}" />
+											TextFieldTemplate="{StaticResource TextFieldTemplate}"
+											FileUploadFieldTemplate="{StaticResource FileUploadFieldTemplate}" />
 		</ResourceDictionary>
 	</ContentPage.Resources>
 
 
-	<Grid Padding="0" Margin="0" RowDefinitions="Auto,*,Auto">
+	<Grid Padding="0"
+		  Margin="0"
+		  RowDefinitions="Auto,*,Auto"
+		  Background="{DynamicResource SurfaceElevation1WL}">
 		<!--  Page title  -->
 
 
 		<!--  Form content  -->
-		<ScrollView Grid.Row="1" Padding="16">
+		<ScrollView Grid.Row="1"
+					Padding="16">
 
 			<VerticalStackLayout Spacing="4"
 								 VerticalOptions="Center">
@@ -108,7 +156,8 @@
 					   Text="{Binding CurrentPageTitle}" />
 				<!--  Page description  -->
 				<Label IsVisible="{Binding HasCurrentPageDescription}"
-					   Text="{Binding CurrentPageDescription}" Margin="0,0,0,16"/>
+					   Text="{Binding CurrentPageDescription}"
+					   Margin="0,0,0,16" />
 
 				<!--  Direct fields (no section)  -->
 				<CollectionView Margin="0,0,0,8"
@@ -124,45 +173,53 @@
 				</CollectionView>
 
 				<!--  Sections  -->
-				<CollectionView IsVisible="{Binding HasSections}"
-								ItemSizingStrategy="MeasureAllItems"
-								ItemsSource="{Binding CurrentPageSections}"
-								SelectionMode="None">
-					<CollectionView.ItemTemplate>
+				<controls:DynamicCollectionView x:Name="SectionsCollectionView"
+												ItemSizingStrategy="MeasureAllItems"
+												OriginalItemsSource="{Binding CurrentPageSections}"
+												SelectionMode="None">
+					<controls:DynamicCollectionView.ItemsLayout>
+						<LinearItemsLayout Orientation="Vertical"
+										   ItemSpacing="24" />
+					</controls:DynamicCollectionView.ItemsLayout>
+					<controls:DynamicCollectionView.ItemTemplate>
 						<DataTemplate x:DataType="models:KycSection">
-								<VerticalStackLayout Spacing="8" >
-									<Label FontAttributes="Bold"
-										   IsVisible="{Binding Label, Converter={mct:IsNotNullConverter}}"
-										   Style="{DynamicResource SectionHeaderLabel}"
-										   Text="{Binding Label.Text}" />
-									<Label FontAttributes="Bold"
-										   FontSize="Medium"
-										   IsVisible="{Binding Description, Converter={mct:IsNotNullConverter}}"
-										   Text="{Binding Description }" />
-									<CollectionView ItemSizingStrategy="MeasureAllItems"
-													ItemTemplate="{StaticResource KycFieldTemplateSelector}"
-													ItemsSource="{Binding VisibleFields}"
-													SelectionMode="None">
-										<CollectionView.ItemsLayout>
-											<LinearItemsLayout Orientation="Vertical"
-															   ItemSpacing="16" />
-										</CollectionView.ItemsLayout>
-									</CollectionView>
-								</VerticalStackLayout>
+							<VerticalStackLayout Spacing="8">
+								<Label FontAttributes="Bold"
+									   IsVisible="{Binding Label, Converter={mct:IsNotNullConverter}}"
+									   Style="{DynamicResource SectionHeaderLabel}"
+									   Text="{Binding Label.Text}" />
+								<Label FontAttributes="Bold"
+									   FontSize="Medium"
+									   IsVisible="{Binding Description, Converter={mct:IsNotNullConverter}}"
+									   Text="{Binding Description }" />
+								<CollectionView ItemSizingStrategy="MeasureAllItems"
+												ItemTemplate="{StaticResource KycFieldTemplateSelector}"
+												ItemsSource="{Binding AllFields}"
+												SelectionMode="None">
+									<CollectionView.ItemsLayout>
+										<LinearItemsLayout Orientation="Vertical"
+														   ItemSpacing="16" />
+									</CollectionView.ItemsLayout>
+								</CollectionView>
+							</VerticalStackLayout>
 						</DataTemplate>
-					</CollectionView.ItemTemplate>
-				</CollectionView>
+					</controls:DynamicCollectionView.ItemTemplate>
+				</controls:DynamicCollectionView>
 			</VerticalStackLayout>
 		</ScrollView>
 
 		<!--  Navigation bar  -->
-		<Border Style="{DynamicResource BottomBarBorder}" Scale="1"
-				Grid.Row="2" Padding="16">
+		<Border Style="{DynamicResource BottomBarBorder}"
+				Scale="1"
+				Grid.Row="2"
+				Padding="16">
 			<VerticalStackLayout Spacing="8">
 				<controls:ProgressBar Progress="{Binding Progress}"
 									  HeightRequest="12"
-									  CornerRadius="12" BarBrush="Orange"/>
-				<controls:TextButton LabelData="Next" Style="{DynamicResource FilledTextButton}"
+									  CornerRadius="12"
+									  BarBrush="Orange" />
+				<controls:TextButton LabelData="Next"
+									 Style="{DynamicResource FilledTextButton}"
 									 Command="{Binding NextCommand}" />
 			</VerticalStackLayout>
 		</Border>

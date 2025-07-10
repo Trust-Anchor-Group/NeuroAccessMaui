@@ -1,6 +1,7 @@
 using Microsoft.Maui.Controls;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI;
+using NeuroAccessMaui.Services.Kyc.Models;
 
 namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 {
@@ -11,6 +12,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 		{
 			this.InitializeComponent();
 			this.BindingContext = ViewModel;
+
+		/*	this.SectionsCollectionView.Filter = (item) =>
+			{
+				if (item is not KycSection Section) return false;
+				return Section.AllFields.Any(f => f.IsVisible) && Section.IsVisible;
+			};*/
 		}
 	}
 }

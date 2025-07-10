@@ -13,6 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 		public DataTemplate DateFieldTemplate { get; set; }
 		public DataTemplate PickerFieldTemplate { get; set; }
 		public DataTemplate BooleanFieldTemplate { get; set; }
+		public DataTemplate FileUploadFieldTemplate { get; set; }
 		// Add more as needed
 
 		protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
@@ -23,6 +24,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 				"date" => this.DateFieldTemplate,
 				"picker" => this.PickerFieldTemplate,
 				"boolean" => this.BooleanFieldTemplate,
+				"file" => this.FileUploadFieldTemplate,
 				// Add more here
 				_ => this.TextFieldTemplate
 			};
