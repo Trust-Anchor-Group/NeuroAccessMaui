@@ -86,15 +86,54 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				Id = (string?)fieldEl.Attribute("id") ?? string.Empty,
 				Type = (string?)fieldEl.Attribute("type") ?? "text",
+				Required = (bool?)fieldEl.Attribute("required") ?? false,
 				Label = ParseLocalizedText(fieldEl.Element("Label")) ?? ParseLegacyString(fieldEl.Attribute("label")),
 				Placeholder = ParseLocalizedText(fieldEl.Element("Placeholder")),
 				Hint = ParseLocalizedText(fieldEl.Element("Hint")),
 				Description = ParseLocalizedText(fieldEl.Element("Description")),
 				SpecialType = (string?)fieldEl.Attribute("specialType"),
-				Validation = ParseValidation(fieldEl.Element("Validation")),
 				Condition = ParseCondition(fieldEl.Element("Condition"))
-			};
 
+			};
+			foreach (var ruleEl in fieldEl.Elements("ValidationRule"))
+			{
+				var rule = new KycValidationRule
+				{
+					MinLength = (int?)ruleEl.Attribute("minLength"),
+					MaxLength = (int?)ruleEl.Attribute("maxLength"),
+					RegexPattern = ruleEl.Element("Regex")?.Value?.Trim(),
+					Message = ParseLocalizedText(ruleEl.Element("Message")),
+				};
+
+				string? min = (string?)ruleEl.Attribute("min");
+				string? max = (string?)ruleEl.Attribute("max");
+				if (DateTime.TryParse(min, out DateTime minDate))
+					rule.MinDate = minDate;
+				if (DateTime.TryParse(max, out DateTime maxDate))
+					rule.MaxDate = maxDate;
+
+				field.ValidationRules.Add(rule);
+			}
+
+			// LEGACY: Convert single <Validation> node to ValidationRule if present
+			var legacyValidation = fieldEl.Element("Validation");
+			if (legacyValidation != null)
+			{
+				var legacyRule = new KycValidationRule
+				{
+					MinLength = (int?)legacyValidation.Attribute("minLength"),
+					MaxLength = (int?)legacyValidation.Attribute("maxLength"),
+					RegexPattern = legacyValidation.Element("Regex")?.Value?.Trim(),
+					Message = ParseLocalizedText(legacyValidation.Element("Message")),
+				};
+				string? min = (string?)legacyValidation.Attribute("min");
+				string? max = (string?)legacyValidation.Attribute("max");
+				if (DateTime.TryParse(min, out DateTime minDate))
+					legacyRule.MinDate = minDate;
+				if (DateTime.TryParse(max, out DateTime maxDate))
+					legacyRule.MaxDate = maxDate;
+				field.ValidationRules.Add(legacyRule);
+			}
 			// Parse mappings (multiple supported)
 			foreach (XElement mappingEl in fieldEl.Elements("Mapping"))
 			{
@@ -144,30 +183,6 @@ namespace NeuroAccessMaui.Services.Kyc
 				}
 			}
 			return field;
-		}
-
-		private static KycValidation? ParseValidation(XElement? validationEl)
-		{
-			if (validationEl is null)
-				return null;
-
-			KycValidation validation = new KycValidation
-			{
-				Required = (bool?)validationEl.Attribute("required") ?? false,
-				MinLength = (int?)validationEl.Attribute("minLength"),
-				MaxLength = (int?)validationEl.Attribute("maxLength"),
-				RegexPattern = validationEl.Element("Regex")?.Value?.Trim(),
-				Message = ParseLocalizedText(validationEl.Element("Message"))
-			};
-
-			string? min = (string?)validationEl.Attribute("min");
-			string? max = (string?)validationEl.Attribute("max");
-			if (DateTime.TryParse(min, out DateTime minDate))
-				validation.MinDate = minDate;
-			if (DateTime.TryParse(max, out DateTime maxDate))
-				validation.MaxDate = maxDate;
-
-			return validation;
 		}
 
 		private static KycCondition? ParseCondition(XElement? conditionEl)
