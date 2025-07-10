@@ -5,6 +5,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Cache;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI.Pages.Debug.Controls;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Popups.Settings;
 using System.ComponentModel;
@@ -618,6 +619,20 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				ServiceRef.Localizer[nameof(AppResources.CacheCleared)],
 				ServiceRef.Localizer[nameof(AppResources.Ok)]);
 		}
+
+		[RelayCommand]
+		private static async Task ShowControlsDebug()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(ControlsDebugPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
 		#endregion
 
 		public void SetBetaFeaturesEnabled(bool Enabled)

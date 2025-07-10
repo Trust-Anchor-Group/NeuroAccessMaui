@@ -5,6 +5,7 @@ using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
+using NeuroAccessMaui.UI.Pages.Debug.Controls;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
@@ -103,6 +104,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 			//Notifications
 			Routing.RegisterRoute(nameof(NotificationsPage), typeof(NotificationsPage));
+
+			// Debug
+			Routing.RegisterRoute(nameof(ControlsDebugPage), typeof(ControlsDebugPage));
 
 			// Petitions
 			Routing.RegisterRoute(nameof(PetitionContractPage), typeof(PetitionContractPage));
