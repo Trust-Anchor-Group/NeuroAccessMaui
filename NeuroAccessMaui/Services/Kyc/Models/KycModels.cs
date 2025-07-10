@@ -191,6 +191,8 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		/// </summary>
 		public ObservableCollection<KycField> VisibleFields { get; set; } = new();
 
+		public int VisibleFieldsCount => VisibleFields.Count;
+
 		[ObservableProperty]
 		private bool isVisible = true;
 
@@ -225,6 +227,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			foreach (var field in AllFields)
 				if (field.IsVisible)
 					VisibleFields.Add(field);
+			OnPropertyChanged(nameof(VisibleFieldsCount));
 		}
 
 		/// <summary>
@@ -256,13 +259,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		public ObservableCollection<KycOption> Options { get; } = new();
 
 		[ObservableProperty]
-		private string? value;
-		[ObservableProperty]
-		private DateTime? dateValue;
-		[ObservableProperty]
-		private KycOption? selectedOption;
-		[ObservableProperty]
-		private bool boolValue;
+		private object? rawValue;
 
 		[ObservableProperty]
 		private bool isVisible = true;
@@ -271,21 +268,41 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		[ObservableProperty]
 		private string? validationText;
 
-		partial void OnValueChanged(string? value) => Validate();
-		partial void OnDateValueChanged(DateTime? value)
+		partial void OnRawValueChanged(object? value)
 		{
-			Value = value?.ToString("yyyy-MM-dd");
 			Validate();
+			OnPropertyChanged(nameof(ValueAsString));
+			OnPropertyChanged(nameof(ValueAsDate));
+			OnPropertyChanged(nameof(ValueAsBool));
+			OnPropertyChanged(nameof(ValueAsOption));
 		}
-		partial void OnSelectedOptionChanged(KycOption? value)
+
+		// Type helpers for easy access (for binding)
+		public string? ValueAsString => RawValue as string;
+		public DateTime? ValueAsDate => RawValue as DateTime?;
+		public bool? ValueAsBool => RawValue as bool?;
+		public KycOption? ValueAsOption => RawValue as KycOption;
+
+		// For backwards compatibility or convenience:
+		public string? Value
 		{
-			Value = value?.Value;
-			Validate();
+			get => ValueAsString;
+			set => RawValue = value;
 		}
-		partial void OnBoolValueChanged(bool value)
+		public DateTime? DateValue
 		{
-			Value = value ? "true" : "false";
-			Validate();
+			get => ValueAsDate;
+			set => RawValue = value;
+		}
+		public bool? BoolValue
+		{
+			get => ValueAsBool;
+			set => RawValue = value;
+		}
+		public KycOption? SelectedOption
+		{
+			get => ValueAsOption;
+			set => RawValue = value;
 		}
 
 		public bool Validate(string? lang = null)
@@ -305,28 +322,28 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			switch (this.Type)
 			{
 				case "date":
-					if (this.Required && this.DateValue is null)
+					if (this.Required && !(RawValue is DateTime))
 					{
 						error = $"{fieldLabel} is required";
 						return false;
 					}
 					break;
 				case "picker":
-					if (this.Required && this.SelectedOption is null)
+					if (this.Required && !(RawValue is KycOption))
 					{
 						error = $"{fieldLabel} is required";
 						return false;
 					}
 					break;
 				case "boolean":
-					if (this.Required && !this.BoolValue)
+					if (this.Required && (!(RawValue is bool b) || !b))
 					{
 						error = $"{fieldLabel} is required";
 						return false;
 					}
 					break;
 				default:
-					if (this.Required && string.IsNullOrEmpty(this.Value))
+					if (this.Required && (RawValue is null || (RawValue is string s && string.IsNullOrEmpty(s))))
 					{
 						error = $"{fieldLabel} is required";
 						return false;
@@ -354,6 +371,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			// Implement mapping logic based on Mappings & Transforms
 		}
 	}
+
 
 	/// <summary>
 	/// Represents a picker/select option.
