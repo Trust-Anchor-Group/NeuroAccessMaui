@@ -62,7 +62,7 @@
 						<Text lang="sv">Ange ett giltigt datum mellan 1900 och 2020</Text>
 					</Message>
 				</Validation>
-				<Default>now()</Default>
+				<!-- <Default>now()</Default> -->
 			</Field>
 			<Field id="email" type="text" label="Email Address">
 				<Label>
