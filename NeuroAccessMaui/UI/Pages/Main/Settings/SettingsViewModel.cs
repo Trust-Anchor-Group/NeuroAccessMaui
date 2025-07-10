@@ -121,11 +121,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 
 		#region Properties
 
-			/// <summary>
-			/// If screen capture prohibition can be controlled
-			/// </summary>
-			[ObservableProperty]
-			private bool canProhibitScreenCapture;
+		/// <summary>
+		/// If screen capture prohibition can be controlled
+		/// </summary>
+		[ObservableProperty]
+		private bool canProhibitScreenCapture;
 
 		/// <summary>
 		/// Screen capture mode.
@@ -210,6 +210,17 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// </summary>
 		[ObservableProperty]
 		private string buildTime;
+
+		/// <summary>
+		/// If the app is in debug or production build
+		/// </summary>
+		public static bool Debug {
+#if DEBUG
+			get => true;
+#else
+			get => false;
+#endif
+		}
 
 		/// <summary>
 		/// Current display mode
@@ -336,7 +347,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			return string.Empty;
 		}
 
-		#endregion
+#endregion
 
 		#region Commands
 

@@ -207,7 +207,7 @@
 								</Grid>
 							</VerticalStackLayout>
 						</Border>
-						<controls:TemplatedButton Command="{Binding ShowControlsDebugCommand}">
+						<controls:TemplatedButton Command="{Binding ShowControlsDebugCommand}" IsVisible="{Binding Debug}">
 							<Border Style="{DynamicResource BorderSubSet}">
 								<Label Text="Go to controls debug menu"/>
 							</Border>
