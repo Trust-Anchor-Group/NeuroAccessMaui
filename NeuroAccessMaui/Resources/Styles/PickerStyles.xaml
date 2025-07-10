@@ -48,7 +48,7 @@
 		   TargetType="Label"
 		   BaseResourceKey="BoldItemTitleLabel">
 		<Setter Property="TextColor"
-				Value="{DynamicResource InputFieldsContentSubhead}" />
+				Value="{DynamicResource InputFieldsContentPrimary}" />
 		<Setter Property="FontSize"
 				Value="15" />
 		<Setter Property="FontFamily"
