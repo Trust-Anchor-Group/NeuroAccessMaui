@@ -132,11 +132,11 @@ namespace NeuroAccessMaui.UI.Controls
 			ValidationIcon.SetBinding(Path.FillProperty, new Binding(nameof(this.ValidationColor), source: this));
 			ValidationIcon.VerticalOptions = LayoutOptions.Center;
 			this.validationGrid.Add(ValidationIcon, 0, 0);
-
 			// ValidationText
 			Label ValidationLabel = new Label();
 			ValidationLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.ValidationText), source: this));
 			ValidationLabel.SetBinding(Label.TextColorProperty, new Binding(nameof(this.ValidationColor), source: this));
+			ValidationLabel.SetBinding(Label.StyleProperty, new Binding(nameof(this.ValidationLabelStyle), source: this));
 			this.validationGrid.Add(ValidationLabel, 1, 0);
 
 			this.validationGrid.SetBinding(Grid.IsVisibleProperty, new Binding(nameof(this.CanShowValidation), source: this));
