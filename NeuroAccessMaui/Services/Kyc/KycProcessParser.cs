@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -15,12 +16,12 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <summary>
 		/// Loads KYC process pages from an XML resource.
 		/// </summary>
-		public static async Task<List<KycPage>> LoadProcessAsync(string resource, string? lang = null)
+		public static async Task<ObservableCollection<KycPage>> LoadProcessAsync(string resource, string? lang = null)
 		{
 			string fileName = GetFileName(resource);
 			using Stream stream = await FileSystem.OpenAppPackageFileAsync(fileName);
 			XDocument doc = XDocument.Load(stream);
-			List<KycPage> pages = [];
+			var pages = new ObservableCollection<KycPage>();
 
 			foreach (XElement pageEl in doc.Root?.Elements("Page") ?? Enumerable.Empty<XElement>())
 			{
@@ -33,12 +34,16 @@ namespace NeuroAccessMaui.Services.Kyc
 				};
 
 				// Fields directly under <Page>
+				var allFields = new ObservableCollection<KycField>();
 				foreach (XElement fieldEl in pageEl.Elements("Field"))
 				{
-					page.Fields.Add(ParseField(fieldEl));
+					allFields.Add(ParseField(fieldEl));
 				}
+				page.AllFields = allFields;
+				page.VisibleFields = new ObservableCollection<KycField>(allFields.Where(f => f.IsVisible));
 
 				// Sections
+				var allSections = new ObservableCollection<KycSection>();
 				foreach (XElement sectionEl in pageEl.Elements("Section"))
 				{
 					var section = new KycSection
@@ -46,15 +51,26 @@ namespace NeuroAccessMaui.Services.Kyc
 						Label = ParseLocalizedText(sectionEl.Element("Label")) ?? ParseLegacyString(sectionEl.Attribute("label")),
 						Description = ParseLocalizedText(sectionEl.Element("Description"))
 					};
+
+					var sectionFields = new ObservableCollection<KycField>();
 					foreach (XElement fieldEl in sectionEl.Elements("Field"))
 					{
-						section.Fields.Add(ParseField(fieldEl));
+						sectionFields.Add(ParseField(fieldEl));
 					}
-					page.Sections.Add(section);
+					section.AllFields = sectionFields;
+					section.VisibleFields = new ObservableCollection<KycField>(sectionFields.Where(f => f.IsVisible));
+					allSections.Add(section);
 				}
+				page.AllSections = allSections;
+				page.VisibleSections = new ObservableCollection<KycSection>(allSections.Where(s => s.VisibleFields.Count > 0));
 
 				pages.Add(page);
 			}
+
+			// Set up IsVisible and handlers for all fields/sections
+			foreach (var page in pages)
+				page.InitVisibilityHandlers();
+
 			return pages;
 		}
 
@@ -80,7 +96,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			};
 
 			// Parse mappings (multiple supported)
-			foreach (var mappingEl in fieldEl.Elements("Mapping"))
+			foreach (XElement mappingEl in fieldEl.Elements("Mapping"))
 			{
 				field.Mappings.Add(new KycMapping
 				{
@@ -135,7 +151,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			if (validationEl is null)
 				return null;
 
-			var validation = new KycValidation
+			KycValidation validation = new KycValidation
 			{
 				Required = (bool?)validationEl.Attribute("required") ?? false,
 				MinLength = (int?)validationEl.Attribute("minLength"),
@@ -170,17 +186,17 @@ namespace NeuroAccessMaui.Services.Kyc
 			if (parent is null)
 				return null;
 
-			var localized = new KycLocalizedText();
-			foreach (var textEl in parent.Elements("Text"))
+			KycLocalizedText localized = new KycLocalizedText();
+			foreach (XElement textEl in parent.Elements("Text"))
 			{
-				var lang = (string?)textEl.Attribute("lang") ?? "en";
-				var value = textEl.Value?.Trim();
+				string lang = (string?)textEl.Attribute("lang") ?? "en";
+				string? value = textEl.Value?.Trim();
 				if (!string.IsNullOrEmpty(value))
 					localized.Add(lang, value);
 			}
 			if (!localized.HasAny)
 			{
-				var val = parent.Value?.Trim();
+				string? val = parent.Value?.Trim();
 				if (!string.IsNullOrEmpty(val))
 					localized.Add("en", val);
 			}
