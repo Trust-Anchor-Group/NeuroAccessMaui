@@ -244,13 +244,14 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 	{
 		public string Id { get; init; } = string.Empty;
 		public string Type { get; init; } = string.Empty;
+		public bool Required { get; init; } = false;
 		public KycLocalizedText? Label { get; set; }
 		public KycLocalizedText? Placeholder { get; set; }
 		public KycLocalizedText? Hint { get; set; }
 		public KycLocalizedText? Description { get; set; }
 		public string? SpecialType { get; set; }
 		public ObservableCollection<KycMapping> Mappings { get; } = new();
-		public KycValidation? Validation { get; set; }
+		public ObservableCollection<KycValidationRule> ValidationRules { get; } = new();
 		public KycCondition? Condition { get; set; }
 		public ObservableCollection<KycOption> Options { get; } = new();
 
@@ -298,71 +299,49 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		public bool Validate(out string error, string? lang = null)
 		{
 			error = string.Empty;
-			KycValidation? v = this.Validation;
-			if (v is null)
-				return true;
-
 			string fieldLabel = this.Label?.Get(lang) ?? this.Id;
 
+			// 1. Apply REQUIRED check
 			switch (this.Type)
 			{
 				case "date":
-					if (v.Required && this.DateValue is null)
+					if (this.Required && this.DateValue is null)
 					{
-						error = v.GetMessage(lang) ?? $"{fieldLabel} is required";
+						error = $"{fieldLabel} is required";
 						return false;
-					}
-					if (this.DateValue is not null)
-					{
-						if (v.MinDate.HasValue && this.DateValue.Value < v.MinDate.Value)
-						{
-							error = v.GetMessage(lang) ?? $"{fieldLabel} is too early";
-							return false;
-						}
-						if (v.MaxDate.HasValue && this.DateValue.Value > v.MaxDate.Value)
-						{
-							error = v.GetMessage(lang) ?? $"{fieldLabel} is too late";
-							return false;
-						}
 					}
 					break;
 				case "picker":
-					if (v.Required && this.SelectedOption is null)
+					if (this.Required && this.SelectedOption is null)
 					{
-						error = v.GetMessage(lang) ?? $"{fieldLabel} is required";
+						error = $"{fieldLabel} is required";
 						return false;
 					}
 					break;
 				case "boolean":
-					if (v.Required && !this.BoolValue)
+					if (this.Required && !this.BoolValue)
 					{
-						error = v.GetMessage(lang) ?? $"{fieldLabel} is required";
+						error = $"{fieldLabel} is required";
 						return false;
 					}
 					break;
 				default:
-					string text = this.Value ?? string.Empty;
-					if (v.Required && string.IsNullOrEmpty(text))
+					if (this.Required && string.IsNullOrEmpty(this.Value))
 					{
-						error = v.GetMessage(lang) ?? $"{fieldLabel} is required";
-						return false;
-					}
-					if (v.MinLength.HasValue && text.Length < v.MinLength.Value)
-					{
-						error = v.GetMessage(lang) ?? $"{fieldLabel} is too short";
-						return false;
-					}
-					if (v.MaxLength.HasValue && text.Length > v.MaxLength.Value)
-					{
-						error = v.GetMessage(lang) ?? $"{fieldLabel} is too long";
-						return false;
-					}
-					if (!string.IsNullOrEmpty(v.RegexPattern) && !Regex.IsMatch(text, v.RegexPattern))
-					{
-						error = v.GetMessage(lang) ?? $"{fieldLabel} is invalid";
+						error = $"{fieldLabel} is required";
 						return false;
 					}
 					break;
+			}
+
+			// 2. Apply VALIDATION RULES in order
+			foreach (var rule in ValidationRules)
+			{
+				if (!rule.Validate(this, out string ruleError, lang))
+				{
+					error = ruleError;
+					return false;
+				}
 			}
 			return true;
 		}
@@ -397,16 +376,63 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		public string? Transform { get; set; }
 	}
 
-	public class KycValidation
+	public class KycValidationRule
 	{
-		public bool Required { get; set; }
 		public int? MinLength { get; set; }
 		public int? MaxLength { get; set; }
 		public string? RegexPattern { get; set; }
 		public DateTime? MinDate { get; set; }
 		public DateTime? MaxDate { get; set; }
 		public KycLocalizedText? Message { get; set; }
-		public string? GetMessage(string? lang = null) => this.Message?.Get(lang);
+
+		public bool Validate(KycField field, out string error, string? lang = null)
+		{
+			error = string.Empty;
+			string fieldLabel = field.Label?.Get(lang) ?? field.Id;
+			string msg = this.Message?.Get(lang) ?? $"{fieldLabel} is invalid";
+
+			switch (field.Type)
+			{
+				case "date":
+					if (field.DateValue is DateTime date)
+					{
+						if (this.MinDate.HasValue && date < this.MinDate.Value)
+						{
+							error = msg;
+							return false;
+						}
+						if (this.MaxDate.HasValue && date > this.MaxDate.Value)
+						{
+							error = msg;
+							return false;
+						}
+					}
+					break;
+				case "picker":
+				case "boolean":
+					// No custom rules for these by default
+					break;
+				default:
+					string text = field.Value ?? string.Empty;
+					if (this.MinLength.HasValue && text.Length < this.MinLength.Value)
+					{
+						error = msg;
+						return false;
+					}
+					if (this.MaxLength.HasValue && text.Length > this.MaxLength.Value)
+					{
+						error = msg;
+						return false;
+					}
+					if (!string.IsNullOrEmpty(this.RegexPattern) && !Regex.IsMatch(text, this.RegexPattern))
+					{
+						error = msg;
+						return false;
+					}
+					break;
+			}
+			return true;
+		}
 	}
 
 	public class KycCondition
