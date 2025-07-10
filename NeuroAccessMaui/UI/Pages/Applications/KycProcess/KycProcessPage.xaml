@@ -13,6 +13,11 @@
 
 	<ContentPage.Resources>
 		<ResourceDictionary>
+			<Style TargetType="Label"
+				   x:Key="SectionHeaderLabel">
+				<Setter Property="FontSize" Value="24"/>
+			</Style>
+			
 			<!--  Text field template  -->
 			<DataTemplate x:Key="TextFieldTemplate"
 						  x:DataType="models:KycField">
@@ -21,11 +26,9 @@
 											 LabelText="{Binding Label.Text}"
 											 Placeholder="{Binding Placeholder.Text}"
 											 Style="{DynamicResource RegularCompositeEntry}"
+											 Required="{Binding Required}"
 											 IsValid="{Binding IsValid}"
 											 ValidationText="{Binding ValidationText}" />
-					<Label FontSize="Small"
-						   Text="{Binding Hint.Text}"
-						   TextColor="Gray" />
 				</VerticalStackLayout>
 			</DataTemplate>
 			<!--  Date field template  -->
@@ -36,11 +39,9 @@
 												  NullableDate="{Binding DateValue, Mode=TwoWay}"
 												  Placeholder="{Binding Placeholder.Text}"
 												  Style="{DynamicResource RegularCompositeDatePicker}"
+												  Required="{Binding Required}"
 												  IsValid="{Binding IsValid}"
 												  ValidationText="{Binding ValidationText}" />
-					<Label FontSize="Small"
-						   Text="{Binding Hint.Text}"
-						   TextColor="Gray" />
 				</VerticalStackLayout>
 			</DataTemplate>
 			<!--  Picker field template  -->
@@ -52,15 +53,13 @@
 											  Placeholder="{Binding Placeholder.Text}"
 											  SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
 											  Style="{DynamicResource RegularCompositePicker}"
+											  Required="{Binding Required}"
 											  IsValid="{Binding IsValid}"
 											  ValidationText="{Binding ValidationText}">
 						<controls:CompositePicker.ItemDisplayBinding>
 							<Binding Path="Label.Text" />
 						</controls:CompositePicker.ItemDisplayBinding>
 					</controls:CompositePicker>
-					<Label FontSize="Small"
-						   Text="{Binding Hint.Text}"
-						   TextColor="Gray" />
 				</VerticalStackLayout>
 			</DataTemplate>
 			<!--  Boolean (switch) field template  -->
@@ -68,6 +67,7 @@
 						  x:DataType="models:KycField">
 				<controls:CompositeInputView LabelText="{Binding Label.Text}"
 											 Style="{DynamicResource BaseCompositeInputView}"
+											 Required="{Binding Required}"
 											 IsValid="{Binding IsValid}"
 											 ValidationText="{Binding ValidationText}">
 					<controls:CompositeInputView.CenterView>
@@ -108,7 +108,7 @@
 					   Text="{Binding CurrentPageTitle}" />
 				<!--  Page description  -->
 				<Label IsVisible="{Binding HasCurrentPageDescription}"
-					   Text="{Binding CurrentPageDescription}" />
+					   Text="{Binding CurrentPageDescription}" Margin="0,0,0,16"/>
 
 				<!--  Direct fields (no section)  -->
 				<CollectionView Margin="0,0,0,8"
@@ -130,10 +130,8 @@
 								SelectionMode="None">
 					<CollectionView.ItemTemplate>
 						<DataTemplate x:DataType="models:KycSection">
-							<Border Style="{DynamicResource BorderSet}">
-								<VerticalStackLayout Spacing="16">
+								<VerticalStackLayout Spacing="8" >
 									<Label FontAttributes="Bold"
-										   FontSize="Medium"
 										   IsVisible="{Binding Label, Converter={mct:IsNotNullConverter}}"
 										   Style="{DynamicResource SectionHeaderLabel}"
 										   Text="{Binding Label.Text}" />
@@ -151,7 +149,6 @@
 										</CollectionView.ItemsLayout>
 									</CollectionView>
 								</VerticalStackLayout>
-							</Border>
 						</DataTemplate>
 					</CollectionView.ItemTemplate>
 				</CollectionView>
@@ -161,8 +158,13 @@
 		<!--  Navigation bar  -->
 		<Border Style="{DynamicResource BottomBarBorder}" Scale="1"
 				Grid.Row="2" Padding="16">
-			<controls:TextButton LabelData="Next" Style="{DynamicResource FilledTextButton}"
-								 Command="{Binding NextCommand}" />
+			<VerticalStackLayout Spacing="8">
+				<controls:ProgressBar Progress="{Binding Progress}"
+									  HeightRequest="12"
+									  CornerRadius="12" BarBrush="Orange"/>
+				<controls:TextButton LabelData="Next" Style="{DynamicResource FilledTextButton}"
+									 Command="{Binding NextCommand}" />
+			</VerticalStackLayout>
 		</Border>
 	</Grid>
 </base:BaseContentPage>

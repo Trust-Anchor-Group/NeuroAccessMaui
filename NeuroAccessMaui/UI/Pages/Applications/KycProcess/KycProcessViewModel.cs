@@ -133,6 +133,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 
 			int NextIndex = this.GetNextPageIndex(this.currentPageIndex + 1);
 			this.NextButtonText = NextIndex >= this.pages.Count ? "Apply" : "Next";
+
+			OnPropertyChanged(nameof(this.Progress));
 		}
 
 		private int GetNextPageIndex(int start)
@@ -215,7 +217,25 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 				this.UpdateCurrentPage();
 			}
 		}
+		public double Progress
+		{
+			get
+			{
+				// Only count pages that are visible in the current state
+				var visiblePages = pages.Where(p => p.IsVisible(this.fieldValues)).ToList();
 
+				if (!visiblePages.Any())
+					return 0;
+
+				// Find the index of the current page among visible pages
+				int visibleIndex = visiblePages.IndexOf(this.CurrentPage);
+
+				// Progress is how many pages completed (including current), divided by total
+				// E.g. on first page: (1/total), on last page: 1.0
+				double progress = (visibleIndex + 1.0) / visiblePages.Count;
+				return Math.Min(1.0, Math.Max(0.0, progress));
+			}
+		}
 		private async Task Apply()
 		{
 			foreach (KycPage page in this.pages)
