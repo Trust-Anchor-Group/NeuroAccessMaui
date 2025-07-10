@@ -13,7 +13,7 @@
 				<Text lang="en">Basic Details</Text>
 				<Text lang="sv">Grundläggande uppgifter</Text>
 			</Label>
-			<Field id="firstName" type="text" label="First Name" mapping="FIRST_NAME">
+			<Field id="firstName" type="text" label="First Name" mapping="FIRST_NAME" required="true">
 				<Label>
 					<Text lang="en">First Name</Text>
 					<Text lang="sv">Förnamn</Text>
@@ -26,7 +26,7 @@
 					<Text lang="en">John</Text>
 					<Text lang="sv">Johan</Text>
 				</Placeholder>
-				<Validation required="true" minLength="2" maxLength="40">
+				<Validation minLength="2" maxLength="40">
 					<Regex>^[A-Za-z]+$</Regex>
 					<Message>
 						<Text lang="en">First name must contain only letters and be 2-40 characters long.</Text>
@@ -56,7 +56,7 @@
 				<Mapping key="BYEAR">
 					<Transform>year</Transform>
 				</Mapping>
-				<Validation required="true" min="1900-01-01" max="2020-01-01">
+				<Validation min="1900-01-01" max="2020-01-01">
 					<Message>
 						<Text lang="en">Enter a valid date between 1900 and 2020</Text>
 						<Text lang="sv">Ange ett giltigt datum mellan 1900 och 2020</Text>
@@ -80,7 +80,7 @@
 				<Mapping key="EMAIL">
 					<Transform>lowercase</Transform>
 				</Mapping>
-				<Validation required="true" minLength="5" maxLength="100">
+				<Validation minLength="5" maxLength="100">
 					<Regex>^[^@\s]+@[^@\s]+\.[^@\s]+$</Regex>
 					<Message>
 						<Text lang="en">Enter a valid email address</Text>
@@ -133,7 +133,7 @@
 					<Text lang="en">Example Corp</Text>
 					<Text lang="sv">Exempelföretag AB</Text>
 				</Placeholder>
-				<Validation required="true" minLength="2" maxLength="100">
+				<Validation minLength="2" maxLength="100">
 					<Message>
 						<Text lang="en">Organization name is required</Text>
 						<Text lang="sv">Organisationsnamn krävs</Text>
@@ -180,7 +180,7 @@
 						<Text lang="sv">Körkort</Text>
 					</Option>
 				</Options>
-				<Validation required="true">
+				<Validation>
 					<Message>
 						<Text lang="en">You must select a document type</Text>
 						<Text lang="sv">Du måste välja en dokumenttyp</Text>
@@ -212,7 +212,7 @@
 					<FieldRef>documentType</FieldRef>
 					<Equals>passport</Equals>
 				</Condition>
-				<Validation required="true" maxFileSizeMB="10">
+				<Validation maxFileSizeMB="10">
 					<FileTypes>
 						<FileType>.jpg</FileType>
 						<FileType>.jpeg</FileType>
@@ -244,7 +244,7 @@
 					<FieldRef>documentType</FieldRef>
 					<Equals>identityCard</Equals>
 				</Condition>
-				<Validation required="true" maxFileSizeMB="10">
+				<Validation maxFileSizeMB="10">
 					<FileTypes>
 						<FileType>.jpg</FileType>
 						<FileType>.jpeg</FileType>
@@ -276,7 +276,7 @@
 					<FieldRef>documentType</FieldRef>
 					<Equals>driversLicence</Equals>
 				</Condition>
-				<Validation required="true" maxFileSizeMB="10">
+				<Validation maxFileSizeMB="10">
 					<FileTypes>
 						<FileType>.jpg</FileType>
 						<FileType>.jpeg</FileType>
@@ -307,7 +307,7 @@
 					<FieldRef>documentType</FieldRef>
 					<Equals>driversLicence</Equals>
 				</Condition>
-				<Validation required="true" maxFileSizeMB="10">
+				<Validation maxFileSizeMB="10">
 					<FileTypes>
 						<FileType>.jpg</FileType>
 						<FileType>.jpeg</FileType>
