@@ -33,6 +33,7 @@
 						<Text lang="sv">Förnamnet måste innehålla endast bokstäver och vara 2-40 tecken långt.</Text>
 					</Message>
 				</Validation>
+				<Default>Maximiliam</Default>
 			</Field>
 			<Field id="dob" type="date" label="Date of Birth">
 				<Label>
@@ -87,8 +88,9 @@
 						<Text lang="sv">Ange en giltig e-postadress</Text>
 					</Message>
 				</Validation>
+				<Default>Maximiliam@gmail.com</Default>
 			</Field>
-			<Field id="isOrganization" type="boolean" label="Are you representing an organization?" mapping="IS_ORG">
+			<Field id="isOrganization" type="boolean" label="Are you representing an organization?" mapping="IS_ORG" Required="true">
 				<Label>
 					<Text lang="en">Are you representing an organization?</Text>
 					<Text lang="sv">Företräder du en organisation?</Text>
@@ -157,7 +159,7 @@
 				<Text lang="en">Document Type Selection</Text>
 				<Text lang="sv">Typ av identitetshandling</Text>
 			</Label>
-			<Field id="documentType" type="picker" label="Select Document Type" mapping="DOC_TYPE">
+			<Field id="documentType" type="picker" label="Select Document Type" mapping="DOC_TYPE" required="true">
 				<Label>
 					<Text lang="en">Select Document Type</Text>
 					<Text lang="sv">Välj ID-handling</Text>
