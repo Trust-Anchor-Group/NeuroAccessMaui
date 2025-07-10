@@ -9,7 +9,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 	{
 		public KycProcessPage(KycProcessViewModel ViewModel)
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 			this.BindingContext = ViewModel;
 		}
 	}

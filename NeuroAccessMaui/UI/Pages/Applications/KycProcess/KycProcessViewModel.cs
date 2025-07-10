@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,8 +16,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 	public partial class KycProcessViewModel : BaseViewModel
 	{
 		private readonly ApplyIdViewModel applyViewModel = new();
-		private List<KycPage> pages = [];
-		private readonly Dictionary<string, string?> fieldValues = [];
+		private ObservableCollection<KycPage> pages = new();
+		private readonly Dictionary<string, string?> fieldValues = new();
 		private int currentPageIndex = 0;
 		private string currentLang = "en";
 		private readonly HashSet<string> conditionControllerFields = new();
@@ -26,51 +27,56 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 		protected override async Task OnInitialize()
 		{
 			await base.OnInitialize();
-			await LoadProcess();
+			await this.LoadProcess();
 		}
 
 		private async Task LoadProcess()
 		{
-			this.pages = await KycProcessParser.LoadProcessAsync("NeuroAccessMaui.Resources.Raw.TestKYC.xml", this.currentLang);
+			// Load your model (must return ObservableCollection<KycPage>)
+			this.pages = new ObservableCollection<KycPage>(
+				await KycProcessParser.LoadProcessAsync("NeuroAccessMaui.Resources.Raw.TestKYC.xml", this.currentLang)
+			);
 
-			GatherConditionFields();
-			AttachFieldPropertyChangedHandlers();
+			// Attach model-level visibility change handlers
+			foreach (var page in this.pages)
+				page.InitVisibilityHandlers();
+
+			this.GatherConditionFields();
+			this.AttachFieldPropertyChangedHandlers();
 
 			this.currentPageIndex = 0;
-			UpdateCurrentPage();
+			this.UpdateCurrentPage();
 		}
 
-		// Gather all field IDs used in KycCondition for fast lookup
 		private void GatherConditionFields()
 		{
-			conditionControllerFields.Clear();
-			foreach (var page in pages)
+			this.conditionControllerFields.Clear();
+			foreach (KycPage page in this.pages)
 			{
 				if (page.Condition is not null)
-					conditionControllerFields.Add(page.Condition.FieldRef);
+					this.conditionControllerFields.Add(page.Condition.FieldRef);
 
-				foreach (var field in page.Fields)
+				foreach (KycField field in page.AllFields)
 					if (field.Condition is not null)
-						conditionControllerFields.Add(field.Condition.FieldRef);
+						this.conditionControllerFields.Add(field.Condition.FieldRef);
 
-				foreach (var section in page.Sections)
-					foreach (var field in section.Fields)
+				foreach (KycSection section in page.AllSections)
+					foreach (KycField field in section.AllFields)
 						if (field.Condition is not null)
-							conditionControllerFields.Add(field.Condition.FieldRef);
+							this.conditionControllerFields.Add(field.Condition.FieldRef);
 			}
 		}
 
-		// Attach PropertyChanged ONCE, never inside UpdateCurrentPage!
 		private void AttachFieldPropertyChangedHandlers()
 		{
-			foreach (var page in pages)
+			foreach (KycPage page in this.pages)
 			{
-				foreach (var field in page.Fields)
-					field.PropertyChanged += Field_PropertyChanged;
+				foreach (KycField field in page.AllFields)
+					field.PropertyChanged += this.Field_PropertyChanged;
 
-				foreach (var section in page.Sections)
-					foreach (var field in section.Fields)
-						field.PropertyChanged += Field_PropertyChanged;
+				foreach (KycSection section in page.AllSections)
+					foreach (KycField field in section.AllFields)
+						field.PropertyChanged += this.Field_PropertyChanged;
 			}
 		}
 
@@ -87,41 +93,24 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 		private bool hasCurrentPageDescription;
 
 		[ObservableProperty]
-		private List<KycField> directFields = new();
-
-		[ObservableProperty]
-		private List<KycSection> currentPageSections = new();
+		private ObservableCollection<KycSection> currentPageSections = new();
 
 		[ObservableProperty]
 		private bool hasSections;
 
 		[ObservableProperty]
 		private string? nextButtonText;
+
+		// Recompute visibility for all fields/sections in all pages
 		private void UpdateAllFieldVisibilities()
 		{
-			foreach (var page in pages)
-			{
-				foreach (var field in page.Fields)
-				{
-					bool newVisibility = field.Condition is null || field.Condition.Evaluate(fieldValues);
-					if (field.IsVisible != newVisibility)
-						field.IsVisible = newVisibility;
-				}
-				foreach (var section in page.Sections)
-				{
-					foreach (var field in section.Fields)
-					{
-						bool newVisibility = field.Condition is null || field.Condition.Evaluate(fieldValues);
-						if (field.IsVisible != newVisibility)
-							field.IsVisible = newVisibility;
-					}
-				}
-			}
+			foreach (KycPage page in this.pages)
+				page.UpdateAllVisibilities(this.fieldValues);
 		}
 
 		private void UpdateCurrentPage()
 		{
-			UpdateAllFieldVisibilities();
+			this.UpdateAllFieldVisibilities();
 
 			if (this.currentPageIndex >= this.pages.Count)
 				return;
@@ -138,16 +127,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 			this.CurrentPageDescription = page.Description?.Text;
 			this.HasCurrentPageDescription = !string.IsNullOrWhiteSpace(this.CurrentPageDescription);
 
-			// Direct fields
-			this.DirectFields = page.Fields.Where(f => f.IsVisible).ToList();
-
-			// Sections
-			this.CurrentPageSections = [.. page.Sections];
+			// **Bind directly to VisibleSections for the current page**
+			this.CurrentPageSections = page.VisibleSections;
 			this.HasSections = this.CurrentPageSections.Count > 0;
 
-
-			int nextIndex = GetNextPageIndex(this.currentPageIndex + 1);
-			this.NextButtonText = nextIndex >= this.pages.Count ? "Apply" : "Next";
+			int NextIndex = this.GetNextPageIndex(this.currentPageIndex + 1);
+			this.NextButtonText = NextIndex >= this.pages.Count ? "Apply" : "Next";
 		}
 
 		private int GetNextPageIndex(int start)
@@ -168,32 +153,36 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 
 		private async Task<bool> ValidateCurrentPage()
 		{
-			foreach (KycField field in this.DirectFields.Concat(this.CurrentPageSections.SelectMany(s => s.Fields)))
+			bool allValid = true;
+
+			// Validate all visible fields on this page and visible sections
+			foreach (KycField field in this.CurrentPage!.VisibleFields
+				.Concat(this.CurrentPageSections.SelectMany(s => s.VisibleFields)))
 			{
-				if (!field.Validate(out string error, this.currentLang))
-				{
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], error);
-					return false;
-				}
-				this.fieldValues[field.Id] = field.Value;
+				if (!field.Validate(this.currentLang))
+					allValid = false;
 			}
+			if (!allValid)
+			{
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], "Some fields are invalid.");
+				return false;
+			}
+			foreach (KycField? field in this.CurrentPage.VisibleFields.Concat(this.CurrentPageSections.SelectMany(s => s.VisibleFields)))
+				this.fieldValues[field.Id] = field.Value;
 			return true;
 		}
 
-		// The only place that triggers UpdateCurrentPage on value change!
 		private void Field_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			if (sender is KycField field && e.PropertyName == nameof(KycField.Value))
 			{
 				this.fieldValues[field.Id] = field.Value;
 
-				// Always update all visibilities, not just when it's a condition controller field
-				UpdateAllFieldVisibilities();
+				this.UpdateAllFieldVisibilities();
 
-				// Refresh page if any field affects page/section visibility or the field list itself
-				if (conditionControllerFields.Contains(field.Id))
+				if (this.conditionControllerFields.Contains(field.Id))
 				{
-					UpdateCurrentPage();
+					this.UpdateCurrentPage();
 				}
 			}
 		}
@@ -231,7 +220,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 		{
 			foreach (KycPage page in this.pages)
 			{
-				foreach (KycField field in page.Fields.Concat(page.Sections.SelectMany(s => s.Fields)))
+				foreach (KycField field in page.AllFields.Concat(page.AllSections.SelectMany(s => s.AllFields)))
 				{
 					field.MapToApplyModel(this.applyViewModel);
 				}

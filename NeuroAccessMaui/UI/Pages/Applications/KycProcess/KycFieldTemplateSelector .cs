@@ -17,14 +17,14 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 
 		protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
 		{
-			if (item is not KycField field) return TextFieldTemplate;
+			if (item is not KycField field) return this.TextFieldTemplate;
 			return field.Type switch
 			{
-				"date" => DateFieldTemplate,
-				"picker" => PickerFieldTemplate,
-				"boolean" => BooleanFieldTemplate,
+				"date" => this.DateFieldTemplate,
+				"picker" => this.PickerFieldTemplate,
+				"boolean" => this.BooleanFieldTemplate,
 				// Add more here
-				_ => TextFieldTemplate
+				_ => this.TextFieldTemplate
 			};
 		}
 	}
