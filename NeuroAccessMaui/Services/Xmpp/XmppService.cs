@@ -1103,13 +1103,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 				switch (newState)
 				{
 					case XmppState.StreamNegotiation:
-						streamNegotiation = true;
+						StreamNegotiation = true;
 						break;
 					case XmppState.StreamOpened:
-						streamOpened = true;
+						StreamOpened = true;
 						break;
 					case XmppState.StartingEncryption:
-						startingEncryption = true;
+						StartingEncryption = true;
 						break;
 					case XmppState.Authenticating:
 						Authenticating = true;
@@ -1117,7 +1117,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							TrySetResult(true);
 						break;
 					case XmppState.Registering:
-						registering = true;
+						Registering = true;
 						break;
 					case XmppState.Connected:
 						TrySetResult(true);
@@ -1136,26 +1136,26 @@ namespace NeuroAccessMaui.Services.Xmpp
 			try
 			{
 				if (string.IsNullOrEmpty(PasswordMethod))
-					client = new XmppClient(HostName, PortNumber, UserName, Password, LanguageCode, ApplicationAssembly, this.sniffer);
+					Client = new XmppClient(HostName, PortNumber, UserName, Password, LanguageCode, ApplicationAssembly, this.sniffer);
 				else
-					client = new XmppClient(HostName, PortNumber, UserName, Password, PasswordMethod, LanguageCode, ApplicationAssembly, this.sniffer);
+					Client = new XmppClient(HostName, PortNumber, UserName, Password, PasswordMethod, LanguageCode, ApplicationAssembly, this.sniffer);
 
 				if (Operation == ConnectOperation.ConnectAndCreateAccount)
 				{
 					if (!string.IsNullOrEmpty(ApiKey) && !string.IsNullOrEmpty(ApiSecret))
-						client.AllowRegistration(ApiKey, ApiSecret);
+						Client.AllowRegistration(ApiKey, ApiSecret);
 					else
-						client.AllowRegistration();
+						Client.AllowRegistration();
 				}
 
-				client.TrustServer = !IsIpAddress;
-				client.AllowCramMD5 = false;
-				client.AllowDigestMD5 = false;
-				client.AllowPlain = false;
-				client.AllowEncryption = true;
-				client.AllowScramSHA1 = true;
-				client.AllowScramSHA256 = true;
-				client.AllowQuickLogin = true;
+				Client.TrustServer = !IsIpAddress;
+				Client.AllowCramMD5 = false;
+				Client.AllowDigestMD5 = false;
+				Client.AllowPlain = false;
+				Client.AllowEncryption = true;
+				Client.AllowScramSHA1 = true;
+				Client.AllowScramSHA256 = true;
+				Client.AllowQuickLogin = true;
 
 				// Register handlers
 				Client.OnConnectionError += OnConnectionError;
@@ -1191,14 +1191,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 				{
 					// The connect operation finished before the state machine did,
 					// but we need to wait for state change events
-					succeeded = await tcs.Task;
+					Succeeded = await Tcs.Task;
 				}
 				else
 				{
 					// Timeout
-					isTimeout = true;
+					IsTimeout = true;
 					TrySetResult(false); // Attempt to signal timeout if not already completed
-					succeeded = false;
+					Succeeded = false;
 				}
 
 				// Call ConnectedFunc if successful
