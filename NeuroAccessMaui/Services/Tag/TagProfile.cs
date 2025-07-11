@@ -255,6 +255,8 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 			finally
 			{
+
+
 				this.loadingProperties = false;
 			}
 		}
