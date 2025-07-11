@@ -1047,89 +1047,92 @@ namespace NeuroAccessMaui.Services.Xmpp
 			int PortNumber, string UserName, string Password, string PasswordMethod, string LanguageCode, string ApiKey, string ApiSecret,
 			Assembly ApplicationAssembly, Func<XmppClient, Task> ConnectedFunc, ConnectOperation Operation)
 		{
-			TaskCompletionSource<bool> Connected = new();
-			bool Succeeded;
-			string? ErrorMessage = null;
-			bool StreamNegotiation = false;
-			bool StreamOpened = false;
-			bool StartingEncryption = false;
-			bool Authenticating = false;
-			bool Registering = false;
-			bool IsTimeout = false;
+			// Use TaskCompletionSource for single completion
+			var Tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+			// Flags for tracking progress and outcome
+			bool StreamNegotiation = false, StreamOpened = false, StartingEncryption = false, Authenticating = false, Registering = false, IsTimeout = false;
 			string? ConnectionError = null;
+			string? ErrorMessage = null;
 			string[]? Alternatives = null;
 
-			Task OnConnectionError(object _, Exception e)
-			{
-				//TODO: Handle stream error not authenticated
-				/* if(e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
-				if (e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException NotAuthor)
-				{
-					Go to page / open popup with info and actions
-				}
-				*/
-				if (e is ObjectDisposedException)
-					ConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
-				else if (e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
-				{
-					this.reconnectTimer?.Dispose();
-					this.reconnectTimer = null;
-				}
-				else if (e is Waher.Networking.XMPP.StanzaErrors.ConflictException ConflictInfo)
-					Alternatives = ConflictInfo.Alternatives;
-				else
-					ConnectionError = e.Message;
+			XmppClient? Client = null;
+			var Disposed = 0; // 0 = not disposed, 1 = disposing/disposing done
 
-				Connected.TrySetResult(false);
+			// Local guard function for tcs
+			void TrySetResult(bool result)
+			{
+				// Ensure only one completion and don't run during/after dispose
+				if (Interlocked.CompareExchange(ref Disposed, 0, 0) == 0)
+					Tcs.TrySetResult(result);
+			}
+
+			// Connection error event handler
+			Task OnConnectionError(object? _, Exception ex)
+			{
+				if (Interlocked.CompareExchange(ref Disposed, 0, 0) == 1)
+					return Task.CompletedTask; // Ignore after dispose
+
+				switch (ex)
+				{
+					case ObjectDisposedException:
+						ConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
+						break;
+					case Waher.Networking.XMPP.StreamErrors.NotAuthorizedException:
+						this.reconnectTimer?.Dispose();
+						this.reconnectTimer = null;
+						break;
+					case Waher.Networking.XMPP.StanzaErrors.ConflictException Conflict:
+						Alternatives = Conflict.Alternatives;
+						break;
+					default:
+						ConnectionError = ex.Message;
+						break;
+				}
+
+				TrySetResult(false);
 				return Task.CompletedTask;
 			}
 
-			async Task OnStateChanged(object _, XmppState newState)
+			// State change event handler
+			async Task OnStateChanged(object? _, XmppState newState)
 			{
+				if (Interlocked.CompareExchange(ref Disposed, 0, 0) == 1)
+					return;
+
 				switch (newState)
 				{
 					case XmppState.StreamNegotiation:
 						StreamNegotiation = true;
 						break;
-
 					case XmppState.StreamOpened:
 						StreamOpened = true;
 						break;
-
 					case XmppState.StartingEncryption:
 						StartingEncryption = true;
 						break;
-
 					case XmppState.Authenticating:
 						Authenticating = true;
-
 						if (Operation == ConnectOperation.Connect)
-							Connected.TrySetResult(true);
-
+							TrySetResult(true);
 						break;
-
 					case XmppState.Registering:
 						Registering = true;
 						break;
-
 					case XmppState.Connected:
-						Connected.TrySetResult(true);
+						TrySetResult(true);
 						break;
-
 					case XmppState.Offline:
-						Connected.TrySetResult(false);
+						TrySetResult(false);
 						break;
-
 					case XmppState.Error:
-						// When State = Error, wait for the OnConnectionError event to arrive also, as it holds more/direct information.
-						// Just in case it never would - set state error and Result.
+						// Wait a bit for error event, but still time out if nothing else happens
 						await Task.Delay(Constants.Timeouts.XmppConnect);
-						Connected.TrySetResult(false);
+						TrySetResult(false);
 						break;
 				}
 			}
 
-			XmppClient? Client = null;
 			try
 			{
 				if (string.IsNullOrEmpty(PasswordMethod))
@@ -1154,70 +1157,102 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Client.AllowScramSHA256 = true;
 				Client.AllowQuickLogin = true;
 
+				// Register handlers
 				Client.OnConnectionError += OnConnectionError;
 				Client.OnStateChanged += OnStateChanged;
 
-				await Client.Connect(IsIpAddress ? string.Empty : Domain);
+				// Begin connect
+				var ConnectTask = Client.Connect(IsIpAddress ? string.Empty : Domain);
 
-				void TimerCallback(object? _)
+				// Set up timeout with cancellation
+				using var Cts = new CancellationTokenSource(Constants.Timeouts.XmppConnect);
+
+				var CompletedTask = await Task.WhenAny(Tcs.Task, ConnectTask, Task.Delay(TimeSpan.FromSeconds(5), Cts.Token));
+				bool Succeeded = false;
+
+				if (CompletedTask == Tcs.Task)
 				{
+					Succeeded = Tcs.Task.Result;
+				}
+				else if (CompletedTask == ConnectTask)
+				{
+					// The connect operation finished before the state machine did,
+					// but we need to wait for state change events
+					Succeeded = await Tcs.Task;
+				}
+				else
+				{
+					// Timeout
 					IsTimeout = true;
-					Connected.TrySetResult(false);
+					TrySetResult(false); // Attempt to signal timeout if not already completed
+					Succeeded = false;
 				}
 
-				using Timer _ = new(TimerCallback, null, (int)Constants.Timeouts.XmppConnect.TotalMilliseconds, Timeout.Infinite);
-				Succeeded = await Connected.Task;
-
-				if (Succeeded && (ConnectedFunc is not null))
+				// Call ConnectedFunc if successful
+				if (Succeeded && ConnectedFunc is not null)
 					await ConnectedFunc(Client);
 
+				// Remove event handlers BEFORE disposal
+				Interlocked.Exchange(ref Disposed, 1);
 				Client.OnStateChanged -= OnStateChanged;
 				Client.OnConnectionError -= OnConnectionError;
+
+				await Client.DisposeAsync();
+				Client = null;
+
+				// Set error message if needed
+				if (!Succeeded && string.IsNullOrEmpty(ErrorMessage))
+				{
+					if (this.sniffer is not null)
+						System.Diagnostics.Debug.WriteLine(await this.sniffer.SnifferToTextAsync(), "Sniffer");
+
+					if (!StreamNegotiation || IsTimeout)
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.CantConnectTo), Domain];
+					else if (!StreamOpened)
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.DomainIsNotAValidOperator), Domain];
+					else if (!StartingEncryption)
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.DomainDoesNotFollowEncryptionPolicy), Domain];
+					else if (!Authenticating)
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToAuthenticateWith), Domain];
+					else if (!Registering)
+					{
+						if (!string.IsNullOrWhiteSpace(ConnectionError))
+							ErrorMessage = ConnectionError;
+						else
+							ErrorMessage = ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts), Domain];
+					}
+					else if (Operation == ConnectOperation.ConnectAndCreateAccount)
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UsernameNameAlreadyTaken), this.accountName ?? string.Empty];
+					else if (Operation == ConnectOperation.ConnectToAccount)
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword), this.accountName ?? string.Empty];
+					else
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain];
+				}
+
+				return (Succeeded, ErrorMessage, Alternatives);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object?>(nameof(ConnectOperation), Operation.ToString()));
-				Succeeded = false;
-				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain];
+				return (false, ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain], null);
 			}
 			finally
 			{
+				// Final fallback cleanup if not already disposed
 				if (Client is not null)
 				{
-					await Client.DisposeAsync();
-					Client = null;
+					try
+					{
+						Interlocked.Exchange(ref Disposed, 1);
+						Client.OnStateChanged -= OnStateChanged;
+						Client.OnConnectionError -= OnConnectionError;
+						await Client.DisposeAsync();
+						Client = null;
+						
+					}
+					catch { /* Swallow to avoid masking original exception */ }
 				}
 			}
-
-			if (!Succeeded && string.IsNullOrEmpty(ErrorMessage))
-			{
-				if (this.sniffer is not null)
-					System.Diagnostics.Debug.WriteLine(await this.sniffer.SnifferToTextAsync(), "Sniffer");
-
-				if (!StreamNegotiation || IsTimeout)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.CantConnectTo), Domain];
-				else if (!StreamOpened)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.DomainIsNotAValidOperator), Domain];
-				else if (!StartingEncryption)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.DomainDoesNotFollowEncryptionPolicy), Domain];
-				else if (!Authenticating)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToAuthenticateWith), Domain];
-				else if (!Registering)
-				{
-					if (!string.IsNullOrWhiteSpace(ConnectionError))
-						ErrorMessage = ConnectionError;
-					else
-						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts), Domain];
-				}
-				else if (Operation == ConnectOperation.ConnectAndCreateAccount)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UsernameNameAlreadyTaken), this.accountName ?? string.Empty];
-				else if (Operation == ConnectOperation.ConnectToAccount)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword), this.accountName ?? string.Empty];
-				else
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain];
-			}
-
-			return (Succeeded, ErrorMessage, Alternatives);
 		}
 
 		private void ReconnectTimer_Tick(object? _)
