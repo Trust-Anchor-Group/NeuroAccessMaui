@@ -1187,19 +1187,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 					TrySetResult(false); // Attempt to signal timeout if not already completed
 					Succeeded = false;
 				}
-				else if (completedTask == connectTask)
-				{
-					// The connect operation finished before the state machine did,
-					// but we need to wait for state change events
-					Succeeded = await Tcs.Task;
-				}
-				else
-				{
-					// Timeout
-					IsTimeout = true;
-					TrySetResult(false); // Attempt to signal timeout if not already completed
-					Succeeded = false;
-				}
 
 				// Call ConnectedFunc if successful
 				if (Succeeded && ConnectedFunc is not null)
