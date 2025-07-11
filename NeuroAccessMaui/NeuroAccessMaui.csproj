@@ -315,7 +315,7 @@
 		<PackageReference Include="Waher.Content.Markdown" Version="6.1.1" />
 		<PackageReference Include="Waher.Content.QR" Version="2.1.2" />
 		<PackageReference Include="Waher.Content.Xml" Version="3.1.2" />
-		<PackageReference Include="Waher.Events" Version="1.4.3" />
+		<PackageReference Include="Waher.Events" Version="1.4.4" />
 		<PackageReference Include="Waher.Events.Files" Version="1.2.0" />
 		<PackageReference Include="Waher.Events.Filter" Version="1.1.0" />
 		<PackageReference Include="Waher.Events.Persistence" Version="1.2.1" />
@@ -327,7 +327,7 @@
 		<PackageReference Include="Waher.Networking.XMPP" Version="4.1.5" />
 		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="3.1.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="4.2.2" />
-		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.5.1" />
+		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.5.2" />
 		<PackageReference Include="Waher.Networking.XMPP.Control" Version="4.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Geo" Version="1.0.1" />
 		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.2.6" />
@@ -350,7 +350,7 @@
 		<PackageReference Include="Waher.Runtime.Settings" Version="1.2.0" />
 		<PackageReference Include="Waher.Runtime.Temporary" Version="1.1.0" />
 		<PackageReference Include="Waher.Runtime.Text" Version="1.2.0" />
-		<PackageReference Include="Waher.Script" Version="2.13.0" />
+		<PackageReference Include="Waher.Script" Version="2.13.1" />
 		<PackageReference Include="Waher.Script.Content" Version="2.2.3" />
 		<PackageReference Include="Waher.Security" Version="1.0.13" />
 		<PackageReference Include="Waher.Security.JWS" Version="1.1.4" />
