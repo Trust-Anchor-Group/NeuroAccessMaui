@@ -107,7 +107,7 @@
 			</Border>
 			<controls:TextButton Command="{Binding CreateAccountCommand}"
 								 Style="{DynamicResource FilledTextButton}"
-								 LabelData="{l:Localize Continue}" />
+								 LabelData="{Binding LocalizedContinueText}" />
 		</VerticalStackLayout>
 	</Grid>
 </base:BaseRegistrationView>

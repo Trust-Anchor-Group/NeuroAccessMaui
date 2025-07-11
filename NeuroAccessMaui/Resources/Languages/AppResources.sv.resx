@@ -2867,4 +2867,7 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
     <value>Språket har ändrats. Starta om appen för att säkerställa att alla ändringar tillämpas.</value>
   </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Fortsätt ({0})</value>
+  </data>
 </root>

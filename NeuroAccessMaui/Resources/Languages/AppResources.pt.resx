@@ -2867,4 +2867,7 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
     <value>O idioma foi alterado. Por favor, reinicie o aplicativo para garantir que todas as alterações sejam aplicadas.</value>
   </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Continuar ({0})</value>
+  </data>
 </root>
