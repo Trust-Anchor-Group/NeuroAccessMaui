@@ -23,6 +23,7 @@
 															ProtectedTemplate="{StaticResource ProtectedParameterTemplate}"
 															CalcTemplate="{StaticResource CalcParameterReadOnlyTemplate}"
 															ContractReferenceTemplate="{StaticResource ContractReferenceParameterReadOnlyTemplate}"
+															GeoTemplate="{StaticResource GeoParameterReadOnlyTemplate}"
 															DefaultTemplate="{StaticResource DefaultParameterReadOnlyTemplate}" />
 	</ContentView.Resources>
 
