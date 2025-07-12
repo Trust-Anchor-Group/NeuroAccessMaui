@@ -660,10 +660,10 @@
     <value>A temporary OTP code has been used. The application will stop working in about a week. You'll have to reinstall the application to use it again.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Enter new pin</value>
+    <value>Create new PIN</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
-    <value>Confirm pin</value>
+    <value>Confirm PIN</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
     <value>Create PIN</value>

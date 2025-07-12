@@ -261,8 +261,8 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Currently selected theme.
 		/// </summary>
-		[DefaultValueNull]
-		public AppTheme? Theme { get; set; }
+		[DefaultValue(AppTheme.Unspecified)]
+		public AppTheme Theme { get; set; }
 
 		/// <summary>
 		/// How the user authenticates itself with the App.

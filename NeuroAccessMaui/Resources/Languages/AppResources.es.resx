@@ -660,10 +660,10 @@
     <value>Se ha utilizado un código OTP temporal. La aplicación dejará de funcionar en aproximadamente una semana. Tendrás que volver a instalar la aplicación para volver a utilizarla.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Introduzca un nuevo pin</value>
+    <value>Crear nuevo PIN</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
-    <value>Confirmar pin</value>
+    <value>Confirmar PIN</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
     <value>Crear PIN</value>
