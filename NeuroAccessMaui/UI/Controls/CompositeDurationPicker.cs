@@ -246,7 +246,7 @@ namespace NeuroAccessMaui.UI.Controls
                Style = AppStyles.RegularCompositeEntry,
                Margin = 0,
                Padding = 0,
-				   EntryData = (Value == "0") ? "" : Value
+			   EntryData = (Value == "0") ? "" : Value
 			};
 
          // Add the Unit Label to the left of the CompositeEntry
