@@ -35,7 +35,7 @@
 				</Validation>
 				<Default>Maximiliam</Default>
 			</Field>
-			<Field id="dob" type="date" label="Date of Birth">
+			<Field id="dob" type="date" label="Date of Birth" required="true">
 				<Label>
 					<Text lang="en">Date of Birth</Text>
 					<Text lang="sv">Födelsedatum</Text>
@@ -44,10 +44,6 @@
 					<Text lang="en">Use the format YYYY-MM-DD</Text>
 					<Text lang="sv">Använd formatet ÅÅÅÅ-MM-DD</Text>
 				</Hint>
-				<Placeholder>
-					<Text lang="en">1990-01-31</Text>
-					<Text lang="sv">1990-01-31</Text>
-				</Placeholder>
 				<Mapping key="BDAY">
 					<Transform>day</Transform>
 				</Mapping>
@@ -88,6 +84,10 @@
 						<Text lang="sv">Ange en giltig e-postadress</Text>
 					</Message>
 				</Validation>
+				<Condition>
+					<FieldRef>isOrganization</FieldRef>
+					<Equals>true</Equals>
+				</Condition>
 				<Default>Maximiliam@gmail.com</Default>
 			</Field>
 			<Field id="isOrganization" type="boolean" label="Are you representing an organization?" mapping="IS_ORG" Required="true">
