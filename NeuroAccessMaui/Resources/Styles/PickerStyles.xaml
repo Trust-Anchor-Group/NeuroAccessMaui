@@ -69,38 +69,14 @@
 	<!-- CompositePicker style -->
 	<Style x:Key="RegularCompositePicker"
 		   TargetType="controls:CompositePicker"
-		   ApplyToDerivedTypes="True">
+		   ApplyToDerivedTypes="True"
+		   BaseResourceKey="BaseCompositeInputView">
 		<Setter Property="TextColor"
 				Value="{DynamicResource InputFieldsContentPrimary}" />
 		<Setter Property="PickerStyle"
 				Value="{DynamicResource RegularCompositePickerPicker}" />
 		<Setter Property="LabelStyle"
 				Value="{DynamicResource RegularCompositePickerLabel}" />
-		<Setter Property="ValidationLabelStyle"
-				Value="{DynamicResource RegularCompositeInputViewLabel}" />
-		<Setter Property="ValidationColor"
-				Value="{DynamicResource TnPDangerbgWL}" />
-		<Setter Property="BorderBackground"
-				Value="{DynamicResource InputFieldsSurfaceBackgroundActive}" />
-		<Setter Property="BorderStroke"
-				Value="{DynamicResource InputFieldsSurfaceStroke}" />
-		<Setter Property="BorderShadow"
-				Value="{x:Null}" />
-		<Setter Property="BorderStrokeShape">
-			<Setter.Value>
-				<RoundRectangle CornerRadius="8" />
-			</Setter.Value>
-		</Setter>
-		<Style.Triggers>
-			<Trigger TargetType="controls:CompositePicker"
-					 Property="IsValid"
-					 Value="False">
-				<Setter Property="TextColor"
-						Value="{DynamicResource InputFieldsContentDangerv500}" />
-				<Setter Property="BorderStroke"
-						Value="{DynamicResource InputFieldsContentDangerv500}" />
-			</Trigger>
-		</Style.Triggers>
 	</Style>
 
 </ResourceDictionary>
