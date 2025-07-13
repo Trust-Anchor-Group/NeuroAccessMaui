@@ -11,218 +11,215 @@ using NeuroAccessMaui.Services.Kyc.Models;
 
 namespace NeuroAccessMaui.Services.Kyc
 {
+	/// <summary>
+	/// Parses an XML-described KYC process into view-model objects.
+	/// </summary>
 	public static class KycProcessParser
 	{
 		/// <summary>
-		/// Loads KYC process pages from an XML resource.
+		/// Loads and parses the KYC pages from an embedded XML resource.
 		/// </summary>
-		public static async Task<ObservableCollection<KycPage>> LoadProcessAsync(string resource, string? lang = null)
+		public static async Task<KycProcess> LoadProcessAsync(string resource, string? lang = null)
 		{
-			string fileName = GetFileName(resource);
-			using Stream stream = await FileSystem.OpenAppPackageFileAsync(fileName);
-			XDocument doc = XDocument.Load(stream);
-			var pages = new ObservableCollection<KycPage>();
+			var process = new KycProcess();
+			var fileName = GetFileName(resource);
+			using var stream = await FileSystem.OpenAppPackageFileAsync(fileName);
+			var doc = XDocument.Load(stream);
 
-			foreach (XElement pageEl in doc.Root?.Elements("Page") ?? Enumerable.Empty<XElement>())
+			foreach (var pageEl in doc.Root?.Elements("Page") ?? Enumerable.Empty<XElement>())
 			{
 				var page = new KycPage
 				{
 					Id = (string?)pageEl.Attribute("id") ?? string.Empty,
-					Title = ParseLocalizedText(pageEl.Element("Title")) ?? ParseLegacyString(pageEl.Attribute("title")),
+					Title = ParseLocalizedText(pageEl.Element("Title"))
+							?? ParseLegacyText(pageEl.Attribute("title"), lang),
 					Description = ParseLocalizedText(pageEl.Element("Description")),
 					Condition = ParseCondition(pageEl.Element("Condition"))
 				};
 
-				// Fields directly under <Page>
-				var allFields = new ObservableCollection<KycField>();
-				foreach (XElement fieldEl in pageEl.Elements("Field"))
-				{
-					allFields.Add(ParseField(fieldEl));
-				}
-				page.AllFields = allFields;
-				page.VisibleFields = new ObservableCollection<KycField>(allFields.Where(f => f.IsVisible));
+				// Fields
+				foreach (var fieldEl in pageEl.Elements("Field"))
+					page.AllFields.Add(ParseField(fieldEl, lang));
 
 				// Sections
-				var allSections = new ObservableCollection<KycSection>();
-				foreach (XElement sectionEl in pageEl.Elements("Section"))
+				foreach (var sectionEl in pageEl.Elements("Section"))
 				{
 					var section = new KycSection
 					{
-						Label = ParseLocalizedText(sectionEl.Element("Label")) ?? ParseLegacyString(sectionEl.Attribute("label")),
+						Label = ParseLocalizedText(sectionEl.Element("Label"))
+							?? ParseLegacyText(sectionEl.Attribute("label"), lang),
 						Description = ParseLocalizedText(sectionEl.Element("Description"))
 					};
 
-					var sectionFields = new ObservableCollection<KycField>();
-					foreach (XElement fieldEl in sectionEl.Elements("Field"))
-					{
-						sectionFields.Add(ParseField(fieldEl));
-					}
-					section.AllFields = sectionFields;
-					section.VisibleFields = new ObservableCollection<KycField>(sectionFields.Where(f => f.IsVisible));
-					allSections.Add(section);
-				}
-				page.AllSections = allSections;
-				page.VisibleSections = new ObservableCollection<KycSection>(allSections.Where(s => s.VisibleFields.Count > 0));
+					foreach (var fieldEl in sectionEl.Elements("Field"))
+						section.AllFields.Add(ParseField(fieldEl, lang));
 
-				pages.Add(page);
+					page.AllSections.Add(section);
+				}
+
+				process.Pages.Add(page);
 			}
 
-			// Set up IsVisible and handlers for all fields/sections
-			foreach (var page in pages)
-				page.InitVisibilityHandlers();
+			// (Optional) Initialize model listeners for field values
+			process.Initialize();
 
-			return pages;
+			return process;
 		}
 
 		private static string GetFileName(string resource)
 		{
-			int index = resource.LastIndexOf("Raw.", StringComparison.OrdinalIgnoreCase);
-			return index >= 0 ? resource[(index + 4)..] : resource;
+			var idx = resource.LastIndexOf("Raw.", StringComparison.OrdinalIgnoreCase);
+			return idx >= 0 ? resource[(idx + 4)..] : resource;
 		}
 
-		private static KycField ParseField(XElement fieldEl)
+		private static KycField ParseField(XElement el, string? lang)
 		{
+			// Basic attributes
+			var typeAttr = (string?)el.Attribute("type") ?? "text";
 			var field = new KycField
 			{
-				Id = (string?)fieldEl.Attribute("id") ?? string.Empty,
-				Type = (string?)fieldEl.Attribute("type") ?? "text",
-				Required = (bool?)fieldEl.Attribute("required") ?? false,
-				Label = ParseLocalizedText(fieldEl.Element("Label")) ?? ParseLegacyString(fieldEl.Attribute("label")),
-				Placeholder = ParseLocalizedText(fieldEl.Element("Placeholder")),
-				Hint = ParseLocalizedText(fieldEl.Element("Hint")),
-				Description = ParseLocalizedText(fieldEl.Element("Description")),
-				SpecialType = (string?)fieldEl.Attribute("specialType"),
-				Condition = ParseCondition(fieldEl.Element("Condition"))
-
+				Id = (string?)el.Attribute("id") ?? string.Empty,
+				FieldType = Enum.TryParse<FieldType>(typeAttr, true, out var ft) ? ft : FieldType.Text,
+				Required = (bool?)el.Attribute("required") ?? false,
+				Label = ParseLocalizedText(el.Element("Label"))
+						?? ParseLegacyText(el.Attribute("label"), lang),
+				Placeholder = ParseLocalizedText(el.Element("Placeholder")),
+				Hint = ParseLocalizedText(el.Element("Hint")),
+				Description = ParseLocalizedText(el.Element("Description")),
+				SpecialType = (string?)el.Attribute("specialType")
 			};
-			foreach (var ruleEl in fieldEl.Elements("ValidationRule"))
+			field.Condition = ParseCondition(el.Element("Condition"));
+
+			// Validation rules (<ValidationRule> or <Validation>) => IKycRule
+			void TryAddLengthRules(XElement ruleEl)
 			{
-				var rule = new KycValidationRule
+				int? min = null, max = null;
+				if (int.TryParse((string?)ruleEl.Attribute("minLength"), out var minVal)) min = minVal;
+				if (int.TryParse((string?)ruleEl.Attribute("maxLength"), out var maxVal)) max = maxVal;
+				if (min.HasValue || max.HasValue)
 				{
-					MinLength = (int?)ruleEl.Attribute("minLength"),
-					MaxLength = (int?)ruleEl.Attribute("maxLength"),
-					RegexPattern = ruleEl.Element("Regex")?.Value?.Trim(),
-					Message = ParseLocalizedText(ruleEl.Element("Message")),
-				};
-
-				string? min = (string?)ruleEl.Attribute("min");
-				string? max = (string?)ruleEl.Attribute("max");
-				if (DateTime.TryParse(min, out DateTime minDate))
-					rule.MinDate = minDate;
-				if (DateTime.TryParse(max, out DateTime maxDate))
-					rule.MaxDate = maxDate;
-
-				field.ValidationRules.Add(rule);
+					var msg = ParseLocalizedText(ruleEl.Element("Message"))?.Get(lang);
+					field.AddRule(new LengthRule(min, max, msg));
+				}
 			}
 
-			// LEGACY: Convert single <Validation> node to ValidationRule if present
-			var legacyValidation = fieldEl.Element("Validation");
-			if (legacyValidation != null)
+			void TryAddRegexRule(XElement ruleEl)
 			{
-				var legacyRule = new KycValidationRule
+				var pattern = ruleEl.Element("Regex")?.Value?.Trim();
+				if (!string.IsNullOrEmpty(pattern))
 				{
-					MinLength = (int?)legacyValidation.Attribute("minLength"),
-					MaxLength = (int?)legacyValidation.Attribute("maxLength"),
-					RegexPattern = legacyValidation.Element("Regex")?.Value?.Trim(),
-					Message = ParseLocalizedText(legacyValidation.Element("Message")),
-				};
-				string? min = (string?)legacyValidation.Attribute("min");
-				string? max = (string?)legacyValidation.Attribute("max");
-				if (DateTime.TryParse(min, out DateTime minDate))
-					legacyRule.MinDate = minDate;
-				if (DateTime.TryParse(max, out DateTime maxDate))
-					legacyRule.MaxDate = maxDate;
-				field.ValidationRules.Add(legacyRule);
+					var msg = ParseLocalizedText(ruleEl.Element("Message"))?.Get(lang);
+					field.AddRule(new RegexRule(pattern, msg));
+				}
 			}
-			// Parse mappings (multiple supported)
-			foreach (XElement mappingEl in fieldEl.Elements("Mapping"))
+
+			void TryAddDateRangeRule(XElement ruleEl)
+			{
+				DateTime? dmin = null, dmax = null;
+				if (DateTime.TryParse((string?)ruleEl.Attribute("min"), out var dminVal)) dmin = dminVal;
+				if (DateTime.TryParse((string?)ruleEl.Attribute("max"), out var dmaxVal)) dmax = dmaxVal;
+				if (dmin.HasValue || dmax.HasValue)
+				{
+					var msg = ParseLocalizedText(ruleEl.Element("Message"))?.Get(lang);
+					field.AddRule(new DateRangeRule(dmin, dmax, msg));
+				}
+			}
+
+			// <ValidationRule> elements
+			foreach (var vr in el.Elements("ValidationRule"))
+			{
+				TryAddLengthRules(vr);
+				TryAddRegexRule(vr);
+				TryAddDateRangeRule(vr);
+			}
+			// legacy <Validation>
+			if (el.Element("Validation") is XElement legacy)
+			{
+				TryAddLengthRules(legacy);
+				TryAddRegexRule(legacy);
+				TryAddDateRangeRule(legacy);
+			}
+
+			// Mappings
+			foreach (var map in el.Elements("Mapping"))
 			{
 				field.Mappings.Add(new KycMapping
 				{
-					Key = (string?)mappingEl.Attribute("key") ?? string.Empty,
-					Transform = mappingEl.Element("Transform")?.Value?.Trim()
+					Key = (string?)map.Attribute("key") ?? string.Empty,
+					Transform = map.Element("Transform")?.Value?.Trim()
 				});
 			}
-			// Legacy attribute for mapping
-			if (fieldEl.Attribute("mapping") is XAttribute mappingAttr)
-			{
-				field.Mappings.Add(new KycMapping { Key = mappingAttr.Value });
-			}
+			// legacy attribute mapping
+			if (el.Attribute("mapping") is XAttribute mapAttr)
+				field.Mappings.Add(new KycMapping { Key = mapAttr.Value });
 
-			// Parse options for pickers
-			XElement optionsEl = fieldEl.Element("Options");
-			if (optionsEl is not null)
+			// Options for pickers
+			if (el.Element("Options") is XElement opts)
 			{
-				foreach (XElement optionEl in optionsEl.Elements("Option"))
+				foreach (var opt in opts.Elements("Option"))
 				{
-					string value = (string?)optionEl.Attribute("value") ?? string.Empty;
-					KycLocalizedText label = ParseLocalizedText(optionEl) ?? new KycLocalizedText(value, "en");
-					field.Options.Add(new KycOption(value, label));
+					var val = (string?)opt.Attribute("value") ?? string.Empty;
+					var lbl = ParseLocalizedText(opt) ?? new KycLocalizedText();
+					field.Options.Add(new KycOption(val, lbl));
 				}
 			}
 
-			// Default value handling
-			string? @default = fieldEl.Element("Default")?.Value?.Trim();
-			if (@default is not null)
+			// Default value
+			var def = el.Element("Default")?.Value?.Trim();
+			if (!string.IsNullOrEmpty(def))
 			{
-				switch (field.Type)
+				switch (field.FieldType)
 				{
-					case "date":
-						if (@default == "now()")
+					case FieldType.Date:
+						if (def.Equals("now()", StringComparison.OrdinalIgnoreCase))
 							field.DateValue = DateTime.Today;
-						else if (DateTime.TryParse(@default, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime d))
-							field.DateValue = d;
+						else if (DateTime.TryParse(def, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt))
+							field.DateValue = dt;
 						break;
-					case "boolean":
-						if (bool.TryParse(@default, out bool b))
-							field.BoolValue = b;
+					case FieldType.Boolean:
+						if (bool.TryParse(def, out var bv))
+							field.BoolValue = bv;
 						break;
 					default:
-						field.Value = @default;
+						field.Value = def;
 						break;
 				}
 			}
+
 			return field;
 		}
 
-		private static KycCondition? ParseCondition(XElement? conditionEl)
+		private static KycCondition? ParseCondition(XElement? cond)
 		{
-			if (conditionEl is null)
-				return null;
+			if (cond == null) return null;
 			return new KycCondition
 			{
-				FieldRef = conditionEl.Element("FieldRef")?.Value ?? string.Empty,
-				Equals = conditionEl.Element("Equals")?.Value
+				FieldRef = cond.Element("FieldRef")?.Value ?? string.Empty,
+				Equals = cond.Element("Equals")?.Value
 			};
 		}
 
 		private static KycLocalizedText? ParseLocalizedText(XElement? parent)
 		{
-			if (parent is null)
-				return null;
-
-			KycLocalizedText localized = new KycLocalizedText();
-			foreach (XElement textEl in parent.Elements("Text"))
+			if (parent == null) return null;
+			var loc = new KycLocalizedText();
+			foreach (var txt in parent.Elements("Text"))
 			{
-				string lang = (string?)textEl.Attribute("lang") ?? "en";
-				string? value = textEl.Value?.Trim();
-				if (!string.IsNullOrEmpty(value))
-					localized.Add(lang, value);
+				var l = (string?)txt.Attribute("lang") ?? "en";
+				var v = txt.Value?.Trim();
+				if (!string.IsNullOrEmpty(v)) loc.Add(l, v);
 			}
-			if (!localized.HasAny)
-			{
-				string? val = parent.Value?.Trim();
-				if (!string.IsNullOrEmpty(val))
-					localized.Add("en", val);
-			}
-			return localized.HasAny ? localized : null;
+			if (!loc.HasAny && !string.IsNullOrEmpty(parent.Value?.Trim()))
+				loc.Add("en", parent.Value.Trim());
+			return loc.HasAny ? loc : null;
 		}
 
-		private static KycLocalizedText? ParseLegacyString(XAttribute? attr)
+		private static KycLocalizedText? ParseLegacyText(XAttribute? attr, string? lang)
 		{
-			if (attr is null)
-				return null;
-			return new KycLocalizedText(attr.Value, "en");
+			if (attr == null) return null;
+			var loc = new KycLocalizedText();
+			loc.Add(lang ?? "en", attr.Value);
+			return loc;
 		}
 	}
 }
