@@ -137,51 +137,30 @@
 		</ResourceDictionary>
 	</ContentPage.Resources>
 
-
 	<Grid Padding="0"
 		  Margin="0"
 		  RowDefinitions="Auto,*,Auto"
 		  Background="{DynamicResource SurfaceElevation1WL}">
-		<!--  Page title  -->
-
-
-		<!--  Form content  -->
+		<!-- Page header -->
 		<ScrollView Grid.Row="1"
-					Padding="16">
-
-			<VerticalStackLayout Spacing="4"
-								 VerticalOptions="Center">
-				<Label Grid.Row="0"
-					   Style="{DynamicResource PageTitleLabel}"
+					Padding="16" VerticalOptions="Center">
+			<VerticalStackLayout Spacing="4">
+				<Label Style="{DynamicResource PageTitleLabel}"
 					   Text="{Binding CurrentPageTitle}" />
-				<!--  Page description  -->
 				<Label IsVisible="{Binding HasCurrentPageDescription}"
 					   Text="{Binding CurrentPageDescription}"
 					   Margin="0,0,0,16" />
 
-				<!--  Direct fields (no section)  -->
-				<CollectionView Margin="0,0,0,8"
-								IsVisible="{Binding CurrentPage.VisibleFields.Count, Converter={converters:GreaterThanZero}}"
-								ItemSizingStrategy="MeasureAllItems"
-								ItemTemplate="{StaticResource KycFieldTemplateSelector}"
-								ItemsSource="{Binding CurrentPage.VisibleFields}"
-								SelectionMode="None">
-					<CollectionView.ItemsLayout>
-						<LinearItemsLayout Orientation="Vertical"
-										   ItemSpacing="8" />
-					</CollectionView.ItemsLayout>
-				</CollectionView>
+				<!-- Direct fields -->
+				<StackLayout IsVisible="{Binding CurrentPage.VisibleFields.Count, Converter={converters:GreaterThanZero}}"
+							 Spacing="8"
+							 BindableLayout.ItemsSource="{Binding CurrentPage.VisibleFields}"
+							 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}" />
 
-				<!--  Sections  -->
-				<controls:DynamicCollectionView x:Name="SectionsCollectionView"
-												ItemSizingStrategy="MeasureAllItems"
-												OriginalItemsSource="{Binding CurrentPageSections}"
-												SelectionMode="None">
-					<controls:DynamicCollectionView.ItemsLayout>
-						<LinearItemsLayout Orientation="Vertical"
-										   ItemSpacing="24" />
-					</controls:DynamicCollectionView.ItemsLayout>
-					<controls:DynamicCollectionView.ItemTemplate>
+				<!-- Sections -->
+				<StackLayout Spacing="24"
+							 BindableLayout.ItemsSource="{Binding CurrentPage.VisibleSections}">
+					<BindableLayout.ItemTemplate>
 						<DataTemplate x:DataType="models:KycSection">
 							<VerticalStackLayout Spacing="8">
 								<Label FontAttributes="Bold"
@@ -192,25 +171,18 @@
 									   FontSize="Medium"
 									   IsVisible="{Binding Description, Converter={mct:IsNotNullConverter}}"
 									   Text="{Binding Description }" />
-								<CollectionView ItemSizingStrategy="MeasureAllItems"
-												ItemTemplate="{StaticResource KycFieldTemplateSelector}"
-												ItemsSource="{Binding AllFields}"
-												SelectionMode="None">
-									<CollectionView.ItemsLayout>
-										<LinearItemsLayout Orientation="Vertical"
-														   ItemSpacing="16" />
-									</CollectionView.ItemsLayout>
-								</CollectionView>
+								<VerticalStackLayout BindableLayout.ItemsSource="{Binding VisibleFields}"
+													 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}"
+													 Spacing="16" />
 							</VerticalStackLayout>
 						</DataTemplate>
-					</controls:DynamicCollectionView.ItemTemplate>
-				</controls:DynamicCollectionView>
+					</BindableLayout.ItemTemplate>
+				</StackLayout>
 			</VerticalStackLayout>
 		</ScrollView>
 
-		<!--  Navigation bar  -->
+		<!-- Navigation bar -->
 		<Border Style="{DynamicResource BottomBarBorder}"
-				Scale="1"
 				Grid.Row="2"
 				Padding="16">
 			<VerticalStackLayout Spacing="8">

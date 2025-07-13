@@ -19,12 +19,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
 		protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
 		{
 			if (item is not KycField field) return this.TextFieldTemplate;
-			return field.Type switch
+			return field.FieldType switch
 			{
-				"date" => this.DateFieldTemplate,
-				"picker" => this.PickerFieldTemplate,
-				"boolean" => this.BooleanFieldTemplate,
-				"file" => this.FileUploadFieldTemplate,
+				FieldType.Date => this.DateFieldTemplate,
+				FieldType.Picker => this.PickerFieldTemplate,
+				FieldType.Boolean => this.BooleanFieldTemplate,
+				FieldType.File => this.FileUploadFieldTemplate,
 				// Add more here
 				_ => this.TextFieldTemplate
 			};
