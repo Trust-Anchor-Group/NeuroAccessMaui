@@ -2882,6 +2882,9 @@
   <data name="LastUpdatedFormat" xml:space="preserve">
     <value>Última actualización: {0}</value>
   </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Continuar ({0})</value>
+  </data>
   <data name="MyAccount" xml:space="preserve">
     <value>Mi cuenta</value>
   </data>

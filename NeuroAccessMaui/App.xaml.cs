@@ -69,7 +69,6 @@ using Waher.Security.JWS;
 using Waher.Security.JWT;
 using Waher.Security.LoginMonitor;
 using Waher.Things;
-using static Microsoft.Maui.Controls.Device;
 
 namespace NeuroAccessMaui
 {
@@ -883,7 +882,7 @@ namespace NeuroAccessMaui
 		{
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				if (ServiceRef.TagProfile.Step != RegistrationStep.Complete)
+				if (ServiceRef.TagProfile.Step != RegistrationStep.Complete && !url.StartsWith("obinfo", StringComparison.OrdinalIgnoreCase))
 				{
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],

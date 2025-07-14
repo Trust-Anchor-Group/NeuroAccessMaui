@@ -10,8 +10,46 @@ using Waher.Networking.XMPP;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
-	public partial class NameEntryViewModel : BaseRegistrationViewModel
+	public partial class NameEntryViewModel : BaseRegistrationViewModel, IDisposable
 	{
+		private bool disposed;
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (this.disposed)
+				return;
+
+			if (disposing)
+			{
+				// Free managed objects
+				this.cooldownCts?.Cancel();
+				this.cooldownCts?.Dispose();
+				this.cooldownCts = null;
+
+				// Call base class dispose if needed
+				base.OnDispose().GetAwaiter().GetResult(); // Or base.Dispose() if base class is IDisposable
+			}
+
+			// Free unmanaged objects here if you add any in the future
+
+			this.disposed = true;
+		}
+
+		private CancellationTokenSource? cooldownCts;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsInCooldown))]
+		[NotifyPropertyChangedFor(nameof(LocalizedContinueText))]
+		private int cooldownSecondsLeft;
+
+		public bool IsInCooldown => this.CooldownSecondsLeft > 0;
+
+
 		public NameEntryViewModel()
 			  : base(RegistrationStep.NameEntry)
 		{
@@ -38,6 +76,11 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		protected override async Task OnDispose()
 		{
 			ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
+
+			this.cooldownCts?.Cancel();
+			this.cooldownCts?.Dispose();
+			this.cooldownCts = null;
+
 
 			await base.OnDispose();
 		}
@@ -80,12 +123,52 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[ObservableProperty]
 		private string? localizedValidationMessage;
 
+		public string LocalizedContinueText
+		{
+			get
+			{
+				if (this.CooldownSecondsLeft > 0)
+					return ServiceRef.Localizer[nameof(AppResources.ContinueSecondsFormat), this.CooldownSecondsLeft];
+
+				return ServiceRef.Localizer[nameof(AppResources.Continue)];
+			}
+		}
+
+
+		private async Task StartCooldownAsync(int seconds = 30)
+		{
+			this.cooldownCts?.Cancel();
+			this.cooldownCts = new CancellationTokenSource();
+
+			this.CooldownSecondsLeft = seconds;
+			try
+			{
+				while (this.CooldownSecondsLeft > 0)
+				{
+					await Task.Delay(1000, this.cooldownCts.Token);
+					this.CooldownSecondsLeft--;
+				}
+			}
+			catch (TaskCanceledException)
+			{
+				// Ignore
+			}
+			finally
+			{
+				this.CooldownSecondsLeft = 0;
+			}
+		}
+
 		/// <summary>
 		/// If App is connected to the XMPP network.
 		/// </summary>
 		public bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
 
-		public bool CanCreateAccount => this.UsernameIsValid && !string.IsNullOrEmpty(this.Username) && string.IsNullOrEmpty(this.AlternativeName) && !this.IsBusy;
+		public bool CanCreateAccount => this.UsernameIsValid &&
+										!string.IsNullOrEmpty(this.Username) &&
+										string.IsNullOrEmpty(this.AlternativeName) &&
+										!this.IsBusy &&
+										!this.IsInCooldown;
 
 		[RelayCommand(CanExecute = nameof(CanCreateAccount))]
 		private async Task CreateAccount()
@@ -143,6 +226,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
+			await this.StartCooldownAsync();
 
 			this.IsBusy = false;
 		}
@@ -318,5 +402,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 			return sb.ToString();
 		}
+
+
 	}
 }
