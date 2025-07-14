@@ -1,21 +1,23 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NeuroAccessMaui.Services.UI.Photos;
-using Waher.Networking.XMPP.Contracts;
-using NeuroAccessMaui.UI.Pages.Identity.ObjectModel;
-using NeuroAccessMaui.UI.MVVM;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Localization;
+using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
-using Microsoft.Extensions.Localization;
-using System.Globalization;
-using NeuroAccessMaui.Resources.Languages;
-using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.UI.Popups.Image;
-using NeuroAccessMaui.Extensions;
-using Waher.Persistence;
-using Waher.Networking.XMPP;
-using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.Photos;
+using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Identity.ObjectModel;
+using NeuroAccessMaui.UI.Popups.Image;
+using Waher.Networking.XMPP;
+using Waher.Networking.XMPP.Contracts;
+using Waher.Persistence;
+using Waher.Script.Constants;
 
 namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 {
@@ -62,6 +64,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(IsApproved))]
+		[NotifyPropertyChangedFor(nameof(ShowBackground))]
 		private IdentityState? identityState = Waher.Networking.XMPP.Contracts.IdentityState.Created;
 
 		public bool IsApproved => this.IdentityState is not null && this.IdentityState == Waher.Networking.XMPP.Contracts.IdentityState.Approved;
@@ -107,10 +110,37 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 		public bool HasTimer => this.timer?.IsRunning ?? false;
 
+		// Get the length of the profile image side in DIPs (device independent pixels).
+		public double ProfileImageSideLength
+		{
+			get
+			{
+				// Width and Height are in pixels
+				double Width = DeviceDisplay.Current.MainDisplayInfo.Width;
+				double Height = DeviceDisplay.Current.MainDisplayInfo.Height;
 
+				// Aspect ratio (width / height)
+				double AspectRatio = Height / Width;
 
+				double Length = AspectRatio * AspectRatio * 45;
 
+				if (Length > 250) Length = 250;
+				if (Length < 125) Length = 125;
 
+				return Length;
+			}
+		}
+
+		// Get the background opacity. 0.1 for light mode. 0.5 for dark mode.
+		public double BackgroundOpacity
+		{
+			get
+			{
+				if (Application.Current!.UserAppTheme is AppTheme.Light) return 0.1;
+				if (Application.Current!.UserAppTheme is AppTheme.Dark) return 0.05;
+				return 0.1; // Default to light mode opacity
+			}
+		}
 
 		// Define custom field descriptors for any multi-part or special properties for example BDAY BMONTH BYEAR -> B
 		private static readonly List<CustomFieldDefinition> customFields =
@@ -892,12 +922,37 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			}
 		}
 
+		public bool HasLegalIdentity => ServiceRef.TagProfile.LegalIdentity.HasApprovedPersonalInformation();
+
+		public bool ShowBackground => this.HasLegalIdentity && this.IsApproved;
+
+		public string CurrentState => this.HasLegalIdentity ? States.HasID : States.NoID;
+
+		static class States
+		{
+			public const string HasID = "HasID";
+			public const string NoID = "NoID";
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		public async Task GoToApplyIdentity()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
 		#region ILinkableView
 
-			/// <summary>
-			/// Title of the current view
-			/// </summary>
-			///
+		/// <summary>
+		/// Title of the current view
+		/// </summary>
+		///
 		public override Task<string> Title => Task.FromResult("Test");//Task.FromResult<string>(ContactInfo.GetFriendlyName(this.LegalIdentity!));
 
 		#endregion
