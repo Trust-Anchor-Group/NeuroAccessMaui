@@ -18,6 +18,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		Boolean,
 		Picker,
 		File,
+		Image,
 		Phone,
 		Email,
 		Integer,

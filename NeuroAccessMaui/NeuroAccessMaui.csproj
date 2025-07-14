@@ -369,7 +369,7 @@
 		<Compile Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml.cs">
 			<DependentUpon>ApplyIdPage.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="UI\Pages\Applications\KycProcess\KycProcessPage.xaml.cs">
+		<Compile Update="UI\Pages\Kyc\KycProcessPage.xaml.cs">
 			<DependentUpon>KycProcessPage.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml.cs">
@@ -544,7 +544,7 @@
 		<MauiXaml Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Applications\KycProcess\KycProcessPage.xaml">
+		<MauiXaml Update="UI\Pages\Kyc\KycProcessPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml">
@@ -790,6 +790,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="UI\Pages\Kyc\ObjectModel\" />
 		<Folder Include="UI\Pages\Wallet\ServiceProviders\NewFolder\" />
 	</ItemGroup>
 </Project>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Applications.KycProcess.KycProcessPage"
+<base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Kyc.KycProcessPage"
 					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-					  xmlns:local="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.KycProcess"
+					  xmlns:local="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
 					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 					  xmlns:models="clr-namespace:NeuroAccessMaui.Services.Kyc.Models"
-					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.KycProcess"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
 					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					  x:DataType="viewmodel:KycProcessViewModel">
 

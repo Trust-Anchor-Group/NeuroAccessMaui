@@ -6,7 +6,7 @@ using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Notifications;
 using Waher.Networking.XMPP.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NeuroAccessMaui.UI.Pages.Applications.KycProcess;
+using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using EDaler;

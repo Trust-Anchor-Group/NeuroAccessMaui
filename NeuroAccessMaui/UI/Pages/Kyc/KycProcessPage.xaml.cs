@@ -3,7 +3,7 @@ using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI;
 using NeuroAccessMaui.Services.Kyc.Models;
 
-namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
+namespace NeuroAccessMaui.UI.Pages.Kyc
 {
 
 	public partial class KycProcessPage : BaseContentPage

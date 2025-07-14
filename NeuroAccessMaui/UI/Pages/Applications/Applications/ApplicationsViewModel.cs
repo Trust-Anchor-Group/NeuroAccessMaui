@@ -7,7 +7,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
-using NeuroAccessMaui.UI.Pages.Applications.KycProcess;
+using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Contracts;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Main.Apps;

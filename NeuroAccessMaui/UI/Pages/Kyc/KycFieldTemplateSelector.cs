@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NeuroAccessMaui.Services.Kyc.Models;
 
-namespace NeuroAccessMaui.UI.Pages.Applications.KycProcess
+namespace NeuroAccessMaui.UI.Pages.Kyc
 {
 	public class KycFieldTemplateSelector : DataTemplateSelector
 	{

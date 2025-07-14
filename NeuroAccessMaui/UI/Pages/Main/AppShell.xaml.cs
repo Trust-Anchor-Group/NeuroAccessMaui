@@ -1,6 +1,6 @@
 ﻿using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
-using NeuroAccessMaui.UI.Pages.Applications.KycProcess;
+using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
