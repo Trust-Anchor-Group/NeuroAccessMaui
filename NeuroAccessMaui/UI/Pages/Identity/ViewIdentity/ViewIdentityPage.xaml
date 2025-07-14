@@ -296,7 +296,7 @@
 			HorizontalOptions="Fill"
 			IsVisible="{Binding ShowBackground}"
 			VerticalOptions="Fill"
-			Opacity="0.1">
+			Opacity="{Binding BackgroundOpacity}">
 			<Border.Background>
 				<LinearGradientBrush>
 					<GradientStop Color="#FFFF00"

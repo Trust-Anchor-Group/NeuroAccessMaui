@@ -131,6 +131,17 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			}
 		}
 
+		// Get the background opacity. 0.1 for light mode. 0.5 for dark mode.
+		public double BackgroundOpacity
+		{
+			get
+			{
+				if (Application.Current!.UserAppTheme is AppTheme.Light) return 0.1;
+				if (Application.Current!.UserAppTheme is AppTheme.Dark) return 0.05;
+				return 0.1; // Default to light mode opacity
+			}
+		}
+
 		// Define custom field descriptors for any multi-part or special properties for example BDAY BMONTH BYEAR -> B
 		private static readonly List<CustomFieldDefinition> customFields =
 		[
