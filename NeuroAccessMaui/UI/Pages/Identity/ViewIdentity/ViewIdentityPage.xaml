@@ -273,7 +273,8 @@
         </Grid.ColumnDefinitions>
         <controls:Background Grid.Row="1" Grid.RowSpan="3" />
 
-        <skiaLottie:SKLottieView
+		<!--  Rainbow Background
+		<skiaLottie:SKLottieView
             x:Name="RainbowView"
             Grid.Row="0"
             Grid.RowSpan="5"
@@ -284,7 +285,34 @@
             RepeatCount="-1"
             Rotation="90"
             Source="background.json" />
-        <!--  TOP BAR  -->
+		-->
+
+		<Border
+			x:Name="RainbowView"
+			Grid.Row="0"
+			Grid.RowSpan="5"
+			AbsoluteLayout.LayoutBounds="0,0,1,1"
+			AbsoluteLayout.LayoutFlags="All"
+			HorizontalOptions="Fill"
+			IsVisible="{Binding ShowBackground}"
+			VerticalOptions="Fill"
+			Opacity="0.1">
+			<Border.Background>
+				<LinearGradientBrush>
+					<GradientStop Color="#FFFF00"
+								  Offset="0.15"/>
+					<GradientStop Color="#FF0000"
+								  Offset="0.4"/>
+					<GradientStop Color="#00FF00"
+								  Offset="0.6"/>
+					<GradientStop Color="#0000FF"
+								  Offset="0.85"/>
+				</LinearGradientBrush>
+			</Border.Background>
+			
+		</Border>
+
+		<!--  TOP BAR  -->
         <Grid
             Grid.Row="0"
             Margin="16,16,16,8"
@@ -398,7 +426,7 @@
 							Padding="0"
 							HorizontalOptions="Center"
 							Spacing="{DynamicResource SmallSpacing}">
-							<Grid HeightRequest="200" WidthRequest="200">
+							<Grid HeightRequest="{Binding ProfileImageSideLength}" WidthRequest="{Binding ProfileImageSideLength}">
 								<controls:ConditionView Condition="{Binding LoadPhotosTask.IsRunning}">
 									<controls:ConditionView.True>
 										<ActivityIndicator
@@ -414,9 +442,9 @@
 												<controls:ConditionView.True>
 													<Image
 														Aspect="AspectFit"
-														HeightRequest="200"
 														Source="{Binding ProfilePhoto}"
-														WidthRequest="200" />
+														HeightRequest="{Binding ProfileImageSideLength}"
+														WidthRequest="{Binding ProfileImageSideLength}" />
 												</controls:ConditionView.True>
 												<controls:ConditionView.False>
 													<controls:SvgView
@@ -493,37 +521,7 @@
 				<!-- NO ID VIEW-->
 				<Grid mct:StateView.StateKey="NoID"
 					  RowDefinitions="auto, auto"
-					  Margin="{DynamicResource SmallMargins}">
-					<Grid RowDefinitions="auto, *"
-						  Margin="{DynamicResource SmallLeftRightMargins}">
-						<Border Grid.Row="0"
-								BackgroundColor="{DynamicResource TnPInfobgWL}"
-								Padding="{DynamicResource MediumMargins}"
-								StrokeShape="RoundRectangle 16,16,0,16">
-							<Border.Shadow>
-								<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
-							</Border.Shadow>
-							<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-								  ColumnDefinitions="auto, *">
-								<Path
-									Grid.Column="0"
-									Data="{x:Static ui:Geometries.InfoCirclePath}"
-									Fill="{DynamicResource TnPInfoContentWL}"/>
-								<Label
-									Grid.Column="1"
-									Text="{l:Localize ApplyIdInfoMainPage}"
-									Style="{DynamicResource InfoLabel}"
-									TextColor="{DynamicResource TnPInfoContentWL}"/>
-							</Grid>
-						</Border>
-						<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">
-							<Grid Padding="{DynamicResource SmallMargins}"
-								  ColumnDefinitions="*, auto">
-								<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{DynamicResource SecondaryButtonActiveLabel}"/>
-								<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{DynamicResource ButtonAccessTertiaryContentWL}"/>
-							</Grid>
-						</controls:TemplatedButton>
-					</Grid>
+					  Margin="{DynamicResource SmallLeftRightMargins}">
 					<Border Style="{DynamicResource BorderSet}"
 							Grid.Row="1">
 						<Grid RowDefinitions="auto, auto, auto"
@@ -541,12 +539,12 @@
 									Style="{DynamicResource BorderSubSet}">
 								<Grid RowDefinitions="auto, auto, auto">
 									<Label Text="{l:Localize Username}" Style="{DynamicResource FieldKeyLabel}"/>
-									<Label Text="{Binding FriendlyName}" Grid.Row="1" Style="{DynamicResource FieldValueLabel}" Margin="{DynamicResource MediumBottomMargins}"/>
+									<Label Text="{Binding FriendlyName}" Grid.Row="1" Style="{DynamicResource FieldValueLabel}" Margin="{DynamicResource SmallBottomMargins}"/>
 									<VerticalStackLayout
                                             BindableLayout.ItemTemplateSelector="{DynamicResource FieldSelector}"
                                             BindableLayout.ItemsSource="{Binding PersonalFields}"
                                             HorizontalOptions="Fill"
-                                            Spacing="16"
+                                            Spacing="8"
 											Grid.Row="2"/>
 								</Grid>
 							</Border>
@@ -559,6 +557,8 @@
 								WidthRequest="150"
 								HorizontalOptions="Center">
 								<Image
+									HeightRequest="{Binding ProfileImageSideLength}"
+									WidthRequest="{Binding ProfileImageSideLength}"
 									Source="{Binding QrCode}">
 									<Image.GestureRecognizers>
 										<TapGestureRecognizer Command="{Binding QrTappedCommand}" NumberOfTapsRequired="1" />
