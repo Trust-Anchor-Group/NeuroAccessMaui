@@ -126,6 +126,13 @@
 
 				</Grid>
 			</DataTemplate>
+
+			<DataTemplate x:Key="ImageUploadTemplate"
+						  x:DataType="models:KycField">
+				<Grid>
+					
+				</Grid>
+			</DataTemplate>
 			<!--  Add file field template or others as needed  -->
 
 			<local:KycFieldTemplateSelector x:Key="KycFieldTemplateSelector"
@@ -186,10 +193,19 @@
 				Grid.Row="2"
 				Padding="16">
 			<VerticalStackLayout Spacing="8">
+				<Grid ColumnDefinitions="*, *">
+					<Label Grid.Column="0"
+						   Text="Progress" />
+					<Label Grid.Column="1"
+						   Text="50%"
+						   HorizontalOptions="End"/>
+				</Grid>
 				<controls:ProgressBar Progress="{Binding Progress}"
-									  HeightRequest="12"
-									  CornerRadius="12"
-									  BarBrush="Orange" />
+									  HeightRequest="10"
+									  CornerRadius="10"
+									  TrackBrush="LightGrey"
+									  BarBrush="Orange">
+				</controls:ProgressBar>
 				<controls:TextButton LabelData="Next"
 									 Style="{DynamicResource FilledTextButton}"
 									 Command="{Binding NextCommand}" />

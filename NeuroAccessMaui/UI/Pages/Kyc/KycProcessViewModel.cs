@@ -72,7 +72,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			this.process = await KycProcessParser.LoadProcessAsync(
 				"NeuroAccessMaui.Resources.Raw.TestKYC.xml",
-				lang: "en"
+				Lang: "en"
 			);
 
 			this.process.Initialize();
