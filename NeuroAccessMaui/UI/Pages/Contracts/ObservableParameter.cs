@@ -527,14 +527,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			try
 			{
-				MainThread.BeginInvokeOnMainThread(() => { this.IsCheckinglocation = true; });
+				MainThread.BeginInvokeOnMainThread(() => this.IsCheckinglocation = true);
 
 				GeolocationRequest Request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
 				Location? Location = await Geolocation.Default.GetLocationAsync(Request);
 
 				if (Location is not null)
 				{
-					this.GeoValue = new GeoPosition(Location.Latitude, Location.Longitude, Location.Altitude);
+					MainThread.BeginInvokeOnMainThread(() =>
+					{
+						this.GeoValue = new GeoPosition(Location.Latitude, Location.Longitude);
+						this.OnPropertyChanged(nameof(this.GeoString));
+					});
 				}
 			}
 			catch
@@ -543,7 +547,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			}
 			finally
 			{
-				MainThread.BeginInvokeOnMainThread(() => { this.IsCheckinglocation = false; });
+				MainThread.BeginInvokeOnMainThread(() => this.IsCheckinglocation = false);
 			}
 		}
 	}

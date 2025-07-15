@@ -624,7 +624,7 @@
 										 LabelText="{Binding Label}"
 										 IsValid="{Binding IsValid}"/>
 
-				<controls:ConditionView Condition="{Binding IsCheckinglocation}">
+				<controls:ConditionView Condition="{Binding IsCheckinglocation}" Margin="{DynamicResource SmallTopMargins}">
 					<controls:ConditionView.True>
 						<ActivityIndicator IsRunning="True"
 										   VerticalOptions="Center"
