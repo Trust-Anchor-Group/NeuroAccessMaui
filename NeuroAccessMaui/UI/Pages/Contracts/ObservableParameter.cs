@@ -540,19 +540,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 						this.OnPropertyChanged(nameof(this.GeoString));
 					});
 				}
-				else
-				{
-					// Display an alert requesting permission
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.Error)],
-						ServiceRef.Localizer[nameof(AppResources.LocationError)],
-						ServiceRef.Localizer[nameof(AppResources.Ok)]
-					);
-				}
 			}
 			catch
 			{
 				// Ignore this case
+				// Display an alert requesting permission
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Error)],
+					ServiceRef.Localizer[nameof(AppResources.LocationError)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]
+				);
 			}
 			finally
 			{
