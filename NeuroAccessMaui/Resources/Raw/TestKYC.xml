@@ -59,7 +59,11 @@
 						<Text lang="sv">Ange ett giltigt datum mellan 1900 och 2020</Text>
 					</Message>
 				</Validation>
-				<!-- <Default>now()</Default> -->
+				<!-- Example: a date field with metadata could look like this -->
+				<Metadata>
+					<DateFormat>yyyy-MM-dd</DateFormat>
+					<AllowFuture>false</AllowFuture>
+				</Metadata>
 			</Field>
 			<Field id="email" type="text" label="Email Address">
 				<Label>
@@ -89,6 +93,10 @@
 					<Equals>true</Equals>
 				</Condition>
 				<Default>Maximiliam@gmail.com</Default>
+				<Metadata>
+					<InputType>email</InputType>
+					<AutoComplete>email</AutoComplete>
+				</Metadata>
 			</Field>
 			<Field id="isOrganization" type="boolean" label="Are you representing an organization?" mapping="IS_ORG" Required="true">
 				<Label>
@@ -226,6 +234,11 @@
 						<Text lang="sv">Ladda upp en giltig passbild eller PDF (max 10MB)</Text>
 					</Message>
 				</Validation>
+				<Metadata>
+					<TargetWidth>1200</TargetWidth>
+					<TargetHeight>1600</TargetHeight>
+					<MinDpi>300</MinDpi>
+				</Metadata>
 			</Field>
 
 			<!-- Identity Card Upload Field (shown if identityCard is selected) -->
@@ -258,6 +271,11 @@
 						<Text lang="sv">Ladda upp en giltig ID-kortsbild eller PDF (max 10MB)</Text>
 					</Message>
 				</Validation>
+				<Metadata>
+					<TargetWidth>1000</TargetWidth>
+					<TargetHeight>1500</TargetHeight>
+					<MinDpi>200</MinDpi>
+				</Metadata>
 			</Field>
 
 			<!-- Drivers Licence Front Upload (shown if driversLicence is selected) -->
@@ -290,6 +308,11 @@
 						<Text lang="sv">Ladda upp framsidan (max 10MB)</Text>
 					</Message>
 				</Validation>
+				<Metadata>
+					<TargetWidth>900</TargetWidth>
+					<TargetHeight>600</TargetHeight>
+					<MinDpi>150</MinDpi>
+				</Metadata>
 			</Field>
 			<!-- Drivers Licence Back Upload (shown if driversLicence is selected) -->
 			<Field id="driversLicenceBack" type="file" label="Driver's Licence (Back)" mapping="DRIVERS_LICENCE_BACK" specialType="driversLicenceBack">
@@ -321,6 +344,11 @@
 						<Text lang="sv">Ladda upp baksidan (max 10MB)</Text>
 					</Message>
 				</Validation>
+				<Metadata>
+					<TargetWidth>900</TargetWidth>
+					<TargetHeight>600</TargetHeight>
+					<MinDpi>150</MinDpi>
+				</Metadata>
 			</Field>
 		</Section>
 	</Page>

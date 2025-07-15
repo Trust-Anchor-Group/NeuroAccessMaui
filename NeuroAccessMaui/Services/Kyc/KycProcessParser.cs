@@ -19,207 +19,251 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <summary>
 		/// Loads and parses the KYC pages from an embedded XML resource.
 		/// </summary>
-		public static async Task<KycProcess> LoadProcessAsync(string resource, string? lang = null)
+		public static async Task<KycProcess> LoadProcessAsync(string Resource, string? Lang = null)
 		{
-			var process = new KycProcess();
-			var fileName = GetFileName(resource);
-			using var stream = await FileSystem.OpenAppPackageFileAsync(fileName);
-			var doc = XDocument.Load(stream);
+			KycProcess Process = new KycProcess();
+			string FileName = GetFileName(Resource);
 
-			foreach (var pageEl in doc.Root?.Elements("Page") ?? Enumerable.Empty<XElement>())
+			using Stream Stream = await FileSystem.OpenAppPackageFileAsync(FileName);
+			XDocument Doc = XDocument.Load(Stream);
+
+			foreach (XElement PageEl in Doc.Root?.Elements("Page") ?? Enumerable.Empty<XElement>())
 			{
-				var page = new KycPage
+				KycPage Page = new KycPage
 				{
-					Id = (string?)pageEl.Attribute("id") ?? string.Empty,
-					Title = ParseLocalizedText(pageEl.Element("Title"))
-							?? ParseLegacyText(pageEl.Attribute("title"), lang),
-					Description = ParseLocalizedText(pageEl.Element("Description")),
-					Condition = ParseCondition(pageEl.Element("Condition"))
+					Id = (string?)PageEl.Attribute("id") ?? string.Empty,
+					Title = ParseLocalizedText(PageEl.Element("Title"))
+							?? ParseLegacyText(PageEl.Attribute("title"), Lang),
+					Description = ParseLocalizedText(PageEl.Element("Description")),
+					Condition = ParseCondition(PageEl.Element("Condition"))
 				};
 
-				// Fields
-				foreach (var fieldEl in pageEl.Elements("Field"))
-					page.AllFields.Add(ParseField(fieldEl, lang));
+				// Fields (direct under Page)
+				foreach (XElement FieldEl in PageEl.Elements("Field"))
+					Page.AllFields.Add(ParseField(FieldEl, Lang));
 
 				// Sections
-				foreach (var sectionEl in pageEl.Elements("Section"))
+				foreach (XElement SectionEl in PageEl.Elements("Section"))
 				{
-					var section = new KycSection
+					KycSection Section = new KycSection
 					{
-						Label = ParseLocalizedText(sectionEl.Element("Label"))
-							?? ParseLegacyText(sectionEl.Attribute("label"), lang),
-						Description = ParseLocalizedText(sectionEl.Element("Description"))
+						Label = ParseLocalizedText(SectionEl.Element("Label"))
+							?? ParseLegacyText(SectionEl.Attribute("label"), Lang),
+						Description = ParseLocalizedText(SectionEl.Element("Description"))
 					};
 
-					foreach (var fieldEl in sectionEl.Elements("Field"))
-						section.AllFields.Add(ParseField(fieldEl, lang));
+					foreach (XElement FieldEl in SectionEl.Elements("Field"))
+						Section.AllFields.Add(ParseField(FieldEl, Lang));
 
-					page.AllSections.Add(section);
+					Page.AllSections.Add(Section);
 				}
 
-				process.Pages.Add(page);
+				Process.Pages.Add(Page);
 			}
 
-			// (Optional) Initialize model listeners for field values
-			process.Initialize();
+			Process.Initialize();
 
-			return process;
+			return Process;
 		}
 
-		private static string GetFileName(string resource)
+		private static string GetFileName(string Resource)
 		{
-			var idx = resource.LastIndexOf("Raw.", StringComparison.OrdinalIgnoreCase);
-			return idx >= 0 ? resource[(idx + 4)..] : resource;
+			int Index = Resource.LastIndexOf("Raw.", StringComparison.OrdinalIgnoreCase);
+			return Index >= 0 ? Resource[(Index + 4)..] : Resource;
 		}
 
-		private static KycField ParseField(XElement el, string? lang)
+		private static KycField ParseField(XElement El, string? Lang)
 		{
+			// Determine field type
+			string TypeAttr = (string?)El.Attribute("type") ?? "text";
+			FieldType FieldType = Enum.TryParse<FieldType>(TypeAttr, true, out FieldType Ft) ? Ft : FieldType.Text;
+
+			KycField Field;
+
+			if (FieldType == FieldType.File)
+			{
+				FileField FileField = new FileField();
+				Field = FileField;
+			}
+			else if (FieldType == FieldType.Image)
+			{
+				ImageField ImageField = new ImageField();
+				Field = ImageField;
+			}
+			else
+			{
+				Field = new KycField();
+			}
+
 			// Basic attributes
-			var typeAttr = (string?)el.Attribute("type") ?? "text";
-			var field = new KycField
-			{
-				Id = (string?)el.Attribute("id") ?? string.Empty,
-				FieldType = Enum.TryParse<FieldType>(typeAttr, true, out var ft) ? ft : FieldType.Text,
-				Required = (bool?)el.Attribute("required") ?? false,
-				Label = ParseLocalizedText(el.Element("Label"))
-						?? ParseLegacyText(el.Attribute("label"), lang),
-				Placeholder = ParseLocalizedText(el.Element("Placeholder")),
-				Hint = ParseLocalizedText(el.Element("Hint")),
-				Description = ParseLocalizedText(el.Element("Description")),
-				SpecialType = (string?)el.Attribute("specialType")
-			};
-			field.Condition = ParseCondition(el.Element("Condition"));
+			Field.Id = (string?)El.Attribute("id") ?? string.Empty;
+			Field.FieldType = FieldType;
+			Field.Required = (bool?)El.Attribute("required") ?? false;
+			Field.Label = ParseLocalizedText(El.Element("Label"))
+				?? ParseLegacyText(El.Attribute("label"), Lang);
+			Field.Placeholder = ParseLocalizedText(El.Element("Placeholder"));
+			Field.Hint = ParseLocalizedText(El.Element("Hint"));
+			Field.Description = ParseLocalizedText(El.Element("Description"));
+			Field.SpecialType = (string?)El.Attribute("specialType");
+			Field.Condition = ParseCondition(El.Element("Condition"));
 
-			// Validation rules (<ValidationRule> or <Validation>) => IKycRule
-			void TryAddLengthRules(XElement ruleEl)
+			// Metadata
+			if (El.Element("Metadata") is XElement MetadataEl)
 			{
-				int? min = null, max = null;
-				if (int.TryParse((string?)ruleEl.Attribute("minLength"), out var minVal)) min = minVal;
-				if (int.TryParse((string?)ruleEl.Attribute("maxLength"), out var maxVal)) max = maxVal;
-				if (min.HasValue || max.HasValue)
+				foreach (XElement MetaChild in MetadataEl.Elements())
 				{
-					var msg = ParseLocalizedText(ruleEl.Element("Message"))?.Get(lang);
-					field.AddRule(new LengthRule(min, max, msg));
+					string Key = MetaChild.Name.LocalName;
+					string Value = MetaChild.Value?.Trim() ?? string.Empty;
+
+					// Attempt to parse to int, double, bool; otherwise keep string
+					if (int.TryParse(Value, out int IntVal))
+						Field.Metadata[Key] = IntVal;
+					else if (double.TryParse(Value, NumberStyles.Any, CultureInfo.InvariantCulture, out double DoubleVal))
+						Field.Metadata[Key] = DoubleVal;
+					else if (bool.TryParse(Value, out bool BoolVal))
+						Field.Metadata[Key] = BoolVal;
+					else if (Key.Equals("AllowedFileTypes", StringComparison.OrdinalIgnoreCase))
+						Field.Metadata[Key] = Value.Split(',', ';', ' ').Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+					else
+						Field.Metadata[Key] = Value;
 				}
 			}
 
-			void TryAddRegexRule(XElement ruleEl)
+			// Validation rules (<ValidationRule> or <Validation>)
+			void TryAddLengthRules(XElement RuleEl)
 			{
-				var pattern = ruleEl.Element("Regex")?.Value?.Trim();
-				if (!string.IsNullOrEmpty(pattern))
+				int? Min = null, Max = null;
+				if (int.TryParse((string?)RuleEl.Attribute("minLength"), out int MinVal)) Min = MinVal;
+				if (int.TryParse((string?)RuleEl.Attribute("maxLength"), out int MaxVal)) Max = MaxVal;
+				if (Min.HasValue || Max.HasValue)
 				{
-					var msg = ParseLocalizedText(ruleEl.Element("Message"))?.Get(lang);
-					field.AddRule(new RegexRule(pattern, msg));
+					string? Msg = ParseLocalizedText(RuleEl.Element("Message"))?.Get(Lang);
+					Field.AddRule(new LengthRule(Min, Max, Msg));
 				}
 			}
 
-			void TryAddDateRangeRule(XElement ruleEl)
+			void TryAddRegexRule(XElement RuleEl)
 			{
-				DateTime? dmin = null, dmax = null;
-				if (DateTime.TryParse((string?)ruleEl.Attribute("min"), out var dminVal)) dmin = dminVal;
-				if (DateTime.TryParse((string?)ruleEl.Attribute("max"), out var dmaxVal)) dmax = dmaxVal;
-				if (dmin.HasValue || dmax.HasValue)
+				string? Pattern = RuleEl.Element("Regex")?.Value?.Trim();
+				if (!string.IsNullOrEmpty(Pattern))
 				{
-					var msg = ParseLocalizedText(ruleEl.Element("Message"))?.Get(lang);
-					field.AddRule(new DateRangeRule(dmin, dmax, msg));
+					string? Msg = ParseLocalizedText(RuleEl.Element("Message"))?.Get(Lang);
+					Field.AddRule(new RegexRule(Pattern, Msg));
 				}
 			}
 
-			// <ValidationRule> elements
-			foreach (var vr in el.Elements("ValidationRule"))
+			void TryAddDateRangeRule(XElement RuleEl)
 			{
-				TryAddLengthRules(vr);
-				TryAddRegexRule(vr);
-				TryAddDateRangeRule(vr);
+				DateTime? DMin = null, DMax = null;
+				if (DateTime.TryParse((string?)RuleEl.Attribute("min"), out DateTime DMinVal)) DMin = DMinVal;
+				if (DateTime.TryParse((string?)RuleEl.Attribute("max"), out DateTime DMaxVal)) DMax = DMaxVal;
+				if (DMin.HasValue || DMax.HasValue)
+				{
+					string? Msg = ParseLocalizedText(RuleEl.Element("Message"))?.Get(Lang);
+					Field.AddRule(new DateRangeRule(DMin, DMax, Msg));
+				}
 			}
-			// legacy <Validation>
-			if (el.Element("Validation") is XElement legacy)
+
+			foreach (XElement Vr in El.Elements("ValidationRule"))
 			{
-				TryAddLengthRules(legacy);
-				TryAddRegexRule(legacy);
-				TryAddDateRangeRule(legacy);
+				TryAddLengthRules(Vr);
+				TryAddRegexRule(Vr);
+				TryAddDateRangeRule(Vr);
+			}
+			if (El.Element("Validation") is XElement Legacy)
+			{
+				TryAddLengthRules(Legacy);
+				TryAddRegexRule(Legacy);
+				TryAddDateRangeRule(Legacy);
 			}
 
 			// Mappings
-			foreach (var map in el.Elements("Mapping"))
+			foreach (XElement Map in El.Elements("Mapping"))
 			{
-				field.Mappings.Add(new KycMapping
+				Field.Mappings.Add(new KycMapping
 				{
-					Key = (string?)map.Attribute("key") ?? string.Empty,
-					Transform = map.Element("Transform")?.Value?.Trim()
+					Key = (string?)Map.Attribute("key") ?? string.Empty,
+					Transform = Map.Element("Transform")?.Value?.Trim()
 				});
 			}
-			// legacy attribute mapping
-			if (el.Attribute("mapping") is XAttribute mapAttr)
-				field.Mappings.Add(new KycMapping { Key = mapAttr.Value });
+			if (El.Attribute("mapping") is XAttribute MapAttr)
+				Field.Mappings.Add(new KycMapping { Key = MapAttr.Value });
 
-			// Options for pickers
-			if (el.Element("Options") is XElement opts)
+			// Options for pickers/checkboxes/radio/country
+			if (El.Element("Options") is XElement Opts)
 			{
-				foreach (var opt in opts.Elements("Option"))
+				foreach (XElement Opt in Opts.Elements("Option"))
 				{
-					var val = (string?)opt.Attribute("value") ?? string.Empty;
-					var lbl = ParseLocalizedText(opt) ?? new KycLocalizedText();
-					field.Options.Add(new KycOption(val, lbl));
+					string Val = (string?)Opt.Attribute("value") ?? string.Empty;
+					KycLocalizedText Lbl = ParseLocalizedText(Opt) ?? new KycLocalizedText();
+					Field.Options.Add(new KycOption(Val, Lbl));
 				}
 			}
 
 			// Default value
-			var def = el.Element("Default")?.Value?.Trim();
-			if (!string.IsNullOrEmpty(def))
+			string? Def = El.Element("Default")?.Value?.Trim();
+			if (!string.IsNullOrEmpty(Def))
 			{
-				switch (field.FieldType)
+				switch (Field.FieldType)
 				{
 					case FieldType.Date:
-						if (def.Equals("now()", StringComparison.OrdinalIgnoreCase))
-							field.DateValue = DateTime.Today;
-						else if (DateTime.TryParse(def, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt))
-							field.DateValue = dt;
+						if (Def.Equals("now()", StringComparison.OrdinalIgnoreCase))
+							Field.DateValue = DateTime.Today;
+						else if (DateTime.TryParse(Def, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime Dt))
+							Field.DateValue = Dt;
 						break;
 					case FieldType.Boolean:
-						if (bool.TryParse(def, out var bv))
-							field.BoolValue = bv;
+						if (bool.TryParse(Def, out bool Bv))
+							Field.BoolValue = Bv;
+						break;
+					case FieldType.Integer:
+						if (int.TryParse(Def, NumberStyles.Integer, CultureInfo.InvariantCulture, out int Iv))
+							Field.IntValue = Iv;
+						break;
+					case FieldType.Decimal:
+						if (decimal.TryParse(Def, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal Dv))
+							Field.DecimalValue = Dv;
 						break;
 					default:
-						field.Value = def;
+						Field.Value = Def;
 						break;
 				}
 			}
 
-			return field;
+			return Field;
 		}
 
-		private static KycCondition? ParseCondition(XElement? cond)
+		private static KycCondition? ParseCondition(XElement? Cond)
 		{
-			if (cond == null) return null;
+			if (Cond is null) return null;
 			return new KycCondition
 			{
-				FieldRef = cond.Element("FieldRef")?.Value ?? string.Empty,
-				Equals = cond.Element("Equals")?.Value
+				FieldRef = Cond.Element("FieldRef")?.Value ?? string.Empty,
+				Equals = Cond.Element("Equals")?.Value
 			};
 		}
 
-		private static KycLocalizedText? ParseLocalizedText(XElement? parent)
+		private static KycLocalizedText? ParseLocalizedText(XElement? Parent)
 		{
-			if (parent == null) return null;
-			var loc = new KycLocalizedText();
-			foreach (var txt in parent.Elements("Text"))
+			if (Parent is null) return null;
+			KycLocalizedText Loc = new KycLocalizedText();
+			foreach (XElement Txt in Parent.Elements("Text"))
 			{
-				var l = (string?)txt.Attribute("lang") ?? "en";
-				var v = txt.Value?.Trim();
-				if (!string.IsNullOrEmpty(v)) loc.Add(l, v);
+				string Lang = (string?)Txt.Attribute("lang") ?? "en";
+				string? Val = Txt.Value?.Trim();
+				if (!string.IsNullOrEmpty(Val)) Loc.Add(Lang, Val);
 			}
-			if (!loc.HasAny && !string.IsNullOrEmpty(parent.Value?.Trim()))
-				loc.Add("en", parent.Value.Trim());
-			return loc.HasAny ? loc : null;
+			if (!Loc.HasAny && !string.IsNullOrEmpty(Parent.Value?.Trim()))
+				Loc.Add("en", Parent.Value.Trim());
+			return Loc.HasAny ? Loc : null;
 		}
 
-		private static KycLocalizedText? ParseLegacyText(XAttribute? attr, string? lang)
+		private static KycLocalizedText? ParseLegacyText(XAttribute? Attr, string? Lang)
 		{
-			if (attr == null) return null;
-			var loc = new KycLocalizedText();
-			loc.Add(lang ?? "en", attr.Value);
-			return loc;
+			if (Attr is null) return null;
+			KycLocalizedText Loc = new KycLocalizedText();
+			Loc.Add(Lang ?? "en", Attr.Value);
+			return Loc;
 		}
 	}
 }

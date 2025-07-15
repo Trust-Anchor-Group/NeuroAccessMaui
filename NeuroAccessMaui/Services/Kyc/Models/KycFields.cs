@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 
@@ -31,7 +32,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 	}
 
 	/// <summary>
-	/// Represents a single field (question, control, info, etc) in the KYC form process.
+	/// The base KYC field model. Use as-is for generic fields, or subclass for custom logic.
 	/// </summary>
 	public partial class KycField : ObservableObject
 	{
@@ -40,6 +41,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 
 		public KycField()
 		{
+			this.Metadata = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
 			this.rules.Add(new RequiredRule());
 			if (this.FieldType == FieldType.Checkbox)
 				this.SelectedOptions = new ObservableCollection<KycOption>();
@@ -48,17 +50,17 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		/// <summary>
 		/// The unique identifier for the field.
 		/// </summary>
-		public string Id { get; init; } = string.Empty;
+		public string Id { get; set; } = string.Empty;
 
 		/// <summary>
 		/// The field type (input, picker, info, etc).
 		/// </summary>
-		public FieldType FieldType { get; init; } = FieldType.Text;
+		public FieldType FieldType { get; set; } = FieldType.Text;
 
 		/// <summary>
 		/// Whether the field is required.
 		/// </summary>
-		public bool Required { get; init; }
+		public bool Required { get; set; }
 
 		/// <summary>
 		/// Field label.
@@ -104,6 +106,12 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		/// For Checkbox type: multi-selection of options.
 		/// </summary>
 		public ObservableCollection<KycOption> SelectedOptions { get; } = new();
+
+		/// <summary>
+		/// Arbitrary metadata for field-specific extensions.
+		/// Use e.g. Metadata["TargetWidth"] or Metadata["MaxFileSizeMB"].
+		/// </summary>
+		public Dictionary<string, object?> Metadata { get; }
 
 		[ObservableProperty]
 		private object? rawValue;
@@ -171,7 +179,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		/// <summary>
 		/// Convenience for string-based output for mapping/submission.
 		/// </summary>
-		public string? ValueString
+		public virtual string? ValueString
 		{
 			get
 			{
@@ -199,7 +207,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		/// <summary>
 		/// Validate this field using all attached rules.
 		/// </summary>
-		public bool Validate(string? Lang = null)
+		public virtual bool Validate(string? Lang = null)
 		{
 			foreach (IKycRule Rule in this.rules)
 			{
@@ -218,10 +226,39 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		/// <summary>
 		/// Map the value of this field to your application viewmodel.
 		/// </summary>
-		public void MapToApplyModel(ApplyIdViewModel Vm)
+		public virtual void MapToApplyModel(ApplyIdViewModel Vm)
 		{
 			// TODO: Implement mapping logic based on Mappings/Transforms
 		}
+	}
+
+	/// <summary>
+	/// File field with file-specific metadata and actions.
+	/// </summary>
+	public class FileField : KycField
+	{
+		/// <summary>
+		/// Target resolution or file metadata (e.g. max size, file types).
+		/// </summary>
+		public int? TargetWidth => this.Metadata.TryGetValue("TargetWidth", out var v) ? v as int? : null;
+		public int? TargetHeight => this.Metadata.TryGetValue("TargetHeight", out var v) ? v as int? : null;
+		public int? MaxFileSizeMB => this.Metadata.TryGetValue("MaxFileSizeMB", out var v) ? v as int? : null;
+		public string[]? AllowedFileTypes => this.Metadata.TryGetValue("AllowedFileTypes", out var v) ? v as string[] : null;
+
+		// Example commands for UI actions
+		public ICommand? TakePhotoCommand { get; set; }
+		public ICommand? PickPhotoCommand { get; set; }
+	}
+
+	/// <summary>
+	/// Image field with image-specific metadata and actions.
+	/// </summary>
+	public class ImageField : KycField
+	{
+		public int? TargetWidth => this.Metadata.TryGetValue("TargetWidth", out var v) ? v as int? : null;
+		public int? TargetHeight => this.Metadata.TryGetValue("TargetHeight", out var v) ? v as int? : null;
+		public double? AspectRatio => this.Metadata.TryGetValue("AspectRatio", out var v) ? v as double? : null;
+		public ICommand? TakePhotoCommand { get; set; }
 	}
 
 	/// <summary>
