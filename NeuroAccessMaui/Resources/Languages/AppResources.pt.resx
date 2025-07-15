@@ -2870,4 +2870,25 @@
   <data name="ContinueSecondsFormat" xml:space="preserve">
     <value>Continuar ({0})</value>
   </data>
+  <data name="Never" xml:space="preserve">
+    <value>Nunca</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Agora</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>Há {0} minutos</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>Há {0} horas</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Última atualização: {0}</value>
+  </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Usar localização atual</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>Ocorreu um erro ao obter sua localização. Certifique-se de que as permissões de localização estão ativadas nas configurações do seu dispositivo</value>
+  </data>
 </root>

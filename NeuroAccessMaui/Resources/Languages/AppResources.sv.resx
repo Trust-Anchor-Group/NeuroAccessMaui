@@ -2870,4 +2870,25 @@
   <data name="ContinueSecondsFormat" xml:space="preserve">
     <value>Fortsätt ({0})</value>
   </data>
+  <data name="Never" xml:space="preserve">
+    <value>Aldrig</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Nu</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>{0} minuter sedan</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>{0} timmar sedan</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Senast uppdaterad: {0}</value>
+  </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Använd nuvarande plats</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>Det uppstod ett fel när din plats skulle hämtas. Se till att platsbehörigheter är aktiverade i enhetens inställningar</value>
+  </data>
 </root>

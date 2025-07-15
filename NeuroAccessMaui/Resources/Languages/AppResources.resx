@@ -2867,6 +2867,9 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
    <value>Please restart the app to ensure all text changes language properly</value>
   </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Continue ({0})</value>
+  </data>
   <data name="Never" xml:space="preserve">
    <value>Never</value>
   </data>
@@ -2882,7 +2885,10 @@
   <data name="LastUpdatedFormat" xml:space="preserve">
     <value>Last updated: {0}</value>
   </data>
-  <data name="ContinueSecondsFormat" xml:space="preserve">
-    <value>Continue ({0})</value>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Use current location</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>There was an error getting your location. Make sure location permissions are granted in your devices' settings</value>
   </data>
 </root>

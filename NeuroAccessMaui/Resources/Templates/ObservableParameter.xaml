@@ -631,7 +631,7 @@
 										   HorizontalOptions="Center"/>
 					</controls:ConditionView.True>
 					<controls:ConditionView.False>
-						<controls:TextButton LabelData="Current Location"
+						<controls:TextButton LabelData="{l:Localize UseCurrentLocation}"
 											 Style="{DynamicResource PrimaryButton}"
 											 Command="{Binding SetCurrentLocationCommand}"/>
 					</controls:ConditionView.False>
