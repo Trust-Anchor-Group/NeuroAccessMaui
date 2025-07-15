@@ -18,6 +18,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public DataTemplate? CalcTemplate { get; set; }
 		public DataTemplate? ContractReferenceTemplate { get; set; }
 		public DataTemplate? ProtectedTemplate { get; set; }
+		public DataTemplate? GeoTemplate { get; set; }
 		public DataTemplate? DefaultTemplate { get; set; }
 
 		// Add other templates if needed
@@ -43,6 +44,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				ObservableNumericalParameter => this.NumericalTemplate ?? this.DefaultTemplate,
 				ObservableTimeParameter => this.TimeTemplate ?? this.DefaultTemplate,
 				ObservableCalcParameter => this.CalcTemplate ?? this.DefaultTemplate,
+				ObservableGeoParameter => this.GeoTemplate ?? this.DefaultTemplate,
 				ObservableContractReferenceParameter => this.ContractReferenceTemplate ?? this.DefaultTemplate,
 				_ => this.DefaultTemplate
 			};

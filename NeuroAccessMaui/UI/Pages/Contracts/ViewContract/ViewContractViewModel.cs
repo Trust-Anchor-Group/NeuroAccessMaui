@@ -556,7 +556,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				Parameter.Parameter.Populate(Vars);
 				if (Parameter.Parameter is BooleanParameter or StringParameter or NumericalParameter
 					or DateParameter or TimeParameter or DurationParameter
-					or DateTimeParameter or CalcParameter or ContractReferenceParameter)
+					or DateTimeParameter or CalcParameter or ContractReferenceParameter or GeoParameter)
 				{
 					this.DisplayableParameters.Add(Parameter);
 				}
