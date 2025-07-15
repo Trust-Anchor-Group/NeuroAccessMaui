@@ -51,8 +51,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
 				ServiceRef.XmppService.LegalIdentityChanged += this.XmppContracts_LegalIdentityChanged;
 			}
+            await ServiceRef.XmppService.WaitForConnectedState(TimeSpan.FromSeconds(10));
 			// Only try to create the identity if we haven't already applied
-			if (!this.hasAppliedForIdentity && this.CreateIdentityCommand.CanExecute(null))
+            if (!this.hasAppliedForIdentity && this.CreateIdentityCommand.CanExecute(null))
                 await this.CreateIdentityCommand.ExecuteAsync(null);
             if (ServiceRef.TagProfile.Step != RegistrationStep.Complete)
                 await this.CheckAndHandleIdentityApplicationAsync();
@@ -123,7 +124,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
         /// <summary>
         /// If we can create an identity.
         /// </summary>
-        public bool CanCreateIdentity => IsAccountCreated && !IsLegalIdentityCreated && IsXmppConnected;
+        public bool CanCreateIdentity => IsAccountCreated && !IsLegalIdentityCreated;
 
         /// <summary>
         /// Try to create an identity with a retry loop.
