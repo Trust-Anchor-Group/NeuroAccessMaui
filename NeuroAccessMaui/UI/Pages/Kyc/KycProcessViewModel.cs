@@ -25,6 +25,17 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private bool hasSections;
 		[ObservableProperty] private string nextButtonText = "Next";
 
+		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
+		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
+
+		public string BannerUri =>
+			Application.Current.RequestedTheme switch
+			{
+				AppTheme.Dark => this.BannerUriDark,
+				AppTheme.Light => this.BannerUriLight,
+				_ => this.BannerUriLight
+			};
+
 		public ObservableCollection<KycPage> Pages
 		{
 			get

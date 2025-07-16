@@ -14,6 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public DataTemplate PickerFieldTemplate { get; set; }
 		public DataTemplate BooleanFieldTemplate { get; set; }
 		public DataTemplate FileUploadFieldTemplate { get; set; }
+		public DataTemplate ImageUploadFieldTemplate { get; set; }
 		// Add more as needed
 
 		protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
@@ -25,6 +26,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				FieldType.Picker => this.PickerFieldTemplate,
 				FieldType.Boolean => this.BooleanFieldTemplate,
 				FieldType.File => this.FileUploadFieldTemplate,
+				FieldType.Image => this.ImageUploadFieldTemplate,
 				// Add more here
 				_ => this.TextFieldTemplate
 			};

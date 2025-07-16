@@ -128,9 +128,45 @@
 			</DataTemplate>
 
 			<DataTemplate x:Key="ImageUploadTemplate"
-						  x:DataType="models:KycField">
-				<Grid>
-					
+						  x:DataType="models:ImageField">
+				<Grid RowDefinitions="auto, auto"
+					  ColumnDefinitions="*,*"
+					  ColumnSpacing="16"
+					  RowSpacing="8">
+					<Border Grid.Row="0"
+							Grid.ColumnSpan="2"
+							StrokeShape="RoundRectangle 8"
+							Stroke="{DynamicResource BrandColorsGreyScalesGreyv250}"
+							StrokeDashArray="1,1">
+						<controls:AspectRatioLayout AspectRatio="{Binding AspectRatio}">
+							<controls:ConditionView Condition="{Binding ImageSource, Converter={mct:IsNullConverter}}">
+								<controls:ConditionView.True>
+									<!--
+										Add svg logo here with a binding to what svg it is (it should be dependent on the specialtype of the field.
+									So we can have passport image, front, back image etc. Maybe a default image as well)
+									-->
+									<Label VerticalOptions="Center"
+										   HorizontalOptions="Center" Text="{Binding Placeholder.Text}"/>
+								</controls:ConditionView.True>
+								<controls:ConditionView.False>
+										<Image Source="{Binding ImageSource}"
+											   Aspect="AspectFit"
+											   BackgroundColor="{DynamicResource SurfaceBackgroundWL}" />
+								</controls:ConditionView.False>
+							</controls:ConditionView>
+
+						</controls:AspectRatioLayout>
+					</Border>
+					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+										 LabelData="Upload"
+										 Command="{Binding PickPhotoCommand}"
+										 Grid.Row="1"
+										 Grid.Column="0" />
+					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+										 LabelData="Camera"
+										 Command="{Binding TakePhotoCommand}"
+										 Grid.Row="1"
+										 Grid.Column="1" />
 				</Grid>
 			</DataTemplate>
 			<!--  Add file field template or others as needed  -->
@@ -140,7 +176,8 @@
 											DateFieldTemplate="{StaticResource DateFieldTemplate}"
 											PickerFieldTemplate="{StaticResource PickerFieldTemplate}"
 											TextFieldTemplate="{StaticResource TextFieldTemplate}"
-											FileUploadFieldTemplate="{StaticResource FileUploadFieldTemplate}" />
+											FileUploadFieldTemplate="{StaticResource FileUploadFieldTemplate}"
+											ImageUploadFieldTemplate="{StaticResource ImageUploadTemplate}" />
 		</ResourceDictionary>
 	</ContentPage.Resources>
 
@@ -148,9 +185,35 @@
 		  Margin="0"
 		  RowDefinitions="Auto,*,Auto"
 		  Background="{DynamicResource SurfaceElevation1WL}">
+
+		<Grid Grid.Row="0"
+			  Margin="16,16,16,8"
+			  ColumnDefinitions="*,auto,*"
+			  RowDefinitions="*">
+			<controls:SvgButton Grid.Row="0"
+								Grid.Column="0"
+								Command="{Binding PreviousCommand}"
+								Style="{DynamicResource IconButton}"
+								SvgSource="close.svg"
+								HeightRequest="48"
+								WidthRequest="48"
+								HorizontalOptions="Start" />
+
+			<controls:UriImage Grid.Row="0"
+							   Grid.Column="1"
+							   Aspect="AspectFit"
+							   ErrorPlaceholder="neuro_b"
+							   HorizontalOptions="Center"
+							   Source="{Binding BannerUri}"
+							   WidthRequest="100"
+							   HeightRequest="24" />
+
+
+		</Grid>
 		<!-- Page header -->
 		<ScrollView Grid.Row="1"
-					Padding="16" VerticalOptions="Center">
+					Padding="16"
+					VerticalOptions="Center">
 			<VerticalStackLayout Spacing="4">
 				<Label Style="{DynamicResource PageTitleLabel}"
 					   Text="{Binding CurrentPageTitle}" />
@@ -198,13 +261,13 @@
 						   Text="Progress" />
 					<Label Grid.Column="1"
 						   Text="50%"
-						   HorizontalOptions="End"/>
+						   HorizontalOptions="End" />
 				</Grid>
 				<controls:ProgressBar Progress="{Binding Progress}"
 									  HeightRequest="10"
 									  CornerRadius="10"
-									  TrackBrush="LightGrey"
-									  BarBrush="Orange">
+									  TrackBrush="{DynamicResource TnPAccent2bgWL}"
+									  BarBrush="{DynamicResource TnPAccent2FigureWL}">
 				</controls:ProgressBar>
 				<controls:TextButton LabelData="Next"
 									 Style="{DynamicResource FilledTextButton}"
