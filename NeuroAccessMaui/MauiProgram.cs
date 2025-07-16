@@ -45,6 +45,7 @@ namespace NeuroAccessMaui
 			Builder.ConfigureMauiHandlers(handlers =>
 			{
 				handlers.AddHandler(typeof(AutoHeightSKCanvasView), typeof(AutoHeightSKCanvasViewHandler));
+				handlers.AddHandler(typeof(AspectRatioLayout), typeof(LayoutHandler));
 			});
 
 			Builder.ConfigureLifecycleEvents(lifecycle =>
