@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 using SkiaSharp;
@@ -48,6 +49,7 @@ namespace NeuroAccessMaui.UI.Controls
 		/// Gets or sets the brush used to paint the progress portion of the bar.
 		/// Supports solid color, linear, and radial gradient brushes.
 		/// </summary>
+		[TypeConverter(typeof(BrushTypeConverter))]
 		public Brush BarBrush
 		{
 			get => (Brush)this.GetValue(BarBrushProperty);
@@ -69,6 +71,7 @@ namespace NeuroAccessMaui.UI.Controls
 		/// Gets or sets the brush used to paint the background (track) of the bar.
 		/// Supports solid color, linear, and radial gradient brushes.
 		/// </summary>
+		[TypeConverter(typeof(BrushTypeConverter))]
 		public Brush TrackBrush
 		{
 			get => (Brush)this.GetValue(TrackBrushProperty);
