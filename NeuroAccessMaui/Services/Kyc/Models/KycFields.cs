@@ -5,7 +5,11 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
+using NeuroAccessMaui.UI.Pages.Utility.Images;
 
 namespace NeuroAccessMaui.Services.Kyc.Models
 {
@@ -152,7 +156,11 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		public KycOption? SelectedOption
 		{
 			get => this.RawValue as KycOption;
-			set => this.RawValue = value;
+			set
+			{
+				if (value is not null)
+					this.RawValue = value;
+			}
 		}
 
 		public int? IntValue
@@ -240,25 +248,98 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		/// <summary>
 		/// Target resolution or file metadata (e.g. max size, file types).
 		/// </summary>
-		public int? TargetWidth => this.Metadata.TryGetValue("TargetWidth", out var v) ? v as int? : null;
-		public int? TargetHeight => this.Metadata.TryGetValue("TargetHeight", out var v) ? v as int? : null;
 		public int? MaxFileSizeMB => this.Metadata.TryGetValue("MaxFileSizeMB", out var v) ? v as int? : null;
 		public string[]? AllowedFileTypes => this.Metadata.TryGetValue("AllowedFileTypes", out var v) ? v as string[] : null;
-
-		// Example commands for UI actions
-		public ICommand? TakePhotoCommand { get; set; }
-		public ICommand? PickPhotoCommand { get; set; }
 	}
 
 	/// <summary>
 	/// Image field with image-specific metadata and actions.
 	/// </summary>
-	public class ImageField : KycField
+	public partial class ImageField : FileField
 	{
 		public int? TargetWidth => this.Metadata.TryGetValue("TargetWidth", out var v) ? v as int? : null;
 		public int? TargetHeight => this.Metadata.TryGetValue("TargetHeight", out var v) ? v as int? : null;
 		public double? AspectRatio => this.Metadata.TryGetValue("AspectRatio", out var v) ? v as double? : null;
-		public ICommand? TakePhotoCommand { get; set; }
+		public bool? ShouldCrop => this.Metadata.TryGetValue("ShouldCrop", out var v) ? v as bool? : null;
+
+		[RelayCommand]
+		private async Task PickPhoto()
+		{
+			try
+			{
+				FileResult? Result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions()
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.PickPhotoOfYourself)]
+				});
+
+				if (Result is null)
+					return;
+
+				Stream Stream = await Result.OpenReadAsync();
+				byte[] InputBin = Stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
+
+				TaskCompletionSource<byte[]?> Tcs = new();
+				await ServiceRef.UiService.GoToAsync(
+					nameof(ImageCroppingPage),
+					new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs)
+				);
+
+				byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
+				this.RawValue = Convert.ToBase64String(OutputBin);
+
+
+				this.ImageSource = ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(this.RawValue as string ?? string.Empty)));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+		}
+
+		[RelayCommand]
+		private async Task TakePhoto()
+		{
+			bool Permitted = await ServiceRef.PermissionService.CheckCameraPermissionAsync();
+
+			if (!Permitted)
+				return;
+
+			try
+			{
+				FileResult? Result = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.TakePhotoOfYourself)]
+				});
+
+				if (Result is null)
+					return;
+
+				Stream Stream = await Result.OpenReadAsync();
+
+				byte[] InputBin = Stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
+
+				TaskCompletionSource<byte[]?> Tcs = new();
+				await ServiceRef.UiService.GoToAsync(nameof(ImageCroppingPage), new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs));
+
+				byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
+
+				this.RawValue = Convert.ToBase64String(OutputBin);
+
+
+				this.ImageSource = ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(this.RawValue as string ?? string.Empty)));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
+			}
+		}
+
+		[ObservableProperty]
+		private ImageSource? imageSource;
 	}
 
 	/// <summary>
