@@ -205,7 +205,7 @@
 				<Text lang="sv">Ladda upp dokument</Text>
 			</Label>
 			<!-- Passport Upload Field (shown if passport is selected) -->
-			<Field id="passportUpload" type="file" label="Passport Photo" mapping="PASSPORT_FILE" specialType="passport">
+			<Field id="passportUpload" type="image" label="Passport Photo" mapping="PASSPORT_FILE" specialType="passport">
 				<Label>
 					<Text lang="en">Passport Photo</Text>
 					<Text lang="sv">Passfoto</Text>
@@ -242,7 +242,7 @@
 			</Field>
 
 			<!-- Identity Card Upload Field (shown if identityCard is selected) -->
-			<Field id="identityCardUpload" type="file" label="Identity Card" mapping="IDENTITY_CARD_FILE" specialType="identityCard">
+			<Field id="identityCardUpload" type="image" label="Identity Card" mapping="IDENTITY_CARD_FILE" specialType="identityCard">
 				<Label>
 					<Text lang="en">Identity Card</Text>
 					<Text lang="sv">ID-kort</Text>
@@ -279,7 +279,7 @@
 			</Field>
 
 			<!-- Drivers Licence Front Upload (shown if driversLicence is selected) -->
-			<Field id="driversLicenceFront" type="file" label="Driver's Licence (Front)" mapping="DRIVERS_LICENCE_FRONT" specialType="driversLicenceFront">
+			<Field id="driversLicenceFront" type="image" label="Driver's Licence (Front)" mapping="DRIVERS_LICENCE_FRONT" specialType="driversLicenceFront">
 				<Label>
 					<Text lang="en">Driver's Licence (Front)</Text>
 					<Text lang="sv">Körkort (Framsida)</Text>
@@ -315,7 +315,7 @@
 				</Metadata>
 			</Field>
 			<!-- Drivers Licence Back Upload (shown if driversLicence is selected) -->
-			<Field id="driversLicenceBack" type="file" label="Driver's Licence (Back)" mapping="DRIVERS_LICENCE_BACK" specialType="driversLicenceBack">
+			<Field id="driversLicenceBack" type="image" label="Driver's Licence (Back)" mapping="DRIVERS_LICENCE_BACK" specialType="driversLicenceBack">
 				<Label>
 					<Text lang="en">Driver's Licence (Back)</Text>
 					<Text lang="sv">Körkort (Baksida)</Text>
