@@ -98,6 +98,27 @@
 					<AutoComplete>email</AutoComplete>
 				</Metadata>
 			</Field>
+			<Field id="newsletterOptIn" type="checkbox" label="Newsletter Subscription" required="true">
+				<Label>
+					<Text lang="en">Subscribe to our newsletter?</Text>
+					<Text lang="sv">Prenumerera på vårt nyhetsbrev?</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Get updates and offers by email</Text>
+					<Text lang="sv">Få uppdateringar och erbjudanden via e-post</Text>
+				</Hint>
+				<Options>
+					<Option value="yes">
+						<Text lang="en">Yes, sign me up!</Text>
+						<Text lang="sv">Ja, anmäl mig!</Text>
+					</Option>
+					<Option value="no">
+						<Text lang="en">no, don't sign me up!</Text>
+						<Text lang="sv">nej, anmäl mig ej!</Text>
+					</Option>
+				</Options>
+				<Default>false</Default>
+			</Field>
 			<Field id="isOrganization" type="boolean" label="Are you representing an organization?" mapping="IS_ORG" Required="true">
 				<Label>
 					<Text lang="en">Are you representing an organization?</Text>
