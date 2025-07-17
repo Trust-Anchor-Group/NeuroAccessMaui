@@ -8,6 +8,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
+using NeuroAccessMaui.Services.Kyc.ViewModels;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
@@ -91,14 +92,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			foreach (KycPage Page in this.process.Pages)
 			{
 				Page.PropertyChanged += this.Page_PropertyChanged;
-				foreach (KycField Field in Page.AllFields)
+				foreach (ObservableKycField Field in Page.AllFields)
 				{
 					Field.PropertyChanged += this.Field_PropertyChanged;
 				}
 				foreach (KycSection Section in Page.AllSections)
 				{
 					Section.PropertyChanged += this.Section_PropertyChanged;
-					foreach (KycField SectionField in Section.AllFields)
+					foreach (ObservableKycField SectionField in Section.AllFields)
 					{
 						SectionField.PropertyChanged += this.Field_PropertyChanged;
 					}
@@ -127,7 +128,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private void Field_PropertyChanged(object? Sender, System.ComponentModel.PropertyChangedEventArgs E)
 		{
-			if (E.PropertyName == nameof(KycField.RawValue))
+			if (E.PropertyName == nameof(ObservableKycField.RawValue))
 			{
 				this.SetCurrentPage(this.currentPageIndex);
 				this.NextCommand.NotifyCanExecuteChanged();
@@ -214,7 +215,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return false;
 			}
 
-			IEnumerable<KycField> AllVisibleFields = this.CurrentPage.VisibleFields
+			IEnumerable<ObservableKycField> AllVisibleFields = this.CurrentPage.VisibleFields
 				.Concat(this.CurrentPageSections.SelectMany(Section => Section.VisibleFields));
 			return AllVisibleFields.All(Field => Field.IsValid);
 		}
@@ -261,10 +262,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			bool IsOk = true;
-			IEnumerable<KycField> Fields = this.CurrentPage.VisibleFields
+			IEnumerable<ObservableKycField> Fields = this.CurrentPage.VisibleFields
 				.Concat(this.CurrentPageSections.SelectMany(Section => Section.VisibleFields));
 
-			foreach (KycField Field in Fields)
+			foreach (ObservableKycField Field in Fields)
 			{
 				if (!Field.Validate("en"))
 				{
@@ -281,9 +282,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 			else if (this.process is not null)
 			{
-				foreach (KycField Field in Fields)
+				foreach (ObservableKycField Field in Fields)
 				{
-					this.process.Values[Field.Id] = Field.ValueString;
+					this.process.Values[Field.Id] = Field.StringValue;
 				}
 			}
 

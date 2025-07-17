@@ -8,6 +8,7 @@
 					  xmlns:local="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
 					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 					  xmlns:models="clr-namespace:NeuroAccessMaui.Services.Kyc.Models"
+					  xmlns:fields="clr-namespace:NeuroAccessMaui.Services.Kyc.ViewModels"
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
 					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					  x:DataType="viewmodel:KycProcessViewModel">
@@ -20,11 +21,10 @@
 						Value="24" />
 			</Style>
 
-			<!--  Text field template  -->
-			<DataTemplate x:Key="TextFieldTemplate"
-						  x:DataType="models:KycField">
+			<!-- Text field template -->
+			<DataTemplate x:Key="TextFieldTemplate" x:DataType="fields:ObservableGenericField">
 				<VerticalStackLayout Spacing="2">
-					<controls:CompositeEntry EntryData="{Binding Value, Mode=TwoWay}"
+					<controls:CompositeEntry EntryData="{Binding StringValue, Mode=TwoWay}"
 											 LabelText="{Binding Label.Text}"
 											 Placeholder="{Binding Placeholder.Text}"
 											 Style="{DynamicResource RegularCompositeEntry}"
@@ -33,9 +33,8 @@
 											 ValidationText="{Binding ValidationText}" />
 				</VerticalStackLayout>
 			</DataTemplate>
-			<!--  Date field template  -->
-			<DataTemplate x:Key="DateFieldTemplate"
-						  x:DataType="models:KycField">
+			<!-- Date field template -->
+			<DataTemplate x:Key="DateFieldTemplate" x:DataType="fields:ObservableDateField">
 				<VerticalStackLayout Spacing="2">
 					<controls:CompositeDatePicker LabelText="{Binding Label.Text}"
 												  NullableDate="{Binding DateValue, Mode=TwoWay}"
@@ -46,9 +45,34 @@
 												  ValidationText="{Binding ValidationText}" />
 				</VerticalStackLayout>
 			</DataTemplate>
-			<!--  Picker field template  -->
-			<DataTemplate x:Key="PickerFieldTemplate"
-						  x:DataType="models:KycField">
+			<!-- Integer field template -->
+			<DataTemplate x:Key="IntegerFieldTemplate" x:DataType="fields:ObservableIntegerField">
+				<VerticalStackLayout Spacing="2">
+					<controls:CompositeEntry EntryData="{Binding IntValue, Mode=TwoWay}"
+											 LabelText="{Binding Label.Text}"
+											 Placeholder="{Binding Placeholder.Text}"
+											 Keyboard="Numeric"
+											 Style="{DynamicResource RegularCompositeEntry}"
+											 Required="{Binding Required}"
+											 IsValid="{Binding IsValid}"
+											 ValidationText="{Binding ValidationText}" />
+				</VerticalStackLayout>
+			</DataTemplate>
+			<!-- Decimal field template -->
+			<DataTemplate x:Key="DecimalFieldTemplate" x:DataType="fields:ObservableDecimalField">
+				<VerticalStackLayout Spacing="2">
+					<controls:CompositeEntry EntryData="{Binding DecimalValue, Mode=TwoWay}"
+											 LabelText="{Binding Label.Text}"
+											 Placeholder="{Binding Placeholder.Text}"
+											 Keyboard="Numeric"
+											 Style="{DynamicResource RegularCompositeEntry}"
+											 Required="{Binding Required}"
+											 IsValid="{Binding IsValid}"
+											 ValidationText="{Binding ValidationText}" />
+				</VerticalStackLayout>
+			</DataTemplate>
+			<!-- Picker field template -->
+			<DataTemplate x:Key="PickerFieldTemplate" x:DataType="fields:ObservablePickerField">
 				<VerticalStackLayout Spacing="2">
 					<controls:CompositePicker ItemsSource="{Binding Options}"
 											  LabelText="{Binding Label.Text}"
@@ -64,9 +88,49 @@
 					</controls:CompositePicker>
 				</VerticalStackLayout>
 			</DataTemplate>
-			<!--  Boolean (switch) field template  -->
-			<DataTemplate x:Key="BooleanFieldTemplate"
-						  x:DataType="models:KycField">
+			<!-- Radio field template -->
+			<DataTemplate x:Key="RadioFieldTemplate" x:DataType="fields:ObservableRadioField">
+				<VerticalStackLayout Spacing="2">
+					<controls:CompositePicker ItemsSource="{Binding Options}"
+											  LabelText="{Binding Label.Text}"
+											  Placeholder="{Binding Placeholder.Text}"
+											  SelectedItem="{Binding SelectedOption, Mode=TwoWay}"
+											  Style="{DynamicResource RegularCompositePicker}"
+											  Required="{Binding Required}"
+											  IsValid="{Binding IsValid}"
+											  ValidationText="{Binding ValidationText}">
+						<controls:CompositePicker.ItemDisplayBinding>
+							<Binding Path="Label.Text" />
+						</controls:CompositePicker.ItemDisplayBinding>
+					</controls:CompositePicker>
+				</VerticalStackLayout>
+			</DataTemplate>
+			<!-- Country field template -->
+			<DataTemplate x:Key="CountryFieldTemplate" x:DataType="fields:ObservableCountryField">
+				<VerticalStackLayout Spacing="2">
+					<controls:CompositePicker ItemsSource="{Binding Options}"
+											  LabelText="{Binding Label.Text}"
+											  Placeholder="{Binding Placeholder.Text}"
+											  SelectedItem="{Binding CountryCode, Mode=TwoWay}"
+											  Style="{DynamicResource RegularCompositePicker}"
+											  Required="{Binding Required}"
+											  IsValid="{Binding IsValid}"
+											  ValidationText="{Binding ValidationText}" />
+				</VerticalStackLayout>
+			</DataTemplate>
+			<!-- Checkbox field template -->
+			<DataTemplate x:Key="CheckboxFieldTemplate" x:DataType="fields:ObservableCheckboxField">
+				<VerticalStackLayout Spacing="2">
+					<controls:CompositeCheckboxGroup ItemsSource="{Binding Options}"
+													 SelectedItems="{Binding SelectedOptions, Mode=TwoWay}"
+													 LabelText="{Binding Label.Text}"
+													 Required="{Binding Required}"
+													 IsValid="{Binding IsValid}"
+													 ValidationText="{Binding ValidationText}" />
+				</VerticalStackLayout>
+			</DataTemplate>
+			<!-- Boolean (switch) field template -->
+			<DataTemplate x:Key="BooleanFieldTemplate" x:DataType="fields:ObservableBooleanField">
 				<controls:CompositeInputView LabelText="{Binding Label.Text}"
 											 Style="{DynamicResource BaseCompositeInputView}"
 											 Required="{Binding Required}"
@@ -85,10 +149,8 @@
 					</controls:CompositeInputView.CenterView>
 				</controls:CompositeInputView>
 			</DataTemplate>
-
 			<!-- File upload field template -->
-			<DataTemplate x:Key="FileUploadFieldTemplate"
-						  x:DataType="models:KycField">
+			<DataTemplate x:Key="FileUploadFieldTemplate" x:DataType="fields:ObservableFileField">
 				<Grid ColumnDefinitions="*,auto,auto,*"
 					  ColumnSpacing="{DynamicResource SmallSpacing}"
 					  RowDefinitions="auto,auto,auto,*"
@@ -105,30 +167,24 @@
 							WidthRequest="200">
 						<Image Aspect="AspectFill"
 							   Source="photo_placeholder">
-
 						</Image>
 					</Border>
-
 					<controls:ImageButton Grid.Row="0"
 										  Grid.Column="2"
 										  PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
 										  Style="{DynamicResource OutlinedImageButton}" />
-
 					<controls:ImageButton Grid.Row="1"
 										  Grid.Column="2"
 										  PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
 										  Style="{DynamicResource OutlinedImageButton}" />
-
 					<controls:ImageButton Grid.Row="2"
 										  Grid.Column="2"
 										  PathData="{x:Static ui:Geometries.TrashCanButtonPath}"
 										  Style="{DynamicResource OutlinedImageButton}" />
-
 				</Grid>
 			</DataTemplate>
-
-			<DataTemplate x:Key="ImageUploadTemplate"
-						  x:DataType="models:ImageField">
+			<!-- Image upload field template -->
+			<DataTemplate x:Key="ImageUploadTemplate" x:DataType="fields:ObservableImageField">
 				<Grid RowDefinitions="auto, auto"
 					  ColumnDefinitions="*,*"
 					  ColumnSpacing="16"
@@ -141,10 +197,6 @@
 						<controls:AspectRatioLayout AspectRatio="{Binding AspectRatio}">
 							<controls:ConditionView Condition="{Binding ImageSource, Converter={mct:IsNullConverter}}">
 								<controls:ConditionView.True>
-									<!--
-										Add svg logo here with a binding to what svg it is (it should be dependent on the specialtype of the field.
-									So we can have passport image, front, back image etc. Maybe a default image as well)
-									-->
 									<Label VerticalOptions="Center"
 										   HorizontalOptions="Center" Text="{Binding Placeholder.Text}"/>
 								</controls:ConditionView.True>
@@ -154,7 +206,6 @@
 											   BackgroundColor="{DynamicResource SurfaceBackgroundWL}" />
 								</controls:ConditionView.False>
 							</controls:ConditionView>
-
 						</controls:AspectRatioLayout>
 					</Border>
 					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
@@ -169,15 +220,24 @@
 										 Grid.Column="1" />
 				</Grid>
 			</DataTemplate>
-			<!--  Add file field template or others as needed  -->
+			<!-- Label/info field template -->
+			<DataTemplate x:Key="LabelFieldTemplate" x:DataType="fields:ObservableLabelField">
+				<Label Text="{Binding Label.Text}" FontAttributes="Bold" FontSize="Medium" />
+			</DataTemplate>
 
 			<local:KycFieldTemplateSelector x:Key="KycFieldTemplateSelector"
 											BooleanFieldTemplate="{StaticResource BooleanFieldTemplate}"
 											DateFieldTemplate="{StaticResource DateFieldTemplate}"
 											PickerFieldTemplate="{StaticResource PickerFieldTemplate}"
+											IntegerFieldTemplate="{StaticResource IntegerFieldTemplate}"
+											DecimalFieldTemplate="{StaticResource DecimalFieldTemplate}"
+											RadioFieldTemplate="{StaticResource RadioFieldTemplate}"
+											CountryFieldTemplate="{StaticResource CountryFieldTemplate}"
+											CheckboxFieldTemplate="{StaticResource CheckboxFieldTemplate}"
 											TextFieldTemplate="{StaticResource TextFieldTemplate}"
 											FileUploadFieldTemplate="{StaticResource FileUploadFieldTemplate}"
-											ImageUploadFieldTemplate="{StaticResource ImageUploadTemplate}" />
+											ImageUploadFieldTemplate="{StaticResource ImageUploadTemplate}"
+											LabelFieldTemplate="{StaticResource LabelFieldTemplate}" />
 		</ResourceDictionary>
 	</ContentPage.Resources>
 
