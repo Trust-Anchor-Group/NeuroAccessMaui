@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 {
 	public partial class KycProcessViewModel : BaseViewModel
 	{
-		private NeuroAccessMaui.Services.Kyc.Models.KycProcess? process;
+		private KycProcess? process;
 		private int currentPageIndex = 0;
 
 		[ObservableProperty] private int currentPagePosition;
@@ -81,10 +81,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			await base.OnInitialize();
 
-			this.process = await KycProcessParser.LoadProcessAsync(
-				"NeuroAccessMaui.Resources.Raw.TestKYC.xml",
-				Lang: "en"
-			);
+			this.process = await ServiceRef.KycService.LoadProcessAsync(
+					 "NeuroAccessMaui.Resources.Raw.TestKYC.xml",
+					 "en"
+			 );
 
 			this.process.Initialize();
 
