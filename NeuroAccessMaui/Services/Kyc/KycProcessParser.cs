@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.Maui.Storage;
 using NeuroAccessMaui.Services.Kyc.Models;
+using NeuroAccessMaui.Services.Kyc.ViewModels;
 
 namespace NeuroAccessMaui.Services.Kyc
 {
@@ -63,28 +64,27 @@ namespace NeuroAccessMaui.Services.Kyc
 			return Task.FromResult(Process);
 		}
 
-		private static KycField ParseField(XElement El, string? Lang)
+		private static ObservableKycField ParseField(XElement El, string? Lang)
 		{
 			// Determine field type
 			string TypeAttr = (string?)El.Attribute("type") ?? "text";
 			FieldType FieldType = Enum.TryParse<FieldType>(TypeAttr, true, out FieldType Ft) ? Ft : FieldType.Text;
 
-			KycField Field;
-
-			if (FieldType == FieldType.File)
+			ObservableKycField Field = FieldType switch
 			{
-				FileField FileField = new FileField();
-				Field = FileField;
-			}
-			else if (FieldType == FieldType.Image)
-			{
-				ImageField ImageField = new ImageField();
-				Field = ImageField;
-			}
-			else
-			{
-				Field = new KycField();
-			}
+				FieldType.Boolean => new ObservableBooleanField(),
+				FieldType.Date => new ObservableDateField(),
+				FieldType.Integer => new ObservableIntegerField(),
+				FieldType.Decimal => new ObservableDecimalField(),
+				FieldType.Picker => new ObservablePickerField(),
+				FieldType.Radio => new ObservableRadioField(),
+				FieldType.Country => new ObservableCountryField(),
+				FieldType.Checkbox => new ObservableCheckboxField(),
+				FieldType.File => new ObservableFileField(),
+				FieldType.Image => new ObservableImageField(),
+				FieldType.Label or FieldType.Info => new ObservableLabelField(),
+				_ => new ObservableGenericField(),
+			};
 
 			// Basic attributes
 			Field.Id = (string?)El.Attribute("id") ?? string.Empty;
@@ -195,28 +195,28 @@ namespace NeuroAccessMaui.Services.Kyc
 			string? Def = El.Element("Default")?.Value?.Trim();
 			if (!string.IsNullOrEmpty(Def))
 			{
-				switch (Field.FieldType)
+				switch (Field)
 				{
-					case FieldType.Date:
+					case ObservableDateField DateField:
 						if (Def.Equals("now()", StringComparison.OrdinalIgnoreCase))
-							Field.DateValue = DateTime.Today;
+							DateField.DateValue = DateTime.Today;
 						else if (DateTime.TryParse(Def, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime Dt))
-							Field.DateValue = Dt;
+							DateField.DateValue = Dt;
 						break;
-					case FieldType.Boolean:
+					case ObservableBooleanField BoolField:
 						if (bool.TryParse(Def, out bool Bv))
-							Field.BoolValue = Bv;
+							BoolField.BoolValue = Bv;
 						break;
-					case FieldType.Integer:
+					case ObservableIntegerField IntField:
 						if (int.TryParse(Def, NumberStyles.Integer, CultureInfo.InvariantCulture, out int Iv))
-							Field.IntValue = Iv;
+							IntField.IntValue = Iv;
 						break;
-					case FieldType.Decimal:
+					case ObservableDecimalField DecField:
 						if (decimal.TryParse(Def, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal Dv))
-							Field.DecimalValue = Dv;
+							DecField.DecimalValue = Dv;
 						break;
 					default:
-						Field.Value = Def;
+						Field.StringValue = Def;
 						break;
 				}
 			}

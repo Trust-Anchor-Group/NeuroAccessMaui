@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.UI.MVVM;
 
 namespace NeuroAccessMaui.Services.Kyc.Models
@@ -11,22 +12,22 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 
 		public KycSection()
 		{
-			this.VisibleFieldsCollection = new FilteredObservableCollection<KycField>(this.AllFields, Field => Field.IsVisible);
+			this.VisibleFieldsCollection = new FilteredObservableCollection<ObservableKycField>(this.AllFields, Field => Field.IsVisible);
 		}
 
 		public KycLocalizedText? Label { get; set; }
 		public KycLocalizedText? Description { get; set; }
 
-		public ObservableCollection<KycField> AllFields { get; } = new();
-		public FilteredObservableCollection<KycField> VisibleFieldsCollection { get; }
-		public ReadOnlyObservableCollection<KycField> VisibleFields => this.VisibleFieldsCollection;
+		public ObservableCollection<ObservableKycField> AllFields { get; } = new();
+		public FilteredObservableCollection<ObservableKycField> VisibleFieldsCollection { get; }
+		public ReadOnlyObservableCollection<ObservableKycField> VisibleFields => this.VisibleFieldsCollection;
 
 		public int VisibleFieldsCount => this.VisibleFields.Count;
 		public bool IsVisible { get; private set; } = true;
 
 		public void UpdateVisibilities(IDictionary<string, string?> Values)
 		{
-			foreach (KycField Field in this.AllFields)
+			foreach (ObservableKycField Field in this.AllFields)
 			{
 				Field.IsVisible = Field.Condition?.Evaluate(Values) ?? true;
 			}

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.UI.MVVM;
 
 namespace NeuroAccessMaui.Services.Kyc.Models
@@ -18,7 +19,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 
 		public KycPage()
 		{
-			this.VisibleFieldsCollection = new FilteredObservableCollection<KycField>(this.AllFields, Field => Field.IsVisible);
+			this.VisibleFieldsCollection = new FilteredObservableCollection<ObservableKycField>(this.AllFields, Field => Field.IsVisible);
 			this.VisibleSectionsCollection = new FilteredObservableCollection<KycSection>(this.AllSections, Section => Section.IsVisible);
 		}
 
@@ -27,9 +28,9 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		public KycLocalizedText? Description { get; set; }
 		public KycCondition? Condition { get; set; }
 
-		public ObservableCollection<KycField> AllFields { get; } = new();
-		public FilteredObservableCollection<KycField> VisibleFieldsCollection { get; }
-		public ReadOnlyObservableCollection<KycField> VisibleFields => this.VisibleFieldsCollection;
+		public ObservableCollection<ObservableKycField> AllFields { get; } = new();
+		public FilteredObservableCollection<ObservableKycField> VisibleFieldsCollection { get; }
+		public ReadOnlyObservableCollection<ObservableKycField> VisibleFields => this.VisibleFieldsCollection;
 
 		public ObservableCollection<KycSection> AllSections { get; } = new();
 		public FilteredObservableCollection<KycSection> VisibleSectionsCollection { get; }
@@ -37,7 +38,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 
 		public void UpdateVisibilities(IDictionary<string, string?> Values)
 		{
-			foreach (KycField Field in this.AllFields)
+			foreach (ObservableKycField Field in this.AllFields)
 			{
 				Field.IsVisible = Field.Condition?.Evaluate(Values) ?? true;
 			}
@@ -80,13 +81,13 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		internal void InitFieldValueNotifications(IDictionary<string, string?> Values)
 		{
 			this.values = Values;
-			foreach (KycField Field in this.AllFields)
+			foreach (ObservableKycField Field in this.AllFields)
 			{
 				Field.PropertyChanged += this.Field_ValueChanged;
 			}
 			foreach (KycSection Section in this.AllSections)
 			{
-				foreach (KycField Field in Section.AllFields)
+				foreach (ObservableKycField Field in Section.AllFields)
 				{
 					Field.PropertyChanged += this.Field_ValueChanged;
 				}
@@ -95,9 +96,9 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 
 		private void Field_ValueChanged(object? Sender, PropertyChangedEventArgs E)
 		{
-			if (E.PropertyName == nameof(KycField.RawValue) && Sender is KycField Field)
+			if (E.PropertyName == nameof(ObservableKycField.RawValue) && Sender is ObservableKycField Field)
 			{
-				this.values[Field.Id] = Field.ValueString;
+				this.values[Field.Id] = Field.StringValue;
 				this.UpdateVisibilities(this.values);
 			}
 		}

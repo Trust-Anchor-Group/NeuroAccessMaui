@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using NeuroAccessMaui.Services.Kyc.ViewModels;
 
 namespace NeuroAccessMaui.Services.Kyc.Models
 {
 	public interface IKycRule
 	{
-		bool Validate(KycField Field, out string Error, string? Lang = null);
+		bool Validate(ObservableKycField Field, out string Error, string? Lang = null);
 	}
 
 	/// <summary>
@@ -16,7 +17,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 	/// </summary>
 	public class RequiredRule : IKycRule
 	{
-		public bool Validate(KycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
 			if (!Field.Required)
@@ -25,19 +26,18 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			string Label = Field.Label?.Get(Lang) ?? Field.Id;
 			bool Missing = Field.FieldType switch
 			{
-				FieldType.Date => Field.DateValue is null,
-				FieldType.Picker => Field.SelectedOption is null,
-				FieldType.Radio => Field.SelectedOption is null,
-				FieldType.Boolean => Field.BoolValue != true,
-				FieldType.Checkbox => Field.SelectedOptions == null || Field.SelectedOptions.Count == 0,
-				FieldType.File => Field.Value is not string s || string.IsNullOrEmpty(s), // file path or token
-				FieldType.Email => string.IsNullOrEmpty(Field.Value),
-				FieldType.Phone => string.IsNullOrEmpty(Field.Value),
-				FieldType.Integer => Field.IntValue is null,
-				FieldType.Decimal => Field.DecimalValue is null,
-				FieldType.Country => string.IsNullOrEmpty(Field.CountryCode),
+				FieldType.Date => Field is ObservableDateField DateField && DateField.DateValue is null,
+				FieldType.Picker => Field is ObservablePickerField PickerField && PickerField.SelectedOption is null,
+				FieldType.Radio => Field is ObservableRadioField RadioField && RadioField.SelectedOption is null,
+				FieldType.Boolean => Field is ObservableBooleanField BoolField && BoolField.BoolValue != true,
+				FieldType.Checkbox => Field is ObservableCheckboxField CheckboxField && (CheckboxField.SelectedOptions == null || CheckboxField.SelectedOptions.Count == 0),
+				FieldType.File => Field is ObservableFileField FileField && (FileField.StringValue is not string FileValue || string.IsNullOrEmpty(FileValue)),
+				FieldType.Email or FieldType.Phone or FieldType.Text => string.IsNullOrEmpty(Field.StringValue),
+				FieldType.Integer => Field is ObservableIntegerField IntField && IntField.IntValue is null,
+				FieldType.Decimal => Field is ObservableDecimalField DecField && DecField.DecimalValue is null,
+				FieldType.Country => Field is ObservableCountryField CountryField && string.IsNullOrEmpty(CountryField.CountryCode),
 				FieldType.Label or FieldType.Info => false, // info/display only, never required
-				_ => string.IsNullOrEmpty(Field.Value)
+				_ => string.IsNullOrEmpty(Field.StringValue)
 			};
 
 			if (Missing)
@@ -62,10 +62,11 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			this.message = Message;
 		}
 
-		public bool Validate(KycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
-			if (Field.Value is string Text)
+			string? Text = Field.StringValue;
+			if (Text is not null)
 			{
 				if (this.min.HasValue && Text.Length < this.min.Value)
 					Error = this.message ?? $"{Field.Label?.Get(Lang) ?? Field.Id} must be at least {this.min.Value} characters";
@@ -90,10 +91,11 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			this.message = Message;
 		}
 
-		public bool Validate(KycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
-			if (Field.Value is string Text && !this.regex.IsMatch(Text))
+			string? Text = Field.StringValue;
+			if (Text is not null && !this.regex.IsMatch(Text))
 				Error = this.message ?? $"{Field.Label?.Get(Lang) ?? Field.Id} format is invalid";
 			return string.IsNullOrEmpty(Error);
 		}
@@ -115,10 +117,10 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			this.message = Message;
 		}
 
-		public bool Validate(KycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
-			if (Field.DateValue is DateTime Date)
+			if (Field is ObservableDateField DateField && DateField.DateValue is DateTime Date)
 			{
 				if (this.min.HasValue && Date < this.min.Value)
 					Error = this.message ?? $"{Field.Label?.Get(Lang) ?? Field.Id} must be on or after {this.min:yyyy-MM-dd}";
@@ -145,20 +147,20 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			this.message = Message;
 		}
 
-		public bool Validate(KycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
-			decimal? val = Field.FieldType switch
+			decimal? Value = Field.FieldType switch
 			{
-				FieldType.Integer => Field.IntValue,
-				FieldType.Decimal => Field.DecimalValue,
+				FieldType.Integer => Field is ObservableIntegerField IntField ? IntField.IntValue : null,
+				FieldType.Decimal => Field is ObservableDecimalField DecField ? DecField.DecimalValue : null,
 				_ => null
 			};
-			if (val is decimal d)
+			if (Value is decimal Dec)
 			{
-				if (this.min.HasValue && d < this.min.Value)
+				if (this.min.HasValue && Dec < this.min.Value)
 					Error = this.message ?? $"{Field.Label?.Get(Lang) ?? Field.Id} must be at least {this.min}";
-				else if (this.max.HasValue && d > this.max.Value)
+				else if (this.max.HasValue && Dec > this.max.Value)
 					Error = this.message ?? $"{Field.Label?.Get(Lang) ?? Field.Id} must be at most {this.max}";
 			}
 			return string.IsNullOrEmpty(Error);
@@ -170,18 +172,18 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 	/// </summary>
 	public class EmailRule : IKycRule
 	{
-		private static readonly Regex EmailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
+		private static readonly Regex emailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
 
 		private readonly string? message;
 
 		public EmailRule(string? Message = null) => this.message = Message;
 
-		public bool Validate(KycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
-			if (Field.FieldType == FieldType.Email && Field.Value is string s && !string.IsNullOrEmpty(s))
+			if (Field.FieldType == FieldType.Email && Field.StringValue is string Email && !string.IsNullOrEmpty(Email))
 			{
-				if (!EmailRegex.IsMatch(s))
+				if (!emailRegex.IsMatch(Email))
 					Error = this.message ?? $"{Field.Label?.Get(Lang) ?? Field.Id} must be a valid email address";
 			}
 			return string.IsNullOrEmpty(Error);
@@ -199,12 +201,12 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 
 		public PhoneRule(string? Message = null) => this.message = Message;
 
-		public bool Validate(KycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
-			if (Field.FieldType == FieldType.Phone && Field.Value is string s && !string.IsNullOrEmpty(s))
+			if (Field.FieldType == FieldType.Phone && Field.StringValue is string Phone && !string.IsNullOrEmpty(Phone))
 			{
-				if (!phoneRegex.IsMatch(s))
+				if (!phoneRegex.IsMatch(Phone))
 					Error = this.message ?? $"{Field.Label?.Get(Lang) ?? Field.Id} must be a valid phone number";
 			}
 			return string.IsNullOrEmpty(Error);
@@ -225,12 +227,12 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			this.message = Message;
 		}
 
-		public bool Validate(KycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
-			if (Field.FieldType == FieldType.Country && !string.IsNullOrEmpty(Field.CountryCode))
+			if (Field.FieldType == FieldType.Country && Field is ObservableCountryField CountryField && !string.IsNullOrEmpty(CountryField.CountryCode))
 			{
-				if (!this.validCountries.Contains(Field.CountryCode))
+				if (!this.validCountries.Contains(CountryField.CountryCode))
 					Error = this.message ?? $"{Field.Label?.Get(Lang) ?? Field.Id} is not a valid country";
 			}
 			return string.IsNullOrEmpty(Error);
@@ -253,7 +255,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			this.message = Message;
 		}
 
-		public bool Validate(KycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
 		{
 			// File validation implementation goes here as needed (pseudo-code):
 			// - check file exists, size, extension...
