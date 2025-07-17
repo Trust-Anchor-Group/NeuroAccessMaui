@@ -17,15 +17,12 @@ namespace NeuroAccessMaui.Services.Kyc
 	public static class KycProcessParser
 	{
 		/// <summary>
-		/// Loads and parses the KYC pages from an embedded XML resource.
+		/// Parses the KYC pages from an XML string.
 		/// </summary>
-		public static async Task<KycProcess> LoadProcessAsync(string Resource, string? Lang = null)
+		public static Task<KycProcess> LoadProcessAsync(string Xml, string? Lang = null)
 		{
-			KycProcess Process = new KycProcess();
-			string FileName = GetFileName(Resource);
-
-			using Stream Stream = await FileSystem.OpenAppPackageFileAsync(FileName);
-			XDocument Doc = XDocument.Load(Stream);
+			KycProcess Process = new();
+			XDocument Doc = XDocument.Parse(Xml);
 
 			foreach (XElement PageEl in Doc.Root?.Elements("Page") ?? Enumerable.Empty<XElement>())
 			{
@@ -63,13 +60,7 @@ namespace NeuroAccessMaui.Services.Kyc
 
 			Process.Initialize();
 
-			return Process;
-		}
-
-		private static string GetFileName(string Resource)
-		{
-			int Index = Resource.LastIndexOf("Raw.", StringComparison.OrdinalIgnoreCase);
-			return Index >= 0 ? Resource[(Index + 4)..] : Resource;
+			return Task.FromResult(Process);
 		}
 
 		private static KycField ParseField(XElement El, string? Lang)
