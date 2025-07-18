@@ -1,5 +1,3 @@
-
-
 using System.Collections;
 using System.Collections.ObjectModel;
 using Microsoft.Maui.Controls;
@@ -12,24 +10,24 @@ namespace NeuroAccessMaui.UI.Controls
         Multiple
     }
 
-    public class SelectableTemplateSelector : StackLayout
+    public class TemplatedSelector : StackLayout
     {
         public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(
-            nameof(ItemsSource), typeof(IEnumerable), typeof(SelectableTemplateSelector), propertyChanged: OnItemsSourceChanged);
+            nameof(ItemsSource), typeof(IEnumerable), typeof(TemplatedSelector), propertyChanged: OnItemsSourceChanged);
 
         public static readonly BindableProperty ItemTemplateProperty = BindableProperty.Create(
-            nameof(ItemTemplate), typeof(DataTemplate), typeof(SelectableTemplateSelector));
+            nameof(ItemTemplate), typeof(DataTemplate), typeof(TemplatedSelector));
 
         public static readonly BindableProperty SelectionModeProperty = BindableProperty.Create(
-            nameof(SelectionMode), typeof(SelectorSelectionMode), typeof(SelectableTemplateSelector), SelectorSelectionMode.Single);
+            nameof(SelectionMode), typeof(SelectorSelectionMode), typeof(TemplatedSelector), SelectorSelectionMode.Single);
 
         public static readonly BindableProperty SelectedItemProperty = BindableProperty.Create(
-            nameof(SelectedItem), typeof(object), typeof(SelectableTemplateSelector), defaultBindingMode: BindingMode.TwoWay);
+            nameof(SelectedItem), typeof(object), typeof(TemplatedSelector), defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly BindableProperty SelectedItemsProperty = BindableProperty.Create(
-            nameof(SelectedItems), typeof(IList), typeof(SelectableTemplateSelector), defaultValue: new ObservableCollection<object>(), defaultBindingMode: BindingMode.TwoWay);
+            nameof(SelectedItems), typeof(IList), typeof(TemplatedSelector), defaultValue: new ObservableCollection<object>(), defaultBindingMode: BindingMode.TwoWay);
         public static readonly BindableProperty SelectOnTapProperty = BindableProperty.Create(
-            nameof(SelectOnTap), typeof(bool), typeof(SelectableTemplateSelector), false);
+            nameof(SelectOnTap), typeof(bool), typeof(TemplatedSelector), false);
 
         public bool SelectOnTap
         {
@@ -38,42 +36,42 @@ namespace NeuroAccessMaui.UI.Controls
         }
         public IEnumerable ItemsSource
         {
-            get => (IEnumerable)GetValue(ItemsSourceProperty);
-            set => SetValue(ItemsSourceProperty, value);
+            get => (IEnumerable)this.GetValue(ItemsSourceProperty);
+            set => this.SetValue(ItemsSourceProperty, value);
         }
 
         public DataTemplate ItemTemplate
         {
-            get => (DataTemplate)GetValue(ItemTemplateProperty);
-            set => SetValue(ItemTemplateProperty, value);
+            get => (DataTemplate)this.GetValue(ItemTemplateProperty);
+            set => this.SetValue(ItemTemplateProperty, value);
         }
 
         public SelectorSelectionMode SelectionMode
         {
-            get => (SelectorSelectionMode)GetValue(SelectionModeProperty);
-            set => SetValue(SelectionModeProperty, value);
+            get => (SelectorSelectionMode)this.GetValue(SelectionModeProperty);
+            set => this.SetValue(SelectionModeProperty, value);
         }
 
         public object SelectedItem
         {
-            get => GetValue(SelectedItemProperty);
-            set => SetValue(SelectedItemProperty, value);
+            get => this.GetValue(SelectedItemProperty);
+            set => this.SetValue(SelectedItemProperty, value);
         }
 
         public IList SelectedItems
         {
-            get => (IList)GetValue(SelectedItemsProperty);
-            set => SetValue(SelectedItemsProperty, value);
+            get => (IList)this.GetValue(SelectedItemsProperty);
+            set => this.SetValue(SelectedItemsProperty, value);
         }
 
-        public SelectableTemplateSelector()
+        public TemplatedSelector()
         {
-            Orientation = StackOrientation.Vertical;
+			this.Orientation = StackOrientation.Vertical;
         }
 
         private static void OnItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
         {
-            if (bindable is SelectableTemplateSelector selector)
+            if (bindable is TemplatedSelector selector)
             {
                 selector.BuildItems();
             }
@@ -115,33 +113,43 @@ namespace NeuroAccessMaui.UI.Controls
 
         private void OnChildIsSelectedChanged(object? sender, EventArgs e)
         {
-            if (this.SelectionMode == SelectorSelectionMode.Single && sender is NeuroAccessMaui.Core.ISelectable ChangedSelectable && ChangedSelectable.IsSelected)
+            if (sender is NeuroAccessMaui.Core.ISelectable ChangedSelectable)
             {
-                foreach (View ChildView in this.Children.Cast<View>())
+                object Item = (ChangedSelectable is SelectableOption<object> So) ? So.Item : ChangedSelectable;
+                if (this.SelectionMode == SelectorSelectionMode.Single && ChangedSelectable.IsSelected)
                 {
-                    if (ChildView.BindingContext is NeuroAccessMaui.Core.ISelectable OtherSelectable && !object.ReferenceEquals(OtherSelectable, ChangedSelectable))
+                    foreach (View ChildView in this.Children.Cast<View>())
                     {
-                        OtherSelectable.IsSelected = false;
+                        if (ChildView.BindingContext is NeuroAccessMaui.Core.ISelectable OtherSelectable && !object.ReferenceEquals(OtherSelectable, ChangedSelectable))
+                        {
+                            OtherSelectable.IsSelected = false;
+                        }
+                    }
+                    this.SelectedItem = Item;
+                    if (this.SelectedItems != null)
+                    {
+                        this.SelectedItems.Clear();
+                        this.SelectedItems.Add(this.SelectedItem);
                     }
                 }
-                this.SelectedItem = (ChangedSelectable is SelectableOption<object> So) ? So.Item : ChangedSelectable;
-                if (this.SelectedItems != null)
+                else if (this.SelectionMode == SelectorSelectionMode.Multiple)
                 {
-                    this.SelectedItems.Clear();
-                    this.SelectedItems.Add(this.SelectedItem);
+                    if (ChangedSelectable.IsSelected)
+                    {
+                        if (!this.SelectedItems.Contains(Item))
+                        {
+                            this.SelectedItems.Add(Item);
+                        }
+                    }
+                    else
+                    {
+                        if (this.SelectedItems.Contains(Item))
+                        {
+                            this.SelectedItems.Remove(Item);
+                        }
+                    }
                 }
             }
-        }
-
-        private object CreateSelectableOption(object item, bool isSelected, Action<object>? toggleAction = null)
-        {
-            Type OptionType = typeof(SelectableOption<>).MakeGenericType(item.GetType());
-            object? Instance = Activator.CreateInstance(OptionType, item, isSelected, toggleAction);
-            if (Instance == null)
-            {
-                throw new InvalidOperationException($"Could not create SelectableOption for type {OptionType}.");
-            }
-            return Instance;
         }
 
         private void ToggleSelection(object selectableOptionObj)
