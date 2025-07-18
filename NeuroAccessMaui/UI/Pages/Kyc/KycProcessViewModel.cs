@@ -89,6 +89,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			this.process.Initialize();
 
+			this.process.ClearValidation();
+
 			foreach (KycPage Page in this.process.Pages)
 			{
 				Page.PropertyChanged += this.Page_PropertyChanged;
@@ -114,6 +116,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.currentPageIndex = this.GetNextIndex(0);
 			this.CurrentPagePosition = this.currentPageIndex;
 			this.SetCurrentPage(this.currentPageIndex);
+
+			this.NextCommand.NotifyCanExecuteChanged();
 		}
 
 		partial void OnCurrentPagePositionChanged(int value)
@@ -273,20 +277,15 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 			}
 
-			if (!IsOk)
-			{
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-					ServiceRef.Localizer[nameof(AppResources.Error)]
-				);
-			}
-			else if (this.process is not null)
+			if (IsOk && this.process is not null)
 			{
 				foreach (ObservableKycField Field in Fields)
 				{
 					this.process.Values[Field.Id] = Field.StringValue;
 				}
 			}
+
+			this.NextCommand.NotifyCanExecuteChanged();
 
 			return IsOk;
 		}

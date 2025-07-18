@@ -1,4 +1,3 @@
-
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.Kyc.Models;
@@ -39,8 +38,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         {
             this.Metadata = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
             this.rules.Add(new RequiredRule());
-            if (this.FieldType == FieldType.Checkbox)
-                this.SelectedOptions = new ObservableCollection<KycOption>();
+            this.SelectedOptions.CollectionChanged += this.SelectedOptions_CollectionChanged;
         }
 
         /// <summary>
@@ -103,6 +101,14 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         /// </summary>
         public ObservableCollection<KycOption> SelectedOptions { get; } = new();
 
+        private void SelectedOptions_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (this.FieldType == FieldType.Checkbox)
+            {
+                this.RawValue = this.SelectedOptions.ToList();
+            }
+        }
+
         /// <summary>
         /// Arbitrary metadata for field-specific extensions.
         /// Use e.g. Metadata["TargetWidth"] or Metadata["MaxFileSizeMB"].
@@ -118,6 +124,8 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
                 {
                     this.Validate();
                 }
+
+				ServiceRef.LogService.LogDebug(this.StringValue ?? string.Empty);
             }
         }
 

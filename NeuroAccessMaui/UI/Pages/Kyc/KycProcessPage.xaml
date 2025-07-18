@@ -125,7 +125,7 @@
 											  ValidationText="{Binding ValidationText}" />
 				</VerticalStackLayout>
 			</DataTemplate>
-			<!-- Checkbox field template using SelectableTemplateSelector -->
+			<!-- Checkbox field template using TemplatedSelector -->
 			<DataTemplate x:Key="CheckboxFieldTemplate"
 						  x:DataType="fields:ObservableCheckboxField">
 				<controls:CompositeInputView LabelText="{Binding Label.Text}"
@@ -134,10 +134,10 @@
 											 IsValid="{Binding IsValid}"
 											 ValidationText="{Binding ValidationText}">
 					<controls:CompositeInputView.CenterView>
-						<controls:SelectableTemplateSelector ItemsSource="{Binding Options}"
+						<controls:TemplatedSelector ItemsSource="{Binding Options}"
 															 SelectedItems="{Binding SelectedOptions, Mode=TwoWay}"
 															 SelectionMode="Multiple">
-							<controls:SelectableTemplateSelector.ItemTemplate>
+							<controls:TemplatedSelector.ItemTemplate>
 								<DataTemplate x:DataType="controls:SelectableKycOption">
 									<HorizontalStackLayout Spacing="8">
 										<CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
@@ -145,8 +145,8 @@
 											   VerticalTextAlignment="Center" />
 									</HorizontalStackLayout>
 								</DataTemplate>
-							</controls:SelectableTemplateSelector.ItemTemplate>
-						</controls:SelectableTemplateSelector>
+							</controls:TemplatedSelector.ItemTemplate>
+						</controls:TemplatedSelector>
 					</controls:CompositeInputView.CenterView>
 				</controls:CompositeInputView>
 			</DataTemplate>
@@ -221,6 +221,7 @@
 						<controls:AspectRatioLayout AspectRatio="{Binding AspectRatio}">
 							<controls:ConditionView Condition="{Binding ImageSource, Converter={mct:IsNullConverter}}">
 								<controls:ConditionView.True>
+									<!-- HEre we can have a image and label, you can create a converter to pick image/svg/label based on the specialType -->
 									<Label VerticalOptions="Center"
 										   HorizontalOptions="Center"
 										   Text="{Binding Placeholder.Text}" />
