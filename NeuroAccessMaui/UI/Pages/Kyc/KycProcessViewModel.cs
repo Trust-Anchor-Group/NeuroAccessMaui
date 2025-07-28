@@ -113,6 +113,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				Page.UpdateVisibilities(this.process.Values);
 			}
 
+			this.process.LoadFieldsAsync();
+
 			this.currentPageIndex = this.GetNextIndex(0);
 			this.CurrentPagePosition = this.currentPageIndex;
 			this.SetCurrentPage(this.currentPageIndex);
@@ -228,6 +230,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			ServiceRef.PlatformSpecific.HideKeyboard();
 
+			this.process?.SaveFieldsToStorage();
+
 			bool IsValid = await this.ValidateCurrentPageAsync();
 			if (!IsValid)
 			{
@@ -249,6 +253,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private void ExecutePrevious()
 		{
+			this.process?.SaveFieldsToStorage();
+
 			int PreviousIndex = this.GetPreviousIndex(this.currentPageIndex - 1);
 			if (PreviousIndex >= 0)
 			{

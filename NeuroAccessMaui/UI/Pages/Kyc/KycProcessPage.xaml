@@ -273,7 +273,7 @@
 	<Grid Padding="0"
 		  Margin="0"
 		  RowDefinitions="Auto,*,Auto"
-		  Background="{DynamicResource SurfaceElevation1WL}">
+		  Background="{DynamicResource SurfaceBackgroundWL}">
 
 		<Grid Grid.Row="0"
 			  Margin="16,16,16,8"

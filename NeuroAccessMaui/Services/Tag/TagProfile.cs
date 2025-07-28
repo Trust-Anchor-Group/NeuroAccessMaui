@@ -97,6 +97,8 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool hasBetaFeatures;
 		private decimal lastEDalerBalanceDecimal;
 		private DateTime? lastEDalerBalanceUpdate;
+		private string[]? kycFieldValues;
+
 		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
 		/// </summary>
@@ -179,7 +181,8 @@ namespace NeuroAccessMaui.Services.Tag
 				LastIdentityUpdate = this.LastIdentityUpdate,
 				HasBetaFeatures = this.HasBetaFeatures,
 				LastEDalerBalanceDecimal = this.LastEDalerBalanceDecimal,
-				LastEDalerBalanceUpdate = this.LastEDalerBalanceUpdate
+				LastEDalerBalanceUpdate = this.LastEDalerBalanceUpdate,
+				KycFieldValues = this.KycFieldValues
 			};
 
 			return Clone;
@@ -244,6 +247,7 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasBetaFeatures = Configuration.HasBetaFeatures;
 				this.LastEDalerBalanceDecimal = Configuration.LastEDalerBalanceDecimal;
 				this.LastEDalerBalanceUpdate = Configuration.LastEDalerBalanceUpdate;
+				this.KycFieldValues = Configuration.KycFieldValues;
 
 				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
@@ -862,6 +866,22 @@ namespace NeuroAccessMaui.Services.Tag
 				{
 					this.hasBetaFeatures = value;
 					this.FlagAsDirty(nameof(this.HasBetaFeatures));
+				}
+			}
+		}
+
+		/// <summary>
+		/// The current values for the KYC process.
+		/// </summary>
+		public string[]? KycFieldValues
+		{
+			get => this.kycFieldValues;
+			set
+			{
+				if (this.kycFieldValues != value)
+				{
+					this.kycFieldValues = value;
+					this.FlagAsDirty(nameof(this.KycFieldValues));
 				}
 			}
 		}
