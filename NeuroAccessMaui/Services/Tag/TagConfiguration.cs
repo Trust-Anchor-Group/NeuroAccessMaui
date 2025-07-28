@@ -309,7 +309,6 @@ namespace NeuroAccessMaui.Services
 		[DefaultValue(false)]
 		public bool HasBetaFeatures { get; set; }
 
-
 		/// <summary>
 		/// How many eDaler the user has in their wallet. At the last update.
 		/// </summary>
@@ -321,5 +320,11 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		[DefaultValueNull]
 		public DateTime? LastEDalerBalanceUpdate { get; set; }
+
+		/// <summary>
+		/// The current KYC process.
+		/// </summary>
+		[DefaultValueNull]
+		public string[]? KycFieldValues { get; set; }
 	}
 }
