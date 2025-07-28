@@ -18,9 +18,9 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
                 {
                     this.DateValue = null;
                 }
-                else if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt))
+                else if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime Dt))
                 {
-                    this.DateValue = dt;
+                    this.DateValue = Dt;
                 }
             }
         }

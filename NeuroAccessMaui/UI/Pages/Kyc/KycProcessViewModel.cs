@@ -134,7 +134,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private void Field_PropertyChanged(object? Sender, System.ComponentModel.PropertyChangedEventArgs E)
 		{
-			if (E.PropertyName == nameof(ObservableKycField.RawValue))
+			if (E.PropertyName == nameof(ObservableKycField.StringValue))
 			{
 				this.SetCurrentPage(this.currentPageIndex);
 				this.NextCommand.NotifyCanExecuteChanged();
