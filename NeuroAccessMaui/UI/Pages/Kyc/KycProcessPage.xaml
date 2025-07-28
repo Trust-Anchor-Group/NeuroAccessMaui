@@ -135,8 +135,8 @@
 											 ValidationText="{Binding ValidationText}">
 					<controls:CompositeInputView.CenterView>
 						<controls:TemplatedSelector ItemsSource="{Binding Options}"
-															 SelectedItems="{Binding SelectedOptions, Mode=TwoWay}"
-															 SelectionMode="Multiple">
+													SelectedItems="{Binding SelectedOptions, Mode=TwoWay}"
+													SelectionMode="Multiple">
 							<controls:TemplatedSelector.ItemTemplate>
 								<DataTemplate x:DataType="controls:SelectableKycOption">
 									<HorizontalStackLayout Spacing="8">
