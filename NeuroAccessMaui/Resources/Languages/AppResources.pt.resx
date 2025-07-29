@@ -291,10 +291,10 @@
     <value>Identidade não válida.</value>
   </data>
   <data name="ClientMessagePersonalNumberMismatch" xml:space="preserve">
-    <value>Número pessoal não coincide.</value>
+    <value>CPF não coincide.</value>
   </data>
   <data name="ClientMessagePersonalNumberNotVerified" xml:space="preserve">
-    <value>Número pessoal não verificado.</value>
+    <value>CPF não verificado.</value>
   </data>
   <data name="ClientMessageReferenceMismatch" xml:space="preserve">
     <value>A referência retornada não correspondeu à referência da solicitação.</value>
@@ -327,7 +327,7 @@
     <value>Aviso</value>
   </data>
   <data name="SuccessTitle" xml:space="preserve">
-    <value>Êxito</value>
+    <value>Sucesso</value>
   </data>
   <data name="Information" xml:space="preserve">
     <value>Informação</value>
@@ -336,7 +336,7 @@
     <value>Mensagem</value>
   </data>
   <data name="Ok" xml:space="preserve">
-    <value>OKEY</value>
+    <value>OK</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Sim</value>
@@ -579,7 +579,7 @@
     <value>Quase concluído</value>
   </data>
   <data name="OnboardingBiometricsPageDetails" xml:space="preserve">
-    <value>O Neuro-Access funciona melhor ao usar {0}. Gostaria de ativar esse recurso? Isso também pode ser alterado nas configurações mais tarde</value>
+    <value>O Neuro-Access funciona melhor ao o usar {0}. Gostaria de ativar esse recurso? Isso também pode ser alterado nas configurações mais tarde</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Criar</value>
@@ -660,10 +660,10 @@
     <value>Um código OTP temporário foi usado. O aplicativo deixará de funcionar em cerca de uma semana. Você terá que reinstalar o aplicativo para usá-lo novamente.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Inserir novo pino</value>
+    <value>Inserir novo PIN</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
-    <value>Confirmar pin</value>
+    <value>Confirmar PIN</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
     <value>Criar PIN</value>
@@ -723,43 +723,43 @@
     <value>Opções</value>
   </data>
   <data name="OrgAddress" xml:space="preserve">
-    <value>Endereço da Organização</value>
+    <value>Endereço da Empresa</value>
   </data>
   <data name="OrgAddress2" xml:space="preserve">
-    <value>Endereço da Organização (linha 2)</value>
+    <value>Endereço da Empresa (linha 2)</value>
   </data>
   <data name="OrganizationInformation" xml:space="preserve">
     <value>Informações da Organização</value>
   </data>
   <data name="OrgArea" xml:space="preserve">
-    <value>Área da Organização</value>
+    <value>Bairro da Empresa</value>
   </data>
   <data name="OrgCity" xml:space="preserve">
-    <value>Cidade Organização</value>
+    <value>Cidade da Empresa</value>
   </data>
   <data name="OrgCountry" xml:space="preserve">
-    <value>País da Organização</value>
+    <value>País da Empresa</value>
   </data>
   <data name="OrgDepartment" xml:space="preserve">
     <value>Departamento</value>
   </data>
   <data name="OrgName" xml:space="preserve">
-    <value>Nome da Organização</value>
+    <value>Nome da Empresa</value>
   </data>
   <data name="OrgNumber" xml:space="preserve">
-    <value>Número da Organização</value>
+    <value>Número do CNPJ</value>
   </data>
   <data name="OrgRegion" xml:space="preserve">
-    <value>Região da Organização</value>
+    <value>Estado da Empresa</value>
   </data>
   <data name="OrgRole" xml:space="preserve">
-    <value>Papel</value>
+    <value>Função</value>
   </data>
   <data name="OrgZipCode" xml:space="preserve">
-    <value>Organização CEP ou Código Postal</value>
+    <value>CEP ou Código Postal da Empresa</value>
   </data>
   <data name="PersonalNumber" xml:space="preserve">
-    <value>Número pessoal</value>
+    <value>CPF</value>
   </data>
   <data name="Petition" xml:space="preserve">
     <value>Pedir</value>
@@ -789,7 +789,7 @@
     <value>CEP ou Código Postal</value>
   </data>
   <data name="OrganizationalInformation" xml:space="preserve">
-    <value>Informações Organizacionais</value>
+    <value>Informações da Empresa</value>
   </data>
   <data name="PersonalInformation" xml:space="preserve">
     <value>Informações Pessoais</value>
@@ -807,7 +807,7 @@
     <value>Informações técnicas</value>
   </data>
   <data name="Home" xml:space="preserve">
-    <value>Casa</value>
+    <value>Início</value>
   </data>
   <data name="ID" xml:space="preserve">
     <value>ID</value>
@@ -843,10 +843,10 @@
     <value>Configurações de exibição</value>
   </data>
   <data name="EnterCurrentPassword" xml:space="preserve">
-    <value>Digite o pino atual:</value>
+    <value>Digite o PIN atual:</value>
   </data>
   <data name="EnterNewPassword" xml:space="preserve">
-    <value>Digite o novo pino:</value>
+    <value>Digite o novo PIN:</value>
   </data>
   <data name="IdentitySettings" xml:space="preserve">
     <value>Configurações de identidade</value>
@@ -858,7 +858,7 @@
     <value>Escolha o seu idioma preferido.</value>
   </data>
   <data name="LightMode" xml:space="preserve">
-    <value>Modo de luz</value>
+    <value>Modo claro</value>
   </data>
   <data name="ProhibitRecording" xml:space="preserve">
     <value>Proibir gravação de tela</value>
@@ -903,7 +903,7 @@
     <value>Aplicação</value>
   </data>
   <data name="Applications" xml:space="preserve">
-    <value>Aplicativos</value>
+    <value>Cadastros</value>
   </data>
   <data name="AreYouSureYouWantToRevokeTheCurrentIdApplication" xml:space="preserve">
     <value>Tem certeza de que deseja revogar o aplicativo de ID atual?</value>
@@ -918,7 +918,7 @@
     <value>Informações de contato</value>
   </data>
   <data name="ContactInformationDescription" xml:space="preserve">
-    <value>As seguintes informações de contato serão incluídas no aplicativo. Essas informações são retiradas do processo de integração.</value>
+    <value>As seguintes informações de contato serão incluídas no cadastro. Essas informações são obtidas pelo próprio processo de cadastro.</value>
   </data>
   <data name="ContactInformationSentDescription" xml:space="preserve">
     <value>As seguintes informações de contato foram incluídas no aplicativo para uma ID pessoal.</value>
@@ -942,37 +942,37 @@
     <value>Autenticação necessária</value>
   </data>
   <data name="IdApplicationDescription" xml:space="preserve">
-    <value>Ao enviar um novo pedido de identificação, confirmo que todas as informações fornecidas estão corretas e atualizadas. O aplicativo obsoleta qualquer identidade atual registrada com o aplicativo.</value>
+    <value>Ao enviar um novo pedido de identificação, confirmo que todas as informações fornecidas estão corretas e atualizadas. O aplicativo torna obsoleta a identidade atual.</value>
   </data>
   <data name="IdApplicationSentDescription" xml:space="preserve">
     <value>Foi enviada uma solicitação para uma nova ID. Aguardando a análise do pedido. Você pode voltar a esta página para revisar o status do aplicativo.</value>
   </data>
   <data name="IdentityApplications" xml:space="preserve">
-    <value>Aplicativos de identidade</value>
+    <value>Cadastros de IDs</value>
   </data>
   <data name="NeuroAccessAccount" xml:space="preserve">
     <value>Conta Neuro-Access</value>
   </data>
   <data name="OrganizationalId" xml:space="preserve">
-    <value>ID organizacional</value>
+    <value>ID da Empresa</value>
   </data>
   <data name="OrganizationalIdDescription" xml:space="preserve">
-    <value>Solicite uma nova ID organizacional digital. O ID conterá suas informações pessoais, as informações organizacionais associadas e sua função na organização. Ele pode ser usado para validar sua identidade pessoal e sua função na organização, bem como obter acesso a serviços que exigem uma identidade organizacional verificada.</value>
+    <value>Solicite um novo ID de Empresa digital. O ID conterá suas informações pessoais, as informações da empresa vinculada e sua função na empresa. Ele pode ser usado para validar sua identidade pessoal e sua função na empresa, bem como para obter acesso a serviços que exigem uma identidade de empresa verificada.</value>
   </data>
   <data name="OrganizationalInformationDescription" xml:space="preserve">
-    <value>As informações organizacionais a seguir serão incluídas no aplicativo para uma ID organizacional.</value>
+    <value>As Informações da Empresa a seguir serão incluídas no aplicativo para uma ID da Empresa.</value>
   </data>
   <data name="OrganizationalInformationSentDescription" xml:space="preserve">
-    <value>As seguintes informações organizacionais foram incluídas no aplicativo para uma ID organizacional.</value>
+    <value>As seguintes Informações da Empresa foram incluídas no aplicativo para uma ID da Empresa.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
     <value>As revisões por pares estão habilitadas. Isso permite que você solicite que colegas (pessoas com IDs digitais já aprovadas) analisem seu aplicativo e o aprovem.</value>
   </data>
   <data name="PersonalId" xml:space="preserve">
-    <value>Identificação pessoal</value>
+    <value>ID de pessoa física</value>
   </data>
   <data name="PersonalIdDescription" xml:space="preserve">
-    <value>Solicite uma nova ID pessoal digital. O ID conterá suas informações pessoais e poderá ser usado para validar sua identidade pessoal, bem como obter acesso a serviços que exijam uma identidade pessoal verificada.</value>
+    <value>Solicite uma nova ID digital de pessoa física. O ID conterá suas informações pessoais e pode ser usado para validar sua identidade pessoal, bem como para obter acesso a serviços que exijam uma identidade pessoal verificada.</value>
   </data>
   <data name="PersonalInformationDescription" xml:space="preserve">
     <value>As seguintes informações pessoais serão incluídas no pedido de uma ID Pessoal.</value>
@@ -984,7 +984,7 @@
     <value>Número de telefone</value>
   </data>
   <data name="Photo" xml:space="preserve">
-    <value>Fotografia</value>
+    <value>Selfie</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
     <value>Por favor, adicione uma imagem onde você pode ser facilmente identificado.</value>
@@ -999,7 +999,7 @@
     <value>Revogar aplicativo</value>
   </data>
   <data name="SendApplication" xml:space="preserve">
-    <value>Enviar Candidatura</value>
+    <value>Enviar Cadastro</value>
   </data>
   <data name="ViewIdApplication" xml:space="preserve">
     <value>Exibir aplicativo ID</value>
@@ -1110,7 +1110,7 @@
     <value>A nacionalidade está correta.</value>
   </data>
   <data name="PeerReviewOrganizationalInfoText" xml:space="preserve">
-    <value>As Informações Organizacionais estão corretas.</value>
+    <value>As Informações da Empresa estão corretas.</value>
   </data>
   <data name="PeerReviewPersonalAddressInfoText" xml:space="preserve">
     <value>As Informações de Endereço Pessoal estão corretas.</value>
@@ -1119,7 +1119,7 @@
     <value>A foto representa claramente {0}.</value>
   </data>
   <data name="PeerReviewPnrText" xml:space="preserve">
-    <value>O número pessoal está correto.</value>
+    <value>O CPF está correto.</value>
   </data>
   <data name="Reject" xml:space="preserve">
     <value>Rejeitar</value>
@@ -1521,7 +1521,7 @@
     <value>Contatos</value>
   </data>
   <data name="ContactsDescription" xml:space="preserve">
-    <value>Abaixo estão todos os contatos em sua agenda de contatos. Clique em qualquer um para interagir com esse contato.</value>
+    <value>Abaixo estão todos os seus contatos. Para interagir com cada um, basta clicar no contato desejado.</value>
   </data>
   <data name="ContractProposal" xml:space="preserve">
     <value>Proposta de contrato</value>
@@ -2106,7 +2106,7 @@
     <value>Detalhes</value>
   </data>
   <data name="Later" xml:space="preserve">
-    <value>Posterior</value>
+    <value>Depois</value>
   </data>
   <data name="Enable" xml:space="preserve">
     <value>Habilitar</value>
@@ -2115,7 +2115,7 @@
     <value>Autenticação biométrica</value>
   </data>
   <data name="FaceId" xml:space="preserve">
-    <value>ID facial</value>
+    <value>Face ID</value>
   </data>
   <data name="TouchId" xml:space="preserve">
     <value>ID de toque</value>
@@ -2139,7 +2139,7 @@
     <value>Transfira sua identidade atual para outro dispositivo.</value>
   </data>
   <data name="TransferIdentityPageDetails" xml:space="preserve">
-    <value>No outro dispositivo, continue com a integração até chegar à página do provedor de serviços. Pressione o botão de alteração e digitalize este QR. Fazer isso removerá a identidade deste dispositivo.</value>
+    <value>No seu outro dispositivo, continue com seu cadastro até chegar à página do provedor de serviços. Pressione o botão alterar e escaneie este QR Code. Esta ação removerá a identidade deste dispositivo.</value>
   </data>
   <data name="AppVersion" xml:space="preserve">
     <value>Número da versão</value>
@@ -2235,7 +2235,7 @@
     <value>Abaixo você pode ver informações sobre um único evento de conta.</value>
   </data>
   <data name="Balance" xml:space="preserve">
-    <value>Equilíbrio:</value>
+    <value>Saldo:</value>
   </data>
   <data name="OpenMessageLink" xml:space="preserve">
     <value>Abrir link da mensagem</value>
@@ -2529,7 +2529,7 @@
     <value>Documento de Identidade</value>
   </data>
   <data name="IdentityDocumentDescription" xml:space="preserve">
-    <value>Para melhorar o processo de verificação de sua inscrição, você pode fornecer fotos de um documento de identidade para verificar sua identidade.</value>
+    <value>Para melhorar o processo de verificação de seu cadastro, você pode fornecer fotos de um documento de identidade para verificar sua identidade.</value>
   </data>
   <data name="FrontOfDocument" xml:space="preserve">
     <value>A frente do documento</value>
@@ -2556,7 +2556,7 @@
     <value>Selecione o tipo de documento</value>
   </data>
   <data name="IdentityDocumentDescription_Passport" xml:space="preserve">
-    <value>Por favor, faça upload de uma foto que mostre claramente ambas as páginas da seção de dados do seu passaporte, incluindo a página com sua foto</value>
+    <value>Por favor, faça upload de uma foto que mostre claramente ambas as páginas da seção de dados do seu passaporte, incluindo a página com sua foto.</value>
   </data>
   <data name="FrontOfDocument_Passport" xml:space="preserve">
     <value>Foto do seu passaporte</value>
@@ -2778,7 +2778,7 @@
     <value>O BankID que você está tentando usar foi revogado ou é muito antigo. Por favor, use outro BankID ou solicite um novo no seu banco online</value>
   </data>
   <data name="ClientMessageBankIdRFA17A" xml:space="preserve">
-    <value>Não foi possível encontrar o aplicativo BankID no seu computador ou dispositivo móvel. Por favor, instale-o e solicite um BankID no seu banco online. Instale o aplicativo na sua loja de aplicativos ou em https://install.bankid.com</value>
+    <value>Não foi possível encontrar o aplicativo BankID no seu computador ou dispositivo móvel. Por favor, instale-o e solicite um BankID no seu banco online. Instale o aplicativo na sua loja de cadastros ou em https://install.bankid.com</value>
   </data>
   <data name="ClientMessageBankIdRFA17B" xml:space="preserve">
     <value>Falha ao escanear o código QR. Inicie o aplicativo BankID e escaneie o código QR. Verifique se o aplicativo BankID está atualizado. Se você não tem o aplicativo BankID, você precisa instalá-lo e solicitar um BankID no seu banco online. Instale o aplicativo na sua loja de aplicativos ou em https://install.bankid.com</value>
@@ -2844,7 +2844,7 @@
     <value>Atualmente estamos trabalhando nisso</value>
   </data>
   <data name="BetaFeature" xml:space="preserve">
-    <value>Beta</value>
+    <value>Funções Beta</value>
   </data>
   <data name="BetaFeatureInfo" xml:space="preserve">
     <value>Para ativar os recursos beta, vá para a tela inicial e abra a página de configurações</value>
