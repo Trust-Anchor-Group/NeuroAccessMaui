@@ -10,19 +10,17 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
     {
         public override string? StringValue
         {
-            get => string.Join(",", this.SelectedOptions.Select(o => o.Value));
+            get => string.Join(",", this.Options.Select(o => o.Value));
             set
             {
                 this.SelectedOptions.Clear();
                 if (!string.IsNullOrWhiteSpace(value))
                 {
                     string[] OptionValues = value.Split(',', System.StringSplitOptions.RemoveEmptyEntries | System.StringSplitOptions.TrimEntries);
-                    foreach (string OptionValue in OptionValues)
-                    {
-                        KycOption? Opt = this.Options.FirstOrDefault(o => o.Value == OptionValue);
-                        if (Opt is not null)
-                            this.SelectedOptions.Add(Opt);
-                    }
+					for(int i = 0; i < OptionValues.Length; i++)
+					{
+						if (this.Options[i].Value == OptionValues[i]) this.SelectedOptions.Add(this.Options[i]);
+					}
                 }
             }
         }
