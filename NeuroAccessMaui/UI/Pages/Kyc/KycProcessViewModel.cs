@@ -45,7 +45,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				{
 					return this.process.Pages;
 				}
-				return new ObservableCollection<KycPage>();
+				return [];
 			}
 		}
 
@@ -58,16 +58,23 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					return 0;
 				}
 
-				List<KycPage> VisiblePages = this.Pages.Where(Page => Page.IsVisible(this.process.Values)).ToList();
+				List<KycPage> VisiblePages = [.. this.Pages.Where(Page => Page.IsVisible(this.process.Values))];
 				if (VisiblePages.Count == 0)
 				{
 					return 0;
 				}
 
 				int Index = VisiblePages.IndexOf(this.CurrentPage);
-				return Math.Clamp((double)Index / VisiblePages.Count, 0, 1);
+				double Progress = Math.Clamp((double)Index / VisiblePages.Count, 0, 1);
+
+				this.ProgressPercent = $"{(Progress * 100):0}%";
+
+				return Progress;
 			}
 		}
+
+		[ObservableProperty]
+		private string progressPercent = "0%";
 
 		public IAsyncRelayCommand NextCommand { get; }
 		public IRelayCommand PreviousCommand { get; }
@@ -75,7 +82,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public KycProcessViewModel()
 		{
 			this.NextCommand = new AsyncRelayCommand(this.ExecuteNextAsync, this.CanExecuteNext);
-			this.PreviousCommand = new RelayCommand(this.ExecutePrevious);
+			this.PreviousCommand = new AsyncRelayCommand(this.ExecutePrevious);
 		}
 
 		protected override async Task OnInitialize()
@@ -174,7 +181,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			KycPage Page = this.Pages[Index];
 			this.CurrentPage = Page;
 			this.CurrentPageTitle = Page.Title is not null ? Page.Title.Text : Page.Id;
-			this.CurrentPageDescription = Page.Description is not null ? Page.Description.Text : null;
+			this.CurrentPageDescription = Page.Description?.Text;
 			this.HasCurrentPageDescription = !string.IsNullOrWhiteSpace(this.CurrentPageDescription);
 
 			this.CurrentPageSections = Page.VisibleSections;
@@ -184,6 +191,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.NextButtonText = NextIndex >= this.Pages.Count ? "Apply" : "Next";
 
 			this.OnPropertyChanged(nameof(this.Progress));
+
+			this.process?.SaveFieldsToStorage();
 		}
 
 		private int GetNextIndex(int Start)
@@ -230,8 +239,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			ServiceRef.PlatformSpecific.HideKeyboard();
 
-			this.process?.SaveFieldsToStorage();
-
 			bool IsValid = await this.ValidateCurrentPageAsync();
 			if (!IsValid)
 			{
@@ -251,10 +258,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 		}
 
-		private void ExecutePrevious()
+		private async Task ExecutePrevious()
 		{
-			this.process?.SaveFieldsToStorage();
-
 			int PreviousIndex = this.GetPreviousIndex(this.currentPageIndex - 1);
 			if (PreviousIndex >= 0)
 			{
@@ -262,6 +267,15 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.CurrentPagePosition = PreviousIndex;
 				this.SetCurrentPage(this.currentPageIndex);
 			}
+			else
+			{
+				await base.GoBack();
+			}
+		}
+
+		public override async Task GoBack()
+		{
+			await this.ExecutePrevious();
 		}
 
 		private async Task<bool> ValidateCurrentPageAsync()
@@ -298,6 +312,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private async Task ExecuteApplyAsync()
 		{
+			this.process?.SaveFieldsToStorage();
+
 			// Map all values and submit
 		}
 	}
