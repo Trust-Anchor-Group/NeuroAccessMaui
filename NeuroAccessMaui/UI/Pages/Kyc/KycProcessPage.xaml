@@ -349,7 +349,7 @@
 					<Label Grid.Column="0"
 						   Text="Progress" />
 					<Label Grid.Column="1"
-						   Text="50%"
+						   Text="{Binding ProgressPercent}"
 						   HorizontalOptions="End" />
 				</Grid>
 				<controls:ProgressBar Progress="{Binding Progress}"
