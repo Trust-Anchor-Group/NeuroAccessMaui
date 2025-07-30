@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,6 +10,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
+using NeuroAccessMaui.UI.Pages.Registration;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
@@ -312,9 +314,84 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private async Task ExecuteApplyAsync()
 		{
-			this.process?.SaveFieldsToStorage();
+			Dictionary<string, string> MappedValues = new();
 
 			// Map all values and submit
+			if (this.process is null)
+			{
+				return;
+			}
+
+			//For each page
+			foreach (KycPage Page in this.process.Pages)
+			{
+				// For each field in the page
+				foreach (ObservableKycField Field in Page.AllFields)
+				{
+					foreach (KeyValuePair<string, string> Kvp in this.ApplyTansform(Field.Mappings, Field.StringValue ?? ""))
+					{
+						MappedValues[Kvp.Key] = Kvp.Value;
+					}
+				}
+				// For each section in the page
+				foreach (KycSection Section in Page.AllSections)
+				{
+					foreach (ObservableKycField Field in Section.AllFields)
+					{
+						foreach (KeyValuePair<string, string> Kvp in this.ApplyTansform(Field.Mappings, Field.StringValue ?? ""))
+						{
+							MappedValues[Kvp.Key] = Kvp.Value;
+						}
+					}
+				}
+			}
+
+			// Create a register Identity Model object
+			RegisterIdentityModel RegisterModel = new();
+
+			// Add Mapped Values to the model
+			foreach (KeyValuePair<string, string> Kvp in MappedValues)
+			{
+				_ = Kvp.Key switch
+				{
+					"firstName" => RegisterModel.FirstName = Kvp.Value,
+					"lastName" => RegisterModel.LastNames = Kvp.Value,
+					// Default case, do nothing
+					_ => throw new Exception("OOF - Unhandled mapping key: " + Kvp.Key)
+				};
+			}
+
+			// Submit the registration
+			// Example in ApplyIdViewModel.cs
+			await Task.Run(() => { });
+		}
+
+		private Dictionary<string, string> ApplyTansform(ObservableCollection<KycMapping> Mappings, string FieldValue)
+		{
+			Dictionary<string, string> Result = new();
+
+			foreach (KycMapping Map in Mappings)
+			{
+				if (string.IsNullOrEmpty(FieldValue))
+				{
+					Result[Map.Key] = string.Empty;
+					continue;
+				}
+
+				Result[Map.Key] = Map.Transform switch
+				{
+					// Examples
+					"uppercase" => FieldValue.ToUpperInvariant(),
+					"lowercase" => FieldValue.ToLowerInvariant(),
+					"trim" => FieldValue.Trim(),
+					"year" => DateTime.TryParse(FieldValue, out DateTime Dt) ? Dt.Year.ToString(CultureInfo.InvariantCulture) : string.Empty,
+					"month" => DateTime.TryParse(FieldValue, out DateTime Dt) ? Dt.Month.ToString(CultureInfo.InvariantCulture) : string.Empty,
+					"day" => DateTime.TryParse(FieldValue, out DateTime Dt) ? Dt.Day.ToString(CultureInfo.InvariantCulture) : string.Empty,
+					_ => FieldValue
+				};
+			}
+
+			return Result;
 		}
 	}
 }
