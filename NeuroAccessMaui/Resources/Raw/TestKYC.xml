@@ -35,7 +35,7 @@
 				</Validation>
 				<Default>Maximiliam</Default>
 			</Field>
-			<Field id="dob" type="date" label="Date of Birth" required="true">
+			<Field id="dob" type="date" label="Date of Birth" required="true" mapping="BDATE">
 				<Label>
 					<Text lang="en">Date of Birth</Text>
 					<Text lang="sv">Födelsedatum</Text>
@@ -44,15 +44,6 @@
 					<Text lang="en">Use the format YYYY-MM-DD</Text>
 					<Text lang="sv">Använd formatet ÅÅÅÅ-MM-DD</Text>
 				</Hint>
-				<Mapping key="BDAY">
-					<Transform>day</Transform>
-				</Mapping>
-				<Mapping key="BMONTH">
-					<Transform>month</Transform>
-				</Mapping>
-				<Mapping key="BYEAR">
-					<Transform>year</Transform>
-				</Mapping>
 				<Validation min="1900-01-01" max="2020-01-01">
 					<Message>
 						<Text lang="en">Enter a valid date between 1900 and 2020</Text>
@@ -64,6 +55,17 @@
 					<DateFormat>yyyy-MM-dd</DateFormat>
 					<AllowFuture>false</AllowFuture>
 				</Metadata>
+			</Field>
+			<Field id="isOrganization" type="boolean" label="Are you representing an organization?" mapping="IS_ORG" Required="true">
+				<Label>
+					<Text lang="en">Are you representing an organization?</Text>
+					<Text lang="sv">Företräder du en organisation?</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Select Yes if you are applying on behalf of an organization</Text>
+					<Text lang="sv">Välj Ja om du ansöker för en organisation</Text>
+				</Hint>
+				<Default>false</Default>
 			</Field>
 			<Field id="email" type="text" label="Email Address">
 				<Label>
@@ -117,17 +119,6 @@
 						<Text lang="sv">nej, anmäl mig ej!</Text>
 					</Option>
 				</Options>
-				<Default>false</Default>
-			</Field>
-			<Field id="isOrganization" type="boolean" label="Are you representing an organization?" mapping="IS_ORG" Required="true">
-				<Label>
-					<Text lang="en">Are you representing an organization?</Text>
-					<Text lang="sv">Företräder du en organisation?</Text>
-				</Label>
-				<Hint>
-					<Text lang="en">Select Yes if you are applying on behalf of an organization</Text>
-					<Text lang="sv">Välj Ja om du ansöker för en organisation</Text>
-				</Hint>
 				<Default>false</Default>
 			</Field>
 		</Section>
@@ -206,8 +197,8 @@
 						<Text lang="en">Identity Card</Text>
 						<Text lang="sv">ID-kort</Text>
 					</Option>
-					<Option value="driversLicence">
-						<Text lang="en">Driver's Licence</Text>
+					<Option value="driverslicense">
+						<Text lang="en">Driver's license</Text>
 						<Text lang="sv">Körkort</Text>
 					</Option>
 				</Options>
@@ -263,7 +254,7 @@
 			</Field>
 
 			<!-- Identity Card Upload Field (shown if identityCard is selected) -->
-			<Field id="identityCardUpload" type="image" label="Identity Card" mapping="IDENTITY_CARD_FILE" specialType="identityCard">
+			<Field id="identityCardUpload" type="image" label="Identity Card" mapping="IDENTITY_CARD_FRONT" specialType="identityCard">
 				<Label>
 					<Text lang="en">Identity Card</Text>
 					<Text lang="sv">ID-kort</Text>
@@ -299,14 +290,14 @@
 				</Metadata>
 			</Field>
 
-			<!-- Drivers Licence Front Upload (shown if driversLicence is selected) -->
-			<Field id="driversLicenceFront" type="image" label="Driver's Licence (Front)" mapping="DRIVERS_LICENCE_FRONT" specialType="driversLicenceFront">
+			<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
+			<Field id="driverslicenseFront" type="image" label="Driver's license (Front)" mapping="DRIVERS_LICENSE_FRONT" specialType="driverslicenseFront">
 				<Label>
-					<Text lang="en">Driver's Licence (Front)</Text>
+					<Text lang="en">Driver's license (Front)</Text>
 					<Text lang="sv">Körkort (Framsida)</Text>
 				</Label>
 				<Hint>
-					<Text lang="en">Upload the front of your driver’s licence</Text>
+					<Text lang="en">Upload the front of your driver’s license</Text>
 					<Text lang="sv">Ladda upp framsidan av ditt körkort</Text>
 				</Hint>
 				<Placeholder>
@@ -315,7 +306,7 @@
 				</Placeholder>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
-					<Equals>driversLicence</Equals>
+					<Equals>driverslicense</Equals>
 				</Condition>
 				<Validation maxFileSizeMB="10">
 					<FileTypes>
@@ -335,14 +326,14 @@
 					<MinDpi>150</MinDpi>
 				</Metadata>
 			</Field>
-			<!-- Drivers Licence Back Upload (shown if driversLicence is selected) -->
-			<Field id="driversLicenceBack" type="image" label="Driver's Licence (Back)" mapping="DRIVERS_LICENCE_BACK" specialType="driversLicenceBack">
+			<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
+			<Field id="driverslicenseBack" type="image" label="Driver's license (Back)" mapping="DRIVERS_LICENSE_BACK" specialType="driverslicenseBack">
 				<Label>
-					<Text lang="en">Driver's Licence (Back)</Text>
+					<Text lang="en">Driver's license (Back)</Text>
 					<Text lang="sv">Körkort (Baksida)</Text>
 				</Label>
 				<Hint>
-					<Text lang="en">Upload the back of your driver’s licence</Text>
+					<Text lang="en">Upload the back of your driver’s license</Text>
 					<Text lang="sv">Ladda upp baksidan av ditt körkort</Text>
 				</Hint>
 				<Placeholder>
@@ -351,7 +342,7 @@
 				</Placeholder>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
-					<Equals>driversLicence</Equals>
+					<Equals>driverslicense</Equals>
 				</Condition>
 				<Validation maxFileSizeMB="10">
 					<FileTypes>
