@@ -197,7 +197,7 @@
 						<Text lang="en">Identity Card</Text>
 						<Text lang="sv">ID-kort</Text>
 					</Option>
-					<Option value="driverslicense">
+					<Option value="driversLicense">
 						<Text lang="en">Driver's license</Text>
 						<Text lang="sv">Körkort</Text>
 					</Option>
@@ -254,7 +254,7 @@
 			</Field>
 
 			<!-- Identity Card Upload Field (shown if identityCard is selected) -->
-			<Field id="identityCardUpload" type="image" label="Identity Card" mapping="IDENTITY_CARD_FRONT" specialType="identityCard">
+			<Field id="identityCardUpload" type="image" label="Identity Card" mapping="IDENTITY_CARD_FRONT" specialType="identityCardFront">
 				<Label>
 					<Text lang="en">Identity Card</Text>
 					<Text lang="sv">ID-kort</Text>
@@ -291,7 +291,7 @@
 			</Field>
 
 			<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
-			<Field id="driverslicenseFront" type="image" label="Driver's license (Front)" mapping="DRIVERS_LICENSE_FRONT" specialType="driverslicenseFront">
+			<Field id="driverslicenseFront" type="image" label="Driver's license (Front)" mapping="DRIVERS_LICENSE_FRONT" specialType="driversLicenseFront">
 				<Label>
 					<Text lang="en">Driver's license (Front)</Text>
 					<Text lang="sv">Körkort (Framsida)</Text>
@@ -306,7 +306,7 @@
 				</Placeholder>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
-					<Equals>driverslicense</Equals>
+					<Equals>driversLicense</Equals>
 				</Condition>
 				<Validation maxFileSizeMB="10">
 					<FileTypes>
@@ -327,7 +327,7 @@
 				</Metadata>
 			</Field>
 			<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
-			<Field id="driverslicenseBack" type="image" label="Driver's license (Back)" mapping="DRIVERS_LICENSE_BACK" specialType="driverslicenseBack">
+			<Field id="driverslicenseBack" type="image" label="Driver's license (Back)" mapping="DRIVERS_LICENSE_BACK" specialType="driversLicenseBack">
 				<Label>
 					<Text lang="en">Driver's license (Back)</Text>
 					<Text lang="sv">Körkort (Baksida)</Text>
@@ -342,7 +342,7 @@
 				</Placeholder>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
-					<Equals>driverslicense</Equals>
+					<Equals>driversLicense</Equals>
 				</Condition>
 				<Validation maxFileSizeMB="10">
 					<FileTypes>

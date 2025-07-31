@@ -352,7 +352,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			bool IsOrg = false;
 			string DocumentType = string.Empty;
-			List <Attachment> Attachments = new();
+			List <string> Attachments = new();
 
 			// Add Mapped Values to the model
 			foreach (KeyValuePair<string, string> Kvp in MappedValues)
@@ -375,11 +375,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					case "BDATE": RegisterModel.BirthDate = DateTime.TryParse(Kvp.Value, out DateTime Dt) ? Dt : DateTime.Now; break;
 					case "EMAIL": RegisterModel.EMail = Kvp.Value; break;
 					case "DOC_TYPE": DocumentType = Kvp.Value; break; // TODO: Handle Documents
-					case "PASSPORT_FILE": break; // TODO: Handle Passport file
-					case "IDENTITY_CARD_FRONT": break; // TODO: Handle Identity Card file
-					case "IDENTITY_CARD_BACK": break; // TODO: Handle Identity Card file
-					case "DRIVERS_LICENSE_FRONT": break; // TODO: Handle Driver License file
-					case "DRIVERS_LICENSE_BACK": break; // TODO: Handle Driver License file
+					case "PASSPORT_FILE": if (Kvp.Value == "passport") Attachments.Add(Kvp.Value);  break; // TODO: Handle Passport file
+					case "IDENTITY_CARD_FRONT": if (Kvp.Value == "identityCard") Attachments.Add(Kvp.Value); break; // TODO: Handle Identity Card file
+					case "IDENTITY_CARD_BACK": if (Kvp.Value == "identityCard") Attachments.Add(Kvp.Value); break; // TODO: Handle Identity Card file
+					case "DRIVERS_LICENSE_FRONT": if (Kvp.Value == "driversLicense") Attachments.Add(Kvp.Value); break; // TODO: Handle Driver License file
+					case "DRIVERS_LICENSE_BACK": if (Kvp.Value == "driversLicense") Attachments.Add(Kvp.Value); break; // TODO: Handle Driver License file
 					case "IS_ORG": IsOrg = true; break; // TODO: Handle Organizations?
 					case "ORG_NAME": RegisterModel.OrgName = IsOrg ? Kvp.Value : string.Empty; break;
 					case "ORG_NUMBER": RegisterModel.OrgNumber = IsOrg ? Kvp.Value : string.Empty; break;
