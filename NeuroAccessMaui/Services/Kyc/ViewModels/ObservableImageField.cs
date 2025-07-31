@@ -17,8 +17,12 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         public override string? StringValue
         {
             get => this.RawValue as string;
-            set => this.RawValue = value;
+            set {
+				this.RawValue = value;
+				this.ImageSource = ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(this.RawValue as string ?? string.Empty)));
+			}
         }
+
         public int? TargetWidth
         {
             get
@@ -80,9 +84,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
                 byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
                 this.RawValue = Convert.ToBase64String(OutputBin);
 
-				MainThread.BeginInvokeOnMainThread( ( ) =>
-					this.ImageSource = ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(this.RawValue as string ?? string.Empty)))
-				);
+				this.ImageSource = ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(this.RawValue as string ?? string.Empty)));
             }
             catch (Exception Ex)
             {
