@@ -111,11 +111,11 @@ namespace NeuroAccessMaui.Test
             this.currentPage = Page;
 
             // LifeCycle: OnInitializeAsync (once), then Appearing
-            if (Page is ILifeCycleView newLifeCycle)
+            if (Page is ILifeCycleView NewLifeCycle)
             {
                 // Optionally track if OnInitializeAsync already called if you wish; for demo just call.
-                await newLifeCycle.OnInitializeAsync();
-                await newLifeCycle.OnAppearingAsync();
+                await NewLifeCycle.OnInitializeAsync();
+                await NewLifeCycle.OnAppearingAsync();
             }
             else
             {
