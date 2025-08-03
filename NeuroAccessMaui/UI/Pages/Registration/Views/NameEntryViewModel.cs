@@ -32,7 +32,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				this.cooldownCts = null;
 
 				// Call base class dispose if needed
-				base.OnDispose().GetAwaiter().GetResult(); // Or base.Dispose() if base class is IDisposable
+				base.OnDisposeAsync().GetAwaiter().GetResult(); // Or base.Dispose() if base class is IDisposable
 			}
 
 			// Free unmanaged objects here if you add any in the future
@@ -82,7 +82,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			this.cooldownCts = null;
 
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		private Task XmppService_ConnectionStateChanged(object? _, XmppState NewState)
