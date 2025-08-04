@@ -233,7 +233,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Currently selected theme.
 		/// </summary>
-		AppTheme? Theme { get; set; }
+		AppTheme Theme { get; set; }
 
 		/// <summary>
 		/// If there exist <see cref="ContractReference"/> objects created.
