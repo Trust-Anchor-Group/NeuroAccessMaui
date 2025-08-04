@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Change settings menu so back button is always visible
 - Make app default theme to phone settings
 - Registration workflow to direct users based on registration state (e.g., password/biometrics steps)
 - ProfilePhoto logic in ViewIdentityViewModel to prioritize photos named ProfilePhoto
