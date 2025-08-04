@@ -18,8 +18,8 @@ fixing a spelling error or one letter/digit in the hex-code changed.
 
 p = pathlib.Path(__file__).parent.resolve()
 json_path = p / pathlib.Path("colors.json")
-new_colors_light_path = p / ("../NeuroAccessMaui/Resources/Styles/colors-light.xaml")
-new_colors_dark_path = p / ("../NeuroAccessMaui/Resources/Styles/colors-dark.xaml")
+new_colors_light_path = p / ("colors-light.xaml")
+new_colors_dark_path = p / ("colors-dark.xaml")
 
 # Converts hex color from figma to one supported by maui
 # Change #XXXXXXAA -> #AAXXXXXX Where A is alpha value
