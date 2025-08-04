@@ -8,6 +8,7 @@ using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
+using NeuroAccessMaui.UI.Pages.Debug.Controls;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Main;
@@ -101,6 +102,8 @@ namespace NeuroAccessMaui.UI
 			//Notification
 			Builder.Services.AddTransient<NotificationsPage, NotificationsViewModel>();
 
+			// Debug
+			Builder.Services.AddTransient<ControlsDebugPage, ControlsDebugViewModel>();
 
 			// Petitions
 			Builder.Services.AddTransient<PetitionContractPage, PetitionContractViewModel>();
