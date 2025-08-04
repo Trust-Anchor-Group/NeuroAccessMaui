@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Update Portuguese translations
 - Fixed Profile configuration not loading properly
 - Ensured authentication method set to Password when Later is selected in biometrics step
 - --
