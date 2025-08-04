@@ -189,7 +189,7 @@
 
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-						<Label Style="{DynamicResource SectionTitleLabel}" Text="Beta Features"/>
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize BetaFeature}"/>
 						<Border Style="{DynamicResource BorderSubSet}">
 							<VerticalStackLayout>
 								<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto" RowSpacing="{DynamicResource SmallSpacing}">
@@ -213,7 +213,7 @@
 				<!-- Version Information -->
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-						<Label Style="{DynamicResource SectionTitleLabel}" Text="Version"/>
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Version}"/>
 						<Border Style="{DynamicResource BorderSubSet}">
 							<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 								<VerticalStackLayout>
