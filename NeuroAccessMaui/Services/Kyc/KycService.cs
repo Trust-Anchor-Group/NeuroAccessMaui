@@ -1,4 +1,7 @@
-﻿using NeuroAccessMaui.Services.Kyc.Models;
+﻿using System.Reflection;
+using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Services.Kyc.Models;
+using NeuroAccessMaui.Services.Kyc.ViewModels;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Kyc
@@ -10,13 +13,62 @@ namespace NeuroAccessMaui.Services.Kyc
 	public class KycService : IKycService
 	{
 		/// <inheritdoc/>
-		public async Task<KycProcess> LoadProcessAsync(string Resource, string? Lang = null)
+		public async Task<KycReference> LoadKycReferenceAsync(string Resource, string? Lang = null)
 		{
-			string FileName = GetFileName(Resource);
-			using Stream Stream = await FileSystem.OpenAppPackageFileAsync(FileName);
-			using StreamReader Reader = new(Stream);
-			string Xml = await Reader.ReadToEndAsync().ConfigureAwait(false);
-			return await KycProcessParser.LoadProcessAsync(Xml, Lang).ConfigureAwait(false);
+			KycReference? Reference;
+
+			// 1) Check if the resource is already saved to storage.
+			try
+			{
+				Reference = await ServiceRef.StorageService.FindFirstDeleteRest<KycReference>();
+			}
+			catch (Exception FindEx)
+			{
+				ServiceRef.LogService.LogException(FindEx, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				Reference = null;
+			}
+
+			if (Reference is null)
+			{
+				Reference = new KycReference
+				{
+					Created = DateTime.UtcNow
+				};
+				try
+				{
+					await ServiceRef.StorageService.Insert(Reference);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				}
+
+				// 2) If not, load from Neuron resource.
+				string FileName = GetFileName(Resource);
+				using Stream Stream = await FileSystem.OpenAppPackageFileAsync(FileName);
+				using StreamReader Reader = new(Stream);
+				string Xml = await Reader.ReadToEndAsync().ConfigureAwait(false);
+
+				Reference.KycXml = Xml;
+			}
+
+			// 3) Load default if not available.
+			return Reference;
+		}
+
+		public async Task SaveKycReference(KycReference Reference)
+		{
+			try
+			{
+				if (string.IsNullOrEmpty(Reference.ObjectId))
+					await ServiceRef.StorageService.Insert(Reference);
+				else
+					await ServiceRef.StorageService.Update(Reference);
+			}
+			catch (KeyNotFoundException)
+			{
+				await ServiceRef.StorageService.Insert(Reference);
+			}
 		}
 
 		private static string GetFileName(string Resource)

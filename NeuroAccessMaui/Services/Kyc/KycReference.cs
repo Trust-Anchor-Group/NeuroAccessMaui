@@ -49,7 +49,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// Field values in the process.
 		/// </summary>
 		[DefaultValueNull]
-		public KycFieldValue[]? FieldValues { get; set; }
+		public KycFieldValue[]? Fields { get; set; }
 
 		/// <summary>
 		/// Optional friendly name.
@@ -73,10 +73,10 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				this.process = await KycProcessParser.LoadProcessAsync(this.KycXml, lang).ConfigureAwait(false);
 
-				if (this.FieldValues is not null)
+				if (this.Fields is not null)
 				{
-					foreach (KycFieldValue FieldValue in this.FieldValues)
-						this.process.Values[FieldValue.FieldId] = FieldValue.Value;
+					foreach (KycFieldValue Field in this.Fields)
+						this.process.Values[Field.FieldId] = Field.Value;
 
 					foreach (KycPage Page in this.process.Pages)
 					{
@@ -129,10 +129,10 @@ namespace NeuroAccessMaui.Services.Kyc
 			this.Created = created;
 			this.Updated = updated;
 			this.Fetched = DateTime.UtcNow;
-			this.FieldValues = process.Values.Select(p => new KycFieldValue(p.Key, p.Value)).ToArray();
+			this.Fields = process.Values.Select(p => new KycFieldValue(p.Key, p.Value)).ToArray();
 		}
 
-		private void ApplyFieldValue(ObservableKycField Field)
+		public void ApplyFieldValue(ObservableKycField Field)
 		{
 			if (this.process is null || !this.process.Values.TryGetValue(Field.Id, out string? Val) || Val is null)
 				return;
@@ -157,7 +157,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				Created = DateTime.UtcNow,
 				Updated = DateTime.UtcNow,
 				Fetched = DateTime.UtcNow,
-				FieldValues = process.Values.Select(P => new KycFieldValue(P.Key, P.Value)).ToArray(),
+				Fields = process.Values.Select(P => new KycFieldValue(P.Key, P.Value)).ToArray(),
 				FriendlyName = friendlyName ?? string.Empty
 			};
 			return Reference;

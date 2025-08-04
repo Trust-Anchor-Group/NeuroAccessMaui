@@ -18,6 +18,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 	public partial class KycProcessViewModel : BaseViewModel
 	{
 		private KycProcess? process;
+		private KycReference? kycReference;
 		private int currentPageIndex = 0;
 
 		[ObservableProperty] private int currentPagePosition;
@@ -92,10 +93,15 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			await base.OnInitialize();
 
-			this.process = await ServiceRef.KycService.LoadProcessAsync(
+			// TODO: Load the KYC process as KycReference from serviceRef.KycService
+			this.kycReference = await ServiceRef.KycService.LoadKycReferenceAsync(
 					 "NeuroAccessMaui.Resources.Raw.TestKYCNeuro.xml",
 					 "en"
 			 );
+
+			this.process = await this.kycReference.ToProcess();
+
+			if (this.process is null) return; // TODO: Check and handle null process
 
 			this.process.Initialize();
 
@@ -122,8 +128,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				Page.UpdateVisibilities(this.process.Values);
 			}
-
-			this.process.LoadFieldsAsync();
 
 			this.currentPageIndex = this.GetNextIndex(0);
 			this.CurrentPagePosition = this.currentPageIndex;
@@ -195,7 +199,40 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			this.OnPropertyChanged(nameof(this.Progress));
 
-			this.process?.SaveFieldsToStorage();
+			this.UpdateReference();
+			this.SaveReferenceToStorage();
+		}
+
+		private void UpdateReference()
+		{
+			if (this.process is null)
+			{
+				return;
+			}
+			foreach (KycPage Page in this.process.Pages)
+			{
+				foreach (ObservableKycField Field in Page.AllFields)
+				{
+					this.kycReference?.ApplyFieldValue(Field);
+				}
+				foreach (KycSection Section in Page.AllSections)
+				{
+					foreach (ObservableKycField Field in Section.AllFields)
+					{
+						this.kycReference?.ApplyFieldValue(Field);
+					}
+				}
+			}
+		}
+
+		private void SaveReferenceToStorage()
+		{
+			if (this.kycReference is null)
+			{
+				return;
+			}
+
+			ServiceRef.KycService.SaveKycReference(this.kycReference);
 		}
 
 		private int GetNextIndex(int Start)
@@ -347,11 +384,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 			}
 
-			// Create a register Identity Model object
-			RegisterIdentityModel RegisterModel = new();
-
-			bool IsOrg = false;
-			string DocumentType = string.Empty;
+			Dictionary<string, string> IdentityFields = new();
 			List <string> Attachments = new();
 
 			// Add Mapped Values to the model
@@ -359,49 +392,37 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				switch (Kvp.Key)
 				{
-					case "FIRST_NAME":  RegisterModel.FirstName = Kvp.Value; break;
-					case "MIDDLE_NAMES": RegisterModel.MiddleNames = Kvp.Value; break;
-					case "LAST_NAMES": RegisterModel.LastNames = Kvp.Value; break;
-					case "PNR": RegisterModel.PersonalNumber = Kvp.Value; break;
-					case "ADDRESS": RegisterModel.Address = Kvp.Value; break;
-					case "ADDRESS2": RegisterModel.Address2 = Kvp.Value; break;
-					case "AREA": RegisterModel.Area = Kvp.Value; break;
-					case "CITY": RegisterModel.City = Kvp.Value; break;
-					case "ZIP_CODE": RegisterModel.ZipCode = Kvp.Value; break;
-					case "REGION": RegisterModel.Region = Kvp.Value; break;
-					case "COUNTRY": RegisterModel.CountryCode = Kvp.Value; break;
-					case "NATIONALITY": RegisterModel.NationalityCode = Kvp.Value; break;
-					case "GENDER": RegisterModel.GenderCode = Kvp.Value; break;
-					case "BDATE": RegisterModel.BirthDate = DateTime.TryParse(Kvp.Value, out DateTime Dt) ? Dt : DateTime.Now; break;
-					case "EMAIL": RegisterModel.EMail = Kvp.Value; break;
-					case "DOC_TYPE": DocumentType = Kvp.Value; break; // TODO: Handle Documents
-					case "PASSPORT_FILE": if (Kvp.Value == "passport") Attachments.Add(Kvp.Value);  break; // TODO: Handle Passport file
-					case "IDENTITY_CARD_FRONT": if (Kvp.Value == "identityCard") Attachments.Add(Kvp.Value); break; // TODO: Handle Identity Card file
-					case "IDENTITY_CARD_BACK": if (Kvp.Value == "identityCard") Attachments.Add(Kvp.Value); break; // TODO: Handle Identity Card file
-					case "DRIVERS_LICENSE_FRONT": if (Kvp.Value == "driversLicense") Attachments.Add(Kvp.Value); break; // TODO: Handle Driver License file
-					case "DRIVERS_LICENSE_BACK": if (Kvp.Value == "driversLicense") Attachments.Add(Kvp.Value); break; // TODO: Handle Driver License file
-					case "IS_ORG": IsOrg = true; break; // TODO: Handle Organizations?
-					case "ORG_NAME": RegisterModel.OrgName = IsOrg ? Kvp.Value : string.Empty; break;
-					case "ORG_NUMBER": RegisterModel.OrgNumber = IsOrg ? Kvp.Value : string.Empty; break;
-					case "ORG_ADDRESS": RegisterModel.OrgAddress = IsOrg ? Kvp.Value : string.Empty; break;
-					case "ORG_ADDRESS2": RegisterModel.OrgAddress2 = IsOrg ? Kvp.Value : string.Empty; break;
-					case "ORG_AREA": RegisterModel.OrgArea = IsOrg ? Kvp.Value : string.Empty; break;
-					case "ORG_CITY": RegisterModel.OrgCity = IsOrg ? Kvp.Value : string.Empty; break;
-					case "ORG_ZIP": RegisterModel.OrgZipCode = IsOrg ? Kvp.Value : string.Empty; break;
-					case "ORG_REGION": RegisterModel.OrgRegion = IsOrg ? Kvp.Value : string.Empty; break;
-					case "ORG_COUNTRY": RegisterModel.OrgCountryCode = IsOrg ? Kvp.Value : string.Empty; break;
-					case "ORG_DEPARMENT": RegisterModel.OrgDepartment = IsOrg ? Kvp.Value : string.Empty; break;
-					case "ORG_ROLE": RegisterModel.OrgRole = IsOrg ? Kvp.Value : string.Empty; break;
-					case "PHONE": RegisterModel.PhoneNr = Kvp.Value; break;
+					case "PASSPORT_FILE":
+						if (MappedValues["DOC_TYPE"] == "passport") Attachments.Add(Kvp.Value);
+						break; // TODO: Handle Passport file
+					case "IDENTITY_CARD_FRONT":
+						if (MappedValues["DOC_TYPE"] == "identityCard") Attachments.Add(Kvp.Value);
+						break; // TODO: Handle Identity Card file
+					case "IDENTITY_CARD_BACK":
+						if (MappedValues["DOC_TYPE"] == "identityCard") Attachments.Add(Kvp.Value);
+						break; // TODO: Handle Identity Card file
+					case "DRIVERS_LICENSE_FRONT":
+						if (MappedValues["DOC_TYPE"] == "driversLicense") Attachments.Add(Kvp.Value);
+						break; // TODO: Handle Driver License file
+					case "DRIVERS_LICENSE_BACK":
+						if (MappedValues["DOC_TYPE"] == "driversLicense") Attachments.Add(Kvp.Value);
+						break; // TODO: Handle Driver License file
+					// Handle other special cases
+					// case email:
+					// case DeviceID
+					// case Document type
 
 					// Default case, unhandled case
-					default: Console.WriteLine("Unhandled mapping key: " + Kvp.Key); break;
+					default:
+						IdentityFields[Kvp.Key] = Kvp.Value;
+						break;
 				};
 
 				Console.WriteLine($"Mapped: {Kvp.Key} = {Kvp.Value}");
 			}
 
 			// Submit the registration
+			// Use IdentityFields and Attachments to submit the KYC process
 			// Example in ApplyIdViewModel.cs
 			await Task.Run(() => { });
 		}
@@ -429,6 +450,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					"uppercase" => FieldValue.ToUpperInvariant(),
 					"lowercase" => FieldValue.ToLowerInvariant(),
 					"trim" => FieldValue.Trim(),
+					"year" => DateTime.TryParse(FieldValue, out DateTime Dt) ? Dt.Year.ToString(CultureInfo.InvariantCulture) : "",
+					"month" => DateTime.TryParse(FieldValue, out DateTime Dt) ? Dt.Month.ToString(CultureInfo.InvariantCulture) : "",
+					"day" => DateTime.TryParse(FieldValue, out DateTime Dt) ? Dt.Day.ToString(CultureInfo.InvariantCulture) : "",
 					_ => FieldValue
 				};
 			}
