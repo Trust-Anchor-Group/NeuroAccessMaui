@@ -21,15 +21,20 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		{
 			this.InitializeComponent();
 			this.ContentPageModel = new ViewIdentityViewModel(ServiceRef.UiService.PopLatestArgs<ViewIdentityNavigationArgs>());
+
+			this.BackgroundRotation();
 		}
+
 		protected override void OnSizeAllocated(double width, double height)
 		{
 			base.OnSizeAllocated(width, height);
 			try
 			{
+				int Diagonal = (int)Math.Sqrt(width * width + height * height);
+
 				// Set the size of the rainbow view
-				this.RainbowView.WidthRequest = height + 200;
-				this.RainbowView.HeightRequest = width + 200;
+				this.RainbowView.WidthRequest = Diagonal;
+				this.RainbowView.HeightRequest = Diagonal;
 
 				// Prepare the confetti system:
 				this.ConfettiView.Systems?.Clear();
@@ -67,7 +72,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			//!!! this.PhotoViewer.HidePhotos();
 			return base.OnDisappearingAsync();
 		}
-
 
 		private SKConfettiSystem CreateSideSystem(SKConfettiEmitterSide side, Rect p)
 		{
@@ -119,6 +123,15 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			}
 
 			return Sys;
+		}
+
+		private async void BackgroundRotation()
+		{
+			while(true)
+			{
+				await this.RainbowView.RotateTo(360, 5000);
+				this.RainbowView.Rotation = 0; // Reset rotation to 0 after completing the rotation
+			}
 		}
 
 	}

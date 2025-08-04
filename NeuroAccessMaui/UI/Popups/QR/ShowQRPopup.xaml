@@ -31,7 +31,7 @@
 					<Label
 							  HorizontalTextAlignment="Center"
 							  Style="{DynamicResource PageTitleLabel}"
-							  Text="{l:Localize PersonalId}"/>
+							  Text="{Binding QrPopUpTitle}"/>
 						 
 					<Image x:Name="QrCode" Source="{Binding QrCode}" WidthRequest="{Binding QrCodeWidth}"
 						HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
