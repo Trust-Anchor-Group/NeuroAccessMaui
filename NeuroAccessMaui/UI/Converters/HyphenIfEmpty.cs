@@ -5,6 +5,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// The Localized String corresponding to "N/A" if empty.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class HyphenIfEmpty : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>

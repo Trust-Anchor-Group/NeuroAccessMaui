@@ -7,6 +7,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// to a <see cref="String"/> value. If the value is <see cref="DateTime.MinValue"/> or <see cref="DateTime.MaxValue"/>,
 	/// the empty string is returned.
     /// </summary>
+    [AcceptEmptyServiceProvider]
     public class TimeToString : IValueConverter, IMarkupExtension
     {
         /// <inheritdoc/>

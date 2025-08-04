@@ -6,6 +6,7 @@ namespace NeuroAccessMaui.UI.Converters
     /// Converts a <see cref="DateTime"/> value to a <see cref="String"/> value. If the value is
     /// <see cref="DateTime.MinValue"/> or <see cref="DateTime.MaxValue"/>, the empty string is returned.
     /// </summary>
+    [AcceptEmptyServiceProvider]
     public class DateTimeToString : IValueConverter, IMarkupExtension
     {
         /// <inheritdoc/>

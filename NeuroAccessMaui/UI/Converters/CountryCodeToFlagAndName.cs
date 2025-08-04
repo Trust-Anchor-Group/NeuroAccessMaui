@@ -6,6 +6,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Converts a country code to a country flag and name.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class CountryCodeToFlagAndName : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>

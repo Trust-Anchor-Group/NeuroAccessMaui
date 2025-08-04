@@ -5,6 +5,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Converts an input control OK state to a background color.
 	/// </summary>
+    [AcceptEmptyServiceProvider]
 	public class ControlBgColor : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>
