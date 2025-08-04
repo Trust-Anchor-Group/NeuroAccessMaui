@@ -93,7 +93,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			await base.OnInitialize();
 
 			this.process = await ServiceRef.KycService.LoadProcessAsync(
-					 "NeuroAccessMaui.Resources.Raw.TestKYC.xml",
+					 "NeuroAccessMaui.Resources.Raw.TestKYCNeuro.xml",
 					 "en"
 			 );
 
@@ -360,14 +360,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				switch (Kvp.Key)
 				{
 					case "FIRST_NAME":  RegisterModel.FirstName = Kvp.Value; break;
-					case "MIDDLE_NAME": RegisterModel.MiddleNames = Kvp.Value; break;
-					case "LAST_NAME": RegisterModel.LastNames = Kvp.Value; break;
-					case "PERSONAL_NUMBER": RegisterModel.PersonalNumber = Kvp.Value; break;
+					case "MIDDLE_NAMES": RegisterModel.MiddleNames = Kvp.Value; break;
+					case "LAST_NAMES": RegisterModel.LastNames = Kvp.Value; break;
+					case "PNR": RegisterModel.PersonalNumber = Kvp.Value; break;
 					case "ADDRESS": RegisterModel.Address = Kvp.Value; break;
 					case "ADDRESS2": RegisterModel.Address2 = Kvp.Value; break;
 					case "AREA": RegisterModel.Area = Kvp.Value; break;
 					case "CITY": RegisterModel.City = Kvp.Value; break;
-					case "ZIP": RegisterModel.ZipCode = Kvp.Value; break;
+					case "ZIP_CODE": RegisterModel.ZipCode = Kvp.Value; break;
 					case "REGION": RegisterModel.Region = Kvp.Value; break;
 					case "COUNTRY": RegisterModel.CountryCode = Kvp.Value; break;
 					case "NATIONALITY": RegisterModel.NationalityCode = Kvp.Value; break;
@@ -395,7 +395,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					case "PHONE": RegisterModel.PhoneNr = Kvp.Value; break;
 
 					// Default case, unhandled case
-					default: throw new Exception("Unhandled mapping key: " + Kvp.Key);
+					default: Console.WriteLine("Unhandled mapping key: " + Kvp.Key); break;
 				};
 
 				Console.WriteLine($"Mapped: {Kvp.Key} = {Kvp.Value}");
