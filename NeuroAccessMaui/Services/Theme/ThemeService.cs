@@ -66,6 +66,8 @@ namespace NeuroAccessMaui.Services.Theme
 		/// <inheritdoc />
 		public void SetTheme(AppTheme Theme)
 		{
+			if (Theme is AppTheme.Unspecified) Theme = Application.Current!.RequestedTheme;
+
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				try

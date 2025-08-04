@@ -18,12 +18,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Change settings menu so back button is always visible
+- Make app default theme to phone settings
 - Registration workflow to direct users based on registration state (e.g., password/biometrics steps)
 - ProfilePhoto logic in ViewIdentityViewModel to prioritize photos named ProfilePhoto
 - AppColors are now always looked up and not cached
 
 ### Fixed
 
+- Update Portuguese translations
+- Fixed Profile configuration not loading properly
 - Ensured authentication method set to Password when Later is selected in biometrics step
 - --
 - A bug which could cause a crash when opening a contract from the Wallet page

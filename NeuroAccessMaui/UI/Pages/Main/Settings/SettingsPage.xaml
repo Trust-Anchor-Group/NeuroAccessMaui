@@ -12,28 +12,28 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Settings">
 
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, *">
 
-		<controls:Background/>
+		<controls:Background Grid.RowSpan="2"/>
 
-		<ScrollView>
-			<VerticalStackLayout Margin="{DynamicResource SmallMargins}">
-				<Grid ColumnDefinitions="Auto, *" Margin="{DynamicResource SmallMargins}">
-					<controls:SvgButton
-						Grid.Row="0" Grid.Column="0"
-						Command="{Binding GoBackCommand}"
-						SvgSource="close.svg"
-						Style="{DynamicResource IconButton}"/>
+		<Grid ColumnDefinitions="Auto, *" Margin="{DynamicResource MediumMargins}">
+			<controls:SvgButton
+				HeightRequest="40"
+				Command="{Binding GoBackCommand}"
+				SvgSource="close.svg"
+				Style="{DynamicResource IconButton}"/>
 
-					<Label
-						Grid.Column="1"
-						HorizontalOptions="End"
-						Style="{DynamicResource PageTitleLabel}"
-						Text="{l:Localize Settings}"/>
-				</Grid>
+			<Label
+				Grid.Column="1"
+				HorizontalOptions="End"
+				Style="{DynamicResource PageTitleLabel}"
+				Text="{l:Localize Settings}"/>
+		</Grid>
 				
+		<ScrollView Grid.Row="1">
+			<VerticalStackLayout Margin="{DynamicResource SmallLeftRightBottomMargins}">
 				<!-- Display Settings -->
-				<Border Style="{DynamicResource BorderSet}">
+				<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource SmallLeftRightBottomMargins}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize DisplaySettings}"/>
 
@@ -189,7 +189,7 @@
 
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-						<Label Style="{DynamicResource SectionTitleLabel}" Text="Beta Features"/>
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize BetaFeature}"/>
 						<Border Style="{DynamicResource BorderSubSet}">
 							<VerticalStackLayout>
 								<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto" RowSpacing="{DynamicResource SmallSpacing}">
@@ -213,7 +213,7 @@
 				<!-- Version Information -->
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-						<Label Style="{DynamicResource SectionTitleLabel}" Text="Version"/>
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Version}"/>
 						<Border Style="{DynamicResource BorderSubSet}">
 							<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 								<VerticalStackLayout>

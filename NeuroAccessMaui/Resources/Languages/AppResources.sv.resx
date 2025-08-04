@@ -660,10 +660,10 @@
     <value>En tillfällig OTP-kod har använts. Applikationen kommer sluta fungera om ungefär en vecka. Du måste ominstallera programmet för att använda det igen.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Ange nytt pin</value>
+    <value>Skapa ny PIN-kod</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
-    <value>Bekräfta pin</value>
+    <value>Bekräfta PIN-kod</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
     <value>Skapa pin</value>

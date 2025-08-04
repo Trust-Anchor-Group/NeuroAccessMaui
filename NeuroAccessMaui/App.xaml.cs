@@ -241,9 +241,10 @@ namespace NeuroAccessMaui
 			if (!backgroundStart)
 			{
 				this.InitializeComponent();
-				AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
-				this.SetTheme(CurrentTheme ?? AppTheme.Light);
-				ServiceRef.ThemeService.SetTheme(CurrentTheme ?? AppTheme.Light);
+				AppTheme CurrentTheme = ServiceRef.TagProfile.Theme;
+
+				this.SetTheme(CurrentTheme);
+				ServiceRef.ThemeService.SetTheme(CurrentTheme);
 				try
 				{
 					this.MainPage = ServiceHelper.GetService<AppShell>();
@@ -255,8 +256,10 @@ namespace NeuroAccessMaui
 			}
 		}
 
-		void SetTheme(AppTheme theme)
+		void SetTheme(AppTheme Theme)
 		{
+			if (Theme is AppTheme.Unspecified) Theme = Application.Current!.RequestedTheme;
+
 			ICollection<ResourceDictionary> Merged = this.Resources.MergedDictionaries;
 
 			// Remove only our color theme dictionaries
@@ -264,7 +267,7 @@ namespace NeuroAccessMaui
 				Merged.Remove(Dict);
 
 			// Add correct one
-			if (theme == AppTheme.Dark)
+			if (Theme == AppTheme.Dark)
 				Merged.Add(new Dark());
 			else
 				Merged.Add(new Light());
@@ -691,6 +694,9 @@ namespace NeuroAccessMaui
 			}
 
 			ServiceRef.TagProfile.FromConfiguration(Configuration);
+
+			this.SetTheme(ServiceRef.TagProfile.Theme);
+			ServiceRef.ThemeService.SetTheme(ServiceRef.TagProfile.Theme);
 		}
 
 		#endregion
