@@ -8,6 +8,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Converts a boolean value to either Yes or No
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class BooleanToYesNo : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>

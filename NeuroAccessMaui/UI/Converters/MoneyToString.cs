@@ -5,6 +5,8 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Converts values to strings.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
+
 	public class MoneyToString : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>

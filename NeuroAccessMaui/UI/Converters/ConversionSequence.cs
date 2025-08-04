@@ -5,6 +5,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Sequence of converters.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class ConversionSequence : List<IValueConverter>, IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>
