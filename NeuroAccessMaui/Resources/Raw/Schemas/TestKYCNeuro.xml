@@ -166,7 +166,7 @@
 				<Text lang="en">Document Type Selection</Text>
 				<Text lang="sv">Typ av identitetshandling</Text>
 			</Label>
-			<Field id="documentType" type="picker" label="Select Document Type" mapping="DOC_TYPE" required="true">
+			<Field id="documentType" type="picker" label="Select Document Type" required="true">
 				<Label>
 					<Text lang="en">Select Document Type</Text>
 					<Text lang="sv">Välj ID-handling</Text>
@@ -386,7 +386,7 @@
 				</Message>
 			</Validation>
 		</Field>
-		<Field id="zipCode" type="text" label="Zip Code" mapping="ZIP_CODE" required="true">
+		<Field id="zipCode" type="text" label="Zip Code" mapping="ZIP" required="true">
 			<Label>
 				<Text lang="en">Zip Code</Text>
 				<Text lang="sv">Postnummer</Text>
@@ -407,7 +407,7 @@
 				</Message>
 			</Validation>
 		</Field>
-		<Field id="address" type="text" label="Street Address" mapping="ADDRESS" required="true">
+		<Field id="address" type="text" label="Street Address" mapping="ADDR" required="true">
 			<Label>
 				<Text lang="en">Street Address</Text>
 				<Text lang="sv">Gatuadress</Text>
@@ -427,7 +427,7 @@
 				</Message>
 			</Validation>
 		</Field>
-		<Field id="address2" type="text" label="Apartment/Unit" mapping="ADDRESS2">
+		<Field id="address2" type="text" label="Apartment/Unit" mapping="ADDR2">
 			<Label>
 				<Text lang="en">Apartment/Unit</Text>
 				<Text lang="sv">Lägenhet/Enhet</Text>
