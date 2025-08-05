@@ -286,11 +286,6 @@ namespace NeuroAccessMaui.Services.Tag
 		bool IsDirty { get; }
 
 		/// <summary>
-		/// The current fields of the Kyc process.
-		/// </summary>
-		string[]? KycFieldValues { get; set; }
-
-		/// <summary>
 		/// Converts the current <see cref="ITagProfile"/> to a <see cref="TagConfiguration"/> object that can be persisted to the <see cref="IStorageService"/>.
 		/// </summary>
 		/// <returns>Configuration object</returns>

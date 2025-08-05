@@ -46,7 +46,6 @@ namespace NeuroAccessMaui.Services.Kyc
 				using Stream Stream = await FileSystem.OpenAppPackageFileAsync(FileName);
 				using StreamReader Reader = new(Stream);
 				string Xml = await Reader.ReadToEndAsync().ConfigureAwait(false);
-
 				Reference.KycXml = Xml;
 			}
 

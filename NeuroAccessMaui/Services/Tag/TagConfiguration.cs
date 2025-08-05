@@ -320,11 +320,5 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		[DefaultValueNull]
 		public DateTime? LastEDalerBalanceUpdate { get; set; }
-
-		/// <summary>
-		/// The current KYC process.
-		/// </summary>
-		[DefaultValueNull]
-		public string[]? KycFieldValues { get; set; }
 	}
 }
