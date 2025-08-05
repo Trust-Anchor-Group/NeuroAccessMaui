@@ -95,7 +95,7 @@
 					</Message>
 				</Validation>
 			</Field>
-			<Field id="dob" type="date" label="Date of Birth" required="true" mapping="BDATE">
+			<Field id="dob" type="date" label="Date of Birth" required="true">
 				<Label>
 					<Text lang="en">Date of Birth</Text>
 					<Text lang="sv">Födelsedatum</Text>
@@ -104,6 +104,15 @@
 					<Text lang="en">Use the format YYYY-MM-DD</Text>
 					<Text lang="sv">Använd formatet ÅÅÅÅ-MM-DD</Text>
 				</Hint>
+				<Mapping key="BDAY">
+					<Transform>day</Transform>
+				</Mapping>
+				<Mapping key="BMONTH">
+					<Transform>month</Transform>
+				</Mapping>
+				<Mapping key="BYEAR">
+					<Transform>year</Transform>
+				</Mapping>
 				<Validation min="1900-01-01" max="2020-01-01">
 					<Message>
 						<Text lang="en">Enter a valid date between 1900 and 2020</Text>
@@ -116,7 +125,7 @@
 					<AllowFuture>false</AllowFuture>
 				</Metadata>
 			</Field>
-			<Field id="gender" type="picker" label="Select Gender" Mapping="GENDER" required="true">
+			<Field id="gender" type="picker" label="Select Gender" mapping="GENDER" required="true">
 				<Label>
 					<Text lang="en">Select Gender</Text>
 					<Text lang="sv">Välj kön</Text>

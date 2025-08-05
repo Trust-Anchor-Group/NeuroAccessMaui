@@ -209,20 +209,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				return;
 			}
-			foreach (KycPage Page in this.process.Pages)
-			{
-				foreach (ObservableKycField Field in Page.AllFields)
-				{
-					this.kycReference?.ApplyFieldValue(Field);
-				}
-				foreach (KycSection Section in Page.AllSections)
-				{
-					foreach (ObservableKycField Field in Section.AllFields)
-					{
-						this.kycReference?.ApplyFieldValue(Field);
-					}
-				}
-			}
+			this.kycReference!.Fields = [.. this.process.Values.Select(p => new KycFieldValue(p.Key, p.Value))];
 		}
 
 		private void SaveReferenceToStorage()

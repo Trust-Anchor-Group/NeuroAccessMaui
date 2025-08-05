@@ -17,7 +17,6 @@ namespace NeuroAccessMaui.Services.Kyc
 		{
 			KycReference? Reference;
 
-			// 1) Check if the resource is already saved to storage.
 			try
 			{
 				Reference = await ServiceRef.StorageService.FindFirstDeleteRest<KycReference>();
@@ -43,7 +42,6 @@ namespace NeuroAccessMaui.Services.Kyc
 					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 				}
 
-				// 2) If not, load from Neuron resource.
 				string FileName = GetFileName(Resource);
 				using Stream Stream = await FileSystem.OpenAppPackageFileAsync(FileName);
 				using StreamReader Reader = new(Stream);
