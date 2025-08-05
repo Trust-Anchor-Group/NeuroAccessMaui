@@ -33,7 +33,7 @@
 					</Message>
 				</Validation>
 			</Field>
-			<Field id="firstName" type="text" label="Given Name" mapping="FIRST_NAME" required="true">
+			<Field id="firstName" type="text" label="Given Name" mapping="FIRST" required="true">
 				<Label>
 					<Text lang="en">First Name</Text>
 					<Text lang="sv">Förnamn</Text>
@@ -54,7 +54,7 @@
 					</Message>
 				</Validation>
 			</Field>
-			<Field id="middleNames" type="text" label="Middle Names" mapping="MIDDLE_NAMES">
+			<Field id="middleNames" type="text" label="Middle Names" mapping="MIDDLE">
 				<Label>
 					<Text lang="en">Middle Names</Text>
 					<Text lang="sv">Mellannamn</Text>
@@ -74,7 +74,7 @@
 					</Message>
 				</Validation>
 			</Field>
-			<Field id="lastNames" type="text" label="Family Name" mapping="LAST_NAMES" required="true">
+			<Field id="lastNames" type="text" label="Family Name" mapping="LAST" required="true">
 				<Label>
 					<Text lang="en">Family Name</Text>
 					<Text lang="sv">Efternamn</Text>
@@ -131,15 +131,15 @@
 					<Text lang="sv">Välj kön</Text>
 				</Label>
 				<Options>
-					<Option value="male">
+					<Option value="M">
 						<Text lang="en">Male</Text>
 						<Text lang="sv">Man</Text>
 					</Option>
-					<Option value="female">
+					<Option value="F">
 						<Text lang="en">Female</Text>
 						<Text lang="sv">Kvinna</Text>
 					</Option>
-					<Option value="other">
+					<Option value="Other">
 						<Text lang="en">Other</Text>
 						<Text lang="sv">Annat</Text>
 					</Option>
@@ -204,7 +204,7 @@
 				<Text lang="sv">Ladda upp dokument</Text>
 			</Label>
 			<!-- Passport Upload Field (shown if passport is selected) -->
-			<Field id="passportUpload" type="image" label="Passport Photo" mapping="PASSPORT_FILE" specialType="passport">
+			<Field id="passportUpload" type="image" label="Passport Photo" mapping="Passport" specialType="passport">
 				<Label>
 					<Text lang="en">Passport Photo</Text>
 					<Text lang="sv">Passfoto</Text>
@@ -241,7 +241,7 @@
 			</Field>
 
 			<!-- Identity Card Upload Field (shown if identityCard is selected) -->
-			<Field id="identityCardUpload" type="image" label="Identity Card" mapping="IDENTITY_CARD_FRONT" specialType="identityCardFront">
+			<Field id="identityCardUpload" type="image" label="Identity Card" mapping="IdCardFront" specialType="identityCardFront">
 				<Label>
 					<Text lang="en">Identity Card</Text>
 					<Text lang="sv">ID-kort</Text>
@@ -278,7 +278,7 @@
 			</Field>
 
 			<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
-			<Field id="driverslicenseFront" type="image" label="Driver's license (Front)" mapping="DRIVERS_LICENSE_FRONT" specialType="driversLicenseFront">
+			<Field id="driverslicenseFront" type="image" label="Driver's license (Front)" mapping="DriverLicenseFront" specialType="driversLicenseFront">
 				<Label>
 					<Text lang="en">Driver's license (Front)</Text>
 					<Text lang="sv">Körkort (Framsida)</Text>
@@ -314,7 +314,7 @@
 				</Metadata>
 			</Field>
 			<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
-			<Field id="driverslicenseBack" type="image" label="Driver's license (Back)" mapping="DRIVERS_LICENSE_BACK" specialType="driversLicenseBack">
+			<Field id="driverslicenseBack" type="image" label="Driver's license (Back)" mapping="DriverLicenseBack" specialType="driversLicenseBack">
 				<Label>
 					<Text lang="en">Driver's license (Back)</Text>
 					<Text lang="sv">Körkort (Baksida)</Text>
@@ -517,7 +517,7 @@
 			<Text lang="en">To complete your KYC process, please take a selfie. Ensure your face is clearly visible and well-lit.</Text>
 			<Text lang="sv">För att slutföra din KYC-process, vänligen ta en selfie. Se till att ditt ansikte är tydligt synligt och väl belyst.</Text>
 		</Description>
-		<Field id="selfieUpload" type="image" label="Selfie Upload" mapping="SELFIE_FILE" required="true">
+		<Field id="selfieUpload" type="image" label="Selfie Upload" mapping="ProfilePhoto" required="true">
 			<Label>
 				<Text lang="en">Selfie Upload</Text>
 				<Text lang="sv">Självporträtt</Text>

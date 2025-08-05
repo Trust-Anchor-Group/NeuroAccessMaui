@@ -1,17 +1,17 @@
-﻿using System;
+﻿
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Net.Mail;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
-using NeuroAccessMaui.UI.Pages.Registration;
+using NeuroAccessMaui.Services.UI.Photos;
+using SkiaSharp;
+using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
@@ -20,6 +20,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private KycProcess? process;
 		private KycReference? kycReference;
 		private int currentPageIndex = 0;
+		private bool applicationSent;
 
 		[ObservableProperty] private int currentPagePosition;
 		[ObservableProperty] private KycPage? currentPage;
@@ -339,7 +340,17 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private async Task ExecuteApplyAsync()
 		{
-			Dictionary<string, string> MappedValues = new();
+			if (this.applicationSent)
+				return;
+
+			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
+				return;
+
+			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true))
+				return;
+
+			List<Property> MappedValues = new();
+			List<LegalIdentityAttachment> Attachments = new();
 
 			// Map all values and submit
 			if (this.process is null)
@@ -350,12 +361,19 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			//For each page
 			foreach (KycPage Page in this.process.Pages)
 			{
+				bool PageValid = await this.ValidateCurrentPageAsync();
+				Console.WriteLine($"Page: {Page.Id} Valid: {PageValid}");
+
 				// For each field in the page
 				foreach (ObservableKycField Field in Page.AllFields)
 				{
-					foreach (KeyValuePair<string, string> Kvp in this.ApplyTansform(Field.Mappings, Field.StringValue ?? ""))
+					if (this.CheckAndHandleFile(Field, Attachments))
 					{
-						MappedValues[Kvp.Key] = Kvp.Value;
+						continue; // File handled, skip further processing
+					}
+					foreach (Property Prop in this.ApplyTansform(Field))
+					{
+						MappedValues.Add(Prop);
 					}
 				}
 				// For each section in the page
@@ -363,55 +381,66 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				{
 					foreach (ObservableKycField Field in Section.AllFields)
 					{
-						foreach (KeyValuePair<string, string> Kvp in this.ApplyTansform(Field.Mappings, Field.StringValue ?? ""))
+						if (this.CheckAndHandleFile(Field, Attachments))
 						{
-							MappedValues[Kvp.Key] = Kvp.Value;
+							continue; // File handled, skip further processing
+						}
+						foreach (Property Prop in this.ApplyTansform(Field))
+						{
+							MappedValues.Add(Prop);
 						}
 					}
 				}
 			}
 
-			Dictionary<string, string> IdentityFields = new();
-			List <string> Attachments = new();
+			// Add special properties
+			MappedValues.Add(new Property(Constants.XmppProperties.DeviceId, ServiceRef.PlatformSpecific.GetDeviceId()));
+			MappedValues.Add(new Property(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid));
+			MappedValues.Add(new Property(Constants.XmppProperties.Phone, ServiceRef.TagProfile.PhoneNumber));
+			MappedValues.Add(new Property(Constants.XmppProperties.EMail, ServiceRef.TagProfile.EMail));
 
-			// Add Mapped Values to the model
-			foreach (KeyValuePair<string, string> Kvp in MappedValues)
+			foreach (Property Prop in MappedValues)
 			{
-				switch (Kvp.Key)
-				{
-					case "PASSPORT_FILE":
-						if (MappedValues["DOC_TYPE"] == "passport") Attachments.Add(Kvp.Value);
-						break; // TODO: Handle Passport file
-					case "IDENTITY_CARD_FRONT":
-						if (MappedValues["DOC_TYPE"] == "identityCard") Attachments.Add(Kvp.Value);
-						break; // TODO: Handle Identity Card file
-					case "IDENTITY_CARD_BACK":
-						if (MappedValues["DOC_TYPE"] == "identityCard") Attachments.Add(Kvp.Value);
-						break; // TODO: Handle Identity Card file
-					case "DRIVERS_LICENSE_FRONT":
-						if (MappedValues["DOC_TYPE"] == "driversLicense") Attachments.Add(Kvp.Value);
-						break; // TODO: Handle Driver License file
-					case "DRIVERS_LICENSE_BACK":
-						if (MappedValues["DOC_TYPE"] == "driversLicense") Attachments.Add(Kvp.Value);
-						break; // TODO: Handle Driver License file
-					// Handle other special cases
-					// case email:
-					// case DeviceID
-					// case Document type
+				Console.WriteLine($"Mapped: {Prop.Name} = {Prop.Value}");
+			}
 
-					// Default case, unhandled case
-					default:
-						IdentityFields[Kvp.Key] = Kvp.Value;
-						break;
-				};
-
-				Console.WriteLine($"Mapped: {Kvp.Key} = {Kvp.Value}");
+			foreach (LegalIdentityAttachment a in Attachments)
+			{
+				Console.WriteLine($"Attachment: {a.FileName} ({a.ContentType}) {a.Data}");
 			}
 
 			// Submit the registration
 			// Use IdentityFields and Attachments to submit the KYC process
-			// Example in ApplyIdViewModel.cs
-			await Task.Run(() => { });
+
+			bool HasIdWithPrivateKey = ServiceRef.TagProfile.LegalIdentity is not null &&
+					  await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
+
+			(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
+				 ServiceRef.XmppService.AddLegalIdentity(MappedValues.ToArray(), !HasIdWithPrivateKey, Attachments.ToArray()));
+
+			if (Succeeded && AddedIdentity is not null)
+			{
+				await ServiceRef.TagProfile.SetIdentityApplication(AddedIdentity, true);
+				this.applicationSent = true;
+
+				// Loop through each local attachment and add it to the cache.
+				// We assume the server returns attachments with the same FileName as those we built.
+				foreach (LegalIdentityAttachment LocalAttachment in Attachments)
+				{
+					// Find the matching attachment in the returned identity by filename.
+					Attachment? MatchingAttachment = AddedIdentity.Attachments
+						 .FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
+					if (MatchingAttachment != null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
+					{
+						await ServiceRef.AttachmentCacheService.Add(
+							 MatchingAttachment.Url,
+							 AddedIdentity.Id,
+							 true,
+							 LocalAttachment.Data, // from our local attachment
+							 LocalAttachment.ContentType);
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -420,18 +449,30 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <param name="Mappings"></param>
 		/// <param name="FieldValue"></param>
 		/// <returns> Key value pair: Key = Field name in identity, Value = Transformed Value. For example: BYEAR: 1999</returns>
-		private Dictionary<string, string> ApplyTansform(ObservableCollection<KycMapping> Mappings, string FieldValue)
+		private List<Property> ApplyTansform(ObservableKycField Field)
 		{
-			Dictionary<string, string> Result = new();
+			if (Field.Condition is not null)
+			{
+				if (Field is null || Field.Mappings is null || Field.Mappings.Count == 0 || !Field.Condition!.Evaluate(this.process!.Values))
+				{
+					return new List<Property>();
+				}
+			}
 
-			foreach (KycMapping Map in Mappings)
+			List<Property> Result = new();
+
+			string FieldValue = Field.StringValue?.Trim() ?? string.Empty;
+
+			foreach (KycMapping Map in Field.Mappings)
 			{
 				if (string.IsNullOrEmpty(FieldValue))
 				{
 					continue;
 				}
 
-				Result[Map.Key] = Map.Transform switch
+				Property Property = new Property { Name = Map.Key };
+
+				Property.Value = Map.Transform switch
 				{
 					// Examples
 					"uppercase" => FieldValue.ToUpperInvariant(),
@@ -442,9 +483,127 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					"day" => DateTime.TryParse(FieldValue, out DateTime Dt) ? Dt.Day.ToString(CultureInfo.InvariantCulture) : "",
 					_ => FieldValue
 				};
+
+				Result.Add(Property);
 			}
 
 			return Result;
 		}
+
+		private bool CheckAndHandleFile(ObservableKycField Field, List<LegalIdentityAttachment> Attachments)
+		{
+			if (Field.StringValue is not null && Field.StringValue.Length > 0)
+			{
+				if (Field is ObservableImageField ImageField)
+				{
+					Attachments.Add(
+						new LegalIdentityAttachment(
+							ImageField.Mappings.First().Key + ".jpg",
+							Constants.MimeTypes.Jpeg,
+							CompressImage(
+								new MemoryStream(
+									Convert.FromBase64String(ImageField.StringValue!)
+								)
+							)!
+						)
+					);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private static byte[]? CompressImage(Stream inputStream)
+		{
+			try
+			{
+				using SKManagedStream ManagedStream = new(inputStream);
+				using SKData ImageData = SKData.Create(ManagedStream);
+
+				SKCodec Codec = SKCodec.Create(ImageData);
+				SKBitmap SkBitmap = SKBitmap.Decode(ImageData);
+
+				SkBitmap = HandleOrientation(SkBitmap, Codec.EncodedOrigin);
+
+				bool Resize = false;
+				int Height = SkBitmap.Height;
+				int Width = SkBitmap.Width;
+
+				// downdsample to FHD
+				if ((Width >= Height) && (Width > 1920))
+				{
+					Height = (int)(Height * (1920.0 / Width) + 0.5);
+					Width = 1920;
+					Resize = true;
+				}
+				else if ((Height > Width) && (Height > 1920))
+				{
+					Width = (int)(Width * (1920.0 / Height) + 0.5);
+					Height = 1920;
+					Resize = true;
+				}
+
+				if (Resize)
+				{
+					SKImageInfo Info = SkBitmap.Info;
+					SKImageInfo NewInfo = new(Width, Height, Info.ColorType, Info.AlphaType, Info.ColorSpace);
+					SkBitmap = SkBitmap.Resize(NewInfo, SKFilterQuality.High);
+				}
+
+				return SkBitmap.Encode(SKEncodedImageFormat.Jpeg, 80).ToArray();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return null;
+			}
+		}
+
+		private static SKBitmap HandleOrientation(SKBitmap Bitmap, SKEncodedOrigin Orientation)
+		{
+			SKBitmap Rotated;
+
+			switch (Orientation)
+			{
+				case SKEncodedOrigin.BottomRight:
+					Rotated = new SKBitmap(Bitmap.Width, Bitmap.Height);
+
+					using (SKCanvas Surface = new(Rotated))
+					{
+						Surface.RotateDegrees(180, Bitmap.Width / 2, Bitmap.Height / 2);
+						Surface.DrawBitmap(Bitmap, 0, 0);
+					}
+					break;
+
+				case SKEncodedOrigin.RightTop:
+					Rotated = new SKBitmap(Bitmap.Height, Bitmap.Width);
+
+					using (SKCanvas Surface = new(Rotated))
+					{
+						Surface.Translate(Rotated.Width, 0);
+						Surface.RotateDegrees(90);
+						Surface.DrawBitmap(Bitmap, 0, 0);
+					}
+					break;
+
+				case SKEncodedOrigin.LeftBottom:
+					Rotated = new SKBitmap(Bitmap.Height, Bitmap.Width);
+
+					using (SKCanvas Surface = new(Rotated))
+					{
+						Surface.Translate(0, Rotated.Height);
+						Surface.RotateDegrees(270);
+						Surface.DrawBitmap(Bitmap, 0, 0);
+					}
+					break;
+
+				default:
+					return Bitmap;
+			}
+
+			return Rotated;
+		}
+
 	}
 }
