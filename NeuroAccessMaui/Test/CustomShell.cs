@@ -117,14 +117,7 @@ private ContentPage? currentPage;
                     await oldLifeCycle.OnDisappearingAsync();
                 else
                     this.currentPage.SendDisappearing();
-
-                if (this.currentPage is ILifeCycleView oldDispose) 
-                    await oldDispose.OnDisposeAsync();
-
-                if (this.currentPage is IAsyncDisposable AsyncDisposable)
-                    await AsyncDisposable.DisposeAsync();
-                else if (this.currentPage is IDisposable Disposable)
-                    Disposable.Dispose();
+                // object cleanup moved to NavigationService
             }
 
             // Add new page as a child to the layout, in content slot
@@ -132,17 +125,11 @@ private ContentPage? currentPage;
             this.contentHost.BindingContext = Page.BindingContext;
             this.currentPage = Page;
 
-            // LifeCycle: OnInitializeAsync (once), then Appearing
+            // Visual appearing only (object init moved to NavigationService)
             if (Page is ILifeCycleView NewLifeCycle)
-            {
-                // Optionally track if OnInitializeAsync already called if you wish; for demo just call.
-                await NewLifeCycle.OnInitializeAsync();
                 await NewLifeCycle.OnAppearingAsync();
-            }
             else
-            {
                 Page.SendAppearing();
-            }
 
             // Manage bar visibility/content
             this.topBar.IsVisible = NavigationBars.GetTopBarVisible(Page);
@@ -183,11 +170,9 @@ private ContentPage? currentPage;
             this.modalHost.IsVisible = true;
             this.modalOverlay.IsVisible = true;
 
+            // Visual appearing only (object init moved to NavigationService)
             if (Page is ILifeCycleView lifeCycle)
-            {
-                await lifeCycle.OnInitializeAsync();
                 await lifeCycle.OnAppearingAsync();
-            }
             else
                 Page.SendAppearing();
 
@@ -212,21 +197,11 @@ private ContentPage? currentPage;
 
             ContentPage Page = this.modalStack.Pop();
 
+            // Visual disappearing only (object cleanup moved to NavigationService)
             if (Page is ILifeCycleView lifeCycle)
                 await lifeCycle.OnDisappearingAsync();
             else
                 Page.SendDisappearing();
-
-            if (Page.BindingContext is BaseModalViewModel vm)
-                await vm.OnPopInternal();
-
-            if (Page is ILifeCycleView dispose)
-                await dispose.OnDisposeAsync();
-
-            if(Page is IAsyncDisposable AsyncDisposable)
-                await AsyncDisposable.DisposeAsync();
-            else if (Page is IDisposable Disposable)
-                Disposable.Dispose();
 
             this.modalHost.Content = null;
             this.modalHost.BindingContext = null;
