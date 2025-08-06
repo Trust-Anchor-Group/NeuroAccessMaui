@@ -18,8 +18,8 @@ namespace NeuroAccessMaui.Test
     [Singleton]
     public class NavigationService : INavigationService
     {
-        private readonly Stack<ContentPage> navigationStack = new();
-        private readonly Stack<ContentPage> modalStack = new();
+        private readonly Stack<BaseContentPage> navigationStack = new();
+        private readonly Stack<BaseContentPage> modalStack = new();
         private readonly Stack<NavigationArgs?> navigationArgsStack = new();
 
         private readonly ConcurrentQueue<Func<Task>> taskQueue = new();
@@ -117,12 +117,12 @@ namespace NeuroAccessMaui.Test
         }
 
         /// <inheritdoc/>
-        public ContentPage CurrentPage => this.navigationStack.Count > 0
+        public BaseContentPage CurrentPage => this.navigationStack.Count > 0
             ? this.navigationStack.Peek()
             : throw new InvalidOperationException("No pages on navigation stack.");
 
         /// <inheritdoc/>
-        public ContentPage CurrentModalPage => this.modalStack.Count > 0
+        public BaseContentPage CurrentModalPage => this.modalStack.Count > 0
             ? this.modalStack.Peek()
             : throw new InvalidOperationException("No modal pages on stack.");
 
@@ -138,7 +138,7 @@ namespace NeuroAccessMaui.Test
         {
             return this.Enqueue(async () =>
             {
-                ContentPage? Page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as ContentPage ?? throw new InvalidOperationException($"No page registered for route '{Route}'.");
+                BaseContentPage? Page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage ?? throw new InvalidOperationException($"No page registered for route '{Route}'.");
                 // Object init lifecycle
                 if (Page is ILifeCycleView Init)
                     await Init.OnInitializeAsync();
@@ -151,17 +151,17 @@ namespace NeuroAccessMaui.Test
                 // Store navigation arguments for this route
                 this.PushArgs(Route, NavigationArgs);
 
-                #pragma warning disable 618,612
+#pragma warning disable 618, 612
                 if (Application.Current.MainPage is CustomShell customShell)
                     await customShell.SetPageAsync(Page);
-                else
-                    Application.Current.MainPage = Page;
-                #pragma warning restore 618,612
+#pragma warning restore 618, 612
+                
+                ServiceRef.LogService.LogDebug($"Navigating to {Route}");
             });
         }
 
         /// <inheritdoc/>
-        public Task GoToAsync(ContentPage Page)
+        public Task GoToAsync(BaseContentPage Page)
         {
             return this.Enqueue(async () =>
             {
@@ -177,10 +177,6 @@ namespace NeuroAccessMaui.Test
                 {
                     await customShell.SetPageAsync(Page);
                 }
-                else if (Window != null)
-                {
-                    Window.Page = Page;
-                }
             });
         }
 
@@ -193,7 +189,7 @@ namespace NeuroAccessMaui.Test
                 {
                     // Pop current page and its args
                     NavigationArgs? poppedArgs = this.navigationArgsStack.Pop();
-                    ContentPage poppedPage = this.navigationStack.Pop();
+                    BaseContentPage poppedPage = this.navigationStack.Pop();
                     // Object disposal lifecycle
                     if (poppedPage is ILifeCycleView disposePage)
                         await disposePage.OnDisposeAsync();
@@ -214,7 +210,7 @@ namespace NeuroAccessMaui.Test
                     for (int i = 1; i < levels && this.navigationStack.Count > 1; i++)
                     {
                         this.navigationArgsStack.Pop();
-                        ContentPage extra = this.navigationStack.Pop();
+                        BaseContentPage extra = this.navigationStack.Pop();
                         if (extra is ILifeCycleView extraDispose)
                             await extraDispose.OnDisposeAsync();
                         if (extra is IAsyncDisposable extraAsync)
@@ -224,16 +220,12 @@ namespace NeuroAccessMaui.Test
                     }
                     
                     // Show target page
-                    ContentPage previous = this.navigationStack.Peek();
+                    BaseContentPage previous = this.navigationStack.Peek();
 
                     Window window = Application.Current.Windows.FirstOrDefault();
                     if (window?.Page is CustomShell customShell)
                     {
                         await customShell.SetPageAsync(previous);
-                    }
-                    else if (window != null)
-                    {
-                        window.Page = previous;
                     }
                 }
             });
@@ -244,7 +236,7 @@ namespace NeuroAccessMaui.Test
         {
             return this.Enqueue(async () =>
             {
-                ContentPage? Page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as ContentPage;
+                BaseContentPage? Page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage;
                 if (Page is null)
                     throw new InvalidOperationException($"No page registered for route '{Route}'.");
 
@@ -255,15 +247,11 @@ namespace NeuroAccessMaui.Test
                 {
                     await customShell.PushModalAsync(Page);
                 }
-                else if (Window?.Page != null)
-                {
-                    await Window.Page.Navigation.PushModalAsync(Page);
-                }
             });
         }
 
         /// <inheritdoc/>
-        public async Task PushModalAsync<TPage>() where TPage : ContentPage
+        public async Task PushModalAsync<TPage>() where TPage : BaseContentPage
         {
             TPage Page = ServiceRef.Provider.GetRequiredService<TPage>();
             await this.Enqueue(async () =>
@@ -274,10 +262,6 @@ namespace NeuroAccessMaui.Test
                 {
                     await customShell.PushModalAsync(Page);
                 }
-                else if (Window?.Page != null)
-                {
-                    await Window.Page.Navigation.PushModalAsync(Page);
-                }
             });
 
             if (Page.BindingContext is BaseModalViewModel Vm)
@@ -286,7 +270,7 @@ namespace NeuroAccessMaui.Test
 
         /// <inheritdoc/>
         public async Task PushModalAsync<TPage, TViewModel>()
-            where TPage : ContentPage
+            where TPage : BaseContentPage
             where TViewModel : BaseModalViewModel
         {
             TPage Page = ServiceRef.Provider.GetRequiredService<TPage>();
@@ -300,10 +284,6 @@ namespace NeuroAccessMaui.Test
                 {
                     await CustomShell.PushModalAsync(Page);
                 }
-                else if (Window?.Page != null)
-                {
-                    await Window.Page.Navigation.PushModalAsync(Page);
-                }
             });
 
             await ViewModel.Popped;
@@ -311,7 +291,7 @@ namespace NeuroAccessMaui.Test
 
         /// <inheritdoc/>
         public async Task<TReturn?> PushModalAsync<TPage, TViewModel, TReturn>()
-            where TPage : ContentPage
+            where TPage : BaseContentPage
             where TViewModel : ReturningModalViewModel<TReturn>
         {
             TPage Page = ServiceRef.Provider.GetRequiredService<TPage>();
@@ -324,10 +304,6 @@ namespace NeuroAccessMaui.Test
                 if (Window?.Page is CustomShell CustomShell)
                 {
                     await CustomShell.PushModalAsync(Page);
-                }
-                else if (Window?.Page != null)
-                {
-                    await Window.Page.Navigation.PushModalAsync(Page);
                 }
             });
 
@@ -366,7 +342,7 @@ namespace NeuroAccessMaui.Test
                 return Args;
             }
             // Next, try to get args by route mapping
-            if (this.CurrentPage is ContentPage Page)
+            if (this.CurrentPage is BaseContentPage Page)
             {
                 string Route = Routing.GetRoute(Page) ?? string.Empty;
                 if (TryGetPageName(Route, out string PageName) &&

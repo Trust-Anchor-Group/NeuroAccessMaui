@@ -25,8 +25,8 @@ namespace NeuroAccessMaui.Test
         private readonly Grid modalOverlay;
         private readonly BoxView modalBackground;
         private readonly ContentView modalHost;
-private readonly Stack<ContentPage> modalStack = new();
-private ContentPage? currentPage;
+private readonly Stack<BaseContentPage> modalStack = new();
+private BaseContentPage? currentPage;
 
         /// <summary>
         /// Initializes a new instance of <see cref="CustomShell"/>.
@@ -60,7 +60,7 @@ private ContentPage? currentPage;
                 if (this.modalStack.Count == 0)
                     return;
 
-                ContentPage TopPage = this.modalStack.Peek();
+                BaseContentPage TopPage = this.modalStack.Peek();
                 if (BaseModalPage.GetPopOnBackgroundPress(TopPage))
                     await this.PopModalAsync();
             };
@@ -100,7 +100,7 @@ private ContentPage? currentPage;
         /// <summary>
         /// The currently displayed page.
         /// </summary>
-        public ContentPage? CurrentPage => this.currentPage;
+        public BaseContentPage? CurrentPage => this.currentPage;
 
         /// <summary>
         /// Swaps in a new page, with optional transition, updating bars and lifecycle events.
@@ -108,28 +108,22 @@ private ContentPage? currentPage;
         /// </summary>
         /// <param name="Page">The new page to show.</param>
         /// <param name="Transition">Transition type (fade, etc).</param>
-        public async Task SetPageAsync(ContentPage Page, TransitionType Transition = TransitionType.None)
+        public async Task SetPageAsync(BaseContentPage Page, TransitionType Transition = TransitionType.None)
         {
             // Remove previous page (disappearing, dispose)
             if (this.currentPage is not null)
             {
                 if (this.currentPage is ILifeCycleView oldLifeCycle)
                     await oldLifeCycle.OnDisappearingAsync();
-                else
-                    this.currentPage.SendDisappearing();
                 // object cleanup moved to NavigationService
             }
 
-            // Add new page as a child to the layout, in content slot
-            this.contentHost.Content = Page.Content;
-            this.contentHost.BindingContext = Page.BindingContext;
+            // Host the shell view in the content slot
+            this.contentHost.Content = Page;
             this.currentPage = Page;
 
-            // Visual appearing only (object init moved to NavigationService)
-            if (Page is ILifeCycleView NewLifeCycle)
-                await NewLifeCycle.OnAppearingAsync();
-            else
-                Page.SendAppearing();
+            // Fire custom appearing lifecycle
+            await Page.OnAppearingAsync();
 
             // Manage bar visibility/content
             this.topBar.IsVisible = NavigationBars.GetTopBarVisible(Page);
@@ -159,10 +153,9 @@ private ContentPage? currentPage;
         /// </summary>
         /// <param name="Page">The modal page to show.</param>
         /// <param name="Transition">Optional transition.</param>
-        public async Task PushModalAsync(ContentPage Page, TransitionType Transition = TransitionType.Fade)
+        public async Task PushModalAsync(BaseContentPage Page, TransitionType Transition = TransitionType.Fade)
         {
-            this.modalHost.Content = Page.Content;
-            this.modalHost.BindingContext = Page.BindingContext;
+            this.modalHost.Content = Page;
             this.modalStack.Push(Page);
 
             this.modalBackground.BackgroundColor = BaseModalPage.GetOverlayColor(Page);
@@ -170,11 +163,8 @@ private ContentPage? currentPage;
             this.modalHost.IsVisible = true;
             this.modalOverlay.IsVisible = true;
 
-            // Visual appearing only (object init moved to NavigationService)
-            if (Page is ILifeCycleView lifeCycle)
-                await lifeCycle.OnAppearingAsync();
-            else
-                Page.SendAppearing();
+            // Fire custom appearing lifecycle
+            await Page.OnAppearingAsync();
 
             if (Transition == TransitionType.Fade)
             {
@@ -195,13 +185,10 @@ private ContentPage? currentPage;
             if (this.modalStack.Count == 0)
                 return;
 
-            ContentPage Page = this.modalStack.Pop();
+            BaseContentPage Page = this.modalStack.Pop();
 
-            // Visual disappearing only (object cleanup moved to NavigationService)
-            if (Page is ILifeCycleView lifeCycle)
-                await lifeCycle.OnDisappearingAsync();
-            else
-                Page.SendDisappearing();
+            // Fire custom disappearing lifecycle
+            await Page.OnDisappearingAsync();
 
             this.modalHost.Content = null;
             this.modalHost.BindingContext = null;
@@ -214,9 +201,8 @@ private ContentPage? currentPage;
             }
             else
             {
-                ContentPage Next = this.modalStack.Peek();
-                this.modalHost.Content = Next.Content;
-                this.modalHost.BindingContext = Next.BindingContext;
+                BaseContentPage Next = this.modalStack.Peek();
+                this.modalHost.Content = Next;
                 this.modalBackground.BackgroundColor = BaseModalPage.GetOverlayColor(Next);
             }
         }

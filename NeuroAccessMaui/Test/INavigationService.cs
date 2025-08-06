@@ -1,6 +1,7 @@
 using Microsoft.Maui.Controls;
 using System.Threading.Tasks;
 using Waher.Runtime.Inventory;
+using NeuroAccessMaui.UI.Pages;
 
 namespace NeuroAccessMaui.Test
 {
@@ -27,10 +28,10 @@ namespace NeuroAccessMaui.Test
                 where TArgs : Services.UI.NavigationArgs, new();
 
         /// <summary>
-        /// Navigates directly to a page instance.
+        /// Navigates directly to a shell-hosted view.
         /// </summary>
-        /// <param name="Page">The page to navigate to.</param>
-        Task GoToAsync(ContentPage Page);
+        /// <param name="Page">The view to navigate to.</param>
+        Task GoToAsync(BaseContentPage Page);
 
         /// <summary>
         /// Pops the current page from the navigation stack and displays the previous page.
@@ -44,28 +45,28 @@ namespace NeuroAccessMaui.Test
         Task PushModalAsync(string Route);
 
         /// <summary>
-        /// Presents a page modally using dependency injection.
+        /// Presents a view modally using dependency injection.
         /// </summary>
-        /// <typeparam name="TPage">The page type.</typeparam>
-        Task PushModalAsync<TPage>() where TPage : ContentPage;
+        /// <typeparam name="TPage">The view type.</typeparam>
+        Task PushModalAsync<TPage>() where TPage : BaseContentPage;
 
         /// <summary>
-        /// Presents a page modally using dependency injection with a view model.
+        /// Presents a view modally using dependency injection with a view model.
         /// </summary>
-        /// <typeparam name="TPage">The page type.</typeparam>
+        /// <typeparam name="TPage">The view type.</typeparam>
         /// <typeparam name="TViewModel">The view model type.</typeparam>
         Task PushModalAsync<TPage, TViewModel>()
-            where TPage : ContentPage
+            where TPage : BaseContentPage
             where TViewModel : BaseModalViewModel;
 
         /// <summary>
-        /// Presents a page modally returning a value.
+        /// Presents a view modally returning a value.
         /// </summary>
-        /// <typeparam name="TPage">The page type.</typeparam>
+        /// <typeparam name="TPage">The view type.</typeparam>
         /// <typeparam name="TViewModel">The view model type.</typeparam>
         /// <typeparam name="TReturn">The return type.</typeparam>
         Task<TReturn?> PushModalAsync<TPage, TViewModel, TReturn>()
-            where TPage : ContentPage
+            where TPage : BaseContentPage
             where TViewModel : ReturningModalViewModel<TReturn>;
 
         /// <summary>
@@ -74,14 +75,14 @@ namespace NeuroAccessMaui.Test
         Task PopModalAsync();
 
         /// <summary>
-        /// Gets the current modal page if any.
+        /// Gets the current modal view if any.
         /// </summary>
-        ContentPage CurrentModalPage { get; }
+        BaseContentPage CurrentModalPage { get; }
 
         /// <summary>
-        /// Gets the current visible page.
+        /// Gets the current visible view.
         /// </summary>
-        ContentPage CurrentPage { get; }
+        BaseContentPage CurrentPage { get; }
 
         /// <summary>
         /// Pops the latest navigation arguments if any.
