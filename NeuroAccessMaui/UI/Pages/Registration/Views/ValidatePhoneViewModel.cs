@@ -194,7 +194,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[ObservableProperty]
 		private string phoneNumber = string.Empty;
 
-		public bool CanSendCode => this.NumberIsValid && !this.IsBusy &&
+		public bool CanSendCode => this.NumberIsValid &&
 			(this.PhoneNumber.Length > 0) && (this.CountDownSeconds <= 0);
 
 		public bool CanResendCode => this.CountDownSeconds <= 0;

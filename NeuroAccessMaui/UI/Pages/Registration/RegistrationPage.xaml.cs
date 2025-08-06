@@ -52,12 +52,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		public override async Task OnAppearingAsync()
 		{
 			await base.OnAppearingAsync();
-
-			if (!this.registeredKeyboardSizeMessage)
-			{
-				WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
-				this.registeredKeyboardSizeMessage = true;
-			}
 		}
 
 		/// <inheritdoc/>
@@ -129,23 +123,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				{
 					ServiceRef.LogService.LogException(ex);
 				}
-			});
-		}
-
-		private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)
-		{
-			await this.Dispatcher.DispatchAsync(() =>
-			{
-				double Bottom = 0;
-				if (DeviceInfo.Platform == DevicePlatform.iOS)
-				{
-					Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
-					Bottom = SafeInsets.Bottom;
-					Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
-					this.TheMainGrid.Margin = Margin;
-				}
-
-
 			});
 		}
 	}

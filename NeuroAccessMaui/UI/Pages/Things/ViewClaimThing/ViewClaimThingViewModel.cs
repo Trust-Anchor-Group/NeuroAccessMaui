@@ -172,12 +172,12 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 								int i = Value.IndexOf('@');
 								if (i > 0 && Guid.TryParse(Value[..i], out _))
 								{
-									if (ServiceRef.UiService.CurrentPage is not ViewIdentityPage)
+									if (ServiceRef.NavigationService.CurrentPage is not ViewIdentityPage)
 									{
 										Info = await ContactInfo.FindByLegalId(Value);
 										if (Info?.LegalIdentity is not null)
 										{
-											await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage),
+											await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage),
 												new ViewIdentityNavigationArgs(Info.LegalIdentity));
 											return;
 										}

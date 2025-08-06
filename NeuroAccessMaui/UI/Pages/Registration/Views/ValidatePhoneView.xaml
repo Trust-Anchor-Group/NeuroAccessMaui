@@ -63,13 +63,13 @@
 							Keyboard="Telephone"
 							Text="{Binding PhoneNumber}">
 							<Entry.Behaviors>
-								<mct:MultiValidationBehavior x:Name="PhoneValidator"
+								<mct:MultiValidationBehavior x:Name="PhoneValidator" x:DataType="mct:MultiValidationBehavior"
 									Flags="ValidateOnValueChanged"
 									IsValid="{Binding NumberIsValid}">
-									<mct:CharactersValidationBehavior
+									<mct:CharactersValidationBehavior x:DataType="mct:CharactersValidationBehavior"
 										IsValid="{Binding TypeIsValid}"
 										RegexPattern="^\d*$" />
-									<mct:TextValidationBehavior
+									<mct:TextValidationBehavior x:DataType="mct:TextValidationBehavior"
 										IsValid="{Binding LengthIsValid}"
 										RegexPattern="^$|^\d{4,}$" />
 								</mct:MultiValidationBehavior>
