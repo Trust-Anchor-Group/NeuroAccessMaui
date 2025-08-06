@@ -1,6 +1,7 @@
 using Microsoft.Maui.Controls;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Pages;  // for ILifeCycleView
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
@@ -138,6 +139,9 @@ namespace NeuroAccessMaui.Test
             return this.Enqueue(async () =>
             {
                 ContentPage? Page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as ContentPage ?? throw new InvalidOperationException($"No page registered for route '{Route}'.");
+                // Object init lifecycle
+                if (Page is ILifeCycleView Init)
+                    await Init.OnInitializeAsync();
                 NavigationArgs NavigationArgs = Args ?? new();
                 NavigationArgs.SetBackArguments(this.navigationArgsStack.Count > 0 ? this.navigationArgsStack.Peek() : null);
 
@@ -161,18 +165,21 @@ namespace NeuroAccessMaui.Test
         {
             return this.Enqueue(async () =>
             {
+                // Object init lifecycle
+                if (Page is ILifeCycleView Init)
+                    await Init.OnInitializeAsync();
                 this.latestArguments = null;
                 this.navigationArgsStack.Push(null);
                 this.navigationStack.Push(Page);
 
-                var window = Application.Current.Windows.FirstOrDefault();
-                if (window?.Page is CustomShell customShell)
+                Window Window = Application.Current.Windows.FirstOrDefault();
+                if (Window?.Page is CustomShell customShell)
                 {
                     await customShell.SetPageAsync(Page);
                 }
-                else if (window != null)
+                else if (Window != null)
                 {
-                    window.Page = Page;
+                    Window.Page = Page;
                 }
             });
         }
@@ -184,11 +191,42 @@ namespace NeuroAccessMaui.Test
             {
                 if (this.navigationStack.Count > 1)
                 {
-                    this.navigationStack.Pop();
-                    this.navigationArgsStack.Pop();
+                    // Pop current page and its args
+                    NavigationArgs? poppedArgs = this.navigationArgsStack.Pop();
+                    ContentPage poppedPage = this.navigationStack.Pop();
+                    // Object disposal lifecycle
+                    if (poppedPage is ILifeCycleView disposePage)
+                        await disposePage.OnDisposeAsync();
+                    if (poppedPage is IAsyncDisposable asyncDisp)
+                        await asyncDisp.DisposeAsync();
+                    else if (poppedPage is IDisposable disp)
+                        disp.Dispose();
+                    
+                    // Determine how many levels to pop based on args back route
+                    int levels = 1;
+                    if (poppedArgs is not null)
+                    {
+                        string backRoute = poppedArgs.GetBackRoute();
+                        string[] segments = backRoute.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                        levels = segments.Count(s => s == "..");
+                    }
+                    // Pop additional pages if needed
+                    for (int i = 1; i < levels && this.navigationStack.Count > 1; i++)
+                    {
+                        this.navigationArgsStack.Pop();
+                        ContentPage extra = this.navigationStack.Pop();
+                        if (extra is ILifeCycleView extraDispose)
+                            await extraDispose.OnDisposeAsync();
+                        if (extra is IAsyncDisposable extraAsync)
+                            await extraAsync.DisposeAsync();
+                        else if (extra is IDisposable extraDisp)
+                            extraDisp.Dispose();
+                    }
+                    
+                    // Show target page
                     ContentPage previous = this.navigationStack.Peek();
 
-                    var window = Application.Current.Windows.FirstOrDefault();
+                    Window window = Application.Current.Windows.FirstOrDefault();
                     if (window?.Page is CustomShell customShell)
                     {
                         await customShell.SetPageAsync(previous);
@@ -206,20 +244,20 @@ namespace NeuroAccessMaui.Test
         {
             return this.Enqueue(async () =>
             {
-                ContentPage? page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as ContentPage;
-                if (page is null)
+                ContentPage? Page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as ContentPage;
+                if (Page is null)
                     throw new InvalidOperationException($"No page registered for route '{Route}'.");
 
-                this.modalStack.Push(page);
+                this.modalStack.Push(Page);
 
-                var window = Application.Current.Windows.FirstOrDefault();
-                if (window?.Page is CustomShell customShell)
+                Window Window = Application.Current.Windows.FirstOrDefault();
+                if (Window?.Page is CustomShell customShell)
                 {
-                    await customShell.PushModalAsync(page);
+                    await customShell.PushModalAsync(Page);
                 }
-                else if (window?.Page != null)
+                else if (Window?.Page != null)
                 {
-                    await window.Page.Navigation.PushModalAsync(page);
+                    await Window.Page.Navigation.PushModalAsync(Page);
                 }
             });
         }
@@ -231,14 +269,14 @@ namespace NeuroAccessMaui.Test
             await this.Enqueue(async () =>
             {
                 this.modalStack.Push(Page);
-                var window = Application.Current.Windows.FirstOrDefault();
-                if (window?.Page is CustomShell customShell)
+                Window Window = Application.Current.Windows.FirstOrDefault();
+                if (Window?.Page is CustomShell customShell)
                 {
                     await customShell.PushModalAsync(Page);
                 }
-                else if (window?.Page != null)
+                else if (Window?.Page != null)
                 {
-                    await window.Page.Navigation.PushModalAsync(Page);
+                    await Window.Page.Navigation.PushModalAsync(Page);
                 }
             });
 
@@ -257,14 +295,14 @@ namespace NeuroAccessMaui.Test
             await this.Enqueue(async () =>
             {
                 this.modalStack.Push(Page);
-                var window = Application.Current.Windows.FirstOrDefault();
-                if (window?.Page is CustomShell customShell)
+                Window Window = Application.Current.Windows.FirstOrDefault();
+                if (Window?.Page is CustomShell CustomShell)
                 {
-                    await customShell.PushModalAsync(Page);
+                    await CustomShell.PushModalAsync(Page);
                 }
-                else if (window?.Page != null)
+                else if (Window?.Page != null)
                 {
-                    await window.Page.Navigation.PushModalAsync(Page);
+                    await Window.Page.Navigation.PushModalAsync(Page);
                 }
             });
 
@@ -282,14 +320,14 @@ namespace NeuroAccessMaui.Test
             await this.Enqueue(async () =>
             {
                 this.modalStack.Push(Page);
-                var window = Application.Current.Windows.FirstOrDefault();
-                if (window?.Page is CustomShell customShell)
+                Window Window = Application.Current.Windows.FirstOrDefault();
+                if (Window?.Page is CustomShell CustomShell)
                 {
-                    await customShell.PushModalAsync(Page);
+                    await CustomShell.PushModalAsync(Page);
                 }
-                else if (window?.Page != null)
+                else if (Window?.Page != null)
                 {
-                    await window.Page.Navigation.PushModalAsync(Page);
+                    await Window.Page.Navigation.PushModalAsync(Page);
                 }
             });
 
@@ -306,14 +344,14 @@ namespace NeuroAccessMaui.Test
 
                 this.modalStack.Pop();
 
-                var window = Application.Current.Windows.FirstOrDefault();
-                if (window?.Page is CustomShell customShell)
+                Window Window = Application.Current.Windows.FirstOrDefault();
+                if (Window?.Page is CustomShell CustomShell)
                 {
-                    await customShell.PopModalAsync();
+                    await CustomShell.PopModalAsync();
                 }
-                else if (window?.Page != null)
+                else if (Window?.Page != null)
                 {
-                    await window.Page.Navigation.PopModalAsync();
+                    await Window.Page.Navigation.PopModalAsync();
                 }
             });
         }
@@ -322,21 +360,21 @@ namespace NeuroAccessMaui.Test
         public TArgs? PopLatestArgs<TArgs>() where TArgs : NavigationArgs, new()
         {
             // First, return the most recent arguments
-            if (this.latestArguments is TArgs args)
+            if (this.latestArguments is TArgs Args)
             {
-                this.latestArguments = null;
-                return args;
+                // Keep latestArguments until overwritten by next navigation
+                return Args;
             }
             // Next, try to get args by route mapping
-            if (this.CurrentPage is ContentPage page)
+            if (this.CurrentPage is ContentPage Page)
             {
-                string route = Routing.GetRoute(page) ?? string.Empty;
-                if (TryGetPageName(route, out string pageName) &&
-                    this.navigationArgsMap.TryGetValue(pageName, out NavigationArgs navArgs))
+                string Route = Routing.GetRoute(Page) ?? string.Empty;
+                if (TryGetPageName(Route, out string PageName) &&
+                    this.navigationArgsMap.TryGetValue(PageName, out NavigationArgs NavArgs))
                 {
-                    this.navigationArgsMap.Remove(pageName);
-                    if (navArgs is TArgs typed)
-                        return typed;
+                    this.navigationArgsMap.Remove(PageName);
+                    if (NavArgs is TArgs Typed)
+                        return Typed;
                 }
             }
             return null;
