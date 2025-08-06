@@ -4,7 +4,11 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using NeuroAccessMaui.UI.Pages;
+using NeuroAccessMaui.Services;                     // for ServiceHelper
+using NeuroAccessMaui.UI.Pages.Startup;             // for LoadingPage
+using NeuroAccessMaui.Test;                         // for CustomShell registration context
 using NeuroAccessMaui.UI.Pages.Main; // For ILifeCycleView
+using Microsoft.Maui.Graphics; // for Colors
 
 namespace NeuroAccessMaui.Test
 {
@@ -21,8 +25,8 @@ namespace NeuroAccessMaui.Test
         private readonly Grid modalOverlay;
         private readonly BoxView modalBackground;
         private readonly ContentView modalHost;
-        private readonly Stack<ContentPage> modalStack = new();
-        private ContentPage currentPage;
+private readonly Stack<ContentPage> modalStack = new();
+private ContentPage? currentPage;
 
         /// <summary>
         /// Initializes a new instance of <see cref="CustomShell"/>.
@@ -38,6 +42,8 @@ namespace NeuroAccessMaui.Test
                     new RowDefinition { Height = GridLength.Auto }   // NavBar
                 }
             };
+            // Ensure background is white to avoid default purple
+            this.layout.BackgroundColor = Colors.White;
 
             this.topBar = new ContentView { IsVisible = false };
             this.navBar = new ContentView { IsVisible = false };
@@ -73,12 +79,28 @@ namespace NeuroAccessMaui.Test
             this.On<iOS>().SetUseSafeArea(false);
 
             AppShell.RegisterRoutes();
+            // Shell background
+            this.BackgroundColor = Colors.White;
+            // Show initial loading page immediately
+            LoadingPage loadingPage = ServiceHelper.GetService<LoadingPage>();
+
+            // Assign content synchronously so spinner is visible right away
+            this.contentHost.Content = loadingPage.Content;
+            this.contentHost.BindingContext = loadingPage.BindingContext;
+            this.currentPage = loadingPage;
+
+            // Trigger lifecycle and potential navigation
+            this.Dispatcher.Dispatch(async () =>
+            {
+                await loadingPage.OnInitializeAsync();
+                await loadingPage.OnAppearingAsync();
+            });
         }
 
         /// <summary>
         /// The currently displayed page.
         /// </summary>
-        public ContentPage CurrentPage => this.currentPage;
+        public ContentPage? CurrentPage => this.currentPage;
 
         /// <summary>
         /// Swaps in a new page, with optional transition, updating bars and lifecycle events.
