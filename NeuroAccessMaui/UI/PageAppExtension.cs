@@ -17,6 +17,7 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Xmpp;
+using NeuroAccessMaui.UI.Pages.Startup;  // LoadingPage
 using NeuroAccessMaui.Test;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages;
@@ -215,7 +216,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ViewIdentityPage, ViewIdentityViewModel>();
 
 			// Main
-			Builder.Services.AddTransient<CustomShell>();
+			Builder.Services.AddSingleton<CustomShell>();
 			Builder.Services.AddTransient<AppShell>();
 			Builder.Services.AddTransient<CalculatorPage, CalculatorViewModel>();
 			Builder.Services.AddTransient<ChangePasswordPage, ChangePasswordViewModel>();
@@ -226,6 +227,8 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<VerifyCodePage, VerifyCodeViewModel>();
 			Builder.Services.AddTransient<XmppFormPage, XmppViewModel>();
 			Builder.Services.AddTransient<AppsPage,  AppsViewModel>();
+		   // Startup page
+		   Builder.Services.AddTransient<LoadingPage>();
 
 			//Notification
 			Builder.Services.AddTransient<NotificationsPage, NotificationsViewModel>();
