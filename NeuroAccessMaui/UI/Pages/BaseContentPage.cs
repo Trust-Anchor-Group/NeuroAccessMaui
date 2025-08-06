@@ -10,7 +10,7 @@ namespace NeuroAccessMaui.UI.Pages
 	/// <summary>
 	/// A base class for all pages, intended for custom navigation with explicit life-cycle events.
 	/// </summary>
-	public abstract class BaseContentPage : ContentPage, ILifeCycleView
+	public abstract class BaseContentPage : ContentView, ILifeCycleView
 	{
 		/// <summary>
 		/// Access the page's strongly-typed view model.
