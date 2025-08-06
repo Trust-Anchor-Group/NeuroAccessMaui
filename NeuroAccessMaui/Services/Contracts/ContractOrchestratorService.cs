@@ -266,8 +266,8 @@ namespace NeuroAccessMaui.Services.Contracts
 						ServiceRef.Localizer[nameof(AppResources.SignaturePetitionDenied)],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
-				else if(ServiceRef.UiService.CurrentPage is not (NewContractPage or ViewContractPage))
-					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
+				else if(ServiceRef.NavigationService.CurrentPage is not (NewContractPage or ViewContractPage))
+					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 			}
 			catch (Exception ex)
 			{

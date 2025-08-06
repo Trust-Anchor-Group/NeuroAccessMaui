@@ -9,6 +9,7 @@ using Waher.Runtime.Settings;
 using Waher.Security;
 using System.Globalization;
 using NeuroAccessMaui.Services.Authentication;
+using NeuroAccessMaui.Test;
 
 namespace NeuroAccessMaui.Services.Nfc
 {
@@ -171,7 +172,7 @@ namespace NeuroAccessMaui.Services.Nfc
 		/// <returns>If process was successful or not.</returns>
 		public static async Task<bool> ProgramNfc(WriteItems Callback)
 		{
-			IUiService Nav = App.Instantiate<IUiService>();
+			INavigationService Nav = App.Instantiate<INavigationService>();
 			if (Nav.CurrentPage is BaseContentPage ContentPage &&
 				ContentPage.ViewModel<BaseViewModel>() is ILinkableView LinkableView &&
 				LinkableView.IsLinkable)

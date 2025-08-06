@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<base:BaseContentPage x:Name="ThisPage"
+<ContentPage x:Name="ThisPage"
 							 x:Class="NeuroAccessMaui.UI.Pages.Main.BootstrapErrorPage"
 							 x:DataType="viewmodel:BootstrapErrorPage"
 							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -21,4 +21,4 @@
 		<controls:TextButton VerticalOptions="End" Command="{Binding CopyToClipboardCommand}" Style="{DynamicResource FilledTextButton}"
 									LabelData="{l:Localize CopyToClipboard}" />
 	</Grid>
-</base:BaseContentPage>
+</ContentPage>

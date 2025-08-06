@@ -65,17 +65,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				await this.navigationComplete.Task;
 
 			this.CameraBarcodeReaderView.IsDetecting = true;
-			WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
 		}
 
 		/// <inheritdoc/>
 		public override async Task OnDisappearingAsync()
 		{
 			await MainThread.InvokeOnMainThreadAsync(this.CloseCamera);
-
-
-			WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
-
 			await base.OnDisappearingAsync();
 		}
 
@@ -135,23 +130,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 
 
 		private readonly TaskCompletionSource<bool>? navigationComplete;
-
-		private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)
-		{
-			await this.Dispatcher.DispatchAsync(() =>
-			{
-				double Bottom = 0;
-				if (DeviceInfo.Platform == DevicePlatform.iOS)
-				{
-					Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
-					Bottom = SafeInsets.Bottom;
-
-					Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
-					this.ManualScanGrid.Margin = Margin;
-				}
-
-			});
-		}
 
 		[RelayCommand]
 		private async Task SwitchMode()

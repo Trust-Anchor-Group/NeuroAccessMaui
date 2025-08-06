@@ -9,7 +9,7 @@ using NeuroAccessMaui.Services.Tag;
 
 namespace NeuroAccessMaui.UI.Pages.Startup
 {
-    public partial class LoadingPage : ContentPage, ILifeCycleView
+    public partial class LoadingPage : BaseContentPage
     {
         private readonly ITagProfile tagProfile;
         public LoadingPage(ITagProfile tagProfile)
@@ -19,11 +19,11 @@ namespace NeuroAccessMaui.UI.Pages.Startup
             this.tagProfile = tagProfile;
         }
 
-        public Task OnDisposeAsync() => Task.CompletedTask;
+        public override Task OnDisposeAsync() => Task.CompletedTask;
 
-        public Task OnInitializeAsync() => Task.CompletedTask;
+        public override Task OnInitializeAsync() => Task.CompletedTask;
 
-        public async Task OnAppearingAsync()
+        public override async Task OnAppearingAsync()
         {
             App? App = App.Current;
             if (App is not null)
@@ -38,6 +38,6 @@ namespace NeuroAccessMaui.UI.Pages.Startup
                 await Shell.SetPageAsync(ServiceHelper.GetService<MainPage>());
         }
 
-        public Task OnDisappearingAsync() => Task.CompletedTask;
+        public override Task OnDisappearingAsync() => Task.CompletedTask;
     }
 }

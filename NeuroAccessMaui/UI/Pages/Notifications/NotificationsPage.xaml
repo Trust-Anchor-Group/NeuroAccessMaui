@@ -10,14 +10,13 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Notifications"
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 x:Class="NeuroAccessMaui.UI.Pages.Notifications.NotificationsPage"
-							 x:DataType="viewmodel:NotificationsViewModel"
-							 Title="NotificationsPage">
+							 x:DataType="viewmodel:NotificationsViewModel">
 
-	<ContentPage.Resources>
+	<base:BaseContentPage.Resources>
 		<ResourceDictionary>
 			<local:ContextualDateConverter x:Key="ContextualDateConverter" />
 		</ResourceDictionary>
-	</ContentPage.Resources>
+	</base:BaseContentPage.Resources>
 
 	<Grid x:Name="TheMainGrid"
 			RowDefinitions="auto, *"
