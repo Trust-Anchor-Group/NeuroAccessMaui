@@ -15,6 +15,7 @@ using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Test;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main;
+using NeuroAccessMaui.UI.Pages.Registration;
 using Waher.Content;
 using Waher.Events;
 using Waher.Runtime.Inventory;
@@ -187,14 +188,8 @@ namespace NeuroAccessMaui
                 AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
                 this.SetTheme(CurrentTheme ?? AppTheme.Light);
                 ServiceRef.ThemeService.SetTheme(CurrentTheme ?? AppTheme.Light);
-                try
-                {
-                    this.MainPage = ServiceHelper.GetService<CustomShell>();
-                }
-                catch (Exception Ex)
-                {
-                    this.HandleStartupException(Ex);
-                }
+                // Show CustomShell directly as MainPage
+               // this.MainPage = ServiceHelper.GetService<CustomShell>();
             }
         }
 
@@ -215,14 +210,15 @@ namespace NeuroAccessMaui
 				Merged.Add(new Light());
 		}
 
-        /*
-		protected override Window CreateWindow(IActivationState? activationState)
-		{
-			if(this.Windows.Any())
-				return this.Windows[0];
-			return new Window(ServiceHelper.GetService<AppShell>());
-		}
-		*/
+        /// <summary>
+        /// Override default window creation to use CustomShell as root page.
+        /// </summary>
+        protected override Window CreateWindow(IActivationState? activationState)
+        {
+            if (this.Windows.Any())
+                return this.Windows[0];
+            return new Window(ServiceHelper.GetService<CustomShell>());
+        }
         #endregion
 
         #region Initialization
@@ -382,8 +378,8 @@ namespace NeuroAccessMaui
                 await ServiceRef.NotificationService.Load(isResuming, Token);
 
 
-				NavigationService NavigationService = ServiceRef.Provider.GetRequiredService<NavigationService>();
-                await NavigationService.GoToAsync(nameof(NeuroAccessMaui.UI.Pages.Main.MainPage));
+          //      NavigationService NavigationService = ServiceRef.Provider.GetRequiredService<NavigationService>();
+           //     await NavigationService.GoToAsync(nameof(NeuroAccessMaui.UI.Pages.Main.MainPage));
                 //	AppShell.AppLoaded();
             }
             catch (OperationCanceledException)
@@ -576,9 +572,19 @@ namespace NeuroAccessMaui
 
         #region Page Navigation
 
-        public static Task SetRegistrationPageAsync() => SetPageAsync(Constants.Pages.RegistrationPage);
+        /// <summary>
+        /// Switch to the registration flow.
+        /// </summary>
+        public static Task SetRegistrationPageAsync()
+            => ServiceRef.Provider.GetRequiredService<CustomShell>()
+                .SetPageAsync(ServiceHelper.GetService<RegistrationPage>());
 
-        public static Task SetMainPageAsync() => SetPageAsync(Constants.Pages.MainPage);
+        /// <summary>
+        /// Switch to the main page.
+        /// </summary>
+        public static Task SetMainPageAsync()
+            => ServiceRef.Provider.GetRequiredService<CustomShell>()
+                .SetPageAsync(ServiceHelper.GetService<MainPage>());
 
         public static Task SetPageAsync(string pagePath)
         {
@@ -760,17 +766,17 @@ namespace NeuroAccessMaui
 
         #region URL Handling
 
-		public static void OpenUrlSync(string url)
-		{
-			MainThread.BeginInvokeOnMainThread(async () =>
-			{
-				if (ServiceRef.TagProfile.Step != RegistrationStep.Complete && !url.StartsWith("obinfo", StringComparison.OrdinalIgnoreCase))
-				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
-						ServiceRef.Localizer[nameof(AppResources.NotCompletedOnboardingError)]);
-					return;
-				}
+        public static void OpenUrlSync(string url)
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                if (ServiceRef.TagProfile.Step != RegistrationStep.Complete && !url.StartsWith("obinfo", StringComparison.OrdinalIgnoreCase))
+                {
+                    await ServiceRef.UiService.DisplayAlert(
+                        ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+                        ServiceRef.Localizer[nameof(AppResources.NotCompletedOnboardingError)]);
+                    return;
+                }
 
 				await QrCode.OpenUrl(url).ConfigureAwait(false);
 			});
