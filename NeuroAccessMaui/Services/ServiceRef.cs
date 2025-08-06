@@ -26,6 +26,7 @@ using Waher.Content;
 using NeuroAccessMaui.Services.Cache.AttachmentCache;
 using NeuroAccessMaui.Services.Cache.InternetCache;
 using NeuroAccessMaui.Services.Theme;
+using NeuroAccessMaui.Test;
 
 namespace NeuroAccessMaui.Services
 {
@@ -42,6 +43,7 @@ namespace NeuroAccessMaui.Services
 
 		private static IXmppService? xmppService;
 		private static IUiService? uiService;
+		private static INavigationService? navigationService;
 		private static ITagProfile? tagProfile;
 		private static ILogService? logService;
 		private static INetworkService? networkService;
@@ -72,6 +74,18 @@ namespace NeuroAccessMaui.Services
 			{
 				uiService ??= App.Instantiate<IUiService>();
 				return uiService;
+			}
+		}
+
+		/// <summary>
+		/// The navigation service for navigating between pages.
+		/// </summary>
+		public static INavigationService NavigationService
+		{
+			get
+			{
+				navigationService ??= App.Instantiate<INavigationService>();
+				return navigationService;
 			}
 		}
 
