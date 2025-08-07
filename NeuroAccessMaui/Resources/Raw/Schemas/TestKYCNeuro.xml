@@ -125,10 +125,10 @@
 					<AllowFuture>false</AllowFuture>
 				</Metadata>
 			</Field>
-			<Field id="gender" type="picker" label="Select Gender" mapping="GENDER" required="true">
+			<Field id="gender" type="picker" label="Gender" mapping="GENDER" required="true">
 				<Label>
-					<Text lang="en">Select Gender</Text>
-					<Text lang="sv">Välj kön</Text>
+					<Text lang="en">Gender</Text>
+					<Text lang="sv">Kön</Text>
 				</Label>
 				<Options>
 					<Option value="M">
@@ -166,10 +166,10 @@
 				<Text lang="en">Document Type Selection</Text>
 				<Text lang="sv">Typ av identitetshandling</Text>
 			</Label>
-			<Field id="documentType" type="picker" label="Select Document Type" required="true">
+			<Field id="documentType" type="picker" label="Document Type" required="true">
 				<Label>
-					<Text lang="en">Select Document Type</Text>
-					<Text lang="sv">Välj ID-handling</Text>
+					<Text lang="en">Document Type</Text>
+					<Text lang="sv">Dokumenttyp</Text>
 				</Label>
 				<Hint>
 					<Text lang="en">Choose which type of ID you want to provide.</Text>
@@ -517,7 +517,7 @@
 			<Text lang="en">To complete your KYC process, please take a selfie. Ensure your face is clearly visible and well-lit.</Text>
 			<Text lang="sv">För att slutföra din KYC-process, vänligen ta en selfie. Se till att ditt ansikte är tydligt synligt och väl belyst.</Text>
 		</Description>
-		<Field id="selfieUpload" type="image" label="Selfie Upload" mapping="ProfilePhoto" required="true">
+		<Field id="selfieUpload" type="image" label="Selfie" mapping="ProfilePhoto" required="true">
 			<Label>
 				<Text lang="en">Selfie Upload</Text>
 				<Text lang="sv">Självporträtt</Text>

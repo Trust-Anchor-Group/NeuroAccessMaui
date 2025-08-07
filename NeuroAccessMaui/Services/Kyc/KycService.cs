@@ -53,7 +53,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			return Reference;
 		}
 
-		public async Task SaveKycReference(KycReference Reference)
+		public async Task SaveKycReferenceAsync(KycReference Reference)
 		{
 			try
 			{

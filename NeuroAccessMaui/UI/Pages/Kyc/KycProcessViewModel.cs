@@ -22,6 +22,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private int currentPageIndex = 0;
 		private bool applicationSent;
 
+		private List<Property> mappedValues;
+		private List<LegalIdentityAttachment> attachments;
+		[ObservableProperty] private bool shouldViewSummary = false;
+
 		[ObservableProperty] private int currentPagePosition;
 		[ObservableProperty] private KycPage? currentPage;
 		[ObservableProperty] private string? currentPageTitle;
@@ -69,6 +73,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					return 0;
 				}
 
+				if (this.ShouldViewSummary)
+				{
+					this.ProgressPercent = "100%";
+					return 1;
+				}
+
 				int Index = VisiblePages.IndexOf(this.CurrentPage);
 				double Progress = Math.Clamp((double)Index / VisiblePages.Count, 0, 1);
 
@@ -101,6 +111,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			 );
 
 			this.process = await this.kycReference.ToProcess();
+			this.OnPropertyChanged(nameof(this.Pages));
 
 			if (this.process is null) return; // TODO: Check and handle null process
 
@@ -196,7 +207,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.HasSections = this.CurrentPageSections is not null && this.CurrentPageSections.Count > 0;
 
 			int NextIndex = this.GetNextIndex(Index + 1);
-			this.NextButtonText = NextIndex >= this.Pages.Count ? "Apply" : "Next";
 
 			this.OnPropertyChanged(nameof(this.Progress));
 
@@ -220,7 +230,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 
-			ServiceRef.KycService.SaveKycReference(this.kycReference);
+			ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
 		}
 
 		private int GetNextIndex(int Start)
@@ -282,12 +292,34 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 			else
 			{
-				await this.ExecuteApplyAsync();
+				if ( this.ShouldViewSummary)
+				{
+					await this.ExecuteApplyAsync();
+				}
+				else
+				{
+					await this.ProcessData();
+
+					// Go to Summary Page
+					this.ShouldViewSummary = true;
+
+					this.OnPropertyChanged(nameof(this.Progress));
+
+					this.NextButtonText = "Apply";
+				}
 			}
 		}
 
 		private async Task ExecutePrevious()
 		{
+			if (this.ShouldViewSummary)
+			{
+				this.ShouldViewSummary = false;
+				this.NextButtonText = "Next";
+				this.OnPropertyChanged(nameof(this.Progress));
+				return;
+			}
+
 			int PreviousIndex = this.GetPreviousIndex(this.currentPageIndex - 1);
 			if (PreviousIndex >= 0)
 			{
@@ -338,6 +370,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return IsOk;
 		}
 
+		[RelayCommand]
 		private async Task ExecuteApplyAsync()
 		{
 			if (this.applicationSent)
@@ -349,8 +382,57 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true))
 				return;
 
-			List<Property> MappedValues = new();
-			List<LegalIdentityAttachment> Attachments = new();
+			if (this.attachments is null || this.mappedValues is null)
+				return;
+
+			foreach (Property Prop in this.mappedValues)
+			{
+				Console.WriteLine($"Mapped: {Prop.Name} = {Prop.Value}");
+			}
+
+			foreach (LegalIdentityAttachment a in this.attachments)
+			{
+				Console.WriteLine($"Attachment: {a.FileName} ({a.ContentType}) {a.Data}");
+			}
+
+			// Submit the registration
+			// Use IdentityFields and Attachments to submit the KYC process
+
+			bool HasIdWithPrivateKey = ServiceRef.TagProfile.LegalIdentity is not null &&
+					  await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
+
+			(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
+				 ServiceRef.XmppService.AddLegalIdentity(this.mappedValues.ToArray(), !HasIdWithPrivateKey, this.attachments.ToArray()));
+
+			if (Succeeded && AddedIdentity is not null)
+			{
+				await ServiceRef.TagProfile.SetIdentityApplication(AddedIdentity, true);
+				this.applicationSent = true;
+
+				// Loop through each local attachment and add it to the cache.
+				// We assume the server returns attachments with the same FileName as those we built.
+				foreach (LegalIdentityAttachment LocalAttachment in this.attachments)
+				{
+					// Find the matching attachment in the returned identity by filename.
+					Attachment? MatchingAttachment = AddedIdentity.Attachments
+						 .FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
+					if (MatchingAttachment != null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
+					{
+						await ServiceRef.AttachmentCacheService.Add(
+							 MatchingAttachment.Url,
+							 AddedIdentity.Id,
+							 true,
+							 LocalAttachment.Data, // from our local attachment
+							 LocalAttachment.ContentType);
+					}
+				}
+			}
+		}
+
+		private async Task ProcessData()
+		{
+			this.mappedValues = new();
+			this.attachments = new();
 
 			// Map all values and submit
 			if (this.process is null)
@@ -367,13 +449,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				// For each field in the page
 				foreach (ObservableKycField Field in Page.AllFields)
 				{
-					if (this.CheckAndHandleFile(Field, Attachments))
+					if (this.CheckAndHandleFile(Field, this.attachments))
 					{
 						continue; // File handled, skip further processing
 					}
 					foreach (Property Prop in this.ApplyTansform(Field))
 					{
-						MappedValues.Add(Prop);
+						this.mappedValues.Add(Prop);
 					}
 				}
 				// For each section in the page
@@ -381,66 +463,23 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				{
 					foreach (ObservableKycField Field in Section.AllFields)
 					{
-						if (this.CheckAndHandleFile(Field, Attachments))
+						if (this.CheckAndHandleFile(Field, this.attachments))
 						{
 							continue; // File handled, skip further processing
 						}
 						foreach (Property Prop in this.ApplyTansform(Field))
 						{
-							MappedValues.Add(Prop);
+							this.mappedValues.Add(Prop);
 						}
 					}
 				}
 			}
 
 			// Add special properties
-			MappedValues.Add(new Property(Constants.XmppProperties.DeviceId, ServiceRef.PlatformSpecific.GetDeviceId()));
-			MappedValues.Add(new Property(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid));
-			MappedValues.Add(new Property(Constants.XmppProperties.Phone, ServiceRef.TagProfile.PhoneNumber));
-			MappedValues.Add(new Property(Constants.XmppProperties.EMail, ServiceRef.TagProfile.EMail));
-
-			foreach (Property Prop in MappedValues)
-			{
-				Console.WriteLine($"Mapped: {Prop.Name} = {Prop.Value}");
-			}
-
-			foreach (LegalIdentityAttachment a in Attachments)
-			{
-				Console.WriteLine($"Attachment: {a.FileName} ({a.ContentType}) {a.Data}");
-			}
-
-			// Submit the registration
-			// Use IdentityFields and Attachments to submit the KYC process
-
-			bool HasIdWithPrivateKey = ServiceRef.TagProfile.LegalIdentity is not null &&
-					  await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
-
-			(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
-				 ServiceRef.XmppService.AddLegalIdentity(MappedValues.ToArray(), !HasIdWithPrivateKey, Attachments.ToArray()));
-
-			if (Succeeded && AddedIdentity is not null)
-			{
-				await ServiceRef.TagProfile.SetIdentityApplication(AddedIdentity, true);
-				this.applicationSent = true;
-
-				// Loop through each local attachment and add it to the cache.
-				// We assume the server returns attachments with the same FileName as those we built.
-				foreach (LegalIdentityAttachment LocalAttachment in Attachments)
-				{
-					// Find the matching attachment in the returned identity by filename.
-					Attachment? MatchingAttachment = AddedIdentity.Attachments
-						 .FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
-					if (MatchingAttachment != null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
-					{
-						await ServiceRef.AttachmentCacheService.Add(
-							 MatchingAttachment.Url,
-							 AddedIdentity.Id,
-							 true,
-							 LocalAttachment.Data, // from our local attachment
-							 LocalAttachment.ContentType);
-					}
-				}
-			}
+			this.mappedValues.Add(new Property(Constants.XmppProperties.DeviceId, ServiceRef.PlatformSpecific.GetDeviceId()));
+			this.mappedValues.Add(new Property(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid));
+			this.mappedValues.Add(new Property(Constants.XmppProperties.Phone, ServiceRef.TagProfile.PhoneNumber));
+			this.mappedValues.Add(new Property(Constants.XmppProperties.EMail, ServiceRef.TagProfile.EMail));
 		}
 
 		/// <summary>
@@ -604,6 +643,5 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			return Rotated;
 		}
-
 	}
 }

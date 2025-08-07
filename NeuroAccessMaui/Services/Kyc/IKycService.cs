@@ -16,6 +16,6 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <param name="Lang">Optional language code.</param>
 		Task<KycReference> LoadKycReferenceAsync(string Resource, string? Lang = null);
 
-		Task SaveKycReference(KycReference Reference);
+		Task SaveKycReferenceAsync(KycReference Reference);
 	}
 }

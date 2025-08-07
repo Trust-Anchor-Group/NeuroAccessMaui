@@ -188,7 +188,7 @@
 				<Text lang="en">Document Type Selection</Text>
 				<Text lang="sv">Typ av identitetshandling</Text>
 			</Label>
-			<Field id="documentType" type="picker" label="Select Document Type" mapping="DOC_TYPE" required="true">
+			<Field id="documentType" type="picker" label="Document Type" mapping="DOC_TYPE" required="true">
 				<Label>
 					<Text lang="en">Select Document Type</Text>
 					<Text lang="sv">Välj ID-handling</Text>
