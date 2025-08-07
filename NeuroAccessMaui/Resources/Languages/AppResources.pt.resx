@@ -642,7 +642,7 @@
     <value>Um provedor de serviços fornece conectividade para o aplicativo, intermedeia solicitações e garante que as informações fornecidas pelo cliente estejam corretas.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
-    <value>Convite de varredura</value>
+    <value>Escaneie o convite</value>
   </data>
   <data name="QrSectionTitleSingular" xml:space="preserve">
     <value>Aponte a câmera para um código QR com o símbolo acima</value>
