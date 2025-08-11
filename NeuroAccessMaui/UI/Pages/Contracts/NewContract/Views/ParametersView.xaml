@@ -21,15 +21,16 @@
 			TimeTemplate="{StaticResource TimeParameterTemplate}"
 			DurationTemplate="{StaticResource DurationParameterTemplate}"
 			ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
+			GeoTemplate="{StaticResource GeoParameterTemplate}"
 			DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 	</ContentView.Resources>
 
 	<!-- Parameters -->
 	<Grid>
 		<CollectionView HorizontalOptions="Center"
-								ItemsSource="{Binding EditableParameters}"
-								ItemTemplate="{StaticResource ParameterTemplateSelector}"
-								SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
+						ItemsSource="{Binding EditableParameters}"
+						ItemTemplate="{StaticResource ParameterTemplateSelector}"
+						SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
 			<CollectionView.ItemsLayout>
 				<LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
 			</CollectionView.ItemsLayout>
