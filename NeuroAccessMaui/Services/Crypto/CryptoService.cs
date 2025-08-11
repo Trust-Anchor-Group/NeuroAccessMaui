@@ -139,10 +139,10 @@ namespace NeuroAccessMaui.Services.Crypto
 		/// </summary>
 		/// <param name="Claims">Set of claims to embed into token.</param>
 		/// <returns>JWT token.</returns>
-		public string GenerateJwtToken(params KeyValuePair<string, object?>[] Claims)
+		public async string GenerateJwtToken(params KeyValuePair<string, object?>[] Claims)
 		{
 			if (this.jwtFactory is null)
-				throw new Exception("JWT Factory not initialized.");
+				await this.InitializeJwtFactory();	// Can be called multiple times.
 
 			return this.jwtFactory.Create(Claims);
 		}
