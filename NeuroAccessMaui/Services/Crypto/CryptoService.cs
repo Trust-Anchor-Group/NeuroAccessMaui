@@ -144,7 +144,7 @@ namespace NeuroAccessMaui.Services.Crypto
 			if (this.jwtFactory is null)
 				await this.InitializeJwtFactory();	// Can be called multiple times.
 
-			return this.jwtFactory.Create(Claims);
+			return this.jwtFactory!.Create(Claims);
 		}
 
 		/// <summary>
@@ -160,7 +160,7 @@ namespace NeuroAccessMaui.Services.Crypto
 					await this.InitializeJwtFactory();  // Can be called multiple times.
 
 				JwtToken Parsed = new(Token);
-				if (!this.jwtFactory.IsValid(Parsed))
+				if (!this.jwtFactory!.IsValid(Parsed))
 					return null;
 
 				return Parsed;
