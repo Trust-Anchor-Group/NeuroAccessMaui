@@ -939,7 +939,7 @@
 		<Setter Property="Padding"
 				Value="{DynamicResource ButtonMediumMargins}" />
 		<Setter Property="StrokeShape">
-			<RoundRectangle CornerRadius="{DynamicResource SmallCornerRadius}" />
+			<RoundRectangle CornerRadius="8" />
 		</Setter>
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>
