@@ -102,6 +102,9 @@ namespace NeuroAccessMaui.Services.UI.QR
 					return false;
 				}
 
+				if (ServiceRef.XmppService.State != Waher.Networking.XMPP.XmppState.Connected)
+					await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
+
 				ILinkOpener Opener = Types.FindBest<ILinkOpener, Uri>(Uri);
 
 				if (Opener is null)
