@@ -139,7 +139,7 @@ namespace NeuroAccessMaui.Services.Crypto
 		/// </summary>
 		/// <param name="Claims">Set of claims to embed into token.</param>
 		/// <returns>JWT token.</returns>
-		public async string GenerateJwtToken(params KeyValuePair<string, object?>[] Claims)
+		public async Task<string> GenerateJwtToken(params KeyValuePair<string, object?>[] Claims)
 		{
 			if (this.jwtFactory is null)
 				await this.InitializeJwtFactory();	// Can be called multiple times.
@@ -152,7 +152,7 @@ namespace NeuroAccessMaui.Services.Crypto
 		/// </summary>
 		/// <param name="Token">String representation of JWT token.</param>
 		/// <returns>Parsed token, if valid, null if not valid.</returns>
-		public JwtToken? ParseAndValidateJwtToken(string Token)
+		public async Task<JwtToken?> ParseAndValidateJwtToken(string Token)
 		{
 			try
 			{
