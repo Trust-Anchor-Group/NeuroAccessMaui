@@ -154,11 +154,11 @@ namespace NeuroAccessMaui.Services.Crypto
 		/// <returns>Parsed token, if valid, null if not valid.</returns>
 		public JwtToken? ParseAndValidateJwtToken(string Token)
 		{
-			if (this.jwtFactory is null)
-				return null;
-
 			try
 			{
+				if (this.jwtFactory is null)
+					await this.InitializeJwtFactory();  // Can be called multiple times.
+
 				JwtToken Parsed = new(Token);
 				if (!this.jwtFactory.IsValid(Parsed))
 					return null;
