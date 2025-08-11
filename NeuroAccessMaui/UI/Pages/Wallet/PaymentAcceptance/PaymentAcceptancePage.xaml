@@ -28,15 +28,15 @@
 						<Label Text="{l:Localize PaymentAcceptanceDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
 						<!-- Note -->
 						<Label Text="{l:Localize To}"/>
-						<Entry Text="{Binding Path=To}" IsReadOnly="True"/>
+						<Label Text="{Binding Path=To}" />
 						<Label Text="{l:Localize From}"/>
-						<Entry Text="{Binding Path=From}" IsReadOnly="True"/>
+						<Label Text="{Binding Path=From}" />
 						<Label Text="{l:Localize Amount}"/>
-						<Entry Text="{Binding Path=AmountAndCurrency}" IsReadOnly="True"/>
+						<Label Text="{Binding Path=AmountAndCurrency}"/>
 						<Label Text="{l:Localize AmountExtra}" IsVisible="{Binding Path=AmountExtraPreset}"/>
-						<Entry Text="{Binding Path=AmountExtraAndCurrency}" IsVisible="{Binding Path=AmountExtraPreset}" IsReadOnly="True"/>
+						<Label Text="{Binding Path=AmountExtraAndCurrency}" IsVisible="{Binding Path=AmountExtraPreset}" />
 						<Label Text="{l:Localize Message}" IsVisible="{Binding Path=MessagePreset}"/>
-						<Entry Text="{Binding Path=Message}" IsVisible="{Binding Path=MessagePreset}" IsReadOnly="True"/>
+						<Label Text="{Binding Path=Message}" IsVisible="{Binding Path=MessagePreset}" />
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}"
 													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>

@@ -2867,6 +2867,21 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
     <value>Språket har ändrats. Starta om appen för att säkerställa att alla ändringar tillämpas.</value>
   </data>
+  <data name="Never" xml:space="preserve">
+    <value>Aldrig</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Nu</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>för {0} minuter sedan</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>för {0} timmar sedan</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Senast uppdaterad: {0}</value>
+  </data>
   <data name="ContinueSecondsFormat" xml:space="preserve">
     <value>Fortsätt ({0})</value>
   </data>
@@ -2893,5 +2908,11 @@
   </data>
   <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
     <value>Hitta och starta under: Inställningar / Överför identitet</value>
+  </data>
+  <data name="PaymentAcceptance" xml:space="preserve">
+    <value>Acceptera betalning</value>
+  </data>
+  <data name="PaymentAcceptanceDescription" xml:space="preserve">
+    <value>Granska offline-betalningsdetaljerna nedan. Om du är nöjd med dem, skicka dem till servern för behandling.</value>
   </data>
 </root>

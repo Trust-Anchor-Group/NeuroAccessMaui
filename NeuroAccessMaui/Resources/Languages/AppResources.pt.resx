@@ -2867,6 +2867,21 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
     <value>O idioma foi alterado. Por favor, reinicie o aplicativo para garantir que todas as alterações sejam aplicadas.</value>
   </data>
+  <data name="Never" xml:space="preserve">
+    <value>Nunca</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Agora</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>há {0} minutos</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>há {0} horas</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Última atualização: {0}</value>
+  </data>
   <data name="ContinueSecondsFormat" xml:space="preserve">
     <value>Continuar ({0})</value>
   </data>
@@ -2893,5 +2908,11 @@
   </data>
   <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
     <value>Encontre e inicie em: Configurações / Transferir identidade</value>
+  </data>
+  <data name="PaymentAcceptance" xml:space="preserve">
+    <value>Aceitação de Pagamentos</value>
+  </data>
+  <data name="PaymentAcceptanceDescription" xml:space="preserve">
+    <value>Revise os detalhes do pagamento offline abaixo. Se estiver satisfeito, envie-os para o servidor para processamento.</value>
   </data>
 </root>

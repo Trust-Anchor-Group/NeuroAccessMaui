@@ -2909,4 +2909,10 @@
   <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
     <value>Find and initiate under: Settings / Transfer identity</value>
   </data>
+  <data name="PaymentAcceptance" xml:space="preserve">
+    <value>Payment Acceptance</value>
+  </data>
+  <data name="PaymentAcceptanceDescription" xml:space="preserve">
+    <value>Review the offline payment details below. If you’re happy with them, send it to the server for processing.</value>
+  </data>
 </root>
