@@ -1,48 +1,75 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+
 <base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.PaymentAcceptance.PaymentAcceptancePage"
-							 x:DataType="viewmodel:EDalerUriViewModel"
-							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet">
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+											x:Class="NeuroAccessMaui.UI.Pages.Wallet.PaymentAcceptance.PaymentAcceptancePage"
+											x:DataType="viewmodel:EDalerUriViewModel"
+											xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+											xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+											xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+											xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+											xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+											xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+											xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+											xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+											xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto,*,auto">
+		<controls:Background Grid.RowSpan="2"/>
 
-		<controls:Background/>
+		<!-- Top Bar -->
+		<Grid ColumnDefinitions="Auto,*" Margin="{DynamicResource MediumMargins}">
+			<controls:ImageButton Command="{Binding GoBackCommand}"
+													 PathData="{x:Static ui:Geometries.BackButtonPath}"
+													 Style="{DynamicResource ImageOnlyButton}"
+													 HeightRequest="40"
+													 HorizontalOptions="Start"/>
+			<Label Grid.Column="1"
+						 HorizontalOptions="End"
+						 Style="{DynamicResource PageTitleLabel}"
+						 Text="{l:Localize PaymentAcceptance}"/>
+		</Grid>
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+		<ScrollView Grid.Row="1">
+			<VerticalStackLayout Margin="{DynamicResource MediumSpacing}" Spacing="{DynamicResource LargeSpacing}">
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Text="{l:Localize Payment}" Style="{DynamicResource SectionTitleLabel}" Margin="{DynamicResource SmallTopMargins}"/>
+						<Label Text="{l:Localize PaymentAcceptanceDescription}" Style="{DynamicResource InfoLabel}"/>
 
-				<Label Text="{l:Localize PaymentAcceptance}" Style="{DynamicResource PageTitleLabel}"/>
-
-				<Frame Style="{DynamicResource FrameSet}">
-					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-						<Label Text="{l:Localize Payment}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize PaymentAcceptanceDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
-						<!-- Note -->
-						<Label Text="{l:Localize To}"/>
-						<Label Text="{Binding Path=To}" />
-						<Label Text="{l:Localize From}"/>
-						<Label Text="{Binding Path=From}" />
-						<Label Text="{l:Localize Amount}"/>
-						<Label Text="{Binding Path=AmountAndCurrency}"/>
-						<Label Text="{l:Localize AmountExtra}" IsVisible="{Binding Path=AmountExtraPreset}"/>
-						<Label Text="{Binding Path=AmountExtraAndCurrency}" IsVisible="{Binding Path=AmountExtraPreset}" />
-						<Label Text="{l:Localize Message}" IsVisible="{Binding Path=MessagePreset}"/>
-						<Label Text="{Binding Path=Message}" IsVisible="{Binding Path=MessagePreset}" />
-						<!-- BUTTONS -->
-						<controls:TextButton LabelData="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}"
-													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
+						<!-- Details Grid -->
+						<Grid ColumnDefinitions="Auto,*"
+								RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+								RowSpacing="{DynamicResource SmallSpacing}">
+							<Label Grid.Row="0" Grid.Column="0" Text="{l:Localize To}" Style="{DynamicResource KeyLabel}"/>
+							<Label Grid.Row="0" Grid.Column="1" Text="{Binding To}" Style="{DynamicResource ValueLabel}"/>
+							<Label Grid.Row="1" Grid.Column="0" Text="{l:Localize From}" Style="{DynamicResource KeyLabel}"/>
+							<Label Grid.Row="1" Grid.Column="1" Text="{Binding From}" Style="{DynamicResource ValueLabel}"/>
+							<Label Grid.Row="2" Grid.Column="0" Text="{l:Localize Amount}" Style="{DynamicResource KeyLabel}"/>
+							<Label Grid.Row="2" Grid.Column="1" Text="{Binding AmountAndCurrency}" Style="{DynamicResource ValueLabel}"/>
+							<Label Grid.Row="3" Grid.Column="0" Text="{l:Localize AmountExtra}" Style="{DynamicResource KeyLabel}" IsVisible="{Binding AmountExtraPreset}"/>
+							<Label Grid.Row="3" Grid.Column="1" Text="{Binding AmountExtraAndCurrency}" Style="{DynamicResource ValueLabel}" IsVisible="{Binding AmountExtraPreset}"/>
+							<Label Grid.Row="4" Grid.Column="0" Text="{l:Localize Message}" Style="{DynamicResource KeyLabel}" IsVisible="{Binding MessagePreset}"/>
+							<Label Grid.Row="4" Grid.Column="1" Text="{Binding Message}" Style="{DynamicResource ValueLabel}" IsVisible="{Binding MessagePreset}"/>
+						</Grid>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
+
+		<!-- Bottom Bar with Actions -->
+		<Border Grid.Row="2" Style="{DynamicResource BottomBarBorder}">
+			<Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{DynamicResource SmallSpacing}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<controls:TextButton Grid.Column="0" LabelData="{l:Localize Accept}" Command="{Binding AcceptCommand}" Style="{DynamicResource FilledTextButton}" />
+				<controls:TextButton Grid.Column="1"
+									 LabelData="{l:Localize Decline}"
+									 Command="{Binding DeclineCommand}"
+									 Style="{DynamicResource FilledTextButtonDecline}" />
+
+			</Grid>
+		</Border>
 	</Grid>
 </base:BaseContentPage>
