@@ -190,7 +190,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// Adds a part with a given LegalId to the role.
 		/// </summary>
 		/// <param name="LegalId"></param>
-		public async Task AddPart(string LegalId, bool Notify = true, bool AutoPetition = true)
+		public async Task AddPart(string LegalId, bool Notify = true, bool AutoPetition = true, bool PresetFromArgs = false)
 		{
 			//Check if Part Exists
 			if (this.Parts.Any(p => string.Equals(p.LegalId, LegalId, StringComparison.OrdinalIgnoreCase)))
@@ -198,7 +198,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 			//Create Part
 			Part Part = new() { LegalId = LegalId, Role = this.Name };
-			ObservablePart ObservablePart = new ObservablePart(Part);
+			ObservablePart ObservablePart = new ObservablePart(Part)
+			{
+				IsPresetFromArgs = PresetFromArgs
+			};
 			await ObservablePart.InitializeAsync(AutoPetition);
 
 			//Notify changes

@@ -307,7 +307,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							if (this.args.ParameterValues.TryGetValue(RoleItem.Role.Name, out object? RoleValue))
 							{
 								if (RoleValue is string LegalID)
-									await RoleItem.AddPart(LegalID);
+									await RoleItem.AddPart(LegalID, PresetFromArgs: true);
 							}
 						}
 						// If my own ID was preselected for any role, lock role selection

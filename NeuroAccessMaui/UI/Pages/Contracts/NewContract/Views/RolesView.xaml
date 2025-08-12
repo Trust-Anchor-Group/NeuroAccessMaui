@@ -50,7 +50,7 @@
 							<Grid ColumnDefinitions="*, auto" RowDefinitions="auto">
 								<Label Grid.Column="0" Text="{Binding Name}" Style="{DynamicResource RoleTitleLabel}"/>
 								<HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
-									<CheckBox IsVisible="{Binding CanSelectMe}"
+									<CheckBox IsVisible="{Binding CanSelectMe}" Color="{DynamicResource ContentAccessWL}"
 											 IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:RolesView}}, Path=BindingContext.AreRolesLockedForMe, Converter={StaticResource InvertedBoolConverter}}"
 											 IsChecked="{Binding IsSelectedByMe, Mode=TwoWay}"/>
 									<Label IsVisible="{Binding CanSelectMe}" Text="{l:Localize SignAs}" VerticalTextAlignment="Center" Style="{DynamicResource RoleDescriptionLabel}"/>
@@ -61,7 +61,7 @@
 							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate x:DataType="objectModel:ObservablePart">
-										<Border Style="{DynamicResource BorderSet}">
+										<Border Style="{DynamicResource BorderSet}" Stroke="{DynamicResource InputFieldsSurfaceStroke}">
 											<Grid ColumnDefinitions="*, auto" RowDefinitions="auto,auto">
 												<controls:TemplatedButton Grid.Column="0" Grid.Row="0" Command="{Binding OpenIdentityCommand}">
 														<Label Text="{Binding FriendlyName}"
@@ -81,13 +81,13 @@
 													</Border>
 												</Grid>
 												<controls:TemplatedButton Grid.Column="1" Grid.RowSpan="2"
-															  IsVisible="{Binding IsMe}"
+															  IsVisible="{Binding ShowRemoveAsMe}"
 															  IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:RolesView}}, Path=BindingContext.AreRolesLockedForMe, Converter={StaticResource InvertedBoolConverter}}"
 															  Command="{Binding Source={RelativeSource AncestorType={x:Type objectModel:ObservableRole}}, Path=RemovePartCommand}"
 															  CommandParameter="{Binding .}">
 														<Border WidthRequest="48" HeightRequest="48"  Style="{DynamicResource TransparentTemplateButtonBorder}" Padding="{DynamicResource SmallMargins}" Margin="0" Background="{DynamicResource ButtonDangerSecondarybgWL}" >
 															<Path WidthRequest="24" HeightRequest="24"
-																Fill="{DynamicResource ButtonDangerSecondaryContentWL}"				  
+															  Fill="{DynamicResource ButtonAccessSecondaryContentWL}"				  
 																Data="{x:Static ui:Geometries.CancelPath}"
 																VerticalOptions="Center" HorizontalOptions="Center"/>
 														</Border>
@@ -95,12 +95,12 @@
 												</controls:TemplatedButton>
 
 												<controls:TemplatedButton Grid.Column="1" Grid.RowSpan="2"
-															  IsVisible="{Binding IsThirdParty}"
+															  IsVisible="{Binding ShowRemoveAsThirdParty}"
 																				  Command="{Binding Source={RelativeSource AncestorType={x:Type objectModel:ObservableRole}}, Path=RemovePartCommand}"
 																				 CommandParameter="{Binding .}">
 													<Border WidthRequest="48" HeightRequest="48"  Style="{DynamicResource TransparentTemplateButtonBorder}" Padding="{DynamicResource SmallMargins}" Margin="0" Background="{DynamicResource ButtonDangerSecondarybgWL}" >
 														<Path WidthRequest="24" HeightRequest="24"
-															Fill="{DynamicResource ButtonDangerSecondaryContentWL}"				  
+															Fill="{DynamicResource ButtonAccessSecondaryContentWL}"				  
 															Data="{x:Static ui:Geometries.CancelPath}"
 															VerticalOptions="Center" HorizontalOptions="Center"/>
 													</Border>
@@ -113,7 +113,9 @@
 								</BindableLayout.ItemTemplate>
 							</VerticalStackLayout>
 
-			    <Border Style="{DynamicResource BorderSet}" IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
+							<Border Style="{DynamicResource BorderSet}"
+									IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}"
+									Stroke="{DynamicResource InputFieldsSurfaceStroke}">
 								<Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource SmallSpacing}">
 				    <controls:TextButton Grid.Column="0" LabelData="{l:Localize AddContact}" Style="{DynamicResource TransparentTextButton}"
 							IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:RolesView}}, Path=BindingContext.AreRolesLockedForMe, Converter={StaticResource InvertedBoolConverter}}"
