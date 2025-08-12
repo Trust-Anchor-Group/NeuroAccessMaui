@@ -38,7 +38,7 @@
 		<!-- Top Bar Simplified -->
 		<Grid Grid.Row="0" RowDefinitions="*" ColumnDefinitions="auto,*" Margin="{DynamicResource MediumMargins}">
 			<controls:ImageButton Grid.Row="0" Grid.Column="0" IsVisible="{Binding CanStateChange}" Command="{Binding BackCommand}" Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
-			<Label Grid.Row="0" Grid.Column="1" Style="{DynamicResource PageTitleLabel}" Text="{l:Localize NewContract}" HorizontalTextAlignment="End" />
+			<Label Grid.Row="0" Grid.Column="1" Style="{DynamicResource PageTitleLabel}" Text="{Binding ContractName}" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" />
 		</Grid>
 		<!-- Main Content -->
 		<Grid x:Name="StateGrid"

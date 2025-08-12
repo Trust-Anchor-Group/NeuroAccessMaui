@@ -313,10 +313,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					}
 				}
 				this.HasAttachmentRequirements = HasAttach;
-				// Auto-select single role if only one role exists
-				if (this.Contract.Roles.Count == 1)
+				// Auto-select a role if exactly one role has no parts yet, and persist the selection
+				List<ObservableRole> EmptyRoles = this.Contract.Roles.Where(r => r.Parts.Count == 0).ToList();
+				if (EmptyRoles.Count == 1)
 				{
-					this.SelectedRole = this.Contract.Roles[0];
+					ObservableRole OnlyEmptyRole = EmptyRoles[0];
+					this.SelectedRole = OnlyEmptyRole;
+					this.persistingSelectedRole = OnlyEmptyRole;
 				}
 
 				await this.GoToState(NewContractStep.Parameters);
@@ -662,7 +665,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.debounceValidationTimer = null;
 				}
 
-				this.debounceValidationTimer = new Timer(1500); // e.g., 1.5 seconds
+				this.debounceValidationTimer = new Timer(700); // e.g., 1.5 seconds
 				this.debounceValidationTimer.Elapsed += async (s, e) =>
 				{
 					lock (this.debounceLock)
