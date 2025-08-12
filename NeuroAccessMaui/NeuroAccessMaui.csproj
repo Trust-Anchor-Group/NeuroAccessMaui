@@ -387,9 +387,6 @@
 		<Compile Update="UI\Pages\Contracts\NewContract\Views\ParametersView.xaml.cs">
 		  <DependentUpon>ParametersView.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="UI\Pages\Contracts\NewContract\Views\OverviewView.xaml.cs">
-		  <DependentUpon>OverviewView.xaml</DependentUpon>
-		</Compile>
 		<Compile Update="UI\Pages\Contracts\ViewContract\Views\LoadingView.xaml.cs">
 		  <DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
@@ -556,9 +553,6 @@
 		<MauiXaml Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\OverviewItemButton.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\PreviewView.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
@@ -569,9 +563,6 @@
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\ParametersView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\OverviewView.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\ViewContractPage.xaml">

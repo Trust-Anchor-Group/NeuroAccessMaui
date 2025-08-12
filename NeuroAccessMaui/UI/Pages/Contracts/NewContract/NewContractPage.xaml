@@ -29,19 +29,16 @@
 	</ContentPage.Resources>
 
 	<Grid x:Name="TheMainGrid"
-	  RowDefinitions="auto, *"
+	  RowDefinitions="auto,*,auto"
 	  ColumnDefinitions="*"
 	  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background Grid.Row ="1"/>
 
-		<!-- Top Bar -->
+		<!-- Top Bar Simplified -->
 		<Grid Grid.Row="0" RowDefinitions="*" ColumnDefinitions="auto,*" Margin="{DynamicResource MediumMargins}">
-
 			<controls:ImageButton Grid.Row="0" Grid.Column="0" IsVisible="{Binding CanStateChange}" Command="{Binding BackCommand}" Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
-
-			<!--	<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />-->
-			<Label Grid.Row="0" Grid.Column="1" Style="{DynamicResource PageTitleLabel}" Text="{l:Localize NewContract}" HorizontalTextAlignment="End"/>
+			<Label Grid.Row="0" Grid.Column="1" Style="{DynamicResource PageTitleLabel}" Text="{l:Localize NewContract}" HorizontalTextAlignment="End" />
 		</Grid>
 		<!-- Main Content -->
 		<Grid x:Name="StateGrid"
@@ -50,11 +47,24 @@
 			mct:StateContainer.CanStateChange="{Binding CanStateChange, Mode=OneWayToSource}" >
 
 			<mct:StateContainer.StateViews>
-				<views:OverviewView x:Name="OverviewView" mct:StateView.StateKey="Overview" />
 				<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading" />
 				<views:ParametersView x:Name="ParametersView" mct:StateView.StateKey="Parameters" />
 				<views:RolesView x:Name="RolesView" mct:StateView.StateKey="Roles" />
 				<views:PreviewView x:Name="PreviewView" mct:StateView.StateKey="Preview" />
+				<!-- Inline Final state content to avoid type resolution issues -->
+				<Border mct:StateView.StateKey="Final" Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="12" Padding="{DynamicResource MediumLeftRightBottomMargins}">
+						<Label Text="{l:Localize Done}" Style="{DynamicResource PageTitleLabel}" HorizontalTextAlignment="Center" />
+						<Label Text="{l:Localize YouCanUploadAttachmentsAndInviteSignersFromTheContractScreen}" Style="{DynamicResource ItemDescriptionLabel}" />
+						<controls:TemplatedButton Command="{Binding OpenCreatedContractCommand}">
+							<Border Style="{DynamicResource FilledTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
+								<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
+									<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize ViewContract}" />
+								</Grid>
+							</Border>
+						</controls:TemplatedButton>
+					</VerticalStackLayout>
+				</Border>
 			</mct:StateContainer.StateViews>
 
 			<!-- default state, should not occur -->
@@ -63,6 +73,37 @@
 
 			</VerticalStackLayout>
 		</Grid>
+
+		<!-- Unified Wizard Bottom Bar in own row -->
+		<Border Grid.Row="2" Style="{DynamicResource BottomBarBorder2}" Margin="0" Padding="0" IsVisible="{Binding IsOnFinalState, Converter={StaticResource InvertedBoolConverter}}">
+			<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" Padding="{DynamicResource MediumMargins}" ColumnSpacing="{DynamicResource MediumSpacing}">
+				<!-- Row 0: Navigation + Progress + Action -->
+				<controls:TemplatedButton Grid.Row="0" Grid.Column="0" Command="{Binding GoPreviousStepCommand}" IsEnabled="{Binding CanGoBack}">
+					<Border Style="{DynamicResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
+						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
+							<Label Grid.Column="1" Style="{DynamicResource TransparentTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}"  Text="{l:Localize Back}"/>
+						</Grid>
+					</Border>
+				</controls:TemplatedButton>
+				<HorizontalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
+					<Label Text="{Binding ProgressText}" Style="{DynamicResource BottomBarLabel}" />
+					<ActivityIndicator IsVisible="{Binding IsValidatingParameters}" IsRunning="{Binding IsValidatingParameters}" Color="{DynamicResource ContentPrimaryWL}" />
+				</HorizontalStackLayout>
+				<controls:TemplatedButton Grid.Row="0" Grid.Column="2" Command="{Binding GoNextStepCommand}" IsEnabled="{Binding IsCurrentStepValid}">
+					<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
+						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
+							<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{Binding PrimaryActionText}" />
+						</Grid>
+					</Border>
+				</controls:TemplatedButton>
+
+				<!-- Row 1: Preview Acknowledgment (only visible on preview step) -->
+				<Grid Grid.Row="1" Grid.ColumnSpan="3" ColumnDefinitions="Auto,*" IsVisible="{Binding IsOnPreviewStep}" ColumnSpacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallTopMargins}">
+					<CheckBox Grid.Column="0" IsChecked="{Binding IsContractOk}" Color="{DynamicResource ContentPrimaryWL}" />
+					<Label Grid.Column="1" Text="{l:Localize IHaveReadAndUnderstoodTheContract}" Style="{DynamicResource BottomBarLabel}" />
+				</Grid>
+			</Grid>
+		</Border>
 
 
 

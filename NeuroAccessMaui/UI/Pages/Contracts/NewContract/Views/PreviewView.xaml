@@ -12,29 +12,33 @@
 						   xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
 						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
 
-	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
-		<Border  Grid.Row="0" Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}">
-			<ScrollView >
+	<ScrollView>
+		<VerticalStackLayout Spacing="12" Padding="{DynamicResource MediumLeftRightBottomMargins}">
+			<!-- Settings block: contract visibility and future general settings -->
+			<Border Style="{DynamicResource BorderSet}" Margin="0">
+				<VerticalStackLayout Spacing="8">
+					<Label Text="Settings" Style="{DynamicResource ItemTitleLabel}" />
+					<controls:CompositePicker
+						LabelText="Visibility"
+						Style="{DynamicResource RegularCompositePicker}"
+						Placeholder="Select who should have access"
+						ItemsSource="{Binding Path=ContractVisibilityItems}"
+						SelectedItem="{Binding Path=SelectedContractVisibilityItem}" />
+				</VerticalStackLayout>
+			</Border>
+
+			<!-- Attachments block: informational/pre-selection placeholder -->
+			<Border Style="{DynamicResource BorderSet}" IsVisible="{Binding HasAttachmentRequirements}">
+				<VerticalStackLayout Spacing="6">
+					<Label Text="Attachments (optional)" Style="{DynamicResource ItemTitleLabel}" />
+					<Label Text="You can add or upload attachments after creation on the finalize screen." Style="{DynamicResource ItemDescriptionLabel}" />
+				</VerticalStackLayout>
+			</Border>
+
+			<!-- Human readable contract preview -->
+			<Border Style="{DynamicResource BorderSet}">
 				<ContentView Content="{Binding HumanReadableText}" />
-			</ScrollView>
-		</Border>
-
-
-		<!-- BOTTOM BAR -->
-		<Border Grid.Row="1" Style="{DynamicResource BottomBarBorder2}" Margin="{DynamicResource MediumTopMargins}">
-			<Grid HorizontalOptions="Center" VerticalOptions="Center" ColumnSpacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="auto" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-
-				<CheckBox Grid.Column="0"
-						  IsChecked="{Binding IsContractOk}"
-						  Color="{DynamicResource ContentPrimaryWL}" />
-				<Label Grid.Column="1"
-					   Text="{l:Localize IHaveReadAndUnderstoodTheContract}"
-					   Style="{DynamicResource BottomBarLabel}" />
-			</Grid>
-		</Border>
-	</Grid>
+			</Border>
+		</VerticalStackLayout>
+	</ScrollView>
 </views:BaseNewContractView>
