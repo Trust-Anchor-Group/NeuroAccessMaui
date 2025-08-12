@@ -77,31 +77,38 @@
 		<!-- Unified Wizard Bottom Bar in own row -->
 		<Border Grid.Row="2" Style="{DynamicResource BottomBarBorder2}" Margin="0" Padding="0" IsVisible="{Binding IsOnFinalState, Converter={StaticResource InvertedBoolConverter}}">
 			<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" Padding="{DynamicResource MediumMargins}" ColumnSpacing="{DynamicResource MediumSpacing}">
-				<!-- Row 0: Navigation + Progress + Action -->
-				<controls:TemplatedButton Grid.Row="0" Grid.Column="0" Command="{Binding GoPreviousStepCommand}" IsEnabled="{Binding CanGoBack}">
-					<Border Style="{DynamicResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
-						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-							<Label Grid.Column="1" Style="{DynamicResource TransparentTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}"  Text="{l:Localize Back}"/>
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
-				<HorizontalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
+
+				<!-- Row 1: Preview Acknowledgment (only visible on preview step) -->
+				<Grid Grid.Row="0"
+					  Grid.ColumnSpan="3"
+					  ColumnDefinitions="Auto,*"
+					  IsVisible="{Binding IsOnPreviewStep}"
+					  ColumnSpacing="{DynamicResource SmallSpacing}"
+					  Padding="{DynamicResource SmallTopMargins}">
+					<CheckBox Grid.Column="0"
+							  IsChecked="{Binding IsContractOk}"
+							  Color="{DynamicResource ContentPrimaryWL}" />
+					<Label Grid.Column="1"
+						   Text="{l:Localize IHaveReadAndUnderstoodTheContract}"
+						   Style="{DynamicResource BottomBarLabel}" />
+				</Grid>
+				<!-- Row 1: Navigation + Progress + Action -->
+				<controls:TextButton Grid.Row="1"
+									 Grid.Column="0"
+									 Command="{Binding GoPreviousStepCommand}"
+									 IsEnabled="{Binding CanGoBack}"
+									 LabelData="{l:Localize Back}"
+									 Style="{DynamicResource SecondaryButton}"/>
+				<HorizontalStackLayout Grid.Row="1" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
 					<Label Text="{Binding ProgressText}" Style="{DynamicResource BottomBarLabel}" />
 					<ActivityIndicator IsVisible="{Binding IsValidatingParameters}" IsRunning="{Binding IsValidatingParameters}" Color="{DynamicResource ContentPrimaryWL}" />
 				</HorizontalStackLayout>
-				<controls:TemplatedButton Grid.Row="0" Grid.Column="2" Command="{Binding GoNextStepCommand}" IsEnabled="{Binding IsCurrentStepValid}">
-					<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
-						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-							<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{Binding PrimaryActionText}" />
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
-
-				<!-- Row 1: Preview Acknowledgment (only visible on preview step) -->
-				<Grid Grid.Row="1" Grid.ColumnSpan="3" ColumnDefinitions="Auto,*" IsVisible="{Binding IsOnPreviewStep}" ColumnSpacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallTopMargins}">
-					<CheckBox Grid.Column="0" IsChecked="{Binding IsContractOk}" Color="{DynamicResource ContentPrimaryWL}" />
-					<Label Grid.Column="1" Text="{l:Localize IHaveReadAndUnderstoodTheContract}" Style="{DynamicResource BottomBarLabel}" />
-				</Grid>
+				<controls:TextButton Grid.Row="1"
+									 Grid.Column="2"
+									 Command="{Binding GoNextStepCommand}"
+									 IsEnabled="{Binding IsCurrentStepValid}"
+									 Style="{DynamicResource PrimaryButton}"
+									 LabelData="{Binding PrimaryActionText}"/>
 			</Grid>
 		</Border>
 
