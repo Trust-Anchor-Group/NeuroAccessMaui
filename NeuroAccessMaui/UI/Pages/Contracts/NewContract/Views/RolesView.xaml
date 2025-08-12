@@ -32,20 +32,21 @@
 	<CollectionView ItemsSource="{Binding Contract.Roles}" SelectionMode="None" IsGrouped="False" ItemSizingStrategy="MeasureAllItems" Margin="{DynamicResource SmallLeftRightMargins}">
 		<CollectionView.Header>
 			<Grid>
-				<Border Style="{DynamicResource BorderSet}" >
-					<VerticalStackLayout>
-						<Label Text="{l:Localize SelectYourRole}" Style="{DynamicResource RoleTitleLabel}"/>
-						<controls:CompositePicker
-									Style="{DynamicResource RegularCompositePicker}"
-									Placeholder="{l:Localize SelectYourRoleInThisContract}"
-									ItemsSource="{Binding Contract.Roles}"
-									SelectedItem="{Binding SelectedRole}">
-							<controls:CompositePicker.ItemDisplayBinding x:DataType="objectModel:ObservableRole">
-								<Binding Path="Name"/>
-							</controls:CompositePicker.ItemDisplayBinding>
-						</controls:CompositePicker>
-					</VerticalStackLayout>
-				</Border>
+				<VerticalStackLayout>
+					<Border Style="{DynamicResource BorderSet}">
+						<VerticalStackLayout>
+							<Label Text="Select roles you will sign as (optional)" Style="{DynamicResource RoleTitleLabel}"/>
+						</VerticalStackLayout>
+					</Border>
+
+					<Border Style="{DynamicResource BorderSet}"
+							BackgroundColor="{DynamicResource TnPWarningbgWL}"
+							IsVisible="{Binding HasSelectedRoles, Converter={StaticResource InvertedBoolConverter}}">
+						<Label Text="No roles selected — you will not sign this contract now."
+							   TextColor="{DynamicResource TnPWarningContentWL}"
+							   Style="{DynamicResource RoleDescriptionLabel}"/>
+					</Border>
+				</VerticalStackLayout>
 			</Grid>
 
 		</CollectionView.Header>
@@ -54,7 +55,13 @@
 				<Grid>
 					<Border Style="{DynamicResource BorderSet}">
 						<VerticalStackLayout>
-							<Label Text="{Binding Name}" Style="{DynamicResource RoleTitleLabel}"/>
+							<Grid ColumnDefinitions="*, auto" RowDefinitions="auto">
+								<Label Grid.Column="0" Text="{Binding Name}" Style="{DynamicResource RoleTitleLabel}"/>
+								<HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
+									<CheckBox IsChecked="{Binding IsSelectedByMe, Mode=TwoWay}"/>
+									<Label Text="Sign as" VerticalTextAlignment="Center" Style="{DynamicResource RoleDescriptionLabel}"/>
+								</HorizontalStackLayout>
+							</Grid>
 							<Label Text="{Binding Description}" Style="{DynamicResource RoleDescriptionLabel}" />
 							<!-- Part Collection -->
 							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">

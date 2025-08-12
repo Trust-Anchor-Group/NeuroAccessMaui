@@ -139,6 +139,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		private ObservableRole? persistingSelectedRole;
 
+		/// <summary>
+		/// True if the current user has selected at least one role to sign as.
+		/// </summary>
+		public bool HasSelectedRoles
+		{
+			get
+			{
+				string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
+				if (this.Contract is null || string.IsNullOrEmpty(MyId))
+					return false;
+				foreach (ObservableRole Role in this.Contract.Roles)
+				{
+					if (Role.Parts.Any(p => p.LegalId == MyId))
+						return true;
+				}
+				return false;
+			}
+		}
+
 		public ObservableCollection<ObservableParameter> EditableParameters { get; set; } = [];
 
 
@@ -207,9 +226,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <summary>
 		/// If Contract can be created
 		/// </summary>
+
 		public bool CanCreate =>
 			(this.IsParametersOk && this.IsRolesOk && this.IsContractOk
-			&& this.persistingSelectedRole is not null
 			&& this.SelectedContractVisibilityItem is not null)
 			|| this.IsValidationDisabled;
 
@@ -242,6 +261,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				this.Contract = await ObservableContract.CreateAsync(this.args.Template);
 				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
+				this.Contract.PartChanged += (_, __) => this.OnPropertyChanged(nameof(this.HasSelectedRoles));
 
 
 				TaskCompletionSource<bool> HasInitializedParameters = new();
@@ -313,14 +333,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					}
 				}
 				this.HasAttachmentRequirements = HasAttach;
-				// Auto-select a role if exactly one role has no parts yet, and persist the selection
-				List<ObservableRole> EmptyRoles = this.Contract.Roles.Where(r => r.Parts.Count == 0).ToList();
-				if (EmptyRoles.Count == 1)
-				{
-					ObservableRole OnlyEmptyRole = EmptyRoles[0];
-					this.SelectedRole = OnlyEmptyRole;
-					this.persistingSelectedRole = OnlyEmptyRole;
-				}
+				// Multi-select: do not auto-select any role. Keep user in control.
 
 				await this.GoToState(NewContractStep.Parameters);
 				this.CurrentStep = this.Steps.FirstOrDefault(Step => Step.Key == nameof(NewContractStep.Parameters));
@@ -764,8 +777,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(5),
 					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(5),
 					null, null, false);
-				if (this.persistingSelectedRole is not null)
-					CreatedContract = await ServiceRef.XmppService.SignContract(CreatedContract, this.persistingSelectedRole!.Name, false);
+				// Sign for all selected roles (could be none)
+				string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
+				if (!string.IsNullOrEmpty(MyId))
+				{
+					foreach (ObservableRole Role in this.Contract.Roles)
+					{
+						if (Role.Parts.Any(p => p.LegalId == MyId))
+						{
+							CreatedContract = await ServiceRef.XmppService.SignContract(CreatedContract, Role.Name, false);
+						}
+					}
+				}
 
 				foreach (Part Part in Parts)
 				{
@@ -885,25 +908,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private async Task GoToRoles()
 		{
 			await this.GoToState(NewContractStep.Loading);
-			//		this.FilterAvailableRoles();
+			// Multi-select: no auto-selection. Let user toggle roles explicitly.
 			await this.GoToState(NewContractStep.Roles);
-			if (this.persistingSelectedRole is not null)
-				this.SelectedRole = this.persistingSelectedRole;
-			else
-			{
-				ObservableRole? AvailableRole = null;
-				foreach (ObservableRole Role in this.Contract?.Roles ?? [])
-				{
-					if (Role.Parts.Count < Role.MaxCount)
-					{
-						if (AvailableRole is null)
-							AvailableRole = Role;
-						else
-							return;
-					}
-				}
-				this.SelectedRole = AvailableRole;
-			}
+			this.SelectedRole = null;
 
 		}
 
