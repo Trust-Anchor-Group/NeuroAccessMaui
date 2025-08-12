@@ -106,7 +106,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			// TODO: Load the KYC process as KycReference from serviceRef.KycService
 			this.kycReference = await ServiceRef.KycService.LoadKycReferenceAsync(
-					 "NeuroAccessMaui.Resources.Raw.TestKYCNeuro.xml",
+					 "NeuroAccessMaui.Resources.Raw.TestKYCK.xml",
 					 "en"
 			 );
 
