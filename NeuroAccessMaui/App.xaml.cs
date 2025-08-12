@@ -896,7 +896,7 @@ namespace NeuroAccessMaui
 					return;
 				}
 
-				await QrCode.OpenUrl(url);
+				await QrCode.OpenUrl(url).ConfigureAwait(false);
 			});
 		}
 

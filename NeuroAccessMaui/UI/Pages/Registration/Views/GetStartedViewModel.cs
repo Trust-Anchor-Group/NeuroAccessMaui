@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -19,7 +20,31 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 	public partial class GetStartedViewModel() : BaseRegistrationViewModel(RegistrationStep.GetStarted)
 	{
 		[ObservableProperty]
-		private bool isLoading = false;
+		private bool isLoading = true;
+		
+		private bool handlesOnboardingLink = false;
+
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+			WeakReferenceMessenger.Default.Register<OnboardingLinkProcessingMessage>(this, (_, m) =>
+			{
+				this.handlesOnboardingLink = m.IsProcessing;
+				MainThread.BeginInvokeOnMainThread(() => this.IsLoading = m.IsProcessing);
+			});
+
+			await Task.Delay(3000);
+			if (!this.handlesOnboardingLink)
+			{
+				MainThread.BeginInvokeOnMainThread(() => this.IsLoading = false);
+			}
+		}
+
+		protected override Task OnDispose()
+		{
+			WeakReferenceMessenger.Default.Unregister<OnboardingLinkProcessingMessage>(this);
+			return base.OnDispose();
+		}
 
 		[RelayCommand]
 		private void NewAccount()
@@ -74,9 +99,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				Uri = new Uri("https://" + Domain + "/Onboarding/GetInfo");
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -104,9 +129,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 					EncryptedStr = (string)Decoded.Decoded;
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					ServiceRef.LogService.LogException(ex);
+					ServiceRef.LogService.LogException(Ex);
 
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],

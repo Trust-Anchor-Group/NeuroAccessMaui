@@ -102,7 +102,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 					return false;
 				}
 
-				if (ServiceRef.XmppService.State != Waher.Networking.XMPP.XmppState.Connected)
+				if (ServiceRef.XmppService.State != Waher.Networking.XMPP.XmppState.Connected && !Url.StartsWith(Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase))
 					await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
 
 				ILinkOpener Opener = Types.FindBest<ILinkOpener, Uri>(Uri);
@@ -119,7 +119,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 					return false;
 				}
 
-				if (!await Opener.TryOpenLink(Uri, false))
+				if (!await Opener.TryOpenLink(Uri, false).ConfigureAwait(false))
 				{
 					if (ShowErrorIfUnable)
 					{
