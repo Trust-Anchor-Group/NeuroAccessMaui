@@ -122,6 +122,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
       Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
+    <value>Selecione os papéis com os quais irá assinar (opcional)</value>
+  </data>
+  <data name="NoRolesSelectedWarning" xml:space="preserve">
+    <value>Nenhum papel selecionado — você não assinará este contrato agora.</value>
+  </data>
+  <data name="SignAs" xml:space="preserve">
+    <value>Assinar como</value>
+  </data>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>CADEIA DE CARACTERES NÃO DEFINIDA</value>
   </data>

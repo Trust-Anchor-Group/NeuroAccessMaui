@@ -45,6 +45,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		#region Fields
 
 		private readonly NewContractNavigationArgs? args;
+		// If roles were preselected via args, the user cannot change their own role selections
+		[ObservableProperty]
+		private bool areRolesLockedForMe;
 
 		private System.Timers.Timer? debounceValidationTimer;
 		private readonly object debounceLock = new(); // To prevent race conditions
@@ -65,6 +68,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		[ObservableProperty]
 		private string currentState = nameof(NewContractStep.Loading);
+
+		partial void OnCurrentStateChanged(string value)
+		{
+			this.OnPropertyChanged(nameof(this.IsOnRolesStep));
+			this.OnPropertyChanged(nameof(this.ShowNoRolesWarning));
+		}
 
 		// Wizard steps (Phase 1 skeleton)
 		public ObservableCollection<StepDescriptor> Steps { get; } = new();
@@ -121,6 +130,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				this.OnPropertyChanged(nameof(this.CanGoBack));
 				this.NavigateStateForStep(newValue);
 				_ = this.UpdateCurrentStepValidityAsync();
+				this.OnPropertyChanged(nameof(this.IsOnRolesStep));
+				this.OnPropertyChanged(nameof(this.ShowNoRolesWarning));
 			}
 		}
 
@@ -157,6 +168,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				return false;
 			}
 		}
+
+		public bool IsOnRolesStep => this.CurrentState == nameof(NewContractStep.Roles);
+
+		public bool ShowNoRolesWarning => this.IsOnRolesStep && !this.HasSelectedRoles;
 
 		public ObservableCollection<ObservableParameter> EditableParameters { get; set; } = [];
 
@@ -261,7 +276,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				this.Contract = await ObservableContract.CreateAsync(this.args.Template);
 				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
-				this.Contract.PartChanged += (_, __) => this.OnPropertyChanged(nameof(this.HasSelectedRoles));
+				this.Contract.PartChanged += (_, __) => { this.OnPropertyChanged(nameof(this.HasSelectedRoles)); this.OnPropertyChanged(nameof(this.ShowNoRolesWarning)); };
 
 
 				TaskCompletionSource<bool> HasInitializedParameters = new();
@@ -294,6 +309,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 								if (RoleValue is string LegalID)
 									await RoleItem.AddPart(LegalID);
 							}
+						}
+						// If my own ID was preselected for any role, lock role selection
+						string? MyIdInit = ServiceRef.TagProfile.LegalIdentity?.Id;
+						if (!string.IsNullOrEmpty(MyIdInit))
+						{
+							this.AreRolesLockedForMe = this.Contract.Roles.Any(r => r.Parts.Any(p => p.LegalId == MyIdInit));
 						}
 					}
 					foreach (ObservableParameter Parameter in this.Contract.Parameters)

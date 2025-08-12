@@ -128,6 +128,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public bool HasReachedMinCount => this.Parts.Count >= this.MinCount;
 
 		/// <summary>
+		/// True if user can select themselves for this role (not at max or already selected).
+		/// </summary>
+		public bool CanSelectMe
+		{
+			get
+			{
+				string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
+				bool AlreadySelected = !string.IsNullOrEmpty(MyId) && this.Parts.Any(p => p.LegalId == MyId);
+				return AlreadySelected || !this.HasReachedMaxCount;
+			}
+		}
+
+		/// <summary>
 		/// If current user has selected to sign as this role. Toggling this will add/remove "Me" as a part,
 		/// respecting MaxCount. Does nothing if no current LegalId is available.
 		/// </summary>

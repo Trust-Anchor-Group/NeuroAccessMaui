@@ -140,6 +140,15 @@
   <data name="IdentityState_Rejected" xml:space="preserve">
     <value>Rejected</value>
   </data>
+    <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
+      <value>Select roles you will sign as (optional)</value>
+    </data>
+    <data name="NoRolesSelectedWarning" xml:space="preserve">
+      <value>No roles selected — you will not sign this contract now.</value>
+    </data>
+    <data name="SignAs" xml:space="preserve">
+      <value>Sign as</value>
+    </data>
   <data name="TagEngraved" xml:space="preserve">
     <value>Tag Engraved with link to {0}.</value>
   </data>
