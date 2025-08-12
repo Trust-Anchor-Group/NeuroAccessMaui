@@ -683,8 +683,9 @@
 	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
 		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonBorder}" />
 		<Setter Property="SvgTintColor" Value="{DynamicResource ButtonNeutralNavButtonsContentActiveWL}" />
-		<Setter Property="SvgAspect" Value="AspectFill"/>
+		<Setter Property="SvgAspect" Value="AspectFit"/>
 		<Setter Property="SvgStyle" Value="{DynamicResource IconButtonSvg}" />
+		<Setter Property="LabelStyle" Value="{DynamicResource DurationLabel}"/>
 	</Style>
 
 	<Style x:Key="NeuroIconButton" ApplyToDerivedTypes="True" TargetType="controls:SvgButton">

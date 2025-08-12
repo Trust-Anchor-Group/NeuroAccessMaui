@@ -16,47 +16,29 @@
 							   VerticalOptions="Center" />
 		</controls:ConditionView.True>
 		<controls:ConditionView.False>
-			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}"
-								 VerticalOptions="End">
-				<Label Style="{DynamicResource PageTitleLabel}"
-					   Text="{l:Localize OnboardingGetStartedTitle}" />
+			<Grid RowDefinitions="*, auto">
+				<VerticalStackLayout VerticalOptions="Center">
+					<Label Style="{DynamicResource PageTitleLabel}"
+						   FontSize="42"
+						   Text="{l:Localize ActivateYourDigitalIdentity}"/>
 
-				<!-- Info Bubble-->
-				<Border Grid.Row="0"
-						BackgroundColor="{DynamicResource TnPInfobgWL}"
-						Padding="{DynamicResource MediumMargins}"
-						StrokeShape="RoundRectangle 8,8,0,8">
-					<Border.Shadow>
-						<Shadow Brush="{DynamicResource SurfaceShadowColorWL}"
-								Offset="0,4" />
-					</Border.Shadow>
-					<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-						  ColumnDefinitions="auto, *">
-						<Path Grid.Column="0"
-							  Data="{x:Static ui:Geometries.InfoCirclePath}"
-							  Fill="{DynamicResource TnPInfoContentWL}" />
-						<Label Grid.Column="1"
-							   Text="{l:Localize ScanInvitationInfo}"
-							   TextColor="{DynamicResource TnPInfoContentWL}" />
+					<Label Style="{DynamicResource DurationLabel}"
+						   HorizontalTextAlignment="Start"
+						   Text="{l:Localize ActivateYourDigitalIdentityDescription}"/>
+				</VerticalStackLayout>
+
+				<Border Style="{DynamicResource BottomBarBorder}" Grid.Row="1" Margin="-24" Padding="{DynamicResource MediumMargins}">
+					<Grid RowDefinitions="auto,auto">
+						<controls:SvgButton Command="{Binding ScanQrCodeCommand}"
+											Style="{DynamicResource PrimaryIconButton}"
+											LabelText="{l:Localize QrScanCode}"
+											SvgSource="scan_qr.svg"
+											LabelPosition="Right"
+											Margin="{DynamicResource SmallBottomMargins}"/>
 					</Grid>
 				</Border>
 
-				<!-- Buttons -->
-				<controls:SvgButton Command="{Binding ScanQrCodeCommand}"
-									Style="{DynamicResource PrimaryIconButton}"
-									LabelText="{l:Localize QrPageTitleScanInvitation}"
-									SvgSource="scan_qr.svg"
-									LabelPosition="Right" />
-
-				<controls:TextButton Command="{Binding NewAccountCommand}"
-									 Style="{DynamicResource TertiaryButton}"
-									 LabelData="{l:Localize CreateNewAccount}" />
-
-				<controls:TextButton Command="{Binding ExistingAccountCommand}"
-									 Style="{DynamicResource TertiaryButton}"
-									 LabelData="{l:Localize IAlreadyHaveAnAccount}" />
-
-			</VerticalStackLayout>
+			</Grid>
 		</controls:ConditionView.False>
 	</controls:ConditionView>
 

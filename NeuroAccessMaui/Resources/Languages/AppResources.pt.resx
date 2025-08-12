@@ -2870,4 +2870,28 @@
   <data name="ContinueSecondsFormat" xml:space="preserve">
     <value>Continuar ({0})</value>
   </data>
+  <data name="ActivateYourDigitalIdentity" xml:space="preserve">
+    <value>Ative sua identidade digital</value>
+  </data>
+  <data name="ActivateYourDigitalIdentityDescription" xml:space="preserve">
+    <value>Conecte-se ao seu provedor de identidade escaneando o código QR dele.</value>
+  </data>
+  <data name="HaveAnyQuestions" xml:space="preserve">
+    <value>Tem alguma dúvida?</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription" xml:space="preserve">
+    <value>Leia mais sobre como ativar sua identidade digital no site do seu provedor de identidade.</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription2" xml:space="preserve">
+    <value>O provedor de identidade pode ser: Banco, Escola, etc.</value>
+  </data>
+  <data name="AlreadyHaveAnID" xml:space="preserve">
+    <value>Já tem uma identidade?</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription" xml:space="preserve">
+    <value>Tudo o que precisamos é do código de transferência do seu telefone anterior.</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
+    <value>Encontre e inicie em: Configurações / Transferir identidade</value>
+  </data>
 </root>

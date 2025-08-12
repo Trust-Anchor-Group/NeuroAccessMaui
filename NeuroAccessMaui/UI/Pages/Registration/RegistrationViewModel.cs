@@ -162,5 +162,11 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		{
 			await ServiceRef.UiService.PushAsync<SelectLanguagePopup>();
 		}
+
+		[RelayCommand]
+		private void ExistingAccount()
+		{
+			GoToRegistrationStep(RegistrationStep.ContactSupport);
+		}
 	}
 }

@@ -2885,4 +2885,28 @@
   <data name="ContinueSecondsFormat" xml:space="preserve">
     <value>Continue ({0})</value>
   </data>
+  <data name="ActivateYourDigitalIdentity" xml:space="preserve">
+    <value>Activate your digital ID</value>
+  </data>
+  <data name="ActivateYourDigitalIdentityDescription" xml:space="preserve">
+    <value>Connect to your identity provider by scanning their QR code.</value>
+  </data>
+  <data name="HaveAnyQuestions" xml:space="preserve">
+    <value>Have any questions?</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription" xml:space="preserve">
+    <value>Read more about activating your digital ID on your ID providers' website.</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription2" xml:space="preserve">
+    <value>ID provider can be your: Bank, School, etc.</value>
+  </data>
+  <data name="AlreadyHaveAnID" xml:space="preserve">
+    <value>Already have an ID?</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription" xml:space="preserve">
+    <value>All we need is the transfer code from your previous phone.</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
+    <value>Find and initiate under: Settings / Transfer identity</value>
+  </data>
 </root>

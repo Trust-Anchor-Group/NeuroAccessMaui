@@ -2870,4 +2870,28 @@
   <data name="ContinueSecondsFormat" xml:space="preserve">
     <value>Fortsätt ({0})</value>
   </data>
+  <data name="ActivateYourDigitalIdentity" xml:space="preserve">
+    <value>Aktivera ditt digitala ID</value>
+  </data>
+  <data name="ActivateYourDigitalIdentityDescription" xml:space="preserve">
+    <value>Anslut till din identitetsleverantör genom att skanna deras QR-kod.</value>
+  </data>
+  <data name="HaveAnyQuestions" xml:space="preserve">
+    <value>Har du några frågor?</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription" xml:space="preserve">
+    <value>Läs mer om att aktivera din digitala ID på din identitetsleverantörs webbplats.</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription2" xml:space="preserve">
+    <value>Identitetsleverantör kan vara din: Bank, Skola, etc.</value>
+  </data>
+  <data name="AlreadyHaveAnID" xml:space="preserve">
+    <value>Har du redan ett ID?</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription" xml:space="preserve">
+    <value>Allt vi behöver är överföringskoden från din tidigare telefon.</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
+    <value>Hitta och starta under: Inställningar / Överför identitet</value>
+  </data>
 </root>
