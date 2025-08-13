@@ -42,20 +42,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		#region Fields
 
 		private readonly NewContractNavigationArgs? args;
-		// If roles were preselected via args, the user cannot change their own role selections
-		[ObservableProperty]
-		private bool areRolesLockedForMe;
-
 		private System.Timers.Timer? debounceValidationTimer;
-		private readonly object debounceLock = new(); // To prevent race conditions
+		private readonly object debounceLock = new();
 		private Task? latestValidationTask;
-		// Suppress parameter change-driven validations when entering the Parameters view
 		private bool suppressParameterValidation;
 
 
 		#endregion
 
 		#region Properties
+		// If roles were preselected via args, the user cannot change their own role selections
+		[ObservableProperty]
+		private bool areRolesLockedForMe;
 
 		[ObservableProperty]
 		private ObservableContract? contract;
@@ -96,8 +94,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private bool isTransientPreview;
 
 		private Contract? lastCreatedContract;
-
-		// Removed legacy attachment requirement flag
 
 		/// <summary>
 		/// When enabled, bypasses step validations and allows creating with invalid parameters (for testing).
@@ -144,12 +140,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		public ObservableCollection<ObservableRole> AvailableRoles { get; set; } = [];
 
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(CanCreate))]
-		private ObservableRole? selectedRole;
-
-		// removed unused persistingSelectedRole
-
 		/// <summary>
 		/// True if the current user has selected at least one role to sign as.
 		/// </summary>
@@ -174,11 +164,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		public bool ShowNoRolesWarning => this.IsOnRolesStep && !this.HasSelectedRoles;
 
 		public ObservableCollection<ObservableParameter> EditableParameters { get; set; } = [];
-
-
-
-
-		// removed unused CanAddParts
 
 		/// <summary>
 		/// If HumanReadableText is not empty
@@ -350,7 +335,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 				await this.GoToState(NewContractStep.Intro);
 				this.CurrentStep = this.Steps.FirstOrDefault(Step => Step.Key == nameof(NewContractStep.Intro));
-				// Overview removed
 			}
 			catch (Exception Ex4)
 			{
@@ -568,7 +552,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						}
 
 						await this.GoToState(Target);
-						this.SelectedRole = null; // Keep neutral selection; user can adjust
 					}
 					else
 					{
@@ -745,7 +728,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					// Reflect aggregate state for step gating without triggering another validation run
 					this.IsParametersOk = this.EditableParameters.All(p => p.Value is not null && p.IsValid);
 				});
-				// Removed self-triggering call to avoid validation loops
 			}
 			catch (Exception Ex)
 			{
@@ -1047,11 +1029,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 
 			await this.GoToState(NewContractStep.Roles);
-			this.SelectedRole = null;
 
 		}
-
-		// Removed GoToOverview; flow starts at Parameters.
 
 		/// <summary>
 		/// Loads the humand readable part of the contract and navigates to the Preview view
@@ -1098,48 +1077,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					return;
 				this.DebounceValidateParameters();
 			}
-		}
-
-		partial void OnSelectedRoleChanged(ObservableRole? oldValue, ObservableRole? newValue)
-		{
-			if (newValue is null)
-				return;
-
-			ObservableRole? MyRole = null;
-			foreach (ObservableRole Role in this.Contract?.Roles ?? [])
-			{
-				foreach (ObservablePart Part in Role.Parts)
-				{
-					if (Part.IsMe)
-						MyRole = Role;
-				}
-			}
-			MainThread.BeginInvokeOnMainThread(async () =>
-			{
-				string? MyLegalID = ServiceRef.TagProfile.LegalIdentity?.Id;
-				if (string.IsNullOrEmpty(MyLegalID))
-				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.Error)],
-						ServiceRef.Localizer[nameof(AppResources.NoLegalIdSelected)],
-						ServiceRef.Localizer[nameof(AppResources.Ok)]);
-					return;
-				}
-
-				if (newValue.Parts.Count < newValue.MaxCount)
-				{
-					MyRole?.RemovePart(MyLegalID, false);
-					newValue?.AddPart(MyLegalID, false);
-				}
-				else if (MyRole != newValue)
-				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.Error)],
-						ServiceRef.Localizer[nameof(AppResources.SelectedRoleHasReachedMaximumNumberOfParts)],
-						ServiceRef.Localizer[nameof(AppResources.Ok)]);
-					this.SelectedRole = MyRole;
-				}
-			});
 		}
 
 		partial void OnSelectedContractVisibilityItemChanged(ContractVisibilityModel? oldValue, ContractVisibilityModel? newValue)
