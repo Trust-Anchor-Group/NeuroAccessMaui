@@ -10,6 +10,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		Loading = 20,
 		/// <summary>
+		/// Introductory step with category and settings.
+		/// </summary>
+		Intro = 25,
+		/// <summary>
 		/// Edit parameters.
 		/// </summary>
 		Parameters = 30,

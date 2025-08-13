@@ -23,9 +23,6 @@ using Timer = System.Timers.Timer;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
-	/// <summary>
-	/// The view model to bind to when displaying a new contract view or page.
-	/// </summary>
 	public partial class NewContractViewModel : BaseViewModel, ILinkableView, IDisposable
 	{
 		#region Constructors
@@ -52,6 +49,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private System.Timers.Timer? debounceValidationTimer;
 		private readonly object debounceLock = new(); // To prevent race conditions
 		private Task? latestValidationTask;
+		// Suppress parameter change-driven validations when entering the Parameters view
+		private bool suppressParameterValidation;
 
 
 		#endregion
@@ -93,6 +92,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[ObservableProperty]
 		private bool isOnFinalState;
 
+		[ObservableProperty]
+		private bool isTransientPreview;
+
 		private Contract? lastCreatedContract;
 
 		// Future: detect attachment reference parameters; for now keep off by default.
@@ -105,7 +107,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(CanCreate))]
 		[NotifyCanExecuteChangedFor(nameof(CreateCommand))]
-		private bool isValidationDisabled = true;
+		private bool isValidationDisabled = false;
 
 		public string ProgressText => this.CurrentStep is null ? string.Empty : $"Step {this.CurrentStep.Index + 1} of {this.Steps.Count}";
 
@@ -276,7 +278,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				this.Contract = await ObservableContract.CreateAsync(this.args.Template);
 				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
-				this.Contract.PartChanged += (_, __) => { this.OnPropertyChanged(nameof(this.HasSelectedRoles)); this.OnPropertyChanged(nameof(this.ShowNoRolesWarning)); };
+				this.Contract.PartChanged += (_, __) =>
+				{
+					this.OnPropertyChanged(nameof(this.HasSelectedRoles));
+					this.OnPropertyChanged(nameof(this.ShowNoRolesWarning));
+					_ = this.UpdateCurrentStepValidityAsync();
+				};
 
 
 				TaskCompletionSource<bool> HasInitializedParameters = new();
@@ -338,7 +345,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					HasInitializedParameters.SetResult(true);
 				});
 				await HasInitializedParameters.Task;
-				//await this.ValidateParametersAsync();
+				// One-time validation after presets, no debounce
+				await this.ValidateParametersAsync();
 				this.InitializeSteps();
 
 				// Detect attachment-related parameters (placeholder logic: any string parameter whose Label/Description contains 'attachment')
@@ -356,8 +364,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				this.HasAttachmentRequirements = HasAttach;
 				// Multi-select: do not auto-select any role. Keep user in control.
 
-				await this.GoToState(NewContractStep.Parameters);
-				this.CurrentStep = this.Steps.FirstOrDefault(Step => Step.Key == nameof(NewContractStep.Parameters));
+				await this.GoToState(NewContractStep.Intro);
+				this.CurrentStep = this.Steps.FirstOrDefault(Step => Step.Key == nameof(NewContractStep.Intro));
 				//await GoToOverview();
 			}
 			catch (Exception Ex4)
@@ -412,18 +420,22 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			if (this.Steps.Count > 0)
 				return;
 
-			string[] Order = [nameof(NewContractStep.Parameters), nameof(NewContractStep.Roles), nameof(NewContractStep.Preview)];
+			string[] Order = [nameof(NewContractStep.Intro), nameof(NewContractStep.Parameters), nameof(NewContractStep.Roles), nameof(NewContractStep.Preview)];
 			int I = 0;
 			foreach (string Key in Order)
 			{
 				Func<Task<bool>>? ValidateFunc = null;
-				if (Key == nameof(NewContractStep.Parameters))
+				if (Key == nameof(NewContractStep.Intro))
 				{
-					ValidateFunc = async () =>
+					// Intro is informational; always valid
+					ValidateFunc = () => Task.FromResult(true);
+				}
+				else if (Key == nameof(NewContractStep.Parameters))
+				{
+					ValidateFunc = () =>
 					{
 						if (this.IsValidationDisabled)
-							return true;
-						await this.FlushValidationAsync();
+							return Task.FromResult(true);
 						bool Ok = true;
 						foreach (ObservableParameter Param in this.EditableParameters)
 						{
@@ -434,7 +446,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							}
 						}
 						this.IsParametersOk = Ok;
-						return Ok;
+						return Task.FromResult(Ok);
 					};
 				}
 				else if (Key == nameof(NewContractStep.Roles))
@@ -460,13 +472,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			if (this.Contract is null)
 				return false;
+
+			// Must have at least one role selected by the current user
+			bool HasMySelection = this.HasSelectedRoles;
+
+			// All roles must meet their minimum part requirements
+			bool MinCountsOk = true;
 			foreach (ObservableRole Role in this.Contract.Roles)
 			{
 				if (Role.Parts.Count < Role.MinCount)
-					return false;
+				{
+					MinCountsOk = false;
+					break;
+				}
 			}
-			this.IsRolesOk = true;
-			return true;
+
+			bool Ok = HasMySelection && MinCountsOk;
+			this.IsRolesOk = Ok;
+			return Ok;
 		}
 
 		private async Task UpdateCurrentStepValidityAsync()
@@ -511,6 +534,57 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					{
 						// Ensure preview is generated when entering preview step
 						await this.GoToPreview();
+					}
+					else if (Target == NewContractStep.Parameters)
+					{
+						// Suppress validation noise caused by initial UI bindings when entering the Parameters step
+						lock (this.debounceLock)
+						{
+							if (this.debounceValidationTimer is not null)
+							{
+								this.debounceValidationTimer.Stop();
+								this.debounceValidationTimer.Dispose();
+								this.debounceValidationTimer = null;
+							}
+						}
+						this.suppressParameterValidation = true;
+
+						await this.GoToState(Target);
+
+						// Clear suppression on the next UI tick after controls have bound
+						MainThread.BeginInvokeOnMainThread(async () =>
+						{
+							await Task.Delay(50);
+							this.suppressParameterValidation = false;
+						});
+					}
+					else if (Target == NewContractStep.Roles)
+					{
+						// Auto-select the only available role if exactly one can be chosen
+						if (this.Contract is not null && !this.HasSelectedRoles)
+						{
+							string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
+							if (!string.IsNullOrEmpty(MyId))
+							{
+								List<ObservableRole> Joinable = this.Contract.Roles
+									.Where(r => r.Parts.Count < r.MaxCount && !r.Parts.Any(p => p.LegalId == MyId))
+									.ToList();
+								if (Joinable.Count == 1)
+								{
+									try
+									{
+										await Joinable[0].AddPart(MyId, false);
+									}
+									catch (Exception Ex)
+									{
+										ServiceRef.LogService.LogException(Ex);
+									}
+								}
+							}
+						}
+
+						await this.GoToState(Target);
+						this.SelectedRole = null; // Keep neutral selection; user can adjust
 					}
 					else
 					{
@@ -596,13 +670,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				}
 			}
 
-			bool RolesOk = true;
-			foreach (ObservableRole Role in this.Contract.Roles)
+			bool RolesOk = this.HasSelectedRoles;
+			if (RolesOk)
 			{
-				if (Role.Parts.Count < Role.MinCount)
+				foreach (ObservableRole Role in this.Contract.Roles)
 				{
-					RolesOk = false;
-					break;
+					if (Role.Parts.Count < Role.MinCount)
+					{
+						RolesOk = false;
+						break;
+					}
 				}
 			}
 
@@ -659,7 +736,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 							IsValid = IsValid || ParamToValidate.Parameter.ErrorText == ContractStatus.ClientIdentityInvalid.ToString();
 							ValidationText = ParamToValidate.Parameter.ErrorText;
 						}
-						ServiceRef.LogService.LogDebug($"Parameter '{ParamToValidate.Parameter.Name}' validation result: {IsValid}, Error: {ParamToValidate.Parameter.ErrorReason} - {ValidationText}");
+						// Optional: keep debug noise low when simply entering the Parameters step
+						if (!this.suppressParameterValidation)
+							ServiceRef.LogService.LogDebug($"Parameter '{ParamToValidate.Parameter.Name}' validation result: {IsValid}, Error: {ParamToValidate.Parameter.ErrorReason} - {ValidationText}");
 					}
 					catch (Exception Ex2)
 					{
@@ -679,8 +758,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						Result.Param.IsValid = Result.IsValid;
 						Result.Param.ValidationText = Result.ValidationText;
 					}
+					// Reflect aggregate state for step gating without triggering another validation run
+					this.IsParametersOk = this.EditableParameters.All(p => p.Value is not null && p.IsValid);
 				});
-				_ = this.UpdateCurrentStepValidityAsync();
+				// Removed self-triggering call to avoid validation loops
 			}
 			catch (Exception Ex)
 			{
@@ -718,6 +799,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					// Store the task for possible awaiting later
 					this.latestValidationTask = ValidationTask;
 					await ValidationTask;
+					// After validation finishes, update step validity based on current flags (no re-validation)
+					await MainThread.InvokeOnMainThreadAsync(async () =>
+					{
+						await this.UpdateCurrentStepValidityAsync();
+					});
 				};
 				this.debounceValidationTimer.AutoReset = false;
 				this.debounceValidationTimer.Start();
@@ -884,6 +970,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						await base.GoBack();
 						this.IsOnFinalState = false;
 						break;
+					case NewContractStep.Preview when this.IsTransientPreview:
+						this.IsTransientPreview = false;
+						await this.GoToState(NewContractStep.Intro);
+						break;
 					default:
 						this.persistingSelectedRole = this.SelectedRole;
 						if (this.CanGoBack)
@@ -919,7 +1009,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private async Task GoToParameters()
 		{
 			await this.GoToState(NewContractStep.Loading);
+
+			// Suppress initial validation during entry
+			lock (this.debounceLock)
+			{
+				if (this.debounceValidationTimer is not null)
+				{
+					this.debounceValidationTimer.Stop();
+					this.debounceValidationTimer.Dispose();
+					this.debounceValidationTimer = null;
+				}
+			}
+			this.suppressParameterValidation = true;
+
 			await this.GoToState(NewContractStep.Parameters);
+
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				await Task.Delay(50);
+				this.suppressParameterValidation = false;
+			});
 		}
 
 		/// <summary>
@@ -929,7 +1038,31 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private async Task GoToRoles()
 		{
 			await this.GoToState(NewContractStep.Loading);
-			// Multi-select: no auto-selection. Let user toggle roles explicitly.
+
+			// If there's exactly one available role (not at MaxCount) for me, select it by default
+			if (this.Contract is not null && !this.HasSelectedRoles)
+			{
+				string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
+				if (!string.IsNullOrEmpty(MyId))
+				{
+					List<ObservableRole> Joinable = this.Contract.Roles
+						.Where(r => r.Parts.Count < r.MaxCount && !r.Parts.Any(p => p.LegalId == MyId))
+						.ToList();
+
+					if (Joinable.Count == 1)
+					{
+						try
+						{
+							await Joinable[0].AddPart(MyId, false);
+						}
+						catch (Exception Ex)
+						{
+							ServiceRef.LogService.LogException(Ex);
+						}
+					}
+				}
+			}
+
 			await this.GoToState(NewContractStep.Roles);
 			this.SelectedRole = null;
 
@@ -959,6 +1092,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			await this.GoToState(NewContractStep.Preview);
 		}
 
+		[RelayCommand(CanExecute = nameof(CanStateChange))]
+		private async Task ShowPreviewFromIntro()
+		{
+			this.IsTransientPreview = true;
+			await this.GoToPreview();
+		}
+
 		#endregion
 
 		#region Event Handlers
@@ -970,7 +1110,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private void Parameter_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == nameof(ObservableParameter.Value))
+			{
+				if (this.suppressParameterValidation)
+					return;
 				this.DebounceValidateParameters();
+			}
 		}
 
 		partial void OnSelectedRoleChanged(ObservableRole? oldValue, ObservableRole? newValue)

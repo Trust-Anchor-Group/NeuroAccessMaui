@@ -48,23 +48,11 @@
 
 			<mct:StateContainer.StateViews>
 				<views:LoadingView x:Name="LoadingView" mct:StateView.StateKey="Loading" />
+				<views:IntroView x:Name="IntroView" mct:StateView.StateKey="Intro" />
 				<views:ParametersView x:Name="ParametersView" mct:StateView.StateKey="Parameters" />
 				<views:RolesView x:Name="RolesView" mct:StateView.StateKey="Roles" />
 				<views:PreviewView x:Name="PreviewView" mct:StateView.StateKey="Preview" />
-				<!-- Inline Final state content to avoid type resolution issues -->
-				<Border mct:StateView.StateKey="Final" Style="{DynamicResource BorderSet}">
-					<VerticalStackLayout Spacing="12" Padding="{DynamicResource MediumLeftRightBottomMargins}">
-						<Label Text="{l:Localize Done}" Style="{DynamicResource PageTitleLabel}" HorizontalTextAlignment="Center" />
-						<Label Text="{l:Localize YouCanUploadAttachmentsAndInviteSignersFromTheContractScreen}" Style="{DynamicResource ItemDescriptionLabel}" />
-						<controls:TemplatedButton Command="{Binding OpenCreatedContractCommand}">
-							<Border Style="{DynamicResource FilledTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
-								<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-									<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize ViewContract}" />
-								</Grid>
-							</Border>
-						</controls:TemplatedButton>
-					</VerticalStackLayout>
-				</Border>
+				<views:FinalView x:Name="FinalView" mct:StateView.StateKey="Final" />
 			</mct:StateContainer.StateViews>
 
 			<!-- default state, should not occur -->

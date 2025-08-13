@@ -11,34 +11,14 @@
 						   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 						   xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
 						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
-
-	<ScrollView>
-		<VerticalStackLayout Spacing="12" Padding="{DynamicResource MediumLeftRightBottomMargins}">
-			<!-- Settings block: contract visibility and future general settings -->
-			<Border Style="{DynamicResource BorderSet}" Margin="0">
-				<VerticalStackLayout Spacing="8">
-					<Label Text="Settings" Style="{DynamicResource ItemTitleLabel}" />
-					<controls:CompositePicker
-						LabelText="Visibility"
-						Style="{DynamicResource RegularCompositePicker}"
-						Placeholder="Select who should have access"
-						ItemsSource="{Binding Path=ContractVisibilityItems}"
-						SelectedItem="{Binding Path=SelectedContractVisibilityItem}" />
-				</VerticalStackLayout>
-			</Border>
-
-			<!-- Attachments block: informational/pre-selection placeholder -->
-			<Border Style="{DynamicResource BorderSet}" IsVisible="{Binding HasAttachmentRequirements}">
-				<VerticalStackLayout Spacing="6">
-					<Label Text="Attachments (optional)" Style="{DynamicResource ItemTitleLabel}" />
-					<Label Text="You can add or upload attachments after creation on the finalize screen." Style="{DynamicResource ItemDescriptionLabel}" />
-				</VerticalStackLayout>
-			</Border>
-
-			<!-- Human readable contract preview -->
-			<Border Style="{DynamicResource BorderSet}">
+	<Border Style="{DynamicResource BorderSet}"
+			Margin="16,0,16,16"
+			Padding="16">
+		<ScrollView>
+			<VerticalStackLayout >
 				<ContentView Content="{Binding HumanReadableText}" />
-			</Border>
-		</VerticalStackLayout>
-	</ScrollView>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Border>
+
 </views:BaseNewContractView>
