@@ -68,7 +68,6 @@
 				<views:ParametersView x:Name="ParametersView" mct:StateView.StateKey="Parameters" />
 				<views:RolesView x:Name="RolesView" mct:StateView.StateKey="Roles" />
 				<views:PreviewView x:Name="PreviewView" mct:StateView.StateKey="Preview" />
-				<views:FinalView x:Name="FinalView" mct:StateView.StateKey="Final" />
 			</mct:StateContainer.StateViews>
 
 			<!-- default state, should not occur -->
@@ -79,7 +78,7 @@
 		</Grid>
 
 		<!-- Unified Wizard Bottom Bar in own row -->
-		<Border Grid.Row="2" Style="{DynamicResource BottomBarBorder2}" Margin="0" Padding="0" IsVisible="{Binding IsOnFinalState, Converter={StaticResource InvertedBoolConverter}}">
+		<Border Grid.Row="2" Style="{DynamicResource BottomBarBorder2}" Margin="0" Padding="0" IsVisible="{Binding CurrentState, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=Loading}">
 			<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto" Padding="16,8,16,8" ColumnSpacing="{DynamicResource MediumSpacing}" RowSpacing="8">
 
 				<!-- Row 1: Preview Acknowledgment (only visible on preview step) -->

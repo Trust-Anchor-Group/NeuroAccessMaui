@@ -87,8 +87,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[ObservableProperty]
 		private bool isValidatingParameters;
 
-		[ObservableProperty]
-		private bool isOnFinalState;
+		// Removed final state concept
 
 		[ObservableProperty]
 		private bool isTransientPreview;
@@ -577,7 +576,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 			else if (this.CurrentStep.Key == nameof(NewContractStep.Preview))
 			{
-				// attempt to create
 				_ = this.CreateAsync();
 			}
 		}
@@ -910,10 +908,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				return;
 			}
 
-			// Navigate to final state instead of opening the contract directly
+			// Directly open created contract (no Final step)
 			this.lastCreatedContract = CreatedContract;
-			this.IsOnFinalState = true;
-			await this.GoToState(NewContractStep.Final);
+			await this.OpenCreatedContract();
 
 		}
 
@@ -932,9 +929,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				switch (CurrentStep)
 				{
 					case NewContractStep.Loading:
-					case NewContractStep.Final:
 						await base.GoBack();
-						this.IsOnFinalState = false;
 						break;
 					case NewContractStep.Preview when this.IsTransientPreview:
 						this.IsTransientPreview = false;

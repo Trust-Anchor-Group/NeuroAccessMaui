@@ -25,14 +25,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// Preview the contract.
 		/// </summary>
 		Preview = 60,
-		/// <summary>
-		/// The final step.
-		/// </summary>
-		Final = 70
-
-
-
-
 
 	}
 }
