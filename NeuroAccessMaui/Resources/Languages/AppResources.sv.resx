@@ -2924,4 +2924,22 @@
   <data name="PaymentAcceptanceDescription" xml:space="preserve">
     <value>Granska offline-betalningsdetaljerna nedan. Om du är nöjd med dem, skicka dem till servern för behandling.</value>
   </data>
+  <data name="ContractWizardStepFormat" xml:space="preserve">
+    <value>Steg {0} av {1}</value>
+  </data>
+  <data name="ContractWizardNext" xml:space="preserve">
+    <value>Nästa</value>
+  </data>
+  <data name="ContractWizardReviewHumanReadable" xml:space="preserve">
+    <value>Granska läsbar version</value>
+  </data>
+  <data name="ContractWizardSettings" xml:space="preserve">
+    <value>Inställningar</value>
+  </data>
+  <data name="ContractWizardVisibilityPlaceholder" xml:space="preserve">
+    <value>Välj vem som ska ha åtkomst</value>
+  </data>
+  <data name="ContractWizardContractLabel" xml:space="preserve">
+    <value>Kontrakt</value>
+  </data>
 </root>

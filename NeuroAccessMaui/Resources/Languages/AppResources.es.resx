@@ -2924,4 +2924,22 @@
   <data name="PaymentAcceptanceDescription" xml:space="preserve">
     <value>Revisa los detalles del pago sin conexión que aparecen a continuación. Si estás conforme, envíalos al servidor para su procesamiento.</value>
   </data>
+  <data name="ContractWizardStepFormat" xml:space="preserve">
+    <value>Paso {0} de {1}</value>
+  </data>
+  <data name="ContractWizardNext" xml:space="preserve">
+    <value>Siguiente</value>
+  </data>
+  <data name="ContractWizardReviewHumanReadable" xml:space="preserve">
+    <value>Revisar versión legible</value>
+  </data>
+  <data name="ContractWizardSettings" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
+  <data name="ContractWizardVisibilityPlaceholder" xml:space="preserve">
+    <value>Seleccione quién debe tener acceso</value>
+  </data>
+  <data name="ContractWizardContractLabel" xml:space="preserve">
+    <value>Contrato</value>
+  </data>
 </root>
