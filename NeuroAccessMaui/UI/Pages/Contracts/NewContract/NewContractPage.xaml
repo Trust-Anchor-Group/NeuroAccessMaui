@@ -26,6 +26,7 @@
 		                                 DurationTemplate="{StaticResource DurationParameterTemplate}"
 										 ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
 		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
+		<converters:StringNotEqualsConverter x:Key="StringNotEqualsConverter" />
 	</ContentPage.Resources>
 
 	<Grid x:Name="TheMainGrid"

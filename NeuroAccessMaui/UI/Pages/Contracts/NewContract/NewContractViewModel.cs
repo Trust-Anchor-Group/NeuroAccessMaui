@@ -102,12 +102,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[NotifyCanExecuteChangedFor(nameof(CreateCommand))]
 		private bool isValidationDisabled = false;
 
-		public string ProgressText => this.CurrentStep is null ? string.Empty : $"Step {this.CurrentStep.Index + 1} of {this.Steps.Count}";
+		public string ProgressText => this.CurrentStep is null ? string.Empty : ServiceRef.Localizer[nameof(AppResources.ContractWizardStepFormat), this.CurrentStep.Index + 1, this.Steps.Count] ?? string.Empty;
 
 		public string PrimaryActionText =>
 			(this.CurrentStep is not null && this.Steps.Count > 0 && this.CurrentStep.Index >= this.Steps.Count - 1)
 				? (ServiceRef.Localizer[nameof(AppResources.Create)] ?? "Create")
-				: "Next";
+				: (ServiceRef.Localizer[nameof(AppResources.ContractWizardNext)] ?? "Next");
 
 		public bool CanGoBack => (this.CurrentStep?.Index ?? 0) > 0;
 
@@ -820,7 +820,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
 			{
-				await this.GoToState(NewContractStep.Parameters);
+				await this.GoToState(NewContractStep.Preview);
 				return;
 			}
 
