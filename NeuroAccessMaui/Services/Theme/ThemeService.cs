@@ -131,11 +131,14 @@ namespace NeuroAccessMaui.Services.Theme
 			await this.themeSemaphore.WaitAsync();
 			try
 			{
-				string? PubSubJid = ServiceRef.TagProfile.PubSubJid;
-				if (string.IsNullOrEmpty(PubSubJid))
+				//	string? PubSubJidLocal = ServiceRef.TagProfile.PubSubJid;
+				//string? Domain = GetPubSubDomainFromJid(PubSubJidLocal);
+				string? Domain = ServiceRef.TagProfile.Domain;
+				if (string.IsNullOrWhiteSpace(Domain))
 					return;
 
-				Uri V2Uri = new($"xmpp:NeuroAccessBranding@{PubSubJid}/BrandingV2");
+				// Try Branding v2 via HTTPS first
+				Uri V2Uri = BuildBrandingItemUrl(Domain, "BrandingV2");
 				string V2Key = V2Uri.AbsoluteUri;
 				byte[]? V2Bytes = await this.FetchOrGetCachedAsync(V2Uri, V2Key);
 
@@ -158,8 +161,8 @@ namespace NeuroAccessMaui.Services.Theme
 					}
 				}
 
-				// Fallback to v1
-				Uri V1Uri = new($"xmpp:NeuroAccessBranding@{PubSubJid}/Branding");
+				// Fallback to v1 via HTTPS
+				Uri V1Uri = BuildBrandingItemUrl(Domain, "Branding");
 				string V1Key = V1Uri.AbsoluteUri;
 				byte[]? V1Bytes = await this.FetchOrGetCachedAsync(V1Uri, V1Key);
 
@@ -192,6 +195,50 @@ namespace NeuroAccessMaui.Services.Theme
 				this.themeSemaphore?.Release();
 				this.ThemeLoaded.TrySetResult();
 			}
+		}
+
+		/// <summary>
+		/// Extracts the PubSub domain from a JID-like string. Accepts values with or without user part.
+		/// Examples:
+		/// - "pubsub.example.com" -> "pubsub.example.com"
+		/// - "user@pubsub.example.com" -> "pubsub.example.com"
+		/// - "user@pubsub.example.com/resource" -> "pubsub.example.com"
+		/// Returns null if input cannot produce a valid host.
+		/// </summary>
+		private static string? GetPubSubDomainFromJid(string? Jid)
+		{
+			if (string.IsNullOrWhiteSpace(Jid))
+				return null;
+
+			string Tmp = Jid.Trim();
+			int At = Tmp.IndexOf('@');
+			string Host = At >= 0 ? Tmp[(At + 1)..] : Tmp;
+			int Slash = Host.IndexOf('/');
+			if (Slash >= 0)
+				Host = Host[..Slash];
+
+			if (string.IsNullOrWhiteSpace(Host))
+				return null;
+
+			try
+			{
+				// Basic host sanity check
+				return Uri.CheckHostName(Host) != UriHostNameType.Unknown ? Host : null;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
+		/// Builds HTTPS URL to a PubSub Branding item on the provider domain.
+		/// ItemIds: "BrandingV2" or "Branding".
+		/// </summary>
+		private static Uri BuildBrandingItemUrl(string Domain, string ItemId)
+		{
+			// Enforce https as per specification
+			return new Uri($"https://{Domain}/PubSub/NeuroAccessBranding/{ItemId}");
 		}
 
 		/// <summary>
