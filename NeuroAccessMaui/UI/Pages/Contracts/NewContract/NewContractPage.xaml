@@ -35,10 +35,26 @@
 
 		<controls:Background Grid.Row ="1"/>
 
-		<!-- Top Bar Simplified -->
-		<Grid Grid.Row="0" RowDefinitions="*" ColumnDefinitions="auto,*" Margin="{DynamicResource MediumMargins}">
-			<controls:ImageButton Grid.Row="0" Grid.Column="0" IsVisible="{Binding CanStateChange}" Command="{Binding BackCommand}" Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
-			<Label Grid.Row="0" Grid.Column="1" Style="{DynamicResource PageTitleLabel}" Text="{Binding ContractName}" LineBreakMode="TailTruncation" HorizontalTextAlignment="End" />
+		<!-- Top Bar -->
+		<Grid Grid.Row="0"
+			  RowDefinitions="*"
+			  ColumnDefinitions="auto,*"
+			  ColumnSpacing="8"
+			  Margin="{DynamicResource MediumMargins}">
+
+
+			<controls:SvgButton Grid.Row="0"
+								Grid.Column="0"
+								Command="{Binding GoBackCommand}"
+								Style="{DynamicResource IconButton}"
+								SvgSource="close.svg" />
+
+			<!--	<Image HorizontalOptions="Center" VerticalOptions="Start" Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}" WidthRequest="50" HeightRequest="50" />-->
+			<Label Grid.Row="0"
+				   Grid.Column="1"
+				   Style="{DynamicResource PageTitleLabel}"
+				   Text="{l:Localize NewContract}"
+				   HorizontalTextAlignment="Center" />
 		</Grid>
 		<!-- Main Content -->
 		<Grid x:Name="StateGrid"
