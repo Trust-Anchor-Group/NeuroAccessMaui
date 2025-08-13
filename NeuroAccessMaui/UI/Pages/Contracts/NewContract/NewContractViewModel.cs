@@ -70,6 +70,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			this.OnPropertyChanged(nameof(this.IsOnRolesStep));
 			this.OnPropertyChanged(nameof(this.ShowNoRolesWarning));
+			this.OnPropertyChanged(nameof(this.CanGoBack));
 		}
 
 		// Wizard steps (Phase 1 skeleton)
@@ -92,6 +93,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[ObservableProperty]
 		private bool isTransientPreview;
 
+		partial void OnIsTransientPreviewChanged(bool value)
+		{
+			this.OnPropertyChanged(nameof(this.CanGoBack));
+		}
+
 		private Contract? lastCreatedContract;
 
 		/// <summary>
@@ -109,7 +115,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				? (ServiceRef.Localizer[nameof(AppResources.Create)] ?? "Create")
 				: (ServiceRef.Localizer[nameof(AppResources.ContractWizardNext)] ?? "Next");
 
-		public bool CanGoBack => (this.CurrentStep?.Index ?? 0) > 0;
+		public bool CanGoBack =>
+			(this.CurrentStep?.Index ?? 0) > 0 ||
+			(this.IsTransientPreview && this.CurrentState == nameof(NewContractStep.Preview));
 
 		partial void OnCurrentStepChanged(StepDescriptor? oldValue, StepDescriptor? newValue)
 		{
@@ -585,6 +593,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			if (this.CurrentStep is null)
 				return;
+			// Special case: transient preview -> always return to Intro regardless of CurrentStep pointer
+			if (this.IsTransientPreview && this.CurrentState == nameof(NewContractStep.Preview))
+			{
+				this.IsTransientPreview = false;
+				// Don't advance step progression; just go back to Intro state
+				_ = this.GoToState(NewContractStep.Intro);
+				return;
+			}
+
 			int PrevIndex = this.CurrentStep.Index - 1;
 			if (PrevIndex >= 0)
 				this.CurrentStep = this.Steps[PrevIndex];
