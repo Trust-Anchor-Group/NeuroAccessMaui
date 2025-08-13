@@ -97,9 +97,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		private Contract? lastCreatedContract;
 
-		// Future: detect attachment reference parameters; for now keep off by default.
-		[ObservableProperty]
-		private bool hasAttachmentRequirements;
+		// Removed legacy attachment requirement flag
 
 		/// <summary>
 		/// When enabled, bypasses step validations and allows creating with invalid parameters (for testing).
@@ -150,7 +148,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		[NotifyPropertyChangedFor(nameof(CanCreate))]
 		private ObservableRole? selectedRole;
 
-		private ObservableRole? persistingSelectedRole;
+		// removed unused persistingSelectedRole
 
 		/// <summary>
 		/// True if the current user has selected at least one role to sign as.
@@ -180,8 +178,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 
 
-		[ObservableProperty]
-		private bool canAddParts;
+		// removed unused CanAddParts
 
 		/// <summary>
 		/// If HumanReadableText is not empty
@@ -349,24 +346,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				await this.ValidateParametersAsync();
 				this.InitializeSteps();
 
-				// Detect attachment-related parameters (placeholder logic: any string parameter whose Label/Description contains 'attachment')
-				bool HasAttach = false;
-				foreach (ObservableParameter P in this.Contract.Parameters)
-				{
-					string Label = P.Label?.ToLowerInvariant() ?? string.Empty;
-					string Desc = P.Description?.ToLowerInvariant() ?? string.Empty;
-					if (Label.Contains("attachment") || Desc.Contains("attachment"))
-					{
-						HasAttach = true;
-						break;
-					}
-				}
-				this.HasAttachmentRequirements = HasAttach;
 				// Multi-select: do not auto-select any role. Keep user in control.
 
 				await this.GoToState(NewContractStep.Intro);
 				this.CurrentStep = this.Steps.FirstOrDefault(Step => Step.Key == nameof(NewContractStep.Intro));
-				//await GoToOverview();
+				// Overview removed
 			}
 			catch (Exception Ex4)
 			{
@@ -975,7 +959,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 						await this.GoToState(NewContractStep.Intro);
 						break;
 					default:
-						this.persistingSelectedRole = this.SelectedRole;
 						if (this.CanGoBack)
 						{
 							this.GoPreviousStep();
