@@ -246,5 +246,78 @@
 			<Equals>driversLicense</Equals>
 		</Condition>
 	</Page>
-	
+	<Page id="selfiePage">
+		<Title>
+			<Text lang="en">Take a photo of yourself.</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Please take a selfie to confirm your identity. Look at the camera and hold your face steady.</Text>
+		</Description>
+		<Field id="selfieUpload" type="image" label="Selfie" mapping="ProfilePhoto" required="true">
+			<Placeholder>
+				<Text lang="en">Upload your photo...</Text>
+			</Placeholder>
+			<Validation maxFileSizeMB="15">
+				<FileTypes>
+					<FileType>.jpg</FileType>
+					<FileType>.jpeg</FileType>
+					<FileType>.png</FileType>
+				</FileTypes>
+				<Message>
+					<Text lang="en">Please upload a valid selfie image (max 15MB)</Text>
+					<Text lang="sv">Ladda upp en giltig selfie-bild (max 15MB)</Text>
+				</Message>
+			</Validation>
+			<Metadata>
+				<TargetWidth>800</TargetWidth>
+				<TargetHeight>800</TargetHeight>
+				<MinDpi>150</MinDpi>
+			</Metadata>
+		</Field>
+	</Page>
+	<Page id="addressInformation">
+		<Title>
+			<Text lang="en">Fill in your address information</Text>
+		</Title>
+		<Field id="zipCode" type="text" mapping="ZIP" required="true">
+			<Label>
+				<Text lang="en">Zip Code</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Zip or postal code</Text>
+			</Placeholder>
+		</Field>
+		<Field id="address" type="text" mapping="ADDR" required="true">
+			<Label>
+				<Text lang="en">Address</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Address</Text>
+			</Placeholder>
+		</Field>
+		<Field id="area" type="text" mapping="AREA" required="true">
+			<Label>
+				<Text lang="en">Area</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Area</Text>
+			</Placeholder>
+		</Field>
+		<Field id="city" type="text" mapping="CITY" required="true">
+			<Label>
+				<Text lang="en">City</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">City</Text>
+			</Placeholder>
+		</Field>
+		<Field id="state" type="text" mapping="REGION" required="true">
+			<Label>
+				<Text lang="en">State</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">State</Text>
+			</Placeholder>
+		</Field>
+	</Page>
 </KYCProcess>
