@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI;
@@ -103,7 +104,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				}
 
 				this.MessagePreset = !string.IsNullOrEmpty(this.Message);
-				this.CanEncryptMessage = this.navigationArguments.Uri?.ToType == EntityType.LegalId;
+				this.CanEncryptMessage = false;//this.navigationArguments.Uri?.ToType == EntityType.LegalId;
 				this.EncryptMessage = this.CanEncryptMessage;
 			}
 		}
@@ -699,6 +700,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				{
 					LegalIdentity LegalIdentity = await ServiceRef.XmppService.GetLegalIdentity(this.To);
 					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(LegalIdentity, this.Amount ?? 0, this.AmountExtra,
+						this.Currency!, 3, this.Message ?? string.Empty);
+				}
+				else if(this.ToType == EntityType.LegalId)
+				{
+					//TODO: Verify that JID is available
+					LegalIdentity LegalIdentity = await ServiceRef.XmppService.GetLegalIdentity(this.To!);
+					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(LegalIdentity.GetJid(), this.Amount ?? 0, this.AmountExtra,
 						this.Currency!, 3, this.Message ?? string.Empty);
 				}
 				else
