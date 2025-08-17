@@ -122,6 +122,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
       Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
+    <value>Select roles you will sign as (optional)</value>
+  </data>
+  <data name="NoRolesSelectedWarning" xml:space="preserve">
+    <value>No roles selected — you will not sign this contract now.</value>
+  </data>
+  <data name="SignAs" xml:space="preserve">
+    <value>Sign as</value>
+  </data>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>STRING NOT DEFINED</value>
   </data>
@@ -2914,5 +2923,24 @@
   </data>
   <data name="PaymentAcceptanceDescription" xml:space="preserve">
     <value>Review the offline payment details below. If you’re happy with them, send it to the server for processing.</value>
+  </data>
+  <data name="ContractWizardStepFormat" xml:space="preserve">
+    <value>Step {0} of {1}</value>
+    <comment>Format: current step number, total steps.</comment>
+  </data>
+  <data name="ContractWizardNext" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="ContractWizardReviewHumanReadable" xml:space="preserve">
+    <value>Review human-readable</value>
+  </data>
+  <data name="ContractWizardSettings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="ContractWizardVisibilityPlaceholder" xml:space="preserve">
+    <value>Select who should have access</value>
+  </data>
+  <data name="ContractWizardContractLabel" xml:space="preserve">
+    <value>Contract</value>
   </data>
 </root>

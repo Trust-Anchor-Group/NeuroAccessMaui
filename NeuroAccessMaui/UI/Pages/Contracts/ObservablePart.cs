@@ -197,6 +197,33 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		public bool HasSigned => this.Signature is not null;
 
+		/// <summary>
+		/// True if this part was preselected via navigation args and therefore should not be removable in the Roles view.
+		/// </summary>
+		public bool IsPresetFromArgs
+		{
+			get => this.isPresetFromArgs;
+			set
+			{
+				if (this.SetProperty(ref this.isPresetFromArgs, value))
+				{
+					this.OnPropertyChanged(nameof(this.ShowRemoveAsMe));
+					this.OnPropertyChanged(nameof(this.ShowRemoveAsThirdParty));
+				}
+			}
+		}
+		private bool isPresetFromArgs = false;
+
+		/// <summary>
+		/// Helper property for XAML: show the remove cross for "me" parts if not preset from args.
+		/// </summary>
+		public bool ShowRemoveAsMe => this.IsMe && !this.IsPresetFromArgs;
+
+		/// <summary>
+		/// Helper property for XAML: show the remove cross for third-party parts if not preset from args.
+		/// </summary>
+		public bool ShowRemoveAsThirdParty => this.IsThirdParty && !this.IsPresetFromArgs;
+
 		#endregion
 
 
