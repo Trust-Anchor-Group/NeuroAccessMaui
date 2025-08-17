@@ -1,42 +1,81 @@
 # Neuro-Access
 
-**Neuro-Access** is a .NET Maui app written in C#, provided by [Trust Anchor Group](https://trustanchorgroup.com/).
-The app is based on [TAG ID App](https://github.com/Trust-Anchor-Group/IdApp)
+**Neuro-Access** is a .NET MAUI application (C#/.NET 8) provided by [Trust Anchor Group](https://trustanchorgroup.com/), based on the original [TAG ID App](https://github.com/Trust-Anchor-Group/IdApp).
 
-# Documentation
+The app gives users secure access to Neuro services: digital identities, smart contracts, tokens, eDaler wallets, messaging (XMPP) and more.
 
-This documentation provides information you need to get started with the project, understand its architecture, and contribute to its development.
+---
 
-## Table of Contents
+## Quick Start
 
-- [Introduction](#introduction)
-- [Getting Started](Content/getting_started.md)
-  - [Prerequisites](Content/getting_started.md#prerequisites)
-  - [Setting Up the Development Environment](Content/getting_started.md#setting-up-the-development-environment)
-  - [Running the Project](Content/getting_started.md#running-the-project)
-- [Project Architecture](Content/architecture.md)
-  - [Project Structure](Content/architecture.md#project-structure)
-  - [MVVM Pattern](Content/architecture.md#mvvm-pattern)
-  - [Dependency Injection](Content/architecture.md#dependency-injection-and-dependency-resolution)
-- [Dependencies](Content/dependencies.md) Coming Soon
-- [Services](Content/services.md)
-- [Navigation](navigation.md) Coming Soon
-- [Platform-Specific Code](features.md#platform-specific-code) Coming Soon
-- [API Reference](api_reference.md) Coming Soon
-- [Deployment](deployment.md) Coming Soon
-  - [Build and Release Process](deployment.md#build-and-release-process)
-  - [Publishing to App Stores](deployment.md#publishing-to-app-stores)
-- [Troubleshooting](troubleshooting.md) Coming Soon
-  - [Common Issues](troubleshooting.md#common-issues)
-  - [Debugging Tips](troubleshooting.md#debugging-tips)
-  - [FAQ](troubleshooting.md#faq)
-- [Contributing](Content/contributing.md)
-  - [Branching Strategy](Content/contributing.md#branching-strategy)
-  - [How to Contribute](Content/contributing.md#how-to-contribute)
-  - [Coding Guidelines](Content/contributing.md#style-guide)
-  - [Issue Reporting](Content/contributing.md#issue-reporting)
-- [License](LICENSE)
+1. Install .NET SDK (see `global.json` – currently 8.0.413).
+1. Clone the repo:
 
+```bash
+git clone https://github.com/Trust-Anchor-Group/NeuroAccessMaui.git
+cd NeuroAccessMaui
+```
 
+1. Restore & build:
 
+```bash
+dotnet restore
+dotnet workload restore
+dotnet build
+```
 
+1. Run (Android on Windows by default):
+
+```bash
+dotnet build -t:Run -f net8.0-android
+```
+
+1. See extended guidance in [Getting Started](Content/getting_started.md).
+
+---
+
+## Documentation Index
+
+Core docs:
+
+- Getting Started: [Content/getting_started.md](Content/getting_started.md)
+- Architecture: [Content/architecture.md](Content/architecture.md)
+- Services overview: [Content/services.md](Content/services.md)
+- Contributing Guide: [Content/contributing.md](Content/contributing.md)
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
+- License: [LICENSE](LICENSE)
+
+Additional (planned) topics – placeholders not yet created (PRs welcome):
+
+- Dependencies (NuGet package rationale)
+- Navigation flow
+- Platform-specific code notes
+- API reference (public service & model surfaces)
+- Deployment (build, signing, store submission)
+- Troubleshooting / FAQ
+
+If you start one of these, create a file under `Content/` (e.g. `Content/dependencies.md`) and link it here in a PR.
+
+---
+
+## Contributing
+
+See [Content/contributing.md](Content/contributing.md) for branching model (Git Flow), coding style and PR process.
+
+---
+
+## Versioning & SDK
+
+Target frameworks: Android (`net8.0-android`) by default on Windows. iOS is enabled automatically on non-Windows hosts (see `NeuroAccessMaui.csproj`). The locked SDK version is governed by `global.json`. Update both `global.json` and the Getting Started guide together when bumping SDK.
+
+---
+
+## Security & Reporting Issues
+
+For security-sensitive issues do not open a public issue. Instead contact Trust Anchor Group via the website. For general bugs use GitHub Issues.
+
+---
+
+## License
+
+See [LICENSE](LICENSE).
