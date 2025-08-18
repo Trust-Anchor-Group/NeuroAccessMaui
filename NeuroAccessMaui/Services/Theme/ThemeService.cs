@@ -6,80 +6,77 @@ using System.Xml.Schema;
 using CommunityToolkit.Maui.Core;
 using NeuroAccessMaui.Resources.Styles;
 using NeuroAccessMaui.Services.Cache;
-using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI;
 using Waher.Content.Xsl;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Theme
 {
-		public async Task ApplyProviderTheme()
+	/// <summary>
+	/// Manages application theming. Applies bundled (local) light/dark themes and, when a provider
+	/// domain is available, downloads & applies remote branding descriptors (V2 preferred, V1 fallback).
+	/// Performs XML schema validation, merges resource dictionaries, extracts image references, and
+	/// implements a retry/backoff policy (0s,2s,5s) for transient network issues. Idempotent per domain:
+	/// once Applied / NotSupported / FailedPermanent, subsequent calls are no-ops. Falls back to local
+	/// theme on unsupported or permanent failures.
+	/// </summary>
+	[Singleton]
+	public sealed class ThemeService : IThemeService, IDisposable
+	{
+		private const string providerFlagKey = "IsServerThemeDictionary";
+		private const string localFlagKey = "IsLocalThemeDictionary";
+		private static readonly TimeSpan themeExpiry = Constants.Cache.DefaultImageCache;
+
+		private static readonly Lazy<Task<XmlSchema>> brandingSchemaV1Lazy = new(async () =>
 		{
-			// Capture semaphore locally to avoid race with Dispose() nulling the field mid-execution.
-			SemaphoreSlim? sem = this.themeSemaphore;
-			if (sem is null)
-				return; // disposed
-			await sem.WaitAsync();
-			try
-			{
-				string? Domain = ServiceRef.TagProfile.Domain;
-				if (string.IsNullOrWhiteSpace(Domain))
-				{
-					ServiceRef.LogService.LogDebug("ApplyProviderTheme: Skipped (no domain). ");
-					return;
-				}
-				if (this.lastDomainAttempted is not null && this.lastDomainAttempted.Equals(Domain, StringComparison.OrdinalIgnoreCase) &&
-					this.providerThemeState is ProviderThemeStatus.Applied or ProviderThemeStatus.NotSupported or ProviderThemeStatus.FailedPermanent)
-				{
-					ServiceRef.LogService.LogDebug($"ApplyProviderTheme: Already finalized for {Domain} state={this.providerThemeState}.");
-					return;
-				}
-				this.providerThemeState = ProviderThemeStatus.InProgress;
-				this.lastDomainAttempted = Domain;
-				this.providerThemeAttemptCount = 0;
-				while (this.providerThemeAttemptCount < maxProviderThemeAttempts && this.providerThemeState == ProviderThemeStatus.InProgress)
-				{
-					int Attempt = ++this.providerThemeAttemptCount;
-					TimeSpan Delay = providerRetryDelays[Math.Min(Attempt - 1, providerRetryDelays.Length - 1)];
-					if (Delay > TimeSpan.Zero)
-						await Task.Delay(Delay);
-					ProviderAttemptOutcome Outcome = await this.TryFetchAndApplyProviderThemeAsync(Domain);
-					switch (Outcome)
-					{
-						case ProviderAttemptOutcome.AppliedV2:
-						case ProviderAttemptOutcome.AppliedV1:
-							this.providerThemeState = ProviderThemeStatus.Applied;
-							ServiceRef.LogService.LogDebug($"ApplyProviderTheme: Success {Outcome} attempt {Attempt} domain {Domain}.");
-							break;
-						case ProviderAttemptOutcome.Unsupported:
-							this.providerThemeState = ProviderThemeStatus.NotSupported;
-							ServiceRef.LogService.LogDebug($"ApplyProviderTheme: Unsupported domain {Domain}.");
-							await this.SetLocalThemeFromBackgroundThread();
-							break;
-						case ProviderAttemptOutcome.TransientFailure:
-							if (Attempt >= maxProviderThemeAttempts)
-							{
-								this.providerThemeState = ProviderThemeStatus.FailedPermanent;
-								ServiceRef.LogService.LogDebug($"ApplyProviderTheme: Exhausted retries domain {Domain}.");
-								await this.SetLocalThemeFromBackgroundThread();
-							}
-							else
-								ServiceRef.LogService.LogDebug($"ApplyProviderTheme: Transient failure attempt {Attempt} domain {Domain} retrying.");
-							break;
-						case ProviderAttemptOutcome.PermanentFailure:
-							this.providerThemeState = ProviderThemeStatus.FailedPermanent;
-							ServiceRef.LogService.LogDebug($"ApplyProviderTheme: Permanent failure domain {Domain}.");
-							await this.SetLocalThemeFromBackgroundThread();
-							break;
-					}
-				}
-			}
-			finally
-			{
-				try { sem.Release(); } catch (ObjectDisposedException) { }
-				this.ThemeLoaded.TrySetResult();
-			}
+			using Stream Stream1 = await FileSystem.OpenAppPackageFileAsync("NeuroAccessBrandingV1.xsd");
+			return XSL.LoadSchema(Stream1, "NeuroAccessBrandingV1.xsd");
+		});
+		private static readonly Lazy<Task<XmlSchema>> brandingSchemaV2Lazy = new(async () =>
+		{
+			using Stream Stream2 = await FileSystem.OpenAppPackageFileAsync("NeuroAccessBrandingV2.xsd");
+			return XSL.LoadSchema(Stream2, "NeuroAccessBrandingV2.xsd");
+		});
+
+		// Provider theme application state & retry
+		private enum ProviderThemeStatus { NotStarted, InProgress, Applied, NotSupported, FailedPermanent }
+		private enum ProviderAttemptOutcome { AppliedV2, AppliedV1, Unsupported, TransientFailure, PermanentFailure }
+		private enum BrandingFetchClassification { Success, NotFound, TransientFailure, PermanentFailure }
+		private ProviderThemeStatus providerThemeState = ProviderThemeStatus.NotStarted;
+		private string? lastDomainAttempted;
+		private int providerThemeAttemptCount;
+		private static readonly TimeSpan[] providerRetryDelays = { TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5) };
+		private const int maxProviderThemeAttempts = 3;
+		private static readonly HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(10) };
+
+		private readonly FileCacheManager cacheManager;
+		private readonly Dictionary<string, Uri> imageUrisMap;
+		private SemaphoreSlim? themeSemaphore;
+		private ResourceDictionary? localLightDict = new Light();
+		private ResourceDictionary? localDarkDict = new Dark();
+		private AppTheme? lastAppliedLocalTheme;
+		private bool disposedValue;
+
+		/// <summary>
+		/// Initializes a new <see cref="ThemeService"/> instance with cache manager and synchronization primitives.
+		/// </summary>
+		public ThemeService()
+		{
+			this.themeSemaphore = new SemaphoreSlim(1, 1);
+			this.cacheManager = new FileCacheManager("BrandingThemes", themeExpiry);
+			this.imageUrisMap = new(StringComparer.OrdinalIgnoreCase);
 		}
+
+		/// <summary>
+		/// Current mapping of branding image identifiers to absolute URIs (empty if no provider theme applied).
+		/// </summary>
+		public IReadOnlyDictionary<string, Uri> ImageUris => new Dictionary<string, Uri>(this.imageUrisMap);
+
+		/// <summary>
+		/// Returns the current user application theme (may be <see cref="AppTheme.Unspecified"/> if unset).
+		/// </summary>
+		public Task<AppTheme> GetTheme() => Task.FromResult(Application.Current?.UserAppTheme ?? AppTheme.Unspecified);
+
 		/// <summary>
 		/// Completes when a provider theme application attempt (success, unsupported, or failure) finishes.
 		/// </summary>
