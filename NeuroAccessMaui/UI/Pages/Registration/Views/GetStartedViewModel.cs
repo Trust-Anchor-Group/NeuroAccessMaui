@@ -37,7 +37,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			await Task.Delay(3000);
 			if (!this.handlesOnboardingLink)
 			{
-				if(Clipboard.HasText && ServiceRef.TagProfile.Step == RegistrationStep.GetStarted)
+				/*
+				if (Clipboard.HasText && ServiceRef.TagProfile.Step == RegistrationStep.GetStarted)
 				{
 					string? ClipboardText = await Clipboard.GetTextAsync();
 					if (!string.IsNullOrEmpty(ClipboardText) && ClipboardText.StartsWith(Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase))
@@ -45,6 +46,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						await QrCode.OpenUrl(ClipboardText);
 					}
 				}
+				*/
 				MainThread.BeginInvokeOnMainThread(() => this.IsLoading = false);
 			}
 		}
