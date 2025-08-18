@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference = null;
 			}
 
-			if (Reference is null)
+			if (true) // Reference is null)
 			{
 				Reference = new KycReference
 				{

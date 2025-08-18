@@ -280,16 +280,20 @@
 			<!-- Label field template -->
 			<DataTemplate x:Key="LabelFieldTemplate"
 						  x:DataType="fields:ObservableLabelField">
-				<Label Text="{Binding Label.Text}"
+				<Grid>
+					<Label Text="{Binding Label.Text}"
 					   FontAttributes="Bold"
 					   FontSize="Medium" />
+				</Grid>
 			</DataTemplate>
 
 			<!-- Info field template -->
 			<DataTemplate x:Key="InfoFieldTemplate"
 						  x:DataType="fields:ObservableInfoField">
-				<Label Text="{Binding Label.Text}"
-					   FontSize="Medium" />
+				<Grid>
+					<Label Text="{Binding Label.Text}"
+						   FontSize="Medium" />
+				</Grid>
 			</DataTemplate>
 
 			<!-- Read-only Text field template -->
@@ -511,7 +515,7 @@
 														<DataTemplate x:DataType="models:KycSection">
 															<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}"
 																				 BindableLayout.ItemsSource="{Binding VisibleFields}"
-																				BindableLayout.ItemTemplateSelector="{StaticResource ReadOnlyKycFieldTemplateSelector}"/>
+																				 BindableLayout.ItemTemplateSelector="{StaticResource ReadOnlyKycFieldTemplateSelector}"/>
 														</DataTemplate>
 													</BindableLayout.ItemTemplate>
 												</VerticalStackLayout>

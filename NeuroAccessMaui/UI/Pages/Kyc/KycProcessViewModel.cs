@@ -145,7 +145,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.CurrentPagePosition = this.currentPageIndex;
 			this.SetCurrentPage(this.currentPageIndex);
 
-			this.NextCommand.NotifyCanExecuteChanged();
+			MainThread.BeginInvokeOnMainThread(
+				this.NextCommand.NotifyCanExecuteChanged
+			);
 		}
 
 		partial void OnCurrentPagePositionChanged(int value)
@@ -159,11 +161,17 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		}
 
 		private void Field_PropertyChanged(object? Sender, System.ComponentModel.PropertyChangedEventArgs E)
-		{
-			if (E.PropertyName == nameof(ObservableKycField.StringValue))
+	{
+			if (E.PropertyName == nameof(ObservableKycField.RawValue))
 			{
 				this.SetCurrentPage(this.currentPageIndex);
-				this.NextCommand.NotifyCanExecuteChanged();
+				if (Sender is ObservableKycField Field)
+				{
+					Field.Validate("en");
+					MainThread.BeginInvokeOnMainThread(
+						this.NextCommand.NotifyCanExecuteChanged
+					);
+				}
 			}
 		}
 
@@ -263,13 +271,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private bool CanExecuteNext()
 		{
-			if (this.CurrentPage is null || this.CurrentPageSections is null)
+			if (this.CurrentPage is null)
 			{
 				return false;
 			}
 
-			IEnumerable<ObservableKycField> AllVisibleFields = this.CurrentPage.VisibleFields
-				.Concat(this.CurrentPageSections.SelectMany(Section => Section.VisibleFields));
+			IEnumerable<ObservableKycField> AllVisibleFields = this.CurrentPage.VisibleFields;
+
+			if (this.CurrentPageSections is not null && this.CurrentPageSections.All(Section => Section is not null))
+				AllVisibleFields = AllVisibleFields.Concat(this.CurrentPageSections.SelectMany(Section => Section.VisibleFields));
+
 			return AllVisibleFields.All(Field => Field.IsValid);
 		}
 
@@ -340,14 +351,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private async Task<bool> ValidateCurrentPageAsync()
 		{
-			if (this.CurrentPage is null || this.CurrentPageSections is null)
+			if (this.CurrentPage is null)
 			{
 				return false;
 			}
 
 			bool IsOk = true;
-			IEnumerable<ObservableKycField> Fields = this.CurrentPage.VisibleFields
-				.Concat(this.CurrentPageSections.SelectMany(Section => Section.VisibleFields));
+			IEnumerable<ObservableKycField> Fields = this.CurrentPage.VisibleFields;
+
+			if (this.CurrentPageSections is not null && this.CurrentPageSections.All(Section => Section is not null))
+				Fields = Fields.Concat(this.CurrentPageSections.SelectMany(Section => Section.VisibleFields));
 
 			foreach (ObservableKycField Field in Fields)
 			{
@@ -365,7 +378,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 			}
 
-			this.NextCommand.NotifyCanExecuteChanged();
+			MainThread.BeginInvokeOnMainThread(
+				this.NextCommand.NotifyCanExecuteChanged
+			);
 
 			return IsOk;
 		}
@@ -429,7 +444,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 		}
 
-		private async Task ProcessData()
+		private Task ProcessData()
 		{
 			this.mappedValues = new();
 			this.attachments = new();
@@ -437,15 +452,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			// Map all values and submit
 			if (this.process is null)
 			{
-				return;
+				return Task.CompletedTask;
 			}
 
 			//For each page
 			foreach (KycPage Page in this.process.Pages)
 			{
-				bool PageValid = await this.ValidateCurrentPageAsync();
-				Console.WriteLine($"Page: {Page.Id} Valid: {PageValid}");
-
 				// For each field in the page
 				foreach (ObservableKycField Field in Page.AllFields)
 				{
@@ -480,6 +492,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.mappedValues.Add(new Property(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid));
 			this.mappedValues.Add(new Property(Constants.XmppProperties.Phone, ServiceRef.TagProfile.PhoneNumber));
 			this.mappedValues.Add(new Property(Constants.XmppProperties.EMail, ServiceRef.TagProfile.EMail));
+
+			return Task.CompletedTask;
 		}
 
 		/// <summary>
