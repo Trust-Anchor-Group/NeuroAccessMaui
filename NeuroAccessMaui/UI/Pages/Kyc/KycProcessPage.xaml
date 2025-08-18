@@ -276,11 +276,19 @@
 										 Grid.Column="1" />
 				</Grid>
 			</DataTemplate>
-			<!-- Label/info field template -->
+			
+			<!-- Label field template -->
 			<DataTemplate x:Key="LabelFieldTemplate"
 						  x:DataType="fields:ObservableLabelField">
 				<Label Text="{Binding Label.Text}"
 					   FontAttributes="Bold"
+					   FontSize="Medium" />
+			</DataTemplate>
+
+			<!-- Info field template -->
+			<DataTemplate x:Key="InfoFieldTemplate"
+						  x:DataType="fields:ObservableInfoField">
+				<Label Text="{Binding Label.Text}"
 					   FontSize="Medium" />
 			</DataTemplate>
 
@@ -376,9 +384,18 @@
 				</VerticalStackLayout>
 			</DataTemplate>
 
-			<!-- Read-only Label/info field template -->
+			<!-- Read-only Label field template -->
 			<DataTemplate x:Key="ReadOnlyLabelFieldTemplate" x:DataType="fields:ObservableLabelField">
-				<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" FontSize="Medium" />
+				<Label Text="{Binding Label.Text}"
+					   Style="{DynamicResource FieldKeyLabel}"
+					   FontSize="Medium" />
+			</DataTemplate>
+
+			<!-- Read-only Info field template -->
+			<DataTemplate x:Key="ReadOnlyInfoFieldTemplate" x:DataType="fields:ObservableInfoField">
+				<Label Text="..."
+					   Style="{DynamicResource FieldValueLabel}"
+					   FontSize="Medium" />
 			</DataTemplate>
 
 			<local:KycFieldTemplateSelector x:Key="KycFieldTemplateSelector"
@@ -393,7 +410,8 @@
 											TextFieldTemplate="{StaticResource TextFieldTemplate}"
 											FileUploadFieldTemplate="{StaticResource FileUploadFieldTemplate}"
 											ImageUploadFieldTemplate="{StaticResource ImageUploadTemplate}"
-											LabelFieldTemplate="{StaticResource LabelFieldTemplate}" />
+											LabelFieldTemplate="{StaticResource LabelFieldTemplate}"
+											InfoFieldTemplate="{StaticResource InfoFieldTemplate}" />
 			
 			<local:KycFieldTemplateSelector x:Key="ReadOnlyKycFieldTemplateSelector"
 											BooleanFieldTemplate="{StaticResource ReadOnlyBooleanFieldTemplate}"
@@ -407,7 +425,8 @@
 											TextFieldTemplate="{StaticResource ReadOnlyTextFieldTemplate}"
 											FileUploadFieldTemplate="{StaticResource ReadOnlyFileUploadFieldTemplate}"
 											ImageUploadFieldTemplate="{StaticResource ReadOnlyImageUploadFieldTemplate}"
-											LabelFieldTemplate="{StaticResource ReadOnlyLabelFieldTemplate}"/>
+											LabelFieldTemplate="{StaticResource ReadOnlyLabelFieldTemplate}"
+											InfoFieldTemplate="{StaticResource ReadOnlyInfoFieldTemplate}" />
 			
 		</ResourceDictionary>
 	</ContentPage.Resources>

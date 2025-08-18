@@ -5,7 +5,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
     /// <summary>
     /// Label/info field (non-input)
     /// </summary>
-    public class ObservableLabelField : ObservableKycField
+    public class ObservableInfoField : ObservableKycField
     {
 		public override string? StringValue
 		{

@@ -82,7 +82,8 @@ namespace NeuroAccessMaui.Services.Kyc
 				FieldType.Checkbox => new ObservableCheckboxField(),
 				FieldType.File => new ObservableFileField(),
 				FieldType.Image => new ObservableImageField(),
-				FieldType.Label or FieldType.Info => new ObservableLabelField(),
+				FieldType.Label => new ObservableLabelField(),
+				FieldType.Info => new ObservableInfoField(),
 				_ => new ObservableGenericField(),
 			};
 

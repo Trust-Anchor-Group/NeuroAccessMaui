@@ -22,6 +22,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public DataTemplate? FileUploadFieldTemplate { get; set; }
 		public DataTemplate? ImageUploadFieldTemplate { get; set; }
 		public DataTemplate? LabelFieldTemplate { get; set; }
+		public DataTemplate? InfoFieldTemplate { get; set; }
 
 		protected override DataTemplate? OnSelectTemplate(object item, BindableObject container)
 		{
@@ -38,7 +39,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				FieldType.Checkbox => this.CheckboxFieldTemplate ?? this.PickerFieldTemplate,
 				FieldType.File => this.FileUploadFieldTemplate,
 				FieldType.Image => this.ImageUploadFieldTemplate,
-				FieldType.Label or FieldType.Info => this.LabelFieldTemplate ?? this.TextFieldTemplate,
+				FieldType.Label => this.LabelFieldTemplate ?? this.TextFieldTemplate,
+				FieldType.Info => this.InfoFieldTemplate ?? this.TextFieldTemplate,
 				_ => this.TextFieldTemplate
 			};
 		}
