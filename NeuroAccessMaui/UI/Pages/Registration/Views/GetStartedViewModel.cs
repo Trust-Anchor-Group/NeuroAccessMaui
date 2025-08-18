@@ -14,6 +14,7 @@ using Waher.Content.Xml;
 using Waher.Content;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using NeuroAccessMaui.Services.UI.QR;
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
@@ -36,6 +37,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			await Task.Delay(3000);
 			if (!this.handlesOnboardingLink)
 			{
+				if(Clipboard.HasText && ServiceRef.TagProfile.Step == RegistrationStep.GetStarted)
+				{
+					string? ClipboardText = await Clipboard.GetTextAsync();
+					if (!string.IsNullOrEmpty(ClipboardText) && ClipboardText.StartsWith(Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase))
+					{
+						await QrCode.OpenUrl(ClipboardText);
+					}
+				}
 				MainThread.BeginInvokeOnMainThread(() => this.IsLoading = false);
 			}
 		}
