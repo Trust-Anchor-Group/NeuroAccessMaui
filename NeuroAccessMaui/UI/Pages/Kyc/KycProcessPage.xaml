@@ -290,17 +290,21 @@
 			<!-- Info field template -->
 			<DataTemplate x:Key="InfoFieldTemplate"
 						  x:DataType="fields:ObservableInfoField">
-				<Grid>
-					<Label Text="{Binding Label.Text}"
-						   FontSize="Medium" />
-				</Grid>
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout>
+						<Label Text="{Binding Label.Text}"
+							   Style="{DynamicResource FieldTitleLabel}"/>
+						<Label Text="{Binding Description.Text}"
+							   Style="{DynamicResource FieldValueLabel}"/>
+					</VerticalStackLayout>
+				</Border>
 			</DataTemplate>
 
 			<!-- Read-only Text field template -->
 			<DataTemplate x:Key="ReadOnlyTextFieldTemplate" x:DataType="fields:ObservableGenericField">
 				<VerticalStackLayout>
 					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-					<Label Text="{Binding StringValue}" Style="{DynamicResource FieldValueLabel}" />
+					<Label Text="{Binding RawValue}" Style="{DynamicResource FieldValueLabel}" />
 				</VerticalStackLayout>
 			</DataTemplate>
 
@@ -308,7 +312,7 @@
 			<DataTemplate x:Key="ReadOnlyDateFieldTemplate" x:DataType="fields:ObservableDateField">
 				<VerticalStackLayout>
 					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-					<Label Text="{Binding StringValue, StringFormat='{0:yyyy-MM-dd}'}" Style="{DynamicResource FieldValueLabel}" />
+					<Label Text="{Binding RawValue, StringFormat='{0:yyyy-MM-dd}'}" Style="{DynamicResource FieldValueLabel}" />
 				</VerticalStackLayout>
 			</DataTemplate>
 
@@ -397,7 +401,7 @@
 
 			<!-- Read-only Info field template -->
 			<DataTemplate x:Key="ReadOnlyInfoFieldTemplate" x:DataType="fields:ObservableInfoField">
-				<Label Text="..."
+				<Label Text="Terms and Conditions"
 					   Style="{DynamicResource FieldValueLabel}"
 					   FontSize="Medium" />
 			</DataTemplate>
@@ -496,7 +500,7 @@
 						</Border>
 
 						<Border Style="{DynamicResource BorderSet}">
-							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Pages}" Spacing="{DynamicResource MediumSpacing}">
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding ReadOnlyPages}" Spacing="{DynamicResource MediumSpacing}">
 								<BindableLayout.ItemTemplate>
 									<!-- Template for each KYC Page -->
 									<DataTemplate x:DataType="models:KycPage">
@@ -506,8 +510,8 @@
 												<VerticalStackLayout Spacing="8">
 													<Label Text="{Binding Title.Text}" Style="{DynamicResource FieldTitleLabel}" />
 													<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}"
-																			BindableLayout.ItemsSource="{Binding VisibleFields}"
-																			BindableLayout.ItemTemplateSelector="{StaticResource ReadOnlyKycFieldTemplateSelector}"/>
+																		 BindableLayout.ItemsSource="{Binding VisibleFields}"
+																		 BindableLayout.ItemTemplateSelector="{StaticResource ReadOnlyKycFieldTemplateSelector}"/>
 												</VerticalStackLayout>
 												<!-- Fields inside sections on the page -->
 												<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}" BindableLayout.ItemsSource="{Binding AllSections}">

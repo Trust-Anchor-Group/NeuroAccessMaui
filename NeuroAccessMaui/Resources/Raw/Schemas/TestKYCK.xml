@@ -108,6 +108,9 @@
 		</Description>
 		<!-- Passport Upload Field (shown if passport is selected) -->
 		<Field id="passportUpload" type="image" mapping="Passport" specialType="passport" required="true">
+			<Label>
+				<Text lang="en">Passport</Text>
+			</Label>
 			<Placeholder>
 				<Text lang="en">Choose file...</Text>
 			</Placeholder>
@@ -142,6 +145,9 @@
 		</Description>
 		<!-- Identity Card Upload Field (shown if identityCard is selected) -->
 		<Field id="identityCardFront" type="image" mapping="IdCardFront" specialType="identityCardFront" required="true">
+			<Label>
+				<Text lang="en">Identity card front</Text>
+			</Label>
 			<Placeholder>
 				<Text lang="en">Front of document...</Text>
 			</Placeholder>
@@ -164,6 +170,9 @@
 			</Metadata>
 		</Field>
 		<Field id="identityCardBack" type="image" mapping="IdCardFront" specialType="identityCardBack" required="true">
+			<Label>
+				<Text lang="en">Identity card back</Text>
+			</Label>
 			<Placeholder>
 				<Text lang="en">Back of document...</Text>
 			</Placeholder>
@@ -199,6 +208,9 @@
 		</Description>
 		<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
 		<Field id="driverslicenseFront" type="image" mapping="DriverLicenseFront" specialType="driversLicenseFront" required="true">
+			<Label>
+				<Text lang="en">Drivers' license front</Text>
+			</Label>
 			<Placeholder>
 				<Text lang="en">Front of document...</Text>
 			</Placeholder>
@@ -221,6 +233,9 @@
 		</Field>
 		<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
 		<Field id="driverslicenseBack" type="image" mapping="DriverLicenseBack" specialType="driversLicenseBack" required="true">
+			<Label>
+				<Text lang="en">Drivers' license back</Text>
+			</Label>
 			<Placeholder>
 				<Text lang="en">Back of document...</Text>
 			</Placeholder>
@@ -253,7 +268,10 @@
 		<Description>
 			<Text lang="en">Please take a selfie to confirm your identity. Look at the camera and hold your face steady.</Text>
 		</Description>
-		<Field id="selfieUpload" type="image" label="Selfie" mapping="ProfilePhoto" required="true">
+		<Field id="selfieUpload" type="image" mapping="ProfilePhoto" required="true">
+			<Label>
+				<Text lang="en">Selfie</Text>
+			</Label>
 			<Placeholder>
 				<Text lang="en">Upload your photo...</Text>
 			</Placeholder>
@@ -327,23 +345,31 @@
 		<Description>
 			<Text lang="en">Please read and accept our terms and conditions to continue.</Text>
 		</Description>
-		<Label>
-			<Text lang="en">Lorem ipsum dolor sit amet</Text>
-		</Label>
 		<Field id="toc" type="info">
 			<Label>
-				<Text lang="en">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla in massa in euismod. Sed pretium enim id bibendum euismod. Proin eget rhoncus turpis. Etiam finibus lorem ut diam efficitur, et aliquam eros finibus. Nunc ante tortor, aliquet sit amet facilisis venenatis, mattis sit amet ipsum. Vestibulum semper et ligula quis varius. Phasellus eros nisl, elementum in odio eget, blandit malesuada eros. Phasellus iaculis, velit non pharetra ullamcorper, enim purus facilisis ante, in ornare ligula quam eu augue.
-
-					Fusce venenatis nunc quam, nec imperdiet diam varius id. Nullam pellentesque hendrerit justo, in tincidunt nulla placerat ac. Etiam sagittis nibh dolor, non bibendum augue sagittis non. Praesent hendrerit enim dui, feugiat ullamcorper lacus semper eget. Quisque arcu mi, sodales sit amet nisl ut, venenatis mollis lacus. Donec massa dolor, pellentesque in nisi ac, faucibus viverra est. Integer sit amet fringilla mi. Phasellus sed imperdiet nunc, quis bibendum nisl.
-
-					Aliquam pharetra magna vel sapien fermentum, eu venenatis orci pulvinar. Morbi quis turpis id lectus ultrices efficitur a quis metus. Pellentesque consectetur sollicitudin varius. Maecenas tristique elit nisi, vitae pellentesque ligula pretium in. Duis a quam metus. Morbi imperdiet scelerisque ex eget vehicula. Vivamus malesuada ac neque a mollis. Sed hendrerit accumsan gravida. Pellentesque malesuada elementum quam quis finibus. Duis iaculis sem fermentum sapien ornare, quis molestie lorem bibendum. Curabitur consectetur blandit eros id efficitur.
-
-					Vestibulum cursus sodales ornare. Aenean quis vestibulum neque. Suspendisse sed odio consectetur, commodo mi nec, elementum ligula. Sed non finibus diam. Curabitur aliquam erat vel enim iaculis eleifend. Nullam magna tortor, laoreet a augue ut, suscipit condimentum arcu. Curabitur fermentum iaculis hendrerit. Sed quis luctus magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla sed enim sed lacus ullamcorper volutpat. Morbi placerat, elit sit amet egestas vulputate, ante ex iaculis nulla, sit amet efficitur quam dui pretium ligula. Fusce justo turpis, cursus at ex at, consectetur cursus risus. Duis sed augue nec sapien auctor volutpat. Nullam blandit blandit justo, vitae lobortis mauris bibendum eget. Morbi maximus mattis pulvinar. Duis non finibus dui.
-
-					Proin placerat, nisl efficitur viverra dictum, quam nisl semper turpis, rhoncus gravida quam dolor vitae nibh. Fusce leo lacus, interdum sed felis ut, sagittis vulputate ex. Donec eget enim ac diam laoreet cursus non non sem. In posuere lacus nec velit interdum luctus. Praesent quis facilisis mi. Donec eget malesuada ligula. Quisque cursus ex vitae venenatis egestas.
-				</Text>
+				<Text lang="en">Lorem ipsum dolor sit amet</Text>
 			</Label>
+			<Description>
+				<Text lang="en">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla in massa in euismod. Sed pretium enim id bibendum euismod. Proin eget rhoncus turpis. Etiam finibus lorem ut diam efficitur, et aliquam eros finibus. Nunc ante tortor, aliquet sit amet facilisis venenatis, mattis sit amet ipsum. Vestibulum semper et ligula quis varius. Phasellus eros nisl, elementum in odio eget, blandit malesuada eros. Phasellus iaculis, velit non pharetra ullamcorper, enim purus facilisis ante, in ornare ligula quam eu augue.
+
+Fusce venenatis nunc quam, nec imperdiet diam varius id. Nullam pellentesque hendrerit justo, in tincidunt nulla placerat ac. Etiam sagittis nibh dolor, non bibendum augue sagittis non. Praesent hendrerit enim dui, feugiat ullamcorper lacus semper eget. Quisque arcu mi, sodales sit amet nisl ut, venenatis mollis lacus. Donec massa dolor, pellentesque in nisi ac, faucibus viverra est. Integer sit amet fringilla mi. Phasellus sed imperdiet nunc, quis bibendum nisl.
+
+Aliquam pharetra magna vel sapien fermentum, eu venenatis orci pulvinar. Morbi quis turpis id lectus ultrices efficitur a quis metus. Pellentesque consectetur sollicitudin varius. Maecenas tristique elit nisi, vitae pellentesque ligula pretium in. Duis a quam metus. Morbi imperdiet scelerisque ex eget vehicula. Vivamus malesuada ac neque a mollis. Sed hendrerit accumsan gravida. Pellentesque malesuada elementum quam quis finibus. Duis iaculis sem fermentum sapien ornare, quis molestie lorem bibendum. Curabitur consectetur blandit eros id efficitur.
+
+Vestibulum cursus sodales ornare. Aenean quis vestibulum neque. Suspendisse sed odio consectetur, commodo mi nec, elementum ligula. Sed non finibus diam. Curabitur aliquam erat vel enim iaculis eleifend. Nullam magna tortor, laoreet a augue ut, suscipit condimentum arcu. Curabitur fermentum iaculis hendrerit. Sed quis luctus magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla sed enim sed lacus ullamcorper volutpat. Morbi placerat, elit sit amet egestas vulputate, ante ex iaculis nulla, sit amet efficitur quam dui pretium ligula. Fusce justo turpis, cursus at ex at, consectetur cursus risus. Duis sed augue nec sapien auctor volutpat. Nullam blandit blandit justo, vitae lobortis mauris bibendum eget. Morbi maximus mattis pulvinar. Duis non finibus dui.
+
+Proin placerat, nisl efficitur viverra dictum, quam nisl semper turpis, rhoncus gravida quam dolor vitae nibh. Fusce leo lacus, interdum sed felis ut, sagittis vulputate ex. Donec eget enim ac diam laoreet cursus non non sem. In posuere lacus nec velit interdum luctus. Praesent quis facilisis mi. Donec eget malesuada ligula. Quisque cursus ex vitae venenatis egestas.
+				</Text>
+			</Description>
+		</Field>
+		<Field id="tocAgreement" type="checkbox" required="true">
+			<Options>
+				<Option value="yes">
+					<Text lang="en">I agree to the terms and conditions</Text>
+				</Option>
+			</Options>
+			<Default>false</Default>
 		</Field>
 	</Page>
 </KYCProcess>

@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -58,6 +59,36 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 		}
 
+		public ObservableCollection<KycPage> ReadOnlyPages
+		{
+			get
+			{
+				if (this.process is not null)
+				{
+					ObservableCollection<KycPage> Pages = new();
+
+					foreach (KycPage Page in this.Pages)
+					{
+						if (!Page.IsVisible(this.process.Values))
+							continue;
+
+						bool HasVisibleField = false;
+
+						HasVisibleField = Page.AllFields.Any(Field => Field.IsVisible);
+
+						if (!HasVisibleField)
+							HasVisibleField = Page.AllSections.Any(Section => Section.AllFields.Any(Field => Field.IsVisible));
+
+						if (HasVisibleField)
+							Pages.Add(Page);
+					}
+
+					return Pages;
+				}
+				return [];
+			}
+		}
+
 		public double Progress
 		{
 			get
@@ -67,7 +98,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					return 0;
 				}
 
-				List<KycPage> VisiblePages = [.. this.Pages.Where(Page => Page.IsVisible(this.process.Values))];
+				ObservableCollection<KycPage> VisiblePages = [.. this.Pages.Where(Page => Page.IsVisible(this.process.Values))];
+
 				if (VisiblePages.Count == 0)
 				{
 					return 0;
@@ -315,6 +347,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.ShouldViewSummary = true;
 
 					this.OnPropertyChanged(nameof(this.Progress));
+					this.OnPropertyChanged(nameof(this.ReadOnlyPages));
 
 					this.NextButtonText = "Apply";
 				}
@@ -455,12 +488,22 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return Task.CompletedTask;
 			}
 
+			bool CurrentPageVisible = false;
+
 			//For each page
 			foreach (KycPage Page in this.process.Pages)
 			{
+				CurrentPageVisible = Page.IsVisible(this.process.Values);
+
 				// For each field in the page
 				foreach (ObservableKycField Field in Page.AllFields)
 				{
+					if (!CurrentPageVisible)
+					{
+						Field.IsVisible = false;
+						continue;
+					}
+
 					if (this.CheckAndHandleFile(Field, this.attachments))
 					{
 						continue; // File handled, skip further processing
@@ -475,6 +518,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				{
 					foreach (ObservableKycField Field in Section.AllFields)
 					{
+						if (!CurrentPageVisible)
+						{
+							Field.IsVisible = false;
+							continue;
+						}
+
 						if (this.CheckAndHandleFile(Field, this.attachments))
 						{
 							continue; // File handled, skip further processing
