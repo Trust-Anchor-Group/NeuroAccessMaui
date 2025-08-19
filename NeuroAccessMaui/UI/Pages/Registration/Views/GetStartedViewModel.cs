@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
+using System.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -22,7 +23,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 	{
 		[ObservableProperty]
 		private bool isLoading = true;
-		
+
 		private bool handlesOnboardingLink = false;
 
 		protected override async Task OnInitialize()
@@ -67,6 +68,115 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		private void ExistingAccount()
 		{
 			GoToRegistrationStep(RegistrationStep.ContactSupport);
+		}
+
+
+		[ObservableProperty]
+		private bool inviteCodeIsValid = true;
+
+		[ObservableProperty]
+		private string? inviteCode;
+
+		private CancellationTokenSource? inviteCodeCts;
+		private const int inviteCodeDebounceMs = 500;
+
+		private static bool BasicValidateInviteCode(string code, out string trimmed)
+		{
+			trimmed = code.Trim();
+			if (string.IsNullOrEmpty(trimmed))
+				return true; // Empty is considered neutral/valid (no error state)
+
+			if (!trimmed.StartsWith(Constants.UriSchemes.Onboarding + ":", StringComparison.OrdinalIgnoreCase))
+				return false;
+
+			string[] Parts = trimmed.Split(':');
+			if (Parts.Length != 5)
+				return false;
+
+			// parts[0] = onboarding
+			string Domain = Parts[1];
+			string CodePart = Parts[2];
+			string KeyPart = Parts[3];
+			string IvPart = Parts[4];
+
+			if (string.IsNullOrWhiteSpace(Domain) || Domain.Any(char.IsWhiteSpace))
+				return false;
+
+			if (string.IsNullOrWhiteSpace(CodePart))
+				return false;
+
+			try
+			{
+				byte[] Key = Convert.FromBase64String(KeyPart);
+				byte[] Iv = Convert.FromBase64String(IvPart);
+			}
+			catch
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		partial void OnInviteCodeChanged(string? value)
+		{
+			// 1. Early guard & cleanup
+			this.inviteCodeCts?.Cancel();
+			string? current = value;
+			if (string.IsNullOrWhiteSpace(current))
+			{
+				InviteCodeIsValid = true; // neutral
+				return;
+			}
+
+			// 2. Lightweight syntax validation
+			bool isValid = BasicValidateInviteCode(current, out string trimmed);
+			InviteCodeIsValid = isValid;
+			if (!isValid)
+				return; // Do not continue to debounce processing
+
+			// 3. Debounce processing
+			CancellationTokenSource cts = new();
+			inviteCodeCts = cts;
+			string snapshot = trimmed; // capture
+			_ = Task.Run(async () =>
+			{
+				try
+				{
+					await Task.Delay(inviteCodeDebounceMs, cts.Token);
+
+					// If value changed meanwhile or cancelled, abort
+					if (cts.IsCancellationRequested)
+						return;
+					if (!string.Equals(this.InviteCode, current, StringComparison.Ordinal))
+						return;
+
+					// Process via existing QR handling pipeline (silent if fails)
+					await QrCode.OpenUrl(snapshot, false);
+				}
+				catch (TaskCanceledException)
+				{
+					// Ignore
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+			}, cts.Token);
+		}
+
+		[RelayCommand]
+		private async Task PasteInviteCode()
+		{
+			if (!Clipboard.HasText)
+				return;
+
+			string? ClipboardText = await Clipboard.GetTextAsync();
+			if (string.IsNullOrEmpty(ClipboardText))
+				return;
+
+			await Clipboard.SetTextAsync(null);
+			this.InviteCode = ClipboardText;
 		}
 
 		[RelayCommand]

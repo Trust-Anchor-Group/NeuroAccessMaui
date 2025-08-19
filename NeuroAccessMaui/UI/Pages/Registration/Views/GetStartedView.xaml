@@ -10,6 +10,14 @@
 									xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Registration"
 									xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 									xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+	<base:BaseRegistrationView.Resources>
+		<Style x:Key="GetStartedCompositeEntryLabel"
+			   TargetType="Label"
+			   BaseResourceKey="RegularCompositeEntryLabel">
+			<Setter Property="TextColor"
+					Value="{DynamicResource InputFieldsContentSubhead}" />
+		</Style>
+	</base:BaseRegistrationView.Resources>
 	<controls:ConditionView Condition="{Binding IsLoading}">
 		<controls:ConditionView.True>
 			<ActivityIndicator IsRunning="True"
@@ -17,18 +25,52 @@
 		</controls:ConditionView.True>
 		<controls:ConditionView.False>
 			<Grid RowDefinitions="*, auto">
-				<VerticalStackLayout VerticalOptions="Center">
-					<Label Style="{DynamicResource PageTitleLabel}"
-						   FontSize="42"
-						   Text="{l:Localize ActivateYourDigitalIdentity}"/>
+				<VerticalStackLayout Grid.Row="0" VerticalOptions="End" Spacing="24">
+					<VerticalStackLayout>
+						<Label Style="{DynamicResource PageTitleLabel}"
+							   FontSize="42"
+							   Text="{l:Localize ActivateYourDigitalIdentity}"/>
+					</VerticalStackLayout>
 
-					<Label Style="{DynamicResource DurationLabel}"
-						   HorizontalTextAlignment="Start"
-						   Text="{l:Localize ActivateYourDigitalIdentityDescription}"/>
-				</VerticalStackLayout>
+					<controls:CompositeEntry LabelText="{l:Localize HaveAnInviteCodeQuestion}"
+											 Placeholder="{l:Localize PasteInviteCodeHere}"
+											 Style="{DynamicResource RegularCompositeEntry}"
+											 LabelStyle="{DynamicResource GetStartedCompositeEntryLabel}"
+											 BorderPadding="0"
+											 EntryData="{Binding InviteCode}"
+											 IsValid="{Binding InviteCodeIsValid, Mode=OneWay}">
+						<controls:CompositeEntry.RightView>
+							<Grid>
+								<controls:TemplatedButton Command="{Binding PasteInviteCodeCommand}">
+									<Border Style="{DynamicResource SecondaryButtonActiveBorder}" StrokeShape="RoundRectangle 0" Scale="1.05">
+										<Label Style="{DynamicResource SecondaryButtonActiveLabel}" FontSize="14"
+										   Text="{l:Localize Paste}" />
+									</Border>
+								</controls:TemplatedButton>
+							</Grid>
+						</controls:CompositeEntry.RightView>
 
-				<Border Style="{DynamicResource BottomBarBorder}" Grid.Row="1" Margin="-24" Padding="{DynamicResource MediumMargins}">
-					<Grid RowDefinitions="auto,auto">
+					</controls:CompositeEntry>
+
+					<Grid ColumnDefinitions="*, auto, *" ColumnSpacing="16">
+						<BoxView Grid.Column="0"
+								 BackgroundColor="{DynamicResource SurfaceDividerWL}"
+								 HeightRequest="1"
+								 VerticalOptions="Center"/>
+						<Label Grid.Column="1"
+						   Text="{l:Localize Or}"
+							   HorizontalOptions="Center"
+							   VerticalOptions="Center"
+							   FontFamily="SpaceGroteskRegular"
+							   FontSize="16"
+							   TextColor="{DynamicResource ContentSecondaryWL}"/>
+						<BoxView Grid.Column="2"
+								 BackgroundColor="{DynamicResource SurfaceDividerWL}"
+								 HeightRequest="1"
+								 VerticalOptions="Center" />
+					</Grid>
+
+					<Grid RowDefinitions="auto">
 						<controls:SvgButton Command="{Binding ScanQrCodeCommand}"
 											Style="{DynamicResource PrimaryIconButton}"
 											LabelText="{l:Localize QrScanCode}"
@@ -36,7 +78,7 @@
 											LabelPosition="Right"
 											Margin="{DynamicResource SmallBottomMargins}"/>
 					</Grid>
-				</Border>
+				</VerticalStackLayout>
 
 			</Grid>
 		</controls:ConditionView.False>
