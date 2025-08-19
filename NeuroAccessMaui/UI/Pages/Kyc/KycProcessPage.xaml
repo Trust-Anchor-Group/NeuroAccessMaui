@@ -498,35 +498,54 @@
 									TextColor="{DynamicResource TnPInfoContentWL}"/>
 							</Grid>
 						</Border>
-
+						<!-- Personal Details -->
 						<Border Style="{DynamicResource BorderSet}">
-							<VerticalStackLayout BindableLayout.ItemsSource="{Binding ReadOnlyPages}" Spacing="{DynamicResource MediumSpacing}">
-								<BindableLayout.ItemTemplate>
-									<!-- Template for each KYC Page -->
-									<DataTemplate x:DataType="models:KycPage">
-										<Border Style="{DynamicResource BorderSubSet}">
-											<VerticalStackLayout>
-												<!-- Fields directly on the page -->
-												<VerticalStackLayout Spacing="8">
-													<Label Text="{Binding Title.Text}" Style="{DynamicResource FieldTitleLabel}" />
-													<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}"
-																		 BindableLayout.ItemsSource="{Binding VisibleFields}"
-																		 BindableLayout.ItemTemplateSelector="{StaticResource ReadOnlyKycFieldTemplateSelector}"/>
-												</VerticalStackLayout>
-												<!-- Fields inside sections on the page -->
-												<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}" BindableLayout.ItemsSource="{Binding AllSections}">
-													<BindableLayout.ItemTemplate>
-														<DataTemplate x:DataType="models:KycSection">
-															<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}"
-																				 BindableLayout.ItemsSource="{Binding VisibleFields}"
-																				 BindableLayout.ItemTemplateSelector="{StaticResource ReadOnlyKycFieldTemplateSelector}"/>
-														</DataTemplate>
-													</BindableLayout.ItemTemplate>
-												</VerticalStackLayout>
+							<VerticalStackLayout Spacing="8">
+								<Label Text="Personal Details" Style="{DynamicResource FieldTitleLabel}" />
+								<VerticalStackLayout BindableLayout.ItemsSource="{Binding PersonalInformationSummary}" Spacing="{DynamicResource SmallSpacing}">
+									<BindableLayout.ItemTemplate>
+										<DataTemplate x:DataType="viewmodel:KVP">
+											<VerticalStackLayout Spacing="0">
+												<Label Text="{Binding Key}" Style="{DynamicResource FieldKeyLabel}" />
+												<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" />
 											</VerticalStackLayout>
-										</Border>
-									</DataTemplate>
-								</BindableLayout.ItemTemplate>
+										</DataTemplate>
+									</BindableLayout.ItemTemplate>
+								</VerticalStackLayout>
+							</VerticalStackLayout>
+						</Border>
+
+						<!-- Address Details -->
+						<Border Style="{DynamicResource BorderSet}">
+							<VerticalStackLayout Spacing="8">
+								<Label Text="Address Details" Style="{DynamicResource FieldTitleLabel}" />
+								<VerticalStackLayout BindableLayout.ItemsSource="{Binding AddressInformationSummary}" Spacing="{DynamicResource SmallSpacing}">
+									<BindableLayout.ItemTemplate>
+										<DataTemplate x:DataType="viewmodel:KVP">
+											<VerticalStackLayout Spacing="0">
+												<Label Text="{Binding Key}" Style="{DynamicResource FieldKeyLabel}" />
+												<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" />
+											</VerticalStackLayout>
+										</DataTemplate>
+									</BindableLayout.ItemTemplate>
+								</VerticalStackLayout>
+							</VerticalStackLayout>
+						</Border>
+
+							<!-- Attachments -->
+						<Border Style="{DynamicResource BorderSet}">
+							<VerticalStackLayout Spacing="8">
+								<Label Text="Attachments" Style="{DynamicResource FieldTitleLabel}" />
+								<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}" Spacing="{DynamicResource SmallSpacing}">
+									<BindableLayout.ItemTemplate>
+										<DataTemplate x:DataType="viewmodel:KVP">
+											<VerticalStackLayout Spacing="0">
+												<Label Text="{Binding Key}" Style="{DynamicResource FieldKeyLabel}" />
+												<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" />
+											</VerticalStackLayout>
+										</DataTemplate>
+									</BindableLayout.ItemTemplate>
+								</VerticalStackLayout>
 							</VerticalStackLayout>
 						</Border>
 					</VerticalStackLayout>

@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -36,6 +35,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private bool hasSections;
 		[ObservableProperty] private string nextButtonText = "Next";
 
+		[ObservableProperty] private ObservableCollection<KVP> personalInformationSummary;
+		[ObservableProperty] private ObservableCollection<KVP> addressInformationSummary;
+		[ObservableProperty] private ObservableCollection<KVP> attachmentInformationSummary;
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
 
@@ -54,36 +56,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				if (this.process is not null)
 				{
 					return this.process.Pages;
-				}
-				return [];
-			}
-		}
-
-		public ObservableCollection<KycPage> ReadOnlyPages
-		{
-			get
-			{
-				if (this.process is not null)
-				{
-					ObservableCollection<KycPage> Pages = new();
-
-					foreach (KycPage Page in this.Pages)
-					{
-						if (!Page.IsVisible(this.process.Values))
-							continue;
-
-						bool HasVisibleField = false;
-
-						HasVisibleField = Page.AllFields.Any(Field => Field.IsVisible);
-
-						if (!HasVisibleField)
-							HasVisibleField = Page.AllSections.Any(Section => Section.AllFields.Any(Field => Field.IsVisible));
-
-						if (HasVisibleField)
-							Pages.Add(Page);
-					}
-
-					return Pages;
 				}
 				return [];
 			}
@@ -347,7 +319,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.ShouldViewSummary = true;
 
 					this.OnPropertyChanged(nameof(this.Progress));
-					this.OnPropertyChanged(nameof(this.ReadOnlyPages));
 
 					this.NextButtonText = "Apply";
 				}
@@ -542,7 +513,55 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.mappedValues.Add(new Property(Constants.XmppProperties.Phone, ServiceRef.TagProfile.PhoneNumber));
 			this.mappedValues.Add(new Property(Constants.XmppProperties.EMail, ServiceRef.TagProfile.EMail));
 
+			this.GenerateSummaryCollection();
+
 			return Task.CompletedTask;
+		}
+
+		private void GenerateSummaryCollection()
+		{
+			this.PersonalInformationSummary = new ObservableCollection<KVP>();
+			this.AddressInformationSummary = new ObservableCollection<KVP>();
+			this.AttachmentInformationSummary = new ObservableCollection<KVP>();
+
+			if (this.process is null)
+			{
+				return;
+			}
+
+			foreach (Property Prop in this.mappedValues)
+			{
+				if (!xmppPropertyFriendlyNames.TryGetValue(Prop.Name, out string? FriendlyName))
+				{
+					continue;
+				}
+
+				switch (Prop.Name)
+				{
+					case "FULLNAME":
+					case Constants.XmppProperties.BirthDay:
+					case Constants.XmppProperties.BirthMonth:
+					case Constants.XmppProperties.BirthYear:
+					case Constants.XmppProperties.PersonalNumber:
+					case Constants.XmppProperties.Gender:
+					case Constants.XmppProperties.Nationality:
+						this.PersonalInformationSummary.Add(new KVP(FriendlyName, Prop.Value));
+						break;
+
+					case Constants.XmppProperties.Address:
+					case Constants.XmppProperties.Address2:
+					case Constants.XmppProperties.Area:
+					case Constants.XmppProperties.City:
+					case Constants.XmppProperties.ZipCode:
+					case Constants.XmppProperties.Region:
+					case Constants.XmppProperties.Country:
+						this.AddressInformationSummary.Add(new KVP(FriendlyName, Prop.Value));
+						break;
+
+					default:
+						break;
+				}
+			}
 		}
 
 		/// <summary>
@@ -706,5 +725,29 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			return Rotated;
 		}
+
+		private static readonly Dictionary<string, string> xmppPropertyFriendlyNames = new()
+		{
+			{ "FULLNAME", "Full name" },
+			{ Constants.XmppProperties.BirthDay, "Birth day" },
+			{ Constants.XmppProperties.BirthMonth, "Birth month" },
+			{ Constants.XmppProperties.BirthYear, "Birth year" },
+			{ Constants.XmppProperties.PersonalNumber, "Personal number" },
+			{ Constants.XmppProperties.Gender, "Gender" },
+			{ Constants.XmppProperties.Nationality, "Nationality" },
+			{ Constants.XmppProperties.Address, "Address" },
+			{ Constants.XmppProperties.Address2, "Address 2" },
+			{ Constants.XmppProperties.Area, "Area" },
+			{ Constants.XmppProperties.City, "City" },
+			{ Constants.XmppProperties.ZipCode, "Zip code" },
+			{ Constants.XmppProperties.Region, "Region" },
+			{ Constants.XmppProperties.Country, "Country" }
+			// Add more as needed
+		};
+	}
+	public class KVP(string Key, string Value)
+	{
+		public string Key { get; set; } = Key;
+		public string Value { get; set; } = Value;
 	}
 }
