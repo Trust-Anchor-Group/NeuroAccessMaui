@@ -20,6 +20,7 @@ using NeuroAccessMaui.UI.Pages.Petitions.PetitionContract;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
+using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
 using NeuroAccessMaui.UI.Pages.Things.CanControl;
@@ -75,6 +76,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		internal static void RegisterRoutes()
 		{
 			Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
+			Routing.RegisterRoute(nameof(RegistrationPage), typeof(RegistrationPage));
+
 			// Applications:
 			Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
 			Routing.RegisterRoute(nameof(ApplyIdPage), typeof(ApplyIdPage));
