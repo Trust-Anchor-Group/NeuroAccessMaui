@@ -24,11 +24,13 @@ namespace NeuroAccessMaui.Test
         private readonly Stack<BaseContentPage> screenStack = new();
         private readonly Stack<BaseContentPage> modalScreenStack = new();
         private readonly Stack<NavigationArgs?> navigationArgsStack = new();
+        private bool isNavigating = false; // Mirrors UiService behavior
 
         private readonly ConcurrentQueue<Func<Task>> taskQueue = new();
         private bool isExecutingTasks;
         private NavigationArgs? latestArguments;
         private readonly Dictionary<string, NavigationArgs> navigationArgsMap = new();
+        private bool IsQueueBusy => this.isExecutingTasks || this.isNavigating;
 
         /// <summary>
         /// Records navigation arguments for a given route.
@@ -96,6 +98,32 @@ namespace NeuroAccessMaui.Test
             return Tcs.Task;
         }
 
+        // Generic enqueue supporting a return value.
+        private Task<TResult> Enqueue<TResult>(Func<Task<TResult>> Action)
+        {
+            TaskCompletionSource<TResult> Tcs = new();
+            this.taskQueue.Enqueue(async () =>
+            {
+                try
+                {
+                    TResult Result = await Action();
+                    Tcs.TrySetResult(Result);
+                }
+                catch (Exception Ex)
+                {
+                    Tcs.TrySetException(Ex);
+                }
+            });
+
+            if (!this.isExecutingTasks)
+            {
+                this.isExecutingTasks = true;
+                MainThread.BeginInvokeOnMainThread(async () => await this.ProcessQueue());
+            }
+
+            return Tcs.Task;
+        }
+
         private async Task ProcessQueue()
         {
             try
@@ -147,16 +175,24 @@ namespace NeuroAccessMaui.Test
                 }
             }
         }
+        // Computes number of ".." segments in a back route string.
         private static int ComputeBackLevels(NavigationArgs? args)
         {
-            if (args is null) return 1;
+            if (args is null)
+                return 1;
+
             try
             {
                 string backRoute = args.GetBackRoute();
-                if (string.IsNullOrWhiteSpace(backRoute)) return 1;
+                if (string.IsNullOrWhiteSpace(backRoute))
+                    return 1;
+
                 return backRoute.Split('/', StringSplitOptions.RemoveEmptyEntries).Count(s => s == "..");
             }
-            catch { return 1; }
+            catch
+            {
+                return 1;
+            }
         }
         private void RemoveArgsFor(object view)
         {
@@ -175,89 +211,55 @@ namespace NeuroAccessMaui.Test
         }
 
         /// <inheritdoc/>
-        public Task GoToAsync(string Route)
-        {
-            return this.GoToAsync<NavigationArgs>(Route, null);
-        }
+        // Interface method (single parameter)
+        public Task GoToAsync(string Route) => this.GoToAsync(Route, BackMethod.Inherited, null);
+
+        // Extended overload with BackMethod & UniqueId
+        public Task GoToAsync(string Route, BackMethod BackMethod = BackMethod.Inherited, string? UniqueId = null)
+            => this.GoToAsync<NavigationArgs>(Route, null, BackMethod, UniqueId);
 
         /// <inheritdoc/>
+        // Interface method (two parameters)
         public Task GoToAsync<TArgs>(string Route, TArgs? Args) where TArgs : NavigationArgs, new()
+            => this.GoToAsync(Route, Args, BackMethod.Inherited, null);
+
+        // Extended overload with BackMethod & UniqueId
+        public Task GoToAsync<TArgs>(string Route, TArgs? Args, BackMethod BackMethod = BackMethod.Inherited, string? UniqueId = null) where TArgs : NavigationArgs, new()
         {
             return this.Enqueue(async () =>
             {
+                NavigationArgs? parentArgs = this.navigationArgsStack.Count > 0 ? this.navigationArgsStack.Peek() : null;
+                NavigationArgs navArgs = Args ?? new();
+                navArgs.SetBackArguments(parentArgs, BackMethod, UniqueId);
+                this.latestArguments = navArgs;
+                this.PushArgs(Route, navArgs);
+
                 BaseContentPage screen = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
                     ?? throw new InvalidOperationException($"No page registered for route '{Route}' or it is not a BaseContentPage.");
+
                 await EnsureInitializedAsync(screen);
-                NavigationArgs navArgs = Args ?? new();
-                navArgs.SetBackArguments(this.navigationArgsStack.Count > 0 ? this.navigationArgsStack.Peek() : null);
-                this.latestArguments = navArgs;
+
                 this.navigationArgsStack.Push(navArgs);
                 this.screenStack.Push(screen);
-                this.PushArgs(Route, navArgs);
-                await screen.OnAppearingAsync();
-                await this.Presenter.ShowScreen(screen, TransitionType.Fade);
-                this.Presenter.UpdateBars(screen);
-                ServiceRef.LogService.LogDebug($"Navigating to {Route}");
-            });
-        }
 
-        /// <inheritdoc/>
-        public Task GoToAsync(BaseContentPage Page)
-        {
-            return this.Enqueue(async () =>
-            {
-                await EnsureInitializedAsync(Page);
-                this.latestArguments = null;
-                this.navigationArgsStack.Push(null);
-                this.screenStack.Push(Page);
-                await Page.OnAppearingAsync();
-                await this.Presenter.ShowScreen(Page, TransitionType.Fade);
-                this.Presenter.UpdateBars(Page);
-            });
-        }
-
-        /// <inheritdoc/>
-        public Task GoBackAsync()
-        {
-            return this.Enqueue(async () =>
-            {
-                if (this.screenStack.Count > 1)
+                try
                 {
-                    NavigationArgs? poppedArgs = this.navigationArgsStack.Pop();
-                    BaseContentPage popped = this.screenStack.Pop();
-                    await popped.OnDisappearingAsync();
-                    if (popped is IAsyncDisposable iad2) await iad2.DisposeAsync();
-                    else if (popped is IDisposable d2) d2.Dispose();
-                    this.RemoveArgsFor(popped);
-                    int levels = ComputeBackLevels(poppedArgs);
-                    for (int i = 1; i < levels && this.screenStack.Count > 1; i++)
-                    {
-                        this.navigationArgsStack.Pop();
-                        BaseContentPage extra = this.screenStack.Pop();
-                        await extra.OnDisappearingAsync();
-                        if (extra is IAsyncDisposable extraAsync) await extraAsync.DisposeAsync();
-                        else if (extra is IDisposable extraDisp) extraDisp.Dispose();
-                        this.RemoveArgsFor(extra);
-                    }
-                    BaseContentPage target = this.screenStack.Peek();
-                    await this.Presenter.ShowScreen(target);
-                    await target.OnAppearingAsync();
-                    this.Presenter.UpdateBars(target);
+                    this.isNavigating = true;
+                    await this.Presenter.ShowScreen(screen, TransitionType.Fade);
+                    this.Presenter.UpdateBars(screen);
+                    await screen.OnAppearingAsync();
+                    ServiceRef.LogService.LogDebug($"Navigated to {Route}");
                 }
-            });
-        }
-
-        /// <inheritdoc/>
-        public Task PushModalAsync(string Route)
-        {
-            return this.Enqueue(async () =>
-            {
-                BaseContentPage screen = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
-                    ?? throw new InvalidOperationException($"No page registered for route '{Route}' or it is not a BaseContentPage.");
-                await EnsureInitializedAsync(screen);
-                this.modalScreenStack.Push(screen);
-                await screen.OnAppearingAsync();
-                await this.Presenter.ShowModal(screen, TransitionType.Fade);
+                catch (Exception ex)
+                {
+                    ex = Waher.Events.Log.UnnestException(ex);
+                    ServiceRef.LogService.LogException(ex);
+                }
+                finally
+                {
+                    this.isNavigating = false;
+                    navArgs.NavigationCompletionSource.TrySetResult(true);
+                }
             });
         }
 
@@ -316,8 +318,8 @@ namespace NeuroAccessMaui.Test
                     return;
                 BaseContentPage top = this.modalScreenStack.Pop();
                 await top.OnDisappearingAsync();
-				await top.OnDisposeAsync();
-				if (top is IAsyncDisposable iad2) await iad2.DisposeAsync();
+                await top.OnDisposeAsync();
+                if (top is IAsyncDisposable iad2) await iad2.DisposeAsync();
                 else if (top is IDisposable d2) d2.Dispose();
                 await this.Presenter.HideTopModal();
             });
@@ -326,7 +328,11 @@ namespace NeuroAccessMaui.Test
         /// <inheritdoc/>
         public TArgs? PopLatestArgs<TArgs>() where TArgs : NavigationArgs, new()
         {
-            if (this.latestArguments is TArgs la) return la;
+            if (this.latestArguments is TArgs la)
+            {
+                this.latestArguments = null; // allow single retrieval only
+                return la;
+            }
             if (this.screenStack.Count > 0)
             {
                 BaseContentPage page = this.screenStack.Peek();
@@ -334,12 +340,189 @@ namespace NeuroAccessMaui.Test
                 if (TryGetPageName(route, out string pageName) && this.navigationArgsMap.TryGetValue(pageName, out NavigationArgs navArgs))
                 {
                     this.navigationArgsMap.Remove(pageName);
-                    if (navArgs is TArgs typed) return typed;
+                    if (navArgs is TArgs typed) return typed; // do not null latestArguments here (already not matching)
                 }
             }
             return null;
         }
 
         // Removed Page support: all views are BaseContentPage.
+
+        /// <summary>
+        /// Navigate to a page instance already constructed.
+        /// </summary>
+        public Task GoToAsync(BaseContentPage Page)
+        {
+            return this.Enqueue(async () =>
+            {
+                await EnsureInitializedAsync(Page);
+                this.latestArguments = null;
+                this.navigationArgsStack.Push(null);
+                this.screenStack.Push(Page);
+                try
+                {
+                    this.isNavigating = true;
+                    await this.Presenter.ShowScreen(Page, TransitionType.Fade);
+                    this.Presenter.UpdateBars(Page);
+                    await Page.OnAppearingAsync();
+                }
+                finally
+                {
+                    this.isNavigating = false;
+                }
+            });
+        }
+
+        /// <summary>
+        /// Goes back according to current navigation arguments (multi-level) or pops one page.
+        /// </summary>
+        public Task GoBackAsync() => this.Enqueue(async () => await this.InternalGoBackAsync());
+
+        /// <summary>
+        /// Push modal by route.
+        /// </summary>
+        public Task PushModalAsync(string Route)
+        {
+            return this.Enqueue(async () =>
+            {
+                BaseContentPage screen = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
+                    ?? throw new InvalidOperationException($"No page registered for route '{Route}' or it is not a BaseContentPage.");
+                await EnsureInitializedAsync(screen);
+                this.modalScreenStack.Push(screen);
+                await screen.OnAppearingAsync();
+                await this.Presenter.ShowModal(screen, TransitionType.Fade);
+            });
+        }
+        #region Back Handling
+
+        internal bool WouldHandleBack()
+        {
+            /*
+            if (this.IsQueueBusy)
+                return true;
+            if (this.modalScreenStack.Count > 0)
+                return true;
+            if (this.screenStack.Count > 1)
+                return true;
+            if (this.screenStack.Count > 0)
+            {
+                BaseContentPage page = this.screenStack.Peek();
+                if (page is IBackButtonHandler || page.BindingContext is IBackButtonHandler)
+                    return true;
+            }
+            return false;*/
+            //Always Handle back for simplicity
+            return true;
+        }
+
+        public async Task<bool> HandleBackAsync()
+        {
+            if (this.IsQueueBusy)
+            {
+                ServiceRef.LogService.LogDebug("Back: Ignored (busy)");
+                return true;
+            }
+
+            return await this.Enqueue(async () =>
+            {
+                if (this.modalScreenStack.Count > 0)
+                {
+                    ServiceRef.LogService.LogDebug("Back: Pop modal");
+                    await this.InternalPopModalAsync();
+                    return true;
+                }
+
+                BaseContentPage? page = this.screenStack.Count > 0 ? this.screenStack.Peek() : null;
+
+                if (page is IBackButtonHandler pageHandler)
+                {
+                    try
+                    {
+                        if (await pageHandler.OnBackButtonPressedAsync())
+                            return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        ServiceRef.LogService.LogException(ex);
+                    }
+                }
+
+                if (page?.BindingContext is IBackButtonHandler vmHandler)
+                {
+                    try
+                    {
+                        if (await vmHandler.OnBackButtonPressedAsync())
+                            return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        ServiceRef.LogService.LogException(ex);
+                    }
+                }
+
+                if (this.screenStack.Count > 1)
+                {
+                    ServiceRef.LogService.LogDebug("Back: Pop page(s)");
+                    await this.InternalGoBackAsync();
+                    return true;
+                }
+
+                ServiceRef.LogService.LogDebug("Back: Not handled (ignore)");
+                return true;
+            });
+        }
+
+        private async Task InternalPopModalAsync()
+        {
+            if (this.modalScreenStack.Count == 0)
+                return;
+            BaseContentPage top = this.modalScreenStack.Pop();
+            await top.OnDisappearingAsync();
+            await top.OnDisposeAsync();
+            if (top is IAsyncDisposable iad2) await iad2.DisposeAsync();
+            else if (top is IDisposable d2) d2.Dispose();
+            await this.Presenter.HideTopModal();
+        }
+
+        private async Task InternalGoBackAsync()
+        {
+            if (this.screenStack.Count <= 1)
+                return;
+            this.isNavigating = true;
+            try
+            {
+                NavigationArgs? PoppedArgs = this.navigationArgsStack.Pop();
+                BaseContentPage Popped = this.screenStack.Pop();
+                await Popped.OnDisappearingAsync();
+                if (Popped is IAsyncDisposable Disposable)
+                    await Disposable.DisposeAsync();
+                else if (Popped is IDisposable Disposable2)
+                    Disposable2.Dispose();
+                this.RemoveArgsFor(Popped);
+
+                int Levels = ComputeBackLevels(PoppedArgs);
+                for (int i = 1; i < Levels && this.screenStack.Count > 1; i++)
+                {
+                    NavigationArgs? ExtraArgs = this.navigationArgsStack.Pop();
+                    BaseContentPage Extra = this.screenStack.Pop();
+                    await Extra.OnDisappearingAsync();
+                    if (Extra is IAsyncDisposable ExtraAsync)
+                        await ExtraAsync.DisposeAsync();
+                    else if (Extra is IDisposable ExtraDisposable)
+                        ExtraDisposable.Dispose();
+                    this.RemoveArgsFor(Extra);
+                }
+
+                BaseContentPage Target = this.screenStack.Peek();
+                await this.Presenter.ShowScreen(Target);
+                await Target.OnAppearingAsync();
+                this.Presenter.UpdateBars(Target);
+            }
+            finally
+            {
+                this.isNavigating = false;
+            }
+        }
+        #endregion
     }
 }

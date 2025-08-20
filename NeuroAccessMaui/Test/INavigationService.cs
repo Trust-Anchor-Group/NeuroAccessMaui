@@ -11,12 +11,19 @@ namespace NeuroAccessMaui.Test
     [DefaultImplementation(typeof(NavigationService))]
     public interface INavigationService
     {
-
         /// <summary>
         /// Navigates to the specified route and pushes the page onto the navigation stack.
         /// </summary>
         /// <param name="Route">The route string.</param>
         Task GoToAsync(string Route);
+
+        /// <summary>
+        /// Navigates to the specified route and pushes the page onto the navigation stack specifying back method handling.
+        /// </summary>
+        /// <param name="Route">The route string.</param>
+        /// <param name="BackMethod">How navigation back should be handled.</param>
+        /// <param name="UniqueId">Optional unique identifier of the view instance.</param>
+        Task GoToAsync(string Route, Services.UI.BackMethod BackMethod, string? UniqueId = null);
 
         /// <summary>
         /// Navigates to the specified route and pushes the page onto the navigation stack with navigation arguments.
@@ -25,7 +32,18 @@ namespace NeuroAccessMaui.Test
         /// <param name="Route">The route string.</param>
         /// <param name="Args">Optional navigation arguments.</param>
         Task GoToAsync<TArgs>(string Route, TArgs? Args)
-                where TArgs : Services.UI.NavigationArgs, new();
+            where TArgs : Services.UI.NavigationArgs, new();
+
+        /// <summary>
+        /// Navigates to the specified route and pushes the page onto the navigation stack with navigation arguments and back method handling.
+        /// </summary>
+        /// <typeparam name="TArgs">The navigation arguments type.</typeparam>
+        /// <param name="Route">The route string.</param>
+        /// <param name="Args">Optional navigation arguments.</param>
+        /// <param name="BackMethod">How navigation back should be handled.</param>
+        /// <param name="UniqueId">Optional unique identifier of the view instance.</param>
+        Task GoToAsync<TArgs>(string Route, TArgs? Args, Services.UI.BackMethod BackMethod, string? UniqueId = null)
+            where TArgs : Services.UI.NavigationArgs, new();
 
         /// <summary>
         /// Navigates directly to a shell-hosted view.
