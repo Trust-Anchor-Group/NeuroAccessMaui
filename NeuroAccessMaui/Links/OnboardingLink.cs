@@ -1,10 +1,13 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
+using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages;
+using NeuroAccessMaui.UI.Pages.Registration;
+using NeuroAccessMaui.UI.Pages.Registration.Views;
 using Waher.Content;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
@@ -43,13 +46,14 @@ namespace NeuroAccessMaui.Links
 
 				if (ServiceRef.TagProfile.Step == Services.Tag.RegistrationStep.GetStarted || ServiceRef.TagProfile.Step == Services.Tag.RegistrationStep.ContactSupport)
 				{
+					WeakReferenceMessenger.Default.Send(new OnboardingLinkProcessingMessage(true));
 					await this.ScanQrCode(Link.ToString());
 					return true;
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 			}
 
 			if (ShowErrorIfUnable)
@@ -69,8 +73,15 @@ namespace NeuroAccessMaui.Links
 
 			string Scheme = Constants.UriSchemes.GetScheme(Url) ?? string.Empty;
 
+			// Notify UI that onboarding processing has started. This makes the GetStarted view show its loading indicator
+			// even when the deep link is opened from the OS camera and the app resumes from background on iOS.
+			WeakReferenceMessenger.Default.Send(new OnboardingLinkProcessingMessage(true));
+
 			if (!string.Equals(Scheme, Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase))
+			{
+				WeakReferenceMessenger.Default.Send(new OnboardingLinkProcessingMessage(false));
 				return;
+			}
 
 			string[] Parts = Url.Split(':');
 
@@ -81,6 +92,7 @@ namespace NeuroAccessMaui.Links
 					ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 
+				CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(new OnboardingLinkProcessingMessage(false));
 				return;
 			}
 
@@ -95,14 +107,15 @@ namespace NeuroAccessMaui.Links
 			{
 				Uri = new Uri("https://" + Domain + "/Onboarding/GetInfo");
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.InvalidInvitationCode)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				CommunityToolkit.Mvvm.Messaging.WeakReferenceMessenger.Default.Send(new OnboardingLinkProcessingMessage(false));
 				return;
 			}
 
@@ -119,9 +132,9 @@ namespace NeuroAccessMaui.Links
 
 				EncryptedStr = (string)Decoded.Decoded;
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -249,6 +262,8 @@ namespace NeuroAccessMaui.Links
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 
+			// Processing finished; let UI hide loader.
+			WeakReferenceMessenger.Default.Send(new OnboardingLinkProcessingMessage(false));
 		}
 		private static async Task SelectDomain(string Domain, string Key, string Secret)
 		{

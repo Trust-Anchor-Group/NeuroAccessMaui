@@ -41,7 +41,7 @@ namespace NeuroAccessMaui.UI.Controls
 				typeof(ParameterProtectionIndicator),
 				string.Empty,
 				BindingMode.TwoWay,
-				defaultValueCreator: bindable => ServiceRef.Localizer[AppResources.Transient].ToString());
+				defaultValueCreator: bindable => ServiceRef.Localizer[nameof(AppResources.Transient)].ToString());
 
 		/// <summary>
 		/// Bindable property for the encrypted text.
@@ -53,7 +53,7 @@ namespace NeuroAccessMaui.UI.Controls
 				typeof(ParameterProtectionIndicator),
 				string.Empty,
 				BindingMode.TwoWay,
-				defaultValueCreator: bindable => ServiceRef.Localizer[AppResources.Encrypted].ToString());
+				defaultValueCreator: bindable => ServiceRef.Localizer[nameof(AppResources.Encrypted)].ToString());
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the transient status is visible.

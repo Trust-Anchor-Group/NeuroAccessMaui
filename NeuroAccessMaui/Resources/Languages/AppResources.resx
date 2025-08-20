@@ -122,6 +122,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
       Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
+    <value>Select roles you will sign as (optional)</value>
+  </data>
+  <data name="NoRolesSelectedWarning" xml:space="preserve">
+    <value>No roles selected — you will not sign this contract now.</value>
+  </data>
+  <data name="SignAs" xml:space="preserve">
+    <value>Sign as</value>
+  </data>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>STRING NOT DEFINED</value>
   </data>
@@ -2884,5 +2893,63 @@
   </data>
   <data name="ContinueSecondsFormat" xml:space="preserve">
     <value>Continue ({0})</value>
+  </data>
+  <data name="ActivateYourDigitalIdentity" xml:space="preserve">
+    <value>Activate your digital ID</value>
+  </data>
+  <data name="HaveAnyQuestions" xml:space="preserve">
+    <value>Have any questions?</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription" xml:space="preserve">
+    <value>Read more about activating your digital ID on your ID providers' website.</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription2" xml:space="preserve">
+    <value>ID provider can be your: Bank, School, etc.</value>
+  </data>
+  <data name="AlreadyHaveAnID" xml:space="preserve">
+    <value>Already have an ID?</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription" xml:space="preserve">
+    <value>All we need is the transfer code from your previous phone.</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
+    <value>Find and initiate under: Settings / Transfer identity</value>
+  </data>
+  <data name="PaymentAcceptance" xml:space="preserve">
+    <value>Payment Acceptance</value>
+  </data>
+  <data name="PaymentAcceptanceDescription" xml:space="preserve">
+    <value>Review the offline payment details below. If you’re happy with them, send it to the server for processing.</value>
+  </data>
+  <data name="ContractWizardStepFormat" xml:space="preserve">
+    <value>Step {0} of {1}</value>
+    <comment>Format: current step number, total steps.</comment>
+  </data>
+  <data name="ContractWizardNext" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="ContractWizardReviewHumanReadable" xml:space="preserve">
+    <value>Review human-readable</value>
+  </data>
+  <data name="ContractWizardSettings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="ContractWizardVisibilityPlaceholder" xml:space="preserve">
+    <value>Select who should have access</value>
+  </data>
+  <data name="ContractWizardContractLabel" xml:space="preserve">
+    <value>Contract</value>
+  </data>
+  <data name="HaveAnInviteCodeQuestion" xml:space="preserve">
+    <value>Have an invite code?</value>
+  </data>
+  <data name="PasteInviteCodeHere" xml:space="preserve">
+    <value>Paste invite code here</value>
+  </data>
+  <data name="Or" xml:space="preserve">
+    <value>Or</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Paste</value>
   </data>
 </root>

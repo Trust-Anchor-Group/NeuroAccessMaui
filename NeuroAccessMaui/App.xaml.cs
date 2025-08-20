@@ -243,11 +243,11 @@ namespace NeuroAccessMaui
 				this.InitializeComponent();
 				AppTheme CurrentTheme = ServiceRef.TagProfile.Theme;
 
-				this.SetTheme(CurrentTheme);
-				ServiceRef.ThemeService.SetTheme(CurrentTheme);
 				try
 				{
 					this.MainPage = ServiceHelper.GetService<AppShell>();
+					this.SetTheme(CurrentTheme);
+					ServiceRef.ThemeService.SetTheme(CurrentTheme);
 				}
 				catch (Exception Ex)
 				{
@@ -287,7 +287,7 @@ namespace NeuroAccessMaui
 
 		private static void InitLocalizationResource()
 		{
-		//	LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
+			//	LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
 			LocalizationManager.Current.CurrentCulture = SelectedLanguage;
 		}
 
@@ -694,9 +694,6 @@ namespace NeuroAccessMaui
 			}
 
 			ServiceRef.TagProfile.FromConfiguration(Configuration);
-
-			this.SetTheme(ServiceRef.TagProfile.Theme);
-			ServiceRef.ThemeService.SetTheme(ServiceRef.TagProfile.Theme);
 		}
 
 		#endregion
@@ -899,7 +896,7 @@ namespace NeuroAccessMaui
 					return;
 				}
 
-				await QrCode.OpenUrl(url);
+				await QrCode.OpenUrl(url).ConfigureAwait(false);
 			});
 		}
 

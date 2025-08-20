@@ -90,3 +90,9 @@ in various parts of the app. However, it should _not_ be done in the `Service` i
 When the app shuts down, all the services' `Unload()` method is called. When the app starts, the services' `Load()` method is called.
 This is especially important to know during soft restarts, like when you're switching apps. In this case the pages and view models are kept around,
 which means they reference the same services. If you dispose a service and then recreate it, the app will fail.
+
+---
+
+### Accessing Services via `ServiceRef`
+
+Throughout the code base you will often see calls like `ServiceRef.TagProfile` or `ServiceRef.SettingsService`. `ServiceRef` is a static facade exposing resolved service singletons to simplify consumption from view models, pages and helpers without repeatedly invoking the dependency resolver. Avoid storing long‑lived references to services outside of view models; prefer accessing them when needed through `ServiceRef` so lifecycle hooks (`Load()/Unload()`) continue to behave predictably.

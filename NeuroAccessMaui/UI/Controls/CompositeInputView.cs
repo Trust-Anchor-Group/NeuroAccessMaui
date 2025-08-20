@@ -28,7 +28,7 @@ namespace NeuroAccessMaui.UI.Controls
 		public CompositeInputView()
 		{
 			// Main Grid with 3 rows
-			Grid mainGrid = new Grid
+			Grid MainGrid = new Grid
 			{
 				RowDefinitions =
 				{
@@ -38,44 +38,44 @@ namespace NeuroAccessMaui.UI.Controls
 				}
 			};
 
-			mainGrid.RowSpacing = 2;
+			MainGrid.RowSpacing = 2;
 
 			// Row 1: Single Label with FormattedText
 			this.label = new Label();
-			FormattedString formattedString = new FormattedString();
+			FormattedString Formatted = new FormattedString();
 
 			// Span for the main label text
-			Span labelSpan = new Span();
-			labelSpan.SetBinding(Span.TextProperty, new Binding(nameof(this.LabelText), source: this));
+			Span LabelSpan = new Span();
+			LabelSpan.SetBinding(Span.TextProperty, new Binding(nameof(this.LabelText), source: this));
 
 			// Inherit styling from the owner label
-			labelSpan.SetBinding(Span.TextColorProperty, new Binding(nameof(this.label.TextColor), source: this.label));
-			labelSpan.SetBinding(Span.FontSizeProperty, new Binding(nameof(this.label.FontSize), source: this.label));
-			labelSpan.SetBinding(Span.FontFamilyProperty, new Binding(nameof(this.label.FontFamily), source: this.label));
-			labelSpan.SetBinding(Span.FontAttributesProperty, new Binding(nameof(this.label.FontAttributes), source: this.label));
-			labelSpan.SetBinding(Span.TextDecorationsProperty, new Binding(nameof(this.label.TextDecorations), source: this.label));
-			labelSpan.SetBinding(Span.CharacterSpacingProperty, new Binding(nameof(this.label.CharacterSpacing), source: this.label));
-			labelSpan.SetBinding(Span.LineHeightProperty, new Binding(nameof(this.label.LineHeight), source: this.label));
-			labelSpan.SetBinding(Span.TextTransformProperty, new Binding(nameof(this.label.TextTransform), source: this.label));
-			labelSpan.SetBinding(Span.BackgroundColorProperty, new Binding(nameof(this.label.BackgroundColor), source: this.label));
-			labelSpan.SetBinding(Span.FontAutoScalingEnabledProperty, new Binding(nameof(this.label.FontAutoScalingEnabled), source: this.label));
+			LabelSpan.SetBinding(Span.TextColorProperty, new Binding(nameof(this.label.TextColor), source: this.label));
+			LabelSpan.SetBinding(Span.FontSizeProperty, new Binding(nameof(this.label.FontSize), source: this.label));
+			LabelSpan.SetBinding(Span.FontFamilyProperty, new Binding(nameof(this.label.FontFamily), source: this.label));
+			LabelSpan.SetBinding(Span.FontAttributesProperty, new Binding(nameof(this.label.FontAttributes), source: this.label));
+			LabelSpan.SetBinding(Span.TextDecorationsProperty, new Binding(nameof(this.label.TextDecorations), source: this.label));
+			LabelSpan.SetBinding(Span.CharacterSpacingProperty, new Binding(nameof(this.label.CharacterSpacing), source: this.label));
+			LabelSpan.SetBinding(Span.LineHeightProperty, new Binding(nameof(this.label.LineHeight), source: this.label));
+			LabelSpan.SetBinding(Span.TextTransformProperty, new Binding(nameof(this.label.TextTransform), source: this.label));
+			LabelSpan.SetBinding(Span.BackgroundColorProperty, new Binding(nameof(this.label.BackgroundColor), source: this.label));
+			LabelSpan.SetBinding(Span.FontAutoScalingEnabledProperty, new Binding(nameof(this.label.FontAutoScalingEnabled), source: this.label));
 
-			formattedString.Spans.Add(labelSpan);
+			Formatted.Spans.Add(LabelSpan);
 
 			// Span for the required marker
-			Span requiredMarkerSpan = new Span();
-			requiredMarkerSpan.SetBinding(Span.TextProperty, new Binding(nameof(this.RequiredMarker), source: this));
-			requiredMarkerSpan.Style = AppStyles.RequiredFieldMarkerSpan;
-			formattedString.Spans.Add(requiredMarkerSpan);
+			Span RequiredMarkerSpan = new Span();
+			RequiredMarkerSpan.SetBinding(Span.TextProperty, new Binding(nameof(this.RequiredMarker), source: this));
+			RequiredMarkerSpan.Style = AppStyles.RequiredFieldMarkerSpan;
+			Formatted.Spans.Add(RequiredMarkerSpan);
 
-			this.label.FormattedText = formattedString;
+			this.label.FormattedText = Formatted;
 			this.label.SetBinding(Label.StyleProperty, new Binding(nameof(this.LabelStyle), source: this));
 			this.label.SetBinding(Label.IsVisibleProperty, new Binding(nameof(this.CanShowLabel), source: this));
 
-			mainGrid.Add(this.label, 0, 0);
+			MainGrid.Add(this.label, 0, 0);
 
 			// Row 2: LeftView, CenterView, RightView
-			Grid contentGrid = new Grid
+			Grid ContentGrid = new Grid
 			{
 				ColumnDefinitions =
 				{
@@ -90,21 +90,21 @@ namespace NeuroAccessMaui.UI.Controls
 			// LeftView
 			this.leftContentView = new ContentView();
 			this.leftContentView.SetBinding(ContentView.ContentProperty, new Binding(nameof(this.LeftView), source: this));
-			contentGrid.Add(this.leftContentView, 0, 0);
+			ContentGrid.Add(this.leftContentView, 0, 0);
 
 			// CenterView
 			this.centerContentView = new ContentView();
 			this.centerContentView.SetBinding(ContentView.ContentProperty, new Binding(nameof(this.CenterView), source: this));
-			contentGrid.Add(this.centerContentView, 1, 0);
+			ContentGrid.Add(this.centerContentView, 1, 0);
 
 			// RightView
 			this.rightContentView = new ContentView();
 			this.rightContentView.SetBinding(ContentView.ContentProperty, new Binding(nameof(this.RightView), source: this));
-			contentGrid.Add(this.rightContentView, 2, 0);
+			ContentGrid.Add(this.rightContentView, 2, 0);
 
 			this.border = new Border()
 			{
-				Content = contentGrid,
+				Content = ContentGrid,
 				StrokeThickness = 0.5f,
 				HorizontalOptions = LayoutOptions.Fill,
 				Margin = 0
@@ -114,7 +114,7 @@ namespace NeuroAccessMaui.UI.Controls
 			this.border.SetBinding(Border.StrokeShapeProperty, new Binding(nameof(this.BorderStrokeShape), source: this));
 			this.border.SetBinding(Border.BackgroundColorProperty, new Binding(nameof(this.BorderBackground), source: this));
 			this.border.SetBinding(Border.PaddingProperty, new Binding(nameof(this.BorderPadding), source: this));
-			mainGrid.Add(this.border, 0, 1);
+			MainGrid.Add(this.border, 0, 1);
 
 			// Row 3: ValidationIcon and ValidationText
 			this.validationGrid = new Grid
@@ -145,9 +145,9 @@ namespace NeuroAccessMaui.UI.Controls
 			this.validationGrid.Margin = AppStyles.SmallTopMargins;
 			this.validationGrid.ColumnSpacing = AppStyles.SmallSpacing;
 
-			mainGrid.Add(this.validationGrid, 0, 2);
-			// Set the Content of the ContentView to the mainGrid
-			this.Content = mainGrid;
+			MainGrid.Add(this.validationGrid, 0, 2);
+			// Set the Content of the ContentView to the MainGrid
+			this.Content = MainGrid;
 		}
 
 		#region Bindable Properties
@@ -376,29 +376,31 @@ namespace NeuroAccessMaui.UI.Controls
 
 		#endregion
 
-		private static void OnRequiredChanged(BindableObject bindable, object oldValue, object newValue)
+		private static void OnRequiredChanged(BindableObject Bindable, object OldValue, object NewValue)
 		{
-			CompositeInputView control = (CompositeInputView)bindable;
-			control.OnPropertyChanged(nameof(RequiredMarker));
+			CompositeInputView Control = (CompositeInputView)Bindable;
+			Control.OnPropertyChanged(nameof(RequiredMarker));
 		}
 
-		private void OnBorderPropertyChanged(Object? sender, PropertyChangedEventArgs e)
+		private void OnBorderPropertyChanged(Object? Sender, PropertyChangedEventArgs E)
 		{
 
 		}
 
-		private static void OnValidationChanged(BindableObject bindable, object oldValue, object newValue)
+		private static void OnValidationChanged(BindableObject Bindable, object OldValue, object NewValue)
 		{
-			CompositeInputView control = (CompositeInputView)bindable;
+			CompositeInputView Control = (CompositeInputView)Bindable;
 
 			// Update CanShowValidation
-			control.OnPropertyChanged(nameof(CanShowValidation));
+			Control.OnPropertyChanged(nameof(CanShowValidation));
+			// Nudge layout to ensure style triggers reflect immediately even if control isn't focused
+			Control.InvalidateMeasure();
 		}
 
-		private static void OnLabelChanged(BindableObject bindable, object oldValue, object newValue)
+		private static void OnLabelChanged(BindableObject Bindable, object OldValue, object NewValue)
 		{
-			CompositeInputView control = (CompositeInputView)bindable;
-			control.OnPropertyChanged(nameof(CanShowLabel));
+			CompositeInputView Control = (CompositeInputView)Bindable;
+			Control.OnPropertyChanged(nameof(CanShowLabel));
 		}
 	}
 }

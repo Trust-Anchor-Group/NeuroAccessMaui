@@ -689,5 +689,11 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 			return false;
 		}
+
+		[RelayCommand]
+		private void NewAccount()
+		{
+			GoToRegistrationStep(RegistrationStep.ValidatePhone);
+		}
 	}
 }
