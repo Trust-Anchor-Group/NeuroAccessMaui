@@ -1,11 +1,12 @@
 using Microsoft.Maui.Controls;
+using NeuroAccessMaui.UI.Pages;
 
 namespace NeuroAccessMaui.Test
 {
     /// <summary>
     /// Base class for modal pages with overlay customization.
     /// </summary>
-    public class BaseModalPage : ContentPage
+    public class BaseModalPage : BaseContentPage
     {
         /// <summary>
         /// Bindable property controlling the background overlay color.
@@ -58,5 +59,25 @@ namespace NeuroAccessMaui.Test
         /// <param name="Value">Value to set.</param>
         public static void SetPopOnBackgroundPress(BindableObject View, bool Value) =>
             View.SetValue(PopOnBackgroundPressProperty, Value);
-    }
+
+		public virtual Task OnInitializeAsync()
+		{
+			return Task.CompletedTask;
+		}
+
+		public virtual Task OnDisposeAsync()
+		{
+			return Task.CompletedTask;
+		}
+
+		public virtual Task OnAppearingAsync()
+		{
+			return Task.CompletedTask;
+		}
+
+		public virtual Task OnDisappearingAsync()
+		{
+			return Task.CompletedTask;
+		}
+	}
 }
