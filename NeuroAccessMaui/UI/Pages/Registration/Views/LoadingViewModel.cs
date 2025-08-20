@@ -22,6 +22,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			{
 				if (App.Current is not null)
 					await App.Current.InitCompleted;
+					
+				await ServiceRef.ThemeService.ApplyProviderTheme();
 
 			}
 			catch (Exception)

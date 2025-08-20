@@ -122,6 +122,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
       Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
+    <value>Selecciona los roles con los que firmarás (opcional)</value>
+  </data>
+  <data name="NoRolesSelectedWarning" xml:space="preserve">
+    <value>No se seleccionaron roles — no firmarás este contrato ahora.</value>
+  </data>
+  <data name="SignAs" xml:space="preserve">
+    <value>Firmar como</value>
+  </data>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>CADENA NO DEFINIDA</value>
   </data>
@@ -2867,14 +2876,26 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
     <value>El idioma ha sido cambiado. Por favor, reinicie la aplicación para asegurarse de que se apliquen todos los cambios.</value>
   </data>
+  <data name="Never" xml:space="preserve">
+    <value>Nunca</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Ahora</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>hace {0} minutos</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>hace {0} horas</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Última actualización: {0}</value>
+  </data>
   <data name="ContinueSecondsFormat" xml:space="preserve">
     <value>Continuar ({0})</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
     <value>Activa tu identificación digital</value>
-  </data>
-  <data name="ActivateYourDigitalIdentityDescription" xml:space="preserve">
-    <value>Conéctate a tu proveedor de identidad escaneando su código QR.</value>
   </data>
   <data name="HaveAnyQuestions" xml:space="preserve">
     <value>¿Tienes alguna pregunta?</value>
@@ -2893,5 +2914,41 @@
   </data>
   <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
     <value>Busca e inicia en: Configuración / Transferir identidad</value>
+  </data>
+  <data name="PaymentAcceptance" xml:space="preserve">
+    <value>Aceptación de pagos</value>
+  </data>
+  <data name="PaymentAcceptanceDescription" xml:space="preserve">
+    <value>Revisa los detalles del pago sin conexión que aparecen a continuación. Si estás conforme, envíalos al servidor para su procesamiento.</value>
+  </data>
+  <data name="ContractWizardStepFormat" xml:space="preserve">
+    <value>Paso {0} de {1}</value>
+  </data>
+  <data name="ContractWizardNext" xml:space="preserve">
+    <value>Siguiente</value>
+  </data>
+  <data name="ContractWizardReviewHumanReadable" xml:space="preserve">
+    <value>Revisar versión legible</value>
+  </data>
+  <data name="ContractWizardSettings" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
+  <data name="ContractWizardVisibilityPlaceholder" xml:space="preserve">
+    <value>Seleccione quién debe tener acceso</value>
+  </data>
+  <data name="ContractWizardContractLabel" xml:space="preserve">
+    <value>Contrato</value>
+  </data>
+  <data name="HaveAnInviteCodeQuestion" xml:space="preserve">
+    <value>¿Tienes un código de invitación?</value>
+  </data>
+  <data name="PasteInviteCodeHere" xml:space="preserve">
+    <value>Pega el código de invitación aquí</value>
+  </data>
+  <data name="Or" xml:space="preserve">
+    <value>O</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Pegar</value>
   </data>
 </root>

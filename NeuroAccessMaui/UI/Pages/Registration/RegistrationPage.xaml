@@ -23,7 +23,7 @@
 						   Right="{StaticResource LargeSpacing}" />
 			</Grid.Padding>
 
-			<controls:SvgButton IsVisible="{Binding CanGoToPrev, Converter={StaticResource InvertedBoolConverter}}" Command="{Binding ExistingAccountCommand}"  Style="{DynamicResource IconButton}" SvgSource="question.svg"/>
+			<controls:SvgButton IsVisible="{Binding IsOnGetStartedView}" Command="{Binding ExistingAccountCommand}"  Style="{DynamicResource IconButton}" SvgSource="question.svg"/>
 			<controls:ImageButton IsVisible="{Binding CanGoToPrev}" Command="{Binding GoToPrevCommand}" Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 			<!--

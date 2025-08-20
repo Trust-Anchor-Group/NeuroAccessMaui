@@ -12,7 +12,7 @@ This guide will help you set up your development environment, run the project, a
 
 Before you begin, ensure you have met the following requirements:
 
-- **.NET SDK**: .NET SDK 8.0.401. You can download it from the [official .NET website](https://dotnet.microsoft.com/en-us/download/dotnet/8.0).
+- **.NET SDK**: .NET SDK 8.0.413 (locked via `global.json`). You can download it from the [official .NET website](https://dotnet.microsoft.com/en-us/download/dotnet/8.0). If you upgrade the SDK, update both `global.json` and this document.
 - **IDE**: We recommend using [Visual Studio](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/) for development.
 - **Git**: If you plan to clone the repository, you need Git installed on your machine. You can download it from the [official Git website](https://git-scm.com/).
 - **Operating System**: .NET MAUI supports development on Windows, macOS, and Linux. However, running iOS projects requires access to macOS computer with Xcode installed.
@@ -31,7 +31,7 @@ Before you begin, ensure you have met the following requirements:
 
 Depending on your IDE, please see the following guides from Microsoft
 
-- [Visual Studio]()
+- [Visual Studio](https://learn.microsoft.com/en-us/dotnet/maui/get-started/first-app?pivots=devices-windows)
 - [Visual Studio Code](https://learn.microsoft.com/en-us/shows/visual-studio-toolbox/getting-started-with-maui-in-visual-studio-code)
 
 ### 2. Clone the Repository
@@ -69,7 +69,10 @@ Build the project to ensure everything is set up correctly:
 dotnet build
 ```
 
-Note: On the IOS playform you need to setup valid Provisioning profiles and Signing identities.
+Notes:
+
+- On the iOS platform you need to set up valid provisioning profiles and signing identities.
+- On Windows hosts the project targets only Android by default (see conditional `TargetFrameworks` in `NeuroAccessMaui.csproj`). iOS is added automatically on non-Windows hosts.
 
 ## Running the Project
 
@@ -80,7 +83,7 @@ Once your environment is set up, you can run the project on your desired platfor
 To run the project on an Android device or emulator:
 
 ```bash
-dotnet build -t:Run -f net6.0-android
+dotnet build -t:Run -f net8.0-android
 ```
 
 Or, use the "Run" button in Visual Studio, ensuring the Android emulator or device is selected.
@@ -90,7 +93,7 @@ Or, use the "Run" button in Visual Studio, ensuring the Android emulator or devi
 To run the project on an iOS device or simulator (macOS only):
 
 ```bash
-dotnet build -t:Run -f net6.0-ios
+dotnet build -t:Run -f net8.0-ios
 ```
 
 Or, use the "Run" button in Visual Studio, ensuring the iOS simulator or device is selected.
@@ -106,4 +109,4 @@ Refer to the specific platform documentation for more details on how to manage t
 
 ---
 
-By following these steps, you should have your development environment set up and your project running on your desired platform. If you encounter any issues, please refer to the [Troubleshooting](troubleshooting.md)
+By following these steps, you should have your development environment set up and your project running on your desired platform. If you encounter any issues, please refer to the (upcoming) Troubleshooting guide.

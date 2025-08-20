@@ -24,9 +24,15 @@
 		<Setter Property="BackgroundColor"
 				Value="{DynamicResource ButtonUniversalbgInactiveWL}" />
 	</Style>
-
-	<Style x:Key="ButtonDisabledLabel"
+	<Style x:Key="ButtonLabelBase"
+		   ApplyToDerivedTypes="True"
 		   TargetType="Label">
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskBold" />
+	</Style>
+	<Style x:Key="ButtonDisabledLabel"
+		   TargetType="Label"
+		   BaseResourceKey="ButtonLabelBase">
 		<Setter Property="TextColor"
 				Value="{DynamicResource ButtonUniversalContentInactiveWL}" />
 	</Style>
@@ -37,12 +43,7 @@
 				Value="{DynamicResource ContentPrimaryWL}" />
 	</Style>
 
-	<Style x:Key="ButtonLabelBase"
-		   ApplyToDerivedTypes="True"
-		   TargetType="Label">
-		<Setter Property="FontFamily"
-				Value="SpaceGroteskBold" />
-	</Style>
+
 
 	<!-- Primary -->
 	<!-- Access Button -->
@@ -939,7 +940,7 @@
 		<Setter Property="Padding"
 				Value="{DynamicResource ButtonMediumMargins}" />
 		<Setter Property="StrokeShape">
-			<RoundRectangle CornerRadius="{DynamicResource SmallCornerRadius}" />
+			<RoundRectangle CornerRadius="8" />
 		</Setter>
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>

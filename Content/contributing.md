@@ -18,13 +18,13 @@ We use a **Git Flow** branching strategy to manage the development process effic
 - **`main`**: The main branch contains stable, production-ready code.
 - **`dev`**: This branch contains code that is ready for testing but not yet released. It is the integration branch for features.
 - **`feature/*`**: Feature branches are used to develop new features. These branches branch off from `dev` and are merged back into `dev` once completed.
-- **`bugfix/*`**: Used for fixing bugs discovered during development. Branch off from `dev` and merge back into `dev`.
+- **`fix/*`** or **`bugfix/*`**: Used for fixing bugs discovered during development. Prefer the existing convention in the repository (you may see both). Branch off from `dev` and merge back into `dev`.
 - **`hotfix/*`**: For urgent fixes in production. These branch off from `main` and should be merged into both `main` and `dev`.
 - **`release/*`**: Used to prepare for a new production release. These branch of `dev` and allows for last-minute adjustments before merging into `main`.
 
 ### Workflow
 
-1. Create a new branch from `dev` for your feature or bugfix.
+1. Create a new branch from `dev` for your feature or bugfix (ensure `dev` is up to date with upstream first).
 2. Work on your branch, commit regularly, and push your changes.
 3. Create a pull request (PR) against `dev` once your work is complete.
 4. Your PR will be reviewed, and after approval, it will be merged into `dev`.
