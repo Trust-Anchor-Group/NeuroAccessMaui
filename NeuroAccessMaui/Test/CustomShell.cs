@@ -1,13 +1,16 @@
 using System;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui.Behaviors;
+using CommunityToolkit.Maui.Core;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
-using NeuroAccessMaui.UI.Pages;
-using NeuroAccessMaui.Services;                     // for ServiceHelper
-using NeuroAccessMaui.UI.Pages.Startup;             // for LoadingPage
 using Microsoft.Maui.Graphics;
+using NeuroAccessMaui.Services;                     // for ServiceHelper
+using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main; // for Colors
+using NeuroAccessMaui.UI.Pages.Startup;             // for LoadingPage
+using NeuroAccessMaui.Services.UI; // for back handling
 
 namespace NeuroAccessMaui.Test
 {
@@ -86,6 +89,12 @@ namespace NeuroAccessMaui.Test
                 await loadingPage.OnInitializeAsync();
                 await loadingPage.OnAppearingAsync();
             });
+
+            this.Behaviors.Add(new StatusBarBehavior
+            {
+                StatusBarColor = Colors.Transparent,
+                StatusBarStyle = StatusBarStyle.Default
+            });
         }
 
         /// <summary>
@@ -160,6 +169,33 @@ namespace NeuroAccessMaui.Test
                 this.topBar.Content = null;
                 this.navBar.Content = null;
             }
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            try
+            {
+                NeuroAccessMaui.Test.NavigationService? nav = ServiceRef.Provider.GetService<INavigationService>() as NeuroAccessMaui.Test.NavigationService;
+                if (nav is not null && nav.WouldHandleBack())
+                {
+                    _ = this.Dispatcher.DispatchAsync(async () =>
+                    {
+                        bool handled = await nav.HandleBackAsync();
+                        if (!handled)
+                        {
+#if ANDROID || WINDOWS
+                            try { Microsoft.Maui.Controls.Application.Current?.Quit(); } catch { }
+#endif
+                        }
+                    });
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                ServiceRef.LogService.LogException(ex);
+            }
+            return base.OnBackButtonPressed();
         }
     }
 
