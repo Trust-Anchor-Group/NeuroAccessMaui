@@ -290,7 +290,7 @@
 			<!-- Info field template -->
 			<DataTemplate x:Key="InfoFieldTemplate"
 						  x:DataType="fields:ObservableInfoField">
-				<Border Style="{DynamicResource BorderSet}">
+				<Border Style="{DynamicResource BorderSet}" Margin="0">
 					<VerticalStackLayout>
 						<Label Text="{Binding Label.Text}"
 							   Style="{DynamicResource FieldTitleLabel}"/>
@@ -298,112 +298,6 @@
 							   Style="{DynamicResource FieldValueLabel}"/>
 					</VerticalStackLayout>
 				</Border>
-			</DataTemplate>
-
-			<!-- Read-only Text field template -->
-			<DataTemplate x:Key="ReadOnlyTextFieldTemplate" x:DataType="fields:ObservableGenericField">
-				<VerticalStackLayout>
-					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-					<Label Text="{Binding RawValue}" Style="{DynamicResource FieldValueLabel}" />
-				</VerticalStackLayout>
-			</DataTemplate>
-
-			<!-- Read-only Date field template -->
-			<DataTemplate x:Key="ReadOnlyDateFieldTemplate" x:DataType="fields:ObservableDateField">
-				<VerticalStackLayout>
-					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-					<Label Text="{Binding RawValue, StringFormat='{0:yyyy-MM-dd}'}" Style="{DynamicResource FieldValueLabel}" />
-				</VerticalStackLayout>
-			</DataTemplate>
-
-			<!-- Read-only Integer field template -->
-			<DataTemplate x:Key="ReadOnlyIntegerFieldTemplate" x:DataType="fields:ObservableIntegerField">
-				<VerticalStackLayout>
-					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-					<Label Text="{Binding StringValue}" Style="{DynamicResource FieldValueLabel}" />
-				</VerticalStackLayout>
-			</DataTemplate>
-
-			<!-- Read-only Decimal field template -->
-			<DataTemplate x:Key="ReadOnlyDecimalFieldTemplate" x:DataType="fields:ObservableDecimalField">
-				<VerticalStackLayout>
-					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-					<Label Text="{Binding StringValue}" Style="{DynamicResource FieldValueLabel}" />
-				</VerticalStackLayout>
-			</DataTemplate>
-
-			<!-- Read-only Picker field template -->
-			<DataTemplate x:Key="ReadOnlyPickerFieldTemplate" x:DataType="fields:ObservablePickerField">
-				<VerticalStackLayout>
-					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-					<Label Text="{Binding SelectedOption.Label.Text}" Style="{DynamicResource FieldValueLabel}" />
-				</VerticalStackLayout>
-			</DataTemplate>
-
-			<!-- Read-only Radio field template -->
-			<DataTemplate x:Key="ReadOnlyRadioFieldTemplate" x:DataType="fields:ObservableRadioField">
-				<VerticalStackLayout>
-					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-					<Label Text="{Binding SelectedOption.Label.Text}" Style="{DynamicResource FieldValueLabel}" />
-				</VerticalStackLayout>
-			</DataTemplate>
-
-			<!-- Read-only Country field template -->
-			<DataTemplate x:Key="ReadOnlyCountryFieldTemplate" x:DataType="fields:ObservableCountryField">
-				<VerticalStackLayout>
-					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-					<Label Text="{Binding StringValue}" Style="{DynamicResource FieldValueLabel}" />
-				</VerticalStackLayout>
-			</DataTemplate>
-
-			<!-- Read-only Checkbox field template (multi-select) -->
-			<DataTemplate x:Key="ReadOnlyCheckboxFieldTemplate" x:DataType="fields:ObservableCheckboxField">
-				<VerticalStackLayout>
-					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-				</VerticalStackLayout>
-			</DataTemplate>
-
-			<!-- Read-only Boolean (switch) field template -->
-			<DataTemplate x:Key="ReadOnlyBooleanFieldTemplate" x:DataType="fields:ObservableBooleanField">
-				<VerticalStackLayout>
-					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-				</VerticalStackLayout>
-			</DataTemplate>
-
-			<!-- Read-only File upload field template -->
-			<DataTemplate x:Key="ReadOnlyFileUploadFieldTemplate" x:DataType="fields:ObservableFileField">
-				<VerticalStackLayout>
-					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-				</VerticalStackLayout>
-			</DataTemplate>
-
-			<!-- Read-only Image upload field template -->
-			<DataTemplate x:Key="ReadOnlyImageUploadFieldTemplate" x:DataType="fields:ObservableImageField">
-				<VerticalStackLayout>
-					<Label Text="{Binding Label.Text}" Style="{DynamicResource FieldKeyLabel}" />
-					<Border Style="{DynamicResource BorderSet}">
-						<Grid ColumnDefinitions="auto, *" ColumnSpacing="{DynamicResource SmallSpacing}">
-							<Border Style="{DynamicResource FileIconBorder}">
-								<controls:SvgView Source="gallery.svg" HeightRequest="24"/>
-							</Border>
-							<Label Grid.Column="1" Text="{Binding Label.Text}" Style="{DynamicResource FieldTitleLabel}" HorizontalOptions="Center" VerticalOptions="Center"/>
-						</Grid>
-					</Border>
-				</VerticalStackLayout>
-			</DataTemplate>
-
-			<!-- Read-only Label field template -->
-			<DataTemplate x:Key="ReadOnlyLabelFieldTemplate" x:DataType="fields:ObservableLabelField">
-				<Label Text="{Binding Label.Text}"
-					   Style="{DynamicResource FieldKeyLabel}"
-					   FontSize="Medium" />
-			</DataTemplate>
-
-			<!-- Read-only Info field template -->
-			<DataTemplate x:Key="ReadOnlyInfoFieldTemplate" x:DataType="fields:ObservableInfoField">
-				<Label Text="Terms and Conditions"
-					   Style="{DynamicResource FieldValueLabel}"
-					   FontSize="Medium" />
 			</DataTemplate>
 
 			<local:KycFieldTemplateSelector x:Key="KycFieldTemplateSelector"
@@ -420,22 +314,7 @@
 											ImageUploadFieldTemplate="{StaticResource ImageUploadTemplate}"
 											LabelFieldTemplate="{StaticResource LabelFieldTemplate}"
 											InfoFieldTemplate="{StaticResource InfoFieldTemplate}" />
-			
-			<local:KycFieldTemplateSelector x:Key="ReadOnlyKycFieldTemplateSelector"
-											BooleanFieldTemplate="{StaticResource ReadOnlyBooleanFieldTemplate}"
-											DateFieldTemplate="{StaticResource ReadOnlyDateFieldTemplate}"
-											PickerFieldTemplate="{StaticResource ReadOnlyPickerFieldTemplate}"
-											IntegerFieldTemplate="{StaticResource ReadOnlyIntegerFieldTemplate}"
-											DecimalFieldTemplate="{StaticResource ReadOnlyDecimalFieldTemplate}"
-											RadioFieldTemplate="{StaticResource ReadOnlyRadioFieldTemplate}"
-											CountryFieldTemplate="{StaticResource ReadOnlyCountryFieldTemplate}"
-											CheckboxFieldTemplate="{StaticResource ReadOnlyCheckboxFieldTemplate}"
-											TextFieldTemplate="{StaticResource ReadOnlyTextFieldTemplate}"
-											FileUploadFieldTemplate="{StaticResource ReadOnlyFileUploadFieldTemplate}"
-											ImageUploadFieldTemplate="{StaticResource ReadOnlyImageUploadFieldTemplate}"
-											LabelFieldTemplate="{StaticResource ReadOnlyLabelFieldTemplate}"
-											InfoFieldTemplate="{StaticResource ReadOnlyInfoFieldTemplate}" />
-			
+
 		</ResourceDictionary>
 	</ContentPage.Resources>
 
@@ -532,17 +411,21 @@
 							</VerticalStackLayout>
 						</Border>
 
-							<!-- Attachments -->
+						<!-- Attachments -->
 						<Border Style="{DynamicResource BorderSet}">
 							<VerticalStackLayout Spacing="8">
 								<Label Text="Attachments" Style="{DynamicResource FieldTitleLabel}" />
 								<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}" Spacing="{DynamicResource SmallSpacing}">
 									<BindableLayout.ItemTemplate>
 										<DataTemplate x:DataType="viewmodel:KVP">
-											<VerticalStackLayout Spacing="0">
-												<Label Text="{Binding Key}" Style="{DynamicResource FieldKeyLabel}" />
-												<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" />
-											</VerticalStackLayout>
+											<Border Style="{DynamicResource BorderSubSet}">
+												<Grid ColumnDefinitions="auto, *" ColumnSpacing="{DynamicResource SmallSpacing}">
+													<Border Style="{DynamicResource FileIconBorder}">
+														<controls:SvgView Source="gallery.svg" HeightRequest="24"/>
+													</Border>
+													<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" HorizontalOptions="Center" VerticalOptions="Center"/>
+												</Grid>
+											</Border>
 										</DataTemplate>
 									</BindableLayout.ItemTemplate>
 								</VerticalStackLayout>
@@ -594,22 +477,27 @@
 		</ScrollView>
 
 		<!-- Navigation bar -->
-		<Border Style="{DynamicResource BottomBarBorder}"
+		<Border Style="{DynamicResource BottomBarBorder2}"
 				Grid.Row="2"
 				Padding="16">
 			<VerticalStackLayout Spacing="8">
 				<Grid ColumnDefinitions="*, *">
 					<Label Grid.Column="0"
-						   Text="Progress" />
+						   Text="Progress"
+						   Style="{DynamicResource FieldKeyLabel}"
+						   TextColor="{DynamicResource TnPAccent2ContentWL}"/>
 					<Label Grid.Column="1"
 						   Text="{Binding ProgressPercent}"
-						   HorizontalOptions="End" />
+						   HorizontalOptions="End"
+						   Style="{DynamicResource FieldKeyLabel}"
+						   TextColor="{DynamicResource TnPAccent2ContentWL}"/>
 				</Grid>
 				<controls:ProgressBar Progress="{Binding Progress}"
 									  HeightRequest="10"
 									  CornerRadius="10"
 									  TrackBrush="{DynamicResource TnPAccent2bgWL}"
-									  BarBrush="{DynamicResource TnPAccent2FigureWL}">
+									  BarBrush="{DynamicResource TnPAccent2FigureWL}"
+									  Margin="{DynamicResource SmallBottomMargins}">
 				</controls:ProgressBar>
 				<Grid ColumnDefinitions="*, *" ColumnSpacing="{DynamicResource SmallSpacing}">
 					<controls:TextButton LabelData="Back"

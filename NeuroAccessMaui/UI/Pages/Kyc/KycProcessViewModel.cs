@@ -221,9 +221,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			int NextIndex = this.GetNextIndex(Index + 1);
 
 			this.OnPropertyChanged(nameof(this.Progress));
-
-			this.UpdateReference();
-			this.SaveReferenceToStorage();
 		}
 
 		private void UpdateReference()
@@ -298,6 +295,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 
+			this.UpdateReference();
+			this.SaveReferenceToStorage();
+
 			int NextIndex = this.GetNextIndex(this.currentPageIndex + 1);
 			if (NextIndex < this.Pages.Count)
 			{
@@ -334,6 +334,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.OnPropertyChanged(nameof(this.Progress));
 				return;
 			}
+
+			this.UpdateReference();
+			this.SaveReferenceToStorage();
 
 			int PreviousIndex = this.GetPreviousIndex(this.currentPageIndex - 1);
 			if (PreviousIndex >= 0)
@@ -459,22 +462,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return Task.CompletedTask;
 			}
 
-			bool CurrentPageVisible = false;
-
 			//For each page
 			foreach (KycPage Page in this.process.Pages)
 			{
-				CurrentPageVisible = Page.IsVisible(this.process.Values);
-
 				// For each field in the page
 				foreach (ObservableKycField Field in Page.AllFields)
 				{
-					if (!CurrentPageVisible)
-					{
-						Field.IsVisible = false;
-						continue;
-					}
-
 					if (this.CheckAndHandleFile(Field, this.attachments))
 					{
 						continue; // File handled, skip further processing
@@ -489,12 +482,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				{
 					foreach (ObservableKycField Field in Section.AllFields)
 					{
-						if (!CurrentPageVisible)
-						{
-							Field.IsVisible = false;
-							continue;
-						}
-
 						if (this.CheckAndHandleFile(Field, this.attachments))
 						{
 							continue; // File handled, skip further processing
@@ -516,52 +503,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.GenerateSummaryCollection();
 
 			return Task.CompletedTask;
-		}
-
-		private void GenerateSummaryCollection()
-		{
-			this.PersonalInformationSummary = new ObservableCollection<KVP>();
-			this.AddressInformationSummary = new ObservableCollection<KVP>();
-			this.AttachmentInformationSummary = new ObservableCollection<KVP>();
-
-			if (this.process is null)
-			{
-				return;
-			}
-
-			foreach (Property Prop in this.mappedValues)
-			{
-				if (!xmppPropertyFriendlyNames.TryGetValue(Prop.Name, out string? FriendlyName))
-				{
-					continue;
-				}
-
-				switch (Prop.Name)
-				{
-					case "FULLNAME":
-					case Constants.XmppProperties.BirthDay:
-					case Constants.XmppProperties.BirthMonth:
-					case Constants.XmppProperties.BirthYear:
-					case Constants.XmppProperties.PersonalNumber:
-					case Constants.XmppProperties.Gender:
-					case Constants.XmppProperties.Nationality:
-						this.PersonalInformationSummary.Add(new KVP(FriendlyName, Prop.Value));
-						break;
-
-					case Constants.XmppProperties.Address:
-					case Constants.XmppProperties.Address2:
-					case Constants.XmppProperties.Area:
-					case Constants.XmppProperties.City:
-					case Constants.XmppProperties.ZipCode:
-					case Constants.XmppProperties.Region:
-					case Constants.XmppProperties.Country:
-						this.AddressInformationSummary.Add(new KVP(FriendlyName, Prop.Value));
-						break;
-
-					default:
-						break;
-				}
-			}
 		}
 
 		/// <summary>
@@ -724,6 +665,77 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			return Rotated;
+		}
+
+		private void GenerateSummaryCollection()
+		{
+			this.PersonalInformationSummary = new ObservableCollection<KVP>();
+			this.AddressInformationSummary = new ObservableCollection<KVP>();
+			this.AttachmentInformationSummary = new ObservableCollection<KVP>();
+
+			if (this.process is null)
+			{
+				return;
+			}
+
+			foreach (Property Prop in this.mappedValues)
+			{
+				if (!xmppPropertyFriendlyNames.TryGetValue(Prop.Name, out string? FriendlyName))
+				{
+					continue;
+				}
+
+				switch (Prop.Name)
+				{
+					case "FULLNAME":
+					case Constants.XmppProperties.BirthDay:
+					case Constants.XmppProperties.BirthMonth:
+					case Constants.XmppProperties.BirthYear:
+					case Constants.XmppProperties.PersonalNumber:
+					case Constants.XmppProperties.Gender:
+					case Constants.XmppProperties.Nationality:
+						this.PersonalInformationSummary.Add(new KVP(FriendlyName, Prop.Value));
+						break;
+
+					case Constants.XmppProperties.Address:
+					case Constants.XmppProperties.Address2:
+					case Constants.XmppProperties.Area:
+					case Constants.XmppProperties.City:
+					case Constants.XmppProperties.ZipCode:
+					case Constants.XmppProperties.Region:
+					case Constants.XmppProperties.Country:
+						this.AddressInformationSummary.Add(new KVP(FriendlyName, Prop.Value));
+						break;
+
+					default:
+						break;
+				}
+			}
+
+			foreach (LegalIdentityAttachment Attachment in this.attachments)
+			{
+				switch (Attachment.FileName)
+				{
+					case "Passport.jpg":
+						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Passport image"));
+						break;
+					case "IdCardFront.jpg":
+						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Front of ID card"));
+						break;
+					case "IdCardBack.jpg":
+						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Back of ID card"));
+						break;
+					case "DriverLicenseFront.jpg":
+						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Front of driver's license"));
+						break;
+					case "DriverLicenseBack.jpg":
+						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Back of driver's license"));
+						break;
+					case "ProfilePhoto.jpg":
+						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Photo of face"));
+						break;
+				}
+			}
 		}
 
 		private static readonly Dictionary<string, string> xmppPropertyFriendlyNames = new()
