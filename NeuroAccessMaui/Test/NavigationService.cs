@@ -22,6 +22,11 @@ namespace NeuroAccessMaui.Test
     {
         // Screen & modal stacks (all are BaseContentPage now)
         private readonly Stack<BaseContentPage> screenStack = new();
+        // Determines transition type for navigation direction
+        private TransitionType GetTransitionType(bool isBack)
+        {
+            return isBack ? TransitionType.SwipeRight : TransitionType.SwipeLeft;
+        }
         private readonly Stack<BaseContentPage> modalScreenStack = new();
         private readonly Stack<NavigationArgs?> navigationArgsStack = new();
         private bool isNavigating = false; // Mirrors UiService behavior
@@ -245,7 +250,7 @@ namespace NeuroAccessMaui.Test
                 try
                 {
                     this.isNavigating = true;
-                    await this.Presenter.ShowScreen(screen, TransitionType.Fade);
+                    await this.Presenter.ShowScreen(screen, GetTransitionType(false)); // SwipeLeft for forward
                     this.Presenter.UpdateBars(screen);
                     await screen.OnAppearingAsync();
                     ServiceRef.LogService.LogDebug($"Navigated to {Route}");
@@ -376,7 +381,10 @@ namespace NeuroAccessMaui.Test
         /// <summary>
         /// Goes back according to current navigation arguments (multi-level) or pops one page.
         /// </summary>
-        public Task GoBackAsync() => this.Enqueue(async () => await this.InternalGoBackAsync());
+        public Task GoBackAsync() => this.Enqueue(async () =>
+        {
+            await this.InternalGoBackAsync();
+        });
 
         /// <summary>
         /// Push modal by route.
@@ -395,7 +403,7 @@ namespace NeuroAccessMaui.Test
         }
         #region Back Handling
 
-        internal bool WouldHandleBack()
+        public bool WouldHandleBack()
         {
             /*
             if (this.IsQueueBusy)
@@ -514,7 +522,7 @@ namespace NeuroAccessMaui.Test
                 }
 
                 BaseContentPage Target = this.screenStack.Peek();
-                await this.Presenter.ShowScreen(Target);
+                await this.Presenter.ShowScreen(Target, GetTransitionType(true)); // SwipeRight for back
                 await Target.OnAppearingAsync();
                 this.Presenter.UpdateBars(Target);
             }

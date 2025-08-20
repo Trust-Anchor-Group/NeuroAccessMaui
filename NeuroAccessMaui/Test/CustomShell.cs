@@ -23,7 +23,9 @@ namespace NeuroAccessMaui.Test
         private readonly Grid layout;
         private readonly ContentView topBar;
         private readonly ContentView navBar;
-        private readonly ContentView contentHost;  // For hosting page content
+        private readonly ContentView contentHostA;  // Slot A
+        private readonly ContentView contentHostB;  // Slot B
+        private bool isSlotAActive = true; // Track which slot is active
         private readonly Grid modalOverlay;
         private readonly BoxView modalBackground;
         private readonly ContentView modalHost;
@@ -33,7 +35,7 @@ namespace NeuroAccessMaui.Test
         /// <summary>
         /// Initializes a new instance of <see cref="CustomShell"/>.
         /// </summary>
-        public CustomShell()
+        public CustomShell(LoadingPage LoadingPage)
         {
             this.layout = new Grid
             {
@@ -49,7 +51,10 @@ namespace NeuroAccessMaui.Test
 
             this.topBar = new ContentView { IsVisible = false };
             this.navBar = new ContentView { IsVisible = false };
-            this.contentHost = new ContentView();
+            this.contentHostA = new ContentView();
+            this.contentHostB = new ContentView();
+            this.contentHostA.IsVisible = true;
+            this.contentHostB.IsVisible = false;
             this.modalHost = new ContentView { IsVisible = false };
             this.modalBackground = new BoxView { Opacity = 0 };
             this.modalOverlay = new Grid { IsVisible = false, InputTransparent = false };
@@ -63,7 +68,8 @@ namespace NeuroAccessMaui.Test
 
 
             this.layout.Add(this.topBar, 0, 0);
-            this.layout.Add(this.contentHost, 0, 1);
+            this.layout.Add(this.contentHostA, 0, 1);
+            this.layout.Add(this.contentHostB, 0, 1);
             this.layout.Add(this.navBar, 0, 2);
             this.layout.Add(this.modalOverlay);
             Grid.SetRowSpan(this.modalOverlay, 3);
@@ -75,19 +81,19 @@ namespace NeuroAccessMaui.Test
 
             // Shell background
             this.BackgroundColor = Colors.White;
-            // Show initial loading page immediately
-            LoadingPage loadingPage = ServiceHelper.GetService<LoadingPage>();
 
             // Assign content synchronously so spinner is visible right away
-            this.contentHost.Content = loadingPage.Content;
-            this.contentHost.BindingContext = loadingPage.BindingContext;
+            LoadingPage loadingPage = ServiceHelper.GetService<LoadingPage>();
+            this.contentHostA.Content = loadingPage.Content;
+            this.contentHostA.BindingContext = loadingPage.BindingContext;
+            this.contentHostB.Content = null;
             this.currentScreen = loadingPage;
 
             // Trigger lifecycle and potential navigation
             this.Dispatcher.Dispatch(async () =>
             {
-                await loadingPage.OnInitializeAsync();
-                await loadingPage.OnAppearingAsync();
+                await LoadingPage.OnInitializeAsync();
+                await LoadingPage.OnAppearingAsync();
             });
 
             this.Behaviors.Add(new StatusBarBehavior
@@ -113,14 +119,57 @@ namespace NeuroAccessMaui.Test
 
         public async Task ShowScreen(ContentView screen, TransitionType transition = TransitionType.None)
         {
-            this.contentHost.Content = screen;
-            this.currentScreen = screen;
+            // Determine active/inactive slot
+            ContentView activeSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
+            ContentView inactiveSlot = this.isSlotAActive ? this.contentHostB : this.contentHostA;
+
+            // Place new content in inactive slot
+            inactiveSlot.Content = screen;
+            inactiveSlot.BindingContext = screen.BindingContext;
+            inactiveSlot.IsVisible = true;
             this.UpdateBars(screen);
+
             if (transition == TransitionType.Fade)
             {
-                screen.Opacity = 0;
-                await screen.FadeTo(1, 150, Easing.CubicOut);
+                // Fade in new content over old
+                inactiveSlot.Opacity = 0;
+                activeSlot.Opacity = 1;
+                await inactiveSlot.FadeTo(1, 200, Easing.CubicOut);
+                // After fade, hide old slot
+                activeSlot.IsVisible = false;
+                activeSlot.Content = null;
             }
+            else if (transition == TransitionType.SwipeLeft || transition == TransitionType.SwipeRight)
+            {
+                // Slide new content in, old out
+                double width = this.Width > 0 ? this.Width : 400; // fallback width
+                double fromX = (transition == TransitionType.SwipeLeft) ? width : -width;
+                double toX = 0;
+                double oldToX = (transition == TransitionType.SwipeLeft) ? -width : width;
+
+                inactiveSlot.TranslationX = fromX;
+                activeSlot.TranslationX = 0;
+
+                Task newIn = inactiveSlot.TranslateTo(toX, 0, 250, Easing.CubicOut);
+                Task oldOut = activeSlot.TranslateTo(oldToX, 0, 250, Easing.CubicOut);
+                await Task.WhenAll(newIn, oldOut);
+
+                // Reset transforms and cleanup
+                inactiveSlot.TranslationX = 0;
+                activeSlot.TranslationX = 0;
+                activeSlot.IsVisible = false;
+                activeSlot.Content = null;
+            }
+            else
+            {
+                // No transition: just swap
+                activeSlot.IsVisible = false;
+                activeSlot.Content = null;
+            }
+
+            // Swap active slot
+            this.isSlotAActive = !this.isSlotAActive;
+            this.currentScreen = screen;
         }
 
         /// <summary>
@@ -206,7 +255,9 @@ namespace NeuroAccessMaui.Test
     {
         None,
         Fade,
-        // Extend: SlideLeft, SlideRight, Scale, etc.
+        SwipeLeft,
+        SwipeRight,
+        // Extend: Scale, Flip, etc.
     }
 
     /// <summary>
