@@ -131,7 +131,7 @@ Example Neuro-Access Page (XAML):
                VerticalOptions="CenterAndExpand" 
                HorizontalOptions="CenterAndExpand" />
     </StackLayout>
-</ContentPage>
+</base:BaseContentPage>
 ```
 
 ### ViewModel
@@ -174,7 +174,7 @@ public class ExampleViewModel : INotifyPropertyChanged
 
 See [BaseViewModel](../NeuroAccessMaui/UI/Pages/BaseViewModel.cs)
 
-Note: This base class is not needed for the app to work properly, but is recommended as long as the view/page is using BaseContentPage/BaseContentPage
+Note: This base class is not required for the app to work, but is recommended when the view/page inherits from `BaseContentPage` or `BaseContentView` to leverage lifecycle forwarding.
 
 ---
 

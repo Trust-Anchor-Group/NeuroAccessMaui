@@ -215,6 +215,10 @@
 						</Grid>
 					</Border>
 				</controls:TemplatedButton>
+
+				<controls:TextButton Style="{DynamicResource TertiaryButton}"
+									 LabelData="{l:Localize CreateNewAccount}"
+									 Command="{Binding NewAccountCommand}"/>
 			</VerticalStackLayout>
 		</Grid>
 

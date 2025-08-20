@@ -36,7 +36,7 @@
 								 ItemSizingStrategy="MeasureAllItems">
 			<CollectionView.ItemsLayout>
 				<LinearItemsLayout Orientation="Vertical"
-											 ItemSpacing="{DynamicResource MediumSpacing}" />
+											 ItemSpacing="16" />
 			</CollectionView.ItemsLayout>
 			<CollectionView.EmptyView>
 				<Label Text="{l:Localize SomethingWentWrong}" />
