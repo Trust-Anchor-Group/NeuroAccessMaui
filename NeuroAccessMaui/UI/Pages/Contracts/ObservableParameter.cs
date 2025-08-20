@@ -473,7 +473,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				TaskCompletionSource<Contract?> TaskCompletionSource = new();
 				MyContractsNavigationArgs Args = new MyContractsNavigationArgs(ContractsListMode.Contracts, TaskCompletionSource);
-				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args);
 				Contract? Contract = await TaskCompletionSource.Task;
 
 				MainThread.BeginInvokeOnMainThread(() => {

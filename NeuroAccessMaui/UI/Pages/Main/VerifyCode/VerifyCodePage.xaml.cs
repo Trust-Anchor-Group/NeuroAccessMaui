@@ -17,7 +17,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.VerifyCode
 		{
 			this.InitializeComponent();
 
-			VerifyCodeViewModel ViewModel = new(ServiceRef.UiService.PopLatestArgs<VerifyCodeNavigationArgs>());
+			VerifyCodeViewModel ViewModel = new(ServiceRef.NavigationService.PopLatestArgs<VerifyCodeNavigationArgs>());
 			this.ContentPageModel = ViewModel;
 
 			this.innerLabels = [

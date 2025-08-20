@@ -576,7 +576,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 								Convert.ToBase64String(Key) + ":" + Convert.ToBase64String(IV);
 
 							await ServiceRef.XmppService.AddTransferCode(Code);
-							await ServiceRef.UiService.GoToAsync(nameof(TransferIdentityPage), new TransferIdentityNavigationArgs(Url));
+							await ServiceRef.NavigationService.GoToAsync(nameof(TransferIdentityPage), new TransferIdentityNavigationArgs(Url));
 							return;
 						}
 					}
@@ -600,7 +600,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		[RelayCommand]
 		private static async Task ChangeLanguage()
 		{
-			await ServiceRef.UiService.PushAsync<SelectLanguagePopup>();
+			await ServiceRef.NavigationService.PushModalAsync<SelectLanguagePopup>();
 		}
 
 		[RelayCommand]

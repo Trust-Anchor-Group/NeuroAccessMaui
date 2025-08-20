@@ -78,22 +78,22 @@
 
 						<HorizontalStackLayout HorizontalOptions="Center" Spacing="{DynamicResource LargeSpacing}">
 							<controls:ImageButton
-								Command="{Binding PickPhotoCommand, Source={x:Reference ThisPage}}"
+								Command="{Binding PickPhotoCommand}"
 								Style="{DynamicResource FilledImageButton}"
 								PathData="{x:Static ui:Geometries.CameraImageButtonPath}" />
 
 							<controls:ImageButton
-								Command="{Binding SwitchTorchCommand, Source={x:Reference ThisPage}}"
+								Command="{Binding SwitchTorchCommand}"
 								Style="{DynamicResource FilledImageButton}"
 								PathData="{x:Static ui:Geometries.CameraTorchButtonPath}" />
 
 							<controls:ImageButton
-								Command="{Binding SwitchCameraCommand, Source={x:Reference ThisPage}}"
+								Command="{Binding SwitchCameraCommand}"
 								Style="{DynamicResource FilledImageButton}"
 								PathData="{x:Static ui:Geometries.CameraSwitchButtonPath}" />
 						</HorizontalStackLayout>
 
-						<controls:TextButton Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}" Style="{DynamicResource FilledTextButton}"
+						<controls:TextButton Command="{Binding SwitchModeCommand}" Style="{DynamicResource FilledTextButton}"
 													LabelData="{l:Localize QrEnterManually}" />
 					</VerticalStackLayout>
 				</Grid>
@@ -107,7 +107,7 @@
 								   Top="{StaticResource LargeSpacing}"
 								   Right="{StaticResource LargeSpacing}" />
 					</Grid.Padding>
-					<controls:ImageButton HorizontalOptions="Start" Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
+					<controls:ImageButton HorizontalOptions="Start" Command="{Binding SwitchModeCommand}"
 													Style="{DynamicResource ImageOnlyButton}"
 													PathData="{x:Static ui:Geometries.BackButtonPath}" />
 				</Grid>
@@ -122,7 +122,7 @@
 
 						<VerticalStackLayout Grid.Row="1" Spacing="{DynamicResource MediumSpacing}">
 							<controls:TextButton Command="{Binding OpenUrlCommand}" Style="{DynamicResource FilledTextButton}" LabelData="{l:Localize Open}" />
-							<controls:TextButton Grid.Row="1" Command="{Binding Path=SwitchModeCommand, Source={x:Reference ThisPage}}"
+							<controls:TextButton Grid.Row="1" Command="{Binding Path=SwitchModeCommand}"
 														Style="{DynamicResource OutlinedTextButton}" LabelData="{l:Localize QrScanCode}" />
 						</VerticalStackLayout>
 					</Grid>

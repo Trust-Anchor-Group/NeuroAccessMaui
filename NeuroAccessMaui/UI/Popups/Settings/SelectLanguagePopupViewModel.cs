@@ -11,10 +11,11 @@ using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.Test;
 
 namespace NeuroAccessMaui.UI.Popups.Settings
 {
-	public partial class SelectLanguagePopupViewModel : BasePopupViewModel
+	public partial class SelectLanguagePopupViewModel : BaseModalViewModel
 	{
 		// Expose the supported languages.
 		public ObservableCollection<ObservableLanguage> Languages { get; }

@@ -245,7 +245,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			}
 			else
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(this.identity), Services.UI.BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(this.identity), Services.UI.BackMethod.Pop);
 			}
 		}
 
@@ -254,7 +254,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			if (this.Signature is not null)
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(ClientSignaturePage),
+				await ServiceRef.NavigationService.GoToAsync(nameof(ClientSignaturePage),
 					new ClientSignatureNavigationArgs(this.Signature, this.identity),
 					Services.UI.BackMethod.Pop);
 			}

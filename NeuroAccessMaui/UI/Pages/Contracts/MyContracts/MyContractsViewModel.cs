@@ -213,7 +213,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 								{
 									Contract ??= await ServiceRef.XmppService.GetContract(ContractId);
 									ViewContractNavigationArgs Args = new(Contract, false);
-									await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+									await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 								}
 								catch (ItemNotFoundException)
 								{
@@ -238,7 +238,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 							{
 								await ServiceRef.ContractOrchestratorService.OpenContract(ContractId, ServiceRef.Localizer[nameof(AppResources.ReferencedID)], null);
 								//NewContractNavigationArgs Args = new(Contract, null);
-								//await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), Args, BackMethod.CurrentPage);
+								//await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), Args, BackMethod.CurrentPage);
 							}
 							break;
 

@@ -15,7 +15,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 		public PetitionIdentityPage()
 		{
 			this.InitializeComponent();
-			this.ContentPageModel = new PetitionIdentityViewModel(ServiceRef.UiService.PopLatestArgs<PetitionIdentityNavigationArgs>());
+			this.ContentPageModel = new PetitionIdentityViewModel(ServiceRef.NavigationService.PopLatestArgs<PetitionIdentityNavigationArgs>());
 		}
 
 		/// <inheritdoc/>

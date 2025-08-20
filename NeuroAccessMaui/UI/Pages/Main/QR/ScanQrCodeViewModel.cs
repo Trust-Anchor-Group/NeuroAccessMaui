@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
+using ZXing.Net.Maui;
 
 namespace NeuroAccessMaui.UI.Pages.Main.QR
 {
@@ -14,14 +15,17 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 	{
 		private readonly ScanQrCodeNavigationArgs? navigationArgs;
 		private IDispatcherTimer? countDownTimer;
+		private bool suppressModeHandler;
 
 		/// <summary>
 		/// The view model to bind to when scanning a QR code.
 		/// </summary>
-		/// <param name="Args">Navigation arguments.</param>
-		public ScanQrCodeViewModel(ScanQrCodeNavigationArgs? Args)
+		public ScanQrCodeViewModel()
 		{
-			this.navigationArgs = Args;
+			this.navigationArgs = ServiceRef.NavigationService.PopLatestArgs<ScanQrCodeNavigationArgs>();
+			// Default: automatic scan => enable detecting
+			this.isAutomaticScan = true; // backing field to avoid recursion
+			this.isDetecting = true;
 			if (this.navigationArgs is not null &&
 				this.navigationArgs.AllowedSchemas is not null &&
 				this.navigationArgs.AllowedSchemas.Length > 0 &&
@@ -73,6 +77,43 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 					this.Icons.Add(new UriSchemaIcon(Geometries.SignatureIconPath, Geometries.SignatureColor, this));
 			}
 		}
+
+
+		[RelayCommand]
+		private async Task SwitchMode()
+		{
+			// Toggle IsAutomaticScan; page listens for change to animate & adjust camera
+			this.suppressModeHandler = true;
+			this.IsAutomaticScan = !this.IsAutomaticScan;
+			this.suppressModeHandler = false;
+			await Task.CompletedTask;
+		}
+
+		[RelayCommand]
+		private void SwitchCamera()
+		{
+			this.CameraLocation = this.CameraLocation == CameraLocation.Rear ? CameraLocation.Front : CameraLocation.Rear;
+		}
+
+		[RelayCommand]
+		private void SwitchTorch()
+		{
+			this.IsTorchOn = !this.IsTorchOn;
+		}
+
+		private static bool CanPickPhoto() => false; // Disabled for now
+
+		[RelayCommand(CanExecute = nameof(CanPickPhoto))]
+		private async Task PickPhoto()
+		{
+#if ANDROID
+			// Platform-specific implementation previously in page; keep placeholder for future
+			await Task.CompletedTask;
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
 
 		/// <inheritdoc />
 		public override async Task OnInitializeAsync()
@@ -194,6 +235,33 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// </summary>
 		[ObservableProperty]
 		private bool isAutomaticScan = true;
+
+		partial void OnIsAutomaticScanChanged(bool value)
+		{
+			if (!this.suppressModeHandler)
+			{
+				// When entering automatic mode, enable detecting; when leaving, disable
+				this.IsDetecting = value;
+			}
+		}
+
+		/// <summary>
+		/// If camera should be detecting (bound to view control)
+		/// </summary>
+		[ObservableProperty]
+		private bool isDetecting;
+
+		/// <summary>
+		/// Torch state
+		/// </summary>
+		[ObservableProperty]
+		private bool isTorchOn;
+
+		/// <summary>
+		/// Camera location (front/rear)
+		/// </summary>
+		[ObservableProperty]
+		private CameraLocation cameraLocation = CameraLocation.Rear;
 
 		/// <summary>
 		/// If scanning of codes is restricted to a set of allowed schemas.

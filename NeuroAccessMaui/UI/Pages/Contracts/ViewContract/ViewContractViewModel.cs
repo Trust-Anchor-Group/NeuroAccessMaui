@@ -47,7 +47,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		public ViewContractViewModel()
 		{
-			this.args = ServiceRef.UiService.PopLatestArgs<ViewContractNavigationArgs>();
+			this.args = ServiceRef.NavigationService.PopLatestArgs<ViewContractNavigationArgs>();
 
 			this.XmppUriClicked = this.CreateUriCommand(UriScheme.Xmpp);
 			this.IotIdUriClicked = this.CreateUriCommand(UriScheme.IotId);

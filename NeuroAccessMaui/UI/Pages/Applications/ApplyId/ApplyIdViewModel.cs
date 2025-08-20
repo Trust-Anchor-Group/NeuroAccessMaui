@@ -95,7 +95,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.HasFeaturedPeerReviewers = false;
 			}
 
-			ApplyIdNavigationArgs? Args = ServiceRef.UiService.PopLatestArgs<ApplyIdNavigationArgs>();
+			ApplyIdNavigationArgs? Args = ServiceRef.NavigationService.PopLatestArgs<ApplyIdNavigationArgs>();
 
 			if (Args is not null)
 			{
@@ -154,7 +154,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.NrReviews = ServiceRef.TagProfile.NrReviews;
 
 				if (this.ApplicationId is not null && this.ApplicationId == ServiceRef.TagProfile.LegalIdentity?.Id)
-					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), BackMethod.Pop2);
+					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), BackMethod.Pop2);
 				else
 				{
 					if (this.ApplicationSent)
@@ -1216,7 +1216,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				byte[] InputBin = Stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
 
 				TaskCompletionSource<byte[]?> Tcs = new();
-				await ServiceRef.UiService.GoToAsync(nameof(ImageCroppingPage), new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs));
+				await ServiceRef.NavigationService.GoToAsync(nameof(ImageCroppingPage), new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs));
 
 				byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
 
@@ -1452,7 +1452,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				byte[] InputBin = Stream.ToByteArray() ?? throw new Exception("Failed to read photo stream");
 
 				TaskCompletionSource<byte[]?> Tcs = new();
-				await ServiceRef.UiService.GoToAsync(
+				await ServiceRef.NavigationService.GoToAsync(
 					nameof(ImageCroppingPage),
 					new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs)
 				);
@@ -1509,7 +1509,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					ServiceRef.Localizer[nameof(AppResources.RequestReview)],
 					ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderPeerReview)]);
 
-				await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
 
 				if (e.ServiceProvider is not null)
 				{
@@ -1609,7 +1609,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 			// Allow user to crop the image (uses your existing ImageCroppingPage)
 			TaskCompletionSource<byte[]?> Tcs = new TaskCompletionSource<byte[]?>();
-			await ServiceRef.UiService.GoToAsync(nameof(ImageCroppingPage),
+			await ServiceRef.NavigationService.GoToAsync(nameof(ImageCroppingPage),
 				new ImageCroppingNavigationArgs(
 					ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs));
 

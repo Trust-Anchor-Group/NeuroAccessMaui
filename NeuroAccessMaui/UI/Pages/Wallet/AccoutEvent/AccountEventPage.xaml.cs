@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.AccountEvent
 		/// </summary>
 		public AccountEventPage()
 		{
-			this.ContentPageModel = new AccountEventViewModel(ServiceRef.UiService.PopLatestArgs<AccountEventNavigationArgs>());
+			this.ContentPageModel = new AccountEventViewModel(ServiceRef.NavigationService.PopLatestArgs<AccountEventNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

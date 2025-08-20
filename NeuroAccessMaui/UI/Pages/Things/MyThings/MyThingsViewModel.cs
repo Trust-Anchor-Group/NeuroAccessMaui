@@ -277,7 +277,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.MyThings
 				if (this.result is null)
 				{
 					ViewThingNavigationArgs Args = new(Thing.Contact, Thing.Events);
-					await ServiceRef.UiService.GoToAsync(nameof(ViewThingPage), Args, BackMethod.Pop2);
+					await ServiceRef.NavigationService.GoToAsync(nameof(ViewThingPage), Args, BackMethod.Pop2);
 				}
 				else
 				{

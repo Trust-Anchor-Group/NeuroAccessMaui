@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Signatures.ServerSignature
         /// </summary>
 		public ServerSignaturePage()
 		{
-			this.ContentPageModel = new ServerSignatureViewModel(ServiceRef.UiService.PopLatestArgs<ServerSignatureNavigationArgs>());
+			this.ContentPageModel = new ServerSignatureViewModel(ServiceRef.NavigationService.PopLatestArgs<ServerSignatureNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

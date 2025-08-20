@@ -261,7 +261,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 						this.StartTimer();
 
 						VerifyCodeNavigationArgs NavigationArgs = new(this, FullPhoneNumber);
-						await ServiceRef.UiService.GoToAsync(nameof(VerifyCodePage), NavigationArgs, BackMethod.Pop);
+						await ServiceRef.NavigationService.GoToAsync(nameof(VerifyCodePage), NavigationArgs, BackMethod.Pop);
 						string? Code = await NavigationArgs.VarifyCode!.Task;
 
 						if (!string.IsNullOrEmpty(Code))

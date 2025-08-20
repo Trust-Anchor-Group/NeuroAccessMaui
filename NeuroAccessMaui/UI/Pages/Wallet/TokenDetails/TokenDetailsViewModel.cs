@@ -619,7 +619,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			try
 			{
 				ChatNavigationArgs Args = new(LegalId, BareJid, FriendlyName);
-				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, BareJid);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, BareJid);
 			}
 			catch (Exception ex)
 			{
@@ -677,7 +677,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				CanScanQrCode = true,
 			};
 
-			await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
 
 			ContactInfoModel? Contact = await Selected.Task;
 			if (Contact is null)
@@ -697,7 +697,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				await Task.Delay(100);  // Otherwise, page doesn't show properly. (Underlying timing issue. TODO: Find better solution.)
 
 				ChatNavigationArgs ChatArgs = new(Contact.Contact);
-				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 			}
 		}
 
@@ -761,7 +761,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 				NewContractArgs.SuppressProposal(e.TrustProviderId);
 
-				await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
+				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
 			}
 			catch (Exception ex)
 			{
@@ -857,7 +857,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				if (!string.IsNullOrEmpty(TrustProviderId))
 					NewContractArgs.SuppressProposal(TrustProviderId);
 
-				await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
+				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
 			}
 			catch (Exception ex)
 			{
@@ -965,7 +965,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				if (!string.IsNullOrEmpty(TrustProviderId))
 					NewContractArgs.SuppressProposal(TrustProviderId);
 
-				await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
+				await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), NewContractArgs, BackMethod.CurrentPage);
 			}
 			catch (Exception ex)
 			{
@@ -987,7 +987,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				TokenEvent[] Events = this.TokenId is null ? [] : await ServiceRef.XmppService.GetNeuroFeatureEvents(this.TokenId);
 				TokenEventsNavigationArgs Args = new(this.TokenId!, Events);
 
-				await ServiceRef.UiService.GoToAsync(nameof(TokenEventsPage), Args, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(TokenEventsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{
@@ -1059,7 +1059,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				{
 					MachineVariablesNavigationArgs Args = new(e.Running, e.Ended, e.CurrentState, e.Variables);
 
-					await ServiceRef.UiService.GoToAsync(nameof(MachineVariablesPage), Args, BackMethod.Pop);
+					await ServiceRef.NavigationService.GoToAsync(nameof(MachineVariablesPage), Args, BackMethod.Pop);
 				}
 				else
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], e.ErrorText);
@@ -1076,7 +1076,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			{
 				MachineReportNavigationArgs Args = new(Report);
 
-				await ServiceRef.UiService.GoToAsync(nameof(MachineReportPage), Args, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MachineReportPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{

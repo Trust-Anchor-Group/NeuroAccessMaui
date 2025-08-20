@@ -136,13 +136,6 @@ namespace NeuroAccessMaui.UI.Pages
 		/// </summary>
 		public event EventHandlerAsync? OnAfterDisappearing;
 
-		/// <summary>
-		/// Override for handling the custom navigation bar's back button. Return true to cancel the back navigation.
-		/// </summary>
-		/// <returns>Whether or not the back navigation was handled by the override.</returns>
-		public virtual Task<bool> OnToolbarBackButtonPressedAsync()
-		{
-			return Task.FromResult(false);
-		}
+
 	}
 }

@@ -206,7 +206,7 @@ namespace NeuroAccessMaui.UI.Pages
 		[RelayCommand]
 		public virtual async Task GoBack()
 		{
-			await ServiceRef.UiService.GoBackAsync();
+			await ServiceRef.NavigationService.GoBackAsync();
 		}
 
 		/// <summary>

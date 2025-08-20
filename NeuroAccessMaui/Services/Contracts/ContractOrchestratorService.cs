@@ -135,7 +135,7 @@ namespace NeuroAccessMaui.Services.Contracts
 					PetitionPeerReviewNavigationArgs Args = new(Identity, e.RequestorFullJid, e.SignatoryIdentityId, e.PetitionId,
 						e.Purpose, e.ContentToSign);
 
-					await ServiceRef.UiService.GoToAsync(nameof(PetitionPeerReviewPage), Args);
+					await ServiceRef.NavigationService.GoToAsync(nameof(PetitionPeerReviewPage), Args);
 				}
 			}
 			catch (Exception ex)
@@ -188,7 +188,7 @@ namespace NeuroAccessMaui.Services.Contracts
 					{
 						RequestIdentityNotificationEvent Event = new(e);
 						//await ServiceRef.NotificationService.NewEvent(Event);
-						await ServiceRef.UiService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
+						await ServiceRef.NavigationService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
 							Identity, e.RequestorFullJid, e.RequestedIdentityId, e.PetitionId, e.Purpose));
 					}
 				}
@@ -242,7 +242,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.PetitionForSignatureReceived))
 							return;
 
-						await ServiceRef.UiService.GoToAsync(nameof(PetitionSignaturePage), new PetitionSignatureNavigationArgs(
+						await ServiceRef.NavigationService.GoToAsync(nameof(PetitionSignaturePage), new PetitionSignatureNavigationArgs(
 							Identity, e.RequestorFullJid, e.SignatoryIdentityId, e.ContentToSign, e.PetitionId, e.Purpose));
 					}
 				}
@@ -360,7 +360,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			{
 				Contract Contract = await ServiceRef.XmppService.GetContract(e.ContractId);
 			
-				await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
 							Contract, false, e.Role, e.MessageText, e.FromBareJID));
 			}
 			catch (Exception ex)
@@ -517,7 +517,7 @@ namespace NeuroAccessMaui.Services.Contracts
 				LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(LegalId);
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
+					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 				});
 			}
 			catch (ForbiddenException)
@@ -636,13 +636,13 @@ namespace NeuroAccessMaui.Services.Contracts
 
 						NewContractNavigationArgs e = new(Contract, ParameterValues);
 
-						await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), e, BackMethod.CurrentPage);
+						await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), e, BackMethod.CurrentPage);
 					}
 					else
 					{
 						ViewContractNavigationArgs e = new(Contract, false);
 
-						await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), e, BackMethod.Pop);
+						await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), e, BackMethod.Pop);
 					}
 				});
 			}
@@ -727,7 +727,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
 				else
-					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
+					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 			}
 			catch (Exception ex)
 			{

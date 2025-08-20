@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		public PetitionSignaturePage()
 		{
 			this.InitializeComponent();
-			this.ContentPageModel = new PetitionSignatureViewModel(ServiceRef.UiService.PopLatestArgs<PetitionSignatureNavigationArgs>());
+			this.ContentPageModel = new PetitionSignatureViewModel(ServiceRef.NavigationService.PopLatestArgs<PetitionSignatureNavigationArgs>());
 		}
 
 		private void Image_Tapped(object? Sender, EventArgs e)

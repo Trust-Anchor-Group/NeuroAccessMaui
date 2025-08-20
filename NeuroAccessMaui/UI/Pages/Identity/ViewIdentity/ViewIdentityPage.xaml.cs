@@ -20,7 +20,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		public ViewIdentityPage()
 		{
 			this.InitializeComponent();
-			this.ContentPageModel = new ViewIdentityViewModel(ServiceRef.UiService.PopLatestArgs<ViewIdentityNavigationArgs>());
+			this.ContentPageModel = new ViewIdentityViewModel(ServiceRef.NavigationService.PopLatestArgs<ViewIdentityNavigationArgs>());
 		}
 		protected override void OnSizeAllocated(double width, double height)
 		{

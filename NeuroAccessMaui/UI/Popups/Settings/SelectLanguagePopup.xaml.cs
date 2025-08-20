@@ -1,12 +1,13 @@
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Devices;
 using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.Test;
 using NeuroAccessMaui.UI.Popups;
 using NeuroAccessMaui.UI.Popups.Settings;
 
 namespace NeuroAccessMaui.UI.Popups.Settings
 {
-	public partial class SelectLanguagePopup : BasePopup
+	public partial class SelectLanguagePopup : BaseModalPage
 	{
 
 		public SelectLanguagePopup()
@@ -42,12 +43,11 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 				}
 			});
 		}
-
-		protected override void OnDisappearing()
+		public override Task OnDisappearingAsync()
 		{
-			base.OnDisappearing();
 			// Unregister the message handler to avoid multiple registrations.
 			WeakReferenceMessenger.Default.Unregister<ScrollToLanguageMessage>(this);
+			return base.OnDisappearingAsync();
 		}
 	}
 }

@@ -162,7 +162,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			try
 			{
 				if (await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
-					await ServiceRef.UiService.GoToAsync(nameof(NotificationsPage));
+					await ServiceRef.NavigationService.GoToAsync(nameof(NotificationsPage));
 			}
 			catch (Exception Ex)
 			{
@@ -175,7 +175,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage));
+				await ServiceRef.NavigationService.GoToAsync(nameof(ApplyIdPage));
 			}
 			catch (Exception Ex)
 			{
@@ -189,7 +189,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(AppsPage));
+				await ServiceRef.NavigationService.GoToAsync(nameof(AppsPage));
 			}
 			catch (Exception Ex)
 			{
@@ -223,7 +223,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			{
 				WalletNavigationArgs Args = new();
 
-				await ServiceRef.UiService.GoToAsync(nameof(WalletPage), Args, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(WalletPage), Args, BackMethod.Pop);
 			}
 			catch (Exception Ex)
 			{
@@ -240,7 +240,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(SettingsPage));
+				await ServiceRef.NavigationService.GoToAsync(nameof(SettingsPage));
 			}
 			catch (Exception Ex)
 			{

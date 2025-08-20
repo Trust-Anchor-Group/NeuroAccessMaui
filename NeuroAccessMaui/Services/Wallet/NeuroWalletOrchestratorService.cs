@@ -109,7 +109,7 @@ namespace NeuroAccessMaui.Services.Wallet
 
 				WalletNavigationArgs e = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
 
-				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), e);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyEDalerWalletPage), e);
 			}
 			catch (Exception ex)
 			{
@@ -141,7 +141,7 @@ namespace NeuroAccessMaui.Services.Wallet
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.UiService.GoToAsync(nameof(IssueEDalerPage), new EDalerUriNavigationArgs(Parsed));
+					await ServiceRef.NavigationService.GoToAsync(nameof(IssueEDalerPage), new EDalerUriNavigationArgs(Parsed));
 				});
 			}
 			else if (Parsed is EDalerDestroyerUri)
@@ -152,14 +152,14 @@ namespace NeuroAccessMaui.Services.Wallet
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.UiService.GoToAsync(nameof(PaymentAcceptancePage), new EDalerUriNavigationArgs(Parsed));
+					await ServiceRef.NavigationService.GoToAsync(nameof(PaymentAcceptancePage), new EDalerUriNavigationArgs(Parsed));
 				});
 			}
 			else if (Parsed is EDalerIncompletePaymentUri)
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.UiService.GoToAsync(nameof(PaymentPage), new EDalerUriNavigationArgs(Parsed));
+					await ServiceRef.NavigationService.GoToAsync(nameof(PaymentPage), new EDalerUriNavigationArgs(Parsed));
 				});
 			}
 			else
@@ -191,7 +191,7 @@ namespace NeuroAccessMaui.Services.Wallet
 
 				TokenDetailsNavigationArgs Args = new(new TokenItem(Token, Events));
 
-				await ServiceRef.UiService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{

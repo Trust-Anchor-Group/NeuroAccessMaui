@@ -724,7 +724,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 			ViewThingNavigationArgs Args = new(this.thing, MyThingsViewModel.GetNotificationEvents(this.thing) ?? []);
 
-			await ServiceRef.UiService.GoToAsync(nameof(ReadSensorPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(ReadSensorPage), Args, BackMethod.Pop);
 
 			await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(false));
 
@@ -771,7 +771,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.UiService.GoToAsync(nameof(XmppFormPage), new XmppFormNavigationArgs(e.Form));
+					await ServiceRef.NavigationService.GoToAsync(nameof(XmppFormPage), new XmppFormNavigationArgs(e.Form));
 				});
 			}
 			else
@@ -802,7 +802,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				string FriendlyName = this.thing.FriendlyName;
 				ChatNavigationArgs Args = new(LegalId, this.thing.BareJid, FriendlyName);
 
-				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.thing.BareJid);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.thing.BareJid);
 			}
 			catch (Exception ex)
 			{

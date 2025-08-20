@@ -1,30 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Settings.SelectLanguagePopup"
+<base:BaseModalPage x:Class="NeuroAccessMaui.UI.Popups.Settings.SelectLanguagePopup"
 					 x:Name="thisPopup"
-					 x:DataType="viewModel:SelectLanguagePopupViewModel"
+					 x:DataType="vm:SelectLanguagePopupViewModel"
 					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 					 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-					 xmlns:viewModel="clr-namespace:NeuroAccessMaui.UI.Popups.Settings"
-					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+				     xmlns:vm="clr-namespace:NeuroAccessMaui.UI.Popups.Settings"
+				xmlns:viewModel="clr-namespace:NeuroAccessMaui.Test"
+	  xmlns:base="clr-namespace:NeuroAccessMaui.Test"
 					 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
 					 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
 
-	<mopups:PopupPage.Animation>
-		<animations:ScaleAnimation DurationIn="500"
-											DurationOut="500"
-											EasingIn="CubicIn"
-											EasingOut="CubicOut"
-											HasBackgroundAnimation="True"
-											PositionIn="Center"
-											PositionOut="Center" />
-	</mopups:PopupPage.Animation>
 
-	<VisualElement.Resources>
+	<base:BaseModalPage.Resources>
 		<DataTemplate x:Key="SelectLanguageDataTemplate"
-						  x:DataType="viewModel:ObservableLanguage">
+						  x:DataType="vm:ObservableLanguage">
 			<Border x:Name="ItemBorder"
 			        BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
 			        Stroke="{DynamicResource SurfaceBackgroundWL}"
@@ -41,9 +33,13 @@
 					</DataTrigger>
 				</Border.Triggers>
 				<Border.GestureRecognizers>
-					<TapGestureRecognizer Command="{Binding Source={x:Reference thisPopup}, Path=BindingContext.SelectLanguageCommand}"
-					                      CommandParameter="{Binding Language.Name}" />
+					<TapGestureRecognizer x:DataType="{x:Null}"
+										  Command="{Binding Source={x:Reference thisPopup}, Path=BindingContext.SelectLanguageCommand}"
+										  CommandParameter="{Binding Language.Name}" />
 				</Border.GestureRecognizers>
+
+
+
 				<Label x:Name="InnerLabel"
 						 HorizontalOptions="Center"
 						 Style="{DynamicResource BoldItemTitleLabel}"
@@ -61,7 +57,7 @@
 			</Border>
 		</DataTemplate>
 
-	</VisualElement.Resources>
+		</base:BaseModalPage.Resources>
 
 	<Grid Style="{DynamicResource PopupGrid}">
 		<Border WidthRequest="{Binding ViewWidthRequest}"
@@ -76,4 +72,4 @@
 			</ScrollView>
 		</Border>
 	</Grid>
-</base:BasePopup>
+</base:BaseModalPage>

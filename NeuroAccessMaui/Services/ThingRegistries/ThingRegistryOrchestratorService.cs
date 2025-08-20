@@ -42,7 +42,7 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 		{
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(ViewClaimThingPage), new ViewClaimThingNavigationArgs(Uri));
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewClaimThingPage), new ViewClaimThingNavigationArgs(Uri));
 			});
 
 			return Task.CompletedTask;
@@ -86,7 +86,7 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 								SubscribeTo = null
 							};
 
-							await ServiceRef.UiService.GoToAsync(nameof(ViewThingPage), new ViewThingNavigationArgs(ContactInfo,
+							await ServiceRef.NavigationService.GoToAsync(nameof(ViewThingPage), new ViewThingNavigationArgs(ContactInfo,
 								MyThingsViewModel.GetNotificationEvents(ContactInfo) ?? []));
 						});
 						break;
@@ -151,7 +151,7 @@ namespace NeuroAccessMaui.Services.ThingRegistries
 
 				ViewThingNavigationArgs Args = new(Info, MyThingsViewModel.GetNotificationEvents(Info) ?? []);
 
-				await ServiceRef.UiService.GoToAsync(nameof(ViewThingPage), Args, BackMethod.CurrentPage);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewThingPage), Args, BackMethod.CurrentPage);
 			}
 			catch (Exception ex)
 			{

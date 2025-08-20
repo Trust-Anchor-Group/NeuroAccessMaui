@@ -33,7 +33,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		public NewContractViewModel()
 		{
-			this.args = ServiceRef.UiService.PopLatestArgs<NewContractNavigationArgs>();
+			this.args = ServiceRef.NavigationService.PopLatestArgs<NewContractNavigationArgs>();
 
 			this.SelectedContractVisibilityItem = this.ContractVisibilityItems[0];
 		}

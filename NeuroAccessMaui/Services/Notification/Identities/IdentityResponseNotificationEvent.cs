@@ -47,7 +47,7 @@ namespace NeuroAccessMaui.Services.Notification.Identities
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
 			}
 			else
-				await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(this.Identity));
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(this.Identity));
 		}
 
 		/// <summary>

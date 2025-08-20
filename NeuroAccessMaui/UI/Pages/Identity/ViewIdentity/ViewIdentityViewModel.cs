@@ -884,7 +884,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					return;
 
 				ChatNavigationArgs ChatArgs = new(this.identity.Id, Jid, PersonalInfo.FullName);
-				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Jid);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Jid);
 			}
 			catch (Exception Ex)
 			{

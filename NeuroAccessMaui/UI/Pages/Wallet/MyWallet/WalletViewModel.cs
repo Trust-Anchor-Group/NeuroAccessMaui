@@ -155,7 +155,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 				if (ServiceProviders.Length == 0)
 				{
 					EDalerBalanceNavigationArgs Args = new(Balance);
-					await ServiceRef.UiService.GoToAsync(nameof(RequestPaymentPage), Args, BackMethod.CurrentPage);
+					await ServiceRef.NavigationService.GoToAsync(nameof(RequestPaymentPage), Args, BackMethod.CurrentPage);
 					return;
 				}
 
@@ -170,7 +170,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 					ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderBuyEDaler)]
 				);
 
-				await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
 				if (e.ServiceProvider is null)
 					return;
 
@@ -186,7 +186,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 				if (string.IsNullOrEmpty(ServiceProvider.Id))
 				{
 					EDalerBalanceNavigationArgs Args = new(Balance);
-					await ServiceRef.UiService.GoToAsync(nameof(RequestPaymentPage), Args, BackMethod.CurrentPage);
+					await ServiceRef.NavigationService.GoToAsync(nameof(RequestPaymentPage), Args, BackMethod.CurrentPage);
 				}
 				// 6. No contract template: manual amount input flow.
 				else if (string.IsNullOrEmpty(ServiceProvider.BuyEDalerTemplateContractId))
@@ -194,7 +194,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 					TaskCompletionSource<decimal?> Result = new();
 					BuyEDalerNavigationArgs Args = new(Balance?.Currency, Result);
 
-					await ServiceRef.UiService.GoToAsync(nameof(BuyEDalerPage), Args, BackMethod.CurrentPage);
+					await ServiceRef.NavigationService.GoToAsync(nameof(BuyEDalerPage), Args, BackMethod.CurrentPage);
 
 					decimal? Amount = await Result.Task;
 					if (!Amount.HasValue)
@@ -270,7 +270,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		{
 			try
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(AppsPage));
+				await ServiceRef.NavigationService.GoToAsync(nameof(AppsPage));
 			}
 			catch (Exception Ex)
 			{

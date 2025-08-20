@@ -16,7 +16,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// </summary>
 		public MyContractsPage()
 		{
-			MyContractsViewModel ViewModel = new(ServiceRef.UiService.PopLatestArgs<MyContractsNavigationArgs>());
+			MyContractsViewModel ViewModel = new(ServiceRef.NavigationService.PopLatestArgs<MyContractsNavigationArgs>());
 			this.ContentPageModel = ViewModel;
 
 			this.InitializeComponent();

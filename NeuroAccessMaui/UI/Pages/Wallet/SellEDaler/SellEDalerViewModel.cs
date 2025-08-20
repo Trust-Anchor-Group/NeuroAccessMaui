@@ -101,7 +101,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.SellEDaler
 					case "AmountText":
 						CalculatorNavigationArgs Args = new(this, nameof(this.AmountText));
 
-						await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), Args, BackMethod.Pop);
+						await ServiceRef.NavigationService.GoToAsync(nameof(CalculatorPage), Args, BackMethod.Pop);
 						break;
 				}
 			}

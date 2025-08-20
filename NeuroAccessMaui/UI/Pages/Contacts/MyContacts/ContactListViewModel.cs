@@ -355,7 +355,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 										EDalerUriNavigationArgs Args = new(Parsed);
 										// Inherit the back method here from the parrent
-										await ServiceRef.UiService.GoToAsync(nameof(PaymentPage), Args, BackMethod.Pop2);
+										await ServiceRef.NavigationService.GoToAsync(nameof(PaymentPage), Args, BackMethod.Pop2);
 
 										break;
 
@@ -365,7 +365,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 										{
 											ViewIdentityNavigationArgs ViewIdentityArgs = new(Contact.LegalIdentity);
 
-											await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs);
+											await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs);
 										}
 										else if (!string.IsNullOrEmpty(Contact.LegalId))
 										{
@@ -375,7 +375,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 										else if (!string.IsNullOrEmpty(Contact.BareJid) && Contact.Contact is not null)
 										{
 											ChatNavigationArgs ChatArgs = new(Contact.Contact);
-											await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+											await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 										}
 
 										break;

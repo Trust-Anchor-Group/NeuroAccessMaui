@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 			try
 			{
 				ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.ContactsDescription)], SelectContactAction.ViewIdentity);
-				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception Ex)
 			{
@@ -57,7 +57,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 			try
 			{
 				MyContractsNavigationArgs Args = new(ContractsListMode.Contracts);
-				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{
@@ -70,7 +70,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		{
 			try
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(ApplicationsPage));
+				await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
 			}
 			catch (Exception Ex)
 			{
@@ -94,7 +94,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 				}
 				else
 				{
-					await ServiceRef.UiService.GoToAsync(nameof(MyThingsPage));
+					await ServiceRef.NavigationService.GoToAsync(nameof(MyThingsPage));
 				}
 			}
 			catch (Exception Ex)
@@ -117,7 +117,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 				else
 				{
 					MyContractsNavigationArgs Args = new(ContractsListMode.ContractTemplates);
-					await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+					await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 				}
 			}
 			catch (Exception Ex)
@@ -140,7 +140,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 				else
 				{
 					MyContractsNavigationArgs Args = new(ContractsListMode.TokenCreationTemplates);
-					await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+					await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 				}
 			}
 			catch (Exception Ex)
@@ -155,7 +155,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 			try
 			{
 				if (await ServiceRef.Provider.GetRequiredService<IAuthenticationService>().AuthenticateUserAsync(AuthenticationPurpose.ViewId))
-					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
+					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception Ex)
 			{
@@ -177,7 +177,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 				else
 				{
 					WalletNavigationArgs Args = new();
-					await ServiceRef.UiService.GoToAsync(nameof(WalletPage), Args, BackMethod.Pop);
+					await ServiceRef.NavigationService.GoToAsync(nameof(WalletPage), Args, BackMethod.Pop);
 				}
 			}
 			catch (Exception Ex)

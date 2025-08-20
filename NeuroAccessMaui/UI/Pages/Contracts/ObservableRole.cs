@@ -294,7 +294,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				Contacts = Contacts
 			};
 
-			await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
 
 			ContactInfoModel? Contact = await Selected.Task;
 			if (Contact is null)
