@@ -12,11 +12,13 @@ namespace NeuroAccessMaui.UI.Pages.Startup
     public partial class LoadingPage : BaseContentPage
     {
         private readonly ITagProfile tagProfile;
-        public LoadingPage(ITagProfile tagProfile)
+		private readonly INavigationService navigationService;
+		public LoadingPage(ITagProfile tagProfile, INavigationService navigationService)
         {
             this.InitializeComponent();
             this.BindingContext = this;
             this.tagProfile = tagProfile;
+            this.navigationService = navigationService;
         }
 
         public override Task OnDisposeAsync() => Task.CompletedTask;
@@ -31,11 +33,10 @@ namespace NeuroAccessMaui.UI.Pages.Startup
             // Check onboarding
             bool IsOnboarded = this.tagProfile.IsComplete();
 
-            CustomShell Shell = ServiceHelper.GetService<CustomShell>();
-            if (!IsOnboarded)
-                await Shell.SetPageAsync(ServiceHelper.GetService<RegistrationPage>());
-            else
-                await Shell.SetPageAsync(ServiceHelper.GetService<MainPage>());
+			if (!IsOnboarded)
+				await this.navigationService.GoToAsync(nameof(RegistrationPage));
+			else
+				await this.navigationService.GoToAsync(nameof(MainPage));
         }
 
         public override Task OnDisappearingAsync() => Task.CompletedTask;
