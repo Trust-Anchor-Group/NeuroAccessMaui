@@ -39,7 +39,8 @@ namespace NeuroAccessMaui
 
         private readonly SemaphoreSlim autoSaveSemaphore = new(1, 1);
         private Timer? autoSaveTimer;
-        private readonly Task<bool> initCompleted;
+        // Initialization completion source (shared across potential recreated App instances)
+        private static readonly TaskCompletionSource<bool> initCompletedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
         private readonly SemaphoreSlim startupWorker = new(1, 1);
         private CancellationTokenSource startupCancellation;
         private bool isDisposed;
@@ -146,7 +147,7 @@ namespace NeuroAccessMaui
         /// </summary>
         public static event EventHandler? AppActivated;
 
-        public Task<bool> InitCompleted => this.initCompleted;
+        public Task<bool> InitCompleted => initCompletedTcs.Task;
 
 
         #endregion
@@ -170,13 +171,12 @@ namespace NeuroAccessMaui
                 TaskScheduler.UnobservedTaskException += this.TaskScheduler_UnobservedTaskException;
 
                 this.startupCancellation = new CancellationTokenSource();
-                this.initCompleted = this.InitializeAppAsync(backgroundStart);
+                this.StartInitialization(backgroundStart);
             }
             else
             {
                 // Reuse state from the previous instance.
                 this.autoSaveTimer = PreviousInstance.autoSaveTimer;
-                this.initCompleted = PreviousInstance.initCompleted;
                 this.startupCancellation = PreviousInstance.startupCancellation;
             }
 
@@ -189,7 +189,7 @@ namespace NeuroAccessMaui
                 this.SetTheme(CurrentTheme ?? AppTheme.Light);
                 ServiceRef.ThemeService.SetTheme(CurrentTheme ?? AppTheme.Light);
                 // Show CustomShell directly as MainPage
-               // this.MainPage = ServiceHelper.GetService<CustomShell>();
+                // this.MainPage = ServiceHelper.GetService<CustomShell>();
             }
         }
 
@@ -217,7 +217,8 @@ namespace NeuroAccessMaui
         {
             if (this.Windows.Any())
                 return this.Windows[0];
-            return new Window(ServiceHelper.GetService<CustomShell>());
+            CustomShell Shell = ServiceHelper.GetService<CustomShell>();
+            return new Window(Shell);
         }
         #endregion
 
@@ -229,29 +230,25 @@ namespace NeuroAccessMaui
 			LocalizationManager.Current.CurrentCulture = SelectedLanguage;
 		}
 
-        private Task<bool> InitializeAppAsync(bool backgroundStart)
+        private void StartInitialization(bool backgroundStart)
         {
-            TaskCompletionSource<bool> ResultTcs = new();
-            Task.Run(async () => await this.InitializeAppInternalAsync(ResultTcs, backgroundStart));
-            return ResultTcs.Task;
-        }
-
-        private async Task InitializeAppInternalAsync(TaskCompletionSource<bool> resultTcs, bool backgroundStart)
-        {
-            try
+            Task.Run(async () =>
             {
-                this.InitializeInstances();
-                await ServiceRef.CryptoService.InitializeJwtFactory();
-                await this.PerformStartupAsync(isResuming: false, backgroundStart);
-                resultTcs.TrySetResult(true);
-            }
-            catch (Exception Ex)
-            {
-                Ex = Log.UnnestException(Ex);
-                this.HandleStartupException(Ex);
-                servicesSetup.TrySetResult(false);
-                resultTcs.TrySetResult(false);
-            }
+                try
+                {
+                    this.InitializeInstances();
+                    await ServiceRef.CryptoService.InitializeJwtFactory();
+                    await this.PerformStartupAsync(isResuming: false, backgroundStart);
+                    initCompletedTcs.TrySetResult(true);
+                }
+                catch (Exception Ex)
+                {
+                    Ex = Log.UnnestException(Ex);
+                    this.HandleStartupException(Ex);
+                    servicesSetup.TrySetResult(false);
+                    initCompletedTcs.TrySetResult(false);
+                }
+            });
         }
 
         private void HandleStartupException(Exception Ex)
@@ -305,7 +302,7 @@ namespace NeuroAccessMaui
             }
 
             // Asynchronously wait up to 60 seconds.
-            if (!await this.initCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
+            if (!await this.InitCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
                 throw new Exception("Initialization did not complete in time.");
         }
 
@@ -318,7 +315,7 @@ namespace NeuroAccessMaui
                 return;
             }
 
-            if (!await this.initCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
+            if (!await this.InitCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
                 throw new Exception("Initialization did not complete in time.");
         }
 
@@ -377,9 +374,8 @@ namespace NeuroAccessMaui
                 await ServiceRef.NeuroWalletOrchestratorService.Load(isResuming, Token);
                 await ServiceRef.NotificationService.Load(isResuming, Token);
 
+                AppShell.RegisterRoutes();
 
-          //      NavigationService NavigationService = ServiceRef.Provider.GetRequiredService<NavigationService>();
-           //     await NavigationService.GoToAsync(nameof(NeuroAccessMaui.UI.Pages.Main.MainPage));
                 //	AppShell.AppLoaded();
             }
             catch (OperationCanceledException)
@@ -406,7 +402,8 @@ namespace NeuroAccessMaui
 
         protected override async void OnSleep()
         {
-            if (this.MainPage?.BindingContext is BaseViewModel Vm)
+            Page? rootPage = this.Windows.FirstOrDefault()?.Page;
+            if (rootPage?.BindingContext is BaseViewModel Vm)
                 await Vm.Shutdown();
 
             await this.ShutdownAsync(inPanic: false);
@@ -636,18 +633,19 @@ namespace NeuroAccessMaui
                 await this.ShutdownAsync(inPanic: false);
 
 #if DEBUG
-            if (!shutdown && this.MainPage is not null)
+            Page? alertPage = this.Windows.FirstOrDefault()?.Page;
+            if (!shutdown && alertPage is not null)
             {
                 if (this.Dispatcher.IsDispatchRequired)
                 {
                     this.Dispatcher.Dispatch(async () =>
                     {
-                        await this.MainPage.DisplayAlert(title, ex?.ToString(), ServiceRef.Localizer[nameof(AppResources.Ok)]);
+                        await alertPage.DisplayAlert(title, ex?.ToString(), ServiceRef.Localizer[nameof(AppResources.Ok)]);
                     });
                 }
                 else
                 {
-                    await this.MainPage.DisplayAlert(title, ex?.ToString(), ServiceRef.Localizer[nameof(AppResources.Ok)]);
+                    await alertPage.DisplayAlert(title, ex?.ToString(), ServiceRef.Localizer[nameof(AppResources.Ok)]);
                 }
             }
 #endif
@@ -655,7 +653,12 @@ namespace NeuroAccessMaui
 
         private void DisplayBootstrapErrorPage(string title, string stackTrace)
         {
-            this.Dispatcher.Dispatch(() => this.MainPage = new BootstrapErrorPage(title, stackTrace));
+            this.Dispatcher.Dispatch(() =>
+            {
+                Window? win = this.Windows.FirstOrDefault();
+                if (win is not null)
+                    win.Page = new BootstrapErrorPage(title, stackTrace);
+            });
         }
 
         private static async Task SendErrorReportFromPreviousRunAsync()
@@ -819,10 +822,10 @@ namespace NeuroAccessMaui
                 return;
 
             this.autoSaveTimer?.Dispose();
-            this.initCompleted.Dispose();
             this.startupWorker.Dispose();
             this.startupCancellation.Dispose();
 
+            await Task.CompletedTask; // keep method truly async if extended later
             this.isDisposed = true;
         }
 
