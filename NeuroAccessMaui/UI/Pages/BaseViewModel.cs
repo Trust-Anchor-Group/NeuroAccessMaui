@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages
 {
@@ -13,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages
 	/// <br/>
 	/// NOTE: using this class requires your page/view to inherit from <see cref="BaseContentPage"/> or <see cref="BaseContentView"/>.
 	/// </summary>
-	public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
+	public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView, IBackButtonHandler
 	{
 		private readonly List<BaseViewModel> childViewModels = [];
 		private bool isOverlayVisible;
@@ -200,10 +201,18 @@ namespace NeuroAccessMaui.UI.Pages
 				ServiceRef.Localizer[nameof(AppResources.No)]);
 		}
 
+		public async Task<bool> OnBackButtonPressedAsync()
+		{
+			if (this.GoBackCommand.CanExecute(null))
+				_ = this.GoBackCommand.ExecuteAsync(null);
+
+			return true;
+		}
+
 		/// <summary>
 		/// Method called when user wants to navigate to the previous screen.
 		/// </summary>
-		[RelayCommand]
+		[RelayCommand(AllowConcurrentExecutions = false)]
 		public virtual async Task GoBack()
 		{
 			await ServiceRef.NavigationService.GoBackAsync();
@@ -258,5 +267,7 @@ namespace NeuroAccessMaui.UI.Pages
 			foreach (BaseViewModel ChildViewModel in this.childViewModels)
 				await ChildViewModel.OnDisappearingAsync();
 		}
+
+
 	}
 }
