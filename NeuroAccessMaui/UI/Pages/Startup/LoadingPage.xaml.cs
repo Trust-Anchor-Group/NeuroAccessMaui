@@ -6,6 +6,7 @@ using NeuroAccessMaui.Services;          // for ServiceRef and ServiceHelper
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Services.Theme;
 
 namespace NeuroAccessMaui.UI.Pages.Startup
 {
@@ -13,12 +14,15 @@ namespace NeuroAccessMaui.UI.Pages.Startup
     {
         private readonly ITagProfile tagProfile;
 		private readonly INavigationService navigationService;
-		public LoadingPage(ITagProfile tagProfile, INavigationService navigationService)
+		private readonly IThemeService themeService;
+
+		public LoadingPage(ITagProfile tagProfile, INavigationService navigationService, IThemeService themeService)
         {
             this.InitializeComponent();
             this.BindingContext = this;
             this.tagProfile = tagProfile;
             this.navigationService = navigationService;
+            this.themeService = themeService;
         }
 
         public override Task OnDisposeAsync() => Task.CompletedTask;
@@ -33,11 +37,17 @@ namespace NeuroAccessMaui.UI.Pages.Startup
             // Check onboarding
             bool IsOnboarded = this.tagProfile.IsComplete();
 
+
+
 			if (!IsOnboarded)
 				await this.navigationService.GoToAsync(nameof(RegistrationPage));
 			else
+			{
+				await Task.Delay(5000);
+				await this.themeService.ApplyProviderTheme();
 				await this.navigationService.GoToAsync(nameof(MainPage));
-        }
+			}
+		}
 
         public override Task OnDisappearingAsync() => Task.CompletedTask;
     }
