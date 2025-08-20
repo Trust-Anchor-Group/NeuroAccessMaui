@@ -1,14 +1,13 @@
+using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.Services;                     // for ServiceHelper
 using NeuroAccessMaui.UI.Pages.Startup;             // for LoadingPage
-using NeuroAccessMaui.Test;                         // for CustomShell registration context
-using NeuroAccessMaui.UI.Pages.Main; // For ILifeCycleView
-using Microsoft.Maui.Graphics; // for Colors
+using Microsoft.Maui.Graphics;
+using NeuroAccessMaui.UI.Pages.Main; // for Colors
 
 namespace NeuroAccessMaui.Test
 {
@@ -16,7 +15,7 @@ namespace NeuroAccessMaui.Test
     /// Custom shell with edge-to-edge layout, dynamic top/nav bars, and transition support.
     /// Handles both normal ContentPage and ILifeCycleView pages.
     /// </summary>
-    public class CustomShell : ContentPage
+    public class CustomShell : ContentPage, IShellPresenter
     {
         private readonly Grid layout;
         private readonly ContentView topBar;
@@ -25,8 +24,8 @@ namespace NeuroAccessMaui.Test
         private readonly Grid modalOverlay;
         private readonly BoxView modalBackground;
         private readonly ContentView modalHost;
-private readonly Stack<BaseContentPage> modalStack = new();
-private BaseContentPage? currentPage;
+        private ContentView? currentScreen;
+        public event EventHandler? ModalBackgroundTapped;
 
         /// <summary>
         /// Initializes a new instance of <see cref="CustomShell"/>.
@@ -55,15 +54,7 @@ private BaseContentPage? currentPage;
             this.modalOverlay.Add(this.modalHost);
 
             TapGestureRecognizer BackgroundTap = new();
-            BackgroundTap.Tapped += async (_, _) =>
-            {
-                if (this.modalStack.Count == 0)
-                    return;
-
-                BaseContentPage TopPage = this.modalStack.Peek();
-                if (BaseModalPage.GetPopOnBackgroundPress(TopPage))
-                    await this.PopModalAsync();
-            };
+            BackgroundTap.Tapped += (_, _) => this.ModalBackgroundTapped?.Invoke(this, EventArgs.Empty);
 
             this.modalBackground.GestureRecognizers.Add(BackgroundTap);
 
@@ -78,7 +69,7 @@ private BaseContentPage? currentPage;
             this.Padding = 0;
             this.On<iOS>().SetUseSafeArea(false);
 
-            AppShell.RegisterRoutes();
+
             // Shell background
             this.BackgroundColor = Colors.White;
             // Show initial loading page immediately
@@ -87,7 +78,7 @@ private BaseContentPage? currentPage;
             // Assign content synchronously so spinner is visible right away
             this.contentHost.Content = loadingPage.Content;
             this.contentHost.BindingContext = loadingPage.BindingContext;
-            this.currentPage = loadingPage;
+            this.currentScreen = loadingPage;
 
             // Trigger lifecycle and potential navigation
             this.Dispatcher.Dispatch(async () =>
@@ -100,7 +91,7 @@ private BaseContentPage? currentPage;
         /// <summary>
         /// The currently displayed page.
         /// </summary>
-        public BaseContentPage? CurrentPage => this.currentPage;
+        public BaseContentPage? CurrentPage => this.currentScreen as BaseContentPage;
 
         /// <summary>
         /// Swaps in a new page, with optional transition, updating bars and lifecycle events.
@@ -108,102 +99,66 @@ private BaseContentPage? currentPage;
         /// </summary>
         /// <param name="Page">The new page to show.</param>
         /// <param name="Transition">Transition type (fade, etc).</param>
-        public async Task SetPageAsync(BaseContentPage Page, TransitionType Transition = TransitionType.None)
+        // Backwards compatibility for existing code still calling SetPageAsync
+        public Task SetPageAsync(BaseContentPage Page, TransitionType Transition = TransitionType.None) => this.ShowScreen(Page, Transition);
+
+        public async Task ShowScreen(ContentView screen, TransitionType transition = TransitionType.None)
         {
-            // Remove previous page (disappearing, dispose)
-            if (this.currentPage is not null)
+            this.contentHost.Content = screen;
+            this.currentScreen = screen;
+            this.UpdateBars(screen);
+            if (transition == TransitionType.Fade)
             {
-                if (this.currentPage is ILifeCycleView oldLifeCycle)
-                    await oldLifeCycle.OnDisappearingAsync();
-                // object cleanup moved to NavigationService
-            }
-
-            // Host the shell view in the content slot
-            this.contentHost.Content = Page;
-            this.currentPage = Page;
-
-            // Fire custom appearing lifecycle
-            await Page.OnAppearingAsync();
-
-            // Manage bar visibility/content
-            this.topBar.IsVisible = NavigationBars.GetTopBarVisible(Page);
-            this.navBar.IsVisible = NavigationBars.GetNavBarVisible(Page);
-
-            if (Page is IBarContentProvider barProvider)
-            {
-                this.topBar.Content = barProvider.TopBarContent;
-                this.navBar.Content = barProvider.NavBarContent;
-            }
-            else
-            {
-                this.topBar.Content = null;
-                this.navBar.Content = null;
-            }
-
-            // Transition (fade in)
-            if (Transition == TransitionType.Fade)
-            {
-                Page.Opacity = 0;
-                await Page.FadeTo(1, 150, Easing.CubicOut);
+                screen.Opacity = 0;
+                await screen.FadeTo(1, 150, Easing.CubicOut);
             }
         }
 
         /// <summary>
-        /// Displays a page modally on top of the current page.
+        /// (Legacy doc removed) Use ShowModal instead via IShellPresenter.
         /// </summary>
-        /// <param name="Page">The modal page to show.</param>
-        /// <param name="Transition">Optional transition.</param>
-        public async Task PushModalAsync(BaseContentPage Page, TransitionType Transition = TransitionType.Fade)
+        public async Task ShowModal(ContentView screen, TransitionType transition = TransitionType.Fade)
         {
-            this.modalHost.Content = Page;
-            this.modalStack.Push(Page);
-
-            this.modalBackground.BackgroundColor = BaseModalPage.GetOverlayColor(Page);
-
+            this.modalHost.Content = screen;
+            this.modalBackground.Opacity = 0;
             this.modalHost.IsVisible = true;
             this.modalOverlay.IsVisible = true;
-
-            // Fire custom appearing lifecycle
-            await Page.OnAppearingAsync();
-
-            if (Transition == TransitionType.Fade)
-            {
-                this.modalBackground.Opacity = 0;
+            if (transition == TransitionType.Fade)
                 await this.modalBackground.FadeTo(1, 150, Easing.CubicOut);
-            }
             else
-            {
                 this.modalBackground.Opacity = 1;
-            }
         }
 
         /// <summary>
         /// Pops the top most modal page.
         /// </summary>
-        public async Task PopModalAsync()
+        public async Task HideTopModal(TransitionType transition = TransitionType.Fade)
         {
-            if (this.modalStack.Count == 0)
+            if (!this.modalOverlay.IsVisible)
                 return;
-
-            BaseContentPage Page = this.modalStack.Pop();
-
-            // Fire custom disappearing lifecycle
-            await Page.OnDisappearingAsync();
-
             this.modalHost.Content = null;
             this.modalHost.BindingContext = null;
-
-            if (this.modalStack.Count == 0)
-            {
+            if (transition == TransitionType.Fade)
                 await this.modalBackground.FadeTo(0, 150, Easing.CubicOut);
-                this.modalHost.IsVisible = false;
-                this.modalOverlay.IsVisible = false;
+            this.modalHost.IsVisible = false;
+            this.modalOverlay.IsVisible = false;
+        }
+
+        public void UpdateBars(BindableObject screen)
+        {
+            bool topVisible = NavigationBars.GetTopBarVisible(screen);
+            bool navVisible = NavigationBars.GetNavBarVisible(screen);
+            this.topBar.IsVisible = topVisible;
+            this.navBar.IsVisible = navVisible;
+            if (screen is IBarContentProvider provider)
+            {
+                this.topBar.Content = provider.TopBarContent;
+                this.navBar.Content = provider.NavBarContent;
             }
             else
             {
-                BaseContentPage Next = this.modalStack.Peek();
-                this.modalHost.Content = Next;
-                this.modalBackground.BackgroundColor = BaseModalPage.GetOverlayColor(Next);
+                this.topBar.Content = null;
+                this.navBar.Content = null;
             }
         }
     }
