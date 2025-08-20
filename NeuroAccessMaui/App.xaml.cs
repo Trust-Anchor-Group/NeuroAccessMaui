@@ -183,7 +183,6 @@ namespace NeuroAccessMaui
             if (!backgroundStart)
             {
                 this.InitializeComponent();
-				AppTheme CurrentTheme = ServiceRef.TagProfile.Theme;
 
                 AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
                 this.SetTheme(CurrentTheme ?? AppTheme.Light);

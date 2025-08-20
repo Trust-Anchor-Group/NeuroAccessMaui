@@ -12,7 +12,7 @@
 							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views">
 
 	<Grid x:Name="TheMainGrid" RowDefinitions="auto,*" ColumnDefinitions="*" 
-		BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+		BackgroundColor="Transparent">
 
 		<controls:Background Grid.RowSpan="2" />
 

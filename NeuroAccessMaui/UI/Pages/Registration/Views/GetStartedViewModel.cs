@@ -26,9 +26,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		private bool handlesOnboardingLink = false;
 
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 			WeakReferenceMessenger.Default.Register<OnboardingLinkProcessingMessage>(this, (_, m) =>
 			{
 				this.handlesOnboardingLink = m.IsProcessing;
@@ -52,10 +52,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			}
 		}
 
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
 			WeakReferenceMessenger.Default.Unregister<OnboardingLinkProcessingMessage>(this);
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		[RelayCommand]
