@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference = null;
 			}
 
-			if (true) // Reference is null)
+			if (true) // Reference is null) // Set line to commented out code to enable storage
 			{
 				Reference = new KycReference
 				{
@@ -42,6 +42,7 @@ namespace NeuroAccessMaui.Services.Kyc
 					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 				}
 
+				// TODO: Replace this with fetching pub/sub element on neuron
 				string FileName = GetFileName(Resource);
 				using Stream Stream = await FileSystem.OpenAppPackageFileAsync(FileName);
 				using StreamReader Reader = new(Stream);

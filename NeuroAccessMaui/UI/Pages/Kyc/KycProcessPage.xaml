@@ -329,7 +329,7 @@
 			  RowDefinitions="*">
 			<controls:SvgButton Grid.Row="0"
 								Grid.Column="0"
-								Command="{Binding PreviousCommand}"
+								Command="{Binding ExitCommand}"
 								Style="{DynamicResource IconButton}"
 								SvgSource="close.svg"
 								HeightRequest="48"

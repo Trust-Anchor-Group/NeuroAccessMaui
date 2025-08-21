@@ -356,6 +356,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			await this.ExecutePrevious();
 		}
 
+		[RelayCommand]
+		public async Task Exit()
+		{
+			this.UpdateReference();
+			this.SaveReferenceToStorage();
+			await base.GoBack();
+		}
+
 		private async Task<bool> ValidateCurrentPageAsync()
 		{
 			if (this.CurrentPage is null)
@@ -712,32 +720,34 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 			}
 
+			// TODO: Localization
 			foreach (LegalIdentityAttachment Attachment in this.attachments)
 			{
-				switch (Attachment.FileName)
+				switch (Attachment.FileName!.Split(".")[0])
 				{
-					case "Passport.jpg":
+					case "Passport":
 						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Passport image"));
 						break;
-					case "IdCardFront.jpg":
+					case "IdCardFront":
 						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Front of ID card"));
 						break;
-					case "IdCardBack.jpg":
+					case "IdCardBack":
 						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Back of ID card"));
 						break;
-					case "DriverLicenseFront.jpg":
+					case "DriverLicenseFront":
 						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Front of driver's license"));
 						break;
-					case "DriverLicenseBack.jpg":
+					case "DriverLicenseBack":
 						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Back of driver's license"));
 						break;
-					case "ProfilePhoto.jpg":
+					case "ProfilePhoto":
 						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Photo of face"));
 						break;
 				}
 			}
 		}
 
+		//TODO: Localization
 		private static readonly Dictionary<string, string> xmppPropertyFriendlyNames = new()
 		{
 			{ "FULLNAME", "Full name" },
