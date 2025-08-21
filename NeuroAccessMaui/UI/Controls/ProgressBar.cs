@@ -123,7 +123,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 			float Width = E.Info.Width;
 			float Height = E.Info.Height;
-			float Radius = Math.Min(this.CornerRadius, Height / 2);
+			float Radius = this.CornerRadius;
 
 			// Draw the background (track)
 			using (SKPaint TrackPaint = new()
@@ -144,7 +144,7 @@ namespace NeuroAccessMaui.UI.Controls
 				BarPaint.Shader = ProgressBar.ToShader(this.BarBrush, ProgressWidth, Height)
 					?? SKShader.CreateColor(SKColors.Blue);
 
-				SKRoundRect BarRect = new(new SKRect(0, 0, ProgressWidth, Height), Radius, Radius);
+				SKRoundRect BarRect = new(new SKRect(Height/3, Height/3, ProgressWidth - Height/3, 2*Height/3), Radius/2, Radius/2);
 				Canvas.DrawRoundRect(BarRect, BarPaint);
 			}
 		}

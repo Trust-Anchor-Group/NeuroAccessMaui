@@ -493,8 +493,8 @@
 						   TextColor="{DynamicResource TnPAccent2ContentWL}"/>
 				</Grid>
 				<controls:ProgressBar Progress="{Binding Progress}"
-									  HeightRequest="10"
-									  CornerRadius="10"
+									  HeightRequest="20"
+									  CornerRadius="40"
 									  TrackBrush="{DynamicResource TnPAccent2bgWL}"
 									  BarBrush="{DynamicResource TnPAccent2FigureWL}"
 									  Margin="{DynamicResource SmallBottomMargins}">
