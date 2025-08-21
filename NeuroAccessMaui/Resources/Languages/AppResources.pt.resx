@@ -582,7 +582,7 @@
     <value>Criar um código PIN</value>
   </data>
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
-    <value>Êxito!</value>
+    <value>Você foi cadastrado(a) com sucesso!</value>
   </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Quase concluído</value>
@@ -651,7 +651,7 @@
     <value>Um provedor de serviços fornece conectividade para o aplicativo, intermedeia solicitações e garante que as informações fornecidas pelo cliente estejam corretas.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
-    <value>Convite de varredura</value>
+    <value>Escaneie o convite</value>
   </data>
   <data name="QrSectionTitleSingular" xml:space="preserve">
     <value>Aponte a câmera para um código QR com o símbolo acima</value>
@@ -966,13 +966,13 @@
     <value>ID da Empresa</value>
   </data>
   <data name="OrganizationalIdDescription" xml:space="preserve">
-    <value>Solicite um novo ID de Empresa digital. O ID conterá suas informações pessoais, as informações da empresa vinculada e sua função na empresa. Ele pode ser usado para validar sua identidade pessoal e sua função na empresa, bem como para obter acesso a serviços que exigem uma identidade de empresa verificada.</value>
+    <value>Solicite um novo ID digital de Empresa. O ID conterá suas informações pessoais, as informações da empresa vinculada e sua função na empresa. Ele pode ser usado para validar sua identidade pessoal e sua função na empresa, bem como para obter acesso a serviços que exigem uma identidade de empresa verificada.</value>
   </data>
   <data name="OrganizationalInformationDescription" xml:space="preserve">
-    <value>As Informações da Empresa a seguir serão incluídas no aplicativo para uma ID da Empresa.</value>
+    <value>As informações corporativas a seguir serão incluídas no aplicativo para o ID digital da Empresa.</value>
   </data>
   <data name="OrganizationalInformationSentDescription" xml:space="preserve">
-    <value>As seguintes Informações da Empresa foram incluídas no aplicativo para uma ID da Empresa.</value>
+    <value>As seguintes informações corporativas foram incluídas no aplicativo para o ID digital da Empresa.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
     <value>As revisões por pares estão habilitadas. Isso permite que você solicite que colegas (pessoas com IDs digitais já aprovadas) analisem seu aplicativo e o aprovem.</value>
@@ -1185,7 +1185,7 @@
     <value>Contratos</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Abaixo está uma lista de contratos que você criou ou assinou, organizados por categoria. Toque em uma categoria para expandir. Toque em um contrato para visualizá-lo.</value>
+    <value>Abaixo está uma lista de contratos que você criou ou assinou, organizados por categoria. Toque em uma categoria para expandi-la. Toque em um contrato para visualizá-lo.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Contrato assinado com sucesso.</value>
@@ -2950,5 +2950,11 @@
   </data>
   <data name="Paste" xml:space="preserve">
     <value>Colar</value>
+  </data>
+  <data name="CreditBalance" xml:space="preserve">
+    <value>Saldo</value>
+  </data>
+  <data name="BuyNeuroCredits" xml:space="preserve">
+    <value>Comprar Créditos-Neuro</value>
   </data>
 </root>

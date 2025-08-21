@@ -2951,4 +2951,10 @@
   <data name="Paste" xml:space="preserve">
     <value>Klistra in</value>
   </data>
+  <data name="CreditBalance" xml:space="preserve">
+    <value>Kreditbalans</value>
+  </data>
+  <data name="BuyNeuroCredits" xml:space="preserve">
+    <value>Köp Neuro-krediter</value>
+  </data>
 </root>

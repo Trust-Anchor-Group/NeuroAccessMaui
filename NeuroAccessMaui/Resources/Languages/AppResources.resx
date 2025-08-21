@@ -2952,4 +2952,10 @@
   <data name="Paste" xml:space="preserve">
     <value>Paste</value>
   </data>
+  <data name="CreditBalance" xml:space="preserve">
+    <value>Credit Balance</value>
+  </data>
+  <data name="BuyNeuroCredits" xml:space="preserve">
+    <value>Buy Neuro-Credits</value>
+  </data>
 </root>
