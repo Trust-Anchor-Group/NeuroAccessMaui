@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference = null;
 			}
 
-			if (true) // Reference is null) // Set line to commented out code to enable storage
+			if (Reference is null) // Set line to commented out code to enable storage
 			{
 				Reference = new KycReference
 				{

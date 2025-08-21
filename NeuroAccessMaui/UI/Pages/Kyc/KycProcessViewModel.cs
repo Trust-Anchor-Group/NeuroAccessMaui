@@ -344,6 +344,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.currentPageIndex = PreviousIndex;
 				this.CurrentPagePosition = PreviousIndex;
 				this.SetCurrentPage(this.currentPageIndex);
+				await this.ValidateCurrentPageAsync();
 			}
 			else
 			{
@@ -686,6 +687,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 
+			DateTime? BirthDate = new();
+
 			foreach (Property Prop in this.mappedValues)
 			{
 				if (!xmppPropertyFriendlyNames.TryGetValue(Prop.Name, out string? FriendlyName))
@@ -693,12 +696,28 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					continue;
 				}
 
+				// Remember fall-trough if adding more cases
 				switch (Prop.Name)
 				{
-					case "FULLNAME":
 					case Constants.XmppProperties.BirthDay:
+						if (int.TryParse(Prop.Value, out int Days))
+						{
+							BirthDate = BirthDate.Value.AddDays(Days - 1);
+						}
+						break;
 					case Constants.XmppProperties.BirthMonth:
+						if (int.TryParse(Prop.Value, out int Months))
+						{
+							BirthDate = BirthDate.Value.AddMonths(Months - 1);
+						}
+						break;
 					case Constants.XmppProperties.BirthYear:
+						if (int.TryParse(Prop.Value, out int Years))
+						{
+							BirthDate = BirthDate.Value.AddYears(Years - 1);
+						}
+						break;
+					case "FULLNAME":
 					case Constants.XmppProperties.PersonalNumber:
 					case Constants.XmppProperties.Gender:
 					case Constants.XmppProperties.Nationality:
@@ -718,6 +737,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					default:
 						break;
 				}
+			}
+
+			// Add birth date if available
+			if (BirthDate.HasValue)
+			{
+				this.PersonalInformationSummary.Add(new KVP("Birth date", BirthDate.Value.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture)));
 			}
 
 			// TODO: Localization
