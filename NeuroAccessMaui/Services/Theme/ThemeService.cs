@@ -62,7 +62,7 @@ namespace NeuroAccessMaui.Services.Theme
 		/// </summary>
 		public ThemeService()
 		{
-			this.themeSemaphore = new SemaphoreSlim(1, 1);
+			//this.themeSemaphore = new SemaphoreSlim(1, 1);
 			this.cacheManager = new FileCacheManager("BrandingThemes", themeExpiry);
 			this.imageUrisMap = new(StringComparer.OrdinalIgnoreCase);
 		}
