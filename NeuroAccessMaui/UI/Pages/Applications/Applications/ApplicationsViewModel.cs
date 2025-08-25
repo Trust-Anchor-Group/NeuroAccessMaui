@@ -288,8 +288,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					ServiceRef.LogService.LogException(ex);
 				}
 
-				throw new Exception("Test");
-
 				ct.ThrowIfCancellationRequested();
 
 				// Add drafts, newest first
