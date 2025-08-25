@@ -160,7 +160,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// <summary>
 		/// If First Password entry is not valid.
 		/// </summary>
-		public bool IsPassword1NotValid => !string.IsNullOrEmpty(this.PasswordText1) && (this.PasswordStrength != PasswordStrength.Strong);
+		public bool IsPassword1NotValid => !string.IsNullOrEmpty(this.PasswordText1) && !this.PasswordIsStrong();
 
 		/// <summary>
 		/// If Second Password entry is not valid.
@@ -222,10 +222,15 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				this.ToggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateAlphanumeric)];
 		}
 
+		private bool PasswordIsStrong()
+		{
+			return this.PasswordStrength == PasswordStrength.Strong;
+		}
+
 		[RelayCommand]
 		private void Continue()
 		{
-			if ((this.PasswordStrength != PasswordStrength.Strong) || !this.PasswordsMatch)
+			if (!this.PasswordIsStrong() || !this.PasswordsMatch)
 			{
 				this.CanContinue = false;
 				return;
