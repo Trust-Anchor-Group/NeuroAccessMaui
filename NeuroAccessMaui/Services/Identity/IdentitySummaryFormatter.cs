@@ -167,16 +167,50 @@ namespace NeuroAccessMaui.Services.Identity
                         continue;
 
                     string Base = Att.FileName.Split('.')[0];
-                    string Description = Base switch
+
+                    string Description;
+                    switch (Base)
                     {
-                        "Passport" => "Passport image", // TODO: Localize
-                        "IdCardFront" => "Front of ID card",
-                        "IdCardBack" => "Back of ID card",
-                        "DriverLicenseFront" => "Front of driver's license",
-                        "DriverLicenseBack" => "Back of driver's license",
-                        "ProfilePhoto" => "Photo of face",
-                        _ => Att.FileName
-                    };
+                        case "Passport":
+                            {
+                                Microsoft.Extensions.Localization.LocalizedString L = ServiceRef.Localizer[nameof(AppResources.Attachment_Passport), false];
+                                Description = L.ResourceNotFound ? Base : L.Value;
+                                break;
+                            }
+                        case "IdCardFront":
+                            {
+                                Microsoft.Extensions.Localization.LocalizedString L = ServiceRef.Localizer[nameof(AppResources.Attachment_IdCardFront), false];
+                                Description = L.ResourceNotFound ? Base : L.Value;
+                                break;
+                            }
+                        case "IdCardBack":
+                            {
+                                Microsoft.Extensions.Localization.LocalizedString L = ServiceRef.Localizer[nameof(AppResources.Attachment_IdCardBack), false];
+                                Description = L.ResourceNotFound ? Base : L.Value;
+                                break;
+                            }
+                        case "DriverLicenseFront":
+                            {
+                                Microsoft.Extensions.Localization.LocalizedString L = ServiceRef.Localizer[nameof(AppResources.Attachment_DriverLicenseFront), false];
+                                Description = L.ResourceNotFound ? Base : L.Value;
+                                break;
+                            }
+                        case "DriverLicenseBack":
+                            {
+                                Microsoft.Extensions.Localization.LocalizedString L = ServiceRef.Localizer[nameof(AppResources.Attachment_DriverLicenseBack), false];
+                                Description = L.ResourceNotFound ? Base : L.Value;
+                                break;
+                            }
+                        case "ProfilePhoto":
+                            {
+                                Microsoft.Extensions.Localization.LocalizedString L = ServiceRef.Localizer[nameof(AppResources.Attachment_ProfilePhoto), false];
+                                Description = L.ResourceNotFound ? Base : L.Value;
+                                break;
+                            }
+                        default:
+                            Description = Att.FileName;
+                            break;
+                    }
 
                     Result.Attachments.Add(new DisplayPair(Att.FileName, Description));
                 }
