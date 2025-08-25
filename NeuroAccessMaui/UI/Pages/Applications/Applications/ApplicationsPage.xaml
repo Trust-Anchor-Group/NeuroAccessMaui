@@ -10,7 +10,8 @@
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.Applications">
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.Applications"
+							 xmlns:service="clr-namespace:NeuroAccessMaui.Services.Kyc">
 
 	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
@@ -26,66 +27,55 @@
 						HorizontalOptions="Start"/>
 
 					<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Applications}" HorizontalOptions="End"/>
-					
 				</Grid>
 
-
-				<!-- Identity Applications -->
+				<!-- Unified Applications List -->
 				<Border Style="{DynamicResource BorderSet}">
-					<Grid>
-						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-											 IsVisible="{Binding IdentityApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-
-							<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}" Margin="{StaticResource SmallLeftMargins}"/>
-
-							<!-- Apply for Personal ID -->
-							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ApplyPersonalIdCommand}">
-								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize PersonalId}" InputTransparent="True"
-											   TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
-											   Margin="{StaticResource SmallLeftMargins}"/>
-										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize PersonalIdDescription}" InputTransparent="True"
-											    TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
-/>
-									</VerticalStackLayout>
-								</Frame>
-							</controls:TemplatedButton>
-
-							<!-- Apply for Organizational ID -->
-							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ApplyOrganizationalIdCommand}">
-								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize OrganizationalId}" InputTransparent="True"
-												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
-											   Margin="{StaticResource SmallLeftMargins}"/>
-										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize OrganizationalIdDescription}" InputTransparent="True"
-											    TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
-									</VerticalStackLayout>
-								</Frame>
-							</controls:TemplatedButton>
-
-						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" IsVisible="{Binding IdentityApplicationSent}">
-							<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}" />
-
-							<!-- View Identity Application -->
-							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ViewIdApplicationCommand}">
-								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"
-												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
-										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize ViewIdApplicationDescription}" InputTransparent="True"
-												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
-											   Margin="{StaticResource SmallLeftMargins}"/>
-									</VerticalStackLayout>
-								</Frame>
-							</controls:TemplatedButton>
-
-						</VerticalStackLayout>
-					</Grid>
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}" />
+						<CollectionView ItemsSource="{Binding Applications}" IsVisible="{Binding HasApplications}">
+							<CollectionView.ItemTemplate>
+								<DataTemplate x:DataType="service:KycReference">
+									<controls:TemplatedButton Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ApplicationsViewModel}}, Path=OpenApplicationCommand}"
+															 CommandParameter="{Binding}">
+										<Border Style="{DynamicResource SecondaryButtonActiveBorder}" InputTransparent="True">
+											<Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" InputTransparent="True">
+												<Label Grid.Row="0" Grid.Column="0" Style="{DynamicResource KeyLabel}" Text="{Binding FriendlyName}" InputTransparent="True" />
+												<Label Grid.Row="1" Grid.Column="0" Style="{DynamicResource ValueLabel}" Text="{Binding UpdatedUtc, StringFormat='{}{0:g}'}" InputTransparent="True" />
+												<Border Grid.RowSpan="2"
+														Grid.Column="1"
+														Padding="8,2"
+														StrokeShape="RoundRectangle 12 12 12 12" BackgroundColor="{DynamicResource TnPWarningContentWL}"
+													   VerticalOptions="Center" InputTransparent="True">
+													<Label Text="In Progress" />
+												</Border>
+										</Grid>
+										</Border>
+									</controls:TemplatedButton>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+					</VerticalStackLayout>
 				</Border>
+
+				<!-- Create new application -->
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}" />
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding CreateNewApplicationCommand}">
+							<Border Style="{DynamicResource PrimaryButtonActiveBorder}" InputTransparent="True">
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
+									<Label Style="{DynamicResource SectionTitleLabel}" Text="New Application" InputTransparent="True"
+										   TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
+									<Label Style="{DynamicResource KeyLabel}" Text="Temporary" InputTransparent="True"
+										   TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
+								</VerticalStackLayout>
+							</Border>
+						</controls:TemplatedButton>
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Removed old grouped sections in favor of unified list above -->
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>
