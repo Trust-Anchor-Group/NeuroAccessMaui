@@ -68,6 +68,10 @@
 				Value="{DynamicResource InputFieldsContentPrimary}" />
 		<Setter Property="EntryStyle"
 				Value="{DynamicResource RegularCompositeEntryEntry}" />
+		<Setter Property="LabelStyle"
+				Value="{DynamicResource RegularCompositeEntryLabel}" />
+		<Setter Property="ValidationLabelStyle"
+				Value="{DynamicResource RegularCompositeInputViewValidationLabel}" />
 		<Setter Property="ValidationColor"
 				Value="{DynamicResource InputFieldsContentDangerv500}" />
 		<!-- Border properties are inherited from BaseCompositeInputView -->
