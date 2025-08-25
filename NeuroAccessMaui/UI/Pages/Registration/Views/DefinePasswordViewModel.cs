@@ -44,13 +44,11 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(PasswordsMatch))]
-		[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]
 		private string? passwordText1;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(IsPassword2NotValid))]
 		[NotifyPropertyChangedFor(nameof(PasswordsMatch))]
-		[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]
 		private string? passwordText2;
 
 
@@ -83,9 +81,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
 		[ObservableProperty]
 		private string toggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateAlphanumeric)];
-
-
-
 
 		partial void OnPasswordText1Changed(string? value)
 		{
@@ -133,6 +128,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			this.OnPropertyChanged(nameof(this.PasswordStrength));
 			this.OnPropertyChanged(nameof(this.LocalizedValidationError));
 			this.OnPropertyChanged(nameof(this.IsPassword1NotValid));
+			this.OnPropertyChanged(nameof(this.IsPassword2NotValid));
+
+			this.CanContinue = true;
 		}
 
 		/// <summary>
@@ -162,12 +160,12 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// <summary>
 		/// If First Password entry is not valid.
 		/// </summary>
-		public bool IsPassword1NotValid => !string.IsNullOrEmpty(this.PasswordText1) && this.PasswordStrength != PasswordStrength.Strong;
+		public bool IsPassword1NotValid => !string.IsNullOrEmpty(this.PasswordText1) && (this.PasswordStrength != PasswordStrength.Strong);
 
 		/// <summary>
 		/// If Second Password entry is not valid.
 		/// </summary>
-		public bool IsPassword2NotValid => !string.IsNullOrEmpty(this.PasswordText2) && !this.PasswordsMatch;
+		public bool IsPassword2NotValid => !this.IsPassword1NotValid && !this.PasswordsMatch;
 
 		/// <summary>
 		/// Localized validation error message.
@@ -202,10 +200,8 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			};
 		}
 
-		public bool CanContinue => this.PasswordStrength == PasswordStrength.Strong && this.PasswordsMatch;
-
-
-
+		[ObservableProperty]
+		private bool canContinue = false;
 
 		[RelayCommand]
 		private void ToggleNumericPassword()
@@ -226,10 +222,15 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 				this.ToggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateAlphanumeric)];
 		}
 
-
-		[RelayCommand(CanExecute = nameof(CanContinue))]
+		[RelayCommand]
 		private void Continue()
 		{
+			if ((this.PasswordStrength != PasswordStrength.Strong) || !this.PasswordsMatch)
+			{
+				this.CanContinue = false;
+				return;
+			}
+
 			ServiceRef.PlatformSpecific.HideKeyboard();
 
 			bool IsFirstPassword = string.IsNullOrEmpty(ServiceRef.TagProfile.LocalPasswordHash); //Wheter or not to go to the Finalize view
