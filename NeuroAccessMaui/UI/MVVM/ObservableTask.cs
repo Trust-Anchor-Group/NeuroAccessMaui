@@ -1,18 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.ApplicationModel;
 using NeuroAccessMaui.Services; // For MainThread
 
 namespace NeuroAccessMaui.UI.MVVM
 {
-	public enum TaskStatus
+	/// <summary>
+	/// UI-friendly status for an observable async operation.
+	/// (Renamed to avoid collision with System.Threading.Tasks.TaskStatus.)
+	/// </summary>
+	public enum ObservableTaskStatus
 	{
 		Pending,
-		Running,    //Executing, Running
+		Running,
 		Succeeded,
 		Failed,
 		Canceled
@@ -28,50 +27,16 @@ namespace NeuroAccessMaui.UI.MVVM
 	/// <remarks>
 	/// This class encapsulates asynchronous operation management and exposes a variety of useful properties and methods:
 	/// <list type="bullet">
-	///   <item>
-	///     <description>
-	///       <c>Task</c> – Gets the current running task.
-	///     </description>
-	///   </item>
-	///   <item>
-	///     <description>
-	///       <c>Result</c> – Returns the result of the operation when the task completes successfully.
-	///     </description>
-	///   </item>
-	///   <item>
-	///     <description>
-	///       <c>State</c> – Indicates the current state of the task (NotStarted, Loading, Succeeded, Faulted, or Canceled).
-	///     </description>
-	///   </item>
-	///   <item>
-	///     <description>
-	///       <c>Progress reporting</c> – The <c>Progress</c> property reflects the latest progress value reported by the task.
-	///     </description>
-	///   </item>
-	///   <item>
-	///     <description>
-	///       <c>Cancellation support</c> – A cancellation token is managed internally to support task cancellation.
-	///     </description>
-	///   </item>
-	///   <item>
-	///     <description>
-	///       <c>Generation fallback</c> – Implements a generation-based mechanism to ensure that if a new task is started (or refreshed/reloaded),
-	///       any progress or completion from an old, cancelled task is ignored. This prevents stale operations from updating the UI.
-	///     </description>
-	///   </item>
+	///   <item><description><c>CurrentTask</c> – The current running task (propagates exceptions if awaited directly).</description></item>
+	///   <item><description><c>CurrentWatcher</c> – Internal watcher that completes after UI notifications.</description></item>
+	///   <item><description><c>State</c> – Indicates current state (Pending, Running, Succeeded, Failed, or Canceled).</description></item>
+	///   <item><description><c>Progress</c> – Reflects latest progress value reported by the task.</description></item>
+	///   <item><description><c>Cancellation</c> – A token source is managed internally to support cancellation.</description></item>
+	///   <item><description><c>Generation fallback</c> – Newer tasks supersede older ones; stale updates are ignored.</description></item>
 	/// </list>
-	/// <para>
-	/// <strong>Usage:</strong> Typically, you use an instance of this notifier as part of your MVVM command infrastructure.
-	/// The asynchronous operation’s status can be bound to UI elements (for example, to show loading indicators, display error messages, etc.).
-	/// </para>
-	/// <para>
-	/// <strong>Warning:</strong> If the asynchronous operation has side effects (such as network requests, file operations,
-	/// or interactions with external systems), reloading or refreshing may not immediately halt the previous operation. The stale operation
-	/// may still complete its execution and perform its side effects. It is therefore important to ensure that such operations are idempotent
-	/// or that any unintended effects are properly managed.
-	/// </para>
+	/// <para><strong>Warning:</strong> If the operation has side effects, ensure idempotency or manage unintended effects when canceling/reloading.</para>
 	/// </remarks>
-	public partial class ObservableTask<TProgress> : ObservableObject
+	public partial class ObservableTask<TProgress> : ObservableObject, IDisposable
 	{
 		private readonly object syncObject = new();
 
@@ -79,53 +44,56 @@ namespace NeuroAccessMaui.UI.MVVM
 		private TProgress progress = default!;
 
 		// Commands to notify when state changes.
-		private readonly List<IRelayCommand> notifyCommands = new List<IRelayCommand>();
+		private readonly List<IRelayCommand> notifyCommands = new();
 
 		// The factory delegate to create tasks; stored so that a new load can be triggered.
 		private Func<TaskContext<TProgress>, Task>? taskFactory;
 
-
-		/// A generation counter to identify the currently active task.
+		// A generation counter to identify the currently active task.
 		private int currentGeneration = 0;
 
 		/// <summary>
-		/// The current task being processed
+		/// If true, invokes the task factory via Task.Run to force background-thread execution (useful for CPU-bound work).
+		/// Default is false (good for async/IO-bound code).
+		/// </summary>
+		public bool UseTaskRun { get; set; } = false;
+
+		/// <summary>
+		/// The current task being processed.
 		/// </summary>
 		/// <remarks>
-		/// <c>Warning: </c> Will propagate exception and return value
+		/// <c>Warning:</c> Awaiting this will propagate exceptions.
 		/// </remarks>
 		public Task? CurrentTask { get; private set; }
 
 		/// <summary>
-		/// The current watcher monitoring the current Task
+		/// The current watcher monitoring the current Task.
 		/// </summary>
 		/// <remarks>
-		/// <c>Note: </c> Will not propagate exceptions. Completes when CurrentTask is done and UI has been notified
+		/// Does not propagate exceptions. Completes when CurrentTask is done and UI has been notified.
 		/// </remarks>
 		public Task? CurrentWatcher { get; private set; }
 
 		/// <summary>
 		/// Gets the current state.
 		/// </summary>
-		public TaskStatus State { get; private set; }
+		public ObservableTaskStatus State { get; private set; }
 
 		// Convenience properties for data binding.
-		public bool IsPending => this.State == TaskStatus.Pending;
-		public bool IsNotPending => this.State != TaskStatus.Pending;
-		public bool IsRunning => this.State == TaskStatus.Running;
-		public bool IsNotRunning => this.State != TaskStatus.Running;
-		public bool IsSucceeded => this.State == TaskStatus.Succeeded;
-		public bool IsNotSucceeded => this.State != TaskStatus.Succeeded;
-		public bool IsFailed => this.State == TaskStatus.Failed;
-		public bool IsNotFailed => this.State != TaskStatus.Failed;
-		public bool IsCanceled => this.State == TaskStatus.Canceled;
-		public bool IsNotCanceled => this.State != TaskStatus.Canceled;
+		public bool IsPending => this.State == ObservableTaskStatus.Pending;
+		public bool IsNotPending => this.State != ObservableTaskStatus.Pending;
+		public bool IsRunning => this.State == ObservableTaskStatus.Running;
+		public bool IsNotRunning => this.State != ObservableTaskStatus.Running;
+		public bool IsSucceeded => this.State == ObservableTaskStatus.Succeeded;
+		public bool IsNotSucceeded => this.State != ObservableTaskStatus.Succeeded;
+		public bool IsFailed => this.State == ObservableTaskStatus.Failed;
+		public bool IsNotFailed => this.State != ObservableTaskStatus.Failed;
+		public bool IsCanceled => this.State == ObservableTaskStatus.Canceled;
+		public bool IsNotCanceled => this.State != ObservableTaskStatus.Canceled;
 		public bool IsRefreshing { get; private set; }
 
-
-
 		/// <summary>
-		/// If the task faulted, returns its AggregateException.
+		/// If the task faulted, returns its AggregateException (if applicable).
 		/// </summary>
 		public AggregateException? Exception { get; private set; }
 
@@ -162,35 +130,38 @@ namespace NeuroAccessMaui.UI.MVVM
 		public CancellationTokenSource? CancellationTokenSource { get; private set; }
 
 		/// <summary>
-		/// Cancels any running task and disposes the CancellationTokenSource.
+		/// Optional event fired when <see cref="State"/> changes. Handy for telemetry or local reactions.
+		/// </summary>
+		public event EventHandler<ObservableTaskStatus>? StateChanged;
+
+		/// <summary>
+		/// Cancels any running task.
 		/// </summary>
 		private void CancelExistingTask()
 		{
-
-			if (this.CancellationTokenSource is null)
+			CancellationTokenSource? Cts = this.CancellationTokenSource;
+			if (Cts is null)
 				return;
 
 			try
 			{
 				if (this.CurrentTask is { IsCompleted: false })
 				{
-					this.CancellationTokenSource.Cancel();
+					Cts.Cancel();
 				}
 			}
-			catch (Exception Ex)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(Ex);
+				ServiceRef.LogService.LogException(ex);
 			}
 		}
 
 		/// <summary>
 		/// Starts a new task using the stored factory.
 		/// If a task is already running, it is canceled first.
-		/// The parameter isRefresh is passed to the factory to indicate whether this is a refresh.
 		/// </summary>
-		private void StartNewTask(bool IsRefresh)
+		private void StartNewTask(bool isRefresh)
 		{
-
 			try
 			{
 				lock (this.syncObject)
@@ -203,18 +174,18 @@ namespace NeuroAccessMaui.UI.MVVM
 
 					// Cancel any existing task.
 					this.CancelExistingTask();
+
 					this.CancellationTokenSource = new CancellationTokenSource();
 					this.CurrentTask = null;
 					this.CurrentWatcher = null;
-					this.IsRefreshing = IsRefresh;
 					this.ErrorMessage = string.Empty;
 					this.Exception = null;
 					this.InnerException = null;
-					this.IsRefreshing = IsRefresh;
-					this.State = TaskStatus.Running;
+					this.IsRefreshing = isRefresh;
+					this.State = ObservableTaskStatus.Running;
 
-					// Create a progress reporter that ensures UI updates.
-					Progress<TProgress> ProgressReporter = new Progress<TProgress>(value =>
+					// Create a progress reporter that ensures UI updates and ignores stale generations.
+					Progress<TProgress> ProgressReporter = new(value =>
 					{
 						if (ThisGeneration == this.currentGeneration)
 						{
@@ -222,16 +193,26 @@ namespace NeuroAccessMaui.UI.MVVM
 						}
 					});
 
-					TaskContext<TProgress> Context = new(IsRefresh, this.CancellationTokenSource.Token, ProgressReporter);
+					TaskContext<TProgress> Context = new(isRefresh, this.CancellationTokenSource.Token, ProgressReporter);
 
 					// Start the new task.
-					this.CurrentTask = this.taskFactory.Invoke(Context);
+					if (this.UseTaskRun)
+					{
+						// Force background-thread execution (good for CPU-bound work).
+						this.CurrentTask = Task.Run(() => this.taskFactory!.Invoke(Context), this.CancellationTokenSource.Token);
+					}
+					else
+					{
+						// Default path (good for naturally async/IO-bound work).
+						this.CurrentTask = this.taskFactory.Invoke(Context);
+					}
+
 					this.CurrentWatcher = this.WatchTaskAsync(ThisGeneration, this.CurrentTask, this.CancellationTokenSource);
 				}
 			}
-			catch (Exception Ex)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(Ex);
+				ServiceRef.LogService.LogException(ex);
 			}
 			finally
 			{
@@ -243,9 +224,9 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// <summary>
 		/// Monitors the current task and notifies property changes when it completes.
 		/// </summary>
-		private async Task WatchTaskAsync(int Generation, Task? Current, CancellationTokenSource Cts)
+		private async Task WatchTaskAsync(int generation, Task? current, CancellationTokenSource cts)
 		{
-			//TODO: Add logging for Tasks gone rouge
+			// TODO: Add logging for tasks gone rogue if desired.
 
 			AggregateException? AggregateException = null;
 			Exception? InnerException = null;
@@ -253,47 +234,47 @@ namespace NeuroAccessMaui.UI.MVVM
 
 			try
 			{
-				if (Current is not null)
+				if (current is not null)
 				{
-					await Current;
+					await current.ConfigureAwait(false);
 				}
 			}
-			catch(TaskCanceledException)
+			catch (TaskCanceledException)
 			{
-				//Ignore, normal operation
+				// Normal operation on cancel.
 			}
-			catch (Exception Ex)
+			catch (Exception ex)
 			{
 				// Exceptions are surfaced via Exception/InnerException/ErrorMessage.
-				AggregateException = Ex as AggregateException;
-				InnerException = Ex.InnerException ?? Ex;
+				AggregateException = ex as AggregateException;
+				InnerException = ex.InnerException ?? ex;
 				ErrorMessage = InnerException.Message;
 
-				//Log by default
-				//TODO: Should be using a handler
-				ServiceRef.LogService.LogException(Ex);
+				// Log by default (can be routed to telemetry later).
+				ServiceRef.LogService.LogException(ex);
 			}
 			finally
 			{
+				// Marshal back to UI thread for state updates.
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					lock (this.syncObject)
 					{
-						Cts.Dispose();
+						cts.Dispose();
 
-						if (Generation != this.currentGeneration)
+						if (generation != this.currentGeneration)
 							return;
 
-						if (Current is null)
-							this.State = TaskStatus.Pending;
-						else if (!Current.IsCompleted)
-							this.State = TaskStatus.Running;
-						else if (Current.IsCanceled)
-							this.State = TaskStatus.Canceled;
-						else if (Current.IsFaulted)
-							this.State = TaskStatus.Failed;
+						if (current is null)
+							this.State = ObservableTaskStatus.Pending;
+						else if (!current.IsCompleted)
+							this.State = ObservableTaskStatus.Running;
+						else if (current.IsCanceled)
+							this.State = ObservableTaskStatus.Canceled;
+						else if (current.IsFaulted)
+							this.State = ObservableTaskStatus.Failed;
 						else
-							this.State = TaskStatus.Succeeded;
+							this.State = ObservableTaskStatus.Succeeded;
 
 						this.Exception = AggregateException;
 						this.InnerException = InnerException;
@@ -308,6 +289,7 @@ namespace NeuroAccessMaui.UI.MVVM
 					}
 
 					this.NotifyAll();
+					this.StateChanged?.Invoke(this, this.State);
 				});
 			}
 		}
@@ -336,7 +318,6 @@ namespace NeuroAccessMaui.UI.MVVM
 				this.OnPropertyChanged(nameof(this.Progress));
 				this.OnPropertyChanged(nameof(this.IsRefreshing));
 
-
 				foreach (IRelayCommand Command in this.notifyCommands)
 				{
 					Command.NotifyCanExecuteChanged();
@@ -352,79 +333,69 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// <summary>
 		/// Asynchronously waits for the current watcher task to complete.
 		/// </summary>
-		/// <remarks>
-		/// If a watcher is active, this method awaits its completion; if no watcher exists,
-		/// the method returns immediately. This ensures that any UI updates or notifications
-		/// associated with the current task have finished processing.
-		/// </remarks>
-		/// <returns>A task that represents the asynchronous wait operation.</returns>
 		public async Task WaitCurrentAsync()
 		{
 			Task? Watcher = this.CurrentWatcher;
 			if (Watcher is null)
 				return;
-			await Watcher;
+
+			await Watcher.ConfigureAwait(false);
 		}
 
 		/// <summary>
 		/// Asynchronously waits until all UI notifications and state updates for the current task have been processed.
 		/// </summary>
-		/// <remarks>
-		/// This method repeatedly awaits the current watcher until it remains unchanged,
-		/// meaning that no new task has been started in the interim. Use this method when you need
-		/// to ensure that all notifications (triggered by task completion, cancellation, or refresh)
-		/// have been fully handled before proceeding.
-		/// </remarks>
-		/// <returns>A task that completes once the latest watcher task has finished and no new watcher has replaced it.</returns>
-		public async Task WaitAllAsync(bool WaitWhilePending = false)
+		public async Task WaitAllAsync(bool waitWhilePending = false)
 		{
 			while (true)
 			{
 				Task? Watcher = this.CurrentWatcher;
 				if (Watcher is null)
 				{
-					if( WaitWhilePending && this.State == TaskStatus.Pending)
+					if (waitWhilePending && this.State == ObservableTaskStatus.Pending)
 					{
-						await Task.Delay(Constants.Delays.Default);
+						await Task.Delay(Constants.Delays.Default).ConfigureAwait(false);
 						continue;
 					}
 
 					return;
-
 				}
-				await Watcher;
+
+				await Watcher.ConfigureAwait(false);
 
 				Task? NewWatcher = this.CurrentWatcher;
-				if (NewWatcher is not null && Watcher != NewWatcher)
+				if (NewWatcher is not null && !ReferenceEquals(Watcher, NewWatcher))
 					continue;
+
 				break;
 			}
 		}
 
 		/// <summary>
-		/// Loads (or reloads) the task using the provided factory.
-		/// If a task is already in progress, it is canceled and replaced.
-		/// This method supports repeated loading.
+		/// Store the factory and optional commands without starting the task.
+		/// Use <see cref="Run"/> or <see cref="RunRefresh"/> to start later.
 		/// </summary>
-		/// <param name="Task">
-		/// The factory delegate used to create the task.
-		/// The TaskContext parameter contains whether this is a refresh, a cancellation token, and a progress reporter.
-		/// </param>
-		/// <param name="NotifyCommands">
-		/// Optional RelayCommands that should be notified when the state changes.
-		/// </param>
-		public void Load(Func<TaskContext<TProgress>, Task> Task, params IRelayCommand[] NotifyCommands)
+		public void Configure(Func<TaskContext<TProgress>, Task> task, params IRelayCommand[] notifyCommands)
 		{
 			lock (this.syncObject)
 			{
-				this.taskFactory = Task;
+				this.taskFactory = task;
 				this.notifyCommands.Clear();
-				if (NotifyCommands.Length > 0)
-					this.notifyCommands.AddRange(NotifyCommands);
+				if (notifyCommands.Length > 0)
+					this.notifyCommands.AddRange(notifyCommands);
 			}
 
-			// For initial load, pass false.
-			this.StartNewTask(IsRefresh: false);
+			// Leave state as-is (likely Pending). No auto-start here.
+			this.NotifyAll();
+		}
+
+		/// <summary>
+		/// Loads (configures) and immediately starts the task (back-compat convenience).
+		/// </summary>
+		public void Load(Func<TaskContext<TProgress>, Task> task, params IRelayCommand[] notifyCommands)
+		{
+			this.Configure(task, notifyCommands);
+			this.StartNewTask(isRefresh: false);
 		}
 
 		public void Load(Func<Task> task, params IRelayCommand[] notifyCommands)
@@ -434,7 +405,17 @@ namespace NeuroAccessMaui.UI.MVVM
 		}
 
 		/// <summary>
-		/// Reload the current task
+		/// Start the configured task now (no CanExecute gating).
+		/// </summary>
+		public void Run() => this.StartNewTask(isRefresh: false);
+
+		/// <summary>
+		/// Start the configured task now with the refresh flag (no CanExecute gating).
+		/// </summary>
+		public void RunRefresh() => this.StartNewTask(isRefresh: true);
+
+		/// <summary>
+		/// Reload the current task.
 		/// This cancels any running task and starts a new one using the stored factory.
 		/// </summary>
 		[RelayCommand(CanExecute = nameof(IsNotPending))]
@@ -443,7 +424,7 @@ namespace NeuroAccessMaui.UI.MVVM
 			if (this.IsPending)
 				return;
 
-			this.StartNewTask(IsRefresh: false);
+			this.StartNewTask(isRefresh: false);
 		}
 
 		/// <summary>
@@ -456,27 +437,60 @@ namespace NeuroAccessMaui.UI.MVVM
 			if (this.IsPending)
 				return;
 
-			// For refresh, pass true.
-			this.StartNewTask(IsRefresh: true);
+			this.StartNewTask(isRefresh: true);
 		}
 
 		/// <summary>
 		/// Cancels the running task.
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(IsNotCanceled))]
+		[RelayCommand(CanExecute = nameof(IsRunning))]
 		public void Cancel()
 		{
-			if (this.IsCanceled)
+			if (!this.IsRunning)
 				return;
+
 			lock (this.syncObject)
 			{
 				try
 				{
 					this.CancellationTokenSource?.Cancel();
 				}
-				catch (Exception)
+				catch
 				{
 					// Ignored.
+				}
+			}
+		}
+		private bool disposed;
+		// Public Dispose: callers clean up managed + unmanaged
+		public void Dispose()
+		{
+			this.Dispose(disposing: true);
+			GC.SuppressFinalize(this);
+		}
+
+		// Finalizer only if you manage native resources.
+		~ObservableTask()
+		{
+			this.Dispose(disposing: false);
+		}
+
+		// The core pattern
+		protected virtual void Dispose(bool disposing)
+		{
+			if (this.disposed)
+				return;
+			this.disposed = true;
+
+			if (disposing)
+			{
+				lock (this.syncObject)
+				{
+					try { this.CancellationTokenSource?.Cancel(); }
+					catch { /* ignore */ }
+
+					this.CancellationTokenSource?.Dispose();
+					this.CancellationTokenSource = null;
 				}
 			}
 		}
@@ -485,6 +499,19 @@ namespace NeuroAccessMaui.UI.MVVM
 
 	public partial class ObservableTask : ObservableTask<int>
 	{
+	}
+
+	public sealed class ObservableTask<TResult, TProgress> : ObservableTask<TProgress>
+	{
+		public TResult? Result { get; private set; }
+
+		public void Load(Func<TaskContext<TProgress>, Task<TResult>> op, params IRelayCommand[] notify)
+		{
+			base.Load(async ctx =>
+			{
+				this.Result = await op(ctx);
+			}, notify);
+		}
 	}
 
 }
