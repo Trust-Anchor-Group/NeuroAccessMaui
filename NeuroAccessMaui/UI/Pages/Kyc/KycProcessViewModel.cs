@@ -12,6 +12,7 @@ using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.Services.UI.Photos;
 using SkiaSharp;
 using Waher.Networking.XMPP.Contracts;
+using NeuroAccessMaui.Services.Identity;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
@@ -42,7 +43,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
 
 		public string BannerUri =>
-			Application.Current.RequestedTheme switch
+			(Application.Current?.RequestedTheme ?? AppTheme.Light) switch
 			{
 				AppTheme.Dark => this.BannerUriDark,
 				AppTheme.Light => this.BannerUriLight,
@@ -102,6 +103,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			this.NextCommand = new AsyncRelayCommand(this.ExecuteNextAsync, this.CanExecuteNext);
 			this.PreviousCommand = new AsyncRelayCommand(this.ExecutePrevious);
+			this.PersonalInformationSummary = new ObservableCollection<KVP>();
+			this.AddressInformationSummary = new ObservableCollection<KVP>();
+			this.AttachmentInformationSummary = new ObservableCollection<KVP>();
+			this.mappedValues = new List<Property>();
+			this.attachments = new List<LegalIdentityAttachment>();
 		}
 
 		protected override async Task OnInitialize()
@@ -114,7 +120,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					 "en"
 			 );
 
-			this.process = await this.kycReference.ToProcess();
+			string LanguageInit = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+			this.process = await this.kycReference.ToProcess(LanguageInit);
 			this.OnPropertyChanged(nameof(this.Pages));
 
 			if (this.process is null) return; // TODO: Check and handle null process
@@ -165,13 +172,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		}
 
 		private void Field_PropertyChanged(object? Sender, System.ComponentModel.PropertyChangedEventArgs E)
-	{
+		{
 			if (E.PropertyName == nameof(ObservableKycField.RawValue))
 			{
-				this.SetCurrentPage(this.currentPageIndex);
+				MainThread.BeginInvokeOnMainThread(() => this.SetCurrentPage(this.currentPageIndex));
 				if (Sender is ObservableKycField Field)
 				{
-					Field.Validate("en");
+					string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+					Field.Validate(Language);
 					MainThread.BeginInvokeOnMainThread(
 						this.NextCommand.NotifyCanExecuteChanged
 					);
@@ -183,7 +191,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			if (E.PropertyName == nameof(KycSection.IsVisible))
 			{
-				this.SetCurrentPage(this.currentPageIndex);
+				MainThread.BeginInvokeOnMainThread(() => this.SetCurrentPage(this.currentPageIndex));
 			}
 		}
 
@@ -191,7 +199,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			if (E.PropertyName == nameof(KycPage.IsVisible))
 			{
-				this.SetCurrentPage(this.currentPageIndex);
+				MainThread.BeginInvokeOnMainThread(() => this.SetCurrentPage(this.currentPageIndex));
 			}
 		}
 
@@ -307,7 +315,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 			else
 			{
-				if ( this.ShouldViewSummary)
+				if (this.ShouldViewSummary)
 				{
 					await this.ExecuteApplyAsync();
 				}
@@ -365,11 +373,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			await base.GoBack();
 		}
 
-		private async Task<bool> ValidateCurrentPageAsync()
+		private Task<bool> ValidateCurrentPageAsync()
 		{
 			if (this.CurrentPage is null)
 			{
-				return false;
+				return Task.FromResult(false);
 			}
 
 			bool IsOk = true;
@@ -398,7 +406,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.NextCommand.NotifyCanExecuteChanged
 			);
 
-			return IsOk;
+			return Task.FromResult(IsOk);
 		}
 
 		[RelayCommand]
@@ -421,9 +429,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				Console.WriteLine($"Mapped: {Prop.Name} = {Prop.Value}");
 			}
 
-			foreach (LegalIdentityAttachment a in this.attachments)
+			foreach (LegalIdentityAttachment Attachment in this.attachments)
 			{
-				Console.WriteLine($"Attachment: {a.FileName} ({a.ContentType}) {a.Data}");
+				Console.WriteLine($"Attachment: {Attachment.FileName} ({Attachment.ContentType}) {Attachment.Data}");
 			}
 
 			// Submit the registration
@@ -515,11 +523,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		}
 
 		/// <summary>
-		/// Given a list of Mappings, retuns a dictionary with the mapping keys and transformed values.
+		/// Applies mapping transforms for a given field and returns a list of identity properties.
 		/// </summary>
-		/// <param name="Mappings"></param>
-		/// <param name="FieldValue"></param>
-		/// <returns> Key value pair: Key = Field name in identity, Value = Transformed Value. For example: BYEAR: 1999</returns>
+		/// <returns>List of properties like Key=identity field name, Value=transformed value.</returns>
 		private List<Property> ApplyTansform(ObservableKycField Field)
 		{
 			if (Field.Condition is not null)
@@ -686,111 +692,27 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				return;
 			}
+			// Build summary via shared formatter to avoid duplicating logic with ViewIdentity
+			IdentitySummaryFormatter.KycSummaryResult Summary = IdentitySummaryFormatter.BuildKycSummaryFromProperties(
+				this.mappedValues,
+				this.attachments.Select(a => new IdentitySummaryFormatter.AttachmentInfo(a.FileName ?? string.Empty, a.ContentType))
+			);
 
-			DateTime? BirthDate = new();
-
-			foreach (Property Prop in this.mappedValues)
+			foreach (IdentitySummaryFormatter.DisplayPair Pair in Summary.Personal)
 			{
-				if (!xmppPropertyFriendlyNames.TryGetValue(Prop.Name, out string? FriendlyName))
-				{
-					continue;
-				}
-
-				// Remember fall-trough if adding more cases
-				switch (Prop.Name)
-				{
-					case Constants.XmppProperties.BirthDay:
-						if (int.TryParse(Prop.Value, out int Days))
-						{
-							BirthDate = BirthDate.Value.AddDays(Days - 1);
-						}
-						break;
-					case Constants.XmppProperties.BirthMonth:
-						if (int.TryParse(Prop.Value, out int Months))
-						{
-							BirthDate = BirthDate.Value.AddMonths(Months - 1);
-						}
-						break;
-					case Constants.XmppProperties.BirthYear:
-						if (int.TryParse(Prop.Value, out int Years))
-						{
-							BirthDate = BirthDate.Value.AddYears(Years - 1);
-						}
-						break;
-					case "FULLNAME":
-					case Constants.XmppProperties.PersonalNumber:
-					case Constants.XmppProperties.Gender:
-					case Constants.XmppProperties.Nationality:
-						this.PersonalInformationSummary.Add(new KVP(FriendlyName, Prop.Value));
-						break;
-
-					case Constants.XmppProperties.Address:
-					case Constants.XmppProperties.Address2:
-					case Constants.XmppProperties.Area:
-					case Constants.XmppProperties.City:
-					case Constants.XmppProperties.ZipCode:
-					case Constants.XmppProperties.Region:
-					case Constants.XmppProperties.Country:
-						this.AddressInformationSummary.Add(new KVP(FriendlyName, Prop.Value));
-						break;
-
-					default:
-						break;
-				}
+				this.PersonalInformationSummary.Add(new KVP(Pair.Label, Pair.Value));
 			}
 
-			// Add birth date if available
-			if (BirthDate.HasValue)
+			foreach (IdentitySummaryFormatter.DisplayPair Pair in Summary.Address)
 			{
-				this.PersonalInformationSummary.Add(new KVP("Birth date", BirthDate.Value.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture)));
+				this.AddressInformationSummary.Add(new KVP(Pair.Label, Pair.Value));
 			}
 
-			// TODO: Localization
-			foreach (LegalIdentityAttachment Attachment in this.attachments)
+			foreach (IdentitySummaryFormatter.DisplayPair Pair in Summary.Attachments)
 			{
-				switch (Attachment.FileName!.Split(".")[0])
-				{
-					case "Passport":
-						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Passport image"));
-						break;
-					case "IdCardFront":
-						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Front of ID card"));
-						break;
-					case "IdCardBack":
-						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Back of ID card"));
-						break;
-					case "DriverLicenseFront":
-						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Front of driver's license"));
-						break;
-					case "DriverLicenseBack":
-						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Back of driver's license"));
-						break;
-					case "ProfilePhoto":
-						this.AttachmentInformationSummary.Add(new KVP(Attachment.FileName, "Photo of face"));
-						break;
-				}
+				this.AttachmentInformationSummary.Add(new KVP(Pair.Label, Pair.Value));
 			}
 		}
-
-		//TODO: Localization
-		private static readonly Dictionary<string, string> xmppPropertyFriendlyNames = new()
-		{
-			{ "FULLNAME", "Full name" },
-			{ Constants.XmppProperties.BirthDay, "Birth day" },
-			{ Constants.XmppProperties.BirthMonth, "Birth month" },
-			{ Constants.XmppProperties.BirthYear, "Birth year" },
-			{ Constants.XmppProperties.PersonalNumber, "Personal number" },
-			{ Constants.XmppProperties.Gender, "Gender" },
-			{ Constants.XmppProperties.Nationality, "Nationality" },
-			{ Constants.XmppProperties.Address, "Address" },
-			{ Constants.XmppProperties.Address2, "Address 2" },
-			{ Constants.XmppProperties.Area, "Area" },
-			{ Constants.XmppProperties.City, "City" },
-			{ Constants.XmppProperties.ZipCode, "Zip code" },
-			{ Constants.XmppProperties.Region, "Region" },
-			{ Constants.XmppProperties.Country, "Country" }
-			// Add more as needed
-		};
 	}
 	public class KVP(string Key, string Value)
 	{
