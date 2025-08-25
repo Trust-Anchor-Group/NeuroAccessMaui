@@ -115,12 +115,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			await base.OnInitialize();
 
 			// TODO: Load the KYC process as KycReference from serviceRef.KycService
-			this.kycReference = await ServiceRef.KycService.LoadKycReferenceAsync(
-					 "NeuroAccessMaui.Resources.Raw.TestKYCK.xml",
-					 "en"
-			 );
-
 			string LanguageInit = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+			this.kycReference = await ServiceRef.KycService.LoadKycReferenceAsync(
+				 "NeuroAccessMaui.Resources.Raw.TestKYCK.xml",
+				 LanguageInit
+			 );
 			this.process = await this.kycReference.ToProcess(LanguageInit);
 			this.OnPropertyChanged(nameof(this.Pages));
 
@@ -155,6 +154,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.currentPageIndex = this.GetNextIndex(0);
 			this.CurrentPagePosition = this.currentPageIndex;
 			this.SetCurrentPage(this.currentPageIndex);
+
+			// Set initial localized label for the next/apply button
+			this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
 
 			MainThread.BeginInvokeOnMainThread(
 				this.NextCommand.NotifyCanExecuteChanged
@@ -240,14 +242,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.kycReference!.Fields = [.. this.process.Values.Select(p => new KycFieldValue(p.Key, p.Value))];
 		}
 
-		private void SaveReferenceToStorage()
+		private async Task SaveReferenceToStorageAsync()
 		{
 			if (this.kycReference is null)
 			{
 				return;
 			}
 
-			ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
+			await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
 		}
 
 		private int GetNextIndex(int Start)
@@ -304,7 +306,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			this.UpdateReference();
-			this.SaveReferenceToStorage();
+			await this.SaveReferenceToStorageAsync();
 
 			int NextIndex = this.GetNextIndex(this.currentPageIndex + 1);
 			if (NextIndex < this.Pages.Count)
@@ -328,7 +330,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 					this.OnPropertyChanged(nameof(this.Progress));
 
-					this.NextButtonText = "Apply";
+					this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 				}
 			}
 		}
@@ -338,13 +340,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.ShouldViewSummary)
 			{
 				this.ShouldViewSummary = false;
-				this.NextButtonText = "Next";
+				this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
 				this.OnPropertyChanged(nameof(this.Progress));
 				return;
 			}
 
 			this.UpdateReference();
-			this.SaveReferenceToStorage();
+			await this.SaveReferenceToStorageAsync();
 
 			int PreviousIndex = this.GetPreviousIndex(this.currentPageIndex - 1);
 			if (PreviousIndex >= 0)
@@ -369,7 +371,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public async Task Exit()
 		{
 			this.UpdateReference();
-			this.SaveReferenceToStorage();
+			await this.SaveReferenceToStorageAsync();
 			await base.GoBack();
 		}
 
@@ -386,9 +388,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.CurrentPageSections is not null && this.CurrentPageSections.All(Section => Section is not null))
 				Fields = Fields.Concat(this.CurrentPageSections.SelectMany(Section => Section.VisibleFields));
 
+			string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 			foreach (ObservableKycField Field in Fields)
 			{
-				if (!Field.Validate("en"))
+				if (!Field.Validate(Language))
 				{
 					IsOk = false;
 				}
@@ -424,15 +427,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.attachments is null || this.mappedValues is null)
 				return;
 
-			foreach (Property Prop in this.mappedValues)
-			{
-				Console.WriteLine($"Mapped: {Prop.Name} = {Prop.Value}");
-			}
-
-			foreach (LegalIdentityAttachment Attachment in this.attachments)
-			{
-				Console.WriteLine($"Attachment: {Attachment.FileName} ({Attachment.ContentType}) {Attachment.Data}");
-			}
+			// Do not log PII or attachment data.
 
 			// Submit the registration
 			// Use IdentityFields and Attachments to submit the KYC process
@@ -483,13 +478,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			foreach (KycPage Page in this.process.Pages)
 			{
 				// For each field in the page
-				foreach (ObservableKycField Field in Page.AllFields)
+				foreach (ObservableKycField Field in Page.VisibleFields)
 				{
 					if (this.CheckAndHandleFile(Field, this.attachments))
 					{
 						continue; // File handled, skip further processing
 					}
-					foreach (Property Prop in this.ApplyTansform(Field))
+					foreach (Property Prop in this.ApplyTransform(Field))
 					{
 						this.mappedValues.Add(Prop);
 					}
@@ -497,13 +492,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				// For each section in the page
 				foreach (KycSection Section in Page.AllSections)
 				{
-					foreach (ObservableKycField Field in Section.AllFields)
+					foreach (ObservableKycField Field in Section.VisibleFields)
 					{
 						if (this.CheckAndHandleFile(Field, this.attachments))
 						{
 							continue; // File handled, skip further processing
 						}
-						foreach (Property Prop in this.ApplyTansform(Field))
+						foreach (Property Prop in this.ApplyTransform(Field))
 						{
 							this.mappedValues.Add(Prop);
 						}
@@ -526,8 +521,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// Applies mapping transforms for a given field and returns a list of identity properties.
 		/// </summary>
 		/// <returns>List of properties like Key=identity field name, Value=transformed value.</returns>
-		private List<Property> ApplyTansform(ObservableKycField Field)
+		private List<Property> ApplyTransform(ObservableKycField Field)
 		{
+			if (Field is null)
+			{
+				return new List<Property>();
+			}
+
 			if (Field.Condition is not null)
 			{
 				if (Field is null || Field.Mappings is null || Field.Mappings.Count == 0 || !Field.Condition!.Evaluate(this.process!.Values))
@@ -539,6 +539,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			List<Property> Result = new();
 
 			string FieldValue = Field.StringValue?.Trim() ?? string.Empty;
+
+			if (Field.Mappings is null || Field.Mappings.Count == 0)
+			{
+				return Result;
+			}
 
 			foreach (KycMapping Map in Field.Mappings)
 			{
@@ -598,7 +603,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				using SKManagedStream ManagedStream = new(inputStream);
 				using SKData ImageData = SKData.Create(ManagedStream);
 
-				SKCodec Codec = SKCodec.Create(ImageData);
+				using SKCodec Codec = SKCodec.Create(ImageData);
 				SKBitmap SkBitmap = SKBitmap.Decode(ImageData);
 
 				SkBitmap = HandleOrientation(SkBitmap, Codec.EncodedOrigin);
@@ -607,7 +612,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				int Height = SkBitmap.Height;
 				int Width = SkBitmap.Width;
 
-				// downdsample to FHD
+				// downsample to FHD
 				if ((Width >= Height) && (Width > 1920))
 				{
 					Height = (int)(Height * (1920.0 / Width) + 0.5);
@@ -625,10 +630,22 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				{
 					SKImageInfo Info = SkBitmap.Info;
 					SKImageInfo NewInfo = new(Width, Height, Info.ColorType, Info.AlphaType, Info.ColorSpace);
-					SkBitmap = SkBitmap.Resize(NewInfo, SKFilterQuality.High);
+					SKBitmap? Resized = SkBitmap.Resize(NewInfo, SKFilterQuality.High);
+					if (Resized is not null)
+					{
+						SkBitmap.Dispose();
+						SkBitmap = Resized;
+					}
 				}
 
-				return SkBitmap.Encode(SKEncodedImageFormat.Jpeg, 80).ToArray();
+				byte[] Bytes;
+				using (SKData Encoded = SkBitmap.Encode(SKEncodedImageFormat.Jpeg, 80))
+				{
+					Bytes = Encoded.ToArray();
+				}
+
+				SkBitmap.Dispose();
+				return Bytes;
 			}
 			catch (Exception Ex)
 			{
