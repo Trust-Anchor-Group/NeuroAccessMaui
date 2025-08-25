@@ -2952,4 +2952,28 @@
   <data name="Paste" xml:space="preserve">
     <value>Paste</value>
   </data>
+  <data name="Attachment_Passport" xml:space="preserve">
+    <value>Passport image</value>
+  </data>
+  <data name="Attachment_IdCardFront" xml:space="preserve">
+    <value>Front of ID card</value>
+  </data>
+  <data name="Attachment_IdCardBack" xml:space="preserve">
+    <value>Back of ID card</value>
+  </data>
+  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
+    <value>Front of driver's license</value>
+  </data>
+  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
+    <value>Back of driver's license</value>
+  </data>
+  <data name="Attachment_ProfilePhoto" xml:space="preserve">
+    <value>Photo of face</value>
+  </data>
+  <data name="Kyc_Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
 </root>

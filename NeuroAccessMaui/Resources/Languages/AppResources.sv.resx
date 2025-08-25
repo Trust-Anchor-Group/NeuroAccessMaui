@@ -2951,4 +2951,28 @@
   <data name="Paste" xml:space="preserve">
     <value>Klistra in</value>
   </data>
+  <data name="Attachment_Passport" xml:space="preserve">
+    <value>Passbild</value>
+  </data>
+  <data name="Attachment_IdCardFront" xml:space="preserve">
+    <value>Framsida av ID-kort</value>
+  </data>
+  <data name="Attachment_IdCardBack" xml:space="preserve">
+    <value>Baksida av ID-kort</value>
+  </data>
+  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
+    <value>Framsida av körkort</value>
+  </data>
+  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
+    <value>Baksida av körkort</value>
+  </data>
+  <data name="Attachment_ProfilePhoto" xml:space="preserve">
+    <value>Ansiktsfoto</value>
+  </data>
+  <data name="Kyc_Next" xml:space="preserve">
+    <value>Nästa</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Skicka</value>
+  </data>
 </root>
