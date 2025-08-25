@@ -443,6 +443,22 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				await ServiceRef.TagProfile.SetIdentityApplication(AddedIdentity, true);
 				this.applicationSent = true;
 
+				// Persist reference to created identity on the draft KYC reference, if available
+				try
+				{
+					if (this.kycReference is not null)
+					{
+						this.kycReference.CreatedIdentityId = AddedIdentity.Id;
+						this.kycReference.CreatedIdentityState = AddedIdentity.State;
+						this.kycReference.UpdatedUtc = DateTime.UtcNow;
+						await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
+					}
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+
 				// Loop through each local attachment and add it to the cache.
 				// We assume the server returns attachments with the same FileName as those we built.
 				foreach (LegalIdentityAttachment LocalAttachment in this.attachments)
