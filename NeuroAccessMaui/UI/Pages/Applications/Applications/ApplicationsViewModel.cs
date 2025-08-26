@@ -212,6 +212,25 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			}
 		}
 
+		[RelayCommand]
+		private async Task RemoveApplication(KycReference Item)
+		{
+			try
+			{
+				if (Item is null)
+					return;
+
+				await Database.Delete(Item);
+				await Database.Provider.Flush();
+
+				this.Loader.Refresh();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
 		private async Task OpenApplication(KycReference Item)
 		{

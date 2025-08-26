@@ -42,14 +42,16 @@
 											<Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" InputTransparent="True">
 												<Label Grid.Row="0" Grid.Column="0" Style="{DynamicResource KeyLabel}" Text="{Binding FriendlyName}" InputTransparent="True" />
 												<Label Grid.Row="1" Grid.Column="0" Style="{DynamicResource ValueLabel}" Text="{Binding UpdatedUtc, StringFormat='{}{0:g}'}" InputTransparent="True" />
-												<Border Grid.RowSpan="2"
+												<Border Grid.Row="1"
 														Grid.Column="1"
 														Padding="8,2"
 														StrokeShape="RoundRectangle 12 12 12 12" BackgroundColor="{DynamicResource TnPWarningContentWL}"
 													   VerticalOptions="Center" InputTransparent="True">
-													<Label Text="In Progress" />
+													<Label Text="Current" />
 												</Border>
-										</Grid>
+												<controls:TextButton Grid.Row="0" Grid.Column="1" LabelData="X" Style="{DynamicResource PrimaryButton}"
+													Command="{Binding Path=RemoveApplicationCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplicationsViewModel}}}" CommandParameter="{Binding}"  />
+											</Grid>
 										</Border>
 									</controls:TemplatedButton>
 								</DataTemplate>
