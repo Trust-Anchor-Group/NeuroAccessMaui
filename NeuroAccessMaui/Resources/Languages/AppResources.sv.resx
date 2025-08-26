@@ -2957,4 +2957,10 @@
   <data name="BuyNeuroCredits" xml:space="preserve">
     <value>Köp Neuro-krediter</value>
   </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Använd nuvarande plats</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>Det uppstod ett fel när din plats skulle hämtas. Se till att platsbehörigheter är aktiverade i enhetens inställningar</value>
+  </data>
 </root>

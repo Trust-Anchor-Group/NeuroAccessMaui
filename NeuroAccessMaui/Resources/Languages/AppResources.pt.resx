@@ -2957,4 +2957,10 @@
   <data name="BuyNeuroCredits" xml:space="preserve">
     <value>Comprar Créditos-Neuro</value>
   </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Usar localização atual</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>Ocorreu um erro ao obter sua localização. Certifique-se de que as permissões de localização estão ativadas nas configurações do seu dispositivo</value>
+  </data>
 </root>

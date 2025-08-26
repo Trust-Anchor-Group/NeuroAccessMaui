@@ -315,14 +315,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					}
 					foreach (ObservableParameter Parameter in this.Contract.Parameters)
 					{
-						if (Parameter.Parameter is BooleanParameter
-							|| Parameter.Parameter is StringParameter
-							|| Parameter.Parameter is NumericalParameter
-							|| Parameter.Parameter is DateParameter
-							|| Parameter.Parameter is DateTimeParameter
-							|| Parameter.Parameter is TimeParameter
-							|| Parameter.Parameter is DurationParameter
-							|| Parameter.Parameter is ContractReferenceParameter)
+						if (p.Parameter is BooleanParameter
+							|| p.Parameter is StringParameter
+							|| p.Parameter is NumericalParameter
+							|| p.Parameter is DateParameter
+							|| p.Parameter is DateTimeParameter
+							|| p.Parameter is TimeParameter
+							|| p.Parameter is DurationParameter
+							|| p.Parameter is ContractReferenceParameter
+							|| p.Parameter is GeoParameter)
 						{
 							Console.WriteLine("Adding parameter: +" + Parameter.Parameter.GetType().Name);
 							this.EditableParameters.Add(Parameter);
