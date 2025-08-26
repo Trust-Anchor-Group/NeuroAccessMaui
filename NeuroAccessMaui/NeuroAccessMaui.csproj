@@ -366,6 +366,9 @@
 		<Compile Update="Resources\Styles\Dark.xaml.cs">
 			<DependentUpon>Dark.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Controls\InfoBubble.xaml.cs">
+		  <DependentUpon>InfoBubble.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml.cs">
 			<DependentUpon>ApplyIdPage.xaml</DependentUpon>
 		</Compile>
@@ -537,6 +540,9 @@
 		</MauiXaml>
 		<MauiXaml Update="Resources\Templates\ObservableParameter.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Controls\InfoBubble.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml">
 			<Generator>MSBuild:Compile</Generator>

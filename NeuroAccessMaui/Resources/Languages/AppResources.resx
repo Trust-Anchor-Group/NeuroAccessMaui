@@ -2876,6 +2876,9 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
    <value>Please restart the app to ensure all text changes language properly</value>
   </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Continue ({0})</value>
+  </data>
   <data name="Never" xml:space="preserve">
    <value>Never</value>
   </data>
@@ -2890,9 +2893,6 @@
   </data>
   <data name="LastUpdatedFormat" xml:space="preserve">
     <value>Last updated: {0}</value>
-  </data>
-  <data name="ContinueSecondsFormat" xml:space="preserve">
-    <value>Continue ({0})</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
     <value>Activate your digital ID</value>
@@ -2923,7 +2923,6 @@
   </data>
   <data name="ContractWizardStepFormat" xml:space="preserve">
     <value>Step {0} of {1}</value>
-    <comment>Format: current step number, total steps.</comment>
   </data>
   <data name="ContractWizardNext" xml:space="preserve">
     <value>Next</value>
@@ -2951,6 +2950,18 @@
   </data>
   <data name="Paste" xml:space="preserve">
     <value>Paste</value>
+  </data>
+  <data name="CreditBalance" xml:space="preserve">
+    <value>Credit Balance</value>
+  </data>
+  <data name="BuyNeuroCredits" xml:space="preserve">
+    <value>Buy Neuro-Credits</value>
+  </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Use current location</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>There was an error getting your location. Make sure location permissions are granted in your devices' settings</value>
   </data>
   <data name="Attachment_Passport" xml:space="preserve">
     <value>Passport image</value>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <Entries>
-	<Entry country="BA" displayString="DDMMYYYRRBBBK">
+	<Entry country="BA" displayString="DDMMYYYRRBBBK (UMCN)">
 		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
 		<Check>
 			<![CDATA[
@@ -9,15 +9,15 @@
 			]]>
 		</Check>
 	</Entry>
-	<Entry country="BR" displayString="NNN.NNN.NNN-NN">
+	<Entry country="BR" displayString="NNN.NNN.NNN-NN (CPF)">
 		<Pattern variable="CPF"><![CDATA[CPF like "(?'N1'\\d{3})[.]?(?'N2'\\d{3})[.]?(?'N3'\\d{3})-?(?'N4'\\d{2})"]]></Pattern>
 		<Normalize><![CDATA[N1_STR+"."+N2_STR+"."+N3_STR+"-"+N4_STR]]></Normalize>
 	</Entry>
-	<Entry country="CL" displayString="NN.NNN.NNN-N">
-		<Pattern variable="RUN"><![CDATA[RUN like "(?'N1'\\d{2})[.]?(?'N2'\\d{3})[.]?(?'N3'\\d{3})-?(?'N4'[\\dK])"]]></Pattern>
+	<Entry country="CL" displayString="NN.NNN.NNN-N (RUN)">
+		<Pattern variable="RUN"><![CDATA[RUN like "(?'N1'\\d{1,2})[.]?(?'N2'\\d{3})[.]?(?'N3'\\d{3})-?(?'N4'[\\dK])"]]></Pattern>
 		<Normalize><![CDATA[N1_STR+"."+N2_STR+"."+N3_STR+"-"+N4_STR]]></Normalize>
 	</Entry>
-	<Entry country="HR" displayString="DDMMYYYRRBBBK">
+	<Entry country="HR" displayString="DDMMYYYRRBBBK (UMCN)">
 		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
 		<Check>
 			<![CDATA[
@@ -26,7 +26,7 @@
 			]]>
 		</Check>
 	</Entry>
-	<Entry country="IN" displayString="NNNN NNNN NNNN">
+	<Entry country="IN" displayString="NNNN NNNN NNNN (Aadhaar)">
 		<Pattern variable="Aadhaar"><![CDATA[Aadhaar like "(?'N1'\\d{4})\\s*(?'N2'\\d{4})\\s*(?'N3'\\d{4})"]]></Pattern>
 		<Check>
 			<![CDATA[
@@ -67,10 +67,10 @@
 		</Check>
 		<Normalize><![CDATA[N1_STR+" "+N2_STR+" "+N3_STR]]></Normalize>
 	</Entry>
-	<Entry country="MD" displayString="NNNNNNNNNNNNN">
+	<Entry country="MD" displayString="NNNNNNNNNNNNN (IDNP)">
 		<Pattern variable="IDNP"><![CDATA[IDNP like "\\d{13}"]]></Pattern>
 	</Entry>
-	<Entry country="ME" displayString="DDMMYYYRRBBBK">
+	<Entry country="ME" displayString="DDMMYYYRRBBBK (UMCN)">
 		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
 		<Check>
 			<![CDATA[
@@ -79,7 +79,7 @@
 			]]>
 		</Check>
 	</Entry>
-	<Entry country="MK" displayString="DDMMYYYRRBBBK">
+	<Entry country="MK" displayString="DDMMYYYRRBBBK (UMCN)">
 		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
 		<Check>
 			<![CDATA[
@@ -88,7 +88,7 @@
 			]]>
 		</Check>
 	</Entry>
-	<Entry country="RS" displayString="DDMMYYYRRBBBK">
+	<Entry country="RS" displayString="DDMMYYYRRBBBK (UMCN)">
 		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
 		<Check>
 			<![CDATA[
@@ -102,7 +102,7 @@
 		<Check><![CDATA[v:=[D1,D2,D3,D4,D5,D6,D7,D8,D9,D10].*[2,1,2,1,2,1,2,1,2,1];(sum(v > 9 ? v-9 : v) MOD 10 = 0)and(MM>=1)and(MM<=12)and(DD>=1)and(DD<=System.DateTime.DaysInMonth((YYYY<30?2000:YYYY<100?1900:0)+YYYY,MM))]]></Check>
 		<Normalize><![CDATA[(YYYY_STR.Length=4?YYYY_STR:(YYYY<30?"20":"19")+YYYY_STR)+MM_STR+DD_STR+"-"+NNNN_STR]]></Normalize>
 	</Entry>
-	<Entry country="SI" displayString="DDMMYYYRRBBBK">
+	<Entry country="SI" displayString="DDMMYYYRRBBBK (UMCN)">
 		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
 		<Check>
 			<![CDATA[
@@ -111,7 +111,7 @@
 			]]>
 		</Check>
 	</Entry>
-	<Entry country="US" displayString="NNNNNNNNN">
+	<Entry country="US" displayString="NNNNNNNNN (SSN)">
 		<Pattern variable="SSN"><![CDATA[SSN like "\\d{9}"]]></Pattern>
 	</Entry>
 </Entries>

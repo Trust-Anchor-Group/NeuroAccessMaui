@@ -51,7 +51,7 @@ namespace NeuroAccessMaui.Services.Theme
 
 		private readonly FileCacheManager cacheManager;
 		private readonly Dictionary<string, Uri> imageUrisMap;
-		private SemaphoreSlim? themeSemaphore;
+		//private SemaphoreSlim? themeSemaphore;
 		private ResourceDictionary? localLightDict = new Light();
 		private ResourceDictionary? localDarkDict = new Dark();
 		private AppTheme? lastAppliedLocalTheme;
@@ -62,7 +62,7 @@ namespace NeuroAccessMaui.Services.Theme
 		/// </summary>
 		public ThemeService()
 		{
-			this.themeSemaphore = new SemaphoreSlim(1, 1);
+			//this.themeSemaphore = new SemaphoreSlim(1, 1);
 			this.cacheManager = new FileCacheManager("BrandingThemes", themeExpiry);
 			this.imageUrisMap = new(StringComparer.OrdinalIgnoreCase);
 		}
@@ -155,9 +155,7 @@ namespace NeuroAccessMaui.Services.Theme
 				ServiceRef.LogService.LogDebug("ApplyProviderTheme: Skipped (no domain). ");
 				return;
 			}
-			if (this.themeSemaphore is null)
-				return; // disposed
-			await this.themeSemaphore.WaitAsync();
+
 			try
 			{
 				if (this.lastDomainAttempted is not null && this.lastDomainAttempted.Equals(Domain, StringComparison.OrdinalIgnoreCase) &&
@@ -208,7 +206,6 @@ namespace NeuroAccessMaui.Services.Theme
 			}
 			finally
 			{
-				this.themeSemaphore?.Release();
 				this.ThemeLoaded.TrySetResult();
 			}
 		}
@@ -473,8 +470,8 @@ namespace NeuroAccessMaui.Services.Theme
 			{
 				if (disposing)
 				{
-					this.themeSemaphore?.Dispose();
-					this.themeSemaphore = null;
+				//	this.themeSemaphore?.Dispose();
+				//f	this.themeSemaphore = null;
 				}
 				this.disposedValue = true;
 			}

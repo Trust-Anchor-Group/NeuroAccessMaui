@@ -107,26 +107,11 @@
 				  x:Name="NoIDPopup"
 				  VerticalOptions="Center"
 				  Margin="{DynamicResource LargeLeftRightMargins}">
-				<Border Grid.Row="0"
-						BackgroundColor="{DynamicResource TnPInfobgWL}"
-						Padding="{DynamicResource MediumMargins}"
-						StrokeShape="RoundRectangle 16,16,0,16">
-					<Border.Shadow>
-						<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
-					</Border.Shadow>
-					<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-						  ColumnDefinitions="auto, *">
-						<Path
-							Grid.Column="0"
-							Data="{x:Static ui:Geometries.InfoCirclePath}"
-							Fill="{DynamicResource TnPInfoContentWL}"/>
-						<Label
-							Grid.Column="1"
-							Text="{l:Localize ApplyIdInfoMainPage}"
-							Style="{DynamicResource InfoLabel}"
-							TextColor="{DynamicResource TnPInfoContentWL}"/>
-					</Grid>
-				</Border>
+				<controls:InfoBubble BackgroundColor="{DynamicResource TnPInfobgWL}"
+									 ContentColor="{DynamicResource TnPInfoContentWL}"
+									 SvgSource="info.svg"
+									 LabelText="{l:Localize ApplyIdInfoMainPage}"/>
+
 				<controls:TemplatedButton Grid.Row="1" Command="{Binding GoToApplyIdentityCommand}">
 					<Grid Padding="{DynamicResource MediumMargins}"
 						  ColumnDefinitions="*, auto">
@@ -137,33 +122,16 @@
 			</Grid>
 
 			<!-- Info Toast for missing wallet -->
-			<!-- TODO Remove this once wallet functionality is improved -->
-			<Border x:Name="NoWalletPopup"
-					Grid.Row="1"
-					VerticalOptions="Center"
-					BackgroundColor="{DynamicResource TnPNeutralv750bgWL}"
-					Padding="{DynamicResource MediumMargins}"
-					StrokeShape="RoundRectangle 16,16,0,16"
-					Margin="{DynamicResource LargeLeftRightMargins}"
-					IsVisible="False">
-				<Border.Shadow>
-					<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
-				</Border.Shadow>
-				<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-					  ColumnDefinitions="auto, *"
-					  RowSpacing="{DynamicResource SmallSpacing}">
-					<controls:SvgView
-						Source="wallet.svg"
-						WidthRequest="24"
-						VerticalOptions="Start"
-						TintColor="{DynamicResource TnPNeutralv750ContentWL}"/>
-					<Label
-						Grid.Column="1"
-						Text="{l:Localize BetaFeatureMainPage}"
-						Style="{DynamicResource InfoLabel}"
-						TextColor="{DynamicResource TnPNeutralv750ContentWL}"/>
-				</Grid>
-			</Border>
+			<!-- TODO Remove this once wallet functionality is improved-->
+			<controls:InfoBubble x:Name="NoWalletPopup"
+								 Grid.Row="1"
+								 BackgroundColor="{DynamicResource TnPNeutralv750bgWL}"
+								 ContentColor="{DynamicResource TnPNeutralv750ContentWL}"
+								 Margin="{DynamicResource LargeLeftRightMargins}"
+								 IsVisible="False"
+								 SvgSource="wallet.svg"
+								 LabelText="{l:Localize BetaFeatureMainPage}"/>
+
 		</Grid>
 
 		<controls:SvgView Source="banner.svg"

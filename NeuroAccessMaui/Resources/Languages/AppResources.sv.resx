@@ -2951,6 +2951,18 @@
   <data name="Paste" xml:space="preserve">
     <value>Klistra in</value>
   </data>
+  <data name="CreditBalance" xml:space="preserve">
+    <value>Kreditbalans</value>
+  </data>
+  <data name="BuyNeuroCredits" xml:space="preserve">
+    <value>Köp Neuro-krediter</value>
+  </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Använd nuvarande plats</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>Det uppstod ett fel när din plats skulle hämtas. Se till att platsbehörigheter är aktiverade i enhetens inställningar</value>
+  </data>
   <data name="Attachment_Passport" xml:space="preserve">
     <value>Passbild</value>
   </data>

@@ -23,6 +23,7 @@ using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using Waher.Script;
+using Microsoft.Maui.ApplicationModel; // For MainThread marshaling
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
@@ -77,11 +78,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				await this.InitializeUIAsync();
 				await this.GoToStateAsync(ViewContractStep.Overview);
 				if (this.RefreshContractCommand.CanExecute(null))
-					await this.RefreshContractCommand.ExecuteAsync(null);
+				{
+					// Ensure command execution (and its CanExecuteChanged events) happen on UI thread
+					await MainThread.InvokeOnMainThreadAsync(async () => await this.RefreshContractCommand.ExecuteAsync(null));
+				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)]);
@@ -279,8 +283,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		[RelayCommand]
 		private async Task OpenServerSignatureAsync()
 		{
-			if (this.Contract?.Contract is { } c)
-				await ServiceRef.UiService.GoToAsync(nameof(ServerSignaturePage), new ServerSignatureNavigationArgs(c), Services.UI.BackMethod.Pop);
+			if (this.Contract?.Contract is { } ContractObj)
+				await ServiceRef.UiService.GoToAsync(nameof(ServerSignaturePage), new ServerSignatureNavigationArgs(ContractObj), Services.UI.BackMethod.Pop);
 		}
 
 		#endregion
@@ -472,7 +476,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			while (!this.RefreshContractCommand.CanExecute(SignedContract))
 				await Task.Delay(100);
 
-			await this.RefreshContractCommand.ExecuteAsync(SignedContract);
+			await MainThread.InvokeOnMainThreadAsync(async () => await this.RefreshContractCommand.ExecuteAsync(SignedContract));
 		}
 
 		private async Task OnContractUpdatedAsync(object? sender, ContractReferenceEventArgs e)
@@ -483,7 +487,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			while (!this.RefreshContractCommand.CanExecute(null))
 				await Task.Delay(100);
 
-			await this.RefreshContractCommand.ExecuteAsync(null);
+			await MainThread.InvokeOnMainThreadAsync(async () => await this.RefreshContractCommand.ExecuteAsync(null));
 		}
 
 		#endregion
@@ -556,16 +560,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				Parameter.Parameter.Populate(Vars);
 				if (Parameter.Parameter is BooleanParameter or StringParameter or NumericalParameter
 					or DateParameter or TimeParameter or DurationParameter
-					or DateTimeParameter or CalcParameter or ContractReferenceParameter)
+					or DateTimeParameter or CalcParameter or ContractReferenceParameter or GeoParameter)
 				{
 					this.DisplayableParameters.Add(Parameter);
 				}
 			}
 
-			foreach (ObservableParameter p in this.DisplayableParameters)
+			foreach (ObservableParameter P in this.DisplayableParameters)
 			{
-				p.Parameter.IsParameterValid(Vars, ServiceRef.XmppService.ContractsClient);
-				ServiceRef.LogService.LogDebug($"Parameter '{p.Parameter.Name}' validation result: {p.IsValid}, Error: {p.Parameter.ErrorReason} - {p.ValidationText}");
+				P.Parameter.IsParameterValid(Vars, ServiceRef.XmppService.ContractsClient);
+				ServiceRef.LogService.LogDebug($"Parameter '{P.Parameter.Name}' validation result: {P.IsValid}, Error: {P.Parameter.ErrorReason} - {P.ValidationText}");
 			}
 		}
 
@@ -583,15 +587,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 			else if (this.Contract.Contract.PartsMode == ContractParts.Open)
 			{
-				foreach (ObservableRole r in this.Contract.Roles)
-					if (!r.HasReachedMaxCount)
-						this.SignableRoles.Add(r);
+				foreach (ObservableRole Role in this.Contract.Roles)
+					if (!Role.HasReachedMaxCount)
+						this.SignableRoles.Add(Role);
 			}
 			else
 			{
-				foreach (ObservableRole r in this.Contract.Roles)
-					if (r.Parts.Any(p => p.IsMe))
-						this.SignableRoles.Add(r);
+				foreach (ObservableRole Role in this.Contract.Roles)
+					if (Role.Parts.Any(p => p.IsMe))
+						this.SignableRoles.Add(Role);
 			}
 		}
 
@@ -600,9 +604,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract is null)
 				return;
 
-			foreach (ObservableRole? r in this.Contract.Roles.Where(r => r.Parts.Any(p => p.IsMe)))
+			foreach (ObservableRole? Role in this.Contract.Roles.Where(R => R.Parts.Any(P => P.IsMe)))
 			{
-				if (r.Role.CanRevoke)
+				if (Role.Role.CanRevoke)
 					this.CanObsoleteContract = this.Contract.ContractState is ContractState.Approved or ContractState.BeingSigned or ContractState.Signed;
 			}
 
@@ -616,10 +620,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 						this.CanDeleteContract = !this.args.IsReadOnly && !Binding;
 					});
 				}
-				catch (Exception e)
+				catch (Exception Ex)
 				{
 					this.CanDeleteContract = false;
-					ServiceRef.LogService.LogException(e);
+					ServiceRef.LogService.LogException(Ex);
 				}
 			}
 		}
@@ -632,7 +636,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				if(!this.IsRefreshing)
+				if (!this.IsRefreshing)
 					this.IsRefreshing = true;
 			});
 
@@ -660,7 +664,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 						});
 						return;
 					}
-				};
+				}
+				;
 			}
 			catch (ItemNotFoundException)
 			{

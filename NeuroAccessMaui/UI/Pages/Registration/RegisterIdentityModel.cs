@@ -155,7 +155,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
 		[NotifyPropertyChangedFor(nameof(CountryOk))]
+		[NotifyPropertyChangedFor(nameof(PersonalNumberPlaceholder))]
 		private string? countryCode;
+
+		public string? PersonalNumberPlaceholder => string.IsNullOrEmpty(this.CountryCode) ? string.Empty: PersonalNumberSchemes.DisplayStringForCountry(this.CountryCode);
 
 		/// <summary>
 		/// Nationality (ISO code)
