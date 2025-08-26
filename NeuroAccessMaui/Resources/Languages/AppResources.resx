@@ -2894,12 +2894,6 @@
   <data name="LastUpdatedFormat" xml:space="preserve">
     <value>Last updated: {0}</value>
   </data>
-  <data name="UseCurrentLocation" xml:space="preserve">
-    <value>Use current location</value>
-  </data>
-  <data name="LocationError" xml:space="preserve">
-    <value>There was an error getting your location. Make sure location permissions are granted in your devices' settings</value>
-  </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
     <value>Activate your digital ID</value>
   </data>
@@ -2929,7 +2923,6 @@
   </data>
   <data name="ContractWizardStepFormat" xml:space="preserve">
     <value>Step {0} of {1}</value>
-    <comment>Format: current step number, total steps.</comment>
   </data>
   <data name="ContractWizardNext" xml:space="preserve">
     <value>Next</value>
@@ -2963,5 +2956,11 @@
   </data>
   <data name="BuyNeuroCredits" xml:space="preserve">
     <value>Buy Neuro-Credits</value>
+  </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Use current location</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>There was an error getting your location. Make sure location permissions are granted in your devices' settings</value>
   </data>
 </root>
