@@ -107,8 +107,8 @@
 				  x:Name="NoIDPopup"
 				  VerticalOptions="Center"
 				  Margin="{DynamicResource LargeLeftRightMargins}">
-				<controls:InfoBubble BackgroundColor="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
-									 ContentColor="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"
+				<controls:InfoBubble BackgroundColor="{DynamicResource TnPInfobgWL}"
+									 ContentColor="{DynamicResource TnPInfoContentWL}"
 									 SvgSource="info.svg"
 									 LabelText="{l:Localize ApplyIdInfoMainPage}"/>
 
@@ -125,8 +125,8 @@
 			<!-- TODO Remove this once wallet functionality is improved-->
 			<controls:InfoBubble x:Name="NoWalletPopup"
 								 Grid.Row="1"
-								 BackgroundColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750bgWLLight}, Dark={DynamicResource TnPNeutralv750bgWLDark}}"
-								 ContentColor="{AppThemeBinding Light={DynamicResource TnPNeutralv750ContentWLLight}, Dark={DynamicResource TnPNeutralv750ContentWLDark}}"
+								 BackgroundColor="{DynamicResource TnPNeutralv750bgWL}"
+								 ContentColor="{DynamicResource TnPNeutralv750ContentWL}"
 								 Margin="{DynamicResource LargeLeftRightMargins}"
 								 IsVisible="False"
 								 SvgSource="wallet.svg"
