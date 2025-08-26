@@ -31,7 +31,7 @@
 		<Setter Property="ValidationLabelStyle"
 				Value="{DynamicResource RegularCompositeInputViewLabel}" />
 		<Setter Property="BorderPadding"
-				Value="{DynamicResource EditMediumMargins}" />
+				Value="{DynamicResource EditSmallMargins}" />
 		<Setter Property="BorderBackground"
 				Value="{DynamicResource InputFieldsSurfaceBackgroundActive}" />
 		<Setter Property="BorderStroke"
