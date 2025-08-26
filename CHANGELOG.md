@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added text to explain validation of Password/PIN
 - New views when creating contract
 - New localization strings for contract wizard steps, navigation, review, settings, visibility, and contract label in multiple languages
 - Localization for Payment acceptence page
