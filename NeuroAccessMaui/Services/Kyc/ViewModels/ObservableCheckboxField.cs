@@ -20,9 +20,12 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
                     foreach (string OptionValue in OptionValues)
                     {
                         KycOption? Opt = this.Options.FirstOrDefault(o => o.Value == OptionValue);
-                        if (Opt is not null)
-                            this.SelectedOptions.Add(Opt);
-                    }
+						MainThread.BeginInvokeOnMainThread(()=>
+						{
+							if (Opt is not null)
+								this.SelectedOptions.Add(Opt);
+						});
+					}
                 }
             }
         }

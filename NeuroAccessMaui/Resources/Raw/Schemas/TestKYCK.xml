@@ -1,0 +1,378 @@
+<KYCProcess>
+	<Page id="prepareDocuments">
+		<Title>
+			<Text lang="en">Before we start, we'd like to give you a tip.</Text>
+		</Title>
+		<Description>
+			<Text lang="en">We'll ask for an official photo ID and proof of residence, so why not get them ready?</Text>
+		</Description>
+	</Page>
+	<Page id="namePage">
+		<Title>
+			<Text lang="en">Nice to meet you, what's your name?</Text>
+		</Title>
+		<Field id="fullName" type="text" mapping="FULLNAME" required="true">
+			<Label>
+				<Text lang="en">Full name</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Full name</Text>
+			</Placeholder>
+			<Validation minLength="2">
+				<Regex>^[\D]+$</Regex>
+				<Message>
+					<Text lang="en">Please enter your full name.</Text>
+				</Message>
+			</Validation>
+		</Field>
+	</Page>
+	<Page id="documentNumberPage">
+		<Title>
+			<Text lang="en">Enter your Identity document number</Text>
+		</Title>
+		<Field id="documentNumber" type="text" mapping="PNR" required="true">
+			<Label>
+				<Text lang="en">Document number</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Document number</Text>
+			</Placeholder>
+			<Validation>
+				<Regex>^\d{3}\.\d{3}\.\d{3}\-\d{2}$</Regex>
+				<Message>
+					<Text lang="en">Please enter your document number.</Text>
+				</Message>
+			</Validation>
+		</Field>
+	</Page>
+	<Page id="dateOfBirh">
+		<Title>
+			<Text lang="en">What's your date of birth?</Text>
+		</Title>
+		<Field id="dob" type="date" required="true">
+			<Label>
+				<Text lang="en">Date of Birth</Text>
+			</Label>
+			<Mapping key="BDAY">
+				<Transform>day</Transform>
+			</Mapping>
+			<Mapping key="BMONTH">
+				<Transform>month</Transform>
+			</Mapping>
+			<Mapping key="BYEAR">
+				<Transform>year</Transform>
+			</Mapping>
+			<Validation min="1900-01-01" max="2025-01-01">
+				<Message>
+					<Text lang="en">Enter a valid date between 1900 and 2025</Text>
+				</Message>
+			</Validation>
+		</Field>
+	</Page>
+	<Page id="identityDocuments">
+		<Title>
+			<Text lang="en">Let's validate your data through a photo ID</Text>
+		</Title>
+		<Description>
+			<Text lang="en">It can be an ID card, driver's license, or passport.</Text>
+		</Description>
+		<Field id="documentType" type="picker" label="Document Type" required="true">
+			<Label>
+				<Text lang="en">Document Type</Text>
+			</Label>
+			<Options>
+				<Option value="passport">
+					<Text lang="en">Passport</Text>
+				</Option>
+				<Option value="identityCard">
+					<Text lang="en">ID Card</Text>
+				</Option>
+				<Option value="driversLicense">
+					<Text lang="en">Driver's license</Text>
+				</Option>
+			</Options>
+			<Validation>
+				<Message>
+					<Text lang="en">You must select a document type</Text>
+					<Text lang="sv">Du måste välja en dokumenttyp</Text>
+				</Message>
+			</Validation>
+		</Field>
+	</Page>
+	<Page id="passportPage">
+		<Title>
+			<Text lang="en">Upload a photo of your passport</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Make sure all information is clearly visible</Text>
+		</Description>
+		<!-- Passport Upload Field (shown if passport is selected) -->
+		<Field id="passportUpload" type="image" mapping="Passport" specialType="passport" required="true">
+			<Label>
+				<Text lang="en">Passport</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Choose file...</Text>
+			</Placeholder>
+			<Validation maxFileSizeMB="15">
+				<FileTypes>
+					<FileType>.jpg</FileType>
+					<FileType>.jpeg</FileType>
+					<FileType>.png</FileType>
+					<FileType>.pdf</FileType>
+				</FileTypes>
+				<Message>
+					<Text lang="en">Please upload a valid passport image or PDF (max 15MB)</Text>
+				</Message>
+			</Validation>
+			<Metadata>
+				<TargetWidth>1200</TargetWidth>
+				<TargetHeight>1600</TargetHeight>
+				<MinDpi>300</MinDpi>
+			</Metadata>
+		</Field>
+		<Condition>
+			<FieldRef>documentType</FieldRef>
+			<Equals>passport</Equals>
+		</Condition>
+	</Page>
+	<Page id="identityCardPage">
+		<Title>
+			<Text lang="en">Let's validate your data through a photo of your identity card.</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Make sure your name and photo is clearly visible.</Text>
+		</Description>
+		<!-- Identity Card Upload Field (shown if identityCard is selected) -->
+		<Field id="identityCardFront" type="image" mapping="IdCardFront" specialType="identityCardFront" required="true">
+			<Label>
+				<Text lang="en">Identity card front</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Front of document...</Text>
+			</Placeholder>
+			<Validation maxFileSizeMB="15">
+				<FileTypes>
+					<FileType>.jpg</FileType>
+					<FileType>.jpeg</FileType>
+					<FileType>.png</FileType>
+					<FileType>.pdf</FileType>
+				</FileTypes>
+				<Message>
+					<Text lang="en">Please upload a valid identity card image or PDF (max 15MB)</Text>
+					<Text lang="sv">Ladda upp en giltig ID-kortsbild eller PDF (max 15MB)</Text>
+				</Message>
+			</Validation>
+			<Metadata>
+				<TargetWidth>1000</TargetWidth>
+				<TargetHeight>1500</TargetHeight>
+				<MinDpi>200</MinDpi>
+			</Metadata>
+		</Field>
+		<Field id="identityCardBack" type="image" mapping="IdCardFront" specialType="identityCardBack" required="true">
+			<Label>
+				<Text lang="en">Identity card back</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Back of document...</Text>
+			</Placeholder>
+			<Validation maxFileSizeMB="15">
+				<FileTypes>
+					<FileType>.jpg</FileType>
+					<FileType>.jpeg</FileType>
+					<FileType>.png</FileType>
+					<FileType>.pdf</FileType>
+				</FileTypes>
+				<Message>
+					<Text lang="en">Please upload a valid identity card image or PDF (max 15MB)</Text>
+					<Text lang="sv">Ladda upp en giltig ID-kortsbild eller PDF (max 15MB)</Text>
+				</Message>
+			</Validation>
+			<Metadata>
+				<TargetWidth>1000</TargetWidth>
+				<TargetHeight>1500</TargetHeight>
+				<MinDpi>200</MinDpi>
+			</Metadata>
+		</Field>
+		<Condition>
+			<FieldRef>documentType</FieldRef>
+			<Equals>identityCard</Equals>
+		</Condition>
+	</Page>
+	<Page id="driversLicensePage">
+		<Title>
+			<Text lang="en">Let's validate your data through a photo of your driver's license.</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Make sure your information is clearly visible.</Text>
+		</Description>
+		<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
+		<Field id="driverslicenseFront" type="image" mapping="DriverLicenseFront" specialType="driversLicenseFront" required="true">
+			<Label>
+				<Text lang="en">Drivers' license front</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Front of document...</Text>
+			</Placeholder>
+			<Validation maxFileSizeMB="15">
+				<FileTypes>
+					<FileType>.jpg</FileType>
+					<FileType>.jpeg</FileType>
+					<FileType>.png</FileType>
+					<FileType>.pdf</FileType>
+				</FileTypes>
+				<Message>
+					<Text lang="en">Please upload the front of your driver's license (max 15MB)</Text>
+				</Message>
+			</Validation>
+			<Metadata>
+				<TargetWidth>900</TargetWidth>
+				<TargetHeight>600</TargetHeight>
+				<MinDpi>150</MinDpi>
+			</Metadata>
+		</Field>
+		<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
+		<Field id="driverslicenseBack" type="image" mapping="DriverLicenseBack" specialType="driversLicenseBack" required="true">
+			<Label>
+				<Text lang="en">Drivers' license back</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Back of document...</Text>
+			</Placeholder>
+			<Validation maxFileSizeMB="15">
+				<FileTypes>
+					<FileType>.jpg</FileType>
+					<FileType>.jpeg</FileType>
+					<FileType>.png</FileType>
+					<FileType>.pdf</FileType>
+				</FileTypes>
+				<Message>
+					<Text lang="en">Please upload the back of your driver's license (max 15MB)</Text>
+				</Message>
+			</Validation>
+			<Metadata>
+				<TargetWidth>900</TargetWidth>
+				<TargetHeight>600</TargetHeight>
+				<MinDpi>150</MinDpi>
+			</Metadata>
+		</Field>
+		<Condition>
+			<FieldRef>documentType</FieldRef>
+			<Equals>driversLicense</Equals>
+		</Condition>
+	</Page>
+	<Page id="selfiePage">
+		<Title>
+			<Text lang="en">Take a photo of yourself.</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Please take a selfie to confirm your identity. Look at the camera and hold your face steady.</Text>
+		</Description>
+		<Field id="selfieUpload" type="image" mapping="ProfilePhoto" required="true">
+			<Label>
+				<Text lang="en">Selfie</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Upload your photo...</Text>
+			</Placeholder>
+			<Validation maxFileSizeMB="15">
+				<FileTypes>
+					<FileType>.jpg</FileType>
+					<FileType>.jpeg</FileType>
+					<FileType>.png</FileType>
+				</FileTypes>
+				<Message>
+					<Text lang="en">Please upload a valid selfie image (max 15MB)</Text>
+					<Text lang="sv">Ladda upp en giltig selfie-bild (max 15MB)</Text>
+				</Message>
+			</Validation>
+			<Metadata>
+				<TargetWidth>800</TargetWidth>
+				<TargetHeight>800</TargetHeight>
+				<MinDpi>150</MinDpi>
+			</Metadata>
+		</Field>
+	</Page>
+	<Page id="addressInformation">
+		<Title>
+			<Text lang="en">Fill in your address information</Text>
+		</Title>
+		<Field id="zipCode" type="text" mapping="ZIP" required="true">
+			<Label>
+				<Text lang="en">Zip Code</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Zip or postal code</Text>
+			</Placeholder>
+		</Field>
+		<Field id="address" type="text" mapping="ADDR" required="true">
+			<Label>
+				<Text lang="en">Address</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Address</Text>
+			</Placeholder>
+		</Field>
+		<Field id="area" type="text" mapping="AREA" required="true">
+			<Label>
+				<Text lang="en">Area</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Area</Text>
+			</Placeholder>
+		</Field>
+		<Field id="city" type="text" mapping="CITY" required="true">
+			<Label>
+				<Text lang="en">City</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">City</Text>
+			</Placeholder>
+		</Field>
+		<Field id="state" type="text" mapping="REGION" required="true">
+			<Label>
+				<Text lang="en">State</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">State</Text>
+			</Placeholder>
+		</Field>
+	</Page>
+	<Page id="tocPage">
+		<Title>
+			<Text lang="en">Terms and Conditions</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Please read and accept our terms and conditions to continue.</Text>
+		</Description>
+		<Field id="tos" type="info">
+			<Label>
+				<Text lang="en">Lorem ipsum dolor sit amet</Text>
+			</Label>
+			<Description>
+				<Text lang="en">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla in massa in euismod. Sed pretium enim id bibendum euismod. Proin eget rhoncus turpis. Etiam finibus lorem ut diam efficitur, et aliquam eros finibus. Nunc ante tortor, aliquet sit amet facilisis venenatis, mattis sit amet ipsum. Vestibulum semper et ligula quis varius. Phasellus eros nisl, elementum in odio eget, blandit malesuada eros. Phasellus iaculis, velit non pharetra ullamcorper, enim purus facilisis ante, in ornare ligula quam eu augue.
+
+Fusce venenatis nunc quam, nec imperdiet diam varius id. Nullam pellentesque hendrerit justo, in tincidunt nulla placerat ac. Etiam sagittis nibh dolor, non bibendum augue sagittis non. Praesent hendrerit enim dui, feugiat ullamcorper lacus semper eget. Quisque arcu mi, sodales sit amet nisl ut, venenatis mollis lacus. Donec massa dolor, pellentesque in nisi ac, faucibus viverra est. Integer sit amet fringilla mi. Phasellus sed imperdiet nunc, quis bibendum nisl.
+
+Aliquam pharetra magna vel sapien fermentum, eu venenatis orci pulvinar. Morbi quis turpis id lectus ultrices efficitur a quis metus. Pellentesque consectetur sollicitudin varius. Maecenas tristique elit nisi, vitae pellentesque ligula pretium in. Duis a quam metus. Morbi imperdiet scelerisque ex eget vehicula. Vivamus malesuada ac neque a mollis. Sed hendrerit accumsan gravida. Pellentesque malesuada elementum quam quis finibus. Duis iaculis sem fermentum sapien ornare, quis molestie lorem bibendum. Curabitur consectetur blandit eros id efficitur.
+
+Vestibulum cursus sodales ornare. Aenean quis vestibulum neque. Suspendisse sed odio consectetur, commodo mi nec, elementum ligula. Sed non finibus diam. Curabitur aliquam erat vel enim iaculis eleifend. Nullam magna tortor, laoreet a augue ut, suscipit condimentum arcu. Curabitur fermentum iaculis hendrerit. Sed quis luctus magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla sed enim sed lacus ullamcorper volutpat. Morbi placerat, elit sit amet egestas vulputate, ante ex iaculis nulla, sit amet efficitur quam dui pretium ligula. Fusce justo turpis, cursus at ex at, consectetur cursus risus. Duis sed augue nec sapien auctor volutpat. Nullam blandit blandit justo, vitae lobortis mauris bibendum eget. Morbi maximus mattis pulvinar. Duis non finibus dui.
+
+Proin placerat, nisl efficitur viverra dictum, quam nisl semper turpis, rhoncus gravida quam dolor vitae nibh. Fusce leo lacus, interdum sed felis ut, sagittis vulputate ex. Donec eget enim ac diam laoreet cursus non non sem. In posuere lacus nec velit interdum luctus. Praesent quis facilisis mi. Donec eget malesuada ligula. Quisque cursus ex vitae venenatis egestas.
+				</Text>
+			</Description>
+		</Field>
+		<Field id="tosAgreement" type="checkbox" required="true">
+			<Label>
+				<Text lang="en">Terms Consent</Text>
+			</Label>
+			<Options>
+				<Option value="yes">
+					<Text lang="en">I accept</Text>
+				</Option>
+			</Options>
+			<Default>false</Default>
+		</Field>
+	</Page>
+</KYCProcess>

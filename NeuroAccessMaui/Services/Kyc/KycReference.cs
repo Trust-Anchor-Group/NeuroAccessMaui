@@ -15,6 +15,7 @@ namespace NeuroAccessMaui.Services.Kyc
 	/// Contains a local reference to a KYC process.
 	/// </summary>
 	[CollectionName("KycReferences")]
+	[Index(nameof(UpdatedUtc), nameof(UpdatedUtc))]
 	public class KycReference
 	{
 		private KycProcess? process;
@@ -33,23 +34,23 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <summary>
 		/// When the reference was created.
 		/// </summary>
-		public DateTime Created { get; set; }
+		public DateTime CreatedUtc { get; set; }
 
 		/// <summary>
 		/// When the reference was last updated.
 		/// </summary>
-		public DateTime Updated { get; set; }
+		public DateTime UpdatedUtc { get; set; }
 
 		/// <summary>
 		/// When the process was last fetched.
 		/// </summary>
-		public DateTime Fetched { get; set; }
+		public DateTime FetchedUtc { get; set; }
 
 		/// <summary>
 		/// Field values in the process.
 		/// </summary>
 		[DefaultValueNull]
-		public KycFieldValue[]? FieldValues { get; set; }
+		public KycFieldValue[]? Fields { get; set; }
 
 		/// <summary>
 		/// Optional friendly name.
@@ -58,10 +59,17 @@ namespace NeuroAccessMaui.Services.Kyc
 		public string FriendlyName { get; set; } = string.Empty;
 
 		/// <summary>
-		/// Gets a parsed KYC process.
+		/// The legal ID of the created identity (if any).
 		/// </summary>
-		/// <param name="Lang">Optional language.</param>
-		/// <returns>Parsed process</returns>
+		[DefaultValueNull]
+		public string? CreatedIdentityId { get; set; }
+
+		/// <summary>
+		/// Last known state of the created identity (if any), for quick status tagging offline.
+		/// </summary>
+		[DefaultValueNull]
+		public IdentityState? CreatedIdentityState { get; set; }
+
 		/// <summary>
 		/// Gets a parsed KYC process, populating its fields from the reference.
 		/// </summary>
@@ -73,10 +81,10 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				this.process = await KycProcessParser.LoadProcessAsync(this.KycXml, lang).ConfigureAwait(false);
 
-				if (this.FieldValues is not null)
+				if (this.Fields is not null)
 				{
-					foreach (KycFieldValue FieldValue in this.FieldValues)
-						this.process.Values[FieldValue.FieldId] = FieldValue.Value;
+					foreach (KycFieldValue Field in this.Fields)
+						this.process.Values[Field.FieldId] = Field.Value;
 
 					foreach (KycPage Page in this.process.Pages)
 					{
@@ -96,11 +104,6 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <summary>
 		/// Stores a parsed KYC process into the reference.
 		/// </summary>
-		/// <param name="Process">KYC process</param>
-		/// <param name="Xml">Process XML</param>
-		/// <summary>
-		/// Stores a parsed KYC process into the reference.
-		/// </summary>
 		/// <param name="process">KYC process.</param>
 		/// <param name="xml">Process XML.</param>
 		public void SetProcess(KycProcess process, string xml)
@@ -108,13 +111,6 @@ namespace NeuroAccessMaui.Services.Kyc
 			this.SetProcess(process, xml, DateTime.UtcNow, DateTime.UtcNow);
 		}
 
-		/// <summary>
-		/// Stores a parsed KYC process into the reference.
-		/// </summary>
-		/// <param name="Process">KYC process</param>
-		/// <param name="Xml">Process XML</param>
-		/// <param name="Created">Created time</param>
-		/// <param name="Updated">Updated time</param>
 		/// <summary>
 		/// Stores a parsed KYC process into the reference with explicit timestamps.
 		/// </summary>
@@ -126,13 +122,13 @@ namespace NeuroAccessMaui.Services.Kyc
 		{
 			this.process = process;
 			this.KycXml = xml;
-			this.Created = created;
-			this.Updated = updated;
-			this.Fetched = DateTime.UtcNow;
-			this.FieldValues = process.Values.Select(p => new KycFieldValue(p.Key, p.Value)).ToArray();
+			this.CreatedUtc = created;
+			this.UpdatedUtc = updated;
+			this.FetchedUtc = DateTime.UtcNow;
+			this.Fields = process.Values.Select(p => new KycFieldValue(p.Key, p.Value)).ToArray();
 		}
 
-		private void ApplyFieldValue(ObservableKycField Field)
+		public void ApplyFieldValue(ObservableKycField Field)
 		{
 			if (this.process is null || !this.process.Values.TryGetValue(Field.Id, out string? Val) || Val is null)
 				return;
@@ -154,10 +150,10 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				process = process,
 				KycXml = xml,
-				Created = DateTime.UtcNow,
-				Updated = DateTime.UtcNow,
-				Fetched = DateTime.UtcNow,
-				FieldValues = process.Values.Select(P => new KycFieldValue(P.Key, P.Value)).ToArray(),
+				CreatedUtc = DateTime.UtcNow,
+				UpdatedUtc = DateTime.UtcNow,
+				FetchedUtc = DateTime.UtcNow,
+				Fields = process.Values.Select(P => new KycFieldValue(P.Key, P.Value)).ToArray(),
 				FriendlyName = friendlyName ?? string.Empty
 			};
 			return Reference;

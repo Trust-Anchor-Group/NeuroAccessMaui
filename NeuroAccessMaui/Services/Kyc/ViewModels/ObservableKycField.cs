@@ -99,7 +99,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         /// <summary>
         /// For Checkbox type: multi-selection of options.
         /// </summary>
-        public ObservableCollection<KycOption> SelectedOptions { get; } = new();
+        public ObservableCollection<KycOption> SelectedOptions { get; set; } = new();
 
         private void SelectedOptions_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {

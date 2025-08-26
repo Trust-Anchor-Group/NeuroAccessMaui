@@ -2864,10 +2864,23 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool GenerateNewKeys,
 			params LegalIdentityAttachment[] Attachments)
 		{
+			return await this.AddLegalIdentity(Model.ToProperties(ServiceRef.XmppService), GenerateNewKeys, Attachments);
+		}
+
+		/// <summary>
+		/// Adds a legal identity.
+		/// </summary>
+		/// <param name="Props">The array holding all the values needed.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Legal Identity</returns>
+		public async Task<LegalIdentity> AddLegalIdentity(Property[] Props, bool GenerateNewKeys,
+			params LegalIdentityAttachment[] Attachments)
+		{
 			if (GenerateNewKeys)
 				await this.GenerateNewKeys();
 
-			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(ServiceRef.XmppService));
+			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Props);
 
 			foreach (LegalIdentityAttachment Attachment in Attachments)
 			{

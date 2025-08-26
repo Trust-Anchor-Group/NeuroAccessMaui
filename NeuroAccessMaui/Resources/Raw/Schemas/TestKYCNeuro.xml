@@ -1,0 +1,551 @@
+<KYCProcess>
+	<Page id="personalInfo" title="Personal Information">
+		<Title>
+			<Text lang="en">Personal Information</Text>
+			<Text lang="sv">Personuppgifter</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Please enter your personal details as they appear on your legal documents.</Text>
+			<Text lang="sv">Ange dina personuppgifter enligt dina officiella dokument.</Text>
+		</Description>
+		<Section label="Basic Details">
+			<Label>
+				<Text lang="en">Basic Details</Text>
+				<Text lang="sv">Grundläggande uppgifter</Text>
+			</Label>
+			<Field id="personalNumber" type="text" label="Personal Number" mapping="PNR" required="true">
+				<Label>
+					<Text lang="en">Personal Number</Text>
+					<Text lang="br">CPF</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">The Personal Number on you document</Text>
+					<Text lang="br">CPF</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">123456789</Text>
+				</Placeholder>
+				<Validation minLength="12" maxLength="12">
+					<Regex>^\d{12}$</Regex>
+					<Message>
+						<Text lang="en">Personal Number must be exactly 12 digits.</Text>
+						<Text lang="sv">Personnummer måste vara exakt 12 siffror.</Text>
+					</Message>
+				</Validation>
+			</Field>
+			<Field id="firstName" type="text" label="Given Name" mapping="FIRST" required="true">
+				<Label>
+					<Text lang="en">First Name</Text>
+					<Text lang="sv">Förnamn</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Your given name</Text>
+					<Text lang="sv">Ditt förnamn</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">John</Text>
+					<Text lang="sv">Johan</Text>
+				</Placeholder>
+				<Validation minLength="2" maxLength="40">
+					<Regex>^[A-Za-z]+$</Regex>
+					<Message>
+						<Text lang="en">First name must contain only letters and be 2-40 characters long.</Text>
+						<Text lang="sv">Förnamnet måste innehålla endast bokstäver och vara 2-40 tecken långt.</Text>
+					</Message>
+				</Validation>
+			</Field>
+			<Field id="middleNames" type="text" label="Middle Names" mapping="MIDDLE">
+				<Label>
+					<Text lang="en">Middle Names</Text>
+					<Text lang="sv">Mellannamn</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Your middle names, if any</Text>
+					<Text lang="sv">Dina mellannamn, om några</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">Alexander</Text>
+					<Text lang="sv">Alexander</Text>
+				</Placeholder>
+				<Validation maxLength="40">
+					<Message>
+						<Text lang="en">Middle names must be up to 40 characters long.</Text>
+						<Text lang="sv">Mellannamn får vara upp till 40 tecken långt.</Text>
+					</Message>
+				</Validation>
+			</Field>
+			<Field id="lastNames" type="text" label="Family Name" mapping="LAST" required="true">
+				<Label>
+					<Text lang="en">Family Name</Text>
+					<Text lang="sv">Efternamn</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Your family name or surname</Text>
+					<Text lang="sv">Ditt efternamn</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">Doe</Text>
+					<Text lang="sv">Svensson</Text>
+				</Placeholder>
+				<Validation minLength="2" maxLength="40">
+					<Regex>^[A-Za-z]+$</Regex>
+					<Message>
+						<Text lang="en">Family name must contain only letters and be 2-40 characters long.</Text>
+						<Text lang="sv">Efternamnet måste innehålla endast bokstäver och vara 2-40 tecken långt.</Text>
+					</Message>
+				</Validation>
+			</Field>
+			<Field id="dob" type="date" label="Date of Birth" required="true">
+				<Label>
+					<Text lang="en">Date of Birth</Text>
+					<Text lang="sv">Födelsedatum</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Use the format YYYY-MM-DD</Text>
+					<Text lang="sv">Använd formatet ÅÅÅÅ-MM-DD</Text>
+				</Hint>
+				<Mapping key="BDAY">
+					<Transform>day</Transform>
+				</Mapping>
+				<Mapping key="BMONTH">
+					<Transform>month</Transform>
+				</Mapping>
+				<Mapping key="BYEAR">
+					<Transform>year</Transform>
+				</Mapping>
+				<Validation min="1900-01-01" max="2020-01-01">
+					<Message>
+						<Text lang="en">Enter a valid date between 1900 and 2020</Text>
+						<Text lang="sv">Ange ett giltigt datum mellan 1900 och 2020</Text>
+					</Message>
+				</Validation>
+				<!-- Example: a date field with metadata could look like this -->
+				<Metadata>
+					<DateFormat>yyyy-MM-dd</DateFormat>
+					<AllowFuture>false</AllowFuture>
+				</Metadata>
+			</Field>
+			<Field id="gender" type="picker" label="Gender" mapping="GENDER" required="true">
+				<Label>
+					<Text lang="en">Gender</Text>
+					<Text lang="sv">Kön</Text>
+				</Label>
+				<Options>
+					<Option value="M">
+						<Text lang="en">Male</Text>
+						<Text lang="sv">Man</Text>
+					</Option>
+					<Option value="F">
+						<Text lang="en">Female</Text>
+						<Text lang="sv">Kvinna</Text>
+					</Option>
+					<Option value="Other">
+						<Text lang="en">Other</Text>
+						<Text lang="sv">Annat</Text>
+					</Option>
+				</Options>
+				<Validation>
+					<Message>
+						<Text lang="en">You must select a gender</Text>
+					</Message>
+				</Validation>
+			</Field>
+		</Section>
+	</Page>
+	<Page id="identityDocuments" title="Identity Documents">
+		<Title>
+			<Text lang="en">Identity Documents</Text>
+			<Text lang="sv">ID-handlingar</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Please select and upload the identity document you would like to provide. Accepted formats: jpg, jpeg, png, pdf.</Text>
+			<Text lang="sv">Välj och ladda upp din identitetshandling. Tillåtna format: jpg, jpeg, png, pdf.</Text>
+		</Description>
+		<Section label="Document Type Selection">
+			<Label>
+				<Text lang="en">Document Type Selection</Text>
+				<Text lang="sv">Typ av identitetshandling</Text>
+			</Label>
+			<Field id="documentType" type="picker" label="Document Type" required="true">
+				<Label>
+					<Text lang="en">Document Type</Text>
+					<Text lang="sv">Dokumenttyp</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Choose which type of ID you want to provide.</Text>
+					<Text lang="sv">Välj vilken typ av ID du vill lämna.</Text>
+				</Hint>
+				<Options>
+					<Option value="passport">
+						<Text lang="en">Passport</Text>
+						<Text lang="sv">Pass</Text>
+					</Option>
+					<Option value="identityCard">
+						<Text lang="en">Identity Card</Text>
+						<Text lang="sv">ID-kort</Text>
+					</Option>
+					<Option value="driversLicense">
+						<Text lang="en">Driver's license</Text>
+						<Text lang="sv">Körkort</Text>
+					</Option>
+				</Options>
+				<Validation>
+					<Message>
+						<Text lang="en">You must select a document type</Text>
+						<Text lang="sv">Du måste välja en dokumenttyp</Text>
+					</Message>
+				</Validation>
+			</Field>
+		</Section>
+
+		<Section label="Document Upload">
+			<Label>
+				<Text lang="en">Document Upload</Text>
+				<Text lang="sv">Ladda upp dokument</Text>
+			</Label>
+			<!-- Passport Upload Field (shown if passport is selected) -->
+			<Field id="passportUpload" type="image" label="Passport Photo" mapping="Passport" specialType="passport">
+				<Label>
+					<Text lang="en">Passport Photo</Text>
+					<Text lang="sv">Passfoto</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Upload the photo page of your passport</Text>
+					<Text lang="sv">Ladda upp fotosidan i ditt pass</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">Choose file...</Text>
+					<Text lang="sv">Välj fil...</Text>
+				</Placeholder>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>passport</Equals>
+				</Condition>
+				<Validation maxFileSizeMB="10">
+					<FileTypes>
+						<FileType>.jpg</FileType>
+						<FileType>.jpeg</FileType>
+						<FileType>.png</FileType>
+						<FileType>.pdf</FileType>
+					</FileTypes>
+					<Message>
+						<Text lang="en">Please upload a valid passport image or PDF (max 10MB)</Text>
+						<Text lang="sv">Ladda upp en giltig passbild eller PDF (max 10MB)</Text>
+					</Message>
+				</Validation>
+				<Metadata>
+					<TargetWidth>1200</TargetWidth>
+					<TargetHeight>1600</TargetHeight>
+					<MinDpi>300</MinDpi>
+				</Metadata>
+			</Field>
+
+			<!-- Identity Card Upload Field (shown if identityCard is selected) -->
+			<Field id="identityCardUpload" type="image" label="Identity Card" mapping="IdCardFront" specialType="identityCardFront">
+				<Label>
+					<Text lang="en">Identity Card</Text>
+					<Text lang="sv">ID-kort</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Upload the front side of your identity card</Text>
+					<Text lang="sv">Ladda upp framsidan av ditt ID-kort</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">Choose file...</Text>
+					<Text lang="sv">Välj fil...</Text>
+				</Placeholder>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>identityCard</Equals>
+				</Condition>
+				<Validation maxFileSizeMB="10">
+					<FileTypes>
+						<FileType>.jpg</FileType>
+						<FileType>.jpeg</FileType>
+						<FileType>.png</FileType>
+						<FileType>.pdf</FileType>
+					</FileTypes>
+					<Message>
+						<Text lang="en">Please upload a valid identity card image or PDF (max 10MB)</Text>
+						<Text lang="sv">Ladda upp en giltig ID-kortsbild eller PDF (max 10MB)</Text>
+					</Message>
+				</Validation>
+				<Metadata>
+					<TargetWidth>1000</TargetWidth>
+					<TargetHeight>1500</TargetHeight>
+					<MinDpi>200</MinDpi>
+				</Metadata>
+			</Field>
+
+			<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
+			<Field id="driverslicenseFront" type="image" label="Driver's license (Front)" mapping="DriverLicenseFront" specialType="driversLicenseFront">
+				<Label>
+					<Text lang="en">Driver's license (Front)</Text>
+					<Text lang="sv">Körkort (Framsida)</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Upload the front of your driver’s license</Text>
+					<Text lang="sv">Ladda upp framsidan av ditt körkort</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">Choose file...</Text>
+					<Text lang="sv">Välj fil...</Text>
+				</Placeholder>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>driversLicense</Equals>
+				</Condition>
+				<Validation maxFileSizeMB="10">
+					<FileTypes>
+						<FileType>.jpg</FileType>
+						<FileType>.jpeg</FileType>
+						<FileType>.png</FileType>
+						<FileType>.pdf</FileType>
+					</FileTypes>
+					<Message>
+						<Text lang="en">Please upload the front side (max 10MB)</Text>
+						<Text lang="sv">Ladda upp framsidan (max 10MB)</Text>
+					</Message>
+				</Validation>
+				<Metadata>
+					<TargetWidth>900</TargetWidth>
+					<TargetHeight>600</TargetHeight>
+					<MinDpi>150</MinDpi>
+				</Metadata>
+			</Field>
+			<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
+			<Field id="driverslicenseBack" type="image" label="Driver's license (Back)" mapping="DriverLicenseBack" specialType="driversLicenseBack">
+				<Label>
+					<Text lang="en">Driver's license (Back)</Text>
+					<Text lang="sv">Körkort (Baksida)</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Upload the back of your driver’s license</Text>
+					<Text lang="sv">Ladda upp baksidan av ditt körkort</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">Choose file...</Text>
+					<Text lang="sv">Välj fil...</Text>
+				</Placeholder>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>driversLicense</Equals>
+				</Condition>
+				<Validation maxFileSizeMB="10">
+					<FileTypes>
+						<FileType>.jpg</FileType>
+						<FileType>.jpeg</FileType>
+						<FileType>.png</FileType>
+						<FileType>.pdf</FileType>
+					</FileTypes>
+					<Message>
+						<Text lang="en">Please upload the back side (max 10MB)</Text>
+						<Text lang="sv">Ladda upp baksidan (max 10MB)</Text>
+					</Message>
+				</Validation>
+				<Metadata>
+					<TargetWidth>900</TargetWidth>
+					<TargetHeight>600</TargetHeight>
+					<MinDpi>150</MinDpi>
+				</Metadata>
+			</Field>
+		</Section>
+	</Page>
+	<Page id="addressInformation" title="Address Information">
+		<Title>
+			<Text lang="en">Address Information</Text>
+			<Text lang="sv">Adressinformation</Text>
+		</Title>
+		<Description>
+			<Text lang="en">The following personal information will be included in the application for Neuro ID</Text>
+			<Text lang="sv">Följande personuppgifter kommer att ingå i ansökan för Neuro ID</Text>
+		</Description>
+		<Field id="countryOfResidence" type="picker" label="Country of Residence" mapping="COUNTRY" required="true">
+			<Label>
+				<Text lang="en">Country of Residence</Text>
+				<Text lang="sv">Land för bosättning</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Select the country where you currently reside</Text>
+				<Text lang="sv">Välj det land där du för närvarande bor</Text>
+			</Hint>
+			<Options>
+				<Option value="SE">
+					<Text lang="en">Sweden</Text>
+					<Text lang="sv">Sverige</Text>
+				</Option>
+				<Option value="FI">
+					<Text lang="en">Finland</Text>
+					<Text lang="sv">Finland</Text>
+				</Option>
+			</Options>
+			<Validation>
+				<Message>
+					<Text lang="en">You must select a country of residence</Text>
+					<Text lang="sv">Du måste välja ett bosättningsland</Text>
+				</Message>
+			</Validation>
+		</Field>
+		<Field id="zipCode" type="text" label="Zip Code" mapping="ZIP" required="true">
+			<Label>
+				<Text lang="en">Zip Code</Text>
+				<Text lang="sv">Postnummer</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Enter your postal code</Text>
+				<Text lang="sv">Ange ditt postnummer</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">12345</Text>
+				<Text lang="sv">12345</Text>
+			</Placeholder>
+			<Validation minLength="5" maxLength="5">
+				<Regex>^\d{5}$</Regex>
+				<Message>
+					<Text lang="en">Zip code must be exactly 5 digits.</Text>
+					<Text lang="sv">Postnummer måste vara exakt 5 siffror.</Text>
+				</Message>
+			</Validation>
+		</Field>
+		<Field id="address" type="text" label="Street Address" mapping="ADDR" required="true">
+			<Label>
+				<Text lang="en">Street Address</Text>
+				<Text lang="sv">Gatuadress</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Enter your street address</Text>
+				<Text lang="sv">Ange din gatuadress</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">123 Main St</Text>
+				<Text lang="sv">123 Huvudgatan</Text>
+			</Placeholder>
+			<Validation minLength="5" maxLength="100">
+				<Message>
+					<Text lang="en">Street address must be between 5 and 100 characters.</Text>
+					<Text lang="sv">Gatuadressen måste vara mellan 5 och 100 tecken.</Text>
+				</Message>
+			</Validation>
+		</Field>
+		<Field id="address2" type="text" label="Apartment/Unit" mapping="ADDR2">
+			<Label>
+				<Text lang="en">Apartment/Unit</Text>
+				<Text lang="sv">Lägenhet/Enhet</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Optional: Enter your apartment or unit number</Text>
+				<Text lang="sv">Valfritt: Ange ditt lägenhets- eller enhetsnummer</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">Apt 4B</Text>
+				<Text lang="sv">Lgh 4B</Text>
+			</Placeholder>
+			<Validation maxLength="20">
+				<Message>
+					<Text lang="en">Apartment/unit must be up to 20 characters long.</Text>
+					<Text lang="sv">Lägenhet/enhet får vara upp till 20 tecken långt.</Text>
+				</Message>
+			</Validation>
+		</Field>
+		<Field id="area" type="text" label="Area" mapping="AREA" required="true">
+			<Label>
+				<Text lang="en">Area</Text>
+				<Text lang="sv">Område</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Enter the area or neighborhood name</Text>
+				<Text lang="sv">Ange områdets eller grannskapets namn</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">Downtown</Text>
+				<Text lang="sv">Centrum</Text>
+			</Placeholder>
+			<Validation minLength="2" maxLength="50">
+				<Message>
+					<Text lang="en">Area must be between 2 and 50 characters.</Text>
+					<Text lang="sv">Området måste vara mellan 2 och 50 tecken.</Text>
+				</Message>
+			</Validation>
+		</Field>
+		<Field id="city" type="text" label="City" mapping="CITY" required="true">
+			<Label>
+				<Text lang="en">City</Text>
+				<Text lang="sv">Stad</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Enter your city</Text>
+				<Text lang="sv">Ange din stad</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">Stockholm</Text>
+				<Text lang="sv">Stockholm</Text>
+			</Placeholder>
+			<Validation minLength="2" maxLength="50">
+				<Message>
+					<Text lang="en">City must be between 2 and 50 characters.</Text>
+					<Text lang="sv">Staden måste vara mellan 2 och 50 tecken.</Text>
+				</Message>
+			</Validation>
+		</Field>
+		<Field id="region" type="text" label="Region/State" mapping="REGION" required="true">
+			<Label>
+				<Text lang="en">Region/State</Text>
+				<Text lang="sv">Region/Län</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Enter your region or state</Text>
+				<Text lang="sv">Ange din region eller ditt län</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">Stockholm County</Text>
+				<Text lang="sv">Stockholms län</Text>
+			</Placeholder>
+			<Validation minLength="2" maxLength="50">
+				<Message>
+					<Text lang="en">Region/state must be between 2 and 50 characters.</Text>
+					<Text lang="sv">Region/län måste vara mellan 2 och 50 tecken.</Text>
+				</Message>
+			</Validation>
+		</Field>
+	</Page>
+	<Page id="selfiePage" title="Validate your identity">
+		<Title>
+			<Text lang="en">Validate your identity</Text>
+			<Text lang="sv">Verifiera din identitet</Text>
+		</Title>
+		<Description>
+			<Text lang="en">To complete your KYC process, please take a selfie. Ensure your face is clearly visible and well-lit.</Text>
+			<Text lang="sv">För att slutföra din KYC-process, vänligen ta en selfie. Se till att ditt ansikte är tydligt synligt och väl belyst.</Text>
+		</Description>
+		<Field id="selfieUpload" type="image" label="Selfie" mapping="ProfilePhoto" required="true">
+			<Label>
+				<Text lang="en">Selfie Upload</Text>
+				<Text lang="sv">Självporträtt</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Upload a clear selfie</Text>
+				<Text lang="sv">Ladda upp ett tydligt självporträtt</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">Choose file...</Text>
+				<Text lang="sv">Välj fil...</Text>
+			</Placeholder>
+			<Validation maxFileSizeMB="5">
+				<FileTypes>
+					<FileType>.jpg</FileType>
+					<FileType>.jpeg</FileType>
+					<FileType>.png</FileType>
+				</FileTypes>
+				<Message>
+					<Text lang="en">Please upload a valid selfie image (max 5MB)</Text>
+					<Text lang="sv">Ladda upp en giltig selfie-bild (max 5MB)</Text>
+				</Message>
+			</Validation>
+			<Metadata>
+				<TargetWidth>800</TargetWidth>
+				<TargetHeight>800</TargetHeight>
+				<MinDpi>150</MinDpi>
+			</Metadata>
+		</Field>
+	</Page>
+</KYCProcess>

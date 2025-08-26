@@ -2951,4 +2951,28 @@
   <data name="Paste" xml:space="preserve">
     <value>Pegar</value>
   </data>
+  <data name="Attachment_Passport" xml:space="preserve">
+    <value>Imagen del pasaporte</value>
+  </data>
+  <data name="Attachment_IdCardFront" xml:space="preserve">
+    <value>Parte frontal del documento de identidad</value>
+  </data>
+  <data name="Attachment_IdCardBack" xml:space="preserve">
+    <value>Parte trasera del documento de identidad</value>
+  </data>
+  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
+    <value>Frente de la licencia de conducir</value>
+  </data>
+  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
+    <value>Reverso de la licencia de conducir</value>
+  </data>
+  <data name="Attachment_ProfilePhoto" xml:space="preserve">
+    <value>Foto del rostro</value>
+  </data>
+  <data name="Kyc_Next" xml:space="preserve">
+    <value>Siguiente</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
 </root>

@@ -332,6 +332,11 @@ namespace NeuroAccessMaui
 			public const string LastNames = "LAST";
 
 			/// <summary>
+			/// Full name
+			/// </summary>
+			public const string FullName = "FULLNAME";
+
+			/// <summary>
 			/// Personal number
 			/// </summary>
 			public const string PersonalNumber = "PNR";

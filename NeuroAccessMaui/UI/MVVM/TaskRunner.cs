@@ -68,7 +68,7 @@ namespace NeuroAccessMaui.UI.MVVM
 		public TProgress Progress { get; private set; } = default!;
 
 		/// <summary>Current status of the operation.</summary>
-		public TaskStatus Status { get; private set; } = TaskStatus.Pending;
+		public ObservableTaskStatus Status { get; private set; } = ObservableTaskStatus.Pending;
 
 		/// <summary>Exception thrown, if any.</summary>
 		public Exception? Exception { get; private set; }
@@ -110,7 +110,7 @@ namespace NeuroAccessMaui.UI.MVVM
 					ProgressChanged?.Invoke(value);
 				});
 
-				this.Status = TaskStatus.Running;
+				this.Status = ObservableTaskStatus.Running;
 				StatusChanged?.Invoke();
 
 				TaskContext<TProgress> Context = new(IsRefresh, this.cts.Token, Reporter);
@@ -182,14 +182,14 @@ namespace NeuroAccessMaui.UI.MVVM
 				await Current;
 				lock (this.sync)
 				{
-					this.Status = TaskStatus.Succeeded;
+					this.Status = ObservableTaskStatus.Succeeded;
 				}
 			}
 			catch (OperationCanceledException) when (Cts.Token.IsCancellationRequested)
 			{
 				lock (this.sync)
 				{
-					this.Status = TaskStatus.Canceled;
+					this.Status = ObservableTaskStatus.Canceled;
 				}
 			}
 			catch (Exception Ex)
@@ -197,7 +197,7 @@ namespace NeuroAccessMaui.UI.MVVM
 				this.exceptionHandler(Ex);
 				lock (this.sync)
 				{
-					this.Status = TaskStatus.Failed;
+					this.Status = ObservableTaskStatus.Failed;
 					this.Exception = Ex;
 					this.InnerException = Ex.InnerException ?? Ex;
 					this.ErrorMessage = this.InnerException.Message;

@@ -546,6 +546,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 		Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool GenerateNewKeys, params LegalIdentityAttachment[] Attachments);
 
 		/// <summary>
+		/// Adds a legal identity.
+		/// </summary>
+		/// <param name="Props">The array holding all the values needed.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Legal Identity</returns>
+		Task<LegalIdentity> AddLegalIdentity(Property[] Props, bool GenerateNewKeys, params LegalIdentityAttachment[] Attachments);
+
+		/// <summary>
 		/// Returns a list of legal identities.
 		/// </summary>
 		/// <param name="client">The Xmpp client instance. Can be null, in that case the default one is used.</param>

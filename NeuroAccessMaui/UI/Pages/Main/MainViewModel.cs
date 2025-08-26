@@ -170,7 +170,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-                               await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage));
+                await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage));
 			}
 			catch (Exception Ex)
 			{

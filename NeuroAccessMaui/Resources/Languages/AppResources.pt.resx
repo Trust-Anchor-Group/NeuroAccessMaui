@@ -651,7 +651,7 @@
     <value>Um provedor de serviços fornece conectividade para o aplicativo, intermedeia solicitações e garante que as informações fornecidas pelo cliente estejam corretas.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
-    <value>Convite de varredura</value>
+    <value>Escaneie o convite</value>
   </data>
   <data name="QrSectionTitleSingular" xml:space="preserve">
     <value>Aponte a câmera para um código QR com o símbolo acima</value>
@@ -2950,5 +2950,29 @@
   </data>
   <data name="Paste" xml:space="preserve">
     <value>Colar</value>
+  </data>
+  <data name="Attachment_Passport" xml:space="preserve">
+    <value>Imagem do passaporte</value>
+  </data>
+  <data name="Attachment_IdCardFront" xml:space="preserve">
+    <value>Frente do cartão de identidade</value>
+  </data>
+  <data name="Attachment_IdCardBack" xml:space="preserve">
+    <value>Verso do cartão de identidade</value>
+  </data>
+  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
+    <value>Frente da carteira de motorista</value>
+  </data>
+  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
+    <value>Verso da carteira de motorista</value>
+  </data>
+  <data name="Attachment_ProfilePhoto" xml:space="preserve">
+    <value>Foto do rosto</value>
+  </data>
+  <data name="Kyc_Next" xml:space="preserve">
+    <value>Próximo</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Enviar</value>
   </data>
 </root>

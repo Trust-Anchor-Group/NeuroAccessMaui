@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Microsoft.Maui.Controls;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services.Kyc.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace NeuroAccessMaui.Services.Kyc.ViewModels
 {
@@ -16,8 +17,12 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         public override string? StringValue
         {
             get => this.RawValue as string;
-            set => this.RawValue = value;
+            set {
+				this.RawValue = value;
+				this.ImageSource = ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(this.RawValue as string ?? string.Empty)));
+			}
         }
+
         public int? TargetWidth
         {
             get
@@ -51,12 +56,8 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
             }
         }
 
+		[ObservableProperty]
         private ImageSource? imageSource;
-        public ImageSource? ImageSource
-        {
-            get => this.imageSource;
-            set => this.imageSource = value;
-        }
 
         [RelayCommand]
         private async Task PickPhoto()
@@ -83,7 +84,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
                 byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
                 this.RawValue = Convert.ToBase64String(OutputBin);
 
-                this.ImageSource = ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(this.RawValue as string ?? string.Empty)));
+				this.ImageSource = ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(this.RawValue as string ?? string.Empty)));
             }
             catch (Exception Ex)
             {
