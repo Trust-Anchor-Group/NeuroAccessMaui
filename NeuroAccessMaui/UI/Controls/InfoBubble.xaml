@@ -11,7 +11,7 @@
 			StrokeShape="RoundRectangle 16,16,0,16"
 			VerticalOptions="Center">
 		<Border.Shadow>
-			<Shadow Brush="{AppThemeBinding Light={DynamicResource SurfaceShadowColorWLLight}, Dark={DynamicResource SurfaceShadowColorWLDark}}" Offset="0,4"/>
+			<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
 		</Border.Shadow>
 		<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
 			  ColumnDefinitions="auto, *">
