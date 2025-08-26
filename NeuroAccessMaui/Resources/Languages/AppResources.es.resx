@@ -122,6 +122,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
       Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
+    <value>Selecciona los roles con los que firmarás (opcional)</value>
+  </data>
+  <data name="NoRolesSelectedWarning" xml:space="preserve">
+    <value>No se seleccionaron roles — no firmarás este contrato ahora.</value>
+  </data>
+  <data name="SignAs" xml:space="preserve">
+    <value>Firmar como</value>
+  </data>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>CADENA NO DEFINIDA</value>
   </data>
@@ -660,10 +669,10 @@
     <value>Se ha utilizado un código OTP temporal. La aplicación dejará de funcionar en aproximadamente una semana. Tendrás que volver a instalar la aplicación para volver a utilizarla.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Introduzca un nuevo pin</value>
+    <value>Crear nuevo PIN</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
-    <value>Confirmar pin</value>
+    <value>Confirmar PIN</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
     <value>Crear PIN</value>
@@ -2867,9 +2876,6 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
     <value>El idioma ha sido cambiado. Por favor, reinicie la aplicación para asegurarse de que se apliquen todos los cambios.</value>
   </data>
-  <data name="ContinueSecondsFormat" xml:space="preserve">
-    <value>Continuar ({0})</value>
-  </data>
   <data name="Never" xml:space="preserve">
     <value>Nunca</value>
   </data>
@@ -2877,13 +2883,16 @@
     <value>Ahora</value>
   </data>
   <data name="MinutesAgoFormat" xml:space="preserve">
-    <value>Hace {0} minutos</value>
+    <value>hace {0} minutos</value>
   </data>
   <data name="HoursAgoFormat" xml:space="preserve">
-    <value>Hace {0} horas</value>
+    <value>hace {0} horas</value>
   </data>
   <data name="LastUpdatedFormat" xml:space="preserve">
     <value>Última actualización: {0}</value>
+  </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Continuar ({0})</value>
   </data>
   <data name="UseCurrentLocation" xml:space="preserve">
     <value>Usar ubicación actual</value>

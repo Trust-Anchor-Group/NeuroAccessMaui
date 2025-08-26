@@ -1794,8 +1794,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public void SendMessage(QoSLevel QoS, Waher.Networking.XMPP.MessageType Type, string Id, string To, string CustomXml, string Body,
 			string Subject, string Language, string ThreadId, string ParentThreadId, EventHandlerAsync<DeliveryEventArgs>? DeliveryCallback, object? State)
 		{
-			this.ContractsClient.LocalE2eEndpoint.SendMessage(this.XmppClient, E2ETransmission.NormalIfNotE2E,
-				QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
+			this.XmppClient.SendMessage(QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
+			//this.ContractsClient.LocalE2eEndpoint.SendMessage(this.XmppClient, E2ETransmission.NormalIfNotE2E,
+			//	QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
+			//TODO: ENABLE E2E
 		}
 
 		private Task XmppClient_OnNormalMessage(object? Sender, MessageEventArgs e)
@@ -4396,21 +4398,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<OptionsTransaction> InitiateBuyEDalerGetOptions(string ServiceId, string ServiceProvider)
 		{
 			string TransactionId = Guid.NewGuid().ToString();
-			string SuccessUrl = GenerateNeuroAccessUrl(
+			string SuccessUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "beos"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string FailureUrl = GenerateNeuroAccessUrl(
+			string FailureUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "beof"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string CancelUrl = GenerateNeuroAccessUrl(
+			string CancelUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "beoc"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
@@ -4509,7 +4511,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<PaymentTransaction> InitiateBuyEDaler(string ServiceId, string ServiceProvider, decimal Amount, string Currency)
 		{
 			string TransactionId = Guid.NewGuid().ToString();
-			string SuccessUrl = GenerateNeuroAccessUrl(
+			string SuccessUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "bes"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>("amt", Amount),
@@ -4518,14 +4520,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string FailureUrl = GenerateNeuroAccessUrl(
+			string FailureUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "bef"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string CancelUrl = GenerateNeuroAccessUrl(
+			string CancelUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "bec"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
@@ -4544,9 +4546,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return Result;
 		}
 
-		private static string GenerateNeuroAccessUrl(params KeyValuePair<string, object?>[] Claims)
+		private static async Task<string> GenerateNeuroAccessUrl(params KeyValuePair<string, object?>[] Claims)
 		{
-			string Token = ServiceRef.CryptoService.GenerateJwtToken(Claims);
+			string Token = await ServiceRef.CryptoService.GenerateJwtToken(Claims);
 			return Constants.UriSchemes.NeuroAccess + ":" + Token;
 		}
 
@@ -4639,21 +4641,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<OptionsTransaction> InitiateSellEDalerGetOptions(string ServiceId, string ServiceProvider)
 		{
 			string TransactionId = Guid.NewGuid().ToString();
-			string SuccessUrl = GenerateNeuroAccessUrl(
+			string SuccessUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "seos"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string FailureUrl = GenerateNeuroAccessUrl(
+			string FailureUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "seof"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string CancelUrl = GenerateNeuroAccessUrl(
+			string CancelUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "seoc"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
@@ -4752,7 +4754,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<PaymentTransaction> InitiateSellEDaler(string ServiceId, string ServiceProvider, decimal Amount, string Currency)
 		{
 			string TransactionId = Guid.NewGuid().ToString();
-			string SuccessUrl = GenerateNeuroAccessUrl(
+			string SuccessUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "ses"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>("amt", Amount),
@@ -4761,14 +4763,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string FailureUrl = GenerateNeuroAccessUrl(
+			string FailureUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "sef"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string CancelUrl = GenerateNeuroAccessUrl(
+			string CancelUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "sec"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),

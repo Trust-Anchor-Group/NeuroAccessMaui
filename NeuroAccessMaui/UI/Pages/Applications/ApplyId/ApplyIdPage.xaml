@@ -533,6 +533,7 @@
 															 IsValid="{Binding PersonalNumberOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															 LabelText="{l:Localize PersonalNumber}"
+															 Placeholder="{Binding PersonalNumberPlaceholder}"
 															 Required="{Binding RequiresPersonalNumber}"
 															 Style="{DynamicResource RegularCompositeEntry}" />
 							<Label IsVisible="{Binding ApplicationSent}"
@@ -692,12 +693,12 @@
 										 Style="{DynamicResource RequiredFieldMarker}" />
 							</HorizontalStackLayout>
 							<controls:CompositePicker HorizontalOptions="Fill"
-															  IsValid="{Binding GenderOk}"
-															  IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
-															  ItemsSource="{Binding Path=Genders}"
-															  Placeholder="{l:Localize SelectGender}"
-															  SelectedItem="{Binding Path=Gender}"
-															  Style="{DynamicResource RegularCompositePicker}">
+														IsValid="{Binding GenderOk}"
+														IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
+														ItemsSource="{Binding Path=Genders}"
+														Placeholder="{l:Localize SelectGender}"
+														SelectedItem="{Binding Path=Gender}"
+														Style="{DynamicResource RegularCompositePicker}">
 								<controls:CompositePicker.ItemDisplayBinding x:DataType="data:ISO_5218_Gender">
 									<Binding Converter="{converters:GenderCodeToSymbolAndLabel}"
 												Path="Code" />

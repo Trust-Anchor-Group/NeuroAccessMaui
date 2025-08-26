@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added text to explain validation of Password/PIN
+- New views when creating contract
+- New localization strings for contract wizard steps, navigation, review, settings, visibility, and contract label in multiple languages
+- Localization for Payment acceptence page
+- Localized signing roles and warning messages across all supported languages
 - ThemeLoaded property to IThemeService and implementation in ThemeService
 - Conditional loading indicators in MainPage.xaml and GetStartedView.xaml
 - IsLoading property to GetStartedViewModel
@@ -18,12 +23,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Temporarily disabled e2e encryption in chat
+- Updated  to display validation feedback in input controls
+- Refactored  for naming consistency and improved readability
+- Centralized button label styling by introducing  and inheriting from it in
+- Minor changes to documentation
+- Change settings menu so back button is always visible
+- Make app default theme to phone settings
 - Registration workflow to direct users based on registration state (e.g., password/biometrics steps)
 - ProfilePhoto logic in ViewIdentityViewModel to prioritize photos named ProfilePhoto
 - AppColors are now always looked up and not cached
 
 ### Fixed
 
+- EDaler symbol loading properly in chat
+- Updated  to be invalidated when validation state changes
+- Update Portuguese translations
+- Fixed Profile configuration not loading properly
 - Ensured authentication method set to Password when Later is selected in biometrics step
 - --
 - A bug which could cause a crash when opening a contract from the Wallet page
@@ -33,8 +49,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Unused contract overview views and associated XAML files (, )
 - Usage of AppThemeBinding, except for images
 - --
+
+### Refactored
+
+- ThemeService for maintainability and robustness
 
 ## [2.6.1] - 2025/06/30
 

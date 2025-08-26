@@ -99,6 +99,7 @@ namespace NeuroAccessMaui.UI.Controls
 			}
 			else
 			{
+				Button.innerLabel.VerticalOptions = LayoutOptions.Center;
 				Button.innerLabel.IsVisible = true;
 				switch (Button.LabelPosition)
 				{
@@ -141,6 +142,8 @@ namespace NeuroAccessMaui.UI.Controls
 		public static void OnLabelStyleChanged(BindableObject Bindable, object OldValue, object NewValue)
 		{
 			((SvgButton)Bindable).innerLabel.Style = (Style)NewValue;
+			((SvgButton)Bindable).innerLabel.VerticalOptions = LayoutOptions.Center;
+			((SvgButton)Bindable).innerLabel.HorizontalOptions = LayoutOptions.Center;
 		}
 
 		public static void OnLabelPositionChanged(BindableObject Bindable, object OldValue, object NewValue)
@@ -190,6 +193,10 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				Button.innerGrid.ColumnSpacing = 0;
 				Button.innerGrid.RowSpacing = 0;
+			}
+			else
+			{
+				Button.innerLabel.VerticalOptions = LayoutOptions.Center;
 			}
 		}
 
@@ -259,7 +266,9 @@ namespace NeuroAccessMaui.UI.Controls
 			this.innerLabel = new()
 			{
 				Text = this.LabelText,
-				Style = this.LabelStyle
+				Style = this.LabelStyle,
+				VerticalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.Center
 			};
 			this.innerGrid = new()
 			{

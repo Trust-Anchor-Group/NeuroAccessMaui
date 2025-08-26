@@ -24,9 +24,15 @@
 		<Setter Property="BackgroundColor"
 				Value="{DynamicResource ButtonUniversalbgInactiveWL}" />
 	</Style>
-
-	<Style x:Key="ButtonDisabledLabel"
+	<Style x:Key="ButtonLabelBase"
+		   ApplyToDerivedTypes="True"
 		   TargetType="Label">
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskBold" />
+	</Style>
+	<Style x:Key="ButtonDisabledLabel"
+		   TargetType="Label"
+		   BaseResourceKey="ButtonLabelBase">
 		<Setter Property="TextColor"
 				Value="{DynamicResource ButtonUniversalContentInactiveWL}" />
 	</Style>
@@ -37,12 +43,7 @@
 				Value="{DynamicResource ContentPrimaryWL}" />
 	</Style>
 
-	<Style x:Key="ButtonLabelBase"
-		   ApplyToDerivedTypes="True"
-		   TargetType="Label">
-		<Setter Property="FontFamily"
-				Value="SpaceGroteskBold" />
-	</Style>
+
 
 	<!-- Primary -->
 	<!-- Access Button -->
@@ -683,8 +684,9 @@
 	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
 		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonBorder}" />
 		<Setter Property="SvgTintColor" Value="{DynamicResource ButtonNeutralNavButtonsContentActiveWL}" />
-		<Setter Property="SvgAspect" Value="AspectFill"/>
+		<Setter Property="SvgAspect" Value="AspectFit"/>
 		<Setter Property="SvgStyle" Value="{DynamicResource IconButtonSvg}" />
+		<Setter Property="LabelStyle" Value="{DynamicResource DurationLabel}"/>
 	</Style>
 
 	<Style x:Key="NeuroIconButton" ApplyToDerivedTypes="True" TargetType="controls:SvgButton">
@@ -938,7 +940,7 @@
 		<Setter Property="Padding"
 				Value="{DynamicResource ButtonMediumMargins}" />
 		<Setter Property="StrokeShape">
-			<RoundRectangle CornerRadius="{DynamicResource SmallCornerRadius}" />
+			<RoundRectangle CornerRadius="8" />
 		</Setter>
 		<Setter Property="VisualStateManager.VisualStateGroups">
 			<VisualStateGroupList>

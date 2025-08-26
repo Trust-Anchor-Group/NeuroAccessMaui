@@ -53,6 +53,7 @@
 				<controls:CompositeInputView Grid.Row="1"
 											 Style="{DynamicResource BaseCompositeInputView}"
 											 IsValid="{Binding IsValid}"
+											 ValidationText="{Binding ValidationText}"
 											 LabelText="{Binding Label}">
 					<controls:CompositeInputView.CenterView>
 						<Grid ColumnDefinitions="Auto, *">
@@ -123,6 +124,7 @@
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 				<controls:CompositeDatePicker Style="{DynamicResource RegularCompositeDatePicker}"
 											  IsValid="{Binding IsValid}"
+											  ValidationText="{Binding ValidationText}"
 											  LabelText="{Binding Label}"
 											  NullableDate="{Binding DateValue}"
 											  Placeholder="{Binding Guide}"
@@ -173,7 +175,8 @@
 										 Placeholder="{Binding Guide}"
 										 VerticalOptions="Center"
 										 LabelText="{Binding Label}"
-										 IsValid="{Binding IsValid}" />
+											 IsValid="{Binding IsValid}"
+											 ValidationText="{Binding ValidationText}" />
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
@@ -222,7 +225,8 @@
 										 Placeholder="{Binding Guide}"
 										 VerticalOptions="Center"
 										 LabelText="{Binding Label}"
-										 IsValid="{Binding IsValid}" />
+											 IsValid="{Binding IsValid}"
+											 ValidationText="{Binding ValidationText}" />
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
@@ -262,6 +266,7 @@
 			<VerticalStackLayout>
 				<controls:CompositeInputView Style="{DynamicResource BaseCompositeInputView}"
 											 IsValid="{Binding IsValid}"
+											 ValidationText="{Binding ValidationText}"
 											 LabelText="{Binding Label}">
 					<controls:CompositeInputView.CenterView>
 						<TimePicker Time="{Binding TimeSpanValue, Mode=TwoWay}"
@@ -446,6 +451,7 @@
 					<controls:CompositeDatePicker Grid.Row="0"
 												  Style="{DynamicResource RegularCompositeDatePicker}"
 												  IsValid="{Binding IsValid}"
+											  ValidationText="{Binding ValidationText}"
 												  LabelText="{Binding Label}"
 												  NullableDate="{Binding SelectedDate}"
 												  Placeholder="{Binding Guide}"
@@ -453,7 +459,8 @@
 
 					<controls:CompositeInputView Grid.Row="1"
 												 Style="{DynamicResource BaseCompositeInputView}"
-												 IsValid="{Binding IsValid}">
+											 IsValid="{Binding IsValid}"
+											 ValidationText="{Binding ValidationText}">
 						<controls:CompositeInputView.CenterView>
 							<TimePicker Time="{Binding SelectedTime, Mode=TwoWay}"
 										BackgroundColor="Transparent"

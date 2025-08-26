@@ -35,15 +35,15 @@ namespace NeuroAccessMaui.Links
 		/// <param name="Link">Link to open</param>
 		/// <param name="ShowErrorIfUnable">If an error message should be displayed, in case the URI could not be opened.</param>
 		/// <returns>If the link was opened.</returns>
-		public Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
+		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
 		{
 			string? Token = Constants.UriSchemes.RemoveScheme(Link.OriginalString);
 			if (string.IsNullOrEmpty(Token))
-				return Task.FromResult(false);
+				return false;
 
-			JwtToken? Parsed = ServiceRef.CryptoService.ParseAndValidateJwtToken(Token);
+			JwtToken? Parsed = await ServiceRef.CryptoService.ParseAndValidateJwtToken(Token);
 			if (Parsed is null)
-				return Task.FromResult(false);
+				return false;
 
 			if (!Parsed.TryGetClaim("cmd", out object Obj) || Obj is not string Command ||
 				!Parsed.TryGetClaim(JwtClaims.ClientId, out Obj) || Obj is not string ClientId ||
@@ -53,7 +53,7 @@ namespace NeuroAccessMaui.Links
 				!Parsed.TryGetClaim(JwtClaims.Subject, out Obj) || Obj is not string Subject ||
 				Subject != ServiceRef.XmppService.BareJid)
 			{
-				return Task.FromResult(false);
+				return false;
 			}
 
 			switch (Command)
@@ -63,7 +63,7 @@ namespace NeuroAccessMaui.Links
 						!Parsed.TryGetClaim("amt", out object Amount) ||
 						!Parsed.TryGetClaim("cur", out Obj) || Obj is not string Currency)
 					{
-						return Task.FromResult(false);
+						return false;
 					}
 
 					decimal AmountDec;
@@ -74,32 +74,32 @@ namespace NeuroAccessMaui.Links
 					}
 					catch (Exception)
 					{
-						return Task.FromResult(false);
+						return false;
 					}
 
 					ServiceRef.XmppService.BuyEDalerCompleted(TransactionId, AmountDec, Currency);
-					return Task.FromResult(true);
+					return true;
 
 				case "bef":  // Buy eDaler Failed
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId2)
-						return Task.FromResult(false);
+						return false;
 
 					ServiceRef.XmppService.BuyEDalerFailed(TransactionId2, ServiceRef.Localizer[nameof(AppResources.PaymentFailed)]);
-					return Task.FromResult(true);
+					return true;
 
 				case "bec":  // Buy eDaler Cancelled
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId3)
-						return Task.FromResult(false);
+						return false;
 
 					ServiceRef.XmppService.BuyEDalerFailed(TransactionId3, ServiceRef.Localizer[nameof(AppResources.PaymentCancelled)]);
-					return Task.FromResult(true);
+					return true;
 
 				case "ses":  // Sell eDaler Successful
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId4 ||
 						!Parsed.TryGetClaim("amt", out Amount) ||
 						!Parsed.TryGetClaim("cur", out Obj) || Obj is not string Currency4)
 					{
-						return Task.FromResult(false);
+						return false;
 					}
 
 					try
@@ -108,70 +108,70 @@ namespace NeuroAccessMaui.Links
 					}
 					catch (Exception)
 					{
-						return Task.FromResult(false);
+						return false;
 					}
 
 					ServiceRef.XmppService.SellEDalerCompleted(TransactionId4, AmountDec, Currency4);
-					return Task.FromResult(true);
+					return true;
 
 				case "sef":  // Sell eDaler Failed
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId5)
-						return Task.FromResult(false);
+						return false;
 
 					ServiceRef.XmppService.SellEDalerFailed(TransactionId5, ServiceRef.Localizer[nameof(AppResources.PaymentFailed)]);
-					return Task.FromResult(true);
+					return true;
 
 				case "sec":  // Sell eDaler Cancelled
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId6)
-						return Task.FromResult(false);
+						return false;
 
 					ServiceRef.XmppService.SellEDalerFailed(TransactionId6, ServiceRef.Localizer[nameof(AppResources.PaymentCancelled)]);
-					return Task.FromResult(true);
+					return true;
 
 				case "beos":  // Buy eDaler Get Options Successful
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId7)
-						return Task.FromResult(false);
+						return false;
 
 					ServiceRef.XmppService.BuyEDalerGetOptionsCompleted(TransactionId7, []);
-					return Task.FromResult(true);
+					return true;
 
 				case "beof":  // Buy eDaler Get Options Failed
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId8)
-						return Task.FromResult(false);
+						return false;
 
 					ServiceRef.XmppService.BuyEDalerGetOptionsFailed(TransactionId8, ServiceRef.Localizer[nameof(AppResources.UnableToGetOptions)]);
-					return Task.FromResult(true);
+					return true;
 
 				case "beoc":  // Buy eDaler Get Options Cancelled
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId9)
-						return Task.FromResult(false);
+						return false;
 
 					ServiceRef.XmppService.BuyEDalerGetOptionsFailed(TransactionId9, ServiceRef.Localizer[nameof(AppResources.GettingOptionsCancelled)]);
-					return Task.FromResult(true);
+					return true;
 
 				case "seos":  // Sell eDaler Get Options Successful
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId10)
-						return Task.FromResult(false);
+						return false;
 
 					ServiceRef.XmppService.SellEDalerGetOptionsCompleted(TransactionId10, []);
-					return Task.FromResult(true);
+					return true;
 
 				case "seof":  // Sell eDaler Get Options Failed
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId11)
-						return Task.FromResult(false);
+						return false;
 
 					ServiceRef.XmppService.SellEDalerGetOptionsFailed(TransactionId11, ServiceRef.Localizer[nameof(AppResources.UnableToGetOptions)]);
-					return Task.FromResult(true);
+					return true;
 
 				case "seoc":  // Sell eDaler Get Options Cancelled
 					if (!Parsed.TryGetClaim("tid", out Obj) || Obj is not string TransactionId12)
-						return Task.FromResult(false);
+						return false;
 
 					ServiceRef.XmppService.SellEDalerGetOptionsFailed(TransactionId12, ServiceRef.Localizer[nameof(AppResources.GettingOptionsCancelled)]);
-					return Task.FromResult(true);
+					return true;
 
 				default:
-					return Task.FromResult(false);
+					return false;
 			}
 		}
 	}

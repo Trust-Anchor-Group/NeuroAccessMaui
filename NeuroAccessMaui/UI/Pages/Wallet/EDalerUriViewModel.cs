@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI;
@@ -59,7 +60,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			this.NotPaid = true;
 
 			this.AmountText = !this.Amount.HasValue || this.Amount.Value <= 0 ? string.Empty : MoneyToString.ToString(this.Amount.Value);
-			this.AmountOk = CommonTypes.TryParse(this.AmountText, out decimal d) && d > 0;
+			this.AmountOk = CommonTypes.TryParse(this.AmountText, out decimal D) && D > 0;
 			this.AmountPreset = !string.IsNullOrEmpty(this.AmountText) && this.AmountOk;
 			this.AmountAndCurrency = this.AmountText + " " + this.Currency;
 
@@ -103,7 +104,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				}
 
 				this.MessagePreset = !string.IsNullOrEmpty(this.Message);
-				this.CanEncryptMessage = this.navigationArguments.Uri?.ToType == EntityType.LegalId;
+				this.CanEncryptMessage = false;//this.navigationArguments.Uri?.ToType == EntityType.LegalId;
 				this.EncryptMessage = this.CanEncryptMessage;
 			}
 		}
@@ -158,9 +159,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					break;
 
 				case nameof(this.AmountText):
-					if (CommonTypes.TryParse(this.AmountText, out decimal d) && d > 0)
+					if (CommonTypes.TryParse(this.AmountText, out decimal D2) && D2 > 0)
 					{
-						this.Amount = d;
+						this.Amount = D2;
 						this.AmountOk = true;
 					}
 					else
@@ -175,9 +176,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 						this.AmountExtra = null;
 						this.AmountExtraOk = true;
 					}
-					else if (CommonTypes.TryParse(this.AmountExtraText, out d) && d >= 0)
+					else if (CommonTypes.TryParse(this.AmountExtraText, out decimal D3) && D3 >= 0)
 					{
-						this.AmountExtra = d;
+						this.AmountExtra = D3;
 						this.AmountExtraOk = true;
 					}
 					else
@@ -396,10 +397,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 					ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
@@ -417,24 +418,27 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.AcceptEDalerUri, true))
 					return;
 
-				(bool Succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(
-					() => ServiceRef.XmppService.SendEDalerUri(this.Uri));
+				Transaction? Transaction = await ServiceRef.XmppService.SendEDalerUri(this.Uri);
 
-				if (Succeeded)
-				{
-					await this.GoBack();
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-						ServiceRef.Localizer[nameof(AppResources.TransactionAccepted)]);
-				}
-				else
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.UnableToProcessEDalerUri)]);
+				await this.GoBack();
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.TransactionAccepted)]);
+
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.UnableToProcessEDalerUri)], Ex.Message);
 			}
+		}
+
+		/// <summary>
+		/// The command to bind to for declining the URI
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(IsConnected))]
+		private async Task Decline()
+		{
+			await this.GoBack();
 		}
 
 		/// <summary>
@@ -499,10 +503,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 
 				this.NotPaid = false;
 
-				(bool succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(
+				(bool Succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(
 					() => ServiceRef.XmppService.SendEDalerUri(Uri));
 
-				if (succeeded)
+				if (Succeeded)
 				{
 					await this.GoBack();
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
@@ -515,11 +519,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 						ServiceRef.Localizer[nameof(AppResources.UnableToProcessEDalerUri)]);
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
 				this.NotPaid = true;
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
@@ -542,7 +546,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			try
 			{
 				string Uri;
-
 				if (this.EncryptMessage && this.ToType == EntityType.LegalId)
 				{
 					LegalIdentity LegalIdentity = await ServiceRef.XmppService.GetLegalIdentity(this.To);
@@ -551,7 +554,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				}
 				else
 				{
-					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To ?? string.Empty, this.Amount ?? 0, this.AmountExtra,
+					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To!, this.Amount ?? 0, this.AmountExtra,
 						this.Currency ?? string.Empty, 3, this.Message ?? string.Empty);
 				}
 
@@ -569,10 +572,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					});
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
@@ -591,16 +594,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 
 			try
 			{
-				string? Message = this.Message?? this.AmountAndCurrency;
+				string? Message = this.Message ?? this.AmountAndCurrency;
 
 				ServiceRef.PlatformSpecific.ShareImage(this.QrCodeBin,
 					string.Format(CultureInfo.CurrentCulture, Message ?? string.Empty, this.Amount, this.Currency),
 					ServiceRef.Localizer[nameof(AppResources.Share)], "RequestPayment.png");
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
@@ -618,8 +621,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SubmitEDalerUri))
 					return;
 
-				(bool succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendEDalerUri(this.Uri));
-				if (succeeded)
+				(bool Succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendEDalerUri(this.Uri));
+				if (Succeeded)
 				{
 					await this.GoBack();
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
@@ -629,10 +632,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.UnableToProcessEDalerUri)]);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
@@ -661,10 +664,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					});
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
@@ -699,6 +702,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(LegalIdentity, this.Amount ?? 0, this.AmountExtra,
 						this.Currency!, 3, this.Message ?? string.Empty);
 				}
+				else if(this.ToType == EntityType.LegalId)
+				{
+					//TODO: Verify that JID is available
+					LegalIdentity LegalIdentity = await ServiceRef.XmppService.GetLegalIdentity(this.To!);
+					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(LegalIdentity.GetJid(), this.Amount ?? 0, this.AmountExtra,
+						this.Currency!, 3, this.Message ?? string.Empty);
+				}
 				else
 				{
 					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To!, this.Amount ?? 0, this.AmountExtra,
@@ -711,10 +721,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				this.uriToSend?.TrySetResult(Uri);
 				await this.GoBack();
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
@@ -742,9 +752,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 						break;
 				}
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				await ServiceRef.UiService.DisplayException(ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 

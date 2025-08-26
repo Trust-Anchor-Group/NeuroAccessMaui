@@ -153,7 +153,11 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			this.XmlOutput.WriteStartElement("VerticalStackLayout", "http://schemas.microsoft.com/dotnet/2021/maui");
 			this.XmlOutput.WriteAttributeString("xmlns", "x", null, "http://schemas.microsoft.com/winfx/2009/xaml");
-			this.XmlOutput.WriteAttributeString("xmlns", "ui", null, "clr-namespace:NeuroAccessMaui.UI");
+
+			// TODO: test change. OLD: this.XmlOutput.WriteAttributeString("xmlns", "ui", null, "clr-namespace:NeuroAccessMaui.UI");
+			string UiAssembly = typeof(NeuroAccessMaui.UI.Geometries).Assembly.GetName().Name ?? "NeuroAccessMaui";
+			this.XmlOutput.WriteAttributeString("xmlns", "ui", null, $"clr-namespace:NeuroAccessMaui.UI;assembly={UiAssembly}");
+
 			this.XmlOutput.WriteAttributeString("Spacing", "0");
 
 			return Task.CompletedTask;

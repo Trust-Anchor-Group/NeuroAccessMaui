@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<views:BaseNewContractView x:Name="ThisPage"
+						   x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.IntroView"
+						   x:DataType="base:NewContractViewModel"
+						   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+						   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+						   xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+						   xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+						   xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
+						   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+						   xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views">
+	<ScrollView>
+		<VerticalStackLayout Spacing="16" Padding="16,0,16,0">
+			<!-- Category / Template info -->
+			<Border Style="{DynamicResource BorderSet}"
+					Margin="0">
+				<VerticalStackLayout Spacing="6">
+					<Label Text="{Binding Contract.Category}" Style="{DynamicResource BoldItemTitleLabel}" FontSize="24" HorizontalOptions="Center" />
+				</VerticalStackLayout>
+			</Border>
+
+			<!-- Settings preview (same as last step's settings) -->
+			<Border Style="{DynamicResource BorderSet}" Margin="0">
+				<VerticalStackLayout Spacing="8">
+					<Label Text="Settings"
+						   Style="{DynamicResource BoldItemTitleLabel}"
+						   FontSize="24" />
+					<controls:CompositePicker
+						LabelText="Visibility"
+						Style="{DynamicResource RegularCompositePicker}"
+						Placeholder="Select who should have access"
+						ItemsSource="{Binding Path=ContractVisibilityItems}"
+						SelectedItem="{Binding Path=SelectedContractVisibilityItem}" />
+				</VerticalStackLayout>
+			</Border>
+
+			<!-- Optional link to see human-readable part early -->
+			<controls:TextButton Command="{Binding ShowPreviewFromIntroCommand}" Style="{DynamicResource SecondaryButton}" LabelData="Review contract" />
+		</VerticalStackLayout>
+	</ScrollView>
+</views:BaseNewContractView>

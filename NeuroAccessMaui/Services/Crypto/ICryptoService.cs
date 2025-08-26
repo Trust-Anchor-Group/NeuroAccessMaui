@@ -38,13 +38,13 @@ namespace NeuroAccessMaui.Services.Crypto
 		/// </summary>
 		/// <param name="Claims">Set of claims to embed into token.</param>
 		/// <returns>JWT token.</returns>
-		string GenerateJwtToken(params KeyValuePair<string, object?>[] Claims);
+		Task<string> GenerateJwtToken(params KeyValuePair<string, object?>[] Claims);
 
 		/// <summary>
 		/// Vaidates a JWT token, that has been issued by the same app. (Tokens from other apps will not be valid.)
 		/// </summary>
 		/// <param name="Token">String representation of JWT token.</param>
 		/// <returns>Parsed token, if valid, null if not valid.</returns>
-		JwtToken? ParseAndValidateJwtToken(string Token);
+		Task<JwtToken?> ParseAndValidateJwtToken(string Token);
 	}
 }

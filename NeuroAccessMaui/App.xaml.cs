@@ -240,12 +240,13 @@ namespace NeuroAccessMaui
 			if (!backgroundStart)
 			{
 				this.InitializeComponent();
-				AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
-				this.SetTheme(CurrentTheme ?? AppTheme.Light);
-				ServiceRef.ThemeService.SetTheme(CurrentTheme ?? AppTheme.Light);
+				AppTheme CurrentTheme = ServiceRef.TagProfile.Theme;
+
 				try
 				{
 					this.MainPage = ServiceHelper.GetService<AppShell>();
+					this.SetTheme(CurrentTheme);
+					ServiceRef.ThemeService.SetTheme(CurrentTheme);
 				}
 				catch (Exception Ex)
 				{
@@ -254,8 +255,10 @@ namespace NeuroAccessMaui
 			}
 		}
 
-		void SetTheme(AppTheme theme)
+		void SetTheme(AppTheme Theme)
 		{
+			if (Theme is AppTheme.Unspecified) Theme = Application.Current!.RequestedTheme;
+
 			ICollection<ResourceDictionary> Merged = this.Resources.MergedDictionaries;
 
 			// Remove only our color theme dictionaries
@@ -263,7 +266,7 @@ namespace NeuroAccessMaui
 				Merged.Remove(Dict);
 
 			// Add correct one
-			if (theme == AppTheme.Dark)
+			if (Theme == AppTheme.Dark)
 				Merged.Add(new Dark());
 			else
 				Merged.Add(new Light());
@@ -283,7 +286,7 @@ namespace NeuroAccessMaui
 
 		private static void InitLocalizationResource()
 		{
-		//	LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
+			//	LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
 			LocalizationManager.Current.CurrentCulture = SelectedLanguage;
 		}
 
@@ -890,7 +893,7 @@ namespace NeuroAccessMaui
 					return;
 				}
 
-				await QrCode.OpenUrl(url);
+				await QrCode.OpenUrl(url).ConfigureAwait(false);
 			});
 		}
 
