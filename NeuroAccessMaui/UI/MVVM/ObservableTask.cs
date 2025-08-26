@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services; // For MainThread
+using System.Threading.Tasks;
 
 namespace NeuroAccessMaui.UI.MVVM
 {
@@ -198,8 +199,9 @@ namespace NeuroAccessMaui.UI.MVVM
 					// Start the new task.
 					if (this.UseTaskRun)
 					{
+
 						// Force background-thread execution (good for CPU-bound work).
-						this.CurrentTask = Task.Run(() => this.taskFactory!.Invoke(Context), this.CancellationTokenSource.Token);
+						this.CurrentTask = Task.Run(async () => await this.taskFactory!(Context),this.CancellationTokenSource.Token);
 					}
 					else
 					{
