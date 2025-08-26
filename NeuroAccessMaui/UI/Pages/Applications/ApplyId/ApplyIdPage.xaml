@@ -533,6 +533,7 @@
 															 IsValid="{Binding PersonalNumberOk}"
 															 IsVisible="{Binding ApplicationSent, Converter={StaticResource InvertedBoolConverter}}"
 															 LabelText="{l:Localize PersonalNumber}"
+															 Placeholder="{Binding PersonalNumberPlaceholder}"
 															 Required="{Binding RequiresPersonalNumber}"
 															 Style="{DynamicResource RegularCompositeEntry}" />
 							<Label IsVisible="{Binding ApplicationSent}"
