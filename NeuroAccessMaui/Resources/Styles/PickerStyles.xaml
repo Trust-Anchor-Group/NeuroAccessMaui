@@ -102,6 +102,8 @@
 				Value="{DynamicResource InputFieldsSurfaceBackgroundActive}" />
 		<Setter Property="BorderStroke"
 				Value="{DynamicResource InputFieldsSurfaceStroke}" />
+		<Setter Property="BorderPadding"
+				Value="{DynamicResource EditSmallMargins}"/>
 		<Setter Property="BorderShadow"
 				Value="{x:Null}" />
 		<Setter Property="BorderStrokeShape">
