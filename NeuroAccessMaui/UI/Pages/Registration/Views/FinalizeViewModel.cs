@@ -106,10 +106,10 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[ObservableProperty]
 		private string? networkID;
 
-        [RelayCommand]
-		private void Continue()
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private static async Task Continue()
 		{
-			GoToRegistrationStep(RegistrationStep.Complete);
+			await Task.Run(() => GoToRegistrationStep(RegistrationStep.Complete));
 		}
 
 		/// <summary>
