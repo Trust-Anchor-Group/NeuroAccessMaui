@@ -329,6 +329,23 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
+		/// Toggles the expanded state of the current object.
+		/// </summary>
+		public void ToggleExpanded()
+		{
+			if (this.isExpanded)
+			{
+				this.AnimateToCollapsed();
+				this.isExpanded = false;
+			}
+			else
+			{
+				this.AnimateToExpanded();
+				this.isExpanded = true;
+			}
+		}
+
+		/// <summary>
 		/// When the gesture is completed, determine whether to fully expand or collapse the sheet using translation.
 		/// </summary>
 		/// <param name="velocity">The average velocity of the pan gesture (pixels/ms).</param>
