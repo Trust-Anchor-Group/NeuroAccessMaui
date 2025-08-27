@@ -32,6 +32,11 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			await base.OnDispose();
 		}
 
+		public override Task DoAppearing()
+		{
+			this.ContinueButtonEnabled = true;
+			return base.DoAppearing();
+		}
 
 		public override async Task DoAssignProperties()
 		{
@@ -106,10 +111,14 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[ObservableProperty]
 		private string? networkID;
 
-		[RelayCommand(AllowConcurrentExecutions = false)]
-		private static async Task Continue()
+		[ObservableProperty]
+		private bool continueButtonEnabled = true;
+
+		[RelayCommand]
+		private void Continue()
 		{
-			await Task.Run(() => GoToRegistrationStep(RegistrationStep.Complete));
+			this.ContinueButtonEnabled = false;
+			GoToRegistrationStep(RegistrationStep.Complete);
 		}
 
 		/// <summary>
