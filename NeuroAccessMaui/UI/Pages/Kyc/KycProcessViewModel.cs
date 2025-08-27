@@ -116,10 +116,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			// TODO: Load the KYC process as KycReference from serviceRef.KycService
 			string LanguageInit = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-			this.kycReference = await ServiceRef.KycService.LoadKycReferenceAsync(
-				 "NeuroAccessMaui.Resources.Raw.TestKYCK.xml",
-				 LanguageInit
-			 );
+			this.kycReference = await ServiceRef.KycService.LoadKycReferenceAsync(LanguageInit);
 			this.process = await this.kycReference.ToProcess(LanguageInit);
 			this.OnPropertyChanged(nameof(this.Pages));
 
@@ -181,10 +178,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				if (Sender is ObservableKycField Field)
 				{
 					string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-					Field.Validate(Language);
-					MainThread.BeginInvokeOnMainThread(
-						this.NextCommand.NotifyCanExecuteChanged
-					);
+					Field.ValidationTask.Run();
+					MainThread.BeginInvokeOnMainThread(async () =>
+					{
+						await Field.ValidationTask.WaitCurrentAsync();
+						this.NextCommand.NotifyCanExecuteChanged();
+					});
 				}
 			}
 		}
@@ -391,10 +390,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 			foreach (ObservableKycField Field in Fields)
 			{
-				if (!Field.Validate(Language))
+				Field.ValidationTask.Run();
+				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					IsOk = false;
-				}
+					await Field.ValidationTask.WaitCurrentAsync();
+					if (!Field.IsValid)
+						IsOk = false;
+				});
 			}
 
 			if (IsOk && this.process is not null)

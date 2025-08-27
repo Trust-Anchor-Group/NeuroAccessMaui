@@ -12,6 +12,11 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		bool Validate(ObservableKycField Field, out string Error, string? Lang = null);
 	}
 
+	public interface IAsyncKycRule: IKycRule
+	{
+		Task<(bool Ok, string? Error)> ValidateAsync(ObservableKycField field, string? lang = null);
+	}
+
 	/// <summary>
 	/// Ensures the field has a value if required.
 	/// </summary>

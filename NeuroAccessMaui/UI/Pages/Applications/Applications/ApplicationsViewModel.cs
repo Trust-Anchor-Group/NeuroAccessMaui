@@ -202,7 +202,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					return;
 
 				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-				KycReference Ref = await ServiceRef.KycService.LoadKycReferenceAsync("NeuroAccessMaui.Resources.Raw.TestKYCK.xml", Language);
+			//	KycReference Ref = await ServiceRef.KycService.LoadKycReferenceAsync(Language);
 				await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage));
 			}
 			catch (Exception Ex)

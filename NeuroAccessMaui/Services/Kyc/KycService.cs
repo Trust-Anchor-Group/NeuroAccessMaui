@@ -5,6 +5,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 using Waher.Runtime.Inventory;
+using Waher.Persistence;
 
 namespace NeuroAccessMaui.Services.Kyc
 {
@@ -15,9 +16,10 @@ namespace NeuroAccessMaui.Services.Kyc
 	public class KycService : IKycService
 	{
 		private static readonly HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(10) };
+		private static readonly string backupKyc = "TestKYCK.xml";
 
 		/// <inheritdoc/>
-		public async Task<KycReference> LoadKycReferenceAsync(string Resource, string? Lang = null)
+		public async Task<KycReference> LoadKycReferenceAsync(string? Lang = null)
 		{
 			KycReference? Reference;
 
@@ -31,7 +33,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference = null;
 			}
 
-			if (Reference is null) // Set line to commented out code to enable storage
+			if (Reference is null || string.IsNullOrEmpty(Reference.ObjectId))
 			{
 				Reference = new KycReference
 				{
@@ -50,8 +52,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				string? Xml = await this.TryFetchKycXmlFromProvider();
 				if (string.IsNullOrEmpty(Xml))
 				{
-					string FileName = GetFileName(Resource);
-					using Stream Stream = await FileSystem.OpenAppPackageFileAsync(FileName);
+					using Stream Stream = await FileSystem.OpenAppPackageFileAsync(backupKyc);
 					using StreamReader Reader = new(Stream);
 					Xml = await Reader.ReadToEndAsync().ConfigureAwait(false);
 				}
