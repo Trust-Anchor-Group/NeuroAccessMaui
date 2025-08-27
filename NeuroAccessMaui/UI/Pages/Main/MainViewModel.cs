@@ -143,7 +143,10 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			try
 			{
 				if(await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
+				{
+					await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
+				}
 			}
 			catch (Exception Ex)
 			{
