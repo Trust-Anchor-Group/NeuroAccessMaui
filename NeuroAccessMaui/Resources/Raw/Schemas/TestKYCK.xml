@@ -37,12 +37,13 @@
 			<Placeholder>
 				<Text lang="en">Document number</Text>
 			</Placeholder>
-			<Validation>
-				<Regex>^\d{3}\.\d{3}\.\d{3}\-\d{2}$</Regex>
-				<Message>
-					<Text lang="en">Please enter your document number.</Text>
-				</Message>
-			</Validation>
+			<ValidationRules>
+				<PersonalNumberRule>
+					<Message>
+						<Text lang="en">Please enter a valid personal number based on the selected country.</Text>
+					</Message>
+				</PersonalNumberRule>
+			</ValidationRules>
 		</Field>
 	</Page>
 	<Page id="dateOfBirh">

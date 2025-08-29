@@ -165,17 +165,32 @@ namespace NeuroAccessMaui.Services.Kyc
 				}
 			}
 
-			foreach (XElement Vr in El.Elements("ValidationRule"))
+			void TryAddPnrRule(XElement RuleEl)
 			{
-				TryAddLengthRules(Vr);
-				TryAddRegexRule(Vr);
-				TryAddDateRangeRule(Vr);
+				string? FieldRef = (string?)RuleEl.Element("CountryFieldReference");
+				string? Msg = ParseLocalizedText(RuleEl.Element("Message"))?.Get(Lang);
+				Field.AddRule(new PersonalNumberRule(FieldRef, Msg));
 			}
-			if (El.Element("Validation") is XElement Legacy)
+
+			XElement? ValidationEl = El.Element("ValidationRules");
+			if (ValidationEl is not null)
 			{
-				TryAddLengthRules(Legacy);
-				TryAddRegexRule(Legacy);
-				TryAddDateRangeRule(Legacy);
+				foreach (XElement Vr in ValidationEl.Elements())
+				{
+					switch (Vr.Name.ToString())
+					{
+						case "RangeRule":
+							TryAddDateRangeRule(Vr); break;
+						case "RegexRule":
+							TryAddRegexRule(Vr); break;
+						case "LengthRule":
+							TryAddLengthRules(Vr); break;
+						case "PersonalNumberRule":
+							TryAddPnrRule(Vr); break;
+						default:
+							break;
+					}
+				}
 			}
 
 			// Mappings

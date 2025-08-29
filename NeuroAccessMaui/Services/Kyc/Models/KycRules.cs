@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 
 namespace NeuroAccessMaui.Services.Kyc.Models
@@ -215,6 +216,64 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 					Error = this.message ?? $"{Field.Label?.Get(Lang) ?? Field.Id} must be a valid phone number";
 			}
 			return string.IsNullOrEmpty(Error);
+		}
+	}
+
+	/// <summary>
+	/// Validates Personal number format
+	/// </summary>
+	public partial class PersonalNumberRule(string? fieldRef, string? message) : IAsyncKycRule
+	{
+		private readonly string? fieldRef = fieldRef;
+		private readonly string? message = message;
+
+		public bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null)
+		{
+			(bool Ok, string? Error) Result = this.ValidateAsync(Field, process, Lang).GetAwaiter().GetResult();
+			Error = Result.Error ?? string.Empty;
+			return Result.Ok;
+		}
+
+		public async Task<(bool Ok, string? Error)> ValidateAsync(ObservableKycField Field, KycProcess? Process, string? Lang = null)
+		{
+			string Error = string.Empty;
+			string CountryCode;
+
+			if (Process is null)
+				return (true, null);
+
+			if (Field.FieldType == FieldType.Text && Field.StringValue is string Pnr && !string.IsNullOrEmpty(Pnr))
+			{
+				// If we have a reference to a country field, use its value to determine country code
+				if (this.fieldRef is not null)
+				{
+					CountryCode = Process.Values.TryGetValue(this.fieldRef, out string? Cc) && !string.IsNullOrEmpty(Cc) ? Cc : string.Empty;
+				} // else use the country from current ID
+				else
+				{
+					try
+					{
+						CountryCode = ServiceRef.TagProfile.LegalIdentity?.GetPersonalInformation().Country;
+					}
+					catch (Exception)
+					{
+						CountryCode = string.Empty;
+					}
+				}
+
+				if (string.IsNullOrEmpty(CountryCode))
+				{
+					return (true, string.Empty);
+				}
+
+				NumberInformation Info = await PersonalNumberSchemes.Validate(CountryCode, Pnr);
+
+				if (Info.IsValid is not true)
+					Error = this.message ?? $"{Field.Label?.Get(Lang) ?? Field.Id} is not a valid personal number";
+			}
+
+			bool Ok = string.IsNullOrEmpty(Error);
+			return (Ok, Error);
 		}
 	}
 
