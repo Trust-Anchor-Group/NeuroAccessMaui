@@ -40,6 +40,7 @@ namespace NeuroAccessMaui.UI.MVVM
 	public partial class ObservableTask<TProgress> : ObservableObject, IDisposable
 	{
 		private readonly object syncObject = new();
+		private readonly List<IDisposable> attachedDisposables = new();
 
 		// Backing field for the latest progress value.
 		private TProgress progress = default!;
@@ -539,7 +540,25 @@ namespace NeuroAccessMaui.UI.MVVM
 
 					this.CancellationTokenSource?.Dispose();
 					this.CancellationTokenSource = null;
+
+					// Dispose any attached disposables (e.g., policies)
+					foreach (var d in this.attachedDisposables)
+					{
+						try { d.Dispose(); }
+						catch { /* ignore */ }
+					}
+					this.attachedDisposables.Clear();
 				}
+			}
+		}
+
+		internal void AttachDisposable(IDisposable disposable)
+		{
+			if (disposable is null)
+				return;
+			lock (this.syncObject)
+			{
+				this.attachedDisposables.Add(disposable);
 			}
 		}
 

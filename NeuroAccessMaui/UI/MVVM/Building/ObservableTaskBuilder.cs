@@ -65,6 +65,13 @@ namespace NeuroAccessMaui.UI.MVVM.Building
 
 			Task.Configure(Wrapped, notify);
 
+			// Attach disposable policies for cleanup when the task is disposed
+			foreach (IAsyncPolicy Policy in this.options.Policies)
+			{
+				if (Policy is IDisposable d)
+					Task.AttachDisposable(d);
+			}
+
 			if (this.options.AutoStart)
 				Task.Run();
 
