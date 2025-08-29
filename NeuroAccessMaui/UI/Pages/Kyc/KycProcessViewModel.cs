@@ -174,17 +174,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			if (E.PropertyName == nameof(ObservableKycField.RawValue))
 			{
+				// Raw value changed: update visibilities and page bindings.
 				MainThread.BeginInvokeOnMainThread(() => this.SetCurrentPage(this.currentPageIndex));
-				if (Sender is ObservableKycField Field)
-				{
-					string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-					Field.ValidationTask.Run();
-					MainThread.BeginInvokeOnMainThread(async () =>
-					{
-						await Field.ValidationTask.WaitCurrentAsync();
-						this.NextCommand.NotifyCanExecuteChanged();
-					});
-				}
+			}
+
+			// When a field's validation result changes, re-evaluate the Next button.
+			if (E.PropertyName == nameof(ObservableKycField.IsValid))
+			{
+				MainThread.BeginInvokeOnMainThread(this.NextCommand.NotifyCanExecuteChanged);
 			}
 		}
 
@@ -192,7 +189,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			if (E.PropertyName == nameof(KycSection.IsVisible))
 			{
-				MainThread.BeginInvokeOnMainThread(() => this.SetCurrentPage(this.currentPageIndex));
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.SetCurrentPage(this.currentPageIndex);
+					this.NextCommand.NotifyCanExecuteChanged();
+				});
 			}
 		}
 
@@ -200,7 +201,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			if (E.PropertyName == nameof(KycPage.IsVisible))
 			{
-				MainThread.BeginInvokeOnMainThread(() => this.SetCurrentPage(this.currentPageIndex));
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.SetCurrentPage(this.currentPageIndex);
+					this.NextCommand.NotifyCanExecuteChanged();
+				});
 			}
 		}
 
@@ -230,6 +235,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			int NextIndex = this.GetNextIndex(Index + 1);
 
 			this.OnPropertyChanged(nameof(this.Progress));
+
+			// Re-evaluate Next button when page/section content changes.
+			this.NextCommand.NotifyCanExecuteChanged();
 		}
 
 		private void UpdateReference()
