@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.Kyc.Models;
@@ -175,11 +176,12 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 
         protected virtual async Task<bool> ValidateAsync(TaskContext<int> context)
         {
+			this.TryGetOwnerProcess(out KycProcess? Process);
             foreach (IKycRule Rule in this.rules)
             {
                 if (Rule is IAsyncKycRule AsyncRule)
                 {
-                    (bool Ok, string? Error) = await AsyncRule.ValidateAsync(this);
+                    (bool Ok, string? Error) = await AsyncRule.ValidateAsync(this, Process);
                     if (!Ok)
                     {
                         await MainThread.InvokeOnMainThreadAsync(() =>
@@ -192,7 +194,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
                 }
                 else
                 {
-                    if (!Rule.Validate(this, out string Error))
+                    if (!Rule.Validate(this, Process, out string Error))
                     {
                         await MainThread.InvokeOnMainThreadAsync(() =>
                         {

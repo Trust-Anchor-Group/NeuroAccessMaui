@@ -418,12 +418,12 @@ namespace NeuroAccessMaui.UI.MVVM
 		public void Load(Func<Task> task, params IRelayCommand[] notifyCommands)
 		{
 			// Wrap the parameterless task factory in a lambda that ignores the TaskContext.
-			this.Load(_ => task(), notifyCommands);
+			this.Load((Func<TaskContext<TProgress>, Task>)(_ => task()), notifyCommands);
 		}
 
 		public void Load<TArg>(Func<TArg, Task> task, TArg arg, params IRelayCommand[] notifyCommands)
 		{
-			this.Load(_ => task(arg), notifyCommands);
+			this.Load((Func<TaskContext<TProgress>, Task>)(_ => task(arg)), notifyCommands);
 		}
 
 		/// <summary>
@@ -589,7 +589,7 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// </summary>
 		public void Run<TArg>(Func<TArg, TaskContext<TProgress>, Task<TResult>> op, TArg arg)
 		{
-			base.Run(async ctx => { this.Result = await op(arg, ctx); });
+			base.Run<TArg>(async (a, ctx) => { this.Result = await op(a, ctx); }, arg);
 		}
 
 		/// <summary>
@@ -597,7 +597,7 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// </summary>
 		public void RunRefresh<TArg>(Func<TArg, TaskContext<TProgress>, Task<TResult>> op, TArg arg)
 		{
-			base.RunRefresh(async ctx => { this.Result = await op(arg, ctx); });
+			base.RunRefresh<TArg>(async (a, ctx) => { this.Result = await op(a, ctx); }, arg);
 		}
 	}
 
