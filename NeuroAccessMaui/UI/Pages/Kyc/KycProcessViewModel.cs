@@ -374,11 +374,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			await base.GoBack();
 		}
 
-		private Task<bool> ValidateCurrentPageAsync()
+		private async Task<bool> ValidateCurrentPageAsync()
 		{
 			if (this.CurrentPage is null)
 			{
-				return Task.FromResult(false);
+				return false;
 			}
 
 			bool IsOk = true;
@@ -388,16 +388,22 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				Fields = Fields.Concat(this.CurrentPageSections.SelectMany(Section => Section.VisibleFields));
 
 			string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+			List<Task> ValidationTasks = new();
+
 			foreach (ObservableKycField Field in Fields)
 			{
 				Field.ValidationTask.Run();
-				MainThread.BeginInvokeOnMainThread(async () =>
+				Task ValidationTask = MainThread.InvokeOnMainThreadAsync(async () =>
 				{
-					await Field.ValidationTask.WaitCurrentAsync();
+					await Field.ValidationTask.WaitAllAsync();
 					if (!Field.IsValid)
 						IsOk = false;
 				});
+				ValidationTasks.Add(ValidationTask);
 			}
+
+			await Task.WhenAll(ValidationTasks);
 
 			if (IsOk && this.process is not null)
 			{
@@ -411,7 +417,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.NextCommand.NotifyCanExecuteChanged
 			);
 
-			return Task.FromResult(IsOk);
+			return IsOk;
 		}
 
 		[RelayCommand]

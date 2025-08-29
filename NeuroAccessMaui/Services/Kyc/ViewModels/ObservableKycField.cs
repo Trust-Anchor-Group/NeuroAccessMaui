@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.MVVM.Building;
+using NeuroAccessMaui.UI.MVVM.Policies;
 
 namespace NeuroAccessMaui.Services.Kyc.ViewModels
 {
@@ -50,6 +51,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 
             this.ValidationTask = new ObservableTaskBuilder<int>()
                                     .Named("KYC Field Validation")
+                                    .WithPolicy(Policies.Debounce(TimeSpan.FromMicroseconds(1500)))
                                     .Run(this.ValidateAsync)
                                     .UseTaskRun(true)
                                     .Build();
