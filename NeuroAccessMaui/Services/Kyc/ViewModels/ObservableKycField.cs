@@ -1,6 +1,10 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.Kyc.Models;
+using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.MVVM.Building;
 
 namespace NeuroAccessMaui.Services.Kyc.ViewModels
 {
@@ -31,14 +35,24 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
     /// </summary>
     public abstract class ObservableKycField : ObservableObject
     {
+
+        private WeakReference<KycProcess>? ownerProcess;
         private readonly List<IKycRule> rules = new();
         public ReadOnlyCollection<IKycRule> ValidationRules => this.rules.AsReadOnly();
+
+        public ObservableTask<int> ValidationTask { get; } = new();
 
         public ObservableKycField()
         {
             this.Metadata = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
             this.rules.Add(new RequiredRule());
             this.SelectedOptions.CollectionChanged += this.SelectedOptions_CollectionChanged;
+
+            this.ValidationTask = new ObservableTaskBuilder<int>()
+                                    .Named("KYC Field Validation")
+                                    .Run(this.ValidateAsync)
+                                    .UseTaskRun(true)
+                                    .Build();
         }
 
         /// <summary>
@@ -122,10 +136,8 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
             {
                 if (this.SetProperty(ref this.rawValue, value))
                 {
-                    this.Validate();
+                    this.ValidationTask.Run();
                 }
-
-				ServiceRef.LogService.LogDebug(this.StringValue ?? string.Empty);
             }
         }
 
@@ -161,22 +173,43 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         /// </summary>
         public void AddRule(IKycRule Rule) => this.rules.Add(Rule);
 
-        /// <summary>
-        /// Validate this field using all attached rules.
-        /// </summary>
-        public virtual bool Validate(string? Lang = null)
+
+        protected virtual async Task<bool> ValidateAsync(TaskContext<int> context)
         {
+			this.TryGetOwnerProcess(out KycProcess? Process);
             foreach (IKycRule Rule in this.rules)
             {
-                if (!Rule.Validate(this, out string Error, Lang))
+                if (Rule is IAsyncKycRule AsyncRule)
                 {
-                    this.IsValid = false;
-                    this.ValidationText = Error;
-                    return false;
+                    (bool Ok, string? Error) = await AsyncRule.ValidateAsync(this, Process);
+                    if (!Ok)
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        {
+                            this.IsValid = false;
+                            this.ValidationText = Error;
+                        });
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (!Rule.Validate(this, Process, out string Error))
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        {
+                            this.IsValid = false;
+                            this.ValidationText = Error;
+                        });
+                        return false;
+                    }
                 }
             }
-            this.IsValid = true;
-            this.ValidationText = null;
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                this.IsValid = true;
+                this.ValidationText = null;
+            });
             return true;
         }
 
@@ -186,6 +219,21 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         public virtual void MapToApplyModel()
         {
             // TODO: Implement mapping logic based on Mappings/Transforms
+        }
+        
+        internal void SetOwnerProcess(KycProcess Process)
+            => this.ownerProcess = new WeakReference<KycProcess>(Process);
+
+        public bool TryGetOwnerProcess([MaybeNullWhen(false), NotNullWhen(true)] out KycProcess? Process)
+        {
+            if (this.ownerProcess is not null && this.ownerProcess.TryGetTarget(out KycProcess? P))
+            {
+                Process = P;
+                return true;
+            }
+
+            Process = null;
+            return false;
         }
     }
 }

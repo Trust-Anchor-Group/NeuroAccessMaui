@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// </summary>
 		/// <param name="Resource">Embedded resource containing the process XML.</param>
 		/// <param name="Lang">Optional language code.</param>
-		Task<KycReference> LoadKycReferenceAsync(string Resource, string? Lang = null);
+		Task<KycReference> LoadKycReferenceAsync(string? Lang = null);
 
 		Task SaveKycReferenceAsync(KycReference Reference);
 	}

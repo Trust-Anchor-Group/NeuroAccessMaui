@@ -38,7 +38,12 @@ namespace NeuroAccessMaui.Services.Kyc
 
 				// Fields (direct under Page)
 				foreach (XElement FieldEl in PageEl.Elements("Field"))
-					Page.AllFields.Add(ParseField(FieldEl, Lang));
+				{
+					ObservableKycField Field = ParseField(FieldEl, Lang);
+					Field.SetOwnerProcess(Process);
+					Page.AllFields.Add(Field);
+
+				}
 
 				// Sections
 				foreach (XElement SectionEl in PageEl.Elements("Section"))
@@ -51,7 +56,11 @@ namespace NeuroAccessMaui.Services.Kyc
 					};
 
 					foreach (XElement FieldEl in SectionEl.Elements("Field"))
-						Section.AllFields.Add(ParseField(FieldEl, Lang));
+					{
+						ObservableKycField Field = ParseField(FieldEl, Lang);
+						Field.SetOwnerProcess(Process);
+						Section.AllFields.Add(Field);
+					}
 
 					Page.AllSections.Add(Section);
 				}

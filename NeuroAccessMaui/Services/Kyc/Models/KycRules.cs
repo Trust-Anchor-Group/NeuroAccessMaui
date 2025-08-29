@@ -9,7 +9,12 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 {
 	public interface IKycRule
 	{
-		bool Validate(ObservableKycField Field, out string Error, string? Lang = null);
+		bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null);
+	}
+
+	public interface IAsyncKycRule: IKycRule
+	{
+		Task<(bool Ok, string? Error)> ValidateAsync(ObservableKycField field, KycProcess? process, string? lang = null);
 	}
 
 	/// <summary>
@@ -17,7 +22,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 	/// </summary>
 	public class RequiredRule : IKycRule
 	{
-		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
 			if (!Field.Required)
@@ -62,7 +67,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			this.message = Message;
 		}
 
-		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
 			string? Text = Field.StringValue;
@@ -91,7 +96,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			this.message = Message;
 		}
 
-		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
 			string? Text = Field.StringValue;
@@ -117,7 +122,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			this.message = Message;
 		}
 
-		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
 			if (Field is ObservableDateField DateField && DateField.DateValue is DateTime Date)
@@ -147,7 +152,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			this.message = Message;
 		}
 
-		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
 			decimal? Value = Field.FieldType switch
@@ -178,7 +183,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 
 		public EmailRule(string? Message = null) => this.message = Message;
 
-		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
 			if (Field.FieldType == FieldType.Email && Field.StringValue is string Email && !string.IsNullOrEmpty(Email))
@@ -201,7 +206,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 
 		public PhoneRule(string? Message = null) => this.message = Message;
 
-		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
 			if (Field.FieldType == FieldType.Phone && Field.StringValue is string Phone && !string.IsNullOrEmpty(Phone))
@@ -227,7 +232,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			this.message = Message;
 		}
 
-		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null)
 		{
 			Error = string.Empty;
 			if (Field.FieldType == FieldType.Country && Field is ObservableCountryField CountryField && !string.IsNullOrEmpty(CountryField.CountryCode))
@@ -255,7 +260,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			this.message = Message;
 		}
 
-		public bool Validate(ObservableKycField Field, out string Error, string? Lang = null)
+		public bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null)
 		{
 			// File validation implementation goes here as needed (pseudo-code):
 			// - check file exists, size, extension...

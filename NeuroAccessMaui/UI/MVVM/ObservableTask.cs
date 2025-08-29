@@ -199,9 +199,8 @@ namespace NeuroAccessMaui.UI.MVVM
 					// Start the new task.
 					if (this.UseTaskRun)
 					{
-
 						// Force background-thread execution (good for CPU-bound work).
-						this.CurrentTask = Task.Run(async () => await this.taskFactory!(Context),this.CancellationTokenSource.Token);
+						this.CurrentTask = Task.Run(async () => await this.taskFactory!(Context), this.CancellationTokenSource.Token);
 					}
 					else
 					{
@@ -392,6 +391,12 @@ namespace NeuroAccessMaui.UI.MVVM
 		}
 
 		/// <summary>
+		/// Configure the factory with a parameter to be captured by the runner (no immediate start).
+		/// </summary>
+		public void Configure<TArg>(Func<TArg, TaskContext<TProgress>, Task> task, TArg arg, params IRelayCommand[] notifyCommands)
+			=> this.Configure(ctx => task(arg, ctx), notifyCommands);
+
+		/// <summary>
 		/// Loads (configures) and immediately starts the task (back-compat convenience).
 		/// </summary>
 		public void Load(Func<TaskContext<TProgress>, Task> task, params IRelayCommand[] notifyCommands)
@@ -400,10 +405,25 @@ namespace NeuroAccessMaui.UI.MVVM
 			this.StartNewTask(isRefresh: false);
 		}
 
+		/// <summary>
+		/// Parameterized overload of <see cref="Load(Func{TaskContext{TProgress}, Task}, IRelayCommand[])"/>.
+		/// Captures <paramref name="arg"/> into the factory and runs immediately.
+		/// </summary>
+		public void Load<TArg>(Func<TArg, TaskContext<TProgress>, Task> task, TArg arg, params IRelayCommand[] notifyCommands)
+		{
+			this.Configure(ctx => task(arg, ctx), notifyCommands);
+			this.StartNewTask(isRefresh: false);
+		}
+
 		public void Load(Func<Task> task, params IRelayCommand[] notifyCommands)
 		{
 			// Wrap the parameterless task factory in a lambda that ignores the TaskContext.
-			this.Load(_ => task(), notifyCommands);
+			this.Load((Func<TaskContext<TProgress>, Task>)(_ => task()), notifyCommands);
+		}
+
+		public void Load<TArg>(Func<TArg, Task> task, TArg arg, params IRelayCommand[] notifyCommands)
+		{
+			this.Load((Func<TaskContext<TProgress>, Task>)(_ => task(arg)), notifyCommands);
 		}
 
 		/// <summary>
@@ -415,6 +435,31 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// Start the configured task now with the refresh flag (no CanExecute gating).
 		/// </summary>
 		public void RunRefresh() => this.StartNewTask(isRefresh: true);
+
+		/// <summary>
+		/// Run a parameterized operation immediately without permanently changing the configured factory.
+		/// The provided <paramref name="task"/> and <paramref name="arg"/> are captured for this invocation only.
+		/// </summary>
+		public void Run<TArg>(Func<TArg, TaskContext<TProgress>, Task> task, TArg arg)
+		{
+			lock (this.syncObject)
+			{
+				this.taskFactory = ctx => task(arg, ctx);
+			}
+			this.StartNewTask(isRefresh: false);
+		}
+
+		/// <summary>
+		/// Run a parameterized operation in refresh mode immediately.
+		/// </summary>
+		public void RunRefresh<TArg>(Func<TArg, TaskContext<TProgress>, Task> task, TArg arg)
+		{
+			lock (this.syncObject)
+			{
+				this.taskFactory = ctx => task(arg, ctx);
+			}
+			this.StartNewTask(isRefresh: true);
+		}
 
 		/// <summary>
 		/// Reload the current task.
@@ -463,6 +508,7 @@ namespace NeuroAccessMaui.UI.MVVM
 				}
 			}
 		}
+
 		private bool disposed;
 		// Public Dispose: callers clean up managed + unmanaged
 		public void Dispose()
@@ -507,12 +553,51 @@ namespace NeuroAccessMaui.UI.MVVM
 	{
 		public TResult? Result { get; private set; }
 
+		/// <summary>
+		/// Configure and immediately run.
+		/// </summary>
 		public void Load(Func<TaskContext<TProgress>, Task<TResult>> op, params IRelayCommand[] notify)
 		{
 			base.Load(async ctx =>
 			{
 				this.Result = await op(ctx);
 			}, notify);
+		}
+
+		/// <summary>
+		/// Configure without running.
+		/// </summary>
+		public void Configure(Func<TaskContext<TProgress>, Task<TResult>> op, params IRelayCommand[] notify)
+			=> base.Configure(async ctx => { this.Result = await op(ctx); }, notify);
+
+		/// <summary>
+		/// Parameterized Configure without running.
+		/// </summary>
+		public void Configure<TArg>(Func<TArg, TaskContext<TProgress>, Task<TResult>> op, TArg arg, params IRelayCommand[] notify)
+			=> base.Configure(async ctx => { this.Result = await op(arg, ctx); }, notify);
+
+		/// <summary>
+		/// Parameterized Load (configure + run immediately).
+		/// </summary>
+		public void Load<TArg>(Func<TArg, TaskContext<TProgress>, Task<TResult>> op, TArg arg, params IRelayCommand[] notify)
+		{
+			base.Load(async ctx => { this.Result = await op(arg, ctx); }, notify);
+		}
+
+		/// <summary>
+		/// Run once with the provided parameter (does not persist factory).
+		/// </summary>
+		public void Run<TArg>(Func<TArg, TaskContext<TProgress>, Task<TResult>> op, TArg arg)
+		{
+			base.Run<TArg>(async (a, ctx) => { this.Result = await op(a, ctx); }, arg);
+		}
+
+		/// <summary>
+		/// Run once in refresh mode with the provided parameter (does not persist factory).
+		/// </summary>
+		public void RunRefresh<TArg>(Func<TArg, TaskContext<TProgress>, Task<TResult>> op, TArg arg)
+		{
+			base.RunRefresh<TArg>(async (a, ctx) => { this.Result = await op(a, ctx); }, arg);
 		}
 	}
 
