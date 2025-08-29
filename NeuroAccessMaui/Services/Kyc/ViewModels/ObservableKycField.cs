@@ -51,8 +51,9 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 
             this.ValidationTask = new ObservableTaskBuilder<int>()
                                     .Named("KYC Field Validation")
-                                    .WithPolicy(Policies.Debounce(TimeSpan.FromMicroseconds(1500)))
+                                    .WithPolicy(Policies.Debounce(TimeSpan.FromMilliseconds(500)))
                                     .Run(this.ValidateAsync)
+                                    .AutoStart(false)
                                     .UseTaskRun(true)
                                     .Build();
         }
