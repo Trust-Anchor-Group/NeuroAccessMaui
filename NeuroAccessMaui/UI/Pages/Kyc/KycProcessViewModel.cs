@@ -36,9 +36,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private bool hasSections;
 		[ObservableProperty] private string nextButtonText = "Next";
 
-		[ObservableProperty] private ObservableCollection<KVP> personalInformationSummary;
-		[ObservableProperty] private ObservableCollection<KVP> addressInformationSummary;
-		[ObservableProperty] private ObservableCollection<KVP> attachmentInformationSummary;
+		[ObservableProperty] private ObservableCollection<DisplayTriple> personalInformationSummary;
+		[ObservableProperty] private ObservableCollection<DisplayTriple> addressInformationSummary;
+		[ObservableProperty] private ObservableCollection<DisplayTriple> attachmentInformationSummary;
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
 
@@ -103,9 +103,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			this.NextCommand = new AsyncRelayCommand(this.ExecuteNextAsync, this.CanExecuteNext);
 			this.PreviousCommand = new AsyncRelayCommand(this.ExecutePrevious);
-			this.PersonalInformationSummary = new ObservableCollection<KVP>();
-			this.AddressInformationSummary = new ObservableCollection<KVP>();
-			this.AttachmentInformationSummary = new ObservableCollection<KVP>();
+			this.PersonalInformationSummary = new ObservableCollection<DisplayTriple>();
+			this.AddressInformationSummary = new ObservableCollection<DisplayTriple>();
+			this.AttachmentInformationSummary = new ObservableCollection<DisplayTriple>();
 			this.mappedValues = new List<Property>();
 			this.attachments = new List<LegalIdentityAttachment>();
 		}
@@ -238,6 +238,40 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			// Re-evaluate Next button when page/section content changes.
 			this.NextCommand.NotifyCanExecuteChanged();
+		}
+
+		/// <summary>
+		/// Go to the first page that contains a field with the specified mapping.
+		/// </summary>
+		[RelayCommand]
+		private void GoToPageWithMapping(string Mapping)
+		{
+			// Find the first page with a field that has the specified mapping.
+			if (this.process is null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < this.Pages.Count; i++)
+			{
+				KycPage Page = this.Pages[i];
+				if (Page.AllFields.Any(f => f.Mappings.Any(m => m.Key == Mapping)) ||
+					Page.AllSections.Any(s => s.AllFields.Any(f => f.Mappings.Any(m => m.Key == Mapping))))
+				{
+					int NextIndex = this.GetNextIndex(i);
+					if (NextIndex >= 0 && NextIndex < this.Pages.Count)
+					{
+						this.currentPageIndex = NextIndex;
+						this.CurrentPagePosition = NextIndex;
+
+						this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
+						this.ShouldViewSummary = false;
+
+						this.SetCurrentPage(this.currentPageIndex);
+					}
+					return;
+				}
+			}
 		}
 
 		private void UpdateReference()
@@ -733,9 +767,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private void GenerateSummaryCollection()
 		{
-			this.PersonalInformationSummary = new ObservableCollection<KVP>();
-			this.AddressInformationSummary = new ObservableCollection<KVP>();
-			this.AttachmentInformationSummary = new ObservableCollection<KVP>();
+			this.PersonalInformationSummary = new ObservableCollection<DisplayTriple>();
+			this.AddressInformationSummary = new ObservableCollection<DisplayTriple>();
+			this.AttachmentInformationSummary = new ObservableCollection<DisplayTriple>();
 
 			if (this.process is null)
 			{
@@ -747,25 +781,20 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.attachments.Select(a => new IdentitySummaryFormatter.AttachmentInfo(a.FileName ?? string.Empty, a.ContentType))
 			);
 
-			foreach (IdentitySummaryFormatter.DisplayPair Pair in Summary.Personal)
+			foreach (DisplayTriple Triple in Summary.Personal)
 			{
-				this.PersonalInformationSummary.Add(new KVP(Pair.Label, Pair.Value));
+				this.PersonalInformationSummary.Add(Triple);
 			}
 
-			foreach (IdentitySummaryFormatter.DisplayPair Pair in Summary.Address)
+			foreach (DisplayTriple Triple in Summary.Address)
 			{
-				this.AddressInformationSummary.Add(new KVP(Pair.Label, Pair.Value));
+				this.AddressInformationSummary.Add(Triple);
 			}
 
-			foreach (IdentitySummaryFormatter.DisplayPair Pair in Summary.Attachments)
+			foreach (DisplayTriple Triple in Summary.Attachments)
 			{
-				this.AttachmentInformationSummary.Add(new KVP(Pair.Label, Pair.Value));
+				this.AttachmentInformationSummary.Add(Triple);
 			}
 		}
-	}
-	public class KVP(string Key, string Value)
-	{
-		public string Key { get; set; } = Key;
-		public string Value { get; set; } = Value;
 	}
 }

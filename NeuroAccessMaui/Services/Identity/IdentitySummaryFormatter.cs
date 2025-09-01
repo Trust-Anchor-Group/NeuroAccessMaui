@@ -8,24 +8,29 @@ using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.Services.Identity
 {
-    /// <summary>
-    /// Builds friendly, localized summaries for identity-like data from mapped properties and attachments.
-    /// Designed to be used by both View Identity and KYC preview summaries.
-    /// </summary>
-    public static class IdentitySummaryFormatter
+	/// <summary>
+	/// Represents a displayable set of three related strings: a label, a value, and an optional mapping.
+	/// </summary>
+	public sealed class DisplayTriple
+	{
+		public string Label { get; }
+		public string Value { get; }
+		public string? Mapping { get; }
+
+		public DisplayTriple(string Label, string Value, string? Mapping)
+		{
+			this.Label = Label;
+			this.Value = Value;
+			this.Mapping = Mapping;
+		}
+	}
+
+	/// <summary>
+	/// Builds friendly, localized summaries for identity-like data from mapped properties and attachments.
+	/// Designed to be used by both View Identity and KYC preview summaries.
+	/// </summary>
+	public static class IdentitySummaryFormatter
     {
-        public sealed class DisplayPair
-        {
-            public string Label { get; }
-            public string Value { get; }
-
-            public DisplayPair(string Label, string Value)
-            {
-                this.Label = Label;
-                this.Value = Value;
-            }
-        }
-
         public sealed class AttachmentInfo
         {
             public string FileName { get; }
@@ -40,9 +45,9 @@ namespace NeuroAccessMaui.Services.Identity
 
         public sealed class KycSummaryResult
         {
-            public List<DisplayPair> Personal { get; } = new List<DisplayPair>();
-            public List<DisplayPair> Address { get; } = new List<DisplayPair>();
-            public List<DisplayPair> Attachments { get; } = new List<DisplayPair>();
+            public List<DisplayTriple> Personal { get; } = new List<DisplayTriple>();
+            public List<DisplayTriple> Address { get; } = new List<DisplayTriple>();
+            public List<DisplayTriple> Attachments { get; } = new List<DisplayTriple>();
         }
 
         public sealed class DisplayField
@@ -145,7 +150,7 @@ namespace NeuroAccessMaui.Services.Identity
                     continue;
 
                 string Label = GetLabel(LabelMap, Key);
-                Result.Personal.Add(new DisplayPair(Label, Val));
+                Result.Personal.Add(new DisplayTriple(Label, Val, Key));
             }
 
             // Address
@@ -155,7 +160,7 @@ namespace NeuroAccessMaui.Services.Identity
                     continue;
 
                 string Label = GetLabel(LabelMap, Key);
-                Result.Address.Add(new DisplayPair(Label, Val));
+                Result.Address.Add(new DisplayTriple(Label, Val, Key));
             }
 
             // Attachments
@@ -212,7 +217,7 @@ namespace NeuroAccessMaui.Services.Identity
                             break;
                     }
 
-                    Result.Attachments.Add(new DisplayPair(Att.FileName, Description));
+                    Result.Attachments.Add(new DisplayTriple(Att.FileName, Description, Base));
                 }
             }
 
