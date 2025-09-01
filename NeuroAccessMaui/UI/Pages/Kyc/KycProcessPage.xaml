@@ -239,7 +239,7 @@
 			<!-- Image upload field template -->
 			<DataTemplate x:Key="ImageUploadTemplate"
 						  x:DataType="fields:ObservableImageField">
-				<Grid RowDefinitions="auto, auto"
+				<Grid RowDefinitions="auto, auto, auto"
 					  ColumnDefinitions="*,*"
 					  ColumnSpacing="16"
 					  RowSpacing="8">
@@ -247,7 +247,8 @@
 							Grid.ColumnSpan="2"
 							StrokeShape="RoundRectangle 8"
 							Stroke="{DynamicResource BrandColorsGreyScalesGreyv250}"
-							StrokeDashArray="1,1">
+							StrokeDashArray="1,1"
+							IsEnabled="{Binding IsValid}">
 						<controls:AspectRatioLayout AspectRatio="{Binding AspectRatio}">
 							<controls:ConditionView Condition="{Binding ImageSource, Converter={mct:IsNullConverter}}">
 								<controls:ConditionView.True>
@@ -263,6 +264,22 @@
 								</controls:ConditionView.False>
 							</controls:ConditionView>
 						</controls:AspectRatioLayout>
+
+
+						<Border.Triggers>
+							<Trigger TargetType="Border"
+									 Property="IsEnabled"
+									 Value="True">
+								<Setter Property="Stroke"
+										Value="{DynamicResource BrandColorsGreyScalesGreyv250}" />
+							</Trigger>
+							<Trigger TargetType="Border"
+									 Property="IsEnabled"
+									 Value="False">
+								<Setter Property="Stroke"
+										Value="{DynamicResource InputFieldsContentDangerv500}" />
+							</Trigger>
+						</Border.Triggers>
 					</Border>
 					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
 										 LabelData="Upload"
@@ -274,6 +291,8 @@
 										 Command="{Binding TakePhotoCommand}"
 										 Grid.Row="1"
 										 Grid.Column="1" />
+
+					<Label Grid.Row="2" Grid.ColumnSpan="2" HorizontalOptions="Center" Style="{DynamicResource RegularCompositeInputViewValidationLabel}" Text="{Binding ValidationText}" TextColor="Red" IsVisible="{Binding IsValid, Converter={mct:InvertedBoolConverter}}"/>
 				</Grid>
 			</DataTemplate>
 			
