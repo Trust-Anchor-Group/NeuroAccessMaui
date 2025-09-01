@@ -18,12 +18,19 @@
 			<Placeholder>
 				<Text lang="en">Full name</Text>
 			</Placeholder>
-			<Validation minLength="2">
-				<Regex>^[\D]+$</Regex>
-				<Message>
-					<Text lang="en">Please enter your full name.</Text>
-				</Message>
-			</Validation>
+			<ValidationRules>
+				<LengthRule min="2">
+					<Message>
+						<Text lang="en">Please enter your full name.</Text>
+					</Message>
+				</LengthRule>
+				<RegexRule>
+					<Regex>^[\D]+$</Regex>
+					<Message>
+						<Text lang="en">Name cannot contain numbers or special characters.</Text>
+					</Message>
+				</RegexRule>
+			</ValidationRules>
 		</Field>
 	</Page>
 	<Page id="documentNumberPage">
@@ -63,11 +70,13 @@
 			<Mapping key="BYEAR">
 				<Transform>year</Transform>
 			</Mapping>
-			<Validation min="1900-01-01" max="2025-01-01">
-				<Message>
-					<Text lang="en">Enter a valid date between 1900 and 2025</Text>
-				</Message>
-			</Validation>
+			<ValidationRules>
+				<DateRangeRule min="1900-01-01" max="2025-01-01">
+					<Message>
+						<Text lang="en">Enter a valid date between 1900 and 2025</Text>
+					</Message>
+				</DateRangeRule>
+			</ValidationRules>
 		</Field>
 	</Page>
 	<Page id="identityDocuments">
@@ -92,12 +101,6 @@
 					<Text lang="en">Driver's license</Text>
 				</Option>
 			</Options>
-			<Validation>
-				<Message>
-					<Text lang="en">You must select a document type</Text>
-					<Text lang="sv">Du måste välja en dokumenttyp</Text>
-				</Message>
-			</Validation>
 		</Field>
 	</Page>
 	<Page id="passportPage">
@@ -115,6 +118,7 @@
 			<Placeholder>
 				<Text lang="en">Choose file...</Text>
 			</Placeholder>
+			<!-- TODO: Add new handling to KycRules and Process parser -->
 			<Validation maxFileSizeMB="15">
 				<FileTypes>
 					<FileType>.jpg</FileType>

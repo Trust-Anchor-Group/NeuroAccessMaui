@@ -130,12 +130,12 @@ namespace NeuroAccessMaui.Services.Kyc
 				}
 			}
 
-			// Validation rules (<ValidationRule> or <Validation>)
+			// Validation rules (<ValidationRule>)
 			void TryAddLengthRules(XElement RuleEl)
 			{
 				int? Min = null, Max = null;
-				if (int.TryParse((string?)RuleEl.Attribute("minLength"), out int MinVal)) Min = MinVal;
-				if (int.TryParse((string?)RuleEl.Attribute("maxLength"), out int MaxVal)) Max = MaxVal;
+				if (int.TryParse((string?)RuleEl.Attribute("min"), out int MinVal)) Min = MinVal;
+				if (int.TryParse((string?)RuleEl.Attribute("max"), out int MaxVal)) Max = MaxVal;
 				if (Min.HasValue || Max.HasValue)
 				{
 					string? Msg = ParseLocalizedText(RuleEl.Element("Message"))?.Get(Lang);
@@ -179,7 +179,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				{
 					switch (Vr.Name.ToString())
 					{
-						case "RangeRule":
+						case "DateRangeRule":
 							TryAddDateRangeRule(Vr); break;
 						case "RegexRule":
 							TryAddRegexRule(Vr); break;
