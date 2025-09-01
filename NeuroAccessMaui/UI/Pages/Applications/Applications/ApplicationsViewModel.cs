@@ -202,8 +202,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					return;
 
 				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-			//	KycReference Ref = await ServiceRef.KycService.LoadKycReferenceAsync(Language);
-				await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage));
+				KycReference Ref = await ServiceRef.KycService.LoadKycReferenceAsync(Language);
+				await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Ref));
 			}
 			catch (Exception Ex)
 			{
@@ -248,7 +248,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				else
 				{
 					// Open KYC process to resume
-					await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage));
+					await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
 				}
 			}
 			catch (Exception Ex)

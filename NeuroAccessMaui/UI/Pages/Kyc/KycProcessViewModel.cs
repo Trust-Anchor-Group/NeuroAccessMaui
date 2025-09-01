@@ -14,10 +14,12 @@ using SkiaSharp;
 using Waher.Networking.XMPP.Contracts;
 using NeuroAccessMaui.Services.Identity;
 
+
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
 	public partial class KycProcessViewModel : BaseViewModel
 	{
+		private readonly KycProcessNavigationArgs? navigationArguments;
 		private KycProcess? process;
 		private KycReference? kycReference;
 		private int currentPageIndex = 0;
@@ -99,8 +101,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public IAsyncRelayCommand NextCommand { get; }
 		public IRelayCommand PreviousCommand { get; }
 
-		public KycProcessViewModel()
+		/// <summary>
+		/// Creates a new instance of the KycProcessViewModel.
+		/// </summary>
+		/// <param name="Args">Navigation arguments carrying the KycReference.</param>
+		public KycProcessViewModel(KycProcessNavigationArgs? Args)
 		{
+			this.navigationArguments = Args;
 			this.NextCommand = new AsyncRelayCommand(this.ExecuteNextAsync, this.CanExecuteNext);
 			this.PreviousCommand = new AsyncRelayCommand(this.ExecutePrevious);
 			this.PersonalInformationSummary = new ObservableCollection<KVP>();
@@ -114,13 +121,32 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			await base.OnInitialize();
 
-			// TODO: Load the KYC process as KycReference from serviceRef.KycService
 			string LanguageInit = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-			this.kycReference = await ServiceRef.KycService.LoadKycReferenceAsync(LanguageInit);
+
+			// Obtain KYC reference from navigation arguments; handle nulls gracefully.
+			this.kycReference = this.navigationArguments?.Reference;
+			if (this.kycReference is null)
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					"Missing KYC reference.",
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				await this.GoBack();
+				return;
+			}
+
 			this.process = await this.kycReference.ToProcess(LanguageInit);
 			this.OnPropertyChanged(nameof(this.Pages));
 
-			if (this.process is null) return; // TODO: Check and handle null process
+			if (this.process is null)
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					"Unable to load KYC process.",
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				await this.GoBack();
+				return;
+			}
 
 			this.process.Initialize();
 
