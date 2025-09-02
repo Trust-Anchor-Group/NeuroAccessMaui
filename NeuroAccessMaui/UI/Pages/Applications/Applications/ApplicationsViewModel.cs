@@ -45,12 +45,18 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 	{
 		public ObservableCollection<KycReference> Applications { get; } = new();
 
+		// Single current application (0 or 1)
+		[ObservableProperty]
+		private KycReference? currentApplication;
+
+		public bool HasCurrentApplication => this.CurrentApplication is not null;
+
 		// Expose loader state if you want to bind spinners/errors in XAML
 		public ObservableTask<int> Loader { get; init; }
 		public bool IsLoading => this.Loader.IsRunning;
 		public string? LoadError => this.Loader.ErrorMessage;
 
-		public bool HasApplications => this.Applications.Count > 0;
+		public bool HasApplications => this.Applications.Count > 0; // legacy, not used by current UI
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ApplicationsViewModel"/> class.
@@ -165,9 +171,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			this.OpenApplicationCommand.NotifyCanExecuteChanged();
 
 			// Optionally also surface loader commands in UI, so keep them fresh:
-			this.Loader.CancelCommand.NotifyCanExecuteChanged();
-			this.Loader.ReloadCommand.NotifyCanExecuteChanged();
-			this.Loader.RefreshCommand.NotifyCanExecuteChanged();
+	//		this.Loader.CancelCommand.NotifyCanExecuteChanged();
+	//		this.Loader.ReloadCommand.NotifyCanExecuteChanged();
+	//		this.Loader.RefreshCommand.NotifyCanExecuteChanged();
 		}
 
 		#region Properties
@@ -200,6 +206,33 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			{
 				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ApplyForPersonalId))
 					return;
+
+				// If a current application exists, remove it; if it is in review, obsolete it.
+				if (this.CurrentApplication is not null)
+				{
+					try
+					{
+						if (!string.IsNullOrEmpty(this.CurrentApplication.CreatedIdentityId))
+						{
+							// Fetch latest state of the created identity
+							LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(this.CurrentApplication.CreatedIdentityId);
+							if (Identity.State == IdentityState.Created)
+							{
+								// Confirm and authenticate for revoking/obsoleting application
+								if (!await App.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
+									return;
+
+								await ServiceRef.XmppService.ObsoleteLegalIdentity(Identity.Id);
+							}
+						}
+						await Database.Delete(this.CurrentApplication);
+						await Database.Provider.Flush();
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+					}
+				}
 
 				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 				KycReference Ref = await ServiceRef.KycService.LoadKycReferenceAsync(Language);
@@ -241,9 +274,17 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 				if (!string.IsNullOrEmpty(Item.CreatedIdentityId))
 				{
-					// Open identity view
 					LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(Item.CreatedIdentityId);
-					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
+					if (Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created)
+					{
+						// Preview in review/approved identity
+						await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
+					}
+					else
+					{
+						// Rejected or other states: allow editing in KYC
+						await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
+					}
 				}
 				else
 				{
@@ -281,6 +322,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			CancellationToken ct = ctx.CancellationToken;
 			IProgress<int> progress = ctx.Progress;
 
+			await Task.Delay(5000);
+
 			try
 			{
 				progress.Report(0);
@@ -292,7 +335,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					this.OnPropertyChanged(nameof(this.HasApplications));
 				});
 
-				// 1) Drafts (local)
+				// 1) Drafts (local). We show at most one (latest) current application.
 				IEnumerable<KycReference> Refs = Array.Empty<KycReference>();
 				try
 				{
@@ -309,16 +352,15 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 				ct.ThrowIfCancellationRequested();
 
-				// Add drafts, newest first
-				foreach (KycReference Ref in Refs.OrderByDescending(r => r.UpdatedUtc))
-				{
-					ct.ThrowIfCancellationRequested();
+				KycReference? Latest = Refs.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
 
-					await MainThread.InvokeOnMainThreadAsync(() =>
-					{
-						this.Applications.Add(Ref);
-					});
-				}
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.Applications.Clear();
+					this.CurrentApplication = Latest;
+					if (Latest is not null)
+						this.Applications.Add(Latest);
+				});
 
 
 				progress.Report(100);
@@ -326,6 +368,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				// Final notify
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
+					this.OnPropertyChanged(nameof(this.HasCurrentApplication));
 					this.OnPropertyChanged(nameof(this.HasApplications));
 					// If you want command states to react to loading completion:
 					this.NotifyCommandsCanExecuteChanged();

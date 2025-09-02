@@ -13,13 +13,13 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.Applications"
 							 xmlns:service="clr-namespace:NeuroAccessMaui.Services.Kyc">
 
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" Margin="16,16,16,0">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource SmallSpacing}">
-				<Grid Margin="{StaticResource SmallLeftRightTopMargins}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="0" Padding="0">
+				<Grid Margin="0">
 					<controls:SvgButton
 						Command="{Binding GoBackCommand}"
 						SvgSource="close.svg"
@@ -29,53 +29,86 @@
 					<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Applications}" HorizontalOptions="End"/>
 				</Grid>
 
-				<!-- Unified Applications List -->
-				<Border Style="{DynamicResource BorderSet}">
-					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}" />
-						<CollectionView ItemsSource="{Binding Applications}" IsVisible="{Binding HasApplications}">
-							<CollectionView.ItemTemplate>
-								<DataTemplate x:DataType="service:KycReference">
-									<controls:TemplatedButton Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ApplicationsViewModel}}, Path=OpenApplicationCommand}"
-															 CommandParameter="{Binding}">
-										<Border Style="{DynamicResource SecondaryButtonActiveBorder}" >
-											<Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" >
-												<Label Grid.Row="0" Grid.Column="0" Style="{DynamicResource KeyLabel}" Text="{Binding FriendlyName}" InputTransparent="True" />
-												<Label Grid.Row="1" Grid.Column="0" Style="{DynamicResource ValueLabel}" Text="{Binding UpdatedUtc, StringFormat='{}{0:g}'}" InputTransparent="True" />
-												<Border Grid.Row="1"
-														Grid.Column="1"
-														Padding="8,2"
-														StrokeShape="RoundRectangle 12 12 12 12" BackgroundColor="{DynamicResource TnPWarningContentWL}"
-													   VerticalOptions="Center" InputTransparent="True">
-													<Label Text="Current" />
-												</Border>
-												<controls:TextButton Grid.Row="0" Grid.Column="1" LabelData="X" Style="{DynamicResource PrimaryButton}"
-													Command="{Binding Path=RemoveApplicationCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplicationsViewModel}}}" CommandParameter="{Binding}"  />
-											</Grid>
-										</Border>
-									</controls:TemplatedButton>
-								</DataTemplate>
-							</CollectionView.ItemTemplate>
-						</CollectionView>
-					</VerticalStackLayout>
-				</Border>
+				<!-- Current Application (0 or 1) -->
+				<Label Text="Current application" TextColor="{DynamicResource ContentSecondaryWL}" FontSize="16" FontFamily="SpaceGroteskBold" />
+				<controls:TemplatedButton Command="{Binding OpenApplicationCommand}"
+										  CommandParameter="{Binding CurrentApplication}"
+										  Margin="0"
+										  Padding="0">
+					<Border Style="{DynamicResource BorderSet}" MinimumHeightRequest="200" Margin="0">
+						<Grid Padding="16"
+							  ColumnDefinitions="auto,*"
+							  RowDefinitions="">
+							
+						</Grid>
+					</Border>
+				</controls:TemplatedButton>
+				
+				<Label Text="Available applications"
+					   TextColor="{DynamicResource ContentSecondaryWL}"
+					   FontSize="16"
+					   FontFamily="SpaceGroteskBold" />
 
-				<!-- Create new application -->
 				<Border Style="{DynamicResource BorderSet}">
-					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}" />
-						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding CreateNewApplicationCommand}">
-							<Border Style="{DynamicResource PrimaryButtonActiveBorder}" InputTransparent="True">
-								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
-									<Label Style="{DynamicResource SectionTitleLabel}" Text="New Application" InputTransparent="True"
-										   TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
-									<Label Style="{DynamicResource KeyLabel}" Text="Temporary" InputTransparent="True"
-										   TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
-								</VerticalStackLayout>
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+							<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}" />
+
+							<controls:TemplatedButton IsVisible="{Binding HasCurrentApplication}"
+													  Command="{Binding OpenApplicationCommand}"
+													  CommandParameter="{Binding CurrentApplication}">
+								<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
+									<Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+										<Label Grid.Row="0" Grid.Column="0" Style="{DynamicResource KeyLabel}"
+											   Text="{Binding CurrentApplication.FriendlyName}" InputTransparent="True" />
+										<Label Grid.Row="1" Grid.Column="0" Style="{DynamicResource ValueLabel}"
+											   Text="{Binding CurrentApplication.UpdatedUtc, StringFormat='{}{0:g}'}" InputTransparent="True" />
+
+										<Border Grid.Row="1" Grid.Column="1" Padding="8,2"
+											   StrokeShape="RoundRectangle 12 12 12 12"
+											   BackgroundColor="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:IdentityStateToColor}}"
+											   VerticalOptions="Center" InputTransparent="True">
+											<Border.Triggers>
+												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityId}" Value="">
+													<Setter Property="BackgroundColor" Value="{DynamicResource TnPWarningContentWL}" />
+												</DataTrigger>
+											</Border.Triggers>
+
+										<Label Text="{Binding CurrentApplication.CreatedIdentityState,
+													  Converter={converters:LocalizedState},
+													  StringFormat='{}{0}'}" >
+										<Label.Triggers>
+												<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityId}" Value="">
+													<Setter Property="Text" Value="In Progress" />
+												</DataTrigger>
+											</Label.Triggers>
+										</Label>
+									</Border>
+								</Grid>
 							</Border>
 						</controls:TemplatedButton>
-					</VerticalStackLayout>
-				</Border>
+
+						<Label IsVisible="{Binding HasCurrentApplication, Converter={StaticResource mct:InvertedBoolConverter}}"
+							   Style="{DynamicResource ValueLabel}"
+							   Text="No current identity application." />
+						</VerticalStackLayout>
+					</Border>
+
+					<!-- Start new process -->
+					<Border Style="{DynamicResource BorderSet}">
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+							<Label Style="{DynamicResource SectionTitleLabel}" Text="Start new process" />
+							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding CreateNewApplicationCommand}">
+								<Border Style="{DynamicResource PrimaryButtonActiveBorder}" InputTransparent="True">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
+										<Label Style="{DynamicResource SectionTitleLabel}" Text="New Application" InputTransparent="True"
+											   TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
+										<Label Style="{DynamicResource KeyLabel}" Text="Start a new KYC application process. If you have one in review, it will be obsoleted." InputTransparent="True"
+											   TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
+									</VerticalStackLayout>
+								</Border>
+							</controls:TemplatedButton>
+						</VerticalStackLayout>
+					</Border>
 
 				<!-- Removed old grouped sections in favor of unified list above -->
 			</VerticalStackLayout>
