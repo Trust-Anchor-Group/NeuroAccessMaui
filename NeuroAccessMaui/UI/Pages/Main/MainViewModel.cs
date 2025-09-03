@@ -13,6 +13,8 @@ using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
+using System.Globalization;
+using NeuroAccessMaui.Services.Kyc;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -170,7 +172,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-                await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage));
+				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+				KycReference Ref = await ServiceRef.KycService.LoadKycReferenceAsync(Language);
+				await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Ref));
 			}
 			catch (Exception Ex)
 			{

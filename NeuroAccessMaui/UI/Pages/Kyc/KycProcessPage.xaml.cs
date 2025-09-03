@@ -1,17 +1,17 @@
 using Microsoft.Maui.Controls;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI;
-using NeuroAccessMaui.Services.Kyc.Models;
+using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
 
 	public partial class KycProcessPage : BaseContentPage
 	{
-		public KycProcessPage(KycProcessViewModel ViewModel)
+		public KycProcessPage()
 		{
 			this.InitializeComponent();
-			this.BindingContext = ViewModel;
+			this.ContentPageModel = new KycProcessViewModel(ServiceRef.UiService.PopLatestArgs<KycProcessNavigationArgs>());
 
 		/*	this.SectionsCollectionView.Filter = (item) =>
 			{
