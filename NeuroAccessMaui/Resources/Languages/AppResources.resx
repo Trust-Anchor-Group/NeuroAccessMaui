@@ -2987,4 +2987,7 @@
   <data name="Kyc_Apply" xml:space="preserve">
     <value>Apply</value>
   </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Return to summary</value>
+  </data>
 </root>

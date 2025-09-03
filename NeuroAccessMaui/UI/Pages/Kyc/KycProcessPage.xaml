@@ -370,7 +370,6 @@
 					Padding="{DynamicResource SmallMargins}"
 					VerticalOptions="Center">
 			<controls:ConditionView Condition="{Binding ShouldViewSummary}">
-				
 				<controls:ConditionView.True>
 						<VerticalStackLayout>
 							<Label Style="{DynamicResource PageTitleLabel}" Text="Application summary" Margin="{DynamicResource MediumLeftRightMargins}"/>
@@ -534,15 +533,25 @@
 									  BarBrush="{DynamicResource TnPAccent2FigureWL}"
 									  Margin="{DynamicResource SmallBottomMargins}">
 				</controls:ProgressBar>
-				<Grid ColumnDefinitions="*, *" ColumnSpacing="{DynamicResource SmallSpacing}">
-					<controls:TextButton LabelData="Back"
-										 Style="{DynamicResource SecondaryButton}"
-										 Command="{Binding GoBackCommand}"/>
-					<controls:TextButton LabelData="{Binding NextButtonText}"
-										 Style="{DynamicResource FilledTextButton}"
-										 Command="{Binding NextCommand}"
-										 Grid.Column="1"/>
-				</Grid>
+
+				<controls:ConditionView Condition="{Binding ShouldReturnToSummary}">
+					<controls:ConditionView.True>
+						<controls:TextButton LabelData="{Binding NextButtonText}"
+											 Style="{DynamicResource FilledTextButton}"
+											 Command="{Binding GoToSummaryCommand}"/>
+					</controls:ConditionView.True>
+					<controls:ConditionView.False>
+						<Grid ColumnDefinitions="*, *" ColumnSpacing="{DynamicResource SmallSpacing}">
+							<controls:TextButton LabelData="Back"
+											 Style="{DynamicResource SecondaryButton}"
+											 Command="{Binding GoBackCommand}"/>
+							<controls:TextButton LabelData="{Binding NextButtonText}"
+											 Style="{DynamicResource FilledTextButton}"
+											 Command="{Binding NextCommand}"
+											 Grid.Column="1"/>
+						</Grid>	
+					</controls:ConditionView.False>
+				</controls:ConditionView>
 			</VerticalStackLayout>
 		</Border>
 	</Grid>

@@ -26,6 +26,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private List<Property> mappedValues;
 		private List<LegalIdentityAttachment> attachments;
 		[ObservableProperty] private bool shouldViewSummary = false;
+		[ObservableProperty] private bool shouldReturnToSummary = false;
 
 		[ObservableProperty] private int currentPagePosition;
 		[ObservableProperty] private KycPage? currentPage;
@@ -277,8 +278,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 							this.currentPageIndex = NextIndex;
 							this.CurrentPagePosition = NextIndex;
 
-							this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
 							this.ShouldViewSummary = false;
+
+							this.ShouldReturnToSummary = true;
+							this.NextButtonText = ServiceRef.Localizer["Kyc_Return"].Value;
 
 							this.SetCurrentPage(this.currentPageIndex);
 						}
@@ -388,6 +391,26 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 				}
 			}
+		}
+
+		[RelayCommand]
+		private async Task GoToSummaryAsync()
+		{
+			bool IsValid = await this.ValidateCurrentPageAsync();
+			if (!IsValid)
+			{
+				return;
+			}
+
+			this.UpdateReference();
+			await this.SaveReferenceToStorageAsync();
+			await this.ProcessData();
+
+			this.ShouldViewSummary = true;
+			this.shouldReturnToSummary = false;
+
+			this.OnPropertyChanged(nameof(this.Progress));
+			this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 		}
 
 		private async Task ExecutePrevious()

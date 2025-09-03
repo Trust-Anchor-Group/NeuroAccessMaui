@@ -2987,4 +2987,7 @@
   <data name="Kyc_Apply" xml:space="preserve">
     <value>Enviar</value>
   </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Volver al resumen</value>
+  </data>
 </root>
