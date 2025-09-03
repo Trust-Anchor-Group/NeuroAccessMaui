@@ -50,7 +50,7 @@
 										  CommandParameter="{Binding CurrentApplication}"
 										  Margin="0"
 										  Padding="0">
-					<Border Style="{DynamicResource BorderSet}" MinimumHeightRequest="200" Margin="0" Padding="16">
+					<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="16">
 						<Grid
 							  ColumnDefinitions="auto,*"
 							  RowDefinitions="auto,auto,auto,auto" RowSpacing="16">
@@ -70,14 +70,23 @@
 								<VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
 									<Grid ColumnDefinitions="*,Auto">
 										<Label Grid.Column="0" Text="{l:Localize Progress}"/>
-										<Label Grid.Column="1" Text="50%" />
+										<Label Grid.Column="1" Text="{Binding CurrentApplication.Progress, StringFormat='{}{0:P0}'}" />
 									</Grid>
-									<controls:ProgressBar Progress="50" 					
-										HeightRequest="20"
-									  	CornerRadius="40"
+									<controls:ProgressBar Progress="{Binding CurrentApplication.Progress}" 					
+										HeightRequest="16"
+									  	CornerRadius="32"
 									  	TrackBrush="{DynamicResource TnPAccent2bgWL}"
 									  	BarBrush="{DynamicResource TnPAccent2FigureWL}"
 									  	Margin="{DynamicResource SmallBottomMargins}"/>
+
+									<Grid Grid.Row="3" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto" >
+										<Label Grid.Column="0" Text="{l:Localize LastUpdatedFormat}" />
+										<Border Grid.Column="1" Padding="8,2,8,2" Background="{DynamicResource TnPWarningbgWL}" StrokeShape="RoundRectangle 8">
+											<Label 
+												Text="Pending..."
+												FontSize="16" FontFamily="SpaceGroteskBold"/>
+										</Border>
+									</Grid>
 								</VerticalStackLayout>
 
 						</Grid>

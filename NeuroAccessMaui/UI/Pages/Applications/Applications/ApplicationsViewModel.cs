@@ -67,6 +67,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 		public bool HasApplications => this.Applications.Count > 0; // legacy, not used by current UI
 
+		public bool ShowProgressBar => this.CurrentApplication is not null
+										&& (this.CurrentApplication.CreatedIdentityState is null
+										|| this.CurrentApplication.CreatedIdentityState == IdentityState.Created);
+
 		/// <summary>
 		/// Creates an instance of the <see cref="ApplicationsViewModel"/> class.
 		/// </summary>
@@ -330,8 +334,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			CancellationToken ct = ctx.CancellationToken;
 			IProgress<int> progress = ctx.Progress;
-
-			await Task.Delay(5000);
 
 			try
 			{
