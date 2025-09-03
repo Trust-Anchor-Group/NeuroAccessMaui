@@ -407,12 +407,12 @@
 										<Label Text="Personal Details" Style="{DynamicResource FieldTitleLabel}" />
 										<VerticalStackLayout BindableLayout.ItemsSource="{Binding PersonalInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="IDSF:DisplayTriple">
-													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}">
+												<DataTemplate x:DataType="IDSF:DisplayQuad">
+													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
 														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
 															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
 															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
-															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20"/>
+															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}"/>
 														</Grid>
 													</controls:TemplatedButton>
 												</DataTemplate>
@@ -427,12 +427,12 @@
 										<Label Text="Address Details" Style="{DynamicResource FieldTitleLabel}" />
 										<VerticalStackLayout BindableLayout.ItemsSource="{Binding AddressInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="IDSF:DisplayTriple">
-													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}">
+												<DataTemplate x:DataType="IDSF:DisplayQuad">
+													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
 														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
 															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
 															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
-															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20"/>
+															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}"/>
 														</Grid>
 													</controls:TemplatedButton>
 												</DataTemplate>
@@ -447,15 +447,15 @@
 										<Label Text="Attachments" Style="{DynamicResource FieldTitleLabel}" />
 										<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="IDSF:DisplayTriple">
-													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}">
+												<DataTemplate x:DataType="IDSF:DisplayQuad">
+													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
 														<Border Style="{DynamicResource BorderSet}" Margin="0">
 															<Grid ColumnDefinitions="auto, *, auto" ColumnSpacing="{DynamicResource SmallSpacing}">
 																<Border Style="{DynamicResource FileIconBorder}">
 																	<controls:SvgView Source="gallery.svg" HeightRequest="24"/>
 																</Border>
 																<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" HorizontalOptions="Center" VerticalOptions="Center"/>
-																<controls:SvgView Grid.Column="2" Grid.RowSpan="2" Source="sign.svg" HeightRequest="24" WidthRequest="24"/>
+																<controls:SvgView Grid.Column="2" Grid.RowSpan="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}"/>
 															</Grid>
 														</Border>
 													</controls:TemplatedButton>

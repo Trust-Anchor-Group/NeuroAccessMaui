@@ -36,9 +36,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private bool hasSections;
 		[ObservableProperty] private string nextButtonText = "Next";
 
-		[ObservableProperty] private ObservableCollection<DisplayTriple> personalInformationSummary;
-		[ObservableProperty] private ObservableCollection<DisplayTriple> addressInformationSummary;
-		[ObservableProperty] private ObservableCollection<DisplayTriple> attachmentInformationSummary;
+		[ObservableProperty] private ObservableCollection<DisplayQuad> personalInformationSummary;
+		[ObservableProperty] private ObservableCollection<DisplayQuad> addressInformationSummary;
+		[ObservableProperty] private ObservableCollection<DisplayQuad> attachmentInformationSummary;
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
 
@@ -103,9 +103,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			this.NextCommand = new AsyncRelayCommand(this.ExecuteNextAsync, this.CanExecuteNext);
 			this.PreviousCommand = new AsyncRelayCommand(this.ExecutePrevious);
-			this.PersonalInformationSummary = new ObservableCollection<DisplayTriple>();
-			this.AddressInformationSummary = new ObservableCollection<DisplayTriple>();
-			this.AttachmentInformationSummary = new ObservableCollection<DisplayTriple>();
+			this.PersonalInformationSummary = new ObservableCollection<DisplayQuad>();
+			this.AddressInformationSummary = new ObservableCollection<DisplayQuad>();
+			this.AttachmentInformationSummary = new ObservableCollection<DisplayQuad>();
 			this.mappedValues = new List<Property>();
 			this.attachments = new List<LegalIdentityAttachment>();
 		}
@@ -241,35 +241,49 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		}
 
 		/// <summary>
-		/// Go to the first page that contains a field with the specified mapping.
+		/// Go to the first page that contains a field with the specified mapping (Should be a unique mapping).
 		/// </summary>
 		[RelayCommand]
-		private void GoToPageWithMapping(string Mapping)
+		private void GoToPageWithMapping(string SoughtMapping)
 		{
-			// Find the first page with a field that has the specified mapping.
 			if (this.process is null)
 			{
 				return;
 			}
 
+			string[] Mappings;
+
+			if (SoughtMapping == "BDATE")
+			{
+				Mappings = ["BDAY", "BMONTH", "BYEAR"];
+			}
+			else
+			{
+				Mappings = [SoughtMapping];
+			}
+
 			for (int i = 0; i < this.Pages.Count; i++)
 			{
 				KycPage Page = this.Pages[i];
-				if (Page.AllFields.Any(f => f.Mappings.Any(m => m.Key == Mapping)) ||
-					Page.AllSections.Any(s => s.AllFields.Any(f => f.Mappings.Any(m => m.Key == Mapping))))
+
+				foreach (string Mapping in Mappings)
 				{
-					int NextIndex = this.GetNextIndex(i);
-					if (NextIndex >= 0 && NextIndex < this.Pages.Count)
+					if (Page.AllFields.Any(f => f.Mappings.Any(m => m.Key == Mapping)) ||
+						Page.AllSections.Any(s => s.AllFields.Any(f => f.Mappings.Any(m => m.Key == Mapping))))
 					{
-						this.currentPageIndex = NextIndex;
-						this.CurrentPagePosition = NextIndex;
+						int NextIndex = this.GetNextIndex(i);
+						if (NextIndex >= 0 && NextIndex < this.Pages.Count)
+						{
+							this.currentPageIndex = NextIndex;
+							this.CurrentPagePosition = NextIndex;
 
-						this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
-						this.ShouldViewSummary = false;
+							this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
+							this.ShouldViewSummary = false;
 
-						this.SetCurrentPage(this.currentPageIndex);
+							this.SetCurrentPage(this.currentPageIndex);
+						}
+						return;
 					}
-					return;
 				}
 			}
 		}
@@ -767,9 +781,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private void GenerateSummaryCollection()
 		{
-			this.PersonalInformationSummary = new ObservableCollection<DisplayTriple>();
-			this.AddressInformationSummary = new ObservableCollection<DisplayTriple>();
-			this.AttachmentInformationSummary = new ObservableCollection<DisplayTriple>();
+			this.PersonalInformationSummary = new ObservableCollection<DisplayQuad>();
+			this.AddressInformationSummary = new ObservableCollection<DisplayQuad>();
+			this.AttachmentInformationSummary = new ObservableCollection<DisplayQuad>();
 
 			if (this.process is null)
 			{
@@ -778,20 +792,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			// Build summary via shared formatter to avoid duplicating logic with ViewIdentity
 			IdentitySummaryFormatter.KycSummaryResult Summary = IdentitySummaryFormatter.BuildKycSummaryFromProperties(
 				this.mappedValues,
+				this.process,
 				this.attachments.Select(a => new IdentitySummaryFormatter.AttachmentInfo(a.FileName ?? string.Empty, a.ContentType))
 			);
 
-			foreach (DisplayTriple Triple in Summary.Personal)
+			foreach (DisplayQuad Triple in Summary.Personal)
 			{
 				this.PersonalInformationSummary.Add(Triple);
 			}
 
-			foreach (DisplayTriple Triple in Summary.Address)
+			foreach (DisplayQuad Triple in Summary.Address)
 			{
 				this.AddressInformationSummary.Add(Triple);
 			}
 
-			foreach (DisplayTriple Triple in Summary.Attachments)
+			foreach (DisplayQuad Triple in Summary.Attachments)
 			{
 				this.AttachmentInformationSummary.Add(Triple);
 			}
