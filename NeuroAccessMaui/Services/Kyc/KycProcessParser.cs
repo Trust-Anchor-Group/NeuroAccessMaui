@@ -127,6 +127,11 @@ namespace NeuroAccessMaui.Services.Kyc
 						Field.Metadata[Key] = Value.Split(',', ';', ' ').Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
 					else
 						Field.Metadata[Key] = Value;
+
+					// Handle special cases
+					// For livenessCheck image fields, disable manual upload
+					if (Field is ObservableImageField ImageField && Key.Equals("AllowUpload", StringComparison.OrdinalIgnoreCase) && bool.TryParse(Value, out bool ParsedBool))
+						ImageField.AllowUpload = ParsedBool;
 				}
 			}
 

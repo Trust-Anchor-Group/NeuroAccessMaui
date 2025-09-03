@@ -295,6 +295,7 @@
 				<TargetWidth>800</TargetWidth>
 				<TargetHeight>800</TargetHeight>
 				<MinDpi>150</MinDpi>
+				<AllowUpload>false</AllowUpload>
 			</Metadata>
 		</Field>
 	</Page>

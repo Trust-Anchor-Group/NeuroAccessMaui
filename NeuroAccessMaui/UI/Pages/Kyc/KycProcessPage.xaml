@@ -282,16 +282,24 @@
 							</Trigger>
 						</Border.Triggers>
 					</Border>
-					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-										 LabelData="Upload"
-										 Command="{Binding PickPhotoCommand}"
-										 Grid.Row="1"
-										 Grid.Column="0" />
-					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+					<controls:ConditionView Condition="{Binding AllowUpload}" Grid.Row="1" Grid.ColumnSpan="2">
+						<controls:ConditionView.True>
+							<Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+								<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+													 LabelData="Upload"
+													 Command="{Binding PickPhotoCommand}"/>
+								<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+													 LabelData="Camera"
+													 Command="{Binding TakePhotoCommand}"
+													 Grid.Column="1"/>
+							</Grid>
+						</controls:ConditionView.True>
+						<controls:ConditionView.False>
+							<controls:TextButton Style="{DynamicResource TransparentTextButton}"
 										 LabelData="Camera"
-										 Command="{Binding TakePhotoCommand}"
-										 Grid.Row="1"
-										 Grid.Column="1" />
+										 Command="{Binding TakePhotoCommand}"/>
+						</controls:ConditionView.False>
+					</controls:ConditionView>
 
 					<Label Grid.Row="2" Grid.ColumnSpan="2" HorizontalOptions="Center" Style="{DynamicResource RegularCompositeInputViewValidationLabel}" Text="{Binding ValidationText}" TextColor="Red" IsVisible="{Binding IsValid, Converter={mct:InvertedBoolConverter}}"/>
 				</Grid>
@@ -527,8 +535,8 @@
 						   TextColor="{DynamicResource TnPAccent2ContentWL}"/>
 				</Grid>
 				<controls:ProgressBar Progress="{Binding Progress}"
-									  HeightRequest="14"
-									  CornerRadius="40"
+									  HeightRequest="16"
+									  CornerRadius="32"
 									  TrackBrush="{DynamicResource TnPAccent2bgWL}"
 									  BarBrush="{DynamicResource TnPAccent2FigureWL}"
 									  Margin="{DynamicResource SmallBottomMargins}">

@@ -71,6 +71,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				if (this.process is null || this.CurrentPage is null)
 				{
+					this.ProgressPercent = "0%";
 					return 0;
 				}
 
@@ -78,6 +79,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 				if (VisiblePages.Count == 0)
 				{
+					this.ProgressPercent = "0%";
 					return 0;
 				}
 
@@ -433,7 +435,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			await this.ProcessData();
 
 			this.ShouldViewSummary = true;
-			this.shouldReturnToSummary = false;
+			this.ShouldReturnToSummary = false;
 
 			this.OnPropertyChanged(nameof(this.Progress));
 			this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
