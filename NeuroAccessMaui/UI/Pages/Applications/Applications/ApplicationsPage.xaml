@@ -12,13 +12,28 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.Applications"
 							 xmlns:service="clr-namespace:NeuroAccessMaui.Services.Kyc">
+							 
+<base:BaseContentPage.Resources>
+  <ResourceDictionary>
+    <Style TargetType="Label" x:Key="CardTitleLabel">
+      <Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+      <Setter Property="FontSize" Value="16"/>
+	  <Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}"/>
+    </Style>
+	<Style TargetType="Label" x:Key="CardSubtitleLabel">
+      <Setter Property="FontFamily" Value="SpaceGroteskRegular"/>
+      <Setter Property="FontSize" Value="14"/>
+	  <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
+    </Style>
+  </ResourceDictionary>
+</base:BaseContentPage.Resources>
 
 	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" Margin="16,16,16,0">
 
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="0" Padding="0">
+			<VerticalStackLayout Spacing="24" Margin="0" Padding="0">
 				<Grid Margin="0">
 					<controls:SvgButton
 						Command="{Binding GoBackCommand}"
@@ -35,11 +50,36 @@
 										  CommandParameter="{Binding CurrentApplication}"
 										  Margin="0"
 										  Padding="0">
-					<Border Style="{DynamicResource BorderSet}" MinimumHeightRequest="200" Margin="0">
-						<Grid Padding="16"
+					<Border Style="{DynamicResource BorderSet}" MinimumHeightRequest="200" Margin="0" Padding="16">
+						<Grid
 							  ColumnDefinitions="auto,*"
-							  RowDefinitions="">
-							
+							  RowDefinitions="auto,auto,auto,auto" RowSpacing="16">
+								<controls:UriImage Source="{Binding BannerUri}"
+									   Grid.Row="0" Grid.Column="0"
+									   HeightRequest="30"
+									   VerticalOptions="Center"  HorizontalOptions="Start"/>
+								<controls:SvgButton Style="{DynamicResource IconButton}" 
+									   SvgSource="arrow_forward.svg"
+									   Grid.Row="0" Grid.Column="1" 
+									   HorizontalOptions="End" 
+									   InputTransparent="True" Margin="0"/>
+								<VerticalStackLayout  Grid.Row="1" Grid.Column="0">
+									<Label Text="Personal ID" Style="{DynamicResource CardTitleLabel}"/> 
+									<Label Text="Identity Verification" Style="{DynamicResource CardSubtitleLabel}"/>
+								</VerticalStackLayout>
+								<VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
+									<Grid ColumnDefinitions="*,Auto">
+										<Label Grid.Column="0" Text="{l:Localize Progress}"/>
+										<Label Grid.Column="1" Text="50%" />
+									</Grid>
+									<controls:ProgressBar Progress="50" 					
+										HeightRequest="20"
+									  	CornerRadius="40"
+									  	TrackBrush="{DynamicResource TnPAccent2bgWL}"
+									  	BarBrush="{DynamicResource TnPAccent2FigureWL}"
+									  	Margin="{DynamicResource SmallBottomMargins}"/>
+								</VerticalStackLayout>
+
 						</Grid>
 					</Border>
 				</controls:TemplatedButton>
@@ -87,7 +127,7 @@
 							</Border>
 						</controls:TemplatedButton>
 
-						<Label IsVisible="{Binding HasCurrentApplication, Converter={StaticResource mct:InvertedBoolConverter}}"
+						<Label IsVisible="{Binding HasCurrentApplication, Converter={StaticResource InvertedBoolConverter}}"
 							   Style="{DynamicResource ValueLabel}"
 							   Text="No current identity application." />
 						</VerticalStackLayout>

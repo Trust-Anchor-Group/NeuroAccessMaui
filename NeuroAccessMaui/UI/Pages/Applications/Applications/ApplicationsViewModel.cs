@@ -45,6 +45,15 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 	{
 		public ObservableCollection<KycReference> Applications { get; } = new();
 
+		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
+		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
+		public string BannerUri =>
+			Application.Current?.UserAppTheme switch
+			{
+				AppTheme.Dark => this.BannerUriDark,
+				AppTheme.Light => this.BannerUriLight,
+				_ => this.BannerUriLight
+			} ?? this.BannerUriLight;
 		// Single current application (0 or 1)
 		[ObservableProperty]
 		private KycReference? currentApplication;
