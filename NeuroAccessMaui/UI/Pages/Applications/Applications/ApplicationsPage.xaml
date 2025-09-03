@@ -11,7 +11,8 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.Applications"
-							 xmlns:service="clr-namespace:NeuroAccessMaui.Services.Kyc">
+							 xmlns:service="clr-namespace:NeuroAccessMaui.Services.Kyc"
+							 xmlns:contracts="clr-namespace:Waher.Networking.XMPP.Contracts;assembly=Waher.Networking.XMPP.Contracts">
 							 
 <base:BaseContentPage.Resources>
   <ResourceDictionary>
@@ -63,32 +64,115 @@
 									   Grid.Row="0" Grid.Column="1" 
 									   HorizontalOptions="End" 
 									   InputTransparent="True" Margin="0"/>
+								<!-- Title and subtitle -->
 								<VerticalStackLayout  Grid.Row="1" Grid.Column="0">
 									<Label Text="Personal ID" Style="{DynamicResource CardTitleLabel}"/> 
 									<Label Text="Identity Verification" Style="{DynamicResource CardSubtitleLabel}"/>
 								</VerticalStackLayout>
+								<!-- Progress bar -->
 								<VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
+									<VerticalStackLayout.Triggers>
+										<!-- Hide progress for finalized states -->
+										<DataTrigger TargetType="VerticalStackLayout" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Approved}">
+											<Setter Property="IsVisible" Value="False" />
+										</DataTrigger>
+										<DataTrigger TargetType="VerticalStackLayout" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Rejected}">
+											<Setter Property="IsVisible" Value="False" />
+										</DataTrigger>
+										<DataTrigger TargetType="VerticalStackLayout" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Obsoleted}">
+											<Setter Property="IsVisible" Value="False" />
+										</DataTrigger>
+										<DataTrigger TargetType="VerticalStackLayout" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Compromised}">
+											<Setter Property="IsVisible" Value="False" />
+										</DataTrigger>
+									</VerticalStackLayout.Triggers>
+
 									<Grid ColumnDefinitions="*,Auto">
-										<Label Grid.Column="0" Text="{l:Localize Progress}"/>
-										<Label Grid.Column="1" Text="{Binding CurrentApplication.Progress, StringFormat='{}{0:P0}'}" />
+										<Label Grid.Column="0" Text="{l:Localize Progress}" TextColor="{DynamicResource TnPInfoContentWL}">
+											<Label.Triggers>
+												<!-- Pending: Warning colors -->
+												<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Created}">
+													<Setter Property="TextColor" Value="{DynamicResource TnPWarningContentWL}" />
+												</DataTrigger>
+											</Label.Triggers>
+										</Label>
+										<Label Grid.Column="1" Text="{Binding CurrentApplication.Progress, StringFormat='{}{0:P0}'}" TextColor="{DynamicResource TnPInfoContentWL}">
+											<Label.Triggers>
+												<!-- Pending: Warning colors -->
+												<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Created}">
+													<Setter Property="TextColor" Value="{DynamicResource TnPWarningContentWL}" />
+												</DataTrigger>
+											</Label.Triggers>
+										</Label>
 									</Grid>
-									<controls:ProgressBar Progress="{Binding CurrentApplication.Progress}" 					
+									<controls:ProgressBar Progress="{Binding CurrentApplication.Progress}"
 										HeightRequest="16"
 									  	CornerRadius="32"
-									  	TrackBrush="{DynamicResource TnPAccent2bgWL}"
-									  	BarBrush="{DynamicResource TnPAccent2FigureWL}"
-									  	Margin="{DynamicResource SmallBottomMargins}"/>
+									  	TrackBrush="{DynamicResource TnPInfobgWL}"
+									  	BarBrush="{DynamicResource TnPInfoFigureWL}"
+									  	Margin="{DynamicResource SmallBottomMargins}">
+										<controls:ProgressBar.Triggers>
+											<!-- Pending: Warning colors -->
+											<DataTrigger TargetType="controls:ProgressBar" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Created}">
+												<Setter Property="TrackBrush" Value="{DynamicResource TnPWarningbgWL}" />
+												<Setter Property="BarBrush" Value="{DynamicResource TnPWarningFigureWL}" />
+											</DataTrigger>
+										</controls:ProgressBar.Triggers>
+									</controls:ProgressBar>
 
-									<Grid Grid.Row="3" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto" >
-										<Label Grid.Column="0" Text="{l:Localize LastUpdatedFormat}" />
-										<Border Grid.Column="1" Padding="8,2,8,2" Background="{DynamicResource TnPWarningbgWL}" StrokeShape="RoundRectangle 8">
-											<Label 
-												Text="Pending..."
-												FontSize="16" FontFamily="SpaceGroteskBold"/>
+	
+								</VerticalStackLayout>
+								<!-- Last updated and state -->
+								<Grid Grid.Row="3" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto" >
+										<Label Grid.Column="0" Text="{l:Localize LastUpdatedFormat}" VerticalOptions="End" />
+										<Border Grid.Column="1" Padding="8,2,8,2" Background="{DynamicResource TnPInfobgWL}" StrokeShape="RoundRectangle 8">
+											<Border.Triggers>
+												<!-- Pending -->
+												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Created}">
+													<Setter Property="Background" Value="{DynamicResource TnPWarningbgWL}" />
+												</DataTrigger>
+												<!-- Finalized states -->
+												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Approved}">
+													<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
+												</DataTrigger>
+												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Rejected}">
+													<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
+												</DataTrigger>
+												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Obsoleted}">
+													<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
+												</DataTrigger>
+												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Compromised}">
+													<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
+												</DataTrigger>
+											</Border.Triggers>
+											<Label FontSize="16" FontFamily="SpaceGroteskBold" Text="In Progress" TextColor="{DynamicResource TnPInfoContentWL}">
+												<Label.Triggers>
+													<!-- Pending: Application sent -->
+													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Created}">
+														<Setter Property="Text" Value="Pending..." />
+														<Setter Property="TextColor" Value="{DynamicResource TnPWarningContentWL}" />
+													</DataTrigger>
+													<!-- Finalized: show localized state in success colors -->
+													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Approved}">
+														<Setter Property="Text" Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+													</DataTrigger>
+													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Rejected}">
+														<Setter Property="Text" Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+													</DataTrigger>
+													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Obsoleted}">
+														<Setter Property="Text" Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+													</DataTrigger>
+													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Compromised}">
+														<Setter Property="Text" Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+													</DataTrigger>
+												</Label.Triggers>
+											</Label>
 										</Border>
 									</Grid>
-								</VerticalStackLayout>
-
 						</Grid>
 					</Border>
 				</controls:TemplatedButton>
@@ -113,12 +197,35 @@
 											   Text="{Binding CurrentApplication.UpdatedUtc, StringFormat='{}{0:g}'}" InputTransparent="True" />
 
 										<Border Grid.Row="1" Grid.Column="1" Padding="8,2"
-											   StrokeShape="RoundRectangle 12 12 12 12"
+											   StrokeShape="RoundRectangle 16"
 											   BackgroundColor="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:IdentityStateToColor}}"
 											   VerticalOptions="Center" InputTransparent="True">
 											<Border.Triggers>
+												<!-- In-progress (no submitted application): Info colors -->
+												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityId}" Value="{x:Null}">
+													<Setter Property="BackgroundColor" Value="{DynamicResource TnPInfobgWL}" />
+												</DataTrigger>
 												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityId}" Value="">
-													<Setter Property="BackgroundColor" Value="{DynamicResource TnPWarningContentWL}" />
+													<Setter Property="BackgroundColor" Value="{DynamicResource TnPInfobgWL}" />
+												</DataTrigger>
+
+												<!-- Pending (Created): Warning colors -->
+												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Created}">
+													<Setter Property="BackgroundColor" Value="{DynamicResource TnPWarningbgWL}" />
+												</DataTrigger>
+
+												<!-- Finalized (Approved/Rejected/Obsoleted/Compromised): Success colors -->
+												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Approved}">
+													<Setter Property="BackgroundColor" Value="{DynamicResource TnPSuccessbgWL}" />
+												</DataTrigger>
+												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Rejected}">
+													<Setter Property="BackgroundColor" Value="{DynamicResource TnPSuccessbgWL}" />
+												</DataTrigger>
+												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Obsoleted}">
+													<Setter Property="BackgroundColor" Value="{DynamicResource TnPSuccessbgWL}" />
+												</DataTrigger>
+												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Compromised}">
+													<Setter Property="BackgroundColor" Value="{DynamicResource TnPSuccessbgWL}" />
 												</DataTrigger>
 											</Border.Triggers>
 
@@ -126,9 +233,37 @@
 													  Converter={converters:LocalizedState},
 													  StringFormat='{}{0}'}" >
 										<Label.Triggers>
-												<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityId}" Value="">
-													<Setter Property="Text" Value="In Progress" />
-												</DataTrigger>
+													<!-- In-progress: Info colors and text -->
+													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityId}" Value="{x:Null}">
+														<Setter Property="Text" Value="In Progress" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPInfoContentWL}" />
+													</DataTrigger>
+													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityId}" Value="">
+														<Setter Property="Text" Value="In Progress" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPInfoContentWL}" />
+													</DataTrigger>
+													<!-- Pending: Warning colors -->
+													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Created}">
+														<Setter Property="Text" Value="Pending..." />
+														<Setter Property="TextColor" Value="{DynamicResource TnPWarningContentWL}" />
+													</DataTrigger>
+													<!-- Finalized: Localized state and success colors -->
+													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Approved}">
+														<Setter Property="Text" Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+													</DataTrigger>
+													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Rejected}">
+														<Setter Property="Text" Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+													</DataTrigger>
+													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Obsoleted}">
+														<Setter Property="Text" Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+													</DataTrigger>
+													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Compromised}">
+														<Setter Property="Text" Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+													</DataTrigger>
 											</Label.Triggers>
 										</Label>
 									</Border>
