@@ -52,9 +52,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			{
 				string[] DateMappings = ["BDAY", "BMONTH", "BYEAR"];
 
-				if (DateMappings.Select(f => this.FindMapping(f)).Any(f => f))
-					return true;
-				return false;
+				return DateMappings.Select(f => this.FindMapping(f)).Any(f => f);
 			}
 			else
 			{
