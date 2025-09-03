@@ -6,13 +6,15 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.Services.UI.Photos;
 using SkiaSharp;
+using Waher.Content.Html.Elements;
 using Waher.Networking.XMPP.Contracts;
-using NeuroAccessMaui.Services.Identity;
 
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
@@ -642,6 +644,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.mappedValues.Add(new Property(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid));
 			this.mappedValues.Add(new Property(Constants.XmppProperties.Phone, ServiceRef.TagProfile.PhoneNumber));
 			this.mappedValues.Add(new Property(Constants.XmppProperties.EMail, ServiceRef.TagProfile.EMail));
+
+			if (!this.process.HasMapping(Constants.XmppProperties.Country) && !string.IsNullOrEmpty(ServiceRef.TagProfile.SelectedCountry))
+				this.mappedValues.Add(new Property(Constants.XmppProperties.Country, ISO_3166_1.ToName(ServiceRef.TagProfile.SelectedCountry) ?? ServiceRef.TagProfile.SelectedCountry));
 
 			this.GenerateSummaryCollection();
 
