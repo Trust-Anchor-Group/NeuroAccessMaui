@@ -2987,4 +2987,7 @@
   <data name="Kyc_Apply" xml:space="preserve">
     <value>Apply</value>
   </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Progress</value>
+  </data>
 </root>
