@@ -17,5 +17,12 @@ namespace NeuroAccessMaui.UI.MVVM.Policies
 			Linked.CancelAfter(this.timeout);
 			await action(Linked.Token);
 		}
+
+		public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken ct)
+		{
+			using CancellationTokenSource Linked = CancellationTokenSource.CreateLinkedTokenSource(ct);
+			Linked.CancelAfter(this.timeout);
+			return await action(Linked.Token);
+		}
 	}
 }

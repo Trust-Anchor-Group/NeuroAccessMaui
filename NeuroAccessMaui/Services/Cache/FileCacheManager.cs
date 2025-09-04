@@ -165,6 +165,23 @@ namespace NeuroAccessMaui.Services.Cache
 			}
 			await Database.Provider.Flush();
 		}
+
+		public async Task<int> RemoveByParentId(string parentId)
+		{
+			int removed = 0;
+			foreach (CacheEntry Entry in await Database.Find<CacheEntry>(
+				new FilterFieldEqualTo("ParentId", parentId)))
+			{
+				try { File.Delete(Entry.LocalFileName); }
+				catch { /* ignore */ }
+
+				await Database.Delete(Entry);
+				removed++;
+			}
+
+			await Database.Provider.Flush();
+			return removed;
+		}
 	}
 
 }

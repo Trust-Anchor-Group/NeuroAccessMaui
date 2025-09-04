@@ -92,5 +92,11 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 		{
 			return this.cacheManager.MakePermanent(ParentId);
 		}
+
+		/// <inheritdoc/>
+		public Task<int> RemoveByParentId(string ParentId)
+		{
+			return this.cacheManager.RemoveByParentId(ParentId);
+		}
 	}
 }

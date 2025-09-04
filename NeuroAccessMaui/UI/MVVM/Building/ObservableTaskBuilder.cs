@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.MVVM.Policies;
 using NeuroAccessMaui.UI.MVVM.Telemetry;
+using NeuroAccessMaui.Services.Resilience.Dispatch;
 
 namespace NeuroAccessMaui.UI.MVVM.Building
 {
@@ -18,6 +19,7 @@ namespace NeuroAccessMaui.UI.MVVM.Building
 		public ObservableTaskBuilder<TProgress> UseTaskRun(bool value = true) { this.options.UseTaskRun = value; return this; }
 		public ObservableTaskBuilder<TProgress> WithPolicy(IAsyncPolicy policy) { this.options.Policies.Add(policy); return this; }
 		public ObservableTaskBuilder<TProgress> WithTelemetry(IObservableTaskTelemetry telemetry) { this.options.Telemetry = telemetry; return this; }
+		public ObservableTaskBuilder<TProgress> WithDispatcher(IDispatcherAdapter dispatcher) { this.options.Dispatcher = dispatcher; return this; }
 		public ObservableTaskBuilder<TProgress> Run(Func<TaskContext<TProgress>, Task> op) { this.factory = op; return this; }
 
 		public ObservableTask<TProgress> Build(params IRelayCommand[] notify)
@@ -60,7 +62,8 @@ namespace NeuroAccessMaui.UI.MVVM.Building
 			// Create the task here so the builder doesn't own a disposable field (fixes CA1001).
 			ObservableTask<TProgress> Task = new ObservableTask<TProgress>
 			{
-				UseTaskRun = this.options.UseTaskRun
+				UseTaskRun = this.options.UseTaskRun,
+				Dispatcher = this.options.Dispatcher ?? UiDispatcher.Instance
 			};
 
 			Task.Configure(Wrapped, notify);

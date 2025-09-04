@@ -46,5 +46,12 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 		/// </summary>
 		/// <param name="ParentId">The parent ID of the items to mark.</param>
 		Task MakePermanent(string ParentId);
+
+		/// <summary>
+		/// Removes all cached entries having the specified parent ID.
+		/// </summary>
+		/// <param name="ParentId">Grouping parent ID.</param>
+		/// <returns>The number of removed entries.</returns>
+		Task<int> RemoveByParentId(string ParentId);
 	}
 }
