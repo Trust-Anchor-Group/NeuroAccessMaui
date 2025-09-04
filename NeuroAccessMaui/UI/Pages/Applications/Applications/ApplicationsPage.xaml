@@ -18,12 +18,12 @@
   <ResourceDictionary>
     <Style TargetType="Label" x:Key="CardTitleLabel">
       <Setter Property="FontFamily" Value="SpaceGroteskBold"/>
-      <Setter Property="FontSize" Value="18"/>
+      <Setter Property="FontSize" Value="16"/>
 	  <Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}"/>
     </Style>
 	<Style TargetType="Label" x:Key="CardSubtitleLabel">
       <Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
-      <Setter Property="FontSize" Value="16"/>
+      <Setter Property="FontSize" Value="14"/>
 	  <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
     </Style>
   </ResourceDictionary>
@@ -66,7 +66,7 @@
 									   InputTransparent="True" Margin="0"/>
 								<!-- Title and subtitle -->
 								<VerticalStackLayout  Grid.Row="1" Grid.Column="0">
-									<Label Text="Personal ID" Style="{DynamicResource CardTitleLabel}"/> 
+									<Label Text="Personal ID Application" Style="{DynamicResource CardTitleLabel}"/> 
 									<Label Text="Identity Verification" Style="{DynamicResource CardSubtitleLabel}"/>
 								</VerticalStackLayout>
 								<!-- Progress bar -->
@@ -198,7 +198,36 @@
 						<DataTemplate x:DataType="service:KycReference">
 							<controls:TemplatedButton Margin="0"
 													  Command="{Binding Path=CreateNewApplicationCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplicationsViewModel}}}">
-								<Label Text="{Binding FriendlyName}" />
+								<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="16,24,16,24">
+									<Grid ColumnDefinitions="auto,*,auto" ColumnSpacing="16">
+										<Border Grid.Column="0"
+												StrokeShape="Ellipse"
+												Padding="8"
+												Background="{DynamicResource BrandColorsNeuroAccessa20WL}">
+											<controls:SvgView Source="person.svg" Aspect="AspectFit"
+															  WidthRequest="32" HeightRequest="32"
+															  VerticalOptions="Center" HorizontalOptions="Center"
+															  TintColor="{DynamicResource BrandColorsNeuroAccessv500WL}"/>
+										</Border>
+										<Grid RowDefinitions="*,auto" Grid.Column="1" ColumnDefinitions="*" VerticalOptions="Center">
+											<Label Text="Personal ID"
+												   Style="{DynamicResource CardTitleLabel}"
+												   Grid.Row="0"
+												   LineBreakMode="TailTruncation"
+												   MaxLines="1" />
+											<Label Text="For your individial use"
+												   Style="{DynamicResource CardSubtitleLabel}"
+												   Grid.Row="1"
+												   LineBreakMode="TailTruncation"
+												   MaxLines="2" />
+										</Grid>
+										<controls:SvgView Source="arrow_forward_ios.svg"
+														  Grid.Column="2"
+														  VerticalOptions="Center"
+														  WidthRequest="24" HeightRequest="24"
+														  TintColor="{DynamicResource ButtonNeutralNavButtonsContentActiveWL}"/>
+									</Grid>
+								</Border>
 							</controls:TemplatedButton>
 						</DataTemplate>
 					</BindableLayout.ItemTemplate>
