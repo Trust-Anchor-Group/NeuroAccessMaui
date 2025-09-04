@@ -250,6 +250,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				return;
 			}
+			this.ScrollUp();
 
 			this.currentPageIndex = Index;
 			this.CurrentPagePosition = Index;
@@ -266,6 +267,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			int NextIndex = this.GetNextIndex(Index + 1);
 
 			this.OnPropertyChanged(nameof(this.Progress));
+
+			// Scroll to top of page when changing pages
 
 			// Re-evaluate Next button when page/section content changes.
 			this.NextCommand.NotifyCanExecuteChanged();
@@ -413,6 +416,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				{
 					await this.ProcessData();
 
+					this.ScrollUp();
 					// Go to Summary Page
 					this.ShouldViewSummary = true;
 
@@ -421,6 +425,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 				}
 			}
+		}
+
+		public event EventHandler? ScrollToTop;
+
+		private void ScrollUp()
+		{
+			ScrollToTop?.Invoke(this, EventArgs.Empty); // scroll to Y=0
 		}
 
 		[RelayCommand]
@@ -447,6 +458,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			if (this.ShouldViewSummary)
 			{
+				this.ScrollUp();
 				this.ShouldViewSummary = false;
 				this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
 				this.OnPropertyChanged(nameof(this.Progress));
@@ -459,6 +471,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			int PreviousIndex = this.GetPreviousIndex(this.currentPageIndex - 1);
 			if (PreviousIndex >= 0)
 			{
+				this.ScrollUp();
+
 				this.currentPageIndex = PreviousIndex;
 				this.CurrentPagePosition = PreviousIndex;
 				this.SetCurrentPage(this.currentPageIndex);

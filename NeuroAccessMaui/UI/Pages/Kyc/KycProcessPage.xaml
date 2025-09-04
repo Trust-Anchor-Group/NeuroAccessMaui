@@ -378,7 +378,8 @@
 							   HeightRequest="24" />
 		</Grid>
 
-		<ScrollView Grid.Row="1"
+		<ScrollView x:Name="FormScrollView"
+					Grid.Row="1"
 					Padding="{DynamicResource SmallMargins}"
 					VerticalOptions="Center">
 			<controls:ConditionView Condition="{Binding ShouldViewSummary}">
@@ -465,7 +466,7 @@
 																<Border Style="{DynamicResource FileIconBorder}">
 																	<controls:SvgView Source="gallery.svg" HeightRequest="24"/>
 																</Border>
-																<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" HorizontalOptions="Center" VerticalOptions="Center"/>
+																<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" VerticalOptions="Center" Margin="16,0,16,0"/>
 																<controls:SvgView Grid.Column="2" Grid.RowSpan="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}"/>
 															</Grid>
 														</Border>
