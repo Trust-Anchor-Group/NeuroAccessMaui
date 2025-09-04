@@ -210,7 +210,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 		#endregion
 
-		#region Commands (new)
+		#region Commands
 
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
 		private async Task CreateNewApplication()
@@ -410,9 +410,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			return L.ResourceNotFound ? state.ToString() : L.Value;
 		}
 
-		#endregion
-
-		#region Commands (legacy cleaned up)
 		#endregion
 	}
 }
