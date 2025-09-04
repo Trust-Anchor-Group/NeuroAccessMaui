@@ -624,6 +624,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			//For each page
 			foreach (KycPage Page in this.process.Pages)
 			{
+				if (!Page.IsVisible(this.process.Values))
+				{
+					continue; // Skip invisible pages
+				}
+
 				// For each field in the page
 				foreach (ObservableKycField Field in Page.VisibleFields)
 				{
@@ -724,6 +729,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private bool CheckAndHandleFile(ObservableKycField Field, List<LegalIdentityAttachment> Attachments)
 		{
+			if (Field.Condition is not null)
+			{
+				if (Field is null || Field.Mappings is null || Field.Mappings.Count == 0 || !Field.Condition!.Evaluate(this.process!.Values))
+				{
+					return false;
+				}
+			}
+
 			if (Field.StringValue is not null && Field.StringValue.Length > 0)
 			{
 				if (Field is ObservableImageField ImageField)
