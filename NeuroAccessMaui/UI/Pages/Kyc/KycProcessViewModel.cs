@@ -179,7 +179,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				Page.UpdateVisibilities(this.process.Values);
 			}
 
-			this.currentPageIndex = this.GetNextIndex(0);
+			this.currentPageIndex = 0;
+			this.currentPageIndex = this.GetNextIndex();
 			this.CurrentPagePosition = this.currentPageIndex;
 			this.SetCurrentPage(this.currentPageIndex);
 
@@ -264,8 +265,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.CurrentPageSections = Page.VisibleSections;
 			this.HasSections = this.CurrentPageSections is not null && this.CurrentPageSections.Count > 0;
 
-			int NextIndex = this.GetNextIndex(Index + 1);
-
 			this.OnPropertyChanged(nameof(this.Progress));
 
 			// Scroll to top of page when changing pages
@@ -305,11 +304,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					if (Page.AllFields.Any(f => f.Mappings.Any(m => m.Key == Mapping)) ||
 						Page.AllSections.Any(s => s.AllFields.Any(f => f.Mappings.Any(m => m.Key == Mapping))))
 					{
-						int NextIndex = this.GetNextIndex(i);
-						if (NextIndex >= 0 && NextIndex < this.Pages.Count)
+						if (i >= 0 && i < this.Pages.Count)
 						{
-							this.currentPageIndex = NextIndex;
-							this.CurrentPagePosition = NextIndex;
+							this.currentPageIndex = i;
+							this.CurrentPagePosition = i;
 
 							this.ShouldViewSummary = false;
 
@@ -343,12 +341,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
 		}
 
-		private int GetNextIndex(int Start)
+		private int GetNextIndex()
 		{
 			if (this.process is null)
 			{
 				return -1;
 			}
+
+			int Start = this.currentPageIndex + 1;
 
 			while (Start < this.Pages.Count && !this.Pages[Start].IsVisible(this.process.Values))
 			{
@@ -357,12 +357,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return Start;
 		}
 
-		private int GetPreviousIndex(int Start)
+		private int GetPreviousIndex()
 		{
 			if (this.process is null)
 			{
 				return -1;
 			}
+
+			int Start = this.currentPageIndex-1;
 
 			while (Start >= 0 && !this.Pages[Start].IsVisible(this.process.Values))
 			{
@@ -399,7 +401,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.UpdateReference();
 			await this.SaveReferenceToStorageAsync();
 
-			int NextIndex = this.GetNextIndex(this.currentPageIndex + 1);
+			int NextIndex = this.GetNextIndex();
 			if (NextIndex < this.Pages.Count)
 			{
 				this.currentPageIndex = NextIndex;
@@ -447,7 +449,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			await this.SaveReferenceToStorageAsync();
 			await this.ProcessData();
 
-			this.currentPageIndex = this.GetPreviousIndex(this.Pages.Count-1);
+			this.currentPageIndex = this.Pages.Count;
+			this.currentPageIndex = this.GetPreviousIndex();
 			this.CurrentPagePosition = this.currentPageIndex;
 			this.SetCurrentPage(this.currentPageIndex);
 
@@ -472,7 +475,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.UpdateReference();
 			await this.SaveReferenceToStorageAsync();
 
-			int PreviousIndex = this.GetPreviousIndex(this.currentPageIndex - 1);
+			int PreviousIndex = this.GetPreviousIndex();
 			if (PreviousIndex >= 0)
 			{
 				this.ScrollUp();
