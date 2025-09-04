@@ -447,6 +447,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			await this.SaveReferenceToStorageAsync();
 			await this.ProcessData();
 
+			this.currentPageIndex = this.GetPreviousIndex(this.Pages.Count-1);
+			this.CurrentPagePosition = this.currentPageIndex;
+			this.SetCurrentPage(this.currentPageIndex);
+
 			this.ShouldViewSummary = true;
 			this.ShouldReturnToSummary = false;
 
