@@ -187,10 +187,19 @@
 					   FontFamily="SpaceGroteskBold" />
 
 					<!-- Start new process -->
-				<VerticalStackLayout BindableLayout.ItemsSource="{Binding AvailableApplications}">
+				<VerticalStackLayout BindableLayout.ItemsSource="{Binding Applications}">
+					<BindableLayout.EmptyView>
+						<Label Text="No available applications"
+							   TextColor="{DynamicResource ContentSecondaryWL}"
+							   FontSize="14"
+							   FontFamily="SpaceGroteskRegular" />
+					</BindableLayout.EmptyView>
 					<BindableLayout.ItemTemplate>
 						<DataTemplate x:DataType="service:KycReference">
-							<Label Text="{Binding Name}" />
+							<controls:TemplatedButton Margin="0"
+													  Command="{Binding Path=CreateNewApplicationCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplicationsViewModel}}}">
+								<Label Text="{Binding FriendlyName}" />
+							</controls:TemplatedButton>
 						</DataTemplate>
 					</BindableLayout.ItemTemplate>
 				</VerticalStackLayout>
