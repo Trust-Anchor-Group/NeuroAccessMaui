@@ -54,7 +54,6 @@ namespace NeuroAccessMaui.Services.Cache
 				new FilterFieldEqualTo("Url", Key));
 
 			if (Entry is null ||
-				DateTime.UtcNow >= Entry.Expires ||
 				!File.Exists(Entry.LocalFileName))
 			{
 				if (Entry is not null)
@@ -67,7 +66,38 @@ namespace NeuroAccessMaui.Services.Cache
 				return (null, string.Empty);
 			}
 
+			// Only return non-expired entries from this method.
+			if (DateTime.UtcNow >= Entry.Expires)
+				return (null, string.Empty);
+
 			return (File.ReadAllBytes(Entry.LocalFileName), Entry.ContentType);
+		}
+
+		/// <summary>
+		/// Tries to get a cached entry and indicates if it is past its expiry.
+		/// Returns bytes for both fresh and expired items (if file exists). Expired items are not deleted here.
+		/// </summary>
+		public async Task<(byte[]? Data, string ContentType, bool IsExpired)> TryGetWithExpiry(string Key)
+		{
+			if (string.IsNullOrEmpty(Key))
+				return (null, string.Empty, false);
+
+			CacheEntry? Entry = await Database.FindFirstDeleteRest<CacheEntry>(
+				new FilterFieldEqualTo("Url", Key));
+
+			if (Entry is null)
+				return (null, string.Empty, false);
+
+			if (!File.Exists(Entry.LocalFileName))
+			{
+				try { await Database.Delete(Entry); }
+				catch { }
+				await Database.Provider.Flush();
+				return (null, string.Empty, false);
+			}
+
+			bool expired = DateTime.UtcNow >= Entry.Expires && Entry.Expires != DateTime.MaxValue;
+			return (File.ReadAllBytes(Entry.LocalFileName), Entry.ContentType, expired);
 		}
 
 		public async Task AddOrUpdate(string key, string parentId, bool permanent,
