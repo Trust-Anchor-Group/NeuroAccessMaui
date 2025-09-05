@@ -510,6 +510,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			this.UpdateReference();
 			await this.SaveReferenceToStorageAsync();
+
+			//ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)])
+			if (!await AreYouSure("Are you sure you would like to leave the Identity Application process?"))
+				return;
+
 			await base.GoBack();
 		}
 

@@ -2990,4 +2990,7 @@
   <data name="Kyc_Return" xml:space="preserve">
     <value>Voltar ao resumo</value>
   </data>
+  <data name="Kyc_Exit" xml:space="preserve">
+    <value>Tem certeza de que deseja sair do processo de solicitação de identidade?</value>
+  </data>
 </root>
