@@ -424,7 +424,7 @@
 														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
 															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
 															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
-															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}"/>
+															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
 														</Grid>
 													</controls:TemplatedButton>
 												</DataTemplate>
@@ -444,7 +444,7 @@
 														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
 															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
 															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
-															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}"/>
+															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
 														</Grid>
 													</controls:TemplatedButton>
 												</DataTemplate>
@@ -467,7 +467,7 @@
 																	<controls:SvgView Source="gallery.svg" HeightRequest="24"/>
 																</Border>
 																<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" VerticalOptions="Center" Margin="16,0,16,0"/>
-																<controls:SvgView Grid.Column="2" Grid.RowSpan="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}"/>
+																<controls:SvgView Grid.Column="2" Grid.RowSpan="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
 															</Grid>
 														</Border>
 													</controls:TemplatedButton>

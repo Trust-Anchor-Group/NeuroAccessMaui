@@ -179,7 +179,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				Page.UpdateVisibilities(this.process.Values);
 			}
 
-			this.currentPageIndex = 0;
+			this.currentPageIndex = -1;
 			this.currentPageIndex = this.GetNextIndex();
 			this.CurrentPagePosition = this.currentPageIndex;
 			this.SetCurrentPage(this.currentPageIndex);
