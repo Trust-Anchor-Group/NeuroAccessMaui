@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using NeuroAccessMaui.Services.Cache.InternetCache;
 using NeuroAccessMaui.Services.Resilience;
 using NeuroAccessMaui.UI.MVVM.Policies;
@@ -26,9 +27,9 @@ namespace NeuroAccessMaui.Services.Fetch
             if (Data is not null)
                 return new ResourceResult<byte[]>(Data, ResourceOrigin.Disk, ContentType);
 
-            IAsyncPolicy timeout = Policies.Timeout(Constants.Timeouts.DownloadFile);
+            IAsyncPolicy timeout = Policies.Timeout(options.Timeout ?? Constants.Timeouts.DownloadFile);
             IAsyncPolicy retry = Policies.Retry(
-                maxAttempts: 3,
+                maxAttempts: options.RetryAttempts ?? 3,
                 delayProvider: (attempt, ex) => JitterBackoff.DecorrelatedJitter(TimeSpan.FromMilliseconds(200), attempt),
                 shouldRetry: Transient.IsTransient);
 
@@ -39,6 +40,41 @@ namespace NeuroAccessMaui.Services.Fetch
                 Data = Bytes;
                 ContentType = Type;
             }, ct, timeout, retry).ConfigureAwait(false);
+
+            return new ResourceResult<byte[]>(Data, ResourceOrigin.Network, ContentType);
+        }
+
+        public async Task<ResourceResult<byte[]>> GetBytesAsync(
+            Uri uri,
+            ResourceFetchOptions options,
+            IEnumerable<IAsyncPolicy>? policies,
+            CancellationToken ct = default)
+        {
+            (byte[]? Data, string ContentType) = await this.cache.TryGet(uri).ConfigureAwait(false);
+            if (Data is not null)
+                return new ResourceResult<byte[]>(Data, ResourceOrigin.Disk, ContentType);
+
+            IEnumerable<IAsyncPolicy> toApply;
+            if (policies is null)
+            {
+                IAsyncPolicy timeout = Policies.Timeout(options.Timeout ?? Constants.Timeouts.DownloadFile);
+                IAsyncPolicy retry = Policies.Retry(
+                    maxAttempts: options.RetryAttempts ?? 3,
+                    delayProvider: (attempt, ex) => JitterBackoff.DecorrelatedJitter(TimeSpan.FromMilliseconds(200), attempt),
+                    shouldRetry: Transient.IsTransient);
+                toApply = new[] { timeout, retry };
+            }
+            else
+            {
+                toApply = policies;
+            }
+
+            await Services.Resilience.PolicyRunner.RunAsync(async cts =>
+            {
+                (byte[]? Bytes, string Type) = await this.cache.GetOrFetch(uri, options.ParentId, options.Permanent).ConfigureAwait(false);
+                Data = Bytes;
+                ContentType = Type;
+            }, ct, toApply is IAsyncPolicy[] Arr ? Arr : System.Linq.Enumerable.ToArray(toApply)).ConfigureAwait(false);
 
             return new ResourceResult<byte[]>(Data, ResourceOrigin.Network, ContentType);
         }
