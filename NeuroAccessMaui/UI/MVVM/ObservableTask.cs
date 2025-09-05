@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.Services; // For MainThread
+using NeuroAccessMaui.Services; // For LogService
+using NeuroAccessMaui.Services.Resilience.Dispatch;
 using System.Threading.Tasks;
 
 namespace NeuroAccessMaui.UI.MVVM
@@ -77,6 +78,11 @@ namespace NeuroAccessMaui.UI.MVVM
 		public Task? CurrentWatcher { get; private set; }
 
 		/// <summary>
+		/// Dispatcher to marshal state and property updates. Defaults to UI dispatcher.
+		/// </summary>
+		public IDispatcherAdapter Dispatcher { get; set; } = UiDispatcher.Instance;
+
+		/// <summary>
 		/// Gets the current state.
 		/// </summary>
 		public ObservableTaskStatus State { get; private set; }
@@ -120,8 +126,8 @@ namespace NeuroAccessMaui.UI.MVVM
 				if (!EqualityComparer<TProgress>.Default.Equals(this.progress, value))
 				{
 					this.progress = value;
-					// Always update on the UI thread.
-					MainThread.BeginInvokeOnMainThread(() => this.OnPropertyChanged(nameof(this.Progress)));
+					// Marshal via dispatcher.
+				this.Dispatcher.Post(() => this.OnPropertyChanged(nameof(this.Progress)));
 				}
 			}
 		}
@@ -191,7 +197,7 @@ namespace NeuroAccessMaui.UI.MVVM
 					{
 						if (ThisGeneration == this.currentGeneration)
 						{
-							MainThread.BeginInvokeOnMainThread(() => this.Progress = value);
+							this.Dispatcher.Post(() => this.Progress = value);
 						}
 					});
 
@@ -257,8 +263,8 @@ namespace NeuroAccessMaui.UI.MVVM
 			}
 			finally
 			{
-				// Marshal back to UI thread for state updates.
-				MainThread.BeginInvokeOnMainThread(() =>
+				// Marshal via dispatcher for state updates.
+				this.Dispatcher.Post(() =>
 				{
 					lock (this.syncObject)
 					{
@@ -301,7 +307,7 @@ namespace NeuroAccessMaui.UI.MVVM
 		/// </summary>
 		private void NotifyAll()
 		{
-			MainThread.BeginInvokeOnMainThread(() =>
+			this.Dispatcher.Post(() =>
 			{
 				this.OnPropertyChanged(nameof(this.State));
 				this.OnPropertyChanged(nameof(this.IsPending));

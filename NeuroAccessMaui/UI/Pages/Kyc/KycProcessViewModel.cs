@@ -330,6 +330,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 			this.kycReference!.Fields = [.. this.process.Values.Select(p => new KycFieldValue(p.Key, p.Value))];
+			this.kycReference.Progress = this.Progress;
+			this.kycReference.UpdatedUtc = DateTime.UtcNow;
 		}
 
 		private async Task SaveReferenceToStorageAsync()
@@ -425,6 +427,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.ShouldViewSummary = true;
 
 					this.OnPropertyChanged(nameof(this.Progress));
+
+					// Persist 100% progress when entering summary
+					this.UpdateReference();
+					await this.SaveReferenceToStorageAsync();
 
 					this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 				}

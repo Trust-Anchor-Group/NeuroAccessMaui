@@ -19,6 +19,7 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
+using NeuroAccessMaui.Services.Cache.Invalidation;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -617,6 +618,47 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 				ServiceRef.Localizer[nameof(AppResources.CacheCleared)],
 				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+		}
+
+		[RelayCommand]
+		private async Task ClearBrandingAndKycCacheAsync()
+		{
+			try
+			{
+				string? domain = ServiceRef.TagProfile.Domain;
+				string? pubSub = ServiceRef.TagProfile.PubSubJid;
+				if (string.IsNullOrWhiteSpace(domain) && string.IsNullOrWhiteSpace(pubSub))
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.PubSubServiceNotFound)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					return;
+				}
+
+				int removed = 0;
+				ICacheInvalidationService invalidation = Waher.Runtime.Inventory.Types.InstantiateDefault<ICacheInvalidationService>(false);
+				// Invalidate KYC entries grouped by domain
+				if (!string.IsNullOrWhiteSpace(domain))
+					removed += await invalidation.InvalidateByParentId($"KycProcess:{domain}", scope: "Kyc");
+
+				// Invalidate Internet cache entries grouped by PubSub JID (branding descriptors)
+				if (!string.IsNullOrWhiteSpace(pubSub))
+					removed += await invalidation.InvalidateByParentId(pubSub, scope: "Branding");
+
+				// Clear ThemeService’s local branding descriptor cache for current domain
+				removed += await ServiceRef.ThemeService.ClearBrandingCacheForCurrentDomain();
+
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.CacheCleared)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
 		}
 		#endregion
 

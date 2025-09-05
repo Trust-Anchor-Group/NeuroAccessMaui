@@ -64,6 +64,43 @@ namespace NeuroAccessMaui.UI.MVVM.Policies
 			}
 		}
 
+		public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken ct)
+		{
+			ObjectDisposedException.ThrowIf(this.disposed, nameof(BulkheadPolicy));
+			bool UsedQueueSlot = false;
+
+			if (this.gate.CurrentCount == 0 && this.maxQueue == 0)
+			{
+				this.onRejected?.Invoke();
+				throw new InvalidOperationException("Bulkhead is full");
+			}
+
+			if (this.gate.CurrentCount == 0 && this.maxQueue > 0)
+			{
+				int q = Interlocked.Increment(ref this.queued);
+				if (q > this.maxQueue)
+				{
+					Interlocked.Decrement(ref this.queued);
+					this.onRejected?.Invoke();
+					throw new InvalidOperationException("Bulkhead queue is full");
+				}
+				UsedQueueSlot = true;
+			}
+
+			await this.gate.WaitAsync(ct).ConfigureAwait(false);
+			if (UsedQueueSlot)
+				Interlocked.Decrement(ref this.queued);
+
+			try
+			{
+				return await action(ct).ConfigureAwait(false);
+			}
+			finally
+			{
+				this.gate.Release();
+			}
+		}
+
 		public void Dispose()
 		{
 			if (this.disposed)

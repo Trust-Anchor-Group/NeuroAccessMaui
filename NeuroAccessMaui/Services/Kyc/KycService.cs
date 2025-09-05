@@ -6,6 +6,7 @@ using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 using Waher.Runtime.Inventory;
 using Waher.Persistence;
+using NeuroAccessMaui.Services.Fetch;
 
 namespace NeuroAccessMaui.Services.Kyc
 {
@@ -94,20 +95,14 @@ namespace NeuroAccessMaui.Services.Kyc
 				if (string.IsNullOrWhiteSpace(Domain))
 					return null;
 
-				// Heuristic endpoint, similar to ThemeService PubSub scheme
-				Uri Uri = new($"https://{Domain}/PubSub/NeuroAccessKyc/KycProcess");
-				HttpStatusCode Probe = await ProbeUriAsync(Uri);
-				if (Probe != HttpStatusCode.OK)
+				Uri uri = new($"https://{Domain}/PubSub/NeuroAccessKyc/KycProcess");
+				IResourceFetcher fetcher = new ResourceFetcher();
+				ResourceFetchOptions opts = new() { ParentId = $"KycProcess:{Domain}", Permanent = false };
+				ResourceResult<byte[]> result = await fetcher.GetBytesAsync(uri, opts).ConfigureAwait(false);
+				byte[]? bytes = result.Value;
+				if (bytes is null || bytes.Length == 0)
 					return null;
-
-				using HttpRequestMessage Req = new(HttpMethod.Get, Uri);
-				using HttpResponseMessage Resp = await httpClient.SendAsync(Req);
-				if (!Resp.IsSuccessStatusCode)
-					return null;
-				byte[] Bytes = await Resp.Content.ReadAsByteArrayAsync();
-				if (Bytes is null || Bytes.Length == 0)
-					return null;
-				return Encoding.UTF8.GetString(Bytes);
+				return Encoding.UTF8.GetString(bytes);
 			}
 			catch (Exception Ex)
 			{
@@ -116,18 +111,5 @@ namespace NeuroAccessMaui.Services.Kyc
 			}
 		}
 
-		private static async Task<HttpStatusCode> ProbeUriAsync(Uri Uri)
-		{
-			try
-			{
-				using HttpRequestMessage Req = new(HttpMethod.Head, Uri);
-				using HttpResponseMessage Resp = await httpClient.SendAsync(Req);
-				return Resp.StatusCode;
-			}
-			catch
-			{
-				return 0;
-			}
-		}
 	}
 }

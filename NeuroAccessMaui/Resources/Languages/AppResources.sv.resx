@@ -2993,4 +2993,7 @@
   <data name="Kyc_Exit" xml:space="preserve">
     <value>Är du säker på att du vill lämna identitetsansökningsprocessen?</value>
   </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Framsteg</value>
+  </data>
 </root>

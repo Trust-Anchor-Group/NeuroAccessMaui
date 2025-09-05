@@ -71,6 +71,12 @@ namespace NeuroAccessMaui.Services.Kyc
 		public IdentityState? CreatedIdentityState { get; set; }
 
 		/// <summary>
+		/// Progress of the KYC process (0.0–1.0), persisted for UI display.
+		/// </summary>
+		[DefaultValue(0.0)]
+		public double Progress { get; set; }
+
+		/// <summary>
 		/// Gets a parsed KYC process, populating its fields from the reference.
 		/// </summary>
 		/// <param name="lang">Optional language.</param>

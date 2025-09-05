@@ -2825,6 +2825,12 @@
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Removes temporary data like images and attachments to free up space</value>
   </data>
+  <data name="ClearBrandingAndKycCache" xml:space="preserve">
+    <value>Clear branding &amp; KYC cache</value>
+  </data>
+  <data name="ClearBrandingAndKycCacheDescription" xml:space="preserve">
+    <value>Removes branding and KYC data for the current domain</value>
+  </data>
   <data name="Apps" xml:space="preserve">
     <value>Apps</value>
   </data>
@@ -2992,5 +2998,8 @@
   </data>
   <data name="Kyc_Exit" xml:space="preserve">
     <value>Are you sure you would like to leave the Identity Application process?</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Progress</value>
   </data>
 </root>
