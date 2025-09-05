@@ -434,15 +434,15 @@ namespace NeuroAccessMaui.Services.Theme
 		{
 			try
 			{
-				(byte[]? Cached, _) = await this.cacheManager.TryGet(Key); if (Cached is not null) return Cached;
-				(byte[]? Fetched, _) = await ServiceRef.InternetCacheService.GetOrFetch(Uri, ServiceRef.TagProfile.PubSubJid!, true);
-				if (Fetched is not null)
-					await this.cacheManager.AddOrUpdate(Key, ServiceRef.TagProfile.PubSubJid!, true, Fetched, "application/xml");
-				return Fetched;
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(new Exception($"FetchOrGetCachedAsync failed for {Uri}", Ex));
+                (byte[]? Cached, _) = await this.cacheManager.TryGet(Key); if (Cached is not null) return Cached;
+                (byte[]? Fetched, _) = await ServiceRef.InternetCacheService.GetOrFetch(Uri, ServiceRef.TagProfile.PubSubJid!, false);
+                if (Fetched is not null)
+                    await this.cacheManager.AddOrUpdate(Key, ServiceRef.TagProfile.PubSubJid!, false, Fetched, "application/xml");
+                return Fetched;
+            }
+            catch (Exception Ex)
+            {
+                ServiceRef.LogService.LogException(new Exception($"FetchOrGetCachedAsync failed for {Uri}", Ex));
 				return null;
 			}
 		}
