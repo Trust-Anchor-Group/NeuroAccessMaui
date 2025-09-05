@@ -25,6 +25,14 @@ namespace NeuroAccessMaui.UI.MVVM.Policies
 
 			await action(ct);
 		}
+
+		public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken ct)
+		{
+			if (this.delay > TimeSpan.Zero)
+				await Task.Delay(this.delay, ct);
+
+			return await action(ct);
+		}
 	}
 }
 

@@ -54,6 +54,29 @@ namespace NeuroAccessMaui.UI.MVVM.Policies
 			}
 		}
 
+		public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken ct)
+		{
+			// Gate based on state
+			this.EnsureEntryAllowed();
+
+			try
+			{
+				T result = await action(ct).ConfigureAwait(false);
+				this.OnSuccess();
+				return result;
+			}
+			catch (OperationCanceledException) when (ct.IsCancellationRequested)
+			{
+				// Forward cancellation without changing state
+				throw;
+			}
+			catch
+			{
+				this.OnFailure();
+				throw;
+			}
+		}
+
 		private void EnsureEntryAllowed()
 		{
 			lock (this.sync)

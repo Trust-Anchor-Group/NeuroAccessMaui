@@ -13,10 +13,10 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 	/// Caches arbitrary Internet-fetchable content (images, JSON, blobs, etc.) locally.
 	/// </summary>
 	[Singleton]
-	internal sealed class InternetCacheService : LoadableService, IInternetCacheService
-	{
-		private static readonly TimeSpan defaultExpiry = TimeSpan.FromHours(24);
-		private readonly FileCacheManager cacheManager;
+    internal sealed class InternetCacheService : LoadableService, IInternetCacheService
+    {
+        private static readonly TimeSpan defaultExpiry = Constants.Cache.DefaultImageCache; // 7d
+        private readonly FileCacheManager cacheManager;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="InternetCacheService"/> class.
@@ -31,20 +31,18 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 		{
 			if (this.BeginLoad(IsResuming, CancellationToken))
 			{
-				try
-				{
-					if (!IsResuming)
-						await this.cacheManager.EvictOldEntries();
-
-					this.EndLoad(true);
-				}
-				catch (Exception)
-				{
-					this.EndLoad(false);
-					throw;
-				}
-			}
-		}
+                try
+                {
+                    // Soft-expiry semantics: don't evict expired items on load; keep them for offline fallback.
+                    this.EndLoad(true);
+                }
+                catch (Exception)
+                {
+                    this.EndLoad(false);
+                    throw;
+                }
+            }
+        }
 
 		/// <inheritdoc/>
 		public Task<(byte[]? Data, string ContentType)> TryGet(Uri Uri)
@@ -53,27 +51,31 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 		}
 
 		/// <inheritdoc/>
-		public async Task<(byte[]? Data, string ContentType)> GetOrFetch(Uri Uri, string ParentId, bool Permanent)
-		{
-			(byte[]? Data, string ContentType) = await this.TryGet(Uri);
-			if (Data is not null)
-				return (Data, ContentType);
+        public async Task<(byte[]? Data, string ContentType)> GetOrFetch(Uri Uri, string ParentId, bool Permanent)
+        {
+            // Check cache, allowing expired entries for potential fallback if fetch fails.
+            (byte[]? Cached, string CachedType, bool IsExpired) = await this.cacheManager.TryGetWithExpiry(Uri.AbsoluteUri);
+            if (Cached is not null && !IsExpired)
+                return (Cached, CachedType);
 
-			ContentResponse Response = await InternetContent.GetAsync(
-				Uri,
-				null,                               // Certificate
-				App.ValidateCertificateCallback);
-			if(Response.HasError)
-				return (null, string.Empty);
-			if (Response.Encoded is null || string.IsNullOrEmpty(Response.ContentType))
-				return (null, string.Empty);
+            ContentResponse Response = await InternetContent.GetAsync(
+                Uri,
+                null,                               // Certificate
+                App.ValidateCertificateCallback);
+            if(Response.HasError || Response.Encoded is null || string.IsNullOrEmpty(Response.ContentType))
+            {
+                // Network failed or invalid response: if we have stale bytes, serve them.
+                if (Cached is not null)
+                    return (Cached, string.IsNullOrEmpty(CachedType) ? "" : CachedType);
+                return (null, string.Empty);
+            }
 
-			byte[] Bytes = Response.Encoded;
-			string Type = Response.ContentType;
+            byte[] Bytes = Response.Encoded;
+            string Type = Response.ContentType;
 
-			await this.cacheManager.AddOrUpdate(Uri.AbsoluteUri, ParentId, Permanent, Bytes, Type);
-			return (Bytes, Type);
-		}
+            await this.cacheManager.AddOrUpdate(Uri.AbsoluteUri, ParentId, Permanent, Bytes, Type);
+            return (Bytes, Type);
+        }
 
 		/// <inheritdoc/>
 		public Task<bool> Remove(Uri Uri)
@@ -91,6 +93,12 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 		public Task MakePermanent(string ParentId)
 		{
 			return this.cacheManager.MakePermanent(ParentId);
+		}
+
+		/// <inheritdoc/>
+		public Task<int> RemoveByParentId(string ParentId)
+		{
+			return this.cacheManager.RemoveByParentId(ParentId);
 		}
 	}
 }
