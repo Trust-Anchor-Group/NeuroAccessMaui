@@ -464,6 +464,17 @@ namespace NeuroAccessMaui.Services.Theme
 			foreach (ResourceDictionary? D in Merged.Where(D => D.ContainsKey(localFlagKey) || D.ContainsKey(providerFlagKey)).ToList()) Merged.Remove(D);
 		}
 
+		/// <summary>
+		/// Clears locally cached branding descriptors for the current provider domain.
+		/// </summary>
+		public Task<int> ClearBrandingCacheForCurrentDomain()
+		{
+			string? parentId = ServiceRef.TagProfile.PubSubJid;
+			if (string.IsNullOrWhiteSpace(parentId))
+				return Task.FromResult(0);
+			return this.cacheManager.RemoveByParentId(parentId);
+		}
+
 		private void Dispose(bool disposing)
 		{
 			if (!this.disposedValue)
