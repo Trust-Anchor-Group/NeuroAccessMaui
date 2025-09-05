@@ -251,7 +251,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				return;
 			}
-			this.ScrollUp();
 
 			this.currentPageIndex = Index;
 			this.CurrentPagePosition = Index;
@@ -315,6 +314,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 							this.NextButtonText = ServiceRef.Localizer["Kyc_Return"].Value;
 
 							this.SetCurrentPage(this.currentPageIndex);
+
+							this.ScrollUp();
 						}
 						return;
 					}
@@ -407,6 +408,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.currentPageIndex = NextIndex;
 				this.CurrentPagePosition = NextIndex;
 				this.SetCurrentPage(this.currentPageIndex);
+				this.ScrollUp();
 			}
 			else
 			{
@@ -454,6 +456,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.CurrentPagePosition = this.currentPageIndex;
 			this.SetCurrentPage(this.currentPageIndex);
 
+			this.ScrollUp();
 			this.ShouldViewSummary = true;
 			this.ShouldReturnToSummary = false;
 
@@ -493,6 +496,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		public override async Task GoBack()
 		{
+			if (this.ShouldReturnToSummary)
+			{
+				await this.GoToSummaryAsync();
+				return;
+			}
+
 			await this.ExecutePrevious();
 		}
 
