@@ -60,12 +60,12 @@ This plan standardizes how the app fetches items from servers (now: Theme; next:
 
 ## Policies (per resource)
 - Theme
-  - Branding descriptor (V2 preferred, V1 fallback): TTL 6–24h (configurable); ParentId: `Branding:{domain}`.
-  - Image assets: TTL 7d (existing `Constants.Cache.DefaultImageCache`); ParentId: `BrandingAssets:{domain}`.
+  - Branding descriptor (V2 preferred, V1 fallback): TTL 7d; ParentId: `Branding:{domain}`.
+  - Image assets: TTL 7d; ParentId: `BrandingAssets:{domain}`.
   - Invalidation: PubSub update on `NeuroAccessBranding` node -> invalidate descriptor + affected images.
 
 - KYC
-  - KYC process XML: TTL 24h; ParentId: `KycProcess:{domain}`; fallback to embedded test if network fails.
+  - KYC process XML: TTL 7d; ParentId: `KycProcess:{domain}`; fallback to embedded test if network fails.
   - Invalidation: PubSub update on `NeuroAccessKyc` node -> invalidate `KycProcess:{domain}` and notify.
 
 ## Data Flow
@@ -80,7 +80,7 @@ This plan standardizes how the app fetches items from servers (now: Theme; next:
 - Prefer conditional GETs over HEAD+GET to minimize round-trips.
 - Store and reuse ETag/Last-Modified when server supports it; fall back to TTL only.
 - Exponential backoff on transient errors (e.g., 0s, 2s, 5s) as in ThemeService.
-- Optional stale-while-revalidate: serve stale cache if network fails, refresh in background (future extension: requires soft-expiry vs hard-expiry).
+- Stale-if-offline (required): treat TTL as a fetch trigger, not a delete. If an item is past TTL and network fetch fails or device is offline, keep serving the last cached bytes. Refresh expiry upon next successful fetch. (Implement via soft-expiry metadata; evict via separate hard-expiry/cleanup.)
 - Apply resilience policies consistently via `PolicyRunner`:
   - `Timeout`: use `Constants.Timeouts.DownloadFile` for downloads.
   - `Retry`: jittered backoff (e.g., decorrelated jitter) for transient HTTP and socket errors only.
@@ -140,18 +140,18 @@ public interface ICacheInvalidationService
 4) Introduce `IResourceFetcher` with in-memory + disk + network logic, built on `PolicyRunner` (timeout/retry/circuit/bulkhead).
 5) Add `ICacheInvalidationService` and wire to `WeakReferenceMessenger`.
 6) ThemeService: refactor to use `IResourceFetcher`; switch to parent-based keys; enable conditional GET where supported.
-7) KycService: switch to `IResourceFetcher` for process XML with 24h TTL and fallback; group by `KycProcess:{domain}`.
+7) KycService: switch to `IResourceFetcher` for process XML with 7d TTL and fallback; group by `KycProcess:{domain}`.
 8) XmppService: add PubSub handlers to call `ICacheInvalidationService` on branding/KYC updates.
 9) Add lightweight tests for cache TTL, invalidation, `PolicyRunner` behaviors (retry-on-transient, breaker states), and conditional GET; add manual QA checklist.
 
 ## Suggested TTLs
-- Branding descriptor: 6–24h (configurable, default 12h).
-- Branding images: 7d (existing constant).
-- KYC process XML: 24h.
+- Branding descriptor: 7d.
+- Branding images: 7d.
+- KYC process XML: 7d.
 
 ## Edge Cases and Resilience
 - Domain change or sign-out: invalidate `Branding:*` and `KycProcess:*` for previous domain.
-- Offline: serve cached entries; if expired and no network, optionally use last known good (future soft-expiry).
+- Offline: serve cached entries even if past TTL; do not delete on read or startup. TTL should only trigger re-fetch when online. Use hard-expiry/grace cleanup separately to cap disk usage.
 - Partial updates: when PubSub indicates specific item IDs, compute affected keys and invalidate selectively.
 - Backoff on transient errors; log and fall back to last applied theme/KYC process.
 
@@ -175,6 +175,8 @@ public interface ICacheInvalidationService
 - [ ] Define `IResourceFetcher` and default implementation leveraging `PolicyRunner`.
 - [ ] Implement `ICacheInvalidationService` + wire to `XmppService` PubSub events.
 - [ ] Refactor ThemeService to use fetcher and parent grouping.
-- [ ] Update KycService to use fetcher; set TTL 24h + fallback.
+- [ ] Update KycService to use fetcher; set TTL 7d + fallback.
+- [ ] Change `FileCacheManager` to soft-expiry: do not delete on `TryGet` when past TTL; return stale bytes and mark as expired. Add a background/explicit cleanup that evicts only when older than a hard limit (e.g., 30–60d) or by LRU/size.
+- [ ] Update `InternetCacheService` default expiry to 7d and integrate soft-expiry semantics; refresh expiry on 304/200 responses.
 - [ ] Add dev menu action: clear branding + KYC caches for current domain.
 - [ ] Optional: ETag/Last-Modified support in cache; conditional GETs.
