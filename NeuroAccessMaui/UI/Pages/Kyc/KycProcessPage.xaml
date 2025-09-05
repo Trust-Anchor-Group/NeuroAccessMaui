@@ -11,7 +11,8 @@
 					  xmlns:fields="clr-namespace:NeuroAccessMaui.Services.Kyc.ViewModels"
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
 					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-					  x:DataType="viewmodel:KycProcessViewModel">
+					  x:DataType="viewmodel:KycProcessViewModel"
+					  xmlns:IDSF="clr-namespace:NeuroAccessMaui.Services.Identity">
 
 	<ContentPage.Resources>
 		<ResourceDictionary>
@@ -117,6 +118,10 @@
 											  Required="{Binding Required}"
 											  IsValid="{Binding IsValid}"
 											  ValidationText="{Binding ValidationText}">
+
+						<controls:CompositePicker.RightView>
+							<Path Grid.Row="1" Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Fill="{DynamicResource InputFieldsContentSecondary}" VerticalOptions="Center"/>
+						</controls:CompositePicker.RightView>
 						<controls:CompositePicker.ItemDisplayBinding>
 							<Binding Path="Label.Text" />
 						</controls:CompositePicker.ItemDisplayBinding>
@@ -281,16 +286,24 @@
 							</Trigger>
 						</Border.Triggers>
 					</Border>
-					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-										 LabelData="Upload"
-										 Command="{Binding PickPhotoCommand}"
-										 Grid.Row="1"
-										 Grid.Column="0" />
-					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+					<controls:ConditionView Condition="{Binding AllowUpload}" Grid.Row="1" Grid.ColumnSpan="2">
+						<controls:ConditionView.True>
+							<Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+								<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+													 LabelData="Upload"
+													 Command="{Binding PickPhotoCommand}"/>
+								<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+													 LabelData="Camera"
+													 Command="{Binding TakePhotoCommand}"
+													 Grid.Column="1"/>
+							</Grid>
+						</controls:ConditionView.True>
+						<controls:ConditionView.False>
+							<controls:TextButton Style="{DynamicResource TransparentTextButton}"
 										 LabelData="Camera"
-										 Command="{Binding TakePhotoCommand}"
-										 Grid.Row="1"
-										 Grid.Column="1" />
+										 Command="{Binding TakePhotoCommand}"/>
+						</controls:ConditionView.False>
+					</controls:ConditionView>
 
 					<Label Grid.Row="2" Grid.ColumnSpan="2" HorizontalOptions="Center" Style="{DynamicResource RegularCompositeInputViewValidationLabel}" Text="{Binding ValidationText}" TextColor="Red" IsVisible="{Binding IsValid, Converter={mct:InvertedBoolConverter}}"/>
 				</Grid>
@@ -365,89 +378,104 @@
 							   HeightRequest="24" />
 		</Grid>
 
-		<ScrollView Grid.Row="1"
+		<ScrollView x:Name="FormScrollView"
+					Grid.Row="1"
 					Padding="{DynamicResource SmallMargins}"
 					VerticalOptions="Center">
 			<controls:ConditionView Condition="{Binding ShouldViewSummary}">
-				
 				<controls:ConditionView.True>
-					<VerticalStackLayout>
-						<Label Style="{DynamicResource PageTitleLabel}" Text="Application summary" Margin="{DynamicResource MediumLeftRightMargins}"/>
+						<VerticalStackLayout>
+							<Label Style="{DynamicResource PageTitleLabel}" Text="Application summary" Margin="{DynamicResource MediumLeftRightMargins}"/>
 
-						<!-- TODO: Replace with infobubble control -->
-						<Border Grid.Row="0"
-								BackgroundColor="{DynamicResource TnPInfobgWL}"
-								Padding="{DynamicResource MediumMargins}"
-								Margin="{DynamicResource SmallMargins}"
-								StrokeShape="RoundRectangle 16,16,0,16">
-							<Border.Shadow>
-								<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
-							</Border.Shadow>
-							<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-								  ColumnDefinitions="auto, *">
-								<Path
-									Grid.Column="0"
-									Data="{x:Static ui:Geometries.InfoCirclePath}"
-									Fill="{DynamicResource TnPInfoContentWL}"/>
-								<Label
-									Grid.Column="1"
-									Text="Before finalizing, please read through and ensure everything is correct."
-									Style="{DynamicResource InfoLabel}"
-									TextColor="{DynamicResource TnPInfoContentWL}"/>
-							</Grid>
-						</Border>
-						<!-- Personal Details -->
+							<!-- TODO: Replace with infobubble control -->
+							<Border Grid.Row="0"
+									BackgroundColor="{DynamicResource TnPInfobgWL}"
+									Padding="{DynamicResource MediumMargins}"
+									Margin="{DynamicResource SmallMargins}"
+									StrokeShape="RoundRectangle 16,16,0,16">
+								<Border.Shadow>
+									<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
+								</Border.Shadow>
+								<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+									  ColumnDefinitions="auto, *">
+									<Path
+										Grid.Column="0"
+										Data="{x:Static ui:Geometries.InfoCirclePath}"
+										Fill="{DynamicResource TnPInfoContentWL}"/>
+									<Label
+										Grid.Column="1"
+										Text="Before finalizing, please read through and ensure everything is correct."
+										Style="{DynamicResource InfoLabel}"
+										TextColor="{DynamicResource TnPInfoContentWL}"/>
+								</Grid>
+							</Border>
 						<Border Style="{DynamicResource BorderSet}">
-							<VerticalStackLayout Spacing="8">
-								<Label Text="Personal Details" Style="{DynamicResource FieldTitleLabel}" />
-								<VerticalStackLayout BindableLayout.ItemsSource="{Binding PersonalInformationSummary}" Spacing="{DynamicResource SmallSpacing}">
-									<BindableLayout.ItemTemplate>
-										<DataTemplate x:DataType="viewmodel:KVP">
-											<VerticalStackLayout Spacing="0">
-												<Label Text="{Binding Key}" Style="{DynamicResource FieldKeyLabel}" />
-												<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" />
-											</VerticalStackLayout>
-										</DataTemplate>
-									</BindableLayout.ItemTemplate>
-								</VerticalStackLayout>
-							</VerticalStackLayout>
-						</Border>
+							<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+								<Label Style="{DynamicResource FieldTitleLabel}" Text="Application Information"/>
 
-						<!-- Address Details -->
-						<Border Style="{DynamicResource BorderSet}">
-							<VerticalStackLayout Spacing="8">
-								<Label Text="Address Details" Style="{DynamicResource FieldTitleLabel}" />
-								<VerticalStackLayout BindableLayout.ItemsSource="{Binding AddressInformationSummary}" Spacing="{DynamicResource SmallSpacing}">
-									<BindableLayout.ItemTemplate>
-										<DataTemplate x:DataType="viewmodel:KVP">
-											<VerticalStackLayout Spacing="0">
-												<Label Text="{Binding Key}" Style="{DynamicResource FieldKeyLabel}" />
-												<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" />
-											</VerticalStackLayout>
-										</DataTemplate>
-									</BindableLayout.ItemTemplate>
-								</VerticalStackLayout>
-							</VerticalStackLayout>
-						</Border>
+								<!-- Personal Details -->
+								<Border Style="{DynamicResource BorderSubSet}">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
+										<Label Text="Personal Details" Style="{DynamicResource FieldTitleLabel}" />
+										<VerticalStackLayout BindableLayout.ItemsSource="{Binding PersonalInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
+											<BindableLayout.ItemTemplate>
+												<DataTemplate x:DataType="IDSF:DisplayQuad">
+													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
+															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+														</Grid>
+													</controls:TemplatedButton>
+												</DataTemplate>
+											</BindableLayout.ItemTemplate>
+										</VerticalStackLayout>
+									</VerticalStackLayout>
+								</Border>
 
-						<!-- Attachments -->
-						<Border Style="{DynamicResource BorderSet}">
-							<VerticalStackLayout Spacing="8">
-								<Label Text="Attachments" Style="{DynamicResource FieldTitleLabel}" />
-								<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}" Spacing="{DynamicResource SmallSpacing}">
-									<BindableLayout.ItemTemplate>
-										<DataTemplate x:DataType="viewmodel:KVP">
-											<Border Style="{DynamicResource BorderSubSet}">
-												<Grid ColumnDefinitions="auto, *" ColumnSpacing="{DynamicResource SmallSpacing}">
-													<Border Style="{DynamicResource FileIconBorder}">
-														<controls:SvgView Source="gallery.svg" HeightRequest="24"/>
-													</Border>
-													<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" HorizontalOptions="Center" VerticalOptions="Center"/>
-												</Grid>
-											</Border>
-										</DataTemplate>
-									</BindableLayout.ItemTemplate>
-								</VerticalStackLayout>
+								<!-- Address Details -->
+								<Border Style="{DynamicResource BorderSubSet}">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
+										<Label Text="Address Details" Style="{DynamicResource FieldTitleLabel}" />
+										<VerticalStackLayout BindableLayout.ItemsSource="{Binding AddressInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
+											<BindableLayout.ItemTemplate>
+												<DataTemplate x:DataType="IDSF:DisplayQuad">
+													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
+															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+														</Grid>
+													</controls:TemplatedButton>
+												</DataTemplate>
+											</BindableLayout.ItemTemplate>
+										</VerticalStackLayout>
+									</VerticalStackLayout>
+								</Border>
+
+								<!-- Attachments -->
+								<Border Style="{DynamicResource BorderSubSet}">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
+										<Label Text="Attachments" Style="{DynamicResource FieldTitleLabel}" />
+										<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
+											<BindableLayout.ItemTemplate>
+												<DataTemplate x:DataType="IDSF:DisplayQuad">
+													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+														<Border Style="{DynamicResource BorderSet}" Margin="0">
+															<Grid ColumnDefinitions="auto, *, auto" ColumnSpacing="{DynamicResource SmallSpacing}">
+																<Border Style="{DynamicResource FileIconBorder}">
+																	<controls:SvgView Source="gallery.svg" HeightRequest="24"/>
+																</Border>
+																<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" VerticalOptions="Center" Margin="16,0,16,0"/>
+																<controls:SvgView Grid.Column="2" Grid.RowSpan="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+															</Grid>
+														</Border>
+													</controls:TemplatedButton>
+												</DataTemplate>
+											</BindableLayout.ItemTemplate>
+										</VerticalStackLayout>
+									</VerticalStackLayout>
+								</Border>
 							</VerticalStackLayout>
 						</Border>
 					</VerticalStackLayout>
@@ -512,21 +540,31 @@
 						   TextColor="{DynamicResource TnPAccent2ContentWL}"/>
 				</Grid>
 				<controls:ProgressBar Progress="{Binding Progress}"
-									  HeightRequest="20"
-									  CornerRadius="40"
+									  HeightRequest="16"
+									  CornerRadius="32"
 									  TrackBrush="{DynamicResource TnPAccent2bgWL}"
 									  BarBrush="{DynamicResource TnPAccent2FigureWL}"
 									  Margin="{DynamicResource SmallBottomMargins}">
 				</controls:ProgressBar>
-				<Grid ColumnDefinitions="*, *" ColumnSpacing="{DynamicResource SmallSpacing}">
-					<controls:TextButton LabelData="Back"
-										 Style="{DynamicResource SecondaryButton}"
-										 Command="{Binding GoBackCommand}"/>
-					<controls:TextButton LabelData="{Binding NextButtonText}"
-										 Style="{DynamicResource FilledTextButton}"
-										 Command="{Binding NextCommand}"
-										 Grid.Column="1"/>
-				</Grid>
+
+				<controls:ConditionView Condition="{Binding ShouldReturnToSummary}">
+					<controls:ConditionView.True>
+						<controls:TextButton LabelData="{Binding NextButtonText}"
+											 Style="{DynamicResource FilledTextButton}"
+											 Command="{Binding GoToSummaryCommand}"/>
+					</controls:ConditionView.True>
+					<controls:ConditionView.False>
+						<Grid ColumnDefinitions="*, *" ColumnSpacing="{DynamicResource SmallSpacing}">
+							<controls:TextButton LabelData="Back"
+											 Style="{DynamicResource SecondaryButton}"
+											 Command="{Binding GoBackCommand}"/>
+							<controls:TextButton LabelData="{Binding NextButtonText}"
+											 Style="{DynamicResource FilledTextButton}"
+											 Command="{Binding NextCommand}"
+											 Grid.Column="1"/>
+						</Grid>	
+					</controls:ConditionView.False>
+				</controls:ConditionView>
 			</VerticalStackLayout>
 		</Border>
 	</Grid>

@@ -174,7 +174,7 @@
 				<MinDpi>200</MinDpi>
 			</Metadata>
 		</Field>
-		<Field id="identityCardBack" type="image" mapping="IdCardFront" specialType="identityCardBack" required="true">
+		<Field id="identityCardBack" type="image" mapping="IdCardBack" specialType="identityCardBack" required="true">
 			<Label>
 				<Text lang="en">Identity card back</Text>
 			</Label>
@@ -295,6 +295,7 @@
 				<TargetWidth>800</TargetWidth>
 				<TargetHeight>800</TargetHeight>
 				<MinDpi>150</MinDpi>
+				<AllowUpload>false</AllowUpload>
 			</Metadata>
 		</Field>
 	</Page>

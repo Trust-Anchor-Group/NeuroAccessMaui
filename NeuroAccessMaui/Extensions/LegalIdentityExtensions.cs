@@ -47,6 +47,7 @@ namespace NeuroAccessMaui.Extensions
 			if (!Identity.IsApproved())
 				return false;
 
+			bool HasFullName = false;
 			bool HasFirstName = false;
 			bool HasLastName = false;
 			bool HasPersonalNumber = false;
@@ -66,10 +67,14 @@ namespace NeuroAccessMaui.Extensions
 					case Constants.XmppProperties.PersonalNumber:
 						HasPersonalNumber = true;
 						break;
+
+					case Constants.XmppProperties.FullName:
+						HasFullName = true;
+						break;
 				}
 			}
 
-			if (!(HasFirstName && HasLastName && HasPersonalNumber))
+			if (!(((HasFirstName && HasLastName) || HasFullName) && HasPersonalNumber))
 				return false;
 
 			Attachment? Photo = Identity.Attachments.GetFirstImageAttachment();

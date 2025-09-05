@@ -45,5 +45,31 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 				}
 			}
 		}
+
+		public bool HasMapping(string Mapping)
+		{
+			if (Mapping.Equals("BDATE", StringComparison.OrdinalIgnoreCase))
+			{
+				string[] DateMappings = ["BDAY", "BMONTH", "BYEAR"];
+
+				return DateMappings.Select(f => this.FindMapping(f)).Any(f => f);
+			}
+			else
+			{
+				return this.FindMapping(Mapping);
+			}
+		}
+
+		private bool FindMapping(string Mapping)
+		{
+			foreach (KycPage Page in this.Pages)
+			{
+				if (Page.AllFields.Any(f => f.Mappings.Any(m => m.Key == Mapping)) ||
+					Page.AllSections.Any(s => s.AllFields.Any(f => f.Mappings.Any(m => m.Key == Mapping))))
+					return true;
+			}
+
+			return false;
+		}
 	}
 }

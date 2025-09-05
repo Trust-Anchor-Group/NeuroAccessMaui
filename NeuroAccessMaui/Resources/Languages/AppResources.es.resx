@@ -2984,6 +2984,12 @@
   <data name="Kyc_Next" xml:space="preserve">
     <value>Siguiente</value>
   </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Volver al resumen</value>
+  </data>
+  <data name="Kyc_Exit" xml:space="preserve">
+    <value>¿Está seguro de que desea salir del proceso de solicitud de identidad?</value>
+  </data>
   <data name="Kyc_Apply" xml:space="preserve">
     <value>Enviar</value>
   </data>

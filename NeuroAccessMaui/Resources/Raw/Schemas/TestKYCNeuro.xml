@@ -19,7 +19,7 @@
 					<Text lang="br">CPF</Text>
 				</Label>
 				<Hint>
-					<Text lang="en">The Personal Number on you document</Text>
+					<Text lang="en">The Personal Number on your document</Text>
 					<Text lang="br">CPF</Text>
 				</Hint>
 				<Placeholder>

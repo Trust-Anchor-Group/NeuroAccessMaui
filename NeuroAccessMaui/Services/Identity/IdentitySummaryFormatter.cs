@@ -4,28 +4,37 @@ using System.Globalization;
 using System.Linq;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Kyc.Models;
+using NeuroAccessMaui.Services.Kyc.ViewModels;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.Services.Identity
 {
-    /// <summary>
-    /// Builds friendly, localized summaries for identity-like data from mapped properties and attachments.
-    /// Designed to be used by both View Identity and KYC preview summaries.
-    /// </summary>
-    public static class IdentitySummaryFormatter
+	/// <summary>
+	/// Represents a displayable set of three related strings: a label, a value, and an optional mapping.
+	/// </summary>
+	public sealed class DisplayQuad
+	{
+		public string Label { get; }
+		public string Value { get; }
+		public string? Mapping { get; }
+		public bool FromField { get; }
+
+		public DisplayQuad(string Label, string Value, string? Mapping, bool FromField)
+		{
+			this.Label = Label;
+			this.Value = Value;
+			this.Mapping = Mapping;
+			this.FromField = FromField;
+		}
+	}
+
+	/// <summary>
+	/// Builds friendly, localized summaries for identity-like data from mapped properties and attachments.
+	/// Designed to be used by both View Identity and KYC preview summaries.
+	/// </summary>
+	public static class IdentitySummaryFormatter
     {
-        public sealed class DisplayPair
-        {
-            public string Label { get; }
-            public string Value { get; }
-
-            public DisplayPair(string Label, string Value)
-            {
-                this.Label = Label;
-                this.Value = Value;
-            }
-        }
-
         public sealed class AttachmentInfo
         {
             public string FileName { get; }
@@ -40,9 +49,9 @@ namespace NeuroAccessMaui.Services.Identity
 
         public sealed class KycSummaryResult
         {
-            public List<DisplayPair> Personal { get; } = new List<DisplayPair>();
-            public List<DisplayPair> Address { get; } = new List<DisplayPair>();
-            public List<DisplayPair> Attachments { get; } = new List<DisplayPair>();
+            public List<DisplayQuad> Personal { get; } = new List<DisplayQuad>();
+            public List<DisplayQuad> Address { get; } = new List<DisplayQuad>();
+            public List<DisplayQuad> Attachments { get; } = new List<DisplayQuad>();
         }
 
         public sealed class DisplayField
@@ -73,6 +82,7 @@ namespace NeuroAccessMaui.Services.Identity
         /// Build a KYC-oriented summary (Personal, Address, Attachments) from mapped properties.
         /// </summary>
         public static KycSummaryResult BuildKycSummaryFromProperties(IEnumerable<Property> Properties,
+			KycProcess Process,
             IEnumerable<AttachmentInfo>? Attachments = null,
             CultureInfo? Culture = null)
         {
@@ -145,7 +155,7 @@ namespace NeuroAccessMaui.Services.Identity
                     continue;
 
                 string Label = GetLabel(LabelMap, Key);
-                Result.Personal.Add(new DisplayPair(Label, Val));
+                Result.Personal.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
             }
 
             // Address
@@ -155,7 +165,7 @@ namespace NeuroAccessMaui.Services.Identity
                     continue;
 
                 string Label = GetLabel(LabelMap, Key);
-                Result.Address.Add(new DisplayPair(Label, Val));
+                Result.Address.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
             }
 
             // Attachments
@@ -212,18 +222,18 @@ namespace NeuroAccessMaui.Services.Identity
                             break;
                     }
 
-                    Result.Attachments.Add(new DisplayPair(Att.FileName, Description));
+                    Result.Attachments.Add(new DisplayQuad(Att.FileName, Description, Base, Process.HasMapping(Base)));
                 }
             }
 
             return Result;
         }
 
-        /// <summary>
-        /// Build grouped identity fields (Personal/Organization/Technical/Other) from a LegalIdentity.
-        /// Includes custom/composed fields and metadata fields similar to the ViewIdentityViewModel.
-        /// </summary>
-        public static IdentityGroupsResult BuildIdentityGroups(LegalIdentity Identity, CultureInfo? Culture = null)
+		/// <summary>
+		/// Build grouped identity fields (Personal/Organization/Technical/Other) from a LegalIdentity.
+		/// Includes custom/composed fields and metadata fields similar to the ViewIdentityViewModel.
+		/// </summary>
+		public static IdentityGroupsResult BuildIdentityGroups(LegalIdentity Identity, CultureInfo? Culture = null)
         {
             CultureInfo EffectiveCulture = Culture ?? CultureInfo.CurrentCulture;
 

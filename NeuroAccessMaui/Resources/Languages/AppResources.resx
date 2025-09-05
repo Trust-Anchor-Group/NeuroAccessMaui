@@ -2993,6 +2993,12 @@
   <data name="Kyc_Apply" xml:space="preserve">
     <value>Apply</value>
   </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Return to summary</value>
+  </data>
+  <data name="Kyc_Exit" xml:space="preserve">
+    <value>Are you sure you would like to leave the Identity Application process?</value>
+  </data>
   <data name="Progress" xml:space="preserve">
     <value>Progress</value>
   </data>

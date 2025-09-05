@@ -59,7 +59,10 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 		[ObservableProperty]
         private ImageSource? imageSource;
 
-        [RelayCommand]
+		[ObservableProperty]
+		private bool allowUpload = true;
+
+		[RelayCommand]
         private async Task PickPhoto()
         {
             try

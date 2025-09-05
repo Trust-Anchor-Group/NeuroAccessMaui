@@ -2987,6 +2987,12 @@
   <data name="Kyc_Apply" xml:space="preserve">
     <value>Skicka</value>
   </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Tillbaka till översikten</value>
+  </data>
+  <data name="Kyc_Exit" xml:space="preserve">
+    <value>Är du säker på att du vill lämna identitetsansökningsprocessen?</value>
+  </data>
   <data name="Progress" xml:space="preserve">
     <value>Framsteg</value>
   </data>

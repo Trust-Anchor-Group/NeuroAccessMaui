@@ -6,13 +6,15 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.Services.UI.Photos;
 using SkiaSharp;
+using Waher.Content.Html.Elements;
 using Waher.Networking.XMPP.Contracts;
-using NeuroAccessMaui.Services.Identity;
 
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
@@ -28,6 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private List<Property> mappedValues;
 		private List<LegalIdentityAttachment> attachments;
 		[ObservableProperty] private bool shouldViewSummary = false;
+		[ObservableProperty] private bool shouldReturnToSummary = false;
 
 		[ObservableProperty] private int currentPagePosition;
 		[ObservableProperty] private KycPage? currentPage;
@@ -38,9 +41,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private bool hasSections;
 		[ObservableProperty] private string nextButtonText = "Next";
 
-		[ObservableProperty] private ObservableCollection<KVP> personalInformationSummary;
-		[ObservableProperty] private ObservableCollection<KVP> addressInformationSummary;
-		[ObservableProperty] private ObservableCollection<KVP> attachmentInformationSummary;
+		[ObservableProperty] private ObservableCollection<DisplayQuad> personalInformationSummary;
+		[ObservableProperty] private ObservableCollection<DisplayQuad> addressInformationSummary;
+		[ObservableProperty] private ObservableCollection<DisplayQuad> attachmentInformationSummary;
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
 
@@ -70,6 +73,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				if (this.process is null || this.CurrentPage is null)
 				{
+					this.ProgressPercent = "0%";
 					return 0;
 				}
 
@@ -77,6 +81,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 				if (VisiblePages.Count == 0)
 				{
+					this.ProgressPercent = "0%";
 					return 0;
 				}
 
@@ -110,9 +115,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.navigationArguments = Args;
 			this.NextCommand = new AsyncRelayCommand(this.ExecuteNextAsync, this.CanExecuteNext);
 			this.PreviousCommand = new AsyncRelayCommand(this.ExecutePrevious);
-			this.PersonalInformationSummary = new ObservableCollection<KVP>();
-			this.AddressInformationSummary = new ObservableCollection<KVP>();
-			this.AttachmentInformationSummary = new ObservableCollection<KVP>();
+			this.PersonalInformationSummary = new ObservableCollection<DisplayQuad>();
+			this.AddressInformationSummary = new ObservableCollection<DisplayQuad>();
+			this.AttachmentInformationSummary = new ObservableCollection<DisplayQuad>();
 			this.mappedValues = new List<Property>();
 			this.attachments = new List<LegalIdentityAttachment>();
 		}
@@ -174,7 +179,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				Page.UpdateVisibilities(this.process.Values);
 			}
 
-			this.currentPageIndex = this.GetNextIndex(0);
+			this.currentPageIndex = -1;
+			this.currentPageIndex = this.GetNextIndex();
 			this.CurrentPagePosition = this.currentPageIndex;
 			this.SetCurrentPage(this.currentPageIndex);
 
@@ -258,12 +264,63 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.CurrentPageSections = Page.VisibleSections;
 			this.HasSections = this.CurrentPageSections is not null && this.CurrentPageSections.Count > 0;
 
-			int NextIndex = this.GetNextIndex(Index + 1);
-
 			this.OnPropertyChanged(nameof(this.Progress));
+
+			// Scroll to top of page when changing pages
 
 			// Re-evaluate Next button when page/section content changes.
 			this.NextCommand.NotifyCanExecuteChanged();
+		}
+
+		/// <summary>
+		/// Go to the first page that contains a field with the specified mapping (Should be a unique mapping).
+		/// </summary>
+		[RelayCommand]
+		private void GoToPageWithMapping(string SoughtMapping)
+		{
+			if (this.process is null)
+			{
+				return;
+			}
+
+			string[] Mappings;
+
+			if (SoughtMapping == "BDATE")
+			{
+				Mappings = ["BDAY", "BMONTH", "BYEAR"];
+			}
+			else
+			{
+				Mappings = [SoughtMapping];
+			}
+
+			for (int i = 0; i < this.Pages.Count; i++)
+			{
+				KycPage Page = this.Pages[i];
+
+				foreach (string Mapping in Mappings)
+				{
+					if (Page.AllFields.Any(f => f.Mappings.Any(m => m.Key == Mapping)) ||
+						Page.AllSections.Any(s => s.AllFields.Any(f => f.Mappings.Any(m => m.Key == Mapping))))
+					{
+						if (i >= 0 && i < this.Pages.Count)
+						{
+							this.currentPageIndex = i;
+							this.CurrentPagePosition = i;
+
+							this.ShouldViewSummary = false;
+
+							this.ShouldReturnToSummary = true;
+							this.NextButtonText = ServiceRef.Localizer["Kyc_Return"].Value;
+
+							this.SetCurrentPage(this.currentPageIndex);
+
+							this.ScrollUp();
+						}
+						return;
+					}
+				}
+			}
 		}
 
 		private void UpdateReference()
@@ -287,12 +344,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
 		}
 
-		private int GetNextIndex(int Start)
+		private int GetNextIndex()
 		{
 			if (this.process is null)
 			{
 				return -1;
 			}
+
+			int Start = this.currentPageIndex + 1;
 
 			while (Start < this.Pages.Count && !this.Pages[Start].IsVisible(this.process.Values))
 			{
@@ -301,12 +360,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return Start;
 		}
 
-		private int GetPreviousIndex(int Start)
+		private int GetPreviousIndex()
 		{
 			if (this.process is null)
 			{
 				return -1;
 			}
+
+			int Start = this.currentPageIndex-1;
 
 			while (Start >= 0 && !this.Pages[Start].IsVisible(this.process.Values))
 			{
@@ -343,12 +404,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.UpdateReference();
 			await this.SaveReferenceToStorageAsync();
 
-			int NextIndex = this.GetNextIndex(this.currentPageIndex + 1);
+			int NextIndex = this.GetNextIndex();
 			if (NextIndex < this.Pages.Count)
 			{
 				this.currentPageIndex = NextIndex;
 				this.CurrentPagePosition = NextIndex;
 				this.SetCurrentPage(this.currentPageIndex);
+				this.ScrollUp();
 			}
 			else
 			{
@@ -360,6 +422,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				{
 					await this.ProcessData();
 
+					this.ScrollUp();
 					// Go to Summary Page
 					this.ShouldViewSummary = true;
 
@@ -374,10 +437,44 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 		}
 
+		public event EventHandler? ScrollToTop;
+
+		private void ScrollUp()
+		{
+			ScrollToTop?.Invoke(this, EventArgs.Empty); // scroll to Y=0
+		}
+
+		[RelayCommand]
+		private async Task GoToSummaryAsync()
+		{
+			bool IsValid = await this.ValidateCurrentPageAsync();
+			if (!IsValid)
+			{
+				return;
+			}
+
+			this.UpdateReference();
+			await this.SaveReferenceToStorageAsync();
+			await this.ProcessData();
+
+			this.currentPageIndex = this.Pages.Count;
+			this.currentPageIndex = this.GetPreviousIndex();
+			this.CurrentPagePosition = this.currentPageIndex;
+			this.SetCurrentPage(this.currentPageIndex);
+
+			this.ScrollUp();
+			this.ShouldViewSummary = true;
+			this.ShouldReturnToSummary = false;
+
+			this.OnPropertyChanged(nameof(this.Progress));
+			this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+		}
+
 		private async Task ExecutePrevious()
 		{
 			if (this.ShouldViewSummary)
 			{
+				this.ScrollUp();
 				this.ShouldViewSummary = false;
 				this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
 				this.OnPropertyChanged(nameof(this.Progress));
@@ -387,9 +484,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.UpdateReference();
 			await this.SaveReferenceToStorageAsync();
 
-			int PreviousIndex = this.GetPreviousIndex(this.currentPageIndex - 1);
+			int PreviousIndex = this.GetPreviousIndex();
 			if (PreviousIndex >= 0)
 			{
+				this.ScrollUp();
+
 				this.currentPageIndex = PreviousIndex;
 				this.CurrentPagePosition = PreviousIndex;
 				this.SetCurrentPage(this.currentPageIndex);
@@ -403,6 +502,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		public override async Task GoBack()
 		{
+			if (this.ShouldReturnToSummary)
+			{
+				await this.GoToSummaryAsync();
+				return;
+			}
+
 			await this.ExecutePrevious();
 		}
 
@@ -411,6 +516,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			this.UpdateReference();
 			await this.SaveReferenceToStorageAsync();
+
+			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.Kyc_Exit)]))
+				return;
+
 			await base.GoBack();
 		}
 
@@ -541,6 +650,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			//For each page
 			foreach (KycPage Page in this.process.Pages)
 			{
+				if (!Page.IsVisible(this.process.Values))
+				{
+					continue; // Skip invisible pages
+				}
+
 				// For each field in the page
 				foreach (ObservableKycField Field in Page.VisibleFields)
 				{
@@ -575,6 +689,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.mappedValues.Add(new Property(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid));
 			this.mappedValues.Add(new Property(Constants.XmppProperties.Phone, ServiceRef.TagProfile.PhoneNumber));
 			this.mappedValues.Add(new Property(Constants.XmppProperties.EMail, ServiceRef.TagProfile.EMail));
+
+			if (!this.process.HasMapping(Constants.XmppProperties.Country) && !string.IsNullOrEmpty(ServiceRef.TagProfile.SelectedCountry))
+				this.mappedValues.Add(new Property(Constants.XmppProperties.Country, ISO_3166_1.ToName(ServiceRef.TagProfile.SelectedCountry) ?? ServiceRef.TagProfile.SelectedCountry));
 
 			this.GenerateSummaryCollection();
 
@@ -638,6 +755,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private bool CheckAndHandleFile(ObservableKycField Field, List<LegalIdentityAttachment> Attachments)
 		{
+			if (Field.Condition is not null)
+			{
+				if (Field is null || Field.Mappings is null || Field.Mappings.Count == 0 || !Field.Condition!.Evaluate(this.process!.Values))
+				{
+					return false;
+				}
+			}
+
 			if (Field.StringValue is not null && Field.StringValue.Length > 0)
 			{
 				if (Field is ObservableImageField ImageField)
@@ -765,9 +890,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private void GenerateSummaryCollection()
 		{
-			this.PersonalInformationSummary = new ObservableCollection<KVP>();
-			this.AddressInformationSummary = new ObservableCollection<KVP>();
-			this.AttachmentInformationSummary = new ObservableCollection<KVP>();
+			this.PersonalInformationSummary = new ObservableCollection<DisplayQuad>();
+			this.AddressInformationSummary = new ObservableCollection<DisplayQuad>();
+			this.AttachmentInformationSummary = new ObservableCollection<DisplayQuad>();
 
 			if (this.process is null)
 			{
@@ -776,28 +901,24 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			// Build summary via shared formatter to avoid duplicating logic with ViewIdentity
 			IdentitySummaryFormatter.KycSummaryResult Summary = IdentitySummaryFormatter.BuildKycSummaryFromProperties(
 				this.mappedValues,
+				this.process,
 				this.attachments.Select(a => new IdentitySummaryFormatter.AttachmentInfo(a.FileName ?? string.Empty, a.ContentType))
 			);
 
-			foreach (IdentitySummaryFormatter.DisplayPair Pair in Summary.Personal)
+			foreach (DisplayQuad Triple in Summary.Personal)
 			{
-				this.PersonalInformationSummary.Add(new KVP(Pair.Label, Pair.Value));
+				this.PersonalInformationSummary.Add(Triple);
 			}
 
-			foreach (IdentitySummaryFormatter.DisplayPair Pair in Summary.Address)
+			foreach (DisplayQuad Triple in Summary.Address)
 			{
-				this.AddressInformationSummary.Add(new KVP(Pair.Label, Pair.Value));
+				this.AddressInformationSummary.Add(Triple);
 			}
 
-			foreach (IdentitySummaryFormatter.DisplayPair Pair in Summary.Attachments)
+			foreach (DisplayQuad Triple in Summary.Attachments)
 			{
-				this.AttachmentInformationSummary.Add(new KVP(Pair.Label, Pair.Value));
+				this.AttachmentInformationSummary.Add(Triple);
 			}
 		}
-	}
-	public class KVP(string Key, string Value)
-	{
-		public string Key { get; set; } = Key;
-		public string Value { get; set; } = Value;
 	}
 }
