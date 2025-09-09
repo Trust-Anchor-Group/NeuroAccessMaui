@@ -214,23 +214,31 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.SetCurrentPage(this.currentPageIndex);
 					this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
 				}
-				else
-				{
-					// Prepare summary view and keep an underlying current page (previous visible)
-					await this.ProcessData();
-					this.currentPageIndex = this.Pages.Count; // sentinel after last
-					this.currentPageIndex = this.GetPreviousIndex();
+                else
+                {
+                    // Prepare summary view and keep an underlying current page (previous visible)
+                    await this.ProcessData();
+                    this.currentPageIndex = this.Pages.Count; // sentinel after last
+                    this.currentPageIndex = this.GetPreviousIndex();
 					if (this.currentPageIndex >= 0)
 					{
 						this.CurrentPagePosition = this.currentPageIndex;
 						this.SetCurrentPage(this.currentPageIndex);
 					}
-					this.ShouldReturnToSummary = false;
-					this.ShouldViewSummary = true;
-					this.OnPropertyChanged(nameof(this.Progress));
-					this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
-				}
-			}
+                    this.ShouldReturnToSummary = false;
+                    this.ShouldViewSummary = true;
+                    this.OnPropertyChanged(nameof(this.Progress));
+                    this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+
+                    // Persist resume mode as Summary to avoid landing on last page on next open
+                    if (this.kycReference is not null)
+                    {
+                        this.kycReference.LastVisitedMode = "Summary";
+                        this.UpdateReference();
+                        await this.SaveReferenceToStorageAsync();
+                    }
+                }
+            }
 			else
 			{
 				this.currentPageIndex = ResumeIndex >= 0 ? ResumeIndex : this.GetNextIndex();
@@ -521,7 +529,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
                     this.OnPropertyChanged(nameof(this.Progress));
 
-                    // Persist 100% progress when entering summary
+                    // Persist 100% progress and summary mode when entering summary via Next
+                    if (this.kycReference is not null)
+                    {
+                        this.kycReference.LastVisitedMode = "Summary";
+                    }
                     this.UpdateReference();
                     await this.SaveReferenceToStorageAsync();
 
