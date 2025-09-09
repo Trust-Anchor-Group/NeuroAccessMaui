@@ -203,10 +203,33 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			if (ResumeSummary)
 			{
-				this.ShouldViewSummary = true;
-				await this.ProcessData();
-				this.OnPropertyChanged(nameof(this.Progress));
-				this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+				// Validate all and decide: if any invalid page exists, navigate there instead of summary.
+				int firstInvalid = await this.GetFirstInvalidVisiblePageIndexAsync();
+				if (firstInvalid >= 0)
+				{
+					this.ShouldReturnToSummary = true; // after fixing, return to summary on continue
+					this.ShouldViewSummary = false;
+					this.currentPageIndex = firstInvalid;
+					this.CurrentPagePosition = this.currentPageIndex;
+					this.SetCurrentPage(this.currentPageIndex);
+					this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
+				}
+				else
+				{
+					// Prepare summary view and keep an underlying current page (previous visible)
+					await this.ProcessData();
+					this.currentPageIndex = this.Pages.Count; // sentinel after last
+					this.currentPageIndex = this.GetPreviousIndex();
+					if (this.currentPageIndex >= 0)
+					{
+						this.CurrentPagePosition = this.currentPageIndex;
+						this.SetCurrentPage(this.currentPageIndex);
+					}
+					this.ShouldReturnToSummary = false;
+					this.ShouldViewSummary = true;
+					this.OnPropertyChanged(nameof(this.Progress));
+					this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+				}
 			}
 			else
 			{
@@ -431,51 +454,81 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return AllVisibleFields.All(Field => Field.IsValid);
 		}
 
-		private async Task ExecuteNextAsync()
-		{
-			ServiceRef.PlatformSpecific.HideKeyboard();
+        private async Task ExecuteNextAsync()
+        {
+            ServiceRef.PlatformSpecific.HideKeyboard();
 
-			bool IsValid = await this.ValidateCurrentPageAsync();
-			if (!IsValid)
-			{
-				return;
-			}
+            bool IsValid = await this.ValidateCurrentPageAsync();
+            if (!IsValid)
+            {
+                return;
+            }
 
-			this.UpdateReference();
-			await this.SaveReferenceToStorageAsync();
+            this.UpdateReference();
+            await this.SaveReferenceToStorageAsync();
 
-			int NextIndex = this.GetNextIndex();
-			if (NextIndex < this.Pages.Count)
-			{
-				this.currentPageIndex = NextIndex;
-				this.CurrentPagePosition = NextIndex;
-				this.SetCurrentPage(this.currentPageIndex);
-				this.ScrollUp();
-			}
-			else
-			{
-				if (this.ShouldViewSummary)
-				{
-					await this.ExecuteApplyAsync();
-				}
-				else
-				{
-					await this.ProcessData();
+            // If we came here from a quick edit initiated on Summary, prefer returning to Summary
+            if (this.ShouldReturnToSummary)
+            {
+                int firstInvalid = await this.GetFirstInvalidVisiblePageIndexAsync();
+                if (firstInvalid >= 0)
+                {
+                    // Still something to fix: jump to the first invalid page
+                    this.currentPageIndex = firstInvalid;
+                    this.CurrentPagePosition = this.currentPageIndex;
+                    this.SetCurrentPage(this.currentPageIndex);
+                    this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
+                    this.ScrollUp();
+                    return;
+                }
+                else
+                {
+                    // All valid: return to Summary directly
+                    await this.ProcessData();
+                    this.ScrollUp();
+                    this.ShouldViewSummary = true;
+                    this.ShouldReturnToSummary = false;
+                    this.OnPropertyChanged(nameof(this.Progress));
+                    this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+                    // Persist state for resume
+                    this.UpdateReference();
+                    await this.SaveReferenceToStorageAsync();
+                    return;
+                }
+            }
 
-					this.ScrollUp();
-					// Go to Summary Page
-					this.ShouldViewSummary = true;
+            int NextIndex = this.GetNextIndex();
+            if (NextIndex < this.Pages.Count)
+            {
+                this.currentPageIndex = NextIndex;
+                this.CurrentPagePosition = NextIndex;
+                this.SetCurrentPage(this.currentPageIndex);
+                this.ScrollUp();
+            }
+            else
+            {
+                if (this.ShouldViewSummary)
+                {
+                    await this.ExecuteApplyAsync();
+                }
+                else
+                {
+                    await this.ProcessData();
 
-					this.OnPropertyChanged(nameof(this.Progress));
+                    this.ScrollUp();
+                    // Go to Summary Page
+                    this.ShouldViewSummary = true;
 
-					// Persist 100% progress when entering summary
-					this.UpdateReference();
-					await this.SaveReferenceToStorageAsync();
+                    this.OnPropertyChanged(nameof(this.Progress));
 
-					this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
-				}
-			}
-		}
+                    // Persist 100% progress when entering summary
+                    this.UpdateReference();
+                    await this.SaveReferenceToStorageAsync();
+
+                    this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+                }
+            }
+        }
 
 		public event EventHandler? ScrollToTop;
 
@@ -552,7 +605,20 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			if (this.ShouldReturnToSummary)
 			{
-				await this.GoToSummaryAsync();
+				// Only go to summary if all visible pages are valid; otherwise navigate to first invalid.
+				int firstInvalid = await this.GetFirstInvalidVisiblePageIndexAsync();
+				if (firstInvalid >= 0)
+				{
+					this.ShouldViewSummary = false;
+					this.currentPageIndex = firstInvalid;
+					this.CurrentPagePosition = this.currentPageIndex;
+					this.SetCurrentPage(this.currentPageIndex);
+					this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
+				}
+				else
+				{
+					await this.GoToSummaryAsync();
+				}
 				return;
 			}
 
@@ -615,6 +681,49 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			);
 
 			return IsOk;
+		}
+
+		private async Task<int> GetFirstInvalidVisiblePageIndexAsync()
+		{
+			if (this.process is null)
+			{
+				return -1;
+			}
+
+			for (int i = 0; i < this.Pages.Count; i++)
+			{
+				KycPage page = this.Pages[i];
+				if (!page.IsVisible(this.process.Values))
+				{
+					continue;
+				}
+
+				IEnumerable<ObservableKycField> fields = page.VisibleFields;
+				ReadOnlyObservableCollection<KycSection> sections = page.VisibleSections;
+				if (sections is not null)
+					fields = fields.Concat(sections.SelectMany(s => s.VisibleFields));
+
+				bool ok = true;
+				List<Task> validationTasks = new();
+				foreach (ObservableKycField field in fields)
+				{
+					field.ValidationTask.Run();
+					Task t = MainThread.InvokeOnMainThreadAsync(async () =>
+					{
+						await field.ValidationTask.WaitAllAsync();
+						if (!field.IsValid)
+							ok = false;
+					});
+					validationTasks.Add(t);
+				}
+				await Task.WhenAll(validationTasks);
+				if (!ok)
+				{
+					return i;
+				}
+			}
+
+			return -1;
 		}
 
 		[RelayCommand]
