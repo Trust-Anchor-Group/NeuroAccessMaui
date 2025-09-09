@@ -101,6 +101,11 @@ namespace NeuroAccessMaui.Services.Kyc
 			}
 		}
 
+		/// <summary>
+		/// Loads available KYC process references from the provider, falling back to the bundled test KYC when unavailable.
+		/// </summary>
+		/// <param name="Lang">Optional language code used for resolving localized process name.</param>
+		/// <returns>A read-only list of <see cref="KycReference"/> items representing available processes.</returns>
 		public async Task<IReadOnlyList<KycReference>> LoadAvailableKycReferencesAsync(string? Lang = null)
 		{
 			try

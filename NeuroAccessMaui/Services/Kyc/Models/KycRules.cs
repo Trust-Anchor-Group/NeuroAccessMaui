@@ -9,15 +9,36 @@ using NeuroAccessMaui.Services.Kyc.ViewModels;
 
 namespace NeuroAccessMaui.Services.Kyc.Models
 {
-	public interface IKycRule
-	{
-		bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null);
-	}
+    /// <summary>
+    /// Contract for synchronous KYC field validation rules.
+    /// </summary>
+    public interface IKycRule
+    {
+        /// <summary>
+        /// Validates a field and returns a result.
+        /// </summary>
+        /// <param name="Field">Field to validate.</param>
+        /// <param name="process">Owning process, if any.</param>
+        /// <param name="Error">Receives localized error message on failure.</param>
+        /// <param name="Lang">Preferred language for error messages.</param>
+        /// <returns>True if valid; otherwise false.</returns>
+        bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null);
+    }
 
-	public interface IAsyncKycRule: IKycRule
-	{
-		Task<(bool Ok, string? Error)> ValidateAsync(ObservableKycField field, KycProcess? process, string? lang = null);
-	}
+    /// <summary>
+    /// Contract for asynchronous KYC field validation rules.
+    /// </summary>
+    public interface IAsyncKycRule: IKycRule
+    {
+        /// <summary>
+        /// Asynchronously validates a field and returns a result and optional error message.
+        /// </summary>
+        /// <param name="field">Field to validate.</param>
+        /// <param name="process">Owning process, if any.</param>
+        /// <param name="lang">Preferred language for error messages.</param>
+        /// <returns>Tuple containing validation result and optional error message.</returns>
+        Task<(bool Ok, string? Error)> ValidateAsync(ObservableKycField field, KycProcess? process, string? lang = null);
+    }
 
 	/// <summary>
 	/// Ensures the field has a value if required.
