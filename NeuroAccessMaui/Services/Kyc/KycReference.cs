@@ -77,6 +77,18 @@ namespace NeuroAccessMaui.Services.Kyc
 		public double Progress { get; set; }
 
 		/// <summary>
+		/// Last visited page identifier to support resuming.
+		/// </summary>
+		[DefaultValueNull]
+		public string? LastVisitedPageId { get; set; }
+
+		/// <summary>
+		/// Last visited mode: "Form" or "Summary". Default is "Form".
+		/// </summary>
+		[DefaultValueStringEmpty]
+		public string LastVisitedMode { get; set; } = "Form";
+
+		/// <summary>
 		/// Gets a parsed KYC process, populating its fields from the reference.
 		/// </summary>
 		/// <param name="lang">Optional language.</param>

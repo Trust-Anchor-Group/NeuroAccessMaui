@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
@@ -245,7 +246,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			if (Field.FieldType == FieldType.Text && Field.StringValue is string Pnr && !string.IsNullOrEmpty(Pnr))
 			{
 				// If we have a reference to a country field, use its value to determine country code
-				if (this.fieldRef is not null)
+				if (!string.IsNullOrEmpty(this.fieldRef))
 				{
 					CountryCode = Process.Values.TryGetValue(this.fieldRef, out string? Cc) && !string.IsNullOrEmpty(Cc) ? Cc : string.Empty;
 				} // else use the country from current ID
@@ -253,7 +254,8 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 				{
 					try
 					{
-						CountryCode = ServiceRef.TagProfile.LegalIdentity?.GetPersonalInformation().Country;
+						CountryCode = ServiceRef.TagProfile.SelectedCountry ??
+						ServiceRef.TagProfile.LegalIdentity?.Properties?.FirstOrDefault(p =>p.Name.Equals(Constants.XmppProperties.Country, StringComparison.OrdinalIgnoreCase))?.Value ?? string.Empty;
 					}
 					catch (Exception)
 					{

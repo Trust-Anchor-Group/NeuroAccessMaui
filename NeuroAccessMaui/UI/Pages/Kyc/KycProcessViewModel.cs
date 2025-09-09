@@ -179,10 +179,41 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				Page.UpdateVisibilities(this.process.Values);
 			}
 
-			this.currentPageIndex = -1;
-			this.currentPageIndex = this.GetNextIndex();
-			this.CurrentPagePosition = this.currentPageIndex;
-			this.SetCurrentPage(this.currentPageIndex);
+			// Resume logic: decide where to open the process
+			int ResumeIndex = -1;
+			bool ResumeSummary = false;
+			if (!string.IsNullOrEmpty(this.kycReference.LastVisitedMode) &&
+				string.Equals(this.kycReference.LastVisitedMode, "Summary", StringComparison.OrdinalIgnoreCase))
+			{
+				ResumeSummary = true;
+			}
+
+			if (!ResumeSummary && !string.IsNullOrEmpty(this.kycReference.LastVisitedPageId))
+			{
+				for (int i = 0; i < this.Pages.Count; i++)
+				{
+					KycPage P = this.Pages[i];
+					if (string.Equals(P.Id, this.kycReference.LastVisitedPageId, StringComparison.Ordinal) && P.IsVisible(this.process.Values))
+					{
+						ResumeIndex = i;
+						break;
+					}
+				}
+			}
+
+			if (ResumeSummary)
+			{
+				this.ShouldViewSummary = true;
+				await this.ProcessData();
+				this.OnPropertyChanged(nameof(this.Progress));
+				this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+			}
+			else
+			{
+				this.currentPageIndex = ResumeIndex >= 0 ? ResumeIndex : this.GetNextIndex();
+				this.CurrentPagePosition = this.currentPageIndex;
+				this.SetCurrentPage(this.currentPageIndex);
+			}
 
 			// Set initial localized label for the next/apply button
 			this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
@@ -265,6 +296,15 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.HasSections = this.CurrentPageSections is not null && this.CurrentPageSections.Count > 0;
 
 			this.OnPropertyChanged(nameof(this.Progress));
+
+			// Persist last visited page when in form mode and not in quick return-to-summary flow.
+			if (!this.ShouldViewSummary && !this.ShouldReturnToSummary && this.kycReference is not null)
+			{
+				this.kycReference.LastVisitedPageId = this.CurrentPage?.Id;
+				this.kycReference.LastVisitedMode = "Form";
+				this.UpdateReference();
+				_ = this.SaveReferenceToStorageAsync();
+			}
 
 			// Scroll to top of page when changing pages
 
@@ -465,6 +505,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.ScrollUp();
 			this.ShouldViewSummary = true;
 			this.ShouldReturnToSummary = false;
+
+			// Persist last visited mode: Summary
+			if (this.kycReference is not null)
+			{
+				this.kycReference.LastVisitedMode = "Summary";
+				this.UpdateReference();
+				await this.SaveReferenceToStorageAsync();
+			}
 
 			this.OnPropertyChanged(nameof(this.Progress));
 			this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
