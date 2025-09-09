@@ -52,7 +52,10 @@ namespace NeuroAccessMaui.Services.Identity
             public List<DisplayQuad> Personal { get; } = new List<DisplayQuad>();
             public List<DisplayQuad> Address { get; } = new List<DisplayQuad>();
             public List<DisplayQuad> Attachments { get; } = new List<DisplayQuad>();
-        }
+			public List<DisplayQuad> CompanyInfo { get; } = new List<DisplayQuad>();
+			public List<DisplayQuad> CompanyAddress { get; } = new List<DisplayQuad>();
+			public List<DisplayQuad> CompanyRepresentative { get; } = new List<DisplayQuad>();
+		}
 
         public sealed class DisplayField
         {
@@ -113,8 +116,36 @@ namespace NeuroAccessMaui.Services.Identity
                 Constants.XmppProperties.Country
             };
 
-            // Prepare dictionary for quick lookup
-            Dictionary<string, string> Dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+			HashSet<string> CompanyInfoKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+			{
+				Constants.XmppProperties.OrgNumber,
+				Constants.XmppProperties.OrgName,
+				"ORGTRADENAME"
+			};
+
+			HashSet<string> CompanyAddressKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+			{
+				Constants.XmppProperties.OrgAddress,
+				Constants.XmppProperties.OrgAddress2,
+				Constants.XmppProperties.OrgZipCode,
+				Constants.XmppProperties.OrgArea,
+				Constants.XmppProperties.OrgCity,
+				Constants.XmppProperties.OrgRegion,
+				Constants.XmppProperties.OrgCountry
+			};
+
+			HashSet<string> CompanyRepresentativeKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+			{
+				"ORGRESPNAME",
+				"ORGRESPCPF",
+				"ORGRESPBDATE",
+				"ORGRESPRG",
+				"ORGEMAIL",
+				"ORGPHONE"
+			};
+
+			// Prepare dictionary for quick lookup
+			Dictionary<string, string> Dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             foreach (Property P in Properties ?? Array.Empty<Property>())
             {
                 if (P is null)
@@ -146,7 +177,25 @@ namespace NeuroAccessMaui.Services.Identity
                 }
             }
 
-            KycSummaryResult Result = new KycSummaryResult();
+			// Compose Company Representative BirthDate if we have parts
+			DayStr = Get(Dict, "ORGRESPBDAY");
+			MonthStr = Get(Dict, "ORGRESPBMONTH");
+			YearStr = Get(Dict, "ORGRESPBYEAR");
+
+			if (int.TryParse(DayStr, out Day) && int.TryParse(MonthStr, out Month) && int.TryParse(YearStr, out Year))
+			{
+				try
+				{
+					DateTime BirthDate = new DateTime(Year, Month, Day);
+					Dict["ORGRESPBDATE"] = BirthDate.ToString("d", EffectiveCulture);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			}
+
+			KycSummaryResult Result = new KycSummaryResult();
 
             // Personal
             foreach (string Key in PersonalKeys)
@@ -168,8 +217,37 @@ namespace NeuroAccessMaui.Services.Identity
                 Result.Address.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
             }
 
-            // Attachments
-            if (Attachments is not null)
+			// Company Info
+			foreach (string Key in CompanyInfoKeys)
+			{
+				if (!Dict.TryGetValue(Key, out string? Val) || string.IsNullOrWhiteSpace(Val))
+					continue;
+
+				string Label = GetLabel(LabelMap, Key);
+				Result.CompanyInfo.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
+			}
+
+			// Company Address
+			foreach (string Key in CompanyAddressKeys)
+			{
+				if (!Dict.TryGetValue(Key, out string? Val) || string.IsNullOrWhiteSpace(Val))
+					continue;
+
+				string Label = GetLabel(LabelMap, Key);
+				Result.CompanyAddress.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
+			}
+
+			// Company Representative
+			foreach (string Key in CompanyRepresentativeKeys)
+			{
+				if (!Dict.TryGetValue(Key, out string? Val) || string.IsNullOrWhiteSpace(Val))
+					continue;
+				string Label = GetLabel(LabelMap, Key);
+				Result.CompanyRepresentative.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
+			}
+
+			// Attachments
+			if (Attachments is not null)
             {
                 foreach (AttachmentInfo Att in Attachments)
                 {
@@ -217,6 +295,13 @@ namespace NeuroAccessMaui.Services.Identity
                                 Description = L.ResourceNotFound ? Base : L.Value;
                                 break;
                             }
+						case "ORGAOA":
+							{
+								//Microsoft.Extensions.Localization.LocalizedString L = ServiceRef.Localizer[nameof(AppResources.Attachment_ORGAOA), false];
+								//Description = L.ResourceNotFound ? Base : L.Value;
+								Description = "Article of Association";
+								break;
+							}
                         default:
                             Description = Att.FileName;
                             break;
@@ -426,8 +511,26 @@ namespace NeuroAccessMaui.Services.Identity
                 { Constants.XmppProperties.City, ServiceRef.Localizer[nameof(AppResources.City)].Value },
                 { Constants.XmppProperties.ZipCode, ServiceRef.Localizer[nameof(AppResources.ZipCode)].Value },
                 { Constants.XmppProperties.Region, ServiceRef.Localizer[nameof(AppResources.Region)].Value },
-                { Constants.XmppProperties.Country, ServiceRef.Localizer[nameof(AppResources.Country)].Value }
-            };
+                { Constants.XmppProperties.Country, ServiceRef.Localizer[nameof(AppResources.Country)].Value },
+
+				// Organization fields
+				{ Constants.XmppProperties.OrgNumber, ServiceRef.Localizer[nameof(AppResources.OrgNumber)].Value },
+				{ Constants.XmppProperties.OrgName, ServiceRef.Localizer[nameof(AppResources.OrgName)].Value },
+				{ "ORGTRADENAME", "Trade Name" },
+				{ Constants.XmppProperties.OrgAddress, ServiceRef.Localizer[nameof(AppResources.OrgAddress)].Value },
+				{ Constants.XmppProperties.OrgAddress2, ServiceRef.Localizer[nameof(AppResources.OrgAddress2)].Value },
+				{ Constants.XmppProperties.OrgArea, ServiceRef.Localizer[nameof(AppResources.OrgArea)].Value },
+				{ Constants.XmppProperties.OrgCity, ServiceRef.Localizer[nameof(AppResources.OrgCity)].Value },
+				{ Constants.XmppProperties.OrgZipCode, ServiceRef.Localizer[nameof(AppResources.OrgZipCode)].Value },
+				{ Constants.XmppProperties.OrgRegion, ServiceRef.Localizer[nameof(AppResources.OrgRegion)].Value },
+				{ Constants.XmppProperties.OrgCountry, ServiceRef.Localizer[nameof(AppResources.OrgCountry)].Value },
+				{ "ORGRESPNAME", "Representative Name" },
+				{ "ORGRESPCPF", "Representative CPF" },
+				{ "ORGRESPBDATE", "Representative Birth Date" },
+				{ "ORGRESPRG", "Representative RG" },
+				{ "ORGEMAIL", ServiceRef.Localizer[nameof(AppResources.EMail)].Value },
+				{ "ORGPHONE", ServiceRef.Localizer[nameof(AppResources.PhoneNr)].Value }
+			};
 
             return Map;
         }

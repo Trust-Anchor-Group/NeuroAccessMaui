@@ -230,7 +230,7 @@
 					<controls:ImageButton Grid.Row="0"
 										  Grid.Column="2"
 										  PathData="{x:Static ui:Geometries.CameraPhotoButtonPath}"
-										  Style="{DynamicResource OutlinedImageButton}" />
+										  Style="{DynamicResource OutlinedImageButton}"/>
 					<controls:ImageButton Grid.Row="1"
 										  Grid.Column="2"
 										  PathData="{x:Static ui:Geometries.CameraImageButtonPath}"
@@ -453,6 +453,66 @@
 									</VerticalStackLayout>
 								</Border>
 
+								<!-- Company Information -->
+								<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding HasCompanyInformation}">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
+										<Label Text="Company Information" Style="{DynamicResource FieldTitleLabel}" />
+										<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
+											<BindableLayout.ItemTemplate>
+												<DataTemplate x:DataType="IDSF:DisplayQuad">
+													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
+															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+														</Grid>
+													</controls:TemplatedButton>
+												</DataTemplate>
+											</BindableLayout.ItemTemplate>
+										</VerticalStackLayout>
+									</VerticalStackLayout>
+								</Border>
+
+								<!-- Company Address Information -->
+								<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding HasCompanyAddress}">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
+										<Label Text="Company Address" Style="{DynamicResource FieldTitleLabel}" />
+										<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyAddressSummary}" Spacing="{DynamicResource MediumSpacing}">
+											<BindableLayout.ItemTemplate>
+												<DataTemplate x:DataType="IDSF:DisplayQuad">
+													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
+															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+														</Grid>
+													</controls:TemplatedButton>
+												</DataTemplate>
+											</BindableLayout.ItemTemplate>
+										</VerticalStackLayout>
+									</VerticalStackLayout>
+								</Border>
+
+								<!-- Company Representative -->
+								<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding HasCompanyRepresentative}">
+									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
+										<Label Text="Company Representative" Style="{DynamicResource FieldTitleLabel}" />
+										<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyRepresentativeSummary}" Spacing="{DynamicResource MediumSpacing}">
+											<BindableLayout.ItemTemplate>
+												<DataTemplate x:DataType="IDSF:DisplayQuad">
+													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
+															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+														</Grid>
+													</controls:TemplatedButton>
+												</DataTemplate>
+											</BindableLayout.ItemTemplate>
+										</VerticalStackLayout>
+									</VerticalStackLayout>
+								</Border>
+								
 								<!-- Attachments -->
 								<Border Style="{DynamicResource BorderSubSet}">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
