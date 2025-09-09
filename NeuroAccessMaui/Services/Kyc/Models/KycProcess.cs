@@ -54,6 +54,12 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 
 				return DateMappings.Select(f => this.FindMapping(f)).Any(f => f);
 			}
+			else if (Mapping.Equals("ORGREPBDATE", StringComparison.OrdinalIgnoreCase))
+			{
+				string[] DateMappings = ["ORGREPBDAY", "ORGREPBMONTH", "ORGREPBYEAR"];
+
+				return DateMappings.Select(f => this.FindMapping(f)).Any(f => f);
+			}
 			else
 			{
 				return this.FindMapping(Mapping);

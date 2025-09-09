@@ -136,10 +136,10 @@ namespace NeuroAccessMaui.Services.Identity
 
 			HashSet<string> CompanyRepresentativeKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
 			{
-				"ORGRESPNAME",
-				"ORGRESPCPF",
-				"ORGRESPBDATE",
-				"ORGRESPRG",
+				"ORGREPNAME",
+				"ORGREPCPF",
+				"ORGREPBDATE",
+				"ORGREPRG",
 				"ORGEMAIL",
 				"ORGPHONE"
 			};
@@ -178,16 +178,16 @@ namespace NeuroAccessMaui.Services.Identity
             }
 
 			// Compose Company Representative BirthDate if we have parts
-			DayStr = Get(Dict, "ORGRESPBDAY");
-			MonthStr = Get(Dict, "ORGRESPBMONTH");
-			YearStr = Get(Dict, "ORGRESPBYEAR");
+			DayStr = Get(Dict, "ORGREPBDAY");
+			MonthStr = Get(Dict, "ORGREPBMONTH");
+			YearStr = Get(Dict, "ORGREPBYEAR");
 
 			if (int.TryParse(DayStr, out Day) && int.TryParse(MonthStr, out Month) && int.TryParse(YearStr, out Year))
 			{
 				try
 				{
 					DateTime BirthDate = new DateTime(Year, Month, Day);
-					Dict["ORGRESPBDATE"] = BirthDate.ToString("d", EffectiveCulture);
+					Dict["ORGREPBDATE"] = BirthDate.ToString("d", EffectiveCulture);
 				}
 				catch (Exception Ex)
 				{
@@ -297,9 +297,8 @@ namespace NeuroAccessMaui.Services.Identity
                             }
 						case "ORGAOA":
 							{
-								//Microsoft.Extensions.Localization.LocalizedString L = ServiceRef.Localizer[nameof(AppResources.Attachment_ORGAOA), false];
-								//Description = L.ResourceNotFound ? Base : L.Value;
-								Description = "Article of Association";
+								Microsoft.Extensions.Localization.LocalizedString L = ServiceRef.Localizer[nameof(AppResources.Attachment_ArticleOfAssociation), false];
+								Description = L.ResourceNotFound ? Base : L.Value;
 								break;
 							}
                         default:
@@ -498,7 +497,7 @@ namespace NeuroAccessMaui.Services.Identity
             // Use ServiceRef.Localizer for labels used in KYC summary
             Dictionary<string, string> Map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
-                { Constants.XmppProperties.FullName, "Full name" },
+                { Constants.XmppProperties.FullName, ServiceRef.Localizer[nameof(AppResources.FullName)].Value },
                 { Constants.CustomXmppProperties.BirthDate, ServiceRef.Localizer[nameof(AppResources.BirthDate)].Value },
                 { Constants.XmppProperties.PersonalNumber, ServiceRef.Localizer[nameof(AppResources.PersonalNumber)].Value },
                 { Constants.XmppProperties.Nationality, ServiceRef.Localizer[nameof(AppResources.Nationality)].Value },
@@ -516,7 +515,7 @@ namespace NeuroAccessMaui.Services.Identity
 				// Organization fields
 				{ Constants.XmppProperties.OrgNumber, ServiceRef.Localizer[nameof(AppResources.OrgNumber)].Value },
 				{ Constants.XmppProperties.OrgName, ServiceRef.Localizer[nameof(AppResources.OrgName)].Value },
-				{ "ORGTRADENAME", "Trade Name" },
+				{ "ORGTRADENAME", ServiceRef.Localizer[nameof(AppResources.TradeName)].Value },
 				{ Constants.XmppProperties.OrgAddress, ServiceRef.Localizer[nameof(AppResources.OrgAddress)].Value },
 				{ Constants.XmppProperties.OrgAddress2, ServiceRef.Localizer[nameof(AppResources.OrgAddress2)].Value },
 				{ Constants.XmppProperties.OrgArea, ServiceRef.Localizer[nameof(AppResources.OrgArea)].Value },
@@ -524,12 +523,12 @@ namespace NeuroAccessMaui.Services.Identity
 				{ Constants.XmppProperties.OrgZipCode, ServiceRef.Localizer[nameof(AppResources.OrgZipCode)].Value },
 				{ Constants.XmppProperties.OrgRegion, ServiceRef.Localizer[nameof(AppResources.OrgRegion)].Value },
 				{ Constants.XmppProperties.OrgCountry, ServiceRef.Localizer[nameof(AppResources.OrgCountry)].Value },
-				{ "ORGRESPNAME", "Representative Name" },
-				{ "ORGRESPCPF", "Representative CPF" },
-				{ "ORGRESPBDATE", "Representative Birth Date" },
-				{ "ORGRESPRG", "Representative RG" },
-				{ "ORGEMAIL", ServiceRef.Localizer[nameof(AppResources.EMail)].Value },
-				{ "ORGPHONE", ServiceRef.Localizer[nameof(AppResources.PhoneNr)].Value }
+				{ "ORGREPNAME", ServiceRef.Localizer[nameof(AppResources.OrgRepName)].Value },
+				{ "ORGREPCPF", ServiceRef.Localizer[nameof(AppResources.OrgRepCPF)].Value },
+				{ "ORGREPBDATE", ServiceRef.Localizer[nameof(AppResources.OrgRepBirthDate)].Value },
+				{ "ORGREPRG", ServiceRef.Localizer[nameof(AppResources.OrgRepRG)].Value },
+				{ "ORGEMAIL", ServiceRef.Localizer[nameof(AppResources.OrgEMail)].Value },
+				{ "ORGPHONE", ServiceRef.Localizer[nameof(AppResources.OrgPhone)].Value }
 			};
 
             return Map;

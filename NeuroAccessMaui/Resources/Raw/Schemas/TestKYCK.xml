@@ -376,7 +376,7 @@
 		</Condition>
 		<Field id="companyID" type="text" mapping="ORGNR" required="true">
 			<Label>
-				<Text lang="en">Company ID</Text>
+				<Text lang="en">Organization Number</Text>
 			</Label>
 			<Placeholder>
 				<Text lang="en">00.000.000/0000-00</Text>
@@ -384,7 +384,7 @@
 		</Field>
 		<Field id="companyName" type="text" mapping="ORGNAME" required="true">
 			<Label>
-				<Text lang="en">Legal Name</Text>
+				<Text lang="en">Organization Name</Text>
 			</Label>
 			<Placeholder>
 				<Text lang="en">Legal Name</Text>
@@ -462,17 +462,17 @@
 			<FieldRef>isOrganization</FieldRef>
 			<Equals>true</Equals>
 		</Condition>
-		<Field id="companyResponsibleName" type="text" mapping="ORGRESPNAME" required="true">
+		<Field id="companyRepresentativeName" type="text" mapping="ORGREPNAME" required="true">
 			<Label>
-				<Text lang="en">Responsible Name</Text>
+				<Text lang="en">Representative Name</Text>
 			</Label>
 			<Placeholder>
-				<Text lang="en">Responsible Name</Text>
+				<Text lang="en">Representative Name</Text>
 			</Placeholder>
 		</Field>
-		<Field id="companyResponsibleCPF" type="text" mapping="ORGRESPCPF" required="true">
+		<Field id="companyRepresentativeCPF" type="text" mapping="ORGREPCPF" required="true">
 			<Label>
-				<Text lang="en">Responsible CPF</Text>
+				<Text lang="en">Representative CPF</Text>
 			</Label>
 			<Placeholder>
 				<Text lang="en">000.000.000-00</Text>
@@ -485,23 +485,23 @@
 				</PersonalNumberRule>
 			</ValidationRules>
 		</Field>
-		<Field id="companyResponsibleDateOfBirth" type="date" required="true">
+		<Field id="companyRepresentativeDateOfBirth" type="date" required="true">
 			<Label>
-				<Text lang="en">Responsible Date of Birth</Text>
+				<Text lang="en">Representative Date of Birth</Text>
 			</Label>
-			<Mapping key="ORGRESPBDAY">
+			<Mapping key="ORGREPBDAY">
 				<Transform>day</Transform>
 			</Mapping>
-			<Mapping key="ORGRESPBMONTH">
+			<Mapping key="ORGREPBMONTH">
 				<Transform>month</Transform>
 			</Mapping>
-			<Mapping key="ORGRESPBYEAR">
+			<Mapping key="ORGREPBYEAR">
 				<Transform>year</Transform>
 			</Mapping>
 		</Field>
-		<Field id="companyResponsibleRG" type="text" mapping="ORGRESPRG" required="true">
+		<Field id="companyRepresentativeRG" type="text" mapping="ORGREPRG" required="true">
 			<Label>
-				<Text lang="en">Responsible RG</Text>
+				<Text lang="en">Representative RG</Text>
 			</Label>
 			<Placeholder>
 				<Text lang="en">00.000.000-0</Text>
@@ -517,7 +517,7 @@
 		</Field>
 		<Field id="companyPhone" type="text" mapping="ORGPHONE" required="true">
 			<Label>
-				<Text lang="en">Corporate phone number</Text>
+				<Text lang="en">Corporate phone</Text>
 			</Label>
 			<Placeholder>
 				<Text lang="en">(00) 00000-0000</Text>

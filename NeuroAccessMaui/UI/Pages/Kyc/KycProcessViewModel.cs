@@ -300,6 +300,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				Mappings = ["BDAY", "BMONTH", "BYEAR"];
 			}
+			else if (SoughtMapping == "ORGREPBDATE")
+			{
+				Mappings = ["ORGREPBDAY", "ORGREPBMONTH", "ORGREPBYEAR"];
+			}
 			else
 			{
 				Mappings = [SoughtMapping];
