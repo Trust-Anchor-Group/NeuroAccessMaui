@@ -4,8 +4,9 @@ using NeuroAccessMaui.Services.Kyc.ViewModels;
 
 namespace NeuroAccessMaui.Services.Kyc.Models
 {
-	public partial class KycProcess
-	{
+    public partial class KycProcess
+    {
+        public KycLocalizedText? Name { get; set; }
 		private readonly Dictionary<string, string?> values = new();
 
 		public IDictionary<string, string?> Values => this.values;

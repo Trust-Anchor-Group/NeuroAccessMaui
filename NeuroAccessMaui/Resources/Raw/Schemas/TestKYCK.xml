@@ -1,4 +1,8 @@
 <KYCProcess>
+	<Name>
+		<Text lang="en">Personal ID</Text>
+		<Text lang="sv">Personligt ID</Text>
+	</Name>
 	<Page id="prepareDocuments">
 		<Title>
 			<Text lang="en">Before we start, we'd like to give you a tip.</Text>

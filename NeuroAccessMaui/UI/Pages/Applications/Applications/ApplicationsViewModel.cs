@@ -44,6 +44,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 	public partial class ApplicationsViewModel : XmppViewModel
 	{
 		public ObservableCollection<KycReference> Applications { get; } = new();
+		public ObservableCollection<KycReference> AvailableApplications { get; } = new();
 
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
@@ -62,6 +63,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 		// Expose loader state if you want to bind spinners/errors in XAML
 		public ObservableTask<int> Loader { get; init; }
+		public ObservableTask<int> AvailableLoader { get; init; }
 		public bool IsLoading => this.Loader.IsRunning;
 		public string? LoadError => this.Loader.ErrorMessage;
 
@@ -85,6 +87,14 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				.UseTaskRun(false) // IO-bound work; keep default path
 				.Run(this.LoadApplicationsAsync)
 				.Build(this.CreateNewApplicationCommand, this.OpenApplicationCommand);
+
+			this.AvailableLoader = new ObservableTaskBuilder()
+				.Named("LoadAvailableApplications")
+				.WithPolicy(Policies.Retry(3, (attempt, ex) => TimeSpan.FromMilliseconds(250 * attempt * attempt)))
+				.WithTelemetry(new LoggerTelemetry())
+				.UseTaskRun(false)
+				.Run(this.LoadAvailableApplicationsAsync)
+				.Build(this.CreateNewApplicationCommand);
 		}
 
 		protected override async Task OnInitialize()
@@ -152,6 +162,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		protected override async Task OnAppearing()
 		{
 			await base.OnAppearing();
+
+			// Ensure data reflects latest storage state each time page appears
+			this.Loader.Reload();
+			this.AvailableLoader.Reload();
 
 			// Page is not correctly updated if changes has happened when viewing a sub-view. Fix by resending notification.
 			bool IdApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
@@ -393,6 +407,50 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			catch (Exception ex)
 			{
 				// ObservableTask will capture/log, but keep behavior consistent.
+				ServiceRef.LogService.LogException(ex);
+				throw;
+			}
+		}
+
+		private async Task LoadAvailableApplicationsAsync(TaskContext<int> ctx)
+		{
+			CancellationToken ct = ctx.CancellationToken;
+			IProgress<int> progress = ctx.Progress;
+
+			try
+			{
+				progress.Report(0);
+
+				IReadOnlyList<KycReference> refs = Array.Empty<KycReference>();
+				try
+				{
+					string language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+					ct.ThrowIfCancellationRequested();
+					refs = await ServiceRef.KycService.LoadAvailableKycReferencesAsync(language);
+				}
+				catch (OperationCanceledException) { throw; }
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+
+				ct.ThrowIfCancellationRequested();
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.AvailableApplications.Clear();
+					foreach (KycReference r in refs)
+						this.AvailableApplications.Add(r);
+				});
+
+				progress.Report(100);
+			}
+			catch (OperationCanceledException)
+			{
+				throw;
+			}
+			catch (Exception ex)
+			{
 				ServiceRef.LogService.LogException(ex);
 				throw;
 			}

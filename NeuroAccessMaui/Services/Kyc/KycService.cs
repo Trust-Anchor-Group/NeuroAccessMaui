@@ -62,6 +62,26 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.FetchedUtc = DateTime.UtcNow;
 			}
 
+			// Populate localized friendly name from process, if available
+			try
+			{
+				KycProcess? Process = await Reference.GetProcess(Lang).ConfigureAwait(false);
+				if (Process?.Name is not null)
+				{
+					string NewName = Process.Name.Text;
+					if (!string.Equals(Reference.FriendlyName, NewName, StringComparison.Ordinal))
+					{
+						Reference.FriendlyName = NewName;
+						// Persist update non-critically
+						try { await ServiceRef.StorageService.Update(Reference); } catch { /* ignore */ }
+					}
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+			}
+
 			// 3) Load default if not available.
 			return Reference;
 		}
@@ -78,6 +98,29 @@ namespace NeuroAccessMaui.Services.Kyc
 			catch (KeyNotFoundException)
 			{
 				await ServiceRef.StorageService.Insert(Reference);
+			}
+		}
+
+		public async Task<IReadOnlyList<KycReference>> LoadAvailableKycReferencesAsync(string? Lang = null)
+		{
+			try
+			{
+				string? xml = await this.TryFetchKycXmlFromProvider();
+				if (string.IsNullOrEmpty(xml))
+				{
+					using Stream stream = await FileSystem.OpenAppPackageFileAsync(backupKyc);
+					using StreamReader reader = new(stream);
+					xml = await reader.ReadToEndAsync().ConfigureAwait(false);
+				}
+
+				KycProcess process = await KycProcessParser.LoadProcessAsync(xml, Lang).ConfigureAwait(false);
+				KycReference reference = KycReference.FromProcess(process, xml, process.Name?.Text);
+				return new List<KycReference> { reference };
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				return Array.Empty<KycReference>();
 			}
 		}
 

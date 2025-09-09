@@ -46,8 +46,9 @@
 				</Grid>
 
 				<!-- Current Application (0 or 1) -->
-				<Label Text="Current application" TextColor="{DynamicResource ContentSecondaryWL}" FontSize="16" FontFamily="SpaceGroteskBold" />
+				<Label Text="Current application" TextColor="{DynamicResource ContentSecondaryWL}" FontSize="16" FontFamily="SpaceGroteskBold" IsVisible="{Binding HasCurrentApplication}" />
 				<controls:TemplatedButton Command="{Binding OpenApplicationCommand}"
+										  IsVisible="{Binding HasCurrentApplication}"
 										  CommandParameter="{Binding CurrentApplication}"
 										  Margin="0"
 										  Padding="0">
@@ -64,11 +65,11 @@
 									   Grid.Row="0" Grid.Column="1" 
 									   HorizontalOptions="End" 
 									   InputTransparent="True" Margin="0"/>
-								<!-- Title and subtitle -->
-								<VerticalStackLayout  Grid.Row="1" Grid.Column="0">
-									<Label Text="Personal ID Application" Style="{DynamicResource CardTitleLabel}"/> 
-									<Label Text="Identity Verification" Style="{DynamicResource CardSubtitleLabel}"/>
-								</VerticalStackLayout>
+                        <!-- Title and subtitle -->
+                        <VerticalStackLayout  Grid.Row="1" Grid.Column="0">
+                            <Label Text="{Binding CurrentApplication.FriendlyName}" Style="{DynamicResource CardTitleLabel}"/>
+                            <Label Text="Identity Verification" Style="{DynamicResource CardSubtitleLabel}"/>
+                        </VerticalStackLayout>
 								<!-- Progress bar -->
 								<VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
 									<VerticalStackLayout.Triggers>
@@ -186,8 +187,8 @@
 					   FontSize="16"
 					   FontFamily="SpaceGroteskBold" />
 
-					<!-- Start new process -->
-				<VerticalStackLayout BindableLayout.ItemsSource="{Binding Applications}">
+				<!-- Start new process -->
+				<VerticalStackLayout BindableLayout.ItemsSource="{Binding AvailableApplications}">
 					<BindableLayout.EmptyView>
 						<Label Text="No available applications"
 							   TextColor="{DynamicResource ContentSecondaryWL}"
@@ -209,18 +210,18 @@
 															  VerticalOptions="Center" HorizontalOptions="Center"
 															  TintColor="{DynamicResource BrandColorsNeuroAccessv500WL}"/>
 										</Border>
-										<Grid RowDefinitions="*,auto" Grid.Column="1" ColumnDefinitions="*" VerticalOptions="Center">
-											<Label Text="Personal ID"
-												   Style="{DynamicResource CardTitleLabel}"
-												   Grid.Row="0"
-												   LineBreakMode="TailTruncation"
-												   MaxLines="1" />
-											<Label Text="For your individial use"
-												   Style="{DynamicResource CardSubtitleLabel}"
-												   Grid.Row="1"
-												   LineBreakMode="TailTruncation"
-												   MaxLines="2" />
-										</Grid>
+                                <Grid RowDefinitions="*,auto" Grid.Column="1" ColumnDefinitions="*" VerticalOptions="Center">
+                                    <Label Text="{Binding FriendlyName}"
+                                           Style="{DynamicResource CardTitleLabel}"
+                                           Grid.Row="0"
+                                           LineBreakMode="TailTruncation"
+                                           MaxLines="1" />
+                                    <Label Text="For your individial use"
+                                           Style="{DynamicResource CardSubtitleLabel}"
+                                           Grid.Row="1"
+                                           LineBreakMode="TailTruncation"
+                                           MaxLines="2" />
+                                </Grid>
 										<controls:SvgView Source="arrow_forward_ios.svg"
 														  Grid.Column="2"
 														  VerticalOptions="Center"

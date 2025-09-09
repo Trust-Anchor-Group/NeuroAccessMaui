@@ -20,6 +20,7 @@ using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using NeuroAccessMaui.Services.Cache.Invalidation;
+using NeuroAccessMaui.Services.Kyc;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -610,44 +611,34 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		[RelayCommand]
 		private async Task ClearCacheAsync()
 		{
-			await Database.FindDelete<CacheEntry>(
-			new FilterFieldGreaterOrEqualTo("Url", string.Empty));
-			await Database.Provider.Flush();
-
-			await ServiceRef.UiService.DisplayAlert(
-				ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-				ServiceRef.Localizer[nameof(AppResources.CacheCleared)],
-				ServiceRef.Localizer[nameof(AppResources.Ok)]);
-		}
-
-		[RelayCommand]
-		private async Task ClearBrandingAndKycCacheAsync()
-		{
 			try
 			{
+				// Internet cache
+				await Database.FindDelete<CacheEntry>(
+					new FilterFieldGreaterOrEqualTo("Url", string.Empty));
+				await Database.Provider.Flush();
+
+				// Branding and KYC invalidations
 				string? domain = ServiceRef.TagProfile.Domain;
 				string? pubSub = ServiceRef.TagProfile.PubSubJid;
-				if (string.IsNullOrWhiteSpace(domain) && string.IsNullOrWhiteSpace(pubSub))
-				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
-						ServiceRef.Localizer[nameof(AppResources.PubSubServiceNotFound)],
-						ServiceRef.Localizer[nameof(AppResources.Ok)]);
-					return;
-				}
-
-				int removed = 0;
 				ICacheInvalidationService invalidation = Waher.Runtime.Inventory.Types.InstantiateDefault<ICacheInvalidationService>(false);
-				// Invalidate KYC entries grouped by domain
 				if (!string.IsNullOrWhiteSpace(domain))
-					removed += await invalidation.InvalidateByParentId($"KycProcess:{domain}", scope: "Kyc");
-
-				// Invalidate Internet cache entries grouped by PubSub JID (branding descriptors)
+					await invalidation.InvalidateByParentId($"KycProcess:{domain}", scope: "Kyc");
 				if (!string.IsNullOrWhiteSpace(pubSub))
-					removed += await invalidation.InvalidateByParentId(pubSub, scope: "Branding");
+					await invalidation.InvalidateByParentId(pubSub, scope: "Branding");
 
-				// Clear ThemeService’s local branding descriptor cache for current domain
-				removed += await ServiceRef.ThemeService.ClearBrandingCacheForCurrentDomain();
+				// ThemeService local cache
+				await ServiceRef.ThemeService.ClearBrandingCacheForCurrentDomain();
+
+
+				// Remove KYC drafts/current application (delete all, robustly)
+				IEnumerable<KycReference> drafts = Array.Empty<KycReference>();
+				try { drafts = await Database.Find<KycReference>(); } catch { /* ignore */ }
+				foreach (KycReference draft in drafts)
+				{
+					try { await Database.Delete(draft); } catch { /* ignore individual failures */ }
+				}
+				await Database.Provider.Flush();
 
 				await ServiceRef.UiService.DisplayAlert(
 					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
@@ -660,6 +651,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
+
+
 		#endregion
 
 		public void SetBetaFeaturesEnabled(bool Enabled)

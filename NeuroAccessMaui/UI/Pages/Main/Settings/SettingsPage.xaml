@@ -185,21 +185,7 @@
 							</Border>
 						</controls:TemplatedButton>
 
-						<controls:TemplatedButton HorizontalOptions="Fill"
-												  Command="{x:Binding ClearBrandingAndKycCacheCommand}">
-							<Border Style="{DynamicResource BorderSubSet}"
-									InputTransparent="True">
-								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-													 InputTransparent="True">
-									<Label Style="{DynamicResource SectionTitleLabel}"
-										   Text="{l:Localize ClearBrandingAndKycCache}"
-										   InputTransparent="True" />
-									<Label Style="{DynamicResource ItemDescriptionLabel}"
-										   Text="{l:Localize ClearBrandingAndKycCacheDescription}"
-										   InputTransparent="True" />
-								</VerticalStackLayout>
-							</Border>
-						</controls:TemplatedButton>
+                        
 					</VerticalStackLayout>
 				</Border>
 
