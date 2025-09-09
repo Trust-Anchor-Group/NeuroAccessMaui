@@ -404,7 +404,7 @@
 			<Text lang="en">About the Company</Text>
 		</Title>
 		<Description>
-			<Text lang="en">Company Address</Text>
+			<Text lang="en">Address Information</Text>
 		</Description>
 		<Condition>
 			<FieldRef>isOrganization</FieldRef>
