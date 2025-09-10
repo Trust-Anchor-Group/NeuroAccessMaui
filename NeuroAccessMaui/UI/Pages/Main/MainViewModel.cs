@@ -15,6 +15,7 @@ using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using System.Globalization;
 using NeuroAccessMaui.Services.Kyc;
+using NeuroAccessMaui.UI.Pages.Applications.Applications;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -172,9 +173,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-				KycReference Ref = await ServiceRef.KycService.LoadKycReferenceAsync(Language);
-				await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Ref));
+				await ServiceRef.UiService.GoToAsync(nameof(ApplicationsPage));
 			}
 			catch (Exception Ex)
 			{
