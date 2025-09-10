@@ -99,7 +99,23 @@
 	</Entry>
 	<Entry country="SE" displayString="YYYYMMDD-NNNN">
 		<Pattern variable="PNR"><![CDATA[PNR like "(?'YYYY'(19|20)?(?'D1'\\d)(?'D2'\\d))(?'MM'(?'D3'\\d)(?'D4'\\d))(?'DD'(?'D5'\\d)(?'D6'\\d))-?(?'NNNN'(?'D7'\\d)(?'D8'\\d)(?'D9'\\d)(?'D10'\\d))"]]></Pattern>
-		<Check><![CDATA[v:=[D1,D2,D3,D4,D5,D6,D7,D8,D9,D10].*[2,1,2,1,2,1,2,1,2,1];(sum(v > 9 ? v-9 : v) MOD 10 = 0)and(MM>=1)and(MM<=12)and(DD>=1)and(DD<=System.DateTime.DaysInMonth((YYYY<30?2000:YYYY<100?1900:0)+YYYY,MM))]]></Check>
+		<Check>
+			<![CDATA[
+			  // Luhn (mod10) on the 10 digits
+			  v := [D1,D2,D3,D4,D5,D6,D7,D8,D9,D10] .* [2,1,2,1,2,1,2,1,2,1];
+			  luhnOk := (sum(v > 9 ? v-9 : v) MOD 10 = 0);
+
+			  // Expand 2-digit year to 4-digit
+			  YR := ((YYYY < 30 ? 2000 : (YYYY < 100 ? 1900 : 0)) + YYYY);
+
+			  // Validate month/day without crashing
+			  mOk := (MM >= 1) and (MM <= 12);
+			  dMax := mOk ? System.DateTime.DaysInMonth(YR, MM) : 31;  // only call when month is valid
+			  dOk := (DD >= 1) and (DD <= dMax);
+
+			  R := luhnOk and mOk and dOk;
+			]]>
+		</Check>
 		<Normalize><![CDATA[(YYYY_STR.Length=4?YYYY_STR:(YYYY<30?"20":"19")+YYYY_STR)+MM_STR+DD_STR+"-"+NNNN_STR]]></Normalize>
 	</Entry>
 	<Entry country="SI" displayString="DDMMYYYRRBBBK (UMCN)">
