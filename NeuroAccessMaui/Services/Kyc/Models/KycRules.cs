@@ -56,6 +56,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			{
 				FieldType.Date => Field is ObservableDateField DateField && DateField.DateValue is null,
 				FieldType.Picker => Field is ObservablePickerField PickerField && PickerField.SelectedOption is null,
+				FieldType.Gender => Field is ObservablePickerField GenderField && GenderField.SelectedOption is null,
 				FieldType.Radio => Field is ObservableRadioField RadioField && RadioField.SelectedOption is null,
 				FieldType.Boolean => Field is ObservableBooleanField BoolField && BoolField.BoolValue != true,
 				// Consider both UI selection list and serialized StringValue (populated during deserialization).

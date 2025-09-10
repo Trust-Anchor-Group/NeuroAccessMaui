@@ -234,6 +234,7 @@
 					</BindableLayout.ItemTemplate>
 				</VerticalStackLayout>
 
+				<Button Command="{Binding CreateNewApplicationCommand}"/>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

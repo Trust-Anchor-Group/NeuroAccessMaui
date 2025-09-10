@@ -36,6 +36,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				FieldType.Picker => this.PickerFieldTemplate,
 				FieldType.Radio => this.RadioFieldTemplate ?? this.PickerFieldTemplate,
 				FieldType.Country => this.CountryFieldTemplate ?? this.PickerFieldTemplate,
+				FieldType.Gender => this.PickerFieldTemplate,
 				FieldType.Checkbox => this.CheckboxFieldTemplate ?? this.PickerFieldTemplate,
 				FieldType.File => this.FileUploadFieldTemplate,
 				FieldType.Image => this.ImageUploadFieldTemplate,
