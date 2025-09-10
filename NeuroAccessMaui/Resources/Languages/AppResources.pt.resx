@@ -2996,4 +2996,40 @@
   <data name="Progress" xml:space="preserve">
     <value>Progresso</value>
   </data>
+  <data name="TradeName" xml:space="preserve">
+    <value>Nome fantasia</value>
+  </data>
+  <data name="LegalName" xml:space="preserve">
+    <value>Nome legal</value>
+  </data>
+  <data name="OrgRepName" xml:space="preserve">
+    <value>Nome do representante</value>
+  </data>
+  <data name="OrgRepCPF" xml:space="preserve">
+    <value>CPF do representante</value>
+  </data>
+  <data name="OrgRepBirthDate" xml:space="preserve">
+    <value>Data de nascimento do representante</value>
+  </data>
+  <data name="OrgRepRG" xml:space="preserve">
+    <value>RG do representante</value>
+  </data>
+  <data name="OrgEMail" xml:space="preserve">
+    <value>E-mail corporativo</value>
+  </data>
+  <data name="OrgPhone" xml:space="preserve">
+    <value>Telefone corporativo</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Nome completo</value>
+  </data>
+  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
+    <value>Estatuto social</value>
+  </data>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Remove dados temporários, como imagens e anexos, para liberar espaço</value>
+  </data>
+  <data name="ClearBrandingAndKycCache" xml:space="preserve">
+    <value>Limpar cache de branding e KYC</value>
+  </data>
 </root>

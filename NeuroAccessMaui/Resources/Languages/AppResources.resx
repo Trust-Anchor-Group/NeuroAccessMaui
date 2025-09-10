@@ -2822,12 +2822,6 @@
   <data name="ClearCache" xml:space="preserve">
     <value>Clear cache</value>
   </data>
-  <data name="ClearCacheDescription" xml:space="preserve">
-    <value>Removes temporary data like images and attachments to free up space</value>
-  </data>
-  <data name="ClearBrandingAndKycCache" xml:space="preserve">
-    <value>Clear branding &amp; KYC cache</value>
-  </data>
   <data name="ClearBrandingAndKycCacheDescription" xml:space="preserve">
     <value>Removes branding and KYC data for the current domain</value>
   </data>
@@ -3001,5 +2995,41 @@
   </data>
   <data name="Progress" xml:space="preserve">
     <value>Progress</value>
+  </data>
+  <data name="TradeName" xml:space="preserve">
+    <value>Trade name</value>
+  </data>
+  <data name="LegalName" xml:space="preserve">
+    <value>Legal name</value>
+  </data>
+  <data name="OrgRepName" xml:space="preserve">
+    <value>Representative name</value>
+  </data>
+  <data name="OrgRepCPF" xml:space="preserve">
+    <value>Representative CPF</value>
+  </data>
+  <data name="OrgRepBirthDate" xml:space="preserve">
+    <value>Representative birth date</value>
+  </data>
+  <data name="OrgRepRG" xml:space="preserve">
+    <value>Representative RG</value>
+  </data>
+  <data name="OrgEMail" xml:space="preserve">
+    <value>Corporate email</value>
+  </data>
+  <data name="OrgPhone" xml:space="preserve">
+    <value>Corporate phone</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Full name</value>
+  </data>
+  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
+    <value>Article of association</value>
+  </data>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Removes temporary data like images and attachments to free up space</value>
+  </data>
+  <data name="ClearBrandingAndKycCache" xml:space="preserve">
+    <value>Clear branding &amp; KYC cache</value>
   </data>
 </root>

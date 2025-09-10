@@ -44,6 +44,17 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private ObservableCollection<DisplayQuad> personalInformationSummary;
 		[ObservableProperty] private ObservableCollection<DisplayQuad> addressInformationSummary;
 		[ObservableProperty] private ObservableCollection<DisplayQuad> attachmentInformationSummary;
+		[ObservableProperty] private ObservableCollection<DisplayQuad> companyInformationSummary;
+		[ObservableProperty] private ObservableCollection<DisplayQuad> companyAddressSummary;
+		[ObservableProperty] private ObservableCollection<DisplayQuad> companyRepresentativeSummary;
+
+		[ObservableProperty] private bool hasPersonalInformation = false;
+		[ObservableProperty] private bool hasAddressInformation = false;
+		[ObservableProperty] private bool hasAttachments = false;
+		[ObservableProperty] private bool hasCompanyInformation = false;
+		[ObservableProperty] private bool hasCompanyAddress = false;
+		[ObservableProperty] private bool hasCompanyRepresentative = false;
+
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
 
@@ -359,6 +370,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (SoughtMapping == "BDATE")
 			{
 				Mappings = ["BDAY", "BMONTH", "BYEAR"];
+			}
+			else if (SoughtMapping == "ORGREPBDATE")
+			{
+				Mappings = ["ORGREPBDAY", "ORGREPBMONTH", "ORGREPBYEAR"];
 			}
 			else
 			{
@@ -1062,6 +1077,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.PersonalInformationSummary = new ObservableCollection<DisplayQuad>();
 			this.AddressInformationSummary = new ObservableCollection<DisplayQuad>();
 			this.AttachmentInformationSummary = new ObservableCollection<DisplayQuad>();
+			this.CompanyInformationSummary = new ObservableCollection<DisplayQuad>();
+			this.CompanyAddressSummary = new ObservableCollection<DisplayQuad>();
+			this.CompanyRepresentativeSummary = new ObservableCollection<DisplayQuad>();
 
 			if (this.process is null)
 			{
@@ -1074,20 +1092,41 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.attachments.Select(a => new IdentitySummaryFormatter.AttachmentInfo(a.FileName ?? string.Empty, a.ContentType))
 			);
 
-			foreach (DisplayQuad Triple in Summary.Personal)
+			foreach (DisplayQuad Quad in Summary.Personal)
 			{
-				this.PersonalInformationSummary.Add(Triple);
+				this.PersonalInformationSummary.Add(Quad);
 			}
+			this.HasPersonalInformation = this.PersonalInformationSummary.Count > 0;
 
-			foreach (DisplayQuad Triple in Summary.Address)
+			foreach (DisplayQuad Quad in Summary.Address)
 			{
-				this.AddressInformationSummary.Add(Triple);
+				this.AddressInformationSummary.Add(Quad);
 			}
+			this.HasAddressInformation = this.AddressInformationSummary.Count > 0;
 
-			foreach (DisplayQuad Triple in Summary.Attachments)
+			foreach (DisplayQuad Quad in Summary.Attachments)
 			{
-				this.AttachmentInformationSummary.Add(Triple);
+				this.AttachmentInformationSummary.Add(Quad);
 			}
+			this.HasAttachments = this.AttachmentInformationSummary.Count > 0;
+
+			foreach (DisplayQuad Quad in Summary.CompanyInfo)
+			{
+				this.CompanyInformationSummary.Add(Quad);
+			}
+			this.HasCompanyInformation = this.CompanyInformationSummary.Count > 0;
+
+			foreach (DisplayQuad Quad in Summary.CompanyAddress)
+			{
+				this.CompanyAddressSummary.Add(Quad);
+			}
+			this.HasCompanyAddress = this.CompanyAddressSummary.Count > 0;
+
+			foreach (DisplayQuad Quad in Summary.CompanyRepresentative)
+			{
+				this.CompanyRepresentativeSummary.Add(Quad);
+			}
+			this.HasCompanyRepresentative = this.CompanyRepresentativeSummary.Count > 0;
 		}
 	}
 }
