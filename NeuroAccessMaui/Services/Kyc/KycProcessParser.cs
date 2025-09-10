@@ -25,15 +25,22 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <summary>
 		/// Parses the KYC pages from an XML string.
 		/// </summary>
-		public static Task<KycProcess> LoadProcessAsync(string Xml, string? Lang = null)
-		{
-			KycProcess Process = new();
-			XDocument Doc = XDocument.Parse(Xml);
+        public static Task<KycProcess> LoadProcessAsync(string Xml, string? Lang = null)
+        {
+            KycProcess Process = new();
+            XDocument Doc = XDocument.Parse(Xml);
 
-			foreach (XElement PageEl in Doc.Root?.Elements("Page") ?? Enumerable.Empty<XElement>())
-			{
-				KycPage Page = new KycPage
-				{
+            // Optional process-level name (localized)
+            if (Doc.Root is not null)
+            {
+                Process.Name = ParseLocalizedText(Doc.Root.Element("Name"))
+                                ?? ParseLegacyText(Doc.Root.Attribute("name"), Lang);
+            }
+
+            foreach (XElement PageEl in Doc.Root?.Elements("Page") ?? Enumerable.Empty<XElement>())
+            {
+                KycPage Page = new KycPage
+                {
 					Id = (string?)PageEl.Attribute("id") ?? string.Empty,
 					Title = ParseLocalizedText(PageEl.Element("Title"))
 							?? ParseLegacyText(PageEl.Attribute("title"), Lang),

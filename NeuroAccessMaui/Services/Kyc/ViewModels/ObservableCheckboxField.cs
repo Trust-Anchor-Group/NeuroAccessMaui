@@ -8,6 +8,9 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
     /// </summary>
     public class ObservableCheckboxField : ObservableKycField
     {
+        /// <summary>
+        /// Gets or sets the value as a comma-separated list of selected option values.
+        /// </summary>
         public override string? StringValue
         {
             get => string.Join(",", this.SelectedOptions.Select(o => o.Value));

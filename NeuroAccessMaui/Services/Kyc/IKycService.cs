@@ -17,5 +17,11 @@ namespace NeuroAccessMaui.Services.Kyc
 		Task<KycReference> LoadKycReferenceAsync(string? Lang = null);
 
 		Task SaveKycReferenceAsync(KycReference Reference);
+
+		/// <summary>
+		/// Loads available KYC processes from server, falling back to bundled test KYC.
+		/// </summary>
+		/// <param name="Lang">Optional language code.</param>
+		Task<IReadOnlyList<KycReference>> LoadAvailableKycReferencesAsync(string? Lang = null);
 	}
 }

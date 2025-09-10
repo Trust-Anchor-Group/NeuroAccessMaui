@@ -190,10 +190,86 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				Page.UpdateVisibilities(this.process.Values);
 			}
 
-			this.currentPageIndex = -1;
-			this.currentPageIndex = this.GetNextIndex();
-			this.CurrentPagePosition = this.currentPageIndex;
-			this.SetCurrentPage(this.currentPageIndex);
+			// Resume logic: decide where to open the process
+			int ResumeIndex = -1;
+			bool ResumeSummary = false;
+			if (!string.IsNullOrEmpty(this.kycReference.LastVisitedMode) &&
+				string.Equals(this.kycReference.LastVisitedMode, "Summary", StringComparison.OrdinalIgnoreCase))
+			{
+				ResumeSummary = true;
+			}
+
+			if (!ResumeSummary && !string.IsNullOrEmpty(this.kycReference.LastVisitedPageId))
+			{
+				for (int i = 0; i < this.Pages.Count; i++)
+				{
+					KycPage P = this.Pages[i];
+					if (string.Equals(P.Id, this.kycReference.LastVisitedPageId, StringComparison.Ordinal) && P.IsVisible(this.process.Values))
+					{
+						ResumeIndex = i;
+						break;
+					}
+				}
+			}
+
+			if (ResumeSummary)
+			{
+				// Validate all and decide: if any invalid page exists, navigate there instead of summary.
+				int firstInvalid = await this.GetFirstInvalidVisiblePageIndexAsync();
+				if (firstInvalid >= 0)
+				{
+					this.ShouldReturnToSummary = true; // after fixing, return to summary on continue
+					this.ShouldViewSummary = false;
+					this.currentPageIndex = firstInvalid;
+					this.CurrentPagePosition = this.currentPageIndex;
+					this.SetCurrentPage(this.currentPageIndex);
+					this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
+				}
+                else
+                {
+                    // Prepare summary view and keep an underlying current page (previous visible)
+                    await this.ProcessData();
+                    this.currentPageIndex = this.Pages.Count; // sentinel after last
+                    this.currentPageIndex = this.GetPreviousIndex();
+					if (this.currentPageIndex >= 0)
+					{
+						this.CurrentPagePosition = this.currentPageIndex;
+						this.SetCurrentPage(this.currentPageIndex);
+					}
+                    this.ShouldReturnToSummary = false;
+                    this.ShouldViewSummary = true;
+                    this.OnPropertyChanged(nameof(this.Progress));
+                    this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+
+                    // Persist resume mode as Summary to avoid landing on last page on next open
+                    if (this.kycReference is not null)
+                    {
+                        this.kycReference.LastVisitedMode = "Summary";
+                        this.UpdateReference();
+                        await this.SaveReferenceToStorageAsync();
+                    }
+                }
+            }
+			else
+			{
+				// When starting fresh (no resume), open the FIRST visible page (index 0 if visible).
+				// Previous logic used GetNextIndex() from default index 0, which always skipped the first page.
+				int InitialIndex;
+				if (ResumeIndex >= 0)
+				{
+					InitialIndex = ResumeIndex;
+				}
+				else
+				{
+					// Force next-index calculation to start from before the first page
+					this.currentPageIndex = -1;
+					InitialIndex = this.GetNextIndex();
+				}
+
+				this.currentPageIndex = InitialIndex;
+				this.CurrentPagePosition = this.currentPageIndex;
+				this.SetCurrentPage(this.currentPageIndex);
+			}
 
 			// Set initial localized label for the next/apply button
 			this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
@@ -276,6 +352,15 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.HasSections = this.CurrentPageSections is not null && this.CurrentPageSections.Count > 0;
 
 			this.OnPropertyChanged(nameof(this.Progress));
+
+			// Persist last visited page when in form mode and not in quick return-to-summary flow.
+			if (!this.ShouldViewSummary && !this.ShouldReturnToSummary && this.kycReference is not null)
+			{
+				this.kycReference.LastVisitedPageId = this.CurrentPage?.Id;
+				this.kycReference.LastVisitedMode = "Form";
+				this.UpdateReference();
+				_ = this.SaveReferenceToStorageAsync();
+			}
 
 			// Scroll to top of page when changing pages
 
@@ -406,51 +491,85 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return AllVisibleFields.All(Field => Field.IsValid);
 		}
 
-		private async Task ExecuteNextAsync()
-		{
-			ServiceRef.PlatformSpecific.HideKeyboard();
+        private async Task ExecuteNextAsync()
+        {
+            ServiceRef.PlatformSpecific.HideKeyboard();
 
-			bool IsValid = await this.ValidateCurrentPageAsync();
-			if (!IsValid)
-			{
-				return;
-			}
+            bool IsValid = await this.ValidateCurrentPageAsync();
+            if (!IsValid)
+            {
+                return;
+            }
 
-			this.UpdateReference();
-			await this.SaveReferenceToStorageAsync();
+            this.UpdateReference();
+            await this.SaveReferenceToStorageAsync();
 
-			int NextIndex = this.GetNextIndex();
-			if (NextIndex < this.Pages.Count)
-			{
-				this.currentPageIndex = NextIndex;
-				this.CurrentPagePosition = NextIndex;
-				this.SetCurrentPage(this.currentPageIndex);
-				this.ScrollUp();
-			}
-			else
-			{
-				if (this.ShouldViewSummary)
-				{
-					await this.ExecuteApplyAsync();
-				}
-				else
-				{
-					await this.ProcessData();
+            // If we came here from a quick edit initiated on Summary, prefer returning to Summary
+            if (this.ShouldReturnToSummary)
+            {
+                int firstInvalid = await this.GetFirstInvalidVisiblePageIndexAsync();
+                if (firstInvalid >= 0)
+                {
+                    // Still something to fix: jump to the first invalid page
+                    this.currentPageIndex = firstInvalid;
+                    this.CurrentPagePosition = this.currentPageIndex;
+                    this.SetCurrentPage(this.currentPageIndex);
+                    this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
+                    this.ScrollUp();
+                    return;
+                }
+                else
+                {
+                    // All valid: return to Summary directly
+                    await this.ProcessData();
+                    this.ScrollUp();
+                    this.ShouldViewSummary = true;
+                    this.ShouldReturnToSummary = false;
+                    this.OnPropertyChanged(nameof(this.Progress));
+                    this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+                    // Persist state for resume
+                    this.UpdateReference();
+                    await this.SaveReferenceToStorageAsync();
+                    return;
+                }
+            }
 
-					this.ScrollUp();
-					// Go to Summary Page
-					this.ShouldViewSummary = true;
+            int NextIndex = this.GetNextIndex();
+            if (NextIndex < this.Pages.Count)
+            {
+                this.currentPageIndex = NextIndex;
+                this.CurrentPagePosition = NextIndex;
+                this.SetCurrentPage(this.currentPageIndex);
+                this.ScrollUp();
+            }
+            else
+            {
+                if (this.ShouldViewSummary)
+                {
+                    await this.ExecuteApplyAsync();
+                }
+                else
+                {
+                    await this.ProcessData();
 
-					this.OnPropertyChanged(nameof(this.Progress));
+                    this.ScrollUp();
+                    // Go to Summary Page
+                    this.ShouldViewSummary = true;
 
-					// Persist 100% progress when entering summary
-					this.UpdateReference();
-					await this.SaveReferenceToStorageAsync();
+                    this.OnPropertyChanged(nameof(this.Progress));
 
-					this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
-				}
-			}
-		}
+                    // Persist 100% progress and summary mode when entering summary via Next
+                    if (this.kycReference is not null)
+                    {
+                        this.kycReference.LastVisitedMode = "Summary";
+                    }
+                    this.UpdateReference();
+                    await this.SaveReferenceToStorageAsync();
+
+                    this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+                }
+            }
+        }
 
 		public event EventHandler? ScrollToTop;
 
@@ -480,6 +599,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.ScrollUp();
 			this.ShouldViewSummary = true;
 			this.ShouldReturnToSummary = false;
+
+			// Persist last visited mode: Summary
+			if (this.kycReference is not null)
+			{
+				this.kycReference.LastVisitedMode = "Summary";
+				this.UpdateReference();
+				await this.SaveReferenceToStorageAsync();
+			}
 
 			this.OnPropertyChanged(nameof(this.Progress));
 			this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
@@ -519,7 +646,20 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			if (this.ShouldReturnToSummary)
 			{
-				await this.GoToSummaryAsync();
+				// Only go to summary if all visible pages are valid; otherwise navigate to first invalid.
+				int firstInvalid = await this.GetFirstInvalidVisiblePageIndexAsync();
+				if (firstInvalid >= 0)
+				{
+					this.ShouldViewSummary = false;
+					this.currentPageIndex = firstInvalid;
+					this.CurrentPagePosition = this.currentPageIndex;
+					this.SetCurrentPage(this.currentPageIndex);
+					this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
+				}
+				else
+				{
+					await this.GoToSummaryAsync();
+				}
 				return;
 			}
 
@@ -582,6 +722,49 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			);
 
 			return IsOk;
+		}
+
+		private async Task<int> GetFirstInvalidVisiblePageIndexAsync()
+		{
+			if (this.process is null)
+			{
+				return -1;
+			}
+
+			for (int i = 0; i < this.Pages.Count; i++)
+			{
+				KycPage page = this.Pages[i];
+				if (!page.IsVisible(this.process.Values))
+				{
+					continue;
+				}
+
+				IEnumerable<ObservableKycField> fields = page.VisibleFields;
+				ReadOnlyObservableCollection<KycSection> sections = page.VisibleSections;
+				if (sections is not null)
+					fields = fields.Concat(sections.SelectMany(s => s.VisibleFields));
+
+				bool ok = true;
+				List<Task> validationTasks = new();
+				foreach (ObservableKycField field in fields)
+				{
+					field.ValidationTask.Run();
+					Task t = MainThread.InvokeOnMainThreadAsync(async () =>
+					{
+						await field.ValidationTask.WaitAllAsync();
+						if (!field.IsValid)
+							ok = false;
+					});
+					validationTasks.Add(t);
+				}
+				await Task.WhenAll(validationTasks);
+				if (!ok)
+				{
+					return i;
+				}
+			}
+
+			return -1;
 		}
 
 		[RelayCommand]
@@ -699,11 +882,33 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 			}
 
+			/// Get values from TagProfile if not already mapped else get from current id, if any.
+			string? JID = null;
+			string? Phone = null;
+			string? EMail = null;
+			if (ServiceRef.TagProfile.LegalIdentity is not null)
+			{
+				JID = ServiceRef.TagProfile.LegalIdentity?.Properties.Where((P) => P.Name == Constants.XmppProperties.Jid).FirstOrDefault()?.Value ?? string.Empty;
+				Phone = ServiceRef.TagProfile.LegalIdentity?.Properties.Where((P) => P.Name == Constants.XmppProperties.Phone).FirstOrDefault()?.Value ?? string.Empty;
+				EMail = ServiceRef.TagProfile.LegalIdentity?.Properties.Where((P) => P.Name == Constants.XmppProperties.EMail).FirstOrDefault()?.Value ?? string.Empty;
+			}
+
+			if(string.IsNullOrEmpty(JID))
+				JID = ServiceRef.XmppService.BareJid ?? string.Empty;
+			if(string.IsNullOrEmpty(Phone))
+				Phone = ServiceRef.TagProfile.PhoneNumber ?? string.Empty;
+			if(string.IsNullOrEmpty(EMail))
+				EMail = ServiceRef.TagProfile.EMail ?? string.Empty;
+
 			// Add special properties
 			this.mappedValues.Add(new Property(Constants.XmppProperties.DeviceId, ServiceRef.PlatformSpecific.GetDeviceId()));
-			this.mappedValues.Add(new Property(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid));
-			this.mappedValues.Add(new Property(Constants.XmppProperties.Phone, ServiceRef.TagProfile.PhoneNumber));
-			this.mappedValues.Add(new Property(Constants.XmppProperties.EMail, ServiceRef.TagProfile.EMail));
+
+			if(!this.process.HasMapping(Constants.XmppProperties.Jid))
+				this.mappedValues.Add(new Property(Constants.XmppProperties.Jid, JID));
+			if(!this.process.HasMapping(Constants.XmppProperties.Phone))
+				this.mappedValues.Add(new Property(Constants.XmppProperties.Phone, Phone));
+			if(!this.process.HasMapping(Constants.XmppProperties.EMail))
+				this.mappedValues.Add(new Property(Constants.XmppProperties.EMail, EMail));
 
 			if (!this.process.HasMapping(Constants.XmppProperties.Country) && !string.IsNullOrEmpty(ServiceRef.TagProfile.SelectedCountry))
 				this.mappedValues.Add(new Property(Constants.XmppProperties.Country, ISO_3166_1.ToName(ServiceRef.TagProfile.SelectedCountry) ?? ServiceRef.TagProfile.SelectedCountry));

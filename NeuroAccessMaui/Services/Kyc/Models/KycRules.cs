@@ -2,21 +2,43 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 
 namespace NeuroAccessMaui.Services.Kyc.Models
 {
-	public interface IKycRule
-	{
-		bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null);
-	}
+    /// <summary>
+    /// Contract for synchronous KYC field validation rules.
+    /// </summary>
+    public interface IKycRule
+    {
+        /// <summary>
+        /// Validates a field and returns a result.
+        /// </summary>
+        /// <param name="Field">Field to validate.</param>
+        /// <param name="process">Owning process, if any.</param>
+        /// <param name="Error">Receives localized error message on failure.</param>
+        /// <param name="Lang">Preferred language for error messages.</param>
+        /// <returns>True if valid; otherwise false.</returns>
+        bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null);
+    }
 
-	public interface IAsyncKycRule: IKycRule
-	{
-		Task<(bool Ok, string? Error)> ValidateAsync(ObservableKycField field, KycProcess? process, string? lang = null);
-	}
+    /// <summary>
+    /// Contract for asynchronous KYC field validation rules.
+    /// </summary>
+    public interface IAsyncKycRule: IKycRule
+    {
+        /// <summary>
+        /// Asynchronously validates a field and returns a result and optional error message.
+        /// </summary>
+        /// <param name="field">Field to validate.</param>
+        /// <param name="process">Owning process, if any.</param>
+        /// <param name="lang">Preferred language for error messages.</param>
+        /// <returns>Tuple containing validation result and optional error message.</returns>
+        Task<(bool Ok, string? Error)> ValidateAsync(ObservableKycField field, KycProcess? process, string? lang = null);
+    }
 
 	/// <summary>
 	/// Ensures the field has a value if required.
@@ -37,7 +59,9 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 				FieldType.Gender => Field is ObservablePickerField GenderField && GenderField.SelectedOption is null,
 				FieldType.Radio => Field is ObservableRadioField RadioField && RadioField.SelectedOption is null,
 				FieldType.Boolean => Field is ObservableBooleanField BoolField && BoolField.BoolValue != true,
-				FieldType.Checkbox => Field is ObservableCheckboxField CheckboxField && (CheckboxField.SelectedOptions == null || CheckboxField.SelectedOptions.Count == 0),
+				// Consider both UI selection list and serialized StringValue (populated during deserialization).
+				FieldType.Checkbox => Field is ObservableCheckboxField CheckboxField &&
+					( (CheckboxField.SelectedOptions == null || CheckboxField.SelectedOptions.Count == 0) && string.IsNullOrEmpty(Field.StringValue) ),
 				FieldType.File => Field is ObservableFileField FileField && (FileField.StringValue is not string FileValue || string.IsNullOrEmpty(FileValue)),
 				FieldType.Email or FieldType.Phone or FieldType.Text => string.IsNullOrEmpty(Field.StringValue),
 				FieldType.Integer => Field is ObservableIntegerField IntField && IntField.IntValue is null,
@@ -246,7 +270,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			if (Field.FieldType == FieldType.Text && Field.StringValue is string Pnr && !string.IsNullOrEmpty(Pnr))
 			{
 				// If we have a reference to a country field, use its value to determine country code
-				if (this.fieldRef is not null)
+				if (!string.IsNullOrEmpty(this.fieldRef))
 				{
 					CountryCode = Process.Values.TryGetValue(this.fieldRef, out string? Cc) && !string.IsNullOrEmpty(Cc) ? Cc : string.Empty;
 				} // else use the country from current ID
@@ -254,7 +278,8 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 				{
 					try
 					{
-						CountryCode = ServiceRef.TagProfile.LegalIdentity?.GetPersonalInformation().Country;
+						CountryCode = ServiceRef.TagProfile.SelectedCountry ??
+						ServiceRef.TagProfile.LegalIdentity?.Properties?.FirstOrDefault(p =>p.Name.Equals(Constants.XmppProperties.Country, StringComparison.OrdinalIgnoreCase))?.Value ?? string.Empty;
 					}
 					catch (Exception)
 					{

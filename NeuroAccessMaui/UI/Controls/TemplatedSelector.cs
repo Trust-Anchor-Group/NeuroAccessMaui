@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using Microsoft.Maui.Controls;
 
 namespace NeuroAccessMaui.UI.Controls
@@ -25,7 +26,7 @@ namespace NeuroAccessMaui.UI.Controls
             nameof(SelectedItem), typeof(object), typeof(TemplatedSelector), defaultBindingMode: BindingMode.TwoWay);
 
         public static readonly BindableProperty SelectedItemsProperty = BindableProperty.Create(
-            nameof(SelectedItems), typeof(IList), typeof(TemplatedSelector), defaultValue: new ObservableCollection<object>(), defaultBindingMode: BindingMode.TwoWay);
+            nameof(SelectedItems), typeof(IList), typeof(TemplatedSelector), defaultValue: new ObservableCollection<object>(), defaultBindingMode: BindingMode.TwoWay, propertyChanged: OnSelectedItemsChanged);
         public static readonly BindableProperty SelectOnTapProperty = BindableProperty.Create(
             nameof(SelectOnTap), typeof(bool), typeof(TemplatedSelector), false);
 
@@ -64,9 +65,43 @@ namespace NeuroAccessMaui.UI.Controls
             set => this.SetValue(SelectedItemsProperty, value);
         }
 
+        private bool syncingSelection = false;
+
         public TemplatedSelector()
         {
 			this.Orientation = StackOrientation.Vertical;
+            TryAttachSelectedItemsHandler(this.SelectedItems);
+        }
+
+        private static void OnSelectedItemsChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            if (bindable is TemplatedSelector selector)
+            {
+                selector.TryDetachSelectedItemsHandler(oldValue as IList);
+                selector.TryAttachSelectedItemsHandler(newValue as IList);
+                selector.SyncSelectionFromSelectedItems();
+            }
+        }
+
+        private void TryAttachSelectedItemsHandler(IList? list)
+        {
+            if (list is INotifyCollectionChanged incc)
+            {
+                incc.CollectionChanged += this.SelectedItems_CollectionChanged;
+            }
+        }
+
+        private void TryDetachSelectedItemsHandler(IList? list)
+        {
+            if (list is INotifyCollectionChanged incc)
+            {
+                incc.CollectionChanged -= this.SelectedItems_CollectionChanged;
+            }
+        }
+
+        private void SelectedItems_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.SyncSelectionFromSelectedItems();
         }
 
         private static void OnItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
@@ -109,10 +144,16 @@ namespace NeuroAccessMaui.UI.Controls
                 }
                 this.Children.Add(Content);
             }
+            // After (re)building, sync selection state visually
+            this.SyncSelectionFromSelectedItems();
         }
 
         private void OnChildIsSelectedChanged(object? sender, EventArgs e)
         {
+            if (this.syncingSelection)
+            {
+                return; // avoid feedback loop during sync
+            }
             if (sender is NeuroAccessMaui.Core.ISelectable ChangedSelectable)
             {
                 object Item = (ChangedSelectable is SelectableOption<object> So) ? So.Item : ChangedSelectable;
@@ -197,6 +238,28 @@ namespace NeuroAccessMaui.UI.Controls
                         this.SelectedItems.Remove(Item);
                     }
                 }
+            }
+        }
+
+        private void SyncSelectionFromSelectedItems()
+        {
+            try
+            {
+                this.syncingSelection = true;
+                HashSet<object> selected = new HashSet<object>(this.SelectedItems?.Cast<object>() ?? Enumerable.Empty<object>());
+                foreach (View child in this.Children)
+                {
+                    if (child.BindingContext is NeuroAccessMaui.Core.ISelectable selectable)
+                    {
+                        object item = (selectable is SelectableOption<object> so) ? so.Item : selectable;
+                        bool shouldSelect = selected.Contains(item);
+                        selectable.IsSelected = shouldSelect;
+                    }
+                }
+            }
+            finally
+            {
+                this.syncingSelection = false;
             }
         }
 
