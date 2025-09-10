@@ -252,7 +252,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
             }
 			else
 			{
-				this.currentPageIndex = ResumeIndex >= 0 ? ResumeIndex : this.GetNextIndex();
+				// When starting fresh (no resume), open the FIRST visible page (index 0 if visible).
+				// Previous logic used GetNextIndex() from default index 0, which always skipped the first page.
+				int InitialIndex;
+				if (ResumeIndex >= 0)
+				{
+					InitialIndex = ResumeIndex;
+				}
+				else
+				{
+					// Force next-index calculation to start from before the first page
+					this.currentPageIndex = -1;
+					InitialIndex = this.GetNextIndex();
+				}
+
+				this.currentPageIndex = InitialIndex;
 				this.CurrentPagePosition = this.currentPageIndex;
 				this.SetCurrentPage(this.currentPageIndex);
 			}
