@@ -254,15 +254,37 @@ namespace NeuroAccessMaui.Services.Kyc
 				}
 			}
 
-			// For country fields, if no options defined, load all countries
-			if (Field is ObservableCountryField && Field.Options.Count == 0)
+			// For country fields
+			if (Field is ObservableCountryField CountryField)
 			{
-				foreach (ISO_3166_Country Country in ISO_3166_1.Countries)
+				string DefaultCountry;
+				// Set default to current country
+				try
 				{
-					KycLocalizedText LocalizedText = new KycLocalizedText();
-					LocalizedText.Add(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, Country.FlagAndName);
+					DefaultCountry = ServiceRef.TagProfile.LegalIdentity?.GetPersonalInformation().Country;
+				}
+				catch (Exception)
+				{
+					DefaultCountry = string.Empty;
+				}
 
-					Field.Options.Add(new KycOption(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, LocalizedText));
+				// if no options defined, load all countries
+				if (CountryField.Options.Count == 0)
+				{
+					foreach (ISO_3166_Country Country in ISO_3166_1.Countries)
+					{
+						KycLocalizedText LocalizedText = new KycLocalizedText();
+						LocalizedText.Add(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, Country.FlagAndName);
+
+						if (Country.Alpha2.Equals(DefaultCountry, StringComparison.OrdinalIgnoreCase))
+						{
+							Field.Options.Insert(0, new KycOption(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, LocalizedText));
+						}
+						else
+						{
+							Field.Options.Add(new KycOption(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, LocalizedText));
+						}
+					}
 				}
 			}
 

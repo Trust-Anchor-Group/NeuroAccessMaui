@@ -38,8 +38,6 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 						Expression? Check = null;
 						Expression? Normalize = null;
 
-						Console.WriteLine("Country: " + Country);
-
 						try
 						{
 							foreach (XmlNode N2 in E.ChildNodes)

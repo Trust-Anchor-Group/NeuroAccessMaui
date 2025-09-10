@@ -50,7 +50,7 @@
 				<Placeholder>pnr</Placeholder>
 			</Metadata>
 		</Field>
-		<Field id="dob" type="date" label="Date of Birth" required="true">
+		<Field id="dob" type="date" required="true">
 			<Label>
 				<Text lang="en">Date of Birth</Text>
 				<Text lang="sv">Födelsedatum</Text>
@@ -68,17 +68,14 @@
 			<Mapping key="BYEAR">
 				<Transform>year</Transform>
 			</Mapping>
-			<Validation min="1900-01-01" max="2020-01-01">
-				<Message>
-					<Text lang="en">Enter a valid date between 1900 and 2020</Text>
-					<Text lang="sv">Ange ett giltigt datum mellan 1900 och 2020</Text>
-				</Message>
-			</Validation>
-			<!-- Example: a date field with metadata could look like this -->
-			<Metadata>
-				<DateFormat>yyyy-MM-dd</DateFormat>
-				<AllowFuture>false</AllowFuture>
-			</Metadata>
+			<ValidationRules>
+				<DateRangeRule min="1900-01-01" max="2020-01-01">
+					<Message>
+						<Text lang="en">Enter a valid date between 1900 and 2020</Text>
+						<Text lang="sv">Ange ett giltigt datum mellan 1900 och 2020</Text>
+					</Message>
+				</DateRangeRule>
+			</ValidationRules>
 		</Field>
 		<Field id="gender" type="gender" mapping="GENDER" required="true">
 			<Label>
@@ -138,7 +135,7 @@
 				<Text lang="sv">Ladda upp dokument</Text>
 			</Label>
 			<!-- Passport Upload Field (shown if passport is selected) -->
-			<Field id="passportUpload" type="image" label="Passport Photo" mapping="Passport" specialType="passport">
+			<Field id="passportUpload" type="image" mapping="Passport" specialType="passport" required="true">
 				<Label>
 					<Text lang="en">Passport Photo</Text>
 					<Text lang="sv">Passfoto</Text>
@@ -175,7 +172,44 @@
 			</Field>
 
 			<!-- Identity Card Upload Field (shown if identityCard is selected) -->
-			<Field id="identityCardUpload" type="image" label="Identity Card" mapping="IdCardFront" specialType="identityCardFront">
+			<Field id="identityCardFrontUpload" type="image" mapping="IdCardFront" specialType="identityCardFront" required="true">
+				<Label>
+					<Text lang="en">Identity Card</Text>
+					<Text lang="sv">ID-kort</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Upload the front side of your identity card</Text>
+					<Text lang="sv">Ladda upp framsidan av ditt ID-kort</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">Choose file...</Text>
+					<Text lang="sv">Välj fil...</Text>
+				</Placeholder>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>identityCard</Equals>
+				</Condition>
+				<Validation maxFileSizeMB="10">
+					<FileTypes>
+						<FileType>.jpg</FileType>
+						<FileType>.jpeg</FileType>
+						<FileType>.png</FileType>
+						<FileType>.pdf</FileType>
+					</FileTypes>
+					<Message>
+						<Text lang="en">Please upload a valid identity card image or PDF (max 10MB)</Text>
+						<Text lang="sv">Ladda upp en giltig ID-kortsbild eller PDF (max 10MB)</Text>
+					</Message>
+				</Validation>
+				<Metadata>
+					<TargetWidth>1000</TargetWidth>
+					<TargetHeight>1500</TargetHeight>
+					<MinDpi>200</MinDpi>
+				</Metadata>
+			</Field>
+
+			<!-- Identity Card Back Upload Field (shown if identityCard is selected) -->
+			<Field id="identityCardbackUpload" type="image" mapping="IdCardBack" specialType="identityCardBack" required="true">
 				<Label>
 					<Text lang="en">Identity Card</Text>
 					<Text lang="sv">ID-kort</Text>
@@ -212,7 +246,7 @@
 			</Field>
 
 			<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
-			<Field id="driverslicenseFront" type="image" label="Driver's license (Front)" mapping="DriverLicenseFront" specialType="driversLicenseFront">
+			<Field id="driverslicenseFront" type="image" mapping="DriverLicenseFront" specialType="driversLicenseFront" required="true">
 				<Label>
 					<Text lang="en">Driver's license (Front)</Text>
 					<Text lang="sv">Körkort (Framsida)</Text>
@@ -248,7 +282,7 @@
 				</Metadata>
 			</Field>
 			<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
-			<Field id="driverslicenseBack" type="image" label="Driver's license (Back)" mapping="DriverLicenseBack" specialType="driversLicenseBack">
+			<Field id="driverslicenseBack" type="image" mapping="DriverLicenseBack" specialType="driversLicenseBack" required="true">
 				<Label>
 					<Text lang="en">Driver's license (Back)</Text>
 					<Text lang="sv">Körkort (Baksida)</Text>
