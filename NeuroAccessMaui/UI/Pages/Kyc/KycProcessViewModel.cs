@@ -882,11 +882,33 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 			}
 
+			/// Get values from TagProfile if not already mapped else get from current id, if any.
+			string? JID = null;
+			string? Phone = null;
+			string? EMail = null;
+			if (ServiceRef.TagProfile.LegalIdentity is not null)
+			{
+				JID = ServiceRef.TagProfile.LegalIdentity?.Properties.Where((P) => P.Name == Constants.XmppProperties.Jid).FirstOrDefault()?.Value ?? string.Empty;
+				Phone = ServiceRef.TagProfile.LegalIdentity?.Properties.Where((P) => P.Name == Constants.XmppProperties.Phone).FirstOrDefault()?.Value ?? string.Empty;
+				EMail = ServiceRef.TagProfile.LegalIdentity?.Properties.Where((P) => P.Name == Constants.XmppProperties.EMail).FirstOrDefault()?.Value ?? string.Empty;
+			}
+
+			if(string.IsNullOrEmpty(JID))
+				JID = ServiceRef.XmppService.BareJid ?? string.Empty;
+			if(string.IsNullOrEmpty(Phone))
+				Phone = ServiceRef.TagProfile.PhoneNumber ?? string.Empty;
+			if(string.IsNullOrEmpty(EMail))
+				EMail = ServiceRef.TagProfile.EMail ?? string.Empty;
+
 			// Add special properties
 			this.mappedValues.Add(new Property(Constants.XmppProperties.DeviceId, ServiceRef.PlatformSpecific.GetDeviceId()));
-			this.mappedValues.Add(new Property(Constants.XmppProperties.Jid, ServiceRef.XmppService.BareJid));
-			this.mappedValues.Add(new Property(Constants.XmppProperties.Phone, ServiceRef.TagProfile.PhoneNumber));
-			this.mappedValues.Add(new Property(Constants.XmppProperties.EMail, ServiceRef.TagProfile.EMail));
+
+			if(!this.process.HasMapping(Constants.XmppProperties.Jid))
+				this.mappedValues.Add(new Property(Constants.XmppProperties.Jid, JID));
+			if(!this.process.HasMapping(Constants.XmppProperties.Phone))
+				this.mappedValues.Add(new Property(Constants.XmppProperties.Phone, Phone));
+			if(!this.process.HasMapping(Constants.XmppProperties.EMail))
+				this.mappedValues.Add(new Property(Constants.XmppProperties.EMail, EMail));
 
 			if (!this.process.HasMapping(Constants.XmppProperties.Country) && !string.IsNullOrEmpty(ServiceRef.TagProfile.SelectedCountry))
 				this.mappedValues.Add(new Property(Constants.XmppProperties.Country, ISO_3166_1.ToName(ServiceRef.TagProfile.SelectedCountry) ?? ServiceRef.TagProfile.SelectedCountry));
