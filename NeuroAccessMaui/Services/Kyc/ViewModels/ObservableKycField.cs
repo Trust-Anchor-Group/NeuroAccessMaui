@@ -27,6 +27,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         Country,
         Checkbox,
         Radio,
+		Gender,
         Label,   // non-input
         Info     // non-input
     }

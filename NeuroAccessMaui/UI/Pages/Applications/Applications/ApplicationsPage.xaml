@@ -186,7 +186,7 @@
 					   FontSize="16"
 					   FontFamily="SpaceGroteskBold" />
 
-					<!-- Start new process -->
+				<!-- Start new process -->
 				<VerticalStackLayout BindableLayout.ItemsSource="{Binding Applications}">
 					<BindableLayout.EmptyView>
 						<Label Text="No available applications"
@@ -233,6 +233,7 @@
 					</BindableLayout.ItemTemplate>
 				</VerticalStackLayout>
 
+				<Button Command="{Binding CreateNewApplicationCommand}"/>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

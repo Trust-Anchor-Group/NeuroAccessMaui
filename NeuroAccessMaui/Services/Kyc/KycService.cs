@@ -17,7 +17,7 @@ namespace NeuroAccessMaui.Services.Kyc
 	public class KycService : IKycService
 	{
 		private static readonly HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(10) };
-		private static readonly string backupKyc = "TestKYCK.xml";
+		private static readonly string backupKyc = "TestKYCNeuro.xml";
 
 		/// <inheritdoc/>
 		public async Task<KycReference> LoadKycReferenceAsync(string? Lang = null)

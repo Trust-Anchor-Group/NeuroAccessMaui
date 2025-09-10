@@ -4,11 +4,16 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using CommunityToolkit.Common;
 using Microsoft.Maui.Storage;
+using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
+using Waher.Content.Html.Elements;
 
 namespace NeuroAccessMaui.Services.Kyc
 {
@@ -86,6 +91,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				FieldType.Integer => new ObservableIntegerField(),
 				FieldType.Decimal => new ObservableDecimalField(),
 				FieldType.Picker => new ObservablePickerField(),
+				FieldType.Gender => new ObservablePickerField(),
 				FieldType.Radio => new ObservableRadioField(),
 				FieldType.Country => new ObservableCountryField(),
 				FieldType.Checkbox => new ObservableCheckboxField(),
@@ -132,6 +138,33 @@ namespace NeuroAccessMaui.Services.Kyc
 					// For livenessCheck image fields, disable manual upload
 					if (Field is ObservableImageField ImageField && Key.Equals("AllowUpload", StringComparison.OrdinalIgnoreCase) && bool.TryParse(Value, out bool ParsedBool))
 						ImageField.AllowUpload = ParsedBool;
+
+					// Special cases for placeholders
+					if (Key.Equals("Placeholder", StringComparison.OrdinalIgnoreCase) && Value.Equals("pnr", StringComparison.OrdinalIgnoreCase))
+					{
+						KycProcess? Process;
+						Field.TryGetOwnerProcess(out Process);
+						string? CountryCode = null;
+						if (Process != null)
+						{
+							CountryCode = Process.Values.TryGetValue("country", out string? Cc) && !string.IsNullOrEmpty(Cc) ? Cc : string.Empty;
+						}
+						if (string.IsNullOrEmpty(CountryCode))
+						{
+							try
+							{
+								CountryCode = ServiceRef.TagProfile.LegalIdentity?.GetPersonalInformation().Country;
+							}
+							catch (Exception)
+							{
+								CountryCode = string.Empty;
+							}
+						}
+
+						string? PnrExample = PersonalNumberSchemes.DisplayStringForCountry(CountryCode);
+						Field.Placeholder = new KycLocalizedText();
+						Field.Placeholder.Add(CountryCode, string.IsNullOrEmpty(PnrExample) ? "" : PnrExample);
+					}
 				}
 			}
 
@@ -221,8 +254,32 @@ namespace NeuroAccessMaui.Services.Kyc
 				}
 			}
 
+			// For country fields, if no options defined, load all countries
+			if (Field is ObservableCountryField && Field.Options.Count == 0)
+			{
+				foreach (ISO_3166_Country Country in ISO_3166_1.Countries)
+				{
+					KycLocalizedText LocalizedText = new KycLocalizedText();
+					LocalizedText.Add(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, Country.FlagAndName);
+
+					Field.Options.Add(new KycOption(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, LocalizedText));
+				}
+			}
+
+			// For gender fields, if no options defined, load default options
+			if (Field is ObservablePickerField && Field.FieldType == FieldType.Gender && Field.Options.Count == 0)
+			{
+				foreach (ISO_5218_Gender Gender in ISO_5218.Genders)
+				{
+					KycLocalizedText LocalizedText = new KycLocalizedText();
+					LocalizedText.Add(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, new string(Gender.Unicode, 1) + "\t" + ServiceRef.Localizer[Gender.LocalizedNameId]);
+
+					Field.Options.Add(new KycOption(Gender.Letter, LocalizedText));
+				}
+			}
+
 			// Default value
-			string? Def = El.Element("Default")?.Value?.Trim();
+			string ? Def = El.Element("Default")?.Value?.Trim();
 			if (!string.IsNullOrEmpty(Def))
 			{
 				switch (Field)
