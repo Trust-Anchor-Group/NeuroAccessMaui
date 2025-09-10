@@ -231,9 +231,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			try
 			{
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ApplyForPersonalId))
-					return;
-
 				// If a current application exists, remove it; if it is in review, obsolete it.
 				if (this.CurrentApplication is not null)
 				{
