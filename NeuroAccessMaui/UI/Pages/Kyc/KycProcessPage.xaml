@@ -163,7 +163,7 @@
 											  IsValid="{Binding IsValid}"
 											  ValidationText="{Binding ValidationText}" >
 						<controls:CompositePicker.RightView>
-							<Path Grid.Row="1" Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Fill="{DynamicResource InputFieldsContentSecondary}" VerticalOptions="Center"/>
+							<Path Data="{x:Static ui:Geometries.DropDownArrowPath}" Fill="{DynamicResource InputFieldsContentSecondary}" VerticalOptions="Center"/>
 						</controls:CompositePicker.RightView>
 						<controls:CompositePicker.ItemDisplayBinding>
 							<Binding Path="Label.Text" />
