@@ -31,6 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private List<LegalIdentityAttachment> attachments;
 		[ObservableProperty] private bool shouldViewSummary = false;
 		[ObservableProperty] private bool shouldReturnToSummary = false;
+		[ObservableProperty] private bool isLoading = false;
 
 		[ObservableProperty] private int currentPagePosition;
 		[ObservableProperty] private KycPage? currentPage;
@@ -135,6 +136,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		protected override async Task OnInitialize()
 		{
+			this.IsLoading = true;
+
 			await base.OnInitialize();
 
 			string LanguageInit = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
@@ -277,6 +280,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			MainThread.BeginInvokeOnMainThread(
 				this.NextCommand.NotifyCanExecuteChanged
 			);
+
+			this.IsLoading = false;
 		}
 
 		partial void OnCurrentPagePositionChanged(int value)
