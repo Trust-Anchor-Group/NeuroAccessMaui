@@ -361,282 +361,318 @@
 		</ResourceDictionary>
 	</ContentPage.Resources>
 
-	<Grid Padding="0"
-		  Margin="0"
-		  RowDefinitions="Auto,*,Auto"
-		  Background="{DynamicResource SurfaceBackgroundWL}">
-
-		<Grid Grid.Row="0"
-			  Margin="16,16,16,8"
-			  ColumnDefinitions="*,auto,*"
-			  RowDefinitions="*">
-			<controls:SvgButton Grid.Row="0"
-								Grid.Column="0"
-								Command="{Binding ExitCommand}"
-								Style="{DynamicResource IconButton}"
-								SvgSource="close.svg"
-								HeightRequest="48"
-								WidthRequest="48"
-								HorizontalOptions="Start" />
-
-			<controls:UriImage Grid.Row="0"
-							   Grid.Column="1"
-							   Aspect="AspectFit"
-							   ErrorPlaceholder="neuro_b"
-							   HorizontalOptions="Center"
-							   Source="{Binding BannerUri}"
-							   WidthRequest="100"
-							   HeightRequest="24" />
-		</Grid>
-
-		<ScrollView x:Name="FormScrollView"
-					Grid.Row="1"
-					Padding="{DynamicResource SmallMargins}"
-					VerticalOptions="Center">
-			<controls:ConditionView Condition="{Binding ShouldViewSummary}">
-				<controls:ConditionView.True>
-						<VerticalStackLayout>
-							<Label Style="{DynamicResource PageTitleLabel}" Text="Application summary" Margin="{DynamicResource MediumLeftRightMargins}"/>
-
-							<!-- TODO: Replace with infobubble control -->
-							<Border Grid.Row="0"
-									BackgroundColor="{DynamicResource TnPInfobgWL}"
-									Padding="{DynamicResource MediumMargins}"
-									Margin="{DynamicResource SmallMargins}"
-									StrokeShape="RoundRectangle 16,16,0,16">
-								<Border.Shadow>
-									<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
-								</Border.Shadow>
-								<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-									  ColumnDefinitions="auto, *">
-									<Path
+	<controls:ConditionView Condition="{Binding IsLoading}">
+		<controls:ConditionView.True>
+			<Grid Grid.Row="0"
+					  Margin="16,16,16,8"
+					  ColumnDefinitions="*,auto,*"
+					  RowDefinitions="auto, *">
+				<controls:SvgButton Grid.Row="0"
 										Grid.Column="0"
-										Data="{x:Static ui:Geometries.InfoCirclePath}"
-										Fill="{DynamicResource TnPInfoContentWL}"/>
-									<Label
-										Grid.Column="1"
-										Text="Before finalizing, please read through and ensure everything is correct."
-										Style="{DynamicResource InfoLabel}"
-										TextColor="{DynamicResource TnPInfoContentWL}"/>
-								</Grid>
-							</Border>
-						<Border Style="{DynamicResource BorderSet}">
-							<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-								<Label Style="{DynamicResource FieldTitleLabel}" Text="Application Information"/>
+										Command="{Binding ExitCommand}"
+										Style="{DynamicResource IconButton}"
+										SvgSource="close.svg"
+										HeightRequest="48"
+										WidthRequest="48"
+										HorizontalOptions="Start" />
 
-								<!-- Personal Details -->
-								<Border Style="{DynamicResource BorderSubSet}">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-										<Label Text="Personal Details" Style="{DynamicResource FieldTitleLabel}" />
-										<VerticalStackLayout BindableLayout.ItemsSource="{Binding PersonalInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
-											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="IDSF:DisplayQuad">
-													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
-														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
-															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
-															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
-															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
-														</Grid>
-													</controls:TemplatedButton>
-												</DataTemplate>
-											</BindableLayout.ItemTemplate>
-										</VerticalStackLayout>
-									</VerticalStackLayout>
-								</Border>
+				<controls:UriImage Grid.Row="0"
+									   Grid.Column="1"
+									   Aspect="AspectFit"
+									   ErrorPlaceholder="neuro_b"
+									   HorizontalOptions="Center"
+									   Source="{Binding BannerUri}"
+									   WidthRequest="100"
+									   HeightRequest="24" />
 
-								<!-- Address Details -->
-								<Border Style="{DynamicResource BorderSubSet}">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-										<Label Text="Address Details" Style="{DynamicResource FieldTitleLabel}" />
-										<VerticalStackLayout BindableLayout.ItemsSource="{Binding AddressInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
-											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="IDSF:DisplayQuad">
-													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
-														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
-															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
-															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
-															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
-														</Grid>
-													</controls:TemplatedButton>
-												</DataTemplate>
-											</BindableLayout.ItemTemplate>
-										</VerticalStackLayout>
-									</VerticalStackLayout>
-								</Border>
+				<ActivityIndicator IsRunning="True"
+									   VerticalOptions="Center"
+									   HorizontalOptions="Center"
+									   Grid.Row="1"
+									   Grid.ColumnSpan="3"
+									   Color="{DynamicResource BrandColorsNeuroAccessv500WL}"/>
+			</Grid>
+		</controls:ConditionView.True>
+		<controls:ConditionView.False>
 
-								<!-- Company Information -->
-								<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding HasCompanyInformation}">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-										<Label Text="Company Information" Style="{DynamicResource FieldTitleLabel}" />
-										<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
-											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="IDSF:DisplayQuad">
-													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
-														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
-															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
-															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
-															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
-														</Grid>
-													</controls:TemplatedButton>
-												</DataTemplate>
-											</BindableLayout.ItemTemplate>
-										</VerticalStackLayout>
-									</VerticalStackLayout>
-								</Border>
+			<Grid Padding="0"
+				  Margin="0"
+				  RowDefinitions="Auto,*,Auto"
+				  Background="{DynamicResource SurfaceBackgroundWL}">
 
-								<!-- Company Address Information -->
-								<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding HasCompanyAddress}">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-										<Label Text="Company Address" Style="{DynamicResource FieldTitleLabel}" />
-										<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyAddressSummary}" Spacing="{DynamicResource MediumSpacing}">
-											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="IDSF:DisplayQuad">
-													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
-														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
-															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
-															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
-															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
-														</Grid>
-													</controls:TemplatedButton>
-												</DataTemplate>
-											</BindableLayout.ItemTemplate>
-										</VerticalStackLayout>
-									</VerticalStackLayout>
-								</Border>
+				<Grid Grid.Row="0"
+					  Margin="16,16,16,8"
+					  ColumnDefinitions="*,auto,*"
+					  RowDefinitions="*">
+					<controls:SvgButton Grid.Row="0"
+										Grid.Column="0"
+										Command="{Binding ExitCommand}"
+										Style="{DynamicResource IconButton}"
+										SvgSource="close.svg"
+										HeightRequest="48"
+										WidthRequest="48"
+										HorizontalOptions="Start" />
 
-								<!-- Company Representative -->
-								<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding HasCompanyRepresentative}">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-										<Label Text="Company Representative" Style="{DynamicResource FieldTitleLabel}" />
-										<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyRepresentativeSummary}" Spacing="{DynamicResource MediumSpacing}">
-											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="IDSF:DisplayQuad">
-													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
-														<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
-															<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
-															<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
-															<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
-														</Grid>
-													</controls:TemplatedButton>
-												</DataTemplate>
-											</BindableLayout.ItemTemplate>
-										</VerticalStackLayout>
-									</VerticalStackLayout>
+					<controls:UriImage Grid.Row="0"
+									   Grid.Column="1"
+									   Aspect="AspectFit"
+									   ErrorPlaceholder="neuro_b"
+									   HorizontalOptions="Center"
+									   Source="{Binding BannerUri}"
+									   WidthRequest="100"
+									   HeightRequest="24" />
+				</Grid>
+
+				<ScrollView x:Name="FormScrollView"
+							Grid.Row="1"
+							Padding="{DynamicResource SmallMargins}"
+							VerticalOptions="Center">
+					<controls:ConditionView Condition="{Binding ShouldViewSummary}">
+						<controls:ConditionView.True>
+							<VerticalStackLayout>
+								<Label Style="{DynamicResource PageTitleLabel}" Text="Application summary" Margin="{DynamicResource MediumLeftRightMargins}"/>
+
+								<!-- TODO: Replace with infobubble control -->
+								<Border Grid.Row="0"
+										BackgroundColor="{DynamicResource TnPInfobgWL}"
+										Padding="{DynamicResource MediumMargins}"
+										Margin="{DynamicResource SmallMargins}"
+										StrokeShape="RoundRectangle 16,16,0,16">
+									<Border.Shadow>
+										<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
+									</Border.Shadow>
+									<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+											ColumnDefinitions="auto, *">
+										<Path
+											Grid.Column="0"
+											Data="{x:Static ui:Geometries.InfoCirclePath}"
+											Fill="{DynamicResource TnPInfoContentWL}"/>
+										<Label
+											Grid.Column="1"
+											Text="Before finalizing, please read through and ensure everything is correct."
+											Style="{DynamicResource InfoLabel}"
+											TextColor="{DynamicResource TnPInfoContentWL}"/>
+									</Grid>
 								</Border>
-								
-								<!-- Attachments -->
-								<Border Style="{DynamicResource BorderSubSet}">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-										<Label Text="Attachments" Style="{DynamicResource FieldTitleLabel}" />
-										<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
-											<BindableLayout.ItemTemplate>
-												<DataTemplate x:DataType="IDSF:DisplayQuad">
-													<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
-														<Border Style="{DynamicResource BorderSet}" Margin="0">
-															<Grid ColumnDefinitions="auto, *, auto" ColumnSpacing="{DynamicResource SmallSpacing}">
-																<Border Style="{DynamicResource FileIconBorder}">
-																	<controls:SvgView Source="gallery.svg" HeightRequest="24"/>
+								<Border Style="{DynamicResource BorderSet}">
+									<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+										<Label Style="{DynamicResource FieldTitleLabel}" Text="Application Information"/>
+
+										<!-- Personal Details -->
+										<Border Style="{DynamicResource BorderSubSet}">
+											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
+												<Label Text="Personal Details" Style="{DynamicResource FieldTitleLabel}" />
+												<VerticalStackLayout BindableLayout.ItemsSource="{Binding PersonalInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
+													<BindableLayout.ItemTemplate>
+														<DataTemplate x:DataType="IDSF:DisplayQuad">
+															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
+																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+																</Grid>
+															</controls:TemplatedButton>
+														</DataTemplate>
+													</BindableLayout.ItemTemplate>
+												</VerticalStackLayout>
+											</VerticalStackLayout>
+										</Border>
+
+										<!-- Address Details -->
+										<Border Style="{DynamicResource BorderSubSet}">
+											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
+												<Label Text="Address Details" Style="{DynamicResource FieldTitleLabel}" />
+												<VerticalStackLayout BindableLayout.ItemsSource="{Binding AddressInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
+													<BindableLayout.ItemTemplate>
+														<DataTemplate x:DataType="IDSF:DisplayQuad">
+															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
+																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+																</Grid>
+															</controls:TemplatedButton>
+														</DataTemplate>
+													</BindableLayout.ItemTemplate>
+												</VerticalStackLayout>
+											</VerticalStackLayout>
+										</Border>
+
+										<!-- Company Information -->
+										<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding HasCompanyInformation}">
+											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
+												<Label Text="Company Information" Style="{DynamicResource FieldTitleLabel}" />
+												<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
+													<BindableLayout.ItemTemplate>
+														<DataTemplate x:DataType="IDSF:DisplayQuad">
+															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
+																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+																</Grid>
+															</controls:TemplatedButton>
+														</DataTemplate>
+													</BindableLayout.ItemTemplate>
+												</VerticalStackLayout>
+											</VerticalStackLayout>
+										</Border>
+
+										<!-- Company Address Information -->
+										<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding HasCompanyAddress}">
+											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
+												<Label Text="Company Address" Style="{DynamicResource FieldTitleLabel}" />
+												<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyAddressSummary}" Spacing="{DynamicResource MediumSpacing}">
+													<BindableLayout.ItemTemplate>
+														<DataTemplate x:DataType="IDSF:DisplayQuad">
+															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
+																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+																</Grid>
+															</controls:TemplatedButton>
+														</DataTemplate>
+													</BindableLayout.ItemTemplate>
+												</VerticalStackLayout>
+											</VerticalStackLayout>
+										</Border>
+
+										<!-- Company Representative -->
+										<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding HasCompanyRepresentative}">
+											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
+												<Label Text="Company Representative" Style="{DynamicResource FieldTitleLabel}" />
+												<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyRepresentativeSummary}" Spacing="{DynamicResource MediumSpacing}">
+													<BindableLayout.ItemTemplate>
+														<DataTemplate x:DataType="IDSF:DisplayQuad">
+															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
+																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+																</Grid>
+															</controls:TemplatedButton>
+														</DataTemplate>
+													</BindableLayout.ItemTemplate>
+												</VerticalStackLayout>
+											</VerticalStackLayout>
+										</Border>
+
+										<!-- Attachments -->
+										<Border Style="{DynamicResource BorderSubSet}">
+											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
+												<Label Text="Attachments" Style="{DynamicResource FieldTitleLabel}" />
+												<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
+													<BindableLayout.ItemTemplate>
+														<DataTemplate x:DataType="IDSF:DisplayQuad">
+															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+																<Border Style="{DynamicResource BorderSet}" Margin="0">
+																	<Grid ColumnDefinitions="auto, *, auto" ColumnSpacing="{DynamicResource SmallSpacing}">
+																		<Border Style="{DynamicResource FileIconBorder}">
+																			<controls:SvgView Source="gallery.svg" HeightRequest="24"/>
+																		</Border>
+																		<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" VerticalOptions="Center" Margin="16,0,16,0"/>
+																		<controls:SvgView Grid.Column="2" Grid.RowSpan="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+																	</Grid>
 																</Border>
-																<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" VerticalOptions="Center" Margin="16,0,16,0"/>
-																<controls:SvgView Grid.Column="2" Grid.RowSpan="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
-															</Grid>
-														</Border>
-													</controls:TemplatedButton>
-												</DataTemplate>
-											</BindableLayout.ItemTemplate>
-										</VerticalStackLayout>
+															</controls:TemplatedButton>
+														</DataTemplate>
+													</BindableLayout.ItemTemplate>
+												</VerticalStackLayout>
+											</VerticalStackLayout>
+										</Border>
 									</VerticalStackLayout>
 								</Border>
 							</VerticalStackLayout>
-						</Border>
-					</VerticalStackLayout>
-				</controls:ConditionView.True>
-				
-				<controls:ConditionView.False>
-					<!-- Page header -->
-					<VerticalStackLayout Spacing="4" Margin="{DynamicResource SmallMargins}">
-						<Label Style="{DynamicResource PageTitleLabel}"
-								Text="{Binding CurrentPageTitle}" />
-						<Label IsVisible="{Binding HasCurrentPageDescription}"
-								Text="{Binding CurrentPageDescription}"
-								Margin="0,0,0,16" />
+						</controls:ConditionView.True>
 
-						<!-- Direct fields -->
-						<StackLayout IsVisible="{Binding CurrentPage.VisibleFields.Count, Converter={converters:GreaterThanZero}}"
-										Spacing="8"
-										BindableLayout.ItemsSource="{Binding CurrentPage.VisibleFields}"
-										BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}" />
+						<controls:ConditionView.False>
+							<!-- Page header -->
+							<VerticalStackLayout Spacing="4" Margin="{DynamicResource SmallMargins}">
+								<Label Style="{DynamicResource PageTitleLabel}"
+										Text="{Binding CurrentPageTitle}" />
+								<Label IsVisible="{Binding HasCurrentPageDescription}"
+										Text="{Binding CurrentPageDescription}"
+										Margin="0,0,0,16" />
 
-						<!-- Sections -->
-						<StackLayout Spacing="24"
+								<!-- Direct fields -->
+								<StackLayout IsVisible="{Binding CurrentPage.VisibleFields.Count, Converter={converters:GreaterThanZero}}"
+											Spacing="8"
+											BindableLayout.ItemsSource="{Binding CurrentPage.VisibleFields}"
+											BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}" />
+
+								<!-- Sections -->
+								<StackLayout Spacing="24"
 										BindableLayout.ItemsSource="{Binding CurrentPage.VisibleSections}">
-							<BindableLayout.ItemTemplate>
-								<DataTemplate x:DataType="models:KycSection">
-									<VerticalStackLayout Spacing="8">
-										<Label FontAttributes="Bold"
-												IsVisible="{Binding Label, Converter={mct:IsNotNullConverter}}"
-												Style="{DynamicResource SectionHeaderLabel}"
-												Text="{Binding Label.Text}" />
-										<Label FontAttributes="Bold"
-												FontSize="Medium"
-												IsVisible="{Binding Description, Converter={mct:IsNotNullConverter}}"
-												Text="{Binding Description }" />
-										<VerticalStackLayout BindableLayout.ItemsSource="{Binding VisibleFields}"
-															 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}"
-															 Spacing="16" />
-									</VerticalStackLayout>
-								</DataTemplate>
-							</BindableLayout.ItemTemplate>
-						</StackLayout>
+									<BindableLayout.ItemTemplate>
+										<DataTemplate x:DataType="models:KycSection">
+											<VerticalStackLayout Spacing="8">
+												<Label FontAttributes="Bold"
+														IsVisible="{Binding Label, Converter={mct:IsNotNullConverter}}"
+														Style="{DynamicResource SectionHeaderLabel}"
+														Text="{Binding Label.Text}" />
+												<Label FontAttributes="Bold"
+														FontSize="Medium"
+														IsVisible="{Binding Description, Converter={mct:IsNotNullConverter}}"
+														Text="{Binding Description }" />
+												<VerticalStackLayout BindableLayout.ItemsSource="{Binding VisibleFields}"
+																	 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}"
+																	 Spacing="16" />
+											</VerticalStackLayout>
+										</DataTemplate>
+									</BindableLayout.ItemTemplate>
+								</StackLayout>
+							</VerticalStackLayout>
+						</controls:ConditionView.False>
+
+					</controls:ConditionView>
+				</ScrollView>
+
+				<!-- Navigation bar -->
+				<Border Style="{DynamicResource BottomBarBorder2}"
+						Grid.Row="2"
+						Padding="16">
+					<VerticalStackLayout Spacing="8">
+						<Grid ColumnDefinitions="*, *">
+							<Label Grid.Column="0"
+								   Text="Progress"
+								   Style="{DynamicResource FieldKeyLabel}"
+								   TextColor="{DynamicResource TnPAccent2ContentWL}"/>
+							<Label Grid.Column="1"
+								   Text="{Binding ProgressPercent}"
+								   HorizontalOptions="End"
+								   Style="{DynamicResource FieldKeyLabel}"
+								   TextColor="{DynamicResource TnPAccent2ContentWL}"/>
+						</Grid>
+						<controls:ProgressBar Progress="{Binding Progress}"
+											  HeightRequest="16"
+											  CornerRadius="32"
+											  TrackBrush="{DynamicResource TnPAccent2bgWL}"
+											  BarBrush="{DynamicResource TnPAccent2FigureWL}"
+											  Margin="{DynamicResource SmallBottomMargins}">
+						</controls:ProgressBar>
+
+						<controls:ConditionView Condition="{Binding ShouldReturnToSummary}">
+							<controls:ConditionView.True>
+								<controls:TextButton LabelData="{Binding NextButtonText}"
+													 Style="{DynamicResource FilledTextButton}"
+													 Command="{Binding GoToSummaryCommand}"/>
+							</controls:ConditionView.True>
+							<controls:ConditionView.False>
+								<Grid ColumnDefinitions="*, *" ColumnSpacing="{DynamicResource SmallSpacing}">
+									<controls:TextButton LabelData="Back"
+														 Style="{DynamicResource SecondaryButton}"
+														 Command="{Binding GoBackCommand}"/>
+									<controls:TextButton LabelData="{Binding NextButtonText}"
+														 Style="{DynamicResource FilledTextButton}"
+														 Command="{Binding NextCommand}"
+														 Grid.Column="1"/>
+								</Grid>
+							</controls:ConditionView.False>
+						</controls:ConditionView>
 					</VerticalStackLayout>
-				</controls:ConditionView.False>
-				
-			</controls:ConditionView>
-		</ScrollView>
-
-		<!-- Navigation bar -->
-		<Border Style="{DynamicResource BottomBarBorder2}"
-				Grid.Row="2"
-				Padding="16">
-			<VerticalStackLayout Spacing="8">
-				<Grid ColumnDefinitions="*, *">
-					<Label Grid.Column="0"
-						   Text="Progress"
-						   Style="{DynamicResource FieldKeyLabel}"
-						   TextColor="{DynamicResource TnPAccent2ContentWL}"/>
-					<Label Grid.Column="1"
-						   Text="{Binding ProgressPercent}"
-						   HorizontalOptions="End"
-						   Style="{DynamicResource FieldKeyLabel}"
-						   TextColor="{DynamicResource TnPAccent2ContentWL}"/>
-				</Grid>
-				<controls:ProgressBar Progress="{Binding Progress}"
-									  HeightRequest="16"
-									  CornerRadius="32"
-									  TrackBrush="{DynamicResource TnPAccent2bgWL}"
-									  BarBrush="{DynamicResource TnPAccent2FigureWL}"
-									  Margin="{DynamicResource SmallBottomMargins}">
-				</controls:ProgressBar>
-
-				<controls:ConditionView Condition="{Binding ShouldReturnToSummary}">
-					<controls:ConditionView.True>
-						<controls:TextButton LabelData="{Binding NextButtonText}"
-											 Style="{DynamicResource FilledTextButton}"
-											 Command="{Binding GoToSummaryCommand}"/>
-					</controls:ConditionView.True>
-					<controls:ConditionView.False>
-						<Grid ColumnDefinitions="*, *" ColumnSpacing="{DynamicResource SmallSpacing}">
-							<controls:TextButton LabelData="Back"
-											 Style="{DynamicResource SecondaryButton}"
-											 Command="{Binding GoBackCommand}"/>
-							<controls:TextButton LabelData="{Binding NextButtonText}"
-											 Style="{DynamicResource FilledTextButton}"
-											 Command="{Binding NextCommand}"
-											 Grid.Column="1"/>
-						</Grid>	
-					</controls:ConditionView.False>
-				</controls:ConditionView>
-			</VerticalStackLayout>
-		</Border>
-	</Grid>
+				</Border>
+			</Grid>
+		</controls:ConditionView.False>
+	</controls:ConditionView>
 </base:BaseContentPage>
