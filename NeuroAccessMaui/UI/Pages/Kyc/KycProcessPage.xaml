@@ -178,18 +178,22 @@
 											 Style="{DynamicResource BaseCompositeInputView}"
 											 Required="{Binding Required}"
 											 IsValid="{Binding IsValid}"
-											 ValidationText="{Binding ValidationText}">
+											 ValidationText="{Binding ValidationText}" BorderBackground="Transparent" >
 					<controls:CompositeInputView.CenterView>
 						<controls:TemplatedSelector ItemsSource="{Binding Options}"
 													SelectedItems="{Binding SelectedOptions, Mode=TwoWay}"
 													SelectionMode="Multiple">
 							<controls:TemplatedSelector.ItemTemplate>
 								<DataTemplate x:DataType="controls:SelectableKycOption">
-									<HorizontalStackLayout Spacing="8">
-										<CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-										<Label Text="{Binding Item.Label.Text}"
+									<Grid ColumnDefinitions="auto,*" ColumnSpacing="8" Padding="8">
+										<controls:AnimatedCheckbox Grid.Column="0" 
+											StrokeColor="{DynamicResource ContentAccessWL}"
+											FillColor="Transparent"
+											StrokeWidth="2"
+											IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+										<Label Text="{Binding Item.Label.Text}" Grid.Column="1"	
 											   VerticalTextAlignment="Center" />
-									</HorizontalStackLayout>
+									</Grid>
 								</DataTemplate>
 							</controls:TemplatedSelector.ItemTemplate>
 						</controls:TemplatedSelector>
@@ -203,9 +207,9 @@
 											 Style="{DynamicResource BaseCompositeInputView}"
 											 Required="{Binding Required}"
 											 IsValid="{Binding IsValid}"
-											 ValidationText="{Binding ValidationText}">
+											 ValidationText="{Binding ValidationText}" >
 					<controls:CompositeInputView.CenterView>
-						<Grid ColumnDefinitions="auto,*">
+						<Grid ColumnDefinitions="auto,*" Margin="8">
 							<Switch IsToggled="{Binding BoolValue, Mode=TwoWay}"
 									Grid.Column="0" />
 							<Label Grid.Column="1"
