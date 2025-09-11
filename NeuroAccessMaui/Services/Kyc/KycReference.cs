@@ -16,6 +16,7 @@ namespace NeuroAccessMaui.Services.Kyc
 	/// </summary>
 	[CollectionName("KycReferences")]
 	[Index(nameof(UpdatedUtc), nameof(UpdatedUtc))]
+	[Index(nameof(CreatedIdentityId))]
 	public class KycReference
 	{
 		private KycProcess? process;

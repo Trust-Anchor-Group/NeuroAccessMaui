@@ -19,6 +19,7 @@ using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.Services.Wallet;
+using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
@@ -3040,6 +3041,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 					Ref.CreatedIdentityState = e.Identity.State;
 					await Database.Update(Ref);
 					await Database.Provider.Flush();
+				}
+
+				if (ServiceRef.UiService.CurrentPage is ApplicationsPage AppPage)
+				{
+					if (AppPage.BindingContext is ApplicationsViewModel Model)
+						Model.Loader.Reload();
 				}
 			}
 			catch (Exception Ex)

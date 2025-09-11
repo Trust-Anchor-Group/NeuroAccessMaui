@@ -343,12 +343,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		/// </summary>
 		private async Task LoadApplicationsAsync(TaskContext<int> ctx)
 		{
-			CancellationToken ct = ctx.CancellationToken;
-			IProgress<int> progress = ctx.Progress;
+			CancellationToken Ct = ctx.CancellationToken;
+			IProgress<int> Progress = ctx.Progress;
 
 			try
 			{
-				progress.Report(0);
+				Progress.Report(0);
 
 				// Clear existing (UI thread)
 				await MainThread.InvokeOnMainThreadAsync(() =>
@@ -362,7 +362,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				try
 				{
 					// Database.Find<T>() doesn't accept CT directly; ensure we respect CT around the call.
-					ct.ThrowIfCancellationRequested();
+					Ct.ThrowIfCancellationRequested();
 					Refs = await Database.Find<KycReference>();
 				}
 				catch (OperationCanceledException) { throw; }
@@ -372,7 +372,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					ServiceRef.LogService.LogException(ex);
 				}
 
-				ct.ThrowIfCancellationRequested();
+				Ct.ThrowIfCancellationRequested();
 
 				KycReference? Latest = Refs.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
 
@@ -385,7 +385,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				});
 
 
-				progress.Report(100);
+				Progress.Report(100);
 
 				// Final notify
 				await MainThread.InvokeOnMainThreadAsync(() =>
@@ -411,19 +411,19 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 		private async Task LoadAvailableApplicationsAsync(TaskContext<int> ctx)
 		{
-			CancellationToken ct = ctx.CancellationToken;
-			IProgress<int> progress = ctx.Progress;
+			CancellationToken Ct = ctx.CancellationToken;
+			IProgress<int> Progress = ctx.Progress;
 
 			try
 			{
-				progress.Report(0);
+				Progress.Report(0);
 
-				IReadOnlyList<KycReference> refs = Array.Empty<KycReference>();
+				IReadOnlyList<KycReference> Refs = Array.Empty<KycReference>();
 				try
 				{
-					string language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-					ct.ThrowIfCancellationRequested();
-					refs = await ServiceRef.KycService.LoadAvailableKycReferencesAsync(language);
+					string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+					Ct.ThrowIfCancellationRequested();
+					Refs = await ServiceRef.KycService.LoadAvailableKycReferencesAsync(Language);
 				}
 				catch (OperationCanceledException) { throw; }
 				catch (Exception ex)
@@ -431,16 +431,16 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					ServiceRef.LogService.LogException(ex);
 				}
 
-				ct.ThrowIfCancellationRequested();
+				Ct.ThrowIfCancellationRequested();
 
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
 					this.AvailableApplications.Clear();
-					foreach (KycReference r in refs)
+					foreach (KycReference r in Refs)
 						this.AvailableApplications.Add(r);
 				});
 
-				progress.Report(100);
+				Progress.Report(100);
 			}
 			catch (OperationCanceledException)
 			{

@@ -831,6 +831,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 							 LocalAttachment.ContentType);
 					}
 				}
+
+				await base.GoBack();
 			}
 		}
 
