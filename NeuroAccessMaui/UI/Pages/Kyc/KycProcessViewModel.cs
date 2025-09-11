@@ -353,15 +353,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			this.OnPropertyChanged(nameof(this.Progress));
 
-			// Persist last visited page when in form mode and not in quick return-to-summary flow.
-			if (!this.ShouldViewSummary && !this.ShouldReturnToSummary && this.kycReference is not null)
-			{
-				this.kycReference.LastVisitedPageId = this.CurrentPage?.Id;
-				this.kycReference.LastVisitedMode = "Form";
-				this.UpdateReference();
-				_ = this.SaveReferenceToStorageAsync();
-			}
-
 			// Scroll to top of page when changing pages
 
 			// Re-evaluate Next button when page/section content changes.
@@ -501,8 +492,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
                 return;
             }
 
-            this.UpdateReference();
-            await this.SaveReferenceToStorageAsync();
+			if (this.kycReference is not null)
+			{
+				this.kycReference.LastVisitedPageId = this.CurrentPage?.Id;
+				this.kycReference.LastVisitedMode = "Form";
+			}
+
+			this.UpdateReference();
+			await this.SaveReferenceToStorageAsync();
 
             // If we came here from a quick edit initiated on Summary, prefer returning to Summary
             if (this.ShouldReturnToSummary)
