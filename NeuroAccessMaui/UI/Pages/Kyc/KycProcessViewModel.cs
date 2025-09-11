@@ -271,8 +271,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.SetCurrentPage(this.currentPageIndex);
 			}
 
-			// Set initial localized label for the next/apply button
-			this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
+
+			// Set initial localized label for the next/apply button depending on current mode
+			this.NextButtonText = this.ShouldViewSummary
+				? ServiceRef.Localizer["Kyc_Apply"].Value
+				: ServiceRef.Localizer["Kyc_Next"].Value;
 
 			MainThread.BeginInvokeOnMainThread(
 				this.NextCommand.NotifyCanExecuteChanged

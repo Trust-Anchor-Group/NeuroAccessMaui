@@ -11,6 +11,7 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Kyc;
+using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.Telemetry;
@@ -231,11 +232,20 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			try
 			{
-				// If a current application exists, remove it; if it is in review, obsolete it.
+				// Capture fields from the most recent application (current or latest previous)
+				KycFieldValue[]? PreviousFields = null;
+
 				if (this.CurrentApplication is not null)
 				{
 					try
 					{
+						if (this.CurrentApplication.Fields is not null)
+						{
+							PreviousFields = this.CurrentApplication.Fields
+								.Select(F => new KycFieldValue(F.FieldId, F.Value))
+								.ToArray();
+						}
+
 						if (!string.IsNullOrEmpty(this.CurrentApplication.CreatedIdentityId))
 						{
 							// Fetch latest state of the created identity
@@ -249,17 +259,58 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 								await ServiceRef.XmppService.ObsoleteLegalIdentity(Identity.Id);
 							}
 						}
+
 						await Database.Delete(this.CurrentApplication);
 						await Database.Provider.Flush();
 					}
-					catch (Exception ex)
+					catch (Exception Ex)
 					{
-						ServiceRef.LogService.LogException(ex);
+						ServiceRef.LogService.LogException(Ex);
+					}
+				}
+				else
+				{
+					// No current application: try to find the latest previous draft and reuse its fields
+					try
+					{
+						IEnumerable<KycReference> All = await Database.Find<KycReference>();
+						KycReference? LatestWithFields = All
+							.OrderByDescending(r => r.UpdatedUtc)
+							.FirstOrDefault(r => r.Fields is not null && r.Fields.Length > 0);
+
+						if (LatestWithFields?.Fields is not null)
+						{
+							PreviousFields = LatestWithFields.Fields
+								.Select(F => new KycFieldValue(F.FieldId, F.Value))
+								.ToArray();
+						}
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
 					}
 				}
 
 				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 				KycReference Ref = await ServiceRef.KycService.LoadKycReferenceAsync(Language);
+
+				// Apply previous field values to the new reference, if any
+				if (PreviousFields is not null && PreviousFields.Length > 0)
+				{
+					Ref.Fields = PreviousFields;
+					Ref.UpdatedUtc = DateTime.UtcNow;
+					try
+					{
+						await ServiceRef.KycService.SaveKycReferenceAsync(Ref);
+						// Ensure cached process instance reflects the newly assigned fields
+						await Ref.ApplyFieldsToProcessAsync(Language);
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+					}
+				}
+
 				await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Ref));
 			}
 			catch (Exception Ex)
@@ -366,10 +417,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					Refs = await Database.Find<KycReference>();
 				}
 				catch (OperationCanceledException) { throw; }
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
 					// Non-fatal; log and continue
-					ServiceRef.LogService.LogException(ex);
+					ServiceRef.LogService.LogException(Ex);
 				}
 
 				Ct.ThrowIfCancellationRequested();
@@ -401,10 +452,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				// Let ObservableTask mark as Canceled; avoid extra UI updates here.
 				throw;
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
 				// ObservableTask will capture/log, but keep behavior consistent.
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 				throw;
 			}
 		}
@@ -426,9 +477,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					Refs = await ServiceRef.KycService.LoadAvailableKycReferencesAsync(Language);
 				}
 				catch (OperationCanceledException) { throw; }
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					ServiceRef.LogService.LogException(ex);
+					ServiceRef.LogService.LogException(Ex);
 				}
 
 				Ct.ThrowIfCancellationRequested();
@@ -446,9 +497,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			{
 				throw;
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 				throw;
 			}
 		}
