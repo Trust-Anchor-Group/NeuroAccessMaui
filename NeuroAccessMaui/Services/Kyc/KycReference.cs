@@ -16,6 +16,7 @@ namespace NeuroAccessMaui.Services.Kyc
 	/// </summary>
 	[CollectionName("KycReferences")]
 	[Index(nameof(UpdatedUtc), nameof(UpdatedUtc))]
+	[Index(nameof(CreatedIdentityId))]
 	public class KycReference
 	{
 		private KycProcess? process;
@@ -175,6 +176,36 @@ namespace NeuroAccessMaui.Services.Kyc
 				FriendlyName = friendlyName ?? string.Empty
 			};
 			return Reference;
+		}
+
+		/// <summary>
+		/// Ensures the current process reflects values in <see cref="Fields"/> by applying them
+		/// into the cached process instance (creating it if needed) and propagating values to
+		/// visible fields. Useful when <see cref="Fields"/> has been updated after a prior
+		/// call to <see cref="GetProcess(string?)"/> created the cached process.
+		/// </summary>
+		/// <param name="lang">Optional language when creating a new process.</param>
+		public async Task ApplyFieldsToProcessAsync(string? lang = null)
+		{
+			KycProcess? Proc = await this.GetProcess(lang).ConfigureAwait(false);
+
+			if (Proc is null || this.Fields is null)
+				return;
+
+			foreach (KycFieldValue Field in this.Fields)
+				Proc.Values[Field.FieldId] = Field.Value;
+
+			foreach (KycPage Page in Proc.Pages)
+			{
+				foreach (ObservableKycField Field in Page.AllFields)
+					this.ApplyFieldValue(Field);
+
+				foreach (KycSection Section in Page.AllSections)
+					foreach (ObservableKycField Field in Section.AllFields)
+						this.ApplyFieldValue(Field);
+
+				Page.UpdateVisibilities(Proc.Values);
+			}
 		}
 
 		/// <summary>
