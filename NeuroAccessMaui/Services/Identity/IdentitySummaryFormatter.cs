@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 using Waher.Networking.XMPP.Contracts;
@@ -214,7 +215,11 @@ namespace NeuroAccessMaui.Services.Identity
                     continue;
 
                 string Label = GetLabel(LabelMap, Key);
-                Result.Address.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
+
+				if (Key.Equals(Constants.XmppProperties.Country, StringComparison.OrdinalIgnoreCase))
+					Val = ISO_3166_1.ToName(Val) ?? Val;
+
+				Result.Address.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
             }
 
 			// Company Info
