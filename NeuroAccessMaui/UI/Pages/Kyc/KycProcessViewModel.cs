@@ -911,7 +911,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.mappedValues.Add(new Property(Constants.XmppProperties.EMail, EMail));
 
 			if (!this.process.HasMapping(Constants.XmppProperties.Country) && !string.IsNullOrEmpty(ServiceRef.TagProfile.SelectedCountry))
-				this.mappedValues.Add(new Property(Constants.XmppProperties.Country, ISO_3166_1.ToName(ServiceRef.TagProfile.SelectedCountry) ?? ServiceRef.TagProfile.SelectedCountry));
+				this.mappedValues.Add(new Property(Constants.XmppProperties.Country, ServiceRef.TagProfile.SelectedCountry));
 
 			this.GenerateSummaryCollection();
 

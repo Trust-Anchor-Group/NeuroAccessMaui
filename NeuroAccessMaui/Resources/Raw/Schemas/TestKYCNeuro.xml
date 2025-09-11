@@ -344,16 +344,8 @@
 				<Text lang="sv">Ange ditt postnummer</Text>
 			</Hint>
 			<Placeholder>
-				<Text lang="en">12345</Text>
-				<Text lang="sv">12345</Text>
+				<Text lang="en">12312</Text>
 			</Placeholder>
-			<Validation minLength="5" maxLength="5">
-				<Regex>^\d{5}$</Regex>
-				<Message>
-					<Text lang="en">Zip code must be exactly 5 digits.</Text>
-					<Text lang="sv">Postnummer måste vara exakt 5 siffror.</Text>
-				</Message>
-			</Validation>
 		</Field>
 		<Field id="address" type="text" label="Street Address" mapping="ADDR" required="true">
 			<Label>
