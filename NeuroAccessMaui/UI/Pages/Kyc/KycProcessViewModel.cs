@@ -49,6 +49,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private ObservableCollection<DisplayQuad> companyAddressSummary;
 		[ObservableProperty] private ObservableCollection<DisplayQuad> companyRepresentativeSummary;
 
+		[ObservableProperty] private string? errorDescription;
+		[ObservableProperty] private bool hasErrorDescription = false;
+
 		[ObservableProperty] private bool hasPersonalInformation = false;
 		[ObservableProperty] private bool hasAddressInformation = false;
 		[ObservableProperty] private bool hasAttachments = false;
@@ -168,6 +171,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			this.process.Initialize();
+
+			// Load any rejection details stored on the reference and apply
+			if (this.kycReference is not null)
+			{
+				this.ErrorDescription = this.kycReference.RejectionMessage;
+				this.HasErrorDescription = !string.IsNullOrWhiteSpace(this.ErrorDescription);
+				this.ApplyInvalidationsToFieldsFromReference();
+			}
 
 			this.process.ClearValidation();
 
@@ -1128,11 +1139,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				return;
 			}
-			// Build summary via shared formatter to avoid duplicating logic with ViewIdentity
+			// Build summary via shared formatter; mark invalid items, if any
+			ISet<string> InvalidMappings = this.BuildInvalidMappingSetFromReference();
 			IdentitySummaryFormatter.KycSummaryResult Summary = IdentitySummaryFormatter.BuildKycSummaryFromProperties(
 				this.mappedValues,
 				this.process,
-				this.attachments.Select(a => new IdentitySummaryFormatter.AttachmentInfo(a.FileName ?? string.Empty, a.ContentType))
+				this.attachments.Select(a => new IdentitySummaryFormatter.AttachmentInfo(a.FileName ?? string.Empty, a.ContentType)),
+				CultureInfo.CurrentCulture,
+				InvalidMappings
 			);
 
 			foreach (DisplayQuad Quad in Summary.Personal)
@@ -1170,6 +1184,124 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.CompanyRepresentativeSummary.Add(Quad);
 			}
 			this.HasCompanyRepresentative = this.CompanyRepresentativeSummary.Count > 0;
+		}
+
+		private ISet<string> BuildInvalidMappingSetFromReference()
+		{
+			HashSet<string> Invalid = new(StringComparer.OrdinalIgnoreCase);
+			if (this.kycReference is null)
+				return Invalid;
+
+			foreach (string Claim in this.kycReference.InvalidClaims ?? Array.Empty<string>())
+			{
+				if (string.IsNullOrWhiteSpace(Claim))
+					continue;
+				string Key = Claim.Trim();
+				Invalid.Add(Key);
+
+				// Grouped date: map parts to composed summary mapping
+				if (Key.Equals(Constants.XmppProperties.BirthDay, StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals(Constants.XmppProperties.BirthMonth, StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals(Constants.XmppProperties.BirthYear, StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals(Constants.CustomXmppProperties.BirthDate, StringComparison.OrdinalIgnoreCase))
+				{
+					Invalid.Add(Constants.CustomXmppProperties.BirthDate);
+				}
+
+				if (Key.Equals("ORGREPBDAY", StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals("ORGREPBMONTH", StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals("ORGREPBYEAR", StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals("ORGREPBDATE", StringComparison.OrdinalIgnoreCase))
+				{
+					Invalid.Add("ORGREPBDATE");
+				}
+			}
+
+			foreach (string Photo in this.kycReference.InvalidPhotos ?? Array.Empty<string>())
+			{
+				if (string.IsNullOrWhiteSpace(Photo))
+					continue;
+				Invalid.Add(Photo.Trim());
+			}
+
+			return Invalid;
+		}
+
+		private void ApplyInvalidationsToFieldsFromReference()
+		{
+			if (this.process is null || this.kycReference is null)
+				return;
+
+			IEnumerable<string> InvalidClaims = this.kycReference.InvalidClaims ?? Array.Empty<string>();
+			if (!InvalidClaims.Any())
+				return;
+
+			HashSet<string> InvalidSet = new(InvalidClaims, StringComparer.OrdinalIgnoreCase);
+
+			foreach (KycPage Page in this.process.Pages)
+			{
+				foreach (ObservableKycField Field in Page.AllFields)
+				{
+					if (Field.Mappings.Any(m => InvalidSet.Contains(m.Key) || this.IsGroupedDateMatch(m.Key, InvalidSet)))
+					{
+						Field.IsValid = false;
+						Field.ValidationText = this.ErrorDescription ?? string.Empty;
+					}
+				}
+				foreach (KycSection Section in Page.AllSections)
+				{
+					foreach (ObservableKycField Field in Section.AllFields)
+					{
+						if (Field.Mappings.Any(m => InvalidSet.Contains(m.Key) || this.IsGroupedDateMatch(m.Key, InvalidSet)))
+						{
+							Field.IsValid = false;
+							Field.ValidationText = this.ErrorDescription ?? string.Empty;
+						}
+					}
+				}
+			}
+		}
+
+		private bool IsGroupedDateMatch(string MappingKey, ISet<string> InvalidSet)
+		{
+			if (string.Equals(MappingKey, Constants.XmppProperties.BirthDay, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(MappingKey, Constants.XmppProperties.BirthMonth, StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(MappingKey, Constants.XmppProperties.BirthYear, StringComparison.OrdinalIgnoreCase))
+			{
+				return InvalidSet.Contains("BDATE") ||
+					InvalidSet.Contains(Constants.XmppProperties.BirthDay) ||
+					InvalidSet.Contains(Constants.XmppProperties.BirthMonth) ||
+					InvalidSet.Contains(Constants.XmppProperties.BirthYear);
+			}
+
+			if (MappingKey.StartsWith("ORGREP", StringComparison.OrdinalIgnoreCase))
+			{
+				return InvalidSet.Contains("ORGREPBDATE") ||
+					InvalidSet.Contains("ORGREPBDAY") ||
+					InvalidSet.Contains("ORGREPBMONTH") ||
+					InvalidSet.Contains("ORGREPBYEAR");
+			}
+
+			return false;
+		}
+
+		public async Task ApplyRejectionAsync(string Message, string[] InvalidClaims, string[] InvalidPhotos, string? Code)
+		{
+			this.ErrorDescription = Message;
+			this.HasErrorDescription = !string.IsNullOrWhiteSpace(Message);
+
+			if (this.kycReference is not null)
+			{
+				this.kycReference.RejectionMessage = Message;
+				this.kycReference.RejectionCode = Code;
+				this.kycReference.InvalidClaims = InvalidClaims;
+				this.kycReference.InvalidPhotos = InvalidPhotos;
+				this.kycReference.UpdatedUtc = DateTime.UtcNow;
+				await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
+			}
+
+			this.ApplyInvalidationsToFieldsFromReference();
+			await MainThread.InvokeOnMainThreadAsync(this.GenerateSummaryCollection);
 		}
 	}
 }
