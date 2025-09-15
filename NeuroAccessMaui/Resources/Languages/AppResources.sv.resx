@@ -3038,4 +3038,10 @@
   <data name="SeeIDApplication" xml:space="preserve">
     <value>Visa ID-ansökan</value>
   </data>
+  <data name="SeeIDApplication" xml:space="preserve">
+    <value>Visa ID-ansökan</value>
+  </data>
+  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
+    <value>Din ID-ansökan har skickats för granskning. Vi meddelar dig när din ID har godkänts!</value>
+  </data>
 </root>
