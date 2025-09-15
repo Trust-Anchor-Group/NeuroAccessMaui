@@ -3038,4 +3038,10 @@
   <data name="SeeIDApplication" xml:space="preserve">
     <value>Ver solicitação de ID</value>
   </data>
+  <data name="SeeIDApplication" xml:space="preserve">
+    <value>Ver solicitação de ID</value>
+  </data>
+  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
+    <value>Sua solicitação de ID foi enviada para análise. Nós notificaremos você quando sua ID for aprovada!</value>
+  </data>
 </root>

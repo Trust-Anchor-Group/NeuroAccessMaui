@@ -50,6 +50,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
+				this.OnPropertyChanged(nameof(this.HasPendingIdentity));
+				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
 
 			});
 
@@ -128,6 +130,10 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		}
 
 		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
+
+		public bool HasPendingIdentity => ServiceRef.TagProfile.LegalIdentity?.State == IdentityState.Created;
+
+		public bool ShowInfoBubble => !this.HasPersonalIdentity || this.HasPendingIdentity;
 
 		public bool CanScanQrCode => true;
 
