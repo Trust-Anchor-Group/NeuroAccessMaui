@@ -49,8 +49,10 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				this.OnPropertyChanged(nameof(this.HasPendingIdentity));
 				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
+				this.OnPropertyChanged(nameof(this.HasPendingIdentity));
+				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
+				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
 				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
 
 			});
@@ -129,11 +131,18 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			}
 		}
 
-		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false && !this.HasPendingIdentity;
+		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
+		public bool ShowApplyIdBox => !(ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false) && !this.CheckPendingIdentity();
 
-		public bool HasPendingIdentity => ServiceRef.TagProfile.IdentityApplication is LegalIdentity Application && Application.State == IdentityState.Created;
+		public bool HasPendingIdentity => this.CheckPendingIdentity();
+		public bool ShowPendingIdBox => this.CheckPendingIdentity();
 
-		public bool ShowInfoBubble => !this.HasPersonalIdentity || this.HasPendingIdentity;
+		private bool CheckPendingIdentity()
+		{
+			return ServiceRef.TagProfile.IdentityApplication is LegalIdentity Application;
+		}
+
+		public bool ShowInfoBubble => this.ShowApplyIdBox || this.ShowPendingIdBox;
 
 		public bool CanScanQrCode => true;
 
