@@ -116,6 +116,18 @@ namespace NeuroAccessMaui.Services.Kyc
 		public string[]? InvalidPhotos { get; set; }
 
 		/// <summary>
+		/// Detailed invalidation information for claims, if provided by the server.
+		/// </summary>
+		[DefaultValueNull]
+		public KycInvalidClaim[]? InvalidClaimDetails { get; set; }
+
+		/// <summary>
+		/// Detailed invalidation information for photos, if provided by the server.
+		/// </summary>
+		[DefaultValueNull]
+		public KycInvalidPhoto[]? InvalidPhotoDetails { get; set; }
+
+		/// <summary>
 		/// Gets a parsed KYC process, populating its fields from the reference.
 		/// </summary>
 		/// <param name="lang">Optional language.</param>

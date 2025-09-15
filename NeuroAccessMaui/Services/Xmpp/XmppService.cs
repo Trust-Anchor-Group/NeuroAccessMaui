@@ -13,6 +13,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Kyc;
+using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Notification.Things;
 using NeuroAccessMaui.Services.Notification.Xmpp;
 using NeuroAccessMaui.Services.Push;
@@ -2096,28 +2097,44 @@ namespace NeuroAccessMaui.Services.Xmpp
 					{
 						Ref.RejectionMessage = Message;
 						Ref.RejectionCode = e.Code;
-						try
-						{
-							IEnumerable<InvalidClaim> InvalidClaimsList = e.InvalidClaims ?? Array.Empty<InvalidClaim>();
-							Ref.InvalidClaims = InvalidClaimsList
-								.Select(c => c?.Claim)
-								.Where(s => !string.IsNullOrWhiteSpace(s))
-								.Select(s => s!.Trim())
-								.ToArray();
-						}
+                    try
+                    {
+                        IEnumerable<InvalidClaim> InvalidClaimsList = e.InvalidClaims ?? Array.Empty<InvalidClaim>();
+                        Ref.InvalidClaims = InvalidClaimsList
+                            .Select(c => c?.Claim)
+                            .Where(s => !string.IsNullOrWhiteSpace(s))
+                            .Select(s => s!.Trim())
+                            .ToArray();
+
+                        Ref.InvalidClaimDetails = InvalidClaimsList
+                            .Where(c => c is not null && !string.IsNullOrWhiteSpace(c.Claim))
+                            .Select(c => new KycInvalidClaim(c.Claim, c.Reason ?? string.Empty, c.ReasonLanguage ?? string.Empty, c.ReasonCode ?? string.Empty, c.Service ?? string.Empty))
+                            .ToArray();
+                    }
 						catch
 						{
 							// Ignore type mismatch; keep null if conversion fails
 						}
-						try
-						{
-							IEnumerable<InvalidPhoto> InvalidPhotosList = e.InvalidPhotos ?? Array.Empty<InvalidPhoto>();
-							Ref.InvalidPhotos = InvalidPhotosList
-								.Select(p => p?.FileName)
-								.Where(s => !string.IsNullOrWhiteSpace(s))
-								.Select(s => Path.GetFileNameWithoutExtension(s!).Trim())
-								.ToArray();
-						}
+                    try
+                    {
+                        IEnumerable<InvalidPhoto> InvalidPhotosList = e.InvalidPhotos ?? Array.Empty<InvalidPhoto>();
+                        Ref.InvalidPhotos = InvalidPhotosList
+                            .Select(p => p?.FileName)
+                            .Where(s => !string.IsNullOrWhiteSpace(s))
+                            .Select(s => Path.GetFileNameWithoutExtension(s!).Trim())
+                            .ToArray();
+
+                        Ref.InvalidPhotoDetails = InvalidPhotosList
+                            .Where(p => p is not null && !string.IsNullOrWhiteSpace(p.FileName))
+                            .Select(p => new KycInvalidPhoto(
+                                p.FileName,
+                                Path.GetFileNameWithoutExtension(p.FileName) ?? p.FileName,
+                                p.Reason ?? string.Empty,
+                                p.ReasonLanguage ?? string.Empty,
+                                p.ReasonCode ?? string.Empty,
+                                p.Service ?? string.Empty))
+                            .ToArray();
+                    }
 						catch
 						{
 							// Ignore type mismatch; keep null if conversion fails

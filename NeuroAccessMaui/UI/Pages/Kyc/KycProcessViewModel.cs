@@ -1237,6 +1237,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 
 			HashSet<string> InvalidSet = new(InvalidClaims, StringComparer.OrdinalIgnoreCase);
+			Dictionary<string, string> ReasonsByMapping = this.BuildInvalidReasonsByMappingFromReference();
 
 			foreach (KycPage Page in this.process.Pages)
 			{
@@ -1245,7 +1246,17 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					if (Field.Mappings.Any(m => InvalidSet.Contains(m.Key) || this.IsGroupedDateMatch(m.Key, InvalidSet)))
 					{
 						Field.IsValid = false;
-						Field.ValidationText = this.ErrorDescription ?? string.Empty;
+						// Use specific reason if available; else fall back to general description
+						string? Reason = null;
+						foreach (KycMapping Map in Field.Mappings)
+						{
+							if (ReasonsByMapping.TryGetValue(Map.Key, out string R))
+							{
+								Reason = R;
+								break;
+							}
+						}
+						Field.ValidationText = !string.IsNullOrWhiteSpace(Reason) ? Reason : (this.ErrorDescription ?? string.Empty);
 					}
 				}
 				foreach (KycSection Section in Page.AllSections)
@@ -1255,11 +1266,64 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 						if (Field.Mappings.Any(m => InvalidSet.Contains(m.Key) || this.IsGroupedDateMatch(m.Key, InvalidSet)))
 						{
 							Field.IsValid = false;
-							Field.ValidationText = this.ErrorDescription ?? string.Empty;
+							string? Reason = null;
+							foreach (KycMapping Map in Field.Mappings)
+							{
+								if (ReasonsByMapping.TryGetValue(Map.Key, out string R))
+								{
+									Reason = R;
+									break;
+								}
+							}
+							Field.ValidationText = !string.IsNullOrWhiteSpace(Reason) ? Reason : (this.ErrorDescription ?? string.Empty);
 						}
 					}
 				}
 			}
+		}
+
+		private Dictionary<string, string> BuildInvalidReasonsByMappingFromReference()
+		{
+			Dictionary<string, string> Map = new(StringComparer.OrdinalIgnoreCase);
+			if (this.kycReference is null)
+				return Map;
+
+			foreach (KycInvalidClaim c in this.kycReference.InvalidClaimDetails ?? Array.Empty<KycInvalidClaim>())
+			{
+				if (c is null || string.IsNullOrWhiteSpace(c.Claim))
+					continue;
+				string Key = c.Claim.Trim();
+				string Reason = string.IsNullOrWhiteSpace(c.Reason) ? this.ErrorDescription ?? string.Empty : c.Reason;
+				Map[Key] = Reason;
+				// grouped date support: if any part has a reason, map composed keys as well
+				if (Key.Equals(Constants.XmppProperties.BirthDay, StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals(Constants.XmppProperties.BirthMonth, StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals(Constants.XmppProperties.BirthYear, StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals("BDATE", StringComparison.OrdinalIgnoreCase))
+				{
+					Map[Constants.CustomXmppProperties.BirthDate] = Reason;
+				}
+				if (Key.Equals("ORGREPBDAY", StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals("ORGREPBMONTH", StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals("ORGREPBYEAR", StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals("ORGREPBDATE", StringComparison.OrdinalIgnoreCase))
+				{
+					Map["ORGREPBDATE"] = Reason;
+				}
+			}
+
+			foreach (KycInvalidPhoto p in this.kycReference.InvalidPhotoDetails ?? Array.Empty<KycInvalidPhoto>())
+			{
+				if (p is null)
+					continue;
+				string Key = string.IsNullOrWhiteSpace(p.Mapping) ? (p.FileName ?? string.Empty) : p.Mapping;
+				if (string.IsNullOrWhiteSpace(Key))
+					continue;
+				string Reason = string.IsNullOrWhiteSpace(p.Reason) ? this.ErrorDescription ?? string.Empty : p.Reason;
+				Map[Key.Trim()] = Reason;
+			}
+
+			return Map;
 		}
 
 		private bool IsGroupedDateMatch(string MappingKey, ISet<string> InvalidSet)
