@@ -3032,4 +3032,10 @@
   <data name="ClearBrandingAndKycCache" xml:space="preserve">
     <value>Rensa cache för branding &amp; KYC</value>
   </data>
+  <data name="ApplicationUnderUnderReview" xml:space="preserve">
+    <value>Din ansökan granskas. Vi meddelar dig när din ID har godkänts!</value>
+  </data>
+  <data name="SeeIDApplication" xml:space="preserve">
+    <value>Visa ID-ansökan</value>
+  </data>
 </root>

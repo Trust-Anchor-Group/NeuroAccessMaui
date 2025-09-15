@@ -3032,4 +3032,10 @@
   <data name="ClearBrandingAndKycCache" xml:space="preserve">
     <value>Limpiar caché de branding y KYC</value>
   </data>
+  <data name="ApplicationUnderUnderReview" xml:space="preserve">
+    <value>Tu solicitud está en revisión. ¡Te notificaremos cuando tu identificación sea aprobada!</value>
+  </data>
+  <data name="SeeIDApplication" xml:space="preserve">
+    <value>Ver solicitud de ID</value>
+  </data>
 </root>
