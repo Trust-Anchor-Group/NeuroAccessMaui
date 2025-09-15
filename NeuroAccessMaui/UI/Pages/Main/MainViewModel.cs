@@ -54,7 +54,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
 				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
 				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
-
 			});
 
 			await base.OnAppearing();
@@ -81,15 +80,68 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
 
 
-		//		GeoMapViewModel vm = new(59.638346832492765,11.879682074310969);
-		//		await ServiceRef.UiService.PushAsync(new GeoMapPopup(vm));
-		//		Console.WriteLine($"GeoMap result: {await vm.Result}");
+				//		GeoMapViewModel vm = new(59.638346832492765,11.879682074310969);
+				//		await ServiceRef.UiService.PushAsync(new GeoMapPopup(vm));
+				//		Console.WriteLine($"GeoMap result: {await vm.Result}");
 
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+
+			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.LegalIdentityChanged += this.XmppService_LegalIdentityChanged;
+			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
+		}
+
+		protected override Task OnDispose()
+		{
+			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
+			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
+
+			return base.OnDispose();
+		}
+
+		private void TagProfile_OnPropertiesChanged(object? Sender, EventArgs e)
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
+				this.OnPropertyChanged(nameof(this.HasPendingIdentity));
+				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
+				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
+				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
+			});
+		}
+
+		private Task XmppService_LegalIdentityChanged(object? Sender, EventArgs e)
+		{
+			MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
+				this.OnPropertyChanged(nameof(this.HasPendingIdentity));
+				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
+				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
+				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
+			});
+
+			return Task.CompletedTask;
+		}
+
+		private Task XmppService_IdentityApplicationChanged(object? Sender, EventArgs e)
+		{
+			MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
+				this.OnPropertyChanged(nameof(this.HasPendingIdentity));
+				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
+				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
+				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
+			});
+
+			return Task.CompletedTask;
 		}
 
 		protected override async Task OnInitialize()
