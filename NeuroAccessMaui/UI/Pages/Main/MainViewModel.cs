@@ -49,8 +49,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
 				this.OnPropertyChanged(nameof(this.HasPendingIdentity));
+				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
 				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
 
 			});
@@ -129,9 +129,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			}
 		}
 
-		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
+		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false && !this.HasPendingIdentity;
 
-		public bool HasPendingIdentity => ServiceRef.TagProfile.IdentityApplication is LegalIdentity Application && Application.State == IdentityState.Created && !this.HasPersonalIdentity;
+		public bool HasPendingIdentity => ServiceRef.TagProfile.IdentityApplication is LegalIdentity Application && Application.State == IdentityState.Created;
 
 		public bool ShowInfoBubble => !this.HasPersonalIdentity || this.HasPendingIdentity;
 
