@@ -90,6 +90,44 @@ namespace NeuroAccessMaui.Services.Kyc
 		public string LastVisitedMode { get; set; } = "Form";
 
 		/// <summary>
+		/// Last rejection or error message received from the provider for this application (if any).
+		/// </summary>
+		[DefaultValueNull]
+		public string? RejectionMessage { get; set; }
+
+		/// <summary>
+		/// Optional provider-specific error/reason code, if included with the message.
+		/// </summary>
+		[DefaultValueNull]
+		public string? RejectionCode { get; set; }
+
+		/// <summary>
+		/// Identity property keys that were invalidated by the provider, if any.
+		/// Example keys include FIRSTNAME, LASTNAMES, BDAY/BMONTH/BYEAR or composed aliases like BDATE.
+		/// </summary>
+		[DefaultValueNull]
+		public string[]? InvalidClaims { get; set; }
+
+		/// <summary>
+		/// Attachment base names that were invalidated by the provider, if any.
+		/// Example values: Passport, IdCardFront, IdCardBack, DriverLicenseFront, ProfilePhoto, ORGAOA.
+		/// </summary>
+		[DefaultValueNull]
+		public string[]? InvalidPhotos { get; set; }
+
+		/// <summary>
+		/// Detailed invalidation information for claims, if provided by the server.
+		/// </summary>
+		[DefaultValueNull]
+		public KycInvalidClaim[]? InvalidClaimDetails { get; set; }
+
+		/// <summary>
+		/// Detailed invalidation information for photos, if provided by the server.
+		/// </summary>
+		[DefaultValueNull]
+		public KycInvalidPhoto[]? InvalidPhotoDetails { get; set; }
+
+		/// <summary>
 		/// Gets a parsed KYC process, populating its fields from the reference.
 		/// </summary>
 		/// <param name="lang">Optional language.</param>

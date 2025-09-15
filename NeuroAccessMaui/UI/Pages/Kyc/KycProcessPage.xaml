@@ -436,6 +436,26 @@
 							<VerticalStackLayout>
 								<Label Style="{DynamicResource PageTitleLabel}" Text="Application summary" Margin="{DynamicResource MediumLeftRightMargins}"/>
 
+								<!-- Rejection/Error banner shown when server reported an error for this application -->
+								<controls:ConditionView Condition="{Binding HasErrorDescription}">
+									<controls:ConditionView.True>
+										<Border Grid.Row="0"
+												BackgroundColor="{DynamicResource TnPDangerbgWL}"
+												Padding="{DynamicResource MediumMargins}"
+												Margin="{DynamicResource SmallMargins}"
+												StrokeShape="RoundRectangle 16,16,0,16">
+											<Border.Shadow>
+												<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
+											</Border.Shadow>
+											<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+													ColumnDefinitions="auto, *">
+												<Path Grid.Column="0" Data="{x:Static ui:Geometries.InfoCirclePath}" Fill="{DynamicResource TnPDangerContentWL}"/>
+												<Label Grid.Column="1" Text="{Binding ErrorDescription}" Style="{DynamicResource InfoLabel}" TextColor="{DynamicResource TnPDangerContentWL}"/>
+											</Grid>
+										</Border>
+									</controls:ConditionView.True>
+								</controls:ConditionView>
+
 								<!-- TODO: Replace with infobubble control -->
 								<Border Grid.Row="0"
 										BackgroundColor="{DynamicResource TnPInfobgWL}"
@@ -472,7 +492,13 @@
 															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
 																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
-																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1">
+																		<Label.Triggers>
+																			<DataTrigger TargetType="Label" Binding="{Binding IsInvalid}" Value="True">
+																				<Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}" />
+																			</DataTrigger>
+																		</Label.Triggers>
+																	</Label>
 																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
 																</Grid>
 															</controls:TemplatedButton>
@@ -492,7 +518,13 @@
 															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
 																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
-																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1">
+																		<Label.Triggers>
+																			<DataTrigger TargetType="Label" Binding="{Binding IsInvalid}" Value="True">
+																				<Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}" />
+																			</DataTrigger>
+																		</Label.Triggers>
+																	</Label>
 																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
 																</Grid>
 															</controls:TemplatedButton>
@@ -512,7 +544,13 @@
 															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
 																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
-																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
+																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1">
+																		<Label.Triggers>
+																			<DataTrigger TargetType="Label" Binding="{Binding IsInvalid}" Value="True">
+																				<Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}" />
+																			</DataTrigger>
+																		</Label.Triggers>
+																	</Label>
 																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
 																</Grid>
 															</controls:TemplatedButton>
@@ -575,7 +613,13 @@
 																		<Border Style="{DynamicResource FileIconBorder}">
 																			<controls:SvgView Source="gallery.svg" HeightRequest="24"/>
 																		</Border>
-																		<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" VerticalOptions="Center" Margin="16,0,16,0"/>
+																	<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" VerticalOptions="Center" Margin="16,0,16,0">
+																		<Label.Triggers>
+																			<DataTrigger TargetType="Label" Binding="{Binding IsInvalid}" Value="True">
+																				<Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}" />
+																			</DataTrigger>
+																		</Label.Triggers>
+																	</Label>
 																		<controls:SvgView Grid.Column="2" Grid.RowSpan="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
 																	</Grid>
 																</Border>

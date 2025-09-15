@@ -20,13 +20,15 @@ namespace NeuroAccessMaui.Services.Identity
 		public string Value { get; }
 		public string? Mapping { get; }
 		public bool FromField { get; }
+		public bool IsInvalid { get; }
 
-		public DisplayQuad(string Label, string Value, string? Mapping, bool FromField)
+		public DisplayQuad(string Label, string Value, string? Mapping, bool FromField, bool IsInvalid = false)
 		{
 			this.Label = Label;
 			this.Value = Value;
 			this.Mapping = Mapping;
 			this.FromField = FromField;
+			this.IsInvalid = IsInvalid;
 		}
 	}
 
@@ -88,7 +90,8 @@ namespace NeuroAccessMaui.Services.Identity
         public static KycSummaryResult BuildKycSummaryFromProperties(IEnumerable<Property> Properties,
 			KycProcess Process,
             IEnumerable<AttachmentInfo>? Attachments = null,
-            CultureInfo? Culture = null)
+            CultureInfo? Culture = null,
+            ISet<string>? InvalidMappings = null)
         {
             CultureInfo EffectiveCulture = Culture ?? CultureInfo.CurrentCulture;
 
@@ -205,7 +208,8 @@ namespace NeuroAccessMaui.Services.Identity
                     continue;
 
                 string Label = GetLabel(LabelMap, Key);
-                Result.Personal.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
+                bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
+                Result.Personal.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
             }
 
             // Address
@@ -214,12 +218,14 @@ namespace NeuroAccessMaui.Services.Identity
                 if (!Dict.TryGetValue(Key, out string? Val) || string.IsNullOrWhiteSpace(Val))
                     continue;
 
+
                 string Label = GetLabel(LabelMap, Key);
 
 				if (Key.Equals(Constants.XmppProperties.Country, StringComparison.OrdinalIgnoreCase))
 					Val = ISO_3166_1.ToName(Val) ?? Val;
 
-				Result.Address.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
+				bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
+				Result.Address.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
             }
 
 			// Company Info
@@ -229,7 +235,8 @@ namespace NeuroAccessMaui.Services.Identity
 					continue;
 
 				string Label = GetLabel(LabelMap, Key);
-				Result.CompanyInfo.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
+				bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
+				Result.CompanyInfo.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
 			}
 
 			// Company Address
@@ -239,7 +246,8 @@ namespace NeuroAccessMaui.Services.Identity
 					continue;
 
 				string Label = GetLabel(LabelMap, Key);
-				Result.CompanyAddress.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
+				bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
+				Result.CompanyAddress.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
 			}
 
 			// Company Representative
@@ -248,7 +256,8 @@ namespace NeuroAccessMaui.Services.Identity
 				if (!Dict.TryGetValue(Key, out string? Val) || string.IsNullOrWhiteSpace(Val))
 					continue;
 				string Label = GetLabel(LabelMap, Key);
-				Result.CompanyRepresentative.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key)));
+				bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
+				Result.CompanyRepresentative.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
 			}
 
 			// Attachments
@@ -311,7 +320,8 @@ namespace NeuroAccessMaui.Services.Identity
                             break;
                     }
 
-                    Result.Attachments.Add(new DisplayQuad(Att.FileName, Description, Base, Process.HasMapping(Base)));
+                    bool IsInvalid = InvalidMappings?.Contains(Base) ?? false;
+                    Result.Attachments.Add(new DisplayQuad(Att.FileName, Description, Base, Process.HasMapping(Base), IsInvalid));
                 }
             }
 
