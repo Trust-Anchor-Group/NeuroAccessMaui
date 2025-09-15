@@ -126,13 +126,28 @@ namespace NeuroAccessMaui.UI.Controls
                 }
                 else
                 {
-                    SelectableOption<object> Option = new SelectableOption<object>(Item, this.SelectedItems?.Contains(Item) == true, o => this.ToggleSelection(o));
-                    Option.IsSelectedChanged += this.OnChildIsSelectedChanged;
-                    Selectable = Option;
+                    // Prefer typed wrapper when working with KYC options so compiled bindings match
+                    if (Item is NeuroAccessMaui.Services.Kyc.Models.KycOption kycOption)
+                    {
+                        SelectableKycOption option = new SelectableKycOption(
+                            kycOption,
+                            this.SelectedItems?.Contains(kycOption) == true,
+                            o => this.ToggleSelection(o));
+                        Selectable = option;
+                    }
+                    else
+                    {
+                        SelectableOption<object> option = new SelectableOption<object>(Item, this.SelectedItems?.Contains(Item) == true, o => this.ToggleSelection(o));
+                        Selectable = option;
+                    }
                 }
                 if (Selectable is SelectableOption<object> Option2)
                 {
                     Option2.IsSelectedChanged += this.OnChildIsSelectedChanged;
+                }
+                else if (Selectable is SelectableKycOption Option3)
+                {
+                    Option3.IsSelectedChanged += this.OnChildIsSelectedChanged;
                 }
                 View Content = (View)this.ItemTemplate.CreateContent();
                 Content.BindingContext = Selectable;
@@ -156,7 +171,7 @@ namespace NeuroAccessMaui.UI.Controls
             }
             if (sender is NeuroAccessMaui.Core.ISelectable ChangedSelectable)
             {
-                object Item = (ChangedSelectable is SelectableOption<object> So) ? So.Item : ChangedSelectable;
+                object Item = GetUnderlyingItem(ChangedSelectable);
                 if (this.SelectionMode == SelectorSelectionMode.Single && ChangedSelectable.IsSelected)
                 {
                     foreach (View ChildView in this.Children.Cast<View>())
@@ -200,7 +215,7 @@ namespace NeuroAccessMaui.UI.Controls
             {
                 return;
             }
-            object Item = (Selectable is SelectableOption<object> So) ? So.Item : selectableOptionObj;
+            object Item = GetUnderlyingItem(Selectable);
             if (this.SelectionMode == SelectorSelectionMode.Single)
             {
                 // Deselect all others
@@ -251,7 +266,7 @@ namespace NeuroAccessMaui.UI.Controls
                 {
                     if (child.BindingContext is NeuroAccessMaui.Core.ISelectable selectable)
                     {
-                        object item = (selectable is SelectableOption<object> so) ? so.Item : selectable;
+                        object item = GetUnderlyingItem(selectable);
                         bool shouldSelect = selected.Contains(item);
                         selectable.IsSelected = shouldSelect;
                     }
@@ -261,6 +276,19 @@ namespace NeuroAccessMaui.UI.Controls
             {
                 this.syncingSelection = false;
             }
+        }
+
+        private static object GetUnderlyingItem(NeuroAccessMaui.Core.ISelectable selectable)
+        {
+            if (selectable is SelectableKycOption kycOption)
+            {
+                return kycOption.Item;
+            }
+            if (selectable is SelectableOption<object> genericOption)
+            {
+                return genericOption.Item;
+            }
+            return selectable;
         }
 
         // SelectableOption<T> is now used for item context

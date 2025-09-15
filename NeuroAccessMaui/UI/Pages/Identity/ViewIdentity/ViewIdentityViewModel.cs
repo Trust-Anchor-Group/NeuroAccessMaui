@@ -271,6 +271,37 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				this.HasDomainProperty = true;
 			}
 
+			PersonalInformation? PInfo = null;
+			try
+			{
+				if (!this.HasDomainProperty)
+				{
+					PInfo = Identity.GetPersonalInformation();
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			if (PInfo is not null)
+			{
+				if (!string.IsNullOrEmpty(PInfo.FullName))
+				{
+					this.FriendlyName = PInfo.FullName;
+					if (PInfo.HasBirthDate)
+						this.SubText = PInfo.BirthDate!.Value.ToShortDateString();
+					else
+						this.SubText = Jid is not null ? Jid[1] : string.Empty;
+				}
+				if (PInfo.HasBirthDate && PInfo.Age > 0)
+					this.AgeText = PInfo.Age.ToString(CultureInfo.InvariantCulture);
+			}
+
+
+			this.IssueDate = Identity.From;
+			this.ExpireDate = Identity.To;
+
 			// Load fields
 			this.LoadIdentityTask.Load(async ctx =>
 			{
