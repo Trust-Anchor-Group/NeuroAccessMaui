@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Kyc.KycProcessPage"
-					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-					  xmlns:local="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
-					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-					  xmlns:models="clr-namespace:NeuroAccessMaui.Services.Kyc.Models"
-					  xmlns:fields="clr-namespace:NeuroAccessMaui.Services.Kyc.ViewModels"
-					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
-					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-					  x:DataType="viewmodel:KycProcessViewModel"
-					  xmlns:IDSF="clr-namespace:NeuroAccessMaui.Services.Identity">
+                      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+                      xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                      xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+                      xmlns:local="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
+                      xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                      xmlns:models="clr-namespace:NeuroAccessMaui.Services.Kyc.Models"
+                      xmlns:fields="clr-namespace:NeuroAccessMaui.Services.Kyc.ViewModels"
+                      xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
+                      xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                      xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                      x:DataType="viewmodel:KycProcessViewModel"
+                      xmlns:IDSF="clr-namespace:NeuroAccessMaui.Services.Identity">
 
 	<ContentPage.Resources>
 		<ResourceDictionary>
@@ -433,8 +434,55 @@
 							VerticalOptions="Center">
 					<controls:ConditionView Condition="{Binding ShouldViewSummary}">
 						<controls:ConditionView.True>
-							<VerticalStackLayout>
-								<Label Style="{DynamicResource PageTitleLabel}" Text="Application summary" Margin="{DynamicResource MediumLeftRightMargins}"/>
+						<VerticalStackLayout>
+							<Label Style="{DynamicResource PageTitleLabel}" Text="Application summary" Margin="{DynamicResource MediumLeftRightMargins}"/>
+
+							<!-- Post-submission panel: application sent + peer review actions -->
+							<Border IsVisible="{Binding ApplicationSentPublic}"
+									Style="{DynamicResource BorderSet}">
+								<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+									<Label Style="{DynamicResource SectionTitleLabel}"
+										   Text="{l:Localize Application}" />
+									<Label Style="{DynamicResource InfoLabel}"
+										   Text="{l:Localize IdApplicationSentDescription}" />
+
+									<!-- Peer review supported -->
+									<controls:ConditionView Condition="{Binding PeerReview}">
+										<controls:ConditionView.True>
+											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+												<Label Style="{DynamicResource InfoLabel}"
+													   Text="{l:Localize PeerReviewDescription}" />
+												<Label Style="{DynamicResource InfoLabel}">
+													<Label.FormattedText>
+														<FormattedString>
+															<Span Text="{l:Localize NrPeerReviews}" />
+															<Span Text=" " />
+															<Span FontAttributes="Bold" Text="{Binding NrReviews}" />
+															<Span Text=" / " />
+															<Span Text="{Binding NrReviewers}" />
+														</FormattedString>
+													</Label.FormattedText>
+												</Label>
+
+												<Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+													<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+																 LabelData="{l:Localize QrScanCode}"
+																 Command="{Binding ScanQrCodeCommand}"/>
+													<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+																 LabelData="{l:Localize FeaturedReviewers}"
+																 Command="{Binding RequestReviewCommand}"
+																 IsVisible="{Binding FeaturedPeerReviewers}"
+																 Grid.Column="1"/>
+												</Grid>
+											</VerticalStackLayout>
+										</controls:ConditionView.True>
+									</controls:ConditionView>
+
+									<controls:TextButton Style="{DynamicResource FilledTextButton}"
+													 LabelData="{l:Localize RevokeApplication}"
+													 Command="{Binding RevokeApplicationCommand}" />
+								</VerticalStackLayout>
+							</Border>
 
 								<!-- Rejection/Error banner shown when server reported an error for this application -->
 								<controls:ConditionView Condition="{Binding HasErrorDescription}">
@@ -456,28 +504,31 @@
 									</controls:ConditionView.True>
 								</controls:ConditionView>
 
-								<!-- TODO: Replace with infobubble control -->
-								<Border Grid.Row="0"
-										BackgroundColor="{DynamicResource TnPInfobgWL}"
-										Padding="{DynamicResource MediumMargins}"
-										Margin="{DynamicResource SmallMargins}"
-										StrokeShape="RoundRectangle 16,16,0,16">
-									<Border.Shadow>
-										<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
-									</Border.Shadow>
-									<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-											ColumnDefinitions="auto, *">
-										<Path
-											Grid.Column="0"
-											Data="{x:Static ui:Geometries.InfoCirclePath}"
-											Fill="{DynamicResource TnPInfoContentWL}"/>
-										<Label
-											Grid.Column="1"
-											Text="Before finalizing, please read through and ensure everything is correct."
-											Style="{DynamicResource InfoLabel}"
-											TextColor="{DynamicResource TnPInfoContentWL}"/>
-									</Grid>
-								</Border>
+								<!-- Info bubble only when not already sent -->
+								<controls:ConditionView Condition="{Binding ApplicationSentPublic}">
+									<controls:ConditionView.True>
+										<!-- Hide info bubble when application is sent -->
+									</controls:ConditionView.True>
+									<controls:ConditionView.False>
+										<Border Grid.Row="0"
+												BackgroundColor="{DynamicResource TnPInfobgWL}"
+												Padding="{DynamicResource MediumMargins}"
+												Margin="{DynamicResource SmallMargins}"
+												StrokeShape="RoundRectangle 16,16,0,16">
+											<Border.Shadow>
+												<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
+											</Border.Shadow>
+											<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+													ColumnDefinitions="auto, *">
+												<Path Grid.Column="0" Data="{x:Static ui:Geometries.InfoCirclePath}" Fill="{DynamicResource TnPInfoContentWL}"/>
+												<Label Grid.Column="1"
+													   Text="Before finalizing, please read through and ensure everything is correct."
+													   Style="{DynamicResource InfoLabel}"
+													   TextColor="{DynamicResource TnPInfoContentWL}"/>
+											</Grid>
+										</Border>
+									</controls:ConditionView.False>
+								</controls:ConditionView>
 								<Border Style="{DynamicResource BorderSet}">
 									<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 										<Label Style="{DynamicResource FieldTitleLabel}" Text="Application Information"/>
@@ -488,8 +539,15 @@
 												<Label Text="Personal Details" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding PersonalInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
-														<DataTemplate x:DataType="IDSF:DisplayQuad">
-															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                <DataTemplate x:DataType="IDSF:DisplayQuad">
+                                    <controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                        <controls:TemplatedButton.Triggers>
+                                            <DataTrigger TargetType="controls:TemplatedButton"
+                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+                                                        Value="True">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                            </DataTrigger>
+                                        </controls:TemplatedButton.Triggers>
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
 																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
 																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1">
@@ -499,7 +557,13 @@
 																			</DataTrigger>
 																		</Label.Triggers>
 																	</Label>
-																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
+																		<controls:SvgView.Triggers>
+																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
+																				<Setter Property="IsVisible" Value="False" />
+																			</DataTrigger>
+																		</controls:SvgView.Triggers>
+																	</controls:SvgView>
 																</Grid>
 															</controls:TemplatedButton>
 														</DataTemplate>
@@ -514,8 +578,15 @@
 												<Label Text="Address Details" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding AddressInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
-														<DataTemplate x:DataType="IDSF:DisplayQuad">
-															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                <DataTemplate x:DataType="IDSF:DisplayQuad">
+                                    <controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                        <controls:TemplatedButton.Triggers>
+                                            <DataTrigger TargetType="controls:TemplatedButton"
+                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+                                                        Value="True">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                            </DataTrigger>
+                                        </controls:TemplatedButton.Triggers>
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
 																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
 																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1">
@@ -525,7 +596,13 @@
 																			</DataTrigger>
 																		</Label.Triggers>
 																	</Label>
-																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
+																		<controls:SvgView.Triggers>
+																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
+																				<Setter Property="IsVisible" Value="False" />
+																			</DataTrigger>
+																		</controls:SvgView.Triggers>
+																	</controls:SvgView>
 																</Grid>
 															</controls:TemplatedButton>
 														</DataTemplate>
@@ -540,8 +617,15 @@
 												<Label Text="Company Information" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
-														<DataTemplate x:DataType="IDSF:DisplayQuad">
-															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                <DataTemplate x:DataType="IDSF:DisplayQuad">
+                                    <controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                        <controls:TemplatedButton.Triggers>
+                                            <DataTrigger TargetType="controls:TemplatedButton"
+                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+                                                        Value="True">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                            </DataTrigger>
+                                        </controls:TemplatedButton.Triggers>
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
 																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
 																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1">
@@ -551,7 +635,13 @@
 																			</DataTrigger>
 																		</Label.Triggers>
 																	</Label>
-																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
+																		<controls:SvgView.Triggers>
+																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
+																				<Setter Property="IsVisible" Value="False" />
+																			</DataTrigger>
+																		</controls:SvgView.Triggers>
+																	</controls:SvgView>
 																</Grid>
 															</controls:TemplatedButton>
 														</DataTemplate>
@@ -566,12 +656,25 @@
 												<Label Text="Company Address" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyAddressSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
-														<DataTemplate x:DataType="IDSF:DisplayQuad">
-															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                <DataTemplate x:DataType="IDSF:DisplayQuad">
+                                    <controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                        <controls:TemplatedButton.Triggers>
+                                            <DataTrigger TargetType="controls:TemplatedButton"
+                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+                                                        Value="True">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                            </DataTrigger>
+                                        </controls:TemplatedButton.Triggers>
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
 																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
 																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
-																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
+																		<controls:SvgView.Triggers>
+																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
+																				<Setter Property="IsVisible" Value="False" />
+																			</DataTrigger>
+																		</controls:SvgView.Triggers>
+																	</controls:SvgView>
 																</Grid>
 															</controls:TemplatedButton>
 														</DataTemplate>
@@ -586,12 +689,25 @@
 												<Label Text="Company Representative" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyRepresentativeSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
-														<DataTemplate x:DataType="IDSF:DisplayQuad">
-															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                <DataTemplate x:DataType="IDSF:DisplayQuad">
+                                    <controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                        <controls:TemplatedButton.Triggers>
+                                            <DataTrigger TargetType="controls:TemplatedButton"
+                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+                                                        Value="True">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                            </DataTrigger>
+                                        </controls:TemplatedButton.Triggers>
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
 																	<Label Text="{Binding Label}" Style="{DynamicResource FieldKeyLabel}" />
 																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
-																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
+																		<controls:SvgView.Triggers>
+																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
+																				<Setter Property="IsVisible" Value="False" />
+																			</DataTrigger>
+																		</controls:SvgView.Triggers>
+																	</controls:SvgView>
 																</Grid>
 															</controls:TemplatedButton>
 														</DataTemplate>
@@ -606,8 +722,15 @@
 												<Label Text="Attachments" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
-														<DataTemplate x:DataType="IDSF:DisplayQuad">
-															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                <DataTemplate x:DataType="IDSF:DisplayQuad">
+                                    <controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                        <controls:TemplatedButton.Triggers>
+                                            <DataTrigger TargetType="controls:TemplatedButton"
+                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+                                                        Value="True">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                            </DataTrigger>
+                                        </controls:TemplatedButton.Triggers>
 																<Border Style="{DynamicResource BorderSet}" Margin="0">
 																	<Grid ColumnDefinitions="auto, *, auto" ColumnSpacing="{DynamicResource SmallSpacing}">
 																		<Border Style="{DynamicResource FileIconBorder}">
@@ -620,7 +743,13 @@
 																			</DataTrigger>
 																		</Label.Triggers>
 																	</Label>
-																		<controls:SvgView Grid.Column="2" Grid.RowSpan="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}"/>
+																		<controls:SvgView Grid.Column="2" Grid.RowSpan="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
+																			<controls:SvgView.Triggers>
+																				<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
+																					<Setter Property="IsVisible" Value="False" />
+																				</DataTrigger>
+																			</controls:SvgView.Triggers>
+																		</controls:SvgView>
 																	</Grid>
 																</Border>
 															</controls:TemplatedButton>
@@ -676,11 +805,16 @@
 					</controls:ConditionView>
 				</ScrollView>
 
-				<!-- Navigation bar -->
-				<Border Style="{DynamicResource BottomBarBorder2}"
-						Grid.Row="2"
-						Padding="16">
-					<VerticalStackLayout Spacing="8">
+				<!-- Navigation bar (hidden once application is sent) -->
+				<controls:ConditionView Condition="{Binding ApplicationSentPublic}" Grid.Row="2">
+					<controls:ConditionView.True>
+						<!-- When an application is sent, hide the bottom bar entirely -->
+					</controls:ConditionView.True>
+					<controls:ConditionView.False>
+						<Border Style="{DynamicResource BottomBarBorder2}"
+								Grid.Row="2"
+								Padding="16">
+							<VerticalStackLayout Spacing="8">
 						<Grid ColumnDefinitions="*, *">
 							<Label Grid.Column="0"
 								   Text="Progress"
@@ -718,8 +852,10 @@
 								</Grid>
 							</controls:ConditionView.False>
 						</controls:ConditionView>
-					</VerticalStackLayout>
-				</Border>
+						</VerticalStackLayout>
+						</Border>
+					</controls:ConditionView.False>
+				</controls:ConditionView>
 			</Grid>
 		</controls:ConditionView.False>
 	</controls:ConditionView>

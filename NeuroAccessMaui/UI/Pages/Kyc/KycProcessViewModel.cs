@@ -15,8 +15,11 @@ using NeuroAccessMaui.Services.UI.Photos;
 using SkiaSharp;
 using Waher.Content.Html.Elements;
 using Waher.Networking.XMPP.Contracts;
-
-
+using Waher.Networking.XMPP.Contracts.EventArguments;
+using Waher.Networking.XMPP;
+using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
+using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
+using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
 	public partial class KycProcessViewModel : BaseViewModel
@@ -29,9 +32,36 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private List<Property> mappedValues;
 		private List<LegalIdentityAttachment> attachments;
+		private ServiceProviderWithLegalId[]? peerReviewServices = null;
 		[ObservableProperty] private bool shouldViewSummary = false;
 		[ObservableProperty] private bool shouldReturnToSummary = false;
 		[ObservableProperty] private bool isLoading = false;
+
+		// Peer review integration
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(ScanQrCodeCommand))]
+		[NotifyCanExecuteChangedFor(nameof(RequestReviewCommand))]
+		[NotifyCanExecuteChangedFor(nameof(RevokeApplicationCommand))]
+		private bool applicationSentPublic;
+
+		[ObservableProperty]
+		private bool peerReview;
+
+		[ObservableProperty]
+		private int nrReviews;
+
+		[ObservableProperty]
+		private int nrReviewers;
+
+		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(RequestReviewCommand))]
+		private bool hasFeaturedPeerReviewers;
+
+		public bool CanRequestFeaturedPeerReviewer => this.ApplicationSentPublic && this.HasFeaturedPeerReviewers;
+
+		public bool FeaturedPeerReviewers => this.CanRequestFeaturedPeerReviewer && this.PeerReview;
+
+        public bool ApplicationSent => this.ApplicationSentPublic;
 
 		[ObservableProperty] private int currentPagePosition;
 		[ObservableProperty] private KycPage? currentPage;
@@ -135,6 +165,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.AttachmentInformationSummary = new ObservableCollection<DisplayQuad>();
 			this.mappedValues = new List<Property>();
 			this.attachments = new List<LegalIdentityAttachment>();
+			// Initialize peer review state
+			this.ApplicationSentPublic = ServiceRef.TagProfile.IdentityApplication is not null;
+			this.NrReviews = ServiceRef.TagProfile.NrReviews;
 		}
 
 		protected override async Task OnInitialize()
@@ -171,6 +204,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			this.process.Initialize();
+
+			// Peer review: hook events and load attributes if an application exists
+			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
+			if (ServiceRef.TagProfile.IdentityApplication is not null)
+			{
+				await this.LoadApplicationAttributes();
+				await this.LoadFeaturedPeerReviewers();
+			}
 
 			// Load any rejection details stored on the reference and apply
 			if (this.kycReference is not null)
@@ -295,8 +336,26 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.NextCommand.NotifyCanExecuteChanged
 			);
 
-			this.IsLoading = false;
-		}
+			// If there's a pending/sent application, prefer summary with post-submission panel
+			if (this.ApplicationSentPublic)
+			{
+				await this.ProcessData();
+				this.ShouldViewSummary = true;
+				this.OnPropertyChanged(nameof(this.Progress));
+				this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+			}
+
+				this.IsLoading = false;
+			}
+
+			partial void OnApplicationSentPublicChanged(bool value)
+			{
+				if (value)
+				{
+					this.ShouldViewSummary = true;
+					this.OnPropertyChanged(nameof(this.Progress));
+				}
+			}
 
 		partial void OnCurrentPagePositionChanged(int value)
 		{
@@ -594,6 +653,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			ScrollToTop?.Invoke(this, EventArgs.Empty); // scroll to Y=0
 		}
 
+		protected override Task OnDispose()
+		{
+			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
+			return base.OnDispose();
+		}
+
 		[RelayCommand]
 		private async Task GoToSummaryAsync()
 		{
@@ -848,7 +913,188 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					}
 				}
 
-				await base.GoBack();
+				// Stay on page, switch to post-submission state and load peer review attributes
+				this.applicationSent = true;
+				this.ApplicationSentPublic = true;
+				this.NrReviews = ServiceRef.TagProfile.NrReviews;
+				await this.LoadApplicationAttributes();
+				await this.LoadFeaturedPeerReviewers();
+				this.ShouldViewSummary = true;
+				this.OnPropertyChanged(nameof(this.Progress));
+			}
+		}
+
+		private async Task LoadApplicationAttributes()
+		{
+			try
+			{
+				IdApplicationAttributesEventArgs e = await ServiceRef.XmppService.GetIdApplicationAttributes();
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.PeerReview = e.PeerReview;
+					this.NrReviewers = e.NrReviewers;
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private async Task LoadFeaturedPeerReviewers()
+		{
+			await ServiceRef.NetworkService.TryRequest(async () =>
+			{
+				this.peerReviewServices = await ServiceRef.XmppService.GetServiceProvidersForPeerReviewAsync();
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.HasFeaturedPeerReviewers = (this.peerReviewServices?.Length ?? 0) > 0;
+				});
+			});
+		}
+
+		private async Task XmppService_IdentityApplicationChanged(object? Sender, LegalIdentityEventArgs e)
+		{
+			await MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				this.ApplicationSentPublic = ServiceRef.TagProfile.IdentityApplication is not null;
+				this.NrReviews = ServiceRef.TagProfile.NrReviews;
+				if (this.ApplicationSentPublic && this.peerReviewServices is null)
+				{
+					await this.LoadFeaturedPeerReviewers();
+				}
+			});
+		}
+
+		[RelayCommand(CanExecute = nameof(ApplicationSentPublic))]
+		private async Task ScanQrCode()
+		{
+			string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.QrPageTitleScanPeerId),
+				[
+					Constants.UriSchemes.IotId
+				]);
+
+			if (string.IsNullOrEmpty(Url) || !Constants.UriSchemes.StartsWithIdScheme(Url))
+				return;
+
+			await this.SendPeerReviewRequest(Constants.UriSchemes.RemoveScheme(Url));
+		}
+
+		private async Task SendPeerReviewRequest(string? ReviewerId)
+		{
+			LegalIdentity? ToReview = ServiceRef.TagProfile.IdentityApplication;
+			if (ToReview is null || string.IsNullOrEmpty(ReviewerId))
+				return;
+
+			try
+			{
+				await ServiceRef.XmppService.PetitionPeerReviewId(ReviewerId, ToReview, Guid.NewGuid().ToString(),
+					ServiceRef.Localizer[nameof(AppResources.CouldYouPleaseReviewMyIdentityInformation)]);
+
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
+					ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToYourPeer)]);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+		}
+
+		[RelayCommand(CanExecute = nameof(CanRequestFeaturedPeerReviewer))]
+		private async Task RequestReview()
+		{
+			if (this.peerReviewServices is null)
+				await this.LoadFeaturedPeerReviewers();
+
+			if ((this.peerReviewServices?.Length ?? 0) > 0)
+			{
+				List<ServiceProviderWithLegalId> ServiceProviders = [.. this.peerReviewServices, new RequestFromPeer()];
+
+				ServiceProvidersNavigationArgs e = new([.. ServiceProviders],
+					ServiceRef.Localizer[nameof(AppResources.RequestReview)],
+					ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderPeerReview)]);
+
+				await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), e, Services.UI.BackMethod.Pop);
+
+				if (e.ServiceProvider is not null)
+				{
+					IServiceProvider? ServiceProvider = await e.ServiceProvider.Task;
+
+					if (ServiceProvider is ServiceProviderWithLegalId ServiceProviderWithLegalId &&
+						!string.IsNullOrEmpty(ServiceProviderWithLegalId.LegalId))
+					{
+						if (!ServiceProviderWithLegalId.External)
+						{
+							if (!await ServiceRef.NetworkService.TryRequest(async () =>
+								await ServiceRef.XmppService.SelectPeerReviewService(ServiceProvider.Id, ServiceProvider.Type)))
+							{
+								return;
+							}
+						}
+
+						await this.SendPeerReviewRequest(ServiceProviderWithLegalId.LegalId);
+						return;
+					}
+					else if (ServiceProvider is null)
+						return;
+				}
+			}
+
+			await this.ScanQrCode();
+		}
+
+		[RelayCommand(CanExecute = nameof(ApplicationSentPublic))]
+		private async Task RevokeApplication()
+		{
+			LegalIdentity? Application = ServiceRef.TagProfile.IdentityApplication;
+			if (Application is null)
+			{
+				this.ApplicationSentPublic = false;
+				this.peerReviewServices = null;
+				this.HasFeaturedPeerReviewers = false;
+				// Revert local reference to draft state if available
+				if (this.kycReference is not null)
+				{
+					this.kycReference.CreatedIdentityId = null;
+					this.kycReference.CreatedIdentityState = null;
+					this.kycReference.UpdatedUtc = DateTime.UtcNow;
+					await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
+				}
+				return;
+			}
+
+			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeTheCurrentIdApplication)]))
+				return;
+
+			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
+				return;
+
+			try
+			{
+				await ServiceRef.XmppService.ObsoleteLegalIdentity(Application.Id);
+				await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+				this.ApplicationSentPublic = false;
+				this.peerReviewServices = null;
+				this.HasFeaturedPeerReviewers = false;
+				// Clear identity pointers on the local KYC reference so Applications page does not show "Pending..."
+				if (this.kycReference is not null)
+				{
+					this.kycReference.CreatedIdentityId = null;
+					this.kycReference.CreatedIdentityState = null;
+					this.kycReference.UpdatedUtc = DateTime.UtcNow;
+					await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
+				}
+
+				// Stay on Summary after revoke to keep context clear
+				await this.ProcessData();
+				this.ShouldViewSummary = true;
+				this.OnPropertyChanged(nameof(this.Progress));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
 			}
 		}
 

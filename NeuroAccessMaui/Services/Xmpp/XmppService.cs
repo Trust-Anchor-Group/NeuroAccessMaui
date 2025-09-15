@@ -3194,7 +3194,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					if (e.Identity.IsDiscarded())
 					{
-						await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 						await this.IdentityApplicationChanged.Raise(this, e);
 					}
 					else if (e.Identity.IsApproved())
