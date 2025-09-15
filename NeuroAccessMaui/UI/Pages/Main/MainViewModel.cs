@@ -129,9 +129,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			}
 		}
 
-		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false && !this.HasPendingIdentity;
+		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
 
-		public bool HasPendingIdentity => ServiceRef.TagProfile.LegalIdentity?.State == IdentityState.Created;
+		public bool HasPendingIdentity => ServiceRef.TagProfile.IdentityApplication is LegalIdentity Application && Application.State == IdentityState.Created && !this.HasPersonalIdentity;
 
 		public bool ShowInfoBubble => !this.HasPersonalIdentity || this.HasPendingIdentity;
 
