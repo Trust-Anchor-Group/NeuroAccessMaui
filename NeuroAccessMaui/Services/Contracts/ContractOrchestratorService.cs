@@ -88,6 +88,7 @@ namespace NeuroAccessMaui.Services.Contracts
 							case Constants.XmppProperties.FirstName:
 							case Constants.XmppProperties.MiddleNames:
 							case Constants.XmppProperties.LastNames:
+							case Constants.XmppProperties.FullName:
 							case Constants.XmppProperties.PersonalNumber:
 							case Constants.XmppProperties.Address:
 							case Constants.XmppProperties.Address2:

@@ -29,6 +29,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private KycReference? kycReference;
 		private int currentPageIndex = 0;
 		private bool applicationSent;
+		private string? applicationId;
 
 		private List<Property> mappedValues;
 		private List<LegalIdentityAttachment> attachments;
@@ -191,6 +192,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			this.process = await this.kycReference.ToProcess(LanguageInit);
+			this.applicationId = this.kycReference?.CreatedIdentityId;
 			this.OnPropertyChanged(nameof(this.Pages));
 
 			if (this.process is null)
@@ -915,6 +917,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 				// Stay on page, switch to post-submission state and load peer review attributes
 				this.applicationSent = true;
+				this.applicationId = AddedIdentity.Id;
 				this.ApplicationSentPublic = true;
 				this.NrReviews = ServiceRef.TagProfile.NrReviews;
 				await this.LoadApplicationAttributes();

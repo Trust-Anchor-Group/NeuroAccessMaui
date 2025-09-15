@@ -546,6 +546,7 @@
                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
                                                         Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
+                                                <Setter Property="InputTransparent" Value="True" />
                                             </DataTrigger>
                                         </controls:TemplatedButton.Triggers>
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
@@ -585,6 +586,7 @@
                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
                                                         Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
+                                                <Setter Property="InputTransparent" Value="True" />
                                             </DataTrigger>
                                         </controls:TemplatedButton.Triggers>
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
@@ -624,6 +626,7 @@
                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
                                                         Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
+                                                <Setter Property="InputTransparent" Value="True" />
                                             </DataTrigger>
                                         </controls:TemplatedButton.Triggers>
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
@@ -663,6 +666,7 @@
                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
                                                         Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
+                                                <Setter Property="InputTransparent" Value="True" />
                                             </DataTrigger>
                                         </controls:TemplatedButton.Triggers>
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
@@ -696,6 +700,7 @@
                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
                                                         Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
+                                                <Setter Property="InputTransparent" Value="True" />
                                             </DataTrigger>
                                         </controls:TemplatedButton.Triggers>
 																<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
@@ -729,6 +734,7 @@
                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
                                                         Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
+                                                <Setter Property="InputTransparent" Value="True" />
                                             </DataTrigger>
                                         </controls:TemplatedButton.Triggers>
 																<Border Style="{DynamicResource BorderSet}" Margin="0">
