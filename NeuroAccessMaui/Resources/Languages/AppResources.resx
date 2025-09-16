@@ -3041,4 +3041,22 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Your ID Application is sent for review. We will notify you when your ID is approved!</value>
   </data>
+  <data name="ApplicationSummary" xml:space="preserve">
+    <value>Application Summary</value>
+  </data>
+  <data name="ApplicationSummaryDescription" xml:space="preserve">
+    <value>Before finalizing, please read through and ensure everything is correct</value>
+  </data>
+  <data name="ApplicationInformation" xml:space="preserve">
+    <value>Application Information</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Personal Details</value>
+  </data>
+  <data name="AddressDetails" xml:space="preserve">
+    <value>Address Details</value>
+  </data>
+  <data name="DocumentDetails" xml:space="preserve">
+    <value>Document Details</value>
+  </data>
 </root>

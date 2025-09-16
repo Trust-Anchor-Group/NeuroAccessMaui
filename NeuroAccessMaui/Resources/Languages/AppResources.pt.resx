@@ -3044,4 +3044,22 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Sua solicitação de ID foi enviada para análise. Nós notificaremos você quando sua ID for aprovada!</value>
   </data>
+  <data name="ApplicationSummary" xml:space="preserve">
+    <value>Resumo da solicitação</value>
+  </data>
+  <data name="ApplicationSummaryDescription" xml:space="preserve">
+    <value>Antes de finalizar, por favor leia e certifique-se de que tudo está correto</value>
+  </data>
+  <data name="ApplicationInformation" xml:space="preserve">
+    <value>Informações da solicitação</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Dados pessoais</value>
+  </data>
+  <data name="AddressDetails" xml:space="preserve">
+    <value>Detalhes do endereço</value>
+  </data>
+  <data name="DocumentDetails" xml:space="preserve">
+    <value>Detalhes do documento</value>
+  </data>
 </root>

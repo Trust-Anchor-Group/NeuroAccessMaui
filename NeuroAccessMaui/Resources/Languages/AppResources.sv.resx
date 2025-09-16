@@ -3044,4 +3044,22 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Din ID-ansökan har skickats för granskning. Vi meddelar dig när din ID har godkänts!</value>
   </data>
+  <data name="ApplicationSummary" xml:space="preserve">
+    <value>Ansökningssammanfattning</value>
+  </data>
+  <data name="ApplicationSummaryDescription" xml:space="preserve">
+    <value>Innan du slutför, vänligen läs igenom och säkerställ att allt är korrekt</value>
+  </data>
+  <data name="ApplicationInformation" xml:space="preserve">
+    <value>Ansökningsinformation</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Personuppgifter</value>
+  </data>
+  <data name="AddressDetails" xml:space="preserve">
+    <value>Adressuppgifter</value>
+  </data>
+  <data name="DocumentDetails" xml:space="preserve">
+    <value>Dokumentuppgifter</value>
+  </data>
 </root>
