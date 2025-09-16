@@ -8,6 +8,7 @@ NeuroAccessMaui is a cross-platform application built with .NET MAUI, targeting 
 
 *	Use clear, descriptive names for variables, methods, and classes.
 *	Write self-documenting code; use comments where necessary for complex logic.
+*   Public Methods, Classes and Properties should have XML documentation comments.
 *	Keep methods short and focused on a single responsibility.
 *	Prefer async/await for asynchronous operations.
 *	Avoid blocking calls on the UI thread.
@@ -51,4 +52,4 @@ NeuroAccessMaui is a cross-platform application built with .NET MAUI, targeting 
 
 ## Building and Running
 
-*	Never build the project if the user has not requested it.
+*	Never build the project after applying changes, if the user has not requested it.
