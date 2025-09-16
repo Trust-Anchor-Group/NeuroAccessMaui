@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         Country,
         Checkbox,
         Radio,
-		Gender,
+        Gender,
         Label,   // non-input
         Info     // non-input
     }
@@ -37,12 +37,17 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
     /// </summary>
     public abstract class ObservableKycField : ObservableObject
     {
-
         private WeakReference<KycProcess>? ownerProcess;
         private readonly List<IKycRule> rules = new();
         public ReadOnlyCollection<IKycRule> ValidationRules => this.rules.AsReadOnly();
 
         public ObservableTask<int> ValidationTask { get; } = new();
+
+        private bool hasAsyncRules;
+
+        // Debounce support for synchronous validation implemented via ObservableTask (avoids manual CTS & CA1001 warning)
+        private readonly ObservableTask<int> syncValidationTask;
+        private static readonly TimeSpan SyncValidationDebounce = TimeSpan.FromMilliseconds(500);
 
         public ObservableKycField()
         {
@@ -51,11 +56,28 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
             this.SelectedOptions.CollectionChanged += this.SelectedOptions_CollectionChanged;
 
             this.ValidationTask = new ObservableTaskBuilder<int>()
-                                    .Named("KYC Field Validation")
+                                    .Named("KYC Field Validation (Async Rules)")
                                     .WithPolicy(Policies.Debounce(TimeSpan.FromMilliseconds(500)))
                                     .Run(this.ValidateAsync)
                                     .AutoStart(false)
                                     .UseTaskRun(true)
+                                    .Build();
+
+            this.syncValidationTask = new ObservableTaskBuilder<int>()
+                                    .Named("KYC Field Sync Validation")
+                                    .WithPolicy(Policies.Debounce(SyncValidationDebounce))
+                                    .Run(async ctx =>
+                                    {
+                                        // Run sync validation on UI thread
+                                        await MainThread.InvokeOnMainThreadAsync(() =>
+                                        {
+                                            this.RunSynchronousValidation();
+                                            if (this.hasAsyncRules)
+                                                this.ValidationTask.Run();
+                                        });
+                                    })
+                                    .AutoStart(false)
+                                    .UseTaskRun(false) // lightweight
                                     .Build();
         }
 
@@ -141,7 +163,16 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
             {
                 if (this.SetProperty(ref this.rawValue, value))
                 {
-                    this.ValidationTask.Run();
+                    // QUICK required check so navigation buttons disable immediately when user clears content
+                    if (this.Required && string.IsNullOrEmpty(this.StringValue))
+                    {
+                        this.IsValid = false;
+                        string Label = this.Label?.Get(null) ?? this.Id;
+                        this.ValidationText = string.IsNullOrEmpty(Label) ? "Required" : $"{Label} is required";
+                    }
+
+                    // Debounced synchronous validation + chaining async validation (if any)
+                    this.syncValidationTask.Run();
                 }
             }
         }
@@ -160,6 +191,13 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
             set => this.SetProperty(ref this.isValid, value);
         }
 
+        private bool isValidating;
+        public bool IsValidating
+        {
+            get => this.isValidating;
+            set => this.SetProperty(ref this.isValidating, value);
+        }
+
         private string? validationText;
         public string? ValidationText
         {
@@ -176,46 +214,104 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         /// <summary>
         /// Add a validation rule to this field.
         /// </summary>
-        public void AddRule(IKycRule Rule) => this.rules.Add(Rule);
+        public void AddRule(IKycRule Rule)
+        {
+            this.rules.Add(Rule);
+            if (Rule is IAsyncKycRule)
+                this.hasAsyncRules = true;
+        }
 
+        /// <summary>
+        /// Forces immediate synchronous validation (used when advancing pages or explicit full validation is required).
+        /// </summary>
+        public void ForceSynchronousValidation()
+        {
+            try
+            {
+                this.syncValidationTask.Cancel();
+                this.RunSynchronousValidation();
+                if (this.hasAsyncRules)
+                    this.ValidationTask.Run();
+            }
+            catch (Exception Ex)
+            {
+                ServiceRef.LogService.LogException(Ex);
+            }
+        }
+
+        private void RunSynchronousValidation()
+        {
+            this.TryGetOwnerProcess(out KycProcess? process);
+
+            foreach (IKycRule rule in this.rules)
+            {
+                if (rule is IAsyncKycRule)
+                    continue;
+
+                if (!rule.Validate(this, process, out string error))
+                {
+                    this.IsValid = false;
+                    this.ValidationText = error;
+                    return;
+                }
+            }
+
+            this.IsValid = true;
+            this.ValidationText = null;
+        }
 
         protected virtual async Task<bool> ValidateAsync(TaskContext<int> context)
         {
-			this.TryGetOwnerProcess(out KycProcess? Process);
-            foreach (IKycRule Rule in this.rules)
+            if (!this.IsValid)
+                return false;
+
+            this.TryGetOwnerProcess(out KycProcess? process);
+            bool asyncFailed = false;
+            string? asyncError = null;
+
+            try
             {
-                if (Rule is IAsyncKycRule AsyncRule)
+                await MainThread.InvokeOnMainThreadAsync(() => this.IsValidating = true);
+
+                foreach (IKycRule rule in this.rules)
                 {
-                    (bool Ok, string? Error) = await AsyncRule.ValidateAsync(this, Process);
-                    if (!Ok)
+                    if (rule is IAsyncKycRule asyncRule)
                     {
-                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        (bool Ok, string? Error) result = await asyncRule.ValidateAsync(this, process);
+                        if (!result.Ok)
                         {
-                            this.IsValid = false;
-                            this.ValidationText = Error;
-                        });
-                        return false;
-                    }
-                }
-                else
-                {
-                    if (!Rule.Validate(this, Process, out string Error))
-                    {
-                        await MainThread.InvokeOnMainThreadAsync(() =>
-                        {
-                            this.IsValid = false;
-                            this.ValidationText = Error;
-                        });
-                        return false;
+                            asyncFailed = true;
+                            asyncError = result.Error;
+                            break;
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                ServiceRef.LogService.LogException(ex);
+            }
+            finally
+            {
+                await MainThread.InvokeOnMainThreadAsync(() => this.IsValidating = false);
+            }
+
+            if (asyncFailed)
+            {
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    this.IsValid = false;
+                    this.ValidationText = asyncError;
+                });
+                return false;
+            }
+
             await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                this.IsValid = true;
-                this.ValidationText = null;
+                if (this.IsValid)
+                    this.ValidationText = null;
             });
-            return true;
+            return this.IsValid;
         }
 
         /// <summary>
@@ -223,17 +319,15 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         /// </summary>
         public virtual void MapToApplyModel()
         {
-            // TODO: Implement mapping logic based on Mappings/Transforms
         }
-        
-        internal void SetOwnerProcess(KycProcess Process)
-            => this.ownerProcess = new WeakReference<KycProcess>(Process);
+
+        internal void SetOwnerProcess(KycProcess Process) => this.ownerProcess = new WeakReference<KycProcess>(Process);
 
         public bool TryGetOwnerProcess([MaybeNullWhen(false), NotNullWhen(true)] out KycProcess? Process)
         {
-            if (this.ownerProcess is not null && this.ownerProcess.TryGetTarget(out KycProcess? P))
+            if (this.ownerProcess is not null && this.ownerProcess.TryGetTarget(out KycProcess? p))
             {
-                Process = P;
+                Process = p;
                 return true;
             }
 

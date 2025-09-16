@@ -248,7 +248,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 	}
 
 	/// <summary>
-	/// Validates Personal number format
+	/// Validates Personal number format (no normalization side-effects; normalization should be handled via transform).
 	/// </summary>
 	public partial class PersonalNumberRule(string? fieldRef, string? message) : IAsyncKycRule
 	{
@@ -272,11 +272,10 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 
 			if (Field.FieldType == FieldType.Text && Field.StringValue is string Pnr && !string.IsNullOrEmpty(Pnr))
 			{
-				// If we have a reference to a country field, use its value to determine country code
 				if (!string.IsNullOrEmpty(this.fieldRef))
 				{
 					CountryCode = Process.Values.TryGetValue(this.fieldRef, out string? Cc) && !string.IsNullOrEmpty(Cc) ? Cc : string.Empty;
-				} // else use the country from current ID
+				}
 				else
 				{
 					try
@@ -350,8 +349,6 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 
 		public bool Validate(ObservableKycField Field, KycProcess? process, out string Error, string? Lang = null)
 		{
-			// File validation implementation goes here as needed (pseudo-code):
-			// - check file exists, size, extension...
 			Error = string.Empty;
 			return true;
 		}
