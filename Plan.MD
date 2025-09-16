@@ -1,182 +1,202 @@
-# Fetching, Caching, and Invalidation Strategy
+# KYC Process Refactoring Plan (Updated)
 
-This plan standardizes how the app fetches items from servers (now: Theme; next: KYC) with robust caching, TTL-based invalidation, and event-driven cache busting via PubSub. Goals: maintainability, minimal network traffic, resilience offline, and consistent behavior across services.
+Goal
+Transform `KycProcessViewModel` from a multi-responsibility monolith into a thin orchestration layer delegating to cohesive, testable services (mapping, validation, navigation state, summary, reference persistence, peer review, attachments) without functional regressions.
 
-## Objectives
-- Reliable fetching with graceful fallbacks and retries.
-- Layered caching with TTL and optional permanence.
-- Event-driven invalidation tied to PubSub updates.
-- Unified APIs to keep feature code simple and consistent.
-- Minimize data transfer using conditional requests when possible.
+Guiding Principles
+- Preserve user-visible behavior each phase (navigation, resume, rejection, summary, submission, peer review).
+- Isolate pure logic early (enables unit tests, reduces branching risk later).
+- Avoid premature file churn (no partials unless unavoidable) – extract services directly.
+- Prefer stateless or minimally stateful services; ViewModel owns only UI state.
+- Deterministic ordering in mapping & summary for stable tests.
+- Explicit main-thread marshaling; no hidden async void or racey updates.
+- Replace boolean flag mesh with explicit flow state model.
 
-## Design Overview
-- Layered cache: in-memory (fast, short-lived) over persistent disk cache (existing `FileCacheManager` via `IInternetCacheService`).
-- Standard fetch utility: a reusable `IResourceFetcher` that wraps: cache lookup -> HTTP GET (conditional using ETag/Last-Modified if available) -> parse/validate -> store -> return.
-- Cache policy per resource type: TTL, permanence, key/parent grouping, and stale-while-revalidate option.
-- Event-driven invalidation: a `ICacheInvalidationService` that listens to PubSub events and broadcasts invalidation messages, plus removes affected keys from cache.
-- Consistent keying: use absolute URI strings for HTTP resources; for logical groups use `ParentId` (e.g., `Branding:{domain}`, `KycProcess:{domain}`).
+Current Responsibility Buckets (Baseline Observations)
+1. Initialization & resume (pending/rejected/draft) logic
+2. Navigation state (page indices, summary mode, progress)
+3. Validation orchestration (duplicate loops for page + first-invalid scan)
+4. Mapping & transform pipeline (fields → Properties + grouped date synthesis)
+5. Attachment & image compression (Skia decode, orientation, resize)
+6. Summary projection (grouping + invalid highlighting)
+7. Peer review feature (featured providers, petitions, QR scanning)
+8. Reference persistence (autosave, rejection application, invalid claim replay)
+9. Rejection/invalidation augmentation (grouped claim key expansion)
+10. Event handling & throttled UI refresh (page/section/field changes)
+11. Command flow (Next/Previous/Summary/Apply/Revoke)
+12. Direct platform/service calls scattered (tight coupling)
 
-## Resilience Layer (Reuse MVVM Policies outside UI)
-- Existing MVVM policies (`Retry`, `Timeout`, `Bulkhead`, `CircuitBreaker`, `Debounce`) already provide a Polly-like foundation and are UI-agnostic.
-- Introduce a non-UI runner (e.g., `PolicyRunner`) to compose and execute these policies in services without `ObservableTask`/UI dependencies:
-  - `Task RunAsync(Func<CancellationToken, Task> action, CancellationToken ct, params IAsyncPolicy[] policies)`
-  - `Task<T> RunAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken ct, params IAsyncPolicy[] policies)`
-- Extend `IAsyncPolicy` with generic overloads to avoid boilerplate captures in typed operations:
-  - `Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken ct)`
-- Add jittered backoff helpers and transient-classification utilities for HTTP/XMPP exceptions (so `Retry` only retries transient failures by default).
-- Keep `ObservableTaskBuilder` for ViewModels; have it internally delegate to the same `PolicyRunner` to avoid duplicated logic.
+Primary Risks
+- Flag drift: `ShouldViewSummary` + `ShouldReturnToSummary` + anchor index interplay.
+- Validation races (async rule completion after navigation).
+- Silent transform failures (exceptions swallowed → partial property set).
+- Attachment processing unbounded memory usage.
+- Duplicated validation enumeration patterns.
+- Invalidation logic spread across multiple methods (risk inconsistent updates).
 
-### ObservableTask decoupling for broader use
-- Add an injectable dispatcher abstraction:
-  - `public interface IDispatcher { void Post(Action action); }`
-  - Default UI implementation uses `MainThread.BeginInvokeOnMainThread`.
-  - A `ImmediateDispatcher` (no-op marshal) for service-side/background scenarios.
-- Extend `ObservableTaskOptions` to accept a dispatcher or a simple `DispatchOnMainThread` boolean (default true). Ensure all UI notifications go through the dispatcher.
-- Result: `ObservableTask` can run in services without requiring a UI thread while still benefiting from policies and telemetry when desired.
+Target Architecture (End State)
+`KycProcessViewModel` responsibilities:
+- Bind properties/collections for UI.
+- Delegate: mapping, validation, summary, state transitions, persistence, peer review, image processing.
+- React to events → update observable properties.
+- No direct transform, compression, or invalidation logic.
 
-### Namespace/layout adjustments (non-breaking)
-- Move or mirror the `Policies` and `TaskContext` types to a neutral folder/namespace (e.g., `Services/Resilience`) and keep a small forwarding type or updated `using` in UI code to avoid churn.
-- Add `PolicyRunner` to the same neutral namespace for reuse by Theme, KYC, and future services.
+Service Interfaces (Conceptual)
+- `IKycFieldMapper` → Builds `KycMappingResult(Properties, Attachments)` from process & reference.
+- `IKycValidationService` → Page validation + first invalid page discovery.
+- `IKycNavigationStateService` → Computes and mutates `KycNavigationSnapshot` (`KycFlowState`).
+- `IKycSummaryService` → Builds `KycSummaryModel` (grouped display quads + invalid sets).
+- `IKycReferenceService` → Update & persist `KycReference`, rejection application, invalidation context.
+- `IImageProcessingService` → Safe compression (orientation, max dimension, quality profile, size guard).
+- `IPeerReviewService` → Attributes, featured reviewers, petition operations.
+- (Optional) `IMainThreadDispatcher` → Unified thread marshaling abstraction.
 
-## Core Components
-- `IInternetCacheService` (exists): persistent, byte-oriented cache with TTL. Extend with:
-  - Remove by parent ID: `Task<int> RemoveByParentId(string parentId)`.
-  - Optional metadata storage (ETag, Last-Modified) to enable conditional GETs.
+Flow State Model
+`enum KycFlowState { Form, Summary, EditingFromSummary, RejectedSummary, PendingSummary }`
+`KycNavigationSnapshot { int CurrentPageIndex; int AnchorPageIndex; KycFlowState State; }`
 
-- `IResourceFetcher` (new): simple façade for services.
-  - `Task<ResourceResult<T>> GetAsync<T>(Uri uri, ResourceFetchOptions options, Func<byte[], T> parse)`
-  - Handles: in-memory cache, `IInternetCacheService`, HTTP fetch with retries/backoff, conditional GET, validation, and storage.
-  - Returns typed results and origin info: cache hit, network hit, 304 (not modified), or fallback.
+Metrics (Track Each Phase)
+- ViewModel LOC (target: reduce by ≥50%).
+- Number of direct `ServiceRef.*` usages (trend toward only UI-related).
+- Cyclomatic complexity of next/previous execution logic.
+- Duplication count (validation & mapping loops → 0).
+- Async warnings / nullable warnings (no increase).
+- Allocation hotspots (post Phase 11 profiling snapshot).
 
-- `ICacheInvalidationService` (new): declarative subscriptions and invalidation.
-  - `void Subscribe(string topic, CacheInvalidationRule rule)` where `topic` maps to PubSub nodes/items.
-  - `Task InvalidateByKeys(IEnumerable<string> keys)` and `Task InvalidateByParentId(string parentId)`.
-  - Publishes `CacheInvalidatedMessage` via `WeakReferenceMessenger` so view models/services can refresh.
-- `PolicyRunner` (new, service-safe): central place to apply retry/timeout/bulkhead/circuit-breaker to IO calls used by `IResourceFetcher` and future services.
+Smoke Test (Executed After Each Phase)
+1. Resume draft (form) → lands on expected page.
+2. Resume draft (summary last) → summary or first invalid page.
+3. Edit invalid field → summary apply disabled until fixed → return to summary.
+4. Submit application → attachments persisted, state pending, summary read-only.
+5. Rejection simulation → invalid reasons appear, summary highlights.
+6. Revoke application → returns to editable summary.
+7. Peer review request (featured + QR) path works.
 
-- Messaging
-  - Use `WeakReferenceMessenger` (already used) for local app notifications: `CacheInvalidatedMessage { Scope, Keys, ParentId }`.
-  - Integrate with `XmppService` PubSub client to convert PubSub item events into invalidation calls.
+Phases (Condensed: 12)
 
-## Policies (per resource)
-- Theme
-  - Branding descriptor (V2 preferred, V1 fallback): TTL 7d; ParentId: `Branding:{domain}`.
-  - Image assets: TTL 7d; ParentId: `BrandingAssets:{domain}`.
-  - Invalidation: PubSub update on `NeuroAccessBranding` node -> invalidate descriptor + affected images.
+Phase 1: Baseline & Instrumentation
+Tasks:
+- Add XML doc header summarizing current responsibilities, risks.
+- Add TODO markers around major logic blocks (// TODO[KYC:MAPPING], etc.).
+- Record baseline metrics (LOC, field count, direct service calls).
+Acceptance: No logic change, build passes.
 
-- KYC
-  - KYC process XML: TTL 7d; ParentId: `KycProcess:{domain}`; fallback to embedded test if network fails.
-  - Invalidation: PubSub update on `NeuroAccessKyc` node -> invalidate `KycProcess:{domain}` and notify.
+Phase 2: Define Core Interfaces (Contracts Only)
+Tasks:
+- Add interface files (no implementations) for mapper, validation, navigation state, summary, reference, image, peer review, dispatcher.
+- Document contracts (inputs/outputs, thread expectations, determinism guarantees).
+Acceptance: Compiles; VM unchanged except added using statements if needed.
 
-## Data Flow
-1) Service requests resource via `IResourceFetcher` with a `ResourceFetchOptions` policy.
-2) Fetcher checks in-memory cache -> disk cache via `IInternetCacheService`.
-3) If miss/stale, uses HTTP with conditional headers (ETag/If-Modified-Since) when stored.
-4) If 304 Not Modified: refresh metadata/expiry, return cached.
-5) If 200 OK: validate/parse, store to caches, return.
-6) On PubSub event: `ICacheInvalidationService` removes relevant cache entries and broadcasts `CacheInvalidatedMessage`.
+Phase 3: Extract Mapping & Attachment Pipeline
+Tasks:
+- Move `BuildMappedValues*`, `BuildPropertiesFromFieldAsync`, file handling into `KycFieldMapper`.
+- Introduce `KycMappingResult` DTO (ordered `Properties` + `Attachments`).
+- Deterministic ordering: page order, field order, mapping order.
+- Wrap transform application with try/catch + structured logging.
+Acceptance: Summary still builds; VM no longer contains mapping internals.
 
-## HTTP Optimizations
-- Prefer conditional GETs over HEAD+GET to minimize round-trips.
-- Store and reuse ETag/Last-Modified when server supports it; fall back to TTL only.
-- Exponential backoff on transient errors (e.g., 0s, 2s, 5s) as in ThemeService.
-- Stale-if-offline (required): treat TTL as a fetch trigger, not a delete. If an item is past TTL and network fetch fails or device is offline, keep serving the last cached bytes. Refresh expiry upon next successful fetch. (Implement via soft-expiry metadata; evict via separate hard-expiry/cleanup.)
-- Apply resilience policies consistently via `PolicyRunner`:
-  - `Timeout`: use `Constants.Timeouts.DownloadFile` for downloads.
-  - `Retry`: jittered backoff (e.g., decorrelated jitter) for transient HTTP and socket errors only.
-  - `Bulkhead`: limit concurrent network fetches per domain to prevent thundering herd.
-  - `CircuitBreaker`: per-domain breaker on repeated failures to cut load and surface failures quickly.
+Phase 4: Validation Orchestration Service
+Tasks:
+- Move `ValidateCurrentPageAsync` + `GetFirstInvalidVisiblePageIndexAsync` logic into `KycValidationService`.
+- Single enumeration per page validation (no duplication).
+- Return `PageValidationResult { bool IsValid; IReadOnlyList<FieldError> Errors; }`.
+Acceptance: Navigation gating unchanged; code duplication removed.
 
-## API Sketches
+Phase 5: Navigation State Service & Flow Enum
+Tasks:
+- Introduce `KycNavigationStateService` implementing initial snapshot derivation (pending, rejected, summary resume).
+- Replace `ShouldViewSummary` & `ShouldReturnToSummary` + anchor index with snapshot.
+- Adapt Next/Previous commands to use service transitions.
+Acceptance: Behavioral parity; fewer booleans in VM.
 
-```csharp
-public record ResourceFetchOptions(
-    string ParentId,
-    TimeSpan Ttl,
-    bool Permanent = false,
-    bool UseMemoryCache = true,
-    bool EnableConditionalGet = true
-);
+Phase 6: Summary & Invalidation Consolidation
+Tasks:
+- Extract `GenerateSummaryCollection`, invalid claim/photo expansion, reason mapping into `KycSummaryService` + helper `KycInvalidationContext`.
+- ViewModel only assigns observable collections from `KycSummaryModel`.
+Acceptance: Summary visuals identical; invalid highlighting intact.
 
-public enum ResourceOrigin { Memory, Disk, Network, NotModified, Fallback }
+Phase 7: Reference Persistence Service
+Tasks:
+- Move `UpdateReference`, `SaveReferenceToStorageAsync`, rejection application to `KycReferenceService`.
+- Introduce debounced save (configurable) + explicit `FlushAsync()`.
+- Provide `ApplyRejectionAsync` integrating invalidation context.
+Acceptance: Autosave still effective; fewer direct saves in VM.
 
-public sealed record ResourceResult<T>(T? Value, ResourceOrigin Origin, string ContentType = "");
+Phase 8: Image Processing Service
+Tasks:
+- Extract `CompressImage`, orientation to `ImageProcessingService` (async API: `CompressAsync(Stream, profile, ct)`).
+- Add max input size guard & safe failure fallback (skip + log once).
+Acceptance: Attachments still produced; VM has no SkiaSharp code.
 
-public interface IResourceFetcher
-{
-    Task<ResourceResult<T>> GetAsync<T>(
-        Uri uri,
-        ResourceFetchOptions options,
-        Func<byte[], T> parse,
-        CancellationToken ct = default);
-}
+Phase 9: Peer Review Adapter
+Tasks:
+- Move application attributes + featured provider load + petition send into `PeerReviewService`.
+- Provide simple methods & optional events.
+Acceptance: Peer review UX unchanged.
 
-public sealed record CacheInvalidatedMessage(
-    string Scope,                // e.g., "Branding", "Kyc"
-    string? ParentId = null,
-    IReadOnlyList<string>? Keys = null
-);
+Phase 10: Command & State Simplification
+Tasks:
+- Refactor navigation/apply/revoke/summary entry into minimal state machine driver.
+- Collapse branching in former `ExecuteNextAsync`.
+Acceptance: Logic simpler; no regression in navigation tests.
 
-public interface ICacheInvalidationService
-{
-    void Subscribe(string pubSubNodeId, Func<PubSubEvent, Task> handler);
-    Task InvalidateByParentId(string parentId);
-    Task InvalidateByKeys(IEnumerable<string> keys);
-}
-```
+Phase 11: Performance & Allocation Optimization
+Tasks:
+- Profile (page change, validation, mapping, summary build).
+- Replace hot LINQ with indexed loops if measurable benefit.
+- Cache visible page list per transition (invalidate on visibility change event).
+- Optional: Reuse buffers via `ArrayPool` for transient property lists.
+Acceptance: No behavior change; reduced GC allocations in hotspots.
 
-## PubSub Integration
-- `XmppService` already wraps PubSub and exposes `GetItemsAsync` etc. Extend with event hookup:
-  - Map nodes to cache scopes:
-    - `NeuroAccessBranding` -> `Branding:{domain}` descriptors and `BrandingAssets:{domain}` images.
-    - `NeuroAccessKyc` -> `KycProcess:{domain}`.
-  - On item publish or retract, call `ICacheInvalidationService.InvalidateByParentId(...)` and broadcast `CacheInvalidatedMessage`.
-  - Theme and KYC services listen and refresh when relevant.
+Phase 12: Final Polish & Documentation
+Tasks:
+- XML docs for public interfaces & ViewModel exposed members.
+- Remove obsolete TODOs, dead private helpers superseded by services.
+- Ensure naming/style per repo standard (explicit locals, PascalCase).
+- Update README / developer notes for new architecture.
+Acceptance: Clean build, zero warnings (new), plan retired.
 
-## Migration Plan (Incremental)
-1) Add `RemoveByParentId` to `IInternetCacheService` (uses `FileCacheManager`).
-2) Extract/mirror `Policies` (+ `TaskContext`) to `Services/Resilience` and add `PolicyRunner` (+ generic `IAsyncPolicy<T>` overloads).
-3) Extend `ObservableTaskOptions` with dispatcher or `DispatchOnMainThread`; audit `ObservableTask` to route notifications via dispatcher.
-4) Introduce `IResourceFetcher` with in-memory + disk + network logic, built on `PolicyRunner` (timeout/retry/circuit/bulkhead).
-5) Add `ICacheInvalidationService` and wire to `WeakReferenceMessenger`.
-6) ThemeService: refactor to use `IResourceFetcher`; switch to parent-based keys; enable conditional GET where supported.
-7) KycService: switch to `IResourceFetcher` for process XML with 7d TTL and fallback; group by `KycProcess:{domain}`.
-8) XmppService: add PubSub handlers to call `ICacheInvalidationService` on branding/KYC updates.
-9) Add lightweight tests for cache TTL, invalidation, `PolicyRunner` behaviors (retry-on-transient, breaker states), and conditional GET; add manual QA checklist.
+Cross-Cutting Concerns
+- Threading: services return plain results; ViewModel applies to UI thread.
+- Cancellation: mapping (for large forms), image compression, peer review fetch support `CancellationToken`.
+- Logging: all service failures surface structured events (category: KYC). Silent swallow avoided.
+- Error UX: central helper for alert display (Phase 10 or 12) consolidates messages.
 
-## Suggested TTLs
-- Branding descriptor: 7d.
-- Branding images: 7d.
-- KYC process XML: 7d.
+Test Targets (Post Phase 6 Minimum)
+1. Mapper: grouped date & company representative birth date composition; transform ordering.
+2. Validation: required + async personal number rule interplay.
+3. Navigation: pending resume, rejected summary return, edit-from-summary cycle.
+4. Summary: invalid claim highlighting & reason propagation.
+5. Reference: rejection application stores + expands grouped claims.
+6. Image: orientation & resize idempotence (optional integration).
+7. Peer review: petition building happy/failure paths.
 
-## Edge Cases and Resilience
-- Domain change or sign-out: invalidate `Branding:*` and `KycProcess:*` for previous domain.
-- Offline: serve cached entries even if past TTL; do not delete on read or startup. TTL should only trigger re-fetch when online. Use hard-expiry/grace cleanup separately to cap disk usage.
-- Partial updates: when PubSub indicates specific item IDs, compute affected keys and invalidate selectively.
-- Backoff on transient errors; log and fall back to last applied theme/KYC process.
+Open Items / Decisions
+- Grouped date handling: remain in mapper vs dedicated composite field? (Reevaluate Phase 4 after validation extraction.)
+- Localized invalidation reasons per claim: implement via reason map → localization key (Phase 12 if needed).
+- Pre-compression size enforcement: now Phase 8 (drop large base64 early).
 
-## Implementation Notes
-- Keep keys consistent: cache keys should be absolute URIs; group entries using `ParentId` for bulk invalidation.
-- Store metadata for conditional GET in DB alongside `CacheEntry` (add columns if/when implemented).
-- Provide simple helpers in services:
-  - ThemeService: `GetBrandingUri(itemId)` and key builders.
-  - KycService: `GetKycProcessUri()` and key builders.
-- Add developer utilities: “Clear cache” command invoking `RemoveByParentId` for current domain scopes.
+Rollback Strategy
+- Each phase in its own branch.
+- Retain old method stubs delegating to services for at least one phase before removal if high-risk.
+- If regression: revert last phase; reapply with finer-grained commits.
 
-## Testing Strategy
-- Unit: `TryGet` eviction on expiry, `RemoveByParentId`, basic `IResourceFetcher` paths (memory/disk/network/304).
-- Integration (manual/dev): toggle network, simulate PubSub events, verify UI refreshes + minimal requests (inspect logs).
-- Performance: ensure no UI thread blocking; use background tasks for fetch and invalidation.
+KPIs After Completion
+- ViewModel LOC reduced (target < 50% of original).
+- 0 duplicated loops for validation/mapping.
+- Command method cyclomatic complexity < 10.
+- All pure services testable without MAUI types.
+- No direct SkiaSharp references in ViewModel.
 
-## Next Steps (Concrete)
-- [ ] Add `RemoveByParentId` to `FileCacheManager` and `IInternetCacheService`.
-- [ ] Extract/mirror `Policies` to `Services/Resilience`; add generic overloads; implement `PolicyRunner` with jitter helpers and transient classification.
-- [ ] Update `ObservableTask` to support an injectable dispatcher for non-UI use; extend `ObservableTaskOptions` accordingly.
-- [ ] Define `IResourceFetcher` and default implementation leveraging `PolicyRunner`.
-- [ ] Implement `ICacheInvalidationService` + wire to `XmppService` PubSub events.
-- [ ] Refactor ThemeService to use fetcher and parent grouping.
-- [ ] Update KycService to use fetcher; set TTL 7d + fallback.
-- [ ] Change `FileCacheManager` to soft-expiry: do not delete on `TryGet` when past TTL; return stale bytes and mark as expired. Add a background/explicit cleanup that evicts only when older than a hard limit (e.g., 30–60d) or by LRU/size.
-- [ ] Update `InternetCacheService` default expiry to 7d and integrate soft-expiry semantics; refresh expiry on 304/200 responses.
-- [ ] Add dev menu action: clear branding + KYC caches for current domain.
-- [ ] Optional: ETag/Last-Modified support in cache; conditional GETs.
+End State Summary
+A lean `KycProcessViewModel` orchestrating:
+- Mapping (IKycFieldMapper)
+- Validation (IKycValidationService)
+- Navigation (IKycNavigationStateService)
+- Summary (IKycSummaryService)
+- Reference persistence & rejection (IKycReferenceService)
+- Peer review (IPeerReviewService)
+- Image processing (IImageProcessingService)
+- Thread dispatch (IMainThreadDispatcher)
+
+Result: High cohesion, improved readability, lower regression risk, and clear extension points for future KYC feature evolution.
