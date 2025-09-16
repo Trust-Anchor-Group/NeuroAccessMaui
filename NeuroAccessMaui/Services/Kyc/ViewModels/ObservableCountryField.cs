@@ -1,3 +1,4 @@
+using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Kyc.Models;
 
 namespace NeuroAccessMaui.Services.Kyc.ViewModels
@@ -15,8 +16,14 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 
         public string? CountryCode
         {
-            get => this.RawValue as string;
-            set => this.RawValue = value;
-        }
+            get
+			{
+				if (this.RawValue is KycOption Option)
+					return Option.Value;
+
+				return null;
+			}
+			set => this.RawValue = value;
+		}
     }
 }

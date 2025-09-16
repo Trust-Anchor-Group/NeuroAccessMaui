@@ -122,7 +122,6 @@
 											  Required="{Binding Required}"
 											  IsValid="{Binding IsValid}"
 											  ValidationText="{Binding ValidationText}">
-
 						<controls:CompositePicker.RightView>
 							<Path Data="{x:Static ui:Geometries.DropDownArrowPath}" Fill="{DynamicResource InputFieldsContentSecondary}" VerticalOptions="Center"/>
 						</controls:CompositePicker.RightView>

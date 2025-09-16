@@ -132,6 +132,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
         /// Use e.g. Metadata["TargetWidth"] or Metadata["MaxFileSizeMB"].
         /// </summary>
         public Dictionary<string, object?> Metadata { get; }
+
         private object? rawValue;
         public object? RawValue
         {

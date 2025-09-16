@@ -1,4 +1,16 @@
 <KYCProcess>
+	<Name>
+		<Text lang="en">Personal ID</Text>
+		<Text lang="sv">Personligt ID</Text>
+	</Name>
+	<Page id="prepareDocuments">
+		<Title>
+			<Text lang="en">Before we start, we'd like to give you a tip.</Text>
+		</Title>
+		<Description>
+			<Text lang="en">We'll ask for an official photo ID and proof of residence, so why not get them ready?</Text>
+		</Description>
+	</Page>
 	<Page id="personalInfo" title="Personal Information">
 		<Title>
 			<Text lang="en">Personal Information</Text>
@@ -110,6 +122,12 @@
 			<Mapping key="BYEAR">
 				<Transform>year</Transform>
 			</Mapping>
+		</Field>
+		<Field id="nationality" type="country" mapping="NATIONALITY" required="true">
+			<Label>
+				<Text lang="en">Nationality</Text>
+				<Text lang="sv">Nationalitet</Text>
+			</Label>
 		</Field>
 		<Field id="gender" type="gender" mapping="GENDER" required="true">
 			<Label>
@@ -282,12 +300,6 @@
 			<Text lang="en">The following personal information will be included in the application for Neuro ID</Text>
 			<Text lang="sv">Följande personuppgifter kommer att ingå i ansökan för Neuro ID</Text>
 		</Description>
-		<Field id="nationality" type="country" mapping="NATIONALITY" required="true">
-			<Label>
-				<Text lang="en">Nationality</Text>
-				<Text lang="sv">Nationalitet</Text>
-			</Label>
-		</Field>
 		<Field id="zipCode" type="text" mapping="ZIP" required="true">
 			<Label>
 				<Text lang="en">Zip Code</Text>

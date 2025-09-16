@@ -61,7 +61,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 				FieldType.Boolean => Field is ObservableBooleanField BoolField && BoolField.BoolValue != true,
 				// Consider both UI selection list and serialized StringValue (populated during deserialization).
 				FieldType.Checkbox => Field is ObservableCheckboxField CheckboxField &&
-					( (CheckboxField.SelectedOptions == null || CheckboxField.SelectedOptions.Count == 0) && string.IsNullOrEmpty(Field.StringValue) ),
+					(CheckboxField.SelectedOptions == null || CheckboxField.SelectedOptions.Count == 0) && string.IsNullOrEmpty(Field.StringValue),
 				FieldType.File => Field is ObservableFileField FileField && (FileField.StringValue is not string FileValue || string.IsNullOrEmpty(FileValue)),
 				FieldType.Email or FieldType.Phone or FieldType.Text => string.IsNullOrEmpty(Field.StringValue),
 				FieldType.Integer => Field is ObservableIntegerField IntField && IntField.IntValue is null,
