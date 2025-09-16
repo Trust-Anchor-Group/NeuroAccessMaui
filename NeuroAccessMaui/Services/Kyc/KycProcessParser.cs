@@ -146,7 +146,7 @@ namespace NeuroAccessMaui.Services.Kyc
 					if (Field is ObservableImageField ImageField && Key.Equals("AllowUpload", StringComparison.OrdinalIgnoreCase) && bool.TryParse(Value, out bool ParsedBool))
 						ImageField.AllowUpload = ParsedBool;
 
-					// Special cases for placeholders
+					// Special cases for PNR placeholders
 					if (Key.Equals("Placeholder", StringComparison.OrdinalIgnoreCase) && Value.Equals("pnr", StringComparison.OrdinalIgnoreCase))
 					{
 						KycProcess? Process;
@@ -175,7 +175,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				}
 			}
 
-			// Validation rules (<ValidationRule>)
+			// Validation rules (<ValidationRules>)
 			void TryAddLengthRules(XElement RuleEl)
 			{
 				int? Min = null, Max = null;
