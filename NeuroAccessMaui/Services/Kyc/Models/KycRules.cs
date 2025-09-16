@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 
@@ -51,6 +52,8 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			if (!Field.Required)
 				return true;
 
+			Lang ??= CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
 			string Label = Field.Label?.Get(Lang) ?? Field.Id;
 			bool Missing = Field.FieldType switch
 			{
@@ -72,7 +75,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			};
 
 			if (Missing)
-				Error = $"{Label} is required";
+				Error = ServiceRef.Localizer[nameof(AppResources.IsRequired), Label];
 			return string.IsNullOrEmpty(Error);
 		}
 	}
