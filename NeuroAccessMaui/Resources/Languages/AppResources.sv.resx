@@ -3038,9 +3038,6 @@
   <data name="SeeIDApplication" xml:space="preserve">
     <value>Visa ID-ansökan</value>
   </data>
-  <data name="SeeIDApplication" xml:space="preserve">
-    <value>Visa ID-ansökan</value>
-  </data>
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Din ID-ansökan har skickats för granskning. Vi meddelar dig när din ID har godkänts!</value>
   </data>
@@ -3061,5 +3058,8 @@
   </data>
   <data name="DocumentDetails" xml:space="preserve">
     <value>Dokumentuppgifter</value>
+  </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>{0} är obligatoriskt</value>
   </data>
 </root>

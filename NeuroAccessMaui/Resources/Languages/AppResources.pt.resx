@@ -3038,9 +3038,6 @@
   <data name="SeeIDApplication" xml:space="preserve">
     <value>Ver solicitação de ID</value>
   </data>
-  <data name="SeeIDApplication" xml:space="preserve">
-    <value>Ver solicitação de ID</value>
-  </data>
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Sua solicitação de ID foi enviada para análise. Nós notificaremos você quando sua ID for aprovada!</value>
   </data>
@@ -3061,5 +3058,8 @@
   </data>
   <data name="DocumentDetails" xml:space="preserve">
     <value>Detalhes do documento</value>
+  </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>{0} é obrigatório</value>
   </data>
 </root>

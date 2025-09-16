@@ -3059,4 +3059,7 @@
   <data name="DocumentDetails" xml:space="preserve">
     <value>Detalles del documento</value>
   </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>{0} es obligatorio</value>
+  </data>
 </root>
