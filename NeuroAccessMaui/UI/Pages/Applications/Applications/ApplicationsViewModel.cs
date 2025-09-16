@@ -260,6 +260,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 							}
 						}
 
+						await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 						await Database.Delete(this.CurrentApplication);
 						await Database.Provider.Flush();
 					}
@@ -293,6 +294,20 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 				KycReference Ref = await ServiceRef.KycService.LoadKycReferenceAsync(Language);
+
+				// Ensure a clean start: reset resume and sent-application flags on the new reference
+				Ref.LastVisitedMode = "Form";
+				Ref.LastVisitedPageId = null;
+				Ref.RejectionMessage = null;
+				Ref.RejectionCode = null;
+				Ref.InvalidClaims = null;
+				Ref.InvalidPhotos = null;
+				Ref.InvalidClaimDetails = null;
+				Ref.InvalidPhotoDetails = null;
+				Ref.CreatedIdentityId = null;
+				Ref.CreatedIdentityState = null;
+				Ref.UpdatedUtc = DateTime.UtcNow;
+				try { await ServiceRef.KycService.SaveKycReferenceAsync(Ref); } catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
 
 				// Apply previous field values to the new reference, if any
 				if (PreviousFields is not null && PreviousFields.Length > 0)

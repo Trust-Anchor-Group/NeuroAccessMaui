@@ -20,6 +20,8 @@ using Waher.Networking.XMPP;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
+using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using System.Linq;
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
 	public partial class KycProcessViewModel : BaseViewModel
@@ -207,6 +209,23 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			this.process.Initialize();
 
+			// Determine if this specific reference has a pending (sent) application
+			bool isPendingForThisReference = this.kycReference is not null &&
+				!string.IsNullOrEmpty(this.kycReference.CreatedIdentityId) &&
+				this.kycReference.CreatedIdentityState == IdentityState.Created;
+			bool isRejectedForThisReference = this.kycReference is not null &&
+				!string.IsNullOrEmpty(this.kycReference.CreatedIdentityId) &&
+				this.kycReference.CreatedIdentityState == IdentityState.Rejected;
+
+			// Reflect pending state (only Created state keeps ApplicationSentPublic true)
+			this.ApplicationSentPublic = isPendingForThisReference;
+
+			// Prefill on fresh applications (no sent application associated with this reference)
+			if (!isPendingForThisReference && !isRejectedForThisReference)
+			{
+				this.PrefillFieldsFromProfile();
+			}
+
 			// Peer review: hook events and load attributes if an application exists
 			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
 			if (ServiceRef.TagProfile.IdentityApplication is not null)
@@ -251,7 +270,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			int ResumeIndex = -1;
 			bool ResumeSummary = false;
 			if (!string.IsNullOrEmpty(this.kycReference.LastVisitedMode) &&
-				string.Equals(this.kycReference.LastVisitedMode, "Summary", StringComparison.OrdinalIgnoreCase))
+				string.Equals(this.kycReference.LastVisitedMode, "Summary", StringComparison.OrdinalIgnoreCase) &&
+				(isPendingForThisReference || isRejectedForThisReference))
 			{
 				ResumeSummary = true;
 			}
@@ -307,10 +327,31 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
                     }
                 }
             }
+			else if (isRejectedForThisReference)
+			{
+				// Rejected applications should open on the summary directly with invalidations visible
+				await this.ProcessData();
+				this.currentPageIndex = this.Pages.Count; // sentinel
+				this.currentPageIndex = this.GetPreviousIndex();
+				if (this.currentPageIndex >= 0)
+				{
+					this.CurrentPagePosition = this.currentPageIndex;
+					this.SetCurrentPage(this.currentPageIndex);
+				}
+				this.ShouldViewSummary = true;
+				this.ShouldReturnToSummary = false;
+				if (this.kycReference is not null)
+				{
+					this.kycReference.LastVisitedMode = "Summary";
+					this.UpdateReference();
+					await this.SaveReferenceToStorageAsync();
+				}
+				this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+				this.OnPropertyChanged(nameof(this.Progress));
+			}
 			else
 			{
 				// When starting fresh (no resume), open the FIRST visible page (index 0 if visible).
-				// Previous logic used GetNextIndex() from default index 0, which always skipped the first page.
 				int InitialIndex;
 				if (ResumeIndex >= 0)
 				{
@@ -318,8 +359,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 				else
 				{
-					// Force next-index calculation to start from before the first page
-					this.currentPageIndex = -1;
+					this.currentPageIndex = -1; // Force calculation to include first page
 					InitialIndex = this.GetNextIndex();
 				}
 
@@ -338,8 +378,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.NextCommand.NotifyCanExecuteChanged
 			);
 
-			// If there's a pending/sent application, prefer summary with post-submission panel
-			if (this.ApplicationSentPublic)
+			// If this reference is pending/sent (Created state), prefer summary with post-submission panel
+			if (isPendingForThisReference)
 			{
 				await this.ProcessData();
 				this.ShouldViewSummary = true;
@@ -350,14 +390,67 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.IsLoading = false;
 			}
 
-			partial void OnApplicationSentPublicChanged(bool value)
+		partial void OnApplicationSentPublicChanged(bool value)
+		{
+			if (value)
 			{
-				if (value)
+				this.ShouldViewSummary = true;
+				this.OnPropertyChanged(nameof(this.Progress));
+			}
+		}
+
+		private void PrefillFieldsFromProfile()
+		{
+			if (this.process is null)
+			{
+				return;
+			}
+
+			LegalIdentity? identity = ServiceRef.TagProfile.LegalIdentity;
+			if (identity?.Properties is null)
+			{
+				return;
+			}
+
+			// Make a quick lookup of identity properties by name (case-insensitive)
+			Dictionary<string, string> byName = identity.Properties
+				.Where(p => p is not null && !string.IsNullOrWhiteSpace(p.Name))
+				.GroupBy(p => p.Name!, StringComparer.OrdinalIgnoreCase)
+				.Select(g => g.OrderByDescending(p => p?.Value?.Length ?? 0).First())
+				.ToDictionary(p => p.Name!, p => p.Value ?? string.Empty, StringComparer.OrdinalIgnoreCase);
+
+			IEnumerable<ObservableKycField> allFields = this.process.Pages.SelectMany(p => p.AllFields)
+				.Concat(this.process.Pages.SelectMany(p => p.AllSections).SelectMany(s => s.AllFields));
+
+			foreach (ObservableKycField field in allFields)
+			{
+				// Respect existing defaults or user input
+				if (!string.IsNullOrWhiteSpace(field.StringValue))
 				{
-					this.ShouldViewSummary = true;
-					this.OnPropertyChanged(nameof(this.Progress));
+					continue;
+				}
+
+				if (field.Mappings is null || field.Mappings.Count == 0)
+				{
+					continue;
+				}
+
+				foreach (KycMapping map in field.Mappings)
+				{
+					if (string.IsNullOrWhiteSpace(map.Key))
+					{
+						continue;
+					}
+
+					if (byName.TryGetValue(map.Key, out string value) && !string.IsNullOrWhiteSpace(value))
+					{
+						field.StringValue = value;
+						this.process.Values[field.Id] = field.StringValue ?? string.Empty;
+						break; // first successful mapping wins
+					}
 				}
 			}
+		}
 
 		partial void OnCurrentPagePositionChanged(int value)
 		{
@@ -962,6 +1055,41 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				this.ApplicationSentPublic = ServiceRef.TagProfile.IdentityApplication is not null;
 				this.NrReviews = ServiceRef.TagProfile.NrReviews;
+
+				// If this event corresponds to our current application, react on state changes
+				if (this.kycReference is not null && !string.IsNullOrEmpty(this.kycReference.CreatedIdentityId)
+					&& string.Equals(this.kycReference.CreatedIdentityId, e.Identity.Id, StringComparison.Ordinal))
+				{
+					// Persist latest state in reference
+					this.kycReference.CreatedIdentityState = e.Identity.State;
+					try { await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference); } catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+
+					if (e.Identity.State == IdentityState.Approved)
+					{
+						await base.GoBack();
+						return;
+					}
+					else if (e.Identity.State == IdentityState.Rejected)
+					{
+						// Switch back to editable summary state
+						this.ApplicationSentPublic = false; // allow editing again
+						await this.ProcessData();
+						this.ShouldViewSummary = true;
+						this.ShouldReturnToSummary = false;
+						if (this.kycReference is not null)
+						{
+							this.kycReference.LastVisitedMode = "Summary";
+							this.UpdateReference();
+							await this.SaveReferenceToStorageAsync();
+						}
+						this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+						this.OnPropertyChanged(nameof(this.Progress));
+						await ServiceRef.UiService.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.Rejected)],
+							ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)]);
+					}
+				}
+
 				if (this.ApplicationSentPublic && this.peerReviewServices is null)
 				{
 					await this.LoadFeaturedPeerReviewers();
