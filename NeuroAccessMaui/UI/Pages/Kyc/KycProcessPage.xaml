@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Kyc.KycProcessPage"
-                      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                      xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-                      xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-                      xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-                      xmlns:local="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
-                      xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-                      xmlns:models="clr-namespace:NeuroAccessMaui.Services.Kyc.Models"
-                      xmlns:fields="clr-namespace:NeuroAccessMaui.Services.Kyc.ViewModels"
-                      xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
-                      xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-                      xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-                      x:DataType="viewmodel:KycProcessViewModel"
-                      xmlns:IDSF="clr-namespace:NeuroAccessMaui.Services.Identity">
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+					  xmlns:local="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
+					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+					  xmlns:models="clr-namespace:NeuroAccessMaui.Services.Kyc.Models"
+					  xmlns:fields="clr-namespace:NeuroAccessMaui.Services.Kyc.ViewModels"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
+					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  x:DataType="viewmodel:KycProcessViewModel"
+					  xmlns:IDSF="clr-namespace:NeuroAccessMaui.Services.Identity">
 
 	<ContentPage.Resources>
 		<ResourceDictionary>
@@ -123,7 +123,6 @@
 											  Required="{Binding Required}"
 											  IsValid="{Binding IsValid}"
 											  ValidationText="{Binding ValidationText}">
-
 						<controls:CompositePicker.RightView>
 							<Path Data="{x:Static ui:Geometries.DropDownArrowPath}" Fill="{DynamicResource InputFieldsContentSecondary}" VerticalOptions="Center"/>
 						</controls:CompositePicker.RightView>
@@ -306,17 +305,17 @@
 						<controls:ConditionView.True>
 							<Grid ColumnDefinitions="*,*" ColumnSpacing="8">
 								<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-													 LabelData="Upload"
+													 LabelData="{l:Localize CameraPermissionTitle}"
 													 Command="{Binding PickPhotoCommand}"/>
 								<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-													 LabelData="Camera"
+													 LabelData="{l:Localize CameraPermissionTitle}"
 													 Command="{Binding TakePhotoCommand}"
 													 Grid.Column="1"/>
 							</Grid>
 						</controls:ConditionView.True>
 						<controls:ConditionView.False>
 							<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-										 LabelData="Camera"
+										 LabelData="{l:Localize CameraPermissionTitle}"
 										 Command="{Binding TakePhotoCommand}"/>
 						</controls:ConditionView.False>
 					</controls:ConditionView>
@@ -434,8 +433,8 @@
 							VerticalOptions="Center">
 					<controls:ConditionView Condition="{Binding ShouldViewSummary}">
 						<controls:ConditionView.True>
-						<VerticalStackLayout>
-							<Label Style="{DynamicResource PageTitleLabel}" Text="Application summary" Margin="{DynamicResource MediumLeftRightMargins}"/>
+							<VerticalStackLayout>
+								<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize ApplicationSummary}" Margin="{DynamicResource MediumLeftRightMargins}"/>
 
 							<!-- Post-submission panel: application sent + peer review actions -->
 							<Border IsVisible="{Binding ApplicationSentPublic}"
@@ -531,12 +530,12 @@
 								</controls:ConditionView>
 								<Border Style="{DynamicResource BorderSet}">
 									<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-										<Label Style="{DynamicResource FieldTitleLabel}" Text="Application Information"/>
+										<Label Style="{DynamicResource FieldTitleLabel}" Text="{l:Localize ApplicationInformation}"/>
 
 										<!-- Personal Details -->
 										<Border Style="{DynamicResource BorderSubSet}">
 											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-												<Label Text="Personal Details" Style="{DynamicResource FieldTitleLabel}" />
+												<Label Text="{l:Localize PersonalDetails}" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding PersonalInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="IDSF:DisplayQuad">
@@ -576,7 +575,7 @@
 										<!-- Address Details -->
 										<Border Style="{DynamicResource BorderSubSet}">
 											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-												<Label Text="Address Details" Style="{DynamicResource FieldTitleLabel}" />
+												<Label Text="{l:Localize AddressDetails}" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding AddressInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="IDSF:DisplayQuad">
@@ -724,7 +723,7 @@
 										<!-- Attachments -->
 										<Border Style="{DynamicResource BorderSubSet}">
 											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-												<Label Text="Attachments" Style="{DynamicResource FieldTitleLabel}" />
+												<Label Text="{l:Localize DocumentDetails}" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="IDSF:DisplayQuad">
@@ -823,7 +822,7 @@
 							<VerticalStackLayout Spacing="8">
 						<Grid ColumnDefinitions="*, *">
 							<Label Grid.Column="0"
-								   Text="Progress"
+								   Text="{l:Localize Progress}"
 								   Style="{DynamicResource FieldKeyLabel}"
 								   TextColor="{DynamicResource TnPAccent2ContentWL}"/>
 							<Label Grid.Column="1"
@@ -848,11 +847,11 @@
 							</controls:ConditionView.True>
 							<controls:ConditionView.False>
 								<Grid ColumnDefinitions="*, *" ColumnSpacing="{DynamicResource SmallSpacing}">
-									<controls:TextButton LabelData="Back"
+									<controls:TextButton LabelData="{l:Localize Back}"
 														 Style="{DynamicResource SecondaryButton}"
 														 Command="{Binding GoBackCommand}"/>
 									<controls:TextButton LabelData="{Binding NextButtonText}"
-														 Style="{DynamicResource FilledTextButton}"
+														 Style="{DynamicResource PrimaryButton}"
 														 Command="{Binding NextCommand}"
 														 Grid.Column="1"/>
 								</Grid>

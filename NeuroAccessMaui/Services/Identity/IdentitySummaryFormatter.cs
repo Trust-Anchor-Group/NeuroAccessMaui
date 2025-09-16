@@ -208,6 +208,10 @@ namespace NeuroAccessMaui.Services.Identity
                     continue;
 
                 string Label = GetLabel(LabelMap, Key);
+
+				if (Key.Equals(Constants.XmppProperties.Nationality, StringComparison.OrdinalIgnoreCase))
+					Val = ISO_3166_1.ToName(Val) ?? Val;
+
                 bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
                 Result.Personal.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
             }

@@ -100,7 +100,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				FieldType.Picker => new ObservablePickerField(),
 				FieldType.Gender => new ObservablePickerField(),
 				FieldType.Radio => new ObservableRadioField(),
-				FieldType.Country => new ObservableCountryField(),
+				FieldType.Country => new ObservablePickerField(),
 				FieldType.Checkbox => new ObservableCheckboxField(),
 				FieldType.File => new ObservableFileField(),
 				FieldType.Image => new ObservableImageField(),
@@ -146,7 +146,7 @@ namespace NeuroAccessMaui.Services.Kyc
 					if (Field is ObservableImageField ImageField && Key.Equals("AllowUpload", StringComparison.OrdinalIgnoreCase) && bool.TryParse(Value, out bool ParsedBool))
 						ImageField.AllowUpload = ParsedBool;
 
-					// Special cases for placeholders
+					// Special cases for PNR placeholders
 					if (Key.Equals("Placeholder", StringComparison.OrdinalIgnoreCase) && Value.Equals("pnr", StringComparison.OrdinalIgnoreCase))
 					{
 						KycProcess? Process;
@@ -175,7 +175,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				}
 			}
 
-			// Validation rules (<ValidationRule>)
+			// Validation rules (<ValidationRules>)
 			void TryAddLengthRules(XElement RuleEl)
 			{
 				int? Min = null, Max = null;
@@ -262,7 +262,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			}
 
 			// For country fields
-			if (Field is ObservableCountryField CountryField)
+			if (Field is ObservablePickerField CountryField && Field.FieldType == FieldType.Country && Field.Options.Count == 0)
 			{
 				string DefaultCountry;
 				// Set default to current country
@@ -285,11 +285,11 @@ namespace NeuroAccessMaui.Services.Kyc
 
 						if (Country.Alpha2.Equals(DefaultCountry, StringComparison.OrdinalIgnoreCase))
 						{
-							Field.Options.Insert(0, new KycOption(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, LocalizedText));
+							Field.Options.Insert(0, new KycOption(Country.Alpha2, LocalizedText));
 						}
 						else
 						{
-							Field.Options.Add(new KycOption(CultureInfo.CurrentCulture.TwoLetterISOLanguageName, LocalizedText));
+							Field.Options.Add(new KycOption(Country.Alpha2, LocalizedText));
 						}
 					}
 				}
