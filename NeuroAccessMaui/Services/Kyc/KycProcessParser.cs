@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.Services.Kyc
                 {
 					Id = (string?)PageEl.Attribute("id") ?? string.Empty,
 					Title = ParseLocalizedText(PageEl.Element("Title"))
-							?? ParseLegacyText(PageEl.Attribute("title"), Lang),
+						?? ParseLegacyText(PageEl.Attribute("title"), Lang),
 					Description = ParseLocalizedText(PageEl.Element("Description")),
 					Condition = ParseCondition(PageEl.Element("Condition"))
 				};
@@ -241,11 +241,22 @@ namespace NeuroAccessMaui.Services.Kyc
 			// Mappings
 			foreach (XElement Map in El.Elements("Mapping"))
 			{
-				Field.Mappings.Add(new KycMapping
+				KycMapping Mapping = new KycMapping
 				{
-					Key = (string?)Map.Attribute("key") ?? string.Empty,
-					Transform = Map.Element("Transform")?.Value?.Trim()
-				});
+					Key = (string?)Map.Attribute("key") ?? string.Empty
+				};
+
+				// New multi-transform syntax only
+				foreach (XElement Tx in Map.Elements("Transform"))
+				{
+					string? NameAttr = (string?)Tx.Attribute("name");
+					if (!string.IsNullOrWhiteSpace(NameAttr))
+					{
+						Mapping.TransformNames.Add(NameAttr.Trim());
+					}
+				}
+
+				Field.Mappings.Add(Mapping);
 			}
 			if (El.Attribute("mapping") is XAttribute MapAttr)
 				Field.Mappings.Add(new KycMapping { Key = MapAttr.Value });
