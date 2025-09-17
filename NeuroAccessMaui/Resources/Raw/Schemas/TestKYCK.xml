@@ -15,17 +15,59 @@
 		<Title>
 			<Text lang="en">Nice to meet you, what's your name?</Text>
 		</Title>
-		<Field id="fullName" type="text" mapping="FULLNAME" required="true">
+		<Field id="firstName" type="text" mapping="FIRST" required="true">
 			<Label>
-				<Text lang="en">Full name</Text>
+				<Text lang="en">First name(s)</Text>
 			</Label>
 			<Placeholder>
-				<Text lang="en">Full name</Text>
+				<Text lang="en">First name(s)</Text>
 			</Placeholder>
 			<ValidationRules>
 				<LengthRule min="2">
 					<Message>
-						<Text lang="en">Please enter your full name.</Text>
+						<Text lang="en">Please enter your first name(s)</Text>
+					</Message>
+				</LengthRule>
+				<RegexRule>
+					<Regex>^[\D]+$</Regex>
+					<Message>
+						<Text lang="en">Name cannot contain numbers or special characters.</Text>
+					</Message>
+				</RegexRule>
+			</ValidationRules>
+		</Field>
+		<Field id="middleName" type="text" mapping="MIDDLE" required="false">
+			<Label>
+				<Text lang="en">Middle name(s)</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Middle names(s)</Text>
+			</Placeholder>
+			<ValidationRules>
+				<LengthRule min="2">
+					<Message>
+						<Text lang="en">Please enter your middle name(s).</Text>
+					</Message>
+				</LengthRule>
+				<RegexRule>
+					<Regex>^[\D]+$</Regex>
+					<Message>
+						<Text lang="en">Name cannot contain numbers or special characters.</Text>
+					</Message>
+				</RegexRule>
+			</ValidationRules>
+		</Field>
+		<Field id="surName" type="text" mapping="LAST" required="true">
+			<Label>
+				<Text lang="en">Surname(s)</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Surname(s)</Text>
+			</Placeholder>
+			<ValidationRules>
+				<LengthRule min="2">
+					<Message>
+						<Text lang="en">Please enter your full surname.</Text>
 					</Message>
 				</LengthRule>
 				<RegexRule>
