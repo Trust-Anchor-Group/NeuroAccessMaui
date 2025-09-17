@@ -35,6 +35,7 @@ namespace NeuroAccessMaui.Services.Identity
 	/// <summary>
 	/// Builds friendly, localized summaries for identity-like data from mapped properties and attachments.
 	/// Designed to be used by both View Identity and KYC preview summaries.
+	/// Guide: To add a new Field to summaries. First add the Property key to the HashSet for the appropriate category. Second, update LabelMap to get localization
 	/// </summary>
 	public static class IdentitySummaryFormatter
     {
@@ -101,7 +102,10 @@ namespace NeuroAccessMaui.Services.Identity
             HashSet<string> PersonalKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 Constants.XmppProperties.FullName,
-                Constants.CustomXmppProperties.BirthDate,
+				Constants.XmppProperties.FirstName,
+				Constants.XmppProperties.MiddleNames,
+				Constants.XmppProperties.LastNames,
+				Constants.CustomXmppProperties.BirthDate,
                 Constants.XmppProperties.PersonalNumber,
                 Constants.XmppProperties.Nationality,
                 Constants.XmppProperties.Gender,
@@ -517,7 +521,10 @@ namespace NeuroAccessMaui.Services.Identity
             Dictionary<string, string> Map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
                 { Constants.XmppProperties.FullName, ServiceRef.Localizer[nameof(AppResources.FullName)].Value },
-                { Constants.CustomXmppProperties.BirthDate, ServiceRef.Localizer[nameof(AppResources.BirthDate)].Value },
+				{ Constants.XmppProperties.FirstName, ServiceRef.Localizer[nameof(AppResources.FirstName)].Value },
+				{ Constants.XmppProperties.MiddleNames, ServiceRef.Localizer[nameof(AppResources.MiddleNames)].Value },
+				{ Constants.XmppProperties.LastNames, ServiceRef.Localizer[nameof(AppResources.LastNames)].Value },
+				{ Constants.CustomXmppProperties.BirthDate, ServiceRef.Localizer[nameof(AppResources.BirthDate)].Value },
                 { Constants.XmppProperties.PersonalNumber, ServiceRef.Localizer[nameof(AppResources.PersonalNumber)].Value },
                 { Constants.XmppProperties.Nationality, ServiceRef.Localizer[nameof(AppResources.Nationality)].Value },
                 { Constants.XmppProperties.Gender, ServiceRef.Localizer[nameof(AppResources.Gender)].Value },
