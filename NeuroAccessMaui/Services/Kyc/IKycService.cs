@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Collections.Generic;
+using NeuroAccessMaui.Services.Kyc.Domain;
 using NeuroAccessMaui.Services.Kyc.Models;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
@@ -43,24 +44,23 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <returns>Tuple of mapped properties and attachments.</returns>
 		Task<(IReadOnlyList<Property> Properties, IReadOnlyList<LegalIdentityAttachment> Attachments)> PreparePropertiesAndAttachmentsAsync(Kyc.Models.KycProcess Process, CancellationToken CancellationToken);
 
-		/// <summary>Updates mutable reference fields (field values snapshot, progress, timestamps) from current process and navigation snapshot.</summary>
-		/// <param name="Reference">Reference to update.</param>
-		/// <param name="Process">Current KYC process.</param>
-		/// <param name="Navigation">Navigation snapshot representing current page and state.</param>
-		/// <param name="Progress">Current progress ratio (0..1).</param>
-		void UpdateReferenceFields(KycReference Reference, Kyc.Models.KycProcess Process, NeuroAccessMaui.Services.Kyc.Domain.KycNavigationSnapshot Navigation, double Progress);
+		/// <summary>Updates snapshot information and schedules an autosave.</summary>
+		Task ScheduleSnapshotAsync(KycReference Reference, Kyc.Models.KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId);
 
-		/// <summary>
-		/// Schedules an autosave of the reference after a debounce delay. Subsequent calls reset the timer.
-		/// </summary>
-		/// <param name="Reference">Reference to persist.</param>
-		/// <returns>Task handle.</returns>
-		Task ScheduleAutosaveAsync(KycReference Reference);
+		/// <summary>Updates snapshot information and flushes any pending autosave.</summary>
+		Task FlushSnapshotAsync(KycReference Reference, Kyc.Models.KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId);
 
-		/// <summary>
-		/// Flushes any pending autosave immediately.
-		/// </summary>
-		/// <param name="Reference">Reference to persist now.</param>
-		Task FlushAutosaveAsync(KycReference Reference);
+		/// <summary>Persists submission details after an application is sent.</summary>
+		Task ApplySubmissionAsync(KycReference Reference, LegalIdentity Identity);
+
+		/// <summary>Clears stored submission details for revoked or reset applications.</summary>
+		Task ClearSubmissionAsync(KycReference Reference);
+
+		/// <summary>Persists rejection metadata and invalid claim/photo information.</summary>
+		Task ApplyRejectionAsync(KycReference Reference, string Message, string[] InvalidClaims, string[] InvalidPhotos, string? Code);
+
+		/// <summary>Resets reference state and seeds optional field values for a fresh application session.</summary>
+		Task PrepareReferenceForNewApplicationAsync(KycReference Reference, string? Language, IReadOnlyList<KycFieldValue>? SeedFields);
+
 	}
 }

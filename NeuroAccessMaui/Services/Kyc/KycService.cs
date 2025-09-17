@@ -1,7 +1,12 @@
-﻿using System.Reflection;
-using System.Net;
-using System.Text;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services.Kyc.Domain;
 using NeuroAccessMaui.Services.Kyc.Models;
@@ -23,29 +28,10 @@ namespace NeuroAccessMaui.Services.Kyc
 		private static readonly HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(10) };
 		private static readonly string backupKyc = "TestKYCNeuro.xml";
 		private static readonly TimeSpan AutosaveDelay = TimeSpan.FromMilliseconds(800);
-		private bool disposedValue;
-
-		protected virtual void Dispose(bool disposing)
-		{
-			if (!this.disposedValue)
-			{
-				if (disposing)
-				{
-					try { this.autosaveCts?.Cancel(); } catch { }
-					this.autosaveCts?.Dispose();
-				}
-				this.disposedValue = true;
-			}
-		}
-
-		public void Dispose()
-		{
-			this.Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-		private CancellationTokenSource? autosaveCts;
 		private readonly object autosaveSync = new();
+		private CancellationTokenSource? autosaveCts;
 		private Task? pendingAutosaveTask;
+		private bool disposedValue;
 
 		#region Loading & Persistence
 
@@ -272,21 +258,140 @@ namespace NeuroAccessMaui.Services.Kyc
 			return (Mapped, Attachments);
 		}
 
-		#region Persistence Helpers (Autosave)
-
-		/// <inheritdoc />
-		public void UpdateReferenceFields(KycReference Reference, KycProcess Process, NeuroAccessMaui.Services.Kyc.Domain.KycNavigationSnapshot Navigation, double Progress)
+		public Task ScheduleSnapshotAsync(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
 		{
-			if (Reference is null || Process is null) return;
-			Reference.Fields = [.. Process.Values.Select(p => new KycFieldValue(p.Key, p.Value))];
+			if (Reference is null || Process is null)
+			{
+				return Task.CompletedTask;
+			}
+			UpdateSnapshot(Reference, Process, Navigation, Progress, CurrentPageId);
+			this.ScheduleAutosave(Reference);
+			return Task.CompletedTask;
+		}
+
+		public async Task FlushSnapshotAsync(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
+		{
+			if (Reference is null || Process is null)
+			{
+				return;
+			}
+			UpdateSnapshot(Reference, Process, Navigation, Progress, CurrentPageId);
+			await this.FlushAutosaveAsync(Reference);
+		}
+
+		public async Task ApplySubmissionAsync(KycReference Reference, LegalIdentity Identity)
+		{
+			if (Reference is null || Identity is null)
+			{
+				return;
+			}
+			Reference.CreatedIdentityId = Identity.Id;
+			Reference.CreatedIdentityState = Identity.State;
+			Reference.UpdatedUtc = DateTime.UtcNow;
+			await SaveReferenceAsync(Reference);
+		}
+
+		public async Task ClearSubmissionAsync(KycReference Reference)
+		{
+			if (Reference is null)
+			{
+				return;
+			}
+			Reference.CreatedIdentityId = null;
+			Reference.CreatedIdentityState = null;
+			Reference.UpdatedUtc = DateTime.UtcNow;
+			await SaveReferenceAsync(Reference);
+		}
+
+		public async Task ApplyRejectionAsync(KycReference Reference, string Message, string[] InvalidClaims, string[] InvalidPhotos, string? Code)
+		{
+			if (Reference is null)
+			{
+				return;
+			}
+			Reference.RejectionMessage = Message;
+			Reference.RejectionCode = Code;
+			Reference.InvalidClaims = InvalidClaims;
+			Reference.InvalidPhotos = InvalidPhotos;
+			Reference.UpdatedUtc = DateTime.UtcNow;
+			await SaveReferenceAsync(Reference);
+		}
+
+		public async Task PrepareReferenceForNewApplicationAsync(KycReference Reference, string? Language, IReadOnlyList<KycFieldValue>? SeedFields)
+		{
+			if (Reference is null)
+			{
+				return;
+			}
+
+			Reference.LastVisitedMode = "Form";
+			Reference.LastVisitedPageId = null;
+			Reference.RejectionMessage = null;
+			Reference.RejectionCode = null;
+			Reference.InvalidClaims = null;
+			Reference.InvalidPhotos = null;
+			Reference.InvalidClaimDetails = null;
+			Reference.InvalidPhotoDetails = null;
+			Reference.CreatedIdentityId = null;
+			Reference.CreatedIdentityState = null;
+
+			if (SeedFields is not null && SeedFields.Count > 0)
+			{
+				Reference.Fields = SeedFields.Select(Field => new KycFieldValue(Field.FieldId, Field.Value)).ToArray();
+			}
+			else
+			{
+				Reference.Fields = null;
+			}
+
+			Reference.UpdatedUtc = DateTime.UtcNow;
+			await SaveReferenceAsync(Reference);
+
+			if (SeedFields is not null && SeedFields.Count > 0 && !string.IsNullOrWhiteSpace(Language))
+			{
+				try
+				{
+					await Reference.ApplyFieldsToProcessAsync(Language);
+				}
+				catch (Exception Exception)
+				{
+					ServiceRef.LogService.LogException(Exception, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				}
+			}
+		}
+
+		private static void UpdateSnapshot(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
+		{
+			Reference.Fields = [.. Process.Values.Select(FieldPair => new KycFieldValue(FieldPair.Key, FieldPair.Value))];
 			Reference.Progress = Progress;
-			Reference.LastVisitedPageId = Process.Pages.Count > Navigation.CurrentPageIndex && Navigation.CurrentPageIndex >= 0 ? Process.Pages[Navigation.CurrentPageIndex].Id : Reference.LastVisitedPageId;
-			Reference.LastVisitedMode = Navigation.State.ToString();
+			Reference.LastVisitedPageId = ResolveLastVisitedPageId(Reference, Process, Navigation, CurrentPageId);
+			Reference.LastVisitedMode = ResolveMode(Navigation);
 			Reference.UpdatedUtc = DateTime.UtcNow;
 		}
 
-		/// <inheritdoc />
-		public Task ScheduleAutosaveAsync(KycReference Reference)
+		private static string ResolveMode(KycNavigationSnapshot Navigation)
+		{
+			if (Navigation.State == KycFlowState.Summary || Navigation.State == KycFlowState.PendingSummary || Navigation.State == KycFlowState.RejectedSummary)
+			{
+				return "Summary";
+			}
+			return "Form";
+		}
+
+		private static string? ResolveLastVisitedPageId(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, string? CurrentPageId)
+		{
+			if (!string.IsNullOrWhiteSpace(CurrentPageId))
+			{
+				return CurrentPageId;
+			}
+			if (Navigation.CurrentPageIndex >= 0 && Navigation.CurrentPageIndex < Process.Pages.Count)
+			{
+				return Process.Pages[Navigation.CurrentPageIndex].Id;
+			}
+			return Reference.LastVisitedPageId;
+		}
+
+		private void ScheduleAutosave(KycReference Reference)
 		{
 			CancellationTokenSource LocalCts;
 			lock (this.autosaveSync)
@@ -296,11 +401,9 @@ namespace NeuroAccessMaui.Services.Kyc
 				LocalCts = this.autosaveCts;
 				this.pendingAutosaveTask = this.InternalDebouncedSaveAsync(Reference, LocalCts.Token);
 			}
-			return Task.CompletedTask;
 		}
 
-		/// <inheritdoc />
-		public async Task FlushAutosaveAsync(KycReference Reference)
+		private async Task FlushAutosaveAsync(KycReference Reference)
 		{
 			CancellationTokenSource? Local;
 			Task? Pending;
@@ -315,25 +418,47 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				try { await Pending; } catch { }
 			}
-			await this.SaveKycReferenceAsync(Reference);
+			await SaveReferenceAsync(Reference);
 		}
 
-		private async Task InternalDebouncedSaveAsync(KycReference Reference, CancellationToken Ct)
+		private async Task InternalDebouncedSaveAsync(KycReference Reference, CancellationToken CancellationToken)
 		{
 			try
 			{
-				await Task.Delay(AutosaveDelay, Ct);
-				if (Ct.IsCancellationRequested) return;
-				await this.SaveKycReferenceAsync(Reference);
+				await Task.Delay(AutosaveDelay, CancellationToken);
+				if (CancellationToken.IsCancellationRequested)
+				{
+					return;
+				}
+				await SaveReferenceAsync(Reference);
 			}
-			catch (TaskCanceledException) { }
-			catch (Exception Ex)
+			catch (TaskCanceledException)
 			{
-				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+			}
+			catch (Exception Exception)
+			{
+				ServiceRef.LogService.LogException(Exception, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 			}
 		}
 
-		#endregion
+		private static async Task SaveReferenceAsync(KycReference Reference)
+		{
+			try
+			{
+				if (string.IsNullOrEmpty(Reference.ObjectId))
+				{
+					await ServiceRef.StorageService.Insert(Reference);
+				}
+				else
+				{
+					await ServiceRef.StorageService.Update(Reference);
+				}
+			}
+			catch (KeyNotFoundException)
+			{
+				await ServiceRef.StorageService.Insert(Reference);
+			}
+		}
 
 		private async Task<List<Property>> BuildPropertiesFromFieldAsync(KycProcess Process, ObservableKycField Field, CancellationToken Ct)
 		{
@@ -436,6 +561,31 @@ namespace NeuroAccessMaui.Services.Kyc
 				default: return Bmp;
 			}
 			return Rotated;
+		}
+
+		protected virtual void Dispose(bool Disposing)
+		{
+			if (this.disposedValue)
+			{
+				return;
+			}
+			if (Disposing)
+			{
+				lock (this.autosaveSync)
+				{
+					try { this.autosaveCts?.Cancel(); } catch { }
+					this.autosaveCts?.Dispose();
+					this.autosaveCts = null;
+					this.pendingAutosaveTask = null;
+				}
+			}
+			this.disposedValue = true;
+		}
+
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
 		#endregion

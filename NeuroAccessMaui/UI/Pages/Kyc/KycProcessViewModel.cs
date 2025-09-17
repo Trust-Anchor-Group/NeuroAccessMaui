@@ -281,7 +281,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 						this.CurrentPagePosition = this.currentPageIndex;
 						this.SetCurrentPage(this.currentPageIndex);
 					}
-					this.navigation = this.navigation with { State = KycFlowState.Summary };
+					int anchorIndex = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
+					this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = anchorIndex, CurrentPageIndex = anchorIndex >= 0 ? anchorIndex : this.navigation.CurrentPageIndex };
+					this.SetEditingFromSummary(false);
+					this.NotifyNavigationChanged();
 					this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 				}
 			}
@@ -296,7 +299,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.CurrentPagePosition = this.currentPageIndex;
 					this.SetCurrentPage(this.currentPageIndex);
 				}
-				this.navigation = this.navigation with { State = KycFlowState.Summary };
+			int anchorIndexRejected = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
+			this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = anchorIndexRejected, CurrentPageIndex = anchorIndexRejected >= 0 ? anchorIndexRejected : this.navigation.CurrentPageIndex };
+				this.SetEditingFromSummary(false);
+				this.NotifyNavigationChanged();
 				this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 			}
 			else
@@ -312,7 +318,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (pending)
 			{
 				await this.BuildMappedValuesAsync();
-				this.navigation = this.navigation with { State = KycFlowState.Summary };
+			int anchorIndexPending = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
+			this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = anchorIndexPending, CurrentPageIndex = anchorIndexPending >= 0 ? anchorIndexPending : this.navigation.CurrentPageIndex };
+				this.SetEditingFromSummary(false);
+				this.NotifyNavigationChanged();
 				this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 			}
 			this.IsLoading = false;
@@ -347,6 +356,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.currentPageIndex = targetIndex;
 			this.CurrentPagePosition = targetIndex;
 			this.SetCurrentPage(targetIndex);
+			this.NotifyNavigationChanged();
 			this.NextButtonText = ServiceRef.Localizer[nameof(AppResources.Kyc_Return), false];
 			await MainThread.InvokeOnMainThreadAsync(this.ScrollUp);
 		}
@@ -398,8 +408,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			if (value)
 			{
-				this.navigation = this.navigation with { State = KycFlowState.Summary };
-				this.OnPropertyChanged(nameof(this.Progress));
+				int anchor = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
+				this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = anchor, CurrentPageIndex = anchor >= 0 ? anchor : this.navigation.CurrentPageIndex };
+				this.SetEditingFromSummary(false);
+				this.NotifyNavigationChanged();
 			}
 			this.OnPropertyChanged(nameof(this.CanRequestFeaturedPeerReviewer));
 			this.OnPropertyChanged(nameof(this.FeaturedPeerReviewers));
@@ -519,16 +531,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.CurrentPageSections = page.VisibleSections;
 			this.HasSections = this.CurrentPageSections is not null && this.CurrentPageSections.Count > 0;
 			// Persist last visited page (only when not in summary mode)
-			if (!this.IsInSummary && this.kycReference is not null)
-			{
-				this.kycReference.LastVisitedPageId = page.Id;
-				this.kycReference.LastVisitedMode = "Form";
-				if (this.process is not null)
-				{
-					this.kycService.UpdateReferenceFields(this.kycReference, this.process, this.navigation, this.Progress);
-					_ = this.kycService.ScheduleAutosaveAsync(this.kycReference);
-				}
-			}
+			if (!this.IsInSummary && this.kycReference is not null && this.process is not null)
+				_ = this.kycService.ScheduleSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, page.Id);
 			this.OnPropertyChanged(nameof(this.Progress));
 			this.NextCommand.NotifyCanExecuteChanged();
 		}
@@ -551,18 +555,35 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private async Task ExecuteNextAsync()
 		{
 			ServiceRef.PlatformSpecific.HideKeyboard();
+			if (this.IsInSummary)
+			{
+				await this.ExecuteApplyAsync();
+				return;
+			}
+			if (this.editingFromSummary)
+			{
+				bool okEditing = await this.ValidateCurrentPageAsync();
+				if (!okEditing)
+				{
+					return;
+				}
+				int firstInvalidFromSummary = await this.GetFirstInvalidVisiblePageIndexAsync();
+				if (firstInvalidFromSummary >= 0)
+				{
+					this.currentPageIndex = firstInvalidFromSummary;
+					this.CurrentPagePosition = firstInvalidFromSummary;
+					this.SetCurrentPage(firstInvalidFromSummary);
+					this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
+					return;
+				}
+				await this.GoToSummaryAsync();
+				this.SetEditingFromSummary(false);
+				return;
+			}
 			bool ok = await this.ValidateCurrentPageAsync();
 			if (!ok) return;
-			if (this.kycReference is not null)
-			{
-				this.kycReference.LastVisitedPageId = this.CurrentPage?.Id;
-				this.kycReference.LastVisitedMode = "Form";
-			}
 			if (this.kycReference is not null && this.process is not null)
-			{
-				this.kycService.UpdateReferenceFields(this.kycReference, this.process, this.navigation, this.Progress);
-				await this.kycService.FlushAutosaveAsync(this.kycReference);
-			}
+				await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
 			if (this.process is null) return;
 			// Build list of visible page indices
 			List<int> VisibleIndices = new List<int>();
@@ -581,14 +602,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.navigation = NextSnap with { AnchorPageIndex = NextSnap.AnchorPageIndex >= 0 ? NextSnap.AnchorPageIndex : this.navigation.AnchorPageIndex >= 0 ? this.navigation.AnchorPageIndex : this.currentPageIndex };
 				this.NotifyNavigationChanged();
 				this.OnPropertyChanged(nameof(this.Progress));
-				if (this.kycReference is not null)
-					this.kycReference.LastVisitedMode = "Summary";
 				this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 				if (this.kycReference is not null && this.process is not null)
-				{
-					this.kycService.UpdateReferenceFields(this.kycReference, this.process, this.navigation, this.Progress);
-					await this.kycService.FlushAutosaveAsync(this.kycReference);
-				}
+					await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
 			}
 			else
 			{
@@ -636,25 +652,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			bool Ok = await this.ValidateCurrentPageAsync();
 			if (!Ok) return;
 			if (this.kycReference is not null && this.process is not null)
-			{
-				this.kycService.UpdateReferenceFields(this.kycReference, this.process, this.navigation, this.Progress);
-				await this.kycService.FlushAutosaveAsync(this.kycReference);
-			}
+				await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
 			await this.BuildMappedValuesAsync();
 			this.ScrollUp();
 			KycProcessState ProcessState = this.BuildProcessState();
 			this.navigation = KycTransitions.EnterSummary(ProcessState);
-			this.SetEditingFromSummary(false);
-			if (this.kycReference is not null)
+			int anchor = this.navigation.AnchorPageIndex >= 0 ? this.navigation.AnchorPageIndex : this.currentPageIndex;
+			if (anchor >= 0)
 			{
-				this.kycReference.LastVisitedMode = "Summary";
-				this.kycReference.LastVisitedPageId = this.CurrentPage?.Id;
-				if (this.process is not null)
-				{
-					this.kycService.UpdateReferenceFields(this.kycReference, this.process, this.navigation, this.Progress);
-					await this.kycService.FlushAutosaveAsync(this.kycReference);
-				}
+				this.currentPageIndex = anchor;
+				this.CurrentPagePosition = anchor;
 			}
+			this.SetEditingFromSummary(false);
+			this.NotifyNavigationChanged();
+			if (this.kycReference is not null && this.process is not null)
+				await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
 			this.OnPropertyChanged(nameof(this.Progress));
 			this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 		}
@@ -737,10 +749,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public async Task Exit()
 		{
 			if (this.kycReference is not null && this.process is not null)
-			{
-				this.kycService.UpdateReferenceFields(this.kycReference, this.process, this.navigation, this.Progress);
-				await this.kycService.FlushAutosaveAsync(this.kycReference);
-			}
+				await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
 			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.Kyc_Exit)])) return;
 			await base.GoBack();
 		}
@@ -782,17 +791,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				await ServiceRef.TagProfile.SetIdentityApplication(added, true);
 				this.applicationSent = true;
-				try
+				if (this.kycReference is not null)
 				{
-					if (this.kycReference is not null)
-					{
-						this.kycReference.CreatedIdentityId = added.Id;
-						this.kycReference.CreatedIdentityState = added.State;
-						this.kycReference.UpdatedUtc = DateTime.UtcNow;
-						await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
-					}
+					try { await this.kycService.ApplySubmissionAsync(this.kycReference, added); }
+					catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
 				}
-				catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
 				foreach (LegalIdentityAttachment localAttachment in this.attachments)
 				{
 					Attachment? match = added.Attachments.FirstOrDefault(a => string.Equals(a.FileName, localAttachment.FileName, StringComparison.OrdinalIgnoreCase));
@@ -806,8 +809,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.NrReviews = ServiceRef.TagProfile.NrReviews;
 				await this.LoadApplicationAttributes();
 				await this.LoadFeaturedPeerReviewers();
-				this.navigation = this.navigation with { State = KycFlowState.Summary };
-				this.OnPropertyChanged(nameof(this.Progress));
+				int anchorAfterApply = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
+				this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = anchorAfterApply, CurrentPageIndex = anchorAfterApply >= 0 ? anchorAfterApply : this.navigation.CurrentPageIndex };
+				this.NotifyNavigationChanged();
 			}
 		}
 
@@ -845,8 +849,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.NrReviews = ServiceRef.TagProfile.NrReviews;
 				if (this.kycReference is not null && this.kycReference.CreatedIdentityId == e.Identity.Id)
 				{
-					this.kycReference.CreatedIdentityState = e.Identity.State;
-					try { await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference); } catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+					try { await this.kycService.ApplySubmissionAsync(this.kycReference, e.Identity); } catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
 					if (e.Identity.State == IdentityState.Approved)
 					{
 						await base.GoBack();
@@ -856,17 +859,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					{
 						this.ApplicationSentPublic = false;
 						await this.BuildMappedValuesAsync();
-						this.navigation = this.navigation with { State = KycFlowState.Summary };
+						int anchorRejected = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
+						this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = anchorRejected, CurrentPageIndex = anchorRejected >= 0 ? anchorRejected : this.navigation.CurrentPageIndex };
 						this.SetEditingFromSummary(false);
-						if (this.kycReference is not null)
-						{
-							this.kycReference.LastVisitedMode = "Summary";
-							if (this.process is not null)
-							{
-								this.kycService.UpdateReferenceFields(this.kycReference, this.process, this.navigation, this.Progress);
-								await this.kycService.FlushAutosaveAsync(this.kycReference);
-							}
-						}
+						if (this.kycReference is not null && this.process is not null)
+							await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
 						this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 						this.OnPropertyChanged(nameof(this.Progress));
 						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Rejected)], ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)]);
@@ -940,12 +937,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.peerReviewServices = null;
 				this.HasFeaturedPeerReviewers = false;
 				if (this.kycReference is not null)
-				{
-					this.kycReference.CreatedIdentityId = null;
-					this.kycReference.CreatedIdentityState = null;
-					this.kycReference.UpdatedUtc = DateTime.UtcNow;
-					await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
-				}
+					await this.kycService.ClearSubmissionAsync(this.kycReference);
 				return;
 			}
 			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeTheCurrentIdApplication)])) return;
@@ -958,16 +950,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.peerReviewServices = null;
 				this.HasFeaturedPeerReviewers = false;
 				if (this.kycReference is not null)
-				{
-					this.kycReference.CreatedIdentityId = null;
-					this.kycReference.CreatedIdentityState = null;
-					this.kycReference.UpdatedUtc = DateTime.UtcNow;
-					await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
-				}
+					await this.kycService.ClearSubmissionAsync(this.kycReference);
 				await this.BuildMappedValuesAsync();
-				this.navigation = this.navigation with { State = KycFlowState.Summary };
+				int anchorAfterRevoke = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
+				this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = anchorAfterRevoke, CurrentPageIndex = anchorAfterRevoke >= 0 ? anchorAfterRevoke : this.navigation.CurrentPageIndex };
 				this.SetEditingFromSummary(false);
-				this.OnPropertyChanged(nameof(this.Progress));
+				this.NotifyNavigationChanged();
 			}
 			catch (Exception ex)
 			{
@@ -1066,14 +1054,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.ErrorDescription = message;
 			this.HasErrorDescription = !string.IsNullOrWhiteSpace(message);
 			if (this.kycReference is not null)
-			{
-				this.kycReference.RejectionMessage = message;
-				this.kycReference.RejectionCode = code;
-				this.kycReference.InvalidClaims = invalidClaims;
-				this.kycReference.InvalidPhotos = invalidPhotos;
-				this.kycReference.UpdatedUtc = DateTime.UtcNow;
-				await ServiceRef.KycService.SaveKycReferenceAsync(this.kycReference);
-			}
+				await this.kycService.ApplyRejectionAsync(this.kycReference, message, invalidClaims, invalidPhotos, code);
 			KycInvalidation.ApplyInvalidations(this.process, this.kycReference, this.ErrorDescription);
 			await this.BuildMappedValuesAsync();
 		}
