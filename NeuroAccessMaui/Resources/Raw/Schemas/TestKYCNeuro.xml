@@ -62,9 +62,9 @@
 			<Text lang="fi">Perustiedot</Text>
 			<Text lang="fr">Informations de base</Text>
 		</Label>
-		<Field id="firstName" type="text" mapping="FIRST" required="true">
+		<Field id="givenNames" type="text" mapping="FIRST" required="true">
 			<Label>
-				<Text lang="en">First names(s)</Text>
+				<Text lang="en">Given name(s)</Text>
 				<Text lang="sv">Förnamn</Text>
 				<Text lang="es">Nombre(s)</Text>
 				<Text lang="pt">Nome(s)</Text>
@@ -76,7 +76,7 @@
 			<ValidationRules>
 				<LengthRule min="2">
 					<Message>
-						<Text lang="en">First name(s) must be at least 2 characters.</Text>
+						<Text lang="en">Given name(s) must be at least 2 characters.</Text>
 						<Text lang="sv">Förnamn måste vara minst 2 tecken.</Text>
 						<Text lang="es">El/Los nombre(s) deben tener al menos 2 caracteres.</Text>
 						<Text lang="pt">O(s) nome(s) deve(m) ter pelo menos 2 caracteres.</Text>
@@ -89,7 +89,7 @@
 				<RegexRule>
 					<Regex>^[\D]+$</Regex>
 					<Message>
-						<Text lang="en">First name(s) can not contain digits.</Text>
+						<Text lang="en">Given name(s) can not contain digits.</Text>
 						<Text lang="sv">Förnamn får inte innehålla siffror.</Text>
 						<Text lang="es">El/Los nombre(s) no pueden contener números.</Text>
 						<Text lang="pt">O(s) nome(s) não pode(m) conter dígitos.</Text>
@@ -101,46 +101,7 @@
 				</RegexRule>
 			</ValidationRules>
 		</Field>
-		<Field id="middleNames" type="text" mapping="MIDDLE" required="false">
-			<Label>
-				<Text lang="en">Middle names(s)</Text>
-				<Text lang="sv">Mellannamn</Text>
-				<Text lang="es">Segundo(s) nombre(s)</Text>
-				<Text lang="pt">Nome(s) do meio</Text>
-				<Text lang="da">Mellemnavn(e)</Text>
-				<Text lang="no">Mellomnavn</Text>
-				<Text lang="fi">Toinen/Toiset etunimi(et)</Text>
-				<Text lang="fr">Deuxième(s) prénom(s)</Text>
-			</Label>
-			<ValidationRules>
-				<LengthRule min="2">
-					<Message>
-						<Text lang="en">Middle name(s) must be at least 2 characters.</Text>
-						<Text lang="sv">Mellannamn måste vara minst 2 tecken.</Text>
-						<Text lang="es">El/Los segundo(s) nombre(s) deben tener al menos 2 caracteres.</Text>
-						<Text lang="pt">O(s) nome(s) do meio deve(m) ter pelo menos 2 caracteres.</Text>
-						<Text lang="da">Mellemnavn(e) skal være mindst 2 tegn.</Text>
-						<Text lang="no">Mellomnavn må være minst 2 tegn.</Text>
-						<Text lang="fi">Toisen etunimen on oltava vähintään 2 merkkiä.</Text>
-						<Text lang="fr">Le(s) deuxième(s) prénom(s) doivent comporter au moins 2 caractères.</Text>
-					</Message>
-				</LengthRule>
-				<RegexRule>
-					<Regex>^[\D]+$</Regex>
-					<Message>
-						<Text lang="en">Middle name(s) name can not contain digits.</Text>
-						<Text lang="sv">Förnamn får inte innehålla siffror.</Text>
-						<Text lang="es">El/Los segundo(s) nombre(s) no pueden contener números.</Text>
-						<Text lang="pt">O(s) nome(s) do meio não pode(m) conter dígitos.</Text>
-						<Text lang="da">Mellemnavn(e) må ikke indeholde tal.</Text>
-						<Text lang="no">Mellomnavn kan ikke inneholde tall.</Text>
-						<Text lang="fi">Toinen etunimi ei saa sisältää numeroita.</Text>
-						<Text lang="fr">Le(s) deuxième(s) prénom(s) ne doivent pas contenir de chiffres.</Text>
-					</Message>
-				</RegexRule>
-			</ValidationRules>
-		</Field>
-		<Field id="surname" type="text" mapping="LAST" required="true">
+		<Field id="surnames" type="text" mapping="LAST" required="true">
 			<Label>
 				<Text lang="en">Surname(s)</Text>
 				<Text lang="sv">Efternamn</Text>
@@ -443,7 +404,7 @@
 			<!-- Identity Card Back Upload Field (shown if identityCard is selected) -->
 			<Field id="identityCardBackUpload" type="image" mapping="IdCardBack" required="true">
 				<Hint>
-					<Text lang="en">Upload the front side of your identity card</Text>
+						<Text lang="en">Upload the back side of your identity card</Text>
 					<Text lang="sv">Ladda upp framsidan av ditt ID-kort</Text>
 					<Text lang="es">Sube la cara posterior de tu documento de identidad</Text>
 					<Text lang="pt">Envie o verso do seu cartão de identidade</Text>
