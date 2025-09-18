@@ -105,13 +105,13 @@
 				<Text lang="pt">Data de nascimento</Text>
 			</Label>
 			<Mapping key="BDAY">
-				<Transform>day</Transform>
+				<Transform name="day" />
 			</Mapping>
 			<Mapping key="BMONTH">
-				<Transform>month</Transform>
+				<Transform name="month" />
 			</Mapping>
 			<Mapping key="BYEAR">
-				<Transform>year</Transform>
+				<Transform name="year" />
 			</Mapping>
 			<ValidationRules>
 				<DateRangeRule min="1900-01-01" max="2025-01-01">

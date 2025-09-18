@@ -1,4 +1,8 @@
 <KYCProcess>
+	<Name>
+		<Text lang="en">Sample Personal ID</Text>
+		<Text lang="sv">Exempel på personligt ID</Text>
+	</Name>
 	<Page id="personalInfo" title="Personal Information">
 		<Title>
 			<Text lang="en">Personal Information</Text>
@@ -26,13 +30,21 @@
 					<Text lang="en">John</Text>
 					<Text lang="sv">Johan</Text>
 				</Placeholder>
-				<Validation minLength="2" maxLength="40">
-					<Regex>^[A-Za-z]+$</Regex>
-					<Message>
-						<Text lang="en">First name must contain only letters and be 2-40 characters long.</Text>
-						<Text lang="sv">Förnamnet måste innehålla endast bokstäver och vara 2-40 tecken långt.</Text>
-					</Message>
-				</Validation>
+				<ValidationRules>
+					<LengthRule min="2" max="40">
+						<Message>
+							<Text lang="en">First name must be 2-40 characters long.</Text>
+							<Text lang="sv">Förnamnet måste vara 2-40 tecken långt.</Text>
+						</Message>
+					</LengthRule>
+					<RegexRule>
+						<Regex>^[A-Za-z]+$</Regex>
+						<Message>
+							<Text lang="en">First name may contain letters only.</Text>
+							<Text lang="sv">Förnamnet får endast innehålla bokstäver.</Text>
+						</Message>
+					</RegexRule>
+				</ValidationRules>
 				<Default>Maximiliam</Default>
 			</Field>
 			<Field id="dob" type="date" label="Date of Birth" required="true" mapping="BDATE">
@@ -45,20 +57,22 @@
 					<Text lang="sv">Använd formatet ÅÅÅÅ-MM-DD</Text>
 				</Hint>
 				<Mapping key="BDAY">
-					<Transform>day</Transform>
+					<Transform name="day" />
 				</Mapping>
 				<Mapping key="BMONTH">
-					<Transform>month</Transform>
+					<Transform name="month" />
 				</Mapping>
 				<Mapping key="BYEAR">
-					<Transform>year</Transform>
+					<Transform name="year" />
 				</Mapping>
-				<Validation min="1900-01-01" max="2020-01-01">
-					<Message>
-						<Text lang="en">Enter a valid date between 1900 and 2020</Text>
-						<Text lang="sv">Ange ett giltigt datum mellan 1900 och 2020</Text>
-					</Message>
-				</Validation>
+				<ValidationRules>
+					<DateRangeRule min="1900-01-01" max="2020-01-01">
+						<Message>
+							<Text lang="en">Enter a valid date between 1900 and 2020</Text>
+							<Text lang="sv">Ange ett giltigt datum mellan 1900 och 2020</Text>
+						</Message>
+					</DateRangeRule>
+				</ValidationRules>
 				<!-- Example: a date field with metadata could look like this -->
 				<Metadata>
 					<DateFormat>yyyy-MM-dd</DateFormat>
@@ -90,15 +104,23 @@
 					<Text lang="sv">du@email.com</Text>
 				</Placeholder>
 				<Mapping key="EMAIL">
-					<Transform>lowercase</Transform>
+					<Transform name="lowercase" />
 				</Mapping>
-				<Validation minLength="5" maxLength="100">
-					<Regex>^[^@\s]+@[^@\s]+\.[^@\s]+$</Regex>
-					<Message>
-						<Text lang="en">Enter a valid email address</Text>
-						<Text lang="sv">Ange en giltig e-postadress</Text>
-					</Message>
-				</Validation>
+				<ValidationRules>
+					<LengthRule min="5" max="100">
+						<Message>
+							<Text lang="en">Enter a valid email address</Text>
+							<Text lang="sv">Ange en giltig e-postadress</Text>
+						</Message>
+					</LengthRule>
+					<RegexRule>
+						<Regex>^[^@\s]+@[^@\s]+\.[^@\s]+$</Regex>
+						<Message>
+							<Text lang="en">Enter a valid email address</Text>
+							<Text lang="sv">Ange en giltig e-postadress</Text>
+						</Message>
+					</RegexRule>
+				</ValidationRules>
 				<Condition>
 					<FieldRef>isOrganization</FieldRef>
 					<Equals>true</Equals>
@@ -164,12 +186,14 @@
 					<Text lang="en">Example Corp</Text>
 					<Text lang="sv">Exempelföretag AB</Text>
 				</Placeholder>
-				<Validation minLength="2" maxLength="100">
-					<Message>
-						<Text lang="en">Organization name is required</Text>
-						<Text lang="sv">Organisationsnamn krävs</Text>
-					</Message>
-				</Validation>
+				<ValidationRules>
+					<LengthRule min="2" max="100">
+						<Message>
+							<Text lang="en">Organization name must be 2-100 characters long.</Text>
+							<Text lang="sv">Organisationsnamnet måste vara 2-100 tecken långt.</Text>
+						</Message>
+					</LengthRule>
+				</ValidationRules>
 			</Field>
 		</Section>
 	</Page>
