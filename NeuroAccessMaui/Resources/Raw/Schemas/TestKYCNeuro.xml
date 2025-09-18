@@ -825,7 +825,7 @@
 			<Text lang="fi">Haetko organisaation tunnistetta?</Text>
 			<Text lang="fr">Demandez-vous une identification organisationnelle ?</Text>
 		</Title>
-		<Field id="isOrg" type="checkbox" required="true">
+		<Field id="isOrg" type="checkbox">
 			<Options>
 				<Option value="yes">
 					<Text lang="en">Yes</Text>
@@ -837,17 +837,8 @@
 					<Text lang="fi">Kyllä</Text>
 					<Text lang="fr">Oui</Text>
 				</Option>
-				<Option value="no">
-					<Text lang="en">No</Text>
-					<Text lang="sv">Nej</Text>
-					<Text lang="es">No</Text>
-					<Text lang="pt">Não</Text>
-					<Text lang="da">Nej</Text>
-					<Text lang="no">Nei</Text>
-					<Text lang="fi">Ei</Text>
-					<Text lang="fr">Non</Text>
-				</Option>
 			</Options>
+			<Default>false</Default>
 		</Field>
 	</Page>
 	<Page id="orgInfo">
