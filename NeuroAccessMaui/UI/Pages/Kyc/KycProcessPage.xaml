@@ -720,29 +720,29 @@
 												<Label Text="{l:Localize DocumentDetails}" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="IDSF:DisplayQuad">
-                                    <controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
-                                        <controls:TemplatedButton.Triggers>
-                                            <DataTrigger TargetType="controls:TemplatedButton"
-                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
-                                                        Value="True">
-                                                <Setter Property="IsEnabled" Value="False" />
-                                                <Setter Property="InputTransparent" Value="True" />
-                                            </DataTrigger>
-                                        </controls:TemplatedButton.Triggers>
+														<DataTemplate x:DataType="IDSF:DisplayQuad">
+															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+																<controls:TemplatedButton.Triggers>
+																	<DataTrigger TargetType="controls:TemplatedButton"
+																				Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+																				Value="True">
+																		<Setter Property="IsEnabled" Value="False" />
+																		<Setter Property="InputTransparent" Value="True" />
+																	</DataTrigger>
+																</controls:TemplatedButton.Triggers>
 																<Border Style="{DynamicResource BorderSet}" Margin="0">
-																	<Grid ColumnDefinitions="auto, *, auto" ColumnSpacing="{DynamicResource SmallSpacing}">
+																	<Grid ColumnDefinitions="auto, *, auto" ColumnSpacing="{DynamicResource MediumSpacing}">
 																		<Border Style="{DynamicResource FileIconBorder}">
 																			<controls:SvgView Source="gallery.svg" HeightRequest="24"/>
 																		</Border>
-																	<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" VerticalOptions="Center" Margin="16,0,16,0">
-																		<Label.Triggers>
-																			<DataTrigger TargetType="Label" Binding="{Binding IsInvalid}" Value="True">
-																				<Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}" />
-																			</DataTrigger>
-																		</Label.Triggers>
-																	</Label>
-																		<controls:SvgView Grid.Column="2" Grid.RowSpan="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
+																		<Label Grid.Column="1" Text="{Binding Value}" Style="{DynamicResource FieldTitleLabel}" FontSize="16" VerticalOptions="Center">
+																			<Label.Triggers>
+																				<DataTrigger TargetType="Label" Binding="{Binding IsInvalid}" Value="True">
+																					<Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}" />
+																				</DataTrigger>
+																			</Label.Triggers>
+																		</Label>
+																		<controls:SvgView Grid.Column="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
 																			<controls:SvgView.Triggers>
 																				<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
 																					<Setter Property="IsVisible" Value="False" />

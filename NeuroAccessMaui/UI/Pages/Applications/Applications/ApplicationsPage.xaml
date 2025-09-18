@@ -230,7 +230,7 @@
 															   Grid.Row="0"
 															   LineBreakMode="TailTruncation"
 															   MaxLines="1" />
-														<Label Text="For your individial use"
+														<Label Text="{l:Localize ForYourIndividualUse}"
 															   Style="{DynamicResource CardSubtitleLabel}"
 															   Grid.Row="1"
 															   LineBreakMode="TailTruncation"
