@@ -19,7 +19,7 @@
 			<Text lang="en">Nice to meet you, what's your name?</Text>
 			<Text lang="pt">Prazer em conhecê-lo, qual é o seu nome?</Text>
 		</Title>
-		<Field id="givenNames" type="text" mapping="FIRST" required="true">
+		<Field id="givenNames" type="text" required="true">
 			<Label>
 				<Text lang="en">Given name(s)</Text>
 				<Text lang="pt">Nome(s)</Text>
@@ -43,8 +43,9 @@
 					</Message>
 				</RegexRule>
 			</ValidationRules>
+			<Mapping key="FIRST" />
 		</Field>
-		<Field id="surName" type="text" mapping="LAST" required="true">
+		<Field id="surName" type="text" required="true">
 			<Label>
 				<Text lang="en">Surname(s)</Text>
 				<Text lang="pt">Sobrenome(s)</Text>
@@ -68,6 +69,7 @@
 					</Message>
 				</RegexRule>
 			</ValidationRules>
+			<Mapping key="LAST" />
 		</Field>
 	</Page>
 	<Page id="documentNumberPage">
@@ -75,7 +77,7 @@
 			<Text lang="en">Enter your Identity document number</Text>
 			<Text lang="pt">Digite o número do seu documento de identidade</Text>
 		</Title>
-		<Field id="documentNumber" type="text" mapping="PNR" required="true">
+		<Field id="documentNumber" type="text" required="true">
 			<Label>
 				<Text lang="en">CPF</Text>
 				<Text lang="pt">CPF</Text>
@@ -92,6 +94,7 @@
 					</Message>
 				</PersonalNumberRule>
 			</ValidationRules>
+			<Mapping key="PNR" />
 		</Field>
 	</Page>
 	<Page id="dateOfBirh">
@@ -132,7 +135,7 @@
 			<Text lang="en">It can be an ID card, driver's license, or passport.</Text>
 			<Text lang="pt">Pode ser um RG, CNH ou passaporte.</Text>
 		</Description>
-		<Field id="documentType" type="picker" label="Document Type" required="true">
+		<Field id="documentType" type="picker" required="true">
 			<Label>
 				<Text lang="en">Document Type</Text>
 				<Text lang="pt">Tipo de documento</Text>
@@ -163,7 +166,7 @@
 			<Text lang="pt">Certifique-se de que todas as informações estejam legíveis</Text>
 		</Description>
 		<!-- Passport Upload Field (shown if passport is selected) -->
-		<Field id="passportUpload" type="image" mapping="Passport" specialType="passport" required="true">
+			<Field id="passportUpload" type="image" specialType="passport" required="true">
 			<Label>
 				<Text lang="en">Passport</Text>
 				<Text lang="pt">Passaporte</Text>
@@ -172,25 +175,13 @@
 				<Text lang="en">Choose file...</Text>
 				<Text lang="pt">Escolher arquivo...</Text>
 			</Placeholder>
-			<!-- TODO: Add new handling to KycRules and Process parser -->
-			<Validation maxFileSizeMB="15">
-				<FileTypes>
-					<FileType>.jpg</FileType>
-					<FileType>.jpeg</FileType>
-					<FileType>.png</FileType>
-					<FileType>.pdf</FileType>
-				</FileTypes>
-				<Message>
-					<Text lang="en">Please upload a valid passport image or PDF (max 15MB)</Text>
-					<Text lang="pt">Por favor, envie uma imagem ou PDF válido do passaporte (máx 15MB)</Text>
-				</Message>
-			</Validation>
-			<Metadata>
-				<TargetWidth>1200</TargetWidth>
-				<TargetHeight>1600</TargetHeight>
-				<MinDpi>300</MinDpi>
-			</Metadata>
-		</Field>
+				<Metadata>
+					<TargetWidth>1200</TargetWidth>
+					<TargetHeight>1600</TargetHeight>
+					<MinDpi>300</MinDpi>
+				</Metadata>
+				<Mapping key="Passport" />
+			</Field>
 		<Condition>
 			<FieldRef>documentType</FieldRef>
 			<Equals>passport</Equals>
@@ -206,7 +197,7 @@
 			<Text lang="pt">Certifique-se de que seu nome e foto estejam legíveis.</Text>
 		</Description>
 		<!-- Identity Card Upload Field (shown if identityCard is selected) -->
-		<Field id="identityCardFront" type="image" mapping="IdCardFront" specialType="identityCardFront" required="true">
+			<Field id="identityCardFront" type="image" specialType="identityCardFront" required="true">
 			<Label>
 				<Text lang="en">Identity card front</Text>
 				<Text lang="pt">Frente do RG</Text>
@@ -215,26 +206,14 @@
 				<Text lang="en">Front of document...</Text>
 				<Text lang="pt">Frente do documento...</Text>
 			</Placeholder>
-			<Validation maxFileSizeMB="15">
-				<FileTypes>
-					<FileType>.jpg</FileType>
-					<FileType>.jpeg</FileType>
-					<FileType>.png</FileType>
-					<FileType>.pdf</FileType>
-				</FileTypes>
-				<Message>
-					<Text lang="en">Please upload a valid identity card image or PDF (max 15MB)</Text>
-					<Text lang="pt">Por favor, envie uma imagem ou PDF válido do RG (máx 15MB)</Text>
-					<Text lang="sv">Ladda upp en giltig ID-kortsbild eller PDF (max 15MB)</Text>
-				</Message>
-			</Validation>
-			<Metadata>
-				<TargetWidth>1000</TargetWidth>
-				<TargetHeight>1500</TargetHeight>
-				<MinDpi>200</MinDpi>
-			</Metadata>
-		</Field>
-		<Field id="identityCardBack" type="image" mapping="IdCardBack" specialType="identityCardBack" required="true">
+				<Metadata>
+					<TargetWidth>1000</TargetWidth>
+					<TargetHeight>1500</TargetHeight>
+					<MinDpi>200</MinDpi>
+				</Metadata>
+				<Mapping key="IdCardFront" />
+			</Field>
+			<Field id="identityCardBack" type="image" specialType="identityCardBack" required="true">
 			<Label>
 				<Text lang="en">Identity card back</Text>
 				<Text lang="pt">Verso do RG</Text>
@@ -243,25 +222,13 @@
 				<Text lang="en">Back of document...</Text>
 				<Text lang="pt">Verso do documento...</Text>
 			</Placeholder>
-			<Validation maxFileSizeMB="15">
-				<FileTypes>
-					<FileType>.jpg</FileType>
-					<FileType>.jpeg</FileType>
-					<FileType>.png</FileType>
-					<FileType>.pdf</FileType>
-				</FileTypes>
-				<Message>
-					<Text lang="en">Please upload a valid identity card image or PDF (max 15MB)</Text>
-					<Text lang="pt">Por favor, envie uma imagem ou PDF válido do RG (máx 15MB)</Text>
-					<Text lang="sv">Ladda upp en giltig ID-kortsbild eller PDF (max 15MB)</Text>
-				</Message>
-			</Validation>
-			<Metadata>
-				<TargetWidth>1000</TargetWidth>
-				<TargetHeight>1500</TargetHeight>
-				<MinDpi>200</MinDpi>
-			</Metadata>
-		</Field>
+				<Metadata>
+					<TargetWidth>1000</TargetWidth>
+					<TargetHeight>1500</TargetHeight>
+					<MinDpi>200</MinDpi>
+				</Metadata>
+				<Mapping key="IdCardBack" />
+			</Field>
 		<Condition>
 			<FieldRef>documentType</FieldRef>
 			<Equals>identityCard</Equals>
@@ -277,7 +244,7 @@
 			<Text lang="pt">Certifique-se de que suas informações estejam legíveis.</Text>
 		</Description>
 		<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
-		<Field id="driverslicenseFront" type="image" mapping="DriverLicenseFront" specialType="driversLicenseFront" required="true">
+			<Field id="driverslicenseFront" type="image" specialType="driversLicenseFront" required="true">
 			<Label>
 				<Text lang="en">Drivers' license front</Text>
 				<Text lang="pt">Frente da CNH</Text>
@@ -286,26 +253,15 @@
 				<Text lang="en">Front of document...</Text>
 				<Text lang="pt">Frente do documento...</Text>
 			</Placeholder>
-			<Validation maxFileSizeMB="15">
-				<FileTypes>
-					<FileType>.jpg</FileType>
-					<FileType>.jpeg</FileType>
-					<FileType>.png</FileType>
-					<FileType>.pdf</FileType>
-				</FileTypes>
-				<Message>
-					<Text lang="en">Please upload the front of your driver's license (max 15MB)</Text>
-					<Text lang="pt">Por favor, envie a frente da sua CNH (máx 15MB)</Text>
-				</Message>
-			</Validation>
-			<Metadata>
-				<TargetWidth>900</TargetWidth>
-				<TargetHeight>600</TargetHeight>
-				<MinDpi>150</MinDpi>
-			</Metadata>
-		</Field>
+				<Metadata>
+					<TargetWidth>900</TargetWidth>
+					<TargetHeight>600</TargetHeight>
+					<MinDpi>150</MinDpi>
+				</Metadata>
+				<Mapping key="DriverLicenseFront" />
+			</Field>
 		<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
-		<Field id="driverslicenseBack" type="image" mapping="DriverLicenseBack" specialType="driversLicenseBack" required="true">
+			<Field id="driverslicenseBack" type="image" specialType="driversLicenseBack" required="true">
 			<Label>
 				<Text lang="en">Drivers' license back</Text>
 				<Text lang="pt">Verso da CNH</Text>
@@ -314,24 +270,13 @@
 				<Text lang="en">Back of document...</Text>
 				<Text lang="pt">Verso do documento...</Text>
 			</Placeholder>
-			<Validation maxFileSizeMB="15">
-				<FileTypes>
-					<FileType>.jpg</FileType>
-					<FileType>.jpeg</FileType>
-					<FileType>.png</FileType>
-					<FileType>.pdf</FileType>
-				</FileTypes>
-				<Message>
-					<Text lang="en">Please upload the back of your driver's license (max 15MB)</Text>
-					<Text lang="pt">Por favor, envie o verso da sua CNH (máx 15MB)</Text>
-				</Message>
-			</Validation>
-			<Metadata>
-				<TargetWidth>900</TargetWidth>
-				<TargetHeight>600</TargetHeight>
-				<MinDpi>150</MinDpi>
-			</Metadata>
-		</Field>
+				<Metadata>
+					<TargetWidth>900</TargetWidth>
+					<TargetHeight>600</TargetHeight>
+					<MinDpi>150</MinDpi>
+				</Metadata>
+				<Mapping key="DriverLicenseBack" />
+			</Field>
 		<Condition>
 			<FieldRef>documentType</FieldRef>
 			<Equals>driversLicense</Equals>
@@ -346,7 +291,7 @@
 			<Text lang="en">Please take a selfie to confirm your identity. Look at the camera and hold your face steady.</Text>
 			<Text lang="pt">Por favor, tire uma selfie para confirmar sua identidade. Olhe para a câmera e mantenha o rosto firme.</Text>
 		</Description>
-		<Field id="selfieUpload" type="image" mapping="ProfilePhoto" required="true">
+			<Field id="selfieUpload" type="image" required="true">
 			<Label>
 				<Text lang="en">Selfie</Text>
 				<Text lang="pt">Selfie</Text>
@@ -355,32 +300,21 @@
 				<Text lang="en">Upload your photo...</Text>
 				<Text lang="pt">Envie sua foto...</Text>
 			</Placeholder>
-			<Validation maxFileSizeMB="15">
-				<FileTypes>
-					<FileType>.jpg</FileType>
-					<FileType>.jpeg</FileType>
-					<FileType>.png</FileType>
-				</FileTypes>
-				<Message>
-					<Text lang="en">Please upload a valid selfie image (max 15MB)</Text>
-					<Text lang="pt">Por favor, envie uma selfie válida (máx 15MB)</Text>
-					<Text lang="sv">Ladda upp en giltig selfie-bild (max 15MB)</Text>
-				</Message>
-			</Validation>
-			<Metadata>
-				<TargetWidth>800</TargetWidth>
-				<TargetHeight>800</TargetHeight>
-				<MinDpi>150</MinDpi>
-				<AllowUpload>false</AllowUpload>
-			</Metadata>
-		</Field>
+				<Metadata>
+					<TargetWidth>800</TargetWidth>
+					<TargetHeight>800</TargetHeight>
+					<MinDpi>150</MinDpi>
+					<AllowUpload>false</AllowUpload>
+				</Metadata>
+				<Mapping key="ProfilePhoto" />
+			</Field>
 	</Page>
 	<Page id="addressInformation">
 		<Title>
 			<Text lang="en">Fill in your address information</Text>
 			<Text lang="pt">Preencha suas informações de endereço</Text>
 		</Title>
-		<Field id="zipCode" type="text" mapping="ZIP" required="true">
+			<Field id="zipCode" type="text" required="true">
 			<Label>
 				<Text lang="en">Zip Code</Text>
 				<Text lang="pt">CEP</Text>
@@ -389,8 +323,9 @@
 				<Text lang="en">Zip or postal code</Text>
 				<Text lang="pt">CEP ou código postal</Text>
 			</Placeholder>
-		</Field>
-		<Field id="address" type="text" mapping="ADDR" required="true">
+				<Mapping key="ZIP" />
+			</Field>
+			<Field id="address" type="text" required="true">
 			<Label>
 				<Text lang="en">Address</Text>
 				<Text lang="pt">Endereço</Text>
@@ -399,8 +334,9 @@
 				<Text lang="en">Address</Text>
 				<Text lang="pt">Endereço</Text>
 			</Placeholder>
-		</Field>
-		<Field id="area" type="text" mapping="AREA" required="true">
+				<Mapping key="ADDR" />
+			</Field>
+			<Field id="area" type="text" required="true">
 			<Label>
 				<Text lang="en">Area</Text>
 				<Text lang="pt">Bairro</Text>
@@ -409,8 +345,9 @@
 				<Text lang="en">Area</Text>
 				<Text lang="pt">Bairro</Text>
 			</Placeholder>
-		</Field>
-		<Field id="city" type="text" mapping="CITY" required="true">
+				<Mapping key="AREA" />
+			</Field>
+			<Field id="city" type="text" required="true">
 			<Label>
 				<Text lang="en">City</Text>
 				<Text lang="pt">Cidade</Text>
@@ -419,8 +356,9 @@
 				<Text lang="en">City</Text>
 				<Text lang="pt">Cidade</Text>
 			</Placeholder>
-		</Field>
-		<Field id="state" type="text" mapping="REGION" required="true">
+				<Mapping key="CITY" />
+			</Field>
+			<Field id="state" type="text" required="true">
 			<Label>
 				<Text lang="en">State</Text>
 				<Text lang="pt">Estado</Text>
@@ -429,7 +367,8 @@
 				<Text lang="en">State</Text>
 				<Text lang="pt">Estado</Text>
 			</Placeholder>
-		</Field>
+				<Mapping key="REGION" />
+			</Field>
 	</Page>
 	<Page id="tocPage">
 		<Title>

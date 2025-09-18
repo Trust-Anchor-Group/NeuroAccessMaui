@@ -31,7 +31,7 @@
 			<Text lang="fr">Nous vous demanderons une pièce d'identité officielle avec photo, alors pourquoi ne pas vous y préparer ?</Text>
 		</Description>
 	</Page>
-	<Page id="personalInfo" title="Personal Information">
+	<Page id="personalInfo">
 		<Title>
 			<Text lang="en">Personal Information</Text>
 			<Text lang="sv">Personuppgifter</Text>
@@ -52,7 +52,7 @@
 			<Text lang="fi">Anna henkilötietosi täsmälleen kuten ne ovat virallisissa asiakirjoissasi.</Text>
 			<Text lang="fr">Veuillez saisir vos informations personnelles telles qu’elles apparaissent sur vos documents officiels.</Text>
 		</Description>
-		<Field id="givenNames" type="text" mapping="FIRST" required="true">
+		<Field id="givenNames" type="text" required="true">
 			<Label>
 				<Text lang="en">Given name(s)</Text>
 				<Text lang="sv">Förnamn (inklusive mellannamn)</Text>
@@ -90,8 +90,9 @@
 					</Message>
 				</RegexRule>
 			</ValidationRules>
+			<Mapping key="FIRST" />
 		</Field>
-		<Field id="surnames" type="text" mapping="LAST" required="true">
+		<Field id="surnames" type="text" required="true">
 			<Label>
 				<Text lang="en">Surname(s)</Text>
 				<Text lang="sv">Efternamn</Text>
@@ -129,8 +130,9 @@
 					</Message>
 				</RegexRule>
 			</ValidationRules>
+			<Mapping key="LAST" />
 		</Field>
-		<Field id="personalNumber" type="text" mapping="PNR" required="true">
+		<Field id="personalNumber" type="text" required="true">
 			<Label>
 				<Text lang="en">Personal Number</Text>
 				<Text lang="sv">Personnummer</Text>
@@ -158,6 +160,7 @@
 			<Metadata>
 				<Placeholder>pnr</Placeholder>
 			</Metadata>
+			<Mapping key="PNR" />
 		</Field>
 		<Field id="dob" type="date" required="true">
 			<Label>
@@ -181,16 +184,16 @@
 				<Text lang="fr">Utilisez le format AAAA-MM-JJ</Text>
 			</Hint>
 			<Mapping key="BDAY">
-				<Transform>day</Transform>
+				<Transform name="day" />
 			</Mapping>
 			<Mapping key="BMONTH">
-				<Transform>month</Transform>
+				<Transform name="month" />
 			</Mapping>
 			<Mapping key="BYEAR">
-				<Transform>year</Transform>
+				<Transform name="year" />
 			</Mapping>
 		</Field>
-		<Field id="nationality" type="country" mapping="NATIONALITY" required="true">
+		<Field id="nationality" type="country" required="true">
 			<Label>
 				<Text lang="en">Nationality</Text>
 				<Text lang="sv">Nationalitet</Text>
@@ -201,8 +204,9 @@
 				<Text lang="fi">Kansalaisuus</Text>
 				<Text lang="fr">Nationalité</Text>
 			</Label>
+			<Mapping key="NATIONALITY" />
 		</Field>
-		<Field id="gender" type="gender" mapping="GENDER" required="true">
+		<Field id="gender" type="gender" required="true">
 			<Label>
 				<Text lang="en">Gender</Text>
 				<Text lang="sv">Kön</Text>
@@ -213,9 +217,10 @@
 				<Text lang="fi">Sukupuoli</Text>
 				<Text lang="fr">Genre</Text>
 			</Label>
+			<Mapping key="GENDER" />
 		</Field>
 	</Page>
-	<Page id="identityDocuments" title="Identity Documents">
+	<Page id="identityDocuments">
 		<Title>
 			<Text lang="en">Identity Documents</Text>
 			<Text lang="sv">ID-handlingar</Text>
@@ -236,7 +241,7 @@
 			<Text lang="fi">Valitse ja lataa henkilöllisyystodistus, jonka haluat toimittaa. Hyväksytyt muodot: jpg, jpeg, png, pdf.</Text>
 			<Text lang="fr">Sélectionnez et téléversez le document d’identité que vous souhaitez fournir. Formats acceptés : jpg, jpeg, png, pdf.</Text>
 		</Description>
-		<Section label="Document Type Selection">
+		<Section>
 			<Label>
 				<Text lang="en">Document Type Selection</Text>
 				<Text lang="sv">Typ av identitetshandling</Text>
@@ -247,7 +252,7 @@
 				<Text lang="fi">Asiakirjatyypin valinta</Text>
 				<Text lang="fr">Sélection du type de document</Text>
 			</Label>
-			<Field id="documentType" type="picker" label="Document Type" required="true">
+			<Field id="documentType" type="picker" required="true">
 				<Label>
 					<Text lang="en">Document Type</Text>
 					<Text lang="sv">Dokumenttyp</Text>
@@ -300,21 +305,9 @@
 						<Text lang="fr">Permis de conduire</Text>
 					</Option>
 				</Options>
-				<Validation>
-					<Message>
-						<Text lang="en">You must select a document type</Text>
-						<Text lang="sv">Du måste välja en dokumenttyp</Text>
-						<Text lang="es">Debes seleccionar un tipo de documento</Text>
-						<Text lang="pt">Você deve selecionar um tipo de documento</Text>
-						<Text lang="da">Du skal vælge en dokumenttype</Text>
-						<Text lang="no">Du må velge en dokumenttype</Text>
-						<Text lang="fi">Sinun on valittava asiakirjatyyppi</Text>
-						<Text lang="fr">Vous devez sélectionner un type de document</Text>
-					</Message>
-				</Validation>
 			</Field>
 		</Section>
-		<Section label="Document Upload">
+		<Section>
 			<Label>
 				<Text lang="en">Document Upload</Text>
 				<Text lang="sv">Ladda upp dokument</Text>
@@ -326,7 +319,7 @@
 				<Text lang="fr">Téléversement de document</Text>
 			</Label>
 			<!-- Passport Upload Field (shown if passport is selected) -->
-			<Field id="passportUpload" type="image" mapping="Passport" required="true">
+				<Field id="passportUpload" type="image" required="true">
 				<Hint>
 					<Text lang="en">Upload the photo page of your passport</Text>
 					<Text lang="sv">Ladda upp fotosidan i ditt pass</Text>
@@ -351,15 +344,16 @@
 					<FieldRef>documentType</FieldRef>
 					<Equals>passport</Equals>
 				</Condition>
-				<Metadata>
-					<TargetWidth>1200</TargetWidth>
-					<TargetHeight>1600</TargetHeight>
-					<MinDpi>300</MinDpi>
-				</Metadata>
-			</Field>
+					<Metadata>
+						<TargetWidth>1200</TargetWidth>
+						<TargetHeight>1600</TargetHeight>
+						<MinDpi>300</MinDpi>
+					</Metadata>
+					<Mapping key="Passport" />
+				</Field>
 
 			<!-- Identity Card Upload Field (shown if identityCard is selected) -->
-			<Field id="identityCardFrontUpload" type="image" mapping="IdCardFront" required="true">
+				<Field id="identityCardFrontUpload" type="image" required="true">
 				<Hint>
 					<Text lang="en">Upload the front side of your identity card</Text>
 					<Text lang="sv">Ladda upp framsidan av ditt ID-kort</Text>
@@ -384,15 +378,16 @@
 					<FieldRef>documentType</FieldRef>
 					<Equals>identityCard</Equals>
 				</Condition>
-				<Metadata>
-					<TargetWidth>1000</TargetWidth>
-					<TargetHeight>1500</TargetHeight>
-					<MinDpi>200</MinDpi>
-				</Metadata>
-			</Field>
+					<Metadata>
+						<TargetWidth>1000</TargetWidth>
+						<TargetHeight>1500</TargetHeight>
+						<MinDpi>200</MinDpi>
+					</Metadata>
+					<Mapping key="IdCardFront" />
+				</Field>
 
 			<!-- Identity Card Back Upload Field (shown if identityCard is selected) -->
-			<Field id="identityCardBackUpload" type="image" mapping="IdCardBack" required="true">
+				<Field id="identityCardBackUpload" type="image" required="true">
 				<Hint>
 						<Text lang="en">Upload the back side of your identity card</Text>
 					<Text lang="sv">Ladda upp framsidan av ditt ID-kort</Text>
@@ -417,15 +412,16 @@
 					<FieldRef>documentType</FieldRef>
 					<Equals>identityCard</Equals>
 				</Condition>
-				<Metadata>
-					<TargetWidth>1000</TargetWidth>
-					<TargetHeight>1500</TargetHeight>
-					<MinDpi>200</MinDpi>
-				</Metadata>
-			</Field>
+					<Metadata>
+						<TargetWidth>1000</TargetWidth>
+						<TargetHeight>1500</TargetHeight>
+						<MinDpi>200</MinDpi>
+					</Metadata>
+					<Mapping key="IdCardBack" />
+				</Field>
 
 			<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
-			<Field id="driverslicenseFront" type="image" mapping="DriverLicenseFront" required="true">
+			<Field id="driverslicenseFront" type="image" required="true">
 				<Hint>
 					<Text lang="en">Upload the front of your driver’s license</Text>
 					<Text lang="sv">Ladda upp framsidan av ditt körkort</Text>
@@ -450,14 +446,15 @@
 					<FieldRef>documentType</FieldRef>
 					<Equals>driversLicense</Equals>
 				</Condition>
-				<Metadata>
-					<TargetWidth>900</TargetWidth>
-					<TargetHeight>600</TargetHeight>
-					<MinDpi>150</MinDpi>
-				</Metadata>
-			</Field>
+					<Metadata>
+						<TargetWidth>900</TargetWidth>
+						<TargetHeight>600</TargetHeight>
+						<MinDpi>150</MinDpi>
+					</Metadata>
+					<Mapping key="DriverLicenseFront" />
+				</Field>
 			<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
-			<Field id="driverslicenseBack" type="image" mapping="DriverLicenseBack" required="true">
+			<Field id="driverslicenseBack" type="image" required="true">
 				<Hint>
 					<Text lang="en">Upload the back of your driver’s license</Text>
 					<Text lang="sv">Ladda upp baksidan av ditt körkort</Text>
@@ -482,15 +479,16 @@
 					<FieldRef>documentType</FieldRef>
 					<Equals>driversLicense</Equals>
 				</Condition>
-				<Metadata>
-					<TargetWidth>900</TargetWidth>
-					<TargetHeight>600</TargetHeight>
-					<MinDpi>150</MinDpi>
-				</Metadata>
-			</Field>
+					<Metadata>
+						<TargetWidth>900</TargetWidth>
+						<TargetHeight>600</TargetHeight>
+						<MinDpi>150</MinDpi>
+					</Metadata>
+					<Mapping key="DriverLicenseBack" />
+				</Field>
 		</Section>
 	</Page>
-	<Page id="addressInformation" title="Address Information">
+	<Page id="addressInformation">
 		<Title>
 			<Text lang="en">Address Information</Text>
 			<Text lang="sv">Adressinformation</Text>
@@ -511,7 +509,7 @@
 			<Text lang="fi">Seuraavat henkilötiedot sisällytetään Neuro ID -hakemukseen</Text>
 			<Text lang="fr">Les informations personnelles suivantes seront incluses dans la demande de Neuro ID</Text>
 		</Description>
-		<Field id="zipCode" type="text" mapping="ZIP" required="true">
+			<Field id="zipCode" type="text" required="true">
 			<Label>
 				<Text lang="en">Zip Code</Text>
 				<Text lang="sv">Postnummer</Text>
@@ -542,8 +540,9 @@
 				<Text lang="fi">123 45</Text>
 				<Text lang="fr">123 45</Text>
 			</Placeholder>
-		</Field>
-		<Field id="address" type="text" mapping="ADDR" required="true">
+				<Mapping key="ZIP" />
+			</Field>
+			<Field id="address" type="text" required="true">
 			<Label>
 				<Text lang="en">Address</Text>
 				<Text lang="sv">Adress</Text>
@@ -588,8 +587,9 @@
 					</Message>
 				</LengthRule>
 			</ValidationRules>
-		</Field>
-		<Field id="address2" type="text" mapping="ADDR2">
+				<Mapping key="ADDR" />
+			</Field>
+			<Field id="address2" type="text">
 			<Label>
 				<Text lang="en">Apartment/Unit</Text>
 				<Text lang="sv">Lägenhetsnummer</Text>
@@ -634,8 +634,9 @@
 					</Message>
 				</LengthRule>
 			</ValidationRules>
-		</Field>
-		<Field id="area" type="text" mapping="AREA" required="true">
+				<Mapping key="ADDR2" />
+			</Field>
+			<Field id="area" type="text" required="true">
 			<Label>
 				<Text lang="en">Area</Text>
 				<Text lang="sv">Område</Text>
@@ -680,8 +681,9 @@
 					</Message>
 				</LengthRule>
 			</ValidationRules>
-		</Field>
-		<Field id="city" type="text" mapping="CITY" required="true">
+				<Mapping key="AREA" />
+			</Field>
+			<Field id="city" type="text" required="true">
 			<Label>
 				<Text lang="en">City</Text>
 				<Text lang="sv">Stad</Text>
@@ -726,8 +728,9 @@
 					</Message>
 				</LengthRule>
 			</ValidationRules>
-		</Field>
-		<Field id="region" type="text" mapping="REGION" required="true">
+				<Mapping key="CITY" />
+			</Field>
+			<Field id="region" type="text" required="true">
 			<Label>
 				<Text lang="en">Region/State</Text>
 				<Text lang="sv">Region/Län</Text>
@@ -772,7 +775,8 @@
 					</Message>
 				</LengthRule>
 			</ValidationRules>
-		</Field>
+				<Mapping key="REGION" />
+			</Field>
 	</Page>
 	<Page id="selfiePage">
 		<Title>
@@ -795,7 +799,7 @@
 			<Text lang="fi">Viimeistelläksesi KYC-prosessin, ota selfie. Varmista, että kasvosi näkyvät selkeästi ja ovat hyvin valaistut.</Text>
 			<Text lang="fr">Pour terminer votre processus KYC, veuillez prendre un selfie. Assurez-vous que votre visage soit bien visible et bien éclairé.</Text>
 		</Description>
-		<Field id="selfieUpload" type="image" mapping="ProfilePhoto" required="true">
+		<Field id="selfieUpload" type="image" required="true">
 			<Placeholder>
 				<Text lang="en">Take picture...</Text>
 				<Text lang="sv">Ta bild...</Text>
@@ -806,13 +810,14 @@
 				<Text lang="fi">Ota kuva...</Text>
 				<Text lang="fr">Prendre une photo...</Text>
 			</Placeholder>
-			<Metadata>
-				<TargetWidth>800</TargetWidth>
-				<TargetHeight>800</TargetHeight>
-				<MinDpi>150</MinDpi>
-				<AllowUpload>false</AllowUpload>
-			</Metadata>
-		</Field>
+				<Metadata>
+					<TargetWidth>800</TargetWidth>
+					<TargetHeight>800</TargetHeight>
+					<MinDpi>150</MinDpi>
+					<AllowUpload>false</AllowUpload>
+				</Metadata>
+				<Mapping key="ProfilePhoto" />
+			</Field>
 	</Page>
 	<Page id="isOrgPage">
 		<Title>
@@ -866,7 +871,7 @@
 			<FieldRef>isOrg</FieldRef>
 			<Equals>yes</Equals>
 		</Condition>
-		<Field id="orgName" type="text" mapping="ORGNAME" required="true">
+			<Field id="orgName" type="text" required="true">
 			<Label>
 				<Text lang="en">Organization Name</Text>
 				<Text lang="sv">Organisationsnamn</Text>
@@ -877,8 +882,9 @@
 				<Text lang="fi">Organisaation nimi</Text>
 				<Text lang="fr">Nom de l’organisation</Text>
 			</Label>
-		</Field>
-		<Field id="orgDepartment" type="text" mapping="ORGDEPT" required="true">
+				<Mapping key="ORGNAME" />
+			</Field>
+			<Field id="orgDepartment" type="text" required="true">
 			<Label>
 				<Text lang="en">Department</Text>
 				<Text lang="sv">Avdelning</Text>
@@ -889,8 +895,9 @@
 				<Text lang="fi">Osasto</Text>
 				<Text lang="fr">Département</Text>
 			</Label>
-		</Field>
-		<Field id="orgRole" type="text" mapping="ORGROLE" required="true">
+				<Mapping key="ORGDEPT" />
+			</Field>
+			<Field id="orgRole" type="text" required="true">
 			<Label>
 				<Text lang="en">Role</Text>
 				<Text lang="sv">Roll</Text>
@@ -901,8 +908,9 @@
 				<Text lang="fi">Rooli</Text>
 				<Text lang="fr">Rôle</Text>
 			</Label>
-		</Field>
-		<Field id="orgNumber" type="text" mapping="ORGNR" required="true">
+				<Mapping key="ORGROLE" />
+			</Field>
+			<Field id="orgNumber" type="text" required="true">
 			<Label>
 				<Text lang="en">Organization Number</Text>
 				<Text lang="sv">Organisationsnummer</Text>
@@ -913,8 +921,9 @@
 				<Text lang="fi">Organisaation numero</Text>
 				<Text lang="fr">Numéro d’organisation</Text>
 			</Label>
-		</Field>
-		<Field id="orgAddress" type="text" mapping="ORGADDR">
+				<Mapping key="ORGNR" />
+			</Field>
+			<Field id="orgAddress" type="text">
 			<Label>
 				<Text lang="en">Organization Address</Text>
 				<Text lang="sv">Organisationsadress</Text>
@@ -925,8 +934,9 @@
 				<Text lang="fi">Organisaation osoite</Text>
 				<Text lang="fr">Adresse de l’organisation</Text>
 			</Label>
-		</Field>
-		<Field id="orgAddress2" type="text" mapping="ORGADDR2">
+				<Mapping key="ORGADDR" />
+			</Field>
+			<Field id="orgAddress2" type="text">
 			<Label>
 				<Text lang="en">Organization Address 2</Text>
 				<Text lang="sv">Organisationsadress 2</Text>
@@ -937,8 +947,9 @@
 				<Text lang="fi">Organisaation osoite 2</Text>
 				<Text lang="fr">Adresse de l’organisation 2</Text>
 			</Label>
-		</Field>
-		<Field id="orgZip" type="text" mapping="ORGZIP">
+				<Mapping key="ORGADDR2" />
+			</Field>
+			<Field id="orgZip" type="text">
 			<Label>
 				<Text lang="en">Organization Zip or Postal Code</Text>
 				<Text lang="sv">Organisations postnummer</Text>
@@ -949,8 +960,9 @@
 				<Text lang="fi">Organisaation postinumero</Text>
 				<Text lang="fr">Code postal de l’organisation</Text>
 			</Label>
-		</Field>
-		<Field id="orgArea" type="text" mapping="ORGAREA">
+				<Mapping key="ORGZIP" />
+			</Field>
+			<Field id="orgArea" type="text">
 			<Label>
 				<Text lang="en">Organization Area</Text>
 				<Text lang="sv">Organisationsområde</Text>
@@ -961,8 +973,9 @@
 				<Text lang="fi">Organisaation alue</Text>
 				<Text lang="fr">Zone de l’organisation</Text>
 			</Label>
-		</Field>
-		<Field id="orgCity" type="text" mapping="ORGCITY">
+				<Mapping key="ORGAREA" />
+			</Field>
+			<Field id="orgCity" type="text">
 			<Label>
 				<Text lang="en">Organization City</Text>
 				<Text lang="sv">Organisationsstad</Text>
@@ -973,8 +986,9 @@
 				<Text lang="fi">Organisaation kaupunki</Text>
 				<Text lang="fr">Ville de l’organisation</Text>
 			</Label>
-		</Field>
-		<Field id="orgRegion" type="text" mapping="ORGREGION">
+				<Mapping key="ORGCITY" />
+			</Field>
+			<Field id="orgRegion" type="text">
 			<Label>
 				<Text lang="en">Organization Region or State</Text>
 				<Text lang="sv">Organisationsregion eller län</Text>
@@ -985,8 +999,9 @@
 				<Text lang="fi">Organisaation alue tai osavaltio</Text>
 				<Text lang="fr">Région ou État de l’organisation</Text>
 			</Label>
-		</Field>
-		<Field id="orgCountry" type="country" mapping="ORGCOUNTRY" required="true">
+				<Mapping key="ORGREGION" />
+			</Field>
+			<Field id="orgCountry" type="country" required="true">
 			<Label>
 				<Text lang="en">Organization Country</Text>
 				<Text lang="sv">Organisationsland</Text>
@@ -997,6 +1012,7 @@
 				<Text lang="fi">Organisaation maa</Text>
 				<Text lang="fr">Pays de l’organisation</Text>
 			</Label>
-		</Field>
+				<Mapping key="ORGCOUNTRY" />
+			</Field>
 	</Page>
 </KYCProcess>
