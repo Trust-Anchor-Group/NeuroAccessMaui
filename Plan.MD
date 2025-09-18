@@ -115,13 +115,13 @@ Created `KycSummary` domain module (`KycSummarySection`, `KycSummaryModel`, `Gen
 
 Encapsulate reviewer discovery, request building, and QR / featured flows; expose minimal async API.
 
-### Phase 7 – Operation Context & Cancellation Unification
+### Phase 7 – Operation Context & Cancellation Unification (DONE)
 
-Introduce `KycOperationContext` for cancellation, debouncing utilities, correlation id.
+Introduced `KycOperationContext` to centralize debouncing, cancellation, and correlation identifiers. Autosave scheduling in `KycService` and UI refresh throttling now flow through the shared context.
 
-### Phase 8 – Documentation & Cleanup
+### Phase 8 – Documentation & Cleanup (IN PROGRESS)
 
-Finalize XML docs, remove deprecated wrappers, update developer docs. (No performance profiling or test suite implementation in this iteration.)
+Removed lingering legacy-comment markers from `KycProcessViewModel`, ensured summary resources/gender labels exist, and introduced `KycOperationContext` documentation so autosave/throttle behavior is clearer. Next: sweep remaining files for outdated phase notes and consolidate developer guidance.
 
 ## Cross-Cutting Concerns
 

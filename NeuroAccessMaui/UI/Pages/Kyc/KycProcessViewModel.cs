@@ -29,33 +29,17 @@ using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
 	/// <summary>
-	/// KYC process orchestrator ViewModel (pre-refactor baseline).
-	/// Responsibilities slated for extraction via refactoring plan:
-	/// 1. Navigation flow &amp; state (currentPageIndex + derived IsInSummary/IsEditingFromSummary)
-	/// 2. Validation orchestration (ValidateCurrentPageAsync, GetFirstInvalidVisiblePageIndexAsync) // TODO[KYC:VALIDATION]
-	/// 3. Mapping + transformation + grouped date synthesis (BuildMappedValuesAsync*, BuildPropertiesFromFieldAsync) // TODO[KYC:MAPPING]
-	/// 4. Attachment & image compression (CompressImage, HandleOrientation) // TODO[KYC:IMAGING]
-	/// 5. Summary projection & invalid highlighting (GenerateSummaryCollection, ApplyInvalidations*) // TODO[KYC:SUMMARY]
-	/// 6. Reference persistence & autosave (UpdateReference, SaveReferenceToStorageAsync, ApplyRejectionAsync) // TODO[KYC:PERSIST]
-	/// 7. Peer review operations (LoadFeaturedPeerReviewers, RequestReview, SendPeerReviewRequest) // TODO[KYC:PEERREVIEW]
-	/// 8. Event throttling (SchedulePageRefresh) // TODO[KYC:THROTTLE]
-	/// 9. Command branching (ExecuteNextAsync, ExecutePrevious, GoToSummaryAsync) // TODO[KYC:NAVIGATION]
-	///
-	/// Refactor goal: Move pure logic into domain/services and inject a single facade into a slimmer ViewModel.
+	/// Orchestrates the interactive KYC flow, covering navigation, validation, summary projection, persistence scheduling, peer review, and submission.
 	/// </summary>
 	public partial class KycProcessViewModel : BaseViewModel, IDisposable
 	{
-		// Consolidated service (validation + data preparation)
 		private readonly IKycService kycService = ServiceRef.KycService;
-		// NOTE[KYC:PHASE2] Transition helpers introduced in KycTransitions (Domain layer) will gradually replace
-		// imperative navigation logic (GetNextIndex, ExecuteNextAsync branching, ExecutePrevious, summary flags)
-		// in subsequent phases. Current code remains untouched for behavior parity during introduction.
 		private bool disposedValue;
 		private readonly KycProcessNavigationArgs? navigationArguments;
 		private KycProcess? process;
 		private KycReference? kycReference;
 		private int currentPageIndex = 0;
-		private KycNavigationSnapshot navigation = new KycNavigationSnapshot(0, -1, KycFlowState.Form); // NEW: pure navigation snapshot
+		private KycNavigationSnapshot navigation = new KycNavigationSnapshot(0, -1, KycFlowState.Form);
 		private bool applicationSent;
 		private string? applicationId;
 
@@ -63,7 +47,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private List<LegalIdentityAttachment> attachments;
 		private ServiceProviderWithLegalId[]? peerReviewServices = null;
 
-		// Legacy flags ShouldViewSummary & ShouldReturnToSummary removed (Option 1) -> replaced by derived IsInSummary and transient editing intent (IsEditingFromSummary via editingFromSummary field).
 		private bool editingFromSummary;
 		[ObservableProperty] private bool isLoading;
 
@@ -107,8 +90,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private bool hasCompanyRepresentative;
 
 		// Throttling support for page refresh (avoid per-keystroke SetCurrentPage work)
-		private CancellationTokenSource? pageRefreshCts;
 		private static readonly TimeSpan PageRefreshThrottle = TimeSpan.FromMilliseconds(250);
+		private readonly KycOperationContext pageRefreshContext = new KycOperationContext("PageRefresh", PageRefreshThrottle);
 
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
@@ -478,30 +461,36 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 		}
 
+		/// <summary>
+		/// Queues a debounced refresh of the current page metadata on the UI thread.
+		/// </summary>
 		private void SchedulePageRefresh()
 		{
-			CancellationTokenSource? old;
-			lock (this)
+			_ = this.pageRefreshContext.ScheduleAsync(async token =>
 			{
-				old = this.pageRefreshCts;
-				this.pageRefreshCts = new CancellationTokenSource();
-			}
-			try { old?.Cancel(); } catch { }
-			CancellationToken token = this.pageRefreshCts.Token;
-			_ = Task.Run(async () =>
-			{
+				if (token.IsCancellationRequested)
+				{
+					return;
+				}
 				try
 				{
-					await Task.Delay(PageRefreshThrottle, token);
-					if (token.IsCancellationRequested) return;
 					await MainThread.InvokeOnMainThreadAsync(() =>
 					{
+						if (token.IsCancellationRequested)
+						{
+							return;
+						}
 						this.SetCurrentPage(this.currentPageIndex);
 						this.NextCommand.NotifyCanExecuteChanged();
 					});
 				}
-				catch (TaskCanceledException) { }
-				catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+				catch (TaskCanceledException)
+				{
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
 			});
 		}
 
@@ -536,9 +525,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.OnPropertyChanged(nameof(this.Progress));
 			this.NextCommand.NotifyCanExecuteChanged();
 		}
-
-		// Legacy UpdateReference & SaveReferenceToStorageAsync removed: persistence now delegated to IKycService (autosave)
-
 
 		private bool CanExecuteNext()
 		{
@@ -628,15 +614,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		protected virtual void Dispose(bool disposing)
 		{
-			if (!this.disposedValue)
+			if (this.disposedValue)
 			{
-				if (disposing)
-				{
-					try { this.pageRefreshCts?.Cancel(); this.pageRefreshCts?.Dispose(); } catch { }
-					ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
-				}
-				this.disposedValue = true;
+				return;
 			}
+			if (disposing)
+			{
+				this.pageRefreshContext.Dispose();
+				ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
+			}
+			this.disposedValue = true;
 		}
 
 		public void Dispose()
@@ -683,7 +670,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				if (this.Pages[i].IsVisible(this.process.Values)) VisibleIndices.Add(i);
 			}
-			// TODO[KYC:PHASE3] Populate page states when validation extraction is complete.
 			KycProcessState ProcessState = this.BuildProcessState();
 			KycNavigationSnapshot PrevSnap = KycTransitions.Back(ProcessState, VisibleIndices);
 			if (this.IsInSummary)
