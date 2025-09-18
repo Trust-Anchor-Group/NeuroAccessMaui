@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using CommunityToolkit.Common;
 using Microsoft.Maui.Storage;
+using NeuroAccessMaui;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.Kyc.Models;
@@ -260,6 +261,25 @@ namespace NeuroAccessMaui.Services.Kyc
 			}
 			if (El.Attribute("mapping") is XAttribute MapAttr)
 				Field.Mappings.Add(new KycMapping { Key = MapAttr.Value });
+
+			// Ensure personal number mappings include normalization transforms
+			bool hasPersonalNumberMapping = false;
+			foreach (KycMapping mapping in Field.Mappings)
+			{
+				if (!string.Equals(mapping.Key, Constants.XmppProperties.PersonalNumber, StringComparison.OrdinalIgnoreCase))
+					continue;
+				hasPersonalNumberMapping = true;
+				bool hasNormalize = mapping.TransformNames.Any(name => string.Equals(name, "personalNumberNormalize", StringComparison.OrdinalIgnoreCase));
+				if (!hasNormalize)
+					mapping.TransformNames.Add("personalNumberNormalize");
+			}
+
+			if (!hasPersonalNumberMapping && string.Equals(Field.Id, "personalNumber", StringComparison.OrdinalIgnoreCase))
+			{
+				KycMapping normalizedMapping = new KycMapping { Key = Constants.XmppProperties.PersonalNumber };
+				normalizedMapping.TransformNames.Add("personalNumberNormalize");
+				Field.Mappings.Add(normalizedMapping);
+			}
 
 			// Options for pickers/checkboxes/radio/country
 			if (El.Element("Options") is XElement Opts)

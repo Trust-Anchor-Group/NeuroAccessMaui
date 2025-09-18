@@ -46,7 +46,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 	public partial class KycProcessViewModel : BaseViewModel, IDisposable
 	{
 		// Consolidated service (validation + data preparation)
-		private readonly IKycService kycService = ServiceRef.KycService; // TODO[KYC:FACADE] replace with injected facade later
+		private readonly IKycService kycService = ServiceRef.KycService;
 		// NOTE[KYC:PHASE2] Transition helpers introduced in KycTransitions (Domain layer) will gradually replace
 		// imperative navigation logic (GetNextIndex, ExecuteNextAsync branching, ExecutePrevious, summary flags)
 		// in subsequent phases. Current code remains untouched for behavior parity during introduction.

@@ -269,7 +269,7 @@
 							Stroke="{DynamicResource BrandColorsGreyScalesGreyv250}"
 							StrokeDashArray="1,1"
 							IsEnabled="{Binding IsValid}">
-						<controls:AspectRatioLayout AspectRatio="{Binding AspectRatio}">
+						<controls:AspectRatioLayout AspectRatio="{Binding AspectRatio, FallbackValue=1.0}">
 							<controls:ConditionView Condition="{Binding ImageSource, Converter={mct:IsNullConverter}}">
 								<controls:ConditionView.True>
 									<!-- Here we can have a image and label, you can create a converter to pick image/svg/label based on the specialType -->
@@ -463,15 +463,15 @@
 													</Label.FormattedText>
 												</Label>
 
-												<Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+												<Grid RowSpacing="8">
 													<controls:TextButton Style="{DynamicResource TransparentTextButton}"
 																 LabelData="{l:Localize QrScanCode}"
-																 Command="{Binding ScanQrCodeCommand}"/>
+																 Command="{Binding ScanQrCodeCommand}" Grid.Row="0"/>
 													<controls:TextButton Style="{DynamicResource TransparentTextButton}"
 																 LabelData="{l:Localize FeaturedReviewers}"
 																 Command="{Binding RequestReviewCommand}"
 																 IsVisible="{Binding FeaturedPeerReviewers}"
-																 Grid.Column="1"/>
+																 Grid.Row="1"/>
 												</Grid>
 											</VerticalStackLayout>
 										</controls:ConditionView.True>
