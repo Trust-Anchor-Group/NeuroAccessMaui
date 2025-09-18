@@ -3062,4 +3062,22 @@
   <data name="IsRequired" xml:space="preserve">
     <value>{0} är obligatoriskt</value>
   </data>
+  <data name="PendingReview" xml:space="preserve">
+    <value>Väntar på granskning</value>
+  </data>
+  <data name="CurrentApplication" xml:space="preserve">
+    <value>Aktuell ansökan</value>
+  </data>
+  <data name="IdentityApplication" xml:space="preserve">
+    <value>Identitetsansökan</value>
+  </data>
+  <data name="AvailableApplications" xml:space="preserve">
+    <value>Tillgängliga ansökningar</value>
+  </data>
+  <data name="ForYourIndividualUse" xml:space="preserve">
+    <value>För eget bruk</value>
+  </data>
+  <data name="BeforeFinalizingSummary" xml:space="preserve">
+    <value>Innan du slutför, läs igenom och säkerställ att allt är korrekt</value>
+  </data>
 </root>

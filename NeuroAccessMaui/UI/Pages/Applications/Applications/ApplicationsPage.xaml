@@ -52,7 +52,7 @@
 
 						<VerticalStackLayout Spacing="24" Margin="0,24,0,0" Padding="0">
 							<!-- Current Application (0 or 1) -->
-							<Label Text="Current application" TextColor="{DynamicResource ContentSecondaryWL}" FontSize="16" FontFamily="SpaceGroteskBold" IsVisible="{Binding HasCurrentApplication}" />
+							<Label Text="{l:Localize CurrentApplication}" TextColor="{DynamicResource ContentSecondaryWL}" FontSize="16" FontFamily="SpaceGroteskBold" IsVisible="{Binding HasCurrentApplication}" />
 							<controls:TemplatedButton Command="{Binding OpenApplicationCommand}"
 													  IsVisible="{Binding HasCurrentApplication}"
 													  CommandParameter="{Binding CurrentApplication}"
@@ -74,7 +74,7 @@
 										<!-- Title and subtitle -->
 										<VerticalStackLayout Grid.Row="1" Grid.Column="0">
 											<Label Text="{Binding CurrentApplication.FriendlyName}" Style="{DynamicResource CardTitleLabel}"/>
-											<Label Text="Identity Verification" Style="{DynamicResource CardSubtitleLabel}"/>
+											<Label Text="{l:Localize IdentityApplication}" Style="{DynamicResource CardSubtitleLabel}"/>
 										</VerticalStackLayout>
 										<!-- Progress bar -->
 										<VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
@@ -159,7 +159,7 @@
 														<Label.Triggers>
 															<!-- Pending: Application sent -->
 															<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Created}">
-																<Setter Property="Text" Value="Pending..." />
+																<Setter Property="Text" Value="{l:Localize PendingReview}" />
 																<Setter Property="TextColor" Value="{DynamicResource TnPWarningContentWL}" />
 															</DataTrigger>
 															<!-- Finalized: show localized state in success colors -->
@@ -188,7 +188,7 @@
 								</Border>
 							</controls:TemplatedButton>
 
-							<Label Text="Available applications"
+							<Label Text="{l:Localize AvailableApplications}"
 									TextColor="{DynamicResource ContentSecondaryWL}"
 									FontSize="16"
 									FontFamily="SpaceGroteskBold" />
@@ -222,7 +222,7 @@
 															   Grid.Row="0"
 															   LineBreakMode="TailTruncation"
 															   MaxLines="1" />
-														<Label Text="For your individial use"
+														<Label Text="{l:Localize ForYourIndividualUse}"
 															   Style="{DynamicResource CardSubtitleLabel}"
 															   Grid.Row="1"
 															   LineBreakMode="TailTruncation"

@@ -52,20 +52,10 @@
 			<Text lang="fi">Anna henkilötietosi täsmälleen kuten ne ovat virallisissa asiakirjoissasi.</Text>
 			<Text lang="fr">Veuillez saisir vos informations personnelles telles qu’elles apparaissent sur vos documents officiels.</Text>
 		</Description>
-		<Label>
-			<Text lang="en">Basic Details</Text>
-			<Text lang="sv">Grundläggande uppgifter</Text>
-			<Text lang="es">Datos básicos</Text>
-			<Text lang="pt">Detalhes básicos</Text>
-			<Text lang="da">Grundlæggende oplysninger</Text>
-			<Text lang="no">Grunnleggende opplysninger</Text>
-			<Text lang="fi">Perustiedot</Text>
-			<Text lang="fr">Informations de base</Text>
-		</Label>
 		<Field id="givenNames" type="text" mapping="FIRST" required="true">
 			<Label>
 				<Text lang="en">Given name(s)</Text>
-				<Text lang="sv">Förnamn</Text>
+				<Text lang="sv">Förnamn (inklusive mellannamn)</Text>
 				<Text lang="es">Nombre(s)</Text>
 				<Text lang="pt">Nome(s)</Text>
 				<Text lang="da">Fornavn(e)</Text>
@@ -822,6 +812,200 @@
 				<MinDpi>150</MinDpi>
 				<AllowUpload>false</AllowUpload>
 			</Metadata>
+		</Field>
+	</Page>
+	<Page id="isOrgPage">
+		<Title>
+			<Text lang="en">Are you applying for a Organizational ID?</Text>
+			<Text lang="sv">Ansöker du om ett organisations-ID?</Text>
+			<Text lang="es">¿Estás solicitando una identificación organizacional?</Text>
+			<Text lang="pt">Você está se candidatando a uma identificação organizacional?</Text>
+			<Text lang="da">Ansøger du om en organisatorisk ID?</Text>
+			<Text lang="no">Søker du om en organisasjons-ID?</Text>
+			<Text lang="fi">Haetko organisaation tunnistetta?</Text>
+			<Text lang="fr">Demandez-vous une identification organisationnelle ?</Text>
+		</Title>
+		<Field id="isOrg" type="checkbox" required="true">
+			<Options>
+				<Option value="yes">
+					<Text lang="en">Yes</Text>
+					<Text lang="sv">Ja</Text>
+					<Text lang="es">Sí</Text>
+					<Text lang="pt">Sim</Text>
+					<Text lang="da">Ja</Text>
+					<Text lang="no">Ja</Text>
+					<Text lang="fi">Kyllä</Text>
+					<Text lang="fr">Oui</Text>
+				</Option>
+				<Option value="no">
+					<Text lang="en">No</Text>
+					<Text lang="sv">Nej</Text>
+					<Text lang="es">No</Text>
+					<Text lang="pt">Não</Text>
+					<Text lang="da">Nej</Text>
+					<Text lang="no">Nei</Text>
+					<Text lang="fi">Ei</Text>
+					<Text lang="fr">Non</Text>
+				</Option>
+			</Options>
+		</Field>
+	</Page>
+	<Page id="orgInfo">
+		<Title>
+			<Text lang="en">Organizational Information</Text>
+			<Text lang="sv">Organisationsinformation</Text>
+			<Text lang="es">Información organizacional</Text>
+			<Text lang="pt">Informações organizacionais</Text>
+			<Text lang="da">Organisatoriske oplysninger</Text>
+			<Text lang="no">Organisasjonsinformasjon</Text>
+			<Text lang="fi">Organisaation tiedot</Text>
+			<Text lang="fr">Informations organisationnelles</Text>
+		</Title>
+		<Description>
+			<Text lang="en">The Following organizational information will be included in the application for an Organizational ID</Text>
+			<Text lang="sv">Följande organisationsinformation kommer att ingå i ansökan om ett organisations-ID</Text>
+			<Text lang="es">La siguiente información organizacional se incluirá en la solicitud de una identificación organizacional</Text>
+			<Text lang="pt">As seguintes informações organizacionais serão incluídas na solicitação de uma identificação organizacional</Text>
+			<Text lang="da">Følgende organisatoriske oplysninger vil blive inkluderet i ansøgningen om en organisatorisk ID</Text>
+			<Text lang="no">Følgende organisasjonsinformasjon vil bli inkludert i søknaden om en organisasjons-ID</Text>
+			<Text lang="fi">Seuraavat organisaation tiedot sisällytetään organisaation tunnisteen hakemukseen</Text>
+			<Text lang="fr">Les informations organisationnelles suivantes seront incluses dans la demande d’une identification organisationnelle</Text>
+		</Description>
+		<Condition>
+			<FieldRef>isOrg</FieldRef>
+			<Equals>yes</Equals>
+		</Condition>
+		<Field id="orgName" type="text" mapping="ORGNAME" required="true">
+			<Label>
+				<Text lang="en">Organization Name</Text>
+				<Text lang="sv">Organisationsnamn</Text>
+				<Text lang="es">Nombre de la organización</Text>
+				<Text lang="pt">Nome da organização</Text>
+				<Text lang="da">Organisationsnavn</Text>
+				<Text lang="no">Organisasjonsnavn</Text>
+				<Text lang="fi">Organisaation nimi</Text>
+				<Text lang="fr">Nom de l’organisation</Text>
+			</Label>
+		</Field>
+		<Field id="orgDepartment" type="text" mapping="ORGDEPT" required="true">
+			<Label>
+				<Text lang="en">Department</Text>
+				<Text lang="sv">Avdelning</Text>
+				<Text lang="es">Departamento</Text>
+				<Text lang="pt">Departamento</Text>
+				<Text lang="da">Afdeling</Text>
+				<Text lang="no">Avdeling</Text>
+				<Text lang="fi">Osasto</Text>
+				<Text lang="fr">Département</Text>
+			</Label>
+		</Field>
+		<Field id="orgRole" type="text" mapping="ORGROLE" required="true">
+			<Label>
+				<Text lang="en">Role</Text>
+				<Text lang="sv">Roll</Text>
+				<Text lang="es">Rol</Text>
+				<Text lang="pt">Função</Text>
+				<Text lang="da">Rolle</Text>
+				<Text lang="no">Rolle</Text>
+				<Text lang="fi">Rooli</Text>
+				<Text lang="fr">Rôle</Text>
+			</Label>
+		</Field>
+		<Field id="orgNumber" type="text" mapping="ORGNR" required="true">
+			<Label>
+				<Text lang="en">Organization Number</Text>
+				<Text lang="sv">Organisationsnummer</Text>
+				<Text lang="es">Número de organización</Text>
+				<Text lang="pt">Número da organização</Text>
+				<Text lang="da">Organisationsnummer</Text>
+				<Text lang="no">Organisasjonsnummer</Text>
+				<Text lang="fi">Organisaation numero</Text>
+				<Text lang="fr">Numéro d’organisation</Text>
+			</Label>
+		</Field>
+		<Field id="orgAddress" type="text" mapping="ORGADDR">
+			<Label>
+				<Text lang="en">Organization Address</Text>
+				<Text lang="sv">Organisationsadress</Text>
+				<Text lang="es">Dirección de la organización</Text>
+				<Text lang="pt">Endereço da organização</Text>
+				<Text lang="da">Organisationsadresse</Text>
+				<Text lang="no">Organisasjonsadresse</Text>
+				<Text lang="fi">Organisaation osoite</Text>
+				<Text lang="fr">Adresse de l’organisation</Text>
+			</Label>
+		</Field>
+		<Field id="orgAddress2" type="text" mapping="ORGADDR2">
+			<Label>
+				<Text lang="en">Organization Address 2</Text>
+				<Text lang="sv">Organisationsadress 2</Text>
+				<Text lang="es">Dirección de la organización 2</Text>
+				<Text lang="pt">Endereço da organização 2</Text>
+				<Text lang="da">Organisationsadresse 2</Text>
+				<Text lang="no">Organisasjonsadresse 2</Text>
+				<Text lang="fi">Organisaation osoite 2</Text>
+				<Text lang="fr">Adresse de l’organisation 2</Text>
+			</Label>
+		</Field>
+		<Field id="orgZip" type="text" mapping="ORGZIP">
+			<Label>
+				<Text lang="en">Organization Zip or Postal Code</Text>
+				<Text lang="sv">Organisations postnummer</Text>
+				<Text lang="es">Código postal de la organización</Text>
+				<Text lang="pt">Código postal da organização</Text>
+				<Text lang="da">Organisations postnummer</Text>
+				<Text lang="no">Organisasjonens postnummer</Text>
+				<Text lang="fi">Organisaation postinumero</Text>
+				<Text lang="fr">Code postal de l’organisation</Text>
+			</Label>
+		</Field>
+		<Field id="orgArea" type="text" mapping="ORGAREA">
+			<Label>
+				<Text lang="en">Organization Area</Text>
+				<Text lang="sv">Organisationsområde</Text>
+				<Text lang="es">Zona de la organización</Text>
+				<Text lang="pt">Área da organização</Text>
+				<Text lang="da">Organisationsområde</Text>
+				<Text lang="no">Organisasjonsområde</Text>
+				<Text lang="fi">Organisaation alue</Text>
+				<Text lang="fr">Zone de l’organisation</Text>
+			</Label>
+		</Field>
+		<Field id="orgCity" type="text" mapping="ORGCITY">
+			<Label>
+				<Text lang="en">Organization City</Text>
+				<Text lang="sv">Organisationsstad</Text>
+				<Text lang="es">Ciudad de la organización</Text>
+				<Text lang="pt">Cidade da organização</Text>
+				<Text lang="da">Organisationsby</Text>
+				<Text lang="no">Organisasjonsby</Text>
+				<Text lang="fi">Organisaation kaupunki</Text>
+				<Text lang="fr">Ville de l’organisation</Text>
+			</Label>
+		</Field>
+		<Field id="orgRegion" type="text" mapping="ORGREGION">
+			<Label>
+				<Text lang="en">Organization Region or State</Text>
+				<Text lang="sv">Organisationsregion eller län</Text>
+				<Text lang="es">Región o estado de la organización</Text>
+				<Text lang="pt">Região ou estado da organização</Text>
+				<Text lang="da">Organisationsregion eller stat</Text>
+				<Text lang="no">Organisasjonsregion eller fylke</Text>
+				<Text lang="fi">Organisaation alue tai osavaltio</Text>
+				<Text lang="fr">Région ou État de l’organisation</Text>
+			</Label>
+		</Field>
+		<Field id="orgCountry" type="country" mapping="ORGCOUNTRY" required="true">
+			<Label>
+				<Text lang="en">Organization Country</Text>
+				<Text lang="sv">Organisationsland</Text>
+				<Text lang="es">País de la organización</Text>
+				<Text lang="pt">País da organização</Text>
+				<Text lang="da">Organisationsland</Text>
+				<Text lang="no">Organisasjonsland</Text>
+				<Text lang="fi">Organisaation maa</Text>
+				<Text lang="fr">Pays de l’organisation</Text>
+			</Label>
 		</Field>
 	</Page>
 </KYCProcess>

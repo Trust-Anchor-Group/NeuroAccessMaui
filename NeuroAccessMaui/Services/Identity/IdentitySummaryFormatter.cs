@@ -128,6 +128,8 @@ namespace NeuroAccessMaui.Services.Identity
 			{
 				Constants.XmppProperties.OrgNumber,
 				Constants.XmppProperties.OrgName,
+				Constants.XmppProperties.OrgDepartment,
+				Constants.XmppProperties.OrgRole,
 				"ORGTRADENAME"
 			};
 
@@ -541,6 +543,8 @@ namespace NeuroAccessMaui.Services.Identity
 				// Organization fields
 				{ Constants.XmppProperties.OrgNumber, ServiceRef.Localizer[nameof(AppResources.OrgNumber)].Value },
 				{ Constants.XmppProperties.OrgName, ServiceRef.Localizer[nameof(AppResources.OrgName)].Value },
+				{ Constants.XmppProperties.OrgDepartment, ServiceRef.Localizer[nameof(AppResources.OrgDepartment)].Value },
+				{ Constants.XmppProperties.OrgRole, ServiceRef.Localizer[nameof(AppResources.OrgRole)].Value },
 				{ "ORGTRADENAME", ServiceRef.Localizer[nameof(AppResources.TradeName)].Value },
 				{ Constants.XmppProperties.OrgAddress, ServiceRef.Localizer[nameof(AppResources.OrgAddress)].Value },
 				{ Constants.XmppProperties.OrgAddress2, ServiceRef.Localizer[nameof(AppResources.OrgAddress2)].Value },
