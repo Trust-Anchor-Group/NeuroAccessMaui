@@ -11,9 +11,14 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services.Kyc.Domain;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
+using NeuroAccessMaui.Services.Resilience;
+using NeuroAccessMaui.Services.Resilience.Dispatch;
+using NeuroAccessMaui.Services.Fetch;
+using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.MVVM.Building;
+using NeuroAccessMaui.UI.MVVM.Policies;
 using Waher.Runtime.Inventory;
 using Waher.Persistence;
-using NeuroAccessMaui.Services.Fetch;
 using SkiaSharp;
 using Waher.Networking.XMPP.Contracts;
 
@@ -28,8 +33,36 @@ namespace NeuroAccessMaui.Services.Kyc
 		private static readonly HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(10) };
 		private static readonly string backupKyc = "TestKYCNeuro.xml";
 		private static readonly TimeSpan AutosaveDelay = TimeSpan.FromMilliseconds(800);
-		private readonly KycOperationContext autosaveContext = new KycOperationContext("Autosave", AutosaveDelay);
+		private static readonly IAsyncPolicy AutosavePolicy = Policies.Debounce(AutosaveDelay);
+		private readonly ObservableTask<int> autosaveTask;
 		private bool disposedValue;
+
+		private readonly struct AutosaveRequest
+		{
+			public AutosaveRequest(KycReference reference, bool isImmediate)
+			{
+				this.Reference = reference;
+				this.IsImmediate = isImmediate;
+			}
+
+			public KycReference Reference { get; }
+			public bool IsImmediate { get; }
+		}
+
+		public KycService()
+		{
+			this.autosaveTask = new ObservableTaskBuilder()
+				.Named("KYC Autosave")
+				.AutoStart(false)
+				.UseTaskRun(true)
+				.WithDispatcher(ImmediateDispatcher.Instance)
+				.Run(context =>
+				{
+					context.CancellationToken.ThrowIfCancellationRequested();
+					return Task.CompletedTask;
+				})
+				.Build();
+		}
 
 		#region Loading & Persistence
 
@@ -256,21 +289,15 @@ namespace NeuroAccessMaui.Services.Kyc
 			return (Mapped, Attachments);
 		}
 
-		public async Task ScheduleSnapshotAsync(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
+		public Task ScheduleSnapshotAsync(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
 		{
 			if (Reference is null || Process is null)
 			{
-				return;
+				return Task.CompletedTask;
 			}
 			UpdateSnapshot(Reference, Process, Navigation, Progress, CurrentPageId);
-			await this.autosaveContext.ScheduleAsync(async token =>
-			{
-				if (token.IsCancellationRequested)
-				{
-					return;
-				}
-				await SaveReferenceAsync(Reference).ConfigureAwait(false);
-			}).ConfigureAwait(false);
+			this.autosaveTask.Run<AutosaveRequest>(this.ExecuteAutosaveAsync, new AutosaveRequest(Reference, false));
+			return Task.CompletedTask;
 		}
 
 		public async Task FlushSnapshotAsync(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
@@ -280,14 +307,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				return;
 			}
 			UpdateSnapshot(Reference, Process, Navigation, Progress, CurrentPageId);
-			await this.autosaveContext.FlushAsync(async token =>
-			{
-				if (token.IsCancellationRequested)
-				{
-					return;
-				}
-				await SaveReferenceAsync(Reference).ConfigureAwait(false);
-			}).ConfigureAwait(false);
+			await this.RunImmediateAutosaveAsync(Reference).ConfigureAwait(false);
 		}
 
 		public async Task ApplySubmissionAsync(KycReference Reference, LegalIdentity Identity)
@@ -296,7 +316,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				return;
 			}
-			await this.autosaveContext.FlushAsync(null).ConfigureAwait(false);
+			await this.FlushPendingAutosaveAsync().ConfigureAwait(false);
 			Reference.CreatedIdentityId = Identity.Id;
 			Reference.CreatedIdentityState = Identity.State;
 			Reference.UpdatedUtc = DateTime.UtcNow;
@@ -309,7 +329,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				return;
 			}
-			await this.autosaveContext.FlushAsync(null).ConfigureAwait(false);
+			await this.FlushPendingAutosaveAsync().ConfigureAwait(false);
 			Reference.CreatedIdentityId = null;
 			Reference.CreatedIdentityState = null;
 			Reference.UpdatedUtc = DateTime.UtcNow;
@@ -322,7 +342,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				return;
 			}
-			await this.autosaveContext.FlushAsync(null).ConfigureAwait(false);
+			await this.FlushPendingAutosaveAsync().ConfigureAwait(false);
 			Reference.RejectionMessage = Message;
 			Reference.RejectionCode = Code;
 			Reference.InvalidClaims = InvalidClaims;
@@ -403,6 +423,87 @@ namespace NeuroAccessMaui.Services.Kyc
 				return Process.Pages[Navigation.CurrentPageIndex].Id;
 			}
 			return Reference.LastVisitedPageId;
+		}
+
+		private async Task RunImmediateAutosaveAsync(KycReference reference)
+		{
+			await this.FlushPendingAutosaveAsync().ConfigureAwait(false);
+			this.autosaveTask.Run<AutosaveRequest>(this.ExecuteAutosaveAsync, new AutosaveRequest(reference, true));
+			Task? watcher = this.autosaveTask.CurrentWatcher;
+			if (watcher is null)
+			{
+				return;
+			}
+
+			try
+			{
+				await watcher.ConfigureAwait(false);
+			}
+			catch (TaskCanceledException)
+			{
+			}
+			catch (OperationCanceledException)
+			{
+			}
+		}
+
+		private async Task FlushPendingAutosaveAsync()
+		{
+			Task? pending = this.autosaveTask.CurrentWatcher;
+			if (pending is null)
+			{
+				return;
+			}
+
+			this.autosaveTask.Cancel();
+			try
+			{
+				await pending.ConfigureAwait(false);
+			}
+			catch (TaskCanceledException)
+			{
+			}
+			catch (OperationCanceledException)
+			{
+			}
+		}
+
+		private async Task ExecuteAutosaveAsync(AutosaveRequest request, TaskContext<int> context)
+		{
+			CancellationToken cancellationToken = context.CancellationToken;
+			if (cancellationToken.IsCancellationRequested)
+			{
+				return;
+			}
+
+			try
+			{
+				if (request.IsImmediate || AutosaveDelay == TimeSpan.Zero)
+				{
+					await SaveReferenceAsync(request.Reference).ConfigureAwait(false);
+					return;
+				}
+
+				await PolicyRunner.RunAsync(
+					async token =>
+					{
+						if (token.IsCancellationRequested)
+						{
+							return;
+						}
+
+						await SaveReferenceAsync(request.Reference).ConfigureAwait(false);
+					},
+					cancellationToken,
+					AutosavePolicy).ConfigureAwait(false);
+			}
+			catch (TaskCanceledException)
+			{
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object?>("Operation", "KYC.Autosave"));
+			}
 		}
 
 		private static async Task SaveReferenceAsync(KycReference Reference)
@@ -536,7 +637,7 @@ namespace NeuroAccessMaui.Services.Kyc
 
 			if (disposing)
 			{
-				this.autosaveContext.Dispose();
+				this.autosaveTask.Dispose();
 			}
 
 			this.disposedValue = true;

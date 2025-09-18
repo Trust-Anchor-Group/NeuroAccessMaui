@@ -16,6 +16,9 @@ using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.Services.Kyc.Domain;
 using NeuroAccessMaui.Services.UI.Photos;
+using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.MVVM.Building;
+using NeuroAccessMaui.UI.MVVM.Policies;
 using SkiaSharp;
 using Waher.Content.Html.Elements;
 using Waher.Networking.XMPP;
@@ -91,7 +94,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		// Throttling support for page refresh (avoid per-keystroke SetCurrentPage work)
 		private static readonly TimeSpan PageRefreshThrottle = TimeSpan.FromMilliseconds(250);
-		private readonly KycOperationContext pageRefreshContext = new KycOperationContext("PageRefresh", PageRefreshThrottle);
+		private readonly ObservableTask<int> pageRefreshTask;
 
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
@@ -163,6 +166,40 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.attachments = new List<LegalIdentityAttachment>();
 			this.ApplicationSentPublic = ServiceRef.TagProfile.IdentityApplication is not null;
 			this.NrReviews = ServiceRef.TagProfile.NrReviews;
+			this.pageRefreshTask = new ObservableTaskBuilder()
+				.Named("KYC Page Refresh")
+				.AutoStart(false)
+				.UseTaskRun(false)
+				.WithPolicy(Policies.Debounce(PageRefreshThrottle))
+				.Run(async context =>
+				{
+					CancellationToken cancellationToken = context.CancellationToken;
+					if (cancellationToken.IsCancellationRequested)
+					{
+						return;
+					}
+
+					try
+					{
+						await MainThread.InvokeOnMainThreadAsync(() =>
+						{
+							if (cancellationToken.IsCancellationRequested)
+							{
+								return;
+							}
+							this.SetCurrentPage(this.currentPageIndex);
+							this.NextCommand.NotifyCanExecuteChanged();
+						});
+					}
+					catch (TaskCanceledException)
+					{
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+					}
+				})
+				.Build();
 		}
 
 		protected override async Task OnInitialize()
@@ -398,6 +435,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 			this.OnPropertyChanged(nameof(this.CanRequestFeaturedPeerReviewer));
 			this.OnPropertyChanged(nameof(this.FeaturedPeerReviewers));
+			this.NextCommand.NotifyCanExecuteChanged();
 		}
 
 		partial void OnPeerReviewChanged(bool value)
@@ -466,32 +504,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// </summary>
 		private void SchedulePageRefresh()
 		{
-			_ = this.pageRefreshContext.ScheduleAsync(async token =>
-			{
-				if (token.IsCancellationRequested)
-				{
-					return;
-				}
-				try
-				{
-					await MainThread.InvokeOnMainThreadAsync(() =>
-					{
-						if (token.IsCancellationRequested)
-						{
-							return;
-						}
-						this.SetCurrentPage(this.currentPageIndex);
-						this.NextCommand.NotifyCanExecuteChanged();
-					});
-				}
-				catch (TaskCanceledException)
-				{
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-			});
+			this.pageRefreshTask.Run();
 		}
 
 		private void Section_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -620,7 +633,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 			if (disposing)
 			{
-				this.pageRefreshContext.Dispose();
+				this.pageRefreshTask.Dispose();
 				ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
 			}
 			this.disposedValue = true;
