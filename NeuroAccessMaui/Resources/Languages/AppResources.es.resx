@@ -3080,4 +3080,19 @@
   <data name="BeforeFinalizingSummary" xml:space="preserve">
     <value>Antes de finalizar, lea y asegúrese de que todo sea correcto</value>
   </data>
+  <data name="CompanyInformation" xml:space="preserve">
+    <value>Información de la empresa</value>
+  </data>
+  <data name="CompanyAddress" xml:space="preserve">
+    <value>Dirección de la empresa</value>
+  </data>
+  <data name="CompanyRepresentative" xml:space="preserve">
+    <value>Representante de la empresa</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Subir</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Tomar foto</value>
+  </data>
 </root>
