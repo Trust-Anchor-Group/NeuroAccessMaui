@@ -95,6 +95,9 @@
 				</PersonalNumberRule>
 			</ValidationRules>
 			<Mapping key="PNR" />
+			<Metadata>
+				<Placeholder>pnr</Placeholder>
+			</Metadata>
 		</Field>
 	</Page>
 	<Page id="dateOfBirh">
