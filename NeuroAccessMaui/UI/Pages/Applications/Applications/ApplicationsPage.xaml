@@ -58,6 +58,7 @@
 								<controls:UriImage Source="{Binding BannerUri}"
 													Grid.Row="0" Grid.Column="0"
 													HeightRequest="30"
+													Aspect="AspectFit"
 													VerticalOptions="Center"  HorizontalOptions="Start"/>
 								<controls:SvgButton Style="{DynamicResource IconButton}" 
 													SvgSource="arrow_forward.svg"
