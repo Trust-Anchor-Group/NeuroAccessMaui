@@ -99,7 +99,7 @@ namespace NeuroAccessMaui.Services.Kyc.Transforms
 		public YearTransform() : base("year") { }
 		public override Task<string> ApplyAsync(ObservableKycField field, KycProcess process, string currentValue, CancellationToken ct)
 		{
-			return Task.FromResult(DateTime.TryParse(currentValue, out DateTime dt) ? dt.Year.ToString(CultureInfo.InvariantCulture) : string.Empty);
+			return Task.FromResult(DateTime.TryParse(currentValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt) ? dt.Year.ToString(CultureInfo.InvariantCulture) : string.Empty);
 		}
 	}
 
@@ -108,7 +108,7 @@ namespace NeuroAccessMaui.Services.Kyc.Transforms
 		public MonthTransform() : base("month") { }
 		public override Task<string> ApplyAsync(ObservableKycField field, KycProcess process, string currentValue, CancellationToken ct)
 		{
-			return Task.FromResult(DateTime.TryParse(currentValue, out DateTime dt) ? dt.Month.ToString(CultureInfo.InvariantCulture) : string.Empty);
+			return Task.FromResult(DateTime.TryParse(currentValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt) ? dt.Month.ToString(CultureInfo.InvariantCulture) : string.Empty);
 		}
 	}
 
@@ -117,7 +117,7 @@ namespace NeuroAccessMaui.Services.Kyc.Transforms
 		public DayTransform() : base("day") { }
 		public override Task<string> ApplyAsync(ObservableKycField field, KycProcess process, string currentValue, CancellationToken ct)
 		{
-			return Task.FromResult(DateTime.TryParse(currentValue, out DateTime dt) ? dt.Day.ToString(CultureInfo.InvariantCulture) : string.Empty);
+			return Task.FromResult(DateTime.TryParse(currentValue, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dt) ? dt.Day.ToString(CultureInfo.InvariantCulture) : string.Empty);
 		}
 	}
 

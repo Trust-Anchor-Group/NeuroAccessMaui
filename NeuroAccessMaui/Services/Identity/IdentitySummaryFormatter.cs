@@ -113,7 +113,7 @@ namespace NeuroAccessMaui.Services.Identity
                 Constants.XmppProperties.EMail
             };
 
-            HashSet<string> AddressKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            HashSet<string> AddressKeys = new(StringComparer.OrdinalIgnoreCase)
             {
                 Constants.XmppProperties.Address,
                 Constants.XmppProperties.Address2,
@@ -124,7 +124,7 @@ namespace NeuroAccessMaui.Services.Identity
                 Constants.XmppProperties.Country
             };
 
-			HashSet<string> CompanyInfoKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+			HashSet<string> CompanyInfoKeys = new(StringComparer.OrdinalIgnoreCase)
 			{
 				Constants.XmppProperties.OrgNumber,
 				Constants.XmppProperties.OrgName,
@@ -133,7 +133,7 @@ namespace NeuroAccessMaui.Services.Identity
 				"ORGTRADENAME"
 			};
 
-			HashSet<string> CompanyAddressKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+			HashSet<string> CompanyAddressKeys = new(StringComparer.OrdinalIgnoreCase)
 			{
 				Constants.XmppProperties.OrgAddress,
 				Constants.XmppProperties.OrgAddress2,
@@ -144,7 +144,7 @@ namespace NeuroAccessMaui.Services.Identity
 				Constants.XmppProperties.OrgCountry
 			};
 
-			HashSet<string> CompanyRepresentativeKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+			HashSet<string> CompanyRepresentativeKeys = new(StringComparer.OrdinalIgnoreCase)
 			{
 				"ORGREPNAME",
 				"ORGREPCPF",
@@ -155,7 +155,7 @@ namespace NeuroAccessMaui.Services.Identity
 			};
 
 			// Prepare dictionary for quick lookup
-			Dictionary<string, string> Dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+			Dictionary<string, string> Dict = new(StringComparer.OrdinalIgnoreCase);
             foreach (Property P in Properties ?? Array.Empty<Property>())
             {
                 if (P is null)
@@ -170,22 +170,22 @@ namespace NeuroAccessMaui.Services.Identity
             }
 
             // Compose BirthDate if we have parts
-            string DayStr = Get(Dict, Constants.XmppProperties.BirthDay);
-            string MonthStr = Get(Dict, Constants.XmppProperties.BirthMonth);
-            string YearStr = Get(Dict, Constants.XmppProperties.BirthYear);
+			string DayStr = Get(Dict, Constants.XmppProperties.BirthDay);
+			string MonthStr = Get(Dict, Constants.XmppProperties.BirthMonth);
+			string YearStr = Get(Dict, Constants.XmppProperties.BirthYear);
 
-            if (int.TryParse(DayStr, out int Day) && int.TryParse(MonthStr, out int Month) && int.TryParse(YearStr, out int Year))
-            {
-                try
-                {
-                    DateTime BirthDate = new DateTime(Year, Month, Day);
-                    Dict[Constants.CustomXmppProperties.BirthDate] = BirthDate.ToString("d", EffectiveCulture);
-                }
-                catch (Exception Ex)
-                {
-                    ServiceRef.LogService.LogException(Ex);
-                }
-            }
+			if (int.TryParse(DayStr, out int Day) && int.TryParse(MonthStr, out int Month) && int.TryParse(YearStr, out int Year))
+			{
+				try
+				{
+					DateTime BirthDate = new(Year, Month, Day);
+					Dict[Constants.CustomXmppProperties.BirthDate] = BirthDate.ToString("D", EffectiveCulture);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			}
 
 			// Compose Company Representative BirthDate if we have parts
 			DayStr = Get(Dict, "ORGREPBDAY");
@@ -196,7 +196,7 @@ namespace NeuroAccessMaui.Services.Identity
 			{
 				try
 				{
-					DateTime BirthDate = new DateTime(Year, Month, Day);
+					DateTime BirthDate = new(Year, Month, Day);
 					Dict["ORGREPBDATE"] = BirthDate.ToString("d", EffectiveCulture);
 				}
 				catch (Exception Ex)
@@ -205,22 +205,43 @@ namespace NeuroAccessMaui.Services.Identity
 				}
 			}
 
-			KycSummaryResult Result = new KycSummaryResult();
+			KycSummaryResult Result = new();
 
             // Personal
-            foreach (string Key in PersonalKeys)
-            {
-                if (!Dict.TryGetValue(Key, out string? Val) || string.IsNullOrWhiteSpace(Val))
-                    continue;
+			foreach (string Key in PersonalKeys)
+			{
+				if (Key.Equals(Constants.XmppProperties.BirthDay, StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals(Constants.XmppProperties.BirthMonth, StringComparison.OrdinalIgnoreCase) ||
+					Key.Equals(Constants.XmppProperties.BirthYear, StringComparison.OrdinalIgnoreCase))
+				{
+					continue;
+				}
 
-                string Label = GetLabel(LabelMap, Key);
+				if (!Dict.TryGetValue(Key, out string? Val) || string.IsNullOrWhiteSpace(Val))
+					continue;
+
+				string Label = GetLabel(LabelMap, Key);
 
 				if (Key.Equals(Constants.XmppProperties.Nationality, StringComparison.OrdinalIgnoreCase))
 					Val = ISO_3166_1.ToName(Val) ?? Val;
 
-                bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
-                Result.Personal.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
-            }
+				if (Key.Equals(Constants.XmppProperties.Gender, StringComparison.OrdinalIgnoreCase))
+				{
+					string Normalized = Val.Trim().ToUpperInvariant();
+					string ResourceKey = Normalized switch
+					{
+						"M" or "MALE" => nameof(AppResources.Male),
+						"F" or "FEMALE" => nameof(AppResources.Female),
+						_ => nameof(AppResources.Other)
+					};
+					Microsoft.Extensions.Localization.LocalizedString Localized = ServiceRef.Localizer[ResourceKey, false];
+					if (!Localized.ResourceNotFound)
+						Val = Localized.Value;
+				}
+
+				bool IsInvalid = InvalidMappings?.Contains(Key) ?? false;
+				Result.Personal.Add(new DisplayQuad(Label, Val, Key, Process.HasMapping(Key), IsInvalid));
+			}
 
             // Address
             foreach (string Key in AddressKeys)
@@ -347,7 +368,7 @@ namespace NeuroAccessMaui.Services.Identity
             CultureInfo EffectiveCulture = Culture ?? CultureInfo.CurrentCulture;
 
             // Reviewable keys set
-            HashSet<string> ReviewableKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            HashSet<string> ReviewableKeys = new(StringComparer.OrdinalIgnoreCase)
             {
                 Constants.XmppProperties.FirstName,
                 Constants.XmppProperties.MiddleNames,
@@ -377,7 +398,7 @@ namespace NeuroAccessMaui.Services.Identity
             };
 
             // Classification sets
-            HashSet<string> PersonalKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            HashSet<string> PersonalKeys = new(StringComparer.OrdinalIgnoreCase)
             {
                 Constants.XmppProperties.FirstName,
                 Constants.XmppProperties.MiddleNames,
@@ -400,7 +421,7 @@ namespace NeuroAccessMaui.Services.Identity
                 Constants.XmppProperties.EMail
             };
 
-            HashSet<string> OrgKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            HashSet<string> OrgKeys = new(StringComparer.OrdinalIgnoreCase)
             {
                 Constants.XmppProperties.OrgName,
                 Constants.XmppProperties.OrgDepartment,
@@ -415,7 +436,7 @@ namespace NeuroAccessMaui.Services.Identity
                 Constants.XmppProperties.OrgNumber
             };
 
-            HashSet<string> TechnicalKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            HashSet<string> TechnicalKeys = new(StringComparer.OrdinalIgnoreCase)
             {
                 Constants.XmppProperties.Jid,
                 Constants.CustomXmppProperties.Neuro_Id,
@@ -429,8 +450,8 @@ namespace NeuroAccessMaui.Services.Identity
             };
 
             Dictionary<string, string> LabelMap = GetIdentityLabelMap();
-            IdentityGroupsResult Result = new IdentityGroupsResult();
-            HashSet<string> UsedKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            IdentityGroupsResult Result = new();
+            HashSet<string> UsedKeys = new(StringComparer.OrdinalIgnoreCase);
 
             // Custom/composed BirthDate
             string D = Identity[Constants.XmppProperties.BirthDay];
@@ -520,7 +541,7 @@ namespace NeuroAccessMaui.Services.Identity
         private static Dictionary<string, string> GetLabelMap()
         {
             // Use ServiceRef.Localizer for labels used in KYC summary
-            Dictionary<string, string> Map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            Dictionary<string, string> Map = new(StringComparer.OrdinalIgnoreCase)
             {
                 { Constants.XmppProperties.FullName, ServiceRef.Localizer[nameof(AppResources.FullName)].Value },
 				{ Constants.XmppProperties.FirstName, ServiceRef.Localizer[nameof(AppResources.FirstName)].Value },
@@ -566,7 +587,7 @@ namespace NeuroAccessMaui.Services.Identity
 
         private static Dictionary<string, string> GetIdentityLabelMap()
         {
-            Dictionary<string, string> Map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            Dictionary<string, string> Map = new(StringComparer.OrdinalIgnoreCase)
             {
                 { Constants.XmppProperties.FirstName,   ServiceRef.Localizer[nameof(AppResources.FirstName)].Value},
                 { Constants.XmppProperties.MiddleNames, ServiceRef.Localizer[nameof(AppResources.MiddleNames)].Value},
@@ -619,7 +640,7 @@ namespace NeuroAccessMaui.Services.Identity
             string Value)
         {
             bool IsReviewable = ReviewableKeys.Contains(Key);
-            DisplayField Field = new DisplayField(Key, Label, Value, IsReviewable);
+            DisplayField Field = new(Key, Label, Value, IsReviewable);
 
             if (PersonalKeys.Contains(Key)) Result.Personal.Add(Field);
             else if (OrgKeys.Contains(Key)) Result.Organization.Add(Field);

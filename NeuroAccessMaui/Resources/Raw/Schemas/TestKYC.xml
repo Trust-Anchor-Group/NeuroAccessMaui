@@ -35,7 +35,7 @@
 				</Validation>
 				<Default>Maximiliam</Default>
 			</Field>
-			<Field id="dob" type="date" label="Date of Birth" required="true" mapping="BDATE">
+			<Field id="dob" type="date" label="Date of Birth" required="true">
 				<Label>
 					<Text lang="en">Date of Birth</Text>
 					<Text lang="sv">Födelsedatum</Text>
@@ -44,12 +44,23 @@
 					<Text lang="en">Use the format YYYY-MM-DD</Text>
 					<Text lang="sv">Använd formatet ÅÅÅÅ-MM-DD</Text>
 				</Hint>
-				<Validation min="1900-01-01" max="2020-01-01">
-					<Message>
-						<Text lang="en">Enter a valid date between 1900 and 2020</Text>
-						<Text lang="sv">Ange ett giltigt datum mellan 1900 och 2020</Text>
-					</Message>
-				</Validation>
+				<Mapping key="BDAY">
+					<Transform name="day" />
+				</Mapping>
+				<Mapping key="BMONTH">
+					<Transform name="month" />
+				</Mapping>
+				<Mapping key="BYEAR">
+					<Transform name="year" />
+				</Mapping>
+				<ValidationRules>
+					<DateRangeRule min="1900-01-01" max="2025-01-01">
+						<Message>
+							<Text lang="en">Enter a valid date between 1900 and 2025</Text>
+							<Text lang="pt">Insira uma data válida entre 1900 e 2025</Text>
+						</Message>
+					</DateRangeRule>
+				</ValidationRules>
 				<!-- Example: a date field with metadata could look like this -->
 				<Metadata>
 					<DateFormat>yyyy-MM-dd</DateFormat>

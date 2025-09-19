@@ -269,7 +269,7 @@
 							Stroke="{DynamicResource BrandColorsGreyScalesGreyv250}"
 							StrokeDashArray="1,1"
 							IsEnabled="{Binding IsValid}">
-						<controls:AspectRatioLayout AspectRatio="{Binding AspectRatio}">
+						<controls:AspectRatioLayout AspectRatio="{Binding AspectRatio, FallbackValue=1.0}">
 							<controls:ConditionView Condition="{Binding ImageSource, Converter={mct:IsNullConverter}}">
 								<controls:ConditionView.True>
 									<!-- Here we can have a image and label, you can create a converter to pick image/svg/label based on the specialType -->
@@ -304,13 +304,48 @@
 					<controls:ConditionView Condition="{Binding AllowUpload}" Grid.Row="1" Grid.ColumnSpan="2">
 						<controls:ConditionView.True>
 							<Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-								<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-													 LabelData="{l:Localize CameraPermissionTitle}"
-													 Command="{Binding PickPhotoCommand}"/>
-								<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-													 LabelData="{l:Localize CameraPermissionTitle}"
-													 Command="{Binding TakePhotoCommand}"
-													 Grid.Column="1"/>
+								<controls:TemplatedButton Grid.Column="0"
+														  Command="{Binding PickPhotoCommand}">
+									<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
+										<Grid ColumnDefinitions="auto,*" ColumnSpacing="8" HorizontalOptions="Center">
+											<controls:SvgView Grid.Column="0"
+																Source="image.svg"
+																Aspect="AspectFit"
+																WidthRequest="18"
+																HeightRequest="18"
+																VerticalOptions="Center"
+																TintColor="{DynamicResource ButtonAccessSecondaryContentWL}"/>
+											<Label Grid.Column="1"
+												   Text="Upload"
+												   VerticalOptions="Center"
+												   FontFamily="SpaceGroteskBold"
+												   FontSize="16"
+												   TextColor="{DynamicResource ButtonAccessSecondaryContentWL}"/>
+										</Grid>
+									</Border>
+								</controls:TemplatedButton>
+								<controls:TemplatedButton Grid.Column="1"
+														  Command="{Binding TakePhotoCommand}">
+									<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
+										<Grid ColumnDefinitions="auto,*"
+											  ColumnSpacing="8"
+											  HorizontalOptions="Center">
+											<controls:SvgView Grid.Column="0"
+																Source="camera_alt.svg"
+																Aspect="AspectFit"
+																WidthRequest="18"
+																HeightRequest="18"
+																VerticalOptions="Center"
+																TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
+											<Label Grid.Column="1"
+												   Text="Take Photo"
+												   VerticalOptions="Center"
+												   FontFamily="SpaceGroteskBold"
+												   FontSize="16"
+												   TextColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
+										</Grid>
+									</Border>
+								</controls:TemplatedButton>
 							</Grid>
 						</controls:ConditionView.True>
 						<controls:ConditionView.False>
@@ -431,7 +466,7 @@
 							Grid.Row="1"
 							Padding="{DynamicResource SmallMargins}"
 							VerticalOptions="Center">
-					<controls:ConditionView Condition="{Binding ShouldViewSummary}">
+					<controls:ConditionView Condition="{Binding IsInSummary}">
 						<controls:ConditionView.True>
 							<VerticalStackLayout>
 								<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize ApplicationSummary}" Margin="{DynamicResource MediumLeftRightMargins}"/>
@@ -463,15 +498,15 @@
 													</Label.FormattedText>
 												</Label>
 
-												<Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+												<Grid RowSpacing="8">
 													<controls:TextButton Style="{DynamicResource TransparentTextButton}"
 																 LabelData="{l:Localize QrScanCode}"
-																 Command="{Binding ScanQrCodeCommand}"/>
+																 Command="{Binding ScanQrCodeCommand}" Grid.Row="0"/>
 													<controls:TextButton Style="{DynamicResource TransparentTextButton}"
 																 LabelData="{l:Localize FeaturedReviewers}"
 																 Command="{Binding RequestReviewCommand}"
 																 IsVisible="{Binding FeaturedPeerReviewers}"
-																 Grid.Column="1"/>
+																 Grid.Row="1"/>
 												</Grid>
 											</VerticalStackLayout>
 										</controls:ConditionView.True>
@@ -504,30 +539,24 @@
 								</controls:ConditionView>
 
 								<!-- Info bubble only when not already sent -->
-								<controls:ConditionView Condition="{Binding ApplicationSentPublic}">
-									<controls:ConditionView.True>
-										<!-- Hide info bubble when application is sent -->
-									</controls:ConditionView.True>
-									<controls:ConditionView.False>
-										<Border Grid.Row="0"
-												BackgroundColor="{DynamicResource TnPInfobgWL}"
-												Padding="{DynamicResource MediumMargins}"
-												Margin="{DynamicResource SmallMargins}"
-												StrokeShape="RoundRectangle 16,16,0,16">
-											<Border.Shadow>
-												<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
-											</Border.Shadow>
-											<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-													ColumnDefinitions="auto, *">
-												<Path Grid.Column="0" Data="{x:Static ui:Geometries.InfoCirclePath}" Fill="{DynamicResource TnPInfoContentWL}"/>
-												<Label Grid.Column="1"
-													   Text="Before finalizing, please read through and ensure everything is correct."
-													   Style="{DynamicResource InfoLabel}"
-													   TextColor="{DynamicResource TnPInfoContentWL}"/>
-											</Grid>
-										</Border>
-									</controls:ConditionView.False>
-								</controls:ConditionView>
+								<Border Grid.Row="0"
+										IsVisible="{Binding ApplicationSentPublic, Converter={mct:InvertedBoolConverter}}"
+										BackgroundColor="{DynamicResource TnPInfobgWL}"
+										Padding="{DynamicResource MediumMargins}"
+										Margin="{DynamicResource SmallMargins}"
+										StrokeShape="RoundRectangle 16,16,0,16">
+									<Border.Shadow>
+										<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4"/>
+									</Border.Shadow>
+									<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+											ColumnDefinitions="auto, *">
+										<Path Grid.Column="0" Data="{x:Static ui:Geometries.InfoCirclePath}" Fill="{DynamicResource TnPInfoContentWL}"/>
+										<Label Grid.Column="1"
+												Text="Before finalizing, please read through and ensure everything is correct."
+												Style="{DynamicResource InfoLabel}"
+												TextColor="{DynamicResource TnPInfoContentWL}"/>
+									</Grid>
+								</Border>
 								<Border Style="{DynamicResource BorderSet}">
 									<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 										<Label Style="{DynamicResource FieldTitleLabel}" Text="{l:Localize ApplicationInformation}"/>
@@ -811,15 +840,11 @@
 				</ScrollView>
 
 				<!-- Navigation bar (hidden once application is sent) -->
-				<controls:ConditionView Condition="{Binding ApplicationSentPublic}" Grid.Row="2">
-					<controls:ConditionView.True>
-						<!-- When an application is sent, hide the bottom bar entirely -->
-					</controls:ConditionView.True>
-					<controls:ConditionView.False>
-						<Border Style="{DynamicResource BottomBarBorder2}"
+				<Border Style="{DynamicResource BottomBarBorder2}"
+							IsVisible="{Binding ApplicationSentPublic, Converter={mct:InvertedBoolConverter}}"
 								Grid.Row="2"
 								Padding="16">
-							<VerticalStackLayout Spacing="8">
+					<VerticalStackLayout Spacing="8">
 						<Grid ColumnDefinitions="*, *">
 							<Label Grid.Column="0"
 								   Text="{l:Localize Progress}"
@@ -839,7 +864,7 @@
 											  Margin="{DynamicResource SmallBottomMargins}">
 						</controls:ProgressBar>
 
-						<controls:ConditionView Condition="{Binding ShouldReturnToSummary}">
+						<controls:ConditionView Condition="{Binding IsEditingFromSummary}">
 							<controls:ConditionView.True>
 								<controls:TextButton LabelData="{Binding NextButtonText}"
 													 Style="{DynamicResource FilledTextButton}"
@@ -857,10 +882,8 @@
 								</Grid>
 							</controls:ConditionView.False>
 						</controls:ConditionView>
-						</VerticalStackLayout>
-						</Border>
-					</controls:ConditionView.False>
-				</controls:ConditionView>
+					</VerticalStackLayout>
+				</Border>
 			</Grid>
 		</controls:ConditionView.False>
 	</controls:ConditionView>

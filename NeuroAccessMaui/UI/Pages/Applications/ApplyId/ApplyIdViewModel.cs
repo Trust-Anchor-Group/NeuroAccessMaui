@@ -147,7 +147,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		{
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				this.ApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
+				LegalIdentity? identity = e.Identity;
+				bool applicationStillPending = identity is not null ? identity.State == IdentityState.Created : ServiceRef.TagProfile.IdentityApplication is not null;
+				this.ApplicationSent = applicationStillPending;
 				this.NrReviews = ServiceRef.TagProfile.NrReviews;
 
 				if (this.ApplicationId is not null && this.ApplicationId == ServiceRef.TagProfile.LegalIdentity?.Id)

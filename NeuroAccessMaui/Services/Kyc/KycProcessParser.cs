@@ -4,11 +4,11 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using CommunityToolkit.Common;
 using Microsoft.Maui.Storage;
+using NeuroAccessMaui;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.Kyc.Models;
@@ -33,8 +33,7 @@ namespace NeuroAccessMaui.Services.Kyc
             // Optional process-level name (localized)
             if (Doc.Root is not null)
             {
-                Process.Name = ParseLocalizedText(Doc.Root.Element("Name"))
-                                ?? ParseLegacyText(Doc.Root.Attribute("name"), Lang);
+                Process.Name = ParseLocalizedText(Doc.Root.Element("Name"));
             }
 
             foreach (XElement PageEl in Doc.Root?.Elements("Page") ?? Enumerable.Empty<XElement>())
@@ -42,8 +41,7 @@ namespace NeuroAccessMaui.Services.Kyc
                 KycPage Page = new KycPage
                 {
 					Id = (string?)PageEl.Attribute("id") ?? string.Empty,
-					Title = ParseLocalizedText(PageEl.Element("Title"))
-						?? ParseLegacyText(PageEl.Attribute("title"), Lang),
+					Title = ParseLocalizedText(PageEl.Element("Title")),
 					Description = ParseLocalizedText(PageEl.Element("Description")),
 					Condition = ParseCondition(PageEl.Element("Condition"))
 				};
@@ -60,12 +58,11 @@ namespace NeuroAccessMaui.Services.Kyc
 				// Sections
 				foreach (XElement SectionEl in PageEl.Elements("Section"))
 				{
-					KycSection Section = new KycSection
-					{
-						Label = ParseLocalizedText(SectionEl.Element("Label"))
-							?? ParseLegacyText(SectionEl.Attribute("label"), Lang),
-						Description = ParseLocalizedText(SectionEl.Element("Description"))
-					};
+				KycSection Section = new KycSection
+				{
+					Label = ParseLocalizedText(SectionEl.Element("Label")),
+					Description = ParseLocalizedText(SectionEl.Element("Description"))
+				};
 
 					foreach (XElement FieldEl in SectionEl.Elements("Field"))
 					{
@@ -113,8 +110,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			Field.Id = (string?)El.Attribute("id") ?? string.Empty;
 			Field.FieldType = FieldType;
 			Field.Required = (bool?)El.Attribute("required") ?? false;
-			Field.Label = ParseLocalizedText(El.Element("Label"))
-				?? ParseLegacyText(El.Attribute("label"), Lang);
+			Field.Label = ParseLocalizedText(El.Element("Label"));
 			Field.Placeholder = ParseLocalizedText(El.Element("Placeholder"));
 			Field.Hint = ParseLocalizedText(El.Element("Hint"));
 			Field.Description = ParseLocalizedText(El.Element("Description"));
@@ -258,8 +254,25 @@ namespace NeuroAccessMaui.Services.Kyc
 
 				Field.Mappings.Add(Mapping);
 			}
-			if (El.Attribute("mapping") is XAttribute MapAttr)
-				Field.Mappings.Add(new KycMapping { Key = MapAttr.Value });
+
+			// Ensure personal number mappings include normalization transforms
+			bool hasPersonalNumberMapping = false;
+			foreach (KycMapping mapping in Field.Mappings)
+			{
+				if (!string.Equals(mapping.Key, Constants.XmppProperties.PersonalNumber, StringComparison.OrdinalIgnoreCase))
+					continue;
+				hasPersonalNumberMapping = true;
+				bool hasNormalize = mapping.TransformNames.Any(name => string.Equals(name, "personalNumberNormalize", StringComparison.OrdinalIgnoreCase));
+				if (!hasNormalize)
+					mapping.TransformNames.Add("personalNumberNormalize");
+			}
+
+			if (!hasPersonalNumberMapping && string.Equals(Field.Id, "personalNumber", StringComparison.OrdinalIgnoreCase))
+			{
+				KycMapping normalizedMapping = new KycMapping { Key = Constants.XmppProperties.PersonalNumber };
+				normalizedMapping.TransformNames.Add("personalNumberNormalize");
+				Field.Mappings.Add(normalizedMapping);
+			}
 
 			// Options for pickers/checkboxes/radio/country
 			if (El.Element("Options") is XElement Opts)
@@ -374,14 +387,6 @@ namespace NeuroAccessMaui.Services.Kyc
 			if (!Loc.HasAny && !string.IsNullOrEmpty(Parent.Value?.Trim()))
 				Loc.Add("en", Parent.Value.Trim());
 			return Loc.HasAny ? Loc : null;
-		}
-
-		private static KycLocalizedText? ParseLegacyText(XAttribute? Attr, string? Lang)
-		{
-			if (Attr is null) return null;
-			KycLocalizedText Loc = new KycLocalizedText();
-			Loc.Add(Lang ?? "en", Attr.Value);
-			return Loc;
 		}
 	}
 }
