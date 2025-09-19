@@ -316,7 +316,7 @@
 																VerticalOptions="Center"
 																TintColor="{DynamicResource ButtonAccessSecondaryContentWL}"/>
 											<Label Grid.Column="1"
-												   Text="Upload"
+												   Text="{l:Localize Upload}"
 												   VerticalOptions="Center"
 												   FontFamily="SpaceGroteskBold"
 												   FontSize="16"
@@ -338,7 +338,7 @@
 																VerticalOptions="Center"
 																TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
 											<Label Grid.Column="1"
-												   Text="Take Photo"
+												   Text="{l:Localize TakePhoto}"
 												   VerticalOptions="Center"
 												   FontFamily="SpaceGroteskBold"
 												   FontSize="16"
@@ -349,9 +349,28 @@
 							</Grid>
 						</controls:ConditionView.True>
 						<controls:ConditionView.False>
-							<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-										 LabelData="{l:Localize CameraPermissionTitle}"
-										 Command="{Binding TakePhotoCommand}"/>
+							<controls:TemplatedButton Grid.Column="1"
+														  Command="{Binding TakePhotoCommand}">
+								<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
+									<Grid ColumnDefinitions="auto,*"
+											  ColumnSpacing="8"
+											  HorizontalOptions="Center">
+										<controls:SvgView Grid.Column="0"
+																Source="camera_alt.svg"
+																Aspect="AspectFit"
+																WidthRequest="18"
+																HeightRequest="18"
+																VerticalOptions="Center"
+																TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
+										<Label Grid.Column="1"
+												   Text="{l:Localize TakePhoto}"
+												   VerticalOptions="Center"
+												   FontFamily="SpaceGroteskBold"
+												   FontSize="16"
+												   TextColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
+									</Grid>
+								</Border>
+							</controls:TemplatedButton>
 						</controls:ConditionView.False>
 					</controls:ConditionView>
 
@@ -552,7 +571,7 @@
 											ColumnDefinitions="auto, *">
 										<Path Grid.Column="0" Data="{x:Static ui:Geometries.InfoCirclePath}" Fill="{DynamicResource TnPInfoContentWL}"/>
 										<Label Grid.Column="1"
-												Text="Before finalizing, please read through and ensure everything is correct."
+												Text="{l:Localize BeforeFinalizingSummary}"
 												Style="{DynamicResource InfoLabel}"
 												TextColor="{DynamicResource TnPInfoContentWL}"/>
 									</Grid>
@@ -644,7 +663,7 @@
 										<!-- Company Information -->
 										<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding HasCompanyInformation}">
 											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-												<Label Text="Company Information" Style="{DynamicResource FieldTitleLabel}" />
+												<Label Text="{l:Localize CompanyInformation}" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="IDSF:DisplayQuad">
@@ -684,7 +703,7 @@
 										<!-- Company Address Information -->
 										<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding HasCompanyAddress}">
 											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-												<Label Text="Company Address" Style="{DynamicResource FieldTitleLabel}" />
+												<Label Text="{l:Localize CompanyAddress}" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyAddressSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="IDSF:DisplayQuad">
@@ -718,7 +737,7 @@
 										<!-- Company Representative -->
 										<Border Style="{DynamicResource BorderSubSet}" IsVisible="{Binding HasCompanyRepresentative}">
 											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-												<Label Text="Company Representative" Style="{DynamicResource FieldTitleLabel}" />
+												<Label Text="{l:Localize CompanyRepresentative}" Style="{DynamicResource FieldTitleLabel}" />
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyRepresentativeSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="IDSF:DisplayQuad">
