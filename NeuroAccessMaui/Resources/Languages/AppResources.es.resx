@@ -3095,4 +3095,7 @@
   <data name="TakePhoto" xml:space="preserve">
     <value>Tomar foto</value>
   </data>
+  <data name="InReview" xml:space="preserve">
+    <value>En Revisión</value>
+  </data>
 </root>
