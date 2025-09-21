@@ -259,53 +259,14 @@
 			<!-- Image upload field template -->
 			<DataTemplate x:Key="ImageUploadTemplate"
 						  x:DataType="fields:ObservableImageField">
-				<Grid RowDefinitions="auto, auto, auto"
-					  ColumnDefinitions="*,*"
+				<Grid RowDefinitions="auto"
+					  ColumnDefinitions="auto, *"
 					  ColumnSpacing="16"
 					  RowSpacing="8">
-					<Border Grid.Row="0"
-							Grid.ColumnSpan="2"
-							StrokeShape="RoundRectangle 8"
-							Stroke="{DynamicResource BrandColorsGreyScalesGreyv250}"
-							StrokeDashArray="1,1"
-							IsEnabled="{Binding IsValid}">
-						<controls:AspectRatioLayout AspectRatio="{Binding AspectRatio, FallbackValue=1.0}">
-							<controls:ConditionView Condition="{Binding ImageSource, Converter={mct:IsNullConverter}}">
-								<controls:ConditionView.True>
-									<!-- Here we can have a image and label, you can create a converter to pick image/svg/label based on the specialType -->
-									<Label VerticalOptions="Center"
-										   HorizontalOptions="Center"
-										   Text="{Binding Placeholder.Text}" />
-								</controls:ConditionView.True>
-								<controls:ConditionView.False>
-									<Image Source="{Binding ImageSource}"
-										   Aspect="AspectFit"
-										   BackgroundColor="{DynamicResource SurfaceBackgroundWL}" />
-								</controls:ConditionView.False>
-							</controls:ConditionView>
-						</controls:AspectRatioLayout>
-
-
-						<Border.Triggers>
-							<Trigger TargetType="Border"
-									 Property="IsEnabled"
-									 Value="True">
-								<Setter Property="Stroke"
-										Value="{DynamicResource BrandColorsGreyScalesGreyv250}" />
-							</Trigger>
-							<Trigger TargetType="Border"
-									 Property="IsEnabled"
-									 Value="False">
-								<Setter Property="Stroke"
-										Value="{DynamicResource InputFieldsContentDangerv500}" />
-							</Trigger>
-						</Border.Triggers>
-					</Border>
-					<controls:ConditionView Condition="{Binding AllowUpload}" Grid.Row="1" Grid.ColumnSpan="2">
+					<controls:ConditionView Condition="{Binding AllowUpload}">
 						<controls:ConditionView.True>
-							<Grid ColumnDefinitions="*,*" ColumnSpacing="8">
-								<controls:TemplatedButton Grid.Column="0"
-														  Command="{Binding PickPhotoCommand}">
+							<VerticalStackLayout Spacing="16">
+								<controls:TemplatedButton Command="{Binding PickPhotoCommand}">
 									<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
 										<Grid ColumnDefinitions="auto,*" ColumnSpacing="8" HorizontalOptions="Center">
 											<controls:SvgView Grid.Column="0"
@@ -324,7 +285,7 @@
 										</Grid>
 									</Border>
 								</controls:TemplatedButton>
-								<controls:TemplatedButton Grid.Column="1"
+								<controls:TemplatedButton Grid.Row="1"
 														  Command="{Binding TakePhotoCommand}">
 									<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
 										<Grid ColumnDefinitions="auto,*"
@@ -346,34 +307,68 @@
 										</Grid>
 									</Border>
 								</controls:TemplatedButton>
-							</Grid>
+							</VerticalStackLayout>
 						</controls:ConditionView.True>
 						<controls:ConditionView.False>
-							<controls:TemplatedButton Grid.Column="1"
-														  Command="{Binding TakePhotoCommand}">
+							<controls:TemplatedButton Command="{Binding TakePhotoCommand}">
 								<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
 									<Grid ColumnDefinitions="auto,*"
-											  ColumnSpacing="8"
-											  HorizontalOptions="Center">
+											ColumnSpacing="8"
+											HorizontalOptions="Center">
 										<controls:SvgView Grid.Column="0"
-																Source="camera_alt.svg"
-																Aspect="AspectFit"
-																WidthRequest="18"
-																HeightRequest="18"
-																VerticalOptions="Center"
-																TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
+															Source="camera_alt.svg"
+															Aspect="AspectFit"
+															WidthRequest="18"
+															HeightRequest="18"
+															VerticalOptions="Center"
+															TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
 										<Label Grid.Column="1"
-												   Text="{l:Localize TakePhoto}"
-												   VerticalOptions="Center"
-												   FontFamily="SpaceGroteskBold"
-												   FontSize="16"
-												   TextColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
+												Text="{l:Localize TakePhoto}"
+												VerticalOptions="Center"
+												FontFamily="SpaceGroteskBold"
+												FontSize="16"
+												TextColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
 									</Grid>
 								</Border>
 							</controls:TemplatedButton>
 						</controls:ConditionView.False>
 					</controls:ConditionView>
 
+					<Border Grid.Column="1"
+							StrokeShape="RoundRectangle 8"
+							Stroke="{DynamicResource BrandColorsGreyScalesGreyv250}"
+							StrokeDashArray="1,1"
+							IsEnabled="{Binding IsValid}">
+						<controls:AspectRatioLayout AspectRatio="{Binding AspectRatio, FallbackValue=1.0}">
+							<controls:ConditionView Condition="{Binding ImageSource, Converter={mct:IsNullConverter}}">
+								<controls:ConditionView.True>
+									<!-- Here we can have a image and label, you can create a converter to pick image/svg/label based on the specialType -->
+									<Label VerticalOptions="Center"
+										   HorizontalOptions="Center"
+										   Text="{Binding Placeholder.Text}" />
+								</controls:ConditionView.True>
+								<controls:ConditionView.False>
+									<Image Source="{Binding ImageSource}"
+										   Aspect="AspectFit"
+										   BackgroundColor="{DynamicResource SurfaceBackgroundWL}" />
+								</controls:ConditionView.False>
+							</controls:ConditionView>
+						</controls:AspectRatioLayout>
+						<Border.Triggers>
+							<Trigger TargetType="Border"
+									 Property="IsEnabled"
+									 Value="True">
+								<Setter Property="Stroke"
+										Value="{DynamicResource BrandColorsGreyScalesGreyv250}" />
+							</Trigger>
+							<Trigger TargetType="Border"
+									 Property="IsEnabled"
+									 Value="False">
+								<Setter Property="Stroke"
+										Value="{DynamicResource InputFieldsContentDangerv500}" />
+							</Trigger>
+						</Border.Triggers>
+					</Border>
 					<Label Grid.Row="2" Grid.ColumnSpan="2" HorizontalOptions="Center" Style="{DynamicResource RegularCompositeInputViewValidationLabel}" Text="{Binding ValidationText}" TextColor="Red" IsVisible="{Binding IsValid, Converter={mct:InvertedBoolConverter}}"/>
 				</Grid>
 			</DataTemplate>
