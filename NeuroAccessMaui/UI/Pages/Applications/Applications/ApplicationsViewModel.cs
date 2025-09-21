@@ -333,11 +333,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				if (Item is null)
 					return;
 
-				if (!string.IsNullOrEmpty(Item.CreatedIdentityId))
+				if (Item.CreatedIdentityState is not null)
 				{
-					LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(Item.CreatedIdentityId);
-					if (Identity.State == IdentityState.Approved)
+					IdentityState? State = Item.CreatedIdentityState;
+					if (State == IdentityState.Approved)
 					{
+						LegalIdentity? Identity = await ServiceRef.XmppService.GetLegalIdentity(Item.CreatedIdentityId);
 						// Preview in review/approved identity
 						await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 					}

@@ -68,7 +68,7 @@
 								<!-- Title and subtitle -->
 								<VerticalStackLayout Grid.Row="1" Grid.Column="0">
 									<Label Text="{Binding CurrentApplication.FriendlyName}" Style="{DynamicResource CardTitleLabel}"/>
-									<Label Text="Identity Verification" Style="{DynamicResource CardSubtitleLabel}"/>
+									<Label Text="{l:Localize IdentityApplication}" Style="{DynamicResource CardSubtitleLabel}"/>
 								</VerticalStackLayout>
 								<!-- Progress bar -->
 								<VerticalStackLayout Grid.Row="2" Grid.ColumnSpan="2" Spacing="4">
@@ -231,7 +231,7 @@
 															   Grid.Row="0"
 															   LineBreakMode="TailTruncation"
 															   MaxLines="1" />
-														<Label Text="{l:Localize ForYourIndividualUse}"
+														<Label Text="{l:Localize IdentityApplication}"
 															   Style="{DynamicResource CardSubtitleLabel}"
 															   Grid.Row="1"
 															   LineBreakMode="TailTruncation"
