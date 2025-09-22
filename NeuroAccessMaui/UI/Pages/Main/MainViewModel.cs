@@ -191,7 +191,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		private bool CheckPendingIdentity()
 		{
-			return ServiceRef.TagProfile.IdentityApplication is LegalIdentity Application;
+			return ServiceRef.TagProfile.IdentityApplication is LegalIdentity Application && Application.State == IdentityState.Created;
 		}
 
 		public bool ShowInfoBubble => this.ShowApplyIdBox || this.ShowPendingIdBox;
