@@ -118,11 +118,16 @@
 										 LabelText="{l:Localize ApplicationUnderReviewDescription}"
 										 IsVisible="{Binding ShowPendingIdBox}"/>
 
+					<controls:InfoBubble BackgroundColor="{DynamicResource TnPDangerbgWL}"
+										 ContentColor="{DynamicResource TnPDangerContentWL}"
+										 SvgSource="info.svg"
+										 LabelText="{l:Localize IdentityRejected}"
+										 IsVisible="{Binding ShowRejectedIdBox}"/>
+
 					<Grid Padding="{DynamicResource MediumMargins}"
 						  ColumnDefinitions="*, auto"
-						  Grid.Row="1"
-						  IsVisible="{Binding ShowApplyIdBox}">
-						<Label Grid.Column="0" Text="{l:Localize CompleteIdButton}" Style="{DynamicResource SecondaryButtonActiveLabel}"/>
+						  Grid.Row="1">
+						<Label Grid.Column="0" Text="{l:Localize GoToApplications}" Style="{DynamicResource SecondaryButtonActiveLabel}"/>
 						<Path Grid.Column="1" Data="{x:Static ui:Geometries.DropDownArrowPath}" Rotation="270" Fill="{DynamicResource ButtonAccessTertiaryContentWL}"/>
 					</Grid>
 				</Grid>

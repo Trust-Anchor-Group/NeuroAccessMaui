@@ -2624,8 +2624,8 @@
   <data name="ApplyIdInfoMainPage" xml:space="preserve">
     <value>Solicite una identificación personal para aprovechar al máximo Neuro Access</value>
   </data>
-  <data name="CompleteIdButton" xml:space="preserve">
-    <value>Complete su identificación personal</value>
+  <data name="GoToApplications" xml:space="preserve">
+    <value>Ir a solicitudes</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Buscar</value>
@@ -3098,7 +3098,10 @@
   <data name="InReview" xml:space="preserve">
     <value>En revisión</value>
   </data>
-  <data name="In Progress" xml:space="preserve">
+  <data name="InProgress" xml:space="preserve">
     <value>En progreso</value>
+  </data>
+  <data name="IdentityRejected" xml:space="preserve">
+    <value>Identidad rechazada. Puede volver a la página de solicitudes y actualizar su información para intentarlo de nuevo.</value>
   </data>
 </root>
