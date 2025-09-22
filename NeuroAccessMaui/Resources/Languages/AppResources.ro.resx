@@ -121,6 +121,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
       Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
+    <value>Selectați rolurile cu care veți semna (opțional)</value>
+  </data>
+  <data name="NoRolesSelectedWarning" xml:space="preserve">
+    <value>Niciun rol selectat - nu veți semna acest contract acum.</value>
+  </data>
+  <data name="SignAs" xml:space="preserve">
+    <value>Semnați ca</value>
+  </data>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>ȘIR NEDEFINIT</value>
   </data>
@@ -659,10 +668,10 @@
     <value>A fost utilizat un cod OTP temporar. Aplicația nu va mai funcționa în aproximativ o săptămână. Va trebui să reinstalați aplicația pentru a o utiliza din nou.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Introduceți codul PIN nou</value>
+    <value>Creați un cod PIN nou</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
-    <value>Confirmați pinul</value>
+    <value>Confirmați codul PIN</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
     <value>Creați codul PIN</value>
@@ -2812,7 +2821,280 @@
   <data name="ClearCache" xml:space="preserve">
     <value>Ștergeți memoria cache</value>
   </data>
+  <data name="ClearBrandingAndKycCacheDescription" xml:space="preserve">
+    <value>Elimină datele de branding și KYC pentru domeniul curent</value>
+  </data>
+  <data name="Apps" xml:space="preserve">
+    <value>Aplicații</value>
+  </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Funcțiile beta sunt în curs de dezvoltare și ar putea să nu aibă funcționalitate sau design. Cu toate acestea, unele dintre caracteristicile lor de bază sunt disponibile</value>
+  </data>
+  <data name="SmartThings" xml:space="preserve">
+    <value>Lucruri inteligente</value>
+  </data>
+  <data name="Assets" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="MicroLoan" xml:space="preserve">
+    <value>MicroCredit</value>
+  </data>
+  <data name="NFC" xml:space="preserve">
+    <value>NFC</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Doriți să adăugați această identitate la contactele dvs.?</value>
+  </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>În curând!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+    <value>În prezent lucrăm la acest lucru</value>
+  </data>
+  <data name="BetaFeature" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>Pentru a activa funcțiile beta, accesați ecranul de pornire și deschideți pagina de setări</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>Această caracteristică este în prezent în stare Beta. Pentru a activa funcțiile beta, deschideți pagina de setări și activați funcțiile beta</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
+    <value>Permisiunea necesară</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
+    <value>Nu am putut încărca cea mai recentă versiune a acestui contract. Detaliile pe care le vedeți pot fi depășite. Solicitați acces acum?</value>
+  </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Cache golit</value>
+  </data>
+  <data name="LanguageChangedTitle" xml:space="preserve">
+    <value>Limba schimbată</value>
+  </data>
+  <data name="LanguageChangedMessage" xml:space="preserve">
+    <value>Vă rugăm să reporniți aplicația pentru a vă asigura că tot textul își schimbă limba corect</value>
+  </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Continuă ({0})</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Niciodată</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Acum</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>acum {0} minute</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>acum {0} ore</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Ultima actualizare: {0}</value>
+  </data>
+  <data name="ActivateYourDigitalIdentity" xml:space="preserve">
+    <value>Activați-vă ID-ul digital</value>
+  </data>
+  <data name="HaveAnyQuestions" xml:space="preserve">
+    <value>Aveți întrebări?</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription" xml:space="preserve">
+    <value>Citiți mai multe despre activarea ID-ului digital pe site-ul web al furnizorilor de ID.</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription2" xml:space="preserve">
+    <value>Furnizorul de ID poate fi al tău: Bancă, Școală etc.</value>
+  </data>
+  <data name="AlreadyHaveAnID" xml:space="preserve">
+    <value>Aveți deja un act de identitate?</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription" xml:space="preserve">
+    <value>Tot ce avem nevoie este codul de transfer de pe telefonul anterior.</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
+    <value>Găsiți și inițiați sub: Setări / Transferați identitatea</value>
+  </data>
+  <data name="PaymentAcceptance" xml:space="preserve">
+    <value>Acceptarea plății</value>
+  </data>
+  <data name="PaymentAcceptanceDescription" xml:space="preserve">
+    <value>Consultați detaliile de plată offline de mai jos. Dacă sunteți mulțumit de ele, trimiteți-l la server pentru procesare.</value>
+  </data>
+  <data name="ContractWizardStepFormat" xml:space="preserve">
+    <value>Pasul {0} al {1}</value>
+  </data>
+  <data name="ContractWizardNext" xml:space="preserve">
+    <value>Următor</value>
+  </data>
+  <data name="ContractWizardReviewHumanReadable" xml:space="preserve">
+    <value>Revizuirea lizibilă de om</value>
+  </data>
+  <data name="ContractWizardSettings" xml:space="preserve">
+    <value>Setări</value>
+  </data>
+  <data name="ContractWizardVisibilityPlaceholder" xml:space="preserve">
+    <value>Selectați cine ar trebui să aibă acces</value>
+  </data>
+  <data name="ContractWizardContractLabel" xml:space="preserve">
+    <value>Contract</value>
+  </data>
+  <data name="HaveAnInviteCodeQuestion" xml:space="preserve">
+    <value>Aveți un cod de invitație?</value>
+  </data>
+  <data name="PasteInviteCodeHere" xml:space="preserve">
+    <value>Lipiți codul de invitație aici</value>
+  </data>
+  <data name="Or" xml:space="preserve">
+    <value>Sau</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Pastă</value>
+  </data>
+  <data name="CreditBalance" xml:space="preserve">
+    <value>Soldul creditului</value>
+  </data>
+  <data name="BuyNeuroCredits" xml:space="preserve">
+    <value>Cumpărați Neuro-Credite</value>
+  </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Utilizați locația curentă</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>A apărut o eroare la obținerea locației. Asigurați-vă că permisiunile de locație sunt acordate în setările dispozitivelor dvs.</value>
+  </data>
+  <data name="Attachment_Passport" xml:space="preserve">
+    <value>Imaginea pașaportului</value>
+  </data>
+  <data name="Attachment_IdCardFront" xml:space="preserve">
+    <value>Partea din față a cărții de identitate</value>
+  </data>
+  <data name="Attachment_IdCardBack" xml:space="preserve">
+    <value>Spatele cărții de identitate</value>
+  </data>
+  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
+    <value>Partea din față a permisului de conducere</value>
+  </data>
+  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
+    <value>Spatele permisului de conducere</value>
+  </data>
+  <data name="Attachment_ProfilePhoto" xml:space="preserve">
+    <value>Fotografie a feței</value>
+  </data>
+  <data name="Kyc_Next" xml:space="preserve">
+    <value>Următor</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Aplica</value>
+  </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Înapoi la rezumat</value>
+  </data>
+  <data name="Kyc_Exit" xml:space="preserve">
+    <value>Sunteți sigur că doriți să părăsiți procesul de cerere de identitate?</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Progres</value>
+  </data>
+  <data name="TradeName" xml:space="preserve">
+    <value>Denumire comercială</value>
+  </data>
+  <data name="LegalName" xml:space="preserve">
+    <value>Denumire legală</value>
+  </data>
+  <data name="OrgRepName" xml:space="preserve">
+    <value>Denumire reprezentativă</value>
+  </data>
+  <data name="OrgRepCPF" xml:space="preserve">
+    <value>Reprezentant CPF</value>
+  </data>
+  <data name="OrgRepBirthDate" xml:space="preserve">
+    <value>Data nașterii reprezentative</value>
+  </data>
+  <data name="OrgRepRG" xml:space="preserve">
+    <value>Reprezentant RG</value>
+  </data>
+  <data name="OrgEMail" xml:space="preserve">
+    <value>E-mail corporativ</value>
+  </data>
+  <data name="OrgPhone" xml:space="preserve">
+    <value>Telefon corporativ</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Nume complet</value>
+  </data>
+  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
+    <value>Statutul constitutiv</value>
+  </data>
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Elimină datele temporare, cum ar fi imaginile și atașamentele, pentru a elibera spațiu</value>
+  </data>
+  <data name="ClearBrandingAndKycCache" xml:space="preserve">
+    <value>Ștergeți brandingul și memoria cache KYC</value>
+  </data>
+  <data name="ApplicationUnderUnderReview" xml:space="preserve">
+    <value>Cererea dumneavoastră este în curs de examinare. Te vom anunța când actul tău de identitate este aprobat!</value>
+  </data>
+  <data name="SeeIDApplication" xml:space="preserve">
+    <value>Vezi cererea de identificare</value>
+  </data>
+  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
+    <value>Cererea de identificare este trimisă spre examinare. Te vom anunța când actul tău de identitate este aprobat!</value>
+  </data>
+  <data name="ApplicationSummary" xml:space="preserve">
+    <value>Rezumatul aplicației</value>
+  </data>
+  <data name="ApplicationSummaryDescription" xml:space="preserve">
+    <value>Înainte de finalizare, vă rugăm să citiți și să vă asigurați că totul este corect</value>
+  </data>
+  <data name="ApplicationInformation" xml:space="preserve">
+    <value>Informații despre aplicație</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Detalii personale</value>
+  </data>
+  <data name="AddressDetails" xml:space="preserve">
+    <value>Detalii adresă</value>
+  </data>
+  <data name="DocumentDetails" xml:space="preserve">
+    <value>Detalii document</value>
+  </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>{0} este necesar</value>
+  </data>
+  <data name="PendingReview" xml:space="preserve">
+    <value>În așteptare de revizuire</value>
+  </data>
+  <data name="CurrentApplication" xml:space="preserve">
+    <value>Aplicație curentă</value>
+  </data>
+  <data name="IdentityApplication" xml:space="preserve">
+    <value>Aplicație de identitate</value>
+  </data>
+  <data name="AvailableApplications" xml:space="preserve">
+    <value>Aplicații disponibile</value>
+  </data>
+  <data name="ForYourIndividualUse" xml:space="preserve">
+    <value>Pentru uz individual</value>
+  </data>
+  <data name="BeforeFinalizingSummary" xml:space="preserve">
+    <value>Înainte de finalizare, vă rugăm să citiți și să vă asigurați că totul este corect</value>
+  </data>
+  <data name="CompanyInformation" xml:space="preserve">
+    <value>Informații despre companie</value>
+  </data>
+  <data name="CompanyAddress" xml:space="preserve">
+    <value>Adresa companiei</value>
+  </data>
+  <data name="CompanyRepresentative" xml:space="preserve">
+    <value>Reprezentant companie</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Încărca</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Faceți o fotografie</value>
+  </data>
+  <data name="InReview" xml:space="preserve">
+    <value>În recenzie</value>
   </data>
 </root>

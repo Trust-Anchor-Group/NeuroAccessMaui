@@ -3093,6 +3093,9 @@
     <value>Upload</value>
   </data>
   <data name="TakePhoto" xml:space="preserve">
-    <value>Take Photo</value>
+    <value>Take photo</value>
+  </data>
+  <data name="InReview" xml:space="preserve">
+    <value>In review</value>
   </data>
 </root>

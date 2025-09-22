@@ -44,15 +44,6 @@
 					<Text lang="en">Use the format YYYY-MM-DD</Text>
 					<Text lang="sv">Använd formatet ÅÅÅÅ-MM-DD</Text>
 				</Hint>
-				<Mapping key="BDAY">
-					<Transform name="day" />
-				</Mapping>
-				<Mapping key="BMONTH">
-					<Transform name="month" />
-				</Mapping>
-				<Mapping key="BYEAR">
-					<Transform name="year" />
-				</Mapping>
 				<ValidationRules>
 					<DateRangeRule min="1900-01-01" max="2025-01-01">
 						<Message>
@@ -66,6 +57,15 @@
 					<DateFormat>yyyy-MM-dd</DateFormat>
 					<AllowFuture>false</AllowFuture>
 				</Metadata>
+				<Mapping key="BDAY">
+					<Transform name="day" />
+				</Mapping>
+				<Mapping key="BMONTH">
+					<Transform name="month" />
+				</Mapping>
+				<Mapping key="BYEAR">
+					<Transform name="year" />
+				</Mapping>
 			</Field>
 			<Field id="isOrganization" type="boolean" label="Are you representing an organization?" mapping="IS_ORG" Required="true">
 				<Label>
@@ -91,9 +91,6 @@
 					<Text lang="en">you@email.com</Text>
 					<Text lang="sv">du@email.com</Text>
 				</Placeholder>
-				<Mapping key="EMAIL">
-					<Transform>lowercase</Transform>
-				</Mapping>
 				<Validation minLength="5" maxLength="100">
 					<Regex>^[^@\s]+@[^@\s]+\.[^@\s]+$</Regex>
 					<Message>
@@ -110,6 +107,9 @@
 					<InputType>email</InputType>
 					<AutoComplete>email</AutoComplete>
 				</Metadata>
+				<Mapping key="EMAIL">
+					<Transform>lowercase</Transform>
+				</Mapping>
 			</Field>
 			<Field id="newsletterOptIn" type="checkbox" label="Newsletter Subscription" required="true">
 				<Label>

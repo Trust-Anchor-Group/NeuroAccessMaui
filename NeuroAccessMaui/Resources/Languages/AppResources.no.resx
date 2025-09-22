@@ -121,6 +121,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
       Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
+    <value>Velg roller du vil signere som (valgfritt)</value>
+  </data>
+  <data name="NoRolesSelectedWarning" xml:space="preserve">
+    <value>Ingen roller valgt – du vil ikke signere denne kontrakten nå.</value>
+  </data>
+  <data name="SignAs" xml:space="preserve">
+    <value>Signer som</value>
+  </data>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>STRENG IKKE DEFINERT</value>
   </data>
@@ -659,10 +668,10 @@
     <value>En midlertidig OTP-kode er brukt. Søknaden slutter å fungere om en uke. Du må installere programmet på nytt for å bruke det igjen.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Skriv inn ny pinne</value>
+    <value>Opprett ny PIN-kode</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
-    <value>Bekreft PIN-koden</value>
+    <value>Bekreft PIN-kode</value>
   </data>
   <data name="CreatePassword" xml:space="preserve">
     <value>Opprett PIN-kode</value>
@@ -2812,7 +2821,280 @@
   <data name="ClearCache" xml:space="preserve">
     <value>Tøm hurtigbufferen</value>
   </data>
+  <data name="ClearBrandingAndKycCacheDescription" xml:space="preserve">
+    <value>Fjerner merkevare- og KYC-data for det gjeldende domenet</value>
+  </data>
+  <data name="Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Betafunksjoner er under utvikling og kan mangle funksjonalitet eller design. Noen av kjernefunksjonene deres er imidlertid tilgjengelige</value>
+  </data>
+  <data name="SmartThings" xml:space="preserve">
+    <value>Smarte ting</value>
+  </data>
+  <data name="Assets" xml:space="preserve">
+    <value>Eiendeler</value>
+  </data>
+  <data name="MicroLoan" xml:space="preserve">
+    <value>Mikrolån</value>
+  </data>
+  <data name="NFC" xml:space="preserve">
+    <value>NFC</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Vil du legge til denne identiteten i kontaktene dine?</value>
+  </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>Kommer snart!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+    <value>Vi jobber for tiden med dette</value>
+  </data>
+  <data name="BetaFeature" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>For å aktivere betafunksjoner, gå til startskjermen og åpne innstillingssiden</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>Denne funksjonen er for øyeblikket i betatilstand. For å aktivere betafunksjoner, åpne innstillingssiden og aktiver betafunksjoner</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
+    <value>Tillatelse kreves</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
+    <value>Vi kunne ikke laste inn den nyeste versjonen av denne kontrakten. Detaljene du ser kan være utdaterte. Be om tilgang nå?</value>
+  </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Hurtigbuffer tømt</value>
+  </data>
+  <data name="LanguageChangedTitle" xml:space="preserve">
+    <value>Språk endret</value>
+  </data>
+  <data name="LanguageChangedMessage" xml:space="preserve">
+    <value>Start appen på nytt for å sikre at all tekst endrer språk på riktig måte</value>
+  </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Fortsett ({0})</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Aldri</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Nå</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>{0} minutter siden</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>{0} timer siden</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Sist oppdatert: {0}</value>
+  </data>
+  <data name="ActivateYourDigitalIdentity" xml:space="preserve">
+    <value>Aktivere din digitale ID</value>
+  </data>
+  <data name="HaveAnyQuestions" xml:space="preserve">
+    <value>Har du spørsmål?</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription" xml:space="preserve">
+    <value>Les mer om aktivering av din digitale ID på ID-leverandørens nettsted.</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription2" xml:space="preserve">
+    <value>ID-leverandør kan være din: Bank, skole osv.</value>
+  </data>
+  <data name="AlreadyHaveAnID" xml:space="preserve">
+    <value>Har du allerede en ID?</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription" xml:space="preserve">
+    <value>Alt vi trenger er overføringskoden fra din forrige telefon.</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
+    <value>Finn og start under: Innstillinger / Overfør identitet</value>
+  </data>
+  <data name="PaymentAcceptance" xml:space="preserve">
+    <value>Aksept av betaling</value>
+  </data>
+  <data name="PaymentAcceptanceDescription" xml:space="preserve">
+    <value>Se gjennom informasjonen om offline-betaling nedenfor. Hvis du er fornøyd med dem, send den til serveren for behandling.</value>
+  </data>
+  <data name="ContractWizardStepFormat" xml:space="preserve">
+    <value>Trinn {0} av {1}</value>
+  </data>
+  <data name="ContractWizardNext" xml:space="preserve">
+    <value>Neste</value>
+  </data>
+  <data name="ContractWizardReviewHumanReadable" xml:space="preserve">
+    <value>Gjennomgang som kan leses av mennesker</value>
+  </data>
+  <data name="ContractWizardSettings" xml:space="preserve">
+    <value>Innstillinger</value>
+  </data>
+  <data name="ContractWizardVisibilityPlaceholder" xml:space="preserve">
+    <value>Velg hvem som skal ha tilgang</value>
+  </data>
+  <data name="ContractWizardContractLabel" xml:space="preserve">
+    <value>Kontrakt</value>
+  </data>
+  <data name="HaveAnInviteCodeQuestion" xml:space="preserve">
+    <value>Har du en invitasjonskode?</value>
+  </data>
+  <data name="PasteInviteCodeHere" xml:space="preserve">
+    <value>Lim inn invitasjonskode her</value>
+  </data>
+  <data name="Or" xml:space="preserve">
+    <value>Eller</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Lime inn</value>
+  </data>
+  <data name="CreditBalance" xml:space="preserve">
+    <value>Kreditt balanse</value>
+  </data>
+  <data name="BuyNeuroCredits" xml:space="preserve">
+    <value>Kjøp Neuro-kreditter</value>
+  </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Bruk gjeldende plassering</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>Det oppsto en feil under plasseringen din. Sørg for at posisjonstillatelser er gitt i enhetens innstillinger</value>
+  </data>
+  <data name="Attachment_Passport" xml:space="preserve">
+    <value>Pass-bilde</value>
+  </data>
+  <data name="Attachment_IdCardFront" xml:space="preserve">
+    <value>Forsiden av ID-kortet</value>
+  </data>
+  <data name="Attachment_IdCardBack" xml:space="preserve">
+    <value>Baksiden av ID-kortet</value>
+  </data>
+  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
+    <value>Forsiden av førerkortet</value>
+  </data>
+  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
+    <value>Baksiden av førerkortet</value>
+  </data>
+  <data name="Attachment_ProfilePhoto" xml:space="preserve">
+    <value>Foto av ansikt</value>
+  </data>
+  <data name="Kyc_Next" xml:space="preserve">
+    <value>Neste</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Bruke</value>
+  </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Gå tilbake til sammendrag</value>
+  </data>
+  <data name="Kyc_Exit" xml:space="preserve">
+    <value>Er du sikker på at du ønsker å forlate identitetssøknadsprosessen?</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Fremgang</value>
+  </data>
+  <data name="TradeName" xml:space="preserve">
+    <value>Handelsnavn</value>
+  </data>
+  <data name="LegalName" xml:space="preserve">
+    <value>Juridisk navn</value>
+  </data>
+  <data name="OrgRepName" xml:space="preserve">
+    <value>Representativt navn</value>
+  </data>
+  <data name="OrgRepCPF" xml:space="preserve">
+    <value>Representativ CPF</value>
+  </data>
+  <data name="OrgRepBirthDate" xml:space="preserve">
+    <value>Representativ fødselsdato</value>
+  </data>
+  <data name="OrgRepRG" xml:space="preserve">
+    <value>Representant RG</value>
+  </data>
+  <data name="OrgEMail" xml:space="preserve">
+    <value>Bedriftens e-postadresse</value>
+  </data>
+  <data name="OrgPhone" xml:space="preserve">
+    <value>Bedriftens telefon</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Fullt navn</value>
+  </data>
+  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
+    <value>Vedtekt</value>
+  </data>
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Fjerner midlertidige data som bilder og vedlegg for å frigjøre plass</value>
+  </data>
+  <data name="ClearBrandingAndKycCache" xml:space="preserve">
+    <value>Tøm merkevarebygging og KYC-buffer</value>
+  </data>
+  <data name="ApplicationUnderUnderReview" xml:space="preserve">
+    <value>Søknaden din er under vurdering. Vi gir deg beskjed når legitimasjonen din er godkjent!</value>
+  </data>
+  <data name="SeeIDApplication" xml:space="preserve">
+    <value>Se ID-søknad</value>
+  </data>
+  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
+    <value>ID-søknaden din sendes til vurdering. Vi gir deg beskjed når legitimasjonen din er godkjent!</value>
+  </data>
+  <data name="ApplicationSummary" xml:space="preserve">
+    <value>Sammendrag av søknaden</value>
+  </data>
+  <data name="ApplicationSummaryDescription" xml:space="preserve">
+    <value>Før du fullfører, vennligst les gjennom og sørg for at alt er riktig</value>
+  </data>
+  <data name="ApplicationInformation" xml:space="preserve">
+    <value>Informasjon om søknaden</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Personlige opplysninger</value>
+  </data>
+  <data name="AddressDetails" xml:space="preserve">
+    <value>Detaljer om adresse</value>
+  </data>
+  <data name="DocumentDetails" xml:space="preserve">
+    <value>Detaljer om dokumentet</value>
+  </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>{0} er nødvendig</value>
+  </data>
+  <data name="PendingReview" xml:space="preserve">
+    <value>Venter på gjennomgang</value>
+  </data>
+  <data name="CurrentApplication" xml:space="preserve">
+    <value>Gjeldende applikasjon</value>
+  </data>
+  <data name="IdentityApplication" xml:space="preserve">
+    <value>Søknad om identitet</value>
+  </data>
+  <data name="AvailableApplications" xml:space="preserve">
+    <value>Tilgjengelige applikasjoner</value>
+  </data>
+  <data name="ForYourIndividualUse" xml:space="preserve">
+    <value>For din individuelle bruk</value>
+  </data>
+  <data name="BeforeFinalizingSummary" xml:space="preserve">
+    <value>Før du fullfører, vennligst les gjennom og sørg for at alt er riktig</value>
+  </data>
+  <data name="CompanyInformation" xml:space="preserve">
+    <value>Informasjon om selskapet</value>
+  </data>
+  <data name="CompanyAddress" xml:space="preserve">
+    <value>Firmaets adresse</value>
+  </data>
+  <data name="CompanyRepresentative" xml:space="preserve">
+    <value>Selskapets representant</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Opplasting</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Ta bilde</value>
+  </data>
+  <data name="InReview" xml:space="preserve">
+    <value>I gjennomgang</value>
   </data>
 </root>
