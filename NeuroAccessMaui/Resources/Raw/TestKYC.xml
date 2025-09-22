@@ -30,6 +30,7 @@
 					<Text lang="en">John</Text>
 					<Text lang="sv">Johan</Text>
 				</Placeholder>
+				<Default>Maximiliam</Default>
 				<ValidationRules>
 					<LengthRule min="2" max="40">
 						<Message>
@@ -46,7 +47,6 @@
 					</RegexRule>
 				</ValidationRules>
 				<Mapping key="FIRST_NAME" />
-				<Default>Maximiliam</Default>
 			</Field>
 			<Field id="dob" type="date" required="true">
 				<Label>
@@ -57,6 +57,19 @@
 					<Text lang="en">Use the format YYYY-MM-DD</Text>
 					<Text lang="sv">Använd formatet ÅÅÅÅ-MM-DD</Text>
 				</Hint>
+				<ValidationRules>
+					<DateRangeRule min="1900-01-01" max="2020-01-01">
+						<Message>
+							<Text lang="en">Enter a valid date between 1900 and 2020</Text>
+							<Text lang="sv">Ange ett giltigt datum mellan 1900 och 2020</Text>
+						</Message>
+					</DateRangeRule>
+				</ValidationRules>
+				<!-- Example: a date field with metadata could look like this -->
+				<Metadata>
+					<DateFormat>yyyy-MM-dd</DateFormat>
+					<AllowFuture>false</AllowFuture>
+				</Metadata>
 				<Mapping key="BDAY">
 					<Transform name="day" />
 				</Mapping>
@@ -66,20 +79,7 @@
 				<Mapping key="BYEAR">
 					<Transform name="year" />
 				</Mapping>
-				<ValidationRules>
-					<DateRangeRule min="1900-01-01" max="2020-01-01">
-						<Message>
-							<Text lang="en">Enter a valid date between 1900 and 2020</Text>
-							<Text lang="sv">Ange ett giltigt datum mellan 1900 och 2020</Text>
-						</Message>
-					</DateRangeRule>
-				</ValidationRules>
 				<Mapping key="BDATE" />
-				<!-- Example: a date field with metadata could look like this -->
-				<Metadata>
-					<DateFormat>yyyy-MM-dd</DateFormat>
-					<AllowFuture>false</AllowFuture>
-				</Metadata>
 			</Field>
 			<Field id="isOrganization" type="boolean" Required="true">
 				<Label>
@@ -106,9 +106,7 @@
 					<Text lang="en">you@email.com</Text>
 					<Text lang="sv">du@email.com</Text>
 				</Placeholder>
-				<Mapping key="EMAIL">
-					<Transform name="lowercase" />
-				</Mapping>
+				<Default>Maximiliam@gmail.com</Default>
 				<ValidationRules>
 					<LengthRule min="5" max="100">
 						<Message>
@@ -128,11 +126,13 @@
 					<FieldRef>isOrganization</FieldRef>
 					<Equals>true</Equals>
 				</Condition>
-				<Default>Maximiliam@gmail.com</Default>
 				<Metadata>
 					<InputType>email</InputType>
 					<AutoComplete>email</AutoComplete>
 				</Metadata>
+				<Mapping key="EMAIL">
+					<Transform name="lowercase" />
+				</Mapping>
 			</Field>
 			<Field id="newsletterOptIn" type="checkbox" required="true">
 				<Label>
@@ -143,6 +143,7 @@
 					<Text lang="en">Get updates and offers by email</Text>
 					<Text lang="sv">Få uppdateringar och erbjudanden via e-post</Text>
 				</Hint>
+				<Default>false</Default>
 				<Options>
 					<Option value="yes">
 						<Text lang="en">Yes, sign me up!</Text>
@@ -153,7 +154,6 @@
 						<Text lang="sv">nej, anmäl mig ej!</Text>
 					</Option>
 				</Options>
-				<Default>false</Default>
 			</Field>
 		</Section>
 	</Page>

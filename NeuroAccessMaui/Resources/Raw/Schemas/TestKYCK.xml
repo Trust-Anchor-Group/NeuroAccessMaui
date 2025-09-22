@@ -86,6 +86,9 @@
 				<Text lang="en">CPF</Text>
 				<Text lang="pt">CPF</Text>
 			</Placeholder>
+			<Metadata>
+				<Placeholder>pnr</Placeholder>
+			</Metadata>
 			<ValidationRules>
 				<PersonalNumberRule>
 					<Message>
@@ -95,9 +98,6 @@
 				</PersonalNumberRule>
 			</ValidationRules>
 			<Mapping key="PNR" />
-			<Metadata>
-				<Placeholder>pnr</Placeholder>
-			</Metadata>
 		</Field>
 	</Page>
 	<Page id="dateOfBirh">
@@ -110,6 +110,14 @@
 				<Text lang="en">Date of Birth</Text>
 				<Text lang="pt">Data de nascimento</Text>
 			</Label>
+			<ValidationRules>
+				<DateRangeRule min="1900-01-01" max="2025-01-01">
+					<Message>
+						<Text lang="en">Enter a valid date between 1900 and 2025</Text>
+						<Text lang="pt">Insira uma data válida entre 1900 e 2025</Text>
+					</Message>
+				</DateRangeRule>
+			</ValidationRules>
 			<Mapping key="BDAY">
 				<Transform name="day" />
 			</Mapping>
@@ -119,14 +127,6 @@
 			<Mapping key="BYEAR">
 				<Transform name="year" />
 			</Mapping>
-			<ValidationRules>
-				<DateRangeRule min="1900-01-01" max="2025-01-01">
-					<Message>
-						<Text lang="en">Enter a valid date between 1900 and 2025</Text>
-						<Text lang="pt">Insira uma data válida entre 1900 e 2025</Text>
-					</Message>
-				</DateRangeRule>
-			</ValidationRules>
 		</Field>
 	</Page>
 	<Page id="identityDocuments">
@@ -168,6 +168,10 @@
 			<Text lang="en">Make sure all information is clearly visible</Text>
 			<Text lang="pt">Certifique-se de que todas as informações estejam legíveis</Text>
 		</Description>
+		<Condition>
+			<FieldRef>documentType</FieldRef>
+			<Equals>passport</Equals>
+		</Condition>
 		<!-- Passport Upload Field (shown if passport is selected) -->
 			<Field id="passportUpload" type="image" specialType="passport" required="true">
 			<Label>
@@ -185,10 +189,6 @@
 				</Metadata>
 				<Mapping key="Passport" />
 			</Field>
-		<Condition>
-			<FieldRef>documentType</FieldRef>
-			<Equals>passport</Equals>
-		</Condition>
 	</Page>
 	<Page id="identityCardPage">
 		<Title>
@@ -199,6 +199,10 @@
 			<Text lang="en">Make sure your name and photo is clearly visible.</Text>
 			<Text lang="pt">Certifique-se de que seu nome e foto estejam legíveis.</Text>
 		</Description>
+		<Condition>
+			<FieldRef>documentType</FieldRef>
+			<Equals>identityCard</Equals>
+		</Condition>
 		<!-- Identity Card Upload Field (shown if identityCard is selected) -->
 			<Field id="identityCardFront" type="image" specialType="identityCardFront" required="true">
 			<Label>
@@ -232,10 +236,6 @@
 				</Metadata>
 				<Mapping key="IdCardBack" />
 			</Field>
-		<Condition>
-			<FieldRef>documentType</FieldRef>
-			<Equals>identityCard</Equals>
-		</Condition>
 	</Page>
 	<Page id="driversLicensePage">
 		<Title>
@@ -246,6 +246,10 @@
 			<Text lang="en">Make sure your information is clearly visible.</Text>
 			<Text lang="pt">Certifique-se de que suas informações estejam legíveis.</Text>
 		</Description>
+		<Condition>
+			<FieldRef>documentType</FieldRef>
+			<Equals>driversLicense</Equals>
+		</Condition>
 		<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
 			<Field id="driverslicenseFront" type="image" specialType="driversLicenseFront" required="true">
 			<Label>
@@ -280,10 +284,6 @@
 				</Metadata>
 				<Mapping key="DriverLicenseBack" />
 			</Field>
-		<Condition>
-			<FieldRef>documentType</FieldRef>
-			<Equals>driversLicense</Equals>
-		</Condition>
 	</Page>
 	<Page id="selfiePage">
 		<Title>
@@ -417,13 +417,13 @@ Proin placerat, nisl efficitur viverra dictum, quam nisl semper turpis, rhoncus 
 				<Text lang="en">Terms Consent</Text>
 				<Text lang="pt">Consentimento dos Termos</Text>
 			</Label>
+			<Default>false</Default>
 			<Options>
 				<Option value="yes">
 					<Text lang="en">I accept</Text>
 					<Text lang="pt">Eu aceito</Text>
 				</Option>
 			</Options>
-			<Default>false</Default>
 		</Field>
 	</Page>
 </KYCProcess>

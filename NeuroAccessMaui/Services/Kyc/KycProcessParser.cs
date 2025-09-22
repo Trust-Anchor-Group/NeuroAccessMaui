@@ -2,12 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using CommunityToolkit.Common;
-using Microsoft.Maui.Storage;
 using NeuroAccessMaui;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Data.PersonalNumbers;
@@ -25,7 +22,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <summary>
 		/// Parses the KYC pages from an XML string.
 		/// </summary>
-        public static Task<KycProcess> LoadProcessAsync(string Xml, string? Lang = null)
+		public static Task<KycProcess> LoadProcessAsync(string Xml, string? Lang = null)
         {
             KycProcess Process = new();
             XDocument Doc = XDocument.Parse(Xml);
@@ -46,33 +43,30 @@ namespace NeuroAccessMaui.Services.Kyc
 					Condition = ParseCondition(PageEl.Element("Condition"))
 				};
 
-				// Fields (direct under Page)
-				foreach (XElement FieldEl in PageEl.Elements("Field"))
-				{
-					ObservableKycField Field = ParseField(FieldEl, Lang);
-					Field.SetOwnerProcess(Process);
-					Page.AllFields.Add(Field);
-
-				}
+                // Fields (direct under Page) - owner process passed early to allow metadata logic to use it
+                foreach (XElement FieldEl in PageEl.Elements("Field"))
+                {
+                    ObservableKycField Field = ParseField(FieldEl, Lang, Process);
+                    Page.AllFields.Add(Field);
+                }
 
 				// Sections
-				foreach (XElement SectionEl in PageEl.Elements("Section"))
-				{
-				KycSection Section = new KycSection
-				{
-					Label = ParseLocalizedText(SectionEl.Element("Label")),
-					Description = ParseLocalizedText(SectionEl.Element("Description"))
-				};
+                foreach (XElement SectionEl in PageEl.Elements("Section"))
+                {
+                    KycSection Section = new KycSection
+                    {
+                        Label = ParseLocalizedText(SectionEl.Element("Label")),
+                        Description = ParseLocalizedText(SectionEl.Element("Description"))
+                    };
 
-					foreach (XElement FieldEl in SectionEl.Elements("Field"))
-					{
-						ObservableKycField Field = ParseField(FieldEl, Lang);
-						Field.SetOwnerProcess(Process);
-						Section.AllFields.Add(Field);
-					}
+                    foreach (XElement FieldEl in SectionEl.Elements("Field"))
+                    {
+                        ObservableKycField Field = ParseField(FieldEl, Lang, Process);
+                        Section.AllFields.Add(Field);
+                    }
 
-					Page.AllSections.Add(Section);
-				}
+                    Page.AllSections.Add(Section);
+                }
 
 				Process.Pages.Add(Page);
 			}
@@ -82,7 +76,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			return Task.FromResult(Process);
 		}
 
-		private static ObservableKycField ParseField(XElement El, string? Lang)
+		private static ObservableKycField ParseField(XElement El, string? Lang, KycProcess Owner)
 		{
 			// Determine field type
 			string TypeAttr = (string?)El.Attribute("type") ?? "text";
@@ -145,31 +139,30 @@ namespace NeuroAccessMaui.Services.Kyc
 					// Special cases for PNR placeholders
 					if (Key.Equals("Placeholder", StringComparison.OrdinalIgnoreCase) && Value.Equals("pnr", StringComparison.OrdinalIgnoreCase))
 					{
-						KycProcess? Process;
-						Field.TryGetOwnerProcess(out Process);
-						string? CountryCode = null;
-						if (Process != null)
-						{
-							CountryCode = Process.Values.TryGetValue("country", out string? Cc) && !string.IsNullOrEmpty(Cc) ? Cc : string.Empty;
-						}
+						string CountryCode = Owner.Values.TryGetValue("country", out string? Cc) && !string.IsNullOrEmpty(Cc) ? Cc : string.Empty;
 						if (string.IsNullOrEmpty(CountryCode))
 						{
 							try
 							{
-								CountryCode = ServiceRef.TagProfile.LegalIdentity?.GetPersonalInformation().Country;
+								CountryCode = ServiceRef.TagProfile.LegalIdentity?.GetPersonalInformation().Country ?? string.Empty;
 							}
 							catch (Exception)
 							{
 								CountryCode = string.Empty;
 							}
 						}
-
 						string? PnrExample = PersonalNumberSchemes.DisplayStringForCountry(CountryCode);
-						Field.Placeholder = new KycLocalizedText();
-						Field.Placeholder.Add(CountryCode, string.IsNullOrEmpty(PnrExample) ? "" : PnrExample);
+						if (!string.IsNullOrEmpty(CountryCode) && !string.IsNullOrEmpty(PnrExample))
+						{
+							Field.Placeholder = new KycLocalizedText();
+							Field.Placeholder.Add(CountryCode, PnrExample);
+						}
 					}
 				}
 			}
+
+			// Set owner after metadata logic has executed (so placeholder override persists)
+			Field.SetOwnerProcess(Owner);
 
 			// Validation rules (<ValidationRules>)
 			void TryAddLengthRules(XElement RuleEl)
@@ -190,7 +183,16 @@ namespace NeuroAccessMaui.Services.Kyc
 				if (!string.IsNullOrEmpty(Pattern))
 				{
 					string? Msg = ParseLocalizedText(RuleEl.Element("Message"))?.Get(Lang);
-					Field.AddRule(new RegexRule(Pattern, Msg));
+					// Defensive: attempt to compile early to surface invalid patterns gracefully
+					try
+					{
+						System.Text.RegularExpressions.Regex.Match(string.Empty, Pattern); // minimal validation
+						Field.AddRule(new RegexRule(Pattern, Msg));
+					}
+					catch (Exception)
+					{
+						// Ignore invalid regex so a single bad pattern does not block entire process
+					}
 				}
 			}
 
@@ -248,7 +250,11 @@ namespace NeuroAccessMaui.Services.Kyc
 					string? NameAttr = (string?)Tx.Attribute("name");
 					if (!string.IsNullOrWhiteSpace(NameAttr))
 					{
-						Mapping.TransformNames.Add(NameAttr.Trim());
+						string Clean = NameAttr.Trim();
+						if (!Mapping.TransformNames.Any(t => string.Equals(t, Clean, StringComparison.OrdinalIgnoreCase)))
+						{
+							Mapping.TransformNames.Add(Clean);
+						}
 					}
 				}
 

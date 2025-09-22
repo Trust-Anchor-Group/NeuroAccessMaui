@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
   <!-- Root element describing the sequence of KYC pages -->
-  <xs:element name="KYCProcess" type="KycProcessType"/>
+  <xs:element name="KYCProcess" type="KycProcessType">
+    <xs:key name="PageIds">
+      <xs:selector xpath="Page"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:key name="FieldIds">
+      <xs:selector xpath=".//Field"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:keyref name="ConditionFieldReferencesExisting" refer="FieldIds">
+      <xs:selector xpath=".//Condition"/>
+      <xs:field xpath="FieldRef"/>
+    </xs:keyref>
+  </xs:element>
 
   <xs:complexType name="KycProcessType">
     <xs:sequence>
@@ -13,10 +26,10 @@
   <!-- Individual page definition -->
   <xs:complexType name="PageType">
     <xs:sequence>
+      <xs:element name="Title" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Description" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Condition" type="ConditionType" minOccurs="0" maxOccurs="1"/>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="Title" type="LocalizedTextType"/>
-        <xs:element name="Description" type="LocalizedTextType"/>
-        <xs:element name="Condition" type="ConditionType"/>
         <xs:element name="Field" type="FieldType"/>
         <xs:element name="Section" type="SectionType"/>
       </xs:choice>
@@ -28,11 +41,9 @@
   <!-- Section grouping fields within a page -->
   <xs:complexType name="SectionType">
     <xs:sequence>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="Label" type="LocalizedTextType"/>
-        <xs:element name="Description" type="LocalizedTextType"/>
-        <xs:element name="Field" type="FieldType"/>
-      </xs:choice>
+      <xs:element name="Label" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Description" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Field" type="FieldType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="label" type="xs:string" use="optional"/>
   </xs:complexType>
@@ -40,18 +51,16 @@
   <!-- Field definition -->
   <xs:complexType name="FieldType">
     <xs:sequence>
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="Label" type="LocalizedTextType"/>
-        <xs:element name="Hint" type="LocalizedTextType"/>
-        <xs:element name="Placeholder" type="LocalizedTextType"/>
-        <xs:element name="Description" type="LocalizedTextType"/>
-        <xs:element name="Default" type="xs:string"/>
-        <xs:element name="Metadata" type="MetadataType"/>
-        <xs:element name="ValidationRules" type="ValidationRulesType"/>
-        <xs:element name="Options" type="OptionsType"/>
-        <xs:element name="Mapping" type="MappingType"/>
-        <xs:element name="Condition" type="ConditionType"/>
-      </xs:choice>
+      <xs:element name="Label" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Hint" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Placeholder" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Description" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Default" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Metadata" type="MetadataType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ValidationRules" type="ValidationRulesType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Options" type="OptionsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Condition" type="ConditionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Mapping" type="MappingType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="id" type="xs:string" use="required"/>
     <xs:attribute name="type" type="FieldTypeName" use="required"/>

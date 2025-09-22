@@ -143,6 +143,9 @@
 				<Text lang="fi">Henkilötunnus</Text>
 				<Text lang="fr">Numéro d’identification personnel</Text>
 			</Label>
+			<Metadata>
+				<Placeholder>pnr</Placeholder>
+			</Metadata>
 			<ValidationRules>
 				<PersonalNumberRule>
 					<Message>
@@ -157,9 +160,6 @@
 					</Message>
 				</PersonalNumberRule>
 			</ValidationRules>
-			<Metadata>
-				<Placeholder>pnr</Placeholder>
-			</Metadata>
 			<Mapping key="PNR" />
 		</Field>
 		<Field id="dob" type="date" required="true">
@@ -340,15 +340,15 @@
 					<Text lang="fi">Valitse tiedosto...</Text>
 					<Text lang="fr">Choisir un fichier...</Text>
 				</Placeholder>
-				<Condition>
-					<FieldRef>documentType</FieldRef>
-					<Equals>passport</Equals>
-				</Condition>
 					<Metadata>
 						<TargetWidth>1200</TargetWidth>
 						<TargetHeight>1600</TargetHeight>
 						<MinDpi>300</MinDpi>
 					</Metadata>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>passport</Equals>
+				</Condition>
 					<Mapping key="Passport" />
 				</Field>
 
@@ -374,15 +374,15 @@
 					<Text lang="fi">Henkilökortin etupuoli...</Text>
 					<Text lang="fr">Carte d’identité recto...</Text>
 				</Placeholder>
-				<Condition>
-					<FieldRef>documentType</FieldRef>
-					<Equals>identityCard</Equals>
-				</Condition>
 					<Metadata>
 						<TargetWidth>1000</TargetWidth>
 						<TargetHeight>1500</TargetHeight>
 						<MinDpi>200</MinDpi>
 					</Metadata>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>identityCard</Equals>
+				</Condition>
 					<Mapping key="IdCardFront" />
 				</Field>
 
@@ -408,15 +408,15 @@
 					<Text lang="fi">Henkilökortin takapuoli...</Text>
 					<Text lang="fr">Carte d’identité verso...</Text>
 				</Placeholder>
-				<Condition>
-					<FieldRef>documentType</FieldRef>
-					<Equals>identityCard</Equals>
-				</Condition>
 					<Metadata>
 						<TargetWidth>1000</TargetWidth>
 						<TargetHeight>1500</TargetHeight>
 						<MinDpi>200</MinDpi>
 					</Metadata>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>identityCard</Equals>
+				</Condition>
 					<Mapping key="IdCardBack" />
 				</Field>
 
@@ -442,15 +442,15 @@
 					<Text lang="fi">Ajokortin etupuoli...</Text>
 					<Text lang="fr">Permis de conduire recto...</Text>
 				</Placeholder>
-				<Condition>
-					<FieldRef>documentType</FieldRef>
-					<Equals>driversLicense</Equals>
-				</Condition>
 					<Metadata>
 						<TargetWidth>900</TargetWidth>
 						<TargetHeight>600</TargetHeight>
 						<MinDpi>150</MinDpi>
 					</Metadata>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>driversLicense</Equals>
+				</Condition>
 					<Mapping key="DriverLicenseFront" />
 				</Field>
 			<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
@@ -475,15 +475,15 @@
 					<Text lang="fi">Ajokortin takapuoli...</Text>
 					<Text lang="fr">Permis de conduire verso...</Text>
 				</Placeholder>
-				<Condition>
-					<FieldRef>documentType</FieldRef>
-					<Equals>driversLicense</Equals>
-				</Condition>
 					<Metadata>
 						<TargetWidth>900</TargetWidth>
 						<TargetHeight>600</TargetHeight>
 						<MinDpi>150</MinDpi>
 					</Metadata>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>driversLicense</Equals>
+				</Condition>
 					<Mapping key="DriverLicenseBack" />
 				</Field>
 		</Section>
@@ -831,6 +831,7 @@
 			<Text lang="fr">Demandez-vous une identification organisationnelle ?</Text>
 		</Title>
 		<Field id="isOrg" type="checkbox">
+			<Default>false</Default>
 			<Options>
 				<Option value="yes">
 					<Text lang="en">Yes</Text>
@@ -843,7 +844,6 @@
 					<Text lang="fr">Oui</Text>
 				</Option>
 			</Options>
-			<Default>false</Default>
 		</Field>
 	</Page>
 	<Page id="orgInfo">
