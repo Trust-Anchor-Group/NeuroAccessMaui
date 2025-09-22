@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Channels;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services.Kyc.Domain;
 using NeuroAccessMaui.Services.Kyc.Models;
@@ -21,106 +22,148 @@ using Waher.Runtime.Inventory;
 using Waher.Persistence;
 using SkiaSharp;
 using Waher.Networking.XMPP.Contracts;
+using System.Diagnostics;
+using System.Security.Cryptography;
 
 namespace NeuroAccessMaui.Services.Kyc
 {
 	/// <summary>
-	/// Default implementation of <see cref="IKycService"/>.
+	/// Service providing KYC process loading, validation, snapshotting and persistence.
+	/// Implements ordered, serialized snapshot persistence to avoid data races.
 	/// </summary>
 	[Singleton]
 	public class KycService : IKycService, IDisposable
 	{
 		private static readonly HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(10) };
 		private static readonly string backupKyc = "TestKYCNeuro.xml";
-		private static readonly TimeSpan AutosaveDelay = TimeSpan.FromMilliseconds(800);
-		private static readonly IAsyncPolicy AutosavePolicy = Policies.Debounce(AutosaveDelay);
-		private readonly ObservableTask<int> autosaveTask;
-		private bool disposedValue;
 
-		private readonly struct AutosaveRequest
+		private readonly System.Collections.Concurrent.ConcurrentDictionary<string, AsyncLock> referenceLocks = new();
+		private readonly Channel<string> autosaveChannel;
+		private readonly System.Collections.Concurrent.ConcurrentDictionary<string, AutosaveEntry> pendingAutosave = new();
+		private readonly CancellationTokenSource autosaveCts = new();
+		private readonly Task autosaveWorkerTask;
+
+		// Snapshot metrics (exposed for future diagnostics)
+		private long snapshotsPersisted = 0;
+		private long snapshotsSkipped = 0;
+
+		private sealed class AutosaveEntry
 		{
-			public AutosaveRequest(KycReference reference, bool isImmediate)
+			public AutosaveEntry(KycReference reference, KycReferenceSnapshot snapshot)
 			{
 				this.Reference = reference;
-				this.IsImmediate = isImmediate;
+				this.Snapshot = snapshot;
 			}
-
 			public KycReference Reference { get; }
-			public bool IsImmediate { get; }
+			public KycReferenceSnapshot Snapshot { get; }
 		}
 
+		private bool disposedValue;
+
+		/// <summary>
+		/// Creates a new instance of the <see cref="KycService"/> class.
+		/// Initializes the autosave channel and background worker.
+		/// </summary>
 		public KycService()
 		{
-			this.autosaveTask = new ObservableTaskBuilder()
-				.Named("KYC Autosave")
-				.AutoStart(false)
-				.UseTaskRun(true)
-				.WithDispatcher(ImmediateDispatcher.Instance)
-				.Run(context =>
+			this.autosaveChannel = Channel.CreateUnbounded<string>(new UnboundedChannelOptions
+			{
+				SingleReader = true,
+				SingleWriter = false,
+				AllowSynchronousContinuations = false
+			});
+			this.autosaveWorkerTask = Task.Run(this.AutosaveWorkerLoop);
+		}
+
+		/// <summary>
+		/// Background worker that serially persists the latest pending snapshot per reference.
+		/// </summary>
+		private async Task AutosaveWorkerLoop()
+		{
+			ChannelReader<string> Reader = this.autosaveChannel.Reader;
+			while (await Reader.WaitToReadAsync(this.autosaveCts.Token).ConfigureAwait(false))
+			{
+				while (Reader.TryRead(out string? Key))
 				{
-					context.CancellationToken.ThrowIfCancellationRequested();
-					return Task.CompletedTask;
-				})
-				.Build();
+					if (this.autosaveCts.IsCancellationRequested)
+						return;
+					if (!this.pendingAutosave.TryRemove(Key, out AutosaveEntry? Entry))
+						continue; // Coalesced away
+					try
+					{
+						await this.SaveSnapshotAsync(Entry.Reference, Entry.Snapshot, false).ConfigureAwait(false);
+					}
+					catch (OperationCanceledException)
+					{
+						return;
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "KYC.AutosaveWorker"));
+					}
+				}
+			}
 		}
 
 		#region Loading & Persistence
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Loads the single persisted <see cref="KycReference"/> (creating a new one if none exists) and ensures KYC XML is available.
+		/// Optionally localizes the friendly name using the provided language.
+		/// </summary>
+		/// <param name="Lang">Optional language code for process localization.</param>
+		/// <returns>The loaded reference.</returns>
 		public async Task<KycReference> LoadKycReferenceAsync(string? Lang = null)
 		{
-			KycReference? Reference;
-
+			KycReference? LoadedReference;
 			try
 			{
-				Reference = await ServiceRef.StorageService.FindFirstDeleteRest<KycReference>();
+				LoadedReference = await ServiceRef.StorageService.FindFirstDeleteRest<KycReference>();
 			}
 			catch (Exception FindEx)
 			{
 				ServiceRef.LogService.LogException(FindEx, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-				Reference = null;
+				LoadedReference = null;
 			}
 
-			if (Reference is null || string.IsNullOrEmpty(Reference.ObjectId))
+			if (LoadedReference is null || string.IsNullOrEmpty(LoadedReference.ObjectId))
 			{
-				Reference = new KycReference
+				LoadedReference = new KycReference
 				{
 					CreatedUtc = DateTime.UtcNow
 				};
 				try
 				{
-					await ServiceRef.StorageService.Insert(Reference);
+					await ServiceRef.StorageService.Insert(LoadedReference);
 				}
 				catch (Exception Ex)
 				{
 					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 				}
 
-				// Try to fetch KYC XML from provider first, fallback to embedded resource
 				string? Xml = await this.TryFetchKycXmlFromProvider();
 				if (string.IsNullOrEmpty(Xml))
 				{
 					using Stream Stream = await FileSystem.OpenAppPackageFileAsync(backupKyc);
-					using StreamReader Reader = new(Stream);
-					Xml = await Reader.ReadToEndAsync().ConfigureAwait(false);
+					using StreamReader Reader2 = new(Stream);
+					Xml = await Reader2.ReadToEndAsync().ConfigureAwait(false);
 				}
-				Reference.KycXml = Xml;
-				Reference.UpdatedUtc = DateTime.UtcNow;
-				Reference.FetchedUtc = DateTime.UtcNow;
+				LoadedReference.KycXml = Xml;
+				LoadedReference.UpdatedUtc = DateTime.UtcNow;
+				LoadedReference.FetchedUtc = DateTime.UtcNow;
 			}
 
-			// Populate localized friendly name from process, if available
+			// Localize friendly name if available
 			try
 			{
-				KycProcess? Process = await Reference.GetProcess(Lang).ConfigureAwait(false);
+				KycProcess? Process = await LoadedReference.GetProcess(Lang).ConfigureAwait(false);
 				if (Process?.Name is not null)
 				{
 					string NewName = Process.Name.Text;
-					if (!string.Equals(Reference.FriendlyName, NewName, StringComparison.Ordinal))
+					if (!string.Equals(LoadedReference.FriendlyName, NewName, StringComparison.Ordinal))
 					{
-						Reference.FriendlyName = NewName;
-						// Persist update non-critically
-						try { await ServiceRef.StorageService.Update(Reference); } catch { /* ignore */ }
+						LoadedReference.FriendlyName = NewName;
+						try { await ServiceRef.StorageService.Update(LoadedReference); } catch { }
 					}
 				}
 			}
@@ -129,10 +172,13 @@ namespace NeuroAccessMaui.Services.Kyc
 				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 			}
 
-			// 3) Load default if not available.
-			return Reference;
+			return LoadedReference;
 		}
 
+		/// <summary>
+		/// Persists an existing <see cref="KycReference"/> instance (insert or update).
+		/// </summary>
+		/// <param name="Reference">Reference to persist.</param>
 		public async Task SaveKycReferenceAsync(KycReference Reference)
 		{
 			try
@@ -149,10 +195,10 @@ namespace NeuroAccessMaui.Services.Kyc
 		}
 
 		/// <summary>
-		/// Loads available KYC process references from the provider, falling back to the bundled test KYC when unavailable.
+		/// Loads available KYC references from the provider; falls back to local bundled test definition.
+		/// Always returns a list (empty on failure).
 		/// </summary>
-		/// <param name="Lang">Optional language code used for resolving localized process name.</param>
-		/// <returns>A read-only list of <see cref="KycReference"/> items representing available processes.</returns>
+		/// <param name="Lang">Optional language code.</param>
 		public async Task<IReadOnlyList<KycReference>> LoadAvailableKycReferencesAsync(string? Lang = null)
 		{
 			try
@@ -174,12 +220,6 @@ namespace NeuroAccessMaui.Services.Kyc
 				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 				return Array.Empty<KycReference>();
 			}
-		}
-
-		private static string GetFileName(string Resource)
-		{
-			int Index = Resource.LastIndexOf("Raw.", StringComparison.OrdinalIgnoreCase);
-			return Index >= 0 ? Resource[(Index + 4)..] : Resource;
 		}
 
 		private async Task<string?> TryFetchKycXmlFromProvider()
@@ -209,8 +249,11 @@ namespace NeuroAccessMaui.Services.Kyc
 		#endregion
 
 		#region Validation
-
-		/// <inheritdoc/>
+		/// <summary>
+		/// Validates all visible fields on a page (including sections) using synchronous and asynchronous validators.
+		/// </summary>
+		/// <param name="Page">Page to validate.</param>
+		/// <returns>True if all visible fields validate; otherwise false.</returns>
 		public async Task<bool> ValidatePageAsync(KycPage Page)
 		{
 			if (Page is null)
@@ -221,14 +264,14 @@ namespace NeuroAccessMaui.Services.Kyc
 				Fields = Fields.Concat(Sections.SelectMany(S => S.VisibleFields));
 			bool Ok = true;
 			List<Task> Tasks = new();
-			foreach (ObservableKycField F in Fields)
+			foreach (ObservableKycField Field in Fields)
 			{
-				F.ForceSynchronousValidation();
-				F.ValidationTask.Run();
+				Field.ForceSynchronousValidation();
+				Field.ValidationTask.Run();
 				Task T = MainThread.InvokeOnMainThreadAsync(async () =>
 				{
-					await F.ValidationTask.WaitAllAsync();
-					if (!F.IsValid)
+					await Field.ValidationTask.WaitAllAsync();
+					if (!Field.IsValid)
 						Ok = false;
 				});
 				Tasks.Add(T);
@@ -237,27 +280,30 @@ namespace NeuroAccessMaui.Services.Kyc
 			return Ok;
 		}
 
-		/// <inheritdoc/>
+		/// <summary>
+		/// Finds the first visible page index that fails validation, or -1 if all visible pages are valid.
+		/// </summary>
+		/// <param name="Process">KYC process.</param>
 		public async Task<int> GetFirstInvalidVisiblePageIndexAsync(KycProcess Process)
 		{
 			if (Process is null)
 				return -1;
-			for (int I = 0; I < Process.Pages.Count; I++)
+			for (int i = 0; i < Process.Pages.Count; i++)
 			{
-				KycPage Page = Process.Pages[I];
+				KycPage Page = Process.Pages[i];
 				if (!Page.IsVisible(Process.Values))
 					continue;
 				if (!await this.ValidatePageAsync(Page))
-					return I;
+					return i;
 			}
 			return -1;
 		}
-
 		#endregion
 
 		#region Data Preparation
-
-		/// <inheritdoc/>
+		/// <summary>
+		/// Builds identity properties and attachments (images) from a process, respecting visibility and transforms.
+		/// </summary>
 		public async Task<(IReadOnlyList<Property> Properties, IReadOnlyList<LegalIdentityAttachment> Attachments)> PreparePropertiesAndAttachmentsAsync(KycProcess Process, CancellationToken CancellationToken)
 		{
 			List<Property> Mapped = new();
@@ -289,97 +335,137 @@ namespace NeuroAccessMaui.Services.Kyc
 			return (Mapped, Attachments);
 		}
 
+		/// <summary>
+		/// Captures a snapshot and schedules an asynchronous persistence operation (coalescing by reference).
+		/// </summary>
 		public Task ScheduleSnapshotAsync(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
 		{
 			if (Reference is null || Process is null)
-			{
 				return Task.CompletedTask;
-			}
-			UpdateSnapshot(Reference, Process, Navigation, Progress, CurrentPageId);
-			this.autosaveTask.Run<AutosaveRequest>(this.ExecuteAutosaveAsync, new AutosaveRequest(Reference, false));
-			return Task.CompletedTask;
+			AsyncLock Lock = this.GetLockFor(Reference);
+			return this.ScheduleSnapshotCoreAsync(Lock, Reference, Process, Navigation, Progress, CurrentPageId);
 		}
 
+		private async Task ScheduleSnapshotCoreAsync(AsyncLock Lock, KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
+		{
+			await using (await Lock.LockAsync().ConfigureAwait(false))
+			{
+				KycReferenceSnapshot Snapshot = CreateSnapshot(Reference, Process, Navigation, Progress, CurrentPageId);
+				string Key = Reference.ObjectId ?? string.Empty;
+				this.pendingAutosave[Key] = new AutosaveEntry(Reference, Snapshot); // coalesce to latest
+				_ = this.autosaveChannel.Writer.TryWrite(Key);
+			}
+		}
+
+		/// <summary>
+		/// Captures a snapshot and persists it immediately (bypasses the autosave queue).
+		/// </summary>
 		public async Task FlushSnapshotAsync(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
 		{
 			if (Reference is null || Process is null)
-			{
 				return;
+			AsyncLock Lock = this.GetLockFor(Reference);
+			KycReferenceSnapshot Snapshot;
+			await using (await Lock.LockAsync().ConfigureAwait(false))
+			{
+				Snapshot = CreateSnapshot(Reference, Process, Navigation, Progress, CurrentPageId);
 			}
-			UpdateSnapshot(Reference, Process, Navigation, Progress, CurrentPageId);
-			await this.RunImmediateAutosaveAsync(Reference).ConfigureAwait(false);
+			try
+			{
+				await this.SaveSnapshotAsync(Reference, Snapshot, true).ConfigureAwait(false);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "KYC.ImmediateAutosave"));
+			}
+			string Key = Reference.ObjectId ?? string.Empty;
+			this.pendingAutosave.TryRemove(Key, out _);
 		}
 
+		/// <summary>
+		/// Records submission data (identity id + state) and persists the reference.
+		/// </summary>
 		public async Task ApplySubmissionAsync(KycReference Reference, LegalIdentity Identity)
 		{
 			if (Reference is null || Identity is null)
-			{
 				return;
+			AsyncLock Lock = this.GetLockFor(Reference);
+			await using (await Lock.LockAsync().ConfigureAwait(false))
+			{
+				Reference.CreatedIdentityId = Identity.Id;
+				Reference.CreatedIdentityState = Identity.State;
+				Reference.Version++;
+				Reference.UpdatedUtc = DateTime.UtcNow;
+				await SaveReferenceAsync(Reference);
 			}
-			await this.FlushPendingAutosaveAsync().ConfigureAwait(false);
-			Reference.CreatedIdentityId = Identity.Id;
-			Reference.CreatedIdentityState = Identity.State;
-			Reference.UpdatedUtc = DateTime.UtcNow;
-			await SaveReferenceAsync(Reference);
 		}
 
+		/// <summary>
+		/// Clears stored submission information from the reference.
+		/// </summary>
 		public async Task ClearSubmissionAsync(KycReference Reference)
 		{
 			if (Reference is null)
-			{
 				return;
+			AsyncLock Lock = this.GetLockFor(Reference);
+			await using (await Lock.LockAsync().ConfigureAwait(false))
+			{
+				Reference.CreatedIdentityId = null;
+				Reference.CreatedIdentityState = null;
+				Reference.Version++;
+				Reference.UpdatedUtc = DateTime.UtcNow;
+				await SaveReferenceAsync(Reference);
 			}
-			await this.FlushPendingAutosaveAsync().ConfigureAwait(false);
-			Reference.CreatedIdentityId = null;
-			Reference.CreatedIdentityState = null;
-			Reference.UpdatedUtc = DateTime.UtcNow;
-			await SaveReferenceAsync(Reference);
 		}
 
+		/// <summary>
+		/// Records rejection metadata and invalid claim/photo information.
+		/// </summary>
 		public async Task ApplyRejectionAsync(KycReference Reference, string Message, string[] InvalidClaims, string[] InvalidPhotos, string? Code)
 		{
 			if (Reference is null)
-			{
 				return;
+			AsyncLock Lock = this.GetLockFor(Reference);
+			await using (await Lock.LockAsync().ConfigureAwait(false))
+			{
+				Reference.RejectionMessage = Message;
+				Reference.RejectionCode = Code;
+				Reference.InvalidClaims = InvalidClaims;
+				Reference.InvalidPhotos = InvalidPhotos;
+				Reference.Version++;
+				Reference.UpdatedUtc = DateTime.UtcNow;
+				await SaveReferenceAsync(Reference);
 			}
-			await this.FlushPendingAutosaveAsync().ConfigureAwait(false);
-			Reference.RejectionMessage = Message;
-			Reference.RejectionCode = Code;
-			Reference.InvalidClaims = InvalidClaims;
-			Reference.InvalidPhotos = InvalidPhotos;
-			Reference.UpdatedUtc = DateTime.UtcNow;
-			await SaveReferenceAsync(Reference);
 		}
 
+		/// <summary>
+		/// Resets a reference for a new application session, optionally seeding field values.
+		/// </summary>
 		public async Task PrepareReferenceForNewApplicationAsync(KycReference Reference, string? Language, IReadOnlyList<KycFieldValue>? SeedFields)
 		{
 			if (Reference is null)
-			{
 				return;
-			}
-
-			Reference.LastVisitedMode = "Form";
-			Reference.LastVisitedPageId = null;
-			Reference.RejectionMessage = null;
-			Reference.RejectionCode = null;
-			Reference.InvalidClaims = null;
-			Reference.InvalidPhotos = null;
-			Reference.InvalidClaimDetails = null;
-			Reference.InvalidPhotoDetails = null;
-			Reference.CreatedIdentityId = null;
-			Reference.CreatedIdentityState = null;
-
-			if (SeedFields is not null && SeedFields.Count > 0)
+			AsyncLock Lock = this.GetLockFor(Reference);
+			await using (await Lock.LockAsync().ConfigureAwait(false))
 			{
-				Reference.Fields = SeedFields.Select(Field => new KycFieldValue(Field.FieldId, Field.Value)).ToArray();
+				Reference.LastVisitedMode = "Form";
+				Reference.LastVisitedPageId = null;
+				Reference.RejectionMessage = null;
+				Reference.RejectionCode = null;
+				Reference.InvalidClaims = null;
+				Reference.InvalidPhotos = null;
+				Reference.InvalidClaimDetails = null;
+				Reference.InvalidPhotoDetails = null;
+				Reference.CreatedIdentityId = null;
+				Reference.CreatedIdentityState = null;
+				if (SeedFields is not null && SeedFields.Count > 0)
+					Reference.Fields = SeedFields.Select(Field => new KycFieldValue(Field.FieldId, Field.Value)).ToArray();
+				else
+					Reference.Fields = null;
+				Reference.Version++;
+				Reference.UpdatedUtc = DateTime.UtcNow;
+				await SaveReferenceAsync(Reference);
 			}
-			else
-			{
-				Reference.Fields = null;
-			}
-
-			Reference.UpdatedUtc = DateTime.UtcNow;
-			await SaveReferenceAsync(Reference);
 
 			if (SeedFields is not null && SeedFields.Count > 0 && !string.IsNullOrWhiteSpace(Language))
 			{
@@ -394,115 +480,140 @@ namespace NeuroAccessMaui.Services.Kyc
 			}
 		}
 
-		private static void UpdateSnapshot(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
+		/// <summary>
+		/// Creates an immutable snapshot of current process state and updates the mutable reference for in-process readers.
+		/// </summary>
+		private static KycReferenceSnapshot CreateSnapshot(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
 		{
-			Reference.Fields = [.. Process.Values.Select(FieldPair => new KycFieldValue(FieldPair.Key, FieldPair.Value))];
+			Reference.Version++;
+			KycFieldValue[] Fields = [.. Process.Values.Select(Pair => new KycFieldValue(Pair.Key, Pair.Value))];
+			string? LastVisitedPageId = ResolveLastVisitedPageId(Reference, Process, Navigation, CurrentPageId);
+			string Mode = ResolveMode(Navigation);
+			DateTime Now = DateTime.UtcNow;
+			Reference.UpdatedUtc = Now;
+			Reference.Fields = Fields;
 			Reference.Progress = Progress;
-			Reference.LastVisitedPageId = ResolveLastVisitedPageId(Reference, Process, Navigation, CurrentPageId);
-			Reference.LastVisitedMode = ResolveMode(Navigation);
-			Reference.UpdatedUtc = DateTime.UtcNow;
+			Reference.LastVisitedPageId = LastVisitedPageId;
+			Reference.LastVisitedMode = Mode;
+
+			KycReferenceSnapshot Snapshot = new KycReferenceSnapshot(
+				Reference.ObjectId,
+				Reference.Version,
+				Fields,
+				Progress,
+				LastVisitedPageId,
+				Mode,
+				Reference.RejectionMessage,
+				Reference.RejectionCode,
+				Reference.InvalidClaims,
+				Reference.InvalidPhotos,
+				Reference.CreatedUtc,
+				Now);
+
+			try
+			{
+				ServiceRef.LogService.LogDebug("KycSnapshotCreated",
+					new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
+					new KeyValuePair<string, object?>("Version", Snapshot.Version),
+					new KeyValuePair<string, object?>("FieldCount", Fields.Length));
+			}
+			catch { }
+
+			return Snapshot;
+		}
+
+		private AsyncLock GetLockFor(KycReference Reference)
+		{
+			string Key = Reference.ObjectId ?? string.Empty;
+			return this.referenceLocks.GetOrAdd(Key, _ => new AsyncLock());
 		}
 
 		private static string ResolveMode(KycNavigationSnapshot Navigation)
 		{
 			if (Navigation.State == KycFlowState.Summary || Navigation.State == KycFlowState.PendingSummary || Navigation.State == KycFlowState.RejectedSummary)
-			{
 				return "Summary";
-			}
 			return "Form";
 		}
 
 		private static string? ResolveLastVisitedPageId(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, string? CurrentPageId)
 		{
 			if (!string.IsNullOrWhiteSpace(CurrentPageId))
-			{
 				return CurrentPageId;
-			}
 			if (Navigation.CurrentPageIndex >= 0 && Navigation.CurrentPageIndex < Process.Pages.Count)
-			{
 				return Process.Pages[Navigation.CurrentPageIndex].Id;
-			}
 			return Reference.LastVisitedPageId;
 		}
 
-		private async Task RunImmediateAutosaveAsync(KycReference reference)
+		/// <summary>
+		/// Persists a snapshot if not stale, updating the mutable reference. Logs timing and hash metrics.
+		/// </summary>
+		private async Task SaveSnapshotAsync(KycReference Reference, KycReferenceSnapshot Snapshot, bool IsImmediate)
 		{
-			await this.FlushPendingAutosaveAsync().ConfigureAwait(false);
-			this.autosaveTask.Run<AutosaveRequest>(this.ExecuteAutosaveAsync, new AutosaveRequest(reference, true));
-			Task? watcher = this.autosaveTask.CurrentWatcher;
-			if (watcher is null)
-			{
-				return;
-			}
-
+			Stopwatch Sw = Stopwatch.StartNew();
 			try
 			{
-				await watcher.ConfigureAwait(false);
-			}
-			catch (TaskCanceledException)
-			{
-			}
-			catch (OperationCanceledException)
-			{
-			}
-		}
+				ServiceRef.LogService.LogDebug("KycSnapshotPersistAttempt",
+					new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
+					new KeyValuePair<string, object?>("Version", Snapshot.Version),
+					new KeyValuePair<string, object?>("IsImmediate", IsImmediate));
 
-		private async Task FlushPendingAutosaveAsync()
-		{
-			Task? pending = this.autosaveTask.CurrentWatcher;
-			if (pending is null)
-			{
-				return;
-			}
-
-			this.autosaveTask.Cancel();
-			try
-			{
-				await pending.ConfigureAwait(false);
-			}
-			catch (TaskCanceledException)
-			{
-			}
-			catch (OperationCanceledException)
-			{
-			}
-		}
-
-		private async Task ExecuteAutosaveAsync(AutosaveRequest request, TaskContext<int> context)
-		{
-			CancellationToken cancellationToken = context.CancellationToken;
-			if (cancellationToken.IsCancellationRequested)
-			{
-				return;
-			}
-
-			try
-			{
-				if (request.IsImmediate || AutosaveDelay == TimeSpan.Zero)
+				// Stale check
+				if (Snapshot.Version < Reference.Version)
 				{
-					await SaveReferenceAsync(request.Reference).ConfigureAwait(false);
+					Interlocked.Increment(ref this.snapshotsSkipped);
+					ServiceRef.LogService.LogDebug("KycSnapshotStaleSkipped",
+						new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
+						new KeyValuePair<string, object?>("SnapshotVersion", Snapshot.Version),
+						new KeyValuePair<string, object?>("CurrentVersion", Reference.Version));
 					return;
 				}
 
-				await PolicyRunner.RunAsync(
-					async token =>
-					{
-						if (token.IsCancellationRequested)
-						{
-							return;
-						}
+				if (Reference.Fields != Snapshot.Fields)
+					Reference.Fields = Snapshot.Fields;
+				Reference.Progress = Snapshot.Progress;
+				Reference.LastVisitedPageId = Snapshot.LastVisitedPageId;
+				Reference.LastVisitedMode = Snapshot.LastVisitedMode;
+				Reference.RejectionMessage = Snapshot.RejectionMessage;
+				Reference.RejectionCode = Snapshot.RejectionCode;
+				Reference.InvalidClaims = Snapshot.InvalidClaims;
+				Reference.InvalidPhotos = Snapshot.InvalidPhotos;
+				Reference.UpdatedUtc = Snapshot.UpdatedUtc;
+				await SaveReferenceAsync(Reference).ConfigureAwait(false);
 
-						await SaveReferenceAsync(request.Reference).ConfigureAwait(false);
-					},
-					cancellationToken,
-					AutosavePolicy).ConfigureAwait(false);
+				Interlocked.Increment(ref this.snapshotsPersisted);
+				string Hash = ComputeFieldsHash(Snapshot.Fields);
+				ServiceRef.LogService.LogInformational("KycSnapshotPersisted",
+					new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
+					new KeyValuePair<string, object?>("Version", Snapshot.Version),
+					new KeyValuePair<string, object?>("FieldCount", Snapshot.Fields?.Length ?? 0),
+					new KeyValuePair<string, object?>("DurationMs", Sw.ElapsedMilliseconds),
+					new KeyValuePair<string, object?>("Hash", Hash));
 			}
-			catch (TaskCanceledException)
+			finally
 			{
+				Sw.Stop();
 			}
-			catch (Exception ex)
+		}
+
+		private static string ComputeFieldsHash(KycFieldValue[]? Fields)
+		{
+			if (Fields is null || Fields.Length == 0)
+				return "0";
+			try
 			{
-				ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object?>("Operation", "KYC.Autosave"));
+				using SHA256 Sha = SHA256.Create();
+				foreach (KycFieldValue F in Fields.OrderBy(f => f.FieldId, StringComparer.Ordinal))
+				{
+					string Line = F.FieldId + "=" + (F.Value ?? string.Empty) + "\n";
+					byte[] Bytes = Encoding.UTF8.GetBytes(Line);
+					Sha.TransformBlock(Bytes, 0, Bytes.Length, null, 0);
+				}
+				Sha.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+				return Convert.ToHexString(Sha.Hash);
+			}
+			catch
+			{
+				return "ERR";
 			}
 		}
 
@@ -598,10 +709,10 @@ namespace NeuroAccessMaui.Services.Kyc
 					SKBitmap? Resized = Bmp.Resize(Ni, SKFilterQuality.High);
 					if (Resized is not null) { Bmp.Dispose(); Bmp = Resized; }
 				}
-				byte[] Bytes;
-				using (SKData Encoded = Bmp.Encode(SKEncodedImageFormat.Jpeg, 80)) Bytes = Encoded.ToArray();
+				byte[] Bytes2;
+				using (SKData Encoded = Bmp.Encode(SKEncodedImageFormat.Jpeg, 80)) Bytes2 = Encoded.ToArray();
 				Bmp.Dispose();
-				return Bytes;
+				return Bytes2;
 			}
 			catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); return null; }
 		}
@@ -628,28 +739,78 @@ namespace NeuroAccessMaui.Services.Kyc
 			return Rotated;
 		}
 
+		#endregion // Data Preparation
+
+		/// <summary>
+		/// Flushes any pending coalesced snapshots by forcing immediate persistence.
+		/// </summary>
+		public async Task FlushAsync(CancellationToken cancellationToken = default)
+		{
+			foreach (KeyValuePair<string, AutosaveEntry> Pair in this.pendingAutosave.ToArray())
+			{
+				if (cancellationToken.IsCancellationRequested)
+					break;
+				if (this.pendingAutosave.TryRemove(Pair.Key, out AutosaveEntry? Entry))
+				{
+					try { await this.SaveSnapshotAsync(Entry.Reference, Entry.Snapshot, true).ConfigureAwait(false); }
+					catch (Exception Ex) { ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "KYC.FlushAutosave")); }
+				}
+			}
+		}
+
+		/// <summary>
+		/// Performs an orderly shutdown of the service, stopping the worker and flushing snapshots.
+		/// </summary>
+		public async Task ShutdownAsync(CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				this.autosaveCts.Cancel();
+				this.autosaveChannel.Writer.TryComplete();
+				await Task.WhenAny(this.autosaveWorkerTask, Task.Delay(TimeSpan.FromSeconds(2), cancellationToken)).ConfigureAwait(false);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+			await this.FlushAsync(cancellationToken).ConfigureAwait(false);
+		}
+
+		/// <summary>
+		/// Releases resources used by the service.
+		/// </summary>
 		protected virtual void Dispose(bool disposing)
 		{
 			if (this.disposedValue)
-			{
 				return;
-			}
-
 			if (disposing)
 			{
-				this.autosaveTask.Dispose();
+				try
+				{
+					this.autosaveCts.Cancel();
+					this.autosaveChannel.Writer.TryComplete();
+					this.autosaveWorkerTask.Wait(TimeSpan.FromSeconds(2));
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
 			}
-
 			this.disposedValue = true;
 		}
 
+		/// <summary>
+		/// Disposes the service.
+		/// </summary>
 		public void Dispose()
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
-		#endregion
-
+		/// <summary>
+		/// Returns current snapshot persistence metrics.
+		/// </summary>
+		internal (long Persisted, long Skipped) GetSnapshotMetrics() => (Interlocked.Read(ref this.snapshotsPersisted), Interlocked.Read(ref this.snapshotsSkipped));
 	}
 }

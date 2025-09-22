@@ -36,20 +36,20 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 		/// </summary>
 		public static ISet<string> BuildInvalidMappingSet(KycReference? reference)
 		{
-			HashSet<string> invalid = new(System.StringComparer.OrdinalIgnoreCase);
-			if (reference is null) return invalid;
-			foreach (string claim in reference.InvalidClaims ?? System.Array.Empty<string>())
+			HashSet<string> Invalid = new(System.StringComparer.OrdinalIgnoreCase);
+			if (reference is null) return Invalid;
+			foreach (string Claim in reference.InvalidClaims ?? System.Array.Empty<string>())
 			{
-				if (string.IsNullOrWhiteSpace(claim)) continue;
-				string key = claim.Trim(); invalid.Add(key);
-				if (key.Equals(Constants.XmppProperties.BirthDay, System.StringComparison.OrdinalIgnoreCase) || key.Equals(Constants.XmppProperties.BirthMonth, System.StringComparison.OrdinalIgnoreCase) || key.Equals(Constants.XmppProperties.BirthYear, System.StringComparison.OrdinalIgnoreCase) || key.Equals(Constants.CustomXmppProperties.BirthDate, System.StringComparison.OrdinalIgnoreCase)) invalid.Add(Constants.CustomXmppProperties.BirthDate);
-				if (key.StartsWith("ORGREP", System.StringComparison.OrdinalIgnoreCase)) invalid.Add("ORGREPBDATE");
+				if (string.IsNullOrWhiteSpace(Claim)) continue;
+				string Key = Claim.Trim(); Invalid.Add(Key);
+				if (Key.Equals(Constants.XmppProperties.BirthDay, System.StringComparison.OrdinalIgnoreCase) || Key.Equals(Constants.XmppProperties.BirthMonth, System.StringComparison.OrdinalIgnoreCase) || Key.Equals(Constants.XmppProperties.BirthYear, System.StringComparison.OrdinalIgnoreCase) || Key.Equals(Constants.CustomXmppProperties.BirthDate, System.StringComparison.OrdinalIgnoreCase)) Invalid.Add(Constants.CustomXmppProperties.BirthDate);
+				if (Key.StartsWith("ORGREP", System.StringComparison.OrdinalIgnoreCase)) Invalid.Add("ORGREPBDATE");
 			}
-			foreach (string photo in reference.InvalidPhotos ?? System.Array.Empty<string>())
+			foreach (string Photo in reference.InvalidPhotos ?? System.Array.Empty<string>())
 			{
-				if (string.IsNullOrWhiteSpace(photo)) continue; invalid.Add(photo.Trim());
+				if (string.IsNullOrWhiteSpace(Photo)) continue; Invalid.Add(Photo.Trim());
 			}
-			return invalid;
+			return Invalid;
 		}
 
 		/// <summary>
@@ -57,24 +57,24 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 		/// </summary>
 		public static KycSummaryModel Generate(KycProcess process, IEnumerable<Property> mappedValues, IEnumerable<LegalIdentityAttachment> attachments, ISet<string> invalid)
 		{
-			IdentitySummaryFormatter.KycSummaryResult summary = IdentitySummaryFormatter.BuildKycSummaryFromProperties(mappedValues, process, attachments.Select(a => new IdentitySummaryFormatter.AttachmentInfo(a.FileName ?? string.Empty, a.ContentType)), CultureInfo.CurrentCulture, invalid);
+			IdentitySummaryFormatter.KycSummaryResult Summary = IdentitySummaryFormatter.BuildKycSummaryFromProperties(mappedValues, process, attachments.Select(a => new IdentitySummaryFormatter.AttachmentInfo(a.FileName ?? string.Empty, a.ContentType)), CultureInfo.CurrentCulture, invalid);
 			KycOrderingComparer Comparer = KycOrderingComparer.Create(process);
-			summary.Personal.Sort(Comparer.DisplayComparer);
-			summary.Address.Sort(Comparer.DisplayComparer);
-			summary.Attachments.Sort(Comparer.DisplayComparer);
-			summary.CompanyInfo.Sort(Comparer.DisplayComparer);
-			summary.CompanyAddress.Sort(Comparer.DisplayComparer);
-			summary.CompanyRepresentative.Sort(Comparer.DisplayComparer);
-			List<KycSummarySection> sections = new List<KycSummarySection>(6)
+			Summary.Personal.Sort(Comparer.DisplayComparer);
+			Summary.Address.Sort(Comparer.DisplayComparer);
+			Summary.Attachments.Sort(Comparer.DisplayComparer);
+			Summary.CompanyInfo.Sort(Comparer.DisplayComparer);
+			Summary.CompanyAddress.Sort(Comparer.DisplayComparer);
+			Summary.CompanyRepresentative.Sort(Comparer.DisplayComparer);
+			List<KycSummarySection> Sections = new List<KycSummarySection>(6)
 			{
-				new KycSummarySection(Personal, summary.Personal.ToList()),
-				new KycSummarySection(Address, summary.Address.ToList()),
-				new KycSummarySection(Attachments, summary.Attachments.ToList()),
-				new KycSummarySection(CompanyInfo, summary.CompanyInfo.ToList()),
-				new KycSummarySection(CompanyAddress, summary.CompanyAddress.ToList()),
-				new KycSummarySection(CompanyRepresentative, summary.CompanyRepresentative.ToList())
+				new KycSummarySection(Personal, Summary.Personal.ToList()),
+				new KycSummarySection(Address, Summary.Address.ToList()),
+				new KycSummarySection(Attachments, Summary.Attachments.ToList()),
+				new KycSummarySection(CompanyInfo, Summary.CompanyInfo.ToList()),
+				new KycSummarySection(CompanyAddress, Summary.CompanyAddress.ToList()),
+				new KycSummarySection(CompanyRepresentative, Summary.CompanyRepresentative.ToList())
 			};
-			return new KycSummaryModel(sections);
+			return new KycSummaryModel(Sections);
 		}
 	}
 }
