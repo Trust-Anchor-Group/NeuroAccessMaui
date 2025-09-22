@@ -670,7 +670,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			return Rotated;
 		}
 
-		public async ValueTask FlushAsync(CancellationToken cancellationToken = default)
+		public async Task FlushAsync(CancellationToken cancellationToken = default)
 		{
 			// Drain any remaining pending snapshots synchronously
 			foreach (KeyValuePair<string, AutosaveEntry> Pair in this.pendingAutosave.ToArray())
@@ -683,6 +683,22 @@ namespace NeuroAccessMaui.Services.Kyc
 					catch (Exception Ex) { ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "KYC.FlushAutosave")); }
 				}
 			}
+		}
+
+		public async Task ShutdownAsync(CancellationToken cancellationToken = default)
+		{
+			try
+			{
+				this.autosaveCts.Cancel();
+				this.autosaveChannel.Writer.TryComplete();
+				// Give worker chance to finish
+				await Task.WhenAny(this.autosaveWorkerTask, Task.Delay(TimeSpan.FromSeconds(2), cancellationToken)).ConfigureAwait(false);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+			await this.FlushAsync(cancellationToken).ConfigureAwait(false);
 		}
 
 		protected virtual void Dispose(bool disposing)

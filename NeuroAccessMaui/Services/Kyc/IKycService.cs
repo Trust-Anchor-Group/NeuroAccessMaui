@@ -62,5 +62,16 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <summary>Resets reference state and seeds optional field values for a fresh application session.</summary>
 		Task PrepareReferenceForNewApplicationAsync(KycReference Reference, string? Language, IReadOnlyList<KycFieldValue>? SeedFields);
 
+		/// <summary>
+		/// Flushes any pending in-memory KYC snapshots to durable storage. Should be fast and idempotent.
+		/// </summary>
+		Task FlushAsync(CancellationToken CancellationToken = default);
+
+		/// <summary>
+		/// Performs an orderly shutdown of the KYC service, draining queues and releasing resources.
+		/// Calls <see cref="FlushAsync"/> internally.
+		/// </summary>
+		Task ShutdownAsync(CancellationToken CancellationToken = default);
+
 	}
 }
