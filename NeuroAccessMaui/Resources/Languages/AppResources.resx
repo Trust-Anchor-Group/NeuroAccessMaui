@@ -2624,8 +2624,8 @@
   <data name="ApplyIdInfoMainPage" xml:space="preserve">
     <value>Apply for a personal ID to get everything out of Neuro Access</value>
   </data>
-  <data name="CompleteIdButton" xml:space="preserve">
-    <value>Complete your personal ID</value>
+  <data name="GoToApplications" xml:space="preserve">
+    <value>Go to applications</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
@@ -3097,5 +3097,11 @@
   </data>
   <data name="InReview" xml:space="preserve">
     <value>In review</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>In Progress</value>
+  </data>
+  <data name="IdentityRejected" xml:space="preserve">
+    <value>Identity rejected. You can return to the applications page and update your information to try again.</value>
   </data>
 </root>

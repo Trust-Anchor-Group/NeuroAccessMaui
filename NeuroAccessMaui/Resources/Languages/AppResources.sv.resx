@@ -2624,8 +2624,8 @@
   <data name="ApplyIdInfoMainPage" xml:space="preserve">
     <value>Ansök om ett personligt ID för att få tillgång till alla funktioner i Neuro Access</value>
   </data>
-  <data name="CompleteIdButton" xml:space="preserve">
-    <value>Slutför ditt personliga ID</value>
+  <data name="GoToApplications" xml:space="preserve">
+    <value>Gå till ansökningar</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Sök</value>
@@ -3097,5 +3097,11 @@
   </data>
   <data name="InReview" xml:space="preserve">
     <value>Under granskning</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>Pågår</value>
+  </data>
+  <data name="IdentityRejected" xml:space="preserve">
+    <value>Identitet avslogs. Du kan gå tillbaka till sidan för ansökningar och uppdatera din information för att försöka igen.</value>
   </data>
 </root>

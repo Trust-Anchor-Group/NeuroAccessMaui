@@ -129,33 +129,32 @@
 										VerticalOptions="End" 
 										Style="{DynamicResource CardSubtitleLabel}" FontSize="14"/>
 									<Grid Grid.Column="1" RowDefinitions="*,auto">
-										<Border Grid.Row="1" Padding="8,2,8,2" Background="{DynamicResource TnPInfobgWL}" StrokeShape="RoundRectangle 10">
+										<Border Grid.Row="1" Padding="8,2,8,2" Background="{DynamicResource TnPWarningbgWL}" StrokeShape="RoundRectangle 10">
 											<Border.Triggers>
 												<!-- Pending -->
 												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Created}">
-													<Setter Property="Background" Value="{DynamicResource TnPWarningbgWL}" />
+													<Setter Property="Background" Value="{DynamicResource TnPInfobgWL}" />
 												</DataTrigger>
 												<!-- Finalized states -->
 												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Approved}">
 													<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
 												</DataTrigger>
 												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Rejected}">
-													<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
+													<Setter Property="Background" Value="{DynamicResource TnPDangerbgWL}" />
 												</DataTrigger>
 												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Obsoleted}">
-													<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
+													<Setter Property="Background" Value="{DynamicResource TnPDangerbgWL}" />
 												</DataTrigger>
 												<DataTrigger TargetType="Border" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Compromised}">
-													<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
+													<Setter Property="Background" Value="{DynamicResource TnPDangerbgWL}" />
 												</DataTrigger>
 											</Border.Triggers>
-											<Label FontSize="12" FontFamily="SpaceGroteskBold" Text="In Progress" TextColor="{DynamicResource TnPInfoContentWL}">
+											<Label FontSize="12" FontFamily="SpaceGroteskBold" Text="{l:Localize InProgress}" TextColor="{DynamicResource TnPWarningContentWL}">
 												<Label.Triggers>
 													<!-- Pending: Application sent -->
 													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Created}">
-														<Setter Property="Text"
-																Value="{l:Localize InReview}" />
-														<Setter Property="TextColor" Value="{DynamicResource TnPWarningContentWL}" />
+														<Setter Property="Text" Value="{l:Localize InReview}" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPInfoContentWL}" />
 													</DataTrigger>
 													<!-- Finalized: show localized state in success colors -->
 													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Approved}">
@@ -164,15 +163,15 @@
 													</DataTrigger>
 													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Rejected}">
 														<Setter Property="Text" Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
-														<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}" />
 													</DataTrigger>
 													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Obsoleted}">
 														<Setter Property="Text" Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
-														<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}" />
 													</DataTrigger>
 													<DataTrigger TargetType="Label" Binding="{Binding CurrentApplication.CreatedIdentityState}" Value="{x:Static contracts:IdentityState.Compromised}">
 														<Setter Property="Text" Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
-														<Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
+														<Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}" />
 													</DataTrigger>
 												</Label.Triggers>
 											</Label>
