@@ -799,12 +799,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					try { await this.kycService.ApplySubmissionAsync(this.kycReference, Added); }
 					catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
 				}
-				foreach (LegalIdentityAttachment localAttachment in this.attachments)
+				foreach (LegalIdentityAttachment LocalAttachment in this.attachments)
 				{
-					Attachment? match = Added.Attachments.FirstOrDefault(a => string.Equals(a.FileName, localAttachment.FileName, StringComparison.OrdinalIgnoreCase));
-					if (match != null && localAttachment.Data is not null && localAttachment.ContentType is not null)
+					Attachment? Match = Added.Attachments.FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
+					if (Match != null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
 					{
-						await ServiceRef.AttachmentCacheService.Add(match.Url, Added.Id, true, localAttachment.Data, localAttachment.ContentType);
+						await ServiceRef.AttachmentCacheService.Add(Match.Url, Added.Id, true, LocalAttachment.Data, LocalAttachment.ContentType);
 					}
 				}
 				this.applicationId = Added.Id;
@@ -812,8 +812,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.NrReviews = ServiceRef.TagProfile.NrReviews;
 				await this.LoadApplicationAttributes();
 				await this.LoadFeaturedPeerReviewers();
-				int anchorAfterApply = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
-				this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = anchorAfterApply, CurrentPageIndex = anchorAfterApply >= 0 ? anchorAfterApply : this.navigation.CurrentPageIndex };
+				int AnchorAfterApply = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
+				this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = AnchorAfterApply, CurrentPageIndex = AnchorAfterApply >= 0 ? AnchorAfterApply : this.navigation.CurrentPageIndex };
 				this.NotifyNavigationChanged();
 			}
 		}

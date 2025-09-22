@@ -36,7 +36,7 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 			}
 		}
 
-		private static bool IsInvalid(ObservableKycField Field, ISet<string> InvalidSet)
+		private static bool IsInvalid(ObservableKycField Field, HashSet<string> InvalidSet)
 		{
 			return Field.Mappings.Any(m => InvalidSet.Contains(m.Key) || IsGroupedDateMatch(m.Key, InvalidSet));
 		}
@@ -44,7 +44,7 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 		private static void Apply(ObservableKycField Field, Dictionary<string, string> Reasons, string? Fallback)
 		{
 			Field.IsValid = false;
-			string? Reason = Field.Mappings.Select(m => Reasons.TryGetValue(m.Key, out string R) ? R : null).FirstOrDefault(r => r is not null);
+			string? Reason = Field.Mappings.Select(m => Reasons.TryGetValue(m.Key, out string? R) ? R : null).FirstOrDefault(r => r is not null);
 			Field.ValidationText = !string.IsNullOrWhiteSpace(Reason) ? Reason : (Fallback ?? string.Empty);
 		}
 

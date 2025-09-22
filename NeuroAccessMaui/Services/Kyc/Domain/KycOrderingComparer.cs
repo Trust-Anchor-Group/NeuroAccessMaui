@@ -17,21 +17,21 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
         private readonly PropertyOrderComparer propertyComparer;
         private readonly DisplayQuadOrderComparer displayComparer;
 
-        private KycOrderingComparer(Dictionary<string, OrderKey> orderByKey)
+        private KycOrderingComparer(Dictionary<string, OrderKey> OrderByKey)
         {
-            this.orderByKey = orderByKey;
+            this.orderByKey = OrderByKey;
             this.propertyComparer = new PropertyOrderComparer(this);
             this.displayComparer = new DisplayQuadOrderComparer(this);
         }
 
-        public static KycOrderingComparer Create(KycProcess process)
+        public static KycOrderingComparer Create(KycProcess Process)
         {
-            if (process is null)
+            if (Process is null)
             {
-                throw new ArgumentNullException(nameof(process));
+                throw new ArgumentNullException(nameof(Process));
             }
 
-            Dictionary<string, OrderKey> Map = BuildOrderMap(process);
+            Dictionary<string, OrderKey> Map = BuildOrderMap(Process);
             return new KycOrderingComparer(Map);
         }
 
@@ -39,10 +39,10 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 
         public IComparer<DisplayQuad> DisplayComparer => this.displayComparer;
 
-        public int Compare(string? left, string? right)
+        public int Compare(string? Left, string? Right)
         {
-            OrderKey LeftKey = this.GetOrderKey(left);
-            OrderKey RightKey = this.GetOrderKey(right);
+            OrderKey LeftKey = this.GetOrderKey(Left);
+            OrderKey RightKey = this.GetOrderKey(Right);
 
             int Result = LeftKey.PageIndex.CompareTo(RightKey.PageIndex);
             if (Result != 0)
@@ -65,19 +65,19 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
             return string.Compare(LeftKey.Name, RightKey.Name, StringComparison.OrdinalIgnoreCase);
         }
 
-        private OrderKey GetOrderKey(string? key)
+        private OrderKey GetOrderKey(string? Key)
         {
-            if (string.IsNullOrWhiteSpace(key))
+            if (string.IsNullOrWhiteSpace(Key))
             {
                 return OrderKey.Unknown;
             }
 
-            if (this.orderByKey.TryGetValue(key, out OrderKey Existing))
+            if (this.orderByKey.TryGetValue(Key, out OrderKey Existing))
             {
                 return Existing;
             }
 
-            string Normalized = key.Trim();
+            string Normalized = Key.Trim();
             return new OrderKey(int.MaxValue, int.MaxValue, int.MaxValue, Normalized);
         }
 
