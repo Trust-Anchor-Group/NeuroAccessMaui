@@ -485,7 +485,7 @@
 													</Label.FormattedText>
 												</Label>
 
-												<Grid RowSpacing="8">
+												<Grid RowSpacing="8" RowDefinitions="auto,auto">
 													<controls:TextButton Style="{DynamicResource TransparentTextButton}"
 																 LabelData="{l:Localize QrScanCode}"
 																 Command="{Binding ScanQrCodeCommand}" Grid.Row="0"/>
