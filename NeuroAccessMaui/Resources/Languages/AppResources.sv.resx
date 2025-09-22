@@ -3098,4 +3098,7 @@
   <data name="InReview" xml:space="preserve">
     <value>Under granskning</value>
   </data>
+  <data name="In Progress" xml:space="preserve">
+    <value>Pågår</value>
+  </data>
 </root>
