@@ -260,11 +260,11 @@
 			<DataTemplate x:Key="ImageUploadTemplate"
 						  x:DataType="fields:ObservableImageField">
 				<Grid RowDefinitions="auto, auto"
-					  ColumnDefinitions="auto, *"
+					  ColumnDefinitions="*, auto"
 					  ColumnSpacing="16"
 					  RowSpacing="8">
-
-					<VerticalStackLayout Spacing="16">
+					
+					<VerticalStackLayout Spacing="16" Grid.Column="1">
 						<controls:TemplatedButton Command="{Binding PickPhotoCommand}" IsVisible="{Binding AllowUpload}">
 							<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
 								<Grid ColumnDefinitions="auto,*" ColumnSpacing="8" HorizontalOptions="Center">
@@ -308,8 +308,7 @@
 						</controls:TemplatedButton>
 					</VerticalStackLayout>
 
-					<Border Grid.Column="1"
-							StrokeShape="RoundRectangle 8"
+					<Border StrokeShape="RoundRectangle 8"
 							Stroke="{DynamicResource BrandColorsGreyScalesGreyv250}"
 							StrokeDashArray="1,1"
 							IsEnabled="{Binding IsValid}">
