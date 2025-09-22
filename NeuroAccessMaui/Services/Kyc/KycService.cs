@@ -22,6 +22,8 @@ using Waher.Runtime.Inventory;
 using Waher.Persistence;
 using SkiaSharp;
 using Waher.Networking.XMPP.Contracts;
+using System.Diagnostics;
+using System.Security.Cryptography;
 
 namespace NeuroAccessMaui.Services.Kyc
 {
@@ -41,6 +43,10 @@ namespace NeuroAccessMaui.Services.Kyc
 		private readonly System.Collections.Concurrent.ConcurrentDictionary<string, AutosaveEntry> pendingAutosave = new();
 		private readonly CancellationTokenSource autosaveCts = new();
 		private readonly Task autosaveWorkerTask;
+
+		// Phase 6 metrics counters
+		private long snapshotsPersisted = 0;
+		private long snapshotsSkipped = 0;
 
 		private sealed class AutosaveEntry
 		{
@@ -82,7 +88,7 @@ namespace NeuroAccessMaui.Services.Kyc
 					try
 					{
 						// Skip stale snapshot via internal check in SaveSnapshotAsync
-						await SaveSnapshotAsync(Entry.Reference, Entry.Snapshot).ConfigureAwait(false);
+						await this.SaveSnapshotAsync(Entry.Reference, Entry.Snapshot, false).ConfigureAwait(false);
 					}
 					catch (OperationCanceledException)
 					{
@@ -358,7 +364,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			// Immediate path: attempt direct persistence bypassing queue (ensures latest durable)
 			try
 			{
-				await SaveSnapshotAsync(Reference, Snapshot).ConfigureAwait(false);
+				await this.SaveSnapshotAsync(Reference, Snapshot, true).ConfigureAwait(false);
 			}
 			catch (Exception Ex)
 			{
@@ -480,7 +486,8 @@ namespace NeuroAccessMaui.Services.Kyc
 			Reference.Progress = Progress;
 			Reference.LastVisitedPageId = LastVisitedPageId;
 			Reference.LastVisitedMode = Mode;
-			return new KycReferenceSnapshot(
+
+			KycReferenceSnapshot Snapshot = new KycReferenceSnapshot(
 				Reference.ObjectId,
 				Reference.Version,
 				Fields,
@@ -493,6 +500,18 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.InvalidPhotos,
 				Reference.CreatedUtc,
 				Now);
+
+			// Phase 6: Log creation event (lightweight)
+			try
+			{
+				ServiceRef.LogService.LogDebug("KycSnapshotCreated",
+					new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
+					new KeyValuePair<string, object?>("Version", Snapshot.Version),
+					new KeyValuePair<string, object?>("FieldCount", Fields.Length));
+			}
+			catch { }
+
+			return Snapshot;
 		}
 
 		private AsyncLock GetLockFor(KycReference Reference)
@@ -525,27 +544,78 @@ namespace NeuroAccessMaui.Services.Kyc
 
 		// Removed legacy RunImmediateAutosaveAsync, FlushPendingAutosaveAsync and ExecuteAutosaveAsync methods
 
-		private static async Task SaveSnapshotAsync(KycReference Reference, KycReferenceSnapshot Snapshot)
+		private async Task SaveSnapshotAsync(KycReference Reference, KycReferenceSnapshot Snapshot, bool IsImmediate)
 		{
-			// Skip if reference has advanced beyond snapshot (stale)
-			if (Snapshot.Version < Reference.Version)
+			Stopwatch Sw = Stopwatch.StartNew();
+			try
 			{
-				return;
+				ServiceRef.LogService.LogDebug("KycSnapshotPersistAttempt",
+					new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
+					new KeyValuePair<string, object?>("Version", Snapshot.Version),
+					new KeyValuePair<string, object?>("IsImmediate", IsImmediate));
+
+				// Skip if reference has advanced beyond snapshot (stale)
+				if (Snapshot.Version < Reference.Version)
+				{
+					Interlocked.Increment(ref this.snapshotsSkipped);
+					ServiceRef.LogService.LogDebug("KycSnapshotStaleSkipped",
+						new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
+						new KeyValuePair<string, object?>("SnapshotVersion", Snapshot.Version),
+						new KeyValuePair<string, object?>("CurrentVersion", Reference.Version));
+					return;
+				}
+
+				// Apply immutable snapshot into reference prior to persistence if versions line up
+				if (Reference.Fields != Snapshot.Fields)
+				{
+					Reference.Fields = Snapshot.Fields;
+				}
+				Reference.Progress = Snapshot.Progress;
+				Reference.LastVisitedPageId = Snapshot.LastVisitedPageId;
+				Reference.LastVisitedMode = Snapshot.LastVisitedMode;
+				Reference.RejectionMessage = Snapshot.RejectionMessage;
+				Reference.RejectionCode = Snapshot.RejectionCode;
+				Reference.InvalidClaims = Snapshot.InvalidClaims;
+				Reference.InvalidPhotos = Snapshot.InvalidPhotos;
+				Reference.UpdatedUtc = Snapshot.UpdatedUtc;
+				await SaveReferenceAsync(Reference).ConfigureAwait(false);
+
+				Interlocked.Increment(ref this.snapshotsPersisted);
+				string Hash = ComputeFieldsHash(Snapshot.Fields);
+				ServiceRef.LogService.LogInformational("KycSnapshotPersisted",
+					new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
+					new KeyValuePair<string, object?>("Version", Snapshot.Version),
+					new KeyValuePair<string, object?>("FieldCount", Snapshot.Fields?.Length ?? 0),
+					new KeyValuePair<string, object?>("DurationMs", Sw.ElapsedMilliseconds),
+					new KeyValuePair<string, object?>("Hash", Hash));
 			}
-			// Apply immutable snapshot into reference prior to persistence if versions line up
-			if (Reference.Fields != Snapshot.Fields)
+			finally
 			{
-				Reference.Fields = Snapshot.Fields;
+				Sw.Stop();
 			}
-			Reference.Progress = Snapshot.Progress;
-			Reference.LastVisitedPageId = Snapshot.LastVisitedPageId;
-			Reference.LastVisitedMode = Snapshot.LastVisitedMode;
-			Reference.RejectionMessage = Snapshot.RejectionMessage;
-			Reference.RejectionCode = Snapshot.RejectionCode;
-			Reference.InvalidClaims = Snapshot.InvalidClaims;
-			Reference.InvalidPhotos = Snapshot.InvalidPhotos;
-			Reference.UpdatedUtc = Snapshot.UpdatedUtc;
-			await SaveReferenceAsync(Reference).ConfigureAwait(false);
+		}
+
+		private static string ComputeFieldsHash(KycFieldValue[]? Fields)
+		{
+			if (Fields is null || Fields.Length == 0)
+				return "0";
+			try
+			{
+				using SHA256 Sha = SHA256.Create();
+				// Order deterministically
+				foreach (KycFieldValue F in Fields.OrderBy(f => f.FieldId, StringComparer.Ordinal))
+				{
+					string Line = F.FieldId + "=" + (F.Value ?? string.Empty) + "\n";
+					byte[] Bytes = Encoding.UTF8.GetBytes(Line);
+					Sha.TransformBlock(Bytes, 0, Bytes.Length, null, 0);
+				}
+				Sha.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+				return Convert.ToHexString(Sha.Hash);
+			}
+			catch
+			{
+				return "ERR";
+			}
 		}
 
 		private static async Task SaveReferenceAsync(KycReference Reference)
@@ -679,7 +749,7 @@ namespace NeuroAccessMaui.Services.Kyc
 					break;
 				if (this.pendingAutosave.TryRemove(Pair.Key, out AutosaveEntry? Entry))
 				{
-					try { await SaveSnapshotAsync(Entry.Reference, Entry.Snapshot).ConfigureAwait(false); }
+					try { await this.SaveSnapshotAsync(Entry.Reference, Entry.Snapshot, true).ConfigureAwait(false); }
 					catch (Exception Ex) { ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "KYC.FlushAutosave")); }
 				}
 			}
@@ -730,6 +800,9 @@ namespace NeuroAccessMaui.Services.Kyc
 		}
 
 		#endregion
+
+		// Phase 6 metrics accessor (optional future diagnostics use)
+		internal (long Persisted, long Skipped) GetSnapshotMetrics() => (Interlocked.Read(ref this.snapshotsPersisted), Interlocked.Read(ref this.snapshotsSkipped));
 
 	}
 }
