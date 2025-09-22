@@ -28,6 +28,7 @@ using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.MVVM.Reentrancy;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
@@ -45,6 +46,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private KycNavigationSnapshot navigation = new KycNavigationSnapshot(0, -1, KycFlowState.Form);
 		private bool applicationSent;
 		private string? applicationId;
+		private readonly ReentrancyGuard navigationGuard = new();
+		private readonly ReentrancyGuard applyGuard = new();
 
 		private List<Property> mappedValues;
 		private List<LegalIdentityAttachment> attachments;
@@ -91,6 +94,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private bool hasCompanyInformation;
 		[ObservableProperty] private bool hasCompanyAddress;
 		[ObservableProperty] private bool hasCompanyRepresentative;
+		[ObservableProperty] private bool isNavigating; // Combined busy state for navigation/apply
 
 		// Throttling support for page refresh (avoid per-keystroke SetCurrentPage work)
 		private static readonly TimeSpan pageRefreshThrottle = TimeSpan.FromMilliseconds(250);
@@ -266,12 +270,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			int ResumeIndex = -1;
 			if (!string.IsNullOrEmpty(this.kycReference.LastVisitedPageId))
 			{
-				for (int i = 0; i < this.Pages.Count; i++)
+				for (int I = 0; I < this.Pages.Count; I++)
 				{
-					KycPage p = this.Pages[i];
-					if (p.Id == this.kycReference.LastVisitedPageId && p.IsVisible(this.process.Values))
+					KycPage PageItem = this.Pages[I];
+					if (PageItem.Id == this.kycReference.LastVisitedPageId && PageItem.IsVisible(this.process.Values))
 					{
-						ResumeIndex = i;
+						ResumeIndex = I;
 						break;
 					}
 				}
@@ -354,9 +358,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private int GetFirstVisibleIndex()
 		{
 			if (this.process is null) return -1;
-			for (int i = 0; i < this.Pages.Count; i++)
+			for (int I = 0; I < this.Pages.Count; I++)
 			{
-				if (this.Pages[i].IsVisible(this.process.Values)) return i;
+				if (this.Pages[I].IsVisible(this.process.Values)) return I;
 			}
 			return -1;
 		}
@@ -388,22 +392,22 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private int FindPageIndexByMapping(string Mapping)
 		{
 			if (this.process is null) return -1;
-			string m = Mapping.Trim();
-			for (int i = 0; i < this.Pages.Count; i++)
+			string MappingKey = Mapping.Trim();
+			for (int I = 0; I < this.Pages.Count; I++)
 			{
-				KycPage Page = this.Pages[i];
+				KycPage Page = this.Pages[I];
 				if (!Page.IsVisible(this.process.Values)) continue;
 				// Direct fields
 				foreach (ObservableKycField Field in Page.AllFields)
 				{
-					if (FieldMatches(Field, m)) return i;
+					if (FieldMatches(Field, MappingKey)) return I;
 				}
 				// Sections
 				foreach (KycSection Section in Page.AllSections)
 				{
 					foreach (ObservableKycField Field in Section.AllFields)
 					{
-						if (FieldMatches(Field, m)) return i;
+						if (FieldMatches(Field, MappingKey)) return I;
 					}
 				}
 			}
@@ -557,67 +561,73 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private async Task ExecuteNextAsync()
 		{
-			ServiceRef.PlatformSpecific.HideKeyboard();
-			if (this.IsInSummary)
+			if (!await this.navigationGuard.RunIfNotBusy(async () =>
 			{
-				await this.ExecuteApplyAsync();
-				return;
-			}
-			if (this.editingFromSummary)
-			{
-				bool OkEditing = await this.ValidateCurrentPageAsync();
-				if (!OkEditing)
+				this.IsNavigating = true;
+				ServiceRef.PlatformSpecific.HideKeyboard();
+				if (this.IsInSummary)
 				{
+					await this.ExecuteApplyAsync();
 					return;
 				}
-				int FirstInvalidFromSummary = await this.GetFirstInvalidVisiblePageIndexAsync();
-				if (FirstInvalidFromSummary >= 0)
+				if (this.editingFromSummary)
 				{
-					this.currentPageIndex = FirstInvalidFromSummary;
-					this.CurrentPagePosition = FirstInvalidFromSummary;
-					this.SetCurrentPage(FirstInvalidFromSummary);
-					this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
+					bool OkEditing = await this.ValidateCurrentPageAsync();
+					if (!OkEditing)
+					{
+						return;
+					}
+					int FirstInvalidFromSummary = await this.GetFirstInvalidVisiblePageIndexAsync();
+					if (FirstInvalidFromSummary >= 0)
+					{
+						this.currentPageIndex = FirstInvalidFromSummary;
+						this.CurrentPagePosition = FirstInvalidFromSummary;
+						this.SetCurrentPage(FirstInvalidFromSummary);
+						this.NextButtonText = ServiceRef.Localizer["Kyc_Next"].Value;
+						return;
+					}
+					await this.GoToSummaryAsync();
+					this.SetEditingFromSummary(false);
 					return;
 				}
-				await this.GoToSummaryAsync();
-				this.SetEditingFromSummary(false);
-				return;
-			}
-			bool Ok = await this.ValidateCurrentPageAsync();
-			if (!Ok) return;
-			if (this.kycReference is not null && this.process is not null)
-				await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
-			if (this.process is null) return;
-			// Build list of visible page indices
-			List<int> VisibleIndices = new List<int>();
-			for (int i = 0; i < this.Pages.Count; i++)
-			{
-				if (this.Pages[i].IsVisible(this.process.Values)) VisibleIndices.Add(i);
-			}
-			// Build current process state including page + field validity snapshots
-			KycProcessState ProcessState = this.BuildProcessState();
-			KycNavigationSnapshot NextSnap = KycTransitions.Advance(ProcessState, VisibleIndices);
-			if (NextSnap.State == KycFlowState.Summary || NextSnap.State == KycFlowState.PendingSummary)
-			{
-				await this.BuildMappedValuesAsync();
-				this.ScrollUp();
-				this.SetEditingFromSummary(false);
-				this.navigation = NextSnap with { AnchorPageIndex = NextSnap.AnchorPageIndex >= 0 ? NextSnap.AnchorPageIndex : this.navigation.AnchorPageIndex >= 0 ? this.navigation.AnchorPageIndex : this.currentPageIndex };
-				this.NotifyNavigationChanged();
-				this.OnPropertyChanged(nameof(this.Progress));
-				this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+				bool Ok = await this.ValidateCurrentPageAsync();
+				if (!Ok) return;
 				if (this.kycReference is not null && this.process is not null)
 					await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
-			}
-			else
+				if (this.process is null) return;
+				List<int> VisibleIndices = new List<int>();
+				for (int I = 0; I < this.Pages.Count; I++)
+				{
+					if (this.Pages[I].IsVisible(this.process.Values)) VisibleIndices.Add(I);
+				}
+				KycProcessState ProcessState = this.BuildProcessState();
+				KycNavigationSnapshot NextSnap = KycTransitions.Advance(ProcessState, VisibleIndices);
+				if (NextSnap.State == KycFlowState.Summary || NextSnap.State == KycFlowState.PendingSummary)
+				{
+					await this.BuildMappedValuesAsync();
+					this.ScrollUp();
+					this.SetEditingFromSummary(false);
+					this.navigation = NextSnap with { AnchorPageIndex = NextSnap.AnchorPageIndex >= 0 ? NextSnap.AnchorPageIndex : this.navigation.AnchorPageIndex >= 0 ? this.navigation.AnchorPageIndex : this.currentPageIndex };
+					this.NotifyNavigationChanged();
+					this.OnPropertyChanged(nameof(this.Progress));
+					this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
+					if (this.kycReference is not null && this.process is not null)
+						await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
+				}
+				else
+				{
+					this.navigation = NextSnap;
+					this.currentPageIndex = NextSnap.CurrentPageIndex;
+					this.CurrentPagePosition = this.currentPageIndex;
+					this.SetCurrentPage(this.currentPageIndex);
+					this.ScrollUp();
+					this.NotifyNavigationChanged();
+				}
+			}).ConfigureAwait(false))
 			{
-				this.navigation = NextSnap;
-				this.currentPageIndex = NextSnap.CurrentPageIndex;
-				this.CurrentPagePosition = this.currentPageIndex;
-				this.SetCurrentPage(this.currentPageIndex);
-				this.ScrollUp();
-				this.NotifyNavigationChanged();
+				return; // Skipped due to ongoing navigation
 			}
+			this.IsNavigating = false;
 		}
 
 		public event EventHandler? ScrollToTop;
@@ -683,9 +693,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 			List<int> VisibleIndices = new List<int>();
-			for (int i = 0; i < this.Pages.Count; i++)
+			for (int I = 0; I < this.Pages.Count; I++)
 			{
-				if (this.Pages[i].IsVisible(this.process.Values)) VisibleIndices.Add(i);
+				if (this.Pages[I].IsVisible(this.process.Values)) VisibleIndices.Add(I);
 			}
 			KycProcessState ProcessState = this.BuildProcessState();
 			KycNavigationSnapshot PrevSnap = KycTransitions.Back(ProcessState, VisibleIndices);
@@ -767,8 +777,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				IEnumerable<ObservableKycField> Fields = this.CurrentPage.VisibleFields;
 				if (this.CurrentPageSections is not null)
 					Fields = Fields.Concat(this.CurrentPageSections.SelectMany(s => s.VisibleFields));
-				foreach (ObservableKycField f in Fields)
-					this.process.Values[f.Id] = f.StringValue;
+				foreach (ObservableKycField Field in Fields)
+					this.process.Values[Field.Id] = Field.StringValue;
 			}
 			MainThread.BeginInvokeOnMainThread(this.NextCommand.NotifyCanExecuteChanged);
 			return Ok;
@@ -785,51 +795,54 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private async Task ExecuteApplyAsync()
 		{
 			if (this.applicationSent) return;
-			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)])) return;
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true)) return;
-			if (this.attachments is null || this.mappedValues is null) return;
-			bool HasIdWithKey = ServiceRef.TagProfile.LegalIdentity is not null && await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
-			(bool Succeeded, LegalIdentity? Added) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.AddLegalIdentity(this.mappedValues.ToArray(), !HasIdWithKey, this.attachments.ToArray()));
-			if (Succeeded && Added is not null)
+			if (!await this.applyGuard.RunIfNotBusy(async () =>
 			{
-				await ServiceRef.TagProfile.SetIdentityApplication(Added, true);
-				this.applicationSent = true;
-				if (this.kycReference is not null)
+				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)])) return;
+				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true)) return;
+				if (this.attachments is null || this.mappedValues is null) return;
+				bool HasIdWithKey = ServiceRef.TagProfile.LegalIdentity is not null && await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
+				(bool Succeeded, LegalIdentity? Added) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.AddLegalIdentity(this.mappedValues.ToArray(), !HasIdWithKey, this.attachments.ToArray()));
+				if (Succeeded && Added is not null)
 				{
-					try { await this.kycService.ApplySubmissionAsync(this.kycReference, Added); }
-					catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
-				}
-				foreach (LegalIdentityAttachment LocalAttachment in this.attachments)
-				{
-					Attachment? Match = Added.Attachments.FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
-					if (Match != null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
+					await ServiceRef.TagProfile.SetIdentityApplication(Added, true);
+					this.applicationSent = true;
+					if (this.kycReference is not null)
 					{
-						await ServiceRef.AttachmentCacheService.Add(Match.Url, Added.Id, true, LocalAttachment.Data, LocalAttachment.ContentType);
+						try { await this.kycService.ApplySubmissionAsync(this.kycReference, Added); }
+						catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
 					}
+					foreach (LegalIdentityAttachment LocalAttachment in this.attachments)
+					{
+						Attachment? Match = Added.Attachments.FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
+						if (Match != null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
+						{
+							await ServiceRef.AttachmentCacheService.Add(Match.Url, Added.Id, true, LocalAttachment.Data, LocalAttachment.ContentType);
+						}
+					}
+					this.applicationId = Added.Id;
+					this.ApplicationSentPublic = true;
+					this.NrReviews = ServiceRef.TagProfile.NrReviews;
+					await this.LoadApplicationAttributes();
+					await this.LoadFeaturedPeerReviewers();
+					int AnchorAfterApply = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
+					this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = AnchorAfterApply, CurrentPageIndex = AnchorAfterApply >= 0 ? AnchorAfterApply : this.navigation.CurrentPageIndex };
+					this.NotifyNavigationChanged();
 				}
-				this.applicationId = Added.Id;
-				this.ApplicationSentPublic = true;
-				this.NrReviews = ServiceRef.TagProfile.NrReviews;
-				await this.LoadApplicationAttributes();
-				await this.LoadFeaturedPeerReviewers();
-				int AnchorAfterApply = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
-				this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = AnchorAfterApply, CurrentPageIndex = AnchorAfterApply >= 0 ? AnchorAfterApply : this.navigation.CurrentPageIndex };
-				this.NotifyNavigationChanged();
-			}
+			}).ConfigureAwait(false)) return; // duplicate apply skipped
 		}
 
 		private async Task LoadApplicationAttributes()
 		{
 			try
 			{
-				IdApplicationAttributesEventArgs e = await ServiceRef.XmppService.GetIdApplicationAttributes();
+				IdApplicationAttributesEventArgs AttributesEventArgs = await ServiceRef.XmppService.GetIdApplicationAttributes();
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
-					this.PeerReview = e.PeerReview;
-					this.NrReviewers = e.NrReviewers;
+					this.PeerReview = AttributesEventArgs.PeerReview;
+					this.NrReviewers = AttributesEventArgs.NrReviewers;
 				});
 			}
-			catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+			catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
 		}
 
 		private async Task LoadFeaturedPeerReviewers()
@@ -844,21 +857,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			});
 		}
 
-		private async Task XmppService_IdentityApplicationChanged(object? sender, LegalIdentityEventArgs e)
+		private async Task XmppService_IdentityApplicationChanged(object? sender, LegalIdentityEventArgs E)
 		{
 			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
 				this.ApplicationSentPublic = ServiceRef.TagProfile.IdentityApplication is not null;
 				this.NrReviews = ServiceRef.TagProfile.NrReviews;
-				if (this.kycReference is not null && this.kycReference.CreatedIdentityId == e.Identity.Id)
+				if (this.kycReference is not null && this.kycReference.CreatedIdentityId == E.Identity.Id)
 				{
-					try { await this.kycService.ApplySubmissionAsync(this.kycReference, e.Identity); } catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
-					if (e.Identity.State == IdentityState.Approved)
+					try { await this.kycService.ApplySubmissionAsync(this.kycReference, E.Identity); } catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
+					if (E.Identity.State == IdentityState.Approved)
 					{
 						await base.GoBack();
 						return;
 					}
-					else if (e.Identity.State == IdentityState.Rejected)
+					else if (E.Identity.State == IdentityState.Rejected)
 					{
 						this.ApplicationSentPublic = false;
 						await this.BuildMappedValuesAsync();
@@ -894,10 +907,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				await ServiceRef.XmppService.PetitionPeerReviewId(reviewerId, ToReview, Guid.NewGuid().ToString(), ServiceRef.Localizer[nameof(AppResources.CouldYouPleaseReviewMyIdentityInformation)]);
 				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)], ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToYourPeer)]);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
@@ -908,23 +921,24 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				await this.LoadFeaturedPeerReviewers();
 			if ((this.peerReviewServices?.Length ?? 0) > 0)
 			{
-				List<ServiceProviderWithLegalId> List = [.. this.peerReviewServices, new RequestFromPeer()];
-				ServiceProvidersNavigationArgs e = new(List.ToArray(), ServiceRef.Localizer[nameof(AppResources.RequestReview)], ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderPeerReview)]);
-				await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), e, Services.UI.BackMethod.Pop);
-				if (e.ServiceProvider is not null)
+				ServiceProviderWithLegalId[] LocalPeerReview = this.peerReviewServices ?? Array.Empty<ServiceProviderWithLegalId>();
+				List<ServiceProviderWithLegalId> List = [.. LocalPeerReview, new RequestFromPeer()];
+				ServiceProvidersNavigationArgs NavigationArgs = new(List.ToArray(), ServiceRef.Localizer[nameof(AppResources.RequestReview)], ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderPeerReview)]);
+				await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), NavigationArgs, Services.UI.BackMethod.Pop);
+				if (NavigationArgs.ServiceProvider is not null)
 				{
-					IServiceProvider? sp = await e.ServiceProvider.Task;
-					if (sp is ServiceProviderWithLegalId SPWL && !string.IsNullOrEmpty(SPWL.LegalId))
+					IServiceProvider? ServiceProvider = await NavigationArgs.ServiceProvider.Task;
+					if (ServiceProvider is ServiceProviderWithLegalId SPWL && !string.IsNullOrEmpty(SPWL.LegalId))
 					{
 						if (!SPWL.External)
 						{
-							if (!await ServiceRef.NetworkService.TryRequest(async () => await ServiceRef.XmppService.SelectPeerReviewService(sp.Id, sp.Type)))
+							if (!await ServiceRef.NetworkService.TryRequest(async () => await ServiceRef.XmppService.SelectPeerReviewService(ServiceProvider.Id, ServiceProvider.Type)))
 								return;
 						}
 						await this.SendPeerReviewRequest(SPWL.LegalId);
 						return;
 					}
-					else if (sp is null) return;
+					else if (ServiceProvider is null) return;
 				}
 			}
 			await this.ScanQrCode();
@@ -960,10 +974,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.SetEditingFromSummary(false);
 				this.NotifyNavigationChanged();
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 

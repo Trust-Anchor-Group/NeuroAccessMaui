@@ -48,6 +48,13 @@ namespace NeuroAccessMaui.Services.Kyc
 		public DateTime FetchedUtc { get; set; }
 
 		/// <summary>
+		/// Monotonically increasing version for optimistic concurrency and snapshot ordering.
+		/// Incremented whenever a new immutable snapshot of the reference state is captured.
+		/// </summary>
+		[DefaultValue(0)]
+		public int Version { get; set; }
+
+		/// <summary>
 		/// Field values in the process.
 		/// </summary>
 		[DefaultValueNull]

@@ -12,25 +12,25 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 		/// <summary>
 		/// Computes next navigation snapshot when advancing from a form page.
 		/// </summary>
-		public static KycNavigationSnapshot Advance(KycProcessState state, IReadOnlyList<int> visibleIndices)
+		public static KycNavigationSnapshot Advance(KycProcessState State, IReadOnlyList<int> VisibleIndices)
 		{
-			KycNavigationSnapshot nav = state.Navigation;
-			if (state.Navigation.State is KycFlowState.Summary or KycFlowState.PendingSummary)
+			KycNavigationSnapshot nav = State.Navigation;
+			if (State.Navigation.State is KycFlowState.Summary or KycFlowState.PendingSummary)
 				return nav; // Already at summary; engine will decide apply action.
 
 			// Find next visible page after current
-			int current = nav.CurrentPageIndex;
-			int next = -1;
-			foreach (int idx in visibleIndices)
+			int Current = nav.CurrentPageIndex;
+			int Next = -1;
+			foreach (int idx in VisibleIndices)
 			{
-				if (idx > current) { next = idx; break; }
+				if (idx > Current) { Next = idx; break; }
 			}
-			if (next < 0)
+			if (Next < 0)
 			{
 				// No further pages -> transition to summary
-				return nav with { State = state.ApplicationSent ? KycFlowState.PendingSummary : KycFlowState.Summary };
+				return nav with { State = State.ApplicationSent ? KycFlowState.PendingSummary : KycFlowState.Summary };
 			}
-			return nav with { CurrentPageIndex = next };
+			return nav with { CurrentPageIndex = Next };
 		}
 
 		/// <summary>
@@ -38,22 +38,22 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 		/// </summary>
 		public static KycNavigationSnapshot Back(KycProcessState state, IReadOnlyList<int> visibleIndices)
 		{
-			KycNavigationSnapshot nav = state.Navigation;
-			if (nav.State == KycFlowState.Summary)
+			KycNavigationSnapshot Nav = state.Navigation;
+			if (Nav.State == KycFlowState.Summary)
 			{
 				// Leave summary returning to anchor page
-				return nav with { State = KycFlowState.Form, CurrentPageIndex = nav.AnchorPageIndex >= 0 ? nav.AnchorPageIndex : nav.CurrentPageIndex };
+				return Nav with { State = KycFlowState.Form, CurrentPageIndex = Nav.AnchorPageIndex >= 0 ? Nav.AnchorPageIndex : Nav.CurrentPageIndex };
 			}
-			int current = nav.CurrentPageIndex;
-			int prev = -1;
+			int Current = Nav.CurrentPageIndex;
+			int Prev = -1;
 			for (int i = visibleIndices.Count - 1; i >= 0; i--)
 			{
 				int idx = visibleIndices[i];
-				if (idx < current) { prev = idx; break; }
+				if (idx < Current) { Prev = idx; break; }
 			}
-			if (prev < 0)
-				return nav; // At first page; caller decides to exit.
-			return nav with { CurrentPageIndex = prev };
+			if (Prev < 0)
+				return Nav; // At first page; caller decides to exit.
+			return Nav with { CurrentPageIndex = Prev };
 		}
 
 		/// <summary>
@@ -61,9 +61,9 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 		/// </summary>
 		public static KycNavigationSnapshot EnterSummary(KycProcessState state)
 		{
-			KycNavigationSnapshot nav = state.Navigation;
-			if (nav.State == KycFlowState.Summary) return nav;
-			return nav with { State = state.ApplicationSent ? KycFlowState.PendingSummary : KycFlowState.Summary, AnchorPageIndex = nav.CurrentPageIndex };
+			KycNavigationSnapshot Nav = state.Navigation;
+			if (Nav.State == KycFlowState.Summary) return Nav;
+			return Nav with { State = state.ApplicationSent ? KycFlowState.PendingSummary : KycFlowState.Summary, AnchorPageIndex = Nav.CurrentPageIndex };
 		}
 
 		/// <summary>
@@ -71,10 +71,10 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 		/// </summary>
 		public static KycNavigationSnapshot EditFromSummary(KycProcessState state, int targetPageIndex)
 		{
-			KycNavigationSnapshot nav = state.Navigation;
-			if (nav.State != KycFlowState.Summary && nav.State != KycFlowState.RejectedSummary)
-				return nav; // Only allowed from summary flavors
-			return new KycNavigationSnapshot(targetPageIndex, nav.AnchorPageIndex >= 0 ? nav.AnchorPageIndex : nav.CurrentPageIndex, KycFlowState.EditingFromSummary);
+			KycNavigationSnapshot Nav = state.Navigation;
+			if (Nav.State != KycFlowState.Summary && Nav.State != KycFlowState.RejectedSummary)
+				return Nav; // Only allowed from summary flavors
+			return new KycNavigationSnapshot(targetPageIndex, Nav.AnchorPageIndex >= 0 ? Nav.AnchorPageIndex : Nav.CurrentPageIndex, KycFlowState.EditingFromSummary);
 		}
 
 		/// <summary>
@@ -82,11 +82,11 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 		/// </summary>
 		public static KycNavigationSnapshot ReturnToSummary(KycProcessState state, bool hasInvalid)
 		{
-			KycNavigationSnapshot nav = state.Navigation;
-			if (nav.State != KycFlowState.EditingFromSummary) return nav;
+			KycNavigationSnapshot Nav = state.Navigation;
+			if (Nav.State != KycFlowState.EditingFromSummary) return Nav;
 			if (hasInvalid)
-				return nav with { State = KycFlowState.Form }; // Caller may reposition to first invalid
-			return nav with { State = KycFlowState.Summary, CurrentPageIndex = nav.AnchorPageIndex >= 0 ? nav.AnchorPageIndex : nav.CurrentPageIndex };
+				return Nav with { State = KycFlowState.Form }; // Caller may reposition to first invalid
+			return Nav with { State = KycFlowState.Summary, CurrentPageIndex = Nav.AnchorPageIndex >= 0 ? Nav.AnchorPageIndex : Nav.CurrentPageIndex };
 		}
 	}
 }
