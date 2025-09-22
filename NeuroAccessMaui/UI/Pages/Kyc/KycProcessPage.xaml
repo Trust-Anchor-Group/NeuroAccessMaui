@@ -259,83 +259,56 @@
 			<!-- Image upload field template -->
 			<DataTemplate x:Key="ImageUploadTemplate"
 						  x:DataType="fields:ObservableImageField">
-				<Grid RowDefinitions="auto"
-					  ColumnDefinitions="auto, *"
+				<Grid RowDefinitions="auto, auto"
+					  ColumnDefinitions="*, auto"
 					  ColumnSpacing="16"
 					  RowSpacing="8">
-					<controls:ConditionView Condition="{Binding AllowUpload}">
-						<controls:ConditionView.True>
-							<VerticalStackLayout Spacing="16">
-								<controls:TemplatedButton Command="{Binding PickPhotoCommand}">
-									<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
-										<Grid ColumnDefinitions="auto,*" ColumnSpacing="8" HorizontalOptions="Center">
-											<controls:SvgView Grid.Column="0"
-																Source="image.svg"
-																Aspect="AspectFit"
-																WidthRequest="18"
-																HeightRequest="18"
-																VerticalOptions="Center"
-																TintColor="{DynamicResource ButtonAccessSecondaryContentWL}"/>
-											<Label Grid.Column="1"
-												   Text="{l:Localize Upload}"
-												   VerticalOptions="Center"
-												   FontFamily="SpaceGroteskBold"
-												   FontSize="16"
-												   TextColor="{DynamicResource ButtonAccessSecondaryContentWL}"/>
-										</Grid>
-									</Border>
-								</controls:TemplatedButton>
-								<controls:TemplatedButton Grid.Row="1"
+					
+					<VerticalStackLayout Spacing="16" Grid.Column="1">
+						<controls:TemplatedButton Command="{Binding PickPhotoCommand}" IsVisible="{Binding AllowUpload}">
+							<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
+								<Grid ColumnDefinitions="auto,*" ColumnSpacing="8" HorizontalOptions="Center">
+									<controls:SvgView Grid.Column="0"
+													Source="image.svg"
+													Aspect="AspectFit"
+													WidthRequest="18"
+													HeightRequest="18"
+													VerticalOptions="Center"
+													TintColor="{DynamicResource ButtonAccessSecondaryContentWL}"/>
+									<Label Grid.Column="1"
+											Text="{l:Localize Upload}"
+											VerticalOptions="Center"
+											FontFamily="SpaceGroteskBold"
+											FontSize="16"
+											TextColor="{DynamicResource ButtonAccessSecondaryContentWL}"/>
+								</Grid>
+							</Border>
+						</controls:TemplatedButton>
+						<controls:TemplatedButton Grid.Row="1"
 														  Command="{Binding TakePhotoCommand}">
-									<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
-										<Grid ColumnDefinitions="auto,*"
-											  ColumnSpacing="8"
-											  HorizontalOptions="Center">
-											<controls:SvgView Grid.Column="0"
-																Source="camera_alt.svg"
-																Aspect="AspectFit"
-																WidthRequest="18"
-																HeightRequest="18"
-																VerticalOptions="Center"
-																TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
-											<Label Grid.Column="1"
-												   Text="{l:Localize TakePhoto}"
-												   VerticalOptions="Center"
-												   FontFamily="SpaceGroteskBold"
-												   FontSize="16"
-												   TextColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
-										</Grid>
-									</Border>
-								</controls:TemplatedButton>
-							</VerticalStackLayout>
-						</controls:ConditionView.True>
-						<controls:ConditionView.False>
-							<controls:TemplatedButton Command="{Binding TakePhotoCommand}">
-								<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
-									<Grid ColumnDefinitions="auto,*"
-											ColumnSpacing="8"
-											HorizontalOptions="Center">
-										<controls:SvgView Grid.Column="0"
-															Source="camera_alt.svg"
-															Aspect="AspectFit"
-															WidthRequest="18"
-															HeightRequest="18"
-															VerticalOptions="Center"
-															TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
-										<Label Grid.Column="1"
-												Text="{l:Localize TakePhoto}"
-												VerticalOptions="Center"
-												FontFamily="SpaceGroteskBold"
-												FontSize="16"
-												TextColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
-									</Grid>
-								</Border>
-							</controls:TemplatedButton>
-						</controls:ConditionView.False>
-					</controls:ConditionView>
+							<Border Style="{DynamicResource SecondaryButtonActiveBorder}">
+								<Grid ColumnDefinitions="auto,*"
+										ColumnSpacing="8"
+										HorizontalOptions="Center">
+									<controls:SvgView Grid.Column="0"
+														Source="camera_alt.svg"
+														Aspect="AspectFit"
+														WidthRequest="18"
+														HeightRequest="18"
+														VerticalOptions="Center"
+														TintColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
+									<Label Grid.Column="1"
+											Text="{l:Localize TakePhoto}"
+											VerticalOptions="Center"
+											FontFamily="SpaceGroteskBold"
+											FontSize="16"
+											TextColor="{DynamicResource ButtonAccessSecondaryContentWL}" />
+								</Grid>
+							</Border>
+						</controls:TemplatedButton>
+					</VerticalStackLayout>
 
-					<Border Grid.Column="1"
-							StrokeShape="RoundRectangle 8"
+					<Border StrokeShape="RoundRectangle 8"
 							Stroke="{DynamicResource BrandColorsGreyScalesGreyv250}"
 							StrokeDashArray="1,1"
 							IsEnabled="{Binding IsValid}">
@@ -369,7 +342,7 @@
 							</Trigger>
 						</Border.Triggers>
 					</Border>
-					<Label Grid.Row="2" Grid.ColumnSpan="2" HorizontalOptions="Center" Style="{DynamicResource RegularCompositeInputViewValidationLabel}" Text="{Binding ValidationText}" TextColor="Red" IsVisible="{Binding IsValid, Converter={mct:InvertedBoolConverter}}"/>
+					<Label Grid.Row="1" Grid.ColumnSpan="2" HorizontalOptions="Center" Style="{DynamicResource RegularCompositeInputViewValidationLabel}" Text="{Binding ValidationText}" TextColor="Red" IsVisible="{Binding IsValid, Converter={mct:InvertedBoolConverter}}"/>
 				</Grid>
 			</DataTemplate>
 			
