@@ -262,22 +262,22 @@ namespace NeuroAccessMaui.Services.Kyc
 			}
 
 			// Ensure personal number mappings include normalization transforms
-			bool hasPersonalNumberMapping = false;
-			foreach (KycMapping mapping in Field.Mappings)
+			bool HasPersonalNumberMapping = false;
+			foreach (KycMapping Mapping in Field.Mappings)
 			{
-				if (!string.Equals(mapping.Key, Constants.XmppProperties.PersonalNumber, StringComparison.OrdinalIgnoreCase))
+				if (!string.Equals(Mapping.Key, Constants.XmppProperties.PersonalNumber, StringComparison.OrdinalIgnoreCase))
 					continue;
-				hasPersonalNumberMapping = true;
-				bool hasNormalize = mapping.TransformNames.Any(name => string.Equals(name, "personalNumberNormalize", StringComparison.OrdinalIgnoreCase));
-				if (!hasNormalize)
-					mapping.TransformNames.Add("personalNumberNormalize");
+				HasPersonalNumberMapping = true;
+				bool HasNormalize = Mapping.TransformNames.Any(name => string.Equals(name, "personalNumberNormalize", StringComparison.OrdinalIgnoreCase));
+				if (!HasNormalize)
+					Mapping.TransformNames.Add("personalNumberNormalize");
 			}
 
-			if (!hasPersonalNumberMapping && string.Equals(Field.Id, "personalNumber", StringComparison.OrdinalIgnoreCase))
+			if (!HasPersonalNumberMapping && string.Equals(Field.Id, "personalNumber", StringComparison.OrdinalIgnoreCase))
 			{
-				KycMapping normalizedMapping = new KycMapping { Key = Constants.XmppProperties.PersonalNumber };
-				normalizedMapping.TransformNames.Add("personalNumberNormalize");
-				Field.Mappings.Add(normalizedMapping);
+				KycMapping NormalizedMapping = new KycMapping { Key = Constants.XmppProperties.PersonalNumber };
+				NormalizedMapping.TransformNames.Add("personalNumberNormalize");
+				Field.Mappings.Add(NormalizedMapping);
 			}
 
 			// Options for pickers/checkboxes/radio/country
