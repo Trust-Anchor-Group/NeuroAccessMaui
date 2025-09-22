@@ -329,7 +329,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				// Normal form resume
 				this.currentPageIndex = resumeIndex >= 0 ? resumeIndex : this.GetFirstVisibleIndex();
-				this.CurrentPagePosition = this.currentPageIndex;
+				// Synchronize navigation snapshot so Back() logic and snapshot persistence have correct page index.
+				if (this.currentPageIndex >= 0)
+					this.navigation = this.navigation with { CurrentPageIndex = this.currentPageIndex };
+				this.CurrentPagePosition = this.currentPageIndex; // Triggers SetCurrentPage via partial method
+				// Explicit call retained for clarity (idempotent) but could be removed since setter already calls it.
 				this.SetCurrentPage(this.currentPageIndex);
 			}
 
@@ -698,7 +702,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.NotifyNavigationChanged();
 				return;
 			}
-			if (PrevSnap.CurrentPageIndex == this.navigation.CurrentPageIndex)
+			if (PrevSnap.CurrentPageIndex == 0)
 			{
 				// Already at first visible page -> exit
 				await base.GoBack();
