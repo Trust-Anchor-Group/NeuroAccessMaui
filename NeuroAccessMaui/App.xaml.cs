@@ -825,7 +825,7 @@ namespace NeuroAccessMaui
 					Headers = { ContentType = MediaTypeHeaderValue.Parse(contentType) }
 				};
 
-				await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
+				//await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
 			}
 			catch (Exception Ex)
 			{

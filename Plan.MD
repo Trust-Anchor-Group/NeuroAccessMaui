@@ -1,196 +1,123 @@
-# KYC Flow Refactor & Layering Plan
+# KYC Flow Refactor & Layering Plan (Simplified Revision)
 
 ## Executive Summary
 The current `KycProcessViewModel` mixes UI binding, navigation state machine logic, summary/materialization logic, submission orchestration, validation coordination, and persistence triggering. The existing `KycService` covers persistence, snapshotting, single-page validation, property/attachment extraction, and submission state mutations, but does **not** own flow orchestration.
 
-This plan introduces a dedicated orchestration layer (`IKycFlowController`) plus small focused services to progressively extract domain logic out of the ViewModel while keeping behavior stable and testable. Refactor is incremental, with measurable checkpoints and rollback options.
+Original plan proposed several new service abstractions (FlowController, SummaryBuilder, PrefillService, etc.). After review, we simplify to a **single new orchestration class** (`KycFlowController`, concrete first – interface later only if needed). We reuse existing `KycService` and `IdentitySummaryFormatter`, adding only tiny internal helpers (e.g., enrichment, hashing). Goal: Slim the ViewModel without service proliferation.
 
 ---
 ## Current vs Target Responsibility Split
 
-| Concern | Current Owner | Target Owner |
-|---------|---------------|--------------|
+| Concern | Current Owner | Simplified Target Owner |
+|---------|---------------|-------------------------|
 | Load & persist `KycReference` | KycService | KycService |
-| Page validation (single page) | KycService | KycService |
-| Whole-process invalid page detection | ViewModel | FlowController |
-| Navigation (Next/Previous/Summary) | ViewModel | FlowController |
-| Editing-from-summary state | ViewModel | FlowController |
-| Progress calculation | ViewModel | FlowController |
-| Snapshot scheduling (trigger points) | ViewModel | FlowController (delegates to service) |
-| Prefill from identity profile | ViewModel | PrefillService (invoked by FlowController) |
-| Build mapped properties + attachments | KycService (+ augmentation in ViewModel) | KycService (+ SummaryBuilder for assembly) |
-| Add standard properties (Jid/Phone/etc.) | ViewModel | SummaryBuilder / configurable enrichment |
-| Summary model assembly | ViewModel | SummaryBuilder |
-| Submission / revoke / rejection orchestration | ViewModel | FlowController (delegates to KycService) |
+| Page validation (single page & first invalid) | KycService | KycService |
+| Whole-process invalid page detection | ViewModel | KycFlowController (queries KycService) |
+| Navigation (Next/Previous/Summary) | ViewModel | KycFlowController |
+| Editing-from-summary state | ViewModel | KycFlowController |
+| Progress calculation | ViewModel | KycFlowController |
+| Snapshot scheduling (trigger points) | ViewModel | KycFlowController (delegates to KycService) |
+| Prefill from identity profile | ViewModel | KycFlowController (private helper; may call KycService) |
+| Build mapped properties + attachments | KycService + VM enrichment | KycService + internal enrichment helper |
+| Add standard properties (Jid/Phone/etc.) | ViewModel | Internal enrichment helper |
+| Summary model assembly | ViewModel | IdentitySummaryFormatter (+ enrichment helper) |
+| Submission / revoke / rejection orchestration | ViewModel | KycFlowController (delegates to KycService) |
 | UI binding exposure | ViewModel | ViewModel (thin adapter) |
 
 ---
-## Target Conceptual Architecture
+## Target Conceptual Architecture (Simplified)
 ```
 +------------------------+          +------------------+
 |        View (XAML)     |  binds   |  KycProcessVM    |
 +-----------+------------+          +---------+--------+
-            | Commands / Events                |
-            v                                   v
-      +-----------+                 +----------------------+
-      |  IKycFlow |  uses           |  KycService          |
-      | Controller|---------------> |  (Persistence,       |
-      +------+----+                 |   Snapshots,         |
-             |                      |   Page Validation,   |
-   uses      |                      |   Property/Attach)   |
-             v                      +----------+-----------+
-   +------------------+                        |
-   | SummaryBuilder    |<----------------------+ (raw data)
-   +------------------+                        |
-             ^                                 v
-   +------------------+              +------------------+
-   | PrefillService    |  (optional) |  Other Infra     |
-   +------------------+              |  (Xmpp, Profile) |
-                                     +------------------+
+		| Commands / Events                |
+		v                                   v (state projection)
+	+------------------+        uses      +-----------------------+
+	|  KycFlowController|---------------->|  KycService           |
+	|  (Orchestration)  |                 |  (Persistence,        |
+	+---------+---------+                 |   Validation,         |
+		    |                           |   Properties/Attach)  |
+	 internal helpers                     +-----------+-----------+
+		    |                                       |
+		    v                                       v
+     IdentitySummaryFormatter                Profile/Other Infra
+     + Enrichment Helper (static)            (Xmpp, Device, etc.)
 ```
 
----
-## Guiding Principles
-1. **Behavioral parity each phase** (no functional regressions).
-2. **Add, migrate, then delete** (never move & delete simultaneously).
-3. **Interfaces first, then implementation** (supports parallel development & test harnessing).
-4. **Minimal churn per phase** to ease code review & rollback.
-5. **Explicit metrics** (LOC reduction in VM, test harness coverage of controller transitions, snapshot integrity).
+Key Simplifications:
+1. Only one new class (`KycFlowController`). No new interfaces until a second implementation or external consumer appears.
+2. Summary built via existing `IdentitySummaryFormatter` plus a small internal static `SummaryEnrichmentHelper` (adds standard properties & attachments).
+3. Prefill logic remains a private method inside the controller (can later be extracted if complexity grows).
+4. A single immutable `FlowState` snapshot is emitted through one `StateChanged` event instead of multiple granular events.
+5. Snapshot policy lives solely inside the controller (hash + interval heuristic) delegating actual persistence to `KycService`.
 
 ---
-## Phased Plan
-
-### Phase 0 – Baseline Capture
-**Goals:** Establish current behavioral snapshot & metrics.
-**Tasks:**
-- Measure `KycProcessViewModel` LOC & cyclomatic complexity (manual note acceptable).
-- List all public/observable members used by XAML.
-- Capture logs from a full successful KYC flow (apply path + rejection path if possible).
-**Deliverables:** Baseline notes appended to bottom of this file.
-**Success Criteria:** Documented baseline; no code changes.
-
-### Phase 1 – Define New Interfaces (No Behavior Change)
-**Goals:** Introduce contracts without wiring.
-**Tasks:**
-- Add `IKycFlowController` interface (navigation + state exposure + submission/revoke skeleton).
-- Add `IKycSummaryBuilder` (takes process/reference -> summary model, returns enriched properties + attachments + summary model).
-- Add `IKycPrefillService` (process + identity -> mutated field list / result object).
-- Provide empty/skeletal implementations returning NotImplementedException where appropriate (or passthrough stubs returning safe defaults).
-**Deliverables:** New interfaces + stub classes in `Services/Kyc/Flow/` or similar.
-**Success Criteria:** Build succeeds; ViewModel unchanged.
-**Rollback:** Delete new files.
-
-### Phase 2 – Extract Summary Building
-**Goals:** Move `BuildMappedValuesAsync` logic out of ViewModel.
-**Tasks:**
-- Implement `KycSummaryBuilder` using existing `KycService.PreparePropertiesAndAttachmentsAsync` then enrichment.
-- Move enrichment (Jid/Phone/Email/Country/DeviceId) into builder.
-- ViewModel now calls `summaryBuilder.BuildAsync(...)` instead of local method; remove local method & property augmentation duplication.
-**Deliverables:** Working summary builder with identical output verified by diffing property sets (log hash before & after).
-**Success Criteria:** Application flows unchanged; summary displays identically (manual spot check).
-**Rollback:** Revert builder wiring.
-
-### Phase 3 – Introduce FlowController (Navigation Only)
-**Goals:** Move navigation & progress logic.
-**Tasks:**
-- Implement initial `KycFlowController` with: Initialize, Next, Previous, GoToSummary, GoToMapping, properties: CurrentPage, IsInSummary, Progress.
-- Internally reuse existing `KycTransitions` and replicate logic from ViewModel.
-- Raise events: `NavigationChanged`, `CurrentPageChanged`, `ProgressChanged`.
-- ViewModel subscribes to events and updates bindings (removing internal navigation logic gradually).
-**Deliverables:** Controller integrated; ViewModel delegates for next/previous/summary.
-**Success Criteria:** All navigation actions work; snapshot scheduling still occurs (temporarily still in VM or partially in controller).
-**Rollback:** Switch command handlers back to original VM methods; keep controller unused.
-
-### Phase 4 – Migrate Snapshot Scheduling & Progress Computation
-**Goals:** Centralize state mutation triggers.
-**Tasks:**
-- Move calls to `ScheduleSnapshotAsync` & `FlushSnapshotAsync` into controller transitions.
-- Controller exposes Progress property & raises change event; remove progress calculation from VM.
-- VM reduces to reading controller.Progress only.
-**Deliverables:** Slimmed progress logic in VM.
-**Success Criteria:** Snapshots still persist (verify by examining storage / metrics if available). UI progress unchanged.
-**Rollback:** Restore snapshot calls in VM.
-
-### Phase 5 – Move Submission / Revoke / Rejection Handling
-**Goals:** Centralize apply/revoke logic.
-**Tasks:**
-- Implement `ApplyAsync`, `RevokeAsync`, `ApplyRejectionAsync` in controller (invoke `KycService` methods + summary rebuild + navigation update + events).
-- VM commands delegate directly.
-- Remove duplication of editing-from-summary state toggling; maintain invariant inside controller.
-**Deliverables:** Controller fully responsible for application lifecycle.
-**Success Criteria:** Apply/Revoke/Rejection scenarios still behave identically (manual test with log comparison if possible).
-**Rollback:** Revert delegation changes.
-
-### Phase 6 – Prefill Extraction
-**Goals:** Move `PrefillFieldsFromProfile` logic.
-**Tasks:**
-- Implement `PrefillService.PrefillAsync(KycProcess, Profile)` returning results (count mutated, maybe list of field IDs).
-- Controller invokes during Initialize if conditions met (not pending/rejected).
-- Remove method from ViewModel.
-**Deliverables:** PrefillService plus integration; added logging for mutated fields.
-**Success Criteria:** Fields still auto-populate; no regression.
-**Rollback:** Reintroduce original method in VM.
-
-### Phase 7 – Clean ViewModel
-**Goals:** Reduce ViewModel to adapter.
-**Tasks:**
-- Remove now-redundant private helpers: navigation, summary rebuild, progress calc, apply/revoke logic.
-- Replace direct property sources with controller-backed or event-driven updates.
-- Ensure naming + XML doc updates reflecting new boundaries.
-**Deliverables:** Lean ViewModel (~50–60% LOC reduction expected).
-**Success Criteria:** Build passes; manual smoke test passes.
-**Rollback:** Git revert this phase.
-
-### Phase 8 – Logging, Metrics & Diagnostics
-**Goals:** Enhance observability for new layer.
-**Tasks:**
-- Structured logs: navigation transitions, summary build hash, submission lifecycle, prefill results.
-- Expose controller metrics: navigation steps, snapshots scheduled vs flushed.
-- Add optional `IKycFlowObserver` hook for test instrumentation.
-**Deliverables:** Extra logging + metrics retrieval method.
-**Success Criteria:** Logs show single-source navigation decisions; no duplication.
-**Rollback:** Remove added logging calls.
-
-### Phase 9 – Optional Performance / UX Refinements
-**Goals:** Optimize responsiveness & resource use.
-**Potential Improvements:**
-- Coalesce redundant summary rebuilds (debounce inside builder).
-- Lazy image compression (parallel vs sequential) if bottleneck.
-- Fine-grained snapshot suppression when no field changes.
-**Deliverables:** Micro-optimizations with profiling notes.
-**Success Criteria:** Reduced snapshot frequency & UI thread latency (qualitative unless profiler integrated later).
-**Rollback:** Revert performance patches.
-
-### Phase 10 – Final Consolidation & Documentation
-**Goals:** Finish with clarity and maintainability.
-**Tasks:**
-- Update README / internal docs (architecture section).
-- Update `.github/copilot-instructions.md` if conventions adjusted.
-- Add sequence diagrams (optional) for navigation & submission flows.
-- Mark deprecated internal methods (if any remained) or remove them.
-**Deliverables:** Updated documentation & final Plan status.
-**Success Criteria:** No dead code; consistent comments; onboarding time reduced.
-**Rollback:** Not typically required (doc-only + cleanup).
+## Guiding Principles (Revised)
+1. Maintain behavioral parity at each step (no regressions).
+2. Introduce only the minimum new abstraction (controller) now; defer interfaces (YAGNI).
+3. Use immutable `FlowState` and pure transition helpers for testability.
+4. Merge related moves to reduce phase overhead while preserving rollback points.
+5. Track explicit metrics: ViewModel LOC, number of domain-mutating methods, state change frequency, snapshot duplication.
 
 ---
-## Risks & Mitigations
+## Condensed Phases (0–6)
+
+### Phase 0 – Baseline Capture (unchanged)
+Goals: Record current VM LOC, cyclomatic complexity (manual), public bindable members, end-to-end flow logs (apply + rejection).
+Deliverable: Baseline notes appended below.
+Rollback: N/A.
+
+### Phase 1 – Introduce `KycFlowController` (Navigation + Progress)
+Scope: Build concrete controller (no interface yet). Implements Initialize, Next, Previous, GoToSummary, GoToMapping. Emits immutable `FlowState` via single `StateChanged` event. Progress derived from page index & total valid pages.
+VM Impact: Commands delegate; retains old submission, summary, snapshot logic for now.
+Rollback: Remove new controller file; restore original command wiring.
+
+### Phase 2 – Move Summary Assembly
+Scope: Relocate summary building & property/attachment enrichment from VM into controller using `KycService.PreparePropertiesAndAttachmentsAsync` + `IdentitySummaryFormatter` + `SummaryEnrichmentHelper` (internal static).
+VM Impact: Removes `BuildMappedValuesAsync` (or equivalent) and related enrichment code; now listens for state changes carrying summary.
+Parity Check: Log hash of properties before/after (SHA256 scheme in Appendix B).
+Rollback: Revert controller summary changes; restore VM method.
+
+### Phase 3 – Submission, Revoke, Rejection, Snapshots, Prefill
+Scope: Move Apply/Revoke/Rejection orchestration, snapshot scheduling policy, and prefill logic (private helper) into controller transitions.
+Policy: On any state-changing action, if field hash changed and interval exceeded, schedule snapshot; on terminal (Apply/Revoke) flush snapshot.
+VM Impact: Command methods become thin delegates; remove snapshot/prefill code.
+Rollback: Revert controller changes and restore removed VM methods.
+
+### Phase 4 – Prune ViewModel
+Scope: Delete obsolete helpers (navigation, progress, summary, submission, prefill, snapshot). Retain only bindable properties & command wiring projecting latest `FlowState`.
+Goal: ≥50% LOC reduction; 0 domain mutation methods.
+Rollback: Git revert of this phase commit.
+
+### Phase 5 – Logging & Diagnostics
+Scope: Add structured logs for transitions (OldState -> NewState + reason), summary hash, submission lifecycle, snapshot decisions, prefill results. Add optional lightweight metrics accessor (counts only). Consider `IKycFlowObserver` only if tests or external instrumentation immediately need it.
+Rollback: Remove logging additions.
+
+### Phase 6 – Documentation & Cleanup
+Scope: Update this Plan section to Completed, README architecture snippet, inline XML docs for controller public API, remove dead code remnants.
+Rollback: Not typically necessary.
+
+Optional Future (Defer Until Need Evident): Performance tuning (debounce summary), interface extraction for DI/mocking, observer hooks.
+
+---
+## Risks & Mitigations (Revised)
 | Risk | Impact | Mitigation |
 |------|--------|-----------|
-| Incremental divergence (VM & controller both manipulating state) | Inconsistent UI state | Hard cutover per phase; feature flags (internal boolean) temporarily if needed |
-| Snapshot regression | Data loss on resume | Add temporary log hash before & after each persisted snapshot during phases 3–5 |
-| Event ordering race (UI vs controller) | Flickering UI / stale bindings | Always marshal controller events to main thread in VM subscription |
-| Hidden coupling to existing private methods | Build errors late | Phase 1 interface drafting with references search |
-| Scope creep (extra validation features) | Delays | Strictly defer new features to post Phase 7 |
+| VM & controller both mutating state during transition phase | Inconsistent UI | Hard switch per phase; never duplicate logic simultaneously |
+| Snapshot policy bug | Potential data loss | Hash + timestamp logging around each scheduled/flush action |
+| Event flood / UI thrash | Performance degradation | Single consolidated `StateChanged` event; coalesce rapid transitions (optional debounce) |
+| Controller bloat over time | Maintainability drop | Partial class split by concern (Navigation, Summary, Submission) without extra abstractions |
+| Need for alternative implementations later | Refactor churn | Defer interfaces until a second implementation appears |
 
 ---
-## Success Metrics
+## Success Metrics (Revised)
 | Metric | Baseline | Target |
 |--------|----------|--------|
-| KycProcessViewModel LOC | (capture in Phase 0) | -50% or better |
-| Public methods in ViewModel performing domain mutations | >10 | ≤3 (delegations only) |
-| Snapshot duplicates (stale vs persisted) | Current log ratio | Reduce by ≥15% (optional) |
-| Navigation logic unit test coverage | 0% | ≥70% in controller (stretch) |
-| Time to add new navigation step (est.) | High | Reduced (qualitative developer feedback) |
+| ViewModel LOC | Capture Phase 0 | ≥50% reduction |
+| Domain mutation methods on VM | Count Phase 0 | 0 (only delegates) |
+| Average state changes per user action | N/A | 1 (no redundant events) |
+| Snapshot duplicate ratio | Capture Phase 0 | -15% (optional improvement) |
+| Time-to-add navigation step (qualitative) | High | Clearly reduced per developer feedback |
 
 ---
 ## Tooling / Testing Approach
@@ -207,52 +134,55 @@ Each phase ends with a stable build; rollback = git revert of that phase’s com
 | Phase | Effort (est.) | Notes |
 |-------|---------------|-------|
 | 0 | 0.5 day | Baseline only |
-| 1 | 0.5 day | Interfaces + stubs |
-| 2 | 1 day | Summary extraction |
-| 3 | 1.5 days | Navigation controller + events |
-| 4 | 0.5 day | Snapshot & progress migration |
-| 5 | 1 day | Submission/revoke/rejection |
-| 6 | 0.5 day | Prefill service |
-| 7 | 0.5 day | ViewModel slimming |
-| 8 | 0.5 day | Logging/metrics |
-| 9 | (optional) | Performance passes |
-| 10 | 0.5 day | Documentation |
+| 1 | 0.75 day | Controller (nav + progress) |
+| 2 | 0.75 day | Summary relocation |
+| 3 | 1 day | Submission + snapshots + prefill |
+| 4 | 0.5 day | ViewModel pruning |
+| 5 | 0.5 day | Logging & diagnostics |
+| 6 | 0.25 day | Docs & cleanup |
+| Future | (optional) | Performance / interfaces if needed |
 
 ---
-## Open Questions (Resolve Before Phase 3)
-1. Should `KycService` expose a bulk validation (first invalid page) to reduce controller logic even further? (Currently in service already via `GetFirstInvalidVisiblePageIndexAsync`.)
-2. Do we persist summary model variants (e.g., fast rebuild vs full rebuild) or always recompute?
-3. Should enrichment (Jid/Phone/Email/Country/DeviceId) be feature-flagged for future dynamic control?
-4. Should snapshot scheduling frequency be policy-driven (e.g., min interval)?
+## Open Questions (Resolve Before Phase 1 Complete)
+1. Confirm `KycService` already offers first-invalid-page API; if yes, rely on it (avoid duplication).
+2. Decide if summary is always recomputed or can be cached (initially always recompute, optimize later).
+3. Should enrichment fields be conditionally included (feature flag)? (Defer until a real requirement.)
+4. Minimum snapshot interval default (e.g., 5s? 10s?) – pick a sensible default now.
+5. Hash algorithm extension need? (SHA256 fine; only change if perf issues arise.)
 
 ---
 ## Appendices
-### Appendix A – Initial Interface Skeletons (Illustrative Only)
+### Appendix A – `FlowState` & Controller Sketch
 ```csharp
-public interface IKycFlowController : IDisposable
+public sealed record FlowState(
+	int PageIndex,
+	int TotalPages,
+	bool IsInSummary,
+	bool IsEditingFromSummary,
+	double Progress, // 0..1
+	KycSummaryModel? Summary,
+	IReadOnlyList<Property> Properties,
+	IReadOnlyList<LegalIdentityAttachment> Attachments,
+	string SubmissionStatus // Draft / Pending / Applied / Rejected etc.
+);
+
+public enum NavigationResult
 {
-	KycReference Reference { get; }
-	KycProcess Process { get; }
-	KycNavigationSnapshot Navigation { get; }
-	KycPage? CurrentPage { get; }
-	double Progress { get; }
-	bool IsInSummary { get; }
-	bool IsEditingFromSummary { get; }
-	IReadOnlyList<Property> CurrentMappedProperties { get; }
-	IReadOnlyList<LegalIdentityAttachment> CurrentAttachments { get; }
-	KycSummaryModel? CurrentSummary { get; }
-	Task InitializeAsync(KycReference reference, string? language, CancellationToken ct = default);
-	Task<bool> NextAsync(CancellationToken ct = default);
-	Task<bool> PreviousAsync(CancellationToken ct = default);
-	Task<bool> GoToSummaryAsync(CancellationToken ct = default);
-	Task<bool> GoToMappingAsync(string mappingKey, CancellationToken ct = default);
-	Task<bool> ApplyAsync(CancellationToken ct = default);
-	Task<bool> RevokeAsync(CancellationToken ct = default);
-	Task<bool> ApplyRejectionAsync(string message, string[] invalidClaims, string[] invalidPhotos, string? code, CancellationToken ct = default);
-	event EventHandler? NavigationChanged;
-	event EventHandler? CurrentPageChanged;
-	event EventHandler? ProgressChanged;
-	event EventHandler? SummaryChanged;
+	Success,
+	AlreadyAtFirst,
+	AlreadyAtLast,
+	ValidationFailed,
+	NotAllowedInState,
+	UnknownError
+}
+
+public sealed class KycFlowController : IDisposable
+{
+	public event EventHandler<FlowState>? StateChanged;
+	// Public async methods: InitializeAsync, NextAsync, PreviousAsync,
+	// GoToSummaryAsync, GoToMappingAsync, ApplyAsync, RevokeAsync, ApplyRejectionAsync.
+	// Each returns NavigationResult or bool (for Apply*) and raises StateChanged once on success.
+	// Internals maintain current FlowState and compute diffs.
 }
 ```
 
@@ -262,12 +192,34 @@ Hash = SHA256( sorted( FieldId + "=" + (Value ?? "") + "\n" ) )
 ```
 Used to confirm no unintended field value changes across phases.
 
----
 ### Baseline Notes (Phase 0 – To Fill In)
 - KycProcessViewModel LOC: _(fill)_
 - Distinct responsibilities enumerated: _(fill)_
 - Average snapshot frequency during nominal flow: _(fill)_
 - Initial property hash for sample application: _(fill)_
 
----
-**End of Plan**
+### Appendix C – Summary Enrichment Helper (Concept)
+```csharp
+internal static class SummaryEnrichmentHelper
+{
+	public static (IReadOnlyList<Property> Properties, IReadOnlyList<LegalIdentityAttachment> Attachments)
+		Enrich(
+			IEnumerable<Property> baseProperties,
+			IEnumerable<LegalIdentityAttachment> baseAttachments,
+			EnrichmentContext context)
+	{
+		// Add Jid, Phone, Email, Country, DeviceId if not already present.
+		// Return new materialized lists (no mutation of inputs).
+	}
+}
+
+internal sealed record EnrichmentContext(
+	string? Jid,
+	string? Phone,
+	string? Email,
+	string? Country,
+	string? DeviceId
+);
+```
+
+**End of Simplified Plan**
