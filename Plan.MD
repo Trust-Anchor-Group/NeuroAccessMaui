@@ -1,239 +1,225 @@
-# KYC Data Consistency & Concurrency Remediation Plan
+# KYC Flow Refactor & Layering Plan (Simplified Revision)
 
-This document outlines a phased implementation strategy to eliminate race conditions and data inconsistency in the KYC application flow (`KycService`, navigation commands, autosave, persistence of `KycReference`).
+## Executive Summary
+The current `KycProcessViewModel` mixes UI binding, navigation state machine logic, summary/materialization logic, submission orchestration, validation coordination, and persistence triggering. The existing `KycService` covers persistence, snapshotting, single-page validation, property/attachment extraction, and submission state mutations, but does **not** own flow orchestration.
 
----
-## Overview of Core Problems
-- Unsynchronized mutations of `KycReference` and associated `KycProcess.Values` across UI thread, autosave background task, and submission/rejection flows.
-- Autosave persisting *live mutable* objects leading to stale overwrite (out-of-order completion).
-- No optimistic concurrency or versioning — last writer wins silently.
-- Navigation commands (e.g., rapid "Next") allow overlapping validation + snapshot + autosave scheduling.
-- Snapshot creation is not atomic: partially updated aggregates may be saved.
-- Null-ing arrays (`Fields = null`) while other operations enumerate them.
-- Dispose does not guarantee final persistence.
+Original plan proposed several new service abstractions (FlowController, SummaryBuilder, PrefillService, etc.). After review, we simplify to a **single new orchestration class** (`KycFlowController`, concrete first – interface later only if needed). We reuse existing `KycService` and `IdentitySummaryFormatter`, adding only tiny internal helpers (e.g., enrichment, hashing). Goal: Slim the ViewModel without service proliferation.
 
 ---
-## Goals
-1. Deterministic, ordered persistence (no stale overwrites).
-2. Atomic snapshotting of UI/process state into an immutable structure before background work.
-3. Eliminate concurrent mutation races (serialize writes, or confine all writes to one logical executor).
-4. Introduce optimistic concurrency (Version) to guard against out-of-process or concurrent logical updates.
-5. Make navigation commands reentrancy-safe (no overlapping transitions).
-6. Provide structured logging + metrics hooks for visibility.
-7. Maintain backward compatibility with existing storage data (migration-friendly).
+## Current vs Target Responsibility Split
+
+| Concern | Current Owner | Simplified Target Owner |
+|---------|---------------|-------------------------|
+| Load & persist `KycReference` | KycService | KycService |
+| Page validation (single page & first invalid) | KycService | KycService |
+| Whole-process invalid page detection | ViewModel | KycFlowController (queries KycService) |
+| Navigation (Next/Previous/Summary) | ViewModel | KycFlowController |
+| Editing-from-summary state | ViewModel | KycFlowController |
+| Progress calculation | ViewModel | KycFlowController |
+| Snapshot scheduling (trigger points) | ViewModel | KycFlowController (delegates to KycService) |
+| Prefill from identity profile | ViewModel | KycFlowController (private helper; may call KycService) |
+| Build mapped properties + attachments | KycService + VM enrichment | KycService + internal enrichment helper |
+| Add standard properties (Jid/Phone/etc.) | ViewModel | Internal enrichment helper |
+| Summary model assembly | ViewModel | IdentitySummaryFormatter (+ enrichment helper) |
+| Submission / revoke / rejection orchestration | ViewModel | KycFlowController (delegates to KycService) |
+| UI binding exposure | ViewModel | ViewModel (thin adapter) |
 
 ---
-## Phase 0 – Preparation & Metrics (Optional but Recommended)
-**Purpose:** Gain baseline and ensure safe rollout.
-- Instrument current `SaveReferenceAsync` with temporary structured log: ReferenceId, UpdatedUtc, ThreadId, Hash(Fields), CallSite.
-- Duration: 0.5 day.
+## Target Conceptual Architecture (Simplified)
+```
++------------------------+          +------------------+
+|        View (XAML)     |  binds   |  KycProcessVM    |
++-----------+------------+          +---------+--------+
+		| Commands / Events                |
+		v                                   v (state projection)
+	+------------------+        uses      +-----------------------+
+	|  KycFlowController|---------------->|  KycService           |
+	|  (Orchestration)  |                 |  (Persistence,        |
+	+---------+---------+                 |   Validation,         |
+		    |                           |   Properties/Attach)  |
+	 internal helpers                     +-----------+-----------+
+		    |                                       |
+		    v                                       v
+     IdentitySummaryFormatter                Profile/Other Infra
+     + Enrichment Helper (static)            (Xmpp, Device, etc.)
+```
+
+Key Simplifications:
+1. Only one new class (`KycFlowController`). No new interfaces until a second implementation or external consumer appears.
+2. Summary built via existing `IdentitySummaryFormatter` plus a small internal static `SummaryEnrichmentHelper` (adds standard properties & attachments).
+3. Prefill logic remains a private method inside the controller (can later be extracted if complexity grows).
+4. A single immutable `FlowState` snapshot is emitted through one `StateChanged` event instead of multiple granular events.
+5. Snapshot policy lives solely inside the controller (hash + interval heuristic) delegating actual persistence to `KycService`.
 
 ---
-## Phase 1 – Add Versioning & Immutable Snapshot DTO
-**Files Impacted:**
-- `NeuroAccessMaui/Services/Kyc/KycReference.cs`
-- `NeuroAccessMaui/Services/Kyc/KycService.cs`
-
-**Changes:**
-1. Add `public int Version { get; set; }` (default 0) to `KycReference` with persistence attribute if required.
-2. Create internal immutable `KycReferenceSnapshot` (new file) containing:
-   - ReferenceId
-   - Version
-   - Fields (array copy)
-   - Progress
-   - LastVisitedPageId / Mode
-   - Rejection / Submission fields
-   - Timestamps (CreatedUtc, UpdatedUtc)
-3. In `KycService.UpdateSnapshot` replace in-place mutation with creation of a `KycReferenceSnapshot` returned to caller.
-4. Increment `Version` only when a new snapshot is captured (pre-persistence) under synchronization.
-5. Modify autosave logic to accept a snapshot object instead of the mutable `KycReference`.
-6. `SaveReferenceAsync(snapshot)` loads current reference, compares Version; if snapshot.Version < stored.Version => skip (stale). If equal => apply and increment Version (or increment pre-save, CAS style depending on persistence API constraints).
-
-**Concerns & Mitigations:**
-- Persistence layer may not support atomic CAS. If not, add a lightweight retry: load -> compare -> update -> if conflict (Version mismatch) -> abort.
-- Existing records have no Version; treat missing as 0.
-
-**Acceptance Criteria:**
-- Saving a stale snapshot (older Version) is skipped (verified via logging).
-- Normal flow increments Version each user action leading to snapshot.
+## Guiding Principles (Revised)
+1. Maintain behavioral parity at each step (no regressions).
+2. Introduce only the minimum new abstraction (controller) now; defer interfaces (YAGNI).
+3. Use immutable `FlowState` and pure transition helpers for testability.
+4. Merge related moves to reduce phase overhead while preserving rollback points.
+5. Track explicit metrics: ViewModel LOC, number of domain-mutating methods, state change frequency, snapshot duplication.
 
 ---
-## Phase 2 – Introduce Per-Reference Async Lock & Serialization of Mutations
-**Files Impacted:**
-- `KycService.cs`
-- New helper: `AsyncLock` (if not already present) under `Services/Resilience` or `Services/Concurrency`.
+## Condensed Phases (0–6)
 
-**Changes:**
-1. Add `private readonly ConcurrentDictionary<string, AsyncLock> referenceLocks;` in `KycService`.
-2. Wrap all mutation entry points:
-   - `ScheduleSnapshotAsync`
-   - `FlushSnapshotAsync`
-   - `ApplySubmissionAsync`
-   - `ClearSubmissionAsync`
-   - `ApplyRejectionAsync`
-   - `PrepareReferenceForNewApplicationAsync`
-3. Inside lock: build snapshot & enqueue persistence (autosave or immediate) using immutable DTO only.
-4. Remove direct field mutation outside locked regions (except read-only access).
+### Phase 0 – Baseline Capture (unchanged)
+Goals: Record current VM LOC, cyclomatic complexity (manual), public bindable members, end-to-end flow logs (apply + rejection).
+Deliverable: Baseline notes appended below.
+Rollback: N/A.
 
-**Concerns:**
-- Deadlocks risk minimal if lock is only awaited in top-level public methods and not re-entered. Document usage.
+### Phase 1 – Introduce `KycFlowController` (Navigation + Progress)
+Scope: Build concrete controller (no interface yet). Implements Initialize, Next, Previous, GoToSummary, GoToMapping. Emits immutable `FlowState` via single `StateChanged` event. Progress derived from page index & total valid pages.
+VM Impact: Commands delegate; retains old submission, summary, snapshot logic for now.
+Rollback: Remove new controller file; restore original command wiring.
 
-**Acceptance Criteria:**
-- Rapid spam of navigation produces strictly increasing Versions with no duplicates skipped incorrectly.
+### Phase 2 – Move Summary Assembly
+Scope: Relocate summary building & property/attachment enrichment from VM into controller using `KycService.PreparePropertiesAndAttachmentsAsync` + `IdentitySummaryFormatter` + `SummaryEnrichmentHelper` (internal static).
+VM Impact: Removes `BuildMappedValuesAsync` (or equivalent) and related enrichment code; now listens for state changes carrying summary.
+Parity Check: Log hash of properties before/after (SHA256 scheme in Appendix B).
+Rollback: Revert controller summary changes; restore VM method.
 
----
-## Phase 3 – Refactor Autosave to Snapshot Queue (Channel)
-**Files Impacted:**
-- `KycService.cs` (replace `ObservableTask<int> autosaveTask` usage)
-- Add new file `KycAutosaveQueue.cs`
+### Phase 3 – Submission, Revoke, Rejection, Snapshots, Prefill
+Scope: Move Apply/Revoke/Rejection orchestration, snapshot scheduling policy, and prefill logic (private helper) into controller transitions.
+Policy: On any state-changing action, if field hash changed and interval exceeded, schedule snapshot; on terminal (Apply/Revoke) flush snapshot.
+VM Impact: Command methods become thin delegates; remove snapshot/prefill code.
+Rollback: Revert controller changes and restore removed VM methods.
 
-**Changes:**
-1. Replace debounce + single task with a `Channel<KycReferenceSnapshot>` or custom serial queue.
-2. On schedule: try `TryWrite(snapshot)`; if channel already has a pending snapshot, drop older (keep last) to avoid redundant saves.
-3. Background consumer executes: dequeues latest snapshot, persists, logs result. Cancellation token controlled by service lifecycle.
-4. Flush operation: force immediate persist by writing and awaiting completion TaskCompletionSource.
+### Phase 4 – Prune ViewModel
+Scope: Delete obsolete helpers (navigation, progress, summary, submission, prefill, snapshot). Retain only bindable properties & command wiring projecting latest `FlowState`.
+Goal: ≥50% LOC reduction; 0 domain mutation methods.
+Rollback: Git revert of this phase commit.
 
-**Concerns:**
-- Ensure graceful shutdown: on `Dispose`, complete channel then drain remaining item(s) before return.
+### Phase 5 – Logging & Diagnostics
+Scope: Add structured logs for transitions (OldState -> NewState + reason), summary hash, submission lifecycle, snapshot decisions, prefill results. Add optional lightweight metrics accessor (counts only). Consider `IKycFlowObserver` only if tests or external instrumentation immediately need it.
+Rollback: Remove logging additions.
 
-**Acceptance Criteria:**
-- At most one outstanding persistence operation at a time.
-- Stress test (manual) shows no stale overwrites in logs.
+### Phase 6 – Documentation & Cleanup
+Scope: Update this Plan section to Completed, README architecture snippet, inline XML docs for controller public API, remove dead code remnants.
+Rollback: Not typically necessary.
+
+Optional Future (Defer Until Need Evident): Performance tuning (debounce summary), interface extraction for DI/mocking, observer hooks.
 
 ---
-## Phase 4 – Navigation Command Reentrancy Guard
-**Files Impacted:**
-- KYC UI ViewModels (e.g., `KycProcessPageViewModel` or equivalent command definitions — not shown; identify actual file names).
-
-**Changes:**
-1. Replace `ICommand` with `AsyncRelayCommand` (CommunityToolkit) configured with `AllowsMultipleExecutions = false`
-2. Disable Next/Previous buttons while validation + snapshot flush is running.
-3. Centralize navigation transition pipeline: Validate -> Snapshot -> Navigate; ensure executed under reference lock.
-
-**Concerns:**
-- UX: Provide subtle loading indicator for disabled period.
-
-**Acceptance Criteria:**
-- Double-tap Next does not trigger two overlapping transitions (verified by logs showing single Version increment).
-
----
-## Phase 5 – Final Flush & Disposal Guarantees
-Status: IMPLEMENTED (Service + lifecycle hook integrated in `App.ShutdownAsync`).
-
-**Files Impacted:**
-- `KycService.cs` (added `FlushAsync` + `ShutdownAsync`)
-- `IKycService.cs` (new interface members)
-
-**Implemented Changes:**
-1. `Task FlushAsync(CancellationToken)` drains any pending coalesced snapshots immediately.
-2. `Task ShutdownAsync(CancellationToken)` cancels worker, completes channel, awaits worker (bounded wait) then calls `FlushAsync`.
-3. Dispose still performs a best-effort cancellation; explicit host code should prefer calling `ShutdownAsync` for deterministic persistence.
-
-**Remaining Integration Follow-ups (Optional Enhancements):**
-- Add a structured log event: `KycShutdown` {PendingCountBeforeFlush}.
-
-**Acceptance Criteria (Met):**
-- Manual invocation of `FlushAsync` after rapid edits leaves zero entries in the pending dictionary.
-- `ShutdownAsync` (invoked from `App.ShutdownAsync`) returns within bounded time (<2s wait for worker) even under load.
-- App backgrounding (`OnSleep`) triggers bounded KYC shutdown/flush (2s timeout) before storage unload.
-
----
-## Phase 6 – Telemetry & Health
-**Files Impacted:**
-- Logging central service.
-- `KycService.cs`.
-
-**Changes:**
-1. Structured log event: `KycSnapshotPersisted` { ReferenceId, Version, FieldCount, DurationMs, Hash }.
-2. Structured log event: `KycSnapshotStaleSkipped` { ReferenceId, SnapshotVersion, CurrentVersion }.
-3. Add lightweight in-memory counters for saved vs skipped; expose via diagnostics page or debug log command.
-
-**Acceptance Criteria:**
-- Logs visible and actionable; ratio of skipped stale snapshots acceptable (<5% under normal usage).
-
----
-## Phase 7 – Clean-Up & Hardening
-**Changes:**
-- Enforce non-null `Fields` (empty array instead of null). Migration: on load, if null -> set to empty.
-- Add guard clauses & early returns consolidated to reduce mutation regions.
-- Add retry policy around persistence (exponential backoff 2–3 attempts on transient exceptions).
-
----
-## Data Model Change Summary
-| Change | Backward Compatibility | Migration Step |
-|--------|------------------------|----------------|
-| Add `Version` (int) to `KycReference` | Existing rows get default 0 | None required; treat missing as 0 |
-| Enforce non-null `Fields` | Safe | On load: if null -> [] |
-
----
-## Risk Register
+## Risks & Mitigations (Revised)
 | Risk | Impact | Mitigation |
-|------|--------|------------|
-| CAS race if storage not transactional | Stale writes | Retry pattern + version compare |
-| Performance regression from locking | UI delay | Narrow critical sections, offload IO |
-| Channel backlog growth | Memory | Drop intermediate snapshots (keep latest) |
-| Missed final save on abrupt kill | Lost last seconds of edits | Short autosave interval + explicit flush on lifecycle |
+|------|--------|-----------|
+| VM & controller both mutating state during transition phase | Inconsistent UI | Hard switch per phase; never duplicate logic simultaneously |
+| Snapshot policy bug | Potential data loss | Hash + timestamp logging around each scheduled/flush action |
+| Event flood / UI thrash | Performance degradation | Single consolidated `StateChanged` event; coalesce rapid transitions (optional debounce) |
+| Controller bloat over time | Maintainability drop | Partial class split by concern (Navigation, Summary, Submission) without extra abstractions |
+| Need for alternative implementations later | Refactor churn | Defer interfaces until a second implementation appears |
 
 ---
-## Acceptance Test Scenarios (Manual)
-1. Rapid Next tapping (10x in <2s): Versions strictly monotonic, no duplicates, final state correct.
-2. Enter data then quickly navigate away & background app: Last entry persisted (after resume).
-3. Simultaneous rejection application while autosave pending: Rejection fields not overwritten by stale autosave.
-4. Prepare new application while previous autosave mid-flight: Old snapshot skipped (Version mismatch).
-5. Image upload + navigate quickly: Attachment appears in final identity submission once; no partial duplicates.
+## Success Metrics (Revised)
+| Metric | Baseline | Target |
+|--------|----------|--------|
+| ViewModel LOC | Capture Phase 0 | ≥50% reduction |
+| Domain mutation methods on VM | Count Phase 0 | 0 (only delegates) |
+| Average state changes per user action | N/A | 1 (no redundant events) |
+| Snapshot duplicate ratio | Capture Phase 0 | -15% (optional improvement) |
+| Time-to-add navigation step (qualitative) | High | Clearly reduced per developer feedback |
 
 ---
-## Implementation Order Justification
-Ordering reduces refactor risk: introduce passive safety (versioning + snapshots) before changing execution model (queue), then guard UI reentrancy, then finalize lifecycle and telemetry.
+## Tooling / Testing Approach
+- Add lightweight unit tests (if allowed later) targeting controller transitions: advance, back, rejection, re-entry to summary.
+- Use temporary logging of: navigation state tuples `(State, CurrentPageIndex, AnchorPageIndex)`.
+- Hash comparison of mapped property sets pre/post refactor (SHA256 of concatenated key=value lines) to assert parity.
 
 ---
-## Next Steps
-- Proceed directly with Phase 1 implementation (`feature/kyc-concurrency-phase1`).
-- After each phase, run manual scenarios before continuing.
+## Rollback Strategy
+Each phase ends with a stable build; rollback = git revert of that phase’s commit. Avoid multi-phase squashes until after Phase 7 completion.
 
 ---
-## Addendum: ObservableTask & PolicyRunner Integration
+## Tentative Timeline (Adjust as Needed)
+| Phase | Effort (est.) | Notes |
+|-------|---------------|-------|
+| 0 | 0.5 day | Baseline only |
+| 1 | 0.75 day | Controller (nav + progress) |
+| 2 | 0.75 day | Summary relocation |
+| 3 | 1 day | Submission + snapshots + prefill |
+| 4 | 0.5 day | ViewModel pruning |
+| 5 | 0.5 day | Logging & diagnostics |
+| 6 | 0.25 day | Docs & cleanup |
+| Future | (optional) | Performance / interfaces if needed |
 
-### Current Usage Summary
-- `ObservableTask<int> autosaveTask` in `KycService` handles debounced autosave with a debounce policy.
-- Field validation (`ObservableKycField.ValidationTask` and synchronous debounce task) relies on `ObservableTask` for stateful validation and UI binding.
-- Page refresh logic (in `KycProcessViewModel`) also uses `ObservableTask`.
-- `PolicyRunner` composes `IAsyncPolicy` pipelines (currently debounce, potentially retries/timeouts) around actions.
+---
+## Open Questions (Resolve Before Phase 1 Complete)
+1. Confirm `KycService` already offers first-invalid-page API; if yes, rely on it (avoid duplication).
+2. Decide if summary is always recomputed or can be cached (initially always recompute, optimize later).
+3. Should enrichment fields be conditionally included (feature flag)? (Defer until a real requirement.)
+4. Minimum snapshot interval default (e.g., 5s? 10s?) – pick a sensible default now.
+5. Hash algorithm extension need? (SHA256 fine; only change if perf issues arise.)
 
-### Impact on Phases
-| Phase | Adjustment Needed | Notes |
-|-------|-------------------|-------|
-| 1 | Keep `autosaveTask`, but persist immutable snapshot instead of live reference. | Introduce `KycReferenceSnapshot`; store latest snapshot in service. |
-| 2 | Wrap snapshot creation & `pendingSnapshot` assignment in per-reference lock. | Validation `ObservableTask`s unchanged. |
-| 3 | Remove `autosaveTask`; replace with channel/queue. | Complete migration—no feature flag fallback. |
-| 4+ | No change to validation tasks. | Consider minor telemetry additions. |
+---
+## Appendices
+### Appendix A – `FlowState` & Controller Sketch
+```csharp
+public sealed record FlowState(
+	int PageIndex,
+	int TotalPages,
+	bool IsInSummary,
+	bool IsEditingFromSummary,
+	double Progress, // 0..1
+	KycSummaryModel? Summary,
+	IReadOnlyList<Property> Properties,
+	IReadOnlyList<LegalIdentityAttachment> Attachments,
+	string SubmissionStatus // Draft / Pending / Applied / Rejected etc.
+);
 
-### Transitional Strategy
-1. Phase 1 retrofit: Modify `ExecuteAutosaveAsync` to use `latestSnapshot` (volatile) and skip if stale.
-2. Add `long latestVersionPersisted` to detect & log skipped snapshots.
-3. When moving to Phase 3 queue, delete debounce policy usage; if a coalescing delay still desired, implement a timer in producer before enqueueing (without mutating the reference further).
+public enum NavigationResult
+{
+	Success,
+	AlreadyAtFirst,
+	AlreadyAtLast,
+	ValidationFailed,
+	NotAllowedInState,
+	UnknownError
+}
 
-### PolicyRunner Reuse
-- Retain `PolicyRunner` for: persistence retry/backoff, timeout around storage operations, optional jitter.
-- Remove its usage for pure debouncing once queue introduced (debounce replaced by snapshot coalescing + short delay).
+public sealed class KycFlowController : IDisposable
+{
+	public event EventHandler<FlowState>? StateChanged;
+	// Public async methods: InitializeAsync, NextAsync, PreviousAsync,
+	// GoToSummaryAsync, GoToMappingAsync, ApplyAsync, RevokeAsync, ApplyRejectionAsync.
+	// Each returns NavigationResult or bool (for Apply*) and raises StateChanged once on success.
+	// Internals maintain current FlowState and compute diffs.
+}
+```
 
-### Removal Checklist (Phase 3)
-- Delete `AutosaveDelay`, `AutosavePolicy`, and `autosaveTask` fields.
-- Remove `FlushPendingAutosaveAsync` and `RunImmediateAutosaveAsync`; replace with `FlushQueueAsync`.
-- Update Dispose to shutdown queue and await drain.
+### Appendix B – Snapshot Comparison Hash
+```
+Hash = SHA256( sorted( FieldId + "=" + (Value ?? "") + "\n" ) )
+```
+Used to confirm no unintended field value changes across phases.
 
-### Validation Tasks Rationale to Keep
-- Provide per-field UI state (IsValid, pending validation) and avoid blocking UI thread with synchronous heavy validation.
-- Their concurrency is localized to field scope; no cross-field mutation races if snapshot capture occurs after `ValidationTask.WaitAllAsync()` in navigation pipeline.
+### Baseline Notes (Phase 0 – To Fill In)
+- KycProcessViewModel LOC: _(fill)_
+- Distinct responsibilities enumerated: _(fill)_
+- Average snapshot frequency during nominal flow: _(fill)_
+- Initial property hash for sample application: _(fill)_
 
-### Additional Logging Events
-- `KycSnapshotCreated` { ReferenceId, Version, FieldCount }
-- `KycSnapshotPersistAttempt` { Version, IsImmediate }
-- `KycSnapshotPersistSkipped` { SnapshotVersion, CurrentVersion }
+### Appendix C – Summary Enrichment Helper (Concept)
+```csharp
+internal static class SummaryEnrichmentHelper
+{
+	public static (IReadOnlyList<Property> Properties, IReadOnlyList<LegalIdentityAttachment> Attachments)
+		Enrich(
+			IEnumerable<Property> baseProperties,
+			IEnumerable<LegalIdentityAttachment> baseAttachments,
+			EnrichmentContext context)
+	{
+		// Add Jid, Phone, Email, Country, DeviceId if not already present.
+		// Return new materialized lists (no mutation of inputs).
+	}
+}
 
-### Risks If Ignored
-| Risk | Consequence |
-|------|-------------|
-| Leaving autosave ObservableTask after introducing queue | Duplicate persistence paths, undefined ordering |
-| Not switching to immutable snapshots early | Persisting mid-mutation state |
-| Removing debounce without coalescing | Excess disk writes under rapid field edits |
+internal sealed record EnrichmentContext(
+	string? Jid,
+	string? Phone,
+	string? Email,
+	string? Country,
+	string? DeviceId
+);
+```
+
+**End of Simplified Plan**
