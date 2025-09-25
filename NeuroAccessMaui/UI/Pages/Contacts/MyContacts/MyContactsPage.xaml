@@ -34,6 +34,16 @@
 						<Label Style="{DynamicResource AlertLabel}" Text="{Binding NrEvents}" Padding="1"/>
 					</Frame>
 
+					<controls:SvgButton SvgSource="chat.svg" Style="{DynamicResource IconButtonOnBackground}"
+										VerticalOptions="Center"
+										Grid.Column="3"
+										Command="{Binding ViewChatCommand}"/>
+
+					<controls:SvgButton SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
+										VerticalOptions="Center"
+										Grid.Column="4"
+										Command="{Binding ViewContactCommand}"/> 
+
 				</Grid>
 			</Border>
 		</DataTemplate>
@@ -44,8 +54,8 @@
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<Grid ColumnDefinitions="*, auto" Margin="{DynamicResource SmallLeftRightMargins}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource SmallMargins}">
+				<Grid ColumnDefinitions="*, auto" Margin="8,8,8,0">
 					<controls:SvgButton
 						Grid.Row="0" Grid.Column="0"
 						Command="{Binding GoBackCommand}"
@@ -73,12 +83,21 @@
 					</VerticalStackLayout>
 				</Border>
 
-				<CollectionView x:Name="Contacts" VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems"
-								SelectionMode="Single" ItemsSource="{Binding Path=Contacts}"
-								SelectedItem="{Binding Path=SelectedContact, Mode=TwoWay}"
-								ItemTemplate="{StaticResource ContactTemplate}">
-
-				</CollectionView>
+				<!-- Use collectionview to maintain logic when page is opened in selection mode, like selecting a contact for add contract part of payments -->
+				<controls:ConditionView Condition="{Binding IsViewMode}">
+					<controls:ConditionView.True>
+						<VerticalStackLayout BindableLayout.ItemsSource="{Binding Contacts}" BindableLayout.ItemTemplate="{StaticResource ContactTemplate}"/>
+					</controls:ConditionView.True>
+					
+					<controls:ConditionView.False>
+						<CollectionView x:Name="Contacts" VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems"
+										SelectionMode="Single" ItemsSource="{Binding Path=Contacts}"
+										SelectedItem="{Binding Path=SelectedContact, Mode=TwoWay}"
+										ItemTemplate="{StaticResource ContactTemplate}">
+						</CollectionView>
+					</controls:ConditionView.False>
+				</controls:ConditionView>
+				
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

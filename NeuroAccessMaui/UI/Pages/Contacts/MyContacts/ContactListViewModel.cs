@@ -365,7 +365,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 										break;
 
-									case SelectContactAction.ViewIdentity:
+									case SelectContactAction.View:
 									default:
 										if (Contact.LegalIdentity is not null)
 										{

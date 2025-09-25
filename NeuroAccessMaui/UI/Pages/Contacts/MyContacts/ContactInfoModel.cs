@@ -1,11 +1,15 @@
 ﻿using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using Waher.Networking.XMPP;
@@ -17,7 +21,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 	/// <summary>
 	/// Contact Information model, including related notification information.
 	/// </summary>
-	public class ContactInfoModel : INotifyPropertyChanged, IUniqueItem
+	public partial class ContactInfoModel : INotifyPropertyChanged, IUniqueItem
 	{
 		private readonly ContactInfo? contact;
 		private NotificationEvent[] events;
@@ -394,6 +398,32 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 					}
 				}
 
+			}
+		}
+
+		[RelayCommand]
+		public async Task ViewContact()
+		{
+			if (this.LegalIdentity is not null)
+			{
+				ViewIdentityNavigationArgs ViewIdentityArgs = new(this.LegalIdentity);
+
+				await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs);
+			}
+			else if (!string.IsNullOrEmpty(this.LegalId))
+			{
+				await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(this.LegalId,
+					ServiceRef.Localizer[nameof(AppResources.ScannedQrCode)]);
+			}
+		}
+
+		[RelayCommand]
+		public async Task ViewChat()
+		{
+			if (!string.IsNullOrEmpty(this.BareJid) && this.Contact is not null)
+			{
+				ChatNavigationArgs ChatArgs = new(this.Contact);
+				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, this.BareJid);
 			}
 		}
 	}
