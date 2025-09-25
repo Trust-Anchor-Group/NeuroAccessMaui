@@ -455,7 +455,10 @@ namespace NeuroAccessMaui.Services.Theme
 				XSL.Validate("BrandingDescriptor", Doc, Schema); return true;
 			}
 			catch (Exception Ex)
-			{ ServiceRef.LogService.LogException(new Exception($"XSD validation failed for schema version {(V2 ? "V2" : "V1")}.", Ex)); return false; }
+			{
+				ServiceRef.LogService.LogException(new Exception($"XSD validation failed for schema version {(V2 ? "V2" : "V1")}.", Ex));
+				return false;
+			}
 		}
 
 		private void RemoveAllThemeDictionaries(ICollection<ResourceDictionary> Merged, ResourceDictionary? Instance)
