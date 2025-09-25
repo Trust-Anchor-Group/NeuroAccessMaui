@@ -31,6 +31,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		private readonly TaskCompletionSource<ContactInfoModel?>? selection;
 		private readonly ContactListNavigationArgs? navigationArguments;
 
+		[ObservableProperty]
+		private bool isViewMode = false;
+
 		/// <summary>
 		/// Creates an instance of the <see cref="ContactListViewModel"/> class.
 		/// </summary>
@@ -54,9 +57,12 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			else
 			{
 				this.Description = ServiceRef.Localizer[nameof(AppResources.ContactsDescription)];
-				this.Action = SelectContactAction.ViewIdentity;
+				this.Action = SelectContactAction.View;
 				this.selection = null;
 			}
+
+			if (this.Action == SelectContactAction.View)
+				this.IsViewMode = true;
 		}
 
 		/// <inheritdoc/>
