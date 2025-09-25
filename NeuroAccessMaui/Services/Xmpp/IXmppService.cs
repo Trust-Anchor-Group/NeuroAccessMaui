@@ -1205,7 +1205,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="TransactionId">ID of transaction containing the encrypted message.</param>
 		/// <param name="RemoteEndpoint">Remote endpoint</param>
 		/// <returns>Decrypted string, if successful, or null, if not.</returns>
-		Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint, bool LocalIsRecipient = false);
+		Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint, bool LocalIsRecipient);
 
 		/// <summary>
 		/// Sends an eDaler URI to the eDaler service.
