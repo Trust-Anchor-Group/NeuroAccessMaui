@@ -97,8 +97,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 						this.Message = Encoding.UTF8.GetString(this.navigationArguments.Uri.EncryptedMessage);
 					else
 					{
+						//TODO: Fix LocalIsRecipient argument
+						bool LocalIsRecipient = this.navigationArguments.Uri.ToType == EntityType.LegalId &&
+							this.navigationArguments.Uri.To == ServiceRef.TagProfile?.LegalIdentity?.Id;
+
 						this.Message = await ServiceRef.XmppService.TryDecryptMessage(this.navigationArguments.Uri.EncryptedMessage,
-						this.navigationArguments.Uri.EncryptionPublicKey, this.navigationArguments.Uri.Id, this.navigationArguments.Uri.From);
+						this.navigationArguments.Uri.EncryptionPublicKey, this.navigationArguments.Uri.Id, this.navigationArguments.Uri.From, LocalIsRecipient);
 					}
 					this.HasMessage = !string.IsNullOrEmpty(this.Message);
 				}

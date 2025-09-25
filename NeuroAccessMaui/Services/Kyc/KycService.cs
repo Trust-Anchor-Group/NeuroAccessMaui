@@ -24,6 +24,7 @@ using SkiaSharp;
 using Waher.Networking.XMPP.Contracts;
 using System.Diagnostics;
 using System.Security.Cryptography;
+using System.Xml;
 
 namespace NeuroAccessMaui.Services.Kyc
 {
@@ -237,7 +238,16 @@ namespace NeuroAccessMaui.Services.Kyc
 				byte[]? Bytes = Result.Value;
 				if (Bytes is null || Bytes.Length == 0)
 					return null;
-				return Encoding.UTF8.GetString(Bytes);
+				string Xml = Encoding.UTF8.GetString(Bytes);
+
+				// Validate against XSD before accepting remote payload using general schema service.
+				bool Valid = await ServiceRef.XmlSchemaValidationService.ValidateAsync(Constants.Schemes.KYCProcess, Xml).ConfigureAwait(false);
+				if (!Valid)
+				{
+					ServiceRef.LogService.LogWarning("KycXmlValidationFailed", new KeyValuePair<string, object?>("Domain", Domain));
+					return null; // Force caller to fallback to packaged version
+				}
+				return Xml;
 			}
 			catch (Exception Ex)
 			{

@@ -86,6 +86,22 @@ namespace NeuroAccessMaui
 		}
 
 		/// <summary>
+		/// XML Schemes (namespaces used also as schema registration keys) + packaged file names.
+		/// </summary>
+		public static class Schemes
+		{
+			// Namespace (URN) constants (as declared in XSD targetNamespace) - also used as registration keys.
+			public const string NeuroAccessBrandingV1 = "urn:neuroaccess:branding:1.0";
+			public const string NeuroAccessBrandingV2 = "urn:neuroaccess:branding:2.0";
+			public const string KYCProcess = "urn:neuroaccess:kyc:1.0";
+
+			// Packaged schema file names (Resources/Raw flattened by MauiAsset)
+			public const string BrandingDescriptorV1File = "NeuroAccessBrandingV1.xsd";
+			public const string BrandingDescriptorV2File = "NeuroAccessBrandingV2.xsd";
+			public const string KycProcessFile = "KYCProcess.xsd";
+		}
+
+		/// <summary>
 		/// IoT Schemes
 		/// </summary>
 		public static class UriSchemes

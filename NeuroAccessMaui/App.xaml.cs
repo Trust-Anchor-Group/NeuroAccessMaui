@@ -70,6 +70,7 @@ using Waher.Security.JWS;
 using Waher.Security.JWT;
 using Waher.Security.LoginMonitor;
 using Waher.Things;
+using NeuroAccessMaui.Services.Xml;
 
 namespace NeuroAccessMaui
 {
@@ -394,6 +395,7 @@ namespace NeuroAccessMaui
 			Types.InstantiateDefault<INfcService>(false);
 			Types.InstantiateDefault<INotificationService>(false);
 			Types.InstantiateDefault<IIntentService>(false);
+			Types.InstantiateDefault<IXmlSchemaValidationService>(false);
 			Types.InstantiateDefault<IThemeService>(false);
 			Types.InstantiateDefault<IKycService>(false);
 
@@ -825,7 +827,7 @@ namespace NeuroAccessMaui
 					Headers = { ContentType = MediaTypeHeaderValue.Parse(contentType) }
 				};
 
-				//await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
+				await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
 			}
 			catch (Exception Ex)
 			{
