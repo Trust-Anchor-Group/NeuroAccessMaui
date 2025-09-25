@@ -52,10 +52,10 @@
 			<Text lang="fi">Anna henkilötietosi täsmälleen kuten ne ovat virallisissa asiakirjoissasi.</Text>
 			<Text lang="fr">Veuillez saisir vos informations personnelles telles qu’elles apparaissent sur vos documents officiels.</Text>
 		</Description>
-		<Field id="givenNames" type="text" required="true">
+		<Field id="firstNames" type="text" required="true">
 			<Label>
-				<Text lang="en">Given name(s)</Text>
-				<Text lang="sv">Förnamn (inklusive mellannamn)</Text>
+				<Text lang="en">First name</Text>
+				<Text lang="sv">Förnamn</Text>
 				<Text lang="es">Nombre(s)</Text>
 				<Text lang="pt">Nome(s)</Text>
 				<Text lang="da">Fornavn(e)</Text>
@@ -90,23 +90,63 @@
 					</Message>
 				</RegexRule>
 			</ValidationRules>
-			<Mapping key="FIRST" />
+			<Mapping key="FIRST"/>
 		</Field>
-		<Field id="surnames" type="text" required="true">
+		<Field id="middleNames" type="text">
 			<Label>
-				<Text lang="en">Surname(s)</Text>
+				<Text lang="en">Middle name(s)</Text>
+				<Text lang="sv">Mellannamn</Text>
+				<Text lang="es">Segundo(s) nombre(s)</Text>
+				<Text lang="pt">Nome(s) do meio</Text>
+				<Text lang="da">Mellemnavn(e)</Text>
+				<Text lang="no">Mellomnavn</Text>
+				<Text lang="fi">Toinen etunimi(t)</Text>
+				<Text lang="fr">Deuxième(s) prénom(s)</Text>
+			</Label>
+			<ValidationRules>
+				<LengthRule min="2">
+					<Message>
+						<Text lang="en">Middle name(s) must be at least 2 characters.</Text>
+						<Text lang="sv">Mellannamn måste vara minst 2 tecken.</Text>
+						<Text lang="es">El/Los segundo(s) nombre(s) deben tener al menos 2 caracteres.</Text>
+						<Text lang="pt">O(s) nome(s) do meio deve(m) ter pelo menos 2 caracteres.</Text>
+						<Text lang="da">Mellemnavn(e) skal være mindst 2 tegn.</Text>
+						<Text lang="no">Mellomnavn må være minst 2 tegn.</Text>
+						<Text lang="fi">Toisen etunimen tulee olla vähintään 2 merkkiä.</Text>
+						<Text lang="fr">Le(s) deuxième(s) prénom(s) doivent comporter au moins 2 caractères.</Text>
+					</Message>
+				</LengthRule>
+				<RegexRule>
+					<Regex>^[\D]+$</Regex>
+					<Message>
+						<Text lang="en">Last name(s) name can not contain digits.</Text>
+						<Text lang="sv">Mellannamn får inte innehålla siffror.</Text>
+						<Text lang="es">El/Los segundo(s) nombre(s) no pueden contener números.</Text>
+						<Text lang="pt">O(s) nome(s) do meio não pode(m) conter dígitos.</Text>
+						<Text lang="da">Mellemnavn(e) må ikke indeholde tal.</Text>
+						<Text lang="no">Mellomnavn kan ikke inneholde tall.</Text>
+						<Text lang="fi">Toisessa etunimessä ei saa olla numeroita.</Text>
+						<Text lang="fr">Le(s) deuxième(s) prénom(s) ne doivent pas contenir de chiffres.</Text>
+					</Message>
+				</RegexRule>
+			</ValidationRules>
+			<Mapping key="MIDDLE"/>
+		</Field>
+		<Field id="lastNames" type="text" required="true">
+			<Label>
+				<Text lang="en">Last Name(s)</Text>
 				<Text lang="sv">Efternamn</Text>
 				<Text lang="es">Apellido(s)</Text>
 				<Text lang="pt">Sobrenome(s)</Text>
 				<Text lang="da">Efternavn(e)</Text>
 				<Text lang="no">Etternavn</Text>
-				<Text lang="fi">Sukunimi(et)</Text>
+				<Text lang="fi">Sukunimi(t)</Text>
 				<Text lang="fr">Nom(s) de famille</Text>
 			</Label>
 			<ValidationRules>
 				<LengthRule min="2">
 					<Message>
-						<Text lang="en">Surname(s) must be at least 2 characters.</Text>
+						<Text lang="en">Last name(s) must be at least 2 characters.</Text>
 						<Text lang="sv">Efternamn måste vara minst 2 tecken.</Text>
 						<Text lang="es">El/Los apellido(s) deben tener al menos 2 caracteres.</Text>
 						<Text lang="pt">O(s) sobrenome(s) deve(m) ter pelo menos 2 caracteres.</Text>
@@ -119,7 +159,7 @@
 				<RegexRule>
 					<Regex>^[\D]+$</Regex>
 					<Message>
-						<Text lang="en">Surname(s) name can not contain digits.</Text>
+						<Text lang="en">Last name(s) name can not contain digits.</Text>
 						<Text lang="sv">Efternamn får inte innehålla siffror.</Text>
 						<Text lang="es">El/Los apellido(s) no pueden contener números.</Text>
 						<Text lang="pt">O(s) sobrenome(s) não pode(m) conter dígitos.</Text>

@@ -19,20 +19,20 @@
 			<Text lang="en">Nice to meet you, what's your name?</Text>
 			<Text lang="pt">Prazer em conhecê-lo, qual é o seu nome?</Text>
 		</Title>
-		<Field id="givenNames" type="text" required="true">
+		<Field id="fullName" type="text" required="true">
 			<Label>
-				<Text lang="en">Given name(s)</Text>
-				<Text lang="pt">Nome(s)</Text>
+				<Text lang="en">Full name</Text>
+				<Text lang="pt">Nome completo</Text>
 			</Label>
 			<Placeholder>
-				<Text lang="en">Given name(s)</Text>
-				<Text lang="pt">Nome(s)</Text>
+				<Text lang="en">Full name</Text>
+				<Text lang="pt">Nome Completo</Text>
 			</Placeholder>
 			<ValidationRules>
 				<LengthRule min="2">
 					<Message>
-						<Text lang="en">Please enter your given name(s)</Text>
-						<Text lang="pt">Por favor, insira seu(s) nome(s)</Text>
+						<Text lang="en">Please enter your full name</Text>
+						<Text lang="pt">Por favor, insira seu nome completo</Text>
 					</Message>
 				</LengthRule>
 				<RegexRule>
@@ -43,33 +43,7 @@
 					</Message>
 				</RegexRule>
 			</ValidationRules>
-			<Mapping key="FIRST" />
-		</Field>
-		<Field id="surName" type="text" required="true">
-			<Label>
-				<Text lang="en">Surname(s)</Text>
-				<Text lang="pt">Sobrenome(s)</Text>
-			</Label>
-			<Placeholder>
-				<Text lang="en">Surname(s)</Text>
-				<Text lang="pt">Sobrenome(s)</Text>
-			</Placeholder>
-			<ValidationRules>
-				<LengthRule min="2">
-					<Message>
-						<Text lang="en">Please enter your full surname.</Text>
-						<Text lang="pt">Por favor, insira seu sobrenome completo.</Text>
-					</Message>
-				</LengthRule>
-				<RegexRule>
-					<Regex>^[\D]+$</Regex>
-					<Message>
-						<Text lang="en">Name cannot contain numbers or special characters.</Text>
-						<Text lang="pt">O nome não pode conter números ou caracteres especiais.</Text>
-					</Message>
-				</RegexRule>
-			</ValidationRules>
-			<Mapping key="LAST" />
+			<Mapping key="FULLNAME" />
 		</Field>
 	</Page>
 	<Page id="documentNumberPage">
