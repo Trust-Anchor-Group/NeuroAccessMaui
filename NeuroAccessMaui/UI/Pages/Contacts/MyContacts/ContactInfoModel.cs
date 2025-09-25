@@ -133,7 +133,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			get
 			{
 				if (string.IsNullOrEmpty(this.contact?.BareJid))
-					return Colors.Transparent;
+					return AppColors.ContentSecondary;
 
 				RosterItem? Item = null;
 				try
@@ -142,22 +142,59 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 				}
 				catch (Exception)
 				{
-					return Colors.Transparent;
+					return AppColors.ContentSecondary;
 				}
 				if (Item is null)
-					return Colors.Transparent;
+					return AppColors.ContentSecondary;
 
 				if (Item.State != SubscriptionState.To && Item.State != SubscriptionState.Both)
-					return Colors.Transparent;
+					return AppColors.ContentSecondary;
 
 				if (!Item.HasLastPresence)
-					return Colors.LightSalmon;
+					return AppColors.ContentSecondary;
 
 				return Item.LastPresence.Availability switch
 				{
-					Availability.Online or Availability.Chat => Colors.LightGreen,
-					Availability.Away or Availability.ExtendedAway => Colors.LightYellow,
-					_ => Colors.LightSalmon,
+					Availability.Online or Availability.Chat => AppColors.TnPSuccessContent,
+					Availability.Away or Availability.ExtendedAway => AppColors.TnPWarningContent,
+					Availability.DoNotDisturb => AppColors.TnPDangerContent,
+					_ => AppColors.ContentSecondary,
+				};
+			}
+		}
+
+		/// <summary>
+		/// Secondary Color representing the current connection state of the contact.
+		/// </summary>
+		public Color ConnectionSecondaryColor
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.contact?.BareJid))
+					return AppColors.ButtonNeutralNavButtonsOnContainerbgActive;
+
+				RosterItem? Item = null;
+				try
+				{
+					Item = ServiceRef.XmppService.GetRosterItem(this.contact?.BareJid);
+				}
+				catch (Exception)
+				{
+					return AppColors.ButtonNeutralNavButtonsOnContainerbgActive;
+				}
+				if (Item is null)
+					return AppColors.ButtonNeutralNavButtonsOnContainerbgActive;
+				if (Item.State != SubscriptionState.To && Item.State != SubscriptionState.Both)
+					return AppColors.ButtonNeutralNavButtonsOnContainerbgActive;
+				if (!Item.HasLastPresence)
+					return AppColors.ButtonNeutralNavButtonsOnContainerbgActive;
+
+				return Item.LastPresence.Availability switch
+				{
+					Availability.Online or Availability.Chat => AppColors.TnPSuccessBg,
+					Availability.Away or Availability.ExtendedAway => AppColors.TnPWarningBg,
+					Availability.DoNotDisturb => AppColors.TnPDangerContent,
+					_ => AppColors.ButtonNeutralNavButtonsOnContainerbgActive,
 				};
 			}
 		}
@@ -265,6 +302,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		public void PresenceUpdated()
 		{
 			this.OnPropertyChanged(nameof(this.ConnectionColor));
+			this.OnPropertyChanged(nameof(this.ConnectionSecondaryColor));
 		}
 
 		/// <summary>

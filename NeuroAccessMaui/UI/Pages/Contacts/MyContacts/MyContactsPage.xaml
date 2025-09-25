@@ -14,25 +14,28 @@
 
 	<VisualElement.Resources>
 		<DataTemplate x:Key="ContactTemplate" x:DataType="viewmodel:ContactInfoModel">
-			<Grid ColumnDefinitions="*,30" RowDefinitions="auto" ColumnSpacing="2">
+			<Border Style="{DynamicResource BorderSet}">
+				<Grid ColumnDefinitions="auto, *, auto, auto, auto" RowDefinitions="auto" ColumnSpacing="8">
+					<Border HeightRequest="48" WidthRequest="48" StrokeShape="RoundRectangle 24" Background="{Binding ConnectionSecondaryColor}">
+						<controls:SvgView Source="person.svg" TintColor="{Binding ConnectionColor}"
+										  HorizontalOptions="Center" VerticalOptions="Center"
+										  HeightRequest="32"
+										  WidthRequest="32"/>
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding ToggleSubscriptionCommand}" />
+						</Border.GestureRecognizers>
+					</Border>
 
-				<Label Grid.Column="0" Grid.Row="0" Margin="{DynamicResource SmallTopBottomMargins}" 
-								   HorizontalOptions="Start" VerticalTextAlignment="Center" LineBreakMode="CharacterWrap"
-								   TextType="Text" Text="{Binding Path=FriendlyName}" Style="{DynamicResource ClickableValueLabel}"/>
+					<Label Grid.Column="1" HorizontalOptions="Start" VerticalTextAlignment="Center" LineBreakMode="TailTruncation"
+						   Text="{Binding Path=FriendlyName}" Style="{DynamicResource Brand2LabelS}"/>
 
-				<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding HasEvents}"
-								   HorizontalOptions="End" VerticalOptions="Center" Style="{DynamicResource AlertFrame}">
-					<Label Style="{DynamicResource AlertLabel}" Text="{Binding NrEvents}" Padding="1"/>
-				</Frame>
+					<Frame Grid.Column="2" CornerRadius="12" Padding="8,3,8,3" IsVisible="{Binding HasEvents}"
+						   HorizontalOptions="End" VerticalOptions="Center" Style="{DynamicResource AlertFrame}">
+						<Label Style="{DynamicResource AlertLabel}" Text="{Binding NrEvents}" Padding="1"/>
+					</Frame>
 
-				<Ellipse Grid.Column="1" Grid.Row="0" WidthRequest="25" HeightRequest="25"
-									 Fill="{Binding ConnectionColor}" Stroke="Black" StrokeThickness="2"
-									 HorizontalOptions="Center" VerticalOptions="Center">
-					<Ellipse.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding ToggleSubscriptionCommand}" />
-					</Ellipse.GestureRecognizers>
-				</Ellipse>
-			</Grid>
+				</Grid>
+			</Border>
 		</DataTemplate>
 	</VisualElement.Resources>
 
@@ -55,7 +58,7 @@
 					<Label Text="{l:Localize Contacts}" Style="{DynamicResource PageTitleLabel}" Grid.Column="1"/>
 				</Grid>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{Binding Description}" HorizontalOptions="Center" VerticalOptions="Start"
 								 IsVisible="{Binding Description, Converter={converters:OnlyShowNonEmpty}}"/>
@@ -63,19 +66,19 @@
 						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
 								 VerticalOptions="Start" IsVisible="{Binding Path=ShowContactsMissing}" Text="{l:Localize NoContactsFound}" />
 
-						<CollectionView x:Name="Contacts" VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems"
-											 SelectionMode="Single" ItemsSource="{Binding Path=Contacts}"
-											 SelectedItem="{Binding Path=SelectedContact, Mode=TwoWay}"
-											 ItemTemplate="{StaticResource ContactTemplate}">
-									
-						</CollectionView>
-							  
 						<controls:TextButton LabelData="{Binding AnonymousText}" Style="{DynamicResource FilledTextButton}"
 													Command="{Binding AnonymousCommand}" IsVisible="{Binding AllowAnonymous}"/>
 						<controls:TextButton LabelData="{l:Localize ScanQRCode}" Style="{DynamicResource FilledTextButton}"
 													Command="{Binding ScanQrCodeCommand}" IsVisible="{Binding CanScanQrCode}"/>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
+
+				<CollectionView x:Name="Contacts" VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems"
+								SelectionMode="Single" ItemsSource="{Binding Path=Contacts}"
+								SelectedItem="{Binding Path=SelectedContact, Mode=TwoWay}"
+								ItemTemplate="{StaticResource ContactTemplate}">
+
+				</CollectionView>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

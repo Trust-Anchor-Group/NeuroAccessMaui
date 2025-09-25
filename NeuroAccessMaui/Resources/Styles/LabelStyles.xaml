@@ -12,6 +12,16 @@
 		<Setter Property="LineHeight" Value="1" />
 	</Style>
 
+	<!-- New Styles according to figma -->
+
+	<Style x:Key="Brand2LabelS" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="FontSize" Value="16"/>
+	</Style>
+
+	<!-- End of new Styles -->
+
 	<Style x:Key="AppCardLabel" ApplyToDerivedTypes="True" TargetType="Label">
 		<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
 		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
