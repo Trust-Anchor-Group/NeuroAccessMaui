@@ -2,12 +2,10 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Xml;
-using System.Xml.Schema;
 using CommunityToolkit.Maui.Core;
 using NeuroAccessMaui.Resources.Styles;
 using NeuroAccessMaui.Services.Cache;
 using NeuroAccessMaui.UI;
-using Waher.Content.Xsl;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Theme
@@ -27,16 +25,9 @@ namespace NeuroAccessMaui.Services.Theme
 		private const string localFlagKey = "IsLocalThemeDictionary";
 		private static readonly TimeSpan themeExpiry = Constants.Cache.DefaultImageCache;
 
-		private static readonly Lazy<Task<XmlSchema>> brandingSchemaV1Lazy = new(async () =>
-		{
-			using Stream Stream1 = await FileSystem.OpenAppPackageFileAsync("NeuroAccessBrandingV1.xsd");
-			return XSL.LoadSchema(Stream1, "NeuroAccessBrandingV1.xsd");
-		});
-		private static readonly Lazy<Task<XmlSchema>> brandingSchemaV2Lazy = new(async () =>
-		{
-			using Stream Stream2 = await FileSystem.OpenAppPackageFileAsync("NeuroAccessBrandingV2.xsd");
-			return XSL.LoadSchema(Stream2, "NeuroAccessBrandingV2.xsd");
-		});
+		// Keys used for validation (registered in MauiProgram) now use the namespace URNs directly.
+		private static readonly string brandingSchemaKeyV1 = Constants.Schemes.NeuroAccessBrandingV1;
+		private static readonly string brandingSchemaKeyV2 = Constants.Schemes.NeuroAccessBrandingV2;
 
 		// Provider theme application state & retry
 		private enum ProviderThemeStatus { NotStarted, InProgress, Applied, NotSupported, FailedPermanent }
@@ -51,7 +42,6 @@ namespace NeuroAccessMaui.Services.Theme
 
 		private readonly FileCacheManager cacheManager;
 		private readonly Dictionary<string, Uri> imageUrisMap;
-		//private SemaphoreSlim? themeSemaphore;
 		private ResourceDictionary? localLightDict = new Light();
 		private ResourceDictionary? localDarkDict = new Dark();
 		private AppTheme? lastAppliedLocalTheme;
@@ -62,7 +52,6 @@ namespace NeuroAccessMaui.Services.Theme
 		/// </summary>
 		public ThemeService()
 		{
-			//this.themeSemaphore = new SemaphoreSlim(1, 1);
 			this.cacheManager = new FileCacheManager("BrandingThemes", themeExpiry);
 			this.imageUrisMap = new(StringComparer.OrdinalIgnoreCase);
 		}
@@ -255,11 +244,14 @@ namespace NeuroAccessMaui.Services.Theme
 			byte[]? Bytes = await this.FetchOrGetCachedAsync(Uri, Key);
 			if (Bytes is not null)
 			{
+				string XmlString = Encoding.UTF8.GetString(Bytes);
+				bool Valid = await this.ValidateBrandingXmlAsync(XmlString, IsV2);
+				if (!Valid)
+					return (false, null, BrandingFetchClassification.PermanentFailure);
 				try
 				{
-					XmlDocument Doc = new(); Doc.LoadXml(Encoding.UTF8.GetString(Bytes));
-					bool Valid = await this.ValidateBrandingXmlAsync(Doc, IsV2);
-					if (!Valid) return (false, null, BrandingFetchClassification.PermanentFailure);
+					XmlDocument Doc = new();
+					Doc.LoadXml(XmlString);
 					return (true, Doc, BrandingFetchClassification.Success);
 				}
 				catch (Exception Ex)
@@ -310,7 +302,7 @@ namespace NeuroAccessMaui.Services.Theme
 
 		private async Task ApplyV2Async(XmlDocument Doc)
 		{
-			XmlElement? Root = Doc.DocumentElement; if (Root is null || Root.NamespaceURI != "urn:neuroaccess:branding:2.0") return;
+			XmlElement? Root = Doc.DocumentElement; if (Root is null || Root.NamespaceURI != Constants.Schemes.NeuroAccessBrandingV2) return;
 			this.imageUrisMap.Clear();
 			foreach (XmlElement Node in Root.SelectNodes("//*[local-name()='ImageRef']")?.OfType<XmlElement>() ?? [])
 			{
@@ -365,7 +357,7 @@ namespace NeuroAccessMaui.Services.Theme
 		private async Task ApplyV1Async(XmlDocument Doc)
 		{
 			XmlElement? Root = Doc.DocumentElement;
-			if (Root is null)
+			if (Root is null || Root.NamespaceURI != Constants.Schemes.NeuroAccessBrandingV1)
 				return;
 			this.imageUrisMap.Clear();
 			foreach (XmlElement Node in Root.SelectNodes("//*[local-name()='ImageRef']")?.OfType<XmlElement>() ?? [])
@@ -447,16 +439,17 @@ namespace NeuroAccessMaui.Services.Theme
 			}
 		}
 
-		private async Task<bool> ValidateBrandingXmlAsync(XmlDocument Doc, bool V2)
+		private async Task<bool> ValidateBrandingXmlAsync(string Xml, bool V2)
 		{
 			try
 			{
-				XmlSchema Schema = V2 ? await brandingSchemaV2Lazy.Value : await brandingSchemaV1Lazy.Value;
-				XSL.Validate("BrandingDescriptor", Doc, Schema); return true;
+				string Key = V2 ? brandingSchemaKeyV2 : brandingSchemaKeyV1;
+				bool Valid = await ServiceRef.XmlSchemaValidationService.ValidateAsync(Key, Xml);
+				return Valid;
 			}
 			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(new Exception($"XSD validation failed for schema version {(V2 ? "V2" : "V1")}.", Ex));
+				ServiceRef.LogService.LogException(new Exception($"Branding XML validation failed for schema version {(V2 ? "V2" : "V1")}.", Ex));
 				return false;
 			}
 		}
@@ -484,8 +477,6 @@ namespace NeuroAccessMaui.Services.Theme
 			{
 				if (disposing)
 				{
-				//	this.themeSemaphore?.Dispose();
-				//f	this.themeSemaphore = null;
 				}
 				this.disposedValue = true;
 			}
