@@ -420,6 +420,19 @@ namespace NeuroAccessMaui
 				}
 			});
 
+			// Register XML schemas on the DI-managed validator instance.
+			try
+			{
+				IXmlSchemaValidationService xml = ServiceRef.XmlSchemaValidationService;
+				xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);
+				xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2, Constants.Schemes.BrandingDescriptorV2File);
+				xml.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.KycProcessFile);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "SchemaRegistrationStartup"));
+			}
+
 			servicesSetup.TrySetResult(true);
 		}
 

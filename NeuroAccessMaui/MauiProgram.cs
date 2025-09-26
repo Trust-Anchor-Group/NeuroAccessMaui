@@ -16,6 +16,8 @@ using SkiaSharp.Views.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.Services.Xml;
+using Waher.Runtime.Inventory;
+
 
 
 #if DEBUG
@@ -107,14 +109,14 @@ namespace NeuroAccessMaui
 
 			 // XML Schema Validation Service & pre-registration
 			Builder.Services.AddSingleton<IXmlSchemaValidationService, XmlSchemaValidationService>();
-			// Pre-register schemas (lazy load on first validation)
-			Builder.Services.PostConfigure<IXmlSchemaValidationService>(Service =>
+			// Pre-register schemas (lazy load on first validation) on the DI-managed instance
+			Builder.Services.PostConfigure<IXmlSchemaValidationService>(service =>
 			{
 				try
 				{
-					Service.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);
-					Service.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2, Constants.Schemes.BrandingDescriptorV2File);
-					Service.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.KycProcessFile);
+					service.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);
+					service.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2, Constants.Schemes.BrandingDescriptorV2File);
+					service.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.KycProcessFile);
 				}
 				catch (Exception Ex)
 				{

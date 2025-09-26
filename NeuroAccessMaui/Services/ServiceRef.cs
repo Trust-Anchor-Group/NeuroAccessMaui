@@ -334,7 +334,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				xmlSchemaValidationService ??= App.Instantiate<IXmlSchemaValidationService>();
+				xmlSchemaValidationService ??= ServiceHelper.GetService<IXmlSchemaValidationService>();
 				return xmlSchemaValidationService;
 			}
 		}

@@ -24,8 +24,10 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// </summary>
 		public static Task<KycProcess> LoadProcessAsync(string Xml, string? Lang = null)
         {
+			///TODO: Refactor parsing to handle namespaces properly (currently works around by stripping them, in order to no break existing logic)
             KycProcess Process = new();
-            XDocument Doc = XDocument.Parse(Xml);
+            string XmlNormalized = StripNamespaces(Xml);
+            XDocument Doc = XDocument.Parse(XmlNormalized);
 
             // Optional process-level name (localized)
             if (Doc.Root is not null)
@@ -74,6 +76,23 @@ namespace NeuroAccessMaui.Services.Kyc
 			Process.Initialize();
 
 			return Task.FromResult(Process);
+		}
+
+		/// <summary>
+		/// Removes XML namespace declarations so parsing by local element names works for both namespaced and non-namespaced inputs.
+		/// Validation happens earlier using the original XML; this normalization is only for view-model parsing.
+		/// </summary>
+		private static string StripNamespaces(string Xml)
+		{
+			try
+			{
+				System.Text.RegularExpressions.Regex R = new System.Text.RegularExpressions.Regex("\\sxmlns(:[A-Za-z0-9_\\-\\.]+)?=\"[^\"]*\"", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+				return R.Replace(Xml, string.Empty);
+			}
+			catch
+			{
+				return Xml;
+			}
 		}
 
 		private static ObservableKycField ParseField(XElement El, string? Lang, KycProcess Owner)
