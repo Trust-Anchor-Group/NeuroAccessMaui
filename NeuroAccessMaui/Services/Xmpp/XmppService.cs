@@ -1735,6 +1735,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				default:
 					break;
 			}
+
+			await this.OnPresenceSubscribe.Raise(this, e);
 		}
 
 		private async Task XmppClient_OnPresenceUnsubscribed(object? Sender, PresenceEventArgs e)
@@ -1745,6 +1747,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				ContactInfo.AllowSubscriptionFrom = null;
 				await Database.Update(ContactInfo);
 			}
+
+			await this.OnPresenceUnsubscribed.Raise(this, e);
 		}
 
 		#endregion
@@ -2253,6 +2257,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Event raised when a new presence stanza has been received.
 		/// </summary>
 		public event EventHandlerAsync<PresenceEventArgs>? OnPresence;
+
+		/// <summary>
+		/// Event raised when a new presence subscription request has been received.
+		/// </summary>
+		public event EventHandlerAsync<PresenceEventArgs>? OnPresenceSubscribe;
+
+		/// <summary>
+		/// Event raised when a presence subscription has been revoked.
+		/// </summary>
+		public event EventHandlerAsync<PresenceEventArgs>? OnPresenceUnsubscribed;
 
 		/// <summary>
 		/// Requests subscription of presence information from a contact.

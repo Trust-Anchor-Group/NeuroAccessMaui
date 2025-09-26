@@ -238,6 +238,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		event EventHandlerAsync<PresenceEventArgs> OnPresence;
 
+		event EventHandlerAsync<PresenceEventArgs> OnPresenceSubscribe;
+
+		event EventHandlerAsync<PresenceEventArgs> OnPresenceUnsubscribed;
+
 		/// <summary>
 		/// Requests subscription of presence information from a contact.
 		/// </summary>

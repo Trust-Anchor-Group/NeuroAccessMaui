@@ -21,7 +21,8 @@ using NeuroAccessMaui.Services.UI;
 using Waher.Networking.XMPP.Events;
 using NeuroAccessMaui.UI.MVVM;                 // For ObservableTask
 using NeuroAccessMaui.UI.MVVM.Building;        // For ObservableTaskBuilder
-using NeuroAccessMaui.UI.MVVM.Policies;        // For Policies.Debounce
+using NeuroAccessMaui.UI.MVVM.Policies;
+using System.Runtime.CompilerServices;        // For Policies.Debounce
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 {
@@ -122,6 +123,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			await this.UpdateContactList(this.navigationArguments?.Contacts);
 			this.FilterContacts();
 
+			ServiceRef.XmppService.OnPresenceSubscribe += this.Xmpp_OnPresence;
+			ServiceRef.XmppService.OnPresenceUnsubscribed += this.Xmpp_OnPresence;
 			ServiceRef.XmppService.OnPresence += this.Xmpp_OnPresence;
 			ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
 			ServiceRef.NotificationService.OnNotificationsDeleted += this.NotificationService_OnNotificationsDeleted;
@@ -333,6 +336,19 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 				i++;
 				Suffix = " " + i.ToString(CultureInfo.InvariantCulture);
 			}
+		}
+
+		private bool CanSelectContact => !this.IsViewMode;
+
+		[RelayCommand(CanExecute = nameof(CanSelectContact))]
+		private Task SelectContact(ContactInfoModel? Contact)
+		{
+			if (Contact is not null)
+			{
+				this.SelectedContact = Contact;
+			}
+
+			return Task.CompletedTask;
 		}
 
 		/// <inheritdoc/>

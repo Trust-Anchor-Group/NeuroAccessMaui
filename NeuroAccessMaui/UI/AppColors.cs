@@ -12,6 +12,7 @@ namespace NeuroAccessMaui.UI
 		private static Color? tnPSuccessContent;
 		private static Color? tnPWarningContent;
 		private static Color? tnPDangerContent;
+		private static Color? tnPSuccessFigure;
 		private static Color? buttonNeutralNavButtonsOnContainerbgActive;
 		private static Color? contentSecondary;
 
@@ -48,6 +49,15 @@ namespace NeuroAccessMaui.UI
 			{
 				tnPSuccessContent ??= AppStyles.TryGetResource<Color>("TnPSuccessContentWL");
 				return tnPSuccessContent!;
+			}
+		}
+
+		public static Color TnPSuccessFigure
+		{
+			get
+			{
+				tnPSuccessFigure ??= AppStyles.TryGetResource<Color>("TnPSuccessFigureWL");
+				return tnPSuccessFigure!;
 			}
 		}
 

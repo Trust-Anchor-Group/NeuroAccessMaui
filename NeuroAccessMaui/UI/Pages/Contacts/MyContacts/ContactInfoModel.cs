@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
@@ -14,6 +15,7 @@ using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Provisioning.Events;
 using Waher.Persistence;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
@@ -39,6 +41,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			this.events = Events;
 
 			this.toggleSubscriptionCommand = new Command(async () => await this.ToggleSubscription(), () => this.CanToggleSubscription());
+
+			this.OnPropertyChanged(nameof(this.IsFriend));
 		}
 
 		/// <inheritdoc/>
@@ -159,7 +163,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 				return Item.LastPresence.Availability switch
 				{
-					Availability.Online or Availability.Chat => AppColors.TnPSuccessContent,
+					Availability.Online or Availability.Chat => AppColors.TnPSuccessFigure,
 					Availability.Away or Availability.ExtendedAway => AppColors.TnPWarningContent,
 					Availability.DoNotDisturb => AppColors.TnPDangerContent,
 					_ => AppColors.ContentSecondary,
@@ -200,6 +204,27 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 					Availability.DoNotDisturb => AppColors.TnPDangerContent,
 					_ => AppColors.ButtonNeutralNavButtonsOnContainerbgActive,
 				};
+			}
+		}
+
+		public bool IsFriend
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.contact?.BareJid))
+					return false;
+				RosterItem? Item;
+				try
+				{
+					Item = ServiceRef.XmppService.GetRosterItem(this.contact?.BareJid);
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+				if (Item is null)
+					return false;
+				return Item.State == SubscriptionState.To || Item.State == SubscriptionState.Both;
 			}
 		}
 
@@ -298,6 +323,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 					ServiceRef.XmppService.RequestPresenceSubscription(this.BareJid, IdXml);
 				}
 			}
+
+			this.OnPropertyChanged(nameof(this.IsFriend));
 		}
 
 		/// <summary>
@@ -307,6 +334,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		{
 			this.OnPropertyChanged(nameof(this.ConnectionColor));
 			this.OnPropertyChanged(nameof(this.ConnectionSecondaryColor));
+			this.OnPropertyChanged(nameof(this.IsFriend));
 		}
 
 		/// <summary>
