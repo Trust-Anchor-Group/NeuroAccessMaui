@@ -166,75 +166,67 @@
 		</Grid>
 		<!-- Main content -->
 		<Grid RowDefinitions="auto, *"
-			  Padding="16,8,16,8"
+			  Padding="8"
 			  RowSpacing="16"
 			  Grid.Row="1">
 			<!-- Balance card -->
 			<Border Style="{DynamicResource BorderSet}"
 					Margin="0"
 					Grid.Row="0">
-				<VerticalStackLayout Spacing="8">
+				<Grid ColumnDefinitions="auto, auto" RowDefinitions="auto, auto" RowSpacing="{DynamicResource MediumSpacing}">
 					<!-- Balance title-->
-					<Grid Grid.Row="0"
-						  ColumnDefinitions="auto, *, auto"
-						  RowDefinitions="*,*"
-						  ColumnSpacing="16"
-						  Margin="0"
-						  Padding="0">
-						<controls:SvgView Source="wallet.svg" VerticalOptions="Center"
-										  Grid.Column="0"
+					<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<controls:SvgView Source="wallet.svg"
 										  TintColor="{DynamicResource ContentPrimaryWL}"
 										  Aspect="AspectFit"
 										  WidthRequest="24"
 										  HeightRequest="24" />
 						<Label Grid.Column="1" Grid.Row="0"
-						   VerticalOptions="Start" HorizontalOptions="Start"
-						   Text="{l:Localize CreditBalance}"
-						   FontSize="20"
-						   LineHeight="0.8"
-						   Style="{DynamicResource PageTitleLabel}"
-						   Margin="0" Padding="0" VerticalTextAlignment="Start" />
+							   HorizontalOptions="Start"
+								Text="{l:Localize CreditBalance}"
+								FontSize="16"
+								LineHeight="0.8"
+								Style="{DynamicResource PageTitleLabel}"/>
+					</HorizontalStackLayout>
 
-						<controls:TemplatedButton Command="{Binding GetBalanceTask.RefreshCommand}"
-												  Grid.Column="2"
-												  WidthRequest="24"
-												  HeightRequest="24"
-												  HorizontalOptions="Center" VerticalOptions="Center"
-												  IsVisible="{Binding GetBalanceTask.IsNotRunning}">
-
+					<controls:TemplatedButton Command="{Binding GetBalanceTask.RefreshCommand}"
+											  Grid.Column="1"
+											  HorizontalOptions="End">
+						<Grid ColumnDefinitions="*, auto">
+							<Label Text="{Binding BalanceUpdated, Converter={converters:DateTimeToLastUpdatedConverter}}"
+								   Style="{DynamicResource KeyLabel}"
+								   FontSize="12"
+								   FontFamily="HaasGroteskRegular"
+								   VerticalOptions="Center"/>
 							<controls:SvgView Source="refresh.svg"
-									   TintColor="{DynamicResource ContentPrimaryWL}"
-									   />
-						</controls:TemplatedButton>
-						<ActivityIndicator IsRunning="True"
-										   VerticalOptions="Start"
-										   Grid.Column="2"
-										   WidthRequest="24"
-										   HeightRequest="24"
-										   HorizontalOptions="Center"
-										   IsVisible="{Binding GetBalanceTask.IsRunning}" />
+											  WidthRequest="24"
+											  HeightRequest="24"
+											  TintColor="{DynamicResource ContentPrimaryWL}"
+											  IsVisible="{Binding GetBalanceTask.IsNotRunning}"
+											  Grid.Column="1"/>
+							<ActivityIndicator IsRunning="True"
+											   WidthRequest="24"
+											   HeightRequest="24"
+											   IsVisible="{Binding GetBalanceTask.IsRunning}"
+											   Grid.Column="1"/>
+						</Grid>
+					</controls:TemplatedButton>
 
-
-					</Grid>
 					<!-- Balance -->
-					<Grid Grid.Row="1"
-						  RowDefinitions="auto, auto">
-
-						<Label Grid.Row="0"
-							   Text="{Binding Path=BalanceDecimal}"
+					<HorizontalStackLayout Grid.Row="1" Spacing="{DynamicResource MediumSpacing}">
+						<Label Text="{Binding Path=BalanceDecimal}"
 							   Style="{DynamicResource PageTitleLabel}" />
-						<Label Grid.Row="1"
-							   Text="{Binding BalanceUpdated, Converter={converters:DateTimeToLastUpdatedConverter}}"
-							   Style="{DynamicResource KeyLabel}"
-							   FontSize="12"
-							   Margin="0"
-							   FontFamily="HaasGroteskRegular" />
-					</Grid>
+						<Label Text="NC"
+							   Style="{DynamicResource PageTitleLabel}"/>
+					</HorizontalStackLayout>
 
 					<controls:TextButton LabelData="{l:Localize BuyNeuroCredits}"
-						 Command="{Binding BuyEdalerCommand}"
-						 Style="{DynamicResource FilledTextButton}" />
-				</VerticalStackLayout>
+										 Command="{Binding BuyEdalerCommand}"
+										 Style="{DynamicResource SecondaryButton}"
+										 Grid.Row="1"
+										 Grid.Column="1"
+										 HorizontalOptions="End"/>
+				</Grid>
 			</Border>
 		</Grid>
 
