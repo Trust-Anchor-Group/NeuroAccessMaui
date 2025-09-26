@@ -1,4 +1,5 @@
-<KYCProcess>
+<?xml version="1.0" encoding="utf-8"?>
+<KYCProcess xmlns="urn:neuroaccess:kyc:1.0">
 	<Name>
 		<Text lang="en">Personal ID</Text>
 		<Text lang="sv">Personligt ID</Text>

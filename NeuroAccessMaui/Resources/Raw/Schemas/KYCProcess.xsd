@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+<xs:schema 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="urn:neuroaccess:kyc:1.0"
+    targetNamespace="urn:neuroaccess:kyc:1.0"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
   <!-- Root element describing the sequence of KYC pages -->
   <xs:element name="KYCProcess" type="KycProcessType">
     <xs:key name="PageIds">
