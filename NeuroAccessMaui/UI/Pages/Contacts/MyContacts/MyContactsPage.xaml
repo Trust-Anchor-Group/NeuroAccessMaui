@@ -1,51 +1,62 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Contacts.MyContacts.MyContactsPage"
-							 x:DataType="viewmodel:ContactListViewModel"
-							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.MyContacts">
+					 x:Class="NeuroAccessMaui.UI.Pages.Contacts.MyContacts.MyContactsPage"
+					 x:DataType="viewmodel:ContactListViewModel"
+					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.MyContacts">
 
 	<VisualElement.Resources>
-		<DataTemplate x:Key="ContactTemplate" x:DataType="viewmodel:ContactInfoModel">
-			<Border Style="{DynamicResource BorderSet}">
-				<Grid ColumnDefinitions="auto, *, auto, auto, auto" RowDefinitions="auto" ColumnSpacing="8">
-					<Border HeightRequest="48" WidthRequest="48" StrokeShape="RoundRectangle 24" Background="{Binding ConnectionSecondaryColor}">
-						<controls:SvgView Source="person.svg" TintColor="{Binding ConnectionColor}"
+		<DataTemplate x:Key="ContactTemplate" x:DataType="viewmodel:GroupedContacts">
+			<VerticalStackLayout>
+				<Label Text="{Binding Group}" Margin="16,8,0,0" Style="{DynamicResource Brand2LabelSSecondary}"/>
+				<VerticalStackLayout BindableLayout.ItemsSource="{Binding Contacts}">
+					<BindableLayout.ItemTemplate>
+						<DataTemplate x:DataType="viewmodel:ContactInfoModel">
+							<Border Style="{DynamicResource BorderSet}">
+								<Grid ColumnDefinitions="auto, *, auto, auto, auto" RowDefinitions="auto" ColumnSpacing="8">
+									<Border HeightRequest="48" WidthRequest="48" StrokeShape="RoundRectangle 24" Background="{Binding ConnectionSecondaryColor}">
+										<controls:SvgView Source="person.svg" TintColor="{Binding ConnectionColor}"
 										  HorizontalOptions="Center" VerticalOptions="Center"
 										  HeightRequest="32"
 										  WidthRequest="32"/>
-						<Border.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ToggleSubscriptionCommand}" />
-						</Border.GestureRecognizers>
-					</Border>
+										<Border.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding ToggleSubscriptionCommand}" />
+										</Border.GestureRecognizers>
+									</Border>
 
-					<Label Grid.Column="1" HorizontalOptions="Start" VerticalTextAlignment="Center" LineBreakMode="TailTruncation"
-						   Text="{Binding Path=FriendlyName}" Style="{DynamicResource Brand2LabelS}"/>
+									<Border HeightRequest="14" WidthRequest="14" BackgroundColor="{Binding ConnectionColor}" HorizontalOptions="End" VerticalOptions="End" StrokeShape="RoundRectangle 7"/>
 
-					<Frame Grid.Column="2" CornerRadius="12" Padding="8,3,8,3" IsVisible="{Binding HasEvents}"
-						   HorizontalOptions="End" VerticalOptions="Center" Style="{DynamicResource AlertFrame}">
-						<Label Style="{DynamicResource AlertLabel}" Text="{Binding NrEvents}" Padding="1"/>
-					</Frame>
+									<Label Grid.Column="1" HorizontalOptions="Start" VerticalTextAlignment="Center" LineBreakMode="TailTruncation"
+									   Text="{Binding Path=FriendlyName}" Style="{DynamicResource Brand2LabelS}"/>
 
-					<controls:SvgButton SvgSource="chat.svg" Style="{DynamicResource IconButtonOnBackground}"
-										VerticalOptions="Center"
-										Grid.Column="3"
-										Command="{Binding ViewChatCommand}"/>
+									<Frame Grid.Column="2" CornerRadius="12" Padding="8,3,8,3" IsVisible="{Binding HasEvents}"
+									   HorizontalOptions="End" VerticalOptions="Center" Style="{DynamicResource AlertFrame}">
+										<Label Style="{DynamicResource AlertLabel}" Text="{Binding NrEvents}" Padding="1"/>
+									</Frame>
 
-					<controls:SvgButton SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
-										VerticalOptions="Center"
-										Grid.Column="4"
-										Command="{Binding ViewContactCommand}"/> 
+									<controls:SvgButton SvgSource="chat.svg" Style="{DynamicResource IconButtonOnBackground}"
+											VerticalOptions="Center"
+											Grid.Column="3"
+											Command="{Binding ViewChatCommand}"/>
 
-				</Grid>
-			</Border>
+									<controls:SvgButton SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
+											VerticalOptions="Center"
+											Grid.Column="4"
+											Command="{Binding ViewContactCommand}"/> 
+
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</BindableLayout.ItemTemplate>
+				</VerticalStackLayout>
+			</VerticalStackLayout>
 		</DataTemplate>
 	</VisualElement.Resources>
 
@@ -68,33 +79,35 @@
 					<Label Text="{l:Localize Contacts}" Style="{DynamicResource PageTitleLabel}" Grid.Column="1"/>
 				</Grid>
 
-				<Border Style="{DynamicResource BorderSet}">
-					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-						<Label Text="{Binding Description}" HorizontalOptions="Center" VerticalOptions="Start"
-								 IsVisible="{Binding Description, Converter={converters:OnlyShowNonEmpty}}"/>
+				<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+					<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
+							 VerticalOptions="Start" IsVisible="{Binding Path=ShowContactsMissing}" Text="{l:Localize NoContactsFound}" />
 
-						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
-								 VerticalOptions="Start" IsVisible="{Binding Path=ShowContactsMissing}" Text="{l:Localize NoContactsFound}" />
+					<controls:TextButton LabelData="{Binding AnonymousText}" Style="{DynamicResource FilledTextButton}"
+									Command="{Binding AnonymousCommand}" IsVisible="{Binding AllowAnonymous}"/>
+					<controls:TextButton LabelData="{l:Localize ScanQRCode}" Style="{DynamicResource FilledTextButton}"
+									Command="{Binding ScanQrCodeCommand}" IsVisible="{Binding CanScanQrCode}"/>
+				</VerticalStackLayout>
 
-						<controls:TextButton LabelData="{Binding AnonymousText}" Style="{DynamicResource FilledTextButton}"
-													Command="{Binding AnonymousCommand}" IsVisible="{Binding AllowAnonymous}"/>
-						<controls:TextButton LabelData="{l:Localize ScanQRCode}" Style="{DynamicResource FilledTextButton}"
-													Command="{Binding ScanQrCodeCommand}" IsVisible="{Binding CanScanQrCode}"/>
-					</VerticalStackLayout>
-				</Border>
+				<!-- Search Entry -->
+				<controls:CompositeEntry Placeholder="{l:Localize Search}" EntryData="{Binding SearchText, Mode=TwoWay}" Style="{DynamicResource RegularCompositeEntry}" Margin="8,0,8,0">
+					<controls:CompositeEntry.LeftView>
+						<controls:SvgView Source="search.svg"/>
+					</controls:CompositeEntry.LeftView>
+				</controls:CompositeEntry>
 
 				<!-- Use collectionview to maintain logic when page is opened in selection mode, like selecting a contact for add contract part of payments -->
 				<controls:ConditionView Condition="{Binding IsViewMode}">
 					<controls:ConditionView.True>
-						<VerticalStackLayout BindableLayout.ItemsSource="{Binding Contacts}" BindableLayout.ItemTemplate="{StaticResource ContactTemplate}"/>
+						<VerticalStackLayout BindableLayout.ItemsSource="{Binding FilteredContacts}" BindableLayout.ItemTemplate="{StaticResource ContactTemplate}"/>
 					</controls:ConditionView.True>
 					
 					<controls:ConditionView.False>
 						<CollectionView x:Name="Contacts" VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems"
-										SelectionMode="Single" ItemsSource="{Binding Path=Contacts}"
+										SelectionMode="Single" ItemsSource="{Binding Path=FilteredContacts}"
 										SelectedItem="{Binding Path=SelectedContact, Mode=TwoWay}"
 										ItemTemplate="{StaticResource ContactTemplate}">
-						</CollectionView>
+							</CollectionView>
 					</controls:ConditionView.False>
 				</controls:ConditionView>
 				

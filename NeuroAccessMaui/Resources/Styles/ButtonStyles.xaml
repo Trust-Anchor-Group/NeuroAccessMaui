@@ -689,12 +689,12 @@
 				Value="24" />
 	</Style>
 
-	<Style x:Key="IconButtonOnBackground" TargetType="controls:SvgButton" BasedOn="{DynamicResource IconButton}">
+	<Style x:Key="IconButtonOnBackground" TargetType="controls:SvgButton" BasedOn="{StaticResource IconButton}">
 		<Setter Property="SvgTintColor" Value="{DynamicResource ContentSecondaryWL}"/>
 		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonBorderOnBackground}"/>
 	</Style>
 
-	<Style x:Key="IconButtonBorderOnBackground" TargetType="Border" BasedOn="{DynamicResource IconButtonBorder}">
+	<Style x:Key="IconButtonBorderOnBackground" TargetType="Border" BasedOn="{StaticResource IconButtonBorder}">
 		<Setter Property="BackgroundColor" Value="{DynamicResource ButtonNeutralNavButtonsOnContainerbgActiveWL}"/>
 	</Style>
 

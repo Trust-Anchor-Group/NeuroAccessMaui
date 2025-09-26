@@ -20,6 +20,12 @@
 		<Setter Property="FontSize" Value="14"/>
 	</Style>
 
+	<Style x:Key="Brand2LabelSSecondary" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
+		<Setter Property="FontFamily" Value="SpaceGrotesk"/>
+		<Setter Property="FontSize" Value="14"/>
+	</Style>
+
 	<!-- End of new Styles -->
 
 	<Style x:Key="AppCardLabel" ApplyToDerivedTypes="True" TargetType="Label">
