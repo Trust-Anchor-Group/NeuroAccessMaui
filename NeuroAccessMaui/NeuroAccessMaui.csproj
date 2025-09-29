@@ -369,9 +369,6 @@
 		<Compile Update="UI\Controls\InfoBubble.xaml.cs">
 		  <DependentUpon>InfoBubble.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml.cs">
-			<DependentUpon>ApplyIdPage.xaml</DependentUpon>
-		</Compile>
 		<Compile Update="UI\Pages\Kyc\KycProcessPage.xaml.cs">
 			<DependentUpon>KycProcessPage.xaml</DependentUpon>
 		</Compile>
@@ -543,9 +540,6 @@
 		</MauiXaml>
 		<MauiXaml Update="UI\Controls\InfoBubble.xaml">
 		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Kyc\KycProcessPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
