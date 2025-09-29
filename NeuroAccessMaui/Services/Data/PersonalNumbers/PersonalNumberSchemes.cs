@@ -2,6 +2,7 @@
 using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Script;
+using System.Collections.Generic;
 
 namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 {
@@ -10,79 +11,109 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 	/// </summary>
 	public static class PersonalNumberSchemes
 	{
-		private static readonly Dictionary<string, LinkedList<PersonalNumberScheme>> schemesByCode = [];
+		// Immutable dictionary after first successful load. Values are read-only lists to avoid concurrent mutation.
+		private static Dictionary<string, IReadOnlyList<PersonalNumberScheme>> schemesByCode = new(StringComparer.OrdinalIgnoreCase);
+		private static volatile bool loaded;
+		private static readonly object syncRoot = new();
 
 		private static void LazyLoad()
 		{
-			try
+			if (loaded)
+				return;
+
+			lock (syncRoot)
 			{
-				using MemoryStream ms = new(Waher.Runtime.IO.Resources.LoadResource(
-					typeof(PersonalNumberSchemes).Namespace + "." + typeof(PersonalNumberSchemes).Name + ".xml"));
-
-				XmlDocument Doc = new();
-				Doc.Load(ms);
-
-				XmlNodeList? ChildNodes = Doc.DocumentElement?.ChildNodes;
-
-				if (ChildNodes is null)
+				if (loaded)
 					return;
 
-				foreach (XmlNode N in ChildNodes)
+				try
 				{
-					if (N is XmlElement E && E.LocalName == "Entry")
+					using MemoryStream ms = new(Waher.Runtime.IO.Resources.LoadResource(
+						typeof(PersonalNumberSchemes).Namespace + "." + typeof(PersonalNumberSchemes).Name + ".xml"));
+
+					XmlDocument Doc = new();
+					Doc.Load(ms);
+
+					XmlNodeList? ChildNodes = Doc.DocumentElement?.ChildNodes;
+
+					if (ChildNodes is null)
 					{
-						string Country = XML.Attribute(E, "country");
-						string DisplayString = XML.Attribute(E, "displayString");
-						string? Variable = null;
-						Expression? Pattern = null;
-						Expression? Check = null;
-						Expression? Normalize = null;
+						loaded = true; // mark as loaded even if empty to avoid repeated attempts
+						return;
+					}
 
-						try
+					Dictionary<string, List<PersonalNumberScheme>> Temp = new(StringComparer.OrdinalIgnoreCase);
+
+					foreach (XmlNode N in ChildNodes)
+					{
+						if (N is XmlElement E && E.LocalName == "Entry")
 						{
-							foreach (XmlNode N2 in E.ChildNodes)
+							string Country = XML.Attribute(E, "country");
+							string DisplayString = XML.Attribute(E, "displayString");
+							string? Variable = null;
+							Expression? Pattern = null;
+							Expression? Check = null;
+							Expression? Normalize = null;
+
+							try
 							{
-								if (N2 is XmlElement E2)
+								foreach (XmlNode N2 in E.ChildNodes)
 								{
-									switch (E2.LocalName)
+									if (N2 is XmlElement E2)
 									{
-										case "Pattern":
-											Pattern = new Expression(E2.InnerText);
-											Variable = XML.Attribute(E2, "variable");
-											break;
+										switch (E2.LocalName)
+										{
+											case "Pattern":
+												Pattern = new Expression(E2.InnerText);
+												Variable = XML.Attribute(E2, "variable");
+												break;
 
-										case "Check":
-											Check = new Expression(E2.InnerText);
-											break;
+											case "Check":
+												Check = new Expression(E2.InnerText);
+												break;
 
-										case "Normalize":
-											Normalize = new Expression(E2.InnerText);
-											break;
+											case "Normalize":
+												Normalize = new Expression(E2.InnerText);
+												break;
+										}
 									}
 								}
 							}
-						}
-						catch (Exception)
-						{
-							continue;
-						}
+							catch (Exception)
+							{
+								continue;
+							}
 
-						if (Pattern is null || string.IsNullOrWhiteSpace(Variable) || string.IsNullOrWhiteSpace(DisplayString))
-							continue;
+							if (Pattern is null || string.IsNullOrWhiteSpace(Variable) || string.IsNullOrWhiteSpace(DisplayString))
+								continue;
 
-						if (!schemesByCode.TryGetValue(Country, out LinkedList<PersonalNumberScheme>? Schemes))
-						{
-							Schemes = new LinkedList<PersonalNumberScheme>();
-							schemesByCode[Country] = Schemes;
+							if (!Temp.TryGetValue(Country, out List<PersonalNumberScheme>? List))
+							{
+								List = [];
+								Temp[Country] = List;
+							}
+
+							List.Add(new PersonalNumberScheme(Variable, DisplayString, Pattern, Check, Normalize));
 						}
-
-						Schemes.AddLast(new PersonalNumberScheme(Variable, DisplayString, Pattern, Check, Normalize));
 					}
+
+					// Freeze collections
+					Dictionary<string, IReadOnlyList<PersonalNumberScheme>> Final = new(StringComparer.OrdinalIgnoreCase);
+					foreach (KeyValuePair<string, List<PersonalNumberScheme>> Kvp in Temp)
+					{
+						Final[Kvp.Key] = Kvp.Value.AsReadOnly();
+					}
+
+					schemesByCode = Final;
 				}
-			}
-			catch (Exception ex)
-			{
-				Log.Exception(ex);
+				catch (Exception ex)
+				{
+					Log.Exception(ex);
+				}
+				finally
+				{
+					loaded = true;
+				}
 			}
 		}
 
@@ -96,7 +127,7 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 		{
 			LazyLoad();
 
-			if (schemesByCode.TryGetValue(CountryCode, out LinkedList<PersonalNumberScheme>? Schemes))
+			if (schemesByCode.TryGetValue(CountryCode, out IReadOnlyList<PersonalNumberScheme>? Schemes))
 			{
 				foreach (PersonalNumberScheme Scheme in Schemes)
 				{
@@ -137,8 +168,8 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 
 			if (!string.IsNullOrWhiteSpace(CountryCode))
 			{
-				if (schemesByCode.TryGetValue(CountryCode, out LinkedList<PersonalNumberScheme>? Schemes))
-					return Schemes?.First?.Value?.DisplayString;
+				if (schemesByCode.TryGetValue(CountryCode, out IReadOnlyList<PersonalNumberScheme>? Schemes))
+					return Schemes.Count > 0 ? Schemes[0].DisplayString : null;
 			}
 
 			return null;
