@@ -72,6 +72,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		public decimal BalanceDecimal =>
 			this.FetchedBalance?.Amount ?? ServiceRef.TagProfile.LastEDalerBalanceDecimal;
 
+		public string BalanceString =>
+			this.BalanceDecimal + " NC";
+
 		#endregion
 
 		#region Tasks

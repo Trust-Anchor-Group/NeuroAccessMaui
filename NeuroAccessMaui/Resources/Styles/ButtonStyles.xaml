@@ -689,6 +689,15 @@
 				Value="24" />
 	</Style>
 
+	<Style x:Key="IconButtonSecondary" ApplyToDerivedTypes="False" TargetType="controls:SvgButton" BasedOn="{StaticResource IconButton}">
+		<Setter Property="SvgTintColor" Value="{DynamicResource ButtonAccessSecondaryContentWL}"/>
+		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonSecondaryBorder}"/>
+	</Style>
+
+	<Style x:Key="IconButtonSecondaryBorder" ApplyToDerivedTypes="False" TargetType="Border" BasedOn="{StaticResource IconButtonBorder}">
+		<Setter Property="BackgroundColor" Value="{DynamicResource ButtonAccessSecondarybgWL}"/>
+	</Style>
+
 	<Style x:Key="IconButtonOnBackground" TargetType="controls:SvgButton" BasedOn="{StaticResource IconButton}">
 		<Setter Property="SvgTintColor" Value="{DynamicResource ContentSecondaryWL}"/>
 		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonBorderOnBackground}"/>

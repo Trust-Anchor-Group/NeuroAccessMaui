@@ -171,33 +171,35 @@
 			  Grid.Row="1">
 			<!-- Balance card -->
 			<Border Style="{DynamicResource BorderSet}"
-					Margin="0"
+					Margin="8,0,8,0"
 					Grid.Row="0">
-				<Grid ColumnDefinitions="auto, auto" RowDefinitions="auto, auto" RowSpacing="{DynamicResource MediumSpacing}">
+				<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto" RowSpacing="{DynamicResource MediumSpacing}" ColumnSpacing="{DynamicResource SmallSpacing}">
 					<!-- Balance title-->
 					<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<controls:SvgView Source="wallet.svg"
 										  TintColor="{DynamicResource ContentPrimaryWL}"
 										  Aspect="AspectFit"
 										  WidthRequest="24"
-										  HeightRequest="24" />
+										  HeightRequest="24"/>
 						<Label Grid.Column="1" Grid.Row="0"
 							   HorizontalOptions="Start"
-								Text="{l:Localize CreditBalance}"
-								FontSize="16"
-								LineHeight="0.8"
-								Style="{DynamicResource PageTitleLabel}"/>
+							   Text="{l:Localize CreditBalance}"
+							   FontSize="16"
+							   LineHeight="0.8"
+							   Style="{DynamicResource PageTitleLabel}"
+							   VerticalOptions="Center"/>
 					</HorizontalStackLayout>
 
 					<controls:TemplatedButton Command="{Binding GetBalanceTask.RefreshCommand}"
 											  Grid.Column="1"
 											  HorizontalOptions="End">
-						<Grid ColumnDefinitions="*, auto">
+						<Grid ColumnDefinitions="*, auto" Margin="0,4,0,0">
 							<Label Text="{Binding BalanceUpdated, Converter={converters:DateTimeToLastUpdatedConverter}}"
 								   Style="{DynamicResource KeyLabel}"
 								   FontSize="12"
 								   FontFamily="HaasGroteskRegular"
-								   VerticalOptions="Center"/>
+								   VerticalOptions="Center"
+								   Margin="0,0,8,0"/>
 							<controls:SvgView Source="refresh.svg"
 											  WidthRequest="24"
 											  HeightRequest="24"
@@ -212,20 +214,22 @@
 						</Grid>
 					</controls:TemplatedButton>
 
-					<!-- Balance -->
-					<HorizontalStackLayout Grid.Row="1" Spacing="{DynamicResource MediumSpacing}">
-						<Label Text="{Binding Path=BalanceDecimal}"
-							   Style="{DynamicResource PageTitleLabel}" />
-						<Label Text="NC"
-							   Style="{DynamicResource PageTitleLabel}"/>
-					</HorizontalStackLayout>
+					<!-- Extra Grid required to give the NC label enough size to expand -->
+					<Grid Grid.Row="1" Grid.ColumnSpan="2" ColumnDefinitions="*, auto" ColumnSpacing="{DynamicResource SmallSpacing}">
+						<!-- Balance -->
+						<Label Text="{Binding Path=BalanceString}"
+							   LineBreakMode="CharacterWrap"
+							   Style="{DynamicResource PageTitleLabel}"
+							   FontSize="24"
+							   VerticalOptions="End"/>
 
-					<controls:TextButton LabelData="{l:Localize BuyNeuroCredits}"
-										 Command="{Binding BuyEdalerCommand}"
-										 Style="{DynamicResource SecondaryButton}"
-										 Grid.Row="1"
-										 Grid.Column="1"
-										 HorizontalOptions="End"/>
+						<!-- Add Balance -->
+						<controls:SvgButton Command="{Binding BuyEdalerCommand}"
+											SvgSource="plus.svg"
+											Style="{DynamicResource IconButtonSecondary}"
+											HorizontalOptions="End"
+											Grid.Column="1"/>
+					</Grid>
 				</Grid>
 			</Border>
 		</Grid>
