@@ -361,16 +361,6 @@
 			</Label>
 			<!-- Passport Upload Field (shown if passport is selected) -->
 			<Field id="passportUpload" type="image" required="true">
-				<Hint>
-					<Text lang="en">Upload the photo page of your passport</Text>
-					<Text lang="sv">Ladda upp fotosidan i ditt pass</Text>
-					<Text lang="es">Sube la página de la foto de tu pasaporte</Text>
-					<Text lang="pt">Envie a página da foto do seu passaporte</Text>
-					<Text lang="da">Upload fotosiden i dit pas</Text>
-					<Text lang="no">Last opp fotosiden i passet ditt</Text>
-					<Text lang="fi">Lataa passisi valokuvallinen sivu</Text>
-					<Text lang="fr">Téléversez la page photo de votre passeport</Text>
-				</Hint>
 				<Label>
 					<Text lang="en">Passport Upload</Text>
 					<Text lang="sv">Passuppladdning</Text>
@@ -381,6 +371,16 @@
 					<Text lang="fi">Passin lataus</Text>
 					<Text lang="fr">Téléversement du passeport</Text>
 				</Label>
+				<Hint>
+					<Text lang="en">Upload the photo page of your passport</Text>
+					<Text lang="sv">Ladda upp fotosidan i ditt pass</Text>
+					<Text lang="es">Sube la página de la foto de tu pasaporte</Text>
+					<Text lang="pt">Envie a página da foto do seu passaporte</Text>
+					<Text lang="da">Upload fotosiden i dit pas</Text>
+					<Text lang="no">Last opp fotosiden i passet ditt</Text>
+					<Text lang="fi">Lataa passisi valokuvallinen sivu</Text>
+					<Text lang="fr">Téléversez la page photo de votre passeport</Text>
+				</Hint>
 				<Placeholder>
 					<Text lang="en">Choose file...</Text>
 					<Text lang="sv">Välj fil...</Text>
@@ -405,16 +405,6 @@
 
 			<!-- Identity Card Upload Field (shown if identityCard is selected) -->
 			<Field id="identityCardFrontUpload" type="image" required="true">
-				<Hint>
-					<Text lang="en">Upload the front side of your identity card</Text>
-					<Text lang="sv">Ladda upp framsidan av ditt ID-kort</Text>
-					<Text lang="es">Sube la cara frontal de tu documento de identidad</Text>
-					<Text lang="pt">Envie a frente do seu cartão de identidade</Text>
-					<Text lang="da">Upload forsiden af dit identitetskort</Text>
-					<Text lang="no">Last opp forsiden av ID-kortet ditt</Text>
-					<Text lang="fi">Lataa henkilökorttisi etupuoli</Text>
-					<Text lang="fr">Téléversez le recto de votre carte d’identité</Text>
-				</Hint>
 				<Label>
 					<Text lang="en">Identity Card Front Upload</Text>
 					<Text lang="sv">ID-kort Framsida Uppladdning</Text>
@@ -425,6 +415,16 @@
 					<Text lang="fi">Henkilökortin etupuolen lataus</Text>
 					<Text lang="fr">Téléversement de la carte d’identité recto</Text>
 				</Label>
+				<Hint>
+					<Text lang="en">Upload the front side of your identity card</Text>
+					<Text lang="sv">Ladda upp framsidan av ditt ID-kort</Text>
+					<Text lang="es">Sube la cara frontal de tu documento de identidad</Text>
+					<Text lang="pt">Envie a frente do seu cartão de identidade</Text>
+					<Text lang="da">Upload forsiden af dit identitetskort</Text>
+					<Text lang="no">Last opp forsiden av ID-kortet ditt</Text>
+					<Text lang="fi">Lataa henkilökorttisi etupuoli</Text>
+					<Text lang="fr">Téléversez le recto de votre carte d’identité</Text>
+				</Hint>
 				<Placeholder>
 					<Text lang="en">Identity Card Front...</Text>
 					<Text lang="sv">Identitetskort Framsida...</Text>
@@ -449,16 +449,6 @@
 
 			<!-- Identity Card Back Upload Field (shown if identityCard is selected) -->
 			<Field id="identityCardBackUpload" type="image" required="true">
-				<Hint>
-					<Text lang="en">Upload the back side of your identity card</Text>
-					<Text lang="sv">Ladda upp framsidan av ditt ID-kort</Text>
-					<Text lang="es">Sube la cara posterior de tu documento de identidad</Text>
-					<Text lang="pt">Envie o verso do seu cartão de identidade</Text>
-					<Text lang="da">Upload bagsiden af dit identitetskort</Text>
-					<Text lang="no">Last opp baksiden av ID-kortet ditt</Text>
-					<Text lang="fi">Lataa henkilökorttisi kääntöpuoli</Text>
-					<Text lang="fr">Téléversez le verso de votre carte d’identité</Text>
-				</Hint>
 				<Label>
 					<Text lang="en">Identity Card Back Upload</Text>
 					<Text lang="sv">ID-kort Baksida Uppladdning</Text>
@@ -469,6 +459,16 @@
 					<Text lang="fi">Henkilökortin takapuolen lataus</Text>
 					<Text lang="fr">Téléversement de la carte d’identité verso</Text>
 				</Label>
+				<Hint>
+					<Text lang="en">Upload the back side of your identity card</Text>
+					<Text lang="sv">Ladda upp framsidan av ditt ID-kort</Text>
+					<Text lang="es">Sube la cara posterior de tu documento de identidad</Text>
+					<Text lang="pt">Envie o verso do seu cartão de identidade</Text>
+					<Text lang="da">Upload bagsiden af dit identitetskort</Text>
+					<Text lang="no">Last opp baksiden av ID-kortet ditt</Text>
+					<Text lang="fi">Lataa henkilökorttisi kääntöpuoli</Text>
+					<Text lang="fr">Téléversez le verso de votre carte d’identité</Text>
+				</Hint>
 				<Placeholder>
 					<Text lang="en">Identity Card Back...</Text>
 					<Text lang="sv">Identitetskort Baksida...</Text>
@@ -493,16 +493,6 @@
 
 			<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
 			<Field id="driverslicenseFront" type="image" required="true">
-				<Hint>
-					<Text lang="en">Upload the front of your driver’s license</Text>
-					<Text lang="sv">Ladda upp framsidan av ditt körkort</Text>
-					<Text lang="es">Sube la parte frontal de tu permiso de conducir</Text>
-					<Text lang="pt">Envie a frente da sua carteira de motorista</Text>
-					<Text lang="da">Upload forsiden af dit kørekort</Text>
-					<Text lang="no">Last opp forsiden av førerkortet ditt</Text>
-					<Text lang="fi">Lataa ajokorttisi etupuoli</Text>
-					<Text lang="fr">Téléversez le recto de votre permis de conduire</Text>
-				</Hint>
 				<Label>
 					<Text lang="en">Driver's License Front Upload</Text>
 					<Text lang="sv">Körkort Framsida Uppladdning</Text>
@@ -513,6 +503,16 @@
 					<Text lang="fi">Ajokortin etupuolen lataus</Text>
 					<Text lang="fr">Téléversement du permis de conduire recto</Text>
 				</Label>
+				<Hint>
+					<Text lang="en">Upload the front of your driver’s license</Text>
+					<Text lang="sv">Ladda upp framsidan av ditt körkort</Text>
+					<Text lang="es">Sube la parte frontal de tu permiso de conducir</Text>
+					<Text lang="pt">Envie a frente da sua carteira de motorista</Text>
+					<Text lang="da">Upload forsiden af dit kørekort</Text>
+					<Text lang="no">Last opp forsiden av førerkortet ditt</Text>
+					<Text lang="fi">Lataa ajokorttisi etupuoli</Text>
+					<Text lang="fr">Téléversez le recto de votre permis de conduire</Text>
+				</Hint>
 				<Placeholder>
 					<Text lang="en">Driver's license Front...</Text>
 					<Text lang="sv">Körkort Framsida...</Text>
@@ -536,6 +536,16 @@
 				</Field>
 			<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
 			<Field id="driverslicenseBack" type="image" required="true">
+				<Label>
+					<Text lang="en">Driver's License Back Upload</Text>
+					<Text lang="sv">Körkort Baksida Uppladdning</Text>
+					<Text lang="es">Carga trasera del permiso de conducir</Text>
+					<Text lang="pt">Envio do verso da carteira de motorista</Text>
+					<Text lang="da">Kørekort bagside upload</Text>
+					<Text lang="no">Førerkort bakside opplasting</Text>
+					<Text lang="fi">Ajokortin takapuolen lataus</Text>
+					<Text lang="fr">Téléversement du permis de conduire verso</Text>
+				</Label>				
 				<Hint>
 					<Text lang="en">Upload the back of your driver’s license</Text>
 					<Text lang="sv">Ladda upp baksidan av ditt körkort</Text>
@@ -546,16 +556,6 @@
 					<Text lang="fi">Lataa ajokorttisi takapuoli</Text>
 					<Text lang="fr">Téléversez le verso de votre permis de conduire</Text>
 				</Hint>
-				<Label>
-					<Text lang="en">Driver's License Back Upload</Text>
-					<Text lang="sv">Körkort Baksida Uppladdning</Text>
-					<Text lang="es">Carga trasera del permiso de conducir</Text>
-					<Text lang="pt">Envio do verso da carteira de motorista</Text>
-					<Text lang="da">Kørekort bagside upload</Text>
-					<Text lang="no">Førerkort bakside opplasting</Text>
-					<Text lang="fi">Ajokortin takapuolen lataus</Text>
-					<Text lang="fr">Téléversement du permis de conduire verso</Text>
-				</Label>
 				<Placeholder>
 					<Text lang="en">Driver's License Back...</Text>
 					<Text lang="sv">Körkort Baksida...</Text>
