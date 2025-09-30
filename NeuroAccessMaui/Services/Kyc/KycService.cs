@@ -241,13 +241,29 @@ namespace NeuroAccessMaui.Services.Kyc
 				string Xml = Encoding.UTF8.GetString(Bytes);
 
 				// Validate against XSD before accepting remote payload using general schema service.
-				bool Valid = await ServiceRef.XmlSchemaValidationService.ValidateAsync(Constants.Schemes.KYCProcess, Xml).ConfigureAwait(false);
-				if (!Valid)
+				bool Valid = await ServiceRef.XmlSchemaValidationService.ValidateAsync(Constants.Schemes.NeuroAccessKycProcessUrl, Xml).ConfigureAwait(false);
+				if (Valid)
 				{
-					ServiceRef.LogService.LogWarning("KycXmlValidationFailed", new KeyValuePair<string, object?>("Domain", Domain));
-					return null; // Force caller to fallback to packaged version
+					ServiceRef.LogService.LogDebug("KycXmlValidationPrimarySuccess", new KeyValuePair<string, object?>("Domain", Domain));
+					return Xml;
 				}
-				return Xml;
+
+				bool LegacyValid = await ServiceRef.XmlSchemaValidationService.ValidateAsync(Constants.Schemes.KYCProcess, Xml).ConfigureAwait(false);
+				if (LegacyValid)
+				{
+					ServiceRef.LogService.LogInformational(
+						"KycXmlValidationFallbackSuccess",
+						new KeyValuePair<string, object?>("Domain", Domain),
+						new KeyValuePair<string, object?>("LegacyKey", Constants.Schemes.KYCProcess));
+					return Xml;
+				}
+
+				ServiceRef.LogService.LogWarning(
+					"KycXmlValidationBothFailed",
+					new KeyValuePair<string, object?>("Domain", Domain),
+					new KeyValuePair<string, object?>("PrimaryKey", Constants.Schemes.NeuroAccessKycProcessUrl),
+					new KeyValuePair<string, object?>("LegacyKey", Constants.Schemes.KYCProcess));
+				return null; // Force caller to fallback to packaged version
 			}
 			catch (Exception Ex)
 			{

@@ -115,8 +115,10 @@ namespace NeuroAccessMaui
 				try
 				{
 					service.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);
+					service.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2Url, Constants.Schemes.BrandingDescriptorV2File);
 					service.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2, Constants.Schemes.BrandingDescriptorV2File);
-					service.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.KycProcessFile);
+					service.RegisterSchema(Constants.Schemes.NeuroAccessKycProcessUrl, Constants.Schemes.NeuroAccessKycProcessFile);
+					service.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.NeuroAccessKycProcessFile);
 				}
 				catch (Exception Ex)
 				{

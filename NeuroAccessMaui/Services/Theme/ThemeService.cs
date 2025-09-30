@@ -27,7 +27,6 @@ namespace NeuroAccessMaui.Services.Theme
 
 		// Keys used for validation (registered in MauiProgram) now use the namespace URNs directly.
 		private static readonly string brandingSchemaKeyV1 = Constants.Schemes.NeuroAccessBrandingV1;
-		private static readonly string brandingSchemaKeyV2 = Constants.Schemes.NeuroAccessBrandingV2;
 
 		// Provider theme application state & retry
 		private enum ProviderThemeStatus { NotStarted, InProgress, Applied, NotSupported, FailedPermanent }
@@ -245,7 +244,7 @@ namespace NeuroAccessMaui.Services.Theme
 			if (Bytes is not null)
 			{
 				string XmlString = Encoding.UTF8.GetString(Bytes);
-				bool Valid = await this.ValidateBrandingXmlAsync(XmlString, IsV2);
+				bool Valid = await this.ValidateBrandingXmlAsync(XmlString, IsV2, Domain);
 				if (!Valid)
 					return (false, null, BrandingFetchClassification.PermanentFailure);
 				try
@@ -302,7 +301,11 @@ namespace NeuroAccessMaui.Services.Theme
 
 		private async Task ApplyV2Async(XmlDocument Doc)
 		{
-			XmlElement? Root = Doc.DocumentElement; if (Root is null || Root.NamespaceURI != Constants.Schemes.NeuroAccessBrandingV2) return;
+			XmlElement? Root = Doc.DocumentElement;
+			if (Root is null)
+				return;
+			if (System.Array.IndexOf(Constants.Schemes.BrandingV2NamespaceKeys, Root.NamespaceURI) < 0)
+				return;
 			this.imageUrisMap.Clear();
 			foreach (XmlElement Node in Root.SelectNodes("//*[local-name()='ImageRef']")?.OfType<XmlElement>() ?? [])
 			{
@@ -439,17 +442,52 @@ namespace NeuroAccessMaui.Services.Theme
 			}
 		}
 
-		private async Task<bool> ValidateBrandingXmlAsync(string Xml, bool V2)
+		private async Task<bool> ValidateBrandingXmlAsync(string Xml, bool V2, string Domain)
 		{
 			try
 			{
-				string Key = V2 ? brandingSchemaKeyV2 : brandingSchemaKeyV1;
-				bool Valid = await ServiceRef.XmlSchemaValidationService.ValidateAsync(Key, Xml);
-				return Valid;
+				if (V2)
+				{
+					foreach (string SchemaKey in Constants.Schemes.BrandingV2NamespaceKeys)
+					{
+						bool Valid = await ServiceRef.XmlSchemaValidationService.ValidateAsync(SchemaKey, Xml).ConfigureAwait(false);
+						if (!Valid)
+							continue;
+						if (string.Equals(SchemaKey, Constants.Schemes.NeuroAccessBrandingV2Url, StringComparison.Ordinal))
+						{
+							ServiceRef.LogService.LogDebug("BrandingXmlValidationPrimarySuccess", new KeyValuePair<string, object?>("Domain", Domain));
+						}
+						else
+						{
+							ServiceRef.LogService.LogInformational(
+								"BrandingXmlValidationFallbackSuccess",
+								new KeyValuePair<string, object?>("Domain", Domain),
+								new KeyValuePair<string, object?>("LegacyKey", SchemaKey));
+						}
+						return true;
+					}
+
+					ServiceRef.LogService.LogWarning(
+						"BrandingXmlValidationBothFailed",
+						new KeyValuePair<string, object?>("Domain", Domain),
+						new KeyValuePair<string, object?>("PrimaryKey", Constants.Schemes.NeuroAccessBrandingV2Url),
+						new KeyValuePair<string, object?>("LegacyKey", Constants.Schemes.NeuroAccessBrandingV2));
+					return false;
+				}
+
+				bool ValidV1 = await ServiceRef.XmlSchemaValidationService.ValidateAsync(brandingSchemaKeyV1, Xml).ConfigureAwait(false);
+				if (!ValidV1)
+				{
+					ServiceRef.LogService.LogWarning(
+						"BrandingXmlValidationV1Failed",
+						new KeyValuePair<string, object?>("Domain", Domain),
+						new KeyValuePair<string, object?>("Key", brandingSchemaKeyV1));
+				}
+				return ValidV1;
 			}
 			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(new Exception($"Branding XML validation failed for schema version {(V2 ? "V2" : "V1")}.", Ex));
+				ServiceRef.LogService.LogException(new Exception($"Branding XML validation failed for schema version {(V2 ? "V2" : "V1")}.", Ex), new KeyValuePair<string, object?>("Domain", Domain));
 				return false;
 			}
 		}
