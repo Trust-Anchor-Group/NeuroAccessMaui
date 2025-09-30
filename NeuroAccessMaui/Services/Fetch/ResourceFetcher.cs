@@ -27,8 +27,8 @@ namespace NeuroAccessMaui.Services.Fetch
             if (Data is not null)
                 return new ResourceResult<byte[]>(Data, ResourceOrigin.Disk, ContentType);
 
-            IAsyncPolicy timeout = Policies.Timeout(options.Timeout ?? Constants.Timeouts.DownloadFile);
-            IAsyncPolicy retry = Policies.Retry(
+            IAsyncPolicy Timeout = Policies.Timeout(options.Timeout ?? Constants.Timeouts.DownloadFile);
+            IAsyncPolicy Retry = Policies.Retry(
                 maxAttempts: options.RetryAttempts ?? 3,
                 delayProvider: (attempt, ex) => JitterBackoff.DecorrelatedJitter(TimeSpan.FromMilliseconds(200), attempt),
                 shouldRetry: Transient.IsTransient);
@@ -39,7 +39,7 @@ namespace NeuroAccessMaui.Services.Fetch
                 (byte[]? Bytes, string Type) = await this.cache.GetOrFetch(uri, options.ParentId, options.Permanent).ConfigureAwait(false);
                 Data = Bytes;
                 ContentType = Type;
-            }, ct, timeout, retry).ConfigureAwait(false);
+            }, ct, Timeout, Retry).ConfigureAwait(false);
 
             return new ResourceResult<byte[]>(Data, ResourceOrigin.Network, ContentType);
         }
@@ -54,19 +54,19 @@ namespace NeuroAccessMaui.Services.Fetch
             if (Data is not null)
                 return new ResourceResult<byte[]>(Data, ResourceOrigin.Disk, ContentType);
 
-            IEnumerable<IAsyncPolicy> toApply;
+            IEnumerable<IAsyncPolicy> ToApply;
             if (policies is null)
             {
-                IAsyncPolicy timeout = Policies.Timeout(options.Timeout ?? Constants.Timeouts.DownloadFile);
-                IAsyncPolicy retry = Policies.Retry(
+                IAsyncPolicy Timeout = Policies.Timeout(options.Timeout ?? Constants.Timeouts.DownloadFile);
+                IAsyncPolicy Retry = Policies.Retry(
                     maxAttempts: options.RetryAttempts ?? 3,
                     delayProvider: (attempt, ex) => JitterBackoff.DecorrelatedJitter(TimeSpan.FromMilliseconds(200), attempt),
                     shouldRetry: Transient.IsTransient);
-                toApply = new[] { timeout, retry };
+                ToApply = new[] { Timeout, Retry };
             }
             else
             {
-                toApply = policies;
+                ToApply = policies;
             }
 
             await Services.Resilience.PolicyRunner.RunAsync(async cts =>
@@ -74,7 +74,7 @@ namespace NeuroAccessMaui.Services.Fetch
                 (byte[]? Bytes, string Type) = await this.cache.GetOrFetch(uri, options.ParentId, options.Permanent).ConfigureAwait(false);
                 Data = Bytes;
                 ContentType = Type;
-            }, ct, toApply is IAsyncPolicy[] Arr ? Arr : System.Linq.Enumerable.ToArray(toApply)).ConfigureAwait(false);
+            }, ct, ToApply is IAsyncPolicy[] Arr ? Arr : System.Linq.Enumerable.ToArray(ToApply)).ConfigureAwait(false);
 
             return new ResourceResult<byte[]>(Data, ResourceOrigin.Network, ContentType);
         }

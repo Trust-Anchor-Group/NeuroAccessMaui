@@ -26,9 +26,9 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
 using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
-using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.MVVM.Reentrancy;
+using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {

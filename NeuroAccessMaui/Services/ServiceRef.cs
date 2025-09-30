@@ -25,6 +25,7 @@ using NeuroAccessMaui.Services.ThingRegistries;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.Services.Xmpp;
+using NeuroAccessMaui.Services.Xml;
 using Waher.Content;
 using ZXing;
 
@@ -58,6 +59,7 @@ namespace NeuroAccessMaui.Services
 		private static IInternetCacheService? internetCacheService;
 		private static IThemeService? themeService;
 		private static IKycService? kycService;
+		private static IXmlSchemaValidationService? xmlSchemaValidationService;
 
 		/// <summary>
 		/// Service serializing and managing UI-related tasks.
@@ -322,6 +324,18 @@ namespace NeuroAccessMaui.Services
 			{
 				kycService ??= App.Instantiate<IKycService>();
 				return kycService;
+			}
+		}
+
+		/// <summary>
+		/// XML schema validation service.
+		/// </summary>
+		public static IXmlSchemaValidationService XmlSchemaValidationService
+		{
+			get
+			{
+				xmlSchemaValidationService ??= ServiceHelper.GetService<IXmlSchemaValidationService>();
+				return xmlSchemaValidationService;
 			}
 		}
 	}

@@ -15,6 +15,9 @@ using Microsoft.Maui.Platform;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls;
 using NeuroAccessMaui.UI.Controls;
+using NeuroAccessMaui.Services.Xml;
+using Waher.Runtime.Inventory;
+
 
 
 #if DEBUG
@@ -103,6 +106,23 @@ namespace NeuroAccessMaui
 
 			// Singleton app's services
 			Builder.Services.AddSingleton<IPlatformSpecific, PlatformSpecific>();
+
+			 // XML Schema Validation Service & pre-registration
+			Builder.Services.AddSingleton<IXmlSchemaValidationService, XmlSchemaValidationService>();
+			// Pre-register schemas (lazy load on first validation) on the DI-managed instance
+			Builder.Services.PostConfigure<IXmlSchemaValidationService>(service =>
+			{
+				try
+				{
+					service.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);
+					service.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2, Constants.Schemes.BrandingDescriptorV2File);
+					service.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.KycProcessFile);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "SchemaPreRegistration"));
+				}
+			});
 
 			// Apps pages & models
 			Builder.RegisterPagesManager();
