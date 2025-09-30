@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 
 namespace NeuroAccessMaui.Services.Kyc.Models
 {
@@ -9,6 +10,8 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 	public class KycLocalizedText : INotifyPropertyChanged
 	{
 		private readonly Dictionary<string, string> byLang = new(StringComparer.OrdinalIgnoreCase);
+		private string? primaryText;
+		private string? primaryLanguage;
 
 		/// <summary>
 		/// Gets a value indicating whether any localized strings have been added.
@@ -22,8 +25,14 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		/// <param name="Value">Localized text value.</param>
 		public void Add(string Lang, string Value)
 		{
+			if (this.primaryText is null && !string.IsNullOrWhiteSpace(Value) && !this.byLang.ContainsKey(Lang))
+			{
+				this.primaryText = Value;
+				this.primaryLanguage = Lang;
+			}
 			this.byLang[Lang] = Value;
 			this.OnPropertyChanged(nameof(this.Text));
+			this.OnPropertyChanged(nameof(this.PrimaryText));
 		}
 
 		/// <summary>
@@ -49,6 +58,16 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 				return this.Get(Current) ?? string.Empty;
 			}
 		}
+
+		/// <summary>
+		/// Gets the first localized text that was added, regardless of current culture.
+		/// </summary>
+		public string? PrimaryText => this.primaryText ?? this.byLang.Values.FirstOrDefault();
+
+		/// <summary>
+		/// Gets the language code associated with <see cref="PrimaryText"/>, if available.
+		/// </summary>
+		public string? PrimaryLanguage => this.primaryLanguage;
 
 		public event PropertyChangedEventHandler? PropertyChanged;
 		/// <summary>

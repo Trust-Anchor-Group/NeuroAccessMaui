@@ -17,7 +17,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// Loads (or creates) the persisted KYC reference and ensures process XML is available.
 		/// </summary>
 		/// <param name="Lang">Optional language code.</param>
-		Task<KycReference> LoadKycReferenceAsync(string? Lang = null);
+		Task<KycReference> LoadKycReferenceAsync(string? Lang = null, KycApplicationTemplate? Template = null);
 
 		/// <summary>
 		/// Persists the provided reference (insert or update).
@@ -30,6 +30,17 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// </summary>
 		/// <param name="Lang">Optional language code.</param>
 		Task<IReadOnlyList<KycReference>> LoadAvailableKycReferencesAsync(string? Lang = null);
+
+		/// <summary>
+		/// Loads a page of KYC application templates using PubSub pagination, with bundled fallback when remote data is unavailable.
+		/// </summary>
+		/// <param name="After">Item identifier to request items after.</param>
+		/// <param name="Before">Item identifier to request items before.</param>
+		/// <param name="Index">Optional zero-based index of the first item to request.</param>
+		/// <param name="Max">Maximum number of entries to request.</param>
+		/// <param name="Lang">Optional language code used when parsing KYC names.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		Task<KycApplicationPage> LoadKycApplicationsPageAsync(string? After = null, string? Before = null, int? Index = null, int? Max = null, string? Lang = null, CancellationToken CancellationToken = default);
 
 		/// <summary>
 		/// Validates a single visible KYC page (synchronous + asynchronous rules).

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -14,7 +14,7 @@ using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.Services.Resilience;
 using NeuroAccessMaui.Services.Resilience.Dispatch;
-using NeuroAccessMaui.Services.Fetch;
+using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.MVVM.Building;
 using NeuroAccessMaui.UI.MVVM.Policies;
@@ -25,6 +25,9 @@ using Waher.Networking.XMPP.Contracts;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Xml;
+using Microsoft.Maui.Storage;
+using Waher.Networking.XMPP.PubSub;
+using Waher.Networking.XMPP.ResultSetManagement;
 
 namespace NeuroAccessMaui.Services.Kyc
 {
@@ -35,8 +38,9 @@ namespace NeuroAccessMaui.Services.Kyc
 	[Singleton]
 	public class KycService : IKycService, IDisposable
 	{
-		private static readonly HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(10) };
 		private static readonly string backupKyc = "TestKYCNeuro.xml";
+		private const string KycTemplateNodeId = "NeuroAccessKyc";
+		private const int DefaultTemplatePageSize = 20;
 
 		private readonly System.Collections.Concurrent.ConcurrentDictionary<string, AsyncLock> referenceLocks = new();
 		private readonly Channel<string> autosaveChannel;
@@ -114,7 +118,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// </summary>
 		/// <param name="Lang">Optional language code for process localization.</param>
 		/// <returns>The loaded reference.</returns>
-		public async Task<KycReference> LoadKycReferenceAsync(string? Lang = null)
+		public async Task<KycReference> LoadKycReferenceAsync(string? Lang = null, KycApplicationTemplate? Template = null)
 		{
 			KycReference? LoadedReference;
 			try
@@ -141,17 +145,44 @@ namespace NeuroAccessMaui.Services.Kyc
 				{
 					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
 				}
+			}
 
-				string? Xml = await this.TryFetchKycXmlFromProvider();
-				if (string.IsNullOrEmpty(Xml))
+			KycApplicationTemplate? TemplateToApply = Template;
+			if (TemplateToApply is null && string.IsNullOrEmpty(LoadedReference.KycXml))
+			{
+				try
 				{
-					using Stream Stream = await FileSystem.OpenAppPackageFileAsync(backupKyc);
-					using StreamReader Reader2 = new(Stream);
-					Xml = await Reader2.ReadToEndAsync().ConfigureAwait(false);
+					KycApplicationPage TemplatePage = await this.LoadKycApplicationsPageAsync(null, null, null, 1, Lang).ConfigureAwait(false);
+					TemplateToApply = TemplatePage.Templates.FirstOrDefault();
 				}
-				LoadedReference.KycXml = Xml;
-				LoadedReference.UpdatedUtc = DateTime.UtcNow;
-				LoadedReference.FetchedUtc = DateTime.UtcNow;
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				}
+			}
+
+			if (TemplateToApply is not null)
+			{
+				try
+				{
+					await this.ApplyTemplateToReferenceAsync(LoadedReference, TemplateToApply, Lang).ConfigureAwait(false);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				}
+			}
+
+			if (string.IsNullOrEmpty(LoadedReference.KycXml))
+			{
+				try
+				{
+					await this.ApplyBundledTemplateAsync(LoadedReference, Lang).ConfigureAwait(false);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				}
 			}
 
 			// Localize friendly name if available
@@ -204,17 +235,13 @@ namespace NeuroAccessMaui.Services.Kyc
 		{
 			try
 			{
-				string? Xml = await this.TryFetchKycXmlFromProvider();
-				if (string.IsNullOrEmpty(Xml))
+				KycApplicationPage Page = await this.LoadKycApplicationsPageAsync(null, null, null, null, Lang).ConfigureAwait(false);
+				List<KycReference> References = new List<KycReference>();
+				foreach (KycApplicationTemplate Template in Page.Templates)
 				{
-					using Stream Stream = await FileSystem.OpenAppPackageFileAsync(backupKyc);
-					using StreamReader Reader = new(Stream);
-					Xml = await Reader.ReadToEndAsync().ConfigureAwait(false);
+					References.Add(Template.Reference);
 				}
-
-				KycProcess Process = await KycProcessParser.LoadProcessAsync(Xml, Lang).ConfigureAwait(false);
-				KycReference Reference = KycReference.FromProcess(Process, Xml, Process.Name?.Text);
-				return new List<KycReference> { Reference };
+				return References;
 			}
 			catch (Exception Ex)
 			{
@@ -223,29 +250,139 @@ namespace NeuroAccessMaui.Services.Kyc
 			}
 		}
 
-		private async Task<string?> TryFetchKycXmlFromProvider()
+		public async Task<KycApplicationPage> LoadKycApplicationsPageAsync(string? After = null, string? Before = null, int? Index = null, int? Max = null, string? Lang = null, CancellationToken CancellationToken = default)
+		{
+			int PageSize = Max.HasValue && Max.Value > 0 ? Max.Value : DefaultTemplatePageSize;
+			string Domain = ServiceRef.TagProfile.Domain ?? string.Empty;
+			string? ServiceAddress = ServiceRef.TagProfile.PubSubJid;
+
+			try
+			{
+				PubSubPageResult? PageResult = await ServiceRef.XmppService.GetItemsPageAsync(KycTemplateNodeId, ServiceAddress, After, Before, Index, PageSize).ConfigureAwait(false);
+				if (PageResult is null && !string.IsNullOrWhiteSpace(ServiceAddress))
+				{
+					PageResult = await ServiceRef.XmppService.GetItemsPageAsync(KycTemplateNodeId, null, After, Before, Index, PageSize).ConfigureAwait(false);
+				}
+				if (PageResult is null)
+				{
+					IReadOnlyList<KycApplicationTemplate> FallbackTemplates = await this.LoadFallbackTemplatesAsync(Lang, CancellationToken).ConfigureAwait(false);
+					return new KycApplicationPage(FallbackTemplates, null, true);
+				}
+
+				IReadOnlyList<KycApplicationTemplate> Templates = await this.ConvertToTemplatesAsync(PageResult.Items, Domain, Lang, CancellationToken).ConfigureAwait(false);
+				if (Templates.Count == 0)
+				{
+					IReadOnlyList<KycApplicationTemplate> FallbackTemplates = await this.LoadFallbackTemplatesAsync(Lang, CancellationToken).ConfigureAwait(false);
+					return new KycApplicationPage(FallbackTemplates, PageResult.ResultPage, true);
+				}
+
+				return new KycApplicationPage(Templates, PageResult.ResultPage, false);
+			}
+			catch (OperationCanceledException)
+			{
+				throw;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				IReadOnlyList<KycApplicationTemplate> FallbackTemplates = await this.LoadFallbackTemplatesAsync(Lang, CancellationToken).ConfigureAwait(false);
+				return new KycApplicationPage(FallbackTemplates, null, true);
+			}
+		}
+
+		private async Task<IReadOnlyList<KycApplicationTemplate>> ConvertToTemplatesAsync(PubSubItem[]? Items, string Domain, string? Lang, CancellationToken CancellationToken)
+		{
+			List<KycApplicationTemplate> Templates = new List<KycApplicationTemplate>();
+			if (Items is null || Items.Length == 0)
+				return Templates;
+
+			foreach (PubSubItem Item in Items)
+			{
+				CancellationToken.ThrowIfCancellationRequested();
+
+				if (!KycApplicationItem.TryCreate(Item, out KycApplicationItem? Application) || Application is null)
+					continue;
+
+				try
+				{
+					KycApplicationTemplate? Template = await this.CreateTemplateAsync(Application, Application.ProcessXml, Domain, Lang, CancellationToken).ConfigureAwait(false);
+					if (Template is not null)
+						Templates.Add(Template);
+				}
+				catch (OperationCanceledException)
+				{
+					throw;
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				}
+			}
+
+			return Templates;
+		}
+
+		private async Task<KycApplicationTemplate?> CreateTemplateAsync(KycApplicationItem? Application, string Xml, string Domain, string? Lang, CancellationToken CancellationToken)
+		{
+			CancellationToken.ThrowIfCancellationRequested();
+			bool IsValid = await this.ValidateKycXmlAsync(string.IsNullOrWhiteSpace(Domain) ? "unknown" : Domain, Xml).ConfigureAwait(false);
+			if (!IsValid)
+				return null;
+
+			CancellationToken.ThrowIfCancellationRequested();
+			KycProcess Process = await KycProcessParser.LoadProcessAsync(Xml, Lang).ConfigureAwait(false);
+				string? FriendlyName = Process.Name?.PrimaryText;
+				if (string.IsNullOrWhiteSpace(FriendlyName) && Application is not null)
+					FriendlyName = Application.PrimaryDisplayName ?? Application.DisplayName;
+				if (string.IsNullOrWhiteSpace(FriendlyName) && Application is not null)
+					FriendlyName = Application.ItemId;
+			if (string.IsNullOrWhiteSpace(FriendlyName))
+				FriendlyName = "KYC Application";
+
+			KycReference Reference = KycReference.FromProcess(Process, Xml, FriendlyName);
+			return new KycApplicationTemplate(Reference, Application);
+		}
+
+		private async Task<IReadOnlyList<KycApplicationTemplate>> LoadFallbackTemplatesAsync(string? Lang, CancellationToken CancellationToken)
+		{
+			List<KycApplicationTemplate> Templates = new List<KycApplicationTemplate>();
+			try
+			{
+				string Xml = await this.LoadBundledKycXmlAsync(CancellationToken).ConfigureAwait(false);
+				KycApplicationTemplate? Template = await this.CreateTemplateAsync(null, Xml, "fallback", Lang, CancellationToken).ConfigureAwait(false);
+				if (Template is not null)
+					Templates.Add(Template);
+			}
+			catch (OperationCanceledException)
+			{
+				throw;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+			}
+
+			return Templates;
+		}
+
+		private async Task<string> LoadBundledKycXmlAsync(CancellationToken CancellationToken)
+		{
+			CancellationToken.ThrowIfCancellationRequested();
+			using Stream Stream = await FileSystem.OpenAppPackageFileAsync(backupKyc);
+			using StreamReader Reader = new(Stream);
+			string Xml = await Reader.ReadToEndAsync(CancellationToken).ConfigureAwait(false);
+			return Xml;
+		}
+
+		private async Task<bool> ValidateKycXmlAsync(string Domain, string Xml)
 		{
 			try
 			{
-				string? Domain = ServiceRef.TagProfile.Domain;
-				if (string.IsNullOrWhiteSpace(Domain))
-					return null;
-
-				Uri Uri = new($"https://{Domain}/PubSub/NeuroAccessKyc/KycProcess");
-				IResourceFetcher Fetcher = new ResourceFetcher();
-				ResourceFetchOptions Options = new() { ParentId = $"KycProcess:{Domain}", Permanent = false };
-				ResourceResult<byte[]> Result = await Fetcher.GetBytesAsync(Uri, Options).ConfigureAwait(false);
-				byte[]? Bytes = Result.Value;
-				if (Bytes is null || Bytes.Length == 0)
-					return null;
-				string Xml = Encoding.UTF8.GetString(Bytes);
-
-				// Validate against XSD before accepting remote payload using general schema service.
 				bool Valid = await ServiceRef.XmlSchemaValidationService.ValidateAsync(Constants.Schemes.NeuroAccessKycProcessUrl, Xml).ConfigureAwait(false);
 				if (Valid)
 				{
 					ServiceRef.LogService.LogDebug("KycXmlValidationPrimarySuccess", new KeyValuePair<string, object?>("Domain", Domain));
-					return Xml;
+					return true;
 				}
 
 				bool LegacyValid = await ServiceRef.XmlSchemaValidationService.ValidateAsync(Constants.Schemes.KYCProcess, Xml).ConfigureAwait(false);
@@ -255,7 +392,7 @@ namespace NeuroAccessMaui.Services.Kyc
 						"KycXmlValidationFallbackSuccess",
 						new KeyValuePair<string, object?>("Domain", Domain),
 						new KeyValuePair<string, object?>("LegacyKey", Constants.Schemes.KYCProcess));
-					return Xml;
+					return true;
 				}
 
 				ServiceRef.LogService.LogWarning(
@@ -263,14 +400,40 @@ namespace NeuroAccessMaui.Services.Kyc
 					new KeyValuePair<string, object?>("Domain", Domain),
 					new KeyValuePair<string, object?>("PrimaryKey", Constants.Schemes.NeuroAccessKycProcessUrl),
 					new KeyValuePair<string, object?>("LegacyKey", Constants.Schemes.KYCProcess));
-				return null; // Force caller to fallback to packaged version
+				return false;
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-				return null;
+				return false;
 			}
- 		}
+		}
+
+		private async Task ApplyTemplateToReferenceAsync(KycReference Reference, KycApplicationTemplate Template, string? Lang)
+		{
+			if (Template.Reference.KycXml is null)
+				return;
+
+			string Xml = Template.Reference.KycXml;
+			KycProcess? Process = await Template.Reference.GetProcess(Lang).ConfigureAwait(false);
+			if (Process is null)
+				Process = await KycProcessParser.LoadProcessAsync(Xml, Lang).ConfigureAwait(false);
+
+			Reference.SetProcess(Process, Xml, DateTime.UtcNow, DateTime.UtcNow);
+				string? FriendlyName = Process.Name?.PrimaryText ?? Template.Reference.FriendlyName;
+				if (!string.IsNullOrWhiteSpace(FriendlyName))
+					Reference.FriendlyName = FriendlyName;
+		}
+
+		private async Task ApplyBundledTemplateAsync(KycReference Reference, string? Lang)
+		{
+			string Xml = await this.LoadBundledKycXmlAsync(default).ConfigureAwait(false);
+			KycProcess Process = await KycProcessParser.LoadProcessAsync(Xml, Lang).ConfigureAwait(false);
+			Reference.SetProcess(Process, Xml, DateTime.UtcNow, DateTime.UtcNow);
+			string? FriendlyName = Process.Name?.Text;
+			if (!string.IsNullOrWhiteSpace(FriendlyName))
+				Reference.FriendlyName = FriendlyName;
+		}
 
 		#endregion
 
