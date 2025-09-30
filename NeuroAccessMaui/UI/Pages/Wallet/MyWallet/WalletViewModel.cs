@@ -26,6 +26,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.RequestPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.SellEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
+using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using Waher.Networking.XMPP.Contracts;
@@ -33,6 +34,7 @@ using Waher.Persistence;
 using Waher.Script.Constants;
 using Waher.Script.Functions.ComplexNumbers;
 using System.Collections.ObjectModel;
+using System.Text;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 {
@@ -131,7 +133,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 
 			// Update command states as appropriate
 			if (e.PropertyName == nameof(this.IsConnected))
+			{
 				this.BuyEdalerCommand.NotifyCanExecuteChanged();
+				this.SendEdalerCommand.NotifyCanExecuteChanged();
+			}
 		}
 
 		#endregion
@@ -240,6 +245,45 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 					if (ServiceRef.UiService.CurrentPage is IContractOptionsPage ContractOptionsPage)
 						MainThread.BeginInvokeOnMainThread(async () => await ContractOptionsPage.ShowContractOptions(Options));
 				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Command to initiate sending eDaler to another user.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(IsConnected))]
+		private async Task SendEdaler()
+		{
+			try
+			{
+				// Prepare a base eDaler URI with current currency. Recipient & amount will be set on SendPaymentPage.
+				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+				StringBuilder Sb = new();
+				Sb.Append("edaler:");
+				Sb.Append("cu=");
+				Sb.Append(Balance.Currency);
+
+				if (!EDalerUri.TryParse(Sb.ToString(), out EDalerUri Parsed))
+					return;
+
+				TaskCompletionSource<string?> UriToSend = new();
+				EDalerUriNavigationArgs Args = new(Parsed, string.Empty, UriToSend);
+				await ServiceRef.UiService.GoToAsync(nameof(SendPaymentPage), Args, BackMethod.Pop);
+
+				string? Uri = await UriToSend.Task; // User composed URI. Null if cancelled.
+				if (string.IsNullOrEmpty(Uri))
+					return;
+
+				// Automatically claim/process the payment (execute transfer) directly.
+				await ServiceRef.NeuroWalletOrchestratorService.OpenEDalerUri(Uri);
+
+				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.PaymentSuccess)]);
 			}
 			catch (Exception Ex)
 			{

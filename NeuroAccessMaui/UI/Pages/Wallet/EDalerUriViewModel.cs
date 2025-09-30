@@ -13,6 +13,7 @@ using System.Text;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
+using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet
 {
@@ -766,6 +767,50 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		public override Task<string> Title => Task.FromResult<string>(ServiceRef.Localizer[nameof(AppResources.Payment)]);
 
 		#endregion
+
+		[RelayCommand]
+		private async Task SelectRecipient()
+		{
+			try
+			{
+				TaskCompletionSource<ContactInfoModel?> Selected = new();
+				string Description = ServiceRef.Localizer[nameof(AppResources.SelectFromWhomToRequestPayment)];
+				ContactListNavigationArgs ContactListArgs = new(Description, Selected)
+				{
+					CanScanQrCode = true
+				};
+
+				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
+
+				ContactInfoModel? Contact = await Selected.Task;
+				if (Contact is null)
+					return;
+
+				if (!string.IsNullOrEmpty(Contact.LegalId))
+				{
+					this.To = Contact.LegalId;
+					this.ToType = EntityType.LegalId;
+				}
+				else if (!string.IsNullOrEmpty(Contact.BareJid))
+				{
+					this.To = Contact.BareJid;
+					this.ToType = EntityType.NetworkJid; // Using Network to represent a bare JID
+				}
+				else
+				{
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.NetworkAddressOfContactUnknown)]);
+					return;
+				}
+
+				this.ToPreset = false;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
 
 	}
 }

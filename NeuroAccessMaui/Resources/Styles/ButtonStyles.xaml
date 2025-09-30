@@ -692,10 +692,15 @@
 	<Style x:Key="IconButtonSecondary" ApplyToDerivedTypes="False" TargetType="controls:SvgButton" BasedOn="{StaticResource IconButton}">
 		<Setter Property="SvgTintColor" Value="{DynamicResource ButtonAccessSecondaryContentWL}"/>
 		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonSecondaryBorder}"/>
+		<Setter Property="LabelStyle" Value="{DynamicResource IconButtonSecondaryLabel}"/>
 	</Style>
 
 	<Style x:Key="IconButtonSecondaryBorder" ApplyToDerivedTypes="False" TargetType="Border" BasedOn="{StaticResource IconButtonBorder}">
 		<Setter Property="BackgroundColor" Value="{DynamicResource ButtonAccessSecondarybgWL}"/>
+	</Style>
+
+	<Style x:Key="IconButtonSecondaryLabel" ApplyToDerivedTypes="False" TargetType="Label" BasedOn="{StaticResource DurationLabel}">
+		<Setter Property="TextColor" Value="{DynamicResource ButtonAccessSecondaryContentWL}"/>
 	</Style>
 
 	<Style x:Key="IconButtonOnBackground" TargetType="controls:SvgButton" BasedOn="{StaticResource IconButton}">

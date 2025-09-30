@@ -104,7 +104,7 @@
 					<Label Text="{l:Localize Contacts}" Style="{DynamicResource PageTitleLabel}" Grid.Column="1"/>
 				</Grid>
 
-				<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+				<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" Margin="8,0,8,0">
 					<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
 							 VerticalOptions="Start" IsVisible="{Binding Path=ShowContactsMissing}" Text="{l:Localize NoContactsFound}" />
 
@@ -115,7 +115,11 @@
 				</VerticalStackLayout>
 
 				<!-- Search Entry -->
-				<controls:CompositeEntry Placeholder="{l:Localize Search}" EntryData="{Binding SearchText, Mode=TwoWay}" Style="{DynamicResource RegularCompositeEntry}" Margin="8,0,8,0">
+				<controls:CompositeEntry Placeholder="{l:Localize Search}"
+										 EntryData="{Binding SearchText, Mode=TwoWay}"
+										 Style="{DynamicResource RegularCompositeEntry}"
+										 Margin="8,0,8,0"
+										 IsVisible="{Binding Path=ShowContactsMissing, Converter={StaticResource InvertedBoolConverter}}">
 					<controls:CompositeEntry.LeftView>
 						<controls:SvgView Source="search.svg"/>
 					</controls:CompositeEntry.LeftView>
