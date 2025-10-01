@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -45,7 +46,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 	public partial class ApplicationsViewModel : XmppViewModel
 	{
 		public ObservableCollection<KycReference> Applications { get; } = new();
-		public ObservableCollection<KycReference> AvailableApplications { get; } = new();
+		public ObservableCollection<KycApplicationTemplate> AvailableApplications { get; } = new();
+		private KycApplicationPage? availableApplicationsPage;
 
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
@@ -60,7 +62,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		[ObservableProperty]
 		private KycReference? currentApplication;
 
+		[ObservableProperty]
+		private bool hasMoreAvailableTemplates;
+
 		public bool HasCurrentApplication => this.CurrentApplication is not null;
+
+		public bool CanLoadMoreAvailableApplications => this.CanExecuteCommands && this.HasMoreAvailableTemplates;
 
 		// Expose loader state if you want to bind spinners/errors in XAML
 		public ObservableTask<int> Loader { get; init; }
@@ -73,6 +80,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		public bool ShowProgressBar => this.CurrentApplication is not null
 										&& (this.CurrentApplication.CreatedIdentityState is null
 										|| this.CurrentApplication.CreatedIdentityState == IdentityState.Created);
+
+		partial void OnHasMoreAvailableTemplatesChanged(bool value)
+		{
+			this.LoadMoreAvailableApplicationsCommand.NotifyCanExecuteChanged();
+		}
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ApplicationsViewModel"/> class.
@@ -95,7 +107,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				.WithTelemetry(new LoggerTelemetry())
 				.UseTaskRun(false)
 				.Run(this.LoadAvailableApplicationsAsync)
-				.Build(this.CreateNewApplicationCommand);
+				.Build(this.CreateNewApplicationCommand, this.LoadMoreAvailableApplicationsCommand);
 		}
 
 		protected override async Task OnInitialize()
@@ -197,6 +209,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			this.CreateNewApplicationCommand.NotifyCanExecuteChanged();
 			this.OpenApplicationCommand.NotifyCanExecuteChanged();
+			this.LoadMoreAvailableApplicationsCommand.NotifyCanExecuteChanged();
 
 			// Optionally also surface loader commands in UI, so keep them fresh:
 	//		this.Loader.CancelCommand.NotifyCanExecuteChanged();
@@ -228,7 +241,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		#region Commands
 
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-		private async Task CreateNewApplication()
+		private async Task CreateNewApplication(KycApplicationTemplate? template)
 		{
 			try
 			{
@@ -293,11 +306,47 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				}
 
 				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-				KycReference Ref = await ServiceRef.KycService.LoadKycReferenceAsync(Language);
+				KycApplicationTemplate? TemplateToUse = template ?? this.AvailableApplications.FirstOrDefault();
+				KycReference Ref = await ServiceRef.KycService.LoadKycReferenceAsync(Language, TemplateToUse);
 
 				await ServiceRef.KycService.PrepareReferenceForNewApplicationAsync(Ref, Language, PreviousFields);
 
 				await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Ref));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		[RelayCommand(CanExecute = nameof(CanLoadMoreAvailableApplications))]
+		private async Task LoadMoreAvailableApplications()
+		{
+			if (!this.CanLoadMoreAvailableApplications)
+				return;
+
+			try
+			{
+				if (this.availableApplicationsPage is null || string.IsNullOrWhiteSpace(this.availableApplicationsPage.NextAfter))
+					return;
+
+				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+				string After = this.availableApplicationsPage.NextAfter;
+				KycApplicationPage Page = await ServiceRef.KycService.LoadKycApplicationsPageAsync(After, null, null, null, Language).ConfigureAwait(false);
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					foreach (KycApplicationTemplate Template in Page.Templates)
+					{
+						bool Exists = this.AvailableApplications.Any(existing => TemplatesEqual(existing, Template));
+						if (!Exists)
+							this.AvailableApplications.Add(Template);
+					}
+
+					this.availableApplicationsPage = Page;
+					this.HasMoreAvailableTemplates = Page.HasMoreAfter;
+				});
 			}
 			catch (Exception Ex)
 			{
@@ -370,6 +419,24 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 		[RelayCommand]
 		private void CancelLoading() => this.Loader.Cancel();
+
+		private static bool TemplatesEqual(KycApplicationTemplate first, KycApplicationTemplate second)
+		{
+			string? firstId = first.Source?.ItemId;
+			string? secondId = second.Source?.ItemId;
+
+			if (!string.IsNullOrEmpty(firstId) && !string.IsNullOrEmpty(secondId))
+				return string.Equals(firstId, secondId, System.StringComparison.Ordinal);
+
+			if (first.Source is null && second.Source is null &&
+				!string.IsNullOrEmpty(first.Reference.KycXml) &&
+				!string.IsNullOrEmpty(second.Reference.KycXml))
+			{
+				return string.Equals(first.Reference.KycXml, second.Reference.KycXml, System.StringComparison.Ordinal);
+			}
+
+			return false;
+		}
 
 		#endregion
 
@@ -456,26 +523,19 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			{
 				Progress.Report(0);
 
-				IReadOnlyList<KycReference> Refs = Array.Empty<KycReference>();
-				try
-				{
-					string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-					Ct.ThrowIfCancellationRequested();
-					Refs = await ServiceRef.KycService.LoadAvailableKycReferencesAsync(Language);
-				}
-				catch (OperationCanceledException) { throw; }
-				catch (Exception Ex)
-				{
-					ServiceRef.LogService.LogException(Ex);
-				}
+				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+				Ct.ThrowIfCancellationRequested();
+				KycApplicationPage Page = await ServiceRef.KycService.LoadKycApplicationsPageAsync(null, null, 0, 10, Language, Ct).ConfigureAwait(false);
 
 				Ct.ThrowIfCancellationRequested();
 
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
 					this.AvailableApplications.Clear();
-					foreach (KycReference r in Refs)
-						this.AvailableApplications.Add(r);
+					foreach (KycApplicationTemplate Template in Page.Templates)
+						this.AvailableApplications.Add(Template);
+					this.availableApplicationsPage = Page;
+					this.HasMoreAvailableTemplates = Page.HasMoreAfter;
 				});
 
 				Progress.Report(100);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<KYCProcess xmlns="urn:neuroaccess:kyc:1.0">
+<KYCProcess xmlns="https://paiwise.tagroot.io/Schema/NeuroAccessKycProcess.xsd">
 	<Page id="personalInfo" title="Personal Information">
 		<Title>
 			<Text lang="en">Personal Information</Text>

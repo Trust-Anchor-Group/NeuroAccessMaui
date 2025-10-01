@@ -67,6 +67,7 @@ using Waher.Networking.XMPP.Provisioning.SearchOperators;
 using Waher.Networking.XMPP.PubSub;
 using Waher.Networking.XMPP.PubSub.Events;
 using Waher.Networking.XMPP.Push;
+using Waher.Networking.XMPP.ResultSetManagement;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Networking.XMPP.StanzaErrors;
@@ -5493,6 +5494,55 @@ namespace NeuroAccessMaui.Services.Xmpp
 				await this.PubSubClient.GetLatestItems(NodeId, Count, (s, e) => HandleResult(e, Tcs), null);
 				ItemsEventArgs Result = await Tcs.Task;
 				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<PubSubPageResult?> GetItemsPageAsync(string NodeId, string? ServiceAddress = null, string? After = null, string? Before = null, int? Index = null, int? Max = null)
+		{
+			try
+			{
+				RestrictedQuery? Query = null;
+				bool HasCursor = !string.IsNullOrWhiteSpace(After) || !string.IsNullOrWhiteSpace(Before) || Index.HasValue || Max.HasValue;
+				if (HasCursor)
+				{
+					Query = new RestrictedQuery(After, Before, Index, Max);
+				}
+
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				string? EffectiveServiceAddress = ServiceAddress ?? this.PubSubClient.ComponentAddress;
+
+				if (Query is null)
+				{
+					if (string.IsNullOrWhiteSpace(EffectiveServiceAddress))
+					{
+						await this.PubSubClient.GetItems(NodeId, (s, e) => HandleResult(e, Tcs), null);
+					}
+					else
+					{
+						await this.PubSubClient.GetItems(EffectiveServiceAddress, NodeId, (s, e) => HandleResult(e, Tcs), null);
+					}
+				}
+				else
+				{
+					if (string.IsNullOrWhiteSpace(EffectiveServiceAddress))
+					{
+						await this.PubSubClient.GetItems(NodeId, Query, (s, e) => HandleResult(e, Tcs), null);
+					}
+					else
+					{
+						await this.PubSubClient.GetItems(EffectiveServiceAddress, NodeId, Query, (s, e) => HandleResult(e, Tcs), null);
+					}
+				}
+
+				ItemsEventArgs Result = await Tcs.Task;
+				PubSubItem[] Items = Result.Items ?? Array.Empty<PubSubItem>();
+				ResultPage? Page = Result.Page;
+				return new PubSubPageResult(NodeId, Items, Page);
 			}
 			catch
 			{

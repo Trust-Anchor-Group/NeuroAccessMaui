@@ -425,8 +425,10 @@ namespace NeuroAccessMaui
 			{
 				IXmlSchemaValidationService xml = ServiceRef.XmlSchemaValidationService;
 				xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);
+				xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2Url, Constants.Schemes.BrandingDescriptorV2File);
 				xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2, Constants.Schemes.BrandingDescriptorV2File);
-				xml.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.KycProcessFile);
+				xml.RegisterSchema(Constants.Schemes.NeuroAccessKycProcessUrl, Constants.Schemes.NeuroAccessKycProcessFile);
+				xml.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.NeuroAccessKycProcessFile);
 			}
 			catch (Exception Ex)
 			{

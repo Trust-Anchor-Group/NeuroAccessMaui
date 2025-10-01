@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.Services.Xml
 	{
 		/// <summary>
 		/// Registers a schema under a logical Key. The schema file must exist in the application package (Raw resources).
-		/// Example RelativePath: "Schemas/KYCProcess.xsd".
+		/// Example RelativePath: "Schemas/NeuroAccessKycProcess.xsd".
 		/// </summary>
 		/// <param name="Key">Logical unique Key.</param>
 		/// <param name="RelativePath">Relative path inside the app package.</param>

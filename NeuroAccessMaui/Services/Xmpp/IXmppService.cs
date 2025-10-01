@@ -1684,6 +1684,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 		Task<PubSubItem[]?> GetItemsAsync(string NodeId, string[] ItemIds);
 
 		/// <summary>
+		/// Retrieves a page of items for a specified node using XEP-0059 result set management parameters.
+		/// </summary>
+		/// <param name="NodeId">Node identifier.</param>
+		/// <param name="ServiceAddress">Optional service address; defaults to the configured PubSub component if omitted.</param>
+		/// <param name="After">Fetch items after this item identifier.</param>
+		/// <param name="Before">Fetch items before this item identifier.</param>
+		/// <param name="Index">Optional index offset to request.</param>
+		/// <param name="Max">Maximum number of items to return.</param>
+		Task<PubSubPageResult?> GetItemsPageAsync(string NodeId, string? ServiceAddress = null, string? After = null, string? Before = null, int? Index = null, int? Max = null);
+
+		/// <summary>
 		/// Retrieves a single item by ID for a specified node, or null on failure.
 		/// </summary>
 		Task<PubSubItem?> GetItemAsync(string NodeId, string ItemId);
