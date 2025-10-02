@@ -45,6 +45,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 	/// </summary>
 	public partial class ApplicationsViewModel : XmppViewModel
 	{
+		private const int AvailableTemplatesPageSize = 10; // Unified page size for available applications pagination
 		public ObservableCollection<KycReference> Applications { get; } = new();
 		public ObservableCollection<KycApplicationTemplate> AvailableApplications { get; } = new();
 		private KycApplicationPage? availableApplicationsPage;
@@ -333,7 +334,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 				string After = this.availableApplicationsPage.NextAfter;
-				KycApplicationPage Page = await ServiceRef.KycService.LoadKycApplicationsPageAsync(After, null, null, null, Language).ConfigureAwait(false);
+				KycApplicationPage Page = await ServiceRef.KycService.LoadKycApplicationsPageAsync(After, null, null, AvailableTemplatesPageSize, Language).ConfigureAwait(false);
 
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
@@ -345,7 +346,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					}
 
 					this.availableApplicationsPage = Page;
-					this.HasMoreAvailableTemplates = Page.HasMoreAfter;
+					// Only allow more if we received a full page, the page indicates more, and it's not fallback.
+					this.HasMoreAvailableTemplates = !Page.UsedFallback && Page.Templates.Count == AvailableTemplatesPageSize && Page.HasMoreAfter;
 				});
 			}
 			catch (Exception Ex)
@@ -525,7 +527,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 				Ct.ThrowIfCancellationRequested();
-				KycApplicationPage Page = await ServiceRef.KycService.LoadKycApplicationsPageAsync(null, null, 0, 10, Language, Ct).ConfigureAwait(false);
+				KycApplicationPage Page = await ServiceRef.KycService.LoadKycApplicationsPageAsync(null, null, 0, AvailableTemplatesPageSize, Language, Ct).ConfigureAwait(false);
 
 				Ct.ThrowIfCancellationRequested();
 
@@ -535,7 +537,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					foreach (KycApplicationTemplate Template in Page.Templates)
 						this.AvailableApplications.Add(Template);
 					this.availableApplicationsPage = Page;
-					this.HasMoreAvailableTemplates = Page.HasMoreAfter;
+					// Only show Load More if full page, remote (not fallback), and server hints more.
+					this.HasMoreAvailableTemplates = !Page.UsedFallback && Page.Templates.Count == AvailableTemplatesPageSize && Page.HasMoreAfter;
 				});
 
 				Progress.Report(100);
