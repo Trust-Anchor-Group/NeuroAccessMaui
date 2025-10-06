@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added Swipe gesture on ID page to expand additional info
 - KYC XML schemas, sample processes, and parser support for dynamic flow definitions.
 - Dedicated  domain, including autosave, validation, and summary materialization.
 - New  UI with summary sections, peer review hooks, and progress indicators.
