@@ -4386,7 +4386,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			try
 			{
-				return await this.EDalerClient.DecryptMessage(EncryptedMessage, PublicKey, TransactionId, RemoteEndpoint, LocalIsRecipient);
+				return await this.EDalerClient.DecryptMessage(EncryptedMessage, PublicKey, TransactionId, RemoteEndpoint);
 			}
 			catch (Exception ex)
 			{

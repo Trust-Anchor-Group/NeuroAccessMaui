@@ -256,6 +256,8 @@ namespace NeuroAccessMaui.Services.Kyc
 			string Domain = ServiceRef.TagProfile.Domain ?? string.Empty;
 			string? ServiceAddress = ServiceRef.TagProfile.PubSubJid;
 
+			bool IsInitialRequest = After is null && Before is null && (!Index.HasValue || Index.Value == 0);
+
 			try
 			{
 				PubSubPageResult? PageResult = await ServiceRef.XmppService.GetItemsPageAsync(KycTemplateNodeId, ServiceAddress, After, Before, Index, PageSize).ConfigureAwait(false);
@@ -265,15 +267,25 @@ namespace NeuroAccessMaui.Services.Kyc
 				}
 				if (PageResult is null)
 				{
-					IReadOnlyList<KycApplicationTemplate> FallbackTemplates = await this.LoadFallbackTemplatesAsync(Lang, CancellationToken).ConfigureAwait(false);
-					return new KycApplicationPage(FallbackTemplates, null, true);
+					if (IsInitialRequest)
+					{
+						IReadOnlyList<KycApplicationTemplate> FallbackTemplates = await this.LoadFallbackTemplatesAsync(Lang, CancellationToken).ConfigureAwait(false);
+						return new KycApplicationPage(FallbackTemplates, null, true);
+					}
+					// Subsequent page but could not load -> return empty page, no fallback.
+					return new KycApplicationPage(Array.Empty<KycApplicationTemplate>(), null, false);
 				}
 
 				IReadOnlyList<KycApplicationTemplate> Templates = await this.ConvertToTemplatesAsync(PageResult.Items, Domain, Lang, CancellationToken).ConfigureAwait(false);
 				if (Templates.Count == 0)
 				{
-					IReadOnlyList<KycApplicationTemplate> FallbackTemplates = await this.LoadFallbackTemplatesAsync(Lang, CancellationToken).ConfigureAwait(false);
-					return new KycApplicationPage(FallbackTemplates, PageResult.ResultPage, true);
+					if (IsInitialRequest)
+					{
+						IReadOnlyList<KycApplicationTemplate> FallbackTemplates = await this.LoadFallbackTemplatesAsync(Lang, CancellationToken).ConfigureAwait(false);
+						return new KycApplicationPage(FallbackTemplates, PageResult.ResultPage, true);
+					}
+					// No more remote items -> return empty page without fallback.
+					return new KycApplicationPage(Array.Empty<KycApplicationTemplate>(), PageResult.ResultPage, false);
 				}
 
 				return new KycApplicationPage(Templates, PageResult.ResultPage, false);
@@ -285,8 +297,12 @@ namespace NeuroAccessMaui.Services.Kyc
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
-				IReadOnlyList<KycApplicationTemplate> FallbackTemplates = await this.LoadFallbackTemplatesAsync(Lang, CancellationToken).ConfigureAwait(false);
-				return new KycApplicationPage(FallbackTemplates, null, true);
+				if (IsInitialRequest)
+				{
+					IReadOnlyList<KycApplicationTemplate> FallbackTemplates = await this.LoadFallbackTemplatesAsync(Lang, CancellationToken).ConfigureAwait(false);
+					return new KycApplicationPage(FallbackTemplates, null, true);
+				}
+				return new KycApplicationPage(Array.Empty<KycApplicationTemplate>(), null, false);
 			}
 		}
 
