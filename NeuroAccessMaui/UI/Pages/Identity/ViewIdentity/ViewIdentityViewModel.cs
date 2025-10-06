@@ -731,6 +731,4 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 											 Func<LegalIdentity, LocalizedString> GetLabel,
 											 Func<LegalIdentity, string?> GetValue);
 	}
-
-
 }
