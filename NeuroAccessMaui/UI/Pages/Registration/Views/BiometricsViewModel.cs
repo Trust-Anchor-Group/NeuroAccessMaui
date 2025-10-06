@@ -113,7 +113,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			};
 
 			ShowInfoPopup InfoPage = new(this.WhatIsX, Message);
-			await ServiceRef.UiService.PushAsync(InfoPage);
+			await ServiceRef.PopupService.PushAsync(InfoPage);
 		}
 
 		[RelayCommand]

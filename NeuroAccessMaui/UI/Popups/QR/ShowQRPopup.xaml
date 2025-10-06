@@ -1,77 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.QR.ShowQRPopup"
-							x:DataType="viewmodel:ShowQRViewModel"
-							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-							xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.QR"
-							xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-							xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
-							xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
-
-	<mopups:PopupPage.Animation>
-		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
-											PositionIn="Center" PositionOut="Center" />
-	</mopups:PopupPage.Animation>
-
-	<Grid
-		Style="{DynamicResource PopupGrid}">
-
-		<Border
-			WidthRequest="{Binding ViewWidthRequest}"
-			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-			Style="{DynamicResource PopupBorder}">
-
-			<ScrollView
-				VerticalOptions="Center">
-				<VerticalStackLayout>
-					<Label
-							  HorizontalTextAlignment="Center"
-							  Style="{DynamicResource PageTitleLabel}"
-							  Text="{l:Localize PersonalId}"/>
-						 
-					<Image x:Name="QrCode" Source="{Binding QrCode}" WidthRequest="{Binding QrCodeWidth}"
-						HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">
-						<Image.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}" />
-						</Image.GestureRecognizers>
-					</Image>
-
-					<Grid HorizontalOptions="Fill" VerticalOptions="Center">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="*" />
-						</Grid.ColumnDefinitions>
-
-						<!-- Share ID Button -->
-						<controls:TemplatedButton Grid.Column="0" Command="{Binding ShareQRCommand}">
-							<Border Style="{DynamicResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
-								<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-									<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-											Data="{x:Static ui:Geometries.ShareIconPath}"
-											Style="{DynamicResource TransparentTemplateButtonPath}"/>
-									<Label Grid.Column="1" Style="{DynamicResource TransparentTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}"  Text="{l:Localize Share}"/>
-								</Grid>
-							</Border>
-						</controls:TemplatedButton>
-
-						<!-- Copy Link Button -->
-						<controls:TemplatedButton Grid.Column="1" Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}">
-							<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
-								<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-									<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-											Data="{x:Static ui:Geometries.ClipboardIconPath}"
-											Style="{DynamicResource FilledTemplateButtonPath}"/>
-									<Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize CopyLink}"/>
-								</Grid>
-							</Border>
-						</controls:TemplatedButton>
-					</Grid>
-				</VerticalStackLayout>
-			</ScrollView>
-		</Border>
-	</Grid>
+                x:DataType="viewmodel:ShowQRViewModel"
+                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.QR"
+                xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
+    <base:BasePopup.PopupContent>
+        <Border Style="{DynamicResource PopupBorder}">
+            <ScrollView VerticalOptions="Center">
+                <VerticalStackLayout>
+                    <Label HorizontalTextAlignment="Center"
+                           Style="{DynamicResource PageTitleLabel}"
+                           Text="{l:Localize PersonalId}" />
+                    <Image x:Name="QrCode"
+                           Source="{Binding QrCode}"
+                           WidthRequest="{Binding QrCodeWidth}"
+                           HeightRequest="{Binding QrCodeHeight}"
+                           HorizontalOptions="Center">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CopyCommand}"
+                                                  CommandParameter="{Binding LegalId}" />
+                        </Image.GestureRecognizers>
+                    </Image>
+                    <Grid HorizontalOptions="Fill" VerticalOptions="Center"
+                          ColumnSpacing="{DynamicResource MediumSpacing}"
+                          ColumnDefinitions="Auto,*">
+                        <controls:TemplatedButton Command="{Binding ShareQRCommand}">
+                            <Border Style="{DynamicResource TransparentTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
+                                <Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
+                                    <Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
+                                          Data="{x:Static ui:Geometries.ShareIconPath}"
+                                          Style="{DynamicResource TransparentTemplateButtonPath}" />
+                                    <Label Grid.Column="1" Style="{DynamicResource TransparentTemplateButtonLabel}"
+                                           Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize Share}" />
+                                </Grid>
+                            </Border>
+                        </controls:TemplatedButton>
+                        <controls:TemplatedButton Grid.Column="1" Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}">
+                            <Border Style="{DynamicResource FilledTemplateButtonBorder}" InputTransparent="True" HorizontalOptions="Fill">
+                                <Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
+                                    <Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
+                                          Data="{x:Static ui:Geometries.ClipboardIconPath}"
+                                          Style="{DynamicResource FilledTemplateButtonPath}" />
+                                    <Label Grid.Column="1" Style="{DynamicResource FilledTemplateButtonLabel}"
+                                           Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize CopyLink}" />
+                                </Grid>
+                            </Border>
+                        </controls:TemplatedButton>
+                    </Grid>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+    </base:BasePopup.PopupContent>
 </base:BasePopup>

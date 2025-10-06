@@ -35,7 +35,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 
 				ImagesPopup ImagesPopup = new();
 				ImagesViewModel ImagesViewModel = new(Attachments);
-				ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
+				ImagesPopup.BindingContext = ImagesViewModel;
+				ServiceRef.PopupService.PushAsync(ImagesPopup);
 				//imagesViewModel.LoadPhotos(Attachments);
 			}
 		}

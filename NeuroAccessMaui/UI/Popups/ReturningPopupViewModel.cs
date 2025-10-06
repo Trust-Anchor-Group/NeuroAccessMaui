@@ -1,17 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Popups
 {
 	public class ReturningPopupViewModel<TReturn> : BasePopupViewModel
 	{
-		protected readonly TaskCompletionSource<TReturn?> result = new();
+		private readonly TaskCompletionSource<TReturn?> result = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
 		public Task<TReturn?> Result => this.result.Task;
 
+		protected bool TrySetResult(TReturn? value) => this.result.TrySetResult(value);
+
+		protected override Task OnPopAsync()
+		{
+			if (!this.result.Task.IsCompleted)
+			{
+				this.result.TrySetResult(default);
+			}
+			return base.OnPopAsync();
+		}
 	}
 }

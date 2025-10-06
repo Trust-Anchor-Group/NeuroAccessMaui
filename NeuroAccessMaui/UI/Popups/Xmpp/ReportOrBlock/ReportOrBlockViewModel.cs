@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages;
 
 namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock
@@ -61,7 +61,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock
 		private async Task Block()
 		{
 			this.result.TrySetResult(ReportOrBlockAction.Block);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>
@@ -71,7 +71,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock
 		private async Task Report()
 		{
 			this.result.TrySetResult(ReportOrBlockAction.Report);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>
@@ -81,7 +81,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock
 		private async Task Ignore()
 		{
 			this.result.TrySetResult(ReportOrBlockAction.Ignore);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>

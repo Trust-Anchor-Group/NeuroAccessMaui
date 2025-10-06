@@ -1,61 +1,50 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<base:BasePopup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-				 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-				 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-				 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-				 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Image"
-				 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
-				 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-		 		 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-	          xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
-             x:Class="NeuroAccessMaui.UI.Popups.Image.ImagesPopup"
-				 x:DataType="viewmodel:ImagesViewModel"
-             Title="ImagePopup">
-	<mopups:PopupPage.Animation>
-		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
-											PositionIn="Center" PositionOut="Center" />
-	</mopups:PopupPage.Animation>
-	<Grid Style="{DynamicResource PopupGrid}">
-		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{DynamicResource PopupBorder}">
-			<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-				<Label
-						 Text="{l:Localize Photos}"
-						 Style="{DynamicResource PageTitleLabel}"
-						 HorizontalTextAlignment="Center"/>
-					
-				<CarouselView x:Name="CarouselView"
-                                  IsSwipeEnabled="{Binding Path=IsSwipeEnabled}"
-                                  HorizontalOptions="Fill"
-                                  VerticalOptions="Fill"
-                                  ItemsSource="{Binding Photos}"
-                                  IndicatorView="{x:Reference IndicatorView}">
-					<CarouselView.ItemTemplate>
-						<DataTemplate x:DataType="photos:Photo">
-							<Border Style="{DynamicResource OutlinedImageButtonBorder}" Padding="0" WidthRequest="250" HeightRequest="250" HorizontalOptions="Center">
-								<Image Source="{Binding Source}" Rotation="{Binding Path=Rotation}" Aspect="AspectFill"/>
-							</Border>
-						</DataTemplate>
-					</CarouselView.ItemTemplate>
-				</CarouselView>
-					
-				<IndicatorView x:Name="IndicatorView"
-                                   HorizontalOptions="Center"
-                                   Padding="0,0,0,0"
-                                   HeightRequest="20"
-											  IsVisible="{Binding IsSwipeEnabled}">
-					<IndicatorView.Margin>
-						<OnPlatform x:TypeArguments="Thickness">
-							<On Platform="iOS" Value="0,-1,0,0"/>
-						</OnPlatform>
-					</IndicatorView.Margin>
-				</IndicatorView>
-					
-				<controls:TextButton Command="{Binding CancelCommand}"
-												Style="{DynamicResource OutlinedTextButton}"
-												LabelData="{l:Localize Cancel}" />
-			</VerticalStackLayout>
-		</Border>
-
-	</Grid>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Image.ImagesPopup"
+                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Image"
+                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos"
+                x:DataType="viewmodel:ImagesViewModel">
+    <base:BasePopup.PopupContent>
+        <Border Style="{DynamicResource PopupBorder}">
+            <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+                <Label Text="{l:Localize Photos}"
+                       Style="{DynamicResource PageTitleLabel}"
+                       HorizontalTextAlignment="Center" />
+                <CarouselView x:Name="CarouselView"
+                              IsSwipeEnabled="{Binding Path=IsSwipeEnabled}"
+                              HorizontalOptions="Fill"
+                              VerticalOptions="Fill"
+                              ItemsSource="{Binding Photos}"
+                              IndicatorView="{x:Reference IndicatorView}">
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate x:DataType="photos:Photo">
+                            <Border Style="{DynamicResource OutlinedImageButtonBorder}" Padding="0" WidthRequest="250" HeightRequest="250" HorizontalOptions="Center">
+                                <Image Source="{Binding Source}"
+                                       Rotation="{Binding Path=Rotation}"
+                                       Aspect="AspectFill" />
+                            </Border>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
+                <IndicatorView x:Name="IndicatorView"
+                               HorizontalOptions="Center"
+                               HeightRequest="20"
+                               IsVisible="{Binding IsSwipeEnabled}">
+                    <IndicatorView.Margin>
+                        <OnPlatform x:TypeArguments="Thickness">
+                            <On Platform="iOS" Value="0,-1,0,0" />
+                        </OnPlatform>
+                    </IndicatorView.Margin>
+                </IndicatorView>
+                <controls:TextButton Command="{Binding CancelCommand}"
+                                     Style="{DynamicResource OutlinedTextButton}"
+                                     LabelData="{l:Localize Cancel}" />
+            </VerticalStackLayout>
+        </Border>
+    </base:BasePopup.PopupContent>
 </base:BasePopup>

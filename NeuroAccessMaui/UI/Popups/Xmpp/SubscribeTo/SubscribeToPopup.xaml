@@ -1,54 +1,45 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo.SubscribeToPopup"
-					 x:DataType="viewmodel:SubscribeToViewModel"
-					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-					 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo"
-					 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-					 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
-
-	<mopups:PopupPage.Animation>
-		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
-											PositionIn="Center" PositionOut="Center" />
-	</mopups:PopupPage.Animation>
-
-	<Grid Style="{DynamicResource PopupGrid}">
-
-		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{DynamicResource PopupBorder}">
-			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
-				<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-
-					<Label Text="{l:Localize SubscribeToPresence}" Style="{DynamicResource SectionTitleLabel}" />
-
-					<Label>
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{l:Localize SubscribeToPresence1}"/>
-								<Span Text=" "/>
-								<Span Text="{Binding BareJid}" FontAttributes="Bold"/>
-								<Span Text="? "/>
-								<Span Text="{l:Localize SubscribeToPresence2}"/>
-								<Span Text=" "/>
-								<Span Text="{l:Localize SubscribeToPresence3}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
-
-					<controls:TextButton Command="{Binding YesCommand}"
-												Style="{DynamicResource FilledTextButton}"
-												LabelData="{l:Localize Yes}" />
-
-					<controls:TextButton Command="{Binding NoCommand}"
-												Style="{DynamicResource OutlinedTextButton}"
-												LabelData="{l:Localize No}" />
-
-				</VerticalStackLayout>
-			</ScrollView>
-		</Border>
-	</Grid>
+                x:DataType="viewmodel:SubscribeToViewModel"
+                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo">
+    <base:BasePopup.PopupContent>
+        <Border Style="{DynamicResource PopupBorder}">
+            <ScrollView VerticalOptions="Center">
+                <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+                    <Label Text="{l:Localize SubscribeToPresence}"
+                           Style="{DynamicResource SectionTitleLabel}" />
+                    <Label>
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{l:Localize SubscribeToPresence1}" />
+                                <Span Text=" " />
+                                <Span Text="{Binding BareJid}" FontAttributes="Bold" />
+                                <Span Text="? " />
+                                <Span Text="{l:Localize SubscribeToPresence2}" />
+                                <Span Text=" " />
+                                <Span Text="{l:Localize SubscribeToPresence3}" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
+                        <controls:TextButton Command="{Binding ConfirmCommand}"
+                                             LabelData="{l:Localize Yes}"
+                                             Style="{DynamicResource PrimaryButton}" />
+                        <controls:TextButton Grid.Column="1"
+                                             Command="{Binding DeclineCommand}"
+                                             LabelData="{l:Localize No}"
+                                             Style="{DynamicResource SecondaryButton}" />
+                    </Grid>
+                    <controls:TextButton Command="{Binding CancelCommand}"
+                                         LabelData="{l:Localize Cancel}"
+                                         Style="{DynamicResource TertiaryButton}" />
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+    </base:BasePopup.PopupContent>
 </base:BasePopup>

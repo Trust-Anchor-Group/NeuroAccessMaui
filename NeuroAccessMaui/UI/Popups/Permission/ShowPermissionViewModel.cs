@@ -103,7 +103,7 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 		[RelayCommand]
 		private async Task Close()
 		{
-			await ServiceRef.UiService.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		[RelayCommand]

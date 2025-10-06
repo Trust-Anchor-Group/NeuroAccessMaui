@@ -1472,7 +1472,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					SubscribeToViewModel SubscribeToViewModel = new(Jid);
 					SubscribeToPopup SubscribeToPopup = new(SubscribeToViewModel);
 
-					await MopupService.Instance.PushAsync(SubscribeToPopup);
+					await ServiceRef.PopupService.PushAsync(SubscribeToPopup);
 					bool? SubscribeTo = await SubscribeToViewModel.Result;
 
 					if (SubscribeTo.HasValue && SubscribeTo.Value)

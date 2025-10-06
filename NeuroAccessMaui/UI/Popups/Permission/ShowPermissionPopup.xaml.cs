@@ -1,18 +1,13 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
 using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Popups.Permission
 {
-	public partial class ShowPermissionPopup
+	public partial class ShowPermissionPopup : BasePopup
 	{
-		public ShowPermissionPopup(ShowPermissionViewModel Vm)
+		public ShowPermissionPopup(ShowPermissionViewModel vm)
 		{
 			this.InitializeComponent();
-			this.BindingContext = Vm;
-
+			this.BindingContext = vm;
 		}
-
-
 	}
 }

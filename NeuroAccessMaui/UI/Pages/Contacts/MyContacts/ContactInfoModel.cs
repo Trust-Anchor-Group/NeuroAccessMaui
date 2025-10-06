@@ -218,7 +218,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 					RemoveSubscriptionViewModel ViewModel = new(this.BareJid);
 					RemoveSubscriptionPopup Page = new(ViewModel);
 
-					await MopupService.Instance.PushAsync(Page);
+					await ServiceRef.PopupService.PushAsync(Page);
 					bool? Remove = await ViewModel.Result;
 
 					if (Remove.HasValue && Remove.Value)
@@ -238,7 +238,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 				SubscribeToViewModel ViewModel = new(this.BareJid);
 				SubscribeToPopup Page = new(ViewModel);
 
-				await MopupService.Instance.PushAsync(Page);
+				await ServiceRef.PopupService.PushAsync(Page);
 				bool? SubscribeTo = await ViewModel.Result;
 
 				if (SubscribeTo.HasValue && SubscribeTo.Value)

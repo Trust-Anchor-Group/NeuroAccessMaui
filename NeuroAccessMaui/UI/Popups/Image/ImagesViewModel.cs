@@ -48,10 +48,10 @@ namespace NeuroAccessMaui.UI.Popups.Image
 			});
 		}
 
-		public override Task OnPop()
+		protected override Task OnPopAsync()
 		{
 			this.photosLoader.CancelLoadPhotos();
-			return base.OnPop();
+			return base.OnPopAsync();
 		}
 		/// <summary>
 		/// Cancels
@@ -59,7 +59,7 @@ namespace NeuroAccessMaui.UI.Popups.Image
 		[RelayCommand]
 		private async Task Cancel()
 		{
-			await ServiceRef.UiService.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 	}
 }

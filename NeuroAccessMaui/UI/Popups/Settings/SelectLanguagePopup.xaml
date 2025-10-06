@@ -9,9 +9,7 @@
 					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 				     xmlns:vm="clr-namespace:NeuroAccessMaui.UI.Popups.Settings"
 				xmlns:viewModel="clr-namespace:NeuroAccessMaui.Test"
-	  xmlns:base="clr-namespace:NeuroAccessMaui.Test"
-					 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-					 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
+	  xmlns:base="clr-namespace:NeuroAccessMaui.Test">
 
 
 	<base:BaseModalPage.Resources>

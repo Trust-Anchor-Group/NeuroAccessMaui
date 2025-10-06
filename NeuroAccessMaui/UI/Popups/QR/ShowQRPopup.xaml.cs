@@ -1,19 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace NeuroAccessMaui.UI.Popups.QR
 {
-	public partial class ShowQRPopup
+	public partial class ShowQRPopup : BasePopup
 	{
-		public ShowQRPopup(byte[] QrCodeBin)
+		public ShowQRPopup(byte[] qrCodeBin)
 		{
-			BasePopupViewModel ViewModel = new ShowQRViewModel(QrCodeBin);
-
+			BasePopupViewModel viewModel = new ShowQRViewModel(qrCodeBin);
 			this.InitializeComponent();
-			this.BindingContext = ViewModel;
+			this.BindingContext = viewModel;
 		}
 
 		public ShowQRPopup()

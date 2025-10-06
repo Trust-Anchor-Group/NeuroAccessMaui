@@ -128,7 +128,7 @@ namespace NeuroAccessMaui.UI.Popups.QR
 		private async Task Close()
 		{
 			this.timer?.Stop();
-			await ServiceRef.UiService.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		[RelayCommand]
@@ -225,10 +225,10 @@ namespace NeuroAccessMaui.UI.Popups.QR
 			});
 		}
 
-		public override Task OnPop()
+		protected override Task OnPopAsync()
 		{
 			this.timer?.Stop();
-			return base.OnPop();
+			return base.OnPopAsync();
 		}
 
 		#endregion

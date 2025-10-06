@@ -506,7 +506,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			{
 				ImagesPopup ImagesPopup = new();
 				ImagesViewModel ImagesViewModel = new([ClickedAttachment]);
-				await ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
+				ImagesPopup.BindingContext = ImagesViewModel;
+				await ServiceRef.PopupService.PushAsync(ImagesPopup);
 			}
 			catch (Exception Ex)
 			{

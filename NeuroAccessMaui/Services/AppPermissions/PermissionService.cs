@@ -84,7 +84,7 @@ namespace NeuroAccessMaui.Services.AppPermissions
 			// Display the permission popup so the user can enable it from the settings.
 			ShowPermissionViewModel ViewModel = new(Title,Description,DescriptionSecondary, IconGeometry);
 			ShowPermissionPopup PermissionPopup = new(ViewModel);
-			await ServiceRef.UiService.PushAsync(PermissionPopup);
+			await ServiceRef.PopupService.PushAsync(PermissionPopup);
 
 			Status = await CheckAndRequestPermissionAsync<Permissions.Camera>();
 

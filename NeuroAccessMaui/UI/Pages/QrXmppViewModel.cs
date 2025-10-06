@@ -118,7 +118,7 @@ namespace NeuroAccessMaui.UI.Pages
 			if (this.QrCodeBin is null) return;
 
 			ShowQRPopup QrPopup = new(this.QrCodeBin);
-			await ServiceRef.UiService.PushAsync(QrPopup);
+			await ServiceRef.PopupService.PushAsync(QrPopup);
 		}
 
 		#region Properties

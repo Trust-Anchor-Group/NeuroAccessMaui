@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Services;
 using EDaler;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Cache.AttachmentCache;
@@ -16,13 +17,13 @@ using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.Toasts;
+using NeuroAccessMaui.Services.Xml;
 using NeuroAccessMaui.Services.Xmpp;
-using NeuroAccessMaui.UI.Pages.Startup;  // LoadingPage
 using NeuroAccessMaui.Test;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
-using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
@@ -30,6 +31,7 @@ using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
@@ -49,6 +51,7 @@ using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Pages.Registration.Views;
 using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
+using NeuroAccessMaui.UI.Pages.Startup;  // LoadingPage
 using NeuroAccessMaui.UI.Pages.Things.CanControl;
 using NeuroAccessMaui.UI.Pages.Things.CanRead;
 using NeuroAccessMaui.UI.Pages.Things.IsFriend;
@@ -75,6 +78,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
+using NeuroAccessMaui.UI.Popups.Password;
 using NeuroAccessMaui.UI.Popups.Photos.Image;
 using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
 using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
@@ -117,7 +121,6 @@ using Waher.Script.Graphs;
 using Waher.Security.JWS;
 using Waher.Security.JWT;
 using Waher.Things;
-using NeuroAccessMaui.Services.Xml;
 
 namespace NeuroAccessMaui.UI
 {
@@ -194,6 +197,8 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<IXmlSchemaValidationService>((_) => Types.InstantiateDefault<IXmlSchemaValidationService>(false));
 			Builder.Services.AddSingleton<IThemeService>((_) => Types.InstantiateDefault<IThemeService>(false));
 			Builder.Services.AddSingleton<INavigationService>((_) => Types.InstantiateDefault<NavigationService>(false));
+			Builder.Services.AddSingleton<IPopupService, PopupService>();
+			Builder.Services.AddSingleton<IToastService, ToastService>();
 
 			return Builder;
 		}
@@ -306,15 +311,24 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<WalletPage, WalletViewModel>();
 
 			// Popups
-			Builder.Services.AddTransient<ImageView, ImageViewModel>();
-			Builder.Services.AddTransient<AddTextNotePopup, AddTextNoteViewModel>();
+			Builder.Services.AddTransient<ImageView>();
+			Builder.Services.AddTransient<ImageViewModel>();
+			Builder.Services.AddTransient<AddTextNotePopup>();
+			Builder.Services.AddTransient<AddTextNoteViewModel>();
+			Builder.Services.AddTransient<CheckPasswordPopup>();
+			Builder.Services.AddTransient<CheckPasswordViewModel>();
 
 			// Xmpp
-			Builder.Services.AddTransient<RemoveSubscriptionPopup, RemoveSubscriptionViewModel>();
-			Builder.Services.AddTransient<ReportOrBlockPopup, ReportOrBlockViewModel>();
-			Builder.Services.AddTransient<ReportTypePopup, ReportTypeViewModel>();
-			Builder.Services.AddTransient<SubscribeToPopup, SubscribeToViewModel>();
-			Builder.Services.AddTransient<SubscriptionRequestPopup, SubscriptionRequestViewModel>();
+			Builder.Services.AddTransient<RemoveSubscriptionPopup>();
+			Builder.Services.AddTransient<RemoveSubscriptionViewModel>();
+			Builder.Services.AddTransient<ReportOrBlockPopup>();
+			Builder.Services.AddTransient<ReportOrBlockViewModel>();
+			Builder.Services.AddTransient<ReportTypePopup>();
+			Builder.Services.AddTransient<ReportTypeViewModel>();
+			Builder.Services.AddTransient<SubscribeToPopup>();
+			Builder.Services.AddTransient<SubscribeToViewModel>();
+			Builder.Services.AddTransient<SubscriptionRequestPopup>();
+			Builder.Services.AddTransient<SubscriptionRequestViewModel>();
 
 			//Utility
 			Builder.Services.AddTransient<ImageCropperView, ImageCroppingViewModel>();

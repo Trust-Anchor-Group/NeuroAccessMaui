@@ -23,6 +23,8 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.ThingRegistries;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.Popups;
+using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.Services.Xml;
@@ -73,6 +75,8 @@ namespace NeuroAccessMaui.Services
 		private static IThemeService? themeService;
 		private static IKycService? kycService;
 		private static IXmlSchemaValidationService? xmlSchemaValidationService;
+		private static IPopupService? popupService;
+		private static IToastService? toastService;
 
 		/// <summary>
 		/// Service serializing and managing UI-related tasks.
@@ -83,6 +87,30 @@ namespace NeuroAccessMaui.Services
 			{
 				uiService ??= App.Instantiate<IUiService>();
 				return uiService;
+			}
+		}
+
+		/// <summary>
+		/// Popup service for presenting application popups.
+		/// </summary>
+		public static IPopupService PopupService
+		{
+			get
+			{
+				popupService ??= App.Instantiate<IPopupService>();
+				return popupService;
+			}
+		}
+
+		/// <summary>
+		/// Toast service for transient notifications.
+		/// </summary>
+		public static IToastService ToastService
+		{
+			get
+			{
+				toastService ??= App.Instantiate<IToastService>();
+				return toastService;
 			}
 		}
 

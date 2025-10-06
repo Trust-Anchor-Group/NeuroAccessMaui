@@ -319,7 +319,7 @@ namespace NeuroAccessMaui.UI.Controls
 		public async Task<DurationUnits?> OpenDurationPopup()
 		{
 			DurationPopupViewModel ViewModel = new(this.durationUnits);
-			DurationUnits? Result = await ServiceRef.UiService.PushAsync<DurationPopup, DurationPopupViewModel, DurationUnits?>(ViewModel);
+			DurationUnits? Result = await ServiceRef.PopupService.PushAsync<DurationPopup, DurationPopupViewModel, DurationUnits?>(ViewModel);
 
 			return Result;
 		}

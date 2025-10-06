@@ -1,9 +1,11 @@
+using System.Threading.Tasks;
+
 namespace NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription
 {
 	/// <summary>
 	/// Asks the user if it wants to remove an existing presence subscription request as well.
 	/// </summary>
-	public partial class RemoveSubscriptionPopup
+	public partial class RemoveSubscriptionPopup : BasePopup
 	{
 		private readonly RemoveSubscriptionViewModel viewModel;
 
@@ -18,10 +20,10 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription
 		}
 
 		/// <inheritdoc/>
-		protected override void OnDisappearing()
+		public override Task OnDisappearingAsync()
 		{
 			this.viewModel.Close();
-			base.OnDisappearing();
+			return base.OnDisappearingAsync();
 		}
 	}
 }

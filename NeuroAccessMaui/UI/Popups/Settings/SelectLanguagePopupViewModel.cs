@@ -69,7 +69,7 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 			);
 
 			// Dismiss the popup via the UI service.
-			await ServiceRef.UiService.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 	}
 }

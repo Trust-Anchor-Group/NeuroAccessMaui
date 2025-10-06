@@ -229,8 +229,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				await ServiceRef.Provider.GetRequiredService<INavigationService>().GoToAsync(nameof(ViewIdentityPage));
-
 				if (await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
 					await ServiceRef.Provider.GetRequiredService<INavigationService>().GoToAsync(nameof(ViewIdentityPage));
 			}

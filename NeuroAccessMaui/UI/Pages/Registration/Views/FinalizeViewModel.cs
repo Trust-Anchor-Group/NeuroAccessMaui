@@ -157,7 +157,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			string Title = this.LocalizedDomainName;
 			string Message = this.LocalizedDomainDescription;
 			ShowInfoPopup InfoPage = new(Title, Message);
-			await ServiceRef.UiService.PushAsync(InfoPage);
+			await ServiceRef.PopupService.PushAsync(InfoPage);
 		}
     }
 }

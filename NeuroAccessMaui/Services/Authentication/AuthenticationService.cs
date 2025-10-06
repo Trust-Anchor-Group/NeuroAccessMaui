@@ -9,11 +9,14 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.Popups;
 using NeuroAccessMaui.UI.Popups.Password;
 using Waher.Events;
 using Waher.Runtime.Inventory;
 using Waher.Security;
 using Waher.Security.LoginMonitor;
+using IPopupService = NeuroAccessMaui.Services.UI.Popups.IPopupService;
+using PopupOptions = NeuroAccessMaui.Services.UI.Popups.PopupOptions;
 
 namespace NeuroAccessMaui.Services.Authentication
 {
@@ -22,6 +25,7 @@ namespace NeuroAccessMaui.Services.Authentication
 	{
 		private readonly ITagProfile tagProfile;
 		private readonly IUiService uiService;
+		private readonly IPopupService popupService;
 		private readonly IPlatformSpecific platformSpecific;
 		private readonly ISettingsService settingsService;
 		private readonly IStringLocalizer localizer;
@@ -43,6 +47,7 @@ namespace NeuroAccessMaui.Services.Authentication
 			this.tagProfile = ServiceRef.Provider.GetRequiredService<TagProfile>();
 
 			this.uiService = ServiceRef.Provider.GetRequiredService<IUiService>();
+			this.popupService = ServiceRef.Provider.GetRequiredService<IPopupService>();
 			this.platformSpecific = ServiceRef.Provider.GetRequiredService<IPlatformSpecific>();
 			this.loginAuditor = new LoginAuditor(Constants.Password.LogAuditorObjectID, loginIntervals);
 			this.settingsService = ServiceRef.Provider.GetRequiredService<ISettingsService>();
@@ -69,7 +74,11 @@ namespace NeuroAccessMaui.Services.Authentication
 					return string.Empty;
 
 				CheckPasswordViewModel ViewModel = new(purpose);
-				string? Result = await this.uiService.PushAsync<CheckPasswordPopup, CheckPasswordViewModel, string>(ViewModel);
+				string? Result = await this.popupService.PushAsync<CheckPasswordPopup, CheckPasswordViewModel, string>(ViewModel, new PopupOptions
+				{
+					CloseOnBackButton = false,
+					CloseOnBackgroundTap = false
+				});
 				await this.CheckUserBlockingAsync();
 				return Result;
 			}

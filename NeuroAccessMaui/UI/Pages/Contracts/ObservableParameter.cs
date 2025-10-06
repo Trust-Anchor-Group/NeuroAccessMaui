@@ -205,7 +205,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			if (string.IsNullOrEmpty(this.ValidationText))
 				return;
 			ShowInfoPopup Popup = new ShowInfoPopup(this.Parameter.ErrorReason?.ToString() ?? ServiceRef.Localizer[nameof(AppResources.Error)], this.ValidationText);
-			await ServiceRef.UiService.PushAsync(Popup);
+			await ServiceRef.PopupService.PushAsync(Popup);
 		}
 		#endregion
 

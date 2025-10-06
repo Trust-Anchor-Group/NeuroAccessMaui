@@ -207,7 +207,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			string Title = ServiceRef.Localizer[nameof(AppResources.WhatIsAServiceProvider)];
 			string Message = ServiceRef.Localizer[nameof(AppResources.ServiceProviderInfo)];
 			ShowInfoPopup InfoPage = new(Title, Message);
-			await ServiceRef.UiService.PushAsync(InfoPage);
+			await ServiceRef.PopupService.PushAsync(InfoPage);
 		}
 
 		[RelayCommand]
@@ -216,7 +216,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 			string Title = this.LocalizedName;
 			string Message = this.LocalizedDescription;
 			ShowInfoPopup InfoPage = new(Title, Message);
-			await ServiceRef.UiService.PushAsync(InfoPage);
+			await ServiceRef.PopupService.PushAsync(InfoPage);
 		}
 
 		[RelayCommand]

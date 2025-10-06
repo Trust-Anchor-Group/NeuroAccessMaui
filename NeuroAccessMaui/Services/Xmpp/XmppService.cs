@@ -7,7 +7,6 @@ using CommunityToolkit.Mvvm.Messaging;
 using EDaler;
 using EDaler.Events;
 using EDaler.Uris;
-using Mopups.Services;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
@@ -1636,7 +1635,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			SubscriptionRequestViewModel SubscriptionRequestViewModel = new(e.FromBareJID, FriendlyName, PhotoUrl, PhotoWidth, PhotoHeight);
 			SubscriptionRequestPopup SubscriptionRequestPopup = new(SubscriptionRequestViewModel);
 
-			await MopupService.Instance.PushAsync(SubscriptionRequestPopup);
+			await ServiceRef.PopupService.PushAsync(SubscriptionRequestPopup);
 			PresenceRequestAction Action = await SubscriptionRequestViewModel.Result;
 
 			switch (Action)
@@ -1669,7 +1668,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						SubscribeToViewModel SubscribeToViewModel = new(e.FromBareJID);
 						SubscribeToPopup SubscribeToPopup = new(SubscribeToViewModel);
 
-						await MopupService.Instance.PushAsync(SubscribeToPopup);
+						await ServiceRef.PopupService.PushAsync(SubscribeToPopup);
 						bool? SubscribeTo = await SubscribeToViewModel.Result;
 
 						if (SubscribeTo.HasValue && SubscribeTo.Value)
@@ -1699,7 +1698,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					ReportOrBlockViewModel ReportOrBlockViewModel = new(e.FromBareJID);
 					ReportOrBlockPopup ReportOrBlockPopup = new(ReportOrBlockViewModel);
 
-					await MopupService.Instance.PushAsync(ReportOrBlockPopup);
+					await ServiceRef.PopupService.PushAsync(ReportOrBlockPopup);
 					ReportOrBlockAction ReportOrBlock = await ReportOrBlockViewModel.Result;
 
 					if (ReportOrBlock == ReportOrBlockAction.Block || ReportOrBlock == ReportOrBlockAction.Report)
@@ -1727,7 +1726,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							ReportTypeViewModel ReportTypeViewModel = new(e.FromBareJID);
 							ReportTypePopup ReportTypePopup = new(ReportTypeViewModel);
 
-							await MopupService.Instance.PushAsync(ReportOrBlockPopup);
+							await ServiceRef.PopupService.PushAsync(ReportTypePopup);
 							ReportingReason? ReportType = await ReportTypeViewModel.Result;
 
 							if (ReportType.HasValue)
