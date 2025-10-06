@@ -2160,7 +2160,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						await Database.Provider.Flush();
 
 						// If KYC page is open, update it
-						if (ServiceRef.UiService.CurrentPage is KycProcessPage Page && Page.BindingContext is KycProcessViewModel Vm)
+						if (ServiceRef.NavigationService.CurrentPage is KycProcessPage Page && Page.BindingContext is KycProcessViewModel Vm)
 						{
 							await Vm.ApplyRejectionAsync(Message,
 								Ref.InvalidClaims ?? Array.Empty<string>(),
@@ -3163,7 +3163,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					await Database.Provider.Flush();
 				}
 
-				if (ServiceRef.UiService.CurrentPage is ApplicationsPage AppPage)
+				if (ServiceRef.NavigationService.CurrentPage is ApplicationsPage AppPage)
 				{
 					if (AppPage.BindingContext is ApplicationsViewModel Model)
 						Model.Loader.Reload();

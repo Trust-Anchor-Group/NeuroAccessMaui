@@ -120,24 +120,24 @@ namespace NeuroAccessMaui.Test
         public async Task ShowScreen(ContentView screen, TransitionType transition = TransitionType.None)
         {
             // Determine active/inactive slot
-            ContentView activeSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
-            ContentView inactiveSlot = this.isSlotAActive ? this.contentHostB : this.contentHostA;
+            ContentView ActiveSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
+            ContentView InactiveSlot = this.isSlotAActive ? this.contentHostB : this.contentHostA;
 
             // Place new content in inactive slot
-            inactiveSlot.Content = screen;
-            inactiveSlot.BindingContext = screen.BindingContext;
-            inactiveSlot.IsVisible = true;
+            InactiveSlot.Content = screen;
+            InactiveSlot.BindingContext = screen.BindingContext;
+            InactiveSlot.IsVisible = true;
             this.UpdateBars(screen);
 
             if (transition == TransitionType.Fade)
             {
                 // Fade in new content over old
-                inactiveSlot.Opacity = 0;
-                activeSlot.Opacity = 1;
-                await inactiveSlot.FadeTo(1, 200, Easing.CubicOut);
+                InactiveSlot.Opacity = 0;
+                ActiveSlot.Opacity = 1;
+                await InactiveSlot.FadeTo(1, 200, Easing.CubicOut);
                 // After fade, hide old slot
-                activeSlot.IsVisible = false;
-                activeSlot.Content = null;
+                ActiveSlot.IsVisible = false;
+                ActiveSlot.Content = null;
             }
             else if (transition == TransitionType.SwipeLeft || transition == TransitionType.SwipeRight)
             {
@@ -147,24 +147,24 @@ namespace NeuroAccessMaui.Test
                 double toX = 0;
                 double oldToX = (transition == TransitionType.SwipeLeft) ? -width : width;
 
-                inactiveSlot.TranslationX = fromX;
-                activeSlot.TranslationX = 0;
+                InactiveSlot.TranslationX = fromX;
+                ActiveSlot.TranslationX = 0;
 
-                Task newIn = inactiveSlot.TranslateTo(toX, 0, 250, Easing.CubicOut);
-                Task oldOut = activeSlot.TranslateTo(oldToX, 0, 250, Easing.CubicOut);
+                Task newIn = InactiveSlot.TranslateTo(toX, 0, 250, Easing.CubicOut);
+                Task oldOut = ActiveSlot.TranslateTo(oldToX, 0, 250, Easing.CubicOut);
                 await Task.WhenAll(newIn, oldOut);
 
                 // Reset transforms and cleanup
-                inactiveSlot.TranslationX = 0;
-                activeSlot.TranslationX = 0;
-                activeSlot.IsVisible = false;
-                activeSlot.Content = null;
+                InactiveSlot.TranslationX = 0;
+                ActiveSlot.TranslationX = 0;
+                ActiveSlot.IsVisible = false;
+                ActiveSlot.Content = null;
             }
             else
             {
                 // No transition: just swap
-                activeSlot.IsVisible = false;
-                activeSlot.Content = null;
+                ActiveSlot.IsVisible = false;
+                ActiveSlot.Content = null;
             }
 
             // Swap active slot

@@ -117,6 +117,7 @@ using Waher.Script.Graphs;
 using Waher.Security.JWS;
 using Waher.Security.JWT;
 using Waher.Things;
+using NeuroAccessMaui.Services.Xml;
 
 namespace NeuroAccessMaui.UI
 {
@@ -190,6 +191,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<INfcService>((_) => Types.InstantiateDefault<INfcService>(false));
 			Builder.Services.AddSingleton<INotificationService>((_) => Types.InstantiateDefault<INotificationService>(false));
 			Builder.Services.AddSingleton<IIntentService>((_) => Types.InstantiateDefault<IIntentService>(false));
+			Builder.Services.AddSingleton<IXmlSchemaValidationService>((_) => Types.InstantiateDefault<IXmlSchemaValidationService>(false));
 			Builder.Services.AddSingleton<IThemeService>((_) => Types.InstantiateDefault<IThemeService>(false));
 			Builder.Services.AddSingleton<INavigationService>((_) => Types.InstantiateDefault<NavigationService>(false));
 
@@ -200,7 +202,7 @@ namespace NeuroAccessMaui.UI
 		{
 			// Applications
 			Builder.Services.AddTransient<ApplicationsPage, ApplicationsViewModel>();
-                       Builder.Services.AddTransient<KycProcessPage, KycProcessViewModel>();
+            Builder.Services.AddTransient<KycProcessPage, KycProcessViewModel>();
 
 			// Contacts
 			Builder.Services.AddTransient<ChatPage, ChatViewModel>();

@@ -18,7 +18,9 @@ using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.Services.Data; // Added for Database access
 using System.Linq;
-using Waher.Persistence; // Added for ordering
+using Waher.Persistence;
+using NeuroAccessMaui.Test;
+using NeuroAccessMaui.Services.Authentication; // Added for ordering
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -103,13 +105,13 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
 		}
 
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
 			ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
 			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
 
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		private void TagProfile_OnPropertiesChanged(object? Sender, EventArgs e)
@@ -128,7 +130,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			await this.LoadLatestKycStateAsync();
 		}
 
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
 			await base.OnInitializeAsync();
 

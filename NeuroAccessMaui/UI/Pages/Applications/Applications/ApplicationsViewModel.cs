@@ -11,6 +11,7 @@ using NeuroAccessMaui;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.UI;
@@ -128,7 +129,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			ServiceRef.XmppService.LegalIdentityChanged += this.XmppService_LegalIdentityChanged;
 			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
 
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 
 
@@ -144,7 +145,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			// If desired, cancel any in-flight load.
 			this.Loader.Cancel();
 
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		private Task XmppService_IdentityApplicationChanged(object? Sender, LegalIdentityEventArgs e)
@@ -266,8 +267,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 							LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(this.CurrentApplication.CreatedIdentityId);
 							if (Identity.State == IdentityState.Created)
 							{
+								IAuthenticationService Auth = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 								// Confirm and authenticate for revoking/obsoleting application
-								if (!await App.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
+								if (!await Auth.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
 									return;
 
 								await ServiceRef.XmppService.ObsoleteLegalIdentity(Identity.Id);

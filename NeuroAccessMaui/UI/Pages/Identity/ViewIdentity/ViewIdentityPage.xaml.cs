@@ -12,10 +12,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		/// <summary>
 		/// Creates a new instance of the <see cref="ViewIdentityPage"/> class.
 		/// </summary>
-		public ViewIdentityPage()
+		public ViewIdentityPage(ViewIdentityViewModel Vm)
 		{
 			this.InitializeComponent();
-			this.ContentPageModel = new ViewIdentityViewModel(ServiceRef.NavigationService.PopLatestArgs<ViewIdentityNavigationArgs>());
+			this.ContentPageModel = Vm;
 		}
 		protected override void OnSizeAllocated(double width, double height)
 		{

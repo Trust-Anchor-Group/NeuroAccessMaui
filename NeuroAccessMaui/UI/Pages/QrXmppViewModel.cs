@@ -38,7 +38,6 @@ namespace NeuroAccessMaui.UI.Pages
 				if (this.QrCode is not null && string.Equals(this.QrCodeUri, Uri, StringComparison.Ordinal))
 				{
 					ServiceRef.LogService.LogDebug($"GenerateQrCode skipped (same URI): {Uri}");
-					return;
 				}
 
 				if (this.QrCodeWidth == 0 || this.QrCodeHeight == 0)

@@ -29,6 +29,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.MVVM.Reentrancy;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
+using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
@@ -206,10 +207,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				.Build();
 		}
 
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
 			this.IsLoading = true;
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			string Lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 			this.kycReference = this.navigationArguments?.Reference;
@@ -633,10 +634,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public event EventHandler? ScrollToTop;
 		private void ScrollUp() => this.ScrollToTop?.Invoke(this, EventArgs.Empty);
 
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
 			this.Dispose(true);
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		protected virtual void Dispose(bool disposing)
@@ -797,8 +798,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.applicationSent) return;
 			if (!await this.applyGuard.RunIfNotBusy(async () =>
 			{
-				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)])) return;
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true)) return;
+				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
+					return;
+
+				IAuthenticationService Auth = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+				if (!await Auth.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true))
+					return;
 				if (this.attachments is null || this.mappedValues is null) return;
 				bool HasIdWithKey = ServiceRef.TagProfile.LegalIdentity is not null && await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
 				(bool Succeeded, LegalIdentity? Added) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.AddLegalIdentity(this.mappedValues.ToArray(), !HasIdWithKey, this.attachments.ToArray()));
@@ -957,8 +962,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					await this.kycService.ClearSubmissionAsync(this.kycReference);
 				return;
 			}
-			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeTheCurrentIdApplication)])) return;
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true)) return;
+			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeTheCurrentIdApplication)]))
+				return;
+
+			IAuthenticationService Auth = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+			if (!await Auth.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
+				return;
 			try
 			{
 				await ServiceRef.XmppService.ObsoleteLegalIdentity(Application.Id);

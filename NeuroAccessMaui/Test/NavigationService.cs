@@ -351,8 +351,6 @@ namespace NeuroAccessMaui.Test
             return null;
         }
 
-        // Removed Page support: all views are BaseContentPage.
-
         /// <summary>
         /// Navigate to a page instance already constructed.
         /// </summary>
@@ -522,7 +520,7 @@ namespace NeuroAccessMaui.Test
                 }
 
                 BaseContentPage Target = this.screenStack.Peek();
-                await this.Presenter.ShowScreen(Target, GetTransitionType(true)); // SwipeRight for back
+                await this.Presenter.ShowScreen(Target, this.GetTransitionType(true)); // SwipeRight for back
                 await Target.OnAppearingAsync();
                 this.Presenter.UpdateBars(Target);
             }

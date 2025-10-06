@@ -194,10 +194,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			};
 
 
-		public ViewIdentityViewModel(ViewIdentityNavigationArgs? args)
+		public ViewIdentityViewModel()
 			: base()
 		{
-			this.args = args;
+			this.args = ServiceRef.NavigationService.PopLatestArgs<ViewIdentityNavigationArgs>();
 			this.photosLoader = new PhotosLoader();
 
 			this.LoadIdentityTask = new ObservableTask<bool>();
