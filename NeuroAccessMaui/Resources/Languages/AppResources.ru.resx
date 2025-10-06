@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+  <!--
     Microsoft ResX Schema 
     
     Version 2.0
@@ -114,11 +114,22 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
+    <value>Выберите роли, за которые вы будете подписываться (необязательно)</value>
+  </data>
+  <data name="NoRolesSelectedWarning" xml:space="preserve">
+    <value>Роли не выбраны — вы не подпишете этот контракт сейчас.</value>
+  </data>
+  <data name="SignAs" xml:space="preserve">
+    <value>Подписать как</value>
+  </data>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>СТРОКА НЕ ОПРЕДЕЛЕНА</value>
   </data>
@@ -657,7 +668,7 @@
     <value>Использован временный OTP-код. Приложение перестанет работать примерно через неделю. Вам придется переустановить приложение, чтобы использовать его снова.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Введите новый пин-код</value>
+    <value>Создание нового PIN-кода</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
     <value>Подтвердите PIN-код</value>
@@ -2614,5 +2625,476 @@
   </data>
   <data name="CompleteIdButton" xml:space="preserve">
     <value>Заполните свой личный ID</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Искать</value>
+  </data>
+  <data name="ClientMessageMissingCountry" xml:space="preserve">
+    <value>Приложение не содержит информации о стране</value>
+  </data>
+  <data name="ClientMessageMissingPNr" xml:space="preserve">
+    <value>Приложение не содержит информации о личном номере</value>
+  </data>
+  <data name="ClientMessageManualReview" xml:space="preserve">
+    <value>Не удается проверить приложение автоматически. Заявка должна быть проверена вручную или путем экспертной оценки</value>
+  </data>
+  <data name="ClientMessageUnableReview" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageInvalidType" xml:space="preserve">
+    <value>Параметр был задан в недопустимом формате</value>
+  </data>
+  <data name="ClientMessageIdMismatch" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageJidMismatch" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageAccountMismatch" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageProviderMismatch" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageStateMismatch" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageCreatedMismatch" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageUpdatedMismatch" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageFromMismatch" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageToMismatch" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageNoClientURL" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageReviewerExternal" xml:space="preserve">
+    <value>Рецензент является внешним. Запрос на рецензирование должен быть направлен непосредственно рецензенту</value>
+  </data>
+  <data name="ClientMessageServiceNotConfigured" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageCountryNotSupported" xml:space="preserve">
+    <value>Услуга недоступна в выбранной стране</value>
+  </data>
+  <data name="ClientMessageNoCompanyId" xml:space="preserve">
+    <value>Сервис не может быть использован для просмотра идентификаторов компаний</value>
+  </data>
+  <data name="ClientMessageServiceClientTimeout" xml:space="preserve">
+    <value>Истекло время ожидания службы в ожидании утверждения запроса пользователем</value>
+  </data>
+  <data name="ClientMessageServiceFailed" xml:space="preserve">
+    <value>Сервису не удалось обработать запрос</value>
+  </data>
+  <data name="ClientMessagePNrMismatch" xml:space="preserve">
+    <value>Личный номер не совпадает с предоставленными документами</value>
+  </data>
+  <data name="ClientMessageFirstNameMismatch" xml:space="preserve">
+    <value>Имя не совпадает с предоставленными документами</value>
+  </data>
+  <data name="ClientMessageLastNameMismatch" xml:space="preserve">
+    <value>Фамилия не совпадает с предоставленными документами</value>
+  </data>
+  <data name="ClientMessageNameMismatch" xml:space="preserve">
+    <value>Имя не совпадает с предоставленными документами</value>
+  </data>
+  <data name="ClientMessageInvalidJid" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageNoLogin" xml:space="preserve">
+    <value>Произошла непредвиденная ошибка</value>
+  </data>
+  <data name="ClientMessageUnexpectedOnboardingServer" xml:space="preserve">
+    <value>Неожиданный ответ, полученный от онбордингового сервера</value>
+  </data>
+  <data name="ClientMessagePersonDead" xml:space="preserve">
+    <value>Не удалось проверить, совпадает ли удостоверение личности с живым человеком</value>
+  </data>
+  <data name="ClientMessageBirthDateMismatch" xml:space="preserve">
+    <value>Дата рождения не совпадает с предоставленными документами</value>
+  </data>
+  <data name="ClientMessageAddressMismatch" xml:space="preserve">
+    <value>Адрес не совпадает с предоставленными документами</value>
+  </data>
+  <data name="ClientMessageZipMismatch" xml:space="preserve">
+    <value>Почтовый индекс не совпадает с предоставленными документами</value>
+  </data>
+  <data name="ClientMessageAreaMismatch" xml:space="preserve">
+    <value>Площадь не соответствует предоставленным документам</value>
+  </data>
+  <data name="ClientMessageCityMismatch" xml:space="preserve">
+    <value>Город не соответствует предоставленным документам</value>
+  </data>
+  <data name="ClientMessageRegionMismatch" xml:space="preserve">
+    <value>Регион не соответствует предоставленным документам</value>
+  </data>
+  <data name="ClientMessageLivenessFailed" xml:space="preserve">
+    <value>Проверка живости не пройдена</value>
+  </data>
+  <data name="ClientMessagePhotoFake" xml:space="preserve">
+    <value>Не удалось проверить подлинность фотографии</value>
+  </data>
+  <data name="ClientMessagePhotoPoor" xml:space="preserve">
+    <value>Слишком низкое качество фотографий</value>
+  </data>
+  <data name="ClientMessageBankIdRFA1" xml:space="preserve">
+    <value>Запустите приложение BankID</value>
+  </data>
+  <data name="ClientMessageBandIdRFA2" xml:space="preserve">
+    <value>Приложение BankID не установлено. Пожалуйста, свяжитесь со своим интернет-банком</value>
+  </data>
+  <data name="ClientMessageBankIdRFA3" xml:space="preserve">
+    <value>Акция отменена. Пожалуйста, попробуйте еще раз</value>
+  </data>
+  <data name="ClientMessageBankIdRFA4" xml:space="preserve">
+    <value>Идентификация или подпись для этого персонального номера уже начаты. Пожалуйста, попробуйте еще раз</value>
+  </data>
+  <data name="ClientMessageBankIdRFA5" xml:space="preserve">
+    <value>Внутренняя ошибка. Пожалуйста, попробуйте еще раз</value>
+  </data>
+  <data name="ClientMessageBankIdRFA6" xml:space="preserve">
+    <value>Акция отменена</value>
+  </data>
+  <data name="ClientMessageBankIdRFA8" xml:space="preserve">
+    <value>Приложение BankID не отвечает. Пожалуйста, убедитесь, что программа запущена и у вас есть доступ к Интернету. Если у вас нет действительного BankID, вы можете получить его в своем банке. Повторить</value>
+  </data>
+  <data name="ClientMessageBankIdRFA9" xml:space="preserve">
+    <value>Введите код безопасности в приложении BankID и выберите «Идентифицировать» или «Подпись»</value>
+  </data>
+  <data name="ClientMessageBankIdRFA13" xml:space="preserve">
+    <value>Попытка запустить приложение BankID</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14A" xml:space="preserve">
+    <value>Поиск BankID:s может занять некоторое время... Если прошло несколько секунд, а BankID все еще не найден, вероятно, у вас нет BankID, который можно использовать для этой идентификации/подписи на этом компьютере. Если у вас есть карта BankID, вставьте ее в считыватель карт. Если у вас нет BankID, вы можете заказать его в своем интернет-банке. Если у вас есть BankID на другом устройстве, вы можете запустить приложение BankID на этом устройстве</value>
+  </data>
+  <data name="ClientMessageBankIdRFA14B" xml:space="preserve">
+    <value>Поиск BankID:s может занять некоторое время... Если прошло несколько секунд, а BankID все еще не найден, вероятно, у вас нет BankID, который можно использовать для этой идентификации/подписания на этом устройстве. Если у вас нет BankID, вы можете заказать его в своем интернет-банке. Если у вас есть BankID на другом устройстве, вы можете запустить приложение BankID на этом устройстве</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15A" xml:space="preserve">
+    <value>Поиск BankID:s может занять некоторое время... Если прошло несколько секунд, а BankID все еще не найден, вероятно, у вас нет BankID, который можно использовать для этой идентификации/подписи на этом компьютере. Если у вас есть карта BankID, вставьте ее в считыватель карт. Если у вас нет BankID, вы можете заказать его в своем интернет-банке</value>
+  </data>
+  <data name="ClientMessageBankIdRFA15B" xml:space="preserve">
+    <value> Поиск BankID:s может занять некоторое время... Если прошло несколько секунд, а BankID все еще не найден, вероятно, у вас нет BankID, который можно использовать для этой идентификации/подписания на этом устройстве. Если у вас нет BankID, вы можете заказать его в своем интернет-банке</value>
+  </data>
+  <data name="ClientMessageBankIdRFA16" xml:space="preserve">
+    <value>BankID, который вы пытаетесь использовать, отозван или устарел. Пожалуйста, используйте другой BankID или закажите новый в своем интернет-банке</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17A" xml:space="preserve">
+    <value>Приложение BankID не удалось найти на вашем компьютере или мобильном устройстве. Установите его и закажите BankID в своем интернет-банке. Установите приложение из магазина приложений или https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA17B" xml:space="preserve">
+    <value>Не удалось отсканировать QR-код. Запустите приложение BankID и отсканируйте QR-код. Убедитесь, что приложение BankID обновлено. Если у вас нет приложения BankID, вам необходимо установить его и заказать BankID в своем интернет-банке. Установите приложение из магазина приложений или https://install.bankid.com</value>
+  </data>
+  <data name="ClientMessageBankIdRFA18" xml:space="preserve">
+    <value>Запустите приложение BankID</value>
+  </data>
+  <data name="ClientMessageBankIdRFA19" xml:space="preserve">
+    <value>Вы хотите идентифицировать себя или подписать с помощью BankID на этом компьютере или с помощью Mobile BankID?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA20" xml:space="preserve">
+    <value>Вы хотите идентифицировать себя или подписать с помощью BankID на этом устройстве или с помощью BankID на другом устройстве?</value>
+  </data>
+  <data name="ClientMessageBankIdRFA21" xml:space="preserve">
+    <value>Идентификация или подписание в процессе</value>
+  </data>
+  <data name="ClientMessageBankIdRFA22" xml:space="preserve">
+    <value>Неизвестная ошибка. Пожалуйста, попробуйте еще раз</value>
+  </data>
+  <data name="SelectContract" xml:space="preserve">
+    <value>Выберите контракт</value>
+  </data>
+  <data name="SelectContractEntryDescription" xml:space="preserve">
+    <value>Вставьте ID контракта или выберите из списка</value>
+  </data>
+  <data name="ScanInvitationInfo" xml:space="preserve">
+    <value>Отсканируйте приглашение, если вы уже создали учетную запись отдельно</value>
+  </data>
+  <data name="PubSubServiceNotFound" xml:space="preserve">
+    <value>Служба обмена сообщениями недоступна</value>
+  </data>
+  <data name="ClearCache" xml:space="preserve">
+    <value>Очистка кэша</value>
+  </data>
+  <data name="ClearBrandingAndKycCacheDescription" xml:space="preserve">
+    <value>Удаляет данные брендинга и KYC для текущего домена</value>
+  </data>
+  <data name="Apps" xml:space="preserve">
+    <value>Приложения</value>
+  </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Бета-функции находятся в стадии разработки и могут отсутствовать функциональность или дизайн. Тем не менее, некоторые из их основных функций доступны</value>
+  </data>
+  <data name="SmartThings" xml:space="preserve">
+    <value>Умные вещи</value>
+  </data>
+  <data name="Assets" xml:space="preserve">
+    <value>Авуары</value>
+  </data>
+  <data name="MicroLoan" xml:space="preserve">
+    <value>Микрокредит</value>
+  </data>
+  <data name="NFC" xml:space="preserve">
+    <value>NFC</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Хотели бы вы добавить эту личность в свои контакты?</value>
+  </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>Скоро!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+    <value>В настоящее время мы работаем над этим</value>
+  </data>
+  <data name="BetaFeature" xml:space="preserve">
+    <value>Бета-версия</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>Чтобы включить бета-функции, перейдите на главный экран и откройте страницу настроек</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>В настоящее время эта функция находится в бета-версии. Чтобы включить бета-функции, откройте страницу настроек и включите бета-функции</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
+    <value>Требуется разрешение</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
+    <value>Мы не смогли загрузить последнюю версию этого контракта. Данные, которые вы видите, могут быть устаревшими. Хотите получить доступ прямо сейчас?</value>
+  </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Кэш очищен</value>
+  </data>
+  <data name="LanguageChangedTitle" xml:space="preserve">
+    <value>Язык изменен</value>
+  </data>
+  <data name="LanguageChangedMessage" xml:space="preserve">
+    <value>Пожалуйста, перезапустите приложение, чтобы убедиться, что весь текст правильно меняет язык</value>
+  </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Продолжить ({0})</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Никогда</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Сейчас</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>{0} минут назад</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>{0} часов назад</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Последнее обновление: {0}</value>
+  </data>
+  <data name="ActivateYourDigitalIdentity" xml:space="preserve">
+    <value>Активируйте свое цифровое удостоверение личности</value>
+  </data>
+  <data name="HaveAnyQuestions" xml:space="preserve">
+    <value>Остались вопросы?</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription" xml:space="preserve">
+    <value>Подробнее об активации цифрового удостоверения личности читайте на сайте поставщика удостоверений личности.</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription2" xml:space="preserve">
+    <value>ID провайдера может быть вашим: Банком, Школой и т.д.</value>
+  </data>
+  <data name="AlreadyHaveAnID" xml:space="preserve">
+    <value>У вас уже есть удостоверение личности?</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription" xml:space="preserve">
+    <value>Все, что нам нужно, это код перевода с вашего предыдущего телефона.</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
+    <value>Найдите и инициируйте в разделе: Настройки / Перенос удостоверения личности</value>
+  </data>
+  <data name="PaymentAcceptance" xml:space="preserve">
+    <value>Прием платежей</value>
+  </data>
+  <data name="PaymentAcceptanceDescription" xml:space="preserve">
+    <value>Ознакомьтесь с деталями офлайн-платежей ниже. Если они вас устраивают, отправьте их на сервер для обработки.</value>
+  </data>
+  <data name="ContractWizardStepFormat" xml:space="preserve">
+    <value>Шаг {0} {1}</value>
+  </data>
+  <data name="ContractWizardNext" xml:space="preserve">
+    <value>Следующий</value>
+  </data>
+  <data name="ContractWizardReviewHumanReadable" xml:space="preserve">
+    <value>Просматривайте удобочитаемо</value>
+  </data>
+  <data name="ContractWizardSettings" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="ContractWizardVisibilityPlaceholder" xml:space="preserve">
+    <value>Выберите, кто должен иметь доступ</value>
+  </data>
+  <data name="ContractWizardContractLabel" xml:space="preserve">
+    <value>Контракт</value>
+  </data>
+  <data name="HaveAnInviteCodeQuestion" xml:space="preserve">
+    <value>У вас есть код приглашения?</value>
+  </data>
+  <data name="PasteInviteCodeHere" xml:space="preserve">
+    <value>Вставьте сюда код приглашения</value>
+  </data>
+  <data name="Or" xml:space="preserve">
+    <value>Или</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Паста</value>
+  </data>
+  <data name="CreditBalance" xml:space="preserve">
+    <value>Кредитный баланс</value>
+  </data>
+  <data name="BuyNeuroCredits" xml:space="preserve">
+    <value>Купить Нейрокредиты</value>
+  </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Используйте текущее местоположение</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>Произошла ошибка при определении вашего местоположения. Убедитесь, что разрешения на определение местоположения предоставлены в настройках ваших устройств</value>
+  </data>
+  <data name="Attachment_Passport" xml:space="preserve">
+    <value>Изображение паспорта</value>
+  </data>
+  <data name="Attachment_IdCardFront" xml:space="preserve">
+    <value>Лицевая сторона удостоверения личности</value>
+  </data>
+  <data name="Attachment_IdCardBack" xml:space="preserve">
+    <value>Оборотная сторона удостоверения личности</value>
+  </data>
+  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
+    <value>Лицевая сторона водительского удостоверения</value>
+  </data>
+  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
+    <value>Оборотная сторона водительского удостоверения</value>
+  </data>
+  <data name="Attachment_ProfilePhoto" xml:space="preserve">
+    <value>Фото лица</value>
+  </data>
+  <data name="Kyc_Next" xml:space="preserve">
+    <value>Следующий</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Применять</value>
+  </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Вернуться к резюме</value>
+  </data>
+  <data name="Kyc_Exit" xml:space="preserve">
+    <value>Вы уверены, что хотели бы завершить процесс подачи заявления на установление личности?</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Прогресс</value>
+  </data>
+  <data name="TradeName" xml:space="preserve">
+    <value>Торговое наименование</value>
+  </data>
+  <data name="LegalName" xml:space="preserve">
+    <value>Юридическое название</value>
+  </data>
+  <data name="OrgRepName" xml:space="preserve">
+    <value>Имя представителя</value>
+  </data>
+  <data name="OrgRepCPF" xml:space="preserve">
+    <value>Представительский CPF</value>
+  </data>
+  <data name="OrgRepBirthDate" xml:space="preserve">
+    <value>Репрезентативная дата рождения</value>
+  </data>
+  <data name="OrgRepRG" xml:space="preserve">
+    <value>Представитель РГ</value>
+  </data>
+  <data name="OrgEMail" xml:space="preserve">
+    <value>Корпоративная электронная почта</value>
+  </data>
+  <data name="OrgPhone" xml:space="preserve">
+    <value>Корпоративный телефон</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Полное имя</value>
+  </data>
+  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
+    <value>Устав</value>
+  </data>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Удаляет временные данные, такие как изображения и вложения, чтобы освободить место</value>
+  </data>
+  <data name="ClearBrandingAndKycCache" xml:space="preserve">
+    <value>Понятный брендинг и кэш KYC</value>
+  </data>
+  <data name="ApplicationUnderUnderReview" xml:space="preserve">
+    <value>Ваша заявка находится на рассмотрении. Мы сообщим вам, когда ваше удостоверение личности будет одобрено!</value>
+  </data>
+  <data name="SeeIDApplication" xml:space="preserve">
+    <value>Смотреть заявку на удостоверение личности</value>
+  </data>
+  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
+    <value>Ваша заявка на удостоверение личности будет отправлена на рассмотрение. Мы сообщим вам, когда ваше удостоверение личности будет одобрено!</value>
+  </data>
+  <data name="ApplicationSummary" xml:space="preserve">
+    <value>Резюме по применению</value>
+  </data>
+  <data name="ApplicationSummaryDescription" xml:space="preserve">
+    <value>Прежде чем завершить работу, пожалуйста, прочитайте и убедитесь, что все верно</value>
+  </data>
+  <data name="ApplicationInformation" xml:space="preserve">
+    <value>Информация о приложении</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Личные данные</value>
+  </data>
+  <data name="AddressDetails" xml:space="preserve">
+    <value>Информация об адресе</value>
+  </data>
+  <data name="DocumentDetails" xml:space="preserve">
+    <value>Сведения о документе</value>
+  </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>{0} требуется</value>
+  </data>
+  <data name="PendingReview" xml:space="preserve">
+    <value>Ожидает рассмотрения</value>
+  </data>
+  <data name="CurrentApplication" xml:space="preserve">
+    <value>Текущее применение</value>
+  </data>
+  <data name="IdentityApplication" xml:space="preserve">
+    <value>Приложение для идентификации</value>
+  </data>
+  <data name="AvailableApplications" xml:space="preserve">
+    <value>Доступные приложения</value>
+  </data>
+  <data name="ForYourIndividualUse" xml:space="preserve">
+    <value>Для вашего индивидуального использования</value>
+  </data>
+  <data name="BeforeFinalizingSummary" xml:space="preserve">
+    <value>Прежде чем завершить работу, пожалуйста, прочитайте и убедитесь, что все верно</value>
+  </data>
+  <data name="CompanyInformation" xml:space="preserve">
+    <value>Информация о компании</value>
+  </data>
+  <data name="CompanyAddress" xml:space="preserve">
+    <value>Адрес компании</value>
+  </data>
+  <data name="CompanyRepresentative" xml:space="preserve">
+    <value>Представитель компании</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Закачать</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Сделать фото</value>
+  </data>
+  <data name="InReview" xml:space="preserve">
+    <value>На обзоре</value>
   </data>
 </root>

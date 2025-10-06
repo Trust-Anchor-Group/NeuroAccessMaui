@@ -6,13 +6,19 @@ using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Notifications;
 using Waher.Networking.XMPP.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
+using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
+using System.Globalization;
+using NeuroAccessMaui.Services.Kyc;
+using NeuroAccessMaui.UI.Pages.Applications.Applications;
+using NeuroAccessMaui.Services.Data; // Added for Database access
+using System.Linq;
+using Waher.Persistence; // Added for ordering
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -23,6 +29,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		[ObservableProperty]
 		bool themeLoaded = false;
+
+		private IdentityState? latestCreatedIdentityState; // Cached state from latest stored KYC reference
 
 		public string BannerUri =>
 			Application.Current?.UserAppTheme switch
@@ -47,13 +55,18 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
-
+				this.OnPropertyChanged(nameof(this.HasPendingIdentity));
+				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
+				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
+				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
+				this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
 			});
 
 			await base.OnAppearing();
 			try
 			{
-				
+				// Load latest stored KYC reference state
+				await this.LoadLatestKycStateAsync();
 				/*
 				try
 				{
@@ -74,15 +87,44 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
 
 
-		//		GeoMapViewModel vm = new(59.638346832492765,11.879682074310969);
-		//		await ServiceRef.UiService.PushAsync(new GeoMapPopup(vm));
-		//		Console.WriteLine($"GeoMap result: {await vm.Result}");
+				//		GeoMapViewModel vm = new(59.638346832492765,11.879682074310969);
+				//		await ServiceRef.UiService.PushAsync(new GeoMapPopup(vm));
+				//		Console.WriteLine($"GeoMap result: {await vm.Result}");
 
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+
+			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.LegalIdentityChanged += this.XmppService_LegalIdentityChanged;
+			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
+		}
+
+		protected override Task OnDispose()
+		{
+			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
+			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
+
+			return base.OnDispose();
+		}
+
+		private void TagProfile_OnPropertiesChanged(object? Sender, EventArgs e)
+		{
+			Task.Run(this.LoadLatestKycStateAsync);
+		}
+
+		private async Task XmppService_LegalIdentityChanged(object? Sender, EventArgs e)
+		{
+			await this.LoadLatestKycStateAsync();
+		}
+
+		private async Task XmppService_IdentityApplicationChanged(object? Sender, EventArgs e)
+		{
+			// Refresh cached KYC state when identity application changes
+			await this.LoadLatestKycStateAsync();
 		}
 
 		protected override async Task OnInitialize()
@@ -125,6 +167,48 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		}
 
 		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
+		public bool HasPendingIdentity => this.CheckPendingIdentity();
+
+		public bool ShowInfoBubble => this.ShowApplyIdBox || this.ShowPendingIdBox || this.ShowRejectedIdBox;
+		public bool ShowApplyIdBox => !(ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false) && !this.CheckPendingIdentity() && !this.CheckRejectedIdentity();
+		public bool ShowPendingIdBox => this.CheckPendingIdentity();
+		public bool ShowRejectedIdBox => this.CheckRejectedIdentity();
+
+		private bool CheckPendingIdentity()
+		{
+			// Uses cached latest KYC reference state instead of TagProfile.IdentityApplication
+			return this.latestCreatedIdentityState == IdentityState.Created;
+		}
+
+		private bool CheckRejectedIdentity()
+		{
+			// Uses cached latest KYC reference state instead of TagProfile.IdentityApplication
+			return this.latestCreatedIdentityState == IdentityState.Rejected;
+		}
+
+		private async Task LoadLatestKycStateAsync()
+		{
+			try
+			{
+				IEnumerable<KycReference> All = await Database.Find<KycReference>();
+				KycReference? Latest = All
+					.OrderByDescending(r => r.UpdatedUtc)
+					.FirstOrDefault(r => r.CreatedIdentityState is not null && !string.IsNullOrEmpty(r.CreatedIdentityId));
+				this.latestCreatedIdentityState = Latest?.CreatedIdentityState;
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.OnPropertyChanged(nameof(this.HasPendingIdentity));
+					this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
+					this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
+					this.OnPropertyChanged(nameof(this.ShowInfoBubble));
+					this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
 		public bool CanScanQrCode => true;
 
@@ -170,7 +254,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage));
+				await ServiceRef.UiService.GoToAsync(nameof(ApplicationsPage));
 			}
 			catch (Exception Ex)
 			{

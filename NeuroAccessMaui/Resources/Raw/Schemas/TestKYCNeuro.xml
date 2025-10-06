@@ -1,0 +1,1109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KYCProcess xmlns="https://paiwise.tagroot.io/Schema/NeuroAccessKycProcess.xsd">
+	<Name>
+		<Text lang="en">Personal ID</Text>
+		<Text lang="sv">Personligt ID</Text>
+		<Text lang="es">Identificación personal</Text>
+		<Text lang="pt">Identificação pessoal</Text>
+		<Text lang="da">Personlig ID</Text>
+		<Text lang="no">Personlig ID</Text>
+		<Text lang="fi">Henkilöllisyys</Text>
+		<Text lang="fr">Pièce d'identité</Text>
+	</Name>
+	<Page id="prepareDocuments">
+		<Title>
+			<Text lang="en">Before we start, we'd like to give you a tip.</Text>
+			<Text lang="sv">Innan vi börjar vill vi ge dig ett tips.</Text>
+			<Text lang="es">Antes de empezar, nos gustaría darte un consejo.</Text>
+			<Text lang="pt">Antes de começar, gostaríamos de lhe dar uma dica.</Text>
+			<Text lang="da">Før vi starter, vil vi gerne give dig et tip.</Text>
+			<Text lang="no">Før vi starter, vil vi gjerne gi deg et tips.</Text>
+			<Text lang="fi">Ennen kuin aloitamme, haluamme antaa sinulle vinkin.</Text>
+			<Text lang="fr">Avant de commencer, nous souhaitons vous donner un conseil.</Text>
+		</Title>
+		<Description>
+			<Text lang="en">We'll ask for an official photo ID, so why not be prepared?</Text>
+			<Text lang="sv">Vi kommer att be om ett officiellt foto-ID, så varför inte förbereda det?</Text>
+			<Text lang="es">Te pediremos un documento de identidad oficial con foto, así que ¿por qué no prepararlo?</Text>
+			<Text lang="pt">Vamos pedir um documento de identificação oficial com foto, então por que não se preparar?</Text>
+			<Text lang="da">Vi vil bede om et officielt foto-ID, så hvorfor ikke være forberedt?</Text>
+			<Text lang="no">Vi kommer til å be om en offisiell legitimasjon med bilde, så hvorfor ikke være forberedt?</Text>
+			<Text lang="fi">Pyydämme virallista kuvallista henkilöllisyystodistusta, joten miksi et varautuisi?</Text>
+			<Text lang="fr">Nous vous demanderons une pièce d'identité officielle avec photo, alors pourquoi ne pas vous y préparer ?</Text>
+		</Description>
+	</Page>
+	<Page id="personalInfo">
+		<Title>
+			<Text lang="en">Personal Information</Text>
+			<Text lang="sv">Personuppgifter</Text>
+			<Text lang="es">Información personal</Text>
+			<Text lang="pt">Informações pessoais</Text>
+			<Text lang="da">Personlige oplysninger</Text>
+			<Text lang="no">Personlig informasjon</Text>
+			<Text lang="fi">Henkilötiedot</Text>
+			<Text lang="fr">Informations personnelles</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Please enter your personal details as they appear on your legal documents.</Text>
+			<Text lang="sv">Ange dina personuppgifter enligt dina officiella dokument.</Text>
+			<Text lang="es">Introduce tus datos personales tal y como aparecen en tus documentos legales.</Text>
+			<Text lang="pt">Insira seus dados pessoais conforme constam em seus documentos legais.</Text>
+			<Text lang="da">Indtast dine personlige oplysninger, som de fremgår af dine officielle dokumenter.</Text>
+			<Text lang="no">Oppgi dine personlige opplysninger slik de står i dine offisielle dokumenter.</Text>
+			<Text lang="fi">Anna henkilötietosi täsmälleen kuten ne ovat virallisissa asiakirjoissasi.</Text>
+			<Text lang="fr">Veuillez saisir vos informations personnelles telles qu’elles apparaissent sur vos documents officiels.</Text>
+		</Description>
+		<Field id="firstNames" type="text" required="true">
+			<Label>
+				<Text lang="en">First name</Text>
+				<Text lang="sv">Förnamn</Text>
+				<Text lang="es">Nombre(s)</Text>
+				<Text lang="pt">Nome(s)</Text>
+				<Text lang="da">Fornavn(e)</Text>
+				<Text lang="no">Fornavn</Text>
+				<Text lang="fi">Etunimi(et)</Text>
+				<Text lang="fr">Prénom(s)</Text>
+			</Label>
+			<ValidationRules>
+				<LengthRule min="2">
+					<Message>
+						<Text lang="en">Given name(s) must be at least 2 characters.</Text>
+						<Text lang="sv">Förnamn måste vara minst 2 tecken.</Text>
+						<Text lang="es">El/Los nombre(s) deben tener al menos 2 caracteres.</Text>
+						<Text lang="pt">O(s) nome(s) deve(m) ter pelo menos 2 caracteres.</Text>
+						<Text lang="da">Fornavn(e) skal være mindst 2 tegn.</Text>
+						<Text lang="no">Fornavn må være minst 2 tegn.</Text>
+						<Text lang="fi">Etunimen tulee olla vähintään 2 merkkiä.</Text>
+						<Text lang="fr">Le(s) prénom(s) doivent comporter au moins 2 caractères.</Text>
+					</Message>
+				</LengthRule>
+				<RegexRule>
+					<Regex>^[\D]+$</Regex>
+					<Message>
+						<Text lang="en">Given name(s) can not contain digits.</Text>
+						<Text lang="sv">Förnamn får inte innehålla siffror.</Text>
+						<Text lang="es">El/Los nombre(s) no pueden contener números.</Text>
+						<Text lang="pt">O(s) nome(s) não pode(m) conter dígitos.</Text>
+						<Text lang="da">Fornavn(e) må ikke indeholde tal.</Text>
+						<Text lang="no">Fornavn kan ikke inneholde tall.</Text>
+						<Text lang="fi">Etunimessä ei saa olla numeroita.</Text>
+						<Text lang="fr">Le(s) prénom(s) ne doivent pas contenir de chiffres.</Text>
+					</Message>
+				</RegexRule>
+			</ValidationRules>
+			<Mapping key="FIRST"/>
+		</Field>
+		<Field id="middleNames" type="text">
+			<Label>
+				<Text lang="en">Middle name(s)</Text>
+				<Text lang="sv">Mellannamn</Text>
+				<Text lang="es">Segundo(s) nombre(s)</Text>
+				<Text lang="pt">Nome(s) do meio</Text>
+				<Text lang="da">Mellemnavn(e)</Text>
+				<Text lang="no">Mellomnavn</Text>
+				<Text lang="fi">Toinen etunimi(t)</Text>
+				<Text lang="fr">Deuxième(s) prénom(s)</Text>
+			</Label>
+			<ValidationRules>
+				<LengthRule min="2">
+					<Message>
+						<Text lang="en">Middle name(s) must be at least 2 characters.</Text>
+						<Text lang="sv">Mellannamn måste vara minst 2 tecken.</Text>
+						<Text lang="es">El/Los segundo(s) nombre(s) deben tener al menos 2 caracteres.</Text>
+						<Text lang="pt">O(s) nome(s) do meio deve(m) ter pelo menos 2 caracteres.</Text>
+						<Text lang="da">Mellemnavn(e) skal være mindst 2 tegn.</Text>
+						<Text lang="no">Mellomnavn må være minst 2 tegn.</Text>
+						<Text lang="fi">Toisen etunimen tulee olla vähintään 2 merkkiä.</Text>
+						<Text lang="fr">Le(s) deuxième(s) prénom(s) doivent comporter au moins 2 caractères.</Text>
+					</Message>
+				</LengthRule>
+				<RegexRule>
+					<Regex>^[\D]+$</Regex>
+					<Message>
+						<Text lang="en">Last name(s) name can not contain digits.</Text>
+						<Text lang="sv">Mellannamn får inte innehålla siffror.</Text>
+						<Text lang="es">El/Los segundo(s) nombre(s) no pueden contener números.</Text>
+						<Text lang="pt">O(s) nome(s) do meio não pode(m) conter dígitos.</Text>
+						<Text lang="da">Mellemnavn(e) må ikke indeholde tal.</Text>
+						<Text lang="no">Mellomnavn kan ikke inneholde tall.</Text>
+						<Text lang="fi">Toisessa etunimessä ei saa olla numeroita.</Text>
+						<Text lang="fr">Le(s) deuxième(s) prénom(s) ne doivent pas contenir de chiffres.</Text>
+					</Message>
+				</RegexRule>
+			</ValidationRules>
+			<Mapping key="MIDDLE"/>
+		</Field>
+		<Field id="lastNames" type="text" required="true">
+			<Label>
+				<Text lang="en">Last Name(s)</Text>
+				<Text lang="sv">Efternamn</Text>
+				<Text lang="es">Apellido(s)</Text>
+				<Text lang="pt">Sobrenome(s)</Text>
+				<Text lang="da">Efternavn(e)</Text>
+				<Text lang="no">Etternavn</Text>
+				<Text lang="fi">Sukunimi(t)</Text>
+				<Text lang="fr">Nom(s) de famille</Text>
+			</Label>
+			<ValidationRules>
+				<LengthRule min="2">
+					<Message>
+						<Text lang="en">Last name(s) must be at least 2 characters.</Text>
+						<Text lang="sv">Efternamn måste vara minst 2 tecken.</Text>
+						<Text lang="es">El/Los apellido(s) deben tener al menos 2 caracteres.</Text>
+						<Text lang="pt">O(s) sobrenome(s) deve(m) ter pelo menos 2 caracteres.</Text>
+						<Text lang="da">Efternavn(e) skal være mindst 2 tegn.</Text>
+						<Text lang="no">Etternavn må være minst 2 tegn.</Text>
+						<Text lang="fi">Sukunimen tulee olla vähintään 2 merkkiä.</Text>
+						<Text lang="fr">Le(s) nom(s) de famille doivent comporter au moins 2 caractères.</Text>
+					</Message>
+				</LengthRule>
+				<RegexRule>
+					<Regex>^[\D]+$</Regex>
+					<Message>
+						<Text lang="en">Last name(s) name can not contain digits.</Text>
+						<Text lang="sv">Efternamn får inte innehålla siffror.</Text>
+						<Text lang="es">El/Los apellido(s) no pueden contener números.</Text>
+						<Text lang="pt">O(s) sobrenome(s) não pode(m) conter dígitos.</Text>
+						<Text lang="da">Efternavn(e) må ikke indeholde tal.</Text>
+						<Text lang="no">Etternavn kan ikke inneholde tall.</Text>
+						<Text lang="fi">Sukunimessä ei saa olla numeroita.</Text>
+						<Text lang="fr">Le(s) nom(s) de famille ne doivent pas contenir de chiffres.</Text>
+					</Message>
+				</RegexRule>
+			</ValidationRules>
+			<Mapping key="LAST" />
+		</Field>
+		<Field id="personalNumber" type="text" required="true">
+			<Label>
+				<Text lang="en">Personal Number</Text>
+				<Text lang="sv">Personnummer</Text>
+				<Text lang="es">Número de identificación personal</Text>
+				<Text lang="pt">Número de identificação pessoal</Text>
+				<Text lang="da">Personnummer</Text>
+				<Text lang="no">Personnummer</Text>
+				<Text lang="fi">Henkilötunnus</Text>
+				<Text lang="fr">Numéro d’identification personnel</Text>
+			</Label>
+			<Metadata>
+				<Placeholder>pnr</Placeholder>
+			</Metadata>
+			<ValidationRules>
+				<PersonalNumberRule>
+					<Message>
+						<Text lang="en">Personal number must be valid according to your country.</Text>
+						<Text lang="sv">Personnummer måste vara giltigt enligt ditt land.</Text>
+						<Text lang="es">El número de identificación debe ser válido según tu país.</Text>
+						<Text lang="pt">O número de identificação pessoal deve ser válido de acordo com o seu país.</Text>
+						<Text lang="da">Personnummeret skal være gyldigt i henhold til dit land.</Text>
+						<Text lang="no">Personnummeret må være gyldig i henhold til ditt land.</Text>
+						<Text lang="fi">Henkilötunnuksen on oltava maasi käytäntöjen mukainen.</Text>
+						<Text lang="fr">Le numéro d’identification personnel doit être valide selon votre pays.</Text>
+					</Message>
+				</PersonalNumberRule>
+			</ValidationRules>
+			<Mapping key="PNR" />
+		</Field>
+		<Field id="dob" type="date" required="true">
+			<Label>
+				<Text lang="en">Date of Birth</Text>
+				<Text lang="sv">Födelsedatum</Text>
+				<Text lang="es">Fecha de nacimiento</Text>
+				<Text lang="pt">Data de nascimento</Text>
+				<Text lang="da">Fødselsdato</Text>
+				<Text lang="no">Fødselsdato</Text>
+				<Text lang="fi">Syntymäaika</Text>
+				<Text lang="fr">Date de naissance</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Use the format YYYY-MM-DD</Text>
+				<Text lang="sv">Använd formatet ÅÅÅÅ-MM-DD</Text>
+				<Text lang="es">Usa el formato AAAA-MM-DD</Text>
+				<Text lang="pt">Use o formato AAAA-MM-DD</Text>
+				<Text lang="da">Brug formatet ÅÅÅÅ-MM-DD</Text>
+				<Text lang="no">Bruk formatet ÅÅÅÅ-MM-DD</Text>
+				<Text lang="fi">Käytä muotoa VVVV-KK-PP</Text>
+				<Text lang="fr">Utilisez le format AAAA-MM-JJ</Text>
+			</Hint>
+			<Mapping key="BDAY">
+				<Transform name="day" />
+			</Mapping>
+			<Mapping key="BMONTH">
+				<Transform name="month" />
+			</Mapping>
+			<Mapping key="BYEAR">
+				<Transform name="year" />
+			</Mapping>
+		</Field>
+		<Field id="nationality" type="country" required="true">
+			<Label>
+				<Text lang="en">Nationality</Text>
+				<Text lang="sv">Nationalitet</Text>
+				<Text lang="es">Nacionalidad</Text>
+				<Text lang="pt">Nacionalidade</Text>
+				<Text lang="da">Nationalitet</Text>
+				<Text lang="no">Nasjonalitet</Text>
+				<Text lang="fi">Kansalaisuus</Text>
+				<Text lang="fr">Nationalité</Text>
+			</Label>
+			<Mapping key="NATIONALITY" />
+		</Field>
+		<Field id="gender" type="gender" required="true">
+			<Label>
+				<Text lang="en">Gender</Text>
+				<Text lang="sv">Kön</Text>
+				<Text lang="es">Género</Text>
+				<Text lang="pt">Gênero</Text>
+				<Text lang="da">Køn</Text>
+				<Text lang="no">Kjønn</Text>
+				<Text lang="fi">Sukupuoli</Text>
+				<Text lang="fr">Genre</Text>
+			</Label>
+			<Mapping key="GENDER" />
+		</Field>
+	</Page>
+	<Page id="identityDocuments">
+		<Title>
+			<Text lang="en">Identity Documents</Text>
+			<Text lang="sv">ID-handlingar</Text>
+			<Text lang="es">Documentos de identidad</Text>
+			<Text lang="pt">Documentos de identificação</Text>
+			<Text lang="da">Identitetsdokumenter</Text>
+			<Text lang="no">Identitetsdokumenter</Text>
+			<Text lang="fi">Henkilöllisyysasiakirjat</Text>
+			<Text lang="fr">Documents d'identité</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Please select and upload the identity document you would like to provide. Accepted formats: jpg, jpeg, png, pdf.</Text>
+			<Text lang="sv">Välj och ladda upp din identitetshandling. Tillåtna format: jpg, jpeg, png, pdf.</Text>
+			<Text lang="es">Selecciona y sube el documento de identidad que deseas proporcionar. Formatos aceptados: jpg, jpeg, png, pdf.</Text>
+			<Text lang="pt">Selecione e envie o documento de identificação que deseja fornecer. Formatos aceitos: jpg, jpeg, png, pdf.</Text>
+			<Text lang="da">Vælg og upload det identitetsdokument, du vil indsende. Accepterede formater: jpg, jpeg, png, pdf.</Text>
+			<Text lang="no">Velg og last opp identitetsdokumentet du ønsker å levere. Godkjente formater: jpg, jpeg, png, pdf.</Text>
+			<Text lang="fi">Valitse ja lataa henkilöllisyystodistus, jonka haluat toimittaa. Hyväksytyt muodot: jpg, jpeg, png, pdf.</Text>
+			<Text lang="fr">Sélectionnez et téléversez le document d’identité que vous souhaitez fournir. Formats acceptés : jpg, jpeg, png, pdf.</Text>
+		</Description>
+		<Section>
+			<Label>
+				<Text lang="en">Document Type Selection</Text>
+				<Text lang="sv">Typ av identitetshandling</Text>
+				<Text lang="es">Selección del tipo de documento</Text>
+				<Text lang="pt">Seleção do tipo de documento</Text>
+				<Text lang="da">Valg af dokumenttype</Text>
+				<Text lang="no">Valg av dokumenttype</Text>
+				<Text lang="fi">Asiakirjatyypin valinta</Text>
+				<Text lang="fr">Sélection du type de document</Text>
+			</Label>
+			<Field id="documentType" type="picker" required="true">
+				<Label>
+					<Text lang="en">Document Type</Text>
+					<Text lang="sv">Dokumenttyp</Text>
+					<Text lang="es">Tipo de documento</Text>
+					<Text lang="pt">Tipo de documento</Text>
+					<Text lang="da">Dokumenttype</Text>
+					<Text lang="no">Dokumenttype</Text>
+					<Text lang="fi">Asiakirjan tyyppi</Text>
+					<Text lang="fr">Type de document</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Choose which type of ID you want to provide.</Text>
+					<Text lang="sv">Välj vilken typ av ID du vill lämna.</Text>
+					<Text lang="es">Elige qué tipo de identificación deseas proporcionar.</Text>
+					<Text lang="pt">Escolha qual tipo de identificação deseja fornecer.</Text>
+					<Text lang="da">Vælg hvilken type ID du vil indsende.</Text>
+					<Text lang="no">Velg hvilken type ID du vil levere.</Text>
+					<Text lang="fi">Valitse, minkä tyyppisen henkilötodistuksen haluat toimittaa.</Text>
+					<Text lang="fr">Choisissez le type de pièce d’identité que vous souhaitez fournir.</Text>
+				</Hint>
+				<Options>
+					<Option value="passport">
+						<Text lang="en">Passport</Text>
+						<Text lang="sv">Pass</Text>
+						<Text lang="es">Pasaporte</Text>
+						<Text lang="pt">Passaporte</Text>
+						<Text lang="da">Pas</Text>
+						<Text lang="no">Pass</Text>
+						<Text lang="fi">Passi</Text>
+						<Text lang="fr">Passeport</Text>
+					</Option>
+					<Option value="identityCard">
+						<Text lang="en">Identity Card</Text>
+						<Text lang="sv">ID-kort</Text>
+						<Text lang="es">Documento de identidad</Text>
+						<Text lang="pt">Cartão de identidade</Text>
+						<Text lang="da">Identitetskort</Text>
+						<Text lang="no">ID-kort</Text>
+						<Text lang="fi">Henkilökortti</Text>
+						<Text lang="fr">Carte d’identité</Text>
+					</Option>
+					<Option value="driversLicense">
+						<Text lang="en">Driver's license</Text>
+						<Text lang="sv">Körkort</Text>
+						<Text lang="es">Permiso de conducir</Text>
+						<Text lang="pt">Carteira de motorista</Text>
+						<Text lang="da">Kørekort</Text>
+						<Text lang="no">Førerkort</Text>
+						<Text lang="fi">Ajokortti</Text>
+						<Text lang="fr">Permis de conduire</Text>
+					</Option>
+				</Options>
+			</Field>
+		</Section>
+		<Section>
+			<Label>
+				<Text lang="en">Document Upload</Text>
+				<Text lang="sv">Ladda upp dokument</Text>
+				<Text lang="es">Carga de documento</Text>
+				<Text lang="pt">Envio de documento</Text>
+				<Text lang="da">Upload af dokument</Text>
+				<Text lang="no">Opplasting av dokument</Text>
+				<Text lang="fi">Asiakirjan lataus</Text>
+				<Text lang="fr">Téléversement de document</Text>
+			</Label>
+			<!-- Passport Upload Field (shown if passport is selected) -->
+			<Field id="passportUpload" type="image" required="true">
+				<Label>
+					<Text lang="en">Passport Upload</Text>
+					<Text lang="sv">Passuppladdning</Text>
+					<Text lang="es">Carga de pasaporte</Text>
+					<Text lang="pt">Envio de passaporte</Text>
+					<Text lang="da">Pas upload</Text>
+					<Text lang="no">Passopplasting</Text>
+					<Text lang="fi">Passin lataus</Text>
+					<Text lang="fr">Téléversement du passeport</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Upload the photo page of your passport</Text>
+					<Text lang="sv">Ladda upp fotosidan i ditt pass</Text>
+					<Text lang="es">Sube la página de la foto de tu pasaporte</Text>
+					<Text lang="pt">Envie a página da foto do seu passaporte</Text>
+					<Text lang="da">Upload fotosiden i dit pas</Text>
+					<Text lang="no">Last opp fotosiden i passet ditt</Text>
+					<Text lang="fi">Lataa passisi valokuvallinen sivu</Text>
+					<Text lang="fr">Téléversez la page photo de votre passeport</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">Choose file...</Text>
+					<Text lang="sv">Välj fil...</Text>
+					<Text lang="es">Elegir archivo...</Text>
+					<Text lang="pt">Escolher arquivo...</Text>
+					<Text lang="da">Vælg fil...</Text>
+					<Text lang="no">Velg fil...</Text>
+					<Text lang="fi">Valitse tiedosto...</Text>
+					<Text lang="fr">Choisir un fichier...</Text>
+				</Placeholder>
+					<Metadata>
+						<TargetWidth>1200</TargetWidth>
+						<TargetHeight>1600</TargetHeight>
+						<MinDpi>300</MinDpi>
+					</Metadata>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>passport</Equals>
+				</Condition>
+					<Mapping key="Passport" />
+				</Field>
+
+			<!-- Identity Card Upload Field (shown if identityCard is selected) -->
+			<Field id="identityCardFrontUpload" type="image" required="true">
+				<Label>
+					<Text lang="en">Identity Card Front Upload</Text>
+					<Text lang="sv">ID-kort Framsida Uppladdning</Text>
+					<Text lang="es">Carga delantera del documento de identidad</Text>
+					<Text lang="pt">Envio da frente do cartão de identidade</Text>
+					<Text lang="da">Identitetskort forside upload</Text>
+					<Text lang="no">ID-kort forside opplasting</Text>
+					<Text lang="fi">Henkilökortin etupuolen lataus</Text>
+					<Text lang="fr">Téléversement de la carte d’identité recto</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Upload the front side of your identity card</Text>
+					<Text lang="sv">Ladda upp framsidan av ditt ID-kort</Text>
+					<Text lang="es">Sube la cara frontal de tu documento de identidad</Text>
+					<Text lang="pt">Envie a frente do seu cartão de identidade</Text>
+					<Text lang="da">Upload forsiden af dit identitetskort</Text>
+					<Text lang="no">Last opp forsiden av ID-kortet ditt</Text>
+					<Text lang="fi">Lataa henkilökorttisi etupuoli</Text>
+					<Text lang="fr">Téléversez le recto de votre carte d’identité</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">Identity Card Front...</Text>
+					<Text lang="sv">Identitetskort Framsida...</Text>
+					<Text lang="es">Frente del documento de identidad...</Text>
+					<Text lang="pt">Frente do cartão de identidade...</Text>
+					<Text lang="da">Identitetskort forside...</Text>
+					<Text lang="no">ID-kort forside...</Text>
+					<Text lang="fi">Henkilökortin etupuoli...</Text>
+					<Text lang="fr">Carte d’identité recto...</Text>
+				</Placeholder>
+					<Metadata>
+						<TargetWidth>1000</TargetWidth>
+						<TargetHeight>1500</TargetHeight>
+						<MinDpi>200</MinDpi>
+					</Metadata>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>identityCard</Equals>
+				</Condition>
+					<Mapping key="IdCardFront" />
+				</Field>
+
+			<!-- Identity Card Back Upload Field (shown if identityCard is selected) -->
+			<Field id="identityCardBackUpload" type="image" required="true">
+				<Label>
+					<Text lang="en">Identity Card Back Upload</Text>
+					<Text lang="sv">ID-kort Baksida Uppladdning</Text>
+					<Text lang="es">Carga trasera del documento de identidad</Text>
+					<Text lang="pt">Envio do verso do cartão de identidade</Text>
+					<Text lang="da">Identitetskort bagside upload</Text>
+					<Text lang="no">ID-kort bakside opplasting</Text>
+					<Text lang="fi">Henkilökortin takapuolen lataus</Text>
+					<Text lang="fr">Téléversement de la carte d’identité verso</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Upload the back side of your identity card</Text>
+					<Text lang="sv">Ladda upp framsidan av ditt ID-kort</Text>
+					<Text lang="es">Sube la cara posterior de tu documento de identidad</Text>
+					<Text lang="pt">Envie o verso do seu cartão de identidade</Text>
+					<Text lang="da">Upload bagsiden af dit identitetskort</Text>
+					<Text lang="no">Last opp baksiden av ID-kortet ditt</Text>
+					<Text lang="fi">Lataa henkilökorttisi kääntöpuoli</Text>
+					<Text lang="fr">Téléversez le verso de votre carte d’identité</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">Identity Card Back...</Text>
+					<Text lang="sv">Identitetskort Baksida...</Text>
+					<Text lang="es">Reverso del documento de identidad...</Text>
+					<Text lang="pt">Verso do cartão de identidade...</Text>
+					<Text lang="da">Identitetskort bagside...</Text>
+					<Text lang="no">ID-kort bakside...</Text>
+					<Text lang="fi">Henkilökortin takapuoli...</Text>
+					<Text lang="fr">Carte d’identité verso...</Text>
+				</Placeholder>
+					<Metadata>
+						<TargetWidth>1000</TargetWidth>
+						<TargetHeight>1500</TargetHeight>
+						<MinDpi>200</MinDpi>
+					</Metadata>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>identityCard</Equals>
+				</Condition>
+					<Mapping key="IdCardBack" />
+				</Field>
+
+			<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
+			<Field id="driverslicenseFront" type="image" required="true">
+				<Label>
+					<Text lang="en">Driver's License Front Upload</Text>
+					<Text lang="sv">Körkort Framsida Uppladdning</Text>
+					<Text lang="es">Carga delantera del permiso de conducir</Text>
+					<Text lang="pt">Envio da frente da carteira de motorista</Text>
+					<Text lang="da">Kørekort forside upload</Text>
+					<Text lang="no">Førerkort forside opplasting</Text>
+					<Text lang="fi">Ajokortin etupuolen lataus</Text>
+					<Text lang="fr">Téléversement du permis de conduire recto</Text>
+				</Label>
+				<Hint>
+					<Text lang="en">Upload the front of your driver’s license</Text>
+					<Text lang="sv">Ladda upp framsidan av ditt körkort</Text>
+					<Text lang="es">Sube la parte frontal de tu permiso de conducir</Text>
+					<Text lang="pt">Envie a frente da sua carteira de motorista</Text>
+					<Text lang="da">Upload forsiden af dit kørekort</Text>
+					<Text lang="no">Last opp forsiden av førerkortet ditt</Text>
+					<Text lang="fi">Lataa ajokorttisi etupuoli</Text>
+					<Text lang="fr">Téléversez le recto de votre permis de conduire</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">Driver's license Front...</Text>
+					<Text lang="sv">Körkort Framsida...</Text>
+					<Text lang="es">Permiso de conducir frente...</Text>
+					<Text lang="pt">Carteira de motorista frente...</Text>
+					<Text lang="da">Kørekort forside...</Text>
+					<Text lang="no">Førerkort forside...</Text>
+					<Text lang="fi">Ajokortin etupuoli...</Text>
+					<Text lang="fr">Permis de conduire recto...</Text>
+				</Placeholder>
+					<Metadata>
+						<TargetWidth>900</TargetWidth>
+						<TargetHeight>600</TargetHeight>
+						<MinDpi>150</MinDpi>
+					</Metadata>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>driversLicense</Equals>
+				</Condition>
+					<Mapping key="DriverLicenseFront" />
+				</Field>
+			<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
+			<Field id="driverslicenseBack" type="image" required="true">
+				<Label>
+					<Text lang="en">Driver's License Back Upload</Text>
+					<Text lang="sv">Körkort Baksida Uppladdning</Text>
+					<Text lang="es">Carga trasera del permiso de conducir</Text>
+					<Text lang="pt">Envio do verso da carteira de motorista</Text>
+					<Text lang="da">Kørekort bagside upload</Text>
+					<Text lang="no">Førerkort bakside opplasting</Text>
+					<Text lang="fi">Ajokortin takapuolen lataus</Text>
+					<Text lang="fr">Téléversement du permis de conduire verso</Text>
+				</Label>				
+				<Hint>
+					<Text lang="en">Upload the back of your driver’s license</Text>
+					<Text lang="sv">Ladda upp baksidan av ditt körkort</Text>
+					<Text lang="es">Sube la parte posterior de tu permiso de conducir</Text>
+					<Text lang="pt">Envie o verso da sua carteira de motorista</Text>
+					<Text lang="da">Upload bagsiden af dit kørekort</Text>
+					<Text lang="no">Last opp baksiden av førerkortet ditt</Text>
+					<Text lang="fi">Lataa ajokorttisi takapuoli</Text>
+					<Text lang="fr">Téléversez le verso de votre permis de conduire</Text>
+				</Hint>
+				<Placeholder>
+					<Text lang="en">Driver's License Back...</Text>
+					<Text lang="sv">Körkort Baksida...</Text>
+					<Text lang="es">Permiso de conducir reverso...</Text>
+					<Text lang="pt">Carteira de motorista verso...</Text>
+					<Text lang="da">Kørekort bagside...</Text>
+					<Text lang="no">Førerkort bakside...</Text>
+					<Text lang="fi">Ajokortin takapuoli...</Text>
+					<Text lang="fr">Permis de conduire verso...</Text>
+				</Placeholder>
+					<Metadata>
+						<TargetWidth>900</TargetWidth>
+						<TargetHeight>600</TargetHeight>
+						<MinDpi>150</MinDpi>
+					</Metadata>
+				<Condition>
+					<FieldRef>documentType</FieldRef>
+					<Equals>driversLicense</Equals>
+				</Condition>
+					<Mapping key="DriverLicenseBack" />
+				</Field>
+		</Section>
+	</Page>
+	<Page id="addressInformation">
+		<Title>
+			<Text lang="en">Address Information</Text>
+			<Text lang="sv">Adressinformation</Text>
+			<Text lang="es">Información de dirección</Text>
+			<Text lang="pt">Informações de endereço</Text>
+			<Text lang="da">Adresseoplysninger</Text>
+			<Text lang="no">Adresseinformasjon</Text>
+			<Text lang="fi">Osoitetiedot</Text>
+			<Text lang="fr">Informations d’adresse</Text>
+		</Title>
+		<Description>
+			<Text lang="en">The following personal information will be included in the application for Neuro ID</Text>
+			<Text lang="sv">Följande personuppgifter kommer att ingå i ansökan för Neuro ID</Text>
+			<Text lang="es">La siguiente información personal se incluirá en la solicitud de Neuro ID</Text>
+			<Text lang="pt">As seguintes informações pessoais serão incluídas na solicitação do Neuro ID</Text>
+			<Text lang="da">Følgende personoplysninger vil blive inkluderet i ansøgningen om Neuro ID</Text>
+			<Text lang="no">Følgende personopplysninger vil bli inkludert i søknaden om Neuro ID</Text>
+			<Text lang="fi">Seuraavat henkilötiedot sisällytetään Neuro ID -hakemukseen</Text>
+			<Text lang="fr">Les informations personnelles suivantes seront incluses dans la demande de Neuro ID</Text>
+		</Description>
+			<Field id="zipCode" type="text" required="true">
+			<Label>
+				<Text lang="en">Zip Code</Text>
+				<Text lang="sv">Postnummer</Text>
+				<Text lang="es">Código postal</Text>
+				<Text lang="pt">Código postal</Text>
+				<Text lang="da">Postnummer</Text>
+				<Text lang="no">Postnummer</Text>
+				<Text lang="fi">Postinumero</Text>
+				<Text lang="fr">Code postal</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Enter your postal code</Text>
+				<Text lang="sv">Ange ditt postnummer</Text>
+				<Text lang="es">Introduce tu código postal</Text>
+				<Text lang="pt">Insira seu código postal</Text>
+				<Text lang="da">Indtast dit postnummer</Text>
+				<Text lang="no">Oppgi postnummeret ditt</Text>
+				<Text lang="fi">Anna postinumerosi</Text>
+				<Text lang="fr">Saisissez votre code postal</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">123 45</Text>
+				<Text lang="sv">123 45</Text>
+				<Text lang="es">123 45</Text>
+				<Text lang="pt">123 45</Text>
+				<Text lang="da">123 45</Text>
+				<Text lang="no">123 45</Text>
+				<Text lang="fi">123 45</Text>
+				<Text lang="fr">123 45</Text>
+			</Placeholder>
+				<Mapping key="ZIP" />
+			</Field>
+			<Field id="address" type="text" required="true">
+			<Label>
+				<Text lang="en">Address</Text>
+				<Text lang="sv">Adress</Text>
+				<Text lang="es">Dirección</Text>
+				<Text lang="pt">Endereço</Text>
+				<Text lang="da">Adresse</Text>
+				<Text lang="no">Adresse</Text>
+				<Text lang="fi">Osoite</Text>
+				<Text lang="fr">Adresse</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Enter your address</Text>
+				<Text lang="sv">Ange din adress</Text>
+				<Text lang="es">Introduce tu dirección</Text>
+				<Text lang="pt">Insira seu endereço</Text>
+				<Text lang="da">Indtast din adresse</Text>
+				<Text lang="no">Oppgi adressen din</Text>
+				<Text lang="fi">Anna osoitteesi</Text>
+				<Text lang="fr">Saisissez votre adresse</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">123 Main St</Text>
+				<Text lang="sv">123 Huvudgatan</Text>
+				<Text lang="es">Calle Principal 123</Text>
+				<Text lang="pt">Rua Principal 123</Text>
+				<Text lang="da">Hovedgaden 123</Text>
+				<Text lang="no">Hovedgata 123</Text>
+				<Text lang="fi">Pääkatu 123</Text>
+				<Text lang="fr">123 Rue Principale</Text>
+			</Placeholder>
+			<ValidationRules>
+				<LengthRule min="5" max="100">
+					<Message>
+						<Text lang="en">Address must be between 5 and 100 characters.</Text>
+						<Text lang="sv">Adressen måste vara mellan 5 och 100 tecken.</Text>
+						<Text lang="es">La dirección debe tener entre 5 y 100 caracteres.</Text>
+						<Text lang="pt">O endereço deve ter entre 5 e 100 caracteres.</Text>
+						<Text lang="da">Adressen skal være mellem 5 og 100 tegn.</Text>
+						<Text lang="no">Adressen må være mellom 5 og 100 tegn.</Text>
+						<Text lang="fi">Osoitteen pituuden tulee olla 5–100 merkkiä.</Text>
+						<Text lang="fr">L’adresse doit comporter entre 5 et 100 caractères.</Text>
+					</Message>
+				</LengthRule>
+			</ValidationRules>
+				<Mapping key="ADDR" />
+			</Field>
+			<Field id="address2" type="text">
+			<Label>
+				<Text lang="en">Apartment/Unit</Text>
+				<Text lang="sv">Lägenhetsnummer</Text>
+				<Text lang="es">Apartamento/Unidad</Text>
+				<Text lang="pt">Apartamento/Unidade</Text>
+				<Text lang="da">Lejlighed/Enhed</Text>
+				<Text lang="no">Leilighet/Enhet</Text>
+				<Text lang="fi">Huoneisto/Yksikkö</Text>
+				<Text lang="fr">Appartement/Unité</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Optional: Enter your apartment or unit number</Text>
+				<Text lang="sv">Valfritt: Ange ditt lägenhets- eller enhetsnummer</Text>
+				<Text lang="es">Opcional: Introduce tu número de apartamento o unidad</Text>
+				<Text lang="pt">Opcional: Insira o número do apartamento ou unidade</Text>
+				<Text lang="da">Valgfrit: Indtast dit lejligheds- eller enhedsnummer</Text>
+				<Text lang="no">Valgfritt: Oppgi leilighets- eller enhetsnummer</Text>
+				<Text lang="fi">Valinnainen: Anna huoneisto- tai yksikkönumero</Text>
+				<Text lang="fr">Facultatif : Saisissez votre numéro d’appartement ou d’unité</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">Apt 4B</Text>
+				<Text lang="sv">Lgh 4B</Text>
+				<Text lang="es">Depto 4B</Text>
+				<Text lang="pt">Ap 4B</Text>
+				<Text lang="da">Lejl. 4B</Text>
+				<Text lang="no">Leil. 4B</Text>
+				<Text lang="fi">As 4B</Text>
+				<Text lang="fr">App. 4B</Text>
+			</Placeholder>
+			<ValidationRules>
+				<LengthRule max="20">
+					<Message>
+						<Text lang="en">Apartment/unit must be up to 20 characters long.</Text>
+						<Text lang="sv">Lägenhet/enhet får vara upp till 20 tecken långt.</Text>
+						<Text lang="es">El apartamento/unidad debe tener hasta 20 caracteres.</Text>
+						<Text lang="pt">Apartamento/unidade deve ter até 20 caracteres.</Text>
+						<Text lang="da">Lejlighed/enhed må højst være 20 tegn.</Text>
+						<Text lang="no">Leilighet/enhet kan være opptil 20 tegn.</Text>
+						<Text lang="fi">Huoneisto/yksikkö saa olla enintään 20 merkkiä pitkä.</Text>
+						<Text lang="fr">L’appartement/l’unité doit comporter au maximum 20 caractères.</Text>
+					</Message>
+				</LengthRule>
+			</ValidationRules>
+				<Mapping key="ADDR2" />
+			</Field>
+			<Field id="area" type="text" required="true">
+			<Label>
+				<Text lang="en">Area</Text>
+				<Text lang="sv">Område</Text>
+				<Text lang="es">Zona</Text>
+				<Text lang="pt">Área</Text>
+				<Text lang="da">Område</Text>
+				<Text lang="no">Område</Text>
+				<Text lang="fi">Alue</Text>
+				<Text lang="fr">Zone</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Enter the area or neighborhood name</Text>
+				<Text lang="sv">Ange områdets eller grannskapets namn</Text>
+				<Text lang="es">Ingresa el nombre de la zona o barrio</Text>
+				<Text lang="pt">Insira o nome da área ou bairro</Text>
+				<Text lang="da">Indtast området eller kvarterets navn</Text>
+				<Text lang="no">Oppgi navn på område eller nabolag</Text>
+				<Text lang="fi">Anna alueen tai naapuruston nimi</Text>
+				<Text lang="fr">Indiquez le nom de la zone ou du quartier</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">Downtown</Text>
+				<Text lang="sv">Centrum</Text>
+				<Text lang="es">Centro</Text>
+				<Text lang="pt">Centro</Text>
+				<Text lang="da">Centrum</Text>
+				<Text lang="no">Sentrum</Text>
+				<Text lang="fi">Keskusta</Text>
+				<Text lang="fr">Centre-ville</Text>
+			</Placeholder>
+			<ValidationRules>
+				<LengthRule min="2" max="50">
+					<Message>
+						<Text lang="en">Area must be between 2 and 50 characters.</Text>
+						<Text lang="sv">Området måste vara mellan 2 och 50 tecken.</Text>
+						<Text lang="es">La zona debe tener entre 2 y 50 caracteres.</Text>
+						<Text lang="pt">A área deve ter entre 2 e 50 caracteres.</Text>
+						<Text lang="da">Område skal være mellem 2 og 50 tegn.</Text>
+						<Text lang="no">Området må være mellom 2 og 50 tegn.</Text>
+						<Text lang="fi">Alueen nimen tulee olla 2–50 merkkiä pitkä.</Text>
+						<Text lang="fr">La zone doit comporter entre 2 et 50 caractères.</Text>
+					</Message>
+				</LengthRule>
+			</ValidationRules>
+				<Mapping key="AREA" />
+			</Field>
+			<Field id="city" type="text" required="true">
+			<Label>
+				<Text lang="en">City</Text>
+				<Text lang="sv">Stad</Text>
+				<Text lang="es">Ciudad</Text>
+				<Text lang="pt">Cidade</Text>
+				<Text lang="da">By</Text>
+				<Text lang="no">By</Text>
+				<Text lang="fi">Kaupunki</Text>
+				<Text lang="fr">Ville</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Enter your city</Text>
+				<Text lang="sv">Ange din stad</Text>
+				<Text lang="es">Introduce tu ciudad</Text>
+				<Text lang="pt">Insira sua cidade</Text>
+				<Text lang="da">Indtast din by</Text>
+				<Text lang="no">Oppgi byen din</Text>
+				<Text lang="fi">Anna kaupunkisi</Text>
+				<Text lang="fr">Saisissez votre ville</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">Stockholm</Text>
+				<Text lang="sv">Stockholm</Text>
+				<Text lang="es">Estocolmo</Text>
+				<Text lang="pt">Estocolmo</Text>
+				<Text lang="da">Stockholm</Text>
+				<Text lang="no">Stockholm</Text>
+				<Text lang="fi">Tukholma</Text>
+				<Text lang="fr">Stockholm</Text>
+			</Placeholder>
+			<ValidationRules>
+				<LengthRule min="2" max="50">
+					<Message>
+						<Text lang="en">City must be between 2 and 50 characters.</Text>
+						<Text lang="sv">Staden måste vara mellan 2 och 50 tecken.</Text>
+						<Text lang="es">La ciudad debe tener entre 2 y 50 caracteres.</Text>
+						<Text lang="pt">A cidade deve ter entre 2 e 50 caracteres.</Text>
+						<Text lang="da">By skal være mellem 2 og 50 tegn.</Text>
+						<Text lang="no">Byen må være mellom 2 og 50 tegn.</Text>
+						<Text lang="fi">Kaupungin nimen tulee olla 2–50 merkkiä.</Text>
+						<Text lang="fr">La ville doit comporter entre 2 et 50 caractères.</Text>
+					</Message>
+				</LengthRule>
+			</ValidationRules>
+				<Mapping key="CITY" />
+			</Field>
+			<Field id="region" type="text" required="true">
+			<Label>
+				<Text lang="en">Region/State</Text>
+				<Text lang="sv">Region/Län</Text>
+				<Text lang="es">Región/Estado</Text>
+				<Text lang="pt">Região/Estado</Text>
+				<Text lang="da">Region/Stat</Text>
+				<Text lang="no">Region/Fylke</Text>
+				<Text lang="fi">Alue/Osavaltio</Text>
+				<Text lang="fr">Région/État</Text>
+			</Label>
+			<Hint>
+				<Text lang="en">Enter your region or state</Text>
+				<Text lang="sv">Ange din region eller ditt län</Text>
+				<Text lang="es">Introduce tu región o estado</Text>
+				<Text lang="pt">Insira sua região ou estado</Text>
+				<Text lang="da">Indtast din region eller stat</Text>
+				<Text lang="no">Oppgi din region eller ditt fylke</Text>
+				<Text lang="fi">Anna alue tai osavaltio</Text>
+				<Text lang="fr">Indiquez votre région ou État</Text>
+			</Hint>
+			<Placeholder>
+				<Text lang="en">Stockholm County</Text>
+				<Text lang="sv">Stockholms län</Text>
+				<Text lang="es">Condado de Estocolmo</Text>
+				<Text lang="pt">Condado de Estocolmo</Text>
+				<Text lang="da">Stockholms amt</Text>
+				<Text lang="no">Stockholms län</Text>
+				<Text lang="fi">Tukholman lääni</Text>
+				<Text lang="fr">Comté de Stockholm</Text>
+			</Placeholder>
+			<ValidationRules>
+				<LengthRule min="2" max="50">
+					<Message>
+						<Text lang="en">Region/state must be between 2 and 50 characters.</Text>
+						<Text lang="sv">Region/län måste vara mellan 2 och 50 tecken.</Text>
+						<Text lang="es">La región/estado debe tener entre 2 y 50 caracteres.</Text>
+						<Text lang="pt">A região/estado deve ter entre 2 e 50 caracteres.</Text>
+						<Text lang="da">Region/stat skal være mellem 2 og 50 tegn.</Text>
+						<Text lang="no">Region/fylke må være mellom 2 og 50 tegn.</Text>
+						<Text lang="fi">Alueen/osavaltion nimen tulee olla 2–50 merkkiä.</Text>
+						<Text lang="fr">La région/l’État doit comporter entre 2 et 50 caractères.</Text>
+					</Message>
+				</LengthRule>
+			</ValidationRules>
+				<Mapping key="REGION" />
+			</Field>
+	</Page>
+	<Page id="selfiePage">
+		<Title>
+			<Text lang="en">Validate your identity</Text>
+			<Text lang="sv">Verifiera din identitet</Text>
+			<Text lang="es">Valida tu identidad</Text>
+			<Text lang="pt">Valide sua identidade</Text>
+			<Text lang="da">Bekræft din identitet</Text>
+			<Text lang="no">Bekreft identiteten din</Text>
+			<Text lang="fi">Vahvista henkilöllisyytesi</Text>
+			<Text lang="fr">Validez votre identité</Text>
+		</Title>
+		<Description>
+			<Text lang="en">To complete your KYC process, please take a selfie. Ensure your face is clearly visible and well-lit.</Text>
+			<Text lang="sv">För att slutföra din KYC-process, vänligen ta en selfie. Se till att ditt ansikte är tydligt synligt och väl belyst.</Text>
+			<Text lang="es">Para completar tu proceso KYC, toma una selfie. Asegúrate de que tu rostro sea claramente visible y bien iluminado.</Text>
+			<Text lang="pt">Para concluir seu processo de KYC, tire uma selfie. Certifique-se de que seu rosto esteja claramente visível e bem iluminado.</Text>
+			<Text lang="da">For at fuldføre din KYC-proces, tag en selfie. Sørg for, at dit ansigt er tydeligt synligt og godt belyst.</Text>
+			<Text lang="no">For å fullføre KYC-prosessen, ta en selfie. Sørg for at ansiktet ditt er tydelig synlig og godt opplyst.</Text>
+			<Text lang="fi">Viimeistelläksesi KYC-prosessin, ota selfie. Varmista, että kasvosi näkyvät selkeästi ja ovat hyvin valaistut.</Text>
+			<Text lang="fr">Pour terminer votre processus KYC, veuillez prendre un selfie. Assurez-vous que votre visage soit bien visible et bien éclairé.</Text>
+		</Description>
+		<Field id="selfieUpload" type="image" required="true">
+			<Placeholder>
+				<Text lang="en">Take picture...</Text>
+				<Text lang="sv">Ta bild...</Text>
+				<Text lang="es">Tomar foto...</Text>
+				<Text lang="pt">Tirar foto...</Text>
+				<Text lang="da">Tag billede...</Text>
+				<Text lang="no">Ta bilde...</Text>
+				<Text lang="fi">Ota kuva...</Text>
+				<Text lang="fr">Prendre une photo...</Text>
+			</Placeholder>
+				<Metadata>
+					<TargetWidth>800</TargetWidth>
+					<TargetHeight>800</TargetHeight>
+					<MinDpi>150</MinDpi>
+					<AllowUpload>false</AllowUpload>
+				</Metadata>
+				<Mapping key="ProfilePhoto" />
+			</Field>
+	</Page>
+	<Page id="isOrgPage">
+		<Title>
+			<Text lang="en">Are you applying for a Organizational ID?</Text>
+			<Text lang="sv">Ansöker du om ett organisations-ID?</Text>
+			<Text lang="es">¿Estás solicitando una identificación organizacional?</Text>
+			<Text lang="pt">Você está se candidatando a uma identificação organizacional?</Text>
+			<Text lang="da">Ansøger du om en organisatorisk ID?</Text>
+			<Text lang="no">Søker du om en organisasjons-ID?</Text>
+			<Text lang="fi">Haetko organisaation tunnistetta?</Text>
+			<Text lang="fr">Demandez-vous une identification organisationnelle ?</Text>
+		</Title>
+		<Field id="isOrg" type="checkbox">
+			<Default>false</Default>
+			<Options>
+				<Option value="yes">
+					<Text lang="en">Yes</Text>
+					<Text lang="sv">Ja</Text>
+					<Text lang="es">Sí</Text>
+					<Text lang="pt">Sim</Text>
+					<Text lang="da">Ja</Text>
+					<Text lang="no">Ja</Text>
+					<Text lang="fi">Kyllä</Text>
+					<Text lang="fr">Oui</Text>
+				</Option>
+			</Options>
+		</Field>
+	</Page>
+	<Page id="orgInfo">
+		<Title>
+			<Text lang="en">Organizational Information</Text>
+			<Text lang="sv">Organisationsinformation</Text>
+			<Text lang="es">Información organizacional</Text>
+			<Text lang="pt">Informações organizacionais</Text>
+			<Text lang="da">Organisatoriske oplysninger</Text>
+			<Text lang="no">Organisasjonsinformasjon</Text>
+			<Text lang="fi">Organisaation tiedot</Text>
+			<Text lang="fr">Informations organisationnelles</Text>
+		</Title>
+		<Description>
+			<Text lang="en">The Following organizational information will be included in the application for an Organizational ID</Text>
+			<Text lang="sv">Följande organisationsinformation kommer att ingå i ansökan om ett organisations-ID</Text>
+			<Text lang="es">La siguiente información organizacional se incluirá en la solicitud de una identificación organizacional</Text>
+			<Text lang="pt">As seguintes informações organizacionais serão incluídas na solicitação de uma identificação organizacional</Text>
+			<Text lang="da">Følgende organisatoriske oplysninger vil blive inkluderet i ansøgningen om en organisatorisk ID</Text>
+			<Text lang="no">Følgende organisasjonsinformasjon vil bli inkludert i søknaden om en organisasjons-ID</Text>
+			<Text lang="fi">Seuraavat organisaation tiedot sisällytetään organisaation tunnisteen hakemukseen</Text>
+			<Text lang="fr">Les informations organisationnelles suivantes seront incluses dans la demande d’une identification organisationnelle</Text>
+		</Description>
+		<Condition>
+			<FieldRef>isOrg</FieldRef>
+			<Equals>yes</Equals>
+		</Condition>
+			<Field id="orgName" type="text" required="true">
+			<Label>
+				<Text lang="en">Organization Name</Text>
+				<Text lang="sv">Organisationsnamn</Text>
+				<Text lang="es">Nombre de la organización</Text>
+				<Text lang="pt">Nome da organização</Text>
+				<Text lang="da">Organisationsnavn</Text>
+				<Text lang="no">Organisasjonsnavn</Text>
+				<Text lang="fi">Organisaation nimi</Text>
+				<Text lang="fr">Nom de l’organisation</Text>
+			</Label>
+				<Mapping key="ORGNAME" />
+			</Field>
+			<Field id="orgDepartment" type="text" required="true">
+			<Label>
+				<Text lang="en">Department</Text>
+				<Text lang="sv">Avdelning</Text>
+				<Text lang="es">Departamento</Text>
+				<Text lang="pt">Departamento</Text>
+				<Text lang="da">Afdeling</Text>
+				<Text lang="no">Avdeling</Text>
+				<Text lang="fi">Osasto</Text>
+				<Text lang="fr">Département</Text>
+			</Label>
+				<Mapping key="ORGDEPT" />
+			</Field>
+			<Field id="orgRole" type="text" required="true">
+			<Label>
+				<Text lang="en">Role</Text>
+				<Text lang="sv">Roll</Text>
+				<Text lang="es">Rol</Text>
+				<Text lang="pt">Função</Text>
+				<Text lang="da">Rolle</Text>
+				<Text lang="no">Rolle</Text>
+				<Text lang="fi">Rooli</Text>
+				<Text lang="fr">Rôle</Text>
+			</Label>
+				<Mapping key="ORGROLE" />
+			</Field>
+			<Field id="orgNumber" type="text" required="true">
+			<Label>
+				<Text lang="en">Organization Number</Text>
+				<Text lang="sv">Organisationsnummer</Text>
+				<Text lang="es">Número de organización</Text>
+				<Text lang="pt">Número da organização</Text>
+				<Text lang="da">Organisationsnummer</Text>
+				<Text lang="no">Organisasjonsnummer</Text>
+				<Text lang="fi">Organisaation numero</Text>
+				<Text lang="fr">Numéro d’organisation</Text>
+			</Label>
+				<Mapping key="ORGNR" />
+			</Field>
+			<Field id="orgAddress" type="text">
+			<Label>
+				<Text lang="en">Organization Address</Text>
+				<Text lang="sv">Organisationsadress</Text>
+				<Text lang="es">Dirección de la organización</Text>
+				<Text lang="pt">Endereço da organização</Text>
+				<Text lang="da">Organisationsadresse</Text>
+				<Text lang="no">Organisasjonsadresse</Text>
+				<Text lang="fi">Organisaation osoite</Text>
+				<Text lang="fr">Adresse de l’organisation</Text>
+			</Label>
+				<Mapping key="ORGADDR" />
+			</Field>
+			<Field id="orgAddress2" type="text">
+			<Label>
+				<Text lang="en">Organization Address 2</Text>
+				<Text lang="sv">Organisationsadress 2</Text>
+				<Text lang="es">Dirección de la organización 2</Text>
+				<Text lang="pt">Endereço da organização 2</Text>
+				<Text lang="da">Organisationsadresse 2</Text>
+				<Text lang="no">Organisasjonsadresse 2</Text>
+				<Text lang="fi">Organisaation osoite 2</Text>
+				<Text lang="fr">Adresse de l’organisation 2</Text>
+			</Label>
+				<Mapping key="ORGADDR2" />
+			</Field>
+			<Field id="orgZip" type="text">
+			<Label>
+				<Text lang="en">Organization Zip or Postal Code</Text>
+				<Text lang="sv">Organisations postnummer</Text>
+				<Text lang="es">Código postal de la organización</Text>
+				<Text lang="pt">Código postal da organização</Text>
+				<Text lang="da">Organisations postnummer</Text>
+				<Text lang="no">Organisasjonens postnummer</Text>
+				<Text lang="fi">Organisaation postinumero</Text>
+				<Text lang="fr">Code postal de l’organisation</Text>
+			</Label>
+				<Mapping key="ORGZIP" />
+			</Field>
+			<Field id="orgArea" type="text">
+			<Label>
+				<Text lang="en">Organization Area</Text>
+				<Text lang="sv">Organisationsområde</Text>
+				<Text lang="es">Zona de la organización</Text>
+				<Text lang="pt">Área da organização</Text>
+				<Text lang="da">Organisationsområde</Text>
+				<Text lang="no">Organisasjonsområde</Text>
+				<Text lang="fi">Organisaation alue</Text>
+				<Text lang="fr">Zone de l’organisation</Text>
+			</Label>
+				<Mapping key="ORGAREA" />
+			</Field>
+			<Field id="orgCity" type="text">
+			<Label>
+				<Text lang="en">Organization City</Text>
+				<Text lang="sv">Organisationsstad</Text>
+				<Text lang="es">Ciudad de la organización</Text>
+				<Text lang="pt">Cidade da organização</Text>
+				<Text lang="da">Organisationsby</Text>
+				<Text lang="no">Organisasjonsby</Text>
+				<Text lang="fi">Organisaation kaupunki</Text>
+				<Text lang="fr">Ville de l’organisation</Text>
+			</Label>
+				<Mapping key="ORGCITY" />
+			</Field>
+			<Field id="orgRegion" type="text">
+			<Label>
+				<Text lang="en">Organization Region or State</Text>
+				<Text lang="sv">Organisationsregion eller län</Text>
+				<Text lang="es">Región o estado de la organización</Text>
+				<Text lang="pt">Região ou estado da organização</Text>
+				<Text lang="da">Organisationsregion eller stat</Text>
+				<Text lang="no">Organisasjonsregion eller fylke</Text>
+				<Text lang="fi">Organisaation alue tai osavaltio</Text>
+				<Text lang="fr">Région ou État de l’organisation</Text>
+			</Label>
+				<Mapping key="ORGREGION" />
+			</Field>
+			<Field id="orgCountry" type="country" required="true">
+			<Label>
+				<Text lang="en">Organization Country</Text>
+				<Text lang="sv">Organisationsland</Text>
+				<Text lang="es">País de la organización</Text>
+				<Text lang="pt">País da organização</Text>
+				<Text lang="da">Organisationsland</Text>
+				<Text lang="no">Organisasjonsland</Text>
+				<Text lang="fi">Organisaation maa</Text>
+				<Text lang="fr">Pays de l’organisation</Text>
+			</Label>
+				<Mapping key="ORGCOUNTRY" />
+			</Field>
+	</Page>
+</KYCProcess>

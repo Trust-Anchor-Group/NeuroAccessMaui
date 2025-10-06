@@ -2624,8 +2624,8 @@
   <data name="ApplyIdInfoMainPage" xml:space="preserve">
     <value>Apply for a personal ID to get everything out of Neuro Access</value>
   </data>
-  <data name="CompleteIdButton" xml:space="preserve">
-    <value>Complete your personal ID</value>
+  <data name="GoToApplications" xml:space="preserve">
+    <value>Go to applications</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
@@ -2822,8 +2822,8 @@
   <data name="ClearCache" xml:space="preserve">
     <value>Clear cache</value>
   </data>
-  <data name="ClearCacheDescription" xml:space="preserve">
-    <value>Removes temporary data like images and attachments to free up space</value>
+  <data name="ClearBrandingAndKycCacheDescription" xml:space="preserve">
+    <value>Removes branding and KYC data for the current domain</value>
   </data>
   <data name="Apps" xml:space="preserve">
     <value>Apps</value>
@@ -2962,5 +2962,146 @@
   </data>
   <data name="LocationError" xml:space="preserve">
     <value>There was an error getting your location. Make sure location permissions are granted in your devices' settings</value>
+  </data>
+  <data name="Attachment_Passport" xml:space="preserve">
+    <value>Passport image</value>
+  </data>
+  <data name="Attachment_IdCardFront" xml:space="preserve">
+    <value>Front of ID card</value>
+  </data>
+  <data name="Attachment_IdCardBack" xml:space="preserve">
+    <value>Back of ID card</value>
+  </data>
+  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
+    <value>Front of driver's license</value>
+  </data>
+  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
+    <value>Back of driver's license</value>
+  </data>
+  <data name="Attachment_ProfilePhoto" xml:space="preserve">
+    <value>Photo of face</value>
+  </data>
+  <data name="Kyc_Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Return to summary</value>
+  </data>
+  <data name="Kyc_Exit" xml:space="preserve">
+    <value>Are you sure you would like to leave the Identity Application process?</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Progress</value>
+  </data>
+  <data name="TradeName" xml:space="preserve">
+    <value>Trade name</value>
+  </data>
+  <data name="LegalName" xml:space="preserve">
+    <value>Legal name</value>
+  </data>
+  <data name="OrgRepName" xml:space="preserve">
+    <value>Representative name</value>
+  </data>
+  <data name="OrgRepCPF" xml:space="preserve">
+    <value>Representative CPF</value>
+  </data>
+  <data name="OrgRepBirthDate" xml:space="preserve">
+    <value>Representative birth date</value>
+  </data>
+  <data name="OrgRepRG" xml:space="preserve">
+    <value>Representative RG</value>
+  </data>
+  <data name="OrgEMail" xml:space="preserve">
+    <value>Corporate email</value>
+  </data>
+  <data name="OrgPhone" xml:space="preserve">
+    <value>Corporate phone</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Full name</value>
+  </data>
+  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
+    <value>Article of association</value>
+  </data>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Removes temporary data like images and attachments to free up space</value>
+  </data>
+  <data name="ClearBrandingAndKycCache" xml:space="preserve">
+    <value>Clear branding &amp; KYC cache</value>
+  </data>
+  <data name="ApplicationUnderUnderReview" xml:space="preserve">
+    <value>Your application is under review. We will notify you when your ID is approved!</value>
+  </data>
+  <data name="SeeIDApplication" xml:space="preserve">
+    <value>See ID application</value>
+  </data>
+  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
+    <value>Your ID Application is sent for review. We will notify you when your ID is approved!</value>
+  </data>
+  <data name="ApplicationSummary" xml:space="preserve">
+    <value>Application Summary</value>
+  </data>
+  <data name="ApplicationSummaryDescription" xml:space="preserve">
+    <value>Before finalizing, please read through and ensure everything is correct</value>
+  </data>
+  <data name="ApplicationInformation" xml:space="preserve">
+    <value>Application Information</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Personal Details</value>
+  </data>
+  <data name="AddressDetails" xml:space="preserve">
+    <value>Address Details</value>
+  </data>
+  <data name="DocumentDetails" xml:space="preserve">
+    <value>Document Details</value>
+  </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>{0} is required</value>
+  </data>
+  <data name="PendingReview" xml:space="preserve">
+    <value>Pending review</value>
+  </data>
+  <data name="CurrentApplication" xml:space="preserve">
+    <value>Current application</value>
+  </data>
+  <data name="IdentityApplication" xml:space="preserve">
+    <value>Identity application</value>
+  </data>
+  <data name="AvailableApplications" xml:space="preserve">
+    <value>Available Applications</value>
+  </data>
+  <data name="ForYourIndividualUse" xml:space="preserve">
+    <value>For your individual use</value>
+  </data>
+  <data name="BeforeFinalizingSummary" xml:space="preserve">
+    <value>Before finalizing, please read through and ensure everything is correct</value>
+  </data>
+  <data name="CompanyInformation" xml:space="preserve">
+    <value>Company Information</value>
+  </data>
+  <data name="CompanyAddress" xml:space="preserve">
+    <value>Company Address</value>
+  </data>
+  <data name="CompanyRepresentative" xml:space="preserve">
+    <value>Company Representative</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Upload</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Take photo</value>
+  </data>
+  <data name="InReview" xml:space="preserve">
+    <value>In review</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>In Progress</value>
+  </data>
+  <data name="IdentityRejected" xml:space="preserve">
+    <value>Identity rejected. You can return to the applications page and update your information to try again.</value>
   </data>
 </root>

@@ -86,6 +86,38 @@ namespace NeuroAccessMaui
 		}
 
 		/// <summary>
+		/// XML Schemes (namespaces used also as schema registration keys) + packaged file names.
+		/// </summary>
+		public static class Schemes
+		{
+			// Namespace constants (as declared in XSD targetNamespace) - also used as schema registration keys.
+			public const string NeuroAccessBrandingV1 = "urn:neuroaccess:branding:1.0";
+			public const string NeuroAccessBrandingV2 = "urn:neuroaccess:branding:2.0";
+			public const string NeuroAccessBrandingV2Url = "https://paiwise.tagroot.io/Schema/NeuroAccessBrandingV2.xsd";
+			public const string KYCProcess = "urn:neuroaccess:kyc:1.0";
+			public const string NeuroAccessKycProcessUrl = "https://paiwise.tagroot.io/Schema/NeuroAccessKycProcess.xsd";
+
+			// Packaged schema file names (Resources/Raw flattened by MauiAsset)
+			public const string BrandingDescriptorV1File = "NeuroAccessBrandingV1.xsd";
+			public const string BrandingDescriptorV2File = "NeuroAccessBrandingV2.xsd";
+			public const string KycProcessFile = "KYCProcess.xsd"; // Legacy alias retained for compatibility.
+			public const string NeuroAccessKycProcessFile = "NeuroAccessKycProcess.xsd";
+
+			// Namespace key groups allow validation fallback during the URL migration.
+			public static readonly string[] KycNamespaceKeys = new string[]
+			{
+				NeuroAccessKycProcessUrl,
+				KYCProcess,
+			};
+
+			public static readonly string[] BrandingV2NamespaceKeys = new string[]
+			{
+				NeuroAccessBrandingV2Url,
+				NeuroAccessBrandingV2,
+			};
+		}
+
+		/// <summary>
 		/// IoT Schemes
 		/// </summary>
 		public static class UriSchemes
@@ -330,6 +362,11 @@ namespace NeuroAccessMaui
 			/// Last names
 			/// </summary>
 			public const string LastNames = "LAST";
+
+			/// <summary>
+			/// Full name
+			/// </summary>
+			public const string FullName = "FULLNAME";
 
 			/// <summary>
 			/// Personal number

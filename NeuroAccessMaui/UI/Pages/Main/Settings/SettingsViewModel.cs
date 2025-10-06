@@ -19,6 +19,8 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
+using NeuroAccessMaui.Services.Cache.Invalidation;
+using NeuroAccessMaui.Services.Kyc;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -609,15 +611,48 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		[RelayCommand]
 		private async Task ClearCacheAsync()
 		{
-			await Database.FindDelete<CacheEntry>(
-			new FilterFieldGreaterOrEqualTo("Url", string.Empty));
-			await Database.Provider.Flush();
+			try
+			{
+				// Internet cache
+				await Database.FindDelete<CacheEntry>(
+					new FilterFieldGreaterOrEqualTo("Url", string.Empty));
+				await Database.Provider.Flush();
 
-			await ServiceRef.UiService.DisplayAlert(
-				ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-				ServiceRef.Localizer[nameof(AppResources.CacheCleared)],
-				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				// Branding and KYC invalidations
+				string? domain = ServiceRef.TagProfile.Domain;
+				string? pubSub = ServiceRef.TagProfile.PubSubJid;
+				ICacheInvalidationService invalidation = Waher.Runtime.Inventory.Types.InstantiateDefault<ICacheInvalidationService>(false);
+				if (!string.IsNullOrWhiteSpace(domain))
+					await invalidation.InvalidateByParentId($"KycProcess:{domain}", scope: "Kyc");
+				if (!string.IsNullOrWhiteSpace(pubSub))
+					await invalidation.InvalidateByParentId(pubSub, scope: "Branding");
+
+				// ThemeService local cache
+				await ServiceRef.ThemeService.ClearBrandingCacheForCurrentDomain();
+
+
+				// Remove KYC drafts/current application (delete all, robustly)
+				IEnumerable<KycReference> drafts = Array.Empty<KycReference>();
+				try { drafts = await Database.Find<KycReference>(); } catch { /* ignore */ }
+				foreach (KycReference draft in drafts)
+				{
+					try { await Database.Delete(draft); } catch { /* ignore individual failures */ }
+				}
+				await Database.Provider.Flush();
+
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.CacheCleared)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
 		}
+
+
 		#endregion
 
 		public void SetBetaFeaturesEnabled(bool Enabled)

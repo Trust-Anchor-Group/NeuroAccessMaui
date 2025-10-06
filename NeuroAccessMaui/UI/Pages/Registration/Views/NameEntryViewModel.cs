@@ -135,7 +135,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		}
 
 
-		private async Task StartCooldownAsync(int seconds = 30)
+		private async Task StartCooldownAsync(int seconds = 3)
 		{
 			this.cooldownCts?.Cancel();
 			this.cooldownCts = new CancellationTokenSource();

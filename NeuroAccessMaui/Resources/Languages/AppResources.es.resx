@@ -2624,8 +2624,8 @@
   <data name="ApplyIdInfoMainPage" xml:space="preserve">
     <value>Solicite una identificación personal para aprovechar al máximo Neuro Access</value>
   </data>
-  <data name="CompleteIdButton" xml:space="preserve">
-    <value>Complete su identificación personal</value>
+  <data name="GoToApplications" xml:space="preserve">
+    <value>Ir a solicitudes</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Buscar</value>
@@ -2962,5 +2962,146 @@
   </data>
   <data name="LocationError" xml:space="preserve">
     <value>Hubo un error al obtener tu ubicación. Asegúrate de que los permisos de ubicación estén habilitados en la configuración de tu dispositivo</value>
+  </data>
+  <data name="Attachment_Passport" xml:space="preserve">
+    <value>Imagen del pasaporte</value>
+  </data>
+  <data name="Attachment_IdCardFront" xml:space="preserve">
+    <value>Parte frontal del documento de identidad</value>
+  </data>
+  <data name="Attachment_IdCardBack" xml:space="preserve">
+    <value>Parte trasera del documento de identidad</value>
+  </data>
+  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
+    <value>Frente de la licencia de conducir</value>
+  </data>
+  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
+    <value>Reverso de la licencia de conducir</value>
+  </data>
+  <data name="Attachment_ProfilePhoto" xml:space="preserve">
+    <value>Foto del rostro</value>
+  </data>
+  <data name="Kyc_Next" xml:space="preserve">
+    <value>Siguiente</value>
+  </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Volver al resumen</value>
+  </data>
+  <data name="Kyc_Exit" xml:space="preserve">
+    <value>¿Está seguro de que desea salir del proceso de solicitud de identidad?</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Progreso</value>
+  </data>
+  <data name="TradeName" xml:space="preserve">
+    <value>Nombre comercial</value>
+  </data>
+  <data name="LegalName" xml:space="preserve">
+    <value>Nombre legal</value>
+  </data>
+  <data name="OrgRepName" xml:space="preserve">
+    <value>Nombre del representante</value>
+  </data>
+  <data name="OrgRepCPF" xml:space="preserve">
+    <value>CPF del representante</value>
+  </data>
+  <data name="OrgRepBirthDate" xml:space="preserve">
+    <value>Fecha de nacimiento del representante</value>
+  </data>
+  <data name="OrgRepRG" xml:space="preserve">
+    <value>RG del representante</value>
+  </data>
+  <data name="OrgEMail" xml:space="preserve">
+    <value>Correo electrónico corporativo</value>
+  </data>
+  <data name="OrgPhone" xml:space="preserve">
+    <value>Teléfono corporativo</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Nombre completo</value>
+  </data>
+  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
+    <value>Estatutos sociales</value>
+  </data>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Elimina datos temporales como imágenes y archivos adjuntos para liberar espacio</value>
+  </data>
+  <data name="ClearBrandingAndKycCache" xml:space="preserve">
+    <value>Limpiar caché de branding y KYC</value>
+  </data>
+  <data name="ApplicationUnderUnderReview" xml:space="preserve">
+    <value>Tu solicitud está en revisión. ¡Te notificaremos cuando tu identificación sea aprobada!</value>
+  </data>
+  <data name="SeeIDApplication" xml:space="preserve">
+    <value>Ver solicitud de ID</value>
+  </data>
+  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
+    <value>Tu solicitud de identificación ha sido enviada para revisión. ¡Te notificaremos cuando tu identificación sea aprobada!</value>
+  </data>
+  <data name="ApplicationSummary" xml:space="preserve">
+    <value>Resumen de la solicitud</value>
+  </data>
+  <data name="ApplicationSummaryDescription" xml:space="preserve">
+    <value>Antes de finalizar, por favor revisa y asegúrate de que todo esté correcto</value>
+  </data>
+  <data name="ApplicationInformation" xml:space="preserve">
+    <value>Información de la solicitud</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Datos personales</value>
+  </data>
+  <data name="AddressDetails" xml:space="preserve">
+    <value>Detalles de la dirección</value>
+  </data>
+  <data name="DocumentDetails" xml:space="preserve">
+    <value>Detalles del documento</value>
+  </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>{0} es obligatorio</value>
+  </data>
+  <data name="PendingReview" xml:space="preserve">
+    <value>Pendiente de revisión</value>
+  </data>
+  <data name="CurrentApplication" xml:space="preserve">
+    <value>Solicitud actual</value>
+  </data>
+  <data name="IdentityApplication" xml:space="preserve">
+    <value>Solicitud de identidad</value>
+  </data>
+  <data name="AvailableApplications" xml:space="preserve">
+    <value>Solicitudes disponibles</value>
+  </data>
+  <data name="ForYourIndividualUse" xml:space="preserve">
+    <value>Para su uso individual</value>
+  </data>
+  <data name="BeforeFinalizingSummary" xml:space="preserve">
+    <value>Antes de finalizar, lea y asegúrese de que todo sea correcto</value>
+  </data>
+  <data name="CompanyInformation" xml:space="preserve">
+    <value>Información de la empresa</value>
+  </data>
+  <data name="CompanyAddress" xml:space="preserve">
+    <value>Dirección de la empresa</value>
+  </data>
+  <data name="CompanyRepresentative" xml:space="preserve">
+    <value>Representante de la empresa</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Subir</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Tomar foto</value>
+  </data>
+  <data name="InReview" xml:space="preserve">
+    <value>En revisión</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>En progreso</value>
+  </data>
+  <data name="IdentityRejected" xml:space="preserve">
+    <value>Identidad rechazada. Puede volver a la página de solicitudes y actualizar su información para intentarlo de nuevo.</value>
   </data>
 </root>

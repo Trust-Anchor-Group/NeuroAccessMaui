@@ -2,12 +2,10 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Xml;
-using System.Xml.Schema;
 using CommunityToolkit.Maui.Core;
 using NeuroAccessMaui.Resources.Styles;
 using NeuroAccessMaui.Services.Cache;
 using NeuroAccessMaui.UI;
-using Waher.Content.Xsl;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Theme
@@ -27,16 +25,8 @@ namespace NeuroAccessMaui.Services.Theme
 		private const string localFlagKey = "IsLocalThemeDictionary";
 		private static readonly TimeSpan themeExpiry = Constants.Cache.DefaultImageCache;
 
-		private static readonly Lazy<Task<XmlSchema>> brandingSchemaV1Lazy = new(async () =>
-		{
-			using Stream Stream1 = await FileSystem.OpenAppPackageFileAsync("NeuroAccessBrandingV1.xsd");
-			return XSL.LoadSchema(Stream1, "NeuroAccessBrandingV1.xsd");
-		});
-		private static readonly Lazy<Task<XmlSchema>> brandingSchemaV2Lazy = new(async () =>
-		{
-			using Stream Stream2 = await FileSystem.OpenAppPackageFileAsync("NeuroAccessBrandingV2.xsd");
-			return XSL.LoadSchema(Stream2, "NeuroAccessBrandingV2.xsd");
-		});
+		// Keys used for validation (registered in MauiProgram) now use the namespace URNs directly.
+		private static readonly string brandingSchemaKeyV1 = Constants.Schemes.NeuroAccessBrandingV1;
 
 		// Provider theme application state & retry
 		private enum ProviderThemeStatus { NotStarted, InProgress, Applied, NotSupported, FailedPermanent }
@@ -51,7 +41,6 @@ namespace NeuroAccessMaui.Services.Theme
 
 		private readonly FileCacheManager cacheManager;
 		private readonly Dictionary<string, Uri> imageUrisMap;
-		//private SemaphoreSlim? themeSemaphore;
 		private ResourceDictionary? localLightDict = new Light();
 		private ResourceDictionary? localDarkDict = new Dark();
 		private AppTheme? lastAppliedLocalTheme;
@@ -62,7 +51,6 @@ namespace NeuroAccessMaui.Services.Theme
 		/// </summary>
 		public ThemeService()
 		{
-			//this.themeSemaphore = new SemaphoreSlim(1, 1);
 			this.cacheManager = new FileCacheManager("BrandingThemes", themeExpiry);
 			this.imageUrisMap = new(StringComparer.OrdinalIgnoreCase);
 		}
@@ -255,11 +243,14 @@ namespace NeuroAccessMaui.Services.Theme
 			byte[]? Bytes = await this.FetchOrGetCachedAsync(Uri, Key);
 			if (Bytes is not null)
 			{
+				string XmlString = Encoding.UTF8.GetString(Bytes);
+				bool Valid = await this.ValidateBrandingXmlAsync(XmlString, IsV2, Domain);
+				if (!Valid)
+					return (false, null, BrandingFetchClassification.PermanentFailure);
 				try
 				{
-					XmlDocument Doc = new(); Doc.LoadXml(Encoding.UTF8.GetString(Bytes));
-					bool Valid = await this.ValidateBrandingXmlAsync(Doc, IsV2);
-					if (!Valid) return (false, null, BrandingFetchClassification.PermanentFailure);
+					XmlDocument Doc = new();
+					Doc.LoadXml(XmlString);
 					return (true, Doc, BrandingFetchClassification.Success);
 				}
 				catch (Exception Ex)
@@ -310,7 +301,11 @@ namespace NeuroAccessMaui.Services.Theme
 
 		private async Task ApplyV2Async(XmlDocument Doc)
 		{
-			XmlElement? Root = Doc.DocumentElement; if (Root is null || Root.NamespaceURI != "urn:neuroaccess:branding:2.0") return;
+			XmlElement? Root = Doc.DocumentElement;
+			if (Root is null)
+				return;
+			if (System.Array.IndexOf(Constants.Schemes.BrandingV2NamespaceKeys, Root.NamespaceURI) < 0)
+				return;
 			this.imageUrisMap.Clear();
 			foreach (XmlElement Node in Root.SelectNodes("//*[local-name()='ImageRef']")?.OfType<XmlElement>() ?? [])
 			{
@@ -365,7 +360,7 @@ namespace NeuroAccessMaui.Services.Theme
 		private async Task ApplyV1Async(XmlDocument Doc)
 		{
 			XmlElement? Root = Doc.DocumentElement;
-			if (Root is null)
+			if (Root is null || Root.NamespaceURI != Constants.Schemes.NeuroAccessBrandingV1)
 				return;
 			this.imageUrisMap.Clear();
 			foreach (XmlElement Node in Root.SelectNodes("//*[local-name()='ImageRef']")?.OfType<XmlElement>() ?? [])
@@ -434,28 +429,67 @@ namespace NeuroAccessMaui.Services.Theme
 		{
 			try
 			{
-				(byte[]? Cached, _) = await this.cacheManager.TryGet(Key); if (Cached is not null) return Cached;
-				(byte[]? Fetched, _) = await ServiceRef.InternetCacheService.GetOrFetch(Uri, ServiceRef.TagProfile.PubSubJid!, true);
-				if (Fetched is not null)
-					await this.cacheManager.AddOrUpdate(Key, ServiceRef.TagProfile.PubSubJid!, true, Fetched, "application/xml");
-				return Fetched;
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(new Exception($"FetchOrGetCachedAsync failed for {Uri}", Ex));
+                (byte[]? Cached, _) = await this.cacheManager.TryGet(Key); if (Cached is not null) return Cached;
+                (byte[]? Fetched, _) = await ServiceRef.InternetCacheService.GetOrFetch(Uri, ServiceRef.TagProfile.PubSubJid!, false);
+                if (Fetched is not null)
+                    await this.cacheManager.AddOrUpdate(Key, ServiceRef.TagProfile.PubSubJid!, false, Fetched, "application/xml");
+                return Fetched;
+            }
+            catch (Exception Ex)
+            {
+                ServiceRef.LogService.LogException(new Exception($"FetchOrGetCachedAsync failed for {Uri}", Ex));
 				return null;
 			}
 		}
 
-		private async Task<bool> ValidateBrandingXmlAsync(XmlDocument Doc, bool V2)
+		private async Task<bool> ValidateBrandingXmlAsync(string Xml, bool V2, string Domain)
 		{
 			try
 			{
-				XmlSchema Schema = V2 ? await brandingSchemaV2Lazy.Value : await brandingSchemaV1Lazy.Value;
-				XSL.Validate("BrandingDescriptor", Doc, Schema); return true;
+				if (V2)
+				{
+					foreach (string SchemaKey in Constants.Schemes.BrandingV2NamespaceKeys)
+					{
+						bool Valid = await ServiceRef.XmlSchemaValidationService.ValidateAsync(SchemaKey, Xml).ConfigureAwait(false);
+						if (!Valid)
+							continue;
+						if (string.Equals(SchemaKey, Constants.Schemes.NeuroAccessBrandingV2Url, StringComparison.Ordinal))
+						{
+							ServiceRef.LogService.LogDebug("BrandingXmlValidationPrimarySuccess", new KeyValuePair<string, object?>("Domain", Domain));
+						}
+						else
+						{
+							ServiceRef.LogService.LogInformational(
+								"BrandingXmlValidationFallbackSuccess",
+								new KeyValuePair<string, object?>("Domain", Domain),
+								new KeyValuePair<string, object?>("LegacyKey", SchemaKey));
+						}
+						return true;
+					}
+
+					ServiceRef.LogService.LogWarning(
+						"BrandingXmlValidationBothFailed",
+						new KeyValuePair<string, object?>("Domain", Domain),
+						new KeyValuePair<string, object?>("PrimaryKey", Constants.Schemes.NeuroAccessBrandingV2Url),
+						new KeyValuePair<string, object?>("LegacyKey", Constants.Schemes.NeuroAccessBrandingV2));
+					return false;
+				}
+
+				bool ValidV1 = await ServiceRef.XmlSchemaValidationService.ValidateAsync(brandingSchemaKeyV1, Xml).ConfigureAwait(false);
+				if (!ValidV1)
+				{
+					ServiceRef.LogService.LogWarning(
+						"BrandingXmlValidationV1Failed",
+						new KeyValuePair<string, object?>("Domain", Domain),
+						new KeyValuePair<string, object?>("Key", brandingSchemaKeyV1));
+				}
+				return ValidV1;
 			}
 			catch (Exception Ex)
-			{ ServiceRef.LogService.LogException(new Exception($"XSD validation failed for schema version {(V2 ? "V2" : "V1")}.", Ex)); return false; }
+			{
+				ServiceRef.LogService.LogException(new Exception($"Branding XML validation failed for schema version {(V2 ? "V2" : "V1")}.", Ex), new KeyValuePair<string, object?>("Domain", Domain));
+				return false;
+			}
 		}
 
 		private void RemoveAllThemeDictionaries(ICollection<ResourceDictionary> Merged, ResourceDictionary? Instance)
@@ -464,14 +498,23 @@ namespace NeuroAccessMaui.Services.Theme
 			foreach (ResourceDictionary? D in Merged.Where(D => D.ContainsKey(localFlagKey) || D.ContainsKey(providerFlagKey)).ToList()) Merged.Remove(D);
 		}
 
+		/// <summary>
+		/// Clears locally cached branding descriptors for the current provider domain.
+		/// </summary>
+		public Task<int> ClearBrandingCacheForCurrentDomain()
+		{
+			string? parentId = ServiceRef.TagProfile.PubSubJid;
+			if (string.IsNullOrWhiteSpace(parentId))
+				return Task.FromResult(0);
+			return this.cacheManager.RemoveByParentId(parentId);
+		}
+
 		private void Dispose(bool disposing)
 		{
 			if (!this.disposedValue)
 			{
 				if (disposing)
 				{
-				//	this.themeSemaphore?.Dispose();
-				//f	this.themeSemaphore = null;
 				}
 				this.disposedValue = true;
 			}

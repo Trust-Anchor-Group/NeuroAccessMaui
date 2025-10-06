@@ -658,6 +658,14 @@
 	</Style>
 
 	<!-- Icon Button -->
+	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
+		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonBorder}" />
+		<Setter Property="SvgTintColor" Value="{DynamicResource ButtonNeutralNavButtonsContentActiveWL}" />
+		<Setter Property="SvgAspect" Value="AspectFit"/>
+		<Setter Property="SvgStyle" Value="{DynamicResource IconButtonSvg}" />
+		<Setter Property="LabelStyle" Value="{DynamicResource DurationLabel}"/>
+	</Style>
+	
 	<Style x:Key="IconButtonBorder" ApplyToDerivedTypes="False" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="{DynamicResource ButtonNeutralNavButtonsbgActiveWL}"/>
 		<Setter Property="Padding" Value="{DynamicResource SmallMargins}"/>
@@ -681,12 +689,20 @@
 				Value="24" />
 	</Style>
 
-	<Style x:Key="IconButton" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
-		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonBorder}" />
-		<Setter Property="SvgTintColor" Value="{DynamicResource ButtonNeutralNavButtonsContentActiveWL}" />
+	<Style x:Key="IconButtonSmall" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
+		<Setter Property="SvgTintColor" Value="{DynamicResource ContentSecondaryWL}"/>
 		<Setter Property="SvgAspect" Value="AspectFit"/>
-		<Setter Property="SvgStyle" Value="{DynamicResource IconButtonSvg}" />
+		<Setter Property="SvgStyle" Value="{DynamicResource IconButtonSmallSvg}"/>
 		<Setter Property="LabelStyle" Value="{DynamicResource DurationLabel}"/>
+	</Style>
+
+	<Style x:Key="IconButtonSmallSvg"
+		   ApplyToDerivedTypes="False"
+		   TargetType="controls:SvgView">
+		<Setter Property="HeightRequest"
+				Value="20" />
+		<Setter Property="WidthRequest"
+				Value="20" />
 	</Style>
 
 	<Style x:Key="NeuroIconButton" ApplyToDerivedTypes="True" TargetType="controls:SvgButton">
