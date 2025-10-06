@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- KYC XML schemas, sample processes, and parser support for dynamic flow definitions.
+- Dedicated  domain, including autosave, validation, and summary materialization.
+- New  UI with summary sections, peer review hooks, and progress indicators.
+- Identity summary formatter to shape output for the review screen.
+- Async MVVM policy framework (, , etc.) used across loaders.
 - Added coordinate parameter to Smart Contracts
 - Added text to explain validation of Password/PIN
 - New views when creating contract
@@ -24,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Applications page/view-model now load drafts through  pipelines and expose the active .
+- Cache services, fetch abstractions, and schema registration were adjusted to support the new flow and XML validation.
+- Branding, buttons, pickers, and other shared styles updated to align with the KYC experience visuals.
 - Temporarily disabled e2e encryption in chat
 - Updated  to display validation feedback in input controls
 - Refactored  for naming consistency and improved readability
@@ -50,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Legacy  implementation superseded by the new  infrastructure.
 - Unused contract overview views and associated XAML files (, )
 - Usage of AppThemeBinding, except for images
 - --
