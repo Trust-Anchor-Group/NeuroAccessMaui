@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<KYCProcess xmlns="https://paiwise.tagroot.io/Schema/NeuroAccessKycProcess.xsd">
+	<Name>
+		<Text lang="en">Personal ID</Text>
+		<Text lang="pt">Identificação pessoal</Text>
+		<Text lang="sv">Personligt ID</Text>
+	</Name>
+	<Page id="prepareDocuments">
+		<Title>
+			<Text lang="en">Before we start, we'd like to give you a tip.</Text>
+			<Text lang="pt">Antes de começar, gostaríamos de lhe dar uma dica.</Text>
+		</Title>
+		<Description>
+			<Text lang="en">We'll ask for an official photo ID and proof of residence, so why not get them ready?</Text>
+			<Text lang="pt">Vamos pedir um documento de identificação oficial com foto e comprovante de residência, então por que não prepará-los?</Text>
+		</Description>
+	</Page>
+	<Page id="namePage">
+		<Title>
+			<Text lang="en">Nice to meet you, what's your name?</Text>
+			<Text lang="pt">Prazer em conhecê-lo, qual é o seu nome?</Text>
+		</Title>
+		<Field id="fullName" type="text" required="true">
+			<Label>
+				<Text lang="en">Full name</Text>
+				<Text lang="pt">Nome completo</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Full name</Text>
+				<Text lang="pt">Nome Completo</Text>
+			</Placeholder>
+			<ValidationRules>
+				<LengthRule min="2">
+					<Message>
+						<Text lang="en">Please enter your full name</Text>
+						<Text lang="pt">Por favor, insira seu nome completo</Text>
+					</Message>
+				</LengthRule>
+				<RegexRule>
+					<Regex>^[\D]+$</Regex>
+					<Message>
+						<Text lang="en">Name cannot contain numbers or special characters.</Text>
+						<Text lang="pt">O nome não pode conter números ou caracteres especiais.</Text>
+					</Message>
+				</RegexRule>
+			</ValidationRules>
+			<Mapping key="FULLNAME" />
+		</Field>
+	</Page>
+	<Page id="documentNumberPage">
+		<Title>
+			<Text lang="en">Enter your Identity document number</Text>
+			<Text lang="pt">Digite o número do seu documento de identidade</Text>
+		</Title>
+		<Field id="documentNumber" type="text" required="true">
+			<Label>
+				<Text lang="en">CPF</Text>
+				<Text lang="pt">CPF</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">CPF</Text>
+				<Text lang="pt">CPF</Text>
+			</Placeholder>
+			<Metadata>
+				<Placeholder>pnr</Placeholder>
+			</Metadata>
+			<ValidationRules>
+				<PersonalNumberRule>
+					<Message>
+						<Text lang="en">Please enter a valid CPF based on the selected country.</Text>
+						<Text lang="pt">Por favor, insira um CPF válido de acordo com o país selecionado.</Text>
+					</Message>
+				</PersonalNumberRule>
+			</ValidationRules>
+			<Mapping key="PNR" />
+		</Field>
+	</Page>
+	<Page id="dateOfBirh">
+		<Title>
+			<Text lang="en">What's your date of birth?</Text>
+			<Text lang="pt">Qual é a sua data de nascimento?</Text>
+		</Title>
+		<Field id="dob" type="date" required="true">
+			<Label>
+				<Text lang="en">Date of Birth</Text>
+				<Text lang="pt">Data de nascimento</Text>
+			</Label>
+			<ValidationRules>
+				<DateRangeRule min="1900-01-01" max="2025-01-01">
+					<Message>
+						<Text lang="en">Enter a valid date between 1900 and 2025</Text>
+						<Text lang="pt">Insira uma data válida entre 1900 e 2025</Text>
+					</Message>
+				</DateRangeRule>
+			</ValidationRules>
+			<Mapping key="BDAY">
+				<Transform name="day" />
+			</Mapping>
+			<Mapping key="BMONTH">
+				<Transform name="month" />
+			</Mapping>
+			<Mapping key="BYEAR">
+				<Transform name="year" />
+			</Mapping>
+		</Field>
+	</Page>
+	<Page id="identityDocuments">
+		<Title>
+			<Text lang="en">Let's validate your data through a photo ID</Text>
+			<Text lang="pt">Vamos validar seus dados através de um documento com foto</Text>
+		</Title>
+		<Description>
+			<Text lang="en">It can be an ID card, driver's license, or passport.</Text>
+			<Text lang="pt">Pode ser um RG, CNH ou passaporte.</Text>
+		</Description>
+		<Field id="documentType" type="picker" required="true">
+			<Label>
+				<Text lang="en">Document Type</Text>
+				<Text lang="pt">Tipo de documento</Text>
+			</Label>
+			<Options>
+				<Option value="passport">
+					<Text lang="en">Passport</Text>
+					<Text lang="pt">Passaporte</Text>
+				</Option>
+				<Option value="identityCard">
+					<Text lang="en">ID Card</Text>
+					<Text lang="pt">Carteira de identidade</Text>
+				</Option>
+				<Option value="driversLicense">
+					<Text lang="en">Driver's license</Text>
+					<Text lang="pt">Carteira de motorista</Text>
+				</Option>
+			</Options>
+		</Field>
+	</Page>
+	<Page id="passportPage">
+		<Title>
+			<Text lang="en">Upload a photo of your passport</Text>
+			<Text lang="pt">Envie uma foto do seu passaporte</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Make sure all information is clearly visible</Text>
+			<Text lang="pt">Certifique-se de que todas as informações estejam legíveis</Text>
+		</Description>
+		<Condition>
+			<FieldRef>documentType</FieldRef>
+			<Equals>passport</Equals>
+		</Condition>
+		<!-- Passport Upload Field (shown if passport is selected) -->
+			<Field id="passportUpload" type="image" specialType="passport" required="true">
+			<Label>
+				<Text lang="en">Passport</Text>
+				<Text lang="pt">Passaporte</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Choose file...</Text>
+				<Text lang="pt">Escolher arquivo...</Text>
+			</Placeholder>
+				<Metadata>
+					<TargetWidth>1200</TargetWidth>
+					<TargetHeight>1600</TargetHeight>
+					<MinDpi>300</MinDpi>
+				</Metadata>
+				<Mapping key="Passport" />
+			</Field>
+	</Page>
+	<Page id="identityCardPage">
+		<Title>
+			<Text lang="en">Let's validate your data through a photo of your identity card.</Text>
+			<Text lang="pt">Vamos validar seus dados através de uma foto do seu RG.</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Make sure your name and photo is clearly visible.</Text>
+			<Text lang="pt">Certifique-se de que seu nome e foto estejam legíveis.</Text>
+		</Description>
+		<Condition>
+			<FieldRef>documentType</FieldRef>
+			<Equals>identityCard</Equals>
+		</Condition>
+		<!-- Identity Card Upload Field (shown if identityCard is selected) -->
+			<Field id="identityCardFront" type="image" specialType="identityCardFront" required="true">
+			<Label>
+				<Text lang="en">Identity card front</Text>
+				<Text lang="pt">Frente do RG</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Front of document...</Text>
+				<Text lang="pt">Frente do documento...</Text>
+			</Placeholder>
+				<Metadata>
+					<TargetWidth>1000</TargetWidth>
+					<TargetHeight>1500</TargetHeight>
+					<MinDpi>200</MinDpi>
+				</Metadata>
+				<Mapping key="IdCardFront" />
+			</Field>
+			<Field id="identityCardBack" type="image" specialType="identityCardBack" required="true">
+			<Label>
+				<Text lang="en">Identity card back</Text>
+				<Text lang="pt">Verso do RG</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Back of document...</Text>
+				<Text lang="pt">Verso do documento...</Text>
+			</Placeholder>
+				<Metadata>
+					<TargetWidth>1000</TargetWidth>
+					<TargetHeight>1500</TargetHeight>
+					<MinDpi>200</MinDpi>
+				</Metadata>
+				<Mapping key="IdCardBack" />
+			</Field>
+	</Page>
+	<Page id="driversLicensePage">
+		<Title>
+			<Text lang="en">Let's validate your data through a photo of your driver's license.</Text>
+			<Text lang="pt">Vamos validar seus dados através de uma foto da sua CNH.</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Make sure your information is clearly visible.</Text>
+			<Text lang="pt">Certifique-se de que suas informações estejam legíveis.</Text>
+		</Description>
+		<Condition>
+			<FieldRef>documentType</FieldRef>
+			<Equals>driversLicense</Equals>
+		</Condition>
+		<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
+			<Field id="driverslicenseFront" type="image" specialType="driversLicenseFront" required="true">
+			<Label>
+				<Text lang="en">Drivers' license front</Text>
+				<Text lang="pt">Frente da CNH</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Front of document...</Text>
+				<Text lang="pt">Frente do documento...</Text>
+			</Placeholder>
+				<Metadata>
+					<TargetWidth>900</TargetWidth>
+					<TargetHeight>600</TargetHeight>
+					<MinDpi>150</MinDpi>
+				</Metadata>
+				<Mapping key="DriverLicenseFront" />
+			</Field>
+		<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
+			<Field id="driverslicenseBack" type="image" specialType="driversLicenseBack" required="true">
+			<Label>
+				<Text lang="en">Drivers' license back</Text>
+				<Text lang="pt">Verso da CNH</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Back of document...</Text>
+				<Text lang="pt">Verso do documento...</Text>
+			</Placeholder>
+				<Metadata>
+					<TargetWidth>900</TargetWidth>
+					<TargetHeight>600</TargetHeight>
+					<MinDpi>150</MinDpi>
+				</Metadata>
+				<Mapping key="DriverLicenseBack" />
+			</Field>
+	</Page>
+	<Page id="selfiePage">
+		<Title>
+			<Text lang="en">Take a photo of yourself.</Text>
+			<Text lang="pt">Tire uma foto sua.</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Please take a selfie to confirm your identity. Look at the camera and hold your face steady.</Text>
+			<Text lang="pt">Por favor, tire uma selfie para confirmar sua identidade. Olhe para a câmera e mantenha o rosto firme.</Text>
+		</Description>
+			<Field id="selfieUpload" type="image" required="true">
+			<Label>
+				<Text lang="en">Selfie</Text>
+				<Text lang="pt">Selfie</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Upload your photo...</Text>
+				<Text lang="pt">Envie sua foto...</Text>
+			</Placeholder>
+				<Metadata>
+					<TargetWidth>800</TargetWidth>
+					<TargetHeight>800</TargetHeight>
+					<MinDpi>150</MinDpi>
+					<AllowUpload>false</AllowUpload>
+				</Metadata>
+				<Mapping key="ProfilePhoto" />
+			</Field>
+	</Page>
+	<Page id="addressInformation">
+		<Title>
+			<Text lang="en">Fill in your address information</Text>
+			<Text lang="pt">Preencha suas informações de endereço</Text>
+		</Title>
+			<Field id="zipCode" type="text" required="true">
+			<Label>
+				<Text lang="en">Zip Code</Text>
+				<Text lang="pt">CEP</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Zip or postal code</Text>
+				<Text lang="pt">CEP ou código postal</Text>
+			</Placeholder>
+				<Mapping key="ZIP" />
+			</Field>
+			<Field id="address" type="text" required="true">
+			<Label>
+				<Text lang="en">Address</Text>
+				<Text lang="pt">Endereço</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Address</Text>
+				<Text lang="pt">Endereço</Text>
+			</Placeholder>
+				<Mapping key="ADDR" />
+			</Field>
+			<Field id="area" type="text" required="true">
+			<Label>
+				<Text lang="en">Area</Text>
+				<Text lang="pt">Bairro</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">Area</Text>
+				<Text lang="pt">Bairro</Text>
+			</Placeholder>
+				<Mapping key="AREA" />
+			</Field>
+			<Field id="city" type="text" required="true">
+			<Label>
+				<Text lang="en">City</Text>
+				<Text lang="pt">Cidade</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">City</Text>
+				<Text lang="pt">Cidade</Text>
+			</Placeholder>
+				<Mapping key="CITY" />
+			</Field>
+			<Field id="state" type="text" required="true">
+			<Label>
+				<Text lang="en">State</Text>
+				<Text lang="pt">Estado</Text>
+			</Label>
+			<Placeholder>
+				<Text lang="en">State</Text>
+				<Text lang="pt">Estado</Text>
+			</Placeholder>
+				<Mapping key="REGION" />
+			</Field>
+	</Page>
+	<Page id="tocPage">
+		<Title>
+			<Text lang="en">Terms and Conditions</Text>
+			<Text lang="pt">Termos e Condições</Text>
+		</Title>
+		<Description>
+			<Text lang="en">Please read and accept our terms and conditions to continue.</Text>
+			<Text lang="pt">Por favor, leia e aceite nossos termos e condições para continuar.</Text>
+		</Description>
+		<Field id="tos" type="info">
+			<Label>
+				<Text lang="en">Lorem ipsum dolor sit amet</Text>
+				<Text lang="pt">Lorem ipsum dolor sit amet</Text>
+			</Label>
+			<Description>
+				<Text lang="en">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla in massa in euismod. Sed pretium enim id bibendum euismod. Proin eget rhoncus turpis. Etiam finibus lorem ut diam efficitur, et aliquam eros finibus. Nunc ante tortor, aliquet sit amet facilisis venenatis, mattis sit amet ipsum. Vestibulum semper et ligula quis varius. Phasellus eros nisl, elementum in odio eget, blandit malesuada eros. Phasellus iaculis, velit non pharetra ullamcorper, enim purus facilisis ante, in ornare ligula quam eu augue.
+
+Fusce venenatis nunc quam, nec imperdiet diam varius id. Nullam pellentesque hendrerit justo, in tincidunt nulla placerat ac. Etiam sagittis nibh dolor, non bibendum augue sagittis non. Praesent hendrerit enim dui, feugiat ullamcorper lacus semper eget. Quisque arcu mi, sodales sit amet nisl ut, venenatis mollis lacus. Donec massa dolor, pellentesque in nisi ac, faucibus viverra est. Integer sit amet fringilla mi. Phasellus sed imperdiet nunc, quis bibendum nisl.
+
+Aliquam pharetra magna vel sapien fermentum, eu venenatis orci pulvinar. Morbi quis turpis id lectus ultrices efficitur a quis metus. Pellentesque consectetur sollicitudin varius. Maecenas tristique elit nisi, vitae pellentesque ligula pretium in. Duis a quam metus. Morbi imperdiet scelerisque ex eget vehicula. Vivamus malesuada ac neque a mollis. Sed hendrerit accumsan gravida. Pellentesque malesuada elementum quam quis finibus. Duis iaculis sem fermentum sapien ornare, quis molestie lorem bibendum. Curabitur consectetur blandit eros id efficitur.
+
+Vestibulum cursus sodales ornare. Aenean quis vestibulum neque. Suspendisse sed odio consectetur, commodo mi nec, elementum ligula. Sed non finibus diam. Curabitur aliquam erat vel enim iaculis eleifend. Nullam magna tortor, laoreet a augue ut, suscipit condimentum arcu. Curabitur fermentum iaculis hendrerit. Sed quis luctus magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla sed enim sed lacus ullamcorper volutpat. Morbi placerat, elit sit amet egestas vulputate, ante ex iaculis nulla, sit amet efficitur quam dui pretium ligula. Fusce justo turpis, cursus at ex at, consectetur cursus risus. Duis sed augue nec sapien auctor volutpat. Nullam blandit blandit justo, vitae lobortis mauris bibendum eget. Morbi maximus mattis pulvinar. Duis non finibus dui.
+
+Proin placerat, nisl efficitur viverra dictum, quam nisl semper turpis, rhoncus gravida quam dolor vitae nibh. Fusce leo lacus, interdum sed felis ut, sagittis vulputate ex. Donec eget enim ac diam laoreet cursus non non sem. In posuere lacus nec velit interdum luctus. Praesent quis facilisis mi. Donec eget malesuada ligula. Quisque cursus ex vitae venenatis egestas.
+				</Text>
+				<Text lang="pt">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas fringilla in massa in euismod. Sed pretium enim id bibendum euismod. Proin eget rhoncus turpis. Etiam finibus lorem ut diam efficitur, et aliquam eros finibus. Nunc ante tortor, aliquet sit amet facilisis venenatis, mattis sit amet ipsum. Vestibulum semper et ligula quis varius. Phasellus eros nisl, elementum in odio eget, blandit malesuada eros. Phasellus iaculis, velit non pharetra ullamcorper, enim purus facilisis ante, in ornare ligula quam eu augue.
+
+Fusce venenatis nunc quam, nec imperdiet diam varius id. Nullam pellentesque hendrerit justo, in tincidunt nulla placerat ac. Etiam sagittis nibh dolor, non bibendum augue sagittis non. Praesent hendrerit enim dui, feugiat ullamcorper lacus semper eget. Quisque arcu mi, sodales sit amet nisl ut, venenatis mollis lacus. Donec massa dolor, pellentesque in nisi ac, faucibus viverra est. Integer sit amet fringilla mi. Phasellus sed imperdiet nunc, quis bibendum nisl.
+
+Aliquam pharetra magna vel sapien fermentum, eu venenatis orci pulvinar. Morbi quis turpis id lectus ultrices efficitur a quis metus. Pellentesque consectetur sollicitudin varius. Maecenas tristique elit nisi, vitae pellentesque ligula pretium in. Duis a quam metus. Morbi imperdiet scelerisque ex eget vehicula. Vivamus malesuada ac neque a mollis. Sed hendrerit accumsan gravida. Pellentesque malesuada elementum quam quis finibus. Duis iaculis sem fermentum sapien ornare, quis molestie lorem bibendum. Curabitur consectetur blandit eros id efficitur.
+
+Vestibulum cursus sodales ornare. Aenean quis vestibulum neque. Suspendisse sed odio consectetur, commodo mi nec, elementum ligula. Sed non finibus diam. Curabitur aliquam erat vel enim iaculis eleifend. Nullam magna tortor, laoreet a augue ut, suscipit condimentum arcu. Curabitur fermentum iaculis hendrerit. Sed quis luctus magna. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla sed enim sed lacus ullamcorper volutpat. Morbi placerat, elit sit amet egestas vulputate, ante ex iaculis nulla, sit amet efficitur quam dui pretium ligula. Fusce justo turpis, cursus at ex at, consectetur cursus risus. Duis sed augue nec sapien auctor volutpat. Nullam blandit blandit justo, vitae lobortis mauris bibendum eget. Morbi maximus mattis pulvinar. Duis non finibus dui.
+
+Proin placerat, nisl efficitur viverra dictum, quam nisl semper turpis, rhoncus gravida quam dolor vitae nibh. Fusce leo lacus, interdum sed felis ut, sagittis vulputate ex. Donec eget enim ac diam laoreet cursus non non sem. In posuere lacus nec velit interdum luctus. Praesent quis facilisis mi. Donec eget malesuada ligula. Quisque cursus ex vitae venenatis egestas.
+				</Text>
+			</Description>
+		</Field>
+		<Field id="tosAgreement" type="checkbox" required="true">
+			<Label>
+				<Text lang="en">Terms Consent</Text>
+				<Text lang="pt">Consentimento dos Termos</Text>
+			</Label>
+			<Default>false</Default>
+			<Options>
+				<Option value="yes">
+					<Text lang="en">I accept</Text>
+					<Text lang="pt">Eu aceito</Text>
+				</Option>
+			</Options>
+		</Field>
+	</Page>
+</KYCProcess>

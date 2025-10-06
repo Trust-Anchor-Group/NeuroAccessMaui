@@ -8,6 +8,22 @@
 		   TargetType="Label"
 		   BaseResourceKey="BoldItemTitleLabel">
 		<Setter Property="FontSize"
+				Value="14" />
+		<Setter Property="FontFamily"
+				Value="SpaceGroteskSemiBold" />
+		<Setter Property="LineBreakMode"
+				Value="WordWrap" />
+		<Setter Property="VerticalTextAlignment"
+				Value="Center" />
+		<Setter Property="HorizontalTextAlignment"
+				Value="Start" />
+	</Style>
+
+	<!-- Validation Label style common to composite input views -->
+	<Style x:Key="RegularCompositeInputViewLabel"
+		   TargetType="Label"
+		   BaseResourceKey="BoldItemTitleLabel">
+		<Setter Property="FontSize"
 				Value="15" />
 		<Setter Property="FontFamily"
 				Value="SpaceGroteskSemiBold" />
@@ -25,11 +41,11 @@
 		   ApplyToDerivedTypes="True">
 		<!-- Common defaults -->
 		<Setter Property="LabelStyle"
-				Value="{DynamicResource RegularCompositeInputViewValidationLabel}" />
+				Value="{DynamicResource RegularCompositeInputViewLabel}" />
 		<Setter Property="ValidationColor"
 				Value="{DynamicResource InputFieldsContentDangerv500}" />
 		<Setter Property="ValidationLabelStyle"
-				Value="{DynamicResource RegularCompositeInputViewLabel}" />
+				Value="{DynamicResource RegularCompositeInputViewValidationLabel}" />
 		<Setter Property="BorderPadding"
 				Value="{DynamicResource EditMediumMargins}" />
 		<Setter Property="BorderBackground"

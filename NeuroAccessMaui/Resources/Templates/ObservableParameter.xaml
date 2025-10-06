@@ -570,6 +570,7 @@
 		</Border>
 	</DataTemplate>
 
+	<!-- ContractReferenceParameterTemplate -->
 	<DataTemplate x:Key="ContractReferenceParameterTemplate"
 				  x:DataType="objectModel:ObservableContractReferenceParameter">
 		<Border Style="{DynamicResource BorderSet}"
@@ -602,6 +603,8 @@
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
+
+	<!-- Read-only ContractReferenceParameterTemplate -->
 	<DataTemplate x:Key="ContractReferenceParameterReadOnlyTemplate"
 				  x:DataType="objectModel:ObservableContractReferenceParameter">
 		<Border Style="{DynamicResource BorderSet}"
@@ -615,4 +618,64 @@
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
+
+	<!-- CoordinatesParameterTemplate -->
+	<DataTemplate x:Key="GeoParameterTemplate"
+				  x:DataType="objectModel:ObservableGeoParameter">
+		<Border Style="{DynamicResource BorderSet}"
+				Margin="{DynamicResource MediumLeftRightMargins}">
+			<VerticalStackLayout>
+				<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
+										 EntryData="{Binding GeoString, Mode=TwoWay}"
+										 Placeholder="{Binding Guide}"
+										 LabelText="{Binding Label}"
+										 IsValid="{Binding IsValid}"/>
+
+				<controls:ConditionView Condition="{Binding IsCheckinglocation}" Margin="{DynamicResource SmallTopMargins}">
+					<controls:ConditionView.True>
+						<ActivityIndicator IsRunning="True"
+										   VerticalOptions="Center"
+										   HorizontalOptions="Center"/>
+					</controls:ConditionView.True>
+					<controls:ConditionView.False>
+						<controls:TextButton LabelData="{l:Localize UseCurrentLocation}"
+											 Style="{DynamicResource PrimaryButton}"
+											 Command="{Binding SetCurrentLocationCommand}"/>
+					</controls:ConditionView.False>
+				</controls:ConditionView>
+
+				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
+													   IsEncrypted="{Binding IsEncrypted}"
+													   IsVisible="{Binding IsProtected}" />
+
+				<controls:TemplatedButton Command="{Binding ShowErrorCommand}"
+										  IsVisible="{Binding CanShowError}"
+										  HeightRequest="24"
+										  WidthRequest="24"
+										  HorizontalOptions="End">
+					<controls:SvgView Source="help.svg"
+									  HeightRequest="24"
+									  WidthRequest="24"
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
+				</controls:TemplatedButton>
+				
+			</VerticalStackLayout>
+		</Border>
+	</DataTemplate>
+
+	<!-- Read-only GeoParameterTemplate -->
+	<DataTemplate x:Key="GeoParameterReadOnlyTemplate"
+				  x:DataType="objectModel:ObservableGeoParameter">
+		<Border Style="{DynamicResource BorderSet}"
+				Margin="{DynamicResource MediumLeftRightMargins}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				<Label Text="Coordinates:" Style="{DynamicResource ParameterItemTitleLabel}"/>
+				<Label Text="{Binding GeoString}" Style="{DynamicResource ParameterItemValueLabel}"/>
+				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
+													   IsEncrypted="{Binding IsEncrypted}"
+													   IsVisible="{Binding IsProtected}" />
+			</VerticalStackLayout>
+		</Border>
+	</DataTemplate>
+
 </ResourceDictionary>

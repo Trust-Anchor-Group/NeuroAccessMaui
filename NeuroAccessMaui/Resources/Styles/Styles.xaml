@@ -49,6 +49,11 @@
 		<On Platform="iOS" Value="16,12" />
 	</OnPlatform>
 
+	<OnPlatform x:Key="EditSmallMargins" x:TypeArguments="Thickness">
+		<On Platform="Android" Value="8,0" />
+		<On Platform="iOS" Value="16,12" />
+	</OnPlatform>
+
 	<Style TargetType="CheckBox">
 		<Setter Property="WidthRequest" Value="48"/>
 		<Setter Property="HeightRequest" Value="48"/>

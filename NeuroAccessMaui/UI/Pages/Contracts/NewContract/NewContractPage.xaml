@@ -24,6 +24,7 @@
 		                                 TimeTemplate="{StaticResource TimeParameterTemplate}"
 		                                 DurationTemplate="{StaticResource DurationParameterTemplate}"
 										 ContractReferenceTemplate="{StaticResource ContractReferenceParameterTemplate}"
+										 GeoTemplate="{StaticResource GeoParameterTemplate}"
 		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 		<converters:StringNotEqualsConverter x:Key="StringNotEqualsConverter" />
 	</base:BaseContentPage.Resources>

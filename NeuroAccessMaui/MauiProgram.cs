@@ -15,6 +15,9 @@ using Microsoft.Maui.Platform;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls;
 using NeuroAccessMaui.UI.Controls;
+using NeuroAccessMaui.Services.Xml;
+using Waher.Runtime.Inventory;
+
 
 
 #if DEBUG
@@ -50,6 +53,7 @@ namespace NeuroAccessMaui
 			Builder.ConfigureMauiHandlers(handlers =>
 			{
 				handlers.AddHandler<AutoHeightSKCanvasView, SKCanvasViewHandler>();
+				handlers.AddHandler(typeof(AspectRatioLayout), typeof(LayoutHandler));
 			});
 
 			Builder.ConfigureLifecycleEvents(lifecycle =>

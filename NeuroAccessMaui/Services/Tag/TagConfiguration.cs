@@ -309,7 +309,6 @@ namespace NeuroAccessMaui.Services
 		[DefaultValue(false)]
 		public bool HasBetaFeatures { get; set; }
 
-
 		/// <summary>
 		/// How many eDaler the user has in their wallet. At the last update.
 		/// </summary>

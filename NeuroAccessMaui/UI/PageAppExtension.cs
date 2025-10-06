@@ -22,7 +22,7 @@ using NeuroAccessMaui.Test;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
-using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
+using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
@@ -200,7 +200,7 @@ namespace NeuroAccessMaui.UI
 		{
 			// Applications
 			Builder.Services.AddTransient<ApplicationsPage, ApplicationsViewModel>();
-			Builder.Services.AddTransient<ApplyIdPage, ApplyIdViewModel>();
+                       Builder.Services.AddTransient<KycProcessPage, KycProcessViewModel>();
 
 			// Contacts
 			Builder.Services.AddTransient<ChatPage, ChatViewModel>();

@@ -83,7 +83,7 @@ namespace NeuroAccessMaui.UI.Controls
 					new ColumnDefinition { Width = GridLength.Star }, // CenterView
 					new ColumnDefinition { Width = GridLength.Auto }  // RightView
 				},
-				ColumnSpacing = AppStyles.SmallSpacing,
+				ColumnSpacing = 0,
 				Margin = 0
 			};
 
@@ -132,11 +132,11 @@ namespace NeuroAccessMaui.UI.Controls
 			ValidationIcon.SetBinding(Path.FillProperty, new Binding(nameof(this.ValidationColor), source: this));
 			ValidationIcon.VerticalOptions = LayoutOptions.Center;
 			this.validationGrid.Add(ValidationIcon, 0, 0);
-
 			// ValidationText
 			Label ValidationLabel = new Label();
 			ValidationLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.ValidationText), source: this));
 			ValidationLabel.SetBinding(Label.TextColorProperty, new Binding(nameof(this.ValidationColor), source: this));
+			ValidationLabel.SetBinding(Label.StyleProperty, new Binding(nameof(this.ValidationLabelStyle), source: this));
 			this.validationGrid.Add(ValidationLabel, 1, 0);
 
 			this.validationGrid.SetBinding(Grid.IsVisibleProperty, new Binding(nameof(this.CanShowValidation), source: this));
@@ -178,7 +178,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		// LeftView Property
 		public static readonly BindableProperty LeftViewProperty =
-			 BindableProperty.Create(nameof(LeftView), typeof(View), typeof(CompositeInputView), null);
+			 BindableProperty.Create(nameof(LeftView), typeof(View), typeof(CompositeInputView), null, propertyChanged: OnLeftViewChanged);
 
 		public View LeftView
 		{
@@ -198,7 +198,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 		// RightView Property
 		public static readonly BindableProperty RightViewProperty =
-			 BindableProperty.Create(nameof(RightView), typeof(View), typeof(CompositeInputView), null);
+			 BindableProperty.Create(nameof(RightView), typeof(View), typeof(CompositeInputView), null, propertyChanged: OnRightViewChanged);
 
 		public View RightView
 		{
@@ -401,6 +401,22 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			CompositeInputView Control = (CompositeInputView)Bindable;
 			Control.OnPropertyChanged(nameof(CanShowLabel));
+		}
+
+		private static void OnLeftViewChanged(BindableObject Bindable, object OldValue, object NewValue)
+		{
+			CompositeInputView Control = (CompositeInputView)Bindable;
+			bool HasLeft = NewValue is View;
+			// Apply spacing only when left view exists
+			Control.leftContentView.Margin = HasLeft ? new Thickness(0, 0, 8, 0) : new Thickness(0);
+		}
+
+		private static void OnRightViewChanged(BindableObject Bindable, object OldValue, object NewValue)
+		{
+			CompositeInputView Control = (CompositeInputView)Bindable;
+			bool HasRight = NewValue is View;
+			// Apply spacing only when right view exists
+			Control.rightContentView.Margin = HasRight ? new Thickness(8, 0, 0, 0) : new Thickness(0);
 		}
 	}
 }

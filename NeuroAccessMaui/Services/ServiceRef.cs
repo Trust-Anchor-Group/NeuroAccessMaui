@@ -4,22 +4,29 @@ using System.Globalization;
 using System.Reflection;
 using Microsoft.Extensions.Localization;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.AppPermissions;
+using NeuroAccessMaui.Services.Cache.AttachmentCache;
+using NeuroAccessMaui.Services.Cache.InternetCache;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
+using NeuroAccessMaui.Services.Intents;
+using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Notification;
-using NeuroAccessMaui.Services.AppPermissions;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.ThingRegistries;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.Services.Xmpp;
+using NeuroAccessMaui.Services.Xml;
+using Waher.Content;
 using ZXing;
 using NeuroAccessMaui.Services.Intents;
 using Waher.Content;
@@ -64,6 +71,8 @@ namespace NeuroAccessMaui.Services
 		private static IIntentService? intentService;
 		private static IInternetCacheService? internetCacheService;
 		private static IThemeService? themeService;
+		private static IKycService? kycService;
+		private static IXmlSchemaValidationService? xmlSchemaValidationService;
 
 		/// <summary>
 		/// Service serializing and managing UI-related tasks.
@@ -331,6 +340,27 @@ namespace NeuroAccessMaui.Services
 			{
 				themeService ??= App.Instantiate<IThemeService>();
 				return themeService;
+			}
+		}
+
+		public static IKycService KycService
+		{
+			get
+			{
+				kycService ??= App.Instantiate<IKycService>();
+				return kycService;
+			}
+		}
+
+		/// <summary>
+		/// XML schema validation service.
+		/// </summary>
+		public static IXmlSchemaValidationService XmlSchemaValidationService
+		{
+			get
+			{
+				xmlSchemaValidationService ??= ServiceHelper.GetService<IXmlSchemaValidationService>();
+				return xmlSchemaValidationService;
 			}
 		}
 	}

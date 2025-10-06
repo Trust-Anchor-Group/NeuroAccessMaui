@@ -97,6 +97,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool hasBetaFeatures;
 		private decimal lastEDalerBalanceDecimal;
 		private DateTime? lastEDalerBalanceUpdate;
+
 		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
 		/// </summary>

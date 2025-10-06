@@ -92,6 +92,7 @@ namespace NeuroAccessMaui.Services.Contracts
 							case Constants.XmppProperties.FirstName:
 							case Constants.XmppProperties.MiddleNames:
 							case Constants.XmppProperties.LastNames:
+							case Constants.XmppProperties.FullName:
 							case Constants.XmppProperties.PersonalNumber:
 							case Constants.XmppProperties.Address:
 							case Constants.XmppProperties.Address2:
@@ -481,7 +482,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 					if (GotoRegistrationPage)
 					{
-						await App.SetRegistrationPageAsync();
+						//await App.SetRegistrationPageAsync();
 
 						// After navigating to the registration page, show the user why this happened.
 						if (!string.IsNullOrWhiteSpace(UserMessage))

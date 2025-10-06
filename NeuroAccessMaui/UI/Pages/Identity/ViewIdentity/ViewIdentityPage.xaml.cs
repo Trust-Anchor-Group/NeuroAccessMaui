@@ -1,10 +1,5 @@
-﻿using CommunityToolkit.Maui.Behaviors;
-using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.UI.Popups.Image;
+﻿using NeuroAccessMaui.Services;
 using SkiaSharp.Extended.UI.Controls;
-using SkiaSharp;
-using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 {
@@ -119,6 +114,21 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			}
 
 			return Sys;
+		}
+
+		private void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
+		{
+			try
+			{
+				if (this.ContentPageModel is ViewIdentityViewModel)
+				{
+					this.BottomSheet?.ToggleExpanded();
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 	}

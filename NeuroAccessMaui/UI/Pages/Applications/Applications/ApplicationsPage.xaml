@@ -10,83 +10,354 @@
 							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.Applications">
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.Applications"
+							 xmlns:service="clr-namespace:NeuroAccessMaui.Services.Kyc"
+							 xmlns:contracts="clr-namespace:Waher.Networking.XMPP.Contracts;assembly=Waher.Networking.XMPP.Contracts">
+							 
+<base:BaseContentPage.Resources>
+  <ResourceDictionary>
+    <Style TargetType="Label" x:Key="CardTitleLabel">
+      <Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+      <Setter Property="FontSize" Value="16"/>
+	  <Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}"/>
+    </Style>
+	<Style TargetType="Label" x:Key="CardSubtitleLabel">
+      <Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
+      <Setter Property="FontSize" Value="14"/>
+	  <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
+    </Style>
+  </ResourceDictionary>
+</base:BaseContentPage.Resources>
 
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" Margin="16,16,16,0">
 
 		<controls:Background/>
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource SmallSpacing}">
-				<Grid Margin="{StaticResource SmallLeftRightTopMargins}">
-					<controls:SvgButton
-						Command="{Binding GoBackCommand}"
-						SvgSource="close.svg"
-						Style="{DynamicResource IconButton}"
-						HorizontalOptions="Start"/>
+		<Grid ColumnDefinitions="auto, *, auto" RowDefinitions="auto, *">
+			<controls:SvgButton Command="{Binding GoBackCommand}"
+								SvgSource="close.svg"
+								Style="{DynamicResource IconButton}"
+								HorizontalOptions="Start"
+								Grid.Column="0"/>
 
-					<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Applications}" HorizontalOptions="End"/>
-					
-				</Grid>
+			<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Applications}" HorizontalOptions="End" Grid.Column="2"/>
+			<Grid Grid.ColumnSpan="3" Grid.Row="1">
+				<CollectionView ItemsSource="{Binding AvailableApplications}"
+								SelectionMode="None"
+								Margin="0">
+					<CollectionView.ItemsLayout>
+						<LinearItemsLayout Orientation="Vertical"
+										   ItemSpacing="8" />
+					</CollectionView.ItemsLayout>
+					<CollectionView.Header>
+						<VerticalStackLayout Spacing="8"
+											 Margin="0,16,0,0"
+											 Padding="0">
+							<Label Text="{l:Localize CurrentApplication}"
+								   TextColor="{DynamicResource ContentSecondaryWL}"
+								   FontSize="16"
+								   FontFamily="SpaceGroteskBold"
+								   IsVisible="{Binding HasCurrentApplication}" />
+							<controls:TemplatedButton Command="{Binding OpenApplicationCommand}"
+													  IsVisible="{Binding HasCurrentApplication}"
+													  CommandParameter="{Binding CurrentApplication}"
+													  Margin="0"
+													  Padding="0">
+								<Border Style="{DynamicResource BorderSet}"
+										Margin="0"
+										Padding="16">
+									<Grid ColumnDefinitions="auto,*"
+										  RowDefinitions="auto,auto,auto,auto"
+										  RowSpacing="16">
+										<controls:UriImage Source="{Binding BannerUri}"
+														   Grid.Row="0"
+														   Grid.Column="0"
+														   HeightRequest="30"
+														   Aspect="AspectFit"
+														   VerticalOptions="Center"
+														   HorizontalOptions="Start" />
+										<controls:SvgButton Style="{DynamicResource IconButton}"
+															SvgSource="arrow_forward.svg"
+															Grid.Row="0"
+															Grid.Column="1"
+															HorizontalOptions="End"
+															InputTransparent="True"
+															Margin="0" />
+										<VerticalStackLayout Grid.Row="1"
+															 Grid.Column="0">
+											<Label Text="{Binding CurrentApplication.FriendlyName}"
+												   Style="{DynamicResource CardTitleLabel}" />
+											<Label Text="{l:Localize IdentityApplication}"
+												   Style="{DynamicResource CardSubtitleLabel}" />
+										</VerticalStackLayout>
+										<VerticalStackLayout Grid.Row="2"
+															 Grid.ColumnSpan="2"
+															 Spacing="4">
+											<VerticalStackLayout.Triggers>
+												<DataTrigger TargetType="VerticalStackLayout"
+															 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+															 Value="{x:Static contracts:IdentityState.Approved}">
+													<Setter Property="IsVisible"
+															Value="False" />
+												</DataTrigger>
+												<DataTrigger TargetType="VerticalStackLayout"
+															 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+															 Value="{x:Static contracts:IdentityState.Rejected}">
+													<Setter Property="IsVisible"
+															Value="False" />
+												</DataTrigger>
+												<DataTrigger TargetType="VerticalStackLayout"
+															 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+															 Value="{x:Static contracts:IdentityState.Obsoleted}">
+													<Setter Property="IsVisible"
+															Value="False" />
+												</DataTrigger>
+												<DataTrigger TargetType="VerticalStackLayout"
+															 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+															 Value="{x:Static contracts:IdentityState.Compromised}">
+													<Setter Property="IsVisible"
+															Value="False" />
+												</DataTrigger>
+											</VerticalStackLayout.Triggers>
 
-
-				<!-- Identity Applications -->
-				<Border Style="{DynamicResource BorderSet}">
-					<Grid>
-						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-											 IsVisible="{Binding IdentityApplicationSent, Converter={StaticResource InvertedBoolConverter}}">
-
-							<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}" Margin="{StaticResource SmallLeftMargins}"/>
-
-							<!-- Apply for Personal ID -->
-							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ApplyPersonalIdCommand}">
-								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize PersonalId}" InputTransparent="True"
-											   TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
-											   Margin="{StaticResource SmallLeftMargins}"/>
-										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize PersonalIdDescription}" InputTransparent="True"
-											    TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
-/>
-									</VerticalStackLayout>
-								</Frame>
+											<Grid ColumnDefinitions="*,Auto">
+												<Label Grid.Column="0"
+													   Text="{l:Localize Progress}"
+													   TextColor="{DynamicResource TnPInfoContentWL}">
+													<Label.Triggers>
+														<DataTrigger TargetType="Label"
+																	 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																	 Value="{x:Static contracts:IdentityState.Created}">
+															<Setter Property="TextColor"
+																	Value="{DynamicResource TnPWarningContentWL}" />
+														</DataTrigger>
+													</Label.Triggers>
+												</Label>
+												<Label Grid.Column="1"
+													   Text="{Binding CurrentApplication.Progress, StringFormat='{}{0:P0}'}"
+													   TextColor="{DynamicResource TnPInfoContentWL}">
+													<Label.Triggers>
+														<DataTrigger TargetType="Label"
+																	 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																	 Value="{x:Static contracts:IdentityState.Created}">
+															<Setter Property="TextColor"
+																	Value="{DynamicResource TnPWarningContentWL}" />
+														</DataTrigger>
+													</Label.Triggers>
+												</Label>
+											</Grid>
+											<controls:ProgressBar Progress="{Binding CurrentApplication.Progress}"
+																  HeightRequest="16"
+																  CornerRadius="32"
+																  TrackBrush="{DynamicResource TnPInfobgWL}"
+																  BarBrush="{DynamicResource TnPInfoFigureWL}"
+																  Margin="{DynamicResource SmallBottomMargins}">
+												<controls:ProgressBar.Triggers>
+													<DataTrigger TargetType="controls:ProgressBar"
+																 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																 Value="{x:Static contracts:IdentityState.Created}">
+														<Setter Property="TrackBrush"
+																Value="{DynamicResource TnPWarningbgWL}" />
+														<Setter Property="BarBrush"
+																Value="{DynamicResource TnPWarningFigureWL}" />
+													</DataTrigger>
+												</controls:ProgressBar.Triggers>
+											</controls:ProgressBar>
+										</VerticalStackLayout>
+										<Grid Grid.Row="3"
+											  Grid.ColumnSpan="2"
+											  ColumnDefinitions="*,Auto">
+											<Label Grid.Column="0"
+												   Text="{Binding CurrentApplication.UpdatedUtc, Converter={converters:DateTimeToLastUpdatedConverter}}"
+												   VerticalOptions="End"
+												   Style="{DynamicResource CardSubtitleLabel}"
+												   FontSize="14" />
+											<Grid Grid.Column="1"
+												  RowDefinitions="*,auto">
+												<Border Grid.Row="1"
+														Padding="8,2,8,2"
+														Background="{DynamicResource TnPWarningbgWL}"
+														StrokeShape="RoundRectangle 10">
+													<Border.Triggers>
+														<DataTrigger TargetType="Border"
+																	 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																	 Value="{x:Static contracts:IdentityState.Created}">
+															<Setter Property="Background"
+																	Value="{DynamicResource TnPInfobgWL}" />
+														</DataTrigger>
+														<DataTrigger TargetType="Border"
+																	 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																	 Value="{x:Static contracts:IdentityState.Approved}">
+															<Setter Property="Background"
+																	Value="{DynamicResource TnPSuccessbgWL}" />
+														</DataTrigger>
+														<DataTrigger TargetType="Border"
+																	 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																	 Value="{x:Static contracts:IdentityState.Rejected}">
+															<Setter Property="Background"
+																	Value="{DynamicResource TnPDangerbgWL}" />
+														</DataTrigger>
+														<DataTrigger TargetType="Border"
+																	 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																	 Value="{x:Static contracts:IdentityState.Obsoleted}">
+															<Setter Property="Background"
+																	Value="{DynamicResource TnPDangerbgWL}" />
+														</DataTrigger>
+														<DataTrigger TargetType="Border"
+																	 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																	 Value="{x:Static contracts:IdentityState.Compromised}">
+															<Setter Property="Background"
+																	Value="{DynamicResource TnPDangerbgWL}" />
+														</DataTrigger>
+													</Border.Triggers>
+													<Label FontSize="12"
+														   FontFamily="SpaceGroteskBold"
+														   Text="{l:Localize InProgress}"
+														   TextColor="{DynamicResource TnPWarningContentWL}">
+														<Label.Triggers>
+															<DataTrigger TargetType="Label"
+																		 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																		 Value="{x:Static contracts:IdentityState.Created}">
+																<Setter Property="Text"
+																		Value="{l:Localize InReview}" />
+																<Setter Property="TextColor"
+																		Value="{DynamicResource TnPInfoContentWL}" />
+															</DataTrigger>
+															<DataTrigger TargetType="Label"
+																		 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																		 Value="{x:Static contracts:IdentityState.Approved}">
+																<Setter Property="Text"
+																		Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
+																<Setter Property="TextColor"
+																		Value="{DynamicResource TnPSuccessContentWL}" />
+															</DataTrigger>
+															<DataTrigger TargetType="Label"
+																		 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																		 Value="{x:Static contracts:IdentityState.Rejected}">
+																<Setter Property="Text"
+																		Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
+																<Setter Property="TextColor"
+																		Value="{DynamicResource TnPDangerContentWL}" />
+															</DataTrigger>
+															<DataTrigger TargetType="Label"
+																		 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																		 Value="{x:Static contracts:IdentityState.Obsoleted}">
+																<Setter Property="Text"
+																		Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
+																<Setter Property="TextColor"
+																		Value="{DynamicResource TnPDangerContentWL}" />
+															</DataTrigger>
+															<DataTrigger TargetType="Label"
+																		 Binding="{Binding CurrentApplication.CreatedIdentityState}"
+																		 Value="{x:Static contracts:IdentityState.Compromised}">
+																<Setter Property="Text"
+																		Value="{Binding CurrentApplication.CreatedIdentityState, Converter={converters:LocalizedState}}" />
+																<Setter Property="TextColor"
+																		Value="{DynamicResource TnPDangerContentWL}" />
+															</DataTrigger>
+														</Label.Triggers>
+													</Label>
+												</Border>
+											</Grid>
+										</Grid>
+									</Grid>
+								</Border>
 							</controls:TemplatedButton>
-
-							<!-- Apply for Organizational ID -->
-							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ApplyOrganizationalIdCommand}">
-								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize OrganizationalId}" InputTransparent="True"
-												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
-											   Margin="{StaticResource SmallLeftMargins}"/>
-										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize OrganizationalIdDescription}" InputTransparent="True"
-											    TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
-									</VerticalStackLayout>
-								</Frame>
-							</controls:TemplatedButton>
-
+							<Label Text="{Binding AvailableLoader.ErrorMessage}"
+								   TextColor="{DynamicResource TnPDangerContentWL}"
+								   BackgroundColor="{DynamicResource TnPDangerbgWL}"
+								   Padding="12,8"
+								   FontSize="14"
+								   FontFamily="SpaceGroteskSemiBold"
+								   IsVisible="{Binding AvailableLoader.IsFailed}">
+								<Label.Triggers>
+									<DataTrigger TargetType="Label"
+												 Binding="{Binding AvailableLoader.ErrorMessage}"
+												 Value="">
+										<Setter Property="IsVisible"
+												Value="False" />
+									</DataTrigger>
+									<DataTrigger TargetType="Label"
+												 Binding="{Binding AvailableLoader.ErrorMessage}"
+												 Value="{x:Null}">
+										<Setter Property="IsVisible"
+												Value="False" />
+									</DataTrigger>
+								</Label.Triggers>
+							</Label>
+							<Label Text="{l:Localize AvailableApplications}"
+								   TextColor="{DynamicResource ContentSecondaryWL}"
+								   FontSize="16"
+								   FontFamily="SpaceGroteskBold"
+								   Margin="0,16,0,0"/>
 						</VerticalStackLayout>
-
-						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" IsVisible="{Binding IdentityApplicationSent}">
-							<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentityApplications}" />
-
-							<!-- View Identity Application -->
-							<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ViewIdApplicationCommand}">
-								<Frame Style="{DynamicResource ClickableFrameSubSet}" InputTransparent="True">
-									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
-										<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ViewIdApplication}" InputTransparent="True"
-												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"/>
-										<Label Style="{DynamicResource KeyLabel}" Text="{l:Localize ViewIdApplicationDescription}" InputTransparent="True"
-												 TextColor="{DynamicResource ButtonAccessPrimaryContentWL}"
-											   Margin="{StaticResource SmallLeftMargins}"/>
-									</VerticalStackLayout>
-								</Frame>
+					</CollectionView.Header>
+					<CollectionView.EmptyView>
+						<ActivityIndicator IsRunning="True"
+										   IsVisible="{Binding AvailableLoader.IsRunning}"
+										   HeightRequest="48"
+										   WidthRequest="48"
+										   HorizontalOptions="Center"
+										   VerticalOptions="Center" />
+					</CollectionView.EmptyView>
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="service:KycApplicationTemplate">
+							<controls:TemplatedButton Margin="0"
+													  Command="{Binding Path=CreateNewApplicationCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplicationsViewModel}}}"
+													  CommandParameter="{Binding .}">
+								<Border Style="{DynamicResource BorderSet}"
+										Margin="0"
+										Padding="16,24,16,24">
+									<Grid ColumnDefinitions="auto,*,auto"
+										  ColumnSpacing="16">
+										<Border Grid.Column="0"
+												StrokeShape="Ellipse"
+												Padding="8"
+												Background="{DynamicResource BrandColorsNeuroAccessa20WL}">
+											<controls:SvgView Source="person.svg"
+															  Aspect="AspectFit"
+															  WidthRequest="32"
+															  HeightRequest="32"
+															  VerticalOptions="Center"
+															  HorizontalOptions="Center"
+															  TintColor="{DynamicResource BrandColorsNeuroAccessv500WL}" />
+										</Border>
+										<Grid RowDefinitions="*,auto"
+											  Grid.Column="1"
+											  ColumnDefinitions="*"
+											  VerticalOptions="Center">
+											<Label Text="{Binding DisplayName}"
+												   Style="{DynamicResource CardTitleLabel}"
+												   Grid.Row="0"
+												   LineBreakMode="TailTruncation"
+												   MaxLines="1" />
+											<Label Text="{l:Localize IdentityApplication}"
+												   Style="{DynamicResource CardSubtitleLabel}"
+												   Grid.Row="1"
+												   LineBreakMode="TailTruncation"
+												   MaxLines="2" />
+										</Grid>
+										<controls:SvgView Source="arrow_forward_ios.svg"
+														  Grid.Column="2"
+														  VerticalOptions="Center"
+														  WidthRequest="24"
+														  HeightRequest="24"
+														  TintColor="{DynamicResource ButtonNeutralNavButtonsContentActiveWL}" />
+									</Grid>
+								</Border>
 							</controls:TemplatedButton>
-
-						</VerticalStackLayout>
-					</Grid>
-				</Border>
-			</VerticalStackLayout>
-		</ScrollView>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+					<CollectionView.Footer>
+						<controls:TextButton Style="{DynamicResource PrimaryButton}"
+											 LabelData="{l:Localize LoadMore}"
+											 Command="{Binding LoadMoreAvailableApplicationsCommand}"
+											 IsVisible="{Binding HasMoreAvailableTemplates}"
+											 HorizontalOptions="Center"
+											 Margin="0,16,0,24" />
+					</CollectionView.Footer>
+				</CollectionView>
+			</Grid>
+		</Grid>
 	</Grid>
 </base:BaseContentPage>

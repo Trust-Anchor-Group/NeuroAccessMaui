@@ -12,13 +12,17 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Kyc;
+using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Notification.Things;
 using NeuroAccessMaui.Services.Notification.Xmpp;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.Services.Wallet;
+using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportType;
@@ -31,7 +35,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
@@ -62,6 +68,7 @@ using Waher.Networking.XMPP.Provisioning.SearchOperators;
 using Waher.Networking.XMPP.PubSub;
 using Waher.Networking.XMPP.PubSub.Events;
 using Waher.Networking.XMPP.Push;
+using Waher.Networking.XMPP.ResultSetManagement;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Networking.XMPP.StanzaErrors;
@@ -2048,6 +2055,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			string Message = e.Body;
 
+
 			if (!string.IsNullOrEmpty(e.Code))
 			{
 				try
@@ -2066,6 +2074,106 @@ namespace NeuroAccessMaui.Services.Xmpp
 					// Ignore
 				}
 			}
+
+			// Persist rejection details on current KYC reference, and reflect in UI if open
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				try
+				{
+					KycReference? Ref = null;
+					LegalIdentity? AppId = ServiceRef.TagProfile.IdentityApplication;
+
+					if (AppId is not null)
+					{
+						try
+						{
+							Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), AppId.Id));
+						}
+						catch (Exception Ex2)
+						{
+							ServiceRef.LogService.LogException(Ex2);
+						}
+					}
+
+					if (Ref is null)
+					{
+						try
+						{
+							IEnumerable<KycReference> All = await Database.Find<KycReference>();
+							Ref = All.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
+						}
+						catch (Exception Ex3)
+						{
+							ServiceRef.LogService.LogException(Ex3);
+						}
+					}
+
+					if (Ref is not null)
+					{
+						Ref.RejectionMessage = Message;
+						Ref.RejectionCode = e.Code;
+                    try
+                    {
+                        IEnumerable<InvalidClaim> InvalidClaimsList = e.InvalidClaims ?? Array.Empty<InvalidClaim>();
+                        Ref.InvalidClaims = InvalidClaimsList
+                            .Select(c => c?.Claim)
+                            .Where(s => !string.IsNullOrWhiteSpace(s))
+                            .Select(s => s!.Trim())
+                            .ToArray();
+
+                        Ref.InvalidClaimDetails = InvalidClaimsList
+                            .Where(c => c is not null && !string.IsNullOrWhiteSpace(c.Claim))
+                            .Select(c => new KycInvalidClaim(c.Claim, c.Reason ?? string.Empty, c.ReasonLanguage ?? string.Empty, c.ReasonCode ?? string.Empty, c.Service ?? string.Empty))
+                            .ToArray();
+                    }
+						catch
+						{
+							// Ignore type mismatch; keep null if conversion fails
+						}
+                    try
+                    {
+                        IEnumerable<InvalidPhoto> InvalidPhotosList = e.InvalidPhotos ?? Array.Empty<InvalidPhoto>();
+                        Ref.InvalidPhotos = InvalidPhotosList
+                            .Select(p => p?.FileName)
+                            .Where(s => !string.IsNullOrWhiteSpace(s))
+                            .Select(s => Path.GetFileNameWithoutExtension(s!).Trim())
+                            .ToArray();
+
+                        Ref.InvalidPhotoDetails = InvalidPhotosList
+                            .Where(p => p is not null && !string.IsNullOrWhiteSpace(p.FileName))
+                            .Select(p => new KycInvalidPhoto(
+                                p.FileName,
+                                Path.GetFileNameWithoutExtension(p.FileName) ?? p.FileName,
+                                p.Reason ?? string.Empty,
+                                p.ReasonLanguage ?? string.Empty,
+                                p.ReasonCode ?? string.Empty,
+                                p.Service ?? string.Empty))
+                            .ToArray();
+                    }
+						catch
+						{
+							// Ignore type mismatch; keep null if conversion fails
+						}
+
+						Ref.UpdatedUtc = DateTime.UtcNow;
+						await Database.Update(Ref);
+						await Database.Provider.Flush();
+
+						// If KYC page is open, update it
+						if (ServiceRef.UiService.CurrentPage is KycProcessPage Page && Page.BindingContext is KycProcessViewModel Vm)
+						{
+							await Vm.ApplyRejectionAsync(Message,
+								Ref.InvalidClaims ?? Array.Empty<string>(),
+								Ref.InvalidPhotos ?? Array.Empty<string>(),
+								e.Code);
+						}
+					}
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			});
 
 			// TODO: Event arguments contain more detailed information about:
 			//
@@ -2878,10 +2986,23 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool GenerateNewKeys,
 			params LegalIdentityAttachment[] Attachments)
 		{
+			return await this.AddLegalIdentity(Model.ToProperties(ServiceRef.XmppService), GenerateNewKeys, Attachments);
+		}
+
+		/// <summary>
+		/// Adds a legal identity.
+		/// </summary>
+		/// <param name="Props">The array holding all the values needed.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Legal Identity</returns>
+		public async Task<LegalIdentity> AddLegalIdentity(Property[] Props, bool GenerateNewKeys,
+			params LegalIdentityAttachment[] Attachments)
+		{
 			if (GenerateNewKeys)
 				await this.GenerateNewKeys();
 
-			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(ServiceRef.XmppService));
+			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Props);
 
 			foreach (LegalIdentityAttachment Attachment in Attachments)
 			{
@@ -3033,6 +3154,28 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			try
 			{
+				KycReference? Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), e.Identity.Id));
+				if (Ref is not null)
+				{
+					Ref.UpdatedUtc = DateTime.UtcNow;
+					Ref.CreatedIdentityState = e.Identity.State;
+					await Database.Update(Ref);
+					await Database.Provider.Flush();
+				}
+
+				if (ServiceRef.UiService.CurrentPage is ApplicationsPage AppPage)
+				{
+					if (AppPage.BindingContext is ApplicationsViewModel Model)
+						Model.Loader.Reload();
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			try
+			{
 				if (ServiceRef.TagProfile.LegalIdentity is not null && ServiceRef.TagProfile.LegalIdentity.Id == e.Identity.Id)
 				{
 					if (ServiceRef.TagProfile.LegalIdentity.Created > e.Identity.Created)
@@ -3066,7 +3209,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					if (e.Identity.IsDiscarded())
 					{
-						await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 						await this.IdentityApplicationChanged.Raise(this, e);
 					}
 					else if (e.Identity.IsApproved())
@@ -4240,7 +4382,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="TransactionId">ID of transaction containing the encrypted message.</param>
 		/// <param name="RemoteEndpoint">Remote endpoint</param>
 		/// <returns>Decrypted string, if successful, or null, if not.</returns>
-		public async Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint)
+		public async Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint, bool LocalIsRecipient)
 		{
 			try
 			{
@@ -5352,6 +5494,55 @@ namespace NeuroAccessMaui.Services.Xmpp
 				await this.PubSubClient.GetLatestItems(NodeId, Count, (s, e) => HandleResult(e, Tcs), null);
 				ItemsEventArgs Result = await Tcs.Task;
 				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<PubSubPageResult?> GetItemsPageAsync(string NodeId, string? ServiceAddress = null, string? After = null, string? Before = null, int? Index = null, int? Max = null)
+		{
+			try
+			{
+				RestrictedQuery? Query = null;
+				bool HasCursor = !string.IsNullOrWhiteSpace(After) || !string.IsNullOrWhiteSpace(Before) || Index.HasValue || Max.HasValue;
+				if (HasCursor)
+				{
+					Query = new RestrictedQuery(After, Before, Index, Max);
+				}
+
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				string? EffectiveServiceAddress = ServiceAddress ?? this.PubSubClient.ComponentAddress;
+
+				if (Query is null)
+				{
+					if (string.IsNullOrWhiteSpace(EffectiveServiceAddress))
+					{
+						await this.PubSubClient.GetItems(NodeId, (s, e) => HandleResult(e, Tcs), null);
+					}
+					else
+					{
+						await this.PubSubClient.GetItems(EffectiveServiceAddress, NodeId, (s, e) => HandleResult(e, Tcs), null);
+					}
+				}
+				else
+				{
+					if (string.IsNullOrWhiteSpace(EffectiveServiceAddress))
+					{
+						await this.PubSubClient.GetItems(NodeId, Query, (s, e) => HandleResult(e, Tcs), null);
+					}
+					else
+					{
+						await this.PubSubClient.GetItems(EffectiveServiceAddress, NodeId, Query, (s, e) => HandleResult(e, Tcs), null);
+					}
+				}
+
+				ItemsEventArgs Result = await Tcs.Task;
+				PubSubItem[] Items = Result.Items ?? Array.Empty<PubSubItem>();
+				ResultPage? Page = Result.Page;
+				return new PubSubPageResult(NodeId, Items, Page);
 			}
 			catch
 			{

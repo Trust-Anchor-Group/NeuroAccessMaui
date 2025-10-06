@@ -10,7 +10,7 @@ using NeuroAccessMaui.UI.MVVM;
 
 namespace NeuroAccessMaui.UI.Pages.Notifications.ObjectModel
 {
-	public partial class ObservableNotification : ObservableObject
+	public partial class ObservableNotification : ObservableObject, IDisposable
 	{
 		private readonly NotificationEvent notification;
 
@@ -45,8 +45,34 @@ namespace NeuroAccessMaui.UI.Pages.Notifications.ObjectModel
 		[ObservableProperty]
 		string? description = null;
 
+
 		public NotificationEventType? Type => this.notification.Type;
 
 		public string? Category => this.notification.Category;
+		private bool disposedValue;
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!this.disposedValue)
+			{
+				if (disposing)
+				{
+					this.loadTask.Dispose();
+				}
+
+				// TODO: free unmanaged resources (unmanaged objects) and override finalizer
+				// TODO: set large fields to null
+				this.disposedValue = true;
+			}
+		}
+
+
+		public void Dispose()
+		{
+			// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+			this.Dispose(disposing: true);
+			GC.SuppressFinalize(this);
+		}
+
 	}
 }

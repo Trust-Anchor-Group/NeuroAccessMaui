@@ -188,12 +188,12 @@
 										  WidthRequest="24"
 										  HeightRequest="24" />
 						<Label Grid.Column="1" Grid.Row="0"
-							   VerticalOptions="Start" HorizontalOptions="Start"
-							   Text="Credit Balance"
-							   FontSize="20"
-							   LineHeight="0.8"
-							   Style="{DynamicResource PageTitleLabel}"
-							   Margin="0" Padding="0" VerticalTextAlignment="Start" />
+						   VerticalOptions="Start" HorizontalOptions="Start"
+						   Text="{l:Localize CreditBalance}"
+						   FontSize="20"
+						   LineHeight="0.8"
+						   Style="{DynamicResource PageTitleLabel}"
+						   Margin="0" Padding="0" VerticalTextAlignment="Start" />
 
 						<controls:TemplatedButton Command="{Binding GetBalanceTask.RefreshCommand}"
 												  Grid.Column="2"
@@ -231,9 +231,9 @@
 							   FontFamily="HaasGroteskRegular" />
 					</Grid>
 
-					<controls:TextButton LabelData="Buy Neuro-Credits"
-										 Command="{Binding BuyEdalerCommand}"
-										 Style="{DynamicResource FilledTextButton}" />
+					<controls:TextButton LabelData="{l:Localize BuyNeuroCredits}"
+						 Command="{Binding BuyEdalerCommand}"
+						 Style="{DynamicResource FilledTextButton}" />
 				</VerticalStackLayout>
 			</Border>
 		</Grid>

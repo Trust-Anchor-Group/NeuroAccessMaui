@@ -27,6 +27,7 @@ using Waher.Security.JWS;
 using Waher.Security.JWT;
 using Waher.Security.LoginMonitor;
 using Waher.Things;
+using NeuroAccessMaui.Services.Xml;
 
 namespace NeuroAccessMaui
 {

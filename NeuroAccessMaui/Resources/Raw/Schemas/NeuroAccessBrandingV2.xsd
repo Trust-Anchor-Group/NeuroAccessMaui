@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns="urn:neuroaccess:branding:2.0"
-    targetNamespace="urn:neuroaccess:branding:2.0"
+    xmlns="https://paiwise.tagroot.io/Schema/NeuroAccessBrandingV2.xsd"
+    targetNamespace="https://paiwise.tagroot.io/Schema/NeuroAccessBrandingV2.xsd"
     elementFormDefault="qualified"
     attributeFormDefault="unqualified">
+
+    <!-- Migrated from urn:neuroaccess:branding:2.0 on 2025-02-14 -->
 
     <!--
       NeuroAccess BRANDING schema v2.0

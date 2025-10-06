@@ -582,7 +582,7 @@
     <value>Criar um código PIN</value>
   </data>
   <data name="OnboardingFinalizePageTitle" xml:space="preserve">
-    <value>Êxito!</value>
+    <value>Você foi cadastrado(a) com sucesso!</value>
   </data>
   <data name="OnboardingBiometricsPageTitle" xml:space="preserve">
     <value>Quase concluído</value>
@@ -651,7 +651,7 @@
     <value>Um provedor de serviços fornece conectividade para o aplicativo, intermedeia solicitações e garante que as informações fornecidas pelo cliente estejam corretas.</value>
   </data>
   <data name="QrPageTitleScanInvitation" xml:space="preserve">
-    <value>Convite de varredura</value>
+    <value>Escaneie o convite</value>
   </data>
   <data name="QrSectionTitleSingular" xml:space="preserve">
     <value>Aponte a câmera para um código QR com o símbolo acima</value>
@@ -966,13 +966,13 @@
     <value>ID da Empresa</value>
   </data>
   <data name="OrganizationalIdDescription" xml:space="preserve">
-    <value>Solicite um novo ID de Empresa digital. O ID conterá suas informações pessoais, as informações da empresa vinculada e sua função na empresa. Ele pode ser usado para validar sua identidade pessoal e sua função na empresa, bem como para obter acesso a serviços que exigem uma identidade de empresa verificada.</value>
+    <value>Solicite um novo ID digital de Empresa. O ID conterá suas informações pessoais, as informações da empresa vinculada e sua função na empresa. Ele pode ser usado para validar sua identidade pessoal e sua função na empresa, bem como para obter acesso a serviços que exigem uma identidade de empresa verificada.</value>
   </data>
   <data name="OrganizationalInformationDescription" xml:space="preserve">
-    <value>As Informações da Empresa a seguir serão incluídas no aplicativo para uma ID da Empresa.</value>
+    <value>As informações corporativas a seguir serão incluídas no aplicativo para o ID digital da Empresa.</value>
   </data>
   <data name="OrganizationalInformationSentDescription" xml:space="preserve">
-    <value>As seguintes Informações da Empresa foram incluídas no aplicativo para uma ID da Empresa.</value>
+    <value>As seguintes informações corporativas foram incluídas no aplicativo para o ID digital da Empresa.</value>
   </data>
   <data name="PeerReviewDescription" xml:space="preserve">
     <value>As revisões por pares estão habilitadas. Isso permite que você solicite que colegas (pessoas com IDs digitais já aprovadas) analisem seu aplicativo e o aprovem.</value>
@@ -1185,7 +1185,7 @@
     <value>Contratos</value>
   </data>
   <data name="ContractsInfoText" xml:space="preserve">
-    <value>Abaixo está uma lista de contratos que você criou ou assinou, organizados por categoria. Toque em uma categoria para expandir. Toque em um contrato para visualizá-lo.</value>
+    <value>Abaixo está uma lista de contratos que você criou ou assinou, organizados por categoria. Toque em uma categoria para expandi-la. Toque em um contrato para visualizá-lo.</value>
   </data>
   <data name="ContractSuccessfullySigned" xml:space="preserve">
     <value>Contrato assinado com sucesso.</value>
@@ -2624,8 +2624,8 @@
   <data name="ApplyIdInfoMainPage" xml:space="preserve">
     <value>Solicite um ID pessoal para aproveitar ao máximo o Neuro Access</value>
   </data>
-  <data name="CompleteIdButton" xml:space="preserve">
-    <value>Complete seu ID pessoal</value>
+  <data name="GoToApplications" xml:space="preserve">
+    <value>Ir para solicitações</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Buscar</value>
@@ -2950,5 +2950,158 @@
   </data>
   <data name="Paste" xml:space="preserve">
     <value>Colar</value>
+  </data>
+  <data name="CreditBalance" xml:space="preserve">
+    <value>Saldo</value>
+  </data>
+  <data name="BuyNeuroCredits" xml:space="preserve">
+    <value>Comprar Créditos-Neuro</value>
+  </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Usar localização atual</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>Ocorreu um erro ao obter sua localização. Certifique-se de que as permissões de localização estão ativadas nas configurações do seu dispositivo</value>
+  </data>
+  <data name="Attachment_Passport" xml:space="preserve">
+    <value>Imagem do passaporte</value>
+  </data>
+  <data name="Attachment_IdCardFront" xml:space="preserve">
+    <value>Frente do cartão de identidade</value>
+  </data>
+  <data name="Attachment_IdCardBack" xml:space="preserve">
+    <value>Verso do cartão de identidade</value>
+  </data>
+  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
+    <value>Frente da carteira de motorista</value>
+  </data>
+  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
+    <value>Verso da carteira de motorista</value>
+  </data>
+  <data name="Attachment_ProfilePhoto" xml:space="preserve">
+    <value>Foto do rosto</value>
+  </data>
+  <data name="Kyc_Next" xml:space="preserve">
+    <value>Próximo</value>
+  </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Voltar ao resumo</value>
+  </data>
+  <data name="Kyc_Exit" xml:space="preserve">
+    <value>Tem certeza de que deseja sair do processo de solicitação de identidade?</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Progresso</value>
+  </data>
+  <data name="TradeName" xml:space="preserve">
+    <value>Nome fantasia</value>
+  </data>
+  <data name="LegalName" xml:space="preserve">
+    <value>Nome legal</value>
+  </data>
+  <data name="OrgRepName" xml:space="preserve">
+    <value>Nome do representante</value>
+  </data>
+  <data name="OrgRepCPF" xml:space="preserve">
+    <value>CPF do representante</value>
+  </data>
+  <data name="OrgRepBirthDate" xml:space="preserve">
+    <value>Data de nascimento do representante</value>
+  </data>
+  <data name="OrgRepRG" xml:space="preserve">
+    <value>RG do representante</value>
+  </data>
+  <data name="OrgEMail" xml:space="preserve">
+    <value>E-mail corporativo</value>
+  </data>
+  <data name="OrgPhone" xml:space="preserve">
+    <value>Telefone corporativo</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Nome completo</value>
+  </data>
+  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
+    <value>Estatuto social</value>
+  </data>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Remove dados temporários, como imagens e anexos, para liberar espaço</value>
+  </data>
+  <data name="ClearBrandingAndKycCache" xml:space="preserve">
+    <value>Limpar cache de branding e KYC</value>
+  </data>
+  <data name="ApplicationUnderUnderReview" xml:space="preserve">
+    <value>Sua solicitação está em análise. Nós o notificaremos quando seu ID for aprovado!</value>
+  </data>
+  <data name="SeeIDApplication" xml:space="preserve">
+    <value>Ver solicitação de ID</value>
+  </data>
+  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
+    <value>Sua solicitação de ID foi enviada para análise. Nós notificaremos você quando sua ID for aprovada!</value>
+  </data>
+  <data name="ApplicationSummary" xml:space="preserve">
+    <value>Resumo da solicitação</value>
+  </data>
+  <data name="ApplicationSummaryDescription" xml:space="preserve">
+    <value>Antes de finalizar, por favor leia e certifique-se de que tudo está correto</value>
+  </data>
+  <data name="ApplicationInformation" xml:space="preserve">
+    <value>Informações da solicitação</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Dados pessoais</value>
+  </data>
+  <data name="AddressDetails" xml:space="preserve">
+    <value>Detalhes do endereço</value>
+  </data>
+  <data name="DocumentDetails" xml:space="preserve">
+    <value>Detalhes do documento</value>
+  </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>{0} é obrigatório</value>
+  </data>
+  <data name="PendingReview" xml:space="preserve">
+    <value>Pendente de revisão</value>
+  </data>
+  <data name="CurrentApplication" xml:space="preserve">
+    <value>Solicitação atual</value>
+  </data>
+  <data name="IdentityApplication" xml:space="preserve">
+    <value>Solicitação de identidade</value>
+  </data>
+  <data name="AvailableApplications" xml:space="preserve">
+    <value>Solicitações disponíveis</value>
+  </data>
+  <data name="ForYourIndividualUse" xml:space="preserve">
+    <value>Para seu uso individual</value>
+  </data>
+  <data name="BeforeFinalizingSummary" xml:space="preserve">
+    <value>Antes de finalizar, leia e certifique-se de que tudo está correto</value>
+  </data>
+  <data name="CompanyInformation" xml:space="preserve">
+    <value>Informações da empresa</value>
+  </data>
+  <data name="CompanyAddress" xml:space="preserve">
+    <value>Endereço da empresa</value>
+  </data>
+  <data name="CompanyRepresentative" xml:space="preserve">
+    <value>Representante da empresa</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Carregar</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Tirar foto</value>
+  </data>
+  <data name="InReview" xml:space="preserve">
+    <value>Em revisão</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>Em andamento</value>
+  </data>
+  <data name="IdentityRejected" xml:space="preserve">
+    <value>Identidade rejeitada. Você pode retornar à página de solicitações e atualizar suas informações para tentar novamente.</value>
   </data>
 </root>

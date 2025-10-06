@@ -632,5 +632,9 @@
                 </controls:BottomSheetView.MainContent>
             </controls:BottomSheetView>
         </Grid>
-    </Grid>
+
+		<Grid.GestureRecognizers>
+			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
+		</Grid.GestureRecognizers>
+	</Grid>
 </base:BaseContentPage>

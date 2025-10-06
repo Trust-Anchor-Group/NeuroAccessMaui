@@ -12,7 +12,7 @@ using NeuroAccessMaui.UI.Pages.Notifications.ObjectModel;
 
 namespace NeuroAccessMaui.UI.Pages.Notifications
 {
-	public partial class NotificationsViewModel : BaseViewModel
+	public partial class NotificationsViewModel : BaseViewModel, IDisposable
 	{
 
 		public ObservableTask NotificationsLoader = new();
@@ -69,5 +69,26 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			}
 		}
 
+		private bool disposedValue;
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!this.disposedValue)
+			{
+				if (disposing)
+				{
+					this.NotificationsLoader.Dispose();
+				}
+
+				this.disposedValue = true;
+			}
+		}
+
+
+		public void Dispose()
+		{
+			this.Dispose(disposing: true);
+			GC.SuppressFinalize(this);
+		}
 	}
 }
