@@ -80,6 +80,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using NeuroAccessMaui.UI.Popups.Password;
 using NeuroAccessMaui.UI.Popups.Photos.Image;
+using NeuroAccessMaui.UI.Popups.Settings;
 using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
 using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
@@ -317,6 +318,8 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<AddTextNoteViewModel>();
 			Builder.Services.AddTransient<CheckPasswordPopup>();
 			Builder.Services.AddTransient<CheckPasswordViewModel>();
+			Builder.Services.AddTransient<SelectLanguagePopup>();
+			Builder.Services.AddTransient<SelectLanguagePopupViewModel>();
 
 			// Xmpp
 			Builder.Services.AddTransient<RemoveSubscriptionPopup>();

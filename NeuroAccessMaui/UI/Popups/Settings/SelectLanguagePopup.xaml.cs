@@ -1,13 +1,14 @@
+using System;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Devices;
 using NeuroAccessMaui.Services.Localization;
-using NeuroAccessMaui.Test;
-using NeuroAccessMaui.UI.Popups;
-using NeuroAccessMaui.UI.Popups.Settings;
 
 namespace NeuroAccessMaui.UI.Popups.Settings
 {
-	public partial class SelectLanguagePopup : BaseModalPage
+	public partial class SelectLanguagePopup : BasePopup
 	{
 
 		public SelectLanguagePopup()
@@ -45,7 +46,6 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 		}
 		public override Task OnDisappearingAsync()
 		{
-			// Unregister the message handler to avoid multiple registrations.
 			WeakReferenceMessenger.Default.Unregister<ScrollToLanguageMessage>(this);
 			return base.OnDisappearingAsync();
 		}

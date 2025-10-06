@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Storage;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
-using NeuroAccessMaui.Test;
 
 namespace NeuroAccessMaui.UI.Popups.Settings
 {
-	public partial class SelectLanguagePopupViewModel : BaseModalViewModel
+	public partial class SelectLanguagePopupViewModel : BasePopupViewModel
 	{
 		// Expose the supported languages.
 		public ObservableCollection<ObservableLanguage> Languages { get; }

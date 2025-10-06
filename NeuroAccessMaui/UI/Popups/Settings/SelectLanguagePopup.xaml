@@ -1,73 +1,60 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<base:BaseModalPage x:Class="NeuroAccessMaui.UI.Popups.Settings.SelectLanguagePopup"
-					 x:Name="thisPopup"
-					 x:DataType="vm:SelectLanguagePopupViewModel"
-					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-					 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-				     xmlns:vm="clr-namespace:NeuroAccessMaui.UI.Popups.Settings"
-				xmlns:viewModel="clr-namespace:NeuroAccessMaui.Test"
-	  xmlns:base="clr-namespace:NeuroAccessMaui.Test">
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Settings.SelectLanguagePopup"
+                x:Name="thisPopup"
+                x:DataType="vm:SelectLanguagePopupViewModel"
+                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+                xmlns:vm="clr-namespace:NeuroAccessMaui.UI.Popups.Settings">
+    <base:BasePopup.Resources>
+        <DataTemplate x:Key="SelectLanguageDataTemplate"
+                      x:DataType="vm:ObservableLanguage">
+            <Border x:Name="ItemBorder"
+                    BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+                    Stroke="{DynamicResource SurfaceBackgroundWL}"
+                    Style="{DynamicResource ItemOuterBorder}">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border"
+                                 Binding="{Binding IsSelected}"
+                                 Value="True">
+                        <Setter Property="BackgroundColor"
+                                Value="{DynamicResource SurfaceBackgroundWL}" />
+                        <Setter Property="Stroke"
+                                Value="{DynamicResource SurfaceBackgroundWL}" />
+                    </DataTrigger>
+                </Border.Triggers>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding Source={x:Reference thisPopup}, Path=BindingContext.SelectLanguageCommand}"
+                                          CommandParameter="{Binding Language.Name}" />
+                </Border.GestureRecognizers>
+                <Label HorizontalOptions="Center"
+                       Style="{DynamicResource BoldItemTitleLabel}"
+                       Text="{Binding Language.MyNativeName}"
+                       TextColor="{DynamicResource ContentPrimaryWL}">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{Binding IsSelected}"
+                                     Value="True">
+                            <Setter Property="TextColor"
+                                    Value="{DynamicResource ButtonNeutralContentPressed}" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+            </Border>
+        </DataTemplate>
+    </base:BasePopup.Resources>
 
-
-	<base:BaseModalPage.Resources>
-		<DataTemplate x:Key="SelectLanguageDataTemplate"
-						  x:DataType="vm:ObservableLanguage">
-			<Border x:Name="ItemBorder"
-			        BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
-			        Stroke="{DynamicResource SurfaceBackgroundWL}"
-			        Style="{DynamicResource ItemOuterBorder}">
-				<Border.Triggers>
-					<!-- When IsSelected is true, update appearance -->
-					<DataTrigger TargetType="Border"
-					             Binding="{Binding IsSelected}"
-					             Value="True">
-						<Setter Property="BackgroundColor"
-						        Value="{DynamicResource SurfaceBackgroundWL}" />
-						<Setter Property="Stroke"
-						        Value="{DynamicResource SurfaceBackgroundWL}" />
-					</DataTrigger>
-				</Border.Triggers>
-				<Border.GestureRecognizers>
-					<TapGestureRecognizer x:DataType="{x:Null}"
-										  Command="{Binding Source={x:Reference thisPopup}, Path=BindingContext.SelectLanguageCommand}"
-										  CommandParameter="{Binding Language.Name}" />
-				</Border.GestureRecognizers>
-
-
-
-				<Label x:Name="InnerLabel"
-						 HorizontalOptions="Center"
-						 Style="{DynamicResource BoldItemTitleLabel}"
-						 Text="{Binding Language.MyNativeName}"
-						 TextColor="{DynamicResource ContentPrimaryWL}">
-					<Label.Triggers>
-						<DataTrigger TargetType="Label"
-						             Binding="{Binding IsSelected}"
-						             Value="True">
-							<Setter Property="TextColor"
-									  Value="{DynamicResource ButtonNeutralContentPressed}" />
-						</DataTrigger>
-					</Label.Triggers>
-				</Label>
-			</Border>
-		</DataTemplate>
-
-		</base:BaseModalPage.Resources>
-
-	<Grid Style="{DynamicResource PopupGrid}">
-		<Border WidthRequest="{Binding ViewWidthRequest}"
-				  MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-				  Style="{DynamicResource PopupBorder}">
-			<ScrollView x:Name="InnerScrollView"
-							VerticalOptions="Center">
-				<VerticalStackLayout x:Name="LanguagesContainer"
-											BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
-											BindableLayout.ItemsSource="{Binding Languages}"
-											Spacing="{DynamicResource MediumSpacing}" />
-			</ScrollView>
-		</Border>
-	</Grid>
-</base:BaseModalPage>
+    <base:BasePopup.PopupContent>
+        <Border Style="{DynamicResource PopupBorder}">
+            <ScrollView x:Name="InnerScrollView"
+                        VerticalOptions="Center">
+                <VerticalStackLayout x:Name="LanguagesContainer"
+                                      Spacing="{DynamicResource MediumSpacing}"
+                                      BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
+                                      BindableLayout.ItemsSource="{Binding Languages}" />
+            </ScrollView>
+        </Border>
+    </base:BasePopup.PopupContent>
+</base:BasePopup>
