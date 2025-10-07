@@ -88,7 +88,7 @@ namespace NeuroAccessMaui.UI.Controls
 				finished: (value, isCompleted) => AnimationTask.SetResult(isCompleted));
 
 				// Await the animation's completion
-				await AnimationTask.Task;
+				//await AnimationTask.Task;
 
 				VisualStateManager.GoToState(this, VisualStateManager.CommonStates.Normal);
 
