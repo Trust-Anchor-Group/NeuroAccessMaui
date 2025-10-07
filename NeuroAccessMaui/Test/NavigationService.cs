@@ -233,24 +233,24 @@ namespace NeuroAccessMaui.Test
         {
             return this.Enqueue(async () =>
             {
-                NavigationArgs? parentArgs = this.navigationArgsStack.Count > 0 ? this.navigationArgsStack.Peek() : null;
-                NavigationArgs navArgs = Args ?? new();
-                navArgs.SetBackArguments(parentArgs, BackMethod, UniqueId);
-                this.latestArguments = navArgs;
-                this.PushArgs(Route, navArgs);
+                NavigationArgs? ParentArgs = this.navigationArgsStack.Count > 0 ? this.navigationArgsStack.Peek() : null;
+                NavigationArgs NavArgs = Args ?? new();
+                NavArgs.SetBackArguments(ParentArgs, BackMethod, UniqueId);
+                this.latestArguments = NavArgs;
+                this.PushArgs(Route, NavArgs);
 
                 BaseContentPage screen = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
                     ?? throw new InvalidOperationException($"No page registered for route '{Route}' or it is not a BaseContentPage.");
 
                 await EnsureInitializedAsync(screen);
 
-                this.navigationArgsStack.Push(navArgs);
+                this.navigationArgsStack.Push(NavArgs);
                 this.screenStack.Push(screen);
 
                 try
                 {
                     this.isNavigating = true;
-                    await this.Presenter.ShowScreen(screen, GetTransitionType(false)); // SwipeLeft for forward
+                    await this.Presenter.ShowScreen(screen, this.GetTransitionType(false)); // SwipeLeft for forward
                     this.Presenter.UpdateBars(screen);
                     await screen.OnAppearingAsync();
                     ServiceRef.LogService.LogDebug($"Navigated to {Route}");
@@ -263,7 +263,7 @@ namespace NeuroAccessMaui.Test
                 finally
                 {
                     this.isNavigating = false;
-                    navArgs.NavigationCompletionSource.TrySetResult(true);
+                    NavArgs.NavigationCompletionSource.TrySetResult(true);
                 }
             });
         }
@@ -271,47 +271,47 @@ namespace NeuroAccessMaui.Test
         /// <inheritdoc/>
         public async Task PushModalAsync<TPage>() where TPage : BaseContentPage
         {
-            TPage page = ServiceRef.Provider.GetRequiredService<TPage>();
+            TPage Page = ServiceRef.Provider.GetRequiredService<TPage>();
             await this.Enqueue(async () =>
             {
-                await EnsureInitializedAsync(page);
-                this.modalScreenStack.Push(page);
-                await page.OnAppearingAsync();
-                await this.Presenter.ShowModal(page, TransitionType.Fade);
+                await EnsureInitializedAsync(Page);
+                this.modalScreenStack.Push(Page);
+                await Page.OnAppearingAsync();
+                await this.Presenter.ShowModal(Page, TransitionType.Fade);
             });
-            if (page.BindingContext is BaseModalViewModel vm) await vm.Popped;
+            if (Page.BindingContext is BaseModalViewModel vm) await vm.Popped;
         }
 
         /// <inheritdoc/>
         public async Task PushModalAsync<TPage, TViewModel>() where TPage : BaseContentPage where TViewModel : BaseModalViewModel
         {
-            TPage page = ServiceRef.Provider.GetRequiredService<TPage>();
-            TViewModel vm = ServiceRef.Provider.GetRequiredService<TViewModel>();
-            page.BindingContext = vm;
+            TPage Page = ServiceRef.Provider.GetRequiredService<TPage>();
+            TViewModel Vm = ServiceRef.Provider.GetRequiredService<TViewModel>();
+            Page.BindingContext = Vm;
             await this.Enqueue(async () =>
             {
-                await EnsureInitializedAsync(page);
-                this.modalScreenStack.Push(page);
-                await page.OnAppearingAsync();
-                await this.Presenter.ShowModal(page, TransitionType.Fade);
+                await EnsureInitializedAsync(Page);
+                this.modalScreenStack.Push(Page);
+                await Page.OnAppearingAsync();
+                await this.Presenter.ShowModal(Page, TransitionType.Fade);
             });
-            await vm.Popped;
+            await Vm.Popped;
         }
 
         /// <inheritdoc/>
         public async Task<TReturn?> PushModalAsync<TPage, TViewModel, TReturn>() where TPage : BaseContentPage where TViewModel : ReturningModalViewModel<TReturn>
         {
-            TPage page = ServiceRef.Provider.GetRequiredService<TPage>();
-            TViewModel vm = ServiceRef.Provider.GetRequiredService<TViewModel>();
-            page.BindingContext = vm;
+            TPage Page = ServiceRef.Provider.GetRequiredService<TPage>();
+            TViewModel Vm = ServiceRef.Provider.GetRequiredService<TViewModel>();
+            Page.BindingContext = Vm;
             await this.Enqueue(async () =>
             {
-                await EnsureInitializedAsync(page);
-                this.modalScreenStack.Push(page);
-                await page.OnAppearingAsync();
-                await this.Presenter.ShowModal(page, TransitionType.Fade);
+                await EnsureInitializedAsync(Page);
+                this.modalScreenStack.Push(Page);
+                await Page.OnAppearingAsync();
+                await this.Presenter.ShowModal(Page, TransitionType.Fade);
             });
-            return await vm.Result;
+            return await Vm.Result;
         }
 
         /// <inheritdoc/>
@@ -391,12 +391,12 @@ namespace NeuroAccessMaui.Test
         {
             return this.Enqueue(async () =>
             {
-                BaseContentPage screen = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
+                BaseContentPage Screen = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
                     ?? throw new InvalidOperationException($"No page registered for route '{Route}' or it is not a BaseContentPage.");
-                await EnsureInitializedAsync(screen);
-                this.modalScreenStack.Push(screen);
-                await screen.OnAppearingAsync();
-                await this.Presenter.ShowModal(screen, TransitionType.Fade);
+                await EnsureInitializedAsync(Screen);
+                this.modalScreenStack.Push(Screen);
+                await Screen.OnAppearingAsync();
+                await this.Presenter.ShowModal(Screen, TransitionType.Fade);
             });
         }
         #region Back Handling
