@@ -20,23 +20,14 @@ using NeuroAccessMaui.Services.UI.Popups;
 using NeuroAccessMaui.Services.UI.Toasts;
 using Waher.Runtime.Inventory;
 
-
-
 #if DEBUG
 using DotNet.Meteor.HotReload.Plugin;
 using SkiaSharp.Views.Maui.Handlers;
 using Microsoft.Maui.Hosting;
-
-
-
-
-
 #endif
 #if ANDROID
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
-
-
 
 namespace NeuroAccessMaui
 {
@@ -77,13 +68,11 @@ namespace NeuroAccessMaui
 #endif
 			});
 
-
 			Builder.UseSkiaSharp();
 			//Builder.RegisterFirebaseServices();
 #if DEBUG
 			Builder.EnableHotReload();
 			Builder.Logging.AddDebug();
-
 #endif
 
 			Builder.ConfigureFonts(fonts =>
@@ -111,19 +100,19 @@ namespace NeuroAccessMaui
 			Builder.UseMauiCommunityToolkitMarkup();
 			Builder.UseBarcodeReader();
 			Builder.UseLocalizationManager<AppResources>();
-			Builder.Services.AddSingleton<IPlatformSpecific, PlatformSpecific>();
 
+			// Register platform specific implementation
+#if ANDROID || IOS || WINDOWS
+			Builder.Services.AddSingleton<IPlatformSpecific, PlatformSpecific>();
+#endif
 
 			Builder.RegisterTypes();
 			Builder.RegisterPages();
-
-			//Builder.Services.AddLogging();
 
 			instance = Builder.Build();
 
 			// Setup the service provider
 			ServiceRef.Provider = new HybridServiceProvider(instance.Services);
-
 
 			return instance;
 		}
@@ -182,7 +171,6 @@ namespace NeuroAccessMaui
 			{
 				handler.PlatformView?.Clear();
 			});
-
 #endif
 		}
 	}
