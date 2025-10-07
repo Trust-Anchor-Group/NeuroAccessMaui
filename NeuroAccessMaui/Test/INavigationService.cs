@@ -75,17 +75,7 @@ namespace NeuroAccessMaui.Test
         /// <typeparam name="TViewModel">The view model type.</typeparam>
         Task PushModalAsync<TPage, TViewModel>()
             where TPage : BaseContentPage
-            where TViewModel : BaseModalViewModel;
-
-        /// <summary>
-        /// Presents a view modally returning a value.
-        /// </summary>
-        /// <typeparam name="TPage">The view type.</typeparam>
-        /// <typeparam name="TViewModel">The view model type.</typeparam>
-        /// <typeparam name="TReturn">The return type.</typeparam>
-        Task<TReturn?> PushModalAsync<TPage, TViewModel, TReturn>()
-            where TPage : BaseContentPage
-            where TViewModel : ReturningModalViewModel<TReturn>;
+            where TViewModel : BaseViewModel;
 
         /// <summary>
         /// Pops the top modal page.

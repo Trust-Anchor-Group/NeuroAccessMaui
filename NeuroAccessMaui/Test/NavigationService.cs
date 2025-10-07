@@ -279,11 +279,10 @@ namespace NeuroAccessMaui.Test
                 await Page.OnAppearingAsync();
                 await this.Presenter.ShowModal(Page, TransitionType.Fade);
             });
-            if (Page.BindingContext is BaseModalViewModel vm) await vm.Popped;
         }
 
         /// <inheritdoc/>
-        public async Task PushModalAsync<TPage, TViewModel>() where TPage : BaseContentPage where TViewModel : BaseModalViewModel
+        public async Task PushModalAsync<TPage, TViewModel>() where TPage : BaseContentPage where TViewModel : BaseViewModel
         {
             TPage Page = ServiceRef.Provider.GetRequiredService<TPage>();
             TViewModel Vm = ServiceRef.Provider.GetRequiredService<TViewModel>();
@@ -295,23 +294,6 @@ namespace NeuroAccessMaui.Test
                 await Page.OnAppearingAsync();
                 await this.Presenter.ShowModal(Page, TransitionType.Fade);
             });
-            await Vm.Popped;
-        }
-
-        /// <inheritdoc/>
-        public async Task<TReturn?> PushModalAsync<TPage, TViewModel, TReturn>() where TPage : BaseContentPage where TViewModel : ReturningModalViewModel<TReturn>
-        {
-            TPage Page = ServiceRef.Provider.GetRequiredService<TPage>();
-            TViewModel Vm = ServiceRef.Provider.GetRequiredService<TViewModel>();
-            Page.BindingContext = Vm;
-            await this.Enqueue(async () =>
-            {
-                await EnsureInitializedAsync(Page);
-                this.modalScreenStack.Push(Page);
-                await Page.OnAppearingAsync();
-                await this.Presenter.ShowModal(Page, TransitionType.Fade);
-            });
-            return await Vm.Result;
         }
 
         /// <inheritdoc/>

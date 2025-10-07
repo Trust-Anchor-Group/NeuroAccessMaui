@@ -9,7 +9,7 @@ using NeuroAccessMaui.UI.Pages;
 namespace NeuroAccessMaui.UI.Popups
 {
 	/// <summary>
-	/// Common popup container providing centered layout and lifecycle forwarding for popup content.
+	/// Common popup container providing centered layout for popup content.
 	/// </summary>
 	public class BasePopupView : ContentView, ILifeCycleView
 	{
@@ -106,13 +106,25 @@ namespace NeuroAccessMaui.UI.Popups
 			set => this.SetValue(CardMaxHeightFractionProperty, value);
 		}
 
-		public virtual Task OnInitializeAsync() => this.ForwardLifecycleAsync(static lifecycle => lifecycle.OnInitializeAsync());
+		public virtual Task OnInitializeAsync()
+		{
+			return Task.CompletedTask;
+		}
 
-		public virtual Task OnDisposeAsync() => this.ForwardLifecycleAsync(static lifecycle => lifecycle.OnDisposeAsync());
+		public virtual Task OnDisposeAsync()
+		{
+			return Task.CompletedTask;
+		}
 
-		public virtual Task OnAppearingAsync() => this.ForwardLifecycleAsync(static lifecycle => lifecycle.OnAppearingAsync());
+		public virtual Task OnAppearingAsync()
+		{
+			return Task.CompletedTask;
+		}
 
-		public virtual Task OnDisappearingAsync() => this.ForwardLifecycleAsync(static lifecycle => lifecycle.OnDisappearingAsync());
+		public virtual Task OnDisappearingAsync()
+		{
+			return Task.CompletedTask;
+		}
 
 		protected virtual Task OnBackgroundDismissRequestedAsync() => ServiceRef.PopupService.PopAsync();
 
@@ -133,13 +145,6 @@ namespace NeuroAccessMaui.UI.Popups
 				if (newValue is View view)
 					popupView.ApplyCardSizing(view);
 			}
-		}
-
-		private Task ForwardLifecycleAsync(Func<ILifeCycleView, Task> invoker)
-		{
-			if (this.BindingContext is ILifeCycleView lifecycle)
-				return invoker(lifecycle);
-			return Task.CompletedTask;
 		}
 
 		protected override void OnPropertyChanged(string? propertyName = null)
