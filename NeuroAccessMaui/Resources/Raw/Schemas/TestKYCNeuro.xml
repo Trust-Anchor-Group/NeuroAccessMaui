@@ -345,6 +345,16 @@
 						<Text lang="fi">Ajokortti</Text>
 						<Text lang="fr">Permis de conduire</Text>
 					</Option>
+					<Option value="none">
+						<Text lang="en">None</Text>
+						<Text lang="sv">Ingen</Text>
+						<Text lang="es">Ninguno</Text>
+						<Text lang="pt">Nenhum</Text>
+						<Text lang="da">Ingen</Text>
+						<Text lang="no">Ingen</Text>
+						<Text lang="fi">Ei mitään</Text>
+						<Text lang="fr">Aucun</Text>
+					</Option>
 				</Options>
 			</Field>
 		</Section>
