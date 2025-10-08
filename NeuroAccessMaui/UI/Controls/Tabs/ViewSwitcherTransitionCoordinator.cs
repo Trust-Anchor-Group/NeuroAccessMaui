@@ -84,7 +84,8 @@ namespace NeuroAccessMaui.UI.Controls
 					bool transitionCompleted = false;
 					try
 					{
-						await this.Transition.RunAsync(request, linkedSource.Token).ConfigureAwait(false);
+						// Keep continuation on UI thread – do NOT use ConfigureAwait(false) here.
+						await this.Transition.RunAsync(request, linkedSource.Token);
 						transitionCompleted = true;
 					}
 					catch (OperationCanceledException)
@@ -98,7 +99,7 @@ namespace NeuroAccessMaui.UI.Controls
 						{
 							if (currentView is not null && !ReferenceEquals(currentView, nextView))
 							{
-								this.presenter.Children.Remove(currentView);
+								this.RemoveFromPresenter(currentView);
 							}
 							this.CurrentView = nextView;
 						}
@@ -106,11 +107,11 @@ namespace NeuroAccessMaui.UI.Controls
 						{
 							if (nextView is not null && !ReferenceEquals(currentView, nextView))
 							{
-								this.presenter.Children.Remove(nextView);
+								this.RemoveFromPresenter(nextView);
 							}
 						}
 					}
-				}).ConfigureAwait(false);
+				});
 			}
 			finally
 			{
@@ -177,6 +178,35 @@ namespace NeuroAccessMaui.UI.Controls
 
 			if (newView is not null)
 				Microsoft.Maui.Controls.ViewExtensions.CancelAnimations(newView);
+		}
+
+		private void RemoveFromPresenter(View view)
+		{
+			if (view is null)
+				return;
+
+			bool removed = this.TryRemove(view);
+			if (!removed)
+			{
+				view.Handler?.DisconnectHandler();
+				this.TryRemove(view);
+			}
+		}
+
+		private bool TryRemove(View view)
+		{
+			try
+			{
+				if (this.presenter.Children.Contains(view))
+				{
+					this.presenter.Children.Remove(view);
+				}
+				return true;
+			}
+			catch (System.Runtime.InteropServices.COMException)
+			{
+				return false;
+			}
 		}
 
 		public void Dispose()
