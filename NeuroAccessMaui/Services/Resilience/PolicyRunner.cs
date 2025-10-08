@@ -21,7 +21,9 @@ namespace NeuroAccessMaui.Services.Resilience
             Func<CancellationToken, Task> pipeline = action;
             if (policies is { Length: > 0 })
             {
-                foreach (IAsyncPolicy pol in policies.Reverse())
+				policies.Reverse();
+
+				foreach (IAsyncPolicy pol in policies)
                 {
                     var next = pipeline;
                     pipeline = c => pol.ExecuteAsync(next, c);
