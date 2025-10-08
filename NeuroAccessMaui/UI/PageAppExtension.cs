@@ -42,6 +42,9 @@ using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using NeuroAccessMaui.UI.Pages.Main.XmppForm;
 using NeuroAccessMaui.UI.Pages.Notifications;
+using NeuroAccessMaui.UI.Pages.Onboarding;
+using NeuroAccessMaui.UI.Pages.Onboarding.Views;
+using NeuroAccessMaui.UI.Pages.Onboarding.ViewModels;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionContract;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
@@ -262,20 +265,28 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<PetitionPeerReviewNavigationArgs>();
 
 
-			// Registration
-			Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
-			Builder.Services.AddTransient<LoadingView, LoadingViewModel>();
-			//Builder.Services.AddTransient<RequestPurposeView, RequestPurposeViewModel>();
-			Builder.Services.AddTransient<ValidatePhoneView, ValidatePhoneViewModel>();
-			Builder.Services.AddTransient<ValidateEmailView, ValidateEmailViewModel>();
-			Builder.Services.AddTransient<ChooseProviderView, ChooseProviderViewModel>();
-			Builder.Services.AddTransient<CreateAccountView, CreateAccountViewModel>();
-			Builder.Services.AddTransient<GetStartedView, GetStartedViewModel>();
-			Builder.Services.AddTransient<NameEntryView, NameEntryViewModel>();
-			Builder.Services.AddTransient<DefinePasswordView, DefinePasswordViewModel>();
-			Builder.Services.AddTransient<BiometricsView, BiometricsViewModel>();
-			Builder.Services.AddTransient<FinalizeView, FinalizeViewModel>();
-			Builder.Services.AddTransient<ContactSupportView, ContactSupportViewModel>();
+		// Registration
+		Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
+		Builder.Services.AddTransient<LoadingView, LoadingViewModel>();
+		//Builder.Services.AddTransient<RequestPurposeView, RequestPurposeViewModel>();
+		Builder.Services.AddTransient<ValidatePhoneView, ValidatePhoneViewModel>();
+		Builder.Services.AddTransient<ValidateEmailView, ValidateEmailViewModel>();
+		Builder.Services.AddTransient<ChooseProviderView, ChooseProviderViewModel>();
+		Builder.Services.AddTransient<CreateAccountView, CreateAccountViewModel>();
+		Builder.Services.AddTransient<GetStartedView, GetStartedViewModel>();
+		Builder.Services.AddTransient<NameEntryView, NameEntryViewModel>();
+		Builder.Services.AddTransient<DefinePasswordView, DefinePasswordViewModel>();
+		Builder.Services.AddTransient<BiometricsView, BiometricsViewModel>();
+		Builder.Services.AddTransient<FinalizeView, FinalizeViewModel>();
+		Builder.Services.AddTransient<ContactSupportView, ContactSupportViewModel>();
+
+		// Onboarding
+		Builder.Services.AddTransient<OnboardingPage, OnboardingViewModel>();
+		Builder.Services.AddTransient<WelcomeStepView, WelcomeOnboardingStepViewModel>();
+		Builder.Services.AddTransient<AccountSetupView, AccountSetupOnboardingStepViewModel>();
+		Builder.Services.AddTransient<PinSetupView, PinSetupOnboardingStepViewModel>();
+		Builder.Services.AddTransient<BaseIdApplicationView, BaseIdApplicationOnboardingStepViewModel>();
+		Builder.Services.AddTransient<SummaryView, SummaryOnboardingStepViewModel>();
 
 			// Signatures
 			Builder.Services.AddTransient<ClientSignaturePage, ClientSignatureViewModel>();

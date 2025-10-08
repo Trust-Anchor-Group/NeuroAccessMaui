@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Onboarding.OnboardingPage"
+                      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+                      xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
+                      xmlns:tabs="clr-namespace:NeuroAccessMaui.UI.Controls"
+                      xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                      xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                      xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.Views"
+                      x:DataType="viewmodel:OnboardingViewModel">
+    <Grid RowDefinitions="auto,*" ColumnDefinitions="*" BackgroundColor="Transparent">
+        <controls:Background Grid.RowSpan="2" />
+
+        <Grid Grid.Row="0" RowDefinitions="auto" ColumnDefinitions="auto,*,auto">
+            <Grid.Padding>
+                <Thickness Left="{StaticResource LargeSpacing}"
+                           Top="{StaticResource LargeSpacing}"
+                           Right="{StaticResource LargeSpacing}" />
+            </Grid.Padding>
+
+            <controls:SvgButton SvgSource="question.svg"
+                                Style="{DynamicResource IconButton}"
+                                Command="{Binding ExistingAccountCommand}"
+                                IsVisible="{Binding IsOnWelcomeStep}" />
+
+            <controls:ImageButton Style="{DynamicResource ImageOnlyButton}"
+                                  PathData="{x:Static ui:Geometries.BackButtonPath}"
+                                  Command="{Binding GoBackCommand}"
+                                  IsVisible="{Binding CanGoBack}" />
+
+            <controls:SvgButton Grid.Column="2"
+                                SvgSource="globe.svg"
+                                Style="{DynamicResource IconButton}"
+                                Command="{Binding ChangeLanguageCommand}"
+                                LabelText="{Binding SelectedLanguage.MyNativeName}"
+                                LabelPosition="Left"
+                                IsVisible="{Binding IsOnWelcomeStep}" />
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <Grid RowDefinitions="auto,*" Padding="{DynamicResource LargeMargins}" RowSpacing="{DynamicResource LargeSpacing}">
+                <Grid Grid.Row="1">
+                    <tabs:ViewSwitcher x:Name="FlowSwitcher"
+                                       SelectedStateKey="{Binding SelectedStateKey}"
+                                       AutomationDescriptionTemplate="Onboarding step: {0}">
+                        <tabs:ViewSwitcher.StateViews>
+                            <tabs:ViewSwitcherStateView StateKey="Welcome">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:WelcomeStepView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                            <tabs:ViewSwitcherStateView StateKey="AccountSetup">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:AccountSetupView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                            <tabs:ViewSwitcherStateView StateKey="PinSetup">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:PinSetupView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                            <tabs:ViewSwitcherStateView StateKey="BaseIdApplication">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:BaseIdApplicationView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                            <tabs:ViewSwitcherStateView StateKey="Summary">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:SummaryView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                        </tabs:ViewSwitcher.StateViews>
+                    </tabs:ViewSwitcher>
+                </Grid>
+            </Grid>
+        </ScrollView>
+    </Grid>
+</base:BaseContentPage>

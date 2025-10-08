@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.Theme;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 
 namespace NeuroAccessMaui.UI.Pages.Startup
 {
@@ -40,7 +41,7 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 
 
 			if (!IsOnboarded)
-				await this.navigationService.GoToAsync(nameof(RegistrationPage));
+				await this.navigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs { InitialStep = OnboardingStep.PinSetup});
 			else
 			{
 				await Task.Delay(5000);

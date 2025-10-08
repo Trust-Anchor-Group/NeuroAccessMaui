@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 
 namespace NeuroAccessMaui.UI.Controls
@@ -43,6 +44,9 @@ namespace NeuroAccessMaui.UI.Controls
 				try
 				{
 					previous.Cancel();
+				}
+				catch (ObjectDisposedException)
+				{
 				}
 				finally
 				{
@@ -111,24 +115,59 @@ namespace NeuroAccessMaui.UI.Controls
 			finally
 			{
 				this.transitionLock.Release();
-				linkedSource.Dispose();
+
+				if (Interlocked.CompareExchange(ref this.transitionSource, null, linkedSource) == linkedSource)
+				{
+					linkedSource.Dispose();
+				}
+				else
+				{
+					linkedSource.Dispose();
+				}
 			}
 		}
 
 		private void DetachFromParent(View view)
 		{
 			Element? parent = view.Parent;
-			if (parent is Layout layout)
+			if (parent is null)
+				return;
+
+			try
 			{
-				layout.Children.Remove(view);
-			}
-			else if (parent is ContentView contentView)
-			{
-				if (ReferenceEquals(contentView.Content, view))
+				if (parent is Layout layout)
 				{
-					contentView.Content = null;
+					layout.Children.Remove(view);
+				}
+				else if (parent is ContentView contentView)
+				{
+					if (ReferenceEquals(contentView.Content, view))
+					{
+						contentView.Content = null;
+					}
 				}
 			}
+			catch (System.Runtime.InteropServices.COMException)
+			{
+				// WinUI can throw when gesture handlers are still tearing down. Retry by disconnecting the handler first.
+				view.Handler?.DisconnectHandler();
+				if (parent is Layout layout)
+				{
+					if (layout.Children.Contains(view))
+					{
+						layout.Children.Remove(view);
+					}
+				}
+				else if (parent is ContentView contentView)
+				{
+					if (ReferenceEquals(contentView.Content, view))
+					{
+						contentView.Content = null;
+					}
+				}
+			}
+
+			view.Handler?.DisconnectHandler();
 		}
 
 		private void CancelAnimations(View? oldView, View? newView)

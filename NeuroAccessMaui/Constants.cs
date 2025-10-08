@@ -858,11 +858,16 @@ namespace NeuroAccessMaui
 			/// </summary>
 			public const string MainPage = "//MainPage";
 
-			/// <summary>
-			/// Path to registration page.
-			/// </summary>
-			public const string RegistrationPage = "//Registration";
-		}
+		/// <summary>
+		/// Path to registration page.
+		/// </summary>
+		public const string RegistrationPage = "//Registration";
+
+		/// <summary>
+		/// Path to onboarding page.
+		/// </summary>
+		public const string OnboardingPage = "//Onboarding";
+	}
 
 		/// <summary>
 		/// Age-related constants.

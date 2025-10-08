@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.AccountSetupView"
+                               xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
+                               xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
+                               xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                               xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                               xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                               x:DataType="viewmodels:AccountSetupOnboardingStepViewModel">
+    <Grid RowDefinitions="*,auto" RowSpacing="{DynamicResource LargeSpacing}">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+                <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+                    <Label Style="{DynamicResource PageTitleLabel}"
+                           Text="{Binding Title}" />
+                    <Label Text="{Binding Description}"
+                           FontSize="16"
+                           TextColor="{DynamicResource ContentSecondaryWL}" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+                    <Label Style="{DynamicResource SectionTitleLabel}"
+                           Text="Profile details" />
+                    <controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
+                                              EntryData="{Binding DisplayName}"
+                                              Placeholder="Display name"
+                                              LabelText="Display name"
+                                              Required="True" />
+
+                    <controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
+                                              EntryData="{Binding EmailAddress}"
+                                              Placeholder="Email address"
+                                              Keyboard="Email"
+                                              LabelText="Email"
+                                              Required="True" />
+
+                    <Grid ColumnDefinitions="auto,*"
+                          ColumnSpacing="{DynamicResource SmallSpacing}"
+                          IsVisible="{Binding HasValidationError}">
+                        <Path Grid.Column="0"
+                              WidthRequest="20"
+                              HeightRequest="20"
+                              Aspect="Uniform"
+                              VerticalOptions="Center"
+                              Data="{x:Static ui:Geometries.InfoCirclePath}"
+                              Fill="{DynamicResource InputFieldsContentDangerv800}" />
+                        <Label Grid.Column="1"
+                               VerticalOptions="Center"
+                               FontSize="14"
+                               TextColor="{DynamicResource InputFieldsContentDangerv800}"
+                               Text="{Binding ValidationMessage}" />
+                    </Grid>
+                </VerticalStackLayout>
+
+                <Border Style="{DynamicResource AccentInfoBorder}"
+                        Padding="{DynamicResource SmallMargins}">
+                    <Label Style="{DynamicResource AccentInfoLabel}"
+                           Text="{l:Localize OnboardingNameEntryDetails}" />
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
+            <controls:TextButton Grid.Column="0"
+                                 Style="{DynamicResource OutlinedTextButton}"
+                                 LabelData="{Binding BackButtonText}"
+                                 Command="{Binding BackCommand}"
+                                 IsVisible="{Binding CoordinatorViewModel.CanGoBack}" />
+
+            <controls:TextButton Grid.Column="1"
+                                 Style="{DynamicResource FilledTextButton}"
+                                 LabelData="{Binding NextButtonText}"
+                                 Command="{Binding NextCommand}"
+                                 IsEnabled="{Binding CanContinue}" />
+        </Grid>
+    </Grid>
+</onboarding:BaseOnboardingView>
