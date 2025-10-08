@@ -22,8 +22,20 @@
 
 	<Style x:Key="Brand2LabelSSecondary" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
-		<Setter Property="FontFamily" Value="SpaceGrotesk"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskRegular"/>
 		<Setter Property="FontSize" Value="14"/>
+	</Style>
+
+	<Style x:Key="Brand2BodySHeadSHeadL" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource InputFieldsContentSubhead}"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="FontSize" Value="14"/>
+	</Style>
+
+	<Style x:Key="Brand2HeadlineHeadlineL" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource InputFieldsContentSecondary}"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="FontSize" Value="24"/>
 	</Style>
 
 	<!-- End of new Styles -->

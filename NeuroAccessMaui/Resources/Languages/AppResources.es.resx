@@ -3104,4 +3104,10 @@
   <data name="IdentityRejected" xml:space="preserve">
     <value>Identidad rechazada. Puede volver a la página de solicitudes y actualizar su información para intentarlo de nuevo.</value>
   </data>
+  <data name="AddToBalance" xml:space="preserve">
+    <value>Agregar al saldo</value>
+  </data>
+  <data name="SelectContact" xml:space="preserve">
+    <value>Seleccionar contacto</value>
+  </data>
 </root>

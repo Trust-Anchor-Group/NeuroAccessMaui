@@ -710,6 +710,11 @@
 
 	<Style x:Key="IconButtonBorderOnBackground" TargetType="Border" BasedOn="{StaticResource IconButtonBorder}">
 		<Setter Property="BackgroundColor" Value="{DynamicResource ButtonNeutralNavButtonsOnContainerbgActiveWL}"/>
+		<Setter Property="Shadow">
+			<Setter.Value>
+				<Shadow Brush="Transparent"/>
+			</Setter.Value>
+		</Setter>
 	</Style>
 
 	<Style x:Key="IconButtonSmall" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">

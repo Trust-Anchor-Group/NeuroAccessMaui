@@ -140,9 +140,7 @@
 												   AccountEventTemplate="{StaticResource AccountEventTemplate}" />
 	</VisualElement.Resources>
 	<Grid x:Name="TheMainGrid"
-		  RowDefinitions="auto, *, auto, auto"
-		  Padding="0"
-		  Margin="0"
+		  RowDefinitions="auto, auto, *, auto"
 		  ColumnDefinitions="*"
 		  BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
@@ -166,8 +164,8 @@
 		<!-- Main content -->
 		<!-- Balance card -->
 		<Border Style="{DynamicResource BorderSet}"
-				Margin="8,0,8,0"
-				Grid.Row="1">
+				Grid.Row="1"
+				Margin="16,8,16,8">
 			<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto, auto" RowSpacing="0" ColumnSpacing="{DynamicResource SmallSpacing}">
 				<!-- Balance title-->
 				<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
@@ -242,6 +240,7 @@
 							Grid.Row="2"
 							Margin="24,24,24,16"
 							HeightRequest="48"
+							VerticalOptions="End"
 							Command="{Binding SendEdalerCommand}"/>
 
 		<!-- Bottom Bar -->

@@ -1,19 +1,21 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.ComponentModel;
+using System.Globalization;
+using System.Text;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Converters;
+using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
-using System.ComponentModel;
-using System.Globalization;
-using System.Text;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
-using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet
 {
@@ -25,6 +27,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		private readonly EDalerUriNavigationArgs? navigationArguments;
 		private readonly IShareQrCode? shareQrCode;
 		private readonly TaskCompletionSource<string?>? uriToSend = null;
+
+		public ObservableTask<bool> GetBalanceTask { get; } = new();
 
 		/// <summary>
 		/// The view model to bind to for when displaying the contents of an eDaler URI.
@@ -112,6 +116,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				this.CanEncryptMessage = false;//this.navigationArguments.Uri?.ToType == EntityType.LegalId;
 				this.EncryptMessage = this.CanEncryptMessage;
 			}
+
+			this.GetBalanceTask.Load(this.LoadBalanceAsync);
 		}
 
 		/// <inheritdoc/>
@@ -193,6 +199,29 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					break;
 			}
 		}
+
+		/// <summary>
+		/// The last known update time of the balance.
+		/// </summary>
+		[ObservableProperty]
+		private DateTime? balanceUpdated = ServiceRef.TagProfile.LastEDalerBalanceUpdate;
+
+
+		/// <summary>
+		/// Exposes the current balance as a decimal.
+		/// </summary>
+		public decimal BalanceDecimal =>
+			this.FetchedBalance?.Amount ?? ServiceRef.TagProfile.LastEDalerBalanceDecimal;
+
+		public string BalanceString =>
+			this.BalanceDecimal + " NC";
+
+		/// <summary>
+		/// Last fetched balance. Changing this notifies <see cref="BalanceDecimal"/>.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(BalanceDecimal))]
+		Balance? fetchedBalance;
 
 		/// <summary>
 		/// <see cref="Amount"/> as text.
@@ -298,6 +327,18 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		/// </summary>
 		[ObservableProperty]
 		private string? to;
+
+		/// <summary>
+		/// Used for UI rendering of selected contact, use property this.to for transfer
+		/// </summary>
+		[ObservableProperty]
+		private ContactInfoModel? toContact;
+
+		/// <summary>
+		/// If a contact has been selected
+		/// </summary>
+		[ObservableProperty]
+		private bool contactSelected = false;
 
 		/// <summary>
 		/// If <see cref="To"/> is preset
@@ -790,6 +831,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (Contact is null)
 					return;
 
+				this.ToContact = Contact;
+				this.ContactSelected = true;
+
 				if (!string.IsNullOrEmpty(Contact.LegalId))
 				{
 					this.To = Contact.LegalId;
@@ -814,6 +858,40 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				ServiceRef.LogService.LogException(Ex);
 				await ServiceRef.UiService.DisplayException(Ex);
 			}
+		}
+
+		[RelayCommand]
+		private Task ClearRecipient()
+		{
+			this.To = string.Empty;
+			this.ToContact = null;
+			this.ContactSelected = false;
+
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Loads the current balance from the backend and updates observable properties.
+		/// </summary>
+		/// <param name="Ctx">Task context</param>
+		private async Task LoadBalanceAsync(TaskContext<bool> Ctx)
+		{
+			ServiceRef.LogService.LogDebug("Refreshing Edaler...");
+
+			if (!await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect))
+				return;
+
+			Balance CurrentBalance = await ServiceRef.XmppService.GetEDalerBalance();
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.FetchedBalance = CurrentBalance;
+				this.BalanceUpdated = DateTime.UtcNow;
+				ServiceRef.TagProfile.LastEDalerBalanceDecimal = this.BalanceDecimal;
+				ServiceRef.TagProfile.LastEDalerBalanceUpdate = DateTime.UtcNow;
+			});
+
+			ServiceRef.LogService.LogDebug("Refreshing Edaler Completed");
 		}
 
 	}

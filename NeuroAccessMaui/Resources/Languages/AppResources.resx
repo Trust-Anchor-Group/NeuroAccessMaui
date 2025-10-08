@@ -2226,10 +2226,10 @@
     <value>Provide the amount of eDaler do you want to buy below, and press the Buy button. A web page may be opened where you have to fill in further information for the payment processor to validate your requst.</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Amount:</value>
+    <value>Amount</value>
   </data>
   <data name="AmountExtra" xml:space="preserve">
-    <value>Amount Extra: (optional, suggestion)</value>
+    <value>Amount Extra (optional, suggestion)</value>
   </data>
   <data name="Wallet" xml:space="preserve">
     <value>Wallet</value>

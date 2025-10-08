@@ -60,6 +60,11 @@
 				Value="18" />
 	</Style>
 
+	<Style x:Key="ThickCompositeEntryEntry" TargetType="Entry">
+		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="FontSize" Value="32"/>
+	</Style>
+
 	<!-- Regular CompositeEntry style, based on BaseCompositeInputView -->
 	<Style x:Key="RegularCompositeEntry"
 		   TargetType="controls:CompositeEntry"
@@ -87,4 +92,9 @@
 			</Trigger>
 		</Style.Triggers>
 	</Style>
+
+	<Style x:Key="ThickCompositeEntry" TargetType="controls:CompositeEntry" BaseResourceKey="RegularCompositeEntry">
+		<Setter Property="EntryStyle" Value="{DynamicResource ThickCompositeEntryEntry}"/>
+	</Style>
+		
 </ResourceDictionary>

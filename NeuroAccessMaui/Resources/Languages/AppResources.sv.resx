@@ -3104,4 +3104,10 @@
   <data name="IdentityRejected" xml:space="preserve">
     <value>Identitet avslogs. Du kan gå tillbaka till sidan för ansökningar och uppdatera din information för att försöka igen.</value>
   </data>
+  <data name="AddToBalance" xml:space="preserve">
+    <value>Lägg till saldo</value>
+  </data>
+  <data name="SelectContact" xml:space="preserve">
+    <value>Välj kontakt</value>
+  </data>
 </root>
