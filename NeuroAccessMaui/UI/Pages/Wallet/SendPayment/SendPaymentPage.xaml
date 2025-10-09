@@ -90,20 +90,20 @@
 							<Label Text="{l:Localize To}" Style="{DynamicResource Brand2BodySHeadSHeadL}"/>
 							<controls:ConditionView Condition="{Binding ContactSelected}" Grid.Row="1">
 								<controls:ConditionView.True>
-									<Border Style="{DynamicResource BorderSubSet}" HeightRequest="70">
+									<Border Style="{DynamicResource BorderSubSet}" HeightRequest="70" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
 										<Grid ColumnDefinitions="auto, *, auto">
-											<Border HeightRequest="48" WidthRequest="48" StrokeShape="RoundRectangle 24">
+											<Border HeightRequest="40" WidthRequest="40" StrokeShape="RoundRectangle 24" Margin="0,0,8,0">
 												<Border.Triggers>
 													<DataTrigger TargetType="Border" Binding="{Binding ToContact.IsFriend}" Value="True">
 														<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
 													</DataTrigger>
 													<DataTrigger TargetType="Border" Binding="{Binding ToContact.IsFriend}" Value="False">
-														<Setter Property="Background" Value="{DynamicResource ButtonNeutralNavButtonsOnContainerbgActiveWL}" />
+														<Setter Property="Background" Value="{DynamicResource InputFieldsSurfaceBackgroundActive}" />
 													</DataTrigger>
 												</Border.Triggers>
 												<controls:SvgView Source="person.svg"
 														  HorizontalOptions="Center" VerticalOptions="Center"
-														  HeightRequest="32" WidthRequest="32">
+														  HeightRequest="24" WidthRequest="24">
 													<controls:SvgView.Triggers>
 														<DataTrigger TargetType="controls:SvgView" Binding="{Binding ToContact.IsFriend}" Value="True">
 															<Setter Property="TintColor" Value="{DynamicResource TnPSuccessContentWL}" />

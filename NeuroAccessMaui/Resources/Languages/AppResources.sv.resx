@@ -2810,6 +2810,9 @@
   <data name="SelectContract" xml:space="preserve">
     <value>Välj ett kontrakt</value>
   </data>
+  <data name="LoadMore" xml:space="preserve">
+    <value>Ladda mer</value>
+  </data>
   <data name="SelectContractEntryDescription" xml:space="preserve">
     <value>Klistra in kontrakt ID eller välj från listan</value>
   </data>
@@ -3109,5 +3112,23 @@
   </data>
   <data name="SelectContact" xml:space="preserve">
     <value>Välj kontakt</value>
+  </data>
+  <data name="TransactionHistory" xml:space="preserve">
+    <value>Transaktionshistorik</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Sammanställning</value>
+  </data>
+  <data name="TotalIn" xml:space="preserve">
+    <value>Totalt in</value>
+  </data>
+  <data name="TotalOut" xml:space="preserve">
+    <value>Totalt ut</value>
+  </data>
+  <data name="Net" xml:space="preserve">
+    <value>Nettobelopp</value>
+  </data>
+  <data name="NoTransactionsYet" xml:space="preserve">
+    <value>Inga transaktioner ännu</value>
   </data>
 </root>

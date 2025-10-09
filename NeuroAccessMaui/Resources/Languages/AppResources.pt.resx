@@ -2810,6 +2810,9 @@
   <data name="SelectContract" xml:space="preserve">
     <value>Selecione um contrato</value>
   </data>
+  <data name="LoadMore" xml:space="preserve">
+    <value>Carregar mais</value>
+  </data>
   <data name="SelectContractEntryDescription" xml:space="preserve">
     <value>Cole o ID do contrato ou escolha da lista</value>
   </data>
@@ -3109,5 +3112,23 @@
   </data>
   <data name="SelectContact" xml:space="preserve">
     <value>Selecionar contato</value>
+  </data>
+  <data name="TransactionHistory" xml:space="preserve">
+    <value>Histórico de transações</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Resumo</value>
+  </data>
+  <data name="TotalIn" xml:space="preserve">
+    <value>Total de entradas</value>
+  </data>
+  <data name="TotalOut" xml:space="preserve">
+    <value>Total de saídas</value>
+  </data>
+  <data name="Net" xml:space="preserve">
+    <value>Líquido</value>
+  </data>
+  <data name="NoTransactionsYet" xml:space="preserve">
+    <value>Sem transações ainda</value>
   </data>
 </root>

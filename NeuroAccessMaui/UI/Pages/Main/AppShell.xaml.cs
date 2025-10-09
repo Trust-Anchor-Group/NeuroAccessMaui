@@ -49,6 +49,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using Waher.Events;
+using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -144,6 +145,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Routing.RegisterRoute(nameof(TokenDetailsPage), typeof(TokenDetailsPage));
 			Routing.RegisterRoute(nameof(TokenEventsPage), typeof(TokenEventsPage));
 			Routing.RegisterRoute(nameof(WalletPage), typeof(WalletPage));
+			Routing.RegisterRoute(nameof(TransactionHistoryPage), typeof(TransactionHistoryPage));
+
 			// Utility
 			Routing.RegisterRoute(nameof(ImageCroppingPage), typeof(ImageCroppingPage));
 		}

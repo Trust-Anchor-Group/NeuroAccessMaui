@@ -62,6 +62,7 @@ using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportType;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
+using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 
 namespace NeuroAccessMaui.UI
 {
@@ -170,6 +171,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<TokenDetailsPage, TokenDetailsViewModel>();
 			Builder.Services.AddTransient<TokenEventsPage, TokenEventsViewModel>();
 			Builder.Services.AddTransient<WalletPage, WalletViewModel>();
+			Builder.Services.AddTransient<TransactionHistoryPage, TransactionHistoryViewModel>();
 
 			// Popups
 			Builder.Services.AddTransient<ImageView, ImageViewModel>();

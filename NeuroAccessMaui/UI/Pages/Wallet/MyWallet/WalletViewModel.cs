@@ -30,6 +30,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.RequestPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.SellEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
+using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using Waher.Networking.XMPP.Contracts;
@@ -321,6 +322,23 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Command to navigate to transaction history page.
+		/// </summary>
+		[RelayCommand]
+		private async Task OpenTransactionHistory()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(TransactionHistoryPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 

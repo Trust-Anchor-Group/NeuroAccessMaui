@@ -149,7 +149,7 @@
 		<Grid Grid.Row="0"
 			  RowDefinitions="*"
 			  Margin="16,16,16,8"
-			  ColumnDefinitions="auto,*">
+			  ColumnDefinitions="auto,*,auto">
 
 			<controls:SvgButton Command="{Binding GoBackCommand}"
 								SvgSource="close.svg"
@@ -159,7 +159,15 @@
 				   Grid.Column="1"
 				   Style="{DynamicResource PageTitleLabel}"
 				   Text="{l:Localize Wallet}"
-				   HorizontalTextAlignment="End" />
+				   HorizontalTextAlignment="Center" />
+
+			<controls:SvgButton Grid.Column="2"
+								Command="{Binding OpenTransactionHistoryCommand}"
+								SvgSource="history.svg"
+								Style="{DynamicResource IconButton}"
+								HorizontalOptions="End"
+								LabelPosition="Right"
+								LabelText="{l:Localize History}"/>
 		</Grid>
 		<!-- Main content -->
 		<!-- Balance card -->
