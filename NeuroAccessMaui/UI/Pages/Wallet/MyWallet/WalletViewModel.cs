@@ -1,4 +1,6 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Text;
 using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,6 +16,7 @@ using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Wallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
+using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts;
@@ -25,16 +28,14 @@ using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.RequestPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.SellEDaler;
-using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
+using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Script.Constants;
 using Waher.Script.Functions.ComplexNumbers;
-using System.Collections.ObjectModel;
-using System.Text;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 {
@@ -280,7 +281,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 					return;
 
 				// Automatically claim/process the payment (execute transfer) directly.
-				await ServiceRef.NeuroWalletOrchestratorService.OpenEDalerUri(Uri);
+				// await ServiceRef.NeuroWalletOrchestratorService.OpenEDalerUri(Uri);
+				await ServiceRef.XmppService.SendEDalerUri(Uri);
 
 				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 					ServiceRef.Localizer[nameof(AppResources.PaymentSuccess)]);

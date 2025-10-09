@@ -15,6 +15,7 @@ using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.StanzaErrors;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet
@@ -94,6 +95,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		{
 			await base.OnInitialize();
 
+			// Subscribe to petitioned identity responses (only once)
+			ServiceRef.XmppService.PetitionedIdentityResponseReceived += this.XmppService_PetitionedIdentityResponseReceived;
+
 			if (this.navigationArguments is not null)
 			{
 				if (this.navigationArguments.Uri?.EncryptedMessage is not null)
@@ -125,7 +129,42 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		{
 			this.uriToSend?.TrySetResult(null);
 
+			ServiceRef.XmppService.PetitionedIdentityResponseReceived -= this.XmppService_PetitionedIdentityResponseReceived;
+
 			await base.OnDispose();
+		}
+
+		private async Task XmppService_PetitionedIdentityResponseReceived(object? Sender, LegalIdentityPetitionResponseEventArgs e)
+		{
+			try
+			{
+				// If we have petitioned this identity and response is positive, capture JID
+				if (e.Response && e.RequestedIdentity is not null && this.ToType == EntityType.LegalId &&
+					string.Equals(this.To, e.RequestedIdentity.Id, StringComparison.OrdinalIgnoreCase))
+				{
+					string Jid = e.RequestedIdentity.GetJid();
+					if (!string.IsNullOrEmpty(Jid))
+					{
+						MainThread.BeginInvokeOnMainThread(async () =>
+						{
+							this.To = Jid;
+							this.ToType = EntityType.NetworkJid;
+
+							// Enrich contact info if possible
+							ContactInfo? InfoByJid = await ContactInfo.FindByBareJid(Jid);
+							if (InfoByJid is not null)
+							{
+								this.ToContact = new ContactInfoModel(InfoByJid);
+								this.ContactSelected = true;
+							}
+						});
+					}
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		#region Properties
@@ -892,6 +931,64 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			});
 
 			ServiceRef.LogService.LogDebug("Refreshing Edaler Completed");
+		}
+
+		[RelayCommand]
+		private async Task ScanQr()
+		{
+			try
+			{
+				string[] AllowedSchemas = [Constants.UriSchemes.IotId];
+				string? Url = await Services.UI.QR.QrCode.ScanQrCode(ServiceRef.Localizer[nameof(AppResources.QrScanCode)], AllowedSchemas);
+				if (string.IsNullOrEmpty(Url))
+					return;
+
+				string? NeuroId = null;
+
+				// Accept formats:
+				// 1. iotid:LegalIdentityId
+				// 2. Raw LegalIdentityId (no scheme)
+				if (Url.StartsWith(Constants.UriSchemes.IotId + ":", StringComparison.OrdinalIgnoreCase))
+				{
+					int i = Url.IndexOf(':');
+					NeuroId = Url[(i + 1)..].Trim();
+				}
+				else
+					NeuroId = Url.Trim();
+
+				if (string.IsNullOrEmpty(NeuroId))
+				{
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.CodeNotRecognized)]);
+					return;
+				}
+
+				// Set recipient as Legal ID initially
+				this.To = NeuroId;
+				this.ToType = EntityType.LegalId;
+				this.ToPreset = false;
+				this.ToContact = null;
+				this.ContactSelected = false;
+
+				// Petition identity to obtain JID (asynchronous response via event)
+				try
+				{
+					await ServiceRef.NetworkService.TryRequest(() =>
+						ServiceRef.XmppService.PetitionIdentity(NeuroId, Guid.NewGuid().ToString(), ServiceRef.Localizer[nameof(AppResources.Payment)])
+					);
+				}
+				catch (Exception Ex2)
+				{
+					ServiceRef.LogService.LogException(Ex2);
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.UnableToOpenLink)]);
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
 		}
 
 	}

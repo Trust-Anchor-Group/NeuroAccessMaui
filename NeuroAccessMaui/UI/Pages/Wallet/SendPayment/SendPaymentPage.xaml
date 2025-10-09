@@ -121,7 +121,7 @@
 								</controls:ConditionView.True>
 								
 								<controls:ConditionView.False>
-									<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}">
+									<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
 										<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
 																 BorderStroke="Transparent"
 																 EntryData="{Binding Path=To}"
@@ -136,7 +136,7 @@
 												WidthRequest="56"
 												Grid.Row="1" Grid.Column="1"/>
 
-							<controls:SvgButton Command="{Binding SelectRecipientCommand}"
+							<controls:SvgButton Command="{Binding ScanQrCommand}"
 												SvgSource="qr.svg"
 												Style="{DynamicResource IconButtonOnBackground}"
 												WidthRequest="56"
@@ -146,7 +146,7 @@
 						<!-- Amount -->
 						<Grid RowDefinitions="auto, auto">
 							<Label Text="{l:Localize Amount}" Style="{DynamicResource Brand2BodySHeadSHeadL}"/>
-							<Border Grid.Row="1" HeightRequest="70" Style="{DynamicResource BorderSubSet}">
+							<Border Grid.Row="1" HeightRequest="70" Style="{DynamicResource BorderSubSet}" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
 								<controls:CompositeEntry Style="{DynamicResource ThickCompositeEntry}" EntryData="{Binding Path=AmountText}"
 														 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
 														 Placeholder="{Binding Path=Currency}" IsReadOnly="{Binding Path=AmountPreset}"
@@ -172,7 +172,7 @@
 						<!-- Message -->
 						<Grid RowDefinitions="auto, auto">
 							<Label Text="{l:Localize Message}" Style="{DynamicResource Brand2BodySHeadSHeadL}"/>
-							<Border Style="{DynamicResource BorderSubSet}" Grid.Row="1">
+							<Border Style="{DynamicResource BorderSubSet}" Grid.Row="1" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
 								<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}" EntryData="{Binding Path=Message}" IsReadOnly="{Binding Path=MessagePreset}"
 														 BorderStroke="Transparent"/>
 							</Border>

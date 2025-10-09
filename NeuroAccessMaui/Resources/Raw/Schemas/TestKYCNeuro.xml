@@ -345,6 +345,16 @@
 						<Text lang="fi">Ajokortti</Text>
 						<Text lang="fr">Permis de conduire</Text>
 					</Option>
+					<Option value="none">
+						<Text lang="en">None</Text>
+						<Text lang="sv">Ingen</Text>
+						<Text lang="es">Ninguno</Text>
+						<Text lang="pt">Nenhum</Text>
+						<Text lang="da">Ingen</Text>
+						<Text lang="no">Ingen</Text>
+						<Text lang="fi">Ei mitään</Text>
+						<Text lang="fr">Aucun</Text>
+					</Option>
 				</Options>
 			</Field>
 		</Section>
@@ -391,17 +401,17 @@
 					<Text lang="fi">Valitse tiedosto...</Text>
 					<Text lang="fr">Choisir un fichier...</Text>
 				</Placeholder>
-					<Metadata>
-						<TargetWidth>1200</TargetWidth>
-						<TargetHeight>1600</TargetHeight>
-						<MinDpi>300</MinDpi>
-					</Metadata>
+				<Metadata>
+					<TargetWidth>1200</TargetWidth>
+					<TargetHeight>1600</TargetHeight>
+					<MinDpi>300</MinDpi>
+				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
 					<Equals>passport</Equals>
 				</Condition>
-					<Mapping key="Passport" />
-				</Field>
+				<Mapping key="Passport" />
+			</Field>
 
 			<!-- Identity Card Upload Field (shown if identityCard is selected) -->
 			<Field id="identityCardFrontUpload" type="image" required="true">
@@ -435,17 +445,17 @@
 					<Text lang="fi">Henkilökortin etupuoli...</Text>
 					<Text lang="fr">Carte d’identité recto...</Text>
 				</Placeholder>
-					<Metadata>
-						<TargetWidth>1000</TargetWidth>
-						<TargetHeight>1500</TargetHeight>
-						<MinDpi>200</MinDpi>
-					</Metadata>
+				<Metadata>
+					<TargetWidth>1000</TargetWidth>
+					<TargetHeight>1500</TargetHeight>
+					<MinDpi>200</MinDpi>
+				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
 					<Equals>identityCard</Equals>
 				</Condition>
-					<Mapping key="IdCardFront" />
-				</Field>
+				<Mapping key="IdCardFront" />
+			</Field>
 
 			<!-- Identity Card Back Upload Field (shown if identityCard is selected) -->
 			<Field id="identityCardBackUpload" type="image" required="true">
@@ -479,17 +489,17 @@
 					<Text lang="fi">Henkilökortin takapuoli...</Text>
 					<Text lang="fr">Carte d’identité verso...</Text>
 				</Placeholder>
-					<Metadata>
-						<TargetWidth>1000</TargetWidth>
-						<TargetHeight>1500</TargetHeight>
-						<MinDpi>200</MinDpi>
-					</Metadata>
+				<Metadata>
+					<TargetWidth>1000</TargetWidth>
+					<TargetHeight>1500</TargetHeight>
+					<MinDpi>200</MinDpi>
+				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
 					<Equals>identityCard</Equals>
 				</Condition>
-					<Mapping key="IdCardBack" />
-				</Field>
+				<Mapping key="IdCardBack" />
+			</Field>
 
 			<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
 			<Field id="driverslicenseFront" type="image" required="true">
@@ -523,17 +533,17 @@
 					<Text lang="fi">Ajokortin etupuoli...</Text>
 					<Text lang="fr">Permis de conduire recto...</Text>
 				</Placeholder>
-					<Metadata>
-						<TargetWidth>900</TargetWidth>
-						<TargetHeight>600</TargetHeight>
-						<MinDpi>150</MinDpi>
-					</Metadata>
+				<Metadata>
+					<TargetWidth>900</TargetWidth>
+					<TargetHeight>600</TargetHeight>
+					<MinDpi>150</MinDpi>
+				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
 					<Equals>driversLicense</Equals>
 				</Condition>
-					<Mapping key="DriverLicenseFront" />
-				</Field>
+				<Mapping key="DriverLicenseFront" />
+			</Field>
 			<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
 			<Field id="driverslicenseBack" type="image" required="true">
 				<Label>
@@ -545,7 +555,7 @@
 					<Text lang="no">Førerkort bakside opplasting</Text>
 					<Text lang="fi">Ajokortin takapuolen lataus</Text>
 					<Text lang="fr">Téléversement du permis de conduire verso</Text>
-				</Label>				
+				</Label>
 				<Hint>
 					<Text lang="en">Upload the back of your driver’s license</Text>
 					<Text lang="sv">Ladda upp baksidan av ditt körkort</Text>
@@ -566,17 +576,17 @@
 					<Text lang="fi">Ajokortin takapuoli...</Text>
 					<Text lang="fr">Permis de conduire verso...</Text>
 				</Placeholder>
-					<Metadata>
-						<TargetWidth>900</TargetWidth>
-						<TargetHeight>600</TargetHeight>
-						<MinDpi>150</MinDpi>
-					</Metadata>
+				<Metadata>
+					<TargetWidth>900</TargetWidth>
+					<TargetHeight>600</TargetHeight>
+					<MinDpi>150</MinDpi>
+				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
 					<Equals>driversLicense</Equals>
 				</Condition>
-					<Mapping key="DriverLicenseBack" />
-				</Field>
+				<Mapping key="DriverLicenseBack" />
+			</Field>
 		</Section>
 	</Page>
 	<Page id="addressInformation">
@@ -600,7 +610,7 @@
 			<Text lang="fi">Seuraavat henkilötiedot sisällytetään Neuro ID -hakemukseen</Text>
 			<Text lang="fr">Les informations personnelles suivantes seront incluses dans la demande de Neuro ID</Text>
 		</Description>
-			<Field id="zipCode" type="text" required="true">
+		<Field id="zipCode" type="text" required="true">
 			<Label>
 				<Text lang="en">Zip Code</Text>
 				<Text lang="sv">Postnummer</Text>
@@ -631,9 +641,9 @@
 				<Text lang="fi">123 45</Text>
 				<Text lang="fr">123 45</Text>
 			</Placeholder>
-				<Mapping key="ZIP" />
-			</Field>
-			<Field id="address" type="text" required="true">
+			<Mapping key="ZIP" />
+		</Field>
+		<Field id="address" type="text" required="true">
 			<Label>
 				<Text lang="en">Address</Text>
 				<Text lang="sv">Adress</Text>
@@ -678,9 +688,9 @@
 					</Message>
 				</LengthRule>
 			</ValidationRules>
-				<Mapping key="ADDR" />
-			</Field>
-			<Field id="address2" type="text">
+			<Mapping key="ADDR" />
+		</Field>
+		<Field id="address2" type="text">
 			<Label>
 				<Text lang="en">Apartment/Unit</Text>
 				<Text lang="sv">Lägenhetsnummer</Text>
@@ -725,9 +735,9 @@
 					</Message>
 				</LengthRule>
 			</ValidationRules>
-				<Mapping key="ADDR2" />
-			</Field>
-			<Field id="area" type="text" required="true">
+			<Mapping key="ADDR2" />
+		</Field>
+		<Field id="area" type="text" required="true">
 			<Label>
 				<Text lang="en">Area</Text>
 				<Text lang="sv">Område</Text>
@@ -772,9 +782,9 @@
 					</Message>
 				</LengthRule>
 			</ValidationRules>
-				<Mapping key="AREA" />
-			</Field>
-			<Field id="city" type="text" required="true">
+			<Mapping key="AREA" />
+		</Field>
+		<Field id="city" type="text" required="true">
 			<Label>
 				<Text lang="en">City</Text>
 				<Text lang="sv">Stad</Text>
@@ -819,9 +829,9 @@
 					</Message>
 				</LengthRule>
 			</ValidationRules>
-				<Mapping key="CITY" />
-			</Field>
-			<Field id="region" type="text" required="true">
+			<Mapping key="CITY" />
+		</Field>
+		<Field id="region" type="text" required="true">
 			<Label>
 				<Text lang="en">Region/State</Text>
 				<Text lang="sv">Region/Län</Text>
@@ -866,8 +876,8 @@
 					</Message>
 				</LengthRule>
 			</ValidationRules>
-				<Mapping key="REGION" />
-			</Field>
+			<Mapping key="REGION" />
+		</Field>
 	</Page>
 	<Page id="selfiePage">
 		<Title>
@@ -901,14 +911,14 @@
 				<Text lang="fi">Ota kuva...</Text>
 				<Text lang="fr">Prendre une photo...</Text>
 			</Placeholder>
-				<Metadata>
-					<TargetWidth>800</TargetWidth>
-					<TargetHeight>800</TargetHeight>
-					<MinDpi>150</MinDpi>
-					<AllowUpload>false</AllowUpload>
-				</Metadata>
-				<Mapping key="ProfilePhoto" />
-			</Field>
+			<Metadata>
+				<TargetWidth>800</TargetWidth>
+				<TargetHeight>800</TargetHeight>
+				<MinDpi>150</MinDpi>
+				<AllowUpload>false</AllowUpload>
+			</Metadata>
+			<Mapping key="ProfilePhoto" />
+		</Field>
 	</Page>
 	<Page id="isOrgPage">
 		<Title>
@@ -962,7 +972,7 @@
 			<FieldRef>isOrg</FieldRef>
 			<Equals>yes</Equals>
 		</Condition>
-			<Field id="orgName" type="text" required="true">
+		<Field id="orgName" type="text" required="true">
 			<Label>
 				<Text lang="en">Organization Name</Text>
 				<Text lang="sv">Organisationsnamn</Text>
@@ -973,9 +983,9 @@
 				<Text lang="fi">Organisaation nimi</Text>
 				<Text lang="fr">Nom de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGNAME" />
-			</Field>
-			<Field id="orgDepartment" type="text" required="true">
+			<Mapping key="ORGNAME" />
+		</Field>
+		<Field id="orgDepartment" type="text" required="true">
 			<Label>
 				<Text lang="en">Department</Text>
 				<Text lang="sv">Avdelning</Text>
@@ -986,9 +996,9 @@
 				<Text lang="fi">Osasto</Text>
 				<Text lang="fr">Département</Text>
 			</Label>
-				<Mapping key="ORGDEPT" />
-			</Field>
-			<Field id="orgRole" type="text" required="true">
+			<Mapping key="ORGDEPT" />
+		</Field>
+		<Field id="orgRole" type="text" required="true">
 			<Label>
 				<Text lang="en">Role</Text>
 				<Text lang="sv">Roll</Text>
@@ -999,9 +1009,9 @@
 				<Text lang="fi">Rooli</Text>
 				<Text lang="fr">Rôle</Text>
 			</Label>
-				<Mapping key="ORGROLE" />
-			</Field>
-			<Field id="orgNumber" type="text" required="true">
+			<Mapping key="ORGROLE" />
+		</Field>
+		<Field id="orgNumber" type="text" required="true">
 			<Label>
 				<Text lang="en">Organization Number</Text>
 				<Text lang="sv">Organisationsnummer</Text>
@@ -1012,9 +1022,9 @@
 				<Text lang="fi">Organisaation numero</Text>
 				<Text lang="fr">Numéro d’organisation</Text>
 			</Label>
-				<Mapping key="ORGNR" />
-			</Field>
-			<Field id="orgAddress" type="text">
+			<Mapping key="ORGNR" />
+		</Field>
+		<Field id="orgAddress" type="text">
 			<Label>
 				<Text lang="en">Organization Address</Text>
 				<Text lang="sv">Organisationsadress</Text>
@@ -1025,9 +1035,9 @@
 				<Text lang="fi">Organisaation osoite</Text>
 				<Text lang="fr">Adresse de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGADDR" />
-			</Field>
-			<Field id="orgAddress2" type="text">
+			<Mapping key="ORGADDR" />
+		</Field>
+		<Field id="orgAddress2" type="text">
 			<Label>
 				<Text lang="en">Organization Address 2</Text>
 				<Text lang="sv">Organisationsadress 2</Text>
@@ -1038,9 +1048,9 @@
 				<Text lang="fi">Organisaation osoite 2</Text>
 				<Text lang="fr">Adresse de l’organisation 2</Text>
 			</Label>
-				<Mapping key="ORGADDR2" />
-			</Field>
-			<Field id="orgZip" type="text">
+			<Mapping key="ORGADDR2" />
+		</Field>
+		<Field id="orgZip" type="text">
 			<Label>
 				<Text lang="en">Organization Zip or Postal Code</Text>
 				<Text lang="sv">Organisations postnummer</Text>
@@ -1051,9 +1061,9 @@
 				<Text lang="fi">Organisaation postinumero</Text>
 				<Text lang="fr">Code postal de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGZIP" />
-			</Field>
-			<Field id="orgArea" type="text">
+			<Mapping key="ORGZIP" />
+		</Field>
+		<Field id="orgArea" type="text">
 			<Label>
 				<Text lang="en">Organization Area</Text>
 				<Text lang="sv">Organisationsområde</Text>
@@ -1064,9 +1074,9 @@
 				<Text lang="fi">Organisaation alue</Text>
 				<Text lang="fr">Zone de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGAREA" />
-			</Field>
-			<Field id="orgCity" type="text">
+			<Mapping key="ORGAREA" />
+		</Field>
+		<Field id="orgCity" type="text">
 			<Label>
 				<Text lang="en">Organization City</Text>
 				<Text lang="sv">Organisationsstad</Text>
@@ -1077,9 +1087,9 @@
 				<Text lang="fi">Organisaation kaupunki</Text>
 				<Text lang="fr">Ville de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGCITY" />
-			</Field>
-			<Field id="orgRegion" type="text">
+			<Mapping key="ORGCITY" />
+		</Field>
+		<Field id="orgRegion" type="text">
 			<Label>
 				<Text lang="en">Organization Region or State</Text>
 				<Text lang="sv">Organisationsregion eller län</Text>
@@ -1090,9 +1100,9 @@
 				<Text lang="fi">Organisaation alue tai osavaltio</Text>
 				<Text lang="fr">Région ou État de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGREGION" />
-			</Field>
-			<Field id="orgCountry" type="country" required="true">
+			<Mapping key="ORGREGION" />
+		</Field>
+		<Field id="orgCountry" type="country" required="true">
 			<Label>
 				<Text lang="en">Organization Country</Text>
 				<Text lang="sv">Organisationsland</Text>
@@ -1103,7 +1113,7 @@
 				<Text lang="fi">Organisaation maa</Text>
 				<Text lang="fr">Pays de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGCOUNTRY" />
-			</Field>
+			<Mapping key="ORGCOUNTRY" />
+		</Field>
 	</Page>
 </KYCProcess>
