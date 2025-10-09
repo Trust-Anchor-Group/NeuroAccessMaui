@@ -273,14 +273,14 @@
 			<Text lang="fr">Documents d'identité</Text>
 		</Title>
 		<Description>
-			<Text lang="en">Please select and upload the identity document you would like to provide. Accepted formats: jpg, jpeg, png, pdf.</Text>
-			<Text lang="sv">Välj och ladda upp din identitetshandling. Tillåtna format: jpg, jpeg, png, pdf.</Text>
-			<Text lang="es">Selecciona y sube el documento de identidad que deseas proporcionar. Formatos aceptados: jpg, jpeg, png, pdf.</Text>
-			<Text lang="pt">Selecione e envie o documento de identificação que deseja fornecer. Formatos aceitos: jpg, jpeg, png, pdf.</Text>
-			<Text lang="da">Vælg og upload det identitetsdokument, du vil indsende. Accepterede formater: jpg, jpeg, png, pdf.</Text>
-			<Text lang="no">Velg og last opp identitetsdokumentet du ønsker å levere. Godkjente formater: jpg, jpeg, png, pdf.</Text>
-			<Text lang="fi">Valitse ja lataa henkilöllisyystodistus, jonka haluat toimittaa. Hyväksytyt muodot: jpg, jpeg, png, pdf.</Text>
-			<Text lang="fr">Sélectionnez et téléversez le document d’identité que vous souhaitez fournir. Formats acceptés : jpg, jpeg, png, pdf.</Text>
+			<Text lang="en">Please select and upload the identity document you would like to provide.</Text>
+			<Text lang="sv">Välj och ladda upp din identitetshandling.</Text>
+			<Text lang="es">Selecciona y sube el documento de identidad que deseas proporcionar.</Text>
+			<Text lang="pt">Selecione e envie o documento de identificação que deseja fornecer.</Text>
+			<Text lang="da">Vælg og upload det identitetsdokument, du vil indsende.</Text>
+			<Text lang="no">Velg og last opp identitetsdokumentet du ønsker å levere.</Text>
+			<Text lang="fi">Valitse ja lataa henkilöllisyystodistus, jonka haluat toimittaa.</Text>
+			<Text lang="fr">Sélectionnez et téléversez le document d’identité que vous souhaitez fournir.</Text>
 		</Description>
 		<Section>
 			<Label>

@@ -183,8 +183,8 @@
 			<Text lang="sv">ID-handlingar</Text>
 		</Title>
 		<Description>
-			<Text lang="en">Please select and upload the identity document you would like to provide. Accepted formats: jpg, jpeg, png, pdf.</Text>
-			<Text lang="sv">Välj och ladda upp din identitetshandling. Tillåtna format: jpg, jpeg, png, pdf.</Text>
+			<Text lang="en">Please select and upload the identity document you would like to provide.</Text>
+			<Text lang="sv">Välj och ladda upp din identitetshandling.</Text>
 		</Description>
 		<Section label="Document Type Selection">
 			<Label>
