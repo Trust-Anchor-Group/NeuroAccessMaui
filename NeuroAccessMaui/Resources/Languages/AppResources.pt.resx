@@ -3104,4 +3104,7 @@
   <data name="IdentityRejected" xml:space="preserve">
     <value>Identidade rejeitada. Você pode retornar à página de solicitações e atualizar suas informações para tentar novamente.</value>
   </data>
+  <data name="LoadMore" xml:space="preserve">
+    <value>Carregar mais</value>
+  </data>
 </root>
