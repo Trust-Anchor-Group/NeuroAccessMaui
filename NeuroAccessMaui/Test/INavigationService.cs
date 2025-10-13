@@ -52,9 +52,35 @@ namespace NeuroAccessMaui.Test
         Task GoToAsync(BaseContentPage Page);
 
         /// <summary>
+        /// Replaces the entire navigation stack with the page registered for the given route. After completion, back navigation cannot return to previous pages.
+        /// Optionally provides navigation arguments to the new root page.
+        /// </summary>
+        /// <typeparam name="TArgs">Navigation arguments type.</typeparam>
+        /// <param name="Route">The route whose page should become the new root.</param>
+        /// <param name="Args">Optional navigation arguments for the root page.</param>
+        Task SetRootAsync<TArgs>(string Route, TArgs? Args) where TArgs : Services.UI.NavigationArgs, new();
+
+        /// <summary>
+        /// Replaces the entire navigation stack with the page registered for the given route. After completion, back navigation cannot return to previous pages.
+        /// </summary>
+        /// <param name="Route">The route whose page should become the new root.</param>
+        Task SetRootAsync(string Route);
+
+        /// <summary>
+        /// Replaces the entire navigation stack with the provided page instance. After completion, back navigation cannot return to previous pages.
+        /// </summary>
+        /// <param name="Page">The page instance to set as the new root.</param>
+        Task SetRootAsync(BaseContentPage Page);
+
+        /// <summary>
         /// Pops the current page from the navigation stack and displays the previous page.
         /// </summary>
         Task GoBackAsync();
+
+        /// <summary>
+        /// Pops all pages until only the root page remains on the navigation stack.
+        /// </summary>
+        Task PopToRootAsync();
 
         /// <summary>
         /// Presents a page modally.

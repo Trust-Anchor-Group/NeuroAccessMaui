@@ -176,7 +176,7 @@ namespace NeuroAccessMaui.Test
                 // Fade in new content over old
                 InactiveSlot.Opacity = 0;
                 ActiveSlot.Opacity = 1;
-                await InactiveSlot.FadeTo(1, 200, Easing.CubicOut);
+                await InactiveSlot.FadeTo(1, 300, Easing.CubicOut);
                 // After fade, hide old slot
                 ActiveSlot.IsVisible = false;
                 ActiveSlot.Content = null;

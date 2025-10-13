@@ -25,7 +25,7 @@ namespace NeuroAccessMaui.Test
         // Determines transition type for navigation direction
         private TransitionType GetTransitionType(bool isBack)
         {
-            return isBack ? TransitionType.SwipeRight : TransitionType.SwipeLeft;
+            return isBack ? TransitionType.Fade : TransitionType.Fade;
         }
         private readonly Stack<BaseContentPage> modalScreenStack = new();
         private readonly Stack<NavigationArgs?> navigationArgsStack = new();
@@ -381,6 +381,182 @@ namespace NeuroAccessMaui.Test
                 await this.Presenter.ShowModal(Screen, TransitionType.Fade);
             });
         }
+
+        /// <summary>
+        /// Replaces the entire navigation stack with the page registered for the given route.
+        /// After completion, back navigation cannot return to previous pages.
+        /// </summary>
+        /// <param name="Route">Route whose page gets set as new root.</param>
+        public Task SetRootAsync(string Route)
+        {
+            return this.Enqueue(async () =>
+            {
+                BaseContentPage screen = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
+                    ?? throw new InvalidOperationException($"No page registered for route '{Route}' or it is not a BaseContentPage.");
+                await this.SetRootInternalAsync(screen);
+                ServiceRef.LogService.LogDebug($"Root page set to {Route}");
+            });
+        }
+
+        /// <summary>
+        /// Replaces the entire navigation stack with the provided page instance.
+        /// After completion, back navigation cannot return to previous pages.
+        /// </summary>
+        /// <param name="Page">Page instance to set as new root.</param>
+        public Task SetRootAsync(BaseContentPage Page)
+        {
+            return this.Enqueue(async () =>
+            {
+                await this.SetRootInternalAsync(Page);
+                ServiceRef.LogService.LogDebug($"Root page set to instance of {Page.GetType().Name}");
+            });
+        }
+
+        /// <summary>
+        /// Replaces the entire navigation stack with the page registered for the given route.
+        /// After completion, back navigation cannot return to previous pages.
+        /// </summary>
+        /// <param name="Route">Route whose page gets set as new root.</param>
+        public Task SetRootAsync<TArgs>(string Route, TArgs? Args) where TArgs : NavigationArgs, new()
+        {
+            return this.Enqueue(async () =>
+            {
+                TArgs navArgs = Args ?? new TArgs();
+                this.latestArguments = navArgs; // Allow retrieval by root page constructor
+                BaseContentPage screen = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
+                    ?? throw new InvalidOperationException($"No page registered for route '{Route}' or it is not a BaseContentPage.");
+                await this.SetRootInternalAsync(screen, navArgs);
+                ServiceRef.LogService.LogDebug($"Root page set to {Route}");
+            });
+        }
+
+        /// <summary>
+        /// Internal root setting logic: disposes existing stack & modals, clears argument state, then shows the new root page.
+        /// </summary>
+        /// <param name="Page">Page to become root.</param>
+        private async Task SetRootInternalAsync(BaseContentPage Page, NavigationArgs? Args = null)
+        {
+            await EnsureInitializedAsync(Page);
+
+            // Dispose modal stack first
+            while (this.modalScreenStack.Count > 0)
+            {
+                BaseContentPage modal = this.modalScreenStack.Pop();
+                try
+                {
+                    await modal.OnDisappearingAsync();
+                    await modal.OnDisposeAsync();
+                    if (modal is IAsyncDisposable mad) await mad.DisposeAsync();
+                    else if (modal is IDisposable md) md.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    ServiceRef.LogService.LogException(ex);
+                }
+            }
+            try { await this.Presenter.HideTopModal(); } catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+
+            // Dispose existing pages in navigation stack
+            while (this.screenStack.Count > 0)
+            {
+                BaseContentPage existing = this.screenStack.Pop();
+                try
+                {
+                    await existing.OnDisappearingAsync();
+                    await existing.OnDisposeAsync();
+                    if (existing is IAsyncDisposable ad) await ad.DisposeAsync();
+                    else if (existing is IDisposable d) d.Dispose();
+                    this.RemoveArgsFor(existing);
+                }
+                catch (Exception ex)
+                {
+                    ServiceRef.LogService.LogException(ex);
+                }
+            }
+
+            // Clear navigation args & stacks
+            this.navigationArgsStack.Clear();
+            this.navigationArgsMap.Clear();
+            this.latestArguments = Args; // Stored for constructor retrieval
+
+            // Push new root (no args -> cannot go back beyond it)
+            this.navigationArgsStack.Push(null);
+            this.screenStack.Push(Page);
+            if (Args is not null)
+            {
+                // Store for lookup using page name
+                string route = Routing.GetRoute(Page) ?? Page.GetType().Name;
+                this.PushArgs(route, Args);
+            }
+
+            try
+            {
+                this.isNavigating = true;
+                await this.Presenter.ShowScreen(Page, TransitionType.Fade);
+                this.Presenter.UpdateBars(Page);
+                await Page.OnAppearingAsync();
+            }
+            catch (Exception ex)
+            {
+                ServiceRef.LogService.LogException(ex);
+            }
+            finally
+            {
+                this.isNavigating = false;
+                Args?.NavigationCompletionSource.TrySetResult(true);
+            }
+        }
+
+        /// <summary>
+        /// Pops all pages until only the root page remains on the navigation stack.
+        /// </summary>
+        public Task PopToRootAsync()
+        {
+            return this.Enqueue(async () =>
+            {
+                if (this.screenStack.Count <= 1)
+                {
+                    ServiceRef.LogService.LogDebug("PopToRoot: Already at root.");
+                    return;
+                }
+
+                this.isNavigating = true;
+                try
+                {
+                    // Dispose everything above root
+                    while (this.screenStack.Count > 1)
+                    {
+                        NavigationArgs? poppedArgs = this.navigationArgsStack.Pop();
+                        BaseContentPage popped = this.screenStack.Pop();
+                        try
+                        {
+                            await popped.OnDisappearingAsync();
+                            if (popped is IAsyncDisposable asyncDisposable)
+                                await asyncDisposable.DisposeAsync();
+                            else if (popped is IDisposable disposable)
+                                disposable.Dispose();
+                            this.RemoveArgsFor(popped);
+                        }
+                        catch (Exception ex)
+                        {
+                            ServiceRef.LogService.LogException(ex);
+                        }
+                    }
+
+                    // Show root again with back transition (optional fade)
+                    BaseContentPage root = this.screenStack.Peek();
+                    await this.Presenter.ShowScreen(root, TransitionType.Fade);
+                    await root.OnAppearingAsync();
+                    this.Presenter.UpdateBars(root);
+                    ServiceRef.LogService.LogDebug("PopToRoot: Navigation stack reset to root.");
+                }
+                finally
+                {
+                    this.isNavigating = false;
+                }
+            });
+        }
+
         #region Back Handling
 
         public bool WouldHandleBack()

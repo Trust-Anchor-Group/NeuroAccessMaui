@@ -253,10 +253,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		{
 			try
 			{
-				if (Application.Current?.MainPage?.Navigation is not null)
-				{
-					await Application.Current.MainPage.Navigation.PopToRootAsync();
-				}
+				await ServiceRef.NavigationService.PopToRootAsync();
 			}
 			catch (Exception Ex)
 			{

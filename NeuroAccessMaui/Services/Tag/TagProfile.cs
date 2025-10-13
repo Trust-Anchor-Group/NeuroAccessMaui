@@ -340,7 +340,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <returns><c>true</c> if the registration process for this <see cref="ITagProfile"/> is either fully complete, <c>false</c> otherwise.</returns>
 		public virtual bool IsComplete()
 		{
-			return this.Step == RegistrationStep.Complete;
+			return this.LegalIdentity is not null;
 		}
 
 		#region Properties

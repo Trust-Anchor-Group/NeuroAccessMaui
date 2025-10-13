@@ -32,23 +32,22 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 
         public override async Task OnAppearingAsync()
         {
-            App? App = App.Current;
-            if (App is not null)
-                await App.InitCompleted;
-            // Check onboarding
-            bool IsOnboarded = this.tagProfile.IsComplete();
+            App? app = App.Current;
+            if (app is not null)
+                await app.InitCompleted;
 
+            bool isOnboarded = this.tagProfile.IsComplete();
 
-
-			if (!IsOnboarded)
-				await this.navigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs { InitialStep = OnboardingStep.PinSetup});
-			else
-			{
-				await Task.Delay(5000);
-				await this.themeService.ApplyProviderTheme();
-				await this.navigationService.GoToAsync(nameof(MainPage));
-			}
-		}
+            if (!isOnboarded)
+            {
+                await this.navigationService.SetRootAsync(nameof(OnboardingPage), new OnboardingNavigationArgs { InitialStep = OnboardingStep.PinSetup });
+            }
+            else
+            {
+                await this.themeService.ApplyProviderTheme();
+                await this.navigationService.SetRootAsync(nameof(MainPage));
+            }
+        }
 
         public override Task OnDisappearingAsync() => Task.CompletedTask;
     }
