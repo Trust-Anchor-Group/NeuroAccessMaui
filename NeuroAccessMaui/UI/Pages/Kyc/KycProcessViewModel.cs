@@ -929,7 +929,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				ServiceProviderWithLegalId[] LocalPeerReview = this.peerReviewServices ?? Array.Empty<ServiceProviderWithLegalId>();
 				List<ServiceProviderWithLegalId> List = [.. LocalPeerReview, new RequestFromPeer()];
 				ServiceProvidersNavigationArgs NavigationArgs = new(List.ToArray(), ServiceRef.Localizer[nameof(AppResources.RequestReview)], ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderPeerReview)]);
-				await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), NavigationArgs, Services.UI.BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), NavigationArgs, Services.UI.BackMethod.Pop);
 				if (NavigationArgs.ServiceProvider is not null)
 				{
 					IServiceProvider? ServiceProvider = await NavigationArgs.ServiceProvider.Task;

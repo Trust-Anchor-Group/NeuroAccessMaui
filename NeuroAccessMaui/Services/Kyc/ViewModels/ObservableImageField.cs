@@ -79,7 +79,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
                 byte[] InputBin = await ToByteArrayAsync(FileStream) ?? throw new Exception("Failed to read photo stream");
 
                 TaskCompletionSource<byte[]?> Tcs = new();
-                await ServiceRef.UiService.GoToAsync(
+                await ServiceRef.NavigationService.GoToAsync(
                     nameof(ImageCroppingPage),
                     new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs)
                 );
@@ -119,7 +119,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
                 byte[] InputBin = await ToByteArrayAsync(FileStream) ?? throw new Exception("Failed to read photo stream");
 
                 TaskCompletionSource<byte[]?> Tcs = new();
-                await ServiceRef.UiService.GoToAsync(nameof(ImageCroppingPage), new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs));
+                await ServiceRef.NavigationService.GoToAsync(nameof(ImageCroppingPage), new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs));
 
                 byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
 

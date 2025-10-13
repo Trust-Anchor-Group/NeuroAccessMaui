@@ -315,7 +315,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 				await ServiceRef.KycService.PrepareReferenceForNewApplicationAsync(Ref, Language, PreviousFields);
 
-				await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Ref));
+				await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Ref));
 			}
 			catch (Exception Ex)
 			{
@@ -394,18 +394,18 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					{
 						LegalIdentity? Identity = await ServiceRef.XmppService.GetLegalIdentity(Item.CreatedIdentityId);
 						// Preview in review/approved identity
-						await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
+						await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 					}
 					else
 					{
 						// Rejected or other states: allow editing in KYC
-						await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
+						await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
 					}
 				}
 				else
 				{
 					// Open KYC process to resume
-					await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
+					await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
 				}
 			}
 			catch (Exception Ex)

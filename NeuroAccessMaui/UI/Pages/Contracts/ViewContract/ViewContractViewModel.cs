@@ -303,7 +303,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private async Task OpenServerSignatureAsync()
 		{
 			if (this.Contract?.Contract is { } ContractObj)
-				await ServiceRef.UiService.GoToAsync(nameof(ServerSignaturePage), new ServerSignatureNavigationArgs(ContractObj), Services.UI.BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ServerSignaturePage), new ServerSignatureNavigationArgs(ContractObj), Services.UI.BackMethod.Pop);
 		}
 
 		#endregion

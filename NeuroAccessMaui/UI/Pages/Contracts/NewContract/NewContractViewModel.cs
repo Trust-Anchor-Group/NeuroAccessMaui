@@ -978,7 +978,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			if (this.lastCreatedContract is null)
 				return;
 			ViewContractNavigationArgs Args = new(this.lastCreatedContract, false);
-			await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop3);
+			await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop3);
 		}
 
 		/// <summary>
