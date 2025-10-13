@@ -128,8 +128,16 @@ using Waher.Things;
 
 namespace NeuroAccessMaui.UI
 {
+	/// <summary>
+	/// Extension methods used during application startup for registering services and pages.
+	/// </summary>
 	public static class PageAppExtension
 	{
+		/// <summary>
+		/// Registers core application services and infrastructure singletons.
+		/// </summary>
+		/// <param name="Builder">MAUI application builder.</param>
+		/// <returns>The same builder instance for chaining.</returns>
 		public static MauiAppBuilder RegisterTypes(this MauiAppBuilder Builder)
 		{
 			Assembly AppAssembly = typeof(App).Assembly;
@@ -183,18 +191,18 @@ namespace NeuroAccessMaui.UI
 			EndpointSecurity.SetCiphers([typeof(Edwards448Endpoint)], false);
 
 			// Instantiate default services.
-			Builder.Services.AddSingleton<ITagProfile>((_)=>Types.InstantiateDefault<ITagProfile>(false));
-			Builder.Services.AddSingleton<ILogService>((_)=>Types.InstantiateDefault<ILogService>(false));
-			Builder.Services.AddSingleton<IUiService>((_)=>Types.InstantiateDefault<IUiService>(false));
-			Builder.Services.AddSingleton<ICryptoService>((_)=>Types.InstantiateDefault<ICryptoService>(false));
-			Builder.Services.AddSingleton<INetworkService>((_)=>Types.InstantiateDefault<INetworkService>(false));
-			Builder.Services.AddSingleton<IStorageService>((_)=>Types.InstantiateDefault<IStorageService>(false));
-			Builder.Services.AddSingleton<ISettingsService>((_)=>Types.InstantiateDefault<ISettingsService>(false));
-			Builder.Services.AddSingleton<IAuthenticationService>((_)=>Types.InstantiateDefault<IAuthenticationService>(false));
-			Builder.Services.AddSingleton<IXmppService>((_)=>Types.InstantiateDefault<IXmppService>(false));
-			Builder.Services.AddSingleton<IAttachmentCacheService>((_)=>Types.InstantiateDefault<IAttachmentCacheService>(false));
-			Builder.Services.AddSingleton<IInternetCacheService>((_)=>Types.InstantiateDefault<IInternetCacheService>(false));
-			Builder.Services.AddSingleton<IContractOrchestratorService>((_)=>Types.InstantiateDefault<IContractOrchestratorService>(false));
+			Builder.Services.AddSingleton<ITagProfile>((_) => Types.InstantiateDefault<ITagProfile>(false));
+			Builder.Services.AddSingleton<ILogService>((_) => Types.InstantiateDefault<ILogService>(false));
+			Builder.Services.AddSingleton<IUiService>((_) => Types.InstantiateDefault<IUiService>(false));
+			Builder.Services.AddSingleton<ICryptoService>((_) => Types.InstantiateDefault<ICryptoService>(false));
+			Builder.Services.AddSingleton<INetworkService>((_) => Types.InstantiateDefault<INetworkService>(false));
+			Builder.Services.AddSingleton<IStorageService>((_) => Types.InstantiateDefault<IStorageService>(false));
+			Builder.Services.AddSingleton<ISettingsService>((_) => Types.InstantiateDefault<ISettingsService>(false));
+			Builder.Services.AddSingleton<IAuthenticationService>((_) => Types.InstantiateDefault<IAuthenticationService>(false));
+			Builder.Services.AddSingleton<IXmppService>((_) => Types.InstantiateDefault<IXmppService>(false));
+			Builder.Services.AddSingleton<IAttachmentCacheService>((_) => Types.InstantiateDefault<IAttachmentCacheService>(false));
+			Builder.Services.AddSingleton<IInternetCacheService>((_) => Types.InstantiateDefault<IInternetCacheService>(false));
+			Builder.Services.AddSingleton<IContractOrchestratorService>((_) => Types.InstantiateDefault<IContractOrchestratorService>(false));
 			Builder.Services.AddSingleton<INfcService>((_) => Types.InstantiateDefault<INfcService>(false));
 			Builder.Services.AddSingleton<INotificationService>((_) => Types.InstantiateDefault<INotificationService>(false));
 			Builder.Services.AddSingleton<IIntentService>((_) => Types.InstantiateDefault<IIntentService>(false));
@@ -206,12 +214,17 @@ namespace NeuroAccessMaui.UI
 
 			return Builder;
 		}
-			
+
+		/// <summary>
+		/// Registers all MAUI pages and their corresponding view models in the dependency injection container.
+		/// </summary>
+		/// <param name="Builder">MAUI application builder.</param>
+		/// <returns>The same builder instance for chaining.</returns>
 		public static MauiAppBuilder RegisterPages(this MauiAppBuilder Builder)
 		{
 			// Applications
 			Builder.Services.AddTransient<ApplicationsPage, ApplicationsViewModel>();
-            Builder.Services.AddTransient<KycProcessPage, KycProcessViewModel>();
+			Builder.Services.AddTransient<KycProcessPage, KycProcessViewModel>();
 
 			// Contacts
 			Builder.Services.AddTransient<ChatPage, ChatViewModel>();
@@ -237,9 +250,9 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<SettingsPage, SettingsViewModel>();
 			Builder.Services.AddTransient<VerifyCodePage, VerifyCodeViewModel>();
 			Builder.Services.AddTransient<XmppFormPage, XmppViewModel>();
-			Builder.Services.AddTransient<AppsPage,  AppsViewModel>();
-		   // Startup page
-		   Builder.Services.AddTransient<LoadingPage>();
+			Builder.Services.AddTransient<AppsPage, AppsViewModel>();
+			// Startup page
+			Builder.Services.AddTransient<LoadingPage>();
 
 			//Notification
 			Builder.Services.AddTransient<NotificationsPage, NotificationsViewModel>();
@@ -265,28 +278,30 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<PetitionPeerReviewNavigationArgs>();
 
 
-		// Registration
-		Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
-		Builder.Services.AddTransient<LoadingView, LoadingViewModel>();
-		//Builder.Services.AddTransient<RequestPurposeView, RequestPurposeViewModel>();
-		Builder.Services.AddTransient<ValidatePhoneView, ValidatePhoneViewModel>();
-		Builder.Services.AddTransient<ValidateEmailView, ValidateEmailViewModel>();
-		Builder.Services.AddTransient<ChooseProviderView, ChooseProviderViewModel>();
-		Builder.Services.AddTransient<CreateAccountView, CreateAccountViewModel>();
-		Builder.Services.AddTransient<GetStartedView, GetStartedViewModel>();
-		Builder.Services.AddTransient<NameEntryView, NameEntryViewModel>();
-		Builder.Services.AddTransient<DefinePasswordView, DefinePasswordViewModel>();
-		Builder.Services.AddTransient<BiometricsView, BiometricsViewModel>();
-		Builder.Services.AddTransient<FinalizeView, FinalizeViewModel>();
-		Builder.Services.AddTransient<ContactSupportView, ContactSupportViewModel>();
+			// Registration
+			Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
+			Builder.Services.AddTransient<LoadingView, LoadingViewModel>();
+			Builder.Services.AddTransient<ValidatePhoneView, ValidatePhoneViewModel>();
+			Builder.Services.AddTransient<ValidateEmailView, ValidateEmailViewModel>();
+			Builder.Services.AddTransient<ChooseProviderView, ChooseProviderViewModel>();
+			Builder.Services.AddTransient<CreateAccountView, CreateAccountViewModel>();
+			Builder.Services.AddTransient<GetStartedView, GetStartedViewModel>();
+			Builder.Services.AddTransient<NameEntryView, NameEntryViewModel>();
+			Builder.Services.AddTransient<DefinePasswordView, DefinePasswordViewModel>();
+			Builder.Services.AddTransient<BiometricsView, BiometricsViewModel>();
+			Builder.Services.AddTransient<FinalizeView, FinalizeViewModel>();
+			Builder.Services.AddTransient<ContactSupportView, ContactSupportViewModel>();
 
-		// Onboarding
-		Builder.Services.AddTransient<OnboardingPage, OnboardingViewModel>();
-		Builder.Services.AddTransient<WelcomeStepView, WelcomeOnboardingStepViewModel>();
-		Builder.Services.AddTransient<AccountSetupView, AccountSetupOnboardingStepViewModel>();
-		Builder.Services.AddTransient<PinSetupView, PinSetupOnboardingStepViewModel>();
-		Builder.Services.AddTransient<BaseIdApplicationView, BaseIdApplicationOnboardingStepViewModel>();
-		Builder.Services.AddTransient<SummaryView, SummaryOnboardingStepViewModel>();
+			// Onboarding
+			Builder.Services.AddTransient<OnboardingPage, OnboardingViewModel>();
+			Builder.Services.AddTransient<WelcomeStepView, WelcomeOnboardingStepViewModel>();
+			Builder.Services.AddTransient<CreateAccountStepView, CreateAccountOnboardingStepViewModel>();
+			Builder.Services.AddTransient<DefinePasswordStepView, DefinePasswordOnboardingStepViewModel>();
+			Builder.Services.AddTransient<ValidateEmailStepView, ValidateEmailOnboardingStepViewModel>(); // Fixed registration
+			Builder.Services.AddTransient<ValidatePhoneStepView, ValidatePhoneOnboardingStepViewModel>(); // Fixed registration
+			Builder.Services.AddTransient<BiometricsStepView, BiometricsOnboardingStepViewModel>();
+			Builder.Services.AddTransient<FinalizeStepView, FinalizeOnboardingStepViewModel>(); // Added missing finalize step
+
 
 			// Signatures
 			Builder.Services.AddTransient<ClientSignaturePage, ClientSignatureViewModel>();

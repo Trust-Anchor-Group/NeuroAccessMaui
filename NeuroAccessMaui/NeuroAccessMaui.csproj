@@ -648,6 +648,24 @@
 		<MauiXaml Update="UI\Pages\Main\XmppForm\XmppFormPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Onboarding\Views\BiometricsStepView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Onboarding\Views\CreateAccountStepView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Onboarding\Views\DefinePasswordStepView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Onboarding\Views\FinalizeStepView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Onboarding\Views\ValidateEmailStepView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Pages\Onboarding\Views\ValidatePhoneStepView.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Petitions\PetitionContract\PetitionContractPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

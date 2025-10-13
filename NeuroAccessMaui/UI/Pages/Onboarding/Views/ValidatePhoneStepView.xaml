@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.ValidatePhoneStepView"
+                               xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
+                               xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
+                               xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                               xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                               x:DataType="viewmodels:ValidatePhoneOnboardingStepViewModel">
+    <Grid RowDefinitions="*,auto" RowSpacing="{DynamicResource LargeSpacing}">
+        <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" Padding="0,0,0,24">
+            <Label Style="{DynamicResource PageTitleLabel}" Text="{Binding Title}" />
+            <Label Text="{Binding Description}" FontSize="16" TextColor="{DynamicResource ContentSecondaryWL}" />
+            <controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}" LabelText="{l:Localize PhoneNumber}" EntryData="{Binding PhoneNumber}" Keyboard="Telephone" Placeholder="{l:Localize EnterPhoneNumber}" />
+            <controls:TextButton Style="{DynamicResource FilledTextButton}" LabelData="{l:Localize SendCode}" Command="{Binding SendCodeCommand}" IsEnabled="{Binding CanSend}" />
+            <Grid ColumnDefinitions="auto,*" IsVisible="{Binding HasError}" ColumnSpacing="8">
+                <Label Grid.Column="1" Text="{Binding ErrorMessage}" TextColor="{DynamicResource InputFieldsContentDangerv800}" FontSize="14" />
+            </Grid>
+        </VerticalStackLayout>
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
+            <controls:TextButton Grid.Column="0" Style="{DynamicResource OutlinedTextButton}" LabelData="{Binding BackButtonText}" Command="{Binding BackCommand}" IsVisible="{Binding CoordinatorViewModel.CanGoBack}" />
+            <controls:TextButton Grid.Column="1" Style="{DynamicResource FilledTextButton}" LabelData="{Binding NextButtonText}" Command="{Binding NextCommand}" IsEnabled="{Binding CanContinue}" />
+        </Grid>
+    </Grid>
+</onboarding:BaseOnboardingView>

@@ -12,20 +12,20 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			this.Step = step;
 		}
 
-	internal void AttachCoordinator(OnboardingViewModel coordinator)
-	{
-		this.Coordinator = coordinator;
-		this.OnPropertyChanged(nameof(this.NextCommand));
-		this.OnPropertyChanged(nameof(this.BackCommand));
-		this.OnPropertyChanged(nameof(this.GoToStepCommand));
-		this.OnPropertyChanged(nameof(this.CoordinatorViewModel));
-	}
+		internal void AttachCoordinator(OnboardingViewModel coordinator)
+		{
+			this.Coordinator = coordinator;
+			this.OnPropertyChanged(nameof(this.NextCommand));
+			this.OnPropertyChanged(nameof(this.BackCommand));
+			this.OnPropertyChanged(nameof(this.GoToStepCommand));
+			this.OnPropertyChanged(nameof(this.CoordinatorViewModel));
+		}
 
 		public OnboardingStep Step { get; }
 
-	protected OnboardingViewModel Coordinator { get; private set; } = null!;
+		protected OnboardingViewModel Coordinator { get; private set; } = null!;
 
-	public OnboardingViewModel? CoordinatorViewModel => this.Coordinator;
+		public OnboardingViewModel? CoordinatorViewModel => this.Coordinator;
 
 		public IAsyncRelayCommand NextCommand => this.Coordinator?.GoToNextCommand ?? disabledAsyncCommand;
 
@@ -37,9 +37,9 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 		public virtual string Description => string.Empty;
 
-	public virtual string NextButtonText => "Continue";
+		public virtual string NextButtonText => "Continue";
 
-	public virtual string BackButtonText => "Back";
+		public virtual string BackButtonText => "Back";
 
 		internal virtual Task<bool> OnNextAsync()
 		{

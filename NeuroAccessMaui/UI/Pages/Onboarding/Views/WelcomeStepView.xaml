@@ -23,7 +23,7 @@
                                VerticalOptions="Center" />
         </controls:ConditionView.True>
         <controls:ConditionView.False>
-            <Grid RowDefinitions="*,auto">
+            <Grid RowDefinitions="*">
                 <VerticalStackLayout Grid.Row="0"
                                      VerticalOptions="End"
                                      Spacing="24">
@@ -80,22 +80,6 @@
                                         LabelPosition="Right"
                                         Margin="{DynamicResource SmallBottomMargins}" />
                 </VerticalStackLayout>
-
-                <Grid Grid.Row="1"
-                      ColumnDefinitions="*,*"
-                      ColumnSpacing="{DynamicResource MediumSpacing}">
-                    <controls:TextButton Grid.Column="0"
-                                         Style="{DynamicResource OutlinedTextButton}"
-                                         LabelData="{Binding BackButtonText}"
-                                         Command="{Binding BackCommand}"
-                                         IsVisible="{Binding CoordinatorViewModel.CanGoBack}" />
-
-                    <controls:TextButton Grid.Column="1"
-                                         Style="{DynamicResource FilledTextButton}"
-                                         LabelData="{Binding NextButtonText}"
-                                         Command="{Binding NextCommand}"
-                                         IsEnabled="{Binding CanContinue}" />
-                </Grid>
             </Grid>
         </controls:ConditionView.False>
     </controls:ConditionView>

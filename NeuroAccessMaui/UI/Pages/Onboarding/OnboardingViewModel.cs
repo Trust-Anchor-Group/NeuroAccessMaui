@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -15,161 +16,146 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 {
 	public partial class OnboardingViewModel : BaseViewModel
 	{
-		private readonly List<OnboardingStep> stepOrder = new()
-		{
-			OnboardingStep.Welcome,
-			OnboardingStep.AccountSetup,
-			OnboardingStep.PinSetup,
-			OnboardingStep.BaseIdApplication,
-			OnboardingStep.Summary
-		};
-
 		private readonly Dictionary<OnboardingStep, BaseOnboardingStepViewModel> stepViewModels = new();
 		private readonly OnboardingNavigationArgs? navigationArgs;
 		private bool isUpdatingSelection;
+		private List<OnboardingStep> activeSequence = new();
 
-		public OnboardingViewModel()
-			: this(null)
-		{
-		}
-
-		public OnboardingViewModel(OnboardingNavigationArgs? args)
-		{
-			this.navigationArgs = args;
-			this.CurrentStep = this.stepOrder[0];
-			this.selectedStateKey = this.CurrentStep.ToStateKey();
-			this.HeaderTitle = this.GetStepTitle(this.CurrentStep);
-		}
+		public OnboardingViewModel() : this(null) { }
+		public OnboardingViewModel(OnboardingNavigationArgs? Args) { this.navigationArgs = Args; }
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(IsSummaryStep))]
 		[NotifyPropertyChangedFor(nameof(IsOnWelcomeStep))]
 		private OnboardingStep currentStep;
 
-		[ObservableProperty]
-		private string selectedStateKey = string.Empty;
+		[ObservableProperty] private string selectedStateKey = string.Empty;
+		[ObservableProperty][NotifyCanExecuteChangedFor(nameof(GoBackCommand))] private bool canGoBack;
+		[ObservableProperty] private string headerTitle = string.Empty;
+		[ObservableProperty] private ObservableCollection<LanguageInfo> languages = new(App.SupportedLanguages);
+		[ObservableProperty] private LanguageInfo selectedLanguage = App.SelectedLanguage;
 
-		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(GoBackCommand))]
-		private bool canGoBack;
-
-		[ObservableProperty]
-		private string headerTitle = string.Empty;
-
-		[ObservableProperty]
-		private ObservableCollection<LanguageInfo> languages = new(App.SupportedLanguages);
-
-		[ObservableProperty]
-		private LanguageInfo selectedLanguage = App.SelectedLanguage;
-
-		public bool IsSummaryStep => this.CurrentStep == OnboardingStep.Summary;
-
+		// Finalize is the last step in current onboarding sequence.
+		public bool IsSummaryStep => this.CurrentStep == OnboardingStep.Finalize;
 		public bool IsOnWelcomeStep => this.CurrentStep == OnboardingStep.Welcome;
 
-		public void RegisterStep(BaseOnboardingStepViewModel stepViewModel)
+		public void RegisterStep(BaseOnboardingStepViewModel StepViewModel)
 		{
-			if (!this.stepViewModels.ContainsKey(stepViewModel.Step))
+			if (!this.stepViewModels.ContainsKey(StepViewModel.Step))
 			{
-				this.stepViewModels[stepViewModel.Step] = stepViewModel;
-				stepViewModel.AttachCoordinator(this);
-				if (stepViewModel.Step == this.CurrentStep)
-				{
-					this.HeaderTitle = this.GetStepTitle(stepViewModel.Step);
-				}
+				this.stepViewModels[StepViewModel.Step] = StepViewModel;
+				StepViewModel.AttachCoordinator(this);
+				if (StepViewModel.Step == this.CurrentStep)
+					this.HeaderTitle = this.GetStepTitle(StepViewModel.Step);
 			}
 		}
 
-		public T GetStepViewModel<T>(OnboardingStep step) where T : BaseOnboardingStepViewModel
+		public T GetStepViewModel<T>(OnboardingStep Step) where T : BaseOnboardingStepViewModel
 		{
-			if (this.stepViewModels.TryGetValue(step, out BaseOnboardingStepViewModel viewModel) && viewModel is T typed)
-				return typed;
-
-			throw new InvalidOperationException($"Step '{step}' has not been registered.");
+			if (this.stepViewModels.TryGetValue(Step, out BaseOnboardingStepViewModel StepVm) && StepVm is T Typed)
+				return Typed;
+			throw new InvalidOperationException($"Step '{Step}' has not been registered.");
 		}
 
 		public override async Task OnInitializeAsync()
 		{
 			await base.OnInitializeAsync();
+			this.BuildActiveSequence();
+			OnboardingStep Target = this.GetInitialStep();
+			await this.MoveToStepAsync(Target).ConfigureAwait(false);
+		}
 
-			OnboardingStep target = this.navigationArgs?.InitialStep ?? this.stepOrder[0];
-			await this.MoveToStepAsync(target).ConfigureAwait(false);
+		private void BuildActiveSequence()
+		{
+			OnboardingScenario Scenario = this.navigationArgs?.Scenario ?? OnboardingScenario.FullSetup;
+			this.activeSequence = Scenario switch
+			{
+				OnboardingScenario.FullSetup => new List<OnboardingStep>
+				{
+					OnboardingStep.Welcome,
+					OnboardingStep.ValidatePhone,
+					OnboardingStep.ValidateEmail,
+					OnboardingStep.CreateAccount,
+					OnboardingStep.DefinePassword,
+					OnboardingStep.Biometrics,
+					OnboardingStep.Finalize
+				},
+				OnboardingScenario.ChangePin => new List<OnboardingStep>
+				{
+					OnboardingStep.DefinePassword,
+					OnboardingStep.Biometrics,
+					OnboardingStep.Finalize
+				},
+				OnboardingScenario.ReverifyIdentity => new List<OnboardingStep>
+				{
+					OnboardingStep.ValidatePhone,
+					OnboardingStep.ValidateEmail,
+					OnboardingStep.CreateAccount,
+					OnboardingStep.Finalize
+				},
+				_ => new List<OnboardingStep> { OnboardingStep.Welcome }
+			};
+		}
+
+		private OnboardingStep GetInitialStep()
+		{
+			OnboardingStep? Requested = this.navigationArgs?.InitialStep;
+			if (Requested.HasValue && this.activeSequence.Contains(Requested.Value))
+				return Requested.Value;
+			return this.activeSequence.FirstOrDefault();
 		}
 
 		[RelayCommand]
 		private async Task GoToNext()
 		{
-			if (!this.stepViewModels.TryGetValue(this.CurrentStep, out BaseOnboardingStepViewModel current))
-				return;
+			if (this.stepViewModels.TryGetValue(this.CurrentStep, out BaseOnboardingStepViewModel Current))
+			{
+				if (!await Current.OnNextAsync().ConfigureAwait(false))
+					return;
+			}
 
-			if (!await current.OnNextAsync().ConfigureAwait(false))
-				return;
-
-			int index = this.stepOrder.IndexOf(this.CurrentStep);
-			if (index < 0)
-				return;
-
-			if (index >= this.stepOrder.Count - 1)
+			int Index = this.activeSequence.IndexOf(this.CurrentStep);
+			if (Index < 0)
+				Index = 0;
+			if (Index >= this.activeSequence.Count - 1)
 			{
 				await this.CompleteOnboardingAsync().ConfigureAwait(false);
 				return;
 			}
-
-			OnboardingStep nextStep = this.stepOrder[index + 1];
-			await this.MoveToStepAsync(nextStep).ConfigureAwait(false);
+			OnboardingStep Next = this.activeSequence[Index + 1];
+			await this.MoveToStepAsync(Next).ConfigureAwait(false);
 		}
 
 		public override async Task GoBack()
 		{
-			int index = this.stepOrder.IndexOf(this.CurrentStep);
-			if (index <= 0)
+			int Index = this.activeSequence.IndexOf(this.CurrentStep);
+			if (Index <= 0)
 				return;
-
-			if (this.stepViewModels.TryGetValue(this.CurrentStep, out BaseOnboardingStepViewModel current))
-			{
-				await current.OnBackAsync().ConfigureAwait(false);
-			}
-
-			OnboardingStep previous = this.stepOrder[index - 1];
-			await this.MoveToStepAsync(previous).ConfigureAwait(false);
+			if (this.stepViewModels.TryGetValue(this.CurrentStep, out BaseOnboardingStepViewModel Current))
+				await Current.OnBackAsync().ConfigureAwait(false);
+			OnboardingStep Previous = this.activeSequence[Index - 1];
+			await this.MoveToStepAsync(Previous).ConfigureAwait(false);
 		}
 
 		[RelayCommand]
-		private async Task GoToStep(OnboardingStep step)
+		private async Task GoToStep(OnboardingStep Step) => await this.MoveToStepAsync(Step).ConfigureAwait(false);
+
+		private async Task MoveToStepAsync(OnboardingStep Step)
 		{
-			await this.MoveToStepAsync(step).ConfigureAwait(false);
+			this.CurrentStep = Step;
+			try { this.isUpdatingSelection = true; this.SelectedStateKey = Step.ToStateKey(); }
+			finally { this.isUpdatingSelection = false; }
+			this.HeaderTitle = this.GetStepTitle(Step);
+			this.CanGoBack = this.activeSequence.IndexOf(Step) > 0;
+			if (this.stepViewModels.TryGetValue(Step, out BaseOnboardingStepViewModel Vm))
+				await Vm.OnActivatedAsync().ConfigureAwait(false);
 		}
 
-		private async Task MoveToStepAsync(OnboardingStep step)
+		private string GetStepTitle(OnboardingStep Step)
 		{
-			if (!this.stepViewModels.ContainsKey(step))
-				return;
-
-			this.CurrentStep = step;
-			try
-			{
-				this.isUpdatingSelection = true;
-				this.SelectedStateKey = step.ToStateKey();
-			}
-			finally
-			{
-				this.isUpdatingSelection = false;
-			}
-
-			this.HeaderTitle = this.GetStepTitle(step);
-			this.CanGoBack = this.stepOrder.IndexOf(step) > 0;
-
-			if (this.stepViewModels.TryGetValue(step, out BaseOnboardingStepViewModel vm))
-			{
-				await vm.OnActivatedAsync().ConfigureAwait(false);
-			}
-		}
-
-		private string GetStepTitle(OnboardingStep step)
-		{
-			if (this.stepViewModels.TryGetValue(step, out BaseOnboardingStepViewModel vm) && !string.IsNullOrWhiteSpace(vm.Title))
-				return vm.Title;
-
-			return step.ToString();
+			if (this.stepViewModels.TryGetValue(Step, out BaseOnboardingStepViewModel Vm) && !string.IsNullOrWhiteSpace(Vm.Title))
+				return Vm.Title;
+			return Step.ToString();
 		}
 
 		[RelayCommand]
@@ -182,38 +168,24 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		[RelayCommand]
 		private async Task ExistingAccount()
 		{
-			await ServiceRef.UiService.DisplayAlert(
-				AppResources.OnboardingContactSupportTitle,
-				AppResources.OnboardingContactSupportDetailsPart1,
-				AppResources.Ok);
+			await this.MoveToStepAsync(OnboardingStep.ContactSupport);
 		}
 
-		private async Task CompleteOnboardingAsync()
-		{
-			await Task.CompletedTask;
-		}
+		private async Task CompleteOnboardingAsync() => await Task.CompletedTask;
 
-		partial void OnSelectedStateKeyChanged(string value)
+		partial void OnSelectedStateKeyChanged(string Value)
 		{
 			if (this.isUpdatingSelection)
 				return;
-
-			if (Enum.TryParse(value, out OnboardingStep step) && step != this.CurrentStep)
-			{
-				_ = this.MoveToStepAsync(step);
-			}
+			if (Enum.TryParse(Value, out OnboardingStep ParsedStep) && ParsedStep != this.CurrentStep && this.activeSequence.Contains(ParsedStep))
+				_ = this.MoveToStepAsync(ParsedStep);
 		}
 
-		partial void OnSelectedLanguageChanged(LanguageInfo value)
+		partial void OnSelectedLanguageChanged(LanguageInfo Value)
 		{
-			if (value is null)
+			if (Value is null)
 				return;
-
-			if (!Equals(App.SelectedLanguage, value))
-			{
-				//TODO
-				//App.SelectedLanguage = value;
-			}
+			if (!Equals(App.SelectedLanguage, Value)) { }
 		}
 	}
 }

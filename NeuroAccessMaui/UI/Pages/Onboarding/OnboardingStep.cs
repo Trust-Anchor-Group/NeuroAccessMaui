@@ -1,19 +1,25 @@
 namespace NeuroAccessMaui.UI.Pages.Onboarding
 {
+	/// <summary>
+	/// Unified onboarding steps matching the registration journey.
+	/// </summary>
 	public enum OnboardingStep
 	{
 		Welcome = 0,
-		AccountSetup = 1,
-		PinSetup = 2,
-		BaseIdApplication = 3,
-		Summary = 4
+		ValidatePhone = 20,
+		ValidateEmail = 30,
+		CreateAccount = 50,
+		DefinePassword = 60,
+		Biometrics = 80,
+		Finalize = 90,
+		ContactSupport = 100
 	}
 
 	public static class OnboardingStepExtensions
 	{
-		public static string ToStateKey(this OnboardingStep step)
-		{
-			return step.ToString();
-		}
+		/// <summary>
+		/// Converts a step value to its string StateKey.
+		/// </summary>
+		public static string ToStateKey(this OnboardingStep step) => step.ToString();
 	}
 }

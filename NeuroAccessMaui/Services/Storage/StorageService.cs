@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using Waher.Events;
 using Waher.Events.Persistence;
 using Waher.Persistence;
@@ -24,6 +25,7 @@ namespace NeuroAccessMaui.Services.Storage
 		public StorageService()
 		{
 			string AppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			Debug.WriteLine("Test: " + AppDataFolder);
 			this.dataFolder = Path.Combine(AppDataFolder, "Data");
 		}
 
