@@ -145,12 +145,12 @@ namespace NeuroAccessMaui.Test
         public BaseContentPage? CurrentPage => this.currentScreen as BaseContentPage;
 
         /// <inheritdoc/>
-        public Task SetPageAsync(BaseContentPage Page, TransitionType Transition = TransitionType.None) => this.ShowScreen(Page, Transition);
+        public Task SetPageAsync(BaseContentPage Page, TransitionType Transition = TransitionType.Fade) => this.ShowScreen(Page, Transition);
 
         /// <summary>
         /// Shows a screen with transition, calling lifecycle methods on outgoing page.
         /// </summary>
-        public async Task ShowScreen(ContentView screen, TransitionType transition = TransitionType.None)
+        public async Task ShowScreen(ContentView screen, TransitionType transition = TransitionType.Fade)
         {
             ContentView ActiveSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
             ContentView InactiveSlot = this.isSlotAActive ? this.contentHostB : this.contentHostA;
@@ -165,7 +165,12 @@ namespace NeuroAccessMaui.Test
             {
                 InactiveSlot.Opacity = 0;
                 ActiveSlot.Opacity = 1;
-                await InactiveSlot.FadeTo(1, 200, Easing.Linear);
+                const uint Dur = 300;
+
+                Task FadeIn  = InactiveSlot.FadeTo(1, Dur, Easing.Linear); 
+                Task FadeOut = ActiveSlot.FadeTo(0, Dur, Easing.Linear);   
+
+                await Task.WhenAll(FadeIn, FadeOut);
             }
             else if (transition == TransitionType.SwipeLeft || transition == TransitionType.SwipeRight)
             {

@@ -251,7 +251,7 @@ namespace NeuroAccessMaui.Test
                 {
                     this.isNavigating = true;
                     ServiceRef.LogService.LogDebug($"Navigate request: {Route}");
-                    await this.Presenter.ShowScreen(screen, this.GetTransitionType(false)); // SwipeLeft for forward
+                    await this.Presenter.ShowScreen(screen, TransitionType.Fade); // SwipeLeft for forward
                     this.Presenter.UpdateBars(screen);
                     // Defer heavy appearing logic so transition frame can paint sooner.
                     _ = screen.Dispatcher.Dispatch(async () =>
