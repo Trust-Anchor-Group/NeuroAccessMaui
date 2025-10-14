@@ -1,55 +1,67 @@
 ﻿using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Layers;
-using Mapsui.Rendering;
-using Mapsui.Rendering.Skia.Cache;
+// Attempt to use Skia renderer interfaces; if unavailable, fall back to stub.
+#if MAPSUI_SKIA
+using Mapsui.Rendering.Skia; // Provides ISkiaStyleRenderer & IRenderCache in Mapsui Skia packages
+#endif
 using Mapsui.Rendering.Skia.SkiaStyles;
 using Mapsui.Styles;
 using SkiaSharp;
 
 namespace NeuroAccessMaui.UI.Controls.Geo
 {
+#if MAPSUI_SKIA
 	/// <summary>
 	/// Draws each feature tagged with <see cref="DataUriStyle"/>, reading its “DataUri” attribute
 	/// and rendering a custom icon or marker.
 	/// </summary>
 	public class DataUriStyleRenderer : ISkiaStyleRenderer
 	{
+		/// <summary>
+		/// Draws features styled with <see cref="DataUriStyle"/> by reading their <c>DataUri</c> attribute.
+		/// </summary>
+		/// <param name="Canvas">Target Skia canvas.</param>
+		/// <param name="Viewport">Current map viewport.</param>
+		/// <param name="Layer">Layer being rendered.</param>
+		/// <param name="Feature">Feature to draw.</param>
+		/// <param name="Style">Resolved style.</param>
+		/// <param name="RenderCache">Render cache provided by Mapsui.</param>
+		/// <param name="Iteration">Current render iteration.</param>
+		/// <returns>True if custom rendering occurred; otherwise false.</returns>
 		public bool Draw(
 			SKCanvas Canvas,
 			Viewport Viewport,
 			ILayer Layer,
 			IFeature Feature,
 			IStyle Style,
-			RenderService renderService, long iteration)
+			IRenderCache RenderCache,
+			long Iteration)
 		{
 			if (Style is not DataUriStyle CustomStyle)
 				return false;
 
-			// Extract the feature’s single coordinate (world = EPSG:3857)
-			double WorldX = 0, WorldY = 0;
+			// Extract a single coordinate (assumes point geometry)
+			double WorldX = 0;
+			double WorldY = 0;
 			bool GotPoint = false;
 
-			Feature.CoordinateVisitor((x, y, setter) =>
+			Feature.CoordinateVisitor((X, Y, Setter) =>
 			{
-				WorldX = x;
-				WorldY = y;
+				WorldX = X;
+				WorldY = Y;
 				GotPoint = true;
-				// If there were multiple coordinates (e.g. a linestring),
-				// you could collect or test them all; here we assume a point.
 			});
 
 			if (!GotPoint)
 				return false;
 
-			// Convert world (spherical mercator) → screen point
 			MPoint WorldPoint = new MPoint(WorldX, WorldY);
-			var Screen = Viewport.WorldToScreen(WorldPoint);
+			MPoint Screen = Viewport.WorldToScreen(WorldPoint);
 
-			// Retrieve your data URI (for use in icon logic)
-			string UriString = Feature["DataUri"]?.ToString() ?? string.Empty;
+			string DataUri = Feature["DataUri"]?.ToString() ?? string.Empty;
 
-			// TODO: replace this placeholder circle with your UriToMapIcon(uriString) logic
+			// Placeholder: Render a circle. Replace with logic parsing DataUri into an icon.
 			using SKPaint Paint = new SKPaint
 			{
 				Color = SKColors.Blue.WithAlpha((byte)(255 * CustomStyle.Opacity)),
@@ -60,4 +72,13 @@ namespace NeuroAccessMaui.UI.Controls.Geo
 			return true;
 		}
 	}
+#else
+	/// <summary>
+	/// Stub renderer compiled when MAPSUI_SKIA is not defined; avoids build break.
+	/// </summary>
+	public class DataUriStyleRenderer
+	{
+		public bool Draw() => false;
+	}
+#endif
 }
