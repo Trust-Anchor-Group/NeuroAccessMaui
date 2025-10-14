@@ -5,7 +5,7 @@ using NeuroAccessMaui.Services;
 namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 {
 	/// <summary>
-	/// ViewModel for final step in onboarding.
+	/// Final step: navigate into main application shell.
 	/// </summary>
 	public class FinalizeOnboardingStepViewModel : BaseOnboardingStepViewModel
 	{
@@ -14,10 +14,10 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		public override string Title => ServiceRef.Localizer[nameof(AppResources.OnboardingFinalizePageTitle)];
 		public override string Description => ServiceRef.Localizer[nameof(AppResources.SuccessTitle)];
 
-		internal override Task<bool> OnNextAsync()
+		internal override async Task<bool> OnNextAsync()
 		{
-			ServiceRef.LogService.LogInformational("Onboarding finalize complete (simulated)." );
-			return Task.FromResult(true);
+			await App.SetMainPageAsync();
+			return true;
 		}
 	}
 }
