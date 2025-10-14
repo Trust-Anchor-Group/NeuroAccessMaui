@@ -250,20 +250,39 @@ namespace NeuroAccessMaui.Test
                 try
                 {
                     this.isNavigating = true;
+                    ServiceRef.LogService.LogDebug($"Navigate request: {Route}");
                     await this.Presenter.ShowScreen(screen, this.GetTransitionType(false)); // SwipeLeft for forward
                     this.Presenter.UpdateBars(screen);
-                    await screen.OnAppearingAsync();
-                    ServiceRef.LogService.LogDebug($"Navigated to {Route}");
+                    // Defer heavy appearing logic so transition frame can paint sooner.
+                    _ = screen.Dispatcher.Dispatch(async () =>
+                    {
+                        try
+                        {
+                            await Task.Yield(); // allow first frame render
+                            await screen.OnAppearingAsync();
+                            ServiceRef.LogService.LogDebug($"Appearing complete: {Route}");
+                        }
+                        catch (Exception ex2)
+                        {
+                            ex2 = Waher.Events.Log.UnnestException(ex2);
+                            ServiceRef.LogService.LogException(ex2);
+                        }
+                        finally
+                        {
+                            NavArgs.NavigationCompletionSource.TrySetResult(true);
+                        }
+                    });
+                    ServiceRef.LogService.LogDebug($"Screen shown (transition started): {Route}");
                 }
                 catch (Exception ex)
                 {
                     ex = Waher.Events.Log.UnnestException(ex);
                     ServiceRef.LogService.LogException(ex);
+                    NavArgs.NavigationCompletionSource.TrySetResult(false);
                 }
                 finally
                 {
                     this.isNavigating = false;
-                    NavArgs.NavigationCompletionSource.TrySetResult(true);
                 }
             });
         }
@@ -347,9 +366,24 @@ namespace NeuroAccessMaui.Test
                 try
                 {
                     this.isNavigating = true;
+                    ServiceRef.LogService.LogDebug($"Navigate request (instance): {Page.GetType().Name}");
                     await this.Presenter.ShowScreen(Page, TransitionType.Fade);
                     this.Presenter.UpdateBars(Page);
-                    await Page.OnAppearingAsync();
+                    _ = Page.Dispatcher.Dispatch(async () =>
+                    {
+                        try
+                        {
+                            await Task.Yield();
+                            await Page.OnAppearingAsync();
+                            ServiceRef.LogService.LogDebug($"Appearing complete (instance): {Page.GetType().Name}");
+                        }
+                        catch (Exception ex2)
+                        {
+                            ex2 = Waher.Events.Log.UnnestException(ex2);
+                            ServiceRef.LogService.LogException(ex2);
+                        }
+                    });
+                    ServiceRef.LogService.LogDebug($"Screen shown (instance): {Page.GetType().Name}");
                 }
                 finally
                 {
@@ -431,7 +465,7 @@ namespace NeuroAccessMaui.Test
         }
 
         /// <summary>
-        /// Internal root setting logic: disposes existing stack & modals, clears argument state, then shows the new root page.
+    /// Internal root setting logic: disposes existing stack &amp; modals, clears argument state, then shows the new root page.
         /// </summary>
         /// <param name="Page">Page to become root.</param>
         private async Task SetRootInternalAsync(BaseContentPage Page, NavigationArgs? Args = null)
@@ -492,9 +526,27 @@ namespace NeuroAccessMaui.Test
             try
             {
                 this.isNavigating = true;
+                ServiceRef.LogService.LogDebug($"Root navigate request: {Page.GetType().Name}");
                 await this.Presenter.ShowScreen(Page, TransitionType.Fade);
                 this.Presenter.UpdateBars(Page);
-                await Page.OnAppearingAsync();
+                _ = Page.Dispatcher.Dispatch(async () =>
+                {
+                    try
+                    {
+                        await Task.Yield();
+                        await Page.OnAppearingAsync();
+                        ServiceRef.LogService.LogDebug($"Root appearing complete: {Page.GetType().Name}");
+                    }
+                    catch (Exception ex2)
+                    {
+                        ServiceRef.LogService.LogException(ex2);
+                    }
+                    finally
+                    {
+                        Args?.NavigationCompletionSource.TrySetResult(true);
+                    }
+                });
+                ServiceRef.LogService.LogDebug($"Root screen shown: {Page.GetType().Name}");
             }
             catch (Exception ex)
             {
@@ -503,7 +555,6 @@ namespace NeuroAccessMaui.Test
             finally
             {
                 this.isNavigating = false;
-                Args?.NavigationCompletionSource.TrySetResult(true);
             }
         }
 
@@ -546,7 +597,19 @@ namespace NeuroAccessMaui.Test
                     // Show root again with back transition (optional fade)
                     BaseContentPage root = this.screenStack.Peek();
                     await this.Presenter.ShowScreen(root, TransitionType.Fade);
-                    await root.OnAppearingAsync();
+                    _ = root.Dispatcher.Dispatch(async () =>
+                    {
+                        try
+                        {
+                            await Task.Yield();
+                            await root.OnAppearingAsync();
+                            ServiceRef.LogService.LogDebug("PopToRoot: Root appearing complete.");
+                        }
+                        catch (Exception ex2)
+                        {
+                            ServiceRef.LogService.LogException(ex2);
+                        }
+                    });
                     this.Presenter.UpdateBars(root);
                     ServiceRef.LogService.LogDebug("PopToRoot: Navigation stack reset to root.");
                 }
@@ -679,7 +742,19 @@ namespace NeuroAccessMaui.Test
 
                 BaseContentPage Target = this.screenStack.Peek();
                 await this.Presenter.ShowScreen(Target, this.GetTransitionType(true)); // SwipeRight for back
-                await Target.OnAppearingAsync();
+                _ = Target.Dispatcher.Dispatch(async () =>
+                {
+                    try
+                    {
+                        await Task.Yield();
+                        await Target.OnAppearingAsync();
+                        ServiceRef.LogService.LogDebug("Back: Target appearing complete.");
+                    }
+                    catch (Exception ex2)
+                    {
+                        ServiceRef.LogService.LogException(ex2);
+                    }
+                });
                 this.Presenter.UpdateBars(Target);
             }
             finally

@@ -165,7 +165,7 @@ namespace NeuroAccessMaui.Test
             {
                 InactiveSlot.Opacity = 0;
                 ActiveSlot.Opacity = 1;
-                await InactiveSlot.FadeTo(1, 300, Easing.CubicOut);
+                await InactiveSlot.FadeTo(1, 200, Easing.Linear);
             }
             else if (transition == TransitionType.SwipeLeft || transition == TransitionType.SwipeRight)
             {
