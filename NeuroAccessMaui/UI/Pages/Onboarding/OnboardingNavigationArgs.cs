@@ -13,15 +13,6 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		public OnboardingNavigationArgs() : this(OnboardingScenario.FullSetup) { }
 
 		/// <summary>
-		/// Creates args with explicit initial step (scenario inferred as FullSetup unless overridden).
-		/// </summary>
-		/// <param name="initialStep">Initial onboarding step.</param>
-		public OnboardingNavigationArgs(OnboardingStep initialStep) : this(OnboardingScenario.FullSetup)
-		{
-			this.InitialStep = initialStep;
-		}
-
-		/// <summary>
 		/// Creates args with an explicit scenario.
 		/// </summary>
 		/// <param name="scenario">Scenario to execute.</param>
@@ -29,11 +20,6 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		{
 			this.Scenario = scenario;
 		}
-
-		/// <summary>
-		/// Optional initial step. Must be part of the scenario's step sequence to be used.
-		/// </summary>
-		public OnboardingStep? InitialStep { get; init; }
 
 		/// <summary>
 		/// Onboarding scenario.

@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 
 			if (!IsOnboarded)
 			{
-				await this.navigationService.SetRootAsync(nameof(OnboardingPage), new OnboardingNavigationArgs { InitialStep = OnboardingStep.Welcome });
+				await this.navigationService.SetRootAsync(nameof(OnboardingPage), new OnboardingNavigationArgs(OnboardingScenario.FullSetup));
 			}
 			else
 			{

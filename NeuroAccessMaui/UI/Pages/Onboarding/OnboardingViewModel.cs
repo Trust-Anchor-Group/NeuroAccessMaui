@@ -61,7 +61,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		{
 			await base.OnInitializeAsync();
 			this.BuildActiveSequence();
-			OnboardingStep Target = this.GetInitialStep();
+			OnboardingStep Target = OnboardingStep.Welcome;
 			await this.MoveToStepAsync(Target).ConfigureAwait(false);
 		}
 
@@ -97,13 +97,6 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			};
 		}
 
-		private OnboardingStep GetInitialStep()
-		{
-			OnboardingStep? Requested = this.navigationArgs?.InitialStep;
-			if (Requested.HasValue && this.activeSequence.Contains(Requested.Value))
-				return Requested.Value;
-			return this.activeSequence.FirstOrDefault();
-		}
 
 		[RelayCommand]
 		private async Task GoToNext()
