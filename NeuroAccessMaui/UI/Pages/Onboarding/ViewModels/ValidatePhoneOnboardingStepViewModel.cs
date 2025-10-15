@@ -47,7 +47,8 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				this.CountDownTimer.Tick += this.CountDownEventHandler;
 			}
 
-			if (string.IsNullOrEmpty(ServiceRef.TagProfile.PhoneNumber))
+			string? ExistingNumber = ServiceRef.TagProfile.PhoneNumber;
+			if (string.IsNullOrEmpty(ExistingNumber))
 			{
 				try
 				{
@@ -71,6 +72,10 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				{
 					ServiceRef.LogService.LogException(Ex);
 				}
+			}
+			else
+			{
+				this.ApplyStoredPhoneNumber(ExistingNumber);
 			}
 		}
 
@@ -200,6 +205,54 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		public bool CanContinue => this.codeVerified;
 
 		#endregion
+
+		private void ApplyStoredPhoneNumber(string StoredNumber)
+		{
+			string Trimmed = StoredNumber.Trim();
+			ISO_3166_Country? ResolvedCountry = null;
+
+			if (ISO_3166_1.TryGetCountryByCode(ServiceRef.TagProfile.SelectedCountry, out ISO_3166_Country? CountryFromProfile))
+			{
+				ResolvedCountry = CountryFromProfile;
+			}
+			else if (ISO_3166_1.TryGetCountryByPhone(Trimmed, out ISO_3166_Country? CountryFromNumber))
+			{
+				ResolvedCountry = CountryFromNumber;
+			}
+
+			if (ResolvedCountry is not null)
+			{
+				this.SelectedCountry = ResolvedCountry;
+				string Digits = Trimmed;
+				if (Digits.StartsWith("+", StringComparison.Ordinal))
+				{
+					Digits = Digits[1..];
+				}
+
+				if (Digits.StartsWith(ResolvedCountry.DialCode, StringComparison.Ordinal))
+				{
+					Digits = Digits[ResolvedCountry.DialCode.Length..];
+				}
+
+				this.PhoneNumber = Digits;
+			}
+			else
+			{
+				this.PhoneNumber = Trimmed.TrimStart('+');
+			}
+
+			this.SendCodeCommand.NotifyCanExecuteChanged();
+		}
+
+		internal override Task OnActivatedAsync()
+		{
+			if (string.IsNullOrEmpty(this.PhoneNumber) && !string.IsNullOrEmpty(ServiceRef.TagProfile.PhoneNumber))
+			{
+				this.ApplyStoredPhoneNumber(ServiceRef.TagProfile.PhoneNumber);
+			}
+
+			return base.OnActivatedAsync();
+		}
 
 		#region Commands
 

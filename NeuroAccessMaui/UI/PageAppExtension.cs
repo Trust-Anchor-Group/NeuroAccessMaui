@@ -2,6 +2,7 @@
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Services;
 using EDaler;
+using Microsoft.Extensions.DependencyInjection;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Cache.AttachmentCache;
 using NeuroAccessMaui.Services.Cache.InternetCache;
@@ -293,7 +294,8 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ContactSupportView, ContactSupportViewModel>();
 
 			// Onboarding
-			Builder.Services.AddTransient<OnboardingPage, OnboardingViewModel>();
+			Builder.Services.AddTransient<OnboardingViewModel>();
+			Builder.Services.AddTransient<OnboardingPage>();
 			Builder.Services.AddTransient<WelcomeStepView, WelcomeOnboardingStepViewModel>();
 			Builder.Services.AddTransient<CreateAccountStepView, CreateAccountOnboardingStepViewModel>();
 			Builder.Services.AddTransient<DefinePasswordStepView, DefinePasswordOnboardingStepViewModel>();

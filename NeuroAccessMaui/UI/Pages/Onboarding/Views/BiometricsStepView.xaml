@@ -6,17 +6,118 @@
                                xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                               xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
                                x:DataType="viewmodels:BiometricsOnboardingStepViewModel">
-    <Grid RowDefinitions="*,auto" RowSpacing="{DynamicResource LargeSpacing}">
-        <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" Padding="0,0,0,24">
-            <Label Style="{DynamicResource PageTitleLabel}" Text="{Binding Title}" />
-            <Label Text="{Binding Description}" FontSize="16" TextColor="{DynamicResource ContentSecondaryWL}" />
-            <Label Text="{l:Localize OnboardingBiometricsInfo}" FontSize="14" TextColor="{DynamicResource ContentSecondaryWL}" />
-            <controls:TextButton Style="{DynamicResource FilledTextButton}" LabelData="{l:Localize EnableBiometrics}" Command="{Binding EnableBiometricsCommand}" />
+    <Grid RowSpacing="{DynamicResource LargeSpacing}" RowDefinitions="*, auto">
+        <VerticalStackLayout Grid.Row="0"
+                             VerticalOptions="Center"
+                             Spacing="{DynamicResource LargeSpacing}">
+            <Label Style="{DynamicResource PageTitleLabel}"
+                   Text="{l:Localize OnboardingBiometricsPageTitle}"
+                   HorizontalTextAlignment="Center"
+                   Margin="{DynamicResource LargeBottomMargins}" />
+
+            <HorizontalStackLayout VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   Spacing="{DynamicResource LargeSpacing}"
+                                   Margin="{DynamicResource LargeBottomMargins}">
+                <Frame WidthRequest="{Binding AuthenticationBackgroundSize}"
+                       HeightRequest="{Binding AuthenticationBackgroundSize}"
+                       HasShadow="False"
+                       CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
+                       BackgroundColor="{DynamicResource ButtonAccessSecondarybgWL}"
+                       HorizontalOptions="Center"
+                       IsVisible="{Binding IsFingerprint}">
+                    <Path VerticalOptions="Center"
+                          HorizontalOptions="Center"
+                          HeightRequest="{Binding AuthenticationIconSize}"
+                          WidthRequest="{Binding AuthenticationIconSize}"
+                          Aspect="Uniform"
+                          Data="{x:Static ui:Geometries.FingerprintPath}"
+                          Fill="{DynamicResource ButtonAccessSecondaryContentWL}" />
+                </Frame>
+
+                <Frame WidthRequest="{Binding AuthenticationBackgroundSize}"
+                       HeightRequest="{Binding AuthenticationBackgroundSize}"
+                       HasShadow="False"
+                       CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
+                       BackgroundColor="{DynamicResource ButtonAccessSecondarybgWL}"
+                       HorizontalOptions="Center"
+                       IsVisible="{Binding IsFace}">
+                    <Path VerticalOptions="Center"
+                          HorizontalOptions="Center"
+                          HeightRequest="{Binding AuthenticationIconSize}"
+                          WidthRequest="{Binding AuthenticationIconSize}"
+                          Aspect="Uniform"
+                          Data="{x:Static ui:Geometries.FacePath}"
+                          Fill="{DynamicResource ButtonAccessSecondaryContentWL}" />
+                </Frame>
+            </HorizontalStackLayout>
+
+            <Label Style="{DynamicResource SectionTitleLabel}"
+                   Text="{Binding DetailText}"
+                   FontSize="16"
+                   HorizontalOptions="Center" />
         </VerticalStackLayout>
-        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
-            <controls:TextButton Grid.Column="0" Style="{DynamicResource OutlinedTextButton}" LabelData="{Binding BackButtonText}" Command="{Binding BackCommand}" IsVisible="{Binding CoordinatorViewModel.CanGoBack}" />
-            <controls:TextButton Grid.Column="1" Style="{DynamicResource FilledTextButton}" LabelData="{Binding NextButtonText}" Command="{Binding NextCommand}" />
+
+        <Grid HorizontalOptions="Fill"
+              VerticalOptions="End"
+              Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <controls:TemplatedButton Grid.Row="0"
+                                      Grid.ColumnSpan="2"
+                                      Margin="{DynamicResource LargeBottomMargins}"
+                                      HorizontalOptions="Center"
+                                      Command="{Binding ShowBiometricsInfoCommand}">
+                <HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
+                    <Path VerticalOptions="Center"
+                          HeightRequest="20"
+                          WidthRequest="20"
+                          Aspect="Uniform"
+                          Data="{x:Static ui:Geometries.InfoCirclePath}"
+                          Fill="{DynamicResource TnPInfoContentWL}" />
+
+                    <Label VerticalOptions="Center"
+                           FontFamily="HaasGroteskRegular"
+                           FontSize="14"
+                           Text="{Binding WhatIsX}"
+                           TextColor="{DynamicResource TnPInfoContentWL}" />
+                </HorizontalStackLayout>
+            </controls:TemplatedButton>
+
+            <controls:TemplatedButton Grid.Row="1"
+                                      Grid.Column="0"
+                                      Command="{Binding LaterCommand}"
+                                      VerticalOptions="End">
+                <Border Style="{DynamicResource TransparentTemplateButtonBorder}"
+                        InputTransparent="True"
+                        HorizontalOptions="Fill">
+                    <Label Style="{DynamicResource TransparentTemplateButtonLabel}"
+                           HorizontalOptions="Center"
+                           Text="{l:Localize Later}" />
+                </Border>
+            </controls:TemplatedButton>
+
+            <controls:TemplatedButton Grid.Row="1"
+                                      Grid.Column="1"
+                                      Command="{Binding EnableCommand}"
+                                      VerticalOptions="End">
+                <Border Style="{DynamicResource FilledTemplateButtonBorder}"
+                        InputTransparent="True"
+                        HorizontalOptions="Fill">
+                    <Label Style="{DynamicResource FilledTemplateButtonLabel}"
+                           HorizontalOptions="Center"
+                           Text="{l:Localize Enable}" />
+                </Border>
+            </controls:TemplatedButton>
         </Grid>
     </Grid>
 </onboarding:BaseOnboardingView>

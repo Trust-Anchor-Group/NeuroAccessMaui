@@ -4,99 +4,147 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 {
 	/// <summary>
-	/// Onboarding step for defining local password/PIN (no strength UI, only validation rules enforced).
+	/// Reuses registration password-strength experience for onboarding.
 	/// </summary>
 	public partial class DefinePasswordOnboardingStepViewModel : BaseOnboardingStepViewModel
 	{
 		public DefinePasswordOnboardingStepViewModel() : base(OnboardingStep.DefinePassword) { }
 
-		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(PasswordsMatch))]
-		[NotifyPropertyChangedFor(nameof(ValidationMessage))]
-		[NotifyPropertyChangedFor(nameof(CanContinue))]
-		private string password = string.Empty;
+		public override async Task OnInitializeAsync()
+		{
+			await base.OnInitializeAsync();
+			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
+		}
+
+		public override async Task OnDisposeAsync()
+		{
+			LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
+			await base.OnDisposeAsync();
+		}
+
+		private void LocalizationManagerEventHandler(object? sender, PropertyChangedEventArgs e)
+		{
+			this.OnPropertyChanged(nameof(this.LocalizedValidationError));
+			this.UpdateToggleKeyboardText();
+			this.UpdateSecurityScore();
+		}
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(PasswordsMatch))]
-		[NotifyPropertyChangedFor(nameof(ValidationMessage))]
-		[NotifyPropertyChangedFor(nameof(CanContinue))]
-		private string confirmPassword = string.Empty;
+		private string? passwordText1;
+
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsPassword2NotValid))]
+		[NotifyPropertyChangedFor(nameof(PasswordsMatch))]
+		private string? passwordText2;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(PasswordVisibilityPathData))]
 		private bool isPasswordHidden = true;
 
-		public override string Title => ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordPageTitle)];
-		public override string Description => ServiceRef.Localizer[nameof(AppResources.CreatePassword)];
+		[ObservableProperty]
+		private double securityBar1Percentage;
 
-		/// <summary>
-		/// Toggle command.
-		/// </summary>
-		[RelayCommand]
-		private void TogglePasswordVisibility() => this.IsPasswordHidden = !this.IsPasswordHidden;
+		[ObservableProperty]
+		private double securityBar2Percentage;
 
-		/// <summary>
-		/// Passwords must match and be strong enough according to TagProfile rules.
-		/// </summary>
-		public bool PasswordsMatch => string.Equals(this.Password, this.ConfirmPassword, StringComparison.Ordinal);
+		[ObservableProperty]
+		private double securityBar3Percentage;
 
-		private PasswordStrength CurrentStrength => ServiceRef.TagProfile.ValidatePasswordStrength(this.Password);
+		[ObservableProperty]
+		private Color securityTextColor = AppColors.WeakPasswordForeground;
 
-		public string ValidationMessage
+		[ObservableProperty]
+		private string securityText = ServiceRef.Localizer[nameof(AppResources.PasswordWeakSecurity)];
+
+		[ObservableProperty]
+		private Keyboard keyboardType = Keyboard.Numeric;
+
+		[ObservableProperty]
+		private string toggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateAlphanumeric)];
+
+		partial void OnPasswordText1Changed(string? value)
 		{
-			get
-			{
-				if (string.IsNullOrEmpty(this.Password) && string.IsNullOrEmpty(this.ConfirmPassword))
-					return string.Empty;
-				PasswordStrength s = this.CurrentStrength;
-				if (s != PasswordStrength.Strong)
-					return DefinePasswordOnboardingStepViewModel.GetLocalizedValidationError(s);
-				if (!this.PasswordsMatch)
-					return ServiceRef.Localizer[nameof(AppResources.PasswordsDoNotMatch)];
-				return string.Empty;
-			}
+			this.UpdateSecurityScore();
 		}
 
-		public bool HasValidationError => !string.IsNullOrEmpty(this.ValidationMessage);
-
-		public bool CanContinue => !this.HasValidationError && !string.IsNullOrEmpty(this.Password) && !string.IsNullOrEmpty(this.ConfirmPassword);
-
-		[RelayCommand]
-		private void Validate() => this.OnPropertyChanged(nameof(this.ValidationMessage));
-
-		[RelayCommand]
-		private void Continue()
+		private void UpdateSecurityScore()
 		{
-			if (!this.CanContinue)
-				return;
-			ServiceRef.PlatformSpecific.HideKeyboard();
-			ServiceRef.TagProfile.LocalPassword = this.Password;
-			bool firstPassword = string.IsNullOrEmpty(ServiceRef.TagProfile.LocalPasswordHash);
-			if (ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication && firstPassword)
+			double score = ServiceRef.TagProfile.CalculatePasswordScore(this.PasswordText1);
+
+			const double low = Constants.Security.MediumSecurityScoreThreshold;
+			const double medium = Constants.Security.HighSecurityPasswordScoreThreshold;
+			const double high = Constants.Security.MaxSecurityPasswordScoreThreshold;
+
+			this.SecurityBar1Percentage = (Math.Min(score, low) / low) * 100.0;
+			this.SecurityBar2Percentage = Math.Max((Math.Min(score - low, medium - low) / (medium - low) * 100.0), 0);
+			this.SecurityBar3Percentage = Math.Max((Math.Min(score - medium, high - medium) / (high - medium) * 100.0), 0);
+
+			if (score >= medium)
 			{
-				this.CoordinatorViewModel?.GoToStepCommand.Execute(OnboardingStep.Biometrics);
+				this.SecurityTextColor = AppColors.StrongPasswordForeground;
+				this.SecurityText = ServiceRef.Localizer[nameof(AppResources.PasswordStrongSecurity)];
+			}
+			else if (score >= low)
+			{
+				this.SecurityTextColor = AppColors.MediumPasswordForeground;
+				this.SecurityText = ServiceRef.Localizer[nameof(AppResources.PasswordMediumSecurity)];
 			}
 			else
 			{
-				this.CoordinatorViewModel?.GoToStepCommand.Execute(OnboardingStep.Finalize);
-			}
-			if (ServiceRef.TagProfile.TestOtpTimestamp is not null)
-			{
-				ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.WarningTitle)],
-					ServiceRef.Localizer[nameof(AppResources.TestOtpUsed)],
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				this.SecurityTextColor = AppColors.WeakPasswordForeground;
+				this.SecurityText = ServiceRef.Localizer[nameof(AppResources.PasswordWeakSecurity)];
 			}
 		}
 
-		public static string GetLocalizedValidationError(PasswordStrength strength) => strength switch
+		[RelayCommand]
+		private void TogglePasswordVisibility()
+		{
+			this.IsPasswordHidden = !this.IsPasswordHidden;
+		}
+
+		[RelayCommand]
+		private void ValidatePassword()
+		{
+			this.OnPropertyChanged(nameof(this.PasswordStrength));
+			this.OnPropertyChanged(nameof(this.LocalizedValidationError));
+			this.OnPropertyChanged(nameof(this.IsPassword1NotValid));
+			this.OnPropertyChanged(nameof(this.IsPassword2NotValid));
+
+			this.CanContinue = true;
+		}
+
+		public Geometry PasswordVisibilityPathData => this.IsPasswordHidden ? Geometries.VisibilityOnPath : Geometries.VisibilityOffPath;
+
+		public PasswordStrength PasswordStrength => ServiceRef.TagProfile.ValidatePasswordStrength(this.PasswordText1);
+
+		public bool PasswordsMatch
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.PasswordText1))
+					return string.IsNullOrEmpty(this.PasswordText2);
+				return string.Equals(this.PasswordText1, this.PasswordText2, StringComparison.Ordinal);
+			}
+		}
+
+		public bool IsPassword1NotValid => !string.IsNullOrEmpty(this.PasswordText1) && !this.PasswordIsStrong();
+
+		public bool IsPassword2NotValid => !this.IsPassword1NotValid && !this.PasswordsMatch;
+
+		public string LocalizedValidationError => GetLocalizedValidationError(this.PasswordStrength);
+
+		public static string GetLocalizedValidationError(PasswordStrength passwordStrength) => passwordStrength switch
 		{
 			PasswordStrength.NotEnoughDigitsLettersSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughDigitsLettersSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
 			PasswordStrength.NotEnoughDigitsOrSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughDigitsOrSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
@@ -114,8 +162,57 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			_ => string.Empty
 		};
 
-		public Microsoft.Maui.Controls.Shapes.Geometry PasswordVisibilityPathData => this.IsPasswordHidden ? Geometries.VisibilityOnPath : Geometries.VisibilityOffPath;
+		[ObservableProperty]
+		private bool canContinue;
 
-		internal override Task<bool> OnNextAsync() => Task.FromResult(this.CanContinue);
+		[RelayCommand]
+		private void ToggleNumericPassword()
+		{
+			this.PasswordText1 = string.Empty;
+			this.PasswordText2 = string.Empty;
+			this.KeyboardType = this.KeyboardType == Keyboard.Numeric ? Keyboard.Default : Keyboard.Numeric;
+			this.UpdateToggleKeyboardText();
+		}
+
+		private void UpdateToggleKeyboardText()
+		{
+			if (this.KeyboardType == Keyboard.Default)
+				this.ToggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateNumeric)];
+			else
+				this.ToggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateAlphanumeric)];
+		}
+
+		private bool PasswordIsStrong() => this.PasswordStrength == PasswordStrength.Strong;
+
+		[RelayCommand]
+		private async Task Continue()
+		{
+			if (!this.PasswordIsStrong() || !this.PasswordsMatch)
+			{
+				this.CanContinue = false;
+				return;
+			}
+
+			ServiceRef.PlatformSpecific.HideKeyboard();
+
+			bool isFirstPassword = string.IsNullOrEmpty(ServiceRef.TagProfile.LocalPasswordHash);
+			ServiceRef.TagProfile.LocalPassword = this.PasswordText1!;
+
+			if (this.CoordinatorViewModel is not null)
+			{
+				if (ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication && isFirstPassword)
+					await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.Biometrics);
+				else
+					await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.Finalize);
+			}
+
+			if (ServiceRef.TagProfile.TestOtpTimestamp is not null)
+			{
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.WarningTitle)],
+					ServiceRef.Localizer[nameof(AppResources.TestOtpUsed)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+		}
 	}
 }

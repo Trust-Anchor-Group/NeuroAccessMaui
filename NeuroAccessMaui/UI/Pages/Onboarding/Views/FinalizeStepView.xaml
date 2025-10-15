@@ -6,16 +6,43 @@
                                xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                               xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
                                x:DataType="viewmodels:FinalizeOnboardingStepViewModel">
-    <Grid RowDefinitions="*,auto" RowSpacing="{DynamicResource LargeSpacing}">
-        <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" Padding="0,0,0,24">
-            <Label Style="{DynamicResource PageTitleLabel}" Text="{Binding Title}" />
-            <Label Text="{Binding Description}" FontSize="16" TextColor="{DynamicResource ContentSecondaryWL}" />
-            <Label Text="{l:Localize OnboardingFinalizeInfo}" FontSize="14" />
-        </VerticalStackLayout>
-        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
-            <controls:TextButton Grid.Column="0" Style="{DynamicResource OutlinedTextButton}" LabelData="{Binding BackButtonText}" Command="{Binding BackCommand}" IsVisible="{Binding CoordinatorViewModel.CanGoBack}" />
-            <controls:TextButton Grid.Column="1" Style="{DynamicResource FilledTextButton}" LabelData="{Binding NextButtonText}" Command="{Binding NextCommand}" />
+    <Grid RowSpacing="{DynamicResource LargeSpacing}"
+          RowDefinitions="*, auto">
+        <Grid RowSpacing="{DynamicResource LargeSpacing}"
+              RowDefinitions="*, auto">
+            <VerticalStackLayout Grid.Row="0"
+                                 VerticalOptions="Center"
+                                 Spacing="{DynamicResource LargeSpacing}">
+                <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+                    <Label Style="{DynamicResource PageTitleLabel}"
+                           Text="{l:Localize OnboardingFinalizePageTitle}"
+                           HorizontalTextAlignment="Center" />
+
+                    <Frame WidthRequest="{Binding CheckmarkBackgroundSize}"
+                           HeightRequest="{Binding CheckmarkBackgroundSize}"
+                           HasShadow="False"
+                           CornerRadius="{Binding CheckmarkBackgroundCornerRadius}"
+                           BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+                           HorizontalOptions="Center"
+                           Margin="{DynamicResource LargeBottomMargins}">
+                        <Path VerticalOptions="Center"
+                              HorizontalOptions="Center"
+                              HeightRequest="{Binding CheckmarkIconSize}"
+                              WidthRequest="{Binding CheckmarkIconSize}"
+                              Aspect="Uniform"
+                              Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
+                              Fill="{DynamicResource TnPSuccessContentWL}" />
+                    </Frame>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
         </Grid>
+
+        <controls:TextButton Grid.Row="1"
+                             VerticalOptions="End"
+                             Command="{Binding ContinueCommand}"
+                             Style="{DynamicResource FilledTextButton}"
+                             LabelData="{l:Localize Continue}" />
     </Grid>
 </onboarding:BaseOnboardingView>

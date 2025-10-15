@@ -1,23 +1,30 @@
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 {
-	/// <summary>
-	/// Final step: navigate into main application shell.
-	/// </summary>
-	public class FinalizeOnboardingStepViewModel : BaseOnboardingStepViewModel
-	{
-		public FinalizeOnboardingStepViewModel() : base(OnboardingStep.Finalize) { }
+    public partial class FinalizeOnboardingStepViewModel : BaseOnboardingStepViewModel
+    {
+        public FinalizeOnboardingStepViewModel() : base(OnboardingStep.Finalize) { }
 
-		public override string Title => ServiceRef.Localizer[nameof(AppResources.OnboardingFinalizePageTitle)];
-		public override string Description => ServiceRef.Localizer[nameof(AppResources.SuccessTitle)];
+        public override string Title => ServiceRef.Localizer[nameof(AppResources.OnboardingFinalizePageTitle)];
 
-		internal override async Task<bool> OnNextAsync()
-		{
-			await App.SetMainPageAsync();
-			return true;
-		}
-	}
+        public override string Description => ServiceRef.Localizer[nameof(AppResources.SuccessTitle)];
+
+        public double CheckmarkBackgroundSize => 120.0;
+
+        public double CheckmarkBackgroundCornerRadius => this.CheckmarkBackgroundSize / 2;
+
+        public double CheckmarkIconSize => 60.0;
+
+        [RelayCommand]
+        private async Task Continue()
+        {
+            if (this.CoordinatorViewModel is not null)
+                await this.CoordinatorViewModel.GoToNextCommand.ExecuteAsync(null);
+        }
+    }
 }

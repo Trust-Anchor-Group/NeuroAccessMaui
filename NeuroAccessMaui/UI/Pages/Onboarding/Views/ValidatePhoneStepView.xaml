@@ -7,14 +7,18 @@
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                                xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                               xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                                x:DataType="viewmodels:ValidatePhoneOnboardingStepViewModel">
-    <Grid RowDefinitions="*,auto" RowSpacing="{DynamicResource LargeSpacing}">
-        <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" Padding="0,0,0,24">
-            <Label Style="{DynamicResource PageTitleLabel}" Text="{Binding Title}" />
-            <Label Text="{Binding Description}" FontSize="16" TextColor="{DynamicResource ContentSecondaryWL}" />
+    <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label Style="{DynamicResource PageTitleLabel}"
+                   Text="{l:Localize OnboardingPhonePageTitle}" />
+
+            <Label Text="{l:Localize OnboardingPhonePageDetails}" />
 
             <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-                <Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize PhoneSectionTitle}" />
+                <Label Style="{DynamicResource SectionTitleLabel}"
+                       Text="{l:Localize PhoneSectionTitle}" />
 
                 <Border Padding="{DynamicResource EditMediumMargins}"
                         Style="{DynamicResource ItemOuterBorder}"
@@ -29,7 +33,10 @@
                             <HorizontalStackLayout.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding SelectPhoneCodeCommand}" />
                             </HorizontalStackLayout.GestureRecognizers>
-                            <Label VerticalOptions="Center" Text="{Binding SelectedCountry.DialCode}" />
+
+                            <Label VerticalOptions="Center"
+                                   Text="{Binding SelectedCountry.DialCode}" />
+
                             <Path VerticalOptions="Center"
                                   HeightRequest="5"
                                   WidthRequest="10"
@@ -37,11 +44,23 @@
                                   Data="{x:Static ui:Geometries.DropDownArrowPath}"
                                   Fill="{DynamicResource InputFieldsContentPrimary}" />
                         </HorizontalStackLayout>
+
                         <Entry Grid.Column="1"
                                VerticalOptions="Center"
                                IsSpellCheckEnabled="False"
                                Keyboard="Telephone"
-                               Text="{Binding PhoneNumber}" />
+                               Text="{Binding PhoneNumber}">
+                            <Entry.Behaviors>
+                                <mct:MultiValidationBehavior x:Name="PhoneValidator"
+                                                             Flags="ValidateOnValueChanged"
+                                                             IsValid="{Binding NumberIsValid}">
+                                    <mct:CharactersValidationBehavior IsValid="{Binding TypeIsValid}"
+                                                                      RegexPattern="^\d*$" />
+                                    <mct:TextValidationBehavior IsValid="{Binding LengthIsValid}"
+                                                                RegexPattern="^$|^\d{4,}$" />
+                                </mct:MultiValidationBehavior>
+                            </Entry.Behaviors>
+                        </Entry>
                     </Grid>
                 </Border>
 
@@ -49,7 +68,7 @@
                       ColumnDefinitions="auto,*"
                       HorizontalOptions="Center"
                       ColumnSpacing="{DynamicResource SmallSpacing}"
-                      IsVisible="{Binding ShowValidationError}">
+                      IsVisible="{Binding IsNotValid, Source={x:Reference PhoneValidator}}">
                     <Path Grid.Column="0"
                           VerticalOptions="Center"
                           HeightRequest="20"
@@ -57,25 +76,17 @@
                           Aspect="Uniform"
                           Data="{x:Static ui:Geometries.InfoCirclePath}"
                           Fill="{DynamicResource TnPDangerFigureWL}" />
+
                     <Label Grid.Column="1"
                            VerticalOptions="Center"
                            Text="{Binding LocalizedValidationError}"
                            TextColor="{DynamicResource TnPDangerFigureWL}" />
                 </Grid>
             </VerticalStackLayout>
-
-            <controls:TextButton Style="{DynamicResource FilledTextButton}"
-                                 LabelData="{Binding LocalizedSendCodeText}"
-                                 Command="{Binding SendCodeCommand}" />
-            <controls:TextButton Style="{DynamicResource OutlinedTextButton}"
-                                 LabelData="{l:Localize ResendCode}"
-                                 Command="{Binding ResendCodeCommand}"
-                                 IsEnabled="{Binding CanResendCode}" />
         </VerticalStackLayout>
 
-        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
-            <controls:TextButton Grid.Column="0" Style="{DynamicResource OutlinedTextButton}" LabelData="{Binding BackButtonText}" Command="{Binding BackCommand}" IsVisible="{Binding CoordinatorViewModel.CanGoBack}" />
-            <controls:TextButton Grid.Column="1" Style="{DynamicResource FilledTextButton}" LabelData="{Binding NextButtonText}" Command="{Binding NextCommand}" IsEnabled="{Binding CanContinue}" />
-        </Grid>
-    </Grid>
+        <controls:TextButton Style="{DynamicResource FilledTextButton}"
+                             Command="{Binding SendCodeCommand}"
+                             LabelData="{Binding LocalizedSendCodeText}" />
+    </VerticalStackLayout>
 </onboarding:BaseOnboardingView>

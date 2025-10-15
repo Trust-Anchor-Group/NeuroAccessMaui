@@ -6,28 +6,44 @@
                                xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
                                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                               xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                                xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
                                x:DataType="viewmodels:ValidateEmailOnboardingStepViewModel">
-    <Grid RowDefinitions="*,auto" RowSpacing="{DynamicResource LargeSpacing}">
-        <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" Padding="0,0,0,24">
-            <Label Style="{DynamicResource PageTitleLabel}" Text="{Binding Title}" />
-            <Label Text="{Binding Description}" FontSize="16" TextColor="{DynamicResource ContentSecondaryWL}" />
+    <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label Style="{DynamicResource PageTitleLabel}"
+                   Text="{l:Localize OnboardingEmailPageTitle}" />
+
+            <Label Text="{l:Localize OnboardingEmailPageDetails}" />
 
             <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-                <Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Email}" />
-                <Border Padding="{DynamicResource EditMediumMargins}"
-                        Style="{DynamicResource ItemOuterBorder}"
-                        BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
-                        Stroke="{DynamicResource InputFieldsSurfaceStroke}">
-                    <Entry IsSpellCheckEnabled="False"
-                           Keyboard="Email"
-                           Text="{Binding EmailText}" />
-                </Border>
+                <Label Style="{DynamicResource SectionTitleLabel}"
+                       Text="{l:Localize EmailSectionTitle}" />
+
+                <controls:CompositeEntry x:Name="EmailEntry"
+                                         Style="{DynamicResource RegularCompositeEntry}"
+                                         EntryData="{Binding EmailText}"
+                                         IsValid="{Binding EmailIsValid}">
+                    <controls:CompositeEntry.LeftView>
+                        <Path HeightRequest="24"
+                              WidthRequest="24"
+                              Aspect="Uniform"
+                              Data="{x:Static ui:Geometries.EmailIconPath}"
+                              Fill="{DynamicResource InputFieldsContentPrimary}" />
+                    </controls:CompositeEntry.LeftView>
+                    <controls:CompositeEntry.Behaviors>
+                        <mct:TextValidationBehavior x:Name="EmailValidator"
+                                                    Flags="ValidateOnValueChanged"
+                                                    IsValid="{Binding EmailIsValid}"
+                                                    RegexPattern="^$|^[\\w\\d](\\w|\\d|[_\\.-][\\w\\d])*@(\\w|\\d|[\\.-][\\w\\d]+)+$" />
+                    </controls:CompositeEntry.Behaviors>
+                </controls:CompositeEntry>
+
                 <Grid RowDefinitions="auto"
                       ColumnDefinitions="auto,*"
                       HorizontalOptions="Center"
                       ColumnSpacing="{DynamicResource SmallSpacing}"
-                      IsVisible="{Binding ShowValidationError}">
+                      IsVisible="{Binding IsNotValid, Source={x:Reference EmailValidator}}">
                     <Path Grid.Column="0"
                           VerticalOptions="Center"
                           HeightRequest="20"
@@ -35,24 +51,17 @@
                           Aspect="Uniform"
                           Data="{x:Static ui:Geometries.InfoCirclePath}"
                           Fill="{DynamicResource TnPDangerFigureWL}" />
+
                     <Label Grid.Column="1"
                            VerticalOptions="Center"
                            Text="{Binding LocalizedValidationError}"
                            TextColor="{DynamicResource TnPDangerFigureWL}" />
                 </Grid>
             </VerticalStackLayout>
-
-            <controls:TextButton Style="{DynamicResource FilledTextButton}"
-                                 LabelData="{Binding LocalizedSendCodeText}"
-                                 Command="{Binding SendCodeCommand}" />
-            <controls:TextButton Style="{DynamicResource OutlinedTextButton}"
-                                 LabelData="{l:Localize ResendCode}"
-                                 Command="{Binding ResendCodeCommand}"
-                                 IsEnabled="{Binding CanResendCode}" />
         </VerticalStackLayout>
-        <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
-            <controls:TextButton Grid.Column="0" Style="{DynamicResource OutlinedTextButton}" LabelData="{Binding BackButtonText}" Command="{Binding BackCommand}" IsVisible="{Binding CoordinatorViewModel.CanGoBack}" />
-            <controls:TextButton Grid.Column="1" Style="{DynamicResource FilledTextButton}" LabelData="{Binding NextButtonText}" Command="{Binding NextCommand}" IsEnabled="{Binding CanContinue}" />
-        </Grid>
-    </Grid>
+
+        <controls:TextButton Style="{DynamicResource FilledTextButton}"
+                             Command="{Binding SendCodeCommand}"
+                             LabelData="{Binding LocalizedSendCodeText}" />
+    </VerticalStackLayout>
 </onboarding:BaseOnboardingView>

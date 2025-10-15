@@ -25,6 +25,11 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		/// Onboarding scenario.
 		/// </summary>
 		public OnboardingScenario Scenario { get; init; } = OnboardingScenario.FullSetup;
+
+		/// <summary>
+		/// Optional initial step to focus when onboarding starts.
+		/// </summary>
+		public OnboardingStep? InitialStep { get; set; }
 	}
 
 	/// <summary>

@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net9.0-android</TargetFrameworks>
-
 		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-maccatalyst</TargetFrameworks> -->
 		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks> -->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
@@ -54,7 +52,7 @@
 
 	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('windows'))">
 		<!-- On Windows build Android + Windows (WinUI) -->
-		<TargetFrameworks>$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks>net9.0-android;net9.0-windows10.0.19041.0</TargetFrameworks>
 
 		<WindowsPackageType>None</WindowsPackageType>
 
@@ -518,32 +516,48 @@
 		</Compile>
 	</ItemGroup>
 
-	<ItemGroup>
+	<!-- Non-Windows targets (Android/iOS/MacCatalyst) -->
+	<ItemGroup Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '-windows'))">
 		<EmbeddedResource Update="Resources/Languages/AppResources.resx">
-			<!-- Tell the SDK to generate the typed class at build -->
 			<Generator>MSBuild:Compile</Generator>
 			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-
-			<!-- Recommended when the .resx is in a subfolder -->
 			<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
 			<StronglyTypedFileName>$(IntermediateOutputPath)\AppResources.Designer.cs</StronglyTypedFileName>
 			<StronglyTypedClassName>AppResources</StronglyTypedClassName>
 			<StronglyTypedNamespace>NeuroAccessMaui.Resources.Languages</StronglyTypedNamespace>
 		</EmbeddedResource>
 
-		<!-- Include the generated file from obj\ in the compile -->
-		<Compile Update="$(IntermediateOutputPath)\AppResources.Designer.cs">
+		<!-- Only include if it exists to avoid first-eval failures -->
+		<Compile Update="$(IntermediateOutputPath)\AppResources.Designer.cs" Condition="Exists('$(IntermediateOutputPath)\AppResources.Designer.cs')">
 			<DesignTime>false</DesignTime>
-			<AutoGen>True</AutoGen>
+			<AutoGen>true</AutoGen>
 			<DependentUpon>Resources\Languages\AppResources.resx</DependentUpon>
 		</Compile>
 	</ItemGroup>
-	<PropertyGroup>
-		<!-- other properties, e.g. TargetFrameworks etc. -->
 
-		<!-- Ensure resource generation is part of compile chain (for VS Code / CLI) -->
-		<CoreCompileDependsOn>PrepareResources;$(CompileDependsOn)</CoreCompileDependsOn>
+	<!-- Windows target -->
+	<ItemGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '-windows'))">
+		<EmbeddedResource Update="Resources\Languages\AppResources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+			<CustomToolNamespace>NeuroAccessMaui.Resources.Languages</CustomToolNamespace>
+		</EmbeddedResource>
+
+		<Compile Update="Resources\Languages\AppResources.Designer.cs">
+			<DesignTime>true</DesignTime>
+			<AutoGen>true</AutoGen>
+			<DependentUpon>AppResources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<!-- Ensure resource generation runs when building via CLI/VS Code -->
+	<PropertyGroup Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">
+		<!-- Prepend PrepareResources to the existing chain -->
+		<CoreCompileDependsOn>PrepareResources;$(CoreCompileDependsOn)</CoreCompileDependsOn>
 	</PropertyGroup>
+
+
+
 	<ItemGroup>
 		<ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />
 		<ProjectReference Include="..\NeuroAccess.Nfc\NeuroAccess.Nfc.csproj" />
