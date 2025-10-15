@@ -46,6 +46,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private readonly object debounceLock = new();
 		private Task? latestValidationTask;
 		private bool suppressParameterValidation;
+		private TaskCompletionSource<Contract?>? postCreateCompletion;
 
 
 		#endregion
@@ -865,6 +866,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(5),
 					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(5),
 					null, null, false);
+				this.lastCreatedContract = CreatedContract;
+				await this.OpenCreatedContract();
 				// Sign for all selected roles (could be none)
 				string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
 				if (!string.IsNullOrEmpty(MyId))
@@ -927,7 +930,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			// Directly open created contract (no Final step)
 			this.lastCreatedContract = CreatedContract;
-			await this.OpenCreatedContract();
+			// Complete the post-create TCS so ViewContract can update signing UI
+			this.postCreateCompletion?.TrySetResult(CreatedContract);
+			this.postCreateCompletion = null;
 
 		}
 
@@ -975,8 +980,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		{
 			if (this.lastCreatedContract is null)
 				return;
-			ViewContractNavigationArgs Args = new(this.lastCreatedContract, false);
+			TaskCompletionSource<Contract?> Tcs = new TaskCompletionSource<Contract?>();
+			ViewContractNavigationArgs Args = new(this.lastCreatedContract, false, null, string.Empty, null, Tcs);
 			await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop3);
+			this.postCreateCompletion = Tcs;
 		}
 
 		/// <summary>

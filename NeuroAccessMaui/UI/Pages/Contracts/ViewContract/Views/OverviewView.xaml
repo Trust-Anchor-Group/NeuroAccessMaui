@@ -316,28 +316,24 @@
 		</RefreshView>
 
 		<!-- BOTTOM BAR -->
-		<Grid Grid.Row="1"
-				RowDefinitions="*">
-			<Border Style="{DynamicResource BottomBarBorder}"
-					  IsVisible="{Binding CanSign}">
-				<Grid HorizontalOptions="Fill"
-						VerticalOptions="Center"
-						ColumnSpacing="{DynamicResource SmallSpacing}"
-						Padding="{DynamicResource SmallMargins}">
+		<Grid Grid.Row="1" RowDefinitions="*">
+			<!-- Loading bottom bar while awaiting post-create completion -->
+			<Border Style="{DynamicResource BottomBarBorder}" IsVisible="{Binding IsAwaitingPostCreateCompletion}">
+				<Grid HorizontalOptions="Fill" VerticalOptions="Center" Padding="{DynamicResource SmallMargins}">
+					<ActivityIndicator IsRunning="True" IsVisible="True" VerticalOptions="Center" HorizontalOptions="Center" />
+				</Grid>
+			</Border>
+
+			<!-- Sign bottom bar shown only when signable and not awaiting -->
+			<Border Style="{DynamicResource BottomBarBorder}" IsVisible="{Binding CanShowSignBar}">
+				<Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 
-					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-												Grid.Column="0"
-												LabelData="{l:Localize Back}"
-												Command="{Binding BackCommand}" />
-					<controls:TextButton Style="{DynamicResource FilledTextButton}"
-												Grid.Column="1"
-												LabelData="{l:Localize Sign}"
-												Command="{Binding GoToSignCommand}" />
-
+					<controls:TextButton Style="{DynamicResource TransparentTextButton}" Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding BackCommand}" />
+					<controls:TextButton Style="{DynamicResource FilledTextButton}" Grid.Column="1" LabelData="{l:Localize Sign}" Command="{Binding GoToSignCommand}" />
 				</Grid>
 			</Border>
 		</Grid>

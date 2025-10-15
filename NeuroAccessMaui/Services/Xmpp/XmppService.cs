@@ -236,7 +236,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 					}
 #endif
-
+					this.xmppClient.DefaultRetryTimeout = 30000;
+					this.xmppClient.DefaultNrRetries = 0;
 					this.xmppClient.RequestRosterOnStartup = false;
 					this.xmppClient.TrustServer = !IsIpAddress;
 					this.xmppClient.AllowCramMD5 = false;
@@ -275,18 +276,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						this.contractsClient = new ContractsClient(this.xmppClient, ServiceRef.TagProfile.LegalJid);
 						this.RegisterContractsEventHandlers();
 
-						if (!await this.contractsClient.LoadKeys(false))
-						{
-							if (ServiceRef.TagProfile.LegalIdentity is not null && ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
-							{
-								Log.Alert("Regeneration of keys not permitted at this time.",
-									string.Empty, string.Empty, string.Empty, EventLevel.Major, string.Empty, string.Empty, Environment.StackTrace);
-
-								throw new Exception("Regeneration of keys not permitted at this time.");
-							}
-
-							await this.GenerateNewKeys();
-						}
+						await this.contractsClient.LoadKeys(false);
 					}
 
 					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
@@ -4226,11 +4216,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="TransactionId">ID of transaction containing the encrypted message.</param>
 		/// <param name="RemoteEndpoint">Remote endpoint</param>
 		/// <returns>Decrypted string, if successful, or null, if not.</returns>
-		public async Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint)
+		public async Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint, bool LocalIsRecipient)
 		{
 			try
 			{
-				return await this.EDalerClient.DecryptMessage(EncryptedMessage, PublicKey, TransactionId, RemoteEndpoint);
+				return await this.EDalerClient.DecryptMessage(EncryptedMessage, PublicKey, TransactionId, RemoteEndpoint, LocalIsRecipient);
 			}
 			catch (Exception ex)
 			{

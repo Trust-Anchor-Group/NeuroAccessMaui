@@ -41,6 +41,8 @@
 	<string>Neuro-Access needs access to Bluetooth, allowing you to connect with other Neuro-Access apps, and exchange information with other users.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Neuro-Access needs access to Face ID to authenticate you in order to protect your digital ID.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Neuro-Access needs access to your location while entering location coordinates and to provide location-based services.</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
@@ -57,7 +59,7 @@
 		<string>ru</string>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>2.6.16</string>
+	<string>2.6.21</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleURLTypes</key>
