@@ -36,6 +36,7 @@ using NeuroAccessMaui.Services.Cache.AttachmentCache;
 using NeuroAccessMaui.Services.Cache.InternetCache;
 using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Test;
+using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.Services
 {
@@ -77,6 +78,8 @@ namespace NeuroAccessMaui.Services
 		private static IXmlSchemaValidationService? xmlSchemaValidationService;
 		private static IPopupService? popupService;
 		private static IToastService? toastService;
+
+		private static IAuthenticationService? authenticationService;
 
 		/// <summary>
 		/// Service serializing and managing UI-related tasks.
@@ -389,6 +392,20 @@ namespace NeuroAccessMaui.Services
 			{
 				xmlSchemaValidationService ??= ServiceHelper.GetService<IXmlSchemaValidationService>();
 				return xmlSchemaValidationService;
+			}
+		}
+
+		/// <summary>
+		/// Authentication service.
+		/// </summary>
+		/// <remarks>If the application does not use authentication, this service will throw exceptions when accessed.</remarks>
+		public static IAuthenticationService AuthenticationService
+		{
+
+			get
+			{
+				authenticationService ??= App.Instantiate<IAuthenticationService>();
+				return authenticationService;
 			}
 		}
 	}

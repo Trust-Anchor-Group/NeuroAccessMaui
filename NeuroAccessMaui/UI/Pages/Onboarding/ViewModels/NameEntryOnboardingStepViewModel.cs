@@ -376,15 +376,32 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			return sb.ToString();
 		}
 
+		/// <summary>
+		/// Disposes resources used by the NameEntryOnboardingStepViewModel.
+		/// </summary>
 		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+			return;
+		}
+
+		/// <summary>
+		/// Disposes resources used by the NameEntryOnboardingStepViewModel.
+		/// </summary>
+		/// <param name="disposing">True if called from Dispose; false if called from finalizer.</param>
+		protected virtual void Dispose(bool disposing)
 		{
 			if (this.disposed)
 				return;
 			this.disposed = true;
-			this.cooldownCts?.Cancel();
-			this.cooldownCts?.Dispose();
-			this.cooldownCts = null;
-			GC.SuppressFinalize(this);
+
+			if (disposing)
+			{
+				this.cooldownCts?.Cancel();
+				this.cooldownCts?.Dispose();
+				this.cooldownCts = null;
+			}
 		}
 	}
 }
