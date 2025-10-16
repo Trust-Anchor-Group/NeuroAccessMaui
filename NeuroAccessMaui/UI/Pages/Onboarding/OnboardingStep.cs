@@ -8,6 +8,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		Welcome = 0,
 		ValidatePhone = 20,
 		ValidateEmail = 30,
+		NameEntry = 40,
 		CreateAccount = 50,
 		DefinePassword = 60,
 		Biometrics = 80,

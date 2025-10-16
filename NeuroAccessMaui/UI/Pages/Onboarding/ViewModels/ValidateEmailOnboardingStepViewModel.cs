@@ -314,6 +314,8 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		{
 			try
 			{
+				this.IsBusy = true;
+				this.CoordinatorViewModel?.SetIsBusy(true);
 				ContentResponse VerifyResult = await InternetContent.PostAsync(
 					new Uri("https://" + Constants.Domains.IdDomain + "/ID/VerifyNumber.ws"),
 					new Dictionary<string, object>()
@@ -335,7 +337,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 					if (this.CoordinatorViewModel is not null)
 					{
-						await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.CreateAccount);
+						await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.NameEntry);
 					}
 				}
 				else
@@ -353,6 +355,11 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 					ServiceRef.Localizer[nameof(AppResources.UnableToVerifyCode)],
 					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+			finally
+			{
+				this.CoordinatorViewModel?.SetIsBusy(false);
+				this.IsBusy = false;
 			}
 		}
 

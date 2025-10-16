@@ -64,6 +64,11 @@
                                     <views:ValidateEmailStepView x:FactoryMethod="Create" />
                                 </tabs:ViewSwitcherStateView.Content>
                             </tabs:ViewSwitcherStateView>
+                            <tabs:ViewSwitcherStateView StateKey="NameEntry">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:NameEntryStepView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
                             <tabs:ViewSwitcherStateView StateKey="CreateAccount">
                                 <tabs:ViewSwitcherStateView.Content>
                                     <views:CreateAccountStepView x:FactoryMethod="Create" />

@@ -210,12 +210,15 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			this.AddDescriptor(OnboardingStep.ValidatePhone,
 				() => ScenarioSet.Contains(OnboardingStep.ValidatePhone),
 				() => this.TryGetSkipReason(OnboardingStep.ValidatePhone, out _));
-			this.AddDescriptor(OnboardingStep.ValidateEmail,
-				() => ScenarioSet.Contains(OnboardingStep.ValidateEmail),
-				() => this.TryGetSkipReason(OnboardingStep.ValidateEmail, out _));
-			this.AddDescriptor(OnboardingStep.CreateAccount,
-				() => ScenarioSet.Contains(OnboardingStep.CreateAccount),
-				() => this.TryGetSkipReason(OnboardingStep.CreateAccount, out _));
+		this.AddDescriptor(OnboardingStep.ValidateEmail,
+			() => ScenarioSet.Contains(OnboardingStep.ValidateEmail),
+			() => this.TryGetSkipReason(OnboardingStep.ValidateEmail, out _));
+		this.AddDescriptor(OnboardingStep.NameEntry,
+			() => ScenarioSet.Contains(OnboardingStep.NameEntry),
+			() => this.TryGetSkipReason(OnboardingStep.NameEntry, out _));
+		this.AddDescriptor(OnboardingStep.CreateAccount,
+			() => ScenarioSet.Contains(OnboardingStep.CreateAccount),
+			() => this.TryGetSkipReason(OnboardingStep.CreateAccount, out _));
 			this.AddDescriptor(OnboardingStep.DefinePassword,
 				() => ScenarioSet.Contains(OnboardingStep.DefinePassword),
 				() => this.TryGetSkipReason(OnboardingStep.DefinePassword, out _));
@@ -286,26 +289,28 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			List<OnboardingStep> Sequence = new List<OnboardingStep>();
 			switch (onboardingScenario)
 			{
-				case OnboardingScenario.FullSetup:
-					Sequence.Add(OnboardingStep.Welcome);
-					Sequence.Add(OnboardingStep.ValidatePhone);
-					Sequence.Add(OnboardingStep.ValidateEmail);
-					Sequence.Add(OnboardingStep.CreateAccount);
-					Sequence.Add(OnboardingStep.DefinePassword);
-					Sequence.Add(OnboardingStep.Biometrics);
-					Sequence.Add(OnboardingStep.Finalize);
-					break;
+			case OnboardingScenario.FullSetup:
+				Sequence.Add(OnboardingStep.Welcome);
+				Sequence.Add(OnboardingStep.ValidatePhone);
+				Sequence.Add(OnboardingStep.ValidateEmail);
+				Sequence.Add(OnboardingStep.NameEntry);
+				Sequence.Add(OnboardingStep.CreateAccount);
+				Sequence.Add(OnboardingStep.DefinePassword);
+				Sequence.Add(OnboardingStep.Biometrics);
+				Sequence.Add(OnboardingStep.Finalize);
+				break;
 				case OnboardingScenario.ChangePin:
 					Sequence.Add(OnboardingStep.DefinePassword);
 					Sequence.Add(OnboardingStep.Biometrics);
 					Sequence.Add(OnboardingStep.Finalize);
 					break;
-				case OnboardingScenario.ReverifyIdentity:
-					Sequence.Add(OnboardingStep.ValidatePhone);
-					Sequence.Add(OnboardingStep.ValidateEmail);
-					Sequence.Add(OnboardingStep.CreateAccount);
-					Sequence.Add(OnboardingStep.Finalize);
-					break;
+			case OnboardingScenario.ReverifyIdentity:
+				Sequence.Add(OnboardingStep.ValidatePhone);
+				Sequence.Add(OnboardingStep.ValidateEmail);
+				Sequence.Add(OnboardingStep.NameEntry);
+				Sequence.Add(OnboardingStep.CreateAccount);
+				Sequence.Add(OnboardingStep.Finalize);
+				break;
 				default:
 					Sequence.Add(OnboardingStep.Welcome);
 					Sequence.Add(OnboardingStep.Finalize);
@@ -348,14 +353,21 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 						return true;
 					}
 					break;
-				case OnboardingStep.CreateAccount:
-					if (Profile.LegalIdentity is LegalIdentity Identity &&
-						(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created))
-					{
-						Reason = "IdentityAlreadyPresent";
-						return true;
-					}
-					break;
+			case OnboardingStep.CreateAccount:
+				if (Profile.LegalIdentity is LegalIdentity Identity &&
+					(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created))
+				{
+					Reason = "IdentityAlreadyPresent";
+					return true;
+				}
+				break;
+			case OnboardingStep.NameEntry:
+				if (!string.IsNullOrEmpty(Profile.Account))
+				{
+					Reason = "AccountAlreadySelected";
+					return true;
+				}
+				break;
 				case OnboardingStep.DefinePassword:
 					if (this.scenario != OnboardingScenario.ChangePin && Profile.HasLocalPassword)
 					{

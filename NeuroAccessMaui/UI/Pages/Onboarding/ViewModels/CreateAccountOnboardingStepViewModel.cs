@@ -150,6 +150,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			{
 				await ServiceRef.TagProfile.ClearLegalIdentity();
 				ServiceRef.LogService.LogWarning("Legal identity application failed during onboarding.");
+				this.hasAppliedForIdentity = false;
 			}
 		}
 

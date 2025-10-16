@@ -39,6 +39,9 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			await base.OnInitializeAsync();
 
 			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
+			this.NumberIsValid = true;
+			this.TypeIsValid = true;
+			this.LengthIsValid = true;
 
 			if (App.Current is not null)
 			{
@@ -238,8 +241,12 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			}
 			else
 			{
-				this.PhoneNumber = Trimmed.TrimStart('+');
-			}
+			this.PhoneNumber = Trimmed.TrimStart('+');
+		}
+
+			this.NumberIsValid = true;
+			this.TypeIsValid = true;
+			this.LengthIsValid = true;
 
 			this.SendCodeCommand.NotifyCanExecuteChanged();
 		}

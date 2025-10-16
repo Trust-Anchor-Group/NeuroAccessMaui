@@ -298,6 +298,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<OnboardingPage>();
 			Builder.Services.AddTransient<WelcomeStepView, WelcomeOnboardingStepViewModel>();
 			Builder.Services.AddTransient<CreateAccountStepView, CreateAccountOnboardingStepViewModel>();
+			Builder.Services.AddTransient<NameEntryStepView, NameEntryOnboardingStepViewModel>();
 			Builder.Services.AddTransient<DefinePasswordStepView, DefinePasswordOnboardingStepViewModel>();
 			Builder.Services.AddTransient<ValidateEmailStepView, ValidateEmailOnboardingStepViewModel>(); // Fixed registration
 			Builder.Services.AddTransient<ValidatePhoneStepView, ValidatePhoneOnboardingStepViewModel>(); // Fixed registration
