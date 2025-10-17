@@ -118,7 +118,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		private ISO_3166_Country selectedCountry = ISO_3166_1.DefaultCountry;
 
 		/// <summary>
-		/// Flag set when the number (digits & length) is valid.
+		/// Flag set when the number (digits &amp; length) is valid.
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
@@ -164,6 +164,12 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]
 		[NotifyPropertyChangedFor(nameof(ShowValidationError))]
 		private string phoneNumber = string.Empty;
+
+		/// <summary>
+		/// True if phone number fields should be read-only (account exists or scenario requires re-verification without change).
+		/// </summary>
+		[ObservableProperty]
+		private bool isPhoneReadOnly;
 
 		#endregion
 
@@ -253,6 +259,22 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 		internal override Task OnActivatedAsync()
 		{
+			// Determine read-only state: ReverifyIdentity scenario or FullSetup with existing account.
+			OnboardingViewModel? Coordinator = this.CoordinatorViewModel;
+			if (Coordinator is not null)
+			{
+				ITagProfile Profile = ServiceRef.TagProfile;
+				bool HasAccount = !string.IsNullOrEmpty(Profile.Account);
+				if (Coordinator.Scenario == OnboardingScenario.ReverifyIdentity || (Coordinator.Scenario == OnboardingScenario.FullSetup && HasAccount))
+				{
+					this.IsPhoneReadOnly = true;
+				}
+				else
+				{
+					this.IsPhoneReadOnly = false;
+				}
+			}
+
 			if (string.IsNullOrEmpty(this.PhoneNumber) && !string.IsNullOrEmpty(ServiceRef.TagProfile.PhoneNumber))
 			{
 				this.ApplyStoredPhoneNumber(ServiceRef.TagProfile.PhoneNumber);
@@ -263,6 +285,15 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 		partial void OnPhoneNumberChanged(string value)
 		{
+			if (this.IsPhoneReadOnly)
+			{
+				// Ignore modifications when read-only; revert to stored value.
+				if (!string.IsNullOrEmpty(ServiceRef.TagProfile.PhoneNumber))
+				{
+					this.ApplyStoredPhoneNumber(ServiceRef.TagProfile.PhoneNumber);
+				}
+				return;
+			}
 			bool TypeValid = value.All(char.IsDigit);
 			bool LengthValid = value.Length >= 4;
 			this.TypeIsValid = TypeValid;

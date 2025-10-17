@@ -59,15 +59,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			if (Args is null)
 			{
 				ServiceRef.LogService.LogWarning("Onboarding navigation arguments missing. Using defaults.");
-				OnboardingNavigationArgs DefaultArgs = new OnboardingNavigationArgs
-				{
-					InitialStep = OnboardingStep.Welcome
-				};
-				Args = DefaultArgs;
-			}
-			else if (Args.InitialStep is null)
-			{
-				Args.InitialStep = OnboardingStep.Welcome;
+				Args = new OnboardingNavigationArgs();
 			}
 
 			this.navigationArgs = Args;
@@ -100,7 +92,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 		public T GetStepViewModel<T>(OnboardingStep step) where T : BaseOnboardingStepViewModel
 		{
-			if (this.stepViewModels.TryGetValue(step, out BaseOnboardingStepViewModel stepViewModel) && stepViewModel is T typed)
+			if (this.stepViewModels.TryGetValue(step, out BaseOnboardingStepViewModel? stepViewModel) && stepViewModel is T typed)
 			{
 				return typed;
 			}
@@ -132,7 +124,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		[RelayCommand]
 		private async Task GoToNext()
 		{
-			if (this.stepViewModels.TryGetValue(this.CurrentStep, out BaseOnboardingStepViewModel CurrentStepViewModel))
+			if (this.stepViewModels.TryGetValue(this.CurrentStep, out BaseOnboardingStepViewModel? CurrentStepViewModel))
 			{
 				bool CanAdvance = await CurrentStepViewModel.OnNextAsync().ConfigureAwait(false);
 				if (!CanAdvance)
@@ -154,7 +146,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 		public override async Task GoBack()
 		{
-			if (this.stepViewModels.TryGetValue(this.CurrentStep, out BaseOnboardingStepViewModel CurrentStepViewModel))
+			if (this.stepViewModels.TryGetValue(this.CurrentStep, out BaseOnboardingStepViewModel? CurrentStepViewModel))
 			{
 				await CurrentStepViewModel.OnBackAsync().ConfigureAwait(false);
 			}
@@ -327,49 +319,31 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			switch (Step)
 			{
 				case OnboardingStep.Welcome:
-					if (this.scenario == OnboardingScenario.FullSetup)
-					{
-						bool HasPhone = !string.IsNullOrEmpty(Profile.PhoneNumber);
-						bool HasEmail = !string.IsNullOrEmpty(Profile.EMail);
-						bool HasPassword = Profile.HasLocalPassword;
-						if (HasEstablishedIdentity && (HasPhone || HasEmail || HasPassword))
-						{
-							Reason = "PrerequisitesAlreadySatisfied";
-							return true;
-						}
-					}
+					// Always show Welcome now.
 					break;
 				case OnboardingStep.ValidatePhone:
-					if (HasEstablishedIdentity && !string.IsNullOrEmpty(Profile.PhoneNumber))
-					{
-						Reason = "PhoneAlreadyVerified";
-						return true;
-					}
+					// Always redo phone verification; never skip.
 					break;
 				case OnboardingStep.ValidateEmail:
-					if (HasEstablishedIdentity && !string.IsNullOrEmpty(Profile.EMail))
+					// Always redo email verification; never skip.
+					break;
+			case OnboardingStep.CreateAccount:
+					if (Profile.LegalIdentity is LegalIdentity Identity &&
+						(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created))
 					{
-						Reason = "EmailAlreadyVerified";
+						Reason = "IdentityAlreadyPresent";
 						return true;
 					}
 					break;
-			case OnboardingStep.CreateAccount:
-				if (Profile.LegalIdentity is LegalIdentity Identity &&
-					(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created))
-				{
-					Reason = "IdentityAlreadyPresent";
-					return true;
-				}
-				break;
 			case OnboardingStep.NameEntry:
-				if (!string.IsNullOrEmpty(Profile.Account))
-				{
-					Reason = "AccountAlreadySelected";
-					return true;
-				}
-				break;
+					if (!string.IsNullOrEmpty(Profile.Account))
+					{
+						Reason = "AccountAlreadySelected";
+						return true;
+					}
+					break;
 				case OnboardingStep.DefinePassword:
-					if (this.scenario != OnboardingScenario.ChangePin && Profile.HasLocalPassword)
+					if (this.scenario != OnboardingScenario.ChangePin && Profile.HasLocalPassword && !HasEstablishedIdentity)
 					{
 						Reason = "PasswordAlreadyDefined";
 						return true;
@@ -400,21 +374,23 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 		private OnboardingStep ResolveInitialStep()
 		{
-			if (this.navigationArgs.InitialStep is OnboardingStep InitialStep)
+			ITagProfile Profile = ServiceRef.TagProfile;
+			bool HasIdentity = this.HasEstablishedIdentity(Profile);
+			switch (this.scenario)
 			{
-				if (this.activeSequence.Contains(InitialStep))
-				{
-					return InitialStep;
-				}
-
-				OnboardingStep? FallbackStep = this.FindStepInDirection(InitialStep, NavigationDirection.Forward);
-				if (FallbackStep.HasValue)
-				{
-					return FallbackStep.Value;
-				}
+				case OnboardingScenario.FullSetup:
+					if (HasIdentity)
+					{
+						return OnboardingStep.DefinePassword;
+					}
+					return OnboardingStep.Welcome;
+				case OnboardingScenario.ReverifyIdentity:
+					return OnboardingStep.Welcome;
+				case OnboardingScenario.ChangePin:
+					return OnboardingStep.DefinePassword;
+				default:
+					return this.activeSequence.Count > 0 ? this.activeSequence[0] : OnboardingStep.Finalize;
 			}
-
-			return this.activeSequence[0];
 		}
 
 		private async Task MoveToStepAsync(OnboardingStep Step, NavigationDirection Direction)
@@ -437,7 +413,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			this.HeaderTitle = this.GetStepTitle(TargetStep);
 			this.CanGoBack = this.FindStepInDirection(TargetStep, NavigationDirection.Backward).HasValue;
 
-			if (this.stepViewModels.TryGetValue(TargetStep, out BaseOnboardingStepViewModel StepViewModel))
+			if (this.stepViewModels.TryGetValue(TargetStep, out BaseOnboardingStepViewModel? StepViewModel))
 			{
 				await StepViewModel.OnActivatedAsync().ConfigureAwait(false);
 			}
@@ -456,7 +432,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 			while (Guard > 0)
 			{
-				if (!this.descriptorMap.TryGetValue(TargetStep, out StepDescriptor Descriptor))
+				if (!this.descriptorMap.TryGetValue(TargetStep, out StepDescriptor? Descriptor))
 				{
 					return TargetStep;
 				}
@@ -611,7 +587,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 		private string GetStepTitle(OnboardingStep Step)
 		{
-			if (this.stepViewModels.TryGetValue(Step, out BaseOnboardingStepViewModel StepViewModel) && !string.IsNullOrWhiteSpace(StepViewModel.Title))
+			if (this.stepViewModels.TryGetValue(Step, out BaseOnboardingStepViewModel? StepViewModel) && StepViewModel is not null && !string.IsNullOrWhiteSpace(StepViewModel.Title))
 			{
 				return StepViewModel.Title;
 			}
@@ -672,28 +648,28 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			return true;
 		}
 
-		partial void OnSelectedStateKeyChanged(string Value)
+		partial void OnSelectedStateKeyChanged(string value)
 		{
 			if (this.isUpdatingSelection)
 			{
 				return;
 			}
 
-			if (Enum.TryParse(Value, out OnboardingStep ParsedStep) && ParsedStep != this.CurrentStep && this.activeSequence.Contains(ParsedStep))
+			if (Enum.TryParse(value, out OnboardingStep ParsedStep) && ParsedStep != this.CurrentStep && this.activeSequence.Contains(ParsedStep))
 			{
 				NavigationDirection Direction = this.DetermineDirection(this.CurrentStep, ParsedStep);
 				_ = this.MoveToStepAsync(ParsedStep, Direction);
 			}
 		}
 
-		partial void OnSelectedLanguageChanged(LanguageInfo Value)
+		partial void OnSelectedLanguageChanged(LanguageInfo value)
 		{
-			if (Value is null)
+			if (value is null)
 			{
 				return;
 			}
 
-			if (!Equals(App.SelectedLanguage, Value))
+			if (!Equals(App.SelectedLanguage, value))
 			{
 				// Language synchronization handled elsewhere.
 			}

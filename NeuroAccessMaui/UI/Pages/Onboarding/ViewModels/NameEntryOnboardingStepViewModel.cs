@@ -390,7 +390,6 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
-			return;
 		}
 
 		/// <summary>

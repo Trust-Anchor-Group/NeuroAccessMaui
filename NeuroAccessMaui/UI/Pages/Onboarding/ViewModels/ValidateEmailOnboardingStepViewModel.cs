@@ -96,6 +96,12 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		private bool emailIsValid = true;
 
 		/// <summary>
+		/// True if e-mail field should be read-only (account exists or scenario requires re-verification without change).
+		/// </summary>
+		[ObservableProperty]
+		private bool isEmailReadOnly;
+
+		/// <summary>
 		/// Countdown seconds for enabling resend.
 		/// </summary>
 		[ObservableProperty]
@@ -233,6 +239,21 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				if (SendResult.Decoded is Dictionary<string, object> SendResponse &&
 					SendResponse.TryGetValue("Status", out object? Obj) && Obj is bool SendStatus && SendStatus)
 				{
+								OnboardingViewModel? Coordinator = this.CoordinatorViewModel;
+								if (Coordinator is not null)
+								{
+									ITagProfile Profile = ServiceRef.TagProfile;
+									bool HasAccount = !string.IsNullOrEmpty(Profile.Account);
+									if (Coordinator.Scenario == OnboardingScenario.ReverifyIdentity || (Coordinator.Scenario == OnboardingScenario.FullSetup && HasAccount))
+									{
+										this.IsEmailReadOnly = true;
+									}
+									else
+									{
+										this.IsEmailReadOnly = false;
+									}
+								}
+
 					this.StartTimer();
 					VerifyCodeNavigationArgs NavigationArgs = new(this, this.EmailText);
 					await ServiceRef.NavigationService.GoToAsync(nameof(VerifyCodePage), NavigationArgs, BackMethod.Pop);

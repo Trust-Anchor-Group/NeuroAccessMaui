@@ -3,7 +3,7 @@ using NeuroAccessMaui.Services.UI;
 namespace NeuroAccessMaui.UI.Pages.Onboarding
 {
 	/// <summary>
-	/// Navigation arguments for onboarding flow. Defines initial step or scenario variant.
+	/// Navigation arguments for onboarding flow. Scenario determines dynamic starting step.
 	/// </summary>
 	public class OnboardingNavigationArgs : NavigationArgs
 	{
@@ -25,11 +25,6 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		/// Onboarding scenario.
 		/// </summary>
 		public OnboardingScenario Scenario { get; init; } = OnboardingScenario.FullSetup;
-
-		/// <summary>
-		/// Optional initial step to focus when onboarding starts.
-		/// </summary>
-		public OnboardingStep? InitialStep { get; set; }
 	}
 
 	/// <summary>
