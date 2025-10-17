@@ -17,7 +17,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 	/// </summary>
 	public partial class TransactionHistoryViewModel : XmppViewModel
 	{
-		private bool isLoading;
 		private DateTime? lastLoadedOldestTimestamp;
 		private string? currency; // Currency for events (taken from balance)
 
@@ -35,16 +34,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 		}
 
 		/// <summary>
-		/// Collection of transaction events.
 		/// Collection of transaction events (filtered).
 		/// </summary>
 		public ObservableCollection<TransactionEventItem> Events { get; }
 
 		[ObservableProperty]
-		private decimal totalIn;
-
-		[ObservableProperty]
-		private decimal totalOut;
+		private bool isLoading;
 
 		[ObservableProperty]
 		private bool hasMore;
@@ -57,20 +52,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 			this.ApplyFilter();
 		}
 
-		/// <summary>
-		/// Total incoming amount formatted.
-		/// </summary>
-		public string TotalInString => this.TotalIn.ToString("F2") + " NC";
-
-		/// <summary>
-		/// Total outgoing amount formatted.
-		/// </summary>
-		public string TotalOutString => this.TotalOut.ToString("F2") + " NC";
-
-		/// <summary>
-		/// Net change formatted.
-		/// </summary>
-		public string NetChangeString => (this.TotalIn - this.TotalOut).ToString("F2") + " NC";
 
 		/// <inheritdoc />
 		protected override async Task OnInitialize()
@@ -98,23 +79,21 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 
 		private async Task LoadInitialAsync()
 		{
-			if (this.isLoading)
+			if (this.IsLoading)
 				return;
 
-			this.isLoading = true;
+			this.IsLoading = true;
 			try
 			{
 				await this.EnsureCurrencyAsync();
 				this.Events.Clear();
 				this.allEvents.Clear();
-				this.TotalIn = 0M;
-				this.TotalOut = 0M;
 				this.lastLoadedOldestTimestamp = null;
 
+				await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
 				(AccountEventModel[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize);
 				await this.AddEventsAsync(Events);
 				this.HasMore = More;
-				this.ApplyFilter();
 			}
 			catch (Exception Ex)
 			{
@@ -122,7 +101,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 			}
 			finally
 			{
-				this.isLoading = false;
+				this.IsLoading = false;
 			}
 		}
 
@@ -144,24 +123,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 					FriendlyNames[Remote] = Friendly;
 				}
 
-				TransactionEventItem item = new(Evt, Friendly, CurrencyLocal);
+				TransactionEventItem Item = new(Evt, Friendly, CurrencyLocal);
 				// Insert at end since service provides descending blocks already preserving global order.
-				this.Events.Add(item);
+				this.Events.Add(Item);
 				// Store in backing collection
-				this.allEvents.Add(item);
+				this.allEvents.Add(Item);
 
 				if (!this.lastLoadedOldestTimestamp.HasValue || Evt.Timestamp < this.lastLoadedOldestTimestamp.Value)
 					this.lastLoadedOldestTimestamp = Evt.Timestamp;
-
-				if (Evt.Change >= 0)
-					this.TotalIn += Evt.Change;
-				else
-					this.TotalOut += -Evt.Change; // store absolute outgoing
 			}
-
-			this.OnPropertyChanged(nameof(this.TotalInString));
-			this.OnPropertyChanged(nameof(this.TotalOutString));
-			this.OnPropertyChanged(nameof(this.NetChangeString));
 		}
 
 		private void ApplyFilter()
@@ -192,10 +162,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 		[RelayCommand]
 		private async Task LoadMore()
 		{
-			if (this.isLoading || !this.HasMore || !this.lastLoadedOldestTimestamp.HasValue)
+			if (this.IsLoading || !this.HasMore || !this.lastLoadedOldestTimestamp.HasValue)
 				return;
 
-			this.isLoading = true;
+			this.IsLoading = true;
 			try
 			{
 				(AccountEventModel[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize, this.lastLoadedOldestTimestamp.Value);
@@ -209,7 +179,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 			}
 			finally
 			{
-				this.isLoading = false;
+				this.IsLoading = false;
 			}
 		}
 
@@ -221,60 +191,5 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 		{
 			return this.GoBack();
 		}
-	}
-
-	/// <summary>
-	/// Presentation model for a transaction event in history (no notification support).
-	/// </summary>
-	public class TransactionEventItem
-	{
-		private readonly AccountEventModel accountEvent;
-		private readonly string friendlyName;
-		private readonly string currency;
-
-		/// <summary>
-		/// Creates a transaction event presentation model.
-		/// </summary>
-		/// <param name="accountEvent">Underlying account event.</param>
-		/// <param name="friendlyName">Friendly name for remote party.</param>
-		/// <param name="currency">Currency code.</param>
-		public TransactionEventItem(AccountEventModel accountEvent, string friendlyName, string currency)
-		{
-			this.accountEvent = accountEvent;
-			this.friendlyName = friendlyName;
-			this.currency = currency;
-		}
-
-		public decimal Balance => this.accountEvent.Balance;
-		public decimal Reserved => this.accountEvent.Reserved;
-		public decimal Change => this.accountEvent.Change;
-		public DateTime Timestamp => this.accountEvent.Timestamp;
-		public Guid TransactionId => this.accountEvent.TransactionId;
-		public string Remote => this.accountEvent.Remote;
-		public string FriendlyName => this.friendlyName;
-		public string Message => this.accountEvent.Message;
-		public bool HasMessage => !string.IsNullOrEmpty(this.accountEvent.Message);
-		public string Currency => this.currency;
-
-		/// <summary>
-		/// Gets a color representing the type of transaction. Incoming (Change &gt;= 0) is green, outgoing is black.
-		/// </summary>
-		public Color ChangeColor => this.Change >= 0 ? Colors.Green : Colors.Black;
-
-		public string TimestampStr
-		{
-			get
-			{
-				DateTime Today = DateTime.Today;
-				if (this.Timestamp.Date == Today)
-					return this.Timestamp.ToLongTimeString();
-				else if (this.Timestamp.Date == Today.AddDays(-1))
-					return ServiceRef.Localizer[nameof(Resources.Languages.AppResources.Yesterday)] + ", " + this.Timestamp.ToLongTimeString();
-				else
-					return this.Timestamp.ToShortDateString() + ", " + this.Timestamp.ToLongTimeString();
-			}
-		}
-
-		public string ReservedSuffix => this.accountEvent.Reserved == 0 ? string.Empty : "+" + NeuroAccessMaui.UI.Converters.MoneyToString.ToString(this.accountEvent.Reserved);
 	}
 }

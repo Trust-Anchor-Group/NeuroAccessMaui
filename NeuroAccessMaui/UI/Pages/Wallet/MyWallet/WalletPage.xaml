@@ -233,10 +233,10 @@
 				<controls:SvgButton Command="{Binding BuyEdalerCommand}"
 									SvgSource="plus.svg"
 									Style="{DynamicResource IconButtonSecondary}"
-									HorizontalOptions="Start"
 									LabelPosition="Right"
 									LabelText="{l:Localize AddToBalance}"
 									Grid.Row="2"
+									Grid.ColumnSpan="2"
 									Margin="0,8,0,0"/>
 			</Grid>
 		</Border>

@@ -5,8 +5,7 @@
                       xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
                       xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                       xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-                      xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory"
-                      x:DataType="viewmodel:TransactionHistoryViewModel">
+                      xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory">
 
     <Grid RowDefinitions="auto,*" BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
         <!-- Top bar -->
@@ -25,51 +24,50 @@
                                      Style="{DynamicResource RegularCompositeEntry}"
                                      Margin="0,0,0,16" />
 
-            <!-- Events list -->
-            <ScrollView Grid.Row="1">
-                <VerticalStackLayout Spacing="16"
-                                     BindableLayout.ItemsSource="{Binding Events}">
-                    <BindableLayout.EmptyView>
-                        <VerticalStackLayout Padding="32" Spacing="12" HorizontalOptions="Center" VerticalOptions="Center">
-                            <controls:SvgView Source="history.svg" HeightRequest="64" WidthRequest="64" TintColor="{DynamicResource ContentSecondaryWL}" />
-                            <Label Text="{l:Localize NoTransactionsYet}" Style="{DynamicResource KeyLabel}" HorizontalTextAlignment="Center" />
-                        </VerticalStackLayout>
-                    </BindableLayout.EmptyView>
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="viewmodel:TransactionEventItem">
-                            <Border Style="{DynamicResource BorderSet}" Margin="0" Padding="0">
-                                <Grid ColumnDefinitions="*,auto" RowDefinitions="auto,auto" Padding="8">
-                                    <Label Grid.Column="0" Grid.Row="0" Text="{Binding FriendlyName}" Style="{DynamicResource KeyLabel}" FontAttributes="Bold" LineBreakMode="TailTruncation" />
-									<Label Grid.Column="1" Grid.Row="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" TextColor="{Binding ChangeColor}" >
-                                        <Label.FormattedText>
-                                            <FormattedString>
-                                                <Span Text="{Binding Change, Converter={StaticResource MoneyToString}}" FontSize="18" FontAttributes="Bold" />
-                                                <Span Text=" " />
-												<Span Text="NC" FontSize="16" FontAttributes="Bold" />
-                                            </FormattedString>
-                                        </Label.FormattedText>
-                                    </Label>
-                                    <Label Grid.Column="0" Grid.Row="1" Text="{Binding TimestampStr}" Style="{DynamicResource ValueLabel}" VerticalTextAlignment="Center" />
-                                    <Label Grid.Column="1" Grid.Row="1" HorizontalTextAlignment="Center" VerticalTextAlignment="Center">
-                                        <Label.FormattedText>
-                                            <FormattedString>
-                                                <Span Text=" (" />
-                                                <Span Text="{Binding Balance, Converter={StaticResource MoneyToString}}" />
-                                                <Span Text="{Binding ReservedSuffix}" FontSize="14" TextColor="{DynamicResource PendingColor}" />
-                                                <Span Text=" " />
-                                                <Span Text="NC" />
-                                                <Span Text=" ) " />
-                                            </FormattedString>
-                                        </Label.FormattedText>
-                                    </Label>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </VerticalStackLayout>
-            </ScrollView>
+			<controls:ConditionView Condition="{Binding Isloading}">
+				<controls:ConditionView.True>
+					<ActivityIndicator IsRunning="True"
+									   VerticalOptions="Center"
+									   HorizontalOptions="Center"
+								       Color="{DynamicResource ContentPrimaryWL}"
+									   HeightRequest="48"
+									   WidthRequest="48" />
+				</controls:ConditionView.True>
+				<controls:ConditionView.False>
+					<!-- Events list -->
+					<ScrollView Grid.Row="1">
+						<VerticalStackLayout Spacing="16"
+											 BindableLayout.ItemsSource="{Binding Events}">
+							<BindableLayout.EmptyView>
+								<VerticalStackLayout Padding="32" Spacing="12" HorizontalOptions="Center" VerticalOptions="Center">
+									<controls:SvgView Source="history.svg" HeightRequest="64" WidthRequest="64" TintColor="{DynamicResource ContentSecondaryWL}" />
+									<Label Text="{l:Localize NoTransactionsYet}" Style="{DynamicResource KeyLabel}" HorizontalTextAlignment="Center" />
+								</VerticalStackLayout>
+							</BindableLayout.EmptyView>
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="viewmodel:TransactionEventItem">
+									<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="0">
+										<Grid ColumnDefinitions="*,auto" RowDefinitions="auto,auto, auto" Padding="16" RowSpacing="{DynamicResource SmallSpacing}">
+											<Label Grid.Column="0" Grid.Row="0" Text="{Binding FriendlyName}" Style="{DynamicResource Brand2LabelS}" FontAttributes="Bold" LineBreakMode="TailTruncation" />
+											<Label Grid.Column="1" Grid.Row="0" Text="{Binding TimestampStr}" Style="{DynamicResource Brand2LabelSSecondary}" VerticalTextAlignment="Center" FontFamily="SpaceGroteskRegular" />
+											<Label Grid.Column="1" Grid.Row="2" HorizontalTextAlignment="End" VerticalTextAlignment="Center" TextColor="{Binding ChangeColor}" FontSize="18" FontAttributes="Bold" >
+												<Label.FormattedText>
+													<FormattedString>
+														<Span Text="{Binding Change, Converter={StaticResource MoneyToString}}" FontSize="18" FontAttributes="Bold" />
+														<Span Text=" NC" FontSize="18" FontAttributes="Bold" />
+													</FormattedString>
+												</Label.FormattedText>
+											</Label>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</VerticalStackLayout>
+					</ScrollView>
+				</controls:ConditionView.False>
+			</controls:ConditionView>
 
-            <!-- Load More Button -->
+			<!-- Load More Button -->
             <controls:TextButton Grid.Row="2"
 								 Margin="0,16,0,0"
 								 LabelData="{l:Localize LoadMore}"
