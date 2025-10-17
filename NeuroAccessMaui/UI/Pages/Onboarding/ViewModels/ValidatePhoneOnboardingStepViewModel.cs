@@ -19,12 +19,11 @@ using Waher.Content;
 namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 {
 	/// <summary>
-	/// Onboarding step ViewModel for validating the phone number. Mirrors the registration experience but defers validation until the user presses Send.
+	/// Onboarding step ViewModel for validating the phone number. Updated to mirror registration validation (continuous validation while typing).
 	/// </summary>
 	public partial class ValidatePhoneOnboardingStepViewModel : BaseOnboardingStepViewModel, ICodeVerification
 	{
 		private bool codeVerified;
-		private bool hasValidated;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="ValidatePhoneOnboardingStepViewModel"/> class.
@@ -39,9 +38,6 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			await base.OnInitializeAsync();
 
 			LocalizationManager.Current.PropertyChanged += this.LocalizationManagerEventHandler;
-			this.NumberIsValid = true;
-			this.TypeIsValid = true;
-			this.LengthIsValid = true;
 
 			if (App.Current is not null)
 			{
@@ -118,22 +114,28 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		private ISO_3166_Country selectedCountry = ISO_3166_1.DefaultCountry;
 
 		/// <summary>
-		/// Flag set when the number (digits &amp; length) is valid after validation.
+		/// Flag set when the number (digits & length) is valid.
 		/// </summary>
 		[ObservableProperty]
+		[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
+		[NotifyPropertyChangedFor(nameof(ShowValidationError))]
 		private bool numberIsValid;
 
 		/// <summary>
-		/// Flag set when only digits are present after validation.
+		/// Flag set when only digits are present.
 		/// </summary>
 		[ObservableProperty]
-		private bool typeIsValid;
+		[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]
+		[NotifyPropertyChangedFor(nameof(ShowValidationError))]
+		private bool typeIsValid = true;
 
 		/// <summary>
-		/// Flag set when length is valid after validation.
+		/// Flag set when length is valid.
 		/// </summary>
 		[ObservableProperty]
-		private bool lengthIsValid;
+		[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]
+		[NotifyPropertyChangedFor(nameof(ShowValidationError))]
+		private bool lengthIsValid = true;
 
 		/// <summary>
 		/// Gets or sets the remaining countdown seconds before resend is allowed.
@@ -151,10 +153,12 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		private IDispatcherTimer? countDownTimer;
 
 		/// <summary>
-		/// Raw phone number (without country code). Validation happens only when Send is pressed.
+		/// Raw phone number (without country code). Validation happens continuously while typing.
 		/// </summary>
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
+		[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]
+		[NotifyPropertyChangedFor(nameof(ShowValidationError))]
 		private string phoneNumber = string.Empty;
 
 		#endregion
@@ -175,14 +179,12 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		}
 
 		/// <summary>
-		/// Localized validation error text (blank until user has validated and an error exists).
+		/// Localized validation error text.
 		/// </summary>
 		public string LocalizedValidationError
 		{
 			get
 			{
-				if (!this.ShowValidationError)
-					return string.Empty;
 				if (!this.TypeIsValid)
 					return ServiceRef.Localizer[nameof(AppResources.PhoneValidationDigits)];
 				if (!this.LengthIsValid)
@@ -194,16 +196,16 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		/// <summary>
 		/// True if a validation error should be displayed.
 		/// </summary>
-		public bool ShowValidationError => this.hasValidated && !this.NumberIsValid;
+		public bool ShowValidationError => !this.NumberIsValid && this.PhoneNumber.Length > 0;
 
 		#endregion
 
 		#region State & Derived
 
 		/// <summary>
-		/// Button enabled if user has entered something (no pre-validation) and timer allows.
+		/// Button enabled if number is valid and timer allows.
 		/// </summary>
-		public bool CanSendCode => this.PhoneNumber.Length > 0 && this.CountDownSeconds <= 0 && !this.IsBusy;
+		public bool CanSendCode => this.NumberIsValid && this.PhoneNumber.Length > 0 && this.CountDownSeconds <= 0 && !this.IsBusy;
 		public bool CanResendCode => this.CountDownSeconds <= 0;
 		public bool CanContinue => this.codeVerified;
 
@@ -241,14 +243,8 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			}
 			else
 			{
-			this.PhoneNumber = Trimmed.TrimStart('+');
-		}
-
-			this.NumberIsValid = true;
-			this.TypeIsValid = true;
-			this.LengthIsValid = true;
-
-			this.SendCodeCommand.NotifyCanExecuteChanged();
+				this.PhoneNumber = Trimmed.TrimStart('+');
+			}
 		}
 
 		internal override Task OnActivatedAsync()
@@ -259,6 +255,18 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			}
 
 			return base.OnActivatedAsync();
+		}
+
+		partial void OnPhoneNumberChanged(string value)
+		{
+			bool TypeValid = value.All(char.IsDigit);
+			bool LengthValid = value.Length >= 4;
+			this.TypeIsValid = TypeValid;
+			this.LengthIsValid = LengthValid;
+			this.NumberIsValid = TypeValid && LengthValid;
+			this.SendCodeCommand.NotifyCanExecuteChanged();
+			this.OnPropertyChanged(nameof(this.LocalizedValidationError));
+			this.OnPropertyChanged(nameof(this.ShowValidationError));
 		}
 
 		#region Commands
@@ -276,20 +284,8 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		[RelayCommand(CanExecute = nameof(CanSendCode))]
 		private async Task SendCode()
 		{
-			// Perform validation now (only when user presses Send)
-			this.hasValidated = true;
-			bool TypeValid = this.PhoneNumber.All(char.IsDigit);
-			bool LengthValid = this.PhoneNumber.Length >= 4; // minimum length requirement
-			this.TypeIsValid = TypeValid;
-			this.LengthIsValid = LengthValid;
-			this.NumberIsValid = TypeValid && LengthValid;
-			this.OnPropertyChanged(nameof(this.LocalizedValidationError));
-			this.OnPropertyChanged(nameof(this.ShowValidationError));
-
 			if (!this.NumberIsValid)
-			{
-				return; // Do not proceed if invalid
-			}
+				return;
 
 			this.IsBusy = true;
 			try

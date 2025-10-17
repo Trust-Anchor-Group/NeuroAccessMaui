@@ -17,7 +17,7 @@ using Waher.Content;
 namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 {
 	/// <summary>
-	/// Onboarding step ViewModel for validating e-mail. Mirrors registration email validation experience.
+	/// Onboarding step ViewModel for validating e-mail. Updated to mirror registration validation (continuous validation, symbol toggling).
 	/// </summary>
 	public partial class ValidateEmailOnboardingStepViewModel : BaseOnboardingStepViewModel, ICodeVerification
 	{
@@ -115,6 +115,8 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(ShowValidationError))]
+		[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]
+		[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
 		private string emailText = string.Empty;
 
 		#endregion
@@ -141,7 +143,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		{
 			get
 			{
-				if (!this.EmailIsValid && !string.IsNullOrEmpty(this.EmailText))
+				if (!this.EmailIsValid && this.EmailText.Length > 0)
 					return ServiceRef.Localizer[nameof(AppResources.EmailValidationFormat)];
 				return string.Empty;
 			}
@@ -150,7 +152,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		/// <summary>
 		/// If validation error should be shown.
 		/// </summary>
-		public bool ShowValidationError => !this.EmailIsValid && !string.IsNullOrEmpty(this.EmailText);
+		public bool ShowValidationError => !this.EmailIsValid && this.EmailText.Length > 0;
 
 		#endregion
 
@@ -181,8 +183,9 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		partial void OnEmailTextChanged(string value)
 		{
 			bool WasValid = this.EmailIsValid;
-			this.EmailIsValid = string.IsNullOrWhiteSpace(value) || EmailRegex.IsMatch(value);
-			if (WasValid != this.EmailIsValid)
+			bool IsValid = string.IsNullOrWhiteSpace(value) || EmailRegex.IsMatch(value);
+			this.EmailIsValid = IsValid;
+			if (WasValid != IsValid)
 			{
 				this.OnPropertyChanged(nameof(this.LocalizedValidationError));
 				this.OnPropertyChanged(nameof(this.ShowValidationError));
@@ -200,6 +203,9 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		[RelayCommand(CanExecute = nameof(CanSendCode))]
 		private async Task SendCode()
 		{
+			if (!this.EmailIsValid)
+				return;
+
 			this.IsBusy = true;
 			try
 			{
