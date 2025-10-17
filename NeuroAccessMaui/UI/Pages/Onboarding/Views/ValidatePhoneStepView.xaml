@@ -51,13 +51,10 @@
                                Keyboard="Telephone"
                                Text="{Binding PhoneNumber}">
                             <Entry.Behaviors>
-                                <mct:MultiValidationBehavior x:Name="PhoneValidator"
-                                                             Flags="ValidateOnValueChanged"
-                                                             IsValid="{Binding NumberIsValid}">
-                                    <mct:CharactersValidationBehavior IsValid="{Binding TypeIsValid}"
-                                                                      RegexPattern="^\d*$" />
-                                    <mct:TextValidationBehavior IsValid="{Binding LengthIsValid}"
-                                                                RegexPattern="^$|^\d{4,}$" />
+                                <!-- Remove binding of overall IsValid to avoid forcing invalid state; keep individual behaviors -->
+                                <mct:MultiValidationBehavior x:Name="PhoneValidator" Flags="ValidateOnValueChanged">
+                                    <mct:CharactersValidationBehavior IsValid="{Binding TypeIsValid}" RegexPattern="^\d*$" />
+                                    <mct:TextValidationBehavior IsValid="{Binding LengthIsValid}" RegexPattern="^$|^\d{4,}$" />
                                 </mct:MultiValidationBehavior>
                             </Entry.Behaviors>
                         </Entry>
@@ -68,7 +65,7 @@
                       ColumnDefinitions="auto,*"
                       HorizontalOptions="Center"
                       ColumnSpacing="{DynamicResource SmallSpacing}"
-                      IsVisible="{Binding IsNotValid, Source={x:Reference PhoneValidator}}">
+                      IsVisible="{Binding ShowValidationError}">
                     <Path Grid.Column="0"
                           VerticalOptions="Center"
                           HeightRequest="20"

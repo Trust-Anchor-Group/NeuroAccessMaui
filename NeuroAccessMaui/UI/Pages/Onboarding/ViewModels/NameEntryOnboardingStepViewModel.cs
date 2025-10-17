@@ -134,6 +134,13 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 				string password = ServiceRef.CryptoService.CreateRandomPassword();
 
+				// Guard: Domain must be set before attempting account creation.
+				if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.Domain))
+				{
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.UnableToConnect)], ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					return;
+				}
+
 				(string hostName, int portNumber, bool isIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain!);
 
 				async Task OnConnected(XmppClient client)

@@ -33,14 +33,9 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		private string errorMessage = string.Empty;
 
 		public bool HasError => !string.IsNullOrEmpty(this.ErrorMessage);
-
 		public bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
-
 		public bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
-
-		public bool IsLegalIdentityCreated => ServiceRef.TagProfile.LegalIdentity is LegalIdentity identity &&
-			(identity.State == IdentityState.Approved || identity.State == IdentityState.Created);
-
+		public bool IsLegalIdentityCreated => ServiceRef.TagProfile.LegalIdentity is LegalIdentity identity && (identity.State == IdentityState.Approved || identity.State == IdentityState.Created);
 		public bool CanCreateIdentity => this.IsAccountCreated && !this.IsLegalIdentityCreated && !this.IsBusy;
 
 		public override async Task OnInitializeAsync()
@@ -98,8 +93,28 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 		private async Task TryAutoApplyAsync()
 		{
+			// Guard: Must have created account and active XMPP connection before applying for identity.
+			if (!this.IsAccountCreated || ServiceRef.XmppService.State != XmppState.Connected)
+				return;
+
+			// Guard: Prevent duplicate attempts while already applied or busy.
 			if (!this.CanCreateIdentity || this.hasAppliedForIdentity)
 				return;
+
+			// Ensure required XMPP services are discovered before attempting identity creation.
+			if (ServiceRef.TagProfile.NeedsUpdating())
+			{
+				try
+				{
+					XmppClient? client = ServiceRef.XmppService.State == XmppState.Connected ? ServiceRef.XmppService.GetType().GetProperty("ContractsClient") is null ? null : null : null; // placeholder to avoid reflection; discovery uses default client
+					await ServiceRef.XmppService.DiscoverServices();
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+					return; // Abort until services available.
+				}
+			}
 
 			this.hasAppliedForIdentity = true;
 			this.ErrorMessage = string.Empty;
@@ -115,8 +130,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				{
 					RegisterIdentityModel model = this.CreateRegisterModel();
 					LegalIdentityAttachment[] photos = []; // No photos during onboarding
-					(bool succeeded, LegalIdentity? addedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
-						ServiceRef.XmppService.AddLegalIdentity(model, true, photos));
+					(bool succeeded, LegalIdentity? addedIdentity) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.AddLegalIdentity(model, true, photos));
 					if (succeeded && addedIdentity is not null)
 					{
 						identity = addedIdentity;
@@ -150,7 +164,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			{
 				await ServiceRef.TagProfile.ClearLegalIdentity();
 				ServiceRef.LogService.LogWarning("Legal identity application failed during onboarding.");
-				this.hasAppliedForIdentity = false;
+				this.hasAppliedForIdentity = false; // Allow future retry.
 			}
 		}
 
@@ -189,16 +203,12 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		{
 			RegisterIdentityModel model = new();
 			string value;
-
 			if (!string.IsNullOrWhiteSpace(value = ServiceRef.TagProfile?.PhoneNumber?.Trim() ?? string.Empty))
 				model.PhoneNr = value;
-
 			if (!string.IsNullOrWhiteSpace(value = ServiceRef.TagProfile?.EMail?.Trim() ?? string.Empty))
 				model.EMail = value;
-
 			if (!string.IsNullOrWhiteSpace(value = ServiceRef.TagProfile?.SelectedCountry?.Trim() ?? string.Empty))
 				model.CountryCode = value;
-
 			return model;
 		}
 	}

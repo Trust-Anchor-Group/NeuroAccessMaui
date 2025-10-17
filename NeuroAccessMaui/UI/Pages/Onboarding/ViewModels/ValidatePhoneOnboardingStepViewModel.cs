@@ -30,6 +30,10 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		/// </summary>
 		public ValidatePhoneOnboardingStepViewModel() : base(OnboardingStep.ValidatePhone)
 		{
+			// Initialize validation flags to true so UI does not show error state initially.
+			this.numberIsValid = true;
+			this.typeIsValid = true;
+			this.lengthIsValid = true;
 		}
 
 		/// <inheritdoc/>
