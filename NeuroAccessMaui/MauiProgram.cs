@@ -19,6 +19,8 @@ using NeuroAccessMaui.Services.Xml;
 using NeuroAccessMaui.Services.UI.Popups;
 using NeuroAccessMaui.Services.UI.Toasts;
 using Waher.Runtime.Inventory;
+using SkiaSharp.Views.Maui.Handlers;
+
 
 #if DEBUG
 using DotNet.Meteor.HotReload.Plugin;

@@ -14,7 +14,7 @@ using NeuroAccessMaui.UI;
 namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 {
 	/// <summary>
-	/// Reuses registration password-strength experience for onboarding.
+	/// Onboarding step for defining a password or PIN. Shows strength feedback but only hard validation rules block continuation.
 	/// </summary>
 	public partial class DefinePasswordOnboardingStepViewModel : BaseOnboardingStepViewModel
 	{
@@ -37,6 +37,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			this.OnPropertyChanged(nameof(this.LocalizedValidationError));
 			this.UpdateToggleKeyboardText();
 			this.UpdateSecurityScore();
+			this.UpdateCanContinue();
 		}
 
 		[ObservableProperty]
@@ -76,26 +77,32 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		partial void OnPasswordText1Changed(string? value)
 		{
 			this.UpdateSecurityScore();
+			this.UpdateCanContinue();
+		}
+
+		partial void OnPasswordText2Changed(string? value)
+		{
+			this.UpdateCanContinue();
 		}
 
 		private void UpdateSecurityScore()
 		{
-			double score = ServiceRef.TagProfile.CalculatePasswordScore(this.PasswordText1);
+			double Score = ServiceRef.TagProfile.CalculatePasswordScore(this.PasswordText1);
 
-			const double low = Constants.Security.MediumSecurityScoreThreshold;
-			const double medium = Constants.Security.HighSecurityPasswordScoreThreshold;
-			const double high = Constants.Security.MaxSecurityPasswordScoreThreshold;
+			const double Low = Constants.Security.MediumSecurityScoreThreshold;
+			const double Medium = Constants.Security.HighSecurityPasswordScoreThreshold;
+			const double High = Constants.Security.MaxSecurityPasswordScoreThreshold;
 
-			this.SecurityBar1Percentage = (Math.Min(score, low) / low) * 100.0;
-			this.SecurityBar2Percentage = Math.Max((Math.Min(score - low, medium - low) / (medium - low) * 100.0), 0);
-			this.SecurityBar3Percentage = Math.Max((Math.Min(score - medium, high - medium) / (high - medium) * 100.0), 0);
+			this.SecurityBar1Percentage = (Math.Min(Score, Low) / Low) * 100.0;
+			this.SecurityBar2Percentage = Math.Max((Math.Min(Score - Low, Medium - Low) / (Medium - Low) * 100.0), 0);
+			this.SecurityBar3Percentage = Math.Max((Math.Min(Score - Medium, High - Medium) / (High - Medium) * 100.0), 0);
 
-			if (score >= medium)
+			if (Score >= Medium)
 			{
 				this.SecurityTextColor = AppColors.StrongPasswordForeground;
 				this.SecurityText = ServiceRef.Localizer[nameof(AppResources.PasswordStrongSecurity)];
 			}
-			else if (score >= low)
+			else if (Score >= Low)
 			{
 				this.SecurityTextColor = AppColors.MediumPasswordForeground;
 				this.SecurityText = ServiceRef.Localizer[nameof(AppResources.PasswordMediumSecurity)];
@@ -120,8 +127,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			this.OnPropertyChanged(nameof(this.LocalizedValidationError));
 			this.OnPropertyChanged(nameof(this.IsPassword1NotValid));
 			this.OnPropertyChanged(nameof(this.IsPassword2NotValid));
-
-			this.CanContinue = true;
+			this.UpdateCanContinue();
 		}
 
 		public Geometry PasswordVisibilityPathData => this.IsPasswordHidden ? Geometries.VisibilityOnPath : Geometries.VisibilityOffPath;
@@ -138,13 +144,16 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			}
 		}
 
-		public bool IsPassword1NotValid => !string.IsNullOrEmpty(this.PasswordText1) && !this.PasswordIsStrong();
+		/// <summary>
+		/// True if first password violates hard rules. Soft warnings do not mark invalid.
+		/// </summary>
+		public bool IsPassword1NotValid => !string.IsNullOrEmpty(this.PasswordText1) && !this.PasswordIsAcceptable();
 
 		public bool IsPassword2NotValid => !this.IsPassword1NotValid && !this.PasswordsMatch;
 
 		public string LocalizedValidationError => GetLocalizedValidationError(this.PasswordStrength);
 
-		public static string GetLocalizedValidationError(PasswordStrength passwordStrength) => passwordStrength switch
+		public static string GetLocalizedValidationError(PasswordStrength PasswordStrength) => PasswordStrength switch
 		{
 			PasswordStrength.NotEnoughDigitsLettersSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughDigitsLettersSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
 			PasswordStrength.NotEnoughDigitsOrSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughDigitsOrSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
@@ -163,7 +172,13 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		};
 
 		[ObservableProperty]
-		private bool canContinue;
+		[NotifyCanExecuteChangedFor(nameof(this.ContinueCommand))]
+		private bool canContinue; // Backing for command can-execute
+
+		private void UpdateCanContinue()
+		{
+			this.CanContinue = this.PasswordIsAcceptable() && this.PasswordsMatch;
+		}
 
 		[RelayCommand]
 		private void ToggleNumericPassword()
@@ -172,6 +187,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			this.PasswordText2 = string.Empty;
 			this.KeyboardType = this.KeyboardType == Keyboard.Numeric ? Keyboard.Default : Keyboard.Numeric;
 			this.UpdateToggleKeyboardText();
+			this.UpdateCanContinue();
 		}
 
 		private void UpdateToggleKeyboardText()
@@ -182,25 +198,56 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				this.ToggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateAlphanumeric)];
 		}
 
-		private bool PasswordIsStrong() => this.PasswordStrength == PasswordStrength.Strong;
+		/// <summary>
+		/// Determines if password passes hard validation rules (acceptable). Soft warnings allowed.
+		/// Hard blocking: TooShort, TooManyIdenticalSymbols, TooManySequencedSymbols, Contains* personal data.
+		/// </summary>
+		private bool PasswordIsAcceptable()
+		{
+			PasswordStrength Strength = this.PasswordStrength;
 
-		[RelayCommand]
+			if (string.IsNullOrEmpty(this.PasswordText1))
+				return false; // Empty not acceptable
+
+			switch (Strength)
+			{
+				case PasswordStrength.Strong:
+				case PasswordStrength.NotEnoughDigitsLettersSigns:
+				case PasswordStrength.NotEnoughDigitsOrSigns:
+				case PasswordStrength.NotEnoughLettersOrDigits:
+				case PasswordStrength.NotEnoughLettersOrSigns:
+					return true; // Soft warnings
+				case PasswordStrength.TooShort:
+				case PasswordStrength.TooManyIdenticalSymbols:
+				case PasswordStrength.TooManySequencedSymbols:
+				case PasswordStrength.ContainsAddress:
+				case PasswordStrength.ContainsName:
+				case PasswordStrength.ContainsPersonalNumber:
+				case PasswordStrength.ContainsPhoneNumber:
+				case PasswordStrength.ContainsEMail:
+				default:
+					return false; // Hard block
+			}
+		}
+
+		private bool CanExecuteContinue() => this.CanContinue;
+
+		[RelayCommand(CanExecute = nameof(CanExecuteContinue))]
 		private async Task Continue()
 		{
-			if (!this.PasswordIsStrong() || !this.PasswordsMatch)
+			if (!this.PasswordIsAcceptable() || !this.PasswordsMatch)
 			{
-				this.CanContinue = false;
-				return;
+				return; // Should not be invoked when CanExecute false, but guard anyway.
 			}
 
 			ServiceRef.PlatformSpecific.HideKeyboard();
 
-			bool isFirstPassword = string.IsNullOrEmpty(ServiceRef.TagProfile.LocalPasswordHash);
+			bool IsFirstPassword = string.IsNullOrEmpty(ServiceRef.TagProfile.LocalPasswordHash);
 			ServiceRef.TagProfile.LocalPassword = this.PasswordText1!;
 
 			if (this.CoordinatorViewModel is not null)
 			{
-				if (ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication && isFirstPassword)
+				if (ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication && IsFirstPassword)
 					await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.Biometrics);
 				else
 					await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.Finalize);

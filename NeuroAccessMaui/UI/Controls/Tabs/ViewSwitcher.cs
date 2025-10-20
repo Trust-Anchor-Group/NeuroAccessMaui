@@ -438,7 +438,11 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			await this.Dispatcher.DispatchAsync(async () =>
 			{
-				cancellationToken.ThrowIfCancellationRequested();
+				// Instead of throwing (causing unhandled exception surfaced to user), abort gracefully if canceled.
+				if (cancellationToken.IsCancellationRequested)
+				{
+					return;
+				}
 
 				this.RefreshDescriptors();
 
@@ -543,7 +547,10 @@ namespace NeuroAccessMaui.UI.Controls
 				}
 
 				this.isInitialLoad = false;
-				cancellationToken.ThrowIfCancellationRequested();
+				if (cancellationToken.IsCancellationRequested)
+				{
+					return;
+				}
 
 				ViewSwitcherSelectionChangedEventArgs changedArgs = new ViewSwitcherSelectionChangedEventArgs(
 					oldIndex,
@@ -918,7 +925,7 @@ namespace NeuroAccessMaui.UI.Controls
 		private Task InvokeLifecycleDisappearingCoreAsync(object target, CancellationToken token)
 		{
 			if (target is not ILifeCycleView lifecycleView)
-				return Task.CompletedTask;
+			 return Task.CompletedTask;
 
 			return PolicyRunner.RunAsync(_ => lifecycleView.OnDisappearingAsync(), token);
 		}

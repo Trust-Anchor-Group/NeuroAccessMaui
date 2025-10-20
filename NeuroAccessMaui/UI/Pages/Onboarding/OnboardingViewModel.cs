@@ -376,14 +376,21 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		{
 			ITagProfile Profile = ServiceRef.TagProfile;
 			bool HasIdentity = this.HasEstablishedIdentity(Profile);
+			bool HasAccount = !string.IsNullOrEmpty(Profile.Account);
 			switch (this.scenario)
 			{
 				case OnboardingScenario.FullSetup:
 					if (HasIdentity)
 						return OnboardingStep.DefinePassword;
+					if (HasAccount && !HasIdentity)
+					{
+						ServiceRef.LogService.LogInformational("Resuming FullSetup with existing account. Restarting 2FA.",
+							new KeyValuePair<string, object?>("Account", Profile.Account));
+						return OnboardingStep.ValidatePhone;
+					}
 					return OnboardingStep.Welcome;
 				case OnboardingScenario.ReverifyIdentity:
-					return OnboardingStep.Welcome;
+					return OnboardingStep.ValidatePhone;
 				case OnboardingScenario.ChangePin:
 					return OnboardingStep.DefinePassword;
 				default:

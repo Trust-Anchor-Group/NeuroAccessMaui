@@ -320,7 +320,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <c>false</c> otherwise.</returns>
 		public virtual bool ShouldCreateClient()
 		{
-			return this.Step >= RegistrationStep.CreateAccount && !string.IsNullOrEmpty(this.Account);
+			return !string.IsNullOrEmpty(this.Account);
 		}
 
 		/// <summary>
@@ -340,7 +340,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <returns><c>true</c> if the registration process for this <see cref="ITagProfile"/> is either fully complete, <c>false</c> otherwise.</returns>
 		public virtual bool IsComplete()
 		{
-			return this.LegalIdentity is not null;
+			return this.LegalIdentity is not null && this.HasLocalPassword;
 		}
 
 		#region Properties
