@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory.TransactionHistoryPage"
+					  x:DataType="viewmodel:TransactionHistoryViewModel"
                       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                       xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
@@ -24,7 +25,7 @@
                                      Style="{DynamicResource RegularCompositeEntry}"
                                      Margin="0,0,0,16" />
 
-			<controls:ConditionView Condition="{Binding Isloading}">
+			<controls:ConditionView Condition="{Binding IsLoading}" Grid.Row="1">
 				<controls:ConditionView.True>
 					<ActivityIndicator IsRunning="True"
 									   VerticalOptions="Center"
@@ -35,7 +36,7 @@
 				</controls:ConditionView.True>
 				<controls:ConditionView.False>
 					<!-- Events list -->
-					<ScrollView Grid.Row="1">
+					<ScrollView>
 						<VerticalStackLayout Spacing="16"
 											 BindableLayout.ItemsSource="{Binding Events}">
 							<BindableLayout.EmptyView>
@@ -53,7 +54,7 @@
 											<Label Grid.Column="1" Grid.Row="2" HorizontalTextAlignment="End" VerticalTextAlignment="Center" TextColor="{Binding ChangeColor}" FontSize="18" FontAttributes="Bold" >
 												<Label.FormattedText>
 													<FormattedString>
-														<Span Text="{Binding Change, Converter={StaticResource MoneyToString}}" FontSize="18" FontAttributes="Bold" />
+														<Span Text="{Binding Change}" FontSize="18" FontAttributes="Bold" />
 														<Span Text=" NC" FontSize="18" FontAttributes="Bold" />
 													</FormattedString>
 												</Label.FormattedText>
