@@ -44,8 +44,12 @@
 		<RepositoryUrl>https://github.com/Trust-Anchor-Group/NeuroAccessMaui</RepositoryUrl>
    		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 	</PropertyGroup>
-	
-	<!-- If on Mac, add iOS as well -->
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+
+		<!-- If on Mac, add iOS as well -->
 	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
 		<TargetFrameworks>net9.0-ios;net9.0-android</TargetFrameworks>
 	</PropertyGroup>
@@ -91,7 +95,6 @@
 		<PublishTrimmed>True</PublishTrimmed>
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>False</UseInterpreter>
-		<DebugType>none</DebugType>
 	</PropertyGroup>
 
 
@@ -99,7 +102,7 @@
 		<RunAOTCompilation>False</RunAOTCompilation>
 		<PublishTrimmed>False</PublishTrimmed>
 		<DebugSymbols>True</DebugSymbols>
-		<DebugType>none</DebugType>
+		<AndroidDebugSymbols>true</AndroidDebugSymbols>
 	</PropertyGroup>
 
 	<Target Name="DoNotLinkWithBrowserEngineKit" AfterTargets="_ComputeLinkNativeExecutableInputs">
@@ -116,12 +119,6 @@
 	<PropertyGroup>
 		<SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))</SourceRevisionId>
 		<DefaultLanguage>en</DefaultLanguage>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-windows10.0.19041.0|AnyCPU'">
-	  <DebugType>none</DebugType>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-windows10.0.19041.0|AnyCPU'">
-	  <DebugType>none</DebugType>
 	</PropertyGroup>
 
 	<!-- Firebase -->
@@ -516,7 +513,7 @@
 		</Compile>
 	</ItemGroup>
 
-	<!-- Non-Windows targets (Android/iOS/MacCatalyst) -->
+	<!-- Non-Windows targets (Android/iOS/MacCatalyst) 
 	<ItemGroup Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '-windows'))">
 		<EmbeddedResource Update="Resources/Languages/AppResources.resx">
 			<Generator>MSBuild:Compile</Generator>
@@ -527,16 +524,15 @@
 			<StronglyTypedNamespace>NeuroAccessMaui.Resources.Languages</StronglyTypedNamespace>
 		</EmbeddedResource>
 
-		<!-- Only include if it exists to avoid first-eval failures -->
 		<Compile Update="$(IntermediateOutputPath)\AppResources.Designer.cs" Condition="Exists('$(IntermediateOutputPath)\AppResources.Designer.cs')">
 			<DesignTime>false</DesignTime>
 			<AutoGen>true</AutoGen>
 			<DependentUpon>Resources\Languages\AppResources.resx</DependentUpon>
 		</Compile>
 	</ItemGroup>
-
+	-->
 	<!-- Windows target -->
-	<ItemGroup Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '-windows'))">
+	<ItemGroup>
 		<EmbeddedResource Update="Resources\Languages\AppResources.resx">
 			<Generator>ResXFileCodeGenerator</Generator>
 			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
@@ -853,6 +849,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Properties\" />
 		<Folder Include="UI\Pages\Kyc\ObjectModel\" />
 		<Folder Include="UI\Pages\Wallet\ServiceProviders\NewFolder\" />
 	</ItemGroup>
