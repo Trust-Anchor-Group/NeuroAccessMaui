@@ -10,6 +10,7 @@ using NeuroAccessMaui.Services.Tag;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
+using Waher.Networking.XMPP.StanzaErrors; // Added for InternalServerErrorException
 
 namespace NeuroAccessMaui.UI.Pages.Registration.Views
 {
@@ -132,16 +133,15 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
         [RelayCommand(CanExecute = nameof(CanCreateIdentity))]
         private async Task CreateIdentity()
         {
-            // Prevent applying more than once
             if (this.hasAppliedForIdentity)
                 return;
 
-				this.hasAppliedForIdentity = true;
+            this.hasAppliedForIdentity = true;
 
-            // Create a cancellation token that cancels after 60 seconds.
             using CancellationTokenSource TimerCts = new CancellationTokenSource(TimeSpan.FromSeconds(Constants.Timeouts.GenericRequest.Seconds));
             bool AppliedSuccessfully = false;
             LegalIdentity? Identity = null;
+            bool InternalServerErrorRetried = false; // Track single retry on InternalServerErrorException
 
             while (!TimerCts.Token.IsCancellationRequested)
             {
@@ -161,6 +161,16 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
                         break;
                     }
                 }
+                catch (InternalServerErrorException Ex)
+                {
+                    if (!InternalServerErrorRetried)
+                    {
+                        InternalServerErrorRetried = true;
+                        ServiceRef.LogService.LogWarning("Internal server error when applying for identity. Retrying once.");
+                        continue; // Immediate retry
+                    }
+                    ServiceRef.LogService.LogException(Ex);
+                }
                 catch (Exception ex)
                 {
                     ServiceRef.LogService.LogException(ex);
@@ -168,22 +178,19 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 
                 try
                 {
-                    // Wait before retrying (if connection issues, etc.)
                     await Task.Delay(TimeSpan.FromSeconds(5), TimerCts.Token);
                 }
                 catch (TaskCanceledException)
                 {
-                    // Timer expired while waiting.
                     break;
                 }
             }
 
             if (!AppliedSuccessfully)
             {
-                // The 60-second timer expired without a successful application.
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
-					ServiceRef.Localizer[nameof(AppResources.PleaseTryAgain)]);
+                await ServiceRef.UiService.DisplayAlert(
+                    ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+                    ServiceRef.Localizer[nameof(AppResources.PleaseTryAgain)]);
                 await ServiceRef.TagProfile.ClearLegalIdentity();
                 GoToRegistrationStep(RegistrationStep.ValidatePhone);
             }
@@ -195,11 +202,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
             await Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Checks the current state of the identity application.
-        /// If the identity is approved, continues to the next registration step.
-        /// If it is discarded, clears the application and navigates back to validate phone.
-        /// </summary>
         private async Task CheckAndHandleIdentityApplicationAsync()
         {
             this.IsBusy = true;
@@ -230,9 +232,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
             this.IsBusy = false;
         }
 
-        /// <summary>
-        /// Creates the model for registering an identity.
-        /// </summary>
         private RegisterIdentityModel CreateRegisterModel()
         {
             RegisterIdentityModel IdentityModel = new();

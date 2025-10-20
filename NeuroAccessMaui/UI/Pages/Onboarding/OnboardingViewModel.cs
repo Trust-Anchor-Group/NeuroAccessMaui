@@ -380,9 +380,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			{
 				case OnboardingScenario.FullSetup:
 					if (HasIdentity)
-					{
 						return OnboardingStep.DefinePassword;
-					}
 					return OnboardingStep.Welcome;
 				case OnboardingScenario.ReverifyIdentity:
 					return OnboardingStep.Welcome;

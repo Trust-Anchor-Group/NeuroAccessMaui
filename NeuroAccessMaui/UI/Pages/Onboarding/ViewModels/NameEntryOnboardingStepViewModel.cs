@@ -13,6 +13,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 using Waher.Networking.XMPP;
+using Waher.Networking.XMPP.StanzaErrors; // Added for InternalServerErrorException
 
 namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 {
@@ -128,66 +129,91 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			this.SetIsBusy(true);
 			try
 			{
-				string? account = this.Username;
-				if (string.IsNullOrEmpty(account))
+				string? Account = this.Username;
+				if (string.IsNullOrEmpty(Account))
 					return;
 
-				string password = ServiceRef.CryptoService.CreateRandomPassword();
+				string Password = ServiceRef.CryptoService.CreateRandomPassword();
 
-				// Guard: Domain must be set before attempting account creation.
 				if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.Domain))
 				{
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.UnableToConnect)], ServiceRef.Localizer[nameof(AppResources.Ok)]);
 					return;
 				}
 
-				(string hostName, int portNumber, bool isIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain!);
+				(string HostName, int PortNumber, bool IsIpAddress) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain!);
 
-				async Task OnConnected(XmppClient client)
+				async Task OnConnected(XmppClient Client)
 				{
 					if (ServiceRef.TagProfile.NeedsUpdating())
-						await ServiceRef.XmppService.DiscoverServices(client);
+						await ServiceRef.XmppService.DiscoverServices(Client);
 
-					ServiceRef.TagProfile.SetAccount(account, client.PasswordHash, client.PasswordHashMethod);
+					ServiceRef.TagProfile.SetAccount(Account, Client.PasswordHash, Client.PasswordHashMethod);
 
 					if (this.CoordinatorViewModel is not null)
 						await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.CreateAccount);
 				}
 
-				(bool succeeded, string? errorMessage, string[]? alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(
-					ServiceRef.TagProfile.Domain!,
-					isIpAddress,
-					hostName,
-					portNumber,
-					account,
-					password,
-					Constants.LanguageCodes.Default,
-					ServiceRef.TagProfile.ApiKey ?? string.Empty,
-					ServiceRef.TagProfile.ApiSecret ?? string.Empty,
-					typeof(App).Assembly,
-					OnConnected);
-
-				if (alternatives is not null && alternatives.Length > 0)
+				int Attempt = 0;
+				bool InternalServerErrorRetried = false;
+				while (Attempt < 2)
 				{
-					Random rnd = new Random();
-					this.UsernameIsValid = false;
-					this.AlternativeName = alternatives[rnd.Next(0, alternatives.Length)];
-					this.LocalizedValidationMessage = ServiceRef.Localizer[nameof(AppResources.UsernameNameAlreadyTaken)];
-				}
-				else if (!succeeded && !string.IsNullOrEmpty(errorMessage))
-				{
-					await ServiceRef.UiService.DisplayAlert(
-						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], errorMessage,
-						ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				}
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
+					Attempt++;
+					try
+					{
+						(bool Succeeded, string? ErrorMessage, string[]? Alternatives) = await ServiceRef.XmppService.TryConnectAndCreateAccount(
+							ServiceRef.TagProfile.Domain!,
+							IsIpAddress,
+							HostName,
+							PortNumber,
+							Account,
+							Password,
+							Constants.LanguageCodes.Default,
+							ServiceRef.TagProfile.ApiKey ?? string.Empty,
+							ServiceRef.TagProfile.ApiSecret ?? string.Empty,
+							typeof(App).Assembly,
+							OnConnected);
 
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ex.Message,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+						if (Alternatives is not null && Alternatives.Length > 0)
+						{
+							Random Rnd = new Random();
+							this.UsernameIsValid = false;
+							this.AlternativeName = Alternatives[Rnd.Next(0, Alternatives.Length)];
+							this.LocalizedValidationMessage = ServiceRef.Localizer[nameof(AppResources.UsernameNameAlreadyTaken)];
+						}
+						else if (!Succeeded && !string.IsNullOrEmpty(ErrorMessage))
+						{
+							await ServiceRef.UiService.DisplayAlert(
+								ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ErrorMessage,
+								ServiceRef.Localizer[nameof(AppResources.Ok)]);
+						}
+
+						// Exit loop after first successful attempt or handled failure.
+						break;
+					}
+					catch (InternalServerErrorException Ex)
+					{
+						if (!InternalServerErrorRetried)
+						{
+							InternalServerErrorRetried = true;
+							ServiceRef.LogService.LogWarning("Internal server error during account creation. Retrying once.");
+							continue; // Immediate retry
+						}
+						ServiceRef.LogService.LogException(Ex);
+						await ServiceRef.UiService.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Ex.Message,
+							ServiceRef.Localizer[nameof(AppResources.Ok)]);
+						break;
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+						await ServiceRef.UiService.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Ex.Message,
+							ServiceRef.Localizer[nameof(AppResources.Ok)]);
+						break;
+					}
+				}
 			}
 			finally
 			{
@@ -316,7 +342,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			string randomDigits = new Random().Next(0, 10000).ToString("D4", CultureInfo.InvariantCulture);
 			result += randomDigits;
 
-			result = Regex.Replace(result, @"\.+", ".");
+			result = System.Text.RegularExpressions.Regex.Replace(result, @"\.+", ".");
 
 			return result;
 		}
