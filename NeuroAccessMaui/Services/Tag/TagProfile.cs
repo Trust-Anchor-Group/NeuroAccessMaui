@@ -1462,6 +1462,7 @@ namespace NeuroAccessMaui.Services.Tag
 
 		/// <summary>
 		/// Validates if the <paramref name="Password"/> is strong enough.
+		/// Variety rules are skipped if <see cref="Constants.Security.MinPasswordSymbolsFromDifferentClasses"/> is 0.
 		/// </summary>
 		/// <param name="Password">Password to validate.</param>
 		/// <returns>A <see cref="PasswordStrength"/> value indicating if the <paramref name="Password"/> is strong enough.</returns>
@@ -1469,7 +1470,8 @@ namespace NeuroAccessMaui.Services.Tag
 		{
 			if (Password is null)
 			{
-				return PasswordStrength.NotEnoughDigitsLettersSigns;
+				// Treat null as empty and only apply length rule (variety warnings suppressed when min=0)
+				return Constants.Security.MinPasswordSymbolsFromDifferentClasses == 0 ? PasswordStrength.TooShort : PasswordStrength.NotEnoughDigitsLettersSigns;
 			}
 
 			Password = Password.Normalize();
@@ -1482,6 +1484,10 @@ namespace NeuroAccessMaui.Services.Tag
 
 			int[] SlidingWindow = new int[Constants.Security.MaxPasswordSequencedSymbols + 1];
 			SlidingWindow.Initialize();
+
+			// Consecutive repeating symbol detection variables
+			int PreviousSymbol = -1;
+			int CurrentRunLength = 0;
 
 			for (int i = 0; i < Password.Length;)
 			{
@@ -1502,6 +1508,19 @@ namespace NeuroAccessMaui.Services.Tag
 				}
 				else
 					DistinctSymbolsCount.Add(Symbol, 1);
+
+				// Update consecutive run length
+				if (Symbol == PreviousSymbol)
+				{
+					CurrentRunLength++;
+					if (CurrentRunLength >= Constants.Security.MaxPasswordRepeatingRun)
+						return PasswordStrength.TooManyRepeatingSymbols;
+				}
+				else
+				{
+					PreviousSymbol = Symbol;
+					CurrentRunLength = 1;
+				}
 
 				for (int j = 0; j < SlidingWindow.Length - 1; j++)
 					SlidingWindow[j] = SlidingWindow[j + 1];
@@ -1558,21 +1577,23 @@ namespace NeuroAccessMaui.Services.Tag
 					return PasswordStrength.ContainsAddress;
 			}
 
-			const int MinDigitsCount = Constants.Security.MinPasswordSymbolsFromDifferentClasses;
-			const int MinLettersCount = Constants.Security.MinPasswordSymbolsFromDifferentClasses;
-			const int MinSignsCount = Constants.Security.MinPasswordSymbolsFromDifferentClasses;
+			int MinClassCount = Constants.Security.MinPasswordSymbolsFromDifferentClasses;
 
-			if (DigitsCount < MinDigitsCount && LettersCount < MinLettersCount && SignsCount < MinSignsCount)
-				return PasswordStrength.NotEnoughDigitsLettersSigns;
+			// Skip variety warnings entirely if configured minimum is 0.
+			if (MinClassCount > 0)
+			{
+				if (DigitsCount < MinClassCount && LettersCount < MinClassCount && SignsCount < MinClassCount)
+					return PasswordStrength.NotEnoughDigitsLettersSigns;
 
-			if (DigitsCount >= MinDigitsCount && LettersCount < MinLettersCount && SignsCount < MinSignsCount)
-				return PasswordStrength.NotEnoughLettersOrSigns;
+				if (DigitsCount >= MinClassCount && LettersCount < MinClassCount && SignsCount < MinClassCount)
+					return PasswordStrength.NotEnoughLettersOrSigns;
 
-			if (DigitsCount < MinDigitsCount && LettersCount >= MinLettersCount && SignsCount < MinSignsCount)
-				return PasswordStrength.NotEnoughDigitsOrSigns;
+				if (DigitsCount < MinClassCount && LettersCount >= MinClassCount && SignsCount < MinClassCount)
+					return PasswordStrength.NotEnoughDigitsOrSigns;
 
-			if (DigitsCount < MinDigitsCount && LettersCount < MinLettersCount && SignsCount >= MinSignsCount)
-				return PasswordStrength.NotEnoughLettersOrDigits;
+				if (DigitsCount < MinClassCount && LettersCount < MinClassCount && SignsCount >= MinClassCount)
+					return PasswordStrength.NotEnoughLettersOrDigits;
+			}
 
 			if (DigitsCount + LettersCount + SignsCount < Constants.Security.MinPasswordLength)
 				return PasswordStrength.TooShort;

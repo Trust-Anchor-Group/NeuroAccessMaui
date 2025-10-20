@@ -72,6 +72,11 @@ namespace NeuroAccessMaui
 			/// Maximum number of seconds screen recording is allowed.
 			/// </summary>
 			public const int MaxScreenRecordingTimeSeconds = 60 * 60;
+
+			/// <summary>
+			/// Maximum allowed consecutive repeating identical symbols before blocking
+			/// </summary>
+			public const int MaxPasswordRepeatingRun = 6;
 		}
 
 		/// <summary>

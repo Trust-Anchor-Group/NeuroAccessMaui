@@ -3104,4 +3104,7 @@
   <data name="IdentityRejected" xml:space="preserve">
     <value>Identity rejected. You can return to the applications page and update your information to try again.</value>
   </data>
+  <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve"> 
+    <value>A PIN must not contain a consecutive run of {0} identical symbols.</value> 
+  </data>
 </root>

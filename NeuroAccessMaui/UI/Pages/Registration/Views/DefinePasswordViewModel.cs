@@ -181,20 +181,19 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			return PasswordStrength switch
 			{
-				PasswordStrength.NotEnoughDigitsLettersSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughDigitsLettersSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
-
-				PasswordStrength.NotEnoughDigitsOrSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughDigitsOrSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
-				PasswordStrength.NotEnoughLettersOrDigits => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughLettersOrDigits), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
-				PasswordStrength.NotEnoughLettersOrSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughLettersOrSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
-				PasswordStrength.TooManyIdenticalSymbols => ServiceRef.Localizer[nameof(AppResources.PasswordWithTooManyIdenticalSymbols), Constants.Security.MaxPasswordIdenticalSymbols],
-				PasswordStrength.TooManySequencedSymbols => ServiceRef.Localizer[nameof(AppResources.PasswordWithTooManySequencedSymbols), Constants.Security.MaxPasswordSequencedSymbols],
-				PasswordStrength.TooShort => ServiceRef.Localizer[nameof(AppResources.PasswordTooShort), Constants.Security.MinPasswordLength],
-
-				PasswordStrength.ContainsAddress => ServiceRef.Localizer[nameof(AppResources.PasswordContainsAddress)],
-				PasswordStrength.ContainsName => ServiceRef.Localizer[nameof(AppResources.PasswordContainsName)],
-				PasswordStrength.ContainsPersonalNumber => ServiceRef.Localizer[nameof(AppResources.PasswordContainsPersonalNumber)],
-				PasswordStrength.ContainsPhoneNumber => ServiceRef.Localizer[nameof(AppResources.PasswordContainsPhoneNumber)],
-				PasswordStrength.ContainsEMail => ServiceRef.Localizer[nameof(AppResources.PasswordContainsEMail)],
+				PasswordStrength.NotEnoughDigitsLettersSigns => ServiceRef.Localizer["PasswordWithNotEnoughDigitsLettersSigns", Constants.Security.MinPasswordSymbolsFromDifferentClasses],
+				PasswordStrength.NotEnoughDigitsOrSigns => ServiceRef.Localizer["PasswordWithNotEnoughDigitsOrSigns", Constants.Security.MinPasswordSymbolsFromDifferentClasses],
+				PasswordStrength.NotEnoughLettersOrDigits => ServiceRef.Localizer["PasswordWithNotEnoughLettersOrDigits", Constants.Security.MinPasswordSymbolsFromDifferentClasses],
+				PasswordStrength.NotEnoughLettersOrSigns => ServiceRef.Localizer["PasswordWithNotEnoughLettersOrSigns", Constants.Security.MinPasswordSymbolsFromDifferentClasses],
+				PasswordStrength.TooManyIdenticalSymbols => ServiceRef.Localizer["PasswordWithTooManyIdenticalSymbols", Constants.Security.MaxPasswordIdenticalSymbols],
+				PasswordStrength.TooManySequencedSymbols => ServiceRef.Localizer["PasswordWithTooManySequencedSymbols", Constants.Security.MaxPasswordSequencedSymbols],
+				PasswordStrength.TooManyRepeatingSymbols => ServiceRef.Localizer["PasswordWithTooManyRepeatingSymbols", Constants.Security.MaxPasswordRepeatingRun],
+				PasswordStrength.TooShort => ServiceRef.Localizer["PasswordTooShort", Constants.Security.MinPasswordLength],
+				PasswordStrength.ContainsAddress => ServiceRef.Localizer["PasswordContainsAddress"],
+				PasswordStrength.ContainsName => ServiceRef.Localizer["PasswordContainsName"],
+				PasswordStrength.ContainsPersonalNumber => ServiceRef.Localizer["PasswordContainsPersonalNumber"],
+				PasswordStrength.ContainsPhoneNumber => ServiceRef.Localizer["PasswordContainsPhoneNumber"],
+				PasswordStrength.ContainsEMail => ServiceRef.Localizer["PasswordContainsEMail"],
 				PasswordStrength.Strong => string.Empty,
 				_ => throw new NotImplementedException()
 			};

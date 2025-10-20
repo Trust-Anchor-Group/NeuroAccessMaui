@@ -376,6 +376,11 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>AppResources.resx</DependentUpon>
 		</Compile>-->
+		<Compile Update="Resources\Languages\AppResources.Designer.cs">
+		  <DesignTime>True</DesignTime>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>AppResources.resx</DependentUpon>
+		</Compile>
 		<Compile Update="Resources\Styles\Dark.xaml.cs">
 			<DependentUpon>Dark.xaml</DependentUpon>
 		</Compile>
@@ -534,16 +539,10 @@
 	<!-- Windows target -->
 	<ItemGroup>
 		<EmbeddedResource Update="Resources\Languages\AppResources.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
+			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
 			<CustomToolNamespace>NeuroAccessMaui.Resources.Languages</CustomToolNamespace>
 		</EmbeddedResource>
-
-		<Compile Update="Resources\Languages\AppResources.Designer.cs">
-			<DesignTime>true</DesignTime>
-			<AutoGen>true</AutoGen>
-			<DependentUpon>AppResources.resx</DependentUpon>
-		</Compile>
 	</ItemGroup>
 
 	<!-- Ensure resource generation runs when building via CLI/VS Code -->

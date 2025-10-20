@@ -42,6 +42,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(PasswordsMatch))]
+		[NotifyPropertyChangedFor(nameof(IsPassword1NotValid))] // Added notification so visibility updates on text changes
 		private string? passwordText1;
 
 		[ObservableProperty]
@@ -153,7 +154,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 		public string LocalizedValidationError => GetLocalizedValidationError(this.PasswordStrength);
 
-		public static string GetLocalizedValidationError(PasswordStrength PasswordStrength) => PasswordStrength switch
+		public static string GetLocalizedValidationError(PasswordStrength Strength) => Strength switch
 		{
 			PasswordStrength.NotEnoughDigitsLettersSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughDigitsLettersSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
 			PasswordStrength.NotEnoughDigitsOrSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughDigitsOrSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
@@ -161,6 +162,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			PasswordStrength.NotEnoughLettersOrSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughLettersOrSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
 			PasswordStrength.TooManyIdenticalSymbols => ServiceRef.Localizer[nameof(AppResources.PasswordWithTooManyIdenticalSymbols), Constants.Security.MaxPasswordIdenticalSymbols],
 			PasswordStrength.TooManySequencedSymbols => ServiceRef.Localizer[nameof(AppResources.PasswordWithTooManySequencedSymbols), Constants.Security.MaxPasswordSequencedSymbols],
+			PasswordStrength.TooManyRepeatingSymbols => ServiceRef.Localizer[nameof(AppResources.PasswordWithTooManyRepeatingSymbols), Constants.Security.MaxPasswordRepeatingRun],
 			PasswordStrength.TooShort => ServiceRef.Localizer[nameof(AppResources.PasswordTooShort), Constants.Security.MinPasswordLength],
 			PasswordStrength.ContainsAddress => ServiceRef.Localizer[nameof(AppResources.PasswordContainsAddress)],
 			PasswordStrength.ContainsName => ServiceRef.Localizer[nameof(AppResources.PasswordContainsName)],
@@ -220,6 +222,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				case PasswordStrength.TooShort:
 				case PasswordStrength.TooManyIdenticalSymbols:
 				case PasswordStrength.TooManySequencedSymbols:
+				case PasswordStrength.TooManyRepeatingSymbols:
 				case PasswordStrength.ContainsAddress:
 				case PasswordStrength.ContainsName:
 				case PasswordStrength.ContainsPersonalNumber:

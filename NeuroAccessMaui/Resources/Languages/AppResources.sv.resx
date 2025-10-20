@@ -3104,4 +3104,7 @@
   <data name="IdentityRejected" xml:space="preserve">
     <value>Identitet avslogs. Du kan gå tillbaka till sidan för ansökningar och uppdatera din information för att försöka igen.</value>
   </data>
+  <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve">
+    <value>En PIN-kod får inte innehålla en följd av {0} identiska symboler.</value>
+  </data>
 </root>
