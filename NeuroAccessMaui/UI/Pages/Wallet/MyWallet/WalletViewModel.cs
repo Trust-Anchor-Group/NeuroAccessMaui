@@ -110,6 +110,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		{
 			await base.OnAppearing();
 			// Place for page appearing logic if needed.
+
+			this.GetBalanceTask.Load(this.LoadBalanceAsync);
 		}
 
 		/// <inheritdoc/>

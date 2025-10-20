@@ -9,6 +9,7 @@ using Microsoft.Maui.Graphics; // Added for Colors
 
 // Alias to avoid conflict with NeuroAccessMaui.UI.Pages.Wallet.AccountEvent namespace
 using AccountEventModel = EDaler.AccountEvent;
+using NeuroAccessMaui.Resources.Languages;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 {
@@ -116,14 +117,31 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 			// Events are expected newest->oldest. Maintain order in UI newest first.
 			foreach (AccountEventModel Evt in eventsBatch)
 			{
+				string? Type = null;
 				string Remote = Evt.Remote;
 				if (!FriendlyNames.TryGetValue(Remote, out string? Friendly))
 				{
 					Friendly = await ContactInfo.GetFriendlyName(Remote);
+
+					string[] FriendlyParts = Friendly.Split("@");
+
+					if (FriendlyParts.Length == 1)
+					{
+						if (Evt.Change > 0)
+							Type = ServiceRef.Localizer[nameof(AppResources.BalanceTopUp)].Value;
+						else
+							Type = ServiceRef.Localizer[nameof(AppResources.Transaction)].Value;
+					}
+					else
+					{
+						Type = ServiceRef.Localizer[nameof(AppResources.CreditTransfer)].Value;
+					}
+
+					Friendly = FriendlyParts[0];
 					FriendlyNames[Remote] = Friendly;
 				}
 
-				TransactionEventItem Item = new(Evt, Friendly, CurrencyLocal);
+				TransactionEventItem Item = new(Evt, Friendly, CurrencyLocal, Type);
 				// Insert at end since service provides descending blocks already preserving global order.
 				this.Events.Add(Item);
 				// Store in backing collection

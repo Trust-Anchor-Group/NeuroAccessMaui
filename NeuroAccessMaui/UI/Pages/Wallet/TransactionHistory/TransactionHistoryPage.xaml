@@ -47,20 +47,23 @@
 							</BindableLayout.EmptyView>
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="viewmodel:TransactionEventItem">
-									<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="0">
-										<Grid ColumnDefinitions="*,auto" RowDefinitions="auto,auto, auto" Padding="16" RowSpacing="{DynamicResource SmallSpacing}">
-											<Label Grid.Column="0" Grid.Row="0" Text="{Binding FriendlyName}" Style="{DynamicResource Brand2LabelS}" FontAttributes="Bold" LineBreakMode="TailTruncation" />
-											<Label Grid.Column="1" Grid.Row="0" Text="{Binding TimestampStr}" Style="{DynamicResource Brand2LabelSSecondary}" VerticalTextAlignment="Center" FontFamily="SpaceGroteskRegular" />
-											<Label Grid.Column="1" Grid.Row="2" HorizontalTextAlignment="End" VerticalTextAlignment="Center" TextColor="{Binding ChangeColor}" FontSize="18" FontAttributes="Bold" >
-												<Label.FormattedText>
-													<FormattedString>
-														<Span Text="{Binding Change}" FontSize="18" FontAttributes="Bold" />
-														<Span Text=" NC" FontSize="18" FontAttributes="Bold" />
-													</FormattedString>
-												</Label.FormattedText>
-											</Label>
-										</Grid>
-									</Border>
+									<controls:TemplatedButton Command="{Binding OpenDetailsCommand}">
+										<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="0">
+											<Grid ColumnDefinitions="auto, *" RowDefinitions="auto,auto" Padding="16" RowSpacing="4" ColumnSpacing="8">
+												<Label Grid.Column="0" Text="{Binding TransactionType}" Style="{DynamicResource Brand2LabelSSecondary}"/>
+												<Label Grid.Column="1" Grid.Row="0" Text="{Binding FriendlyName}" Style="{DynamicResource Brand2LabelS}" FontAttributes="Bold" LineBreakMode="TailTruncation" HorizontalOptions="End" />
+												<Label Grid.Column="0" Grid.Row="1" Text="{Binding TimestampStr}" Style="{DynamicResource Brand2LabelSSecondary}"/>
+												<Label Grid.Column="1" Grid.Row="1" HorizontalTextAlignment="End" TextColor="{Binding ChangeColor}" LineBreakMode="TailTruncation" >
+													<Label.FormattedText>
+														<FormattedString>
+															<Span Text="{Binding Change}" FontSize="18" FontAttributes="Bold" />
+															<Span Text=" NC" FontSize="18" FontAttributes="Bold" />
+														</FormattedString>
+													</Label.FormattedText>
+												</Label>
+											</Grid>
+										</Border>
+									</controls:TemplatedButton>
 								</DataTemplate>
 							</BindableLayout.ItemTemplate>
 						</VerticalStackLayout>

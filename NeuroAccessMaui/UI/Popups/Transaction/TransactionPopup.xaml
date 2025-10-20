@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Transaction.TransactionPopup"
+							x:DataType="viewmodel:TransactionPopupViewModel"
+							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+							xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Transaction"
+							xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+							xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
+
+	<mopups:PopupPage.Animation>
+		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
+											PositionIn="Center" PositionOut="Center" />
+	</mopups:PopupPage.Animation>
+
+	<Grid
+		Style="{DynamicResource PopupGrid}">
+
+		<Border
+			WidthRequest="{Binding ViewWidthRequest}"
+			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
+			Style="{DynamicResource PopupBorder}">
+
+			<ScrollView VerticalOptions="Center">
+				<VerticalStackLayout>
+					<Label Style="{DynamicResource PageTitleLabel}" Text="Transaction Details"/>
+					<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="Recipient"/>
+					<Border Style="{DynamicResource BorderSubSet}">
+						<Grid ColumnDefinitions="auto, *, auto, auto"
+							  RowDefinitions="auto, auto">
+
+							<Border HeightRequest="48" WidthRequest="48" StrokeShape="RoundRectangle 24" Grid.RowSpan="2" Margin="0,0,8,0">
+								<Border.Triggers>
+									<DataTrigger TargetType="Border" Binding="{Binding IsFriend}" Value="True">
+										<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
+									</DataTrigger>
+									<DataTrigger TargetType="Border" Binding="{Binding IsFriend}" Value="False">
+										<Setter Property="Background" Value="{DynamicResource ButtonNeutralNavButtonsOnContainerbgActiveWL}" />
+									</DataTrigger>
+								</Border.Triggers>
+								<controls:SvgView Source="person.svg"
+											  HorizontalOptions="Center" VerticalOptions="Center"
+											  HeightRequest="32" WidthRequest="32">
+									<controls:SvgView.Triggers>
+										<DataTrigger TargetType="controls:SvgView" Binding="{Binding IsFriend}" Value="True">
+											<Setter Property="TintColor" Value="{DynamicResource TnPSuccessContentWL}" />
+										</DataTrigger>
+										<DataTrigger TargetType="controls:SvgView" Binding="{Binding IsFriend}" Value="False">
+											<Setter Property="TintColor" Value="{DynamicResource ContentSecondaryWL}" />
+										</DataTrigger>
+									</controls:SvgView.Triggers>
+								</controls:SvgView>
+							</Border>
+
+							<Label Grid.Column="1" Style="{DynamicResource Brand2LabelS}" Text="Jonathan Smith" LineBreakMode="TailTruncation"/>
+							<Label Grid.Column="1" Grid.Row="1" Style="{DynamicResource Brand2LabelS}" TextColor="Red" Text="Unfamiliar Contact" IsVisible="{Binding IsFriend}"/>
+							
+							<controls:SvgButton SvgSource="chat.svg" Style="{DynamicResource IconButtonOnBackground}"
+												VerticalOptions="Center"
+												Grid.Column="2"
+												Grid.RowSpan="2"/>
+
+							<controls:SvgButton SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
+												VerticalOptions="Center"
+												Grid.Column="3"
+												Grid.RowSpan="2"/> 
+						</Grid>
+					</Border>
+				</VerticalStackLayout>
+			</ScrollView>
+		</Border>
+	</Grid>
+</base:BasePopup>

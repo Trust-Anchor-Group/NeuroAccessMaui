@@ -498,6 +498,9 @@
 		<Compile Update="UI\Popups\Permission\ShowPermissionPopup.xaml.cs">
 			<DependentUpon>ShowPermissionPopup.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Popups\Transaction\TransactionPopup.xaml.cs">
+		  <DependentUpon>TransactionPopup.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -755,6 +758,9 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\QR\ShowQRPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Transaction\TransactionPupup.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Settings\SelectLanguagePopup.xaml">

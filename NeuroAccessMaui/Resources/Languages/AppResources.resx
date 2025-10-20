@@ -3131,4 +3131,13 @@
   <data name="NoTransactionsYet" xml:space="preserve">
     <value>No transactions yet</value>
   </data>
+  <data name="Transaction" xml:space="preserve">
+    <value>Transaction</value>
+  </data>
+  <data name="CreditTransfer" xml:space="preserve">
+    <value>Credit Transfer</value>
+  </data>
+  <data name="BalanceTopUp" xml:space="preserve">
+    <value>Balance Top-Up</value>
+  </data>
 </root>
