@@ -51,6 +51,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using Waher.Events;
+using NeuroAccessMaui.UI.Pages.Startup;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -77,6 +78,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		internal static void RegisterRoutes()
 		{
+			Routing.RegisterRoute(nameof(LoadingPage), typeof(LoadingPage));
+
 			Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
 			Routing.RegisterRoute(nameof(RegistrationPage), typeof(RegistrationPage));
 			Routing.RegisterRoute(nameof(OnboardingPage), typeof(OnboardingPage));
