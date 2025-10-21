@@ -43,6 +43,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(PasswordsMatch))]
 		[NotifyPropertyChangedFor(nameof(IsPassword1NotValid))] // Added notification so visibility updates on text changes
+		[NotifyPropertyChangedFor(nameof(LocalizedValidationError))] // Update validation message on each text change
 		private string? passwordText1;
 
 		[ObservableProperty]
