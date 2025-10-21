@@ -3126,9 +3126,48 @@
     <value>Totalt ut</value>
   </data>
   <data name="Net" xml:space="preserve">
-    <value>Nettobelopp</value>
+    <value>Netto</value>
   </data>
   <data name="NoTransactionsYet" xml:space="preserve">
     <value>Inga transaktioner ännu</value>
+  </data>
+  <data name="Transaction" xml:space="preserve">
+    <value>Transaktion</value>
+  </data>
+  <data name="CreditTransfer" xml:space="preserve">
+    <value>Kreditöverföring</value>
+  </data>
+  <data name="BalanceTopUp" xml:space="preserve">
+    <value>Saldoinsättning</value>
+  </data>
+  <data name="TransactionDetails" xml:space="preserve">
+    <value>Transaktionsdetaljer</value>
+  </data>
+  <data name="Recipient" xml:space="preserve">
+    <value>Mottagare</value>
+  </data>
+  <data name="NotInContacts" xml:space="preserve">
+    <value>Inte i kontakter</value>
+  </data>
+  <data name="FullIdentifier" xml:space="preserve">
+    <value>Fullständig identifierare</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Transaktionstyp</value>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Transaktionsdatum</value>
+  </data>
+  <data name="TransactionStatus" xml:space="preserve">
+    <value>Transaktionsstatus</value>
+  </data>
+  <data name="ReservedNoColon" xml:space="preserve">
+    <value>Reserverad</value>
+  </data>
+  <data name="Successful" xml:space="preserve">
+    <value>Lyckad</value>
+  </data>
+  <data name="TransactionIDNoColon" xml:space="preserve">
+    <value>Transaktions-ID</value>
   </data>
 </root>

@@ -3120,15 +3120,54 @@
     <value>Resumo</value>
   </data>
   <data name="TotalIn" xml:space="preserve">
-    <value>Total de entradas</value>
+    <value>Total de entrada</value>
   </data>
   <data name="TotalOut" xml:space="preserve">
-    <value>Total de saídas</value>
+    <value>Total de saída</value>
   </data>
   <data name="Net" xml:space="preserve">
     <value>Líquido</value>
   </data>
   <data name="NoTransactionsYet" xml:space="preserve">
-    <value>Sem transações ainda</value>
+    <value>Ainda não há transações</value>
+  </data>
+  <data name="Transaction" xml:space="preserve">
+    <value>Transação</value>
+  </data>
+  <data name="CreditTransfer" xml:space="preserve">
+    <value>Transferência de crédito</value>
+  </data>
+  <data name="BalanceTopUp" xml:space="preserve">
+    <value>Recarga de saldo</value>
+  </data>
+  <data name="TransactionDetails" xml:space="preserve">
+    <value>Detalhes da transação</value>
+  </data>
+  <data name="Recipient" xml:space="preserve">
+    <value>Destinatário</value>
+  </data>
+  <data name="NotInContacts" xml:space="preserve">
+    <value>Não está nos contatos</value>
+  </data>
+  <data name="FullIdentifier" xml:space="preserve">
+    <value>Identificador completo</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Tipo de transação</value>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Data da transação</value>
+  </data>
+  <data name="TransactionStatus" xml:space="preserve">
+    <value>Status da transação</value>
+  </data>
+  <data name="ReservedNoColon" xml:space="preserve">
+    <value>Reservado</value>
+  </data>
+  <data name="Successful" xml:space="preserve">
+    <value>Bem-sucedida</value>
+  </data>
+  <data name="TransactionIDNoColon" xml:space="preserve">
+    <value>ID da transação</value>
   </data>
 </root>
