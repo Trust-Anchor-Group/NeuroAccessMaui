@@ -20,6 +20,12 @@
 		<Setter Property="FontSize" Value="16"/>
 	</Style>
 
+	<Style x:Key="Brand2BodyS" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskRegular"/>
+		<Setter Property="FontSize" Value="16"/>
+	</Style>
+
 	<Style x:Key="Brand2LabelSSecondary" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
 		<Setter Property="FontFamily" Value="SpaceGroteskRegular"/>

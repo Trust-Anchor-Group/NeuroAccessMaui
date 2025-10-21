@@ -4,6 +4,7 @@ using EDaler;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Popups.Transaction;
+using Waher.Networking.XMPP;
 using AccountEventModel = EDaler.AccountEvent;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
@@ -60,11 +61,35 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 				else
 					TimeString = Dt.ToString("m", CultureInfo.CurrentCulture);
 				return TimeString;
+				}
+				}
+
+		public string ReservedSuffix => this.accountEvent.Reserved == 0 ? string.Empty : "+" + NeuroAccessMaui.UI.Converters.MoneyToString.ToString(this.accountEvent.Reserved);
+		/// <summary>If any amount is reserved.</summary>
+		public bool IsReserved => this.accountEvent.Reserved != 0;
+		/// <summary>True if remote party appears in roster with subscription state To or Both.</summary>
+		/// 
+		public bool IsContact
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.Remote))
+					return false;
+				try
+				{
+					RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.Remote);
+					return Item is not null;
+				}
+				catch
+				{
+					return false;
+				}
 			}
 		}
 
-		public string ReservedSuffix => this.accountEvent.Reserved == 0 ? string.Empty : "+" + NeuroAccessMaui.UI.Converters.MoneyToString.ToString(this.accountEvent.Reserved);
-
+		/// <summary>
+		/// Opens transaction details popup.
+		/// </summary>
 		[RelayCommand]
 		public async Task OpenDetailsAsync()
 		{

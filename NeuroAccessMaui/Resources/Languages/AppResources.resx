@@ -3140,4 +3140,34 @@
   <data name="BalanceTopUp" xml:space="preserve">
     <value>Balance Top-Up</value>
   </data>
+  <data name="TransactionDetails" xml:space="preserve">
+    <value>Transaction Details</value>
+  </data>
+  <data name="Recipient" xml:space="preserve">
+    <value>Recipient</value>
+  </data>
+  <data name="NotInContacts" xml:space="preserve">
+    <value>Not in contacts</value>
+  </data>
+  <data name="FullIdentifier" xml:space="preserve">
+    <value>Full identifier</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Transaction Type</value>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Transaction Date</value>
+  </data>
+  <data name="TransactionStatus" xml:space="preserve">
+    <value>Transaction Status</value>
+  </data>
+  <data name="ReservedNoColon" xml:space="preserve">
+    <value>Reserved</value>
+  </data>
+  <data name="Successful" xml:space="preserve">
+    <value>Successful</value> 
+  </data>
+  <data name="TransactionIDNoColon" xml:space="preserve">
+    <value>Transaction ID</value>
+  </data>
 </root>
