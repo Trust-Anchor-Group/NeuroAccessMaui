@@ -29,28 +29,13 @@ namespace NeuroAccessMaui.Test
         private readonly Grid popupOverlay;
         private readonly BoxView popupBackground;
         private readonly Grid popupHost;
-        private readonly Stack<PopupState> popupStack = new();
+        private PopupVisualState? currentPopupState;
         private readonly Grid toastLayer;
         private View? activeToast;
         private ToastPlacement activeToastPlacement = ToastPlacement.Top;
         private ContentView? currentScreen;
         public event EventHandler? PopupBackgroundTapped;
         public event EventHandler? PopupBackRequested;
-
-        private class PopupState
-        {
-            public PopupState(ContentView view, bool isBlocking, bool disableBackgroundTap, double overlayOpacity)
-            {
-                this.View = view;
-                this.IsBlocking = isBlocking;
-                this.DisableBackgroundTap = disableBackgroundTap;
-                this.OverlayOpacity = overlayOpacity;
-            }
-            public ContentView View { get; }
-            public bool IsBlocking { get; }
-            public bool DisableBackgroundTap { get; }
-            public double OverlayOpacity { get; }
-        }
 
         /// <summary>
         /// Initializes a new instance of <see cref="CustomShell"/>.
@@ -120,11 +105,11 @@ namespace NeuroAccessMaui.Test
 
         private void OnPopupBackgroundTapped(object? sender, EventArgs e)
         {
-            if (this.popupStack.Count == 0)
+            if (this.currentPopupState is null)
                 return;
-            PopupState top = this.popupStack.Peek();
-            if (!top.DisableBackgroundTap)
-                this.PopupBackgroundTapped?.Invoke(this, EventArgs.Empty);
+            if (!this.currentPopupState.AllowBackgroundTap)
+                return;
+            this.PopupBackgroundTapped?.Invoke(this, EventArgs.Empty);
         }
 
         public BaseContentPage? CurrentPage => this.currentScreen as BaseContentPage;
@@ -175,95 +160,63 @@ namespace NeuroAccessMaui.Test
             this.currentScreen = screen;
         }
 
-        public Task ShowPopup(ContentView popup, PopupTransition transition = PopupTransition.Fade, double overlayOpacity = 0.7)
-            => this.ShowPopupInternal(popup, transition, overlayOpacity, isBlocking: false, disableBackgroundTap: false);
-
-        private async Task ShowPopupInternal(ContentView popup, PopupTransition transition, double overlayOpacity, bool isBlocking, bool disableBackgroundTap)
+        public async Task ShowPopup(ContentView popup, PopupTransition transition, PopupVisualState visualState)
         {
             ArgumentNullException.ThrowIfNull(popup);
-            double targetOpacity = overlayOpacity;
+            ArgumentNullException.ThrowIfNull(visualState);
 
-            if (!this.popupOverlay.IsVisible)
+            bool overlayWasVisible = this.popupOverlay.IsVisible;
+            if (!overlayWasVisible)
             {
                 this.popupOverlay.IsVisible = true;
                 this.popupBackground.Opacity = 0;
+            }
+
+            this.ApplyOverlayInteractionState(visualState);
+
+            double targetOpacity = visualState.OverlayOpacity;
+            double currentOpacity = this.popupBackground.Opacity;
+            if (!overlayWasVisible)
+            {
                 await this.popupBackground.FadeTo(targetOpacity, 150, Easing.CubicOut);
             }
-            else
+            else if (Math.Abs(currentOpacity - targetOpacity) > 0.01)
             {
-                double currentOpacity = this.popupBackground.Opacity;
-                if (Math.Abs(currentOpacity - targetOpacity) > 0.01)
-                    await this.popupBackground.FadeTo(targetOpacity, 120, Easing.CubicOut);
+                await this.popupBackground.FadeTo(targetOpacity, 120, Easing.CubicOut);
             }
 
-            popup.Opacity = 1;
-            popup.Scale = 1;
-            popup.TranslationY = 0;
-            popup.ZIndex = this.popupStack.Count + 1;
             this.popupHost.Children.Add(popup);
-            this.popupStack.Push(new PopupState(popup, isBlocking, disableBackgroundTap, overlayOpacity));
+            popup.ZIndex = this.popupHost.Children.Count;
 
-            if (transition == PopupTransition.Fade)
-            {
-                popup.Opacity = 0;
-                await popup.FadeTo(1, 150, Easing.CubicOut);
-            }
-            else if (transition == PopupTransition.Scale)
-            {
-                popup.Scale = 0.9;
-                popup.Opacity = 0;
-                Task fadeTask = popup.FadeTo(1, 200, Easing.CubicOut);
-                Task scaleTask = popup.ScaleTo(1, 200, Easing.CubicOut);
-                await Task.WhenAll(fadeTask, scaleTask);
-            }
-            else if (transition == PopupTransition.SlideUp)
-            {
-                double fromY = this.Height > 0 ? this.Height : 400;
-                popup.TranslationY = fromY * 0.5;
-                popup.Opacity = 0;
-                Task fadeTask = popup.FadeTo(1, 200, Easing.CubicOut);
-                Task translateTask = popup.TranslateTo(0, 0, 200, Easing.CubicOut);
-                await Task.WhenAll(fadeTask, translateTask);
-            }
+            await this.RunShowAnimationAsync(popup, transition);
+
+            this.currentPopupState = visualState;
         }
 
-        public async Task HideTopPopup(PopupTransition transition = PopupTransition.Fade)
+        public async Task HidePopup(ContentView popup, PopupTransition transition, PopupVisualState? nextVisualState)
         {
-            if (this.popupStack.Count == 0)
-                return;
-            PopupState state = this.popupStack.Pop();
-            ContentView topPopup = state.View;
+            ArgumentNullException.ThrowIfNull(popup);
 
-            if (transition == PopupTransition.Fade)
-            {
-                await topPopup.FadeTo(0, 150, Easing.CubicIn);
-            }
-            else if (transition == PopupTransition.Scale)
-            {
-                Task fadeTask = topPopup.FadeTo(0, 150, Easing.CubicIn);
-                Task scaleTask = topPopup.ScaleTo(0.9, 150, Easing.CubicIn);
-                await Task.WhenAll(fadeTask, scaleTask);
-            }
-            else if (transition == PopupTransition.SlideUp)
-            {
-                Task fadeTask = topPopup.FadeTo(0, 150, Easing.CubicIn);
-                Task translateTask = topPopup.TranslateTo(0, 50, 150, Easing.CubicIn);
-                await Task.WhenAll(fadeTask, translateTask);
-            }
-            this.popupHost.Children.Remove(topPopup);
+            await this.RunHideAnimationAsync(popup, transition);
+            this.popupHost.Children.Remove(popup);
 
-            if (this.popupStack.Count == 0)
+            if (nextVisualState is null)
             {
                 await this.popupBackground.FadeTo(0, 150, Easing.CubicOut);
                 this.popupOverlay.IsVisible = false;
+                this.popupOverlay.InputTransparent = true;
+                this.currentPopupState = null;
             }
             else
             {
-                PopupState newTop = this.popupStack.Peek();
-                double desiredOpacity = newTop.OverlayOpacity;
+                this.ApplyOverlayInteractionState(nextVisualState);
+                double targetOpacity = nextVisualState.OverlayOpacity;
                 double currentOpacity = this.popupBackground.Opacity;
-                if (Math.Abs(currentOpacity - desiredOpacity) > 0.01)
-                    await this.popupBackground.FadeTo(desiredOpacity, 120, Easing.CubicOut);
+                if (!this.popupOverlay.IsVisible)
+                    this.popupOverlay.IsVisible = true;
+                if (Math.Abs(currentOpacity - targetOpacity) > 0.01)
+                    await this.popupBackground.FadeTo(targetOpacity, 120, Easing.CubicOut);
+                this.currentPopupState = nextVisualState;
             }
         }
 
@@ -334,6 +287,73 @@ namespace NeuroAccessMaui.Test
                 this.toastLayer.IsVisible = false;
         }
 
+        private async Task RunShowAnimationAsync(View popup, PopupTransition transition)
+        {
+            if (transition == PopupTransition.None)
+            {
+                popup.Opacity = 1;
+                popup.Scale = 1;
+                popup.TranslationY = 0;
+                return;
+            }
+            if (transition == PopupTransition.Fade)
+            {
+                popup.Opacity = 0;
+                await popup.FadeTo(1, 150, Easing.CubicOut);
+                return;
+            }
+            if (transition == PopupTransition.Scale)
+            {
+                popup.Scale = 0.9;
+                popup.Opacity = 0;
+                Task fadeTask = popup.FadeTo(1, 200, Easing.CubicOut);
+                Task scaleTask = popup.ScaleTo(1, 200, Easing.CubicOut);
+                await Task.WhenAll(fadeTask, scaleTask);
+                return;
+            }
+            if (transition == PopupTransition.SlideUp)
+            {
+                double fromY = this.Height > 0 ? this.Height : 400;
+                popup.TranslationY = fromY * 0.5;
+                popup.Opacity = 0;
+                Task fadeTask = popup.FadeTo(1, 200, Easing.CubicOut);
+                Task translateTask = popup.TranslateTo(0, 0, 200, Easing.CubicOut);
+                await Task.WhenAll(fadeTask, translateTask);
+            }
+        }
+
+        private async Task RunHideAnimationAsync(View popup, PopupTransition transition)
+        {
+            if (transition == PopupTransition.None)
+            {
+                popup.Opacity = 0;
+                return;
+            }
+            if (transition == PopupTransition.Fade)
+            {
+                await popup.FadeTo(0, 150, Easing.CubicIn);
+                return;
+            }
+            if (transition == PopupTransition.Scale)
+            {
+                Task fadeTask = popup.FadeTo(0, 150, Easing.CubicIn);
+                Task scaleTask = popup.ScaleTo(0.9, 150, Easing.CubicIn);
+                await Task.WhenAll(fadeTask, scaleTask);
+                return;
+            }
+            if (transition == PopupTransition.SlideUp)
+            {
+                Task fadeTask = popup.FadeTo(0, 150, Easing.CubicIn);
+                Task translateTask = popup.TranslateTo(0, 50, 150, Easing.CubicIn);
+                await Task.WhenAll(fadeTask, translateTask);
+            }
+        }
+
+        private void ApplyOverlayInteractionState(PopupVisualState visualState)
+        {
+            this.popupOverlay.InputTransparent = false;
+        }
+
         public void UpdateBars(BindableObject screen)
         {
             bool topVisible = NavigationBars.GetTopBarVisible(screen);
@@ -356,7 +376,7 @@ namespace NeuroAccessMaui.Test
         {
             try
             {
-                if (this.popupStack.Count > 0)
+                if (this.popupHost.Children.Count > 0)
                 {
                     this.PopupBackRequested?.Invoke(this, EventArgs.Empty);
                     return true;

@@ -22,6 +22,11 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			base.OnSizeAllocated(width, height);
 			try
 			{
+				if(this.RainbowView is null || this.ConfettiView is null)
+				{
+					return;
+				}
+
 				// Set the size of the rainbow view
 				this.RainbowView.WidthRequest = height + 200;
 				this.RainbowView.HeightRequest = width + 200;

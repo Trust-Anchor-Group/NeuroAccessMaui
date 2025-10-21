@@ -7,33 +7,29 @@
                 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription">
-    <base:BasePopup.PopupContent>
-        <Border Style="{DynamicResource PopupBorder}">
-            <ScrollView VerticalOptions="Center">
-                <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-                    <Label Text="{l:Localize RemoveSubscriptionRequest}"
-                           Style="{DynamicResource SectionTitleLabel}" />
-                    <Label>
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="{l:Localize RemoveSubscriptionQuestion}" />
-                                <Span Text=" " />
-                                <Span Text="{Binding BareJid}" FontAttributes="Bold" />
-                                <Span Text="?" />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
-                        <controls:TextButton Command="{Binding YesCommand}"
-                                             Style="{DynamicResource FilledTextButton}"
-                                             LabelData="{l:Localize Yes}" />
-                        <controls:TextButton Grid.Column="1"
-                                             Command="{Binding NoCommand}"
-                                             Style="{DynamicResource OutlinedTextButton}"
-                                             LabelData="{l:Localize No}" />
-                    </Grid>
-                </VerticalStackLayout>
-            </ScrollView>
-        </Border>
-    </base:BasePopup.PopupContent>
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label Text="{l:Localize RemoveSubscriptionRequest}"
+                   Style="{DynamicResource SectionTitleLabel}" />
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="{l:Localize RemoveSubscriptionQuestion}" />
+                        <Span Text=" " />
+                        <Span Text="{Binding BareJid}" FontAttributes="Bold" />
+                        <Span Text="?" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
+                <controls:TextButton Command="{Binding YesCommand}"
+                                     Style="{DynamicResource FilledTextButton}"
+                                     LabelData="{l:Localize Yes}" />
+                <controls:TextButton Grid.Column="1"
+                                     Command="{Binding NoCommand}"
+                                     Style="{DynamicResource OutlinedTextButton}"
+                                     LabelData="{l:Localize No}" />
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
 </base:BasePopup>

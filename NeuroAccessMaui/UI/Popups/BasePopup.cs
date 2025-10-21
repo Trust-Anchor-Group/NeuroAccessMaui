@@ -5,8 +5,8 @@ namespace NeuroAccessMaui.UI.Popups
 	/// <summary>
 	/// Compatibility wrapper that mirrors the previous Mopups-based BasePopup API while using the new popup infrastructure.
 	/// </summary>
-	[ContentProperty(nameof(CustomContentProperty))]
-	public class BasePopup : BasePopupView
+	[ContentProperty(nameof(CustomContent))]
+	public class BasePopup : BasicPopup
 	{
 		public static readonly BindableProperty CustomContentProperty = BindableProperty.Create(
 			nameof(CustomContent),
@@ -25,7 +25,7 @@ namespace NeuroAccessMaui.UI.Popups
 		{
 			if (bindable is BasePopup popup)
 			{
-				popup.PopupContent = newValue as View;
+				popup.CardContent = newValue as View;
 			}
 		}
 	}

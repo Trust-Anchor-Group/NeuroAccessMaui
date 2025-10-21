@@ -4,33 +4,29 @@
                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                      xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                      xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups">
-    <viewmodel:BasePopup.PopupContent>
-        <Border Style="{DynamicResource PopupBorder}">
-            <Grid RowDefinitions="Auto,*" ColumnDefinitions="*"
-                  Style="{DynamicResource PopupGrid}">
-                <SearchBar x:Name="InnerSearchBar"
-                           Margin="{DynamicResource MediumSpacing}"
-                           TextChanged="SearchBar_TextChanged"
-                           Placeholder="{l:Localize Search}" />
-                <CollectionView x:Name="InnerListView"
-                                Grid.Row="1"
-                                Margin="{DynamicResource MediumSpacing}"
-                                ItemsSource="{x:Static viewmodel:SelectPhoneCodePopup.Countries}"
-                                SelectionMode="Single"
-                                SelectionChanged="InnerListView_SelectionChanged">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid ColumnDefinitions="Auto,*" Padding="{DynamicResource SmallSpacing}">
-                                <Label Text="{Binding DialCode}"
-                                       VerticalOptions="Center" />
-                                <Label Grid.Column="1"
-                                       Text="{Binding Name}"
-                                       VerticalOptions="Center" />
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </Grid>
-        </Border>
-    </viewmodel:BasePopup.PopupContent>
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*"
+          Style="{DynamicResource PopupGrid}">
+        <SearchBar x:Name="InnerSearchBar"
+                   Margin="{DynamicResource MediumSpacing}"
+                   TextChanged="SearchBar_TextChanged"
+                   Placeholder="{l:Localize Search}" />
+        <CollectionView x:Name="InnerListView"
+                        Grid.Row="1"
+                        Margin="{DynamicResource MediumSpacing}"
+                        ItemsSource="{x:Static viewmodel:SelectPhoneCodePopup.Countries}"
+                        SelectionMode="Single"
+                        SelectionChanged="InnerListView_SelectionChanged">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="Auto,*" Padding="{DynamicResource SmallSpacing}">
+                        <Label Text="{Binding DialCode}"
+                               VerticalOptions="Center" />
+                        <Label Grid.Column="1"
+                               Text="{Binding Name}"
+                               VerticalOptions="Center" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
 </viewmodel:BasePopup>

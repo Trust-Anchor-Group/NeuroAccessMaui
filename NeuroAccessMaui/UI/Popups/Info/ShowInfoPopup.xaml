@@ -7,21 +7,17 @@
                 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Info">
-    <base:BasePopup.PopupContent>
-        <Border Style="{DynamicResource PopupBorder}">
-            <ScrollView VerticalOptions="Center">
-                <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-                    <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-                        <Label HorizontalTextAlignment="Center"
-                               Style="{DynamicResource PageTitleLabel}"
-                               Text="{Binding InfoTitle}" />
-                        <Label Text="{Binding InfoText}" />
-                    </VerticalStackLayout>
-                    <controls:TextButton Command="{Binding CloseCommand}"
-                                         LabelData="{l:Localize Close}"
-                                         Style="{DynamicResource FilledTextButton}" />
-                </VerticalStackLayout>
-            </ScrollView>
-        </Border>
-    </base:BasePopup.PopupContent>
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+            <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+                <Label HorizontalTextAlignment="Center"
+                       Style="{DynamicResource PageTitleLabel}"
+                       Text="{Binding InfoTitle}" />
+                <Label Text="{Binding InfoText}" />
+            </VerticalStackLayout>
+            <controls:TextButton Command="{Binding CloseCommand}"
+                                 LabelData="{l:Localize Close}"
+                                 Style="{DynamicResource FilledTextButton}" />
+        </VerticalStackLayout>
+    </ScrollView>
 </base:BasePopup>

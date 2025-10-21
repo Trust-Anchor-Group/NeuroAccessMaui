@@ -9,35 +9,31 @@
                 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Tokens.AddTextNote">
-    <base:BasePopup.PopupContent>
-        <Border Style="{DynamicResource PopupBorder}">
-            <ScrollView VerticalOptions="Center">
-                <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-                    <Label Text="{l:Localize TextNote}"
-                           Style="{DynamicResource SectionTitleLabel}" />
-                    <controls:CompositeEntry x:Name="NoteEntry"
-                                             Style="{DynamicResource RegularCompositeEntry}"
-                                             EntryData="{Binding TextNote}">
-                        <controls:CompositeEntry.Behaviors>
-                            <mct:EventToCommandBehavior EventName="Completed"
-                                                       Command="{Binding AddNoteCommand}" />
-                        </controls:CompositeEntry.Behaviors>
-                    </controls:CompositeEntry>
-                    <Grid ColumnDefinitions="Auto,*">
-                        <CheckBox Grid.Column="0" IsChecked="{Binding Personal}"
-                                  VerticalOptions="Center" />
-                        <Label Grid.Column="1" Text="{l:Localize NoteIsPersonal}"
-                               VerticalOptions="Center"
-                               Margin="{DynamicResource SmallLeftMargins}" />
-                    </Grid>
-                    <controls:TextButton Command="{Binding AddNoteCommand}"
-                                         Style="{DynamicResource FilledTextButton}"
-                                         LabelData="{l:Localize Add}" />
-                    <controls:TextButton Command="{Binding CancelCommand}"
-                                         Style="{DynamicResource OutlinedTextButton}"
-                                         LabelData="{l:Localize Cancel}" />
-                </VerticalStackLayout>
-            </ScrollView>
-        </Border>
-    </base:BasePopup.PopupContent>
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label Text="{l:Localize TextNote}"
+                   Style="{DynamicResource SectionTitleLabel}" />
+            <controls:CompositeEntry x:Name="NoteEntry"
+                                     Style="{DynamicResource RegularCompositeEntry}"
+                                     EntryData="{Binding TextNote}">
+                <controls:CompositeEntry.Behaviors>
+                    <mct:EventToCommandBehavior EventName="Completed"
+                                               Command="{Binding AddNoteCommand}" />
+                </controls:CompositeEntry.Behaviors>
+            </controls:CompositeEntry>
+            <Grid ColumnDefinitions="Auto,*">
+                <CheckBox Grid.Column="0" IsChecked="{Binding Personal}"
+                          VerticalOptions="Center" />
+                <Label Grid.Column="1" Text="{l:Localize NoteIsPersonal}"
+                       VerticalOptions="Center"
+                       Margin="{DynamicResource SmallLeftMargins}" />
+            </Grid>
+            <controls:TextButton Command="{Binding AddNoteCommand}"
+                                 Style="{DynamicResource FilledTextButton}"
+                                 LabelData="{l:Localize Add}" />
+            <controls:TextButton Command="{Binding CancelCommand}"
+                                 Style="{DynamicResource OutlinedTextButton}"
+                                 LabelData="{l:Localize Cancel}" />
+        </VerticalStackLayout>
+    </ScrollView>
 </base:BasePopup>

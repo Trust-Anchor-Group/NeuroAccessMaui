@@ -8,28 +8,24 @@
                 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Duration">
-    <base:BasePopup.PopupContent>
-        <Border Style="{DynamicResource PopupBorder}">
-            <ScrollView VerticalOptions="Center">
-                <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-                    <Label HorizontalTextAlignment="Center"
-                           Style="{DynamicResource PageTitleLabel}"
-                           Text="{l:Localize SelectUnit}" />
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label HorizontalTextAlignment="Center"
+                   Style="{DynamicResource PageTitleLabel}"
+                   Text="{l:Localize SelectUnit}" />
 
-                    <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="controls:TextButton">
-                                <controls:TextButton Style="{DynamicResource TertiaryButton}"
-                                                     LabelData="{Binding LabelData}"
-                                                     Command="{Binding Command}" />
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                        <BindableLayout.ItemsSource>
-                            <Binding Path="Buttons" />
-                        </BindableLayout.ItemsSource>
-                    </VerticalStackLayout>
-                </VerticalStackLayout>
-            </ScrollView>
-        </Border>
-    </base:BasePopup.PopupContent>
+            <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="controls:TextButton">
+                        <controls:TextButton Style="{DynamicResource TertiaryButton}"
+                                             LabelData="{Binding LabelData}"
+                                             Command="{Binding Command}" />
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+                <BindableLayout.ItemsSource>
+                    <Binding Path="Buttons" />
+                </BindableLayout.ItemsSource>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </base:BasePopup>

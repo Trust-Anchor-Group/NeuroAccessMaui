@@ -142,7 +142,7 @@ namespace NeuroAccessMaui.Services.UI.Popups
 			this.popupStack.Push(session);
 
 			IShellPresenter presenter = this.GetPresenter();
-			await presenter.ShowPopup(popupView, options.ShowTransition, options.OverlayOpacity);
+			await presenter.ShowPopup(popupView, options.ShowTransition, CreateVisualState(options));
 			await InvokeAppearingAsync(popupView);
 			await InvokeAppearingAsync(viewModel);
 			this.RaisePopupStackChanged();
@@ -163,7 +163,8 @@ namespace NeuroAccessMaui.Services.UI.Popups
 				if (bindingContext is BasePopupViewModel basePopupViewModel)
 					await basePopupViewModel.NotifyPoppedAsync();
 				IShellPresenter presenter = this.GetPresenter();
-				await presenter.HideTopPopup(session.Options.HideTransition);
+				PopupVisualState? nextVisualState = this.popupStack.Count > 0 ? CreateVisualState(this.popupStack.Peek().Options) : null;
+				await presenter.HidePopup(popupView, session.Options.HideTransition, nextVisualState);
 				await InvokeDisposeAsync(popupView);
 				await InvokeDisposeAsync(bindingContext);
 				if (bindingContext is IAsyncDisposable asyncDisposable)
@@ -299,6 +300,11 @@ namespace NeuroAccessMaui.Services.UI.Popups
 		}
 
 		private void RaisePopupStackChanged() => this.PopupStackChanged?.Invoke(this, EventArgs.Empty);
+
+		private static PopupVisualState CreateVisualState(PopupOptions options)
+		{
+			return new PopupVisualState(options.OverlayOpacity, options.IsBlocking, options.CloseOnBackgroundTap);
+		}
 
 		private static async Task EnsureInitializedAsync(object? target)
 		{

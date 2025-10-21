@@ -7,38 +7,34 @@
                 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock">
-    <base:BasePopup.PopupContent>
-        <Border Style="{DynamicResource PopupBorder}">
-            <ScrollView VerticalOptions="Center">
-                <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-                    <Label Text="{l:Localize FurtherAction}"
-                           Style="{DynamicResource SectionTitleLabel}" />
-                    <Label>
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="{l:Localize FurtherAction1}" />
-                                <Span Text=" " />
-                                <Span Text="{Binding BareJid}" FontAttributes="Bold" />
-                                <Span Text="? " />
-                                <Span Text="{l:Localize FurtherAction2}" />
-                                <Span Text=" " />
-                                <Span Text="{l:Localize FurtherAction3}" />
-                                <Span Text=" " />
-                                <Span Text="{l:Localize FurtherAction4}" />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-                    <controls:TextButton Command="{Binding BlockCommand}"
-                                         Style="{DynamicResource FilledTextButton}"
-                                         LabelData="{l:Localize Block}" />
-                    <controls:TextButton Command="{Binding ReportCommand}"
-                                         Style="{DynamicResource FilledTextButton}"
-                                         LabelData="{l:Localize Report}" />
-                    <controls:TextButton Command="{Binding IgnoreCommand}"
-                                         Style="{DynamicResource OutlinedTextButton}"
-                                         LabelData="{l:Localize NoJustIgnore}" />
-                </VerticalStackLayout>
-            </ScrollView>
-        </Border>
-    </base:BasePopup.PopupContent>
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label Text="{l:Localize FurtherAction}"
+                   Style="{DynamicResource SectionTitleLabel}" />
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="{l:Localize FurtherAction1}" />
+                        <Span Text=" " />
+                        <Span Text="{Binding BareJid}" FontAttributes="Bold" />
+                        <Span Text="? " />
+                        <Span Text="{l:Localize FurtherAction2}" />
+                        <Span Text=" " />
+                        <Span Text="{l:Localize FurtherAction3}" />
+                        <Span Text=" " />
+                        <Span Text="{l:Localize FurtherAction4}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <controls:TextButton Command="{Binding BlockCommand}"
+                                 Style="{DynamicResource FilledTextButton}"
+                                 LabelData="{l:Localize Block}" />
+            <controls:TextButton Command="{Binding ReportCommand}"
+                                 Style="{DynamicResource FilledTextButton}"
+                                 LabelData="{l:Localize Report}" />
+            <controls:TextButton Command="{Binding IgnoreCommand}"
+                                 Style="{DynamicResource OutlinedTextButton}"
+                                 LabelData="{l:Localize NoJustIgnore}" />
+        </VerticalStackLayout>
+    </ScrollView>
 </base:BasePopup>

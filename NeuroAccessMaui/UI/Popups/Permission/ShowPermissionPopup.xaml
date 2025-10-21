@@ -7,47 +7,43 @@
                 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Permission">
-    <base:BasePopup.PopupContent>
-        <Border Style="{DynamicResource PopupBorder}">
-            <ScrollView VerticalOptions="Center">
-                <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-                    <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-                        <Label HorizontalTextAlignment="Center"
-                               Style="{DynamicResource PageTitleLabel}"
-                               Text="{Binding Title}" />
-                        <Frame WidthRequest="{Binding CameraIconBackgroundSize}"
-                               HeightRequest="{Binding CameraIconBackgroundSize}"
-                               CornerRadius="{Binding CameraIconBackgroundCornerRadius}"
-                               BackgroundColor="{DynamicResource TnPSuccessbgWL}">
-                            <Path VerticalOptions="Center"
-                                  HorizontalOptions="Center"
-                                  HeightRequest="{Binding CameraIconSize}"
-                                  WidthRequest="{Binding CameraIconSize}"
-                                  Aspect="Uniform"
-                                  Data="{Binding IconGeometry}"
-                                  Fill="{DynamicResource TnPSuccessContentWL}" />
-                        </Frame>
-                        <Label HorizontalTextAlignment="Start"
-                               Style="{DynamicResource ItemDescriptionLabel}"
-                               Text="{Binding Description}"
-                               FontSize="15"
-                               Margin="{DynamicResource SmallLeftRightMargins}" />
-                        <Label HorizontalTextAlignment="Start"
-                               Style="{DynamicResource ItemDescriptionLabel}"
-                               Text="{Binding DescriptionSecondary}"
-                               FontSize="15"
-                               Margin="{DynamicResource SmallLeftRightMargins}" />
-                    </VerticalStackLayout>
-                    <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-                        <controls:TextButton Command="{Binding GoToSettingsCommand}"
-                                             LabelData="{l:Localize GoToSettings}"
-                                             Style="{DynamicResource PrimaryButton}" />
-                        <controls:TextButton Command="{Binding CloseCommand}"
-                                             LabelData="{l:Localize Skip}"
-                                             Style="{DynamicResource SecondaryButton}" />
-                    </VerticalStackLayout>
-                </VerticalStackLayout>
-            </ScrollView>
-        </Border>
-    </base:BasePopup.PopupContent>
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+            <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+                <Label HorizontalTextAlignment="Center"
+                       Style="{DynamicResource PageTitleLabel}"
+                       Text="{Binding Title}" />
+                <Frame WidthRequest="{Binding CameraIconBackgroundSize}"
+                       HeightRequest="{Binding CameraIconBackgroundSize}"
+                       CornerRadius="{Binding CameraIconBackgroundCornerRadius}"
+                       BackgroundColor="{DynamicResource TnPSuccessbgWL}">
+                    <Path VerticalOptions="Center"
+                          HorizontalOptions="Center"
+                          HeightRequest="{Binding CameraIconSize}"
+                          WidthRequest="{Binding CameraIconSize}"
+                          Aspect="Uniform"
+                          Data="{Binding IconGeometry}"
+                          Fill="{DynamicResource TnPSuccessContentWL}" />
+                </Frame>
+                <Label HorizontalTextAlignment="Start"
+                       Style="{DynamicResource ItemDescriptionLabel}"
+                       Text="{Binding Description}"
+                       FontSize="15"
+                       Margin="{DynamicResource SmallLeftRightMargins}" />
+                <Label HorizontalTextAlignment="Start"
+                       Style="{DynamicResource ItemDescriptionLabel}"
+                       Text="{Binding DescriptionSecondary}"
+                       FontSize="15"
+                       Margin="{DynamicResource SmallLeftRightMargins}" />
+            </VerticalStackLayout>
+            <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+                <controls:TextButton Command="{Binding GoToSettingsCommand}"
+                                     LabelData="{l:Localize GoToSettings}"
+                                     Style="{DynamicResource PrimaryButton}" />
+                <controls:TextButton Command="{Binding CloseCommand}"
+                                     LabelData="{l:Localize Skip}"
+                                     Style="{DynamicResource SecondaryButton}" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </base:BasePopup>

@@ -7,39 +7,35 @@
                 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo">
-    <base:BasePopup.PopupContent>
-        <Border Style="{DynamicResource PopupBorder}">
-            <ScrollView VerticalOptions="Center">
-                <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-                    <Label Text="{l:Localize SubscribeToPresence}"
-                           Style="{DynamicResource SectionTitleLabel}" />
-                    <Label>
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="{l:Localize SubscribeToPresence1}" />
-                                <Span Text=" " />
-                                <Span Text="{Binding BareJid}" FontAttributes="Bold" />
-                                <Span Text="? " />
-                                <Span Text="{l:Localize SubscribeToPresence2}" />
-                                <Span Text=" " />
-                                <Span Text="{l:Localize SubscribeToPresence3}" />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
-                        <controls:TextButton Command="{Binding ConfirmCommand}"
-                                             LabelData="{l:Localize Yes}"
-                                             Style="{DynamicResource PrimaryButton}" />
-                        <controls:TextButton Grid.Column="1"
-                                             Command="{Binding DeclineCommand}"
-                                             LabelData="{l:Localize No}"
-                                             Style="{DynamicResource SecondaryButton}" />
-                    </Grid>
-                    <controls:TextButton Command="{Binding CancelCommand}"
-                                         LabelData="{l:Localize Cancel}"
-                                         Style="{DynamicResource TertiaryButton}" />
-                </VerticalStackLayout>
-            </ScrollView>
-        </Border>
-    </base:BasePopup.PopupContent>
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label Text="{l:Localize SubscribeToPresence}"
+                   Style="{DynamicResource SectionTitleLabel}" />
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="{l:Localize SubscribeToPresence1}" />
+                        <Span Text=" " />
+                        <Span Text="{Binding BareJid}" FontAttributes="Bold" />
+                        <Span Text="? " />
+                        <Span Text="{l:Localize SubscribeToPresence2}" />
+                        <Span Text=" " />
+                        <Span Text="{l:Localize SubscribeToPresence3}" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
+                <controls:TextButton Command="{Binding ConfirmCommand}"
+                                     LabelData="{l:Localize Yes}"
+                                     Style="{DynamicResource PrimaryButton}" />
+                <controls:TextButton Grid.Column="1"
+                                     Command="{Binding DeclineCommand}"
+                                     LabelData="{l:Localize No}"
+                                     Style="{DynamicResource SecondaryButton}" />
+            </Grid>
+            <controls:TextButton Command="{Binding CancelCommand}"
+                                 LabelData="{l:Localize Cancel}"
+                                 Style="{DynamicResource TertiaryButton}" />
+        </VerticalStackLayout>
+    </ScrollView>
 </base:BasePopup>

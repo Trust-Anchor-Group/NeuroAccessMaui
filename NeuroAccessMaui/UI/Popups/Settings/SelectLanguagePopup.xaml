@@ -46,15 +46,11 @@
         </DataTemplate>
     </base:BasePopup.Resources>
 
-    <base:BasePopup.PopupContent>
-        <Border Style="{DynamicResource PopupBorder}">
-            <ScrollView x:Name="InnerScrollView"
-                        VerticalOptions="Center">
-                <VerticalStackLayout x:Name="LanguagesContainer"
-                                      Spacing="{DynamicResource MediumSpacing}"
-                                      BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
-                                      BindableLayout.ItemsSource="{Binding Languages}" />
-            </ScrollView>
-        </Border>
-    </base:BasePopup.PopupContent>
+    <ScrollView x:Name="InnerScrollView"
+                VerticalOptions="Center">
+        <VerticalStackLayout x:Name="LanguagesContainer"
+                              Spacing="{DynamicResource MediumSpacing}"
+                              BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}"
+                              BindableLayout.ItemsSource="{Binding Languages}" />
+    </ScrollView>
 </base:BasePopup>

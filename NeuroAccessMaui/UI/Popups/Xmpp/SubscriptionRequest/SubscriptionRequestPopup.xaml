@@ -9,46 +9,42 @@
                 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest">
-    <base:BasePopup.PopupContent>
-        <Border Style="{DynamicResource PopupBorder}">
-            <ScrollView VerticalOptions="Center">
-                <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-                    <Label Text="{l:Localize PresenceSubscriptionRequest}"
-                           Style="{DynamicResource SectionTitleLabel}" />
-                    <Image HorizontalOptions="Center"
-                           Source="{Binding PhotoUrl}"
-                           WidthRequest="{Binding PhotoWidth}"
-                           HeightRequest="{Binding PhotoHeight}"
-                           IsVisible="{Binding HasPhoto}" />
-                    <Label>
-                        <Label.FormattedText>
-                            <FormattedString>
-                                <Span Text="{l:Localize PresenceSubscriptionReceived1}" />
-                                <Span Text=" " />
-                                <Span Text="{Binding PrimaryName}" FontAttributes="Bold" />
-                                <Span Text="{Binding SecondaryName}" />
-                                <Span Text=" " />
-                                <Span Text="{l:Localize PresenceSubscriptionReceived2}" />
-                                <Span Text=" " />
-                                <Span Text="{Binding FriendlyName}" FontAttributes="Bold" />
-                                <Span Text="." />
-                            </FormattedString>
-                        </Label.FormattedText>
-                    </Label>
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
-                        <controls:TextButton Command="{Binding AcceptCommand}"
-                                             LabelData="{l:Localize Accept}"
-                                             Style="{DynamicResource PrimaryButton}" />
-                        <controls:TextButton Grid.Column="1"
-                                             Command="{Binding RejectCommand}"
-                                             LabelData="{l:Localize Reject}"
-                                             Style="{DynamicResource SecondaryButton}" />
-                    </Grid>
-                    <controls:TextButton Command="{Binding IgnoreCommand}"
-                                         LabelData="{l:Localize Ignore}"
-                                         Style="{DynamicResource TertiaryButton}" />
-                </VerticalStackLayout>
-            </ScrollView>
-        </Border>
-    </base:BasePopup.PopupContent>
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label Text="{l:Localize PresenceSubscriptionRequest}"
+                   Style="{DynamicResource SectionTitleLabel}" />
+            <Image HorizontalOptions="Center"
+                   Source="{Binding PhotoUrl}"
+                   WidthRequest="{Binding PhotoWidth}"
+                   HeightRequest="{Binding PhotoHeight}"
+                   IsVisible="{Binding HasPhoto}" />
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="{l:Localize PresenceSubscriptionReceived1}" />
+                        <Span Text=" " />
+                        <Span Text="{Binding PrimaryName}" FontAttributes="Bold" />
+                        <Span Text="{Binding SecondaryName}" />
+                        <Span Text=" " />
+                        <Span Text="{l:Localize PresenceSubscriptionReceived2}" />
+                        <Span Text=" " />
+                        <Span Text="{Binding FriendlyName}" FontAttributes="Bold" />
+                        <Span Text="." />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
+                <controls:TextButton Command="{Binding AcceptCommand}"
+                                     LabelData="{l:Localize Accept}"
+                                     Style="{DynamicResource PrimaryButton}" />
+                <controls:TextButton Grid.Column="1"
+                                     Command="{Binding RejectCommand}"
+                                     LabelData="{l:Localize Reject}"
+                                     Style="{DynamicResource SecondaryButton}" />
+            </Grid>
+            <controls:TextButton Command="{Binding IgnoreCommand}"
+                                 LabelData="{l:Localize Ignore}"
+                                 Style="{DynamicResource TertiaryButton}" />
+        </VerticalStackLayout>
+    </ScrollView>
 </base:BasePopup>

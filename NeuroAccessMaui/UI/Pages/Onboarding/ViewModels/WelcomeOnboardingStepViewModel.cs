@@ -315,8 +315,8 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 							ServiceRef.LogService.LogDebug("Transfer node expanded.");
 							break;
 						default:
-							ServiceRef.LogService.LogWarning($"Unexpected XML node '{E.LocalName}'.");
-							throw new Exception("Invalid Invitation XML node");
+							ServiceRef.LogService.LogWarning($"Unexpected XML node '<{E.LocalName}>'.");
+							break;
 					}
 				}
 				if (AccountDone && LegalIdDefinition is not null)
