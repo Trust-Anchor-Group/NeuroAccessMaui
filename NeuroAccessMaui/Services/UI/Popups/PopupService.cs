@@ -27,17 +27,35 @@ namespace NeuroAccessMaui.Services.UI.Popups
 		/// <inheritdoc/>
 		public bool HasOpenPopups => this.popupStack.Count > 0;
 
+		/// <summary>
+		/// Gets true if the top popup is blocking.
+		/// </summary>
+		public bool TopIsBlocking => this.popupStack.Count > 0 && this.popupStack.Peek().Options.IsBlocking;
+
+		/// <summary>
+		/// Returns true if any blocking popup exists in the stack.
+		/// </summary>
+		public bool ContainsBlockingPopup
+		{
+			get
+			{
+				foreach (PopupSession Session in this.popupStack)
+					if (Session.Options.IsBlocking)
+						return true;
+				return false;
+			}
+		}
+
 		/// <inheritdoc/>
 		public async Task PushAsync<TPopup>(PopupOptions? Options = null) where TPopup : ContentView
 		{
-			PopupOptions EffectiveOptions = Options ?? new PopupOptions();
-			PopupSession Session = await this.Enqueue(async () =>
+			PopupOptions effectiveOptions = Options ?? new PopupOptions();
+			PopupSession session = await this.Enqueue(async () =>
 			{
-				TPopup PopupView = ServiceRef.Provider.GetRequiredService<TPopup>();
-				return await this.PrepareAndShowPopupAsync(PopupView, PopupView.BindingContext, EffectiveOptions);
+				TPopup popupView = ServiceRef.Provider.GetRequiredService<TPopup>();
+				return await this.PrepareAndShowPopupAsync(popupView, popupView.BindingContext, effectiveOptions);
 			});
-
-			await Session.Completion.Task;
+			await session.Completion.Task;
 		}
 
 		/// <inheritdoc/>
@@ -45,64 +63,60 @@ namespace NeuroAccessMaui.Services.UI.Popups
 			where TPopup : ContentView
 			where TViewModel : class
 		{
-			PopupOptions EffectiveOptions = Options ?? new PopupOptions();
-			PopupSession Session = await this.Enqueue(async () =>
+			PopupOptions effectiveOptions = Options ?? new PopupOptions();
+			PopupSession session = await this.Enqueue(async () =>
 			{
-				TPopup PopupView = ServiceRef.Provider.GetRequiredService<TPopup>();
-				TViewModel ViewModel = ServiceRef.Provider.GetRequiredService<TViewModel>();
-				PopupView.BindingContext = ViewModel;
-				return await this.PrepareAndShowPopupAsync(PopupView, ViewModel, EffectiveOptions);
+				TPopup popupView = ServiceRef.Provider.GetRequiredService<TPopup>();
+				TViewModel viewModel = ServiceRef.Provider.GetRequiredService<TViewModel>();
+				popupView.BindingContext = viewModel;
+				return await this.PrepareAndShowPopupAsync(popupView, viewModel, effectiveOptions);
 			});
-
-			await Session.Completion.Task;
+			await session.Completion.Task;
 		}
 
 		/// <inheritdoc/>
-        public async Task<TReturn?> PushAsync<TPopup, TViewModel, TReturn>(PopupOptions? Options = null)
-            where TPopup : ContentView
-            where TViewModel : ReturningPopupViewModel<TReturn>
-        {
-            PopupOptions EffectiveOptions = Options ?? new PopupOptions();
-            TViewModel ViewModel = ServiceRef.Provider.GetRequiredService<TViewModel>();
-            Task<TReturn?> ResultTask = ViewModel.Result;
-            await this.Enqueue(async () =>
-            {
-                TPopup PopupView = ServiceRef.Provider.GetRequiredService<TPopup>();
-                PopupView.BindingContext = ViewModel;
-                await this.PrepareAndShowPopupAsync(PopupView, ViewModel, EffectiveOptions);
-            });
-            return await ResultTask;
-        }
+		public async Task<TReturn?> PushAsync<TPopup, TViewModel, TReturn>(PopupOptions? Options = null)
+			where TPopup : ContentView
+			where TViewModel : ReturningPopupViewModel<TReturn>
+		{
+			PopupOptions effectiveOptions = Options ?? new PopupOptions();
+			TViewModel viewModel = ServiceRef.Provider.GetRequiredService<TViewModel>();
+			Task<TReturn?> resultTask = viewModel.Result;
+			await this.Enqueue(async () =>
+			{
+				TPopup popupView = ServiceRef.Provider.GetRequiredService<TPopup>();
+				popupView.BindingContext = viewModel;
+				await this.PrepareAndShowPopupAsync(popupView, viewModel, effectiveOptions);
+			});
+			return await resultTask;
+		}
 
-        /// <inheritdoc/>
-        public async Task<TReturn?> PushAsync<TPopup, TViewModel, TReturn>(TViewModel ViewModel, PopupOptions? Options = null)
-            where TPopup : ContentView
-            where TViewModel : ReturningPopupViewModel<TReturn>
-        {
-            if (ViewModel is null)
-                throw new ArgumentNullException(nameof(ViewModel));
-
-            PopupOptions EffectiveOptions = Options ?? new PopupOptions();
-            Task<TReturn?> ResultTask = ViewModel.Result;
-            await this.Enqueue(async () =>
-            {
-                TPopup PopupView = ServiceRef.Provider.GetRequiredService<TPopup>();
-                PopupView.BindingContext = ViewModel;
-                await this.PrepareAndShowPopupAsync(PopupView, ViewModel, EffectiveOptions);
-            });
-            return await ResultTask;
-        }
+		/// <inheritdoc/>
+		public async Task<TReturn?> PushAsync<TPopup, TViewModel, TReturn>(TViewModel ViewModel, PopupOptions? Options = null)
+			where TPopup : ContentView
+			where TViewModel : ReturningPopupViewModel<TReturn>
+		{
+			if (ViewModel is null)
+				throw new ArgumentNullException(nameof(ViewModel));
+			PopupOptions effectiveOptions = Options ?? new PopupOptions();
+			Task<TReturn?> resultTask = ViewModel.Result;
+			await this.Enqueue(async () =>
+			{
+				TPopup popupView = ServiceRef.Provider.GetRequiredService<TPopup>();
+				popupView.BindingContext = ViewModel;
+				await this.PrepareAndShowPopupAsync(popupView, ViewModel, effectiveOptions);
+			});
+			return await resultTask;
+		}
 
 		/// <inheritdoc/>
 		public async Task PushAsync(ContentView Popup, PopupOptions? Options = null)
 		{
 			if (Popup is null)
 				throw new ArgumentNullException(nameof(Popup));
-
-			PopupOptions EffectiveOptions = Options ?? new PopupOptions();
-			PopupSession Session = await this.Enqueue(async () => await this.PrepareAndShowPopupAsync(Popup, Popup.BindingContext, EffectiveOptions));
-
-			await Session.Completion.Task;
+			PopupOptions effectiveOptions = Options ?? new PopupOptions();
+			PopupSession session = await this.Enqueue(async () => await this.PrepareAndShowPopupAsync(Popup, Popup.BindingContext, effectiveOptions));
+			await session.Completion.Task;
 		}
 
 		/// <inheritdoc/>
@@ -111,110 +125,105 @@ namespace NeuroAccessMaui.Services.UI.Popups
 			return this.Enqueue(this.PopTopAsync);
 		}
 
-		private async Task<PopupSession> PrepareAndShowPopupAsync(ContentView PopupView, object? ViewModel, PopupOptions Options)
+		private async Task<PopupSession> PrepareAndShowPopupAsync(ContentView popupView, object? viewModel, PopupOptions options)
 		{
-			await EnsureInitializedAsync(PopupView);
-			await EnsureInitializedAsync(ViewModel);
+			options.Normalize();
+			await EnsureInitializedAsync(popupView);
+			await EnsureInitializedAsync(viewModel);
 
-			PopupSession Session = new PopupSession(PopupView, ViewModel, Options);
-			this.popupStack.Push(Session);
+			if (options.IsBlocking)
+			{
+				// Remove all non-blocking popups. If a blocking popup already exists, remove it to enforce single modal semantics.
+				while (this.popupStack.Count > 0)
+					await this.PopTopAsync();
+			}
 
-			IShellPresenter Presenter = this.GetPresenter();
-			await Presenter.ShowPopup(PopupView, Options.ShowTransition, Options.OverlayOpacity);
+			PopupSession session = new PopupSession(popupView, viewModel, options);
+			this.popupStack.Push(session);
 
-			await InvokeAppearingAsync(PopupView);
-			await InvokeAppearingAsync(ViewModel);
-
+			IShellPresenter presenter = this.GetPresenter();
+			await presenter.ShowPopup(popupView, options.ShowTransition, options.OverlayOpacity);
+			await InvokeAppearingAsync(popupView);
+			await InvokeAppearingAsync(viewModel);
 			this.RaisePopupStackChanged();
-			return Session;
+			return session;
 		}
 
 		private async Task PopTopAsync()
 		{
 			if (this.popupStack.Count == 0)
 				return;
-
-			PopupSession Session = this.popupStack.Pop();
-			ContentView PopupView = Session.View;
-			object? BindingContext = Session.BindingContext;
-
+			PopupSession session = this.popupStack.Pop();
+			ContentView popupView = session.View;
+			object? bindingContext = session.BindingContext;
 			try
 			{
-				await InvokeDisappearingAsync(PopupView);
-				await InvokeDisappearingAsync(BindingContext);
-
-            if (BindingContext is BasePopupViewModel BasePopupViewModel)
-                await BasePopupViewModel.NotifyPoppedAsync();
-
-				IShellPresenter Presenter = this.GetPresenter();
-				await Presenter.HideTopPopup(Session.Options.HideTransition);
-
-				await InvokeDisposeAsync(PopupView);
-				await InvokeDisposeAsync(BindingContext);
-
-				if (BindingContext is IAsyncDisposable AsyncDisposable)
-					await AsyncDisposable.DisposeAsync();
-				else if (BindingContext is IDisposable Disposable)
-					Disposable.Dispose();
+				await InvokeDisappearingAsync(popupView);
+				await InvokeDisappearingAsync(bindingContext);
+				if (bindingContext is BasePopupViewModel basePopupViewModel)
+					await basePopupViewModel.NotifyPoppedAsync();
+				IShellPresenter presenter = this.GetPresenter();
+				await presenter.HideTopPopup(session.Options.HideTransition);
+				await InvokeDisposeAsync(popupView);
+				await InvokeDisposeAsync(bindingContext);
+				if (bindingContext is IAsyncDisposable asyncDisposable)
+					await asyncDisposable.DisposeAsync();
+				else if (bindingContext is IDisposable disposable)
+					disposable.Dispose();
 			}
-			catch (Exception Ex)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(Ex);
+				ServiceRef.LogService.LogException(ex);
 			}
 			finally
 			{
-				Session.Completion.TrySetResult(true);
+				session.Completion.TrySetResult(true);
 				this.RaisePopupStackChanged();
 			}
 		}
 
-		private Task<TResult> Enqueue<TResult>(Func<Task<TResult>> Action)
+		private Task<TResult> Enqueue<TResult>(Func<Task<TResult>> action)
 		{
-			TaskCompletionSource<TResult> Completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
-
+			TaskCompletionSource<TResult> completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
 			this.taskQueue.Enqueue(async () =>
 			{
 				try
 				{
-					TResult Result = await Action();
-					Completion.TrySetResult(Result);
+					TResult result = await action();
+					completion.TrySetResult(result);
 				}
-				catch (Exception Ex)
+				catch (Exception ex)
 				{
-					Completion.TrySetException(Ex);
+					completion.TrySetException(ex);
 				}
 			});
-
 			this.StartQueueProcessing();
-			return Completion.Task;
+			return completion.Task;
 		}
 
-		private Task Enqueue(Func<Task> Action)
+		private Task Enqueue(Func<Task> action)
 		{
-			TaskCompletionSource<bool> Completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
-
+			TaskCompletionSource<bool> completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
 			this.taskQueue.Enqueue(async () =>
 			{
 				try
 				{
-					await Action();
-					Completion.TrySetResult(true);
+					await action();
+					completion.TrySetResult(true);
 				}
-				catch (Exception Ex)
+				catch (Exception ex)
 				{
-					Completion.TrySetException(Ex);
+					completion.TrySetException(ex);
 				}
 			});
-
 			this.StartQueueProcessing();
-			return Completion.Task;
+			return completion.Task;
 		}
 
 		private void StartQueueProcessing()
 		{
 			if (this.isExecutingQueue)
 				return;
-
 			this.isExecutingQueue = true;
 			MainThread.BeginInvokeOnMainThread(async () => await this.ProcessQueueAsync());
 		}
@@ -223,12 +232,12 @@ namespace NeuroAccessMaui.Services.UI.Popups
 		{
 			try
 			{
-				while (this.taskQueue.TryDequeue(out Func<Task>? Action))
-					await Action();
+				while (this.taskQueue.TryDequeue(out Func<Task>? action))
+					await action();
 			}
-			catch (Exception Ex)
+			catch (Exception ex)
 			{
-				ServiceRef.LogService.LogException(Ex);
+				ServiceRef.LogService.LogException(ex);
 			}
 			finally
 			{
@@ -238,126 +247,108 @@ namespace NeuroAccessMaui.Services.UI.Popups
 
 		private IShellPresenter GetPresenter()
 		{
-			Page? MainPage = Application.Current?.MainPage;
-			if (MainPage is null)
+			Page? mainPage = Application.Current?.MainPage;
+			if (mainPage is null)
 				throw new InvalidOperationException("No main page is available for popup presentation.");
-
-			IShellPresenter? Presenter = (MainPage as NavigationPage)?.CurrentPage as IShellPresenter ?? MainPage as IShellPresenter;
-			if (Presenter is null)
+			IShellPresenter? presenter = (mainPage as NavigationPage)?.CurrentPage as IShellPresenter ?? mainPage as IShellPresenter;
+			if (presenter is null)
 				throw new InvalidOperationException("CustomShell presenter not found.");
-
-			if (!ReferenceEquals(this.attachedPresenter, Presenter))
+			if (!ReferenceEquals(this.attachedPresenter, presenter))
 			{
 				this.DetachPresenter();
-				this.attachedPresenter = Presenter;
-				Presenter.PopupBackgroundTapped += this.OnPresenterPopupBackgroundTapped;
-				Presenter.PopupBackRequested += this.OnPresenterPopupBackRequested;
+				this.attachedPresenter = presenter;
+				presenter.PopupBackgroundTapped += this.OnPresenterPopupBackgroundTapped;
+				presenter.PopupBackRequested += this.OnPresenterPopupBackRequested;
 			}
-
-			return Presenter;
+			return presenter;
 		}
 
 		private void DetachPresenter()
 		{
 			if (this.attachedPresenter is null)
 				return;
-
 			this.attachedPresenter.PopupBackgroundTapped -= this.OnPresenterPopupBackgroundTapped;
 			this.attachedPresenter.PopupBackRequested -= this.OnPresenterPopupBackRequested;
 			this.attachedPresenter = null;
 		}
 
-		private void OnPresenterPopupBackgroundTapped(object? Sender, EventArgs Args)
+		private void OnPresenterPopupBackgroundTapped(object? sender, EventArgs args)
 		{
 			_ = this.Enqueue(async () =>
 			{
 				if (this.popupStack.Count == 0)
 					return;
-
-				PopupSession Session = this.popupStack.Peek();
-				if (!Session.Options.CloseOnBackgroundTap)
+				PopupSession session = this.popupStack.Peek();
+				if (!session.Options.CloseOnBackgroundTap)
 					return;
-
 				await this.PopTopAsync();
 			});
 		}
 
-		private void OnPresenterPopupBackRequested(object? Sender, EventArgs Args)
+		private void OnPresenterPopupBackRequested(object? sender, EventArgs args)
 		{
 			_ = this.Enqueue(async () =>
 			{
 				if (this.popupStack.Count == 0)
 					return;
-
-				PopupSession Session = this.popupStack.Peek();
-				if (!Session.Options.CloseOnBackButton)
+				PopupSession session = this.popupStack.Peek();
+				if (!session.Options.CloseOnBackButton)
 					return;
-
 				await this.PopTopAsync();
 			});
 		}
 
-		private void RaisePopupStackChanged()
-		{
-			PopupStackChanged?.Invoke(this, EventArgs.Empty);
-		}
+		private void RaisePopupStackChanged() => this.PopupStackChanged?.Invoke(this, EventArgs.Empty);
 
-		private static async Task EnsureInitializedAsync(object? Target)
+		private static async Task EnsureInitializedAsync(object? target)
 		{
-			if (Target is null)
+			if (target is null)
 				return;
-
-			if (Target is ILifeCycleView LifeCycle)
+			if (target is ILifeCycleView lifeCycle)
 			{
-				Type TargetType = Target.GetType();
-				System.Reflection.PropertyInfo? Property = TargetType.GetProperty("IsInitialized", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
-				bool IsInitialized = false;
-				if (Property?.CanRead == true)
-					IsInitialized = (bool)(Property.GetValue(Target) ?? false);
-
-				if (!IsInitialized)
+				System.Reflection.PropertyInfo? property = target.GetType().GetProperty("IsInitialized", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+				bool isInitialized = false;
+				if (property?.CanRead == true)
+					isInitialized = (bool)(property.GetValue(target) ?? false);
+				if (!isInitialized)
 				{
-					await LifeCycle.OnInitializeAsync();
-					if (Property?.CanWrite == true)
-						Property.SetValue(Target, true);
+					await lifeCycle.OnInitializeAsync();
+					if (property?.CanWrite == true)
+						property.SetValue(target, true);
 				}
 			}
 		}
 
-		private static async Task InvokeAppearingAsync(object? Target)
+		private static async Task InvokeAppearingAsync(object? target)
 		{
-			if (Target is ILifeCycleView LifeCycle)
-				await LifeCycle.OnAppearingAsync();
+			if (target is ILifeCycleView lifeCycle)
+				await lifeCycle.OnAppearingAsync();
 		}
 
-		private static async Task InvokeDisappearingAsync(object? Target)
+		private static async Task InvokeDisappearingAsync(object? target)
 		{
-			if (Target is ILifeCycleView LifeCycle)
-				await LifeCycle.OnDisappearingAsync();
+			if (target is ILifeCycleView lifeCycle)
+				await lifeCycle.OnDisappearingAsync();
 		}
 
-		private static async Task InvokeDisposeAsync(object? Target)
+		private static async Task InvokeDisposeAsync(object? target)
 		{
-			if (Target is ILifeCycleView LifeCycle)
-				await LifeCycle.OnDisposeAsync();
+			if (target is ILifeCycleView lifeCycle)
+				await lifeCycle.OnDisposeAsync();
 		}
 
 		private sealed class PopupSession
 		{
-			public PopupSession(ContentView View, object? BindingContext, PopupOptions Options)
+			public PopupSession(ContentView view, object? bindingContext, PopupOptions options)
 			{
-				this.View = View;
-				this.BindingContext = BindingContext;
-				this.Options = Options;
+				this.View = view;
+				this.BindingContext = bindingContext;
+				this.Options = options;
 				this.Completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 			}
-
 			public ContentView View { get; }
-
 			public object? BindingContext { get; }
-
 			public PopupOptions Options { get; }
-
 			public TaskCompletionSource<bool> Completion { get; }
 		}
 	}

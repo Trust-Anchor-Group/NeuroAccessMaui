@@ -83,37 +83,6 @@ namespace NeuroAccessMaui.Test
         Task PopToRootAsync();
 
         /// <summary>
-        /// Presents a page modally.
-        /// </summary>
-        /// <param name="Route">The route string.</param>
-        Task PushModalAsync(string Route);
-
-        /// <summary>
-        /// Presents a view modally using dependency injection.
-        /// </summary>
-        /// <typeparam name="TPage">The view type.</typeparam>
-        Task PushModalAsync<TPage>() where TPage : BaseContentPage;
-
-        /// <summary>
-        /// Presents a view modally using dependency injection with a view model.
-        /// </summary>
-        /// <typeparam name="TPage">The view type.</typeparam>
-        /// <typeparam name="TViewModel">The view model type.</typeparam>
-        Task PushModalAsync<TPage, TViewModel>()
-            where TPage : BaseContentPage
-            where TViewModel : BaseViewModel;
-
-        /// <summary>
-        /// Pops the top modal page.
-        /// </summary>
-        Task PopModalAsync();
-
-        /// <summary>
-        /// Gets the current modal view if any.
-        /// </summary>
-        BaseContentPage CurrentModalPage { get; }
-
-        /// <summary>
         /// Gets the current visible view.
         /// </summary>
         BaseContentPage CurrentPage { get; }

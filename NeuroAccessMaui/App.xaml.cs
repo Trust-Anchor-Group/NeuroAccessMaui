@@ -582,32 +582,6 @@ namespace NeuroAccessMaui
 
         #endregion
 
-        #region Page Navigation
-
-        /// <summary>
-        /// Switch to the registration flow.
-        /// </summary>
-        public static Task SetRegistrationPageAsync()
-            => ServiceRef.Provider.GetRequiredService<CustomShell>()
-                .SetPageAsync(ServiceHelper.GetService<RegistrationPage>());
-
-        /// <summary>
-        /// Switch to the main page.
-        /// </summary>
-        public static Task SetMainPageAsync()
-            => ServiceRef.Provider.GetRequiredService<CustomShell>()
-                .SetPageAsync(ServiceHelper.GetService<MainPage>());
-
-        public static Task SetPageAsync(string pagePath)
-        {
-            if (Shell.Current.CurrentState.Location?.OriginalString == pagePath)
-                return Task.CompletedTask;
-
-            return MainThread.InvokeOnMainThreadAsync(() => Shell.Current.GoToAsync(pagePath));
-        }
-
-        #endregion
-
         #region Error Handling
 
         private async void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)

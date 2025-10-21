@@ -7,6 +7,8 @@ namespace NeuroAccessMaui.Services.UI.Popups
 	/// </summary>
 	public class PopupOptions
 	{
+		private double overlayOpacity = 0.7;
+
 		/// <summary>
 		/// Gets or sets the transition used when the popup is shown.
 		/// </summary>
@@ -19,11 +21,13 @@ namespace NeuroAccessMaui.Services.UI.Popups
 
 		/// <summary>
 		/// Gets or sets if tapping the dimmed background should close the popup.
+		/// Ignored if <see cref="IsBlocking"/> or <see cref="DisableBackgroundTap"/> is true.
 		/// </summary>
 		public bool CloseOnBackgroundTap { get; set; } = true;
 
 		/// <summary>
 		/// Gets or sets if the hardware back button should close the popup.
+		/// For blocking popups this is typically set to true to allow dismissal.
 		/// </summary>
 		public bool CloseOnBackButton { get; set; } = true;
 
@@ -36,15 +40,62 @@ namespace NeuroAccessMaui.Services.UI.Popups
 			get => this.overlayOpacity;
 			set
 			{
-				double Clamped = value;
-				if (Clamped < 0)
-					Clamped = 0;
-				else if (Clamped > 1)
-					Clamped = 1;
-				this.overlayOpacity = Clamped;
+				double clamped = value;
+				if (clamped < 0)
+					clamped = 0;
+				else if (clamped > 1)
+					clamped = 1;
+				this.overlayOpacity = clamped;
 			}
 		}
 
-		private double overlayOpacity = 0.7;
+		/// <summary>
+		/// If true, popup behaves as a blocking modal (single logical layer). Background taps are disabled unless explicitly overridden.
+		/// </summary>
+		public bool IsBlocking { get; set; } = false;
+
+		/// <summary>
+		/// Explicit flag to disable background tap regardless of <see cref="CloseOnBackgroundTap"/>.
+		/// </summary>
+		public bool DisableBackgroundTap { get; set; } = false;
+
+		/// <summary>
+		/// Normalizes option combinations enforcing blocking semantics.
+		/// </summary>
+		public void Normalize()
+		{
+			if (this.IsBlocking)
+			{
+				// Blocking popups should not close on background tap unless developer explicitly allows it.
+				if (this.CloseOnBackgroundTap && !this.DisableBackgroundTap)
+					this.CloseOnBackgroundTap = false;
+				// Ensure overlay is at least semi-opaque for modals.
+				if (this.OverlayOpacity < 0.3)
+					this.OverlayOpacity = 0.7;
+			}
+			if (this.DisableBackgroundTap)
+				this.CloseOnBackgroundTap = false;
+		}
+
+		/// <summary>
+		/// Creates standard blocking modal popup options.
+		/// </summary>
+		/// <param name="overlayOpacity">Optional overlay opacity (default 0.7).</param>
+		/// <param name="closeOnBackButton">If back button dismisses (default true).</param>
+		/// <returns>Configured blocking <see cref="PopupOptions"/>.</returns>
+		public static PopupOptions CreateModal(double overlayOpacity = 0.7, bool closeOnBackButton = true)
+		{
+			PopupOptions options = new()
+			{
+				IsBlocking = true,
+				DisableBackgroundTap = true,
+				OverlayOpacity = overlayOpacity,
+				CloseOnBackButton = closeOnBackButton,
+				ShowTransition = PopupTransition.Scale,
+				HideTransition = PopupTransition.Fade
+			};
+			options.Normalize();
+			return options;
+		}
 	}
 }

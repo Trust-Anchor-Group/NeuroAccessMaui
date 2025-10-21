@@ -6,6 +6,7 @@ using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
@@ -423,7 +424,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			catch (ForbiddenException)    // Old ID belonging to a previous account, for example. Simply discard.
 			{
 				await ServiceRef.TagProfile.ClearLegalIdentity();
-				await App.SetRegistrationPageAsync();
+				await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.FullSetup});
 				return;
 			}
 			catch (Exception ex)

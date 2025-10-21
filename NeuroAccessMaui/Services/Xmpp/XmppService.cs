@@ -81,6 +81,7 @@ using Waher.Script.Constants;
 using Waher.Security.JWT;
 using Waher.Things;
 using Waher.Things.SensorData;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -1519,7 +1520,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await RuntimeSettings.SetAsync(Constants.Settings.TransferIdCodeSent, string.Empty);
 			await Database.Provider.Flush();
 			WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
-			await App.SetRegistrationPageAsync();
+			await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.FullSetup});
 		}
 
 		/// <summary>

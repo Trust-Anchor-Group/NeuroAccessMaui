@@ -87,7 +87,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration
 				}
 				finally
 				{
-					await App.SetMainPageAsync();
+				//	await App.SetMainPageAsync();
 				}
 				return;
 			}

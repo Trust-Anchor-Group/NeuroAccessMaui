@@ -1,3 +1,9 @@
+using System.ComponentModel;
+using System.Globalization;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
+using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -5,23 +11,18 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Cache;
+using NeuroAccessMaui.Services.Cache.Invalidation;
+using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 using NeuroAccessMaui.UI.Popups.Settings;
-using System.ComponentModel;
-using System.Globalization;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
-using System.Xml;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
-using NeuroAccessMaui.Services.Cache.Invalidation;
-using NeuroAccessMaui.Services.Kyc;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -358,8 +359,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				await ServiceRef.XmppService.TryGenerateAndChangePassword();
 
 				//Update the local password
-				GoToRegistrationStep(RegistrationStep.DefinePassword);
-				await App.SetRegistrationPageAsync();
+				await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.ChangePin });
 
 				//Listen for completed event
 				WeakReferenceMessenger.Default.Register<RegistrationPageMessage>(this, this.HandleRegistrationPageMessage);
@@ -444,8 +444,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 						await ServiceRef.TagProfile.RevokeLegalIdentity(RevokedIdentity);
 					else
 						await ServiceRef.TagProfile.ClearLegalIdentity();
-					GoToRegistrationStep(RegistrationStep.ValidatePhone);
-					await App.SetRegistrationPageAsync();
+					await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.ReverifyIdentity });
 				}
 			}
 			catch (Exception ex)
@@ -475,7 +474,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				if (succeeded && CompromisedIdentity is not null)
 				{
 					await ServiceRef.TagProfile.CompromiseLegalIdentity(CompromisedIdentity);
-					await App.SetRegistrationPageAsync();
+					await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.ReverifyIdentity });
 				}
 			}
 			catch (Exception ex)
