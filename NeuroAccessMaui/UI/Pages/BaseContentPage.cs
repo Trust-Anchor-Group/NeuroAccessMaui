@@ -53,7 +53,6 @@ namespace NeuroAccessMaui.UI.Pages
 		{
 			//this.On<iOS>().SetUseSafeArea(true);
 			this.SetDynamicResource(Microsoft.Maui.Controls.VisualElement.BackgroundColorProperty, "SurfaceBackgroundWL");
-			this.Padding = ServiceRef.PlatformSpecific.GetInsets();
 		}
 
 		/// <summary>

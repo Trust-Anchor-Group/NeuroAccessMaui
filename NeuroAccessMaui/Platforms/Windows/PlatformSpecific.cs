@@ -173,7 +173,7 @@ namespace NeuroAccessMaui.Services
 		/// <inheritdoc/>
 		public Thickness GetInsets()
 		{
-			return new Thickness(0); // No safe area concept needed for desktop window.
+			return new Thickness(0,16,0,0); // No safe area concept needed for desktop window.
 		}
 	}
 }

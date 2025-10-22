@@ -16,11 +16,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		public override async Task OnAppearingAsync()
 		{
-			this.Padding = ServiceRef.PlatformSpecific.GetInsets();
-
 			await base.OnAppearingAsync();
-
-			
 		}
 
 		private async void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)

@@ -14,9 +14,8 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 		public SelectLanguagePopup()
 		{
 			this.InitializeComponent();
-
-			// Set the BindingContext to the dedicated view model.
 			this.BindingContext = new SelectLanguagePopupViewModel();
+
 
 			WeakReferenceMessenger.Default.Register<ScrollToLanguageMessage>(this, (r, m) =>
 			{

@@ -72,12 +72,13 @@ namespace NeuroAccessMaui.UI.Popups
 				VerticalOptions = LayoutOptions.Fill,
 				Padding = new Thickness(16)
 			};
+			root.InputTransparent = true;
+			root.CascadeInputTransparent = false;
 			root.Add(this.cardFrame);
 
 			this.PopupContent = root;
 
-			if (Application.Current?.Resources.TryGetValue("PopupBorder", out object? style) == true && style is Style borderStyle)
-				this.CardStyle = borderStyle;
+			this.SetDynamicResource(CardStyleProperty, "PopupBorder");
 
 			this.SizeChanged += this.OnSizeChanged;
 		}

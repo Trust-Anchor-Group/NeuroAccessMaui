@@ -13,7 +13,7 @@
 						xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 	<!-- Main Grid-->
 	<Grid RowDefinitions="auto, *, auto">
-		<Grid Margin="{DynamicResource MediumMargins}" ColumnDefinitions="*, auto, *">
+		<Grid Margin="16,0,16,16" ColumnDefinitions="*, auto, *">
 			<controls:SvgButton
 					Command="{Binding ViewMainPageCommand}"
 					SvgSource="close.svg"

@@ -14,8 +14,7 @@
 						xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
 						xmlns:ext="clr-namespace:NeuroAccessMaui.MarkupExtensions"
 						 Shell.FlyoutBehavior="Flyout"
-						Shell.NavBarIsVisible="False"
-					  Padding="{ext:SafeInsets}">
+						Shell.NavBarIsVisible="False">
 <!--
 	<Shell.TitleView>
 		<Grid Padding="10">

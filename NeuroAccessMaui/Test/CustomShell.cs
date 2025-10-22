@@ -12,6 +12,7 @@ using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main; // for Colors
 using NeuroAccessMaui.UI.Pages.Startup;             // for LoadingPage
 using NeuroAccessMaui.Services.UI; // for back handling
+using NeuroAccessMaui.UI;
 
 namespace NeuroAccessMaui.Test
 {
@@ -51,7 +52,7 @@ namespace NeuroAccessMaui.Test
                     new RowDefinition { Height = GridLength.Auto }
                 }
             };
-            this.layout.BackgroundColor = Colors.White;
+			this.layout.SetDynamicResource(Grid.BackgroundColorProperty, "SurfaceBackgroundWL");
 
             this.topBar = new ContentView { IsVisible = false };
             this.navBar = new ContentView { IsVisible = false };
@@ -93,6 +94,7 @@ namespace NeuroAccessMaui.Test
             this.contentHostA.Content = loadingPageInstance;
             this.contentHostB.Content = null;
             this.currentScreen = loadingPageInstance;
+            this.ApplySafeAreaPadding(this.contentHostA, loadingPageInstance);
 
             this.Dispatcher.Dispatch(async () =>
             {
@@ -101,6 +103,7 @@ namespace NeuroAccessMaui.Test
             });
 
             this.Behaviors.Add(new StatusBarBehavior { StatusBarColor = Colors.Transparent, StatusBarStyle = StatusBarStyle.Default });
+            this.SizeChanged += this.OnShellSizeChanged;
         }
 
         private void OnPopupBackgroundTapped(object? sender, EventArgs e)
@@ -123,6 +126,7 @@ namespace NeuroAccessMaui.Test
             inactiveSlot.Content = screen;
             inactiveSlot.BindingContext = screen.BindingContext;
             inactiveSlot.IsVisible = true;
+            this.ApplySafeAreaPadding(inactiveSlot, screen);
             this.UpdateBars(screen);
 
             if (transition == TransitionType.Fade)
@@ -158,6 +162,8 @@ namespace NeuroAccessMaui.Test
             activeSlot.Content = null;
             this.isSlotAActive = !this.isSlotAActive;
             this.currentScreen = screen;
+            ContentView newlyActiveSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
+            this.ApplySafeAreaPadding(newlyActiveSlot, screen);
         }
 
         public async Task ShowPopup(ContentView popup, PopupTransition transition, PopupVisualState visualState)
@@ -352,6 +358,27 @@ namespace NeuroAccessMaui.Test
         private void ApplyOverlayInteractionState(PopupVisualState visualState)
         {
             this.popupOverlay.InputTransparent = false;
+        }
+
+        private void OnShellSizeChanged(object? sender, EventArgs e)
+        {
+            if (this.currentScreen is null)
+                return;
+
+            ContentView activeSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
+            this.ApplySafeAreaPadding(activeSlot, this.currentScreen);
+        }
+
+        private void ApplySafeAreaPadding(ContentView host, BindableObject screen)
+        {
+            if (screen is null)
+                throw new ArgumentNullException(nameof(screen));
+
+            if (host is null)
+                throw new ArgumentNullException(nameof(host));
+
+            Thickness padding = SafeArea.ResolveInsetsFor(screen);
+            host.Padding = padding;
         }
 
         public void UpdateBars(BindableObject screen)
