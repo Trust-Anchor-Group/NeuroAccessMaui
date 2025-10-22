@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Handlers.Items;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.LifecycleEvents;
-using Mopups.Hosting;
 using NeuroAccessMaui.UI;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -29,6 +28,14 @@ using Microsoft.Maui.Hosting;
 #endif
 #if ANDROID
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+#endif
+#if WINDOWS
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using WinScrollBarVisibility = Microsoft.UI.Xaml.Controls.ScrollBarVisibility;
+using WinThickness = Microsoft.UI.Xaml.Thickness;
+using WinSolidColorBrush = Microsoft.UI.Xaml.Media.SolidColorBrush;
 #endif
 
 namespace NeuroAccessMaui
@@ -62,11 +69,18 @@ namespace NeuroAccessMaui
 					}));
 #elif IOS
 				lifecycle.AddiOS(ios =>
-                ios.OnActivated(app =>
-                {
-                    // App has resumed on iOS
-                    App.RaiseAppActivated();
-                }));
+					ios.OnActivated(app =>
+					{
+						// App has resumed on iOS
+						App.RaiseAppActivated();
+					}));
+#elif WINDOWS
+				lifecycle.AddWindows(windows =>
+					windows.OnActivated((window, args) =>
+					{
+						// App has resumed on Windows
+						App.RaiseAppActivated();
+					}));
 #endif
 			});
 
@@ -88,7 +102,6 @@ namespace NeuroAccessMaui
 			});
 
 			// NuGets
-			Builder.ConfigureMopups();
 #if DEBUG
 			Builder.UseMauiCommunityToolkit();
 #else
@@ -134,13 +147,34 @@ namespace NeuroAccessMaui
 
 			CollectionViewHandler.Mapper.AppendToMapping("BouncesCollectionViewHandler", (handler, view) =>
 			{
-				//!!! not sure how this is done here yet
-				//!!! handler.ViewController.PlatformView.Bounces = false;
+				handler.PlatformView.Bounces = false;
 			});
 
 			Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("BorderStyleEntryHandler", (handler, view) =>
 			{
 				handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
+			});
+
+			EditorHandler.Mapper.AppendToMapping("BorderlessEditorHandler", (handler, view) =>
+			{
+				handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
+			});
+
+			PickerHandler.Mapper.AppendToMapping("BorderlessPickerHandler", (handler, view) =>
+			{
+				handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
+			});
+
+			DatePickerHandler.Mapper.AppendToMapping("BorderlessDatePickerHandler", (handler, view) =>
+			{
+				handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
+				handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
+			});
+
+			TimePickerHandler.Mapper.AppendToMapping("BorderlessTimePickerHandler", (handler, view) =>
+			{
+				handler.PlatformView.BorderStyle = UIKit.UITextBorderStyle.None;
+				handler.PlatformView.BackgroundColor = UIKit.UIColor.Clear;
 			});
 #elif ANDROID
 			ScrollViewHandler.Mapper.AppendToMapping("OverScrollModeScrollViewHandler", (handler, view) =>
@@ -173,7 +207,133 @@ namespace NeuroAccessMaui
 			{
 				handler.PlatformView?.Clear();
 			});
+#elif WINDOWS
+			ScrollViewHandler.Mapper.AppendToMapping("HideScrollBarsScrollViewHandler", (handler, view) =>
+			{
+				if (handler.PlatformView is ScrollViewer ScrollViewer)
+				{
+					ScrollViewer.VerticalScrollBarVisibility = WinScrollBarVisibility.Hidden;
+					ScrollViewer.HorizontalScrollBarVisibility = WinScrollBarVisibility.Hidden;
+				}
+			});
+
+			CollectionViewHandler.Mapper.AppendToMapping("HideScrollBarsCollectionViewHandler", (handler, view) =>
+			{
+				if (handler.PlatformView is ListViewBase ListViewBase)
+				{
+					ScrollViewer? NestedScrollViewer = FindDescendantScrollViewer(ListViewBase);
+					if (NestedScrollViewer is not null)
+					{
+						NestedScrollViewer.VerticalScrollBarVisibility = WinScrollBarVisibility.Hidden;
+						NestedScrollViewer.HorizontalScrollBarVisibility = WinScrollBarVisibility.Hidden;
+					}
+				}
+			});
+
+			EntryHandler.Mapper.AppendToMapping("NoBorderEntryHandler", (handler, view) =>
+			{
+				if (handler.PlatformView is TextBox TextBox)
+				{
+					TextBox.BorderThickness = new WinThickness(0);
+					TextBox.BorderBrush = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					TextBox.Background = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					TextBox.GotFocus += (sender, args) =>
+					{
+						TextBox.BorderThickness = new WinThickness(0);
+						TextBox.BorderBrush = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					};
+					TextBox.Loaded += (sender, args) =>
+					{
+						TextBox.BorderThickness = new WinThickness(0);
+						TextBox.BorderBrush = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					};
+				}
+			});
+
+			EditorHandler.Mapper.AppendToMapping("NoBorderEditorHandler", (handler, view) =>
+			{
+				if (handler.PlatformView is TextBox TextBox)
+				{
+					TextBox.BorderThickness = new WinThickness(0);
+					TextBox.BorderBrush = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					TextBox.Background = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					TextBox.GotFocus += (sender, args) =>
+					{
+						TextBox.BorderThickness = new WinThickness(0);
+						TextBox.BorderBrush = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					};
+					TextBox.Loaded += (sender, args) =>
+					{
+						TextBox.BorderThickness = new WinThickness(0);
+						TextBox.BorderBrush = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					};
+				}
+			});
+
+			PickerHandler.Mapper.AppendToMapping("NoBorderPickerHandler", (handler, view) =>
+			{
+				if (handler.PlatformView is ComboBox ComboBox)
+				{
+					ComboBox.BorderThickness = new WinThickness(0);
+					ComboBox.BorderBrush = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					ComboBox.Background = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					ComboBox.GotFocus += (sender, args) =>
+					{
+						ComboBox.BorderThickness = new WinThickness(0);
+						ComboBox.BorderBrush = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					};
+					ComboBox.Loaded += (sender, args) =>
+					{
+						ComboBox.BorderThickness = new WinThickness(0);
+						ComboBox.BorderBrush = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					};
+				}
+			});
+
+			DatePickerHandler.Mapper.AppendToMapping("NoBorderDatePickerHandler", (handler, view) =>
+			{
+				if (handler.PlatformView is CalendarDatePicker CalendarDatePicker)
+				{
+					CalendarDatePicker.BorderThickness = new WinThickness(0);
+					CalendarDatePicker.BorderBrush = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					CalendarDatePicker.Background = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					CalendarDatePicker.GotFocus += (sender, args) =>
+					{
+						CalendarDatePicker.BorderThickness = new WinThickness(0);
+						CalendarDatePicker.BorderBrush = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					};
+					CalendarDatePicker.Loaded += (sender, args) =>
+					{
+						CalendarDatePicker.BorderThickness = new WinThickness(0);
+						CalendarDatePicker.BorderBrush = new WinSolidColorBrush(Microsoft.UI.Colors.Transparent);
+					};
+				}
+			});
+			// Windows TimePicker styling skipped (native control lacks BorderThickness). Add custom template if needed.
 #endif
 		}
+
+#if WINDOWS
+		private static ScrollViewer? FindDescendantScrollViewer(DependencyObject Root)
+		{
+			int Count = VisualTreeHelper.GetChildrenCount(Root);
+			for (int i = 0; i < Count; i++)
+			{
+				DependencyObject Child = VisualTreeHelper.GetChild(Root, i);
+				if (Child is ScrollViewer Found)
+				{
+					return Found;
+				}
+
+				ScrollViewer? Nested = FindDescendantScrollViewer(Child);
+				if (Nested is not null)
+				{
+					return Nested;
+				}
+			}
+
+			return null;
+		}
+#endif
 	}
 }
