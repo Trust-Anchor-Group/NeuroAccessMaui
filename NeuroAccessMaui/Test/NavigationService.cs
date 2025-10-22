@@ -70,7 +70,7 @@ namespace NeuroAccessMaui.Test
                 BaseContentPage page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
                     ?? throw new InvalidOperationException($"No page registered for route '{Route}' or not a BaseContentPage");
 
-                await EnsureInitializedAsync(page);
+                Task initializationTask = EnsureInitializedAsync(page);
                 this.navigationArgsStack.Push(navArgs);
                 this.screenStack.Push(page);
 
@@ -81,7 +81,12 @@ namespace NeuroAccessMaui.Test
                     this.Presenter.UpdateBars(page);
                     _ = page.Dispatcher.Dispatch(async () =>
                     {
-                        try { await Task.Yield(); await page.OnAppearingAsync(); }
+                        try
+                        {
+                            await initializationTask;
+                            await Task.Yield();
+                            await page.OnAppearingAsync();
+                        }
                         catch (Exception ex) { ServiceRef.LogService.LogException(Waher.Events.Log.UnnestException(ex)); }
                         finally { navArgs.NavigationCompletionSource.TrySetResult(true); }
                     });
@@ -100,7 +105,7 @@ namespace NeuroAccessMaui.Test
         {
             return this.Enqueue(async () =>
             {
-                await EnsureInitializedAsync(Page);
+                Task initializationTask = EnsureInitializedAsync(Page);
                 this.latestArguments = null;
                 this.navigationArgsStack.Push(null);
                 this.screenStack.Push(Page);
@@ -111,7 +116,12 @@ namespace NeuroAccessMaui.Test
                     this.Presenter.UpdateBars(Page);
                     _ = Page.Dispatcher.Dispatch(async () =>
                     {
-                        try { await Task.Yield(); await Page.OnAppearingAsync(); }
+                        try
+                        {
+                            await initializationTask;
+                            await Task.Yield();
+                            await Page.OnAppearingAsync();
+                        }
                         catch (Exception ex) { ServiceRef.LogService.LogException(Waher.Events.Log.UnnestException(ex)); }
                     });
                 }
@@ -154,27 +164,47 @@ namespace NeuroAccessMaui.Test
         {
             if (this.screenStack.Count <= 1)
                 return;
+            List<BaseContentPage> removedPages = new();
+            bool transitionCompleted = false;
             this.isNavigating = true;
             try
             {
                 while (this.screenStack.Count > 1)
                 {
-                    NavigationArgs? navArgs = this.navigationArgsStack.Pop();
+                    _ = this.navigationArgsStack.Pop();
                     BaseContentPage popped = this.screenStack.Pop();
-                    await popped.OnDisappearingAsync();
-                    if (popped is IAsyncDisposable ad) await ad.DisposeAsync();
-                    else if (popped is IDisposable d) d.Dispose();
                     this.RemoveArgsFor(popped);
+                    removedPages.Add(popped);
                 }
                 BaseContentPage root = this.screenStack.Peek();
                 await this.Presenter.ShowScreen(root, TransitionType.Fade);
+                transitionCompleted = true;
                 _ = root.Dispatcher.Dispatch(async () =>
                 {
                     try { await Task.Yield(); await root.OnAppearingAsync(); } catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
                 });
                 this.Presenter.UpdateBars(root);
             }
+            catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
             finally { this.isNavigating = false; }
+
+            await Task.Yield();
+            for (int i = 0; i < removedPages.Count; i++)
+            {
+                BaseContentPage removed = removedPages[i];
+                try
+                {
+                    bool skipDisappearing = transitionCompleted && i == 0;
+                    if (!skipDisappearing)
+                        await removed.OnDisappearingAsync();
+                    await removed.OnDisposeAsync();
+                    if (removed is IAsyncDisposable asyncDisposable)
+                        await asyncDisposable.DisposeAsync();
+                    else if (removed is IDisposable disposable)
+                        disposable.Dispose();
+                }
+                catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+            }
         });
 
         /// <inheritdoc/>
@@ -293,34 +323,54 @@ namespace NeuroAccessMaui.Test
         {
             if (this.screenStack.Count <= 1)
                 return;
-            this.isNavigating = true;
+            List<BaseContentPage> removedPages = new();
+            bool transitionCompleted = false;
             try
             {
                 NavigationArgs? poppedArgs = this.navigationArgsStack.Pop();
                 BaseContentPage popped = this.screenStack.Pop();
-                await popped.OnDisappearingAsync();
-                if (popped is IAsyncDisposable ad) await ad.DisposeAsync(); else if (popped is IDisposable d) d.Dispose();
                 this.RemoveArgsFor(popped);
+                removedPages.Add(popped);
 
                 int levels = ComputeBackLevels(poppedArgs);
                 for (int i = 1; i < levels && this.screenStack.Count > 1; i++)
                 {
-                    NavigationArgs? extraArgs = this.navigationArgsStack.Pop();
+                    _ = this.navigationArgsStack.Pop();
                     BaseContentPage extra = this.screenStack.Pop();
-                    await extra.OnDisappearingAsync();
-                    if (extra is IAsyncDisposable ad2) await ad2.DisposeAsync(); else if (extra is IDisposable d2) d2.Dispose();
                     this.RemoveArgsFor(extra);
+                    removedPages.Add(extra);
                 }
 
                 BaseContentPage target = this.screenStack.Peek();
+                this.isNavigating = true;
                 await this.Presenter.ShowScreen(target, TransitionType.Fade);
+                transitionCompleted = true;
                 _ = target.Dispatcher.Dispatch(async () =>
                 {
                     try { await Task.Yield(); await target.OnAppearingAsync(); } catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
                 });
                 this.Presenter.UpdateBars(target);
             }
+            catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
             finally { this.isNavigating = false; }
+
+            await Task.Yield();
+            for (int i = 0; i < removedPages.Count; i++)
+            {
+                BaseContentPage removed = removedPages[i];
+                try
+                {
+                    bool skipDisappearing = transitionCompleted && i == 0;
+                    if (!skipDisappearing)
+                        await removed.OnDisappearingAsync();
+                    await removed.OnDisposeAsync();
+                    if (removed is IAsyncDisposable asyncDisposable)
+                        await asyncDisposable.DisposeAsync();
+                    else if (removed is IDisposable disposable)
+                        disposable.Dispose();
+                }
+                catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+            }
         }
 
         #endregion
@@ -429,18 +479,13 @@ namespace NeuroAccessMaui.Test
 
         private async Task SetRootInternalAsync(BaseContentPage Page, NavigationArgs? Args)
         {
-            await EnsureInitializedAsync(Page);
+            Task initializationTask = EnsureInitializedAsync(Page);
+            List<BaseContentPage> removedPages = new();
             while (this.screenStack.Count > 0)
             {
                 BaseContentPage existing = this.screenStack.Pop();
-                try
-                {
-                    await existing.OnDisappearingAsync();
-                    await existing.OnDisposeAsync();
-                    if (existing is IAsyncDisposable ad) await ad.DisposeAsync(); else if (existing is IDisposable d) d.Dispose();
-                    this.RemoveArgsFor(existing);
-                }
-                catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                removedPages.Add(existing);
+                this.RemoveArgsFor(existing);
             }
             this.navigationArgsStack.Clear();
             this.navigationArgsMap.Clear();
@@ -452,18 +497,49 @@ namespace NeuroAccessMaui.Test
                 string route = Routing.GetRoute(Page) ?? Page.GetType().Name;
                 this.PushArgs(route, Args);
             }
+            bool transitionCompleted = false;
             try
             {
                 this.isNavigating = true;
                 await this.Presenter.ShowScreen(Page, TransitionType.Fade);
+                transitionCompleted = true;
                 this.Presenter.UpdateBars(Page);
                 _ = Page.Dispatcher.Dispatch(async () =>
                 {
-                    try { await Task.Yield(); await Page.OnAppearingAsync(); } catch (Exception ex) { ServiceRef.LogService.LogException(ex); } finally { Args?.NavigationCompletionSource.TrySetResult(true); }
+                    try
+                    {
+                        await initializationTask;
+                        await Task.Yield();
+                        await Page.OnAppearingAsync();
+                    }
+                    catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+                    finally { Args?.NavigationCompletionSource.TrySetResult(true); }
                 });
             }
-            catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+            catch (Exception ex)
+            {
+                ServiceRef.LogService.LogException(ex);
+                Args?.NavigationCompletionSource.TrySetResult(false);
+            }
             finally { this.isNavigating = false; }
+
+            await Task.Yield();
+            BaseContentPage? outgoingPage = removedPages.Count > 0 ? removedPages[0] : null;
+            foreach (BaseContentPage removed in removedPages)
+            {
+                try
+                {
+                    bool skipDisappearing = transitionCompleted && ReferenceEquals(removed, outgoingPage);
+                    if (!skipDisappearing)
+                        await removed.OnDisappearingAsync();
+                    await removed.OnDisposeAsync();
+                    if (removed is IAsyncDisposable asyncDisposable)
+                        await asyncDisposable.DisposeAsync();
+                    else if (removed is IDisposable disposable)
+                        disposable.Dispose();
+                }
+                catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
+            }
         }
 
         #endregion
