@@ -70,15 +70,16 @@ namespace NeuroAccessMaui.Test
                 BaseContentPage page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
                     ?? throw new InvalidOperationException($"No page registered for route '{Route}' or not a BaseContentPage");
 
-                Task initializationTask = EnsureInitializedAsync(page);
                 this.navigationArgsStack.Push(navArgs);
                 this.screenStack.Push(page);
 
+                Task initializationTask = Task.CompletedTask;
                 try
                 {
                     this.isNavigating = true;
                     await this.Presenter.ShowScreen(page, TransitionType.Fade);
                     this.Presenter.UpdateBars(page);
+                    initializationTask = EnsureInitializedAsync(page);
                     _ = page.Dispatcher.Dispatch(async () =>
                     {
                         try
@@ -105,15 +106,16 @@ namespace NeuroAccessMaui.Test
         {
             return this.Enqueue(async () =>
             {
-                Task initializationTask = EnsureInitializedAsync(Page);
                 this.latestArguments = null;
                 this.navigationArgsStack.Push(null);
                 this.screenStack.Push(Page);
+                Task initializationTask = Task.CompletedTask;
                 try
                 {
                     this.isNavigating = true;
                     await this.Presenter.ShowScreen(Page, TransitionType.Fade);
                     this.Presenter.UpdateBars(Page);
+                    initializationTask = EnsureInitializedAsync(Page);
                     _ = Page.Dispatcher.Dispatch(async () =>
                     {
                         try
@@ -479,7 +481,6 @@ namespace NeuroAccessMaui.Test
 
         private async Task SetRootInternalAsync(BaseContentPage Page, NavigationArgs? Args)
         {
-            Task initializationTask = EnsureInitializedAsync(Page);
             List<BaseContentPage> removedPages = new();
             while (this.screenStack.Count > 0)
             {
@@ -497,6 +498,7 @@ namespace NeuroAccessMaui.Test
                 string route = Routing.GetRoute(Page) ?? Page.GetType().Name;
                 this.PushArgs(route, Args);
             }
+            Task initializationTask = Task.CompletedTask;
             bool transitionCompleted = false;
             try
             {
@@ -504,6 +506,7 @@ namespace NeuroAccessMaui.Test
                 await this.Presenter.ShowScreen(Page, TransitionType.Fade);
                 transitionCompleted = true;
                 this.Presenter.UpdateBars(Page);
+                initializationTask = EnsureInitializedAsync(Page);
                 _ = Page.Dispatcher.Dispatch(async () =>
                 {
                     try
