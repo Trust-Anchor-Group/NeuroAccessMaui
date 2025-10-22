@@ -19,26 +19,23 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 
 			WeakReferenceMessenger.Default.Register<ScrollToLanguageMessage>(this, (r, m) =>
 			{
-				// Find the visual element corresponding to the language name.
-				foreach (object Item in this.LanguagesContainer)
+				foreach (var element in this.LanguagesContainer.Children)
 				{
-					if (Item is not VisualElement { BindingContext: LanguageInfo Lang } Element)
-						continue;
-					if (Lang.Name != m.Value)
+					if (element is not VisualElement { BindingContext: ObservableLanguage lang })
 						continue;
 
-					// Scroll to the element.
-					MainThread.BeginInvokeOnMainThread(async void () =>
+					if (lang.Language.Name != m.Value)
+						continue;
+
+					MainThread.BeginInvokeOnMainThread(async () =>
 					{
 						try
 						{
-							await this.InnerScrollView.ScrollToAsync(Element, ScrollToPosition.MakeVisible, true);
+							await this.InnerScrollView.ScrollToAsync(element as Element, ScrollToPosition.MakeVisible, true);
 						}
-						catch (Exception)
-						{
-							return; // Ignore, not muy importante.
-						}
+						catch { /* ignore */ }
 					});
+
 					break;
 				}
 			});

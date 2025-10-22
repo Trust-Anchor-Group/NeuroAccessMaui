@@ -29,8 +29,11 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 
 			this.Languages = new ObservableCollection<ObservableLanguage>(
 				App.SupportedLanguages.Select(l =>
-					new ObservableLanguage(l, l.Name == this.SelectedLanguageName))
-			);
+					new ObservableLanguage(l, this.SelectLanguageAsync)
+					{
+						IsSelected = l.Name == this.SelectedLanguageName
+					}));
+
 
 		}
 
@@ -50,6 +53,14 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 			LanguageInfo? SelectedLanguage = this.Languages.FirstOrDefault(l => l.Language.Name == languageName)?.Language;
 			if (SelectedLanguage is null)
 				return;
+
+			// Update selection flags for visual feedback.
+			foreach (ObservableLanguage Observable in this.Languages)
+			{
+				bool IsSelected = Observable.Language.Name == languageName;
+				if (Observable.IsSelected != IsSelected)
+					Observable.IsSelected = IsSelected;
+			}
 
 			// Update selected language property.
 			this.SelectedLanguageName = SelectedLanguage.Name;
