@@ -139,6 +139,7 @@ namespace NeuroAccessMaui.Services.UI.Popups
 			}
 
 			PopupSession session = new PopupSession(popupView, viewModel, options);
+			ApplyOptionsToPopup(popupView, options);
 			this.popupStack.Push(session);
 
 			IShellPresenter presenter = this.GetPresenter();
@@ -303,7 +304,26 @@ namespace NeuroAccessMaui.Services.UI.Popups
 
 		private static PopupVisualState CreateVisualState(PopupOptions options)
 		{
-			return new PopupVisualState(options.OverlayOpacity, options.IsBlocking, options.CloseOnBackgroundTap);
+			return new PopupVisualState(
+				options.OverlayOpacity,
+				options.IsBlocking,
+				options.CloseOnBackgroundTap,
+				options.Placement,
+				options.AnchorPoint,
+				options.Margin,
+				options.Padding);
+		}
+
+		private static void ApplyOptionsToPopup(ContentView popupView, PopupOptions options)
+		{
+			if (popupView is BasePopupView basePopup)
+			{
+				basePopup.Placement = options.Placement;
+				basePopup.AnchorPoint = options.AnchorPoint;
+				basePopup.PopupMargin = options.Margin;
+				basePopup.PopupPadding = options.Padding;
+				basePopup.CloseOnBackgroundTap = options.CloseOnBackgroundTap && !options.DisableBackgroundTap;
+			}
 		}
 
 		private static async Task EnsureInitializedAsync(object? target)

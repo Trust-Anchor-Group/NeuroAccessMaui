@@ -1,4 +1,7 @@
+using Microsoft.Maui;
+using Microsoft.Maui.Graphics;
 using NeuroAccessMaui.Test;
+using NeuroAccessMaui.UI.Popups;
 
 namespace NeuroAccessMaui.Services.UI.Popups
 {
@@ -58,6 +61,26 @@ namespace NeuroAccessMaui.Services.UI.Popups
 		/// Explicit flag to disable background tap regardless of <see cref="CloseOnBackgroundTap"/>.
 		/// </summary>
 		public bool DisableBackgroundTap { get; set; } = false;
+
+		/// <summary>
+		/// Defines how the popup content should be positioned on screen.
+		/// </summary>
+		public PopupPlacement Placement { get; set; } = PopupPlacement.Center;
+
+		/// <summary>
+		/// Optional anchor coordinate in device-independent units used with <see cref="PopupPlacement.Anchor"/>.
+		/// </summary>
+		public Point? AnchorPoint { get; set; }
+
+		/// <summary>
+		/// Margin applied around the popup container.
+		/// </summary>
+		public Thickness Margin { get; set; } = new Thickness(0);
+
+		/// <summary>
+		/// Padding applied inside the popup container before measuring child content.
+		/// </summary>
+		public Thickness Padding { get; set; } = new Thickness(0);
 
 		/// <summary>
 		/// Normalizes option combinations enforcing blocking semantics.

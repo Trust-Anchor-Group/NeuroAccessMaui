@@ -76,8 +76,8 @@ namespace NeuroAccessMaui.Services.Authentication
 				CheckPasswordViewModel ViewModel = new(purpose);
 				string? Result = await this.popupService.PushAsync<CheckPasswordPopup, CheckPasswordViewModel, string>(ViewModel, new PopupOptions
 				{
-					CloseOnBackButton = false,
-					CloseOnBackgroundTap = false
+					CloseOnBackButton = true,
+					CloseOnBackgroundTap = true
 				});
 				await this.CheckUserBlockingAsync();
 				return Result;

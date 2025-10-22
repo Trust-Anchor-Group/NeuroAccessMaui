@@ -66,10 +66,7 @@ namespace NeuroAccessMaui.Test
 			this.popupOverlay = new Grid { IsVisible = false, InputTransparent = false };
 			this.popupOverlay.Add(this.popupBackground);
 			this.popupHost = new Grid { VerticalOptions = LayoutOptions.Fill, HorizontalOptions = LayoutOptions.Fill };
-
 			this.popupOverlay.Add(this.popupHost);
-			this.popupHost.InputTransparent = true;
-			this.popupHost.CascadeInputTransparent = false;
 
 			TapGestureRecognizer popupBackgroundTap = new();
             popupBackgroundTap.Tapped += this.OnPopupBackgroundTapped;

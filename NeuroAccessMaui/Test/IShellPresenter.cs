@@ -1,6 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.Maui;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Graphics;
+using NeuroAccessMaui.UI.Popups;
 
 namespace NeuroAccessMaui.Test
 {
@@ -24,11 +27,15 @@ namespace NeuroAccessMaui.Test
     /// </summary>
     public sealed class PopupVisualState
     {
-        public PopupVisualState(double overlayOpacity, bool isBlocking, bool allowBackgroundTap)
+        public PopupVisualState(double overlayOpacity, bool isBlocking, bool allowBackgroundTap, PopupPlacement placement, Point? anchorPoint, Thickness margin, Thickness padding)
         {
             this.OverlayOpacity = overlayOpacity;
             this.IsBlocking = isBlocking;
             this.AllowBackgroundTap = allowBackgroundTap;
+            this.Placement = placement;
+            this.AnchorPoint = anchorPoint;
+            this.Margin = margin;
+            this.Padding = padding;
         }
 
         public double OverlayOpacity { get; }
@@ -36,5 +43,13 @@ namespace NeuroAccessMaui.Test
         public bool IsBlocking { get; }
 
         public bool AllowBackgroundTap { get; }
+
+        public PopupPlacement Placement { get; }
+
+        public Point? AnchorPoint { get; }
+
+        public Thickness Margin { get; }
+
+        public Thickness Padding { get; }
     }
 }
