@@ -498,7 +498,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 					if (this.CoordinatorViewModel is not null)
 					{
-						OnboardingStep Next = VerifyIsTemporary ? OnboardingStep.CreateAccount : OnboardingStep.ValidateEmail;
+						OnboardingStep Next = VerifyIsTemporary ? OnboardingStep.NameEntry : OnboardingStep.ValidateEmail;
 						await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(Next);
 					}
 				}
