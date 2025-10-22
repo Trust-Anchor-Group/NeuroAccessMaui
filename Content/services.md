@@ -18,11 +18,35 @@ The [TagProfile](../NeuroAccessMaui/Services/Tag/ITagProfile.cs) represents and 
 
 ## UiService
 
-The [UiService](../NeuroAccessMaui/Services/UI/IUiService.cs) is responsible for everything related to the UI, this includes:
+The [UiService](../NeuroAccessMaui/Services/UI/IUiService.cs) orchestrates high-level UI concerns and acts as a façade over the lower-level navigation and popup services. It provides helpers to:
 
 - Navigation
 - Popups
 - Screenshots
+
+Internally, `UiService` resolves `INavigationService` and `IPopupService` to execute navigation flows, show popups or blocking dialogs, and capture UI state. Consumers should prefer `UiService` for high-level tasks (launching onboarding flows, displaying global dialogs, etc.) and fall back to the dedicated services when they need more granular control.
+
+### NavigationService
+
+The [NavigationService](../NeuroAccessMaui/Services/UI/NavigationService.cs) maintains a custom stack of `BaseContentPage` instances. Calls to `GoToAsync`, `SetRootAsync`, or `GoBackAsync` are serialized through a main-thread queue to avoid overlapping transitions. The service:
+
+- Resolves pages (and optional view models) via MAUI routing/DI.
+- Tracks navigation arguments, unique route IDs, and back-stack metadata.
+- Invokes lifecycle methods (`OnInitializeAsync`, `OnAppearingAsync`, `OnDisappearingAsync`) for both pages and view models.
+- Delegates rendering to the active `IShellPresenter` (currently `CustomShell`) which performs the actual page animations.
+- Handles hardware back presses by consulting the popup stack and current page/view model back handlers.
+
+### PopupService
+
+The [PopupService](../NeuroAccessMaui/Services/UI/Popups/PopupService.cs) provides a queued API for showing and dismissing popups. Core responsibilities:
+
+- Resolve popup views and view models from dependency injection.
+- Enforce blocking semantics and overlay opacity according to [`PopupOptions`](../NeuroAccessMaui/Services/UI/Popups/PopupOptions.cs).
+- Serialize popup operations through a main-thread queue so only one animation runs at a time.
+- Relay lifecycle hooks (`OnInitializeAsync`, `OnAppearingAsync`, `OnDisappearingAsync`, `OnDisposeAsync`) to both view and view model.
+- Communicate with the `IShellPresenter` to animate popups and overlay changes by sending a `PopupVisualState`.
+
+Use the generic `PushAsync<TPopup, TViewModel>` overloads for strongly-typed popups and `PopAsync` to dismiss the top-most popup. The service also raises a `PopupStackChanged` event for scenarios where the UI needs to react to popup presence (e.g., disabling background navigation).
 
 ### XmppService ###
 

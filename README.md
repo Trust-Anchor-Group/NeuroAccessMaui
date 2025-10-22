@@ -34,12 +34,25 @@ dotnet build -t:Run -f net8.0-android
 
 ---
 
+## Navigation & UI Infrastructure
+
+Neuro-Access uses a custom presentation layer that sits on top of MAUI navigation:
+
+- `NavigationService` keeps an internal stack of `BaseContentPage` screens and serializes navigation requests via a main-thread queue.
+- `CustomShell` implements the `IShellPresenter` interface and hosts page content, global bars, popup/toast layers, and hardware back handling in one place.
+- `PopupService` pushes and dismisses popups through the presenter, ensuring consistent overlay transitions and lifecycle hooks.
+
+To navigate or show popups from a view model or service, resolve the appropriate service (for example `ServiceRef.NavigationService` or `ServiceRef.PopupService`) and call the async helpers (`GoToAsync`, `PushAsync`, `PopAsync`, etc.). See [Content/navigation.md](Content/navigation.md) for full examples and diagrams showing how these pieces interact.
+
+---
+
 ## Documentation Index
 
 Core docs:
 
 - Getting Started: [Content/getting_started.md](Content/getting_started.md)
 - Architecture: [Content/architecture.md](Content/architecture.md)
+- Navigation & Presenter layer: [Content/navigation.md](Content/navigation.md)
 - Services overview: [Content/services.md](Content/services.md)
 - Contributing Guide: [Content/contributing.md](Content/contributing.md)
 - Changelog: [CHANGELOG.md](CHANGELOG.md)
@@ -48,7 +61,6 @@ Core docs:
 Additional (planned) topics – placeholders not yet created (PRs welcome):
 
 - Dependencies (NuGet package rationale)
-- Navigation flow
 - Platform-specific code notes
 - API reference (public service & model surfaces)
 - Deployment (build, signing, store submission)
