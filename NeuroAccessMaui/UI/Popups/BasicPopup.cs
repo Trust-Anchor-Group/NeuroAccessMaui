@@ -59,7 +59,7 @@ namespace NeuroAccessMaui.UI.Popups
 
 			this.cardFrame = new Border
 			{
-				HorizontalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.Fill,
 				VerticalOptions = LayoutOptions.Center,
 				Padding = this.CardPadding,
 				Margin = this.CardMargin
