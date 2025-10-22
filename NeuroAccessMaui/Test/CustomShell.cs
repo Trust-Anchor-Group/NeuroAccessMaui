@@ -13,6 +13,7 @@ using NeuroAccessMaui.UI.Pages.Main; // for Colors
 using NeuroAccessMaui.UI.Pages.Startup;             // for LoadingPage
 using NeuroAccessMaui.Services.UI; // for back handling
 using NeuroAccessMaui.UI;
+using NeuroAccessMaui.UI.Popups;
 
 namespace NeuroAccessMaui.Test
 {
@@ -61,13 +62,16 @@ namespace NeuroAccessMaui.Test
             this.contentHostA.IsVisible = true;
             this.contentHostB.IsVisible = false;
 
-            this.popupBackground = new BoxView { Opacity = 0, BackgroundColor = Colors.Black };
-            this.popupOverlay = new Grid { IsVisible = false, InputTransparent = false };
-            this.popupOverlay.Add(this.popupBackground);
-            this.popupHost = new Grid { VerticalOptions = LayoutOptions.Fill, HorizontalOptions = LayoutOptions.Fill };
-            this.popupOverlay.Add(this.popupHost);
+			this.popupBackground = new BoxView { Opacity = 0, BackgroundColor = Colors.Black };
+			this.popupOverlay = new Grid { IsVisible = false, InputTransparent = false };
+			this.popupOverlay.Add(this.popupBackground);
+			this.popupHost = new Grid { VerticalOptions = LayoutOptions.Fill, HorizontalOptions = LayoutOptions.Fill };
 
-            TapGestureRecognizer popupBackgroundTap = new();
+			this.popupOverlay.Add(this.popupHost);
+			this.popupHost.InputTransparent = true;
+			this.popupHost.CascadeInputTransparent = false;
+
+			TapGestureRecognizer popupBackgroundTap = new();
             popupBackgroundTap.Tapped += this.OnPopupBackgroundTapped;
             this.popupBackground.GestureRecognizers.Add(popupBackgroundTap);
 
@@ -191,6 +195,12 @@ namespace NeuroAccessMaui.Test
                 await this.popupBackground.FadeTo(targetOpacity, 120, Easing.CubicOut);
             }
 
+            if (popup is BasePopupView popupView)
+            {
+                popupView.BackgroundTapped -= this.OnPopupBackgroundTapped;
+                popupView.BackgroundTapped += this.OnPopupBackgroundTapped;
+            }
+
             this.popupHost.Children.Add(popup);
             popup.ZIndex = this.popupHost.Children.Count;
 
@@ -204,6 +214,9 @@ namespace NeuroAccessMaui.Test
             ArgumentNullException.ThrowIfNull(popup);
 
             await this.RunHideAnimationAsync(popup, transition);
+            if (popup is BasePopupView popupView)
+                popupView.BackgroundTapped -= this.OnPopupBackgroundTapped;
+
             this.popupHost.Children.Remove(popup);
 
             if (nextVisualState is null)

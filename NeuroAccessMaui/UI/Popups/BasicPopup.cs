@@ -52,6 +52,7 @@ namespace NeuroAccessMaui.UI.Popups
 
 		private readonly Border cardFrame;
 		private readonly ContentView contentHost;
+		private readonly Grid root;
 
 		public BasicPopup()
 		{
@@ -66,14 +67,13 @@ namespace NeuroAccessMaui.UI.Popups
 			};
 			this.cardFrame.Content = this.contentHost;
 
-			Grid root = new Grid
+			this.root = new Grid
 			{
 				HorizontalOptions = LayoutOptions.Fill,
 				VerticalOptions = LayoutOptions.Fill,
 				Padding = new Thickness(16)
 			};
-			root.InputTransparent = true;
-			root.CascadeInputTransparent = false;
+
 			root.Add(this.cardFrame);
 
 			this.PopupContent = root;
@@ -176,7 +176,6 @@ namespace NeuroAccessMaui.UI.Popups
 
 			double maxWidth = this.Width * this.CardWidthFraction;
 			double maxHeight = this.Height * this.CardMaxHeightFraction;
-
 			this.cardFrame.MaximumWidthRequest = maxWidth;
 			this.cardFrame.MaximumHeightRequest = maxHeight;
 		}

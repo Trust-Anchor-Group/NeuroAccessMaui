@@ -1,5 +1,7 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Graphics;
 using NeuroAccessMaui.UI.Pages;
 
 namespace NeuroAccessMaui.UI.Popups
@@ -19,6 +21,8 @@ namespace NeuroAccessMaui.UI.Popups
 		private readonly Grid root;
 		private readonly ContentView contentHost;
 
+		public event EventHandler? BackgroundTapped;
+
 		public BasePopupView()
 		{
 			this.contentHost = new ContentView
@@ -34,7 +38,16 @@ namespace NeuroAccessMaui.UI.Popups
 			};
 			this.root.Add(this.contentHost);
 
+			TapGestureRecognizer popupBackgroundTap = new();
+			popupBackgroundTap.Tapped += this.OnPopupBackgroundTapped;
+			this.root.GestureRecognizers.Add(popupBackgroundTap);
+
 			base.Content = this.root;
+		}
+
+		private void OnPopupBackgroundTapped(object? sender, TappedEventArgs e)
+		{
+			this.BackgroundTapped?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
