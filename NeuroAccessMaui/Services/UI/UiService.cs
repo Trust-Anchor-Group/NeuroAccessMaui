@@ -2,8 +2,6 @@
 
 using IdApp.Cv;
 using IdApp.Cv.ColorModels;
-using Mopups.Pages;
-using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.UI.Tasks;
 using NeuroAccessMaui.UI.Pages;
@@ -30,7 +28,6 @@ namespace NeuroAccessMaui.Services.UI
 	{
 		private readonly Dictionary<string, NavigationArgs> navigationArgsMap = [];
 		private readonly ConcurrentQueue<UiTask> taskQueue = new();
-		private readonly Stack<PopupPage?> popupStack = new();
 		private NavigationArgs? latestArguments = null;
 		private bool isExecutingUiTasks = false;
 		private bool isNavigating = false;

@@ -36,6 +36,11 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 			if (AppInstance is not null)
 				await AppInstance.InitCompleted;
 
+			await ServiceRef.XmppService.WaitForConnectedState(TimeSpan.FromSeconds(3));
+			await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
+
+			//TODO: Handle the case wher an intent to URI before onboarding is completed
+
 			bool IsOnboarded = this.tagProfile.IsComplete();
 
 			if (!IsOnboarded)

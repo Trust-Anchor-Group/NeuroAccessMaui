@@ -1,5 +1,4 @@
-﻿using Mopups.Services;
-using NeuroAccessMaui.Resources.Languages;
+﻿using NeuroAccessMaui.Resources.Languages;
 using Waher.Script.Operators.Membership;
 
 namespace NeuroAccessMaui.Services.UI.Tasks

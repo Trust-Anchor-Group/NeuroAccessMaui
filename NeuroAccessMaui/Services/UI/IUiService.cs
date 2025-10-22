@@ -1,7 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using Mopups.Pages;
-using NeuroAccessMaui.UI.Popups;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.UI

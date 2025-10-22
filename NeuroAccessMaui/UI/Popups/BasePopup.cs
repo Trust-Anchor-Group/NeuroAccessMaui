@@ -3,7 +3,7 @@ using Microsoft.Maui.Controls;
 namespace NeuroAccessMaui.UI.Popups
 {
 	/// <summary>
-	/// Compatibility wrapper that mirrors the previous Mopups-based BasePopup API while using the new popup infrastructure.
+	/// Compatibility wrapper so old Mopups based popups work using the new popup infrastructure.
 	/// </summary>
 	[ContentProperty(nameof(CustomContent))]
 	public class BasePopup : BasicPopup
