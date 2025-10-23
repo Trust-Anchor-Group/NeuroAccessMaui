@@ -33,5 +33,7 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
                     this.RawValue = value;
             }
         }
+
+		public string Text => this.Label?.Text ?? "-";
     }
 }

@@ -303,7 +303,7 @@
 					<CollectionView.ItemTemplate>
 						<DataTemplate x:DataType="service:KycApplicationTemplate">
 							<controls:TemplatedButton Margin="0"
-													  Command="{Binding Path=CreateNewApplicationCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplicationsViewModel}}}"
+													  Command="{Binding Path=CreateNewApplicationCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplicationsViewModel}}, x:DataType=viewmodel:ApplicationsViewModel}"
 													  CommandParameter="{Binding .}">
 								<Border Style="{DynamicResource BorderSet}"
 										Margin="0"

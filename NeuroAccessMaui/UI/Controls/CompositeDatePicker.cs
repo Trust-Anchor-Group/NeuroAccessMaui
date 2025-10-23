@@ -6,6 +6,7 @@ using Microsoft.Maui.Graphics;
 using NeuroAccessMaui.UI.Controls.Extended;
 using NeuroAccessMaui.UI.Converters;
 using Waher.Events;
+using NeuroAccessMaui.Extensions;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -14,6 +15,9 @@ namespace NeuroAccessMaui.UI.Controls
 	/// </summary>
 	public class CompositeDatePicker : CompositeInputView
 	{
+		private static readonly DateTime SafeMinDate = new DateTime(1900,1,1);
+		private static readonly DateTime SafeMaxDate = new DateTime(2100,12,31);
+
 		/// <summary>
 		/// The Font property.
 		/// </summary>
@@ -167,7 +171,7 @@ namespace NeuroAccessMaui.UI.Controls
 			propertyName: nameof(MinimumDate),
 			returnType: typeof(DateTime),
 			declaringType: typeof(CompositeDatePicker),
-			defaultValue: DateTime.MinValue);
+			defaultValue: SafeMinDate);
 
 		/// <summary>
 		/// Gets or sets the minimum allowable date.
@@ -175,7 +179,7 @@ namespace NeuroAccessMaui.UI.Controls
 		public DateTime MinimumDate
 		{
 			get => (DateTime)this.GetValue(MinimumDateProperty);
-			set => this.SetValue(MinimumDateProperty, value);
+			set => this.SetValue(MinimumDateProperty, value.SanitizeForDatePicker(SafeMinDate, SafeMaxDate));
 		}
 
 		/// <summary>
@@ -185,7 +189,7 @@ namespace NeuroAccessMaui.UI.Controls
 			propertyName: nameof(MaximumDate),
 			returnType: typeof(DateTime),
 			declaringType: typeof(CompositeDatePicker),
-			defaultValue: DateTime.MaxValue);
+			defaultValue: SafeMaxDate);
 
 		/// <summary>
 		/// Gets or sets the maximum allowable date.
@@ -193,7 +197,7 @@ namespace NeuroAccessMaui.UI.Controls
 		public DateTime MaximumDate
 		{
 			get => (DateTime)this.GetValue(MaximumDateProperty);
-			set => this.SetValue(MaximumDateProperty, value);
+			set => this.SetValue(MaximumDateProperty, value.SanitizeForDatePicker(SafeMinDate, SafeMaxDate));
 		}
 
 		/// <summary>
@@ -210,6 +214,10 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			this.picker = new WrappedDatePicker();
 			this.SetDefaultDate();
+
+			// Ensure bounds are applied on internal picker immediately.
+			this.picker.MinimumDate = SafeMinDate;
+			this.picker.MaximumDate = SafeMaxDate;
 
 			// Bind internal properties to this control
 			this.picker.SetBinding(DatePicker.DateProperty,
@@ -228,7 +236,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 			// Handle user changes and property updates
 			this.picker.DateSelected += this.OnPickerDateSelected;
-			if(this.picker is VisualElement E)
+			if (this.picker is VisualElement E)
 				E.Focused += this.OnPickerUnfocused;
 			this.PropertyChanged += this.OnControlPropertyChanged;
 
@@ -242,6 +250,13 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			if (E.PropertyName == nameof(this.Placeholder) || E.PropertyName == nameof(this.NullableDate))
 				this.UpdateFormat();
+
+			if (E.PropertyName == nameof(this.NullableDate) && this.NullableDate.HasValue)
+			{
+				DateTime Clamped = this.NullableDate.Value.SanitizeForDatePicker(this.MinimumDate, this.MaximumDate);
+				if (Clamped != this.NullableDate.Value)
+					this.NullableDate = Clamped;
+			}
 		}
 
 		/// <summary>
@@ -250,8 +265,9 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private void OnPickerDateSelected(object? Sender, DateChangedEventArgs E)
 		{
-			var OldDate = this.NullableDate;
-			this.NullableDate = E.NewDate;
+			DateTime? OldDate = this.NullableDate;
+			DateTime NewDate = E.NewDate.SanitizeForDatePicker(this.MinimumDate, this.MaximumDate);
+			this.NullableDate = NewDate;
 			NullableDateSelected?.Invoke(this, new NullableDateChangedEventArgs(OldDate, this.NullableDate));
 		}
 
@@ -259,10 +275,9 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			if (!this.NullableDate.HasValue)
 			{
-				var Picked = this.picker.Date;
+				DateTime Picked = this.picker.Date.SanitizeForDatePicker(this.MinimumDate, this.MaximumDate);
 				this.NullableDate = Picked;
-				NullableDateSelected?.Invoke(this,
-					new NullableDateChangedEventArgs(null, Picked));
+				NullableDateSelected?.Invoke(this, new NullableDateChangedEventArgs(null, Picked));
 			}
 		}
 
@@ -290,7 +305,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private void SetDefaultDate()
 		{
-			this.picker.Date = DateTime.Today.Date;
+			DateTime Today = DateTime.Today.SanitizeForDatePicker(SafeMinDate, SafeMaxDate);
+			this.picker.Date = Today;
 		}
 	}
 }

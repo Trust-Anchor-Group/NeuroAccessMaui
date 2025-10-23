@@ -8,11 +8,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 	public partial class KycProcessPage : BaseContentPage
 	{
-		public KycProcessPage()
+		public KycProcessPage(KycProcessViewModel Vm)
 		{
 			this.InitializeComponent();
 
-			KycProcessViewModel Vm = new KycProcessViewModel(ServiceRef.UiService.PopLatestArgs<KycProcessNavigationArgs>());
 			this.ContentPageModel = Vm;
 
 			Vm.ScrollToTop += async (_, _) =>

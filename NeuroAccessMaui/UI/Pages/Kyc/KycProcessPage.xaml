@@ -126,8 +126,9 @@
 						<controls:CompositePicker.RightView>
 							<Path Data="{x:Static ui:Geometries.DropDownArrowPath}" Fill="{DynamicResource InputFieldsContentSecondary}" VerticalOptions="Center"/>
 						</controls:CompositePicker.RightView>
-						<controls:CompositePicker.ItemDisplayBinding>
-							<Binding Path="Label.Text" />
+						<controls:CompositePicker.ItemDisplayBinding >
+							<Binding Path="Label.Text"
+									 x:DataType="models:KycOption" />
 						</controls:CompositePicker.ItemDisplayBinding>
 					</controls:CompositePicker>
 				</VerticalStackLayout>
@@ -184,7 +185,7 @@
 													SelectedItems="{Binding SelectedOptions, Mode=TwoWay}"
 													SelectionMode="Multiple">
 							<controls:TemplatedSelector.ItemTemplate>
-								<DataTemplate x:DataType="controls:SelectableKycOption">
+								<DataTemplate x:DataType="controls:SelectableOption(models:KycOption)">
 									<Grid ColumnDefinitions="auto,*" ColumnSpacing="8" Padding="8">
 										<controls:AnimatedCheckbox Grid.Column="0" 
 											StrokeColor="{DynamicResource ContentAccessWL}"

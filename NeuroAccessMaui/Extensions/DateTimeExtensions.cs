@@ -28,5 +28,21 @@
 				return null;
 			return date;
 		}
+
+		/// <summary>
+		/// Clamps a date to a safe range to avoid <see cref="System.ArgumentOutOfRangeException"/> when MAUI converts it to <see cref="System.DateTimeOffset"/> with a timezone offset.
+		/// </summary>
+		/// <param name="date">Input date.</param>
+		/// <param name="safeMin">Lower bound (inclusive).</param>
+		/// <param name="safeMax">Upper bound (inclusive).</param>
+		/// <returns>Clamped date in range [safeMin, safeMax]. If input is <see cref="DateTime.MinValue"/> or <see cref="DateTime.MaxValue"/>, substitutes safe bounds.</returns>
+		public static DateTime SanitizeForDatePicker(this DateTime date, DateTime safeMin, DateTime safeMax)
+		{
+			if (date <= safeMin || date == DateTime.MinValue)
+				return safeMin;
+			if (date >= safeMax || date == DateTime.MaxValue)
+				return safeMax;
+			return date;
+		}
 	}
 }
