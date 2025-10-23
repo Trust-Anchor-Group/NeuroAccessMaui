@@ -44,10 +44,6 @@ namespace NeuroAccessMaui.Test
         public BaseContentPage CurrentPage => this.screenStack.Count > 0 ? this.screenStack.Peek() : throw new InvalidOperationException("Navigation stack is empty.");
 
         /// <inheritdoc/>
-        [Obsolete("Modal pages removed. Use blocking popups (PopupOptions.IsBlocking) instead.")]
-        public BaseContentPage CurrentModalPage => throw new InvalidOperationException("Modal stack removed. Use PopupService.");
-
-        /// <inheritdoc/>
         public Task GoToAsync(string Route) => this.GoToAsync(Route, Services.UI.BackMethod.Inherited, null);
 
         /// <inheritdoc/>
@@ -208,43 +204,6 @@ namespace NeuroAccessMaui.Test
                 catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
             }
         });
-
-        /// <inheritdoc/>
-        [Obsolete("Use IPopupService.PushAsync with PopupOptions.IsBlocking instead.")]
-        public Task PushModalAsync(string Route) => this.Enqueue(async () =>
-        {
-            BaseContentPage page = Routing.GetOrCreateContent(Route, ServiceRef.Provider) as BaseContentPage
-                ?? throw new InvalidOperationException($"No page registered for route '{Route}' or not a BaseContentPage");
-            await EnsureInitializedAsync(page);
-            await ServiceRef.PopupService.PushAsync(page, PopupOptions.CreateModal());
-            await page.OnAppearingAsync();
-        });
-
-        /// <inheritdoc/>
-        [Obsolete("Use IPopupService.PushAsync with PopupOptions.IsBlocking instead.")]
-        public Task PushModalAsync<TPage>() where TPage : BaseContentPage => this.Enqueue(async () =>
-        {
-            TPage page = ServiceRef.Provider.GetRequiredService<TPage>();
-            await EnsureInitializedAsync(page);
-            await ServiceRef.PopupService.PushAsync(page, PopupOptions.CreateModal());
-            await page.OnAppearingAsync();
-        });
-
-        /// <inheritdoc/>
-        [Obsolete("Use IPopupService.PushAsync with PopupOptions.IsBlocking instead.")]
-        public Task PushModalAsync<TPage, TViewModel>() where TPage : BaseContentPage where TViewModel : BaseViewModel => this.Enqueue(async () =>
-        {
-            TPage page = ServiceRef.Provider.GetRequiredService<TPage>();
-            TViewModel vm = ServiceRef.Provider.GetRequiredService<TViewModel>();
-            page.BindingContext = vm;
-            await EnsureInitializedAsync(page);
-            await ServiceRef.PopupService.PushAsync(page, PopupOptions.CreateModal());
-            await page.OnAppearingAsync();
-        });
-
-        /// <inheritdoc/>
-        [Obsolete("Use IPopupService.PopAsync instead.")]
-        public Task PopModalAsync() => this.Enqueue(async () => await ServiceRef.PopupService.PopAsync());
 
         /// <inheritdoc/>
         public TArgs? PopLatestArgs<TArgs>() where TArgs : NavigationArgs, new()
