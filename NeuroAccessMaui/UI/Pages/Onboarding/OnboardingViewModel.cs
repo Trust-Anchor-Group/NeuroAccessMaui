@@ -55,7 +55,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 		public OnboardingViewModel()
 		{
-			OnboardingNavigationArgs? Args = ServiceRef.UiService.PopLatestArgs<OnboardingNavigationArgs>();
+			OnboardingNavigationArgs? Args = ServiceRef.NavigationService.PopLatestArgs<OnboardingNavigationArgs>();
 			if (Args is null)
 			{
 				ServiceRef.LogService.LogWarning("Onboarding navigation arguments missing. Using defaults.");
