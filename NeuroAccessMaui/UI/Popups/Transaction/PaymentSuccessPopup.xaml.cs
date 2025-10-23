@@ -10,9 +10,17 @@ namespace NeuroAccessMaui.UI.Popups.Transaction
 {
 	public partial class PaymentSuccessPopup
 	{
-		public PaymentSuccessPopup(TransactionEventItem Event)
+		public PaymentSuccessPopup(EDaler.Transaction Transaction, string? Message)
 		{
-			BasePopupViewModel ViewModel = new PaymentSuccessPopupViewModel(Event);
+			BasePopupViewModel ViewModel = new PaymentSuccessPopupViewModel(Transaction, Message);
+
+			this.InitializeComponent();
+			this.BindingContext = ViewModel;
+		}
+
+		public PaymentSuccessPopup(EDaler.Transaction Transaction)
+		{
+			BasePopupViewModel ViewModel = new PaymentSuccessPopupViewModel(Transaction, null);
 
 			this.InitializeComponent();
 			this.BindingContext = ViewModel;

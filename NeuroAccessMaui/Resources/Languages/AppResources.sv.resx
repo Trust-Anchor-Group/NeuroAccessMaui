@@ -3095,9 +3095,6 @@
   <data name="Upload" xml:space="preserve">
     <value>Ladda upp</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Ta foto</value>
-  </data>
   <data name="InReview" xml:space="preserve">
     <value>Under granskning</value>
   </data>
@@ -3169,5 +3166,8 @@
   </data>
   <data name="TransactionIDNoColon" xml:space="preserve">
     <value>Transaktions-ID</value>
+  </data>
+  <data name="TransferSuccessful" xml:space="preserve">
+    <value>Överföring lyckades</value>
   </data>
 </root>

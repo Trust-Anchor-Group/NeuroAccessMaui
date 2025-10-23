@@ -27,6 +27,23 @@
 
 			<ScrollView VerticalOptions="Center">
 				<VerticalStackLayout>
+					<Border WidthRequest="120" HeightRequest="120" StrokeShape="RoundRectangle 60" BackgroundColor="{DynamicResource TnPSuccessbgWL}">
+						<controls:SvgView Source="arrow_up_right.svg" TintColor="{DynamicResource ContentAccessWL}" WidthRequest="48" HeightRequest="48" HorizontalOptions="Center" VerticalOptions="Center"/>
+					</Border>
+					<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize TransferSuccessful}" Margin="0,16,0,0"/>
+					
+					<Grid RowDefinitions="auto, auto, auto" ColumnDefinitions="auto, *" Margin="0,8,0,16" ColumnSpacing="24" RowSpacing="16">
+						<Label Style="{DynamicResource Brand2LabelSSecondary}" FontAttributes="Bold" Text="{l:Localize Recipient}"/>
+						<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{Binding Transaction.To}" Grid.Column="1" HorizontalOptions="End" />
+
+						<Label Style="{DynamicResource Brand2LabelSSecondary}" FontAttributes="Bold" Text="{l:Localize Amount}" Grid.Row="1"/>
+						<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{Binding Amount}" Grid.Row="1" Grid.Column="1" HorizontalOptions="End" />
+
+						<Label Style="{DynamicResource Brand2LabelSSecondary}" FontAttributes="Bold" Text="{l:Localize Message}" Grid.Row="2"/>
+						<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{Binding Message}" Grid.Row="2" Grid.Column="1" HorizontalOptions="End" />
+					</Grid>
+
+					<controls:TextButton Style="{DynamicResource PrimaryButton}" LabelData="{l:Localize Close}" Command="{Binding CloseCommand}"/>
 				</VerticalStackLayout>
 			</ScrollView>
 		</Border>

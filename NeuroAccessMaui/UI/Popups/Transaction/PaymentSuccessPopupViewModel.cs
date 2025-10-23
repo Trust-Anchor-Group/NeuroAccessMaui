@@ -2,18 +2,25 @@ using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using EDaler;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 
 namespace NeuroAccessMaui.UI.Popups.Transaction
 {
-	public partial class PaymentSuccessPopupViewModel(TransactionEventItem Event) : BasePopupViewModel
+	public partial class PaymentSuccessPopupViewModel(EDaler.Transaction Transaction, string? Message) : BasePopupViewModel
 	{
 		[ObservableProperty]
-		private TransactionEventItem transactionEventItem = Event;
+		private EDaler.Transaction transaction = Transaction;
 
-		[ObservableProperty]
-		private bool isContact = Event.IsContact;
+		private readonly string? message = Message;
+
+		public string Amount => this.Transaction.Amount + " NC";
+
+		public string Message
+		{
+			get => this.message ?? "";
+		}
 
 		#region Commands
 

@@ -3095,9 +3095,6 @@
   <data name="Upload" xml:space="preserve">
     <value>Subir</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Tomar foto</value>
-  </data>
   <data name="InReview" xml:space="preserve">
     <value>En revisión</value>
   </data>
@@ -3169,5 +3166,8 @@
   </data>
   <data name="TransactionIDNoColon" xml:space="preserve">
     <value>ID de transacción</value>
+  </data>
+  <data name="TransferSuccessful" xml:space="preserve">
+    <value>Transferencia exitosa</value>
   </data>
 </root>

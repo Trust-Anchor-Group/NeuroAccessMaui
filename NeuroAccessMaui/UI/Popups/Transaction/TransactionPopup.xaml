@@ -121,7 +121,7 @@
 						</VerticalStackLayout>
 					</Border>
 
-					<controls:TextButton Style="{DynamicResource PrimaryButton}" LabelData="{l:Localize Close}" Command="{Binding CloseCommand}"/>
+					<controls:TextButton Style="{DynamicResource PrimaryButton}" LabelData="{l:Localize Close}" Command="{Binding CloseCommand}" Margin="0,16,0,0"/>
 
 				</VerticalStackLayout>
 			</ScrollView>

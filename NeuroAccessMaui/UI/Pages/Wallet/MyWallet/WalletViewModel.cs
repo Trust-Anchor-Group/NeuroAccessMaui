@@ -31,6 +31,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.SellEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
+using NeuroAccessMaui.UI.Popups.Transaction;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using Waher.Networking.XMPP.Contracts;
@@ -276,19 +277,21 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 					return;
 
 				TaskCompletionSource<string?> UriToSend = new();
-				EDalerUriNavigationArgs Args = new(Parsed, string.Empty, UriToSend);
+				TaskCompletionSource<string?> MessageToSend = new();
+				EDalerUriNavigationArgs Args = new(Parsed, string.Empty, UriToSend, MessageToSend);
 				await ServiceRef.UiService.GoToAsync(nameof(SendPaymentPage), Args, BackMethod.Pop);
 
 				string? Uri = await UriToSend.Task; // User composed URI. Null if cancelled.
+				string? Message = await MessageToSend.Task; // Optional message.
 				if (string.IsNullOrEmpty(Uri))
 					return;
 
 				// Automatically claim/process the payment (execute transfer) directly.
 				// await ServiceRef.NeuroWalletOrchestratorService.OpenEDalerUri(Uri);
-				await ServiceRef.XmppService.SendEDalerUri(Uri);
+				EDaler.Transaction Transaction = await ServiceRef.XmppService.SendEDalerUri(Uri);
 
-				await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-					ServiceRef.Localizer[nameof(AppResources.PaymentSuccess)]);
+				PaymentSuccessPopup Popup = new(Transaction, Message);
+				await ServiceRef.UiService.PushAsync(Popup);
 			}
 			catch (Exception Ex)
 			{

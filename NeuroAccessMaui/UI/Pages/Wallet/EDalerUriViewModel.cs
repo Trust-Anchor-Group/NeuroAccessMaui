@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -13,6 +14,7 @@ using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
+using NeuroAccessMaui.UI.Popups.Transaction;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
@@ -28,6 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		private readonly EDalerUriNavigationArgs? navigationArguments;
 		private readonly IShareQrCode? shareQrCode;
 		private readonly TaskCompletionSource<string?>? uriToSend = null;
+		private readonly TaskCompletionSource<string?>? messageToSend = null;
 
 		public ObservableTask<bool> GetBalanceTask { get; } = new();
 
@@ -43,6 +46,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			this.shareQrCode = ShareQrCode;
 
 			this.uriToSend = Args?.UriToSend;
+			this.messageToSend = Args?.MessageToSend;
 			this.FriendlyName = Args?.FriendlyName;
 
 			if (Args?.Uri is not null)
@@ -128,6 +132,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		protected override async Task OnDispose()
 		{
 			this.uriToSend?.TrySetResult(null);
+			this.messageToSend?.TrySetResult(null);
 
 			ServiceRef.XmppService.PetitionedIdentityResponseReceived -= this.XmppService_PetitionedIdentityResponseReceived;
 
@@ -594,8 +599,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (Succeeded)
 				{
 					await this.GoBack();
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-						ServiceRef.Localizer[nameof(AppResources.PaymentSuccess)]);
+					PaymentSuccessPopup Popup = new(Transaction!, this.Message);
+					await ServiceRef.UiService.PushAsync(Popup);
 				}
 				else
 				{
@@ -710,8 +715,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (Succeeded)
 				{
 					await this.GoBack();
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-						ServiceRef.Localizer[nameof(AppResources.PaymentSuccess)]);
+					PaymentSuccessPopup Popup = new(Transaction!, this.Message);
+					await ServiceRef.UiService.PushAsync(Popup);
 				}
 				else
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -804,6 +809,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				// TODO: Offline options: Expiry days
 
 				this.uriToSend?.TrySetResult(Uri);
+				this.messageToSend?.TrySetResult(this.Message);
 				await this.GoBack();
 			}
 			catch (Exception Ex)
