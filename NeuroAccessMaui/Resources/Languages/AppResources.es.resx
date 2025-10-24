@@ -3170,4 +3170,7 @@
   <data name="TransferSuccessful" xml:space="preserve">
     <value>Transferencia exitosa</value>
   </data>
+  <data name="UnknownPleaseRefresh" xml:space="preserve">
+    <value>Desconocido, por favor actualiza</value>
+  </data>
 </root>

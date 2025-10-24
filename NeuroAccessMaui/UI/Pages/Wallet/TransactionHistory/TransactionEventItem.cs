@@ -46,8 +46,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 		{
 			get
 			{
-				DateTime Dt = this.Timestamp.Date.ToLocalTime();
-				DateTime Now = DateTime.Now.ToLocalTime();
+				DateTime Dt = this.Timestamp.Date.ToUniversalTime();
+				DateTime Now = DateTime.UtcNow;
 				TimeSpan Span = Now - Dt;
 
 				string TimeString;
@@ -62,13 +62,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 					TimeString = Dt.ToString("m", CultureInfo.CurrentCulture);
 				return TimeString;
 				}
-				}
+			}
 
 		public string ReservedSuffix => this.accountEvent.Reserved == 0 ? string.Empty : "+" + NeuroAccessMaui.UI.Converters.MoneyToString.ToString(this.accountEvent.Reserved);
-		/// <summary>If any amount is reserved.</summary>
+
 		public bool IsReserved => this.accountEvent.Reserved != 0;
-		/// <summary>True if remote party appears in roster with subscription state To or Both.</summary>
-		/// 
+
 		public bool IsContact
 		{
 			get

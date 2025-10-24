@@ -215,15 +215,22 @@
 					</Grid>
 				</controls:TemplatedButton>
 
-				<!-- Extra Grid required to give the NC label enough size to expand -->
-				<Grid Grid.Row="1" Grid.ColumnSpan="2" ColumnDefinitions="*, auto" ColumnSpacing="{DynamicResource SmallSpacing}">
+				<Grid Grid.Row="1" Grid.ColumnSpan="2" RowDefinitions="auto, auto">
 					<!-- Balance -->
-					<Label LineBreakMode="CharacterWrap"
-							VerticalOptions="End">
+					<Label>
 						<Label.FormattedText>
 							<FormattedString>
 								<Span Text="{Binding Path=BalanceDecimal}" FontSize="48" FontFamily="SpaceGroteskBold"/>
 								<Span Text=" NC" FontSize="32" FontFamily="SpaceGroteskBold"/>
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+					<Label Grid.Row="1" Style="{DynamicResource Brand2LabelSSecondary}" VerticalTextAlignment="Start">
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="{l:Localize Reserved}" FontSize="14" />
+								<Span Text=" " />
+								<Span Text="{Binding ReservedString}" FontSize="14" />
 							</FormattedString>
 						</Label.FormattedText>
 					</Label>
@@ -237,7 +244,7 @@
 									LabelText="{l:Localize AddToBalance}"
 									Grid.Row="2"
 									Grid.ColumnSpan="2"
-									Margin="0,8,0,0"/>
+									Margin="0,16,0,0"/>
 			</Grid>
 		</Border>
 		

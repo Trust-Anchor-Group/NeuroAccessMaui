@@ -53,6 +53,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(BalanceDecimal))]
+		[NotifyPropertyChangedFor(nameof(BalanceString))]
+		[NotifyPropertyChangedFor(nameof(ReservedDecimal))]
+		[NotifyPropertyChangedFor(nameof(ReservedString))]
 		Balance? fetchedBalance;
 
 		/// <summary>
@@ -79,6 +82,20 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 
 		public string BalanceString =>
 			this.BalanceDecimal + " NC";
+
+		public decimal ReservedDecimal =>
+			this.FetchedBalance?.Reserved ?? 0;
+
+		public string ReservedString
+		{
+			get
+			{
+				if (this.ReservedDecimal == 0)
+					return ServiceRef.Localizer[nameof(AppResources.UnknownPleaseRefresh)];
+				else
+					return this.ReservedDecimal + " NC";
+			}
+		}
 
 		#endregion
 
