@@ -27,8 +27,8 @@
 
 			<ScrollView VerticalOptions="Center">
 				<VerticalStackLayout>
-					<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize TransactionDetails}"/>
-					<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{l:Localize Recipient}" Margin="4,16,0,4"/>
+					<Label Style="{DynamicResource PageTitleLabelSmall}" Text="{l:Localize TransactionDetails}"/>
+					<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize Recipient}" Margin="4,16,0,4"/>
 					<Border Style="{DynamicResource BorderSubSet}">
 						<Grid ColumnDefinitions="auto, *, auto, auto"
 							  RowDefinitions="*, auto">
@@ -81,7 +81,7 @@
 
 					<Border Style="{DynamicResource BorderSubSet}" Padding="16" Margin="0,16,0,0">
 						<VerticalStackLayout>
-							<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{l:Localize Amount}"/>
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize Amount}"/>
 							<Label TextColor="{Binding TransactionEevent.ChangeColor}" LineBreakMode="TailTruncation" >
 								<Label.FormattedText>
 									<FormattedString>
@@ -91,16 +91,16 @@
 								</Label.FormattedText>
 							</Label>
 
-							<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{l:Localize FullIdentifier}" Margin="0,8,0,0"/>
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize FullIdentifier}" Margin="0,16,0,0"/>
 							<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.Remote}"/>
 
-							<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{l:Localize TransactionType}" Margin="0,8,0,0"/>
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize TransactionType}" Margin="0,16,0,0"/>
 							<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.TransactionType}"/>
 
-							<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{l:Localize TransactionType}" Margin="0,8,0,0"/>
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize TransactionType}" Margin="0,16,0,0"/>
 							<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.Timestamp}"/>
 
-							<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{l:Localize TransactionStatus}" Margin="0,8,0,0"/>
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize TransactionStatus}" Margin="0,16,0,0"/>
 							<Grid ColumnDefinitions="auto">
 								<controls:ConditionView Condition="{Binding TransactionEevent.IsReserved}">
 									<controls:ConditionView.True>
@@ -116,7 +116,7 @@
 								</controls:ConditionView>
 							</Grid>
 
-							<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{l:Localize TransactionIDNoColon}" Margin="0,8,0,0"/>
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize TransactionIDNoColon}" Margin="0,16,0,0"/>
 							<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.TransactionId}"/>
 						</VerticalStackLayout>
 					</Border>

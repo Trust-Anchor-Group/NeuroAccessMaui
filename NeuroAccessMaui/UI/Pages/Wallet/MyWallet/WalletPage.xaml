@@ -225,7 +225,7 @@
 							</FormattedString>
 						</Label.FormattedText>
 					</Label>
-					<Label Grid.Row="1" Style="{DynamicResource Brand2LabelSSecondary}" VerticalTextAlignment="Start">
+					<Label Grid.Row="1" Style="{DynamicResource Brand2LabelSSecondary}" VerticalTextAlignment="Start" IsVisible="{Binding HasReserved}">
 						<Label.FormattedText>
 							<FormattedString>
 								<Span Text="{l:Localize Reserved}" FontSize="14" />
