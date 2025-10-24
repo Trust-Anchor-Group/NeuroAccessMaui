@@ -342,6 +342,39 @@ namespace NeuroAccessMaui.Services.Kyc
 						}
 					}
 				}
+
+				if (string.Equals(Field.Id, "country", StringComparison.OrdinalIgnoreCase))
+				{
+					string ExistingCountry = Owner.Values.TryGetValue(Field.Id, out string? StoredCountry) && !string.IsNullOrEmpty(StoredCountry)
+						? StoredCountry
+						: string.Empty;
+
+					if (string.IsNullOrEmpty(ExistingCountry))
+					{
+						string SeedCountry = string.Empty;
+						try
+						{
+							string? SelectedCountry = ServiceRef.TagProfile.SelectedCountry;
+							if (!string.IsNullOrEmpty(SelectedCountry))
+								SeedCountry = SelectedCountry;
+							else
+							{
+								string? IdentityCountry = ServiceRef.TagProfile.LegalIdentity?.GetPersonalInformation().Country;
+								SeedCountry = string.IsNullOrEmpty(IdentityCountry) ? string.Empty : IdentityCountry;
+							}
+						}
+						catch (Exception)
+						{
+							SeedCountry = string.Empty;
+						}
+
+						if (!string.IsNullOrEmpty(SeedCountry))
+						{
+							Owner.Values[Field.Id] = SeedCountry;
+							Field.StringValue = SeedCountry;
+						}
+					}
+				}
 			}
 
 			// For gender fields, if no options defined, load default options

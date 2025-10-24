@@ -32,7 +32,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		public NewContractViewModel()
 		{
-			this.args = ServiceRef.UiService.PopLatestArgs<NewContractNavigationArgs>();
+			this.args = ServiceRef.NavigationService.PopLatestArgs<NewContractNavigationArgs>();
 
 			this.SelectedContractVisibilityItem = this.ContractVisibilityItems[0];
 		}
@@ -982,7 +982,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				return;
 			TaskCompletionSource<Contract?> Tcs = new TaskCompletionSource<Contract?>();
 			ViewContractNavigationArgs Args = new(this.lastCreatedContract, false, null, string.Empty, null, Tcs);
-			await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop3);
+			await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop3);
 			this.postCreateCompletion = Tcs;
 		}
 

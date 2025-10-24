@@ -60,7 +60,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		public ViewContractViewModel()
 		{
-			this.args = ServiceRef.UiService.PopLatestArgs<ViewContractNavigationArgs>();
+			this.args = ServiceRef.NavigationService.PopLatestArgs<ViewContractNavigationArgs>();
 
 			this.XmppUriClicked = this.CreateUriCommand(UriScheme.Xmpp);
 			this.IotIdUriClicked = this.CreateUriCommand(UriScheme.IotId);
@@ -325,7 +325,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		private async Task OpenServerSignatureAsync()
 		{
 			if (this.Contract?.Contract is { } ContractObj)
-				await ServiceRef.UiService.GoToAsync(nameof(ServerSignaturePage), new ServerSignatureNavigationArgs(ContractObj), Services.UI.BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ServerSignaturePage), new ServerSignatureNavigationArgs(ContractObj), Services.UI.BackMethod.Pop);
 		}
 
 		#endregion
