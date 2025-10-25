@@ -369,9 +369,6 @@
 		<Compile Update="UI\Controls\InfoBubble.xaml.cs">
 		  <DependentUpon>InfoBubble.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="UI\Pages\Kyc\KycProcessPage.xaml.cs">
-			<DependentUpon>KycProcessPage.xaml</DependentUpon>
-		</Compile>
 		<Compile Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml.cs">
 			<DependentUpon>ApplicationsPage.xaml</DependentUpon>
 		</Compile>
@@ -546,9 +543,6 @@
 		</MauiXaml>
 		<MauiXaml Update="UI\Controls\InfoBubble.xaml">
 		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Kyc\KycProcessPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -793,7 +787,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="UI\Pages\Kyc\ObjectModel\" />
 		<Folder Include="UI\Pages\Wallet\ServiceProviders\NewFolder\" />
 	</ItemGroup>
 </Project>

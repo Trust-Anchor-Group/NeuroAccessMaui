@@ -20,7 +20,6 @@ using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using NeuroAccessMaui.Services.Cache.Invalidation;
-using NeuroAccessMaui.Services.Kyc;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -631,13 +630,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				await ServiceRef.ThemeService.ClearBrandingCacheForCurrentDomain();
 
 
-				// Remove KYC drafts/current application (delete all, robustly)
-				IEnumerable<KycReference> drafts = Array.Empty<KycReference>();
-				try { drafts = await Database.Find<KycReference>(); } catch { /* ignore */ }
-				foreach (KycReference draft in drafts)
-				{
-					try { await Database.Delete(draft); } catch { /* ignore individual failures */ }
-				}
 				await Database.Provider.Flush();
 
 				await ServiceRef.UiService.DisplayAlert(

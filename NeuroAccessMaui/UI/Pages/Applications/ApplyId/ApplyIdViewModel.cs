@@ -25,13 +25,6 @@ using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
 namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 {
-	public enum IdentityDocumentType
-	{
-		None,
-		Passport,
-		NationalId,
-		DriverLicense
-	}
 
 	/// <summary>
 	/// The view model to bind to for when displaying the an application for a Personal ID.

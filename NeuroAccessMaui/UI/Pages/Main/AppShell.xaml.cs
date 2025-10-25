@@ -1,6 +1,4 @@
 ﻿using NeuroAccessMaui.UI.Pages.Applications.Applications;
-using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
-using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
@@ -50,6 +48,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using Waher.Events;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
+using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -77,8 +76,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		private void RegisterRoutes()
 		{
 			// Applications:
-                       Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
-                       Routing.RegisterRoute(nameof(KycProcessPage), typeof(KycProcessPage));
+			  Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
+			Routing.RegisterRoute(nameof(ApplyIdPage), typeof(ApplyIdPage));
 
 			// Contacts
 			Routing.RegisterRoute(nameof(ChatPage), typeof(ChatPage));

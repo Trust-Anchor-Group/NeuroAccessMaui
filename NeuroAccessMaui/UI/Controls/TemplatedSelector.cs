@@ -126,28 +126,13 @@ namespace NeuroAccessMaui.UI.Controls
                 }
                 else
                 {
-                    // Prefer typed wrapper when working with KYC options so compiled bindings match
-                    if (Item is NeuroAccessMaui.Services.Kyc.Models.KycOption kycOption)
-                    {
-                        SelectableKycOption option = new SelectableKycOption(
-                            kycOption,
-                            this.SelectedItems?.Contains(kycOption) == true,
-                            o => this.ToggleSelection(o));
-                        Selectable = option;
-                    }
-                    else
-                    {
-                        SelectableOption<object> option = new SelectableOption<object>(Item, this.SelectedItems?.Contains(Item) == true, o => this.ToggleSelection(o));
-                        Selectable = option;
-                    }
+  
+                    SelectableOption<object> option = new SelectableOption<object>(Item, this.SelectedItems?.Contains(Item) == true, o => this.ToggleSelection(o));
+                     Selectable = option;
                 }
                 if (Selectable is SelectableOption<object> Option2)
                 {
                     Option2.IsSelectedChanged += this.OnChildIsSelectedChanged;
-                }
-                else if (Selectable is SelectableKycOption Option3)
-                {
-                    Option3.IsSelectedChanged += this.OnChildIsSelectedChanged;
                 }
                 View Content = (View)this.ItemTemplate.CreateContent();
                 Content.BindingContext = Selectable;
@@ -262,7 +247,7 @@ namespace NeuroAccessMaui.UI.Controls
             {
                 this.syncingSelection = true;
                 HashSet<object> selected = new HashSet<object>(this.SelectedItems?.Cast<object>() ?? Enumerable.Empty<object>());
-                foreach (View child in this.Children)
+                foreach (View child in this.Children.Cast<View>())
                 {
                     if (child.BindingContext is NeuroAccessMaui.Core.ISelectable selectable)
                     {
@@ -280,10 +265,6 @@ namespace NeuroAccessMaui.UI.Controls
 
         private static object GetUnderlyingItem(NeuroAccessMaui.Core.ISelectable selectable)
         {
-            if (selectable is SelectableKycOption kycOption)
-            {
-                return kycOption.Item;
-            }
             if (selectable is SelectableOption<object> genericOption)
             {
                 return genericOption.Item;

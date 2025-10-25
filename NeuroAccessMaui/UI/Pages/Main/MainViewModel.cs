@@ -6,7 +6,6 @@ using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Notifications;
 using Waher.Networking.XMPP.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using EDaler;
@@ -14,7 +13,6 @@ using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using System.Globalization;
-using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.Services.Data; // Added for Database access
 using System.Linq;
@@ -177,24 +175,22 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		private bool CheckPendingIdentity()
 		{
 			// Uses cached latest KYC reference state instead of TagProfile.IdentityApplication
-			return this.latestCreatedIdentityState == IdentityState.Created;
+			return ServiceRef.TagProfile.IdentityApplication?.State == IdentityState.Created;
 		}
 
 		private bool CheckRejectedIdentity()
 		{
 			// Uses cached latest KYC reference state instead of TagProfile.IdentityApplication
-			return this.latestCreatedIdentityState == IdentityState.Rejected;
+			return ServiceRef.TagProfile.IdentityApplication?.State == IdentityState.Rejected;
 		}
 
 		private async Task LoadLatestKycStateAsync()
 		{
 			try
 			{
-				IEnumerable<KycReference> All = await Database.Find<KycReference>();
-				KycReference? Latest = All
-					.OrderByDescending(r => r.UpdatedUtc)
-					.FirstOrDefault(r => r.CreatedIdentityState is not null && !string.IsNullOrEmpty(r.CreatedIdentityId));
-				this.latestCreatedIdentityState = Latest?.CreatedIdentityState;
+				this.latestCreatedIdentityState = ServiceRef.TagProfile.IdentityApplication?.State ?? ServiceRef.TagProfile.LegalIdentity?.State ?? null;
+
+
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					this.OnPropertyChanged(nameof(this.HasPendingIdentity));

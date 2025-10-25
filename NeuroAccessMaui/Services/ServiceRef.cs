@@ -11,7 +11,6 @@ using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
 using NeuroAccessMaui.Services.Intents;
-using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
@@ -58,7 +57,6 @@ namespace NeuroAccessMaui.Services
 		private static IIntentService? intentService;
 		private static IInternetCacheService? internetCacheService;
 		private static IThemeService? themeService;
-		private static IKycService? kycService;
 		private static IXmlSchemaValidationService? xmlSchemaValidationService;
 
 		/// <summary>
@@ -315,15 +313,6 @@ namespace NeuroAccessMaui.Services
 			{
 				themeService ??= App.Instantiate<IThemeService>();
 				return themeService;
-			}
-		}
-
-		public static IKycService KycService
-		{
-			get
-			{
-				kycService ??= App.Instantiate<IKycService>();
-				return kycService;
 			}
 		}
 
