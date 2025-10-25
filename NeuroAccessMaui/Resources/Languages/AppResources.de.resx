@@ -121,6 +121,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
       Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
+    <value>Rollen auswählen, mit denen Sie unterschreiben möchten (optional)</value>
+  </data>
+  <data name="NoRolesSelectedWarning" xml:space="preserve">
+    <value>Keine Rollen ausgewählt – Sie werden diesen Vertrag jetzt nicht unterzeichnen.</value>
+  </data>
+  <data name="SignAs" xml:space="preserve">
+    <value>Unterschreiben als</value>
+  </data>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>STRING NICHT DEFINIERT</value>
   </data>
@@ -659,7 +668,7 @@
     <value>Es wurde ein temporärer OTP-Code verwendet. Die Anwendung wird in etwa einer Woche nicht mehr funktionieren. Sie müssen die Anwendung neu installieren, um sie wieder verwenden zu können.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Neue PIN eingeben</value>
+    <value>Neue PIN erstellen</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
     <value>PIN bestätigen</value>
@@ -2812,7 +2821,280 @@
   <data name="ClearCache" xml:space="preserve">
     <value>Cache leeren</value>
   </data>
+  <data name="ClearBrandingAndKycCacheDescription" xml:space="preserve">
+    <value>Entfernt Branding- und KYC-Daten für die aktuelle Domain</value>
+  </data>
+  <data name="Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Beta-Funktionen befinden sich in der Entwicklung und könnten Funktionalität oder Design vermissen. Einige ihrer Kernfunktionen sind jedoch verfügbar</value>
+  </data>
+  <data name="SmartThings" xml:space="preserve">
+    <value>Kluge Dinge</value>
+  </data>
+  <data name="Assets" xml:space="preserve">
+    <value>Vermögen</value>
+  </data>
+  <data name="MicroLoan" xml:space="preserve">
+    <value>Mikrokredit</value>
+  </data>
+  <data name="NFC" xml:space="preserve">
+    <value>NFC</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Möchten Sie diese Identität zu Ihren Kontakten hinzufügen?</value>
+  </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>Demnächst!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+    <value>Daran arbeiten wir gerade</value>
+  </data>
+  <data name="BetaFeature" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>Um Beta-Funktionen zu aktivieren, gehen Sie zum Startbildschirm und öffnen Sie die Einstellungsseite</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>Diese Funktion befindet sich derzeit im Beta-Status. Um Beta-Funktionen zu aktivieren, öffnen Sie die Einstellungsseite und aktivieren Sie die Beta-Funktionen</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
+    <value>Erlaubnis erforderlich</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
+    <value>Die neueste Version dieses Vertrags konnte nicht geladen werden. Die Details, die Sie sehen, sind möglicherweise veraltet. Jetzt Zugang anfordern?</value>
+  </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Cache geleert</value>
+  </data>
+  <data name="LanguageChangedTitle" xml:space="preserve">
+    <value>Sprache geändert</value>
+  </data>
+  <data name="LanguageChangedMessage" xml:space="preserve">
+    <value>Bitte starten Sie die App neu, um sicherzustellen, dass der gesamte Text die Sprache korrekt ändert</value>
+  </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Weiter ({0})</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Nie</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Jetzt</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>vor {0} Minuten</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>vor {0} Stunden</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Letzte Aktualisierung: {0}</value>
+  </data>
+  <data name="ActivateYourDigitalIdentity" xml:space="preserve">
+    <value>Aktivieren Sie Ihre digitale ID</value>
+  </data>
+  <data name="HaveAnyQuestions" xml:space="preserve">
+    <value>Haben Sie Fragen?</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription" xml:space="preserve">
+    <value>Lesen Sie mehr über die Aktivierung Ihrer digitalen ID auf der Website Ihres ID-Anbieters.</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription2" xml:space="preserve">
+    <value>ID-Anbieter kann Ihr sein: Bank, Schule usw.</value>
+  </data>
+  <data name="AlreadyHaveAnID" xml:space="preserve">
+    <value>Haben Sie bereits einen Ausweis?</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription" xml:space="preserve">
+    <value>Alles, was wir brauchen, ist der Übertragungscode von Ihrem vorherigen Telefon.</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
+    <value>Suchen und initiieren unter: Einstellungen / Identität übertragen</value>
+  </data>
+  <data name="PaymentAcceptance" xml:space="preserve">
+    <value>Annahme von Zahlungen</value>
+  </data>
+  <data name="PaymentAcceptanceDescription" xml:space="preserve">
+    <value>Überprüfen Sie die Details zur Offline-Zahlung unten. Wenn Sie damit zufrieden sind, senden Sie sie zur Verarbeitung an den Server.</value>
+  </data>
+  <data name="ContractWizardStepFormat" xml:space="preserve">
+    <value>Schritt {0} von {1}</value>
+  </data>
+  <data name="ContractWizardNext" xml:space="preserve">
+    <value>Nächster</value>
+  </data>
+  <data name="ContractWizardReviewHumanReadable" xml:space="preserve">
+    <value>Bewertung menschenlesbar</value>
+  </data>
+  <data name="ContractWizardSettings" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="ContractWizardVisibilityPlaceholder" xml:space="preserve">
+    <value>Auswählen, wer Zugriff haben soll</value>
+  </data>
+  <data name="ContractWizardContractLabel" xml:space="preserve">
+    <value>Vertrag</value>
+  </data>
+  <data name="HaveAnInviteCodeQuestion" xml:space="preserve">
+    <value>Haben Sie einen Einladungscode?</value>
+  </data>
+  <data name="PasteInviteCodeHere" xml:space="preserve">
+    <value>Fügen Sie hier den Einladungscode ein</value>
+  </data>
+  <data name="Or" xml:space="preserve">
+    <value>Oder</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Kleister</value>
+  </data>
+  <data name="CreditBalance" xml:space="preserve">
+    <value>Guthaben</value>
+  </data>
+  <data name="BuyNeuroCredits" xml:space="preserve">
+    <value>Neuro-Credits kaufen</value>
+  </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Aktuellen Standort verwenden</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>Beim Abrufen Ihres Standorts ist ein Fehler aufgetreten. Stellen Sie sicher, dass in den Einstellungen Ihrer Geräte Standortberechtigungen erteilt wurden.</value>
+  </data>
+  <data name="Attachment_Passport" xml:space="preserve">
+    <value>Passbild</value>
+  </data>
+  <data name="Attachment_IdCardFront" xml:space="preserve">
+    <value>Vorderseite des Personalausweises</value>
+  </data>
+  <data name="Attachment_IdCardBack" xml:space="preserve">
+    <value>Rückseite des Personalausweises</value>
+  </data>
+  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
+    <value>Vorderseite des Führerscheins</value>
+  </data>
+  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
+    <value>Rückseite des Führerscheins</value>
+  </data>
+  <data name="Attachment_ProfilePhoto" xml:space="preserve">
+    <value>Foto des Gesichts</value>
+  </data>
+  <data name="Kyc_Next" xml:space="preserve">
+    <value>Nächster</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Anwenden</value>
+  </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Zurück zur Übersicht</value>
+  </data>
+  <data name="Kyc_Exit" xml:space="preserve">
+    <value>Sind Sie sicher, dass Sie den Prozess der Identitätsbeantragung verlassen möchten?</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Fortschritt</value>
+  </data>
+  <data name="TradeName" xml:space="preserve">
+    <value>Handelsname</value>
+  </data>
+  <data name="LegalName" xml:space="preserve">
+    <value>Offizieller Name</value>
+  </data>
+  <data name="OrgRepName" xml:space="preserve">
+    <value>Name des Vertreters</value>
+  </data>
+  <data name="OrgRepCPF" xml:space="preserve">
+    <value>Vertreter CPF</value>
+  </data>
+  <data name="OrgRepBirthDate" xml:space="preserve">
+    <value>Repräsentatives Geburtsdatum</value>
+  </data>
+  <data name="OrgRepRG" xml:space="preserve">
+    <value>Vertreter RG</value>
+  </data>
+  <data name="OrgEMail" xml:space="preserve">
+    <value>Firmen-E-Mail</value>
+  </data>
+  <data name="OrgPhone" xml:space="preserve">
+    <value>Firmen-Telefon</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Vollständiger Name</value>
+  </data>
+  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
+    <value>Gesellschaftsvertrag</value>
+  </data>
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Entfernt temporäre Daten wie Bilder und Anhänge, um Speicherplatz freizugeben</value>
+  </data>
+  <data name="ClearBrandingAndKycCache" xml:space="preserve">
+    <value>Klares Branding und KYC-Cache</value>
+  </data>
+  <data name="ApplicationUnderUnderReview" xml:space="preserve">
+    <value>Ihre Bewerbung wird derzeit geprüft. Wir werden Sie benachrichtigen, wenn Ihr Ausweis genehmigt wurde!</value>
+  </data>
+  <data name="SeeIDApplication" xml:space="preserve">
+    <value>Siehe ID-Anwendung</value>
+  </data>
+  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
+    <value>Ihr Ausweisantrag wird zur Prüfung gesendet. Wir werden Sie benachrichtigen, wenn Ihr Ausweis genehmigt wurde!</value>
+  </data>
+  <data name="ApplicationSummary" xml:space="preserve">
+    <value>Zusammenfassung der Anwendung</value>
+  </data>
+  <data name="ApplicationSummaryDescription" xml:space="preserve">
+    <value>Bevor Sie abschließen, lesen Sie bitte durch und stellen Sie sicher, dass alles korrekt ist</value>
+  </data>
+  <data name="ApplicationInformation" xml:space="preserve">
+    <value>Anwendungsinformation</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Zur Person</value>
+  </data>
+  <data name="AddressDetails" xml:space="preserve">
+    <value>Angaben zur Adresse</value>
+  </data>
+  <data name="DocumentDetails" xml:space="preserve">
+    <value>Details zum Dokument</value>
+  </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>{0} ist erforderlich</value>
+  </data>
+  <data name="PendingReview" xml:space="preserve">
+    <value>Überprüfung ausstehend</value>
+  </data>
+  <data name="CurrentApplication" xml:space="preserve">
+    <value>Aktuelle Anwendung</value>
+  </data>
+  <data name="IdentityApplication" xml:space="preserve">
+    <value>Anwendung der Identität</value>
+  </data>
+  <data name="AvailableApplications" xml:space="preserve">
+    <value>Verfügbare Anwendungen</value>
+  </data>
+  <data name="ForYourIndividualUse" xml:space="preserve">
+    <value>Für Ihren individuellen Einsatz</value>
+  </data>
+  <data name="BeforeFinalizingSummary" xml:space="preserve">
+    <value>Bevor Sie abschließen, lesen Sie bitte durch und stellen Sie sicher, dass alles korrekt ist</value>
+  </data>
+  <data name="CompanyInformation" xml:space="preserve">
+    <value>Unternehmensinformationen</value>
+  </data>
+  <data name="CompanyAddress" xml:space="preserve">
+    <value>Firmenadresse</value>
+  </data>
+  <data name="CompanyRepresentative" xml:space="preserve">
+    <value>Vertreter des Unternehmens</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Hochladen</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Foto aufnehmen</value>
+  </data>
+  <data name="InReview" xml:space="preserve">
+    <value>Im Rückblick</value>
   </data>
 </root>

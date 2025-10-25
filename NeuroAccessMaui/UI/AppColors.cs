@@ -6,6 +6,117 @@ namespace NeuroAccessMaui.UI
 	/// </summary>
 	public static class AppColors
 	{
+		private static Color? tnPSuccessBg;
+		private static Color? tnPWarningBg;
+		private static Color? tnPDangerBg;
+		private static Color? tnPSuccessContent;
+		private static Color? tnPWarningContent;
+		private static Color? tnPDangerContent;
+		private static Color? tnPSuccessFigure;
+		private static Color? buttonNeutralNavButtonsOnContainerbgActive;
+		private static Color? contentPrimary;
+		private static Color? contentSecondary;
+		private static Color? contentAccess;
+
+		public static Color TnPSuccessBg
+		{
+			get
+			{
+				tnPSuccessBg ??= AppStyles.TryGetResource<Color>("TnPSuccessbgWL");
+				return tnPSuccessBg!;
+			}
+		}
+
+		public static Color TnPWarningBg
+		{
+			get
+			{
+				tnPWarningBg ??= AppStyles.TryGetResource<Color>("TnPWarningbgWL");
+				return tnPWarningBg!;
+			}
+		}
+
+		public static Color TnPDangerBg
+		{
+			get
+			{
+				tnPDangerBg ??= AppStyles.TryGetResource<Color>("TnPDangerbgWL");
+				return tnPDangerBg!;
+			}
+		}
+
+		public static Color TnPSuccessContent
+		{
+			get
+			{
+				tnPSuccessContent ??= AppStyles.TryGetResource<Color>("TnPSuccessContentWL");
+				return tnPSuccessContent!;
+			}
+		}
+
+		public static Color TnPSuccessFigure
+		{
+			get
+			{
+				tnPSuccessFigure ??= AppStyles.TryGetResource<Color>("TnPSuccessFigureWL");
+				return tnPSuccessFigure!;
+			}
+		}
+
+		public static Color TnPWarningContent
+		{
+			get
+			{
+				tnPWarningContent ??= AppStyles.TryGetResource<Color>("TnPWarningContentWL");
+				return tnPWarningContent!;
+			}
+		}
+
+		public static Color TnPDangerContent
+		{
+			get
+			{
+				tnPDangerContent ??= AppStyles.TryGetResource<Color>("TnPDangerContentWL");
+				return tnPDangerContent!;
+			}
+		}
+
+		public static Color ButtonNeutralNavButtonsOnContainerbgActive
+		{
+			get
+			{
+				buttonNeutralNavButtonsOnContainerbgActive ??= AppStyles.TryGetResource<Color>("ButtonNeutralNavButtonsOnContainerbgActiveWL");
+				return buttonNeutralNavButtonsOnContainerbgActive!;
+			}
+		}
+
+		public static Color ContentPrimary
+		{
+			get
+			{
+				contentPrimary ??= AppStyles.TryGetResource<Color>("ContentPrimaryWL");
+				return contentPrimary!;
+			}
+		}
+
+		public static Color ContentSecondary
+		{
+			get
+			{
+				contentSecondary ??= AppStyles.TryGetResource<Color>("ContentSecondaryWL");
+				return contentSecondary!;
+			}
+		}
+
+		public static Color ContentAccess
+		{
+			get
+			{
+				contentAccess ??= AppStyles.TryGetResource<Color>("ContentAccessWL");
+				return contentAccess!;
+			}
+		}
+
 		/// <summary>
 		/// Primary foreground color.
 		/// </summary>
@@ -113,5 +224,7 @@ namespace NeuroAccessMaui.UI
 		/// </summary>
 		public static Color Blue =>
 			AppStyles.TryGetResource<Color>("TnPInfoContentWL");
+
+
 	}
 }

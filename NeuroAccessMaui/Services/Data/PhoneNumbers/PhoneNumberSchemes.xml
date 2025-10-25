@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Entries>
+  <!-- ===== Generic E.164 fallback =====
+       Accepts +CC NSN or 00CC NSN, strips formatting, checks total length 8..15 (E.164 max 15).
+       This is a safe default when no country-specific rule is present.
+  -->
+  <Entry country="*" displayString="+CC... (E.164)">
+    <Pattern variable="MSISDN"><![CDATA[
+      MSISDN like "^\s*(?:\+|00)?(?'CC'\d{1,3})\s*(?'NSN'[0-9][0-9\-\s]{3,})\s*$"
+    ]]></Pattern>
+    <Check><![CDATA[
+      // Remove all non-digits in NSN, then check combined length 8..15
+      nsn := replace(NSN, "[^0-9]", "");
+      // Some users accidentally keep a leading trunk '0' after CC; we do not strip it here in generic.
+      len := length(CC + nsn);
+      (len>=8) and (len<=15)
+    ]]></Check>
+    <Normalize><![CDATA[
+      "+" + CC + replace(NSN, "[^0-9]", "")
+    ]]></Normalize>
+  </Entry>
+
+  <!-- ===== Sweden (SE) =====
+       Handles:
+       - +46 7...  (correct)
+       - +46 07... (strip the single trunk '0' after CC)
+       - 0046 7... (strip 00 prefix)
+       - 0046 07...
+       - 07...     (domestic; replace leading 0 with +46)
+       - Allows spaces/dashes
+       Valid Swedish mobile NSN is typically 9 digits starting with 7 (e.g., 7xxxxxxxx),
+       but we allow 7–9 to be safe for non-mobile ranges; adjust as needed.
+  -->
+  <Entry country="SE" displayString="+46 7xxxxxxxx">
+    <Pattern variable="PHONE"><![CDATA[
+      PHONE like "^\s*
+        (?:
+          \+?46\W*0?(?'A'[1-9][0-9\-\s]{5,})  |   # +46 or 46 with optional single trunk 0
+          00\W*46\W*0?(?'B'[1-9][0-9\-\s]{5,}) |  # 0046 with optional single trunk 0
+          0(?'C'[1-9][0-9\-\s]{5,})              # domestic leading 0
+        )
+        \s*$"
+    ]]></Pattern>
+
+    <!-- Basic length & prefix sanity.
+         For SE mobiles, first digit of NSN is 7. If you only want mobiles, enforce that.
+         Below we allow any NSN first digit 1–9, but *normalize* will preserve only digits.
+    -->
+    <Check><![CDATA[
+      nsn :=
+        A is defined and A != null ? replace(A, "[^0-9]", "") :
+        B is defined and B != null ? replace(B, "[^0-9]", "") :
+        replace(C, "[^0-9]", "");
+
+      // If you want to *force* mobile ranges, uncomment next line:
+      // (left(nsn,1)="7") and
+
+      // E.164 length: CC(46) + NSN should be 8..15 (Sweden NSN is usually 7..9 digits).
+      len := length("46" + nsn);
+      (len>=8) and (len<=15)
+    ]]></Check>
+
+    <Normalize><![CDATA[
+      nsn :=
+        A is defined and A != null ? replace(A, "[^0-9]", "") :
+        B is defined and B != null ? replace(B, "[^0-9]", "") :
+        replace(C, "[^0-9]", "");
+
+      "+46" + nsn
+    ]]></Normalize>
+  </Entry>
+
+  <!-- ===== Add more countries similarly =====
+       Example: Norway (NO, +47) stripping a trunk 0 if present, etc.
+       Copy SE block, change CC, displayString, and tighten checks per country.
+  -->
+</Entries>

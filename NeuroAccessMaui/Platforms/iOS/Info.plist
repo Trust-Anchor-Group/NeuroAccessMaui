@@ -27,6 +27,8 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon_ios.appiconset</string>
 	<key>NSCameraUsageDescription</key>

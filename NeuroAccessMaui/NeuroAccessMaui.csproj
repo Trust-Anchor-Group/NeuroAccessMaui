@@ -8,7 +8,7 @@
 	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
 		<TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
 	</PropertyGroup>
-	
+
 	<PropertyGroup>
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-maccatalyst</TargetFrameworks> -->
 		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks> -->
@@ -64,21 +64,21 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
-		<PublishTrimmed>True</PublishTrimmed> 
+		<PublishTrimmed>True</PublishTrimmed>
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
-		<PublishTrimmed>True</PublishTrimmed> 
+		<PublishTrimmed>True</PublishTrimmed>
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>True</UseInterpreter>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
-		<PublishTrimmed>True</PublishTrimmed> 
+		<PublishTrimmed>True</PublishTrimmed>
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
@@ -86,7 +86,7 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
 		<RunAOTCompilation>False</RunAOTCompilation>
-		<PublishTrimmed>False</PublishTrimmed> 
+		<PublishTrimmed>False</PublishTrimmed>
 		<DebugSymbols>True</DebugSymbols>
 	</PropertyGroup>
 
@@ -141,21 +141,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Services\NewFolder1\**" />
-	  <Compile Remove="Services\NewFolder2\**" />
-	  <Compile Remove="Services\Xmpp\NewFolder\**" />
-	  <EmbeddedResource Remove="Services\NewFolder1\**" />
-	  <EmbeddedResource Remove="Services\NewFolder2\**" />
-	  <EmbeddedResource Remove="Services\Xmpp\NewFolder\**" />
-	  <MauiCss Remove="Services\NewFolder1\**" />
-	  <MauiCss Remove="Services\NewFolder2\**" />
-	  <MauiCss Remove="Services\Xmpp\NewFolder\**" />
-	  <MauiXaml Remove="Services\NewFolder1\**" />
-	  <MauiXaml Remove="Services\NewFolder2\**" />
-	  <MauiXaml Remove="Services\Xmpp\NewFolder\**" />
-	  <None Remove="Services\NewFolder1\**" />
-	  <None Remove="Services\NewFolder2\**" />
-	  <None Remove="Services\Xmpp\NewFolder\**" />
+		<Compile Remove="Services\NewFolder1\**" />
+		<Compile Remove="Services\NewFolder2\**" />
+		<Compile Remove="Services\Xmpp\NewFolder\**" />
+		<EmbeddedResource Remove="Services\NewFolder1\**" />
+		<EmbeddedResource Remove="Services\NewFolder2\**" />
+		<EmbeddedResource Remove="Services\Xmpp\NewFolder\**" />
+		<MauiCss Remove="Services\NewFolder1\**" />
+		<MauiCss Remove="Services\NewFolder2\**" />
+		<MauiCss Remove="Services\Xmpp\NewFolder\**" />
+		<MauiXaml Remove="Services\NewFolder1\**" />
+		<MauiXaml Remove="Services\NewFolder2\**" />
+		<MauiXaml Remove="Services\Xmpp\NewFolder\**" />
+		<None Remove="Services\NewFolder1\**" />
+		<None Remove="Services\NewFolder2\**" />
+		<None Remove="Services\Xmpp\NewFolder\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -195,7 +195,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiImage Remove="Resources\Images\appiconfg.svg" />
+		<MauiImage Remove="Resources\Images\appiconfg.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -364,55 +364,55 @@
 			<DependentUpon>AppResources.resx</DependentUpon>
 		</Compile>-->
 		<Compile Update="Resources\Styles\Dark.xaml.cs">
-		  <DependentUpon>Dark.xaml</DependentUpon>
+			<DependentUpon>Dark.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Controls\InfoBubble.xaml.cs">
 		  <DependentUpon>InfoBubble.xaml</DependentUpon>
 		</Compile>
-		<Compile Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml.cs">
-			<DependentUpon>ApplyIdPage.xaml</DependentUpon>
+		<Compile Update="UI\Pages\Kyc\KycProcessPage.xaml.cs">
+			<DependentUpon>KycProcessPage.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml.cs">
 			<DependentUpon>ApplicationsPage.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml.cs">
-		  <DependentUpon>NewContractPage.xaml</DependentUpon>
+			<DependentUpon>NewContractPage.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\NewContract\Views\PreviewView.xaml.cs">
-		  <DependentUpon>PreviewView.xaml</DependentUpon>
+			<DependentUpon>PreviewView.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\NewContract\Views\LoadingView.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
+			<DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\NewContract\Views\RolesView.xaml.cs">
-		  <DependentUpon>RolesView.xaml</DependentUpon>
+			<DependentUpon>RolesView.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\NewContract\Views\ParametersView.xaml.cs">
-		  <DependentUpon>ParametersView.xaml</DependentUpon>
+			<DependentUpon>ParametersView.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\ViewContract\Views\LoadingView.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
+			<DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\ViewContract\Views\OverviewItemButton.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
+			<DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\ViewContract\Views\OverviewView.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
+			<DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\ViewContract\Views\ParametersView.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
+			<DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\ViewContract\Views\PreviewView.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
+			<DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\ViewContract\Views\SignView.xaml.cs">
-		  <DependentUpon>SignView.xaml</DependentUpon>
+			<DependentUpon>SignView.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
+			<DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Main\Apps\AppsPage.xaml.cs">
-		  <DependentUpon>AppsPage.xaml</DependentUpon>
+			<DependentUpon>AppsPage.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Main\ChangePassword\ChangePasswordPage.xaml.cs">
 			<DependentUpon>ChangePasswordPage.xaml</DependentUpon>
@@ -463,7 +463,7 @@
 			<DependentUpon>DefinePasswordView.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Pages\Registration\Views\ContactSupportView.xaml.cs">
-		  <DependentUpon>ContactSupportView.xaml</DependentUpon>
+			<DependentUpon>ContactSupportView.xaml</DependentUpon>
 		</Compile>
 		<!--<Compile Update="UI\Pages\Registration\Views\RequestPurposeView.xaml.cs">
 	    <DependentUpon>RequestPurposeView.xaml</DependentUpon>
@@ -475,7 +475,7 @@
 			<DependentUpon>MyTokenWalletPage.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Popups\Duration\DurationPopup.xaml.cs">
-		  <DependentUpon>DurationPopup.xaml</DependentUpon>
+			<DependentUpon>DurationPopup.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Popups\Image\ImagesPopup.xaml.cs">
 			<DependentUpon>ImagesPopup.xaml</DependentUpon>
@@ -484,7 +484,7 @@
 			<DependentUpon>CheckPasswordPopup.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Popups\Permission\ShowPermissionPopup.xaml.cs">
-		  <DependentUpon>ShowPermissionPopup.xaml</DependentUpon>
+			<DependentUpon>ShowPermissionPopup.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Popups\SelectPhoneCodePopup.xaml.cs">
 			<DependentUpon>SelectPhoneCodePopup.xaml</DependentUpon>
@@ -498,6 +498,12 @@
 		<Compile Update="UI\Popups\Permission\ShowPermissionPopup.xaml.cs">
 			<DependentUpon>ShowPermissionPopup.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Popups\Transaction\PaymentSuccessPopup.xaml.cs">
+		  <DependentUpon>PaymentSuccessPopup.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Popups\Transaction\TransactionPopup.xaml.cs">
+		  <DependentUpon>TransactionPopup.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -505,7 +511,7 @@
 			<Generator>MSBuild:Compile</Generator>
 			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
 			<StronglyTypedFileName>$(IntermediateOutputPath)\AppResources.Designer.cs</StronglyTypedFileName>
-	      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+			<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
 			<StronglyTypedNamespace>NeuroAccessMaui.Resources.Languages</StronglyTypedNamespace>
 			<StronglyTypedClassName>AppResources</StronglyTypedClassName>
 		</EmbeddedResource>
@@ -524,24 +530,24 @@
 
 	<ItemGroup>
 		<MauiXaml Update="Resources\Styles\CompositeInputViewStyles.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\Dark.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\Light.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\PickerStyles.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Resources\Templates\ObservableParameter.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Controls\InfoBubble.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml">
+		<MauiXaml Update="UI\Pages\Kyc\KycProcessPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml">
@@ -557,46 +563,46 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\PreviewView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\LoadingView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\RolesView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\ParametersView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\ViewContractPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\LoadingView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\OverviewItemButton.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\OverviewView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\ParametersView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\PreviewView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\SignView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Main\Apps\AppsPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Main\Calculator\CalculatorPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -650,10 +656,10 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Registration\Views\ContactSupportView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Registration\Views\NameEntryView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Signatures\ClientSignature\ClientSignaturePage.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -683,7 +689,7 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Utility\Images\ImageCroppingPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Pages\Wallet\AccoutEvent\AccountEventPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -740,13 +746,13 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Duration\DurationPopup.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Image\ImagesPopup.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Permission\ShowPermissionPopup.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Photos\Image\ImageView.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -755,7 +761,13 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\QR\ShowQRPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Transaction\PaymentSuccessPopup.xaml">
 		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Transaction\TransactionPupup.xaml">
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Settings\SelectLanguagePopup.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -781,6 +793,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="UI\Pages\Wallet\ServiceProviders\NewFolder\" />
+		<Folder Include="UI\Pages\Kyc\ObjectModel\" />
+		<Folder Include="UI\Pages\Wallet\ServiceProviders\NewFolder\" />
 	</ItemGroup>
 </Project>

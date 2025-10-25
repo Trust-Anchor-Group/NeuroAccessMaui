@@ -42,6 +42,11 @@ namespace NeuroAccessMaui.Services.Theme
 		TaskCompletionSource ThemeLoaded { get; }
 
 		/// <summary>
+		/// Clears locally cached branding descriptors for the current provider domain.
+		/// </summary>
+		public Task<int> ClearBrandingCacheForCurrentDomain();
+
+		/// <summary>
 		/// Returns the image URI for the given identifier, or empty string if not found.
 		/// </summary>
 		/// <param name="Id">The image identifier.</param>

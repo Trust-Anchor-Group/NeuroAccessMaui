@@ -132,7 +132,6 @@ namespace NeuroAccessMaui.UI.Controls
 			ValidationIcon.SetBinding(Path.FillProperty, new Binding(nameof(this.ValidationColor), source: this));
 			ValidationIcon.VerticalOptions = LayoutOptions.Center;
 			this.validationGrid.Add(ValidationIcon, 0, 0);
-
 			// ValidationText
 			Label ValidationLabel = new Label();
 			ValidationLabel.SetBinding(Label.TextProperty, new Binding(nameof(this.ValidationText), source: this));

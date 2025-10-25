@@ -11,54 +11,192 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet">
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, *, auto">
 
-		<controls:Background/>
+		<controls:Background Grid.RowSpan="2"/>
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+		<Grid ColumnDefinitions="auto, *" Margin="16,16,16,8">
+			<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+								Style="{DynamicResource IconButton}" SvgSource="close.svg"/>
 
-				<Label Text="{l:Localize SendPayment}" Style="{DynamicResource PageTitleLabel}"/>
+			<Label Text="{l:Localize SendPayment}" Style="{DynamicResource PageTitleLabel}" Grid.Column="1" HorizontalOptions="End"/>
+		</Grid>
+		
+		<ScrollView Grid.Row="1" Margin="8,0,8,0">
+			<VerticalStackLayout Spacing="0">
+				<!-- Balance card -->
+				<Border Style="{DynamicResource BorderSet}">
+					<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto" RowSpacing="0" ColumnSpacing="{DynamicResource SmallSpacing}">
+						<!-- Balance title-->
+						<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
+							<controls:SvgView Source="wallet.svg"
+											  TintColor="{DynamicResource ContentPrimaryWL}"
+											  Aspect="AspectFit"
+											  WidthRequest="24"
+											  HeightRequest="24"/>
+							<Label Grid.Column="1" Grid.Row="0"
+									HorizontalOptions="Start"
+									Text="{l:Localize CreditBalance}"
+									FontSize="16"
+									LineHeight="0.8"
+									Style="{DynamicResource PageTitleLabel}"
+									VerticalOptions="Center"/>
+						</HorizontalStackLayout>
 
-				<Frame Style="{DynamicResource FrameSet}">
-					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-						<Label Text="{l:Localize Payment}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize PaymentDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
-						<!-- Note -->
-						<Label Text="{l:Localize To}"/>
-						<Entry Text="{Binding Path=To}" IsReadOnly="{Binding Path=ToPreset}"/>
-						<Label Text="{l:Localize Amount}"/>
-						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
-							<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountText}"
-									 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
-									 Placeholder="{Binding Path=Currency}" IsReadOnly="{Binding Path=AmountPreset}"/>
-							<controls:ImageButton Grid.Column="1" Grid.Row="0" IsEnabled="{Binding Path=AmountPreset}"
-														 PathData="{x:Static ui:Geometries.CalculatorPath}"
-														 Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText"
-														 Style="{DynamicResource ImageOnlyButton}"/>
+						<controls:TemplatedButton Command="{Binding GetBalanceTask.RefreshCommand}"
+												  Grid.Column="1"
+												  HorizontalOptions="End">
+							<Grid ColumnDefinitions="*, auto" Margin="0,4,0,0">
+								<Label Text="{Binding BalanceUpdated, Converter={converters:DateTimeToLastUpdatedConverter}}"
+										Style="{DynamicResource KeyLabel}"
+										FontSize="12"
+										FontFamily="HaasGroteskRegular"
+										VerticalOptions="Center"
+										Margin="0,0,8,0"/>
+								<controls:SvgView Source="refresh.svg"
+													WidthRequest="24"
+													HeightRequest="24"
+													TintColor="{DynamicResource ContentPrimaryWL}"
+													IsVisible="{Binding GetBalanceTask.IsNotRunning}"
+													Grid.Column="1"/>
+								<ActivityIndicator IsRunning="True"
+													WidthRequest="24"
+													HeightRequest="24"
+													IsVisible="{Binding GetBalanceTask.IsRunning}"
+													Grid.Column="1"/>
+							</Grid>
+						</controls:TemplatedButton>
+
+						<Grid Grid.Row="1" Grid.ColumnSpan="2" RowDefinitions="auto, auto">
+							<Label>
+								<Label.FormattedText>
+									<FormattedString>
+										<Span Text="{Binding Path=BalanceDecimal}" FontSize="48" FontFamily="SpaceGroteskBold"/>
+										<Span Text=" NC" FontSize="32" FontFamily="SpaceGroteskBold"/>
+									</FormattedString>
+								</Label.FormattedText>
+							</Label>
+							<Label Grid.Row="1" Style="{DynamicResource Brand2LabelSSecondary}" VerticalTextAlignment="Start" IsVisible="{Binding HasReserved}">
+								<Label.FormattedText>
+									<FormattedString>
+										<Span Text="{l:Localize Reserved}" FontSize="14" />
+										<Span Text=" " />
+										<Span Text="{Binding ReservedString}" FontSize="14" />
+									</FormattedString>
+								</Label.FormattedText>
+							</Label>
 						</Grid>
-						<Label Text="{l:Localize AmountExtra}" IsVisible="{Binding Path=AmountPreset}"/>
-						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0" IsVisible="{Binding Path=AmountPreset}">
-							<Entry Text="{Binding Path=AmountExtraText}" BackgroundColor="{Binding Path=AmountExtraOk, Converter={converters:ControlBgColor}}" 
-									 Placeholder="{Binding Path=Currency}" IsVisible="{Binding Path=AmountPreset}"/>
-							<controls:ImageButton IsEnabled="{Binding Path=AmountPreset}" PathData="{x:Static ui:Geometries.CalculatorPath}"
-														 Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountExtraText"
-														 Style="{DynamicResource ImageOnlyButton}"/>
+					</Grid>
+				</Border>
+
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+						<!-- To -->
+						<Grid RowDefinitions="auto,auto" ColumnDefinitions="*, auto, auto" ColumnSpacing="8">
+							<Label Text="{l:Localize To}" Style="{DynamicResource Brand2BodySHeadSHeadL}"/>
+							<controls:ConditionView Condition="{Binding ContactSelected}" Grid.Row="1">
+								<controls:ConditionView.True>
+									<Border Style="{DynamicResource BorderSubSet}" HeightRequest="70" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+										<Grid ColumnDefinitions="auto, *, auto">
+											<Border HeightRequest="40" WidthRequest="40" StrokeShape="RoundRectangle 24" Margin="0,0,8,0">
+												<Border.Triggers>
+													<DataTrigger TargetType="Border" Binding="{Binding ToContact.IsFriend}" Value="True">
+														<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
+													</DataTrigger>
+													<DataTrigger TargetType="Border" Binding="{Binding ToContact.IsFriend}" Value="False">
+														<Setter Property="Background" Value="{DynamicResource InputFieldsSurfaceBackgroundActive}" />
+													</DataTrigger>
+												</Border.Triggers>
+												<controls:SvgView Source="person.svg"
+														  HorizontalOptions="Center" VerticalOptions="Center"
+														  HeightRequest="24" WidthRequest="24">
+													<controls:SvgView.Triggers>
+														<DataTrigger TargetType="controls:SvgView" Binding="{Binding ToContact.IsFriend}" Value="True">
+															<Setter Property="TintColor" Value="{DynamicResource TnPSuccessContentWL}" />
+														</DataTrigger>
+														<DataTrigger TargetType="controls:SvgView" Binding="{Binding ToContact.IsFriend}" Value="False">
+															<Setter Property="TintColor" Value="{DynamicResource ContentSecondaryWL}" />
+														</DataTrigger>
+													</controls:SvgView.Triggers>
+												</controls:SvgView>
+											</Border>
+											<Label Text="{Binding ToContact.FriendlyName}" Grid.Column="1" LineBreakMode="TailTruncation" VerticalOptions="Center" FontSize="14"/>
+											<controls:SvgButton SvgSource="close.svg" Grid.Column="2" HeightRequest="32" WidthRequest="32" Command="{Binding ClearRecipientCommand}"/>
+										</Grid>
+									</Border>
+								</controls:ConditionView.True>
+								
+								<controls:ConditionView.False>
+									<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+										<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
+																 BorderStroke="Transparent"
+																 EntryData="{Binding Path=To}"
+																 IsReadOnly="{Binding Path=ToPreset}"/>
+									</Border>
+								</controls:ConditionView.False>
+							</controls:ConditionView>
+
+							<controls:SvgButton Command="{Binding SelectRecipientCommand}"
+												SvgSource="person.svg"
+												Style="{DynamicResource IconButtonOnBackground}"
+												WidthRequest="56"
+												Grid.Row="1" Grid.Column="1"/>
+
+							<controls:SvgButton Command="{Binding ScanQrCommand}"
+												SvgSource="qr.svg"
+												Style="{DynamicResource IconButtonOnBackground}"
+												WidthRequest="56"
+												Grid.Row="1" Grid.Column="2"/>
 						</Grid>
-						<Label Text="{l:Localize Message}"/>
-						<Entry Text="{Binding Path=Message}" IsReadOnly="{Binding Path=MessagePreset}"/>
+
+						<!-- Amount -->
+						<Grid RowDefinitions="auto, auto">
+							<Label Text="{l:Localize Amount}" Style="{DynamicResource Brand2BodySHeadSHeadL}"/>
+							<Border Grid.Row="1" HeightRequest="70" Style="{DynamicResource BorderSubSet}" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+								<controls:CompositeEntry Style="{DynamicResource ThickCompositeEntry}" EntryData="{Binding Path=AmountText}"
+														 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
+														 Placeholder="{Binding Path=Currency}" IsReadOnly="{Binding Path=AmountPreset}"
+														 BorderStroke="Transparent" VerticalOptions="Center">
+									<controls:CompositeEntry.RightView>
+										<Label Text="NC" VerticalOptions="Center" Style="{DynamicResource Brand2HeadlineHeadlineL}" Margin="0,0,4,0"/>
+									</controls:CompositeEntry.RightView>
+								</controls:CompositeEntry>
+							</Border>
+
+						</Grid>
+
+						<!-- Amount Extra -->
+						<Grid RowDefinitions="auto, auto" IsVisible="{Binding Path=AmountPreset}">
+							<Label Text="{l:Localize AmountExtra}" Style="{DynamicResource Brand2BodySHeadSHeadL}"/>
+							<Border Grid.Row="1" HeightRequest="70" Style="{DynamicResource BorderSubSet}">
+								<controls:CompositeEntry Style="{DynamicResource ThickCompositeEntry}" EntryData="{Binding Path=AmountExtraText}" BackgroundColor="{Binding Path=AmountExtraOk, Converter={converters:ControlBgColor}}" 
+														 Placeholder="{Binding Path=Currency}" IsVisible="{Binding Path=AmountPreset}"
+														 BorderStroke="Transparent" VerticalOptions="Center"/>
+							</Border>
+						</Grid>
+
+						<!-- Message -->
+						<Grid RowDefinitions="auto, auto">
+							<Label Text="{l:Localize Message}" Style="{DynamicResource Brand2BodySHeadSHeadL}"/>
+							<Border Style="{DynamicResource BorderSubSet}" Grid.Row="1" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+								<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}" EntryData="{Binding Path=Message}" IsReadOnly="{Binding Path=MessagePreset}"
+														 BorderStroke="Transparent"/>
+							</Border>
+							
+						</Grid>
+
 						<Grid ColumnDefinitions="auto,*" IsVisible="False" RowDefinitions="auto" Margin="{DynamicResource SmallTopBottomMargins}">
 							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Path=EncryptMessage, Mode=TwoWay}" VerticalOptions="Center" IsEnabled="{Binding CanEncryptMessage}"/>
 							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize EncryptMessage}" VerticalOptions="Center" Margin="{DynamicResource SmallLeftMargins}"/>
 						</Grid>
-						<!-- BUTTONS -->
-						<controls:TextButton LabelData="{l:Localize Send}" Command="{Binding Path=SendPaymentCommand}"
-													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
+				<!-- BUTTONS -->
 			</VerticalStackLayout>
 		</ScrollView>
+		
+		<controls:TextButton LabelData="{l:Localize Send}" Command="{Binding Path=SendPaymentCommand}"
+							 Margin="24,0,24,16" Style="{DynamicResource FilledTextButton}"
+							 VerticalOptions="End" Grid.Row="2"/>
 	</Grid>
 </base:BaseContentPage>

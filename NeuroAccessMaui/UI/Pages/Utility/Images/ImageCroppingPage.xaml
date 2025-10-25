@@ -35,7 +35,7 @@
             CropMode="Aspect"
             OutputMaxResolution="1280,1280" />
 
-        <Border Grid.Row="2" Style="{DynamicResource BottomBarBorder}">
+        <Border Grid.Row="2" Style="{DynamicResource BottomBarBorder2}">
             <Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{DynamicResource SmallSpacing}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

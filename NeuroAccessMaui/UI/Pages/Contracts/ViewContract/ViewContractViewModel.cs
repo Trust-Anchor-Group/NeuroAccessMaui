@@ -576,7 +576,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
-				this.GenerateQrCode(Constants.UriSchemes.CreateSmartContractUri(this.Contract!.ContractId));
 				this.ProposalFriendlyName = await this.ResolveProposalFriendlyNameAsync();
 				this.ProposalRole = this.args!.Role ?? string.Empty;
 				this.ProposalMessage = this.args!.Proposal ?? string.Empty;
@@ -775,6 +774,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract is null)
 				return;
 
+			ServiceRef.LogService.LogDebug($"RefreshContractAsync start for {this.Contract.ContractId}");
+			bool previousStateChange = this.CanStateChange;
+			this.CanStateChange = false; // Gate state transitions during refresh
+
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				if (!this.IsRefreshing)
@@ -836,6 +839,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				{
 					this.IsRefreshing = false;
 				});
+				this.CanStateChange = previousStateChange;
+				ServiceRef.LogService.LogDebug("RefreshContractAsync skipped (no changes)");
 				return;
 			}
 
@@ -868,6 +873,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			}
 
 			await this.GoToStateAsync(CurrentStep);
+			this.CanStateChange = previousStateChange;
+			ServiceRef.LogService.LogDebug($"RefreshContractAsync completed for {this.Contract.ContractId}");
 
 			MainThread.BeginInvokeOnMainThread(() =>
 			{

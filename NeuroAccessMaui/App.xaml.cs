@@ -27,6 +27,7 @@ using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.UI.Pages;
@@ -69,6 +70,7 @@ using Waher.Security.JWS;
 using Waher.Security.JWT;
 using Waher.Security.LoginMonitor;
 using Waher.Things;
+using NeuroAccessMaui.Services.Xml;
 
 namespace NeuroAccessMaui
 {
@@ -393,7 +395,10 @@ namespace NeuroAccessMaui
 			Types.InstantiateDefault<INfcService>(false);
 			Types.InstantiateDefault<INotificationService>(false);
 			Types.InstantiateDefault<IIntentService>(false);
+			Types.InstantiateDefault<IXmlSchemaValidationService>(false);
 			Types.InstantiateDefault<IThemeService>(false);
+			Types.InstantiateDefault<IKycService>(false);
+
 
 			defaultInstantiatedSource.TrySetResult(true);
 
@@ -414,6 +419,21 @@ namespace NeuroAccessMaui
 					return null;
 				}
 			});
+
+			// Register XML schemas on the DI-managed validator instance.
+			try
+			{
+				IXmlSchemaValidationService xml = ServiceRef.XmlSchemaValidationService;
+				xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);
+				xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2Url, Constants.Schemes.BrandingDescriptorV2File);
+				xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2, Constants.Schemes.BrandingDescriptorV2File);
+				xml.RegisterSchema(Constants.Schemes.NeuroAccessKycProcessUrl, Constants.Schemes.NeuroAccessKycProcessFile);
+				xml.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.NeuroAccessKycProcessFile);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "SchemaRegistrationStartup"));
+			}
 
 			servicesSetup.TrySetResult(true);
 		}

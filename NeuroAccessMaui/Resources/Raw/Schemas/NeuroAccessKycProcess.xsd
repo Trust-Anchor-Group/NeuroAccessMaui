@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="https://paiwise.tagroot.io/Schema/NeuroAccessKycProcess.xsd"
+    targetNamespace="https://paiwise.tagroot.io/Schema/NeuroAccessKycProcess.xsd"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+  <!-- Migrated from urn:neuroaccess:kyc:1.0 on 2025-02-14 -->
+
+  <!-- Root element describing the sequence of KYC pages -->
+  <xs:element name="KYCProcess" type="KycProcessType">
+    <xs:key name="PageIds">
+      <xs:selector xpath="Page"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:key name="FieldIds">
+      <xs:selector xpath=".//Field"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:keyref name="ConditionFieldReferencesExisting" refer="FieldIds">
+      <xs:selector xpath=".//Condition"/>
+      <xs:field xpath="FieldRef"/>
+    </xs:keyref>
+  </xs:element>
+
+  <xs:complexType name="KycProcessType">
+    <xs:sequence>
+      <xs:element name="Name" type="LocalizedTextType" minOccurs="0"/>
+      <xs:element name="Page" type="PageType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Individual page definition -->
+  <xs:complexType name="PageType">
+    <xs:sequence>
+      <xs:element name="Title" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Description" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Condition" type="ConditionType" minOccurs="0" maxOccurs="1"/>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Field" type="FieldType"/>
+        <xs:element name="Section" type="SectionType"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="title" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- Section grouping fields within a page -->
+  <xs:complexType name="SectionType">
+    <xs:sequence>
+      <xs:element name="Label" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Description" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Field" type="FieldType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="label" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- Field definition -->
+  <xs:complexType name="FieldType">
+    <xs:sequence>
+      <xs:element name="Label" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Hint" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Placeholder" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Description" type="LocalizedTextType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Default" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Metadata" type="MetadataType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ValidationRules" type="ValidationRulesType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Options" type="OptionsType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Condition" type="ConditionType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Mapping" type="MappingType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" use="required"/>
+    <xs:attribute name="type" type="FieldTypeName" use="required"/>
+    <xs:attribute name="required" type="xs:boolean" use="optional" default="false"/>
+    <xs:attribute name="specialType" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- Supported field type values -->
+  <xs:simpleType name="FieldTypeName">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="text"/>
+      <xs:enumeration value="Text"/>
+      <xs:enumeration value="date"/>
+      <xs:enumeration value="Date"/>
+      <xs:enumeration value="boolean"/>
+      <xs:enumeration value="Boolean"/>
+      <xs:enumeration value="picker"/>
+      <xs:enumeration value="Picker"/>
+      <xs:enumeration value="file"/>
+      <xs:enumeration value="File"/>
+      <xs:enumeration value="image"/>
+      <xs:enumeration value="Image"/>
+      <xs:enumeration value="phone"/>
+      <xs:enumeration value="Phone"/>
+      <xs:enumeration value="email"/>
+      <xs:enumeration value="Email"/>
+      <xs:enumeration value="integer"/>
+      <xs:enumeration value="Integer"/>
+      <xs:enumeration value="decimal"/>
+      <xs:enumeration value="Decimal"/>
+      <xs:enumeration value="country"/>
+      <xs:enumeration value="Country"/>
+      <xs:enumeration value="checkbox"/>
+      <xs:enumeration value="Checkbox"/>
+      <xs:enumeration value="radio"/>
+      <xs:enumeration value="Radio"/>
+      <xs:enumeration value="gender"/>
+      <xs:enumeration value="Gender"/>
+      <xs:enumeration value="label"/>
+      <xs:enumeration value="Label"/>
+      <xs:enumeration value="info"/>
+      <xs:enumeration value="Info"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Mapping of field values to outgoing payload keys -->
+  <xs:complexType name="MappingType">
+    <xs:sequence>
+      <xs:element name="Transform" type="TransformType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="key" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="TransformType">
+    <xs:sequence/>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- Validation rules supported by the parser -->
+  <xs:complexType name="ValidationRulesType">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="LengthRule" type="LengthRuleType"/>
+      <xs:element name="RegexRule" type="RegexRuleType"/>
+      <xs:element name="DateRangeRule" type="DateRangeRuleType"/>
+      <xs:element name="PersonalNumberRule" type="PersonalNumberRuleType"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="LengthRuleType">
+    <xs:sequence>
+      <xs:element name="Message" type="LocalizedTextType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="min" type="xs:int" use="optional"/>
+    <xs:attribute name="max" type="xs:int" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="RegexRuleType">
+    <xs:sequence>
+      <xs:element name="Regex" type="xs:string"/>
+      <xs:element name="Message" type="LocalizedTextType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="DateRangeRuleType">
+    <xs:sequence>
+      <xs:element name="Message" type="LocalizedTextType" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="min" type="xs:date" use="optional"/>
+    <xs:attribute name="max" type="xs:date" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="PersonalNumberRuleType">
+    <xs:sequence>
+      <xs:element name="CountryFieldReference" type="xs:string" minOccurs="0"/>
+      <xs:element name="Message" type="LocalizedTextType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Options exposed for picker/checkbox/radio fields -->
+  <xs:complexType name="OptionsType">
+    <xs:sequence>
+      <xs:element name="Option" type="OptionType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="OptionType" mixed="false">
+    <xs:sequence>
+      <xs:element name="Text" type="LangStringType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="value" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- Free-form metadata bag, consumed dynamically by the parser -->
+  <xs:complexType name="MetadataType">
+    <xs:sequence>
+      <xs:any minOccurs="1" maxOccurs="unbounded" processContents="lax"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Localized text helpers -->
+  <xs:complexType name="LocalizedTextType" mixed="true">
+    <xs:sequence>
+      <xs:element name="Text" type="LangStringType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LangStringType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="lang" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Conditional visibility -->
+  <xs:complexType name="ConditionType">
+    <xs:sequence>
+      <xs:element name="FieldRef" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="Equals" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

@@ -184,6 +184,8 @@
 								</VerticalStackLayout>
 							</Border>
 						</controls:TemplatedButton>
+
+                        
 					</VerticalStackLayout>
 				</Border>
 

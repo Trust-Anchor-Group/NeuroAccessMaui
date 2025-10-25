@@ -41,8 +41,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		{
 			try
 			{
-				ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.ContactsDescription)], SelectContactAction.ViewIdentity);
-				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), BackMethod.Pop);
 			}
 			catch (Exception Ex)
 			{

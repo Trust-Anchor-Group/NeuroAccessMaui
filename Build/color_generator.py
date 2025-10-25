@@ -18,8 +18,8 @@ fixing a spelling error or one letter/digit in the hex-code changed.
 
 p = pathlib.Path(__file__).parent.resolve()
 json_path = p / pathlib.Path("colors.json")
-new_colors_light_path = p / ("../NeuroAccessMaui/Resources/Styles/colors-light.xaml")
-new_colors_dark_path = p / ("../NeuroAccessMaui/Resources/Styles/colors-dark.xaml")
+new_colors_light_path = p / ("colors-light.xaml")
+new_colors_dark_path = p / ("colors-dark.xaml")
 
 # Converts hex color from figma to one supported by maui
 # Change #XXXXXXAA -> #AAXXXXXX Where A is alpha value
@@ -53,7 +53,7 @@ xaml_doc_start = """
 
 xaml_doc_end = "</ResourceDictionary>"
 
-def create_xaml_file(alternative: bool) -> str:
+def create_files(alternative: bool) -> str:
     with open(json_path) as f:
         data = json.load(f)[0]["values"]
         if alternative:
@@ -69,9 +69,37 @@ def create_xaml_file(alternative: bool) -> str:
     with open(new_colors_light_path, "w") as f:
         f.write(result_light[1:])
 
+    print(f"Wrote light XAML colors -> {new_colors_light_path}")
+
     with open(new_colors_dark_path, "w") as f:
         f.write(result_dark[1:])
 
+    print(f"Wrote dark XAML colors -> {new_colors_dark_path}")
+
+    output_path = p / "colors-combined.json"
+
+    with open(json_path, encoding="utf-8") as f:
+        data = json.load(f)[0]["values"]
+        if alternative:
+            light_raw = data[3]["color"]
+            dark_raw  = data[2]["color"]
+        else:
+            light_raw = data[0]["color"]
+            dark_raw  = data[1]["color"]
+
+    # Build simple dicts name -> hex (using existing helpers)
+    light_map = {filter_name(c["name"]): figma_hex_to_maui(c["value"]) for c in light_raw}
+    dark_map  = {filter_name(c["name"]): figma_hex_to_maui(c["value"]) for c in dark_raw}
+
+    combined = {
+        "light": light_map,
+        "dark": dark_map
+    }
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(combined, f, indent=2)
+
+    print(f"Wrote combined JSON colors -> {output_path}")
 
 parser = argparse.ArgumentParser(
     prog='ColorConverter',
@@ -83,4 +111,4 @@ parser.add_argument("-a", "--alternative", action="store_true", help="If flag is
 
 args = parser.parse_args()
 
-create_xaml_file(args.alternative)
+create_files(args.alternative)
