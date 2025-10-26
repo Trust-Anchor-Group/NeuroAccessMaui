@@ -21,7 +21,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		/// Threshold for considering an icon to be a wide (horizontal) rectangle.
 		/// Icons at or above this aspect ratio are treated as hero/banners and shown without text.
 		/// </summary>
-		private const double WideAspectThreshold = 800/200; 
+		private const double WideAspectThreshold = 2; 
 
 		/// <summary>
 		/// Underlying service provider
