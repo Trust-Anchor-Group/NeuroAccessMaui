@@ -1,61 +1,96 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
-							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.IssueEDaler.IssueEDalerPage"
-							 x:DataType="viewmodel:EDalerUriViewModel"
-							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
-							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet">
+					  x:Class="NeuroAccessMaui.UI.Pages.Wallet.IssueEDaler.IssueEDalerPage"
+					  x:DataType="viewmodel:EDalerUriViewModel"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet">
 	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
-		<controls:Background/>
+		<controls:Background />
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
+								 Margin="{DynamicResource MediumSpacing}">
+				<controls:ImageButton HorizontalOptions="Start"
+									  Command="{Binding GoBackCommand}"
+									  Style="{DynamicResource ImageOnlyButton}"
+									  PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize EDalerNote}" Style="{DynamicResource PageTitleLabel}"/>
+				<Label Text="{l:Localize EDalerNote}"
+					   Style="{DynamicResource PageTitleLabel}" />
 
 				<Frame Style="{DynamicResource FrameSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-						<Frame HeightRequest="150" BorderColor="{DynamicResource ForegroundColor}" CornerRadius="6" HasShadow="True" BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
-							<Grid HeightRequest="150" WidthRequest="10000" BackgroundColor="Transparent">
+						<Frame HeightRequest="150"
+							   BorderColor="{DynamicResource ForegroundColor}"
+							   CornerRadius="6"
+							   HasShadow="True"
+							   BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+							<Grid HeightRequest="150"
+								  BackgroundColor="Transparent">
 								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="*" />
 								</Grid.ColumnDefinitions>
 								<Grid.RowDefinitions>
-									<RowDefinition Height="25"/>
-									<RowDefinition Height="100"/>
-									<RowDefinition Height="25"/>
+									<RowDefinition Height="25" />
+									<RowDefinition Height="100" />
+									<RowDefinition Height="25" />
 								</Grid.RowDefinitions>
-								<Image x:Name="Img" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Source="{Binding Path=EDalerFrontGlyph}" Opacity="0.5"/>
-								<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=Created}" HorizontalOptions="Start" TextColor="{DynamicResource SurfaceBackgroundWL}"/>
-								<Label Grid.Column="0" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center" TextColor="{DynamicResource SurfaceBackgroundWL}">
+								<controls:UriImage x:Name="Img"
+									   Grid.Column="0"
+									   Grid.Row="0"
+									   Grid.RowSpan="3"
+									   Source="{Binding Path=EDalerFrontGlyph}"
+									   Opacity="0.5" />
+								<Label Grid.Column="0"
+									   Grid.Row="0"
+									   Text="{Binding Path=Created}"
+									   HorizontalOptions="Start"
+									   TextColor="{DynamicResource SurfaceBackgroundWL}" />
+								<Label Grid.Column="0"
+									   Grid.Row="1"
+									   HorizontalOptions="Center"
+									   VerticalOptions="Center"
+									   TextColor="{DynamicResource SurfaceBackgroundWL}">
 									<Label.FormattedText>
 										<FormattedString>
-											<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}" FontSize="50" FontAttributes="Bold"/>
-											<Span Text=" "/>
-											<Span Text="{Binding Path=Currency}" FontSize="30"/>
+											<Span Text="{Binding Path=Amount, Converter={converters:MoneyToString}}"
+												  FontSize="50"
+												  FontAttributes="Bold" />
+											<Span Text=" " />
+											<Span Text="{Binding Path=Currency}"
+												  FontSize="30" />
 										</FormattedString>
 									</Label.FormattedText>
 								</Label>
-								<Label Grid.Column="0" Grid.Row="2" Text="{Binding Path=From}" HorizontalOptions="Start" Style="{DynamicResource ClickableValueLabel}" TextColor="{DynamicResource SurfaceBackgroundWL}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding Path=BindingContext.FromClickCommand, Source={x:Reference MainStackLayout}}" />
-									</Label.GestureRecognizers>
-								</Label>
+								<controls:TemplatedButton Grid.Column="0"
+														  Grid.Row="2"
+														  Command="{Binding FromClickCommand}">
+									<Label Text="{Binding Path=From}"
+										   HorizontalOptions="Start"
+										   Style="{DynamicResource ClickableValueLabel}"
+										   TextColor="{DynamicResource SurfaceBackgroundWL}" />
+								</controls:TemplatedButton>
+
 							</Grid>
 						</Frame>
-						<Label Text="{Binding Path=Message}" IsVisible="{Binding Path=HasMessage}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
+						<Label Text="{Binding Path=Message}"
+							   IsVisible="{Binding Path=HasMessage}"
+							   Style="{DynamicResource InfoLabel}"
+							   VerticalOptions="Start" />
 						<!-- BUTTONS -->
-						<controls:TextButton LabelData="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}" IsEnabled="{Binding Path=IsConnected}"
-													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
+						<controls:TextButton LabelData="{l:Localize Accept}"
+											 Command="{Binding Path=AcceptCommand}"
+											 IsEnabled="{Binding Path=IsConnected}"
+											 Margin="{DynamicResource SmallBottomMargins}"
+											 Style="{DynamicResource FilledTextButton}" />
 					</VerticalStackLayout>
 				</Frame>
 			</VerticalStackLayout>
