@@ -10,12 +10,52 @@
 		</Check>
 	</Entry>
 	<Entry country="BR" displayString="NNN.NNN.NNN-NN (CPF)">
-		<Pattern variable="CPF"><![CDATA[CPF like "(?'N1'\\d{3})[.]?(?'N2'\\d{3})[.]?(?'N3'\\d{3})-?(?'N4'\\d{2})"]]></Pattern>
-		<Normalize><![CDATA[N1_STR+"."+N2_STR+"."+N3_STR+"-"+N4_STR]]></Normalize>
+		<Pattern variable="CPF"><![CDATA[CPF like "(?'G1'\\d{3})[.]?(?'G2'\\d{3})[.]?(?'G3'\\d{3})-?(?'DV'\\d{2})"]]></Pattern>
+		<Check>
+			<![CDATA[
+			T:=Num(G1_STR+G2_STR+G3_STR);
+			M:=2;
+			S:=0;
+			while T>0 do
+			(
+				S+=(M++)*(T MOD 10);
+				T:=floor(T/10);
+			);
+			DV1:=(S*10) MOD 11;
+			if (DV1=10) then DV1:=0;
+			
+			T:=Num(G1_STR+G2_STR+G3_STR);
+			M:=3;
+			S:=2*Num(Left(DV_STR,1));
+			while T>0 do
+			(
+				S+=(M++)*(T MOD 10);
+				T:=floor(T/10);
+			);
+			DV2:=(S*10) MOD 11;
+			if (DV2=10) then DV2:=0;
+			DV=(DV1*10+DV2);
+			]]>
+		</Check>
+		<Normalize><![CDATA[G1_STR+"."+G2_STR+"."+G3_STR+"-"+DV_STR]]></Normalize>
 	</Entry>
 	<Entry country="CL" displayString="NN.NNN.NNN-N (RUN)">
-		<Pattern variable="RUN"><![CDATA[RUN like "(?'N1'\\d{1,2})[.]?(?'N2'\\d{3})[.]?(?'N3'\\d{3})-?(?'N4'[\\dK])"]]></Pattern>
-		<Normalize><![CDATA[N1_STR+"."+N2_STR+"."+N3_STR+"-"+N4_STR]]></Normalize>
+		<Pattern variable="RUN"><![CDATA[RUN like "(?'G1'\\d{1,2})[.]?(?'G2'\\d{3})[.]?(?'G3'\\d{3})-?(?'DV'[\\dkK])"]]></Pattern>
+		<Check>
+			<![CDATA[
+			T:=Num(G1_STR+G2_STR+G3_STR);
+			M:=0;
+			S:=1;
+			while T>0 do
+			(
+				S+=(T MOD 10)*(9-(M++ MOD 6));
+				T:=floor(T/10)
+			);
+			S:=S MOD 11;
+			S=0 ? UpperCase(DV)="K" : DV=S-1;
+			]]>
+		</Check>
+		<Normalize><![CDATA[G1_STR+"."+G2_STR+"."+G3_STR+"-"+UpperCase(DV_STR)]]></Normalize>
 	</Entry>
 	<Entry country="HR" displayString="DDMMYYYRRBBBK (UMCN)">
 		<Pattern variable="UMCN"><![CDATA[UMCN like "(?'D1'\\d{1})(?'D2'\\d{1})(?'D3'\\d{1})(?'D4'\\d{1})(?'D5'\\d{1})(?'D6'\\d{1})(?'D7'\\d{1})(?'D8'\\d{1})(?'D9'\\d{1})(?'D10'\\d{1})(?'D11'\\d{1})(?'D12'\\d{1})(?'D13'\\d{1})"]]></Pattern>
