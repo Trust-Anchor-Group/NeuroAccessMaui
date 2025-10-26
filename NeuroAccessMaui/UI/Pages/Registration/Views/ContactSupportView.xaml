@@ -192,34 +192,6 @@
 -->
 			</VerticalStackLayout>
 
-			<!-- Scan QR Button -->
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Grid.Row="1">
-				<Border Style="{DynamicResource AccentInfoBorder}" Padding="{DynamicResource SmallMargins}">
-					<Grid ColumnDefinitions="auto, *">
-						<Path Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center"
-						      Data="{x:Static ui:Geometries.InfoCirclePath}" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-						      Fill="{DynamicResource TnPInfoContentWL}"/>
-						<Label Grid.Column="1" Style ="{DynamicResource AccentInfoLabel}" Margin="{DynamicResource SmallLeftMargins}" Text="{l:Localize OnboardingGetStartedQrInfo}" />
-
-					</Grid>
-				</Border>
-
-				<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
-					<Border Style="{DynamicResource TransparentTemplateButtonBorder}" InputTransparent="True" Margin="0">
-						<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
-							<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"
-							      Data="{x:Static ui:Geometries.ScanQrIconPath}"
-							      Style="{DynamicResource TransparentTemplateButtonPath}"
-							/>
-							<Label Grid.Column="1" Style="{DynamicResource TransparentTemplateButtonLabel}" Margin="{DynamicResource SmallLeftMargins}"  Text="{l:Localize ScanQRShort}"/>
-						</Grid>
-					</Border>
-				</controls:TemplatedButton>
-
-				<controls:TextButton Style="{DynamicResource TertiaryButton}"
-									 LabelData="{l:Localize CreateNewAccount}"
-									 Command="{Binding NewAccountCommand}"/>
-			</VerticalStackLayout>
 		</Grid>
 
 	</Grid>
