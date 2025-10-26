@@ -25,6 +25,8 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 
 		/// <summary>
 		/// Checks if a personal number is valid according to the personal number scheme.
+		/// Order: Pattern (original) -> Normalize -> Pattern (normalized) -> Check.
+		/// Any exception or failed evaluation yields IsValid=false (except first pattern mismatch => null).
 		/// </summary>
 		/// <returns>Validation information about the number.</returns>
 		public async Task<NumberInformation> Validate(string PersonalNumber)
@@ -37,28 +39,19 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 
 			try
 			{
+				//1. Evaluate pattern on original input
 				Variables Variables = new(new Variable(this.variableName, PersonalNumber));
 				object EvalResult = await this.pattern.EvaluateAsync(Variables);
 
-				if (EvalResult is bool b)
+				if (EvalResult is bool PatternMatchOriginal)
 				{
-					if (!b)
+					if (!PatternMatchOriginal)
 					{
-						Info.IsValid = null;
+						Info.IsValid = null; // Scheme not applicable.
 						return Info;
 					}
 
-					if (this.check is not null)
-					{
-						EvalResult = await this.check.EvaluateAsync(Variables);
-
-						if (EvalResult is not bool b2 || !b2)
-						{
-							Info.IsValid = false;
-							return Info;
-						}
-					}
-
+					//2. Normalize (if applicable)
 					if (this.normalize is not null)
 					{
 						EvalResult = await this.normalize.EvaluateAsync(Variables);
@@ -70,6 +63,28 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 						}
 
 						Info.PersonalNumber = Normalized;
+
+						// Recreate variables for normalized value
+						Variables = new(new Variable(this.variableName, Normalized));
+
+						//3. Re-run pattern on normalized value
+						EvalResult = await this.pattern.EvaluateAsync(Variables);
+						if (EvalResult is not bool PatternMatchNormalized || !PatternMatchNormalized)
+						{
+							Info.IsValid = false; // Normalization produced value not matching pattern
+							return Info;
+						}
+					}
+
+					//4. Check logic (if applicable) on (possibly) normalized variables
+					if (this.check is not null)
+					{
+						EvalResult = await this.check.EvaluateAsync(Variables);
+						if (EvalResult is not bool CheckOk || !CheckOk)
+						{
+							Info.IsValid = false;
+							return Info;
+						}
 					}
 
 					Info.IsValid = true;
@@ -77,13 +92,13 @@ namespace NeuroAccessMaui.Services.Data.PersonalNumbers
 				}
 				else
 				{
-					Info.IsValid = null;
+					Info.IsValid = null; // Pattern evaluation did not yield boolean => not applicable
 					return Info;
 				}
 			}
 			catch (Exception)
 			{
-				Info.IsValid = false;
+				Info.IsValid = false; // Any exception => invalid
 				return Info;
 			}
 		}
