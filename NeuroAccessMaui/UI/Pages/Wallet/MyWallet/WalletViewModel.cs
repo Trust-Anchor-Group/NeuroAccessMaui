@@ -57,7 +57,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		[NotifyPropertyChangedFor(nameof(ReservedDecimal))]
 		[NotifyPropertyChangedFor(nameof(ReservedString))]
 		[NotifyPropertyChangedFor(nameof(HasReserved))]
+		[NotifyPropertyChangedFor(nameof(Currency))]
 		Balance? fetchedBalance;
+
+		public string Currency =>
+			this.FetchedBalance?.Currency ?? "NC";
 
 		/// <summary>
 		/// Indicates if the balance is currently refreshing.
@@ -120,7 +124,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			this.GetBalanceTask.Load(this.LoadBalanceAsync);
 
 			// Uncomment if event handlers are needed
-			// ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
+			ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
 			// ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokenAdded;
 			// ServiceRef.XmppService.NeuroFeatureRemoved += this.Wallet_TokenRemoved;
 			// ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
@@ -396,15 +400,19 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		}
 
 		/// <summary>
-		/// Loads account event history (not yet implemented).
+		/// Handles balance update events from the wallet service.
 		/// </summary>
-		/// <param name="Ctx">Task context</param>
-		private async Task LoadAccountEventsAsync(TaskContext<bool> Ctx)
+		private async Task Wallet_BalanceUpdated(object? sender, BalanceEventArgs e)
 		{
-			if (!await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect))
-				return;
-
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.FetchedBalance = e.Balance;
+				this.BalanceUpdated = DateTime.UtcNow;
+				ServiceRef.TagProfile.LastEDalerBalanceDecimal = this.BalanceDecimal;
+				ServiceRef.TagProfile.LastEDalerBalanceUpdate = DateTime.UtcNow;
+			});
 		}
+
 		#endregion
 	}
 }

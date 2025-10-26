@@ -137,7 +137,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 		/// <summary>
 		/// The command to bind to for generating a QR code
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(AmountOk))]
+		[RelayCommand]
 		private Task GenerateQrCode()
 		{
 			string Uri;
@@ -160,6 +160,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 					this.GenerateQrCode(Uri);
 
 					await this.page.ShowQrCode();
+
+					this.HasQrCode = true;
 				});
 			}
 
@@ -169,7 +171,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 		/// <summary>
 		/// The command to bind to for sharing the QR code with a contact
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(HasQrCode))]
+		[RelayCommand]
 		private async Task ShareContact()
 		{
 			try
@@ -221,7 +223,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 		/// <summary>
 		/// The command to bind to for sharing the QR code with external applications
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(HasQrCode))]
+		[RelayCommand]
 		private async Task ShareExternal()
 		{
 			if (this.QrCodeBin is null)
