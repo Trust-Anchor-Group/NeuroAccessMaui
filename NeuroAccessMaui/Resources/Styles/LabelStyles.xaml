@@ -175,6 +175,8 @@
 
 	<Style x:Key="DurationLabel" ApplyToDerivedTypes="False" BaseResourceKey="RegularItemTitleLabel" TargetType="Label">
 		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
+		<Setter Property="HorizontalTextAlignment"
+				Value="Start" />
 	</Style>
 
 	<Style x:Key="RequiredFieldMarker" ApplyToDerivedTypes="False" TargetType="Label">

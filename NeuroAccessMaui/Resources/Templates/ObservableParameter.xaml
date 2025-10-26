@@ -321,10 +321,8 @@
 		<Border Style="{DynamicResource BorderSet}"
 				Margin="{DynamicResource MediumLeftRightMargins}">
 			<VerticalStackLayout>
-				<controls:CompositeDurationPicker	TitleLabelText="{l:Localize DurationPickerTitle}"
+				<controls:CompositeDurationPicker	TitleLabelText="{Binding Label}"
 													TitleLabelStyle="{DynamicResource DurationLabel}"
-													DescriptionLabelText="{l:Localize DurationPickerDescription}"
-													DescriptionLabelStyle="{DynamicResource ParameterItemValueLabel}"
 													DurationValue="{Binding DurationValue, Mode=TwoWay}"
 													IsValid="{Binding IsValid}" />
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
