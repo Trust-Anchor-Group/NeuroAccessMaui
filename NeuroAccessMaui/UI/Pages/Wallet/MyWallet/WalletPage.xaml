@@ -244,10 +244,7 @@
 									LabelText="{l:Localize AddToBalance}"
 									Grid.Row="2"
 									Grid.ColumnSpan="2"
-									Margin="0,16,0,0"/>
-				<controls:UriImage Source="https://waher.se/Transbank/Images/1.Webpay_FB_800.svg"
-								   Aspect="AspectFill"
-								   HeightRequest="50" />
+									Margin="0,16,0,0" />
 
 			</Grid>
 		</Border>
