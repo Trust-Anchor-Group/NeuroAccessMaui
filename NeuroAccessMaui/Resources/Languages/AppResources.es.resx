@@ -2898,7 +2898,7 @@
     <value>Continuar ({0})</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
-    <value>Activa tu identidad digital</value>
+    <value>Selecciona tu proveedor de identificación</value>
   </data>
   <data name="HaveAnyQuestions" xml:space="preserve">
     <value>¿Tienes alguna pregunta?</value>
@@ -3172,5 +3172,8 @@
   </data>
   <data name="UnknownPleaseRefresh" xml:space="preserve">
     <value>Desconocido, por favor actualiza</value>
+  </data>
+  <data name="SelectForMe" xml:space="preserve">
+    <value>Seleccionar por mí</value>
   </data>
 </root>

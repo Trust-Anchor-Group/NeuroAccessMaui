@@ -2898,7 +2898,7 @@
     <value>Fortsätt ({0})</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
-    <value>Aktivera ditt digitala ID</value>
+    <value>Välj din ID-leverantör</value>
   </data>
   <data name="HaveAnyQuestions" xml:space="preserve">
     <value>Har du några frågor?</value>
@@ -3172,5 +3172,8 @@
   </data>
   <data name="UnknownPleaseRefresh" xml:space="preserve">
     <value>Okänt, vänligen uppdatera</value>
+  </data>
+  <data name="SelectForMe" xml:space="preserve">
+    <value>Välj åt mig</value>
   </data>
 </root>
