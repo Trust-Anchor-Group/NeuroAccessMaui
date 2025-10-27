@@ -310,7 +310,7 @@
 		<PackageReference Include="Svg.Skia" Version="2.0.0.1" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-		<PackageReference Include="Waher.Content" Version="3.4.0" />
+		<PackageReference Include="Waher.Content" Version="3.4.1" />
 		<PackageReference Include="Waher.Content.Images" Version="3.0.2" />
 		<PackageReference Include="Waher.Content.Markdown" Version="6.2.0" />
 		<PackageReference Include="Waher.Content.QR" Version="2.1.2" />
@@ -327,7 +327,7 @@
 		<PackageReference Include="Waher.Networking.XMPP" Version="4.2.3" />
 		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="4.2.3" />
-		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.8.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.8.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Control" Version="4.1.2" />
 		<PackageReference Include="Waher.Networking.XMPP.Geo" Version="1.0.1" />
 		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.2.7" />
@@ -343,7 +343,7 @@
 		<PackageReference Include="Waher.Persistence.XmlLedger" Version="1.2.3" />
 		<PackageReference Include="Waher.Runtime.Collections" Version="1.0.3" />
 		<PackageReference Include="Waher.Runtime.Geo" Version="1.0.1" />
-		<PackageReference Include="Waher.Runtime.Inventory" Version="1.4.4" />
+		<PackageReference Include="Waher.Runtime.Inventory" Version="1.4.5" />
 		<PackageReference Include="Waher.Runtime.IO" Version="1.0.5" />
 		<PackageReference Include="Waher.Runtime.Profiling" Version="1.1.2" />
 		<PackageReference Include="Waher.Runtime.Queue" Version="3.2.1" />
