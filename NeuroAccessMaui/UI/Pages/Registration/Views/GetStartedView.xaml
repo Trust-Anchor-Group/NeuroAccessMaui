@@ -52,24 +52,6 @@
 
 					</controls:CompositeEntry>
 
-					<Grid ColumnDefinitions="*, auto, *" ColumnSpacing="16">
-						<BoxView Grid.Column="0"
-								 BackgroundColor="{DynamicResource SurfaceDividerWL}"
-								 HeightRequest="1"
-								 VerticalOptions="Center"/>
-						<Label Grid.Column="1"
-						   Text="{l:Localize Or}"
-							   HorizontalOptions="Center"
-							   VerticalOptions="Center"
-							   FontFamily="SpaceGroteskRegular"
-							   FontSize="16"
-							   TextColor="{DynamicResource ContentSecondaryWL}"/>
-						<BoxView Grid.Column="2"
-								 BackgroundColor="{DynamicResource SurfaceDividerWL}"
-								 HeightRequest="1"
-								 VerticalOptions="Center" />
-					</Grid>
-
 					<controls:SvgButton Command="{Binding ScanQrCodeCommand}"
 										Style="{DynamicResource PrimaryIconButton}"
 										LabelText="{l:Localize QrScanCode}"
