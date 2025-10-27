@@ -315,9 +315,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			await this.GoToStepAsync(ViewContractStep.Review, Prepare: async () =>
 			{
-				string Xaml = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
-				VerticalStackLayout Layout = new VerticalStackLayout().LoadFromXaml(Xaml);
-				this.HumanReadableText = Layout;
+
+				await this.ValidateParametersAsync();
+				VerticalStackLayout? HumanReadableText = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
+				this.HumanReadableText = HumanReadableText;
 			});
 		}
 
@@ -562,6 +563,59 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		#region Private Helpers
 
+		/// <summary>
+		/// Validates the parameters of the contract and updates their error states.
+		/// </summary>
+		private async Task ValidateParametersAsync()
+		{
+			if (this.Contract is null)
+				return;
+
+			try
+			{
+				// Step 1: Get the variables and prepare the parameters to validate
+				Variables Variables = [];
+				foreach (ObservableParameter ParamLoop in this.Contract.Parameters)
+					ParamLoop.Parameter.Populate(Variables);
+
+				// Step 2: Prepare to collect validation results
+				List<(ObservableParameter Param, bool IsValid, string ValidationText)> ValidationResults = [];
+
+				ContractsClient? ContractsClient = null;
+				try
+				{
+					ContractsClient = ServiceRef.XmppService.ContractsClient;
+				}
+				catch (Exception)
+				{
+					// Ignore, client might not be available currently
+				}
+
+				Task<(ObservableParameter Param, bool IsValid, string ValidationText)>[] ValidationTasks = this.Contract.Parameters.Select(async ParamToValidate =>
+				{
+					bool IsValid = false;
+					string ValidationText = string.Empty;
+					try
+					{
+						IsValid = await ParamToValidate.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient).ConfigureAwait(false);
+						IsValid = IsValid || ParamToValidate.Parameter.ErrorText == ContractStatus.ClientIdentityInvalid.ToString();
+						ValidationText = ParamToValidate.Parameter.ErrorText;
+					}
+					catch (Exception Ex2)
+					{
+						ServiceRef.LogService.LogException(Ex2);
+						IsValid = true;
+					}
+					return (Param: ParamToValidate, IsValid, ValidationText);
+				}).ToArray();
+
+				(ObservableParameter Param, bool IsValid, string ValidationText)[] Results = await Task.WhenAll(ValidationTasks);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 		private bool ValidateArgs()
 		{
 			return this.args is not null && this.args.Contract is not null;
