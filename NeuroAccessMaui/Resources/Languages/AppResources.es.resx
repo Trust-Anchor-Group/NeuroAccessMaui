@@ -3197,4 +3197,10 @@
   <data name="ShareOfflinePaymentDescription" xml:space="preserve">
     <value>Puedes compartir este código QR con otro usuario para procesarlo más tarde, ya sea cuando se necesite o cuando exista conectividad.</value>
   </data>
+  <data name="RequestCredits" xml:space="preserve">
+    <value>Solicitar créditos</value>
+  </data>
+  <data name="SendCredits" xml:space="preserve">
+    <value>Enviar créditos</value>
+  </data>
 </root>

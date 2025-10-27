@@ -249,16 +249,23 @@
 
 			</Grid>
 		</Border>
-		
-		<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
-							SvgSource="transfer.svg"
-							LabelPosition="Right"
-							LabelText="Send Credits"
-							Grid.Row="2"
-							Margin="24,24,24,16"
-							HeightRequest="48"
-							VerticalOptions="End"
-							Command="{Binding SendEdalerCommand}"/>
+
+		<Grid VerticalOptions="End" Grid.Row="2" ColumnDefinitions="*,*" Margin="16" ColumnSpacing="8">
+			<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
+								SvgSource="transfer.svg"
+								LabelPosition="Right"
+								LabelText="{l:Localize RequestCredits}"
+								HeightRequest="48"
+								Command="{Binding ViewRequestPaymentCommand}"/>
+
+			<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
+								SvgSource="transfer.svg"
+								LabelPosition="Right"
+								LabelText="{l:Localize SendCredits}"
+								HeightRequest="48"
+								Command="{Binding SendEdalerCommand}"
+								Grid.Column="1"/>
+		</Grid>
 
 		<!-- Bottom Bar -->
 		<controls:BottomBar Grid.Row="3"

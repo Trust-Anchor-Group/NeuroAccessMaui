@@ -354,6 +354,20 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			}
 		}
 
+		// Go to request payment page
+		[RelayCommand]
+		public async Task ViewRequestPayment()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(RequestPaymentPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
 		/// <summary>
 		/// Command to navigate to transaction history page.
 		/// </summary>
