@@ -22,8 +22,7 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework
   object]</value>
         <comment>This is a comment</comment>
@@ -61,7 +60,9 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  <xsd:schema id="root"
+    xmlns=""
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -115,12 +116,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Select roles you will sign as (optional)</value>
@@ -2514,17 +2513,17 @@
     <value>Generate QR Code</value>
   </data>
   <data name="CameraPermissionTitle" xml:space="preserve">
-		<value>Camera</value>
-	</data>
+    <value>Camera</value>
+  </data>
   <data name="CameraPermissionDescription" xml:space="preserve">
-		<value>To use this feature, please enable camera access in your settings.</value>
-	</data>
+    <value>To use this feature, please enable camera access in your settings.</value>
+  </data>
   <data name="CameraPermissionDescriptionSecondary" xml:space="preserve">
-		<value>Open settings - Click on "Permissions" - Enable Camera Permissions</value>
-	</data>
+    <value>Open settings - Click on "Permissions" - Enable Camera Permissions</value>
+  </data>
   <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
-		<value>Open settings - Enable Camera Permissions</value>
-	</data>
+    <value>Open settings - Enable Camera Permissions</value>
+  </data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Open settings</value>
   </data>
@@ -2577,16 +2576,16 @@
     <value>Today</value>
   </data>
   <data name="DurationPickerTitle" xml:space="preserve">
-    <value>Validity Time</value> 
+    <value>Validity Time</value>
   </data>
   <data name="DurationPickerDescription" xml:space="preserve">
-    <value>Specify the lifetime of the contract</value> 
+    <value>Specify the lifetime of the contract</value>
   </data>
   <data name="NegateDuration" xml:space="preserve">
-    <value>Negative duration: </value> 
+    <value>Negative duration: </value>
   </data>
   <data name="AddDuration" xml:space="preserve">
-    <value>Add duration</value> 
+    <value>Add duration</value>
   </data>
   <data name="SelectUnit" xml:space="preserve">
     <value>Select unit</value>
@@ -2847,16 +2846,16 @@
     <value>NFC</value>
   </data>
   <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
-   <value>Would you like to add this identity to your contacts?</value>
+    <value>Would you like to add this identity to your contacts?</value>
   </data>
   <data name="ComingSoon" xml:space="preserve">
-   <value>Coming soon!</value>
+    <value>Coming soon!</value>
   </data>
   <data name="ComingSoonInfo" xml:space="preserve">
-   <value>We are currently working on this</value>
+    <value>We are currently working on this</value>
   </data>
   <data name="BetaFeature" xml:space="preserve">
-   <value>Beta</value>
+    <value>Beta</value>
   </data>
   <data name="BetaFeatureInfo" xml:space="preserve">
     <value>To enable Beta features, go to the Home screen and open the settings page</value>
@@ -2874,19 +2873,19 @@
     <value>Cache cleared</value>
   </data>
   <data name="LanguageChangedTitle" xml:space="preserve">
-   <value>Language changed</value>
+    <value>Language changed</value>
   </data>
   <data name="LanguageChangedMessage" xml:space="preserve">
-   <value>Please restart the app to ensure all text changes language properly</value>
+    <value>Please restart the app to ensure all text changes language properly</value>
   </data>
   <data name="ContinueSecondsFormat" xml:space="preserve">
     <value>Continue ({0})</value>
   </data>
   <data name="Never" xml:space="preserve">
-   <value>Never</value>
+    <value>Never</value>
   </data>
   <data name="Now" xml:space="preserve">
-   <value>Now</value>
+    <value>Now</value>
   </data>
   <data name="MinutesAgoFormat" xml:space="preserve">
     <value>{0} minutes ago</value>
@@ -2898,7 +2897,7 @@
     <value>Last updated: {0}</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
-   <value>Select your ID provider</value>
+    <value>Select your ID provider</value>
   </data>
   <data name="HaveAnyQuestions" xml:space="preserve">
     <value>Have any questions?</value>
@@ -3162,7 +3161,7 @@
     <value>Reserved</value>
   </data>
   <data name="Successful" xml:space="preserve">
-    <value>Successful</value> 
+    <value>Successful</value>
   </data>
   <data name="TransactionIDNoColon" xml:space="preserve">
     <value>Transaction ID</value>
@@ -3202,5 +3201,47 @@
   </data>
   <data name="SendCredits" xml:space="preserve">
     <value>Send Credits</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>year</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>years</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>month</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>months</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>day</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>days</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>hour</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>hours</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minute</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minutes</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>second</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="DurationAndSeparator" xml:space="preserve">
+    <value> and </value>
+  </data>
+  <data name="DurationCommaSeparator" xml:space="preserve">
+    <value>, </value>
   </data>
 </root>

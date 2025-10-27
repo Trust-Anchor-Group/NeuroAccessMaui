@@ -22,8 +22,7 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework
   object]</value>
         <comment>This is a comment</comment>
@@ -61,7 +60,9 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  <xsd:schema id="root"
+    xmlns=""
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -115,12 +116,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Välj roller du vill signera som (valfritt)</value>
@@ -2466,22 +2465,22 @@
     <value>Jag har läst och förstått villkoren i detta kontrakt</value>
   </data>
   <data name="Status" xml:space="preserve">
-      <value>Status</value>
+    <value>Status</value>
   </data>
   <data name="Encrypted" xml:space="preserve">
-      <value>Krypterad</value>
+    <value>Krypterad</value>
   </data>
   <data name="ViewParametersTitle" xml:space="preserve">
-      <value>Visa parametrar</value>
+    <value>Visa parametrar</value>
   </data>
   <data name="ViewParametersDescription" xml:space="preserve">
-      <value>Visa de variabler som styr kontraktet</value>
+    <value>Visa de variabler som styr kontraktet</value>
   </data>
   <data name="ViewRolesTitle" xml:space="preserve">
-      <value>Granska tilldelade roller</value>
+    <value>Granska tilldelade roller</value>
   </data>
   <data name="ViewRolesDescription" xml:space="preserve">
-      <value>Granska rollerna och se vem som har signerat varje roll</value>
+    <value>Granska rollerna och se vem som har signerat varje roll</value>
   </data>
   <data name="InvitationToSign" xml:space="preserve">
     <value>Du har blivit inbjuden att signera detta kontrakt. Se till att verifiera och granska kontraktet innan du fortsätter.</value>
@@ -2502,7 +2501,7 @@
     <value>Granska kontraktets villkor</value>
   </data>
   <data name="ServerSignatureButtonTitle" xml:space="preserve">
-    <value>Visa serversignatur</value> 
+    <value>Visa serversignatur</value>
   </data>
   <data name="ServerSignatureButtonDescription" xml:space="preserve">
     <value>Visa serversignaturen, som skyddar avtalets integritet</value>
@@ -2524,7 +2523,7 @@
   </data>
   <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Öppna inställningar - Aktivera kamerabehörigheter</value>
-	</data>
+  </data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Öppna inställningar</value>
   </data>
@@ -2829,7 +2828,7 @@
     <value>Tar bort tillfälliga data som bilder och bilagor för att frigöra utrymme</value>
   </data>
   <data name="Apps" xml:space="preserve">
-      <value>Appar</value>
+    <value>Appar</value>
   </data>
   <data name="BetaFeaturesDescription" xml:space="preserve">
     <value>Betafunktioner är under utveckling och kan sakna fullständig funktionalitet eller design. Vissa av deras kärnfunktioner är dock redan tillgängliga.</value>
@@ -3202,5 +3201,47 @@
   </data>
   <data name="SendCredits" xml:space="preserve">
     <value>Skicka krediter</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>år</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>år</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>månad</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>månader</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>dag</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>dagar</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>timme</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>timmar</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minut</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minuter</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>sekund</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>sekunder</value>
+  </data>
+  <data name="DurationAndSeparator" xml:space="preserve">
+    <value> och </value>
+  </data>
+  <data name="DurationCommaSeparator" xml:space="preserve">
+    <value>, </value>
   </data>
 </root>
