@@ -3176,4 +3176,25 @@
   <data name="SelectForMe" xml:space="preserve">
     <value>Välj åt mig</value>
   </data>
+  <data name="ShareDescription" xml:space="preserve">
+    <value>Nedan hittar du ytterligare alternativ för att dela QR-koden.</value>
+  </data>
+  <data name="OtherApp" xml:space="preserve">
+    <value>Annan app</value>
+  </data>
+  <data name="SuccessfullyCopiedToClipboard" xml:space="preserve">
+    <value>Har kopierats till urklipp</value>
+  </data>
+  <data name="MakePayment" xml:space="preserve">
+    <value>Genomför betalning</value>
+  </data>
+  <data name="PayOnline" xml:space="preserve">
+    <value>Betala online</value>
+  </data>
+  <data name="PayOffline" xml:space="preserve">
+    <value>Betala offline</value>
+  </data>
+  <data name="ShareOfflinePaymentDescription" xml:space="preserve">
+    <value>Du kan dela denna QR-kod med en annan användare för att behandlas senare, antingen när den behövs eller när uppkoppling finns.</value>
+  </data>
 </root>

@@ -72,7 +72,8 @@
 								<Label.FormattedText>
 									<FormattedString>
 										<Span Text="{Binding Path=BalanceDecimal}" FontSize="48" FontFamily="SpaceGroteskBold"/>
-										<Span Text=" NC" FontSize="32" FontFamily="SpaceGroteskBold"/>
+										<Span Text=" "/>
+										<Span Text="{Binding Currency}" FontSize="32" FontFamily="SpaceGroteskBold"/>
 									</FormattedString>
 								</Label.FormattedText>
 							</Label>

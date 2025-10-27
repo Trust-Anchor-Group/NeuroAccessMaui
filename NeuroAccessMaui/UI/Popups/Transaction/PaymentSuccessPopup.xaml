@@ -37,7 +37,15 @@
 						<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{Binding Transaction.To}" Grid.Column="1" HorizontalOptions="End" />
 
 						<Label Style="{DynamicResource Brand2LabelSSecondary}" FontAttributes="Bold" Text="{l:Localize Amount}" Grid.Row="1"/>
-						<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{Binding Amount}" Grid.Row="1" Grid.Column="1" HorizontalOptions="End" />
+						<Label Style="{DynamicResource Brand2LabelSSecondary}" Grid.Row="1" Grid.Column="1" HorizontalOptions="End">
+							<Label.FormattedText>
+								<FormattedString>
+									<Span Text="{Binding Transaction.Amount}" />
+									<Span Text=" " />
+									<Span Text="{Binding Transaction.Currency}" />
+								</FormattedString>
+							</Label.FormattedText>
+						</Label>
 
 						<Label Style="{DynamicResource Brand2LabelSSecondary}" FontAttributes="Bold" Text="{l:Localize Message}" Grid.Row="2"/>
 						<Label Style="{DynamicResource Brand2LabelSSecondary}" Text="{Binding Message}" Grid.Row="2" Grid.Column="1" HorizontalOptions="End" />

@@ -96,9 +96,10 @@ namespace NeuroAccessMaui.UI.Popups.QR
 
 		#endregion
 
-		public ShowQRViewModel(byte[] QrCodeBin)
+		public ShowQRViewModel(byte[] QrCodeBin, string? QrCodeUri)
 		{
 			this.QrCodeBin = QrCodeBin;
+			this.QrCodeUri = QrCodeUri;
 			this.LegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
 
 			if (this.QrCodeWidth == 0 || this.QrCodeHeight == 0)
@@ -167,29 +168,16 @@ namespace NeuroAccessMaui.UI.Popups.QR
 		/// Copies Item to clipboard
 		/// </summary>
 		[RelayCommand]
-		private async Task Copy(object Item)
+		private async Task Copy()
 		{
 			try
 			{
 				this.SetIsBusy(true);
 
-				if (Item is string Label)
-				{
-					if (Label == this.LegalId)
-					{
-						await Clipboard.SetTextAsync(Constants.UriSchemes.IotId + ":" + this.LegalId);
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-							ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
-					}
-					else
-					{
-						await Clipboard.SetTextAsync(Label);
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
-					}
-				}
+				await Clipboard.SetTextAsync(this.QrCodeUri);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.SuccessfullyCopiedToClipboard)]);
 			}
 			catch (Exception ex)
 			{

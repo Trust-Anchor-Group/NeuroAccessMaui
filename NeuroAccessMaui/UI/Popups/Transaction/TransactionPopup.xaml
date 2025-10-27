@@ -86,7 +86,8 @@
 								<Label.FormattedText>
 									<FormattedString>
 										<Span Text="{Binding TransactionEevent.Change}" FontSize="16" />
-										<Span Text=" NC" FontSize="16" />
+										<Span Text=" " FontSize="16" />
+										<Span Text="{Binding TransactionEevent.Currency}" FontSize="16" />
 									</FormattedString>
 								</Label.FormattedText>
 							</Label>

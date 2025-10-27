@@ -258,7 +258,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			this.FetchedBalance?.Amount ?? ServiceRef.TagProfile.LastEDalerBalanceDecimal;
 
 		public string BalanceString =>
-			this.BalanceDecimal + " NC";
+			this.BalanceDecimal + " " + this.Currency;
 
 		public decimal ReservedDecimal =>
 			this.FetchedBalance?.Reserved ?? -1;
@@ -270,7 +270,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (this.ReservedDecimal == -1)
 					return ServiceRef.Localizer[nameof(AppResources.UnknownPleaseRefresh)];
 				else
-					return this.ReservedDecimal + " NC";
+					return this.ReservedDecimal + " " + this.Currency;
 			}
 		}
 

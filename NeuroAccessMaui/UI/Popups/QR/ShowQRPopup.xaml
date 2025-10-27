@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.QR.ShowQRPopup"
-							x:DataType="viewmodel:ShowQRViewModel"
-							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-							xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.QR"
-							xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-							xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
-							xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
+				x:DataType="viewmodel:ShowQRViewModel"
+				xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+				xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+				xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+				xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+				xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+				xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.QR"
+				xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
+				xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+				xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
 
 	<mopups:PopupPage.Animation>
 		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
@@ -59,7 +59,7 @@
 						</controls:TemplatedButton>
 
 						<!-- Copy Link Button -->
-						<controls:TemplatedButton Grid.Column="1" Command="{Binding CopyCommand}" CommandParameter="{Binding LegalId}">
+						<controls:TemplatedButton Grid.Column="1" Command="{Binding CopyCommand}">
 							<Border Style="{DynamicResource FilledTemplateButtonBorder}"  InputTransparent="True" HorizontalOptions="Fill">
 								<Grid ColumnDefinitions="Auto,*" HorizontalOptions="Center" VerticalOptions="Center">
 									<Path VerticalOptions="Center" HeightRequest="24" WidthRequest="24" Aspect="Uniform"

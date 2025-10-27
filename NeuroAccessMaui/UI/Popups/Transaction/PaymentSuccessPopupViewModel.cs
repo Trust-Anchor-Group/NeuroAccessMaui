@@ -15,7 +15,7 @@ namespace NeuroAccessMaui.UI.Popups.Transaction
 
 		private readonly string? message = Message;
 
-		public string Amount => this.Transaction.Amount + " NC";
+		public string Amount => this.Transaction.Amount + " " + this.Transaction.Currency;
 
 		public string Message
 		{

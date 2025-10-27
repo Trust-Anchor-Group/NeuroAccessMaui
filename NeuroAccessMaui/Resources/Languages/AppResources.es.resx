@@ -3176,4 +3176,25 @@
   <data name="SelectForMe" xml:space="preserve">
     <value>Seleccionar por mí</value>
   </data>
+  <data name="ShareDescription" xml:space="preserve">
+    <value>A continuación, puedes encontrar opciones adicionales para compartir el código QR.</value>
+  </data>
+  <data name="OtherApp" xml:space="preserve">
+    <value>Otra aplicación</value>
+  </data>
+  <data name="SuccessfullyCopiedToClipboard" xml:space="preserve">
+    <value>Copiado al portapapeles correctamente</value>
+  </data>
+  <data name="MakePayment" xml:space="preserve">
+    <value>Realizar pago</value>
+  </data>
+  <data name="PayOnline" xml:space="preserve">
+    <value>Pagar en línea</value>
+  </data>
+  <data name="PayOffline" xml:space="preserve">
+    <value>Pagar sin conexión</value>
+  </data>
+  <data name="ShareOfflinePaymentDescription" xml:space="preserve">
+    <value>Puedes compartir este código QR con otro usuario para procesarlo más tarde, ya sea cuando se necesite o cuando exista conectividad.</value>
+  </data>
 </root>

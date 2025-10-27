@@ -57,7 +57,8 @@
 													<Label.FormattedText>
 														<FormattedString>
 															<Span Text="{Binding Change}" FontSize="18" FontAttributes="Bold" />
-															<Span Text=" NC" FontSize="18" FontAttributes="Bold" />
+															<Span Text=" " />
+															<Span Text="{Binding Currency}" FontSize="18" FontAttributes="Bold" />
 														</FormattedString>
 													</Label.FormattedText>
 												</Label>
