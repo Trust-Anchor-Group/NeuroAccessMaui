@@ -35,7 +35,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 		public string Message => this.accountEvent.Message;
 		public bool HasMessage => !string.IsNullOrEmpty(this.accountEvent.Message);
 		public string Currency => this.currency;
-		public string? TransactionType => this.transactionType ?? ServiceRef.Localizer[nameof(AppResources.CreditTransfer)].Value;
+		public string? TransactionType => ServiceRef.Localizer[nameof(AppResources.Transfer)].Value;
 
 		/// <summary>
 		/// Gets a color representing the type of transaction. Incoming (Change &gt;= 0) is green, outgoing is black.

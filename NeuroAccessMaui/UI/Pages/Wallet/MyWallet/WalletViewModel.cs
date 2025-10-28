@@ -60,9 +60,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		[NotifyPropertyChangedFor(nameof(Currency))]
 		Balance? fetchedBalance;
 
-		public string Currency =>
-			this.FetchedBalance?.Currency ?? "NC";
-
 		/// <summary>
 		/// Indicates if the balance is currently refreshing.
 		/// </summary>
@@ -80,33 +77,40 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		#region Computed Properties
 
 		/// <summary>
+		/// Currency of current balance.
+		/// </summary>
+		public string Currency => this.FetchedBalance?.Currency ?? "NC";
+
+		/// <summary>
 		/// Exposes the current balance as a decimal.
 		/// </summary>
-		public decimal BalanceDecimal =>
-			this.FetchedBalance?.Amount ?? ServiceRef.TagProfile.LastEDalerBalanceDecimal;
+		public decimal BalanceDecimal => this.FetchedBalance?.Amount ?? ServiceRef.TagProfile.LastEDalerBalanceDecimal;
 
-		public string BalanceString =>
-			this.BalanceDecimal + " " + this.Currency;
+		/// <summary>
+		/// Balance formatted with currency.
+		/// </summary>
+		public string BalanceString => this.BalanceDecimal + " " + this.Currency;
 
-		public decimal ReservedDecimal =>
-			this.FetchedBalance?.Reserved ?? -1;
+		/// <summary>
+		/// Reserved amount.
+		/// </summary>
+		public decimal ReservedDecimal => this.FetchedBalance?.Reserved ?? -1;
 
-		public string ReservedString
-		{
-			get
-			{
-				if (this.ReservedDecimal == -1)
-					return ServiceRef.Localizer[nameof(AppResources.UnknownPleaseRefresh)];
-				else
-					return this.ReservedDecimal + " " + this.Currency;
-			}
-		}
+		/// <summary>
+		/// Reserved formatted.
+		/// </summary>
+		public string ReservedString => this.ReservedDecimal == -1
+			? ServiceRef.Localizer[nameof(AppResources.UnknownPleaseRefresh)]
+			: this.ReservedDecimal + " " + this.Currency;
 
-		public bool HasReserved => this.ReservedDecimal > 0 || this.ReservedDecimal == -1;
+		/// <summary>
+		/// If there is a reserved amount.
+		/// </summary>
+		public bool HasReserved => this.ReservedDecimal >0 || this.ReservedDecimal == -1;
 
 		#endregion
 
-		#region Tasks
+		#region Tasks & Refresh Policy
 
 		/// <summary>
 		/// Wraps the balance fetch operation for async UI binding.
@@ -134,8 +138,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		protected override async Task OnAppearing()
 		{
 			await base.OnAppearing();
-			// Place for page appearing logic if needed.
-
+			// Re-load on appearing.
 			this.GetBalanceTask.Load(this.LoadBalanceAsync);
 		}
 
@@ -148,6 +151,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			// ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
 			// ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
 
+			ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
 			await base.OnDispose();
 		}
 
@@ -160,7 +164,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		{
 			base.OnPropertyChanged(e);
 
-			// Update command states as appropriate
 			if (e.PropertyName == nameof(this.IsConnected))
 			{
 				this.BuyEdalerCommand.NotifyCanExecuteChanged();
@@ -175,13 +178,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		/// <summary>
 		/// Initiates the Buy eDaler flow. Disabled if not connected.
 		/// </summary>
-		/// <returns></returns>
 		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(IsConnected))]
 		private async Task BuyEdaler()
 		{
 			try
 			{
-				// 1. Fetch available service providers and the current balance.
 				IBuyEDalerServiceProvider[] ServiceProviders = await ServiceRef.XmppService.GetServiceProvidersForBuyingEDalerAsync();
 				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
 
@@ -198,8 +199,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 				ServiceProviders2.AddRange(ServiceProviders);
 				ServiceProviders2.Add(new EmptyBuyEDalerServiceProvider());
 
-				ServiceProvidersNavigationArgs e = new(
-					ServiceProviders2.ToArray(),
+				ServiceProvidersNavigationArgs SelectionArgs = new(
+					ServiceProviders.ToArray(),
 					ServiceRef.Localizer[nameof(AppResources.BuyEDaler)],
 					ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderBuyEDaler)]
 				);
@@ -243,8 +244,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 
 						if (Amount.HasValue && Amount.Value > 0)
 						{
-							ServiceRef.TagProfile.HasWallet = true;
-						}
+						ServiceRef.TagProfile.HasWallet = true;
+				}
 					}
 				}
 				// 7. Contract-based buy flow.
@@ -330,9 +331,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			try
 			{
 				if (Application.Current?.MainPage?.Navigation != null)
-				{
 					await Application.Current.MainPage.Navigation.PopToRootAsync();
-				}
 			}
 			catch (Exception Ex)
 			{
@@ -340,7 +339,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			}
 		}
 
-		// Go to Apps page
 		[RelayCommand]
 		public async Task ViewApps()
 		{
@@ -354,7 +352,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			}
 		}
 
-		// Go to request payment page
 		[RelayCommand]
 		public async Task ViewRequestPayment()
 		{
