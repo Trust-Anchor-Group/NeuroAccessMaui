@@ -12,55 +12,88 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens">
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto,*">
+		<!-- Top Bar -->
+		<Grid ColumnDefinitions="auto,*" Margin="16,16,16,8" RowSpacing="0" ColumnSpacing="8">
+			<controls:ImageButton Grid.Column="0"
+								  HorizontalOptions="Start"
+								  Command="{Binding GoBackCommand}"
+								  Style="{DynamicResource ImageOnlyButton}"
+								  PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<Label Grid.Column="1" Text="{l:Localize MyTokens}" Style="{DynamicResource PageTitleLabel}" HorizontalOptions="End" />
+		</Grid>
 
-		<controls:Background/>
+		<!-- Content -->
+		<Grid Grid.Row="1" Margin="16,0,16,16" RowDefinitions="*,auto">
+			<ScrollView Grid.Row="0">
+				<VerticalStackLayout Spacing="12" BindableLayout.ItemsSource="{Binding Tokens}">
+					<BindableLayout.EmptyView>
+						<VerticalStackLayout Padding="32" Spacing="12" HorizontalOptions="Center" VerticalOptions="Center">
+							<controls:SvgView Source="wallet.svg" HeightRequest="64" WidthRequest="64" TintColor="{DynamicResource ContentSecondaryWL}" />
+							<Label Text="{l:Localize NoTokens}" Style="{DynamicResource KeyLabel}" HorizontalTextAlignment="Center" />
+						</VerticalStackLayout>
+					</BindableLayout.EmptyView>
+					<BindableLayout.ItemTemplate>
+						<DataTemplate x:DataType="objectmodel:TokenItem">
+							<controls:TemplatedButton Command="{Binding ClickedCommand}" CommandParameter="{Binding .}">
+								<Border Style="{DynamicResource BorderSet}" Margin="0" Padding="0">
+									<Grid ColumnDefinitions="*,4*,2*,*" RowDefinitions="auto" Padding="16" ColumnSpacing="8">
+										<Image Grid.Column="0"
+                                               Source="{Binding Path=GlyphImage}"
+                                               IsVisible="{Binding Path=HasGlyphImage}"
+                                               WidthRequest="{Binding Path=GlyphWidth, Mode=OneTime}"
+                                               HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}"
+                                               VerticalOptions="Center"
+                                               HorizontalOptions="Center" />
+										<Label Grid.Column="1"
+                                               Text="{Binding Path=FriendlyName}"
+                                               Style="{DynamicResource KeyLabel}"
+                                               LineBreakMode="TailTruncation"
+                                               FontAttributes="Bold"
+                                               FontSize="18"
+                                               HorizontalTextAlignment="Start"
+                                               VerticalOptions="Center" />
+										<Border Grid.Column="2"
+											   Margin="2"
+											   Padding="8,3,8,3"
+											   IsVisible="{Binding New}"
+											   HorizontalOptions="Start"
+											   VerticalOptions="Center"
+											   Style="{DynamicResource BorderSubSet}">
+											<Label FontSize="Caption"
+                                                   TextColor="{DynamicResource SurfaceBackgroundWL}"
+                                                   Text="{Binding NrEvents}"
+                                                   Padding="1" />
+										</Border>
+										<Label Grid.Column="2"
+                                               Text="{Binding Path=Value, Converter={converters:MoneyToString}}"
+                                               Style="{DynamicResource KeyLabel}"
+                                               LineBreakMode="TailTruncation"
+                                               FontSize="18"
+                                               HorizontalTextAlignment="End"
+                                               VerticalOptions="Center" />
+										<Label Grid.Column="3"
+                                               Text="{Binding Path=Currency}"
+                                               FontSize="18"
+                                               Style="{DynamicResource KeyLabel}"
+                                               LineBreakMode="TailTruncation"
+                                               HorizontalTextAlignment="Start"
+                                               VerticalOptions="Center" />
+									</Grid>
+								</Border>
+							</controls:TemplatedButton>
+						</DataTemplate>
+					</BindableLayout.ItemTemplate>
+				</VerticalStackLayout>
+			</ScrollView>
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-									  Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
-
-				<Label Text="{l:Localize MyTokens}" Style="{DynamicResource PageTitleLabel}"/>
-
-				<Frame Style="{DynamicResource FrameSet}">
-					<controls:LoadingCollectionView VerticalOptions="Start" SelectionMode="Single" RemainingItemsThreshold="1"
-                                       ItemSizingStrategy="MeasureFirstItem" BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
-                                       ItemsSource="{Binding Path=Tokens}" LoadMoreCommand="{Binding LoadMoreTokensCommand}">
-						<CollectionView.ItemsLayout>
-							<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="12"/>
-						</CollectionView.ItemsLayout>
-						<CollectionView.ItemTemplate>
-							<DataTemplate x:DataType="objectmodel:TokenItem">
-								<Grid ColumnDefinitions="*,4*,2*,*" RowDefinitions="auto">
-									<Image Grid.Column="0" Grid.Row="0"
-                                            Source="{Binding Path=GlyphImage}" IsVisible="{Binding Path=HasGlyphImage}"
-                                            WidthRequest="{Binding Path=GlyphWidth, Mode=OneTime}"
-                                            HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}"
-                                            VerticalOptions="Center" HorizontalOptions="Center" />
-									<Label Grid.Column="1" Grid.Row="0" Text="{Binding Path=FriendlyName}"
-                                            Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation"
-                                            FontAttributes="Bold" FontSize="18" HorizontalTextAlignment="Start"
-                                            VerticalOptions="Center"/>
-									<Frame Grid.Row="0" Grid.Column="2" CornerRadius="12" Margin="2" Padding="8,3,8,3" IsVisible="{Binding New}"
-							   HorizontalOptions="Start" VerticalOptions="Center" Style="{DynamicResource AlertFrame}">
-										<Label FontSize="Caption" TextColor="{DynamicResource SurfaceBackgroundWL}" Text="{Binding NrEvents}" Padding="1"/>
-									</Frame>
-									<Label Grid.Column="2" Grid.Row="0" Text="{Binding Path=Value, Converter={converters:MoneyToString}}"
-                                            Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation" FontSize="18"
-                                            HorizontalTextAlignment="End" VerticalOptions="Center"/>
-									<Label Grid.Column="3" Grid.Row="0" Text="{Binding Path=Currency}" FontSize="18"
-                                            Style="{DynamicResource KeyLabel}" LineBreakMode="TailTruncation"
-                                            HorizontalTextAlignment="Start" VerticalOptions="Center"/>
-									<Grid.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding ClickedCommand}" CommandParameter="{Binding .}"/>
-									</Grid.GestureRecognizers>
-								</Grid>
-							</DataTemplate>
-						</CollectionView.ItemTemplate>
-					</controls:LoadingCollectionView>
-				</Frame>
-			</VerticalStackLayout>
-		</ScrollView>
+			<!-- Load More Button -->
+			<controls:TextButton Grid.Row="1"
+								  Margin="0,16,0,0"
+								  LabelData="{l:Localize LoadMore}"
+								  Style="{DynamicResource SecondaryButton}"
+								  Command="{Binding LoadMoreTokensCommand}"
+								  IsVisible="{Binding HasMoreTokens}" />
+		</Grid>
 	</Grid>
 </base:BaseContentPage>

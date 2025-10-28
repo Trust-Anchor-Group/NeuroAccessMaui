@@ -359,7 +359,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		{
 			try
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(RequestPaymentPage));
+				EDalerBalanceNavigationArgs Args = new(this.FetchedBalance);
+				await ServiceRef.UiService.GoToAsync(nameof(RequestPaymentPage), Args);
 			}
 			catch (Exception Ex)
 			{
