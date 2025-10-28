@@ -81,7 +81,7 @@
 						</Label>
 
 					<Label Style="{DynamicResource InfoLabel}"
-					   IsVisible="{Binding HasInvalidItems}"
+					   IsVisible="{Binding HasInvalidOnly}"
 					   LineBreakMode="WordWrap"
 					   Text="{l:Localize KycInvalidGuidance}" />
 
@@ -135,7 +135,7 @@
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-											 IsVisible="{Binding HasUnvalidatedClaims}">
+											 IsVisible="{Binding HasOnlyUnvalidatedItems}">
 							<Label Style="{DynamicResource InfoLabel}"
 								   FontAttributes="Bold"
 								   Text="{l:Localize KycUnvalidatedClaimsHeader}" />
@@ -150,7 +150,7 @@
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-											 IsVisible="{Binding HasUnvalidatedPhotos}">
+											 IsVisible="{Binding HasOnlyUnvalidatedItems}">
 							<Label Style="{DynamicResource InfoLabel}"
 								   FontAttributes="Bold"
 								   Text="{l:Localize KycUnvalidatedPhotosHeader}" />
@@ -164,10 +164,10 @@
 							</VerticalStackLayout>
 						</VerticalStackLayout>
 
-						<controls:TextButton Command="{Binding FixInvalidClaimsCommand}"
-											 IsVisible="{Binding CanFixInvalidClaims}"
-											 LabelData="{l:Localize KycFixInvalidClaimsButton}"
-											 Style="{DynamicResource FilledTextButton}" />
+				<controls:TextButton Command="{Binding FixInvalidClaimsCommand}"
+								 IsVisible="{Binding CanFixInvalidClaims}"
+								 LabelData="{l:Localize KycFixInvalidClaimsButton}"
+								 Style="{DynamicResource FilledTextButton}" />
 
 						<controls:TextButton Command="{Binding PrepareReapplyWithoutPendingClaimsCommand}"
 											 IsVisible="{Binding CanPrepareReapplyWithoutPendingClaims}"

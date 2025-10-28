@@ -3008,7 +3008,7 @@
     <value>Foton att ersätta</value>
   </data>
   <data name="KycInvalidGuidance" xml:space="preserve">
-    <value>Uppdatera punkterna nedan innan du skickar in ansökan igen.</value>
+    <value>Dessa uppgifter kunde inte godkännas. Uppdatera dem i formuläret innan du skickar igen.</value>
   </data>
   <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
     <value>Fält som väntar</value>

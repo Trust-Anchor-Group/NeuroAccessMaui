@@ -3008,7 +3008,7 @@
     <value>Photos to replace</value>
   </data>
   <data name="KycInvalidGuidance" xml:space="preserve">
-    <value>Update the items below before resubmitting your application.</value>
+    <value>These details could not be approved. Update them on the form before resubmitting.</value>
   </data>
   <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
     <value>Pending fields</value>

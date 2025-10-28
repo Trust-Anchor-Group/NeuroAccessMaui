@@ -60,7 +60,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			{ "ADDR2", nameof(AppResources.Address2) },
 			{ "Address2", nameof(AppResources.Address2) },
 			{ "ZIP", nameof(AppResources.ZipCode) },
-			{ "ZIPCode", nameof(AppResources.ZipCode) },
 			{ "PostalCode", nameof(AppResources.ZipCode) },
 			{ "ZipCode", nameof(AppResources.ZipCode) },
 			{ "Area", nameof(AppResources.Area) },
@@ -86,7 +85,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			{ "OrgRegion", nameof(AppResources.OrgRegion) },
 			{ "OrgCountry", nameof(AppResources.OrgCountry) },
 			{ "OrgCountryCode", nameof(AppResources.OrgCountry) },
-			{ "EMail", nameof(AppResources.EMail) },
 			{ "Email", nameof(AppResources.EMail) },
 			{ "PhoneNumber", nameof(AppResources.Phone) },
 			{ "Phone", nameof(AppResources.Phone) },
@@ -672,6 +670,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		public bool HasInvalidItems => this.HasInvalidClaimDetails || this.HasInvalidPhotoDetails;
 
 		/// <summary>
+		/// True if the review contains only invalid items (no pending items).
+		/// </summary>
+		public bool HasInvalidOnly => this.HasInvalidItems && !this.HasOnlyUnvalidatedItems;
+
+		/// <summary>
 		/// True if only unvalidated items remain.
 		/// </summary>
 		public bool HasOnlyUnvalidatedItems => !this.HasInvalidItems && (this.HasUnvalidatedClaims || this.HasUnvalidatedPhotos);
@@ -1114,124 +1117,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		/// </summary>
 		protected override async Task Apply()
 		{
-			if (this.ApplicationSent)
-				return;
-
-			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
-				return;
-
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true))
-				return;
-
-			try
-			{
-				// Build attachments in order:
-				// 1. Profile Photo (this.photo)
-				// 2. Proof of ID Front (if available)
-				// 3. Proof of ID Back (if available)
-				// 4. Additional Photos (if any)
-				List<LegalIdentityAttachment> LocalAttachments = new();
-
-				if (this.photo is not null)
-					LocalAttachments.Add(this.photo);
-
-				// Only add document attachments if a document type other than None is selected.
-				if (this.DocumentType != IdentityDocumentType.None)
-				{
-					if (this.HasProofOfIdFront && this.ProofOfIdFrontImageBin is not null)
-					{
-						string FrontFileName = this.DocumentType switch
-						{
-							IdentityDocumentType.Passport => passportFileName,
-							IdentityDocumentType.NationalId => nationalIdFrontFileName,
-							IdentityDocumentType.DriverLicense => driverLicenseFrontFileName,
-							_ => nationalIdFrontFileName
-						};
-
-						LegalIdentityAttachment FrontAttachment = new(FrontFileName, "image/jpeg", this.ProofOfIdFrontImageBin);
-						LocalAttachments.Add(FrontAttachment);
-					}
-
-					if ((this.DocumentType == IdentityDocumentType.NationalId || this.DocumentType == IdentityDocumentType.DriverLicense) &&
-						 this.HasProofOfIdBack && this.ProofOfIdBackImageBin is not null)
-					{
-						string BackFileName = this.DocumentType switch
-						{
-							IdentityDocumentType.NationalId => nationalIdBackFileName,
-							IdentityDocumentType.DriverLicense => driverLicenseBackFileName,
-							_ => nationalIdBackFileName
-						};
-
-						LegalIdentityAttachment BackAttachment = new(BackFileName, "image/jpeg", this.ProofOfIdBackImageBin);
-						LocalAttachments.Add(BackAttachment);
-					}
-				}
-
-				if (this.AdditionalPhotos.Count > 0)
-				{
-					int Index = 1;
-					foreach (ObservableAttachmentCard Additional in this.AdditionalPhotos)
-					{
-						if (Additional.ImageBin == null)
-							continue;
-						LocalAttachments.Add(new LegalIdentityAttachment($"AdditionalPhoto{Index}.jpg", "image/jpeg", Additional.ImageBin));
-						Index++;
-					}
-				}
-
-				this.SetIsBusy(true);
-				this.IsApplying = true;
-				NumberInformation Info = await PersonalNumberSchemes.Validate(this.CountryCode!, this.PersonalNumber!);
-				this.PersonalNumber = Info.PersonalNumber;
-
-				bool HasIdWithPrivateKey = ServiceRef.TagProfile.LegalIdentity is not null &&
-					  await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
-
-				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
-					 ServiceRef.XmppService.AddLegalIdentity(this, !HasIdWithPrivateKey, LocalAttachments.ToArray()));
-
-				if (Succeeded && AddedIdentity is not null)
-				{
-					await ServiceRef.TagProfile.SetIdentityApplication(AddedIdentity, true);
-					this.ApplicationSent = true;
-					this.ApplicationId = AddedIdentity.Id;
-
-					await Task.Run(this.LoadFeaturedPeerReviewers);
-
-					// Loop through each local attachment and add it to the cache.
-					// We assume the server returns attachments with the same FileName as those we built.
-					foreach (LegalIdentityAttachment LocalAttachment in LocalAttachments)
-					{
-						// Find the matching attachment in the returned identity by filename.
-						Attachment? MatchingAttachment = AddedIdentity.Attachments
-							 .FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
-						if (MatchingAttachment != null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
-						{
-							await ServiceRef.AttachmentCacheService.Add(
-								 MatchingAttachment.Url,
-								 AddedIdentity.Id,
-								 true,
-								 LocalAttachment.Data, // from our local attachment
-								 LocalAttachment.ContentType);
-						}
-					}
-
-					// Load all attachment images immediately after applying.
-					await this.LoadAllAttachmentPhotos(AddedIdentity);
-					ServiceRef.TagProfile.SetApplicationReview(null);
-					this.LoadApplicationReview(null);
-				}
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
-			}
-			finally
-			{
-				this.SetIsBusy(false);
-				this.IsApplying = false;
-			}
+			await this.SubmitApplicationAsync(skipConfirmation: false, skipAuthentication: false, allowResubmission: false);
 		}
 
 
@@ -1636,10 +1522,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (Review is null)
 				return;
 
-			await this.PrepareFormForEditingAsync();
-
-			this.ClearClaims(Review.InvalidClaims);
-			this.ClearInvalidPhotos(Review.InvalidPhotoDetails);
+			await this.EnterEditModeAsync();
 		}
 
 		/// <summary>
@@ -1652,9 +1535,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (Review is null)
 				return;
 
-			await this.PrepareFormForEditingAsync();
-
-			this.ClearClaims(Review.UnvalidatedClaims);
+			await this.AutoReapplyAsync(
+				Review.UnvalidatedClaims ?? Array.Empty<string>(),
+				Array.Empty<ApplicationReviewPhotoDetail>(),
+				Review.UnvalidatedPhotos ?? Array.Empty<string>());
 		}
 
 		private async Task LoadFeaturedPeerReviewers()
@@ -1716,27 +1600,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			await this.ScanQrCode();
 		}
 
-		private async Task PrepareFormForEditingAsync()
-		{
-			try
-			{
-				await ServiceRef.TagProfile.SetIdentityApplication(null, false);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-
-			this.ApplicationSent = false;
-			this.IsRevoking = false;
-
-			this.NotifyCommandsCanExecuteChanged();
-			this.OnPropertyChanged(nameof(this.CanEdit));
-			this.OnPropertyChanged(nameof(this.CanRemovePhoto));
-			this.OnPropertyChanged(nameof(this.CanTakePhoto));
-			this.OnPropertyChanged(nameof(this.ApplicationSentAndConnected));
-		}
-
 		private void LoadApplicationReview(ApplicationReview? review)
 		{
 			this.applicationReview = review;
@@ -1787,6 +1650,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.OnPropertyChanged(nameof(this.HasUnvalidatedClaims));
 			this.OnPropertyChanged(nameof(this.HasUnvalidatedPhotos));
 			this.OnPropertyChanged(nameof(this.HasInvalidItems));
+			this.OnPropertyChanged(nameof(this.HasInvalidOnly));
 			this.OnPropertyChanged(nameof(this.HasOnlyUnvalidatedItems));
 			this.OnPropertyChanged(nameof(this.CanFixInvalidClaims));
 			this.OnPropertyChanged(nameof(this.CanPrepareReapplyWithoutPendingClaims));
@@ -1794,6 +1658,112 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.FixInvalidClaimsCommand?.NotifyCanExecuteChanged();
 
 			this.PrepareReapplyWithoutPendingClaimsCommand?.NotifyCanExecuteChanged();
+		}
+
+		private async Task AutoReapplyAsync(IEnumerable<string> claimsToClear, IEnumerable<ApplicationReviewPhotoDetail> photosToClear, IEnumerable<string> pendingPhotosToClear)
+		{
+			if (this.IsApplying || this.IsBusy)
+				return;
+
+			try
+			{
+				this.SetIsBusy(true);
+
+				string[] claims = claimsToClear?.ToArray() ?? Array.Empty<string>();
+				ApplicationReviewPhotoDetail[] photoDetails = photosToClear?.ToArray() ?? Array.Empty<ApplicationReviewPhotoDetail>();
+				string[] pendingPhotoNames = pendingPhotosToClear?.ToArray() ?? Array.Empty<string>();
+
+				this.ClearClaims(claims);
+				this.ClearInvalidPhotos(photoDetails);
+				this.ClearPendingPhotoNames(pendingPhotoNames);
+
+				ServiceRef.TagProfile.SetApplicationReview(null);
+				this.LoadApplicationReview(null);
+
+				LegalIdentity? currentApplication = ServiceRef.TagProfile.IdentityApplication;
+				if (currentApplication is not null)
+				{
+					try
+					{
+						await ServiceRef.XmppService.ObsoleteLegalIdentity(currentApplication.Id);
+					}
+					catch (ForbiddenException)
+					{
+						// Ignore if the identity is already revoked or cannot be revoked.
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+					}
+				}
+
+				await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+				this.ApplicationSent = false;
+				this.IsRevoking = false;
+
+				await this.SubmitApplicationAsync(skipConfirmation: true, skipAuthentication: false, allowResubmission: true);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+			finally
+			{
+				this.SetIsBusy(false);
+			}
+		}
+
+		private async Task EnterEditModeAsync()
+		{
+			if (!this.ApplicationSent)
+				return;
+
+			try
+			{
+				this.SetIsBusy(true);
+
+				ServiceRef.TagProfile.SetApplicationReview(null);
+				this.LoadApplicationReview(null);
+
+				try
+				{
+					await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+
+				this.ApplicationSent = false;
+				this.IsRevoking = false;
+
+				this.NotifyCommandsCanExecuteChanged();
+				this.OnPropertyChanged(nameof(this.CanEdit));
+				this.OnPropertyChanged(nameof(this.CanRemovePhoto));
+				this.OnPropertyChanged(nameof(this.CanTakePhoto));
+				this.OnPropertyChanged(nameof(this.ApplicationSentAndConnected));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+			finally
+			{
+				this.SetIsBusy(false);
+			}
+		}
+
+		private void ClearPendingPhotoNames(IEnumerable<string> pendingPhotoNames)
+		{
+			if (pendingPhotoNames is null)
+				return;
+
+			if (!pendingPhotoNames.Any(name => !string.IsNullOrWhiteSpace(name)))
+				return;
+
+			MainThread.BeginInvokeOnMainThread(() => this.AdditionalPhotos.Clear());
 		}
 
 		private static void ReplaceCollection<T>(ObservableCollection<T> collection, IEnumerable<T> items)
@@ -2192,5 +2162,131 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		#endregion
 
 		#endregion
+
+		private async Task SubmitApplicationAsync(bool skipConfirmation, bool skipAuthentication, bool allowResubmission)
+		{
+			if (this.ApplicationSent && !allowResubmission)
+				return;
+
+			if (!skipConfirmation)
+			{
+				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
+					return;
+			}
+
+			if (!skipAuthentication)
+			{
+				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true))
+					return;
+			}
+
+			try
+			{
+				List<LegalIdentityAttachment> localAttachments = this.BuildAttachments();
+
+				this.SetIsBusy(true);
+				this.IsApplying = true;
+				NumberInformation info = await PersonalNumberSchemes.Validate(this.CountryCode!, this.PersonalNumber!);
+				this.PersonalNumber = info.PersonalNumber;
+
+				bool hasIdWithPrivateKey = ServiceRef.TagProfile.LegalIdentity is not null &&
+					  await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
+
+				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
+					 ServiceRef.XmppService.AddLegalIdentity(this, !hasIdWithPrivateKey, localAttachments.ToArray()));
+
+				if (Succeeded && AddedIdentity is not null)
+				{
+					await ServiceRef.TagProfile.SetIdentityApplication(AddedIdentity, true);
+					this.ApplicationSent = true;
+					this.ApplicationId = AddedIdentity.Id;
+
+					await Task.Run(this.LoadFeaturedPeerReviewers);
+
+					foreach (LegalIdentityAttachment localAttachment in localAttachments)
+					{
+						Attachment? matchingAttachment = AddedIdentity.Attachments
+							 .FirstOrDefault(a => string.Equals(a.FileName, localAttachment.FileName, StringComparison.OrdinalIgnoreCase));
+						if (matchingAttachment != null && localAttachment.Data is not null && localAttachment.ContentType is not null)
+						{
+							await ServiceRef.AttachmentCacheService.Add(
+								 matchingAttachment.Url,
+								 AddedIdentity.Id,
+								 true,
+								 localAttachment.Data,
+								 localAttachment.ContentType);
+						}
+					}
+
+					await this.LoadAllAttachmentPhotos(AddedIdentity);
+					ServiceRef.TagProfile.SetApplicationReview(null);
+					this.LoadApplicationReview(null);
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+			finally
+			{
+				this.SetIsBusy(false);
+				this.IsApplying = false;
+			}
+		}
+
+		private List<LegalIdentityAttachment> BuildAttachments()
+		{
+			List<LegalIdentityAttachment> localAttachments = new();
+
+			if (this.photo is not null)
+				localAttachments.Add(this.photo);
+
+			if (this.DocumentType != IdentityDocumentType.None)
+			{
+				if (this.HasProofOfIdFront && this.ProofOfIdFrontImageBin is not null)
+				{
+					string frontFileName = this.DocumentType switch
+					{
+						IdentityDocumentType.Passport => passportFileName,
+						IdentityDocumentType.NationalId => nationalIdFrontFileName,
+						IdentityDocumentType.DriverLicense => driverLicenseFrontFileName,
+						_ => nationalIdFrontFileName
+					};
+
+					LegalIdentityAttachment frontAttachment = new(frontFileName, "image/jpeg", this.ProofOfIdFrontImageBin);
+					localAttachments.Add(frontAttachment);
+				}
+
+				if ((this.DocumentType == IdentityDocumentType.NationalId || this.DocumentType == IdentityDocumentType.DriverLicense) &&
+					 this.HasProofOfIdBack && this.ProofOfIdBackImageBin is not null)
+				{
+					string backFileName = this.DocumentType switch
+					{
+						IdentityDocumentType.NationalId => nationalIdBackFileName,
+						IdentityDocumentType.DriverLicense => driverLicenseBackFileName,
+						_ => nationalIdBackFileName
+					};
+
+					LegalIdentityAttachment backAttachment = new(backFileName, "image/jpeg", this.ProofOfIdBackImageBin);
+					localAttachments.Add(backAttachment);
+				}
+			}
+
+			if (this.AdditionalPhotos.Count > 0)
+			{
+				int index = 1;
+				foreach (ObservableAttachmentCard additional in this.AdditionalPhotos)
+				{
+					if (additional.ImageBin == null)
+						continue;
+					localAttachments.Add(new LegalIdentityAttachment($"AdditionalPhoto{index}.jpg", "image/jpeg", additional.ImageBin));
+					index++;
+				}
+			}
+
+			return localAttachments;
+		}
+
 	}
 }
