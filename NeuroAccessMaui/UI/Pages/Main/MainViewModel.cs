@@ -17,6 +17,7 @@ using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.Services.Data; // Added for Database access
 using System.Linq;
 using Waher.Persistence; // Added for ordering
+using NeuroAccessMaui.Services.Tag;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -95,26 +96,46 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				ServiceRef.LogService.LogException(Ex);
 			}
 
-			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
-			ServiceRef.XmppService.LegalIdentityChanged += this.XmppService_LegalIdentityChanged;
-			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
-		}
+		ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
+		ServiceRef.XmppService.LegalIdentityChanged += this.XmppService_LegalIdentityChanged;
+		ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
+		ServiceRef.TagProfile.Changed += this.TagProfile_PropertyChanged;
+	}
 
-		protected override Task OnDispose()
+	protected override Task OnDispose()
+	{
+		ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
+		ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
+		ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
+		ServiceRef.TagProfile.Changed -= this.TagProfile_PropertyChanged;
+
+		return base.OnDispose();
+	}
+
+	private void TagProfile_OnPropertiesChanged(object? Sender, EventArgs e)
+	{
+		Task.Run(this.LoadLatestKycStateAsync);
+	}
+
+	private void TagProfile_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (string.IsNullOrEmpty(e.PropertyName) ||
+			e.PropertyName == nameof(TagProfile.ApplicationReview) ||
+			e.PropertyName == nameof(TagProfile.IdentityApplication) ||
+			e.PropertyName == nameof(TagProfile.LegalIdentity))
 		{
-			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
-			ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
-			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
-
-			return base.OnDispose();
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
+				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
+				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
+				this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
+				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
+			});
 		}
+	}
 
-		private void TagProfile_OnPropertiesChanged(object? Sender, EventArgs e)
-		{
-			Task.Run(this.LoadLatestKycStateAsync);
-		}
-
-		private async Task XmppService_LegalIdentityChanged(object? Sender, EventArgs e)
+	private async Task XmppService_LegalIdentityChanged(object? Sender, EventArgs e)
 		{
 			await this.LoadLatestKycStateAsync();
 		}
@@ -164,13 +185,14 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			}
 		}
 
-		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
-		public bool HasPendingIdentity => this.CheckPendingIdentity();
+	public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
+	public bool HasPendingIdentity => this.CheckPendingIdentity();
 
-		public bool ShowInfoBubble => this.ShowApplyIdBox || this.ShowPendingIdBox || this.ShowRejectedIdBox;
-		public bool ShowApplyIdBox => !(ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false) && !this.CheckPendingIdentity() && !this.CheckRejectedIdentity();
-		public bool ShowPendingIdBox => this.CheckPendingIdentity();
-		public bool ShowRejectedIdBox => this.CheckRejectedIdentity();
+	public bool ShowInfoBubble => this.ShowApplyIdBox || this.ShowPendingIdBox || this.ShowRejectedIdBox || this.ShowApplicationReviewBox;
+	public bool ShowApplicationReviewBox => ServiceRef.TagProfile.ApplicationReview is not null;
+	public bool ShowApplyIdBox => !(ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false) && !this.CheckPendingIdentity() && !this.CheckRejectedIdentity() && !this.ShowApplicationReviewBox;
+	public bool ShowPendingIdBox => !this.ShowApplicationReviewBox && this.CheckPendingIdentity();
+	public bool ShowRejectedIdBox => !this.ShowApplicationReviewBox && this.CheckRejectedIdentity();
 
 		private bool CheckPendingIdentity()
 		{
@@ -191,14 +213,15 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				this.latestCreatedIdentityState = ServiceRef.TagProfile.IdentityApplication?.State ?? ServiceRef.TagProfile.LegalIdentity?.State ?? null;
 
 
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					this.OnPropertyChanged(nameof(this.HasPendingIdentity));
-					this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
-					this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
-					this.OnPropertyChanged(nameof(this.ShowInfoBubble));
-					this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
-				});
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.OnPropertyChanged(nameof(this.HasPendingIdentity));
+				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
+				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
+				this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
+				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
+				this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
+			});
 			}
 			catch (Exception Ex)
 			{
