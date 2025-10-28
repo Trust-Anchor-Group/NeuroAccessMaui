@@ -308,7 +308,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task AddPartFromQr()
 		{
-			string? Code = await QrCode.ScanQrCode(ServiceRef.Localizer[nameof(AppResources.ScanQRCode)], [Constants.UriSchemes.IotId]);
+			string? Code = await QrCode.ScanQrCode(nameof(AppResources.ScanQRCode), [Constants.UriSchemes.IotId]);
 			if (string.IsNullOrEmpty(Code))
 				return;
 

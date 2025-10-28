@@ -125,17 +125,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 
 					string[] FriendlyParts = Friendly.Split("@");
 
-					if (FriendlyParts.Length == 1)
-					{
-						if (Evt.Change > 0)
-							Type = ServiceRef.Localizer[nameof(AppResources.BalanceTopUp)].Value;
-						else
-							Type = ServiceRef.Localizer[nameof(AppResources.Transaction)].Value;
-					}
-					else
-					{
-						Type = ServiceRef.Localizer[nameof(AppResources.CreditTransfer)].Value;
-					}
+					Type = ServiceRef.Localizer[nameof(AppResources.Transfer)].Value;
 
 					Friendly = FriendlyParts[0];
 					FriendlyNames[Remote] = Friendly;

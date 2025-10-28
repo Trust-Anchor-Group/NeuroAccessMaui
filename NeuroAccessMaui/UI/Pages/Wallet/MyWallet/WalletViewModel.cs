@@ -152,6 +152,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			// ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
 
 			ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
+
 			await base.OnDispose();
 		}
 
@@ -199,17 +200,18 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 				ServiceProviders2.AddRange(ServiceProviders);
 				ServiceProviders2.Add(new EmptyBuyEDalerServiceProvider());
 
+				// Todo: Change to ServiceProviders2 IF you want to include from user. We now have a button for "Request" on wallet page.
 				ServiceProvidersNavigationArgs SelectionArgs = new(
 					ServiceProviders.ToArray(),
 					ServiceRef.Localizer[nameof(AppResources.BuyEDaler)],
 					ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderBuyEDaler)]
 				);
 
-				await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
-				if (e.ServiceProvider is null)
+				await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), SelectionArgs, BackMethod.Pop);
+				if (SelectionArgs.ServiceProvider is null)
 					return;
 
-				IBuyEDalerServiceProvider? ServiceProvider = (IBuyEDalerServiceProvider?)(await e.ServiceProvider.Task);
+				IBuyEDalerServiceProvider? ServiceProvider = (IBuyEDalerServiceProvider?)(await SelectionArgs.ServiceProvider.Task);
 				if (ServiceProvider is null)
 					return;
 
@@ -415,7 +417,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		/// </summary>
 		private async Task Wallet_BalanceUpdated(object? sender, BalanceEventArgs e)
 		{
-			MainThread.BeginInvokeOnMainThread(() =>
+			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				this.FetchedBalance = e.Balance;
 				this.BalanceUpdated = DateTime.UtcNow;
