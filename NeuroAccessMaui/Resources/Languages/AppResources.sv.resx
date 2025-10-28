@@ -2995,6 +2995,42 @@
   <data name="Kyc_Exit" xml:space="preserve">
     <value>Är du säker på att du vill lämna identitetsansökningsprocessen?</value>
   </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Granskning av ansökan</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Kod:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Fält att åtgärda</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Foton att ersätta</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Uppdatera punkterna nedan innan du skickar in ansökan igen.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Fält som väntar</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Foton som väntar</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Åtgärda problem och redigera formulär</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Justera valfria uppgifter och skicka igen</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Din ansökan genomgår manuell granskning. Du kan invänta resultatet eller justera posterna nedan för att prova automatisk hantering.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Dessa poster väntar på manuell granskning. Du kan låta dem vara eller justera dem för att prova automatisk hantering.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Vissa uppgifter kunde inte verifieras. Tryck för att granska.</value>
+  </data>
   <data name="Progress" xml:space="preserve">
     <value>Framsteg</value>
   </data>

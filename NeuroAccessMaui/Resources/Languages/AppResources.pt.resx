@@ -2992,6 +2992,42 @@
   <data name="Kyc_Exit" xml:space="preserve">
     <value>Tem certeza de que deseja sair do processo de solicitação de identidade?</value>
   </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Revisão da solicitação</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Código:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Campos para revisar</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Fotos a substituir</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Atualize os itens abaixo antes de reenviar sua solicitação.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Campos pendentes</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Fotos pendentes</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Corrigir problemas e editar formulário</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Ajustar itens opcionais e reenviar</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Sua solicitação está em revisão manual. Você pode aguardar o resultado ou ajustar os itens abaixo para tentar um processamento automático.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Esses itens aguardam revisão manual. Você pode mantê-los como estão ou ajustá-los para tentar um processamento automático.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Alguns dados enviados não puderam ser verificados. Toque para revisar.</value>
+  </data>
   <data name="Kyc_Apply" xml:space="preserve">
     <value>Enviar</value>
   </data>

@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Tag;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence.Attributes;
@@ -245,6 +246,12 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		[DefaultValueNull]
 		public LegalIdentity? IdentityApplication { get; set; }
+
+		/// <summary>
+		/// Latest review information for the current or most recent application.
+		/// </summary>
+		[DefaultValueNull]
+		public ApplicationReview? ApplicationReview { get; set; }
 
 		/// <summary>
 		/// Number of peer reviews accepted for the current identity application.

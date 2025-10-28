@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -7,6 +9,8 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Data.PersonalNumbers;
+using NeuroAccessMaui.Services.Identity;
+using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.Controls;
@@ -36,12 +40,67 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		private readonly PhotosLoader photosLoader;
 		private LegalIdentityAttachment? photo;
 		private ServiceProviderWithLegalId[]? peerReviewServices = null;
+		private ApplicationReview? applicationReview;
 
 		private const string passportFileName = "Passport.jpeg";
 		private const string nationalIdFrontFileName = "IdCardFront.jpg";
 		private const string nationalIdBackFileName = "IdCardBack.jpg";
 		private const string driverLicenseFrontFileName = "DriverLicenseFront.jpeg";
 		private const string driverLicenseBackFileName = "DriverLicenseBack.jpeg";
+
+		private static readonly Dictionary<string, string> claimResourceKeyMap = new(StringComparer.OrdinalIgnoreCase)
+		{
+			{ "FirstName", nameof(AppResources.FirstName) },
+			{ "MiddleNames", nameof(AppResources.MiddleNames) },
+			{ "LastNames", nameof(AppResources.LastNames) },
+			{ "PersonalNumber", nameof(AppResources.PersonalNumber) },
+			{ "ADDR", nameof(AppResources.Address) },
+			{ "Address", nameof(AppResources.Address) },
+			{ "ADDR1", nameof(AppResources.Address) },
+			{ "ADDR2", nameof(AppResources.Address2) },
+			{ "Address2", nameof(AppResources.Address2) },
+			{ "ZIP", nameof(AppResources.ZipCode) },
+			{ "ZIPCode", nameof(AppResources.ZipCode) },
+			{ "PostalCode", nameof(AppResources.ZipCode) },
+			{ "ZipCode", nameof(AppResources.ZipCode) },
+			{ "Area", nameof(AppResources.Area) },
+			{ "City", nameof(AppResources.City) },
+			{ "Region", nameof(AppResources.Region) },
+			{ "State", nameof(AppResources.Region) },
+			{ "Country", nameof(AppResources.Country) },
+			{ "CountryCode", nameof(AppResources.Country) },
+			{ "Nationality", nameof(AppResources.Nationality) },
+			{ "NationalityCode", nameof(AppResources.Nationality) },
+			{ "Gender", nameof(AppResources.Gender) },
+			{ "GenderCode", nameof(AppResources.Gender) },
+			{ "BirthDate", nameof(AppResources.BirthDate) },
+			{ "OrgName", nameof(AppResources.OrgName) },
+			{ "OrgDepartment", nameof(AppResources.OrgDepartment) },
+			{ "OrgRole", nameof(AppResources.OrgRole) },
+			{ "OrgNumber", nameof(AppResources.OrgNumber) },
+			{ "OrgAddress", nameof(AppResources.OrgAddress) },
+			{ "OrgAddress2", nameof(AppResources.OrgAddress2) },
+			{ "OrgZipCode", nameof(AppResources.OrgZipCode) },
+			{ "OrgArea", nameof(AppResources.OrgArea) },
+			{ "OrgCity", nameof(AppResources.OrgCity) },
+			{ "OrgRegion", nameof(AppResources.OrgRegion) },
+			{ "OrgCountry", nameof(AppResources.OrgCountry) },
+			{ "OrgCountryCode", nameof(AppResources.OrgCountry) },
+			{ "EMail", nameof(AppResources.EMail) },
+			{ "Email", nameof(AppResources.EMail) },
+			{ "PhoneNumber", nameof(AppResources.Phone) },
+			{ "Phone", nameof(AppResources.Phone) },
+			{ "PhoneNr", nameof(AppResources.Phone) }
+		};
+
+		private static readonly HashSet<string> claimsHiddenInPending = new(StringComparer.OrdinalIgnoreCase)
+		{
+			"EMail",
+			"Email",
+			"PhoneNumber",
+			"Phone",
+			"PhoneNr"
+		};
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ApplyIdViewModel"/> class.
@@ -114,6 +173,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.RequiresOrgRole = this.Organizational;
 			this.RequiresOrgNumber = this.Organizational;
 
+			this.LoadApplicationReview(ServiceRef.TagProfile.ApplicationReview);
+			ServiceRef.TagProfile.Changed += this.TagProfile_Changed;
 			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
 
 			if (this.ApplicationSent && IdentityReference is not null)
@@ -131,6 +192,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		{
 			this.photosLoader.CancelLoadPhotos();
 
+			ServiceRef.TagProfile.Changed -= this.TagProfile_Changed;
 			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
 
 			return base.OnDispose();
@@ -168,6 +230,15 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			});
 
 			return Task.CompletedTask;
+		}
+
+		private void TagProfile_Changed(object? sender, PropertyChangedEventArgs e)
+		{
+			if (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == nameof(TagProfile.ApplicationReview))
+			{
+				ApplicationReview? Review = ServiceRef.TagProfile.ApplicationReview;
+				MainThread.BeginInvokeOnMainThread(() => this.LoadApplicationReview(Review));
+			}
 		}
 
 		/// <inheritdoc/>
@@ -530,6 +601,90 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		/// </summary>
 		[ObservableProperty]
 		private int imageRotation;
+
+		/// <summary>
+		/// Indicates if review information is available for the current application.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasApplicationReview;
+
+		/// <summary>
+		/// Latest review message presented to the user.
+		/// </summary>
+		[ObservableProperty]
+		private string applicationReviewMessage = string.Empty;
+
+		/// <summary>
+		/// Optional review code identifying the reason.
+		/// </summary>
+		[ObservableProperty]
+		private string? applicationReviewCode;
+
+		/// <summary>
+		/// Timestamp for when the review was received.
+		/// </summary>
+		[ObservableProperty]
+		private DateTime? applicationReviewTimestamp;
+
+		/// <summary>
+		/// Detailed invalid claim entries.
+		/// </summary>
+		public ObservableCollection<ApplicationReviewClaimDetail> InvalidClaimDetails { get; } = new ObservableCollection<ApplicationReviewClaimDetail>();
+
+		/// <summary>
+		/// Detailed invalid photo entries.
+		/// </summary>
+		public ObservableCollection<ApplicationReviewPhotoDetail> InvalidPhotoDetails { get; } = new ObservableCollection<ApplicationReviewPhotoDetail>();
+
+		/// <summary>
+		/// Claims still pending validation.
+		/// </summary>
+		public ObservableCollection<string> UnvalidatedClaims { get; } = new ObservableCollection<string>();
+
+		/// <summary>
+		/// Photos still pending validation.
+		/// </summary>
+		public ObservableCollection<string> UnvalidatedPhotos { get; } = new ObservableCollection<string>();
+
+		/// <summary>
+		/// True if there are invalid claims to address.
+		/// </summary>
+		public bool HasInvalidClaimDetails => this.InvalidClaimDetails.Count > 0;
+
+		/// <summary>
+		/// True if there are invalid photos to address.
+		/// </summary>
+		public bool HasInvalidPhotoDetails => this.InvalidPhotoDetails.Count > 0;
+
+		/// <summary>
+		/// True if there are claims that remain unvalidated.
+		/// </summary>
+		public bool HasUnvalidatedClaims => this.UnvalidatedClaims.Count > 0;
+
+		/// <summary>
+		/// True if there are photos that remain unvalidated.
+		/// </summary>
+		public bool HasUnvalidatedPhotos => this.UnvalidatedPhotos.Count > 0;
+
+		/// <summary>
+		/// True if any invalid items require attention.
+		/// </summary>
+		public bool HasInvalidItems => this.HasInvalidClaimDetails || this.HasInvalidPhotoDetails;
+
+		/// <summary>
+		/// True if only unvalidated items remain.
+		/// </summary>
+		public bool HasOnlyUnvalidatedItems => !this.HasInvalidItems && (this.HasUnvalidatedClaims || this.HasUnvalidatedPhotos);
+
+		/// <summary>
+		/// True if the user can start fixing invalid claims.
+		/// </summary>
+		public bool CanFixInvalidClaims => this.HasApplicationReview && this.HasInvalidItems;
+
+		/// <summary>
+		/// True if the user can resubmit without pending items.
+		/// </summary>
+		public bool CanPrepareReapplyWithoutPendingClaims => this.HasApplicationReview && this.HasOnlyUnvalidatedItems;
 
 		/// <summary>
 		/// If the form can be edited.
@@ -1063,6 +1218,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 					// Load all attachment images immediately after applying.
 					await this.LoadAllAttachmentPhotos(AddedIdentity);
+					ServiceRef.TagProfile.SetApplicationReview(null);
+					this.LoadApplicationReview(null);
 				}
 			}
 			catch (Exception ex)
@@ -1469,6 +1626,37 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.RemovePhoto(true);
 		}
 
+		/// <summary>
+		/// Allows the user to start correcting invalid claims reported by the review.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanFixInvalidClaims))]
+		private async Task FixInvalidClaims()
+		{
+			ApplicationReview? Review = this.applicationReview;
+			if (Review is null)
+				return;
+
+			await this.PrepareFormForEditingAsync();
+
+			this.ClearClaims(Review.InvalidClaims);
+			this.ClearInvalidPhotos(Review.InvalidPhotoDetails);
+		}
+
+		/// <summary>
+		/// Allows the user to resubmit without pending unvalidated items.
+		/// </summary>
+		[RelayCommand(CanExecute = nameof(CanPrepareReapplyWithoutPendingClaims))]
+		private async Task PrepareReapplyWithoutPendingClaims()
+		{
+			ApplicationReview? Review = this.applicationReview;
+			if (Review is null)
+				return;
+
+			await this.PrepareFormForEditingAsync();
+
+			this.ClearClaims(Review.UnvalidatedClaims);
+		}
+
 		private async Task LoadFeaturedPeerReviewers()
 		{
 			await ServiceRef.NetworkService.TryRequest(async () =>
@@ -1526,6 +1714,347 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			}
 
 			await this.ScanQrCode();
+		}
+
+		private async Task PrepareFormForEditingAsync()
+		{
+			try
+			{
+				await ServiceRef.TagProfile.SetIdentityApplication(null, false);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+
+			this.ApplicationSent = false;
+			this.IsRevoking = false;
+
+			this.NotifyCommandsCanExecuteChanged();
+			this.OnPropertyChanged(nameof(this.CanEdit));
+			this.OnPropertyChanged(nameof(this.CanRemovePhoto));
+			this.OnPropertyChanged(nameof(this.CanTakePhoto));
+			this.OnPropertyChanged(nameof(this.ApplicationSentAndConnected));
+		}
+
+		private void LoadApplicationReview(ApplicationReview? review)
+		{
+			this.applicationReview = review;
+
+			this.HasApplicationReview = review is not null;
+			this.ApplicationReviewMessage = (review?.Message ?? string.Empty).Trim();
+			this.ApplicationReviewCode = review?.Code;
+			this.ApplicationReviewTimestamp = review?.ReceivedUtc;
+
+			IEnumerable<ApplicationReviewClaimDetail> rawClaimDetails = review?.InvalidClaimDetails ?? Array.Empty<ApplicationReviewClaimDetail>();
+			List<ApplicationReviewClaimDetail> localizedClaimDetails = new();
+			foreach (ApplicationReviewClaimDetail detail in rawClaimDetails)
+			{
+				if (detail is null)
+					continue;
+
+				detail.DisplayName = this.GetClaimDisplayName(detail.Claim);
+				localizedClaimDetails.Add(detail);
+			}
+			ReplaceCollection(this.InvalidClaimDetails, localizedClaimDetails);
+
+			IEnumerable<ApplicationReviewPhotoDetail> PhotoDetails = review?.InvalidPhotoDetails ?? Array.Empty<ApplicationReviewPhotoDetail>();
+			ReplaceCollection(this.InvalidPhotoDetails, PhotoDetails);
+
+			IEnumerable<string> pendingClaimsRaw = review?.UnvalidatedClaims ?? Array.Empty<string>();
+			List<string> pendingClaimsLocalized = new();
+			foreach (string pendingClaim in pendingClaimsRaw)
+			{
+				if (string.IsNullOrWhiteSpace(pendingClaim))
+					continue;
+
+				if (claimsHiddenInPending.Contains(pendingClaim))
+					continue;
+
+				string displayName = this.GetClaimDisplayName(pendingClaim);
+				if (string.IsNullOrWhiteSpace(displayName))
+					continue;
+
+				pendingClaimsLocalized.Add(displayName);
+			}
+			ReplaceCollection(this.UnvalidatedClaims, pendingClaimsLocalized);
+
+			IEnumerable<string> PendingPhotos = review?.UnvalidatedPhotos ?? Array.Empty<string>();
+			ReplaceCollection(this.UnvalidatedPhotos, PendingPhotos);
+
+			this.OnPropertyChanged(nameof(this.HasInvalidClaimDetails));
+			this.OnPropertyChanged(nameof(this.HasInvalidPhotoDetails));
+			this.OnPropertyChanged(nameof(this.HasUnvalidatedClaims));
+			this.OnPropertyChanged(nameof(this.HasUnvalidatedPhotos));
+			this.OnPropertyChanged(nameof(this.HasInvalidItems));
+			this.OnPropertyChanged(nameof(this.HasOnlyUnvalidatedItems));
+			this.OnPropertyChanged(nameof(this.CanFixInvalidClaims));
+			this.OnPropertyChanged(nameof(this.CanPrepareReapplyWithoutPendingClaims));
+
+			this.FixInvalidClaimsCommand?.NotifyCanExecuteChanged();
+
+			this.PrepareReapplyWithoutPendingClaimsCommand?.NotifyCanExecuteChanged();
+		}
+
+		private static void ReplaceCollection<T>(ObservableCollection<T> collection, IEnumerable<T> items)
+		{
+			collection.Clear();
+			foreach (T Item in items)
+			{
+				collection.Add(Item);
+			}
+		}
+
+		private string GetClaimDisplayName(string claim)
+		{
+			if (string.IsNullOrWhiteSpace(claim))
+				return string.Empty;
+
+			if (claimResourceKeyMap.TryGetValue(claim, out string resourceKey))
+			{
+				try
+				{
+					string localized = ServiceRef.Localizer[resourceKey, false];
+					if (!string.IsNullOrEmpty(localized) && !string.Equals(localized, resourceKey, StringComparison.Ordinal))
+						return localized;
+
+					return string.IsNullOrEmpty(localized) ? resourceKey : localized;
+				}
+				catch
+				{
+					return resourceKey;
+				}
+			}
+
+			return claim;
+		}
+
+		private static bool IsProtectedClaim(string claim)
+		{
+			return claimsHiddenInPending.Contains(claim);
+		}
+
+		private void ClearClaims(IEnumerable<string> claims)
+		{
+			foreach (string Claim in claims)
+			{
+				if (string.IsNullOrWhiteSpace(Claim))
+					continue;
+
+				string NormalizedClaim = Claim.Trim();
+			if (NormalizedClaim.Length == 0)
+				continue;
+
+			if (IsProtectedClaim(NormalizedClaim))
+				continue;
+
+			switch (NormalizedClaim)
+			{
+				case "FirstName":
+				case "firstName":
+					this.FirstName = string.Empty;
+					break;
+				case "MiddleNames":
+				case "middleNames":
+					this.MiddleNames = string.Empty;
+					break;
+				case "LastNames":
+				case "lastNames":
+					this.LastNames = string.Empty;
+					break;
+				case "PersonalNumber":
+				case "personalNumber":
+					this.PersonalNumber = string.Empty;
+					break;
+				case "ADDR":
+				case "addr":
+				case "Address":
+				case "address":
+				case "ADDR1":
+				case "addr1":
+					this.Address = string.Empty;
+					break;
+				case "ADDR2":
+				case "addr2":
+				case "Address2":
+				case "address2":
+					this.Address2 = string.Empty;
+					break;
+				case "ZIP":
+				case "zip":
+				case "ZipCode":
+				case "zipCode":
+				case "PostalCode":
+				case "postalCode":
+					this.ZipCode = string.Empty;
+					break;
+				case "Area":
+				case "area":
+					this.Area = string.Empty;
+					break;
+				case "City":
+				case "city":
+				case "CITY":
+					this.City = string.Empty;
+					break;
+				case "Region":
+				case "region":
+				case "State":
+				case "state":
+					this.Region = string.Empty;
+					break;
+				case "Country":
+				case "country":
+				case "CountryCode":
+				case "countryCode":
+					this.CountryCode = string.Empty;
+					break;
+				case "Nationality":
+				case "nationality":
+				case "NationalityCode":
+				case "nationalityCode":
+					this.Nationality = null;
+					this.NationalityCode = string.Empty;
+					break;
+				case "Gender":
+				case "gender":
+				case "GenderCode":
+				case "genderCode":
+					this.Gender = null;
+					this.GenderCode = string.Empty;
+					break;
+				case "BirthDate":
+				case "birthDate":
+					this.BirthDate = DateTime.Today;
+					break;
+				case "OrgName":
+				case "orgName":
+					this.OrgName = string.Empty;
+					break;
+				case "OrgDepartment":
+				case "orgDepartment":
+					this.OrgDepartment = string.Empty;
+					break;
+				case "OrgRole":
+				case "orgRole":
+					this.OrgRole = string.Empty;
+					break;
+				case "OrgNumber":
+				case "orgNumber":
+					this.OrgNumber = string.Empty;
+					break;
+				case "OrgAddress":
+				case "orgAddress":
+				case "OrgADDR":
+				case "orgAddr":
+					this.OrgAddress = string.Empty;
+					break;
+				case "OrgAddress2":
+				case "orgAddress2":
+				case "OrgADDR2":
+				case "orgAddr2":
+					this.OrgAddress2 = string.Empty;
+					break;
+				case "OrgZipCode":
+				case "orgZipCode":
+				case "OrgZIP":
+				case "orgZip":
+					this.OrgZipCode = string.Empty;
+					break;
+				case "OrgArea":
+				case "orgArea":
+					this.OrgArea = string.Empty;
+					break;
+				case "OrgCity":
+				case "orgCity":
+					this.OrgCity = string.Empty;
+					break;
+				case "OrgRegion":
+				case "orgRegion":
+				case "OrgState":
+				case "orgState":
+					this.OrgRegion = string.Empty;
+					break;
+				case "OrgCountry":
+				case "orgCountry":
+				case "OrgCountryCode":
+				case "orgCountryCode":
+					this.OrgCountryCode = string.Empty;
+					break;
+				case "Consent":
+				case "consent":
+					this.Consent = false;
+					break;
+				case "Correct":
+				case "correct":
+					this.Correct = false;
+					break;
+				default:
+					break;
+			}
+			}
+		}
+
+		private void ClearInvalidPhotos(IEnumerable<ApplicationReviewPhotoDetail> photoDetails)
+		{
+			foreach (ApplicationReviewPhotoDetail Detail in photoDetails)
+			{
+				if (Detail is null || string.IsNullOrWhiteSpace(Detail.FileName))
+					continue;
+
+				string FileName = Detail.FileName;
+				if (string.Equals(FileName, profilePhotoFileName, StringComparison.OrdinalIgnoreCase))
+				{
+					this.RemovePhoto(true);
+				}
+				else if (string.Equals(FileName, passportFileName, StringComparison.OrdinalIgnoreCase) ||
+					string.Equals(FileName, nationalIdFrontFileName, StringComparison.OrdinalIgnoreCase) ||
+					string.Equals(FileName, driverLicenseFrontFileName, StringComparison.OrdinalIgnoreCase))
+				{
+					this.RemoveProofOfIdFront();
+				}
+				else if (string.Equals(FileName, nationalIdBackFileName, StringComparison.OrdinalIgnoreCase) ||
+					string.Equals(FileName, driverLicenseBackFileName, StringComparison.OrdinalIgnoreCase))
+				{
+					this.RemoveProofOfIdBack();
+				}
+				else if (FileName.StartsWith("AdditionalPhoto", StringComparison.OrdinalIgnoreCase))
+				{
+					this.RemoveAdditionalPhotoByFileName(FileName);
+				}
+			}
+		}
+
+		private void RemoveAdditionalPhotoByFileName(string fileName)
+		{
+			if (string.IsNullOrWhiteSpace(fileName))
+				return;
+
+			string Trimmed = fileName;
+			if (Trimmed.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
+			{
+				Trimmed = Trimmed[..^5];
+			}
+			else if (Trimmed.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
+			{
+				Trimmed = Trimmed[..^4];
+			}
+
+			const string Prefix = "AdditionalPhoto";
+			if (!Trimmed.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase))
+				return;
+
+			string IndexPart = Trimmed.Substring(Prefix.Length);
+			if (int.TryParse(IndexPart, out int Index) && Index > 0 && Index <= this.AdditionalPhotos.Count)
+			{
+				int ZeroBasedIndex = Index - 1;
+				if (ZeroBasedIndex >= 0 && ZeroBasedIndex < this.AdditionalPhotos.Count)
+					this.AdditionalPhotos.RemoveAt(ZeroBasedIndex);
+			}
+			else
+			{
+				this.AdditionalPhotos.Clear();
+			}
 		}
 
 		#region Additional Photos

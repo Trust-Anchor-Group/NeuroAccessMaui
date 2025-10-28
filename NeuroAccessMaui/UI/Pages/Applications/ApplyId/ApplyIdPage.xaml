@@ -11,6 +11,7 @@
 							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Applications.ApplyId"
+							 xmlns:identity="clr-namespace:NeuroAccessMaui.Services.Identity"
 							 x:Name="ThisPage"
 							 x:DataType="viewmodel:ApplyIdViewModel">
 
@@ -23,6 +24,7 @@
 			<converters:GenderCodeToSymbolAndLabel />
 			<converters:HyphenIfEmpty />
 		</converters:ConversionSequence>
+		<mct:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmptyConverter" />
 
 		<viewmodel:IdentityDocumentTypeConverter x:Key="IdentityDocumentTypeConverter" />
 		<viewmodel:IdentityDocumentTypeToFrontVisibilityConverter x:Key="IdentityDocumentTypeToFrontVisibilityConverter" />
@@ -53,6 +55,126 @@
 						   Grid.Column="2"
 						   HorizontalOptions="End"/>
 				</Grid>
+
+				<!--  Application Review Feedback  -->
+				<Border Style="{DynamicResource BorderSet}"
+				        IsVisible="{Binding HasApplicationReview}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}"
+							   Text="{l:Localize KycReviewTitle}" />
+
+						<Label Style="{DynamicResource InfoLabel}"
+							   IsVisible="{Binding ApplicationReviewMessage, Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
+							   LineBreakMode="WordWrap"
+							   Text="{Binding ApplicationReviewMessage}" />
+
+						<Label Style="{DynamicResource InfoLabel}"
+							   IsVisible="{Binding ApplicationReviewCode, Converter={StaticResource IsStringNotNullOrEmptyConverter}}">
+							<Label.FormattedText>
+								<FormattedString>
+									<Span Text="{l:Localize KycReviewCodeLabel}" />
+									<Span Text=" " />
+									<Span FontAttributes="Bold"
+										  Text="{Binding ApplicationReviewCode}" />
+								</FormattedString>
+							</Label.FormattedText>
+						</Label>
+
+					<Label Style="{DynamicResource InfoLabel}"
+					   IsVisible="{Binding HasInvalidItems}"
+					   LineBreakMode="WordWrap"
+					   Text="{l:Localize KycInvalidGuidance}" />
+
+					<Label Style="{DynamicResource InfoLabel}"
+					   IsVisible="{Binding HasOnlyUnvalidatedItems}"
+					   LineBreakMode="WordWrap"
+					   Text="{l:Localize KycManualReviewInfo}" />
+
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
+											 IsVisible="{Binding HasInvalidClaimDetails}">
+							<Label Style="{DynamicResource InfoLabel}"
+								   FontAttributes="Bold"
+								   Text="{l:Localize KycInvalidClaimsHeader}" />
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding InvalidClaimDetails}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate x:DataType="identity:ApplicationReviewClaimDetail">
+										<VerticalStackLayout Spacing="2">
+											<Label Style="{DynamicResource InfoLabel}"
+									   FontAttributes="Bold"
+									   Text="{Binding DisplayName}" />
+											<Label Style="{DynamicResource InfoLabel}"
+												   IsVisible="{Binding Reason, Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
+												   LineBreakMode="WordWrap"
+												   Text="{Binding Reason}" />
+										</VerticalStackLayout>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
+											 IsVisible="{Binding HasInvalidPhotoDetails}">
+							<Label Style="{DynamicResource InfoLabel}"
+								   FontAttributes="Bold"
+								   Text="{l:Localize KycInvalidPhotosHeader}" />
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding InvalidPhotoDetails}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate x:DataType="identity:ApplicationReviewPhotoDetail">
+										<VerticalStackLayout Spacing="2">
+											<Label Style="{DynamicResource InfoLabel}"
+												   FontAttributes="Bold"
+												   Text="{Binding DisplayName}" />
+											<Label Style="{DynamicResource InfoLabel}"
+												   IsVisible="{Binding Reason, Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
+												   LineBreakMode="WordWrap"
+												   Text="{Binding Reason}" />
+										</VerticalStackLayout>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
+											 IsVisible="{Binding HasUnvalidatedClaims}">
+							<Label Style="{DynamicResource InfoLabel}"
+								   FontAttributes="Bold"
+								   Text="{l:Localize KycUnvalidatedClaimsHeader}" />
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding UnvalidatedClaims}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate>
+										<Label Style="{DynamicResource InfoLabel}"
+											   Text="{Binding .}" />
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+						</VerticalStackLayout>
+
+						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
+											 IsVisible="{Binding HasUnvalidatedPhotos}">
+							<Label Style="{DynamicResource InfoLabel}"
+								   FontAttributes="Bold"
+								   Text="{l:Localize KycUnvalidatedPhotosHeader}" />
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding UnvalidatedPhotos}">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate>
+										<Label Style="{DynamicResource InfoLabel}"
+											   Text="{Binding .}" />
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+						</VerticalStackLayout>
+
+						<controls:TextButton Command="{Binding FixInvalidClaimsCommand}"
+											 IsVisible="{Binding CanFixInvalidClaims}"
+											 LabelData="{l:Localize KycFixInvalidClaimsButton}"
+											 Style="{DynamicResource FilledTextButton}" />
+
+						<controls:TextButton Command="{Binding PrepareReapplyWithoutPendingClaimsCommand}"
+											 IsVisible="{Binding CanPrepareReapplyWithoutPendingClaims}"
+											 LabelData="{l:Localize KycReapplyWithoutPendingButton}"
+											 Style="{DynamicResource FilledTextButton}" />
+					</VerticalStackLayout>
+				</Border>
 
 				<!--  Application Sent  -->
 				<Border IsVisible="{Binding ApplicationSent}"
