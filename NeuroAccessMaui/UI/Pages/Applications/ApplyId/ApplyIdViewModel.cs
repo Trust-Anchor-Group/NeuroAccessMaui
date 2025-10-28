@@ -48,57 +48,110 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		private const string driverLicenseFrontFileName = "DriverLicenseFront.jpeg";
 		private const string driverLicenseBackFileName = "DriverLicenseBack.jpeg";
 
-		private static readonly Dictionary<string, string> claimResourceKeyMap = new(StringComparer.OrdinalIgnoreCase)
-		{
-			{ "FirstName", nameof(AppResources.FirstName) },
-			{ "MiddleNames", nameof(AppResources.MiddleNames) },
-			{ "LastNames", nameof(AppResources.LastNames) },
-			{ "PersonalNumber", nameof(AppResources.PersonalNumber) },
-			{ "ADDR", nameof(AppResources.Address) },
-			{ "Address", nameof(AppResources.Address) },
-			{ "ADDR1", nameof(AppResources.Address) },
-			{ "ADDR2", nameof(AppResources.Address2) },
-			{ "Address2", nameof(AppResources.Address2) },
-			{ "ZIP", nameof(AppResources.ZipCode) },
-			{ "PostalCode", nameof(AppResources.ZipCode) },
-			{ "ZipCode", nameof(AppResources.ZipCode) },
-			{ "Area", nameof(AppResources.Area) },
-			{ "City", nameof(AppResources.City) },
-			{ "Region", nameof(AppResources.Region) },
-			{ "State", nameof(AppResources.Region) },
-			{ "Country", nameof(AppResources.Country) },
-			{ "CountryCode", nameof(AppResources.Country) },
-			{ "Nationality", nameof(AppResources.Nationality) },
-			{ "NationalityCode", nameof(AppResources.Nationality) },
-			{ "Gender", nameof(AppResources.Gender) },
-			{ "GenderCode", nameof(AppResources.Gender) },
-			{ "BirthDate", nameof(AppResources.BirthDate) },
-			{ "OrgName", nameof(AppResources.OrgName) },
-			{ "OrgDepartment", nameof(AppResources.OrgDepartment) },
-			{ "OrgRole", nameof(AppResources.OrgRole) },
-			{ "OrgNumber", nameof(AppResources.OrgNumber) },
-			{ "OrgAddress", nameof(AppResources.OrgAddress) },
-			{ "OrgAddress2", nameof(AppResources.OrgAddress2) },
-			{ "OrgZipCode", nameof(AppResources.OrgZipCode) },
-			{ "OrgArea", nameof(AppResources.OrgArea) },
-			{ "OrgCity", nameof(AppResources.OrgCity) },
-			{ "OrgRegion", nameof(AppResources.OrgRegion) },
-			{ "OrgCountry", nameof(AppResources.OrgCountry) },
-			{ "OrgCountryCode", nameof(AppResources.OrgCountry) },
-			{ "Email", nameof(AppResources.EMail) },
-			{ "PhoneNumber", nameof(AppResources.Phone) },
-			{ "Phone", nameof(AppResources.Phone) },
-			{ "PhoneNr", nameof(AppResources.Phone) }
+	private static readonly Dictionary<string, string> claimDisplayNameMap = BuildClaimDisplayNameMap();
+	private static readonly Dictionary<string, Action<ApplyIdViewModel>> claimClearActions = BuildClaimClearActions();
+	private static readonly HashSet<string> birthClaimKeys = new(StringComparer.OrdinalIgnoreCase)
+	{
+		Constants.XmppProperties.BirthDay,
+			Constants.XmppProperties.BirthMonth,
+			Constants.XmppProperties.BirthYear,
+			"BirthDate"
 		};
 
-		private static readonly HashSet<string> claimsHiddenInPending = new(StringComparer.OrdinalIgnoreCase)
+	private static readonly HashSet<string> claimsHiddenInPending = new(StringComparer.OrdinalIgnoreCase)
+	{
+		Constants.XmppProperties.EMail,
+		Constants.XmppProperties.Phone,
+		"EMail",
+		"Email",
+		"PhoneNumber",
+		"Phone",
+		"PhoneNr"
+	};
+
+	private static Dictionary<string, string> BuildClaimDisplayNameMap()
+	{
+		Dictionary<string, string> map = new(StringComparer.OrdinalIgnoreCase);
+		AddDisplayMap(map, nameof(AppResources.FirstName), Constants.XmppProperties.FirstName, "FirstName", "firstName");
+		AddDisplayMap(map, nameof(AppResources.MiddleNames), Constants.XmppProperties.MiddleNames, "MiddleNames", "middleNames");
+		AddDisplayMap(map, nameof(AppResources.LastNames), Constants.XmppProperties.LastNames, "LastNames", "lastNames");
+		AddDisplayMap(map, nameof(AppResources.PersonalNumber), Constants.XmppProperties.PersonalNumber, "PersonalNumber", "personalNumber");
+		AddDisplayMap(map, nameof(AppResources.Address), Constants.XmppProperties.Address, "Address", "address", "ADDR1", "addr1");
+		AddDisplayMap(map, nameof(AppResources.Address2), Constants.XmppProperties.Address2, "Address2", "address2");
+		AddDisplayMap(map, nameof(AppResources.ZipCode), Constants.XmppProperties.ZipCode, "ZipCode", "zipCode", "PostalCode", "postalCode");
+		AddDisplayMap(map, nameof(AppResources.Area), Constants.XmppProperties.Area, "Area", "area");
+		AddDisplayMap(map, nameof(AppResources.City), Constants.XmppProperties.City, "City", "city", "CITY");
+		AddDisplayMap(map, nameof(AppResources.Region), Constants.XmppProperties.Region, "Region", "region", "State", "state");
+		AddDisplayMap(map, nameof(AppResources.Country), Constants.XmppProperties.Country, "Country", "country", "CountryCode", "countryCode");
+		AddDisplayMap(map, nameof(AppResources.Nationality), Constants.XmppProperties.Nationality, "Nationality", "nationality", "NationalityCode", "nationalityCode");
+		AddDisplayMap(map, nameof(AppResources.Gender), Constants.XmppProperties.Gender, "Gender", "gender", "GenderCode", "genderCode");
+		AddDisplayMap(map, nameof(AppResources.BirthDate), Constants.XmppProperties.BirthDay, Constants.XmppProperties.BirthMonth, Constants.XmppProperties.BirthYear, "BirthDate", "birthDate");
+		AddDisplayMap(map, nameof(AppResources.OrgName), Constants.XmppProperties.OrgName, "OrgName", "orgName");
+		AddDisplayMap(map, nameof(AppResources.OrgNumber), Constants.XmppProperties.OrgNumber, "OrgNumber", "orgNumber");
+		AddDisplayMap(map, nameof(AppResources.OrgDepartment), Constants.XmppProperties.OrgDepartment, "OrgDepartment", "orgDepartment");
+		AddDisplayMap(map, nameof(AppResources.OrgRole), Constants.XmppProperties.OrgRole, "OrgRole", "orgRole");
+		AddDisplayMap(map, nameof(AppResources.OrgAddress), Constants.XmppProperties.OrgAddress, "OrgAddress", "orgAddress", "OrgADDR", "orgAddr");
+		AddDisplayMap(map, nameof(AppResources.OrgAddress2), Constants.XmppProperties.OrgAddress2, "OrgAddress2", "orgAddress2", "OrgADDR2", "orgAddr2");
+		AddDisplayMap(map, nameof(AppResources.OrgZipCode), Constants.XmppProperties.OrgZipCode, "OrgZipCode", "orgZipCode", "OrgZIP", "orgZip");
+		AddDisplayMap(map, nameof(AppResources.OrgArea), Constants.XmppProperties.OrgArea, "OrgArea", "orgArea");
+		AddDisplayMap(map, nameof(AppResources.OrgCity), Constants.XmppProperties.OrgCity, "OrgCity", "orgCity");
+		AddDisplayMap(map, nameof(AppResources.OrgRegion), Constants.XmppProperties.OrgRegion, "OrgRegion", "orgRegion", "OrgState", "orgState");
+		AddDisplayMap(map, nameof(AppResources.OrgCountry), Constants.XmppProperties.OrgCountry, "OrgCountry", "orgCountry", "OrgCountryCode", "orgCountryCode");
+		AddDisplayMap(map, nameof(AppResources.EMail), Constants.XmppProperties.EMail, "EMail", "Email", "email");
+		AddDisplayMap(map, nameof(AppResources.Phone), Constants.XmppProperties.Phone, "Phone", "phone", "PhoneNr", "phoneNr", "PhoneNumber", "phoneNumber");
+		return map;
+	}
+
+	private static void AddDisplayMap(Dictionary<string, string> map, string resourceKey, params string[] keys)
+	{
+		foreach (string key in keys)
 		{
-			"EMail",
-			"Email",
-			"PhoneNumber",
-			"Phone",
-			"PhoneNr"
-		};
+			map[key] = resourceKey;
+		}
+	}
+
+	private static Dictionary<string, Action<ApplyIdViewModel>> BuildClaimClearActions()
+	{
+		Dictionary<string, Action<ApplyIdViewModel>> map = new(StringComparer.OrdinalIgnoreCase);
+		AddClearAction(map, vm => vm.FirstName = string.Empty, Constants.XmppProperties.FirstName, "FirstName", "firstName");
+		AddClearAction(map, vm => vm.MiddleNames = string.Empty, Constants.XmppProperties.MiddleNames, "MiddleNames", "middleNames");
+		AddClearAction(map, vm => vm.LastNames = string.Empty, Constants.XmppProperties.LastNames, "LastNames", "lastNames");
+		AddClearAction(map, vm => vm.PersonalNumber = string.Empty, Constants.XmppProperties.PersonalNumber, "PersonalNumber", "personalNumber");
+		AddClearAction(map, vm => vm.Address = string.Empty, Constants.XmppProperties.Address, "Address", "address", "ADDR1", "addr1");
+		AddClearAction(map, vm => vm.Address2 = string.Empty, Constants.XmppProperties.Address2, "Address2", "address2");
+		AddClearAction(map, vm => vm.ZipCode = string.Empty, Constants.XmppProperties.ZipCode, "ZipCode", "zipCode", "PostalCode", "postalCode");
+		AddClearAction(map, vm => vm.Area = string.Empty, Constants.XmppProperties.Area, "Area", "area");
+		AddClearAction(map, vm => vm.City = string.Empty, Constants.XmppProperties.City, "City", "city", "CITY");
+		AddClearAction(map, vm => vm.Region = string.Empty, Constants.XmppProperties.Region, "Region", "region", "State", "state");
+		AddClearAction(map, vm => vm.CountryCode = string.Empty, Constants.XmppProperties.Country, "Country", "country", "CountryCode", "countryCode");
+		AddClearAction(map, vm => { vm.Nationality = null; vm.NationalityCode = string.Empty; }, Constants.XmppProperties.Nationality, "Nationality", "nationality", "NationalityCode", "nationalityCode");
+		AddClearAction(map, vm => { vm.Gender = null; vm.GenderCode = string.Empty; }, Constants.XmppProperties.Gender, "Gender", "gender", "GenderCode", "genderCode");
+		AddClearAction(map, vm => vm.BirthDate = DateTime.Today, Constants.XmppProperties.BirthDay, Constants.XmppProperties.BirthMonth, Constants.XmppProperties.BirthYear, "BirthDate", "birthDate");
+		AddClearAction(map, vm => vm.OrgName = string.Empty, Constants.XmppProperties.OrgName, "OrgName", "orgName");
+		AddClearAction(map, vm => vm.OrgNumber = string.Empty, Constants.XmppProperties.OrgNumber, "OrgNumber", "orgNumber");
+		AddClearAction(map, vm => vm.OrgDepartment = string.Empty, Constants.XmppProperties.OrgDepartment, "OrgDepartment", "orgDepartment");
+		AddClearAction(map, vm => vm.OrgRole = string.Empty, Constants.XmppProperties.OrgRole, "OrgRole", "orgRole");
+		AddClearAction(map, vm => vm.OrgAddress = string.Empty, Constants.XmppProperties.OrgAddress, "OrgAddress", "orgAddress", "OrgADDR", "orgAddr");
+		AddClearAction(map, vm => vm.OrgAddress2 = string.Empty, Constants.XmppProperties.OrgAddress2, "OrgAddress2", "orgAddress2", "OrgADDR2", "orgAddr2");
+		AddClearAction(map, vm => vm.OrgZipCode = string.Empty, Constants.XmppProperties.OrgZipCode, "OrgZipCode", "orgZipCode", "OrgZIP", "orgZip");
+		AddClearAction(map, vm => vm.OrgArea = string.Empty, Constants.XmppProperties.OrgArea, "OrgArea", "orgArea");
+		AddClearAction(map, vm => vm.OrgCity = string.Empty, Constants.XmppProperties.OrgCity, "OrgCity", "orgCity");
+		AddClearAction(map, vm => vm.OrgRegion = string.Empty, Constants.XmppProperties.OrgRegion, "OrgRegion", "orgRegion", "OrgState", "orgState");
+		AddClearAction(map, vm => vm.OrgCountryCode = string.Empty, Constants.XmppProperties.OrgCountry, "OrgCountry", "orgCountry", "OrgCountryCode", "orgCountryCode");
+		AddClearAction(map, vm => vm.PhoneNr = string.Empty, Constants.XmppProperties.Phone, "Phone", "phone", "PhoneNr", "phoneNr", "PhoneNumber", "phoneNumber");
+		AddClearAction(map, vm => vm.EMail = string.Empty, Constants.XmppProperties.EMail, "EMail", "Email", "email");
+		AddClearAction(map, vm => vm.Consent = false, "Consent", "consent");
+		AddClearAction(map, vm => vm.Correct = false, "Correct", "correct");
+		return map;
+	}
+
+	private static void AddClearAction(Dictionary<string, Action<ApplyIdViewModel>> map, Action<ApplyIdViewModel> action, params string[] keys)
+	{
+		foreach (string key in keys)
+		{
+			map[key] = action;
+		}
+	}
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ApplyIdViewModel"/> class.
@@ -1635,19 +1688,34 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 			IEnumerable<string> pendingClaimsRaw = review?.UnvalidatedClaims ?? Array.Empty<string>();
 			List<string> pendingClaimsLocalized = new();
+			bool hasBirthComponent = false;
 			foreach (string pendingClaim in pendingClaimsRaw)
 			{
 				if (string.IsNullOrWhiteSpace(pendingClaim))
 					continue;
 
-				if (claimsHiddenInPending.Contains(pendingClaim))
+				string normalizedClaim = pendingClaim.Trim();
+				if (claimsHiddenInPending.Contains(normalizedClaim))
 					continue;
 
-				string displayName = this.GetClaimDisplayName(pendingClaim);
+				if (IsBirthComponent(normalizedClaim))
+				{
+					hasBirthComponent = true;
+					continue;
+				}
+
+				string displayName = this.GetClaimDisplayName(normalizedClaim);
 				if (string.IsNullOrWhiteSpace(displayName))
 					continue;
 
 				pendingClaimsLocalized.Add(displayName);
+			}
+
+			if (hasBirthComponent)
+			{
+				string birthDisplay = this.GetClaimDisplayName(Constants.XmppProperties.BirthDay);
+				if (!string.IsNullOrWhiteSpace(birthDisplay))
+					pendingClaimsLocalized.Add(birthDisplay);
 			}
 			ReplaceCollection(this.UnvalidatedClaims, pendingClaimsLocalized);
 
@@ -1743,10 +1811,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				}
 				catch (Exception ex)
 				{
-					ServiceRef.LogService.LogException(ex);
-				}
+				ServiceRef.LogService.LogException(ex);
+			}
 
-				this.ApplicationSent = false;
+			this.ApplicationSent = false;
 				this.IsRevoking = false;
 
 				this.NotifyCommandsCanExecuteChanged();
@@ -1770,16 +1838,27 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			}
 		}
 
-		private void ClearPendingPhotoNames(IEnumerable<string> pendingPhotoNames)
-		{
-			if (pendingPhotoNames is null)
-				return;
+	private void ClearPendingPhotoNames(IEnumerable<string> pendingPhotoNames)
+	{
+		if (pendingPhotoNames is null)
+			return;
 
-			if (!pendingPhotoNames.Any(name => !string.IsNullOrWhiteSpace(name)))
-				return;
+		HashSet<string> normalized = new(pendingPhotoNames
+			.Where(name => !string.IsNullOrWhiteSpace(name))
+			.Select(name => Path.GetFileName(name.Trim())), StringComparer.OrdinalIgnoreCase);
 
-			MainThread.BeginInvokeOnMainThread(() => this.AdditionalPhotos.Clear());
-		}
+		if (normalized.Count == 0)
+			return;
+
+		if (normalized.Contains(passportFileName) || normalized.Contains(Path.GetFileName(passportFileName)))
+			this.RemoveProofOfIdFront();
+
+		if (normalized.Contains(nationalIdFrontFileName) || normalized.Contains(driverLicenseFrontFileName))
+			this.RemoveProofOfIdFront();
+
+		if (normalized.Contains(nationalIdBackFileName) || normalized.Contains(driverLicenseBackFileName))
+			this.RemoveProofOfIdBack();
+	}
 
 		private static void ReplaceCollection<T>(ObservableCollection<T> collection, IEnumerable<T> items)
 		{
@@ -1795,7 +1874,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (string.IsNullOrWhiteSpace(claim))
 				return string.Empty;
 
-			if (claimResourceKeyMap.TryGetValue(claim, out string resourceKey))
+			if (claimDisplayNameMap.TryGetValue(claim, out string resourceKey))
 			{
 				try
 				{
@@ -1814,6 +1893,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			return claim;
 		}
 
+		private static bool IsBirthComponent(string claim)
+		{
+			return birthClaimKeys.Contains(claim);
+		}
+
 		private static bool IsProtectedClaim(string claim)
 		{
 			return claimsHiddenInPending.Contains(claim);
@@ -1827,156 +1911,14 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					continue;
 
 				string NormalizedClaim = Claim.Trim();
-			if (NormalizedClaim.Length == 0)
-				continue;
+				if (NormalizedClaim.Length == 0)
+					continue;
 
-			if (IsProtectedClaim(NormalizedClaim))
-				continue;
+				if (IsProtectedClaim(NormalizedClaim))
+					continue;
 
-			switch (NormalizedClaim)
-			{
-				case "FirstName":
-				case "firstName":
-					this.FirstName = string.Empty;
-					break;
-				case "MiddleNames":
-				case "middleNames":
-					this.MiddleNames = string.Empty;
-					break;
-				case "LastNames":
-				case "lastNames":
-					this.LastNames = string.Empty;
-					break;
-				case "PersonalNumber":
-				case "personalNumber":
-					this.PersonalNumber = string.Empty;
-					break;
-				case "ADDR":
-				case "addr":
-				case "Address":
-				case "address":
-				case "ADDR1":
-				case "addr1":
-					this.Address = string.Empty;
-					break;
-				case "ADDR2":
-				case "addr2":
-				case "Address2":
-				case "address2":
-					this.Address2 = string.Empty;
-					break;
-				case "ZIP":
-				case "zip":
-				case "ZipCode":
-				case "zipCode":
-				case "PostalCode":
-				case "postalCode":
-					this.ZipCode = string.Empty;
-					break;
-				case "Area":
-				case "area":
-					this.Area = string.Empty;
-					break;
-				case "City":
-				case "city":
-				case "CITY":
-					this.City = string.Empty;
-					break;
-				case "Region":
-				case "region":
-				case "State":
-				case "state":
-					this.Region = string.Empty;
-					break;
-				case "Country":
-				case "country":
-				case "CountryCode":
-				case "countryCode":
-					this.CountryCode = string.Empty;
-					break;
-				case "Nationality":
-				case "nationality":
-				case "NationalityCode":
-				case "nationalityCode":
-					this.Nationality = null;
-					this.NationalityCode = string.Empty;
-					break;
-				case "Gender":
-				case "gender":
-				case "GenderCode":
-				case "genderCode":
-					this.Gender = null;
-					this.GenderCode = string.Empty;
-					break;
-				case "BirthDate":
-				case "birthDate":
-					this.BirthDate = DateTime.Today;
-					break;
-				case "OrgName":
-				case "orgName":
-					this.OrgName = string.Empty;
-					break;
-				case "OrgDepartment":
-				case "orgDepartment":
-					this.OrgDepartment = string.Empty;
-					break;
-				case "OrgRole":
-				case "orgRole":
-					this.OrgRole = string.Empty;
-					break;
-				case "OrgNumber":
-				case "orgNumber":
-					this.OrgNumber = string.Empty;
-					break;
-				case "OrgAddress":
-				case "orgAddress":
-				case "OrgADDR":
-				case "orgAddr":
-					this.OrgAddress = string.Empty;
-					break;
-				case "OrgAddress2":
-				case "orgAddress2":
-				case "OrgADDR2":
-				case "orgAddr2":
-					this.OrgAddress2 = string.Empty;
-					break;
-				case "OrgZipCode":
-				case "orgZipCode":
-				case "OrgZIP":
-				case "orgZip":
-					this.OrgZipCode = string.Empty;
-					break;
-				case "OrgArea":
-				case "orgArea":
-					this.OrgArea = string.Empty;
-					break;
-				case "OrgCity":
-				case "orgCity":
-					this.OrgCity = string.Empty;
-					break;
-				case "OrgRegion":
-				case "orgRegion":
-				case "OrgState":
-				case "orgState":
-					this.OrgRegion = string.Empty;
-					break;
-				case "OrgCountry":
-				case "orgCountry":
-				case "OrgCountryCode":
-				case "orgCountryCode":
-					this.OrgCountryCode = string.Empty;
-					break;
-				case "Consent":
-				case "consent":
-					this.Consent = false;
-					break;
-				case "Correct":
-				case "correct":
-					this.Correct = false;
-					break;
-				default:
-					break;
-			}
+				if (claimClearActions.TryGetValue(NormalizedClaim, out Action<ApplyIdViewModel> action))
+					action(this);
 			}
 		}
 
