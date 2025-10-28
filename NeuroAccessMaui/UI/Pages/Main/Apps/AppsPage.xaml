@@ -82,12 +82,20 @@
 												Command="{Binding ShowThingsCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize SmartThings}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
+						
 						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
 												SvgSource="wallet.svg"
 												Command="{Binding ShowWalletCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Wallet}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="1" Grid.Row="2">
+							<controls:SvgButton Style="{Binding BetaButtonStyle}"
+												SvgSource="token.svg"
+												Command="{Binding ShowMyTokensCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize MyTokens}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						
 						<Label x:Name="BetaText"
 							   Text="{l:Localize BetaFeatureInfo}"
 							   Grid.Row="3"
