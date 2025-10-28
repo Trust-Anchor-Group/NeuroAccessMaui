@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -46,6 +47,60 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		private const string nationalIdBackFileName = "IdCardBack.jpg";
 		private const string driverLicenseFrontFileName = "DriverLicenseFront.jpeg";
 		private const string driverLicenseBackFileName = "DriverLicenseBack.jpeg";
+
+		private static readonly Dictionary<string, string> claimResourceKeyMap = new(StringComparer.OrdinalIgnoreCase)
+		{
+			{ "FirstName", nameof(AppResources.FirstName) },
+			{ "MiddleNames", nameof(AppResources.MiddleNames) },
+			{ "LastNames", nameof(AppResources.LastNames) },
+			{ "PersonalNumber", nameof(AppResources.PersonalNumber) },
+			{ "ADDR", nameof(AppResources.Address) },
+			{ "Address", nameof(AppResources.Address) },
+			{ "ADDR1", nameof(AppResources.Address) },
+			{ "ADDR2", nameof(AppResources.Address2) },
+			{ "Address2", nameof(AppResources.Address2) },
+			{ "ZIP", nameof(AppResources.ZipCode) },
+			{ "ZIPCode", nameof(AppResources.ZipCode) },
+			{ "PostalCode", nameof(AppResources.ZipCode) },
+			{ "ZipCode", nameof(AppResources.ZipCode) },
+			{ "Area", nameof(AppResources.Area) },
+			{ "City", nameof(AppResources.City) },
+			{ "Region", nameof(AppResources.Region) },
+			{ "State", nameof(AppResources.Region) },
+			{ "Country", nameof(AppResources.Country) },
+			{ "CountryCode", nameof(AppResources.Country) },
+			{ "Nationality", nameof(AppResources.Nationality) },
+			{ "NationalityCode", nameof(AppResources.Nationality) },
+			{ "Gender", nameof(AppResources.Gender) },
+			{ "GenderCode", nameof(AppResources.Gender) },
+			{ "BirthDate", nameof(AppResources.BirthDate) },
+			{ "OrgName", nameof(AppResources.OrgName) },
+			{ "OrgDepartment", nameof(AppResources.OrgDepartment) },
+			{ "OrgRole", nameof(AppResources.OrgRole) },
+			{ "OrgNumber", nameof(AppResources.OrgNumber) },
+			{ "OrgAddress", nameof(AppResources.OrgAddress) },
+			{ "OrgAddress2", nameof(AppResources.OrgAddress2) },
+			{ "OrgZipCode", nameof(AppResources.OrgZipCode) },
+			{ "OrgArea", nameof(AppResources.OrgArea) },
+			{ "OrgCity", nameof(AppResources.OrgCity) },
+			{ "OrgRegion", nameof(AppResources.OrgRegion) },
+			{ "OrgCountry", nameof(AppResources.OrgCountry) },
+			{ "OrgCountryCode", nameof(AppResources.OrgCountry) },
+			{ "EMail", nameof(AppResources.EMail) },
+			{ "Email", nameof(AppResources.EMail) },
+			{ "PhoneNumber", nameof(AppResources.Phone) },
+			{ "Phone", nameof(AppResources.Phone) },
+			{ "PhoneNr", nameof(AppResources.Phone) }
+		};
+
+		private static readonly HashSet<string> claimsHiddenInPending = new(StringComparer.OrdinalIgnoreCase)
+		{
+			"EMail",
+			"Email",
+			"PhoneNumber",
+			"Phone",
+			"PhoneNr"
+		};
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ApplyIdViewModel"/> class.
@@ -612,14 +667,24 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		public bool HasUnvalidatedPhotos => this.UnvalidatedPhotos.Count > 0;
 
 		/// <summary>
+		/// True if any invalid items require attention.
+		/// </summary>
+		public bool HasInvalidItems => this.HasInvalidClaimDetails || this.HasInvalidPhotoDetails;
+
+		/// <summary>
+		/// True if only unvalidated items remain.
+		/// </summary>
+		public bool HasOnlyUnvalidatedItems => !this.HasInvalidItems && (this.HasUnvalidatedClaims || this.HasUnvalidatedPhotos);
+
+		/// <summary>
 		/// True if the user can start fixing invalid claims.
 		/// </summary>
-		public bool CanFixInvalidClaims => this.HasApplicationReview && (this.HasInvalidClaimDetails || this.HasInvalidPhotoDetails);
+		public bool CanFixInvalidClaims => this.HasApplicationReview && this.HasInvalidItems;
 
 		/// <summary>
 		/// True if the user can resubmit without pending items.
 		/// </summary>
-		public bool CanPrepareReapplyWithoutPendingClaims => this.HasApplicationReview && !this.CanFixInvalidClaims && (this.HasUnvalidatedClaims || this.HasUnvalidatedPhotos);
+		public bool CanPrepareReapplyWithoutPendingClaims => this.HasApplicationReview && this.HasOnlyUnvalidatedItems;
 
 		/// <summary>
 		/// If the form can be edited.
@@ -1681,14 +1746,38 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.ApplicationReviewCode = review?.Code;
 			this.ApplicationReviewTimestamp = review?.ReceivedUtc;
 
-			IEnumerable<ApplicationReviewClaimDetail> ClaimDetails = review?.InvalidClaimDetails ?? Array.Empty<ApplicationReviewClaimDetail>();
-			ReplaceCollection(this.InvalidClaimDetails, ClaimDetails);
+			IEnumerable<ApplicationReviewClaimDetail> rawClaimDetails = review?.InvalidClaimDetails ?? Array.Empty<ApplicationReviewClaimDetail>();
+			List<ApplicationReviewClaimDetail> localizedClaimDetails = new();
+			foreach (ApplicationReviewClaimDetail detail in rawClaimDetails)
+			{
+				if (detail is null)
+					continue;
+
+				detail.DisplayName = this.GetClaimDisplayName(detail.Claim);
+				localizedClaimDetails.Add(detail);
+			}
+			ReplaceCollection(this.InvalidClaimDetails, localizedClaimDetails);
 
 			IEnumerable<ApplicationReviewPhotoDetail> PhotoDetails = review?.InvalidPhotoDetails ?? Array.Empty<ApplicationReviewPhotoDetail>();
 			ReplaceCollection(this.InvalidPhotoDetails, PhotoDetails);
 
-			IEnumerable<string> PendingClaims = review?.UnvalidatedClaims ?? Array.Empty<string>();
-			ReplaceCollection(this.UnvalidatedClaims, PendingClaims);
+			IEnumerable<string> pendingClaimsRaw = review?.UnvalidatedClaims ?? Array.Empty<string>();
+			List<string> pendingClaimsLocalized = new();
+			foreach (string pendingClaim in pendingClaimsRaw)
+			{
+				if (string.IsNullOrWhiteSpace(pendingClaim))
+					continue;
+
+				if (claimsHiddenInPending.Contains(pendingClaim))
+					continue;
+
+				string displayName = this.GetClaimDisplayName(pendingClaim);
+				if (string.IsNullOrWhiteSpace(displayName))
+					continue;
+
+				pendingClaimsLocalized.Add(displayName);
+			}
+			ReplaceCollection(this.UnvalidatedClaims, pendingClaimsLocalized);
 
 			IEnumerable<string> PendingPhotos = review?.UnvalidatedPhotos ?? Array.Empty<string>();
 			ReplaceCollection(this.UnvalidatedPhotos, PendingPhotos);
@@ -1697,6 +1786,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.OnPropertyChanged(nameof(this.HasInvalidPhotoDetails));
 			this.OnPropertyChanged(nameof(this.HasUnvalidatedClaims));
 			this.OnPropertyChanged(nameof(this.HasUnvalidatedPhotos));
+			this.OnPropertyChanged(nameof(this.HasInvalidItems));
+			this.OnPropertyChanged(nameof(this.HasOnlyUnvalidatedItems));
 			this.OnPropertyChanged(nameof(this.CanFixInvalidClaims));
 			this.OnPropertyChanged(nameof(this.CanPrepareReapplyWithoutPendingClaims));
 
@@ -1714,6 +1805,35 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			}
 		}
 
+		private string GetClaimDisplayName(string claim)
+		{
+			if (string.IsNullOrWhiteSpace(claim))
+				return string.Empty;
+
+			if (claimResourceKeyMap.TryGetValue(claim, out string resourceKey))
+			{
+				try
+				{
+					string localized = ServiceRef.Localizer[resourceKey, false];
+					if (!string.IsNullOrEmpty(localized) && !string.Equals(localized, resourceKey, StringComparison.Ordinal))
+						return localized;
+
+					return string.IsNullOrEmpty(localized) ? resourceKey : localized;
+				}
+				catch
+				{
+					return resourceKey;
+				}
+			}
+
+			return claim;
+		}
+
+		private static bool IsProtectedClaim(string claim)
+		{
+			return claimsHiddenInPending.Contains(claim);
+		}
+
 		private void ClearClaims(IEnumerable<string> claims)
 		{
 			foreach (string Claim in claims)
@@ -1722,142 +1842,156 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					continue;
 
 				string NormalizedClaim = Claim.Trim();
-				if (NormalizedClaim.Length == 0)
-					continue;
+			if (NormalizedClaim.Length == 0)
+				continue;
 
-				switch (NormalizedClaim)
-				{
-					case "FirstName":
-					case "firstName":
-						this.FirstName = string.Empty;
-						break;
-					case "MiddleNames":
-					case "middleNames":
-						this.MiddleNames = string.Empty;
-						break;
-					case "LastNames":
-					case "lastNames":
-						this.LastNames = string.Empty;
-						break;
-					case "PersonalNumber":
-					case "personalNumber":
-						this.PersonalNumber = string.Empty;
-						break;
-					case "Address":
-					case "address":
-						this.Address = string.Empty;
-						break;
-					case "Address2":
-					case "address2":
-						this.Address2 = string.Empty;
-						break;
-					case "ZipCode":
-					case "zipCode":
-						this.ZipCode = string.Empty;
-						break;
-					case "Area":
-					case "area":
-						this.Area = string.Empty;
-						break;
-					case "City":
-					case "city":
-						this.City = string.Empty;
-						break;
-					case "Region":
-					case "region":
-						this.Region = string.Empty;
-						break;
-					case "Country":
-					case "country":
-					case "CountryCode":
-					case "countryCode":
-						this.CountryCode = string.Empty;
-						break;
-					case "Nationality":
-					case "nationality":
-					case "NationalityCode":
-					case "nationalityCode":
-						this.Nationality = null;
-						this.NationalityCode = string.Empty;
-						break;
-					case "Gender":
-					case "gender":
-					case "GenderCode":
-					case "genderCode":
-						this.Gender = null;
-						this.GenderCode = string.Empty;
-						break;
-					case "BirthDate":
-					case "birthDate":
-						this.BirthDate = DateTime.Today;
-						break;
-					case "OrgName":
-					case "orgName":
-						this.OrgName = string.Empty;
-						break;
-					case "OrgDepartment":
-					case "orgDepartment":
-						this.OrgDepartment = string.Empty;
-						break;
-					case "OrgRole":
-					case "orgRole":
-						this.OrgRole = string.Empty;
-						break;
-					case "OrgNumber":
-					case "orgNumber":
-						this.OrgNumber = string.Empty;
-						break;
-					case "OrgAddress":
-					case "orgAddress":
-						this.OrgAddress = string.Empty;
-						break;
-					case "OrgAddress2":
-					case "orgAddress2":
-						this.OrgAddress2 = string.Empty;
-						break;
-					case "OrgZipCode":
-					case "orgZipCode":
-						this.OrgZipCode = string.Empty;
-						break;
-					case "OrgArea":
-					case "orgArea":
-						this.OrgArea = string.Empty;
-						break;
-					case "OrgCity":
-					case "orgCity":
-						this.OrgCity = string.Empty;
-						break;
-					case "OrgRegion":
-					case "orgRegion":
-						this.OrgRegion = string.Empty;
-						break;
-					case "OrgCountry":
-					case "orgCountry":
-					case "OrgCountryCode":
-					case "orgCountryCode":
-						this.OrgCountryCode = string.Empty;
-						break;
-					case "Consent":
-					case "consent":
-						this.Consent = false;
-						break;
-					case "Correct":
-					case "correct":
-						this.Correct = false;
-						break;
-					case "EMail":
-					case "Email":
-					case "email":
-					case "eMail":
-						this.EMail = string.Empty;
-						break;
-					case "PhoneNumber":
-					case "phoneNumber":
-						this.PhoneNr = string.Empty;
-						break;
-					default:
-						break;
-				}
+			if (IsProtectedClaim(NormalizedClaim))
+				continue;
+
+			switch (NormalizedClaim)
+			{
+				case "FirstName":
+				case "firstName":
+					this.FirstName = string.Empty;
+					break;
+				case "MiddleNames":
+				case "middleNames":
+					this.MiddleNames = string.Empty;
+					break;
+				case "LastNames":
+				case "lastNames":
+					this.LastNames = string.Empty;
+					break;
+				case "PersonalNumber":
+				case "personalNumber":
+					this.PersonalNumber = string.Empty;
+					break;
+				case "ADDR":
+				case "addr":
+				case "Address":
+				case "address":
+				case "ADDR1":
+				case "addr1":
+					this.Address = string.Empty;
+					break;
+				case "ADDR2":
+				case "addr2":
+				case "Address2":
+				case "address2":
+					this.Address2 = string.Empty;
+					break;
+				case "ZIP":
+				case "zip":
+				case "ZipCode":
+				case "zipCode":
+				case "PostalCode":
+				case "postalCode":
+					this.ZipCode = string.Empty;
+					break;
+				case "Area":
+				case "area":
+					this.Area = string.Empty;
+					break;
+				case "City":
+				case "city":
+				case "CITY":
+					this.City = string.Empty;
+					break;
+				case "Region":
+				case "region":
+				case "State":
+				case "state":
+					this.Region = string.Empty;
+					break;
+				case "Country":
+				case "country":
+				case "CountryCode":
+				case "countryCode":
+					this.CountryCode = string.Empty;
+					break;
+				case "Nationality":
+				case "nationality":
+				case "NationalityCode":
+				case "nationalityCode":
+					this.Nationality = null;
+					this.NationalityCode = string.Empty;
+					break;
+				case "Gender":
+				case "gender":
+				case "GenderCode":
+				case "genderCode":
+					this.Gender = null;
+					this.GenderCode = string.Empty;
+					break;
+				case "BirthDate":
+				case "birthDate":
+					this.BirthDate = DateTime.Today;
+					break;
+				case "OrgName":
+				case "orgName":
+					this.OrgName = string.Empty;
+					break;
+				case "OrgDepartment":
+				case "orgDepartment":
+					this.OrgDepartment = string.Empty;
+					break;
+				case "OrgRole":
+				case "orgRole":
+					this.OrgRole = string.Empty;
+					break;
+				case "OrgNumber":
+				case "orgNumber":
+					this.OrgNumber = string.Empty;
+					break;
+				case "OrgAddress":
+				case "orgAddress":
+				case "OrgADDR":
+				case "orgAddr":
+					this.OrgAddress = string.Empty;
+					break;
+				case "OrgAddress2":
+				case "orgAddress2":
+				case "OrgADDR2":
+				case "orgAddr2":
+					this.OrgAddress2 = string.Empty;
+					break;
+				case "OrgZipCode":
+				case "orgZipCode":
+				case "OrgZIP":
+				case "orgZip":
+					this.OrgZipCode = string.Empty;
+					break;
+				case "OrgArea":
+				case "orgArea":
+					this.OrgArea = string.Empty;
+					break;
+				case "OrgCity":
+				case "orgCity":
+					this.OrgCity = string.Empty;
+					break;
+				case "OrgRegion":
+				case "orgRegion":
+				case "OrgState":
+				case "orgState":
+					this.OrgRegion = string.Empty;
+					break;
+				case "OrgCountry":
+				case "orgCountry":
+				case "OrgCountryCode":
+				case "orgCountryCode":
+					this.OrgCountryCode = string.Empty;
+					break;
+				case "Consent":
+				case "consent":
+					this.Consent = false;
+					break;
+				case "Correct":
+				case "correct":
+					this.Correct = false;
+					break;
+				default:
+					break;
+			}
 			}
 		}
 

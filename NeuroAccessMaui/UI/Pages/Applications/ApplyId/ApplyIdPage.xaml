@@ -80,10 +80,15 @@
 							</Label.FormattedText>
 						</Label>
 
-						<Label Style="{DynamicResource InfoLabel}"
-							   IsVisible="{Binding CanPrepareReapplyWithoutPendingClaims}"
-							   LineBreakMode="WordWrap"
-							   Text="{l:Localize KycPendingManualReviewHint}" />
+					<Label Style="{DynamicResource InfoLabel}"
+					   IsVisible="{Binding HasInvalidItems}"
+					   LineBreakMode="WordWrap"
+					   Text="{l:Localize KycInvalidGuidance}" />
+
+					<Label Style="{DynamicResource InfoLabel}"
+					   IsVisible="{Binding HasOnlyUnvalidatedItems}"
+					   LineBreakMode="WordWrap"
+					   Text="{l:Localize KycManualReviewInfo}" />
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
 											 IsVisible="{Binding HasInvalidClaimDetails}">
@@ -95,8 +100,8 @@
 									<DataTemplate x:DataType="identity:ApplicationReviewClaimDetail">
 										<VerticalStackLayout Spacing="2">
 											<Label Style="{DynamicResource InfoLabel}"
-												   FontAttributes="Bold"
-												   Text="{Binding Claim}" />
+									   FontAttributes="Bold"
+									   Text="{Binding DisplayName}" />
 											<Label Style="{DynamicResource InfoLabel}"
 												   IsVisible="{Binding Reason, Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
 												   LineBreakMode="WordWrap"

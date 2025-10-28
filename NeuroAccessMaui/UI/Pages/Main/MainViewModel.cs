@@ -15,6 +15,7 @@ using NeuroAccessMaui.UI.Pages.Main.Settings;
 using System.Globalization;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.Services.Data; // Added for Database access
+using NeuroAccessMaui.Services.Identity;
 using System.Linq;
 using Waher.Persistence; // Added for ordering
 using NeuroAccessMaui.Services.Tag;
@@ -185,14 +186,14 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			}
 		}
 
-	public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
-	public bool HasPendingIdentity => this.CheckPendingIdentity();
+		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
+		public bool HasPendingIdentity => this.CheckPendingIdentity();
 
-	public bool ShowInfoBubble => this.ShowApplyIdBox || this.ShowPendingIdBox || this.ShowRejectedIdBox || this.ShowApplicationReviewBox;
-	public bool ShowApplicationReviewBox => ServiceRef.TagProfile.ApplicationReview is not null;
-	public bool ShowApplyIdBox => !(ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false) && !this.CheckPendingIdentity() && !this.CheckRejectedIdentity() && !this.ShowApplicationReviewBox;
-	public bool ShowPendingIdBox => !this.ShowApplicationReviewBox && this.CheckPendingIdentity();
-	public bool ShowRejectedIdBox => !this.ShowApplicationReviewBox && this.CheckRejectedIdentity();
+		public bool ShowInfoBubble => this.ShowApplyIdBox || this.ShowPendingIdBox || this.ShowRejectedIdBox || this.ShowApplicationReviewBox;
+		public bool ShowApplicationReviewBox => this.HasActionableReview();
+		public bool ShowApplyIdBox => !(ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false) && !this.CheckPendingIdentity() && !this.CheckRejectedIdentity() && !this.ShowApplicationReviewBox;
+		public bool ShowPendingIdBox => !this.ShowApplicationReviewBox && this.CheckPendingIdentity();
+		public bool ShowRejectedIdBox => !this.ShowApplicationReviewBox && this.CheckRejectedIdentity();
 
 		private bool CheckPendingIdentity()
 		{
@@ -227,6 +228,18 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+		}
+
+		private bool HasActionableReview()
+		{
+			ApplicationReview? review = ServiceRef.TagProfile.ApplicationReview;
+			if (review is null)
+				return false;
+
+			int invalidClaimsCount = review.InvalidClaims?.Length ?? 0;
+			int invalidPhotosCount = review.InvalidPhotos?.Length ?? 0;
+
+			return invalidClaimsCount > 0 || invalidPhotosCount > 0;
 		}
 
 		public bool CanScanQrCode => true;

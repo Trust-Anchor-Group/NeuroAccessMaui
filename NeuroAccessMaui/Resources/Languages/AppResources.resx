@@ -2995,6 +2995,42 @@
   <data name="Kyc_Exit" xml:space="preserve">
     <value>Are you sure you would like to leave the Identity Application process?</value>
   </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Application review</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Code:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Fields to review</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Photos to replace</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Update the items below before resubmitting your application.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Pending fields</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Pending photos</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Fix issues and edit form</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Adjust optional items and resubmit</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Your application is undergoing manual review. You can wait for the result or adjust the items below to try automatic processing.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>These items are awaiting manual review. You may keep them as is or adjust them to try automatic processing.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Some submitted details could not be verified. Tap to review.</value>
+  </data>
   <data name="Progress" xml:space="preserve">
     <value>Progress</value>
   </data>

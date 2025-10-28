@@ -76,6 +76,7 @@ namespace NeuroAccessMaui.Services.Identity
 		public ApplicationReviewClaimDetail(string claim, string reason, string? reasonLanguage, string? reasonCode, string? service)
 		{
 			this.Claim = claim;
+			this.DisplayName = claim;
 			this.Reason = reason;
 			this.ReasonLanguage = reasonLanguage;
 			this.ReasonCode = reasonCode;
@@ -86,6 +87,11 @@ namespace NeuroAccessMaui.Services.Identity
 		/// The claim identifier.
 		/// </summary>
 		public string Claim { get; set; } = string.Empty;
+
+		/// <summary>
+		/// Localized display name for the claim.
+		/// </summary>
+		public string DisplayName { get; set; } = string.Empty;
 
 		/// <summary>
 		/// The textual reason explaining the invalidation.
