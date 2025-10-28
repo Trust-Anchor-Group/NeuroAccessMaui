@@ -686,6 +686,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				// Step 1: Get the variables and prepare the parameters to validate
 				Variables Variables = [];
+
+				Variables["Duration"] = this.Contract.Contract.Duration;
+
+				DateTime? FirstSignature = this.Contract.Contract.FirstSignatureAt;
+				if (FirstSignature.HasValue)
+				{
+					Variables["Now"] = FirstSignature.Value.ToLocalTime();
+					Variables["NowUtc"] = FirstSignature.Value.ToUniversalTime();
+				}
+
 				foreach (ObservableParameter ParamLoop in this.Contract.Parameters)
 				ParamLoop.Parameter.Populate(Variables);
 
