@@ -3020,7 +3020,7 @@
     <value>Fix issues and edit form</value>
   </data>
   <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
-    <value>Adjust optional items and resubmit</value>
+    <value>Resubmit without pending fields</value>
   </data>
   <data name="KycManualReviewInfo" xml:space="preserve">
     <value>Your application is undergoing manual review. You can wait for the result or adjust the items below to try automatic processing.</value>

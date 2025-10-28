@@ -164,10 +164,10 @@
 							</VerticalStackLayout>
 						</VerticalStackLayout>
 
-				<controls:TextButton Command="{Binding FixInvalidClaimsCommand}"
-								 IsVisible="{Binding CanFixInvalidClaims}"
-								 LabelData="{l:Localize KycFixInvalidClaimsButton}"
-								 Style="{DynamicResource FilledTextButton}" />
+						<controls:TextButton Command="{Binding FixInvalidClaimsCommand}"
+											 IsVisible="{Binding CanFixInvalidClaims}"
+											 LabelData="{l:Localize KycFixInvalidClaimsButton}"
+											 Style="{DynamicResource FilledTextButton}" />
 
 						<controls:TextButton Command="{Binding PrepareReapplyWithoutPendingClaimsCommand}"
 											 IsVisible="{Binding CanPrepareReapplyWithoutPendingClaims}"
