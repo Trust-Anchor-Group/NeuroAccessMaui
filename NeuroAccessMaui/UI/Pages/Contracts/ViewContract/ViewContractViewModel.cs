@@ -570,10 +570,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract?.Parameters is null)
 				return;
 
-			Variables Vars = new Variables();
+			Variables Vars = [];
+
+			Vars["Duration"] = this.Contract.Contract.Duration;
+
+			DateTime? FirstSignature = this.Contract.Contract.FirstSignatureAt;
+			if (FirstSignature.HasValue)
+			{
+				Vars["Now"] = FirstSignature.Value.ToLocalTime();
+				Vars["NowUtc"] = FirstSignature.Value.ToUniversalTime();
+			}
+
 			foreach (ObservableParameter Parameter in this.Contract.Parameters)
 			{
 				Parameter.Parameter.Populate(Vars);
+
 				if (Parameter.Parameter is BooleanParameter or StringParameter or NumericalParameter
 					or DateParameter or TimeParameter or DurationParameter
 					or DateTimeParameter or CalcParameter or ContractReferenceParameter or GeoParameter)
