@@ -38,7 +38,9 @@ namespace NeuroAccessMaui.Script
         /// <returns>Function result.</returns>
         public override ScriptElements.IElement EvaluateScalar(string Argument, Variables Variables)
         {
-			if (ISO_3166_1.TryGetCountryByCode(Argument, out ISO_3166_Country? Country))
+			if (string.IsNullOrEmpty(Argument))
+				return new StringValue(string.Empty);
+			else if (ISO_3166_1.TryGetCountryByCode(Argument, out ISO_3166_Country? Country))
 				return new StringValue(Country.Name);
 			else
 				throw new ScriptRuntimeException("Country Code not recognized: " + Argument, this);
