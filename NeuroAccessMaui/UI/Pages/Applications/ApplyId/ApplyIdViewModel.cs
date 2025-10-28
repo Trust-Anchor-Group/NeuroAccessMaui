@@ -559,6 +559,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		[NotifyPropertyChangedFor(nameof(ApplicationSentAndConnected))]
 		[NotifyPropertyChangedFor(nameof(CanRequestFeaturedPeerReviewer))]
 		[NotifyPropertyChangedFor(nameof(FeaturedPeerReviewers))]
+		[NotifyPropertyChangedFor(nameof(ShowApplicationSection))]
 		private bool applicationSent;
 
 		/// <summary>
@@ -708,6 +709,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		/// If application has been sent and app is connected.
 		/// </summary>
 		public bool ApplicationSentAndConnected => this.ApplicationSent && this.IsConnected;
+
+		/// <summary>
+		/// If the application card (peer review actions) should be visible.
+		/// </summary>
+		public bool ShowApplicationSection => this.ApplicationSent && !this.HasInvalidItems;
 
 		/// <summary>
 		/// If app is in the processing of uploading application.
@@ -1161,6 +1167,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.ApplicationSent = false;
 				this.peerReviewServices = null;
 				this.HasFeaturedPeerReviewers = false;
+
+				ServiceRef.TagProfile.SetApplicationReview(null);
+				this.LoadApplicationReview(null);
 
 				await this.GoBack();
 			}
@@ -1652,6 +1661,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.OnPropertyChanged(nameof(this.HasInvalidItems));
 			this.OnPropertyChanged(nameof(this.HasInvalidOnly));
 			this.OnPropertyChanged(nameof(this.HasOnlyUnvalidatedItems));
+			this.OnPropertyChanged(nameof(this.ShowApplicationSection));
 			this.OnPropertyChanged(nameof(this.CanFixInvalidClaims));
 			this.OnPropertyChanged(nameof(this.CanPrepareReapplyWithoutPendingClaims));
 
@@ -1714,6 +1724,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			}
 		}
 
+
 		private async Task EnterEditModeAsync()
 		{
 			if (!this.ApplicationSent)
@@ -1739,6 +1750,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.IsRevoking = false;
 
 				this.NotifyCommandsCanExecuteChanged();
+				this.PickAdditionalPhotoCommand.NotifyCanExecuteChanged();
+				this.PickPhotoCommand.NotifyCanExecuteChanged();
+				this.PickProofOfIdBackCommand.NotifyCanExecuteChanged();
+				this.PickProofOfIdFrontCommand.NotifyCanExecuteChanged();
 				this.OnPropertyChanged(nameof(this.CanEdit));
 				this.OnPropertyChanged(nameof(this.CanRemovePhoto));
 				this.OnPropertyChanged(nameof(this.CanTakePhoto));

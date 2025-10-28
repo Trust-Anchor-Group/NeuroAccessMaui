@@ -177,8 +177,8 @@
 				</Border>
 
 				<!--  Application Sent  -->
-				<Border IsVisible="{Binding ApplicationSent}"
-						  Style="{DynamicResource BorderSet}">
+                <Border IsVisible="{Binding ShowApplicationSection}"
+                          Style="{DynamicResource BorderSet}">
 					<Grid>
 						<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 							<Label Style="{DynamicResource SectionTitleLabel}"
@@ -1138,7 +1138,7 @@
 														LabelData="{l:Localize SendApplication}"
 														Style="{DynamicResource FilledTextButton}" />
 						</VerticalStackLayout>
-						<VerticalStackLayout IsVisible="{Binding ApplicationSent}"
+						<VerticalStackLayout IsVisible="{Binding ShowApplicationSection}"
 											 Spacing="{DynamicResource MediumSpacing}">
 							<Label Style="{DynamicResource SectionTitleLabel}"
 								   Text="{l:Localize Application}"/>
