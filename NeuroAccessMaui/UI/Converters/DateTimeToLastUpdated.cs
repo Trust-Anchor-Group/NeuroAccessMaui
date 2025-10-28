@@ -18,12 +18,16 @@ namespace NeuroAccessMaui.UI.Converters
 
 			string TimeString;
 
+			/*
 			if (Span.TotalMinutes < 1)
 				TimeString = ServiceRef.Localizer[nameof(AppResources.Now)].Value.ToLower(culture);
 			else if (Span.TotalHours < 1)
 				TimeString = ServiceRef.Localizer[nameof(AppResources.MinutesAgoFormat), false, (int)Span.TotalMinutes];
 			else if (Span.TotalDays < 1)
 				TimeString = ServiceRef.Localizer[nameof(AppResources.HoursAgoFormat), false, (int)Span.TotalHours];
+			*/
+			if (Span.TotalDays < 1)
+				TimeString = Dt.ToString("t", culture); // "t" = short time, respects locale
 			else
 				TimeString = Dt.ToString("d", culture); // "d" = short date, respects locale
 			return ServiceRef.Localizer[nameof(AppResources.LastUpdatedFormat), false, TimeString];

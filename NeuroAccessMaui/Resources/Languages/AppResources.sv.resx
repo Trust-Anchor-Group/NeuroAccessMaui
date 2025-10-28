@@ -3130,8 +3130,8 @@
   <data name="Transaction" xml:space="preserve">
     <value>Transaktion</value>
   </data>
-  <data name="CreditTransfer" xml:space="preserve">
-    <value>Kreditöverföring</value>
+  <data name="Transfer" xml:space="preserve">
+    <value>Överföring</value>
   </data>
   <data name="BalanceTopUp" xml:space="preserve">
     <value>Saldoinsättning</value>
