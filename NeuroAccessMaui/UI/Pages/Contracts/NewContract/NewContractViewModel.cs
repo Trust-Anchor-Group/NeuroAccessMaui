@@ -1077,8 +1077,33 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
+			foreach (Parameter Param in this.Contract.Contract.Parameters)
+			{
+				try
+				{
+					if (string.IsNullOrEmpty(Param.StringValue))
+						Param.StringValue = null;
+				}
+				catch (Exception Ex)
+				{
+					// Ignore
+				}
+			}
+
 			await this.ValidateParametersAsync(); // Populate All Parameters
 
+			foreach (Parameter Param in this.Contract.Contract.Parameters)
+			{
+				try
+				{
+					if (string.IsNullOrEmpty(Param.StringValue))
+						Param.StringValue = null;
+				}
+				catch (Exception Ex)
+				{
+					// Ignore
+				}
+			}
 			VerticalStackLayout? HumanReadableText = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
 
 			await MainThread.InvokeOnMainThreadAsync(() =>
