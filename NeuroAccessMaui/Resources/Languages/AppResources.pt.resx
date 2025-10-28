@@ -3005,7 +3005,7 @@
     <value>Fotos a substituir</value>
   </data>
   <data name="KycInvalidGuidance" xml:space="preserve">
-    <value>Atualize os itens abaixo antes de reenviar sua solicitação.</value>
+    <value>Esses dados não puderam ser aprovados. Atualize-os no formulário antes de reenviar.</value>
   </data>
   <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
     <value>Campos pendentes</value>

@@ -48,59 +48,110 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		private const string driverLicenseFrontFileName = "DriverLicenseFront.jpeg";
 		private const string driverLicenseBackFileName = "DriverLicenseBack.jpeg";
 
-		private static readonly Dictionary<string, string> claimResourceKeyMap = new(StringComparer.OrdinalIgnoreCase)
-		{
-			{ "FirstName", nameof(AppResources.FirstName) },
-			{ "MiddleNames", nameof(AppResources.MiddleNames) },
-			{ "LastNames", nameof(AppResources.LastNames) },
-			{ "PersonalNumber", nameof(AppResources.PersonalNumber) },
-			{ "ADDR", nameof(AppResources.Address) },
-			{ "Address", nameof(AppResources.Address) },
-			{ "ADDR1", nameof(AppResources.Address) },
-			{ "ADDR2", nameof(AppResources.Address2) },
-			{ "Address2", nameof(AppResources.Address2) },
-			{ "ZIP", nameof(AppResources.ZipCode) },
-			{ "ZIPCode", nameof(AppResources.ZipCode) },
-			{ "PostalCode", nameof(AppResources.ZipCode) },
-			{ "ZipCode", nameof(AppResources.ZipCode) },
-			{ "Area", nameof(AppResources.Area) },
-			{ "City", nameof(AppResources.City) },
-			{ "Region", nameof(AppResources.Region) },
-			{ "State", nameof(AppResources.Region) },
-			{ "Country", nameof(AppResources.Country) },
-			{ "CountryCode", nameof(AppResources.Country) },
-			{ "Nationality", nameof(AppResources.Nationality) },
-			{ "NationalityCode", nameof(AppResources.Nationality) },
-			{ "Gender", nameof(AppResources.Gender) },
-			{ "GenderCode", nameof(AppResources.Gender) },
-			{ "BirthDate", nameof(AppResources.BirthDate) },
-			{ "OrgName", nameof(AppResources.OrgName) },
-			{ "OrgDepartment", nameof(AppResources.OrgDepartment) },
-			{ "OrgRole", nameof(AppResources.OrgRole) },
-			{ "OrgNumber", nameof(AppResources.OrgNumber) },
-			{ "OrgAddress", nameof(AppResources.OrgAddress) },
-			{ "OrgAddress2", nameof(AppResources.OrgAddress2) },
-			{ "OrgZipCode", nameof(AppResources.OrgZipCode) },
-			{ "OrgArea", nameof(AppResources.OrgArea) },
-			{ "OrgCity", nameof(AppResources.OrgCity) },
-			{ "OrgRegion", nameof(AppResources.OrgRegion) },
-			{ "OrgCountry", nameof(AppResources.OrgCountry) },
-			{ "OrgCountryCode", nameof(AppResources.OrgCountry) },
-			{ "EMail", nameof(AppResources.EMail) },
-			{ "Email", nameof(AppResources.EMail) },
-			{ "PhoneNumber", nameof(AppResources.Phone) },
-			{ "Phone", nameof(AppResources.Phone) },
-			{ "PhoneNr", nameof(AppResources.Phone) }
+	private static readonly Dictionary<string, string> claimDisplayNameMap = BuildClaimDisplayNameMap();
+	private static readonly Dictionary<string, Action<ApplyIdViewModel>> claimClearActions = BuildClaimClearActions();
+	private static readonly HashSet<string> birthClaimKeys = new(StringComparer.OrdinalIgnoreCase)
+	{
+		Constants.XmppProperties.BirthDay,
+			Constants.XmppProperties.BirthMonth,
+			Constants.XmppProperties.BirthYear,
+			"BirthDate"
 		};
 
-		private static readonly HashSet<string> claimsHiddenInPending = new(StringComparer.OrdinalIgnoreCase)
+	private static readonly HashSet<string> claimsHiddenInPending = new(StringComparer.OrdinalIgnoreCase)
+	{
+		Constants.XmppProperties.EMail,
+		Constants.XmppProperties.Phone,
+		"EMail",
+		"Email",
+		"PhoneNumber",
+		"Phone",
+		"PhoneNr"
+	};
+
+	private static Dictionary<string, string> BuildClaimDisplayNameMap()
+	{
+		Dictionary<string, string> map = new(StringComparer.OrdinalIgnoreCase);
+		AddDisplayMap(map, nameof(AppResources.FirstName), Constants.XmppProperties.FirstName, "FirstName", "firstName");
+		AddDisplayMap(map, nameof(AppResources.MiddleNames), Constants.XmppProperties.MiddleNames, "MiddleNames", "middleNames");
+		AddDisplayMap(map, nameof(AppResources.LastNames), Constants.XmppProperties.LastNames, "LastNames", "lastNames");
+		AddDisplayMap(map, nameof(AppResources.PersonalNumber), Constants.XmppProperties.PersonalNumber, "PersonalNumber", "personalNumber");
+		AddDisplayMap(map, nameof(AppResources.Address), Constants.XmppProperties.Address, "Address", "address", "ADDR1", "addr1");
+		AddDisplayMap(map, nameof(AppResources.Address2), Constants.XmppProperties.Address2, "Address2", "address2");
+		AddDisplayMap(map, nameof(AppResources.ZipCode), Constants.XmppProperties.ZipCode, "ZipCode", "zipCode", "PostalCode", "postalCode");
+		AddDisplayMap(map, nameof(AppResources.Area), Constants.XmppProperties.Area, "Area", "area");
+		AddDisplayMap(map, nameof(AppResources.City), Constants.XmppProperties.City, "City", "city", "CITY");
+		AddDisplayMap(map, nameof(AppResources.Region), Constants.XmppProperties.Region, "Region", "region", "State", "state");
+		AddDisplayMap(map, nameof(AppResources.Country), Constants.XmppProperties.Country, "Country", "country", "CountryCode", "countryCode");
+		AddDisplayMap(map, nameof(AppResources.Nationality), Constants.XmppProperties.Nationality, "Nationality", "nationality", "NationalityCode", "nationalityCode");
+		AddDisplayMap(map, nameof(AppResources.Gender), Constants.XmppProperties.Gender, "Gender", "gender", "GenderCode", "genderCode");
+		AddDisplayMap(map, nameof(AppResources.BirthDate), Constants.XmppProperties.BirthDay, Constants.XmppProperties.BirthMonth, Constants.XmppProperties.BirthYear, "BirthDate", "birthDate");
+		AddDisplayMap(map, nameof(AppResources.OrgName), Constants.XmppProperties.OrgName, "OrgName", "orgName");
+		AddDisplayMap(map, nameof(AppResources.OrgNumber), Constants.XmppProperties.OrgNumber, "OrgNumber", "orgNumber");
+		AddDisplayMap(map, nameof(AppResources.OrgDepartment), Constants.XmppProperties.OrgDepartment, "OrgDepartment", "orgDepartment");
+		AddDisplayMap(map, nameof(AppResources.OrgRole), Constants.XmppProperties.OrgRole, "OrgRole", "orgRole");
+		AddDisplayMap(map, nameof(AppResources.OrgAddress), Constants.XmppProperties.OrgAddress, "OrgAddress", "orgAddress", "OrgADDR", "orgAddr");
+		AddDisplayMap(map, nameof(AppResources.OrgAddress2), Constants.XmppProperties.OrgAddress2, "OrgAddress2", "orgAddress2", "OrgADDR2", "orgAddr2");
+		AddDisplayMap(map, nameof(AppResources.OrgZipCode), Constants.XmppProperties.OrgZipCode, "OrgZipCode", "orgZipCode", "OrgZIP", "orgZip");
+		AddDisplayMap(map, nameof(AppResources.OrgArea), Constants.XmppProperties.OrgArea, "OrgArea", "orgArea");
+		AddDisplayMap(map, nameof(AppResources.OrgCity), Constants.XmppProperties.OrgCity, "OrgCity", "orgCity");
+		AddDisplayMap(map, nameof(AppResources.OrgRegion), Constants.XmppProperties.OrgRegion, "OrgRegion", "orgRegion", "OrgState", "orgState");
+		AddDisplayMap(map, nameof(AppResources.OrgCountry), Constants.XmppProperties.OrgCountry, "OrgCountry", "orgCountry", "OrgCountryCode", "orgCountryCode");
+		AddDisplayMap(map, nameof(AppResources.EMail), Constants.XmppProperties.EMail, "EMail", "Email", "email");
+		AddDisplayMap(map, nameof(AppResources.Phone), Constants.XmppProperties.Phone, "Phone", "phone", "PhoneNr", "phoneNr", "PhoneNumber", "phoneNumber");
+		return map;
+	}
+
+	private static void AddDisplayMap(Dictionary<string, string> map, string resourceKey, params string[] keys)
+	{
+		foreach (string key in keys)
 		{
-			"EMail",
-			"Email",
-			"PhoneNumber",
-			"Phone",
-			"PhoneNr"
-		};
+			map[key] = resourceKey;
+		}
+	}
+
+	private static Dictionary<string, Action<ApplyIdViewModel>> BuildClaimClearActions()
+	{
+		Dictionary<string, Action<ApplyIdViewModel>> map = new(StringComparer.OrdinalIgnoreCase);
+		AddClearAction(map, vm => vm.FirstName = string.Empty, Constants.XmppProperties.FirstName, "FirstName", "firstName");
+		AddClearAction(map, vm => vm.MiddleNames = string.Empty, Constants.XmppProperties.MiddleNames, "MiddleNames", "middleNames");
+		AddClearAction(map, vm => vm.LastNames = string.Empty, Constants.XmppProperties.LastNames, "LastNames", "lastNames");
+		AddClearAction(map, vm => vm.PersonalNumber = string.Empty, Constants.XmppProperties.PersonalNumber, "PersonalNumber", "personalNumber");
+		AddClearAction(map, vm => vm.Address = string.Empty, Constants.XmppProperties.Address, "Address", "address", "ADDR1", "addr1");
+		AddClearAction(map, vm => vm.Address2 = string.Empty, Constants.XmppProperties.Address2, "Address2", "address2");
+		AddClearAction(map, vm => vm.ZipCode = string.Empty, Constants.XmppProperties.ZipCode, "ZipCode", "zipCode", "PostalCode", "postalCode");
+		AddClearAction(map, vm => vm.Area = string.Empty, Constants.XmppProperties.Area, "Area", "area");
+		AddClearAction(map, vm => vm.City = string.Empty, Constants.XmppProperties.City, "City", "city", "CITY");
+		AddClearAction(map, vm => vm.Region = string.Empty, Constants.XmppProperties.Region, "Region", "region", "State", "state");
+		AddClearAction(map, vm => vm.CountryCode = string.Empty, Constants.XmppProperties.Country, "Country", "country", "CountryCode", "countryCode");
+		AddClearAction(map, vm => { vm.Nationality = null; vm.NationalityCode = string.Empty; }, Constants.XmppProperties.Nationality, "Nationality", "nationality", "NationalityCode", "nationalityCode");
+		AddClearAction(map, vm => { vm.Gender = null; vm.GenderCode = string.Empty; }, Constants.XmppProperties.Gender, "Gender", "gender", "GenderCode", "genderCode");
+		AddClearAction(map, vm => vm.BirthDate = DateTime.Today, Constants.XmppProperties.BirthDay, Constants.XmppProperties.BirthMonth, Constants.XmppProperties.BirthYear, "BirthDate", "birthDate");
+		AddClearAction(map, vm => vm.OrgName = string.Empty, Constants.XmppProperties.OrgName, "OrgName", "orgName");
+		AddClearAction(map, vm => vm.OrgNumber = string.Empty, Constants.XmppProperties.OrgNumber, "OrgNumber", "orgNumber");
+		AddClearAction(map, vm => vm.OrgDepartment = string.Empty, Constants.XmppProperties.OrgDepartment, "OrgDepartment", "orgDepartment");
+		AddClearAction(map, vm => vm.OrgRole = string.Empty, Constants.XmppProperties.OrgRole, "OrgRole", "orgRole");
+		AddClearAction(map, vm => vm.OrgAddress = string.Empty, Constants.XmppProperties.OrgAddress, "OrgAddress", "orgAddress", "OrgADDR", "orgAddr");
+		AddClearAction(map, vm => vm.OrgAddress2 = string.Empty, Constants.XmppProperties.OrgAddress2, "OrgAddress2", "orgAddress2", "OrgADDR2", "orgAddr2");
+		AddClearAction(map, vm => vm.OrgZipCode = string.Empty, Constants.XmppProperties.OrgZipCode, "OrgZipCode", "orgZipCode", "OrgZIP", "orgZip");
+		AddClearAction(map, vm => vm.OrgArea = string.Empty, Constants.XmppProperties.OrgArea, "OrgArea", "orgArea");
+		AddClearAction(map, vm => vm.OrgCity = string.Empty, Constants.XmppProperties.OrgCity, "OrgCity", "orgCity");
+		AddClearAction(map, vm => vm.OrgRegion = string.Empty, Constants.XmppProperties.OrgRegion, "OrgRegion", "orgRegion", "OrgState", "orgState");
+		AddClearAction(map, vm => vm.OrgCountryCode = string.Empty, Constants.XmppProperties.OrgCountry, "OrgCountry", "orgCountry", "OrgCountryCode", "orgCountryCode");
+		AddClearAction(map, vm => vm.PhoneNr = string.Empty, Constants.XmppProperties.Phone, "Phone", "phone", "PhoneNr", "phoneNr", "PhoneNumber", "phoneNumber");
+		AddClearAction(map, vm => vm.EMail = string.Empty, Constants.XmppProperties.EMail, "EMail", "Email", "email");
+		AddClearAction(map, vm => vm.Consent = false, "Consent", "consent");
+		AddClearAction(map, vm => vm.Correct = false, "Correct", "correct");
+		return map;
+	}
+
+	private static void AddClearAction(Dictionary<string, Action<ApplyIdViewModel>> map, Action<ApplyIdViewModel> action, params string[] keys)
+	{
+		foreach (string key in keys)
+		{
+			map[key] = action;
+		}
+	}
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ApplyIdViewModel"/> class.
@@ -561,6 +612,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		[NotifyPropertyChangedFor(nameof(ApplicationSentAndConnected))]
 		[NotifyPropertyChangedFor(nameof(CanRequestFeaturedPeerReviewer))]
 		[NotifyPropertyChangedFor(nameof(FeaturedPeerReviewers))]
+		[NotifyPropertyChangedFor(nameof(ShowApplicationSection))]
 		private bool applicationSent;
 
 		/// <summary>
@@ -672,6 +724,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		public bool HasInvalidItems => this.HasInvalidClaimDetails || this.HasInvalidPhotoDetails;
 
 		/// <summary>
+		/// True if the review contains only invalid items (no pending items).
+		/// </summary>
+		public bool HasInvalidOnly => this.HasInvalidItems && !this.HasOnlyUnvalidatedItems;
+
+		/// <summary>
 		/// True if only unvalidated items remain.
 		/// </summary>
 		public bool HasOnlyUnvalidatedItems => !this.HasInvalidItems && (this.HasUnvalidatedClaims || this.HasUnvalidatedPhotos);
@@ -705,6 +762,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		/// If application has been sent and app is connected.
 		/// </summary>
 		public bool ApplicationSentAndConnected => this.ApplicationSent && this.IsConnected;
+
+		/// <summary>
+		/// If the application card (peer review actions) should be visible.
+		/// </summary>
+		public bool ShowApplicationSection => this.ApplicationSent && !this.HasInvalidItems;
 
 		/// <summary>
 		/// If app is in the processing of uploading application.
@@ -1114,124 +1176,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		/// </summary>
 		protected override async Task Apply()
 		{
-			if (this.ApplicationSent)
-				return;
-
-			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
-				return;
-
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true))
-				return;
-
-			try
-			{
-				// Build attachments in order:
-				// 1. Profile Photo (this.photo)
-				// 2. Proof of ID Front (if available)
-				// 3. Proof of ID Back (if available)
-				// 4. Additional Photos (if any)
-				List<LegalIdentityAttachment> LocalAttachments = new();
-
-				if (this.photo is not null)
-					LocalAttachments.Add(this.photo);
-
-				// Only add document attachments if a document type other than None is selected.
-				if (this.DocumentType != IdentityDocumentType.None)
-				{
-					if (this.HasProofOfIdFront && this.ProofOfIdFrontImageBin is not null)
-					{
-						string FrontFileName = this.DocumentType switch
-						{
-							IdentityDocumentType.Passport => passportFileName,
-							IdentityDocumentType.NationalId => nationalIdFrontFileName,
-							IdentityDocumentType.DriverLicense => driverLicenseFrontFileName,
-							_ => nationalIdFrontFileName
-						};
-
-						LegalIdentityAttachment FrontAttachment = new(FrontFileName, "image/jpeg", this.ProofOfIdFrontImageBin);
-						LocalAttachments.Add(FrontAttachment);
-					}
-
-					if ((this.DocumentType == IdentityDocumentType.NationalId || this.DocumentType == IdentityDocumentType.DriverLicense) &&
-						 this.HasProofOfIdBack && this.ProofOfIdBackImageBin is not null)
-					{
-						string BackFileName = this.DocumentType switch
-						{
-							IdentityDocumentType.NationalId => nationalIdBackFileName,
-							IdentityDocumentType.DriverLicense => driverLicenseBackFileName,
-							_ => nationalIdBackFileName
-						};
-
-						LegalIdentityAttachment BackAttachment = new(BackFileName, "image/jpeg", this.ProofOfIdBackImageBin);
-						LocalAttachments.Add(BackAttachment);
-					}
-				}
-
-				if (this.AdditionalPhotos.Count > 0)
-				{
-					int Index = 1;
-					foreach (ObservableAttachmentCard Additional in this.AdditionalPhotos)
-					{
-						if (Additional.ImageBin == null)
-							continue;
-						LocalAttachments.Add(new LegalIdentityAttachment($"AdditionalPhoto{Index}.jpg", "image/jpeg", Additional.ImageBin));
-						Index++;
-					}
-				}
-
-				this.SetIsBusy(true);
-				this.IsApplying = true;
-				NumberInformation Info = await PersonalNumberSchemes.Validate(this.CountryCode!, this.PersonalNumber!);
-				this.PersonalNumber = Info.PersonalNumber;
-
-				bool HasIdWithPrivateKey = ServiceRef.TagProfile.LegalIdentity is not null &&
-					  await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
-
-				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
-					 ServiceRef.XmppService.AddLegalIdentity(this, !HasIdWithPrivateKey, LocalAttachments.ToArray()));
-
-				if (Succeeded && AddedIdentity is not null)
-				{
-					await ServiceRef.TagProfile.SetIdentityApplication(AddedIdentity, true);
-					this.ApplicationSent = true;
-					this.ApplicationId = AddedIdentity.Id;
-
-					await Task.Run(this.LoadFeaturedPeerReviewers);
-
-					// Loop through each local attachment and add it to the cache.
-					// We assume the server returns attachments with the same FileName as those we built.
-					foreach (LegalIdentityAttachment LocalAttachment in LocalAttachments)
-					{
-						// Find the matching attachment in the returned identity by filename.
-						Attachment? MatchingAttachment = AddedIdentity.Attachments
-							 .FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
-						if (MatchingAttachment != null && LocalAttachment.Data is not null && LocalAttachment.ContentType is not null)
-						{
-							await ServiceRef.AttachmentCacheService.Add(
-								 MatchingAttachment.Url,
-								 AddedIdentity.Id,
-								 true,
-								 LocalAttachment.Data, // from our local attachment
-								 LocalAttachment.ContentType);
-						}
-					}
-
-					// Load all attachment images immediately after applying.
-					await this.LoadAllAttachmentPhotos(AddedIdentity);
-					ServiceRef.TagProfile.SetApplicationReview(null);
-					this.LoadApplicationReview(null);
-				}
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
-			}
-			finally
-			{
-				this.SetIsBusy(false);
-				this.IsApplying = false;
-			}
+			await this.SubmitApplicationAsync(skipConfirmation: false, skipAuthentication: false, allowResubmission: false);
 		}
 
 
@@ -1275,6 +1220,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.ApplicationSent = false;
 				this.peerReviewServices = null;
 				this.HasFeaturedPeerReviewers = false;
+
+				ServiceRef.TagProfile.SetApplicationReview(null);
+				this.LoadApplicationReview(null);
 
 				await this.GoBack();
 			}
@@ -1636,10 +1584,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (Review is null)
 				return;
 
-			await this.PrepareFormForEditingAsync();
-
-			this.ClearClaims(Review.InvalidClaims);
-			this.ClearInvalidPhotos(Review.InvalidPhotoDetails);
+			await this.EnterEditModeAsync();
 		}
 
 		/// <summary>
@@ -1652,9 +1597,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (Review is null)
 				return;
 
-			await this.PrepareFormForEditingAsync();
-
-			this.ClearClaims(Review.UnvalidatedClaims);
+			await this.AutoReapplyAsync(
+				Review.UnvalidatedClaims ?? Array.Empty<string>(),
+				Array.Empty<ApplicationReviewPhotoDetail>(),
+				Review.UnvalidatedPhotos ?? Array.Empty<string>());
 		}
 
 		private async Task LoadFeaturedPeerReviewers()
@@ -1716,27 +1662,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			await this.ScanQrCode();
 		}
 
-		private async Task PrepareFormForEditingAsync()
-		{
-			try
-			{
-				await ServiceRef.TagProfile.SetIdentityApplication(null, false);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-
-			this.ApplicationSent = false;
-			this.IsRevoking = false;
-
-			this.NotifyCommandsCanExecuteChanged();
-			this.OnPropertyChanged(nameof(this.CanEdit));
-			this.OnPropertyChanged(nameof(this.CanRemovePhoto));
-			this.OnPropertyChanged(nameof(this.CanTakePhoto));
-			this.OnPropertyChanged(nameof(this.ApplicationSentAndConnected));
-		}
-
 		private void LoadApplicationReview(ApplicationReview? review)
 		{
 			this.applicationReview = review;
@@ -1763,19 +1688,34 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 			IEnumerable<string> pendingClaimsRaw = review?.UnvalidatedClaims ?? Array.Empty<string>();
 			List<string> pendingClaimsLocalized = new();
+			bool hasBirthComponent = false;
 			foreach (string pendingClaim in pendingClaimsRaw)
 			{
 				if (string.IsNullOrWhiteSpace(pendingClaim))
 					continue;
 
-				if (claimsHiddenInPending.Contains(pendingClaim))
+				string normalizedClaim = pendingClaim.Trim();
+				if (claimsHiddenInPending.Contains(normalizedClaim))
 					continue;
 
-				string displayName = this.GetClaimDisplayName(pendingClaim);
+				if (IsBirthComponent(normalizedClaim))
+				{
+					hasBirthComponent = true;
+					continue;
+				}
+
+				string displayName = this.GetClaimDisplayName(normalizedClaim);
 				if (string.IsNullOrWhiteSpace(displayName))
 					continue;
 
 				pendingClaimsLocalized.Add(displayName);
+			}
+
+			if (hasBirthComponent)
+			{
+				string birthDisplay = this.GetClaimDisplayName(Constants.XmppProperties.BirthDay);
+				if (!string.IsNullOrWhiteSpace(birthDisplay))
+					pendingClaimsLocalized.Add(birthDisplay);
 			}
 			ReplaceCollection(this.UnvalidatedClaims, pendingClaimsLocalized);
 
@@ -1787,7 +1727,9 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.OnPropertyChanged(nameof(this.HasUnvalidatedClaims));
 			this.OnPropertyChanged(nameof(this.HasUnvalidatedPhotos));
 			this.OnPropertyChanged(nameof(this.HasInvalidItems));
+			this.OnPropertyChanged(nameof(this.HasInvalidOnly));
 			this.OnPropertyChanged(nameof(this.HasOnlyUnvalidatedItems));
+			this.OnPropertyChanged(nameof(this.ShowApplicationSection));
 			this.OnPropertyChanged(nameof(this.CanFixInvalidClaims));
 			this.OnPropertyChanged(nameof(this.CanPrepareReapplyWithoutPendingClaims));
 
@@ -1795,6 +1737,128 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 
 			this.PrepareReapplyWithoutPendingClaimsCommand?.NotifyCanExecuteChanged();
 		}
+
+		private async Task AutoReapplyAsync(IEnumerable<string> claimsToClear, IEnumerable<ApplicationReviewPhotoDetail> photosToClear, IEnumerable<string> pendingPhotosToClear)
+		{
+			if (this.IsApplying || this.IsBusy)
+				return;
+
+			try
+			{
+				this.SetIsBusy(true);
+
+				string[] claims = claimsToClear?.ToArray() ?? Array.Empty<string>();
+				ApplicationReviewPhotoDetail[] photoDetails = photosToClear?.ToArray() ?? Array.Empty<ApplicationReviewPhotoDetail>();
+				string[] pendingPhotoNames = pendingPhotosToClear?.ToArray() ?? Array.Empty<string>();
+
+				this.ClearClaims(claims);
+				this.ClearInvalidPhotos(photoDetails);
+				this.ClearPendingPhotoNames(pendingPhotoNames);
+
+				ServiceRef.TagProfile.SetApplicationReview(null);
+				this.LoadApplicationReview(null);
+
+				LegalIdentity? currentApplication = ServiceRef.TagProfile.IdentityApplication;
+				if (currentApplication is not null)
+				{
+					try
+					{
+						await ServiceRef.XmppService.ObsoleteLegalIdentity(currentApplication.Id);
+					}
+					catch (ForbiddenException)
+					{
+						// Ignore if the identity is already revoked or cannot be revoked.
+					}
+					catch (Exception ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+					}
+				}
+
+				await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+				this.ApplicationSent = false;
+				this.IsRevoking = false;
+
+				await this.SubmitApplicationAsync(skipConfirmation: true, skipAuthentication: false, allowResubmission: true);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+			finally
+			{
+				this.SetIsBusy(false);
+			}
+		}
+
+
+		private async Task EnterEditModeAsync()
+		{
+			if (!this.ApplicationSent)
+				return;
+
+			try
+			{
+				this.SetIsBusy(true);
+
+				ServiceRef.TagProfile.SetApplicationReview(null);
+				this.LoadApplicationReview(null);
+
+				try
+				{
+					await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+				}
+				catch (Exception ex)
+				{
+				ServiceRef.LogService.LogException(ex);
+			}
+
+			this.ApplicationSent = false;
+				this.IsRevoking = false;
+
+				this.NotifyCommandsCanExecuteChanged();
+				this.PickAdditionalPhotoCommand.NotifyCanExecuteChanged();
+				this.PickPhotoCommand.NotifyCanExecuteChanged();
+				this.PickProofOfIdBackCommand.NotifyCanExecuteChanged();
+				this.PickProofOfIdFrontCommand.NotifyCanExecuteChanged();
+				this.OnPropertyChanged(nameof(this.CanEdit));
+				this.OnPropertyChanged(nameof(this.CanRemovePhoto));
+				this.OnPropertyChanged(nameof(this.CanTakePhoto));
+				this.OnPropertyChanged(nameof(this.ApplicationSentAndConnected));
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+			finally
+			{
+				this.SetIsBusy(false);
+			}
+		}
+
+	private void ClearPendingPhotoNames(IEnumerable<string> pendingPhotoNames)
+	{
+		if (pendingPhotoNames is null)
+			return;
+
+		HashSet<string> normalized = new(pendingPhotoNames
+			.Where(name => !string.IsNullOrWhiteSpace(name))
+			.Select(name => Path.GetFileName(name.Trim())), StringComparer.OrdinalIgnoreCase);
+
+		if (normalized.Count == 0)
+			return;
+
+		if (normalized.Contains(passportFileName) || normalized.Contains(Path.GetFileName(passportFileName)))
+			this.RemoveProofOfIdFront();
+
+		if (normalized.Contains(nationalIdFrontFileName) || normalized.Contains(driverLicenseFrontFileName))
+			this.RemoveProofOfIdFront();
+
+		if (normalized.Contains(nationalIdBackFileName) || normalized.Contains(driverLicenseBackFileName))
+			this.RemoveProofOfIdBack();
+	}
 
 		private static void ReplaceCollection<T>(ObservableCollection<T> collection, IEnumerable<T> items)
 		{
@@ -1810,7 +1874,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			if (string.IsNullOrWhiteSpace(claim))
 				return string.Empty;
 
-			if (claimResourceKeyMap.TryGetValue(claim, out string resourceKey))
+			if (claimDisplayNameMap.TryGetValue(claim, out string resourceKey))
 			{
 				try
 				{
@@ -1829,6 +1893,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			return claim;
 		}
 
+		private static bool IsBirthComponent(string claim)
+		{
+			return birthClaimKeys.Contains(claim);
+		}
+
 		private static bool IsProtectedClaim(string claim)
 		{
 			return claimsHiddenInPending.Contains(claim);
@@ -1842,156 +1911,14 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 					continue;
 
 				string NormalizedClaim = Claim.Trim();
-			if (NormalizedClaim.Length == 0)
-				continue;
+				if (NormalizedClaim.Length == 0)
+					continue;
 
-			if (IsProtectedClaim(NormalizedClaim))
-				continue;
+				if (IsProtectedClaim(NormalizedClaim))
+					continue;
 
-			switch (NormalizedClaim)
-			{
-				case "FirstName":
-				case "firstName":
-					this.FirstName = string.Empty;
-					break;
-				case "MiddleNames":
-				case "middleNames":
-					this.MiddleNames = string.Empty;
-					break;
-				case "LastNames":
-				case "lastNames":
-					this.LastNames = string.Empty;
-					break;
-				case "PersonalNumber":
-				case "personalNumber":
-					this.PersonalNumber = string.Empty;
-					break;
-				case "ADDR":
-				case "addr":
-				case "Address":
-				case "address":
-				case "ADDR1":
-				case "addr1":
-					this.Address = string.Empty;
-					break;
-				case "ADDR2":
-				case "addr2":
-				case "Address2":
-				case "address2":
-					this.Address2 = string.Empty;
-					break;
-				case "ZIP":
-				case "zip":
-				case "ZipCode":
-				case "zipCode":
-				case "PostalCode":
-				case "postalCode":
-					this.ZipCode = string.Empty;
-					break;
-				case "Area":
-				case "area":
-					this.Area = string.Empty;
-					break;
-				case "City":
-				case "city":
-				case "CITY":
-					this.City = string.Empty;
-					break;
-				case "Region":
-				case "region":
-				case "State":
-				case "state":
-					this.Region = string.Empty;
-					break;
-				case "Country":
-				case "country":
-				case "CountryCode":
-				case "countryCode":
-					this.CountryCode = string.Empty;
-					break;
-				case "Nationality":
-				case "nationality":
-				case "NationalityCode":
-				case "nationalityCode":
-					this.Nationality = null;
-					this.NationalityCode = string.Empty;
-					break;
-				case "Gender":
-				case "gender":
-				case "GenderCode":
-				case "genderCode":
-					this.Gender = null;
-					this.GenderCode = string.Empty;
-					break;
-				case "BirthDate":
-				case "birthDate":
-					this.BirthDate = DateTime.Today;
-					break;
-				case "OrgName":
-				case "orgName":
-					this.OrgName = string.Empty;
-					break;
-				case "OrgDepartment":
-				case "orgDepartment":
-					this.OrgDepartment = string.Empty;
-					break;
-				case "OrgRole":
-				case "orgRole":
-					this.OrgRole = string.Empty;
-					break;
-				case "OrgNumber":
-				case "orgNumber":
-					this.OrgNumber = string.Empty;
-					break;
-				case "OrgAddress":
-				case "orgAddress":
-				case "OrgADDR":
-				case "orgAddr":
-					this.OrgAddress = string.Empty;
-					break;
-				case "OrgAddress2":
-				case "orgAddress2":
-				case "OrgADDR2":
-				case "orgAddr2":
-					this.OrgAddress2 = string.Empty;
-					break;
-				case "OrgZipCode":
-				case "orgZipCode":
-				case "OrgZIP":
-				case "orgZip":
-					this.OrgZipCode = string.Empty;
-					break;
-				case "OrgArea":
-				case "orgArea":
-					this.OrgArea = string.Empty;
-					break;
-				case "OrgCity":
-				case "orgCity":
-					this.OrgCity = string.Empty;
-					break;
-				case "OrgRegion":
-				case "orgRegion":
-				case "OrgState":
-				case "orgState":
-					this.OrgRegion = string.Empty;
-					break;
-				case "OrgCountry":
-				case "orgCountry":
-				case "OrgCountryCode":
-				case "orgCountryCode":
-					this.OrgCountryCode = string.Empty;
-					break;
-				case "Consent":
-				case "consent":
-					this.Consent = false;
-					break;
-				case "Correct":
-				case "correct":
-					this.Correct = false;
-					break;
-				default:
-					break;
-			}
+				if (claimClearActions.TryGetValue(NormalizedClaim, out Action<ApplyIdViewModel> action))
+					action(this);
 			}
 		}
 
@@ -2192,5 +2119,131 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		#endregion
 
 		#endregion
+
+		private async Task SubmitApplicationAsync(bool skipConfirmation, bool skipAuthentication, bool allowResubmission)
+		{
+			if (this.ApplicationSent && !allowResubmission)
+				return;
+
+			if (!skipConfirmation)
+			{
+				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
+					return;
+			}
+
+			if (!skipAuthentication)
+			{
+				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true))
+					return;
+			}
+
+			try
+			{
+				List<LegalIdentityAttachment> localAttachments = this.BuildAttachments();
+
+				this.SetIsBusy(true);
+				this.IsApplying = true;
+				NumberInformation info = await PersonalNumberSchemes.Validate(this.CountryCode!, this.PersonalNumber!);
+				this.PersonalNumber = info.PersonalNumber;
+
+				bool hasIdWithPrivateKey = ServiceRef.TagProfile.LegalIdentity is not null &&
+					  await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
+
+				(bool Succeeded, LegalIdentity? AddedIdentity) = await ServiceRef.NetworkService.TryRequest(() =>
+					 ServiceRef.XmppService.AddLegalIdentity(this, !hasIdWithPrivateKey, localAttachments.ToArray()));
+
+				if (Succeeded && AddedIdentity is not null)
+				{
+					await ServiceRef.TagProfile.SetIdentityApplication(AddedIdentity, true);
+					this.ApplicationSent = true;
+					this.ApplicationId = AddedIdentity.Id;
+
+					await Task.Run(this.LoadFeaturedPeerReviewers);
+
+					foreach (LegalIdentityAttachment localAttachment in localAttachments)
+					{
+						Attachment? matchingAttachment = AddedIdentity.Attachments
+							 .FirstOrDefault(a => string.Equals(a.FileName, localAttachment.FileName, StringComparison.OrdinalIgnoreCase));
+						if (matchingAttachment != null && localAttachment.Data is not null && localAttachment.ContentType is not null)
+						{
+							await ServiceRef.AttachmentCacheService.Add(
+								 matchingAttachment.Url,
+								 AddedIdentity.Id,
+								 true,
+								 localAttachment.Data,
+								 localAttachment.ContentType);
+						}
+					}
+
+					await this.LoadAllAttachmentPhotos(AddedIdentity);
+					ServiceRef.TagProfile.SetApplicationReview(null);
+					this.LoadApplicationReview(null);
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.UiService.DisplayException(ex);
+			}
+			finally
+			{
+				this.SetIsBusy(false);
+				this.IsApplying = false;
+			}
+		}
+
+		private List<LegalIdentityAttachment> BuildAttachments()
+		{
+			List<LegalIdentityAttachment> localAttachments = new();
+
+			if (this.photo is not null)
+				localAttachments.Add(this.photo);
+
+			if (this.DocumentType != IdentityDocumentType.None)
+			{
+				if (this.HasProofOfIdFront && this.ProofOfIdFrontImageBin is not null)
+				{
+					string frontFileName = this.DocumentType switch
+					{
+						IdentityDocumentType.Passport => passportFileName,
+						IdentityDocumentType.NationalId => nationalIdFrontFileName,
+						IdentityDocumentType.DriverLicense => driverLicenseFrontFileName,
+						_ => nationalIdFrontFileName
+					};
+
+					LegalIdentityAttachment frontAttachment = new(frontFileName, "image/jpeg", this.ProofOfIdFrontImageBin);
+					localAttachments.Add(frontAttachment);
+				}
+
+				if ((this.DocumentType == IdentityDocumentType.NationalId || this.DocumentType == IdentityDocumentType.DriverLicense) &&
+					 this.HasProofOfIdBack && this.ProofOfIdBackImageBin is not null)
+				{
+					string backFileName = this.DocumentType switch
+					{
+						IdentityDocumentType.NationalId => nationalIdBackFileName,
+						IdentityDocumentType.DriverLicense => driverLicenseBackFileName,
+						_ => nationalIdBackFileName
+					};
+
+					LegalIdentityAttachment backAttachment = new(backFileName, "image/jpeg", this.ProofOfIdBackImageBin);
+					localAttachments.Add(backAttachment);
+				}
+			}
+
+			if (this.AdditionalPhotos.Count > 0)
+			{
+				int index = 1;
+				foreach (ObservableAttachmentCard additional in this.AdditionalPhotos)
+				{
+					if (additional.ImageBin == null)
+						continue;
+					localAttachments.Add(new LegalIdentityAttachment($"AdditionalPhoto{index}.jpg", "image/jpeg", additional.ImageBin));
+					index++;
+				}
+			}
+
+			return localAttachments;
+		}
+
 	}
 }
