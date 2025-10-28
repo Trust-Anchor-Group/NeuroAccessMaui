@@ -1822,6 +1822,14 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.PickPhotoCommand.NotifyCanExecuteChanged();
 				this.PickProofOfIdBackCommand.NotifyCanExecuteChanged();
 				this.PickProofOfIdFrontCommand.NotifyCanExecuteChanged();
+				this.TakeAdditionalPhotoCommand.NotifyCanExecuteChanged();
+				this.TakePhotoCommand.NotifyCanExecuteChanged();
+				this.TakeProofOfIdBackCommand.NotifyCanExecuteChanged();
+				this.TakeProofOfIdFrontCommand.NotifyCanExecuteChanged();
+				this.RemovePhotoCommand?.NotifyCanExecuteChanged();
+				this.removeAdditionalPhotoCommand?.NotifyCanExecuteChanged();
+				this.removeProofOfIdFrontCommand?.NotifyCanExecuteChanged();
+				this.removeProofOfIdBackCommand?.NotifyCanExecuteChanged();
 				this.OnPropertyChanged(nameof(this.CanEdit));
 				this.OnPropertyChanged(nameof(this.CanRemovePhoto));
 				this.OnPropertyChanged(nameof(this.CanTakePhoto));
