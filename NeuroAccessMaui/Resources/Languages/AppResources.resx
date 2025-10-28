@@ -3283,4 +3283,145 @@
   <data name="NoTokens" xml:space="preserve">
     <value>No tokens</value>
   </data>
+  <data name="TokenDetails" xml:space="preserve">
+    <value>Token Details</value>
+  </data>
+  <data name="TokenDetailsDescription" xml:space="preserve">
+    <value>Following are details encoded into the token. Click on any links for more information.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="TokenId" xml:space="preserve">
+    <value>Token ID</value>
+  </data>
+  <data name="TokenIdMethod" xml:space="preserve">
+    <value>Token ID Method</value>
+  </data>
+  <data name="TokenVisibility" xml:space="preserve">
+    <value>Token Visibility</value>
+  </data>
+  <data name="Ordinal" xml:space="preserve">
+    <value>Ordinal</value>
+  </data>
+  <data name="Valuation" xml:space="preserve">
+    <value>Valuation</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variables</value>
+  </data>
+  <data name="States" xml:space="preserve">
+    <value>States</value>
+  </data>
+  <data name="TokenPartsInfoText" xml:space="preserve">
+    <value>Following is a list of parties related to this token.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Owner</value>
+  </data>
+  <data name="OwnerJid" xml:space="preserve">
+    <value>Owner Address</value>
+  </data>
+  <data name="OwnershipContract" xml:space="preserve">
+    <value>Ownership Contract</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Creator</value>
+  </data>
+  <data name="CreatorJid" xml:space="preserve">
+    <value>Creator Address</value>
+  </data>
+  <data name="CreationContract" xml:space="preserve">
+    <value>Creation Contract</value>
+  </data>
+  <data name="TrustProvider" xml:space="preserve">
+    <value>Trust Provider</value>
+  </data>
+  <data name="TrustProviderJid" xml:space="preserve">
+    <value>Trust Provider Address</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>Privileges</value>
+  </data>
+  <data name="TokenPrivilegesInfoText" xml:space="preserve">
+    <value>Following are privileges engraved into the token.</value>
+  </data>
+  <data name="CreatorCanDestroy" xml:space="preserve">
+    <value>Creator can destroy token</value>
+  </data>
+  <data name="OwnerCanDestroyBatch" xml:space="preserve">
+    <value>Owner can destroy token batch</value>
+  </data>
+  <data name="OwnerCanDestroyIndividual" xml:space="preserve">
+    <value>Owner can destroy individual token</value>
+  </data>
+  <data name="CertifierCanDestroy" xml:space="preserve">
+    <value>Certifier can destroy token</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Machine readable information</value>
+  </data>
+  <data name="MachineReadableInfoTextToken" xml:space="preserve">
+    <value>An overview of the machine-readable data embedded in the token is shown below.</value>
+  </data>
+  <data name="DefinitionNamespace" xml:space="preserve">
+    <value>Definition namespace</value>
+  </data>
+  <data name="DefinitionSchemaDigest" xml:space="preserve">
+    <value>Definition schema digest</value>
+  </data>
+  <data name="ShowM2MInfo" xml:space="preserve">
+    <value>Show M2M Definition</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="SendToContact" xml:space="preserve">
+    <value>Send to Contact</value>
+  </data>
+  <data name="PublishMarketplace" xml:space="preserve">
+    <value>Publish on Marketplace</value>
+  </data>
+  <data name="OfferToBuy" xml:space="preserve">
+    <value>Offer To Buy</value>
+  </data>
+  <data name="OfferToSell" xml:space="preserve">
+    <value>Offer To Sell</value>
+  </data>
+  <data name="ViewEvents" xml:space="preserve">
+    <value>View Events</value>
+  </data>
+  <data name="CurrentState" xml:space="preserve">
+    <value>Current State</value>
+  </data>
+  <data name="MachineHasEnded" xml:space="preserve">
+    <value>State-Machine has ended.</value>
+  </data>
+  <data name="CurrentVariables" xml:space="preserve">
+    <value>Current Variables</value>
+  </data>
+  <data name="TokenEvents" xml:space="preserve">
+    <value>Token Events</value>
+  </data>
+  <data name="TokenEventsDescription" xml:space="preserve">
+    <value>Following are public events recorded for the token. Your private events are also included.</value>
+  </data>
+  <data name="TextNote" xml:space="preserve">
+    <value>Text Note</value>
+  </data>
+  <data name="XmlNote" xml:space="preserve">
+    <value>XML Note</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Add Note</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Value</value>
+  </data>
 </root>

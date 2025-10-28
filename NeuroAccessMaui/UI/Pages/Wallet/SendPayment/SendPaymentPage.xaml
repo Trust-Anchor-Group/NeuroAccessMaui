@@ -159,11 +159,10 @@
 														 Placeholder="{Binding Path=Currency}" IsReadOnly="{Binding Path=AmountPreset}"
 														 BorderStroke="Transparent" VerticalOptions="Center">
 									<controls:CompositeEntry.RightView>
-										<Label Text="NC" VerticalOptions="Center" Style="{DynamicResource Brand2HeadlineHeadlineL}" Margin="0,0,4,0"/>
+										<Label Text="{Binding Currency}" VerticalOptions="Center" Style="{DynamicResource Brand2HeadlineHeadlineL}" Margin="0,0,4,0"/>
 									</controls:CompositeEntry.RightView>
 								</controls:CompositeEntry>
 							</Border>
-
 						</Grid>
 
 						<!-- Amount Extra -->
