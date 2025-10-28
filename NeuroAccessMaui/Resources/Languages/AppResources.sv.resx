@@ -2994,7 +2994,8 @@
     <value>Tillbaka till översikten</value>
   </data>
   <data name="Kyc_Exit" xml:space="preserve">
-    <value>Är du säker på att du vill lämna identitetsansökningsproce
+    <value>Är du säker på att du vill lämna identitetsansökningsprocessen?</value>
+  </data>
   <data name="KycReviewTitle" xml:space="preserve">
     <value>Granskning av ansökan</value>
   </data>

@@ -2992,7 +2992,7 @@
   </data>
   <data name="Kyc_Exit" xml:space="preserve">
     <value>Tem certeza de que deseja sair do processo de solicitação de identidade?</value>
-
+  </data>
   <data name="KycReviewTitle" xml:space="preserve">
     <value>Revisão da solicitação</value>
   </data>
