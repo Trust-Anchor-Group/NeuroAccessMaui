@@ -694,9 +694,19 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		public bool HasUnvalidatedClaims => this.UnvalidatedClaims.Count > 0;
 
 		/// <summary>
+		/// True if there are unvalidated claims and no invalid items present.
+		/// </summary>
+		public bool HasUnvalidatedClaimsAndNoInvalids => this.HasUnvalidatedClaims && !this.HasInvalidItems;
+
+		/// <summary>
 		/// True if there are photos that remain unvalidated.
 		/// </summary>
 		public bool HasUnvalidatedPhotos => this.UnvalidatedPhotos.Count > 0;
+
+		/// <summary>
+		/// True if there are unvalidated photos and no invalid items present.
+		/// </summary>
+		public bool HasUnvalidatedPhotosAndNoInvalids => this.HasUnvalidatedPhotos && !this.HasInvalidItems;
 
 		/// <summary>
 		/// True if any invalid items require attention.
@@ -2000,6 +2010,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 			this.OnPropertyChanged(nameof(this.HasInvalidPhotoDetails));
 			this.OnPropertyChanged(nameof(this.HasUnvalidatedClaims));
 			this.OnPropertyChanged(nameof(this.HasUnvalidatedPhotos));
+			this.OnPropertyChanged(nameof(this.HasUnvalidatedClaimsAndNoInvalids));
+			this.OnPropertyChanged(nameof(this.HasUnvalidatedPhotosAndNoInvalids));
 			this.OnPropertyChanged(nameof(this.HasInvalidItems));
 			this.OnPropertyChanged(nameof(this.HasInvalidOnly));
 			this.OnPropertyChanged(nameof(this.HasOnlyUnvalidatedItems));
