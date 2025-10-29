@@ -135,10 +135,11 @@
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-											 IsVisible="{Binding HasOnlyUnvalidatedItems}">
+											 IsVisible="{Binding HasUnvalidatedClaims}">
 							<Label Style="{DynamicResource InfoLabel}"
 								   FontAttributes="Bold"
-								   Text="{l:Localize KycUnvalidatedClaimsHeader}" />
+								   Text="{l:Localize KycUnvalidatedClaimsHeader}"
+								   IsVisible="{Binding HasUnvalidatedClaims}" />
 							<VerticalStackLayout BindableLayout.ItemsSource="{Binding UnvalidatedClaims}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate>
@@ -150,10 +151,11 @@
 						</VerticalStackLayout>
 
 						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-											 IsVisible="{Binding HasOnlyUnvalidatedItems}">
+											 IsVisible="{Binding HasUnvalidatedPhotos}">
 							<Label Style="{DynamicResource InfoLabel}"
 								   FontAttributes="Bold"
-								   Text="{l:Localize KycUnvalidatedPhotosHeader}" />
+								   Text="{l:Localize KycUnvalidatedPhotosHeader}"
+								   IsVisible="{Binding HasUnvalidatedPhotos}" />
 							<VerticalStackLayout BindableLayout.ItemsSource="{Binding UnvalidatedPhotos}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate>
@@ -256,7 +258,7 @@
 							</CarouselView.ItemTemplate>
 						</CarouselView>
 						<IndicatorView x:Name="AllPhotosPhotosIndicator"
-						               Count="{Binding AdditionalPhotos.Count}"
+						               Count="{Binding AllPhotos.Count}"
 						               IndicatorColor="LightGrey"
 						               SelectedIndicatorColor="Black"
 						               HorizontalOptions="Center" />

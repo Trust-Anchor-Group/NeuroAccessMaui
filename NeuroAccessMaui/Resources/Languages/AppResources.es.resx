@@ -996,7 +996,7 @@
     <value>Foto</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Por favor, añada una imagen en la que pueda ser fácilmente identificado.</value>
+    <value>Toma una foto en vivo de ti ahora para que podamos verificar tu identidad. No se permiten capturas de pantalla ni imágenes editadas.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>En la aplicación se han incluido las siguientes imágenes.</value>
@@ -1926,7 +1926,7 @@
     <value>Autenticación</value>
   </data>
   <data name="BeingSigned" xml:space="preserve">
-    <value>Estar firmado</value>
+    <value>Se está firmando</value>
   </data>
   <data name="Binding" xml:space="preserve">
     <value>Encuadernación</value>

@@ -995,7 +995,7 @@
     <value>Photo</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Please add an image where you can easily be identified.</value>
+    <value>Please take a live photo of yourself now so we can verify your identity. Screenshots or edited images aren’t allowed.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>The following images have been included in the application.</value>
@@ -3423,6 +3423,12 @@
   </data>
   <data name="Value" xml:space="preserve">
     <value>Value</value>
+  </data>
+  <data name="InvitationToSignFormat" xml:space="preserve">
+    <value>You have been invited to sign this contract as {0}, make sure to verify and review the contract before proceeding</value>
+  </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Send proposal</value>
   </data>
   <data name="Sender" xml:space="preserve">
     <value>Sender:</value>

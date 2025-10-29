@@ -331,6 +331,65 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		#endregion
 
+		#region Proposals
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task SendProposalToPartAsync(ObservablePart? part)
+		{
+			if (part is null || this.Contract is null)
+				return;
+
+			if (!part.CanSendProposal)
+				return;
+
+			try
+			{
+				ContactInfo? info = await ContactInfo.FindByLegalId(part.LegalId);
+				if (info is null || string.IsNullOrEmpty(info.BareJid))
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.NetworkAddressOfContactUnknown)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					return;
+				}
+
+				await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(
+					this.Contract.ContractId,
+					info.BareJid,
+					true);
+
+				string? friendlyTarget = info.FriendlyName;
+				if (string.IsNullOrEmpty(friendlyTarget))
+					friendlyTarget = part.FriendlyName ?? info.BareJid ?? part.LegalId;
+
+				string? proposal = await ServiceRef.UiService.DisplayPrompt(
+					ServiceRef.Localizer[nameof(AppResources.Proposal)] ?? string.Empty,
+					ServiceRef.Localizer[nameof(AppResources.EnterProposal), friendlyTarget] ?? string.Empty,
+					ServiceRef.Localizer[nameof(AppResources.Send)] ?? string.Empty,
+					ServiceRef.Localizer[nameof(AppResources.Cancel)] ?? string.Empty);
+
+				if (string.IsNullOrEmpty(proposal))
+					return;
+
+				await ServiceRef.XmppService.SendContractProposal(
+					this.Contract.Contract,
+					part.Part.Role,
+					info.BareJid,
+					proposal);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)] ?? string.Empty,
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)] ?? string.Empty,
+					ServiceRef.Localizer[nameof(AppResources.Ok)] ?? string.Empty);
+			}
+		}
+
+		#endregion
+
 		#region Contract Management Commands
 
 		[RelayCommand]

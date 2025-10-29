@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
@@ -47,6 +49,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		private const string nationalIdBackFileName = "IdCardBack.jpg";
 		private const string driverLicenseFrontFileName = "DriverLicenseFront.jpeg";
 		private const string driverLicenseBackFileName = "DriverLicenseBack.jpeg";
+		private const string additionalPhotoPrefix = "AdditionalPhoto";
 
 	private static readonly Dictionary<string, string> claimDisplayNameMap = BuildClaimDisplayNameMap();
 	private static readonly Dictionary<string, Action<ApplyIdViewModel>> claimClearActions = BuildClaimClearActions();
@@ -168,12 +171,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		protected override async Task OnInitialize()
 		{
 			this.ApplicationId = null;
-
-			if (ServiceRef.TagProfile.IdentityApplication is not null)
-			{
-				if (ServiceRef.TagProfile.IdentityApplication.IsDiscarded())
-					await ServiceRef.TagProfile.SetIdentityApplication(null, true);
-			}
 
 			LegalIdentity? IdentityReference;
 
@@ -345,27 +342,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				i++;
 			}
 
-			if (SetPhoto && Identity?.Attachments is not null)
-			{
-				Photo? First = await this.photosLoader.LoadPhotos(Identity.Attachments, SignWith.LatestApprovedIdOrCurrentKeys);
-
-				if (First is null)
-				{
-					if (ClearPropertiesNotFound)
-					{
-						this.photo = null;
-						this.Image = null;
-						this.ImageBin = null;
-						this.HasPhoto = false;
-					}
-				}
-				else
-				{
-					this.Image = First.Source;
-					this.ImageBin = First.Binary;
-					this.HasPhoto = true;
-				}
-			}
+			if (Identity?.Attachments is not null)
+				await this.RestoreAttachmentStateAsync(Identity.Attachments, SetPhoto, ClearPropertiesNotFound);
+			else if (ClearPropertiesNotFound)
+				this.ResetAllPhotoState();
 		}
 
 		private async Task LoadApplicationAttributes()
@@ -845,6 +825,299 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		}
 
 		#endregion
+
+		private async Task RestoreAttachmentStateAsync(Attachment[] attachments, bool setPhoto, bool clearIfMissing)
+		{
+			if (!setPhoto)
+			{
+				if (clearIfMissing)
+					this.ResetAllPhotoState();
+
+				return;
+			}
+
+			await this.RestoreProfilePhotoAsync(attachments, clearIfMissing);
+			await this.RestoreDocumentAttachmentsAsync(attachments, clearIfMissing);
+			await this.RestoreAdditionalPhotosAsync(attachments, clearIfMissing);
+		}
+
+		private void ResetAllPhotoState()
+		{
+			this.RemovePhoto(false);
+			this.RemoveProofOfIdFront();
+			this.RemoveProofOfIdBack();
+			this.DocumentType = IdentityDocumentType.None;
+			MainThread.BeginInvokeOnMainThread(() => this.AdditionalPhotos.Clear());
+		}
+
+		private async Task RestoreProfilePhotoAsync(Attachment[] attachments, bool clearIfMissing)
+		{
+			Attachment? ProfileAttachment = null;
+
+			foreach (Attachment Attachment in attachments)
+			{
+				if (IsProfilePhotoFileName(Attachment.FileName))
+				{
+					ProfileAttachment = Attachment;
+					break;
+				}
+			}
+
+			if (ProfileAttachment is null)
+				ProfileAttachment = attachments.GetFirstImageAttachment();
+
+			if (ProfileAttachment is not null)
+			{
+				(byte[]? Bin, string ContentType, int Rotation) = await this.photosLoader.LoadOnePhoto(ProfileAttachment, SignWith.LatestApprovedIdOrCurrentKeys);
+				if (Bin is not null && Bin.Length > 0)
+				{
+					string FileName = GetProfilePhotoFileName(ProfileAttachment.FileName);
+					string ContentTypeValue = string.IsNullOrWhiteSpace(ContentType) ? Constants.MimeTypes.Jpeg : ContentType;
+					byte[] PhotoBytes = Bin;
+
+					this.photo = new LegalIdentityAttachment(FileName, ContentTypeValue, PhotoBytes);
+					this.ImageRotation = Rotation;
+					this.Image = ImageSource.FromStream(() => new MemoryStream(PhotoBytes));
+					this.ImageBin = PhotoBytes;
+					this.HasPhoto = true;
+					return;
+				}
+			}
+
+			if (clearIfMissing)
+				this.RemovePhoto(false);
+		}
+
+		private async Task RestoreDocumentAttachmentsAsync(Attachment[] attachments, bool clearIfMissing)
+		{
+			Attachment? PassportFrontAttachment = FindAttachmentByName(attachments, passportFileName);
+			Attachment? NationalFrontAttachment = FindAttachmentByName(attachments, nationalIdFrontFileName);
+			Attachment? DriverFrontAttachment = FindAttachmentByName(attachments, driverLicenseFrontFileName);
+			Attachment? NationalBackAttachment = FindAttachmentByName(attachments, nationalIdBackFileName);
+			Attachment? DriverBackAttachment = FindAttachmentByName(attachments, driverLicenseBackFileName);
+
+			IdentityDocumentType DetectedDocumentType = IdentityDocumentType.None;
+			Attachment? FrontAttachment = null;
+
+			if (PassportFrontAttachment is not null)
+			{
+				DetectedDocumentType = IdentityDocumentType.Passport;
+				FrontAttachment = PassportFrontAttachment;
+			}
+			else if (NationalFrontAttachment is not null)
+			{
+				DetectedDocumentType = IdentityDocumentType.NationalId;
+				FrontAttachment = NationalFrontAttachment;
+			}
+			else if (DriverFrontAttachment is not null)
+			{
+				DetectedDocumentType = IdentityDocumentType.DriverLicense;
+				FrontAttachment = DriverFrontAttachment;
+			}
+
+			if (FrontAttachment is not null)
+				await this.ApplyProofOfIdFrontAsync(FrontAttachment, clearIfMissing);
+			else if (clearIfMissing)
+				this.RemoveProofOfIdFront();
+
+			Attachment? BackAttachment = null;
+
+			if (DetectedDocumentType == IdentityDocumentType.NationalId)
+				BackAttachment = NationalBackAttachment;
+			else if (DetectedDocumentType == IdentityDocumentType.DriverLicense)
+				BackAttachment = DriverBackAttachment;
+
+			if (BackAttachment is not null)
+				await this.ApplyProofOfIdBackAsync(BackAttachment, clearIfMissing);
+			else if (clearIfMissing)
+				this.RemoveProofOfIdBack();
+
+			if (DetectedDocumentType != IdentityDocumentType.None)
+				this.DocumentType = DetectedDocumentType;
+			else if (clearIfMissing)
+				this.DocumentType = IdentityDocumentType.None;
+		}
+
+		private async Task RestoreAdditionalPhotosAsync(Attachment[] attachments, bool clearIfMissing)
+		{
+			Dictionary<int, ObservableAttachmentCard> AdditionalMap = new Dictionary<int, ObservableAttachmentCard>();
+
+			foreach (Attachment Attachment in attachments)
+			{
+				string FileName = GetNormalizedFileName(Attachment.FileName);
+				int Index;
+
+				if (!IsAdditionalPhotoFileName(FileName, out Index))
+					continue;
+
+				(byte[]? Bin, _, int Rotation) = await this.photosLoader.LoadOnePhoto(Attachment, SignWith.LatestApprovedIdOrCurrentKeys);
+				if (Bin is null || Bin.Length == 0)
+					continue;
+
+				byte[] PhotoBytes = Bin;
+
+				ObservableAttachmentCard Card = new ObservableAttachmentCard
+				{
+					Image = ImageSource.FromStream(() => new MemoryStream(PhotoBytes)),
+					ImageBin = PhotoBytes,
+					ImageRotation = Rotation
+				};
+
+				AdditionalMap[Index] = Card;
+			}
+
+			if (AdditionalMap.Count > 0)
+			{
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.AdditionalPhotos.Clear();
+
+					List<int> OrderedIndexes = new List<int>(AdditionalMap.Keys);
+					OrderedIndexes.Sort();
+					foreach (int OrderedIndex in OrderedIndexes)
+					{
+						if (AdditionalMap.TryGetValue(OrderedIndex, out ObservableAttachmentCard? Card))
+							this.AdditionalPhotos.Add(Card);
+					}
+				});
+			}
+			else if (clearIfMissing)
+			{
+				await MainThread.InvokeOnMainThreadAsync(() => this.AdditionalPhotos.Clear());
+			}
+		}
+
+		private async Task ApplyProofOfIdFrontAsync(Attachment attachment, bool clearIfMissing)
+		{
+			(byte[]? Bin, _, _) = await this.photosLoader.LoadOnePhoto(attachment, SignWith.LatestApprovedIdOrCurrentKeys);
+			if (Bin is null || Bin.Length == 0)
+			{
+				if (clearIfMissing)
+					this.RemoveProofOfIdFront();
+				return;
+			}
+
+			byte[] PhotoBytes = Bin;
+			this.ProofOfIdFrontImage = ImageSource.FromStream(() => new MemoryStream(PhotoBytes));
+			this.ProofOfIdFrontImageBin = PhotoBytes;
+			this.HasProofOfIdFront = true;
+		}
+
+		private async Task ApplyProofOfIdBackAsync(Attachment attachment, bool clearIfMissing)
+		{
+			(byte[]? Bin, _, _) = await this.photosLoader.LoadOnePhoto(attachment, SignWith.LatestApprovedIdOrCurrentKeys);
+			if (Bin is null || Bin.Length == 0)
+			{
+				if (clearIfMissing)
+					this.RemoveProofOfIdBack();
+				return;
+			}
+
+			byte[] PhotoBytes = Bin;
+			this.ProofOfIdBackImage = ImageSource.FromStream(() => new MemoryStream(PhotoBytes));
+			this.ProofOfIdBackImageBin = PhotoBytes;
+			this.HasProofOfIdBack = true;
+		}
+
+		private static Attachment? FindAttachmentByName(IEnumerable<Attachment> attachments, string expectedFileName)
+		{
+			foreach (Attachment Attachment in attachments)
+			{
+				string FileName = GetNormalizedFileName(Attachment.FileName);
+
+				if (FileNameMatches(FileName, expectedFileName))
+					return Attachment;
+			}
+
+			return null;
+		}
+
+		private static bool IsProfilePhotoFileName(string? fileName)
+		{
+			if (string.IsNullOrWhiteSpace(fileName))
+				return false;
+
+			string Normalized = GetNormalizedFileName(fileName);
+
+			return Normalized.StartsWith("ProfilePhoto", StringComparison.OrdinalIgnoreCase);
+		}
+
+		private static string GetProfilePhotoFileName(string? fileName)
+		{
+			if (string.IsNullOrWhiteSpace(fileName))
+				return profilePhotoFileName;
+
+			string Normalized = GetNormalizedFileName(fileName);
+
+			return IsProfilePhotoFileName(Normalized) ? NormalizeProfilePhotoFileName(Normalized) : profilePhotoFileName;
+		}
+
+		private static string NormalizeProfilePhotoFileName(string fileName)
+		{
+			if (string.IsNullOrWhiteSpace(fileName))
+				return profilePhotoFileName;
+
+			string WithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+			if (string.Equals(WithoutExtension, "ProfilePhoto", StringComparison.OrdinalIgnoreCase))
+				return profilePhotoFileName;
+
+			return fileName;
+		}
+
+		private static bool IsAdditionalPhotoFileName(string fileName, out int index)
+		{
+			index = 0;
+
+			if (string.IsNullOrWhiteSpace(fileName))
+				return false;
+
+			if (!fileName.StartsWith(additionalPhotoPrefix, StringComparison.OrdinalIgnoreCase))
+				return false;
+
+			string Suffix = fileName.Substring(additionalPhotoPrefix.Length);
+			int DotIndex = Suffix.IndexOf('.', StringComparison.Ordinal);
+
+			if (DotIndex >= 0)
+				Suffix = Suffix.Substring(0, DotIndex);
+
+			if (int.TryParse(Suffix, out int ParsedIndex) && ParsedIndex > 0)
+			{
+				index = ParsedIndex;
+				return true;
+			}
+
+			return false;
+		}
+
+		private static string GetNormalizedFileName(string? fileName)
+		{
+			if (string.IsNullOrWhiteSpace(fileName))
+				return string.Empty;
+
+			return Path.GetFileName(fileName).Trim();
+		}
+
+		private static bool FileNameMatches(string fileName, string expectedFileName)
+		{
+			if (string.Equals(fileName, expectedFileName, StringComparison.OrdinalIgnoreCase))
+				return true;
+
+			string NormalizedName = Path.GetFileNameWithoutExtension(fileName);
+			string ExpectedNormalized = Path.GetFileNameWithoutExtension(expectedFileName);
+
+			return string.Equals(NormalizedName, ExpectedNormalized, StringComparison.OrdinalIgnoreCase);
+		}
+
+		private static bool SetContainsFileName(HashSet<string> set, string expectedFileName)
+		{
+			foreach (string Name in set)
+			{
+				if (FileNameMatches(Name, expectedFileName))
+					return true;
+			}
+
+			return false;
+		}
 
 		#region Commands
 
@@ -1363,7 +1636,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				}
 			}
 
-			this.photo = new LegalIdentityAttachment(this.localPhotoFileName, ContentType, Bin);
+			this.photo = new LegalIdentityAttachment(profilePhotoFileName, ContentType, Bin);
 			this.ImageRotation = Rotation;
 			this.Image = ImageSource.FromStream(() => new MemoryStream(Bin));
 			this.ImageBin = Bin;
@@ -1516,6 +1789,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				this.photo = null;
 				this.Image = null;
 				this.ImageBin = null;
+				this.ImageRotation = 0;
 				this.HasPhoto = false;
 
 				if (RemoveFileOnDisc && File.Exists(this.localPhotoFileName))
@@ -1851,21 +2125,46 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		if (pendingPhotoNames is null)
 			return;
 
-		HashSet<string> normalized = new(pendingPhotoNames
+		HashSet<string> Normalized = new HashSet<string>(pendingPhotoNames
 			.Where(name => !string.IsNullOrWhiteSpace(name))
-			.Select(name => Path.GetFileName(name.Trim())), StringComparer.OrdinalIgnoreCase);
+			.Select(name => GetNormalizedFileName(name.Trim())), StringComparer.OrdinalIgnoreCase);
 
-		if (normalized.Count == 0)
+		if (Normalized.Count == 0)
 			return;
 
-		if (normalized.Contains(passportFileName) || normalized.Contains(Path.GetFileName(passportFileName)))
-			this.RemoveProofOfIdFront();
+		bool RemoveProfilePhoto = false;
+		foreach (string FileName in Normalized)
+		{
+			if (IsProfilePhotoFileName(FileName))
+			{
+				RemoveProfilePhoto = true;
+				break;
+			}
+		}
 
-		if (normalized.Contains(nationalIdFrontFileName) || normalized.Contains(driverLicenseFrontFileName))
-			this.RemoveProofOfIdFront();
+		if (RemoveProfilePhoto)
+			this.RemovePhoto(true);
 
-		if (normalized.Contains(nationalIdBackFileName) || normalized.Contains(driverLicenseBackFileName))
+		if (SetContainsFileName(Normalized, passportFileName) ||
+			SetContainsFileName(Normalized, nationalIdFrontFileName) ||
+			SetContainsFileName(Normalized, driverLicenseFrontFileName))
+		{
+			this.RemoveProofOfIdFront();
+		}
+
+		if (SetContainsFileName(Normalized, nationalIdBackFileName) ||
+			SetContainsFileName(Normalized, driverLicenseBackFileName))
+		{
 			this.RemoveProofOfIdBack();
+		}
+
+		foreach (string FileName in Normalized)
+		{
+			int Index;
+
+			if (IsAdditionalPhotoFileName(FileName, out Index))
+				this.RemoveAdditionalPhotoByFileName(FileName);
+		}
 	}
 
 		private static void ReplaceCollection<T>(ObservableCollection<T> collection, IEnumerable<T> items)
@@ -1975,11 +2274,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 				Trimmed = Trimmed[..^4];
 			}
 
-			const string Prefix = "AdditionalPhoto";
-			if (!Trimmed.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase))
+			if (!Trimmed.StartsWith(additionalPhotoPrefix, StringComparison.OrdinalIgnoreCase))
 				return;
 
-			string IndexPart = Trimmed.Substring(Prefix.Length);
+			string IndexPart = Trimmed.Substring(additionalPhotoPrefix.Length);
 			if (int.TryParse(IndexPart, out int Index) && Index > 0 && Index <= this.AdditionalPhotos.Count)
 			{
 				int ZeroBasedIndex = Index - 1;

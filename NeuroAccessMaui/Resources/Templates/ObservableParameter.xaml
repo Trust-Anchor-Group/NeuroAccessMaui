@@ -17,11 +17,11 @@
 		   TargetType="Label"
 		   BaseResourceKey="BoldItemTitleLabel">
 		<Setter Property="TextColor"
-				Value="{DynamicResource ContentPrimaryWL}" />
+				Value="{DynamicResource ContentSecondaryWL}" />
 		<Setter Property="FontSize"
 				Value="15" />
 		<Setter Property="FontFamily"
-				Value="SpaceGroteskSemiBold" />
+				Value="HaasGroteskRegular" />
 		<Setter Property="LineBreakMode"
 				Value="WordWrap" />
 		<Setter Property="VerticalTextAlignment"
@@ -37,7 +37,7 @@
 		<Setter Property="FontSize"
 				Value="15" />
 		<Setter Property="FontFamily"
-				Value="HaasGroteskRegular" />
+				Value="SpaceGroteskSemiBold" />
 		<Setter Property="LineBreakMode"
 				Value="WordWrap" />
 		<Setter Property="VerticalTextAlignment"
@@ -153,7 +153,7 @@
 						   Style="{DynamicResource ParameterItemTitleLabel}"
 						   HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
-						   Text="{Binding DateValue, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=true}"
+						   Text="{Binding DateValue, Converter={converters:DateTimeToStringConverter}}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -203,7 +203,7 @@
 						   Text="{Binding Label}"
 						   Style="{DynamicResource ParameterItemTitleLabel}" />
 					<Label Grid.Row="1"
-						   Text="{Binding DecimalValue}"
+						   Text="{Binding DecimalValue,Converter={converters:MoneyToString}}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -353,7 +353,7 @@
 						   Style="{DynamicResource ParameterItemTitleLabel}"
 						   HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
-						   Text="{Binding DurationValue}"
+						   Text="{Binding DurationValue, Converter={StaticResource DurationToStringConverter}}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -507,7 +507,7 @@
 						   Style="{DynamicResource ParameterItemTitleLabel}"
 						   HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
-						   Text="{Binding DateTimeValue, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=false}"
+						   Text="{Binding DateTimeValue, Converter={converters:DateTimeToStringConverter}}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -558,7 +558,7 @@
 						   Style="{DynamicResource ParameterItemTitleLabel}"
 						   HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
-						   Text="{Binding CalcString}"
+						   Text="{Binding CalcValue,Converter={converters:MoneyToString}}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
