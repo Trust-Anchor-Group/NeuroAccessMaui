@@ -3427,4 +3427,7 @@
   <data name="InvitationToSignFormat" xml:space="preserve">
     <value>You have been invited to sign this contract as {0}, make sure to verify and review the contract before proceeding</value>
   </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Send proposal</value>
+  </data>
 </root>
