@@ -38,8 +38,9 @@ namespace NeuroAccessMaui.Links
 		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
 		{
 			Dictionary<CaseInsensitiveString, object> Parameters = [];
+			string s = Link.OriginalString.Replace("%40", "@"); // Android has problems with URIs containg @
 
-			string? ContractId = Constants.UriSchemes.RemoveScheme(Link.OriginalString) ?? string.Empty;
+			string? ContractId = Constants.UriSchemes.RemoveScheme(s) ?? string.Empty;
 			if (ContractId is null)
 				return false;
 
@@ -54,7 +55,7 @@ namespace NeuroAccessMaui.Links
 					if (Key is null)
 						continue;
 
-					string? Value= QueryParameters[Key];
+					string? Value = QueryParameters[Key];
 					if (Value is null)
 						continue;
 

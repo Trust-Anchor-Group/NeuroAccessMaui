@@ -134,28 +134,28 @@
 							</VerticalStackLayout>
 						</VerticalStackLayout>
 
-						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-											 IsVisible="{Binding HasUnvalidatedClaims}">
-							<Label Style="{DynamicResource InfoLabel}"
-								   FontAttributes="Bold"
-								   Text="{l:Localize KycUnvalidatedClaimsHeader}"
-								   IsVisible="{Binding HasUnvalidatedClaims}" />
-							<VerticalStackLayout BindableLayout.ItemsSource="{Binding UnvalidatedClaims}">
-								<BindableLayout.ItemTemplate>
-									<DataTemplate>
-										<Label Style="{DynamicResource InfoLabel}"
-											   Text="{Binding .}" />
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
+							 IsVisible="{Binding HasUnvalidatedClaimsAndNoInvalids}">
+						<Label Style="{DynamicResource InfoLabel}"
+						   FontAttributes="Bold"
+						   Text="{l:Localize KycUnvalidatedClaimsHeader}"
+						   IsVisible="{Binding HasUnvalidatedClaimsAndNoInvalids}" />
+						<VerticalStackLayout BindableLayout.ItemsSource="{Binding UnvalidatedClaims}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate>
+									<Label Style="{DynamicResource InfoLabel}"
+									   Text="{Binding .}" />
 									</DataTemplate>
 								</BindableLayout.ItemTemplate>
 							</VerticalStackLayout>
 						</VerticalStackLayout>
 
-						<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-											 IsVisible="{Binding HasUnvalidatedPhotos}">
-							<Label Style="{DynamicResource InfoLabel}"
-								   FontAttributes="Bold"
-								   Text="{l:Localize KycUnvalidatedPhotosHeader}"
-								   IsVisible="{Binding HasUnvalidatedPhotos}" />
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
+							 IsVisible="{Binding HasUnvalidatedPhotosAndNoInvalids}">
+						<Label Style="{DynamicResource InfoLabel}"
+						   FontAttributes="Bold"
+						   Text="{l:Localize KycUnvalidatedPhotosHeader}"
+						   IsVisible="{Binding HasUnvalidatedPhotosAndNoInvalids}" />
 							<VerticalStackLayout BindableLayout.ItemsSource="{Binding UnvalidatedPhotos}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate>
