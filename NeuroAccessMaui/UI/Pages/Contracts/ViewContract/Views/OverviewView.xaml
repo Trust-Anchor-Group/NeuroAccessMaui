@@ -221,12 +221,40 @@
 
 								</Grid>
 							</Border>
-							<!--
-						<Label Text="{Binding Path=Contract.Category}"
-								Margin="{DynamicResource SmallSpacing}"
-								Style="{DynamicResource PageTitleLabel}"
-								HorizontalTextAlignment="Center"/>
--->
+							<Border Style="{DynamicResource BorderSubSet}"
+									IsVisible="{Binding IsProposal}"
+									Margin="0">
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+									<Grid ColumnDefinitions="auto, *"
+										  ColumnSpacing="{DynamicResource MediumSpacing}">
+										<Label Grid.Column="0"
+											   Text="{l:Localize From}"
+											   Style="{DynamicResource ItemTitleLabel}" />
+										<Label Grid.Column="1"
+											   Text="{Binding Path=ProposalFriendlyName,Converter={converters:HyphenIfEmpty}}"
+											   Style="{DynamicResource ItemValueLabel}" />
+									</Grid>
+
+									<Grid ColumnDefinitions="auto, *">
+										<Label Grid.Column="0"
+											   Text="{l:Localize Role}"
+											   Style="{DynamicResource ItemTitleLabel}" />
+										<Label Grid.Column="1"
+											   Text="{Binding Path=ProposalRole,Converter={converters:HyphenIfEmpty}}"
+											   Style="{DynamicResource ItemValueLabel}" />
+									</Grid>
+
+									<Grid ColumnDefinitions="auto, *">
+										<Label Grid.Column="0"
+											   Text="{l:Localize Message}"
+											   Style="{DynamicResource ItemTitleLabel}" />
+										<Label Grid.Column="1"
+											   Text="{Binding Path=ProposalMessage,Converter={converters:HyphenIfEmpty}}"
+											   Style="{DynamicResource ItemValueLabel}" />
+									</Grid>
+								</VerticalStackLayout>
+
+							</Border>
 
 
 							<Border Style="{DynamicResource BorderSubSet}"
