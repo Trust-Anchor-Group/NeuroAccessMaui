@@ -996,7 +996,7 @@
     <value>Selfie</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Por favor, adicione uma imagem onde você pode ser facilmente identificado.</value>
+    <value>Tire uma foto ao vivo de si mesmo agora para que possamos verificar a sua identidade. Capturas de ecrã ou imagens editadas não são permitidas.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>As imagens a seguir foram incluídas no aplicativo.</value>

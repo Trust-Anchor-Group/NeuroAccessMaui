@@ -996,7 +996,7 @@
     <value>Foto</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Lägg till en bild där du lätt kan identifieras.</value>
+    <value>Ta ett livefoto av dig själv nu så att vi kan verifiera din identitet. Skärmdumpar eller redigerade bilder är inte tillåtna.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>Följande bilder har inkluderats i ansökan.</value>
