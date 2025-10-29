@@ -400,7 +400,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			try
 			{
-				await this.OpenQrPopup();
+				await this.OpenQrPopup("");
 			}
 			catch (Exception Ex)
 			{

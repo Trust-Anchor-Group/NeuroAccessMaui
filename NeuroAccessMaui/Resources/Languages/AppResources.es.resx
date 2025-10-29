@@ -2829,7 +2829,7 @@
     <value>Elimina datos temporales como imágenes y archivos adjuntos para liberar espacio</value>
   </data>
   <data name="Apps" xml:space="preserve">
-      <value>Aplicaciones</value>
+    <value>Aplicaciones</value>
   </data>
   <data name="BetaFeaturesDescription" xml:space="preserve">
     <value>Las funciones beta están en desarrollo y podrían carecer de funcionalidad o diseño. Sin embargo, algunas de sus funciones principales ya están disponibles.</value>

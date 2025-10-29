@@ -29,9 +29,9 @@
 				VerticalOptions="Center">
 				<VerticalStackLayout>
 					<Label
-							  HorizontalTextAlignment="Center"
-							  Style="{DynamicResource PageTitleLabel}"
-							  Text="{l:Localize PersonalId}"/>
+						HorizontalTextAlignment="Center"
+						Style="{DynamicResource PageTitleLabel}"
+						Text="{Binding Title}"/>
 						 
 					<Image x:Name="QrCode" Source="{Binding QrCode}" WidthRequest="{Binding QrCodeWidth}"
 						HeightRequest="{Binding QrCodeHeight}" HorizontalOptions="Center">

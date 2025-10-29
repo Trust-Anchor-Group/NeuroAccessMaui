@@ -45,7 +45,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="ContractModelTemplate" x:DataType="objectmodel:ContractModel">
-			<Grid ColumnDefinitions="auto,*" RowDefinitions="auto,auto" Padding="5,5,5,5">
+			<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto" Padding="5,5,5,5">
 				<Label Grid.Column="0" Grid.Row="0" LineBreakMode="NoWrap" Padding="5,2,5,0"
 					   Text="{Binding Path=Timestamp, Converter={converters:DateToString}}"
 					   HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -61,6 +61,15 @@
 					<Label FontSize="Caption" TextColor="{DynamicResource ContentWhitefixed}"
 						   Text="{Binding NrEvents}" Padding="1"/>
 				</Frame>
+				<!-- Share Template QR button -->
+				<controls:SvgButton Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
+									SvgSource="share.svg"
+									Style="{DynamicResource IconButtonOnBackground}"
+									HorizontalOptions="End"
+									VerticalOptions="Center"
+									Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ShareTemplateQRCommand}"
+									CommandParameter="{Binding .}"
+									IsVisible="{Binding Source={x:Reference ThisPage}, Path=BindingContext.CanShareTemplate}" />
 			</Grid>
 		</DataTemplate>
 
@@ -123,11 +132,11 @@
 						<!-- CollectionView's IsVisible used to be bound to IsIdle, but there seems to be a race condition somewhere because this led
 		the CollectionView not appearing sometimes on iOS. Always showing it seems to be OK because it is empty before contracts are loaded anyway. -->
 						<CollectionView x:Name="Contracts" VerticalOptions="Start"
-											 ItemSizingStrategy="MeasureAllItems" SelectionMode="Single"
-											 IsVisible="True"
-											 ItemsSource="{Binding Path=Categories}"
-											 ItemTemplate="{StaticResource ItemStyleSelector}"
-											 SelectionChanged="ContractsSelectionChanged">
+										ItemSizingStrategy="MeasureAllItems" SelectionMode="Single"
+										IsVisible="True"
+										ItemsSource="{Binding Path=Categories}"
+										ItemTemplate="{StaticResource ItemStyleSelector}"
+										SelectionChanged="ContractsSelectionChanged">
 							<CollectionView.ItemsLayout>
 								<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5" />
 							</CollectionView.ItemsLayout>

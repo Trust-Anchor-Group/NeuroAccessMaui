@@ -114,11 +114,17 @@ namespace NeuroAccessMaui.UI.Pages
 		/// </summary>
 		/// <returns></returns>
 		[RelayCommand]
-		public async Task OpenQrPopup()
+		public async Task OpenQrPopup(string? Title)
 		{
 			if (this.QrCodeBin is null) return;
 
-			ShowQRPopup QrPopup = new(this.QrCodeBin, this.QrCodeUri);
+			ShowQRPopup QrPopup;
+
+			if (!string.IsNullOrEmpty(Title))
+				QrPopup = new(this.QrCodeBin, this.QrCodeUri, Title);
+			else
+				QrPopup = new(this.QrCodeBin, this.QrCodeUri);
+
 			await ServiceRef.UiService.PushAsync(QrPopup);
 		}
 

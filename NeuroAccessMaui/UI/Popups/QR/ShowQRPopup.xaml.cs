@@ -16,6 +16,14 @@ namespace NeuroAccessMaui.UI.Popups.QR
 			this.BindingContext = ViewModel;
 		}
 
+		public ShowQRPopup(byte[] QrCodeBin, string? QrCodeUri, string Title)
+		{
+			BasePopupViewModel ViewModel = new ShowQRViewModel(QrCodeBin, QrCodeUri, Title);
+
+			this.InitializeComponent();
+			this.BindingContext = ViewModel;
+		}
+
 		public ShowQRPopup()
 		{
 			this.InitializeComponent();

@@ -18,8 +18,10 @@ namespace NeuroAccessMaui.UI.Popups.QR
 
 		private byte[] qrCodeBin = [];
 		private readonly IDispatcherTimer? timer;
-
 		private int timerSeconds = 60;
+
+		[ObservableProperty]
+		private string title;
 
 		/// <summary>
 		/// Legal ID
@@ -96,8 +98,14 @@ namespace NeuroAccessMaui.UI.Popups.QR
 
 		#endregion
 
-		public ShowQRViewModel(byte[] QrCodeBin, string? QrCodeUri)
+		public ShowQRViewModel(byte[] QrCodeBin, string? QrCodeUri) : this(QrCodeBin, QrCodeUri, "QR Code")
 		{
+		}
+
+		public ShowQRViewModel(byte[] QrCodeBin, string? QrCodeUri, string Title)
+		{
+			this.Title = Title;
+
 			this.QrCodeBin = QrCodeBin;
 			this.QrCodeUri = QrCodeUri;
 			this.LegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
@@ -121,6 +129,7 @@ namespace NeuroAccessMaui.UI.Popups.QR
 			this.timer.Interval = TimeSpan.FromSeconds(1);
 			this.timer.Tick += this.OnTimerTick;
 			this.timer.Start();
+
 		}
 
 		#region Commands
@@ -152,7 +161,7 @@ namespace NeuroAccessMaui.UI.Popups.QR
 				// Share the file
 				await Share.Default.RequestAsync(new ShareFileRequest
 				{
-					Title = "QR Code",
+					Title = this.Title ?? "QR Code",
 					File = new ShareFile(FilePath, "image/png")
 				});
 
@@ -179,10 +188,10 @@ namespace NeuroAccessMaui.UI.Popups.QR
 					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
 					ServiceRef.Localizer[nameof(AppResources.SuccessfullyCopiedToClipboard)]);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 			finally
 			{
