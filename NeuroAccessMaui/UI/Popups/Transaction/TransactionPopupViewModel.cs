@@ -10,7 +10,8 @@ using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.Services.Contacts; // Added for ContactInfo lookup
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
-using Waher.Networking.XMPP.Contracts; // Added for identity navigation
+using Waher.Networking.XMPP.Contracts;
+using System.Globalization; // Added for identity navigation
 
 namespace NeuroAccessMaui.UI.Popups.Transaction
 {
@@ -20,13 +21,24 @@ namespace NeuroAccessMaui.UI.Popups.Transaction
 		private TransactionEventItem transactionEevent = Event;
 
 		[ObservableProperty]
-		private bool isContact = Event.IsContact;
+		private bool isContact;
+
+		public decimal Change => this.TransactionEevent.Change < 0 ? -this.TransactionEevent.Change : this.TransactionEevent.Change;
 
 		public bool IsSender => this.TransactionEevent.Change < 0;
 
 		public bool HasMessage => this.TransactionEevent.HasMessage;
 
 		public bool MessageIsUrl => this.HasMessage && Uri.IsWellFormedUriString(this.TransactionEevent.Message, UriKind.Absolute);
+
+		protected override async Task OnInitialize()
+		{
+			await base.OnInitialize();
+
+			await this.EvaluateIsContact();
+
+			this.OnPropertyChanged(nameof(this.IsContact));
+		}
 
 		public string? Message
 		{
@@ -100,7 +112,9 @@ namespace NeuroAccessMaui.UI.Popups.Transaction
 				if (string.IsNullOrEmpty(Remote))
 					return;
 
-				ContactInfo Contact = await ContactInfo.FindByBareJid(Remote);
+				ContactInfo? Contact = await ContactInfo.FindByBareJid(Remote);
+				Contact ??= await ContactInfo.FindByLegalId(Remote);
+
 				if (Contact is null)
 					return;
 
@@ -140,6 +154,7 @@ namespace NeuroAccessMaui.UI.Popups.Transaction
 				try
 				{
 					await App.OpenUrlAsync(this.Message);
+					await ServiceRef.UiService.PopAsync();
 				}
 				catch (Exception Ex)
 				{
@@ -147,7 +162,51 @@ namespace NeuroAccessMaui.UI.Popups.Transaction
 				}
 			}
 		}
-
 		#endregion
+
+		private async Task EvaluateIsContact()
+		{
+			string Remote = this.TransactionEevent.Remote;
+			if (string.IsNullOrEmpty(Remote))
+			{
+				this.IsContact = false;
+				return;
+			}
+
+			// Count as contact if self
+			if (string.Equals(Remote, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase) || string.Equals(Remote, ServiceRef.TagProfile.LegalJid, StringComparison.OrdinalIgnoreCase))
+			{
+				this.IsContact = true;
+				return;
+			}
+
+			try
+			{
+				ContactInfo? Contact2 = await ContactInfo.FindByLegalId(Remote);
+				if (Contact2 is not null)
+				{
+					this.IsContact = true;
+					return;
+				}
+
+				ContactInfo Contact = await ContactInfo.FindByBareJid(Remote);
+				if (Contact is not null)
+				{
+					this.IsContact = true;
+					return;
+				}
+
+				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(Remote);
+				if (Item is not null)
+				{
+					this.IsContact = true;
+					return;
+				}
+			}
+			catch
+			{
+				// Do nothing
+			}
+		}
 	}
 }

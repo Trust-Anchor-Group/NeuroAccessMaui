@@ -67,14 +67,14 @@
 												VerticalOptions="Center"
 												Grid.Column="2"
 												Grid.RowSpan="2"
-												IsVisible="{Binding TransactionEevent.IsContact}"
+												IsVisible="{Binding IsContact}"
 												Command="{Binding OpenChatCommand}"/>
 
 							<controls:SvgButton SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
 												VerticalOptions="Center"
 												Grid.Column="3"
 												Grid.RowSpan="2"
-												IsVisible="{Binding TransactionEevent.IsContact}"
+												IsVisible="{Binding IsContact}"
 												Command="{Binding ViewIdCommand}"/> 
 						</Grid>
 					</Border>
@@ -85,7 +85,7 @@
 							<Label TextColor="{Binding TransactionEevent.ChangeColor}" LineBreakMode="TailTruncation" >
 								<Label.FormattedText>
 									<FormattedString>
-										<Span Text="{Binding TransactionEevent.Change}" FontSize="16" />
+										<Span Text="{Binding Change}" FontSize="16" />
 										<Span Text=" " FontSize="16" />
 										<Span Text="{Binding TransactionEevent.Currency}" FontSize="16" />
 									</FormattedString>

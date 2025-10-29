@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Threading.Tasks;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
@@ -294,6 +295,11 @@ namespace NeuroAccessMaui.UI.Controls
 			this.durationsContainer.Clear();
 			foreach (CompositeEntry Entry in SortedDurationEntries)
 				MainThread.BeginInvokeOnMainThread(() => this.durationsContainer.Add(Entry));
+
+			MainThread.BeginInvokeOnMainThread(async () => {
+				await Task.Delay(500);
+				DurationEntry.Focus();
+			});
 		  }
 
 		/// <summary>
