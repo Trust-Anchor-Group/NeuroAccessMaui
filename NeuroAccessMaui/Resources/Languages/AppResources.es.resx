@@ -22,8 +22,7 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework
   object]</value>
         <comment>This is a comment</comment>
@@ -3280,5 +3279,161 @@
   </data>
   <data name="DurationCommaSeparator" xml:space="preserve">
     <value>, </value>
+  </data>
+  <data name="NoTokens" xml:space="preserve">
+    <value>Sin tokens</value>
+  </data>
+  <data name="TokenDetails" xml:space="preserve">
+    <value>Detalles del token</value>
+  </data>
+  <data name="TokenDetailsDescription" xml:space="preserve">
+    <value>A continuación se muestran los detalles codificados en el token. Haz clic en cualquier enlace para más información.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categoría</value>
+  </data>
+  <data name="TokenId" xml:space="preserve">
+    <value>ID de token</value>
+  </data>
+  <data name="TokenIdMethod" xml:space="preserve">
+    <value>Método de ID de token</value>
+  </data>
+  <data name="TokenVisibility" xml:space="preserve">
+    <value>Visibilidad del token</value>
+  </data>
+  <data name="Ordinal" xml:space="preserve">
+    <value>Ordinal</value>
+  </data>
+  <data name="Valuation" xml:space="preserve">
+    <value>Valoración</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Informes</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variables</value>
+  </data>
+  <data name="States" xml:space="preserve">
+    <value>Estados</value>
+  </data>
+  <data name="TokenPartsInfoText" xml:space="preserve">
+    <value>A continuación se muestra una lista de partes relacionadas con este token.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Propietario</value>
+  </data>
+  <data name="OwnerJid" xml:space="preserve">
+    <value>Dirección del propietario</value>
+  </data>
+  <data name="OwnershipContract" xml:space="preserve">
+    <value>Contrato de propiedad</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Creador</value>
+  </data>
+  <data name="CreatorJid" xml:space="preserve">
+    <value>Dirección del creador</value>
+  </data>
+  <data name="CreationContract" xml:space="preserve">
+    <value>Contrato de creación</value>
+  </data>
+  <data name="TrustProvider" xml:space="preserve">
+    <value>Proveedor de confianza</value>
+  </data>
+  <data name="TrustProviderJid" xml:space="preserve">
+    <value>Dirección del proveedor de confianza</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>Privilegios</value>
+  </data>
+  <data name="TokenPrivilegesInfoText" xml:space="preserve">
+    <value>A continuación se muestran los privilegios grabados en el token.</value>
+  </data>
+  <data name="CreatorCanDestroy" xml:space="preserve">
+    <value>El creador puede destruir el token</value>
+  </data>
+  <data name="OwnerCanDestroyBatch" xml:space="preserve">
+    <value>El propietario puede destruir el lote de tokens</value>
+  </data>
+  <data name="OwnerCanDestroyIndividual" xml:space="preserve">
+    <value>El propietario puede destruir un token individual</value>
+  </data>
+  <data name="CertifierCanDestroy" xml:space="preserve">
+    <value>El certificador puede destruir el token</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Información legible por máquina</value>
+  </data>
+  <data name="MachineReadableInfoTextToken" xml:space="preserve">
+    <value>A continuación se muestra una vista general de los datos legibles por máquina incrustados en el token.</value>
+  </data>
+  <data name="DefinitionNamespace" xml:space="preserve">
+    <value>Espacio de nombres de la definición</value>
+  </data>
+  <data name="DefinitionSchemaDigest" xml:space="preserve">
+    <value>Resumen (digest) del esquema de definición</value>
+  </data>
+  <data name="ShowM2MInfo" xml:space="preserve">
+    <value>Mostrar definición M2M</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Acciones</value>
+  </data>
+  <data name="SendToContact" xml:space="preserve">
+    <value>Enviar a contacto</value>
+  </data>
+  <data name="PublishMarketplace" xml:space="preserve">
+    <value>Publicar en el Marketplace</value>
+  </data>
+  <data name="OfferToBuy" xml:space="preserve">
+    <value>Ofrecer comprar</value>
+  </data>
+  <data name="OfferToSell" xml:space="preserve">
+    <value>Ofrecer vender</value>
+  </data>
+  <data name="ViewEvents" xml:space="preserve">
+    <value>Ver eventos</value>
+  </data>
+  <data name="CurrentState" xml:space="preserve">
+    <value>Estado actual</value>
+  </data>
+  <data name="MachineHasEnded" xml:space="preserve">
+    <value>La máquina de estados ha finalizado.</value>
+  </data>
+  <data name="CurrentVariables" xml:space="preserve">
+    <value>Variables actuales</value>
+  </data>
+  <data name="TokenEvents" xml:space="preserve">
+    <value>Eventos del token</value>
+  </data>
+  <data name="TokenEventsDescription" xml:space="preserve">
+    <value>A continuación se muestran los eventos públicos registrados para el token. Tus eventos privados también están incluidos.</value>
+  </data>
+  <data name="TextNote" xml:space="preserve">
+    <value>Nota de texto</value>
+  </data>
+  <data name="XmlNote" xml:space="preserve">
+    <value>Nota XML</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Añadir nota</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Valor</value>
+  </data>
+  <data name="InvitationToSignFormat" xml:space="preserve">
+    <value>Has sido invitado a firmar este contrato como {0}. Asegúrate de verificar y revisar el contrato antes de continuar.</value>
+  </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Enviar propuesta</value>
+  </data>
+  <data name="Sender" xml:space="preserve">
+    <value>Remitente:</value>
+  </data>
+  <data name="ShortId" xml:space="preserve">
+    <value>ID</value>
   </data>
 </root>

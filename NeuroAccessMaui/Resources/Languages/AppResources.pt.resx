@@ -22,8 +22,7 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework
   object]</value>
         <comment>This is a comment</comment>
@@ -3280,5 +3279,161 @@
   </data>
   <data name="DurationCommaSeparator" xml:space="preserve">
     <value>, </value>
+  </data>
+  <data name="NoTokens" xml:space="preserve">
+    <value>Sem tokens</value>
+  </data>
+  <data name="TokenDetails" xml:space="preserve">
+    <value>Detalhes do token</value>
+  </data>
+  <data name="TokenDetailsDescription" xml:space="preserve">
+    <value>A seguir estão os detalhes codificados no token. Clique em qualquer link para mais informações.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categoria</value>
+  </data>
+  <data name="TokenId" xml:space="preserve">
+    <value>ID do token</value>
+  </data>
+  <data name="TokenIdMethod" xml:space="preserve">
+    <value>Método de ID do token</value>
+  </data>
+  <data name="TokenVisibility" xml:space="preserve">
+    <value>Visibilidade do token</value>
+  </data>
+  <data name="Ordinal" xml:space="preserve">
+    <value>Ordinal</value>
+  </data>
+  <data name="Valuation" xml:space="preserve">
+    <value>Avaliação</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Relatórios</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variáveis</value>
+  </data>
+  <data name="States" xml:space="preserve">
+    <value>Estados</value>
+  </data>
+  <data name="TokenPartsInfoText" xml:space="preserve">
+    <value>A seguir está uma lista de partes relacionadas a este token.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Proprietário</value>
+  </data>
+  <data name="OwnerJid" xml:space="preserve">
+    <value>Endereço do proprietário</value>
+  </data>
+  <data name="OwnershipContract" xml:space="preserve">
+    <value>Contrato de propriedade</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Criador</value>
+  </data>
+  <data name="CreatorJid" xml:space="preserve">
+    <value>Endereço do criador</value>
+  </data>
+  <data name="CreationContract" xml:space="preserve">
+    <value>Contrato de criação</value>
+  </data>
+  <data name="TrustProvider" xml:space="preserve">
+    <value>Provedor de confiança</value>
+  </data>
+  <data name="TrustProviderJid" xml:space="preserve">
+    <value>Endereço do provedor de confiança</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>Privilégios</value>
+  </data>
+  <data name="TokenPrivilegesInfoText" xml:space="preserve">
+    <value>A seguir estão os privilégios gravados no token.</value>
+  </data>
+  <data name="CreatorCanDestroy" xml:space="preserve">
+    <value>O criador pode destruir o token</value>
+  </data>
+  <data name="OwnerCanDestroyBatch" xml:space="preserve">
+    <value>O proprietário pode destruir o lote de tokens</value>
+  </data>
+  <data name="OwnerCanDestroyIndividual" xml:space="preserve">
+    <value>O proprietário pode destruir um token individual</value>
+  </data>
+  <data name="CertifierCanDestroy" xml:space="preserve">
+    <value>O certificador pode destruir o token</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Informações legíveis por máquina</value>
+  </data>
+  <data name="MachineReadableInfoTextToken" xml:space="preserve">
+    <value>Abaixo está uma visão geral dos dados legíveis por máquina incorporados no token.</value>
+  </data>
+  <data name="DefinitionNamespace" xml:space="preserve">
+    <value>Namespace da definição</value>
+  </data>
+  <data name="DefinitionSchemaDigest" xml:space="preserve">
+    <value>Resumo (digest) do esquema de definição</value>
+  </data>
+  <data name="ShowM2MInfo" xml:space="preserve">
+    <value>Mostrar definição M2M</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Ações</value>
+  </data>
+  <data name="SendToContact" xml:space="preserve">
+    <value>Enviar para contato</value>
+  </data>
+  <data name="PublishMarketplace" xml:space="preserve">
+    <value>Publicar no Marketplace</value>
+  </data>
+  <data name="OfferToBuy" xml:space="preserve">
+    <value>Oferecer para comprar</value>
+  </data>
+  <data name="OfferToSell" xml:space="preserve">
+    <value>Oferecer para vender</value>
+  </data>
+  <data name="ViewEvents" xml:space="preserve">
+    <value>Ver eventos</value>
+  </data>
+  <data name="CurrentState" xml:space="preserve">
+    <value>Estado atual</value>
+  </data>
+  <data name="MachineHasEnded" xml:space="preserve">
+    <value>A máquina de estados foi encerrada.</value>
+  </data>
+  <data name="CurrentVariables" xml:space="preserve">
+    <value>Variáveis atuais</value>
+  </data>
+  <data name="TokenEvents" xml:space="preserve">
+    <value>Eventos do token</value>
+  </data>
+  <data name="TokenEventsDescription" xml:space="preserve">
+    <value>A seguir estão os eventos públicos registrados para o token. Seus eventos privados também estão incluídos.</value>
+  </data>
+  <data name="TextNote" xml:space="preserve">
+    <value>Nota de texto</value>
+  </data>
+  <data name="XmlNote" xml:space="preserve">
+    <value>Nota XML</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Adicionar nota</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Valor</value>
+  </data>
+  <data name="InvitationToSignFormat" xml:space="preserve">
+    <value>Você foi convidado a assinar este contrato como {0}. Verifique e revise o contrato antes de prosseguir.</value>
+  </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Enviar proposta</value>
+  </data>
+  <data name="Sender" xml:space="preserve">
+    <value>Remetente:</value>
+  </data>
+  <data name="ShortId" xml:space="preserve">
+    <value>ID</value>
   </data>
 </root>
