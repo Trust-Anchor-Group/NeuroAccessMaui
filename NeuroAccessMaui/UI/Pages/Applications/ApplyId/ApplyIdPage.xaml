@@ -256,7 +256,7 @@
 							</CarouselView.ItemTemplate>
 						</CarouselView>
 						<IndicatorView x:Name="AllPhotosPhotosIndicator"
-						               Count="{Binding AdditionalPhotos.Count}"
+						               Count="{Binding AllPhotos.Count}"
 						               IndicatorColor="LightGrey"
 						               SelectedIndicatorColor="Black"
 						               HorizontalOptions="Center" />
