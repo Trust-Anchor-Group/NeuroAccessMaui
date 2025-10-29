@@ -309,11 +309,10 @@
 
 					</Border>
 
-					<!-- Parameters Button -->
-					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractEditPath}"
-											  TopLabelText="{l:Localize ViewParametersTitle}"
-											  BottomLabelText="{l:Localize ViewParametersDescription}"
-											  Command="{Binding GoToParametersCommand}" />
+					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractPath}"
+											  TopLabelText="{l:Localize ReviewContractTitle}"
+											  BottomLabelText="{l:Localize ReviewContractDescription2}"
+											  Command="{Binding GoToReviewCommand}" />
 
 					<!-- Roles Button -->
 					<views:OverviewItemButton IconData="{x:Static ui:Geometries.RolesPath}"
@@ -321,10 +320,12 @@
 											  BottomLabelText="{l:Localize ViewRolesDescription}"
 											  Command="{Binding GoToRolesCommand}" />
 
-					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractPath}"
-											  TopLabelText="{l:Localize ReviewContractTitle}"
-											  BottomLabelText="{l:Localize ReviewContractDescription2}"
-											  Command="{Binding GoToReviewCommand}" />
+					<!-- Parameters Button -->
+					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractEditPath}"
+											  TopLabelText="{l:Localize ViewParametersTitle}"
+											  BottomLabelText="{l:Localize ViewParametersDescription}"
+											  Command="{Binding GoToParametersCommand}" />
+
 
 					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractIconPath}"
 											  TopLabelText="{l:Localize ServerSignatureButtonTitle}"
