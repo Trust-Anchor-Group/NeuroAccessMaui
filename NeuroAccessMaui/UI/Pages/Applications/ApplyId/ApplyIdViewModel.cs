@@ -172,12 +172,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.ApplyId
 		{
 			this.ApplicationId = null;
 
-			if (ServiceRef.TagProfile.IdentityApplication is not null)
-			{
-				if (ServiceRef.TagProfile.IdentityApplication.IsDiscarded())
-					await ServiceRef.TagProfile.SetIdentityApplication(null, true);
-			}
-
 			LegalIdentity? IdentityReference;
 
 			if (ServiceRef.TagProfile.IdentityApplication is not null)
