@@ -98,7 +98,7 @@
 							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize TransactionType}" Margin="0,16,0,0"/>
 							<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.TransactionType}"/>
 
-							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize TransactionType}" Margin="0,16,0,0"/>
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize Timestamp}" Margin="0,16,0,0"/>
 							<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.Timestamp}"/>
 
 							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize TransactionStatus}" Margin="0,16,0,0"/>
