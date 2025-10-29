@@ -203,7 +203,7 @@
 						   Text="{Binding Label}"
 						   Style="{DynamicResource ParameterItemTitleLabel}" />
 					<Label Grid.Row="1"
-						   Text="{Binding DecimalValue}"
+						   Text="{Binding DecimalValue,Converter={converters:MoneyToString}}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
