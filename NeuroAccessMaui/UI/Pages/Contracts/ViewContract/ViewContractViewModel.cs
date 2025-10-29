@@ -996,8 +996,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				await Database.Update(Ref);
 			}
 
-			await this.GoToStateAsync(CurrentStep);
 			this.CanStateChange = previousStateChange;
+			await this.GoToStateAsync(CurrentStep);
 			ServiceRef.LogService.LogDebug($"RefreshContractAsync completed for {this.Contract.ContractId}");
 
 			MainThread.BeginInvokeOnMainThread(() =>
