@@ -28,7 +28,7 @@
 			<ScrollView VerticalOptions="Center">
 				<VerticalStackLayout>
 					<Label Style="{DynamicResource PageTitleLabelSmall}" Text="{l:Localize TransactionDetails}"/>
-					<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize Recipient}" Margin="4,16,0,4"/>
+					<Label Style="{DynamicResource Brand2LabelXS}" Text="{Binding DestinationString}" Margin="4,16,0,4"/>
 					<Border Style="{DynamicResource BorderSubSet}">
 						<Grid ColumnDefinitions="auto, *, auto, auto"
 							  RowDefinitions="*, auto">
@@ -92,9 +92,6 @@
 								</Label.FormattedText>
 							</Label>
 
-							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize FullIdentifier}" Margin="0,16,0,0"/>
-							<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.Remote}"/>
-
 							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize TransactionType}" Margin="0,16,0,0"/>
 							<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.TransactionType}"/>
 
@@ -119,6 +116,21 @@
 
 							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize TransactionIDNoColon}" Margin="0,16,0,0"/>
 							<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.TransactionId}"/>
+
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize Message}" Margin="0,16,0,0" IsVisible="{Binding HasMessage}"/>
+							<controls:ConditionView Condition="{Binding MessageIsUrl}" IsVisible="{Binding HasMessage}">
+								<controls:ConditionView.True>
+									<Border>
+										<Label Style="{DynamicResource ClickableValueLabel}" Text="{Binding TransactionEevent.Message}"/>
+										<Border.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding OpenMessageUriCommand}"/>
+										</Border.GestureRecognizers>
+									</Border>
+								</controls:ConditionView.True>
+								<controls:ConditionView.False>
+									<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.Message}"/>
+								</controls:ConditionView.False>
+							</controls:ConditionView>
 						</VerticalStackLayout>
 					</Border>
 

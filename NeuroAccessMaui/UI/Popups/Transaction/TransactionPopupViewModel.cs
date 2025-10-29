@@ -22,6 +22,34 @@ namespace NeuroAccessMaui.UI.Popups.Transaction
 		[ObservableProperty]
 		private bool isContact = Event.IsContact;
 
+		public bool IsSender => this.TransactionEevent.Change < 0;
+
+		public bool HasMessage => this.TransactionEevent.HasMessage;
+
+		public bool MessageIsUrl => this.HasMessage && Uri.IsWellFormedUriString(this.TransactionEevent.Message, UriKind.Absolute);
+
+		public string? Message
+		{
+			get
+			{
+				if (this.HasMessage)
+					return this.TransactionEevent.Message;
+				else
+					return null;
+			}
+		}
+
+		public string DestinationString
+		{
+			get
+			{
+				if (this.IsSender)
+					return ServiceRef.Localizer[nameof(AppResources.To)];
+				else
+					return ServiceRef.Localizer[nameof(AppResources.From)];
+			}
+		}
+
 		#region Commands
 
 		[RelayCommand]
@@ -81,12 +109,16 @@ namespace NeuroAccessMaui.UI.Popups.Transaction
 				{
 					ViewIdentityNavigationArgs ViewIdentityArgs = new(Identity);
 					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs);
+					await ServiceRef.UiService.PopAsync();
 				}
 				else
 				{
 					string LegalId = Contact.LegalId;
 					if (!string.IsNullOrEmpty(LegalId))
+					{
 						await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(LegalId, ServiceRef.Localizer[nameof(AppResources.ScannedQrCode)]);
+						await ServiceRef.UiService.PopAsync();
+					}
 				}
 			}
 			catch (Exception Ex)
@@ -98,6 +130,22 @@ namespace NeuroAccessMaui.UI.Popups.Transaction
 		public override Task OnPop()
 		{
 			return base.OnPop();
+		}
+
+		[RelayCommand]
+		private async Task OpenMessageUri()
+		{
+			if (this.MessageIsUrl && this.Message is not null)
+			{
+				try
+				{
+					await App.OpenUrlAsync(this.Message);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			}
 		}
 
 		#endregion

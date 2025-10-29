@@ -74,6 +74,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 			{
 				if (string.IsNullOrEmpty(this.Remote))
 					return false;
+
+				// Count as contact if self
+				if (string.Equals(this.Remote, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase) || string.Equals(this.Remote, ServiceRef.TagProfile.LegalJid, StringComparison.OrdinalIgnoreCase))
+					return true;
+
 				try
 				{
 					RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.Remote);

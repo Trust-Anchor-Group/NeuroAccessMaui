@@ -2226,7 +2226,7 @@
     <value>Proporcione la cantidad de eDaler que desea comprar a continuación y presione el botón Comprar. Es posible que se abra una página web en la que tenga que rellenar más información para que el procesador de pagos valide su solicitud.</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Importe:</value>
+    <value>Monto:</value>
   </data>
   <data name="AmountExtra" xml:space="preserve">
     <value>Cantidad Extra: (opcional, sugerencia)</value>
