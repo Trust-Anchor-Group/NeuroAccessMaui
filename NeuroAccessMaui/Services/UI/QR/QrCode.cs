@@ -220,27 +220,27 @@ namespace NeuroAccessMaui.Services.UI.QR
 					break;
 
 				case Constants.UriSchemes.IotId:
-					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text.Replace("@", "%40"));	// iOS has problems with URIs containg @
 					Rgba = M.ToRGBA(Width, Height, (LightTheme ? userCodeLight : userCodeDark).ColorFunction, true);
 					break;
 
 				case Constants.UriSchemes.IotSc:
-					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text.Replace("@", "%40"));	// iOS has problems with URIs containg @
 					Rgba = M.ToRGBA(Width, Height, (LightTheme ? contractCodeLight : contractCodeDark).ColorFunction, true);
 					break;
 
 				case Constants.UriSchemes.IotDisco:
-					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text.Replace("@", "%40"));    // iOS has problems with URIs containg @
 					Rgba = M.ToRGBA(Width, Height, (LightTheme ? thingsCodeLight : thingsCodeDark).ColorFunction, true);
 					break;
 
 				case Constants.UriSchemes.EDaler:
-					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text.Replace("@", "%40"));    // iOS has problems with URIs containg @
 					Rgba = M.ToRGBA(Width, Height, (LightTheme ? eDalerCodeLight : eDalerCodeDark).ColorFunction, true);
 					break;
 
 				case Constants.UriSchemes.NeuroFeature:
-					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text.Replace("@", "%40"));    // iOS has problems with URIs containg @
 					Rgba = M.ToRGBA(Width, Height, (LightTheme ? tokenCodeLight : tokenCodeDark).ColorFunction, true);
 					break;
 
