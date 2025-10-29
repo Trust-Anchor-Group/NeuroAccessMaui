@@ -459,6 +459,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			try
 			{
+				this.GenerateQrCode(this.Contract.Contract.ContractIdUriString);
 				await this.OpenQrPopup("");
 			}
 			catch (Exception Ex)
