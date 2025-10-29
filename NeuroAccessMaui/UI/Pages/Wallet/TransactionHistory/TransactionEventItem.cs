@@ -1,8 +1,10 @@
 ﻿using System.Globalization;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Popups.Transaction;
 using Waher.Networking.XMPP;
 using AccountEventModel = EDaler.AccountEvent;
@@ -67,29 +69,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 		public string ReservedSuffix => this.accountEvent.Reserved == 0 ? string.Empty : "+" + NeuroAccessMaui.UI.Converters.MoneyToString.ToString(this.accountEvent.Reserved);
 
 		public bool IsReserved => this.accountEvent.Reserved != 0;
-
-		public bool IsContact
-		{
-			get
-			{
-				if (string.IsNullOrEmpty(this.Remote))
-					return false;
-
-				// Count as contact if self
-				if (string.Equals(this.Remote, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase) || string.Equals(this.Remote, ServiceRef.TagProfile.LegalJid, StringComparison.OrdinalIgnoreCase))
-					return true;
-
-				try
-				{
-					RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.Remote);
-					return Item is not null;
-				}
-				catch
-				{
-					return false;
-				}
-			}
-		}
 
 		/// <summary>
 		/// Opens transaction details popup.
