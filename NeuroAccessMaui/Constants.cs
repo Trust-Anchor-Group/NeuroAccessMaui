@@ -2,6 +2,21 @@
 
 namespace NeuroAccessMaui
 {
+
+	public static class RegexBackups
+	{
+		/// <summary>
+		/// Regex pattern for validating Neuro-Feature tokens.
+		/// </summary>
+		public const string IotId = """iotid:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+)""";
+
+		public const string NeuroFeatures = """nfeat:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+)""";
+
+		public const string Smartcontract = """iotsc:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+)([?][^\s=&]+=[^\s&]*(&[^\s=&]+=[^\s&]*)*)?""";
+		//
+		/// ((iotid:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+))|(nfeat:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+))|(iotsc:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+)([?][^\s=&]+=[^\s&]*(&[^\s=&]+=[^\s&]*)*)?)|(edaler:[^\s=;]+=[^\s;]*(;[^\s=;]+=[^\s;]*)*))
+
+	}
 	/// <summary>
 	/// A set of never changing property constants and helpful values.
 	/// </summary>
