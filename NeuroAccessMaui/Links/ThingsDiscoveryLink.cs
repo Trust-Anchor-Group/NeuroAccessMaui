@@ -34,7 +34,7 @@ namespace NeuroAccessMaui.Links
 		/// <returns>If the link was opened.</returns>
 		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
 		{
-			string Url = Link.OriginalString.Replace("%40", "@"); // iOS has problems with URIs containg @
+			string Url = Link.OriginalString.Replace("%40", "@"); // Android has problems with URIs containg @
 
 			if (ServiceRef.XmppService.IsIoTDiscoClaimURI(Url))
 				await ServiceRef.ThingRegistryOrchestratorService.OpenClaimDevice(Url);

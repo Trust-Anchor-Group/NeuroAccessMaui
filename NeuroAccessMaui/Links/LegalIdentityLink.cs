@@ -29,7 +29,7 @@ namespace NeuroAccessMaui.Links
 		/// <inheritdoc/>
 		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
 		{
-			string? LegalId = Constants.UriSchemes.RemoveScheme(Link.OriginalString.Replace("%40", "@")); // iOS has problems with URIs containg @
+			string? LegalId = Constants.UriSchemes.RemoveScheme(Link.OriginalString.Replace("%40", "@")); // Android has problems with URIs containg @
 			if (LegalId is null)
 				return false;
 

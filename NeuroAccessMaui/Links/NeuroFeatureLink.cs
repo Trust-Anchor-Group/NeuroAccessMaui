@@ -33,7 +33,7 @@ namespace NeuroAccessMaui.Links
 		/// <returns>If the link was opened.</returns>
 		public async Task<bool> TryOpenLink(Uri Link, bool ShowErrorIfUnable)
 		{
-			await ServiceRef.NeuroWalletOrchestratorService.OpenNeuroFeatureUri(Link.OriginalString.Replace("%40", "@")); // iOS has problems with URIs containg @
+			await ServiceRef.NeuroWalletOrchestratorService.OpenNeuroFeatureUri(Link.OriginalString.Replace("%40", "@")); // Android has problems with URIs containg @
 
 			return true;
 		}
