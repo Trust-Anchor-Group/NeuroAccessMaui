@@ -283,7 +283,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			ViewContractStep Step = Enum.Parse<ViewContractStep>(this.CurrentState);
 			if (Step == ViewContractStep.Overview || Step == ViewContractStep.Loading)
-				await this.GoBack();
+				await base.GoBack();
 			else
 				await this.GoToStateAsync(ViewContractStep.Overview);
 		}
