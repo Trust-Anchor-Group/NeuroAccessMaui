@@ -1,67 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
-  object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  <xsd:schema id="root"
+    xmlns=""
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -115,12 +56,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Välj roller du vill signera som (valfritt)</value>
@@ -2466,22 +2405,22 @@
     <value>Jag har läst och förstått villkoren i detta kontrakt</value>
   </data>
   <data name="Status" xml:space="preserve">
-      <value>Status</value>
+    <value>Status</value>
   </data>
   <data name="Encrypted" xml:space="preserve">
-      <value>Krypterad</value>
+    <value>Krypterad</value>
   </data>
   <data name="ViewParametersTitle" xml:space="preserve">
-      <value>Visa parametrar</value>
+    <value>Visa parametrar</value>
   </data>
   <data name="ViewParametersDescription" xml:space="preserve">
-      <value>Visa de variabler som styr kontraktet</value>
+    <value>Visa de variabler som styr kontraktet</value>
   </data>
   <data name="ViewRolesTitle" xml:space="preserve">
-      <value>Granska tilldelade roller</value>
+    <value>Granska tilldelade roller</value>
   </data>
   <data name="ViewRolesDescription" xml:space="preserve">
-      <value>Granska rollerna och se vem som har signerat varje roll</value>
+    <value>Granska rollerna och se vem som har signerat varje roll</value>
   </data>
   <data name="InvitationToSign" xml:space="preserve">
     <value>Du har blivit inbjuden att signera detta kontrakt. Se till att verifiera och granska kontraktet innan du fortsätter.</value>
@@ -2502,7 +2441,7 @@
     <value>Granska kontraktets villkor</value>
   </data>
   <data name="ServerSignatureButtonTitle" xml:space="preserve">
-    <value>Visa serversignatur</value> 
+    <value>Visa serversignatur</value>
   </data>
   <data name="ServerSignatureButtonDescription" xml:space="preserve">
     <value>Visa serversignaturen, som skyddar avtalets integritet</value>
@@ -2524,7 +2463,7 @@
   </data>
   <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Öppna inställningar - Aktivera kamerabehörigheter</value>
-	</data>
+  </data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Öppna inställningar</value>
   </data>
@@ -2829,7 +2768,7 @@
     <value>Tar bort tillfälliga data som bilder och bilagor för att frigöra utrymme</value>
   </data>
   <data name="Apps" xml:space="preserve">
-      <value>Appar</value>
+    <value>Appar</value>
   </data>
   <data name="BetaFeaturesDescription" xml:space="preserve">
     <value>Betafunktioner är under utveckling och kan sakna fullständig funktionalitet eller design. Vissa av deras kärnfunktioner är dock redan tillgängliga.</value>
@@ -2987,14 +2926,50 @@
   <data name="Kyc_Next" xml:space="preserve">
     <value>Nästa</value>
   </data>
-  <data name="Kyc_Apply" xml:space="preserve">
-    <value>Skicka</value>
-  </data>
   <data name="Kyc_Return" xml:space="preserve">
     <value>Tillbaka till översikten</value>
   </data>
   <data name="Kyc_Exit" xml:space="preserve">
     <value>Är du säker på att du vill lämna identitetsansökningsprocessen?</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Skicka</value>
+  </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Ansökningsgranskning</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Kod:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Fält att granska</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Foton att ersätta</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Dessa uppgifter kunde inte godkännas. Uppdatera dem i formuläret innan du skickar igen.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Väntande fält</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Väntande foton</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Åtgärda problem och redigera formulär</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Skicka igen utan väntande fält</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Din ansökan genomgår manuell granskning. Du kan vänta på resultatet eller justera punkterna nedan för att prova automatisk bearbetning.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Dessa punkter väntar på manuell granskning. Du kan lämna dem som de är eller justera dem för att försöka automatisk bearbetning.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Några inskickade uppgifter kunde inte verifieras. Tryck för att granska.</value>
   </data>
   <data name="Progress" xml:space="preserve">
     <value>Framsteg</value>
@@ -3172,5 +3147,236 @@
   </data>
   <data name="UnknownPleaseRefresh" xml:space="preserve">
     <value>Okänt, vänligen uppdatera</value>
+  </data>
+  <data name="SelectForMe" xml:space="preserve">
+    <value>Välj åt mig</value>
+  </data>
+  <data name="ShareDescription" xml:space="preserve">
+    <value>Nedan hittar du ytterligare alternativ för att dela QR-koden.</value>
+  </data>
+  <data name="OtherApp" xml:space="preserve">
+    <value>Annan app</value>
+  </data>
+  <data name="SuccessfullyCopiedToClipboard" xml:space="preserve">
+    <value>Har kopierats till urklipp</value>
+  </data>
+  <data name="MakePayment" xml:space="preserve">
+    <value>Genomför betalning</value>
+  </data>
+  <data name="PayOnline" xml:space="preserve">
+    <value>Betala online</value>
+  </data>
+  <data name="PayOffline" xml:space="preserve">
+    <value>Betala offline</value>
+  </data>
+  <data name="ShareOfflinePaymentDescription" xml:space="preserve">
+    <value>Du kan dela denna QR-kod med en annan användare för att behandlas senare, antingen när den behövs eller när uppkoppling finns.</value>
+  </data>
+  <data name="RequestCredits" xml:space="preserve">
+    <value>Begär krediter</value>
+  </data>
+  <data name="SendCredits" xml:space="preserve">
+    <value>Skicka krediter</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>år</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>år</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>månad</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>månader</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>dag</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>dagar</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>timme</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>timmar</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minut</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minuter</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>sekund</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>sekunder</value>
+  </data>
+  <data name="DurationAndSeparator" xml:space="preserve">
+    <value> och </value>
+  </data>
+  <data name="DurationCommaSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="NoTokens" xml:space="preserve">
+    <value>Inga tokens</value>
+  </data>
+  <data name="TokenDetails" xml:space="preserve">
+    <value>Tokendetaljer</value>
+  </data>
+  <data name="TokenDetailsDescription" xml:space="preserve">
+    <value>Nedan följer detaljer som är kodade i token. Klicka på länkar för mer information.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Beskrivning</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="TokenId" xml:space="preserve">
+    <value>Token-ID</value>
+  </data>
+  <data name="TokenIdMethod" xml:space="preserve">
+    <value>Token-ID-metod</value>
+  </data>
+  <data name="TokenVisibility" xml:space="preserve">
+    <value>Token-synlighet</value>
+  </data>
+  <data name="Ordinal" xml:space="preserve">
+    <value>Ordningstal</value>
+  </data>
+  <data name="Valuation" xml:space="preserve">
+    <value>Värdering</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Rapporter</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variabler</value>
+  </data>
+  <data name="States" xml:space="preserve">
+    <value>Tillstånd</value>
+  </data>
+  <data name="TokenPartsInfoText" xml:space="preserve">
+    <value>Nedan finns en lista över parter som är relaterade till denna token.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Ägare</value>
+  </data>
+  <data name="OwnerJid" xml:space="preserve">
+    <value>Ägaradress</value>
+  </data>
+  <data name="OwnershipContract" xml:space="preserve">
+    <value>Ägarkontrakt</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Skapare</value>
+  </data>
+  <data name="CreatorJid" xml:space="preserve">
+    <value>Skaparadress</value>
+  </data>
+  <data name="CreationContract" xml:space="preserve">
+    <value>Skapelsekontrakt</value>
+  </data>
+  <data name="TrustProvider" xml:space="preserve">
+    <value>Förtroendeleverantör</value>
+  </data>
+  <data name="TrustProviderJid" xml:space="preserve">
+    <value>Förtroendeleverantörens adress</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>Privilegier</value>
+  </data>
+  <data name="TokenPrivilegesInfoText" xml:space="preserve">
+    <value>Nedan följer privilegier som är ingraverade i token.</value>
+  </data>
+  <data name="CreatorCanDestroy" xml:space="preserve">
+    <value>Skapare kan förstöra token</value>
+  </data>
+  <data name="OwnerCanDestroyBatch" xml:space="preserve">
+    <value>Ägare kan förstöra token-batch</value>
+  </data>
+  <data name="OwnerCanDestroyIndividual" xml:space="preserve">
+    <value>Ägare kan förstöra individuell token</value>
+  </data>
+  <data name="CertifierCanDestroy" xml:space="preserve">
+    <value>Certifierare kan förstöra token</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Maskinläsbar information</value>
+  </data>
+  <data name="MachineReadableInfoTextToken" xml:space="preserve">
+    <value>Nedan visas en översikt över maskinläsbar data som är inbäddad i token.</value>
+  </data>
+  <data name="DefinitionNamespace" xml:space="preserve">
+    <value>Definitionsnamnrymd</value>
+  </data>
+  <data name="DefinitionSchemaDigest" xml:space="preserve">
+    <value>Definitionsschemats digest</value>
+  </data>
+  <data name="ShowM2MInfo" xml:space="preserve">
+    <value>Visa M2M-definition</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Åtgärder</value>
+  </data>
+  <data name="SendToContact" xml:space="preserve">
+    <value>Skicka till kontakt</value>
+  </data>
+  <data name="PublishMarketplace" xml:space="preserve">
+    <value>Publicera på marknadsplats</value>
+  </data>
+  <data name="OfferToBuy" xml:space="preserve">
+    <value>Erbjud att köpa</value>
+  </data>
+  <data name="OfferToSell" xml:space="preserve">
+    <value>Erbjud att sälja</value>
+  </data>
+  <data name="ViewEvents" xml:space="preserve">
+    <value>Visa händelser</value>
+  </data>
+  <data name="CurrentState" xml:space="preserve">
+    <value>Aktuellt tillstånd</value>
+  </data>
+  <data name="MachineHasEnded" xml:space="preserve">
+    <value>Tillståndsmaskin har avslutats.</value>
+  </data>
+  <data name="CurrentVariables" xml:space="preserve">
+    <value>Aktuella variabler</value>
+  </data>
+  <data name="TokenEvents" xml:space="preserve">
+    <value>Token-händelser</value>
+  </data>
+  <data name="TokenEventsDescription" xml:space="preserve">
+    <value>Nedan följer publika händelser som registrerats för token. Dina privata händelser ingår också.</value>
+  </data>
+  <data name="TextNote" xml:space="preserve">
+    <value>Textanteckning</value>
+  </data>
+  <data name="XmlNote" xml:space="preserve">
+    <value>XML-anteckning</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Lägg till anteckning</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Värde</value>
+  </data>
+  <data name="InvitationToSignFormat" xml:space="preserve">
+    <value>Du har blivit inbjuden att signera detta kontrakt som {0}. Kontrollera och granska kontraktet innan du fortsätter.</value>
+  </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Skicka förslag</value>
+  </data>
+  <data name="Sender" xml:space="preserve">
+    <value>Avsändare:</value>
+  </data>
+  <data name="ShortId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ProposalDefaultMessage" xml:space="preserve">
+    <value>Hej, jag skulle vilja föreslå ett kontrakt med dig. Vänligen granska och acceptera förslaget om du godkänner.</value>
   </data>
 </root>

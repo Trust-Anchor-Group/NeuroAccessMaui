@@ -1,67 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
-  object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  <xsd:schema id="root"
+    xmlns=""
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -115,12 +56,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Selecciona los roles con los que firmarás (opcional)</value>
@@ -2466,22 +2405,22 @@
     <value>He leído y entendido los términos de este contrato</value>
   </data>
   <data name="Status" xml:space="preserve">
-      <value>Status</value>
+    <value>Status</value>
   </data>
   <data name="Encrypted" xml:space="preserve">
-      <value>Cifrado</value>
+    <value>Cifrado</value>
   </data>
   <data name="ViewParametersTitle" xml:space="preserve">
-      <value>Ver parámetros</value>
+    <value>Ver parámetros</value>
   </data>
   <data name="ViewParametersDescription" xml:space="preserve">
-      <value>Consulta las variables que rigen el contrato</value>
+    <value>Consulta las variables que rigen el contrato</value>
   </data>
   <data name="ViewRolesTitle" xml:space="preserve">
-      <value>Revisar roles asignados</value>
+    <value>Revisar roles asignados</value>
   </data>
   <data name="ViewRolesDescription" xml:space="preserve">
-      <value>Revisa los roles y verifica quién ha firmado cada uno</value>
+    <value>Revisa los roles y verifica quién ha firmado cada uno</value>
   </data>
   <data name="InvitationToSign" xml:space="preserve">
     <value>Ha sido invitado(a) a firmar este contrato. Asegúrese de verificar y revisar el contrato antes de continuar.</value>
@@ -2524,7 +2463,7 @@
   </data>
   <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Abre la configuración - Habilita los permisos de la cámara</value>
-	</data>
+  </data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Abrir configuración</value>
   </data>
@@ -2996,6 +2935,42 @@
   <data name="Kyc_Apply" xml:space="preserve">
     <value>Enviar</value>
   </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Revisión de la solicitud</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Código:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Campos para revisar</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Fotos para reemplazar</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Estos detalles no pudieron aprobarse. Actualízalos en el formulario antes de reenviar.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Campos pendientes</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Fotos pendientes</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Corregir e editar formulario</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Reenviar sin campos pendientes</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Tu solicitud está en revisión manual. Puedes esperar el resultado o ajustar los elementos abajo para intentar el procesamiento automático.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Estos elementos esperan revisión manual. Puedes dejarlos como están o ajustarlos para intentar el procesamiento automático.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Algunos datos enviados no pudieron verificarse. Toca para revisar.</value>
+  </data>
   <data name="Progress" xml:space="preserve">
     <value>Progreso</value>
   </data>
@@ -3172,5 +3147,236 @@
   </data>
   <data name="UnknownPleaseRefresh" xml:space="preserve">
     <value>Desconocido, por favor actualiza</value>
+  </data>
+  <data name="SelectForMe" xml:space="preserve">
+    <value>Seleccionar por mí</value>
+  </data>
+  <data name="ShareDescription" xml:space="preserve">
+    <value>A continuación, puedes encontrar opciones adicionales para compartir el código QR.</value>
+  </data>
+  <data name="OtherApp" xml:space="preserve">
+    <value>Otra aplicación</value>
+  </data>
+  <data name="SuccessfullyCopiedToClipboard" xml:space="preserve">
+    <value>Copiado al portapapeles correctamente</value>
+  </data>
+  <data name="MakePayment" xml:space="preserve">
+    <value>Realizar pago</value>
+  </data>
+  <data name="PayOnline" xml:space="preserve">
+    <value>Pagar en línea</value>
+  </data>
+  <data name="PayOffline" xml:space="preserve">
+    <value>Pagar sin conexión</value>
+  </data>
+  <data name="ShareOfflinePaymentDescription" xml:space="preserve">
+    <value>Puedes compartir este código QR con otro usuario para procesarlo más tarde, ya sea cuando se necesite o cuando exista conectividad.</value>
+  </data>
+  <data name="RequestCredits" xml:space="preserve">
+    <value>Solicitar créditos</value>
+  </data>
+  <data name="SendCredits" xml:space="preserve">
+    <value>Enviar créditos</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>año</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>años</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>mes</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>meses</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>día</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>días</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>hora</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>horas</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minuto</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minutos</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>segundo</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>segundos</value>
+  </data>
+  <data name="DurationAndSeparator" xml:space="preserve">
+    <value> y </value>
+  </data>
+  <data name="DurationCommaSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="NoTokens" xml:space="preserve">
+    <value>Sin tokens</value>
+  </data>
+  <data name="TokenDetails" xml:space="preserve">
+    <value>Detalles del token</value>
+  </data>
+  <data name="TokenDetailsDescription" xml:space="preserve">
+    <value>A continuación se muestran los detalles codificados en el token. Haz clic en cualquier enlace para más información.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categoría</value>
+  </data>
+  <data name="TokenId" xml:space="preserve">
+    <value>ID de token</value>
+  </data>
+  <data name="TokenIdMethod" xml:space="preserve">
+    <value>Método de ID de token</value>
+  </data>
+  <data name="TokenVisibility" xml:space="preserve">
+    <value>Visibilidad del token</value>
+  </data>
+  <data name="Ordinal" xml:space="preserve">
+    <value>Ordinal</value>
+  </data>
+  <data name="Valuation" xml:space="preserve">
+    <value>Valoración</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Informes</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variables</value>
+  </data>
+  <data name="States" xml:space="preserve">
+    <value>Estados</value>
+  </data>
+  <data name="TokenPartsInfoText" xml:space="preserve">
+    <value>A continuación se muestra una lista de partes relacionadas con este token.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Propietario</value>
+  </data>
+  <data name="OwnerJid" xml:space="preserve">
+    <value>Dirección del propietario</value>
+  </data>
+  <data name="OwnershipContract" xml:space="preserve">
+    <value>Contrato de propiedad</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Creador</value>
+  </data>
+  <data name="CreatorJid" xml:space="preserve">
+    <value>Dirección del creador</value>
+  </data>
+  <data name="CreationContract" xml:space="preserve">
+    <value>Contrato de creación</value>
+  </data>
+  <data name="TrustProvider" xml:space="preserve">
+    <value>Proveedor de confianza</value>
+  </data>
+  <data name="TrustProviderJid" xml:space="preserve">
+    <value>Dirección del proveedor de confianza</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>Privilegios</value>
+  </data>
+  <data name="TokenPrivilegesInfoText" xml:space="preserve">
+    <value>A continuación se muestran los privilegios grabados en el token.</value>
+  </data>
+  <data name="CreatorCanDestroy" xml:space="preserve">
+    <value>El creador puede destruir el token</value>
+  </data>
+  <data name="OwnerCanDestroyBatch" xml:space="preserve">
+    <value>El propietario puede destruir el lote de tokens</value>
+  </data>
+  <data name="OwnerCanDestroyIndividual" xml:space="preserve">
+    <value>El propietario puede destruir un token individual</value>
+  </data>
+  <data name="CertifierCanDestroy" xml:space="preserve">
+    <value>El certificador puede destruir el token</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Información legible por máquina</value>
+  </data>
+  <data name="MachineReadableInfoTextToken" xml:space="preserve">
+    <value>A continuación se muestra una vista general de los datos legibles por máquina incrustados en el token.</value>
+  </data>
+  <data name="DefinitionNamespace" xml:space="preserve">
+    <value>Espacio de nombres de la definición</value>
+  </data>
+  <data name="DefinitionSchemaDigest" xml:space="preserve">
+    <value>Resumen (digest) del esquema de definición</value>
+  </data>
+  <data name="ShowM2MInfo" xml:space="preserve">
+    <value>Mostrar definición M2M</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Acciones</value>
+  </data>
+  <data name="SendToContact" xml:space="preserve">
+    <value>Enviar a contacto</value>
+  </data>
+  <data name="PublishMarketplace" xml:space="preserve">
+    <value>Publicar en el Marketplace</value>
+  </data>
+  <data name="OfferToBuy" xml:space="preserve">
+    <value>Ofrecer comprar</value>
+  </data>
+  <data name="OfferToSell" xml:space="preserve">
+    <value>Ofrecer vender</value>
+  </data>
+  <data name="ViewEvents" xml:space="preserve">
+    <value>Ver eventos</value>
+  </data>
+  <data name="CurrentState" xml:space="preserve">
+    <value>Estado actual</value>
+  </data>
+  <data name="MachineHasEnded" xml:space="preserve">
+    <value>La máquina de estados ha finalizado.</value>
+  </data>
+  <data name="CurrentVariables" xml:space="preserve">
+    <value>Variables actuales</value>
+  </data>
+  <data name="TokenEvents" xml:space="preserve">
+    <value>Eventos del token</value>
+  </data>
+  <data name="TokenEventsDescription" xml:space="preserve">
+    <value>A continuación se muestran los eventos públicos registrados para el token. Tus eventos privados también están incluidos.</value>
+  </data>
+  <data name="TextNote" xml:space="preserve">
+    <value>Nota de texto</value>
+  </data>
+  <data name="XmlNote" xml:space="preserve">
+    <value>Nota XML</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Añadir nota</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Valor</value>
+  </data>
+  <data name="InvitationToSignFormat" xml:space="preserve">
+    <value>Has sido invitado a firmar este contrato como {0}. Asegúrate de verificar y revisar el contrato antes de continuar.</value>
+  </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Enviar propuesta</value>
+  </data>
+  <data name="Sender" xml:space="preserve">
+    <value>Remitente:</value>
+  </data>
+  <data name="ShortId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ProposalDefaultMessage" xml:space="preserve">
+    <value>Hola, me gustaría proponer un contrato contigo. Por favor, revísalo y acepta la propuesta si estás de acuerdo.</value>
   </data>
 </root>
