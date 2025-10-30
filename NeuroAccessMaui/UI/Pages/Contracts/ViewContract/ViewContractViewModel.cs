@@ -288,6 +288,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				await this.GoToStateAsync(ViewContractStep.Overview);
 		}
 
+		public override async Task GoBack()
+		{
+			await this.BackAsync();
+		}
+
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
 		private Task GoToParametersAsync() => this.GoToStepAsync(ViewContractStep.Parameters);
 

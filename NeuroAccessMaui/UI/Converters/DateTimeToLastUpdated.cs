@@ -12,8 +12,8 @@ namespace NeuroAccessMaui.UI.Converters
 			if (value is not DateTime DtNullable)
 				return ServiceRef.Localizer[nameof(AppResources.Never)].Value.ToLower(culture);
 
-			DateTime Dt = DtNullable.ToUniversalTime(); // ensure local time
-			DateTime Now = DateTime.UtcNow;
+			DateTime Dt = DtNullable.ToLocalTime(); // ensure local time
+			DateTime Now = DateTime.Now;
 			TimeSpan Span = Now - Dt;
 
 			string TimeString;

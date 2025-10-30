@@ -48,8 +48,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 		{
 			get
 			{
-				DateTime Dt = this.Timestamp.ToUniversalTime();
-				DateTime Now = DateTime.UtcNow;
+				DateTime Dt = this.Timestamp.ToLocalTime();
+				DateTime Now = DateTime.Now;
 				TimeSpan Span = Now - Dt;
 
 				string TimeString;

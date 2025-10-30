@@ -47,7 +47,7 @@
 
 			<controls:SvgButton Grid.Row="0"
 								Grid.Column="0"
-								Command="{Binding GoBackCommand}"
+								Command="{Binding BackCommand}"
 								Style="{DynamicResource IconButton}"
 								SvgSource="close.svg" />
 

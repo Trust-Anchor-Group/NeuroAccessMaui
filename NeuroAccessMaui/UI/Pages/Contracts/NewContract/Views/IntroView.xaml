@@ -23,11 +23,11 @@
 			<!-- Settings preview (same as last step's settings) -->
 			<Border Style="{DynamicResource BorderSet}" Margin="0">
 				<VerticalStackLayout Spacing="8">
-					<Label Text="Settings"
+					<Label Text="{l:Localize Settings}"
 						   Style="{DynamicResource BoldItemTitleLabel}"
 						   FontSize="24" />
 					<controls:CompositePicker
-						LabelText="Visibility"
+						LabelText="{l:Localize Visibility}"
 						Style="{DynamicResource RegularCompositePicker}"
 						Placeholder="Select who should have access"
 						ItemsSource="{Binding Path=ContractVisibilityItems}"
@@ -36,7 +36,7 @@
 			</Border>
 
 			<!-- Optional link to see human-readable part early -->
-			<controls:TextButton Command="{Binding ShowPreviewFromIntroCommand}" Style="{DynamicResource SecondaryButton}" LabelData="Review contract" />
+			<controls:TextButton Command="{Binding ShowPreviewFromIntroCommand}" Style="{DynamicResource SecondaryButton}" LabelData="{l:Localize ReviewContractTitle}" />
 		</VerticalStackLayout>
 	</ScrollView>
 </views:BaseNewContractView>

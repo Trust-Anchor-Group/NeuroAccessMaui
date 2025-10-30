@@ -191,31 +191,7 @@
 							VerticalOptions="Center"/>
 				</HorizontalStackLayout>
 
-				<controls:TemplatedButton Command="{Binding GetBalanceTask.RefreshCommand}"
-											Grid.Column="1"
-											HorizontalOptions="End">
-					<Grid ColumnDefinitions="*, auto" Margin="0,4,0,0">
-						<Label Text="{Binding BalanceUpdated, Converter={converters:DateTimeToLastUpdatedConverter}}"
-								Style="{DynamicResource KeyLabel}"
-								FontSize="12"
-								FontFamily="HaasGroteskRegular"
-								VerticalOptions="Center"
-								Margin="0,0,8,0"/>
-						<controls:SvgView Source="refresh.svg"
-											WidthRequest="24"
-											HeightRequest="24"
-											TintColor="{DynamicResource ContentPrimaryWL}"
-											IsVisible="{Binding GetBalanceTask.IsNotRunning}"
-											Grid.Column="1"/>
-						<ActivityIndicator IsRunning="True"
-											WidthRequest="24"
-											HeightRequest="24"
-											IsVisible="{Binding GetBalanceTask.IsRunning}"
-											Grid.Column="1"/>
-					</Grid>
-				</controls:TemplatedButton>
-
-				<Grid Grid.Row="1" Grid.ColumnSpan="2" RowDefinitions="auto, auto">
+				<Grid Grid.Row="1" Grid.ColumnSpan="2" RowDefinitions="auto, auto, auto">
 					<!-- Balance -->
 					<Label>
 						<Label.FormattedText>
@@ -226,7 +202,32 @@
 							</FormattedString>
 						</Label.FormattedText>
 					</Label>
-					<Label Grid.Row="1" Style="{DynamicResource Brand2LabelSSecondary}" VerticalTextAlignment="Start" IsVisible="{Binding HasReserved}">
+
+					<controls:TemplatedButton Command="{Binding GetBalanceTask.RefreshCommand}"
+												Grid.Row="1"
+												HorizontalOptions="Start">
+						<Grid ColumnDefinitions="*, auto" Margin="0,4,0,0">
+							<Label Text="{Binding BalanceUpdated, Converter={converters:DateTimeToLastUpdatedConverter}}"
+								Style="{DynamicResource KeyLabel}"
+								FontSize="12"
+								FontFamily="HaasGroteskRegular"
+								VerticalOptions="Center"
+								Margin="0,0,8,0"/>
+							<controls:SvgView Source="refresh.svg"
+											WidthRequest="24"
+											HeightRequest="24"
+											TintColor="{DynamicResource ContentPrimaryWL}"
+											IsVisible="{Binding GetBalanceTask.IsNotRunning}"
+											Grid.Column="1"/>
+							<ActivityIndicator IsRunning="True"
+											WidthRequest="24"
+											HeightRequest="24"
+											IsVisible="{Binding GetBalanceTask.IsRunning}"
+											Grid.Column="1"/>
+						</Grid>
+					</controls:TemplatedButton>
+
+					<Label Grid.Row="2" Style="{DynamicResource Brand2LabelSSecondary}" VerticalTextAlignment="Start" IsVisible="{Binding HasReserved}">
 						<Label.FormattedText>
 							<FormattedString>
 								<Span Text="{l:Localize Reserved}" FontSize="14" />
@@ -251,20 +252,16 @@
 		</Border>
 
 		<Grid VerticalOptions="End" Grid.Row="2" ColumnDefinitions="*,*" Margin="16" ColumnSpacing="8">
-			<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
-								SvgSource="transfer.svg"
-								LabelPosition="Right"
-								LabelText="{l:Localize RequestCredits}"
-								HeightRequest="48"
-								Command="{Binding ViewRequestPaymentCommand}"/>
+			<controls:TextButton Style="{DynamicResource SecondaryButton}"
+									LabelData="{l:Localize RequestCredits}"
+									HeightRequest="48"
+									Command="{Binding ViewRequestPaymentCommand}"/>
 
-			<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
-								SvgSource="transfer.svg"
-								LabelPosition="Right"
-								LabelText="{l:Localize SendCredits}"
-								HeightRequest="48"
-								Command="{Binding SendEdalerCommand}"
-								Grid.Column="1"/>
+			<controls:TextButton Style="{DynamicResource SecondaryButton}"
+									LabelData="{l:Localize SendCredits}"
+									HeightRequest="48"
+									Command="{Binding SendEdalerCommand}"
+									Grid.Column="1"/>
 		</Grid>
 
 		<!-- Bottom Bar -->
