@@ -377,7 +377,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				if(proposal is null) // Dont send if cancelled
 					return;
 				if (string.IsNullOrEmpty(proposal)) // Use default if empty
-					proposal = ServiceRef.Localizer[nameof(AppResources.DefaultProposalMessage)];
+					proposal = ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)];
 
 				await ServiceRef.XmppService.SendContractProposal(
 					this.Contract.Contract,

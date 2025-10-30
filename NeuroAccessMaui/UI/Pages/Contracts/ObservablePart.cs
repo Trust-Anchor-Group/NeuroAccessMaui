@@ -200,7 +200,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		public bool HasSigned => this.Signature is not null;
 
-		public bool CanSendProposal => this.IsThirdParty && this.HasIdentity && !this.HasSigned;
+		public bool CanSendProposal => this.IsThirdParty && this.HasIdentity && !this.HasSigned && this.Role != "TrustProvider";
 
 		/// <summary>
 		/// True if this part was preselected via navigation args and therefore should not be removable in the Roles view.
