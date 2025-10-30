@@ -916,7 +916,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					if (!string.IsNullOrEmpty(Proposal))
 						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, Proposal);
 					else
-						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, ServiceRef.Localizer[nameof(AppResources.DefaultProposalMessage)]);
+						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)]);
 				}
 			}
 			catch (Waher.Networking.XMPP.XmppException Ex)
