@@ -1,6 +1,11 @@
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Text;
 using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel; // For MainThread marshaling
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -11,10 +16,6 @@ using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Text;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
@@ -23,7 +24,6 @@ using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using Waher.Script;
-using Microsoft.Maui.ApplicationModel; // For MainThread marshaling
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
@@ -369,8 +369,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 					ServiceRef.Localizer[nameof(AppResources.Send)] ?? string.Empty,
 					ServiceRef.Localizer[nameof(AppResources.Cancel)] ?? string.Empty);
 
-				if (string.IsNullOrEmpty(proposal))
+				if(proposal is null) // Dont send if cancelled
 					return;
+				if (string.IsNullOrEmpty(proposal)) // Use default if empty
+					proposal = ServiceRef.Localizer[nameof(AppResources.DefaultProposalMessage)];
 
 				await ServiceRef.XmppService.SendContractProposal(
 					this.Contract.Contract,
