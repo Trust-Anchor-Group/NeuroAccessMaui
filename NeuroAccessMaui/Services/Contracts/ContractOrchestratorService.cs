@@ -1,4 +1,9 @@
-﻿using NeuroAccessMaui.Extensions;
+﻿using System.Data;
+using System.Globalization;
+using System.Reflection;
+using System.Text;
+using EDaler;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Notification.Identities;
 using NeuroAccessMaui.Services.UI;
@@ -11,10 +16,6 @@ using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
-using System.Data;
-using System.Globalization;
-using System.Reflection;
-using System.Text;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -636,6 +637,8 @@ namespace NeuroAccessMaui.Services.Contracts
 							ServiceRef.TagProfile.TrustProviderId = CreationAttr.TrustProviderId;
 							ParameterValues ??= [];
 							ParameterValues.TryAdd(new CaseInsensitiveString("TrustProvider"), CreationAttr.TrustProviderId);
+							ParameterValues.TryAdd(new CaseInsensitiveString("Currency"), CreationAttr.Currency);
+							ParameterValues.TryAdd(new CaseInsensitiveString("CommissionPercent"), CreationAttr.Commission);
 						}
 
 						NewContractNavigationArgs e = new(Contract, ParameterValues);
