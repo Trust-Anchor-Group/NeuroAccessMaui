@@ -405,9 +405,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.FetchedBalance = CurrentBalance;
-				this.BalanceUpdated = DateTime.UtcNow;
+				this.BalanceUpdated = DateTime.Now;
 				ServiceRef.TagProfile.LastEDalerBalanceDecimal = this.BalanceDecimal;
-				ServiceRef.TagProfile.LastEDalerBalanceUpdate = DateTime.UtcNow;
+				ServiceRef.TagProfile.LastEDalerBalanceUpdate = DateTime.Now;
 			});
 
 			ServiceRef.LogService.LogDebug("Refreshing Edaler Completed");
@@ -421,9 +421,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				this.FetchedBalance = e.Balance;
-				this.BalanceUpdated = DateTime.UtcNow;
+				this.BalanceUpdated = DateTime.Now;
 				ServiceRef.TagProfile.LastEDalerBalanceDecimal = this.BalanceDecimal;
-				ServiceRef.TagProfile.LastEDalerBalanceUpdate = DateTime.UtcNow;
+				ServiceRef.TagProfile.LastEDalerBalanceUpdate = DateTime.Now;
 			});
 		}
 
