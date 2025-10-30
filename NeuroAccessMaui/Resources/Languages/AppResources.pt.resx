@@ -3436,4 +3436,8 @@
   <data name="ShortId" xml:space="preserve">
     <value>ID</value>
   </data>
+  <data name="DefaultProposalMessage" xml:space="preserve">
+    <value>Por favor, reveja e assine este contrato!</value>
+  </data>
+
 </root>
