@@ -21,7 +21,7 @@
 		<!-- Versions -->
 		<ApplicationDisplayVersion>2.7.1</ApplicationDisplayVersion>
 		<Version>2.7.1</Version>
-		<ApplicationVersion>425</ApplicationVersion>
+		<ApplicationVersion>501</ApplicationVersion>
 
 		<NeutralLanguage>en</NeutralLanguage>
 
@@ -305,14 +305,12 @@
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="6.0.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="DotNetMeteor.HotReload.Plugin" Version="3.*" />
-		<PackageReference Include="EDaler" Version="3.1.2" />
 		<PackageReference Include="Mapsui" Version="5.0.0-rc.2" />
 		<PackageReference Include="Mapsui.Maui" Version="5.0.0-rc.2" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.9" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.110" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.110" />
-		<PackageReference Include="NeuroFeatures" Version="2.1.5" />
 		<PackageReference Include="Plugin.Fingerprint" Version="2.1.5" />
 		<PackageReference Include="SkiaSharp" Version="3.119.1" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.1" />
@@ -322,6 +320,10 @@
 		<PackageReference Include="Svg.Skia" Version="3.2.1" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.5.2" />
+
+		<PackageReference Include="EDaler" Version="3.1.2" />
+		<PackageReference Include="NeuroFeatures" Version="2.1.5" />
 		<PackageReference Include="Waher.Content" Version="3.4.1" />
 		<PackageReference Include="Waher.Content.Images" Version="3.0.2" />
 		<PackageReference Include="Waher.Content.Markdown" Version="6.2.0" />
@@ -351,7 +353,7 @@
 		<PackageReference Include="Waher.Networking.XMPP.Push" Version="3.1.2" />
 		<PackageReference Include="Waher.Networking.XMPP.Sensor" Version="4.1.3" />
 		<PackageReference Include="Waher.Persistence" Version="1.16.0" />
-		<PackageReference Include="Waher.Persistence.FilesLW" Version="1.16.0" />
+		<PackageReference Include="Waher.Persistence.Files" Version="1.16.0" />
 		<PackageReference Include="Waher.Persistence.XmlLedger" Version="1.2.3" />
 		<PackageReference Include="Waher.Runtime.Collections" Version="1.0.3" />
 		<PackageReference Include="Waher.Runtime.Geo" Version="1.0.1" />
@@ -367,7 +369,55 @@
 		<PackageReference Include="Waher.Security" Version="1.0.13" />
 		<PackageReference Include="Waher.Security.JWS" Version="1.1.4" />
 		<PackageReference Include="Waher.Security.JWT" Version="1.5.5" />
-		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.5.2" />
+		<!--
+		<ProjectReference Include="..\..\iotbroker\Waher.Networking.XMPP.EDaler\Waher.Networking.XMPP.EDaler.csproj" />
+		<ProjectReference Include="..\..\iotbroker\Waher.Networking.XMPP.NeuroFeatures\Waher.Networking.XMPP.NeuroFeatures.csproj" />
+
+		<ProjectReference Include="..\..\IoTGateway\Content\Waher.Content\Waher.Content.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Content\Waher.Content.Images\Waher.Content.Images.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Content\Waher.Content.Markdown\Waher.Content.Markdown.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Content\Waher.Content.QR\Waher.Content.QR.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Content\Waher.Content.Xml\Waher.Content.Xml.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Events\Waher.Events\Waher.Events.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Events\Waher.Events.Files\Waher.Events.Files.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Events\Waher.Events.Filter\Waher.Events.Filter.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Events\Waher.Events.Persistence\Waher.Events.Persistence.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Events\Waher.Events.XMPP\Waher.Events.XMPP.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking\Waher.Networking.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.DNS\Waher.Networking.DNS.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.PeerToPeer\Waher.Networking.PeerToPeer.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.UPnP\Waher.Networking.UPnP.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP\Waher.Networking.XMPP.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Avatar\Waher.Networking.XMPP.Avatar.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Concentrator\Waher.Networking.XMPP.Concentrator.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Contracts\Waher.Networking.XMPP.Contracts.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Control\Waher.Networking.XMPP.Control.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Geo\Waher.Networking.XMPP.Geo.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.HTTPX\Waher.Networking.XMPP.HTTPX.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Mail\Waher.Networking.XMPP.Mail.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.P2P\Waher.Networking.XMPP.P2P.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.PEP\Waher.Networking.XMPP.PEP.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Provisioning\Waher.Networking.XMPP.Provisioning.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.PubSub\Waher.Networking.XMPP.PubSub.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Push\Waher.Networking.XMPP.Push.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Sensor\Waher.Networking.XMPP.Sensor.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Persistence\Waher.Persistence\Waher.Persistence.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Persistence\Waher.Persistence.FilesLW\Waher.Persistence.FilesLW.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Persistence\Waher.Persistence.XmlLedger\Waher.Persistence.XmlLedger.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Collections\Waher.Runtime.Collections.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Geo\Waher.Runtime.Geo.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Inventory\Waher.Runtime.Inventory.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.IO\Waher.Runtime.IO.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Profiling\Waher.Runtime.Profiling.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Queue\Waher.Runtime.Queue.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Settings\Waher.Runtime.Settings.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Temporary\Waher.Runtime.Temporary.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Text\Waher.Runtime.Text.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Script\Waher.Script\Waher.Script.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Script\Waher.Script.Content\Waher.Script.Content.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Security\Waher.Security\Waher.Security.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Security\Waher.Security.JWS\Waher.Security.JWS.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Security\Waher.Security.JWT\Waher.Security.JWT.csproj" /> -->
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="Resources\Languages\AppResources.Designer.cs">
