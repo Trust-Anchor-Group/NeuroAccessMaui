@@ -3,7 +3,8 @@
                      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                      xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-                     xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups">
+                     xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups"
+					 xmlns:data="clr-namespace:NeuroAccessMaui.Services.Data">
     <Grid RowDefinitions="Auto,*" ColumnDefinitions="*"
           Style="{DynamicResource PopupGrid}">
         <SearchBar x:Name="InnerSearchBar"
@@ -17,7 +18,7 @@
                         SelectionMode="Single"
                         SelectionChanged="InnerListView_SelectionChanged">
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="data:ISO_3166_Country">
                     <Grid ColumnDefinitions="Auto,*" Padding="{DynamicResource SmallSpacing}">
                         <Label Text="{Binding DialCode}"
                                VerticalOptions="Center" />
