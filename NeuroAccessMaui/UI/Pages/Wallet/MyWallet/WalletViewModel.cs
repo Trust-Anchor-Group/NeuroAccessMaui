@@ -211,7 +211,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 					ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderBuyEDaler)]
 				);
 
-				await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), SelectionArgs, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), SelectionArgs, BackMethod.Pop);
 				if (SelectionArgs.ServiceProvider is null)
 					return;
 
@@ -310,7 +310,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 				TaskCompletionSource<string?> UriToSend = new();
 				TaskCompletionSource<string?> MessageToSend = new();
 				EDalerUriNavigationArgs Args = new(Parsed, string.Empty, UriToSend, MessageToSend);
-				await ServiceRef.UiService.GoToAsync(nameof(SendPaymentPage), Args, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(SendPaymentPage), Args, BackMethod.Pop);
 
 				string? Uri = await UriToSend.Task; // User composed URI. Null if cancelled.
 				string? Message = await MessageToSend.Task; // Optional message.
@@ -364,7 +364,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			try
 			{
 				EDalerBalanceNavigationArgs Args = new(this.FetchedBalance);
-				await ServiceRef.UiService.GoToAsync(nameof(RequestPaymentPage), Args);
+				await ServiceRef.NavigationService.GoToAsync(nameof(RequestPaymentPage), Args);
 			}
 			catch (Exception Ex)
 			{
@@ -380,7 +380,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		{
 			try
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(TransactionHistoryPage));
+				await ServiceRef.NavigationService.GoToAsync(nameof(TransactionHistoryPage));
 			}
 			catch (Exception Ex)
 			{

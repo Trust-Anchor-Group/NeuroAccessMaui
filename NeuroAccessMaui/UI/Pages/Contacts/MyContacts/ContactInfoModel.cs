@@ -435,7 +435,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			{
 				ViewIdentityNavigationArgs ViewIdentityArgs = new(this.LegalIdentity);
 
-				await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs);
 			}
 			else if (!string.IsNullOrEmpty(this.LegalId))
 			{
@@ -450,7 +450,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			if (!string.IsNullOrEmpty(this.BareJid) && this.Contact is not null)
 			{
 				ChatNavigationArgs ChatArgs = new(this.Contact);
-				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, this.BareJid);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, this.BareJid);
 			}
 		}
 	}

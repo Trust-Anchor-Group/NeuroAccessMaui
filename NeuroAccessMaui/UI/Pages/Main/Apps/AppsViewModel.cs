@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		{
 			try
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), BackMethod.Pop);
 			}
 			catch (Exception Ex)
 			{
@@ -162,7 +162,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 				}
 				else
 				{
-					await ServiceRef.UiService.GoToAsync(nameof(MyTokensPage), BackMethod.Pop);
+					await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage), BackMethod.Pop);
 				}
 			}
 			catch (Exception Ex)

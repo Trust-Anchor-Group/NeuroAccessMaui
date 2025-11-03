@@ -894,7 +894,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					CanScanQrCode = true
 				};
 
-				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
 
 				ContactInfoModel? Contact = await Selected.Task;
 				if (Contact is null)

@@ -370,7 +370,7 @@ namespace NeuroAccessMaui.Services.Contracts
 				}
 				await Task.Delay(500);
 				
-				await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
 							Contract, false, e.Role, e.MessageText, e.FromBareJID));
 			}
 			catch (Exception ex)
