@@ -9,6 +9,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Converts an enumerated state into a localized string.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class LocalizedState : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>

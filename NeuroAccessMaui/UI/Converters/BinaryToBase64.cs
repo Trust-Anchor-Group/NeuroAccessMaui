@@ -2,9 +2,10 @@
 
 namespace NeuroAccessMaui.UI.Converters
 {
-    /// <summary>
-    /// Converts binary data to base64-encoded strings.
-    /// </summary>
+	/// <summary>
+	/// Converts binary data to base64-encoded strings.
+	/// </summary>
+	[AcceptEmptyServiceProvider]
     public class BinaryToBase64 : IValueConverter, IMarkupExtension
     {
         /// <inheritdoc/>
