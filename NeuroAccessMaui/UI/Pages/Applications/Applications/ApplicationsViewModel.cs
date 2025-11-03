@@ -114,12 +114,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 		public override async Task OnInitializeAsync()
 		{
-			if (ServiceRef.TagProfile.IdentityApplication is not null)
-			{
-				if (ServiceRef.TagProfile.IdentityApplication.IsDiscarded())
-					await ServiceRef.TagProfile.SetIdentityApplication(null, true);
-			}
-
 			this.IdentityApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
 
 			this.HasLegalIdentity = ServiceRef.TagProfile.LegalIdentity is not null &&

@@ -591,7 +591,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 			try
 			{
-				await this.OpenQrPopup();
+				await this.OpenQrPopup(ServiceRef.Localizer[nameof(AppResources.PersonalId)]);
 			}
 			catch (Exception Ex)
 			{

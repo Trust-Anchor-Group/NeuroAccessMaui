@@ -714,8 +714,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 
 				string FileName = "Token.QR." + InternetContent.GetFileExtension(this.QrCodeContentType);
 
-				ServiceRef.PlatformSpecific.ShareImage(this.QrCodeBin, this.FriendlyName ?? string.Empty,
-					ServiceRef.Localizer[nameof(AppResources.Share)], FileName);
+				await this.OpenQrPopup(this.FriendlyName);
+
+				//ServiceRef.PlatformSpecific.ShareImage(this.QrCodeBin, this.FriendlyName ?? string.Empty,
+				//	ServiceRef.Localizer[nameof(AppResources.Share)], FileName);
 			}
 			catch (Exception ex)
 			{

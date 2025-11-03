@@ -689,6 +689,34 @@
 				Value="24" />
 	</Style>
 
+	<Style x:Key="IconButtonSecondary" ApplyToDerivedTypes="False" TargetType="controls:SvgButton" BasedOn="{StaticResource IconButton}">
+		<Setter Property="SvgTintColor" Value="{DynamicResource ButtonAccessSecondaryContentWL}"/>
+		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonSecondaryBorder}"/>
+		<Setter Property="LabelStyle" Value="{DynamicResource IconButtonSecondaryLabel}"/>
+	</Style>
+
+	<Style x:Key="IconButtonSecondaryBorder" ApplyToDerivedTypes="False" TargetType="Border" BasedOn="{StaticResource IconButtonBorder}">
+		<Setter Property="BackgroundColor" Value="{DynamicResource ButtonAccessSecondarybgWL}"/>
+	</Style>
+
+	<Style x:Key="IconButtonSecondaryLabel" ApplyToDerivedTypes="False" TargetType="Label" BasedOn="{StaticResource DurationLabel}">
+		<Setter Property="TextColor" Value="{DynamicResource ButtonAccessSecondaryContentWL}"/>
+	</Style>
+
+	<Style x:Key="IconButtonOnBackground" TargetType="controls:SvgButton" BasedOn="{StaticResource IconButton}">
+		<Setter Property="SvgTintColor" Value="{DynamicResource ContentSecondaryWL}"/>
+		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonBorderOnBackground}"/>
+	</Style>
+
+	<Style x:Key="IconButtonBorderOnBackground" TargetType="Border" BasedOn="{StaticResource IconButtonBorder}">
+		<Setter Property="BackgroundColor" Value="{DynamicResource InputFieldsSurfaceBackgroundActive}"/>
+		<Setter Property="Shadow">
+			<Setter.Value>
+				<Shadow Brush="Transparent"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	
 	<Style x:Key="IconButtonSmall" ApplyToDerivedTypes="False" TargetType="controls:SvgButton">
 		<Setter Property="SvgTintColor" Value="{DynamicResource ContentSecondaryWL}"/>
 		<Setter Property="SvgAspect" Value="AspectFit"/>

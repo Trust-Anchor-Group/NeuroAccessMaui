@@ -311,7 +311,7 @@
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="AlertFrame">
-		<Setter Property="BackgroundColor" Value="{DynamicResource TnPDangerFigureWL}" />
+		<Setter Property="BackgroundColor" Value="{DynamicResource TnPDangerbgWL}" />
 	</Style>
 
 	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="ShellFrame">

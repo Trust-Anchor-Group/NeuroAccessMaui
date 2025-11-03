@@ -15,6 +15,9 @@ using NeuroAccessMaui.Services.UI;
 using Microsoft.Maui.Controls.Shapes;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Script.Constants;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.UI.Popups.QR;
+using CommunityToolkit.Maui; // Added for ShowQRPopup/ShowQRViewModel
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -28,6 +31,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private readonly ContractsListMode contractsListMode;
 		private readonly TaskCompletionSource<Contract?>? selection;
 		private Contract? selectedContract = null;
+
+		public bool CanShareTemplate = false;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="MyContractsViewModel"/> class.
@@ -54,6 +59,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					case ContractsListMode.ContractTemplates:
 						this.Title = ServiceRef.Localizer[nameof(AppResources.ContractTemplates)];
 						this.Description = ServiceRef.Localizer[nameof(AppResources.ContractTemplatesInfoText)];
+						this.CanShareTemplate = true;
 						break;
 
 					case ContractsListMode.TokenCreationTemplates:
@@ -250,6 +256,33 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					}
 				}
 			});
+		}
+
+		[RelayCommand]
+		private async Task ShareTemplateQR(object? parameter)
+		{
+			try
+			{
+				ContractModel? Model = parameter as ContractModel;
+				if (Model is null)
+					return;
+
+				string ContractUri = Model.ContractIdUriString;
+				string ContractName = Model.Category;
+
+				if (string.IsNullOrEmpty(ContractUri))
+					return;
+
+				int Width = Constants.QrCode.DefaultImageWidth;
+				int Height = Constants.QrCode.DefaultImageHeight;
+				byte[] QrBytes = Services.UI.QR.QrCode.GeneratePng(ContractUri, Width, Height);
+				ShowQRViewModel ViewModel = new ShowQRViewModel(QrBytes, ContractUri, ContractName);
+				await ServiceRef.PopupService.PushAsync<ShowQRPopup, ShowQRViewModel>(ViewModel);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		private async Task LoadContracts()

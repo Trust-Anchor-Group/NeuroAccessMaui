@@ -238,6 +238,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// </summary>
 		event EventHandlerAsync<PresenceEventArgs> OnPresence;
 
+		event EventHandlerAsync<PresenceEventArgs> OnPresenceSubscribe;
+
+		event EventHandlerAsync<PresenceEventArgs> OnPresenceUnsubscribed;
+
 		/// <summary>
 		/// Requests subscription of presence information from a contact.
 		/// </summary>
@@ -1205,7 +1209,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="TransactionId">ID of transaction containing the encrypted message.</param>
 		/// <param name="RemoteEndpoint">Remote endpoint</param>
 		/// <returns>Decrypted string, if successful, or null, if not.</returns>
-		Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint, bool LocalIsRecipient);
+		Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint,bool LocalIsRecipient = false);
 
 		/// <summary>
 		/// Sends an eDaler URI to the eDaler service.

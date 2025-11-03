@@ -74,6 +74,20 @@ namespace NeuroAccessMaui.Services.UI.Popups
 			await session.Completion.Task;
 		}
 
+		public async Task PushAsync<TPopup, TViewModel>(TViewModel ViewModel, PopupOptions? Options = null)
+		where TPopup : ContentView
+		where TViewModel : class
+		{
+			PopupOptions effectiveOptions = Options ?? new PopupOptions();
+			PopupSession session = await this.Enqueue(async () =>
+			{
+				TPopup popupView = ServiceRef.Provider.GetRequiredService<TPopup>();
+				popupView.BindingContext = ViewModel;
+				return await this.PrepareAndShowPopupAsync(popupView, ViewModel, effectiveOptions);
+			});
+			await session.Completion.Task;
+		}
+
 		/// <inheritdoc/>
 		public async Task<TReturn?> PushAsync<TPopup, TViewModel, TReturn>(PopupOptions? Options = null)
 			where TPopup : ContentView

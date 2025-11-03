@@ -322,7 +322,7 @@
 		<PackageReference Include="Svg.Skia" Version="3.2.1" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-		<PackageReference Include="Waher.Content" Version="3.4.0" />
+		<PackageReference Include="Waher.Content" Version="3.4.1" />
 		<PackageReference Include="Waher.Content.Images" Version="3.0.2" />
 		<PackageReference Include="Waher.Content.Markdown" Version="6.2.0" />
 		<PackageReference Include="Waher.Content.QR" Version="2.1.2" />
@@ -339,7 +339,7 @@
 		<PackageReference Include="Waher.Networking.XMPP" Version="4.2.3" />
 		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="4.2.3" />
-		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.8.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.9.2" />
 		<PackageReference Include="Waher.Networking.XMPP.Control" Version="4.1.2" />
 		<PackageReference Include="Waher.Networking.XMPP.Geo" Version="1.0.1" />
 		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.2.7" />
@@ -355,7 +355,7 @@
 		<PackageReference Include="Waher.Persistence.XmlLedger" Version="1.2.3" />
 		<PackageReference Include="Waher.Runtime.Collections" Version="1.0.3" />
 		<PackageReference Include="Waher.Runtime.Geo" Version="1.0.1" />
-		<PackageReference Include="Waher.Runtime.Inventory" Version="1.4.4" />
+		<PackageReference Include="Waher.Runtime.Inventory" Version="1.4.5" />
 		<PackageReference Include="Waher.Runtime.IO" Version="1.0.5" />
 		<PackageReference Include="Waher.Runtime.Profiling" Version="1.1.2" />
 		<PackageReference Include="Waher.Runtime.Queue" Version="3.2.1" />
@@ -370,11 +370,6 @@
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.5.2" />
 	</ItemGroup>
 	<ItemGroup>
-		<!-- <Compile Update="Resources\Languages\AppResources.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>AppResources.resx</DependentUpon>
-		</Compile>-->
 		<Compile Update="Resources\Languages\AppResources.Designer.cs">
 		  <DesignTime>True</DesignTime>
 		  <AutoGen>True</AutoGen>
@@ -515,40 +510,15 @@
 		<Compile Update="UI\Popups\Permission\ShowPermissionPopup.xaml.cs">
 			<DependentUpon>ShowPermissionPopup.xaml</DependentUpon>
 		</Compile>
-	</ItemGroup>
-
-	<!-- Non-Windows targets (Android/iOS/MacCatalyst) 
-	<ItemGroup Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(TargetFramework)', '-windows'))">
-		<EmbeddedResource Update="Resources/Languages/AppResources.resx">
-			<Generator>MSBuild:Compile</Generator>
-			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-			<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
-			<StronglyTypedFileName>$(IntermediateOutputPath)\AppResources.Designer.cs</StronglyTypedFileName>
-			<StronglyTypedClassName>AppResources</StronglyTypedClassName>
-			<StronglyTypedNamespace>NeuroAccessMaui.Resources.Languages</StronglyTypedNamespace>
-		</EmbeddedResource>
-
-		<Compile Update="$(IntermediateOutputPath)\AppResources.Designer.cs" Condition="Exists('$(IntermediateOutputPath)\AppResources.Designer.cs')">
-			<DesignTime>false</DesignTime>
-			<AutoGen>true</AutoGen>
-			<DependentUpon>Resources\Languages\AppResources.resx</DependentUpon>
+		<Compile Update="UI\Popups\Transaction\PaymentSuccessPopup.xaml.cs">
+		  <DependentUpon>PaymentSuccessPopup.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Popups\Transaction\TransactionPopup.xaml.cs">
+		  <DependentUpon>TransactionPopup.xaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
-	-->
-	<!-- Windows target -->
-	<ItemGroup>
-		<EmbeddedResource Update="Resources\Languages\AppResources.resx">
-			<Generator>PublicResXFileCodeGenerator</Generator>
-			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-			<CustomToolNamespace>NeuroAccessMaui.Resources.Languages</CustomToolNamespace>
-		</EmbeddedResource>
-	</ItemGroup>
 
-	<!-- Ensure resource generation runs when building via CLI/VS Code -->
-	<PropertyGroup Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">
-		<!-- Prepend PrepareResources to the existing chain -->
-		<CoreCompileDependsOn>PrepareResources;$(CoreCompileDependsOn)</CoreCompileDependsOn>
-	</PropertyGroup>
+
 
 
 
@@ -821,6 +791,9 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\QR\ShowQRPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\Transaction\TransactionPupup.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Settings\SelectLanguagePopup.xaml">

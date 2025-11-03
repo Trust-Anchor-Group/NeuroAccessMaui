@@ -1,6 +1,11 @@
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Text;
 using CommunityToolkit.Maui.Layouts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel; // For MainThread marshaling
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -11,10 +16,6 @@ using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Text;
 using Waher.Events;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
@@ -23,7 +24,6 @@ using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using Waher.Script;
-using Microsoft.Maui.ApplicationModel; // For MainThread marshaling
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 {
@@ -283,9 +283,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			ViewContractStep Step = Enum.Parse<ViewContractStep>(this.CurrentState);
 			if (Step == ViewContractStep.Overview || Step == ViewContractStep.Loading)
-				await this.GoBack();
+				await base.GoBack();
 			else
 				await this.GoToStateAsync(ViewContractStep.Overview);
+		}
+
+		public override async Task GoBack()
+		{
+			await this.BackAsync();
 		}
 
 		[RelayCommand(CanExecute = nameof(CanStateChange))]
@@ -315,9 +320,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			await this.GoToStepAsync(ViewContractStep.Review, Prepare: async () =>
 			{
-				string Xaml = await this.Contract.Contract.ToMauiXaml(this.Contract.Contract.DeviceLanguage());
-				VerticalStackLayout Layout = new VerticalStackLayout().LoadFromXaml(Xaml);
-				this.HumanReadableText = Layout;
+
+				await this.ValidateParametersAsync();
+				VerticalStackLayout? HumanReadableText = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
+				this.HumanReadableText = HumanReadableText;
 			});
 		}
 
@@ -326,6 +332,67 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			if (this.Contract?.Contract is { } ContractObj)
 				await ServiceRef.NavigationService.GoToAsync(nameof(ServerSignaturePage), new ServerSignatureNavigationArgs(ContractObj), Services.UI.BackMethod.Pop);
+		}
+
+		#endregion
+
+		#region Proposals
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task SendProposalToPartAsync(ObservablePart? part)
+		{
+			if (part is null || this.Contract is null)
+				return;
+
+			if (!part.CanSendProposal)
+				return;
+
+			try
+			{
+				ContactInfo? info = await ContactInfo.FindByLegalId(part.LegalId);
+				if (info is null || string.IsNullOrEmpty(info.BareJid))
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.NetworkAddressOfContactUnknown)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					return;
+				}
+
+				await ServiceRef.XmppService.ContractsClient.AuthorizeAccessToContractAsync(
+					this.Contract.ContractId,
+					info.BareJid,
+					true);
+
+				string? friendlyTarget = info.FriendlyName;
+				if (string.IsNullOrEmpty(friendlyTarget))
+					friendlyTarget = part.FriendlyName ?? info.BareJid ?? part.LegalId;
+
+				string? proposal = await ServiceRef.UiService.DisplayPrompt(
+					ServiceRef.Localizer[nameof(AppResources.Proposal)] ?? string.Empty,
+					ServiceRef.Localizer[nameof(AppResources.EnterProposal), friendlyTarget] ?? string.Empty,
+					ServiceRef.Localizer[nameof(AppResources.Send)] ?? string.Empty,
+					ServiceRef.Localizer[nameof(AppResources.Cancel)] ?? string.Empty);
+
+				if(proposal is null) // Dont send if cancelled
+					return;
+				if (string.IsNullOrEmpty(proposal)) // Use default if empty
+					proposal = ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)];
+
+				await ServiceRef.XmppService.SendContractProposal(
+					this.Contract.Contract,
+					part.Part.Role,
+					info.BareJid,
+					proposal);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)] ?? string.Empty,
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)] ?? string.Empty,
+					ServiceRef.Localizer[nameof(AppResources.Ok)] ?? string.Empty);
+			}
 		}
 
 		#endregion
@@ -399,7 +466,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			try
 			{
-				await this.OpenQrPopup();
+				this.GenerateQrCode(this.Contract.Contract.ContractIdUriString);
+				await this.OpenQrPopup("");
 			}
 			catch (Exception Ex)
 			{
@@ -562,6 +630,70 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 		#region Private Helpers
 
+		/// <summary>
+		/// Validates the parameters of the contract and updates their error states.
+		/// </summary>
+		private async Task ValidateParametersAsync()
+		{
+			if (this.Contract is null)
+				return;
+
+			try
+			{
+				// Step 1: Get the variables and prepare the parameters to validate
+				Variables Variables = [];
+
+
+				Variables["Duration"] = this.Contract.Contract.Duration;
+
+				DateTime? FirstSignature = this.Contract.Contract.FirstSignatureAt;
+				if (FirstSignature.HasValue)
+				{
+					Variables["Now"] = FirstSignature.Value.ToLocalTime();
+					Variables["NowUtc"] = FirstSignature.Value.ToUniversalTime();
+				}
+
+				foreach (ObservableParameter ParamLoop in this.Contract.Parameters)
+					ParamLoop.Parameter.Populate(Variables);
+
+				// Step 2: Prepare to collect validation results
+				List<(ObservableParameter Param, bool IsValid, string ValidationText)> ValidationResults = [];
+
+				ContractsClient? ContractsClient = null;
+				try
+				{
+					ContractsClient = ServiceRef.XmppService.ContractsClient;
+				}
+				catch (Exception)
+				{
+					// Ignore, client might not be available currently
+				}
+
+				Task<(ObservableParameter Param, bool IsValid, string ValidationText)>[] ValidationTasks = this.Contract.Parameters.Select(async ParamToValidate =>
+				{
+					bool IsValid = false;
+					string ValidationText = string.Empty;
+					try
+					{
+						IsValid = await ParamToValidate.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient).ConfigureAwait(false);
+						IsValid = IsValid || ParamToValidate.Parameter.ErrorText == ContractStatus.ClientIdentityInvalid.ToString();
+						ValidationText = ParamToValidate.Parameter.ErrorText;
+					}
+					catch (Exception Ex2)
+					{
+						ServiceRef.LogService.LogException(Ex2);
+						IsValid = true;
+					}
+					return (Param: ParamToValidate, IsValid, ValidationText);
+				}).ToArray();
+
+				(ObservableParameter Param, bool IsValid, string ValidationText)[] Results = await Task.WhenAll(ValidationTasks);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 		private bool ValidateArgs()
 		{
 			return this.args is not null && this.args.Contract is not null;
@@ -576,7 +708,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		{
 			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
-				this.GenerateQrCode(Constants.UriSchemes.CreateSmartContractUri(this.Contract!.ContractId));
 				this.ProposalFriendlyName = await this.ResolveProposalFriendlyNameAsync();
 				this.ProposalRole = this.args!.Role ?? string.Empty;
 				this.ProposalMessage = this.args!.Proposal ?? string.Empty;
@@ -775,6 +906,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract is null)
 				return;
 
+			ServiceRef.LogService.LogDebug($"RefreshContractAsync start for {this.Contract.ContractId}");
+			bool previousStateChange = this.CanStateChange;
+			this.CanStateChange = false; // Gate state transitions during refresh
+
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				if (!this.IsRefreshing)
@@ -836,6 +971,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				{
 					this.IsRefreshing = false;
 				});
+				this.CanStateChange = previousStateChange;
+				ServiceRef.LogService.LogDebug("RefreshContractAsync skipped (no changes)");
 				return;
 			}
 
@@ -867,7 +1004,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				await Database.Update(Ref);
 			}
 
+			this.CanStateChange = previousStateChange;
 			await this.GoToStateAsync(CurrentStep);
+			ServiceRef.LogService.LogDebug($"RefreshContractAsync completed for {this.Contract.ContractId}");
 
 			MainThread.BeginInvokeOnMainThread(() =>
 			{

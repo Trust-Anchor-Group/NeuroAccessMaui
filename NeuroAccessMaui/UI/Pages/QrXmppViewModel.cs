@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Popups.QR;
@@ -38,6 +38,7 @@ namespace NeuroAccessMaui.UI.Pages
 				if (this.QrCode is not null && string.Equals(this.QrCodeUri, Uri, StringComparison.Ordinal))
 				{
 					ServiceRef.LogService.LogDebug($"GenerateQrCode skipped (same URI): {Uri}");
+					return;
 				}
 
 				if (this.QrCodeWidth == 0 || this.QrCodeHeight == 0)
@@ -113,11 +114,17 @@ namespace NeuroAccessMaui.UI.Pages
 		/// </summary>
 		/// <returns></returns>
 		[RelayCommand]
-		public async Task OpenQrPopup()
+		public async Task OpenQrPopup(string? Title)
 		{
 			if (this.QrCodeBin is null) return;
 
-			ShowQRPopup QrPopup = new(this.QrCodeBin);
+			ShowQRPopup QrPopup;
+
+			if (!string.IsNullOrEmpty(Title))
+				QrPopup = new(this.QrCodeBin, this.QrCodeUri, Title);
+			else
+				QrPopup = new(this.QrCodeBin, this.QrCodeUri);
+
 			await ServiceRef.PopupService.PushAsync(QrPopup);
 		}
 

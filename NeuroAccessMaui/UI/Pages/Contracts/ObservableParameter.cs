@@ -69,6 +69,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			};
 
 			await ParameterInfo.InitializeAsync(contract);
+
+			if(ParameterInfo.Parameter is RoleParameter RP)
+			{
+				if(RP.Value is not null && RP.Value is string RoleValue && string.IsNullOrEmpty(RoleValue))
+				{
+					RP.SetValue(null);
+				}
+			}
+			else if (ParameterInfo.Parameter is CalcParameter CP)
+			{
+				if (string.IsNullOrEmpty(CP.StringValue))
+					CP.SetValue(null);
+			}
+
 			return ParameterInfo;
 		}
 		#endregion

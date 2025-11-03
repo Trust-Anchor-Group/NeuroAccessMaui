@@ -13,6 +13,7 @@ using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Notification.Things;
 using NeuroAccessMaui.Services.Notification.Xmpp;
 using NeuroAccessMaui.Services.Push;
@@ -30,6 +31,7 @@ using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.Events;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -244,7 +246,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 					}
 #endif
-
+					this.xmppClient.DefaultRetryTimeout = 30000;
+					this.xmppClient.DefaultNrRetries = 0;
 					this.xmppClient.RequestRosterOnStartup = false;
 					this.xmppClient.TrustServer = !IsIpAddress;
 					this.xmppClient.AllowCramMD5 = false;
@@ -1726,6 +1729,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				default:
 					break;
 			}
+
+			await this.OnPresenceSubscribe.Raise(this, e);
 		}
 
 		private async Task XmppClient_OnPresenceUnsubscribed(object? Sender, PresenceEventArgs e)
@@ -1736,6 +1741,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				ContactInfo.AllowSubscriptionFrom = null;
 				await Database.Update(ContactInfo);
 			}
+
+			await this.OnPresenceUnsubscribed.Raise(this, e);
 		}
 
 		#endregion
@@ -2029,7 +2036,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private Task ContractsClient_ClientMessage(object? Sender, ClientMessageEventArgs e)
 		{
-			string Message = e.Body;
+			string Message = e.Body ?? string.Empty;
 
 
 			if (!string.IsNullOrEmpty(e.Code))
@@ -2039,15 +2046,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 					string Key = "ClientMessage" + e.Code;
 					string LocalizedMessage = ServiceRef.Localizer[Key, false];
 
-					// TODO: Make sure this does not generate logs or errors, as the app
-					// does not control future error codes that can be returned.
-
 					if (!string.IsNullOrEmpty(LocalizedMessage) && !LocalizedMessage.Equals(Key, StringComparison.Ordinal))
+					{
 						Message = LocalizedMessage;
+					}
 				}
 				catch (Exception)
 				{
-					// Ignore
+					// Ignore localization lookup issues.
 				}
 			}
 
@@ -2220,13 +2226,203 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// BankIdRFA20: Would you like to identify yourself or sign with a BankID on this device or with a BankID on another device?
 			// BankIdRFA21: Identification or signing in progress.
 			// BankIdRFA22: Unknown error. Please try again.
+			Message = Message.Trim();
 
-			MainThread.BeginInvokeOnMainThread(async () =>
+			ApplicationReview? Review = null;
+
+			try
 			{
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-			});
+				ApplicationReview Candidate = new ApplicationReview
+				{
+					Message = Message,
+					Code = e.Code,
+					ReceivedUtc = DateTime.UtcNow
+				};
+
+				try
+				{
+					IEnumerable<InvalidClaim> InvalidClaimsEnumerable = Array.Empty<InvalidClaim>();
+					if (e.InvalidClaims is IEnumerable<InvalidClaim> InvalidClaimsCandidate)
+					{
+						InvalidClaimsEnumerable = InvalidClaimsCandidate;
+					}
+
+					List<string> InvalidClaimNames = new List<string>();
+					List<ApplicationReviewClaimDetail> InvalidClaimDetailList = new List<ApplicationReviewClaimDetail>();
+
+					foreach (InvalidClaim InvalidClaim in InvalidClaimsEnumerable)
+					{
+						if (InvalidClaim is null || string.IsNullOrWhiteSpace(InvalidClaim.Claim))
+							continue;
+
+						string ClaimValue = InvalidClaim.Claim.Trim();
+						InvalidClaimNames.Add(ClaimValue);
+
+						string Reason = InvalidClaim.Reason ?? string.Empty;
+						string? ReasonLanguage = InvalidClaim.ReasonLanguage;
+						string? ReasonCode = InvalidClaim.ReasonCode;
+						string? Service = InvalidClaim.Service;
+
+						ApplicationReviewClaimDetail Detail = new ApplicationReviewClaimDetail(
+							ClaimValue,
+							Reason,
+							ReasonLanguage,
+							ReasonCode,
+							Service);
+						InvalidClaimDetailList.Add(Detail);
+					}
+
+					Candidate.InvalidClaims = InvalidClaimNames.Count > 0 ? InvalidClaimNames.ToArray() : Array.Empty<string>();
+					Candidate.InvalidClaimDetails = InvalidClaimDetailList.Count > 0 ? InvalidClaimDetailList.ToArray() : Array.Empty<ApplicationReviewClaimDetail>();
+				}
+				catch
+				{
+					// Ignore conversion errors; keep defaults.
+				}
+
+				try
+				{
+					IEnumerable<InvalidPhoto> InvalidPhotosEnumerable = Array.Empty<InvalidPhoto>();
+					if (e.InvalidPhotos is IEnumerable<InvalidPhoto> InvalidPhotosCandidate)
+					{
+						InvalidPhotosEnumerable = InvalidPhotosCandidate;
+					}
+
+					List<string> InvalidPhotoNames = new List<string>();
+					List<ApplicationReviewPhotoDetail> InvalidPhotoDetailList = new List<ApplicationReviewPhotoDetail>();
+
+					foreach (InvalidPhoto InvalidPhoto in InvalidPhotosEnumerable)
+					{
+						if (InvalidPhoto is null || string.IsNullOrWhiteSpace(InvalidPhoto.FileName))
+							continue;
+
+						string FileName = InvalidPhoto.FileName.Trim();
+						if (string.IsNullOrEmpty(FileName))
+							continue;
+
+						string FileNameWithoutExtension = Path.GetFileNameWithoutExtension(FileName);
+						string DisplayName = string.IsNullOrEmpty(FileNameWithoutExtension) ? FileName : FileNameWithoutExtension;
+						DisplayName = DisplayName.Trim();
+						if (string.IsNullOrEmpty(DisplayName))
+							DisplayName = FileName;
+
+						InvalidPhotoNames.Add(DisplayName);
+
+						string Reason = InvalidPhoto.Reason ?? string.Empty;
+						string? ReasonLanguage = InvalidPhoto.ReasonLanguage;
+						string? ReasonCode = InvalidPhoto.ReasonCode;
+						string? Service = InvalidPhoto.Service;
+
+						ApplicationReviewPhotoDetail Detail = new ApplicationReviewPhotoDetail(
+							FileName,
+							DisplayName,
+							Reason,
+							ReasonLanguage,
+							ReasonCode,
+							Service);
+						InvalidPhotoDetailList.Add(Detail);
+					}
+
+					Candidate.InvalidPhotos = InvalidPhotoNames.Count > 0 ? InvalidPhotoNames.ToArray() : Array.Empty<string>();
+					Candidate.InvalidPhotoDetails = InvalidPhotoDetailList.Count > 0 ? InvalidPhotoDetailList.ToArray() : Array.Empty<ApplicationReviewPhotoDetail>();
+				}
+				catch
+				{
+					// Ignore conversion errors; keep defaults.
+				}
+
+				try
+				{
+					IEnumerable<string> UnvalidatedClaimsEnumerable = Array.Empty<string>();
+					if (e.UnvalidatedClaims is IEnumerable<string> UnvalidatedClaimsCandidate)
+					{
+						UnvalidatedClaimsEnumerable = UnvalidatedClaimsCandidate;
+					}
+
+					List<string> UnvalidatedClaimList = new List<string>();
+					foreach (string Claim in UnvalidatedClaimsEnumerable)
+					{
+						if (string.IsNullOrWhiteSpace(Claim))
+							continue;
+
+						string TrimmedClaim = Claim.Trim();
+						if (TrimmedClaim.Length > 0)
+							UnvalidatedClaimList.Add(TrimmedClaim);
+					}
+
+					Candidate.UnvalidatedClaims = UnvalidatedClaimList.Count > 0 ? UnvalidatedClaimList.ToArray() : Array.Empty<string>();
+				}
+				catch
+				{
+					// Ignore conversion errors; keep defaults.
+				}
+
+				try
+				{
+					IEnumerable<string> UnvalidatedPhotosEnumerable = Array.Empty<string>();
+					if (e.UnvalidatedPhotos is IEnumerable<string> UnvalidatedPhotosCandidate)
+					{
+						UnvalidatedPhotosEnumerable = UnvalidatedPhotosCandidate;
+					}
+
+					List<string> UnvalidatedPhotoList = new List<string>();
+					foreach (string Photo in UnvalidatedPhotosEnumerable)
+					{
+						if (string.IsNullOrWhiteSpace(Photo))
+							continue;
+
+						string TrimmedPhoto = Photo.Trim();
+						if (TrimmedPhoto.Length > 0)
+							UnvalidatedPhotoList.Add(TrimmedPhoto);
+					}
+
+					Candidate.UnvalidatedPhotos = UnvalidatedPhotoList.Count > 0 ? UnvalidatedPhotoList.ToArray() : Array.Empty<string>();
+				}
+				catch
+				{
+					// Ignore conversion errors; keep defaults.
+				}
+
+				bool HasMeaningfulData =
+					!string.IsNullOrEmpty(Candidate.Message) ||
+					!string.IsNullOrEmpty(Candidate.Code) ||
+					Candidate.InvalidClaims.Length > 0 ||
+					Candidate.InvalidPhotos.Length > 0 ||
+					Candidate.UnvalidatedClaims.Length > 0 ||
+					Candidate.UnvalidatedPhotos.Length > 0;
+
+				if (HasMeaningfulData)
+					Review = Candidate;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			if (Review is not null)
+			{
+				ApplicationReview CapturedReview = Review;
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					ServiceRef.TagProfile.SetApplicationReview(CapturedReview);
+				});
+			}
+
+			bool ShouldShowAlert = Review is null ||
+				(Review.InvalidClaims.Length == 0 &&
+				Review.InvalidPhotos.Length == 0 &&
+				Review.UnvalidatedClaims.Length == 0 &&
+				Review.UnvalidatedPhotos.Length == 0);
+
+			if (ShouldShowAlert)
+			{
+				MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], string.IsNullOrEmpty(Message) ? ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)] : Message,
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				});
+			}
 
 			return Task.CompletedTask;
 		}
@@ -2244,6 +2440,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Event raised when a new presence stanza has been received.
 		/// </summary>
 		public event EventHandlerAsync<PresenceEventArgs>? OnPresence;
+
+		/// <summary>
+		/// Event raised when a new presence subscription request has been received.
+		/// </summary>
+		public event EventHandlerAsync<PresenceEventArgs>? OnPresenceSubscribe;
+
+		/// <summary>
+		/// Event raised when a presence subscription has been revoked.
+		/// </summary>
+		public event EventHandlerAsync<PresenceEventArgs>? OnPresenceUnsubscribed;
 
 		/// <summary>
 		/// Requests subscription of presence information from a contact.

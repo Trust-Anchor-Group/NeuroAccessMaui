@@ -1,6 +1,13 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Cache.InternetCache;
+using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.MVVM.Building;
+using NeuroAccessMaui.UI.MVVM.Policies;
+using Microsoft.Maui;
 using SkiaSharp;
 using Svg.Skia;
 
@@ -139,7 +146,9 @@ namespace NeuroAccessMaui.UI.Controls
 
 		private readonly Image imageView;
 		private readonly ActivityIndicator spinner;
+		private readonly ObservableTask<int> loadImageTask;
 		private bool isErrorDisplayed;
+		private bool isDisposed;
 
 		public UriImage()
 		{
@@ -160,6 +169,27 @@ namespace NeuroAccessMaui.UI.Controls
 			{
 				Children = { this.imageView, this.spinner }
 			};
+
+			ObservableTaskBuilder Builder = new ObservableTaskBuilder();
+			Builder.Named("UriImage.Load");
+			Builder.AutoStart(false);
+			Builder.WithPolicy(Policies.Retry(3, (int Attempt, Exception Error) => TimeSpan.FromMilliseconds(Math.Min(2000, 200 * Attempt))));
+			Builder.Run(this.LoadImageCoreAsync);
+
+			this.loadImageTask = Builder.Build();
+			this.loadImageTask.StateChanged += this.OnLoadTaskStateChanged;
+		}
+
+		protected override void OnHandlerChanging(HandlerChangingEventArgs Args)
+		{
+			base.OnHandlerChanging(Args);
+
+			if (Args.NewHandler is null && !this.isDisposed)
+			{
+				this.loadImageTask.StateChanged -= this.OnLoadTaskStateChanged;
+				this.loadImageTask.Dispose();
+				this.isDisposed = true;
+			}
 		}
 
 		private static void OnAspectChanged(BindableObject Bindable, object OldValue, object NewValue)
@@ -172,7 +202,8 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			UriImage Control = (UriImage)Bindable;
 			Control.isErrorDisplayed = false;
-			_ = Control.LoadImageAsync();
+			if (!Control.isDisposed)
+				Control.loadImageTask.Run();
 		}
 
 		private static void OnErrorPlaceholderChanged(BindableObject Bindable, object OldValue, object NewValue)
@@ -182,103 +213,139 @@ namespace NeuroAccessMaui.UI.Controls
 				Control.imageView.Source = (ImageSource)NewValue;
 		}
 
-		private async Task LoadImageAsync()
+		private void OnLoadTaskStateChanged(object? Sender, ObservableTaskStatus Status)
 		{
+			bool IsRunning = Status == ObservableTaskStatus.Running;
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				this.IsLoading = true;
-				this.spinner.IsVisible = true;
-				this.spinner.IsRunning = true;
+				this.IsLoading = IsRunning;
+				this.spinner.IsRunning = IsRunning;
+				this.spinner.IsVisible = IsRunning;
 			});
 
-			if (string.IsNullOrWhiteSpace(this.Source)
-				|| !Uri.TryCreate(this.Source, UriKind.Absolute, out Uri? UriVal))
-			{
-				this.ShowError();
-				return;
-			}
+			if (Status == ObservableTaskStatus.Failed && !this.isErrorDisplayed)
+				_ = this.ShowErrorAsync();
+		}
 
+		private async Task LoadImageCoreAsync(TaskContext<int> Context)
+		{
 			try
 			{
-				bool IsSvgUri = this.Source.EndsWith(".svg", StringComparison.OrdinalIgnoreCase);
-				ImageSource? NewImage = null;
-
-				if (this.Source.StartsWith("resource://", StringComparison.Ordinal))
-					NewImage = ImageSource.FromResource(this.Source[11..]);
-				else if (this.Source.StartsWith("file://", StringComparison.Ordinal))
+				string? CurrentSource = this.Source;
+				if (string.IsNullOrWhiteSpace(CurrentSource))
 				{
-					if (IsSvgUri)
-						NewImage = this.Source[7..^4];
-					else
-						NewImage = this.Source[7..];
+					await this.ShowErrorAsync();
+					return;
 				}
 
-				// IF not local, fetch
+				ImageSource? NewImage = await this.ResolveImageSourceAsync(CurrentSource, Context.CancellationToken);
 				if (NewImage is null)
 				{
-
-					string Key = !string.IsNullOrEmpty(this.ParentId) ? this.ParentId : this.Source;
-					IInternetCacheService CacheService = ServiceRef.InternetCacheService;
-					(byte[]? ImageBytes, string _) = await CacheService.GetOrFetch(UriVal, Key, this.Permanent);
-
-					if (ImageBytes is not null)
-					{
-						try
-						{
-							SKSvg Svg = new();
-							using (MemoryStream Stream = new(ImageBytes))
-							{
-								Svg.Load(Stream);
-							}
-
-							//Check that the svg was parsed correct
-							if (Svg.Picture is not null)
-							{
-								using MemoryStream Stream = new();
-								if (Svg.Picture.ToImage(Stream, SKColor.Parse("#00FFFFFF"), SKEncodedImageFormat.Png, 100, 1, 1, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb()))
-									ImageBytes = Stream.ToArray();
-							}
-						}
-						catch
-						{
-							//Silent failure
-						}
-					}
-
-					if (ImageBytes is not null)
-						NewImage = ImageSource.FromStream(() => new MemoryStream(ImageBytes));
+					await this.ShowErrorAsync();
+					return;
 				}
 
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					if (NewImage is null)
-						this.ShowError();
-					else
-					{
+				Context.CancellationToken.ThrowIfCancellationRequested();
 
-						this.isErrorDisplayed = false;
-						this.imageView.Source = NewImage;
-					}
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.isErrorDisplayed = false;
+					this.imageView.Source = NewImage;
 				});
+			}
+			catch (OperationCanceledException)
+			{
+				throw;
 			}
 			catch (Exception Ex)
 			{
-				this.ShowError();
-			}
-			finally
-			{
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					this.IsLoading = false;
-					this.spinner.IsRunning = false;
-					this.spinner.IsVisible = false;
-				});
+				ServiceRef.LogService.LogException(Ex);
+				throw;
 			}
 		}
 
-		private void ShowError()
+		private async Task<ImageSource?> ResolveImageSourceAsync(string CurrentSource, CancellationToken CancellationToken)
 		{
-			MainThread.BeginInvokeOnMainThread(() =>
+			bool IsSvgUri = CurrentSource.EndsWith(".svg", StringComparison.OrdinalIgnoreCase);
+
+			if (CurrentSource.StartsWith("resource://", StringComparison.Ordinal))
+			{
+				CancellationToken.ThrowIfCancellationRequested();
+				return ImageSource.FromResource(CurrentSource[11..]);
+			}
+
+			if (CurrentSource.StartsWith("file://", StringComparison.Ordinal))
+			{
+				CancellationToken.ThrowIfCancellationRequested();
+				if (IsSvgUri)
+					return CurrentSource[7..^4];
+				return CurrentSource[7..];
+			}
+
+			if (!Uri.TryCreate(CurrentSource, UriKind.Absolute, out Uri? UriValue))
+				return null;
+
+			string Key = string.IsNullOrEmpty(this.ParentId) ? CurrentSource : this.ParentId;
+			IInternetCacheService CacheService = ServiceRef.InternetCacheService;
+			(byte[]? ImageBytes, string _) = await CacheService.GetOrFetch(UriValue, Key, this.Permanent);
+
+			if (ImageBytes is null || ImageBytes.Length == 0)
+				throw new InvalidOperationException($"Unable to retrieve image from '{CurrentSource}'.");
+
+			byte[] ProcessedBytes = ImageBytes;
+			if (IsSvgUri)
+				ProcessedBytes = this.TryConvertSvgToPng(ProcessedBytes, CancellationToken);
+
+			CancellationToken.ThrowIfCancellationRequested();
+
+			return this.CreateImageSourceFromBytes(ProcessedBytes);
+		}
+
+		private ImageSource CreateImageSourceFromBytes(byte[] ImageBytes)
+		{
+			byte[] Buffer = ImageBytes;
+			return ImageSource.FromStream(() => new MemoryStream(Buffer));
+		}
+
+		private byte[] TryConvertSvgToPng(byte[] ImageBytes, CancellationToken CancellationToken)
+		{
+			try
+			{
+				CancellationToken.ThrowIfCancellationRequested();
+				SKSvg Svg = new SKSvg();
+				using (MemoryStream InputStream = new MemoryStream(ImageBytes))
+				{
+					Svg.Load(InputStream);
+				}
+
+				CancellationToken.ThrowIfCancellationRequested();
+
+				if (Svg.Picture is null)
+					return ImageBytes;
+
+				using (MemoryStream OutputStream = new MemoryStream())
+				{
+					bool Converted = Svg.Picture.ToImage(OutputStream, SKColor.Parse("#00FFFFFF"), SKEncodedImageFormat.Png, 100, 1, 1, SKColorType.Rgba8888, SKAlphaType.Premul, SKColorSpace.CreateSrgb());
+					if (!Converted)
+						return ImageBytes;
+
+					return OutputStream.ToArray();
+				}
+			}
+			catch (OperationCanceledException)
+			{
+				throw;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return ImageBytes;
+			}
+		}
+
+		private Task ShowErrorAsync()
+		{
+			return MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				this.isErrorDisplayed = true;
 				this.IsLoading = false;

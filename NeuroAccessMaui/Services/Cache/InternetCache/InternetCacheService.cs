@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
@@ -63,8 +63,8 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 				return (null, string.Empty);
 			}
 
-			byte[] Bytes = Response.Encoded;
-			string Type = Response.ContentType;
+            byte[] Bytes = Response.Encoded;
+            string Type = Response.ContentType;
 
 			// 🔽 NEW: Transparent decompression
 			Bytes = TryDecompress(Bytes);

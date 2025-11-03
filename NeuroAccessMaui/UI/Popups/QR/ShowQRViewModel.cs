@@ -18,8 +18,10 @@ namespace NeuroAccessMaui.UI.Popups.QR
 
 		private byte[] qrCodeBin = [];
 		private readonly IDispatcherTimer? timer;
-
 		private int timerSeconds = 60;
+
+		[ObservableProperty]
+		private string title;
 
 		/// <summary>
 		/// Legal ID
@@ -96,9 +98,16 @@ namespace NeuroAccessMaui.UI.Popups.QR
 
 		#endregion
 
-		public ShowQRViewModel(byte[] QrCodeBin)
+		public ShowQRViewModel(byte[] QrCodeBin, string? QrCodeUri) : this(QrCodeBin, QrCodeUri, "QR Code")
 		{
+		}
+
+		public ShowQRViewModel(byte[] QrCodeBin, string? QrCodeUri, string Title)
+		{
+			this.Title = Title;
+
 			this.QrCodeBin = QrCodeBin;
+			this.QrCodeUri = QrCodeUri;
 			this.LegalId = ServiceRef.TagProfile.LegalIdentity?.Id;
 
 			if (this.QrCodeWidth == 0 || this.QrCodeHeight == 0)
@@ -120,6 +129,7 @@ namespace NeuroAccessMaui.UI.Popups.QR
 			this.timer.Interval = TimeSpan.FromSeconds(1);
 			this.timer.Tick += this.OnTimerTick;
 			this.timer.Start();
+
 		}
 
 		#region Commands
@@ -151,7 +161,7 @@ namespace NeuroAccessMaui.UI.Popups.QR
 				// Share the file
 				await Share.Default.RequestAsync(new ShareFileRequest
 				{
-					Title = "QR Code",
+					Title = this.Title ?? "QR Code",
 					File = new ShareFile(FilePath, "image/png")
 				});
 
@@ -167,34 +177,21 @@ namespace NeuroAccessMaui.UI.Popups.QR
 		/// Copies Item to clipboard
 		/// </summary>
 		[RelayCommand]
-		private async Task Copy(object Item)
+		private async Task Copy()
 		{
 			try
 			{
 				this.SetIsBusy(true);
 
-				if (Item is string Label)
-				{
-					if (Label == this.LegalId)
-					{
-						await Clipboard.SetTextAsync(Constants.UriSchemes.IotId + ":" + this.LegalId);
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-							ServiceRef.Localizer[nameof(AppResources.IdCopiedSuccessfully)]);
-					}
-					else
-					{
-						await Clipboard.SetTextAsync(Label);
-						await ServiceRef.UiService.DisplayAlert(
-							ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-							ServiceRef.Localizer[nameof(AppResources.TagValueCopiedToClipboard)]);
-					}
-				}
+				await Clipboard.SetTextAsync(this.QrCodeUri);
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
+					ServiceRef.Localizer[nameof(AppResources.SuccessfullyCopiedToClipboard)]);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
-				await ServiceRef.UiService.DisplayException(ex);
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 			finally
 			{

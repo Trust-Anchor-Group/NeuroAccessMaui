@@ -137,6 +137,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		public string UniqueName => this.ContractId;
 
 		/// <summary>
+		/// URI string for the contract ID, used for sharing and QR codes.
+		/// </summary>
+		public string ContractIdUriString => Constants.UriSchemes.IotSc + ":" + this.contractId;
+
+		/// <summary>
 		/// The created timestamp of the contract.
 		/// </summary>
 		public DateTime Timestamp => this.timestamp;

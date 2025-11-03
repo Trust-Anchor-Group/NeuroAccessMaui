@@ -17,7 +17,7 @@ using Plugin.Firebase.CloudMessaging;
 
 namespace NeuroAccessMaui
 {
-	[Activity(Theme = "@style/Maui.SplashTheme", MainLauncher = true, Name = "com.tag.NeuroAccess.MainActivity",
+	[Activity(Exported = true, Theme = "@style/Maui.SplashTheme", MainLauncher = true, Name = "com.tag.NeuroAccess.MainActivity",
 		ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density | ConfigChanges.Locale,
 		ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
 	[IntentFilter([NfcAdapter.ActionNdefDiscovered],

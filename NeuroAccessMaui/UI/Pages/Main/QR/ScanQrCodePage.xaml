@@ -43,7 +43,7 @@
 											Direction="Row" JustifyContent="Center" Margin="{DynamicResource SmallMargins}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate x:DataType="viewmodel:UriSchemaIcon">
-										<Border HeightRequest="66" WidthRequest="66" BackgroundColor="{Binding BackgroundColor}"
+										<Border HeightRequest="48" WidthRequest="48" BackgroundColor="{Binding BackgroundColor}"
 												  Stroke="{Binding ForegroundColor}" StrokeShape="RoundRectangle 33" StrokeThickness="3">
 											<Path VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="40" WidthRequest="40" Aspect="Uniform"
 													Data="{Binding Geometry}" Fill="{Binding ForegroundColor}" />

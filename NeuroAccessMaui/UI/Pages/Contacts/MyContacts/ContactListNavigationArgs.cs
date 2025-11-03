@@ -14,9 +14,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		MakePayment,
 
 		/// <summary>
-		/// View the identity.
+		/// View the contacts list.
 		/// </summary>
-		ViewIdentity,
+		View,
 
 		/// <summary>
 		/// Embed link to ID in chat

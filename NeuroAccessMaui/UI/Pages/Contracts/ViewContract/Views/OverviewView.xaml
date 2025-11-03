@@ -211,21 +211,52 @@
 										  WidthRequest="16"
 										  Aspect="Uniform"
 										  Fill="{DynamicResource TnPInfoContentWL}" />
-									<Label Grid.Column="1"
-										   Style="{DynamicResource AccentInfoLabel}"
-										   VerticalOptions="Start"
-										   VerticalTextAlignment="Start"
-										   Margin="{DynamicResource SmallLeftMargins}"
-										   Text="{l:Localize InvitationToSign}" />
 
+									<controls:ConditionView Condition="{Binding ProposalRole, Converter={mct:IsStringNullOrEmptyConverter}}" Grid.Column="1">
+										<controls:ConditionView.True>
+											<Label 
+												   Style="{DynamicResource AccentInfoLabel}"
+												   VerticalOptions="Start"
+												   VerticalTextAlignment="Start"
+												   Margin="{DynamicResource SmallLeftMargins}"
+												   Text="{l:Localize InvitationToSign}" />
+										</controls:ConditionView.True>
+										<controls:ConditionView.False>
+											<Label 
+												   Style="{DynamicResource AccentInfoLabel}"
+												   VerticalOptions="Start"
+												   VerticalTextAlignment="Start"
+												   Margin="{DynamicResource SmallLeftMargins}"
+												   Text="{l:Localize InvitationToSignFormat, Arg={Binding ProposalRole}}"/>
+										</controls:ConditionView.False>
+									</controls:ConditionView>
 								</Grid>
 							</Border>
-							<!--
-						<Label Text="{Binding Path=Contract.Category}"
-								Margin="{DynamicResource SmallSpacing}"
-								Style="{DynamicResource PageTitleLabel}"
-								HorizontalTextAlignment="Center"/>
--->
+							<Border Style="{DynamicResource BorderSubSet}"
+									IsVisible="{Binding IsProposal}"
+									Margin="0">
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+									<Grid ColumnDefinitions="auto, *"
+										  ColumnSpacing="{DynamicResource MediumSpacing}">
+										<Label Grid.Column="0"
+											   Text="{l:Localize From}"
+											   Style="{DynamicResource ItemTitleLabel}" />
+										<Label Grid.Column="1"
+											   Text="{Binding Path=ProposalFriendlyName,Converter={converters:HyphenIfEmpty}}"
+											   Style="{DynamicResource ItemValueLabel}" />
+									</Grid>
+
+									<Grid ColumnDefinitions="auto, *">
+										<Label Grid.Column="0"
+											   Text="{l:Localize Message}"
+											   Style="{DynamicResource ItemTitleLabel}" />
+										<Label Grid.Column="1"
+											   Text="{Binding Path=ProposalMessage,Converter={converters:HyphenIfEmpty}}"
+											   Style="{DynamicResource ItemValueLabel}" />
+									</Grid>
+								</VerticalStackLayout>
+
+							</Border>
 
 
 							<Border Style="{DynamicResource BorderSubSet}"
@@ -277,11 +308,10 @@
 
 					</Border>
 
-					<!-- Parameters Button -->
-					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractEditPath}"
-											  TopLabelText="{l:Localize ViewParametersTitle}"
-											  BottomLabelText="{l:Localize ViewParametersDescription}"
-											  Command="{Binding GoToParametersCommand}" />
+					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractPath}"
+											  TopLabelText="{l:Localize ReviewContractTitle}"
+											  BottomLabelText="{l:Localize ReviewContractDescription2}"
+											  Command="{Binding GoToReviewCommand}" />
 
 					<!-- Roles Button -->
 					<views:OverviewItemButton IconData="{x:Static ui:Geometries.RolesPath}"
@@ -289,10 +319,12 @@
 											  BottomLabelText="{l:Localize ViewRolesDescription}"
 											  Command="{Binding GoToRolesCommand}" />
 
-					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractPath}"
-											  TopLabelText="{l:Localize ReviewContractTitle}"
-											  BottomLabelText="{l:Localize ReviewContractDescription2}"
-											  Command="{Binding GoToReviewCommand}" />
+					<!-- Parameters Button -->
+					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractEditPath}"
+											  TopLabelText="{l:Localize ViewParametersTitle}"
+											  BottomLabelText="{l:Localize ViewParametersDescription}"
+											  Command="{Binding GoToParametersCommand}" />
+
 
 					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractIconPath}"
 											  TopLabelText="{l:Localize ServerSignatureButtonTitle}"

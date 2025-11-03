@@ -1,4 +1,4 @@
-﻿
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
@@ -13,6 +13,7 @@ using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Resources.Languages;
 using System.Runtime.CompilerServices;
+using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Apps
@@ -42,8 +43,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		{
 			try
 			{
-				ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.ContactsDescription)], SelectContactAction.ViewIdentity);
-				await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), BackMethod.Pop);
 			}
 			catch (Exception Ex)
 			{
@@ -141,6 +141,28 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 				{
 					MyContractsNavigationArgs Args = new(ContractsListMode.TokenCreationTemplates);
 					await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private async Task ShowMyTokens()
+		{
+			try
+			{
+				if (!ServiceRef.TagProfile.HasBetaFeatures)
+				{
+					this.BetaFeaturePressed = true;
+					await Task.Delay(100);
+					this.BetaFeaturePressed = false;
+				}
+				else
+				{
+					await ServiceRef.UiService.GoToAsync(nameof(MyTokensPage), BackMethod.Pop);
 				}
 			}
 			catch (Exception Ex)

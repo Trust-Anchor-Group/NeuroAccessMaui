@@ -86,6 +86,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 					this.FriendlyName = FriendlyName;
 					this.HasSentPetition = false;
 					this.OnPropertyChanged(nameof(this.HasIdentity));
+					this.OnPropertyChanged(nameof(this.CanSendProposal));
 					this.OnPropertyChanged(nameof(this.HasSentPetition));
 				});
 			}
@@ -104,6 +105,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				if (this.identity is null)
 					this.HasSentPetition = true;
 				this.OnPropertyChanged(nameof(this.HasIdentity));
+				this.OnPropertyChanged(nameof(this.CanSendProposal));
 				this.OnPropertyChanged(nameof(this.HasSentPetition));
 				this.FriendlyName = FriendlyName;
 			});
@@ -157,6 +159,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				this.SetProperty(ref this.signature, value);
 				this.OnPropertyChanged(nameof(this.HasSigned));
+				this.OnPropertyChanged(nameof(this.CanSendProposal));
 				this.OpenSignatureCommand.NotifyCanExecuteChanged();
 			}
 		}
@@ -196,6 +199,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		public bool HasIdentity => this.identity is not null;
 
 		public bool HasSigned => this.Signature is not null;
+
+		public bool CanSendProposal => this.IsThirdParty && this.HasIdentity && !this.HasSigned && this.Role != "TrustProvider";
 
 		/// <summary>
 		/// True if this part was preselected via navigation args and therefore should not be removable in the Roles view.

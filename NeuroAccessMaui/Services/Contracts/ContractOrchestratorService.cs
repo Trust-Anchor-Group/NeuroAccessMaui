@@ -1,4 +1,9 @@
-﻿using NeuroAccessMaui.Extensions;
+using System.Data;
+using System.Globalization;
+using System.Reflection;
+using System.Text;
+using EDaler;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Notification.Identities;
@@ -7,15 +12,12 @@ using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Onboarding;
+using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
-using System.Data;
-using System.Globalization;
-using System.Reflection;
-using System.Text;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -361,8 +363,14 @@ namespace NeuroAccessMaui.Services.Contracts
 			try
 			{
 				Contract Contract = await ServiceRef.XmppService.GetContract(e.ContractId);
-			
-				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
+
+				while(ServiceRef.NavigationService.CurrentPage is not MainPage)
+				{
+					await Task.Delay(500);
+				}
+				await Task.Delay(500);
+				
+				await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
 							Contract, false, e.Role, e.MessageText, e.FromBareJID));
 			}
 			catch (Exception ex)
@@ -385,7 +393,7 @@ namespace NeuroAccessMaui.Services.Contracts
 							try
 							{
 								await Task.Delay(Constants.Timeouts.XmppInit);
-								await ReDownloadLegalIdentity();
+								//await ReDownloadLegalIdentity();
 							}
 							catch (Exception ex)
 							{
@@ -634,6 +642,8 @@ namespace NeuroAccessMaui.Services.Contracts
 							ServiceRef.TagProfile.TrustProviderId = CreationAttr.TrustProviderId;
 							ParameterValues ??= [];
 							ParameterValues.TryAdd(new CaseInsensitiveString("TrustProvider"), CreationAttr.TrustProviderId);
+							ParameterValues.TryAdd(new CaseInsensitiveString("Currency"), CreationAttr.Currency);
+							ParameterValues.TryAdd(new CaseInsensitiveString("CommissionPercent"), CreationAttr.Commission);
 						}
 
 						NewContractNavigationArgs e = new(Contract, ParameterValues);

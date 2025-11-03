@@ -20,6 +20,11 @@ namespace NeuroAccessMaui.UI.Converters
 			{
 				if (TP.TimeOfDay == TimeSpan.Zero && TP.Kind != DateTimeKind.Utc)
 					return TP.ToShortDateString();
+                if(TP.Kind == DateTimeKind.Utc)
+                {
+					DateTimeToStringConverter Converter = new DateTimeToStringConverter();
+					return Converter.Convert(TP, targetType, true, culture);
+                }
 				else
 					return TP.ToString(CultureInfo.CurrentCulture);
 			}

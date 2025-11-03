@@ -25,7 +25,7 @@
 		</controls:ConditionView.True>
 		<controls:ConditionView.False>
 			<Grid RowDefinitions="*, auto">
-				<VerticalStackLayout Grid.Row="0" VerticalOptions="End" Spacing="24">
+				<VerticalStackLayout Grid.Row="0" VerticalOptions="End" Spacing="16">
 					<VerticalStackLayout>
 						<Label Style="{DynamicResource PageTitleLabel}"
 							   FontSize="42"
@@ -52,32 +52,35 @@
 
 					</controls:CompositeEntry>
 
-					<Grid ColumnDefinitions="*, auto, *" ColumnSpacing="16">
+					<controls:SvgButton Command="{Binding ScanQrCodeCommand}"
+										Style="{DynamicResource PrimaryIconButton}"
+										LabelText="{l:Localize QrScanCode}"
+										SvgSource="scan_qr.svg"
+										LabelPosition="Right"
+										/>
+
+					<Grid ColumnDefinitions="*, auto, *"
+						  ColumnSpacing="16">
 						<BoxView Grid.Column="0"
 								 BackgroundColor="{DynamicResource SurfaceDividerWL}"
 								 HeightRequest="1"
-								 VerticalOptions="Center"/>
+								 VerticalOptions="Center" />
 						<Label Grid.Column="1"
-						   Text="{l:Localize Or}"
+							   Text="{l:Localize Or}"
 							   HorizontalOptions="Center"
 							   VerticalOptions="Center"
 							   FontFamily="SpaceGroteskRegular"
 							   FontSize="16"
-							   TextColor="{DynamicResource ContentSecondaryWL}"/>
+							   TextColor="{DynamicResource ContentSecondaryWL}" />
 						<BoxView Grid.Column="2"
 								 BackgroundColor="{DynamicResource SurfaceDividerWL}"
 								 HeightRequest="1"
 								 VerticalOptions="Center" />
 					</Grid>
 
-					<Grid RowDefinitions="auto">
-						<controls:SvgButton Command="{Binding ScanQrCodeCommand}"
-											Style="{DynamicResource PrimaryIconButton}"
-											LabelText="{l:Localize QrScanCode}"
-											SvgSource="scan_qr.svg"
-											LabelPosition="Right"
-											Margin="{DynamicResource SmallBottomMargins}"/>
-					</Grid>
+					<controls:TextButton Style="{DynamicResource PrimaryButton}"
+										 LabelData="{l:Localize SelectForMe}"
+										 Command="{Binding NewAccountCommand}" />
 				</VerticalStackLayout>
 
 			</Grid>

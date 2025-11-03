@@ -686,8 +686,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				// Step 1: Get the variables and prepare the parameters to validate
 				Variables Variables = [];
+
+				Variables["Duration"] = this.Contract.Contract.Duration;
+
+				DateTime? FirstSignature = this.Contract.Contract.FirstSignatureAt;
+				if (FirstSignature.HasValue)
+				{
+					Variables["Now"] = FirstSignature.Value.ToLocalTime();
+					Variables["NowUtc"] = FirstSignature.Value.ToUniversalTime();
+				}
+
 				foreach (ObservableParameter ParamLoop in this.Contract.Parameters)
-					ParamLoop.Parameter.Populate(Variables);
+				ParamLoop.Parameter.Populate(Variables);
 
 				// Step 2: Prepare to collect validation results
 				List<(ObservableParameter Param, bool IsValid, string ValidationText)> ValidationResults = [];
@@ -702,23 +712,27 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					// Ignore, client might not be available currently
 				}
 
-				Task<(ObservableParameter Param, bool IsValid, string ValidationText)>[] ValidationTasks = this.EditableParameters.Select(async ParamToValidate =>
+				Task<(ObservableParameter Param, bool IsValid, string ValidationText)>[] ValidationTasks = this.Contract.Parameters.Select(async ParamToValidate =>
 				{
 					bool IsValid = false;
 					string ValidationText = string.Empty;
 					try
 					{
-						if (ParamToValidate.Value is null)
+						if (await ParamToValidate.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient).ConfigureAwait(false))
 						{
-							IsValid = false;
+							IsValid = true;
+							ValidationText = string.Empty;
+						}
+						else if(ParamToValidate.Value is null)
+						{
 							ValidationText = string.Empty;
 						}
 						else
 						{
-							IsValid = await ParamToValidate.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient).ConfigureAwait(false);
 							IsValid = IsValid || ParamToValidate.Parameter.ErrorText == ContractStatus.ClientIdentityInvalid.ToString();
 							ValidationText = ParamToValidate.Parameter.ErrorText;
 						}
+
 						// Optional: keep debug noise low when simply entering the Parameters step
 						if (!this.suppressParameterValidation)
 							ServiceRef.LogService.LogDebug($"Parameter '{ParamToValidate.Parameter.Name}' validation result: {IsValid}, Error: {ParamToValidate.Parameter.ErrorReason} - {ValidationText}");
@@ -901,6 +915,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 					if (!string.IsNullOrEmpty(Proposal))
 						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, Proposal);
+					else
+						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)]);
 				}
 			}
 			catch (Waher.Networking.XMPP.XmppException Ex)
@@ -973,6 +989,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				ServiceRef.LogService.LogException(Ex3);
 			}
+		}
+
+		public override async Task GoBack()
+		{
+			await this.Back();
 		}
 
 		[RelayCommand]
@@ -1063,6 +1084,33 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
+			foreach (Parameter Param in this.Contract.Contract.Parameters)
+			{
+				try
+				{
+					if (string.IsNullOrEmpty(Param.StringValue))
+						Param.StringValue = null;
+				}
+				catch (Exception Ex)
+				{
+					// Ignore
+				}
+			}
+
+			await this.ValidateParametersAsync(); // Populate All Parameters
+
+			foreach (Parameter Param in this.Contract.Contract.Parameters)
+			{
+				try
+				{
+					if (string.IsNullOrEmpty(Param.StringValue))
+						Param.StringValue = null;
+				}
+				catch (Exception Ex)
+				{
+					// Ignore
+				}
+			}
 			VerticalStackLayout? HumanReadableText = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
 
 			await MainThread.InvokeOnMainThreadAsync(() =>

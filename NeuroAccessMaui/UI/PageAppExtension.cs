@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Services;
 using EDaler;
@@ -126,6 +126,7 @@ using Waher.Script.Graphs;
 using Waher.Security.JWS;
 using Waher.Security.JWT;
 using Waher.Things;
+using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 
 namespace NeuroAccessMaui.UI
 {
@@ -339,6 +340,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<TokenDetailsPage, TokenDetailsViewModel>();
 			Builder.Services.AddTransient<TokenEventsPage, TokenEventsViewModel>();
 			Builder.Services.AddTransient<WalletPage, WalletViewModel>();
+			Builder.Services.AddTransient<TransactionHistoryPage, TransactionHistoryViewModel>();
 
 			// Popups
 			Builder.Services.AddTransient<ImageView>();

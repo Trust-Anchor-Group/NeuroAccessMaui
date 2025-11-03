@@ -1,4 +1,6 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Text;
 using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -14,6 +16,7 @@ using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Wallet;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Wallet;
+using NeuroAccessMaui.UI.Converters;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts;
@@ -25,7 +28,10 @@ using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Wallet.RequestPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.SellEDaler;
+using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
+using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
+using NeuroAccessMaui.UI.Popups.Transaction;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using Waher.Networking.XMPP.Contracts;
@@ -51,6 +57,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		/// </summary>
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(BalanceDecimal))]
+		[NotifyPropertyChangedFor(nameof(BalanceString))]
+		[NotifyPropertyChangedFor(nameof(ReservedDecimal))]
+		[NotifyPropertyChangedFor(nameof(ReservedString))]
+		[NotifyPropertyChangedFor(nameof(HasReserved))]
+		[NotifyPropertyChangedFor(nameof(Currency))]
 		Balance? fetchedBalance;
 
 		/// <summary>
@@ -70,14 +81,40 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		#region Computed Properties
 
 		/// <summary>
+		/// Currency of current balance.
+		/// </summary>
+		public string Currency => this.FetchedBalance?.Currency ?? "NC";
+
+		/// <summary>
 		/// Exposes the current balance as a decimal.
 		/// </summary>
-		public decimal BalanceDecimal =>
-			this.FetchedBalance?.Amount ?? ServiceRef.TagProfile.LastEDalerBalanceDecimal;
+		public decimal BalanceDecimal => this.FetchedBalance?.Amount ?? ServiceRef.TagProfile.LastEDalerBalanceDecimal;
+
+		/// <summary>
+		/// Balance formatted with currency.
+		/// </summary>
+		public string BalanceString => this.BalanceDecimal + " " + this.Currency;
+
+		/// <summary>
+		/// Reserved amount.
+		/// </summary>
+		public decimal ReservedDecimal => this.FetchedBalance?.Reserved ?? -1;
+
+		/// <summary>
+		/// Reserved formatted.
+		/// </summary>
+		public string ReservedString => this.ReservedDecimal == -1
+			? ServiceRef.Localizer[nameof(AppResources.UnknownPleaseRefresh)]
+			: this.ReservedDecimal + " " + this.Currency;
+
+		/// <summary>
+		/// If there is a reserved amount.
+		/// </summary>
+		public bool HasReserved => this.ReservedDecimal >0 || this.ReservedDecimal == -1;
 
 		#endregion
 
-		#region Tasks
+		#region Tasks & Refresh Policy
 
 		/// <summary>
 		/// Wraps the balance fetch operation for async UI binding.
@@ -95,7 +132,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			this.GetBalanceTask.Load(this.LoadBalanceAsync);
 
 			// Uncomment if event handlers are needed
-			// ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
+			ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
 			// ServiceRef.XmppService.NeuroFeatureAdded += this.Wallet_TokenAdded;
 			// ServiceRef.XmppService.NeuroFeatureRemoved += this.Wallet_TokenRemoved;
 			// ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
@@ -105,7 +142,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		public override async Task OnAppearingAsync()
 		{
 			await base.OnAppearingAsync();
-			// Place for page appearing logic if needed.
+			// Re-load on appearing.
+			this.GetBalanceTask.Load(this.LoadBalanceAsync);
 		}
 
 		/// <inheritdoc/>
@@ -116,6 +154,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			// ServiceRef.XmppService.NeuroFeatureAdded -= this.Wallet_TokenAdded;
 			// ServiceRef.XmppService.NeuroFeatureRemoved -= this.Wallet_TokenRemoved;
 			// ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
+
+			ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
 
 			await base.OnDisposeAsync();
 		}
@@ -129,9 +169,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		{
 			base.OnPropertyChanged(e);
 
-			// Update command states as appropriate
 			if (e.PropertyName == nameof(this.IsConnected))
+			{
 				this.BuyEdalerCommand.NotifyCanExecuteChanged();
+				this.SendEdalerCommand.NotifyCanExecuteChanged();
+			}
 		}
 
 		#endregion
@@ -141,13 +183,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		/// <summary>
 		/// Initiates the Buy eDaler flow. Disabled if not connected.
 		/// </summary>
-		/// <returns></returns>
 		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(IsConnected))]
 		private async Task BuyEdaler()
 		{
 			try
 			{
-				// 1. Fetch available service providers and the current balance.
 				IBuyEDalerServiceProvider[] ServiceProviders = await ServiceRef.XmppService.GetServiceProvidersForBuyingEDalerAsync();
 				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
 
@@ -164,17 +204,18 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 				ServiceProviders2.AddRange(ServiceProviders);
 				ServiceProviders2.Add(new EmptyBuyEDalerServiceProvider());
 
-				ServiceProvidersNavigationArgs e = new(
-					ServiceProviders2.ToArray(),
+				// Todo: Change to ServiceProviders2 IF you want to include from user. We now have a button for "Request" on wallet page.
+				ServiceProvidersNavigationArgs SelectionArgs = new(
+					ServiceProviders.ToArray(),
 					ServiceRef.Localizer[nameof(AppResources.BuyEDaler)],
 					ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderBuyEDaler)]
 				);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), e, BackMethod.Pop);
-				if (e.ServiceProvider is null)
+				await ServiceRef.UiService.GoToAsync(nameof(ServiceProvidersPage), SelectionArgs, BackMethod.Pop);
+				if (SelectionArgs.ServiceProvider is null)
 					return;
 
-				IBuyEDalerServiceProvider? ServiceProvider = (IBuyEDalerServiceProvider?)(await e.ServiceProvider.Task);
+				IBuyEDalerServiceProvider? ServiceProvider = (IBuyEDalerServiceProvider?)(await SelectionArgs.ServiceProvider.Task);
 				if (ServiceProvider is null)
 					return;
 
@@ -209,8 +250,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 
 						if (Amount.HasValue && Amount.Value > 0)
 						{
-							ServiceRef.TagProfile.HasWallet = true;
-						}
+						ServiceRef.TagProfile.HasWallet = true;
+				}
 					}
 				}
 				// 7. Contract-based buy flow.
@@ -248,12 +289,55 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			}
 		}
 
+		/// <summary>
+		/// Command to initiate sending eDaler to another user.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false, CanExecute = nameof(IsConnected))]
+		private async Task SendEdaler()
+		{
+			try
+			{
+				// Prepare a base eDaler URI with current currency. Recipient & amount will be set on SendPaymentPage.
+				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
+				StringBuilder Sb = new();
+				Sb.Append("edaler:");
+				Sb.Append("cu=");
+				Sb.Append(Balance.Currency);
+
+				if (!EDalerUri.TryParse(Sb.ToString(), out EDalerUri Parsed))
+					return;
+
+				TaskCompletionSource<string?> UriToSend = new();
+				TaskCompletionSource<string?> MessageToSend = new();
+				EDalerUriNavigationArgs Args = new(Parsed, string.Empty, UriToSend, MessageToSend);
+				await ServiceRef.UiService.GoToAsync(nameof(SendPaymentPage), Args, BackMethod.Pop);
+
+				string? Uri = await UriToSend.Task; // User composed URI. Null if cancelled.
+				string? Message = await MessageToSend.Task; // Optional message.
+				if (string.IsNullOrEmpty(Uri))
+					return;
+
+				// Automatically claim/process the payment (execute transfer) directly.
+				// await ServiceRef.NeuroWalletOrchestratorService.OpenEDalerUri(Uri);
+				EDaler.Transaction Transaction = await ServiceRef.XmppService.SendEDalerUri(Uri);
+
+				PaymentSuccessPopup Popup = new(Transaction, Message);
+				await ServiceRef.PopupService.PushAsync(Popup);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
 		[RelayCommand]
 		public async Task ViewMainPage()
 		{
 			try
 			{
-				await ServiceRef.NavigationService.PopToRootAsync();
+				if (Application.Current?.MainPage?.Navigation != null)
+					await Application.Current.MainPage.Navigation.PopToRootAsync();
 			}
 			catch (Exception Ex)
 			{
@@ -261,7 +345,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			}
 		}
 
-		// Go to Apps page
 		[RelayCommand]
 		public async Task ViewApps()
 		{
@@ -272,6 +355,37 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		public async Task ViewRequestPayment()
+		{
+			try
+			{
+				EDalerBalanceNavigationArgs Args = new(this.FetchedBalance);
+				await ServiceRef.UiService.GoToAsync(nameof(RequestPaymentPage), Args);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Command to navigate to transaction history page.
+		/// </summary>
+		[RelayCommand]
+		private async Task OpenTransactionHistory()
+		{
+			try
+			{
+				await ServiceRef.UiService.GoToAsync(nameof(TransactionHistoryPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
 			}
 		}
 
@@ -295,24 +409,28 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.FetchedBalance = CurrentBalance;
-				this.BalanceUpdated = DateTime.UtcNow;
+				this.BalanceUpdated = DateTime.Now;
 				ServiceRef.TagProfile.LastEDalerBalanceDecimal = this.BalanceDecimal;
-				ServiceRef.TagProfile.LastEDalerBalanceUpdate = DateTime.UtcNow;
+				ServiceRef.TagProfile.LastEDalerBalanceUpdate = DateTime.Now;
 			});
 
 			ServiceRef.LogService.LogDebug("Refreshing Edaler Completed");
 		}
 
 		/// <summary>
-		/// Loads account event history (not yet implemented).
+		/// Handles balance update events from the wallet service.
 		/// </summary>
-		/// <param name="Ctx">Task context</param>
-		private async Task LoadAccountEventsAsync(TaskContext<bool> Ctx)
+		private async Task Wallet_BalanceUpdated(object? sender, BalanceEventArgs e)
 		{
-			if (!await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect))
-				return;
-
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.FetchedBalance = e.Balance;
+				this.BalanceUpdated = DateTime.Now;
+				ServiceRef.TagProfile.LastEDalerBalanceDecimal = this.BalanceDecimal;
+				ServiceRef.TagProfile.LastEDalerBalanceUpdate = DateTime.Now;
+			});
 		}
+
 		#endregion
 	}
 }

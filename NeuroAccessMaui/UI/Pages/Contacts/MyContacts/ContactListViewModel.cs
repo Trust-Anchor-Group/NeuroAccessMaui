@@ -19,9 +19,25 @@ using NeuroAccessMaui.UI.Pages.Wallet;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services.UI;
 using Waher.Networking.XMPP.Events;
+using NeuroAccessMaui.UI.MVVM;                 // For ObservableTask
+using NeuroAccessMaui.UI.MVVM.Building;        // For ObservableTaskBuilder
+using NeuroAccessMaui.UI.MVVM.Policies;
+using System.Runtime.CompilerServices;        // For Policies.Debounce
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 {
+	public class GroupedContacts
+	{
+		public char Group { get; set; }
+		public ObservableCollection<ContactInfoModel?> Contacts { get; set; }
+
+		public GroupedContacts(char Group)
+		{
+			this.Group = Group;
+			this.Contacts = [];
+		}
+	}
+
 	/// <summary>
 	/// The view model to bind to when displaying the list of contacts.
 	/// </summary>
@@ -30,6 +46,31 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		private readonly Dictionary<CaseInsensitiveString, List<ContactInfoModel>> byBareJid;
 		private readonly TaskCompletionSource<ContactInfoModel?>? selection;
 		private readonly ContactListNavigationArgs? navigationArguments;
+
+		// Debounced search filtering using ObservableTask (no manual CTS needed)
+		private readonly ObservableTask<int> searchFilterTask;
+
+		[ObservableProperty]
+		private bool isViewMode = false;
+
+		private string? searchText; // backing field
+		/// <summary>
+		/// Text used for filtering contacts (search box).
+		/// </summary>
+		public string? SearchText
+		{
+			get => this.searchText;
+			set
+			{
+				if (this.searchText != value)
+				{
+					this.searchText = value;
+					this.OnPropertyChanged(new PropertyChangedEventArgs(nameof(this.SearchText)));
+					// Trigger debounced filtering
+					this.searchFilterTask.Run();
+				}
+			}
+		}
 
 		/// <summary>
 		/// Creates an instance of the <see cref="ContactListViewModel"/> class.
@@ -54,9 +95,24 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			else
 			{
 				this.Description = ServiceRef.Localizer[nameof(AppResources.ContactsDescription)];
-				this.Action = SelectContactAction.ViewIdentity;
+				this.Action = SelectContactAction.View;
 				this.selection = null;
 			}
+
+			if (this.Action == SelectContactAction.View)
+				this.IsViewMode = true;
+
+			// debounced search task
+			this.searchFilterTask = new ObservableTaskBuilder<int>()
+				.Named("Contacts Search Filter")
+				.WithPolicy(Policies.Debounce(TimeSpan.FromMilliseconds(300)))
+				.AutoStart(false)
+				.UseTaskRun(false)
+				.Run(async ctx =>
+				{
+					await MainThread.InvokeOnMainThreadAsync(this.FilterContacts);
+				})
+				.Build();
 		}
 
 		/// <inheritdoc/>
@@ -65,7 +121,10 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			await base.OnInitializeAsync();
 
 			await this.UpdateContactList(this.navigationArguments?.Contacts);
+			this.FilterContacts();
 
+			ServiceRef.XmppService.OnPresenceSubscribe += this.Xmpp_OnPresence;
+			ServiceRef.XmppService.OnPresenceUnsubscribed += this.Xmpp_OnPresence;
 			ServiceRef.XmppService.OnPresence += this.Xmpp_OnPresence;
 			ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
 			ServiceRef.NotificationService.OnNotificationsDeleted += this.NotificationService_OnNotificationsDeleted;
@@ -179,6 +238,52 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			}
 		}
 
+		private void FilterContacts()
+		{
+			this.FilteredContacts.Clear();
+			if (this.Contacts.Count == 0)
+				return;
+
+			Dictionary<char, List<ContactInfoModel>> Groups = [];
+			string Search = (this.SearchText ?? string.Empty).Trim();
+			bool HasSearch = !string.IsNullOrEmpty(Search);
+
+			foreach (ContactInfoModel? Contact in this.Contacts)
+			{
+				if (Contact is null)
+					continue;
+
+				if (HasSearch)
+				{
+					string Name = Contact.FriendlyName ?? string.Empty;
+					if (Name.IndexOf(Search, StringComparison.CurrentCultureIgnoreCase) < 0)
+						continue;
+				}
+
+				char Group = string.IsNullOrEmpty(Contact?.FriendlyName) ? '#' : Contact.FriendlyName.Substring(0, 1).ToUpper(CultureInfo.CurrentCulture)[0];
+				if (!char.IsLetter(Group))
+					Group = '#';
+
+				if (!Groups.TryGetValue(Group, out List<ContactInfoModel>? list))
+				{
+					list = new List<ContactInfoModel>();
+					Groups[Group] = list;
+				}
+
+				list.Add(Contact!);
+			}
+
+			foreach (char Group in Groups.Keys.OrderBy(s => s))
+			{
+				GroupedContacts ContactGroup = new(Group);
+
+				foreach (ContactInfoModel Contact in Groups[Group].OrderBy(Contact => Contact.FriendlyName))
+					ContactGroup.Contacts.Add(Contact);
+
+				this.FilteredContacts.Add(ContactGroup);
+			}
+		}
+
 		private static void Add(SortedDictionary<CaseInsensitiveString, ContactInfo> Sorted, CaseInsensitiveString Name, ContactInfo Info)
 		{
 			if (Sorted.ContainsKey(Name))
@@ -231,6 +336,19 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 				i++;
 				Suffix = " " + i.ToString(CultureInfo.InvariantCulture);
 			}
+		}
+
+		private bool CanSelectContact => !this.IsViewMode;
+
+		[RelayCommand(CanExecute = nameof(CanSelectContact))]
+		private Task SelectContact(ContactInfoModel? Contact)
+		{
+			if (Contact is not null)
+			{
+				this.SelectedContact = Contact;
+			}
+
+			return Task.CompletedTask;
 		}
 
 		/// <inheritdoc/>
@@ -291,6 +409,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		/// Holds the list of contacts to display.
 		/// </summary>
 		public ObservableCollection<ContactInfoModel?> Contacts { get; }
+
+		public ObservableCollection<GroupedContacts> FilteredContacts { get; } = new();
 
 		/// <summary>
 		/// The currently selected contact, if any.
@@ -359,7 +479,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 
 										break;
 
-									case SelectContactAction.ViewIdentity:
+									case SelectContactAction.View:
 									default:
 										if (Contact.LegalIdentity is not null)
 										{
