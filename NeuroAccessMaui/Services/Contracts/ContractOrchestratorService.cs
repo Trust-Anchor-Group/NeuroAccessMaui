@@ -379,7 +379,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			}
 		}
 
-		private Task Contracts_ConnectionStateChanged(object _, XmppState NewState)
+		private async Task Contracts_ConnectionStateChanged(object _, XmppState NewState)
 		{
 			try
 			{
@@ -388,12 +388,12 @@ namespace NeuroAccessMaui.Services.Contracts
 				{
 					if (ServiceRef.TagProfile.LegalIdentity is not null)
 					{
-						Task _2 = Task.Run(async () =>
-						{
+						Task FireAndForget = Task.Run( async () =>
+						{ 
 							try
 							{
 								await Task.Delay(Constants.Timeouts.XmppInit);
-								//await ReDownloadLegalIdentity();
+								await ReDownloadLegalIdentity();
 							}
 							catch (Exception ex)
 							{
@@ -408,7 +408,6 @@ namespace NeuroAccessMaui.Services.Contracts
 				ServiceRef.LogService.LogException(ex);
 			}
 
-			return Task.CompletedTask;
 		}
 
 		#endregion
@@ -445,6 +444,9 @@ namespace NeuroAccessMaui.Services.Contracts
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
+					try
+					{
+
 					string? UserMessage = null;
 					bool GotoRegistrationPage = false;
 
@@ -460,9 +462,26 @@ namespace NeuroAccessMaui.Services.Contracts
 						await ServiceRef.TagProfile.RevokeLegalIdentity(Identity);
 						GotoRegistrationPage = true;
 					}
-					else if (Identity.State == IdentityState.Approved && !await ServiceRef.XmppService!.HasPrivateKey(Identity.Id))
+					else if (Identity.State == IdentityState.Approved)
 					{
-						bool Response = await ServiceRef.UiService.DisplayAlert(
+							bool HasPrivateKeys = false;
+							try
+							{
+								HasPrivateKeys = await ServiceRef.XmppService.HasPrivateKey(Identity.Id);
+
+							}
+							catch (Exception Ex)
+							{
+								ServiceRef.LogService.LogException(Ex);
+							}
+
+							if (HasPrivateKeys)
+							{
+								await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
+								return;
+							}
+
+							bool Response = await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.WarningTitle)],
 							ServiceRef.Localizer[nameof(AppResources.UnableToGetAccessToYourPrivateKeys)],
 							ServiceRef.Localizer[nameof(AppResources.Continue)],
@@ -505,6 +524,11 @@ namespace NeuroAccessMaui.Services.Contracts
 									ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)], UserMessage);
 							});
 						}
+					}
+					}
+					catch (Exception E)
+					{
+						ServiceRef.LogService.LogException(E);
 					}
 				});
 			}
