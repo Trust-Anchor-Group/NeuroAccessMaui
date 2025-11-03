@@ -128,6 +128,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			base.OnPropertyChanged(e);
 
+			if (e.PropertyName == nameof(this.NumberIsValid))
+				this.OnPropertyChanged(nameof(this.IsNotValid));
+
 			if (e.PropertyName == nameof(this.IsBusy))
 				this.SendCodeCommand.NotifyCanExecuteChanged();
 		}
@@ -144,6 +147,11 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[ObservableProperty]
 		[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
 		bool numberIsValid;
+
+		/// <summary>
+		/// Inverse of <see cref="NumberIsValid"/> for legacy XAML bindings (IsNotValid).
+		/// </summary>
+		public bool IsNotValid => !this.NumberIsValid;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]

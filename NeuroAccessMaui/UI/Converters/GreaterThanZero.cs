@@ -5,6 +5,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Is true if a property is greater than zero.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class GreaterThanZero : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>

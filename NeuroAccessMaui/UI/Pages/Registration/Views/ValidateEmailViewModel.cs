@@ -65,6 +65,9 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		{
 			base.OnPropertyChanged(e);
 
+			if (e.PropertyName == nameof(this.EmailIsValid))
+				this.OnPropertyChanged(nameof(this.IsNotValid));
+
 			if (e.PropertyName == nameof(this.IsBusy))
 				this.SendCodeCommand.NotifyCanExecuteChanged();
 		}
@@ -79,6 +82,11 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		[NotifyCanExecuteChangedFor(nameof(SendCodeCommand))]
 		[NotifyPropertyChangedFor(nameof(LocalizedValidationError))]
 		bool emailIsValid = true;
+
+		/// <summary>
+		/// Inverse of <see cref="EmailIsValid"/> for XAML bindings expecting IsNotValid.
+		/// </summary>
+		public bool IsNotValid => !this.EmailIsValid;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(LocalizedSendCodeText))]
