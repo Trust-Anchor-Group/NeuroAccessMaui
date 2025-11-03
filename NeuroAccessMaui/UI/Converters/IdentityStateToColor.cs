@@ -7,6 +7,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Converts an identity state to a color.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class IdentityStateToColor : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>
