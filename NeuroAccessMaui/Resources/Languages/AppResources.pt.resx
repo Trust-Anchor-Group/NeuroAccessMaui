@@ -1,7 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -54,12 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Selecione os papéis com os quais irá assinar (opcional)</value>
@@ -1154,7 +1210,7 @@
     <value>dia</value>
   </data>
   <data name="Days" xml:space="preserve">
-    <value>Dias</value>
+    <value>dias</value>
   </data>
   <data name="SchemaDigest" xml:space="preserve">
     <value>Resumo do esquema</value>
@@ -1187,7 +1243,7 @@
     <value>hora</value>
   </data>
   <data name="Hours" xml:space="preserve">
-    <value>Horas</value>
+    <value>horas</value>
   </data>
   <data name="InvalidEDalerUri" xml:space="preserve">
     <value>URI eDaler inválido: {0}</value>
@@ -1199,7 +1255,7 @@
     <value>minuto</value>
   </data>
   <data name="Minutes" xml:space="preserve">
-    <value>ata</value>
+    <value>minutos</value>
   </data>
   <data name="Mode" xml:space="preserve">
     <value>Modo</value>
@@ -1208,7 +1264,7 @@
     <value>mês</value>
   </data>
   <data name="Months" xml:space="preserve">
-    <value>Meses</value>
+    <value>meses</value>
   </data>
   <data name="Namespace" xml:space="preserve">
     <value>Espaço de nomes</value>
@@ -1232,7 +1288,7 @@
     <value>segundo</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value>Segundos</value>
+    <value>segundos</value>
   </data>
   <data name="SelectedContactCannotBeAdded" xml:space="preserve">
     <value>O contato selecionado não pode ser adicionado. Não possui identidade registrada.</value>
@@ -1295,7 +1351,7 @@
     <value>ano</value>
   </data>
   <data name="Years" xml:space="preserve">
-    <value>Anos</value>
+    <value>anos</value>
   </data>
   <data name="YouHaveReceivedAProposal" xml:space="preserve">
     <value>Recebeu uma proposta.</value>
@@ -1701,9 +1757,6 @@
   </data>
   <data name="StreetNumber" xml:space="preserve">
     <value>Número da Rua</value>
-  </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Tirar foto</value>
   </data>
   <data name="TakePhotoToShare" xml:space="preserve">
     <value>Tirar uma foto para compartilhar</value>
@@ -2405,22 +2458,22 @@
     <value>Li e compreendi os termos deste contrato</value>
   </data>
   <data name="Status" xml:space="preserve">
-      <value>Status</value>
+    <value>Status</value>
   </data>
   <data name="Encrypted" xml:space="preserve">
-      <value>Criptografado</value>
+    <value>Criptografado</value>
   </data>
   <data name="ViewParametersTitle" xml:space="preserve">
-      <value>Ver parâmetros</value>
+    <value>Ver parâmetros</value>
   </data>
   <data name="ViewParametersDescription" xml:space="preserve">
-      <value>Veja as variáveis que regem o contrato</value>
+    <value>Veja as variáveis que regem o contrato</value>
   </data>
   <data name="ViewRolesTitle" xml:space="preserve">
-      <value>Revisar papéis atribuídos</value>
+    <value>Revisar papéis atribuídos</value>
   </data>
   <data name="ViewRolesDescription" xml:space="preserve">
-      <value>Revise os papéis e veja quem assinou cada papel</value>
+    <value>Revise os papéis e veja quem assinou cada papel</value>
   </data>
   <data name="InvitationToSign" xml:space="preserve">
     <value>Você foi convidado(a) a assinar este contrato. Certifique-se de verificar e revisar o contrato antes de prosseguir.</value>
@@ -2463,7 +2516,7 @@
   </data>
   <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Abra as configurações - Habilite as permissões da câmera</value>
-	</data>
+  </data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Abrir configurações</value>
   </data>
@@ -2764,11 +2817,8 @@
   <data name="ClearCache" xml:space="preserve">
     <value>Limpar cache</value>
   </data>
-  <data name="ClearCacheDescription" xml:space="preserve">
-    <value>Remove dados temporários como imagens e anexos para liberar espaço</value>
-  </data>
   <data name="Apps" xml:space="preserve">
-      <value>Aplicativos</value>
+    <value>Aplicativos</value>
   </data>
   <data name="BetaFeaturesDescription" xml:space="preserve">
     <value>Os recursos beta estão em desenvolvimento e podem não ter funcionalidade ou design completos. No entanto, alguns de seus recursos principais já estão disponíveis.</value>
@@ -2784,9 +2834,6 @@
   </data>
   <data name="NFC" xml:space="preserve">
     <value>NFC</value>
-  </data>
-  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
-    <value>Gostaria de adicionar esta identidade aos seus contatos?</value>
   </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Em breve!</value>
@@ -2818,6 +2865,9 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
     <value>O idioma foi alterado. Por favor, reinicie o aplicativo para garantir que todas as alterações sejam aplicadas.</value>
   </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Continuar ({0})</value>
+  </data>
   <data name="Never" xml:space="preserve">
     <value>Nunca</value>
   </data>
@@ -2832,9 +2882,6 @@
   </data>
   <data name="LastUpdatedFormat" xml:space="preserve">
     <value>Última atualização: {0}</value>
-  </data>
-  <data name="ContinueSecondsFormat" xml:space="preserve">
-    <value>Continuar ({0})</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
     <value>Ative sua identidade digital</value>
@@ -2926,14 +2973,14 @@
   <data name="Kyc_Next" xml:space="preserve">
     <value>Próximo</value>
   </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
   <data name="Kyc_Return" xml:space="preserve">
     <value>Voltar ao resumo</value>
   </data>
   <data name="Kyc_Exit" xml:space="preserve">
     <value>Tem certeza de que deseja sair do processo de solicitação de identidade?</value>
-  </data>
-  <data name="Kyc_Apply" xml:space="preserve">
-    <value>Enviar</value>
   </data>
   <data name="Progress" xml:space="preserve">
     <value>Progresso</value>
@@ -3034,9 +3081,6 @@
   <data name="Upload" xml:space="preserve">
     <value>Carregar</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Tirar foto</value>
-  </data>
   <data name="InReview" xml:space="preserve">
     <value>Em revisão</value>
   </data>
@@ -3048,36 +3092,6 @@
   </data>
   <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve">
     <value>Um PIN não deve conter uma sequência consecutiva de {0} símbolos idênticos.</value>
-  </data>
-  <data name="Attachment_Passport" xml:space="preserve">
-    <value>Imagem do passaporte</value>
-  </data>
-  <data name="Attachment_IdCardFront" xml:space="preserve">
-    <value>Frente do cartão de identidade</value>
-  </data>
-  <data name="Attachment_IdCardBack" xml:space="preserve">
-    <value>Verso do cartão de identidade</value>
-  </data>
-  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
-    <value>Frente da carteira de motorista</value>
-  </data>
-  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
-    <value>Verso da carteira de motorista</value>
-  </data>
-  <data name="Attachment_ProfilePhoto" xml:space="preserve">
-    <value>Foto do rosto</value>
-  </data>
-  <data name="Kyc_Next" xml:space="preserve">
-    <value>Próximo</value>
-  </data>
-  <data name="Kyc_Return" xml:space="preserve">
-    <value>Voltar ao resumo</value>
-  </data>
-  <data name="Kyc_Exit" xml:space="preserve">
-    <value>Tem certeza de que deseja sair do processo de solicitação de identidade?</value>
-  </data>
-  <data name="Kyc_Apply" xml:space="preserve">
-    <value>Enviar</value>
   </data>
   <data name="KycReviewTitle" xml:space="preserve">
     <value>Revisão da solicitação</value>
@@ -3115,114 +3129,6 @@
   <data name="KycReviewAvailableMainPage" xml:space="preserve">
     <value>Alguns dados enviados não puderam ser verificados. Toque para revisar.</value>
   </data>
-  <data name="Progress" xml:space="preserve">
-    <value>Progresso</value>
-  </data>
-  <data name="TradeName" xml:space="preserve">
-    <value>Nome fantasia</value>
-  </data>
-  <data name="LegalName" xml:space="preserve">
-    <value>Nome legal</value>
-  </data>
-  <data name="OrgRepName" xml:space="preserve">
-    <value>Nome do representante</value>
-  </data>
-  <data name="OrgRepCPF" xml:space="preserve">
-    <value>CPF do representante</value>
-  </data>
-  <data name="OrgRepBirthDate" xml:space="preserve">
-    <value>Data de nascimento do representante</value>
-  </data>
-  <data name="OrgRepRG" xml:space="preserve">
-    <value>RG do representante</value>
-  </data>
-  <data name="OrgEMail" xml:space="preserve">
-    <value>E-mail corporativo</value>
-  </data>
-  <data name="OrgPhone" xml:space="preserve">
-    <value>Telefone corporativo</value>
-  </data>
-  <data name="FullName" xml:space="preserve">
-    <value>Nome completo</value>
-  </data>
-  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
-    <value>Estatuto social</value>
-  </data>
-  <data name="ClearCacheDescription" xml:space="preserve">
-    <value>Remove dados temporários, como imagens e anexos, para liberar espaço</value>
-  </data>
-  <data name="ClearBrandingAndKycCache" xml:space="preserve">
-    <value>Limpar cache de branding e KYC</value>
-  </data>
-  <data name="ApplicationUnderUnderReview" xml:space="preserve">
-    <value>Sua solicitação está em análise. Nós o notificaremos quando seu ID for aprovado!</value>
-  </data>
-  <data name="SeeIDApplication" xml:space="preserve">
-    <value>Ver solicitação de ID</value>
-  </data>
-  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
-    <value>Sua solicitação de ID foi enviada para análise. Nós notificaremos você quando sua ID for aprovada!</value>
-  </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Resumo da solicitação</value>
-  </data>
-  <data name="ApplicationSummaryDescription" xml:space="preserve">
-    <value>Antes de finalizar, por favor leia e certifique-se de que tudo está correto</value>
-  </data>
-  <data name="ApplicationInformation" xml:space="preserve">
-    <value>Informações da solicitação</value>
-  </data>
-  <data name="PersonalDetails" xml:space="preserve">
-    <value>Dados pessoais</value>
-  </data>
-  <data name="AddressDetails" xml:space="preserve">
-    <value>Detalhes do endereço</value>
-  </data>
-  <data name="DocumentDetails" xml:space="preserve">
-    <value>Detalhes do documento</value>
-  </data>
-  <data name="IsRequired" xml:space="preserve">
-    <value>{0} é obrigatório</value>
-  </data>
-  <data name="PendingReview" xml:space="preserve">
-    <value>Pendente de revisão</value>
-  </data>
-  <data name="CurrentApplication" xml:space="preserve">
-    <value>Solicitação atual</value>
-  </data>
-  <data name="IdentityApplication" xml:space="preserve">
-    <value>Solicitação de identidade</value>
-  </data>
-  <data name="AvailableApplications" xml:space="preserve">
-    <value>Solicitações disponíveis</value>
-  </data>
-  <data name="ForYourIndividualUse" xml:space="preserve">
-    <value>Para seu uso individual</value>
-  </data>
-  <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Antes de finalizar, leia e certifique-se de que tudo está correto</value>
-  </data>
-  <data name="CompanyInformation" xml:space="preserve">
-    <value>Informações da empresa</value>
-  </data>
-  <data name="CompanyAddress" xml:space="preserve">
-    <value>Endereço da empresa</value>
-  </data>
-  <data name="CompanyRepresentative" xml:space="preserve">
-    <value>Representante da empresa</value>
-  </data>
-  <data name="Upload" xml:space="preserve">
-    <value>Carregar</value>
-  </data>
-  <data name="InReview" xml:space="preserve">
-    <value>Em revisão</value>
-  </data>
-  <data name="InProgress" xml:space="preserve">
-    <value>Em andamento</value>
-  </data>
-  <data name="IdentityRejected" xml:space="preserve">
-    <value>Identidade rejeitada. Você pode retornar à página de solicitações e atualizar suas informações para tentar novamente.</value>
-  </data>
   <data name="AddToBalance" xml:space="preserve">
     <value>Adicionar ao saldo</value>
   </data>
@@ -3250,8 +3156,8 @@
   <data name="Transaction" xml:space="preserve">
     <value>Transação</value>
   </data>
-  <data name="CreditTransfer" xml:space="preserve">
-    <value>Transferência de crédito</value>
+  <data name="Transfer" xml:space="preserve">
+    <value>Transferir</value>
   </data>
   <data name="BalanceTopUp" xml:space="preserve">
     <value>Recarga de saldo</value>
@@ -3321,42 +3227,6 @@
   </data>
   <data name="SendCredits" xml:space="preserve">
     <value>Enviar créditos</value>
-  </data>
-  <data name="Year" xml:space="preserve">
-    <value>ano</value>
-  </data>
-  <data name="Years" xml:space="preserve">
-    <value>anos</value>
-  </data>
-  <data name="Month" xml:space="preserve">
-    <value>mês</value>
-  </data>
-  <data name="Months" xml:space="preserve">
-    <value>meses</value>
-  </data>
-  <data name="Day" xml:space="preserve">
-    <value>dia</value>
-  </data>
-  <data name="Days" xml:space="preserve">
-    <value>dias</value>
-  </data>
-  <data name="Hour" xml:space="preserve">
-    <value>hora</value>
-  </data>
-  <data name="Hours" xml:space="preserve">
-    <value>horas</value>
-  </data>
-  <data name="Minute" xml:space="preserve">
-    <value>minuto</value>
-  </data>
-  <data name="Minutes" xml:space="preserve">
-    <value>minutos</value>
-  </data>
-  <data name="Second" xml:space="preserve">
-    <value>segundo</value>
-  </data>
-  <data name="Seconds" xml:space="preserve">
-    <value>segundos</value>
   </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> e </value>
@@ -3448,9 +3318,6 @@
   <data name="CertifierCanDestroy" xml:space="preserve">
     <value>O certificador pode destruir o token</value>
   </data>
-  <data name="MachineReadableText" xml:space="preserve">
-    <value>Informações legíveis por máquina</value>
-  </data>
   <data name="MachineReadableInfoTextToken" xml:space="preserve">
     <value>Abaixo está uma visão geral dos dados legíveis por máquina incorporados no token.</value>
   </data>
@@ -3522,5 +3389,14 @@
   </data>
   <data name="ProposalDefaultMessage" xml:space="preserve">
     <value>Olá, gostaria de propor um contrato com você. Por favor, revise e aceite a proposta se concordar.</value>
+  </data>
+  <data name="CreditTransfer" xml:space="preserve">
+    <value>Transferência de crédito</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Gostaria de adicionar esta identidade aos seus contatos?</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Tirar foto</value>
   </data>
 </root>

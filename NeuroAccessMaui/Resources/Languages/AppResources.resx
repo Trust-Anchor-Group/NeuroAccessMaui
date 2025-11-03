@@ -1,9 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root"
-    xmlns=""
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1702,9 +1758,6 @@
   <data name="StreetNumber" xml:space="preserve">
     <value>Street Number</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Take photo</value>
-  </data>
   <data name="TakePhotoToShare" xml:space="preserve">
     <value>Take a photo to share</value>
   </data>
@@ -2104,13 +2157,13 @@
   <data name="OnboardingGetStartedTitle" xml:space="preserve">
     <value>Welcome to Neuro-Access</value>
   </data>
-  <data name="CreateNewAccount">
+  <data name="CreateNewAccount" xml:space="preserve">
     <value>Create new account</value>
   </data>
-  <data name="IAlreadyHaveAnAccount">
+  <data name="IAlreadyHaveAnAccount" xml:space="preserve">
     <value>I already have an account</value>
   </data>
-  <data name="OnboardingGetStartedQrInfo">
+  <data name="OnboardingGetStartedQrInfo" xml:space="preserve">
     <value>Received an invite, transfer, or recovery code? Scan it below</value>
   </data>
   <data name="OnboardingNameEntryTitle" xml:space="preserve">
@@ -2785,9 +2838,6 @@
   <data name="NFC" xml:space="preserve">
     <value>NFC</value>
   </data>
-  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
-    <value>Would you like to add this identity to your contacts?</value>
-  </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Coming soon!</value>
   </data>
@@ -3034,9 +3084,6 @@
   <data name="Upload" xml:space="preserve">
     <value>Upload</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Take photo</value>
-  </data>
   <data name="InReview" xml:space="preserve">
     <value>In review</value>
   </data>
@@ -3046,38 +3093,8 @@
   <data name="IdentityRejected" xml:space="preserve">
     <value>Identity rejected. You can return to the applications page and update your information to try again.</value>
   </data>
-  <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve"> 
-    <value>A PIN must not contain a consecutive run of {0} identical symbols.</value> 
-  </data>
-  <data name="Attachment_Passport" xml:space="preserve">
-    <value>Passport image</value>
-  </data>
-  <data name="Attachment_IdCardFront" xml:space="preserve">
-    <value>Front of ID card</value>
-  </data>
-  <data name="Attachment_IdCardBack" xml:space="preserve">
-    <value>Back of ID card</value>
-  </data>
-  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
-    <value>Front of driver's license</value>
-  </data>
-  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
-    <value>Back of driver's license</value>
-  </data>
-  <data name="Attachment_ProfilePhoto" xml:space="preserve">
-    <value>Photo of face</value>
-  </data>
-  <data name="Kyc_Next" xml:space="preserve">
-    <value>Next</value>
-  </data>
-  <data name="Kyc_Return" xml:space="preserve">
-    <value>Return to summary</value>
-  </data>
-  <data name="Kyc_Exit" xml:space="preserve">
-    <value>Are you sure you would like to leave the Identity Application process?</value>
-  </data>
-  <data name="Kyc_Apply" xml:space="preserve">
-    <value>Apply</value>
+  <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve">
+    <value>A PIN must not contain a consecutive run of {0} identical symbols.</value>
   </data>
   <data name="KycReviewTitle" xml:space="preserve">
     <value>Application review</value>
@@ -3114,114 +3131,6 @@
   </data>
   <data name="KycReviewAvailableMainPage" xml:space="preserve">
     <value>Some submitted details could not be verified. Tap to review.</value>
-  </data>
-  <data name="Progress" xml:space="preserve">
-    <value>Progress</value>
-  </data>
-  <data name="TradeName" xml:space="preserve">
-    <value>Trade name</value>
-  </data>
-  <data name="LegalName" xml:space="preserve">
-    <value>Legal name</value>
-  </data>
-  <data name="OrgRepName" xml:space="preserve">
-    <value>Representative name</value>
-  </data>
-  <data name="OrgRepCPF" xml:space="preserve">
-    <value>Representative CPF</value>
-  </data>
-  <data name="OrgRepBirthDate" xml:space="preserve">
-    <value>Representative birth date</value>
-  </data>
-  <data name="OrgRepRG" xml:space="preserve">
-    <value>Representative RG</value>
-  </data>
-  <data name="OrgEMail" xml:space="preserve">
-    <value>Corporate email</value>
-  </data>
-  <data name="OrgPhone" xml:space="preserve">
-    <value>Corporate phone</value>
-  </data>
-  <data name="FullName" xml:space="preserve">
-    <value>Full name</value>
-  </data>
-  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
-    <value>Article of association</value>
-  </data>
-  <data name="ClearCacheDescription" xml:space="preserve">
-    <value>Removes temporary data like images and attachments to free up space</value>
-  </data>
-  <data name="ClearBrandingAndKycCache" xml:space="preserve">
-    <value>Clear branding &amp; KYC cache</value>
-  </data>
-  <data name="ApplicationUnderUnderReview" xml:space="preserve">
-    <value>Your application is under review. We will notify you when your ID is approved!</value>
-  </data>
-  <data name="SeeIDApplication" xml:space="preserve">
-    <value>See ID application</value>
-  </data>
-  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
-    <value>Your ID Application is sent for review. We will notify you when your ID is approved!</value>
-  </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Application Summary</value>
-  </data>
-  <data name="ApplicationSummaryDescription" xml:space="preserve">
-    <value>Before finalizing, please read through and ensure everything is correct</value>
-  </data>
-  <data name="ApplicationInformation" xml:space="preserve">
-    <value>Application Information</value>
-  </data>
-  <data name="PersonalDetails" xml:space="preserve">
-    <value>Personal Details</value>
-  </data>
-  <data name="AddressDetails" xml:space="preserve">
-    <value>Address Details</value>
-  </data>
-  <data name="DocumentDetails" xml:space="preserve">
-    <value>Document Details</value>
-  </data>
-  <data name="IsRequired" xml:space="preserve">
-    <value>{0} is required</value>
-  </data>
-  <data name="PendingReview" xml:space="preserve">
-    <value>Pending review</value>
-  </data>
-  <data name="CurrentApplication" xml:space="preserve">
-    <value>Current application</value>
-  </data>
-  <data name="IdentityApplication" xml:space="preserve">
-    <value>Identity application</value>
-  </data>
-  <data name="AvailableApplications" xml:space="preserve">
-    <value>Available Applications</value>
-  </data>
-  <data name="ForYourIndividualUse" xml:space="preserve">
-    <value>For your individual use</value>
-  </data>
-  <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Before finalizing, please read through and ensure everything is correct</value>
-  </data>
-  <data name="CompanyInformation" xml:space="preserve">
-    <value>Company Information</value>
-  </data>
-  <data name="CompanyAddress" xml:space="preserve">
-    <value>Company Address</value>
-  </data>
-  <data name="CompanyRepresentative" xml:space="preserve">
-    <value>Company Representative</value>
-  </data>
-  <data name="Upload" xml:space="preserve">
-    <value>Upload</value>
-  </data>
-  <data name="InReview" xml:space="preserve">
-    <value>In review</value>
-  </data>
-  <data name="InProgress" xml:space="preserve">
-    <value>In Progress</value>
-  </data>
-  <data name="IdentityRejected" xml:space="preserve">
-    <value>Identity rejected. You can return to the applications page and update your information to try again.</value>
   </data>
   <data name="AddToBalance" xml:space="preserve">
     <value>Add to balance</value>
@@ -3322,42 +3231,6 @@
   <data name="SendCredits" xml:space="preserve">
     <value>Send Credits</value>
   </data>
-  <data name="Year" xml:space="preserve">
-    <value>year</value>
-  </data>
-  <data name="Years" xml:space="preserve">
-    <value>years</value>
-  </data>
-  <data name="Month" xml:space="preserve">
-    <value>month</value>
-  </data>
-  <data name="Months" xml:space="preserve">
-    <value>months</value>
-  </data>
-  <data name="Day" xml:space="preserve">
-    <value>day</value>
-  </data>
-  <data name="Days" xml:space="preserve">
-    <value>days</value>
-  </data>
-  <data name="Hour" xml:space="preserve">
-    <value>hour</value>
-  </data>
-  <data name="Hours" xml:space="preserve">
-    <value>hours</value>
-  </data>
-  <data name="Minute" xml:space="preserve">
-    <value>minute</value>
-  </data>
-  <data name="Minutes" xml:space="preserve">
-    <value>minutes</value>
-  </data>
-  <data name="Second" xml:space="preserve">
-    <value>second</value>
-  </data>
-  <data name="Seconds" xml:space="preserve">
-    <value>seconds</value>
-  </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> and </value>
   </data>
@@ -3448,9 +3321,6 @@
   <data name="CertifierCanDestroy" xml:space="preserve">
     <value>Certifier can destroy token</value>
   </data>
-  <data name="MachineReadableText" xml:space="preserve">
-    <value>Machine readable information</value>
-  </data>
   <data name="MachineReadableInfoTextToken" xml:space="preserve">
     <value>An overview of the machine-readable data embedded in the token is shown below.</value>
   </data>
@@ -3522,5 +3392,11 @@
   </data>
   <data name="ProposalDefaultMessage" xml:space="preserve">
     <value>Hi, I would like to propose a contract with you. Please review and accept the proposal if you agree.</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Would you like to add this identity to your contacts?</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Take photo</value>
   </data>
 </root>

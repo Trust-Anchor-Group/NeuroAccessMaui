@@ -1,9 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root"
-    xmlns=""
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -1702,9 +1758,6 @@
   <data name="StreetNumber" xml:space="preserve">
     <value>Gatunummer</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Ta foto</value>
-  </data>
   <data name="TakePhotoToShare" xml:space="preserve">
     <value>Ta ett foto som du vill dela</value>
   </data>
@@ -2764,9 +2817,6 @@
   <data name="ClearCache" xml:space="preserve">
     <value>Rensa cache</value>
   </data>
-  <data name="ClearCacheDescription" xml:space="preserve">
-    <value>Tar bort tillfälliga data som bilder och bilagor för att frigöra utrymme</value>
-  </data>
   <data name="Apps" xml:space="preserve">
     <value>Appar</value>
   </data>
@@ -2784,9 +2834,6 @@
   </data>
   <data name="NFC" xml:space="preserve">
     <value>NFC</value>
-  </data>
-  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
-    <value>Vill du lägga till denna identitet i dina kontakter?</value>
   </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Kommer snart!</value>
@@ -2818,6 +2865,9 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
     <value>Språket har ändrats. Starta om appen för att säkerställa att alla ändringar tillämpas.</value>
   </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Fortsätt ({0})</value>
+  </data>
   <data name="Never" xml:space="preserve">
     <value>Aldrig</value>
   </data>
@@ -2832,9 +2882,6 @@
   </data>
   <data name="LastUpdatedFormat" xml:space="preserve">
     <value>Senast uppdaterad: {0}</value>
-  </data>
-  <data name="ContinueSecondsFormat" xml:space="preserve">
-    <value>Fortsätt ({0})</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
     <value>Aktivera ditt digitala ID</value>
@@ -3034,9 +3081,6 @@
   <data name="Upload" xml:space="preserve">
     <value>Ladda upp</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Ta foto</value>
-  </data>
   <data name="InReview" xml:space="preserve">
     <value>Under granskning</value>
   </data>
@@ -3048,36 +3092,6 @@
   </data>
   <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve">
     <value>En PIN-kod får inte innehålla en följd av {0} identiska symboler.</value>
-  </data>
-  <data name="Attachment_Passport" xml:space="preserve">
-    <value>Passbild</value>
-  </data>
-  <data name="Attachment_IdCardFront" xml:space="preserve">
-    <value>Framsida av ID-kort</value>
-  </data>
-  <data name="Attachment_IdCardBack" xml:space="preserve">
-    <value>Baksida av ID-kort</value>
-  </data>
-  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
-    <value>Framsida av körkort</value>
-  </data>
-  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
-    <value>Baksida av körkort</value>
-  </data>
-  <data name="Attachment_ProfilePhoto" xml:space="preserve">
-    <value>Ansiktsfoto</value>
-  </data>
-  <data name="Kyc_Next" xml:space="preserve">
-    <value>Nästa</value>
-  </data>
-  <data name="Kyc_Return" xml:space="preserve">
-    <value>Tillbaka till översikten</value>
-  </data>
-  <data name="Kyc_Exit" xml:space="preserve">
-    <value>Är du säker på att du vill lämna identitetsansökningsprocessen?</value>
-  </data>
-  <data name="Kyc_Apply" xml:space="preserve">
-    <value>Skicka</value>
   </data>
   <data name="KycReviewTitle" xml:space="preserve">
     <value>Ansökningsgranskning</value>
@@ -3115,114 +3129,6 @@
   <data name="KycReviewAvailableMainPage" xml:space="preserve">
     <value>Några inskickade uppgifter kunde inte verifieras. Tryck för att granska.</value>
   </data>
-  <data name="Progress" xml:space="preserve">
-    <value>Framsteg</value>
-  </data>
-  <data name="TradeName" xml:space="preserve">
-    <value>Företagsnamn</value>
-  </data>
-  <data name="LegalName" xml:space="preserve">
-    <value>Juridiskt namn</value>
-  </data>
-  <data name="OrgRepName" xml:space="preserve">
-    <value>Representantens namn</value>
-  </data>
-  <data name="OrgRepCPF" xml:space="preserve">
-    <value>Representantens CPF</value>
-  </data>
-  <data name="OrgRepBirthDate" xml:space="preserve">
-    <value>Representantens födelsedatum</value>
-  </data>
-  <data name="OrgRepRG" xml:space="preserve">
-    <value>Representantens RG</value>
-  </data>
-  <data name="OrgEMail" xml:space="preserve">
-    <value>Företagets e-post</value>
-  </data>
-  <data name="OrgPhone" xml:space="preserve">
-    <value>Företagets telefon</value>
-  </data>
-  <data name="FullName" xml:space="preserve">
-    <value>Fullständigt namn</value>
-  </data>
-  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
-    <value>Bolagsordning</value>
-  </data>
-  <data name="ClearCacheDescription" xml:space="preserve">
-    <value>Tar bort temporära data som bilder och bilagor för att frigöra utrymme</value>
-  </data>
-  <data name="ClearBrandingAndKycCache" xml:space="preserve">
-    <value>Rensa cache för branding &amp; KYC</value>
-  </data>
-  <data name="ApplicationUnderUnderReview" xml:space="preserve">
-    <value>Din ansökan granskas. Vi meddelar dig när din ID har godkänts!</value>
-  </data>
-  <data name="SeeIDApplication" xml:space="preserve">
-    <value>Visa ID-ansökan</value>
-  </data>
-  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
-    <value>Din ID-ansökan har skickats för granskning. Vi meddelar dig när din ID har godkänts!</value>
-  </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Ansökningssammanfattning</value>
-  </data>
-  <data name="ApplicationSummaryDescription" xml:space="preserve">
-    <value>Innan du slutför, vänligen läs igenom och säkerställ att allt är korrekt</value>
-  </data>
-  <data name="ApplicationInformation" xml:space="preserve">
-    <value>Ansökningsinformation</value>
-  </data>
-  <data name="PersonalDetails" xml:space="preserve">
-    <value>Personuppgifter</value>
-  </data>
-  <data name="AddressDetails" xml:space="preserve">
-    <value>Adressuppgifter</value>
-  </data>
-  <data name="DocumentDetails" xml:space="preserve">
-    <value>Dokumentuppgifter</value>
-  </data>
-  <data name="IsRequired" xml:space="preserve">
-    <value>{0} är obligatoriskt</value>
-  </data>
-  <data name="PendingReview" xml:space="preserve">
-    <value>Väntar på granskning</value>
-  </data>
-  <data name="CurrentApplication" xml:space="preserve">
-    <value>Aktuell ansökan</value>
-  </data>
-  <data name="IdentityApplication" xml:space="preserve">
-    <value>Identitetsansökan</value>
-  </data>
-  <data name="AvailableApplications" xml:space="preserve">
-    <value>Tillgängliga ansökningar</value>
-  </data>
-  <data name="ForYourIndividualUse" xml:space="preserve">
-    <value>För eget bruk</value>
-  </data>
-  <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Innan du slutför, läs igenom och säkerställ att allt är korrekt</value>
-  </data>
-  <data name="CompanyInformation" xml:space="preserve">
-    <value>Företagsinformation</value>
-  </data>
-  <data name="CompanyAddress" xml:space="preserve">
-    <value>Företagsadress</value>
-  </data>
-  <data name="CompanyRepresentative" xml:space="preserve">
-    <value>Företagsrepresentant</value>
-  </data>
-  <data name="Upload" xml:space="preserve">
-    <value>Ladda upp</value>
-  </data>
-  <data name="InReview" xml:space="preserve">
-    <value>Under granskning</value>
-  </data>
-  <data name="InProgress" xml:space="preserve">
-    <value>Pågår</value>
-  </data>
-  <data name="IdentityRejected" xml:space="preserve">
-    <value>Identitet avslogs. Du kan gå tillbaka till sidan för ansökningar och uppdatera din information för att försöka igen.</value>
-  </data>
   <data name="AddToBalance" xml:space="preserve">
     <value>Lägg till saldo</value>
   </data>
@@ -3250,8 +3156,8 @@
   <data name="Transaction" xml:space="preserve">
     <value>Transaktion</value>
   </data>
-  <data name="CreditTransfer" xml:space="preserve">
-    <value>Kreditöverföring</value>
+  <data name="Transfer" xml:space="preserve">
+    <value>Överför</value>
   </data>
   <data name="BalanceTopUp" xml:space="preserve">
     <value>Saldoinsättning</value>
@@ -3321,42 +3227,6 @@
   </data>
   <data name="SendCredits" xml:space="preserve">
     <value>Skicka krediter</value>
-  </data>
-  <data name="Year" xml:space="preserve">
-    <value>år</value>
-  </data>
-  <data name="Years" xml:space="preserve">
-    <value>år</value>
-  </data>
-  <data name="Month" xml:space="preserve">
-    <value>månad</value>
-  </data>
-  <data name="Months" xml:space="preserve">
-    <value>månader</value>
-  </data>
-  <data name="Day" xml:space="preserve">
-    <value>dag</value>
-  </data>
-  <data name="Days" xml:space="preserve">
-    <value>dagar</value>
-  </data>
-  <data name="Hour" xml:space="preserve">
-    <value>timme</value>
-  </data>
-  <data name="Hours" xml:space="preserve">
-    <value>timmar</value>
-  </data>
-  <data name="Minute" xml:space="preserve">
-    <value>minut</value>
-  </data>
-  <data name="Minutes" xml:space="preserve">
-    <value>minuter</value>
-  </data>
-  <data name="Second" xml:space="preserve">
-    <value>sekund</value>
-  </data>
-  <data name="Seconds" xml:space="preserve">
-    <value>sekunder</value>
   </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> och </value>
@@ -3448,9 +3318,6 @@
   <data name="CertifierCanDestroy" xml:space="preserve">
     <value>Certifierare kan förstöra token</value>
   </data>
-  <data name="MachineReadableText" xml:space="preserve">
-    <value>Maskinläsbar information</value>
-  </data>
   <data name="MachineReadableInfoTextToken" xml:space="preserve">
     <value>Nedan visas en översikt över maskinläsbar data som är inbäddad i token.</value>
   </data>
@@ -3522,5 +3389,14 @@
   </data>
   <data name="ProposalDefaultMessage" xml:space="preserve">
     <value>Hej, jag skulle vilja föreslå ett kontrakt med dig. Vänligen granska och acceptera förslaget om du godkänner.</value>
+  </data>
+  <data name="CreditTransfer" xml:space="preserve">
+    <value>Kreditöverföring</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Vill du lägga till denna identitet i dina kontakter?</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Ta foto</value>
   </data>
 </root>

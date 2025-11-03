@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -22,10 +22,8 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
-  object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -114,12 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Izaberite uloge koje ćete potpisati kao (opciono)</value>
@@ -995,7 +991,7 @@
     <value>Fotografija</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Dodajte sliku na koju možete lako da budete identifikovani.</value>
+    <value>Molimo vas da sada napravite fotografiju uživo kako bismo mogli da potvrdimo vaš identitet. Snimci ekrana ili uređene slike nisu dozvoljeni.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>Sledeće slike su uključene u aplikaciju.</value>
@@ -1762,9 +1758,6 @@
   <data name="StreetNumber" xml:space="preserve">
     <value>Broj ulice</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Fotografisanje</value>
-  </data>
   <data name="TakePhotoToShare" xml:space="preserve">
     <value>Fotografisanje za deljenje</value>
   </data>
@@ -2225,10 +2218,10 @@
     <value>Navedite iznos eDaler koji želite da kupite ispod, i pritisnite dugme Kupi. Veb stranica može biti otvorena na kojoj morate da popunite dodatne informacije za procesor plaćanja da potvrdi vaš zahtev.</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Iznos:</value>
+    <value>Iznos</value>
   </data>
   <data name="AmountExtra" xml:space="preserve">
-    <value>Dodatni iznos: (opciono, predlog)</value>
+    <value>Dodatni iznos (opciono, predlog)</value>
   </data>
   <data name="Wallet" xml:space="preserve">
     <value>Novиanik</value>
@@ -2623,8 +2616,8 @@
   <data name="ApplyIdInfoMainPage" xml:space="preserve">
     <value>Prijavite se za ličnu kartu da biste dobili sve od Neuro Access-a</value>
   </data>
-  <data name="CompleteIdButton" xml:space="preserve">
-    <value>Popunite svoj lični ID</value>
+  <data name="GoToApplications" xml:space="preserve">
+    <value>Idi na aplikacije</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Pretrage</value>
@@ -2809,6 +2802,9 @@
   <data name="SelectContract" xml:space="preserve">
     <value>Izaberite ugovor</value>
   </data>
+  <data name="LoadMore" xml:space="preserve">
+    <value>Učitaj više</value>
+  </data>
   <data name="SelectContractEntryDescription" xml:space="preserve">
     <value>Nalepite ID ugovora ili izaberite sa liste</value>
   </data>
@@ -2841,9 +2837,6 @@
   </data>
   <data name="NFC" xml:space="preserve">
     <value>NFC</value>
-  </data>
-  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
-    <value>Da li želite da dodate ovaj identitet svojim kontaktima?</value>
   </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Uskoro stižem!</value>
@@ -2894,7 +2887,7 @@
     <value>Poslednje izmene: {0}</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
-    <value>Aktivirajte svoj digitalni ID</value>
+    <value>Izaberite svog provajdera ID-a</value>
   </data>
   <data name="HaveAnyQuestions" xml:space="preserve">
     <value>Imate li pitanja?</value>
@@ -3091,10 +3084,319 @@
   <data name="Upload" xml:space="preserve">
     <value>Otpremanje</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Fotografisanje</value>
-  </data>
   <data name="InReview" xml:space="preserve">
     <value>U pregledu</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>U toku</value>
+  </data>
+  <data name="IdentityRejected" xml:space="preserve">
+    <value>Identitet odbijen. Možete se vratiti na stranicu aplikacija i ažurirati svoje podatke da biste pokušali ponovo.</value>
+  </data>
+  <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve">
+    <value>PIN ne sme da sadrži uzastopnu seriju {0} identičnih simbola.</value>
+  </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Pregled aplikacije</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Šifru:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Polja za pregled</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Fotografije za zamenu</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Ovi detalji nisu mogli biti odobreni. Ažurirajte ih na obrascu pre ponovnog slanja.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Polja na čekanju</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Fotografije na čekanju</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Rešite probleme i obrazac za uređivanje</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Ponovo pošalji bez polja na čekanju</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Vaša aplikacija prolazi kroz ručni pregled. Možete sačekati rezultat ili podesiti stavke ispod da pokuša automatsku obradu.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Ove stavke čekaju ručni pregled. Možete ih zadržati kao što jesu ili ih prilagoditi da pokušate automatsku obradu.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Neki dostavljeni detalji nisu mogli biti potvrđeni. Dodirnite za pregled.</value>
+  </data>
+  <data name="AddToBalance" xml:space="preserve">
+    <value>Dodaj u ravnotežu</value>
+  </data>
+  <data name="SelectContact" xml:space="preserve">
+    <value>Izaberite kontakt</value>
+  </data>
+  <data name="TransactionHistory" xml:space="preserve">
+    <value>Istorija transakcija</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Rezime</value>
+  </data>
+  <data name="TotalIn" xml:space="preserve">
+    <value>Ukupno u</value>
+  </data>
+  <data name="TotalOut" xml:space="preserve">
+    <value>Ukupno Out</value>
+  </data>
+  <data name="Net" xml:space="preserve">
+    <value>Neto</value>
+  </data>
+  <data name="NoTransactionsYet" xml:space="preserve">
+    <value>Još nema transakcija</value>
+  </data>
+  <data name="Transaction" xml:space="preserve">
+    <value>Transakcije</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Prenos</value>
+  </data>
+  <data name="BalanceTopUp" xml:space="preserve">
+    <value>Dopuna balansa</value>
+  </data>
+  <data name="TransactionDetails" xml:space="preserve">
+    <value>Detalji transakcije</value>
+  </data>
+  <data name="Recipient" xml:space="preserve">
+    <value>Primaoca</value>
+  </data>
+  <data name="NotInContacts" xml:space="preserve">
+    <value>Nije u kontaktima</value>
+  </data>
+  <data name="FullIdentifier" xml:space="preserve">
+    <value>Puni identifikator</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Vrsta transakcije</value>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Datum transakcije</value>
+  </data>
+  <data name="TransactionStatus" xml:space="preserve">
+    <value>Status transakcije</value>
+  </data>
+  <data name="ReservedNoColon" xml:space="preserve">
+    <value>Rezervisana</value>
+  </data>
+  <data name="Successful" xml:space="preserve">
+    <value>Uspešan</value>
+  </data>
+  <data name="TransactionIDNoColon" xml:space="preserve">
+    <value>ID transakcije</value>
+  </data>
+  <data name="TransferSuccessful" xml:space="preserve">
+    <value>Prenos uspešan</value>
+  </data>
+  <data name="UnknownPleaseRefresh" xml:space="preserve">
+    <value>Nepoznato, molim vas osvežite</value>
+  </data>
+  <data name="SelectForMe" xml:space="preserve">
+    <value>Izaberi za mene</value>
+  </data>
+  <data name="ShareDescription" xml:space="preserve">
+    <value>U nastavku možete pronaći dodatne opcije za deljenje KR-koda.</value>
+  </data>
+  <data name="OtherApp" xml:space="preserve">
+    <value>Druga aplikacija</value>
+  </data>
+  <data name="SuccessfullyCopiedToClipboard" xml:space="preserve">
+    <value>Uspešno kopiran u ostavu</value>
+  </data>
+  <data name="MakePayment" xml:space="preserve">
+    <value>Izvršite uplatu</value>
+  </data>
+  <data name="PayOnline" xml:space="preserve">
+    <value>Plati online</value>
+  </data>
+  <data name="PayOffline" xml:space="preserve">
+    <value>Plati van</value>
+  </data>
+  <data name="ShareOfflinePaymentDescription" xml:space="preserve">
+    <value>Ovaj KR kod možete podeliti sa drugim korisnikom za kasniju obradu, bilo kada je to potrebno ili kada postoji povezivanje.</value>
+  </data>
+  <data name="RequestCredits" xml:space="preserve">
+    <value>Zahtev za kredite</value>
+  </data>
+  <data name="SendCredits" xml:space="preserve">
+    <value>Pošalji kredite</value>
+  </data>
+  <data name="DurationAndSeparator" xml:space="preserve">
+    <value> I </value>
+  </data>
+  <data name="DurationCommaSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="NoTokens" xml:space="preserve">
+    <value>Nema tokena</value>
+  </data>
+  <data name="TokenDetails" xml:space="preserve">
+    <value>Token Detalji</value>
+  </data>
+  <data name="TokenDetailsDescription" xml:space="preserve">
+    <value>Slede detalji kodirani u token. Kliknite na bilo koji link za više informacija.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Opis</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Kategorija</value>
+  </data>
+  <data name="TokenId" xml:space="preserve">
+    <value>Token ID</value>
+  </data>
+  <data name="TokenIdMethod" xml:space="preserve">
+    <value>Token ID metod</value>
+  </data>
+  <data name="TokenVisibility" xml:space="preserve">
+    <value>Vidljivost tokena</value>
+  </data>
+  <data name="Ordinal" xml:space="preserve">
+    <value>Bilten</value>
+  </data>
+  <data name="Valuation" xml:space="preserve">
+    <value>Izračunavanje</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Izveštaje</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Promenljive</value>
+  </data>
+  <data name="States" xml:space="preserve">
+    <value>Države</value>
+  </data>
+  <data name="TokenPartsInfoText" xml:space="preserve">
+    <value>Sledi lista stranaka koje se odnose na ovaj token.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Vlasnik</value>
+  </data>
+  <data name="OwnerJid" xml:space="preserve">
+    <value>Adresa vlasnika</value>
+  </data>
+  <data name="OwnershipContract" xml:space="preserve">
+    <value>Ugovor o vlasništvu</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Stvoritelja</value>
+  </data>
+  <data name="CreatorJid" xml:space="preserve">
+    <value>Adresa kreatora</value>
+  </data>
+  <data name="CreationContract" xml:space="preserve">
+    <value>Ugovor o stvaranju</value>
+  </data>
+  <data name="TrustProvider" xml:space="preserve">
+    <value>Poverenje provajdera</value>
+  </data>
+  <data name="TrustProviderJid" xml:space="preserve">
+    <value>Adresa provajdera poverenja</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>Privilegije</value>
+  </data>
+  <data name="TokenPrivilegesInfoText" xml:space="preserve">
+    <value>Slede privilegije ugravirane u token.</value>
+  </data>
+  <data name="CreatorCanDestroy" xml:space="preserve">
+    <value>Tvorac može uništiti token</value>
+  </data>
+  <data name="OwnerCanDestroyBatch" xml:space="preserve">
+    <value>Vlasnik može uništiti token seriju</value>
+  </data>
+  <data name="OwnerCanDestroyIndividual" xml:space="preserve">
+    <value>Vlasnik može uništiti pojedinačni token</value>
+  </data>
+  <data name="CertifierCanDestroy" xml:space="preserve">
+    <value>Sertifikator može uništiti token</value>
+  </data>
+  <data name="MachineReadableInfoTextToken" xml:space="preserve">
+    <value>Pregled mašinski čitljivih podataka ugrađenih u token je prikazan ispod.</value>
+  </data>
+  <data name="DefinitionNamespace" xml:space="preserve">
+    <value>Definicija imenskog prostora</value>
+  </data>
+  <data name="DefinitionSchemaDigest" xml:space="preserve">
+    <value>Definicija šema digest</value>
+  </data>
+  <data name="ShowM2MInfo" xml:space="preserve">
+    <value>Shov M2M Definicija</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Radnje</value>
+  </data>
+  <data name="SendToContact" xml:space="preserve">
+    <value>Pošalji na kontakt</value>
+  </data>
+  <data name="PublishMarketplace" xml:space="preserve">
+    <value>Objavi na tržištu</value>
+  </data>
+  <data name="OfferToBuy" xml:space="preserve">
+    <value>Ponuda za kupovinu</value>
+  </data>
+  <data name="OfferToSell" xml:space="preserve">
+    <value>Ponuda za prodaju</value>
+  </data>
+  <data name="ViewEvents" xml:space="preserve">
+    <value>Pogledaj događaje</value>
+  </data>
+  <data name="CurrentState" xml:space="preserve">
+    <value>Trenutno stanje</value>
+  </data>
+  <data name="MachineHasEnded" xml:space="preserve">
+    <value>Državna mašina je završena.</value>
+  </data>
+  <data name="CurrentVariables" xml:space="preserve">
+    <value>Trenutne varijable</value>
+  </data>
+  <data name="TokenEvents" xml:space="preserve">
+    <value>Token događaji</value>
+  </data>
+  <data name="TokenEventsDescription" xml:space="preserve">
+    <value>Slede javni događaji snimljeni za token. Vaši privatni događaji su takođe uključeni.</value>
+  </data>
+  <data name="TextNote" xml:space="preserve">
+    <value>Tekstualna napomena</value>
+  </data>
+  <data name="XmlNote" xml:space="preserve">
+    <value>KSML Napomena</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Dodaj napomenu</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Vrednost</value>
+  </data>
+  <data name="InvitationToSignFormat" xml:space="preserve">
+    <value>Pozvani ste da potpišete ovaj ugovor kao {0}, uverite se da proverite i pregledate ugovor pre nego što nastavite</value>
+  </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Pošalji predlog</value>
+  </data>
+  <data name="Sender" xml:space="preserve">
+    <value>Pošiljaoca:</value>
+  </data>
+  <data name="ShortId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ProposalDefaultMessage" xml:space="preserve">
+    <value>Zdravo, želeo bih da predložim ugovor sa vama. Molimo vas da pregledate i prihvatite predlog ako se slažete.</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Da li želite da dodate ovaj identitet svojim kontaktima?</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Fotografisanje</value>
   </data>
 </root>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -22,10 +22,8 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
-  object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -114,12 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Выберите роли, за которые вы будете подписываться (необязательно)</value>
@@ -995,7 +991,7 @@
     <value>Фото</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Пожалуйста, добавьте изображение, на котором вас можно легко идентифицировать.</value>
+    <value>Пожалуйста, сфотографируйтесь в прямом эфире прямо сейчас, чтобы мы могли подтвердить вашу личность. Скриншоты или отредактированные изображения запрещены.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>В приложение включены следующие изображения.</value>
@@ -1762,9 +1758,6 @@
   <data name="StreetNumber" xml:space="preserve">
     <value>Номер улицы</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Сделать фото</value>
-  </data>
   <data name="TakePhotoToShare" xml:space="preserve">
     <value>Сделайте фотографию, чтобы поделиться ею</value>
   </data>
@@ -2225,10 +2218,10 @@
     <value>Укажите ниже количество eDaler, которое вы хотите купить, и нажмите кнопку «Купить». Может быть открыта веб-страница, на которой вам нужно будет ввести дополнительную информацию, чтобы платежная система подтвердила ваш запрос.</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Количество:</value>
+    <value>Количество</value>
   </data>
   <data name="AmountExtra" xml:space="preserve">
-    <value>Дополнительная сумма: (по желанию, предложение)</value>
+    <value>Дополнительная сумма (по желанию, предложение)</value>
   </data>
   <data name="Wallet" xml:space="preserve">
     <value>Бумажник</value>
@@ -2623,8 +2616,8 @@
   <data name="ApplyIdInfoMainPage" xml:space="preserve">
     <value>Подайте заявку на получение удостоверения личности, чтобы получить все преимущества Neuro Access</value>
   </data>
-  <data name="CompleteIdButton" xml:space="preserve">
-    <value>Заполните свой личный ID</value>
+  <data name="GoToApplications" xml:space="preserve">
+    <value>Перейти к приложениям</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Искать</value>
@@ -2809,6 +2802,9 @@
   <data name="SelectContract" xml:space="preserve">
     <value>Выберите контракт</value>
   </data>
+  <data name="LoadMore" xml:space="preserve">
+    <value>Загрузить еще</value>
+  </data>
   <data name="SelectContractEntryDescription" xml:space="preserve">
     <value>Вставьте ID контракта или выберите из списка</value>
   </data>
@@ -2841,9 +2837,6 @@
   </data>
   <data name="NFC" xml:space="preserve">
     <value>NFC</value>
-  </data>
-  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
-    <value>Хотели бы вы добавить эту личность в свои контакты?</value>
   </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Скоро!</value>
@@ -2894,7 +2887,7 @@
     <value>Последнее обновление: {0}</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
-    <value>Активируйте свое цифровое удостоверение личности</value>
+    <value>Выберите поставщика удостоверений личности</value>
   </data>
   <data name="HaveAnyQuestions" xml:space="preserve">
     <value>Остались вопросы?</value>
@@ -3091,10 +3084,319 @@
   <data name="Upload" xml:space="preserve">
     <value>Закачать</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Сделать фото</value>
-  </data>
   <data name="InReview" xml:space="preserve">
     <value>На обзоре</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>Развиваться</value>
+  </data>
+  <data name="IdentityRejected" xml:space="preserve">
+    <value>Личность отвергнута. Вы можете вернуться на страницу приложений и обновить свои данные, чтобы повторить попытку.</value>
+  </data>
+  <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve">
+    <value>PIN-код не должен содержать последовательный набор из {0} одинаковых символов.</value>
+  </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Рассмотрение заявки</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Код:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Поля для просмотра</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Фотографии на замену</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Эти данные не могли быть утверждены. Обновите их в форме перед повторной отправкой.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Ожидающие поля</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Ожидающие фотографии</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Устранение проблем и редактирование формы</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Повторная отправка без ожидающих полей</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Ваша заявка проходит ручную проверку. Вы можете дождаться результата или настроить элементы ниже, чтобы попробовать автоматическую обработку.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Эти элементы ожидают ручной проверки. Вы можете оставить их как есть или настроить их для автоматической обработки.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Некоторые предоставленные данные не удалось проверить. Нажмите, чтобы просмотреть.</value>
+  </data>
+  <data name="AddToBalance" xml:space="preserve">
+    <value>Добавить в баланс</value>
+  </data>
+  <data name="SelectContact" xml:space="preserve">
+    <value>Выберите контакт</value>
+  </data>
+  <data name="TransactionHistory" xml:space="preserve">
+    <value>История транзакций</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Сводка</value>
+  </data>
+  <data name="TotalIn" xml:space="preserve">
+    <value>Всего в</value>
+  </data>
+  <data name="TotalOut" xml:space="preserve">
+    <value>Тотал аут</value>
+  </data>
+  <data name="Net" xml:space="preserve">
+    <value>Сеть</value>
+  </data>
+  <data name="NoTransactionsYet" xml:space="preserve">
+    <value>Транзакций пока нет</value>
+  </data>
+  <data name="Transaction" xml:space="preserve">
+    <value>Транзакция</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Перенос</value>
+  </data>
+  <data name="BalanceTopUp" xml:space="preserve">
+    <value>Пополнение баланса</value>
+  </data>
+  <data name="TransactionDetails" xml:space="preserve">
+    <value>Детали транзакции</value>
+  </data>
+  <data name="Recipient" xml:space="preserve">
+    <value>Получатель</value>
+  </data>
+  <data name="NotInContacts" xml:space="preserve">
+    <value>Нет в контактах</value>
+  </data>
+  <data name="FullIdentifier" xml:space="preserve">
+    <value>Полный идентификатор</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Тип транзакции</value>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Дата транзакции</value>
+  </data>
+  <data name="TransactionStatus" xml:space="preserve">
+    <value>Статус транзакции</value>
+  </data>
+  <data name="ReservedNoColon" xml:space="preserve">
+    <value>Скрытный</value>
+  </data>
+  <data name="Successful" xml:space="preserve">
+    <value>Успешный</value>
+  </data>
+  <data name="TransactionIDNoColon" xml:space="preserve">
+    <value>ID транзакции</value>
+  </data>
+  <data name="TransferSuccessful" xml:space="preserve">
+    <value>Перевод выполнен успешно</value>
+  </data>
+  <data name="UnknownPleaseRefresh" xml:space="preserve">
+    <value>Неизвестно, пожалуйста, обновите</value>
+  </data>
+  <data name="SelectForMe" xml:space="preserve">
+    <value>Выберите для меня</value>
+  </data>
+  <data name="ShareDescription" xml:space="preserve">
+    <value>Ниже вы можете ознакомиться с дополнительными опциями для обмена QR-кодом.</value>
+  </data>
+  <data name="OtherApp" xml:space="preserve">
+    <value>Другое приложение</value>
+  </data>
+  <data name="SuccessfullyCopiedToClipboard" xml:space="preserve">
+    <value>Успешно скопировано в буфер обмена</value>
+  </data>
+  <data name="MakePayment" xml:space="preserve">
+    <value>Произвести оплату</value>
+  </data>
+  <data name="PayOnline" xml:space="preserve">
+    <value>Оплатить онлайн</value>
+  </data>
+  <data name="PayOffline" xml:space="preserve">
+    <value>Оплачивайте офлайн</value>
+  </data>
+  <data name="ShareOfflinePaymentDescription" xml:space="preserve">
+    <value>Вы можете поделиться этим QR-кодом с другим пользователем для обработки позже, когда это потребуется или когда появится подключение.</value>
+  </data>
+  <data name="RequestCredits" xml:space="preserve">
+    <value>Запросить кредиты</value>
+  </data>
+  <data name="SendCredits" xml:space="preserve">
+    <value>Отправить кредиты</value>
+  </data>
+  <data name="DurationAndSeparator" xml:space="preserve">
+    <value> и </value>
+  </data>
+  <data name="DurationCommaSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="NoTokens" xml:space="preserve">
+    <value>Без токенов</value>
+  </data>
+  <data name="TokenDetails" xml:space="preserve">
+    <value>Детали токена</value>
+  </data>
+  <data name="TokenDetailsDescription" xml:space="preserve">
+    <value>Ниже приведены данные, закодированные в токене. Нажмите на любые ссылки для получения дополнительной информации.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Категория</value>
+  </data>
+  <data name="TokenId" xml:space="preserve">
+    <value>Идентификатор токена</value>
+  </data>
+  <data name="TokenIdMethod" xml:space="preserve">
+    <value>Метод идентификатора токена</value>
+  </data>
+  <data name="TokenVisibility" xml:space="preserve">
+    <value>Видимость токенов</value>
+  </data>
+  <data name="Ordinal" xml:space="preserve">
+    <value>Порядковый</value>
+  </data>
+  <data name="Valuation" xml:space="preserve">
+    <value>Оценка</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Отчеты</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Переменные</value>
+  </data>
+  <data name="States" xml:space="preserve">
+    <value>Государств</value>
+  </data>
+  <data name="TokenPartsInfoText" xml:space="preserve">
+    <value>Ниже приведен список сторон, связанных с этим токеном.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Владелец</value>
+  </data>
+  <data name="OwnerJid" xml:space="preserve">
+    <value>Адрес владельца</value>
+  </data>
+  <data name="OwnershipContract" xml:space="preserve">
+    <value>Договор о праве собственности</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Создатель</value>
+  </data>
+  <data name="CreatorJid" xml:space="preserve">
+    <value>Адрес автора</value>
+  </data>
+  <data name="CreationContract" xml:space="preserve">
+    <value>Договор о создании</value>
+  </data>
+  <data name="TrustProvider" xml:space="preserve">
+    <value>Доверительный провайдер</value>
+  </data>
+  <data name="TrustProviderJid" xml:space="preserve">
+    <value>Адрес доверенного провайдера</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>Привилегии</value>
+  </data>
+  <data name="TokenPrivilegesInfoText" xml:space="preserve">
+    <value>Ниже приведены привилегии, выгравированные на жетоне.</value>
+  </data>
+  <data name="CreatorCanDestroy" xml:space="preserve">
+    <value>Создатель может уничтожить токен</value>
+  </data>
+  <data name="OwnerCanDestroyBatch" xml:space="preserve">
+    <value>Владелец может уничтожить партию токенов</value>
+  </data>
+  <data name="OwnerCanDestroyIndividual" xml:space="preserve">
+    <value>Владелец может уничтожить отдельный токен</value>
+  </data>
+  <data name="CertifierCanDestroy" xml:space="preserve">
+    <value>Сертифицирующий орган может уничтожить токен</value>
+  </data>
+  <data name="MachineReadableInfoTextToken" xml:space="preserve">
+    <value>Обзор машиночитаемых данных, встроенных в токен, показан ниже.</value>
+  </data>
+  <data name="DefinitionNamespace" xml:space="preserve">
+    <value>Пространство имен определений</value>
+  </data>
+  <data name="DefinitionSchemaDigest" xml:space="preserve">
+    <value>Дайджест схемы определений</value>
+  </data>
+  <data name="ShowM2MInfo" xml:space="preserve">
+    <value>Показать определение M2M</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Действия</value>
+  </data>
+  <data name="SendToContact" xml:space="preserve">
+    <value>Отправить в контакт</value>
+  </data>
+  <data name="PublishMarketplace" xml:space="preserve">
+    <value>Публикация в Marketplace</value>
+  </data>
+  <data name="OfferToBuy" xml:space="preserve">
+    <value>Предложение о покупке</value>
+  </data>
+  <data name="OfferToSell" xml:space="preserve">
+    <value>Предложение о продаже</value>
+  </data>
+  <data name="ViewEvents" xml:space="preserve">
+    <value>Посмотреть события</value>
+  </data>
+  <data name="CurrentState" xml:space="preserve">
+    <value>Текущее состояние</value>
+  </data>
+  <data name="MachineHasEnded" xml:space="preserve">
+    <value>Конечный автомат закончился.</value>
+  </data>
+  <data name="CurrentVariables" xml:space="preserve">
+    <value>Текущие переменные</value>
+  </data>
+  <data name="TokenEvents" xml:space="preserve">
+    <value>События токенов</value>
+  </data>
+  <data name="TokenEventsDescription" xml:space="preserve">
+    <value>Ниже приведены публичные события, записанные для токена. Ваши частные мероприятия также включены в стоимость.</value>
+  </data>
+  <data name="TextNote" xml:space="preserve">
+    <value>Текстовая заметка</value>
+  </data>
+  <data name="XmlNote" xml:space="preserve">
+    <value>Примечание по XML</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Добавить примечание</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Ценность</value>
+  </data>
+  <data name="InvitationToSignFormat" xml:space="preserve">
+    <value>Вам было предложено подписать этот договор в качестве {0}, обязательно проверьте и ознакомьтесь с договором, прежде чем продолжить.</value>
+  </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Отправить предложение</value>
+  </data>
+  <data name="Sender" xml:space="preserve">
+    <value>Отправитель:</value>
+  </data>
+  <data name="ShortId" xml:space="preserve">
+    <value>ИДЕНТИФИКАТОР</value>
+  </data>
+  <data name="ProposalDefaultMessage" xml:space="preserve">
+    <value>Здравствуйте, я хотел бы предложить вам договор. Пожалуйста, ознакомьтесь и примите предложение, если вы согласны.</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Хотели бы вы добавить эту личность в свои контакты?</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Сделать фото</value>
   </data>
 </root>
