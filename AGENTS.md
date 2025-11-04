@@ -180,6 +180,16 @@ public class KycReference
 
 ---
 
+## Navigation & Insets Quick Guide
+
+- **Use the custom navigation stack.** Call `NavigationService` (backed by `CustomShell`) from view models to change screens. It handles transitions, bar visibility, and cleanup; avoid directly pushing MAUI navigation pages.
+- **Always inherit our base classes.** Pages should derive from `BaseContentPage` and section views from `BaseContentView`. These types register lifecycle hooks and apply the project safe-area padding automatically.
+- **Keyboard insets are opt-out.** By default, `CustomShell` adds the keyboard height to safe-area padding. Set `KeyboardInsets.Mode="Manual"` or implement `IKeyboardInsetAware` only when a view must manage that padding itself.
+- **Never hard-code margins for safe areas.** Use the `SafeArea` attached properties on pages (e.g., `SafeArea.Mode="TopAndBottom"`) or bind to the `SafeInsetsExtension` in XAML when you need a literal `Thickness`. The shell already calls `SafeArea.ResolveInsetsFor`, so prefer these helpers over manual values.
+- **Popups and toasts already adjust.** The shell forwards inset updates to popup/toast content. Override this behavior only with a clear reason, and prefer listening to `IKeyboardInsetAware` callbacks instead of duplicating logic.
+
+---
+
 ## Summary for AI Agents
 
 When generating or editing code, AI agents must:
