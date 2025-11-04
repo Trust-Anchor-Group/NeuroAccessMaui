@@ -2817,6 +2817,9 @@
   <data name="ClearCache" xml:space="preserve">
     <value>Limpar cache</value>
   </data>
+  <data name="ClearBrandingAndKycCacheDescription" xml:space="preserve">
+    <value>Remove os dados de branding e KYC do domínio atual</value>
+  </data>
   <data name="Apps" xml:space="preserve">
     <value>Aplicativos</value>
   </data>
@@ -3390,13 +3393,13 @@
   <data name="ProposalDefaultMessage" xml:space="preserve">
     <value>Olá, gostaria de propor um contrato com você. Por favor, revise e aceite a proposta se concordar.</value>
   </data>
-  <data name="CreditTransfer" xml:space="preserve">
-    <value>Transferência de crédito</value>
-  </data>
   <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
     <value>Gostaria de adicionar esta identidade aos seus contatos?</value>
   </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Tirar foto</value>
+  </data>
+  <data name="CreditTransfer" xml:space="preserve">
+    <value>Transferência de crédito</value>
   </data>
 </root>

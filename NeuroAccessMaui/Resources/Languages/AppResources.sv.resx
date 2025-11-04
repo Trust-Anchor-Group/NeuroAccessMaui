@@ -2817,6 +2817,9 @@
   <data name="ClearCache" xml:space="preserve">
     <value>Rensa cache</value>
   </data>
+  <data name="ClearBrandingAndKycCacheDescription" xml:space="preserve">
+    <value>Tar bort varumärkes- och KYC-data för den aktuella domänen</value>
+  </data>
   <data name="Apps" xml:space="preserve">
     <value>Appar</value>
   </data>
@@ -3390,13 +3393,13 @@
   <data name="ProposalDefaultMessage" xml:space="preserve">
     <value>Hej, jag skulle vilja föreslå ett kontrakt med dig. Vänligen granska och acceptera förslaget om du godkänner.</value>
   </data>
-  <data name="CreditTransfer" xml:space="preserve">
-    <value>Kreditöverföring</value>
-  </data>
   <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
     <value>Vill du lägga till denna identitet i dina kontakter?</value>
   </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Ta foto</value>
+  </data>
+  <data name="CreditTransfer" xml:space="preserve">
+    <value>Kreditöverföring</value>
   </data>
 </root>
