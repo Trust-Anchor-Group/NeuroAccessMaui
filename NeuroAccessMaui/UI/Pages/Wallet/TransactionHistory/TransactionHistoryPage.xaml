@@ -10,7 +10,7 @@
 
     <Grid RowDefinitions="auto,*" BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
         <!-- Top bar -->
-        <Grid ColumnDefinitions="auto,*,auto" Margin="16,16,16,8">
+        <Grid ColumnDefinitions="auto,*,auto" Margin="16,0,16,8">
             <controls:SvgButton SvgSource="close.svg" Style="{DynamicResource IconButton}" Command="{Binding BackCommand}" />
             <Label Grid.Column="1" Text="{l:Localize History}" Style="{DynamicResource PageTitleLabel}" HorizontalTextAlignment="Center" />
             <controls:SvgButton Grid.Column="2" SvgSource="refresh.svg" Style="{DynamicResource IconButton}" Command="{Binding RefreshCommand}" />

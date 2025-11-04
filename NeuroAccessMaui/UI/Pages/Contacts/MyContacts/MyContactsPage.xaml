@@ -90,7 +90,7 @@
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource SmallMargins}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="8,0,8,8">
 				<Grid ColumnDefinitions="*, auto" Margin="8,8,8,0">
 					<controls:SvgButton
 						Grid.Row="0" Grid.Column="0"

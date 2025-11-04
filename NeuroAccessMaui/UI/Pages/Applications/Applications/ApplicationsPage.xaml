@@ -29,7 +29,7 @@
   </ResourceDictionary>
 </base:BaseContentPage.Resources>
 
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" Margin="16,16,16,0">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" Margin="16,0,16,0">
 
 		<controls:Background/>
 
@@ -51,7 +51,7 @@
 					</CollectionView.ItemsLayout>
 					<CollectionView.Header>
 						<VerticalStackLayout Spacing="8"
-											 Margin="0,16,0,0"
+											 Margin="0,8,0,0"
 											 Padding="0">
 							<Label Text="{l:Localize CurrentApplication}"
 								   TextColor="{DynamicResource ContentSecondaryWL}"

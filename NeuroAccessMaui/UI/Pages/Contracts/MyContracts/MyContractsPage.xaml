@@ -104,14 +104,13 @@
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="16,0,16,16">
 				<controls:SvgButton
 					Grid.Row="0" Grid.Column="0"
 					Command="{Binding GoBackCommand}"
 					SvgSource="close.svg"
 					Style="{DynamicResource IconButton}"
-					HorizontalOptions="Start"
-					Margin="{DynamicResource SmallLeftMargins}"/>
+					HorizontalOptions="Start"/>
 
 				<Label Text="{Binding Path=Title}" Style="{DynamicResource PageTitleLabel}" Margin="{DynamicResource SmallLeftMargins}"/>
 

@@ -14,12 +14,12 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens">
 	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto,*">
 		<!-- Top Bar -->
-		<Grid ColumnDefinitions="auto,*" Margin="16,16,16,8" RowSpacing="0" ColumnSpacing="8">
-			<controls:ImageButton Grid.Column="0"
-								  HorizontalOptions="Start"
-								  Command="{Binding GoBackCommand}"
-								  Style="{DynamicResource ImageOnlyButton}"
-								  PathData="{x:Static ui:Geometries.BackButtonPath}" />
+		<Grid ColumnDefinitions="auto,*" Margin="16,0,16,8" RowSpacing="0" ColumnSpacing="8">
+			<controls:SvgButton Grid.Column="0"
+								HorizontalOptions="Start"
+								Command="{Binding GoBackCommand}"
+								Style="{DynamicResource IconButton}"
+								SvgSource="close.svg"/>
 			<Label Grid.Column="1" Text="{l:Localize MyTokens}" Style="{DynamicResource PageTitleLabel}" HorizontalOptions="End" />
 		</Grid>
 
