@@ -15,6 +15,7 @@ using SkiaSharp.Views.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.Services.Xml;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Popups;
 using NeuroAccessMaui.Services.UI.Toasts;
 using Waher.Runtime.Inventory;
@@ -120,6 +121,7 @@ namespace NeuroAccessMaui
 			// Register platform specific implementation
 #if ANDROID || IOS || WINDOWS
 			Builder.Services.AddSingleton<IPlatformSpecific, PlatformSpecific>();
+			Builder.Services.AddSingleton<IKeyboardInsetsService, KeyboardInsetsService>();
 #endif
 
 			Builder.RegisterTypes();

@@ -78,6 +78,7 @@ namespace NeuroAccessMaui.Services
 		private static IXmlSchemaValidationService? xmlSchemaValidationService;
 		private static IPopupService? popupService;
 		private static IToastService? toastService;
+		private static IKeyboardInsetsService? keyboardInsetsService;
 
 		private static IAuthenticationService? authenticationService;
 
@@ -114,6 +115,18 @@ namespace NeuroAccessMaui.Services
 			{
 				toastService ??= App.Instantiate<IToastService>();
 				return toastService;
+			}
+		}
+
+		/// <summary>
+		/// Provides the current keyboard inset state.
+		/// </summary>
+		public static IKeyboardInsetsService KeyboardInsetsService
+		{
+			get
+			{
+				keyboardInsetsService ??= App.Instantiate<IKeyboardInsetsService>();
+				return keyboardInsetsService;
 			}
 		}
 

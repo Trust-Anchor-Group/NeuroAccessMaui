@@ -427,7 +427,7 @@ namespace NeuroAccessMaui.Services
 		private void OnKeyboardWillHide(NSNotification notification)
 		{
 			float keyboardHeight = 0;
-			KeyboardShown.Raise(this, new KeyboardSizeMessage(keyboardHeight));
+			KeyboardHidden.Raise(this, new KeyboardSizeMessage(keyboardHeight));
 			KeyboardSizeChanged.Raise(this, new KeyboardSizeMessage(keyboardHeight));
 			WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(keyboardHeight));
 		}

@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using _Microsoft.Android.Resource.Designer;
 using Android;
@@ -7,15 +8,17 @@ using Android.Content.PM;
 //using Android.Gms.Extensions;
 using Android.Graphics;
 using Android.OS;
-using Android.Renderscripts;
 using Android.Runtime;
 using Android.Views;
 using Android.Views.InputMethods;
 using AndroidX.Biometric;
 using AndroidX.Core.App;
+using AndroidX.Core.Graphics;
+using AndroidX.Core.View;
 using AndroidX.Fragment.App;
 using AndroidX.Lifecycle;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Devices;
 
 //using Firebase.Messaging;	// TODO: Firebase
 using Java.Util.Concurrent;
@@ -23,8 +26,6 @@ using NeuroAccessMaui.Services.Push;
 using Plugin.Firebase.CloudMessaging;
 using Waher.Events;
 using Waher.Networking.XMPP.Push;
-using Rect = Android.Graphics.Rect;
-
 using Application = Android.App.Application;
 using FileProvider = AndroidX.Core.Content.FileProvider;
 using Resource = Android.Resource;
@@ -68,6 +69,10 @@ namespace NeuroAccessMaui.Services
 			{
 				protectionTimer?.Dispose();
 				protectionTimer = null;
+				this.initializeKeyboardHandler?.RemoveCallbacksAndMessages(null);
+				this.initializeKeyboardHandler = null;
+				this.DetachInsetsListener();
+				this.rootView = null;
 			}
 
 			this.isDisposed = true;
@@ -684,8 +689,9 @@ namespace NeuroAccessMaui.Services
 
 		private Activity? activity;
 		private Android.Views.View? rootView;
-		private int lastKeyboardHeight = 0;
+		private double lastKeyboardHeight = 0;
 		private Handler? initializeKeyboardHandler;
+		private KeyboardInsetsListener? windowInsetsListener;
 
 		/// <inheritdoc/>
 		public void HideKeyboard()
@@ -699,7 +705,6 @@ namespace NeuroAccessMaui.Services
 
 		private void InitializeKeyboard()
 		{
-			this.activity = Platform.CurrentActivity;
 			try
 			{
 				this.initializeKeyboardHandler = new Handler(Looper.MainLooper!);
@@ -715,61 +720,97 @@ namespace NeuroAccessMaui.Services
 		{
 			this.activity = Platform.CurrentActivity;
 
-			if (this.activity?.Window?.DecorView.RootView?.ViewTreeObserver is null)
+			Android.Views.View? currentRoot = this.activity?.Window?.DecorView?.RootView;
+			if (currentRoot is null)
 			{
 				this.initializeKeyboardHandler?.PostDelayed(this.CheckRootView, 100);
 				return;
 			}
-			this.activity = Platform.CurrentActivity;
-			this.rootView = this.activity!.Window!.DecorView.RootView;
-			this.rootView!.ViewTreeObserver!.GlobalLayout += this.OnGlobalLayout;
+
+			if (ReferenceEquals(this.rootView, currentRoot) && this.windowInsetsListener is not null)
+			{
+				ViewCompat.RequestApplyInsets(this.rootView);
+				return;
+			}
+
+			this.DetachInsetsListener();
+
+			this.rootView = currentRoot;
+			this.windowInsetsListener = new KeyboardInsetsListener(this);
+			ViewCompat.SetOnApplyWindowInsetsListener(this.rootView, this.windowInsetsListener);
+			ViewCompat.RequestApplyInsets(this.rootView);
 		}
 
-
-
-		private void OnGlobalLayout(object? sender, EventArgs e)
+		private void DetachInsetsListener()
 		{
-			Rect r = new();
-			this.rootView!.GetWindowVisibleDisplayFrame(r);
-
-			int ScreenHeight = this.rootView.RootView!.Height;
-			int StatusBarHeight = 0;
-			int ActionBarHeight = 0;
-
-			// if this succeeds, we can calculate an exact keyboard height
-			Android.Views.View? ContentView = this.rootView.FindViewById(Android.Views.Window.IdAndroidContent);
-			if (ContentView is not null)
+			if (this.rootView is not null)
 			{
-				StatusBarHeight = r.Top - ContentView.Top;
-				ActionBarHeight = r.Bottom - ContentView.Bottom;
+				ViewCompat.SetOnApplyWindowInsetsListener(this.rootView, null);
 			}
 
-			// Calculate the height of the keyboard (if the above fails, the keyboardsize will include the size of the action and status bar)
-			int AvailableScreenHeight = ScreenHeight - StatusBarHeight - ActionBarHeight;
-			int VisibleHeight = r.Height();
-			int KeypadHeight = AvailableScreenHeight - VisibleHeight; // height of the keyboard, but is not garanteed to be the actual keyboard height it might include other things such as the action bar.
+			this.windowInsetsListener?.Dispose();
+			this.windowInsetsListener = null;
+		}
 
-			// Assume keyboard is shown if more than 15% of the available screen height is used.
-			// This is a heuristic, and may need to be adjusted.
-			// I really don't like this solution, but android doesn't provide a better way to detect the keyboard at the time of writing.
-			// Checking keyboardheight > 0 is not enough, because the keyboardheight is not garanteed to be accurate on all devices and circumstances
-
-			if (KeypadHeight > AvailableScreenHeight * 0.15)
+		internal void ProcessWindowInsets(WindowInsetsCompat insets)
+		{
+			try
 			{
-				this.lastKeyboardHeight = KeypadHeight;
-				this.KeyboardSizeChanged.Raise(this, new KeyboardSizeMessage(KeypadHeight));
-				WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(KeypadHeight));
-				this.KeyboardShown.Raise(this, new KeyboardSizeMessage(KeypadHeight));
+				bool isImeVisible = insets.IsVisible(WindowInsetsCompat.Type.Ime());
+				AndroidX.Core.Graphics.Insets imeInsets = insets.GetInsets(WindowInsetsCompat.Type.Ime());
+				AndroidX.Core.Graphics.Insets systemInsets = insets.GetInsets(WindowInsetsCompat.Type.SystemBars());
+				int keyboardHeightPixels = isImeVisible ? Math.Max(0, imeInsets.Bottom - systemInsets.Bottom) : 0;
+				float keyboardHeightDip = ConvertToDip(keyboardHeightPixels);
+
+				if (isImeVisible && keyboardHeightDip > 0.5)
+				{
+					if (Math.Abs(this.lastKeyboardHeight - keyboardHeightDip) < 0.5)
+						return;
+
+					this.lastKeyboardHeight = keyboardHeightDip;
+					this.KeyboardSizeChanged.Raise(this, new KeyboardSizeMessage(keyboardHeightDip));
+					WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(keyboardHeightDip));
+					this.KeyboardShown.Raise(this, new KeyboardSizeMessage(keyboardHeightDip));
+				}
+				else
+				{
+					if (Math.Abs(this.lastKeyboardHeight) < 0.5)
+						return;
+
+					this.lastKeyboardHeight = 0;
+					this.KeyboardSizeChanged.Raise(this, new KeyboardSizeMessage(0));
+					WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(0));
+					this.KeyboardHidden.Raise(this, new KeyboardSizeMessage(0));
+				}
 			}
-			else
+			catch (Exception ex)
 			{
-				if (this.lastKeyboardHeight == 0)
-					return;
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
 
-				this.lastKeyboardHeight = 0;
-				this.KeyboardSizeChanged.Raise(this, new KeyboardSizeMessage(0));
-				WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(0));
-				this.KeyboardHidden.Raise(this, new KeyboardSizeMessage(0));
+		private static float ConvertToDip(int pixelValue)
+		{
+			double density = DeviceDisplay.MainDisplayInfo.Density;
+			if (density <= 0)
+				density = 1;
+			return (float)(pixelValue / density);
+		}
+
+		private sealed class KeyboardInsetsListener : Java.Lang.Object, IOnApplyWindowInsetsListener
+		{
+			private readonly WeakReference<PlatformSpecific> ownerReference;
+
+			public KeyboardInsetsListener(PlatformSpecific owner)
+			{
+				this.ownerReference = new WeakReference<PlatformSpecific>(owner);
+			}
+
+			public WindowInsetsCompat OnApplyWindowInsets(Android.Views.View v, WindowInsetsCompat insets)
+			{
+				if (this.ownerReference.TryGetTarget(out PlatformSpecific? owner))
+					owner.ProcessWindowInsets(insets);
+				return insets;
 			}
 		}
 		#endregion

@@ -6,6 +6,7 @@ using CommunityToolkit.Maui.Core;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Graphics;
 using NeuroAccessMaui.Services;                     // for ServiceHelper
 using NeuroAccessMaui.UI.Pages;
@@ -14,6 +15,7 @@ using NeuroAccessMaui.UI.Pages.Startup;             // for LoadingPage
 using NeuroAccessMaui.Services.UI; // for back handling
 using NeuroAccessMaui.UI;
 using NeuroAccessMaui.UI.Popups;
+using ControlsVisualElement = Microsoft.Maui.Controls.VisualElement;
 
 namespace NeuroAccessMaui.Test
 {
@@ -33,17 +35,27 @@ namespace NeuroAccessMaui.Test
         private readonly Grid popupHost;
         private PopupVisualState? currentPopupState;
         private readonly Grid toastLayer;
+        private readonly Thickness toastBasePadding = new Thickness(16, 32, 16, 16);
+        private readonly IKeyboardInsetsService keyboardInsetsService;
         private View? activeToast;
         private ToastPlacement activeToastPlacement = ToastPlacement.Top;
         private ContentView? currentScreen;
+        private double currentKeyboardInset;
+        private bool isKeyboardVisible;
         public event EventHandler? PopupBackgroundTapped;
         public event EventHandler? PopupBackRequested;
 
         /// <summary>
         /// Initializes a new instance of <see cref="CustomShell"/>.
         /// </summary>
-        public CustomShell(LoadingPage loadingPage)
+        public CustomShell(LoadingPage loadingPage, IKeyboardInsetsService keyboardInsetsService)
         {
+            ArgumentNullException.ThrowIfNull(keyboardInsetsService);
+            this.keyboardInsetsService = keyboardInsetsService;
+            this.currentKeyboardInset = this.keyboardInsetsService.KeyboardHeight;
+            this.isKeyboardVisible = this.keyboardInsetsService.IsKeyboardVisible;
+            this.keyboardInsetsService.KeyboardInsetChanged += this.OnKeyboardInsetChanged;
+
             this.layout = new Grid
             {
                 RowDefinitions =
@@ -72,7 +84,7 @@ namespace NeuroAccessMaui.Test
             popupBackgroundTap.Tapped += this.OnPopupBackgroundTapped;
             this.popupBackground.GestureRecognizers.Add(popupBackgroundTap);
 
-            this.toastLayer = new Grid { IsVisible = false, InputTransparent = false, Padding = new Thickness(16, 32, 16, 16), VerticalOptions = LayoutOptions.Fill, HorizontalOptions = LayoutOptions.Fill };
+            this.toastLayer = new Grid { IsVisible = false, InputTransparent = false, Padding = this.toastBasePadding, VerticalOptions = LayoutOptions.Fill, HorizontalOptions = LayoutOptions.Fill };
             this.toastLayer.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             this.toastLayer.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             this.toastLayer.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -95,7 +107,8 @@ namespace NeuroAccessMaui.Test
             this.contentHostA.Content = loadingPageInstance;
             this.contentHostB.Content = null;
             this.currentScreen = loadingPageInstance;
-            this.ApplySafeAreaPadding(this.contentHostA, loadingPageInstance);
+            Thickness initialSafeArea = this.ApplyInsetsToHost(this.contentHostA, loadingPageInstance, false, false);
+            this.UpdateOverlayInsets(initialSafeArea, this.currentKeyboardInset, false);
 
             this.Dispatcher.Dispatch(async () =>
             {
@@ -127,7 +140,7 @@ namespace NeuroAccessMaui.Test
             inactiveSlot.Content = screen;
             inactiveSlot.BindingContext = screen.BindingContext;
             inactiveSlot.IsVisible = true;
-            this.ApplySafeAreaPadding(inactiveSlot, screen);
+            _ = this.ApplyInsetsToHost(inactiveSlot, screen, false, false);
             this.UpdateBars(screen);
 
             if (transition == TransitionType.Fade)
@@ -164,7 +177,8 @@ namespace NeuroAccessMaui.Test
             this.isSlotAActive = !this.isSlotAActive;
             this.currentScreen = screen;
             ContentView newlyActiveSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
-            this.ApplySafeAreaPadding(newlyActiveSlot, screen);
+            Thickness safeArea = this.ApplyInsetsToHost(newlyActiveSlot, screen, false, true);
+            this.UpdateOverlayInsets(safeArea, this.currentKeyboardInset, false);
         }
 
         public async Task ShowPopup(ContentView popup, PopupTransition transition, PopupVisualState visualState)
@@ -199,6 +213,7 @@ namespace NeuroAccessMaui.Test
             }
 
             this.popupHost.Children.Add(popup);
+            this.NotifyKeyboardAwareTargets(popup);
             popup.ZIndex = this.popupHost.Children.Count;
 
             await this.RunShowAnimationAsync(popup, transition);
@@ -247,6 +262,8 @@ namespace NeuroAccessMaui.Test
             Grid.SetRow(toast, targetRow);
             if (!this.toastLayer.Children.Contains(toast))
                 this.toastLayer.Children.Add(toast);
+            if (toast is BindableObject toastBindable)
+                this.NotifyKeyboardAwareTargets(toastBindable);
             this.toastLayer.IsVisible = true;
             toast.Opacity = 1;
             toast.TranslationY = 0;
@@ -376,19 +393,173 @@ namespace NeuroAccessMaui.Test
                 return;
 
             ContentView activeSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
-            this.ApplySafeAreaPadding(activeSlot, this.currentScreen);
+            Thickness safeArea = this.ApplyInsetsToHost(activeSlot, this.currentScreen, false, true);
+            this.UpdateOverlayInsets(safeArea, this.currentKeyboardInset, false);
         }
 
-        private void ApplySafeAreaPadding(ContentView host, BindableObject screen)
+        private Thickness ApplyInsetsToHost(ContentView host, BindableObject screen, bool animate, bool notify)
         {
-            if (screen is null)
-                throw new ArgumentNullException(nameof(screen));
+            ArgumentNullException.ThrowIfNull(screen);
+            ArgumentNullException.ThrowIfNull(host);
 
-            if (host is null)
-                throw new ArgumentNullException(nameof(host));
+            Thickness safeArea = SafeArea.ResolveInsetsFor(screen);
+            KeyboardInsetMode mode = KeyboardInsets.GetMode(screen);
+            double keyboardInsetForPadding = mode == KeyboardInsetMode.Automatic ? this.currentKeyboardInset : 0;
+            Thickness targetPadding = new Thickness(
+                safeArea.Left,
+                safeArea.Top,
+                safeArea.Right,
+                safeArea.Bottom + keyboardInsetForPadding);
 
-            Thickness padding = SafeArea.ResolveInsetsFor(screen);
-            host.Padding = padding;
+            this.SetViewPadding(host, targetPadding, animate);
+
+            if (notify)
+                this.NotifyKeyboardAwareTargets(screen);
+
+            return safeArea;
+        }
+
+        private void UpdateOverlayInsets(Thickness safeArea, double keyboardInset, bool animate)
+        {
+            Thickness overlayPadding = new Thickness(safeArea.Left, safeArea.Top, safeArea.Right, safeArea.Bottom + keyboardInset);
+            this.SetViewPadding(this.popupOverlay, overlayPadding, animate);
+
+            Thickness toastPadding = new Thickness(
+                this.toastBasePadding.Left + safeArea.Left,
+                this.toastBasePadding.Top + safeArea.Top,
+                this.toastBasePadding.Right + safeArea.Right,
+                this.toastBasePadding.Bottom + safeArea.Bottom + keyboardInset);
+            this.SetViewPadding(this.toastLayer, toastPadding, animate);
+
+            Thickness topBarPadding = new Thickness(safeArea.Left, safeArea.Top, safeArea.Right, 0);
+            this.SetViewPadding(this.topBar, topBarPadding, animate);
+
+            Thickness navBarPadding = new Thickness(safeArea.Left, 0, safeArea.Right, safeArea.Bottom);
+            this.SetViewPadding(this.navBar, navBarPadding, animate);
+        }
+
+        private void SetViewPadding(ControlsVisualElement view, Thickness targetPadding, bool animate)
+        {
+            if (!this.TryGetPadding(view, out Thickness currentPadding))
+                return;
+
+            if (!animate)
+            {
+                this.AssignPadding(view, targetPadding);
+                return;
+            }
+
+            if (this.AreThicknessClose(currentPadding, targetPadding))
+            {
+                this.AssignPadding(view, targetPadding);
+                return;
+            }
+
+            const uint duration = 180;
+            Microsoft.Maui.Controls.ViewExtensions.CancelAnimations(view);
+            view.Animate(
+                "KeyboardPadding",
+                progress => this.AssignPadding(view, this.InterpolateThickness(currentPadding, targetPadding, progress)),
+                rate: 16,
+                length: duration,
+                easing: Easing.CubicInOut,
+                finished: (v, cancelled) => this.AssignPadding(view, targetPadding));
+        }
+
+        private bool TryGetPadding(ControlsVisualElement element, out Thickness padding)
+        {
+            switch (element)
+            {
+                case Layout layout:
+                    padding = layout.Padding;
+                    return true;
+                case ContentView contentView:
+                    padding = contentView.Padding;
+                    return true;
+                case TemplatedView templatedView:
+                    padding = templatedView.Padding;
+                    return true;
+                case Border border:
+                    padding = border.Padding;
+                    return true;
+                default:
+                    padding = new Thickness(0);
+                    return false;
+            }
+        }
+
+        private void AssignPadding(ControlsVisualElement element, Thickness padding)
+        {
+            switch (element)
+            {
+                case Layout layout:
+                    layout.Padding = padding;
+                    break;
+                case ContentView contentView:
+                    contentView.Padding = padding;
+                    break;
+                case TemplatedView templatedView:
+                    templatedView.Padding = padding;
+                    break;
+                case Border border:
+                    border.Padding = padding;
+                    break;
+            }
+        }
+
+        private Thickness InterpolateThickness(Thickness from, Thickness to, double progress)
+        {
+            return new Thickness(
+                this.InterpolateDouble(from.Left, to.Left, progress),
+                this.InterpolateDouble(from.Top, to.Top, progress),
+                this.InterpolateDouble(from.Right, to.Right, progress),
+                this.InterpolateDouble(from.Bottom, to.Bottom, progress));
+        }
+
+        private double InterpolateDouble(double from, double to, double progress)
+        {
+            return from + ((to - from) * progress);
+        }
+
+        private bool AreThicknessClose(Thickness a, Thickness b)
+        {
+            return Math.Abs(a.Left - b.Left) < 0.5 &&
+                   Math.Abs(a.Top - b.Top) < 0.5 &&
+                   Math.Abs(a.Right - b.Right) < 0.5 &&
+                   Math.Abs(a.Bottom - b.Bottom) < 0.5;
+        }
+
+        private void NotifyKeyboardAwareTargets(BindableObject screen)
+        {
+            KeyboardInsetChangedEventArgs args = new KeyboardInsetChangedEventArgs(this.currentKeyboardInset, this.isKeyboardVisible);
+
+            if (screen is IKeyboardInsetAware awareView)
+                awareView.OnKeyboardInsetChanged(args);
+
+            if (screen.BindingContext is IKeyboardInsetAware awareContext)
+                awareContext.OnKeyboardInsetChanged(args);
+        }
+
+        private void OnKeyboardInsetChanged(object? sender, KeyboardInsetChangedEventArgs e)
+        {
+            this.currentKeyboardInset = e.KeyboardHeight;
+            this.isKeyboardVisible = e.IsVisible;
+
+            if (this.currentScreen is not null)
+            {
+                ContentView activeSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
+                Thickness safeArea = this.ApplyInsetsToHost(activeSlot, this.currentScreen, true, true);
+                this.UpdateOverlayInsets(safeArea, this.currentKeyboardInset, true);
+            }
+
+            foreach (Microsoft.Maui.IView child in this.popupHost.Children)
+            {
+                if (child is BindableObject bindableChild)
+                    this.NotifyKeyboardAwareTargets(bindableChild);
+            }
+
+            if (this.activeToast is BindableObject toastBindable)
+                this.NotifyKeyboardAwareTargets(toastBindable);
         }
 
         public void UpdateBars(BindableObject screen)
@@ -406,6 +577,13 @@ namespace NeuroAccessMaui.Test
             {
                 this.topBar.Content = null;
                 this.navBar.Content = null;
+            }
+
+            if (ReferenceEquals(screen, this.currentScreen))
+            {
+                ContentView activeSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
+                Thickness safeArea = this.ApplyInsetsToHost(activeSlot, screen, false, true);
+                this.UpdateOverlayInsets(safeArea, this.currentKeyboardInset, false);
             }
         }
 
