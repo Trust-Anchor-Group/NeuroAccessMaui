@@ -113,11 +113,14 @@ namespace NeuroAccessMaui.Services.UI
 			StatusBarBehavior StatusBehaviour = new() { StatusBarColor = Colors.Transparent, StatusBarStyle = StatusStyle };
 			this.Behaviors.Add(StatusBehaviour);
 
-			Microsoft.Maui.Controls.Application.Current?.RequestedThemeChanged += (s, e) =>
+			if (Microsoft.Maui.Controls.Application.Current is not null)
 			{
-				StatusBarStyle StatusStyle = CurrentTheme == AppTheme.Dark ? StatusBarStyle.LightContent : StatusBarStyle.DarkContent;
-				StatusBehaviour.StatusBarStyle = StatusStyle;
-			};
+				Microsoft.Maui.Controls.Application.Current.RequestedThemeChanged += (s, e) =>
+				{
+					StatusBarStyle StatusStyle = CurrentTheme == AppTheme.Dark ? StatusBarStyle.LightContent : StatusBarStyle.DarkContent;
+					StatusBehaviour.StatusBarStyle = StatusStyle;
+				};
+			}
 #endif
 			this.SizeChanged += this.OnShellSizeChanged;
         }
