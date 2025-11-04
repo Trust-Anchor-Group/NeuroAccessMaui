@@ -19,7 +19,7 @@
 	xmlns:ext="clr-namespace:NeuroAccessMaui.MarkupExtensions"
 	x:Name="ThisPage"
     x:DataType="viewmodel:ViewIdentityViewModel"
-	Padding="{ext:SafeInsets Type=Top}">
+	ui:SafeArea.Mode="Top">
 
     <VisualElement.Resources>
         <Style
