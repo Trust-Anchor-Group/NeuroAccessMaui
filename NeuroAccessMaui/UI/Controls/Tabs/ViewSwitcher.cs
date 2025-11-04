@@ -14,6 +14,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Resilience;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.Pages;
+using NeuroAccessMaui.Animations;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -114,7 +115,16 @@ namespace NeuroAccessMaui.UI.Controls
 			this.selectionOperation = new ObservableTask<int>();
 
 			this.presenter = new Grid();
-			this.transitionCoordinator = new ViewSwitcherTransitionCoordinator(this.presenter)
+			IAnimationCoordinator? AnimationCoordinator = null;
+			try
+			{
+				AnimationCoordinator = ServiceHelper.GetService<IAnimationCoordinator>();
+			}
+			catch (ArgumentException)
+			{
+				AnimationCoordinator = null;
+			}
+			this.transitionCoordinator = new ViewSwitcherTransitionCoordinator(this.presenter, AnimationCoordinator)
 			{
 				Animate = this.Animate,
 				Duration = this.TransitionDuration,

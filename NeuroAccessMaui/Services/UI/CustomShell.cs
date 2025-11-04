@@ -7,6 +7,7 @@ using NeuroAccessMaui.UI.Popups;
 using ControlsVisualElement = Microsoft.Maui.Controls.VisualElement;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Behaviors;
+using NeuroAccessMaui.Animations;
 
 namespace NeuroAccessMaui.Services.UI
 {
@@ -28,6 +29,7 @@ namespace NeuroAccessMaui.Services.UI
         private readonly Grid toastLayer;
         private readonly Thickness toastBasePadding = new Thickness(16, 32, 16, 16);
         private readonly IKeyboardInsetsService keyboardInsetsService;
+        private readonly IAnimationCoordinator animationCoordinator;
         private View? activeToast;
         private ToastPlacement activeToastPlacement = ToastPlacement.Top;
         private ContentView? currentScreen;
@@ -39,10 +41,12 @@ namespace NeuroAccessMaui.Services.UI
         /// <summary>
         /// Initializes a new instance of <see cref="CustomShell"/>.
         /// </summary>
-        public CustomShell(LoadingPage loadingPage, IKeyboardInsetsService keyboardInsetsService)
+        public CustomShell(LoadingPage loadingPage, IKeyboardInsetsService keyboardInsetsService, IAnimationCoordinator animationCoordinator)
         {
             ArgumentNullException.ThrowIfNull(keyboardInsetsService);
+            ArgumentNullException.ThrowIfNull(animationCoordinator);
             this.keyboardInsetsService = keyboardInsetsService;
+            this.animationCoordinator = animationCoordinator;
             this.currentKeyboardInset = this.keyboardInsetsService.KeyboardHeight;
             this.isKeyboardVisible = this.keyboardInsetsService.IsKeyboardVisible;
             this.keyboardInsetsService.KeyboardInsetChanged += this.OnKeyboardInsetChanged;
@@ -148,27 +152,33 @@ namespace NeuroAccessMaui.Services.UI
             _ = this.ApplyInsetsToHost(InactiveSlot, Screen, false, false);
             this.UpdateBars(Screen);
 
-            if (Transition == TransitionType.Fade)
+            AnimationContextOptions ContextOptions = this.CreateAnimationContextOptions();
+            try
             {
-                InactiveSlot.Opacity = 0;
-                ActiveSlot.Opacity = 1;
-                const uint Duration = 300;
-                Task<bool> FadeIn = InactiveSlot.FadeTo(1, Duration, Easing.Linear);
-                Task<bool> FadeOut = ActiveSlot.FadeTo(0, Duration, Easing.Linear);
-                await Task.WhenAll(FadeIn, FadeOut);
+                if (Transition == TransitionType.Fade)
+                {
+                    await this.animationCoordinator.PlayTransitionAsync(AnimationKeys.Shell.PageCrossFade, InactiveSlot, ActiveSlot, null, ContextOptions);
+                }
+                else if (Transition == TransitionType.SwipeLeft)
+                {
+                    await this.animationCoordinator.PlayTransitionAsync(AnimationKeys.Shell.PageSlideLeft, InactiveSlot, ActiveSlot, null, ContextOptions);
+                }
+                else if (Transition == TransitionType.SwipeRight)
+                {
+                    await this.animationCoordinator.PlayTransitionAsync(AnimationKeys.Shell.PageSlideRight, InactiveSlot, ActiveSlot, null, ContextOptions);
+                }
+                else
+                {
+                    InactiveSlot.Opacity = 1;
+                    ActiveSlot.Opacity = 1;
+                }
             }
-            else if (Transition == TransitionType.SwipeLeft || Transition == TransitionType.SwipeRight)
+            finally
             {
-                double Width = this.Width > 0 ? this.Width : 400;
-                double FromX = (Transition == TransitionType.SwipeLeft) ? Width : -Width;
-                double OldToX = (Transition == TransitionType.SwipeLeft) ? -Width : Width;
-                InactiveSlot.TranslationX = FromX;
-                ActiveSlot.TranslationX = 0;
-                Task<bool> NewIn = InactiveSlot.TranslateTo(0, 0, 250, Easing.CubicOut);
-                Task<bool> OldOut = ActiveSlot.TranslateTo(OldToX, 0, 250, Easing.CubicOut);
-                await Task.WhenAll(NewIn, OldOut);
                 InactiveSlot.TranslationX = 0;
                 ActiveSlot.TranslationX = 0;
+                InactiveSlot.Opacity = 1;
+                ActiveSlot.Opacity = 1;
             }
 
             if (OutgoingPage is not null)
@@ -217,24 +227,73 @@ namespace NeuroAccessMaui.Services.UI
                 popupView.BackgroundTapped += this.OnPopupBackgroundTapped;
             }
 
-            this.popupHost.Children.Add(popup);
-            this.NotifyKeyboardAwareTargets(popup);
-            popup.ZIndex = this.popupHost.Children.Count;
+			this.popupHost.Children.Add(popup);
+			this.NotifyKeyboardAwareTargets(popup);
+			popup.ZIndex = this.popupHost.Children.Count;
 
-            await this.RunShowAnimationAsync(popup, transition);
+			if (transition == PopupTransition.None)
+			{
+				popup.Opacity = 1;
+				popup.Scale = 1;
+				popup.TranslationX = 0;
+				popup.TranslationY = 0;
+			}
+			else
+			{
+				AnimationKey? ShowKey = transition switch
+				{
+					PopupTransition.Fade => AnimationKeys.Shell.PopupShowFade,
+					PopupTransition.Scale => AnimationKeys.Shell.PopupShowScale,
+					PopupTransition.SlideUp => AnimationKeys.Shell.PopupShowSlideUp,
+					_ => null
+				};
 
-            this.currentPopupState = visualState;
-        }
+				if (ShowKey.HasValue)
+					await this.animationCoordinator.PlayAsync(ShowKey.Value, popup, null, this.CreateAnimationContextOptions());
+				else
+					popup.Opacity = 1;
+			}
 
-        public async Task HidePopup(ContentView popup, PopupTransition transition, PopupVisualState? nextVisualState)
-        {
-            ArgumentNullException.ThrowIfNull(popup);
+			popup.TranslationX = 0;
+			popup.TranslationY = 0;
+			popup.Scale = 1;
+			popup.Opacity = 1;
 
-            await this.RunHideAnimationAsync(popup, transition);
-            if (popup is BasePopupView popupView)
-                popupView.BackgroundTapped -= this.OnPopupBackgroundTapped;
+			this.currentPopupState = visualState;
+		}
 
-            this.popupHost.Children.Remove(popup);
+		public async Task HidePopup(ContentView popup, PopupTransition transition, PopupVisualState? nextVisualState)
+		{
+			ArgumentNullException.ThrowIfNull(popup);
+
+			if (transition == PopupTransition.None)
+			{
+				popup.Opacity = 0;
+			}
+			else
+			{
+				AnimationKey? HideKey = transition switch
+				{
+					PopupTransition.Fade => AnimationKeys.Shell.PopupHideFade,
+					PopupTransition.Scale => AnimationKeys.Shell.PopupHideScale,
+					PopupTransition.SlideUp => AnimationKeys.Shell.PopupHideSlideUp,
+					_ => null
+				};
+
+				if (HideKey.HasValue)
+					await this.animationCoordinator.PlayAsync(HideKey.Value, popup, null, this.CreateAnimationContextOptions());
+				else
+					popup.Opacity = 0;
+			}
+
+			popup.TranslationX = 0;
+			popup.TranslationY = 0;
+			popup.Scale = 1;
+			popup.Opacity = 0;
+			if (popup is BasePopupView popupView)
+				popupView.BackgroundTapped -= this.OnPopupBackgroundTapped;
+
+			this.popupHost.Children.Remove(popup);
 
             if (nextVisualState is null)
             {
@@ -256,141 +315,93 @@ namespace NeuroAccessMaui.Services.UI
             }
         }
 
-        public async Task ShowToast(View Toast, ToastTransition Transition = ToastTransition.SlideFromTop, ToastPlacement Placement = ToastPlacement.Top)
-        {
-            ArgumentNullException.ThrowIfNull(Toast);
-            if (this.activeToast is not null)
-                this.toastLayer.Children.Remove(this.activeToast);
-            this.activeToast = Toast;
-            this.activeToastPlacement = Placement;
-            int TargetRow = Placement == ToastPlacement.Top ? 0 : 2;
-            Grid.SetRow(Toast, TargetRow);
-            if (!this.toastLayer.Children.Contains(Toast))
-                this.toastLayer.Children.Add(Toast);
-            if (Toast is BindableObject toastBindable)
-                this.NotifyKeyboardAwareTargets(toastBindable);
-            this.toastLayer.IsVisible = true;
-            Toast.Opacity = 1;
-            Toast.TranslationY = 0;
-            if (Transition == ToastTransition.Fade)
-            {
-                Toast.Opacity = 0;
-                await Toast.FadeTo(1, 150, Easing.CubicOut);
-            }
-            else if (Transition == ToastTransition.SlideFromBottom || (Transition == ToastTransition.SlideFromTop && Placement == ToastPlacement.Bottom))
-            {
-                double Offset = this.Height > 0 ? this.Height : 400;
-                Toast.TranslationY = Offset * 0.1;
-                Toast.Opacity = 0;
-                Task<bool> FadeTask = Toast.FadeTo(1, 150, Easing.CubicOut);
-                Task<bool> TranslateTask = Toast.TranslateTo(0, 0, 150, Easing.CubicOut);
-                await Task.WhenAll(FadeTask, TranslateTask);
-            }
-            else if (Transition == ToastTransition.SlideFromTop)
-            {
-                double Offset = this.Height > 0 ? this.Height : 400;
-                Toast.TranslationY = -Offset * 0.1;
-                Toast.Opacity = 0;
-                Task<bool> FadeTask = Toast.FadeTo(1, 150, Easing.CubicOut);
-                Task<bool> TranslateTask = Toast.TranslateTo(0, 0, 150, Easing.CubicOut);
-                await Task.WhenAll(FadeTask, TranslateTask);
-            }
-        }
+		public async Task ShowToast(View Toast, ToastTransition Transition = ToastTransition.SlideFromTop, ToastPlacement Placement = ToastPlacement.Top)
+		{
+			ArgumentNullException.ThrowIfNull(Toast);
+			if (this.activeToast is not null)
+				this.toastLayer.Children.Remove(this.activeToast);
+			this.activeToast = Toast;
+			this.activeToastPlacement = Placement;
+			int TargetRow = Placement == ToastPlacement.Top ? 0 : 2;
+			Grid.SetRow(Toast, TargetRow);
+			if (!this.toastLayer.Children.Contains(Toast))
+				this.toastLayer.Children.Add(Toast);
+			if (Toast is BindableObject toastBindable)
+				this.NotifyKeyboardAwareTargets(toastBindable);
+			this.toastLayer.IsVisible = true;
 
-        public async Task HideToast(ToastTransition Transition = ToastTransition.SlideFromTop)
-        {
-            if (this.activeToast is null)
-                return;
-            View Toast = this.activeToast;
-            if (Transition == ToastTransition.Fade)
-            {
-                await Toast.FadeTo(0, 120, Easing.CubicIn);
-            }
-            else if (Transition == ToastTransition.SlideFromBottom || (Transition == ToastTransition.SlideFromTop && this.activeToastPlacement == ToastPlacement.Bottom))
-            {
-                Task<bool> FadeTask = Toast.FadeTo(0, 120, Easing.CubicIn);
-                Task<bool> TranslateTask = Toast.TranslateTo(0, 40, 120, Easing.CubicIn);
-                await Task.WhenAll(FadeTask, TranslateTask);
-            }
-            else if (Transition == ToastTransition.SlideFromTop)
-            {
-                Task<bool> FadeTask = Toast.FadeTo(0, 120, Easing.CubicIn);
-                Task<bool> TranslateTask = Toast.TranslateTo(0, -40, 120, Easing.CubicIn);
-                await Task.WhenAll(FadeTask, TranslateTask);
-            }
-            this.toastLayer.Children.Remove(Toast);
-            this.activeToast = null;
-            this.activeToastPlacement = ToastPlacement.Top;
-            if (this.toastLayer.Children.Count == 0)
-                this.toastLayer.IsVisible = false;
-        }
+			AnimationKey? ShowKey = Transition switch
+			{
+				ToastTransition.Fade => AnimationKeys.Shell.ToastShowFade,
+				ToastTransition.SlideFromBottom => AnimationKeys.Shell.ToastShowSlideBottom,
+				ToastTransition.SlideFromTop when Placement == ToastPlacement.Bottom => AnimationKeys.Shell.ToastShowSlideBottom,
+				ToastTransition.SlideFromTop => AnimationKeys.Shell.ToastShowSlideTop,
+				_ => null
+			};
 
-        private async Task RunShowAnimationAsync(View popup, PopupTransition transition)
-        {
-            if (transition == PopupTransition.None)
-            {
-                popup.Opacity = 1;
-                popup.Scale = 1;
-                popup.TranslationY = 0;
-                return;
-            }
-            if (transition == PopupTransition.Fade)
-            {
-                popup.Opacity = 0;
-                await popup.FadeTo(1, 150, Easing.CubicOut);
-                return;
-            }
-            if (transition == PopupTransition.Scale)
-            {
-                popup.Scale = 0.9;
-                popup.Opacity = 0;
-                Task<bool> FadeTask = popup.FadeTo(1, 200, Easing.CubicOut);
-                Task<bool> ScaleTask = popup.ScaleTo(1, 200, Easing.CubicOut);
-                await Task.WhenAll(FadeTask, ScaleTask);
-                return;
-            }
-            if (transition == PopupTransition.SlideUp)
-            {
-                double FromY = this.Height > 0 ? this.Height : 400;
-                popup.TranslationY = FromY * 0.5;
-                popup.Opacity = 0;
-                Task<bool> FadeTask = popup.FadeTo(1, 200, Easing.CubicOut);
-                Task<bool> TranslateTask = popup.TranslateTo(0, 0, 200, Easing.CubicOut);
-                await Task.WhenAll(FadeTask, TranslateTask);
-            }
-        }
+			if (ShowKey.HasValue)
+			{
+				await this.animationCoordinator.PlayAsync(ShowKey.Value, Toast, null, this.CreateAnimationContextOptions());
+			}
+			else
+			{
+				Toast.Opacity = 1;
+				Toast.TranslationX = 0;
+				Toast.TranslationY = 0;
+			}
 
-        private async Task RunHideAnimationAsync(View popup, PopupTransition transition)
-        {
-            if (transition == PopupTransition.None)
-            {
-                popup.Opacity = 0;
-                return;
-            }
-            if (transition == PopupTransition.Fade)
-            {
-                await popup.FadeTo(0, 150, Easing.CubicIn);
-                return;
-            }
-            if (transition == PopupTransition.Scale)
-            {
-                Task<bool> FadeTask = popup.FadeTo(0, 150, Easing.CubicIn);
-                Task<bool> ScaleTask = popup.ScaleTo(0.9, 150, Easing.CubicIn);
-                await Task.WhenAll(FadeTask, ScaleTask);
-                return;
-            }
-            if (transition == PopupTransition.SlideUp)
-            {
-                Task<bool> FadeTask = popup.FadeTo(0, 150, Easing.CubicIn);
-                Task<bool> TranslateTask = popup.TranslateTo(0, 50, 150, Easing.CubicIn);
-                await Task.WhenAll(FadeTask, TranslateTask);
-            }
-        }
+			Toast.TranslationX = 0;
+			Toast.TranslationY = 0;
+			Toast.Opacity = 1;
+		}
 
-        private void ApplyOverlayInteractionState(PopupVisualState visualState)
-        {
-            this.popupOverlay.InputTransparent = false;
-        }
+		public async Task HideToast(ToastTransition Transition = ToastTransition.SlideFromTop)
+		{
+			if (this.activeToast is null)
+				return;
+			View Toast = this.activeToast;
+
+			AnimationKey? HideKey = Transition switch
+			{
+				ToastTransition.Fade => AnimationKeys.Shell.ToastHideFade,
+				ToastTransition.SlideFromBottom => AnimationKeys.Shell.ToastHideSlideBottom,
+				ToastTransition.SlideFromTop when this.activeToastPlacement == ToastPlacement.Bottom => AnimationKeys.Shell.ToastHideSlideBottom,
+				ToastTransition.SlideFromTop => AnimationKeys.Shell.ToastHideSlideTop,
+				_ => null
+			};
+
+			if (HideKey.HasValue)
+			{
+				await this.animationCoordinator.PlayAsync(HideKey.Value, Toast, null, this.CreateAnimationContextOptions());
+			}
+			else
+			{
+				Toast.Opacity = 0;
+			}
+
+			this.toastLayer.Children.Remove(Toast);
+			this.activeToast = null;
+			this.activeToastPlacement = ToastPlacement.Top;
+			if (this.toastLayer.Children.Count == 0)
+				this.toastLayer.IsVisible = false;
+		}
+
+		private AnimationContextOptions CreateAnimationContextOptions()
+		{
+			double? ViewportWidth = this.Width > 0 ? this.Width : null;
+			double? ViewportHeight = this.Height > 0 ? this.Height : null;
+			return new AnimationContextOptions
+			{
+				KeyboardInset = this.currentKeyboardInset,
+				ViewportWidth = ViewportWidth,
+				ViewportHeight = ViewportHeight
+			};
+		}
+
+		private void ApplyOverlayInteractionState(PopupVisualState visualState)
+		{
+			this.popupOverlay.InputTransparent = false;
+		}
 
         private void OnShellSizeChanged(object? sender, EventArgs e)
         {

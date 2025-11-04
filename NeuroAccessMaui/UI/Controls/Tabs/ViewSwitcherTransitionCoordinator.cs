@@ -3,19 +3,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
+using NeuroAccessMaui.Animations;
 
 namespace NeuroAccessMaui.UI.Controls
 {
 	internal partial class ViewSwitcherTransitionCoordinator : IDisposable
 	{
 		private readonly Grid presenter;
+		private readonly IAnimationCoordinator? animationCoordinator;
 		private readonly SemaphoreSlim transitionLock = new SemaphoreSlim(1, 1);
 		private CancellationTokenSource? transitionSource;
 		private bool disposed;
 
-		public ViewSwitcherTransitionCoordinator(Grid presenter)
+		public ViewSwitcherTransitionCoordinator(Grid presenter, IAnimationCoordinator? animationCoordinator)
 		{
 			this.presenter = presenter;
+			this.animationCoordinator = animationCoordinator;
 			this.Transition = new CrossFadeViewTransition();
 			this.Animate = true;
 			this.Duration = 250;
@@ -84,9 +87,29 @@ namespace NeuroAccessMaui.UI.Controls
 					bool transitionCompleted = false;
 					try
 					{
-						// Keep continuation on UI thread – do NOT use ConfigureAwait(false) here.
-						await this.Transition.RunAsync(request, linkedSource.Token);
-						transitionCompleted = true;
+						if (!this.Animate)
+						{
+							transitionCompleted = true;
+						}
+						else if (this.ShouldUseCoordinator())
+						{
+							AnimationOptions? Options = null;
+							if (this.Duration > 0)
+							{
+								Options = new AnimationOptions
+								{
+									DurationOverride = TimeSpan.FromMilliseconds(this.Duration)
+								};
+							}
+							AnimationContextOptions ContextOptions = this.CreateContextOptions();
+							await this.animationCoordinator!.PlayTransitionAsync(AnimationKeys.ViewSwitcher.CrossFade, nextView as VisualElement, currentView as VisualElement, Options, ContextOptions, linkedSource.Token);
+							transitionCompleted = true;
+						}
+						else
+						{
+							await this.Transition.RunAsync(request, linkedSource.Token);
+							transitionCompleted = true;
+						}
 					}
 					catch (OperationCanceledException)
 					{
@@ -178,6 +201,25 @@ namespace NeuroAccessMaui.UI.Controls
 
 			if (newView is not null)
 				Microsoft.Maui.Controls.ViewExtensions.CancelAnimations(newView);
+		}
+
+		private bool ShouldUseCoordinator()
+		{
+			if (this.animationCoordinator is null)
+				return false;
+
+			return this.Transition is CrossFadeViewTransition;
+		}
+
+		private AnimationContextOptions CreateContextOptions()
+		{
+			double? ViewportWidth = this.presenter.Width > 0 ? this.presenter.Width : null;
+			double? ViewportHeight = this.presenter.Height > 0 ? this.presenter.Height : null;
+			return new AnimationContextOptions
+			{
+				ViewportWidth = ViewportWidth,
+				ViewportHeight = ViewportHeight
+			};
 		}
 
 		private void RemoveFromPresenter(View view)

@@ -19,6 +19,7 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Toasts;
+using NeuroAccessMaui.Animations;
 using NeuroAccessMaui.Services.Xml;
 using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.UI.Controls;
@@ -212,6 +213,15 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<INavigationService>((_) => Types.InstantiateDefault<NavigationService>(false));
 			Builder.Services.AddSingleton<IPopupService, PopupService>();
 			Builder.Services.AddSingleton<IToastService, ToastService>();
+			Builder.Services.AddSingleton<IMotionSettings, MotionSettings>();
+			Builder.Services.AddSingleton<IAnimationRegistry>((_) =>
+			{
+				AnimationRegistry Registry = new AnimationRegistry();
+				AnimationCatalog.RegisterDefaults(Registry);
+				return Registry;
+			});
+			Builder.Services.AddSingleton<IAnimationContextProvider, AnimationContextProvider>();
+			Builder.Services.AddSingleton<IAnimationCoordinator, AnimationCoordinator>();
 
 			return Builder;
 		}
