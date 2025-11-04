@@ -297,9 +297,9 @@ namespace NeuroAccessMaui.Test
                 double Offset = this.Height > 0 ? this.Height : 400;
                 Toast.TranslationY = -Offset * 0.1;
                 Toast.Opacity = 0;
-                Task<bool> fadeTask = Toast.FadeTo(1, 150, Easing.CubicOut);
-                Task<bool> translateTask = Toast.TranslateTo(0, 0, 150, Easing.CubicOut);
-                await Task.WhenAll(fadeTask, translateTask);
+                Task<bool> FadeTask = Toast.FadeTo(1, 150, Easing.CubicOut);
+                Task<bool> TranslateTask = Toast.TranslateTo(0, 0, 150, Easing.CubicOut);
+                await Task.WhenAll(FadeTask, TranslateTask);
             }
         }
 
