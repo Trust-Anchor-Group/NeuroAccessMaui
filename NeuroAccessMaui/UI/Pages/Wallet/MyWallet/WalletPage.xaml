@@ -148,7 +148,7 @@
 		<!-- Top Bar -->
 		<Grid Grid.Row="0"
 			  RowDefinitions="*"
-			  Margin="16,16,16,8"
+			  Margin="16,0,16,8"
 			  ColumnDefinitions="auto,*,auto">
 
 			<controls:SvgButton Command="{Binding GoBackCommand}"

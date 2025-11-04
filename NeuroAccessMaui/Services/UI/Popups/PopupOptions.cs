@@ -1,6 +1,5 @@
 using Microsoft.Maui;
 using Microsoft.Maui.Graphics;
-using NeuroAccessMaui.Test;
 using NeuroAccessMaui.UI.Popups;
 
 namespace NeuroAccessMaui.Services.UI.Popups

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
-using NeuroAccessMaui.Test;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Popups;
 using Waher.Runtime.Inventory;

@@ -9,7 +9,6 @@ using Waher.Runtime.Settings;
 using Waher.Security;
 using System.Globalization;
 using NeuroAccessMaui.Services.Authentication;
-using NeuroAccessMaui.Test;
 
 namespace NeuroAccessMaui.Services.Nfc
 {

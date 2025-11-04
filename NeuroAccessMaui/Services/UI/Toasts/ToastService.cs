@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
-using NeuroAccessMaui.Test;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.UI.Toasts

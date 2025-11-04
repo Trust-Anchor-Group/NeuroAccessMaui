@@ -1,19 +1,10 @@
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Controls;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Popups;
 using NeuroAccessMaui.UI.Pages;
 using Waher.Runtime.Inventory;
 
-#pragma warning disable CS0618, CS8600, CS8602, CS8603, CS8604, CS8765
 
-namespace NeuroAccessMaui.Test
+namespace NeuroAccessMaui.Services.UI
 {
     /// <summary>
     /// Navigation service managing a custom stack of <see cref="BaseContentPage"/> instances.
@@ -47,13 +38,13 @@ namespace NeuroAccessMaui.Test
         public Task GoToAsync(string Route) => this.GoToAsync(Route, Services.UI.BackMethod.Inherited, null);
 
         /// <inheritdoc/>
-        public Task GoToAsync(string Route, Services.UI.BackMethod BackMethod, string? UniqueId = null) => this.GoToAsync<NavigationArgs>(Route, null, BackMethod, UniqueId);
+        public Task GoToAsync(string Route, BackMethod BackMethod, string? UniqueId = null) => this.GoToAsync<NavigationArgs>(Route, null, BackMethod, UniqueId);
 
         /// <inheritdoc/>
         public Task GoToAsync<TArgs>(string Route, TArgs? Args) where TArgs : NavigationArgs, new() => this.GoToAsync(Route, Args, Services.UI.BackMethod.Inherited, null);
 
         /// <inheritdoc/>
-        public Task GoToAsync<TArgs>(string Route, TArgs? Args, Services.UI.BackMethod BackMethod, string? UniqueId = null) where TArgs : NavigationArgs, new()
+        public Task GoToAsync<TArgs>(string Route, TArgs? Args, BackMethod BackMethod, string? UniqueId = null) where TArgs : NavigationArgs, new()
         {
             return this.Enqueue(async () =>
             {

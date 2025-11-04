@@ -1,13 +1,13 @@
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Registration;    // for RegistrationPage
 using NeuroAccessMaui.UI.Pages.Main;           // for MainPage
-using NeuroAccessMaui.Test;                    // for CustomShell
 using NeuroAccessMaui.Services;          // for ServiceRef and ServiceHelper
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.UI.Pages.Onboarding;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Startup
 {

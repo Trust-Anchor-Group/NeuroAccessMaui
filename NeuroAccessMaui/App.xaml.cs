@@ -12,7 +12,6 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI.QR;
-using NeuroAccessMaui.Test;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Registration;
@@ -28,6 +27,7 @@ using Waher.Security.JWT;
 using Waher.Security.LoginMonitor;
 using Waher.Things;
 using NeuroAccessMaui.Services.Xml;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui
 {

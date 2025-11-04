@@ -1,23 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CommunityToolkit.Maui.Behaviors;
-using CommunityToolkit.Maui.Core;
-using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
-using Microsoft.Maui.Controls.Shapes;
-using Microsoft.Maui.Graphics;
-using NeuroAccessMaui.Services;                     // for ServiceHelper
 using NeuroAccessMaui.UI.Pages;
-using NeuroAccessMaui.UI.Pages.Main; // for Colors
 using NeuroAccessMaui.UI.Pages.Startup;             // for LoadingPage
-using NeuroAccessMaui.Services.UI; // for back handling
 using NeuroAccessMaui.UI;
 using NeuroAccessMaui.UI.Popups;
 using ControlsVisualElement = Microsoft.Maui.Controls.VisualElement;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Behaviors;
 
-namespace NeuroAccessMaui.Test
+namespace NeuroAccessMaui.Services.UI
 {
     /// <summary>
     /// Custom shell hosting app content, popups and Toast layers.

@@ -21,7 +21,6 @@ using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.Xml;
 using NeuroAccessMaui.Services.Xmpp;
-using NeuroAccessMaui.Test;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;

@@ -1,9 +1,7 @@
-using Microsoft.Maui.Controls;
-using System.Threading.Tasks;
 using Waher.Runtime.Inventory;
 using NeuroAccessMaui.UI.Pages;
 
-namespace NeuroAccessMaui.Test
+namespace NeuroAccessMaui.Services.UI
 {
     /// <summary>
     /// Service for navigating between pages using route-based navigation.
@@ -23,7 +21,7 @@ namespace NeuroAccessMaui.Test
         /// <param name="Route">The route string.</param>
         /// <param name="BackMethod">How navigation back should be handled.</param>
         /// <param name="UniqueId">Optional unique identifier of the view instance.</param>
-        Task GoToAsync(string Route, Services.UI.BackMethod BackMethod, string? UniqueId = null);
+        Task GoToAsync(string Route, BackMethod BackMethod, string? UniqueId = null);
 
         /// <summary>
         /// Navigates to the specified route and pushes the page onto the navigation stack with navigation arguments.
@@ -32,7 +30,7 @@ namespace NeuroAccessMaui.Test
         /// <param name="Route">The route string.</param>
         /// <param name="Args">Optional navigation arguments.</param>
         Task GoToAsync<TArgs>(string Route, TArgs? Args)
-            where TArgs : Services.UI.NavigationArgs, new();
+            where TArgs : NavigationArgs, new();
 
         /// <summary>
         /// Navigates to the specified route and pushes the page onto the navigation stack with navigation arguments and back method handling.
@@ -42,8 +40,8 @@ namespace NeuroAccessMaui.Test
         /// <param name="Args">Optional navigation arguments.</param>
         /// <param name="BackMethod">How navigation back should be handled.</param>
         /// <param name="UniqueId">Optional unique identifier of the view instance.</param>
-        Task GoToAsync<TArgs>(string Route, TArgs? Args, Services.UI.BackMethod BackMethod, string? UniqueId = null)
-            where TArgs : Services.UI.NavigationArgs, new();
+        Task GoToAsync<TArgs>(string Route, TArgs? Args, BackMethod BackMethod, string? UniqueId = null)
+            where TArgs : NavigationArgs, new();
 
         /// <summary>
         /// Navigates directly to a shell-hosted view.
@@ -58,7 +56,7 @@ namespace NeuroAccessMaui.Test
         /// <typeparam name="TArgs">Navigation arguments type.</typeparam>
         /// <param name="Route">The route whose page should become the new root.</param>
         /// <param name="Args">Optional navigation arguments for the root page.</param>
-        Task SetRootAsync<TArgs>(string Route, TArgs? Args) where TArgs : Services.UI.NavigationArgs, new();
+        Task SetRootAsync<TArgs>(string Route, TArgs? Args) where TArgs : NavigationArgs, new();
 
         /// <summary>
         /// Replaces the entire navigation stack with the page registered for the given route. After completion, back navigation cannot return to previous pages.
@@ -92,6 +90,6 @@ namespace NeuroAccessMaui.Test
         /// </summary>
         /// <typeparam name="TArgs">The navigation arguments type.</typeparam>
         /// <returns>Navigation arguments or null.</returns>
-        TArgs? PopLatestArgs<TArgs>() where TArgs : Services.UI.NavigationArgs, new();
+        TArgs? PopLatestArgs<TArgs>() where TArgs : NavigationArgs, new();
     }
 }

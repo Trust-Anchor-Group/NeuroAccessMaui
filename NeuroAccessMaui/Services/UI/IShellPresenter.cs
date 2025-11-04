@@ -5,7 +5,7 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 using NeuroAccessMaui.UI.Popups;
 
-namespace NeuroAccessMaui.Test
+namespace NeuroAccessMaui.Services.UI
 {
     /// <summary>
     /// Presenter abstraction host for page, popup and toast transitions.
