@@ -20,7 +20,7 @@ using ControlsVisualElement = Microsoft.Maui.Controls.VisualElement;
 namespace NeuroAccessMaui.Test
 {
     /// <summary>
-    /// Custom shell hosting app content, popups and toast layers.
+    /// Custom shell hosting app content, popups and Toast layers.
     /// </summary>
     public class CustomShell : ContentPage, IShellPresenter
     {
@@ -116,8 +116,19 @@ namespace NeuroAccessMaui.Test
                 await loadingPage.OnAppearingAsync();
             });
 
-            this.Behaviors.Add(new StatusBarBehavior { StatusBarColor = Colors.Transparent, StatusBarStyle = StatusBarStyle.Default });
-            this.SizeChanged += this.OnShellSizeChanged;
+#if !WINDOWS
+			AppTheme CurrentTheme = Microsoft.Maui.Controls.Application.Current?.RequestedTheme ?? AppTheme.Light;
+			StatusBarStyle StatusStyle = CurrentTheme == AppTheme.Dark ? StatusBarStyle.LightContent : StatusBarStyle.DarkContent;
+			StatusBarBehavior StatusBehaviour = new() { StatusBarColor = Colors.Transparent, StatusBarStyle = StatusStyle };
+			this.Behaviors.Add(StatusBehaviour);
+
+			Microsoft.Maui.Controls.Application.Current?.RequestedThemeChanged += (s, e) =>
+			{
+				StatusBarStyle StatusStyle = CurrentTheme == AppTheme.Dark ? StatusBarStyle.LightContent : StatusBarStyle.DarkContent;
+				StatusBehaviour.StatusBarStyle = StatusStyle;
+			};
+#endif
+			this.SizeChanged += this.OnShellSizeChanged;
         }
 
         private void OnPopupBackgroundTapped(object? sender, EventArgs e)
@@ -131,54 +142,54 @@ namespace NeuroAccessMaui.Test
 
         public BaseContentPage? CurrentPage => this.currentScreen as BaseContentPage;
 
-        public async Task ShowScreen(ContentView screen, TransitionType transition = TransitionType.Fade)
+        public async Task ShowScreen(ContentView Screen, TransitionType Transition = TransitionType.Fade)
         {
-            ContentView activeSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
-            ContentView inactiveSlot = this.isSlotAActive ? this.contentHostB : this.contentHostA;
-            BaseContentPage? outgoingPage = activeSlot.Content as BaseContentPage;
+            ContentView ActiveSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
+            ContentView InactiveSlot = this.isSlotAActive ? this.contentHostB : this.contentHostA;
+            BaseContentPage? OutgoingPage = ActiveSlot.Content as BaseContentPage;
 
-            inactiveSlot.Content = screen;
-            inactiveSlot.BindingContext = screen.BindingContext;
-            inactiveSlot.IsVisible = true;
-            _ = this.ApplyInsetsToHost(inactiveSlot, screen, false, false);
-            this.UpdateBars(screen);
+            InactiveSlot.Content = Screen;
+            InactiveSlot.BindingContext = Screen.BindingContext;
+            InactiveSlot.IsVisible = true;
+            _ = this.ApplyInsetsToHost(InactiveSlot, Screen, false, false);
+            this.UpdateBars(Screen);
 
-            if (transition == TransitionType.Fade)
+            if (Transition == TransitionType.Fade)
             {
-                inactiveSlot.Opacity = 0;
-                activeSlot.Opacity = 1;
-                const uint duration = 300;
-                Task fadeIn = inactiveSlot.FadeTo(1, duration, Easing.Linear);
-                Task fadeOut = activeSlot.FadeTo(0, duration, Easing.Linear);
-                await Task.WhenAll(fadeIn, fadeOut);
+                InactiveSlot.Opacity = 0;
+                ActiveSlot.Opacity = 1;
+                const uint Duration = 300;
+                Task<bool> FadeIn = InactiveSlot.FadeTo(1, Duration, Easing.Linear);
+                Task<bool> FadeOut = ActiveSlot.FadeTo(0, Duration, Easing.Linear);
+                await Task.WhenAll(FadeIn, FadeOut);
             }
-            else if (transition == TransitionType.SwipeLeft || transition == TransitionType.SwipeRight)
+            else if (Transition == TransitionType.SwipeLeft || Transition == TransitionType.SwipeRight)
             {
-                double width = this.Width > 0 ? this.Width : 400;
-                double fromX = (transition == TransitionType.SwipeLeft) ? width : -width;
-                double oldToX = (transition == TransitionType.SwipeLeft) ? -width : width;
-                inactiveSlot.TranslationX = fromX;
-                activeSlot.TranslationX = 0;
-                Task newIn = inactiveSlot.TranslateTo(0, 0, 250, Easing.CubicOut);
-                Task oldOut = activeSlot.TranslateTo(oldToX, 0, 250, Easing.CubicOut);
-                await Task.WhenAll(newIn, oldOut);
-                inactiveSlot.TranslationX = 0;
-                activeSlot.TranslationX = 0;
+                double Width = this.Width > 0 ? this.Width : 400;
+                double FromX = (Transition == TransitionType.SwipeLeft) ? Width : -Width;
+                double OldToX = (Transition == TransitionType.SwipeLeft) ? -Width : Width;
+                InactiveSlot.TranslationX = FromX;
+                ActiveSlot.TranslationX = 0;
+                Task<bool> NewIn = InactiveSlot.TranslateTo(0, 0, 250, Easing.CubicOut);
+                Task<bool> OldOut = ActiveSlot.TranslateTo(OldToX, 0, 250, Easing.CubicOut);
+                await Task.WhenAll(NewIn, OldOut);
+                InactiveSlot.TranslationX = 0;
+                ActiveSlot.TranslationX = 0;
             }
 
-            if (outgoingPage is not null)
+            if (OutgoingPage is not null)
             {
-                try { await outgoingPage.OnDisappearingAsync(); }
+                try { await OutgoingPage.OnDisappearingAsync(); }
                 catch (Exception ex) { ServiceRef.LogService.LogException(ex); }
             }
 
-            activeSlot.IsVisible = false;
-            activeSlot.Content = null;
+            ActiveSlot.IsVisible = false;
+            ActiveSlot.Content = null;
             this.isSlotAActive = !this.isSlotAActive;
-            this.currentScreen = screen;
-            ContentView newlyActiveSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
-            Thickness safeArea = this.ApplyInsetsToHost(newlyActiveSlot, screen, false, true);
-            this.UpdateOverlayInsets(safeArea, this.currentKeyboardInset, false);
+            this.currentScreen = Screen;
+            ContentView NewlyActiveSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
+            Thickness SafeAreaThickness = this.ApplyInsetsToHost(NewlyActiveSlot, Screen, false, true);
+            this.UpdateOverlayInsets(SafeAreaThickness, this.currentKeyboardInset, false);
         }
 
         public async Task ShowPopup(ContentView popup, PopupTransition transition, PopupVisualState visualState)
@@ -251,69 +262,69 @@ namespace NeuroAccessMaui.Test
             }
         }
 
-        public async Task ShowToast(View toast, ToastTransition transition = ToastTransition.SlideFromTop, ToastPlacement placement = ToastPlacement.Top)
+        public async Task ShowToast(View Toast, ToastTransition Transition = ToastTransition.SlideFromTop, ToastPlacement Placement = ToastPlacement.Top)
         {
-            ArgumentNullException.ThrowIfNull(toast);
+            ArgumentNullException.ThrowIfNull(Toast);
             if (this.activeToast is not null)
                 this.toastLayer.Children.Remove(this.activeToast);
-            this.activeToast = toast;
-            this.activeToastPlacement = placement;
-            int targetRow = placement == ToastPlacement.Top ? 0 : 2;
-            Grid.SetRow(toast, targetRow);
-            if (!this.toastLayer.Children.Contains(toast))
-                this.toastLayer.Children.Add(toast);
-            if (toast is BindableObject toastBindable)
+            this.activeToast = Toast;
+            this.activeToastPlacement = Placement;
+            int TargetRow = Placement == ToastPlacement.Top ? 0 : 2;
+            Grid.SetRow(Toast, TargetRow);
+            if (!this.toastLayer.Children.Contains(Toast))
+                this.toastLayer.Children.Add(Toast);
+            if (Toast is BindableObject toastBindable)
                 this.NotifyKeyboardAwareTargets(toastBindable);
             this.toastLayer.IsVisible = true;
-            toast.Opacity = 1;
-            toast.TranslationY = 0;
-            if (transition == ToastTransition.Fade)
+            Toast.Opacity = 1;
+            Toast.TranslationY = 0;
+            if (Transition == ToastTransition.Fade)
             {
-                toast.Opacity = 0;
-                await toast.FadeTo(1, 150, Easing.CubicOut);
+                Toast.Opacity = 0;
+                await Toast.FadeTo(1, 150, Easing.CubicOut);
             }
-            else if (transition == ToastTransition.SlideFromBottom || (transition == ToastTransition.SlideFromTop && placement == ToastPlacement.Bottom))
+            else if (Transition == ToastTransition.SlideFromBottom || (Transition == ToastTransition.SlideFromTop && Placement == ToastPlacement.Bottom))
             {
-                double offset = this.Height > 0 ? this.Height : 400;
-                toast.TranslationY = offset * 0.1;
-                toast.Opacity = 0;
-                Task fadeTask = toast.FadeTo(1, 150, Easing.CubicOut);
-                Task translateTask = toast.TranslateTo(0, 0, 150, Easing.CubicOut);
-                await Task.WhenAll(fadeTask, translateTask);
+                double Offset = this.Height > 0 ? this.Height : 400;
+                Toast.TranslationY = Offset * 0.1;
+                Toast.Opacity = 0;
+                Task<bool> FadeTask = Toast.FadeTo(1, 150, Easing.CubicOut);
+                Task<bool> TranslateTask = Toast.TranslateTo(0, 0, 150, Easing.CubicOut);
+                await Task.WhenAll(FadeTask, TranslateTask);
             }
-            else if (transition == ToastTransition.SlideFromTop)
+            else if (Transition == ToastTransition.SlideFromTop)
             {
-                double offset = this.Height > 0 ? this.Height : 400;
-                toast.TranslationY = -offset * 0.1;
-                toast.Opacity = 0;
-                Task fadeTask = toast.FadeTo(1, 150, Easing.CubicOut);
-                Task translateTask = toast.TranslateTo(0, 0, 150, Easing.CubicOut);
+                double Offset = this.Height > 0 ? this.Height : 400;
+                Toast.TranslationY = -Offset * 0.1;
+                Toast.Opacity = 0;
+                Task<bool> fadeTask = Toast.FadeTo(1, 150, Easing.CubicOut);
+                Task<bool> translateTask = Toast.TranslateTo(0, 0, 150, Easing.CubicOut);
                 await Task.WhenAll(fadeTask, translateTask);
             }
         }
 
-        public async Task HideToast(ToastTransition transition = ToastTransition.SlideFromTop)
+        public async Task HideToast(ToastTransition Transition = ToastTransition.SlideFromTop)
         {
             if (this.activeToast is null)
                 return;
-            View toast = this.activeToast;
-            if (transition == ToastTransition.Fade)
+            View Toast = this.activeToast;
+            if (Transition == ToastTransition.Fade)
             {
-                await toast.FadeTo(0, 120, Easing.CubicIn);
+                await Toast.FadeTo(0, 120, Easing.CubicIn);
             }
-            else if (transition == ToastTransition.SlideFromBottom || (transition == ToastTransition.SlideFromTop && this.activeToastPlacement == ToastPlacement.Bottom))
+            else if (Transition == ToastTransition.SlideFromBottom || (Transition == ToastTransition.SlideFromTop && this.activeToastPlacement == ToastPlacement.Bottom))
             {
-                Task fadeTask = toast.FadeTo(0, 120, Easing.CubicIn);
-                Task translateTask = toast.TranslateTo(0, 40, 120, Easing.CubicIn);
-                await Task.WhenAll(fadeTask, translateTask);
+                Task<bool> FadeTask = Toast.FadeTo(0, 120, Easing.CubicIn);
+                Task<bool> TranslateTask = Toast.TranslateTo(0, 40, 120, Easing.CubicIn);
+                await Task.WhenAll(FadeTask, TranslateTask);
             }
-            else if (transition == ToastTransition.SlideFromTop)
+            else if (Transition == ToastTransition.SlideFromTop)
             {
-                Task fadeTask = toast.FadeTo(0, 120, Easing.CubicIn);
-                Task translateTask = toast.TranslateTo(0, -40, 120, Easing.CubicIn);
-                await Task.WhenAll(fadeTask, translateTask);
+                Task<bool> FadeTask = Toast.FadeTo(0, 120, Easing.CubicIn);
+                Task<bool> TranslateTask = Toast.TranslateTo(0, -40, 120, Easing.CubicIn);
+                await Task.WhenAll(FadeTask, TranslateTask);
             }
-            this.toastLayer.Children.Remove(toast);
+            this.toastLayer.Children.Remove(Toast);
             this.activeToast = null;
             this.activeToastPlacement = ToastPlacement.Top;
             if (this.toastLayer.Children.Count == 0)
@@ -339,19 +350,19 @@ namespace NeuroAccessMaui.Test
             {
                 popup.Scale = 0.9;
                 popup.Opacity = 0;
-                Task fadeTask = popup.FadeTo(1, 200, Easing.CubicOut);
-                Task scaleTask = popup.ScaleTo(1, 200, Easing.CubicOut);
-                await Task.WhenAll(fadeTask, scaleTask);
+                Task<bool> FadeTask = popup.FadeTo(1, 200, Easing.CubicOut);
+                Task<bool> ScaleTask = popup.ScaleTo(1, 200, Easing.CubicOut);
+                await Task.WhenAll(FadeTask, ScaleTask);
                 return;
             }
             if (transition == PopupTransition.SlideUp)
             {
-                double fromY = this.Height > 0 ? this.Height : 400;
-                popup.TranslationY = fromY * 0.5;
+                double FromY = this.Height > 0 ? this.Height : 400;
+                popup.TranslationY = FromY * 0.5;
                 popup.Opacity = 0;
-                Task fadeTask = popup.FadeTo(1, 200, Easing.CubicOut);
-                Task translateTask = popup.TranslateTo(0, 0, 200, Easing.CubicOut);
-                await Task.WhenAll(fadeTask, translateTask);
+                Task<bool> FadeTask = popup.FadeTo(1, 200, Easing.CubicOut);
+                Task<bool> TranslateTask = popup.TranslateTo(0, 0, 200, Easing.CubicOut);
+                await Task.WhenAll(FadeTask, TranslateTask);
             }
         }
 
@@ -369,16 +380,16 @@ namespace NeuroAccessMaui.Test
             }
             if (transition == PopupTransition.Scale)
             {
-                Task fadeTask = popup.FadeTo(0, 150, Easing.CubicIn);
-                Task scaleTask = popup.ScaleTo(0.9, 150, Easing.CubicIn);
-                await Task.WhenAll(fadeTask, scaleTask);
+                Task<bool> FadeTask = popup.FadeTo(0, 150, Easing.CubicIn);
+                Task<bool> ScaleTask = popup.ScaleTo(0.9, 150, Easing.CubicIn);
+                await Task.WhenAll(FadeTask, ScaleTask);
                 return;
             }
             if (transition == PopupTransition.SlideUp)
             {
-                Task fadeTask = popup.FadeTo(0, 150, Easing.CubicIn);
-                Task translateTask = popup.TranslateTo(0, 50, 150, Easing.CubicIn);
-                await Task.WhenAll(fadeTask, translateTask);
+                Task<bool> FadeTask = popup.FadeTo(0, 150, Easing.CubicIn);
+                Task<bool> TranslateTask = popup.TranslateTo(0, 50, 150, Easing.CubicIn);
+                await Task.WhenAll(FadeTask, TranslateTask);
             }
         }
 
@@ -392,9 +403,9 @@ namespace NeuroAccessMaui.Test
             if (this.currentScreen is null)
                 return;
 
-            ContentView activeSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
-            Thickness safeArea = this.ApplyInsetsToHost(activeSlot, this.currentScreen, false, true);
-            this.UpdateOverlayInsets(safeArea, this.currentKeyboardInset, false);
+            ContentView ActiveSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
+            Thickness SafeArea = this.ApplyInsetsToHost(ActiveSlot, this.currentScreen, false, true);
+            this.UpdateOverlayInsets(SafeArea, this.currentKeyboardInset, false);
         }
 
         private Thickness ApplyInsetsToHost(ContentView host, BindableObject screen, bool animate, bool notify)
@@ -402,40 +413,40 @@ namespace NeuroAccessMaui.Test
             ArgumentNullException.ThrowIfNull(screen);
             ArgumentNullException.ThrowIfNull(host);
 
-            Thickness safeArea = SafeArea.ResolveInsetsFor(screen);
-            KeyboardInsetMode mode = KeyboardInsets.GetMode(screen);
-            double keyboardInsetForPadding = mode == KeyboardInsetMode.Automatic ? this.currentKeyboardInset : 0;
-            Thickness targetPadding = new Thickness(
-                safeArea.Left,
-                safeArea.Top,
-                safeArea.Right,
-                safeArea.Bottom + keyboardInsetForPadding);
+            Thickness SafeAreaThickness = SafeArea.ResolveInsetsFor(screen);
+            KeyboardInsetMode Mode = KeyboardInsets.GetMode(screen);
+            double KeyboardInsetForPadding = Mode == KeyboardInsetMode.Automatic ? this.currentKeyboardInset : 0;
+            Thickness TargetPadding = new Thickness(
+                SafeAreaThickness.Left,
+                SafeAreaThickness.Top,
+                SafeAreaThickness.Right,
+                SafeAreaThickness.Bottom + KeyboardInsetForPadding);
 
-            this.SetViewPadding(host, targetPadding, animate);
+            this.SetViewPadding(host, TargetPadding, animate);
 
             if (notify)
                 this.NotifyKeyboardAwareTargets(screen);
 
-            return safeArea;
+            return SafeAreaThickness;
         }
 
         private void UpdateOverlayInsets(Thickness safeArea, double keyboardInset, bool animate)
         {
-            Thickness overlayPadding = new Thickness(safeArea.Left, safeArea.Top, safeArea.Right, safeArea.Bottom + keyboardInset);
-            this.SetViewPadding(this.popupOverlay, overlayPadding, animate);
+            Thickness OverlayPadding = new Thickness(safeArea.Left, safeArea.Top, safeArea.Right, safeArea.Bottom + keyboardInset);
+            this.SetViewPadding(this.popupOverlay, OverlayPadding, animate);
 
-            Thickness toastPadding = new Thickness(
+            Thickness ToastPadding = new Thickness(
                 this.toastBasePadding.Left + safeArea.Left,
                 this.toastBasePadding.Top + safeArea.Top,
                 this.toastBasePadding.Right + safeArea.Right,
                 this.toastBasePadding.Bottom + safeArea.Bottom + keyboardInset);
-            this.SetViewPadding(this.toastLayer, toastPadding, animate);
+            this.SetViewPadding(this.toastLayer, ToastPadding, animate);
 
-            Thickness topBarPadding = new Thickness(safeArea.Left, safeArea.Top, safeArea.Right, 0);
-            this.SetViewPadding(this.topBar, topBarPadding, animate);
+            Thickness TopBarPadding = new Thickness(safeArea.Left, safeArea.Top, safeArea.Right, 0);
+            this.SetViewPadding(this.topBar, TopBarPadding, animate);
 
-            Thickness navBarPadding = new Thickness(safeArea.Left, 0, safeArea.Right, safeArea.Bottom);
-            this.SetViewPadding(this.navBar, navBarPadding, animate);
+            Thickness NavBarPadding = new Thickness(safeArea.Left, 0, safeArea.Right, safeArea.Bottom);
+            this.SetViewPadding(this.navBar, NavBarPadding, animate);
         }
 
         private void SetViewPadding(ControlsVisualElement view, Thickness targetPadding, bool animate)
@@ -455,70 +466,70 @@ namespace NeuroAccessMaui.Test
                 return;
             }
 
-            const uint duration = 180;
+            const uint Duration = 180;
             Microsoft.Maui.Controls.ViewExtensions.CancelAnimations(view);
             view.Animate(
                 "KeyboardPadding",
                 progress => this.AssignPadding(view, this.InterpolateThickness(currentPadding, targetPadding, progress)),
                 rate: 16,
-                length: duration,
+                length: Duration,
                 easing: Easing.CubicInOut,
                 finished: (v, cancelled) => this.AssignPadding(view, targetPadding));
         }
 
-        private bool TryGetPadding(ControlsVisualElement element, out Thickness padding)
+        private bool TryGetPadding(ControlsVisualElement Element, out Thickness Padding)
         {
-            switch (element)
+            switch (Element)
             {
-                case Layout layout:
-                    padding = layout.Padding;
+                case Layout LayoutElement:
+                    Padding = LayoutElement.Padding;
                     return true;
-                case ContentView contentView:
-                    padding = contentView.Padding;
+                case ContentView ContentViewElement:
+                    Padding = ContentViewElement.Padding;
                     return true;
-                case TemplatedView templatedView:
-                    padding = templatedView.Padding;
+                case TemplatedView TemplatedViewElement:
+                    Padding = TemplatedViewElement.Padding;
                     return true;
-                case Border border:
-                    padding = border.Padding;
+                case Border BorderElement:
+                    Padding = BorderElement.Padding;
                     return true;
                 default:
-                    padding = new Thickness(0);
+                    Padding = new Thickness(0);
                     return false;
             }
         }
 
-        private void AssignPadding(ControlsVisualElement element, Thickness padding)
+        private void AssignPadding(ControlsVisualElement Element, Thickness Padding)
         {
-            switch (element)
+            switch (Element)
             {
-                case Layout layout:
-                    layout.Padding = padding;
+                case Layout LayoutElement:
+                    LayoutElement.Padding = Padding;
                     break;
-                case ContentView contentView:
-                    contentView.Padding = padding;
+                case ContentView ContentViewElement:
+                    ContentViewElement.Padding = Padding;
                     break;
-                case TemplatedView templatedView:
-                    templatedView.Padding = padding;
+                case TemplatedView TemplatedViewElement:
+                    TemplatedViewElement.Padding = Padding;
                     break;
-                case Border border:
-                    border.Padding = padding;
+                case Border BorderElement:
+                    BorderElement.Padding = Padding;
                     break;
             }
         }
 
-        private Thickness InterpolateThickness(Thickness from, Thickness to, double progress)
+        private Thickness InterpolateThickness(Thickness From, Thickness To, double Progress)
         {
             return new Thickness(
-                this.InterpolateDouble(from.Left, to.Left, progress),
-                this.InterpolateDouble(from.Top, to.Top, progress),
-                this.InterpolateDouble(from.Right, to.Right, progress),
-                this.InterpolateDouble(from.Bottom, to.Bottom, progress));
+                this.InterpolateDouble(From.Left, To.Left, Progress),
+                this.InterpolateDouble(From.Top, To.Top, Progress),
+                this.InterpolateDouble(From.Right, To.Right, Progress),
+                this.InterpolateDouble(From.Bottom, To.Bottom, Progress));
         }
 
-        private double InterpolateDouble(double from, double to, double progress)
+        private double InterpolateDouble(double From, double To, double Progress)
         {
-            return from + ((to - from) * progress);
+            return From + ((To - From) * Progress);
         }
 
         private bool AreThicknessClose(Thickness a, Thickness b)
@@ -529,15 +540,15 @@ namespace NeuroAccessMaui.Test
                    Math.Abs(a.Bottom - b.Bottom) < 0.5;
         }
 
-        private void NotifyKeyboardAwareTargets(BindableObject screen)
+        private void NotifyKeyboardAwareTargets(BindableObject Screen)
         {
-            KeyboardInsetChangedEventArgs args = new KeyboardInsetChangedEventArgs(this.currentKeyboardInset, this.isKeyboardVisible);
+            KeyboardInsetChangedEventArgs Args = new KeyboardInsetChangedEventArgs(this.currentKeyboardInset, this.isKeyboardVisible);
 
-            if (screen is IKeyboardInsetAware awareView)
-                awareView.OnKeyboardInsetChanged(args);
+            if (Screen is IKeyboardInsetAware awareView)
+                awareView.OnKeyboardInsetChanged(Args);
 
-            if (screen.BindingContext is IKeyboardInsetAware awareContext)
-                awareContext.OnKeyboardInsetChanged(args);
+            if (Screen.BindingContext is IKeyboardInsetAware awareContext)
+                awareContext.OnKeyboardInsetChanged(Args);
         }
 
         private void OnKeyboardInsetChanged(object? sender, KeyboardInsetChangedEventArgs e)
@@ -552,9 +563,9 @@ namespace NeuroAccessMaui.Test
                 this.UpdateOverlayInsets(safeArea, this.currentKeyboardInset, true);
             }
 
-            foreach (Microsoft.Maui.IView child in this.popupHost.Children)
+            foreach (Microsoft.Maui.IView Child in this.popupHost.Children)
             {
-                if (child is BindableObject bindableChild)
+                if (Child is BindableObject bindableChild)
                     this.NotifyKeyboardAwareTargets(bindableChild);
             }
 
@@ -562,16 +573,16 @@ namespace NeuroAccessMaui.Test
                 this.NotifyKeyboardAwareTargets(toastBindable);
         }
 
-        public void UpdateBars(BindableObject screen)
+        public void UpdateBars(BindableObject Screen)
         {
-            bool topVisible = NavigationBars.GetTopBarVisible(screen);
-            bool navVisible = NavigationBars.GetNavBarVisible(screen);
-            this.topBar.IsVisible = topVisible;
-            this.navBar.IsVisible = navVisible;
-            if (screen is IBarContentProvider provider)
+            bool TopVisible = NavigationBars.GetTopBarVisible(Screen);
+            bool NavVisible = NavigationBars.GetNavBarVisible(Screen);
+            this.topBar.IsVisible = TopVisible;
+            this.navBar.IsVisible = NavVisible;
+            if (Screen is IBarContentProvider Provider)
             {
-                this.topBar.Content = provider.TopBarContent;
-                this.navBar.Content = provider.NavBarContent;
+                this.topBar.Content = Provider.TopBarContent;
+                this.navBar.Content = Provider.NavBarContent;
             }
             else
             {
@@ -579,11 +590,11 @@ namespace NeuroAccessMaui.Test
                 this.navBar.Content = null;
             }
 
-            if (ReferenceEquals(screen, this.currentScreen))
+            if (ReferenceEquals(Screen, this.currentScreen))
             {
-                ContentView activeSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
-                Thickness safeArea = this.ApplyInsetsToHost(activeSlot, screen, false, true);
-                this.UpdateOverlayInsets(safeArea, this.currentKeyboardInset, false);
+                ContentView ActiveSlot = this.isSlotAActive ? this.contentHostA : this.contentHostB;
+                Thickness SafeAreaThickness = this.ApplyInsetsToHost(ActiveSlot, Screen, false, true);
+                this.UpdateOverlayInsets(SafeAreaThickness, this.currentKeyboardInset, false);
             }
         }
 
@@ -658,7 +669,7 @@ namespace NeuroAccessMaui.Test
     }
 
     /// <summary>
-    /// Helper class for attached properties to show/hide bars.
+    /// Helper class for attached properties To show/hide bars.
     /// </summary>
     public static class NavigationBars
     {
