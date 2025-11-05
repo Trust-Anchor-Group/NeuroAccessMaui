@@ -25,7 +25,7 @@
 
 				<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize RequestForReview}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<Grid x:Name="GridWithAnimation" AnchorX="0.5" AnchorY="0.5">
 						<mct:StateContainer.StateViews>
 							<views:PhotoView x:Name="PhotoView" x:FactoryMethod="Create" mct:StateView.StateKey="Photo" />
@@ -41,7 +41,7 @@
 							<views:ApprovedView x:Name="ApprovedView" x:FactoryMethod="Create" mct:StateView.StateKey="Approved" />
 						</mct:StateContainer.StateViews>
 					</Grid>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

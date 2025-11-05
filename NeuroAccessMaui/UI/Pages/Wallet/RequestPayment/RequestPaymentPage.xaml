@@ -22,7 +22,7 @@
 
 				<Label Text="{l:Localize RequestPayment}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<VerticalStackLayout Margin="{DynamicResource SmallMargins}"
                          BackgroundColor="{DynamicResource PageBackgroundColorLightTheme}">
@@ -83,7 +83,7 @@
 												 IsEnabled="{Binding HasQrCode}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

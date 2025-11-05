@@ -112,8 +112,8 @@
 					  x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton HorizontalOptions="Fill"
 									  Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{DynamicResource ClickableFrameSubSet}"
-					   InputTransparent="True" />
+				<Border Style="{DynamicResource BorderSubSet}"
+						InputTransparent="True" />
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<viewmodel:ServiceTemplateSelector x:Key="TemplateSelector"

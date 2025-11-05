@@ -22,7 +22,7 @@
 
 				<Label Text="{l:Localize MakePayment}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="0">
 						<Label Text="{l:Localize Payment}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize PaymentDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
@@ -96,7 +96,7 @@
 											 IsVisible="{Binding Path=HasQrCode}" Margin="0,8,0,0"
 											 Style="{DynamicResource FilledTextButton}"/>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

@@ -55,7 +55,7 @@
 				   Grid.Column="1"
 				   Style="{DynamicResource PageTitleLabel}"
 				   Text="{l:Localize NewContract}"
-				   HorizontalTextAlignment="Center" />
+				   HorizontalTextAlignment="End" />
 		</Grid>
 		<!-- Main Content -->
 		<Grid x:Name="StateGrid"

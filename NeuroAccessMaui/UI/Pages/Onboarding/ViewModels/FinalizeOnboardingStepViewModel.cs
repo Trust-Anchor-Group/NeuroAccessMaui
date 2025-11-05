@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 
@@ -16,7 +17,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
         public double CheckmarkBackgroundSize => 120.0;
 
-        public double CheckmarkBackgroundCornerRadius => this.CheckmarkBackgroundSize / 2;
+        public RoundRectangle CheckmarkBackgroundStroke => new RoundRectangle { CornerRadius = this.CheckmarkBackgroundSize / 2 };
 
         public double CheckmarkIconSize => 60.0;
 

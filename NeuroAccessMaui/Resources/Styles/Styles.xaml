@@ -258,39 +258,6 @@
 		<Setter Property="Offset" Value="0,4" />
 	</Style>
 
-	<Style ApplyToDerivedTypes="False" TargetType="Frame">
-		<Setter Property="HasShadow" Value="False" />
-		<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevation1WL}" />
-	</Style>
-
-	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="FrameSet">
-		<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevation1WL}" />
-		<Setter Property="CornerRadius" Value="8" />
-		<Setter Property="Padding" Value="{DynamicResource SmallMargins}" />
-		<Setter Property="Margin" Value="{DynamicResource SmallMargins}" />
-		<Setter Property="Shadow">
-			<Setter.Value>
-				<Shadow Brush="{DynamicResource SurfaceShadowColorWL}" Offset="0,4" />
-			</Setter.Value>
-		</Setter>
-	</Style>
-
-	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="FrameSubSet">
-		<Setter Property="HasShadow" Value="False" />
-		<Setter Property="BackgroundColor" Value="{DynamicResource SurfaceElevation2WL}" />
-		<Setter Property="CornerRadius" Value="8" />
-		<Setter Property="Padding" Value="{DynamicResource SmallMargins}" />
-		<Setter Property="Margin" Value="{DynamicResource SmallMargins}" />
-	</Style>
-
-	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="ClickableFrameSubSet">
-		<Setter Property="HasShadow" Value="False" />
-		<Setter Property="BackgroundColor" Value="{DynamicResource ButtonAccessPrimarybgWL}" />
-		<Setter Property="CornerRadius" Value="8" />
-		<Setter Property="Padding" Value="{DynamicResource SmallMargins}" />
-		<Setter Property="Margin" Value="{DynamicResource SmallMargins}" />
-	</Style>
-
 	<Style ApplyToDerivedTypes="True" TargetType="Border" x:Key="BorderSet">
 		<Setter Property="Background" Value="{DynamicResource SurfaceElevation1WL}" />
 		<Setter Property="Stroke" Value="{DynamicResource SurfaceStrokeWL}" />
@@ -308,13 +275,6 @@
 		<Setter Property="Background" Value="{DynamicResource SurfaceElevation2WL}" />
 		<Setter Property="StrokeShape" Value="RoundRectangle 8" />
 		<Setter Property="Padding" Value="{DynamicResource SmallMargins}" />
-	</Style>
-
-	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="AlertFrame">
-		<Setter Property="BackgroundColor" Value="{DynamicResource TnPDangerbgWL}" />
-	</Style>
-
-	<Style ApplyToDerivedTypes="True" TargetType="Frame" x:Key="ShellFrame">
 	</Style>
 
 	<ControlTemplate x:Key="RadioButtonTemplate">
@@ -351,29 +311,29 @@
 		<Setter Property="Padding" Value="5,2,5,2" />
 	</Style>
 
-	<Style x:Key="TableCellEven" ApplyToDerivedTypes="True" TargetType="Frame">
+	<Style x:Key="TableCellEven" ApplyToDerivedTypes="True" TargetType="Border">
 		<Setter Property="Padding" Value="0" />
-		<Setter Property="BorderColor" Value="{DynamicResource InputFieldsContentSecondary}" />
+		<Setter Property="Stroke" Value="{DynamicResource InputFieldsContentSecondary}" />
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#20404040, Dark=#20c0c0c0}" />
 	</Style>
 
-	<Style x:Key="TableCellOdd" ApplyToDerivedTypes="True" TargetType="Frame">
+	<Style x:Key="TableCellOdd" ApplyToDerivedTypes="True" TargetType="Border">
 		<Setter Property="Padding" Value="0" />
-		<Setter Property="BorderColor" Value="{DynamicResource InputFieldsContentSecondary}" />
+		<Setter Property="Stroke" Value="{DynamicResource InputFieldsContentSecondary}" />
 		<Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#10808080, Dark=#10808080}" />
 	</Style>
 
-	<Style x:Key="SendFrame" ApplyToDerivedTypes="True" TargetType="Frame">
+	<Style x:Key="SendFrame" ApplyToDerivedTypes="True" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="{DynamicResource BrandColorsNeuroPayv100}" />
-		<Setter Property="BorderColor" Value="{DynamicResource BrandColorsNeuroPay}"/>
+		<Setter Property="Stroke" Value="{DynamicResource BrandColorsNeuroPay}"/>
 		<Setter Property="HorizontalOptions" Value="Start"/>
 		<Setter Property="Margin" Value="{DynamicResource SmallMargins}"/>
 		<Setter Property="Padding" Value="{DynamicResource SmallLeftRightMargins}"/>
 	</Style>
 
-	<Style x:Key="ReceiveFrame" ApplyToDerivedTypes="True" TargetType="Frame">
+	<Style x:Key="ReceiveFrame" ApplyToDerivedTypes="True" TargetType="Border">
 		<Setter Property="BackgroundColor" Value="{DynamicResource TnPInfobgWL}" />
-		<Setter Property="BorderColor" Value="{DynamicResource TnPInfoContentWL}"/>
+		<Setter Property="Stroke" Value="{DynamicResource TnPInfoContentWL}"/>
 		<Setter Property="HorizontalOptions" Value="End"/>
 		<Setter Property="Margin" Value="{DynamicResource SmallMargins}"/>
 		<Setter Property="Padding" Value="{DynamicResource SmallLeftRightMargins}"/>
@@ -483,10 +443,4 @@
 	<Style x:Key="MyWalletView" TargetType="BoxView">
 		<Setter Property="BackgroundColor"  Value="{DynamicResource SurfaceBackgroundWL}" />
 	</Style>
-	<Style x:Key="MyWalletFrame" TargetType="Frame">
-		<Setter Property="BorderColor"  Value="{DynamicResource ContentPrimaryWL}" />
-		<Setter Property="CornerRadius"  Value="6" />
-		<Setter Property="Margin"  Value="5" />
-	</Style>
-
 </ResourceDictionary>

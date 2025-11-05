@@ -22,11 +22,11 @@
 
 				<Label Text="{l:Localize EDalerNote}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{l:Localize EDalerNoteDescription}" VerticalOptions="Start"/>
 						<!-- Note -->
-						<Frame HeightRequest="150" BorderColor="{DynamicResource ForegroundColor}" CornerRadius="6" HasShadow="True" BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+						<Border HeightRequest="150" Stroke="{DynamicResource ForegroundColor}" StrokeShape="RoundRectangle 6" BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 							<Grid HeightRequest="150" WidthRequest="10000" BackgroundColor="Transparent">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
@@ -49,14 +49,14 @@
 								</Label>
 								<Label Grid.Column="0" Grid.Row="2" Text="{Binding Path=From}" HorizontalOptions="Start" TextColor="{DynamicResource SurfaceBackgroundWL}"/>
 							</Grid>
-						</Frame>
+						</Border>
 						<Label Text="{Binding Path=Message}" IsVisible="{Binding Path=HasMessage}" VerticalOptions="Start"/>
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize Accept}" Command="{Binding Path=AcceptCommand}"
 													Style="{DynamicResource FilledTextButton}"
 													Margin="{DynamicResource SmallBottomMargins}"/>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

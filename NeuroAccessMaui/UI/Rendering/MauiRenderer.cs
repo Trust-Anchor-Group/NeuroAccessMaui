@@ -609,7 +609,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 				ColSpan -= Column;
 
-				Frame Frame = new Frame();
+				Border Frame = new Border();
 
 				if ((RowNr & 1) == 0)
 					Frame.Style = AppStyles.TableCellEven;

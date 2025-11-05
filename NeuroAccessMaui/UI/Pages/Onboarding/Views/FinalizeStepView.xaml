@@ -20,13 +20,12 @@
                            Text="{l:Localize OnboardingFinalizePageTitle}"
                            HorizontalTextAlignment="Center" />
 
-                    <Frame WidthRequest="{Binding CheckmarkBackgroundSize}"
-                           HeightRequest="{Binding CheckmarkBackgroundSize}"
-                           HasShadow="False"
-                           CornerRadius="{Binding CheckmarkBackgroundCornerRadius}"
-                           BackgroundColor="{DynamicResource TnPSuccessbgWL}"
-                           HorizontalOptions="Center"
-                           Margin="{DynamicResource LargeBottomMargins}">
+                    <Border WidthRequest="{Binding CheckmarkBackgroundSize}"
+							HeightRequest="{Binding CheckmarkBackgroundSize}"
+							StrokeShape="{Binding CheckmarkBackgroundStroke}"
+							BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+							HorizontalOptions="Center"
+							Margin="{DynamicResource LargeBottomMargins}">
                         <Path VerticalOptions="Center"
                               HorizontalOptions="Center"
                               HeightRequest="{Binding CheckmarkIconSize}"
@@ -34,7 +33,7 @@
                               Aspect="Uniform"
                               Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
                               Fill="{DynamicResource TnPSuccessContentWL}" />
-                    </Frame>
+                    </Border>
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </Grid>

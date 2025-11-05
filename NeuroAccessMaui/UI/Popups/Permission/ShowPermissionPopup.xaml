@@ -13,10 +13,10 @@
                 <Label HorizontalTextAlignment="Center"
                        Style="{DynamicResource PageTitleLabel}"
                        Text="{Binding Title}" />
-                <Frame WidthRequest="{Binding CameraIconBackgroundSize}"
-                       HeightRequest="{Binding CameraIconBackgroundSize}"
-                       CornerRadius="{Binding CameraIconBackgroundCornerRadius}"
-                       BackgroundColor="{DynamicResource TnPSuccessbgWL}">
+                <Border WidthRequest="{Binding CameraIconBackgroundSize}"
+						HeightRequest="{Binding CameraIconBackgroundSize}"
+						StrokeShape="{Binding CameraIconBackgroundStrokeShape}"
+						BackgroundColor="{DynamicResource TnPSuccessbgWL}">
                     <Path VerticalOptions="Center"
                           HorizontalOptions="Center"
                           HeightRequest="{Binding CameraIconSize}"
@@ -24,7 +24,7 @@
                           Aspect="Uniform"
                           Data="{Binding IconGeometry}"
                           Fill="{DynamicResource TnPSuccessContentWL}" />
-                </Frame>
+                </Border>
                 <Label HorizontalTextAlignment="Start"
                        Style="{DynamicResource ItemDescriptionLabel}"
                        Text="{Binding Description}"

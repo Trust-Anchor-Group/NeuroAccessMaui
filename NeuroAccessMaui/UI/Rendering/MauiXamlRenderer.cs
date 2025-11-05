@@ -779,9 +779,9 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteStartElement("ContentView");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, false, true, true));
 
-			this.XmlOutput.WriteStartElement("Frame");
+			this.XmlOutput.WriteStartElement("Border");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
-			this.XmlOutput.WriteAttributeString("BorderColor", "{DynamicResource ContentPrimaryWL}");
+			this.XmlOutput.WriteAttributeString("Stroke", "{DynamicResource ContentPrimaryWL}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1117,9 +1117,9 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteStartElement("ContentView");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, false, true, true));
 
-			this.XmlOutput.WriteStartElement("Frame");
+			this.XmlOutput.WriteStartElement("Border");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
-			this.XmlOutput.WriteAttributeString("BorderColor", "{DynamicResource TnPDangerbgWL}");
+			this.XmlOutput.WriteAttributeString("Stroke", "{DynamicResource TnPDangerbgWL}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1244,9 +1244,9 @@ namespace NeuroAccessMaui.UI.Rendering
 			this.XmlOutput.WriteStartElement("ContentView");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, false, true, true));
 
-			this.XmlOutput.WriteStartElement("Frame");
+			this.XmlOutput.WriteStartElement("Border");
 			this.XmlOutput.WriteAttributeString("Padding", SmallMargins(true, true, false, false));
-			this.XmlOutput.WriteAttributeString("BorderColor", "{DynamicResource TnPSuccessbgWL}");
+			this.XmlOutput.WriteAttributeString("Stroke", "{DynamicResource TnPSuccessbgWL}");
 			// TODO: Border thickness
 
 			this.XmlOutput.WriteStartElement("VerticalStackLayout");
@@ -1809,7 +1809,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 				ColSpan -= Column;
 
-				this.XmlOutput.WriteStartElement("Frame");
+				this.XmlOutput.WriteStartElement("Border");
 
 				if ((RowNr & 1) == 0)
 					this.XmlOutput.WriteAttributeString("Style", "{DynamicResource TableCellEven}");
@@ -1844,7 +1844,7 @@ namespace NeuroAccessMaui.UI.Rendering
 					this.XmlOutput.WriteEndElement();   // ContentView
 				}
 
-				this.XmlOutput.WriteEndElement();   // Frame
+				this.XmlOutput.WriteEndElement();   // Border
 			}
 
 			this.Restore(Bak);

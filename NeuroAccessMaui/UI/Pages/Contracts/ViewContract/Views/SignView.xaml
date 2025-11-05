@@ -55,9 +55,9 @@
 							<Label Text="{l:Localize SelectYourRole}"
 									 Style="{DynamicResource RoleTitleLabel}" />
 							<controls:CompositePicker Style="{DynamicResource RegularCompositePicker}"
-															  Placeholder="{l:Localize SelectYourRoleInThisContract}"
-															  ItemsSource="{Binding SignableRoles}"
-															  SelectedItem="{Binding SelectedRole}">
+														Placeholder="{l:Localize SelectYourRoleInThisContract}"
+														ItemsSource="{Binding SignableRoles}"
+														SelectedItem="{Binding SelectedRole}">
 								<controls:CompositePicker.ItemDisplayBinding x:DataType="objectModel:ObservableRole">
 									<Binding Path="Name" />
 								</controls:CompositePicker.ItemDisplayBinding>

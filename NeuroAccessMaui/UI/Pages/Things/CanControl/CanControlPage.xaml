@@ -24,7 +24,7 @@
 
 				<Label Text="{l:Localize ControlRequest}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Border Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{l:Localize ControlRequest}" Margin="{DynamicResource SmallTopMargins}"
 					   VerticalOptions="Start"/>

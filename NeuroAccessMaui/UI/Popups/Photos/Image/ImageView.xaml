@@ -8,9 +8,9 @@
                        xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Photos.Image"
                        x:DataType="viewmodel:ImageViewModel"
                        x:Class="NeuroAccessMaui.UI.Popups.Photos.Image.ImageView">
-	<Frame Style="{DynamicResource PopupFrame}" x:Name="PhotoViewer" HasShadow="true"
-			 BackgroundColor="{DynamicResource SurfaceBackgroundWLDarkTranslucent}"
-			 Opacity="0" HorizontalOptions="Center" VerticalOptions="Center">
+	<Border Style="{DynamicResource PopupBorder}" x:Name="PhotoViewer"
+			BackgroundColor="{DynamicResource SurfaceBackgroundWLDarkTranslucent}"
+			Opacity="0" HorizontalOptions="Center" VerticalOptions="Center">
 		<Grid>
 			<VerticalStackLayout Margin="0">
 				<CarouselView x:Name="CarouselView"
@@ -54,5 +54,5 @@
 				<Label Style="{DynamicResource PopupCloseButton}"/>
 			</Grid>
 		</Grid>
-	</Frame>
+	</Border>
 </base:BaseContentPage>

@@ -43,7 +43,7 @@
 				</Grid>
 
 				<!-- Info -->
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border	Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout>
 						<Label Style="{DynamicResource PageTitleLabel}"
 								 HorizontalTextAlignment="Center"
@@ -79,10 +79,10 @@
 
 
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 				<!-- Advanced Information -->
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<mct:Expander>
 						<mct:Expander.Header>
 							<HorizontalStackLayout HorizontalOptions="Center"
@@ -112,7 +112,7 @@
 						<mct:Expander.Content>
 							<VerticalStackLayout>
 								<!-- Personal Information -->
-								<Frame Style="{DynamicResource FrameSubSet}"
+								<Border Style="{DynamicResource BorderSubSet}"
 										 IsVisible="{Binding HasDomain, Converter={StaticResource InvertedBoolConverter}}">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 										<Label Style="{DynamicResource SectionTitleLabel}"
@@ -333,10 +333,10 @@
 											</ScrollView>
 										</Grid>
 									</VerticalStackLayout>
-								</Frame>
+								</Border>
 
 								<!-- Organizational Information -->
-								<Frame Style="{DynamicResource FrameSubSet}"
+								<Border Style="{DynamicResource BorderSubSet}"
 										 IsVisible="{Binding HasOrg}">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 										<Label Style="{DynamicResource SectionTitleLabel}"
@@ -484,10 +484,10 @@
 													 Text="{Binding OrgCountryCode, Converter={converters:CountryCodeToFlagAndName}}" />
 										</Grid>
 									</VerticalStackLayout>
-								</Frame>
+								</Border>
 
 								<!-- Technical Information -->
-								<Frame Style="{DynamicResource FrameSubSet}">
+								<Border Style="{DynamicResource BorderSubSet}">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 										<Label Style="{DynamicResource SectionTitleLabel}"
 												 Text="{l:Localize Technical}" />
@@ -584,12 +584,12 @@
 											</Label>
 										</Grid>
 									</VerticalStackLayout>
-								</Frame>
+								</Border>
 							</VerticalStackLayout>
 
 						</mct:Expander.Content>
 					</mct:Expander>
-				</Frame>
+				</Border>
 
 			</VerticalStackLayout>
 		</ScrollView>

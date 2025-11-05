@@ -20,11 +20,10 @@
 
 			<!-- Touch Circle -->
 			<HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="{DynamicResource LargeSpacing}" Margin="{DynamicResource LargeBottomMargins}">
-				<Frame
+				<Border
 					WidthRequest="{Binding AuthenticationBackgroundSize}"
 					HeightRequest="{Binding AuthenticationBackgroundSize}"
-					HasShadow="False"
-					CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
+					StrokeShape="{Binding AuthenticationBackgroundStrokeShape}"
 					BackgroundColor="{DynamicResource ButtonAccessSecondarybgWL}"
 					HorizontalOptions="Center"
 					IsVisible="{Binding IsFingerprint}">
@@ -36,13 +35,12 @@
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.FingerprintPath}"
 						Fill="{DynamicResource ButtonAccessSecondaryContentWL}" />
-				</Frame>
+				</Border>
 
-				<Frame
+				<Border
 					WidthRequest="{Binding AuthenticationBackgroundSize}"
 					HeightRequest="{Binding AuthenticationBackgroundSize}"
-					HasShadow="False"
-					CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
+					StrokeShape="{Binding AuthenticationBackgroundStrokeShape}"
 					BackgroundColor="{DynamicResource ButtonAccessSecondarybgWL}"
 					HorizontalOptions="Center"
 					IsVisible="{Binding IsFace}">
@@ -54,7 +52,7 @@
 						Aspect="Uniform"
 						Data="{x:Static ui:Geometries.FacePath}"
 						Fill="{DynamicResource ButtonAccessSecondaryContentWL}" />
-				</Frame>
+				</Border>
 			</HorizontalStackLayout>
 
 

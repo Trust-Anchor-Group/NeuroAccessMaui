@@ -26,7 +26,7 @@
 				<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize PetitionIdentity}"/>
 
 				<!-- Photo and QR-code -->
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout>
 
 						<Label HorizontalOptions="Center" VerticalOptions="Center" Text="{l:Localize PetitionIdentityInformationText}"
@@ -61,10 +61,10 @@
 							<Label Style="{DynamicResource ValueLabel}" Text="{Binding State, Converter={converters:LocalizedState}}" />
 						</HorizontalStackLayout>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 				<!-- Personal Information -->
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize PersonalInformation}"/>
 
@@ -133,10 +133,10 @@
 							<Label Grid.Row="13" Grid.Column="1" Margin="{DynamicResource SmallTopMargins}" Style="{DynamicResource ValueLabel}" Text="{Binding BirthDate, Converter={converters:DateToString}}" />
 						</Grid>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 				<!-- Organizational Information -->
-				<Frame Style="{DynamicResource FrameSet}" IsVisible="{Binding HasOrg}">
+				<Border Style="{DynamicResource BorderSet}" IsVisible="{Binding HasOrg}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize OrganizationalInformation}"/>
 
@@ -193,10 +193,10 @@
 							<Label Grid.Row="10" Grid.Column="1" Margin="{DynamicResource SmallTopMargins}" Style="{DynamicResource ValueLabel}" Text="{Binding OrgCountryCode, Converter={converters:CountryCodeToFlagAndName}}" />
 						</Grid>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 				<!-- Technical Information -->
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Technical}"/>
 
@@ -248,7 +248,7 @@
 							</Label>
 						</Grid>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 				<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource SmallSpacing}">
 					<Label HorizontalOptions="Center" VerticalOptions="Center" Text="{l:Localize Options}"

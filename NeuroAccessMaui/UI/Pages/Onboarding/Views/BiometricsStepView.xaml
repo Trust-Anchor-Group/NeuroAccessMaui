@@ -21,13 +21,12 @@
                                    HorizontalOptions="Center"
                                    Spacing="{DynamicResource LargeSpacing}"
                                    Margin="{DynamicResource LargeBottomMargins}">
-                <Frame WidthRequest="{Binding AuthenticationBackgroundSize}"
-                       HeightRequest="{Binding AuthenticationBackgroundSize}"
-                       HasShadow="False"
-                       CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
-                       BackgroundColor="{DynamicResource ButtonAccessSecondarybgWL}"
-                       HorizontalOptions="Center"
-                       IsVisible="{Binding IsFingerprint}">
+                <Border WidthRequest="{Binding AuthenticationBackgroundSize}"
+						HeightRequest="{Binding AuthenticationBackgroundSize}"
+						StrokeShape="{Binding AuthenticationBackgroundStroke}"
+						BackgroundColor="{DynamicResource ButtonAccessSecondarybgWL}"
+						HorizontalOptions="Center"
+						IsVisible="{Binding IsFingerprint}">
                     <Path VerticalOptions="Center"
                           HorizontalOptions="Center"
                           HeightRequest="{Binding AuthenticationIconSize}"
@@ -35,12 +34,11 @@
                           Aspect="Uniform"
                           Data="{x:Static ui:Geometries.FingerprintPath}"
                           Fill="{DynamicResource ButtonAccessSecondaryContentWL}" />
-                </Frame>
+                </Border>
 
-                <Frame WidthRequest="{Binding AuthenticationBackgroundSize}"
+                <Border WidthRequest="{Binding AuthenticationBackgroundSize}"
                        HeightRequest="{Binding AuthenticationBackgroundSize}"
-                       HasShadow="False"
-                       CornerRadius="{Binding AuthenticationBackgroundCornerRadius}"
+                       StrokeShape="{Binding AuthenticationBackgroundStroke}"
                        BackgroundColor="{DynamicResource ButtonAccessSecondarybgWL}"
                        HorizontalOptions="Center"
                        IsVisible="{Binding IsFace}">
@@ -51,7 +49,7 @@
                           Aspect="Uniform"
                           Data="{x:Static ui:Geometries.FacePath}"
                           Fill="{DynamicResource ButtonAccessSecondaryContentWL}" />
-                </Frame>
+                </Border>
             </HorizontalStackLayout>
 
             <Label Style="{DynamicResource SectionTitleLabel}"

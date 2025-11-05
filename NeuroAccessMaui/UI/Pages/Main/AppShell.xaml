@@ -65,10 +65,10 @@
 	</Shell.Resources>
 
 	<Shell.FlyoutHeader>
-		<Frame Style="{DynamicResource ShellFrame}" Background="Transparent" Padding="1" CornerRadius="0">
+		<Border Background="Transparent" Padding="1">
 			<Grid HeightRequest="200">
 			</Grid>
-		</Frame>
+		</Border>
 	</Shell.FlyoutHeader>
 
 	<!-- The main or root page of the app -->

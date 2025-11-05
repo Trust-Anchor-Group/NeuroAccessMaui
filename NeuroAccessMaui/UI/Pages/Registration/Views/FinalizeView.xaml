@@ -22,11 +22,10 @@
 						/>
 							
 					<!-- Checkmark Circle -->
-					<Frame
+					<Border
 						WidthRequest="{Binding CheckmarkBackgroundSize}"
 						HeightRequest="{Binding CheckmarkBackgroundSize}"
-						HasShadow="False"
-						CornerRadius="{Binding CheckmarkBackgroundCornerRadius}"
+						StrokeShape="{Binding CheckmarkBackgroundStrokeShape}"
 						BackgroundColor="{DynamicResource TnPSuccessbgWL}"
 						HorizontalOptions="Center"
 						Margin="{DynamicResource LargeBottomMargins}">
@@ -38,7 +37,7 @@
 							Aspect="Uniform"
 							Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
 							Fill="{DynamicResource TnPSuccessContentWL}" />
-					</Frame>
+					</Border>
 					
 				</VerticalStackLayout>
 			</VerticalStackLayout>

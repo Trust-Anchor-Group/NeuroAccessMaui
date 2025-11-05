@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 		/// <summary>
 		/// Gets the Readius of the background for Camera Icon
 		/// </summary>
-		public double CameraIconBackgroundCornerRadius => this.CameraIconBackgroundSize / 2;
+		public RoundRectangle CameraIconBackgroundStrokeShape => new RoundRectangle { CornerRadius = this.CameraIconBackgroundSize / 2 };
 
 		/// <summary>
 		/// Gets the size of the Camera Icon

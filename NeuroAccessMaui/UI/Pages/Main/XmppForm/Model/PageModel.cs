@@ -2,6 +2,7 @@
 using Waher.Networking.XMPP.DataForms.FieldTypes;
 using Layout = Waher.Networking.XMPP.DataForms.Layout;
 using Waher.Content;
+using Microsoft.Maui.Controls.Shapes;
 
 namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 {
@@ -283,11 +284,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm.Model
 						Layout.Children.Add(View);
 				}
 
-				Frame Frame = new()
+				Border Frame = new()
 				{
-					BorderColor = AppColors.PrimaryForeground,
+					Stroke = AppColors.PrimaryForeground,
 					Padding = new Thickness(10),
-					CornerRadius = 5,
+					StrokeShape = new RoundRectangle
+					{
+						CornerRadius = 5
+					},
 					Content = Layout
 				};
 

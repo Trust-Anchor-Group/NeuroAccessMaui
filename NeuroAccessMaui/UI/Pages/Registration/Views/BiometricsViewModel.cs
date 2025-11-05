@@ -3,6 +3,7 @@ using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
@@ -48,7 +49,7 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		/// <summary>
 		/// Gets the size of the background for the authentication method.
 		/// </summary>
-		public double AuthenticationBackgroundCornerRadius => this.AuthenticationBackgroundSize / 2;
+		public RoundRectangle AuthenticationBackgroundStrokeShape => new RoundRectangle { CornerRadius = this.AuthenticationBackgroundSize / 2 };
 		/// <summary>
 		/// Gets the size of the icon for the authentication method.
 		/// </summary>
