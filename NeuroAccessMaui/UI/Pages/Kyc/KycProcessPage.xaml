@@ -15,7 +15,7 @@
 					  x:DataType="viewmodel:KycProcessViewModel"
 					  xmlns:IDSF="clr-namespace:NeuroAccessMaui.Services.Identity">
 
-	<ContentPage.Resources>
+	<base:BaseContentPage.Resources>
 		<ResourceDictionary>
 			<Style TargetType="Label"
 				   x:Key="SectionHeaderLabel">
@@ -185,7 +185,7 @@
 													SelectedItems="{Binding SelectedOptions, Mode=TwoWay}"
 													SelectionMode="Multiple">
 							<controls:TemplatedSelector.ItemTemplate>
-								<DataTemplate x:DataType="controls:SelectableOption(models:KycOption)">
+								<DataTemplate x:DataType="models:KycOption">
 									<Grid ColumnDefinitions="auto,*" ColumnSpacing="8" Padding="8">
 										<controls:AnimatedCheckbox Grid.Column="0" 
 											StrokeColor="{DynamicResource ContentAccessWL}"
@@ -386,7 +386,7 @@
 											InfoFieldTemplate="{StaticResource InfoFieldTemplate}" />
 
 		</ResourceDictionary>
-	</ContentPage.Resources>
+	</base:BaseContentPage.Resources>
 
 	<controls:ConditionView Condition="{Binding IsLoading}">
 		<controls:ConditionView.True>
@@ -556,10 +556,10 @@
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding PersonalInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="IDSF:DisplayQuad">
-                                    <controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                    <controls:TemplatedButton Command="{Binding GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
                                         <controls:TemplatedButton.Triggers>
                                             <DataTrigger TargetType="controls:TemplatedButton"
-                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}"
                                                         Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
                                                 <Setter Property="InputTransparent" Value="True" />
@@ -576,7 +576,7 @@
 																	</Label>
 																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
 																		<controls:SvgView.Triggers>
-																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
+																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}" Value="True">
 																				<Setter Property="IsVisible" Value="False" />
 																			</DataTrigger>
 																		</controls:SvgView.Triggers>
@@ -596,10 +596,10 @@
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding AddressInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="IDSF:DisplayQuad">
-                                    <controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                    <controls:TemplatedButton Command="{Binding GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
                                         <controls:TemplatedButton.Triggers>
                                             <DataTrigger TargetType="controls:TemplatedButton"
-                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}"
                                                         Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
                                                 <Setter Property="InputTransparent" Value="True" />
@@ -616,7 +616,7 @@
 																	</Label>
 																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
 																		<controls:SvgView.Triggers>
-																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
+																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}" Value="True">
 																				<Setter Property="IsVisible" Value="False" />
 																			</DataTrigger>
 																		</controls:SvgView.Triggers>
@@ -636,10 +636,10 @@
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="IDSF:DisplayQuad">
-                                    <controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                    <controls:TemplatedButton Command="{Binding GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
                                         <controls:TemplatedButton.Triggers>
                                             <DataTrigger TargetType="controls:TemplatedButton"
-                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}"
                                                         Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
                                                 <Setter Property="InputTransparent" Value="True" />
@@ -656,7 +656,7 @@
 																	</Label>
 																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
 																		<controls:SvgView.Triggers>
-																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
+																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}" Value="True">
 																				<Setter Property="IsVisible" Value="False" />
 																			</DataTrigger>
 																		</controls:SvgView.Triggers>
@@ -676,10 +676,10 @@
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyAddressSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="IDSF:DisplayQuad">
-                                    <controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                    <controls:TemplatedButton Command="{Binding GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
                                         <controls:TemplatedButton.Triggers>
                                             <DataTrigger TargetType="controls:TemplatedButton"
-                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}"
                                                         Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
                                                 <Setter Property="InputTransparent" Value="True" />
@@ -690,7 +690,7 @@
 																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
 																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
 																		<controls:SvgView.Triggers>
-																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
+																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}" Value="True">
 																				<Setter Property="IsVisible" Value="False" />
 																			</DataTrigger>
 																		</controls:SvgView.Triggers>
@@ -710,10 +710,10 @@
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyRepresentativeSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="IDSF:DisplayQuad">
-                                    <controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+                                    <controls:TemplatedButton Command="{Binding GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
                                         <controls:TemplatedButton.Triggers>
                                             <DataTrigger TargetType="controls:TemplatedButton"
-                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}"
                                                         Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
                                                 <Setter Property="InputTransparent" Value="True" />
@@ -724,7 +724,7 @@
 																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
 																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
 																		<controls:SvgView.Triggers>
-																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
+																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}" Value="True">
 																				<Setter Property="IsVisible" Value="False" />
 																			</DataTrigger>
 																		</controls:SvgView.Triggers>
@@ -744,10 +744,10 @@
 												<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}" Spacing="{DynamicResource MediumSpacing}">
 													<BindableLayout.ItemTemplate>
 														<DataTemplate x:DataType="IDSF:DisplayQuad">
-															<controls:TemplatedButton Command="{Binding BindingContext.GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
+															<controls:TemplatedButton Command="{Binding GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
 																<controls:TemplatedButton.Triggers>
 																	<DataTrigger TargetType="controls:TemplatedButton"
-																				Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}"
+																				Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}"
 																				Value="True">
 																		<Setter Property="IsEnabled" Value="False" />
 																		<Setter Property="InputTransparent" Value="True" />
@@ -767,7 +767,7 @@
 																		</Label>
 																		<controls:SvgView Grid.Column="2" Source="sign.svg" HeightRequest="24" WidthRequest="24" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
 																			<controls:SvgView.Triggers>
-																				<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type base:BaseContentPage}}, Path=BindingContext.ApplicationSentPublic}" Value="True">
+																				<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}" Value="True">
 																					<Setter Property="IsVisible" Value="False" />
 																				</DataTrigger>
 																			</controls:SvgView.Triggers>

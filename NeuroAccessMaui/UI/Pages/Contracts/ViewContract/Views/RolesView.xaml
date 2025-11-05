@@ -90,28 +90,28 @@
 														<Grid ColumnDefinitions="auto"
 																IsVisible="{Binding HasSigned, Converter={StaticResource InvertedBoolConverter}}">
 															<Border Padding="{DynamicResource SmallLeftRightMargins}"
-																	  Style="{DynamicResource RoundedBorder}"
-																	  Stroke="Transparent"
-																	  BackgroundColor="{DynamicResource BrandColorsNeuroOrangea20}">
+																	Style="{DynamicResource RoundedBorder}"
+																	Stroke="Transparent"
+																	BackgroundColor="{DynamicResource BrandColorsNeuroOrangea20}">
 																<Label Style="{DynamicResource RoleDescriptionLabel}"
-																		 Text="{l:Localize PendingSignature}"
-																		 TextColor="{DynamicResource BrandColorsNeuroOrange}"
-																		 HorizontalOptions="End"
-																		 VerticalOptions="Center"
-																		 HorizontalTextAlignment="End" />
+																		Text="{l:Localize PendingSignature}"
+																		TextColor="{DynamicResource BrandColorsNeuroOrange}"
+																		HorizontalOptions="End"
+																		VerticalOptions="Center"
+																		HorizontalTextAlignment="End" />
 															</Border>
 														</Grid>
 													</VerticalStackLayout>
 
 													<!-- View signature button (if signed) -->
 												<VerticalStackLayout Grid.Column="1"
-																			 HorizontalOptions="End"
-																			 Spacing="{DynamicResource SmallSpacing}">
-													<controls:TemplatedButton Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.SendProposalToPartCommand}"
-																						  CommandParameter="{Binding .}"
-																						  IsVisible="{Binding CanSendProposal}"
-																						  VerticalOptions="End"
-																						  HorizontalOptions="End">
+																		HorizontalOptions="End"
+																		Spacing="{DynamicResource SmallSpacing}">
+													<controls:TemplatedButton Command="{Binding SendProposalToPartCommand, Source={RelativeSource AncestorType={x:Type base:ViewContractViewModel}}, x:DataType=base:ViewContractViewModel}"
+																				CommandParameter="{Binding .}"
+																				IsVisible="{Binding CanSendProposal}"
+																				VerticalOptions="End"
+																				HorizontalOptions="End">
 														<Border Style="{DynamicResource FilledTemplateButtonBorder}"
 																  Margin="0">
 															<Label Text="{l:Localize SendProposal}"
