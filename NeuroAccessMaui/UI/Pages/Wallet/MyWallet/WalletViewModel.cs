@@ -108,9 +108,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 			: this.ReservedDecimal + " " + this.Currency;
 
 		/// <summary>
-		/// If there is a reserved amount.
+		/// If there is a reserved amount. Only show once balance fetch is complete.
 		/// </summary>
-		public bool HasReserved => this.ReservedDecimal >0 || this.ReservedDecimal == -1;
+		public bool HasReserved => (this.ReservedDecimal > 0 || this.ReservedDecimal == -1) && this.GetBalanceTask.IsSucceeded;
 
 		#endregion
 
