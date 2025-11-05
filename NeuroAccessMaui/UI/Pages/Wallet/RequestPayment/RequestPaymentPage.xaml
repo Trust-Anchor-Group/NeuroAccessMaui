@@ -17,8 +17,8 @@
 
 		<ScrollView x:Name="ScrollView">
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="16,0,16,16">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+				<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+									Style="{DynamicResource IconButton}" SvgSource="close.svg" />
 
 				<Label Text="{l:Localize RequestPayment}" Style="{DynamicResource PageTitleLabel}"/>
 

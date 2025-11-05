@@ -189,7 +189,7 @@
         <DataTemplate x:Key="ClickableFieldTemplate" x:DataType="objectModel:ObservableFieldItem">
             <Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
                 <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.FieldTappedCommand}" CommandParameter="{Binding Value}" />
+					<TapGestureRecognizer Command="{Binding FieldTappedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ViewIdentityViewModel}}, x:DataType=viewmodel:ViewIdentityViewModel}" CommandParameter="{Binding Value}" />
                 </Grid.GestureRecognizers>
 
                 <Label
@@ -568,7 +568,7 @@
                                                         Source="{Binding Source}"
                                                         WidthRequest="64">
                                                         <Image.GestureRecognizers>
-                                                            <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ImageTappedCommand}" CommandParameter="{Binding Attachment}" />
+                                                            <TapGestureRecognizer Command="{Binding ImageTappedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ViewIdentityViewModel}}, x:DataType=viewmodel:ViewIdentityViewModel}" CommandParameter="{Binding Attachment}" />
                                                         </Image.GestureRecognizers>
                                                     </Image>
                                                 </DataTemplate>

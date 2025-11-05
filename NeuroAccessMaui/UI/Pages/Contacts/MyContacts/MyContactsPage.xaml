@@ -54,28 +54,28 @@
 											IsVisible="{Binding IsFriend}"/>
 
 									<Label Grid.Column="1" HorizontalOptions="Start" VerticalTextAlignment="Center" LineBreakMode="TailTruncation"
-										   Text="{Binding Path=FriendlyName}" Style="{DynamicResource Brand2LabelS}"/>
+										   Text="{Binding FriendlyName}" Style="{DynamicResource Brand2LabelS}"/>
 
-									<Frame Grid.Column="2" CornerRadius="12" Padding="8,3,8,3" IsVisible="{Binding HasEvents}"
-										   HorizontalOptions="End" VerticalOptions="Center" Style="{DynamicResource AlertFrame}">
+									<Border Grid.Column="2" StrokeShape="RoundRectangle 12" Padding="8,3,8,3" IsVisible="{Binding HasEvents}"
+										   HorizontalOptions="End" VerticalOptions="Center" Style="{DynamicResource RedButtonActiveBorder}">
 										<Label Style="{DynamicResource AlertLabel}" Text="{Binding NrEvents}" Padding="1"/>
-									</Frame>
+									</Border>
 
 									<controls:SvgButton SvgSource="chat.svg" Style="{DynamicResource IconButtonOnBackground}"
 														VerticalOptions="Center"
 														Grid.Column="3"
 														Command="{Binding ViewChatCommand}"
-														IsVisible="{Binding Source={x:Reference ThisPage}, Path=BindingContext.IsViewMode}"/>
+														IsVisible="{Binding IsViewMode, Source={RelativeSource AncestorType={x:Type viewmodel:ContactListViewModel}}, x:DataType=viewmodel:ContactListViewModel}"/>
 
 									<controls:SvgButton SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
 														VerticalOptions="Center"
 														Grid.Column="4"
 														Command="{Binding ViewContactCommand}"
-														IsVisible="{Binding Source={x:Reference ThisPage}, Path=BindingContext.IsViewMode}"/> 
+														IsVisible="{Binding IsViewMode, Source={RelativeSource AncestorType={x:Type viewmodel:ContactListViewModel}}, x:DataType=viewmodel:ContactListViewModel}"/>
 								</Grid>
 
 								<Border.GestureRecognizers>
-									<TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.SelectContactCommand}" CommandParameter="{Binding .}" />
+									<TapGestureRecognizer Command="{Binding SelectContactCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ContactListViewModel}}, x:DataType=viewmodel:ContactListViewModel}" CommandParameter="{Binding .}" />
 								</Border.GestureRecognizers>
 							</Border>
 						</DataTemplate>
@@ -91,7 +91,7 @@
 
 		<ScrollView>
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="8,0,8,8">
-				<Grid ColumnDefinitions="*, auto" Margin="8,8,8,0">
+				<Grid ColumnDefinitions="*, auto" Margin="8,0,8,0">
 					<controls:SvgButton
 						Grid.Row="0" Grid.Column="0"
 						Command="{Binding GoBackCommand}"
@@ -119,7 +119,7 @@
 										 EntryData="{Binding SearchText, Mode=TwoWay}"
 										 Style="{DynamicResource RegularCompositeEntry}"
 										 Margin="8,0,8,0"
-										 IsVisible="{Binding Path=ShowContactsMissing, Converter={StaticResource InvertedBoolConverter}}">
+										 IsVisible="{Binding ShowContactsMissing, Converter={StaticResource InvertedBoolConverter}}">
 					<controls:CompositeEntry.LeftView>
 						<controls:SvgView Source="search.svg"/>
 					</controls:CompositeEntry.LeftView>
