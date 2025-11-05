@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Name="ThisPage"
 					  x:Class="NeuroAccessMaui.UI.Pages.Wallet.MyWallet.WalletPage"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet"
 					  x:DataType="viewmodel:WalletViewModel"
 					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -10,8 +11,7 @@
 					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-					  xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels"
-					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet">
+					  xmlns:objectmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels">
 	<VisualElement.Resources>
 		<DataTemplate x:Key="DefaultTemplate">
 			<Grid />

@@ -52,7 +52,6 @@ using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
 using Waher.Events;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
-using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI.Pages.Startup;
 
 namespace NeuroAccessMaui.UI.Pages.Main

@@ -38,7 +38,6 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Script.Constants;
 using Waher.Script.Functions.ComplexNumbers;
-using System.Collections.ObjectModel;
 using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet

@@ -23,7 +23,6 @@ using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
-using NeuroAccessMaui.Services.Cache.Invalidation;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
