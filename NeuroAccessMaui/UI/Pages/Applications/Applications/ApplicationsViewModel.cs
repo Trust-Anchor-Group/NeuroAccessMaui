@@ -80,8 +80,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		public bool HasApplications => this.Applications.Count > 0; // legacy, not used by current UI
 
 		public bool ShowProgressBar => this.CurrentApplication is not null
-										&& (this.CurrentApplication.CreatedIdentityState is null
-										|| this.CurrentApplication.CreatedIdentityState == IdentityState.Created);
+									&& (this.CurrentApplication.CreatedIdentityState is null
+									|| this.CurrentApplication.CreatedIdentityState == IdentityState.Created);
 
 		partial void OnHasMoreAvailableTemplatesChanged(bool value)
 		{
@@ -94,17 +94,19 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		public ApplicationsViewModel()
 			: base()
 		{
-			// Kick off first load. We also pass commands so they get NotifyCanExecuteChanged when state changes.
+			// Disable auto-start to avoid immediate generation superseding reload in OnAppearing.
 			this.Loader = new ObservableTaskBuilder()
 				.Named("LoadApplications")
+				.AutoStart(false)
 				.WithPolicy(Policies.Retry(3, (attempt, ex) => TimeSpan.FromMilliseconds(250 * attempt * attempt)))
-				.WithTelemetry(new LoggerTelemetry()) // when you have a telemetry sink
-				.UseTaskRun(false) // IO-bound work; keep default path
+				.WithTelemetry(new LoggerTelemetry())
+				.UseTaskRun(false)
 				.Run(this.LoadApplicationsAsync)
 				.Build(this.CreateNewApplicationCommand, this.OpenApplicationCommand);
 
 			this.AvailableLoader = new ObservableTaskBuilder()
 				.Named("LoadAvailableApplications")
+				.AutoStart(false)
 				.WithPolicy(Policies.Retry(3, (attempt, ex) => TimeSpan.FromMilliseconds(250 * attempt * attempt)))
 				.WithTelemetry(new LoggerTelemetry())
 				.UseTaskRun(false)
@@ -124,8 +126,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
 
 			await base.OnInitializeAsync();
-
-
 
 			this.NotifyCommandsCanExecuteChanged();
 		}
@@ -172,11 +172,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			await base.OnAppearingAsync();
 
-			// Ensure data reflects latest storage state each time page appears
-			this.Loader.Reload();
-			this.AvailableLoader.Reload();
+			this.Loader.Run();
+			this.AvailableLoader.Run();
 
-			// Page is not correctly updated if changes has happened when viewing a sub-view. Fix by resending notification.
+			// Page is not correctly updated if changes happened when viewing a sub-view. Fix by resending notification.
 			bool IdApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
 			if (this.IdentityApplicationSent != IdApplicationSent)
 				this.IdentityApplicationSent = IdApplicationSent;
@@ -206,11 +205,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			this.CreateNewApplicationCommand.NotifyCanExecuteChanged();
 			this.OpenApplicationCommand.NotifyCanExecuteChanged();
 			this.LoadMoreAvailableApplicationsCommand.NotifyCanExecuteChanged();
-
-			// Optionally also surface loader commands in UI, so keep them fresh:
-	//		this.Loader.CancelCommand.NotifyCanExecuteChanged();
-	//		this.Loader.ReloadCommand.NotifyCanExecuteChanged();
-	//		this.Loader.RefreshCommand.NotifyCanExecuteChanged();
 		}
 
 		#region Properties
@@ -241,7 +235,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			try
 			{
-				// Capture fields from the most recent application (current or latest previous)
 				KycFieldValue[]? PreviousFields = null;
 
 				if (this.CurrentApplication is not null)
@@ -257,13 +250,11 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 						if (!string.IsNullOrEmpty(this.CurrentApplication.CreatedIdentityId))
 						{
-							// Fetch latest state of the created identity
 							LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(this.CurrentApplication.CreatedIdentityId);
 							if (Identity.State == IdentityState.Created)
 							{
 								IAuthenticationService Auth = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
 
-								// Confirm and authenticate for revoking/obsoleting application
 								if (!await Auth.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
 									return;
 
