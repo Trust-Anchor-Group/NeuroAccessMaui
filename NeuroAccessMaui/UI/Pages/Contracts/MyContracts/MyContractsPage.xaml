@@ -32,12 +32,12 @@
 						</FormattedString>
 					</Label.FormattedText>
 				</Label>
-				<Frame Grid.Row="0" Grid.Column="0" CornerRadius="12" Margin="2" Padding="8,3,8,3"
-						 IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
-						 Style="{DynamicResource AlertFrame}">
+				<Border Grid.Row="0" Grid.Column="0" StrokeShape="RoundRectangle 12" Margin="2" Padding="8,3,8,3"
+						IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
+						Style="{DynamicResource RedButtonActiveBorder}">
 					<Label FontSize="Caption" Text="{Binding NrEvents}" Padding="1"
 							 TextColor="{DynamicResource ContentWhitefixed}" />
-				</Frame>
+				</Border>
 				<Path Grid.Column="1" Grid.Row="0" HorizontalOptions="End" VerticalOptions="Center"
 						Data="{Binding Symbol}" HeightRequest="16" WidthRequest="16" Aspect="Uniform"
 						Fill="{DynamicResource ButtonNeutralSecondaryContent}"/>
@@ -55,21 +55,21 @@
 				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="CharacterWrap" TextType="Text"
 					   HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,2,5,2" Margin="5"
 					   Text="{Binding Path=NameOrCategory}" Style="{DynamicResource ClickableValueLabel}"/>
-				<Frame Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" CornerRadius="12" Margin="2" Padding="8,3,8,3"
-					   IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
-					   Style="{DynamicResource AlertFrame}">
+				<Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" StrokeShape="RoundRectangle 12" Margin="2" Padding="8,3,8,3"
+						IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
+						Style="{DynamicResource RedButtonActiveBorder}">
 					<Label FontSize="Caption" TextColor="{DynamicResource ContentWhitefixed}"
 						   Text="{Binding NrEvents}" Padding="1"/>
-				</Frame>
+				</Border>
 				<!-- Share Template QR button -->
 				<controls:SvgButton Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
 									SvgSource="share.svg"
 									Style="{DynamicResource IconButtonOnBackground}"
 									HorizontalOptions="End"
 									VerticalOptions="Center"
-									Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ShareTemplateQRCommand}"
+									Command="{Binding ShareTemplateQRCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
 									CommandParameter="{Binding .}"
-									IsVisible="{Binding Source={x:Reference ThisPage}, Path=BindingContext.CanShareTemplate}" />
+									IsVisible="{Binding CanShareTemplate, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}" />
 			</Grid>
 		</DataTemplate>
 

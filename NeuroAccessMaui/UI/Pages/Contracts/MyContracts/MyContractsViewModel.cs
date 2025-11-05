@@ -276,8 +276,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				int Width = Constants.QrCode.DefaultImageWidth;
 				int Height = Constants.QrCode.DefaultImageHeight;
 				byte[] QrBytes = Services.UI.QR.QrCode.GeneratePng(ContractUri, Width, Height);
-				ShowQRViewModel ViewModel = new ShowQRViewModel(QrBytes, ContractUri, ContractName);
-				await ServiceRef.PopupService.PushAsync<ShowQRPopup, ShowQRViewModel>(ViewModel);
+
+				ShowQRPopup QrPopup = new ShowQRPopup(QrBytes, ContractUri, ContractName);
+				await ServiceRef.PopupService.PushAsync(QrPopup);
 			}
 			catch (Exception Ex)
 			{
