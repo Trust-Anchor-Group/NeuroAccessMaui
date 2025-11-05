@@ -32,7 +32,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private readonly TaskCompletionSource<Contract?>? selection;
 		private Contract? selectedContract = null;
 
-		public bool CanShareTemplate = false;
+		[ObservableProperty]
+		private bool canShareTemplate;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="MyContractsViewModel"/> class.
@@ -54,6 +55,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					case ContractsListMode.Contracts:
 						this.Title = ServiceRef.Localizer[nameof(AppResources.Contracts)];
 						this.Description = ServiceRef.Localizer[nameof(AppResources.ContractsInfoText)];
+						this.CanShareTemplate = false;
 						break;
 
 					case ContractsListMode.ContractTemplates:
@@ -65,6 +67,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					case ContractsListMode.TokenCreationTemplates:
 						this.Title = ServiceRef.Localizer[nameof(AppResources.TokenCreationTemplates)];
 						this.Description = ServiceRef.Localizer[nameof(AppResources.TokenCreationTemplatesInfoText)];
+						this.CanShareTemplate = true;
 						break;
 				}
 			}

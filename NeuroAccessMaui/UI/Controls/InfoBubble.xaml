@@ -6,7 +6,7 @@
 	xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 	x:Name="This">
 
-	<Border	BackgroundColor="{Binding BackgroundColor, Source={x:Reference This}}"
+	<Border	BackgroundColor="{Binding BackgroundColor, Source={RelativeSource AncestorType={x:Type controls:InfoBubble}}, x:DataType=controls:InfoBubble}"
 			Padding="{DynamicResource MediumMargins}"
 			StrokeShape="RoundRectangle 16,16,0,16"
 			VerticalOptions="Center">
@@ -16,16 +16,16 @@
 		<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
 			  ColumnDefinitions="auto, *">
 			<controls:SvgView
-				Source="{Binding SvgSource, Source={x:Reference This}}"
+				Source="{Binding SvgSource, Source={RelativeSource AncestorType={x:Type controls:InfoBubble}}, x:DataType=controls:InfoBubble}"
 				WidthRequest="20"
 				HeightRequest="20"
 				VerticalOptions="Start"
-				TintColor="{Binding ContentColor, Source={x:Reference This}}"/>
+				TintColor="{Binding ContentColor, Source={RelativeSource AncestorType={x:Type controls:InfoBubble}}, x:DataType=controls:InfoBubble}"/>
 			<Label
 				Grid.Column="1"
 				VerticalOptions="Start"
-				Text="{Binding LabelText, Source={x:Reference This}}"
-				TextColor="{Binding ContentColor, Source={x:Reference This}}"
+				Text="{Binding LabelText, Source={RelativeSource AncestorType={x:Type controls:InfoBubble}}, x:DataType=controls:InfoBubble}"
+				TextColor="{Binding ContentColor, Source={RelativeSource AncestorType={x:Type controls:InfoBubble}}, x:DataType=controls:InfoBubble}"
 				Style="{DynamicResource InfoLabel}"/>
 		</Grid>
 	</Border>

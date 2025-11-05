@@ -28,7 +28,7 @@
 				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{DynamicResource KeyLabel}" LineBreakMode="WordWrap"/>
 				<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{DynamicResource ClickableValueLabel}">
 					<Label.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference SensorData}}" CommandParameter="{Binding}" />
+						<TapGestureRecognizer Command="{Binding ClickCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ReadSensorViewModel}}, x:DataType=viewmodel:ReadSensorViewModel}" CommandParameter="{Binding}" />
 					</Label.GestureRecognizers>
 				</Label>
 			</Grid>
@@ -40,7 +40,7 @@
 				<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=ValueString}" Style="{DynamicResource ClickableValueLabel}"
 					   HorizontalTextAlignment="{Binding HorizontalAlignment}">
 					<Label.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference SensorData}}" CommandParameter="{Binding}" />
+						<TapGestureRecognizer Command="{Binding ClickCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ReadSensorViewModel}}, x:DataType=viewmodel:ReadSensorViewModel}" CommandParameter="{Binding}" />
 					</Label.GestureRecognizers>
 				</Label>
 			</Grid>
@@ -49,7 +49,7 @@
 		<DataTemplate x:Key="ErrorModelTemplate" x:DataType="model:ErrorModel">
 			<Label LineBreakMode="WordWrap" Text="{Binding Path=ErrorMessage}" Style="{DynamicResource AlertLabel}">
 				<Label.GestureRecognizers>
-					<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference SensorData}}" CommandParameter="{Binding}" />
+					<TapGestureRecognizer Command="{Binding ClickCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ReadSensorViewModel}}, x:DataType=viewmodel:ReadSensorViewModel}" CommandParameter="{Binding}" />
 				</Label.GestureRecognizers>
 			</Label>
 		</DataTemplate>

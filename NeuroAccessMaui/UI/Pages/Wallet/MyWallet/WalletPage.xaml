@@ -55,7 +55,7 @@
 					</Label.FormattedText>
 				</Label>
 				<Grid.GestureRecognizers>
-					<TapGestureRecognizer Command="{Binding Path=BindingContext.ShowPaymentItemCommand, Source={x:Reference ThisPage}}"
+					<TapGestureRecognizer Command="{Binding ShowPaymentItemCommand, Source={RelativeSource AncestorType={x:Type viewmodel:WalletViewModel}}, x:DataType=viewmodel:WalletViewModel}"
 										  CommandParameter="{Binding}" />
 				</Grid.GestureRecognizers>
 			</Grid>
@@ -128,7 +128,7 @@
 					   IsVisible="{Binding Path=HasMessage}"
 					   LineBreakMode="TailTruncation" />
 				<Grid.GestureRecognizers>
-					<TapGestureRecognizer Command="{Binding Path=BindingContext.ShowPaymentItemCommand, Source={x:Reference ThisPage}}"
+					<TapGestureRecognizer Command="{Binding ShowPaymentItemCommand, Source={RelativeSource AncestorType={x:Type viewmodel:WalletViewModel}}, x:DataType=viewmodel:WalletViewModel}"
 										  CommandParameter="{Binding}" />
 				</Grid.GestureRecognizers>
 			</Grid>

@@ -41,7 +41,7 @@
 													LineBreakMode="TailTruncation"
 													Text="{Binding Path=LocalizedValue}">
 												<Label.GestureRecognizers>
-													<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference TagLayout}}"
+													<TapGestureRecognizer Command="{Binding ClickCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ViewClaimThingViewModel}}, x:DataType=viewmodel:ViewClaimThingViewModel}"
 													  CommandParameter="{Binding}" />
 												</Label.GestureRecognizers>
 											</Label>
