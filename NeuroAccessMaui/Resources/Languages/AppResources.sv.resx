@@ -3226,10 +3226,10 @@
     <value>Du kan dela denna QR-kod med en annan användare för att behandlas senare, antingen när den behövs eller när uppkoppling finns.</value>
   </data>
   <data name="RequestCredits" xml:space="preserve">
-    <value>Begär krediter</value>
+    <value>Begär</value>
   </data>
   <data name="SendCredits" xml:space="preserve">
-    <value>Skicka krediter</value>
+    <value>Skicka</value>
   </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> och </value>

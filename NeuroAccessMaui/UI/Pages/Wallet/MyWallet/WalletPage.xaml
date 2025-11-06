@@ -252,16 +252,20 @@
 		</Border>
 
 		<Grid VerticalOptions="End" Grid.Row="2" ColumnDefinitions="*,*" Margin="16" ColumnSpacing="8">
-			<controls:TextButton Style="{DynamicResource SecondaryButton}"
-									LabelData="{l:Localize RequestCredits}"
-									HeightRequest="48"
-									Command="{Binding ViewRequestPaymentCommand}"/>
+			<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
+								LabelText="{l:Localize RequestCredits}"
+								LabelPosition="Right"
+								HeightRequest="48"
+								SvgSource="transfer.svg"
+								Command="{Binding ViewRequestPaymentCommand}"/>
 
-			<controls:TextButton Style="{DynamicResource SecondaryButton}"
-									LabelData="{l:Localize SendCredits}"
-									HeightRequest="48"
-									Command="{Binding SendEdalerCommand}"
-									Grid.Column="1"/>
+			<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
+								LabelText="{l:Localize SendCredits}"
+								LabelPosition="Right"
+								HeightRequest="48"
+								SvgSource="transfer.svg"
+								Command="{Binding SendEdalerCommand}"
+								Grid.Column="1"/>
 		</Grid>
 
 		<!-- Bottom Bar -->

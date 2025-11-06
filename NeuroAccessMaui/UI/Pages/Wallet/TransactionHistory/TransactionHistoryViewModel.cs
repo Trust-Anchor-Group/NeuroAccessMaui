@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
+using EDaler.Events; // Added for BalanceEventArgs
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.MVVM;
@@ -53,12 +54,19 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 			this.ApplyFilter();
 		}
 
-
 		/// <inheritdoc />
 		public override async Task OnInitializeAsync()
 		{
 			await base.OnInitializeAsync();
+			ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
 			await this.LoadInitialAsync();
+		}
+
+		/// <inheritdoc />
+		public override async Task OnDisposeAsync()
+		{
+			ServiceRef.XmppService.EDalerBalanceUpdated -= this.Wallet_BalanceUpdated;
+			await base.OnDisposeAsync();
 		}
 
 		private async Task EnsureCurrencyAsync()
@@ -188,6 +196,53 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory
 			finally
 			{
 				this.IsLoading = false;
+			}
+		}
+
+		/// <summary>
+		/// Adds the latest balance event (incoming payment) to the top of the collections if applicable.
+		/// </summary>
+		private async Task Wallet_BalanceUpdated(object? sender, BalanceEventArgs e)
+		{
+			try
+			{
+				await this.EnsureCurrencyAsync();
+				AccountEventModel? Evt = e.Balance?.Event;
+				if (Evt is null)
+					return;
+
+				string Remote = Evt.Remote;
+				string Friendly = await ContactInfo.GetFriendlyName(Remote);
+				string[] FriendlyParts = Friendly.Split('@');
+				Friendly = FriendlyParts[0];
+				string TransactionType = ServiceRef.Localizer[nameof(AppResources.Transfer)].Value;
+				string CurrencyLocal = this.currency ?? string.Empty;
+				TransactionEventItem Item = new(Evt, Friendly, CurrencyLocal, TransactionType);
+
+				// Insert at beginning of backing list (newest first)
+				this.allEvents.Insert(0, Item);
+
+				bool passesFilter = true;
+				if (!string.IsNullOrWhiteSpace(this.SearchText))
+				{
+					string filterLower = this.SearchText.Trim().ToLowerInvariant();
+					passesFilter = (Item.FriendlyName ?? string.Empty).ToLowerInvariant().Contains(filterLower);
+				}
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					if (passesFilter)
+					{
+						this.Events.Insert(0, Item);
+					}
+					// Update oldest timestamp tracking
+					if (!this.lastLoadedOldestTimestamp.HasValue || Evt.Timestamp < this.lastLoadedOldestTimestamp.Value)
+						this.lastLoadedOldestTimestamp = Evt.Timestamp;
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 

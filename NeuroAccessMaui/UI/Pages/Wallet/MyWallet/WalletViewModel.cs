@@ -134,7 +134,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		public override async Task OnInitializeAsync()
 		{
 			await base.OnInitializeAsync();
-			this.GetBalanceTask.Load(this.LoadBalanceAsync);
 
 			// Uncomment if event handlers are needed
 			ServiceRef.XmppService.EDalerBalanceUpdated += this.Wallet_BalanceUpdated;
