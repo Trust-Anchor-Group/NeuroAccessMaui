@@ -5,8 +5,13 @@
              x:Class="NeuroAccessMaui.UI.Pages.Startup.LoadingPage"
              xmlns:skiaLottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              BackgroundColor="White">
-    <VerticalStackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="20">
-        <ActivityIndicator IsRunning="True" WidthRequest="50" HeightRequest="50"/>
-        <Label Text="Loading..." HorizontalOptions="Center"/>
+    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20">
+        <skiaLottie:SKLottieView
+            x:Name="RainbowView"
+            HeightRequest="120"
+            WidthRequest="120"
+            HorizontalOptions="Center"
+            RepeatCount="-1"
+            Source="access-loading.json" />
     </VerticalStackLayout>
 </base:BaseContentPage>
