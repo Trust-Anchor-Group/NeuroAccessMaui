@@ -1,6 +1,5 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Maui.Controls;
 
 namespace NeuroAccessMaui.UI.Controls
 {
@@ -11,7 +10,7 @@ namespace NeuroAccessMaui.UI.Controls
 	{
 		private string key = string.Empty;
 		private string title = string.Empty;
-		private ImageSource? icon;
+		private string? icon;
 		private int? badgeCount;
 		private bool isEnabled = true;
 		private bool isProminent;
@@ -41,7 +40,7 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <summary>
 		/// Gets or sets the icon image displayed alongside the title.
 		/// </summary>
-		public ImageSource? Icon
+		public string? Icon
 		{
 			get => this.icon;
 			set => this.SetProperty(ref this.icon, value);

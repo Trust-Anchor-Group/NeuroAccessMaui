@@ -256,6 +256,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<CalculatorPage, CalculatorViewModel>();
 			Builder.Services.AddTransient<ChangePasswordPage, ChangePasswordViewModel>();
 			Builder.Services.AddTransient<DurationPage, DurationViewModel>();
+			Builder.Services.AddTransient<HomePage, HomeViewModel>();
 			Builder.Services.AddTransient<MainPage, MainViewModel>();
 			Builder.Services.AddTransient<ScanQrCodePage, ScanQrCodeViewModel>();
 			Builder.Services.AddTransient<SettingsPage, SettingsViewModel>();

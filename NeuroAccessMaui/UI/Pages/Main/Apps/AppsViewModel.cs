@@ -18,7 +18,7 @@ using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Apps
 {
-    public partial class AppsViewModel : BaseViewModel
+	public partial class AppsViewModel : BaseViewModel
 	{
 		private bool hasBetaFeatures;
 
@@ -35,6 +35,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 
 		// Binding for selecting between NeuroIconButton and NeuroIconButtonDisabled style depending on if has beta features enabled
 		public Style BetaButtonStyle => this.HasBetaFeatures ? AppStyles.NeuroIconButton : AppStyles.NeuroIconButtonDisabled;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the legacy bottom navigation bar should be visible.
+		/// </summary>
+		[ObservableProperty]
+		private bool showBottomNavigation = true;
 
 		#region Navigation Commands
 

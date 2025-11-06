@@ -186,6 +186,7 @@
 							RightLabelText="{l:Localize Apps}"
 							LeftCommand="{Binding ViewMainPageCommand}"
 							CenterCommand="{Binding ShowWalletBottombarCommand}"
+							IsVisible="{Binding ShowBottomNavigation}"
 							Grid.Row="2"/>
 	</Grid>
 </base:BaseContentPage>

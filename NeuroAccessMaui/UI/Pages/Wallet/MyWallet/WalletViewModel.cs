@@ -75,6 +75,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 		[ObservableProperty]
 		private DateTime? balanceUpdated = ServiceRef.TagProfile.LastEDalerBalanceUpdate;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the bottom navigation bar should be visible.
+		/// </summary>
+		[ObservableProperty]
+		private bool showBottomNavigation = true;
+
 		#endregion
 
 		#region Computed Properties

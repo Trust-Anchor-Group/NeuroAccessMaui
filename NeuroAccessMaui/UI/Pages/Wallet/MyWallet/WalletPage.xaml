@@ -275,6 +275,7 @@
 							CenterLabelText="{l:Localize Wallet}"
 							RightLabelText="{l:Localize Apps}"
 							LeftCommand="{Binding ViewMainPageCommand}"
-							RightCommand="{Binding ViewAppsCommand}"/>
+							RightCommand="{Binding ViewAppsCommand}"
+							IsVisible="{Binding ShowBottomNavigation}"/>
 	</Grid>
 </base:BaseContentPage>
