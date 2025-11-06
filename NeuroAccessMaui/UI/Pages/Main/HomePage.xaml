@@ -10,8 +10,7 @@
 						xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 						xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main"
 						xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-						 Shell.FlyoutBehavior="Flyout"
-						Shell.NavBarIsVisible="False">
+						 >
 <!--
 	<Shell.TitleView>
 		<Grid Padding="10">

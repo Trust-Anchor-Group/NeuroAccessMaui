@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Maui.Controls;
 using NeuroAccessMaui.Services;
+using Waher.Content.Html.Elements;
 
 namespace NeuroAccessMaui.UI
 {
@@ -60,26 +61,50 @@ namespace NeuroAccessMaui.UI
 		{
 			ArgumentNullException.ThrowIfNull(screen);
 
-			SafeAreaMode mode = GetMode(screen);
+			SafeAreaMode Mode = GetMode(screen);
+
+			if (Mode == SafeAreaMode.Ignore)
+				return new Thickness(0);
+
+			if (Mode == SafeAreaMode.Custom)
+				return GetCustomPadding(screen);
+
+			Thickness Insets = ServiceRef.PlatformSpecific.GetInsets();
+
+			return Mode switch
+			{
+				SafeAreaMode.Top => new Thickness(0, Insets.Top, 0, 0),
+				SafeAreaMode.Bottom => new Thickness(0, 0, 0, Insets.Bottom),
+				SafeAreaMode.TopAndBottom => new Thickness(0, Insets.Top, 0, Insets.Bottom),
+				SafeAreaMode.Right => new Thickness(0, 0, Insets.Right, 0),
+				SafeAreaMode.Left => new Thickness(Insets.Left, 0, 0, 0),
+				SafeAreaMode.RightAndLeft => new Thickness(Insets.Left, 0, Insets.Right, 0),
+				SafeAreaMode.All => Insets,
+				_ => Insets
+			};
+		}
+
+		public static Thickness ResolveInsetsForMode(SafeAreaMode mode)
+		{
 
 			if (mode == SafeAreaMode.Ignore)
 				return new Thickness(0);
 
 			if (mode == SafeAreaMode.Custom)
-				return GetCustomPadding(screen);
+				return new Thickness(0);
 
-			Thickness insets = ServiceRef.PlatformSpecific.GetInsets();
+			Thickness Insets = ServiceRef.PlatformSpecific.GetInsets();
 
 			return mode switch
 			{
-				SafeAreaMode.Top => new Thickness(0, insets.Top, 0, 0),
-				SafeAreaMode.Bottom => new Thickness(0, 0, 0, insets.Bottom),
-				SafeAreaMode.TopAndBottom => new Thickness(0, insets.Top, 0, insets.Bottom),
-				SafeAreaMode.Right => new Thickness(0, 0, insets.Right, 0),
-				SafeAreaMode.Left => new Thickness(insets.Left, 0, 0, 0),
-				SafeAreaMode.RightAndLeft => new Thickness(insets.Left, 0, insets.Right, 0),
-				SafeAreaMode.All => insets,
-				_ => insets
+				SafeAreaMode.Top => new Thickness(0, Insets.Top, 0, 0),
+				SafeAreaMode.Bottom => new Thickness(0, 0, 0, Insets.Bottom),
+				SafeAreaMode.TopAndBottom => new Thickness(0, Insets.Top, 0, Insets.Bottom),
+				SafeAreaMode.Right => new Thickness(0, 0, Insets.Right, 0),
+				SafeAreaMode.Left => new Thickness(Insets.Left, 0, 0, 0),
+				SafeAreaMode.RightAndLeft => new Thickness(Insets.Left, 0, Insets.Right, 0),
+				SafeAreaMode.All => Insets,
+				_ => Insets
 			};
 		}
 	}

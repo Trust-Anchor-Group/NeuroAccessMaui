@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
              x:Class="NeuroAccessMaui.UI.Pages.Startup.LoadingPage"
+             xmlns:skiaLottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              BackgroundColor="White">
     <VerticalStackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="20">
         <ActivityIndicator IsRunning="True" WidthRequest="50" HeightRequest="50"/>
