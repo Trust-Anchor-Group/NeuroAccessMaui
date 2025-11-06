@@ -1,5 +1,4 @@
-
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI;
@@ -15,6 +14,7 @@ using NeuroAccessMaui.Resources.Languages;
 using System.Runtime.CompilerServices;
 using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.Services.Authentication;
+using System; // For EventHandler
 
 namespace NeuroAccessMaui.UI.Pages.Main.Apps
 {
@@ -27,20 +27,59 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 			this.hasBetaFeatures = ServiceRef.TagProfile.HasBetaFeatures;
 		}
 
+		/// <summary>
+		/// Indicates if beta features are enabled in the profile.
+		/// </summary>
 		public bool HasBetaFeatures
 		{
 			get => this.hasBetaFeatures;
-			set => this.hasBetaFeatures = value;
+			set
+			{
+				if (this.hasBetaFeatures == value)
+					return;
+				this.hasBetaFeatures = value;
+				this.OnPropertyChanged(nameof(this.HasBetaFeatures));
+				this.OnPropertyChanged(nameof(this.BetaButtonStyle));
+			}
 		}
 
-		// Binding for selecting between NeuroIconButton and NeuroIconButtonDisabled style depending on if has beta features enabled
+		/// <summary>
+		/// Style for beta‑feature dependent buttons.
+		/// </summary>
 		public Style BetaButtonStyle => this.HasBetaFeatures ? AppStyles.NeuroIconButton : AppStyles.NeuroIconButtonDisabled;
 
-		/// <summary>
-		/// Gets or sets a value indicating whether the legacy bottom navigation bar should be visible.
-		/// </summary>
 		[ObservableProperty]
 		private bool showBottomNavigation = true;
+
+		/// <summary>
+		/// Subscribes to profile property changes.
+		/// </summary>
+		public override async Task OnInitializeAsync()
+		{
+			await base.OnInitializeAsync();
+			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
+		}
+
+		/// <summary>
+		/// Unsubscribes from profile property changes.
+		/// </summary>
+		public override async Task OnDisposeAsync()
+		{
+			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
+			await base.OnDisposeAsync();
+		}
+
+		/// <summary>
+		/// Handles TagProfile property changes. Updates HasBetaFeatures & BetaButtonStyle if necessary.
+		/// </summary>
+		private void TagProfile_OnPropertiesChanged(object? sender, EventArgs e)
+		{
+			bool profileValue = ServiceRef.TagProfile.HasBetaFeatures;
+			if (this.HasBetaFeatures != profileValue)
+			{
+				this.HasBetaFeatures = profileValue;
+			}
+		}
 
 		#region Navigation Commands
 
@@ -229,19 +268,17 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		}
 
 		[RelayCommand]
-        public async Task ViewMainPage()
-        {
-            try
-            {
-                await ServiceRef.NavigationService.PopToRootAsync();
-            }
-            catch (Exception Ex)
-            {
-                ServiceRef.LogService.LogException(Ex);
-            }
-        }
-
-		// Code used for displayig the coming soon popup
+		public async Task ViewMainPage()
+		{
+			try
+			{
+				await ServiceRef.NavigationService.PopToRootAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
 		[ObservableProperty]
 		private bool showingComingSoonPopup = false;
