@@ -381,6 +381,7 @@ namespace NeuroAccessMaui.Services.Contracts
 
 		private async Task Contracts_ConnectionStateChanged(object _, XmppState NewState)
 		{
+			/*
 			try
 			{
 				if (ServiceRef.XmppService.IsOnline &&
@@ -407,6 +408,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
+			*/
 
 		}
 

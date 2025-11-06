@@ -10,5 +10,8 @@
 	<converters:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
 	<converters:DurationToStringConverter x:Key="DurationToStringConverter" />
 	<converters:NumberToBoolConverter x:Key="NumberToBoolConverter" />
+	<converters:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+	<converters:NullToBooleanConverter x:Key="NullToBooleanConverterInverted"
+									   Invert="True" />
 
 </ResourceDictionary>
