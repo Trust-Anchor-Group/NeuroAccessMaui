@@ -175,6 +175,80 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			MainThread.BeginInvokeOnMainThread(() => this.InviteCode = Url);
 		}
 
+		[RelayCommand]
+		private async Task SelectForMe()
+		{
+			ServiceRef.LogService.LogInformational("SelectForMe command invoked from Welcome step.");
+
+			this.inviteCodeCts?.Cancel();
+
+			if (!await this.PrepareAutomaticProviderSelectionAsync().ConfigureAwait(false))
+			{
+				ServiceRef.LogService.LogWarning("Automatic provider preparation failed. Staying on Welcome step.");
+				return;
+			}
+
+			bool NavigationSucceeded = false;
+			try
+			{
+				this.autoAdvanced = true;
+
+				await MainThread.InvokeOnMainThreadAsync(() => this.InviteCode = null);
+
+				if (this.CoordinatorViewModel is null)
+				{
+					ServiceRef.LogService.LogWarning("Coordinator not attached; cannot advance to ValidatePhone.");
+					return;
+				}
+
+				ServiceRef.LogService.LogInformational("Advancing directly to ValidatePhone step after automatic provider selection.");
+				await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.ValidatePhone).ConfigureAwait(false);
+				NavigationSucceeded = true;
+			}
+			finally
+			{
+				if (!NavigationSucceeded)
+				{
+					this.autoAdvanced = false;
+				}
+			}
+		}
+
+		private async Task<bool> PrepareAutomaticProviderSelectionAsync()
+		{
+			try
+			{
+				bool HadExistingDomain = !string.IsNullOrEmpty(ServiceRef.TagProfile.Domain) ||
+					!string.IsNullOrEmpty(ServiceRef.TagProfile.ApiKey) ||
+					!string.IsNullOrEmpty(ServiceRef.TagProfile.ApiSecret);
+
+				if (HadExistingDomain)
+				{
+					ServiceRef.LogService.LogInformational("Clearing previously selected domain to enable automatic provider selection.");
+				}
+				else
+				{
+					ServiceRef.LogService.LogInformational("No domain selected; ready for automatic provider selection.");
+				}
+
+				ServiceRef.TagProfile.ClearDomain();
+				return true;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await MainThread.InvokeOnMainThreadAsync(async () =>
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				});
+
+				return false;
+			}
+		}
+
 		internal override Task OnBackAsync()
 		{
 			ServiceRef.LogService.LogDebug("Back requested from Welcome step.");
