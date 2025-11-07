@@ -14,20 +14,20 @@
 							 xmlns:service="clr-namespace:NeuroAccessMaui.Services.Kyc"
 							 xmlns:contracts="clr-namespace:Waher.Networking.XMPP.Contracts;assembly=Waher.Networking.XMPP.Contracts">
 							 
-<base:BaseContentPage.Resources>
-  <ResourceDictionary>
-    <Style TargetType="Label" x:Key="CardTitleLabel">
-      <Setter Property="FontFamily" Value="SpaceGroteskBold"/>
-      <Setter Property="FontSize" Value="16"/>
-	  <Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}"/>
-    </Style>
-	<Style TargetType="Label" x:Key="CardSubtitleLabel">
-      <Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
-      <Setter Property="FontSize" Value="14"/>
-	  <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
-    </Style>
-  </ResourceDictionary>
-</base:BaseContentPage.Resources>
+	<base:BaseContentPage.Resources>
+	  <ResourceDictionary>
+		<Style TargetType="Label" x:Key="CardTitleLabel">
+		  <Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		  <Setter Property="FontSize" Value="16"/>
+		  <Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}"/>
+		</Style>
+		<Style TargetType="Label" x:Key="CardSubtitleLabel">
+		  <Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
+		  <Setter Property="FontSize" Value="14"/>
+		  <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
+		</Style>
+	  </ResourceDictionary>
+	</base:BaseContentPage.Resources>
 
 	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" Margin="16,0,16,0">
 
