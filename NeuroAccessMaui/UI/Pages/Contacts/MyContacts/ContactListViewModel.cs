@@ -50,6 +50,14 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		// Debounced search filtering using ObservableTask (no manual CTS needed)
 		private readonly ObservableTask<int> searchFilterTask;
 
+		// Loader task reporting running state while contacts are being loaded.
+		private readonly ObservableTask<int> contactsLoader;
+
+		/// <summary>
+		/// Exposes the loader responsible for loading contacts. Bind to <see cref="ObservableTask{TProgress}.IsRunning"/> to show an activity indicator while contacts load.
+		/// </summary>
+		public ObservableTask<int> ContactsLoader => this.contactsLoader;
+
 		[ObservableProperty]
 		private bool isViewMode = false;
 
@@ -113,6 +121,18 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 					await MainThread.InvokeOnMainThreadAsync(this.FilterContacts);
 				})
 				.Build();
+
+			// contacts loader task
+			this.contactsLoader = new ObservableTaskBuilder<int>()
+				.Named("Contacts Loader")
+				.AutoStart(false)
+				.UseTaskRun(false)
+				.Run(async ctx =>
+				{
+					await this.UpdateContactList(this.navigationArguments?.Contacts);
+					await MainThread.InvokeOnMainThreadAsync(this.FilterContacts);
+				})
+				.Build();
 		}
 
 		/// <inheritdoc/>
@@ -120,8 +140,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		{
 			await base.OnInitializeAsync();
 
-			await this.UpdateContactList(this.navigationArguments?.Contacts);
-			this.FilterContacts();
+			// Run loader task to populate contacts; activity indicator bound to ContactsLoader.IsRunning will show during this.
+			this.contactsLoader.Run();
+			await this.contactsLoader.WaitAllAsync();
 
 			ServiceRef.XmppService.OnPresenceSubscribe += this.Xmpp_OnPresence;
 			ServiceRef.XmppService.OnPresenceUnsubscribed += this.Xmpp_OnPresence;
@@ -365,6 +386,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			}
 
 			this.selection?.TrySetResult(this.SelectedContact);
+			this.contactsLoader.Dispose();
+			this.searchFilterTask.Dispose();
 
 			return base.OnDisposeAsync();
 		}

@@ -95,6 +95,7 @@
 
 	<Style x:Key="ThickCompositeEntry" TargetType="controls:CompositeEntry" BaseResourceKey="RegularCompositeEntry">
 		<Setter Property="EntryStyle" Value="{DynamicResource ThickCompositeEntryEntry}"/>
+		<Setter Property="VerticalOptions" Value="Center"/>
 	</Style>
 		
 </ResourceDictionary>

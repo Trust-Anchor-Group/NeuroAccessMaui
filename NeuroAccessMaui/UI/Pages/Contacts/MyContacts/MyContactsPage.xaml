@@ -89,47 +89,58 @@
 
 		<controls:Background/>
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="8,0,8,8">
-				<Grid ColumnDefinitions="*, auto" Margin="8,0,8,0">
-					<controls:SvgButton
-						Grid.Row="0" Grid.Column="0"
-						Command="{Binding GoBackCommand}"
-						SvgSource="close.svg"
-						Style="{DynamicResource IconButton}"
-						HorizontalOptions="Start"
-						WidthRequest="44"
-						HeightRequest="44"/>
+		<Grid RowDefinitions="auto, auto, auto, *" RowSpacing="{DynamicResource SmallSpacing}" Margin="8,0,8,8">
+			<Grid ColumnDefinitions="*, auto" Margin="8,0,8,0">
+				<controls:SvgButton
+					Grid.Row="0" Grid.Column="0"
+					Command="{Binding GoBackCommand}"
+					SvgSource="close.svg"
+					Style="{DynamicResource IconButton}"
+					HorizontalOptions="Start"
+					WidthRequest="44"
+					HeightRequest="44"/>
 
-					<Label Text="{l:Localize Contacts}" Style="{DynamicResource PageTitleLabel}" Grid.Column="1"/>
-				</Grid>
+				<Label Text="{l:Localize Contacts}" Style="{DynamicResource PageTitleLabel}" Grid.Column="1"/>
+			</Grid>
 
-				<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" Margin="8,0,8,0">
-					<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
-							 VerticalOptions="Start" IsVisible="{Binding Path=ShowContactsMissing}" Text="{l:Localize NoContactsFound}" />
+			<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}" Margin="8,0,8,0" Grid.Row="1">
+				<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
+							VerticalOptions="Start" IsVisible="{Binding Path=ShowContactsMissing}" Text="{l:Localize NoContactsFound}" />
 
-					<controls:TextButton LabelData="{Binding AnonymousText}" Style="{DynamicResource FilledTextButton}"
-									Command="{Binding AnonymousCommand}" IsVisible="{Binding AllowAnonymous}"/>
-					<controls:TextButton LabelData="{l:Localize ScanQRCode}" Style="{DynamicResource FilledTextButton}"
-									Command="{Binding ScanQrCodeCommand}" IsVisible="{Binding CanScanQrCode}"/>
-				</VerticalStackLayout>
+				<controls:TextButton LabelData="{Binding AnonymousText}" Style="{DynamicResource FilledTextButton}"
+								Command="{Binding AnonymousCommand}" IsVisible="{Binding AllowAnonymous}"/>
+				<controls:TextButton LabelData="{l:Localize ScanQRCode}" Style="{DynamicResource FilledTextButton}"
+								Command="{Binding ScanQrCodeCommand}" IsVisible="{Binding CanScanQrCode}"/>
+			</VerticalStackLayout>
 
-				<!-- Search Entry -->
-				<controls:CompositeEntry Placeholder="{l:Localize Search}"
-										 EntryData="{Binding SearchText, Mode=TwoWay}"
-										 Style="{DynamicResource RegularCompositeEntry}"
-										 Margin="8,0,8,0"
-										 IsVisible="{Binding ShowContactsMissing, Converter={StaticResource InvertedBoolConverter}}">
-					<controls:CompositeEntry.LeftView>
-						<controls:SvgView Source="search.svg"/>
-					</controls:CompositeEntry.LeftView>
-				</controls:CompositeEntry>
+			<!-- Search Entry -->
+			<controls:CompositeEntry Placeholder="{l:Localize Search}"
+										EntryData="{Binding SearchText, Mode=TwoWay}"
+										Style="{DynamicResource RegularCompositeEntry}"
+										Margin="8,0,8,0"
+										IsVisible="{Binding ShowContactsMissing, Converter={StaticResource InvertedBoolConverter}}"
+										Grid.Row="2">
+				<controls:CompositeEntry.LeftView>
+					<controls:SvgView Source="search.svg"/>
+				</controls:CompositeEntry.LeftView>
+			</controls:CompositeEntry>
 
+			<!-- Activity Indicator for loading contacts -->
+			<ActivityIndicator IsRunning="{Binding ContactsLoader.IsNotSucceeded}"
+								IsVisible="{Binding ContactsLoader.IsNotSucceeded}"
+								HeightRequest="48"
+								WidthRequest="48"
+								HorizontalOptions="Center"
+								VerticalOptions="Center"
+								Color="{DynamicResource ContentPrimaryWL}"
+								Grid.Row="3"/>
+			
+			<ScrollView Grid.Row="3">
 				<CollectionView x:Name="Contacts" VerticalOptions="Start" ItemSizingStrategy="MeasureAllItems"
 								ItemsSource="{Binding Path=FilteredContacts}"
-								ItemTemplate="{StaticResource ContactTemplate}">
-				</CollectionView>
-			</VerticalStackLayout>
-		</ScrollView>
+								ItemTemplate="{StaticResource ContactTemplate}"
+								IsVisible="{Binding ContactsLoader.IsSucceeded}"/>
+			</ScrollView>
+		</Grid>
 	</Grid>
 </base:BaseContentPage>
