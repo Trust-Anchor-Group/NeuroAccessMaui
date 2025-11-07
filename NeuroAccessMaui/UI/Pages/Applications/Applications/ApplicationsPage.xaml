@@ -41,6 +41,7 @@
 								Grid.Column="0"/>
 
 			<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Applications}" HorizontalOptions="End" Grid.Column="2"/>
+			
 			<Grid Grid.ColumnSpan="3" Grid.Row="1">
 				<CollectionView ItemsSource="{Binding AvailableApplications}"
 								SelectionMode="None"
