@@ -57,7 +57,7 @@
 							</Grid>
 							
 							<!-- BUTTONS -->
-							<controls:TextButton LabelData="{l:Localize GenerateQrCode}" Command="{Binding Path=GenerateQrCodeCommand}"
+							<controls:TextButton LabelData="{l:Localize GenerateQrCode}" Command="{Binding GenerateQrCodeCommand}"
 												 Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"
 												 IsEnabled="{Binding AmountOk}"/>
 							

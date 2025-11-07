@@ -153,17 +153,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 					this.Currency ?? string.Empty, this.Message ?? string.Empty);
 			}
 
-			if (this.IsAppearing)
+			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				MainThread.BeginInvokeOnMainThread(async () =>
-				{
-					this.GenerateQrCode(Uri);
+				this.GenerateQrCode(Uri);
 
-					await this.page.ShowQrCode();
+				await this.page.ShowQrCode();
 
-					this.HasQrCode = true;
-				});
-			}
+				this.HasQrCode = true;
+			});
 
 			return Task.CompletedTask;
 		}
