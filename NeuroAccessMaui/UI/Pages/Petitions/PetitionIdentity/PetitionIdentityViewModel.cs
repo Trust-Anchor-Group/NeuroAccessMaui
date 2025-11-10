@@ -159,7 +159,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 					}
 
 				}
-				await ServiceRef.UiService.GoBackAsync();
+				await ServiceRef.NavigationService.GoBackAsync();
 			}
 		}
 

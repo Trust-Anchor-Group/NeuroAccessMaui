@@ -76,6 +76,7 @@
 							</DataTrigger>
 						</Grid.Triggers>
 					</Grid>
+					
 			</DataTemplate>
 		</ResourceDictionary>
 	</base:BaseContentPage.Resources>

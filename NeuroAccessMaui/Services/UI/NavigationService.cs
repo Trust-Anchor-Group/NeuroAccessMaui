@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using NeuroAccessMaui.Services.UI.Popups;
 using NeuroAccessMaui.UI.Pages;
+using NeuroAccessMaui.UI.Pages.Main;
 using Waher.Runtime.Inventory;
 
 
@@ -295,7 +296,7 @@ namespace NeuroAccessMaui.Services.UI
 
                 BaseContentPage target = this.screenStack.Peek();
                 this.isNavigating = true;
-                await this.Presenter.ShowScreen(target, TransitionType.Fade);
+				await this.Presenter.ShowScreen(target, TransitionType.Fade);
                 transitionCompleted = true;
                 _ = target.Dispatcher.Dispatch(async () =>
                 {
