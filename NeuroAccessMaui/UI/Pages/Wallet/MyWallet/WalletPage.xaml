@@ -148,18 +148,20 @@
 		<!-- Top Bar -->
 		<Grid Grid.Row="0"
 			  RowDefinitions="*"
-			  Margin="16,0,16,8"
+			  Margin="16,8,16,8"
 			  ColumnDefinitions="auto,*,auto">
 
+			<!--
 			<controls:SvgButton Command="{Binding GoBackCommand}"
 								SvgSource="close.svg"
 								Style="{DynamicResource IconButton}"/>
-
+			-->
+				
 			<Label Grid.Row="0"
-				   Grid.Column="1"
+				   Grid.Column="0"
 				   Style="{DynamicResource PageTitleLabel}"
 				   Text="{l:Localize Wallet}"
-				   HorizontalTextAlignment="Center" />
+				   HorizontalTextAlignment="Start" />
 
 			<controls:SvgButton Grid.Column="2"
 								Command="{Binding OpenTransactionHistoryCommand}"
@@ -268,18 +270,5 @@
 								Grid.Column="1"/>
 		</Grid>
 
-		<!-- Bottom Bar -->
-		<controls:BottomBar Grid.Row="3"
-							Style="{DynamicResource BottomBar}"
-							SelectedIcon="Center"
-							LeftIcon="home.svg"
-							CenterIcon="wallet.svg"
-							RightIcon="apps.svg"
-							LeftLabelText="{l:Localize Home}"
-							CenterLabelText="{l:Localize Wallet}"
-							RightLabelText="{l:Localize Apps}"
-							LeftCommand="{Binding ViewMainPageCommand}"
-							RightCommand="{Binding ViewAppsCommand}"
-							IsVisible="{Binding ShowBottomNavigation}"/>
 	</Grid>
 </base:BaseContentPage>

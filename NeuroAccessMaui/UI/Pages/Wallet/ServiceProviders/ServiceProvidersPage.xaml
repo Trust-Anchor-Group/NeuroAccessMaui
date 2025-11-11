@@ -128,7 +128,7 @@
 		<controls:Background />
 
 			<Grid RowSpacing="{DynamicResource SmallSpacing}" RowDefinitions="auto,*"
-				  Margin="16,0,16,16">
+				  Margin="16,8,16,16">
 				<Grid ColumnDefinitions="auto,*" Grid.Row="0">
 				<controls:SvgButton Command="{Binding GoBackCommand}"
 									Style="{DynamicResource IconButton}"

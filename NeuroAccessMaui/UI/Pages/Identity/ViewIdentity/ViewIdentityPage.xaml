@@ -266,7 +266,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="90" />
             <!--  Padding between Card and bottom  -->
-            <RowDefinition Height="50" />
+            <RowDefinition Height="90" />
             <!--  Bottom sheet  -->
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
@@ -289,7 +289,7 @@
         <!--  TOP BAR  -->
         <Grid
             Grid.Row="0"
-            Margin="16,0,16,8"
+            Margin="16,8,16,0"
             ColumnDefinitions="auto,*,auto"
             RowDefinitions="auto">
             <controls:SvgButton

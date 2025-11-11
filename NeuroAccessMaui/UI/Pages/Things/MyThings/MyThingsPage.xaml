@@ -17,7 +17,7 @@
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="16,0,16,16">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="16,8,16,16">
 				<Grid ColumnDefinitions="*, *">
 					<controls:SvgButton HorizontalOptions="Start"
 										Command="{Binding GoBackCommand}"
@@ -27,7 +27,7 @@
 					<Label Text="{l:Localize Things}" Style="{DynamicResource PageTitleLabel}" Grid.Column="1" HorizontalOptions="End"/>
 				</Grid>
 
-				<Border Style="{DynamicResource BorderSet}">
+				<Border Style="{DynamicResource BorderSet}" Margin="0,8,0,8">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{l:Localize ThingsDescription}" HorizontalOptions="Center" VerticalOptions="Start"/>
 						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center" VerticalOptions="Start" IsVisible="{Binding Path=ShowThingsMissing}" Text="{l:Localize NoThingsFound}" />

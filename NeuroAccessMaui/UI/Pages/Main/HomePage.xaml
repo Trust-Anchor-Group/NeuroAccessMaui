@@ -43,10 +43,11 @@
 
 		<!-- Top Buttons -->
 		<Grid Grid.Row="0"
-			  Margin="16,0,16,0"
+			  Margin="16,8,16,0"
 			  RowSpacing="{DynamicResource MediumSpacing}"
 			  RowDefinitions="auto,auto"
 			  ColumnDefinitions="auto,auto">
+
 			<controls:SvgButton
 				Command="{Binding ShowSettingsCommand}"
 				SvgSource="cog.svg"
@@ -162,7 +163,7 @@
 			  ColumnDefinitions="*, *"
 			  Grid.Row="3"
 			  Margin="{DynamicResource SmallMargins}">
-			
+
 			<!-- Scan QR Button -->
 			<controls:TemplatedButton Command="{x:Binding ScanQrCodeCommand}">
 				<Border Style="{DynamicResource TransparentTemplateButtonBorder}"
@@ -199,9 +200,5 @@
 				</Border>
 			</controls:TemplatedButton>
 		</Grid>
-		
-		<Grid.GestureRecognizers>
-			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
-		</Grid.GestureRecognizers>
 	</Grid>
 </base:BaseContentPage>

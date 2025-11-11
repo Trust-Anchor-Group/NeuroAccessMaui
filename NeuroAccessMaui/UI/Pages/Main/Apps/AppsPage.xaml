@@ -13,14 +13,16 @@
 						xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 	<!-- Main Grid-->
 	<Grid RowDefinitions="auto, *, auto">
-		<Grid Margin="16,0,16,16" ColumnDefinitions="*, auto, *">
+		<Grid Margin="16,8,16,16" ColumnDefinitions="*, auto, *">
+			<!--
 			<controls:SvgButton
 					Command="{Binding ViewMainPageCommand}"
 					SvgSource="close.svg"
 					Style="{DynamicResource IconButton}"
 					HorizontalOptions="Start"/>
+			-->
 
-			<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Apps}" HorizontalOptions="Center" Grid.Column="1"/>
+			<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Apps}" HorizontalOptions="Start" Grid.Column="0"/>
 
 			<controls:SvgButton
 				Command="{Binding ShowIdCommand}"
@@ -84,15 +86,8 @@
 												Command="{Binding ShowThingsCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize SmartThings}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
-						
+
 						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
-							<controls:SvgButton Style="{Binding BetaButtonStyle}"
-												SvgSource="wallet.svg"
-												Command="{Binding ShowWalletCommand}"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Wallet}" HorizontalOptions="Center"/>
-						</VerticalStackLayout>
-						
-						<VerticalStackLayout Grid.Column="1" Grid.Row="2">
 							<controls:SvgButton Style="{Binding BetaButtonStyle}"
 												SvgSource="token.svg"
 												Command="{Binding ShowMyTokensCommand}"/>

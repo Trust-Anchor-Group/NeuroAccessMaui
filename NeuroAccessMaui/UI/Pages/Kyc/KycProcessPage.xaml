@@ -428,7 +428,7 @@
 				  Background="{DynamicResource SurfaceBackgroundWL}">
 
 				<Grid Grid.Row="0"
-					  Margin="16,16,16,8"
+					  Margin="16,8,16,8"
 					  ColumnDefinitions="*,auto,*"
 					  RowDefinitions="*">
 					<controls:SvgButton Grid.Row="0"

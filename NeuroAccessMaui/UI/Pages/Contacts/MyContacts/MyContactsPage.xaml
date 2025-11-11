@@ -89,7 +89,7 @@
 
 		<controls:Background/>
 
-		<Grid RowDefinitions="auto, auto, auto, *" RowSpacing="{DynamicResource SmallSpacing}" Margin="8,0,8,8">
+		<Grid RowDefinitions="auto, auto, auto, *" RowSpacing="{DynamicResource SmallSpacing}" Margin="8">
 			<Grid ColumnDefinitions="*, auto" Margin="8,0,8,0">
 				<controls:SvgButton
 					Grid.Row="0" Grid.Column="0"

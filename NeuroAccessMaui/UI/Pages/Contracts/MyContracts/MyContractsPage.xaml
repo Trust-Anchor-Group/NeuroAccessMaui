@@ -104,7 +104,7 @@
 		<controls:Background/>
 
 		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="16,0,16,16">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="16,8,16,16">
 				<controls:SvgButton
 					Grid.Row="0" Grid.Column="0"
 					Command="{Binding GoBackCommand}"
