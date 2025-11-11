@@ -305,8 +305,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ContactSupportView, ContactSupportViewModel>();
 
 			// Onboarding
-			Builder.Services.AddTransient<OnboardingViewModel>();
-			Builder.Services.AddTransient<OnboardingPage>();
+			Builder.Services.AddTransient<OnboardingPage, OnboardingViewModel>();
 			Builder.Services.AddTransient<WelcomeStepView, WelcomeOnboardingStepViewModel>();
 			Builder.Services.AddTransient<CreateAccountStepView, CreateAccountOnboardingStepViewModel>();
 			Builder.Services.AddTransient<NameEntryStepView, NameEntryOnboardingStepViewModel>();

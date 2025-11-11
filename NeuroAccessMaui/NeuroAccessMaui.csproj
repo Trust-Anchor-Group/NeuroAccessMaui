@@ -21,7 +21,7 @@
 		<!-- Versions -->
 		<ApplicationDisplayVersion>2.7.1</ApplicationDisplayVersion>
 		<Version>2.7.1</Version>
-		<ApplicationVersion>501</ApplicationVersion>
+		<ApplicationVersion>556</ApplicationVersion>
 
 		<NeutralLanguage>en</NeutralLanguage>
 
@@ -33,8 +33,8 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</TargetPlatformMinVersion>
-		<PublishTrimmed>False</PublishTrimmed>
 		<PublishAot>False</PublishAot>
+		<TrimMode>partial</TrimMode>
 		<Title>Neuro-Access</Title>
 		<Company>Trust Anchor Group AB</Company>
 		<Product>Neuro-Access</Product>
@@ -66,7 +66,6 @@
 		<ProvisioningType>manual</ProvisioningType>
 		<CodesignKey>iPhone Developer: Maximiliam Berggren (6C6VB862B9)</CodesignKey>
 		<CodesignProvision>Maximiliam Dev</CodesignProvision>
-		<PublishTrimmed>True</PublishTrimmed>
 		<UseInterpreter>True</UseInterpreter>
 		<MtouchLink>SdkOnly</MtouchLink>
 		<NoSymbolStrip>True</NoSymbolStrip>
@@ -78,21 +77,18 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
-		<PublishTrimmed>True</PublishTrimmed>
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
 		<DebugSymbols>True</DebugSymbols>
-		<PublishTrimmed>True</PublishTrimmed> 
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>True</UseInterpreter>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
-		<PublishTrimmed>True</PublishTrimmed>
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
@@ -100,7 +96,6 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
 		<RunAOTCompilation>False</RunAOTCompilation>
-		<PublishTrimmed>False</PublishTrimmed>
 		<DebugSymbols>True</DebugSymbols>
 		<AndroidDebugSymbols>true</AndroidDebugSymbols>
 	</PropertyGroup>

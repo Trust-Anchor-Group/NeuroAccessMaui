@@ -315,10 +315,11 @@ namespace NeuroAccessMaui
                 await this.ResumeAsync(isBackground: true);
                 return;
             }
-
+#if !DEBUG
             // Asynchronously wait up to 60 seconds.
             if (!await this.InitCompleted.WaitAsync(TimeSpan.FromSeconds(60)))
                 throw new Exception("Initialization did not complete in time.");
+#endif
         }
 
         protected override async void OnStart()
@@ -381,7 +382,6 @@ namespace NeuroAccessMaui
                 TimeSpan InitialAutoSaveDelay = Constants.Intervals.AutoSave.Multiply(4);
                 this.autoSaveTimer = new Timer(async _ => await this.AutoSaveAsync(), null, InitialAutoSaveDelay, Constants.Intervals.AutoSave);
 
-                await ServiceRef.UiService.Load(isResuming, Token);
                 await ServiceRef.AttachmentCacheService.Load(isResuming, Token);
                 await ServiceRef.InternetCacheService.Load(isResuming, Token);
                 await ServiceRef.ContractOrchestratorService.Load(isResuming, Token);
@@ -390,7 +390,6 @@ namespace NeuroAccessMaui
                 await ServiceRef.NotificationService.Load(isResuming, Token);
 
                 AppShell.RegisterRoutes();
-
                 //	AppShell.AppLoaded();
             }
             catch (OperationCanceledException)
@@ -699,7 +698,7 @@ namespace NeuroAccessMaui
                     Headers = { ContentType = MediaTypeHeaderValue.Parse(contentType) }
                 };
 
-              //  await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
+               await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
             }
             catch (Exception Ex)
             {
