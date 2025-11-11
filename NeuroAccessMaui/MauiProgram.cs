@@ -31,6 +31,9 @@ using Microsoft.Maui.Hosting;
 #if ANDROID
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
+#if IOS
+using UIKit;
+#endif
 #if WINDOWS
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -145,12 +148,18 @@ namespace NeuroAccessMaui
 #if IOS
 			ScrollViewHandler.Mapper.AppendToMapping("BouncesScrollViewHandler", (handler, view) =>
 			{
-				handler.PlatformView.Bounces = false;
+				if (handler.PlatformView is UIScrollView scroll)
+				{
+					scroll.Bounces = false;
+				}
 			});
 
 			CollectionViewHandler.Mapper.AppendToMapping("BouncesCollectionViewHandler", (handler, view) =>
 			{
-				handler.PlatformView.Bounces = false;
+				if (handler.PlatformView is UIScrollView scroll)
+				{
+					scroll.Bounces = false;
+				}
 			});
 
 			Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("BorderStyleEntryHandler", (handler, view) =>
