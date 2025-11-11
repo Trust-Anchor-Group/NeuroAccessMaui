@@ -266,7 +266,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="90" />
             <!--  Padding between Card and bottom  -->
-            <RowDefinition Height="90" />
+            <RowDefinition Height="50" />
             <!--  Bottom sheet  -->
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
