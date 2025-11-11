@@ -9,24 +9,6 @@
             "type": "dotnet-meteor.debugger",
             "request": "launch",
             "preLaunchTask": "dotnet-meteor: Build",
-            "justMyCode": false,
-            "suppressJITOptimizations": true,
-            "symbolOptions": {
-                "searchPaths": [
-                    "https://symbols.nuget.org/download/symbols"
-                ],
-                "searchMicrosoftSymbolServer": true,
-                "searchNuGetOrgSymbolServer": true,
-                "cachePath": "/symcache",
-                "moduleFilter": {
-                    "mode": "loadAllButExcluded",
-                    "excludedModules": []
-                }
-            },
-            "sourceLinkOptions": {
-                "https://raw.githubusercontent.com/*": { "enabled": true },
-                "*": { "enabled": false }
-            }
         },
         {
             "name": ".NET MAUI",

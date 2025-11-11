@@ -694,7 +694,7 @@ namespace NeuroAccessMaui
 			/// <summary>
 			/// Database timeout
 			/// </summary>
-			public static readonly TimeSpan Database = TimeSpan.FromSeconds(10);
+			public static readonly TimeSpan Database = TimeSpan.FromSeconds(30);
 
 			/// <summary>
 			/// XMPP Connect timeout
