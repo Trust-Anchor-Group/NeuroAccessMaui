@@ -16,11 +16,14 @@
 		<controls:Background/>
 
 		<ScrollView x:Name="ScrollView">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="16,8,16,16">
-				<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="8">
+				<Grid ColumnDefinitions="auto, *" RowDefinitions="auto" Margin="8,0,8,0">
+					<!-- BACK BUTTON --> 
+					<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
 									Style="{DynamicResource IconButton}" SvgSource="close.svg" />
 
-				<Label Text="{l:Localize RequestPayment}" Style="{DynamicResource PageTitleLabel}"/>
+					<Label Text="{l:Localize RequestPayment}" Style="{DynamicResource PageTitleLabel}" Grid.Column="1" HorizontalOptions="End"/>
+				</Grid>
 
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
