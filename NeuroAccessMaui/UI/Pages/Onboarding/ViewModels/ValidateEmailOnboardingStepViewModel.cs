@@ -364,7 +364,19 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 					if (this.CoordinatorViewModel is not null)
 					{
-						await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.NameEntry);
+						if (this.CoordinatorViewModel.HasPendingTransfer)
+						{
+							bool Connected = await this.CoordinatorViewModel.TryFinalizeTransferAsync(true).ConfigureAwait(false);
+							ServiceRef.LogService.LogInformational("Transfer connection attempted after email verification.",
+								new KeyValuePair<string, object?>("Success", Connected));
+							if (Connected)
+							{
+								await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.DefinePassword).ConfigureAwait(false);
+								return;
+							}
+						}
+
+						await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.NameEntry).ConfigureAwait(false);
 					}
 				}
 				else

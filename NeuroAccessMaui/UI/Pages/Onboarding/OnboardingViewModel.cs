@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui;
@@ -12,6 +13,7 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Onboarding.ViewModels;
 using NeuroAccessMaui.UI.Pages.Startup;
 using NeuroAccessMaui.UI.Popups.Settings;
+using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Onboarding
@@ -29,6 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		private List<OnboardingStep> activeSequence = new List<OnboardingStep>();
 		private readonly OnboardingNavigationArgs navigationArgs;
 		private readonly OnboardingScenario scenario;
+		private OnboardingTransferContext? transferContext;
 		private bool isUpdatingSelection;
 		private bool isCompleting;
 		private bool hasLoggedSequence;
@@ -76,6 +79,10 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 		public OnboardingScenario Scenario => this.scenario;
 
+		internal bool HasPendingTransfer => this.transferContext is not null;
+
+		internal bool PendingTransferIncludesLegalIdentity => this.transferContext?.HasLegalIdentity == true;
+
 		public void RegisterStep(BaseOnboardingStepViewModel stepViewModel)
 		{
 			if (this.stepViewModels.ContainsKey(stepViewModel.Step))
@@ -90,6 +97,198 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 				this.HeaderTitle = this.GetStepTitle(stepViewModel.Step);
 			}
 		}
+
+		internal Task ApplyTransferContextAsync(OnboardingTransferContext context)
+		{
+			this.transferContext = context;
+			ServiceRef.LogService.LogInformational("Transfer context applied.",
+				new KeyValuePair<string, object?>("HasLegalIdentity", context.HasLegalIdentity));
+			this.BuildActiveSequence();
+			return Task.CompletedTask;
+		}
+
+		internal async Task<bool> TryFinalizeTransferAsync(bool showBusyOverlay)
+		{
+			OnboardingTransferContext? context = this.transferContext;
+			if (context is null)
+			{
+				return false;
+			}
+
+			if (showBusyOverlay)
+			{
+				await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(true));
+			}
+
+			try
+			{
+				bool connected = await ConnectToAccountAsync(
+					context.AccountName,
+					context.Password,
+					context.PasswordMethod,
+					string.Empty,
+					context.LegalIdDefinition,
+					string.Empty).ConfigureAwait(false);
+
+				if (connected)
+				{
+					this.transferContext = null;
+					this.BuildActiveSequence();
+				}
+
+				return connected;
+			}
+			finally
+			{
+				if (showBusyOverlay)
+				{
+					await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(false));
+				}
+			}
+		}
+
+        /// <summary>
+        /// Attempts to connect to the transferred account and import any provided legal identity definition.
+        /// </summary>
+        /// <param name="accountName">The account name.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="passwordMethod">The password hashing method.</param>
+        /// <param name="legalIdentityJid">Optional legal identity JID to select, if provided.</param>
+        /// <param name="legalIdDefinition">Optional legal identity definition to import.</param>
+        /// <param name="pin">Optional local PIN to store.</param>
+        /// <returns>true if the connection Succeeded; otherwise, false.</returns>
+        internal static async Task<bool> ConnectToAccountAsync(string accountName, string password, string passwordMethod, string legalIdentityJid, XmlElement? legalIdDefinition, string pin)
+        {
+            ServiceRef.LogService.LogInformational("Attempting transferred account connection.",
+                new KeyValuePair<string, object?>("Account", accountName),
+                new KeyValuePair<string, object?>("Domain", ServiceRef.TagProfile.Domain));
+
+            try
+            {
+                async Task OnConnected(XmppClient client)
+                {
+                    ServiceRef.LogService.LogInformational("XMPP account connected. Discovering identities.");
+                    DateTime Now = DateTime.Now;
+                    LegalIdentity? CreatedIdentity = null;
+                    LegalIdentity? ApprovedIdentity = null;
+                    bool ServiceDiscoverySucceeded = ServiceRef.TagProfile.NeedsUpdating() ? await ServiceRef.XmppService.DiscoverServices(client) : true;
+                    ServiceRef.LogService.LogInformational($"Service discovery result: {ServiceDiscoverySucceeded}.");
+                    if (ServiceDiscoverySucceeded && !string.IsNullOrEmpty(ServiceRef.TagProfile.LegalJid))
+                    {
+                        bool DestroyContractsClient = false;
+                        if (!client.TryGetExtension(typeof(ContractsClient), out IXmppExtension Extension) || Extension is not ContractsClient contractsClient)
+                        {
+                            contractsClient = new ContractsClient(client, ServiceRef.TagProfile.LegalJid);
+                            DestroyContractsClient = true;
+                            ServiceRef.LogService.LogDebug("ContractsClient created for identity operations.");
+                        }
+
+                        try
+                        {
+                            if (legalIdDefinition is not null)
+                            {
+                                ServiceRef.LogService.LogInformational("Importing provided LegalId keys.");
+                                await contractsClient.ImportKeys(legalIdDefinition);
+                            }
+
+                            LegalIdentity[] identities = await contractsClient.GetLegalIdentitiesAsync();
+                            ServiceRef.LogService.LogInformational($"Fetched {identities.Length} identities.");
+                            foreach (LegalIdentity identity in identities)
+                            {
+                                try
+                                {
+                                    if ((string.IsNullOrEmpty(legalIdentityJid) || string.Compare(legalIdentityJid, identity.Id, StringComparison.OrdinalIgnoreCase) == 0) &&
+                                        identity.HasClientSignature && identity.HasClientPublicKey && identity.From <= Now && identity.To >= Now &&
+                                        (identity.State == IdentityState.Approved || identity.State == IdentityState.Created) && identity.ValidateClientSignature() && await contractsClient.HasPrivateKey(identity))
+                                    {
+                                        if (identity.State == IdentityState.Approved)
+                                        {
+                                            ApprovedIdentity = identity;
+                                            break;
+                                        }
+
+                                        CreatedIdentity ??= identity;
+                                    }
+                                }
+                                catch (Exception ex2)
+                                {
+                                    ServiceRef.LogService.LogException(ex2);
+                                }
+                            }
+
+                            LegalIdentity? SelectedIdentity = ApprovedIdentity ?? CreatedIdentity;
+                            string SelectedId;
+                            if (SelectedIdentity is not null)
+                            {
+                                ServiceRef.LogService.LogInformational($"Selected identity '{SelectedIdentity.Id}' (State={SelectedIdentity.State}).");
+                                await ServiceRef.TagProfile.SetAccountAndLegalIdentity(accountName, client.PasswordHash, client.PasswordHashMethod, SelectedIdentity);
+                                SelectedId = SelectedIdentity.Id;
+                                ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
+                            }
+                            else
+                            {
+                                ServiceRef.LogService.LogInformational("No identity selected; storing account only.");
+                                ServiceRef.TagProfile.SetAccount(accountName, client.PasswordHash, client.PasswordHashMethod);
+                                SelectedId = string.Empty;
+                            }
+
+                            if (!string.IsNullOrEmpty(pin))
+                            {
+                                ServiceRef.LogService.LogInformational("Local PIN set from invitation.");
+                                ServiceRef.TagProfile.LocalPassword = pin;
+                            }
+
+                            foreach (LegalIdentity identity in identities)
+                            {
+                                if (identity.Id == SelectedId)
+                                    continue;
+
+                                switch (identity.State)
+                                {
+                                    case IdentityState.Approved:
+                                    case IdentityState.Created:
+                                        ServiceRef.LogService.LogDebug($"Obsoleting identity '{identity.Id}'.");
+                                        await contractsClient.ObsoleteLegalIdentityAsync(identity.Id);
+                                        break;
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            if (DestroyContractsClient)
+                            {
+                                ServiceRef.LogService.LogDebug("Disposing temporary ContractsClient.");
+                                contractsClient.Dispose();
+                            }
+                        }
+                    }
+                }
+
+                (string HostName, int PortNumber, bool IsIp) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain ?? string.Empty);
+                ServiceRef.LogService.LogInformational($"Connecting to XMPP account Host='{HostName}' Port={PortNumber} IsIp={IsIp}.");
+                (bool Succeeded, string? ErrorMessage, string[]? _) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(
+                    ServiceRef.TagProfile.Domain ?? string.Empty,
+                    IsIp,
+                    HostName,
+                    PortNumber,
+                    accountName,
+                    password,
+                    passwordMethod,
+                    Constants.LanguageCodes.Default,
+                    typeof(App).Assembly,
+                    OnConnected);
+                ServiceRef.LogService.LogInformational($"XMPP connect result: {(Succeeded ? "Succeeded" : "Failed")} Error='{ErrorMessage}'.");
+                if (!Succeeded && !string.IsNullOrEmpty(ErrorMessage))
+                    ServiceRef.LogService.LogWarning(ErrorMessage);
+                return Succeeded;
+            }
+            catch (Exception ex)
+            {
+                ServiceRef.LogService.LogException(ex);
+            }
+
+            return false;
+        }
 
 		internal OnboardingStep? GetNextActiveStep(OnboardingStep step)
 		{
@@ -410,27 +609,40 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			switch (Step)
 			{
 				case OnboardingStep.Welcome:
-					// Always show Welcome now.
+					// Always show Welcome Now.
 					break;
 				case OnboardingStep.ValidatePhone:
-					// Always redo phone verification; never skip.
+					if (this.scenario != OnboardingScenario.ReverifyIdentity &&
+						(this.transferContext?.HasLegalIdentity == true || HasEstablishedIdentity))
+					{
+						Reason = "IdentityAlreadyEstablished";
+						return true;
+					}
 					break;
 				case OnboardingStep.ValidateEmail:
-					// Always redo email verification; never skip.
-					break;
-				case OnboardingStep.CreateAccount:
 					if (this.scenario != OnboardingScenario.ReverifyIdentity &&
-						Profile.LegalIdentity is LegalIdentity Identity &&
-						(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created))
+						(this.transferContext?.HasLegalIdentity == true || HasEstablishedIdentity))
 					{
-						Reason = "IdentityAlreadyPresent";
+						Reason = "IdentityAlreadyEstablished";
 						return true;
 					}
 					break;
 				case OnboardingStep.NameEntry:
-					if (this.scenario != OnboardingScenario.ReverifyIdentity && !string.IsNullOrEmpty(Profile.Account))
+					if (this.scenario != OnboardingScenario.ReverifyIdentity &&
+						(!string.IsNullOrEmpty(Profile.Account) || this.transferContext is not null))
 					{
-						Reason = "AccountAlreadySelected";
+						Reason = this.transferContext is not null ? "AccountTransferred" : "AccountAlreadySelected";
+						return true;
+					}
+					break;
+				case OnboardingStep.CreateAccount:
+					if (this.scenario != OnboardingScenario.ReverifyIdentity &&
+						(this.transferContext is not null ||
+						!string.IsNullOrEmpty(Profile.Account) ||
+						(Profile.LegalIdentity is LegalIdentity Identity &&
+						(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created))))
+					{
+						Reason = this.transferContext is not null ? "AccountTransferred" : "IdentityAlreadyPresent";
 						return true;
 					}
 					break;

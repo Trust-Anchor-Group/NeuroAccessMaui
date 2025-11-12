@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using NeuroAccessMaui;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI.QR;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 using Waher.Content;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
@@ -102,7 +104,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				return;
 			}
 
-			this.inviteCodeCts?.Cancel();
+			this.CancelPendingInviteProcessing();
 
 			if (string.IsNullOrWhiteSpace(value))
 			{
@@ -143,8 +145,11 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					this.SetInviteProcessingState(true);
 					try
 					{
-						await this.ProcessInvitationAsync(Trimmed).ConfigureAwait(false);
-						MainThread.BeginInvokeOnMainThread(this.AdvanceAfterInvite);
+						bool Processed = await this.ProcessInvitationAsync(Trimmed).ConfigureAwait(false);
+						if (Processed)
+						{
+							MainThread.BeginInvokeOnMainThread(this.AdvanceAfterInvite);
+						}
 					}
 					finally
 					{
@@ -161,6 +166,11 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				}
 				finally
 				{
+					if (ReferenceEquals(this.inviteCodeCts, DebounceCts))
+					{
+						this.inviteCodeCts = null;
+					}
+
 					DebounceCts.Dispose();
 				}
 			}, DebounceCts.Token);
@@ -224,7 +234,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		{
 			ServiceRef.LogService.LogInformational("SelectForMe command invoked from Welcome step.");
 
-			this.inviteCodeCts?.Cancel();
+			this.CancelPendingInviteProcessing();
 
 			if (!await this.PrepareAutomaticProviderSelectionAsync().ConfigureAwait(false))
 			{
@@ -296,7 +306,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		internal override Task OnBackAsync()
 		{
 			ServiceRef.LogService.LogDebug("Back requested from Welcome step.");
-			this.inviteCodeCts?.Cancel();
+			this.CancelPendingInviteProcessing();
 			return Task.CompletedTask;
 		}
 
@@ -310,6 +320,36 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			{
 				MainThread.BeginInvokeOnMainThread(() => this.IsProcessingInvite = isProcessing);
 			}
+		}
+
+		private void CancelPendingInviteProcessing()
+		{
+			CancellationTokenSource? existing = Interlocked.Exchange(ref this.inviteCodeCts, null);
+			if (existing is null)
+			{
+				return;
+			}
+
+			try
+			{
+				existing.Cancel();
+			}
+			catch (ObjectDisposedException)
+			{
+				// Already disposed.
+			}
+		}
+
+		private void MarkInviteAsInvalid(string messageResourceKey)
+		{
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				this.InviteCodeIsValid = false;
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+					ServiceRef.Localizer[messageResourceKey],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			});
 		}
 
 		private static bool BasicValidateInviteCode(string code, out string trimmed)
@@ -339,14 +379,15 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			return true;
 		}
 
-		private async Task ProcessInvitationAsync(string inviteUrl)
+		private async Task<bool> ProcessInvitationAsync(string inviteUrl)
 		{
 			ServiceRef.LogService.LogInformational($"Processing invitation: '{inviteUrl}'.");
 			string[] Parts = inviteUrl.Split(':', StringSplitOptions.RemoveEmptyEntries);
 			if (Parts.Length != 5)
 			{
 				ServiceRef.LogService.LogWarning("Invitation split length invalid.");
-				return;
+				this.MarkInviteAsInvalid(nameof(AppResources.InvalidInvitationCode));
+				return false;
 			}
 			string Domain = Parts[1];
 			string Code = Parts[2];
@@ -361,7 +402,8 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
-				return;
+				this.MarkInviteAsInvalid(nameof(AppResources.InvalidInvitationCode));
+				return false;
 			}
 			try
 			{
@@ -382,11 +424,14 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
-				return;
+				this.MarkInviteAsInvalid(nameof(AppResources.UnableToAccessInvitation));
+				return false;
 			}
 
 			XmlElement? LegalIdDefinition = null;
-			bool AccountDone = false;
+			string? transferredAccount = null;
+			string? transferredPassword = null;
+			string? transferredPasswordMethod = null;
 			try
 			{
 				ServiceRef.LogService.LogDebug("Decrypting invitation payload.");
@@ -427,12 +472,11 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 							string Password = XML.Attribute(E, "password");
 							string PasswordMethod = XML.Attribute(E, "passwordMethod");
 							string AccDomain = XML.Attribute(E, "domain");
-							ServiceRef.LogService.LogInformational($"Selecting domain (Account) '{AccDomain}'. Attempting auto-connect for user '{UserName}'.");
+							ServiceRef.LogService.LogInformational($"Selecting domain (Account) '{AccDomain}'. Capturing transfer for user '{UserName}'.");
 							await SelectDomain(AccDomain, string.Empty, string.Empty).ConfigureAwait(false);
-							bool Connected = await this.ConnectToAccount(UserName, Password, PasswordMethod, string.Empty, LegalIdDefinition, string.Empty).ConfigureAwait(false);
-							ServiceRef.LogService.LogInformational($"Auto-connect result: {(Connected ? "Succeeded" : "Failed")}.");
-							if (Connected)
-								AccountDone = true;
+							transferredAccount = UserName;
+							transferredPassword = Password;
+							transferredPasswordMethod = PasswordMethod;
 							break;
 						case "LegalId":
 							LegalIdDefinition = E;
@@ -449,22 +493,48 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 							break;
 					}
 				}
-				if (AccountDone && LegalIdDefinition is not null)
+
+				bool advancedManually = false;
+				bool shouldAdvance = false;
+				if (!string.IsNullOrEmpty(transferredAccount) && transferredPassword is not null && transferredPasswordMethod is not null && this.CoordinatorViewModel is not null)
 				{
-					ServiceRef.LogService.LogInformational("Account and LegalId detected. Fast-forward advancing.");
-					this.AdvanceAfterInvite();
-					this.AdvanceAfterInvite();
+					OnboardingTransferContext Context = new OnboardingTransferContext(transferredAccount, transferredPassword, transferredPasswordMethod, LegalIdDefinition);
+					await this.CoordinatorViewModel.ApplyTransferContextAsync(Context).ConfigureAwait(false);
+					shouldAdvance = true;
+
+					bool Connected = await this.CoordinatorViewModel.TryFinalizeTransferAsync(false).ConfigureAwait(false);
+					ServiceRef.LogService.LogInformational("Deferred transfer connection attempt finished.",
+						new KeyValuePair<string, object?>("Success", Connected),
+						new KeyValuePair<string, object?>("HasLegalId", Context.HasLegalIdentity));
+					if (Connected && Context.HasLegalIdentity)
+					{
+						advancedManually = true;
+						MainThread.BeginInvokeOnMainThread(async () =>
+						{
+							await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.DefinePassword);
+						});
+					}
 				}
-				else if (AccountDone)
+				else
 				{
-					ServiceRef.LogService.LogInformational("Account detected without LegalId. Single advance.");
-					this.AdvanceAfterInvite();
+					this.MarkInviteAsInvalid(nameof(AppResources.InvalidInvitationCode));
+					return false;
 				}
+
+				if (!advancedManually)
+				{
+					return shouldAdvance;
+				}
+
+				return false;
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
+				this.MarkInviteAsInvalid(nameof(AppResources.InvalidInvitationCode));
 			}
+
+			return false;
 		}
 
 		private static async Task SelectDomain(string Domain, string Key, string Secret)
@@ -486,115 +556,5 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			ServiceRef.LogService.LogInformational("Domain selection stored in TagProfile.");
 		}
 
-		private async Task<bool> ConnectToAccount(string AccountName, string Password, string PasswordMethod, string LegalIdentityJid, XmlElement? LegalIdDefinition, string Pin)
-		{
-			ServiceRef.LogService.LogDebug($"ConnectToAccount attempt for '{AccountName}'. PasswordMethod='{PasswordMethod}'.");
-			try
-			{
-				async Task OnConnected(XmppClient Client)
-				{
-					ServiceRef.LogService.LogInformational("XMPP account connected. Discovering identities.");
-					DateTime Now = DateTime.Now;
-					LegalIdentity? CreatedIdentity = null;
-					LegalIdentity? ApprovedIdentity = null;
-					bool ServiceDiscoverySucceeded = ServiceRef.TagProfile.NeedsUpdating() ? await ServiceRef.XmppService.DiscoverServices(Client) : true;
-					ServiceRef.LogService.LogInformational($"Service discovery result: {ServiceDiscoverySucceeded}.");
-					if (ServiceDiscoverySucceeded && !string.IsNullOrEmpty(ServiceRef.TagProfile.LegalJid))
-					{
-						bool DestroyContractsClient = false;
-						if (!Client.TryGetExtension(typeof(ContractsClient), out IXmppExtension Extension) || Extension is not ContractsClient ContractsClient)
-						{
-							ContractsClient = new ContractsClient(Client, ServiceRef.TagProfile.LegalJid);
-							DestroyContractsClient = true;
-							ServiceRef.LogService.LogDebug("ContractsClient created for identity operations.");
-						}
-						try
-						{
-							if (LegalIdDefinition is not null)
-							{
-								ServiceRef.LogService.LogInformational("Importing provided LegalId keys.");
-								await ContractsClient.ImportKeys(LegalIdDefinition);
-							}
-							LegalIdentity[] Identities = await ContractsClient.GetLegalIdentitiesAsync();
-							ServiceRef.LogService.LogInformational($"Fetched {Identities.Length} identities.");
-							foreach (LegalIdentity Identity in Identities)
-							{
-								try
-								{
-									if ((string.IsNullOrEmpty(LegalIdentityJid) || string.Compare(LegalIdentityJid, Identity.Id, StringComparison.OrdinalIgnoreCase) == 0) &&
-										Identity.HasClientSignature && Identity.HasClientPublicKey && Identity.From <= Now && Identity.To >= Now &&
-										(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created) && Identity.ValidateClientSignature() && await ContractsClient.HasPrivateKey(Identity))
-									{
-										if (Identity.State == IdentityState.Approved)
-										{
-											ApprovedIdentity = Identity;
-											break;
-										}
-										CreatedIdentity ??= Identity;
-									}
-								}
-								catch (Exception Ex2)
-								{
-									ServiceRef.LogService.LogException(Ex2);
-								}
-							}
-							LegalIdentity? SelectedIdentity = ApprovedIdentity ?? CreatedIdentity;
-							string SelectedId;
-							if (SelectedIdentity is not null)
-							{
-								ServiceRef.LogService.LogInformational($"Selected identity '{SelectedIdentity.Id}' (State={SelectedIdentity.State}).");
-								await ServiceRef.TagProfile.SetAccountAndLegalIdentity(AccountName, Client.PasswordHash, Client.PasswordHashMethod, SelectedIdentity);
-								SelectedId = SelectedIdentity.Id;
-								ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
-							}
-							else
-							{
-								ServiceRef.LogService.LogInformational("No identity selected; storing account only.");
-								ServiceRef.TagProfile.SetAccount(AccountName, Client.PasswordHash, Client.PasswordHashMethod);
-								SelectedId = string.Empty;
-							}
-							if (!string.IsNullOrEmpty(Pin))
-							{
-								ServiceRef.LogService.LogInformational("Local PIN set from invitation.");
-								ServiceRef.TagProfile.LocalPassword = Pin;
-							}
-							foreach (LegalIdentity Identity in Identities)
-							{
-								if (Identity.Id == SelectedId)
-									continue;
-								switch (Identity.State)
-								{
-									case IdentityState.Approved:
-									case IdentityState.Created:
-										ServiceRef.LogService.LogDebug($"Obsoleting identity '{Identity.Id}'.");
-										await ContractsClient.ObsoleteLegalIdentityAsync(Identity.Id);
-										break;
-								}
-							}
-						}
-						finally
-						{
-							if (DestroyContractsClient)
-							{
-								ServiceRef.LogService.LogDebug("Disposing temporary ContractsClient.");
-								ContractsClient.Dispose();
-							}
-						}
-					}
-				}
-				(string HostName, int PortNumber, bool IsIp) = await ServiceRef.NetworkService.LookupXmppHostnameAndPort(ServiceRef.TagProfile.Domain ?? string.Empty);
-				ServiceRef.LogService.LogInformational($"Connecting to XMPP account Host='{HostName}' Port={PortNumber} IsIp={IsIp}.");
-				(bool Succeeded, string? ErrorMessage, string[]? _) = await ServiceRef.XmppService.TryConnectAndConnectToAccount(ServiceRef.TagProfile.Domain ?? string.Empty, IsIp, HostName, PortNumber, AccountName, Password, PasswordMethod, Constants.LanguageCodes.Default, typeof(App).Assembly, OnConnected);
-				ServiceRef.LogService.LogInformational($"XMPP connect result: {(Succeeded ? "Succeeded" : "Failed")} Error='{ErrorMessage}'.");
-				if (!Succeeded && !string.IsNullOrEmpty(ErrorMessage))
-					ServiceRef.LogService.LogWarning(ErrorMessage);
-				return Succeeded;
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-			return false;
-		}
 	}
 }
