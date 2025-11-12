@@ -636,14 +636,15 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 					}
 					break;
 				case OnboardingStep.CreateAccount:
-					if (this.scenario != OnboardingScenario.ReverifyIdentity &&
-						(this.transferContext is not null ||
-						!string.IsNullOrEmpty(Profile.Account) ||
-						(Profile.LegalIdentity is LegalIdentity Identity &&
-						(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created))))
+					if (this.scenario != OnboardingScenario.ReverifyIdentity)
 					{
-						Reason = this.transferContext is not null ? "AccountTransferred" : "IdentityAlreadyPresent";
-						return true;
+						bool HasTransferIdentity = this.transferContext?.HasLegalIdentity == true;
+						bool HasApprovedIdentity = Profile.LegalIdentity is LegalIdentity identity && identity.State == IdentityState.Approved;
+						if (HasTransferIdentity || HasApprovedIdentity)
+						{
+							Reason = HasTransferIdentity ? "AccountTransferred" : "IdentityAlreadyPresent";
+							return true;
+						}
 					}
 					break;
 				case OnboardingStep.DefinePassword:
