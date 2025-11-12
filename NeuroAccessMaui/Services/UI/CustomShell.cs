@@ -69,7 +69,7 @@ namespace NeuroAccessMaui.Services.UI
             this.contentHostA.IsVisible = true;
             this.contentHostB.IsVisible = false;
 
-			this.popupBackground = new BoxView { Opacity = 0, BackgroundColor = Colors.Black };
+			this.popupBackground = new BoxView { Opacity = 0, Color = Colors.Black };
 			this.popupOverlay = new Grid { IsVisible = false, InputTransparent = false };
 			this.popupOverlay.Add(this.popupBackground);
 			this.popupHost = new Grid { VerticalOptions = LayoutOptions.Fill, HorizontalOptions = LayoutOptions.Fill };
