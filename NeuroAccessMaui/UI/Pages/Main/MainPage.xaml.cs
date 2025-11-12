@@ -11,19 +11,14 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			this.InitializeComponent();
 			this.ContentPageModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
-
-			this.Loaded += this.OnLoaded;
+			this.InitializeTabs();
 
 			Thickness BottomBarPadding = this.BottomBar.Padding;
 			BottomBarPadding.Bottom += SafeArea.ResolveInsetsForMode(SafeAreaMode.Bottom).Bottom;
 			this.BottomBar.Padding = BottomBarPadding;
 		}
 
-		private void OnLoaded(object? sender, EventArgs e)
-		{
-			this.Loaded -= this.OnLoaded;
-			this.InitializeTabs();
-		}
+
 
 		private void InitializeTabs()
 		{

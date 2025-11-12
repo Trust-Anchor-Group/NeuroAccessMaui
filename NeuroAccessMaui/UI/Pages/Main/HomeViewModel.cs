@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 {
 	public partial class HomeViewModel : QrXmppViewModel
 	{
-		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+		private readonly IAuthenticationService authenticationService = ServiceRef.AuthenticationService;
 
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeDark);
@@ -51,7 +51,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			Application.Current.RequestedThemeChanged += (_, __) =>
 				OnPropertyChanged(nameof(BannerUri));
 		}
-	
+
 		public override Task<string> Title => Task.FromResult(ContactInfo.GetFriendlyName(ServiceRef.TagProfile.LegalIdentity));
 
 		public override async Task OnAppearingAsync()
@@ -101,44 +101,44 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				ServiceRef.LogService.LogException(Ex);
 			}
 
-		ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
-		ServiceRef.XmppService.LegalIdentityChanged += this.XmppService_LegalIdentityChanged;
-		ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
-		ServiceRef.TagProfile.Changed += this.TagProfile_PropertyChanged;
-	}
-
-	public override Task OnDisposeAsync()
-	{
-		ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
-		ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
-		ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
-		ServiceRef.TagProfile.Changed -= this.TagProfile_PropertyChanged;
-
-		return base.OnDisposeAsync();
-	}
-
-	private void TagProfile_OnPropertiesChanged(object? Sender, EventArgs e)
-	{
-		Task.Run(this.LoadLatestKycStateAsync);
-	}
-
-	private void TagProfile_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-	{
-		if (string.IsNullOrEmpty(e.PropertyName) ||
-			e.PropertyName == nameof(ITagProfile.ApplicationReview) ||
-			e.PropertyName == nameof(ITagProfile.IdentityApplication) ||
-			e.PropertyName == nameof(ITagProfile.LegalIdentity))
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
-				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
-				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
-				this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
-				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
-			});
+			ServiceRef.XmppService.IdentityApplicationChanged += this.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.LegalIdentityChanged += this.XmppService_LegalIdentityChanged;
+			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
+			ServiceRef.TagProfile.Changed += this.TagProfile_PropertyChanged;
 		}
-	}
+
+		public override Task OnDisposeAsync()
+		{
+			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
+			ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
+			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
+			ServiceRef.TagProfile.Changed -= this.TagProfile_PropertyChanged;
+
+			return base.OnDisposeAsync();
+		}
+
+		private void TagProfile_OnPropertiesChanged(object? Sender, EventArgs e)
+		{
+			Task.Run(this.LoadLatestKycStateAsync);
+		}
+
+		private void TagProfile_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			if (string.IsNullOrEmpty(e.PropertyName) ||
+				e.PropertyName == nameof(ITagProfile.ApplicationReview) ||
+				e.PropertyName == nameof(ITagProfile.IdentityApplication) ||
+				e.PropertyName == nameof(ITagProfile.LegalIdentity))
+			{
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
+					this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
+					this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
+					this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
+					this.OnPropertyChanged(nameof(this.ShowInfoBubble));
+				});
+			}
+		}
 
 		private async Task XmppService_IdentityApplicationChanged(object? Sender, EventArgs e)
 		{
@@ -218,15 +218,15 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				this.latestCreatedIdentityState = ServiceRef.TagProfile.IdentityApplication?.State ?? ServiceRef.TagProfile.LegalIdentity?.State ?? null;
 
 
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.OnPropertyChanged(nameof(this.HasPendingIdentity));
-				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
-				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
-				this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
-				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
-				this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
-			});
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.OnPropertyChanged(nameof(this.HasPendingIdentity));
+					this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
+					this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
+					this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
+					this.OnPropertyChanged(nameof(this.ShowInfoBubble));
+					this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
+				});
 			}
 			catch (Exception Ex)
 			{
@@ -263,7 +263,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			try
 			{
 				if (await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
-					await ServiceRef.Provider.GetRequiredService<INavigationService>().GoToAsync(nameof(ViewIdentityPage));
+					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception Ex)
 			{
