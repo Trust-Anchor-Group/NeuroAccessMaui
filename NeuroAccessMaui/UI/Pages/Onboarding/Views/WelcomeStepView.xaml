@@ -17,7 +17,7 @@
         </Style>
     </onboarding:BaseOnboardingView.Resources>
 
-	<controls:ConditionView Condition="{Binding IsLoading}">
+	<controls:ConditionView Condition="{Binding IsBusy}">
 		<controls:ConditionView.True>
 			<ActivityIndicator IsRunning="True"
 							   VerticalOptions="Center" />

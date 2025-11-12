@@ -18,6 +18,9 @@ using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 {
+	/// <summary>
+	/// Provides state and logic for the welcome onboarding step, including invite and QR handling.
+	/// </summary>
 	public partial class WelcomeOnboardingStepViewModel : BaseOnboardingStepViewModel
 	{
 		private CancellationTokenSource? inviteCodeCts;
@@ -26,18 +29,51 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 		public WelcomeOnboardingStepViewModel() : base(OnboardingStep.Welcome) { }
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the welcome content is in its initial loading state.
+		/// </summary>
 		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsBusy))]
 		private bool isLoading = true;
 
+		/// <summary>
+		/// Gets or sets the invite code entered or scanned by the user.
+		/// </summary>
 		[ObservableProperty]
 		private string? inviteCode;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the current invite code passes basic validation.
+		/// </summary>
 		[ObservableProperty]
 		private bool inviteCodeIsValid = true;
 
+		/// <summary>
+		/// Gets or sets a value indicating whether an invite payload is currently being processed.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(IsBusy))]
+		private bool isProcessingInvite;
+
+		/// <summary>
+		/// Gets the localized title displayed on the welcome step.
+		/// </summary>
 		public override string Title => ServiceRef.Localizer[nameof(AppResources.ActivateYourDigitalIdentity)];
+
+		/// <summary>
+		/// Gets the text displayed on the (unused) next button.
+		/// </summary>
 		public override string NextButtonText => string.Empty; // Not used.
+
+		/// <summary>
+		/// Gets a value indicating whether manual continuation is allowed.
+		/// </summary>
 		public bool CanContinue => false; // Manual button disabled.
+
+		/// <summary>
+		/// Gets a value indicating whether the welcome step is initializing or processing invite data.
+		/// </summary>
+		public bool IsBusy => this.IsLoading || this.IsProcessingInvite;
 
 		internal override async Task OnActivatedAsync()
 		{
@@ -104,8 +140,16 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 						return;
 					}
 					ServiceRef.LogService.LogInformational("Debounce elapsed. Processing invitation.");
-					await this.ProcessInvitationAsync(Trimmed).ConfigureAwait(false);
-					MainThread.BeginInvokeOnMainThread(this.AdvanceAfterInvite);
+					this.SetInviteProcessingState(true);
+					try
+					{
+						await this.ProcessInvitationAsync(Trimmed).ConfigureAwait(false);
+						MainThread.BeginInvokeOnMainThread(this.AdvanceAfterInvite);
+					}
+					finally
+					{
+						this.SetInviteProcessingState(false);
+					}
 				}
 				catch (OperationCanceledException)
 				{
@@ -254,6 +298,18 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			ServiceRef.LogService.LogDebug("Back requested from Welcome step.");
 			this.inviteCodeCts?.Cancel();
 			return Task.CompletedTask;
+		}
+
+		private void SetInviteProcessingState(bool isProcessing)
+		{
+			if (MainThread.IsMainThread)
+			{
+				this.IsProcessingInvite = isProcessing;
+			}
+			else
+			{
+				MainThread.BeginInvokeOnMainThread(() => this.IsProcessingInvite = isProcessing);
+			}
 		}
 
 		private static bool BasicValidateInviteCode(string code, out string trimmed)
