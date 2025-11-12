@@ -277,8 +277,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			}
 		}
 
-		public bool HasReserved => this.ReservedDecimal > 0 || this.ReservedDecimal == -1;
-
+		public bool HasReserved => (this.ReservedDecimal > 0 || this.ReservedDecimal == -1) && this.GetBalanceTask.IsSucceeded;
 
 		/// <summary>
 		/// Last fetched balance. Changing this notifies <see cref="BalanceDecimal"/>.
