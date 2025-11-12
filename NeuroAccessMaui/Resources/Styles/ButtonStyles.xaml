@@ -693,6 +693,7 @@
 		<Setter Property="SvgTintColor" Value="{DynamicResource ButtonAccessSecondaryContentWL}"/>
 		<Setter Property="BorderStyle" Value="{DynamicResource IconButtonSecondaryBorder}"/>
 		<Setter Property="LabelStyle" Value="{DynamicResource IconButtonSecondaryLabel}"/>
+		<Setter Property="SvgAspect" Value="AspectFit"/>
 	</Style>
 
 	<Style x:Key="IconButtonSecondaryBorder" ApplyToDerivedTypes="False" TargetType="Border" BasedOn="{StaticResource IconButtonBorder}">

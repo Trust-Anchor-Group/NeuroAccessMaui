@@ -17,29 +17,25 @@
 			ColumnDefinitions="*"
 			BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
-
 		<controls:Background />
 
 		<ScrollView Grid.Row="0">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-										Margin="{DynamicResource MediumSpacing}">
-
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 
 				<Grid RowDefinitions="auto"
-						ColumnDefinitions="*">
-
+					  ColumnDefinitions="*">
 
 					<controls:ImageButton HorizontalOptions="Start"
-												 Command="{Binding GoBackCommand}"
-												 Style="{DynamicResource ImageOnlyButton}"
-												 PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											Command="{Binding GoBackCommand}"
+											Style="{DynamicResource ImageOnlyButton}"
+											PathData="{x:Static ui:Geometries.BackButtonPath}"
+											Margin="8"/>
+					
 					<Image HorizontalOptions="Center"
-							 VerticalOptions="Start"
-							 Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}"
-							 WidthRequest="50"
-							 HeightRequest="50" />
-
-
+							VerticalOptions="Start"
+							Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}"
+							WidthRequest="50"
+							HeightRequest="50" />
 				</Grid>
 
 				<!-- Info -->
@@ -110,7 +106,7 @@
 							</HorizontalStackLayout>
 						</mct:Expander.Header>
 						<mct:Expander.Content>
-							<VerticalStackLayout>
+							<VerticalStackLayout Spacing="8">
 								<!-- Personal Information -->
 								<Border Style="{DynamicResource BorderSubSet}"
 										 IsVisible="{Binding HasDomain, Converter={StaticResource InvertedBoolConverter}}">
@@ -226,7 +222,7 @@
 											<Label Grid.Row="7"
 													 Grid.Column="1"
 													 Margin="{DynamicResource SmallTopMargins}"
-													 FontAttributes="Bold"
+													 Style="{DynamicResource ValueLabel}"
 													 Text="{Binding Area}" />
 											<!--    -->
 											<Label Grid.Row="8"
