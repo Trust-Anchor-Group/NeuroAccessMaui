@@ -32,11 +32,17 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		[ObservableProperty]
 		private string errorMessage = string.Empty;
 
+		[ObservableProperty]
+		private string statusMessage = string.Empty;
+
 		public bool HasError => !string.IsNullOrEmpty(this.ErrorMessage);
+		public bool HasStatusMessage => !string.IsNullOrEmpty(this.StatusMessage);
 		public bool IsXmppConnected => ServiceRef.XmppService.State == XmppState.Connected;
 		public bool IsAccountCreated => !string.IsNullOrEmpty(ServiceRef.TagProfile.Account);
-		public bool IsLegalIdentityCreated => ServiceRef.TagProfile.LegalIdentity is LegalIdentity identity && (identity.State == IdentityState.Approved || identity.State == IdentityState.Created);
-		public bool CanCreateIdentity => this.IsAccountCreated && !this.IsLegalIdentityCreated && !this.IsBusy;
+		public bool IsLegalIdentityCreated => ServiceRef.TagProfile.LegalIdentity is LegalIdentity identity && identity.State == IdentityState.Approved;
+		public bool IsIdentityPendingApproval => ServiceRef.TagProfile.LegalIdentity is LegalIdentity identity && identity.State == IdentityState.Created;
+		public bool IsWaitingForIdentity => this.IsBusy || this.IsIdentityPendingApproval || (this.hasAppliedForIdentity && !this.IsLegalIdentityCreated);
+		public bool CanCreateIdentity => this.IsAccountCreated && ServiceRef.TagProfile.LegalIdentity is null && !this.IsBusy;
 
 		public override async Task OnInitializeAsync()
 		{
@@ -49,7 +55,22 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				this.callbacksRegistered = true;
 			}
 
+			if (this.CoordinatorViewModel?.Scenario == OnboardingScenario.ReverifyIdentity &&
+				ServiceRef.TagProfile.LegalIdentity is LegalIdentity existingIdentity &&
+				existingIdentity.State == IdentityState.Approved)
+			{
+				ServiceRef.LogService.LogInformational("Clearing approved identity prior to reverify onboarding step.");
+				await ServiceRef.TagProfile.ClearLegalIdentity();
+			}
+
 			await ServiceRef.XmppService.WaitForConnectedState(TimeSpan.FromSeconds(10));
+			await this.TryAutoApplyAsync();
+			await this.CheckApplicationStateAsync();
+		}
+
+		internal override async Task OnActivatedAsync()
+		{
+			await base.OnActivatedAsync();
 			await this.TryAutoApplyAsync();
 			await this.CheckApplicationStateAsync();
 		}
@@ -85,6 +106,8 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
 				this.OnPropertyChanged(nameof(this.IsLegalIdentityCreated));
+				this.OnPropertyChanged(nameof(this.IsIdentityPendingApproval));
+				this.OnPropertyChanged(nameof(this.IsWaitingForIdentity));
 				await this.CheckApplicationStateAsync();
 			});
 
@@ -116,8 +139,9 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				}
 			}
 
-			this.hasAppliedForIdentity = true;
+			this.SetHasAppliedForIdentity(true);
 			this.ErrorMessage = string.Empty;
+			this.StatusMessage = string.Empty;
 			this.IsBusy = true;
 
 			using CancellationTokenSource timerCts = new(TimeSpan.FromSeconds(Constants.Timeouts.GenericRequest.Seconds));
@@ -136,6 +160,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 						identity = addedIdentity;
 						await ServiceRef.TagProfile.SetLegalIdentity(identity, true);
 						appliedSuccessfully = true;
+						this.StatusMessage = ServiceRef.Localizer[nameof(AppResources.IdApplicationSentDescription)];
 						break;
 					}
 				}
@@ -159,12 +184,14 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 			this.IsBusy = false;
 			this.OnPropertyChanged(nameof(this.IsLegalIdentityCreated));
+			this.OnPropertyChanged(nameof(this.IsIdentityPendingApproval));
+			this.OnPropertyChanged(nameof(this.IsWaitingForIdentity));
 
 			if (!appliedSuccessfully)
 			{
 				await ServiceRef.TagProfile.ClearLegalIdentity();
 				ServiceRef.LogService.LogWarning("Legal identity application failed during onboarding.");
-				this.hasAppliedForIdentity = false; // Allow future retry.
+				this.SetHasAppliedForIdentity(false); // Allow future retry.
 			}
 		}
 
@@ -182,21 +209,65 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			switch (legalIdentity.State)
 			{
 				case IdentityState.Approved:
-				case IdentityState.Created:
 					this.ErrorMessage = string.Empty;
+					this.StatusMessage = string.Empty;
 					if (this.CoordinatorViewModel is not null)
 						await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.DefinePassword);
+					break;
+				case IdentityState.Created:
+					this.ErrorMessage = string.Empty;
+					this.StatusMessage = ServiceRef.Localizer[nameof(AppResources.IdApplicationSentDescription)];
+					break;
+				case IdentityState.Rejected:
+				case IdentityState.Obsoleted:
+				case IdentityState.Compromised:
+					await this.HandleIdentityFailureAsync(legalIdentity.State);
 					break;
 				default:
 					if (legalIdentity.IsDiscarded())
 					{
-						await ServiceRef.TagProfile.ClearLegalIdentity();
-						this.ErrorMessage = ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)];
-						if (this.CoordinatorViewModel is not null)
-							await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.ValidatePhone);
+						await this.HandleIdentityFailureAsync(legalIdentity.State);
 					}
 					break;
 			}
+
+			this.OnPropertyChanged(nameof(this.IsLegalIdentityCreated));
+			this.OnPropertyChanged(nameof(this.IsIdentityPendingApproval));
+			this.OnPropertyChanged(nameof(this.IsWaitingForIdentity));
+		}
+
+		private async Task HandleIdentityFailureAsync(IdentityState state)
+		{
+			this.StatusMessage = string.Empty;
+			switch (state)
+			{
+				case IdentityState.Compromised:
+					this.ErrorMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
+					break;
+				case IdentityState.Obsoleted:
+					this.ErrorMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
+					break;
+				default:
+					this.ErrorMessage = ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)];
+					break;
+			}
+
+			await ServiceRef.TagProfile.ClearLegalIdentity();
+			this.SetHasAppliedForIdentity(false);
+			this.OnPropertyChanged(nameof(this.IsLegalIdentityCreated));
+			this.OnPropertyChanged(nameof(this.IsIdentityPendingApproval));
+
+			if (this.CoordinatorViewModel is not null)
+				await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.ValidatePhone);
+		}
+
+		private void SetHasAppliedForIdentity(bool value)
+		{
+			if (this.hasAppliedForIdentity == value)
+				return;
+
+			this.hasAppliedForIdentity = value;
+			this.OnPropertyChanged(nameof(this.IsWaitingForIdentity));
 		}
 
 		private RegisterIdentityModel CreateRegisterModel()
@@ -210,6 +281,16 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			if (!string.IsNullOrWhiteSpace(value = ServiceRef.TagProfile?.SelectedCountry?.Trim() ?? string.Empty))
 				model.CountryCode = value;
 			return model;
+		}
+
+		partial void OnStatusMessageChanged(string value)
+		{
+			this.OnPropertyChanged(nameof(this.HasStatusMessage));
+		}
+
+		partial void OnIsBusyChanged(bool value)
+		{
+			this.OnPropertyChanged(nameof(this.IsWaitingForIdentity));
 		}
 	}
 }

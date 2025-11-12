@@ -17,8 +17,13 @@
             </VerticalStackLayout>
 
             <ActivityIndicator VerticalOptions="Center"
-                               IsVisible="True"
-                               IsRunning="True" />
+                               IsVisible="{Binding IsWaitingForIdentity}"
+                               IsRunning="{Binding IsWaitingForIdentity}" />
+
+            <Label Text="{Binding StatusMessage}"
+                   HorizontalOptions="Center"
+                   TextColor="{DynamicResource ContentPrimaryWL}"
+                   IsVisible="{Binding HasStatusMessage}" />
 
             <Label Text="{Binding ErrorMessage}"
                    TextColor="{DynamicResource InputFieldsContentDangerv800}"
