@@ -25,6 +25,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		private readonly List<StepDescriptor> descriptorOrder = new List<StepDescriptor>();
 		private readonly List<OnboardingStep> scenarioSequence = new List<OnboardingStep>();
 		private readonly HashSet<OnboardingStep> loggedSkips = new HashSet<OnboardingStep>();
+		private readonly HashSet<OnboardingStep> completedSteps = new HashSet<OnboardingStep>();
 		private List<OnboardingStep> activeSequence = new List<OnboardingStep>();
 		private readonly OnboardingNavigationArgs navigationArgs;
 		private readonly OnboardingScenario scenario;
@@ -90,6 +91,26 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			}
 		}
 
+		internal OnboardingStep? GetNextActiveStep(OnboardingStep step)
+		{
+			this.BuildActiveSequence();
+			return this.FindStepInDirection(step, NavigationDirection.Forward);
+		}
+
+		internal void MarkStepCompleted(OnboardingStep step)
+		{
+			if (!this.completedSteps.Add(step))
+			{
+				return;
+			}
+
+			ServiceRef.LogService.LogInformational("Onboarding step marked as completed.",
+				new KeyValuePair<string, object?>("Step", step.ToString()),
+				new KeyValuePair<string, object?>("Scenario", this.scenario.ToString()));
+
+			this.BuildActiveSequence();
+		}
+
 		public T GetStepViewModel<T>(OnboardingStep step) where T : BaseOnboardingStepViewModel
 		{
 			if (this.stepViewModels.TryGetValue(step, out BaseOnboardingStepViewModel? stepViewModel) && stepViewModel is T typed)
@@ -121,6 +142,12 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			await this.MoveToStepAsync(StartStep, NavigationDirection.Forward).ConfigureAwait(false);
 		}
 
+		/// <summary>
+		/// Advances the onboarding process to the next step, completing onboarding if no further steps are available.
+		/// </summary>
+		/// <remarks>If the current step does not allow advancement, the method does not proceed to the next step.
+		/// When the final step is reached, onboarding is completed automatically.</remarks>
+		/// <returns>A task that represents the asynchronous operation of moving to the next onboarding step or completing onboarding.</returns>
 		[RelayCommand]
 		private async Task GoToNext()
 		{
@@ -144,8 +171,20 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			await this.MoveToStepAsync(NextStep.Value, NavigationDirection.Forward).ConfigureAwait(false);
 		}
 
+		/// <summary>
+		/// Navigates to the previous onboarding step if backward navigation is permitted from the current step.
+		/// </summary>
+		/// <remarks>If the current step restricts backward navigation, this method does not perform any navigation.
+		/// If there is no previous step available, the method completes without changing the current step.</remarks>
+		/// <returns>A task that represents the asynchronous navigation operation. The task completes when the navigation to the
+		/// previous step has finished, or immediately if backward navigation is restricted or no previous step exists.</returns>
 		public override async Task GoBack()
 		{
+			if (IsBackRestrictedStep(this.CurrentStep))
+			{
+				return;
+			}
+
 			if (this.stepViewModels.TryGetValue(this.CurrentStep, out BaseOnboardingStepViewModel? CurrentStepViewModel))
 			{
 				await CurrentStepViewModel.OnBackAsync().ConfigureAwait(false);
@@ -161,10 +200,22 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			await this.MoveToStepAsync(PreviousStep.Value, NavigationDirection.Backward).ConfigureAwait(false);
 		}
 
+		/// <summary>
+		/// Navigates to the specified onboarding step asynchronously, updating the current step and direction as appropriate.
+		/// </summary>
+		/// <remarks>If navigation to a previous step is restricted, the operation will not proceed. This method
+		/// should be called when transitioning between steps in the onboarding workflow.</remarks>
+		/// <param name="Step">The onboarding step to navigate to. Must be a valid step within the onboarding process.</param>
+		/// <returns>A task that represents the asynchronous navigation operation.</returns>
 		[RelayCommand]
 		private async Task GoToStep(OnboardingStep Step)
 		{
 			NavigationDirection Direction = this.DetermineDirection(this.CurrentStep, Step);
+			if (Direction == NavigationDirection.Backward && IsBackRestrictedStep(this.CurrentStep))
+			{
+				return;
+			}
+
 			await this.MoveToStepAsync(Step, Direction).ConfigureAwait(false);
 		}
 
@@ -182,6 +233,14 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			await this.MoveToStepAsync(OnboardingStep.ContactSupport, Direction).ConfigureAwait(false);
 		}
 
+		/// <summary>
+		/// Initializes the onboarding step descriptors and prepares the internal collections for the current onboarding
+		/// scenario.
+		/// </summary>
+		/// <remarks>This method resets and populates the descriptor and sequence collections to reflect the steps
+		/// required for the current scenario. It should be called before accessing onboarding step descriptors to ensure that
+		/// all relevant steps and their conditions are up to date. This method is intended for internal use and is not
+		/// thread-safe.</remarks>
 		private void InitializeDescriptors()
 		{
 			this.descriptorOrder.Clear();
@@ -202,15 +261,15 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			this.AddDescriptor(OnboardingStep.ValidatePhone,
 				() => ScenarioSet.Contains(OnboardingStep.ValidatePhone),
 				() => this.TryGetSkipReason(OnboardingStep.ValidatePhone, out _));
-		this.AddDescriptor(OnboardingStep.ValidateEmail,
-			() => ScenarioSet.Contains(OnboardingStep.ValidateEmail),
-			() => this.TryGetSkipReason(OnboardingStep.ValidateEmail, out _));
-		this.AddDescriptor(OnboardingStep.NameEntry,
-			() => ScenarioSet.Contains(OnboardingStep.NameEntry),
-			() => this.TryGetSkipReason(OnboardingStep.NameEntry, out _));
-		this.AddDescriptor(OnboardingStep.CreateAccount,
-			() => ScenarioSet.Contains(OnboardingStep.CreateAccount),
-			() => this.TryGetSkipReason(OnboardingStep.CreateAccount, out _));
+			this.AddDescriptor(OnboardingStep.ValidateEmail,
+				() => ScenarioSet.Contains(OnboardingStep.ValidateEmail),
+				() => this.TryGetSkipReason(OnboardingStep.ValidateEmail, out _));
+			this.AddDescriptor(OnboardingStep.NameEntry,
+				() => ScenarioSet.Contains(OnboardingStep.NameEntry),
+				() => this.TryGetSkipReason(OnboardingStep.NameEntry, out _));
+			this.AddDescriptor(OnboardingStep.CreateAccount,
+				() => ScenarioSet.Contains(OnboardingStep.CreateAccount),
+				() => this.TryGetSkipReason(OnboardingStep.CreateAccount, out _));
 			this.AddDescriptor(OnboardingStep.DefinePassword,
 				() => ScenarioSet.Contains(OnboardingStep.DefinePassword),
 				() => this.TryGetSkipReason(OnboardingStep.DefinePassword, out _));
@@ -232,6 +291,14 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			this.descriptorMap[step] = descriptor;
 		}
 
+		/// <summary>
+		/// Builds the current sequence of active onboarding steps based on the configured descriptors and their inclusion or
+		/// skip status.
+		/// </summary>
+		/// <remarks>This method updates the active onboarding sequence to reflect the latest configuration and
+		/// conditions. If no steps are included, the sequence will contain only the finalization step. The method also logs
+		/// any steps that are skipped, along with their reasons, and records changes to the sequence for auditing
+		/// purposes.</remarks>
 		private void BuildActiveSequence()
 		{
 			List<OnboardingStep> PreviousSequence = this.activeSequence;
@@ -276,33 +343,40 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			}
 		}
 
+		/// <summary>
+		/// Generates the default sequence of onboarding steps for the specified onboarding scenario.
+		/// </summary>
+		/// <param name="onboardingScenario">The onboarding scenario for which to retrieve the base sequence of steps. Determines the set and order of steps
+		/// included in the returned list.</param>
+		/// <returns>A list of <see cref="OnboardingStep"/> values representing the base sequence for the given scenario. The list
+		/// reflects the recommended order of steps for the specified onboarding process.</returns>
 		private List<OnboardingStep> GetBaseSequence(OnboardingScenario onboardingScenario)
 		{
 			List<OnboardingStep> Sequence = new List<OnboardingStep>();
 			switch (onboardingScenario)
 			{
-			case OnboardingScenario.FullSetup:
-				Sequence.Add(OnboardingStep.Welcome);
-				Sequence.Add(OnboardingStep.ValidatePhone);
-				Sequence.Add(OnboardingStep.ValidateEmail);
-				Sequence.Add(OnboardingStep.NameEntry);
-				Sequence.Add(OnboardingStep.CreateAccount);
-				Sequence.Add(OnboardingStep.DefinePassword);
-				Sequence.Add(OnboardingStep.Biometrics);
-				Sequence.Add(OnboardingStep.Finalize);
-				break;
+				case OnboardingScenario.FullSetup:
+					Sequence.Add(OnboardingStep.Welcome);
+					Sequence.Add(OnboardingStep.ValidatePhone);
+					Sequence.Add(OnboardingStep.ValidateEmail);
+					Sequence.Add(OnboardingStep.NameEntry);
+					Sequence.Add(OnboardingStep.CreateAccount);
+					Sequence.Add(OnboardingStep.DefinePassword);
+					Sequence.Add(OnboardingStep.Biometrics);
+					Sequence.Add(OnboardingStep.Finalize);
+					break;
 				case OnboardingScenario.ChangePin:
 					Sequence.Add(OnboardingStep.DefinePassword);
 					Sequence.Add(OnboardingStep.Biometrics);
 					Sequence.Add(OnboardingStep.Finalize);
 					break;
-			case OnboardingScenario.ReverifyIdentity:
-				Sequence.Add(OnboardingStep.ValidatePhone);
-				Sequence.Add(OnboardingStep.ValidateEmail);
-				Sequence.Add(OnboardingStep.NameEntry);
-				Sequence.Add(OnboardingStep.CreateAccount);
-				Sequence.Add(OnboardingStep.Finalize);
-				break;
+				case OnboardingScenario.ReverifyIdentity:
+					Sequence.Add(OnboardingStep.ValidatePhone);
+					Sequence.Add(OnboardingStep.ValidateEmail);
+					Sequence.Add(OnboardingStep.NameEntry);
+					Sequence.Add(OnboardingStep.CreateAccount);
+					Sequence.Add(OnboardingStep.Finalize);
+					break;
 				default:
 					Sequence.Add(OnboardingStep.Welcome);
 					Sequence.Add(OnboardingStep.Finalize);
@@ -312,10 +386,27 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			return Sequence;
 		}
 
+		/// <summary>
+		/// Determines whether the specified onboarding step should be skipped and provides the reason if it is skipped.
+		/// </summary>
+		/// <remarks>The skip reason is provided as a string value in <paramref name="Reason"/> when the method
+		/// returns <see langword="true"/>. If the step is not skipped, <paramref name="Reason"/> is set to an empty string.
+		/// The possible reasons include completed steps, existing identity or account, previously defined password, enabled
+		/// biometrics, or unavailable biometric support.</remarks>
+		/// <param name="Step">The onboarding step to evaluate for skipping.</param>
+		/// <param name="Reason">When this method returns <see langword="true"/>, contains a string describing the reason the step is skipped;
+		/// otherwise, set to an empty string.</param>
+		/// <returns>true if the step should be skipped; otherwise, false.</returns>
 		private bool TryGetSkipReason(OnboardingStep Step, out string Reason)
 		{
 			ITagProfile Profile = ServiceRef.TagProfile;
 			bool HasEstablishedIdentity = this.HasEstablishedIdentity(Profile);
+			if (this.completedSteps.Contains(Step))
+			{
+				Reason = "StepCompleted";
+				return true;
+			}
+
 			switch (Step)
 			{
 				case OnboardingStep.Welcome:
@@ -327,16 +418,17 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 				case OnboardingStep.ValidateEmail:
 					// Always redo email verification; never skip.
 					break;
-			case OnboardingStep.CreateAccount:
-					if (Profile.LegalIdentity is LegalIdentity Identity &&
+				case OnboardingStep.CreateAccount:
+					if (this.scenario != OnboardingScenario.ReverifyIdentity &&
+						Profile.LegalIdentity is LegalIdentity Identity &&
 						(Identity.State == IdentityState.Approved || Identity.State == IdentityState.Created))
 					{
 						Reason = "IdentityAlreadyPresent";
 						return true;
 					}
 					break;
-			case OnboardingStep.NameEntry:
-					if (!string.IsNullOrEmpty(Profile.Account))
+				case OnboardingStep.NameEntry:
+					if (this.scenario != OnboardingScenario.ReverifyIdentity && !string.IsNullOrEmpty(Profile.Account))
 					{
 						Reason = "AccountAlreadySelected";
 						return true;
@@ -353,6 +445,11 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 					if (Profile.AuthenticationMethod == AuthenticationMethod.Fingerprint)
 					{
 						Reason = "BiometricsAlreadyEnabled";
+						return true;
+					}
+					if (!ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication)
+					{
+						Reason = "BiometricsUnavailable";
 						return true;
 					}
 					break;
@@ -416,7 +513,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			}
 
 			this.HeaderTitle = this.GetStepTitle(TargetStep);
-			this.CanGoBack = this.FindStepInDirection(TargetStep, NavigationDirection.Backward).HasValue;
+			this.CanGoBack = !IsBackRestrictedStep(TargetStep) && this.FindStepInDirection(TargetStep, NavigationDirection.Backward).HasValue;
 
 			if (this.stepViewModels.TryGetValue(TargetStep, out BaseOnboardingStepViewModel? StepViewModel))
 			{
@@ -663,6 +760,11 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			if (Enum.TryParse(value, out OnboardingStep ParsedStep) && ParsedStep != this.CurrentStep && this.activeSequence.Contains(ParsedStep))
 			{
 				NavigationDirection Direction = this.DetermineDirection(this.CurrentStep, ParsedStep);
+				if (Direction == NavigationDirection.Backward && IsBackRestrictedStep(this.CurrentStep))
+				{
+					return;
+				}
+
 				_ = this.MoveToStepAsync(ParsedStep, Direction);
 			}
 		}
@@ -685,6 +787,13 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			None = 0,
 			Forward = 1,
 			Backward = 2
+		}
+
+		private static bool IsBackRestrictedStep(OnboardingStep step)
+		{
+			return step == OnboardingStep.DefinePassword ||
+				step == OnboardingStep.Biometrics ||
+				step == OnboardingStep.Finalize;
 		}
 	}
 }

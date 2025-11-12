@@ -90,20 +90,28 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
             await ServiceRef.PopupService.PushAsync(popup);
         }
 
-        [RelayCommand]
-        private async Task Later()
-        {
-            ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod.Password;
-            if (this.CoordinatorViewModel is not null)
-                await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.Finalize);
-        }
+		[RelayCommand]
+		private async Task Later()
+		{
+			ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod.Password;
+			OnboardingViewModel? Coordinator = this.CoordinatorViewModel;
+			if (Coordinator is not null)
+			{
+				Coordinator.MarkStepCompleted(OnboardingStep.Biometrics);
+				await Coordinator.GoToStepCommand.ExecuteAsync(OnboardingStep.Finalize);
+			}
+		}
 
-        [RelayCommand]
-        private async Task Enable()
-        {
-            ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod.Fingerprint;
-            if (this.CoordinatorViewModel is not null)
-                await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.Finalize);
-        }
-    }
+		[RelayCommand]
+		private async Task Enable()
+		{
+			ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod.Fingerprint;
+			OnboardingViewModel? Coordinator = this.CoordinatorViewModel;
+			if (Coordinator is not null)
+			{
+				Coordinator.MarkStepCompleted(OnboardingStep.Biometrics);
+				await Coordinator.GoToStepCommand.ExecuteAsync(OnboardingStep.Finalize);
+			}
+		}
+	}
 }

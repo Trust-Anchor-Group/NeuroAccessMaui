@@ -246,13 +246,13 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 
 			ServiceRef.PlatformSpecific.HideKeyboard();
 
-			bool IsFirstPassword = string.IsNullOrEmpty(ServiceRef.TagProfile.LocalPasswordHash);
 			ServiceRef.TagProfile.LocalPassword = this.PasswordText1!;
 
 			if (this.CoordinatorViewModel is not null)
 			{
-				if (ServiceRef.PlatformSpecific.SupportsFingerprintAuthentication && IsFirstPassword)
-					await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.Biometrics);
+				OnboardingStep? NextStep = this.CoordinatorViewModel.GetNextActiveStep(this.Step);
+				if (NextStep.HasValue)
+					await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(NextStep.Value);
 				else
 					await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(OnboardingStep.Finalize);
 			}
