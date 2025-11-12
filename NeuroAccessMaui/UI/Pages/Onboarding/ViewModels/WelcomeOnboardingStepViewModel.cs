@@ -432,6 +432,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			string? transferredAccount = null;
 			string? transferredPassword = null;
 			string? transferredPasswordMethod = null;
+			bool domainSelectedFromInvite = false;
 			try
 			{
 				ServiceRef.LogService.LogDebug("Decrypting invitation payload.");
@@ -466,6 +467,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 							string ApiDomain = XML.Attribute(E, "domain");
 							ServiceRef.LogService.LogInformational($"Selecting domain (ApiKey) '{ApiDomain}'.");
 							await SelectDomain(ApiDomain, ApiKey, Secret).ConfigureAwait(false);
+							domainSelectedFromInvite = true;
 							break;
 						case "Account":
 							string UserName = XML.Attribute(E, "userName");
@@ -517,8 +519,15 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 				}
 				else
 				{
-					this.MarkInviteAsInvalid(nameof(AppResources.InvalidInvitationCode));
-					return false;
+					if (domainSelectedFromInvite)
+					{
+						shouldAdvance = true;
+					}
+					else
+					{
+						this.MarkInviteAsInvalid(nameof(AppResources.InvalidInvitationCode));
+						return false;
+					}
 				}
 
 				if (!advancedManually)
