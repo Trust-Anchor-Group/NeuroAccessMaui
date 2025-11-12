@@ -88,7 +88,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				uiService ??= App.Instantiate<IUiService>();
+				uiService ??= Provider.GetRequiredService<IUiService>();
 				return uiService;
 			}
 		}
@@ -100,7 +100,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				popupService ??= App.Instantiate<IPopupService>();
+				popupService ??= Provider.GetRequiredService<IPopupService>();
 				return popupService;
 			}
 		}
@@ -112,7 +112,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				toastService ??= App.Instantiate<IToastService>();
+				toastService ??= Provider.GetRequiredService<IToastService>();
 				return toastService;
 			}
 		}
@@ -124,7 +124,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				keyboardInsetsService ??= App.Instantiate<IKeyboardInsetsService>();
+				keyboardInsetsService ??= Provider.GetRequiredService<IKeyboardInsetsService>();
 				return keyboardInsetsService;
 			}
 		}
@@ -136,7 +136,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				navigationService ??= App.Instantiate<INavigationService>();
+				navigationService ??= Provider.GetRequiredService<INavigationService>();
 				return navigationService;
 			}
 		}
@@ -148,7 +148,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				xmppService ??= App.Instantiate<IXmppService>();
+				xmppService ??= Provider.GetRequiredService<IXmppService>();
 				return xmppService;
 			}
 		}
@@ -160,7 +160,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				tagProfile ??= App.Instantiate<ITagProfile>();
+				tagProfile ??= Provider.GetRequiredService<ITagProfile>();
 				return tagProfile;
 			}
 		}
@@ -172,7 +172,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				logService ??= App.Instantiate<ILogService>();
+				logService ??= Provider.GetRequiredService<ILogService>();
 				return logService;
 			}
 		}
@@ -184,7 +184,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				networkService ??= App.Instantiate<INetworkService>();
+				networkService ??= Provider.GetRequiredService<INetworkService>();
 				return networkService;
 			}
 		}
@@ -196,7 +196,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				contractOrchestratorService ??= App.Instantiate<IContractOrchestratorService>();
+				contractOrchestratorService ??= Provider.GetRequiredService<IContractOrchestratorService>();
 				return contractOrchestratorService;
 			}
 		}
@@ -208,7 +208,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				thingRegistryOrchestratorService ??= App.Instantiate<IThingRegistryOrchestratorService>();
+				thingRegistryOrchestratorService ??= Provider.GetRequiredService<IThingRegistryOrchestratorService>();
 				return thingRegistryOrchestratorService;
 			}
 		}
@@ -220,7 +220,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				neuroWalletOrchestratorService ??= App.Instantiate<INeuroWalletOrchestratorService>();
+				neuroWalletOrchestratorService ??= Provider.GetRequiredService<INeuroWalletOrchestratorService>();
 				return neuroWalletOrchestratorService;
 			}
 		}
@@ -232,7 +232,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				attachmentCacheService ??= App.Instantiate<IAttachmentCacheService>();
+				attachmentCacheService ??= Provider.GetRequiredService<IAttachmentCacheService>();
 				return attachmentCacheService;
 			}
 		}
@@ -244,7 +244,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				cryptoService ??= App.Instantiate<ICryptoService>();
+				cryptoService ??= Provider.GetRequiredService<ICryptoService>();
 				return cryptoService;
 			}
 		}
@@ -256,7 +256,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				settingsService ??= App.Instantiate<ISettingsService>();
+				settingsService ??= Provider.GetRequiredService<ISettingsService>();
 				return settingsService;
 			}
 		}
@@ -268,7 +268,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				storageService ??= App.Instantiate<IStorageService>();
+				storageService ??= Provider.GetRequiredService<IStorageService>();
 				return storageService;
 			}
 		}
@@ -280,7 +280,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				nfcService ??= App.Instantiate<INfcService>();
+				nfcService ??= Provider.GetRequiredService<INfcService>();
 				return nfcService;
 			}
 		}
@@ -292,7 +292,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				notificationService ??= App.Instantiate<INotificationService>();
+				notificationService ??= Provider.GetRequiredService<INotificationService>();
 				return notificationService;
 			}
 		}
@@ -304,7 +304,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				pushNotificationService ??= App.Instantiate<IPushNotificationService>();
+				pushNotificationService ??= Provider.GetRequiredService<IPushNotificationService>();
 				return pushNotificationService;
 			}
 		}
@@ -316,7 +316,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				permissionService ??= App.Instantiate<IPermissionService>();
+				permissionService ??= Provider.GetRequiredService<IPermissionService>();
 				return permissionService;
 			}
 		}
@@ -363,7 +363,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				intentService ??= App.Instantiate<IIntentService>();
+				intentService ??= Provider.GetRequiredService<IIntentService>();
 				return intentService;
 			}
 		}
@@ -372,7 +372,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				internetCacheService ??= App.Instantiate<IInternetCacheService>();
+				internetCacheService ??= Provider.GetRequiredService<IInternetCacheService>();
 				return internetCacheService;
 			}
 		}
@@ -381,7 +381,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				themeService ??= App.Instantiate<IThemeService>();
+				themeService ??= Provider.GetRequiredService<IThemeService>();
 				return themeService;
 			}
 		}
@@ -390,7 +390,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				kycService ??= App.Instantiate<IKycService>();
+				kycService ??= Provider.GetRequiredService<IKycService>();
 				return kycService;
 			}
 		}
@@ -416,7 +416,7 @@ namespace NeuroAccessMaui.Services
 
 			get
 			{
-				authenticationService ??= App.Instantiate<IAuthenticationService>();
+				authenticationService ??= Provider.GetRequiredService<IAuthenticationService>();
 				return authenticationService;
 			}
 		}
