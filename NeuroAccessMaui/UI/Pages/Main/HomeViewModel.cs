@@ -62,8 +62,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				this.OnPropertyChanged(nameof(this.HasPendingIdentity));
 				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
 				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
-				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
 				this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
+				this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
+				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
 			});
 
 			await base.OnAppearingAsync();
@@ -131,6 +132,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			{
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
+					this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
+					this.OnPropertyChanged(nameof(this.HasPendingIdentity));
 					this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
 					this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
 					this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
@@ -194,8 +197,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		public bool HasPendingIdentity => this.CheckPendingIdentity();
 
 		public bool ShowInfoBubble => this.ShowApplyIdBox || this.ShowPendingIdBox || this.ShowRejectedIdBox || this.ShowApplicationReviewBox;
-		public bool ShowApplicationReviewBox => this.HasActionableReview();
 		public bool ShowApplyIdBox => !(ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false) && !this.CheckPendingIdentity() && !this.CheckRejectedIdentity() && !this.ShowApplicationReviewBox;
+		public bool ShowApplicationReviewBox => this.HasActionableReview();
 		public bool ShowPendingIdBox => !this.ShowApplicationReviewBox && this.CheckPendingIdentity();
 		public bool ShowRejectedIdBox => !this.ShowApplicationReviewBox && this.CheckRejectedIdentity();
 
@@ -217,9 +220,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			{
 				this.latestCreatedIdentityState = ServiceRef.TagProfile.IdentityApplication?.State ?? ServiceRef.TagProfile.LegalIdentity?.State ?? null;
 
-
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
+					this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
 					this.OnPropertyChanged(nameof(this.HasPendingIdentity));
 					this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
 					this.OnPropertyChanged(nameof(this.ShowApplyIdBox));

@@ -2013,8 +2013,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				if (ServiceRef.UiService.CurrentPage is ChatPage &&
-					ServiceRef.UiService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
+				if (ServiceRef.NavigationService.CurrentPage is ChatPage &&
+					ServiceRef.NavigationService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
 					string.Equals(ChatViewModel.BareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
 				{
 					if (string.IsNullOrEmpty(ReplaceObjectId))

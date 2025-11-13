@@ -70,8 +70,11 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		[ObservableProperty]
 		private string securityText = ServiceRef.Localizer[nameof(AppResources.PasswordWeakSecurity)];
 
+		[NotifyPropertyChangedFor(nameof(this.IsAlphanumericKeyboardPreferred))]
 		[ObservableProperty]
 		private Keyboard keyboardType = Keyboard.Numeric;
+
+		public bool IsAlphanumericKeyboardPreferred => this.KeyboardType != Keyboard.Numeric;
 
 		[ObservableProperty]
 		private string toggleKeyboardTypeText = ServiceRef.Localizer[nameof(AppResources.OnboardingDefinePasswordCreateAlphanumeric)];

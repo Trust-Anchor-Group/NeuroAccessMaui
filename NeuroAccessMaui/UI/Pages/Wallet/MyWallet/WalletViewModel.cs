@@ -282,7 +282,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 					IDictionary<CaseInsensitiveString, object>[] Options = await OptionsTransaction.Wait();
 
 					// Show contract options if UI is in a contract page.
-					if (ServiceRef.UiService.CurrentPage is IContractOptionsPage ContractOptionsPage)
+					if (ServiceRef.NavigationService.CurrentPage is IContractOptionsPage ContractOptionsPage)
 						MainThread.BeginInvokeOnMainThread(async () => await ContractOptionsPage.ShowContractOptions(Options));
 				}
 			}

@@ -457,7 +457,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 							OptionsTransaction OptionsTransaction = await ServiceRef.XmppService.InitiateBuyEDalerGetOptions(ServiceProvider.Id, ServiceProvider.Type);
 							IDictionary<CaseInsensitiveString, object>[] Options = await OptionsTransaction.Wait();
 
-							if (ServiceRef.UiService.CurrentPage is IContractOptionsPage ContractOptionsPage)
+							if (ServiceRef.NavigationService.CurrentPage is IContractOptionsPage ContractOptionsPage)
 								MainThread.BeginInvokeOnMainThread(async () => await ContractOptionsPage.ShowContractOptions(Options));
 						}
 					}
@@ -566,7 +566,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 							OptionsTransaction OptionsTransaction = await ServiceRef.XmppService.InitiateSellEDalerGetOptions(ServiceProvider.Id, ServiceProvider.Type);
 							IDictionary<CaseInsensitiveString, object>[] Options = await OptionsTransaction.Wait();
 
-							if (ServiceRef.UiService.CurrentPage is IContractOptionsPage ContractOptionsPage)
+							if (ServiceRef.NavigationService.CurrentPage is IContractOptionsPage ContractOptionsPage)
 								MainThread.BeginInvokeOnMainThread(async () => await ContractOptionsPage.ShowContractOptions(Options));
 						}
 					}
