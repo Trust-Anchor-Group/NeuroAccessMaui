@@ -79,7 +79,7 @@ namespace NeuroAccessMaui.UI.Pages
 		}
 
 		/// <summary>
-		/// Called by the parent page when it appears on screen, <em>after</em> the <see cref="DoAppearing"/> method is called.
+		/// Called by the parent page when it appears on screen, <em>after</em> the DoAppearing method is called.
 		/// </summary>
 		public async Task RestoreState()
 		{
@@ -90,7 +90,7 @@ namespace NeuroAccessMaui.UI.Pages
 		}
 
 		/// <summary>
-		/// Called by the parent page when it disappears on screen, <em>before</em> the <see cref="DoDisappearing"/> method is called.
+		/// Called by the parent page when it disappears on screen, <em>before</em> the DoDisappearing" method is called.
 		/// </summary>
 		public async Task SaveState()
 		{
@@ -101,7 +101,7 @@ namespace NeuroAccessMaui.UI.Pages
 		}
 
 		/// <summary>
-		/// Convenience method that calls <see cref="SaveState"/> and then <see cref="DoDisappearing"/>.
+		/// Convenience method that calls SaveState and then DoDisappearing.
 		/// </summary>
 		public async Task Shutdown()
 		{

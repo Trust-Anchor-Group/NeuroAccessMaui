@@ -24,7 +24,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// </summary>
 		public static Task<KycProcess> LoadProcessAsync(string Xml, string? Lang = null)
         {
-			///TODO: Refactor parsing to handle namespaces properly (currently works around by stripping them, in order to no break existing logic)
+			//TODO: Refactor parsing to handle namespaces properly (currently works around by stripping them, in order to no break existing logic)
             KycProcess Process = new();
             string XmlNormalized = StripNamespaces(Xml);
             XDocument Doc = XDocument.Parse(XmlNormalized);

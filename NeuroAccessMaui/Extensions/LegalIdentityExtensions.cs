@@ -103,7 +103,6 @@ namespace NeuroAccessMaui.Extensions
 			/// <summary>
 		/// Gets personal information from an identity.
 		/// </summary>
-		/// <param name="Properties">Enumerable set of identity properties.</param>
 		/// <returns>Personal information</returns>
 		internal static PersonalInformation GetPersonalInfo(this LegalIdentity legalIdentity)
 		{

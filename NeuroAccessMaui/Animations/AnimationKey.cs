@@ -32,7 +32,6 @@ namespace NeuroAccessMaui.Animations
 		/// <summary>
 		/// Implicit conversion helper enabling string to <see cref="AnimationKey"/> assignments.
 		/// </summary>
-		/// <param name="value">Raw key value.</param>
 		public static implicit operator AnimationKey(string RawValue) => new AnimationKey(RawValue);
 	}
 }

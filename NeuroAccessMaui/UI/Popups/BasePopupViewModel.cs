@@ -4,7 +4,7 @@ using NeuroAccessMaui.UI.Pages;
 namespace NeuroAccessMaui.UI.Popups
 {
 	/// <summary>
-	/// Base class for popup view models handled by <see cref="PopupService"/>.
+	/// Base class for popup view models/>.
 	/// </summary>
 	public class BasePopupViewModel : BaseViewModel
 	{
