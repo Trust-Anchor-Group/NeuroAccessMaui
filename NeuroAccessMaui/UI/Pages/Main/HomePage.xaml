@@ -94,52 +94,52 @@
 				</controls:ConditionView.False>
 			</controls:ConditionView>
 
+			<Grid Grid.Row="1" RowDefinitions="auto" VerticalOptions="Center">
+				<controls:TemplatedButton Command="{Binding GoToApplyIdentityCommand}"
+										  IsVisible="{Binding ShowInfoBubble}">
+					<!-- Missing Neuro ID Box-->
+					<Grid RowDefinitions="auto, auto"
+						  x:Name="NoIDPopup"
+						  VerticalOptions="Center"
+						  Margin="{DynamicResource LargeLeftRightMargins}">
+						<controls:InfoBubble BackgroundColor="{DynamicResource TnPInfobgWL}"
+											 ContentColor="{DynamicResource TnPInfoContentWL}"
+											 SvgSource="info.svg"
+											 LabelText="{l:Localize ApplyIdInfoMainPage}"
+											 IsVisible="{Binding ShowApplyIdBox}" />
 
-			<controls:TemplatedButton Grid.Row="1"
-									  Command="{Binding GoToApplyIdentityCommand}"
-									  IsVisible="{Binding ShowInfoBubble}">
-				<!-- Missing Neuro ID Box-->
-				<Grid RowDefinitions="auto, *"
-					  x:Name="NoIDPopup"
-					  VerticalOptions="Center"
-					  Margin="{DynamicResource LargeLeftRightMargins}">
-					<controls:InfoBubble BackgroundColor="{DynamicResource TnPInfobgWL}"
-										 ContentColor="{DynamicResource TnPInfoContentWL}"
-										 SvgSource="info.svg"
-										 LabelText="{l:Localize ApplyIdInfoMainPage}"
-										 IsVisible="{Binding ShowApplyIdBox}" />
+						<controls:InfoBubble BackgroundColor="{DynamicResource TnPWarningbgWL}"
+											 ContentColor="{DynamicResource TnPWarningContentWL}"
+											 SvgSource="hourglass.svg"
+											 LabelText="{l:Localize ApplicationUnderReviewDescription}"
+											 IsVisible="{Binding ShowPendingIdBox}" />
 
-					<controls:InfoBubble BackgroundColor="{DynamicResource TnPWarningbgWL}"
-										 ContentColor="{DynamicResource TnPWarningContentWL}"
-										 SvgSource="hourglass.svg"
-										 LabelText="{l:Localize ApplicationUnderReviewDescription}"
-										 IsVisible="{Binding ShowPendingIdBox}" />
+						<controls:InfoBubble BackgroundColor="{DynamicResource TnPWarningbgWL}"
+											 ContentColor="{DynamicResource TnPWarningContentWL}"
+											 SvgSource="info.svg"
+											 LabelText="{l:Localize KycReviewAvailableMainPage}"
+											 IsVisible="{Binding ShowApplicationReviewBox}" />
 
-					<controls:InfoBubble BackgroundColor="{DynamicResource TnPWarningbgWL}"
-										 ContentColor="{DynamicResource TnPWarningContentWL}"
-										 SvgSource="info.svg"
-										 LabelText="{l:Localize KycReviewAvailableMainPage}"
-										 IsVisible="{Binding ShowApplicationReviewBox}" />
+						<controls:InfoBubble BackgroundColor="{DynamicResource TnPDangerbgWL}"
+											 ContentColor="{DynamicResource TnPDangerContentWL}"
+											 SvgSource="info.svg"
+											 LabelText="{l:Localize IdentityRejected}"
+											 IsVisible="{Binding ShowRejectedIdBox}" />
 
-					<controls:InfoBubble BackgroundColor="{DynamicResource TnPDangerbgWL}"
-										 ContentColor="{DynamicResource TnPDangerContentWL}"
-										 SvgSource="info.svg"
-										 LabelText="{l:Localize IdentityRejected}"
-										 IsVisible="{Binding ShowRejectedIdBox}" />
-
-					<Grid Padding="{DynamicResource MediumMargins}"
-						  ColumnDefinitions="*, auto"
-						  Grid.Row="1">
-						<Label Grid.Column="0"
-							   Text="{l:Localize GoToApplications}"
-							   Style="{DynamicResource SecondaryButtonActiveLabel}" />
-						<Path Grid.Column="1"
-							  Data="{x:Static ui:Geometries.DropDownArrowPath}"
-							  Rotation="270"
-							  Fill="{DynamicResource ButtonAccessTertiaryContentWL}" />
+						<Grid Padding="{DynamicResource MediumMargins}"
+							  ColumnDefinitions="*, auto"
+							  Grid.Row="1">
+							<Label Grid.Column="0"
+								   Text="{l:Localize GoToApplications}"
+								   Style="{DynamicResource SecondaryButtonActiveLabel}" />
+							<Path Grid.Column="1"
+								  Data="{x:Static ui:Geometries.DropDownArrowPath}"
+								  Rotation="270"
+								  Fill="{DynamicResource ButtonAccessTertiaryContentWL}" />
+						</Grid>
 					</Grid>
-				</Grid>
-			</controls:TemplatedButton>
+				</controls:TemplatedButton>
+			</Grid>
 
 			<!-- Info Toast for missing wallet -->
 			<!-- TODO Remove this once wallet functionality is improved-->

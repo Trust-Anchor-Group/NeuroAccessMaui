@@ -20,6 +20,7 @@
                                IsVisible="{Binding IsWaitingForIdentity}"
                                IsRunning="{Binding IsWaitingForIdentity}" />
 
+			<!-- Rarely used or shown, "Creating account" is sufficient. Page closes on error or success. Renable if needed for other changes
             <Label Text="{Binding StatusMessage}"
                    HorizontalOptions="Center"
                    TextColor="{DynamicResource ContentPrimaryWL}"
@@ -29,6 +30,7 @@
                    TextColor="{DynamicResource InputFieldsContentDangerv800}"
                    HorizontalOptions="Center"
                    IsVisible="{Binding HasError}" />
+			-->
         </VerticalStackLayout>
     </Grid>
 </onboarding:BaseOnboardingView>

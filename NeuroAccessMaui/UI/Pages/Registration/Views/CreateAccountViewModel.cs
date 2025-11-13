@@ -28,7 +28,6 @@ namespace NeuroAccessMaui.UI.Pages.Registration.Views
 		public override async Task OnInitializeAsync()
         {
             await base.OnInitializeAsync();
-
         }
 
         /// <inheritdoc />
