@@ -833,7 +833,15 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				if (!await Auth.AuthenticateUserAsync(AuthenticationPurpose.SignApplication, true))
 					return;
 				if (this.attachments is null || this.mappedValues is null) return;
-				bool HasIdWithKey = ServiceRef.TagProfile.LegalIdentity is not null && await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
+				bool HasIdWithKey = false;
+				try
+				{ 
+					HasIdWithKey = ServiceRef.TagProfile.LegalIdentity is not null && await ServiceRef.XmppService.HasPrivateKey(ServiceRef.TagProfile.LegalIdentity.Id);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogWarning("Error checking for existing identity private key, genereting new keys...: " + Ex.Message);
+				}
 				(bool Succeeded, LegalIdentity? Added) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.AddLegalIdentity(this.mappedValues.ToArray(), !HasIdWithKey, this.attachments.ToArray()));
 				if (Succeeded && Added is not null)
 				{

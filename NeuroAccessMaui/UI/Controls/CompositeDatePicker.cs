@@ -282,7 +282,7 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		/// <summary>
-		/// Updates the <see cref="Picker.Format"/> property based on whether a date is selected.
+		/// Updates the Format property based on whether a date is selected.
 		/// </summary>
 		private void UpdateFormat()
 		{

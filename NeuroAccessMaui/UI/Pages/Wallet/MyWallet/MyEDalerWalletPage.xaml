@@ -163,19 +163,5 @@
 				</VerticalStackLayout>
 			</Grid>
 		</ScrollView>
-
-		<controls:BottomBar Grid.Row="4"
-							Style="{DynamicResource BottomBar}"
-							SelectedIcon="Center"
-							LeftIcon="home.svg"
-							CenterIcon="wallet.svg"
-							RightIcon="apps.svg"
-							LeftLabelText="{l:Localize Home}"
-							CenterLabelText="{l:Localize Wallet}"
-							RightLabelText="{l:Localize Apps}"
-							LeftCommand="{Binding ViewMainPageCommand}"
-							RightCommand="{Binding ViewAppsCommand}"
-							IsVisible="{Binding ShowBottomNavigation}"/>
-		
 	</Grid>
 </base:BaseContentPage>

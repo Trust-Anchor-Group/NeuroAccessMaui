@@ -55,7 +55,7 @@
 			</Style>
 
 			<!-- Proposed -->
-			<DataTemplate x:Key="ProposedTemplate">
+			<DataTemplate x:Key="ProposedTemplate" x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -70,7 +70,8 @@
 			</DataTemplate>
 
 			<!-- Rejected -->
-			<DataTemplate x:Key="RejectedTemplate">
+			<DataTemplate x:Key="RejectedTemplate"
+						  x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -85,7 +86,8 @@
 			</DataTemplate>
 
 			<!-- Approved -->
-			<DataTemplate x:Key="ApprovedTemplate">
+			<DataTemplate x:Key="ApprovedTemplate"
+						  x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -100,7 +102,8 @@
 			</DataTemplate>
 
 			<!-- BeingSigned -->
-			<DataTemplate x:Key="BeingSignedTemplate">
+			<DataTemplate x:Key="BeingSignedTemplate"
+						  x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -115,7 +118,8 @@
 			</DataTemplate>
 
 			<!-- Signed -->
-			<DataTemplate x:Key="SignedTemplate">
+			<DataTemplate x:Key="SignedTemplate"
+						  x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}" Stroke="Transparent"
@@ -129,7 +133,8 @@
 			</DataTemplate>
 
 			<!-- Failed -->
-			<DataTemplate x:Key="FailedTemplate">
+			<DataTemplate x:Key="FailedTemplate"
+						  x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -144,7 +149,8 @@
 			</DataTemplate>
 
 			<!-- Obsoleted -->
-			<DataTemplate x:Key="ObsoletedTemplate"> 
+			<DataTemplate x:Key="ObsoletedTemplate"
+						  x:DataType="base:ViewContractViewModel"> 
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -159,7 +165,8 @@
 			</DataTemplate>
 
 			<!-- Deleted -->
-			<DataTemplate x:Key="DeletedTemplate">
+			<DataTemplate x:Key="DeletedTemplate"
+						  x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"

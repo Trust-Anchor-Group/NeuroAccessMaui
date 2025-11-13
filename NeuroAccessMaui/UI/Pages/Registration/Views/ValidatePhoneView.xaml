@@ -65,13 +65,13 @@
 							<Entry.Behaviors>
 								<mct:MultiValidationBehavior x:Name="PhoneValidator" x:DataType="mct:MultiValidationBehavior"
 									Flags="ValidateOnValueChanged"
-									IsValid="{Binding NumberIsValid}">
+															 IsValid="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ValidatePhoneViewModel}}, x:DataType=viewmodel:ValidatePhoneViewModel,Path=NumberIsValid}">
 									<mct:CharactersValidationBehavior x:DataType="mct:CharactersValidationBehavior"
-										IsValid="{Binding TypeIsValid}"
-										RegexPattern="^\d*$" />
+																	  IsValid="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ValidatePhoneViewModel}}, x:DataType=viewmodel:ValidatePhoneViewModel,Path=TypeIsValid}"
+																	  RegexPattern="^\d*$" />
 									<mct:TextValidationBehavior x:DataType="mct:TextValidationBehavior"
-										IsValid="{Binding LengthIsValid}"
-										RegexPattern="^$|^\d{4,}$" />
+																IsValid="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ValidatePhoneViewModel}}, x:DataType=viewmodel:ValidatePhoneViewModel,Path=LengthIsValid}"
+																RegexPattern="^$|^\d{4,}$" />
 								</mct:MultiValidationBehavior>
 							</Entry.Behaviors>
 						</Entry>
