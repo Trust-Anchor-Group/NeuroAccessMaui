@@ -893,7 +893,7 @@
 																					  TintColor="{DynamicResource ContentSecondaryWL}">
 																		<controls:SvgView.Triggers>
 																			<DataTrigger TargetType="controls:SvgView"
-																						 Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}"
+																						 Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel, Path=ApplicationSentPublic}"
 																						 Value="True">
 																				<Setter Property="IsVisible"
 																						Value="False" />
