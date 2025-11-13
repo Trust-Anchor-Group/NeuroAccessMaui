@@ -1,6 +1,8 @@
 using System;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 
 namespace NeuroAccessMaui.Animations
@@ -53,9 +55,30 @@ namespace NeuroAccessMaui.Animations
 
 			uint DurationMs = this.ResolveDurationMilliseconds(Context, Options);
 			Func<CancellationToken, Task> Execute = _ => Target.TranslateTo(this.toX, this.toY, DurationMs, this.Easing);
-			await AnimationRunner.RunAsync(Target, Execute, Token).ConfigureAwait(false);
-			Target.TranslationX = this.toX;
-			Target.TranslationY = this.toY;
+			ExceptionDispatchInfo? DispatchInfo = null;
+			try
+			{
+				await AnimationRunner.RunAsync(Target, Execute, Token).ConfigureAwait(false);
+			}
+			catch (Exception Ex)
+			{
+				DispatchInfo = ExceptionDispatchInfo.Capture(Ex);
+			}
+			finally
+			{
+				await this.ApplyFinalTranslationAsync(Target).ConfigureAwait(false);
+			}
+
+			DispatchInfo?.Throw();
+		}
+
+		private Task ApplyFinalTranslationAsync(VisualElement Target)
+		{
+			return MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				Target.TranslationX = this.toX;
+				Target.TranslationY = this.toY;
+			});
 		}
 	}
 }

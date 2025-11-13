@@ -1,6 +1,8 @@
 using System;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 
 namespace NeuroAccessMaui.Animations
@@ -49,8 +51,29 @@ namespace NeuroAccessMaui.Animations
 
 			uint DurationMs = this.ResolveDurationMilliseconds(Context, Options);
 			Func<CancellationToken, Task> Execute = _ => Target.ScaleTo(this.toScale, DurationMs, this.Easing);
-			await AnimationRunner.RunAsync(Target, Execute, Token).ConfigureAwait(false);
-			Target.Scale = this.toScale;
+			ExceptionDispatchInfo? DispatchInfo = null;
+			try
+			{
+				await AnimationRunner.RunAsync(Target, Execute, Token).ConfigureAwait(false);
+			}
+			catch (Exception Ex)
+			{
+				DispatchInfo = ExceptionDispatchInfo.Capture(Ex);
+			}
+			finally
+			{
+				await this.ApplyFinalScaleAsync(Target).ConfigureAwait(false);
+			}
+
+			DispatchInfo?.Throw();
+		}
+
+		private Task ApplyFinalScaleAsync(VisualElement Target)
+		{
+			return MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				Target.Scale = this.toScale;
+			});
 		}
 	}
 }

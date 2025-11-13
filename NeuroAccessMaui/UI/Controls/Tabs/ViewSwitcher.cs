@@ -446,131 +446,140 @@ namespace NeuroAccessMaui.UI.Controls
 			bool? animateOverride,
 			CancellationToken cancellationToken)
 		{
-			await this.Dispatcher.DispatchAsync(async () =>
+			try
 			{
-				// Instead of throwing (causing unhandled exception surfaced to user), abort gracefully if canceled.
-				if (cancellationToken.IsCancellationRequested)
+				await this.Dispatcher.DispatchAsync(async () =>
 				{
-					return;
-				}
+					// Instead of throwing (causing unhandled exception surfaced to user), abort gracefully if canceled.
+					if (cancellationToken.IsCancellationRequested)
+					{
+						return;
+					}
 
-				this.RefreshDescriptors();
+					this.RefreshDescriptors();
 
-				int itemCount = this.descriptors.Count;
-				int targetIndex = this.ResolveTargetIndex(requestedIndex, requestedItem, requestedStateKey, source, itemCount);
-				int oldIndex = this.selectionState.SelectedIndex;
-				object? oldItem = this.selectionState.SelectedItem;
-				string? oldStateKey = this.selectionState.SelectedStateKey;
+					int itemCount = this.descriptors.Count;
+					int targetIndex = this.ResolveTargetIndex(requestedIndex, requestedItem, requestedStateKey, source, itemCount);
+					int oldIndex = this.selectionState.SelectedIndex;
+					object? oldItem = this.selectionState.SelectedItem;
+					string? oldStateKey = this.selectionState.SelectedStateKey;
 
-				if (targetIndex >= itemCount)
-				{
-					targetIndex = this.selectionState.NormalizeIndex(targetIndex, itemCount);
-				}
+					if (targetIndex >= itemCount)
+					{
+						targetIndex = this.selectionState.NormalizeIndex(targetIndex, itemCount);
+					}
 
-				ViewSwitcherItemDescriptor? descriptor = null;
-				object? newItem = null;
-				string? newStateKey = null;
+					ViewSwitcherItemDescriptor? descriptor = null;
+					object? newItem = null;
+					string? newStateKey = null;
 
-				if (targetIndex >= 0 && targetIndex < itemCount)
-				{
-					descriptor = this.descriptors[targetIndex];
-					newItem = descriptor.Item;
-					newStateKey = descriptor.StateKey;
-				}
+					if (targetIndex >= 0 && targetIndex < itemCount)
+					{
+						descriptor = this.descriptors[targetIndex];
+						newItem = descriptor.Item;
+						newStateKey = descriptor.StateKey;
+					}
 
-				ViewSwitcherSelectionChangingEventArgs changingArgs = new ViewSwitcherSelectionChangingEventArgs(
-					oldIndex,
-					oldItem,
-					oldStateKey,
-					targetIndex,
-					newItem,
-					newStateKey);
+					ViewSwitcherSelectionChangingEventArgs changingArgs = new ViewSwitcherSelectionChangingEventArgs(
+						oldIndex,
+						oldItem,
+						oldStateKey,
+						targetIndex,
+						newItem,
+						newStateKey);
 
-				this.SelectionChanging?.Invoke(this, changingArgs);
-				if (changingArgs.Cancel)
-				{
-					this.RevertSelectionProperties();
-					return;
-				}
+					this.SelectionChanging?.Invoke(this, changingArgs);
+					if (changingArgs.Cancel)
+					{
+						this.RevertSelectionProperties();
+						return;
+					}
 
-				this.selectionState.UpdateSnapshot(targetIndex, newItem, newStateKey);
+					this.selectionState.UpdateSnapshot(targetIndex, newItem, newStateKey);
 
-				using (this.selectionState.BeginUpdate(ViewSwitcherSelectionChangeSource.Index))
-				{
-					this.SelectedIndex = targetIndex;
-				}
+					using (this.selectionState.BeginUpdate(ViewSwitcherSelectionChangeSource.Index))
+					{
+						this.SelectedIndex = targetIndex;
+					}
 
-				using (this.selectionState.BeginUpdate(ViewSwitcherSelectionChangeSource.Item))
-				{
-					this.SelectedItem = newItem;
-				}
+					using (this.selectionState.BeginUpdate(ViewSwitcherSelectionChangeSource.Item))
+					{
+						this.SelectedItem = newItem;
+					}
 
-				using (this.selectionState.BeginUpdate(ViewSwitcherSelectionChangeSource.StateKey))
-				{
-					this.SelectedStateKey = newStateKey;
-				}
+					using (this.selectionState.BeginUpdate(ViewSwitcherSelectionChangeSource.StateKey))
+					{
+						this.SelectedStateKey = newStateKey;
+					}
 
-				this.UpdateAutomationSemantics(newItem, newStateKey);
-				this.UpdateNavigationCommands();
+					this.UpdateAutomationSemantics(newItem, newStateKey);
+					this.UpdateNavigationCommands();
 
-				View? oldViewInstance = this.transitionCoordinator.CurrentView;
-				View? viewToPresent = descriptor is not null ? this.ResolveView(descriptor, targetIndex) : null;
+					View? oldViewInstance = this.transitionCoordinator.CurrentView;
+					View? viewToPresent = descriptor is not null ? this.ResolveView(descriptor, targetIndex) : null;
 
-				if (!ReferenceEquals(oldViewInstance, viewToPresent))
-				{
-					await this.InvokeLifecycleDisappearingAsync(oldViewInstance, cancellationToken).ConfigureAwait(false);
-				}
-
-				if (viewToPresent is not null)
-				{
-					await this.EnsureLifecycleInitializedAsync(viewToPresent, cancellationToken).ConfigureAwait(false);
-				}
-
-				bool previousAnimate = this.transitionCoordinator.Animate;
-				uint previousDuration = this.transitionCoordinator.Duration;
-				Easing? previousEasing = this.transitionCoordinator.Easing;
-
-				if (animateOverride.HasValue)
-				{
-					this.transitionCoordinator.Animate = animateOverride.Value;
-				}
-
-				this.transitionCoordinator.Duration = this.TransitionDuration;
-				this.transitionCoordinator.Easing = this.TransitionEasing;
-
-				try
-				{
-					await PolicyRunner.RunAsync(
-						ct => this.transitionCoordinator.SwitchAsync(this, viewToPresent, this.isInitialLoad, ct),
-						cancellationToken).ConfigureAwait(false);
 					if (!ReferenceEquals(oldViewInstance, viewToPresent))
 					{
-						await this.InvokeLifecycleAppearingAsync(viewToPresent, cancellationToken).ConfigureAwait(false);
+						await this.InvokeLifecycleDisappearingAsync(oldViewInstance, cancellationToken).ConfigureAwait(false);
 					}
-					await this.DisposeLifecycleIfRequiredAsync(oldViewInstance, viewToPresent).ConfigureAwait(false);
-				}
-				finally
-				{
-					this.transitionCoordinator.Animate = previousAnimate;
-					this.transitionCoordinator.Duration = previousDuration;
-					this.transitionCoordinator.Easing = previousEasing;
-				}
 
-				this.isInitialLoad = false;
-				if (cancellationToken.IsCancellationRequested)
-				{
-					return;
-				}
+					if (viewToPresent is not null)
+					{
+						await this.EnsureLifecycleInitializedAsync(viewToPresent, cancellationToken).ConfigureAwait(false);
+					}
 
-				ViewSwitcherSelectionChangedEventArgs changedArgs = new ViewSwitcherSelectionChangedEventArgs(
-					oldIndex,
-					oldItem,
-					oldStateKey,
-					targetIndex,
-					newItem,
-					newStateKey);
-				this.SelectionChanged?.Invoke(this, changedArgs);
-			}).ConfigureAwait(false);
+					bool previousAnimate = this.transitionCoordinator.Animate;
+					uint previousDuration = this.transitionCoordinator.Duration;
+					Easing? previousEasing = this.transitionCoordinator.Easing;
+
+					if (animateOverride.HasValue)
+					{
+						this.transitionCoordinator.Animate = animateOverride.Value;
+					}
+
+					this.transitionCoordinator.Duration = this.TransitionDuration;
+					this.transitionCoordinator.Easing = this.TransitionEasing;
+
+					try
+					{
+						await PolicyRunner.RunAsync(
+							ct => this.transitionCoordinator.SwitchAsync(this, viewToPresent, this.isInitialLoad, ct),
+							cancellationToken).ConfigureAwait(false);
+						if (!ReferenceEquals(oldViewInstance, viewToPresent))
+						{
+							await this.InvokeLifecycleAppearingAsync(viewToPresent, cancellationToken).ConfigureAwait(false);
+						}
+						await this.DisposeLifecycleIfRequiredAsync(oldViewInstance, viewToPresent).ConfigureAwait(false);
+					}
+					finally
+					{
+						this.transitionCoordinator.Animate = previousAnimate;
+						this.transitionCoordinator.Duration = previousDuration;
+						this.transitionCoordinator.Easing = previousEasing;
+					}
+
+					this.isInitialLoad = false;
+					if (cancellationToken.IsCancellationRequested)
+					{
+						return;
+					}
+
+					ViewSwitcherSelectionChangedEventArgs changedArgs = new ViewSwitcherSelectionChangedEventArgs(
+						oldIndex,
+						oldItem,
+						oldStateKey,
+						targetIndex,
+						newItem,
+						newStateKey);
+					this.SelectionChanged?.Invoke(this, changedArgs);
+				}).ConfigureAwait(false);
+			}
+			catch (OperationCanceledException)
+			{
+				// Cancellation is an expected control-flow event when switching views rapidly. Swallow the exception
+				// so the debugger does not surface it as user-unhandled while the cancellation token semantics already
+				// halted the transition inside the dispatcher callback.
+			}
 		}
 
 		private void RevertSelectionProperties()
