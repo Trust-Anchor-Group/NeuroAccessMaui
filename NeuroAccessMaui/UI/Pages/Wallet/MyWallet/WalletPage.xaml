@@ -128,7 +128,7 @@
 					   IsVisible="{Binding Path=HasMessage}"
 					   LineBreakMode="TailTruncation" />
 				<Grid.GestureRecognizers>
-					<TapGestureRecognizer Command="{Binding ShowPaymentItemCommand, Source={RelativeSource AncestorType={x:Type viewmodel:WalletViewModel}}, x:DataType=viewmodel:WalletViewModel}"
+					<TapGestureRecognizer Command="{Binding ShowPaymentItemCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyWalletViewModel}}, x:DataType=viewmodel:MyWalletViewModel}"
 										  CommandParameter="{Binding}" />
 				</Grid.GestureRecognizers>
 			</Grid>

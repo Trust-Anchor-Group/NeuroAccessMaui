@@ -90,7 +90,7 @@
 										 Margin="{DynamicResource SmallLeftMargins}">
 									<Image.Triggers>
 										<DataTrigger TargetType="Image"
-														 Binding="{Binding Source={RelativeSource AncestorType={x:Type mct:Expander}}, Path=IsExpanded}"
+														 Binding="{Binding Source={RelativeSource AncestorType={x:Type mct:Expander}}, x:DataType=mct:Expander, Path=IsExpanded}"
 														 Value="True">
 											<Setter Property="Source"
 													  Value="{AppThemeBinding Light=arrow_up_light, Dark=arrow_up_dark}" />
