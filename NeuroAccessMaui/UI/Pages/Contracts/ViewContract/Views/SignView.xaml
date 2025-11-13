@@ -59,7 +59,8 @@
 														ItemsSource="{Binding SignableRoles}"
 														SelectedItem="{Binding SelectedRole}">
 								<controls:CompositePicker.ItemDisplayBinding x:DataType="objectModel:ObservableRole">
-									<Binding Path="Name" />
+									<Binding Path="Name"
+											 x:DataType="objectModel:ObservableRole" />
 								</controls:CompositePicker.ItemDisplayBinding>
 							</controls:CompositePicker>
 						</VerticalStackLayout>
