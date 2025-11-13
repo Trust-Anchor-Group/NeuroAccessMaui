@@ -51,7 +51,6 @@ namespace NeuroAccessMaui.UI.Pages
 		/// </summary>
 		protected BaseContentPage()
 		{
-			//this.On<iOS>().SetUseSafeArea(true);
 			this.SetDynamicResource(Microsoft.Maui.Controls.VisualElement.BackgroundColorProperty, "SurfaceBackgroundWL");
 		}
 

@@ -185,7 +185,7 @@
 													SelectedItems="{Binding SelectedOptions, Mode=TwoWay}"
 													SelectionMode="Multiple">
 							<controls:TemplatedSelector.ItemTemplate>
-								<DataTemplate x:DataType="models:KycOption">
+								<DataTemplate x:DataType="controls:SelectableKycOption">
 									<Grid ColumnDefinitions="auto,*" ColumnSpacing="8" Padding="8">
 										<controls:AnimatedCheckbox Grid.Column="0" 
 											StrokeColor="{DynamicResource ContentAccessWL}"
@@ -559,7 +559,7 @@
                                     <controls:TemplatedButton Command="{Binding GoToPageWithMappingCommand, Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel}" CommandParameter="{Binding Mapping}" IsEnabled="{Binding FromField}">
                                         <controls:TemplatedButton.Triggers>
                                             <DataTrigger TargetType="controls:TemplatedButton"
-                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}"
+                                                        Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, x:DataType=viewmodel:KycProcessViewModel, Path=ApplicationSentPublic}"
                                                         Value="True">
                                                 <Setter Property="IsEnabled" Value="False" />
                                                 <Setter Property="InputTransparent" Value="True" />
@@ -576,7 +576,8 @@
 																	</Label>
 																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
 																		<controls:SvgView.Triggers>
-																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}" Value="True">
+																			<DataTrigger TargetType="controls:SvgView"
+																						 Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}},x:DataType=viewmodel:KycProcessViewModel, Path=ApplicationSentPublic}" Value="True">
 																				<Setter Property="IsVisible" Value="False" />
 																			</DataTrigger>
 																		</controls:SvgView.Triggers>
@@ -690,7 +691,8 @@
 																	<Label Text="{Binding Value}" Style="{DynamicResource FieldValueLabel}" Grid.Row="1" />
 																	<controls:SvgView Grid.Column="1" Grid.RowSpan="2" Source="sign.svg" HeightRequest="20" WidthRequest="20" IsVisible="{Binding FromField}" TintColor="{DynamicResource ContentSecondaryWL}">
 																		<controls:SvgView.Triggers>
-																			<DataTrigger TargetType="controls:SvgView" Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}}, Path=ApplicationSentPublic}" Value="True">
+																			<DataTrigger TargetType="controls:SvgView"
+																						 Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:KycProcessViewModel}},x:DataType=viewmodel:KycProcessViewModel, Path=ApplicationSentPublic}" Value="True">
 																				<Setter Property="IsVisible" Value="False" />
 																			</DataTrigger>
 																		</controls:SvgView.Triggers>
