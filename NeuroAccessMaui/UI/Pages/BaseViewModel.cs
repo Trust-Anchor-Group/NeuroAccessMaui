@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using NeuroAccessMaui;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
@@ -246,6 +247,8 @@ namespace NeuroAccessMaui.UI.Pages
 
 		public virtual async Task OnInitializeAsync()
 		{
+			await App.ServicesReady;
+
 			foreach (BaseViewModel ChildViewModel in this.childViewModels)
 				await ChildViewModel.OnInitializeAsync();
 		}
@@ -258,6 +261,8 @@ namespace NeuroAccessMaui.UI.Pages
 
 		public virtual async Task OnAppearingAsync()
 		{
+			await App.ServicesReady;
+
 			foreach (BaseViewModel ChildViewModel in this.childViewModels)
 				await ChildViewModel.OnAppearingAsync();
 		}
