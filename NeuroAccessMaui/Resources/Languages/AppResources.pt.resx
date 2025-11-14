@@ -3399,7 +3399,7 @@
   <data name="TakePhoto" xml:space="preserve">
     <value>Tirar foto</value>
   </data>
-  <data name="CreditTransfer" xml:space="preserve">
-    <value>Transferência de crédito</value>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Solicite uma identidade pessoal para usar este recurso.</value>
   </data>
 </root>

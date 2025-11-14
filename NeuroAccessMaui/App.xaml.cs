@@ -815,7 +815,7 @@ namespace NeuroAccessMaui
         {
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                if (ServiceRef.TagProfile.Step != RegistrationStep.Complete && !url.StartsWith("obinfo", StringComparison.OrdinalIgnoreCase))
+                if (!ServiceRef.TagProfile.IsComplete() && !url.StartsWith("obinfo", StringComparison.OrdinalIgnoreCase))
                 {
                     await ServiceRef.UiService.DisplayAlert(
                         ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],

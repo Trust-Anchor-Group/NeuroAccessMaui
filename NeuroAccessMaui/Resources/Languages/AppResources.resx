@@ -3399,4 +3399,7 @@
   <data name="TakePhoto" xml:space="preserve">
     <value>Take photo</value>
   </data>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Apply for a personal identity to use this feature.</value>
+  </data>
 </root>
