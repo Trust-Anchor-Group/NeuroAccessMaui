@@ -30,6 +30,34 @@ using Waher.Security.LoginMonitor;
 using Waher.Things;
 using NeuroAccessMaui.Services.Xml;
 using NeuroAccessMaui.Services.UI;
+using Waher.Networking.XMPP.P2P;
+using Waher.Networking.XMPP.P2P.E2E;
+using Waher.Networking.XMPP.HTTPX;
+using Waher.Runtime.Geo;
+using Waher.Networking.XMPP.Geo;
+using Waher.Networking.XMPP.Mail;
+using Waher.Networking.XMPP.Push;
+using Waher.Networking.XMPP.Avatar;
+using Waher.Networking.XMPP.PEP;
+using Waher.Networking.XMPP.PubSub;
+using Waher.Networking.XMPP.Provisioning;
+using Waher.Networking.XMPP.Concentrator;
+using Waher.Networking.XMPP.Control;
+using Waher.Networking.XMPP.Sensor;
+using EDaler;
+using NeuroFeatures;
+using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP;
+using Android.Net;
+using Waher.Content.Xml;
+using Waher.Content.Markdown;
+using Waher.Content.Images;
+using Waher.Events.Persistence;
+using Waher.Runtime.Settings;
+using Waher.Persistence.Files;
+using Waher.Persistence.Serialization;
+using Waher.Persistence;
+using Waher.Runtime.Settings.SettingObjects;
 
 namespace NeuroAccessMaui
 {
@@ -207,22 +235,22 @@ namespace NeuroAccessMaui
             }
         }
 
-		void SetTheme(AppTheme Theme)
-		{
-			if (Theme is AppTheme.Unspecified) Theme = Application.Current!.RequestedTheme;
+        void SetTheme(AppTheme Theme)
+        {
+            if (Theme is AppTheme.Unspecified) Theme = Application.Current!.RequestedTheme;
 
-			ICollection<ResourceDictionary> Merged = this.Resources.MergedDictionaries;
+            ICollection<ResourceDictionary> Merged = this.Resources.MergedDictionaries;
 
             // Remove only our color theme dictionaries
             foreach (ResourceDictionary? Dict in Merged.Where(d => d.ContainsKey("IsLocalThemeDictionary")).ToList())
                 Merged.Remove(Dict);
 
-			// Add correct one
-			if (Theme == AppTheme.Dark)
-				Merged.Add(new Dark());
-			else
-				Merged.Add(new Light());
-		}
+            // Add correct one
+            if (Theme == AppTheme.Dark)
+                Merged.Add(new Dark());
+            else
+                Merged.Add(new Light());
+        }
 
         /// <summary>
         /// Override default window creation to use CustomShell as root page.
@@ -263,11 +291,11 @@ namespace NeuroAccessMaui
 
         #region Initialization
 
-		private static void InitLocalizationResource()
-		{
-			//	LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
-			LocalizationManager.Current.CurrentCulture = SelectedLanguage;
-		}
+        private static void InitLocalizationResource()
+        {
+            //	LocalizationManager.Current.PropertyChanged += (_, _) => AppResources.Culture = LocalizationManager.Current.CurrentCulture;
+            LocalizationManager.Current.CurrentCulture = SelectedLanguage;
+        }
 
         private void StartInitialization(bool backgroundStart)
         {
@@ -324,22 +352,22 @@ namespace NeuroAccessMaui
                 }
             });
 
-			// Register XML schemas on the DI-managed validator instance.
-			try
-			{
-				IXmlSchemaValidationService Xml = ServiceRef.Provider.GetRequiredService<IXmlSchemaValidationService>();
-				Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);
-				Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2Url, Constants.Schemes.BrandingDescriptorV2File);
-				Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2, Constants.Schemes.BrandingDescriptorV2File);
-				Xml.RegisterSchema(Constants.Schemes.NeuroAccessKycProcessUrl, Constants.Schemes.NeuroAccessKycProcessFile);
-				Xml.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.NeuroAccessKycProcessFile);
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "SchemaRegistrationStartup"));
-			}
+            // Register XML schemas on the DI-managed validator instance.
+            try
+            {
+                IXmlSchemaValidationService Xml = ServiceRef.Provider.GetRequiredService<IXmlSchemaValidationService>();
+                Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV1, Constants.Schemes.BrandingDescriptorV1File);
+                Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2Url, Constants.Schemes.BrandingDescriptorV2File);
+                Xml.RegisterSchema(Constants.Schemes.NeuroAccessBrandingV2, Constants.Schemes.BrandingDescriptorV2File);
+                Xml.RegisterSchema(Constants.Schemes.NeuroAccessKycProcessUrl, Constants.Schemes.NeuroAccessKycProcessFile);
+                Xml.RegisterSchema(Constants.Schemes.KYCProcess, Constants.Schemes.NeuroAccessKycProcessFile);
+            }
+            catch (Exception Ex)
+            {
+                ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "SchemaRegistrationStartup"));
+            }
 
-			servicesSetup.TrySetResult(true);
+            servicesSetup.TrySetResult(true);
         }
 
         #endregion
@@ -406,6 +434,56 @@ namespace NeuroAccessMaui
                     Token.ThrowIfCancellationRequested();
                 }
 
+
+                if (!Types.IsInitialized)
+                {
+                    Types.Initialize(
+                        typeof(App).Assembly,
+                        typeof(Database).Assembly,
+                        typeof(ObjectSerializer).Assembly,
+                        typeof(FilesProvider).Assembly,
+                        typeof(Setting).Assembly,
+                        typeof(RuntimeSettings).Assembly,
+                        typeof(PersistedEvent).Assembly,
+                        typeof(InternetContent).Assembly,
+                        typeof(ImageCodec).Assembly,
+                        typeof(MarkdownDocument).Assembly,
+                        typeof(XML).Assembly,
+                        typeof(DnsResolver).Assembly,
+                        typeof(XmppClient).Assembly,
+                        typeof(ContractsClient).Assembly,
+                        typeof(NeuroFeaturesClient).Assembly,
+                        typeof(EDalerClient).Assembly,
+                        typeof(SensorClient).Assembly,
+                        typeof(ControlClient).Assembly,
+                        typeof(ConcentratorClient).Assembly,
+                        typeof(ProvisioningClient).Assembly,
+                        typeof(PubSubClient).Assembly,
+                        typeof(PepClient).Assembly,
+                        typeof(AvatarClient).Assembly,
+                        typeof(PushNotificationClient).Assembly,
+                        typeof(MailClient).Assembly,
+                        typeof(GeoClient).Assembly,
+                        typeof(GeoPosition).Assembly,
+                        typeof(ThingReference).Assembly,
+                        typeof(JwtFactory).Assembly,
+                        typeof(JwsAlgorithm).Assembly,
+                        typeof(Expression).Assembly,
+                        typeof(Graph).Assembly,
+                        typeof(GraphEncoder).Assembly,
+                        typeof(XmppServerlessMessaging).Assembly,
+                        typeof(HttpxClient).Assembly);
+                }
+
+                // Register exceptions as alerts.
+                Log.RegisterAlertExceptionType(true,
+                    typeof(OutOfMemoryException),
+                    typeof(StackOverflowException),
+                    typeof(AccessViolationException),
+                    typeof(InsufficientMemoryException));
+
+                EndpointSecurity.SetCiphers([typeof(Edwards448Endpoint)], false);
+
                 await ServiceRef.LogService.Load(isResuming, Token);
 
                 await ServiceRef.StorageService.Init(Token);
@@ -462,7 +540,7 @@ namespace NeuroAccessMaui
         protected override async void OnSleep()
         {
             await this.ShutdownAsync(inPanic: false, isTerminatingProcess: false);
-    }
+        }
 
         internal static async Task StopAsync()
         {
@@ -521,7 +599,7 @@ namespace NeuroAccessMaui
 
                     await Task.WhenAll(UnloadTasks);
 
-                    
+
 
                     if (isTerminatingProcess)
                     {
@@ -752,7 +830,7 @@ namespace NeuroAccessMaui
                     Headers = { ContentType = MediaTypeHeaderValue.Parse(contentType) }
                 };
 
-               await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
+                await Client.PostAsync("https://lab.tagroot.io/Alert.ws", Content);
             }
             catch (Exception Ex)
             {
@@ -823,9 +901,9 @@ namespace NeuroAccessMaui
                     return;
                 }
 
-				await QrCode.OpenUrl(url).ConfigureAwait(false);
-			});
-		}
+                await QrCode.OpenUrl(url).ConfigureAwait(false);
+            });
+        }
 
         public static Task<bool> OpenUrlAsync(string url) => OpenUrlAsync(url, showErrorIfUnable: true);
 
