@@ -3038,11 +3038,20 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("ErrorTitle", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Everyone.
-        /// </summary>
-        public static string Everyone {
+
+		/// <summary>
+		/// Looks up a localized string similar to Url Schema Not Permitted.
+		/// </summary>
+		public static string UrlSchemaNotPermitted {
+			get {
+				return ResourceManager.GetString("UrlSchemaNotPermitted", resourceCulture);
+			}
+		}
+
+		/// <summary>
+		///   Looks up a localized string similar to Everyone.
+		/// </summary>
+		public static string Everyone {
             get {
                 return ResourceManager.GetString("Everyone", resourceCulture);
             }

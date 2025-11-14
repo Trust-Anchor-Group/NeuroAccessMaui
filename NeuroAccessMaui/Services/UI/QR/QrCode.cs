@@ -63,7 +63,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 			if (string.IsNullOrWhiteSpace(Url))
 				return;
 
-			await OpenUrl(Url);
+			await OpenUrl(Url, true, AllowedSchemas);
 		}
 
 		/// <summary>
@@ -84,8 +84,23 @@ namespace NeuroAccessMaui.Services.UI.QR
 		/// <param name="Url">URL to open.</param>
 		/// <param name="ShowErrorIfUnable">If an error message should be displayed, in case the URI could not be opened.</param>
 		/// <returns>If URL was handled.</returns>
-		public static async Task<bool> OpenUrl(string Url, bool ShowErrorIfUnable)
+		public static async Task<bool> OpenUrl(string Url, bool ShowErrorIfUnable, string[]? AllowedSchemas = null)
 		{
+			AllowedSchemas ??= GetAllowedSchemas();
+
+			string UrlSchema = Constants.UriSchemes.GetScheme(Url) ?? string.Empty;
+
+			if (!string.IsNullOrEmpty(UrlSchema) && !AllowedSchemas.Contains(UrlSchema) && !string.Equals(UrlSchema, Constants.UriSchemes.Onboarding, StringComparison.Ordinal))
+			{
+				if (ShowErrorIfUnable)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.UrlSchemaNotPermitted)]);
+				}
+				return false;
+			}
+
 			try
 			{
 				if (!System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri))
