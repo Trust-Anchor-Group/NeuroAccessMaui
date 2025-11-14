@@ -1,5 +1,6 @@
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using NeuroAccessMaui;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using Waher.Events;
@@ -60,6 +61,7 @@ namespace NeuroAccessMaui.UI.Pages
 		/// </summary>
 		public virtual async Task OnInitializeAsync()
 		{
+			await App.ServicesReady;
 			// Forward to ViewModel if it implements ILifeCycleView
 			if (BindingContext is ILifeCycleView vm)
 				await vm.OnInitializeAsync();
@@ -81,6 +83,8 @@ namespace NeuroAccessMaui.UI.Pages
 		{
 				try
 				{
+					await App.ServicesReady;
+
 					if (BindingContext is BaseViewModel vm)
 					{
 						await vm.OnAppearingAsync();

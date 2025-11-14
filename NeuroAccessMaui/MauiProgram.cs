@@ -133,7 +133,7 @@ namespace NeuroAccessMaui
 			instance = Builder.Build();
 
 			// Setup the service provider
-			ServiceRef.Provider = new HybridServiceProvider(instance.Services);
+			ServiceRef.Initialize(new HybridServiceProvider(instance.Services));
 
 			return instance;
 		}

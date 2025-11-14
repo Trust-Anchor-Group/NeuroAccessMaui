@@ -1,8 +1,11 @@
+using System;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Globalization;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Localization;
+using NeuroAccessMaui;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.AppPermissions;
 using NeuroAccessMaui.Services.Cache.AttachmentCache;
@@ -48,7 +51,7 @@ namespace NeuroAccessMaui.Services
 		/// The service provider for the app.
 		/// This is set before the app is started, and will be used to resolve services
 		/// </summary>
-		public static IServiceProvider Provider { get; set; } = null!;
+		public static IServiceProvider Provider { get; private set; } = null!;
 
 		private static IXmppService? xmppService;
 		private static IUiService? uiService;
@@ -80,6 +83,51 @@ namespace NeuroAccessMaui.Services
 		private static IKeyboardInsetsService? keyboardInsetsService;
 
 		private static IAuthenticationService? authenticationService;
+
+		/// <summary>
+		/// Initializes the service reference cache with a fresh provider instance.
+		/// This method must be called whenever the MAUI host builds a new DI container (e.g., Android process rehydration).
+		/// </summary>
+		/// <param name="provider">The service provider to use for subsequent resolutions.</param>
+		public static void Initialize(IServiceProvider provider)
+		{
+			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+
+			xmppService = null;
+			uiService = null;
+			navigationService = null;
+			tagProfile = null;
+			logService = null;
+			networkService = null;
+			contractOrchestratorService = null;
+			thingRegistryOrchestratorService = null;
+			neuroWalletOrchestratorService = null;
+			attachmentCacheService = null;
+			cryptoService = null;
+			settingsService = null;
+			storageService = null;
+			nfcService = null;
+			notificationService = null;
+			pushNotificationService = null;
+			localizer = null;
+			platformSpecific = null;
+			barcodeReader = null;
+			permissionService = null;
+			intentService = null;
+			internetCacheService = null;
+			themeService = null;
+			kycService = null;
+			xmlSchemaValidationService = null;
+			popupService = null;
+			toastService = null;
+			keyboardInsetsService = null;
+			authenticationService = null;
+		}
+
+		/// <summary>
+		/// Gets a task that completes when all core services are initialized.
+		/// </summary>
+		public static Task ServicesReadyTask => App.ServicesReady;
 
 		/// <summary>
 		/// Service serializing and managing UI-related tasks.

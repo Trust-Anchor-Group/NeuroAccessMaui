@@ -4,6 +4,7 @@ using System.Net.Security;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Microsoft.Maui;
 using Microsoft.Maui.Controls.Internals;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
@@ -12,6 +13,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI.QR;
+using NeuroAccessMaui.UI;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Registration;
@@ -53,6 +55,13 @@ namespace NeuroAccessMaui
 
         private static readonly TaskCompletionSource<bool> servicesSetup = new();
         private static readonly TaskCompletionSource<bool> defaultInstantiatedSource = new();
+        private static TaskCompletionSource<bool> servicesReadyTcs = CreateServicesReadySignal();
+
+        private static TaskCompletionSource<bool> CreateServicesReadySignal() =>
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        private static void ResetServicesReadySignal() =>
+            servicesReadyTcs = CreateServicesReadySignal();
 
         /// <summary>
         /// Flag indicating if this instance is “resuming” an already-started app.
@@ -73,6 +82,11 @@ namespace NeuroAccessMaui
         /// Gets the current application instance.
         /// </summary>
         public static new App? Current => appInstance;
+
+        /// <summary>
+        /// Task that completes once all core services have finished loading.
+        /// </summary>
+        public static Task ServicesReady => servicesReadyTcs.Task;
 
         /// <summary>
         /// Supported languages.
@@ -218,8 +232,33 @@ namespace NeuroAccessMaui
             if (this.Windows.Any())
                 return this.Windows[0];
             CustomShell Shell = ServiceHelper.GetService<CustomShell>();
-            return new Window(Shell);
+            return new AppWindow(this, Shell, activationState);
         }
+        #endregion
+
+        #region Window lifecycle bridge
+
+        /// <summary>
+        /// Captures activation state when the MAUI window is created.
+        /// </summary>
+        /// <param name="activationState">Activation state provided by MAUI.</param>
+        internal void HandleWindowCreated(IActivationState? activationState) => _ = activationState;
+
+        /// <summary>
+        /// Invoked when the MAUI window enters the stopped state.
+        /// </summary>
+        internal Task HandleWindowStoppedAsync() => this.OnBackgroundSleep();
+
+        /// <summary>
+        /// Invoked when the MAUI window resumes after being stopped.
+        /// </summary>
+        internal Task HandleWindowResumedAsync() => this.ResumeAsync(isBackground: false);
+
+        /// <summary>
+        /// Invoked when the MAUI window is being destroyed.
+        /// </summary>
+        internal Task HandleWindowDestroyingAsync() => this.ShutdownAsync(inPanic: false, isTerminatingProcess: true, forceTermination: true);
+
         #endregion
 
         #region Initialization
@@ -349,11 +388,14 @@ namespace NeuroAccessMaui
 
         private async Task PerformStartupAsync(bool isResuming, bool backgroundStart)
         {
+            TaskCompletionSource<bool>? ReadySignal = null;
             await this.startupWorker.WaitAsync();
             try
             {
                 if (++startupCounter > 1)
                     return;
+
+                ReadySignal = servicesReadyTcs;
 
                 CancellationToken Token = this.startupCancellation.Token;
                 Token.ThrowIfCancellationRequested();
@@ -390,14 +432,17 @@ namespace NeuroAccessMaui
                 await ServiceRef.NotificationService.Load(isResuming, Token);
 
                 AppShell.RegisterRoutes();
+                ReadySignal?.TrySetResult(true);
                 //	AppShell.AppLoaded();
             }
             catch (OperationCanceledException)
             {
+                ReadySignal?.TrySetCanceled();
                 Log.Notice($"{(isResuming ? "OnResume" : "Initial app")} startup was canceled.");
             }
             catch (Exception Ex)
             {
+                ReadySignal?.TrySetException(Ex);
                 Ex = Log.UnnestException(Ex);
                 ServiceRef.LogService.SaveExceptionDump(Ex.Message, Ex.StackTrace ?? string.Empty);
                 this.DisplayBootstrapErrorPage(Ex.Message, Ex.StackTrace ?? string.Empty);
@@ -412,22 +457,18 @@ namespace NeuroAccessMaui
 
         #region Sleep / Shutdown
 
-        public async Task OnBackgroundSleep() => await this.ShutdownAsync(inPanic: false);
+        public async Task OnBackgroundSleep() => await this.ShutdownAsync(inPanic: false, isTerminatingProcess: false);
 
         protected override async void OnSleep()
         {
-            Page? rootPage = this.Windows.FirstOrDefault()?.Page;
-            if (rootPage?.BindingContext is BaseViewModel Vm)
-                await Vm.Shutdown();
-
-            await this.ShutdownAsync(inPanic: false);
-        }
+            await this.ShutdownAsync(inPanic: false, isTerminatingProcess: false);
+    }
 
         internal static async Task StopAsync()
         {
             if (appInstance is not null)
             {
-                await appInstance.ShutdownAsync(inPanic: false);
+                await appInstance.ShutdownAsync(inPanic: false, isTerminatingProcess: true, forceTermination: true);
                 appInstance = null;
             }
 
@@ -441,15 +482,22 @@ namespace NeuroAccessMaui
             }
         }
 
-        private async Task ShutdownAsync(bool inPanic)
+        private async Task ShutdownAsync(bool inPanic, bool isTerminatingProcess, bool forceTermination = false)
         {
             this.startupCancellation.Cancel();
             await this.startupWorker.WaitAsync();
 
             try
             {
-                if ((startupCounter < 1) || (--startupCounter > 0))
-                    return;
+                if (!forceTermination)
+                {
+                    if ((startupCounter < 1) || (--startupCounter > 0))
+                        return;
+                }
+                else
+                {
+                    startupCounter = 0;
+                }
 
                 this.StopAutoSaveTimer();
 
@@ -462,14 +510,8 @@ namespace NeuroAccessMaui
                 {
                     List<Task> UnloadTasks = [];
 
-                    if (ServiceRef.UiService is not null)
-                        UnloadTasks.Add(ServiceRef.UiService.Unload());
-
-                    if (ServiceRef.ContractOrchestratorService is not null)
-                        UnloadTasks.Add(ServiceRef.ContractOrchestratorService.Unload());
-
-                    if (ServiceRef.XmppService is not null)
-                        UnloadTasks.Add(ServiceRef.XmppService.Unload());
+                    await ServiceRef.ContractOrchestratorService.Unload();
+                    await ServiceRef.XmppService.Unload();
 
                     if (ServiceRef.NetworkService is not null)
                         UnloadTasks.Add(ServiceRef.NetworkService.Unload());
@@ -479,15 +521,27 @@ namespace NeuroAccessMaui
 
                     await Task.WhenAll(UnloadTasks);
 
-                    foreach (IEventSink Sink in Log.Sinks)
-                        Log.Unregister(Sink);
+                    
 
-                    if (ServiceRef.StorageService is not null)
-                        await ServiceRef.StorageService.Shutdown();
+                    if (isTerminatingProcess)
+                    {
+                        foreach (IEventSink Sink in Log.Sinks)
+                            Log.Unregister(Sink);
+
+                        if (ServiceRef.StorageService is not null)
+                            await ServiceRef.StorageService.Shutdown();
+                    }
                 }
 
-                // Causes list of singleton instances to be cleared.
-                await Log.TerminateAsync();
+                if (isTerminatingProcess)
+                {
+                    // Causes list of singleton instances to be cleared.
+                    await Log.TerminateAsync();
+                }
+                else
+                {
+                    ResetServicesReadySignal();
+                }
             }
             finally
             {
@@ -618,7 +672,7 @@ namespace NeuroAccessMaui
             }
 
             if (shutdown)
-                await this.ShutdownAsync(inPanic: false);
+                await this.ShutdownAsync(inPanic: false, isTerminatingProcess: true, forceTermination: true);
 
 #if DEBUG
             Page? alertPage = this.Windows.FirstOrDefault()?.Page;
