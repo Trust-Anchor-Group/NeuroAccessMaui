@@ -496,11 +496,12 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					this.codeVerified = true;
 					this.OnPropertyChanged(nameof(this.CanContinue));
 
-					if (this.CoordinatorViewModel is not null)
-					{
-						OnboardingStep Next = VerifyIsTemporary ? OnboardingStep.NameEntry : OnboardingStep.ValidateEmail;
-						await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(Next);
-					}
+				if (this.CoordinatorViewModel is not null)
+				{
+					OnboardingStep? NextStep = this.CoordinatorViewModel.GetNextActiveStep(this.Step);
+					OnboardingStep TargetStep = NextStep ?? OnboardingStep.Finalize;
+					await this.CoordinatorViewModel.GoToStepCommand.ExecuteAsync(TargetStep);
+				}
 				}
 				else
 				{

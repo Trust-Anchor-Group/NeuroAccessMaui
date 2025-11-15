@@ -35,6 +35,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		private bool isUpdatingSelection;
 		private bool isCompleting;
 		private bool hasLoggedSequence;
+		private bool allStepsSkippable;
 
 		[ObservableProperty]
 		[NotifyPropertyChangedFor(nameof(IsSummaryStep))]
@@ -293,7 +294,13 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		internal OnboardingStep? GetNextActiveStep(OnboardingStep step)
 		{
 			this.BuildActiveSequence();
-			return this.FindStepInDirection(step, NavigationDirection.Forward);
+			OnboardingStep? Candidate = this.FindStepInDirection(step, NavigationDirection.Forward);
+			if (!Candidate.HasValue)
+			{
+				return null;
+			}
+
+			return this.ResolveStepWithSkipping(Candidate.Value, NavigationDirection.Forward, false);
 		}
 
 		internal void MarkStepCompleted(OnboardingStep step)
@@ -325,16 +332,16 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			await base.OnInitializeAsync().ConfigureAwait(false);
 
 			this.BuildActiveSequence();
-			if (this.activeSequence.Count == 0)
-			{
-				this.activeSequence.Add(OnboardingStep.Finalize);
-			}
-
-			if (this.activeSequence.Count == 1 && this.activeSequence[0] == OnboardingStep.Finalize)
+			if (this.allStepsSkippable)
 			{
 				await this.MoveToStepAsync(OnboardingStep.Finalize, NavigationDirection.Forward).ConfigureAwait(false);
 				await this.CompleteOnboardingAsync(false, true).ConfigureAwait(false);
 				return;
+			}
+
+			if (this.activeSequence.Count == 0)
+			{
+				this.activeSequence.Add(OnboardingStep.Finalize);
 			}
 
 			OnboardingStep StartStep = this.ResolveInitialStep();
@@ -495,13 +502,14 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		/// skip status.
 		/// </summary>
 		/// <remarks>This method updates the active onboarding sequence to reflect the latest configuration and
-		/// conditions. If no steps are included, the sequence will contain only the finalization step. The method also logs
-		/// any steps that are skipped, along with their reasons, and records changes to the sequence for auditing
-		/// purposes.</remarks>
+		/// conditions. If no steps are included, the sequence will contain only the finalization step. Skip decisions are
+		/// evaluated during navigation, so this builder only tracks whether any steps remain visible and records changes
+		/// to the deterministic sequence for auditing purposes.</remarks>
 		private void BuildActiveSequence()
 		{
 			List<OnboardingStep> PreviousSequence = this.activeSequence;
 			List<OnboardingStep> NewSequence = new List<OnboardingStep>();
+			bool HasVisibleSteps = false;
 
 			foreach (StepDescriptor Descriptor in this.descriptorOrder)
 			{
@@ -511,20 +519,18 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 				}
 
 				OnboardingStep Step = Descriptor.Step;
-				if (Descriptor.Skip() && Step != OnboardingStep.Finalize)
-				{
-					if (this.TryGetSkipReason(Step, out string Reason) && !string.IsNullOrEmpty(Reason) && !this.loggedSkips.Contains(Step))
-					{
-						this.loggedSkips.Add(Step);
-						ServiceRef.LogService.LogInformational("Onboarding step skipped.",
-							new KeyValuePair<string, object?>("Step", Step.ToString()),
-							new KeyValuePair<string, object?>("Reason", Reason));
-					}
+				NewSequence.Add(Step);
 
+				if (Step == OnboardingStep.Finalize)
+				{
 					continue;
 				}
 
-				NewSequence.Add(Step);
+				bool Skip = Descriptor.Skip();
+				if (!Skip)
+				{
+					HasVisibleSteps = true;
+				}
 			}
 
 			if (NewSequence.Count == 0)
@@ -533,6 +539,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			}
 
 			this.activeSequence = NewSequence;
+			this.allStepsSkippable = !HasVisibleSteps;
 
 			bool SequencesEqual = this.AreSequencesEqual(PreviousSequence, NewSequence);
 			if (!this.hasLoggedSequence || !SequencesEqual)
@@ -569,13 +576,12 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 					Sequence.Add(OnboardingStep.Biometrics);
 					Sequence.Add(OnboardingStep.Finalize);
 					break;
-				case OnboardingScenario.ReverifyIdentity:
-					Sequence.Add(OnboardingStep.ValidatePhone);
-					Sequence.Add(OnboardingStep.ValidateEmail);
-					Sequence.Add(OnboardingStep.NameEntry);
-					Sequence.Add(OnboardingStep.CreateAccount);
-					Sequence.Add(OnboardingStep.Finalize);
-					break;
+			case OnboardingScenario.ReverifyIdentity:
+				Sequence.Add(OnboardingStep.ValidatePhone);
+				Sequence.Add(OnboardingStep.ValidateEmail);
+				Sequence.Add(OnboardingStep.CreateAccount);
+				Sequence.Add(OnboardingStep.Finalize);
+				break;
 				default:
 					Sequence.Add(OnboardingStep.Welcome);
 					Sequence.Add(OnboardingStep.Finalize);
@@ -611,21 +617,26 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 				case OnboardingStep.Welcome:
 					// Always show Welcome Now.
 					break;
-				case OnboardingStep.ValidatePhone:
-					if (this.scenario != OnboardingScenario.ReverifyIdentity &&
-						(this.transferContext?.HasLegalIdentity == true || HasEstablishedIdentity))
-					{
-						Reason = "IdentityAlreadyEstablished";
-						return true;
-					}
-					break;
-				case OnboardingStep.ValidateEmail:
-					if (this.scenario != OnboardingScenario.ReverifyIdentity &&
-						(this.transferContext?.HasLegalIdentity == true || HasEstablishedIdentity))
-					{
-						Reason = "IdentityAlreadyEstablished";
-						return true;
-					}
+			case OnboardingStep.ValidatePhone:
+				if (this.scenario != OnboardingScenario.ReverifyIdentity &&
+					(this.transferContext?.HasLegalIdentity == true || HasEstablishedIdentity))
+				{
+					Reason = "IdentityAlreadyEstablished";
+					return true;
+				}
+				break;
+			case OnboardingStep.ValidateEmail:
+				if (Profile.TestOtpTimestamp is not null)
+				{
+					Reason = "TemporaryOtpUsed";
+					return true;
+				}
+				if (this.scenario != OnboardingScenario.ReverifyIdentity &&
+					(this.transferContext?.HasLegalIdentity == true || HasEstablishedIdentity))
+				{
+					Reason = "IdentityAlreadyEstablished";
+					return true;
+				}
 					break;
 				case OnboardingStep.NameEntry:
 					if (this.scenario != OnboardingScenario.ReverifyIdentity &&
@@ -734,7 +745,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 			}
 		}
 
-		private OnboardingStep ResolveStepWithSkipping(OnboardingStep Step, NavigationDirection Direction)
+		private OnboardingStep ResolveStepWithSkipping(OnboardingStep Step, NavigationDirection Direction, bool logSkips = true)
 		{
 			if (Step == OnboardingStep.ContactSupport)
 			{
@@ -760,7 +771,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 					return TargetStep;
 				}
 
-				if (Skip && this.TryGetSkipReason(TargetStep, out string Reason) && !string.IsNullOrEmpty(Reason) && !this.loggedSkips.Contains(TargetStep))
+				if (Skip && logSkips && this.TryGetSkipReason(TargetStep, out string Reason) && !string.IsNullOrEmpty(Reason) && !this.loggedSkips.Contains(TargetStep))
 				{
 					this.loggedSkips.Add(TargetStep);
 					ServiceRef.LogService.LogInformational("Runtime skipped onboarding step.",
