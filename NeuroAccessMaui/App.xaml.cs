@@ -34,6 +34,7 @@ using Waher.Networking.XMPP.P2P;
 using Waher.Networking.XMPP.P2P.E2E;
 using Waher.Networking.XMPP.HTTPX;
 using Waher.Runtime.Geo;
+using Waher.Networking.DNS;
 using Waher.Networking.XMPP.Geo;
 using Waher.Networking.XMPP.Mail;
 using Waher.Networking.XMPP.Push;
@@ -48,7 +49,6 @@ using EDaler;
 using NeuroFeatures;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP;
-using Android.Net;
 using Waher.Content.Xml;
 using Waher.Content.Markdown;
 using Waher.Content.Images;
@@ -142,8 +142,17 @@ namespace NeuroAccessMaui
         {
             get
             {
-                string? LanguageName = Preferences.Get("user_selected_language", null);
-                LanguageInfo SelectedLanguage = SupportedLanguages[0];
+				string? LanguageName = null;
+				try
+				{
+					LanguageName = Preferences.Get("user_selected_language", null);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+
+				LanguageInfo SelectedLanguage = SupportedLanguages[0];
 
                 if (LanguageName is null)
                 {
@@ -901,7 +910,7 @@ namespace NeuroAccessMaui
                     return;
                 }
 
-                await QrCode.OpenUrl(url).ConfigureAwait(false);
+                await QrCode.OpenUrl(url);
             });
         }
 
