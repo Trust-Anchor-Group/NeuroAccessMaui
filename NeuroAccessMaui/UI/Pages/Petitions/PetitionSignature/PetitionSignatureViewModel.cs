@@ -78,7 +78,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		[RelayCommand]
 		private async Task Accept()
 		{
-			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.AcceptPetitionRequest))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.AcceptPetitionRequest, true))
 				return;
 
 			bool Succeeded = await ServiceRef.NetworkService.TryRequest(async () =>
