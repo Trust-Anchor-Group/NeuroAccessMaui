@@ -11,8 +11,6 @@ This guide explains how the Neuro-Access onboarding experience is stitched toget
 3. Each visual step has its own view model under `UI/Pages/Onboarding/ViewModels`. They inherit from `BaseOnboardingStepViewModel`, handle validation and networking, and call back to the coordinator when it is time to advance.
 4. Shared services (`ServiceRef`) provide persistence (`TagProfile`), networking, localization, popups, etc. The step view models never talk directly to UI controls.
 
-Keep the PlantUML diagram in `docs/OnboardingStateMachine.puml` open while reading; it mirrors the logic described here.
-
 ---
 
 ## Scenarios & Default Sequences
@@ -97,7 +95,7 @@ Whenever a guard short-circuits a step, the coordinator logs the reason exactly 
 3. **Respect MVVM Rules**
    - Do not manipulate UI elements directly from view models. Use bindings, commands, and services (`ServiceRef.UiService`, `PopupService`, etc.).
 4. **Keep Documentation in Sync**
-   - Update this guide and the PlantUML diagram when the flow changes.
+   - Update this guide when the flow changes.
 
 ---
 
@@ -114,7 +112,5 @@ Whenever a guard short-circuits a step, the coordinator logs the reason exactly 
 - `NeuroAccessMaui/UI/Pages/Onboarding/OnboardingPage.xaml`
 - `NeuroAccessMaui/UI/Pages/Onboarding/OnboardingViewModel.cs`
 - `NeuroAccessMaui/UI/Pages/Onboarding/ViewModels/*`
-- `docs/OnboardingStateMachine.puml`
-- `Onboarding.md` (deep-dive reference)
 
 Refer to these files whenever you need concrete implementation details beyond what this guide covers.
