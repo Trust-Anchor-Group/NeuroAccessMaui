@@ -54,6 +54,7 @@ Core docs:
 - Architecture: [Content/architecture.md](Content/architecture.md)
 - Navigation & Presenter layer: [Content/navigation.md](Content/navigation.md)
 - Services overview: [Content/services.md](Content/services.md)
+- Onboarding flow: [Content/Onboarding.md](Content/Onboarding.md)
 - Contributing Guide: [Content/contributing.md](Content/contributing.md)
 - Changelog: [CHANGELOG.md](CHANGELOG.md)
 - License: [LICENSE](LICENSE)
