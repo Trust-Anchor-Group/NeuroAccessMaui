@@ -49,7 +49,7 @@ namespace NeuroAccessMaui.Animations
 			if (Tasks.Count == 0)
 				return;
 
-			await Task.WhenAll(Tasks).ConfigureAwait(false);
+			await Task.WhenAll(Tasks);
 		}
 	}
 }

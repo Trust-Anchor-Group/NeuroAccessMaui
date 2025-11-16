@@ -78,7 +78,7 @@ namespace NeuroAccessMaui.Animations
 
 			Func<CancellationToken, Task> Execute = CancellationToken => EnsureMainThreadAsync(() => Animation.RunAsync(Target, Context, Options, CancellationToken));
 
-			await this.ExecuteAsync(Key, Target, Options, Execute, Token).ConfigureAwait(false);
+			await this.ExecuteAsync(Key, Target, Options, Execute, Token);
 		}
 
 		/// <inheritdoc/>
@@ -99,7 +99,7 @@ namespace NeuroAccessMaui.Animations
 			VisualElement Anchor = Entering ?? Exiting!;
 			Func<CancellationToken, Task> Execute = CancellationToken => EnsureMainThreadAsync(() => Animation.RunAsync(Entering, Exiting, Context, Options, CancellationToken));
 
-			await this.ExecuteAsync(Key, Anchor, Options, Execute, Token).ConfigureAwait(false);
+			await this.ExecuteAsync(Key, Anchor, Options, Execute, Token);
 		}
 
 		private async Task ExecuteAsync(AnimationKey Key, VisualElement Anchor, AnimationOptions? Options, Func<CancellationToken, Task> Execute, CancellationToken Token)
@@ -108,7 +108,7 @@ namespace NeuroAccessMaui.Animations
 			this.RaiseEvent(new AnimationEvent(Key, AnimationLifecycleStage.Started, TimeSpan.Zero, false, null));
 			try
 			{
-				await AnimationRunner.RunAsync(Anchor, Execute, Token).ConfigureAwait(false);
+				await AnimationRunner.RunAsync(Anchor, Execute, Token);
 				Stopwatch.Stop();
 				this.RaiseEvent(new AnimationEvent(Key, AnimationLifecycleStage.Completed, Stopwatch.Elapsed, false, null));
 				Options?.Completed?.Invoke();

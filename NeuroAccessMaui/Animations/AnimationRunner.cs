@@ -25,7 +25,7 @@ namespace NeuroAccessMaui.Animations
 
 			if (!Token.CanBeCanceled)
 			{
-				await Execute(CancellationToken.None).ConfigureAwait(false);
+				await Execute(CancellationToken.None);
 				return;
 			}
 
@@ -34,8 +34,7 @@ namespace NeuroAccessMaui.Animations
 				MainThread.BeginInvokeOnMainThread(() => Microsoft.Maui.Controls.ViewExtensions.CancelAnimations(Target));
 			});
 
-			await Execute(Token).ConfigureAwait(false);
-			Token.ThrowIfCancellationRequested();
+			await Execute(Token);
 		}
 	}
 }

@@ -54,7 +54,7 @@ namespace NeuroAccessMaui.Animations
 			ExceptionDispatchInfo? DispatchInfo = null;
 			try
 			{
-				await AnimationRunner.RunAsync(Target, Execute, Token).ConfigureAwait(false);
+				await AnimationRunner.RunAsync(Target, Execute, Token);
 			}
 			catch (Exception Ex)
 			{
@@ -62,7 +62,7 @@ namespace NeuroAccessMaui.Animations
 			}
 			finally
 			{
-				await this.ApplyFinalScaleAsync(Target).ConfigureAwait(false);
+				await this.ApplyFinalScaleAsync(Target);
 			}
 
 			DispatchInfo?.Throw();
