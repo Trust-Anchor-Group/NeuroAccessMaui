@@ -216,22 +216,22 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		private bool CheckPendingIdentity()
 		{
-			// Uses cached latest KYC reference state instead of TagProfile.IdentityApplication
-			return ServiceRef.TagProfile.IdentityApplication?.State == IdentityState.Created;
+			IdentityState? state = this.latestCreatedIdentityState ?? ServiceRef.TagProfile.IdentityApplication?.State;
+			return state == IdentityState.Created;
 		}
 
 		private bool CheckRejectedIdentity()
 		{
-			// Uses cached latest KYC reference state instead of TagProfile.IdentityApplication
-			return ServiceRef.TagProfile.IdentityApplication?.State == IdentityState.Rejected;
+			IdentityState? state = this.latestCreatedIdentityState ?? ServiceRef.TagProfile.IdentityApplication?.State;
+			return state == IdentityState.Rejected;
 		}
 
 		private async Task LoadLatestKycStateAsync()
 		{
 			try
 			{
-				this.latestCreatedIdentityState = ServiceRef.TagProfile.IdentityApplication?.State ?? ServiceRef.TagProfile.LegalIdentity?.State ?? null;
 				KycReference? LatestReference = await FindMostRecentReferenceAsync();
+				this.latestCreatedIdentityState = LatestReference?.CreatedIdentityState ?? ServiceRef.TagProfile.IdentityApplication?.State ?? ServiceRef.TagProfile.LegalIdentity?.State;
 				this.latestApplicationReview = LatestReference?.ApplicationReview;
 
 				MainThread.BeginInvokeOnMainThread(() =>
