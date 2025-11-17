@@ -3033,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Your ID Application is sent for review. We will notify you when your ID is approved!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Application Summary</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Before finalizing, please read through and ensure everything is correct</value>
   </data>
@@ -3070,7 +3067,7 @@
     <value>For your individual use</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Before finalizing, please read through and ensure everything is correct</value>
+    <value>Please take a moment to review your details before submitting. Make sure everything is accurate and complete</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Company Information</value>

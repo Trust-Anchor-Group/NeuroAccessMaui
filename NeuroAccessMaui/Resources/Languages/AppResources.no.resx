@@ -3033,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>ID-søknaden din sendes til vurdering. Vi gir deg beskjed når legitimasjonen din er godkjent!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Sammendrag av søknaden</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Før du fullfører, vennligst les gjennom og sørg for at alt er riktig</value>
   </data>

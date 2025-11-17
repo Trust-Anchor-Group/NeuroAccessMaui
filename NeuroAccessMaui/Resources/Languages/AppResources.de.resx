@@ -3033,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Ihr Ausweisantrag wird zur Prüfung gesendet. Wir werden Sie benachrichtigen, wenn Ihr Ausweis genehmigt wurde!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Zusammenfassung der Anwendung</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Bevor Sie abschließen, lesen Sie bitte durch und stellen Sie sicher, dass alles korrekt ist</value>
   </data>

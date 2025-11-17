@@ -561,7 +561,7 @@
 							<CollectionView.Header>
 								<VerticalStackLayout>
 									<Label Style="{DynamicResource PageTitleLabel}"
-										   Text="{l:Localize ApplicationSummary}"
+										   Text="{l:Localize Summary}"
 										   Margin="{DynamicResource MediumLeftRightMargins}" />
 
 									<!-- Post-submission panel: application sent + peer review actions -->
@@ -640,28 +640,7 @@
 										</controls:ConditionView.True>
 									</controls:ConditionView>
 
-									<!-- Info bubble only when not already sent -->
-									<Border Grid.Row="0"
-											IsVisible="{Binding ApplicationSentPublic, Converter={mct:InvertedBoolConverter}}"
-											BackgroundColor="{DynamicResource TnPInfobgWL}"
-											Padding="{DynamicResource MediumMargins}"
-											Margin="{DynamicResource SmallMargins}"
-											StrokeShape="RoundRectangle 16,16,0,16">
-										<Border.Shadow>
-											<Shadow Brush="{DynamicResource SurfaceShadowColorWL}"
-													Offset="0,4" />
-										</Border.Shadow>
-										<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-											  ColumnDefinitions="auto, *">
-											<Path Grid.Column="0"
-												  Data="{x:Static ui:Geometries.InfoCirclePath}"
-												  Fill="{DynamicResource TnPInfoContentWL}" />
-											<Label Grid.Column="1"
-												   Text="{l:Localize BeforeFinalizingSummary}"
-												   Style="{DynamicResource InfoLabel}"
-												   TextColor="{DynamicResource TnPInfoContentWL}" />
-										</Grid>
-									</Border>
+
 									<Border Style="{DynamicResource BorderSet}">
 										<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
 											<Label Style="{DynamicResource FieldTitleLabel}"
@@ -852,6 +831,27 @@
 						Grid.Row="2"
 						Padding="16">
 					<VerticalStackLayout Spacing="8">
+						<!-- Info bubble only when not already sent -->
+						<Border Grid.Row="0"
+								IsVisible="{Binding ApplicationSentPublic, Converter={mct:InvertedBoolConverter}}"
+								BackgroundColor="{DynamicResource TnPInfobgWL}"
+								Padding="{DynamicResource MediumMargins}"
+								StrokeShape="RoundRectangle 16,16,0,16">
+							<Border.Shadow>
+								<Shadow Brush="{DynamicResource SurfaceShadowColorWL}"
+										Offset="0,4" />
+							</Border.Shadow>
+							<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+								  ColumnDefinitions="auto, *">
+								<Path Grid.Column="0"
+									  Data="{x:Static ui:Geometries.InfoCirclePath}"
+									  Fill="{DynamicResource TnPInfoContentWL}" />
+								<Label Grid.Column="1"
+									   Text="{l:Localize BeforeFinalizingSummary}"
+									   Style="{DynamicResource InfoLabel}"
+									   TextColor="{DynamicResource TnPInfoContentWL}" />
+							</Grid>
+						</Border>
 						<Grid ColumnDefinitions="*, *">
 							<Label Grid.Column="0"
 								   Text="{l:Localize Progress}"

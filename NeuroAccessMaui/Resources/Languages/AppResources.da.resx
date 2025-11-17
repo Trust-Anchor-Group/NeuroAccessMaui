@@ -3033,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Din ID-ansøgning sendes til gennemgang. Vi giver dig besked, når dit ID er godkendt!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Resumé af ansøgning</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Før du afslutter, bedes du læse igennem og sikre dig, at alt er korrekt</value>
   </data>

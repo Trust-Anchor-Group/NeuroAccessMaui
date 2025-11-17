@@ -3033,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Tu solicitud de identificación ha sido enviada para revisión. ¡Te notificaremos cuando tu identificación sea aprobada!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Resumen de la solicitud</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Antes de finalizar, por favor revisa y asegúrate de que todo esté correcto</value>
   </data>
@@ -3070,7 +3067,7 @@
     <value>Para su uso individual</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Antes de finalizar, lea y asegúrese de que todo sea correcto</value>
+    <value>Por favor, tómate un momento para revisar tus datos antes de enviarlos. Asegúrate de que toda la información sea precisa y esté completa</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Información de la empresa</value>

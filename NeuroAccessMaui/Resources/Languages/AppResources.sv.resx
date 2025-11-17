@@ -3033,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Din ID-ansökan har skickats för granskning. Vi meddelar dig när din ID har godkänts!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Ansökningssammanfattning</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Innan du slutför, vänligen läs igenom och säkerställ att allt är korrekt</value>
   </data>
@@ -3070,7 +3067,7 @@
     <value>För eget bruk</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Innan du slutför, läs igenom och säkerställ att allt är korrekt</value>
+    <value>Ta dig en stund för att granska dina uppgifter innan du skickar in dem. Se till att all information är korrekt och komplett</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Företagsinformation</value>

@@ -3033,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Votre demande d’identification est envoyée pour examen. Nous vous informerons lorsque votre pièce d’identité sera approuvée !</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Sommaire de la demande</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Avant de finaliser, veuillez lire et vous assurer que tout est correct</value>
   </data>

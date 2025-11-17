@@ -3033,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Henkilöllisyystodistuksesi hakemus lähetetään tarkistettavaksi. Ilmoitamme sinulle, kun henkilöllisyystodistuksesi on hyväksytty!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Hakemuksen yhteenveto</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Ennen kuin viimeistelet, lue läpi ja varmista, että kaikki on oikein</value>
   </data>

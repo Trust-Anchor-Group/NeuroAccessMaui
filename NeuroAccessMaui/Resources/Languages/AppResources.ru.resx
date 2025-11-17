@@ -3033,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Ваша заявка на удостоверение личности будет отправлена на рассмотрение. Мы сообщим вам, когда ваше удостоверение личности будет одобрено!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Резюме по применению</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Прежде чем завершить работу, пожалуйста, прочитайте и убедитесь, что все верно</value>
   </data>

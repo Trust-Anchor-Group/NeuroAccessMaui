@@ -3033,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Cererea de identificare este trimisă spre examinare. Te vom anunța când actul tău de identitate este aprobat!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Rezumatul aplicației</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Înainte de finalizare, vă rugăm să citiți și să vă asigurați că totul este corect</value>
   </data>

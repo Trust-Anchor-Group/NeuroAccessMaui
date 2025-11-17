@@ -3033,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Vaša ID aplikacija se šalje na pregled. Obavestit ćemo vas kada vaša lična karta bude odobrena!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Rezime aplikacije</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Pre finalizacije, pročitajte i uverite se da je sve tačno</value>
   </data>
