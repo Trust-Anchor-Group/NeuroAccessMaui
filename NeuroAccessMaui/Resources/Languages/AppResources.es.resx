@@ -59,7 +59,10 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root"
+    xmlns=""
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -3398,5 +3401,26 @@
   </data>
   <data name="UrlSchemaNotPermitted" xml:space="preserve">
     <value>Solicita una identidad personal para utilizar esta función.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Solicitud rechazada</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>El proveedor no pudo aprobar tu envío. Consulta el motivo a continuación.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Los campos y fotos destacados muestran lo que debe actualizarse antes de reenviar.</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Algunos datos requieren una revisión manual</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} campos y {1} fotos no pueden validarse automáticamente y deben ser revisados por un operador. Esto puede retrasar la aprobación.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Si lo prefieres, puedes eliminar estas entradas pendientes para continuar sin ellas, pero es opcional.</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Eliminar datos pendientes</value>
   </data>
 </root>

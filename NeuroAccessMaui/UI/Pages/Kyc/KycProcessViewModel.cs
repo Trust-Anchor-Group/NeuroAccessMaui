@@ -88,6 +88,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		[ObservableProperty] private string? errorDescription;
 		[ObservableProperty] private bool hasErrorDescription;
+		[ObservableProperty] private string unvalidatedSummaryText = string.Empty;
 
 		[ObservableProperty] private bool hasPersonalInformation;
 		[ObservableProperty] private bool hasAddressInformation;
@@ -115,6 +116,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		public bool IsInSummary => this.navigation.State == KycFlowState.Summary || this.navigation.State == KycFlowState.PendingSummary;
 		public bool IsEditingFromSummary => this.editingFromSummary;
+		public bool HasUnvalidatedItems => (this.kycReference?.ApplicationReview?.UnvalidatedClaims?.Length ?? 0) > 0 ||
+			(this.kycReference?.ApplicationReview?.UnvalidatedPhotos?.Length ?? 0) > 0;
 
 		private void SetEditingFromSummary(bool value)
 		{
@@ -257,6 +260,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.ErrorDescription = ExistingReview.Message;
 				this.HasErrorDescription = !string.IsNullOrWhiteSpace(this.ErrorDescription);
 				KycInvalidation.ApplyInvalidations(this.process, ExistingReview, this.ErrorDescription);
+				this.UpdateReviewIndicators();
 			}
 
 			this.process.ClearValidation();
@@ -1109,7 +1113,115 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.kycReference is not null)
 				await this.kycService.ApplyApplicationReviewAsync(this.kycReference, review);
 			KycInvalidation.ApplyInvalidations(this.process, review, this.ErrorDescription);
+			this.UpdateReviewIndicators();
 			await this.BuildMappedValuesAsync();
+		}
+
+		[RelayCommand(CanExecute = nameof(HasUnvalidatedItems))]
+		private async Task ClearUnvalidatedAsync()
+		{
+			if (this.process is null || this.kycReference?.ApplicationReview is null)
+				return;
+
+			ApplicationReview review = this.kycReference.ApplicationReview;
+			HashSet<string> mappingKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			foreach (string Claim in review.UnvalidatedClaims ?? Array.Empty<string>())
+			{
+				if (!string.IsNullOrWhiteSpace(Claim))
+					mappingKeys.Add(Claim.Trim());
+			}
+			foreach (string Photo in review.UnvalidatedPhotos ?? Array.Empty<string>())
+			{
+				if (!string.IsNullOrWhiteSpace(Photo))
+					mappingKeys.Add(Photo.Trim());
+			}
+
+			if (mappingKeys.Count == 0)
+				return;
+
+			bool cleared = this.ClearFieldsForMappings(mappingKeys);
+
+			if (!cleared)
+				return;
+
+			review.UnvalidatedClaims = Array.Empty<string>();
+			review.UnvalidatedPhotos = Array.Empty<string>();
+
+			await this.kycService.ApplyApplicationReviewAsync(this.kycReference, review);
+			this.UpdateReviewIndicators();
+
+			try
+			{
+				await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+
+			await this.BuildMappedValuesAsync();
+		}
+
+		private bool ClearFieldsForMappings(HashSet<string> mappingKeys)
+		{
+			if (this.process is null || mappingKeys.Count == 0)
+				return false;
+
+			bool cleared = false;
+			foreach (KycPage Page in this.process.Pages)
+			{
+				cleared |= this.ClearFields(Page.AllFields, mappingKeys);
+
+				foreach (KycSection Section in Page.AllSections)
+				{
+					cleared |= this.ClearFields(Section.AllFields, mappingKeys);
+				}
+			}
+			return cleared;
+		}
+
+		private bool ClearFields(IEnumerable<ObservableKycField> fields, HashSet<string> mappingKeys)
+		{
+			bool cleared = false;
+			foreach (ObservableKycField Field in fields)
+			{
+				if (!Field.Mappings.Any(m => mappingKeys.Contains(m.Key)))
+					continue;
+
+				if (!string.IsNullOrWhiteSpace(Field.StringValue))
+				{
+					Field.StringValue = null;
+					if (this.process is not null && this.process.Values.ContainsKey(Field.Id))
+						this.process.Values[Field.Id] = null;
+					cleared = true;
+				}
+			}
+			return cleared;
+		}
+
+		private void UpdateReviewIndicators()
+		{
+			ApplicationReview? review = this.kycReference?.ApplicationReview;
+			if (review is null)
+			{
+				this.UnvalidatedSummaryText = string.Empty;
+			}
+			else
+			{
+				int claimCount = review.UnvalidatedClaims?.Length ?? 0;
+				int photoCount = review.UnvalidatedPhotos?.Length ?? 0;
+				if (claimCount == 0 && photoCount == 0)
+				{
+					this.UnvalidatedSummaryText = string.Empty;
+				}
+				else
+				{
+					this.UnvalidatedSummaryText = ServiceRef.Localizer[nameof(AppResources.KycUnvalidatedWarningDescription), false, claimCount, photoCount];
+				}
+			}
+
+			this.OnPropertyChanged(nameof(this.HasUnvalidatedItems));
+			this.ClearUnvalidatedCommand?.NotifyCanExecuteChanged();
 		}
 
 	}

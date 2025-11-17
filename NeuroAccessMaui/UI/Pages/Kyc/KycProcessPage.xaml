@@ -626,16 +626,64 @@
 													<Shadow Brush="{DynamicResource SurfaceShadowColorWL}"
 															Offset="0,4" />
 												</Border.Shadow>
-												<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
-													  ColumnDefinitions="auto, *">
-													<Path Grid.Column="0"
-														  Data="{x:Static ui:Geometries.InfoCirclePath}"
-														  Fill="{DynamicResource TnPDangerContentWL}" />
-													<Label Grid.Column="1"
-														   Text="{Binding ErrorDescription}"
+												<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+													<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+														  ColumnDefinitions="auto, *">
+														<Path Grid.Column="0"
+															  Data="{x:Static ui:Geometries.InfoCirclePath}"
+															  Fill="{DynamicResource TnPDangerContentWL}" />
+														<Label Grid.Column="1"
+															   Text="{l:Localize KycRejectedHeader}"
+															   Style="{DynamicResource FieldTitleLabel}"
+															   TextColor="{DynamicResource TnPDangerContentWL}" />
+													</Grid>
+													<Label Text="{l:Localize KycRejectedDescription}"
 														   Style="{DynamicResource InfoLabel}"
 														   TextColor="{DynamicResource TnPDangerContentWL}" />
-												</Grid>
+													<Label Text="{Binding ErrorDescription}"
+														   Style="{DynamicResource InfoLabel}" FontAttributes="Bold" FontSize="17"
+														   TextColor="{DynamicResource TnPDangerFigureWL}" />
+													<Label Text="{l:Localize KycRejectedInvalidationHint}"
+														   Style="{DynamicResource InfoLabel}"
+														   TextColor="{DynamicResource TnPDangerContentWL}" />
+												</VerticalStackLayout>
+											</Border>
+										</controls:ConditionView.True>
+									</controls:ConditionView>
+
+									<!-- Warning banner for pending/unvalidated details -->
+									<controls:ConditionView Condition="{Binding HasUnvalidatedItems}">
+										<controls:ConditionView.True>
+											<Border Grid.Row="0"
+													BackgroundColor="{DynamicResource TnPWarningbgWL}"
+													Padding="{DynamicResource MediumMargins}"
+													Margin="{DynamicResource SmallMargins}"
+													StrokeShape="RoundRectangle 16,16,0,16">
+												<Border.Shadow>
+													<Shadow Brush="{DynamicResource SurfaceShadowColorWL}"
+															Offset="0,4" />
+												</Border.Shadow>
+												<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+													<Grid ColumnSpacing="{DynamicResource SmallSpacing}"
+														  ColumnDefinitions="auto, *">
+														<Path Grid.Column="0"
+															  Data="{x:Static ui:Geometries.InfoCirclePath}"
+															  Fill="{DynamicResource TnPWarningContentWL}" />
+														<Label Grid.Column="1"
+															   Text="{l:Localize KycUnvalidatedWarningTitle}"
+															   Style="{DynamicResource FieldTitleLabel}"
+															   TextColor="{DynamicResource TnPWarningContentWL}" />
+													</Grid>
+													<Label Text="{Binding UnvalidatedSummaryText}"
+														   Style="{DynamicResource InfoLabel}"
+														   TextColor="{DynamicResource TnPWarningContentWL}" />
+													<Label Text="{l:Localize KycUnvalidatedActionHint}"
+														   Style="{DynamicResource InfoLabel}"
+														   TextColor="{DynamicResource TnPWarningContentWL}" />
+													<controls:TextButton Style="{DynamicResource FilledTextButton}"
+																		 LabelData="{l:Localize KycClearUnvalidatedButton}"
+																		 Command="{Binding ClearUnvalidatedCommand}" />
+												</VerticalStackLayout>
 											</Border>
 										</controls:ConditionView.True>
 									</controls:ConditionView>
@@ -846,7 +894,7 @@
 								<Path Grid.Column="0"
 									  Data="{x:Static ui:Geometries.InfoCirclePath}"
 									  Fill="{DynamicResource TnPInfoContentWL}" />
-								<Label Grid.Column="1"
+								<Label Grid.Column="1" FontSize="14"
 									   Text="{l:Localize BeforeFinalizingSummary}"
 									   Style="{DynamicResource InfoLabel}"
 									   TextColor="{DynamicResource TnPInfoContentWL}" />

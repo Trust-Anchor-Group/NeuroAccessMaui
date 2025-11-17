@@ -439,15 +439,6 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application Summary.
-        /// </summary>
-        public static string ApplicationSummary {
-            get {
-                return ResourceManager.GetString("ApplicationSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Before finalizing, please read through and ensure everything is correct.
         /// </summary>
         public static string ApplicationSummaryDescription {
@@ -835,7 +826,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Before finalizing, please read through and ensure everything is correct.
+        ///   Looks up a localized string similar to Please take a moment to review your details before submitting. Make sure everything is accurate and complete.
         /// </summary>
         public static string BeforeFinalizingSummary {
             get {
@@ -3038,20 +3029,11 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("ErrorTitle", resourceCulture);
             }
         }
-
-		/// <summary>
-		/// Looks up a localized string similar to Url Schema Not Permitted.
-		/// </summary>
-		public static string UrlSchemaNotPermitted {
-			get {
-				return ResourceManager.GetString("UrlSchemaNotPermitted", resourceCulture);
-			}
-		}
-
-		/// <summary>
-		///   Looks up a localized string similar to Everyone.
-		/// </summary>
-		public static string Everyone {
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Everyone.
+        /// </summary>
+        public static string Everyone {
             get {
                 return ResourceManager.GetString("Everyone", resourceCulture);
             }
@@ -4039,6 +4021,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove pending details.
+        /// </summary>
+        public static string KycClearUnvalidatedButton {
+            get {
+                return ResourceManager.GetString("KycClearUnvalidatedButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fix issues and edit form.
         /// </summary>
         public static string KycFixInvalidClaimsButton {
@@ -4102,6 +4093,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The provider could not approve your submission. See the reason below..
+        /// </summary>
+        public static string KycRejectedDescription {
+            get {
+                return ResourceManager.GetString("KycRejectedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application rejected.
+        /// </summary>
+        public static string KycRejectedHeader {
+            get {
+                return ResourceManager.GetString("KycRejectedHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Highlighted fields and photos show what must be updated before you ressubmit..
+        /// </summary>
+        public static string KycRejectedInvalidationHint {
+            get {
+                return ResourceManager.GetString("KycRejectedInvalidationHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Some submitted details could not be verified. Tap to review..
         /// </summary>
         public static string KycReviewAvailableMainPage {
@@ -4129,6 +4147,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If you prefer, you can remove these pending entries to continue without them, but this is optional..
+        /// </summary>
+        public static string KycUnvalidatedActionHint {
+            get {
+                return ResourceManager.GetString("KycUnvalidatedActionHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pending fields.
         /// </summary>
         public static string KycUnvalidatedClaimsHeader {
@@ -4143,6 +4170,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string KycUnvalidatedPhotosHeader {
             get {
                 return ResourceManager.GetString("KycUnvalidatedPhotosHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} fields and {1} photos cannot be validated automatically and must be checked by an operator. This may delay approval..
+        /// </summary>
+        public static string KycUnvalidatedWarningDescription {
+            get {
+                return ResourceManager.GetString("KycUnvalidatedWarningDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some details require manual review.
+        /// </summary>
+        public static string KycUnvalidatedWarningTitle {
+            get {
+                return ResourceManager.GetString("KycUnvalidatedWarningTitle", resourceCulture);
             }
         }
         
@@ -7036,7 +7081,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Request Credits.
+        ///   Looks up a localized string similar to Request.
         /// </summary>
         public static string RequestCredits {
             get {
@@ -7702,7 +7747,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Send Credits.
+        ///   Looks up a localized string similar to Send.
         /// </summary>
         public static string SendCredits {
             get {
@@ -9336,6 +9381,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string Upload {
             get {
                 return ResourceManager.GetString("Upload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apply for a personal identity to use this feature..
+        /// </summary>
+        public static string UrlSchemaNotPermitted {
+            get {
+                return ResourceManager.GetString("UrlSchemaNotPermitted", resourceCulture);
             }
         }
         

@@ -3399,4 +3399,25 @@
   <data name="UrlSchemaNotPermitted" xml:space="preserve">
     <value>Apply for a personal identity to use this feature.</value>
   </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Application rejected</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>The provider could not approve your submission. See the reason below.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Highlighted fields and photos show what must be updated before you ressubmit.</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Some details require manual review</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} fields and {1} photos cannot be validated automatically and must be checked by an operator. This may delay approval.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>If you prefer, you can remove these pending entries to continue without them, but this is optional.</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Remove pending details</value>
+  </data>
 </root>
