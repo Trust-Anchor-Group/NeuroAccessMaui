@@ -42,8 +42,6 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 
 			await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
 
-			//TODO: Handle the case wher an intent to URI before onboarding is completed
-
 			bool IsOnboarded = this.tagProfile.IsComplete();
 
 			if (!IsOnboarded)

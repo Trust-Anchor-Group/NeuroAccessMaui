@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
 using System.Xml;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -17,6 +17,7 @@ using Waher.Content;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Script.Functions.Strings;
 
 namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 {
@@ -174,6 +175,34 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					DebounceCts.Dispose();
 				}
 			}, DebounceCts.Token);
+		}
+
+		public async Task HandleInviteCodeFromIntent(string inviteUrl)
+		{
+			ServiceRef.LogService.LogInformational($"Handling invite code from intent: '{inviteUrl}'.");
+
+			bool IsValid = BasicValidateInviteCode(inviteUrl, out string Trimmed);
+			this.InviteCodeIsValid = IsValid;
+			ServiceRef.LogService.LogInformational($"Invite code validation result: Valid={IsValid} Trimmed='{Trimmed}'.");
+
+			if (!IsValid)
+			{
+				ServiceRef.LogService.LogWarning("Invite code failed basic validation.");
+				return;
+			}
+
+			try
+			{
+				bool Processed = await this.ProcessInvitationAsync(Trimmed).ConfigureAwait(false);
+				if (Processed)
+				{
+					MainThread.BeginInvokeOnMainThread(this.AdvanceAfterInvite);
+				}
+			}
+			finally
+			{
+				this.SetInviteProcessingState(false);
+			}
 		}
 
 		private void AdvanceAfterInvite()

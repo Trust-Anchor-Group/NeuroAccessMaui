@@ -352,7 +352,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 				// Find the viewmodel of WelcomeOnboardingPage
 				WelcomeOnboardingStepViewModel WelcomeVM = this.GetStepViewModel<WelcomeOnboardingStepViewModel>(OnboardingStep.Welcome);
 
-				WelcomeVM.InviteCode = this.navigationArgs.PendingIntentUri;
+				await WelcomeVM.HandleInviteCodeFromIntent(this.navigationArgs.PendingIntentUri);
 			}
 		}
 
@@ -667,7 +667,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 					}
 					break;
 				case OnboardingStep.DefinePassword:
-					if (this.scenario != OnboardingScenario.ChangePin && Profile.HasLocalPassword && !HasEstablishedIdentity)
+					if (this.scenario != OnboardingScenario.ChangePin && Profile.HasLocalPassword)
 					{
 						Reason = "PasswordAlreadyDefined";
 						return true;
