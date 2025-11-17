@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using ExCSS;
 using NeuroAccessMaui.Services.Nfc;
 using Waher.Events;
 using Waher.Runtime.Inventory;
@@ -31,7 +32,7 @@ namespace NeuroAccessMaui.Services.Intents
 	{
 		// Thread-safe queue for storing incoming intents. Usually there will always be only one or none intents in the queue.
 		// ConcurrentQueue might not be needed, but this is not performance-critical code.
-		private readonly ConcurrentQueue<AppIntent> intentQueue = new();
+		private ConcurrentQueue<AppIntent> intentQueue = new();
 
 		/// <summary>
 		/// Queues an intent for later processing.
@@ -108,6 +109,33 @@ namespace NeuroAccessMaui.Services.Intents
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+		}
+
+		/// <summary>
+		/// Processes a OpenUrl intent with onboarding by returning value
+		/// </summary>
+		public async Task<string?> TryGetAndDequeueOnboardingUrl()
+		{
+			ConcurrentQueue<AppIntent> newIntents = new();
+
+			string? OnboardingUrl = null;
+
+			while (this.intentQueue.TryDequeue(out AppIntent? Intent))
+			{
+				if (Intent.Action == Constants.IntentActions.OpenUrl)
+				{
+					if (!string.IsNullOrEmpty(Intent.Data) && string.Equals(Constants.UriSchemes.GetScheme(Intent.Data), Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase))
+					{
+						OnboardingUrl = Intent.Data;
+						continue;
+					}
+				}
+
+				newIntents.Enqueue(Intent);
+			}
+
+			this.intentQueue = newIntents;
+			return OnboardingUrl;
 		}
 	}
 }

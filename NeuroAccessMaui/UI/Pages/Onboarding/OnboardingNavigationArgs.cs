@@ -16,6 +16,17 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		/// Creates args with an explicit scenario.
 		/// </summary>
 		/// <param name="scenario">Scenario to execute.</param>
+		/// <param name="PendingIntentUri">Pending intent URI to process before onboarding.</param>
+		public OnboardingNavigationArgs(OnboardingScenario scenario, string PendingIntentUri)
+		{
+			this.Scenario = scenario;
+			this.PendingIntentUri = PendingIntentUri;
+		}
+
+		/// <summary>
+		/// Creates args with an explicit scenario.
+		/// </summary>
+		/// <param name="scenario">Scenario to execute.</param>
 		public OnboardingNavigationArgs(OnboardingScenario scenario)
 		{
 			this.Scenario = scenario;
@@ -25,6 +36,8 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		/// Onboarding scenario.
 		/// </summary>
 		public OnboardingScenario Scenario { get; init; } = OnboardingScenario.FullSetup;
+
+		public string PendingIntentUri { get; init; } = string.Empty;
 	}
 
 	/// <summary>

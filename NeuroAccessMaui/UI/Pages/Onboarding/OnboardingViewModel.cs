@@ -346,6 +346,14 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 
 			OnboardingStep StartStep = this.ResolveInitialStep();
 			await this.MoveToStepAsync(StartStep, NavigationDirection.Forward).ConfigureAwait(false);
+
+			if (!string.IsNullOrEmpty(this.navigationArgs.PendingIntentUri))
+			{
+				// Find the viewmodel of WelcomeOnboardingPage
+				WelcomeOnboardingStepViewModel WelcomeVM = this.GetStepViewModel<WelcomeOnboardingStepViewModel>(OnboardingStep.Welcome);
+
+				WelcomeVM.InviteCode = this.navigationArgs.PendingIntentUri;
+			}
 		}
 
 		/// <summary>

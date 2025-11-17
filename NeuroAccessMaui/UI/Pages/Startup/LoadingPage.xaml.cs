@@ -37,6 +37,9 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 				await AppInstance.InitCompleted;
 
 			await ServiceRef.XmppService.WaitForConnectedState(TimeSpan.FromSeconds(3));
+
+			string? PendingIntentUri = await ServiceRef.IntentService.TryGetAndDequeueOnboardingUrl();
+
 			await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
 
 			//TODO: Handle the case wher an intent to URI before onboarding is completed
@@ -45,7 +48,14 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 
 			if (!IsOnboarded)
 			{
-				await this.navigationService.SetRootAsync(nameof(OnboardingPage), new OnboardingNavigationArgs(OnboardingScenario.FullSetup));
+				OnboardingNavigationArgs Args;
+
+				if (PendingIntentUri is not null)
+					Args = new OnboardingNavigationArgs(OnboardingScenario.FullSetup, PendingIntentUri);
+				else
+					Args = new OnboardingNavigationArgs(OnboardingScenario.FullSetup);
+
+				await this.navigationService.SetRootAsync(nameof(OnboardingPage), Args);
 			}
 			else
 			{
