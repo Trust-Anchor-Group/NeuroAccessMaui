@@ -408,10 +408,6 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <param name="RemoveOldAttachments">If old attachments should be removed.</param>
 		Task SetLegalIdentity(LegalIdentity? Identity, bool RemoveOldAttachments);
 
-		public ApplicationReview? ApplicationReview { get; }
-
-		public void SetApplicationReview(ApplicationReview? review);
-
 		/// <summary>
 		/// Sets the legal identity of the profile.
 		/// </summary>

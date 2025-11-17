@@ -251,11 +251,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				await this.LoadFeaturedPeerReviewers();
 			}
 
-			if (this.kycReference.RejectionMessage is not null)
+			ApplicationReview? ExistingReview = this.kycReference.ApplicationReview;
+			if (ExistingReview is not null)
 			{
-				this.ErrorDescription = this.kycReference.RejectionMessage;
+				this.ErrorDescription = ExistingReview.Message;
 				this.HasErrorDescription = !string.IsNullOrWhiteSpace(this.ErrorDescription);
-				KycInvalidation.ApplyInvalidations(this.process, this.kycReference, this.ErrorDescription);
+				KycInvalidation.ApplyInvalidations(this.process, ExistingReview, this.ErrorDescription);
 			}
 
 			this.process.ClearValidation();
@@ -1101,13 +1102,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return new KycProcessState(PageStates, this.navigation, this.applicationSent);
 		}
 
-		public async Task ApplyRejectionAsync(string message, string[] invalidClaims, string[] invalidPhotos, string? code)
+		public async Task ApplyApplicationReviewAsync(ApplicationReview review)
 		{
-			this.ErrorDescription = message;
-			this.HasErrorDescription = !string.IsNullOrWhiteSpace(message);
+			this.ErrorDescription = review.Message;
+			this.HasErrorDescription = !string.IsNullOrWhiteSpace(review.Message);
 			if (this.kycReference is not null)
-				await this.kycService.ApplyRejectionAsync(this.kycReference, message, invalidClaims, invalidPhotos, code);
-			KycInvalidation.ApplyInvalidations(this.process, this.kycReference, this.ErrorDescription);
+				await this.kycService.ApplyApplicationReviewAsync(this.kycReference, review);
+			KycInvalidation.ApplyInvalidations(this.process, review, this.ErrorDescription);
 			await this.BuildMappedValuesAsync();
 		}
 

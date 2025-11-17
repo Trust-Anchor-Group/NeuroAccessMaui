@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Collections.Generic;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc.Domain;
 using NeuroAccessMaui.Services.Kyc.Models;
 using Waher.Networking.XMPP.Contracts;
@@ -13,6 +15,11 @@ namespace NeuroAccessMaui.Services.Kyc
 	[DefaultImplementation(typeof(KycService))]
 	public interface IKycService
 	{
+		/// <summary>
+		/// Event raised whenever an application review is stored.
+		/// </summary>
+		event EventHandler<ApplicationReviewEventArgs>? ApplicationReviewUpdated;
+
 		/// <summary>
 		/// Loads (or creates) the persisted KYC reference and ensures process XML is available.
 		/// </summary>
@@ -84,9 +91,9 @@ namespace NeuroAccessMaui.Services.Kyc
 		Task ClearSubmissionAsync(KycReference Reference);
 
 		/// <summary>
-		/// Persists rejection metadata and invalid claim/photo information.
+		/// Persists review metadata from the provider.
 		/// </summary>
-		Task ApplyRejectionAsync(KycReference Reference, string Message, string[] InvalidClaims, string[] InvalidPhotos, string? Code);
+		Task ApplyApplicationReviewAsync(KycReference Reference, ApplicationReview Review);
 
 		/// <summary>
 		/// Resets reference state and seeds optional field values for a fresh application session.

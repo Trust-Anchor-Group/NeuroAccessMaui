@@ -49,7 +49,6 @@ namespace NeuroAccessMaui.Services.Tag
 
 		private LegalIdentity? legalIdentity;
 		private LegalIdentity? identityApplication;
-		private ApplicationReview? applicationReview;
 		private string? objectId;
 		private string? initialDomain;
 		private string? initialApiKey;
@@ -170,7 +169,6 @@ namespace NeuroAccessMaui.Services.Tag
 				TestOtpTimestamp = this.TestOtpTimestamp,
 				LegalIdentity = this.LegalIdentity,
 				IdentityApplication = this.identityApplication,
-				ApplicationReview = this.applicationReview,
 				NrReviews = this.NrReviews,
 				Step = this.Step,
 				Theme = this.Theme,
@@ -236,7 +234,6 @@ namespace NeuroAccessMaui.Services.Tag
 				this.Purpose = Configuration.Purpose;
 				this.TestOtpTimestamp = Configuration.TestOtpTimestamp;
 				this.identityApplication = Configuration.IdentityApplication;
-				this.applicationReview = Configuration.ApplicationReview;
 				this.nrReviews = Configuration.NrReviews;
 				this.Theme = Configuration.Theme;
 				this.AuthenticationMethod = Configuration.AuthenticationMethod;
@@ -1124,24 +1121,6 @@ namespace NeuroAccessMaui.Services.Tag
 		/// Any current Identity application.
 		/// </summary>
 		public LegalIdentity? IdentityApplication => this.identityApplication;
-
-		/// <summary>
-		/// Latest review information for the current or last application.
-		/// </summary>
-		public ApplicationReview? ApplicationReview => this.applicationReview;
-
-		/// <summary>
-		/// Updates the stored review information.
-		/// </summary>
-		/// <param name="review">Review data to store.</param>
-		public void SetApplicationReview(ApplicationReview? review)
-		{
-			if (!Equals(this.applicationReview, review))
-			{
-				this.applicationReview = review;
-				this.FlagAsDirty(nameof(this.ApplicationReview));
-			}
-		}
 
 		/// <summary>
 		/// Sets the legal identity of the profile.

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Channels;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc.Domain;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
@@ -64,6 +65,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		}
 
 		private bool disposedValue;
+		public event EventHandler<ApplicationReviewEventArgs>? ApplicationReviewUpdated;
 
 		/// <summary>
 		/// Creates a new instance of the <see cref="KycService"/> class.
@@ -624,23 +626,32 @@ namespace NeuroAccessMaui.Services.Kyc
 		}
 
 		/// <summary>
-		/// Records rejection metadata and invalid claim/photo information.
+		/// Records the latest application review from the provider.
 		/// </summary>
-		public async Task ApplyRejectionAsync(KycReference Reference, string Message, string[] InvalidClaims, string[] InvalidPhotos, string? Code)
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Review">Review payload to persist.</param>
+		public async Task ApplyApplicationReviewAsync(KycReference Reference, ApplicationReview Review)
 		{
-			if (Reference is null)
+			if (Reference is null || Review is null)
 				return;
+
+			ApplicationReview Clone = CloneReview(Review)!;
 			AsyncLock Lock = this.GetLockFor(Reference);
 			await using (await Lock.LockAsync().ConfigureAwait(false))
 			{
-				Reference.RejectionMessage = Message;
-				Reference.RejectionCode = Code;
-				Reference.InvalidClaims = InvalidClaims;
-				Reference.InvalidPhotos = InvalidPhotos;
+				Reference.ApplicationReview = Clone;
+				Reference.RejectionMessage = null;
+				Reference.RejectionCode = null;
+				Reference.InvalidClaims = null;
+				Reference.InvalidPhotos = null;
+				Reference.InvalidClaimDetails = null;
+				Reference.InvalidPhotoDetails = null;
 				Reference.Version++;
 				Reference.UpdatedUtc = DateTime.UtcNow;
-				await SaveReferenceAsync(Reference);
+				await SaveReferenceAsync(Reference).ConfigureAwait(false);
 			}
+
+			this.RaiseApplicationReviewUpdated(Reference, Clone);
 		}
 
 		/// <summary>
@@ -655,6 +666,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				Reference.LastVisitedMode = "Form";
 				Reference.LastVisitedPageId = null;
+				Reference.ApplicationReview = null;
 				Reference.RejectionMessage = null;
 				Reference.RejectionCode = null;
 				Reference.InvalidClaims = null;
@@ -701,6 +713,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			Reference.LastVisitedPageId = LastVisitedPageId;
 			Reference.LastVisitedMode = Mode;
 
+			ApplicationReview? SnapshotReview = CloneReview(Reference.ApplicationReview);
 			KycReferenceSnapshot Snapshot = new KycReferenceSnapshot(
 				Reference.ObjectId,
 				Reference.Version,
@@ -708,10 +721,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				Progress,
 				LastVisitedPageId,
 				Mode,
-				Reference.RejectionMessage,
-				Reference.RejectionCode,
-				Reference.InvalidClaims,
-				Reference.InvalidPhotos,
+				SnapshotReview,
 				Reference.CreatedUtc,
 				Now);
 
@@ -778,10 +788,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.Progress = Snapshot.Progress;
 				Reference.LastVisitedPageId = Snapshot.LastVisitedPageId;
 				Reference.LastVisitedMode = Snapshot.LastVisitedMode;
-				Reference.RejectionMessage = Snapshot.RejectionMessage;
-				Reference.RejectionCode = Snapshot.RejectionCode;
-				Reference.InvalidClaims = Snapshot.InvalidClaims;
-				Reference.InvalidPhotos = Snapshot.InvalidPhotos;
+				Reference.ApplicationReview = CloneReview(Snapshot.ApplicationReview);
 				Reference.UpdatedUtc = Snapshot.UpdatedUtc;
 				await SaveReferenceAsync(Reference).ConfigureAwait(false);
 
@@ -819,6 +826,56 @@ namespace NeuroAccessMaui.Services.Kyc
 			catch
 			{
 				return "ERR";
+			}
+		}
+
+		private static ApplicationReview? CloneReview(ApplicationReview? Source)
+		{
+			if (Source is null)
+				return null;
+
+			ApplicationReview Clone = new ApplicationReview
+			{
+				Message = Source.Message,
+				Code = Source.Code,
+				ReceivedUtc = Source.ReceivedUtc,
+				InvalidClaims = Source.InvalidClaims?.ToArray() ?? Array.Empty<string>(),
+				InvalidPhotos = Source.InvalidPhotos?.ToArray() ?? Array.Empty<string>(),
+				UnvalidatedClaims = Source.UnvalidatedClaims?.ToArray() ?? Array.Empty<string>(),
+				UnvalidatedPhotos = Source.UnvalidatedPhotos?.ToArray() ?? Array.Empty<string>()
+			};
+
+			Clone.InvalidClaimDetails = Source.InvalidClaimDetails?
+				.Select(d =>
+				{
+					ApplicationReviewClaimDetail Detail = new ApplicationReviewClaimDetail(d.Claim, d.Reason, d.ReasonLanguage, d.ReasonCode, d.Service)
+					{
+						DisplayName = d.DisplayName
+					};
+					return Detail;
+				})
+				.ToArray() ?? Array.Empty<ApplicationReviewClaimDetail>();
+
+			Clone.InvalidPhotoDetails = Source.InvalidPhotoDetails?
+				.Select(d => new ApplicationReviewPhotoDetail(d.FileName, d.DisplayName, d.Reason, d.ReasonLanguage, d.ReasonCode, d.Service))
+				.ToArray() ?? Array.Empty<ApplicationReviewPhotoDetail>();
+
+			return Clone;
+		}
+
+		private void RaiseApplicationReviewUpdated(KycReference Reference, ApplicationReview? Review)
+		{
+			if (Reference is null)
+				return;
+
+			try
+			{
+				ApplicationReviewEventArgs Args = new ApplicationReviewEventArgs(Reference, Review);
+				this.ApplicationReviewUpdated?.Invoke(this, Args);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 

@@ -19,6 +19,7 @@ using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.Services.Data; // Added for Database access
 using System.Linq;
 using Waher.Persistence;
+using Waher.Persistence.Filters;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Tag; // Added for ordering
@@ -36,6 +37,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		bool themeLoaded = false;
 
 		private IdentityState? latestCreatedIdentityState; // Cached state from latest stored KYC reference
+		private ApplicationReview? latestApplicationReview;
+		private bool reviewEventSubscribed;
 
 		public string BannerUri =>
 			Application.Current?.UserAppTheme switch
@@ -106,6 +109,11 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			ServiceRef.XmppService.LegalIdentityChanged += this.XmppService_LegalIdentityChanged;
 			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
 			ServiceRef.TagProfile.Changed += this.TagProfile_PropertyChanged;
+			if (!this.reviewEventSubscribed)
+			{
+				ServiceRef.KycService.ApplicationReviewUpdated += this.KycService_ApplicationReviewUpdated;
+				this.reviewEventSubscribed = true;
+			}
 		}
 
 		public override Task OnDisposeAsync()
@@ -114,6 +122,11 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
 			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
 			ServiceRef.TagProfile.Changed -= this.TagProfile_PropertyChanged;
+			if (this.reviewEventSubscribed)
+			{
+				ServiceRef.KycService.ApplicationReviewUpdated -= this.KycService_ApplicationReviewUpdated;
+				this.reviewEventSubscribed = false;
+			}
 
 			return base.OnDisposeAsync();
 		}
@@ -126,7 +139,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		private void TagProfile_PropertyChanged(object? sender, PropertyChangedEventArgs e)
 		{
 			if (string.IsNullOrEmpty(e.PropertyName) ||
-				e.PropertyName == nameof(ITagProfile.ApplicationReview) ||
 				e.PropertyName == nameof(ITagProfile.IdentityApplication) ||
 				e.PropertyName == nameof(ITagProfile.LegalIdentity))
 			{
@@ -219,6 +231,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			try
 			{
 				this.latestCreatedIdentityState = ServiceRef.TagProfile.IdentityApplication?.State ?? ServiceRef.TagProfile.LegalIdentity?.State ?? null;
+				KycReference? LatestReference = await FindMostRecentReferenceAsync();
+				this.latestApplicationReview = LatestReference?.ApplicationReview;
 
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
@@ -237,9 +251,52 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			}
 		}
 
+		private void KycService_ApplicationReviewUpdated(object? sender, ApplicationReviewEventArgs e)
+		{
+			this.latestApplicationReview = e.Review;
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
+				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
+				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
+				this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
+				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
+			});
+		}
+
+		private static async Task<KycReference?> FindMostRecentReferenceAsync()
+		{
+			LegalIdentity? IdentityApplication = ServiceRef.TagProfile.IdentityApplication;
+			if (IdentityApplication is not null)
+			{
+				try
+				{
+					KycReference? Match = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), IdentityApplication.Id));
+					if (Match is not null)
+						return Match;
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			}
+
+			try
+			{
+				IEnumerable<KycReference> All = await Database.Find<KycReference>();
+				return All.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			return null;
+		}
+
 		private bool HasActionableReview()
 		{
-			ApplicationReview? review = ServiceRef.TagProfile.ApplicationReview;
+			ApplicationReview? review = this.latestApplicationReview;
 			if (review is null)
 				return false;
 

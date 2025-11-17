@@ -2057,8 +2057,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 
-			// Persist rejection details on current KYC reference, and reflect in UI if open
-			MainThread.BeginInvokeOnMainThread(async () =>
+		ApplicationReview? Review = BuildApplicationReview(e, Message);
+
+		// Persist rejection details on current KYC reference, and reflect in UI if open
+		MainThread.BeginInvokeOnMainThread(async () =>
 			{
 				try
 				{
@@ -2090,71 +2092,20 @@ namespace NeuroAccessMaui.Services.Xmpp
 						}
 					}
 
-					if (Ref is not null)
+					if (Ref is not null && Review is not null)
 					{
-						Ref.RejectionMessage = Message;
-						Ref.RejectionCode = e.Code;
-                    try
-                    {
-                        IEnumerable<InvalidClaim> InvalidClaimsList = e.InvalidClaims ?? Array.Empty<InvalidClaim>();
-                        Ref.InvalidClaims = InvalidClaimsList
-                            .Select(c => c?.Claim)
-                            .Where(s => !string.IsNullOrWhiteSpace(s))
-                            .Select(s => s!.Trim())
-                            .ToArray();
+						await ServiceRef.KycService.ApplyApplicationReviewAsync(Ref, Review);
 
-                        Ref.InvalidClaimDetails = InvalidClaimsList
-                            .Where(c => c is not null && !string.IsNullOrWhiteSpace(c.Claim))
-                            .Select(c => new KycInvalidClaim(c.Claim, c.Reason ?? string.Empty, c.ReasonLanguage ?? string.Empty, c.ReasonCode ?? string.Empty, c.Service ?? string.Empty))
-                            .ToArray();
-                    }
-						catch
-						{
-							// Ignore type mismatch; keep null if conversion fails
-						}
-                    try
-                    {
-                        IEnumerable<InvalidPhoto> InvalidPhotosList = e.InvalidPhotos ?? Array.Empty<InvalidPhoto>();
-                        Ref.InvalidPhotos = InvalidPhotosList
-                            .Select(p => p?.FileName)
-                            .Where(s => !string.IsNullOrWhiteSpace(s))
-                            .Select(s => Path.GetFileNameWithoutExtension(s!).Trim())
-                            .ToArray();
-
-                        Ref.InvalidPhotoDetails = InvalidPhotosList
-                            .Where(p => p is not null && !string.IsNullOrWhiteSpace(p.FileName))
-                            .Select(p => new KycInvalidPhoto(
-                                p.FileName,
-                                Path.GetFileNameWithoutExtension(p.FileName) ?? p.FileName,
-                                p.Reason ?? string.Empty,
-                                p.ReasonLanguage ?? string.Empty,
-                                p.ReasonCode ?? string.Empty,
-                                p.Service ?? string.Empty))
-                            .ToArray();
-                    }
-						catch
-						{
-							// Ignore type mismatch; keep null if conversion fails
-						}
-
-						Ref.UpdatedUtc = DateTime.UtcNow;
-						await Database.Update(Ref);
-						await Database.Provider.Flush();
-
-						// If KYC page is open, update it
 						if (ServiceRef.NavigationService.CurrentPage is KycProcessPage Page && Page.BindingContext is KycProcessViewModel Vm)
 						{
-							await Vm.ApplyRejectionAsync(Message,
-								Ref.InvalidClaims ?? Array.Empty<string>(),
-								Ref.InvalidPhotos ?? Array.Empty<string>(),
-								e.Code);
+							await Vm.ApplyApplicationReviewAsync(Review);
 						}
 					}
-				}
-				catch (Exception Ex)
-				{
-					ServiceRef.LogService.LogException(Ex);
-				}
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+					}
 			});
 
 			// TODO: Event arguments contain more detailed information about:
@@ -2224,189 +2175,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// BankIdRFA18: Start the BankID app
 			// BankIdRFA19: Would you like to identify yourself or sign with a BankID on this computer or with a Mobile BankID?
 			// BankIdRFA20: Would you like to identify yourself or sign with a BankID on this device or with a BankID on another device?
-			// BankIdRFA21: Identification or signing in progress.
-			// BankIdRFA22: Unknown error. Please try again.
-			Message = Message.Trim();
-
-			ApplicationReview? Review = null;
-
-			try
-			{
-				ApplicationReview Candidate = new ApplicationReview
-				{
-					Message = Message,
-					Code = e.Code,
-					ReceivedUtc = DateTime.UtcNow
-				};
-
-				try
-				{
-					IEnumerable<InvalidClaim> InvalidClaimsEnumerable = Array.Empty<InvalidClaim>();
-					if (e.InvalidClaims is IEnumerable<InvalidClaim> InvalidClaimsCandidate)
-					{
-						InvalidClaimsEnumerable = InvalidClaimsCandidate;
-					}
-
-					List<string> InvalidClaimNames = new List<string>();
-					List<ApplicationReviewClaimDetail> InvalidClaimDetailList = new List<ApplicationReviewClaimDetail>();
-
-					foreach (InvalidClaim InvalidClaim in InvalidClaimsEnumerable)
-					{
-						if (InvalidClaim is null || string.IsNullOrWhiteSpace(InvalidClaim.Claim))
-							continue;
-
-						string ClaimValue = InvalidClaim.Claim.Trim();
-						InvalidClaimNames.Add(ClaimValue);
-
-						string Reason = InvalidClaim.Reason ?? string.Empty;
-						string? ReasonLanguage = InvalidClaim.ReasonLanguage;
-						string? ReasonCode = InvalidClaim.ReasonCode;
-						string? Service = InvalidClaim.Service;
-
-						ApplicationReviewClaimDetail Detail = new ApplicationReviewClaimDetail(
-							ClaimValue,
-							Reason,
-							ReasonLanguage,
-							ReasonCode,
-							Service);
-						InvalidClaimDetailList.Add(Detail);
-					}
-
-					Candidate.InvalidClaims = InvalidClaimNames.Count > 0 ? InvalidClaimNames.ToArray() : Array.Empty<string>();
-					Candidate.InvalidClaimDetails = InvalidClaimDetailList.Count > 0 ? InvalidClaimDetailList.ToArray() : Array.Empty<ApplicationReviewClaimDetail>();
-				}
-				catch
-				{
-					// Ignore conversion errors; keep defaults.
-				}
-
-				try
-				{
-					IEnumerable<InvalidPhoto> InvalidPhotosEnumerable = Array.Empty<InvalidPhoto>();
-					if (e.InvalidPhotos is IEnumerable<InvalidPhoto> InvalidPhotosCandidate)
-					{
-						InvalidPhotosEnumerable = InvalidPhotosCandidate;
-					}
-
-					List<string> InvalidPhotoNames = new List<string>();
-					List<ApplicationReviewPhotoDetail> InvalidPhotoDetailList = new List<ApplicationReviewPhotoDetail>();
-
-					foreach (InvalidPhoto InvalidPhoto in InvalidPhotosEnumerable)
-					{
-						if (InvalidPhoto is null || string.IsNullOrWhiteSpace(InvalidPhoto.FileName))
-							continue;
-
-						string FileName = InvalidPhoto.FileName.Trim();
-						if (string.IsNullOrEmpty(FileName))
-							continue;
-
-						string FileNameWithoutExtension = Path.GetFileNameWithoutExtension(FileName);
-						string DisplayName = string.IsNullOrEmpty(FileNameWithoutExtension) ? FileName : FileNameWithoutExtension;
-						DisplayName = DisplayName.Trim();
-						if (string.IsNullOrEmpty(DisplayName))
-							DisplayName = FileName;
-
-						InvalidPhotoNames.Add(DisplayName);
-
-						string Reason = InvalidPhoto.Reason ?? string.Empty;
-						string? ReasonLanguage = InvalidPhoto.ReasonLanguage;
-						string? ReasonCode = InvalidPhoto.ReasonCode;
-						string? Service = InvalidPhoto.Service;
-
-						ApplicationReviewPhotoDetail Detail = new ApplicationReviewPhotoDetail(
-							FileName,
-							DisplayName,
-							Reason,
-							ReasonLanguage,
-							ReasonCode,
-							Service);
-						InvalidPhotoDetailList.Add(Detail);
-					}
-
-					Candidate.InvalidPhotos = InvalidPhotoNames.Count > 0 ? InvalidPhotoNames.ToArray() : Array.Empty<string>();
-					Candidate.InvalidPhotoDetails = InvalidPhotoDetailList.Count > 0 ? InvalidPhotoDetailList.ToArray() : Array.Empty<ApplicationReviewPhotoDetail>();
-				}
-				catch
-				{
-					// Ignore conversion errors; keep defaults.
-				}
-
-				try
-				{
-					IEnumerable<string> UnvalidatedClaimsEnumerable = Array.Empty<string>();
-					if (e.UnvalidatedClaims is IEnumerable<string> UnvalidatedClaimsCandidate)
-					{
-						UnvalidatedClaimsEnumerable = UnvalidatedClaimsCandidate;
-					}
-
-					List<string> UnvalidatedClaimList = new List<string>();
-					foreach (string Claim in UnvalidatedClaimsEnumerable)
-					{
-						if (string.IsNullOrWhiteSpace(Claim))
-							continue;
-
-						string TrimmedClaim = Claim.Trim();
-						if (TrimmedClaim.Length > 0)
-							UnvalidatedClaimList.Add(TrimmedClaim);
-					}
-
-					Candidate.UnvalidatedClaims = UnvalidatedClaimList.Count > 0 ? UnvalidatedClaimList.ToArray() : Array.Empty<string>();
-				}
-				catch
-				{
-					// Ignore conversion errors; keep defaults.
-				}
-
-				try
-				{
-					IEnumerable<string> UnvalidatedPhotosEnumerable = Array.Empty<string>();
-					if (e.UnvalidatedPhotos is IEnumerable<string> UnvalidatedPhotosCandidate)
-					{
-						UnvalidatedPhotosEnumerable = UnvalidatedPhotosCandidate;
-					}
-
-					List<string> UnvalidatedPhotoList = new List<string>();
-					foreach (string Photo in UnvalidatedPhotosEnumerable)
-					{
-						if (string.IsNullOrWhiteSpace(Photo))
-							continue;
-
-						string TrimmedPhoto = Photo.Trim();
-						if (TrimmedPhoto.Length > 0)
-							UnvalidatedPhotoList.Add(TrimmedPhoto);
-					}
-
-					Candidate.UnvalidatedPhotos = UnvalidatedPhotoList.Count > 0 ? UnvalidatedPhotoList.ToArray() : Array.Empty<string>();
-				}
-				catch
-				{
-					// Ignore conversion errors; keep defaults.
-				}
-
-				bool HasMeaningfulData =
-					!string.IsNullOrEmpty(Candidate.Message) ||
-					!string.IsNullOrEmpty(Candidate.Code) ||
-					Candidate.InvalidClaims.Length > 0 ||
-					Candidate.InvalidPhotos.Length > 0 ||
-					Candidate.UnvalidatedClaims.Length > 0 ||
-					Candidate.UnvalidatedPhotos.Length > 0;
-
-				if (HasMeaningfulData)
-					Review = Candidate;
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-
-			if (Review is not null)
-			{
-				ApplicationReview CapturedReview = Review;
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					ServiceRef.TagProfile.SetApplicationReview(CapturedReview);
-				});
-			}
+				// BankIdRFA21: Identification or signing in progress.
+				// BankIdRFA22: Unknown error. Please try again.
+				Message = Message.Trim();
 
 			bool ShouldShowAlert = Review is null ||
 				(Review.InvalidClaims.Length == 0 &&
@@ -2428,6 +2199,151 @@ namespace NeuroAccessMaui.Services.Xmpp
 		}
 
 		#endregion
+
+		private static ApplicationReview? BuildApplicationReview(ClientMessageEventArgs e, string message)
+		{
+			try
+			{
+				ApplicationReview Candidate = new ApplicationReview
+				{
+					Message = message,
+					Code = e.Code,
+					ReceivedUtc = DateTime.UtcNow
+				};
+
+				try
+				{
+					IEnumerable<InvalidClaim> InvalidClaimsEnumerable = e.InvalidClaims as IEnumerable<InvalidClaim> ?? Array.Empty<InvalidClaim>();
+					List<string> InvalidClaimNames = new List<string>();
+					List<ApplicationReviewClaimDetail> InvalidClaimDetailList = new List<ApplicationReviewClaimDetail>();
+
+					foreach (InvalidClaim InvalidClaim in InvalidClaimsEnumerable)
+					{
+						if (InvalidClaim is null || string.IsNullOrWhiteSpace(InvalidClaim.Claim))
+							continue;
+
+						string ClaimValue = InvalidClaim.Claim.Trim();
+						if (ClaimValue.Length == 0)
+							continue;
+
+						InvalidClaimNames.Add(ClaimValue);
+
+						ApplicationReviewClaimDetail Detail = new ApplicationReviewClaimDetail(
+							ClaimValue,
+							InvalidClaim.Reason ?? string.Empty,
+							InvalidClaim.ReasonLanguage,
+							InvalidClaim.ReasonCode,
+							InvalidClaim.Service ?? string.Empty);
+						InvalidClaimDetailList.Add(Detail);
+					}
+
+					Candidate.InvalidClaims = InvalidClaimNames.Count > 0 ? InvalidClaimNames.ToArray() : Array.Empty<string>();
+					Candidate.InvalidClaimDetails = InvalidClaimDetailList.Count > 0 ? InvalidClaimDetailList.ToArray() : Array.Empty<ApplicationReviewClaimDetail>();
+				}
+				catch
+				{
+					// Ignore conversion issues.
+				}
+
+				try
+				{
+					IEnumerable<InvalidPhoto> InvalidPhotosEnumerable = e.InvalidPhotos as IEnumerable<InvalidPhoto> ?? Array.Empty<InvalidPhoto>();
+					List<string> InvalidPhotoNames = new List<string>();
+					List<ApplicationReviewPhotoDetail> InvalidPhotoDetailList = new List<ApplicationReviewPhotoDetail>();
+
+					foreach (InvalidPhoto InvalidPhoto in InvalidPhotosEnumerable)
+					{
+						if (InvalidPhoto is null || string.IsNullOrWhiteSpace(InvalidPhoto.FileName))
+							continue;
+
+						string FileName = InvalidPhoto.FileName.Trim();
+						if (FileName.Length == 0)
+							continue;
+
+						string FileNameWithoutExtension = Path.GetFileNameWithoutExtension(FileName);
+						string DisplayName = string.IsNullOrEmpty(FileNameWithoutExtension) ? FileName : FileNameWithoutExtension;
+						DisplayName = DisplayName.Trim();
+						if (DisplayName.Length == 0)
+							DisplayName = FileName;
+
+						InvalidPhotoNames.Add(DisplayName);
+
+						ApplicationReviewPhotoDetail Detail = new ApplicationReviewPhotoDetail(
+							FileName,
+							DisplayName,
+							InvalidPhoto.Reason ?? string.Empty,
+							InvalidPhoto.ReasonLanguage,
+							InvalidPhoto.ReasonCode,
+							InvalidPhoto.Service ?? string.Empty);
+						InvalidPhotoDetailList.Add(Detail);
+					}
+
+					Candidate.InvalidPhotos = InvalidPhotoNames.Count > 0 ? InvalidPhotoNames.ToArray() : Array.Empty<string>();
+					Candidate.InvalidPhotoDetails = InvalidPhotoDetailList.Count > 0 ? InvalidPhotoDetailList.ToArray() : Array.Empty<ApplicationReviewPhotoDetail>();
+				}
+				catch
+				{
+					// Ignore conversion issues.
+				}
+
+				try
+				{
+					IEnumerable<string> UnvalidatedClaimsEnumerable = e.UnvalidatedClaims as IEnumerable<string> ?? Array.Empty<string>();
+					List<string> UnvalidatedClaimList = new List<string>();
+					foreach (string Claim in UnvalidatedClaimsEnumerable)
+					{
+						if (string.IsNullOrWhiteSpace(Claim))
+							continue;
+
+						string TrimmedClaim = Claim.Trim();
+						if (TrimmedClaim.Length > 0)
+							UnvalidatedClaimList.Add(TrimmedClaim);
+					}
+
+					Candidate.UnvalidatedClaims = UnvalidatedClaimList.Count > 0 ? UnvalidatedClaimList.ToArray() : Array.Empty<string>();
+				}
+				catch
+				{
+					// Ignore conversion issues.
+				}
+
+				try
+				{
+					IEnumerable<string> UnvalidatedPhotosEnumerable = e.UnvalidatedPhotos as IEnumerable<string> ?? Array.Empty<string>();
+					List<string> UnvalidatedPhotoList = new List<string>();
+					foreach (string Photo in UnvalidatedPhotosEnumerable)
+					{
+						if (string.IsNullOrWhiteSpace(Photo))
+							continue;
+
+						string TrimmedPhoto = Photo.Trim();
+						if (TrimmedPhoto.Length > 0)
+							UnvalidatedPhotoList.Add(TrimmedPhoto);
+					}
+
+					Candidate.UnvalidatedPhotos = UnvalidatedPhotoList.Count > 0 ? UnvalidatedPhotoList.ToArray() : Array.Empty<string>();
+				}
+				catch
+				{
+					// Ignore conversion issues.
+				}
+
+				bool HasMeaningfulData =
+					!string.IsNullOrEmpty(Candidate.Message) ||
+					!string.IsNullOrEmpty(Candidate.Code) ||
+					Candidate.InvalidClaims.Length > 0 ||
+					Candidate.InvalidPhotos.Length > 0 ||
+					Candidate.UnvalidatedClaims.Length > 0 ||
+					Candidate.UnvalidatedPhotos.Length > 0;
+
+				return HasMeaningfulData ? Candidate : null;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return null;
+			}
+		}
 
 		#region Presence
 

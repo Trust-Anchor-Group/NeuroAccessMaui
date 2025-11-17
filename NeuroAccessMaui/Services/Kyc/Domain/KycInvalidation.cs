@@ -1,23 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 
 namespace NeuroAccessMaui.Services.Kyc.Domain
 {
 	/// <summary>
-	/// Applies invalidation information from a <see cref="KycReference"/> onto an in-memory <see cref="KycProcess"/>, marking fields invalid and setting validation messages.
+	/// Applies invalidation information from a <see cref="ApplicationReview"/> onto an in-memory <see cref="KycProcess"/>, marking fields invalid and setting validation messages.
 	/// </summary>
 	internal static class KycInvalidation
 	{
-		public static void ApplyInvalidations(KycProcess? process, KycReference? reference, string? fallbackReason)
+		public static void ApplyInvalidations(KycProcess? process, ApplicationReview? review, string? fallbackReason)
 		{
-			if (process is null || reference is null) return;
-			IEnumerable<string> invalidClaims = reference.InvalidClaims ?? Array.Empty<string>();
-			if (!invalidClaims.Any() && !(reference.InvalidPhotos?.Any() ?? false)) return;
+			if (process is null || review is null)
+				return;
+			IEnumerable<string> invalidClaims = review.InvalidClaims ?? Array.Empty<string>();
+			if (!invalidClaims.Any() && !(review.InvalidPhotos?.Any() ?? false))
+				return;
 			HashSet<string> invalidSet = new(invalidClaims, StringComparer.OrdinalIgnoreCase);
-			Dictionary<string, string> reasons = BuildInvalidReasonsByMapping(reference, fallbackReason);
+			Dictionary<string, string> reasons = BuildInvalidReasonsByMapping(review, fallbackReason);
 			foreach (KycPage Page in process.Pages)
 			{
 				foreach (ObservableKycField Field in Page.AllFields)
@@ -48,19 +51,28 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 			Field.ValidationText = !string.IsNullOrWhiteSpace(Reason) ? Reason : (Fallback ?? string.Empty);
 		}
 
-		private static Dictionary<string, string> BuildInvalidReasonsByMapping(KycReference Reference, string? Fallback)
+		private static Dictionary<string, string> BuildInvalidReasonsByMapping(ApplicationReview Review, string? Fallback)
 		{
 			Dictionary<string, string> Map = new(StringComparer.OrdinalIgnoreCase);
-			foreach (KycInvalidClaim C in Reference.InvalidClaimDetails ?? Array.Empty<KycInvalidClaim>())
+			foreach (ApplicationReviewClaimDetail Detail in Review.InvalidClaimDetails ?? Array.Empty<ApplicationReviewClaimDetail>())
 			{
-				if (C is null || string.IsNullOrWhiteSpace(C.Claim)) continue;
-				string Key = C.Claim.Trim(); string Reason = string.IsNullOrWhiteSpace(C.Reason) ? Fallback ?? string.Empty : C.Reason; Map[Key] = Reason;
+				if (Detail is null || string.IsNullOrWhiteSpace(Detail.Claim))
+					continue;
+				string Key = Detail.Claim.Trim();
+				string Reason = string.IsNullOrWhiteSpace(Detail.Reason) ? Fallback ?? string.Empty : Detail.Reason;
+				Map[Key] = Reason;
 				if (Key.Equals(Constants.XmppProperties.BirthDay, StringComparison.OrdinalIgnoreCase) || Key.Equals(Constants.XmppProperties.BirthMonth, StringComparison.OrdinalIgnoreCase) || Key.Equals(Constants.XmppProperties.BirthYear, StringComparison.OrdinalIgnoreCase) || Key.Equals("BDATE", StringComparison.OrdinalIgnoreCase)) Map[Constants.CustomXmppProperties.BirthDate] = Reason;
 				if (Key.StartsWith("ORGREP", StringComparison.OrdinalIgnoreCase)) Map["ORGREPBDATE"] = Reason;
 			}
-			foreach (KycInvalidPhoto P in Reference.InvalidPhotoDetails ?? Array.Empty<KycInvalidPhoto>())
+			foreach (ApplicationReviewPhotoDetail Detail in Review.InvalidPhotoDetails ?? Array.Empty<ApplicationReviewPhotoDetail>())
 			{
-				if (P is null) continue; string Key = string.IsNullOrWhiteSpace(P.Mapping) ? (P.FileName ?? string.Empty) : P.Mapping; if (string.IsNullOrWhiteSpace(Key)) continue; string Reason = string.IsNullOrWhiteSpace(P.Reason) ? Fallback ?? string.Empty : P.Reason; Map[Key.Trim()] = Reason;
+				if (Detail is null)
+					continue;
+				string Key = string.IsNullOrWhiteSpace(Detail.DisplayName) ? (Detail.FileName ?? string.Empty) : Detail.DisplayName;
+				if (string.IsNullOrWhiteSpace(Key))
+					continue;
+				string Reason = string.IsNullOrWhiteSpace(Detail.Reason) ? Fallback ?? string.Empty : Detail.Reason;
+				Map[Key.Trim()] = Reason;
 			}
 			return Map;
 		}

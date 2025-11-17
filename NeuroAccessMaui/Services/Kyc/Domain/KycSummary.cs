@@ -38,14 +38,15 @@ namespace NeuroAccessMaui.Services.Kyc.Domain
 		{
 			HashSet<string> Invalid = new(System.StringComparer.OrdinalIgnoreCase);
 			if (reference is null) return Invalid;
-			foreach (string Claim in reference.InvalidClaims ?? System.Array.Empty<string>())
+			ApplicationReview? Review = reference.ApplicationReview;
+			foreach (string Claim in Review?.InvalidClaims ?? System.Array.Empty<string>())
 			{
 				if (string.IsNullOrWhiteSpace(Claim)) continue;
 				string Key = Claim.Trim(); Invalid.Add(Key);
 				if (Key.Equals(Constants.XmppProperties.BirthDay, System.StringComparison.OrdinalIgnoreCase) || Key.Equals(Constants.XmppProperties.BirthMonth, System.StringComparison.OrdinalIgnoreCase) || Key.Equals(Constants.XmppProperties.BirthYear, System.StringComparison.OrdinalIgnoreCase) || Key.Equals(Constants.CustomXmppProperties.BirthDate, System.StringComparison.OrdinalIgnoreCase)) Invalid.Add(Constants.CustomXmppProperties.BirthDate);
 				if (Key.StartsWith("ORGREP", System.StringComparison.OrdinalIgnoreCase)) Invalid.Add("ORGREPBDATE");
 			}
-			foreach (string Photo in reference.InvalidPhotos ?? System.Array.Empty<string>())
+			foreach (string Photo in Review?.InvalidPhotos ?? System.Array.Empty<string>())
 			{
 				if (string.IsNullOrWhiteSpace(Photo)) continue; Invalid.Add(Photo.Trim());
 			}
