@@ -16,9 +16,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			Vm.ScrollToTop += async (_, _) =>
 			{
-				await this.Dispatcher.DispatchAsync(async () =>
+				await this.Dispatcher.DispatchAsync(() =>
 				{
-					await this.FormScrollView.ScrollToAsync(0, 0, false);
+					if (this.FormCollectionView is not null)
+					{
+						this.FormCollectionView.ScrollTo(0, position: ScrollToPosition.Start, animate: false);
+					}
 				});
 			};
 		}
