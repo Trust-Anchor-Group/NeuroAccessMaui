@@ -496,8 +496,9 @@
 
 				<ScrollView x:Name="FormScrollView"
 							Grid.Row="1"
-							Padding="{DynamicResource SmallMargins}"
-							VerticalOptions="Center">
+							HorizontalOptions="Fill"
+							VerticalOptions="Fill"
+							Padding="{DynamicResource SmallMargins}">
 					<controls:ConditionView Condition="{Binding IsInSummary}">
 						<controls:ConditionView.True>
 							<VerticalStackLayout>
@@ -991,33 +992,33 @@
 									   Text="{Binding CurrentPageDescription}"
 									   Margin="0,0,0,16" />
 
-								<!-- Direct fields -->
-								<StackLayout IsVisible="{Binding CurrentPage.VisibleFields.Count, Converter={converters:GreaterThanZero}}"
-											 Spacing="8"
-											 BindableLayout.ItemsSource="{Binding CurrentPage.VisibleFields}"
-											 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}" />
+									<!-- Direct fields -->
+									<VerticalStackLayout IsVisible="{Binding CurrentPage.VisibleFields.Count, Converter={converters:GreaterThanZero}}"
+														  Spacing="8"
+														  BindableLayout.ItemsSource="{Binding CurrentPage.VisibleFields}"
+														  BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}" />
 
-								<!-- Sections -->
-								<StackLayout Spacing="24"
-											 BindableLayout.ItemsSource="{Binding CurrentPage.VisibleSections}">
-									<BindableLayout.ItemTemplate>
-										<DataTemplate x:DataType="models:KycSection">
-											<VerticalStackLayout Spacing="8">
-												<Label FontAttributes="Bold"
-													   IsVisible="{Binding Label, Converter={mct:IsNotNullConverter}}"
-													   Style="{DynamicResource SectionHeaderLabel}"
-													   Text="{Binding Label.Text}" />
-												<Label FontAttributes="Bold"
-													   FontSize="Medium"
-													   IsVisible="{Binding Description, Converter={mct:IsNotNullConverter}}"
-													   Text="{Binding Description }" />
-												<VerticalStackLayout BindableLayout.ItemsSource="{Binding VisibleFields}"
-																	 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}"
-																	 Spacing="16" />
-											</VerticalStackLayout>
-										</DataTemplate>
-									</BindableLayout.ItemTemplate>
-								</StackLayout>
+									<!-- Sections -->
+									<VerticalStackLayout Spacing="24"
+														  BindableLayout.ItemsSource="{Binding CurrentPage.VisibleSections}">
+										<BindableLayout.ItemTemplate>
+											<DataTemplate x:DataType="models:KycSection">
+												<VerticalStackLayout Spacing="8">
+													<Label FontAttributes="Bold"
+														   IsVisible="{Binding Label, Converter={mct:IsNotNullConverter}}"
+														   Style="{DynamicResource SectionHeaderLabel}"
+														   Text="{Binding Label.Text}" />
+													<Label FontAttributes="Bold"
+														   FontSize="Medium"
+														   IsVisible="{Binding Description, Converter={mct:IsNotNullConverter}}"
+														   Text="{Binding Description }" />
+													<VerticalStackLayout BindableLayout.ItemsSource="{Binding VisibleFields}"
+																		 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}"
+																		 Spacing="16" />
+												</VerticalStackLayout>
+											</DataTemplate>
+										</BindableLayout.ItemTemplate>
+									</VerticalStackLayout>
 							</VerticalStackLayout>
 						</controls:ConditionView.False>
 
