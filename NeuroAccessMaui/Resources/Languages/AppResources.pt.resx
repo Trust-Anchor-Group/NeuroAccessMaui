@@ -3415,9 +3415,15 @@
     <value>{0} campos e {1} fotos não podem ser validados automaticamente e precisam ser verificados por um operador. Isso pode atrasar a aprovação.</value>
   </data>
   <data name="KycUnvalidatedActionHint" xml:space="preserve">
-    <value>Se preferir, você pode remover essas entradas pendentes para continuar sem elas, mas isso é opcional.</value>
+    <value>Você pode remover esses itens pendentes e reenviar sem eles. Isso não é recomendado</value>
   </data>
   <data name="KycClearUnvalidatedButton" xml:space="preserve">
     <value>Remover detalhes pendentes</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Remover detalhes pendentes e reenviar</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Isso irá revogar sua solicitação atual, remover os detalhes pendentes e reenviá-la sem eles. Deseja continuar?</value>
   </data>
 </root>

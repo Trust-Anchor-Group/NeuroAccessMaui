@@ -8,7 +8,7 @@ namespace NeuroAccessMaui.Animations
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AnimationKey"/> struct.
 		/// </summary>
-		/// <param name="value">Raw key value.</param>
+		/// <param name="RawValue">Raw key value.</param>
 		/// <exception cref="ArgumentException">Thrown if the key is null or whitespace.</exception>
 		public AnimationKey(string RawValue)
 		{

@@ -3415,9 +3415,15 @@
     <value>{0} fält och {1} foton kan inte valideras automatiskt och måste kontrolleras av en handläggare. Detta kan försena godkännandet.</value>
   </data>
   <data name="KycUnvalidatedActionHint" xml:space="preserve">
-    <value>Om du vill kan du ta bort dessa väntande poster för att fortsätta utan dem, men det är valfritt.</value>
+    <value>Du kan ta bort dessa väntande poster och ansöka igen utan dem. Detta rekommenderas inte</value>
   </data>
   <data name="KycClearUnvalidatedButton" xml:space="preserve">
     <value>Ta bort väntande uppgifter</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Ta bort väntande uppgifter och ansök igen</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Detta kommer att återkalla din nuvarande ansökan, ta bort de väntande uppgifterna och skicka in den igen utan dem. Vill du fortsätta?</value>
   </data>
 </root>

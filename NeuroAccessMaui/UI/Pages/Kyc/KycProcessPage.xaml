@@ -615,7 +615,7 @@
 									</Border>
 
 									<!-- Rejection/Error banner shown when server reported an error for this application -->
-									<controls:ConditionView Condition="{Binding HasErrorDescription}">
+									<controls:ConditionView Condition="{Binding ShouldShowRejectionBanner}">
 										<controls:ConditionView.True>
 											<Border Grid.Row="0"
 													BackgroundColor="{DynamicResource TnPDangerbgWL}"
@@ -645,7 +645,8 @@
 														   TextColor="{DynamicResource TnPDangerContentWL}" />
 													<Label Text="{l:Localize KycRejectedInvalidationHint}"
 														   Style="{DynamicResource InfoLabel}"
-														   TextColor="{DynamicResource TnPDangerContentWL}" />
+														   TextColor="{DynamicResource TnPDangerContentWL}"
+														   IsVisible="{Binding HasInvalidatedItems}" />
 													<CollectionView ItemsSource="{Binding InvalidatedItems}"
 																	ItemSizingStrategy="MeasureAllItems"
 																	SelectionMode="None">
@@ -667,7 +668,7 @@
 									</controls:ConditionView>
 
 									<!-- Warning banner for pending/unvalidated details -->
-									<controls:ConditionView Condition="{Binding HasUnvalidatedItems}">
+									<controls:ConditionView Condition="{Binding ShouldShowUnvalidatedBanner}">
 										<controls:ConditionView.True>
 											<Border Grid.Row="0"
 													BackgroundColor="{DynamicResource TnPWarningbgWL}"
@@ -692,12 +693,27 @@
 													<Label Text="{Binding UnvalidatedSummaryText}"
 														   Style="{DynamicResource InfoLabel}"
 														   TextColor="{DynamicResource TnPWarningContentWL}" />
+													<CollectionView ItemsSource="{Binding UnvalidatedItems}"
+																	ItemSizingStrategy="MeasureAllItems"
+																	SelectionMode="None">
+														<CollectionView.ItemsLayout>
+															<LinearItemsLayout Orientation="Vertical"
+																			   ItemSpacing="{DynamicResource TinySpacing}" />
+														</CollectionView.ItemsLayout>
+														<CollectionView.ItemTemplate>
+															<DataTemplate x:DataType="x:String">
+																<Label Text="{Binding}"
+																		TextColor="{DynamicResource TnPWarningContentWL}"
+																		Style="{DynamicResource InfoLabel}" />
+															</DataTemplate>
+														</CollectionView.ItemTemplate>
+													</CollectionView>
 													<Label Text="{l:Localize KycUnvalidatedActionHint}"
 														   Style="{DynamicResource InfoLabel}"
 														   TextColor="{DynamicResource TnPWarningContentWL}" />
-													<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-																		 LabelData="{l:Localize KycClearUnvalidatedButton}"
-																		 Command="{Binding ClearUnvalidatedCommand}" />
+													<controls:TextButton Style="{DynamicResource FilledTextButton}"
+																		 LabelData="{l:Localize KycRemovePendingAndReapplyButton}"
+																		 Command="{Binding RemovePendingAndResubmitCommand}" />
 												</VerticalStackLayout>
 											</Border>
 										</controls:ConditionView.True>

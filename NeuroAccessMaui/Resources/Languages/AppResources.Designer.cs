@@ -4030,6 +4030,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This will revoke your current application, remove the pending details, and resubmit without them. Do you want to continue?.
+        /// </summary>
+        public static string KycConfirmRemovePending {
+            get {
+                return ResourceManager.GetString("KycConfirmRemovePending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fix issues and edit form.
         /// </summary>
         public static string KycFixInvalidClaimsButton {
@@ -4111,11 +4120,20 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Highlighted fields and photos show what must be updated before you ressubmit..
+        ///   Looks up a localized string similar to The following items need your attention before you resubmit:.
         /// </summary>
         public static string KycRejectedInvalidationHint {
             get {
                 return ResourceManager.GetString("KycRejectedInvalidationHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove pending details and reapply.
+        /// </summary>
+        public static string KycRemovePendingAndReapplyButton {
+            get {
+                return ResourceManager.GetString("KycRemovePendingAndReapplyButton", resourceCulture);
             }
         }
         

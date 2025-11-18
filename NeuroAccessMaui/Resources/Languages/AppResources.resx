@@ -3415,9 +3415,15 @@
     <value>{0} fields and {1} photos cannot be validated automatically and must be checked by an operator. This may delay approval.</value>
   </data>
   <data name="KycUnvalidatedActionHint" xml:space="preserve">
-    <value>If you prefer, you can remove these pending entries to continue without them, but this is optional.</value>
+    <value>You can remove these pending entries and reapply without them. This is not recommended</value>
   </data>
   <data name="KycClearUnvalidatedButton" xml:space="preserve">
     <value>Remove pending details</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Remove pending details and reapply</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>This will revoke your current application, remove the pending details, and resubmit without them. Do you want to continue?</value>
   </data>
 </root>

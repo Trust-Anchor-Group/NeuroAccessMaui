@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -86,6 +87,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private ObservableCollection<DisplayQuad> companyAddressSummary;
 		[ObservableProperty] private ObservableCollection<DisplayQuad> companyRepresentativeSummary;
 		[ObservableProperty] private ObservableCollection<string> invalidatedItems = new ObservableCollection<string>();
+		[ObservableProperty] private ObservableCollection<string> unvalidatedItems = new ObservableCollection<string>();
 
 		[ObservableProperty] private string? errorDescription;
 		[ObservableProperty] private bool hasErrorDescription;
@@ -119,6 +121,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public bool IsEditingFromSummary => this.editingFromSummary;
 		public bool HasUnvalidatedItems => (this.kycReference?.ApplicationReview?.UnvalidatedClaims?.Length ?? 0) > 0 ||
 			(this.kycReference?.ApplicationReview?.UnvalidatedPhotos?.Length ?? 0) > 0;
+
+		public bool HasInvalidatedItems => this.InvalidatedItems.Count > 0;
+		public bool ShouldShowUnvalidatedBanner => this.HasUnvalidatedItems && this.InvalidatedItems.Count == 0 && this.kycReference?.CreatedIdentityState == IdentityState.Created;
+		public bool ShouldShowRejectionBanner => ((!string.IsNullOrEmpty(this.kycReference?.ApplicationReview?.Code)) && this.kycReference?.ApplicationReview?.Code != "ManualReview") || this.kycReference?.CreatedIdentityState == IdentityState.Rejected;
 
 		private void SetEditingFromSummary(bool value)
 		{
@@ -861,9 +867,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					this.ErrorDescription = null;
 					this.HasErrorDescription = false;
 					this.InvalidatedItems.Clear();
+					this.UnvalidatedItems.Clear();
 					this.UnvalidatedSummaryText = string.Empty;
 					this.OnPropertyChanged(nameof(this.HasUnvalidatedItems));
-					this.ClearUnvalidatedCommand?.NotifyCanExecuteChanged();
+					this.OnPropertyChanged(nameof(this.ShouldShowUnvalidatedBanner));
+					this.OnPropertyChanged(nameof(this.ShouldShowRejectionBanner));
+					this.RemovePendingAndResubmitCommand?.NotifyCanExecuteChanged();
 					foreach (LegalIdentityAttachment LocalAttachment in this.attachments)
 					{
 						Attachment? Match = Added.Attachments.FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
@@ -1000,42 +1009,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[RelayCommand(CanExecute = nameof(ApplicationSentPublic))]
 		private async Task RevokeApplication()
 		{
-			LegalIdentity? Application = ServiceRef.TagProfile.IdentityApplication;
-			if (Application is null)
-			{
-				this.ApplicationSentPublic = false;
-				this.peerReviewServices = null;
-				this.HasFeaturedPeerReviewers = false;
-				if (this.kycReference is not null)
-					await this.kycService.ClearSubmissionAsync(this.kycReference);
-				return;
-			}
-			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeTheCurrentIdApplication)]))
-				return;
-
-			IAuthenticationService Auth = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
-			if (!await Auth.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
-				return;
-			try
-			{
-				await ServiceRef.XmppService.ObsoleteLegalIdentity(Application.Id);
-				await ServiceRef.TagProfile.SetIdentityApplication(null, true);
-				this.ApplicationSentPublic = false;
-				this.peerReviewServices = null;
-				this.HasFeaturedPeerReviewers = false;
-				if (this.kycReference is not null)
-					await this.kycService.ClearSubmissionAsync(this.kycReference);
-				await this.BuildMappedValuesAsync();
-				int AnchorAfterRevoke = this.currentPageIndex >=0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
-				this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = AnchorAfterRevoke, CurrentPageIndex = AnchorAfterRevoke >=0 ? AnchorAfterRevoke : this.navigation.CurrentPageIndex };
-				this.SetEditingFromSummary(false);
-				this.NotifyNavigationChanged();
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-				await ServiceRef.UiService.DisplayException(Ex);
-			}
+			await this.RevokeCurrentApplicationAsync(true);
 		}
 
 		private Task BuildMappedValuesAsync()
@@ -1124,11 +1098,39 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			await this.BuildMappedValuesAsync();
 		}
 
-		[RelayCommand(CanExecute = nameof(HasUnvalidatedItems))]
-		private async Task ClearUnvalidatedAsync()
+		[RelayCommand(CanExecute = nameof(ShouldShowUnvalidatedBanner))]
+		private async Task RemovePendingAndResubmitAsync()
+		{
+			string Confirmation = ServiceRef.Localizer[nameof(AppResources.KycConfirmRemovePending), false];
+			if (!await AreYouSure(Confirmation))
+				return;
+
+			if (!await this.RevokeCurrentApplicationAsync(false))
+				return;
+
+			if (!await this.ClearUnvalidatedFieldsAsync())
+				return;
+
+			if (this.process is not null && this.kycReference is not null)
+			{
+				try
+				{
+					await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+			}
+
+			await this.BuildMappedValuesAsync();
+			await this.ExecuteApplyAsync();
+		}
+
+		private async Task<bool> ClearUnvalidatedFieldsAsync()
 		{
 			if (this.process is null || this.kycReference?.ApplicationReview is null)
-				return;
+				return false;
 
 			ApplicationReview review = this.kycReference.ApplicationReview;
 			HashSet<string> mappingKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -1140,33 +1142,41 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			foreach (string Photo in review.UnvalidatedPhotos ?? Array.Empty<string>())
 			{
 				if (!string.IsNullOrWhiteSpace(Photo))
-					mappingKeys.Add(Photo.Trim());
+				{
+					string trimmed = Photo.Trim();
+					mappingKeys.Add(trimmed);
+					string? baseName = Path.GetFileNameWithoutExtension(trimmed);
+					if (!string.IsNullOrWhiteSpace(baseName))
+						mappingKeys.Add(baseName.Trim());
+				}
 			}
 
 			if (mappingKeys.Count == 0)
-				return;
+				return false;
 
 			bool cleared = this.ClearFieldsForMappings(mappingKeys);
 
 			if (!cleared)
-				return;
+				return false;
+
+			this.mappedValues = this.mappedValues
+				.Where(p => !mappingKeys.Contains(p.Name ?? string.Empty))
+				.ToList();
+			this.attachments = this.attachments
+				.Where(a =>
+				{
+					string fileName = a.FileName ?? string.Empty;
+					string baseName = Path.GetFileNameWithoutExtension(fileName) ?? fileName;
+					return !mappingKeys.Contains(fileName.Trim()) && !mappingKeys.Contains(baseName.Trim());
+				})
+				.ToList();
 
 			review.UnvalidatedClaims = Array.Empty<string>();
 			review.UnvalidatedPhotos = Array.Empty<string>();
 
 			await this.kycService.ApplyApplicationReviewAsync(this.kycReference, review);
 			this.UpdateReviewIndicators();
-
-			try
-			{
-				await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
-			}
-			catch (Exception ex)
-			{
-				ServiceRef.LogService.LogException(ex);
-			}
-
-			await this.BuildMappedValuesAsync();
+			return true;
 		}
 
 		private bool ClearFieldsForMappings(HashSet<string> mappingKeys)
@@ -1185,6 +1195,52 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 			}
 			return cleared;
+		}
+
+		private async Task<bool> RevokeCurrentApplicationAsync(bool requireConfirmation)
+		{
+			LegalIdentity? Application = ServiceRef.TagProfile.IdentityApplication;
+			if (Application is null)
+			{
+				this.ApplicationSentPublic = false;
+				this.applicationSent = false;
+				this.peerReviewServices = null;
+				this.HasFeaturedPeerReviewers = false;
+				if (this.kycReference is not null)
+					await this.kycService.ClearSubmissionAsync(this.kycReference);
+				return true;
+			}
+
+			if (requireConfirmation && !await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeTheCurrentIdApplication)]))
+				return false;
+
+			IAuthenticationService Auth = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+			if (!await Auth.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
+				return false;
+
+			try
+			{
+				await ServiceRef.XmppService.ObsoleteLegalIdentity(Application.Id);
+				await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+				this.ApplicationSentPublic = false;
+				this.applicationSent = false;
+				this.peerReviewServices = null;
+				this.HasFeaturedPeerReviewers = false;
+				if (this.kycReference is not null)
+					await this.kycService.ClearSubmissionAsync(this.kycReference);
+				await this.BuildMappedValuesAsync();
+				int AnchorAfterRevoke = this.currentPageIndex >= 0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
+				this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = AnchorAfterRevoke, CurrentPageIndex = AnchorAfterRevoke >= 0 ? AnchorAfterRevoke : this.navigation.CurrentPageIndex };
+				this.SetEditingFromSummary(false);
+				this.NotifyNavigationChanged();
+				return true;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+				return false;
+			}
 		}
 
 		private bool ClearFields(IEnumerable<ObservableKycField> fields, HashSet<string> mappingKeys)
@@ -1213,6 +1269,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				this.UnvalidatedSummaryText = string.Empty;
 				this.InvalidatedItems.Clear();
+				this.UnvalidatedItems.Clear();
 			}
 			else
 			{
@@ -1244,10 +1301,28 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					string Reason = string.IsNullOrWhiteSpace(Detail.Reason) ? string.Empty : $" — {Detail.Reason}";
 					this.InvalidatedItems.Add($"{Label}{Reason}");
 				}
+
+				this.UnvalidatedItems.Clear();
+				foreach (string claim in review.UnvalidatedClaims ?? Array.Empty<string>())
+				{
+					if (string.IsNullOrWhiteSpace(claim))
+						continue;
+					string label = this.ResolveDisplayLabel(claim.Trim(), claim.Trim());
+					this.UnvalidatedItems.Add(label);
+				}
+				foreach (string photo in review.UnvalidatedPhotos ?? Array.Empty<string>())
+				{
+					if (string.IsNullOrWhiteSpace(photo))
+						continue;
+					string label = this.ResolveDisplayLabel(photo.Trim(), photo.Trim());
+					this.UnvalidatedItems.Add(label);
+				}
 			}
 
 			this.OnPropertyChanged(nameof(this.HasUnvalidatedItems));
-			this.ClearUnvalidatedCommand?.NotifyCanExecuteChanged();
+			this.OnPropertyChanged(nameof(this.ShouldShowUnvalidatedBanner));
+			this.OnPropertyChanged(nameof(this.ShouldShowRejectionBanner));
+			this.RemovePendingAndResubmitCommand?.NotifyCanExecuteChanged();
 		}
 
 		private string ResolveDisplayLabel(string? MappingKey, string? Fallback)
