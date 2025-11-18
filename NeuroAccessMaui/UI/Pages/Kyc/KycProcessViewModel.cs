@@ -860,7 +860,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					}
 					this.ErrorDescription = null;
 					this.HasErrorDescription = false;
-					this.UpdateReviewIndicators();
+					this.InvalidatedItems.Clear();
+					this.UnvalidatedSummaryText = string.Empty;
+					this.OnPropertyChanged(nameof(this.HasUnvalidatedItems));
+					this.ClearUnvalidatedCommand?.NotifyCanExecuteChanged();
 					foreach (LegalIdentityAttachment LocalAttachment in this.attachments)
 					{
 						Attachment? Match = Added.Attachments.FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));

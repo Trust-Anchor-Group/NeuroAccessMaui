@@ -695,7 +695,7 @@
 													<Label Text="{l:Localize KycUnvalidatedActionHint}"
 														   Style="{DynamicResource InfoLabel}"
 														   TextColor="{DynamicResource TnPWarningContentWL}" />
-													<controls:TextButton Style="{DynamicResource FilledTextButton}"
+													<controls:TextButton Style="{DynamicResource TransparentTextButton}"
 																		 LabelData="{l:Localize KycClearUnvalidatedButton}"
 																		 Command="{Binding ClearUnvalidatedCommand}" />
 												</VerticalStackLayout>
@@ -896,7 +896,7 @@
 					<VerticalStackLayout Spacing="8">
 						<!-- Info bubble only when not already sent -->
 						<Border Grid.Row="0"
-								IsVisible="{Binding ApplicationSentPublic, Converter={mct:InvertedBoolConverter}}"
+								IsVisible="{Binding IsInSummary}"
 								BackgroundColor="{DynamicResource TnPInfobgWL}"
 								Padding="{DynamicResource MediumMargins}"
 								StrokeShape="RoundRectangle 16,16,0,16">
