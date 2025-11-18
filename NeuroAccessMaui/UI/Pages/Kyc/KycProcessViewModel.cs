@@ -949,6 +949,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 				if (this.ApplicationSentPublic && this.peerReviewServices is null)
 					await this.LoadFeaturedPeerReviewers();
+				
+				this.UpdateReviewIndicators();
 			});
 		}
 
