@@ -1248,7 +1248,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						Client.OnConnectionError -= OnConnectionError;
 						await Client.DisposeAsync();
 						Client = null;
-						
+
 					}
 					catch { /* Swallow to avoid masking original exception */ }
 				}
@@ -1427,7 +1427,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.NeuroFeaturesJid))
 				return false;
 
-			if(string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
+			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
 				return false;
 
 			if (!ServiceRef.TagProfile.SupportsPushNotification)
@@ -1523,7 +1523,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await RuntimeSettings.SetAsync(Constants.Settings.TransferIdCodeSent, string.Empty);
 			await Database.Provider.Flush();
 			WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
-			await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.FullSetup});
+			await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.FullSetup });
 		}
 
 		/// <summary>
@@ -2057,56 +2057,56 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 
-		ApplicationReview? Review = BuildApplicationReview(e, Message);
+			ApplicationReview? Review = BuildApplicationReview(e, Message);
 
-		// Persist rejection details on current KYC reference, and reflect in UI if open
-		MainThread.BeginInvokeOnMainThread(async () =>
-			{
-				try
+			// Persist rejection details on current KYC reference, and reflect in UI if open
+			MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					KycReference? Ref = null;
-					LegalIdentity? AppId = ServiceRef.TagProfile.IdentityApplication;
-
-					if (AppId is not null)
+					try
 					{
-						try
-						{
-							Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), AppId.Id));
-						}
-						catch (Exception Ex2)
-						{
-							ServiceRef.LogService.LogException(Ex2);
-						}
-					}
+						KycReference? Ref = null;
+						LegalIdentity? AppId = ServiceRef.TagProfile.IdentityApplication;
 
-					if (Ref is null)
-					{
-						try
+						if (AppId is not null)
 						{
-							IEnumerable<KycReference> All = await Database.Find<KycReference>();
-							Ref = All.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
+							try
+							{
+								Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), AppId.Id));
+							}
+							catch (Exception Ex2)
+							{
+								ServiceRef.LogService.LogException(Ex2);
+							}
 						}
-						catch (Exception Ex3)
-						{
-							ServiceRef.LogService.LogException(Ex3);
-						}
-					}
 
-					if (Ref is not null && Review is not null)
-					{
-						await ServiceRef.KycService.ApplyApplicationReviewAsync(Ref, Review);
-
-						if (ServiceRef.NavigationService.CurrentPage is KycProcessPage Page && Page.BindingContext is KycProcessViewModel Vm)
+						if (Ref is null)
 						{
-							await Vm.ApplyApplicationReviewAsync(Review);
+							try
+							{
+								IEnumerable<KycReference> All = await Database.Find<KycReference>();
+								Ref = All.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
+							}
+							catch (Exception Ex3)
+							{
+								ServiceRef.LogService.LogException(Ex3);
+							}
 						}
-					}
+
+						if (Ref is not null && Review is not null)
+						{
+							await ServiceRef.KycService.ApplyApplicationReviewAsync(Ref, Review);
+
+							if (ServiceRef.NavigationService.CurrentPage is KycProcessPage Page && Page.BindingContext is KycProcessViewModel Vm)
+							{
+								await Vm.ApplyApplicationReviewAsync(Review);
+							}
+						}
 					}
 					catch (Exception Ex)
 					{
 						ServiceRef.LogService.LogException(Ex);
 					}
-			});
+				});
 
 			// TODO: Event arguments contain more detailed information about:
 			//
@@ -2175,9 +2175,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// BankIdRFA18: Start the BankID app
 			// BankIdRFA19: Would you like to identify yourself or sign with a BankID on this computer or with a Mobile BankID?
 			// BankIdRFA20: Would you like to identify yourself or sign with a BankID on this device or with a BankID on another device?
-				// BankIdRFA21: Identification or signing in progress.
-				// BankIdRFA22: Unknown error. Please try again.
-				Message = Message.Trim();
+			// BankIdRFA21: Identification or signing in progress.
+			// BankIdRFA22: Unknown error. Please try again.
+			Message = Message.Trim();
 
 			bool ShouldShowAlert = Review is null ||
 				(Review.InvalidClaims.Length == 0 &&
