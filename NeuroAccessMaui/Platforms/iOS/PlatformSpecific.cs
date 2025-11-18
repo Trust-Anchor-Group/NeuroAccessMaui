@@ -527,25 +527,41 @@ namespace NeuroAccessMaui.Services
 
 		public Thickness GetInsets()
 		{
-
+			/// <summary>
+			/// Gets the current safe-area insets for the active window using the root view's
+			/// <see cref="UIView.SafeAreaLayoutGuide"/> when available, falling back to the window's
+			/// <see cref="UIWindow.SafeAreaInsets"/> if necessary.
+			/// </summary>
+			/// <returns>Safe-area insets as a <see cref="Thickness"/>.</returns>
 			// Try to get the current UIWindow.
-
 			UIWindow? Window = AppDelegate.GetKeyWindow();
 			if (Window is null)
 				return new Thickness(0);
 
+			// Prefer using the root view's SafeAreaLayoutGuide to compute insets.
+			UIView? RootView = Window.RootViewController?.View;
+			if (RootView is not null)
+			{
+				CoreGraphics.CGRect Bounds = RootView.Bounds;
+				CoreGraphics.CGRect LayoutFrame = RootView.SafeAreaLayoutGuide.LayoutFrame;
 
+				double Left = LayoutFrame.Left - Bounds.Left;
+				double Top = LayoutFrame.Top - Bounds.Top;
+				double Right = Bounds.Right - LayoutFrame.Right;
+				double Bottom = Bounds.Bottom - LayoutFrame.Bottom;
 
-			// Get the safe area insets from the UIWindow.
+				// Validate non-negative before returning.
+				if (Left >= 0 && Top >= 0 && Right >= 0 && Bottom >= 0)
+					return new Thickness(Left, Top, Right, Bottom);
+			}
+
+			// Fallback to window safe area insets.
 			UIEdgeInsets Insets = Window.SafeAreaInsets;
-
-			// Convert from native (nfloat) to double as needed for Thickness.
 			return new Thickness(
 				(double)Insets.Left,
 				(double)Insets.Top,
 				(double)Insets.Right,
-				(double)Insets.Bottom
-			);
+				(double)Insets.Bottom);
 		}
 	}
 }

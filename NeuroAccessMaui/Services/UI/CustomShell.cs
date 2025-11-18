@@ -74,6 +74,7 @@ namespace NeuroAccessMaui.Services.UI
 			this.popupOverlay.Add(this.popupBackground);
 			this.popupHost = new Grid { VerticalOptions = LayoutOptions.Fill, HorizontalOptions = LayoutOptions.Fill };
 			this.popupOverlay.Add(this.popupHost);
+            this.popupOverlay.IgnoreSafeArea = true;
 
 			TapGestureRecognizer popupBackgroundTap = new();
             popupBackgroundTap.Tapped += this.OnPopupBackgroundTapped;
@@ -83,6 +84,8 @@ namespace NeuroAccessMaui.Services.UI
             this.toastLayer.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             this.toastLayer.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             this.toastLayer.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            this.toastLayer.IgnoreSafeArea = true;
+
 
             this.layout.Add(this.topBar, 0, 0);
             this.layout.Add(this.contentHostA, 0, 1);
@@ -93,11 +96,13 @@ namespace NeuroAccessMaui.Services.UI
             this.layout.Add(this.toastLayer);
             Grid.SetRowSpan(this.toastLayer, 3);
 
+            this.layout.IgnoreSafeArea = true;
+            this.On<iOS>().SetUseSafeArea(false);
+
             this.Content = this.layout;
             this.Padding = 0;
-            this.On<iOS>().SetUseSafeArea(false);
             this.SetDynamicResource(BackgroundColorProperty, "SurfaceBackgroundWL");
-
+            
             LoadingPage loadingPageInstance = ServiceHelper.GetService<LoadingPage>();
             this.contentHostA.Content = loadingPageInstance;
             this.contentHostB.Content = null;
