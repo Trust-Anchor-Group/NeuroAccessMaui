@@ -59,6 +59,10 @@ namespace NeuroAccessMaui
 
 			Builder.ConfigureMauiHandlers(handlers =>
 			{
+				#if IOS || MACCATALYST
+				handlers.AddHandler<Microsoft.Maui.Controls.CollectionView, Microsoft.Maui.Controls.Handlers.Items2.CollectionViewHandler2>();
+				handlers.AddHandler<Microsoft.Maui.Controls.CarouselView, Microsoft.Maui.Controls.Handlers.Items2.CarouselViewHandler2>();
+				#endif
 				handlers.AddHandler<AutoHeightSKCanvasView, SKCanvasViewHandler>();
 				handlers.AddHandler(typeof(AspectRatioLayout), typeof(LayoutHandler));
 			});
@@ -145,6 +149,14 @@ namespace NeuroAccessMaui
 
 		private static void InitMauiControlsHandlers()
 		{
+			    // Layouts (Grid, StackLayout, etc.)
+			LayoutHandler.Mapper.AppendToMapping("GlobalIgnoreSafeArea", (handler, view) =>
+			{
+				// Sets once at handler creation
+				if(view is Layout layout)
+				layout.IgnoreSafeArea = true;
+			});
+
 #if IOS
 			ScrollViewHandler.Mapper.AppendToMapping("BouncesScrollViewHandler", (handler, view) =>
 			{
