@@ -3406,7 +3406,7 @@
     <value>The provider could not approve your submission. See the reason below.</value>
   </data>
   <data name="KycRejectedInvalidationHint" xml:space="preserve">
-    <value>Highlighted fields and photos show what must be updated before you ressubmit.</value>
+    <value>The following items need your attention before you resubmit:</value>
   </data>
   <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
     <value>Some details require manual review</value>

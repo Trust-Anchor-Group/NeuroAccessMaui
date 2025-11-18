@@ -85,6 +85,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private ObservableCollection<DisplayQuad> companyInformationSummary;
 		[ObservableProperty] private ObservableCollection<DisplayQuad> companyAddressSummary;
 		[ObservableProperty] private ObservableCollection<DisplayQuad> companyRepresentativeSummary;
+		[ObservableProperty] private ObservableCollection<string> invalidatedItems = new ObservableCollection<string>();
 
 		[ObservableProperty] private string? errorDescription;
 		[ObservableProperty] private bool hasErrorDescription;
@@ -1205,6 +1206,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (review is null)
 			{
 				this.UnvalidatedSummaryText = string.Empty;
+				this.InvalidatedItems.Clear();
 			}
 			else
 			{
@@ -1216,12 +1218,90 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 				else
 				{
-					this.UnvalidatedSummaryText = ServiceRef.Localizer[nameof(AppResources.KycUnvalidatedWarningDescription), false, claimCount, photoCount];
+					this.UnvalidatedSummaryText = ServiceRef.Localizer["KycUnvalidatedWarningDescription", false, claimCount, photoCount];
+				}
+
+				this.InvalidatedItems.Clear();
+				foreach (ApplicationReviewClaimDetail detail in review.InvalidClaimDetails ?? Array.Empty<ApplicationReviewClaimDetail>())
+				{
+					if (detail is null)
+						continue;
+					string label = this.ResolveDisplayLabel(detail.Claim, detail.DisplayName);
+					string reason = string.IsNullOrWhiteSpace(detail.Reason) ? string.Empty : $" — {detail.Reason}";
+					this.InvalidatedItems.Add($"{label}{reason}");
+				}
+				foreach (ApplicationReviewPhotoDetail Detail in review.InvalidPhotoDetails ?? Array.Empty<ApplicationReviewPhotoDetail>())
+				{
+					if (Detail is null)
+						continue;
+					string Label = this.ResolveDisplayLabel(null, Detail.DisplayName);
+					string Reason = string.IsNullOrWhiteSpace(Detail.Reason) ? string.Empty : $" — {Detail.Reason}";
+					this.InvalidatedItems.Add($"{Label}{Reason}");
 				}
 			}
 
 			this.OnPropertyChanged(nameof(this.HasUnvalidatedItems));
 			this.ClearUnvalidatedCommand?.NotifyCanExecuteChanged();
+		}
+
+		private string ResolveDisplayLabel(string? MappingKey, string? Fallback)
+		{
+			string? FromMapping = string.IsNullOrWhiteSpace(MappingKey) ? null : this.FindLabelByMapping(MappingKey);
+			if (!string.IsNullOrWhiteSpace(FromMapping))
+				return FromMapping;
+
+			if (!string.IsNullOrWhiteSpace(Fallback))
+			{
+				string? FromLabel = this.FindLabelByDisplayName(Fallback);
+				if (!string.IsNullOrWhiteSpace(FromLabel))
+					return FromLabel;
+			}
+
+			return Fallback ?? string.Empty;
+		}
+
+		private string? FindLabelByMapping(string MappingKey)
+		{
+			foreach (DisplayQuad Item in this.IterateSummaryItems())
+			{
+				if (!string.IsNullOrWhiteSpace(Item.Mapping) && Item.Mapping.Equals(MappingKey, StringComparison.OrdinalIgnoreCase))
+					return Item.Label;
+			}
+
+			return null;
+		}
+
+		private string? FindLabelByDisplayName(string label)
+		{
+			foreach (DisplayQuad Item in this.IterateSummaryItems())
+			{
+				if (!string.IsNullOrWhiteSpace(Item.Label) && Item.Label.Equals(label, StringComparison.OrdinalIgnoreCase))
+					return Item.Label;
+			}
+
+			return null;
+		}
+
+		private IEnumerable<DisplayQuad> IterateSummaryItems()
+		{
+			IEnumerable<ObservableCollection<DisplayQuad>?> Collections = new ObservableCollection<DisplayQuad>?[]
+			{
+				this.PersonalInformationSummary,
+				this.AddressInformationSummary,
+				this.AttachmentInformationSummary,
+				this.CompanyInformationSummary,
+				this.CompanyAddressSummary,
+				this.CompanyRepresentativeSummary
+			};
+
+			foreach (ObservableCollection<DisplayQuad>? List in Collections)
+			{
+				if (List is null)
+					continue;
+
+				foreach (DisplayQuad Item in List)
+					yield return Item;
+			}
 		}
 
 	}

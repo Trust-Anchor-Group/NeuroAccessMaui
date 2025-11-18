@@ -646,6 +646,21 @@
 													<Label Text="{l:Localize KycRejectedInvalidationHint}"
 														   Style="{DynamicResource InfoLabel}"
 														   TextColor="{DynamicResource TnPDangerContentWL}" />
+													<CollectionView ItemsSource="{Binding InvalidatedItems}"
+																	ItemSizingStrategy="MeasureAllItems"
+																	SelectionMode="None">
+														<CollectionView.ItemsLayout>
+															<LinearItemsLayout Orientation="Vertical"
+																			   ItemSpacing="4" />
+														</CollectionView.ItemsLayout>
+														<CollectionView.ItemTemplate>
+															<DataTemplate x:DataType="x:String">
+																	<Label Text="{Binding}"
+																		   Style="{DynamicResource InfoLabel}"
+																		   TextColor="{DynamicResource TnPDangerFigureWL}" />
+															</DataTemplate>
+														</CollectionView.ItemTemplate>
+													</CollectionView>
 												</VerticalStackLayout>
 											</Border>
 										</controls:ConditionView.True>
