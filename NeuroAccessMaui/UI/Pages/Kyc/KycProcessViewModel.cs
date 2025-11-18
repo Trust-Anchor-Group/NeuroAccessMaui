@@ -858,6 +858,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 						try { await this.kycService.ApplySubmissionAsync(this.kycReference, Added); }
 						catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
 					}
+					this.ErrorDescription = null;
+					this.HasErrorDescription = false;
+					this.UpdateReviewIndicators();
 					foreach (LegalIdentityAttachment LocalAttachment in this.attachments)
 					{
 						Attachment? Match = Added.Attachments.FirstOrDefault(a => string.Equals(a.FileName, LocalAttachment.FileName, StringComparison.OrdinalIgnoreCase));
@@ -1260,12 +1263,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return Fallback ?? string.Empty;
 		}
 
-		private string? FindLabelByMapping(string MappingKey)
+		private string? FindLabelByMapping(string mappingKey)
 		{
-			foreach (DisplayQuad Item in this.IterateSummaryItems())
+			foreach ((DisplayQuad Item, bool PreferValue) entry in this.IterateSummaryItems())
 			{
-				if (!string.IsNullOrWhiteSpace(Item.Mapping) && Item.Mapping.Equals(MappingKey, StringComparison.OrdinalIgnoreCase))
-					return Item.Label;
+				if (!string.IsNullOrWhiteSpace(entry.Item.Mapping) && entry.Item.Mapping.Equals(mappingKey, StringComparison.OrdinalIgnoreCase))
+					return this.GetDisplayLabel(entry.Item, entry.PreferValue);
 			}
 
 			return null;
@@ -1273,35 +1276,50 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		private string? FindLabelByDisplayName(string label)
 		{
-			foreach (DisplayQuad Item in this.IterateSummaryItems())
+			foreach ((DisplayQuad Item, bool PreferValue) entry in this.IterateSummaryItems())
 			{
-				if (!string.IsNullOrWhiteSpace(Item.Label) && Item.Label.Equals(label, StringComparison.OrdinalIgnoreCase))
-					return Item.Label;
+				string candidate = this.GetDisplayLabel(entry.Item, entry.PreferValue);
+				if (!string.IsNullOrWhiteSpace(candidate) && candidate.Equals(label, StringComparison.OrdinalIgnoreCase))
+					return candidate;
 			}
 
 			return null;
 		}
 
-		private IEnumerable<DisplayQuad> IterateSummaryItems()
+		private IEnumerable<(DisplayQuad Item, bool PreferValue)> IterateSummaryItems()
 		{
-			IEnumerable<ObservableCollection<DisplayQuad>?> Collections = new ObservableCollection<DisplayQuad>?[]
+			IEnumerable<(ObservableCollection<DisplayQuad>? Collection, bool PreferValue)> collections = new (ObservableCollection<DisplayQuad>?, bool)[]
 			{
-				this.PersonalInformationSummary,
-				this.AddressInformationSummary,
-				this.AttachmentInformationSummary,
-				this.CompanyInformationSummary,
-				this.CompanyAddressSummary,
-				this.CompanyRepresentativeSummary
+				(this.PersonalInformationSummary, false),
+				(this.AddressInformationSummary, false),
+				(this.AttachmentInformationSummary, true),
+				(this.CompanyInformationSummary, false),
+				(this.CompanyAddressSummary, false),
+				(this.CompanyRepresentativeSummary, false)
 			};
 
-			foreach (ObservableCollection<DisplayQuad>? List in Collections)
+			foreach ((ObservableCollection<DisplayQuad>? Collection, bool PreferValue) entry in collections)
 			{
-				if (List is null)
+				if (entry.Collection is null)
 					continue;
 
-				foreach (DisplayQuad Item in List)
-					yield return Item;
+				foreach (DisplayQuad item in entry.Collection)
+					yield return (item, entry.PreferValue);
 			}
+		}
+
+		private string GetDisplayLabel(DisplayQuad item, bool preferValue)
+		{
+			if (item is null)
+				return string.Empty;
+
+			if (preferValue && !string.IsNullOrWhiteSpace(item.Value))
+				return item.Value;
+
+			if (!string.IsNullOrWhiteSpace(item.Label))
+				return item.Label;
+
+			return item.Value ?? string.Empty;
 		}
 
 	}

@@ -641,8 +641,8 @@
 														   Style="{DynamicResource InfoLabel}"
 														   TextColor="{DynamicResource TnPDangerContentWL}" />
 													<Label Text="{Binding ErrorDescription}"
-														   Style="{DynamicResource InfoLabel}" FontAttributes="Bold" FontSize="17"
-														   TextColor="{DynamicResource TnPDangerFigureWL}" />
+														   Style="{DynamicResource InfoLabel}" FontAttributes="Bold"
+														   TextColor="{DynamicResource TnPDangerContentWL}" />
 													<Label Text="{l:Localize KycRejectedInvalidationHint}"
 														   Style="{DynamicResource InfoLabel}"
 														   TextColor="{DynamicResource TnPDangerContentWL}" />
@@ -657,7 +657,7 @@
 															<DataTemplate x:DataType="x:String">
 																	<Label Text="{Binding}"
 																		   Style="{DynamicResource InfoLabel}"
-																		   TextColor="{DynamicResource TnPDangerFigureWL}" />
+																	   TextColor="{DynamicResource TnPDangerContentWL}" FontAttributes="Bold" />
 															</DataTemplate>
 														</CollectionView.ItemTemplate>
 													</CollectionView>
