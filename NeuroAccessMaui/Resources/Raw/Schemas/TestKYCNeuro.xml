@@ -137,29 +137,6 @@
 			</ValidationRules>
 			<Mapping key="LAST" />
 		</Field>
-		<Field id="country" type="country">
-			<Label>
-				<Text lang="en">Country of Residence</Text>
-				<Text lang="sv">Bosättningsland</Text>
-				<Text lang="es">País de residencia</Text>
-				<Text lang="pt">País de residência</Text>
-				<Text lang="da">Bopælsland</Text>
-				<Text lang="no">Bostedsland</Text>
-				<Text lang="fi">Asuinmaa</Text>
-				<Text lang="fr">Pays de résidence</Text>
-			</Label>
-			<Hint>
-				<Text lang="en">Select the country where you currently live</Text>
-				<Text lang="sv">Välj landet där du bor</Text>
-				<Text lang="es">Selecciona el país donde vives actualmente</Text>
-				<Text lang="pt">Selecione o país onde você vive atualmente</Text>
-				<Text lang="da">Vælg det land, du bor i</Text>
-				<Text lang="no">Velg landet du bor i</Text>
-				<Text lang="fi">Valitse maa, jossa asut</Text>
-				<Text lang="fr">Sélectionnez le pays où vous vivez actuellement</Text>
-			</Hint>
-			<Mapping key="COUNTRY" />
-		</Field>
 		<Field id="personalNumber" type="text" required="true">
 			<Label>
 				<Text lang="en">Personal Number</Text>
@@ -176,7 +153,6 @@
 			</Metadata>
 			<ValidationRules>
 				<PersonalNumberRule>
-					<CountryFieldReference>country</CountryFieldReference>
 					<Message>
 						<Text lang="en">Personal number must be valid according to your country.</Text>
 						<Text lang="sv">Personnummer måste vara giltigt enligt ditt land.</Text>
