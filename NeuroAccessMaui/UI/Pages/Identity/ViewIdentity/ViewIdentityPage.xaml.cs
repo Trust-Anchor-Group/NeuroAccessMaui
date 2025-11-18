@@ -125,9 +125,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		{
 			try
 			{
-				if (this.ContentPageModel is ViewIdentityViewModel)
+				if (this.ContentPageModel is ViewIdentityViewModel VM)
 				{
-					this.BottomSheet?.ToggleExpanded();
+					if(!this.BottomSheet.IsExpanded)
+						this.BottomSheet?.ToggleExpanded();
 				}
 			}
 			catch (Exception Ex)
