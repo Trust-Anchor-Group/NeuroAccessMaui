@@ -2272,7 +2272,7 @@
     <value>Use this device to scan the QR code and transfer your account.</value>
   </data>
   <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
-    <value>If you do not have access to your account, please contact our support team at</value>
+    <value>If you do not have access to your account, please contact your ID provider.</value>
   </data>
   <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
     <value>.</value>

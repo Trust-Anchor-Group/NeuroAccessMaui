@@ -127,6 +127,7 @@ using Waher.Security.JWS;
 using Waher.Security.JWT;
 using Waher.Things;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
+using NeuroAccessMaui.UI.Popups.OnboardingHelp;
 
 namespace NeuroAccessMaui.UI
 {
@@ -308,6 +309,8 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<AddTextNoteViewModel>();
 			Builder.Services.AddTransient<CheckPasswordPopup>();
 			Builder.Services.AddTransient<CheckPasswordViewModel>();
+			Builder.Services.AddTransient<OnboardingHelpPopup>();
+			Builder.Services.AddTransient<OnboardingHelpViewModel>();
 			Builder.Services.AddTransient<SelectLanguagePopup>();
 			Builder.Services.AddTransient<SelectLanguagePopupViewModel>();
 

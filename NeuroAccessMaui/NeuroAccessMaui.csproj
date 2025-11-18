@@ -537,8 +537,14 @@
 		<Compile Update="UI\Popups\Image\ImagesPopup.xaml.cs">
 			<DependentUpon>ImagesPopup.xaml</DependentUpon>
 		</Compile>
+		<Compile Update="UI\Popups\OnboardingHelp\OnboardingHelpPopup.xaml.cs">
+		  <DependentUpon>OnboardingHelpPopup.xaml</DependentUpon>
+		</Compile>
 		<Compile Update="UI\Popups\Password\CheckPasswordPopup.xaml.cs">
 			<DependentUpon>CheckPasswordPopup.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="UI\Popups\OnboardingHelp\OnboardingHelpPopup.xaml.cs">
+			<DependentUpon>OnboardingHelpPopup.xaml</DependentUpon>
 		</Compile>
 		<Compile Update="UI\Popups\Permission\ShowPermissionPopup.xaml.cs">
 			<DependentUpon>ShowPermissionPopup.xaml</DependentUpon>
@@ -825,6 +831,9 @@
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Image\ImagesPopup.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="UI\Popups\OnboardingHelp\OnboardingHelpPopup.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="UI\Popups\Permission\ShowPermissionPopup.xaml">
 			<Generator>MSBuild:Compile</Generator>

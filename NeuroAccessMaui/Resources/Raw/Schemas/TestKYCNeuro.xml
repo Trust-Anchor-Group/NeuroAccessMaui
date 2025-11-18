@@ -137,29 +137,6 @@
 			</ValidationRules>
 			<Mapping key="LAST" />
 		</Field>
-		<Field id="country" type="country" required="true">
-			<Label>
-				<Text lang="en">Country of Residence</Text>
-				<Text lang="sv">Bosättningsland</Text>
-				<Text lang="es">País de residencia</Text>
-				<Text lang="pt">País de residência</Text>
-				<Text lang="da">Bopælsland</Text>
-				<Text lang="no">Bostedsland</Text>
-				<Text lang="fi">Asuinmaa</Text>
-				<Text lang="fr">Pays de résidence</Text>
-			</Label>
-			<Hint>
-				<Text lang="en">Select the country where you currently live</Text>
-				<Text lang="sv">Välj landet där du bor</Text>
-				<Text lang="es">Selecciona el país donde vives actualmente</Text>
-				<Text lang="pt">Selecione o país onde você vive atualmente</Text>
-				<Text lang="da">Vælg det land, du bor i</Text>
-				<Text lang="no">Velg landet du bor i</Text>
-				<Text lang="fi">Valitse maa, jossa asut</Text>
-				<Text lang="fr">Sélectionnez le pays où vous vivez actuellement</Text>
-			</Hint>
-			<Mapping key="COUNTRY" />
-		</Field>
 		<Field id="personalNumber" type="text" required="true">
 			<Label>
 				<Text lang="en">Personal Number</Text>
@@ -176,7 +153,6 @@
 			</Metadata>
 			<ValidationRules>
 				<PersonalNumberRule>
-					<CountryFieldReference>country</CountryFieldReference>
 					<Message>
 						<Text lang="en">Personal number must be valid according to your country.</Text>
 						<Text lang="sv">Personnummer måste vara giltigt enligt ditt land.</Text>
@@ -191,7 +167,7 @@
 			</ValidationRules>
 			<Mapping key="PNR" />
 		</Field>
-		<Field id="dob" type="date" required="true">
+		<Field id="dob" type="date">
 			<Label>
 				<Text lang="en">Date of Birth</Text>
 				<Text lang="sv">Födelsedatum</Text>
@@ -222,7 +198,7 @@
 				<Transform name="year" />
 			</Mapping>
 		</Field>
-		<Field id="nationality" type="country" required="true">
+		<Field id="nationality" type="country">
 			<Label>
 				<Text lang="en">Nationality</Text>
 				<Text lang="sv">Nationalitet</Text>
@@ -235,7 +211,7 @@
 			</Label>
 			<Mapping key="NATIONALITY" />
 		</Field>
-		<Field id="gender" type="gender" required="true">
+		<Field id="gender" type="gender">
 			<Label>
 				<Text lang="en">Gender</Text>
 				<Text lang="sv">Kön</Text>
@@ -598,7 +574,7 @@
 			<Text lang="fi">Seuraavat henkilötiedot sisällytetään Neuro ID -hakemukseen</Text>
 			<Text lang="fr">Les informations personnelles suivantes seront incluses dans la demande de Neuro ID</Text>
 		</Description>
-		<Field id="zipCode" type="text" required="true">
+		<Field id="zipCode" type="text">
 			<Label>
 				<Text lang="en">Zip Code</Text>
 				<Text lang="sv">Postnummer</Text>
@@ -631,7 +607,7 @@
 			</Placeholder>
 			<Mapping key="ZIP" />
 		</Field>
-		<Field id="address" type="text" required="true">
+		<Field id="address" type="text">
 			<Label>
 				<Text lang="en">Address</Text>
 				<Text lang="sv">Adress</Text>
@@ -711,7 +687,7 @@
 			</ValidationRules>
 			<Mapping key="ADDR2" />
 		</Field>
-		<Field id="area" type="text" required="true">
+		<Field id="area" type="text">
 			<Label>
 				<Text lang="en">Area</Text>
 				<Text lang="sv">Område</Text>
@@ -744,7 +720,7 @@
 			</Placeholder>
 			<Mapping key="AREA" />
 		</Field>
-		<Field id="city" type="text" required="true">
+		<Field id="city" type="text">
 			<Label>
 				<Text lang="en">City</Text>
 				<Text lang="sv">Stad</Text>
@@ -777,7 +753,7 @@
 			</Placeholder>
 			<Mapping key="CITY" />
 		</Field>
-		<Field id="region" type="text" required="true">
+		<Field id="region" type="text">
 			<Label>
 				<Text lang="en">Region/State</Text>
 				<Text lang="sv">Region/Län</Text>
