@@ -690,24 +690,28 @@
 															   Style="{DynamicResource FieldTitleLabel}"
 															   TextColor="{DynamicResource TnPWarningContentWL}" />
 													</Grid>
-													<Label Text="{Binding UnvalidatedSummaryText}"
-														   Style="{DynamicResource InfoLabel}"
-														   TextColor="{DynamicResource TnPWarningContentWL}" />
-													<CollectionView ItemsSource="{Binding UnvalidatedItems}"
-																	ItemSizingStrategy="MeasureAllItems"
-																	SelectionMode="None">
-														<CollectionView.ItemsLayout>
-															<LinearItemsLayout Orientation="Vertical"
+														<mct:Expander IsExpanded="False">
+															<mct:Expander.Header>
+																<Label Text="{Binding UnvalidatedSummaryText}"
+																	   Style="{DynamicResource InfoLabel}"
+																	   TextColor="{DynamicResource TnPWarningContentWL}" />
+															</mct:Expander.Header>
+															<CollectionView ItemsSource="{Binding UnvalidatedItems}"
+																		ItemSizingStrategy="MeasureAllItems"
+																		SelectionMode="None">
+																	<CollectionView.ItemsLayout>
+																		<LinearItemsLayout Orientation="Vertical"
 																			   ItemSpacing="{DynamicResource TinySpacing}" />
-														</CollectionView.ItemsLayout>
-														<CollectionView.ItemTemplate>
-															<DataTemplate x:DataType="x:String">
-																<Label Text="{Binding}"
-																		TextColor="{DynamicResource TnPWarningContentWL}"
-																		Style="{DynamicResource InfoLabel}" />
-															</DataTemplate>
-														</CollectionView.ItemTemplate>
-													</CollectionView>
+																	</CollectionView.ItemsLayout>
+																	<CollectionView.ItemTemplate>
+																		<DataTemplate x:DataType="x:String">
+																			<Label Text="{Binding}"
+																				   TextColor="{DynamicResource TnPWarningContentWL}"
+																				   Style="{DynamicResource InfoLabel}" />
+																			</DataTemplate>
+																	</CollectionView.ItemTemplate>
+																</CollectionView>
+														</mct:Expander>
 													<Label Text="{l:Localize KycUnvalidatedActionHint}"
 														   Style="{DynamicResource InfoLabel}"
 														   TextColor="{DynamicResource TnPWarningContentWL}" />
