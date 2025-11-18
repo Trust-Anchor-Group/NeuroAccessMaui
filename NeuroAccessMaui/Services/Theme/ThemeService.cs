@@ -35,7 +35,7 @@ namespace NeuroAccessMaui.Services.Theme
 		private ProviderThemeStatus providerThemeState = ProviderThemeStatus.NotStarted;
 		private string? lastDomainAttempted;
 		private int providerThemeAttemptCount;
-		private static readonly TimeSpan[] providerRetryDelays = { TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5) };
+		private static readonly TimeSpan[] providerRetryDelays = { TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2) };
 		private const int maxProviderThemeAttempts = 3;
 		private static readonly HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(10) };
 
