@@ -13,7 +13,8 @@
 					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 					  x:DataType="viewmodel:KycProcessViewModel"
-					  xmlns:IDSF="clr-namespace:NeuroAccessMaui.Services.Identity">
+					  xmlns:IDSF="clr-namespace:NeuroAccessMaui.Services.Identity"
+					  ui:KeyboardInsets.Mode="Automatic">
 
 	<base:BaseContentPage.Resources>
 		<ResourceDictionary>
@@ -910,7 +911,7 @@
 
 				<!-- Navigation bar (hidden once application is sent) -->
 				<Border Style="{DynamicResource BottomBarBorder2}"
-						IsVisible="{Binding ApplicationSentPublic, Converter={mct:InvertedBoolConverter}}"
+					IsVisible="{Binding ShowBottomBar}"
 						Grid.Row="2"
 						Padding="16">
 					<VerticalStackLayout Spacing="8">

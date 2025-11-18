@@ -30,6 +30,7 @@ using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.MVVM.Reentrancy;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
+using NeuroAccessMaui.UI; // For IKeyboardInsetAware
 using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
@@ -37,7 +38,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 	/// <summary>
 	/// Orchestrates the interactive KYC flow, covering navigation, validation, summary projection, persistence scheduling, peer review, and submission.
 	/// </summary>
-	public partial class KycProcessViewModel : BaseViewModel, IDisposable
+	public partial class KycProcessViewModel : BaseViewModel, IDisposable, IKeyboardInsetAware
 	{
 		private readonly IKycService kycService = ServiceRef.KycService;
 		private bool disposedValue; // Disposal flag
@@ -168,6 +169,37 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		}
 
 		[ObservableProperty] private string progressPercent = "0%";
+
+		/// <summary>
+		/// Gets a value indicating whether any on-screen keyboard is currently visible.
+		/// </summary>
+		public bool IsKeyboardVisible => this.isKeyboardVisible;
+
+		/// <summary>
+		/// Backing field for keyboard visibility state.
+		/// </summary>
+		private bool isKeyboardVisible;
+
+		/// <summary>
+		/// Gets a value indicating whether the bottom navigation bar should be shown.
+		/// Hidden when the application has been sent or when the keyboard is visible.
+		/// </summary>
+		public bool ShowBottomBar => !this.ApplicationSentPublic && !this.IsKeyboardVisible;
+
+		/// <summary>
+		/// Receives keyboard inset change notifications from the shell.
+		/// </summary>
+		/// <param name="args">Keyboard inset change arguments.</param>
+		public void OnKeyboardInsetChanged(Services.UI.KeyboardInsetChangedEventArgs args)
+		{
+			bool Visible = args?.IsVisible ?? false;
+			if (this.isKeyboardVisible == Visible)
+				return;
+			this.isKeyboardVisible = Visible;
+			this.OnPropertyChanged(nameof(this.IsKeyboardVisible));
+			this.OnPropertyChanged(nameof(this.ShowBottomBar));
+		}
+
 
 		public IAsyncRelayCommand NextCommand { get; }
 		public IRelayCommand PreviousCommand { get; }
@@ -452,6 +484,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.SetEditingFromSummary(false);
 				this.NotifyNavigationChanged();
 			}
+			this.OnPropertyChanged(nameof(this.ShowBottomBar));
 			this.OnPropertyChanged(nameof(this.CanRequestFeaturedPeerReviewer));
 			this.OnPropertyChanged(nameof(this.FeaturedPeerReviewers));
 			this.NextCommand.NotifyCanExecuteChanged();
