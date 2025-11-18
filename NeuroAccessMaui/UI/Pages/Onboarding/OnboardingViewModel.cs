@@ -12,6 +12,8 @@ using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Onboarding.ViewModels;
 using NeuroAccessMaui.UI.Pages.Startup;
+using NeuroAccessMaui.UI.Popups.OnboardingHelp;
+using NeuroAccessMaui.UI.Popups.QR;
 using NeuroAccessMaui.UI.Popups.Settings;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -443,8 +445,9 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
 		[RelayCommand]
 		private async Task ExistingAccount()
 		{
-			NavigationDirection Direction = this.DetermineDirection(this.CurrentStep, OnboardingStep.ContactSupport);
-			await this.MoveToStepAsync(OnboardingStep.ContactSupport, Direction).ConfigureAwait(false);
+			OnboardingHelpPopup Popup = new();
+
+			await ServiceRef.PopupService.PushAsync(Popup);
 		}
 
 		/// <summary>
