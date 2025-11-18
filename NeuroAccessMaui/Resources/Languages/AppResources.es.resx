@@ -23,7 +23,8 @@
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
     <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
+  object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -59,7 +60,8 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -112,10 +114,12 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
+      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Selecciona los roles con los que firmarás (opcional)</value>
@@ -991,7 +995,7 @@
     <value>Foto</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Por favor, añada una imagen en la que pueda ser fácilmente identificado.</value>
+    <value>Toma una foto en vivo de ti ahora para que podamos verificar tu identidad. No se permiten capturas de pantalla ni imágenes editadas.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>En la aplicación se han incluido las siguientes imágenes.</value>
@@ -1210,7 +1214,7 @@
     <value>día</value>
   </data>
   <data name="Days" xml:space="preserve">
-    <value>días</value>
+    <value>Días</value>
   </data>
   <data name="SchemaDigest" xml:space="preserve">
     <value>Resumen de esquema</value>
@@ -1255,7 +1259,7 @@
     <value>minuto</value>
   </data>
   <data name="Minutes" xml:space="preserve">
-    <value>minutos</value>
+    <value>acta</value>
   </data>
   <data name="Mode" xml:space="preserve">
     <value>Modo</value>
@@ -1264,7 +1268,7 @@
     <value>mes</value>
   </data>
   <data name="Months" xml:space="preserve">
-    <value>meses</value>
+    <value>Meses</value>
   </data>
   <data name="Namespace" xml:space="preserve">
     <value>Espacio de nombres</value>
@@ -1288,7 +1292,7 @@
     <value>segundo</value>
   </data>
   <data name="Seconds" xml:space="preserve">
-    <value>segundos</value>
+    <value>sobras</value>
   </data>
   <data name="SelectedContactCannotBeAdded" xml:space="preserve">
     <value>El contacto seleccionado no se puede agregar. No tiene una identidad registrada.</value>
@@ -1758,6 +1762,9 @@
   <data name="StreetNumber" xml:space="preserve">
     <value>Número de calle</value>
   </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Tomar foto</value>
+  </data>
   <data name="TakePhotoToShare" xml:space="preserve">
     <value>Toma una foto para compartirla</value>
   </data>
@@ -1918,7 +1925,7 @@
     <value>Autenticación</value>
   </data>
   <data name="BeingSigned" xml:space="preserve">
-    <value>Estar firmado</value>
+    <value>Se está firmando</value>
   </data>
   <data name="Binding" xml:space="preserve">
     <value>Encuadernación</value>
@@ -2218,7 +2225,7 @@
     <value>Proporcione la cantidad de eDaler que desea comprar a continuación y presione el botón Comprar. Es posible que se abra una página web en la que tenga que rellenar más información para que el procesador de pagos valide su solicitud.</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Importe:</value>
+    <value>Monto:</value>
   </data>
   <data name="AmountExtra" xml:space="preserve">
     <value>Cantidad Extra: (opcional, sugerencia)</value>
@@ -2272,7 +2279,7 @@
     <value>Utilice este dispositivo para escanear el código QR y transferir su cuenta.</value>
   </data>
   <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
-    <value>Si no tienes acceso a tu cuenta, ponte en contacto con nuestro equipo de soporte en</value>
+    <value>Si no tienes acceso a tu cuenta, ponte en contacto con tu proveedor de identidad.</value>
   </data>
   <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
     <value>.</value>
@@ -2458,22 +2465,22 @@
     <value>He leído y entendido los términos de este contrato</value>
   </data>
   <data name="Status" xml:space="preserve">
-    <value>Status</value>
+      <value>Status</value>
   </data>
   <data name="Encrypted" xml:space="preserve">
-    <value>Cifrado</value>
+      <value>Cifrado</value>
   </data>
   <data name="ViewParametersTitle" xml:space="preserve">
-    <value>Ver parámetros</value>
+      <value>Ver parámetros</value>
   </data>
   <data name="ViewParametersDescription" xml:space="preserve">
-    <value>Consulta las variables que rigen el contrato</value>
+      <value>Consulta las variables que rigen el contrato</value>
   </data>
   <data name="ViewRolesTitle" xml:space="preserve">
-    <value>Revisar roles asignados</value>
+      <value>Revisar roles asignados</value>
   </data>
   <data name="ViewRolesDescription" xml:space="preserve">
-    <value>Revisa los roles y verifica quién ha firmado cada uno</value>
+      <value>Revisa los roles y verifica quién ha firmado cada uno</value>
   </data>
   <data name="InvitationToSign" xml:space="preserve">
     <value>Ha sido invitado(a) a firmar este contrato. Asegúrese de verificar y revisar el contrato antes de continuar.</value>
@@ -2516,7 +2523,7 @@
   </data>
   <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Abre la configuración - Habilita los permisos de la cámara</value>
-  </data>
+	</data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Abrir configuración</value>
   </data>
@@ -2817,8 +2824,8 @@
   <data name="ClearCache" xml:space="preserve">
     <value>Limpiar caché</value>
   </data>
-  <data name="ClearBrandingAndKycCacheDescription" xml:space="preserve">
-    <value>Elimina los datos de marca y KYC del dominio actual</value>
+  <data name="ClearCacheDescription" xml:space="preserve">
+    <value>Elimina datos temporales como imágenes y archivos adjuntos para liberar espacio</value>
   </data>
   <data name="Apps" xml:space="preserve">
     <value>Aplicaciones</value>
@@ -2837,6 +2844,9 @@
   </data>
   <data name="NFC" xml:space="preserve">
     <value>NFC</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>¿Te gustaría añadir esta identidad a tus contactos?</value>
   </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>¡Próximamente!</value>
@@ -2868,9 +2878,6 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
     <value>El idioma ha sido cambiado. Por favor, reinicie la aplicación para asegurarse de que se apliquen todos los cambios.</value>
   </data>
-  <data name="ContinueSecondsFormat" xml:space="preserve">
-    <value>Continuar ({0})</value>
-  </data>
   <data name="Never" xml:space="preserve">
     <value>Nunca</value>
   </data>
@@ -2885,6 +2892,9 @@
   </data>
   <data name="LastUpdatedFormat" xml:space="preserve">
     <value>Última actualización: {0}</value>
+  </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Continuar ({0})</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
     <value>Activa tu identidad digital</value>
@@ -2976,14 +2986,50 @@
   <data name="Kyc_Next" xml:space="preserve">
     <value>Siguiente</value>
   </data>
-  <data name="Kyc_Apply" xml:space="preserve">
-    <value>Enviar</value>
-  </data>
   <data name="Kyc_Return" xml:space="preserve">
     <value>Volver al resumen</value>
   </data>
   <data name="Kyc_Exit" xml:space="preserve">
     <value>¿Está seguro de que desea salir del proceso de solicitud de identidad?</value>
+  </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Revisión de la solicitud</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Código:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Campos a revisar</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Fotos que deben reemplazarse</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Estos datos no pudieron aprobarse. Actualízalos en el formulario antes de reenviar.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Campos pendientes</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Fotos pendientes</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Corregir problemas y editar formulario</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Reenviar sin campos pendientes</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Tu solicitud se encuentra en revisión manual. Puedes esperar el resultado o ajustar los elementos siguientes para intentar un procesamiento automático.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Estos elementos están en revisión manual. Puedes dejarlos como están o ajustarlos para intentar un procesamiento automático.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Algunos datos enviados no pudieron verificarse. Toca para revisarlos.</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Enviar</value>
   </data>
   <data name="Progress" xml:space="preserve">
     <value>Progreso</value>
@@ -3033,6 +3079,9 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Tu solicitud de identificación ha sido enviada para revisión. ¡Te notificaremos cuando tu identificación sea aprobada!</value>
   </data>
+  <data name="ApplicationSummary" xml:space="preserve">
+    <value>Resumen de la solicitud</value>
+  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Antes de finalizar, por favor revisa y asegúrate de que todo esté correcto</value>
   </data>
@@ -3067,7 +3116,7 @@
     <value>Para su uso individual</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Por favor, tómate un momento para revisar tus datos antes de enviarlos. Asegúrate de que toda la información sea precisa y esté completa</value>
+    <value>Antes de finalizar, lea y asegúrese de que todo sea correcto</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Información de la empresa</value>
@@ -3089,45 +3138,6 @@
   </data>
   <data name="IdentityRejected" xml:space="preserve">
     <value>Identidad rechazada. Puede volver a la página de solicitudes y actualizar su información para intentarlo de nuevo.</value>
-  </data>
-  <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve">
-    <value>Un PIN no debe contener una secuencia consecutiva de {0} símbolos idénticos.</value>
-  </data>
-  <data name="KycReviewTitle" xml:space="preserve">
-    <value>Revisión de la solicitud</value>
-  </data>
-  <data name="KycReviewCodeLabel" xml:space="preserve">
-    <value>Código:</value>
-  </data>
-  <data name="KycInvalidClaimsHeader" xml:space="preserve">
-    <value>Campos para revisar</value>
-  </data>
-  <data name="KycInvalidPhotosHeader" xml:space="preserve">
-    <value>Fotos para reemplazar</value>
-  </data>
-  <data name="KycInvalidGuidance" xml:space="preserve">
-    <value>Estos detalles no pudieron aprobarse. Actualízalos en el formulario antes de reenviar.</value>
-  </data>
-  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
-    <value>Campos pendientes</value>
-  </data>
-  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
-    <value>Fotos pendientes</value>
-  </data>
-  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
-    <value>Corregir e editar formulario</value>
-  </data>
-  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
-    <value>Reenviar sin campos pendientes</value>
-  </data>
-  <data name="KycManualReviewInfo" xml:space="preserve">
-    <value>Tu solicitud está en revisión manual. Puedes esperar el resultado o ajustar los elementos abajo para intentar el procesamiento automático.</value>
-  </data>
-  <data name="KycPendingManualReviewHint" xml:space="preserve">
-    <value>Estos elementos esperan revisión manual. Puedes dejarlos como están o ajustarlos para intentar el procesamiento automático.</value>
-  </data>
-  <data name="KycReviewAvailableMainPage" xml:space="preserve">
-    <value>Algunos datos enviados no pudieron verificarse. Toca para revisar.</value>
   </data>
   <data name="AddToBalance" xml:space="preserve">
     <value>Agregar al saldo</value>
@@ -3157,7 +3167,7 @@
     <value>Transacción</value>
   </data>
   <data name="Transfer" xml:space="preserve">
-    <value>Transferir</value>
+    <value>Transferencia</value>
   </data>
   <data name="BalanceTopUp" xml:space="preserve">
     <value>Recarga de saldo</value>
@@ -3223,10 +3233,46 @@
     <value>Puedes compartir este código QR con otro usuario para procesarlo más tarde, ya sea cuando se necesite o cuando exista conectividad.</value>
   </data>
   <data name="RequestCredits" xml:space="preserve">
-    <value>Solicitar</value>
+    <value>Solicitar créditos</value>
   </data>
   <data name="SendCredits" xml:space="preserve">
-    <value>Enviar</value>
+    <value>Enviar créditos</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>año</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>años</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>mes</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>meses</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>día</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>días</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>hora</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>horas</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minuto</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minutos</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>segundo</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>segundos</value>
   </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> y </value>
@@ -3318,6 +3364,9 @@
   <data name="CertifierCanDestroy" xml:space="preserve">
     <value>El certificador puede destruir el token</value>
   </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Información legible por máquina</value>
+  </data>
   <data name="MachineReadableInfoTextToken" xml:space="preserve">
     <value>A continuación se muestra una vista general de los datos legibles por máquina incrustados en el token.</value>
   </data>
@@ -3386,44 +3435,5 @@
   </data>
   <data name="ShortId" xml:space="preserve">
     <value>ID</value>
-  </data>
-  <data name="ProposalDefaultMessage" xml:space="preserve">
-    <value>Hola, me gustaría proponer un contrato contigo. Por favor, revísalo y acepta la propuesta si estás de acuerdo.</value>
-  </data>
-  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
-    <value>¿Te gustaría añadir esta identidad a tus contactos?</value>
-  </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Tomar foto</value>
-  </data>
-  <data name="UrlSchemaNotPermitted" xml:space="preserve">
-    <value>Solicita una identidad personal para utilizar esta función.</value>
-  </data>
-  <data name="KycRejectedHeader" xml:space="preserve">
-    <value>Solicitud rechazada</value>
-  </data>
-  <data name="KycRejectedDescription" xml:space="preserve">
-    <value>El proveedor no pudo aprobar tu envío. Consulta el motivo a continuación.</value>
-  </data>
-  <data name="KycRejectedInvalidationHint" xml:space="preserve">
-    <value>Los siguientes elementos requieren tu atención antes de reenviar:</value>
-  </data>
-  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
-    <value>Algunos datos requieren una revisión manual</value>
-  </data>
-  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
-    <value>{0} campos y {1} fotos no pueden validarse automáticamente y deben ser revisados por un operador. Esto puede retrasar la aprobación.</value>
-  </data>
-  <data name="KycUnvalidatedActionHint" xml:space="preserve">
-    <value>Puedes eliminar estas entradas pendientes y volver a aplicar sin ellas. No se recomienda</value>
-  </data>
-  <data name="KycClearUnvalidatedButton" xml:space="preserve">
-    <value>Eliminar datos pendientes</value>
-  </data>
-  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
-    <value>Eliminar datos pendientes y volver a aplicar</value>
-  </data>
-  <data name="KycConfirmRemovePending" xml:space="preserve">
-    <value>Esto revocará tu solicitud actual, eliminará los datos pendientes y la reenviará sin ellos. ¿Deseas continuar?</value>
   </data>
 </root>
