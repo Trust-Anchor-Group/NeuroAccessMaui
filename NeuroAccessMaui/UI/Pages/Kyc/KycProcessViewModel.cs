@@ -781,6 +781,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		public override async Task GoBack()
 		{
+			if(this.applicationSent)
+				return;
 			if (this.editingFromSummary)
 			{
 				int FirstInvalid = await this.GetFirstInvalidVisiblePageIndexAsync();
