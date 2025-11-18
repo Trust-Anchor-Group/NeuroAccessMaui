@@ -4,7 +4,7 @@
              xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
              x:Class="NeuroAccessMaui.UI.Pages.Startup.LoadingPage"
              xmlns:skiaLottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
-             BackgroundColor="White">
+             >
     <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20">
         <skiaLottie:SKLottieView
             x:Name="RainbowView"

@@ -96,7 +96,7 @@ namespace NeuroAccessMaui.Services.UI
             this.Content = this.layout;
             this.Padding = 0;
             this.On<iOS>().SetUseSafeArea(false);
-            this.BackgroundColor = Colors.White;
+            this.SetDynamicResource(BackgroundColorProperty, "SurfaceBackgroundWL");
 
             LoadingPage loadingPageInstance = ServiceHelper.GetService<LoadingPage>();
             this.contentHostA.Content = loadingPageInstance;
