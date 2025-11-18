@@ -86,12 +86,25 @@ namespace NeuroAccessMaui.UI.Popups
 				HorizontalOptions = LayoutOptions.Fill,
 				VerticalOptions = LayoutOptions.Fill
 			};
-			AbsoluteLayout.SetLayoutFlags(this.popupContainer, Microsoft.Maui.Layouts.AbsoluteLayoutFlags.None);
-			this.root.Children.Add(this.popupContainer);
+
+			// Separate transparent background view to capture outside taps without swallowing child gestures.
+			BoxView background = new BoxView
+			{
+				BackgroundColor = Colors.Transparent,
+				HorizontalOptions = LayoutOptions.Fill,
+				VerticalOptions = LayoutOptions.Fill
+			};
+			AbsoluteLayout.SetLayoutBounds(background, new Rect(0, 0, 1, 1));
+			AbsoluteLayout.SetLayoutFlags(background, Microsoft.Maui.Layouts.AbsoluteLayoutFlags.All);
 
 			TapGestureRecognizer backgroundTap = new();
 			backgroundTap.Tapped += this.OnPopupBackgroundTapped;
-			this.root.GestureRecognizers.Add(backgroundTap);
+			background.GestureRecognizers.Add(backgroundTap);
+
+			this.root.Children.Add(background);
+
+			AbsoluteLayout.SetLayoutFlags(this.popupContainer, Microsoft.Maui.Layouts.AbsoluteLayoutFlags.None);
+			this.root.Children.Add(this.popupContainer);
 
 			base.Content = this.root;
 		}
