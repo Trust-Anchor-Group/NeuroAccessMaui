@@ -3067,7 +3067,7 @@
     <value>For din individuelle bruk</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Før du fullfører, vennligst les gjennom og sørg for at alt er riktig</value>
+    <value>Vennligst ta et øyeblikk til å gjennomgå opplysningene dine før du sender inn. Sørg for at alt er nøyaktig og fullstendig</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Informasjon om selskapet</value>
@@ -3223,10 +3223,10 @@
     <value>Du kan dele denne QR-koden med en annen bruker for behandling senere, enten når det er nødvendig eller når tilkobling eksisterer.</value>
   </data>
   <data name="RequestCredits" xml:space="preserve">
-    <value>Be om kreditter</value>
+    <value>Anmodning</value>
   </data>
   <data name="SendCredits" xml:space="preserve">
-    <value>Send kreditter</value>
+    <value>Sende</value>
   </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> og </value>
@@ -3395,5 +3395,35 @@
   </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Ta bilde</value>
+  </data>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Søk om en personlig identitet for å bruke denne funksjonen.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Søknad avvist</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Leverandøren kunne ikke godkjenne innlegget ditt. Se grunnen nedenfor.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Følgende punkter trenger din oppmerksomhet før du sender inn på nytt:</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Noen detaljer krever manuell gjennomgang</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} felt og {1} bilder kan ikke valideres automatisk og må sjekkes av en operatør. Dette kan forsinke godkjenningen.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Du kan fjerne disse ventende oppføringene og søke på nytt uten dem. Dette anbefales ikke</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Fjern ventende detaljer</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Fjern utestående detaljer og søk på nytt</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Dette vil trekke tilbake din nåværende søknad, fjerne de utestående detaljene, og sende inn på nytt uten dem. Vil du fortsette?</value>
   </data>
 </root>

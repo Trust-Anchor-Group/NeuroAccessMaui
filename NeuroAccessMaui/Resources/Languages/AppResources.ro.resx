@@ -3067,7 +3067,7 @@
     <value>Pentru uz individual</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Înainte de finalizare, vă rugăm să citiți și să vă asigurați că totul este corect</value>
+    <value>Vă rugăm să vă luați un moment pentru a vă revizui detaliile înainte de a trimite. Asigură-te că totul este corect și complet</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Informații despre companie</value>
@@ -3223,10 +3223,10 @@
     <value>Puteți partaja acest cod QR cu un alt utilizator pentru procesare ulterioară, fie atunci când este necesar, fie când există conectivitate.</value>
   </data>
   <data name="RequestCredits" xml:space="preserve">
-    <value>Solicitați credite</value>
+    <value>Cerere</value>
   </data>
   <data name="SendCredits" xml:space="preserve">
-    <value>Trimiteți credite</value>
+    <value>Expedia</value>
   </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> și </value>
@@ -3395,5 +3395,35 @@
   </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Faceți o fotografie</value>
+  </data>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Solicită o identitate personală pentru a folosi această funcție.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Cerere respinsă</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Furnizorul nu a putut aproba depunerea ta. Vezi motivul de mai jos.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Următoarele aspecte necesită atenția ta înainte de a retrimite:</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Unele detalii necesită revizuire manuală</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>Câmpurile {0} și fotografiile {1} nu pot fi validate automat și trebuie verificate de un operator. Acest lucru poate întârzia aprobarea.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Poți elimina aceste înregistrări în așteptare și să aplici din nou fără ele. Acest lucru nu este recomandat</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Elimină detaliile în așteptare</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Elimină detaliile în așteptare și aplică din nou</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Acest lucru va revoca cererea ta actuală, va elimina detaliile în așteptare și va retrimite fără ele. Vrei să continui?</value>
   </data>
 </root>

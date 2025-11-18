@@ -3067,7 +3067,7 @@
     <value>Для вашего индивидуального использования</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Прежде чем завершить работу, пожалуйста, прочитайте и убедитесь, что все верно</value>
+    <value>Пожалуйста, уделите время, чтобы ознакомиться с вашими данными перед отправкой. Убедитесь, что всё точно и полно</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Информация о компании</value>
@@ -3223,10 +3223,10 @@
     <value>Вы можете поделиться этим QR-кодом с другим пользователем для обработки позже, когда это потребуется или когда появится подключение.</value>
   </data>
   <data name="RequestCredits" xml:space="preserve">
-    <value>Запросить кредиты</value>
+    <value>Просьба</value>
   </data>
   <data name="SendCredits" xml:space="preserve">
-    <value>Отправить кредиты</value>
+    <value>Отправить</value>
   </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> и </value>
@@ -3395,5 +3395,35 @@
   </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Сделать фото</value>
+  </data>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Подайте заявку на личную личность для использования этой функции.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Заявка отклонена</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Провайдер не смог одобрить вашу заявку. См. причину ниже.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Следующие пункты требуют вашего внимания перед повторной отправкой:</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Некоторые детали требуют ручного повторения</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} поля и {1} фотографии не могут быть автоматически проверены и должны проверяться оператором. Это может задержать одобрение.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Вы можете удалить эти ожидающие записи и подать заявку заново без них. Это не рекомендуется</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Удалить ожидающие детали</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Удалите ожидающие детали и подайте заявку снова</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Это отзовёт вашу текущую заявку, удалит ожидающие данные и подаст её повторно без них. Хочешь продолжить?</value>
   </data>
 </root>

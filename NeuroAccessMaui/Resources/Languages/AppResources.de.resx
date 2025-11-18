@@ -3067,7 +3067,7 @@
     <value>Für Ihren individuellen Einsatz</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Bevor Sie abschließen, lesen Sie bitte durch und stellen Sie sicher, dass alles korrekt ist</value>
+    <value>Bitte nehmen Sie sich einen Moment Zeit, um Ihre Daten vor der Einreichung zu überprüfen. Stellen Sie sicher, dass alles korrekt und vollständig ist</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Unternehmensinformationen</value>
@@ -3223,10 +3223,10 @@
     <value>Sie können diesen QR-Code für die spätere Verarbeitung mit einem anderen Benutzer teilen, entweder bei Bedarf oder wenn eine Verbindung besteht.</value>
   </data>
   <data name="RequestCredits" xml:space="preserve">
-    <value>Credits anfordern</value>
+    <value>Bitten</value>
   </data>
   <data name="SendCredits" xml:space="preserve">
-    <value>Credits senden</value>
+    <value>Senden</value>
   </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> und </value>
@@ -3395,5 +3395,35 @@
   </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Foto aufnehmen</value>
+  </data>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Beantragen Sie eine persönliche Identität, um diese Funktion zu nutzen.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Antrag abgelehnt</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Der Anbieter konnte Ihre Einreichung nicht genehmigen. Siehe den Grund unten.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Die folgenden Punkte benötigen Ihre Aufmerksamkeit, bevor Sie erneut einreichen:</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Einige Details erfordern eine manuelle Überprüfung</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} Felder und {1} Fotos können nicht automatisch validiert werden und müssen von einem Bediener überprüft werden. Das kann die Genehmigung verzögern.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Du kannst diese ausstehenden Einträge entfernen und ohne sie erneut beantragen. Das wird nicht empfohlen</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Entfernen von ausstehenden Details</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Entferne ausstehende Details und beantrage erneut</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Dadurch wird dein aktueller Antrag widerrufen, die ausstehenden Daten entfernt und du reichst sie ohne diese erneut ein. Willst du weitermachen?</value>
   </data>
 </root>

@@ -3067,7 +3067,7 @@
     <value>Henkilökohtaiseen käyttöön</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Ennen kuin viimeistelet, lue läpi ja varmista, että kaikki on oikein</value>
+    <value>Ole hyvä ja käytä hetki tarkistaaksesi tietosi ennen lähettämistä. Varmista, että kaikki on tarkkaa ja täydellistä</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Yrityksen tiedot</value>
@@ -3223,10 +3223,10 @@
     <value>Voit jakaa tämän QR-koodin toisen käyttäjän kanssa myöhempää käsittelyä varten joko tarvittaessa tai yhteyden ollessa olemassa.</value>
   </data>
   <data name="RequestCredits" xml:space="preserve">
-    <value>Pyydä krediittejä</value>
+    <value>Pyytää</value>
   </data>
   <data name="SendCredits" xml:space="preserve">
-    <value>Lähetä krediittejä</value>
+    <value>Lähettää</value>
   </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> ja </value>
@@ -3395,5 +3395,35 @@
   </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Ota valokuva</value>
+  </data>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Hae henkilökohtaista henkilöllisyyttä tämän ominaisuuden käyttöä varten.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Hakemus hylätty</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Palveluntarjoaja ei voinut hyväksyä lähetystäsi. Katso syy alta.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Seuraavat asiat vaativat huomiotasi ennen kuin lähetät uudelleen:</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Jotkin yksityiskohdat vaativat manuaalista tarkastelua</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} kenttiä ja {1}-kuvia ei voida validoida automaattisesti, vaan ne täytyy tarkistaa operaattorin toimesta. Tämä voi viivästyttää hyväksyntää.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Voit poistaa nämä odottavat merkinnät ja hakea uudelleen ilman niitä. Tätä ei suositella</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Poista odottavat tiedot</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Poista odottavat tiedot ja hae uudelleen</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Tämä peruuttaa nykyisen hakemuksesi, poistaa odottavat tiedot ja lähettää hakemuksesi uudelleen ilman niitä. Haluatko jatkaa?</value>
   </data>
 </root>

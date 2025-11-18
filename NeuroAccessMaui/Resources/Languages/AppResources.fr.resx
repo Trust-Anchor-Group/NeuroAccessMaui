@@ -3067,7 +3067,7 @@
     <value>Pour votre usage individuel</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Avant de finaliser, veuillez lire et vous assurer que tout est correct</value>
+    <value>Veuillez prendre un moment pour examiner vos informations avant de soumettre. Assurez-vous que tout est exact et complet</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Informations sur l’entreprise</value>
@@ -3223,10 +3223,10 @@
     <value>Vous pouvez partager ce code QR avec un autre utilisateur pour qu’il soit traité ultérieurement, soit en cas de besoin, soit lorsque la connectivité existe.</value>
   </data>
   <data name="RequestCredits" xml:space="preserve">
-    <value>Demander des crédits</value>
+    <value>Demander</value>
   </data>
   <data name="SendCredits" xml:space="preserve">
-    <value>Envoyer des crédits</value>
+    <value>Envoyer</value>
   </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> et </value>
@@ -3395,5 +3395,35 @@
   </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Prendre une photo</value>
+  </data>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Faites une demande d’identité personnelle pour utiliser cette fonctionnalité.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Demande rejetée</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Le prestataire n’a pas pu approuver votre soumission. Voir la raison ci-dessous.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Les éléments suivants nécessitent votre attention avant de soumettre à nouveau :</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Certains détails nécessitent une revue manuelle</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} champs et {1} photos ne peuvent pas être validés automatiquement et doivent être vérifiés par un opérateur. Cela peut retarder l’approbation.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Vous pouvez supprimer ces entrées en attente et postuler à nouveau sans les utiliser. Ce n’est pas recommandé</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Supprimer les détails en attente</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Supprimez les informations en attente et postulez à nouveau</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Cela révoquera votre demande actuelle, supprimera les informations en attente et la soumettra sans elles. Tu veux continuer ?</value>
   </data>
 </root>

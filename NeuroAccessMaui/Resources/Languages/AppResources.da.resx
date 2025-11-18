@@ -3067,7 +3067,7 @@
     <value>Til din individuelle brug</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Før du afslutter, bedes du læse igennem og sikre dig, at alt er korrekt</value>
+    <value>Tag venligst et øjeblik til at gennemgå dine oplysninger, før du indsender. Sørg for, at alt er korrekt og komplet</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Firmaoplysninger</value>
@@ -3223,10 +3223,10 @@
     <value>Du kan dele denne QR-kode med en anden bruger til behandling senere, enten når det er nødvendigt, eller når der er forbindelse.</value>
   </data>
   <data name="RequestCredits" xml:space="preserve">
-    <value>Anmod om kreditter</value>
+    <value>Bøn</value>
   </data>
   <data name="SendCredits" xml:space="preserve">
-    <value>Send kreditter</value>
+    <value>Sende</value>
   </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> og </value>
@@ -3395,5 +3395,35 @@
   </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Tag billede</value>
+  </data>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Ansøg om en personlig identitet for at bruge denne funktion.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Ansøgning afvist</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Udbyderen kunne ikke godkende din indsendelse. Se grunden nedenfor.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Følgende punkter kræver din opmærksomhed, før du indsender igen:</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Nogle detaljer kræver manuel gennemgang</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} felter og {1} fotos kan ikke valideres automatisk og skal kontrolleres af en operatør. Dette kan forsinke godkendelsen.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Du kan fjerne disse ventende poster og ansøge igen uden dem. Dette anbefales ikke</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Fjern afventende detaljer</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Fjern afventende oplysninger og ansøg igen</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Dette vil tilbagekalde din nuværende ansøgning, fjerne de verserende oplysninger og indsende den igen uden dem. Vil du fortsætte?</value>
   </data>
 </root>

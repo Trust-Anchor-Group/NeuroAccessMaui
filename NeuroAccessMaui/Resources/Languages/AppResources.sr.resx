@@ -3067,7 +3067,7 @@
     <value>Za vašu individualnu upotrebu</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Pre finalizacije, pročitajte i uverite se da je sve tačno</value>
+    <value>Molimo vas da odvojite trenutak da pregledate svoje podatke pre slanja. Uverite se da je sve tačno i kompletno</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Informacije o kompaniji</value>
@@ -3223,10 +3223,10 @@
     <value>Ovaj KR kod možete podeliti sa drugim korisnikom za kasniju obradu, bilo kada je to potrebno ili kada postoji povezivanje.</value>
   </data>
   <data name="RequestCredits" xml:space="preserve">
-    <value>Zahtev za kredite</value>
+    <value>Zahtev</value>
   </data>
   <data name="SendCredits" xml:space="preserve">
-    <value>Pošalji kredite</value>
+    <value>Poљalji</value>
   </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> I </value>
@@ -3395,5 +3395,35 @@
   </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Fotografisanje</value>
+  </data>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Prijavite se za lični identitet da biste koristili ovu funkciju.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Prijava odbijena</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Provajder nije mogao da odobri vaš podnesak. Pogledajte razlog ispod.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Sledeće stavke zahtevaju vašu pažnju pre nego što ponovo pošaljete:</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Neki detalji zahtevaju ručni pregled</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} polja i {1} fotografije ne mogu se automatski potvrditi i moraju biti proverene od strane operatera. Ovo može odložiti odobrenje.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Možete ukloniti ove unose na čekanju i ponovo se prijaviti bez njih. Ovo se ne preporučuje</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Ukloni detalje na čekanju</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Uklonite detalje na čekanju i ponovo se prijavite</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Ovo će opozvati vašu trenutnu prijavu, ukloniti detalje na čekanju i ponovo poslati bez njih. Da li želite da nastavite?</value>
   </data>
 </root>
