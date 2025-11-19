@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using Waher.Runtime.Inventory;
 

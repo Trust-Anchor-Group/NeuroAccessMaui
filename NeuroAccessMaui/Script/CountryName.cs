@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Waher.Script;
 using ScriptElements = Waher.Script.Abstraction.Elements;
 using Waher.Script.Exceptions;

@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.UI.Converters;
+using NeuroAccessMaui.UI.Converters;
 using System.Globalization;
 using System.Text;
 using Waher.Content;
