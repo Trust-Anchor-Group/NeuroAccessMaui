@@ -51,8 +51,6 @@ using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview.Views;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
-using NeuroAccessMaui.UI.Pages.Registration;
-using NeuroAccessMaui.UI.Pages.Registration.Views;
 using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
 using NeuroAccessMaui.UI.Pages.Startup;  // LoadingPage
@@ -203,7 +201,6 @@ namespace NeuroAccessMaui.UI
 
 			// Main
 			Builder.Services.AddSingleton<CustomShell>();
-			Builder.Services.AddTransient<AppShell>();
 			Builder.Services.AddTransient<CalculatorPage, CalculatorViewModel>();
 			Builder.Services.AddTransient<ChangePasswordPage, ChangePasswordViewModel>();
 			Builder.Services.AddTransient<DurationPage, DurationViewModel>();
@@ -240,20 +237,6 @@ namespace NeuroAccessMaui.UI
 
 			Builder.Services.AddTransient<PetitionPeerReviewNavigationArgs>();
 
-
-			// Registration
-			Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
-			Builder.Services.AddTransient<LoadingView, LoadingViewModel>();
-			Builder.Services.AddTransient<ValidatePhoneView, ValidatePhoneViewModel>();
-			Builder.Services.AddTransient<ValidateEmailView, ValidateEmailViewModel>();
-			Builder.Services.AddTransient<ChooseProviderView, ChooseProviderViewModel>();
-			Builder.Services.AddTransient<CreateAccountView, CreateAccountViewModel>();
-			Builder.Services.AddTransient<GetStartedView, GetStartedViewModel>();
-			Builder.Services.AddTransient<NameEntryView, NameEntryViewModel>();
-			Builder.Services.AddTransient<DefinePasswordView, DefinePasswordViewModel>();
-			Builder.Services.AddTransient<BiometricsView, BiometricsViewModel>();
-			Builder.Services.AddTransient<FinalizeView, FinalizeViewModel>();
-			Builder.Services.AddTransient<ContactSupportView, ContactSupportViewModel>();
 
 			// Onboarding
 			Builder.Services.AddTransient<OnboardingPage, OnboardingViewModel>();

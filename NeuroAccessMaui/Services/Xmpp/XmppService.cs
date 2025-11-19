@@ -23,7 +23,6 @@ using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Kyc;
-using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportType;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;

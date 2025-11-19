@@ -1,5 +1,4 @@
 using NeuroAccessMaui.UI.Pages;
-using NeuroAccessMaui.UI.Pages.Registration;    // for RegistrationPage
 using NeuroAccessMaui.UI.Pages.Main;           // for MainPage
 using NeuroAccessMaui.Services;          // for ServiceRef and ServiceHelper
 using System.Threading.Tasks;

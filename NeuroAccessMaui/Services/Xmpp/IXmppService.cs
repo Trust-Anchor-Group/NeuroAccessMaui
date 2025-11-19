@@ -3,7 +3,6 @@ using EDaler.Events;
 using EDaler.Uris;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Wallet;
-using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.Events;
@@ -34,6 +33,7 @@ using Waher.Runtime.Inventory;
 using Waher.Runtime.Temporary;
 using Waher.Things;
 using Waher.Things.SensorData;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {

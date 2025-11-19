@@ -9,7 +9,6 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Tag;
-using NeuroAccessMaui.UI.Pages.Registration;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;

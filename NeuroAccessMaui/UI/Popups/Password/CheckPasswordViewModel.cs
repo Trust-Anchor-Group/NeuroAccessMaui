@@ -7,7 +7,6 @@ using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Authentication;
-using NeuroAccessMaui.UI.Pages.Registration.Views;
 using Waher.Content;
 using Waher.Script.Constants;
 
