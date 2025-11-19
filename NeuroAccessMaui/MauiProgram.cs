@@ -153,7 +153,7 @@ namespace NeuroAccessMaui
 			LayoutHandler.Mapper.AppendToMapping("GlobalIgnoreSafeArea", (handler, view) =>
 			{
 				// Sets once at handler creation
-				if(view is Layout layout)
+				if(view is Microsoft.Maui.Controls.Layout layout)
 				layout.IgnoreSafeArea = true;
 			});
 
