@@ -547,8 +547,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				await Task.Delay(100);
 
 			await MainThread.InvokeOnMainThreadAsync(async () =>
+				{
+					await StateContainer.ChangeStateWithAnimation(this.StateObject, NewState);
+				});
+		}
+
+		private Task SetCanStateChangeOnMainThreadAsync(bool value)
+		{
+			return MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				await StateContainer.ChangeStateWithAnimation(this.StateObject, NewState);
+				this.CanStateChange = value;
 			});
 		}
 
@@ -908,7 +916,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			ServiceRef.LogService.LogDebug($"RefreshContractAsync start for {this.Contract.ContractId}");
 			bool previousStateChange = this.CanStateChange;
-			this.CanStateChange = false; // Gate state transitions during refresh
+			await this.SetCanStateChangeOnMainThreadAsync(false); // Gate state transitions during refresh
 
 			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
@@ -971,7 +979,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				{
 					this.IsRefreshing = false;
 				});
-				this.CanStateChange = previousStateChange;
+				await this.SetCanStateChangeOnMainThreadAsync(previousStateChange);
 				ServiceRef.LogService.LogDebug("RefreshContractAsync skipped (no changes)");
 				return;
 			}
@@ -1004,7 +1012,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 				await Database.Update(Ref);
 			}
 
-			this.CanStateChange = previousStateChange;
+			await this.SetCanStateChangeOnMainThreadAsync(previousStateChange);
 			await this.GoToStateAsync(CurrentStep);
 			ServiceRef.LogService.LogDebug($"RefreshContractAsync completed for {this.Contract.ContractId}");
 
