@@ -1,5 +1,7 @@
 ﻿using NeuroAccessMaui.Services;
 using SkiaSharp.Extended.UI.Controls;
+using System; // For IDisposable
+using System.Threading; // Added for cancellation support
 
 namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 {
@@ -8,21 +10,22 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 	/// </summary>
 	public partial class ViewIdentityPage
 	{
-
 		/// <summary>
 		/// Creates a new instance of the <see cref="ViewIdentityPage"/> class.
 		/// </summary>
+		/// <param name="Vm">The view model bound to the page.</param>
 		public ViewIdentityPage(ViewIdentityViewModel Vm)
 		{
 			this.InitializeComponent();
 			this.ContentPageModel = Vm;
 		}
+
 		protected override void OnSizeAllocated(double width, double height)
 		{
 			base.OnSizeAllocated(width, height);
 			try
 			{
-				if(this.RainbowView is null || this.ConfettiView is null)
+				if (this.RainbowView is null || this.ConfettiView is null)
 				{
 					return;
 				}
@@ -127,8 +130,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			{
 				if (this.ContentPageModel is ViewIdentityViewModel VM)
 				{
-					if(!this.BottomSheet.IsExpanded)
+					if (!this.BottomSheet.IsExpanded)
+					{
 						this.BottomSheet?.ToggleExpanded();
+					}
 				}
 			}
 			catch (Exception Ex)

@@ -110,10 +110,26 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 		public bool HasTimer => this.timer?.IsRunning ?? false;
 
+		// Get the length of the profile image side in DIPs (device independent pixels).
+		public double ProfileImageSideLength
+		{
+			get
+			{
+				// Width and Height are in pixels
+				double Width = DeviceDisplay.Current.MainDisplayInfo.Width;
+				double Height = DeviceDisplay.Current.MainDisplayInfo.Height;
 
+				// Aspect ratio (width / height)
+				double AspectRatio = Height / Width;
 
+				double Length = AspectRatio * AspectRatio * 45; // Base length adjusted by aspect ratio squared
 
+				if (Length > 250) Length = 250;
+				if (Length < 125) Length = 125;
 
+				return Length;
+			}
+		}
 
 		// Define custom field descriptors for any multi-part or special properties for example BDAY BMONTH BYEAR -> B
 		private static readonly List<CustomFieldDefinition> customFields =

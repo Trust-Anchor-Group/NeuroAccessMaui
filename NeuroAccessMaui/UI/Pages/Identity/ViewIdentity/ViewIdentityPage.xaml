@@ -287,7 +287,8 @@
             RepeatCount="-1"
             Rotation="90"
             Source="background.json" />
-        <!--  TOP BAR  -->
+
+		<!--  TOP BAR  -->
         <Grid
             Grid.Row="0"
             Margin="16,8,16,0"
@@ -393,7 +394,7 @@
                 Padding="0"
                 HorizontalOptions="Center"
                 Spacing="{DynamicResource SmallSpacing}">
-                <Grid HeightRequest="200" WidthRequest="200">
+				<Grid HeightRequest="{Binding ProfileImageSideLength}" WidthRequest="{Binding ProfileImageSideLength}">
                     <controls:ConditionView Condition="{Binding LoadPhotosTask.IsRunning}">
                         <controls:ConditionView.True>
                             <ActivityIndicator
@@ -409,9 +410,9 @@
                                     <controls:ConditionView.True>
                                         <Image
                                             Aspect="AspectFit"
-                                            HeightRequest="200"
                                             Source="{Binding ProfilePhoto}"
-                                            WidthRequest="200" />
+                                            HeightRequest="{Binding ProfileImageSideLength}"
+                                            WidthRequest="{Binding ProfileImageSideLength}" />
                                     </controls:ConditionView.True>
                                     <controls:ConditionView.False>
                                         <controls:SvgView
