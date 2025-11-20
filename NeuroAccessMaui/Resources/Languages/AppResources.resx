@@ -3426,4 +3426,7 @@
   <data name="KycConfirmRemovePending" xml:space="preserve">
     <value>This will revoke your current application, remove the pending details, and resubmit without them. Do you want to continue?</value>
   </data>
+  <data name="Optional" xml:space="preserve">
+    <value>Optional</value>
+  </data>
 </root>
