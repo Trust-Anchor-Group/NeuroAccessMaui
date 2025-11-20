@@ -14,6 +14,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.Services.Nfc;
 using Plugin.Firebase.CloudMessaging;
+using Plugin.Firebase.Core.Platforms.Android;
 
 namespace NeuroAccessMaui
 {
@@ -84,7 +85,6 @@ namespace NeuroAccessMaui
 			try
 			{
 				base.OnCreate(savedInstanceState);
-
 				this.CreateNotificationChannelsIfNeeded();
 				nfcAdapter = NfcAdapter.GetDefaultAdapter(this);
 				await this.HandleIntent(this.Intent);

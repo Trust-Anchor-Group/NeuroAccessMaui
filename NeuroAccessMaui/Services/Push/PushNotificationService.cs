@@ -1,9 +1,13 @@
+using System.Threading;
+using System.Threading.Tasks;
 using EDaler;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroFeatures;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Devices;
 using Plugin.Firebase.CloudMessaging;
 using Plugin.Firebase.CloudMessaging.EventArgs;
 using Waher.Content;
@@ -25,6 +29,9 @@ namespace NeuroAccessMaui.Services.Push
 	{
 		private readonly Dictionary<PushMessagingService, string> tokens = [];
 		private DateTime lastTokenCheck = DateTime.MinValue;
+		private bool isInitialized;
+		private readonly object tokenVerificationSync = new();
+		private Task? pendingTokenVerificationTask;
 
 		/// <summary>
 		/// Push notification service
@@ -33,6 +40,32 @@ namespace NeuroAccessMaui.Services.Push
 		{
 			//	CrossFirebaseCloudMessaging.Current.NotificationReceived += OnNotificationReceived;
 			//	CrossFirebaseCloudMessaging.Current.NotificationTapped += OnNotificationTapped;
+		}
+
+		/// <summary>
+		/// Loads the specified service.
+		/// </summary>
+		/// <param name="isResuming">Set to <c>true</c> when app is resuming.</param>
+		/// <param name="cancellationToken">Cancellation token.</param>
+		public override async Task Load(bool isResuming, CancellationToken cancellationToken)
+		{
+			if (!this.isInitialized)
+			{
+				this.isInitialized = true;
+				App.AppActivated += this.App_AppActivated;
+				try
+				{
+					CrossFirebaseCloudMessaging.Current.TokenChanged += this.FirebaseCloudMessaging_TokenChanged;
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+
+				this.ScheduleTokenVerification();
+			}
+
+			await base.Load(isResuming, cancellationToken);
 		}
 
 		/// <summary>
@@ -51,6 +84,70 @@ namespace NeuroAccessMaui.Services.Push
 				await ServiceRef.XmppService.NewPushNotificationToken(TokenInformation);
 				await this.OnNewToken.Raise(this, new TokenEventArgs(TokenInformation.Service, TokenInformation.Token, TokenInformation.ClientType));
 			}
+		}
+
+		private void App_AppActivated(object? sender, EventArgs e)
+		{
+			this.ScheduleTokenVerification();
+		}
+
+		private async void FirebaseCloudMessaging_TokenChanged(object? sender, FCMTokenChangedEventArgs e)
+		{
+			try
+			{
+				string? token = e?.Token;
+				if (string.IsNullOrEmpty(token))
+					return;
+
+				TokenInformation info = new()
+				{
+					Token = token,
+					Service = PushMessagingService.Firebase,
+					ClientType = ResolveClientType()
+				};
+
+				await this.CheckPushNotificationToken(info);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		private void ScheduleTokenVerification()
+		{
+			Task VerificationTask;
+
+			lock (this.tokenVerificationSync)
+			{
+				if (this.pendingTokenVerificationTask is not null && !this.pendingTokenVerificationTask.IsCompleted)
+					return;
+
+				VerificationTask = MainThread.InvokeOnMainThreadAsync(async () =>
+				{
+					await this.CheckPushNotificationToken(null);
+				});
+
+				this.pendingTokenVerificationTask = VerificationTask;
+			}
+
+			VerificationTask.ContinueWith(t =>
+			{
+				Exception? Exception = t.Exception?.GetBaseException() ?? t.Exception;
+				if (Exception is not null)
+					ServiceRef.LogService.LogException(Exception);
+			}, TaskContinuationOptions.OnlyOnFaulted);
+		}
+
+		private static ClientType ResolveClientType()
+		{
+			if (DeviceInfo.Platform == DevicePlatform.Android)
+				return ClientType.Android;
+
+			if (DeviceInfo.Platform == DevicePlatform.iOS || DeviceInfo.Platform == DevicePlatform.MacCatalyst)
+				return ClientType.iOS;
+
+			return ClientType.Other;
 		}
 
 		/// <summary>
