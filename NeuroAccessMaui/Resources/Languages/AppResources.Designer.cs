@@ -4165,7 +4165,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you prefer, you can remove these pending entries to continue without them, but this is optional..
+        ///   Looks up a localized string similar to You can remove these pending entries and reapply without them. This is not recommended.
         /// </summary>
         public static string KycUnvalidatedActionHint {
             get {
@@ -5074,7 +5074,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you do not have access to your account, please contact our support team at.
+        ///   Looks up a localized string similar to If you do not have access to your account, please contact your ID provider..
         /// </summary>
         public static string OnboardingContactSupportDetailsPart2 {
             get {
@@ -5286,6 +5286,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string OperatorDoesNotSupportRegisteringNewAccounts {
             get {
                 return ResourceManager.GetString("OperatorDoesNotSupportRegisteringNewAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optional.
+        /// </summary>
+        public static string Optional {
+            get {
+                return ResourceManager.GetString("Optional", resourceCulture);
             }
         }
         

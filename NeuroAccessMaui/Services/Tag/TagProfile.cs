@@ -100,6 +100,12 @@ namespace NeuroAccessMaui.Services.Tag
 		private DateTime? lastEDalerBalanceUpdate;
 
 		/// <summary>
+		/// TODO: When implemented, is property to determine if the user is a merchant.
+		/// Can be used to hide or show certain features.
+		/// </summary>
+		public bool IsMerchant => false;
+
+		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
 		/// </summary>
 		public TagProfile()

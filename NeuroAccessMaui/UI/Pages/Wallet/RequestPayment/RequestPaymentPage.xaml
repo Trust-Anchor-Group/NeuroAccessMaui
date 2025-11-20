@@ -32,7 +32,7 @@
 						<!-- AMOUNT -->
 						<Label Text="{l:Localize Amount}" Style="{DynamicResource Brand2BodySHeadSHeadL}"/>
 						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
-							<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+							<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}">
 								<controls:CompositeEntry EntryData="{Binding AmountText}"
 																 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
 																 Placeholder="{Binding Path=Currency}"
@@ -48,7 +48,7 @@
 						<!-- AMOUNT EXTRA -->
 						<Label Text="{l:Localize AmountExtra}" Style="{DynamicResource Brand2BodySHeadSHeadL}" Margin="0,16,0,0"/>
 						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
-							<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+							<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}">
 								<controls:CompositeEntry EntryData="{Binding AmountExtraText}"
 														 BackgroundColor="{Binding Path=AmountExtraOk, Converter={converters:ControlBgColor}}"
 														 Placeholder="{Binding Path=Currency}"
@@ -62,9 +62,12 @@
 						</Grid>
 
 						<!-- MESSAGE -->
-						<Label Text="{l:Localize Message}" Style="{DynamicResource Brand2BodySHeadSHeadL}" Margin="0,16,0,0"/>
-						<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
-							<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}" EntryData="{Binding Path=Message}" BorderStroke="Transparent"/>
+						<Label Text="{l:Localize Message}" Style="{DynamicResource Brand2BodySHeadSHeadL}" Margin="0,16,0,0" IsVisible="{Binding IsMerchant}"/>
+						<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}" IsVisible="{Binding IsMerchant}">
+							<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
+													 EntryData="{Binding Path=Message}"
+													 BorderStroke="Transparent"
+													 Placeholder="{l:Localize Optional}"/>
 						</Border>
 
 						<!-- BUTTONS -->

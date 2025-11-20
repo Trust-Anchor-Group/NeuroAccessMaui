@@ -248,6 +248,7 @@
 									LabelText="{l:Localize AddToBalance}"
 									Grid.Row="2"
 									Grid.ColumnSpan="2"
+									HeightRequest="48"
 									Margin="0,16,0,0" />
 
 			</Grid>
