@@ -943,7 +943,7 @@ namespace NeuroAccessMaui
                     Msg.AppendLine();
                     Msg.AppendLine("```");
                     Msg.AppendLine(StackTrace);
-                    Msg.AppendLine("```");
+                    Msg.AppendLine("```\n");
 
                     Log.Alert(Msg.ToString(), [.. Tags]);
 
