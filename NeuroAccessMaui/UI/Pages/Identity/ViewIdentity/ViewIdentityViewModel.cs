@@ -86,6 +86,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		public bool HasTechnicalFields => this.TechnicalFields.Count > 0;
 		public bool HasOtherFields => this.OtherFields.Count > 0;
 
+		public double SuperSafeAreaBottom => SafeArea.ResolveInsetsForMode(SafeAreaMode.Bottom).Bottom;
+
 		public ObservableTask<bool> LoadIdentityTask { get; }
 		public ObservableTask<int> LoadPhotosTask { get; }
 		public ObservableCollection<Photo> Photos { get; } = [];
