@@ -381,13 +381,6 @@
 		<ProjectReference Include="..\..\IoTGateway\Security\Waher.Security.JWS\Waher.Security.JWS.csproj" />
 		<ProjectReference Include="..\..\IoTGateway\Security\Waher.Security.JWT\Waher.Security.JWT.csproj" /> -->
 	</ItemGroup>
-	<ItemGroup>
-		<Compile Update="Resources\Languages\AppResources.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>AppResources.resx</DependentUpon>
-		</Compile>
-	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />

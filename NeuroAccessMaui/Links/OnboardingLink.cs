@@ -6,6 +6,7 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 using Waher.Content;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
@@ -192,6 +193,14 @@ namespace NeuroAccessMaui.Links
 								ServiceRef.Localizer[nameof(AppResources.InvitationAccepted)],
 								ServiceRef.Localizer[nameof(AppResources.InvitedToCreateAccountOnDomain), Domain],
 								ServiceRef.Localizer[nameof(AppResources.Ok)]);
+
+							OnboardingNavigationArgs Args;
+							if (Url is not null)
+							{
+								Args = new OnboardingNavigationArgs(OnboardingScenario.FullSetup, Url);
+								await ServiceRef.NavigationService.SetRootAsync(nameof(OnboardingPage), Args);
+							}
+
 							break;
 
 						case "Account":
