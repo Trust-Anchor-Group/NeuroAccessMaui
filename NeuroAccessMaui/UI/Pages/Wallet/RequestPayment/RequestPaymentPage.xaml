@@ -64,7 +64,10 @@
 						<!-- MESSAGE -->
 						<Label Text="{l:Localize Message}" Style="{DynamicResource Brand2BodySHeadSHeadL}" Margin="0,16,0,0"/>
 						<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}">
-							<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}" EntryData="{Binding Path=Message}" BorderStroke="Transparent"/>
+							<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
+													 EntryData="{Binding Path=Message}"
+													 BorderStroke="Transparent"
+													 Placeholder="{l:Localize Optional}"/>
 						</Border>
 
 						<!-- BUTTONS -->
