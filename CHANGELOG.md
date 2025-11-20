@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- WIP Animation system.
+- CustomShell host with NavigationService and PopupService, fully decoupled from MAUI AppShell.
+- PolicyRunner/ObservableTaskBuilder integration driving startup/service resilience.
+- Windows desktop support with platform-specific services, manifests, and presenter integration.
+- Dynamic KYC flows and the reimagined Onboarding journey replacing ApplyID/registration.
 - Added Swipe gesture on ID page to expand additional info
 - KYC XML schemas, sample processes, and parser support for dynamic flow definitions.
 - Dedicated  domain, including autosave, validation, and summary materialization.
@@ -30,6 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Upgraded to .NET 9
+- Modified service lifecycle, making the app more resiliant when closing/sleeping/shutting off the app
 - Applications page/view-model now load drafts through  pipelines and expose the active .
 - Cache services, fetch abstractions, and schema registration were adjusted to support the new flow and XML validation.
 - Branding, buttons, pickers, and other shared styles updated to align with the KYC experience visuals.
@@ -59,6 +66,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- All files related to Registration (Replaced with Onboarding)
+- AppShell
+- Mopups dependency (Replace with in-house popup solution)
 - Legacy  implementation superseded by the new  infrastructure.
 - Unused contract overview views and associated XAML files (, )
 - Usage of AppThemeBinding, except for images
@@ -67,6 +77,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Refactored
 
 - ThemeService for maintainability and robustness
+
+### Deprecated
+
+- UiService (Replaced with NavigationService, PopupService)
 
 ## [2.6.1] - 2025/06/30
 
