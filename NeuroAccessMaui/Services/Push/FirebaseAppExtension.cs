@@ -1,6 +1,7 @@
 ﻿
 
 using Microsoft.Maui.LifecycleEvents;
+using Microsoft.Extensions.DependencyInjection;
 using Plugin.Firebase.CloudMessaging;
 #if IOS
 using Plugin.Firebase.Core.Platforms.iOS;
@@ -31,11 +32,12 @@ namespace NeuroAccessMaui.Services.Push
 			Builder.ConfigureLifecycleEvents(events =>
 			{
 #if IOS
-            events.AddiOS(iOS => iOS.WillFinishLaunching((_,_) => {
-						CrossFirebase.Initialize();
-						UNUserNotificationCenter.Current.Delegate = new NotificationDelegate();
-               	return false;
-            }));
+				events.AddiOS(iOS => iOS.WillFinishLaunching((_, _) =>
+				{
+					CrossFirebase.Initialize();
+					UNUserNotificationCenter.Current.Delegate = new NotificationDelegate();
+					return false;
+				}));
 #elif ANDROID
 				events.AddAndroid(android => android.OnCreate((activity, _) =>
 					{
@@ -44,6 +46,8 @@ namespace NeuroAccessMaui.Services.Push
 					));
 #endif
 			});
+
+			Builder.Services.AddSingleton(_ => CrossFirebaseCloudMessaging.Current);
 
 			return Builder;
 		}
