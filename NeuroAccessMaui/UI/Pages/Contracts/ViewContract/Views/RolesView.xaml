@@ -57,7 +57,7 @@
 							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">
 								<BindableLayout.ItemTemplate>
 									<DataTemplate x:DataType="objectModel:ObservablePart">
-										<Border Style="{AppThemeBinding Light={DynamicResource BorderSet}, Dark={DynamicResource BorderSubSet}}">
+										<Border Style="{DynamicResource BorderSet}">
 											<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 												<!-- Friendly name (clickable) -->
 												<controls:TemplatedButton Command="{Binding OpenIdentityCommand}"
@@ -66,7 +66,7 @@
 															 Style="{DynamicResource RoleDescriptionLabel}"
 															 VerticalOptions="Center"
 															 HorizontalOptions="Center"
-														   TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+														   TextColor="{DynamicResource ContentPrimaryWL}" />
 												</controls:TemplatedButton>
 												<Grid ColumnDefinitions="auto,*">
 													<VerticalStackLayout Grid.Column="0"
@@ -78,10 +78,10 @@
 															<Border Padding="{DynamicResource SmallLeftRightMargins}"
 																	  Style="{DynamicResource RoundedBorder}"
 																	  Stroke="Transparent"
-																	  BackgroundColor="{DynamicResource BrandColorsNeuroOrangea20Light}">
+																	  BackgroundColor="{DynamicResource BrandColorsNeuroOrangea20}">
 																<Label Style="{DynamicResource RoleDescriptionLabel}"
 																		 Text="{l:Localize IDRequestSent}"
-																		 TextColor="{DynamicResource BrandColorsNeuroOrangeLight}"
+																		 TextColor="{DynamicResource BrandColorsNeuroOrange}"
 																		 VerticalOptions="Center" />
 															</Border>
 														</Grid>
@@ -90,25 +90,41 @@
 														<Grid ColumnDefinitions="auto"
 																IsVisible="{Binding HasSigned, Converter={StaticResource InvertedBoolConverter}}">
 															<Border Padding="{DynamicResource SmallLeftRightMargins}"
-																	  Style="{DynamicResource RoundedBorder}"
-																	  Stroke="Transparent"
-																	  BackgroundColor="{DynamicResource BrandColorsNeuroOrangea20Light}">
+																	Style="{DynamicResource RoundedBorder}"
+																	Stroke="Transparent"
+																	BackgroundColor="{DynamicResource BrandColorsNeuroOrangea20}">
 																<Label Style="{DynamicResource RoleDescriptionLabel}"
-																		 Text="{l:Localize PendingSignature}"
-																		 TextColor="{DynamicResource BrandColorsNeuroOrangeLight}"
-																		 HorizontalOptions="End"
-																		 VerticalOptions="Center"
-																		 HorizontalTextAlignment="End" />
+																		Text="{l:Localize PendingSignature}"
+																		TextColor="{DynamicResource BrandColorsNeuroOrange}"
+																		HorizontalOptions="End"
+																		VerticalOptions="Center"
+																		HorizontalTextAlignment="End" />
 															</Border>
 														</Grid>
 													</VerticalStackLayout>
 
 													<!-- View signature button (if signed) -->
+												<VerticalStackLayout Grid.Column="1"
+																		HorizontalOptions="End"
+																		Spacing="{DynamicResource SmallSpacing}">
+													<controls:TemplatedButton Command="{Binding SendProposalToPartCommand, Source={RelativeSource AncestorType={x:Type base:ViewContractViewModel}}, x:DataType=base:ViewContractViewModel}"
+																				CommandParameter="{Binding .}"
+																				IsVisible="{Binding CanSendProposal}"
+																				VerticalOptions="End"
+																				HorizontalOptions="End">
+														<Border Style="{DynamicResource FilledTemplateButtonBorder}"
+																  Margin="0">
+															<Label Text="{l:Localize SendProposal}"
+																	 Style="{DynamicResource FilledTemplateButtonLabel}"
+																	 HorizontalTextAlignment="Center"
+																	 VerticalTextAlignment="Center" />
+														</Border>
+													</controls:TemplatedButton>
+
 													<controls:TemplatedButton Command="{Binding OpenSignatureCommand}"
-																					  VerticalOptions="End"
-																					  IsVisible="true"
-																					  Grid.Column="1"
-																					  HorizontalOptions="End">
+																						  VerticalOptions="End"
+																						  IsVisible="true"
+																						  HorizontalOptions="End">
 														<Border Style="{DynamicResource FilledTemplateButtonBorder}"
 																  Margin="0">
 															<Label Text="{l:Localize ViewSignature}"
@@ -118,6 +134,7 @@
 														</Border>
 
 													</controls:TemplatedButton>
+												</VerticalStackLayout>
 
 												</Grid>
 
@@ -132,7 +149,7 @@
 									  IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}">
 								<Label Text="{l:Localize None}"
 										 Style="{DynamicResource RoleDescriptionLabel}"
-										 TextColor="{DynamicResource ButtonAccessPrimarybgWLLight}"
+										 TextColor="{DynamicResource ButtonAccessPrimarybgWL}"
 										 HorizontalTextAlignment="Center"
 										 VerticalTextAlignment="Center" />
 							</Border>

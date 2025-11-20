@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
 using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
@@ -31,9 +30,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (this.navigationArguments is not null)
 			{
@@ -52,11 +51,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			this.Events.Clear();
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		#region Properties
@@ -87,7 +86,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 				AddTextNoteViewModel AddTextNoteViewModel = new();
 				AddTextNotePopup AddTextNotePopup = new(AddTextNoteViewModel);
 
-				await MopupService.Instance.PushAsync(AddTextNotePopup);
+				await ServiceRef.PopupService.PushAsync(AddTextNotePopup);
 				bool? Result = await AddTextNoteViewModel.Result;
 
 				if (Result.HasValue && Result.Value)

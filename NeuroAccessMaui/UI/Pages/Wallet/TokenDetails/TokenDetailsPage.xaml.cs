@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// </summary>
 		public TokenDetailsPage()
 		{
-			this.ContentPageModel = new TokenDetailsViewModel(this, ServiceRef.UiService.PopLatestArgs<TokenDetailsNavigationArgs>());
+			this.ContentPageModel = new TokenDetailsViewModel(this, ServiceRef.NavigationService.PopLatestArgs<TokenDetailsNavigationArgs>());
 			this.InitializeComponent();
 		}
 

@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 		/// </summary>
 		public MachineVariablesPage()
 		{
-			this.ContentPageModel = new MachineVariablesViewModel(ServiceRef.UiService.PopLatestArgs<MachineVariablesNavigationArgs>());
+			this.ContentPageModel = new MachineVariablesViewModel(ServiceRef.NavigationService.PopLatestArgs<MachineVariablesNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

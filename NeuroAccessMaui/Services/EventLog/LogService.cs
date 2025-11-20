@@ -9,6 +9,7 @@ using Waher.Events.XMPP;
 using Waher.Networking.XMPP.Contracts.HumanReadable.InlineElements;
 using Waher.Persistence.Exceptions;
 using Waher.Runtime.Inventory;
+using System.Threading; // Added for OperationCanceledException
 
 namespace NeuroAccessMaui.Services.EventLog
 {
@@ -119,6 +120,14 @@ namespace NeuroAccessMaui.Services.EventLog
 		/// <param name="extraParameters">Any extra parameters that are added to the log.</param>
 		public void LogException(Exception ex, params KeyValuePair<string, object?>[] extraParameters)
 		{
+			// Treat cooperative cancellation as normal flow with minimal noise.
+			if (ex is OperationCanceledException)
+			{
+				// Log a concise informational entry instead of a full exception + stack trace.
+				this.LogInformational("Operation canceled.", [.. this.GetParameters(extraParameters)]);
+				return;
+			}
+
 			ex = Log.UnnestException(ex);
 
 			Debug.WriteLine(ex.ToString());
@@ -245,7 +254,7 @@ namespace NeuroAccessMaui.Services.EventLog
 			string FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), debugLogFileName);
 
 			// If an old session is still open, end it first
-			if (this.debugSink != null)
+			if (this.debugSink is not null)
 				await this.EndDebugLogSessionAsync();
 
 			if (File.Exists(FileName))

@@ -1,19 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!-- Default to Android only -->
-		<TargetFrameworks>net8.0-android</TargetFrameworks>
-	</PropertyGroup>
-
-	<!-- If on Mac, add iOS as well -->
-	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-		<TargetFrameworks>net8.0-ios;net8.0-android</TargetFrameworks>
-	</PropertyGroup>
-	
-	<PropertyGroup>
-		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-maccatalyst</TargetFrameworks> -->
-		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks> -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-maccatalyst</TargetFrameworks> -->
+		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks> -->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
 		<RootNamespace>NeuroAccessMaui</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -24,23 +14,27 @@
 		<ApplicationTitle>Neuro-Access</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId Condition="$(TargetFramework) == 'net8.0-android'">com.tag.NeuroAccess</ApplicationId>
-		<ApplicationId Condition="$(TargetFramework) != 'net8.0-android'">com.trustanchorgroup.NeuroAccess</ApplicationId>
+		<ApplicationId Condition="$(TargetFramework) == 'net9.0-android'">com.tag.NeuroAccess</ApplicationId>
+		<ApplicationId Condition="$(TargetFramework) != 'net9.0-android'">com.trustanchorgroup.NeuroAccess</ApplicationId>
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2.6.1</ApplicationDisplayVersion>
-		<ApplicationVersion>245</ApplicationVersion>
+		<ApplicationDisplayVersion>2.7.2</ApplicationDisplayVersion>
+		<Version>2.7.2</Version>
+		<ApplicationVersion>670</ApplicationVersion>
 
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</SupportedOSPlatformVersion>
+		<NeutralLanguage>en</NeutralLanguage>
+
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">23.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
-		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">13.0</TargetPlatformMinVersion>
-		<PublishTrimmed>False</PublishTrimmed>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</TargetPlatformMinVersion>
 		<PublishAot>False</PublishAot>
+		<TrimMode>partial</TrimMode>
 		<Title>Neuro-Access</Title>
 		<Company>Trust Anchor Group AB</Company>
 		<Product>Neuro-Access</Product>
@@ -48,53 +42,63 @@
 		<Copyright>Copyright © Trust Anchor Group 2018-2025. All rights reserved.</Copyright>
 		<PackageProjectUrl></PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Trust-Anchor-Group/NeuroAccessMaui</RepositoryUrl>
+		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+
+	<!-- If on Mac, add iOS as well -->
+	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+		<TargetFrameworks>net9.0-ios;net9.0-android</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('windows'))">
+		<!-- On Windows build Android + Windows (WinUI) -->
+		<TargetFrameworks>net9.0-android;net9.0-windows10.0.19041.0</TargetFrameworks>
+
+		<WindowsPackageType>None</WindowsPackageType>
 
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
 		<ProvisioningType>manual</ProvisioningType>
 		<CodesignKey>iPhone Developer: Maximiliam Berggren (6C6VB862B9)</CodesignKey>
 		<CodesignProvision>Maximiliam Dev</CodesignProvision>
-		<PublishTrimmed>True</PublishTrimmed>
 		<UseInterpreter>True</UseInterpreter>
 		<MtouchLink>SdkOnly</MtouchLink>
 		<NoSymbolStrip>True</NoSymbolStrip>
 		<MtouchExtraArgs>--optimize:-static-block-to-delegate-lookup</MtouchExtraArgs>
 	</PropertyGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
+		<TrimmerRootAssembly Include="CommunityToolkit.Maui" RootMode="All" />
+	</ItemGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
-		<PublishTrimmed>True</PublishTrimmed> 
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
-		<DebugSymbols>False</DebugSymbols>
-		<PublishTrimmed>True</PublishTrimmed> 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
+		<DebugSymbols>True</DebugSymbols>
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>True</UseInterpreter>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
-		<PublishTrimmed>True</PublishTrimmed> 
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
 		<RunAOTCompilation>False</RunAOTCompilation>
-		<PublishTrimmed>False</PublishTrimmed> 
 		<DebugSymbols>True</DebugSymbols>
+		<AndroidDebugSymbols>true</AndroidDebugSymbols>
 	</PropertyGroup>
-
-	<Target Name="DoNotLinkWithBrowserEngineKit" AfterTargets="_ComputeLinkNativeExecutableInputs">
-		<ItemGroup>
-			<_NativeExecutableFrameworks Remove="BrowserEngineKit" />
-		</ItemGroup>
-	</Target>
 
 	<PropertyGroup>
 		<NoSymbolStrip Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">True</NoSymbolStrip>
@@ -106,11 +110,11 @@
 	</PropertyGroup>
 
 	<!-- Firebase -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android' and Exists('google-services.json')">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android' and Exists('google-services.json')">
 		<GoogleServicesJson Include="google-services.json" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios' and Exists('GoogleService-Info.plist')">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-ios' and Exists('GoogleService-Info.plist')">
 		<BundleResource Include="GoogleService-Info.plist" />
 	</ItemGroup>
 
@@ -138,24 +142,6 @@
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<AndroidResource Include="Resources\xml\file_paths.xml" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Remove="Services\NewFolder1\**" />
-	  <Compile Remove="Services\NewFolder2\**" />
-	  <Compile Remove="Services\Xmpp\NewFolder\**" />
-	  <EmbeddedResource Remove="Services\NewFolder1\**" />
-	  <EmbeddedResource Remove="Services\NewFolder2\**" />
-	  <EmbeddedResource Remove="Services\Xmpp\NewFolder\**" />
-	  <MauiCss Remove="Services\NewFolder1\**" />
-	  <MauiCss Remove="Services\NewFolder2\**" />
-	  <MauiCss Remove="Services\Xmpp\NewFolder\**" />
-	  <MauiXaml Remove="Services\NewFolder1\**" />
-	  <MauiXaml Remove="Services\NewFolder2\**" />
-	  <MauiXaml Remove="Services\Xmpp\NewFolder\**" />
-	  <None Remove="Services\NewFolder1\**" />
-	  <None Remove="Services\NewFolder2\**" />
-	  <None Remove="Services\Xmpp\NewFolder\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -195,7 +181,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiImage Remove="Resources\Images\appiconfg.svg" />
+		<MauiImage Remove="Resources\Images\appiconfg.svg" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -276,505 +262,136 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="Platforms\iOS\IOSHelpers.cs" />
-		<None Include="Platforms\iOS\Security\BlurProtectionManager.cs" />
-		<None Include="Platforms\iOS\Security\ScreenRecordingProtectionManager.cs" />
-		<None Include="Platforms\iOS\Security\ScreenSecurity.ios.cs" />
-		<None Include="Platforms\iOS\Security\ScreenshotProtectionManager.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Common" Version="8.3.2" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
-		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.2.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+		<PackageReference Include="CommunityToolkit.Common" Version="8.4.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="12.2.0" />
+		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="6.0.1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="DotNetMeteor.HotReload.Plugin" Version="3.*" />
-		<PackageReference Include="EDaler" Version="3.1.1" />
-		<PackageReference Include="Mapsui.Maui" Version="4.1.9" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.10" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.100" />
-		<PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="4.12.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-		<PackageReference Include="Mopups" Version="1.3.2" />
-		<PackageReference Include="NeuroFeatures" Version="2.1.4" />
-		<PackageReference Include="Plugin.Fingerprint" Version="3.0.0-beta.1" />
-		<PackageReference Include="SkiaSharp" Version="2.88.9" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="2.88.9" />
+		<PackageReference Include="Mapsui" Version="5.0.0-rc.2" />
+		<PackageReference Include="Mapsui.Maui" Version="5.0.0-rc.2" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.110" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.110" />
+		<PackageReference Include="Plugin.Fingerprint" Version="2.1.5" />
+		<PackageReference Include="SkiaSharp" Version="3.119.1" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.1" />
 		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0" />
 		<PackageReference Include="Plugin.Firebase.Core" Version="3.1.1" />
 		<PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.2" />
-		<PackageReference Include="Svg.Skia" Version="2.0.0.1" />
+		<PackageReference Include="Svg.Skia" Version="3.2.1" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-		<PackageReference Include="Waher.Content" Version="3.3.4" />
+		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.5.2" />
+
+		<PackageReference Include="EDaler" Version="3.1.2" />
+		<PackageReference Include="NeuroFeatures" Version="2.1.5" />
+		<PackageReference Include="Waher.Content" Version="3.4.1" />
 		<PackageReference Include="Waher.Content.Images" Version="3.0.2" />
-		<PackageReference Include="Waher.Content.Markdown" Version="6.1.1" />
+		<PackageReference Include="Waher.Content.Markdown" Version="6.2.0" />
 		<PackageReference Include="Waher.Content.QR" Version="2.1.2" />
-		<PackageReference Include="Waher.Content.Xml" Version="3.1.2" />
-		<PackageReference Include="Waher.Events" Version="1.4.3" />
-		<PackageReference Include="Waher.Events.Files" Version="1.2.0" />
+		<PackageReference Include="Waher.Content.Xml" Version="3.1.3" />
+		<PackageReference Include="Waher.Events" Version="1.4.5" />
+		<PackageReference Include="Waher.Events.Files" Version="1.2.1" />
 		<PackageReference Include="Waher.Events.Filter" Version="1.1.0" />
 		<PackageReference Include="Waher.Events.Persistence" Version="1.2.1" />
-		<PackageReference Include="Waher.Events.XMPP" Version="2.1.1" />
-		<PackageReference Include="Waher.Networking" Version="4.5.1" />
+		<PackageReference Include="Waher.Events.XMPP" Version="2.1.2" />
+		<PackageReference Include="Waher.Networking" Version="4.5.3" />
 		<PackageReference Include="Waher.Networking.DNS" Version="3.1.3" />
 		<PackageReference Include="Waher.Networking.PeerToPeer" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.UPnP" Version="3.1.0" />
-		<PackageReference Include="Waher.Networking.XMPP" Version="4.1.5" />
-		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="3.1.0" />
-		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="4.2.2" />
-		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.5.0" />
-		<PackageReference Include="Waher.Networking.XMPP.Control" Version="4.1.1" />
+		<PackageReference Include="Waher.Networking.XMPP" Version="4.2.3" />
+		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="3.1.1" />
+		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="4.2.3" />
+		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.9.2" />
+		<PackageReference Include="Waher.Networking.XMPP.Control" Version="4.1.2" />
 		<PackageReference Include="Waher.Networking.XMPP.Geo" Version="1.0.1" />
-		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.2.6" />
+		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.2.7" />
 		<PackageReference Include="Waher.Networking.XMPP.Mail" Version="3.1.0" />
-		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="4.1.4" />
-		<PackageReference Include="Waher.Networking.XMPP.PEP" Version="3.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="4.2.2" />
+		<PackageReference Include="Waher.Networking.XMPP.PEP" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Provisioning" Version="4.1.1" />
-		<PackageReference Include="Waher.Networking.XMPP.PubSub" Version="3.1.0" />
+		<PackageReference Include="Waher.Networking.XMPP.PubSub" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Push" Version="3.1.2" />
 		<PackageReference Include="Waher.Networking.XMPP.Sensor" Version="4.1.3" />
-		<PackageReference Include="Waher.Persistence" Version="1.15.2" />
-		<PackageReference Include="Waher.Persistence.FilesLW" Version="1.15.1" />
-		<PackageReference Include="Waher.Persistence.XmlLedger" Version="1.2.2" />
+		<PackageReference Include="Waher.Persistence" Version="1.16.0" />
+		<PackageReference Include="Waher.Persistence.FilesLW" Version="1.16.0" />
+		<PackageReference Include="Waher.Persistence.XmlLedger" Version="1.2.3" />
 		<PackageReference Include="Waher.Runtime.Collections" Version="1.0.3" />
-		<PackageReference Include="Waher.Runtime.Geo" Version="1.0.0" />
-		<PackageReference Include="Waher.Runtime.Inventory" Version="1.4.3" />
-		<PackageReference Include="Waher.Runtime.IO" Version="1.0.4" />
-		<PackageReference Include="Waher.Runtime.Profiling" Version="1.1.1" />
+		<PackageReference Include="Waher.Runtime.Geo" Version="1.0.1" />
+		<PackageReference Include="Waher.Runtime.Inventory" Version="1.4.5" />
+		<PackageReference Include="Waher.Runtime.IO" Version="1.0.5" />
+		<PackageReference Include="Waher.Runtime.Profiling" Version="1.1.2" />
 		<PackageReference Include="Waher.Runtime.Queue" Version="3.2.1" />
 		<PackageReference Include="Waher.Runtime.Settings" Version="1.2.0" />
 		<PackageReference Include="Waher.Runtime.Temporary" Version="1.1.0" />
 		<PackageReference Include="Waher.Runtime.Text" Version="1.2.0" />
-		<PackageReference Include="Waher.Script" Version="2.13.0" />
+		<PackageReference Include="Waher.Script" Version="2.13.3" />
 		<PackageReference Include="Waher.Script.Content" Version="2.2.3" />
 		<PackageReference Include="Waher.Security" Version="1.0.13" />
 		<PackageReference Include="Waher.Security.JWS" Version="1.1.4" />
-		<PackageReference Include="Waher.Security.JWT" Version="1.5.4" />
-		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.4.0" />
+		<PackageReference Include="Waher.Security.JWT" Version="1.5.5" />
+		<!--
+		<ProjectReference Include="..\..\iotbroker\Waher.Networking.XMPP.EDaler\Waher.Networking.XMPP.EDaler.csproj" />
+		<ProjectReference Include="..\..\iotbroker\Waher.Networking.XMPP.NeuroFeatures\Waher.Networking.XMPP.NeuroFeatures.csproj" />
+
+		<ProjectReference Include="..\..\IoTGateway\Content\Waher.Content\Waher.Content.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Content\Waher.Content.Images\Waher.Content.Images.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Content\Waher.Content.Markdown\Waher.Content.Markdown.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Content\Waher.Content.QR\Waher.Content.QR.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Content\Waher.Content.Xml\Waher.Content.Xml.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Events\Waher.Events\Waher.Events.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Events\Waher.Events.Files\Waher.Events.Files.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Events\Waher.Events.Filter\Waher.Events.Filter.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Events\Waher.Events.Persistence\Waher.Events.Persistence.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Events\Waher.Events.XMPP\Waher.Events.XMPP.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking\Waher.Networking.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.DNS\Waher.Networking.DNS.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.PeerToPeer\Waher.Networking.PeerToPeer.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.UPnP\Waher.Networking.UPnP.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP\Waher.Networking.XMPP.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Avatar\Waher.Networking.XMPP.Avatar.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Concentrator\Waher.Networking.XMPP.Concentrator.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Contracts\Waher.Networking.XMPP.Contracts.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Control\Waher.Networking.XMPP.Control.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Geo\Waher.Networking.XMPP.Geo.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.HTTPX\Waher.Networking.XMPP.HTTPX.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Mail\Waher.Networking.XMPP.Mail.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.P2P\Waher.Networking.XMPP.P2P.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.PEP\Waher.Networking.XMPP.PEP.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Provisioning\Waher.Networking.XMPP.Provisioning.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.PubSub\Waher.Networking.XMPP.PubSub.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Push\Waher.Networking.XMPP.Push.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Networking\Waher.Networking.XMPP.Sensor\Waher.Networking.XMPP.Sensor.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Persistence\Waher.Persistence\Waher.Persistence.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Persistence\Waher.Persistence.FilesLW\Waher.Persistence.FilesLW.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Persistence\Waher.Persistence.XmlLedger\Waher.Persistence.XmlLedger.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Collections\Waher.Runtime.Collections.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Geo\Waher.Runtime.Geo.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Inventory\Waher.Runtime.Inventory.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.IO\Waher.Runtime.IO.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Profiling\Waher.Runtime.Profiling.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Queue\Waher.Runtime.Queue.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Settings\Waher.Runtime.Settings.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Temporary\Waher.Runtime.Temporary.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Runtime\Waher.Runtime.Text\Waher.Runtime.Text.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Script\Waher.Script\Waher.Script.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Script\Waher.Script.Content\Waher.Script.Content.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Security\Waher.Security\Waher.Security.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Security\Waher.Security.JWS\Waher.Security.JWS.csproj" />
+		<ProjectReference Include="..\..\IoTGateway\Security\Waher.Security.JWT\Waher.Security.JWT.csproj" /> -->
 	</ItemGroup>
 	<ItemGroup>
-		<!-- <Compile Update="Resources\Languages\AppResources.Designer.cs">
+		<Compile Update="Resources\Languages\AppResources.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>AppResources.resx</DependentUpon>
-		</Compile>-->
-		<Compile Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml.cs">
-			<DependentUpon>ApplyIdPage.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml.cs">
-			<DependentUpon>ApplicationsPage.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml.cs">
-		  <DependentUpon>NewContractPage.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\NewContract\Views\PreviewView.xaml.cs">
-		  <DependentUpon>PreviewView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\NewContract\Views\LoadingView.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\NewContract\Views\RolesView.xaml.cs">
-		  <DependentUpon>RolesView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\NewContract\Views\ParametersView.xaml.cs">
-		  <DependentUpon>ParametersView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\NewContract\Views\OverviewView.xaml.cs">
-		  <DependentUpon>OverviewView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\ViewContract\Views\LoadingView.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\ViewContract\Views\OverviewItemButton.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\ViewContract\Views\OverviewView.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\ViewContract\Views\ParametersView.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\ViewContract\Views\PreviewView.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\ViewContract\Views\SignView.xaml.cs">
-		  <DependentUpon>SignView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml.cs">
-		  <DependentUpon>%(Filename)</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Main\Apps\AppsPage.xaml.cs">
-		  <DependentUpon>AppsPage.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Main\ChangePassword\ChangePasswordPage.xaml.cs">
-			<DependentUpon>ChangePasswordPage.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Main\Settings\SettingsPage.xaml.cs">
-			<DependentUpon>SettingsPage.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\PetitionPeerReviewPage.xaml.cs">
-			<DependentUpon>PetitionPeerReviewPage.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\NameView.xaml.cs">
-			<DependentUpon>NameView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\NationalityView.xaml.cs">
-			<DependentUpon>NationalityView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\BirthDateView.xaml.cs">
-			<DependentUpon>BirthDateView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\GenderView.xaml.cs">
-			<DependentUpon>GenderView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PnrView.xaml.cs">
-			<DependentUpon>PnrView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PersonalAddressInfoView.xaml.cs">
-			<DependentUpon>PersonalAddressInfoView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\OrganizationalInfoView.xaml.cs">
-			<DependentUpon>OrganizationalInfoView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\ConsentView.xaml.cs">
-			<DependentUpon>ConsentView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\AuthenticateView.xaml.cs">
-			<DependentUpon>AuthenticateView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\ApprovedView.xaml.cs">
-			<DependentUpon>ApprovedView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionPeerReview\Views\PhotoView.xaml.cs">
-			<DependentUpon>PhotoView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Petitions\PetitionSignature\PetitionSignaturePage.xaml.cs">
-			<DependentUpon>PetitionSignaturePage.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Registration\Views\DefinePasswordView.xaml.cs">
-			<DependentUpon>DefinePasswordView.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Registration\Views\ContactSupportView.xaml.cs">
-		  <DependentUpon>ContactSupportView.xaml</DependentUpon>
-		</Compile>
-		<!--<Compile Update="UI\Pages\Registration\Views\RequestPurposeView.xaml.cs">
-	    <DependentUpon>RequestPurposeView.xaml</DependentUpon>
-	  </Compile> -->
-		<Compile Update="UI\Pages\Wallet\MyWallet\MyEDalerWalletPage.xaml.cs">
-			<DependentUpon>MyEDalerWalletPage.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml.cs">
-			<DependentUpon>MyTokenWalletPage.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Popups\Duration\DurationPopup.xaml.cs">
-		  <DependentUpon>DurationPopup.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Popups\Image\ImagesPopup.xaml.cs">
-			<DependentUpon>ImagesPopup.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Popups\Password\CheckPasswordPopup.xaml.cs">
-			<DependentUpon>CheckPasswordPopup.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Popups\Permission\ShowPermissionPopup.xaml.cs">
-		  <DependentUpon>ShowPermissionPopup.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Popups\SelectPhoneCodePopup.xaml.cs">
-			<DependentUpon>SelectPhoneCodePopup.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Popups\Settings\SelectLanguagePopup.xaml.cs">
-			<DependentUpon>SelectLanguagePopup.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Popups\Info\ShowInfoPopup.xaml.cs">
-			<DependentUpon>ShowInfoPopup.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="UI\Popups\Permission\ShowPermissionPopup.xaml.cs">
-			<DependentUpon>ShowPermissionPopup.xaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Resources\Languages\AppResources.resx">
-			<Generator>MSBuild:Compile</Generator>
-			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-			<StronglyTypedFileName>$(IntermediateOutputPath)\AppResources.Designer.cs</StronglyTypedFileName>
-	      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
-			<StronglyTypedNamespace>NeuroAccessMaui.Resources.Languages</StronglyTypedNamespace>
-			<StronglyTypedClassName>AppResources</StronglyTypedClassName>
-		</EmbeddedResource>
-	</ItemGroup>
-
-	<PropertyGroup>
-		<!-- Required for vs code to understand typed resources  (Disabledin visual studio, because there it creates intellisense errors -_- )-->
-		<CoreCompileDependsOn>PrepareResources;$(CoreCompileDependsOn)</CoreCompileDependsOn>
-	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />
 		<ProjectReference Include="..\NeuroAccess.Nfc\NeuroAccess.Nfc.csproj" />
 		<ProjectReference Include="..\NeuroAccessMaui.Generator\NeuroAccessMaui.Generator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<MauiXaml Update="Resources\Styles\CompositeInputViewStyles.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Resources\Styles\PickerStyles.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Resources\Templates\ObservableParameter.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Applications\ApplyId\ApplyIdPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Applications\Applications\ApplicationsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contacts\Chat\ChatPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contacts\MyContacts\MyContactsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\MyContracts\MyContractsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\NewContract\NewContractPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\OverviewItemButton.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\PreviewView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\LoadingView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\RolesView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\ParametersView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\NewContract\Views\OverviewView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\ViewContract\ViewContractPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\LoadingView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\OverviewItemButton.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\OverviewView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\ParametersView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\PreviewView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\SignView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Contracts\ViewContract\Views\RolesView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Main\Apps\AppsPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Main\Calculator\CalculatorPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Main\Duration\DurationPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Main\Settings\SettingsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Main\XmppForm\XmppFormPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionContract\PetitionContractPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\PetitionPeerReviewPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\NameView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\NationalityView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\BirthDateView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\GenderView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PnrView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PersonalAddressInfoView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\OrganizationalInfoView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\ConsentView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\AuthenticateView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\ApprovedView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Petitions\PetitionPeerReview\Views\PhotoView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Registration\Views\ContactSupportView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Registration\Views\NameEntryView.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Signatures\ClientSignature\ClientSignaturePage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Signatures\ServerSignature\ServerSignaturePage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Things\CanControl\CanControlPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Things\CanRead\CanReadPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Things\IsFriend\IsFriendPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Things\MyThings\MyThingsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Things\ReadSensor\ReadSensorPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Things\ViewClaimThing\ViewClaimThingPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Things\ViewThing\ViewThingPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Utility\Images\ImageCroppingPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\AccoutEvent\AccountEventPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\BuyEDaler\BuyEDalerPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\EDalerReceived\EDalerReceivedPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\IssueEDaler\IssueEDalerPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\MachineReport\MachineReportPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\MachineVariables\MachineVariablesPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\MyTokens\MyTokensPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\MyWallet\MyEDalerWalletPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\MyWallet\MyTokenWalletPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\PaymentAcceptance\PaymentAcceptancePage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\Payment\PaymentPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\PendingPayment\PendingPaymentPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\RequestPayment\RequestPaymentPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\SellEDaler\SellEDalerPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\SendPayment\SendPaymentPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\ServiceProviders\ServiceProvidersPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\TokenDetails\TokenDetailsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Pages\Wallet\TokenEvents\TokenEventsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\Duration\DurationPopup.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\Image\ImagesPopup.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\Permission\ShowPermissionPopup.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\Photos\Image\ImageView.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\Password\CheckPasswordPopup.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\QR\ShowQRPopup.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\Settings\SelectLanguagePopup.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\Tokens\AddTextNote\AddTextNotePopup.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\Xmpp\RemoveSubscription\RemoveSubscriptionPopup.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\Xmpp\ReportOrBlock\ReportOrBlockPopup.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\Xmpp\ReportType\ReportTypePopup.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\Xmpp\SubscribeTo\SubscribeToPopup.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="UI\Popups\Xmpp\SubscriptionRequest\SubscriptionRequestPopup.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="UI\Pages\Wallet\ServiceProviders\NewFolder\" />
 	</ItemGroup>
 </Project>

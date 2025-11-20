@@ -11,7 +11,7 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -22,7 +22,7 @@
 
 				<Label Text="{l:Localize PendingPayment}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{l:Localize PendingPayment}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize PendingPaymentDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
@@ -42,7 +42,7 @@
 													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize ShowCode}" Command="{Binding Path=ShowCodeCommand}"
 													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
-						<Image x:Name="QrCode" BackgroundColor="{DynamicResource SurfaceBackgroundWLLight}" Source="{Binding Path=QrCode}" 
+						<Image x:Name="QrCode" BackgroundColor="{DynamicResource SurfaceBackgroundWL}" Source="{Binding Path=QrCode}" 
                        IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
                        HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
                        Margin="0" />
@@ -50,7 +50,7 @@
 													IsVisible="{Binding Path=HasQrCode}" Margin="{DynamicResource SmallBottomMargins}"
 													Style="{DynamicResource FilledTextButton}"/>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

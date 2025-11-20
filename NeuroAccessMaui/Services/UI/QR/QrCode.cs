@@ -9,6 +9,7 @@ using SkiaSharp;
 using Waher.Content.QR;
 using Waher.Content.QR.Encoding;
 using Waher.Runtime.Inventory;
+using System.Runtime.CompilerServices;
 
 namespace NeuroAccessMaui.Services.UI.QR
 {
@@ -33,11 +34,8 @@ namespace NeuroAccessMaui.Services.UI.QR
 				AllowedSchemas.Add(Constants.UriSchemes.IotSc);
 				AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
 				AllowedSchemas.Add(Constants.UriSchemes.Xmpp);
-				
-				// TODO:
-				// AllowedSchemas.Add(Constants.UriSchemes.IotDisco);
-				// AllowedSchemas.Add(Constants.UriSchemes.NeuroFeature);
-				// AllowedSchemas.Add(Constants.UriSchemes.EDaler);
+				AllowedSchemas.Add(Constants.UriSchemes.EDaler);
+				AllowedSchemas.Add(Constants.UriSchemes.NeuroFeature);
 			}
 
 			return [.. AllowedSchemas];
@@ -65,7 +63,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 			if (string.IsNullOrWhiteSpace(Url))
 				return;
 
-			await OpenUrl(Url);
+			await OpenUrl(Url, true, AllowedSchemas);
 		}
 
 		/// <summary>
@@ -86,8 +84,23 @@ namespace NeuroAccessMaui.Services.UI.QR
 		/// <param name="Url">URL to open.</param>
 		/// <param name="ShowErrorIfUnable">If an error message should be displayed, in case the URI could not be opened.</param>
 		/// <returns>If URL was handled.</returns>
-		public static async Task<bool> OpenUrl(string Url, bool ShowErrorIfUnable)
+		public static async Task<bool> OpenUrl(string Url, bool ShowErrorIfUnable, string[]? AllowedSchemas = null)
 		{
+			AllowedSchemas ??= GetAllowedSchemas();
+
+			string UrlSchema = Constants.UriSchemes.GetScheme(Url) ?? string.Empty;
+
+			if (!string.IsNullOrEmpty(UrlSchema) && !AllowedSchemas.Contains(UrlSchema) && !string.Equals(UrlSchema, Constants.UriSchemes.Onboarding, StringComparison.Ordinal))
+			{
+				if (ShowErrorIfUnable)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.UrlSchemaNotPermitted)]);
+				}
+				return false;
+			}
+
 			try
 			{
 				if (!System.Uri.TryCreate(Url, UriKind.Absolute, out Uri? Uri))
@@ -101,6 +114,9 @@ namespace NeuroAccessMaui.Services.UI.QR
 
 					return false;
 				}
+
+				if (ServiceRef.XmppService.State != Waher.Networking.XMPP.XmppState.Connected && !Url.StartsWith(Constants.UriSchemes.Onboarding, StringComparison.OrdinalIgnoreCase))
+					await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
 
 				ILinkOpener Opener = Types.FindBest<ILinkOpener, Uri>(Uri);
 
@@ -116,7 +132,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 					return false;
 				}
 
-				if (!await Opener.TryOpenLink(Uri, false))
+				if (!await Opener.TryOpenLink(Uri, false).ConfigureAwait(false))
 				{
 					if (ShowErrorIfUnable)
 					{
@@ -168,7 +184,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 
 			ScanQrCodeNavigationArgs NavigationArgs = new(QrTitle, AllowedSchemas);
 
-			await ServiceRef.UiService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(ScanQrCodePage), NavigationArgs, BackMethod.Pop);
 
 			if (NavigationArgs.QrCodeScanned is null)
 				return null;
@@ -217,27 +233,27 @@ namespace NeuroAccessMaui.Services.UI.QR
 					break;
 
 				case Constants.UriSchemes.IotId:
-					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text.Replace("@", "%40"));    // iOS has problems with URIs containg @
 					Rgba = M.ToRGBA(Width, Height, (LightTheme ? userCodeLight : userCodeDark).ColorFunction, true);
 					break;
 
 				case Constants.UriSchemes.IotSc:
-					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text.Replace("@", "%40"));    // iOS has problems with URIs containg @
 					Rgba = M.ToRGBA(Width, Height, (LightTheme ? contractCodeLight : contractCodeDark).ColorFunction, true);
 					break;
 
 				case Constants.UriSchemes.IotDisco:
-					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text.Replace("@", "%40"));    // iOS has problems with URIs containg @
 					Rgba = M.ToRGBA(Width, Height, (LightTheme ? thingsCodeLight : thingsCodeDark).ColorFunction, true);
 					break;
 
 				case Constants.UriSchemes.EDaler:
-					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text.Replace("@", "%40"));    // iOS has problems with URIs containg @
 					Rgba = M.ToRGBA(Width, Height, (LightTheme ? eDalerCodeLight : eDalerCodeDark).ColorFunction, true);
 					break;
 
 				case Constants.UriSchemes.NeuroFeature:
-					M = encoder.GenerateMatrix(CorrectionLevel.H, Text);
+					M = encoder.GenerateMatrix(CorrectionLevel.H, Text.Replace("@", "%40"));    // iOS has problems with URIs containg @
 					Rgba = M.ToRGBA(Width, Height, (LightTheme ? tokenCodeLight : tokenCodeDark).ColorFunction, true);
 					break;
 

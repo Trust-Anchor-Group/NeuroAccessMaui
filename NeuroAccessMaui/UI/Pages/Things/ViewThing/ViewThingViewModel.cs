@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Notification;
@@ -33,6 +34,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 	/// </summary>
 	public partial class ViewThingViewModel : QrXmppViewModel
 	{
+
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
 		private readonly Dictionary<string, PresenceEventArgs> presences = new(StringComparer.InvariantCultureIgnoreCase);
 		private readonly ViewThingNavigationArgs? navigationArguments;
 		private readonly ContactInfo? thing;
@@ -73,9 +76,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (this.navigationArguments?.Events is not null)
 			{
@@ -170,7 +173,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.OnPresence -= this.Xmpp_OnPresence;
 			ServiceRef.XmppService.OnRosterItemAdded -= this.Xmpp_OnRosterItemAdded;
@@ -180,7 +183,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
 			ServiceRef.NotificationService.OnNotificationsDeleted -= this.NotificationService_OnNotificationsDeleted;
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		private async Task Xmpp_OnPresence(object? Sender, PresenceEventArgs e)
@@ -533,7 +536,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					return;
 				}
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.DeleteRules, true))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.DeleteRules, true))
 					return;
 
 				TaskCompletionSource<bool> Result = new();
@@ -583,7 +586,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 					return;
 				}
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.DisownThing, true))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.DisownThing, true))
 					return;
 
 				(bool Succeeded, bool Done) = await ServiceRef.NetworkService.TryRequest(() =>
@@ -629,7 +632,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				return;
 			try
 			{
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.AddToListOfThings))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.AddToListOfThings))
 					return;
 
 				RosterItem? Item = ServiceRef.XmppService.GetRosterItem(this.thing.BareJid);
@@ -681,7 +684,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 			try
 			{
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.RemoveFromListOfThings))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.RemoveFromListOfThings))
 					return;
 
 				if (this.InContacts)
@@ -721,7 +724,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 
 			ViewThingNavigationArgs Args = new(this.thing, MyThingsViewModel.GetNotificationEvents(this.thing) ?? []);
 
-			await ServiceRef.UiService.GoToAsync(nameof(ReadSensorPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(ReadSensorPage), Args, BackMethod.Pop);
 
 			await MainThread.InvokeOnMainThreadAsync(() => this.SetIsBusy(false));
 
@@ -768,7 +771,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					await ServiceRef.UiService.GoToAsync(nameof(XmppFormPage), new XmppFormNavigationArgs(e.Form));
+					await ServiceRef.NavigationService.GoToAsync(nameof(XmppFormPage), new XmppFormNavigationArgs(e.Form));
 				});
 			}
 			else
@@ -799,7 +802,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 				string FriendlyName = this.thing.FriendlyName;
 				ChatNavigationArgs Args = new(LegalId, this.thing.BareJid, FriendlyName);
 
-				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.thing.BareJid);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.thing.BareJid);
 			}
 			catch (Exception ex)
 			{

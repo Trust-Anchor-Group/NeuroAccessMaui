@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Transaction.TransactionPopup"
+							x:DataType="viewmodel:TransactionPopupViewModel"
+							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+							xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Transaction"
+							xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
+
+	<Grid
+		Style="{DynamicResource PopupGrid}">
+
+		<Border
+			WidthRequest="{Binding ViewWidthRequest}"
+			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
+			Style="{DynamicResource PopupBorder}">
+
+			<ScrollView VerticalOptions="Center">
+				<VerticalStackLayout>
+					<Label Style="{DynamicResource PageTitleLabelSmall}" Text="{l:Localize TransactionDetails}"/>
+					<Label Style="{DynamicResource Brand2LabelXS}" Text="{Binding DestinationString}" Margin="4,16,0,4"/>
+					<Border Style="{DynamicResource BorderSubSet}">
+						<Grid ColumnDefinitions="auto, *, auto, auto"
+							  RowDefinitions="*, auto">
+
+							<Border HeightRequest="48" WidthRequest="48" StrokeShape="RoundRectangle 24" Grid.RowSpan="2" Margin="0,0,10,0">
+								<Border.Triggers>
+									<DataTrigger TargetType="Border" Binding="{Binding IsContact}" Value="True">
+										<Setter Property="Background" Value="{DynamicResource TnPSuccessbgWL}" />
+									</DataTrigger>
+									<DataTrigger TargetType="Border" Binding="{Binding IsContact}" Value="False">
+										<Setter Property="Background" Value="{DynamicResource ButtonNeutralNavButtonsOnContainerbgActiveWL}" />
+									</DataTrigger>
+								</Border.Triggers>
+								<controls:SvgView Source="person.svg"
+												  HorizontalOptions="Center" VerticalOptions="Center"
+												  HeightRequest="32" WidthRequest="32">
+									<controls:SvgView.Triggers>
+										<DataTrigger TargetType="controls:SvgView" Binding="{Binding IsContact}" Value="True">
+											<Setter Property="TintColor" Value="{DynamicResource TnPSuccessContentWL}" />
+										</DataTrigger>
+										<DataTrigger TargetType="controls:SvgView" Binding="{Binding IsContact}" Value="False">
+											<Setter Property="TintColor" Value="{DynamicResource ContentSecondaryWL}" />
+										</DataTrigger>
+									</controls:SvgView.Triggers>
+								</controls:SvgView>
+							</Border>
+
+							<Label Grid.Column="1" Style="{DynamicResource Brand2LabelS}" Text="{Binding TransactionEevent.FriendlyName}" LineBreakMode="TailTruncation" VerticalOptions="Center"/>
+							<Grid Grid.Column="1" Grid.Row="1" ColumnDefinitions="auto">
+								<Border Padding="8,2,8,2" StrokeShape="RoundRectangle 10" BackgroundColor="{DynamicResource TnPWarningbgWL}" IsVisible="{Binding IsContact, Converter={StaticResource InvertedBoolConverter}}">
+									<Label Style="{DynamicResource Brand2LabelSSecondary}" TextColor="{DynamicResource TnPWarningContentWL}" Text="{l:Localize NotInContacts}" FontSize="14" HorizontalOptions="Center"/>
+								</Border>
+							</Grid>
+							
+							<controls:SvgButton SvgSource="chat.svg" Style="{DynamicResource IconButtonOnBackground}"
+												VerticalOptions="Center"
+												Grid.Column="2"
+												Grid.RowSpan="2"
+												IsVisible="{Binding IsContact}"
+												Command="{Binding OpenChatCommand}"/>
+
+							<controls:SvgButton SvgSource="person.svg" Style="{DynamicResource IconButtonOnBackground}"
+												VerticalOptions="Center"
+												Grid.Column="3"
+												Grid.RowSpan="2"
+												IsVisible="{Binding IsContact}"
+												Command="{Binding ViewIdCommand}"/> 
+						</Grid>
+					</Border>
+
+					<Border Style="{DynamicResource BorderSubSet}" Padding="16" Margin="0,16,0,0">
+						<VerticalStackLayout>
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize Amount}"/>
+							<Label TextColor="{Binding TransactionEevent.ChangeColor}" LineBreakMode="TailTruncation" >
+								<Label.FormattedText>
+									<FormattedString>
+										<Span Text="{Binding Change}" FontSize="16" />
+										<Span Text=" " FontSize="16" />
+										<Span Text="{Binding TransactionEevent.Currency}" FontSize="16" />
+									</FormattedString>
+								</Label.FormattedText>
+							</Label>
+
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize TransactionType}" Margin="0,16,0,0"/>
+							<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.TransactionType}"/>
+
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize Timestamp}" Margin="0,16,0,0"/>
+							<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.Timestamp}"/>
+
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize TransactionStatus}" Margin="0,16,0,0"/>
+							<Grid ColumnDefinitions="auto">
+								<controls:ConditionView Condition="{Binding TransactionEevent.IsReserved}">
+									<controls:ConditionView.True>
+										<Border StrokeShape="RoundRectangle 10" BackgroundColor="{DynamicResource TnPWarningbgWL}" Padding="8,2,8,2">
+											<Label Style="{DynamicResource Brand2BodyS}" Text="{l:Localize ReservedNoColon}" TextColor="{DynamicResource TnPWarningContentWL}"/>
+										</Border>
+									</controls:ConditionView.True>
+									<controls:ConditionView.False>
+										<Border StrokeShape="RoundRectangle 10" BackgroundColor="{DynamicResource TnPSuccessbgWL}" Padding="8,2,8,2">
+											<Label Style="{DynamicResource Brand2BodyS}" Text="{l:Localize Successful}" TextColor="{DynamicResource TnPSuccessContentWL}"/>
+										</Border>
+									</controls:ConditionView.False>
+								</controls:ConditionView>
+							</Grid>
+
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize TransactionIDNoColon}" Margin="0,16,0,0"/>
+							<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.TransactionId}"/>
+
+							<Label Style="{DynamicResource Brand2LabelXS}" Text="{l:Localize Message}" Margin="0,16,0,0" IsVisible="{Binding HasMessage}"/>
+							<controls:ConditionView Condition="{Binding MessageIsUrl}" IsVisible="{Binding HasMessage}">
+								<controls:ConditionView.True>
+									<Border>
+										<Label Style="{DynamicResource ClickableValueLabel}" Text="{Binding TransactionEevent.Message}"/>
+										<Border.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding OpenMessageUriCommand}"/>
+										</Border.GestureRecognizers>
+									</Border>
+								</controls:ConditionView.True>
+								<controls:ConditionView.False>
+									<Label Style="{DynamicResource Brand2BodyS}" Text="{Binding TransactionEevent.Message}"/>
+								</controls:ConditionView.False>
+							</controls:ConditionView>
+						</VerticalStackLayout>
+					</Border>
+
+					<controls:TextButton Style="{DynamicResource PrimaryButton}" LabelData="{l:Localize Close}" Command="{Binding CloseCommand}" Margin="0,16,0,0"/>
+
+				</VerticalStackLayout>
+			</ScrollView>
+		</Border>
+	</Grid>
+</base:BasePopup>

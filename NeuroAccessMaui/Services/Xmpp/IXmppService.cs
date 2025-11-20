@@ -3,7 +3,6 @@ using EDaler.Events;
 using EDaler.Uris;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Wallet;
-using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.Events;
@@ -34,6 +33,7 @@ using Waher.Runtime.Inventory;
 using Waher.Runtime.Temporary;
 using Waher.Things;
 using Waher.Things.SensorData;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -237,6 +237,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Event raised when a new presence stanza has been received.
 		/// </summary>
 		event EventHandlerAsync<PresenceEventArgs> OnPresence;
+
+		event EventHandlerAsync<PresenceEventArgs> OnPresenceSubscribe;
+
+		event EventHandlerAsync<PresenceEventArgs> OnPresenceUnsubscribed;
 
 		/// <summary>
 		/// Requests subscription of presence information from a contact.
@@ -544,6 +548,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="Attachments">The physical attachments to upload.</param>
 		/// <returns>Legal Identity</returns>
 		Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool GenerateNewKeys, params LegalIdentityAttachment[] Attachments);
+
+		/// <summary>
+		/// Adds a legal identity.
+		/// </summary>
+		/// <param name="Props">The array holding all the values needed.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Legal Identity</returns>
+		Task<LegalIdentity> AddLegalIdentity(Property[] Props, bool GenerateNewKeys, params LegalIdentityAttachment[] Attachments);
 
 		/// <summary>
 		/// Returns a list of legal identities.
@@ -1196,7 +1209,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="TransactionId">ID of transaction containing the encrypted message.</param>
 		/// <param name="RemoteEndpoint">Remote endpoint</param>
 		/// <returns>Decrypted string, if successful, or null, if not.</returns>
-		Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint);
+		Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint,bool LocalIsRecipient = false);
 
 		/// <summary>
 		/// Sends an eDaler URI to the eDaler service.
@@ -1669,6 +1682,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Retrieves specific items by ID for a specified node, or null on failure.
 		/// </summary>
 		Task<PubSubItem[]?> GetItemsAsync(string NodeId, string[] ItemIds);
+
+		/// <summary>
+		/// Retrieves a page of items for a specified node using XEP-0059 result set management parameters.
+		/// </summary>
+		/// <param name="NodeId">Node identifier.</param>
+		/// <param name="ServiceAddress">Optional service address; defaults to the configured PubSub component if omitted.</param>
+		/// <param name="After">Fetch items after this item identifier.</param>
+		/// <param name="Before">Fetch items before this item identifier.</param>
+		/// <param name="Index">Optional index offset to request.</param>
+		/// <param name="Max">Maximum number of items to return.</param>
+		Task<PubSubPageResult?> GetItemsPageAsync(string NodeId, string? ServiceAddress = null, string? After = null, string? Before = null, int? Index = null, int? Max = null);
 
 		/// <summary>
 		/// Retrieves a single item by ID for a specified node, or null on failure.

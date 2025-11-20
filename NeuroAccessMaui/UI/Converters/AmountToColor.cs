@@ -5,6 +5,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Converts an amount to a color.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class AmountToColor : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>

@@ -15,6 +15,9 @@ using NeuroAccessMaui.Services.UI;
 using Microsoft.Maui.Controls.Shapes;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Script.Constants;
+using CommunityToolkit.Mvvm.Input;
+using NeuroAccessMaui.UI.Popups.QR;
+using CommunityToolkit.Maui; // Added for ShowQRPopup/ShowQRViewModel
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -28,6 +31,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private readonly ContractsListMode contractsListMode;
 		private readonly TaskCompletionSource<Contract?>? selection;
 		private Contract? selectedContract = null;
+
+		[ObservableProperty]
+		private bool canShareTemplate;
 
 		/// <summary>
 		/// Creates an instance of the <see cref="MyContractsViewModel"/> class.
@@ -49,25 +55,28 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					case ContractsListMode.Contracts:
 						this.Title = ServiceRef.Localizer[nameof(AppResources.Contracts)];
 						this.Description = ServiceRef.Localizer[nameof(AppResources.ContractsInfoText)];
+						this.CanShareTemplate = false;
 						break;
 
 					case ContractsListMode.ContractTemplates:
 						this.Title = ServiceRef.Localizer[nameof(AppResources.ContractTemplates)];
 						this.Description = ServiceRef.Localizer[nameof(AppResources.ContractTemplatesInfoText)];
+						this.CanShareTemplate = true;
 						break;
 
 					case ContractsListMode.TokenCreationTemplates:
 						this.Title = ServiceRef.Localizer[nameof(AppResources.TokenCreationTemplates)];
 						this.Description = ServiceRef.Localizer[nameof(AppResources.TokenCreationTemplatesInfoText)];
+						this.CanShareTemplate = true;
 						break;
 				}
 			}
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			this.IsBusy = true;
 			this.ShowContractsMissing = false;
@@ -79,9 +88,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 
 			if (this.selection is not null && this.selection.Task.IsCompleted)
 			{
@@ -91,7 +100,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
 			ServiceRef.NotificationService.OnNotificationsDeleted -= this.NotificationService_OnNotificationsDeleted;
@@ -104,7 +113,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			this.selection?.TrySetResult(this.selectedContract);
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		/// <summary>
@@ -213,7 +222,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 								{
 									Contract ??= await ServiceRef.XmppService.GetContract(ContractId);
 									ViewContractNavigationArgs Args = new(Contract, false);
-									await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+									await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 								}
 								catch (ItemNotFoundException)
 								{
@@ -238,7 +247,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 							{
 								await ServiceRef.ContractOrchestratorService.OpenContract(ContractId, ServiceRef.Localizer[nameof(AppResources.ReferencedID)], null);
 								//NewContractNavigationArgs Args = new(Contract, null);
-								//await ServiceRef.UiService.GoToAsync(nameof(NewContractPage), Args, BackMethod.CurrentPage);
+								//await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), Args, BackMethod.CurrentPage);
 							}
 							break;
 
@@ -250,6 +259,34 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					}
 				}
 			});
+		}
+
+		[RelayCommand]
+		private async Task ShareTemplateQR(object? parameter)
+		{
+			try
+			{
+				ContractModel? Model = parameter as ContractModel;
+				if (Model is null)
+					return;
+
+				string ContractUri = Model.ContractIdUriString;
+				string ContractName = Model.Category;
+
+				if (string.IsNullOrEmpty(ContractUri))
+					return;
+
+				int Width = Constants.QrCode.DefaultImageWidth;
+				int Height = Constants.QrCode.DefaultImageHeight;
+				byte[] QrBytes = Services.UI.QR.QrCode.GeneratePng(ContractUri, Width, Height);
+
+				ShowQRPopup QrPopup = new ShowQRPopup(QrBytes, ContractUri, ContractName);
+				await ServiceRef.PopupService.PushAsync(QrPopup);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		private async Task LoadContracts()

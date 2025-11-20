@@ -13,18 +13,18 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Things.CanControl"
 							 xmlns:viewmodel2="clr-namespace:NeuroAccessMaui.UI.Pages.Things.CanRead"
 							 xmlns:things="clr-namespace:NeuroAccessMaui.UI.Pages.Things">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
 		<ScrollView>
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+				<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+									Style="{DynamicResource IconButton}" SvgSource="close.svg" />
 
 				<Label Text="{l:Localize ControlRequest}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{l:Localize ControlRequest}" Margin="{DynamicResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
@@ -49,14 +49,14 @@
 								</Label.GestureRecognizers>
 							</Label>
 						</Grid>
-						<VerticalStackLayout x:Name="CallerLayout" BindableLayout.ItemsSource="{Binding Path=CallerTags}" VerticalOptions="StartAndExpand" Margin="{DynamicResource SmallMargins}">
+						<VerticalStackLayout x:Name="CallerLayout" BindableLayout.ItemsSource="{Binding Path=CallerTags}" VerticalOptions="Start" Margin="{DynamicResource SmallMargins}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="things:HumanReadableTag">
 									<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
 										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{DynamicResource KeyLabel}" LineBreakMode="WordWrap"/>
 										<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{DynamicResource ClickableValueLabel}">
 											<Label.GestureRecognizers>
-												<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference CallerLayout}}" CommandParameter="{Binding}" />
+												<TapGestureRecognizer Command="{Binding ClickCommand, Source={RelativeSource AncestorType={x:Type viewmodel:CanControlViewModel}}, x:DataType=viewmodel:CanControlViewModel}" CommandParameter="{Binding}" />
 											</Label.GestureRecognizers>
 										</Label>
 									</Grid>
@@ -73,14 +73,14 @@
 						<Label Text="{l:Localize InformationAboutThing}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize InformationAboutThingText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"
 					   HorizontalOptions="Start"/>
-						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="StartAndExpand" Margin="{DynamicResource SmallMargins}">
+						<VerticalStackLayout x:Name="TagLayout" BindableLayout.ItemsSource="{Binding Path=Tags}" VerticalOptions="Start" Margin="{DynamicResource SmallMargins}">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="things:HumanReadableTag">
 									<Grid ColumnDefinitions="*,*" RowDefinitions="auto">
 										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{DynamicResource KeyLabel}" LineBreakMode="WordWrap"/>
 										<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{DynamicResource ClickableValueLabel}">
 											<Label.GestureRecognizers>
-												<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference TagLayout}}" CommandParameter="{Binding}" />
+												<TapGestureRecognizer Command="{Binding ClickCommand, Source={RelativeSource AncestorType={x:Type viewmodel:CanControlViewModel}}, x:DataType=viewmodel:CanControlViewModel}" CommandParameter="{Binding}" />
 											</Label.GestureRecognizers>
 										</Label>
 									</Grid>
@@ -90,7 +90,7 @@
 						<!-- Parameter Names -->
 						<Label Text="{l:Localize Parameters}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize PermitParametersText}" LineBreakMode="WordWrap" Style="{DynamicResource InfoLabel}"/>
-						<VerticalStackLayout x:Name="ParameterLayout" BindableLayout.ItemsSource="{Binding Path=Parameters}" VerticalOptions="StartAndExpand">
+						<VerticalStackLayout x:Name="ParameterLayout" BindableLayout.ItemsSource="{Binding Path=Parameters}" VerticalOptions="Start">
 							<BindableLayout.ItemTemplate>
 								<DataTemplate x:DataType="viewmodel2:FieldReference">
 									<Grid ColumnDefinitions="auto,*" RowDefinitions="auto">
@@ -112,8 +112,8 @@
 					   HorizontalOptions="Start"/>
 						<Picker SelectedIndex="{Binding SelectedRuleRangeIndex}" ItemsSource="{Binding RuleRanges}"
 						Margin="{DynamicResource SmallBottomMargins}"
-						BackgroundColor="{AppThemeBinding Dark={DynamicResource SurfaceBackgroundWLDark}, Default={DynamicResource SurfaceBackgroundWLLight}}"
-						TextColor="{AppThemeBinding Dark={DynamicResource InputFieldsContentPrimaryDark}, Light={DynamicResource InputFieldsContentPrimaryLight}}"/>
+						BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+						TextColor="{DynamicResource InputFieldsContentPrimary}"/>
 						<!-- BUTTONS -->
 						<Label Text="{l:Localize Options}" Margin="{DynamicResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
@@ -124,7 +124,7 @@
 						<controls:TextButton LabelData="{l:Localize Ignore}" Command="{Binding Path=IgnoreCommand}"
 													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

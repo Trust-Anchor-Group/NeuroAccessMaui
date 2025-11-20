@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Onboarding.OnboardingPage"
+                      x:Name="ThisPage"
+                      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+                      xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
+                      xmlns:tabs="clr-namespace:NeuroAccessMaui.UI.Controls"
+                      xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                      xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                      xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.Views"
+                      x:DataType="viewmodel:OnboardingViewModel">
+    <!-- Replicated layout structure from RegistrationPage for visual parity -->
+    <Grid x:Name="TheMainGrid" RowDefinitions="auto,*" ColumnDefinitions="*" BackgroundColor="Transparent">
+        <controls:Background Grid.RowSpan="2" />
+
+        <!-- Top bar identical styling -->
+        <Grid Grid.Row="0" RowDefinitions="auto" ColumnDefinitions="auto,*,auto">
+            <Grid.Padding>
+                <Thickness Left="{StaticResource LargeSpacing}" Top="{StaticResource LargeSpacing}" Right="{StaticResource LargeSpacing}" />
+            </Grid.Padding>
+            <!-- Existing account help (same icon & placement) -->
+            <controls:SvgButton SvgSource="question.svg"
+                                Style="{DynamicResource IconButton}"
+                                Command="{Binding ExistingAccountCommand}"
+                                IsVisible="{Binding IsOnWelcomeStep}" />
+            <!-- Back button matches RegistrationPage using ImageButton geometry -->
+            <controls:ImageButton Grid.Column="1"
+                                  Style="{DynamicResource ImageOnlyButton}"
+                                  PathData="{x:Static ui:Geometries.BackButtonPath}"
+                                  Command="{Binding GoBackCommand}"
+                                  IsVisible="{Binding CanGoBack}" />
+            <!-- Language change button with label -->
+            <controls:SvgButton Grid.Column="2"
+                                SvgSource="globe.svg"
+                                Style="{DynamicResource IconButton}"
+                                Command="{Binding ChangeLanguageCommand}"
+                                LabelText="{Binding SelectedLanguage.MyNativeName}"
+                                LabelPosition="Left"
+                                HorizontalOptions="End"
+                                IsVisible="{Binding IsOnWelcomeStep}" />
+        </Grid>
+
+        <!-- Scrollable content area mirroring RegistrationPage paddings & spacing -->
+        <ScrollView x:Name="TheMainScrollView" Grid.Row="1">
+            <Grid RowDefinitions="auto,*" Padding="{DynamicResource LargeMargins}" RowSpacing="{DynamicResource LargeSpacing}">
+                <!-- Optional logo section omitted (same as registration which commented logo) -->
+                <Grid x:Name="GridWithAnimation" Grid.Row="1">
+                    <!-- Use existing ViewSwitcher mechanism for onboarding steps inside visually identical container -->
+                    <tabs:ViewSwitcher x:Name="FlowSwitcher" SelectedStateKey="{Binding SelectedStateKey}" AutomationDescriptionTemplate="Onboarding step: {0}">
+                        <tabs:ViewSwitcher.StateViews>
+                            <tabs:ViewSwitcherStateView StateKey="Welcome">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:WelcomeStepView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                            <tabs:ViewSwitcherStateView StateKey="ValidatePhone">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:ValidatePhoneStepView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                            <tabs:ViewSwitcherStateView StateKey="ValidateEmail">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:ValidateEmailStepView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                            <tabs:ViewSwitcherStateView StateKey="NameEntry">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:NameEntryStepView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                            <tabs:ViewSwitcherStateView StateKey="CreateAccount">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:CreateAccountStepView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                            <tabs:ViewSwitcherStateView StateKey="DefinePassword">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:DefinePasswordStepView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                            <tabs:ViewSwitcherStateView StateKey="Biometrics">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:BiometricsStepView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                            <tabs:ViewSwitcherStateView StateKey="Finalize">
+                                <tabs:ViewSwitcherStateView.Content>
+                                    <views:FinalizeStepView x:FactoryMethod="Create" />
+                                </tabs:ViewSwitcherStateView.Content>
+                            </tabs:ViewSwitcherStateView>
+                        </tabs:ViewSwitcher.StateViews>
+                    </tabs:ViewSwitcher>
+                </Grid>
+            </Grid>
+        </ScrollView>
+    </Grid>
+</base:BaseContentPage>

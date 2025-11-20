@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 		/// </summary>
 		public IsFriendPage()
 		{
-			this.ContentPageModel = new IsFriendViewModel(ServiceRef.UiService.PopLatestArgs<IsFriendNavigationArgs>());
+			this.ContentPageModel = new IsFriendViewModel(ServiceRef.NavigationService.PopLatestArgs<IsFriendNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 		/// </summary>
 		public MachineReportPage()
 		{
-			this.ContentPageModel = new MachineReportViewModel(ServiceRef.UiService.PopLatestArgs<MachineReportNavigationArgs>());
+			this.ContentPageModel = new MachineReportViewModel(ServiceRef.NavigationService.PopLatestArgs<MachineReportNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages;
 using Waher.Networking.XMPP.Abuse;
 
@@ -41,7 +41,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportType
 		private async Task Spam()
 		{
 			this.result.TrySetResult(ReportingReason.Spam);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>
@@ -51,7 +51,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportType
 		private async Task Abuse()
 		{
 			this.result.TrySetResult(ReportingReason.Abuse);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>
@@ -61,7 +61,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportType
 		private async Task Other()
 		{
 			this.result.TrySetResult(ReportingReason.Other);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>
@@ -71,7 +71,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportType
 		private async Task Ignore()
 		{
 			this.result.TrySetResult(null);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>

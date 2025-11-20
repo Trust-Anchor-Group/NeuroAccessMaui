@@ -1,27 +1,25 @@
+using System.Threading.Tasks;
+
 namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest
 {
 	/// <summary>
 	/// Prompts the user for a response of a presence subscription request.
 	/// </summary>
-	public partial class SubscriptionRequestPopup
+	public partial class SubscriptionRequestPopup : BasePopup
 	{
 		private readonly SubscriptionRequestViewModel viewModel;
 
-		/// <summary>
-		/// Prompts the user for a response of a presence subscription request.
-		/// </summary>
-		/// <param name="ViewModel">View model</param>
-		public SubscriptionRequestPopup(SubscriptionRequestViewModel ViewModel)
+		public SubscriptionRequestPopup(SubscriptionRequestViewModel viewModel)
 		{
 			this.InitializeComponent();
-			this.BindingContext = this.viewModel = ViewModel;
+			this.viewModel = viewModel;
+			this.BindingContext = viewModel;
 		}
 
-		/// <inheritdoc/>
-		protected override void OnDisappearing()
+		public override Task OnDisappearingAsync()
 		{
 			this.viewModel.Close();
-			base.OnDisappearing();
+			return base.OnDisappearingAsync();
 		}
 	}
 }

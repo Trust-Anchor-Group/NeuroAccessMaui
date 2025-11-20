@@ -59,9 +59,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			this.CalcThingIsOnline();
 
@@ -340,7 +340,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.UnregisterPepHandler(typeof(SensorData), this.SensorDataPersonalEventHandler);
 
@@ -356,7 +356,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 				await this.request.Cancel();
 			}
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		private Task Xmpp_OnPresence(object? Sender, PresenceEventArgs e)

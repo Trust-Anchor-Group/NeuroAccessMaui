@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages;
 
 namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest
@@ -130,7 +130,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest
 		private async Task Accept()
 		{
 			this.result.TrySetResult(PresenceRequestAction.Accept);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>
@@ -140,7 +140,14 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest
 		private async Task Reject()
 		{
 			this.result.TrySetResult(PresenceRequestAction.Reject);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
+		}
+
+		[RelayCommand]
+		private async Task Ignore()
+		{
+			this.result.TrySetResult(PresenceRequestAction.Ignore);
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>

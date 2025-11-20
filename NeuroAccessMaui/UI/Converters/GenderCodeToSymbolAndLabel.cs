@@ -7,6 +7,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Converts a gender code to a Unicode symbol followed by a label.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class GenderCodeToSymbolAndLabel : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>

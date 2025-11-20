@@ -48,17 +48,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				// Add the parts associated with the role
 				if (contract.Parts is null)
 					return;
-				foreach (Part part in contract.Parts)
+				foreach (Part Part in contract.Parts)
 				{
-					if (part.Role == this.Name)
+					if (Part.Role == this.Name)
 					{
-						await this.AddPart(part);
+						await this.AddPart(Part);
 					}
 				}
 			}
-			catch (Exception e)
+			catch (Exception E)
 			{
-				ServiceRef.LogService.LogException(e);
+				ServiceRef.LogService.LogException(E);
 			}
 		}
 		#endregion
@@ -126,6 +126,63 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// If the role has reached the minimum amount of parts.
 		/// </summary>
 		public bool HasReachedMinCount => this.Parts.Count >= this.MinCount;
+
+		/// <summary>
+		/// True if user can select themselves for this role (not at max or already selected).
+		/// </summary>
+		public bool CanSelectMe
+		{
+			get
+			{
+				string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
+				bool AlreadySelected = !string.IsNullOrEmpty(MyId) && this.Parts.Any(p => p.LegalId == MyId);
+				return AlreadySelected || !this.HasReachedMaxCount;
+			}
+		}
+
+		/// <summary>
+		/// If current user has selected to sign as this role. Toggling this will add/remove "Me" as a part,
+		/// respecting MaxCount. Does nothing if no current LegalId is available.
+		/// </summary>
+		public bool IsSelectedByMe
+		{
+			get
+			{
+				string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
+				if (string.IsNullOrEmpty(MyId))
+					return false;
+				return this.Parts.Any(p => p.LegalId == MyId);
+			}
+			set
+			{
+				string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
+				if (string.IsNullOrEmpty(MyId))
+				{
+					// No identity selected; ignore.
+					return;
+				}
+
+				bool CurrentlySelected = this.Parts.Any(p => p.LegalId == MyId);
+				if (value == CurrentlySelected)
+					return;
+
+				if (value)
+				{
+					if (this.Parts.Count >= this.MaxCount)
+					{
+						// Cannot add, would exceed max. Simply ignore.
+						return;
+					}
+					_ = this.AddPart(MyId, false);
+				}
+				else
+				{
+					this.RemovePart(MyId, false);
+				}
+
+				this.OnPropertyChanged();
+			}
+		}
 		#endregion
 
 		#region Methods
@@ -133,7 +190,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// Adds a part with a given LegalId to the role.
 		/// </summary>
 		/// <param name="LegalId"></param>
-		public async Task AddPart(string LegalId, bool Notify = true, bool AutoPetition = true)
+		public async Task AddPart(string LegalId, bool Notify = true, bool AutoPetition = true, bool PresetFromArgs = false)
 		{
 			//Check if Part Exists
 			if (this.Parts.Any(p => string.Equals(p.LegalId, LegalId, StringComparison.OrdinalIgnoreCase)))
@@ -141,7 +198,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 			//Create Part
 			Part Part = new() { LegalId = LegalId, Role = this.Name };
-			ObservablePart ObservablePart = new ObservablePart(Part);
+			ObservablePart ObservablePart = new ObservablePart(Part)
+			{
+				IsPresetFromArgs = PresetFromArgs
+			};
 			await ObservablePart.InitializeAsync(AutoPetition);
 
 			//Notify changes
@@ -151,6 +211,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				this.Parts.Add(ObservablePart);
 				this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
 				this.OnPropertyChanged(nameof(this.HasReachedMinCount));
+				this.OnPropertyChanged(nameof(this.IsSelectedByMe));
 				if (Notify)
 					this.OnPropertyChanged(nameof(this.Parts));
 				TaskCompletionSource.SetResult();
@@ -188,14 +249,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// </summary>
 		public void RemovePart(string LegalId, bool Notify = true)
 		{
-			ObservablePart? part = this.Parts.FirstOrDefault(p => p.LegalId == LegalId);
-			if (part is not null)
+			ObservablePart? Part = this.Parts.FirstOrDefault(p => p.LegalId == LegalId);
+			if (Part is not null)
 			{
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
-					this.Parts.Remove(part);
+					this.Parts.Remove(Part);
 					this.OnPropertyChanged(nameof(this.HasReachedMaxCount));
 					this.OnPropertyChanged(nameof(this.HasReachedMinCount));
+					this.OnPropertyChanged(nameof(this.IsSelectedByMe));
 					if (Notify)
 						this.OnPropertyChanged(nameof(this.Parts));
 				});
@@ -232,7 +294,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				Contacts = Contacts
 			};
 
-			await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
 
 			ContactInfoModel? Contact = await Selected.Task;
 			if (Contact is null)
@@ -246,7 +308,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task AddPartFromQr()
 		{
-			string? Code = await QrCode.ScanQrCode(ServiceRef.Localizer[nameof(AppResources.ScanQRCode)], [Constants.UriSchemes.IotId]);
+			string? Code = await QrCode.ScanQrCode(nameof(AppResources.ScanQRCode), [Constants.UriSchemes.IotId]);
 			if (string.IsNullOrEmpty(Code))
 				return;
 

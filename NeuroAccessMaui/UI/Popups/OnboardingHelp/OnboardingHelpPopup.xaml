@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<popups:BasePopup x:Class="NeuroAccessMaui.UI.Popups.OnboardingHelp.OnboardingHelpPopup"
+                  x:DataType="viewmodel:OnboardingHelpViewModel"
+                  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                  xmlns:popups="clr-namespace:NeuroAccessMaui.UI.Popups"
+                  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.OnboardingHelp" >
+
+	<Grid RowSpacing="{DynamicResource MediumSpacing}" RowDefinitions="auto, auto, auto, auto, auto">
+		<Label Style="{DynamicResource PageTitleLabel}"
+			   Text="{l:Localize OnboardingContactSupportTitle}"/>
+		<!-- Part 1 -->
+		<Label Text="{l:Localize OnboardingContactSupportDetailsPart1}"
+			   Grid.Row="1"/>
+
+		<!-- Bullet Points -->
+		<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Grid.Row="2">
+			<Label>
+				<Label.FormattedText>
+					<FormattedString>
+						<Span Text="• " />
+						<Span Text="{l:Localize OnboardingContactSupportDetailsBullet1}" />
+					</FormattedString>
+				</Label.FormattedText>
+			</Label>
+			<Label>
+				<Label.FormattedText>
+					<FormattedString>
+						<Span Text="• " />
+						<Span Text="{l:Localize OnboardingContactSupportDetailsBullet2}" />
+					</FormattedString>
+				</Label.FormattedText>
+			</Label>
+			<Label>
+				<Label.FormattedText>
+					<FormattedString>
+						<Span Text="• " />
+						<Span Text="{l:Localize OnboardingContactSupportDetailsBullet3}" />
+					</FormattedString>
+				</Label.FormattedText>
+			</Label>
+			<Label>
+				<Label.FormattedText>
+					<FormattedString>
+						<Span Text="• " />
+						<Span Text="{l:Localize OnboardingContactSupportDetailsBullet4}" />
+					</FormattedString>
+				</Label.FormattedText>
+			</Label>
+		</VerticalStackLayout>
+		
+		<Label Text="{l:Localize OnboardingContactSupportDetailsPart2}"
+			   Grid.Row="3"/>
+
+		<Label Text="{Binding SupportEmail}"
+			   TextColor="Blue"
+			   TextDecorations="Underline"
+			   Grid.Row="4"
+			   IsVisible="False">
+			<Label.GestureRecognizers>
+				<TapGestureRecognizer Command="{Binding ContactSupportCommand}"/>
+			</Label.GestureRecognizers>
+		</Label>
+	</Grid>
+</popups:BasePopup>

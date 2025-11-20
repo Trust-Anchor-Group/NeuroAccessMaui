@@ -1,6 +1,8 @@
-﻿using NeuroAccessMaui.Extensions;
+﻿using EDaler;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.UI;
 using System.ComponentModel;
@@ -82,7 +84,7 @@ namespace NeuroAccessMaui.Services.Tag
 		private PurposeUse purpose;
 		private DateTime? testOtpTimestamp;
 		private RegistrationStep step;
-		private AppTheme? theme;
+		private AppTheme theme;
 		private AuthenticationMethod authenticationMethod;
 		private bool loadingProperties;
 		private bool initialDefaultXmppConnectivity;
@@ -94,6 +96,8 @@ namespace NeuroAccessMaui.Services.Tag
 		private bool hasThing;
 		private DateTime? lastIdentityUpdate;
 		private bool hasBetaFeatures;
+		private decimal lastEDalerBalanceDecimal;
+		private DateTime? lastEDalerBalanceUpdate;
 
 		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
@@ -175,7 +179,9 @@ namespace NeuroAccessMaui.Services.Tag
 				HasWallet = this.HasWallet,
 				HasThing = this.HasThing,
 				LastIdentityUpdate = this.LastIdentityUpdate,
-				HasBetaFeatures = this.HasBetaFeatures
+				HasBetaFeatures = this.HasBetaFeatures,
+				LastEDalerBalanceDecimal = this.LastEDalerBalanceDecimal,
+				LastEDalerBalanceUpdate = this.LastEDalerBalanceUpdate
 			};
 
 			return Clone;
@@ -238,10 +244,11 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasThing = Configuration.HasThing;
 				this.LastIdentityUpdate = Configuration.LastIdentityUpdate ?? DateTime.MinValue;
 				this.HasBetaFeatures = Configuration.HasBetaFeatures;
+				this.LastEDalerBalanceDecimal = Configuration.LastEDalerBalanceDecimal;
+				this.LastEDalerBalanceUpdate = Configuration.LastEDalerBalanceUpdate;
 
 				this.SetLegalIdentityInternal(Configuration.LegalIdentity);
 
-				this.SetTheme();
 				// Do this last, as listeners will read the other properties when the event is fired.
 				if (Configuration.Step > RegistrationStep.GetStarted && Configuration.Step <= RegistrationStep.CreateAccount)
 					this.GoToStep(RegistrationStep.ValidatePhone);
@@ -250,6 +257,8 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 			finally
 			{
+
+
 				this.loadingProperties = false;
 			}
 		}
@@ -312,7 +321,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <c>false</c> otherwise.</returns>
 		public virtual bool ShouldCreateClient()
 		{
-			return this.Step >= RegistrationStep.CreateAccount && !string.IsNullOrEmpty(this.Account);
+			return !string.IsNullOrEmpty(this.Account);
 		}
 
 		/// <summary>
@@ -321,9 +330,9 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <returns><c>true</c> if the registration process for this <see cref="ITagProfile"/> is either fully complete or is just awaiting validation, <c>false</c> otherwise.</returns>
 		public virtual bool IsCompleteOrWaitingForValidation()
 		{
-			return this.Step >= RegistrationStep.CreateAccount &&
-				this.LegalIdentity is not null &&
-				this.LegalIdentity.State == IdentityState.Created;
+			return this.Step >= RegistrationStep.CreateAccount ||
+				(this.LegalIdentity is not null &&
+				this.LegalIdentity.State == IdentityState.Created);
 		}
 
 		/// <summary>
@@ -332,7 +341,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <returns><c>true</c> if the registration process for this <see cref="ITagProfile"/> is either fully complete, <c>false</c> otherwise.</returns>
 		public virtual bool IsComplete()
 		{
-			return this.Step == RegistrationStep.Complete;
+			return this.LegalIdentity is not null && this.HasLocalPassword;
 		}
 
 		#region Properties
@@ -885,6 +894,32 @@ namespace NeuroAccessMaui.Services.Tag
 			}
 		}
 
+		public decimal LastEDalerBalanceDecimal
+		{
+			get => this.lastEDalerBalanceDecimal;
+			set
+			{
+				if (this.lastEDalerBalanceDecimal != value)
+				{
+					this.lastEDalerBalanceDecimal = value;
+					this.FlagAsDirty(nameof(this.LastEDalerBalanceDecimal));
+				}
+			}
+		}
+
+		public DateTime? LastEDalerBalanceUpdate
+		{
+			get => this.lastEDalerBalanceUpdate;
+			set
+			{
+				if (this.lastEDalerBalanceUpdate != value)
+				{
+					this.lastEDalerBalanceUpdate = value;
+					this.FlagAsDirty(nameof(this.LastEDalerBalanceUpdate));
+				}
+			}
+		}
+
 		/// <summary>
 		/// This profile's current registration step.
 		/// </summary>
@@ -1139,10 +1174,10 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Currently selected theme.
 		/// </summary>
-		public AppTheme? Theme
+		public AppTheme Theme
 		{
 			get => this.theme;
-			private set
+			set
 			{
 				if (!Equals(this.theme, value))
 				{
@@ -1364,37 +1399,6 @@ namespace NeuroAccessMaui.Services.Tag
 			this.HttpFileUploadMaxSize = MaxSize;
 		}
 
-		/// <summary>
-		/// Sets the preferred theme.
-		/// </summary>
-		/// <param name="Theme">Theme</param>
-		public void SetTheme(AppTheme Theme)
-		{
-			this.Theme = Theme;
-			this.SetTheme();
-		}
-
-		/// <summary>
-		/// Sets the preferred theme.
-		/// </summary>
-		public void SetTheme()
-		{
-			if (Application.Current is null || !this.Theme.HasValue)
-				return;
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				try
-				{
-					Application.Current.UserAppTheme = this.Theme.Value;
-				}
-				catch (Exception)
-				{
-					return;
-				}
-
-			});
-		}
-
 		#endregion
 
 		/// <summary>
@@ -1459,6 +1463,7 @@ namespace NeuroAccessMaui.Services.Tag
 
 		/// <summary>
 		/// Validates if the <paramref name="Password"/> is strong enough.
+		/// Variety rules are skipped if <see cref="Constants.Security.MinPasswordSymbolsFromDifferentClasses"/> is 0.
 		/// </summary>
 		/// <param name="Password">Password to validate.</param>
 		/// <returns>A <see cref="PasswordStrength"/> value indicating if the <paramref name="Password"/> is strong enough.</returns>
@@ -1466,7 +1471,8 @@ namespace NeuroAccessMaui.Services.Tag
 		{
 			if (Password is null)
 			{
-				return PasswordStrength.NotEnoughDigitsLettersSigns;
+				// Treat null as empty and only apply length rule (variety warnings suppressed when min=0)
+				return Constants.Security.MinPasswordSymbolsFromDifferentClasses == 0 ? PasswordStrength.TooShort : PasswordStrength.NotEnoughDigitsLettersSigns;
 			}
 
 			Password = Password.Normalize();
@@ -1479,6 +1485,10 @@ namespace NeuroAccessMaui.Services.Tag
 
 			int[] SlidingWindow = new int[Constants.Security.MaxPasswordSequencedSymbols + 1];
 			SlidingWindow.Initialize();
+
+			// Consecutive repeating symbol detection variables
+			int PreviousSymbol = -1;
+			int CurrentRunLength = 0;
 
 			for (int i = 0; i < Password.Length;)
 			{
@@ -1499,6 +1509,19 @@ namespace NeuroAccessMaui.Services.Tag
 				}
 				else
 					DistinctSymbolsCount.Add(Symbol, 1);
+
+				// Update consecutive run length
+				if (Symbol == PreviousSymbol)
+				{
+					CurrentRunLength++;
+					if (CurrentRunLength >= Constants.Security.MaxPasswordRepeatingRun)
+						return PasswordStrength.TooManyRepeatingSymbols;
+				}
+				else
+				{
+					PreviousSymbol = Symbol;
+					CurrentRunLength = 1;
+				}
 
 				for (int j = 0; j < SlidingWindow.Length - 1; j++)
 					SlidingWindow[j] = SlidingWindow[j + 1];
@@ -1555,21 +1578,23 @@ namespace NeuroAccessMaui.Services.Tag
 					return PasswordStrength.ContainsAddress;
 			}
 
-			const int MinDigitsCount = Constants.Security.MinPasswordSymbolsFromDifferentClasses;
-			const int MinLettersCount = Constants.Security.MinPasswordSymbolsFromDifferentClasses;
-			const int MinSignsCount = Constants.Security.MinPasswordSymbolsFromDifferentClasses;
+			int MinClassCount = Constants.Security.MinPasswordSymbolsFromDifferentClasses;
 
-			if (DigitsCount < MinDigitsCount && LettersCount < MinLettersCount && SignsCount < MinSignsCount)
-				return PasswordStrength.NotEnoughDigitsLettersSigns;
+			// Skip variety warnings entirely if configured minimum is 0.
+			if (MinClassCount > 0)
+			{
+				if (DigitsCount < MinClassCount && LettersCount < MinClassCount && SignsCount < MinClassCount)
+					return PasswordStrength.NotEnoughDigitsLettersSigns;
 
-			if (DigitsCount >= MinDigitsCount && LettersCount < MinLettersCount && SignsCount < MinSignsCount)
-				return PasswordStrength.NotEnoughLettersOrSigns;
+				if (DigitsCount >= MinClassCount && LettersCount < MinClassCount && SignsCount < MinClassCount)
+					return PasswordStrength.NotEnoughLettersOrSigns;
 
-			if (DigitsCount < MinDigitsCount && LettersCount >= MinLettersCount && SignsCount < MinSignsCount)
-				return PasswordStrength.NotEnoughDigitsOrSigns;
+				if (DigitsCount < MinClassCount && LettersCount >= MinClassCount && SignsCount < MinClassCount)
+					return PasswordStrength.NotEnoughDigitsOrSigns;
 
-			if (DigitsCount < MinDigitsCount && LettersCount < MinLettersCount && SignsCount >= MinSignsCount)
-				return PasswordStrength.NotEnoughLettersOrDigits;
+				if (DigitsCount < MinClassCount && LettersCount < MinClassCount && SignsCount >= MinClassCount)
+					return PasswordStrength.NotEnoughLettersOrDigits;
+			}
 
 			if (DigitsCount + LettersCount + SignsCount < Constants.Security.MinPasswordLength)
 				return PasswordStrength.TooShort;

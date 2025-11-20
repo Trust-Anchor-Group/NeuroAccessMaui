@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls">
+
+	<DataTemplate x:Key="DefaultBottomPillTabTemplate">
+		<Grid Padding="0,4"
+			  HeightRequest="64">
+			<Border x:Name="TabContainer"
+					Padding="16,10"
+					StrokeThickness="0"
+					BackgroundColor="Transparent"
+					HorizontalOptions="Fill"
+					VerticalOptions="Fill">
+				<Border.StrokeShape>
+					<RoundRectangle CornerRadius="28" />
+				</Border.StrokeShape>
+
+				<Grid ColumnDefinitions="Auto,*"
+					  ColumnSpacing="8"
+					  VerticalOptions="Center">
+					<Image WidthRequest="24"
+						   HeightRequest="24"
+						   VerticalOptions="Center"
+						   Source="{Binding Icon}"
+						   IsVisible="True">
+						<Image.Triggers>
+							<DataTrigger TargetType="Image"
+										 Binding="{Binding Icon}"
+										 Value="{x:Null}">
+								<Setter Property="IsVisible" Value="False" />
+							</DataTrigger>
+						</Image.Triggers>
+					</Image>
+
+					<Label Grid.Column="1"
+						   HorizontalOptions="Center"
+						   VerticalOptions="Center"
+						   Text="{Binding Title}"
+						   TextColor="{DynamicResource ContentPrimaryWL}"
+						   FontFamily="HaasGroteskMedium"
+						   FontSize="14" />
+				</Grid>
+			</Border>
+
+			<Grid x:Name="CustomBadgeHost"
+				  HorizontalOptions="End"
+				  VerticalOptions="Start"
+				  Margin="0,-6,-6,0"
+				  IsVisible="{Binding Source={RelativeSource AncestorType={x:Type controls:TabNavigationHost}}, Path=BadgeTemplate, Converter={StaticResource NullToBooleanConverter}}"
+				  InputTransparent="True" />
+
+			<controls:Badge HorizontalOptions="End"
+							VerticalOptions="Start"
+							Margin="0,-6,-6,0"
+							Text="{Binding BadgeCount}"
+							BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+							IsVisible="{Binding BadgeCount, Converter={StaticResource NumberToBoolConverter}}">
+				<controls:Badge.Triggers>
+					<DataTrigger TargetType="controls:Badge"
+								 Binding="{Binding Source={RelativeSource AncestorType={x:Type controls:TabNavigationHost}}, Path=BadgeTemplate, Converter={StaticResource NullToBooleanConverter}}"
+								 Value="True">
+						<Setter Property="IsVisible" Value="False" />
+					</DataTrigger>
+				</controls:Badge.Triggers>
+			</controls:Badge>
+
+			<Border.Triggers>
+				<DataTrigger TargetType="Border"
+							 Binding="{Binding IsSelected}"
+							 Value="True">
+					<Setter Property="BackgroundColor" Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+					<Setter Property="StrokeThickness" Value="0" />
+				</DataTrigger>
+				<DataTrigger TargetType="Border"
+							 Binding="{Binding IsProminent}"
+							 Value="True">
+					<Setter Property="Padding" Value="16,20" />
+				</DataTrigger>
+			</Border.Triggers>
+		</Grid>
+	</DataTemplate>
+
+	<DataTemplate x:Key="DefaultTopUnderlineTabTemplate">
+		<Grid Padding="0"
+			  HeightRequest="56">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="2" />
+			</Grid.RowDefinitions>
+
+			<Grid Grid.Row="0"
+				  ColumnDefinitions="Auto,*"
+				  ColumnSpacing="8"
+				  Padding="12,8"
+				  VerticalOptions="Center">
+				<Image WidthRequest="20"
+					   HeightRequest="20"
+					   VerticalOptions="Center"
+					   Source="{Binding Icon}"
+					   IsVisible="True">
+					<Image.Triggers>
+						<DataTrigger TargetType="Image"
+									 Binding="{Binding Icon}"
+									 Value="{x:Null}">
+							<Setter Property="IsVisible" Value="False" />
+						</DataTrigger>
+					</Image.Triggers>
+				</Image>
+
+				<Label Grid.Column="1"
+					   Text="{Binding Title}"
+					   HorizontalOptions="Center"
+					   VerticalOptions="Center"
+					   FontSize="14"
+					   FontFamily="HaasGroteskMedium"
+					   TextColor="{DynamicResource ContentPrimaryWL}" />
+			</Grid>
+
+			<BoxView Grid.Row="1"
+					 HeightRequest="2"
+					 HorizontalOptions="Fill"
+					 Color="{DynamicResource ButtonAccessPrimarybgWL}"
+					 IsVisible="False">
+				<BoxView.Triggers>
+					<DataTrigger TargetType="BoxView"
+								 Binding="{Binding IsSelected}"
+								 Value="True">
+						<Setter Property="IsVisible" Value="True" />
+					</DataTrigger>
+				</BoxView.Triggers>
+			</BoxView>
+
+			<Grid x:Name="CustomBadgeHost"
+				  Grid.RowSpan="2"
+				  HorizontalOptions="End"
+				  VerticalOptions="Start"
+				  Margin="0,0,8,0"
+				  IsVisible="{Binding Source={RelativeSource AncestorType={x:Type controls:TabNavigationHost}}, Path=BadgeTemplate, Converter={StaticResource NullToBooleanConverter}}"
+				  InputTransparent="True" />
+
+			<controls:Badge HorizontalOptions="End"
+							VerticalOptions="Start"
+							Margin="0,0,8,0"
+							Text="{Binding BadgeCount}"
+							BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+							IsVisible="{Binding BadgeCount, Converter={StaticResource NumberToBoolConverter}}">
+				<controls:Badge.Triggers>
+					<DataTrigger TargetType="controls:Badge"
+								 Binding="{Binding Source={RelativeSource AncestorType={x:Type controls:TabNavigationHost}}, Path=BadgeTemplate, Converter={StaticResource NullToBooleanConverter}}"
+								 Value="True">
+						<Setter Property="IsVisible" Value="False" />
+					</DataTrigger>
+				</controls:Badge.Triggers>
+			</controls:Badge>
+		</Grid>
+	</DataTemplate>
+
+	<DataTemplate x:Key="DefaultVerticalTabTemplate">
+		<Grid Padding="0,8"
+			  WidthRequest="104">
+			<Border Padding="12"
+					StrokeThickness="0"
+					BackgroundColor="Transparent"
+					HorizontalOptions="Fill"
+					VerticalOptions="Fill">
+				<Border.StrokeShape>
+					<RoundRectangle CornerRadius="16" />
+				</Border.StrokeShape>
+
+				<VerticalStackLayout Spacing="6"
+									  HorizontalOptions="Center"
+									  VerticalOptions="Center">
+					<Image WidthRequest="24"
+						   HeightRequest="24"
+						   HorizontalOptions="Center"
+						   Source="{Binding Icon}"
+						   IsVisible="True">
+						<Image.Triggers>
+							<DataTrigger TargetType="Image"
+										 Binding="{Binding Icon}"
+										 Value="{x:Null}">
+								<Setter Property="IsVisible" Value="False" />
+							</DataTrigger>
+						</Image.Triggers>
+					</Image>
+
+					<Label Text="{Binding Title}"
+						   HorizontalOptions="Center"
+						   VerticalOptions="Center"
+						   FontSize="13"
+						   FontFamily="HaasGroteskMedium"
+						   TextColor="{DynamicResource ContentPrimaryWL}"
+						   LineBreakMode="TailTruncation" />
+				</VerticalStackLayout>
+			</Border>
+
+			<controls:Badge HorizontalOptions="End"
+							VerticalOptions="Start"
+							Margin="0,-6,-6,0"
+							Text="{Binding BadgeCount}"
+							BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+							IsVisible="{Binding BadgeCount, Converter={StaticResource NumberToBoolConverter}}">
+				<controls:Badge.Triggers>
+					<DataTrigger TargetType="controls:Badge"
+								 Binding="{Binding Source={RelativeSource AncestorType={x:Type controls:TabNavigationHost}}, Path=BadgeTemplate, Converter={StaticResource NullToBooleanConverter}}"
+								 Value="True">
+						<Setter Property="IsVisible" Value="False" />
+					</DataTrigger>
+				</controls:Badge.Triggers>
+			</controls:Badge>
+
+			<Grid x:Name="CustomBadgeHost"
+				  HorizontalOptions="End"
+				  VerticalOptions="Start"
+				  Margin="0,-6,-6,0"
+				  IsVisible="{Binding Source={RelativeSource AncestorType={x:Type controls:TabNavigationHost}}, Path=BadgeTemplate, Converter={StaticResource NullToBooleanConverter}}"
+				  InputTransparent="True" />
+		</Grid>
+	</DataTemplate>
+
+	<DataTemplate x:Key="DefaultSegmentedTabTemplate">
+		<Border Padding="16,10"
+				StrokeThickness="1"
+				Stroke="{DynamicResource ButtonAccessPrimarybgWL}"
+				BackgroundColor="Transparent"
+				HorizontalOptions="Fill"
+				VerticalOptions="Fill">
+			<Border.StrokeShape>
+				<RoundRectangle CornerRadius="24" />
+			</Border.StrokeShape>
+
+			<Label Text="{Binding Title}"
+				   HorizontalOptions="Center"
+				   VerticalOptions="Center"
+				   FontSize="14"
+				   FontFamily="HaasGroteskMedium"
+				   TextColor="{DynamicResource ContentPrimaryWL}" />
+
+			<Border.Triggers>
+				<DataTrigger TargetType="Border"
+							 Binding="{Binding IsSelected}"
+							 Value="True">
+					<Setter Property="BackgroundColor" Value="{DynamicResource ButtonAccessPrimarybgWL}" />
+					<Setter Property="StrokeThickness" Value="0" />
+				</DataTrigger>
+			</Border.Triggers>
+		</Border>
+	</DataTemplate>
+
+	<DataTemplate x:Key="DefaultIconOnlyTabTemplate">
+		<Grid Padding="0,6"
+			  HeightRequest="56"
+			  WidthRequest="64">
+			<Border Padding="12"
+					StrokeThickness="0"
+					BackgroundColor="Transparent"
+					HorizontalOptions="Fill"
+					VerticalOptions="Fill">
+				<Border.StrokeShape>
+					<RoundRectangle CornerRadius="24" />
+				</Border.StrokeShape>
+
+				<Image WidthRequest="24"
+					   HeightRequest="24"
+					   HorizontalOptions="Center"
+					   VerticalOptions="Center"
+					   Source="{Binding Icon}" />
+			</Border>
+
+			<controls:Badge HorizontalOptions="End"
+							VerticalOptions="Start"
+							Margin="0,-6,-6,0"
+							Text="{Binding BadgeCount}"
+							BackgroundColor="{DynamicResource ButtonAccessPrimarybgWL}"
+							IsVisible="{Binding BadgeCount, Converter={StaticResource NumberToBoolConverter}}">
+				<controls:Badge.Triggers>
+					<DataTrigger TargetType="controls:Badge"
+								 Binding="{Binding Source={RelativeSource AncestorType={x:Type controls:TabNavigationHost}}, Path=BadgeTemplate, Converter={StaticResource NullToBooleanConverter}}"
+								 Value="True">
+						<Setter Property="IsVisible" Value="False" />
+					</DataTrigger>
+				</controls:Badge.Triggers>
+			</controls:Badge>
+
+			<Grid x:Name="CustomBadgeHost"
+				  HorizontalOptions="End"
+				  VerticalOptions="Start"
+				  Margin="0,-6,-6,0"
+				  IsVisible="{Binding Source={RelativeSource AncestorType={x:Type controls:TabNavigationHost}}, Path=BadgeTemplate, Converter={StaticResource NullToBooleanConverter}}"
+				  InputTransparent="True" />
+		</Grid>
+	</DataTemplate>
+
+</ResourceDictionary>

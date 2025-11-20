@@ -17,11 +17,11 @@
 		   TargetType="Label"
 		   BaseResourceKey="BoldItemTitleLabel">
 		<Setter Property="TextColor"
-				Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+				Value="{DynamicResource ContentSecondaryWL}" />
 		<Setter Property="FontSize"
 				Value="15" />
 		<Setter Property="FontFamily"
-				Value="SpaceGroteskSemiBold" />
+				Value="HaasGroteskRegular" />
 		<Setter Property="LineBreakMode"
 				Value="WordWrap" />
 		<Setter Property="VerticalTextAlignment"
@@ -33,11 +33,11 @@
 	<Style x:Key="ParameterItemValueLabel"
 		   TargetType="Label">
 		<Setter Property="TextColor"
-				Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+				Value="{DynamicResource ContentPrimaryWL}" />
 		<Setter Property="FontSize"
 				Value="15" />
 		<Setter Property="FontFamily"
-				Value="HaasGroteskRegular" />
+				Value="SpaceGroteskSemiBold" />
 		<Setter Property="LineBreakMode"
 				Value="WordWrap" />
 		<Setter Property="VerticalTextAlignment"
@@ -53,6 +53,7 @@
 				<controls:CompositeInputView Grid.Row="1"
 											 Style="{DynamicResource BaseCompositeInputView}"
 											 IsValid="{Binding IsValid}"
+											 ValidationText="{Binding ValidationText}"
 											 LabelText="{Binding Label}">
 					<controls:CompositeInputView.CenterView>
 						<Grid ColumnDefinitions="Auto, *">
@@ -64,12 +65,12 @@
 									  IsChecked="{Binding BooleanValue, Mode=TwoWay}"
 									  VerticalOptions="Center"
 									  HorizontalOptions="Start"
-									  Color="{AppThemeBinding Light={DynamicResource ButtonAccessPrimarybgWLLight}, Dark={DynamicResource ButtonAccessPrimarybgWLDark}}"
+									  Color="{DynamicResource ButtonAccessPrimarybgWL}"
 									  Margin="{DynamicResource SmallRightMargins}" />
 							<Label Grid.Column="1"
 								   Text="{Binding Guide}"
 								   Style="{DynamicResource ParameterItemTitleLabel}"
-								   TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+								   TextColor="{DynamicResource ContentPrimaryWL}" />
 						</Grid>
 					</controls:CompositeInputView.CenterView>
 				</controls:CompositeInputView>
@@ -83,7 +84,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -105,7 +106,7 @@
 							  IsChecked="{Binding BooleanValue, Mode=OneTime}"
 							  VerticalOptions="Center"
 							  HorizontalOptions="Start"
-							  Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+							  Color="{DynamicResource ContentPrimaryWL}"
 							  InputTransparent="True" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -123,6 +124,7 @@
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 				<controls:CompositeDatePicker Style="{DynamicResource RegularCompositeDatePicker}"
 											  IsValid="{Binding IsValid}"
+											  ValidationText="{Binding ValidationText}"
 											  LabelText="{Binding Label}"
 											  NullableDate="{Binding DateValue}"
 											  Placeholder="{Binding Guide}"
@@ -132,7 +134,7 @@
 													   IsVisible="{Binding IsProtected}" />
 				<controls:TemplatedButton Command="{Binding ShowErrorCommand}" IsVisible="{Binding CanShowError}" HeightRequest="24" WidthRequest="24" HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -151,7 +153,7 @@
 						   Style="{DynamicResource ParameterItemTitleLabel}"
 						   HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
-						   Text="{Binding DateValue, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=true}"
+						   Text="{Binding DateValue, Converter={converters:DateTimeToStringConverter}}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -173,7 +175,8 @@
 										 Placeholder="{Binding Guide}"
 										 VerticalOptions="Center"
 										 LabelText="{Binding Label}"
-										 IsValid="{Binding IsValid}" />
+											 IsValid="{Binding IsValid}"
+											 ValidationText="{Binding ValidationText}" />
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
@@ -183,7 +186,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -200,7 +203,7 @@
 						   Text="{Binding Label}"
 						   Style="{DynamicResource ParameterItemTitleLabel}" />
 					<Label Grid.Row="1"
-						   Text="{Binding DecimalValue}"
+						   Text="{Binding DecimalValue,Converter={converters:MoneyToString}}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -222,7 +225,8 @@
 										 Placeholder="{Binding Guide}"
 										 VerticalOptions="Center"
 										 LabelText="{Binding Label}"
-										 IsValid="{Binding IsValid}" />
+											 IsValid="{Binding IsValid}"
+											 ValidationText="{Binding ValidationText}" />
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
 													   IsEncrypted="{Binding IsEncrypted}"
 													   IsVisible="{Binding IsProtected}" />
@@ -232,7 +236,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -262,11 +266,12 @@
 			<VerticalStackLayout>
 				<controls:CompositeInputView Style="{DynamicResource BaseCompositeInputView}"
 											 IsValid="{Binding IsValid}"
+											 ValidationText="{Binding ValidationText}"
 											 LabelText="{Binding Label}">
 					<controls:CompositeInputView.CenterView>
 						<TimePicker Time="{Binding TimeSpanValue, Mode=TwoWay}"
 									BackgroundColor="Transparent"
-									TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+									TextColor="{DynamicResource ContentPrimaryWL}"
 									VerticalOptions="Center"
 									FontFamily="HaasGroteskRegular"
 									FontSize="18" />
@@ -281,7 +286,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -316,10 +321,8 @@
 		<Border Style="{DynamicResource BorderSet}"
 				Margin="{DynamicResource MediumLeftRightMargins}">
 			<VerticalStackLayout>
-				<controls:CompositeDurationPicker	TitleLabelText="{l:Localize DurationPickerTitle}"
+				<controls:CompositeDurationPicker	TitleLabelText="{Binding Label}"
 													TitleLabelStyle="{DynamicResource DurationLabel}"
-													DescriptionLabelText="{l:Localize DurationPickerDescription}"
-													DescriptionLabelStyle="{DynamicResource ParameterItemValueLabel}"
 													DurationValue="{Binding DurationValue, Mode=TwoWay}"
 													IsValid="{Binding IsValid}" />
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -331,7 +334,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -350,7 +353,7 @@
 						   Style="{DynamicResource ParameterItemTitleLabel}"
 						   HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
-						   Text="{Binding DurationValue}"
+						   Text="{Binding DurationValue, Converter={StaticResource DurationToStringConverter}}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -406,7 +409,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -446,6 +449,7 @@
 					<controls:CompositeDatePicker Grid.Row="0"
 												  Style="{DynamicResource RegularCompositeDatePicker}"
 												  IsValid="{Binding IsValid}"
+											  ValidationText="{Binding ValidationText}"
 												  LabelText="{Binding Label}"
 												  NullableDate="{Binding SelectedDate}"
 												  Placeholder="{Binding Guide}"
@@ -453,11 +457,12 @@
 
 					<controls:CompositeInputView Grid.Row="1"
 												 Style="{DynamicResource BaseCompositeInputView}"
-												 IsValid="{Binding IsValid}">
+											 IsValid="{Binding IsValid}"
+											 ValidationText="{Binding ValidationText}">
 						<controls:CompositeInputView.CenterView>
 							<TimePicker Time="{Binding SelectedTime, Mode=TwoWay}"
 										BackgroundColor="Transparent"
-										TextColor="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+										TextColor="{DynamicResource ContentPrimaryWL}"
 										VerticalOptions="Center"
 										FontFamily="HaasGroteskRegular"
 										FontSize="18">
@@ -466,7 +471,7 @@
 												 Binding="{Binding IsValid}"
 												 Value="False">
 										<Setter Property="TextColor"
-												Value="{AppThemeBinding Light={DynamicResource InputFieldsContentDangerv500Light}, Dark={DynamicResource InputFieldsContentDangerv500Dark}}" />
+												Value="{DynamicResource InputFieldsContentDangerv500}" />
 
 									</DataTrigger>
 								</TimePicker.Triggers>
@@ -483,7 +488,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -502,7 +507,7 @@
 						   Style="{DynamicResource ParameterItemTitleLabel}"
 						   HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
-						   Text="{Binding DateTimeValue, Converter={StaticResource DateTimeToStringConverter}, ConverterParameter=false}"
+						   Text="{Binding DateTimeValue, Converter={converters:DateTimeToStringConverter}}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -534,7 +539,7 @@
 										  WidthRequest="24"
 										  HorizontalOptions="End">
 					<controls:SvgView Source="help.svg"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
@@ -553,7 +558,7 @@
 						   Style="{DynamicResource ParameterItemTitleLabel}"
 						   HorizontalTextAlignment="Start" />
 					<Label Grid.Row="1"
-						   Text="{Binding CalcString}"
+						   Text="{Binding CalcValue,Converter={converters:MoneyToString}}"
 						   Style="{DynamicResource ParameterItemValueLabel}" />
 				</Grid>
 				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
@@ -563,6 +568,7 @@
 		</Border>
 	</DataTemplate>
 
+	<!-- ContractReferenceParameterTemplate -->
 	<DataTemplate x:Key="ContractReferenceParameterTemplate"
 				  x:DataType="objectModel:ObservableContractReferenceParameter">
 		<Border Style="{DynamicResource BorderSet}"
@@ -590,11 +596,13 @@
 					<controls:SvgView Source="help.svg"
 									  HeightRequest="24"
 									  WidthRequest="24"
-									  TintColor="{DynamicResource InputFieldsContentDangerv500Light}" />
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
 				</controls:TemplatedButton>
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
+
+	<!-- Read-only ContractReferenceParameterTemplate -->
 	<DataTemplate x:Key="ContractReferenceParameterReadOnlyTemplate"
 				  x:DataType="objectModel:ObservableContractReferenceParameter">
 		<Border Style="{DynamicResource BorderSet}"
@@ -608,4 +616,64 @@
 			</VerticalStackLayout>
 		</Border>
 	</DataTemplate>
+
+	<!-- CoordinatesParameterTemplate -->
+	<DataTemplate x:Key="GeoParameterTemplate"
+				  x:DataType="objectModel:ObservableGeoParameter">
+		<Border Style="{DynamicResource BorderSet}"
+				Margin="{DynamicResource MediumLeftRightMargins}">
+			<VerticalStackLayout>
+				<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
+										 EntryData="{Binding GeoString, Mode=TwoWay}"
+										 Placeholder="{Binding Guide}"
+										 LabelText="{Binding Label}"
+										 IsValid="{Binding IsValid}"/>
+
+				<controls:ConditionView Condition="{Binding IsCheckinglocation}" Margin="{DynamicResource SmallTopMargins}">
+					<controls:ConditionView.True>
+						<ActivityIndicator IsRunning="True"
+										   VerticalOptions="Center"
+										   HorizontalOptions="Center"/>
+					</controls:ConditionView.True>
+					<controls:ConditionView.False>
+						<controls:TextButton LabelData="{l:Localize UseCurrentLocation}"
+											 Style="{DynamicResource PrimaryButton}"
+											 Command="{Binding SetCurrentLocationCommand}"/>
+					</controls:ConditionView.False>
+				</controls:ConditionView>
+
+				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
+													   IsEncrypted="{Binding IsEncrypted}"
+													   IsVisible="{Binding IsProtected}" />
+
+				<controls:TemplatedButton Command="{Binding ShowErrorCommand}"
+										  IsVisible="{Binding CanShowError}"
+										  HeightRequest="24"
+										  WidthRequest="24"
+										  HorizontalOptions="End">
+					<controls:SvgView Source="help.svg"
+									  HeightRequest="24"
+									  WidthRequest="24"
+									  TintColor="{DynamicResource InputFieldsContentDangerv500}" />
+				</controls:TemplatedButton>
+				
+			</VerticalStackLayout>
+		</Border>
+	</DataTemplate>
+
+	<!-- Read-only GeoParameterTemplate -->
+	<DataTemplate x:Key="GeoParameterReadOnlyTemplate"
+				  x:DataType="objectModel:ObservableGeoParameter">
+		<Border Style="{DynamicResource BorderSet}"
+				Margin="{DynamicResource MediumLeftRightMargins}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+				<Label Text="Coordinates:" Style="{DynamicResource ParameterItemTitleLabel}"/>
+				<Label Text="{Binding GeoString}" Style="{DynamicResource ParameterItemValueLabel}"/>
+				<controls:ParameterProtectionIndicator IsTransient="{Binding IsTransient}"
+													   IsEncrypted="{Binding IsEncrypted}"
+													   IsVisible="{Binding IsProtected}" />
+			</VerticalStackLayout>
+		</Border>
+	</DataTemplate>
+
 </ResourceDictionary>

@@ -1,6 +1,7 @@
-﻿using NeuroAccessMaui.Services.Contracts;
+﻿using System.ComponentModel;
+using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Storage;
-using System.ComponentModel;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
 
@@ -233,7 +234,7 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <summary>
 		/// Currently selected theme.
 		/// </summary>
-		AppTheme? Theme { get; }
+		AppTheme Theme { get; set; }
 
 		/// <summary>
 		/// If there exist <see cref="ContractReference"/> objects created.
@@ -269,6 +270,16 @@ namespace NeuroAccessMaui.Services.Tag
 		/// The date and time of the last identity update.
 		/// </summary>
 		DateTime LastIdentityUpdate { get; set; }
+
+		/// <summary>
+		/// The cached eDaler balance.
+		/// </summary>
+		decimal LastEDalerBalanceDecimal { get; set; }
+
+		/// <summary>
+		/// Last time the eDaler balance was updated.
+		/// </summary>
+		DateTime? LastEDalerBalanceUpdate { get; set; }
 
 		/// <summary>
 		/// Returns <c>true</c> if the current <see cref="ITagProfile"/> has changed values and need saving, <c>false</c> otherwise.
@@ -472,17 +483,6 @@ namespace NeuroAccessMaui.Services.Tag
 		/// <param name="Password">Password to check.</param>
 		/// <returns>The password score</returns>
 		double CalculatePasswordScore(string? Password);
-
-		/// <summary>
-		/// Sets the preferred theme.
-		/// </summary>
-		/// <param name="Theme">Theme</param>
-		void SetTheme(AppTheme Theme);
-
-		/// <summary>
-		/// Sets the preferred theme.
-		/// </summary>
-		void SetTheme();
 
 		/// <summary>
 		/// Checks if Tag Profile properties need to be changed, with regards to a current <see cref="ContractReference"/> object instance.

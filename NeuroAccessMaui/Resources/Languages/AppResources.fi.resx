@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -22,10 +22,8 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
-  object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -114,13 +112,20 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
+    <value>Valitse roolit, joilla allekirjoitat (valinnainen)</value>
+  </data>
+  <data name="NoRolesSelectedWarning" xml:space="preserve">
+    <value>Rooleja ei ole valittu – et allekirjoita tätä sopimusta nyt.</value>
+  </data>
+  <data name="SignAs" xml:space="preserve">
+    <value>Allekirjoita nimellä</value>
+  </data>
   <data name="STRINGNOTDEFINED" xml:space="preserve">
     <value>MERKKIJONOA EI OLE MÄÄRITETTY</value>
   </data>
@@ -659,7 +664,7 @@
     <value>Väliaikaista OTP-koodia on käytetty. Sovellus lakkaa toimimasta noin viikon kuluttua. Sinun on asennettava sovellus uudelleen, jotta voit käyttää sitä uudelleen.</value>
   </data>
   <data name="DefinePasswordSectionTitle1" xml:space="preserve">
-    <value>Anna uusi nasta</value>
+    <value>Luo uusi PIN-koodi</value>
   </data>
   <data name="DefinePasswordSectionTitle2" xml:space="preserve">
     <value>Vahvista PIN-koodi</value>
@@ -986,7 +991,7 @@
     <value>Valokuva</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Lisää kuva, josta sinut on helppo tunnistaa.</value>
+    <value>Ota itsestäsi live-kuva nyt, jotta voimme vahvistaa henkilöllisyytesi. Kuvakaappauksia tai muokattuja kuvia ei sallita.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>Seuraavat kuvat on sisällytetty sovellukseen.</value>
@@ -1753,9 +1758,6 @@
   <data name="StreetNumber" xml:space="preserve">
     <value>Kadun numero</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Ota valokuva</value>
-  </data>
   <data name="TakePhotoToShare" xml:space="preserve">
     <value>Ota valokuva jaettavaksi</value>
   </data>
@@ -2216,10 +2218,10 @@
     <value>Anna alla oleva määrä eDaleria, jonka haluat ostaa, ja paina Osta-painiketta. Saatat avata verkkosivun, jossa sinun on täytettävä lisätietoja, jotta maksunkäsittelijä voi vahvistaa vaatimuksesi.</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Määrä:</value>
+    <value>Määrä</value>
   </data>
   <data name="AmountExtra" xml:space="preserve">
-    <value>Ylimääräinen: (valinnainen, ehdotus)</value>
+    <value>Ylimääräinen määrä (valinnainen, ehdotus)</value>
   </data>
   <data name="Wallet" xml:space="preserve">
     <value>Lompakko</value>
@@ -2614,8 +2616,8 @@
   <data name="ApplyIdInfoMainPage" xml:space="preserve">
     <value>Hae henkilötunnusta saadaksesi kaiken irti Neuro Accessista</value>
   </data>
-  <data name="CompleteIdButton" xml:space="preserve">
-    <value>Täytä henkilötunnuksesi</value>
+  <data name="GoToApplications" xml:space="preserve">
+    <value>Siirry sovelluksiin</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Etsiä</value>
@@ -2800,6 +2802,9 @@
   <data name="SelectContract" xml:space="preserve">
     <value>Valitse sopimus</value>
   </data>
+  <data name="LoadMore" xml:space="preserve">
+    <value>Lataa lisää</value>
+  </data>
   <data name="SelectContractEntryDescription" xml:space="preserve">
     <value>Liitä sopimustunnus tai valitse luettelosta</value>
   </data>
@@ -2812,7 +2817,613 @@
   <data name="ClearCache" xml:space="preserve">
     <value>Tyhjennä välimuisti</value>
   </data>
+  <data name="ClearBrandingAndKycCacheDescription" xml:space="preserve">
+    <value>Poistaa nykyisen verkkotunnuksen brändäys- ja KYC-tiedot</value>
+  </data>
+  <data name="Apps" xml:space="preserve">
+    <value>Sovellukset</value>
+  </data>
+  <data name="BetaFeaturesDescription" xml:space="preserve">
+    <value>Beta-ominaisuudet ovat kehitteillä, ja niistä voi puuttua toiminnallisuus tai muotoilu. Jotkut niiden ydinominaisuuksista ovat kuitenkin saatavilla</value>
+  </data>
+  <data name="SmartThings" xml:space="preserve">
+    <value>Älykkäitä asioita</value>
+  </data>
+  <data name="Assets" xml:space="preserve">
+    <value>Varat</value>
+  </data>
+  <data name="MicroLoan" xml:space="preserve">
+    <value>Mikrolaina</value>
+  </data>
+  <data name="NFC" xml:space="preserve">
+    <value>NFC</value>
+  </data>
+  <data name="ComingSoon" xml:space="preserve">
+    <value>Tulossa pian!</value>
+  </data>
+  <data name="ComingSoonInfo" xml:space="preserve">
+    <value>Työskentelemme parhaillaan tämän parissa</value>
+  </data>
+  <data name="BetaFeature" xml:space="preserve">
+    <value>Beeta</value>
+  </data>
+  <data name="BetaFeatureInfo" xml:space="preserve">
+    <value>Ota beta-ominaisuudet käyttöön siirtymällä aloitusnäyttöön ja avaamalla asetussivu</value>
+  </data>
+  <data name="BetaFeatureMainPage" xml:space="preserve">
+    <value>Tämä ominaisuus on tällä hetkellä beta-tilassa. Ota beta-ominaisuudet käyttöön avaamalla asetussivu ja ottamalla beta-ominaisuudet käyttöön</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Title" xml:space="preserve">
+    <value>Lupa vaaditaan</value>
+  </data>
+  <data name="RefreshContract_Forbidden_Description" xml:space="preserve">
+    <value>Emme voineet ladata tämän sopimuksen uusinta versiota. Näkemäsi tiedot voivat olla vanhentuneita. Pyydätkö käyttöoikeutta nyt?</value>
+  </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Välimuisti tyhjennetty</value>
+  </data>
+  <data name="LanguageChangedTitle" xml:space="preserve">
+    <value>Kieli vaihtunut</value>
+  </data>
+  <data name="LanguageChangedMessage" xml:space="preserve">
+    <value>Käynnistä sovellus uudelleen varmistaaksesi, että kaikki teksti vaihtaa kieltä oikein</value>
+  </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Jatka ({0})</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>Koskaan</value>
+  </data>
+  <data name="Now" xml:space="preserve">
+    <value>Nyt</value>
+  </data>
+  <data name="MinutesAgoFormat" xml:space="preserve">
+    <value>{0} minuuttia sitten</value>
+  </data>
+  <data name="HoursAgoFormat" xml:space="preserve">
+    <value>{0} tuntia sitten</value>
+  </data>
+  <data name="LastUpdatedFormat" xml:space="preserve">
+    <value>Päivitetty viimeksi: {0}</value>
+  </data>
+  <data name="ActivateYourDigitalIdentity" xml:space="preserve">
+    <value>Valitse tunnuksen tarjoaja</value>
+  </data>
+  <data name="HaveAnyQuestions" xml:space="preserve">
+    <value>Onko sinulla kysyttävää?</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription" xml:space="preserve">
+    <value>Lue lisää digitaalisen tunnuksen aktivoinnista tunnuksen tarjoajien verkkosivuilta.</value>
+  </data>
+  <data name="HaveAnyQuestionsDescription2" xml:space="preserve">
+    <value>Tunnuksen tarjoaja voi olla sinun: pankki, koulu jne.</value>
+  </data>
+  <data name="AlreadyHaveAnID" xml:space="preserve">
+    <value>Onko sinulla jo henkilöllisyystodistus?</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription" xml:space="preserve">
+    <value>Tarvitsemme vain siirtokoodin edellisestä puhelimestasi.</value>
+  </data>
+  <data name="AlreadyHaveAnIDDescription2" xml:space="preserve">
+    <value>Etsi ja aloita kohdasta: Asetukset / Siirrä identiteetti</value>
+  </data>
+  <data name="PaymentAcceptance" xml:space="preserve">
+    <value>Maksun hyväksyminen</value>
+  </data>
+  <data name="PaymentAcceptanceDescription" xml:space="preserve">
+    <value>Tarkista offline-maksun tiedot alta. Jos olet tyytyväinen niihin, lähetä se palvelimelle käsiteltäväksi.</value>
+  </data>
+  <data name="ContractWizardStepFormat" xml:space="preserve">
+    <value>Vaihe {0} {1}</value>
+  </data>
+  <data name="ContractWizardNext" xml:space="preserve">
+    <value>Seuraava</value>
+  </data>
+  <data name="ContractWizardReviewHumanReadable" xml:space="preserve">
+    <value>Ihmisen luettavissa oleva arvostelu</value>
+  </data>
+  <data name="ContractWizardSettings" xml:space="preserve">
+    <value>Asetukset</value>
+  </data>
+  <data name="ContractWizardVisibilityPlaceholder" xml:space="preserve">
+    <value>Valitse, kenellä on käyttöoikeus</value>
+  </data>
+  <data name="ContractWizardContractLabel" xml:space="preserve">
+    <value>Sopimus</value>
+  </data>
+  <data name="HaveAnInviteCodeQuestion" xml:space="preserve">
+    <value>Onko sinulla kutsukoodi?</value>
+  </data>
+  <data name="PasteInviteCodeHere" xml:space="preserve">
+    <value>Liitä kutsukoodi tähän</value>
+  </data>
+  <data name="Or" xml:space="preserve">
+    <value>Tai</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Tahna</value>
+  </data>
+  <data name="CreditBalance" xml:space="preserve">
+    <value>Saldo</value>
+  </data>
+  <data name="BuyNeuroCredits" xml:space="preserve">
+    <value>Osta Neuro-krediittejä</value>
+  </data>
+  <data name="UseCurrentLocation" xml:space="preserve">
+    <value>Käytä nykyistä sijaintia</value>
+  </data>
+  <data name="LocationError" xml:space="preserve">
+    <value>Sijaintisi määrittämisessä tapahtui virhe. Varmista, että sijaintiluvat on myönnetty laitteidesi asetuksissa</value>
+  </data>
+  <data name="Attachment_Passport" xml:space="preserve">
+    <value>Passin kuva</value>
+  </data>
+  <data name="Attachment_IdCardFront" xml:space="preserve">
+    <value>Henkilökortin etupuoli</value>
+  </data>
+  <data name="Attachment_IdCardBack" xml:space="preserve">
+    <value>Henkilökortin takapuoli</value>
+  </data>
+  <data name="Attachment_DriverLicenseFront" xml:space="preserve">
+    <value>Ajokortin etupuoli</value>
+  </data>
+  <data name="Attachment_DriverLicenseBack" xml:space="preserve">
+    <value>Ajokortin takaosa</value>
+  </data>
+  <data name="Attachment_ProfilePhoto" xml:space="preserve">
+    <value>Kuva kasvoista</value>
+  </data>
+  <data name="Kyc_Next" xml:space="preserve">
+    <value>Seuraava</value>
+  </data>
+  <data name="Kyc_Apply" xml:space="preserve">
+    <value>Käyttää</value>
+  </data>
+  <data name="Kyc_Return" xml:space="preserve">
+    <value>Palaa yhteenvetoon</value>
+  </data>
+  <data name="Kyc_Exit" xml:space="preserve">
+    <value>Oletko varma, että haluat poistua henkilöllisyyden hakuprosessista?</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Eteneminen</value>
+  </data>
+  <data name="TradeName" xml:space="preserve">
+    <value>Toiminimi</value>
+  </data>
+  <data name="LegalName" xml:space="preserve">
+    <value>Virallinen nimi</value>
+  </data>
+  <data name="OrgRepName" xml:space="preserve">
+    <value>Edustajan nimi</value>
+  </data>
+  <data name="OrgRepCPF" xml:space="preserve">
+    <value>Edustaja CPF</value>
+  </data>
+  <data name="OrgRepBirthDate" xml:space="preserve">
+    <value>Edustava syntymäaika</value>
+  </data>
+  <data name="OrgRepRG" xml:space="preserve">
+    <value>Edustaja RG</value>
+  </data>
+  <data name="OrgEMail" xml:space="preserve">
+    <value>Yrityksen sähköposti</value>
+  </data>
+  <data name="OrgPhone" xml:space="preserve">
+    <value>Yrityksen puhelin</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Koko nimi</value>
+  </data>
+  <data name="Attachment_ArticleOfAssociation" xml:space="preserve">
+    <value>Yhtiöjärjestys</value>
+  </data>
   <data name="ClearCacheDescription" xml:space="preserve">
     <value>Poistaa väliaikaiset tiedot, kuten kuvat ja liitteet, vapauttaakseen tilaa</value>
+  </data>
+  <data name="ClearBrandingAndKycCache" xml:space="preserve">
+    <value>Tyhjennä brändäys ja KYC-välimuisti</value>
+  </data>
+  <data name="ApplicationUnderUnderReview" xml:space="preserve">
+    <value>Hakemuksesi on arvioitavana. Ilmoitamme sinulle, kun henkilöllisyystodistuksesi on hyväksytty!</value>
+  </data>
+  <data name="SeeIDApplication" xml:space="preserve">
+    <value>Katso ID-hakemus</value>
+  </data>
+  <data name="ApplicationUnderReviewDescription" xml:space="preserve">
+    <value>Henkilöllisyystodistuksesi hakemus lähetetään tarkistettavaksi. Ilmoitamme sinulle, kun henkilöllisyystodistuksesi on hyväksytty!</value>
+  </data>
+  <data name="ApplicationSummaryDescription" xml:space="preserve">
+    <value>Ennen kuin viimeistelet, lue läpi ja varmista, että kaikki on oikein</value>
+  </data>
+  <data name="ApplicationInformation" xml:space="preserve">
+    <value>Sovelluksen tiedot</value>
+  </data>
+  <data name="PersonalDetails" xml:space="preserve">
+    <value>Henkilökohtaiset tiedot</value>
+  </data>
+  <data name="AddressDetails" xml:space="preserve">
+    <value>Osoitteen tiedot</value>
+  </data>
+  <data name="DocumentDetails" xml:space="preserve">
+    <value>Asiakirjan tiedot</value>
+  </data>
+  <data name="IsRequired" xml:space="preserve">
+    <value>{0} vaaditaan</value>
+  </data>
+  <data name="PendingReview" xml:space="preserve">
+    <value>Odottaa tarkistusta</value>
+  </data>
+  <data name="CurrentApplication" xml:space="preserve">
+    <value>Nykyinen hakemus</value>
+  </data>
+  <data name="IdentityApplication" xml:space="preserve">
+    <value>Identiteetti-sovellus</value>
+  </data>
+  <data name="AvailableApplications" xml:space="preserve">
+    <value>Käytettävissä olevat sovellukset</value>
+  </data>
+  <data name="ForYourIndividualUse" xml:space="preserve">
+    <value>Henkilökohtaiseen käyttöön</value>
+  </data>
+  <data name="BeforeFinalizingSummary" xml:space="preserve">
+    <value>Ole hyvä ja käytä hetki tarkistaaksesi tietosi ennen lähettämistä. Varmista, että kaikki on tarkkaa ja täydellistä</value>
+  </data>
+  <data name="CompanyInformation" xml:space="preserve">
+    <value>Yrityksen tiedot</value>
+  </data>
+  <data name="CompanyAddress" xml:space="preserve">
+    <value>Yrityksen osoite</value>
+  </data>
+  <data name="CompanyRepresentative" xml:space="preserve">
+    <value>Yrityksen edustaja</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Lähettää tiedosto</value>
+  </data>
+  <data name="InReview" xml:space="preserve">
+    <value>Tarkastelussa</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>Liikkeellä</value>
+  </data>
+  <data name="IdentityRejected" xml:space="preserve">
+    <value>Henkilöllisyys hylättiin. Voit palata sovellussivulle ja päivittää tietosi yrittääksesi uudelleen.</value>
+  </data>
+  <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve">
+    <value>PIN-koodi ei saa sisältää peräkkäisiä {0} identtisiä symboleja.</value>
+  </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Hakemuksen tarkistus</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Koodi:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Tarkistettavat kentät</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Korvattavat valokuvat</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Näitä yksityiskohtia ei voitu hyväksyä. Päivitä ne lomakkeella ennen kuin lähetät ne uudelleen.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Odottavat kentät</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Odottavat kuvat</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Ongelmien korjaaminen ja lomakkeen muokkaaminen</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Lähetä uudelleen ilman odottavia kenttiä</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Hakemuksesi on manuaalisessa arvioinnissa. Voit odottaa tulosta tai säätää alla olevia kohteita kokeillaksesi automaattista käsittelyä.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Nämä kohteet odottavat manuaalista tarkistusta. Voit pitää ne sellaisenaan tai säätää niitä kokeilemaan automaattista käsittelyä.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Joitakin lähetettyjä tietoja ei voitu vahvistaa. Tarkista napauttamalla.</value>
+  </data>
+  <data name="AddToBalance" xml:space="preserve">
+    <value>Lisää saldoon</value>
+  </data>
+  <data name="SelectContact" xml:space="preserve">
+    <value>Valitse yhteyshenkilö</value>
+  </data>
+  <data name="TransactionHistory" xml:space="preserve">
+    <value>Tapahtumahistoria</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Yhteenveto</value>
+  </data>
+  <data name="TotalIn" xml:space="preserve">
+    <value>Yhteensä</value>
+  </data>
+  <data name="TotalOut" xml:space="preserve">
+    <value>Yhteensä ulos</value>
+  </data>
+  <data name="Net" xml:space="preserve">
+    <value>Verkko</value>
+  </data>
+  <data name="NoTransactionsYet" xml:space="preserve">
+    <value>Ei vielä tapahtumia</value>
+  </data>
+  <data name="Transaction" xml:space="preserve">
+    <value>Transaktio</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Siirto</value>
+  </data>
+  <data name="BalanceTopUp" xml:space="preserve">
+    <value>Saldon lisäys</value>
+  </data>
+  <data name="TransactionDetails" xml:space="preserve">
+    <value>Tapahtuman tiedot</value>
+  </data>
+  <data name="Recipient" xml:space="preserve">
+    <value>Vastaanottaja</value>
+  </data>
+  <data name="NotInContacts" xml:space="preserve">
+    <value>Ei yhteystiedoissa</value>
+  </data>
+  <data name="FullIdentifier" xml:space="preserve">
+    <value>Täysi tunniste</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Tapahtuman tyyppi</value>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Tapahtuman päivämäärä</value>
+  </data>
+  <data name="TransactionStatus" xml:space="preserve">
+    <value>Tapahtuman tila</value>
+  </data>
+  <data name="ReservedNoColon" xml:space="preserve">
+    <value>Varattu</value>
+  </data>
+  <data name="Successful" xml:space="preserve">
+    <value>Menestyksekäs</value>
+  </data>
+  <data name="TransactionIDNoColon" xml:space="preserve">
+    <value>Tapahtuman tunnus</value>
+  </data>
+  <data name="TransferSuccessful" xml:space="preserve">
+    <value>Siirto onnistui</value>
+  </data>
+  <data name="UnknownPleaseRefresh" xml:space="preserve">
+    <value>Tuntematon, päivitä</value>
+  </data>
+  <data name="SelectForMe" xml:space="preserve">
+    <value>Valitse minulle</value>
+  </data>
+  <data name="ShareDescription" xml:space="preserve">
+    <value>Alta löydät lisävaihtoehtoja QR-koodin jakamiseen.</value>
+  </data>
+  <data name="OtherApp" xml:space="preserve">
+    <value>Muu sovellus</value>
+  </data>
+  <data name="SuccessfullyCopiedToClipboard" xml:space="preserve">
+    <value>Kopioitu onnistuneesti leikepöydälle</value>
+  </data>
+  <data name="MakePayment" xml:space="preserve">
+    <value>Suorita maksu</value>
+  </data>
+  <data name="PayOnline" xml:space="preserve">
+    <value>Maksa verkossa</value>
+  </data>
+  <data name="PayOffline" xml:space="preserve">
+    <value>Maksaminen offline-tilassa</value>
+  </data>
+  <data name="ShareOfflinePaymentDescription" xml:space="preserve">
+    <value>Voit jakaa tämän QR-koodin toisen käyttäjän kanssa myöhempää käsittelyä varten joko tarvittaessa tai yhteyden ollessa olemassa.</value>
+  </data>
+  <data name="RequestCredits" xml:space="preserve">
+    <value>Pyytää</value>
+  </data>
+  <data name="SendCredits" xml:space="preserve">
+    <value>Lähettää</value>
+  </data>
+  <data name="DurationAndSeparator" xml:space="preserve">
+    <value> ja </value>
+  </data>
+  <data name="DurationCommaSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="NoTokens" xml:space="preserve">
+    <value>Ei tokeneita</value>
+  </data>
+  <data name="TokenDetails" xml:space="preserve">
+    <value>Tunnuksen tiedot</value>
+  </data>
+  <data name="TokenDetailsDescription" xml:space="preserve">
+    <value>Seuraavassa on tunnukseen koodattuja tietoja. Napsauta mitä tahansa linkkiä saadaksesi lisätietoja.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Kuvaus</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Luokka</value>
+  </data>
+  <data name="TokenId" xml:space="preserve">
+    <value>Tunnuksen tunnus</value>
+  </data>
+  <data name="TokenIdMethod" xml:space="preserve">
+    <value>Tunnuksen tunnusmenetelmä</value>
+  </data>
+  <data name="TokenVisibility" xml:space="preserve">
+    <value>Tunnuksen näkyvyys</value>
+  </data>
+  <data name="Ordinal" xml:space="preserve">
+    <value>Järjestysluku</value>
+  </data>
+  <data name="Valuation" xml:space="preserve">
+    <value>Arviointi</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Raportit</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Muuttujat</value>
+  </data>
+  <data name="States" xml:space="preserve">
+    <value>Valtioiden</value>
+  </data>
+  <data name="TokenPartsInfoText" xml:space="preserve">
+    <value>Seuraavassa on luettelo tähän tunnukseen liittyvistä osapuolista.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Omistaja</value>
+  </data>
+  <data name="OwnerJid" xml:space="preserve">
+    <value>Omistajan osoite</value>
+  </data>
+  <data name="OwnershipContract" xml:space="preserve">
+    <value>Omistussopimus</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Luoja</value>
+  </data>
+  <data name="CreatorJid" xml:space="preserve">
+    <value>Luojan osoite</value>
+  </data>
+  <data name="CreationContract" xml:space="preserve">
+    <value>Luomissopimus</value>
+  </data>
+  <data name="TrustProvider" xml:space="preserve">
+    <value>Luottamuksen tarjoaja</value>
+  </data>
+  <data name="TrustProviderJid" xml:space="preserve">
+    <value>Luottamuspalvelun tarjoajan osoite</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>Oikeudet</value>
+  </data>
+  <data name="TokenPrivilegesInfoText" xml:space="preserve">
+    <value>Seuraavassa on tunnukseen kaiverretut oikeudet.</value>
+  </data>
+  <data name="CreatorCanDestroy" xml:space="preserve">
+    <value>Creator voi tuhota tunnuksen</value>
+  </data>
+  <data name="OwnerCanDestroyBatch" xml:space="preserve">
+    <value>Omistaja voi tuhota token-erän</value>
+  </data>
+  <data name="OwnerCanDestroyIndividual" xml:space="preserve">
+    <value>Omistaja voi tuhota yksittäisen tunnuksen</value>
+  </data>
+  <data name="CertifierCanDestroy" xml:space="preserve">
+    <value>Varmentaja voi tuhota tunnuksen</value>
+  </data>
+  <data name="MachineReadableInfoTextToken" xml:space="preserve">
+    <value>Alla on yleiskatsaus tunnukseen upotetuista koneellisesti luettavista tiedoista.</value>
+  </data>
+  <data name="DefinitionNamespace" xml:space="preserve">
+    <value>Määritelmän nimiavaruus</value>
+  </data>
+  <data name="DefinitionSchemaDigest" xml:space="preserve">
+    <value>Määritelmän rakenteen kooste</value>
+  </data>
+  <data name="ShowM2MInfo" xml:space="preserve">
+    <value>Näytä M2M-määritelmä</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Toimet</value>
+  </data>
+  <data name="SendToContact" xml:space="preserve">
+    <value>Lähetä yhteyshenkilölle</value>
+  </data>
+  <data name="PublishMarketplace" xml:space="preserve">
+    <value>Julkaise Marketplacessa</value>
+  </data>
+  <data name="OfferToBuy" xml:space="preserve">
+    <value>Tarjous ostaa</value>
+  </data>
+  <data name="OfferToSell" xml:space="preserve">
+    <value>Tarjoa myydä</value>
+  </data>
+  <data name="ViewEvents" xml:space="preserve">
+    <value>Näytä tapahtumat</value>
+  </data>
+  <data name="CurrentState" xml:space="preserve">
+    <value>Nykyinen tila</value>
+  </data>
+  <data name="MachineHasEnded" xml:space="preserve">
+    <value>Tilakone on päättynyt.</value>
+  </data>
+  <data name="CurrentVariables" xml:space="preserve">
+    <value>Nykyiset muuttujat</value>
+  </data>
+  <data name="TokenEvents" xml:space="preserve">
+    <value>Token-tapahtumat</value>
+  </data>
+  <data name="TokenEventsDescription" xml:space="preserve">
+    <value>Seuraavassa on kirjattu tokenille tallennetut julkiset tapahtumat. Myös yksityistilaisuutesi sisältyvät hintaan.</value>
+  </data>
+  <data name="TextNote" xml:space="preserve">
+    <value>Teksti huomautus</value>
+  </data>
+  <data name="XmlNote" xml:space="preserve">
+    <value>XML-huomautus</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Lisää muistiinpano</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Arvo</value>
+  </data>
+  <data name="InvitationToSignFormat" xml:space="preserve">
+    <value>Sinut on kutsuttu allekirjoittamaan tämä sopimus {0}, muista tarkistaa ja tarkistaa sopimus ennen kuin jatkat</value>
+  </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Lähetä ehdotus</value>
+  </data>
+  <data name="Sender" xml:space="preserve">
+    <value>Lähettäjä:</value>
+  </data>
+  <data name="ShortId" xml:space="preserve">
+    <value>HENKILÖLLISYYSTODISTUS</value>
+  </data>
+  <data name="ProposalDefaultMessage" xml:space="preserve">
+    <value>Hei, haluaisin ehdottaa sopimusta kanssasi. Tarkista ja hyväksy ehdotus, jos olet samaa mieltä.</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Haluatko lisätä tämän identiteetin yhteystietoihisi?</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Ota valokuva</value>
+  </data>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Hae henkilökohtaista henkilöllisyyttä tämän ominaisuuden käyttöä varten.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Hakemus hylätty</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Palveluntarjoaja ei voinut hyväksyä lähetystäsi. Katso syy alta.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Seuraavat asiat vaativat huomiotasi ennen kuin lähetät uudelleen:</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Jotkin yksityiskohdat vaativat manuaalista tarkastelua</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} kenttiä ja {1}-kuvia ei voida validoida automaattisesti, vaan ne täytyy tarkistaa operaattorin toimesta. Tämä voi viivästyttää hyväksyntää.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Voit poistaa nämä odottavat merkinnät ja hakea uudelleen ilman niitä. Tätä ei suositella</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Poista odottavat tiedot</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Poista odottavat tiedot ja hae uudelleen</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Tämä peruuttaa nykyisen hakemuksesi, poistaa odottavat tiedot ja lähettää hakemuksesi uudelleen ilman niitä. Haluatko jatkaa?</value>
   </data>
 </root>

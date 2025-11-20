@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		/// </summary>
 		public ServiceProvidersPage()
 		{
-			this.ContentPageModel = new ServiceProvidersViewModel(ServiceRef.UiService.PopLatestArgs<ServiceProvidersNavigationArgs>());
+			this.ContentPageModel = new ServiceProvidersViewModel(ServiceRef.NavigationService.PopLatestArgs<ServiceProvidersNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

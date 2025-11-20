@@ -1,5 +1,4 @@
-﻿
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI;
@@ -13,10 +12,13 @@ using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Resources.Languages;
 using System.Runtime.CompilerServices;
+using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
+using NeuroAccessMaui.Services.Authentication;
+using System; // For EventHandler
 
 namespace NeuroAccessMaui.UI.Pages.Main.Apps
 {
-    public partial class AppsViewModel : BaseViewModel
+	public partial class AppsViewModel : BaseViewModel
 	{
 		private bool hasBetaFeatures;
 
@@ -25,14 +27,59 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 			this.hasBetaFeatures = ServiceRef.TagProfile.HasBetaFeatures;
 		}
 
+		/// <summary>
+		/// Indicates if beta features are enabled in the profile.
+		/// </summary>
 		public bool HasBetaFeatures
 		{
 			get => this.hasBetaFeatures;
-			set => this.hasBetaFeatures = value;
+			set
+			{
+				if (this.hasBetaFeatures == value)
+					return;
+				this.hasBetaFeatures = value;
+				this.OnPropertyChanged(nameof(this.HasBetaFeatures));
+				this.OnPropertyChanged(nameof(this.BetaButtonStyle));
+			}
 		}
 
-		// Binding for selecting between NeuroIconButton and NeuroIconButtonDisabled style depending on if has beta features enabled
+		/// <summary>
+		/// Style for beta‑feature dependent buttons.
+		/// </summary>
 		public Style BetaButtonStyle => this.HasBetaFeatures ? AppStyles.NeuroIconButton : AppStyles.NeuroIconButtonDisabled;
+
+		[ObservableProperty]
+		private bool showBottomNavigation = true;
+
+		/// <summary>
+		/// Subscribes to profile property changes.
+		/// </summary>
+		public override async Task OnInitializeAsync()
+		{
+			await base.OnInitializeAsync();
+			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
+		}
+
+		/// <summary>
+		/// Unsubscribes from profile property changes.
+		/// </summary>
+		public override async Task OnDisposeAsync()
+		{
+			ServiceRef.TagProfile.OnPropertiesChanged -= this.TagProfile_OnPropertiesChanged;
+			await base.OnDisposeAsync();
+		}
+
+		/// <summary>
+		/// Handles TagProfile property changes. Updates HasBetaFeatures & BetaButtonStyle if necessary.
+		/// </summary>
+		private void TagProfile_OnPropertiesChanged(object? sender, EventArgs e)
+		{
+			bool profileValue = ServiceRef.TagProfile.HasBetaFeatures;
+			if (this.HasBetaFeatures != profileValue)
+			{
+				this.HasBetaFeatures = profileValue;
+			}
+		}
 
 		#region Navigation Commands
 
@@ -41,8 +88,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		{
 			try
 			{
-				ContactListNavigationArgs Args = new(ServiceRef.Localizer[nameof(AppResources.ContactsDescription)], SelectContactAction.ViewIdentity);
-				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), BackMethod.Pop);
 			}
 			catch (Exception Ex)
 			{
@@ -56,7 +102,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 			try
 			{
 				MyContractsNavigationArgs Args = new(ContractsListMode.Contracts);
-				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 			}
 			catch (Exception ex)
 			{
@@ -69,7 +115,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		{
 			try
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(ApplicationsPage));
+				await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
 			}
 			catch (Exception Ex)
 			{
@@ -93,7 +139,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 				}
 				else
 				{
-					await ServiceRef.UiService.GoToAsync(nameof(MyThingsPage));
+					await ServiceRef.NavigationService.GoToAsync(nameof(MyThingsPage));
 				}
 			}
 			catch (Exception Ex)
@@ -116,7 +162,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 				else
 				{
 					MyContractsNavigationArgs Args = new(ContractsListMode.ContractTemplates);
-					await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+					await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 				}
 			}
 			catch (Exception Ex)
@@ -139,7 +185,29 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 				else
 				{
 					MyContractsNavigationArgs Args = new(ContractsListMode.TokenCreationTemplates);
-					await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+					await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private async Task ShowMyTokens()
+		{
+			try
+			{
+				if (!ServiceRef.TagProfile.HasBetaFeatures)
+				{
+					this.BetaFeaturePressed = true;
+					await Task.Delay(100);
+					this.BetaFeaturePressed = false;
+				}
+				else
+				{
+					await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage), BackMethod.Pop);
 				}
 			}
 			catch (Exception Ex)
@@ -153,8 +221,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		{
 			try
 			{
-				if (await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
-					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
+				if (await ServiceRef.Provider.GetRequiredService<IAuthenticationService>().AuthenticateUserAsync(AuthenticationPurpose.ViewId))
+					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage));
 			}
 			catch (Exception Ex)
 			{
@@ -163,7 +231,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		}
 
 		[RelayCommand]
-		private async Task ShowWallet()
+		public async Task ShowWallet()
 		{
 			try
 			{
@@ -175,13 +243,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 				}
 				else
 				{
-					Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
-					(decimal PendingAmount, string PendingCurrency, PendingPayment[] PendingPayments) = await ServiceRef.XmppService.GetPendingEDalerPayments();
-					(AccountEvent[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize);
-
-					WalletNavigationArgs Args = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
-
-					await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), Args, BackMethod.Pop);
+					WalletNavigationArgs Args = new();
+					await ServiceRef.NavigationService.GoToAsync(nameof(WalletPage), Args, BackMethod.Pop);
 				}
 			}
 			catch (Exception Ex)
@@ -205,22 +268,17 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		}
 
 		[RelayCommand]
-        public async Task ViewMainPage()
-        {
-            try
-            {
-                if (Application.Current?.MainPage?.Navigation != null)
-                {
-                    await Application.Current.MainPage.Navigation.PopToRootAsync();
-                }
-            }
-            catch (Exception Ex)
-            {
-                ServiceRef.LogService.LogException(Ex);
-            }
-        }
-
-		// Code used for displayig the coming soon popup
+		public async Task ViewMainPage()
+		{
+			try
+			{
+				await ServiceRef.NavigationService.PopToRootAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
 		[ObservableProperty]
 		private bool showingComingSoonPopup = false;

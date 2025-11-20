@@ -1,5 +1,4 @@
-﻿using Mopups.Services;
-using NeuroAccessMaui.Resources.Languages;
+﻿using NeuroAccessMaui.Resources.Languages;
 using Waher.Script.Operators.Membership;
 
 namespace NeuroAccessMaui.Services.UI.Tasks
@@ -45,7 +44,7 @@ namespace NeuroAccessMaui.Services.UI.Tasks
 		{
 			bool Result;
 
-			Page? DisplayedPage = ServiceRef.UiService.PopupStack.LastOrDefault() ?? App.Current?.MainPage;
+			Page? DisplayedPage = App.Current?.MainPage;
 
 			if (!string.IsNullOrWhiteSpace(this.Accept) && !string.IsNullOrWhiteSpace(this.Cancel))
 			{

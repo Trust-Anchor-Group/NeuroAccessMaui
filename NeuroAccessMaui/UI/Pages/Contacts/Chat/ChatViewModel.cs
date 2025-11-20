@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using EDaler.Uris;
-using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Notification;
@@ -77,8 +76,6 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			this.FriendlyName = Args?.FriendlyName ?? string.Empty;
 			this.UniqueId = Args?.UniqueId;
 
-			this.page.OnAfterAppearing += this.Page_OnAfterAppearing;
-
 			this.XmppUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.Xmpp));
 			this.IotIdUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotId));
 			this.IotScUriClicked = new Command(async Parameter => await this.ExecuteUriClicked(Parameter as string ?? "", UriScheme.IotSc));
@@ -133,9 +130,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			this.scrollTo = await this.LoadMessagesAsync(false);
 
@@ -146,9 +143,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 
 			this.waitUntilBound = new TaskCompletionSource<bool>();
 		}
@@ -1101,7 +1098,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 				CanScanQrCode = true
 			};
 
-			await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), Args, BackMethod.Pop);
 
 			ContactInfoModel? Contact = await SelectedContact.Task;
 			if (Contact is null)
@@ -1152,7 +1149,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			TaskCompletionSource<Contract?> SelectedContract = new();
 			MyContractsNavigationArgs Args = new(ContractsListMode.Contracts, SelectedContract);
 
-			await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, BackMethod.Pop);
 
 			Contract? Contract = await SelectedContract.Task;
 			if (Contract is null)
@@ -1212,7 +1209,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			TaskCompletionSource<string?> UriToSend = new();
 			EDalerUriNavigationArgs Args = new(Parsed, this.FriendlyName ?? string.Empty, UriToSend);
 
-			await ServiceRef.UiService.GoToAsync(nameof(SendPaymentPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(SendPaymentPage), Args, BackMethod.Pop);
 
 			string? Uri = await UriToSend.Task;
 			if (string.IsNullOrEmpty(Uri) || !EDalerUri.TryParse(Uri, out Parsed))
@@ -1249,7 +1246,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 		{
 			MyTokensNavigationArgs Args = new();
 
-			await ServiceRef.UiService.GoToAsync(nameof(MyTokensPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage), Args, BackMethod.Pop);
 
 			TokenItem? Selected = await Args.TokenItemProvider.Task;
 
@@ -1282,7 +1279,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 			TaskCompletionSource<ContactInfoModel?> ThingToShare = new();
 			MyThingsNavigationArgs Args = new(ThingToShare);
 
-			await ServiceRef.UiService.GoToAsync(nameof(MyThingsPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(MyThingsPage), Args, BackMethod.Pop);
 
 			ContactInfoModel? Thing = await ThingToShare.Task;
 			if (Thing is null)
@@ -1406,14 +1403,14 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 								LegalIdentity Id = LegalIdentity.Parse(Doc.DocumentElement);
 								ViewIdentityNavigationArgs ViewIdentityArgs = new(Id);
 
-								await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs, BackMethod.Pop);
+								await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs, BackMethod.Pop);
 								break;
 
 							case UriScheme.IotSc:
 								ParsedContract ParsedContract = await Contract.Parse(Doc.DocumentElement, ServiceRef.XmppService.ContractsClient, true);
 								ViewContractNavigationArgs ViewContractArgs = new(ParsedContract.Contract, false);
 
-								await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), ViewContractArgs, BackMethod.Pop);
+								await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), ViewContractArgs, BackMethod.Pop);
 								break;
 
 							case UriScheme.NeuroFeature:
@@ -1425,7 +1422,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 
 								TokenDetailsNavigationArgs Args = new(new TokenItem(ParsedToken, Events));
 
-								await ServiceRef.UiService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+								await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
 								break;
 
 							default:
@@ -1474,7 +1471,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 					SubscribeToViewModel SubscribeToViewModel = new(Jid);
 					SubscribeToPopup SubscribeToPopup = new(SubscribeToViewModel);
 
-					await MopupService.Instance.PushAsync(SubscribeToPopup);
+					await ServiceRef.PopupService.PushAsync(SubscribeToPopup);
 					bool? SubscribeTo = await SubscribeToViewModel.Result;
 
 					if (SubscribeTo.HasValue && SubscribeTo.Value)

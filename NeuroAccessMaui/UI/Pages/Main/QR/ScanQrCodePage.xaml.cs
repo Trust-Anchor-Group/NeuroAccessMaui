@@ -1,6 +1,6 @@
 ﻿
 using CommunityToolkit.Maui.Layouts;
-using CommunityToolkit.Mvvm.Input;
+// using CommunityToolkit.Mvvm.Input; // Removed page-level commands; commands now reside in ViewModel
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
@@ -23,19 +23,15 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 	/// </summary>
 	public partial class ScanQrCodePage
 	{
-		/// <summary>
-		/// Creates a new instance of the <see cref="ScanQrCodePage"/> class.
-		/// </summary>
 		public ScanQrCodePage()
 		{
+			// Create VM (it will PopLatestArgs internally)
+			ScanQrCodeViewModel vm = new();
+			this.BindingContext = vm; // set before InitializeComponent for compiled bindings
+
 			this.InitializeComponent();
 
-			ScanQrCodeNavigationArgs? args = ServiceRef.UiService.PopLatestArgs<ScanQrCodeNavigationArgs>();
-			ScanQrCodeViewModel ViewModel = new(args);
-			this.ContentPageModel = ViewModel;
-
-			this.navigationComplete = args?.NavigationCompletionSource;
-
+			// Post-XAML control configuration
 			this.LinkEntry.Keyboard = Keyboard.Url;
 			this.LinkEntry.IsSpellCheckEnabled = false;
 			this.LinkEntry.IsTextPredictionEnabled = false;
@@ -52,31 +48,118 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				Multiple = false,
 			};
 
-			ViewModel.DoSwitchMode(true);
+			vm.DoSwitchMode(true);
 		}
 
 
 		/// <inheritdoc/>
-		protected override async Task OnAppearingAsync()
+		public override async Task OnAppearingAsync()
 		{
+			// Base Appearing executes ViewModel lifecycle
 			await base.OnAppearingAsync();
 
-			if (this.navigationComplete is not null)
-				await this.navigationComplete.Task;
-
-			this.CameraBarcodeReaderView.IsDetecting = true;
-			WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
+			// Sync initial states from VM
+			if (this.BindingContext is ScanQrCodeViewModel vm)
+			{
+				this.ApplyState(vm.IsAutomaticScan, initial: true);
+				this.CameraBarcodeReaderView.IsTorchOn = vm.IsTorchOn;
+				this.CameraBarcodeReaderView.CameraLocation = vm.CameraLocation;
+				vm.PropertyChanged += this.VmOnPropertyChanged;
+			}
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDisappearingAsync()
+		public override async Task OnDisappearingAsync()
 		{
+			if (this.BindingContext is ScanQrCodeViewModel vm)
+				vm.PropertyChanged -= this.VmOnPropertyChanged;
 			await MainThread.InvokeOnMainThreadAsync(this.CloseCamera);
-
-
-			WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
-
 			await base.OnDisappearingAsync();
+		}
+
+		private async void VmOnPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (sender is not ScanQrCodeViewModel vm)
+				return;
+
+			switch (e.PropertyName)
+			{
+				case nameof(ScanQrCodeViewModel.IsAutomaticScan):
+					await this.Dispatcher.DispatchAsync(() => this.ApplyState(vm.IsAutomaticScan));
+					break;
+				case nameof(ScanQrCodeViewModel.IsTorchOn):
+					this.CameraBarcodeReaderView.IsTorchOn = vm.IsTorchOn;
+					break;
+				case nameof(ScanQrCodeViewModel.IsDetecting):
+					this.CameraBarcodeReaderView.IsDetecting = vm.IsDetecting;
+					break;
+				case nameof(ScanQrCodeViewModel.CameraLocation):
+					this.CameraBarcodeReaderView.CameraLocation = vm.CameraLocation;
+					break;
+			}
+		}
+
+		private async void ApplyState(bool isAutomatic, bool initial = false)
+		{
+			try
+			{
+				string current = StateContainer.GetCurrentState(this.GridWithAnimation);
+				bool currentlyAutomatic = string.Equals(current, "AutomaticScan", StringComparison.OrdinalIgnoreCase);
+				if (currentlyAutomatic == isAutomatic && !initial)
+					return;
+
+				if (initial)
+				{
+					// Initial setup: avoid animation & camera flip hack to prevent black screen
+					if (isAutomatic)
+					{
+						if (!currentlyAutomatic)
+							StateContainer.SetCurrentState(this.GridWithAnimation, "AutomaticScan");
+						this.LinkEntry.Unfocus();
+						// slight delay to allow native camera initialization before enabling detection
+						await Task.Delay(250);
+						this.CameraBarcodeReaderView.IsDetecting = true;
+					}
+					else
+					{
+						StateContainer.SetCurrentState(this.GridWithAnimation, "ManualScan");
+						this.CameraBarcodeReaderView.IsTorchOn = false;
+						this.CameraBarcodeReaderView.IsDetecting = false;
+						this.LinkEntry.Focus();
+					}
+					return;
+				}
+
+				if (!isAutomatic)
+				{
+					// Enter manual: stop camera
+					this.CameraBarcodeReaderView.IsTorchOn = false;
+					this.CameraBarcodeReaderView.IsDetecting = false;
+					await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, "ManualScan", CancellationToken.None);
+					this.LinkEntry.Focus();
+				}
+				else
+				{
+					this.LinkEntry.Unfocus();
+					// Re-init camera by flipping (runtime toggle only)
+					if (this.CameraBarcodeReaderView.CameraLocation == CameraLocation.Rear)
+					{
+						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
+						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
+					}
+					else
+					{
+						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
+						this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
+					}
+					await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation, "AutomaticScan", CancellationToken.None);
+					this.CameraBarcodeReaderView.IsDetecting = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
 
 		/// <summary>
@@ -133,168 +216,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		}
 #endif
 
-
-		private readonly TaskCompletionSource<bool>? navigationComplete;
-
-		private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)
-		{
-			await this.Dispatcher.DispatchAsync(() =>
-			{
-				double Bottom = 0;
-				if (DeviceInfo.Platform == DevicePlatform.iOS)
-				{
-					Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
-					Bottom = SafeInsets.Bottom;
-
-					Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
-					this.ManualScanGrid.Margin = Margin;
-				}
-
-			});
-		}
-
-		[RelayCommand]
-		private async Task SwitchMode()
-		{
-			await this.Dispatcher.DispatchAsync(async () =>
-			{
-				try
-				{
-					string CurrentState = StateContainer.GetCurrentState(this.GridWithAnimation);
-					bool IsAutomaticScan = string.Equals(CurrentState, "AutomaticScan", StringComparison.OrdinalIgnoreCase);
-
-					if (!IsAutomaticScan)
-						this.LinkEntry.Unfocus();
-					else
-					{
-						this.CameraBarcodeReaderView.IsTorchOn = false;
-						this.CameraBarcodeReaderView.IsDetecting = false;
-					}
-
-					DateTime Start = DateTime.Now;
-
-					while (!StateContainer.GetCanStateChange(this.GridWithAnimation) && DateTime.Now.Subtract(Start).TotalSeconds < 2)
-						await Task.Delay(100);
-
-					await StateContainer.ChangeStateWithAnimation(this.GridWithAnimation,
-						IsAutomaticScan ? "ManualScan" : "AutomaticScan", CancellationToken.None);
-
-					ScanQrCodeViewModel ViewModel = this.ViewModel<ScanQrCodeViewModel>();
-					await ViewModel.DoSwitchMode(IsAutomaticScan);
-
-					if (IsAutomaticScan)
-						this.LinkEntry.Focus();
-					else
-					{
-						// reinitialize the camera by switching it
-						if (this.CameraBarcodeReaderView.CameraLocation == CameraLocation.Rear)
-						{
-							this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
-							this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
-						}
-						else
-						{
-							this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
-							this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
-						}
-
-						this.CameraBarcodeReaderView.IsDetecting = true;
-					}
-				}
-				catch (Exception ex)
-				{
-					ServiceRef.LogService.LogException(ex);
-				}
-			});
-		}
-
-		[RelayCommand]
-		private void SwitchCamera()
-		{
-			this.CameraBarcodeReaderView.IsTorchOn = false;
-
-			if (this.CameraBarcodeReaderView.CameraLocation == CameraLocation.Rear)
-				this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Front;
-			else
-				this.CameraBarcodeReaderView.CameraLocation = CameraLocation.Rear;
-		}
-
-		[RelayCommand]
-		private void SwitchTorch()
-		{
-			if (this.CameraBarcodeReaderView.IsTorchOn)
-				this.CameraBarcodeReaderView.IsTorchOn = false;
-			else
-				this.CameraBarcodeReaderView.IsTorchOn = true;
-		}
-
-		/// <summary>
-		/// Disable the command for now, as it is not working properly
-		/// </summary>
-		private static bool CanPickPhoto() => false;
-
-		[RelayCommand(CanExecute = nameof(CanPickPhoto))]
-		private async Task PickPhoto()
-		{
-			FileResult? result = await MediaPicker.PickPhotoAsync();
-			if (result is null)
-				return;
-
-#if ANDROID
-			// For Android, convert the picked image to a Bitmap and then to pixel data
-			Console.WriteLine($"Picked photo {result.FullPath}");
-			await using Stream stream = await result.OpenReadAsync();
-			Bitmap? bitmap = await BitmapFactory.DecodeStreamAsync(stream);
-			Console.WriteLine($"Loaded photo {result.FullPath}");
-
-			if (bitmap != null)
-			{
-				int width = bitmap.Width;
-				int height = bitmap.Height;
-				int[] pixels = new int[width * height];
-				bitmap.GetPixels(pixels, 0, width, 0, 0, width, height);
-
-				// Convert pixel data to ByteBuffer
-				ByteBuffer byteBuffer = ByteBuffer.Allocate(pixels.Length * sizeof(int));
-				Console.WriteLine($"{pixels.Length * sizeof(int)} : buffer: {byteBuffer.Capacity()}");
-				byteBuffer.AsIntBuffer().Put(pixels);
-				byteBuffer.Flip();
-
-				// Initialize PixelBufferHolder
-				PixelBufferHolder data = new()
-				{
-					Size = new Size(width, height),
-					Data = byteBuffer
-				};
-
-				ZXingBarcodeReader reader = new();
-				BarcodeReaderOptions options = new()
-				{
-					AutoRotate = true,
-					TryHarder = true,
-					TryInverted = true,
-					Formats = BarcodeFormat.QrCode,
-					Multiple = false
-				};
-				reader.Options = options;
-
-				BarcodeResult[]? scanned = reader.Decode(data);
-				if (scanned != null)
-				{
-					foreach (BarcodeResult item in scanned)
-					{
-						Console.WriteLine($"Barcode found: {item.Value}");
-					}
-				}
-				else
-				{
-					Console.WriteLine("No barcode found");
-				}
-			}
-#elif IOS
-			return;
-#endif
-		}
 
 		private async void CameraBarcodeReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
 		{

@@ -1,86 +1,49 @@
-﻿using System.ComponentModel;
+using Microsoft.Maui.Controls;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Pages.Main.Apps;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
 	public partial class MainPage
 	{
-		public MainPage(MainViewModel ViewModel)
+		public MainPage(MainViewModel viewModel)
 		{
 			this.InitializeComponent();
-			this.ContentPageModel = ViewModel;
+			this.ContentPageModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
+			this.InitializeTabs();
 
-			if (this.BindingContext is MainViewModel Model) 
-				Model.PropertyChanged += this.Vm_PropertyChanged;
+			Thickness BottomBarPadding = this.BottomBar.Padding;
+			BottomBarPadding.Bottom += SafeArea.ResolveInsetsForMode(SafeAreaMode.Bottom).Bottom;
+			this.BottomBar.Padding = BottomBarPadding;
 		}
 
-		protected override async Task OnAppearingAsync()
+
+
+		private void InitializeTabs()
 		{
-			await base.OnAppearingAsync();
-
-			
-		}
-
-		private async void SwipeGestureRecognizer_Swiped(object sender, SwipedEventArgs e)
-		{
-			try
+			if (this.ContentSwitcher.Views.Count > 0)
 			{
-				if(this.ContentPageModel is MainViewModel ViewModel)
-					await ViewModel.ViewId();
+				return;
 			}
-			catch (Exception Ex)
+
+			View homeView = ServiceHelper.GetService<HomePage>();
+			View walletView = ServiceHelper.GetService<WalletPage>();
+			View appsView = ServiceHelper.GetService<AppsPage>();
+
+			if (walletView.BindingContext is WalletViewModel walletViewModel)
 			{
-				ServiceRef.LogService.LogException(Ex);
+				walletViewModel.ShowBottomNavigation = false;
 			}
-		}
 
-		private async void Vm_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == nameof(MainViewModel.ShowingNoWalletPopup))
+			if (appsView.BindingContext is AppsViewModel appsViewModel)
 			{
-				if (this.BindingContext is MainViewModel Vm)
-				{
-					this.NoWalletPopup.CancelAnimations();
-					this.NoIDPopup.CancelAnimations();
-
-					if (Vm.ShowingNoWalletPopup)
-					{
-						this.NoWalletPopup.Opacity = 0;
-						this.NoWalletPopup.Scale = 0.8;
-						this.NoWalletPopup.IsVisible = true;
-
-						this.NoIDPopup.Opacity = 1;
-						this.NoIDPopup.Scale = 1;
-						this.NoIDPopup.IsVisible = !Vm.HasPersonalIdentity;
-
-						_ = this.NoWalletPopup.FadeTo(1, 500, Easing.CubicIn);
-						_ = this.NoWalletPopup.ScaleTo(1, 500, Easing.CubicIn);
-
-						_ = this.NoIDPopup.FadeTo(0.8, 500, Easing.CubicOut);
-						await this.NoIDPopup.ScaleTo(0.8, 500, Easing.CubicOut);
-
-						this.NoIDPopup.IsVisible = false;
-					}
-					else
-					{
-						this.NoIDPopup.Opacity = 0;
-						this.NoIDPopup.Scale = 0.8;
-						this.NoIDPopup.IsVisible = !Vm.HasPersonalIdentity;
-
-						this.NoWalletPopup.Opacity = 1;
-						this.NoWalletPopup.Scale = 1;
-						this.NoWalletPopup.IsVisible = true;
-
-						_ = this.NoIDPopup.FadeTo(1, 1000, Easing.CubicIn);
-						_ = this.NoIDPopup.ScaleTo(1, 1000, Easing.CubicIn);
-
-						_ = this.NoWalletPopup.FadeTo(0, 1000, Easing.CubicOut);
-						await this.NoWalletPopup.ScaleTo(0.8, 1000, Easing.CubicOut);
-
-						this.NoWalletPopup.IsVisible = false;
-					}
-				}
+				appsViewModel.ShowBottomNavigation = false;
 			}
+
+			this.ContentSwitcher.Views.Add(homeView);
+			this.ContentSwitcher.Views.Add(walletView);
+			this.ContentSwitcher.Views.Add(appsView);
 		}
 	}
 }

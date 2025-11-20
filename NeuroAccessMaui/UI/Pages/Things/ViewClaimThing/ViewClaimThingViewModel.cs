@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
@@ -24,6 +25,8 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 	/// </summary>
 	public partial class ViewClaimThingViewModel : XmppViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		/// <summary>
 		/// Creates an instance of the <see cref="ViewClaimThingViewModel"/> class.
 		/// </summary>
@@ -162,19 +165,19 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 								ContactInfo Info = await ContactInfo.FindByBareJid(Value);
 								if (Info is not null)
 								{
-									await ServiceRef.UiService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(Info));
+									await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(Info));
 									return;
 								}
 
 								int i = Value.IndexOf('@');
 								if (i > 0 && Guid.TryParse(Value[..i], out _))
 								{
-									if (ServiceRef.UiService.CurrentPage is not ViewIdentityPage)
+									if (ServiceRef.NavigationService.CurrentPage is not ViewIdentityPage)
 									{
 										Info = await ContactInfo.FindByLegalId(Value);
 										if (Info?.LegalIdentity is not null)
 										{
-											await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage),
+											await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage),
 												new ViewIdentityNavigationArgs(Info.LegalIdentity));
 											return;
 										}
@@ -183,7 +186,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 								else
 								{
 									string FriendlyName = await ContactInfo.GetFriendlyName(Value);
-									await ServiceRef.UiService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(string.Empty, Value, FriendlyName));
+									await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), new ChatNavigationArgs(string.Empty, Value, FriendlyName));
 									return;
 								}
 							}
@@ -258,7 +261,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 				if (string.IsNullOrEmpty(this.Uri))
 					return;
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ClaimThing, true))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ClaimThing, true))
 					return;
 
 				(bool Succeeded, NodeResultEventArgs? e) = await ServiceRef.NetworkService.TryRequest(() =>
@@ -315,7 +318,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewClaimThing
 
 					ServiceRef.XmppService.RequestPresenceSubscription(Info.BareJid);
 
-					await ServiceRef.UiService.GoToAsync(nameof(ViewThingPage), new ViewThingNavigationArgs(Info, []), Services.UI.BackMethod.Pop2);
+					await ServiceRef.NavigationService.GoToAsync(nameof(ViewThingPage), new ViewThingNavigationArgs(Info, []), Services.UI.BackMethod.Pop2);
 				}
 				else
 				{

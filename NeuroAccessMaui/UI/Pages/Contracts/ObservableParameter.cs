@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -11,6 +10,7 @@ using NeuroAccessMaui.UI.Popups.Info;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
+using Waher.Runtime.Geo;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
@@ -64,10 +64,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				RoleParameter RoleParameter => new ObservableRoleParameter(RoleParameter),
 				CalcParameter CalcParameter => new ObservableCalcParameter(CalcParameter),
 				ContractReferenceParameter ContractReferenceParameter => new ObservableContractReferenceParameter(ContractReferenceParameter),
+				GeoParameter GeoParameter => new ObservableGeoParameter(GeoParameter),
 				_ => new ObservableParameter(parameter)
 			};
 
 			await ParameterInfo.InitializeAsync(contract);
+
+			if(ParameterInfo.Parameter is RoleParameter RP)
+			{
+				if(RP.Value is not null && RP.Value is string RoleValue && string.IsNullOrEmpty(RoleValue))
+				{
+					RP.SetValue(null);
+				}
+			}
+			else if (ParameterInfo.Parameter is CalcParameter CP)
+			{
+				if (string.IsNullOrEmpty(CP.StringValue))
+					CP.SetValue(null);
+			}
+
 			return ParameterInfo;
 		}
 		#endregion
@@ -203,7 +218,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			if (string.IsNullOrEmpty(this.ValidationText))
 				return;
 			ShowInfoPopup Popup = new ShowInfoPopup(this.Parameter.ErrorReason?.ToString() ?? ServiceRef.Localizer[nameof(AppResources.Error)], this.ValidationText);
-			await ServiceRef.UiService.PushAsync(Popup);
+			await ServiceRef.PopupService.PushAsync(Popup);
 		}
 		#endregion
 
@@ -473,22 +488,87 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				TaskCompletionSource<Contract?> TaskCompletionSource = new();
 				MyContractsNavigationArgs Args = new MyContractsNavigationArgs(ContractsListMode.Contracts, TaskCompletionSource);
-				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args);
 				Contract? Contract = await TaskCompletionSource.Task;
 
-				MainThread.BeginInvokeOnMainThread(() => {
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
 					if (Contract is null)
 						return;
 					this.ContractReferenceValue = Contract?.ContractId ?? string.Empty;
-				   this.OnPropertyChanged(nameof(this.ContractReferenceValue));
+					this.OnPropertyChanged(nameof(this.ContractReferenceValue));
 				});
 			}
 			catch (Exception E)
 			{
 				ServiceRef.LogService.LogException(E);
 			}
-		} 
+		}
 	}
 
+	// Class for ObservableGeoParameter
+	public partial class ObservableGeoParameter : ObservableParameter
+	{
+		public ObservableGeoParameter(GeoParameter parameter) : base(parameter)
+		{
+			this.Value = parameter.ObjectValue;
+		}
+
+		public GeoPosition? GeoValue
+		{
+			get => this.Value as GeoPosition;
+			set => this.Value = value;
+		}
+
+		public string GeoString
+		{
+			get => this.GeoValue?.ToString() ?? string.Empty;
+			set
+			{
+				if (GeoPosition.TryParse(value, out GeoPosition? GeoValue))
+					this.Value = GeoValue;
+				else
+					this.Value = null;
+			}
+		}
+
+		[ObservableProperty]
+		bool isCheckinglocation;
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task SetCurrentLocationAsync()
+		{
+			try
+			{
+				MainThread.BeginInvokeOnMainThread(() => this.IsCheckinglocation = true);
+
+				GeolocationRequest Request = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(10));
+				Location? Location = await Geolocation.Default.GetLocationAsync(Request);
+
+				if (Location is not null)
+				{
+					MainThread.BeginInvokeOnMainThread(() =>
+					{
+						this.GeoValue = new GeoPosition(Location.Latitude, Location.Longitude);
+						this.OnPropertyChanged(nameof(this.GeoString));
+					});
+				}
+			}
+			catch
+			{
+				// Ignore this case
+				// Display an alert requesting permission
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Error)],
+					ServiceRef.Localizer[nameof(AppResources.LocationError)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]
+				);
+			}
+			finally
+			{
+				MainThread.BeginInvokeOnMainThread(() => this.IsCheckinglocation = false);
+			}
+		}
+	}
 }
 #endregion

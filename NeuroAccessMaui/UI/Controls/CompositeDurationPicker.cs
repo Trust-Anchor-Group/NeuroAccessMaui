@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Threading.Tasks;
 using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
@@ -79,7 +80,7 @@ namespace NeuroAccessMaui.UI.Controls
 			//{
 			//	LabelData = "Add Duration",
 			//	Style = AppStyles.TertiaryButton,
-			//	HorizontalOptions = LayoutOptions.FillAndExpand,
+			//	HorizontalOptions = LayoutOptions.Fill,
 			//	VerticalOptions = LayoutOptions.Center
 			//};
 
@@ -239,63 +240,67 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		/// <param name="Unit"></param>
 		private void AddUnit(DurationUnits Unit, string Value)
-      {
-         // Setup the Composite Entry
-         CompositeEntry DurationEntry = new()
-         {
-               Style = AppStyles.RegularCompositeEntry,
-               Margin = 0,
-               Padding = 0,
-				   EntryData = (Value == "0") ? "" : Value
+		{
+			// Setup the Composite Entry
+			CompositeEntry DurationEntry = new()
+			{
+				Style = AppStyles.RegularCompositeEntry,
+				Margin = 0,
+				Padding = 0,
+				EntryData = (Value == "0") ? "" : Value
 			};
 
-         // Add the Unit Label to the left of the CompositeEntry
-         DurationLabel UnitLabel = new()
+			 // Add the Unit Label to the left of the CompositeEntry
+			DurationLabel UnitLabel = new()
 			{
 				Text = ServiceRef.Localizer[Unit.ToString() + "Capitalized"],
-            HorizontalTextAlignment = TextAlignment.Start,
-            VerticalTextAlignment = TextAlignment.Center,
-            Style = AppStyles.SectionTitleLabel,
-            LineBreakMode = LineBreakMode.NoWrap,
-            WidthRequest = 60,
-            Unit = Unit,
-         };
+				HorizontalTextAlignment = TextAlignment.Start,
+				VerticalTextAlignment = TextAlignment.Center,
+				Style = AppStyles.SectionTitleLabel,
+				LineBreakMode = LineBreakMode.NoWrap,
+				Unit = Unit,
+			};
 
-         DurationEntry.LeftView = UnitLabel;
+			DurationEntry.LeftView = UnitLabel;
 
-         this.durationUnits.Remove(Unit); // Remove used units
+			this.durationUnits.Remove(Unit); // Remove used units
 
 			DurationEntry.SetBinding(CompositeEntry.IsValidProperty, new Binding(nameof(this.IsValid), source: this));
 
-         DurationEntry.TextChanged += (sender, args) => this.UpdateDuration();
+			DurationEntry.TextChanged += (sender, args) => this.UpdateDuration();
 
-         DurationEntry.Keyboard = Keyboard.Numeric;
+			DurationEntry.Keyboard = Keyboard.Numeric;
 
 
-         // Add delete button to the right of the CompositeEntry
-         ImageButton DeleteButton = new()
-         {
-               Style = AppStyles.ImageOnlyButton,
-               PathData = Geometries.CancelPath,
-               VerticalOptions = LayoutOptions.Center,
-               HorizontalOptions = LayoutOptions.End,
-               Command = new RelayCommand(() => this.DeleteUnit(Unit, DurationEntry))
-         };
+			// Add delete button to the right of the CompositeEntry
+			ImageButton DeleteButton = new()
+			{
+				Style = AppStyles.ImageOnlyButton,
+				PathData = Geometries.CancelPath,
+				VerticalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.End,
+				Command = new RelayCommand(() => this.DeleteUnit(Unit, DurationEntry))
+			};
 
-         DurationEntry.RightView = DeleteButton;
+			DurationEntry.RightView = DeleteButton;
 
-         // Add the CompositeEntry to the Vertical Stack Layout
-         this.durationsContainer.Add(DurationEntry);
+			// Add the CompositeEntry to the Vertical Stack Layout
+			this.durationsContainer.Add(DurationEntry);
 
-         // Sort the entries by unit
-         List<CompositeEntry> SortedDurationEntries = [.. this.durationsContainer.Children
-                                       .OfType<CompositeEntry>()
-                                       .OrderBy(x => (x.LeftView as DurationLabel)?.Unit)];
+			// Sort the entries by unit
+			List<CompositeEntry> SortedDurationEntries = [.. this.durationsContainer.Children
+										.OfType<CompositeEntry>()
+										.OrderBy(x => (x.LeftView as DurationLabel)?.Unit)];
 
-         this.durationsContainer.Clear();
-         foreach (CompositeEntry Entry in SortedDurationEntries)
-               MainThread.BeginInvokeOnMainThread(() => this.durationsContainer.Add(Entry));
-      }
+			this.durationsContainer.Clear();
+			foreach (CompositeEntry Entry in SortedDurationEntries)
+				MainThread.BeginInvokeOnMainThread(() => this.durationsContainer.Add(Entry));
+
+			MainThread.BeginInvokeOnMainThread(async () => {
+				await Task.Delay(500);
+				DurationEntry.Focus();
+			});
+		  }
 
 		/// <summary>
 		/// Delete a duration entry from the durations container and add the unit back to the available units
@@ -319,7 +324,7 @@ namespace NeuroAccessMaui.UI.Controls
 		public async Task<DurationUnits?> OpenDurationPopup()
 		{
 			DurationPopupViewModel ViewModel = new(this.durationUnits);
-			DurationUnits? Result = await ServiceRef.UiService.PushAsync<DurationPopup, DurationPopupViewModel, DurationUnits?>(ViewModel);
+			DurationUnits? Result = await ServiceRef.PopupService.PushAsync<DurationPopup, DurationPopupViewModel, DurationUnits?>(ViewModel);
 
 			return Result;
 		}

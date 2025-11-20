@@ -15,35 +15,31 @@
 	<Grid x:Name="TheMainGrid"
 			RowDefinitions="*, auto"
 			ColumnDefinitions="*"
-			BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
-
+			BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background />
 
 		<ScrollView Grid.Row="0">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}"
-										Margin="{DynamicResource MediumSpacing}">
-
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 
 				<Grid RowDefinitions="auto"
-						ColumnDefinitions="*">
-
+					  ColumnDefinitions="*">
 
 					<controls:ImageButton HorizontalOptions="Start"
-												 Command="{Binding GoBackCommand}"
-												 Style="{DynamicResource ImageOnlyButton}"
-												 PathData="{x:Static ui:Geometries.BackButtonPath}" />
+											Command="{Binding GoBackCommand}"
+											Style="{DynamicResource ImageOnlyButton}"
+											PathData="{x:Static ui:Geometries.BackButtonPath}"
+											Margin="8"/>
+					
 					<Image HorizontalOptions="Center"
-							 VerticalOptions="Start"
-							 Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}"
-							 WidthRequest="50"
-							 HeightRequest="50" />
-
-
+							VerticalOptions="Start"
+							Source="{AppThemeBinding Light=neuro_assets_icon_dark, Dark=neuro_assets_icon_light}"
+							WidthRequest="50"
+							HeightRequest="50" />
 				</Grid>
 
 				<!-- Info -->
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border	Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout>
 						<Label Style="{DynamicResource PageTitleLabel}"
 								 HorizontalTextAlignment="Center"
@@ -79,10 +75,10 @@
 
 
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 
 				<!-- Advanced Information -->
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<mct:Expander>
 						<mct:Expander.Header>
 							<HorizontalStackLayout HorizontalOptions="Center"
@@ -94,13 +90,13 @@
 										 Margin="{DynamicResource SmallLeftMargins}">
 									<Image.Triggers>
 										<DataTrigger TargetType="Image"
-														 Binding="{Binding Source={RelativeSource AncestorType={x:Type mct:Expander}}, Path=IsExpanded}"
+														 Binding="{Binding Source={RelativeSource AncestorType={x:Type mct:Expander}}, x:DataType=mct:Expander, Path=IsExpanded}"
 														 Value="True">
 											<Setter Property="Source"
 													  Value="{AppThemeBinding Light=arrow_up_light, Dark=arrow_up_dark}" />
 										</DataTrigger>
 										<DataTrigger TargetType="Image"
-														 Binding="{Binding Source={RelativeSource AncestorType={x:Type mct:Expander}}, Path=IsExpanded}"
+														 Binding="{Binding Source={RelativeSource AncestorType={x:Type mct:Expander}}, x:DataType=mct:Expander, Path=IsExpanded}"
 														 Value="False">
 											<Setter Property="Source"
 													  Value="{AppThemeBinding Light=arrow_down_light, Dark=arrow_down_dark}" />
@@ -110,15 +106,15 @@
 							</HorizontalStackLayout>
 						</mct:Expander.Header>
 						<mct:Expander.Content>
-							<VerticalStackLayout>
+							<VerticalStackLayout Spacing="8">
 								<!-- Personal Information -->
-								<Frame Style="{DynamicResource FrameSubSet}"
+								<Border Style="{DynamicResource BorderSubSet}"
 										 IsVisible="{Binding HasDomain, Converter={StaticResource InvertedBoolConverter}}">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 										<Label Style="{DynamicResource SectionTitleLabel}"
 												 Text="{l:Localize PersonalInformation}" />
 
-										<Grid VerticalOptions="StartAndExpand"
+										<Grid VerticalOptions="Start"
 												RowSpacing="0">
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition Width="Auto" />
@@ -226,7 +222,7 @@
 											<Label Grid.Row="7"
 													 Grid.Column="1"
 													 Margin="{DynamicResource SmallTopMargins}"
-													 FontAttributes="Bold"
+													 Style="{DynamicResource ValueLabel}"
 													 Text="{Binding Area}" />
 											<!--    -->
 											<Label Grid.Row="8"
@@ -299,7 +295,7 @@
 											<Label Grid.Row="14"
 													 Grid.Column="0"
 													 Margin="{DynamicResource SmallRightTopMargins}"
-													 HorizontalOptions="StartAndExpand"
+													 HorizontalOptions="Start"
 													 Text="{l:Localize Photos}"
 													 Style="{DynamicResource KeyLabel}"
 													 IsVisible="{Binding HasPhotos}" />
@@ -333,16 +329,16 @@
 											</ScrollView>
 										</Grid>
 									</VerticalStackLayout>
-								</Frame>
+								</Border>
 
 								<!-- Organizational Information -->
-								<Frame Style="{DynamicResource FrameSubSet}"
+								<Border Style="{DynamicResource BorderSubSet}"
 										 IsVisible="{Binding HasOrg}">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 										<Label Style="{DynamicResource SectionTitleLabel}"
 												 Text="{l:Localize OrganizationalInformation}" />
 
-										<Grid VerticalOptions="StartAndExpand"
+										<Grid VerticalOptions="Start"
 												RowSpacing="0">
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition Width="Auto" />
@@ -484,15 +480,15 @@
 													 Text="{Binding OrgCountryCode, Converter={converters:CountryCodeToFlagAndName}}" />
 										</Grid>
 									</VerticalStackLayout>
-								</Frame>
+								</Border>
 
 								<!-- Technical Information -->
-								<Frame Style="{DynamicResource FrameSubSet}">
+								<Border Style="{DynamicResource BorderSubSet}">
 									<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 										<Label Style="{DynamicResource SectionTitleLabel}"
 												 Text="{l:Localize Technical}" />
 
-										<Grid VerticalOptions="StartAndExpand"
+										<Grid VerticalOptions="Start"
 												RowSpacing="0">
 											<Grid.ColumnDefinitions>
 												<ColumnDefinition Width="Auto" />
@@ -584,12 +580,12 @@
 											</Label>
 										</Grid>
 									</VerticalStackLayout>
-								</Frame>
+								</Border>
 							</VerticalStackLayout>
 
 						</mct:Expander.Content>
 					</mct:Expander>
-				</Frame>
+				</Border>
 
 			</VerticalStackLayout>
 		</ScrollView>
@@ -597,8 +593,8 @@
 		<Border Grid.Row="1"
 				  Style="{DynamicResource BottomBarBorder}">
 			<!-- Bottom Buttons -->
-			<Grid HorizontalOptions="FillAndExpand"
-					VerticalOptions="CenterAndExpand"
+			<Grid HorizontalOptions="Fill"
+					VerticalOptions="Center"
 					ColumnSpacing="{DynamicResource SmallSpacing}">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />

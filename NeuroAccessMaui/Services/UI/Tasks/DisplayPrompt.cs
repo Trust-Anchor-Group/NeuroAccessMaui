@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.Services.UI.Tasks
 		{
 			string? Result;
 
-			Page? DisplayedPage = ServiceRef.UiService.PopupStack.LastOrDefault() ?? App.Current?.MainPage;
+			Page? DisplayedPage = App.Current?.MainPage;
 
 			if (DisplayedPage is null)
 				Result = null;

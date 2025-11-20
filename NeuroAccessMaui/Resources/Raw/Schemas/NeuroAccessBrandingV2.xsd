@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="https://paiwise.tagroot.io/Schema/NeuroAccessBrandingV2.xsd"
+    targetNamespace="https://paiwise.tagroot.io/Schema/NeuroAccessBrandingV2.xsd"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+    <!-- Migrated from urn:neuroaccess:branding:2.0 on 2025-02-14 -->
+
+    <!--
+      NeuroAccess BRANDING schema v2.0
+      - Supports multiple color palette files (light, dark, etc.)
+      - Backward-compatible: only one <ColorsUri> still works
+    -->
+
+    <!-- VersionType: semantic versioning -->
+    <xs:complexType name="VersionType">
+        <xs:annotation>
+            <xs:documentation>
+                Semantic version: major (required), minor (required), patch (optional, default=0).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="major" type="xs:nonNegativeInteger" use="required"/>
+        <xs:attribute name="minor" type="xs:nonNegativeInteger" use="required"/>
+        <xs:attribute name="patch" type="xs:nonNegativeInteger" use="optional" default="0"/>
+    </xs:complexType>
+
+    <!-- ThemeType: known themes (extensible, open string for future) -->
+    <xs:simpleType name="ThemeType">
+        <xs:annotation>
+            <xs:documentation>
+                Known color palette themes.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="light"/>
+            <xs:enumeration value="dark"/>
+            <xs:enumeration value="system"/>
+            <xs:enumeration value="highcontrast"/>
+            <!-- Add more as needed -->
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Allowed image MIME types -->
+    <xs:simpleType name="ImageMimeType">
+        <xs:annotation>
+            <xs:documentation>
+                Common HTTP image MIME types for banners, logos, etc.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="image/png"/>
+            <xs:enumeration value="image/jpeg"/>
+            <xs:enumeration value="image/svg+xml"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- BrandingDescriptorType -->
+    <xs:complexType name="BrandingDescriptorType">
+        <xs:annotation>
+            <xs:documentation>
+                Versioned branding descriptor. Contains color palettes and image references.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <!-- Semantic version -->
+            <xs:element name="Version" type="VersionType"/>
+
+            <!-- Multiple color palettes -->
+            <xs:element name="ColorPalettes" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <!-- One or more color palette URIs, each with a theme -->
+                        <xs:element name="ColorsUri" maxOccurs="unbounded" minOccurs="1">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:anyURI">
+                                        <!-- Required theme name -->
+                                        <xs:attribute name="theme" type="ThemeType" use="required"/>
+                                        <!-- Optionally mark as default fallback -->
+                                        <xs:attribute name="isDefault" type="xs:boolean" use="optional" default="false"/>
+                                        <!-- Future extensibility -->
+                                        <xs:anyAttribute namespace="##other" processContents="lax"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <!-- Images -->
+            <xs:element name="Images" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ImageRef"
+                                    type="ImageRefType"
+                                    maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:anyAttribute namespace="##other" processContents="lax"/>
+    </xs:complexType>
+
+    <!-- ImageRefType: references an image asset plus metadata -->
+    <xs:complexType name="ImageRefType">
+        <xs:annotation>
+            <xs:documentation>
+                Reference to a previously-published image asset via URI,
+                with required ID (xs:ID), dimensions, and MIME type.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="id"          type="xs:ID"              use="required"/>
+        <xs:attribute name="uri"         type="xs:anyURI"          use="required"/>
+        <xs:attribute name="width"       type="xs:positiveInteger" use="optional"/>
+        <xs:attribute name="height"      type="xs:positiveInteger" use="optional"/>
+        <xs:attribute name="contentType" type="ImageMimeType"      use="optional"/>
+        <xs:anyAttribute namespace="##other" processContents="lax"/>
+    </xs:complexType>
+
+    <!-- Global root element -->
+    <xs:element name="BrandingDescriptor" type="BrandingDescriptorType"/>
+
+</xs:schema>

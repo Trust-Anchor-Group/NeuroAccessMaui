@@ -1,57 +1,37 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Xmpp.ReportType.ReportTypePopup"
-					 x:DataType="viewmodel:ReportTypeViewModel"
-					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-					 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.ReportType"
-					 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-					 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
-
-	<mopups:PopupPage.Animation>
-		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
-											PositionIn="Center" PositionOut="Center" />
-	</mopups:PopupPage.Animation>
-
-	<Grid Style="{DynamicResource PopupGrid}">
-
-		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{DynamicResource PopupBorder}">
-			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
-				<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-
-					<Label Text="{l:Localize TypeOfReport}" Style="{DynamicResource SectionTitleLabel}" />
-
-					<Label>
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{l:Localize TypeOfReport1}"/>
-								<Span Text=" "/>
-								<Span Text="{Binding BareJid}" FontAttributes="Bold"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
-
-					<controls:TextButton Command="{Binding SpamCommand}"
-												Style="{DynamicResource FilledTextButton}"
-												LabelData="{l:Localize Spam}" />
-
-					<controls:TextButton Command="{Binding AbuseCommand}"
-												Style="{DynamicResource FilledTextButton}"
-												LabelData="{l:Localize Abuse}" />
-
-					<controls:TextButton Command="{Binding OtherCommand}"
-												Style="{DynamicResource FilledTextButton}"
-												LabelData="{l:Localize Other}" />
-
-					<controls:TextButton Command="{Binding IgnoreCommand}"
-												Style="{DynamicResource OutlinedTextButton}"
-												LabelData="{l:Localize NoJustIgnore}" />
-				</VerticalStackLayout>
-			</ScrollView>
-		</Border>
-	</Grid>
+                x:DataType="viewmodel:ReportTypeViewModel"
+                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.ReportType">
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label Text="{l:Localize TypeOfReport}"
+                   Style="{DynamicResource SectionTitleLabel}" />
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="{l:Localize TypeOfReport1}" />
+                        <Span Text=" " />
+                        <Span Text="{Binding BareJid}" FontAttributes="Bold" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <controls:TextButton Command="{Binding SpamCommand}"
+                                 Style="{DynamicResource FilledTextButton}"
+                                 LabelData="{l:Localize Spam}" />
+            <controls:TextButton Command="{Binding AbuseCommand}"
+                                 Style="{DynamicResource FilledTextButton}"
+                                 LabelData="{l:Localize Abuse}" />
+            <controls:TextButton Command="{Binding OtherCommand}"
+                                 Style="{DynamicResource FilledTextButton}"
+                                 LabelData="{l:Localize Other}" />
+            <controls:TextButton Command="{Binding IgnoreCommand}"
+                                 Style="{DynamicResource OutlinedTextButton}"
+                                 LabelData="{l:Localize NoJustIgnore}" />
+        </VerticalStackLayout>
+    </ScrollView>
 </base:BasePopup>

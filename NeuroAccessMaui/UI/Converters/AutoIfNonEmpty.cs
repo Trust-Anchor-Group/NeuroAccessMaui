@@ -5,6 +5,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Automatic length if a property is non-empty.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class AutoIfNonEmpty : IValueConverter, IMarkupExtension
 	{
 		private static readonly GridLength zeroLength = new(0, GridUnitType.Absolute);

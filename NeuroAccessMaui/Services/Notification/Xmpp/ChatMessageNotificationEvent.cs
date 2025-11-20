@@ -75,7 +75,7 @@ namespace NeuroAccessMaui.Services.Notification.Xmpp
 			string FriendlyName = await this.GetDescription();
 			ChatNavigationArgs Args = new(LegalId, this.BareJid, FriendlyName);
 
-			await ServiceRef.UiService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.BareJid);
+			await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), Args, BackMethod.Inherited, this.BareJid);
 		}
 	}
 }

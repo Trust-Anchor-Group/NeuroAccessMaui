@@ -1,8 +1,10 @@
+using System;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Devices;
 using NeuroAccessMaui.Services.Localization;
-using NeuroAccessMaui.UI.Popups;
-using NeuroAccessMaui.UI.Popups.Settings;
 
 namespace NeuroAccessMaui.UI.Popups.Settings
 {
@@ -12,42 +14,36 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 		public SelectLanguagePopup()
 		{
 			this.InitializeComponent();
-
-			// Set the BindingContext to the dedicated view model.
 			this.BindingContext = new SelectLanguagePopupViewModel();
+
 
 			WeakReferenceMessenger.Default.Register<ScrollToLanguageMessage>(this, (r, m) =>
 			{
-				// Find the visual element corresponding to the language name.
-				foreach (object Item in this.LanguagesContainer)
+				foreach (var element in this.LanguagesContainer.Children)
 				{
-					if (Item is not VisualElement { BindingContext: LanguageInfo Lang } Element)
-						continue;
-					if (Lang.Name != m.Value)
+					if (element is not VisualElement { BindingContext: ObservableLanguage lang })
 						continue;
 
-					// Scroll to the element.
-					MainThread.BeginInvokeOnMainThread(async void () =>
+					if (lang.Language.Name != m.Value)
+						continue;
+
+					MainThread.BeginInvokeOnMainThread(async () =>
 					{
 						try
 						{
-							await this.InnerScrollView.ScrollToAsync(Element, ScrollToPosition.MakeVisible, true);
+							await this.InnerScrollView.ScrollToAsync(element as Element, ScrollToPosition.MakeVisible, true);
 						}
-						catch (Exception)
-						{
-							return; // Ignore, not muy importante.
-						}
+						catch { /* ignore */ }
 					});
+
 					break;
 				}
 			});
 		}
-
-		protected override void OnDisappearing()
+		public override Task OnDisappearingAsync()
 		{
-			base.OnDisappearing();
-			// Unregister the message handler to avoid multiple registrations.
 			WeakReferenceMessenger.Default.Unregister<ScrollToLanguageMessage>(this);
+			return base.OnDisappearingAsync();
 		}
 	}
 }

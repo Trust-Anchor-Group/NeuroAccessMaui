@@ -10,21 +10,20 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Notifications"
 							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 							 x:Class="NeuroAccessMaui.UI.Pages.Notifications.NotificationsPage"
-							 x:DataType="viewmodel:NotificationsViewModel"
-							 Title="NotificationsPage">
+							 x:DataType="viewmodel:NotificationsViewModel">
 
-	<ContentPage.Resources>
+	<base:BaseContentPage.Resources>
 		<ResourceDictionary>
 			<local:ContextualDateConverter x:Key="ContextualDateConverter" />
 		</ResourceDictionary>
-	</ContentPage.Resources>
+	</base:BaseContentPage.Resources>
 
 	<Grid x:Name="TheMainGrid"
 			RowDefinitions="auto, *"
 			ColumnDefinitions="*"
 			Margin="0"
 			Padding="0"
-			BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+			BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background Grid.Row="1" />
 
@@ -94,11 +93,11 @@
 										<Border Grid.Column="0"
 												  WidthRequest="48"
 												  HeightRequest="48" Margin="0"
-												  Background="{AppThemeBinding Light={DynamicResource TnPInfobgWLLight}, Dark={DynamicResource TnPInfobgWLDark}}"
+												  Background="{DynamicResource TnPInfobgWL}"
 												  Style="{DynamicResource RoundedBorder}">
 											<Path Data="{Binding Icon}"
 													Aspect="Uniform"
-													Fill="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"
+													Fill="{DynamicResource TnPInfoContentWL}"
 													VerticalOptions="Center"
 													HorizontalOptions="Center"
 													WidthRequest="32"

@@ -115,7 +115,7 @@ namespace NeuroAccessMaui.UI.Controls
 			ContentGrid.Add(RightButton, 2, 0);
 
 			this.VerticalOptions = LayoutOptions.End;
-			this.HorizontalOptions = LayoutOptions.FillAndExpand;
+			this.HorizontalOptions = LayoutOptions.Fill;
 			this.Content = this.border;
 
 			this.SetBinding(ActiveIconProperty, new Binding(nameof(this.SelectedIcon), source: this));

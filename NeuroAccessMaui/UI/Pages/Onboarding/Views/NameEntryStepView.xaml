@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.NameEntryStepView"
+                               xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
+                               xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
+                               xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                               xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                               xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                               xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                               x:DataType="viewmodels:NameEntryOnboardingStepViewModel">
+    <onboarding:BaseOnboardingView.Resources>
+        <mct:IsStringNotNullOrEmptyConverter x:Key="OnlyShowNonEmpty" />
+        <mct:IsStringNullOrEmptyConverter x:Key="OnlyShowEmpty" />
+    </onboarding:BaseOnboardingView.Resources>
+
+    <Grid RowDefinitions="*,auto"
+          RowSpacing="{DynamicResource LargeSpacing}">
+        <VerticalStackLayout Grid.Row="0"
+                             Spacing="{DynamicResource LargeSpacing}"
+                             VerticalOptions="Center">
+            <Label Style="{DynamicResource PageTitleLabel}"
+                   Text="{l:Localize OnboardingNameEntryTitle}" />
+
+            <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+                <controls:CompositeEntry x:Name="UsernameEntry"
+                                         Style="{DynamicResource RegularCompositeEntry}"
+                                         EntryData="{Binding Username}"
+                                         Placeholder="{l:Localize Username}"
+                                         IsValid="{Binding LocalizedValidationMessage, Converter={StaticResource OnlyShowEmpty}}" />
+
+                <Grid RowDefinitions="auto,auto"
+                      ColumnDefinitions="auto,*"
+                      HorizontalOptions="Center"
+                      ColumnSpacing="{DynamicResource SmallSpacing}"
+                      IsVisible="{Binding LocalizedValidationMessage, Converter={StaticResource OnlyShowNonEmpty}}">
+                    <Path Grid.Column="0"
+                          VerticalOptions="Center"
+                          HeightRequest="20"
+                          WidthRequest="20"
+                          Aspect="Uniform"
+                          Data="{x:Static ui:Geometries.InfoCirclePath}"
+                          Fill="{DynamicResource InputFieldsContentDangerv800}" />
+
+                    <Label Grid.Column="1"
+                           VerticalOptions="Center"
+                           Text="{Binding LocalizedValidationMessage}"
+                           TextColor="{DynamicResource InputFieldsContentDangerv800}" />
+
+                    <Grid Grid.Row="1"
+                          Grid.Column="1"
+                          ColumnDefinitions="auto,*"
+                          IsVisible="{Binding AlternativeName, Converter={StaticResource OnlyShowNonEmpty}}">
+                        <Label Grid.Column="0"
+                               HorizontalOptions="Start"
+                               Text="{l:Localize Alternative}"
+                               TextColor="{DynamicResource InputFieldsContentDangerv800}" />
+
+                        <Label Grid.Column="1"
+                               Text="{Binding AlternativeName}"
+                               TextDecorations="Underline"
+                               LineBreakMode="CharacterWrap"
+                               TextColor="{DynamicResource ContentLinkWL}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectNameCommand}"
+                                                      CommandParameter="{Binding AlternativeName}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+                </Grid>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Grid.Row="1"
+                             Spacing="{DynamicResource MediumSpacing}">
+            <Border Style="{DynamicResource AccentInfoBorder}"
+                    Padding="{DynamicResource SmallMargins}">
+                <Grid ColumnDefinitions="auto,*">
+                    <Path Grid.Column="0"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center"
+                          Data="{x:Static ui:Geometries.InfoCirclePath}"
+                          HeightRequest="24"
+                          WidthRequest="24"
+                          Aspect="Uniform"
+                          Fill="{DynamicResource TnPInfoContentWL}" />
+                    <Label Grid.Column="1"
+                           Style="{DynamicResource AccentInfoLabel}"
+                           Margin="{DynamicResource SmallLeftMargins}"
+                           Text="{l:Localize OnboardingNameEntryDetails}" />
+                </Grid>
+            </Border>
+
+            <controls:TextButton Command="{Binding CreateAccountCommand}"
+                                 Style="{DynamicResource FilledTextButton}"
+                                 LabelData="{Binding LocalizedContinueText}"
+                                 IsEnabled="{Binding CanCreateAccount}" />
+        </VerticalStackLayout>
+    </Grid>
+</onboarding:BaseOnboardingView>

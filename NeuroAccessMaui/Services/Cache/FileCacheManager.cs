@@ -29,19 +29,26 @@ namespace NeuroAccessMaui.Services.Cache
 
 		public async Task EvictOldEntries()
 		{
-			// Only allow the first caller to actually perform eviction
-			// This is not really needed,
-			// but added justin case there ever is a situations where the cache contains a ridicoulus amount of files
-			if (Interlocked.Exchange(ref evictionPerformed, 1) == 1)
-				return;
-
-			IEnumerable<CacheEntry> Expired = await Database.FindDelete<CacheEntry>(
-				new FilterFieldLesserOrEqualTo("Expires", DateTime.UtcNow));
-
-			foreach (CacheEntry Entry in Expired)
+			try
 			{
-				try { File.Delete(Entry.LocalFileName); }
-				catch { /* log if desired */ }
+				// Only allow the first caller to actually perform eviction
+				// This is not really needed,
+				// but added justin case there ever is a situations where the cache contains a ridicoulus amount of files
+				if (Interlocked.Exchange(ref evictionPerformed, 1) == 1)
+					return;
+
+				IEnumerable<CacheEntry> Expired = await Database.FindDelete<CacheEntry>(
+					new FilterFieldLesserOrEqualTo("Expires", DateTime.UtcNow));
+
+				foreach (CacheEntry Entry in Expired)
+				{
+					try { File.Delete(Entry.LocalFileName); }
+					catch { /* log if desired */ }
+				}
+			}
+			catch
+			{
+				// Ignore
 			}
 		}
 
@@ -54,7 +61,6 @@ namespace NeuroAccessMaui.Services.Cache
 				new FilterFieldEqualTo("Url", Key));
 
 			if (Entry is null ||
-				DateTime.UtcNow >= Entry.Expires ||
 				!File.Exists(Entry.LocalFileName))
 			{
 				if (Entry is not null)
@@ -67,7 +73,38 @@ namespace NeuroAccessMaui.Services.Cache
 				return (null, string.Empty);
 			}
 
+			// Only return non-Expired entries from this method.
+			if (DateTime.UtcNow >= Entry.Expires)
+				return (null, string.Empty);
+
 			return (File.ReadAllBytes(Entry.LocalFileName), Entry.ContentType);
+		}
+
+		/// <summary>
+		/// Tries to get a cached entry and indicates if it is past its expiry.
+		/// Returns bytes for both fresh and Expired items (if file exists). Expired items are not deleted here.
+		/// </summary>
+		public async Task<(byte[]? Data, string ContentType, bool IsExpired)> TryGetWithExpiry(string Key)
+		{
+			if (string.IsNullOrEmpty(Key))
+				return (null, string.Empty, false);
+
+			CacheEntry? Entry = await Database.FindFirstDeleteRest<CacheEntry>(
+				new FilterFieldEqualTo("Url", Key));
+
+			if (Entry is null)
+				return (null, string.Empty, false);
+
+			if (!File.Exists(Entry.LocalFileName))
+			{
+				try { await Database.Delete(Entry); }
+				catch { }
+				await Database.Provider.Flush();
+				return (null, string.Empty, false);
+			}
+
+			bool Expired = DateTime.UtcNow >= Entry.Expires && Entry.Expires != DateTime.MaxValue;
+			return (File.ReadAllBytes(Entry.LocalFileName), Entry.ContentType, Expired);
 		}
 
 		public async Task AddOrUpdate(string key, string parentId, bool permanent,
@@ -164,6 +201,23 @@ namespace NeuroAccessMaui.Services.Cache
 				}
 			}
 			await Database.Provider.Flush();
+		}
+
+		public async Task<int> RemoveByParentId(string parentId)
+		{
+			int Removed = 0;
+			foreach (CacheEntry Entry in await Database.Find<CacheEntry>(
+				new FilterFieldEqualTo("ParentId", parentId)))
+			{
+				try { File.Delete(Entry.LocalFileName); }
+				catch { /* ignore */ }
+
+				await Database.Delete(Entry);
+				Removed++;
+			}
+
+			await Database.Provider.Flush();
+			return Removed;
 		}
 	}
 

@@ -13,7 +13,7 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Duration"
 							 xmlns:data="clr-namespace:NeuroAccessMaui.Services.Data"
 							 xmlns:behaviors="clr-namespace:NeuroAccessMaui.UI.Behaviors">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -30,7 +30,7 @@
 
 				<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Duration}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 
 					<Grid RowDefinitions="auto,auto,auto,auto,auto,auto,auto" ColumnDefinitions="auto,*"
 							RowSpacing="{DynamicResource SmallSpacing}" ColumnSpacing="{DynamicResource SmallSpacing}"
@@ -78,7 +78,7 @@
 														 BackgroundColor="{Binding SecondsOk, Converter={converters:ControlBgColor}}"
 				   									 EntryData="{Binding Seconds}" />
 					</Grid>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

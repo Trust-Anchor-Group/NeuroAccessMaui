@@ -16,8 +16,10 @@
     xmlns:skiaLottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
     xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
     xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ViewIdentity"
-    x:Name="ThisPage"
-    x:DataType="viewmodel:ViewIdentityViewModel">
+	xmlns:ext="clr-namespace:NeuroAccessMaui.MarkupExtensions"
+	x:Name="ThisPage"
+    x:DataType="viewmodel:ViewIdentityViewModel"
+	ui:SafeArea.Mode="Top">
 
     <VisualElement.Resources>
         <Style
@@ -30,9 +32,9 @@
             x:Key="FieldGroupBorder"
             BasedOn="{StaticResource BorderSubSet}"
             TargetType="Border">
-            <Setter Property="Background" Value="{AppThemeBinding Light={DynamicResource SurfaceElevation2WLLight}, Dark={DynamicResource SurfaceElevation2WLDark}}" />
-            <Setter Property="StrokeShape" Value="RoundRectangle 16" />
-            <Setter Property="Margin" Value="16" />
+            <Setter Property="Background" Value="{DynamicResource SurfaceElevation2WL}" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+            <Setter Property="Margin" Value="16,0,16,16" />
             <Setter Property="Padding" Value="16" />
         </Style>
         <Style
@@ -56,7 +58,7 @@
             <Setter Property="FontSize" Value="26" />
             <Setter Property="LineBreakMode" Value="WordWrap" />
             <Setter Property="HorizontalTextAlignment" Value="Center" />
-            <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+            <Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}" />
         </Style>
         <Style
             x:Key="SubTextLabel"
@@ -67,7 +69,7 @@
             <Setter Property="FontSize" Value="18" />
             <Setter Property="LineBreakMode" Value="WordWrap" />
             <Setter Property="HorizontalTextAlignment" Value="Center" />
-            <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
+            <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
         </Style>
         <Style
             x:Key="AgeLabel"
@@ -81,34 +83,34 @@
         </Style>
 
         <Style x:Key="StatusPillBorder" TargetType="Border">
-            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource TnPNeutralv300bgWLLight}, Dark={DynamicResource TnPNeutralv300bgWLDark}}" />
+            <Setter Property="BackgroundColor" Value="{DynamicResource TnPNeutralv300bgWL}" />
             <Setter Property="VisualStateManager.VisualStateGroups">
                 <VisualStateGroupList>
                     <VisualStateGroup Name="StatusStates">
 
                         <VisualState Name="Created">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource TnPWarningbgWLLight}, Dark={DynamicResource TnPWarningbgWLDark}}" />
+                                <Setter Property="BackgroundColor" Value="{DynamicResource TnPWarningbgWL}" />
                             </VisualState.Setters>
                         </VisualState>
                         <VisualState Name="Compromised">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource TnPWarningbgWLLight}, Dark={DynamicResource TnPWarningbgWLDark}}" />
+                                <Setter Property="BackgroundColor" Value="{DynamicResource TnPWarningbgWL}" />
                             </VisualState.Setters>
                         </VisualState>
                         <VisualState Name="Approved">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource TnPSuccessbgWLLight}, Dark={DynamicResource TnPSuccessbgWLDark}}" />
+                                <Setter Property="BackgroundColor" Value="{DynamicResource TnPSuccessbgWL}" />
                             </VisualState.Setters>
                         </VisualState>
                         <VisualState Name="Rejected">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}" />
+                                <Setter Property="BackgroundColor" Value="{DynamicResource TnPDangerbgWL}" />
                             </VisualState.Setters>
                         </VisualState>
                         <VisualState Name="Obsoleted">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerbgWLLight}, Dark={DynamicResource TnPDangerbgWLDark}}" />
+                                <Setter Property="BackgroundColor" Value="{DynamicResource TnPDangerbgWL}" />
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>
@@ -119,7 +121,7 @@
         <Style x:Key="StatusPillLabel" TargetType="Label">
             <Setter Property="FontSize" Value="10" />
             <Setter Property="FontFamily" Value="SpaceGroteskBold" />
-            <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPNeutralv300ContentWLLight}, Dark={DynamicResource TnPNeutralv300ContentWLDark}}" />
+            <Setter Property="TextColor" Value="{DynamicResource TnPNeutralv300ContentWL}" />
             <Setter Property="Text" Value="{l:Localize NotAvailable}" />
             <Style.Triggers>
                 <DataTrigger
@@ -127,35 +129,35 @@
                     TargetType="Label"
                     Value="Created">
                     <Setter Property="Text" Value="{l:Localize IdentityState_Created}" />
-                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPWarningContentWLLight}, Dark={DynamicResource TnPWarningContentWLDark}}" />
+                    <Setter Property="TextColor" Value="{DynamicResource TnPWarningContentWL}" />
                 </DataTrigger>
                 <DataTrigger
                     Binding="{Binding IdentityState}"
                     TargetType="Label"
-                    Value="Compromised">
+                    Value="Compromised"> 
                     <Setter Property="Text" Value="{l:Localize IdentityState_Compromised}" />
-                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPWarningContentWLLight}, Dark={DynamicResource TnPWarningContentWLDark}}" />
+                    <Setter Property="TextColor" Value="{DynamicResource TnPWarningContentWL}" />
                 </DataTrigger>
                 <DataTrigger
                     Binding="{Binding IdentityState}"
                     TargetType="Label"
                     Value="Approved">
                     <Setter Property="Text" Value="{l:Localize IdentityState_Approved}" />
-                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPSuccessContentWLLight}, Dark={DynamicResource TnPSuccessContentWLDark}}" />
+                    <Setter Property="TextColor" Value="{DynamicResource TnPSuccessContentWL}" />
                 </DataTrigger>
                 <DataTrigger
                     Binding="{Binding IdentityState}"
                     TargetType="Label"
                     Value="Rejected">
                     <Setter Property="Text" Value="{l:Localize IdentityState_Rejected}" />
-                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
+                    <Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}" />
                 </DataTrigger>
                 <DataTrigger
                     Binding="{Binding IdentityState}"
                     TargetType="Label"
                     Value="Obsoleted">
                     <Setter Property="Text" Value="{l:Localize IdentityState_Obsoleted}" />
-                    <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
+                    <Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -164,17 +166,17 @@
         <Style x:Key="FieldKeyLabel" TargetType="Label">
             <Setter Property="FontSize" Value="14" />
             <Setter Property="FontFamily" Value="SpaceGroteskRegular" />
-            <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
+            <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
         </Style>
         <Style x:Key="FieldValueLabel" TargetType="Label">
             <Setter Property="FontSize" Value="16" />
             <Setter Property="FontFamily" Value="SpaceGroteskRegular" />
-            <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
+            <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
         </Style>
         <Style x:Key="FieldTitleLabel" TargetType="Label">
             <Setter Property="FontSize" Value="14" />
             <Setter Property="FontFamily" Value="SpaceGroteskBold" />
-            <Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
+            <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
         </Style>
 
         <DataTemplate x:Key="DefaultFieldTemplate" x:DataType="objectModel:ObservableFieldItem">
@@ -187,7 +189,7 @@
         <DataTemplate x:Key="ClickableFieldTemplate" x:DataType="objectModel:ObservableFieldItem">
             <Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
                 <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.FieldTappedCommand}" CommandParameter="{Binding Value}" />
+					<TapGestureRecognizer Command="{Binding FieldTappedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ViewIdentityViewModel}}, x:DataType=viewmodel:ViewIdentityViewModel}" CommandParameter="{Binding Value}" />
                 </Grid.GestureRecognizers>
 
                 <Label
@@ -201,16 +203,14 @@
                     Aspect="AspectFit"
                     HeightRequest="16"
                     Source="content_copy.svg"
-                    TintColor="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight},
-                                                Dark={DynamicResource ContentSecondaryWLDark}}"
+                    TintColor="{DynamicResource ContentSecondaryWL}"
                     WidthRequest="16" />
                 <Label
                     Grid.Row="1"
                     Grid.ColumnSpan="2"
                     Style="{DynamicResource FieldValueLabel}"
                     Text="{Binding Value}"
-                    TextColor="{AppThemeBinding Light={DynamicResource ContentLinkWLLight},
-                                                Dark={DynamicResource ContentLinkWLDark}}" />
+                    TextColor="{DynamicResource ContentLinkWL}" />
             </Grid>
         </DataTemplate>
 
@@ -245,7 +245,7 @@
             ApplyToDerivedTypes="False"
             BasedOn="{StaticResource BorderSet}"
             TargetType="Border">
-            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={DynamicResource ButtonNeutralNavButtonsbgActiveWLLight}, Dark={DynamicResource ButtonNeutralNavButtonsbgActiveWLDark}}" />
+            <Setter Property="BackgroundColor" Value="{DynamicResource ButtonNeutralNavButtonsbgActiveWL}" />
             <Setter Property="Padding" Value="{DynamicResource MediumMargins}" />
             <Setter Property="Margin" Value="0" />
             <Setter Property="WidthRequest" Value="40" />
@@ -258,7 +258,7 @@
         </Style>
     </VisualElement.Resources>
 
-    <Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+    <Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
         <Grid.RowDefinitions>
             <!--  top bar  -->
             <RowDefinition Height="auto" />
@@ -289,7 +289,7 @@
         <!--  TOP BAR  -->
         <Grid
             Grid.Row="0"
-            Margin="16,16,16,8"
+            Margin="16,8,16,0"
             ColumnDefinitions="auto,*,auto"
             RowDefinitions="auto">
             <controls:SvgButton
@@ -344,8 +344,7 @@
                     <!--  TIMER  -->
                     <Border
                         Margin="16"
-                        BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight},
-                                                          Dark={DynamicResource SurfaceElevation1WLDark}}"
+                        BackgroundColor="{DynamicResource SurfaceElevation1WL}"
                         HeightRequest="38"
                         HorizontalOptions="End"
                         IsVisible="{Binding HasTimer}"
@@ -404,7 +403,7 @@
                                 WidthRequest="50" />
                         </controls:ConditionView.True>
                         <controls:ConditionView.False>
-                            <Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation2WLLight}, Dark={DynamicResource SurfaceElevation2WLDark}}" StrokeShape="RoundRectangle 16">
+                            <Border Background="{DynamicResource SurfaceElevation2WL}" StrokeShape="RoundRectangle 16">
                                 <controls:ConditionView Condition="{Binding HasProfilePhoto}">
                                     <controls:ConditionView.True>
                                         <Image
@@ -431,7 +430,7 @@
 						  WidthRequest="50"
 						  HeightRequest="50"
 						  IsVisible="{Binding HasProfilePhoto}">
-						<Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1Light}, Dark={DynamicResource SurfaceElevation1Dark}}"
+						<Border Background="{DynamicResource SurfaceElevation1}"
 								StrokeShape="RoundRectangle 0 16 0 0">
 
 						</Border>
@@ -442,7 +441,7 @@
                         IsVisible="{Binding HasAge}"
                         VerticalOptions="End"
                         WidthRequest="50">
-                        <Border Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}" StrokeShape="RoundRectangle 16 0 0 0">
+                        <Border Background="{DynamicResource SurfaceElevation1WL}" StrokeShape="RoundRectangle 16 0 0 0">
                             <Label
                                 HorizontalOptions="Center"
                                 Style="{DynamicResource AgeLabel}"
@@ -500,13 +499,12 @@
                 MaxExpandedHeight="-1"
                 VerticalOptions="End">
                 <controls:BottomSheetView.HeaderContent>
-                    <VerticalStackLayout Padding="2" Background="{AppThemeBinding Light={DynamicResource SurfaceElevation1WLLight}, Dark={DynamicResource SurfaceElevation1WLDark}}">
+                    <VerticalStackLayout Padding="2" Background="{DynamicResource SurfaceElevation1WL}">
                         <controls:SvgView
                             Aspect="Fill"
                             HeightRequest="24"
                             Source="swipe_up.svg"
-                            TintColor="{AppThemeBinding Light={DynamicResource ContentAccessWLLight},
-                                                        Dark={DynamicResource ContentAccessWLDark}}"
+                            TintColor="{DynamicResource ContentAccessWL}"
                             WidthRequest="24" />
                         <Label
                             FontFamily="SpaceGroteskBold"
@@ -514,14 +512,14 @@
                             HorizontalOptions="Center"
                             HorizontalTextAlignment="Center"
                             Text="{l:Localize SwipeForDetails}"
-                            TextColor="{AppThemeBinding Light={DynamicResource ContentAccessWLLight},
-                                                        Dark={DynamicResource ContentAccessWLDark}}" />
+							   TextColor="{DynamicResource ContentAccessWL}"
+							   Margin="{ext:SafeInsets Type=Bottom}" />
                     </VerticalStackLayout>
                 </controls:BottomSheetView.HeaderContent>
                 <controls:BottomSheetView.MainContent>
                     <ContentView>
                         <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
-                            <VerticalStackLayout>
+                            <VerticalStackLayout Background="{DynamicResource SurfaceElevation1WL}">
                                 <controls:TextButton
                                     Margin="16"
                                     Command="{Binding AddContactCommand}"
@@ -570,7 +568,7 @@
                                                         Source="{Binding Source}"
                                                         WidthRequest="64">
                                                         <Image.GestureRecognizers>
-                                                            <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ImageTappedCommand}" CommandParameter="{Binding Attachment}" />
+                                                            <TapGestureRecognizer Command="{Binding ImageTappedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ViewIdentityViewModel}}, x:DataType=viewmodel:ViewIdentityViewModel}" CommandParameter="{Binding Attachment}" />
                                                         </Image.GestureRecognizers>
                                                     </Image>
                                                 </DataTemplate>
@@ -634,5 +632,9 @@
                 </controls:BottomSheetView.MainContent>
             </controls:BottomSheetView>
         </Grid>
-    </Grid>
+
+		<Grid.GestureRecognizers>
+			<SwipeGestureRecognizer Direction="Up" Swiped="SwipeGestureRecognizer_Swiped"/>
+		</Grid.GestureRecognizers>
+	</Grid>
 </base:BaseContentPage>

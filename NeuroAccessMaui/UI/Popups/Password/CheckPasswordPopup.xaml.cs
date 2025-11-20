@@ -1,26 +1,25 @@
-﻿using NeuroAccessMaui.Services;
+using System;
+using Microsoft.Maui.Controls;
+using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Popups.Password
 {
 	/// <summary>
-	/// A Popup letting the user enter a password to be verified with the password defined by the user earlier.
+	/// Popup view for entering a password that will be validated against the stored credentials.
 	/// </summary>
-	public partial class CheckPasswordPopup
+	public partial class CheckPasswordPopup : BasePopup
 	{
 		public CheckPasswordPopup()
 		{
 			this.InitializeComponent();
-			this.PasswordEntry.Keyboard = ServiceRef.TagProfile.IsNumericPassword ? Keyboard.Numeric : Keyboard.Default;
-
+			this.Loaded += this.OnLoaded;
 		}
 
-		protected override void OnAppearing()
+		private void OnLoaded(object? sender, EventArgs args)
 		{
-			base.OnAppearing();
-
+			this.Loaded -= this.OnLoaded;
+			this.PasswordEntry.Keyboard = ServiceRef.TagProfile.IsNumericPassword ? Keyboard.Numeric : Keyboard.Default;
 			this.PasswordEntry.Focus();
 		}
-
-
 	}
 }

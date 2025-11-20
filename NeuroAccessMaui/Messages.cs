@@ -15,6 +15,18 @@ namespace NeuroAccessMaui
 	}
 
 	/// <summary>
+	/// Signals that an onboarding link is being processed (start/stop).
+	/// Used by GetStarted view to toggle a loading indicator when an onboarding link is opened externally.
+	/// </summary>
+	public class OnboardingLinkProcessingMessage(bool isProcessing)
+	{
+		/// <summary>
+		/// True when processing begins, false when finished or aborted.
+		/// </summary>
+		public bool IsProcessing { get; } = isProcessing;
+	}
+
+	/// <summary>
 	/// Keyboard size change message
 	/// </summary>
 	public class KeyboardSizeMessage(float KeyboardSize)

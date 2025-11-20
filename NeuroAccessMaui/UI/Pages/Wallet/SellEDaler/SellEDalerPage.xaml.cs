@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.SellEDaler
 		/// </summary>
 		public SellEDalerPage()
 		{
-			this.ContentPageModel = new SellEDalerViewModel(ServiceRef.UiService.PopLatestArgs<SellEDalerNavigationArgs>());
+			this.ContentPageModel = new SellEDalerViewModel(ServiceRef.NavigationService.PopLatestArgs<SellEDalerNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

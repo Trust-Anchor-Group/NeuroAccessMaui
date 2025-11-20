@@ -16,6 +16,7 @@ using Waher.Persistence;
 using Waher.Networking.XMPP;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.Identity;
 
 namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 {
@@ -89,7 +90,17 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		public ObservableTask<int> LoadPhotosTask { get; }
 		public ObservableCollection<Photo> Photos { get; } = [];
 
-		public ImageSource? ProfilePhoto => this.Photos.Count > 0 ? this.Photos[0].Source : null;
+		public ImageSource? ProfilePhoto
+		{
+			get
+			{
+				// Look for a photo named "ProfilePhoto" (adjust property as needed)
+				Photo? Profile = this.Photos.FirstOrDefault(p => p.Attachment?.FileName.StartsWith("ProfilePhoto", StringComparison.OrdinalIgnoreCase) ?? false);
+
+				// If not found, fallback to first photo
+				return (Profile ?? this.Photos.FirstOrDefault())?.Source;
+			}
+		}
 
 		public bool HasProfilePhoto => this.ProfilePhoto is not null;
 
@@ -175,7 +186,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
 
 		public string BannerUri =>
-			Application.Current.RequestedTheme switch
+			(Application.Current?.RequestedTheme ?? AppTheme.Light) switch
 			{
 				AppTheme.Dark => this.BannerUriDark,
 				AppTheme.Light => this.BannerUriLight,
@@ -183,17 +194,22 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			};
 
 
-		public ViewIdentityViewModel(ViewIdentityNavigationArgs? args)
+		public ViewIdentityViewModel()
 			: base()
 		{
-			this.args = args;
+			this.args = ServiceRef.NavigationService.PopLatestArgs<ViewIdentityNavigationArgs>();
 			this.photosLoader = new PhotosLoader();
 
 			this.LoadIdentityTask = new ObservableTask<bool>();
 			this.LoadPhotosTask = new ObservableTask<int>();
 
-			Application.Current.RequestedThemeChanged += (_, __) =>
-				OnPropertyChanged(nameof(BannerUri));
+			if (Application.Current is not null)
+			{
+				Application.Current.RequestedThemeChanged += (_, __) =>
+				{
+					this.OnPropertyChanged(nameof(this.BannerUri));
+				};
+			}
 
 			this.timer = Application.Current?.Dispatcher.CreateTimer();
 			if (this.timer is null)
@@ -210,9 +226,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 
 
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 
 			bool IsRefresh = this.hasAppeared;
 			this.hasAppeared = true;
@@ -238,7 +254,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 			if (!string.IsNullOrEmpty(FullJid))
 			{
-				Jid =  FullJid.Split('@');
+				Jid = FullJid.Split('@');
 				Jid[1] = "@" + Jid[1];
 				this.FriendlyName = Jid.Length > 0 ? Jid[0] : FullJid;
 				this.SubText = Jid.Length > 1 ? Jid[1] : string.Empty;
@@ -248,28 +264,26 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 				this.FriendlyName = Identity.Id;
 			}
 
-			if(!string.IsNullOrEmpty(Domain))
+			if (!string.IsNullOrEmpty(Domain))
 			{
 				this.FriendlyName = Domain;
 				this.SubText = Identity.Id;
-
 				this.HasDomainProperty = true;
 			}
 
-			// Friendly name
 			PersonalInformation? PInfo = null;
 			try
 			{
 				if (!this.HasDomainProperty)
 				{
-					PInfo = Identity.GetPersonalInfo();
+					PInfo = Identity.GetPersonalInformation();
 				}
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
-			} 
-			
+			}
+
 			if (PInfo is not null)
 			{
 				if (!string.IsNullOrEmpty(PInfo.FullName))
@@ -291,201 +305,21 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			// Load fields
 			this.LoadIdentityTask.Load(async ctx =>
 			{
-				List<ObservableFieldItem> PersonalList = [];
-				List<ObservableFieldItem> OrganizationList = [];
-				List<ObservableFieldItem> TechnicalList = [];
-				List<ObservableFieldItem> OtherList = [];
+				IdentitySummaryFormatter.IdentityGroupsResult Groups = IdentitySummaryFormatter.BuildIdentityGroups(Identity);
 
-				// Reviewable keys set
-				HashSet<string> ReviewableKeys = new(StringComparer.OrdinalIgnoreCase)
-				{
-					Constants.XmppProperties.FirstName,
-					Constants.XmppProperties.MiddleNames,
-					Constants.XmppProperties.LastNames,
-					Constants.XmppProperties.PersonalNumber,
-					Constants.XmppProperties.Address,
-					Constants.XmppProperties.Address2,
-					Constants.XmppProperties.ZipCode,
-					Constants.XmppProperties.Area,
-					Constants.XmppProperties.City,
-					Constants.XmppProperties.Region,
-					Constants.XmppProperties.Country,
-					Constants.XmppProperties.BirthDay,
-					Constants.XmppProperties.BirthMonth,
-					Constants.XmppProperties.BirthYear,
-					Constants.XmppProperties.OrgName,
-					Constants.XmppProperties.OrgDepartment,
-					Constants.XmppProperties.OrgRole,
-					Constants.XmppProperties.OrgAddress,
-					Constants.XmppProperties.OrgAddress2,
-					Constants.XmppProperties.OrgZipCode,
-					Constants.XmppProperties.OrgArea,
-					Constants.XmppProperties.OrgCity,
-					Constants.XmppProperties.OrgRegion,
-					Constants.XmppProperties.OrgCountry,
-					Constants.XmppProperties.OrgNumber
-				};
+				List<ObservableFieldItem> PersonalList = new();
+				List<ObservableFieldItem> OrganizationList = new();
+				List<ObservableFieldItem> TechnicalList = new();
+				List<ObservableFieldItem> OtherList = new();
 
-				// Classification sets using Constants
-				HashSet<string> PersonalKeys = new(StringComparer.OrdinalIgnoreCase)
-				{
-					Constants.XmppProperties.FirstName,
-					Constants.XmppProperties.MiddleNames,
-					Constants.XmppProperties.LastNames,
-					Constants.CustomXmppProperties.BirthDate,
-					Constants.XmppProperties.BirthDay,
-					Constants.XmppProperties.BirthMonth,
-					Constants.XmppProperties.BirthYear,
-					Constants.XmppProperties.Address,
-					Constants.XmppProperties.Address2,
-					Constants.XmppProperties.ZipCode,
-					Constants.XmppProperties.Area,
-					Constants.XmppProperties.City,
-					Constants.XmppProperties.Region,
-					Constants.XmppProperties.Country,
-					Constants.XmppProperties.PersonalNumber,
-					Constants.XmppProperties.Nationality,
-					Constants.XmppProperties.Gender,
-					Constants.XmppProperties.Phone,
-					Constants.XmppProperties.EMail
-
-				};
-
-				HashSet<string> OrgKeys = new(StringComparer.OrdinalIgnoreCase)
-				{
-					Constants.XmppProperties.OrgName,
-					Constants.XmppProperties.OrgDepartment,
-					Constants.XmppProperties.OrgRole,
-					Constants.XmppProperties.OrgAddress,
-					Constants.XmppProperties.OrgAddress2,
-					Constants.XmppProperties.OrgZipCode,
-					Constants.XmppProperties.OrgArea,
-					Constants.XmppProperties.OrgCity,
-					Constants.XmppProperties.OrgRegion,
-					Constants.XmppProperties.OrgCountry,
-					Constants.XmppProperties.OrgNumber
-				};
-
-				HashSet<string> TechnicalKeys = new(StringComparer.OrdinalIgnoreCase)
-				{
-					Constants.XmppProperties.Jid,
-					Constants.CustomXmppProperties.Neuro_Id,
-					Constants.CustomXmppProperties.Provider,
-					Constants.CustomXmppProperties.State,
-					Constants.CustomXmppProperties.Created,
-					Constants.CustomXmppProperties.Updated,
-					Constants.CustomXmppProperties.From,
-					Constants.CustomXmppProperties.To,
-					Constants.XmppProperties.DeviceId
-				};
-
-				// Label map for display names (We should localize based on the key, but this is done so we don't need to refactor the localization fornow)
-				// TODO: Localize based on the key
-				Dictionary<string, LocalizedString> LabelMap = new(StringComparer.OrdinalIgnoreCase)
-				{
-				   {Constants.XmppProperties.FirstName,   ServiceRef.Localizer[nameof(AppResources.FirstName)]},
-				   {Constants.XmppProperties.MiddleNames, ServiceRef.Localizer[nameof(AppResources.MiddleNames)]},
-				   {Constants.XmppProperties.LastNames,   ServiceRef.Localizer[nameof(AppResources.LastNames)]},
-				   {Constants.CustomXmppProperties.BirthDate, ServiceRef.Localizer[nameof(AppResources.BirthDate)]},
-				   {Constants.XmppProperties.Address,     ServiceRef.Localizer[nameof(AppResources.Address)]},
-				   {Constants.XmppProperties.Address2,    ServiceRef.Localizer[nameof(AppResources.Address2)]},
-				   {Constants.XmppProperties.ZipCode,     ServiceRef.Localizer[nameof(AppResources.ZipCode)]},
-				   {Constants.XmppProperties.Area,        ServiceRef.Localizer[nameof(AppResources.Area)]},
-				   {Constants.XmppProperties.City,        ServiceRef.Localizer[nameof(AppResources.City)]},
-				   {Constants.XmppProperties.Region,      ServiceRef.Localizer[nameof(AppResources.Region)]},
-				   {Constants.XmppProperties.Country,     ServiceRef.Localizer[nameof(AppResources.Country)]},
-				   {Constants.XmppProperties.Nationality,     ServiceRef.Localizer[nameof(AppResources.Nationality)]},
-				   {Constants.XmppProperties.PersonalNumber, ServiceRef.Localizer[nameof(AppResources.PersonalNumber)]},
-				   {Constants.XmppProperties.Gender, ServiceRef.Localizer[nameof(AppResources.Gender)]},
-				   {Constants.XmppProperties.Phone, ServiceRef.Localizer[nameof(AppResources.PhoneNr)]},
-				   {Constants.XmppProperties.EMail, ServiceRef.Localizer[nameof(AppResources.EMail)]},
-				   {Constants.XmppProperties.OrgName,    ServiceRef.Localizer[nameof(AppResources.OrgName)]},
-				   {Constants.XmppProperties.OrgDepartment, ServiceRef.Localizer[nameof(AppResources.OrgDepartment)]},
-				   {Constants.XmppProperties.OrgRole,     ServiceRef.Localizer[nameof(AppResources.OrgRole)]},
-				   {Constants.XmppProperties.OrgAddress,  ServiceRef.Localizer[nameof(AppResources.OrgAddress)]},
-				   {Constants.XmppProperties.OrgAddress2, ServiceRef.Localizer[nameof(AppResources.OrgAddress2)]},
-				   {Constants.XmppProperties.OrgZipCode,  ServiceRef.Localizer[nameof(AppResources.OrgZipCode)]},
-				   {Constants.XmppProperties.OrgArea,     ServiceRef.Localizer[nameof(AppResources.OrgArea)]},
-				   {Constants.XmppProperties.OrgCity,     ServiceRef.Localizer[nameof(AppResources.OrgCity)]},
-				   {Constants.XmppProperties.OrgRegion,   ServiceRef.Localizer[nameof(AppResources.OrgRegion)]},
-				   {Constants.XmppProperties.OrgCountry,  ServiceRef.Localizer[nameof(AppResources.OrgCountry)]},
-				   {Constants.XmppProperties.OrgNumber,   ServiceRef.Localizer[nameof(AppResources.OrgNumber)]},
-				   {Constants.XmppProperties.Jid,   ServiceRef.Localizer[nameof(AppResources.NetworkID)]},
-				   {Constants.XmppProperties.DeviceId,   ServiceRef.Localizer[nameof(AppResources.DeviceID)]}
-				};
-
-
-
-
-				// Handle custom fields first
-				HashSet<string> UsedKeys = new(StringComparer.OrdinalIgnoreCase);
-				// Now iterate raw properties
-				foreach (Property? Prop in Identity.Properties ?? [])
-				{
-					if (UsedKeys.Contains(Prop.Name))
-						continue;
-
-					string? Key = null;
-					LocalizedString? Label = null;
-					string? ValueOverride = null;
-
-					// Handle custom definitions
-					CustomFieldDefinition? CustomDef = customFields.Find(CustomFieldDefinition => CustomFieldDefinition.Keys.Contains(Prop.Name, StringComparer.OrdinalIgnoreCase));
-					if (CustomDef is not null)
-					{
-						if (!CustomDef.Keys.Any(k => UsedKeys.Contains(k)))
-						{
-							ValueOverride = CustomDef.GetValue(Identity);
-							//	if (val is null)
-							//		continue;
-							if (!string.IsNullOrEmpty(ValueOverride))
-							{
-								Key = CustomDef.NewKey;
-								Label = CustomDef.GetLabel(Identity);
-								foreach (string Keys in CustomDef.Keys)
-									UsedKeys.Add(Keys);
-							}
-							else
-								ValueOverride = null;
-						}
-					}
-
-					// Create a new field item
-					Key ??= Prop.Name;
-					Label ??= LabelMap.TryGetValue(Prop.Name, out LocalizedString? L) ? L : new LocalizedString(Prop.Name, Prop.Name);
-					if (Label.ResourceNotFound)
-					{
-						Label = new LocalizedString(Prop.Name, Prop.Name);
-					}
-					bool IsReviewable = ReviewableKeys.Contains(Prop.Name);
-					ObservableFieldItem Item = new(Key, Label, Identity, IsReviewable, ValueOverride);
-
-					if (PersonalKeys.Contains(Prop.Name)) PersonalList.Add(Item);
-					else if (OrgKeys.Contains(Prop.Name)) OrganizationList.Add(Item);
-					else if (TechnicalKeys.Contains(Prop.Name)) TechnicalList.Add(Item);
-					else OtherList.Add(Item);
-
-					UsedKeys.Add(Key);
-
-				}
-
-				// Handle custom fields that are not part of the identity model
-				customFields
-					.Where(CustomFieldDefinition => CustomFieldDefinition.Keys.Length == 0)
-					.ToList()
-					.ForEach(CustomFieldDefinition =>
-					{
-						string? ValueOverride = CustomFieldDefinition.GetValue(Identity);
-						if (string.IsNullOrEmpty(ValueOverride))
-							return;
-						// Create a new field item
-						ObservableFieldItem Item = new(CustomFieldDefinition.NewKey, CustomFieldDefinition.GetLabel(Identity), Identity, false, ValueOverride);
-						if (PersonalKeys.Contains(CustomFieldDefinition.NewKey)) PersonalList.Add(Item);
-						else if (OrgKeys.Contains(CustomFieldDefinition.NewKey)) OrganizationList.Add(Item);
-						else if (TechnicalKeys.Contains(CustomFieldDefinition.NewKey)) TechnicalList.Add(Item);
-						else OtherList.Add(Item);
-					});
-
+				foreach (IdentitySummaryFormatter.DisplayField F in Groups.Personal)
+					PersonalList.Add(new ObservableFieldItem(F.Key, new LocalizedString(F.Label, F.Label), Identity, F.IsReviewable, F.Value));
+				foreach (IdentitySummaryFormatter.DisplayField F in Groups.Organization)
+					OrganizationList.Add(new ObservableFieldItem(F.Key, new LocalizedString(F.Label, F.Label), Identity, F.IsReviewable, F.Value));
+				foreach (IdentitySummaryFormatter.DisplayField F in Groups.Technical)
+					TechnicalList.Add(new ObservableFieldItem(F.Key, new LocalizedString(F.Label, F.Label), Identity, F.IsReviewable, F.Value));
+				foreach (IdentitySummaryFormatter.DisplayField F in Groups.Other)
+					OtherList.Add(new ObservableFieldItem(F.Key, new LocalizedString(F.Label, F.Label), Identity, F.IsReviewable, F.Value));
 
 				bool ShouldCelebrate = PersonalList.Any(Item => Item.Key == Constants.CustomXmppProperties.BirthDate &&
 																!string.IsNullOrEmpty(Item.Value) &&
@@ -493,7 +327,6 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 																BirthDate == DateTime.Today);
 
 				// Check if we can add or remove contact and update contact info
-
 				bool CanAddContact = false;
 				bool CanRemoveContact = false;
 				bool IsThirdPartyIdentity = false;
@@ -559,7 +392,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					this.OnPropertyChanged(nameof(this.HasTimer));
 
 					this.OnQrTimerTick(this, EventArgs.Empty); // Generate the QR code for the first time
-					//this.qrTimer?.Start(); //Currently the qr is not random, so no need to set time for refresh
+															   //this.qrTimer?.Start(); //Currently the qr is not random, so no need to set time for refresh
 
 				});
 
@@ -578,18 +411,18 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					Waher.Content.Images.ImageCodec.ContentTypeJpg,
 				};
 
-				for (int i = 0; i < Atts.Length; i++)
+				for (int Index = 0; Index < Atts.Length; Index++)
 				{
-					if (!AllowedContentTypes.Contains(Atts[i].ContentType))
+					if (!AllowedContentTypes.Contains(Atts[Index].ContentType))
 						continue;
 
 					if (ctx.CancellationToken.IsCancellationRequested)
 						break;
 
-					ctx.Progress.Report(i * 100 / Math.Max(Atts.Length, 1));
-					(byte[]? Bin, string _, int Rot) = await this.photosLoader.LoadOnePhoto(Atts[i], SignWith.LatestApprovedIdOrCurrentKeys);
+					ctx.Progress.Report(Index * 100 / Math.Max(Atts.Length, 1));
+					(byte[]? Bin, string _, int Rot) = await this.photosLoader.LoadOnePhoto(Atts[Index], SignWith.LatestApprovedIdOrCurrentKeys);
 					if (Bin is not null)
-						Buffer.Add(new Photo(Bin, Rot, Atts[i]));
+						Buffer.Add(new Photo(Bin, Rot, Atts[Index]));
 				}
 
 				await MainThread.InvokeOnMainThreadAsync(() =>
@@ -607,7 +440,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			});
 		}
 
-		protected override Task OnDisappearing()
+		public override Task OnDisappearingAsync()
 		{
 			try
 			{
@@ -617,7 +450,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			{
 				//Ignore, timer might already been stopped (not sure if it throws when already stopped)
 			}
-			return base.OnDisappearing();
+			return base.OnDisappearingAsync();
 		}
 
 		private void OnTimerTick(object? sender, EventArgs e)
@@ -673,7 +506,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			{
 				ImagesPopup ImagesPopup = new();
 				ImagesViewModel ImagesViewModel = new([ClickedAttachment]);
-				await ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
+				ImagesPopup.BindingContext = ImagesViewModel;
+				await ServiceRef.PopupService.PushAsync(ImagesPopup);
 			}
 			catch (Exception Ex)
 			{
@@ -757,7 +591,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 			try
 			{
-				await this.OpenQrPopup();
+				await this.OpenQrPopup(ServiceRef.Localizer[nameof(AppResources.PersonalId)]);
 			}
 			catch (Exception Ex)
 			{
@@ -874,7 +708,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					return;
 
 				ChatNavigationArgs ChatArgs = new(this.identity.Id, Jid, PersonalInfo.FullName);
-				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Jid);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Jid);
 			}
 			catch (Exception Ex)
 			{
@@ -884,10 +718,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 		#region ILinkableView
 
-			/// <summary>
-			/// Title of the current view
-			/// </summary>
-			///
+		/// <summary>
+		/// Title of the current view
+		/// </summary>
+		///
 		public override Task<string> Title => Task.FromResult("Test");//Task.FromResult<string>(ContactInfo.GetFriendlyName(this.LegalIdentity!));
 
 		#endregion
@@ -898,6 +732,4 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 											 Func<LegalIdentity, LocalizedString> GetLabel,
 											 Func<LegalIdentity, string?> GetValue);
 	}
-
-
 }

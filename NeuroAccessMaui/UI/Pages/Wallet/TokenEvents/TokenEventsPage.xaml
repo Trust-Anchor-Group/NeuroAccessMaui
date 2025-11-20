@@ -305,7 +305,7 @@
 														 ExternalNoteXmlTemplate="{StaticResource ExternalNoteXml}"
 														 DefaultTemplate="{StaticResource OtherEvents}"/>
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -316,17 +316,17 @@
 
 				<Label Text="{l:Localize TokenEvents}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,*,auto" Margin="{DynamicResource SmallMargins}">
 						<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize TokenEvents}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize TokenEventsDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
-						<ListView Grid.Column="0" Grid.Row="2" HasUnevenRows="True" SeparatorVisibility="None" VerticalOptions="StartAndExpand"
-                    ItemsSource="{Binding Path=Events}" ItemTemplate="{StaticResource EventStyleSelector}"/>
+						<ListView Grid.Column="0" Grid.Row="2" HasUnevenRows="True" SeparatorVisibility="None" VerticalOptions="Start"
+								  ItemsSource="{Binding Path=Events}" ItemTemplate="{StaticResource EventStyleSelector}"/>
 						<controls:TextButton Grid.Column="0" Grid.Row="3" LabelData="{l:Localize AddNote}" Margin="{DynamicResource SmallBottomMargins}"
 													Command="{Binding Path=AddNoteCommand}" Style="{DynamicResource FilledTextButton}"
 													IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
 					</Grid>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

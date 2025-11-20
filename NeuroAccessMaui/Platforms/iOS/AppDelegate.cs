@@ -2,6 +2,7 @@ using Firebase.CloudMessaging;
 using Foundation;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Intents;
+using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI;
 using Plugin.Firebase.Core.Platforms.iOS;
 using UIKit;
@@ -36,7 +37,7 @@ namespace NeuroAccessMaui
 			string? Body = userInfo["myBody"]?.ToString();
 			string? ChannelId = userInfo["channelId"]?.ToString();
 
-			if (Title == null || Body == null)
+			if (Title is null || Body is null)
 			{
 				ServiceRef.LogService.LogWarning("NotificationDelegate, Received notification with missing title or body.");
 				return;
@@ -118,7 +119,10 @@ namespace NeuroAccessMaui
 
 				// Retrieve the shared intent service and queue the intent.
 				IIntentService IntentService = App.Instantiate<IIntentService>();
-				IntentService.QueueIntent(AppIntent);
+				if (ServiceRef.TagProfile.Step == RegistrationStep.GetStarted)
+					IntentService.ProcessIntentAsync(AppIntent).ConfigureAwait(false);
+				else
+					IntentService.QueueIntent(AppIntent);
 			}
 			catch (Exception Ex)
 			{

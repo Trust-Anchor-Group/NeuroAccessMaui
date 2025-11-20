@@ -4,7 +4,7 @@
 						  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
 	<Style ApplyToDerivedTypes="True" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+		<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}" />
 		<Setter Property="BackgroundColor" Value="Transparent" />
 		<Setter Property="LineBreakMode" Value="WordWrap" />
 		<Setter Property="FontFamily" Value="HaasGroteskRegular" />
@@ -12,20 +12,65 @@
 		<Setter Property="LineHeight" Value="1" />
 	</Style>
 
+	<!-- New Styles according to figma -->
+
+	<Style x:Key="Brand2LabelS" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="FontSize" Value="16"/>
+	</Style>
+
+	<Style x:Key="Brand2BodyS" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskRegular"/>
+		<Setter Property="FontSize" Value="16"/>
+	</Style>
+
+	<Style x:Key="Brand2LabelSSecondary" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskRegular"/>
+		<Setter Property="FontSize" Value="16"/>
+	</Style>
+
+	<Style x:Key="Brand2LabelXS" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="FontSize" Value="14"/>
+	</Style>
+
+	<Style x:Key="Brand2BodySHeadSHeadL" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource InputFieldsContentSubhead}"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="FontSize" Value="16"/>
+	</Style>
+
+	<Style x:Key="Brand2HeadlineHeadlineL" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="TextColor" Value="{DynamicResource InputFieldsContentSecondary}"/>
+		<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		<Setter Property="FontSize" Value="24"/>
+	</Style>
+
+	<!-- End of new Styles -->
+
 	<Style x:Key="AppCardLabel" ApplyToDerivedTypes="True" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}" />
+		<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
 		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
 		<Setter Property="FontSize" Value="14"/>
 		<Setter Property="HorizontalTextAlignment" Value="Center"/>
 	</Style>
 
 	<Style x:Key="MenuItemLabel" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
+		<Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}" />
 	</Style>
 
 	<Style x:Key="PageTitleLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
 		<Setter Property="FontSize" Value="32" />
+	</Style>
+
+	<Style x:Key="PageTitleLabelSmall" ApplyToDerivedTypes="False" TargetType="Label">
+		<Setter Property="FontFamily" Value="SpaceGroteskBold" />
+		<Setter Property="FontSize" Value="28" />
 	</Style>
 
 	<Style x:Key="SectionTitleLabel" ApplyToDerivedTypes="False" TargetType="Label">
@@ -85,7 +130,7 @@
 	<Style x:Key="KeyLabel" ApplyToDerivedTypes="False" TargetType="Label">
 		<Setter Property="FontSize" Value="14" />
 		<Setter Property="Margin" Value="10" />
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource ContentSecondaryWLLight}, Dark={DynamicResource ContentSecondaryWLDark}}"/>
+		<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
 		<Setter Property="FontFamily" Value="HaasGroteskBold"/>
 	</Style>
 
@@ -111,7 +156,7 @@
 		<Setter Property="Margin" Value="10" />
 		<Setter Property="FontAttributes" Value="Bold" />
 		<Setter Property="HorizontalTextAlignment" Value="End" />
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPInfoContentWLLight}, Dark={DynamicResource TnPInfoContentWLDark}}"/>
+		<Setter Property="TextColor" Value="{DynamicResource TnPInfoContentWL}"/>
 	</Style>
 
 	<Style x:Key="RegularItemTitleLabel" ApplyToDerivedTypes="False" TargetType="Label">
@@ -130,20 +175,22 @@
 
 	<Style x:Key="DurationLabel" ApplyToDerivedTypes="False" BaseResourceKey="RegularItemTitleLabel" TargetType="Label">
 		<Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
+		<Setter Property="HorizontalTextAlignment"
+				Value="Start" />
 	</Style>
 
 	<Style x:Key="RequiredFieldMarker" ApplyToDerivedTypes="False" TargetType="Label">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}"/>
+		<Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}"/>
 		<Setter Property="Text" Value="*"/>
 	</Style>
 
 	<Style x:Key="RequiredFieldMarkerSpan" ApplyToDerivedTypes="False" TargetType="Span">
-		<Setter Property="TextColor" Value="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}"/>
+		<Setter Property="TextColor" Value="{DynamicResource TnPDangerContentWL}"/>
 		<Setter Property="Text" Value="*"/>
 	</Style>
 
 	<Style x:Key="AlertLabel" TargetType="Label">
-		<Setter Property="TextColor"  Value="{AppThemeBinding Light={DynamicResource TnPDangerContentWLLight}, Dark={DynamicResource TnPDangerContentWLDark}}" />
+		<Setter Property="TextColor"  Value="{DynamicResource TnPDangerContentWL}" />
 	</Style>
 
 </ResourceDictionary>

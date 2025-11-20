@@ -2,8 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Tag;
-using NeuroAccessMaui.UI.Pages.Registration.Views;
 using Waher.Networking.XMPP;
 
 namespace NeuroAccessMaui.UI.Pages.Main.ChangePassword
@@ -13,6 +13,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePassword
 	/// </summary>
 	public partial class ChangePasswordViewModel : XmppViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		/// <summary>
 		/// View model for the <see cref="ChangePasswordPage"/> page.
 		/// </summary>
@@ -88,11 +90,39 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePassword
 		/// <summary>
 		/// Localized validation error message.
 		/// </summary>
-		public string LocalizedValidationError => DefinePasswordViewModel.GetLocalizedValidationError(this.NewPasswordStrength);
+		public string LocalizedValidationError => GetLocalizedValidationError(this.NewPasswordStrength);
 
-		protected override async Task OnInitialize()
+		/// <summary>
+		/// Gets a localized error message, given a Password strength.
+		/// </summary>
+		/// <param name="PasswordStrength">Password strength.</param>
+		/// <returns>Localized error message (or empty string if OK).</returns>
+		public static string GetLocalizedValidationError(PasswordStrength PasswordStrength)
 		{
-			await base.OnInitialize();
+			return PasswordStrength switch
+			{
+				PasswordStrength.NotEnoughDigitsLettersSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughDigitsLettersSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
+
+				PasswordStrength.NotEnoughDigitsOrSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughDigitsOrSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
+				PasswordStrength.NotEnoughLettersOrDigits => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughLettersOrDigits), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
+				PasswordStrength.NotEnoughLettersOrSigns => ServiceRef.Localizer[nameof(AppResources.PasswordWithNotEnoughLettersOrSigns), Constants.Security.MinPasswordSymbolsFromDifferentClasses],
+				PasswordStrength.TooManyIdenticalSymbols => ServiceRef.Localizer[nameof(AppResources.PasswordWithTooManyIdenticalSymbols), Constants.Security.MaxPasswordIdenticalSymbols],
+				PasswordStrength.TooManySequencedSymbols => ServiceRef.Localizer[nameof(AppResources.PasswordWithTooManySequencedSymbols), Constants.Security.MaxPasswordSequencedSymbols],
+				PasswordStrength.TooShort => ServiceRef.Localizer[nameof(AppResources.PasswordTooShort), Constants.Security.MinPasswordLength],
+
+				PasswordStrength.ContainsAddress => ServiceRef.Localizer[nameof(AppResources.PasswordContainsAddress)],
+				PasswordStrength.ContainsName => ServiceRef.Localizer[nameof(AppResources.PasswordContainsName)],
+				PasswordStrength.ContainsPersonalNumber => ServiceRef.Localizer[nameof(AppResources.PasswordContainsPersonalNumber)],
+				PasswordStrength.ContainsPhoneNumber => ServiceRef.Localizer[nameof(AppResources.PasswordContainsPhoneNumber)],
+				PasswordStrength.ContainsEMail => ServiceRef.Localizer[nameof(AppResources.PasswordContainsEMail)],
+				PasswordStrength.Strong => string.Empty,
+				_ => throw new NotImplementedException()
+			};
+		}
+
+		public override async Task OnInitializeAsync()
+		{
+			await base.OnInitializeAsync();
 			this.NotifyCommandsCanExecuteChanged();
 		}
 
@@ -127,7 +157,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePassword
 		{
 			if (!string.IsNullOrEmpty(this.OldPassword) && this.CanChangePassword)
 			{
-				if (await App.CheckPasswordAndUnblockUserAsync(this.OldPassword))
+				if (await this.authenticationService.CheckPasswordAndUnblockUserAsync(this.OldPassword))
 				{
 					try
 					{
@@ -160,14 +190,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePassword
 				{
 					this.OldPassword = string.Empty;
 
-					long PasswordAttemptCounter = await App.GetCurrentPasswordCounterAsync();
+					long PasswordAttemptCounter = await this.authenticationService.GetCurrentPasswordCounterAsync();
 					long RemainingAttempts = Math.Max(0, Constants.Password.FirstMaxPasswordAttempts - PasswordAttemptCounter);
 
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PasswordIsInvalid), RemainingAttempts]);
 
-					await App.CheckUserBlockingAsync();
+					await this.authenticationService.CheckUserBlockingAsync();
 				}
 			}
 		}

@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanControl
 		/// </summary>
 		public CanControlPage()
 		{
-			this.ContentPageModel = new CanControlViewModel(ServiceRef.UiService.PopLatestArgs<CanControlNavigationArgs>());
+			this.ContentPageModel = new CanControlViewModel(ServiceRef.NavigationService.PopLatestArgs<CanControlNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

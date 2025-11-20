@@ -2,11 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>UIBackgroundModes</key>
-    <array>
-        <string>fetch</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
 		<string>remote-notification</string>
-    </array>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIDeviceFamily</key>
@@ -27,6 +27,8 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon_ios.appiconset</string>
 	<key>NSCameraUsageDescription</key>
@@ -41,6 +43,32 @@
 	<string>Neuro-Access needs access to Bluetooth, allowing you to connect with other Neuro-Access apps, and exchange information with other users.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Neuro-Access needs access to Face ID to authenticate you in order to protect your digital ID.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Neuro-Access needs access to your location while entering location coordinates and to provide location-based services.</string>
+	
+	<!-- Privacy Usage Descriptions for Neuro-Access -->
+
+	<key>NSCameraUsageDescription</key>
+	<string>Neuro-Access uses your camera to take your digital ID photo and to scan QR codes that help you verify or connect with others.</string>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Neuro-Access lets you choose photos from your library for your digital ID, scan QR codes saved from other apps, and share images in chats.</string>
+
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Neuro-Access can save photos you take or receive—such as ID images or shared pictures—back to your photo library.</string>
+
+	<key>NFCReaderUsageDescription</key>
+	<string>Neuro-Access uses the NFC reader to scan and verify tags related to digital IDs, tokens, or smart contracts.</string>
+
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Neuro-Access uses Bluetooth to connect securely with nearby devices and exchange digital credentials or tokens.</string>
+
+	<key>NSFaceIDUsageDescription</key>
+	<string>Neuro-Access uses Face ID to confirm your identity and keep your digital ID secure.</string>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Neuro-Access uses your location to fill in coordinates for digital records and provide relevant location-based services.</string>
+
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
@@ -57,7 +85,7 @@
 		<string>ru</string>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>2.6.1</string>
+	<string>2.7.1</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleURLTypes</key>

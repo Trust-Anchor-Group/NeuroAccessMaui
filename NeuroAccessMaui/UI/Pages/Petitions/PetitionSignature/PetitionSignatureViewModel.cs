@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI.Photos;
 using System.Collections.ObjectModel;
@@ -17,6 +18,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 	/// </summary>
 	public partial class PetitionSignatureViewModel : QrXmppViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		private readonly PhotosLoader photosLoader;
 		private readonly string? requestorFullJid;
 		private readonly string? signatoryIdentityId;
@@ -44,9 +47,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			this.AssignProperties();
 
@@ -55,11 +58,11 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			this.photosLoader.CancelLoadPhotos();
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		/// <summary>
@@ -75,7 +78,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature
 		[RelayCommand]
 		private async Task Accept()
 		{
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.AcceptPetitionRequest))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.AcceptPetitionRequest, true))
 				return;
 
 			bool Succeeded = await ServiceRef.NetworkService.TryRequest(async () =>

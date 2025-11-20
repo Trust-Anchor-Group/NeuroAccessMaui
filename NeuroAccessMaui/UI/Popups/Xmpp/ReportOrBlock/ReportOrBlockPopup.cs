@@ -1,9 +1,11 @@
+using System.Threading.Tasks;
+
 namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock
 {
 	/// <summary>
 	/// Prompts the user for a response of a presence subscription request.
 	/// </summary>
-	public partial class ReportOrBlockPopup
+	public partial class ReportOrBlockPopup : BasePopup
 	{
 		private readonly ReportOrBlockViewModel viewModel;
 
@@ -17,10 +19,10 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock
 		}
 
 		/// <inheritdoc/>
-		protected override void OnDisappearing()
+		public override Task OnDisappearingAsync()
 		{
 			this.viewModel.Close();
-			base.OnDisappearing();
+			return base.OnDisappearingAsync();
 		}
 	}
 }

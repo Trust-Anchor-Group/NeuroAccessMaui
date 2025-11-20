@@ -1,28 +1,25 @@
+using System.Threading.Tasks;
+
 namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo
 {
 	/// <summary>
 	/// Asks the user if it wants to remove an existing presence subscription request as well.
 	/// </summary>
-	public partial class SubscribeToPopup
+	public partial class SubscribeToPopup : BasePopup
 	{
 		private readonly SubscribeToViewModel viewModel;
 
-		/// <summary>
-		/// Asks the user if it wants to remove an existing presence subscription request as well.
-		/// </summary>
-		/// <param name="ViewModel">View model</param>
-		/// <param name="Background">Optional background</param>
-		public SubscribeToPopup(SubscribeToViewModel ViewModel, ImageSource? Background = null)
+		public SubscribeToPopup(SubscribeToViewModel viewModel)
 		{
 			this.InitializeComponent();
-			this.BindingContext = this.viewModel = ViewModel;
+			this.viewModel = viewModel;
+			this.BindingContext = viewModel;
 		}
 
-		/// <inheritdoc/>
-		protected override void OnDisappearing()
+		public override Task OnDisappearingAsync()
 		{
 			this.viewModel.Close();
-			base.OnDisappearing();
+			return base.OnDisappearingAsync();
 		}
 	}
 }

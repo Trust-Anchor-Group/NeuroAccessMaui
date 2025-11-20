@@ -23,19 +23,21 @@ namespace NeuroAccessMaui.UI.Pages
 			this.StateSummaryText = string.Empty;
 			this.SetConnectionStateAndText(ServiceRef.XmppService.State);
 		}
+
+
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			ServiceRef.XmppService.ConnectionStateChanged += this.XmppService_ConnectionStateChanged;
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.ConnectionStateChanged -= this.XmppService_ConnectionStateChanged;
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		#region Properties
@@ -85,18 +87,10 @@ namespace NeuroAccessMaui.UI.Pages
 		/// <param name="NewState">New XMPP State.</param>
 		protected virtual Task XmppService_ConnectionStateChanged(object? _, XmppState NewState)
 		{
-			if (MainThread.IsMainThread)
+			return MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				this.SetConnectionStateAndText(NewState);
-				return Task.CompletedTask;
-			}
-			else
-			{
-				return MainThread.InvokeOnMainThreadAsync(() =>
-				{
-					this.SetConnectionStateAndText(NewState);
-				});
-			}
+			});
 		}
 	}
 }

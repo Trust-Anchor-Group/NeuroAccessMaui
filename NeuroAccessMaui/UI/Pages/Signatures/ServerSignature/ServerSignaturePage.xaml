@@ -12,7 +12,7 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Signatures.ServerSignature"
 							 xmlns:photos="clr-namespace:NeuroAccessMaui.Services.UI.Photos">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -24,13 +24,13 @@
 
 				<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize SignatureInformation}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ServerInformation}"/>
 
 						<Label Text="{l:Localize ServerSignatureInformationInfoText}"/>
 
-						<Grid VerticalOptions="StartAndExpand" RowSpacing="0">
+						<Grid VerticalOptions="Start" RowSpacing="0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition Width="*" />
@@ -54,7 +54,7 @@
 							</Label>
 						</Grid>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

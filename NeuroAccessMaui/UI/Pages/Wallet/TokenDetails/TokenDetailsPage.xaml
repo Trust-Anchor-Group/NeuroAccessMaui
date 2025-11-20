@@ -11,7 +11,7 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenDetails">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -22,7 +22,7 @@
 
 				<Label Text="{l:Localize TokenDetails}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<VerticalStackLayout Margin="{DynamicResource SmallMargins}">
 							<Label Text="{l:Localize TokenDetails}" Margin="{DynamicResource SmallTopMargins}"
@@ -30,7 +30,7 @@
 							<Label Text="{l:Localize TokenDetailsDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize Description}" Margin="{DynamicResource SmallTopMargins}"
 									 VerticalOptions="Start"/>
-							<ContentView Content="{Binding Description}" VerticalOptions="StartAndExpand" Margin="{DynamicResource SmallLeftRightBottomMargins}"/>
+							<ContentView Content="{Binding Description}" VerticalOptions="Start" Margin="{DynamicResource SmallLeftRightBottomMargins}"/>
 							<Grid x:Name="GeneralInfoGrid">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
@@ -116,35 +116,37 @@
 
 							<Image Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" 
                        WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" 
-                       VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" Margin="{DynamicResource SmallTopMargins}" />
+                       VerticalOptions="Start" HorizontalOptions="Center" Margin="{DynamicResource SmallTopMargins}" />
 
-							<Label Text="{l:Localize Reports}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"
-									 IsVisible="{Binding HasStateMachine}"/>
+							<VerticalStackLayout IsVisible="False">
+								<Label Text="{l:Localize Reports}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"
+										 IsVisible="{Binding HasStateMachine}"/>
 
-							<controls:TextButton LabelData="{l:Localize Present}" Margin="{DynamicResource SmallBottomMargins}"
-														Command="{Binding Path=PresentReportCommand}" IsVisible="{Binding HasStateMachine}"
-														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-														Style="{DynamicResource FilledTextButton}"/>
+								<controls:TextButton LabelData="{l:Localize Present}" Margin="{DynamicResource SmallBottomMargins}"
+															Command="{Binding Path=PresentReportCommand}" IsVisible="{Binding HasStateMachine}"
+															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+															Style="{DynamicResource FilledTextButton}"/>
 
-							<controls:TextButton LabelData="{l:Localize History}" Margin="{DynamicResource SmallBottomMargins}"
-														Command="{Binding Path=HistoryReportCommand}"
-														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-														IsVisible="{Binding HasStateMachine}" Style="{DynamicResource FilledTextButton}"/>
+								<controls:TextButton LabelData="{l:Localize History}" Margin="{DynamicResource SmallBottomMargins}"
+															Command="{Binding Path=HistoryReportCommand}"
+															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+															IsVisible="{Binding HasStateMachine}" Style="{DynamicResource FilledTextButton}"/>
 
-							<controls:TextButton LabelData="{l:Localize Variables}" Margin="{DynamicResource SmallBottomMargins}"
-														Command="{Binding Path=VariablesReportCommand}" Style="{DynamicResource FilledTextButton}"
-														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-														IsVisible="{Binding HasStateMachine}"/>
+								<controls:TextButton LabelData="{l:Localize Variables}" Margin="{DynamicResource SmallBottomMargins}"
+															Command="{Binding Path=VariablesReportCommand}" Style="{DynamicResource FilledTextButton}"
+															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+															IsVisible="{Binding HasStateMachine}"/>
 
-							<controls:TextButton LabelData="{l:Localize States}" Margin="{DynamicResource SmallBottomMargins}"
-														Command="{Binding Path=StatesReportCommand}" Style="{DynamicResource FilledTextButton}"
-														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-														IsVisible="{Binding HasStateMachine}"/>
+								<controls:TextButton LabelData="{l:Localize States}" Margin="{DynamicResource SmallBottomMargins}"
+															Command="{Binding Path=StatesReportCommand}" Style="{DynamicResource FilledTextButton}"
+															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+															IsVisible="{Binding HasStateMachine}"/>
 
-							<controls:TextButton LabelData="{l:Localize Profiling}" Margin="{DynamicResource SmallBottomMargins}"
-														Command="{Binding Path=ProfilingReportCommand}" Style="{DynamicResource FilledTextButton}"
-														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-														IsVisible="{Binding HasStateMachine}"/>
+								<controls:TextButton LabelData="{l:Localize Profiling}" Margin="{DynamicResource SmallBottomMargins}"
+															Command="{Binding Path=ProfilingReportCommand}" Style="{DynamicResource FilledTextButton}"
+															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+															IsVisible="{Binding HasStateMachine}"/>
+							</VerticalStackLayout>
 
 							<Label Text="{l:Localize Parts}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize TokenPartsInfoText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
@@ -310,9 +312,9 @@
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
 
 							<controls:TextButton LabelData="{l:Localize PublishMarketplace}" Margin="{DynamicResource SmallBottomMargins}"
-														Command="{Binding Path=PublishMarketplaceCommand}"
-														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-														IsVisible="{Binding IsMyToken}"/>
+												Command="{Binding Path=PublishMarketplaceCommand}" Style="{DynamicResource FilledTextButton}"
+												IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+												IsVisible="{Binding IsMyToken}"/>
 
 							<controls:TextButton LabelData="{l:Localize OfferToSell}" Margin="{DynamicResource SmallBottomMargins}"
 														Command="{Binding Path=OfferToSellCommand}" Style="{DynamicResource FilledTextButton}"
@@ -329,7 +331,7 @@
 														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

@@ -18,8 +18,8 @@ fixing a spelling error or one letter/digit in the hex-code changed.
 
 p = pathlib.Path(__file__).parent.resolve()
 json_path = p / pathlib.Path("colors.json")
-new_colors_path = p / ("../NeuroAccessMaui/Resources/Styles/colors.xaml")
-old_colors_path = p / ("old_colors.xaml")
+new_colors_light_path = p / ("colors-light.xaml")
+new_colors_dark_path = p / ("colors-dark.xaml")
 
 # Converts hex color from figma to one supported by maui
 # Change #XXXXXXAA -> #AAXXXXXX Where A is alpha value
@@ -39,9 +39,9 @@ def json_color_list_to_name_color_pairs(list) -> Generator[str, None, None]:
         yield (filter_name(color["name"]), figma_hex_to_maui(color["value"]))
 
 # Takes the Name and Color pairs and creates the lines in colors.xaml
-def json_color_list_xaml_list(list, dark_mode) -> Generator[str, None, None]:
+def json_color_list_xaml_list(list) -> Generator[str, None, None]:
     for color_name, color_value in json_color_list_to_name_color_pairs(list):
-        yield f'\t<Color x:Key="{color_name}{"Dark" if dark_mode else "Light"}">{color_value}</Color>'
+        yield f'\t<Color x:Key="{color_name}">{color_value}</Color>'
 
 xaml_doc_start = """
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -53,27 +53,57 @@ xaml_doc_start = """
 
 xaml_doc_end = "</ResourceDictionary>"
 
-def create_xaml_file(alternative: bool) -> str:
+def create_files(alternative: bool) -> str:
     with open(json_path) as f:
         data = json.load(f)[0]["values"]
         if alternative:
-            formatted_light_colors = list(json_color_list_xaml_list(data[3]["color"], False))
-            formatted_dark_colors = list(json_color_list_xaml_list(data[2]["color"], True))
+            formatted_light_colors = list(json_color_list_xaml_list(data[3]["color"]))
+            formatted_dark_colors = list(json_color_list_xaml_list(data[2]["color"]))
         else:
-            formatted_light_colors = list(json_color_list_xaml_list(data[0]["color"], False))
-            formatted_dark_colors = list(json_color_list_xaml_list(data[1]["color"], True))
+            formatted_light_colors = list(json_color_list_xaml_list(data[0]["color"]))
+            formatted_dark_colors = list(json_color_list_xaml_list(data[1]["color"]))
 
-    result = "\n".join([xaml_doc_start] + formatted_light_colors + formatted_dark_colors + [xaml_doc_end])
-    
-    with open(new_colors_path, "w") as f:
-        f.write(result[1:])
+    result_light = "\n".join([xaml_doc_start] + formatted_light_colors + [xaml_doc_end])
+    result_dark = "\n".join([xaml_doc_start] + formatted_dark_colors + [xaml_doc_end])
 
-    return result
+    with open(new_colors_light_path, "w") as f:
+        f.write(result_light[1:])
 
+    print(f"Wrote light XAML colors -> {new_colors_light_path}")
+
+    with open(new_colors_dark_path, "w") as f:
+        f.write(result_dark[1:])
+
+    print(f"Wrote dark XAML colors -> {new_colors_dark_path}")
+
+    output_path = p / "colors-combined.json"
+
+    with open(json_path, encoding="utf-8") as f:
+        data = json.load(f)[0]["values"]
+        if alternative:
+            light_raw = data[3]["color"]
+            dark_raw  = data[2]["color"]
+        else:
+            light_raw = data[0]["color"]
+            dark_raw  = data[1]["color"]
+
+    # Build simple dicts name -> hex (using existing helpers)
+    light_map = {filter_name(c["name"]): figma_hex_to_maui(c["value"]) for c in light_raw}
+    dark_map  = {filter_name(c["name"]): figma_hex_to_maui(c["value"]) for c in dark_raw}
+
+    combined = {
+        "light": light_map,
+        "dark": dark_map
+    }
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(combined, f, indent=2)
+
+    print(f"Wrote combined JSON colors -> {output_path}")
 
 parser = argparse.ArgumentParser(
     prog='ColorConverter',
-    description='Converts JSON colors from figma to colors.xaml, usable in a C# MAUI app',
+    description='Converts JSON colors from figma to xaml, usable in a C# MAUI app',
     epilog='Wow you actually read documentation, good for you. Happy easter (Egg)'
 )
 
@@ -81,22 +111,4 @@ parser.add_argument("-a", "--alternative", action="store_true", help="If flag is
 
 args = parser.parse_args()
 
-result = create_xaml_file(args.alternative)
-
-# Check if there is a file containing the old colors and print information of what colors have changed
-try:
-    with open(old_colors_path, "rt") as f:
-        f = f.read()
-        
-        print("Added lines in new file:")
-        for line in result.split("\n"):
-            if line not in f:
-                print(line)
-
-        print("Removed lines in new file:")
-        for line in f.split("\n"):
-            if line not in result:
-                print(f"{line}")
-
-except:
-    print("No old file to provide a diff of colors changed")
+create_files(args.alternative)

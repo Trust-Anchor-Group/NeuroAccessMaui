@@ -1,4 +1,5 @@
-﻿using Mapsui;
+using System.Threading.Tasks;
+using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Projections;
 using Mapsui.Tiling;
@@ -8,34 +9,28 @@ using Waher.Runtime.Geo;
 namespace NeuroAccessMaui.UI.Popups.Password
 {
 	/// <summary>
-	/// A Popup letting the user enter a password to be verified with the password defined by the user earlier.
+	/// Displays an interactive map to pick a geographic coordinate.
 	/// </summary>
-	public partial class GeoMapPopup
+	public partial class GeoMapPopup : BasePopup
 	{
-		public GeoMapPopup(GeoMapViewModel ViewModel)
+		public GeoMapPopup(GeoMapViewModel viewModel)
 		{
 			InitializeComponent();
-
-		
-			ViewModel.MapControl = GeoMapControl;
-			BindingContext = ViewModel;
-			GeoMapControl.Map.Navigator.RotationLock = true;
-			// Add OpenStreetMap tile layer
-			GeoMapControl.Map?.Layers.Add(OpenStreetMap.CreateTileLayer());
-
+			viewModel.MapControl = this.GeoMapControl;
+			this.BindingContext = viewModel;
+			this.GeoMapControl.Map.Navigator.RotationLock = true;
+			this.GeoMapControl.Map?.Layers.Add(OpenStreetMap.CreateTileLayer());
 		}
 
-		protected override void OnAppearing()
+		public override Task OnAppearingAsync()
 		{
-			base.OnAppearing();
-
-			if (this.BindingContext is GeoMapViewModel Vm && Vm.InitialCoordinate is not null)
+			if (this.BindingContext is GeoMapViewModel viewModel && viewModel.InitialCoordinate is not null)
 			{
-				var mercator = SphericalMercator.FromLonLat(Vm.InitialCoordinate.Longitude, Vm.InitialCoordinate.Latitude).ToMPoint();
-				GeoMapControl.Map?.Navigator.CenterOn(mercator);
-				GeoMapControl.Map?.Navigator.ZoomTo(1000);
+				MPoint mercator = SphericalMercator.FromLonLat(viewModel.InitialCoordinate.Longitude, viewModel.InitialCoordinate.Latitude).ToMPoint();
+				this.GeoMapControl.Map?.Navigator.CenterOn(mercator);
+				this.GeoMapControl.Map?.Navigator.ZoomTo(1000);
 			}
+			return base.OnAppearingAsync();
 		}
-
 	}
 }

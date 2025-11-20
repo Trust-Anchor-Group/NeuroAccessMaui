@@ -1,34 +1,31 @@
+using System.Threading.Tasks;
+
 namespace NeuroAccessMaui.UI.Popups.Tokens.AddTextNote
 {
 	/// <summary>
 	/// Prompts the user for text to add as a note for a token.
 	/// </summary>
-	public partial class AddTextNotePopup
+	public partial class AddTextNotePopup : BasePopup
 	{
 		private readonly AddTextNoteViewModel viewModel;
 
-		/// <summary>
-		/// Prompts the user for text to add as a note for a token.
-		/// </summary>
-		/// <param name="ViewModel">View model</param>
-		public AddTextNotePopup(AddTextNoteViewModel ViewModel)
+		public AddTextNotePopup(AddTextNoteViewModel viewModel)
 		{
 			this.InitializeComponent();
-			this.BindingContext = this.viewModel = ViewModel;
+			this.viewModel = viewModel;
+			this.BindingContext = viewModel;
 		}
 
-		/// <inheritdoc/>
-		protected override void OnAppearing()
+		public override Task OnAppearingAsync()
 		{
 			this.NoteEntry.Focus();
-			base.OnAppearing();
+			return base.OnAppearingAsync();
 		}
 
-		/// <inheritdoc/>
-		protected override void OnDisappearing()
+		public override Task OnDisappearingAsync()
 		{
 			this.viewModel.Close();
-			base.OnDisappearing();
+			return base.OnDisappearingAsync();
 		}
 	}
 }

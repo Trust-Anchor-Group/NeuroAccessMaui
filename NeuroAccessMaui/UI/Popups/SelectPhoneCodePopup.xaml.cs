@@ -1,79 +1,74 @@
-﻿using Mopups.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 
 namespace NeuroAccessMaui.UI.Popups
 {
-	public partial class SelectPhoneCodePopup : IDisposable
+	public partial class SelectPhoneCodePopup : BasePopup, IDisposable
 	{
-		private readonly TaskCompletionSource<ISO_3166_Country?> result = new();
+		private readonly TaskCompletionSource<ISO_3166_Country?> result = new(TaskCreationOptions.RunContinuationsAsynchronously);
 		private CancellationTokenSource? cancellationTokenSource;
 		private bool isDisposed;
 
-		/// <summary>
-		/// Task waiting for result. null means dialog was closed without selection.
-		/// </summary>
 		public Task<ISO_3166_Country?> Result => this.result.Task;
 
-		/// <summary>
-		/// Available country definitions.
-		/// </summary>
 		public static ISO_3166_Country[] Countries => ISO_3166_1.Countries;
 
 		public SelectPhoneCodePopup()
 		{
 			this.InitializeComponent();
 			this.BindingContext = this;
-
 			this.InnerSearchBar.Text = string.Empty;
 		}
 
-		private void SearchBar_TextChanged(object sender, TextChangedEventArgs e)
+		private void SearchBar_TextChanged(object? sender, TextChangedEventArgs e)
 		{
-			if (e.NewTextValue.Length == 0)
+			if (string.IsNullOrEmpty(e.NewTextValue))
 			{
 				this.InnerListView.ItemsSource = Countries;
 				return;
 			}
 
-			if (this.cancellationTokenSource is not null)
-			{
-				this.cancellationTokenSource.Cancel();
-				this.cancellationTokenSource = null;
-			}
-
-			this.cancellationTokenSource = new();
-			CancellationToken Token = this.cancellationTokenSource.Token;
+			this.cancellationTokenSource?.Cancel();
+			this.cancellationTokenSource = new CancellationTokenSource();
+			CancellationToken token = this.cancellationTokenSource.Token;
 
 			Task.Run(() =>
 			{
-				IEnumerable<ISO_3166_Country> CountriesFiltered = Countries.Where(el =>
-				{
-					bool Result = el.Name.Contains(e.NewTextValue, StringComparison.OrdinalIgnoreCase) ||
-					string.Equals(el.Alpha2, e.NewTextValue, StringComparison.OrdinalIgnoreCase) ||
-					string.Equals(el.Alpha3, e.NewTextValue, StringComparison.OrdinalIgnoreCase) ||
-					el.DialCode.Contains(e.NewTextValue, StringComparison.OrdinalIgnoreCase);
-
-					return Result;
-				});
+				IEnumerable<ISO_3166_Country> filtered = Countries.Where(country =>
+					country.Name.Contains(e.NewTextValue, StringComparison.OrdinalIgnoreCase)
+					|| string.Equals(country.Alpha2, e.NewTextValue, StringComparison.OrdinalIgnoreCase)
+					|| string.Equals(country.Alpha3, e.NewTextValue, StringComparison.OrdinalIgnoreCase)
+					|| country.DialCode.Contains(e.NewTextValue, StringComparison.OrdinalIgnoreCase));
 
 				this.Dispatcher.Dispatch(() =>
 				{
-					if (!Token.IsCancellationRequested)
-						this.InnerListView.ItemsSource = CountriesFiltered;
+					if (!token.IsCancellationRequested)
+					{
+						this.InnerListView.ItemsSource = filtered;
+					}
 				});
-			}, Token);
+			}, token);
 		}
 
-		private async void InnerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private async void InnerListView_SelectionChanged(object? sender, SelectionChangedEventArgs e)
 		{
-			this.result.TrySetResult((ISO_3166_Country)this.InnerListView.SelectedItem);
-			await MopupService.Instance.PopAsync();
+			if (this.InnerListView.SelectedItem is ISO_3166_Country selected)
+			{
+				this.result.TrySetResult(selected);
+				await ServiceRef.PopupService.PopAsync();
+			}
 		}
 
-		protected override void OnDisappearing()
+		public override async Task OnDisappearingAsync()
 		{
 			this.result.TrySetResult(null);
-			base.OnDisappearing();
+			await base.OnDisappearingAsync();
 		}
 
 		protected virtual void Dispose(bool disposing)
@@ -90,13 +85,9 @@ namespace NeuroAccessMaui.UI.Popups
 			}
 		}
 
-		/// <summary>
-		/// <see cref="IDisposable.Dispose"/>
-		/// </summary>
 		public void Dispose()
 		{
-			// Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-			this.Dispose(disposing: true);
+			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 	}

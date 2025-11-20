@@ -48,6 +48,20 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		}
 
 		/// <summary>
+		/// Creates a new instance of the <see cref="EDalerUriNavigationArgs"/> class.
+		/// </summary>
+		/// <param name="Uri">Parsed edaler URI.</param>
+		/// <param name="FriendlyName">Optional Friendly Name associated with URI</param>
+		/// <param name="UriToSend">Task Completion Source in case the URI being built is to be returned to the parent page.</param>
+		public EDalerUriNavigationArgs(EDalerUri Uri, string FriendlyName, TaskCompletionSource<string?>? UriToSend, TaskCompletionSource<string?>? MessageToSend)
+		{
+			this.Uri = Uri;
+			this.FriendlyName = FriendlyName;
+			this.UriToSend = UriToSend;
+			this.MessageToSend = MessageToSend;
+		}
+
+		/// <summary>
 		/// The edaler URI
 		/// </summary>
 		public EDalerUri? Uri { get; }
@@ -61,5 +75,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		/// Task Completion Source in case the URI being built is to be returned to the parent page.
 		/// </summary>
 		public TaskCompletionSource<string?>? UriToSend { get; }
+
+		/// <summary>
+		/// Task Completion Source in case a message being sent is to be returned to the parent page.
+		/// </summary>
+		public TaskCompletionSource<string?>? MessageToSend { get; }
 	}
 }

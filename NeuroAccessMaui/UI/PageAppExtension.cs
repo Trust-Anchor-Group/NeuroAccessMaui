@@ -1,8 +1,30 @@
-﻿using CommunityToolkit.Maui;
+using System.Reflection;
+using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Services;
+using EDaler;
+using Microsoft.Extensions.DependencyInjection;
+using NeuroAccessMaui.Services.Authentication;
+using NeuroAccessMaui.Services.Cache.AttachmentCache;
+using NeuroAccessMaui.Services.Cache.InternetCache;
+using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Crypto;
+using NeuroAccessMaui.Services.EventLog;
+using NeuroAccessMaui.Services.Intents;
+using NeuroAccessMaui.Services.Network;
+using NeuroAccessMaui.Services.Nfc;
+using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.Settings;
+using NeuroAccessMaui.Services.Storage;
+using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Services.Theme;
+using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.Toasts;
+using NeuroAccessMaui.Animations;
+using NeuroAccessMaui.Services.Xml;
+using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
-using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
@@ -10,6 +32,7 @@ using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
@@ -20,15 +43,17 @@ using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using NeuroAccessMaui.UI.Pages.Main.XmppForm;
 using NeuroAccessMaui.UI.Pages.Notifications;
+using NeuroAccessMaui.UI.Pages.Onboarding;
+using NeuroAccessMaui.UI.Pages.Onboarding.Views;
+using NeuroAccessMaui.UI.Pages.Onboarding.ViewModels;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionContract;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview.Views;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
-using NeuroAccessMaui.UI.Pages.Registration;
-using NeuroAccessMaui.UI.Pages.Registration.Views;
 using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using NeuroAccessMaui.UI.Pages.Signatures.ServerSignature;
+using NeuroAccessMaui.UI.Pages.Startup;  // LoadingPage
 using NeuroAccessMaui.UI.Pages.Things.CanControl;
 using NeuroAccessMaui.UI.Pages.Things.CanRead;
 using NeuroAccessMaui.UI.Pages.Things.IsFriend;
@@ -55,23 +80,111 @@ using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents;
+using NeuroAccessMaui.UI.Popups.Password;
 using NeuroAccessMaui.UI.Popups.Photos.Image;
+using NeuroAccessMaui.UI.Popups.Settings;
 using NeuroAccessMaui.UI.Popups.Tokens.AddTextNote;
 using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportType;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
+using NeuroFeatures;
+using Waher.Content;
+using Waher.Content.Images;
+using Waher.Content.Markdown;
+using Waher.Content.Xml;
+using Waher.Events;
+using Waher.Events.Persistence;
+using Waher.Networking.DNS;
+using Waher.Networking.XMPP;
+using Waher.Networking.XMPP.Avatar;
+using Waher.Networking.XMPP.Concentrator;
+using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Control;
+using Waher.Networking.XMPP.Geo;
+using Waher.Networking.XMPP.HTTPX;
+using Waher.Networking.XMPP.Mail;
+using Waher.Networking.XMPP.P2P;
+using Waher.Networking.XMPP.P2P.E2E;
+using Waher.Networking.XMPP.PEP;
+using Waher.Networking.XMPP.Provisioning;
+using Waher.Networking.XMPP.PubSub;
+using Waher.Networking.XMPP.Push;
+using Waher.Networking.XMPP.Sensor;
+using Waher.Persistence;
+using Waher.Persistence.Files;
+using Waher.Persistence.Serialization;
+using Waher.Runtime.Geo;
+using Waher.Runtime.Inventory;
+using Waher.Runtime.Settings;
+using Waher.Script;
+using Waher.Script.Content;
+using Waher.Script.Graphs;
+using Waher.Security.JWS;
+using Waher.Security.JWT;
+using Waher.Things;
+using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
+using NeuroAccessMaui.UI.Popups.OnboardingHelp;
 
 namespace NeuroAccessMaui.UI
 {
+	/// <summary>
+	/// Extension methods used during application startup for registering services and pages.
+	/// </summary>
 	public static class PageAppExtension
 	{
-		public static MauiAppBuilder RegisterPagesManager(this MauiAppBuilder Builder)
+		/// <summary>
+		/// Registers core application services and infrastructure singletons.
+		/// </summary>
+		/// <param name="Builder">MAUI application builder.</param>
+		/// <returns>The same builder instance for chaining.</returns>
+		public static MauiAppBuilder RegisterTypes(this MauiAppBuilder Builder)
+		{
+			// Instantiate default services.
+			Builder.Services.AddSingleton<ITagProfile>((_) => Types.InstantiateDefault<ITagProfile>(false));
+			Builder.Services.AddSingleton<ILogService>((_) => Types.InstantiateDefault<ILogService>(false));
+			Builder.Services.AddSingleton<IUiService>((_) => Types.InstantiateDefault<IUiService>(false));
+			Builder.Services.AddSingleton<ICryptoService>((_) => Types.InstantiateDefault<ICryptoService>(false));
+			Builder.Services.AddSingleton<INetworkService>((_) => Types.InstantiateDefault<INetworkService>(false));
+			Builder.Services.AddSingleton<IStorageService>((_) => Types.InstantiateDefault<IStorageService>(false));
+			Builder.Services.AddSingleton<ISettingsService>((_) => Types.InstantiateDefault<ISettingsService>(false));
+			Builder.Services.AddSingleton<IAuthenticationService>((_) => Types.InstantiateDefault<IAuthenticationService>(false));
+			Builder.Services.AddSingleton<IXmppService>((_) => Types.InstantiateDefault<IXmppService>(false));
+			Builder.Services.AddSingleton<IAttachmentCacheService>((_) => Types.InstantiateDefault<IAttachmentCacheService>(false));
+			Builder.Services.AddSingleton<IInternetCacheService>((_) => Types.InstantiateDefault<IInternetCacheService>(false));
+			Builder.Services.AddSingleton<IContractOrchestratorService>((_) => Types.InstantiateDefault<IContractOrchestratorService>(false));
+			Builder.Services.AddSingleton<INfcService>((_) => Types.InstantiateDefault<INfcService>(false));
+			Builder.Services.AddSingleton<INotificationService>((_) => Types.InstantiateDefault<INotificationService>(false));
+			Builder.Services.AddSingleton<IIntentService>((_) => Types.InstantiateDefault<IIntentService>(false));
+			Builder.Services.AddSingleton<IXmlSchemaValidationService>((_) => Types.InstantiateDefault<IXmlSchemaValidationService>(false));
+			Builder.Services.AddSingleton<IThemeService>((_) => Types.InstantiateDefault<IThemeService>(false));
+			Builder.Services.AddSingleton<INavigationService>((_) => Types.InstantiateDefault<NavigationService>(false));
+			Builder.Services.AddSingleton<IPopupService, PopupService>();
+			Builder.Services.AddSingleton<IToastService, ToastService>();
+			Builder.Services.AddSingleton<IMotionSettings, MotionSettings>();
+			Builder.Services.AddSingleton<IAnimationRegistry>((_) =>
+			{
+				AnimationRegistry Registry = new AnimationRegistry();
+				AnimationCatalog.RegisterDefaults(Registry);
+				return Registry;
+			});
+			Builder.Services.AddSingleton<IAnimationContextProvider, AnimationContextProvider>();
+			Builder.Services.AddSingleton<IAnimationCoordinator, AnimationCoordinator>();
+
+			return Builder;
+		}
+
+		/// <summary>
+		/// Registers all MAUI pages and their corresponding view models in the dependency injection container.
+		/// </summary>
+		/// <param name="Builder">MAUI application builder.</param>
+		/// <returns>The same builder instance for chaining.</returns>
+		public static MauiAppBuilder RegisterPages(this MauiAppBuilder Builder)
 		{
 			// Applications
 			Builder.Services.AddTransient<ApplicationsPage, ApplicationsViewModel>();
-			Builder.Services.AddTransient<ApplyIdPage, ApplyIdViewModel>();
+			Builder.Services.AddTransient<KycProcessPage, KycProcessViewModel>();
 
 			// Contacts
 			Builder.Services.AddTransient<ChatPage, ChatViewModel>();
@@ -87,16 +200,19 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ViewIdentityPage, ViewIdentityViewModel>();
 
 			// Main
-			Builder.Services.AddTransient<AppShell>();
+			Builder.Services.AddSingleton<CustomShell>();
 			Builder.Services.AddTransient<CalculatorPage, CalculatorViewModel>();
 			Builder.Services.AddTransient<ChangePasswordPage, ChangePasswordViewModel>();
 			Builder.Services.AddTransient<DurationPage, DurationViewModel>();
+			Builder.Services.AddTransient<HomePage, HomeViewModel>();
 			Builder.Services.AddTransient<MainPage, MainViewModel>();
 			Builder.Services.AddTransient<ScanQrCodePage, ScanQrCodeViewModel>();
 			Builder.Services.AddTransient<SettingsPage, SettingsViewModel>();
 			Builder.Services.AddTransient<VerifyCodePage, VerifyCodeViewModel>();
 			Builder.Services.AddTransient<XmppFormPage, XmppViewModel>();
-			Builder.Services.AddTransient<AppsPage,  AppsViewModel>();
+			Builder.Services.AddTransient<AppsPage, AppsViewModel>();
+			// Startup page
+			Builder.Services.AddTransient<LoadingPage>();
 
 			//Notification
 			Builder.Services.AddTransient<NotificationsPage, NotificationsViewModel>();
@@ -122,20 +238,17 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<PetitionPeerReviewNavigationArgs>();
 
 
-			// Registration
-			Builder.Services.AddTransient<RegistrationPage, RegistrationViewModel>();
-			Builder.Services.AddTransient<LoadingView, LoadingViewModel>();
-			//Builder.Services.AddTransient<RequestPurposeView, RequestPurposeViewModel>();
-			Builder.Services.AddTransient<ValidatePhoneView, ValidatePhoneViewModel>();
-			Builder.Services.AddTransient<ValidateEmailView, ValidateEmailViewModel>();
-			Builder.Services.AddTransient<ChooseProviderView, ChooseProviderViewModel>();
-			Builder.Services.AddTransient<CreateAccountView, CreateAccountViewModel>();
-			Builder.Services.AddTransient<GetStartedView, GetStartedViewModel>();
-			Builder.Services.AddTransient<NameEntryView, NameEntryViewModel>();
-			Builder.Services.AddTransient<DefinePasswordView, DefinePasswordViewModel>();
-			Builder.Services.AddTransient<BiometricsView, BiometricsViewModel>();
-			Builder.Services.AddTransient<FinalizeView, FinalizeViewModel>();
-			Builder.Services.AddTransient<ContactSupportView, ContactSupportViewModel>();
+			// Onboarding
+			Builder.Services.AddTransient<OnboardingPage, OnboardingViewModel>();
+			Builder.Services.AddTransient<WelcomeStepView, WelcomeOnboardingStepViewModel>();
+			Builder.Services.AddTransient<CreateAccountStepView, CreateAccountOnboardingStepViewModel>();
+			Builder.Services.AddTransient<NameEntryStepView, NameEntryOnboardingStepViewModel>();
+			Builder.Services.AddTransient<DefinePasswordStepView, DefinePasswordOnboardingStepViewModel>();
+			Builder.Services.AddTransient<ValidateEmailStepView, ValidateEmailOnboardingStepViewModel>(); // Fixed registration
+			Builder.Services.AddTransient<ValidatePhoneStepView, ValidatePhoneOnboardingStepViewModel>(); // Fixed registration
+			Builder.Services.AddTransient<BiometricsStepView, BiometricsOnboardingStepViewModel>();
+			Builder.Services.AddTransient<FinalizeStepView, FinalizeOnboardingStepViewModel>(); // Added missing finalize step
+
 
 			// Signatures
 			Builder.Services.AddTransient<ClientSignaturePage, ClientSignatureViewModel>();
@@ -169,17 +282,32 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ServiceProvidersPage, ServiceProvidersViewModel>();
 			Builder.Services.AddTransient<TokenDetailsPage, TokenDetailsViewModel>();
 			Builder.Services.AddTransient<TokenEventsPage, TokenEventsViewModel>();
+			Builder.Services.AddTransient<WalletPage, WalletViewModel>();
+			Builder.Services.AddTransient<TransactionHistoryPage, TransactionHistoryViewModel>();
 
 			// Popups
-			Builder.Services.AddTransient<ImageView, ImageViewModel>();
-			Builder.Services.AddTransient<AddTextNotePopup, AddTextNoteViewModel>();
+			Builder.Services.AddTransient<ImageView>();
+			Builder.Services.AddTransient<ImageViewModel>();
+			Builder.Services.AddTransient<AddTextNotePopup>();
+			Builder.Services.AddTransient<AddTextNoteViewModel>();
+			Builder.Services.AddTransient<CheckPasswordPopup>();
+			Builder.Services.AddTransient<CheckPasswordViewModel>();
+			Builder.Services.AddTransient<OnboardingHelpPopup>();
+			Builder.Services.AddTransient<OnboardingHelpViewModel>();
+			Builder.Services.AddTransient<SelectLanguagePopup>();
+			Builder.Services.AddTransient<SelectLanguagePopupViewModel>();
 
 			// Xmpp
-			Builder.Services.AddTransient<RemoveSubscriptionPopup, RemoveSubscriptionViewModel>();
-			Builder.Services.AddTransient<ReportOrBlockPopup, ReportOrBlockViewModel>();
-			Builder.Services.AddTransient<ReportTypePopup, ReportTypeViewModel>();
-			Builder.Services.AddTransient<SubscribeToPopup, SubscribeToViewModel>();
-			Builder.Services.AddTransient<SubscriptionRequestPopup, SubscriptionRequestViewModel>();
+			Builder.Services.AddTransient<RemoveSubscriptionPopup>();
+			Builder.Services.AddTransient<RemoveSubscriptionViewModel>();
+			Builder.Services.AddTransient<ReportOrBlockPopup>();
+			Builder.Services.AddTransient<ReportOrBlockViewModel>();
+			Builder.Services.AddTransient<ReportTypePopup>();
+			Builder.Services.AddTransient<ReportTypeViewModel>();
+			Builder.Services.AddTransient<SubscribeToPopup>();
+			Builder.Services.AddTransient<SubscribeToViewModel>();
+			Builder.Services.AddTransient<SubscriptionRequestPopup>();
+			Builder.Services.AddTransient<SubscriptionRequestViewModel>();
 
 			//Utility
 			Builder.Services.AddTransient<ImageCropperView, ImageCroppingViewModel>();

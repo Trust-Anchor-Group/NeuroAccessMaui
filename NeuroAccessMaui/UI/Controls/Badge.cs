@@ -519,7 +519,7 @@ namespace NeuroAccessMaui.UI.Controls
 			if (!this.IsIndicator && !string.IsNullOrEmpty(this.Text) && this.Text.Length > 1)
 			{
 				// Measure the label's requested size.
-				Size Request = this.badgeLabel.Measure(width, height).Request;
+				Size Request = this.badgeLabel.Measure(width, height);
 				double DesiredWidth = Math.Max(Request.Width + this.TextMargin.HorizontalThickness, height);
 
 				// Only override if the current width is smaller than desired.

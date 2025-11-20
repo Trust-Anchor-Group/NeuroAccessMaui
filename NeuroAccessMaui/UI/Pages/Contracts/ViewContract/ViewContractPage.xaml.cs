@@ -25,7 +25,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDisappearingAsync()
+		public override Task OnDisappearingAsync()
 		{
 			return base.OnDisappearingAsync();
 		}
@@ -40,7 +40,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 
 			ImagesPopup ImagesPopup = new();
 			ImagesViewModel ImagesViewModel = new(Attachments);
-			ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
+			ImagesPopup.BindingContext = ImagesViewModel;
+			ServiceRef.PopupService.PushAsync(ImagesPopup);
 			//imagesViewModel.LoadPhotos(Attachments);
 		}
 	}

@@ -11,30 +11,14 @@
 						   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 						   xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
 						   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract">
-
-	<Grid RowDefinitions="*, auto" ColumnDefinitions="*">
-		<Border  Grid.Row="0" Style="{DynamicResource BorderSet}" Margin="{DynamicResource MediumLeftRightMargins}">
-			<ScrollView >
+	<Border Style="{DynamicResource BorderSet}"
+			Margin="16,0,16,16"
+			Padding="16">
+		<ScrollView>
+			<VerticalStackLayout >
 				<ContentView Content="{Binding HumanReadableText}" />
-			</ScrollView>
-		</Border>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Border>
 
-
-		<!-- BOTTOM BAR -->
-		<Border Grid.Row="1" Style="{DynamicResource BottomBarBorder2}" Margin="{DynamicResource MediumTopMargins}">
-			<Grid HorizontalOptions="Center" VerticalOptions="Center" ColumnSpacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="auto" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-
-				<CheckBox Grid.Column="0"
-						  IsChecked="{Binding IsContractOk}"
-						  Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}" />
-				<Label Grid.Column="1"
-					   Text="{l:Localize IHaveReadAndUnderstoodTheContract}"
-					   Style="{DynamicResource BottomBarLabel}" />
-			</Grid>
-		</Border>
-	</Grid>
 </views:BaseNewContractView>

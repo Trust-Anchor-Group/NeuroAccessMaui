@@ -2,8 +2,6 @@
 
 using IdApp.Cv;
 using IdApp.Cv.ColorModels;
-using Mopups.Pages;
-using Mopups.Services;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.UI.Tasks;
 using NeuroAccessMaui.UI.Pages;
@@ -30,7 +28,6 @@ namespace NeuroAccessMaui.Services.UI
 	{
 		private readonly Dictionary<string, NavigationArgs> navigationArgsMap = [];
 		private readonly ConcurrentQueue<UiTask> taskQueue = new();
-		private readonly Stack<PopupPage?> popupStack = new();
 		private NavigationArgs? latestArguments = null;
 		private bool isExecutingUiTasks = false;
 		private bool isNavigating = false;
@@ -438,12 +435,13 @@ namespace NeuroAccessMaui.Services.UI
 				NavigationArgs = this.TryGetArgs(Page.GetType().Name, UniqueId);
 				string Route = Routing.GetRoute(Page);
 				NavigationArgs ??= this.TryGetArgs(Route, UniqueId);
-
+/*
 				if ((NavigationArgs is null) && (UniqueId is null) &&
 					(Page is BaseContentPage BasePage) && (BasePage.UniqueId is not null))
 				{
 					return this.TryGetArgs(out Args, BasePage.UniqueId);
 				}
+*/
 			}
 
 			if (NavigationArgs is TArgs TArgsArgs)
@@ -552,151 +550,6 @@ namespace NeuroAccessMaui.Services.UI
 		}
 
 		#endregion
-
-		#region Popups
-
-		/// <summary>
-		/// The current stack of popup pages.
-		/// </summary>
-		public ReadOnlyCollection<PopupPage?> PopupStack => new(this.popupStack.ToList());
-
-		/// <inheritdoc/>
-		public async Task PushAsync<TPage, TViewModel>() where TPage : BasePopup, new() where TViewModel : BasePopupViewModel, new()
-		{
-			TPage Page = new();
-			TViewModel ViewModel = new();
-			Page.ViewModel = ViewModel;
-
-			this.popupStack.Push(Page);
-			await MopupService.Instance.PushAsync(Page);
-			await ViewModel.Popped;
-		}
-
-		/// <inheritdoc/>
-		public async Task PushAsync<TPage, TViewModel>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : BasePopupViewModel
-		{
-			page.ViewModel = viewModel;
-
-			this.popupStack.Push(page);
-			await MopupService.Instance.PushAsync(page);
-			await page.ViewModel.Popped;
-		}
-
-		/// <inheritdoc/>
-		public async Task PushAsync<TPage, TViewModel>(TPage page) where TPage : BasePopup where TViewModel : BasePopupViewModel, new()
-		{
-			TViewModel ViewModel = new();
-			page.ViewModel = ViewModel;
-
-			this.popupStack.Push(page);
-			await MopupService.Instance.PushAsync(page);
-			await ViewModel.Popped;
-		}
-
-		/// <inheritdoc/>
-		public async Task PushAsync<TPage, TViewModel>(TViewModel viewModel) where TPage : BasePopup, new() where TViewModel : BasePopupViewModel
-		{
-			TPage Page = new()
-			{
-				ViewModel = viewModel
-			};
-
-			this.popupStack.Push(Page);
-			await MopupService.Instance.PushAsync(Page);
-			await viewModel.Popped;
-		}
-
-		/// <inheritdoc/>
-		public async Task PushAsync<TPage>() where TPage : BasePopup, new()
-		{
-			TPage Page = new();
-			Page.BindingContext ??= new BasePopupViewModel();
-
-			this.popupStack.Push(Page);
-			await MopupService.Instance.PushAsync(Page);
-			if(Page.ViewModel is not null)
-				await Page.ViewModel.Popped;
-		}
-
-		/// <inheritdoc/>
-		public async Task PushAsync<TPage>(TPage page) where TPage : BasePopup
-		{
-			page.ViewModel ??= new BasePopupViewModel();
-
-			this.popupStack.Push(page);
-			await MopupService.Instance.PushAsync(page);
-			await page.ViewModel.Popped;
-		}
-
-		/// <inheritdoc/>
-		public async Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>() where TPage : BasePopup, new() where TViewModel : ReturningPopupViewModel<TReturn>, new()
-		{
-			TPage Page = new();
-			TViewModel ViewModel = new();
-			Page.ViewModel = ViewModel;
-
-			this.popupStack.Push(Page);
-			await MopupService.Instance.PushAsync(Page);
-			return await ViewModel.Result;
-		}
-
-		/// <inheritdoc/>
-		public async Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>(TPage page, TViewModel viewModel) where TPage : BasePopup where TViewModel : ReturningPopupViewModel<TReturn>
-		{
-			page.ViewModel = viewModel;
-
-			this.popupStack.Push(page);
-			await MopupService.Instance.PushAsync(page);
-			return await viewModel.Result;
-		}
-
-		/// <inheritdoc/>
-		public async Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>(TPage page) where TPage : BasePopup
-			where TViewModel : ReturningPopupViewModel<TReturn>, new()
-		{
-			TViewModel ViewModel = new();
-			page.ViewModel = ViewModel;
-
-			this.popupStack.Push(page);
-			await MopupService.Instance.PushAsync(page);
-			return await ViewModel.Result;
-		}
-
-		/// <inheritdoc/>
-		public async Task<TReturn?> PushAsync<TPage, TViewModel, TReturn>(TViewModel viewModel) where TPage : BasePopup, new() where TViewModel : ReturningPopupViewModel<TReturn>
-		{
-			TPage Page = new()
-			{
-				ViewModel = viewModel
-			};
-
-			this.popupStack.Push(Page);
-			await MopupService.Instance.PushAsync(Page);
-
-			return await viewModel.Result;
-		}
-
-		/// <inheritdoc/>
-		public async Task PopAsync()
-		{
-			if (this.popupStack.Count == 0)
-				return;
-			try
-			{
-				object? ViewModel = this.popupStack.Pop()?.BindingContext;
-				if (ViewModel is BasePopupViewModel BaseVm)
-					await BaseVm.OnPopInternal();
-
-				await MopupService.Instance.PopAsync();
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		#endregion
-
 		#region Image
 		/// <inheritdoc/>  
 		public async Task<ImageSource?> ConvertSvgUriToImageSource(string svgUri)

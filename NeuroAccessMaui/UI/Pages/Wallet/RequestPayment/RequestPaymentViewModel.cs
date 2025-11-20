@@ -137,7 +137,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 		/// <summary>
 		/// The command to bind to for generating a QR code
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(AmountOk))]
+		[RelayCommand]
 		private Task GenerateQrCode()
 		{
 			string Uri;
@@ -153,15 +153,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 					this.Currency ?? string.Empty, this.Message ?? string.Empty);
 			}
 
-			if (this.IsAppearing)
+			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				MainThread.BeginInvokeOnMainThread(async () =>
-				{
-					this.GenerateQrCode(Uri);
+				this.GenerateQrCode(Uri);
 
-					await this.page.ShowQrCode();
-				});
-			}
+				await this.page.ShowQrCode();
+
+				this.HasQrCode = true;
+			});
 
 			return Task.CompletedTask;
 		}
@@ -169,7 +168,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 		/// <summary>
 		/// The command to bind to for sharing the QR code with a contact
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(HasQrCode))]
+		[RelayCommand]
 		private async Task ShareContact()
 		{
 			try
@@ -180,7 +179,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 					CanScanQrCode = true
 				};
 
-				await ServiceRef.UiService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
 
 				ContactInfoModel? Contact = await Selected.Task;
 				if (Contact is null)
@@ -208,7 +207,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 					await Task.Delay(100);  // Otherwise, page doesn't show properly. (Underlying timing issue. TODO: Find better solution.)
 
 					ChatNavigationArgs ChatArgs = new(Contact.Contact);
-					await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
+					await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 				}
 			}
 			catch (Exception ex)
@@ -221,7 +220,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 		/// <summary>
 		/// The command to bind to for sharing the QR code with external applications
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(HasQrCode))]
+		[RelayCommand]
 		private async Task ShareExternal()
 		{
 			if (this.QrCodeBin is null)
@@ -257,13 +256,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 					case "AmountText":
 						CalculatorNavigationArgs AmountArgs = new(this, nameof(this.AmountText));
 
-						await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), AmountArgs, BackMethod.Pop);
+						await ServiceRef.NavigationService.GoToAsync(nameof(CalculatorPage), AmountArgs, BackMethod.Pop);
 						break;
 
 					case "AmountExtraText":
 						CalculatorNavigationArgs ExtraArgs = new(this, nameof(this.AmountExtraText));
 
-						await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), ExtraArgs, BackMethod.Pop);
+						await ServiceRef.NavigationService.GoToAsync(nameof(CalculatorPage), ExtraArgs, BackMethod.Pop);
 						break;
 				}
 			}

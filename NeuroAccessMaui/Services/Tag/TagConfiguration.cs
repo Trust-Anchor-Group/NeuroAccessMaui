@@ -1,4 +1,5 @@
 ﻿using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Tag;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence.Attributes;
@@ -261,8 +262,8 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Currently selected theme.
 		/// </summary>
-		[DefaultValueNull]
-		public AppTheme? Theme { get; set; }
+		[DefaultValue(AppTheme.Unspecified)]
+		public AppTheme Theme { get; set; }
 
 		/// <summary>
 		/// How the user authenticates itself with the App.
@@ -308,5 +309,17 @@ namespace NeuroAccessMaui.Services
 		/// </summary>
 		[DefaultValue(false)]
 		public bool HasBetaFeatures { get; set; }
+
+		/// <summary>
+		/// How many eDaler the user has in their wallet. At the last update.
+		/// </summary>
+		[DefaultValue(0)]
+		public decimal LastEDalerBalanceDecimal { get; set; }
+
+		/// <summary>
+		/// The timestamp of the last update to the user's eDaler balance.
+		/// </summary>
+		[DefaultValueNull]
+		public DateTime? LastEDalerBalanceUpdate { get; set; }
 	}
 }

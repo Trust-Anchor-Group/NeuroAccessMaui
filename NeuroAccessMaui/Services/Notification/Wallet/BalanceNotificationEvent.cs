@@ -76,7 +76,7 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 			{
 				Balance Balance = new(this.Timestamp, this.Amount, this.Reserved, this.Currency, this.Event);
 
-				await ServiceRef.UiService.GoToAsync(nameof(EDalerReceivedPage), new EDalerBalanceNavigationArgs(Balance));
+				await ServiceRef.NavigationService.GoToAsync(nameof(EDalerReceivedPage), new EDalerBalanceNavigationArgs(Balance));
 			}
 			else
 				await ServiceRef.NeuroWalletOrchestratorService.OpenEDalerWallet();

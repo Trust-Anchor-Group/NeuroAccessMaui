@@ -609,7 +609,7 @@ namespace NeuroAccessMaui.UI.Rendering
 
 				ColSpan -= Column;
 
-				Frame Frame = new Frame();
+				Border Frame = new Border();
 
 				if ((RowNr & 1) == 0)
 					Frame.Style = AppStyles.TableCellEven;
@@ -1743,15 +1743,6 @@ namespace NeuroAccessMaui.UI.Rendering
 		{
 			ContentView Bakup = (ContentView)this.currentElement;
 
-			bool HasLink = !Element.ForEach((E, _) =>
-			{
-				return !(
-					E is AutomaticLinkMail ||
-					E is AutomaticLinkUrl ||
-					E is Link ||
-					E is LinkReference);
-			}, null);
-
 			Label ParentLabel = new Label
 			{
 				LineBreakMode = LineBreakMode.WordWrap,
@@ -1760,49 +1751,23 @@ namespace NeuroAccessMaui.UI.Rendering
 
 			this.currentElement = ParentLabel;
 
-			if (HasLink)
+			bool WasInLabel = this.InLabel;
+			this.InLabel = true;
+
+			try
 			{
-				if (this.InLabel)
-				{
-					if (IncludeElement)
-						await Element.Render(this);
-					else
-						await this.RenderChildren(Element);
-				}
-				else
-				{
-					this.InLabel = true;
-
-					if (IncludeElement)
-						await Element.Render(this);
-					else
-						await this.RenderChildren(Element);
-
-					this.InLabel = false;
-				}
-			}
-			else
-			{
-				ParentLabel.TextType = TextType.Html;
-
-				if (this.Bold)
-					ParentLabel.FontAttributes = FontAttributes.Bold;
-
-				using HtmlRenderer Renderer = new(new HtmlSettings()
-				{
-					XmlEntitiesOnly = true
-				}, this.Document);
-
 				if (IncludeElement)
-					await Element.Render(Renderer);
+					await Element.Render(this);
 				else
-					await Renderer.RenderChildren(Element);
-
-				ParentLabel.Text = Renderer.ToString();
+					await this.RenderChildren(Element);
+			}
+			finally
+			{
+				this.InLabel = WasInLabel;
+				this.currentElement = Bakup;
 			}
 
 			Bakup.Content = ParentLabel;
-			this.currentElement = Bakup;
 		}
 
 		/// <summary>
@@ -1832,7 +1797,7 @@ namespace NeuroAccessMaui.UI.Rendering
 				this.currentElement = MainLabel;
 			}
 
-			if (MainLabel.FormattedText == null)
+			if (MainLabel.FormattedText is null)
 			{
 				FormattedString = new();
 			}
@@ -1867,7 +1832,10 @@ namespace NeuroAccessMaui.UI.Rendering
 				MainSpan.TextDecorations = TextDecorations.Underline;
 
 			if (this.Code)
-				MainSpan.FontFamily = "SpaceGroteskRegular";
+			{
+				MainSpan.FontAttributes |= FontAttributes.Italic;
+				MainSpan.FontFamily = "SpaceGroteskBold";
+			}
 
 			if (this.Hyperlink is not null)
 			{

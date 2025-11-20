@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages;
 
 namespace NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription
@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription
 		private async Task Yes()
 		{
 			this.result.TrySetResult(true);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>
@@ -50,7 +50,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription
 		private async Task No()
 		{
 			this.result.TrySetResult(false);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>

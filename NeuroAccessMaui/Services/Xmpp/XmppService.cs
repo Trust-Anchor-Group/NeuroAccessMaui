@@ -7,19 +7,22 @@ using CommunityToolkit.Mvvm.Messaging;
 using EDaler;
 using EDaler.Events;
 using EDaler.Uris;
-using Mopups.Services;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Kyc;
+using NeuroAccessMaui.Services.Kyc.Models;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Notification.Things;
 using NeuroAccessMaui.Services.Notification.Xmpp;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.Services.Wallet;
+using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
-using NeuroAccessMaui.UI.Pages.Registration;
+using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportType;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
@@ -27,10 +30,14 @@ using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.Events;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
@@ -61,6 +68,7 @@ using Waher.Networking.XMPP.Provisioning.SearchOperators;
 using Waher.Networking.XMPP.PubSub;
 using Waher.Networking.XMPP.PubSub.Events;
 using Waher.Networking.XMPP.Push;
+using Waher.Networking.XMPP.ResultSetManagement;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
 using Waher.Networking.XMPP.StanzaErrors;
@@ -74,6 +82,7 @@ using Waher.Script.Constants;
 using Waher.Security.JWT;
 using Waher.Things;
 using Waher.Things.SensorData;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -236,7 +245,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 					}
 #endif
-
+					this.xmppClient.DefaultRetryTimeout = 30000;
+					this.xmppClient.DefaultNrRetries = 0;
 					this.xmppClient.RequestRosterOnStartup = false;
 					this.xmppClient.TrustServer = !IsIpAddress;
 					this.xmppClient.AllowCramMD5 = false;
@@ -275,18 +285,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						this.contractsClient = new ContractsClient(this.xmppClient, ServiceRef.TagProfile.LegalJid);
 						this.RegisterContractsEventHandlers();
 
-						if (!await this.contractsClient.LoadKeys(false))
-						{
-							if (ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
-							{
-								Log.Alert("Regeneration of keys not permitted at this time.",
-									string.Empty, string.Empty, string.Empty, EventLevel.Major, string.Empty, string.Empty, Environment.StackTrace);
-
-								throw new Exception("Regeneration of keys not permitted at this time.");
-							}
-
-							await this.GenerateNewKeys();
-						}
+						await this.contractsClient.LoadKeys(false);
 					}
 
 					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
@@ -1047,89 +1046,92 @@ namespace NeuroAccessMaui.Services.Xmpp
 			int PortNumber, string UserName, string Password, string PasswordMethod, string LanguageCode, string ApiKey, string ApiSecret,
 			Assembly ApplicationAssembly, Func<XmppClient, Task> ConnectedFunc, ConnectOperation Operation)
 		{
-			TaskCompletionSource<bool> Connected = new();
-			bool Succeeded;
-			string? ErrorMessage = null;
-			bool StreamNegotiation = false;
-			bool StreamOpened = false;
-			bool StartingEncryption = false;
-			bool Authenticating = false;
-			bool Registering = false;
-			bool IsTimeout = false;
+			// Use TaskCompletionSource for single completion
+			var Tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+			// Flags for tracking progress and outcome
+			bool StreamNegotiation = false, StreamOpened = false, StartingEncryption = false, Authenticating = false, Registering = false, IsTimeout = false;
 			string? ConnectionError = null;
+			string? ErrorMessage = null;
 			string[]? Alternatives = null;
 
-			Task OnConnectionError(object _, Exception e)
-			{
-				//TODO: Handle stream error not authenticated
-				/* if(e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
-				if (e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException NotAuthor)
-				{
-					Go to page / open popup with info and actions
-				}
-				*/
-				if (e is ObjectDisposedException)
-					ConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
-				else if (e is Waher.Networking.XMPP.StreamErrors.NotAuthorizedException)
-				{
-					this.reconnectTimer?.Dispose();
-					this.reconnectTimer = null;
-				}
-				else if (e is Waher.Networking.XMPP.StanzaErrors.ConflictException ConflictInfo)
-					Alternatives = ConflictInfo.Alternatives;
-				else
-					ConnectionError = e.Message;
+			XmppClient? Client = null;
+			var Disposed = 0; // 0 = not disposed, 1 = disposing/disposing done
 
-				Connected.TrySetResult(false);
+			// Local guard function for tcs
+			void TrySetResult(bool result)
+			{
+				// Ensure only one completion and don't run during/after dispose
+				if (Interlocked.CompareExchange(ref Disposed, 0, 0) == 0)
+					Tcs.TrySetResult(result);
+			}
+
+			// Connection error event handler
+			Task OnConnectionError(object? _, Exception ex)
+			{
+				if (Interlocked.CompareExchange(ref Disposed, 0, 0) == 1)
+					return Task.CompletedTask; // Ignore after dispose
+
+				switch (ex)
+				{
+					case ObjectDisposedException:
+						ConnectionError = ServiceRef.Localizer[nameof(AppResources.UnableToConnect)];
+						break;
+					case Waher.Networking.XMPP.StreamErrors.NotAuthorizedException:
+						this.reconnectTimer?.Dispose();
+						this.reconnectTimer = null;
+						break;
+					case Waher.Networking.XMPP.StanzaErrors.ConflictException Conflict:
+						Alternatives = Conflict.Alternatives;
+						break;
+					default:
+						ConnectionError = ex.Message;
+						break;
+				}
+
+				TrySetResult(false);
 				return Task.CompletedTask;
 			}
 
-			async Task OnStateChanged(object _, XmppState newState)
+			// State change event handler
+			async Task OnStateChanged(object? _, XmppState newState)
 			{
+				if (Interlocked.CompareExchange(ref Disposed, 0, 0) == 1)
+					return;
+
 				switch (newState)
 				{
 					case XmppState.StreamNegotiation:
 						StreamNegotiation = true;
 						break;
-
 					case XmppState.StreamOpened:
 						StreamOpened = true;
 						break;
-
 					case XmppState.StartingEncryption:
 						StartingEncryption = true;
 						break;
-
 					case XmppState.Authenticating:
 						Authenticating = true;
-
 						if (Operation == ConnectOperation.Connect)
-							Connected.TrySetResult(true);
-
+							TrySetResult(true);
 						break;
-
 					case XmppState.Registering:
 						Registering = true;
 						break;
-
 					case XmppState.Connected:
-						Connected.TrySetResult(true);
+						TrySetResult(true);
 						break;
-
 					case XmppState.Offline:
-						Connected.TrySetResult(false);
+						TrySetResult(false);
 						break;
-
 					case XmppState.Error:
-						// When State = Error, wait for the OnConnectionError event to arrive also, as it holds more/direct information.
-						// Just in case it never would - set state error and Result.
+						// Wait a bit for error event, but still time out if nothing else happens
 						await Task.Delay(Constants.Timeouts.XmppConnect);
-						Connected.TrySetResult(false);
+						TrySetResult(false);
 						break;
 				}
 			}
 
-			XmppClient? Client = null;
 			try
 			{
 				if (string.IsNullOrEmpty(PasswordMethod))
@@ -1154,70 +1156,102 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Client.AllowScramSHA256 = true;
 				Client.AllowQuickLogin = true;
 
+				// Register handlers
 				Client.OnConnectionError += OnConnectionError;
 				Client.OnStateChanged += OnStateChanged;
 
-				await Client.Connect(IsIpAddress ? string.Empty : Domain);
+				// Begin connect
+				var ConnectTask = Client.Connect(IsIpAddress ? string.Empty : Domain);
 
-				void TimerCallback(object? _)
+				// Set up timeout with cancellation
+				using var Cts = new CancellationTokenSource(Constants.Timeouts.XmppConnect);
+
+				var CompletedTask = await Task.WhenAny(Tcs.Task, ConnectTask, Task.Delay(TimeSpan.FromSeconds(5), Cts.Token));
+				bool Succeeded = false;
+
+				if (CompletedTask == Tcs.Task)
 				{
+					Succeeded = Tcs.Task.Result;
+				}
+				else if (CompletedTask == ConnectTask)
+				{
+					// The connect operation finished before the state machine did,
+					// but we need to wait for state change events
+					Succeeded = await Tcs.Task;
+				}
+				else
+				{
+					// Timeout
 					IsTimeout = true;
-					Connected.TrySetResult(false);
+					TrySetResult(false); // Attempt to signal timeout if not already completed
+					Succeeded = false;
 				}
 
-				using Timer _ = new(TimerCallback, null, (int)Constants.Timeouts.XmppConnect.TotalMilliseconds, Timeout.Infinite);
-				Succeeded = await Connected.Task;
-
-				if (Succeeded && (ConnectedFunc is not null))
+				// Call ConnectedFunc if successful
+				if (Succeeded && ConnectedFunc is not null)
 					await ConnectedFunc(Client);
 
+				// Remove event handlers BEFORE disposal
+				Interlocked.Exchange(ref Disposed, 1);
 				Client.OnStateChanged -= OnStateChanged;
 				Client.OnConnectionError -= OnConnectionError;
+
+				await Client.DisposeAsync();
+				Client = null;
+
+				// Set error message if needed
+				if (!Succeeded && string.IsNullOrEmpty(ErrorMessage))
+				{
+					if (this.sniffer is not null)
+						System.Diagnostics.Debug.WriteLine(await this.sniffer.SnifferToTextAsync(), "Sniffer");
+
+					if (!StreamNegotiation || IsTimeout)
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.CantConnectTo), Domain];
+					else if (!StreamOpened)
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.DomainIsNotAValidOperator), Domain];
+					else if (!StartingEncryption)
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.DomainDoesNotFollowEncryptionPolicy), Domain];
+					else if (!Authenticating)
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToAuthenticateWith), Domain];
+					else if (!Registering)
+					{
+						if (!string.IsNullOrWhiteSpace(ConnectionError))
+							ErrorMessage = ConnectionError;
+						else
+							ErrorMessage = ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts), Domain];
+					}
+					else if (Operation == ConnectOperation.ConnectAndCreateAccount)
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UsernameNameAlreadyTaken), this.accountName ?? string.Empty];
+					else if (Operation == ConnectOperation.ConnectToAccount)
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword), this.accountName ?? string.Empty];
+					else
+						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain];
+				}
+
+				return (Succeeded, ErrorMessage, Alternatives);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex, new KeyValuePair<string, object?>(nameof(ConnectOperation), Operation.ToString()));
-				Succeeded = false;
-				ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain];
+				return (false, ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain], null);
 			}
 			finally
 			{
+				// Final fallback cleanup if not already disposed
 				if (Client is not null)
 				{
-					await Client.DisposeAsync();
-					Client = null;
+					try
+					{
+						Interlocked.Exchange(ref Disposed, 1);
+						Client.OnStateChanged -= OnStateChanged;
+						Client.OnConnectionError -= OnConnectionError;
+						await Client.DisposeAsync();
+						Client = null;
+
+					}
+					catch { /* Swallow to avoid masking original exception */ }
 				}
 			}
-
-			if (!Succeeded && string.IsNullOrEmpty(ErrorMessage))
-			{
-				if (this.sniffer is not null)
-					System.Diagnostics.Debug.WriteLine(await this.sniffer.SnifferToTextAsync(), "Sniffer");
-
-				if (!StreamNegotiation || IsTimeout)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.CantConnectTo), Domain];
-				else if (!StreamOpened)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.DomainIsNotAValidOperator), Domain];
-				else if (!StartingEncryption)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.DomainDoesNotFollowEncryptionPolicy), Domain];
-				else if (!Authenticating)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToAuthenticateWith), Domain];
-				else if (!Registering)
-				{
-					if (!string.IsNullOrWhiteSpace(ConnectionError))
-						ErrorMessage = ConnectionError;
-					else
-						ErrorMessage = ServiceRef.Localizer[nameof(AppResources.OperatorDoesNotSupportRegisteringNewAccounts), Domain];
-				}
-				else if (Operation == ConnectOperation.ConnectAndCreateAccount)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UsernameNameAlreadyTaken), this.accountName ?? string.Empty];
-				else if (Operation == ConnectOperation.ConnectToAccount)
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.InvalidUsernameOrPassword), this.accountName ?? string.Empty];
-				else
-					ErrorMessage = ServiceRef.Localizer[nameof(AppResources.UnableToConnectTo), Domain];
-			}
-
-			return (Succeeded, ErrorMessage, Alternatives);
 		}
 
 		private void ReconnectTimer_Tick(object? _)
@@ -1392,6 +1426,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.NeuroFeaturesJid))
 				return false;
 
+			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
+				return false;
+
 			if (!ServiceRef.TagProfile.SupportsPushNotification)
 				return false;
 
@@ -1485,7 +1522,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await RuntimeSettings.SetAsync(Constants.Settings.TransferIdCodeSent, string.Empty);
 			await Database.Provider.Flush();
 			WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
-			await App.SetRegistrationPageAsync();
+			await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.FullSetup });
 		}
 
 		/// <summary>
@@ -1577,7 +1614,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			SubscriptionRequestViewModel SubscriptionRequestViewModel = new(e.FromBareJID, FriendlyName, PhotoUrl, PhotoWidth, PhotoHeight);
 			SubscriptionRequestPopup SubscriptionRequestPopup = new(SubscriptionRequestViewModel);
 
-			await MopupService.Instance.PushAsync(SubscriptionRequestPopup);
+			await ServiceRef.PopupService.PushAsync(SubscriptionRequestPopup);
 			PresenceRequestAction Action = await SubscriptionRequestViewModel.Result;
 
 			switch (Action)
@@ -1610,7 +1647,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						SubscribeToViewModel SubscribeToViewModel = new(e.FromBareJID);
 						SubscribeToPopup SubscribeToPopup = new(SubscribeToViewModel);
 
-						await MopupService.Instance.PushAsync(SubscribeToPopup);
+						await ServiceRef.PopupService.PushAsync(SubscribeToPopup);
 						bool? SubscribeTo = await SubscribeToViewModel.Result;
 
 						if (SubscribeTo.HasValue && SubscribeTo.Value)
@@ -1640,7 +1677,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					ReportOrBlockViewModel ReportOrBlockViewModel = new(e.FromBareJID);
 					ReportOrBlockPopup ReportOrBlockPopup = new(ReportOrBlockViewModel);
 
-					await MopupService.Instance.PushAsync(ReportOrBlockPopup);
+					await ServiceRef.PopupService.PushAsync(ReportOrBlockPopup);
 					ReportOrBlockAction ReportOrBlock = await ReportOrBlockViewModel.Result;
 
 					if (ReportOrBlock == ReportOrBlockAction.Block || ReportOrBlock == ReportOrBlockAction.Report)
@@ -1668,7 +1705,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							ReportTypeViewModel ReportTypeViewModel = new(e.FromBareJID);
 							ReportTypePopup ReportTypePopup = new(ReportTypeViewModel);
 
-							await MopupService.Instance.PushAsync(ReportOrBlockPopup);
+							await ServiceRef.PopupService.PushAsync(ReportTypePopup);
 							ReportingReason? ReportType = await ReportTypeViewModel.Result;
 
 							if (ReportType.HasValue)
@@ -1691,6 +1728,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				default:
 					break;
 			}
+
+			await this.OnPresenceSubscribe.Raise(this, e);
 		}
 
 		private async Task XmppClient_OnPresenceUnsubscribed(object? Sender, PresenceEventArgs e)
@@ -1701,6 +1740,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				ContactInfo.AllowSubscriptionFrom = null;
 				await Database.Update(ContactInfo);
 			}
+
+			await this.OnPresenceUnsubscribed.Raise(this, e);
 		}
 
 		#endregion
@@ -1756,8 +1797,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public void SendMessage(QoSLevel QoS, Waher.Networking.XMPP.MessageType Type, string Id, string To, string CustomXml, string Body,
 			string Subject, string Language, string ThreadId, string ParentThreadId, EventHandlerAsync<DeliveryEventArgs>? DeliveryCallback, object? State)
 		{
-			this.ContractsClient.LocalE2eEndpoint.SendMessage(this.XmppClient, E2ETransmission.NormalIfNotE2E,
-				QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
+			this.XmppClient.SendMessage(QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
+			//this.ContractsClient.LocalE2eEndpoint.SendMessage(this.XmppClient, E2ETransmission.NormalIfNotE2E,
+			//	QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
+			//TODO: ENABLE E2E
 		}
 
 		private Task XmppClient_OnNormalMessage(object? Sender, MessageEventArgs e)
@@ -1969,8 +2012,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				if (ServiceRef.UiService.CurrentPage is ChatPage &&
-					ServiceRef.UiService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
+				if (ServiceRef.NavigationService.CurrentPage is ChatPage &&
+					ServiceRef.NavigationService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
 					string.Equals(ChatViewModel.BareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
 				{
 					if (string.IsNullOrEmpty(ReplaceObjectId))
@@ -1992,7 +2035,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private Task ContractsClient_ClientMessage(object? Sender, ClientMessageEventArgs e)
 		{
-			string Message = e.Body;
+			string Message = e.Body ?? string.Empty;
+
 
 			if (!string.IsNullOrEmpty(e.Code))
 			{
@@ -2001,17 +2045,67 @@ namespace NeuroAccessMaui.Services.Xmpp
 					string Key = "ClientMessage" + e.Code;
 					string LocalizedMessage = ServiceRef.Localizer[Key, false];
 
-					// TODO: Make sure this does not generate logs or errors, as the app
-					// does not control future error codes that can be returned.
-
 					if (!string.IsNullOrEmpty(LocalizedMessage) && !LocalizedMessage.Equals(Key, StringComparison.Ordinal))
+					{
 						Message = LocalizedMessage;
+					}
 				}
 				catch (Exception)
 				{
-					// Ignore
+					// Ignore localization lookup issues.
 				}
 			}
+
+			ApplicationReview? Review = BuildApplicationReview(e, Message);
+
+			// Persist rejection details on current KYC reference, and reflect in UI if open
+			MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					try
+					{
+						KycReference? Ref = null;
+						LegalIdentity? AppId = ServiceRef.TagProfile.IdentityApplication;
+
+						if (AppId is not null)
+						{
+							try
+							{
+								Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), AppId.Id));
+							}
+							catch (Exception Ex2)
+							{
+								ServiceRef.LogService.LogException(Ex2);
+							}
+						}
+
+						if (Ref is null)
+						{
+							try
+							{
+								IEnumerable<KycReference> All = await Database.Find<KycReference>();
+								Ref = All.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
+							}
+							catch (Exception Ex3)
+							{
+								ServiceRef.LogService.LogException(Ex3);
+							}
+						}
+
+						if (Ref is not null && Review is not null)
+						{
+							await ServiceRef.KycService.ApplyApplicationReviewAsync(Ref, Review);
+
+							if (ServiceRef.NavigationService.CurrentPage is KycProcessPage Page && Page.BindingContext is KycProcessViewModel Vm)
+							{
+								await Vm.ApplyApplicationReviewAsync(Review);
+							}
+						}
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+					}
+				});
 
 			// TODO: Event arguments contain more detailed information about:
 			//
@@ -2082,18 +2176,173 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// BankIdRFA20: Would you like to identify yourself or sign with a BankID on this device or with a BankID on another device?
 			// BankIdRFA21: Identification or signing in progress.
 			// BankIdRFA22: Unknown error. Please try again.
+			Message = Message.Trim();
 
-			MainThread.BeginInvokeOnMainThread(async () =>
+			bool ShouldShowAlert = Review is null ||
+				(Review.InvalidClaims.Length == 0 &&
+				Review.InvalidPhotos.Length == 0 &&
+				Review.UnvalidatedClaims.Length == 0 &&
+				Review.UnvalidatedPhotos.Length == 0);
+
+			if (ShouldShowAlert)
 			{
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-			});
+				MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], string.IsNullOrEmpty(Message) ? ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)] : Message,
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				});
+			}
 
 			return Task.CompletedTask;
 		}
 
 		#endregion
+
+		private static ApplicationReview? BuildApplicationReview(ClientMessageEventArgs e, string message)
+		{
+			try
+			{
+				ApplicationReview Candidate = new ApplicationReview
+				{
+					Message = message,
+					Code = e.Code,
+					ReceivedUtc = DateTime.UtcNow
+				};
+
+				try
+				{
+					IEnumerable<InvalidClaim> InvalidClaimsEnumerable = e.InvalidClaims as IEnumerable<InvalidClaim> ?? Array.Empty<InvalidClaim>();
+					List<string> InvalidClaimNames = new List<string>();
+					List<ApplicationReviewClaimDetail> InvalidClaimDetailList = new List<ApplicationReviewClaimDetail>();
+
+					foreach (InvalidClaim InvalidClaim in InvalidClaimsEnumerable)
+					{
+						if (InvalidClaim is null || string.IsNullOrWhiteSpace(InvalidClaim.Claim))
+							continue;
+
+						string ClaimValue = InvalidClaim.Claim.Trim();
+						if (ClaimValue.Length == 0)
+							continue;
+
+						InvalidClaimNames.Add(ClaimValue);
+
+						ApplicationReviewClaimDetail Detail = new ApplicationReviewClaimDetail(
+							ClaimValue,
+							InvalidClaim.Reason ?? string.Empty,
+							InvalidClaim.ReasonLanguage,
+							InvalidClaim.ReasonCode,
+							InvalidClaim.Service ?? string.Empty);
+						InvalidClaimDetailList.Add(Detail);
+					}
+
+					Candidate.InvalidClaims = InvalidClaimNames.Count > 0 ? InvalidClaimNames.ToArray() : Array.Empty<string>();
+					Candidate.InvalidClaimDetails = InvalidClaimDetailList.Count > 0 ? InvalidClaimDetailList.ToArray() : Array.Empty<ApplicationReviewClaimDetail>();
+				}
+				catch
+				{
+					// Ignore conversion issues.
+				}
+
+				try
+				{
+					IEnumerable<InvalidPhoto> InvalidPhotosEnumerable = e.InvalidPhotos as IEnumerable<InvalidPhoto> ?? Array.Empty<InvalidPhoto>();
+					List<string> InvalidPhotoNames = new List<string>();
+					List<ApplicationReviewPhotoDetail> InvalidPhotoDetailList = new List<ApplicationReviewPhotoDetail>();
+
+					foreach (InvalidPhoto InvalidPhoto in InvalidPhotosEnumerable)
+					{
+						if (InvalidPhoto is null || string.IsNullOrWhiteSpace(InvalidPhoto.FileName))
+							continue;
+
+						string FileName = InvalidPhoto.FileName.Trim();
+						if (FileName.Length == 0)
+							continue;
+
+						string FileNameWithoutExtension = Path.GetFileNameWithoutExtension(FileName);
+						string DisplayName = string.IsNullOrEmpty(FileNameWithoutExtension) ? FileName : FileNameWithoutExtension;
+						DisplayName = DisplayName.Trim();
+						if (DisplayName.Length == 0)
+							DisplayName = FileName;
+
+						InvalidPhotoNames.Add(DisplayName);
+
+						ApplicationReviewPhotoDetail Detail = new ApplicationReviewPhotoDetail(
+							FileName,
+							DisplayName,
+							InvalidPhoto.Reason ?? string.Empty,
+							InvalidPhoto.ReasonLanguage,
+							InvalidPhoto.ReasonCode,
+							InvalidPhoto.Service ?? string.Empty);
+						InvalidPhotoDetailList.Add(Detail);
+					}
+
+					Candidate.InvalidPhotos = InvalidPhotoNames.Count > 0 ? InvalidPhotoNames.ToArray() : Array.Empty<string>();
+					Candidate.InvalidPhotoDetails = InvalidPhotoDetailList.Count > 0 ? InvalidPhotoDetailList.ToArray() : Array.Empty<ApplicationReviewPhotoDetail>();
+				}
+				catch
+				{
+					// Ignore conversion issues.
+				}
+
+				try
+				{
+					IEnumerable<string> UnvalidatedClaimsEnumerable = e.UnvalidatedClaims as IEnumerable<string> ?? Array.Empty<string>();
+					List<string> UnvalidatedClaimList = new List<string>();
+					foreach (string Claim in UnvalidatedClaimsEnumerable)
+					{
+						if (string.IsNullOrWhiteSpace(Claim))
+							continue;
+
+						string TrimmedClaim = Claim.Trim();
+						if (TrimmedClaim.Length > 0)
+							UnvalidatedClaimList.Add(TrimmedClaim);
+					}
+
+					Candidate.UnvalidatedClaims = UnvalidatedClaimList.Count > 0 ? UnvalidatedClaimList.ToArray() : Array.Empty<string>();
+				}
+				catch
+				{
+					// Ignore conversion issues.
+				}
+
+				try
+				{
+					IEnumerable<string> UnvalidatedPhotosEnumerable = e.UnvalidatedPhotos as IEnumerable<string> ?? Array.Empty<string>();
+					List<string> UnvalidatedPhotoList = new List<string>();
+					foreach (string Photo in UnvalidatedPhotosEnumerable)
+					{
+						if (string.IsNullOrWhiteSpace(Photo))
+							continue;
+
+						string TrimmedPhoto = Photo.Trim();
+						if (TrimmedPhoto.Length > 0)
+							UnvalidatedPhotoList.Add(TrimmedPhoto);
+					}
+
+					Candidate.UnvalidatedPhotos = UnvalidatedPhotoList.Count > 0 ? UnvalidatedPhotoList.ToArray() : Array.Empty<string>();
+				}
+				catch
+				{
+					// Ignore conversion issues.
+				}
+
+				bool HasMeaningfulData =
+					!string.IsNullOrEmpty(Candidate.Message) ||
+					!string.IsNullOrEmpty(Candidate.Code) ||
+					Candidate.InvalidClaims.Length > 0 ||
+					Candidate.InvalidPhotos.Length > 0 ||
+					Candidate.UnvalidatedClaims.Length > 0 ||
+					Candidate.UnvalidatedPhotos.Length > 0;
+
+				return HasMeaningfulData ? Candidate : null;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return null;
+			}
+		}
 
 		#region Presence
 
@@ -2106,6 +2355,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Event raised when a new presence stanza has been received.
 		/// </summary>
 		public event EventHandlerAsync<PresenceEventArgs>? OnPresence;
+
+		/// <summary>
+		/// Event raised when a new presence subscription request has been received.
+		/// </summary>
+		public event EventHandlerAsync<PresenceEventArgs>? OnPresenceSubscribe;
+
+		/// <summary>
+		/// Event raised when a presence subscription has been revoked.
+		/// </summary>
+		public event EventHandlerAsync<PresenceEventArgs>? OnPresenceUnsubscribed;
 
 		/// <summary>
 		/// Requests subscription of presence information from a contact.
@@ -2824,10 +3083,23 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<LegalIdentity> AddLegalIdentity(RegisterIdentityModel Model, bool GenerateNewKeys,
 			params LegalIdentityAttachment[] Attachments)
 		{
+			return await this.AddLegalIdentity(Model.ToProperties(ServiceRef.XmppService), GenerateNewKeys, Attachments);
+		}
+
+		/// <summary>
+		/// Adds a legal identity.
+		/// </summary>
+		/// <param name="Props">The array holding all the values needed.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Legal Identity</returns>
+		public async Task<LegalIdentity> AddLegalIdentity(Property[] Props, bool GenerateNewKeys,
+			params LegalIdentityAttachment[] Attachments)
+		{
 			if (GenerateNewKeys)
 				await this.GenerateNewKeys();
 
-			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Model.ToProperties(ServiceRef.XmppService));
+			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Props);
 
 			foreach (LegalIdentityAttachment Attachment in Attachments)
 			{
@@ -2979,6 +3251,28 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			try
 			{
+				KycReference? Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), e.Identity.Id));
+				if (Ref is not null)
+				{
+					Ref.UpdatedUtc = DateTime.UtcNow;
+					Ref.CreatedIdentityState = e.Identity.State;
+					await Database.Update(Ref);
+					await Database.Provider.Flush();
+				}
+
+				if (ServiceRef.NavigationService.CurrentPage is ApplicationsPage AppPage)
+				{
+					if (AppPage.BindingContext is ApplicationsViewModel Model)
+						Model.Loader.Reload();
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+
+			try
+			{
 				if (ServiceRef.TagProfile.LegalIdentity is not null && ServiceRef.TagProfile.LegalIdentity.Id == e.Identity.Id)
 				{
 					if (ServiceRef.TagProfile.LegalIdentity.Created > e.Identity.Created)
@@ -3012,7 +3306,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					if (e.Identity.IsDiscarded())
 					{
-						await ServiceRef.TagProfile.SetIdentityApplication(null, true);
 						await this.IdentityApplicationChanged.Raise(this, e);
 					}
 					else if (e.Identity.IsApproved())
@@ -4186,11 +4479,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <param name="TransactionId">ID of transaction containing the encrypted message.</param>
 		/// <param name="RemoteEndpoint">Remote endpoint</param>
 		/// <returns>Decrypted string, if successful, or null, if not.</returns>
-		public async Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint)
+		public async Task<string> TryDecryptMessage(byte[] EncryptedMessage, byte[] PublicKey, Guid TransactionId, string RemoteEndpoint, bool LocalIsRecipient)
 		{
 			try
 			{
-				return await this.EDalerClient.DecryptMessage(EncryptedMessage, PublicKey, TransactionId, RemoteEndpoint);
+				return await this.EDalerClient.DecryptMessage(EncryptedMessage, PublicKey, TransactionId, RemoteEndpoint, LocalIsRecipient);
 			}
 			catch (Exception ex)
 			{
@@ -4358,21 +4651,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<OptionsTransaction> InitiateBuyEDalerGetOptions(string ServiceId, string ServiceProvider)
 		{
 			string TransactionId = Guid.NewGuid().ToString();
-			string SuccessUrl = GenerateNeuroAccessUrl(
+			string SuccessUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "beos"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string FailureUrl = GenerateNeuroAccessUrl(
+			string FailureUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "beof"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string CancelUrl = GenerateNeuroAccessUrl(
+			string CancelUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "beoc"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
@@ -4471,7 +4764,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<PaymentTransaction> InitiateBuyEDaler(string ServiceId, string ServiceProvider, decimal Amount, string Currency)
 		{
 			string TransactionId = Guid.NewGuid().ToString();
-			string SuccessUrl = GenerateNeuroAccessUrl(
+			string SuccessUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "bes"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>("amt", Amount),
@@ -4480,14 +4773,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string FailureUrl = GenerateNeuroAccessUrl(
+			string FailureUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "bef"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string CancelUrl = GenerateNeuroAccessUrl(
+			string CancelUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "bec"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
@@ -4506,9 +4799,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return Result;
 		}
 
-		private static string GenerateNeuroAccessUrl(params KeyValuePair<string, object?>[] Claims)
+		private static async Task<string> GenerateNeuroAccessUrl(params KeyValuePair<string, object?>[] Claims)
 		{
-			string Token = ServiceRef.CryptoService.GenerateJwtToken(Claims);
+			string Token = await ServiceRef.CryptoService.GenerateJwtToken(Claims);
 			return Constants.UriSchemes.NeuroAccess + ":" + Token;
 		}
 
@@ -4601,21 +4894,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<OptionsTransaction> InitiateSellEDalerGetOptions(string ServiceId, string ServiceProvider)
 		{
 			string TransactionId = Guid.NewGuid().ToString();
-			string SuccessUrl = GenerateNeuroAccessUrl(
+			string SuccessUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "seos"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string FailureUrl = GenerateNeuroAccessUrl(
+			string FailureUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "seof"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string CancelUrl = GenerateNeuroAccessUrl(
+			string CancelUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "seoc"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
@@ -4714,7 +5007,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<PaymentTransaction> InitiateSellEDaler(string ServiceId, string ServiceProvider, decimal Amount, string Currency)
 		{
 			string TransactionId = Guid.NewGuid().ToString();
-			string SuccessUrl = GenerateNeuroAccessUrl(
+			string SuccessUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "ses"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>("amt", Amount),
@@ -4723,14 +5016,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string FailureUrl = GenerateNeuroAccessUrl(
+			string FailureUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "sef"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Issuer, ServiceRef.CryptoService.DeviceID),
 				new KeyValuePair<string, object?>(JwtClaims.Subject, ServiceRef.XmppService.BareJid),
 				new KeyValuePair<string, object?>(JwtClaims.ExpirationTime, (int)DateTime.UtcNow.AddHours(1).Subtract(JSON.UnixEpoch).TotalSeconds));
-			string CancelUrl = GenerateNeuroAccessUrl(
+			string CancelUrl = await GenerateNeuroAccessUrl(
 				new KeyValuePair<string, object?>("cmd", "sec"),
 				new KeyValuePair<string, object?>("tid", TransactionId),
 				new KeyValuePair<string, object?>(JwtClaims.ClientId, ServiceRef.CryptoService.DeviceID),
@@ -5298,6 +5591,55 @@ namespace NeuroAccessMaui.Services.Xmpp
 				await this.PubSubClient.GetLatestItems(NodeId, Count, (s, e) => HandleResult(e, Tcs), null);
 				ItemsEventArgs Result = await Tcs.Task;
 				return Result.Items;
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		/// <inheritdoc />
+		public async Task<PubSubPageResult?> GetItemsPageAsync(string NodeId, string? ServiceAddress = null, string? After = null, string? Before = null, int? Index = null, int? Max = null)
+		{
+			try
+			{
+				RestrictedQuery? Query = null;
+				bool HasCursor = !string.IsNullOrWhiteSpace(After) || !string.IsNullOrWhiteSpace(Before) || Index.HasValue || Max.HasValue;
+				if (HasCursor)
+				{
+					Query = new RestrictedQuery(After, Before, Index, Max);
+				}
+
+				TaskCompletionSource<ItemsEventArgs> Tcs = new();
+				string? EffectiveServiceAddress = ServiceAddress ?? this.PubSubClient.ComponentAddress;
+
+				if (Query is null)
+				{
+					if (string.IsNullOrWhiteSpace(EffectiveServiceAddress))
+					{
+						await this.PubSubClient.GetItems(NodeId, (s, e) => HandleResult(e, Tcs), null);
+					}
+					else
+					{
+						await this.PubSubClient.GetItems(EffectiveServiceAddress, NodeId, (s, e) => HandleResult(e, Tcs), null);
+					}
+				}
+				else
+				{
+					if (string.IsNullOrWhiteSpace(EffectiveServiceAddress))
+					{
+						await this.PubSubClient.GetItems(NodeId, Query, (s, e) => HandleResult(e, Tcs), null);
+					}
+					else
+					{
+						await this.PubSubClient.GetItems(EffectiveServiceAddress, NodeId, Query, (s, e) => HandleResult(e, Tcs), null);
+					}
+				}
+
+				ItemsEventArgs Result = await Tcs.Task;
+				PubSubItem[] Items = Result.Items ?? Array.Empty<PubSubItem>();
+				ResultPage? Page = Result.Page;
+				return new PubSubPageResult(NodeId, Items, Page);
 			}
 			catch
 			{

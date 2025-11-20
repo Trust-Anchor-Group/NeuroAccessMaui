@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
+using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages;
 
 namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo
@@ -37,20 +37,27 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo
 		/// Subscribes to contact.
 		/// </summary>
 		[RelayCommand]
-		private async Task Yes()
+		private async Task Confirm()
 		{
 			this.result.TrySetResult(true);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>
 		/// Does not subscribe to contact.
 		/// </summary>
 		[RelayCommand]
-		private async Task No()
+		private async Task Decline()
 		{
 			this.result.TrySetResult(false);
-			await MopupService.Instance.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
+		}
+
+		[RelayCommand]
+		private async Task Cancel()
+		{
+			this.result.TrySetResult(null);
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		/// <summary>

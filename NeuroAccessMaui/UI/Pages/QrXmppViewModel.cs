@@ -1,8 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Popups.QR;
 using Waher.Content.Html.Elements;
+using System; // For StringComparison
+using System.IO; // For MemoryStream
+using Microsoft.Maui.Storage; // For FileSystem paths
 
 namespace NeuroAccessMaui.UI.Pages
 {
@@ -11,6 +14,8 @@ namespace NeuroAccessMaui.UI.Pages
 	/// </summary>
 	public abstract partial class QrXmppViewModel : XmppViewModel, ILinkableView
 	{
+		private readonly object qrSync = new();
+
 		/// <summary>
 		/// Creates an instance of a <see cref="XmppViewModel"/>.
 		/// </summary>
@@ -19,27 +24,59 @@ namespace NeuroAccessMaui.UI.Pages
 		{
 		}
 
+
+		private string? qrTempFilePath;
+
 		/// <summary>
 		/// Generates a QR-code
 		/// </summary>
 		/// <param name="Uri">URI to encode in QR-code.</param>
 		public void GenerateQrCode(string Uri)
 		{
-			if (this.QrCodeWidth == 0 || this.QrCodeHeight == 0)
+			lock (this.qrSync)
 			{
-				this.QrCodeWidth = Constants.QrCode.DefaultImageWidth;
-				this.QrCodeHeight = Constants.QrCode.DefaultImageHeight;
+				// Idempotency: Avoid regenerating the same QR multiple times (mitigates race conditions during animations)
+				if (this.QrCode is not null && string.Equals(this.QrCodeUri, Uri, StringComparison.Ordinal))
+				{
+					ServiceRef.LogService.LogDebug($"GenerateQrCode skipped (same URI): {Uri}");
+					return;
+				}
+
+				if (this.QrCodeWidth == 0 || this.QrCodeHeight == 0)
+				{
+					this.QrCodeWidth = Constants.QrCode.DefaultImageWidth;
+					this.QrCodeHeight = Constants.QrCode.DefaultImageHeight;
+				}
+
+				if (this.QrResolutionScale == 0)
+					this.QrResolutionScale = Constants.QrCode.DefaultResolutionScale;
+
+				ServiceRef.LogService.LogDebug($"GenerateQrCode start: {Uri} ({this.QrCodeWidth}x{this.QrCodeHeight} scale={this.QrResolutionScale})");
+				byte[] Bin = Services.UI.QR.QrCode.GeneratePng(Uri, this.QrCodeWidth * this.QrResolutionScale, this.QrCodeHeight * this.QrResolutionScale);
+				this.QrCodeBin = Bin;
+
+				try
+				{
+					// Persist to a temporary file to avoid premature bitmap recycling when view hierarchies animate.
+					string CacheDir = FileSystem.CacheDirectory;
+					string FileName = $"qr_{Guid.NewGuid():N}.png";
+					string FullPath = Path.Combine(CacheDir, FileName);
+					File.WriteAllBytes(FullPath, Bin);
+					this.qrTempFilePath = FullPath;
+					this.QrCode = ImageSource.FromFile(FullPath);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+					// Fallback to in-memory stream method if file write fails
+					this.QrCode = ImageSource.FromStream(() => new MemoryStream(Bin));
+				}
+
+				this.QrCodeContentType = Constants.MimeTypes.Png;
+				this.QrCodeUri = Uri;
+				this.HasQrCode = true;
+				ServiceRef.LogService.LogDebug($"GenerateQrCode done: {Uri} (bytes={Bin.Length})");
 			}
-
-			if (this.QrResolutionScale == 0)
-				this.QrResolutionScale = Constants.QrCode.DefaultResolutionScale;
-
-			byte[] Bin = Services.UI.QR.QrCode.GeneratePng(Uri, this.QrCodeWidth * this.QrResolutionScale, this.QrCodeHeight * this.QrResolutionScale);
-			this.QrCode = ImageSource.FromStream(() => new MemoryStream(Bin));
-			this.QrCodeBin = Bin;
-			this.QrCodeContentType = Constants.MimeTypes.Png;
-			this.QrCodeUri = Uri;
-			this.HasQrCode = true;
 		}
 
 		/// <summary>
@@ -47,11 +84,30 @@ namespace NeuroAccessMaui.UI.Pages
 		/// </summary>
 		public void RemoveQrCode()
 		{
-			this.QrCode = null;
-			this.QrCodeBin = null;
-			this.QrCodeContentType = null;
-			this.QrCodeUri = null;
-			this.HasQrCode = false;
+			lock (this.qrSync)
+			{
+				this.QrCode = null;
+				this.QrCodeBin = null;
+				this.QrCodeContentType = null;
+				this.QrCodeUri = null;
+				this.HasQrCode = false;
+				if (!string.IsNullOrEmpty(this.qrTempFilePath))
+				{
+					try
+					{
+						if (File.Exists(this.qrTempFilePath))
+							File.Delete(this.qrTempFilePath);
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+					}
+					finally
+					{
+						this.qrTempFilePath = null;
+					}
+				}
+			}
 		}
 
 		/// <summary>
@@ -59,12 +115,18 @@ namespace NeuroAccessMaui.UI.Pages
 		/// </summary>
 		/// <returns></returns>
 		[RelayCommand]
-		public async Task OpenQrPopup()
+		public async Task OpenQrPopup(string? Title)
 		{
 			if (this.QrCodeBin is null) return;
 
-			ShowQRPopup QrPopup = new(this.QrCodeBin);
-			await ServiceRef.UiService.PushAsync(QrPopup);
+			ShowQRPopup QrPopup;
+
+			if (!string.IsNullOrEmpty(Title))
+				QrPopup = new(this.QrCodeBin, this.QrCodeUri, Title);
+			else
+				QrPopup = new(this.QrCodeBin, this.QrCodeUri);
+
+			await ServiceRef.PopupService.PushAsync(QrPopup);
 		}
 
 		#region Properties

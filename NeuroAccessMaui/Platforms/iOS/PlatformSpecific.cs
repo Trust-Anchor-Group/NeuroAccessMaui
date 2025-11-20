@@ -427,7 +427,7 @@ namespace NeuroAccessMaui.Services
 		private void OnKeyboardWillHide(NSNotification notification)
 		{
 			float keyboardHeight = 0;
-			KeyboardShown.Raise(this, new KeyboardSizeMessage(keyboardHeight));
+			KeyboardHidden.Raise(this, new KeyboardSizeMessage(keyboardHeight));
 			KeyboardSizeChanged.Raise(this, new KeyboardSizeMessage(keyboardHeight));
 			WeakReferenceMessenger.Default.Send(new KeyboardSizeMessage(keyboardHeight));
 		}
@@ -460,7 +460,7 @@ namespace NeuroAccessMaui.Services
 				};
 
 				// Add any additional data as UserInfo
-				if (data != null)
+				if (data is not null)
 				{
 					NSMutableDictionary UserInfo = new();
 					foreach (KeyValuePair<string, string> Pair in data)
@@ -524,5 +524,44 @@ namespace NeuroAccessMaui.Services
 			this.ShowLocalNotification(Title, MessageBody, Data);
         }
 		#endregion
+
+		public Thickness GetInsets()
+		{
+			/// <summary>
+			/// Gets the current safe-area insets for the active window using the root view's
+			/// <see cref="UIView.SafeAreaLayoutGuide"/> when available, falling back to the window's
+			/// <see cref="UIWindow.SafeAreaInsets"/> if necessary.
+			/// </summary>
+			/// <returns>Safe-area insets as a <see cref="Thickness"/>.</returns>
+			// Try to get the current UIWindow.
+			UIWindow? Window = AppDelegate.GetKeyWindow();
+			if (Window is null)
+				return new Thickness(0);
+
+			// Prefer using the root view's SafeAreaLayoutGuide to compute insets.
+			UIView? RootView = Window.RootViewController?.View;
+			if (RootView is not null)
+			{
+				CoreGraphics.CGRect Bounds = RootView.Bounds;
+				CoreGraphics.CGRect LayoutFrame = RootView.SafeAreaLayoutGuide.LayoutFrame;
+
+				double Left = LayoutFrame.Left - Bounds.Left;
+				double Top = LayoutFrame.Top - Bounds.Top;
+				double Right = Bounds.Right - LayoutFrame.Right;
+				double Bottom = Bounds.Bottom - LayoutFrame.Bottom;
+
+				// Validate non-negative before returning.
+				if (Left >= 0 && Top >= 0 && Right >= 0 && Bottom >= 0)
+					return new Thickness(Left, Top, Right, Bottom);
+			}
+
+			// Fallback to window safe area insets.
+			UIEdgeInsets Insets = Window.SafeAreaInsets;
+			return new Thickness(
+				(double)Insets.Left,
+				(double)Insets.Top,
+				(double)Insets.Right,
+				(double)Insets.Bottom);
+		}
 	}
 }

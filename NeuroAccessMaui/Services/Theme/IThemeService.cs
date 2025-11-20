@@ -23,12 +23,28 @@ namespace NeuroAccessMaui.Services.Theme
 		/// Sets the application theme.
 		/// </summary>
 		/// <param name="Theme">The <see cref="AppTheme"/> to apply.</param>
-		Task SetTheme(AppTheme Theme);
+		void SetTheme(AppTheme Theme);
+
+		/// <summary>
+		/// Sets the active theme
+		/// </summary>
+		/// <param name="theme"></param>
+		void SetLocalTheme(AppTheme theme);
 
 		/// <summary>
 		/// Gets the mapping of image identifiers to their URIs.
 		/// </summary>
 		IReadOnlyDictionary<string, Uri> ImageUris { get; }
+
+		/// <summary>
+		/// If the theme has been loaded.
+		/// </summary>
+		TaskCompletionSource ThemeLoaded { get; }
+
+		/// <summary>
+		/// Clears locally cached branding descriptors for the current provider domain.
+		/// </summary>
+		public Task<int> ClearBrandingCacheForCurrentDomain();
 
 		/// <summary>
 		/// Returns the image URI for the given identifier, or empty string if not found.

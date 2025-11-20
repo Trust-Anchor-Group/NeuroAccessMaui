@@ -11,7 +11,7 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.SellEDaler">
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 
@@ -22,10 +22,10 @@
 
 				<Label Text="{l:Localize SellEDaler}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<VerticalStackLayout Margin="{DynamicResource SmallMargins}"
-                         BackgroundColor="{AppThemeBinding Light={DynamicResource PageBackgroundColorLightTheme}, Dark={DynamicResource PageBackgroundColorDarkTheme}}">
+                         BackgroundColor="{DynamicResource PageBackgroundColorLightTheme}">
 							<Label Text="{l:Localize SellEDaler}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize SellEDalerDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
 							<Label Text="{l:Localize Amount}"/>
@@ -41,7 +41,7 @@
 														Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

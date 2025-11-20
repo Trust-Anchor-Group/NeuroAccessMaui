@@ -63,7 +63,7 @@ namespace NeuroAccessMaui.Services.Notification.Contracts
 			this.Contract ??= await this.GetContract();
 			ViewContractNavigationArgs Args = new(this.Contract, false);
 
-			await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 		}
 
 		/// <summary>

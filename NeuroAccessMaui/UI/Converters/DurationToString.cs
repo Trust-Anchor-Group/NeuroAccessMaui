@@ -9,6 +9,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Converts a <see cref="Duration"/> value to a <see cref="String"/> value.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class DurationToString : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>

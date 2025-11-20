@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,21 +24,34 @@ namespace NeuroAccessMaui.UI.Controls
 
 		private static void OnViewChanged(BindableObject bindable, object oldValue, object newValue)
 		{
-			((ConditionView)bindable).UpdateContent();
+			ConditionView Control = (ConditionView)bindable;
+
+			if (newValue is View View)
+			{
+				SetInheritedBindingContext(View, Control.BindingContext);
+			}
+
+			Control.UpdateContent();
 		}
+
 
 		private void UpdateContent()
 		{
 			this.Content = this.Condition ? this.True : this.False;
+			this.InvalidateMeasure();
 		}
 
 		protected override void OnBindingContextChanged()
 		{
-			base.OnBindingContextChanged();
-			if (this.True is not null)
-				this.True.BindingContext = this.BindingContext;
-			if (this.False is not null)
-				this.False.BindingContext = this.BindingContext;
+			{
+				base.OnBindingContextChanged();
+
+				if (this.True is not null)
+					SetInheritedBindingContext(this.True, this.BindingContext);
+
+				if (this.False is not null)
+					SetInheritedBindingContext(this.False, this.BindingContext);
+			}
 		}
 
 		public bool Condition

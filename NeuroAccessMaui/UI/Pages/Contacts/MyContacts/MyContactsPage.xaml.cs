@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		/// </summary>
 		public MyContactsPage()
 		{
-			this.ContentPageModel = new ContactListViewModel(ServiceRef.UiService.PopLatestArgs<ContactListNavigationArgs>());
+			this.ContentPageModel = new ContactListViewModel(ServiceRef.NavigationService.PopLatestArgs<ContactListNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

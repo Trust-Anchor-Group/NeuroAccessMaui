@@ -14,7 +14,7 @@
                       xmlns:model="clr-namespace:NeuroAccessMaui.UI.Pages.Main.XmppForm"
                       xmlns:model2="clr-namespace:NeuroAccessMaui.UI.Pages.Main.XmppForm.Model">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
 
 		<controls:Background/>
 			<Grid RowDefinitions="auto, auto, *" RowSpacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
@@ -23,41 +23,38 @@
 											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 				<Label Grid.Row="1" Style="{DynamicResource PageTitleLabel}" Text="{Binding Title}"/>
-				<Frame Grid.Row="2" Style="{DynamicResource FrameSet}">
-						<Grid RowDefinitions="auto,*,auto" HorizontalOptions="Fill" >
-							<VerticalStackLayout Grid.Row="0" BindableLayout.ItemsSource="{Binding Instructions}">
-								<BindableLayout.ItemTemplate>
-									<DataTemplate>
-										<Label Text="{Binding .}" LineBreakMode="WordWrap" VerticalOptions="Center"/>
-									</DataTemplate>
-								</BindableLayout.ItemTemplate>
-							</VerticalStackLayout>
+			<Border Grid.Row="2" Style="{DynamicResource BorderSet}">
+				<Grid RowDefinitions="auto,*,auto" HorizontalOptions="Fill" >
+					<VerticalStackLayout Grid.Row="0" BindableLayout.ItemsSource="{Binding Instructions}">
+						<BindableLayout.ItemTemplate>
+							<DataTemplate x:DataType="x:String">
+								<Label Text="{Binding .}" LineBreakMode="WordWrap" VerticalOptions="Center"/>
+							</DataTemplate>
+						</BindableLayout.ItemTemplate>
+					</VerticalStackLayout>
 
-							<CollectionView Grid.Row="1" ItemsSource="{Binding Pages}" SelectionMode="None">
-								<CollectionView.ItemsLayout>
-									<LinearItemsLayout Orientation="Vertical" />
-								</CollectionView.ItemsLayout>
-								<CollectionView.ItemTemplate>
-									<DataTemplate x:DataType="model2:PageModel">
-										<Grid RowDefinitions="auto, auto">
-											<Label Grid.Row="0"
-												Text="{Binding Label}"
-												IsVisible="{Binding HasLabel}"
-												LineBreakMode="WordWrap"
-												/>
-											<ContentView Grid.Row="1"
-														Content="{Binding Content}"
-														/>
-										</Grid>
-									</DataTemplate>
-								</CollectionView.ItemTemplate>
-							</CollectionView>
+					<CollectionView Grid.Row="1" ItemsSource="{Binding Pages}" SelectionMode="None">
+						<CollectionView.ItemsLayout>
+							<LinearItemsLayout Orientation="Vertical" />
+						</CollectionView.ItemsLayout>
+						<CollectionView.ItemTemplate>
+							<DataTemplate x:DataType="model2:PageModel">
+								<Grid RowDefinitions="auto, auto">
+									<Label Grid.Row="0"
+											Text="{Binding Label}"
+											IsVisible="{Binding HasLabel}"
+											LineBreakMode="WordWrap"/>
+									<ContentView Grid.Row="1"
+														 Content="{Binding Content}"/>
+								</Grid>
+							</DataTemplate>
+						</CollectionView.ItemTemplate>
+					</CollectionView>
 
-							<controls:TextButton Grid.Row="3" LabelData="{l:Localize Submit}" Style="{DynamicResource FilledTextButton}"
+					<controls:TextButton Grid.Row="3" LabelData="{l:Localize Submit}" Style="{DynamicResource FilledTextButton}"
 														Command="{Binding SubmitCommand}" IsEnabled="{Binding IsFormOk}" Margin="{DynamicResource SmallMargins}"/>
-						</Grid>
-				</Frame>
-
-			</Grid>
+				</Grid>
+			</Border>
+		</Grid>
 	</Grid>
 </base:BaseContentPage>

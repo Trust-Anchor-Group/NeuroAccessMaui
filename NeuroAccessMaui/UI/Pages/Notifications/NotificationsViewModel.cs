@@ -12,7 +12,7 @@ using NeuroAccessMaui.UI.Pages.Notifications.ObjectModel;
 
 namespace NeuroAccessMaui.UI.Pages.Notifications
 {
-	public partial class NotificationsViewModel : BaseViewModel
+	public partial class NotificationsViewModel : BaseViewModel, IDisposable
 	{
 
 		public ObservableTask NotificationsLoader = new();
@@ -21,7 +21,7 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		private ObservableCollection<ObservableNotification> notifications = new();
 
 
-		protected override Task OnAppearing()
+		public override Task OnAppearingAsync()
 		{
 			ServiceRef.NotificationService.OnNewNotification += this.OnNotificationEvent;
 			//Load notifications
@@ -35,14 +35,14 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 						this.Notifications.Add(new ObservableNotification(Event));
 				});
 			});
-			return base.OnAppearing();
+			return base.OnAppearingAsync();
 		}
 
-		protected override Task OnDisappearing()
+		public override async Task OnDisappearingAsync()
 		{
 			ServiceRef.NotificationService.OnNewNotification -= this.OnNotificationEvent;
 
-			return base.OnDisappearing();
+			await base.OnDisappearingAsync();
 		}
 
 		//On notification event
@@ -69,5 +69,26 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			}
 		}
 
+		private bool disposedValue;
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!this.disposedValue)
+			{
+				if (disposing)
+				{
+					this.NotificationsLoader.Dispose();
+				}
+
+				this.disposedValue = true;
+			}
+		}
+
+
+		public void Dispose()
+		{
+			this.Dispose(disposing: true);
+			GC.SuppressFinalize(this);
+		}
 	}
 }

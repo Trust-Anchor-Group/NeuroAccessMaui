@@ -70,5 +70,9 @@ namespace NeuroAccessMaui.Services.Intents
 		/// <returns>A task representing the asynchronous operation.</returns>
 		Task ProcessIntentAsync(AppIntent intent);
 
+		/// <summary>
+		/// Processes a OpenUrl intent with onboarding by returning value
+		/// </summary>
+		Task<string?> TryGetAndDequeueOnboardingUrl();
 	}
 }

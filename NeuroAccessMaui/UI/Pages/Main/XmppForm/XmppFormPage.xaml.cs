@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.XmppForm
 		/// </summary>
 		public XmppFormPage()
 		{
-			this.ContentPageModel = new XmppFormViewModel(ServiceRef.UiService.PopLatestArgs<XmppFormNavigationArgs>());
+			this.ContentPageModel = new XmppFormViewModel(ServiceRef.NavigationService.PopLatestArgs<XmppFormNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

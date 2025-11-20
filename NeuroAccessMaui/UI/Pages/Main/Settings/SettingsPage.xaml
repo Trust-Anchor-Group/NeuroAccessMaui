@@ -12,28 +12,27 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Settings">
 
-	<Grid BackgroundColor="{AppThemeBinding Light={DynamicResource SurfaceBackgroundWLLight}, Dark={DynamicResource SurfaceBackgroundWLDark}}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, *">
 
-		<controls:Background/>
+		<controls:Background Grid.RowSpan="2"/>
 
-		<ScrollView>
-			<VerticalStackLayout Margin="{DynamicResource SmallMargins}">
-				<Grid ColumnDefinitions="Auto, *" Margin="{DynamicResource SmallMargins}">
-					<controls:SvgButton
-						Grid.Row="0" Grid.Column="0"
-						Command="{Binding GoBackCommand}"
-						SvgSource="close.svg"
-						Style="{DynamicResource IconButton}"/>
+		<Grid ColumnDefinitions="Auto, *" Margin="16,8,16,16">
+			<controls:SvgButton
+				Command="{Binding GoBackCommand}"
+				SvgSource="close.svg"
+				Style="{DynamicResource IconButton}"/>
 
-					<Label
-						Grid.Column="1"
-						HorizontalOptions="End"
-						Style="{DynamicResource PageTitleLabel}"
-						Text="{l:Localize Settings}"/>
-				</Grid>
+			<Label
+				Grid.Column="1"
+				HorizontalOptions="End"
+				Style="{DynamicResource PageTitleLabel}"
+				Text="{l:Localize Settings}"/>
+		</Grid>
 				
+		<ScrollView Grid.Row="1">
+			<VerticalStackLayout Margin="{DynamicResource SmallLeftRightBottomMargins}">
 				<!-- Display Settings -->
-				<Border Style="{DynamicResource BorderSet}">
+				<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource SmallLeftRightBottomMargins}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize DisplaySettings}"/>
 
@@ -60,7 +59,7 @@
 						</Border>
 
 						<!-- Language options -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangeLanguageCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ChangeLanguageCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize LanguageOptions}" InputTransparent="True"/>
@@ -77,7 +76,7 @@
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize IdentitySettings}"/>
 
 						<!-- Compromized -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding CompromiseCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding CompromiseCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ReportAsCompromized}" InputTransparent="True"/>
@@ -87,7 +86,7 @@
 						</controls:TemplatedButton>
 
 						<!-- Revoke -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding RevokeCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding RevokeCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize RevokeIdentity}" InputTransparent="True"/>
@@ -97,7 +96,7 @@
 						</controls:TemplatedButton>
 
 						<!-- Transfer -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding TransferCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding TransferCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize TransferIdentity}" InputTransparent="True"/>
@@ -115,7 +114,7 @@
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize SecuritySettings}"/>
 
 						<!-- Change Password -->
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand" Command="{x:Binding ChangePasswordCommand}">
+						<controls:TemplatedButton HorizontalOptions="Fill" Command="{x:Binding ChangePasswordCommand}">
 							<Border Style="{DynamicResource BorderSubSet}" InputTransparent="True">
 								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" InputTransparent="True">
 									<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ChangePassword}" InputTransparent="True"/>
@@ -169,7 +168,7 @@
 							</VerticalStackLayout>
 						</Border>
 
-						<controls:TemplatedButton HorizontalOptions="FillAndExpand"
+						<controls:TemplatedButton HorizontalOptions="Fill"
 												  Command="{x:Binding ClearCacheCommand}">
 							<Border Style="{DynamicResource BorderSubSet}"
 									InputTransparent="True">
@@ -184,12 +183,14 @@
 								</VerticalStackLayout>
 							</Border>
 						</controls:TemplatedButton>
+
+                        
 					</VerticalStackLayout>
 				</Border>
 
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-						<Label Style="{DynamicResource SectionTitleLabel}" Text="Beta Features"/>
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize BetaFeature}"/>
 						<Border Style="{DynamicResource BorderSubSet}">
 							<VerticalStackLayout>
 								<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto" RowSpacing="{DynamicResource SmallSpacing}">
@@ -199,7 +200,7 @@
 										   Text="{l:Localize BetaFeaturesDescription}"
 										   Grid.Row="1"/>
 									<CheckBox IsChecked="{Binding IsBetaEnabled, Mode=TwoWay}"
-											  Color="{AppThemeBinding Light={DynamicResource ContentPrimaryWLLight}, Dark={DynamicResource ContentPrimaryWLDark}}"
+											  Color="{DynamicResource ContentPrimaryWL}"
 											  CheckedChanged="BetaEnabled_CheckedChanged"
 											  VerticalOptions="Center"
 											  Grid.Column="1"
@@ -213,7 +214,7 @@
 				<!-- Version Information -->
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
-						<Label Style="{DynamicResource SectionTitleLabel}" Text="Version"/>
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize Version}"/>
 						<Border Style="{DynamicResource BorderSubSet}">
 							<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 								<VerticalStackLayout>

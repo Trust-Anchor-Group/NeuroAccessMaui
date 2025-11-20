@@ -1,241 +1,54 @@
-using System.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Contacts;
-using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
-using NeuroAccessMaui.UI.Pages.Notifications;
-using Waher.Networking.XMPP.Contracts;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
-using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.UI.Pages.Main.Apps;
-using EDaler;
-using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
-using NeuroAccessMaui.Services.UI;
-using NeuroAccessMaui.UI.Pages.Main.Settings;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.UI.Controls;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
-	public partial class MainViewModel : QrXmppViewModel
+	/// <summary>
+	/// Provides the tab definitions and selection state for the main view-switcher surface.
+	/// </summary>
+	public partial class MainViewModel : BaseViewModel
 	{
-		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeLight);
-		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeDark);
+		private readonly ObservableCollection<TabDefinition> tabs;
 
-		public string BannerUri =>
-			Application.Current.RequestedTheme switch
+		/// <summary>
+		/// Initializes a new instance of the <see cref="MainViewModel"/> class.
+		/// </summary>
+		public MainViewModel()
+		{
+			this.tabs = new ObservableCollection<TabDefinition>
 			{
-				AppTheme.Dark => this.BannerUriDark,
-				AppTheme.Light => this.BannerUriLight,
-				_ => this.BannerUriLight
+				this.CreateTab("home", "home.svg", ServiceRef.Localizer[nameof(AppResources.Home)]),
+				this.CreateTab("wallet", "wallet.svg", ServiceRef.Localizer[nameof(AppResources.Wallet)], isProminent: true),
+				this.CreateTab("apps", "apps.svg", ServiceRef.Localizer[nameof(AppResources.Apps)])
 			};
 
-		public MainViewModel()
-			: base()
-		{
-
-			Application.Current.RequestedThemeChanged += (_, __) =>
-				OnPropertyChanged(nameof(BannerUri));
-		}
-	
-		public override Task<string> Title => Task.FromResult(ContactInfo.GetFriendlyName(ServiceRef.TagProfile.LegalIdentity));
-
-		protected override async Task OnAppearing()
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
-
-			});
-
-			await base.OnAppearing();
-			try
-			{
-				
-				/*
-				try
-				{
-					await Permissions.RequestAsync<NotificationPermission>();
-				}
-				catch
-				{
-					//Normal operation if Notification is not supported or denied
-				}
-				*/
-				_ = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
-				await ServiceRef.IntentService.ProcessQueuedIntentsAsync();
-
-
-		//		GeoMapViewModel vm = new(59.638346832492765,11.879682074310969);
-		//		await ServiceRef.UiService.PushAsync(new GeoMapPopup(vm));
-		//		Console.WriteLine($"GeoMap result: {await vm.Result}");
-
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		protected override async Task OnInitialize()
-		{
-			await base.OnInitialize();
-
-			await this.OnIsConnectedChanged(); // Call this method in case the connection state has already changed before the view model was initialized.
-		}
-
-		protected override async void OnPropertyChanged(PropertyChangedEventArgs e)
-		{
-			base.OnPropertyChanged(e);
-
-			switch (e.PropertyName)
-			{
-				case nameof(this.IsConnected):
-					await this.OnIsConnectedChanged();
-					break;
-			}
-		}
-
-		private async Task OnIsConnectedChanged()
-		{
-			try
-			{
-				if (this.IsConnected && ServiceRef.TagProfile.LegalIdentityNeedsRefreshing())
-				{
-					LegalIdentity RefreshedIdentity = await ServiceRef.XmppService.GetLegalIdentity(ServiceRef.TagProfile.LegalIdentity?.Id);
-					await MainThread.InvokeOnMainThreadAsync(async () => await ServiceRef.TagProfile.SetLegalIdentity(RefreshedIdentity, false));
-				}
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-			finally
-			{
-				this.ScanQrCodeCommand.NotifyCanExecuteChanged();
-			}
-		}
-
-		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
-
-		public bool CanScanQrCode => true;
-
-		[RelayCommand(CanExecute = nameof(CanScanQrCode))]
-		private async Task ScanQrCode()
-		{
-			await MainThread.InvokeOnMainThreadAsync(async () =>
-			{
-				await Services.UI.QR.QrCode.ScanQrCodeAndHandleResult();
-			});
-		}
-
-		[RelayCommand(AllowConcurrentExecutions = false)]
-		public async Task ViewId()
-		{
-			try
-			{
-				if(await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
-					await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage));
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		[RelayCommand(AllowConcurrentExecutions = false)]
-		public async Task OpenNotifications()
-		{
-			try
-			{
-				if (await App.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
-					await ServiceRef.UiService.GoToAsync(nameof(NotificationsPage));
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		[RelayCommand(AllowConcurrentExecutions = false)]
-		public async Task GoToApplyIdentity()
-		{
-			try
-			{
-				await ServiceRef.UiService.GoToAsync(nameof(ApplyIdPage));
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		// Go to Apps page
-		[RelayCommand]
-		public async Task ViewApps()
-		{
-			try
-			{
-				await ServiceRef.UiService.GoToAsync(nameof(AppsPage));
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		[ObservableProperty]
-		private bool showingNoWalletPopup = false;
-
-		[RelayCommand(AllowConcurrentExecutions = false)]
-		public async Task OpenWallet()
-		{
-			if (ServiceRef.TagProfile.HasBetaFeatures)
-			{
-				await ShowWallet();
-				return;
-			}
-			else
-			{
-				this.ShowingNoWalletPopup = true;
-				await Task.Delay(5000);
-				this.ShowingNoWalletPopup = false;
-			}
-		}
-
-		[RelayCommand]
-		internal static async Task ShowWallet()
-		{
-			try
-			{
-				Balance Balance = await ServiceRef.XmppService.GetEDalerBalance();
-				(decimal PendingAmount, string PendingCurrency, PendingPayment[] PendingPayments) = await ServiceRef.XmppService.GetPendingEDalerPayments();
-				(AccountEvent[] Events, bool More) = await ServiceRef.XmppService.GetEDalerAccountEvents(Constants.BatchSizes.AccountEventBatchSize);
-
-				WalletNavigationArgs Args = new(Balance, PendingAmount, PendingCurrency, PendingPayments, Events, More);
-
-				await ServiceRef.UiService.GoToAsync(nameof(MyEDalerWalletPage), Args, BackMethod.Pop);
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-				await ServiceRef.UiService.DisplayException(Ex);
-			}
+			this.Tabs = new ReadOnlyObservableCollection<TabDefinition>(this.tabs);
+			this.SelectedTabIndex = 0;
 		}
 
 		/// <summary>
-		/// Shows the settings page.
+		/// Gets the collection of tabs displayed in the navigation host.
 		/// </summary>
-		[RelayCommand]
-		private static async Task ShowSettings()
+		public ReadOnlyObservableCollection<TabDefinition> Tabs { get; }
+
+		/// <summary>
+		/// Gets or sets the selected tab index.
+		/// </summary>
+		[ObservableProperty]
+		private int selectedTabIndex;
+
+		private TabDefinition CreateTab(string key, string icon, string title, bool isProminent = false)
 		{
-			try
+			return new TabDefinition
 			{
-				await ServiceRef.UiService.GoToAsync(nameof(SettingsPage));
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
+				Key = key,
+				Icon = icon,
+				Title = title,
+				IsProminent = isProminent
+			};
 		}
 	}
 }

@@ -1,5 +1,22 @@
-﻿namespace NeuroAccessMaui
+﻿using Waher.Events.Statistics;
+
+namespace NeuroAccessMaui
 {
+
+	public static class RegexBackups
+	{
+		/// <summary>
+		/// Regex pattern for validating Neuro-Feature tokens.
+		/// </summary>
+		public const string IotId = """iotid:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+)""";
+
+		public const string NeuroFeatures = """nfeat:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+)""";
+
+		public const string Smartcontract = """iotsc:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+)([?][^\s=&]+=[^\s&]*(&[^\s=&]+=[^\s&]*)*)?""";
+		
+		// ((iotid:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+))|(nfeat:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+))|(iotsc:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+)([?][^\s=&]+=[^\s&]*(&[^\s=&]+=[^\s&]*)*)?)|(edaler:[^\s=;]+=[^\s;]*(;[^\s=;]+=[^\s;]*)*))
+
+	}
 	/// <summary>
 	/// A set of never changing property constants and helpful values.
 	/// </summary>
@@ -70,6 +87,11 @@
 			/// Maximum number of seconds screen recording is allowed.
 			/// </summary>
 			public const int MaxScreenRecordingTimeSeconds = 60 * 60;
+
+			/// <summary>
+			/// Maximum allowed consecutive repeating identical symbols before blocking
+			/// </summary>
+			public const int MaxPasswordRepeatingRun = 6;
 		}
 
 		/// <summary>
@@ -81,6 +103,38 @@
 			/// The default language code.
 			/// </summary>
 			public const string Default = "en-US";
+		}
+
+		/// <summary>
+		/// XML Schemes (namespaces used also as schema registration keys) + packaged file names.
+		/// </summary>
+		public static class Schemes
+		{
+			// Namespace constants (as declared in XSD targetNamespace) - also used as schema registration keys.
+			public const string NeuroAccessBrandingV1 = "urn:neuroaccess:branding:1.0";
+			public const string NeuroAccessBrandingV2 = "urn:neuroaccess:branding:2.0";
+			public const string NeuroAccessBrandingV2Url = "https://paiwise.tagroot.io/Schema/NeuroAccessBrandingV2.xsd";
+			public const string KYCProcess = "urn:neuroaccess:kyc:1.0";
+			public const string NeuroAccessKycProcessUrl = "https://paiwise.tagroot.io/Schema/NeuroAccessKycProcess.xsd";
+
+			// Packaged schema file names (Resources/Raw flattened by MauiAsset)
+			public const string BrandingDescriptorV1File = "NeuroAccessBrandingV1.xsd";
+			public const string BrandingDescriptorV2File = "NeuroAccessBrandingV2.xsd";
+			public const string KycProcessFile = "KYCProcess.xsd"; // Legacy alias retained for compatibility.
+			public const string NeuroAccessKycProcessFile = "NeuroAccessKycProcess.xsd";
+
+			// Namespace key groups allow validation fallback during the URL migration.
+			public static readonly string[] KycNamespaceKeys = new string[]
+			{
+				NeuroAccessKycProcessUrl,
+				KYCProcess,
+			};
+
+			public static readonly string[] BrandingV2NamespaceKeys = new string[]
+			{
+				NeuroAccessBrandingV2Url,
+				NeuroAccessBrandingV2,
+			};
 		}
 
 		/// <summary>
@@ -328,6 +382,11 @@
 			/// Last names
 			/// </summary>
 			public const string LastNames = "LAST";
+
+			/// <summary>
+			/// Full name
+			/// </summary>
+			public const string FullName = "FULLNAME";
 
 			/// <summary>
 			/// Personal number
@@ -635,7 +694,7 @@
 			/// <summary>
 			/// Database timeout
 			/// </summary>
-			public static readonly TimeSpan Database = TimeSpan.FromSeconds(10);
+			public static readonly TimeSpan Database = TimeSpan.FromSeconds(30);
 
 			/// <summary>
 			/// XMPP Connect timeout
@@ -662,6 +721,11 @@
 			/// </summary>
 			public static readonly TimeSpan IdentityAllowedWatch = TimeSpan.FromSeconds(60);
 
+		}
+
+		public static class Cache
+		{
+			public static readonly TimeSpan DefaultImageCache = TimeSpan.FromDays(7);
 		}
 
 		/// <summary>
@@ -814,11 +878,16 @@
 			/// </summary>
 			public const string MainPage = "//MainPage";
 
-			/// <summary>
-			/// Path to registration page.
-			/// </summary>
-			public const string RegistrationPage = "//Registration";
-		}
+		/// <summary>
+		/// Path to registration page.
+		/// </summary>
+		public const string RegistrationPage = "//Registration";
+
+		/// <summary>
+		/// Path to onboarding page.
+		/// </summary>
+		public const string OnboardingPage = "//Onboarding";
+	}
 
 		/// <summary>
 		/// Age-related constants.
