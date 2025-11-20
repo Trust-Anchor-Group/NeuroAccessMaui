@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Made field in request and payment page have proper background colors
+- Handle neuroaccess URIs
+- Add dynamic picture size on View Identity
+- Fix margins on QR code so it is always visible in identity
+- Various minor UI improvements
+- Fixed scanning Onboarding QR codes outside of app
+
 ## [2.6.1] - 2025/06/30
 
 ### Added
