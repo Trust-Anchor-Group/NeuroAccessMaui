@@ -62,8 +62,8 @@
 						</Grid>
 
 						<!-- MESSAGE -->
-						<Label Text="{l:Localize Message}" Style="{DynamicResource Brand2BodySHeadSHeadL}" Margin="0,16,0,0"/>
-						<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+						<Label Text="{l:Localize Message}" Style="{DynamicResource Brand2BodySHeadSHeadL}" Margin="0,16,0,0" IsVisible="{Binding IsMerchant}"/>
+						<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}" IsVisible="{Binding IsMerchant}">
 							<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
 													 EntryData="{Binding Path=Message}"
 													 BorderStroke="Transparent"

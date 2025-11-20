@@ -132,6 +132,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 		[ObservableProperty]
 		private bool encryptMessage;
 
+		public bool IsMerchant => ServiceRef.TagProfile?.IsMerchant ?? false;
+
 		#endregion
 
 		/// <summary>
