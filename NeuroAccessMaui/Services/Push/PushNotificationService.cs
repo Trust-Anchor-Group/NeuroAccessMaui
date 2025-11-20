@@ -1,20 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using EDaler;
-using NeuroAccessMaui.Resources.Languages;
-using NeuroFeatures;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Devices;
-using Plugin.Firebase.CloudMessaging;
-using Plugin.Firebase.CloudMessaging.EventArgs;
-using Waher.Content;
 using Waher.Events;
-using Waher.Networking.XMPP;
-using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.Provisioning;
 using Waher.Networking.XMPP.Push;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
@@ -27,6 +16,8 @@ namespace NeuroAccessMaui.Services.Push
 	[Singleton]
 	public class PushNotificationService : LoadableService, IPushNotificationService
 	{
+		private readonly IPushTransport pushTransport;
+		private readonly IPushTokenRegistrar tokenRegistrar;
 		private readonly Dictionary<PushMessagingService, string> tokens = [];
 		private DateTime lastTokenCheck = DateTime.MinValue;
 		private bool isInitialized;
@@ -36,26 +27,29 @@ namespace NeuroAccessMaui.Services.Push
 		/// <summary>
 		/// Push notification service
 		/// </summary>
-		public PushNotificationService()
+		/// <param name="PushTransport">Transport adapter.</param>
+		/// <param name="TokenRegistrar">Token registrar handling broker updates.</param>
+		public PushNotificationService(IPushTransport PushTransport, IPushTokenRegistrar TokenRegistrar)
 		{
-			//	CrossFirebaseCloudMessaging.Current.NotificationReceived += OnNotificationReceived;
-			//	CrossFirebaseCloudMessaging.Current.NotificationTapped += OnNotificationTapped;
+			this.pushTransport = PushTransport;
+			this.tokenRegistrar = TokenRegistrar;
 		}
 
 		/// <summary>
 		/// Loads the specified service.
 		/// </summary>
-		/// <param name="isResuming">Set to <c>true</c> when app is resuming.</param>
-		/// <param name="cancellationToken">Cancellation token.</param>
-		public override async Task Load(bool isResuming, CancellationToken cancellationToken)
+		/// <param name="IsResuming">Set to <c>true</c> when app is resuming.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
 			if (!this.isInitialized)
 			{
 				this.isInitialized = true;
 				App.AppActivated += this.App_AppActivated;
+				this.pushTransport.TokenChanged += this.PushTransport_TokenChanged;
 				try
 				{
-					CrossFirebaseCloudMessaging.Current.TokenChanged += this.FirebaseCloudMessaging_TokenChanged;
+					await this.pushTransport.InitializeAsync(CancellationToken);
 				}
 				catch (Exception ex)
 				{
@@ -65,7 +59,7 @@ namespace NeuroAccessMaui.Services.Push
 				this.ScheduleTokenVerification();
 			}
 
-			await base.Load(isResuming, cancellationToken);
+			await base.Load(IsResuming, CancellationToken);
 		}
 
 		/// <summary>
@@ -86,27 +80,16 @@ namespace NeuroAccessMaui.Services.Push
 			}
 		}
 
-		private void App_AppActivated(object? sender, EventArgs e)
+		private void App_AppActivated(object? Sender, EventArgs EventArgs)
 		{
 			this.ScheduleTokenVerification();
 		}
 
-		private async void FirebaseCloudMessaging_TokenChanged(object? sender, FCMTokenChangedEventArgs e)
+		private async Task PushTransport_TokenChanged(object? Sender, TokenInformation TokenInformation)
 		{
 			try
 			{
-				string? token = e?.Token;
-				if (string.IsNullOrEmpty(token))
-					return;
-
-				TokenInformation info = new()
-				{
-					Token = token,
-					Service = PushMessagingService.Firebase,
-					ClientType = ResolveClientType()
-				};
-
-				await this.CheckPushNotificationToken(info);
+				await this.CheckPushNotificationToken(TokenInformation, CancellationToken.None);
 			}
 			catch (Exception ex)
 			{
@@ -139,17 +122,6 @@ namespace NeuroAccessMaui.Services.Push
 			}, TaskContinuationOptions.OnlyOnFaulted);
 		}
 
-		private static ClientType ResolveClientType()
-		{
-			if (DeviceInfo.Platform == DevicePlatform.Android)
-				return ClientType.Android;
-
-			if (DeviceInfo.Platform == DevicePlatform.iOS || DeviceInfo.Platform == DevicePlatform.MacCatalyst)
-				return ClientType.iOS;
-
-			return ClientType.Other;
-		}
-
 		/// <summary>
 		/// Event raised when a new token is made available.
 		/// </summary>
@@ -169,19 +141,12 @@ namespace NeuroAccessMaui.Services.Push
 			}
 		}
 
-		private static async Task<bool> ForceTokenReport(TokenInformation TokenInformation)
-		{
-			string OldToken = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationToken, string.Empty);
-			DateTime ReportDate = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationReportDate, DateTime.MinValue);
-
-			return (DateTime.UtcNow.Subtract(ReportDate).TotalDays > 7) || (TokenInformation.Token != OldToken);
-		}
-
 		/// <summary>
 		/// Checks if the Push Notification Token is current and registered properly.
 		/// </summary>
 		/// <param name="TokenInformation">Non null if we got it from the OnNewToken</param>
-		public async Task CheckPushNotificationToken(TokenInformation? TokenInformation)
+		/// <param name="CancellationToken">Cancellation token.</param>
+		public async Task CheckPushNotificationToken(TokenInformation? TokenInformation, CancellationToken CancellationToken = default)
 		{
 			try
 			{
@@ -200,26 +165,11 @@ namespace NeuroAccessMaui.Services.Push
 							return;
 					}
 
-					bool ForceReport = await ForceTokenReport(TokenInformation);
-
 					string Version = AppInfo.VersionString + "." + AppInfo.BuildString;
 					string PrevVersion = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationConfigurationVersion, string.Empty);
 					bool IsVersionChanged = Version != PrevVersion;
 
-					if (IsVersionChanged || ForceReport)
-					{
-						string? Token = TokenInformation.Token;
-
-						if (!string.IsNullOrEmpty(Token))
-						{
-							PushMessagingService Service = TokenInformation.Service;
-							ClientType ClientType = TokenInformation.ClientType;
-							await ServiceRef.XmppService.ReportNewPushNotificationToken(Token, Service, ClientType);
-
-							await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationToken, TokenInformation.Token);
-							await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationReportDate, DateTime.UtcNow);
-						}
-					}
+					await this.tokenRegistrar.ReportTokenAsync(TokenInformation, IsVersionChanged, CancellationToken);
 
 					if (IsVersionChanged)
 					{
