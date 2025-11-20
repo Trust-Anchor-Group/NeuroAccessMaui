@@ -28,11 +28,11 @@ namespace NeuroAccessMaui.UI.Controls
 			AutoHeightSKCanvasView? AutoHeightSKCanvasView = this.VirtualView as AutoHeightSKCanvasView;
             if (AutoHeightSKCanvasView is not null)
             {
-                SizeRequest Custom = AutoHeightSKCanvasView.Measure(widthConstraint, heightConstraint);
-                if (Custom.Request == Size.Zero)
+                Size Custom = AutoHeightSKCanvasView.Measure(widthConstraint, heightConstraint);
+                if (Custom == Size.Zero)
                     return base.GetDesiredSize(widthConstraint, heightConstraint);
                 else
-                    return Custom.Request;
+                    return Custom;
             }
             return base.GetDesiredSize(widthConstraint, heightConstraint);
         }
@@ -365,7 +365,7 @@ namespace NeuroAccessMaui.UI.Controls
 		protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
 		{
 			// If the SVG is not loaded yet, fall back to the default measurement.
-			if (this.svg?.Picture == null)
+			if (this.svg?.Picture is null)
 			{
 				return base.OnMeasure(widthConstraint, heightConstraint);
 			}

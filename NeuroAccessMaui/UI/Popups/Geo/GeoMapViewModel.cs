@@ -26,19 +26,20 @@ namespace NeuroAccessMaui.UI.Popups.Password
 		}
 
 		[RelayCommand]
-		public void Confirm()
+		public async Task Confirm()
 		{
 			if (MapControl?.Map?.Navigator.Viewport is null)
 			{
-				result.SetResult(null);
+				this.TrySetResult(null);
+				await ServiceRef.PopupService.PopAsync();
 				return;
 			}
 
 			var vp = MapControl.Map.Navigator.Viewport;
 			// Convert world (Mercator) to lon/lat
 			var (lon, lat) = SphericalMercator.ToLonLat(vp.CenterX, vp.CenterY);
-			result.SetResult($"{lon},{lat}");
-			ServiceRef.UiService.PopAsync();
+			this.TrySetResult($"{lon},{lat}");
+			await ServiceRef.PopupService.PopAsync();
 		}
 	}
 }

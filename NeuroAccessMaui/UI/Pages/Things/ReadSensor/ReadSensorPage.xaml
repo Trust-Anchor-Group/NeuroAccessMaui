@@ -28,7 +28,7 @@
 				<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{DynamicResource KeyLabel}" LineBreakMode="WordWrap"/>
 				<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{DynamicResource ClickableValueLabel}">
 					<Label.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference SensorData}}" CommandParameter="{Binding}" />
+						<TapGestureRecognizer Command="{Binding ClickCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ReadSensorViewModel}}, x:DataType=viewmodel:ReadSensorViewModel}" CommandParameter="{Binding}" />
 					</Label.GestureRecognizers>
 				</Label>
 			</Grid>
@@ -40,7 +40,7 @@
 				<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=ValueString}" Style="{DynamicResource ClickableValueLabel}"
 					   HorizontalTextAlignment="{Binding HorizontalAlignment}">
 					<Label.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference SensorData}}" CommandParameter="{Binding}" />
+						<TapGestureRecognizer Command="{Binding ClickCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ReadSensorViewModel}}, x:DataType=viewmodel:ReadSensorViewModel}" CommandParameter="{Binding}" />
 					</Label.GestureRecognizers>
 				</Label>
 			</Grid>
@@ -49,7 +49,7 @@
 		<DataTemplate x:Key="ErrorModelTemplate" x:DataType="model:ErrorModel">
 			<Label LineBreakMode="WordWrap" Text="{Binding Path=ErrorMessage}" Style="{DynamicResource AlertLabel}">
 				<Label.GestureRecognizers>
-					<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference SensorData}}" CommandParameter="{Binding}" />
+					<TapGestureRecognizer Command="{Binding ClickCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ReadSensorViewModel}}, x:DataType=viewmodel:ReadSensorViewModel}" CommandParameter="{Binding}" />
 				</Label.GestureRecognizers>
 			</Label>
 		</DataTemplate>
@@ -78,23 +78,23 @@
 											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 			<Label Grid.Row="0" Grid.Column="1" Text="{l:Localize SensorData}" Style="{DynamicResource PageTitleLabel}" HorizontalOptions="End" HorizontalTextAlignment="End"/>
-			<Frame Style="{DynamicResource FrameSet}" Grid.Row="1">
+			<Border Style="{DynamicResource BorderSet}" Grid.Row="1">
 				<Grid RowDefinitions="auto, auto, *" RowSpacing="{DynamicResource SmallSpacing}" >
-					<Label Grid.Row="0"  Text="{l:Localize SensorDataText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
+					<Label Grid.Row="0" Text="{l:Localize SensorDataText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
 					<Label Grid.Row="1" Text="{Binding Path=Status}" Style="{DynamicResource InfoLabel}" VerticalOptions="Center" IsVisible="{Binding Path=HasStatus}"/>
-					<Frame Style="{DynamicResource FrameSubSet}" Grid.Row="2">
-					<CollectionView x:Name="SensorData"
-											 ItemsSource="{Binding SensorData}"
-											 ItemTemplate="{StaticResource ItemStyleSelector}"
-											 ItemSizingStrategy="MeasureAllItems"
-											 SelectionMode="None" VerticalScrollBarVisibility="Always">
-						<CollectionView.ItemsLayout>
-							<LinearItemsLayout Orientation="Vertical" ItemSpacing="{DynamicResource SmallSpacing}"/>
-						</CollectionView.ItemsLayout>
+					<Border Style="{DynamicResource BorderSubSet}" Grid.Row="2">
+						<CollectionView x:Name="SensorData"
+										ItemsSource="{Binding SensorData}"
+										ItemTemplate="{StaticResource ItemStyleSelector}"
+										ItemSizingStrategy="MeasureAllItems"
+										SelectionMode="None" VerticalScrollBarVisibility="Always">
+							<CollectionView.ItemsLayout>
+								<LinearItemsLayout Orientation="Vertical" ItemSpacing="{DynamicResource SmallSpacing}"/>
+							</CollectionView.ItemsLayout>
 						</CollectionView>
-					</Frame>
+					</Border>
 				</Grid>
-			</Frame>
+			</Border>
 		</Grid>
 	</Grid>
 </base:BaseContentPage>

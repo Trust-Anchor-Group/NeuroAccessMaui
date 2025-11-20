@@ -16,59 +16,87 @@
 		<controls:Background/>
 
 		<ScrollView x:Name="ScrollView">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}" >
 				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+									  Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
 				<Label Text="{l:Localize MakePayment}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
-					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="0">
 						<Label Text="{l:Localize Payment}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize PaymentDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
+						
 						<!-- Note -->
-						<Label Text="{l:Localize To}" IsVisible="{Binding ToPreset}"/>
-						<Entry Text="{Binding Path=To}" IsReadOnly="True" IsVisible="{Binding ToPreset}"/>
-						<Label Text="{l:Localize Amount}"/>
+						<controls:CompositeEntry LabelText="{l:Localize To}"
+												 Placeholder="{Binding Path=To}"
+												 IsReadOnly="True"
+												 IsVisible="{Binding ToPreset}"
+												 Style="{DynamicResource RegularCompositeEntry}"
+												 Margin="0,8,0,0"/>
+						
 						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
-							<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountText}"
-									 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
-									 Placeholder="{Binding Path=Currency}" IsReadOnly="{Binding Path=AmountPreset}"/>
+							<controls:CompositeEntry Grid.Column="0" Grid.Row="0" Placeholder="{Binding Path=AmountText}"
+													 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
+													 IsReadOnly="{Binding Path=AmountPreset}"
+													 Style="{DynamicResource RegularCompositeEntry}"
+													 LabelText="{l:Localize Amount}"
+													 Margin="0,8,0,0">
+								<controls:CompositeEntry.RightView>
+									<Label Text="{Binding Currency}" VerticalOptions="Center"/>
+								</controls:CompositeEntry.RightView>
+							</controls:CompositeEntry>
 							<controls:ImageButton Grid.Column="1" Grid.Row="0" IsEnabled="{Binding Path=AmountPreset, Converter={StaticResource InvertedBoolConverter}}"
-									  PathData="{x:Static ui:Geometries.CalculatorPath}" Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText"
-									  Style="{DynamicResource ImageOnlyButton}"/>
+												  PathData="{x:Static ui:Geometries.CalculatorPath}" Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText"
+												  Style="{DynamicResource ImageOnlyButton}"
+												  VerticalOptions="End"/>
 						</Grid>
-						<Label Text="{l:Localize AmountExtra}" IsVisible="{Binding Path=AmountPreset}"/>
-						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0" IsVisible="{Binding Path=AmountPreset}">
-							<Entry Grid.Column="0" Grid.Row="0" Text="{Binding Path=AmountExtraText}"
-									 BackgroundColor="{Binding Path=AmountExtraOk, Converter={converters:ControlBgColor}}"
-									 Placeholder="{Binding Path=Currency}" IsVisible="{Binding Path=AmountPreset}"/>
-							<controls:ImageButton Grid.Column="1" Grid.Row="0" IsEnabled="{Binding Path=AmountPreset}"
-														 PathData="{x:Static ui:Geometries.CalculatorPath}"
-														 Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountExtraText"
-														 Style="{DynamicResource ImageOnlyButton}"/>
+
+						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0,8,0,0" IsVisible="{Binding Path=AmountPreset}">
+							<controls:CompositeEntry EntryData="{Binding Path=AmountExtraText}"
+													 BackgroundColor="{Binding Path=AmountExtraOk, Converter={converters:ControlBgColor}}"
+													 Style="{DynamicResource RegularCompositeEntry}"
+													 LabelText="{l:Localize AmountExtra}">
+								<controls:CompositeEntry.RightView>
+									<Label Text="{Binding Currency}" VerticalOptions="Center"/>
+								</controls:CompositeEntry.RightView>
+							</controls:CompositeEntry>
+							<controls:ImageButton Grid.Column="1" IsEnabled="{Binding Path=AmountPreset}"
+												  PathData="{x:Static ui:Geometries.CalculatorPath}"
+												  Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountExtraText"
+												  Style="{DynamicResource ImageOnlyButton}"
+												  VerticalOptions="End"/>
 						</Grid>
-						<Label Text="{l:Localize Message}"/>
-						<Entry Text="{Binding Path=Message}" IsReadOnly="{Binding Path=MessagePreset}"/>
+						
+						<controls:CompositeEntry EntryData="{Binding Path=Message}"
+												 LabelText="{l:Localize Message}"
+												 Style="{DynamicResource RegularCompositeEntry}"
+												 Margin="0,8,0,0"
+												 IsReadOnly="{Binding Path=MessagePreset}"/>
+
 						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto" Margin="{DynamicResource SmallTopBottomMargins}" IsVisible="{Binding ToPreset}">
 							<CheckBox Grid.Column="0" Grid.Row="0" IsChecked="{Binding Path=EncryptMessage, Mode=TwoWay}" VerticalOptions="Center" IsEnabled="{Binding CanEncryptMessage}"/>
 							<Label Grid.Column="1" Grid.Row="0" Text="{l:Localize EncryptMessage}" VerticalOptions="Center" Margin="{DynamicResource SmallLeftMargins}"/>
 						</Grid>
+
 						<!-- BUTTONS -->
 						<controls:TextButton LabelData="{l:Localize PayOnline}" Command="{Binding Path=PayOnlineCommand}"
 													IsEnabled="{Binding Path=NotPaid}" Margin="{DynamicResource SmallBottomMargins}" IsVisible="{Binding ToPreset}"
 													Style="{DynamicResource FilledTextButton}"/>
 						<controls:TextButton LabelData="{l:Localize PayOffline}" Command="{Binding Path=GenerateQrCodeCommand}"
 													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
+
 						<Image x:Name="QrCode" BackgroundColor="{DynamicResource SurfaceBackgroundWL}" Source="{Binding Path=QrCode}" 
-                       IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
-                       HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
-                       Margin="0" />
-						<controls:TextButton x:Name="ShareButton" LabelData="{l:Localize Share}" Command="{Binding Path=ShareCommand}"
-													IsVisible="{Binding Path=HasQrCode}" Margin="{DynamicResource SmallBottomMargins}"
-													Style="{DynamicResource FilledTextButton}"/>
+							   IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
+							   HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
+							   Margin="0" />
+
+						<Label Text="{l:Localize ShareOfflinePaymentDescription}" Margin="0,8,0,0" IsVisible="{Binding HasQrCode}"/>
+						<controls:TextButton x:Name="ShareButton" LabelData="{l:Localize Share}" Command="{Binding OpenQrPopupCommand}"
+											 IsVisible="{Binding Path=HasQrCode}" Margin="0,8,0,0"
+											 Style="{DynamicResource FilledTextButton}"/>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

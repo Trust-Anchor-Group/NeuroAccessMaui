@@ -24,7 +24,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// </summary>
 		public static Task<KycProcess> LoadProcessAsync(string Xml, string? Lang = null)
         {
-			///TODO: Refactor parsing to handle namespaces properly (currently works around by stripping them, in order to no break existing logic)
+			//TODO: Refactor parsing to handle namespaces properly (currently works around by stripping them, in order to no break existing logic)
             KycProcess Process = new();
             string XmlNormalized = StripNamespaces(Xml);
             XDocument Doc = XDocument.Parse(XmlNormalized);
@@ -339,6 +339,39 @@ namespace NeuroAccessMaui.Services.Kyc
 						else
 						{
 							Field.Options.Add(new KycOption(Country.Alpha2, LocalizedText));
+						}
+					}
+				}
+
+				if (string.Equals(Field.Id, "country", StringComparison.OrdinalIgnoreCase))
+				{
+					string ExistingCountry = Owner.Values.TryGetValue(Field.Id, out string? StoredCountry) && !string.IsNullOrEmpty(StoredCountry)
+						? StoredCountry
+						: string.Empty;
+
+					if (string.IsNullOrEmpty(ExistingCountry))
+					{
+						string SeedCountry = string.Empty;
+						try
+						{
+							string? SelectedCountry = ServiceRef.TagProfile.SelectedCountry;
+							if (!string.IsNullOrEmpty(SelectedCountry))
+								SeedCountry = SelectedCountry;
+							else
+							{
+								string? IdentityCountry = ServiceRef.TagProfile.LegalIdentity?.GetPersonalInformation().Country;
+								SeedCountry = string.IsNullOrEmpty(IdentityCountry) ? string.Empty : IdentityCountry;
+							}
+						}
+						catch (Exception)
+						{
+							SeedCountry = string.Empty;
+						}
+
+						if (!string.IsNullOrEmpty(SeedCountry))
+						{
+							Owner.Values[Field.Id] = SeedCountry;
+							Field.StringValue = SeedCountry;
 						}
 					}
 				}

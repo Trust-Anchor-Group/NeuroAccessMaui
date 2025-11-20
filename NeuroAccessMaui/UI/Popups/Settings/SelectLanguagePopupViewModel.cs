@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Maui.Storage;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
@@ -28,18 +29,21 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 
 			this.Languages = new ObservableCollection<ObservableLanguage>(
 				App.SupportedLanguages.Select(l =>
-					new ObservableLanguage(l, l.Name == this.SelectedLanguageName))
-			);
+					new ObservableLanguage(l, this.SelectLanguageAsync)
+					{
+						IsSelected = l.Name == this.SelectedLanguageName
+					}));
+
 
 		}
 
 
-		protected override Task OnAppearing()
+		public override Task OnAppearingAsync()
 		{
 			if(this.SelectedLanguageName is not null)
 				WeakReferenceMessenger.Default.Send(new ScrollToLanguageMessage(this.SelectedLanguageName));
 
-			return base.OnAppearing();
+			return base.OnAppearingAsync();
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
@@ -49,6 +53,14 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 			LanguageInfo? SelectedLanguage = this.Languages.FirstOrDefault(l => l.Language.Name == languageName)?.Language;
 			if (SelectedLanguage is null)
 				return;
+
+			// Update selection flags for visual feedback.
+			foreach (ObservableLanguage Observable in this.Languages)
+			{
+				bool IsSelected = Observable.Language.Name == languageName;
+				if (Observable.IsSelected != IsSelected)
+					Observable.IsSelected = IsSelected;
+			}
 
 			// Update selected language property.
 			this.SelectedLanguageName = SelectedLanguage.Name;
@@ -68,7 +80,7 @@ namespace NeuroAccessMaui.UI.Popups.Settings
 			);
 
 			// Dismiss the popup via the UI service.
-			await ServiceRef.UiService.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 	}
 }

@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		/// </summary>
 		public TokenEventsPage()
 		{
-			this.ContentPageModel = new TokenEventsViewModel(ServiceRef.UiService.PopLatestArgs<TokenEventsNavigationArgs>());
+			this.ContentPageModel = new TokenEventsViewModel(ServiceRef.NavigationService.PopLatestArgs<TokenEventsNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -22,10 +22,8 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
-  object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -114,12 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Selectați rolurile cu care veți semna (opțional)</value>
@@ -995,7 +991,7 @@
     <value>Fotografie</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Vă rugăm să adăugați o imagine în care puteți fi identificat cu ușurință.</value>
+    <value>Vă rugăm să vă faceți o fotografie live acum, astfel încât să vă putem verifica identitatea. Capturile de ecran sau imaginile editate nu sunt permise.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>Următoarele imagini au fost incluse în aplicație.</value>
@@ -1762,9 +1758,6 @@
   <data name="StreetNumber" xml:space="preserve">
     <value>Numărul străzii</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Faceți o fotografie</value>
-  </data>
   <data name="TakePhotoToShare" xml:space="preserve">
     <value>Faceți o fotografie pentru a o partaja</value>
   </data>
@@ -2225,10 +2218,10 @@
     <value>Furnizați mai jos suma de eDaler pe care doriți să o cumpărați și apăsați butonul Cumpărați. Se poate deschide o pagină web în care trebuie să completați informații suplimentare pentru ca procesatorul de plăți să vă valideze solicitarea.</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Sumă:</value>
+    <value>Sumă</value>
   </data>
   <data name="AmountExtra" xml:space="preserve">
-    <value>Suma suplimentară: (opțional, sugestie)</value>
+    <value>Suma suplimentară (opțional, sugestie)</value>
   </data>
   <data name="Wallet" xml:space="preserve">
     <value>Portofel</value>
@@ -2623,8 +2616,8 @@
   <data name="ApplyIdInfoMainPage" xml:space="preserve">
     <value>Solicitați un act de identitate personal pentru a obține totul din Neuro Access</value>
   </data>
-  <data name="CompleteIdButton" xml:space="preserve">
-    <value>Completează-ți ID-ul personal</value>
+  <data name="GoToApplications" xml:space="preserve">
+    <value>Mergi la aplicații</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Căutare</value>
@@ -2809,6 +2802,9 @@
   <data name="SelectContract" xml:space="preserve">
     <value>Selectează un contract</value>
   </data>
+  <data name="LoadMore" xml:space="preserve">
+    <value>Încarcă mai mult</value>
+  </data>
   <data name="SelectContractEntryDescription" xml:space="preserve">
     <value>Lipiți ID-ul contractului sau alegeți din listă</value>
   </data>
@@ -2841,9 +2837,6 @@
   </data>
   <data name="NFC" xml:space="preserve">
     <value>NFC</value>
-  </data>
-  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
-    <value>Doriți să adăugați această identitate la contactele dvs.?</value>
   </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>În curând!</value>
@@ -2894,7 +2887,7 @@
     <value>Ultima actualizare: {0}</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
-    <value>Activați-vă ID-ul digital</value>
+    <value>Selectați furnizorul de ID</value>
   </data>
   <data name="HaveAnyQuestions" xml:space="preserve">
     <value>Aveți întrebări?</value>
@@ -3040,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Cererea de identificare este trimisă spre examinare. Te vom anunța când actul tău de identitate este aprobat!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Rezumatul aplicației</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Înainte de finalizare, vă rugăm să citiți și să vă asigurați că totul este corect</value>
   </data>
@@ -3077,7 +3067,7 @@
     <value>Pentru uz individual</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Înainte de finalizare, vă rugăm să citiți și să vă asigurați că totul este corect</value>
+    <value>Vă rugăm să vă luați un moment pentru a vă revizui detaliile înainte de a trimite. Asigură-te că totul este corect și complet</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Informații despre companie</value>
@@ -3091,10 +3081,349 @@
   <data name="Upload" xml:space="preserve">
     <value>Încărca</value>
   </data>
+  <data name="InReview" xml:space="preserve">
+    <value>În recenzie</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>În curs de desfășurare</value>
+  </data>
+  <data name="IdentityRejected" xml:space="preserve">
+    <value>Identitate respinsă. Puteți reveni la pagina de aplicații și vă puteți actualiza informațiile pentru a încerca din nou.</value>
+  </data>
+  <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve">
+    <value>Un cod PIN nu trebuie să conțină o serie consecutivă de {0} simboluri identice.</value>
+  </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Revizuirea aplicației</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Cod:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Câmpuri de revizuit</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Fotografii de înlocuit</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Aceste detalii nu au putut fi aprobate. Actualizați-le pe formular înainte de a le retrimite.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Câmpuri în așteptare</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Fotografii în așteptare</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Remediați problemele și editați formularul</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Retrimiteți fără câmpuri în așteptare</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Aplicația dumneavoastră este în curs de revizuire manuală. Puteți aștepta rezultatul sau puteți ajusta elementele de mai jos pentru a încerca procesarea automată.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Aceste articole așteaptă revizuirea manuală. Le puteți păstra așa cum sunt sau le puteți ajusta pentru a încerca procesarea automată.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Unele detalii trimise nu au putut fi verificate. Atingeți pentru a revizui.</value>
+  </data>
+  <data name="AddToBalance" xml:space="preserve">
+    <value>Adaugă la sold</value>
+  </data>
+  <data name="SelectContact" xml:space="preserve">
+    <value>Selectați contactul</value>
+  </data>
+  <data name="TransactionHistory" xml:space="preserve">
+    <value>Istoricul tranzacțiilor</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Rezumat</value>
+  </data>
+  <data name="TotalIn" xml:space="preserve">
+    <value>Total în</value>
+  </data>
+  <data name="TotalOut" xml:space="preserve">
+    <value>Ieșire totală</value>
+  </data>
+  <data name="Net" xml:space="preserve">
+    <value>Net</value>
+  </data>
+  <data name="NoTransactionsYet" xml:space="preserve">
+    <value>Încă nu există tranzacții</value>
+  </data>
+  <data name="Transaction" xml:space="preserve">
+    <value>Tranzacție</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="BalanceTopUp" xml:space="preserve">
+    <value>Reîncărcarea soldului</value>
+  </data>
+  <data name="TransactionDetails" xml:space="preserve">
+    <value>Detalii tranzacție</value>
+  </data>
+  <data name="Recipient" xml:space="preserve">
+    <value>Destinatar</value>
+  </data>
+  <data name="NotInContacts" xml:space="preserve">
+    <value>Nu se află în contacte</value>
+  </data>
+  <data name="FullIdentifier" xml:space="preserve">
+    <value>Identificator complet</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Tip tranzacție</value>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Data tranzacției</value>
+  </data>
+  <data name="TransactionStatus" xml:space="preserve">
+    <value>Starea tranzacției</value>
+  </data>
+  <data name="ReservedNoColon" xml:space="preserve">
+    <value>Rezervat</value>
+  </data>
+  <data name="Successful" xml:space="preserve">
+    <value>Prosper</value>
+  </data>
+  <data name="TransactionIDNoColon" xml:space="preserve">
+    <value>ID tranzacție</value>
+  </data>
+  <data name="TransferSuccessful" xml:space="preserve">
+    <value>Transfer reușit</value>
+  </data>
+  <data name="UnknownPleaseRefresh" xml:space="preserve">
+    <value>Necunoscut, vă rugăm să reîmprospătați</value>
+  </data>
+  <data name="SelectForMe" xml:space="preserve">
+    <value>Selectează pentru mine</value>
+  </data>
+  <data name="ShareDescription" xml:space="preserve">
+    <value>Mai jos, puteți găsi opțiuni suplimentare pentru partajarea codului QR.</value>
+  </data>
+  <data name="OtherApp" xml:space="preserve">
+    <value>Altă aplicație</value>
+  </data>
+  <data name="SuccessfullyCopiedToClipboard" xml:space="preserve">
+    <value>Copiat cu succes în clipboard</value>
+  </data>
+  <data name="MakePayment" xml:space="preserve">
+    <value>Efectuați plata</value>
+  </data>
+  <data name="PayOnline" xml:space="preserve">
+    <value>Plătește online</value>
+  </data>
+  <data name="PayOffline" xml:space="preserve">
+    <value>Plătiți offline</value>
+  </data>
+  <data name="ShareOfflinePaymentDescription" xml:space="preserve">
+    <value>Puteți partaja acest cod QR cu un alt utilizator pentru procesare ulterioară, fie atunci când este necesar, fie când există conectivitate.</value>
+  </data>
+  <data name="RequestCredits" xml:space="preserve">
+    <value>Cerere</value>
+  </data>
+  <data name="SendCredits" xml:space="preserve">
+    <value>Expedia</value>
+  </data>
+  <data name="DurationAndSeparator" xml:space="preserve">
+    <value> și </value>
+  </data>
+  <data name="DurationCommaSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="NoTokens" xml:space="preserve">
+    <value>Fără jetoane</value>
+  </data>
+  <data name="TokenDetails" xml:space="preserve">
+    <value>Detalii despre token</value>
+  </data>
+  <data name="TokenDetailsDescription" xml:space="preserve">
+    <value>Mai jos sunt detaliile codificate în token. Faceți clic pe orice link pentru mai multe informații.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descriere</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categorie</value>
+  </data>
+  <data name="TokenId" xml:space="preserve">
+    <value>Token ID</value>
+  </data>
+  <data name="TokenIdMethod" xml:space="preserve">
+    <value>Metoda ID token</value>
+  </data>
+  <data name="TokenVisibility" xml:space="preserve">
+    <value>Vizibilitatea tokenului</value>
+  </data>
+  <data name="Ordinal" xml:space="preserve">
+    <value>Ordinale</value>
+  </data>
+  <data name="Valuation" xml:space="preserve">
+    <value>Evaluare</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Rapoarte</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variabile</value>
+  </data>
+  <data name="States" xml:space="preserve">
+    <value>Statele</value>
+  </data>
+  <data name="TokenPartsInfoText" xml:space="preserve">
+    <value>Mai jos este o listă de părți legate de acest token.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Proprietar</value>
+  </data>
+  <data name="OwnerJid" xml:space="preserve">
+    <value>Adresa proprietarului</value>
+  </data>
+  <data name="OwnershipContract" xml:space="preserve">
+    <value>Contract de proprietate</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Creatorul</value>
+  </data>
+  <data name="CreatorJid" xml:space="preserve">
+    <value>Adresa creatorului</value>
+  </data>
+  <data name="CreationContract" xml:space="preserve">
+    <value>Contract de creare</value>
+  </data>
+  <data name="TrustProvider" xml:space="preserve">
+    <value>Furnizor de încredere</value>
+  </data>
+  <data name="TrustProviderJid" xml:space="preserve">
+    <value>Adresa furnizorului de încredere</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>Privilegii</value>
+  </data>
+  <data name="TokenPrivilegesInfoText" xml:space="preserve">
+    <value>Mai jos sunt privilegiile gravate în jeton.</value>
+  </data>
+  <data name="CreatorCanDestroy" xml:space="preserve">
+    <value>Creatorul poate distruge tokenul</value>
+  </data>
+  <data name="OwnerCanDestroyBatch" xml:space="preserve">
+    <value>Proprietarul poate distruge lotul de jetoane</value>
+  </data>
+  <data name="OwnerCanDestroyIndividual" xml:space="preserve">
+    <value>Proprietarul poate distruge tokenul individual</value>
+  </data>
+  <data name="CertifierCanDestroy" xml:space="preserve">
+    <value>Certificatorul poate distruge tokenul</value>
+  </data>
+  <data name="MachineReadableInfoTextToken" xml:space="preserve">
+    <value>O prezentare generală a datelor care pot fi citite automat încorporate în token este prezentată mai jos.</value>
+  </data>
+  <data name="DefinitionNamespace" xml:space="preserve">
+    <value>Spațiu de nume de definiție</value>
+  </data>
+  <data name="DefinitionSchemaDigest" xml:space="preserve">
+    <value>Rezumatul schemei de definiție</value>
+  </data>
+  <data name="ShowM2MInfo" xml:space="preserve">
+    <value>Afișați definiția M2M</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Acțiuni</value>
+  </data>
+  <data name="SendToContact" xml:space="preserve">
+    <value>Trimite la Contact</value>
+  </data>
+  <data name="PublishMarketplace" xml:space="preserve">
+    <value>Publicați pe Marketplace</value>
+  </data>
+  <data name="OfferToBuy" xml:space="preserve">
+    <value>Ofertă de cumpărare</value>
+  </data>
+  <data name="OfferToSell" xml:space="preserve">
+    <value>Ofertă de vânzare</value>
+  </data>
+  <data name="ViewEvents" xml:space="preserve">
+    <value>Vezi evenimente</value>
+  </data>
+  <data name="CurrentState" xml:space="preserve">
+    <value>Starea actuală</value>
+  </data>
+  <data name="MachineHasEnded" xml:space="preserve">
+    <value>State-Machine s-a încheiat.</value>
+  </data>
+  <data name="CurrentVariables" xml:space="preserve">
+    <value>Variabile curente</value>
+  </data>
+  <data name="TokenEvents" xml:space="preserve">
+    <value>Evenimente Token</value>
+  </data>
+  <data name="TokenEventsDescription" xml:space="preserve">
+    <value>Următoarele sunt evenimentele publice înregistrate pentru token. Evenimentele dumneavoastră private sunt, de asemenea, incluse.</value>
+  </data>
+  <data name="TextNote" xml:space="preserve">
+    <value>Notă text</value>
+  </data>
+  <data name="XmlNote" xml:space="preserve">
+    <value>Notă XML</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Adăugați o notă</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Valoare</value>
+  </data>
+  <data name="InvitationToSignFormat" xml:space="preserve">
+    <value>Ați fost invitat să semnați acest contract ca {0}, asigurați-vă că verificați și revizuiți contractul înainte de a continua</value>
+  </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Trimite propunere</value>
+  </data>
+  <data name="Sender" xml:space="preserve">
+    <value>Expeditor:</value>
+  </data>
+  <data name="ShortId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ProposalDefaultMessage" xml:space="preserve">
+    <value>Bună, aș dori să vă propun un contract. Vă rugăm să revizuiți și să acceptați propunerea dacă sunteți de acord.</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Doriți să adăugați această identitate la contactele dvs.?</value>
+  </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Faceți o fotografie</value>
   </data>
-  <data name="InReview" xml:space="preserve">
-    <value>În recenzie</value>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Solicită o identitate personală pentru a folosi această funcție.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Cerere respinsă</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Furnizorul nu a putut aproba depunerea ta. Vezi motivul de mai jos.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Următoarele aspecte necesită atenția ta înainte de a retrimite:</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Unele detalii necesită revizuire manuală</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>Câmpurile {0} și fotografiile {1} nu pot fi validate automat și trebuie verificate de un operator. Acest lucru poate întârzia aprobarea.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Poți elimina aceste înregistrări în așteptare și să aplici din nou fără ele. Acest lucru nu este recomandat</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Elimină detaliile în așteptare</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Elimină detaliile în așteptare și aplică din nou</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Acest lucru va revoca cererea ta actuală, va elimina detaliile în așteptare și va retrimite fără ele. Vrei să continui?</value>
   </data>
 </root>

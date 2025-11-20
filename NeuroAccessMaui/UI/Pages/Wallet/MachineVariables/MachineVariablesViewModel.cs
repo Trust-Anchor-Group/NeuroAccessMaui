@@ -35,21 +35,21 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineVariables
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			ServiceRef.XmppService.NeuroFeatureVariablesUpdated += this.Wallet_VariablesUpdated;
 			ServiceRef.XmppService.NeuroFeatureStateUpdated += this.Wallet_StateUpdated;
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.NeuroFeatureVariablesUpdated -= this.Wallet_VariablesUpdated;
 			ServiceRef.XmppService.NeuroFeatureStateUpdated -= this.Wallet_StateUpdated;
 
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		private Task Wallet_StateUpdated(object? Sender, NeuroFeatures.EventArguments.NewStateEventArgs e)

@@ -15,11 +15,11 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 		public PetitionIdentityPage()
 		{
 			this.InitializeComponent();
-			this.ContentPageModel = new PetitionIdentityViewModel(ServiceRef.UiService.PopLatestArgs<PetitionIdentityNavigationArgs>());
+			this.ContentPageModel = new PetitionIdentityViewModel(ServiceRef.NavigationService.PopLatestArgs<PetitionIdentityNavigationArgs>());
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDisappearingAsync()
+		public override Task OnDisappearingAsync()
 		{
 			return base.OnDisappearingAsync();
 		}
@@ -34,7 +34,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity
 
 			ImagesPopup ImagesPopup = new();
 			ImagesViewModel ImagesViewModel = new(Attachments);
-			ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
+			ImagesPopup.BindingContext = ImagesViewModel;
+			ServiceRef.PopupService.PushAsync(ImagesPopup);
 			//imagesViewModel.LoadPhotos(Attachments);
 		}
 	}

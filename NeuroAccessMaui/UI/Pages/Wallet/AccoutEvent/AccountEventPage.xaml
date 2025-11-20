@@ -22,7 +22,7 @@
 
 				<Label Text="{l:Localize AccountEvent}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{l:Localize AccountEventDescription}" VerticalOptions="Start"/>
 						<!-- Note -->
@@ -50,7 +50,7 @@
 						<Label Text="{l:Localize TransactionId}"/>
 						<controls:CompositeEntry EntryData="{Binding Path=Id}" IsReadOnly="True" Style="{DynamicResource RegularCompositeEntry}"/>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

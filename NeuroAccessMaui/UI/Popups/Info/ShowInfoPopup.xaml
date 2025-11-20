@@ -1,51 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Info.ShowInfoPopup"
-							x:DataType="viewmodel:BaseShowInfoViewModel"
-							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-							xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Info"
-							xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-							xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
-
-	<mopups:PopupPage.Animation>
-		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
-											PositionIn="Center" PositionOut="Center" />
-	</mopups:PopupPage.Animation>
-
-	<Grid
-		Style="{DynamicResource PopupGrid}">
-
-		<Border
-			WidthRequest="{Binding ViewWidthRequest}"
-			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-			Style="{DynamicResource PopupBorder}">
-
-			<ScrollView
-				VerticalOptions="Center">
-				<VerticalStackLayout
-					Spacing="{DynamicResource LargeSpacing}">
-
-					<VerticalStackLayout
-						Spacing="{DynamicResource SmallSpacing}">
-
-						<Label
-							HorizontalTextAlignment="Center"
-							Style="{DynamicResource PageTitleLabel}"
-							Text="{Binding InfoTitle}" />
-
-						<Label
-							Text="{Binding InfoText}" />
-					</VerticalStackLayout>
-
-					<controls:TextButton
-						Command="{Binding CloseCommand}"
-						LabelData="{l:Localize Close}"
-						Style="{DynamicResource FilledTextButton}" />
-				</VerticalStackLayout>
-			</ScrollView>
-		</Border>
-	</Grid>
+                x:DataType="viewmodel:BaseShowInfoViewModel"
+                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Info">
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+            <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+                <Label HorizontalTextAlignment="Center"
+                       Style="{DynamicResource PageTitleLabel}"
+                       Text="{Binding InfoTitle}" />
+                <Label Text="{Binding InfoText}" />
+            </VerticalStackLayout>
+            <controls:TextButton Command="{Binding CloseCommand}"
+                                 LabelData="{l:Localize Close}"
+                                 Style="{DynamicResource FilledTextButton}" />
+        </VerticalStackLayout>
+    </ScrollView>
 </base:BasePopup>

@@ -1,8 +1,11 @@
+using System;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Globalization;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Localization;
+using NeuroAccessMaui;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.AppPermissions;
 using NeuroAccessMaui.Services.Cache.AttachmentCache;
@@ -23,11 +26,19 @@ using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.ThingRegistries;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.Services.UI.Popups;
+using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.Services.Xml;
 using Waher.Content;
 using ZXing;
+using NeuroAccessMaui.Services.Intents;
+using Waher.Content;
+using NeuroAccessMaui.Services.Cache.AttachmentCache;
+using NeuroAccessMaui.Services.Cache.InternetCache;
+using NeuroAccessMaui.Services.Theme;
+using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.Services
 {
@@ -36,8 +47,15 @@ namespace NeuroAccessMaui.Services
 	/// </summary>
 	public static class ServiceRef
 	{
+		/// <summary>
+		/// The service provider for the app.
+		/// This is set before the app is started, and will be used to resolve services
+		/// </summary>
+		public static IServiceProvider Provider { get; private set; } = null!;
+
 		private static IXmppService? xmppService;
 		private static IUiService? uiService;
+		private static INavigationService? navigationService;
 		private static ITagProfile? tagProfile;
 		private static ILogService? logService;
 		private static INetworkService? networkService;
@@ -60,6 +78,56 @@ namespace NeuroAccessMaui.Services
 		private static IThemeService? themeService;
 		private static IKycService? kycService;
 		private static IXmlSchemaValidationService? xmlSchemaValidationService;
+		private static IPopupService? popupService;
+		private static IToastService? toastService;
+		private static IKeyboardInsetsService? keyboardInsetsService;
+
+		private static IAuthenticationService? authenticationService;
+
+		/// <summary>
+		/// Initializes the service reference cache with a fresh provider instance.
+		/// This method must be called whenever the MAUI host builds a new DI container (e.g., Android process rehydration).
+		/// </summary>
+		/// <param name="provider">The service provider to use for subsequent resolutions.</param>
+		public static void Initialize(IServiceProvider provider)
+		{
+			Provider = provider ?? throw new ArgumentNullException(nameof(provider));
+
+			xmppService = null;
+			uiService = null;
+			navigationService = null;
+			tagProfile = null;
+			logService = null;
+			networkService = null;
+			contractOrchestratorService = null;
+			thingRegistryOrchestratorService = null;
+			neuroWalletOrchestratorService = null;
+			attachmentCacheService = null;
+			cryptoService = null;
+			settingsService = null;
+			storageService = null;
+			nfcService = null;
+			notificationService = null;
+			pushNotificationService = null;
+			localizer = null;
+			platformSpecific = null;
+			barcodeReader = null;
+			permissionService = null;
+			intentService = null;
+			internetCacheService = null;
+			themeService = null;
+			kycService = null;
+			xmlSchemaValidationService = null;
+			popupService = null;
+			toastService = null;
+			keyboardInsetsService = null;
+			authenticationService = null;
+		}
+
+		/// <summary>
+		/// Gets a task that completes when all core services are initialized.
+		/// </summary>
+		public static Task ServicesReadyTask => App.ServicesReady;
 
 		/// <summary>
 		/// Service serializing and managing UI-related tasks.
@@ -68,8 +136,56 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				uiService ??= App.Instantiate<IUiService>();
+				uiService ??= Provider.GetRequiredService<IUiService>();
 				return uiService;
+			}
+		}
+
+		/// <summary>
+		/// Popup service for presenting application popups.
+		/// </summary>
+		public static IPopupService PopupService
+		{
+			get
+			{
+				popupService ??= Provider.GetRequiredService<IPopupService>();
+				return popupService;
+			}
+		}
+
+		/// <summary>
+		/// Toast service for transient notifications.
+		/// </summary>
+		public static IToastService ToastService
+		{
+			get
+			{
+				toastService ??= Provider.GetRequiredService<IToastService>();
+				return toastService;
+			}
+		}
+
+		/// <summary>
+		/// Provides the current keyboard inset state.
+		/// </summary>
+		public static IKeyboardInsetsService KeyboardInsetsService
+		{
+			get
+			{
+				keyboardInsetsService ??= Provider.GetRequiredService<IKeyboardInsetsService>();
+				return keyboardInsetsService;
+			}
+		}
+
+		/// <summary>
+		/// The navigation service for navigating between pages.
+		/// </summary>
+		public static INavigationService NavigationService
+		{
+			get
+			{
+				navigationService ??= Provider.GetRequiredService<INavigationService>();
+				return navigationService;
 			}
 		}
 
@@ -80,7 +196,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				xmppService ??= App.Instantiate<IXmppService>();
+				xmppService ??= Provider.GetRequiredService<IXmppService>();
 				return xmppService;
 			}
 		}
@@ -92,7 +208,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				tagProfile ??= App.Instantiate<ITagProfile>();
+				tagProfile ??= Provider.GetRequiredService<ITagProfile>();
 				return tagProfile;
 			}
 		}
@@ -104,7 +220,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				logService ??= App.Instantiate<ILogService>();
+				logService ??= Provider.GetRequiredService<ILogService>();
 				return logService;
 			}
 		}
@@ -116,7 +232,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				networkService ??= App.Instantiate<INetworkService>();
+				networkService ??= Provider.GetRequiredService<INetworkService>();
 				return networkService;
 			}
 		}
@@ -128,7 +244,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				contractOrchestratorService ??= App.Instantiate<IContractOrchestratorService>();
+				contractOrchestratorService ??= Provider.GetRequiredService<IContractOrchestratorService>();
 				return contractOrchestratorService;
 			}
 		}
@@ -140,7 +256,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				thingRegistryOrchestratorService ??= App.Instantiate<IThingRegistryOrchestratorService>();
+				thingRegistryOrchestratorService ??= Provider.GetRequiredService<IThingRegistryOrchestratorService>();
 				return thingRegistryOrchestratorService;
 			}
 		}
@@ -152,7 +268,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				neuroWalletOrchestratorService ??= App.Instantiate<INeuroWalletOrchestratorService>();
+				neuroWalletOrchestratorService ??= Provider.GetRequiredService<INeuroWalletOrchestratorService>();
 				return neuroWalletOrchestratorService;
 			}
 		}
@@ -164,7 +280,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				attachmentCacheService ??= App.Instantiate<IAttachmentCacheService>();
+				attachmentCacheService ??= Provider.GetRequiredService<IAttachmentCacheService>();
 				return attachmentCacheService;
 			}
 		}
@@ -176,7 +292,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				cryptoService ??= App.Instantiate<ICryptoService>();
+				cryptoService ??= Provider.GetRequiredService<ICryptoService>();
 				return cryptoService;
 			}
 		}
@@ -188,7 +304,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				settingsService ??= App.Instantiate<ISettingsService>();
+				settingsService ??= Provider.GetRequiredService<ISettingsService>();
 				return settingsService;
 			}
 		}
@@ -200,7 +316,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				storageService ??= App.Instantiate<IStorageService>();
+				storageService ??= Provider.GetRequiredService<IStorageService>();
 				return storageService;
 			}
 		}
@@ -212,7 +328,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				nfcService ??= App.Instantiate<INfcService>();
+				nfcService ??= Provider.GetRequiredService<INfcService>();
 				return nfcService;
 			}
 		}
@@ -224,7 +340,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				notificationService ??= App.Instantiate<INotificationService>();
+				notificationService ??= Provider.GetRequiredService<INotificationService>();
 				return notificationService;
 			}
 		}
@@ -236,7 +352,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				pushNotificationService ??= App.Instantiate<IPushNotificationService>();
+				pushNotificationService ??= Provider.GetRequiredService<IPushNotificationService>();
 				return pushNotificationService;
 			}
 		}
@@ -248,7 +364,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				permissionService ??= App.Instantiate<IPermissionService>();
+				permissionService ??= Provider.GetRequiredService<IPermissionService>();
 				return permissionService;
 			}
 		}
@@ -295,7 +411,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				intentService ??= App.Instantiate<IIntentService>();
+				intentService ??= Provider.GetRequiredService<IIntentService>();
 				return intentService;
 			}
 		}
@@ -304,7 +420,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				internetCacheService ??= App.Instantiate<IInternetCacheService>();
+				internetCacheService ??= Provider.GetRequiredService<IInternetCacheService>();
 				return internetCacheService;
 			}
 		}
@@ -313,7 +429,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				themeService ??= App.Instantiate<IThemeService>();
+				themeService ??= Provider.GetRequiredService<IThemeService>();
 				return themeService;
 			}
 		}
@@ -322,7 +438,7 @@ namespace NeuroAccessMaui.Services
 		{
 			get
 			{
-				kycService ??= App.Instantiate<IKycService>();
+				kycService ??= Provider.GetRequiredService<IKycService>();
 				return kycService;
 			}
 		}
@@ -336,6 +452,20 @@ namespace NeuroAccessMaui.Services
 			{
 				xmlSchemaValidationService ??= ServiceHelper.GetService<IXmlSchemaValidationService>();
 				return xmlSchemaValidationService;
+			}
+		}
+
+		/// <summary>
+		/// Authentication service.
+		/// </summary>
+		/// <remarks>If the application does not use authentication, this service will throw exceptions when accessed.</remarks>
+		public static IAuthenticationService AuthenticationService
+		{
+
+			get
+			{
+				authenticationService ??= Provider.GetRequiredService<IAuthenticationService>();
+				return authenticationService;
 			}
 		}
 	}

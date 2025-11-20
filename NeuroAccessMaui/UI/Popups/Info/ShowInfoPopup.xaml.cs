@@ -1,24 +1,19 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
 using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Popups.Info
 {
-	public partial class ShowInfoPopup
+	public partial class ShowInfoPopup : BasePopup
 	{
-		public ShowInfoPopup(string InfoTitle, string InfoText)
+		public ShowInfoPopup(string infoTitle, string infoText)
 		{
-			BasePopupViewModel ViewModel = new BaseShowInfoViewModel(InfoTitle, InfoText);
-
+			BasePopupViewModel viewModel = new BaseShowInfoViewModel(infoTitle, infoText);
 			this.InitializeComponent();
-			this.BindingContext = ViewModel;
+			this.BindingContext = viewModel;
 		}
 
 		public ShowInfoPopup()
 		{
 			this.InitializeComponent();
 		}
-
-
 	}
 }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.FinalizeStepView"
+                               xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
+                               xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
+                               xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                               xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                               xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                               x:DataType="viewmodels:FinalizeOnboardingStepViewModel">
+    <Grid RowSpacing="{DynamicResource LargeSpacing}"
+          RowDefinitions="*, auto">
+        <Grid RowSpacing="{DynamicResource LargeSpacing}"
+              RowDefinitions="*, auto">
+            <VerticalStackLayout Grid.Row="0"
+                                 VerticalOptions="Center"
+                                 Spacing="{DynamicResource LargeSpacing}">
+                <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+                    <Label Style="{DynamicResource PageTitleLabel}"
+                           Text="{l:Localize OnboardingFinalizePageTitle}"
+                           HorizontalTextAlignment="Center" />
+
+                    <Border WidthRequest="{Binding CheckmarkBackgroundSize}"
+							HeightRequest="{Binding CheckmarkBackgroundSize}"
+							StrokeShape="{Binding CheckmarkBackgroundStroke}"
+							BackgroundColor="{DynamicResource TnPSuccessbgWL}"
+							HorizontalOptions="Center"
+							Margin="{DynamicResource LargeBottomMargins}">
+                        <Path VerticalOptions="Center"
+                              HorizontalOptions="Center"
+                              HeightRequest="{Binding CheckmarkIconSize}"
+                              WidthRequest="{Binding CheckmarkIconSize}"
+                              Aspect="Uniform"
+                              Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
+                              Fill="{DynamicResource TnPSuccessContentWL}" />
+                    </Border>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </Grid>
+
+        <controls:TextButton Grid.Row="1"
+                             VerticalOptions="End"
+                             Command="{Binding ContinueCommand}"
+                             Style="{DynamicResource FilledTextButton}"
+                             LabelData="{l:Localize Continue}" />
+    </Grid>
+</onboarding:BaseOnboardingView>

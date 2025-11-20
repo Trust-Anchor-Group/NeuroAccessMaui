@@ -24,7 +24,7 @@
 
 				<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize SignatureInformation}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize ServerInformation}"/>
 
@@ -54,7 +54,7 @@
 							</Label>
 						</Grid>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

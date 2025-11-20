@@ -14,22 +14,22 @@
 							 xmlns:service="clr-namespace:NeuroAccessMaui.Services.Kyc"
 							 xmlns:contracts="clr-namespace:Waher.Networking.XMPP.Contracts;assembly=Waher.Networking.XMPP.Contracts">
 							 
-<base:BaseContentPage.Resources>
-  <ResourceDictionary>
-    <Style TargetType="Label" x:Key="CardTitleLabel">
-      <Setter Property="FontFamily" Value="SpaceGroteskBold"/>
-      <Setter Property="FontSize" Value="16"/>
-	  <Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}"/>
-    </Style>
-	<Style TargetType="Label" x:Key="CardSubtitleLabel">
-      <Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
-      <Setter Property="FontSize" Value="14"/>
-	  <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
-    </Style>
-  </ResourceDictionary>
-</base:BaseContentPage.Resources>
+	<base:BaseContentPage.Resources>
+	  <ResourceDictionary>
+		<Style TargetType="Label" x:Key="CardTitleLabel">
+		  <Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+		  <Setter Property="FontSize" Value="16"/>
+		  <Setter Property="TextColor" Value="{DynamicResource ContentPrimaryWL}"/>
+		</Style>
+		<Style TargetType="Label" x:Key="CardSubtitleLabel">
+		  <Setter Property="FontFamily" Value="SpaceGroteskSemiBold"/>
+		  <Setter Property="FontSize" Value="14"/>
+		  <Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
+		</Style>
+	  </ResourceDictionary>
+	</base:BaseContentPage.Resources>
 
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" Margin="16,16,16,0">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" Margin="16,8,16,0">
 
 		<controls:Background/>
 
@@ -41,6 +41,7 @@
 								Grid.Column="0"/>
 
 			<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize Applications}" HorizontalOptions="End" Grid.Column="2"/>
+			
 			<Grid Grid.ColumnSpan="3" Grid.Row="1">
 				<CollectionView ItemsSource="{Binding AvailableApplications}"
 								SelectionMode="None"
@@ -51,7 +52,7 @@
 					</CollectionView.ItemsLayout>
 					<CollectionView.Header>
 						<VerticalStackLayout Spacing="8"
-											 Margin="0,16,0,0"
+											 Margin="0,8,0,0"
 											 Padding="0">
 							<Label Text="{l:Localize CurrentApplication}"
 								   TextColor="{DynamicResource ContentSecondaryWL}"
@@ -303,7 +304,7 @@
 					<CollectionView.ItemTemplate>
 						<DataTemplate x:DataType="service:KycApplicationTemplate">
 							<controls:TemplatedButton Margin="0"
-													  Command="{Binding Path=CreateNewApplicationCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplicationsViewModel}}}"
+													  Command="{Binding Path=CreateNewApplicationCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ApplicationsViewModel}}, x:DataType=viewmodel:ApplicationsViewModel}"
 													  CommandParameter="{Binding .}">
 								<Border Style="{DynamicResource BorderSet}"
 										Margin="0"

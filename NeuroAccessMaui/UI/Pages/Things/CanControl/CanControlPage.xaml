@@ -19,12 +19,12 @@
 
 		<ScrollView>
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+				<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+									Style="{DynamicResource IconButton}" SvgSource="close.svg" />
 
 				<Label Text="{l:Localize ControlRequest}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{l:Localize ControlRequest}" Margin="{DynamicResource SmallTopMargins}"
 					   VerticalOptions="Start"/>
@@ -56,7 +56,7 @@
 										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{DynamicResource KeyLabel}" LineBreakMode="WordWrap"/>
 										<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{DynamicResource ClickableValueLabel}">
 											<Label.GestureRecognizers>
-												<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference CallerLayout}}" CommandParameter="{Binding}" />
+												<TapGestureRecognizer Command="{Binding ClickCommand, Source={RelativeSource AncestorType={x:Type viewmodel:CanControlViewModel}}, x:DataType=viewmodel:CanControlViewModel}" CommandParameter="{Binding}" />
 											</Label.GestureRecognizers>
 										</Label>
 									</Grid>
@@ -80,7 +80,7 @@
 										<Label Grid.Column="0" Grid.Row="0" Text="{Binding Path=LocalizedName}" Style="{DynamicResource KeyLabel}" LineBreakMode="WordWrap"/>
 										<Label Grid.Column="1" Grid.Row="0" LineBreakMode="WordWrap" Text="{Binding Path=LocalizedValue}" Style="{DynamicResource ClickableValueLabel}">
 											<Label.GestureRecognizers>
-												<TapGestureRecognizer Command="{Binding Path=BindingContext.ClickCommand, Source={x:Reference TagLayout}}" CommandParameter="{Binding}" />
+												<TapGestureRecognizer Command="{Binding ClickCommand, Source={RelativeSource AncestorType={x:Type viewmodel:CanControlViewModel}}, x:DataType=viewmodel:CanControlViewModel}" CommandParameter="{Binding}" />
 											</Label.GestureRecognizers>
 										</Label>
 									</Grid>
@@ -124,7 +124,7 @@
 						<controls:TextButton LabelData="{l:Localize Ignore}" Command="{Binding Path=IgnoreCommand}"
 													Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

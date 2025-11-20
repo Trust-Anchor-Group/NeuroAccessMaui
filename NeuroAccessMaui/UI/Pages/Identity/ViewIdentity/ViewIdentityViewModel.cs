@@ -194,10 +194,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			};
 
 
-		public ViewIdentityViewModel(ViewIdentityNavigationArgs? args)
+		public ViewIdentityViewModel()
 			: base()
 		{
-			this.args = args;
+			this.args = ServiceRef.NavigationService.PopLatestArgs<ViewIdentityNavigationArgs>();
 			this.photosLoader = new PhotosLoader();
 
 			this.LoadIdentityTask = new ObservableTask<bool>();
@@ -226,9 +226,9 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 
 
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 
 			bool IsRefresh = this.hasAppeared;
 			this.hasAppeared = true;
@@ -440,7 +440,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			});
 		}
 
-		protected override Task OnDisappearing()
+		public override Task OnDisappearingAsync()
 		{
 			try
 			{
@@ -450,7 +450,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			{
 				//Ignore, timer might already been stopped (not sure if it throws when already stopped)
 			}
-			return base.OnDisappearing();
+			return base.OnDisappearingAsync();
 		}
 
 		private void OnTimerTick(object? sender, EventArgs e)
@@ -506,7 +506,8 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 			{
 				ImagesPopup ImagesPopup = new();
 				ImagesViewModel ImagesViewModel = new([ClickedAttachment]);
-				await ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
+				ImagesPopup.BindingContext = ImagesViewModel;
+				await ServiceRef.PopupService.PushAsync(ImagesPopup);
 			}
 			catch (Exception Ex)
 			{
@@ -590,7 +591,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 
 			try
 			{
-				await this.OpenQrPopup();
+				await this.OpenQrPopup(ServiceRef.Localizer[nameof(AppResources.PersonalId)]);
 			}
 			catch (Exception Ex)
 			{
@@ -707,7 +708,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 					return;
 
 				ChatNavigationArgs ChatArgs = new(this.identity.Id, Jid, PersonalInfo.FullName);
-				await ServiceRef.UiService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Jid);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Jid);
 			}
 			catch (Exception Ex)
 			{

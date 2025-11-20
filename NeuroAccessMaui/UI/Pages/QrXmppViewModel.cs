@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Popups.QR;
@@ -24,12 +24,13 @@ namespace NeuroAccessMaui.UI.Pages
 		{
 		}
 
+
+		private string? qrTempFilePath;
+
 		/// <summary>
 		/// Generates a QR-code
 		/// </summary>
 		/// <param name="Uri">URI to encode in QR-code.</param>
-		private string? qrTempFilePath;
-
 		public void GenerateQrCode(string Uri)
 		{
 			lock (this.qrSync)
@@ -114,12 +115,18 @@ namespace NeuroAccessMaui.UI.Pages
 		/// </summary>
 		/// <returns></returns>
 		[RelayCommand]
-		public async Task OpenQrPopup()
+		public async Task OpenQrPopup(string? Title)
 		{
 			if (this.QrCodeBin is null) return;
 
-			ShowQRPopup QrPopup = new(this.QrCodeBin);
-			await ServiceRef.UiService.PushAsync(QrPopup);
+			ShowQRPopup QrPopup;
+
+			if (!string.IsNullOrEmpty(Title))
+				QrPopup = new(this.QrCodeBin, this.QrCodeUri, Title);
+			else
+				QrPopup = new(this.QrCodeBin, this.QrCodeUri);
+
+			await ServiceRef.PopupService.PushAsync(QrPopup);
 		}
 
 		#region Properties

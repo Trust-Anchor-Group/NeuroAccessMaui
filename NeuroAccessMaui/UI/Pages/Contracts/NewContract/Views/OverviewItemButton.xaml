@@ -2,9 +2,9 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.OverviewItemButton"
-				 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-             x:Name="This"
-				 >
+			 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+             x:Name="This">
+	
 	<ContentView.Resources>
 		<Style x:Key="ButtonBorder" TargetType="Border" BasedOn="{StaticResource BorderSet}">
 			<Setter Property="Margin" Value="0"/>

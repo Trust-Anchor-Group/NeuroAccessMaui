@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 		/// </summary>
 		public CalculatorPage()
 		{
-			this.ContentPageModel = new CalculatorViewModel(ServiceRef.UiService.PopLatestArgs<CalculatorNavigationArgs>());
+			this.ContentPageModel = new CalculatorViewModel(ServiceRef.NavigationService.PopLatestArgs<CalculatorNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

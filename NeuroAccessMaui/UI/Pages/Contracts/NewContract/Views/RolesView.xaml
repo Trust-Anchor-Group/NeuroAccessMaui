@@ -2,16 +2,16 @@
 
 <views:BaseNewContractView x:Name="ThisPage"
                            x:Class="NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views.RolesView"
+                           xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
+                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
                            x:DataType="base:NewContractViewModel"
                            xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                            xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                            xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                            xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-                           xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Registration.Views"
                            xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
                            xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
-                           xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
                            xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
                            xmlns:xmpp="clr-namespace:Waher.Networking.XMPP.Contracts;assembly=Waher.Networking.XMPP.Contracts">
 
@@ -51,78 +51,77 @@
 								<Label Grid.Column="0" Text="{Binding Name}" Style="{DynamicResource RoleTitleLabel}"/>
 								<HorizontalStackLayout Grid.Column="1" Spacing="8" VerticalOptions="Center">
 									<CheckBox IsVisible="{Binding CanSelectMe}" Color="{DynamicResource ContentAccessWL}"
-											 IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:RolesView}}, Path=BindingContext.AreRolesLockedForMe, Converter={StaticResource InvertedBoolConverter}}"
+											 IsEnabled="{Binding AreRolesLockedForMe, Source={RelativeSource AncestorType={x:Type base:NewContractViewModel}}, x:DataType=base:NewContractViewModel , Converter={StaticResource InvertedBoolConverter}}"
 											 IsChecked="{Binding IsSelectedByMe, Mode=TwoWay}"/>
 									<Label IsVisible="{Binding CanSelectMe}" Text="{l:Localize SignAs}" VerticalTextAlignment="Center" Style="{DynamicResource RoleDescriptionLabel}"/>
 								</HorizontalStackLayout>
 							</Grid>
 							<Label Text="{Binding Description}" Style="{DynamicResource RoleDescriptionLabel}" />
-							<!-- Part Collection -->
-							<VerticalStackLayout BindableLayout.ItemsSource="{Binding Parts}">
-								<BindableLayout.ItemTemplate>
+							<!-- Part Collection (refactored to CollectionView) -->
+							<CollectionView ItemsSource="{Binding Parts}" SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
+								<CollectionView.ItemTemplate>
 									<DataTemplate x:DataType="objectModel:ObservablePart">
 										<Border Style="{DynamicResource BorderSet}" Stroke="{DynamicResource InputFieldsSurfaceStroke}">
 											<Grid ColumnDefinitions="*, auto" RowDefinitions="auto,auto">
 												<controls:TemplatedButton Grid.Column="0" Grid.Row="0" Command="{Binding OpenIdentityCommand}">
-														<Label Text="{Binding FriendlyName}"
-																	Style="{DynamicResource RoleDescriptionLabel}"
-																	VerticalOptions="Center"
-																	HorizontalOptions="Center"
-																	TextColor="{DynamicResource ButtonAccessTertiaryContentWL}"
-																	/>
-												</controls:TemplatedButton>
-												<Grid ColumnDefinitions="*, auto, *" Grid.Column="0" Grid.Row="1">
-													<Border Grid.Column="1"
+													<Label Text="{Binding FriendlyName}"
+															Style="{DynamicResource RoleDescriptionLabel}"
+															VerticalOptions="Center"
+															HorizontalOptions="Center"
+															TextColor="{DynamicResource ButtonAccessTertiaryContentWL}"/>
+													</controls:TemplatedButton>
+													<Grid ColumnDefinitions="*, auto, *" Grid.Column="0" Grid.Row="1">
+														<Border Grid.Column="1"
 																Padding="{DynamicResource SmallLeftRightMargins}"
 																Style="{DynamicResource RoundedBorder}"
 																BackgroundColor="{DynamicResource TnPWarningbgWL}"
 																IsVisible="{Binding HasIdentity, Converter={StaticResource InvertedBoolConverter}}">
-														<Label Style="{DynamicResource RoleDescriptionLabel}" Text="{l:Localize IDRequestSent}" TextColor="{DynamicResource TnPWarningContentWL}" VerticalOptions="Center"/>
-													</Border>
-												</Grid>
-												<controls:TemplatedButton Grid.Column="1" Grid.RowSpan="2"
+																<Label Style="{DynamicResource RoleDescriptionLabel}" Text="{l:Localize IDRequestSent}" TextColor="{DynamicResource TnPWarningContentWL}" VerticalOptions="Center"/>
+															</Border>
+													</Grid>
+													<controls:TemplatedButton Grid.Column="1" Grid.RowSpan="2"
 															  IsVisible="{Binding ShowRemoveAsMe}"
-															  IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:RolesView}}, Path=BindingContext.AreRolesLockedForMe, Converter={StaticResource InvertedBoolConverter}}"
+															  IsEnabled="{Binding AreRolesLockedForMe, Source={RelativeSource AncestorType={x:Type base:NewContractViewModel}}, x:DataType=base:NewContractViewModel, Converter={StaticResource InvertedBoolConverter}}"
 															  Command="{Binding Source={RelativeSource AncestorType={x:Type objectModel:ObservableRole}}, Path=RemovePartCommand}"
 															  CommandParameter="{Binding .}">
-														<Border WidthRequest="48" HeightRequest="48"  Style="{DynamicResource TransparentTemplateButtonBorder}" Padding="{DynamicResource SmallMargins}" Margin="0" Background="{DynamicResource ButtonDangerSecondarybgWL}" >
-															<Path WidthRequest="24" HeightRequest="24"
-															  Fill="{DynamicResource ButtonAccessSecondaryContentWL}"				  
-																Data="{x:Static ui:Geometries.CancelPath}"
-																VerticalOptions="Center" HorizontalOptions="Center"/>
-														</Border>
+																<Border WidthRequest="48" HeightRequest="48"  Style="{DynamicResource TransparentTemplateButtonBorder}" Padding="{DynamicResource SmallMargins}" Margin="0" Background="{DynamicResource ButtonDangerSecondarybgWL}" >
+																	<Path WidthRequest="24" HeightRequest="24"
+																	  Fill="{DynamicResource ButtonAccessSecondaryContentWL}"				  
+																	  Data="{x:Static ui:Geometries.CancelPath}"
+																	  VerticalOptions="Center" HorizontalOptions="Center"/>
+																</Border>
 
-												</controls:TemplatedButton>
+															</controls:TemplatedButton>
 
-												<controls:TemplatedButton Grid.Column="1" Grid.RowSpan="2"
+														<controls:TemplatedButton Grid.Column="1" Grid.RowSpan="2"
 															  IsVisible="{Binding ShowRemoveAsThirdParty}"
-																				  Command="{Binding Source={RelativeSource AncestorType={x:Type objectModel:ObservableRole}}, Path=RemovePartCommand}"
+																					  Command="{Binding Source={RelativeSource AncestorType={x:Type objectModel:ObservableRole}}, Path=RemovePartCommand}"
 																				 CommandParameter="{Binding .}">
-													<Border WidthRequest="48" HeightRequest="48"  Style="{DynamicResource TransparentTemplateButtonBorder}" Padding="{DynamicResource SmallMargins}" Margin="0" Background="{DynamicResource ButtonDangerSecondarybgWL}" >
-														<Path WidthRequest="24" HeightRequest="24"
-															Fill="{DynamicResource ButtonAccessSecondaryContentWL}"				  
-															Data="{x:Static ui:Geometries.CancelPath}"
-															VerticalOptions="Center" HorizontalOptions="Center"/>
-													</Border>
+																<Border WidthRequest="48" HeightRequest="48"  Style="{DynamicResource TransparentTemplateButtonBorder}" Padding="{DynamicResource SmallMargins}" Margin="0" Background="{DynamicResource ButtonDangerSecondarybgWL}" >
+																	<Path WidthRequest="24" HeightRequest="24"
+																	  Fill="{DynamicResource ButtonAccessSecondaryContentWL}"				  
+																	  Data="{x:Static ui:Geometries.CancelPath}"
+																	  VerticalOptions="Center" HorizontalOptions="Center"/>
+																</Border>
 
-												</controls:TemplatedButton>
+															</controls:TemplatedButton>
 
-											</Grid>
+												</Grid>
 										</Border>
 									</DataTemplate>
-								</BindableLayout.ItemTemplate>
-							</VerticalStackLayout>
+								</CollectionView.ItemTemplate>
+							</CollectionView>
 
 							<Border Style="{DynamicResource BorderSet}"
 									IsVisible="{Binding Path=HasReachedMaxCount, Converter={StaticResource InvertedBoolConverter}}"
 									Stroke="{DynamicResource InputFieldsSurfaceStroke}">
 								<Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource SmallSpacing}">
-				    <controls:TextButton Grid.Column="0" LabelData="{l:Localize AddContact}" Style="{DynamicResource TransparentTextButton}"
-							IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:RolesView}}, Path=BindingContext.AreRolesLockedForMe, Converter={StaticResource InvertedBoolConverter}}"
-							Command="{Binding AddPartFromContactsCommand}"/>
-				    <controls:TextButton Grid.Column="1" LabelData="{l:Localize ScanQRShort}" Style="{DynamicResource TransparentTextButton}"
-							IsEnabled="{Binding Source={RelativeSource AncestorType={x:Type views:RolesView}}, Path=BindingContext.AreRolesLockedForMe, Converter={StaticResource InvertedBoolConverter}}"
-							Command="{Binding AddPartFromQrCommand}"/>
+									<controls:TextButton Grid.Column="0" LabelData="{l:Localize AddContact}" Style="{DynamicResource TransparentTextButton}"
+															IsEnabled="{Binding AreRolesLockedForMe, Source={RelativeSource AncestorType={x:Type base:NewContractViewModel}}, x:DataType=base:NewContractViewModel, Converter={StaticResource InvertedBoolConverter}}"
+															Command="{Binding AddPartFromContactsCommand}"/>
+									<controls:TextButton Grid.Column="1" LabelData="{l:Localize ScanQRShort}" Style="{DynamicResource TransparentTextButton}"
+															IsEnabled="{Binding AreRolesLockedForMe, Source={RelativeSource AncestorType={x:Type base:NewContractViewModel}}, x:DataType=base:NewContractViewModel, Converter={StaticResource InvertedBoolConverter}}"
+															Command="{Binding AddPartFromQrCommand}"/>
 								</Grid>
 							</Border>
 						</VerticalStackLayout>

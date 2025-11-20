@@ -32,7 +32,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		public NewContractViewModel()
 		{
-			this.args = ServiceRef.UiService.PopLatestArgs<NewContractNavigationArgs>();
+			this.args = ServiceRef.NavigationService.PopLatestArgs<NewContractNavigationArgs>();
 
 			this.SelectedContractVisibilityItem = this.ContractVisibilityItems[0];
 		}
@@ -46,6 +46,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private readonly object debounceLock = new();
 		private Task? latestValidationTask;
 		private bool suppressParameterValidation;
+		private TaskCompletionSource<Contract?>? postCreateCompletion;
 
 
 		#endregion
@@ -248,10 +249,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		#region Methods
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
 
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (this.args is null || this.args?.Template is null)
 			{
@@ -356,13 +357,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			if (this.Contract is not null)
 			{
 				this.Contract.ParameterChanged -= this.Parameter_PropertyChanged;
 			}
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		/// <summary>
@@ -696,7 +697,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 				}
 
 				foreach (ObservableParameter ParamLoop in this.Contract.Parameters)
-					ParamLoop.Parameter.Populate(Variables);
+				ParamLoop.Parameter.Populate(Variables);
 
 				// Step 2: Prepare to collect validation results
 				List<(ObservableParameter Param, bool IsValid, string ValidationText)> ValidationResults = [];
@@ -711,23 +712,27 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					// Ignore, client might not be available currently
 				}
 
-				Task<(ObservableParameter Param, bool IsValid, string ValidationText)>[] ValidationTasks = this.EditableParameters.Select(async ParamToValidate =>
+				Task<(ObservableParameter Param, bool IsValid, string ValidationText)>[] ValidationTasks = this.Contract.Parameters.Select(async ParamToValidate =>
 				{
 					bool IsValid = false;
 					string ValidationText = string.Empty;
 					try
 					{
-						if (ParamToValidate.Value is null)
+						if (await ParamToValidate.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient).ConfigureAwait(false))
 						{
-							IsValid = false;
+							IsValid = true;
+							ValidationText = string.Empty;
+						}
+						else if(ParamToValidate.Value is null)
+						{
 							ValidationText = string.Empty;
 						}
 						else
 						{
-							IsValid = await ParamToValidate.Parameter.IsParameterValid(Variables, ServiceRef.XmppService.ContractsClient).ConfigureAwait(false);
 							IsValid = IsValid || ParamToValidate.Parameter.ErrorText == ContractStatus.ClientIdentityInvalid.ToString();
 							ValidationText = ParamToValidate.Parameter.ErrorText;
 						}
+
 						// Optional: keep debug noise low when simply entering the Parameters step
 						if (!this.suppressParameterValidation)
 							ServiceRef.LogService.LogDebug($"Parameter '{ParamToValidate.Parameter.Name}' validation result: {IsValid}, Error: {ParamToValidate.Parameter.ErrorReason} - {ValidationText}");
@@ -845,7 +850,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
+			if (!await ServiceRef.AuthenticationService.AuthenticateUserAsync(AuthenticationPurpose.SignContract, true))
 			{
 				await this.GoToState(NewContractStep.Preview);
 				return;
@@ -875,6 +880,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 					this.Contract.Contract.ArchiveRequired ?? Duration.FromYears(5),
 					this.Contract.Contract.ArchiveOptional ?? Duration.FromYears(5),
 					null, null, false);
+				this.lastCreatedContract = CreatedContract;
+				await this.OpenCreatedContract();
 				// Sign for all selected roles (could be none)
 				string? MyId = ServiceRef.TagProfile.LegalIdentity?.Id;
 				if (!string.IsNullOrEmpty(MyId))
@@ -908,6 +915,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 					if (!string.IsNullOrEmpty(Proposal))
 						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, Proposal);
+					else
+						await ServiceRef.XmppService.SendContractProposal(CreatedContract, Part.Role, Info.BareJid, ServiceRef.Localizer[nameof(AppResources.ProposalDefaultMessage)]);
 				}
 			}
 			catch (Waher.Networking.XMPP.XmppException Ex)
@@ -937,7 +946,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			// Directly open created contract (no Final step)
 			this.lastCreatedContract = CreatedContract;
-			await this.OpenCreatedContract();
+			// Complete the post-create TCS so ViewContract can update signing UI
+			this.postCreateCompletion?.TrySetResult(CreatedContract);
+			this.postCreateCompletion = null;
 
 		}
 
@@ -980,13 +991,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			}
 		}
 
+		public override async Task GoBack()
+		{
+			await this.Back();
+		}
+
 		[RelayCommand]
 		private async Task OpenCreatedContract()
 		{
 			if (this.lastCreatedContract is null)
 				return;
-			ViewContractNavigationArgs Args = new(this.lastCreatedContract, false);
-			await ServiceRef.UiService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop3);
+			TaskCompletionSource<Contract?> Tcs = new TaskCompletionSource<Contract?>();
+			ViewContractNavigationArgs Args = new(this.lastCreatedContract, false, null, string.Empty, null, Tcs);
+			await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop3);
+			this.postCreateCompletion = Tcs;
 		}
 
 		/// <summary>
@@ -1066,6 +1084,33 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 			await this.GoToState(NewContractStep.Loading);
 
+			foreach (Parameter Param in this.Contract.Contract.Parameters)
+			{
+				try
+				{
+					if (string.IsNullOrEmpty(Param.StringValue))
+						Param.StringValue = null;
+				}
+				catch (Exception Ex)
+				{
+					// Ignore
+				}
+			}
+
+			await this.ValidateParametersAsync(); // Populate All Parameters
+
+			foreach (Parameter Param in this.Contract.Contract.Parameters)
+			{
+				try
+				{
+					if (string.IsNullOrEmpty(Param.StringValue))
+						Param.StringValue = null;
+				}
+				catch (Exception Ex)
+				{
+					// Ignore
+				}
+			}
 			VerticalStackLayout? HumanReadableText = await this.Contract.Contract.ToMaui(this.Contract.Contract.DeviceLanguage());
 
 			await MainThread.InvokeOnMainThreadAsync(() =>

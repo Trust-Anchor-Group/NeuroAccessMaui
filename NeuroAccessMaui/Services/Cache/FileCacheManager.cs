@@ -29,19 +29,26 @@ namespace NeuroAccessMaui.Services.Cache
 
 		public async Task EvictOldEntries()
 		{
-			// Only allow the first caller to actually perform eviction
-			// This is not really needed,
-			// but added justin case there ever is a situations where the cache contains a ridicoulus amount of files
-			if (Interlocked.Exchange(ref evictionPerformed, 1) == 1)
-				return;
-
-			IEnumerable<CacheEntry> Expired = await Database.FindDelete<CacheEntry>(
-				new FilterFieldLesserOrEqualTo("Expires", DateTime.UtcNow));
-
-			foreach (CacheEntry Entry in Expired)
+			try
 			{
-				try { File.Delete(Entry.LocalFileName); }
-				catch { /* log if desired */ }
+				// Only allow the first caller to actually perform eviction
+				// This is not really needed,
+				// but added justin case there ever is a situations where the cache contains a ridicoulus amount of files
+				if (Interlocked.Exchange(ref evictionPerformed, 1) == 1)
+					return;
+
+				IEnumerable<CacheEntry> Expired = await Database.FindDelete<CacheEntry>(
+					new FilterFieldLesserOrEqualTo("Expires", DateTime.UtcNow));
+
+				foreach (CacheEntry Entry in Expired)
+				{
+					try { File.Delete(Entry.LocalFileName); }
+					catch { /* log if desired */ }
+				}
+			}
+			catch
+			{
+				// Ignore
 			}
 		}
 

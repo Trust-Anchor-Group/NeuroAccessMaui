@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using Waher.Events;
 using Waher.Events.Persistence;
 using Waher.Persistence;
@@ -175,8 +176,7 @@ namespace NeuroAccessMaui.Services.Storage
 
 		private Task<FilesProvider> CreateDatabaseFile()
 		{
-			FilesProvider.AsyncFileIo = false;  // Asynchronous file I/O induces a long delay during startup on mobile platforms. Why??
-
+			FilesProvider.AsyncFileIo = true;  // Asynchronous file I/O induces a long delay during startup on mobile platforms. Why??
 			return FilesProvider.CreateAsync(this.dataFolder, "Default", 8192, 10000, 8192, Encoding.UTF8,
 				(int)Constants.Timeouts.Database.TotalMilliseconds, ServiceRef.CryptoService.GetCustomKey);
 		}

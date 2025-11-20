@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyTokens
 		/// </summary>
 		public MyTokensPage()
 		{
-			this.ContentPageModel = new MyTokensViewModel(ServiceRef.UiService.PopLatestArgs<MyTokensNavigationArgs>());
+			this.ContentPageModel = new MyTokensViewModel(ServiceRef.NavigationService.PopLatestArgs<MyTokensNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

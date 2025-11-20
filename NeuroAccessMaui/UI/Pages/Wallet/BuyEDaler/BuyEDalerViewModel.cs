@@ -31,11 +31,11 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			this.result?.TrySetResult(this.buyButtonPressed ? this.Amount : null);
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		partial void OnAmountTextChanged(string? value)
@@ -98,7 +98,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 					case "AmountText":
 						CalculatorNavigationArgs Args = new(this, nameof(this.AmountText));
 
-						await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), Args, BackMethod.Pop);
+						await ServiceRef.NavigationService.GoToAsync(nameof(CalculatorPage), Args, BackMethod.Pop);
 						break;
 				}
 			}

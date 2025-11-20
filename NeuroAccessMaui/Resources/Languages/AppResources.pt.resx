@@ -22,8 +22,7 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework
   object]</value>
         <comment>This is a comment</comment>
@@ -996,7 +995,7 @@
     <value>Selfie</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Por favor, adicione uma imagem onde você pode ser facilmente identificado.</value>
+    <value>Tire uma foto ao vivo de si mesmo agora para que possamos verificar a sua identidade. Capturas de ecrã ou imagens editadas não são permitidas.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>As imagens a seguir foram incluídas no aplicativo.</value>
@@ -2280,7 +2279,7 @@
     <value>Use este dispositivo para escanear o código QR e transferir sua conta.</value>
   </data>
   <data name="OnboardingContactSupportDetailsPart2" xml:space="preserve">
-    <value>Se você não tiver acesso à sua conta, entre em contato com nossa equipe de suporte em</value>
+    <value>Se você não tiver acesso à sua conta, entre em contato com o seu provedor de identidade.</value>
   </data>
   <data name="OnboardingContactSupportDetailsPart3" xml:space="preserve">
     <value>.</value>
@@ -2810,6 +2809,9 @@
   <data name="SelectContract" xml:space="preserve">
     <value>Selecione um contrato</value>
   </data>
+  <data name="LoadMore" xml:space="preserve">
+    <value>Carregar mais</value>
+  </data>
   <data name="SelectContractEntryDescription" xml:space="preserve">
     <value>Cole o ID do contrato ou escolha da lista</value>
   </data>
@@ -2990,6 +2992,42 @@
   <data name="Kyc_Exit" xml:space="preserve">
     <value>Tem certeza de que deseja sair do processo de solicitação de identidade?</value>
   </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Revisão da solicitação</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Código:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Campos para revisar</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Fotos a substituir</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Esses dados não puderam ser aprovados. Atualize-os no formulário antes de reenviar.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Campos pendentes</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Fotos pendentes</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Corrigir problemas e editar formulário</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Reenviar sem campos pendentes</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Sua solicitação está em revisão manual. Você pode aguardar o resultado ou ajustar os itens abaixo para tentar um processamento automático.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Esses itens aguardam revisão manual. Você pode mantê-los como estão ou ajustá-los para tentar um processamento automático.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Alguns dados enviados não puderam ser verificados. Toque para revisar.</value>
+  </data>
   <data name="Kyc_Apply" xml:space="preserve">
     <value>Enviar</value>
   </data>
@@ -3092,9 +3130,6 @@
   <data name="Upload" xml:space="preserve">
     <value>Carregar</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Tirar foto</value>
-  </data>
   <data name="InReview" xml:space="preserve">
     <value>Em revisão</value>
   </data>
@@ -3104,7 +3139,301 @@
   <data name="IdentityRejected" xml:space="preserve">
     <value>Identidade rejeitada. Você pode retornar à página de solicitações e atualizar suas informações para tentar novamente.</value>
   </data>
-  <data name="LoadMore" xml:space="preserve">
-    <value>Carregar mais</value>
+  <data name="AddToBalance" xml:space="preserve">
+    <value>Adicionar ao saldo</value>
+  </data>
+  <data name="SelectContact" xml:space="preserve">
+    <value>Selecionar contato</value>
+  </data>
+  <data name="TransactionHistory" xml:space="preserve">
+    <value>Histórico de transações</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Resumo</value>
+  </data>
+  <data name="TotalIn" xml:space="preserve">
+    <value>Total de entrada</value>
+  </data>
+  <data name="TotalOut" xml:space="preserve">
+    <value>Total de saída</value>
+  </data>
+  <data name="Net" xml:space="preserve">
+    <value>Líquido</value>
+  </data>
+  <data name="NoTransactionsYet" xml:space="preserve">
+    <value>Ainda não há transações</value>
+  </data>
+  <data name="Transaction" xml:space="preserve">
+    <value>Transação</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Transferência</value>
+  </data>
+  <data name="BalanceTopUp" xml:space="preserve">
+    <value>Recarga de saldo</value>
+  </data>
+  <data name="TransactionDetails" xml:space="preserve">
+    <value>Detalhes da transação</value>
+  </data>
+  <data name="Recipient" xml:space="preserve">
+    <value>Destinatário</value>
+  </data>
+  <data name="NotInContacts" xml:space="preserve">
+    <value>Não está nos contatos</value>
+  </data>
+  <data name="FullIdentifier" xml:space="preserve">
+    <value>Identificador completo</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Tipo de transação</value>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Data da transação</value>
+  </data>
+  <data name="TransactionStatus" xml:space="preserve">
+    <value>Status da transação</value>
+  </data>
+  <data name="ReservedNoColon" xml:space="preserve">
+    <value>Reservado</value>
+  </data>
+  <data name="Successful" xml:space="preserve">
+    <value>Bem-sucedida</value>
+  </data>
+  <data name="TransactionIDNoColon" xml:space="preserve">
+    <value>ID da transação</value>
+  </data>
+  <data name="TransferSuccessful" xml:space="preserve">
+    <value>Transferência bem-sucedida</value>
+  </data>
+  <data name="UnknownPleaseRefresh" xml:space="preserve">
+    <value>Desconhecido, por favor atualize</value>
+  </data>
+  <data name="SelectForMe" xml:space="preserve">
+    <value>Selecionar por mim</value>
+  </data>
+  <data name="ShareDescription" xml:space="preserve">
+    <value>Abaixo, você pode encontrar opções adicionais para compartilhar o código QR.</value>
+  </data>
+  <data name="OtherApp" xml:space="preserve">
+    <value>Outro aplicativo</value>
+  </data>
+  <data name="SuccessfullyCopiedToClipboard" xml:space="preserve">
+    <value>Copiado para a área de transferência com sucesso</value>
+  </data>
+  <data name="MakePayment" xml:space="preserve">
+    <value>Efetuar pagamento</value>
+  </data>
+  <data name="PayOnline" xml:space="preserve">
+    <value>Pagar online</value>
+  </data>
+  <data name="PayOffline" xml:space="preserve">
+    <value>Pagar offline</value>
+  </data>
+  <data name="ShareOfflinePaymentDescription" xml:space="preserve">
+    <value>Você pode compartilhar este código QR com outro usuário para processamento posterior, seja quando necessário ou quando houver conectividade.</value>
+  </data>
+  <data name="RequestCredits" xml:space="preserve">
+    <value>Solicitar créditos</value>
+  </data>
+  <data name="SendCredits" xml:space="preserve">
+    <value>Enviar créditos</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>ano</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>anos</value>
+  </data>
+  <data name="Month" xml:space="preserve">
+    <value>mês</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>meses</value>
+  </data>
+  <data name="Day" xml:space="preserve">
+    <value>dia</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>dias</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>hora</value>
+  </data>
+  <data name="Hours" xml:space="preserve">
+    <value>horas</value>
+  </data>
+  <data name="Minute" xml:space="preserve">
+    <value>minuto</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minutos</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>segundo</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>segundos</value>
+  </data>
+  <data name="DurationAndSeparator" xml:space="preserve">
+    <value> e </value>
+  </data>
+  <data name="DurationCommaSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="NoTokens" xml:space="preserve">
+    <value>Sem tokens</value>
+  </data>
+  <data name="TokenDetails" xml:space="preserve">
+    <value>Detalhes do token</value>
+  </data>
+  <data name="TokenDetailsDescription" xml:space="preserve">
+    <value>A seguir estão os detalhes codificados no token. Clique em qualquer link para mais informações.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categoria</value>
+  </data>
+  <data name="TokenId" xml:space="preserve">
+    <value>ID do token</value>
+  </data>
+  <data name="TokenIdMethod" xml:space="preserve">
+    <value>Método de ID do token</value>
+  </data>
+  <data name="TokenVisibility" xml:space="preserve">
+    <value>Visibilidade do token</value>
+  </data>
+  <data name="Ordinal" xml:space="preserve">
+    <value>Ordinal</value>
+  </data>
+  <data name="Valuation" xml:space="preserve">
+    <value>Avaliação</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Relatórios</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variáveis</value>
+  </data>
+  <data name="States" xml:space="preserve">
+    <value>Estados</value>
+  </data>
+  <data name="TokenPartsInfoText" xml:space="preserve">
+    <value>A seguir está uma lista de partes relacionadas a este token.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Proprietário</value>
+  </data>
+  <data name="OwnerJid" xml:space="preserve">
+    <value>Endereço do proprietário</value>
+  </data>
+  <data name="OwnershipContract" xml:space="preserve">
+    <value>Contrato de propriedade</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Criador</value>
+  </data>
+  <data name="CreatorJid" xml:space="preserve">
+    <value>Endereço do criador</value>
+  </data>
+  <data name="CreationContract" xml:space="preserve">
+    <value>Contrato de criação</value>
+  </data>
+  <data name="TrustProvider" xml:space="preserve">
+    <value>Provedor de confiança</value>
+  </data>
+  <data name="TrustProviderJid" xml:space="preserve">
+    <value>Endereço do provedor de confiança</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>Privilégios</value>
+  </data>
+  <data name="TokenPrivilegesInfoText" xml:space="preserve">
+    <value>A seguir estão os privilégios gravados no token.</value>
+  </data>
+  <data name="CreatorCanDestroy" xml:space="preserve">
+    <value>O criador pode destruir o token</value>
+  </data>
+  <data name="OwnerCanDestroyBatch" xml:space="preserve">
+    <value>O proprietário pode destruir o lote de tokens</value>
+  </data>
+  <data name="OwnerCanDestroyIndividual" xml:space="preserve">
+    <value>O proprietário pode destruir um token individual</value>
+  </data>
+  <data name="CertifierCanDestroy" xml:space="preserve">
+    <value>O certificador pode destruir o token</value>
+  </data>
+  <data name="MachineReadableText" xml:space="preserve">
+    <value>Informações legíveis por máquina</value>
+  </data>
+  <data name="MachineReadableInfoTextToken" xml:space="preserve">
+    <value>Abaixo está uma visão geral dos dados legíveis por máquina incorporados no token.</value>
+  </data>
+  <data name="DefinitionNamespace" xml:space="preserve">
+    <value>Namespace da definição</value>
+  </data>
+  <data name="DefinitionSchemaDigest" xml:space="preserve">
+    <value>Resumo (digest) do esquema de definição</value>
+  </data>
+  <data name="ShowM2MInfo" xml:space="preserve">
+    <value>Mostrar definição M2M</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Ações</value>
+  </data>
+  <data name="SendToContact" xml:space="preserve">
+    <value>Enviar para contato</value>
+  </data>
+  <data name="PublishMarketplace" xml:space="preserve">
+    <value>Publicar no Marketplace</value>
+  </data>
+  <data name="OfferToBuy" xml:space="preserve">
+    <value>Oferecer para comprar</value>
+  </data>
+  <data name="OfferToSell" xml:space="preserve">
+    <value>Oferecer para vender</value>
+  </data>
+  <data name="ViewEvents" xml:space="preserve">
+    <value>Ver eventos</value>
+  </data>
+  <data name="CurrentState" xml:space="preserve">
+    <value>Estado atual</value>
+  </data>
+  <data name="MachineHasEnded" xml:space="preserve">
+    <value>A máquina de estados foi encerrada.</value>
+  </data>
+  <data name="CurrentVariables" xml:space="preserve">
+    <value>Variáveis atuais</value>
+  </data>
+  <data name="TokenEvents" xml:space="preserve">
+    <value>Eventos do token</value>
+  </data>
+  <data name="TokenEventsDescription" xml:space="preserve">
+    <value>A seguir estão os eventos públicos registrados para o token. Seus eventos privados também estão incluídos.</value>
+  </data>
+  <data name="TextNote" xml:space="preserve">
+    <value>Nota de texto</value>
+  </data>
+  <data name="XmlNote" xml:space="preserve">
+    <value>Nota XML</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Adicionar nota</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Valor</value>
+  </data>
+  <data name="InvitationToSignFormat" xml:space="preserve">
+    <value>Você foi convidado a assinar este contrato como {0}. Verifique e revise o contrato antes de prosseguir.</value>
+  </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Enviar proposta</value>
+  </data>
+  <data name="Sender" xml:space="preserve">
+    <value>Remetente:</value>
+  </data>
+  <data name="ShortId" xml:space="preserve">
+    <value>ID</value>
   </data>
 </root>

@@ -2,6 +2,21 @@
 
 namespace NeuroAccessMaui
 {
+
+	public static class RegexBackups
+	{
+		/// <summary>
+		/// Regex pattern for validating Neuro-Feature tokens.
+		/// </summary>
+		public const string IotId = """iotid:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+)""";
+
+		public const string NeuroFeatures = """nfeat:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+)""";
+
+		public const string Smartcontract = """iotsc:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+)([?][^\s=&]+=[^\s&]*(&[^\s=&]+=[^\s&]*)*)?""";
+		
+		// ((iotid:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+))|(nfeat:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+))|(iotsc:(?:([^@\/<>'\"\s]+)@)([^@\/<>'\"\s]+)([?][^\s=&]+=[^\s&]*(&[^\s=&]+=[^\s&]*)*)?)|(edaler:[^\s=;]+=[^\s;]*(;[^\s=;]+=[^\s;]*)*))
+
+	}
 	/// <summary>
 	/// A set of never changing property constants and helpful values.
 	/// </summary>
@@ -72,6 +87,11 @@ namespace NeuroAccessMaui
 			/// Maximum number of seconds screen recording is allowed.
 			/// </summary>
 			public const int MaxScreenRecordingTimeSeconds = 60 * 60;
+
+			/// <summary>
+			/// Maximum allowed consecutive repeating identical symbols before blocking
+			/// </summary>
+			public const int MaxPasswordRepeatingRun = 6;
 		}
 
 		/// <summary>
@@ -674,7 +694,7 @@ namespace NeuroAccessMaui
 			/// <summary>
 			/// Database timeout
 			/// </summary>
-			public static readonly TimeSpan Database = TimeSpan.FromSeconds(10);
+			public static readonly TimeSpan Database = TimeSpan.FromSeconds(30);
 
 			/// <summary>
 			/// XMPP Connect timeout
@@ -858,11 +878,16 @@ namespace NeuroAccessMaui
 			/// </summary>
 			public const string MainPage = "//MainPage";
 
-			/// <summary>
-			/// Path to registration page.
-			/// </summary>
-			public const string RegistrationPage = "//Registration";
-		}
+		/// <summary>
+		/// Path to registration page.
+		/// </summary>
+		public const string RegistrationPage = "//Registration";
+
+		/// <summary>
+		/// Path to onboarding page.
+		/// </summary>
+		public const string OnboardingPage = "//Onboarding";
+	}
 
 		/// <summary>
 		/// Age-related constants.

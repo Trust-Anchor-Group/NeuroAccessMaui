@@ -65,18 +65,6 @@
 				<Text lang="fr">Prénom(s)</Text>
 			</Label>
 			<ValidationRules>
-				<LengthRule min="2">
-					<Message>
-						<Text lang="en">Given name(s) must be at least 2 characters.</Text>
-						<Text lang="sv">Förnamn måste vara minst 2 tecken.</Text>
-						<Text lang="es">El/Los nombre(s) deben tener al menos 2 caracteres.</Text>
-						<Text lang="pt">O(s) nome(s) deve(m) ter pelo menos 2 caracteres.</Text>
-						<Text lang="da">Fornavn(e) skal være mindst 2 tegn.</Text>
-						<Text lang="no">Fornavn må være minst 2 tegn.</Text>
-						<Text lang="fi">Etunimen tulee olla vähintään 2 merkkiä.</Text>
-						<Text lang="fr">Le(s) prénom(s) doivent comporter au moins 2 caractères.</Text>
-					</Message>
-				</LengthRule>
 				<RegexRule>
 					<Regex>^[\D]+$</Regex>
 					<Message>
@@ -105,18 +93,6 @@
 				<Text lang="fr">Deuxième(s) prénom(s)</Text>
 			</Label>
 			<ValidationRules>
-				<LengthRule min="2">
-					<Message>
-						<Text lang="en">Middle name(s) must be at least 2 characters.</Text>
-						<Text lang="sv">Mellannamn måste vara minst 2 tecken.</Text>
-						<Text lang="es">El/Los segundo(s) nombre(s) deben tener al menos 2 caracteres.</Text>
-						<Text lang="pt">O(s) nome(s) do meio deve(m) ter pelo menos 2 caracteres.</Text>
-						<Text lang="da">Mellemnavn(e) skal være mindst 2 tegn.</Text>
-						<Text lang="no">Mellomnavn må være minst 2 tegn.</Text>
-						<Text lang="fi">Toisen etunimen tulee olla vähintään 2 merkkiä.</Text>
-						<Text lang="fr">Le(s) deuxième(s) prénom(s) doivent comporter au moins 2 caractères.</Text>
-					</Message>
-				</LengthRule>
 				<RegexRule>
 					<Regex>^[\D]+$</Regex>
 					<Message>
@@ -145,18 +121,6 @@
 				<Text lang="fr">Nom(s) de famille</Text>
 			</Label>
 			<ValidationRules>
-				<LengthRule min="2">
-					<Message>
-						<Text lang="en">Last name(s) must be at least 2 characters.</Text>
-						<Text lang="sv">Efternamn måste vara minst 2 tecken.</Text>
-						<Text lang="es">El/Los apellido(s) deben tener al menos 2 caracteres.</Text>
-						<Text lang="pt">O(s) sobrenome(s) deve(m) ter pelo menos 2 caracteres.</Text>
-						<Text lang="da">Efternavn(e) skal være mindst 2 tegn.</Text>
-						<Text lang="no">Etternavn må være minst 2 tegn.</Text>
-						<Text lang="fi">Sukunimen tulee olla vähintään 2 merkkiä.</Text>
-						<Text lang="fr">Le(s) nom(s) de famille doivent comporter au moins 2 caractères.</Text>
-					</Message>
-				</LengthRule>
 				<RegexRule>
 					<Regex>^[\D]+$</Regex>
 					<Message>
@@ -203,7 +167,7 @@
 			</ValidationRules>
 			<Mapping key="PNR" />
 		</Field>
-		<Field id="dob" type="date" required="true">
+		<Field id="dob" type="date">
 			<Label>
 				<Text lang="en">Date of Birth</Text>
 				<Text lang="sv">Födelsedatum</Text>
@@ -234,7 +198,7 @@
 				<Transform name="year" />
 			</Mapping>
 		</Field>
-		<Field id="nationality" type="country" required="true">
+		<Field id="nationality" type="country">
 			<Label>
 				<Text lang="en">Nationality</Text>
 				<Text lang="sv">Nationalitet</Text>
@@ -247,7 +211,7 @@
 			</Label>
 			<Mapping key="NATIONALITY" />
 		</Field>
-		<Field id="gender" type="gender" required="true">
+		<Field id="gender" type="gender">
 			<Label>
 				<Text lang="en">Gender</Text>
 				<Text lang="sv">Kön</Text>
@@ -401,17 +365,17 @@
 					<Text lang="fi">Valitse tiedosto...</Text>
 					<Text lang="fr">Choisir un fichier...</Text>
 				</Placeholder>
-					<Metadata>
-						<TargetWidth>1200</TargetWidth>
-						<TargetHeight>1600</TargetHeight>
-						<MinDpi>300</MinDpi>
-					</Metadata>
+				<Metadata>
+					<TargetWidth>1200</TargetWidth>
+					<TargetHeight>1600</TargetHeight>
+					<MinDpi>300</MinDpi>
+				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
 					<Equals>passport</Equals>
 				</Condition>
-					<Mapping key="Passport" />
-				</Field>
+				<Mapping key="Passport" />
+			</Field>
 
 			<!-- Identity Card Upload Field (shown if identityCard is selected) -->
 			<Field id="identityCardFrontUpload" type="image" required="true">
@@ -445,17 +409,17 @@
 					<Text lang="fi">Henkilökortin etupuoli...</Text>
 					<Text lang="fr">Carte d’identité recto...</Text>
 				</Placeholder>
-					<Metadata>
-						<TargetWidth>1000</TargetWidth>
-						<TargetHeight>1500</TargetHeight>
-						<MinDpi>200</MinDpi>
-					</Metadata>
+				<Metadata>
+					<TargetWidth>1000</TargetWidth>
+					<TargetHeight>1500</TargetHeight>
+					<MinDpi>200</MinDpi>
+				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
 					<Equals>identityCard</Equals>
 				</Condition>
-					<Mapping key="IdCardFront" />
-				</Field>
+				<Mapping key="IdCardFront" />
+			</Field>
 
 			<!-- Identity Card Back Upload Field (shown if identityCard is selected) -->
 			<Field id="identityCardBackUpload" type="image" required="true">
@@ -489,17 +453,17 @@
 					<Text lang="fi">Henkilökortin takapuoli...</Text>
 					<Text lang="fr">Carte d’identité verso...</Text>
 				</Placeholder>
-					<Metadata>
-						<TargetWidth>1000</TargetWidth>
-						<TargetHeight>1500</TargetHeight>
-						<MinDpi>200</MinDpi>
-					</Metadata>
+				<Metadata>
+					<TargetWidth>1000</TargetWidth>
+					<TargetHeight>1500</TargetHeight>
+					<MinDpi>200</MinDpi>
+				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
 					<Equals>identityCard</Equals>
 				</Condition>
-					<Mapping key="IdCardBack" />
-				</Field>
+				<Mapping key="IdCardBack" />
+			</Field>
 
 			<!-- Drivers license Front Upload (shown if driverslicense is selected) -->
 			<Field id="driverslicenseFront" type="image" required="true">
@@ -533,17 +497,17 @@
 					<Text lang="fi">Ajokortin etupuoli...</Text>
 					<Text lang="fr">Permis de conduire recto...</Text>
 				</Placeholder>
-					<Metadata>
-						<TargetWidth>900</TargetWidth>
-						<TargetHeight>600</TargetHeight>
-						<MinDpi>150</MinDpi>
-					</Metadata>
+				<Metadata>
+					<TargetWidth>900</TargetWidth>
+					<TargetHeight>600</TargetHeight>
+					<MinDpi>150</MinDpi>
+				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
 					<Equals>driversLicense</Equals>
 				</Condition>
-					<Mapping key="DriverLicenseFront" />
-				</Field>
+				<Mapping key="DriverLicenseFront" />
+			</Field>
 			<!-- Drivers license Back Upload (shown if driverslicense is selected) -->
 			<Field id="driverslicenseBack" type="image" required="true">
 				<Label>
@@ -555,7 +519,7 @@
 					<Text lang="no">Førerkort bakside opplasting</Text>
 					<Text lang="fi">Ajokortin takapuolen lataus</Text>
 					<Text lang="fr">Téléversement du permis de conduire verso</Text>
-				</Label>				
+				</Label>
 				<Hint>
 					<Text lang="en">Upload the back of your driver’s license</Text>
 					<Text lang="sv">Ladda upp baksidan av ditt körkort</Text>
@@ -576,17 +540,17 @@
 					<Text lang="fi">Ajokortin takapuoli...</Text>
 					<Text lang="fr">Permis de conduire verso...</Text>
 				</Placeholder>
-					<Metadata>
-						<TargetWidth>900</TargetWidth>
-						<TargetHeight>600</TargetHeight>
-						<MinDpi>150</MinDpi>
-					</Metadata>
+				<Metadata>
+					<TargetWidth>900</TargetWidth>
+					<TargetHeight>600</TargetHeight>
+					<MinDpi>150</MinDpi>
+				</Metadata>
 				<Condition>
 					<FieldRef>documentType</FieldRef>
 					<Equals>driversLicense</Equals>
 				</Condition>
-					<Mapping key="DriverLicenseBack" />
-				</Field>
+				<Mapping key="DriverLicenseBack" />
+			</Field>
 		</Section>
 	</Page>
 	<Page id="addressInformation">
@@ -610,7 +574,7 @@
 			<Text lang="fi">Seuraavat henkilötiedot sisällytetään Neuro ID -hakemukseen</Text>
 			<Text lang="fr">Les informations personnelles suivantes seront incluses dans la demande de Neuro ID</Text>
 		</Description>
-			<Field id="zipCode" type="text" required="true">
+		<Field id="zipCode" type="text">
 			<Label>
 				<Text lang="en">Zip Code</Text>
 				<Text lang="sv">Postnummer</Text>
@@ -641,9 +605,9 @@
 				<Text lang="fi">123 45</Text>
 				<Text lang="fr">123 45</Text>
 			</Placeholder>
-				<Mapping key="ZIP" />
-			</Field>
-			<Field id="address" type="text" required="true">
+			<Mapping key="ZIP" />
+		</Field>
+		<Field id="address" type="text">
 			<Label>
 				<Text lang="en">Address</Text>
 				<Text lang="sv">Adress</Text>
@@ -674,23 +638,9 @@
 				<Text lang="fi">Pääkatu 123</Text>
 				<Text lang="fr">123 Rue Principale</Text>
 			</Placeholder>
-			<ValidationRules>
-				<LengthRule min="5" max="100">
-					<Message>
-						<Text lang="en">Address must be between 5 and 100 characters.</Text>
-						<Text lang="sv">Adressen måste vara mellan 5 och 100 tecken.</Text>
-						<Text lang="es">La dirección debe tener entre 5 y 100 caracteres.</Text>
-						<Text lang="pt">O endereço deve ter entre 5 e 100 caracteres.</Text>
-						<Text lang="da">Adressen skal være mellem 5 og 100 tegn.</Text>
-						<Text lang="no">Adressen må være mellom 5 og 100 tegn.</Text>
-						<Text lang="fi">Osoitteen pituuden tulee olla 5–100 merkkiä.</Text>
-						<Text lang="fr">L’adresse doit comporter entre 5 et 100 caractères.</Text>
-					</Message>
-				</LengthRule>
-			</ValidationRules>
-				<Mapping key="ADDR" />
-			</Field>
-			<Field id="address2" type="text">
+			<Mapping key="ADDR" />
+		</Field>
+		<Field id="address2" type="text">
 			<Label>
 				<Text lang="en">Apartment/Unit</Text>
 				<Text lang="sv">Lägenhetsnummer</Text>
@@ -735,9 +685,9 @@
 					</Message>
 				</LengthRule>
 			</ValidationRules>
-				<Mapping key="ADDR2" />
-			</Field>
-			<Field id="area" type="text" required="true">
+			<Mapping key="ADDR2" />
+		</Field>
+		<Field id="area" type="text">
 			<Label>
 				<Text lang="en">Area</Text>
 				<Text lang="sv">Område</Text>
@@ -768,23 +718,9 @@
 				<Text lang="fi">Keskusta</Text>
 				<Text lang="fr">Centre-ville</Text>
 			</Placeholder>
-			<ValidationRules>
-				<LengthRule min="2" max="50">
-					<Message>
-						<Text lang="en">Area must be between 2 and 50 characters.</Text>
-						<Text lang="sv">Området måste vara mellan 2 och 50 tecken.</Text>
-						<Text lang="es">La zona debe tener entre 2 y 50 caracteres.</Text>
-						<Text lang="pt">A área deve ter entre 2 e 50 caracteres.</Text>
-						<Text lang="da">Område skal være mellem 2 og 50 tegn.</Text>
-						<Text lang="no">Området må være mellom 2 og 50 tegn.</Text>
-						<Text lang="fi">Alueen nimen tulee olla 2–50 merkkiä pitkä.</Text>
-						<Text lang="fr">La zone doit comporter entre 2 et 50 caractères.</Text>
-					</Message>
-				</LengthRule>
-			</ValidationRules>
-				<Mapping key="AREA" />
-			</Field>
-			<Field id="city" type="text" required="true">
+			<Mapping key="AREA" />
+		</Field>
+		<Field id="city" type="text">
 			<Label>
 				<Text lang="en">City</Text>
 				<Text lang="sv">Stad</Text>
@@ -815,23 +751,9 @@
 				<Text lang="fi">Tukholma</Text>
 				<Text lang="fr">Stockholm</Text>
 			</Placeholder>
-			<ValidationRules>
-				<LengthRule min="2" max="50">
-					<Message>
-						<Text lang="en">City must be between 2 and 50 characters.</Text>
-						<Text lang="sv">Staden måste vara mellan 2 och 50 tecken.</Text>
-						<Text lang="es">La ciudad debe tener entre 2 y 50 caracteres.</Text>
-						<Text lang="pt">A cidade deve ter entre 2 e 50 caracteres.</Text>
-						<Text lang="da">By skal være mellem 2 og 50 tegn.</Text>
-						<Text lang="no">Byen må være mellom 2 og 50 tegn.</Text>
-						<Text lang="fi">Kaupungin nimen tulee olla 2–50 merkkiä.</Text>
-						<Text lang="fr">La ville doit comporter entre 2 et 50 caractères.</Text>
-					</Message>
-				</LengthRule>
-			</ValidationRules>
-				<Mapping key="CITY" />
-			</Field>
-			<Field id="region" type="text" required="true">
+			<Mapping key="CITY" />
+		</Field>
+		<Field id="region" type="text">
 			<Label>
 				<Text lang="en">Region/State</Text>
 				<Text lang="sv">Region/Län</Text>
@@ -862,22 +784,8 @@
 				<Text lang="fi">Tukholman lääni</Text>
 				<Text lang="fr">Comté de Stockholm</Text>
 			</Placeholder>
-			<ValidationRules>
-				<LengthRule min="2" max="50">
-					<Message>
-						<Text lang="en">Region/state must be between 2 and 50 characters.</Text>
-						<Text lang="sv">Region/län måste vara mellan 2 och 50 tecken.</Text>
-						<Text lang="es">La región/estado debe tener entre 2 y 50 caracteres.</Text>
-						<Text lang="pt">A região/estado deve ter entre 2 e 50 caracteres.</Text>
-						<Text lang="da">Region/stat skal være mellem 2 og 50 tegn.</Text>
-						<Text lang="no">Region/fylke må være mellom 2 og 50 tegn.</Text>
-						<Text lang="fi">Alueen/osavaltion nimen tulee olla 2–50 merkkiä.</Text>
-						<Text lang="fr">La région/l’État doit comporter entre 2 et 50 caractères.</Text>
-					</Message>
-				</LengthRule>
-			</ValidationRules>
-				<Mapping key="REGION" />
-			</Field>
+			<Mapping key="REGION" />
+		</Field>
 	</Page>
 	<Page id="selfiePage">
 		<Title>
@@ -911,14 +819,14 @@
 				<Text lang="fi">Ota kuva...</Text>
 				<Text lang="fr">Prendre une photo...</Text>
 			</Placeholder>
-				<Metadata>
-					<TargetWidth>800</TargetWidth>
-					<TargetHeight>800</TargetHeight>
-					<MinDpi>150</MinDpi>
-					<AllowUpload>false</AllowUpload>
-				</Metadata>
-				<Mapping key="ProfilePhoto" />
-			</Field>
+			<Metadata>
+				<TargetWidth>800</TargetWidth>
+				<TargetHeight>800</TargetHeight>
+				<MinDpi>150</MinDpi>
+				<AllowUpload>false</AllowUpload>
+			</Metadata>
+			<Mapping key="ProfilePhoto" />
+		</Field>
 	</Page>
 	<Page id="isOrgPage">
 		<Title>
@@ -972,7 +880,7 @@
 			<FieldRef>isOrg</FieldRef>
 			<Equals>yes</Equals>
 		</Condition>
-			<Field id="orgName" type="text" required="true">
+		<Field id="orgName" type="text" required="true">
 			<Label>
 				<Text lang="en">Organization Name</Text>
 				<Text lang="sv">Organisationsnamn</Text>
@@ -983,9 +891,9 @@
 				<Text lang="fi">Organisaation nimi</Text>
 				<Text lang="fr">Nom de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGNAME" />
-			</Field>
-			<Field id="orgDepartment" type="text" required="true">
+			<Mapping key="ORGNAME" />
+		</Field>
+		<Field id="orgDepartment" type="text" required="true">
 			<Label>
 				<Text lang="en">Department</Text>
 				<Text lang="sv">Avdelning</Text>
@@ -996,9 +904,9 @@
 				<Text lang="fi">Osasto</Text>
 				<Text lang="fr">Département</Text>
 			</Label>
-				<Mapping key="ORGDEPT" />
-			</Field>
-			<Field id="orgRole" type="text" required="true">
+			<Mapping key="ORGDEPT" />
+		</Field>
+		<Field id="orgRole" type="text" required="true">
 			<Label>
 				<Text lang="en">Role</Text>
 				<Text lang="sv">Roll</Text>
@@ -1009,9 +917,9 @@
 				<Text lang="fi">Rooli</Text>
 				<Text lang="fr">Rôle</Text>
 			</Label>
-				<Mapping key="ORGROLE" />
-			</Field>
-			<Field id="orgNumber" type="text" required="true">
+			<Mapping key="ORGROLE" />
+		</Field>
+		<Field id="orgNumber" type="text" required="true">
 			<Label>
 				<Text lang="en">Organization Number</Text>
 				<Text lang="sv">Organisationsnummer</Text>
@@ -1022,9 +930,9 @@
 				<Text lang="fi">Organisaation numero</Text>
 				<Text lang="fr">Numéro d’organisation</Text>
 			</Label>
-				<Mapping key="ORGNR" />
-			</Field>
-			<Field id="orgAddress" type="text">
+			<Mapping key="ORGNR" />
+		</Field>
+		<Field id="orgAddress" type="text">
 			<Label>
 				<Text lang="en">Organization Address</Text>
 				<Text lang="sv">Organisationsadress</Text>
@@ -1035,9 +943,9 @@
 				<Text lang="fi">Organisaation osoite</Text>
 				<Text lang="fr">Adresse de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGADDR" />
-			</Field>
-			<Field id="orgAddress2" type="text">
+			<Mapping key="ORGADDR" />
+		</Field>
+		<Field id="orgAddress2" type="text">
 			<Label>
 				<Text lang="en">Organization Address 2</Text>
 				<Text lang="sv">Organisationsadress 2</Text>
@@ -1048,9 +956,9 @@
 				<Text lang="fi">Organisaation osoite 2</Text>
 				<Text lang="fr">Adresse de l’organisation 2</Text>
 			</Label>
-				<Mapping key="ORGADDR2" />
-			</Field>
-			<Field id="orgZip" type="text">
+			<Mapping key="ORGADDR2" />
+		</Field>
+		<Field id="orgZip" type="text">
 			<Label>
 				<Text lang="en">Organization Zip or Postal Code</Text>
 				<Text lang="sv">Organisations postnummer</Text>
@@ -1061,9 +969,9 @@
 				<Text lang="fi">Organisaation postinumero</Text>
 				<Text lang="fr">Code postal de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGZIP" />
-			</Field>
-			<Field id="orgArea" type="text">
+			<Mapping key="ORGZIP" />
+		</Field>
+		<Field id="orgArea" type="text">
 			<Label>
 				<Text lang="en">Organization Area</Text>
 				<Text lang="sv">Organisationsområde</Text>
@@ -1074,9 +982,9 @@
 				<Text lang="fi">Organisaation alue</Text>
 				<Text lang="fr">Zone de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGAREA" />
-			</Field>
-			<Field id="orgCity" type="text">
+			<Mapping key="ORGAREA" />
+		</Field>
+		<Field id="orgCity" type="text">
 			<Label>
 				<Text lang="en">Organization City</Text>
 				<Text lang="sv">Organisationsstad</Text>
@@ -1087,9 +995,9 @@
 				<Text lang="fi">Organisaation kaupunki</Text>
 				<Text lang="fr">Ville de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGCITY" />
-			</Field>
-			<Field id="orgRegion" type="text">
+			<Mapping key="ORGCITY" />
+		</Field>
+		<Field id="orgRegion" type="text">
 			<Label>
 				<Text lang="en">Organization Region or State</Text>
 				<Text lang="sv">Organisationsregion eller län</Text>
@@ -1100,9 +1008,9 @@
 				<Text lang="fi">Organisaation alue tai osavaltio</Text>
 				<Text lang="fr">Région ou État de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGREGION" />
-			</Field>
-			<Field id="orgCountry" type="country" required="true">
+			<Mapping key="ORGREGION" />
+		</Field>
+		<Field id="orgCountry" type="country" required="true">
 			<Label>
 				<Text lang="en">Organization Country</Text>
 				<Text lang="sv">Organisationsland</Text>
@@ -1113,7 +1021,7 @@
 				<Text lang="fi">Organisaation maa</Text>
 				<Text lang="fr">Pays de l’organisation</Text>
 			</Label>
-				<Mapping key="ORGCOUNTRY" />
-			</Field>
+			<Mapping key="ORGCOUNTRY" />
+		</Field>
 	</Page>
 </KYCProcess>

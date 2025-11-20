@@ -66,11 +66,11 @@ dotnet_naming_rule.kinds_must_be_pascal_case.severity = error
 dotnet_naming_rule.kinds_must_be_pascal_case.symbols = kinds_must_be_pascal_case
 dotnet_naming_rule.kinds_must_be_pascal_case.style = pascal_case
 
-dotnet_naming_rule.kinds_should_be_pascal_case.severity = warning
+dotnet_naming_rule.kinds_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.kinds_should_be_pascal_case.symbols = kinds_should_be_pascal_case
 dotnet_naming_rule.kinds_should_be_pascal_case.style = pascal_case
 
-dotnet_naming_rule.kinds_should_be_camel_case.severity = warning
+dotnet_naming_rule.kinds_should_be_camel_case.severity = suggestion
 dotnet_naming_rule.kinds_should_be_camel_case.symbols = kinds_should_be_camel_case
 dotnet_naming_rule.kinds_should_be_camel_case.style = camel_case
 

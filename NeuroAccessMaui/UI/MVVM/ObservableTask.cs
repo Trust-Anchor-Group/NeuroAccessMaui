@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services; // For LogService
 using NeuroAccessMaui.Services.Resilience.Dispatch;
 using System.Threading.Tasks;
+using System.Threading; // Added for OperationCanceledException
 
 namespace NeuroAccessMaui.UI.MVVM
 {
@@ -247,9 +248,9 @@ namespace NeuroAccessMaui.UI.MVVM
 					await current.ConfigureAwait(false);
 				}
 			}
-			catch (TaskCanceledException)
+			catch (OperationCanceledException)
 			{
-				// Normal operation on cancel.
+				// Normal cooperative cancellation (includes TaskCanceledException). Suppress error logging.
 			}
 			catch (Exception ex)
 			{

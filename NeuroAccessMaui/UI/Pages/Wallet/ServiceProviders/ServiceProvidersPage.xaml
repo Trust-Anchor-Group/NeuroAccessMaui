@@ -112,8 +112,8 @@
 					  x:DataType="viewmodel:ServiceProviderViewModel">
 			<controls:TemplatedButton HorizontalOptions="Fill"
 									  Command="{x:Binding SelectServiceProviderCommand}">
-				<Frame Style="{DynamicResource ClickableFrameSubSet}"
-					   InputTransparent="True" />
+				<Border Style="{DynamicResource BorderSubSet}"
+						InputTransparent="True" />
 			</controls:TemplatedButton>
 		</DataTemplate>
 		<viewmodel:ServiceTemplateSelector x:Key="TemplateSelector"
@@ -128,11 +128,11 @@
 		<controls:Background />
 
 			<Grid RowSpacing="{DynamicResource SmallSpacing}" RowDefinitions="auto,*"
-								 Margin="{DynamicResource MediumSpacing}">
+				  Margin="16,8,16,16">
 				<Grid ColumnDefinitions="auto,*" Grid.Row="0">
 				<controls:SvgButton Command="{Binding GoBackCommand}"
-										Style="{DynamicResource IconButton}"
-										SvgSource="close.svg"/>
+									Style="{DynamicResource IconButton}"
+									SvgSource="close.svg"/>
 
 				<Label Grid.Column="1"
 						   HorizontalOptions="End"

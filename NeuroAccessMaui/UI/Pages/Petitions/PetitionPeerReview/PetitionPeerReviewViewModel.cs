@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.UI.Photos;
@@ -18,6 +19,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 	/// </summary>
 	public partial class PetitionPeerReviewViewModel : QrXmppViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		private readonly PhotosLoader photosLoader;
 		private readonly string? requestorFullJid;
 		private readonly string? requestedIdentityId;
@@ -71,9 +74,9 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		private readonly SortedDictionary<ReviewStep, BaseContentView> stepViews = [];
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (!string.IsNullOrEmpty(this.bareJid))
 			{
@@ -138,11 +141,11 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			this.photosLoader.CancelLoadPhotos();
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		/// <summary>
@@ -228,7 +231,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 
 		private async Task Accept(bool GoBackIfOk)
 		{
-			if (this.ContentToSign is null || !await App.AuthenticateUserAsync(AuthenticationPurpose.AcceptPeerReview))
+			if (this.ContentToSign is null || !await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.AcceptPeerReview))
 				return;
 
 			bool Succeeded = await ServiceRef.NetworkService.TryRequest(async () =>
@@ -256,7 +259,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 
 		private async Task Decline(bool GoBackIfOk)
 		{
-			if (this.ContentToSign is null || !await App.AuthenticateUserAsync(AuthenticationPurpose.DeclinePeerReview))
+			if (this.ContentToSign is null || !await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.DeclinePeerReview))
 				return;
 
 			bool Succeeded = await ServiceRef.NetworkService.TryRequest(async () =>
@@ -1176,7 +1179,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		{
 			try
 			{
-				if (await App.AuthenticateUserAsync(AuthenticationPurpose.AuthenticateReviewer, true))
+				if (await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.AuthenticateReviewer, true))
 				{
 					await this.Accept(false);
 					this.NextPage();

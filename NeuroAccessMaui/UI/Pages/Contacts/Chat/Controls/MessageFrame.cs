@@ -1,9 +1,9 @@
 ﻿namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.Controls
 {
 	/// <summary>
-	/// Frame containing sent messages.
+	/// Border containing sent messages.
 	/// </summary>
-	public abstract class MessageFrame : Frame
+	public abstract class MessageFrame : Border
 	{
 		/// <summary>
 		/// Abstract base class for message frames.

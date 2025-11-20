@@ -40,7 +40,7 @@
 		TooShort,
 
 		/// <summary>
-		/// A password contains too many identical symbols.
+		/// A password contains too many identical symbols (global frequency of a symbol exceeds limit).
 		/// </summary>
 		TooManyIdenticalSymbols,
 
@@ -48,6 +48,11 @@
 		/// A password contains too many sequenced symbols.
 		/// </summary>
 		TooManySequencedSymbols,
+
+		/// <summary>
+		/// A password contains a consecutive run of the same symbol that is too long (e.g. 111111).
+		/// </summary>
+		TooManyRepeatingSymbols,
 
 		/// <summary>
 		/// A password contains the legal identity personal number.

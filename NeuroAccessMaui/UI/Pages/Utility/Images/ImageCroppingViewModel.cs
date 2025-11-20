@@ -38,9 +38,9 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 		/// Assigns the incoming source to the cropper control.
 		/// </summary>
 		/// <returns>A task representing the asynchronous operation.</returns>
-		protected override Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			base.OnAppearing();
+			await base.OnAppearingAsync();
 
 			if (this.args?.Source is not null && this.ImageCropperView is not null)
 			{
@@ -48,17 +48,15 @@ namespace NeuroAccessMaui.UI.Pages.Utility.Images
 				this.ImageCropperView.ImageSource = this.args.Source;
 			}
 
-			if (this.args?.OutputResolution != null && this.ImageCropperView is not null)
+			if (this.args?.OutputResolution is not null && this.ImageCropperView is not null)
 			{
 				this.ImageCropperView.OutputMaxResolution = this.args.OutputResolution.Value;
 			}
 
-			if (this.args?.CropMode != null && this.ImageCropperView is not null)
+			if (this.args?.CropMode is not null && this.ImageCropperView is not null)
 			{
 				this.ImageCropperView.CropMode = this.args.CropMode;
 			}
-
-			return Task.CompletedTask;
 		}
 
 		/// <summary>

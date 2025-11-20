@@ -43,7 +43,7 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 		/// <summary>
 		/// Gets the Readius of the background for Camera Icon
 		/// </summary>
-		public double CameraIconBackgroundCornerRadius => this.CameraIconBackgroundSize / 2;
+		public RoundRectangle CameraIconBackgroundStrokeShape => new RoundRectangle { CornerRadius = this.CameraIconBackgroundSize / 2 };
 
 		/// <summary>
 		/// Gets the size of the Camera Icon
@@ -67,19 +67,19 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 
 		#region Overrides
 
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			App.AppActivated += this.App_OnActivated;
 
 		}
 
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
 			App.AppActivated -= this.App_OnActivated;
 
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		protected async void App_OnActivated(object? sender, EventArgs e)
@@ -103,7 +103,7 @@ namespace NeuroAccessMaui.UI.Popups.Permission
 		[RelayCommand]
 		private async Task Close()
 		{
-			await ServiceRef.UiService.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		[RelayCommand]

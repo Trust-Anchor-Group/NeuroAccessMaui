@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Persistence.Attributes;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 
@@ -20,6 +21,7 @@ namespace NeuroAccessMaui.Services.Kyc
 	public class KycReference
 	{
 		private KycProcess? process;
+		private ApplicationReview? applicationReview;
 
 		/// <summary>
 		/// Object ID
@@ -97,41 +99,62 @@ namespace NeuroAccessMaui.Services.Kyc
 		public string LastVisitedMode { get; set; } = "Form";
 
 		/// <summary>
-		/// Last rejection or error message received from the provider for this application (if any).
+		/// Latest backend review for this application, if any.
 		/// </summary>
 		[DefaultValueNull]
+		public ApplicationReview? ApplicationReview
+		{
+			get
+			{
+				if (this.applicationReview is null)
+					this.TryMigrateLegacyReview();
+
+				return this.applicationReview;
+			}
+
+			set => this.applicationReview = value;
+		}
+
+		/// <summary>
+		/// Legacy rejection message retained for persistence migration. Do not use directly.
+		/// </summary>
+		[DefaultValueNull]
+		[Obsolete("Use ApplicationReview instead.")]
 		public string? RejectionMessage { get; set; }
 
 		/// <summary>
-		/// Optional provider-specific error/reason code, if included with the message.
+		/// Legacy rejection code retained for persistence migration. Do not use directly.
 		/// </summary>
 		[DefaultValueNull]
+		[Obsolete("Use ApplicationReview instead.")]
 		public string? RejectionCode { get; set; }
 
 		/// <summary>
-		/// Identity property keys that were invalidated by the provider, if any.
-		/// Example keys include FIRSTNAME, LASTNAMES, BDAY/BMONTH/BYEAR or composed aliases like BDATE.
+		/// Legacy invalid claim collection retained for persistence migration. Do not use directly.
 		/// </summary>
 		[DefaultValueNull]
+		[Obsolete("Use ApplicationReview instead.")]
 		public string[]? InvalidClaims { get; set; }
 
 		/// <summary>
-		/// Attachment base names that were invalidated by the provider, if any.
-		/// Example values: Passport, IdCardFront, IdCardBack, DriverLicenseFront, ProfilePhoto, ORGAOA.
+		/// Legacy invalid photo collection retained for persistence migration. Do not use directly.
 		/// </summary>
 		[DefaultValueNull]
+		[Obsolete("Use ApplicationReview instead.")]
 		public string[]? InvalidPhotos { get; set; }
 
 		/// <summary>
-		/// Detailed invalidation information for claims, if provided by the server.
+		/// Legacy invalid claim detail payload retained for persistence migration. Do not use directly.
 		/// </summary>
 		[DefaultValueNull]
+		[Obsolete("Use ApplicationReview instead.")]
 		public KycInvalidClaim[]? InvalidClaimDetails { get; set; }
 
 		/// <summary>
-		/// Detailed invalidation information for photos, if provided by the server.
+		/// Legacy invalid photo detail payload retained for persistence migration. Do not use directly.
 		/// </summary>
 		[DefaultValueNull]
+		[Obsolete("Use ApplicationReview instead.")]
 		public KycInvalidPhoto[]? InvalidPhotoDetails { get; set; }
 
 		/// <summary>
@@ -261,6 +284,73 @@ namespace NeuroAccessMaui.Services.Kyc
 		public async Task<KycProcess?> ToProcess(string? lang = null)
 		{
 			return await this.GetProcess(lang);
+		}
+
+		private void TryMigrateLegacyReview()
+		{
+			if (this.applicationReview is not null)
+				return;
+
+			bool hasLegacyData =
+				!string.IsNullOrWhiteSpace(this.RejectionMessage) ||
+				!string.IsNullOrWhiteSpace(this.RejectionCode) ||
+				(this.InvalidClaims?.Length ?? 0) > 0 ||
+				(this.InvalidPhotos?.Length ?? 0) > 0 ||
+				(this.InvalidClaimDetails?.Length ?? 0) > 0 ||
+				(this.InvalidPhotoDetails?.Length ?? 0) > 0;
+
+			if (!hasLegacyData)
+				return;
+
+			ApplicationReview Migrated = new ApplicationReview
+			{
+				Message = this.RejectionMessage ?? string.Empty,
+				Code = this.RejectionCode,
+				ReceivedUtc = this.UpdatedUtc
+			};
+
+			string[]? invalidClaims = this.InvalidClaims?
+				.Where(s => !string.IsNullOrWhiteSpace(s))
+				.Select(s => s.Trim())
+				.ToArray();
+			string[]? invalidPhotos = this.InvalidPhotos?
+				.Where(s => !string.IsNullOrWhiteSpace(s))
+				.Select(s => s.Trim())
+				.ToArray();
+
+			Migrated.InvalidClaims = invalidClaims is { Length: > 0 } ? invalidClaims : Array.Empty<string>();
+			Migrated.InvalidPhotos = invalidPhotos is { Length: > 0 } ? invalidPhotos : Array.Empty<string>();
+
+			ApplicationReviewClaimDetail[] claimDetails = this.InvalidClaimDetails?
+				.Where(c => c is not null && !string.IsNullOrWhiteSpace(c.Claim))
+				.Select(c =>
+				{
+					string Claim = c.Claim.Trim();
+					string Reason = c.Reason ?? string.Empty;
+					return new ApplicationReviewClaimDetail(Claim, Reason, c.ReasonLanguage, c.ReasonCode, c.Service);
+				})
+				.ToArray() ?? Array.Empty<ApplicationReviewClaimDetail>();
+
+			ApplicationReviewPhotoDetail[] photoDetails = this.InvalidPhotoDetails?
+				.Where(p => p is not null && (!string.IsNullOrWhiteSpace(p.Mapping) || !string.IsNullOrWhiteSpace(p.FileName)))
+				.Select(p =>
+				{
+					string FileName = (p.FileName ?? string.Empty).Trim();
+					string DisplayName = !string.IsNullOrWhiteSpace(p.Mapping) ? p.Mapping.Trim() : FileName;
+					return new ApplicationReviewPhotoDetail(FileName, DisplayName, p.Reason ?? string.Empty, p.ReasonLanguage, p.ReasonCode, p.Service);
+				})
+				.ToArray() ?? Array.Empty<ApplicationReviewPhotoDetail>();
+
+			Migrated.InvalidClaimDetails = claimDetails;
+			Migrated.InvalidPhotoDetails = photoDetails;
+
+			this.applicationReview = Migrated;
+			this.RejectionMessage = null;
+			this.RejectionCode = null;
+			this.InvalidClaims = null;
+			this.InvalidPhotos = null;
+			this.InvalidClaimDetails = null;
+			this.InvalidPhotoDetails = null;
 		}
 	}
 }

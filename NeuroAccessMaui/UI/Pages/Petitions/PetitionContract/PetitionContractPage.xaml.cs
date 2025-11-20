@@ -15,12 +15,12 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 		/// </summary>
 		public PetitionContractPage()
 		{
-			this.ContentPageModel = new PetitionContractViewModel(ServiceRef.UiService.PopLatestArgs<PetitionContractNavigationArgs>());
+			this.ContentPageModel = new PetitionContractViewModel(ServiceRef.NavigationService.PopLatestArgs<PetitionContractNavigationArgs>());
 			this.InitializeComponent();
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDisappearingAsync()
+		public override Task OnDisappearingAsync()
 		{
 			return base.OnDisappearingAsync();
 		}
@@ -35,7 +35,8 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionContract
 
 				ImagesPopup ImagesPopup = new();
 				ImagesViewModel ImagesViewModel = new(Attachments);
-				ServiceRef.UiService.PushAsync(ImagesPopup, ImagesViewModel);
+				ImagesPopup.BindingContext = ImagesViewModel;
+				ServiceRef.PopupService.PushAsync(ImagesPopup);
 				//imagesViewModel.LoadPhotos(Attachments);
 			}
 		}

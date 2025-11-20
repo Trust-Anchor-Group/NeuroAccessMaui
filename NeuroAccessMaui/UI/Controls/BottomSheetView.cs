@@ -19,6 +19,8 @@ namespace NeuroAccessMaui.UI.Controls
 		private double sheetHeight;
 		private bool isExpanded = false;
 
+		public bool IsExpanded => this.isExpanded;
+
 		// Bindable property for the header background color (still available if needed).
 		public static readonly BindableProperty HeaderBackgroundColorProperty =
 			BindableProperty.Create(nameof(HeaderBackgroundColor), typeof(Color), typeof(BottomSheetView), Colors.LightGray);

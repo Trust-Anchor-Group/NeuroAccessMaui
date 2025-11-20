@@ -1,86 +1,49 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Permission.ShowPermissionPopup"
-							x:DataType="viewmodel:ShowPermissionViewModel"
-							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-							xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-							xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-							xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-							xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-							xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Permission"
-							xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-							xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
-
-	<mopups:PopupPage.Animation>
-		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
-											PositionIn="Center" PositionOut="Center" />
-	</mopups:PopupPage.Animation>
-
-	<Grid
-		Style="{DynamicResource PopupGrid}">
-
-		<Border
-			WidthRequest="{Binding ViewWidthRequest}"
-			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
-			Style="{DynamicResource PopupBorder}">
-
-			<ScrollView
-				VerticalOptions="Center">
-				<VerticalStackLayout
-					Spacing="{DynamicResource LargeSpacing}">
-
-					<VerticalStackLayout
-						Spacing="{DynamicResource MediumSpacing}">
-
-						<Label
-							HorizontalTextAlignment="Center"
-							Style="{DynamicResource PageTitleLabel}"
-							Text="{Binding Title}" />
-
-						<Frame
-							WidthRequest="{Binding CameraIconBackgroundSize}"
-							HeightRequest="{Binding CameraIconBackgroundSize}"
-							CornerRadius="{Binding CameraIconBackgroundCornerRadius}"
-							BackgroundColor="{DynamicResource TnPSuccessbgWL}">
-							<Path
-								VerticalOptions="Center"
-								HorizontalOptions="Center"
-								HeightRequest="{Binding CameraIconSize}"
-								WidthRequest="{Binding CameraIconSize}"
-								Aspect="Uniform"
-								Data="{Binding IconGeometry}"
-								Fill="{DynamicResource TnPSuccessContentWL}" />
-						</Frame>
-
-						<Label
-							HorizontalTextAlignment="Start"
-							Style="{DynamicResource ItemDescriptionLabel}"
-							Text="{Binding Description}"
-							FontSize="15"
-							Margin="{DynamicResource SmallLeftRightMargins}"/>
-
-						<Label
-							HorizontalTextAlignment="Start"
-							Style="{DynamicResource ItemDescriptionLabel}"
-							Text="{Binding DescriptionSecondary}"
-							FontSize="15"
-							Margin="{DynamicResource SmallLeftRightMargins}"/>
-							  
-					</VerticalStackLayout>
-
-					<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-						<controls:TextButton
-							Command="{Binding GoToSettingsCommand}"
-							LabelData="{l:Localize GoToSettings}"
-							Style="{DynamicResource PrimaryButton}" />
-
-						<controls:TextButton
-							Command="{Binding CloseCommand}"
-							LabelData="{l:Localize Skip}"
-							Style="{DynamicResource SecondaryButton}" />
-					</VerticalStackLayout>
-				</VerticalStackLayout>
-			</ScrollView>
-		</Border>
-	</Grid>
+                x:DataType="viewmodel:ShowPermissionViewModel"
+                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Permission">
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+            <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+                <Label HorizontalTextAlignment="Center"
+                       Style="{DynamicResource PageTitleLabel}"
+                       Text="{Binding Title}" />
+                <Border WidthRequest="{Binding CameraIconBackgroundSize}"
+						HeightRequest="{Binding CameraIconBackgroundSize}"
+						StrokeShape="{Binding CameraIconBackgroundStrokeShape}"
+						BackgroundColor="{DynamicResource TnPSuccessbgWL}">
+                    <Path VerticalOptions="Center"
+                          HorizontalOptions="Center"
+                          HeightRequest="{Binding CameraIconSize}"
+                          WidthRequest="{Binding CameraIconSize}"
+                          Aspect="Uniform"
+                          Data="{Binding IconGeometry}"
+                          Fill="{DynamicResource TnPSuccessContentWL}" />
+                </Border>
+                <Label HorizontalTextAlignment="Start"
+                       Style="{DynamicResource ItemDescriptionLabel}"
+                       Text="{Binding Description}"
+                       FontSize="15"
+                       Margin="{DynamicResource SmallLeftRightMargins}" />
+                <Label HorizontalTextAlignment="Start"
+                       Style="{DynamicResource ItemDescriptionLabel}"
+                       Text="{Binding DescriptionSecondary}"
+                       FontSize="15"
+                       Margin="{DynamicResource SmallLeftRightMargins}" />
+            </VerticalStackLayout>
+            <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+                <controls:TextButton Command="{Binding GoToSettingsCommand}"
+                                     LabelData="{l:Localize GoToSettings}"
+                                     Style="{DynamicResource PrimaryButton}" />
+                <controls:TextButton Command="{Binding CloseCommand}"
+                                     LabelData="{l:Localize Skip}"
+                                     Style="{DynamicResource SecondaryButton}" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </base:BasePopup>

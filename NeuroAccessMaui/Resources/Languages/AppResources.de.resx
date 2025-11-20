@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -22,10 +22,8 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
-  object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -114,12 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Rollen auswählen, mit denen Sie unterschreiben möchten (optional)</value>
@@ -995,7 +991,7 @@
     <value>Foto</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Bitte fügen Sie ein Bild hinzu, auf dem Sie leicht identifiziert werden können.</value>
+    <value>Bitte machen Sie jetzt ein Live-Foto von sich, damit wir Ihre Identität überprüfen können. Screenshots oder bearbeitete Bilder sind nicht erlaubt.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>Die folgenden Bilder wurden in die Anwendung aufgenommen.</value>
@@ -1762,9 +1758,6 @@
   <data name="StreetNumber" xml:space="preserve">
     <value>Hausnummer</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Foto aufnehmen</value>
-  </data>
   <data name="TakePhotoToShare" xml:space="preserve">
     <value>Machen Sie ein Foto zum Teilen</value>
   </data>
@@ -2225,10 +2218,10 @@
     <value>Geben Sie unten die Menge an eDaler an, die Sie kaufen möchten, und klicken Sie auf die Schaltfläche Kaufen. Möglicherweise wird eine Webseite geöffnet, auf der Sie weitere Informationen eingeben müssen, damit der Zahlungsabwickler Ihre Anfrage bestätigen kann.</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Menge:</value>
+    <value>Menge</value>
   </data>
   <data name="AmountExtra" xml:space="preserve">
-    <value>Betrag Extra: (optional, Vorschlag)</value>
+    <value>Betrag Extra (optional, Vorschlag)</value>
   </data>
   <data name="Wallet" xml:space="preserve">
     <value>Brieftasche</value>
@@ -2623,8 +2616,8 @@
   <data name="ApplyIdInfoMainPage" xml:space="preserve">
     <value>Beantragen Sie eine persönliche ID, um alles aus Neuro Access herauszuholen</value>
   </data>
-  <data name="CompleteIdButton" xml:space="preserve">
-    <value>Vervollständigen Sie Ihre persönliche ID</value>
+  <data name="GoToApplications" xml:space="preserve">
+    <value>Zu den Anwendungen</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Suchen</value>
@@ -2809,6 +2802,9 @@
   <data name="SelectContract" xml:space="preserve">
     <value>Wählen Sie einen Vertrag aus</value>
   </data>
+  <data name="LoadMore" xml:space="preserve">
+    <value>Mehr laden</value>
+  </data>
   <data name="SelectContractEntryDescription" xml:space="preserve">
     <value>Vertrags-ID einfügen oder aus Liste auswählen</value>
   </data>
@@ -2841,9 +2837,6 @@
   </data>
   <data name="NFC" xml:space="preserve">
     <value>NFC</value>
-  </data>
-  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
-    <value>Möchten Sie diese Identität zu Ihren Kontakten hinzufügen?</value>
   </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Demnächst!</value>
@@ -2894,7 +2887,7 @@
     <value>Letzte Aktualisierung: {0}</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
-    <value>Aktivieren Sie Ihre digitale ID</value>
+    <value>Wählen Sie Ihren ID-Anbieter aus.</value>
   </data>
   <data name="HaveAnyQuestions" xml:space="preserve">
     <value>Haben Sie Fragen?</value>
@@ -3040,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Ihr Ausweisantrag wird zur Prüfung gesendet. Wir werden Sie benachrichtigen, wenn Ihr Ausweis genehmigt wurde!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Zusammenfassung der Anwendung</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Bevor Sie abschließen, lesen Sie bitte durch und stellen Sie sicher, dass alles korrekt ist</value>
   </data>
@@ -3077,7 +3067,7 @@
     <value>Für Ihren individuellen Einsatz</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Bevor Sie abschließen, lesen Sie bitte durch und stellen Sie sicher, dass alles korrekt ist</value>
+    <value>Bitte nehmen Sie sich einen Moment Zeit, um Ihre Daten vor der Einreichung zu überprüfen. Stellen Sie sicher, dass alles korrekt und vollständig ist</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Unternehmensinformationen</value>
@@ -3091,10 +3081,349 @@
   <data name="Upload" xml:space="preserve">
     <value>Hochladen</value>
   </data>
+  <data name="InReview" xml:space="preserve">
+    <value>Im Rückblick</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>Im Gange</value>
+  </data>
+  <data name="IdentityRejected" xml:space="preserve">
+    <value>Identität abgelehnt. Sie können zur Anwendungsseite zurückkehren und Ihre Informationen aktualisieren, um es erneut zu versuchen.</value>
+  </data>
+  <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve">
+    <value>Eine PIN darf keinen aufeinanderfolgenden Lauf {0} identischen Symbole enthalten.</value>
+  </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Prüfung der Bewerbung</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Code:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Zu überprüfende Felder</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Zu ersetzende Fotos</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Diese Angaben konnten nicht genehmigt werden. Aktualisieren Sie sie im Formular, bevor Sie sie erneut einreichen.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Ausstehende Felder</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Ausstehende Fotos</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Beheben von Problemen und Bearbeiten des Formulars</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Erneutes Einreichen ohne ausstehende Felder</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Ihre Anwendung wird derzeit manuell überprüft. Sie können auf das Ergebnis warten oder die folgenden Elemente anpassen, um die automatische Verarbeitung zu versuchen.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Diese Elemente warten auf eine manuelle Überprüfung. Sie können sie unverändert lassen oder anpassen, um die automatische Verarbeitung zu versuchen.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Einige eingereichte Angaben konnten nicht überprüft werden. Tippen Sie hier, um zu überprüfen.</value>
+  </data>
+  <data name="AddToBalance" xml:space="preserve">
+    <value>Zum Saldo hinzufügen</value>
+  </data>
+  <data name="SelectContact" xml:space="preserve">
+    <value>Kontakt auswählen</value>
+  </data>
+  <data name="TransactionHistory" xml:space="preserve">
+    <value>Historie der Transaktion</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Zusammenfassung</value>
+  </data>
+  <data name="TotalIn" xml:space="preserve">
+    <value>Insgesamt in</value>
+  </data>
+  <data name="TotalOut" xml:space="preserve">
+    <value>Gesamter Ausgang</value>
+  </data>
+  <data name="Net" xml:space="preserve">
+    <value>Netto</value>
+  </data>
+  <data name="NoTransactionsYet" xml:space="preserve">
+    <value>Noch keine Transaktionen</value>
+  </data>
+  <data name="Transaction" xml:space="preserve">
+    <value>Transaktion</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Übertragung</value>
+  </data>
+  <data name="BalanceTopUp" xml:space="preserve">
+    <value>Guthaben aufladen</value>
+  </data>
+  <data name="TransactionDetails" xml:space="preserve">
+    <value>Details zur Transaktion</value>
+  </data>
+  <data name="Recipient" xml:space="preserve">
+    <value>Empfänger</value>
+  </data>
+  <data name="NotInContacts" xml:space="preserve">
+    <value>Nicht in Kontakten</value>
+  </data>
+  <data name="FullIdentifier" xml:space="preserve">
+    <value>Vollständige Kennung</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Art der Transaktion</value>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Datum der Transaktion</value>
+  </data>
+  <data name="TransactionStatus" xml:space="preserve">
+    <value>Status der Transaktion</value>
+  </data>
+  <data name="ReservedNoColon" xml:space="preserve">
+    <value>Reserviert</value>
+  </data>
+  <data name="Successful" xml:space="preserve">
+    <value>Erfolgreich</value>
+  </data>
+  <data name="TransactionIDNoColon" xml:space="preserve">
+    <value>Transaktions-ID</value>
+  </data>
+  <data name="TransferSuccessful" xml:space="preserve">
+    <value>Übertragung erfolgreich</value>
+  </data>
+  <data name="UnknownPleaseRefresh" xml:space="preserve">
+    <value>Unbekannt, bitte aktualisieren</value>
+  </data>
+  <data name="SelectForMe" xml:space="preserve">
+    <value>Für mich auswählen</value>
+  </data>
+  <data name="ShareDescription" xml:space="preserve">
+    <value>Nachfolgend finden Sie weitere Optionen zum Teilen des QR-Codes.</value>
+  </data>
+  <data name="OtherApp" xml:space="preserve">
+    <value>Andere App</value>
+  </data>
+  <data name="SuccessfullyCopiedToClipboard" xml:space="preserve">
+    <value>Erfolgreich in die Zwischenablage kopiert</value>
+  </data>
+  <data name="MakePayment" xml:space="preserve">
+    <value>Zahlung vornehmen</value>
+  </data>
+  <data name="PayOnline" xml:space="preserve">
+    <value>Online bezahlen</value>
+  </data>
+  <data name="PayOffline" xml:space="preserve">
+    <value>Offline bezahlen</value>
+  </data>
+  <data name="ShareOfflinePaymentDescription" xml:space="preserve">
+    <value>Sie können diesen QR-Code für die spätere Verarbeitung mit einem anderen Benutzer teilen, entweder bei Bedarf oder wenn eine Verbindung besteht.</value>
+  </data>
+  <data name="RequestCredits" xml:space="preserve">
+    <value>Bitten</value>
+  </data>
+  <data name="SendCredits" xml:space="preserve">
+    <value>Senden</value>
+  </data>
+  <data name="DurationAndSeparator" xml:space="preserve">
+    <value> und </value>
+  </data>
+  <data name="DurationCommaSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="NoTokens" xml:space="preserve">
+    <value>Keine Token</value>
+  </data>
+  <data name="TokenDetails" xml:space="preserve">
+    <value>Einzelheiten zum Token</value>
+  </data>
+  <data name="TokenDetailsDescription" xml:space="preserve">
+    <value>Im Folgenden finden Sie Details, die in das Token codiert sind. Klicken Sie auf einen beliebigen Link, um weitere Informationen zu erhalten.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="TokenId" xml:space="preserve">
+    <value>Token-ID</value>
+  </data>
+  <data name="TokenIdMethod" xml:space="preserve">
+    <value>Token-ID-Methode</value>
+  </data>
+  <data name="TokenVisibility" xml:space="preserve">
+    <value>Sichtbarkeit von Token</value>
+  </data>
+  <data name="Ordinal" xml:space="preserve">
+    <value>Ordinale</value>
+  </data>
+  <data name="Valuation" xml:space="preserve">
+    <value>Bewertung</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Berichte</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variablen</value>
+  </data>
+  <data name="States" xml:space="preserve">
+    <value>Staaten</value>
+  </data>
+  <data name="TokenPartsInfoText" xml:space="preserve">
+    <value>Im Folgenden finden Sie eine Liste der Parteien, die mit diesem Token in Verbindung stehen.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Eigentümer</value>
+  </data>
+  <data name="OwnerJid" xml:space="preserve">
+    <value>Adresse des Eigentümers</value>
+  </data>
+  <data name="OwnershipContract" xml:space="preserve">
+    <value>Eigentumsvertrag</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Schöpfer</value>
+  </data>
+  <data name="CreatorJid" xml:space="preserve">
+    <value>Adresse des Creators</value>
+  </data>
+  <data name="CreationContract" xml:space="preserve">
+    <value>Erstellungsvertrag</value>
+  </data>
+  <data name="TrustProvider" xml:space="preserve">
+    <value>Vertrauensanbieter</value>
+  </data>
+  <data name="TrustProviderJid" xml:space="preserve">
+    <value>Adresse des Trust Providers</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>Privilegien</value>
+  </data>
+  <data name="TokenPrivilegesInfoText" xml:space="preserve">
+    <value>Im Folgenden finden Sie Privilegien, die in das Token eingraviert sind.</value>
+  </data>
+  <data name="CreatorCanDestroy" xml:space="preserve">
+    <value>Ersteller kann Token zerstören</value>
+  </data>
+  <data name="OwnerCanDestroyBatch" xml:space="preserve">
+    <value>Der Besitzer kann den Tokenbatch zerstören</value>
+  </data>
+  <data name="OwnerCanDestroyIndividual" xml:space="preserve">
+    <value>Der Besitzer kann einzelne Token zerstören</value>
+  </data>
+  <data name="CertifierCanDestroy" xml:space="preserve">
+    <value>Der Zertifizierer kann Token zerstören</value>
+  </data>
+  <data name="MachineReadableInfoTextToken" xml:space="preserve">
+    <value>Im Folgenden finden Sie eine Übersicht über die maschinenlesbaren Daten, die in das Token eingebettet sind.</value>
+  </data>
+  <data name="DefinitionNamespace" xml:space="preserve">
+    <value>Definitions-Namensraum</value>
+  </data>
+  <data name="DefinitionSchemaDigest" xml:space="preserve">
+    <value>Definitionsschema-Digest</value>
+  </data>
+  <data name="ShowM2MInfo" xml:space="preserve">
+    <value>M2M-Definition anzeigen</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Aktionen</value>
+  </data>
+  <data name="SendToContact" xml:space="preserve">
+    <value>An Kontakt senden</value>
+  </data>
+  <data name="PublishMarketplace" xml:space="preserve">
+    <value>Veröffentlichen auf dem Marketplace</value>
+  </data>
+  <data name="OfferToBuy" xml:space="preserve">
+    <value>Angebot zum Kauf</value>
+  </data>
+  <data name="OfferToSell" xml:space="preserve">
+    <value>Angebot zum Verkauf</value>
+  </data>
+  <data name="ViewEvents" xml:space="preserve">
+    <value>Veranstaltungen anzeigen</value>
+  </data>
+  <data name="CurrentState" xml:space="preserve">
+    <value>Aktueller Stand</value>
+  </data>
+  <data name="MachineHasEnded" xml:space="preserve">
+    <value>State-Machine ist beendet.</value>
+  </data>
+  <data name="CurrentVariables" xml:space="preserve">
+    <value>Aktuelle Variablen</value>
+  </data>
+  <data name="TokenEvents" xml:space="preserve">
+    <value>Token-Ereignisse</value>
+  </data>
+  <data name="TokenEventsDescription" xml:space="preserve">
+    <value>Im Folgenden finden Sie öffentliche Ereignisse, die für das Token aufgezeichnet wurden. Auch Ihre privaten Veranstaltungen sind inklusive.</value>
+  </data>
+  <data name="TextNote" xml:space="preserve">
+    <value>Texthinweis</value>
+  </data>
+  <data name="XmlNote" xml:space="preserve">
+    <value>XML-Hinweis</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Notiz hinzufügen</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Wert</value>
+  </data>
+  <data name="InvitationToSignFormat" xml:space="preserve">
+    <value>Sie wurden eingeladen, diesen Vertrag als {0} zu unterzeichnen, stellen Sie sicher, dass Sie den Vertrag überprüfen und überprüfen, bevor Sie fortfahren</value>
+  </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Angebot senden</value>
+  </data>
+  <data name="Sender" xml:space="preserve">
+    <value>Absender:</value>
+  </data>
+  <data name="ShortId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ProposalDefaultMessage" xml:space="preserve">
+    <value>Hallo, ich möchte Ihnen einen Vertrag vorschlagen. Bitte überprüfen und akzeptieren Sie den Vorschlag, wenn Sie damit einverstanden sind.</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Möchten Sie diese Identität zu Ihren Kontakten hinzufügen?</value>
+  </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Foto aufnehmen</value>
   </data>
-  <data name="InReview" xml:space="preserve">
-    <value>Im Rückblick</value>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Beantragen Sie eine persönliche Identität, um diese Funktion zu nutzen.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Antrag abgelehnt</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Der Anbieter konnte Ihre Einreichung nicht genehmigen. Siehe den Grund unten.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Die folgenden Punkte benötigen Ihre Aufmerksamkeit, bevor Sie erneut einreichen:</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Einige Details erfordern eine manuelle Überprüfung</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} Felder und {1} Fotos können nicht automatisch validiert werden und müssen von einem Bediener überprüft werden. Das kann die Genehmigung verzögern.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Du kannst diese ausstehenden Einträge entfernen und ohne sie erneut beantragen. Das wird nicht empfohlen</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Entfernen von ausstehenden Details</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Entferne ausstehende Details und beantrage erneut</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Dadurch wird dein aktueller Antrag widerrufen, die ausstehenden Daten entfernt und du reichst sie ohne diese erneut ein. Willst du weitermachen?</value>
   </data>
 </root>

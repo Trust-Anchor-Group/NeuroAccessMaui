@@ -77,6 +77,29 @@ NeuroAccessMaui/
 
 ---
 
+## Shell & Navigation Layer
+
+Neuro-Access replaces the default MAUI Shell navigation surface with a custom presenter composed of three building blocks:
+
+- **`NavigationService`** (`Services/UI/NavigationService.cs`) owns the logical stack of `BaseContentPage` instances. All navigation APIs (`GoToAsync`, `SetRootAsync`, `GoBackAsync`, etc.) enqueue work onto a main-thread queue to avoid overlapping transitions. The service keeps route arguments, handles back requests, and coordinates with lifecycle hooks on pages and view models.
+- **`CustomShell`** (`Test/CustomShell.cs`, promoted to production usage) implements `IShellPresenter`. It contains the actual layout: dual page hosts for animated transitions, optional top/bottom bars, a popup overlay, and toast layers. It also exposes events for background taps and hardware back presses.
+- **`IShellPresenter`** is the contract between services and the visual host. Navigation and popup services call `ShowScreen`, `ShowPopup`, and `HidePopup` on the presenter, while `CustomShell` raises events that the services subscribe to.
+
+This separation keeps navigation logic testable while allowing the UI to deliver custom transitions and layered visuals. Any page that participates in navigation should derive from `BaseContentPage` to gain lifecycle callbacks (`OnInitializeAsync`, `OnAppearingAsync`, `OnDisappearingAsync`) used by the service stack.
+
+### Popup Architecture
+
+Popups follow a similar pattern:
+
+- **`BasePopupView`** is now a thin, full-screen surface that simply hosts content and provides lifecycle hooks.
+- **`BasicPopup`** wraps `BasePopupView` with a centered card frame, consistent padding, sizing constraints, and optional styling. The legacy `BasePopup` class now inherits from `BasicPopup` and exposes the `CustomContent` property for XAML compatibility.
+- **`PopupService`** manages a stack of open popups and serializes push/pop requests. It resolves views and view models from DI, enforces blocking semantics, and relays lifecycle transitions (`OnInitializeAsync`, `OnAppearingAsync`, etc.). When showing or hiding a popup it sends a `PopupVisualState` snapshot to the presenter so the overlay opacity and interaction rules stay in sync.
+- **`CustomShell`** hosts the popup overlay and performs the fade/scale/slide animations requested by `PopupService`. Background taps and back button presses are routed back to the service, which decides if the top popup should close based on `PopupOptions`.
+
+By funnelling all popup activity through the service and presenter, the app achieves a single source of truth for overlay state, animation, and dismissal rules while keeping popup views focused on their content.
+
+---
+
 ## MVVM Pattern
 
 **Neuro-Access** follows the Model-View-ViewModel (MVVM) architectural pattern, which separates the business logic, user interface, and data binding logic into distinct layers. The following is a brief overview of the MVVM pattern, more information can be found at [Microsoft official docs](https://learn.microsoft.com/en-us/dotnet/maui/xaml/fundamentals/mvvm?view=net-maui-8.0)

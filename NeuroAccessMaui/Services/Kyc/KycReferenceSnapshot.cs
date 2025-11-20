@@ -1,4 +1,5 @@
 using System;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc.Models;
 
 namespace NeuroAccessMaui.Services.Kyc
@@ -16,10 +17,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			double progress,
 			string? lastVisitedPageId,
 			string lastVisitedMode,
-			string? rejectionMessage,
-			string? rejectionCode,
-			string[]? invalidClaims,
-			string[]? invalidPhotos,
+			ApplicationReview? applicationReview,
 			DateTime createdUtc,
 			DateTime updatedUtc)
 		{
@@ -29,10 +27,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			this.Progress = progress;
 			this.LastVisitedPageId = lastVisitedPageId;
 			this.LastVisitedMode = lastVisitedMode;
-			this.RejectionMessage = rejectionMessage;
-			this.RejectionCode = rejectionCode;
-			this.InvalidClaims = invalidClaims;
-			this.InvalidPhotos = invalidPhotos;
+			this.ApplicationReview = applicationReview;
 			this.CreatedUtc = createdUtc;
 			this.UpdatedUtc = updatedUtc;
 		}
@@ -43,10 +38,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		public double Progress { get; }
 		public string? LastVisitedPageId { get; }
 		public string LastVisitedMode { get; }
-		public string? RejectionMessage { get; }
-		public string? RejectionCode { get; }
-		public string[]? InvalidClaims { get; }
-		public string[]? InvalidPhotos { get; }
+		public ApplicationReview? ApplicationReview { get; }
 		public DateTime CreatedUtc { get; }
 		public DateTime UpdatedUtc { get; }
 	}

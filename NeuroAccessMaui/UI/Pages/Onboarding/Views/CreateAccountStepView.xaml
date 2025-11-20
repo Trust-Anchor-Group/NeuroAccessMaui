@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.CreateAccountStepView"
+                               xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
+                               xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
+                               xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                               xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                               x:DataType="viewmodels:CreateAccountOnboardingStepViewModel">
+    <Grid VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}"
+                             VerticalOptions="Center">
+            <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+                <Label Style="{DynamicResource PageTitleLabel}"
+                       Text="{l:Localize OnboardingAccountPageTitle}" />
+                <Label Text="{l:Localize OnboardingAccountPageDetails}" />
+            </VerticalStackLayout>
+
+            <ActivityIndicator VerticalOptions="Center"
+                               IsVisible="{Binding IsWaitingForIdentity}"
+                               IsRunning="{Binding IsWaitingForIdentity}" />
+
+			<!-- Rarely used or shown, "Creating account" is sufficient. Page closes on error or success. Renable if needed for other changes
+            <Label Text="{Binding StatusMessage}"
+                   HorizontalOptions="Center"
+                   TextColor="{DynamicResource ContentPrimaryWL}"
+                   IsVisible="{Binding HasStatusMessage}" />
+
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="{DynamicResource InputFieldsContentDangerv800}"
+                   HorizontalOptions="Center"
+                   IsVisible="{Binding HasError}" />
+			-->
+        </VerticalStackLayout>
+    </Grid>
+</onboarding:BaseOnboardingView>

@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ViewThing
 		/// </summary>
 		public ViewThingPage()
 		{
-			this.ContentPageModel = new ViewThingViewModel(ServiceRef.UiService.PopLatestArgs<ViewThingNavigationArgs>());
+			this.ContentPageModel = new ViewThingViewModel(ServiceRef.NavigationService.PopLatestArgs<ViewThingNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

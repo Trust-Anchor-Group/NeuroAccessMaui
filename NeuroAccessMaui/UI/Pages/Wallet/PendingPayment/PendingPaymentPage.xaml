@@ -22,7 +22,7 @@
 
 				<Label Text="{l:Localize PendingPayment}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<Label Text="{l:Localize PendingPayment}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Text="{l:Localize PendingPaymentDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
@@ -50,7 +50,7 @@
 													IsVisible="{Binding Path=HasQrCode}" Margin="{DynamicResource SmallBottomMargins}"
 													Style="{DynamicResource FilledTextButton}"/>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

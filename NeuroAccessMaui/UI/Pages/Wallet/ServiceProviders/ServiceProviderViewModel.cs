@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 
@@ -16,6 +16,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		private readonly IServiceProvider serviceProvider = ServiceProvider;
 		private readonly ServiceProvidersViewModel parent = Parent;
 		private ImageSource? iconSource;
+
+		/// <summary>
+		/// Threshold for considering an icon to be a wide (horizontal) rectangle.
+		/// Icons at or above this aspect ratio are treated as hero/banners and shown without text.
+		/// </summary>
+		private const double WideAspectThreshold = 2; 
 
 		/// <summary>
 		/// Underlying service provider
@@ -43,22 +49,56 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		public string IconUrl => this.serviceProvider.IconUrl;
 
 		/// <summary>
+		/// True if icon has valid dimensions.
+		/// </summary>
+		private bool HasValidIconDimensions => this.serviceProvider.IconWidth > 0 && this.serviceProvider.IconHeight > 0;
+
+		/// <summary>
+		/// Aspect ratio of icon (Width/Height). Returns 1 if not available.
+		/// </summary>
+		private double IconAspectRatio
+		{
+			get
+			{
+				if (!this.HasValidIconDimensions)
+					return 1.0;
+
+				return (double)this.serviceProvider.IconWidth / this.serviceProvider.IconHeight;
+			}
+		}
+
+		/// <summary>
+		/// True if icon is considered a wide (horizontal) rectangle suited for image-only display.
+		/// </summary>
+		public bool IsWideHero => this.HasIcon && this.HasValidIconDimensions && this.IconAspectRatio >= WideAspectThreshold;
+
+		/// <summary>
 		/// If an image should be displayed.
 		/// </summary>
 		public bool ShowImage => this.HasIcon;
 
 		/// <summary>
 		/// If text should be displayed.
+		/// 
+		/// New rule:
+		/// - If icon is a wide horizontal rectangle (hero) -> show image alone (no text), unless icon is from the app assembly.
+		/// - Otherwise -> show text (with or without image).
 		/// </summary>
-		public bool ShowText => !this.HasIcon || this.IconWidth <= 250 || this.serviceProvider.GetType().Assembly == typeof(App).Assembly;
+		public bool ShowText =>
+			!this.HasIcon ||
+			!this.IsWideHero ||
+			this.serviceProvider.GetType().Assembly == typeof(App).Assembly;
 
 		/// <summary>
-		/// Icon Height
+		/// Icon Height (requested)
 		/// </summary>
 		public int IconHeight { get; } = IconHeight;
 
 		/// <summary>
-		/// Icon Width
+		/// Icon Width (scaled to requested height).
+		/// 
+		/// Note: This retains the original proportional scaling behavior.
+		/// When used together with text, prefer <see cref="DisplayIconWidth"/> for a uniform presentation.
 		/// </summary>
 		public int IconWidth
 		{
@@ -73,6 +113,47 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 			}
 		}
 
+		/// <summary>
+		/// Display Icon Height, taking layout rules into account.
+		/// - If showing image with text: Use a uniform square based on requested IconHeight.
+		/// - If showing image alone (wide hero): Use requested IconHeight (original proportional width applies).
+		/// - If no image: 0.
+		/// </summary>
+		public int DisplayIconHeight
+		{
+			get
+			{
+				if (!this.ShowImage)
+					return 0;
+
+				// With text -> uniform square (height == width == IconHeight)
+				// Image-only -> use the requested height (width is proportional)
+				return this.IconHeight;
+			}
+		}
+
+		/// <summary>
+		/// Display Icon Width, taking layout rules into account.
+		/// - If showing image with text: Use a uniform square based on requested IconHeight.
+		/// - If showing image alone (wide hero): Proportional width based on requested IconHeight (same as IconWidth).
+		/// - If no image: 0.
+		/// </summary>
+		public int DisplayIconWidth
+		{
+			get
+			{
+				if (!this.ShowImage)
+					return 0;
+
+				// If text is visible, we present the icon as a square for uniformity.
+				if (this.ShowText)
+					return this.IconHeight;
+
+				// Image-only (wide hero) preserves proportional width.
+				return this.IconWidth;
+			}
+		}
+
 		private bool hasRun = false;
 
 		/// <summary>
@@ -82,7 +163,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		{
 			get
 			{
-				if (this.iconSource == null && !this.hasRun)
+				if (this.iconSource is null && !this.hasRun)
 				{
 					//Load the icon
 					Task.Run(this.UpdateIconUrlSourceAsync);
@@ -92,9 +173,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 			}
 		}
 
+		/// <summary>
+		/// Loads the icon source asynchronously.
+		/// Handles SVG by converting or removing extension depending on source kind.
+		/// </summary>
 		public async Task UpdateIconUrlSourceAsync()
 		{
-			if (this.iconSource != null) return; // Already loaded or loading
+			if (this.iconSource is not null) return; // Already loaded or loading
 
 			try
 			{

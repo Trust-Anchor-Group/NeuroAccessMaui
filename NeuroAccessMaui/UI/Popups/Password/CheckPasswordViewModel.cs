@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Maui.Controls.Shapes;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
-using NeuroAccessMaui.UI.Pages.Registration.Views;
+using NeuroAccessMaui.Services.Authentication;
 using Waher.Content;
 using Waher.Script.Constants;
 
@@ -17,6 +17,8 @@ namespace NeuroAccessMaui.UI.Popups.Password
 	/// </summary>
 	public partial class CheckPasswordViewModel : ReturningPopupViewModel<string>
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		public CheckPasswordViewModel(AuthenticationPurpose purpose)
 		{
 			this.PurposeInfo = purpose;
@@ -63,23 +65,23 @@ namespace NeuroAccessMaui.UI.Popups.Password
 			{
 				string Password = this.PasswordText;
 
-				if (await App.CheckPasswordAndUnblockUserAsync(Password))
+				if (await this.authenticationService.CheckPasswordAndUnblockUserAsync(Password))
 				{
-					this.result.TrySetResult(Password);
-					await ServiceRef.UiService.PopAsync();
+					this.TrySetResult(Password);
+					await ServiceRef.PopupService.PopAsync();
 				}
 				else
 				{
 					this.PasswordText = string.Empty;
 
-					long PasswordAttemptCounter = await App.GetCurrentPasswordCounterAsync();
+					long PasswordAttemptCounter = await this.authenticationService.GetCurrentPasswordCounterAsync();
 					long RemainingAttempts = Math.Max(0, Constants.Password.FirstMaxPasswordAttempts - PasswordAttemptCounter);
 
 					await ServiceRef.UiService.DisplayAlert(
 						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 						ServiceRef.Localizer[nameof(AppResources.PasswordIsInvalid), RemainingAttempts]);
 
-					await App.CheckUserBlockingAsync();
+					await this.authenticationService.CheckUserBlockingAsync();
 				}
 			}
 		}
@@ -90,7 +92,7 @@ namespace NeuroAccessMaui.UI.Popups.Password
 		[RelayCommand]
 		private async Task Cancel()
 		{
-			await ServiceRef.UiService.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		[RelayCommand]
@@ -99,19 +101,18 @@ namespace NeuroAccessMaui.UI.Popups.Password
 			this.IsPasswordHidden = !this.IsPasswordHidden;
 		}
 
-		public override Task OnPop()
+		protected override Task OnPopAsync()
 		{
 			try
 			{
-				if (!this.result.Task.IsCompleted)
-					this.result.TrySetResult(null);
+				this.TrySetResult(null);
 			}
 			catch (Exception)
 			{
 				// ignored
 			}
 
-			return base.OnPop();
+			return base.OnPopAsync();
 		}
 	}
 

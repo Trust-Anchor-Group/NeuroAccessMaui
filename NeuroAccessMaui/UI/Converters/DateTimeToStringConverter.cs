@@ -5,58 +5,58 @@ using Microsoft.Maui.Controls;
 namespace NeuroAccessMaui.UI.Converters
 {
 	/// <summary>
-	/// A value converter that converts a <see cref="DateTime"/> to a localized string representation.
-	/// If a parameter is supplied and evaluates to <c>true</c>, only the date portion of the 
-	/// <see cref="DateTime"/> is displayed using the short date format (e.g., "MM/dd/yyyy" in US culture).
-	/// If the parameter is not supplied or is <c>false</c>, the converter displays both date and time 
-	/// using a localized pattern (long date + short time).
-	/// 
-	/// Examples:
-	/// - With parameter = true: Displays only the date (e.g., "11/30/2024")
-	/// - With parameter = false or omitted: Displays date and time (e.g., "November 30, 2024 1:23 PM")
+	/// Converts <see cref="DateTime"/> values into localized strings, optionally forcing UTC output.
+	/// Date-only formatting is inferred from the supplied <see cref="DateTime"/> value instead of a parameter.
 	/// </summary>
 	public class DateTimeToStringConverter : IValueConverter
 	{
-		/// <summary>
-		/// Converts a DateTime to a localized string. If the parameter indicates date-only mode,
-		/// it shows only the date; otherwise, it shows both date and time.
-		/// </summary>
-		/// <param name="value">The DateTime value to convert.</param>
-		/// <param name="targetType">The target type (string).</param>
-		/// <param name="parameter">An optional parameter that, if true, indicates only a date should be shown.</param>
-		/// <param name="culture">The culture used for localization.</param>
-		/// <returns>A localized string representing the date and optionally time.</returns>
+		/// <inheritdoc/>
 		public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
 			if (value is not DateTime DateTime)
 				return string.Empty;
 
-			bool DateOnly = false;
+			bool ForceUtc = IsForceUtc(parameter);
 
-			if (parameter is bool BoolParam)
-			{
-				DateOnly = BoolParam;
-			}
-			else if (parameter is string StrParam && bool.TryParse(StrParam, out bool Parsed))
-			{
-				DateOnly = Parsed;
-			}
+			DateTime Formatted = ForceUtc ? DateTime.ToUniversalTime() : DateTime;
+			bool DateOnly = IsDateOnly(Formatted);
 
-			// If DateOnly is true, use short date format; otherwise, use date and time.
-			return DateOnly
-				 ? DateTime.ToString("d", culture)    // Short date pattern
-				 : DateTime.ToString("G", culture);   // short date + short time pattern
+			string Result = DateOnly
+				? Formatted.ToString("d", culture)
+				: Formatted.ToString("G", culture);
+
+			if (Formatted.Kind == DateTimeKind.Utc || ForceUtc)
+				Result = $"{Result} (UTC)";
+
+			return Result;
 		}
 
-		/// <summary>
-		/// Attempts to parse a string back into a DateTime.
-		/// </summary>
+		/// <inheritdoc/>
 		public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
-			if (value is string s && DateTime.TryParse(s, culture, DateTimeStyles.None, out DateTime dt))
-				return dt;
+			if (value is string s && DateTime.TryParse(s, culture, DateTimeStyles.None, out DateTime Parsed))
+				return Parsed;
 
 			return DateTime.MinValue;
+		}
+
+		private static bool IsDateOnly(DateTime dateTime)
+		{
+			return dateTime.TimeOfDay == TimeSpan.Zero;
+		}
+
+		private static bool IsForceUtc(object? parameter)
+		{
+			if (parameter is null)
+				return false;
+
+			if (parameter is bool BoolParam)
+				return BoolParam;
+
+			if (parameter is string StrParam)
+				return string.Equals(StrParam, "utc", StringComparison.OrdinalIgnoreCase);
+
+			return false;
 		}
 	}
 }

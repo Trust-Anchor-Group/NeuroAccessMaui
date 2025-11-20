@@ -1,26 +1,28 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.Services.Cache;
-using NeuroAccessMaui.Services.Tag;
-using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
-using NeuroAccessMaui.UI.Popups.Settings;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
+using NeuroAccessMaui.Services.Cache;
+using NeuroAccessMaui.Services.Cache.Invalidation;
+using NeuroAccessMaui.Services.Kyc;
+using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
+using NeuroAccessMaui.UI.Pages.Onboarding;
+using NeuroAccessMaui.UI.Popups.Settings;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
-using NeuroAccessMaui.Services.Cache.Invalidation;
-using NeuroAccessMaui.Services.Kyc;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Settings
 {
@@ -29,6 +31,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 	/// </summary>
 	public partial class SettingsViewModel : XmppViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		private const string allowed = "Allowed";
 		private const string prohibited = "Prohibited";
 
@@ -76,9 +80,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// </summary>
 		internal SettingsPage? Page { get; set; }
 
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 			this.NotifyCommandsCanExecuteChanged();
 		}
 
@@ -270,7 +274,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 							this.AuthenticationMethod != this.ApprovedAuthenticationMethod &&
 							Enum.TryParse(this.AuthenticationMethod, out AuthenticationMethod AuthenticationMethod))
 						{
-							if (await App.AuthenticateUserAsync(AuthenticationPurpose.ChangeAuthenticationMethod, true))
+							if (await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ChangeAuthenticationMethod, true))
 							{
 								ServiceRef.TagProfile.AuthenticationMethod = AuthenticationMethod;
 								this.ApprovedAuthenticationMethod = this.AuthenticationMethod;
@@ -347,16 +351,15 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			try
 			{
 				//Authenticate user
-				await App.CheckUserBlockingAsync();
-				if (await App.AuthenticateUserAsync(AuthenticationPurpose.ChangePassword, true) == false)
+				await this.authenticationService.CheckUserBlockingAsync();
+				if (await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ChangePassword, true) == false)
 					return;
 
 				//Update the network password
 				await ServiceRef.XmppService.TryGenerateAndChangePassword();
 
 				//Update the local password
-				GoToRegistrationStep(RegistrationStep.DefinePassword);
-				await App.SetRegistrationPageAsync();
+				await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.ChangePin });
 
 				//Listen for completed event
 				WeakReferenceMessenger.Default.Register<RegistrationPageMessage>(this, this.HandleRegistrationPageMessage);
@@ -383,7 +386,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			if (!ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 				return;
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.PermitScreenCapture))
+			if (!await ServiceRef.Provider.GetRequiredService<IAuthenticationService>().AuthenticateUserAsync(AuthenticationPurpose.PermitScreenCapture))
 				return;
 
 			ServiceRef.PlatformSpecific.ProhibitScreenCapture = false;
@@ -394,7 +397,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			if (!ServiceRef.PlatformSpecific.CanProhibitScreenCapture)
 				return;
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ProhibitScreenCapture))
+			if (!await ServiceRef.Provider.GetRequiredService<IAuthenticationService>().AuthenticateUserAsync(AuthenticationPurpose.ProhibitScreenCapture))
 				return;
 
 			ServiceRef.PlatformSpecific.ProhibitScreenCapture = true;
@@ -420,7 +423,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToRevokeYourLegalIdentity)]))
 					return;
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.RevokeIdentity, true))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.RevokeIdentity, true))
 					return;
 
 				(bool succeeded, LegalIdentity? RevokedIdentity) = await ServiceRef.NetworkService.TryRequest(async () =>
@@ -441,8 +444,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 						await ServiceRef.TagProfile.RevokeLegalIdentity(RevokedIdentity);
 					else
 						await ServiceRef.TagProfile.ClearLegalIdentity();
-					GoToRegistrationStep(RegistrationStep.ValidatePhone);
-					await App.SetRegistrationPageAsync();
+					await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.ReverifyIdentity });
 				}
 			}
 			catch (Exception ex)
@@ -463,7 +465,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToReportYourLegalIdentityAsCompromized)]))
 					return;
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ReportAsCompromized, true))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ReportAsCompromized, true))
 					return;
 
 				(bool succeeded, LegalIdentity? CompromisedIdentity) = await ServiceRef.NetworkService.TryRequest(
@@ -472,7 +474,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 				if (succeeded && CompromisedIdentity is not null)
 				{
 					await ServiceRef.TagProfile.CompromiseLegalIdentity(CompromisedIdentity);
-					await App.SetRegistrationPageAsync();
+					await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.ReverifyIdentity });
 				}
 			}
 			catch (Exception ex)
@@ -501,7 +503,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 					return;
 				}
 
-				string? Password = await App.InputPasswordAsync(AuthenticationPurpose.TransferIdentity);
+				string? Password = await this.authenticationService.InputPasswordAsync(AuthenticationPurpose.TransferIdentity);
 				if (Password is null)
 					return;
 
@@ -575,7 +577,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 								Convert.ToBase64String(Key) + ":" + Convert.ToBase64String(IV);
 
 							await ServiceRef.XmppService.AddTransferCode(Code);
-							await ServiceRef.UiService.GoToAsync(nameof(TransferIdentityPage), new TransferIdentityNavigationArgs(Url));
+							await ServiceRef.NavigationService.GoToAsync(nameof(TransferIdentityPage), new TransferIdentityNavigationArgs(Url));
 							return;
 						}
 					}
@@ -599,7 +601,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		[RelayCommand]
 		private static async Task ChangeLanguage()
 		{
-			await ServiceRef.UiService.PushAsync<SelectLanguagePopup>();
+			await ServiceRef.PopupService.PushAsync<SelectLanguagePopup>();
 		}
 
 		[RelayCommand]

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Maui.ApplicationModel;
+using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.UI.MVVM;
 
@@ -146,7 +148,69 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 			{
 				this.values[Field.Id] = Field.StringValue;
 				this.UpdateVisibilities(this.values);
+				if (Field.FieldType == FieldType.Country && string.Equals(Field.Id, "country", StringComparison.OrdinalIgnoreCase))
+					this.HandleCountryFieldChanged(Field);
 			}
+		}
+
+		private void HandleCountryFieldChanged(ObservableKycField CountryField)
+		{
+			if (CountryField is null)
+				return;
+
+			string CountryCode = CountryField.StringValue ?? string.Empty;
+			if (CountryField.TryGetOwnerProcess(out KycProcess? Process))
+			{
+				Process.Values[CountryField.Id] = CountryCode;
+				string PlaceholderExample = string.IsNullOrEmpty(CountryCode) ? string.Empty : PersonalNumberSchemes.DisplayStringForCountry(CountryCode) ?? string.Empty;
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					foreach (KycPage Page in Process.Pages)
+					{
+						this.UpdatePersonalNumberFields(Page.VisibleFields, CountryCode, PlaceholderExample);
+						foreach (KycSection Section in Page.VisibleSections)
+							this.UpdatePersonalNumberFields(Section.VisibleFields, CountryCode, PlaceholderExample);
+					}
+				});
+			}
+		}
+
+		private void UpdatePersonalNumberFields(IEnumerable<ObservableKycField> Fields, string CountryCode, string PlaceholderExample)
+		{
+			foreach (ObservableKycField Field in Fields)
+			{
+				if (!Field.IsVisible)
+					continue;
+
+				if (!MapsToPersonalNumber(Field))
+					continue;
+
+				this.ApplyPersonalNumberPlaceholder(Field, CountryCode, PlaceholderExample);
+				Field.ForceSynchronousValidation();
+				Field.ValidationTask.Run();
+			}
+		}
+
+		private void ApplyPersonalNumberPlaceholder(ObservableKycField Field, string CountryCode, string PlaceholderExample)
+		{
+			if (Field.Placeholder is null)
+				Field.Placeholder = new KycLocalizedText();
+
+			string PlaceholderKey = string.IsNullOrEmpty(CountryCode) ? "en" : CountryCode;
+			string PlaceholderValue = PlaceholderExample ?? string.Empty;
+			Field.Placeholder.Add(PlaceholderKey, PlaceholderValue);
+		}
+
+		private static bool MapsToPersonalNumber(ObservableKycField Field)
+		{
+			foreach (KycMapping Mapping in Field.Mappings)
+			{
+				if (string.Equals(Mapping.Key, Constants.XmppProperties.PersonalNumber, StringComparison.OrdinalIgnoreCase))
+					return true;
+			}
+
+			return string.Equals(Field.Id, "personalNumber", StringComparison.OrdinalIgnoreCase);
 		}
 	}
 }

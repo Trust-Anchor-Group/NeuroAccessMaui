@@ -5,6 +5,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Converts an DateTime to a string containing only the date.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class DateToString : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>

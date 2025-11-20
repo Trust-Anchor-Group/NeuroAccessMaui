@@ -1,15 +1,20 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
-using Mopups.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Provisioning.Events;
 using Waher.Persistence;
 
 namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
@@ -17,7 +22,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 	/// <summary>
 	/// Contact Information model, including related notification information.
 	/// </summary>
-	public class ContactInfoModel : INotifyPropertyChanged, IUniqueItem
+	public partial class ContactInfoModel : INotifyPropertyChanged, IUniqueItem
 	{
 		private readonly ContactInfo? contact;
 		private NotificationEvent[] events;
@@ -35,6 +40,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			this.events = Events;
 
 			this.toggleSubscriptionCommand = new Command(async () => await this.ToggleSubscription(), () => this.CanToggleSubscription());
+
+			this.OnPropertyChanged(nameof(this.IsFriend));
 		}
 
 		/// <inheritdoc/>
@@ -133,7 +140,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 			get
 			{
 				if (string.IsNullOrEmpty(this.contact?.BareJid))
-					return Colors.Transparent;
+					return AppColors.ContentSecondary;
 
 				RosterItem? Item = null;
 				try
@@ -142,23 +149,81 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 				}
 				catch (Exception)
 				{
-					return Colors.Transparent;
+					return AppColors.ContentSecondary;
 				}
 				if (Item is null)
-					return Colors.Transparent;
+					return AppColors.ContentSecondary;
 
 				if (Item.State != SubscriptionState.To && Item.State != SubscriptionState.Both)
-					return Colors.Transparent;
+					return AppColors.ContentSecondary;
 
 				if (!Item.HasLastPresence)
-					return Colors.LightSalmon;
+					return AppColors.ContentSecondary;
 
 				return Item.LastPresence.Availability switch
 				{
-					Availability.Online or Availability.Chat => Colors.LightGreen,
-					Availability.Away or Availability.ExtendedAway => Colors.LightYellow,
-					_ => Colors.LightSalmon,
+					Availability.Online or Availability.Chat => AppColors.TnPSuccessFigure,
+					Availability.Away or Availability.ExtendedAway => AppColors.TnPWarningContent,
+					Availability.DoNotDisturb => AppColors.TnPDangerContent,
+					_ => AppColors.ContentSecondary,
 				};
+			}
+		}
+
+		/// <summary>
+		/// Secondary Color representing the current connection state of the contact.
+		/// </summary>
+		public Color ConnectionSecondaryColor
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.contact?.BareJid))
+					return AppColors.ButtonNeutralNavButtonsOnContainerbgActive;
+
+				RosterItem? Item = null;
+				try
+				{
+					Item = ServiceRef.XmppService.GetRosterItem(this.contact?.BareJid);
+				}
+				catch (Exception)
+				{
+					return AppColors.ButtonNeutralNavButtonsOnContainerbgActive;
+				}
+				if (Item is null)
+					return AppColors.ButtonNeutralNavButtonsOnContainerbgActive;
+				if (Item.State != SubscriptionState.To && Item.State != SubscriptionState.Both)
+					return AppColors.ButtonNeutralNavButtonsOnContainerbgActive;
+				if (!Item.HasLastPresence)
+					return AppColors.ButtonNeutralNavButtonsOnContainerbgActive;
+
+				return Item.LastPresence.Availability switch
+				{
+					Availability.Online or Availability.Chat => AppColors.TnPSuccessBg,
+					Availability.Away or Availability.ExtendedAway => AppColors.TnPWarningBg,
+					Availability.DoNotDisturb => AppColors.TnPDangerContent,
+					_ => AppColors.ButtonNeutralNavButtonsOnContainerbgActive,
+				};
+			}
+		}
+
+		public bool IsFriend
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(this.contact?.BareJid))
+					return false;
+				RosterItem? Item;
+				try
+				{
+					Item = ServiceRef.XmppService.GetRosterItem(this.contact?.BareJid);
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+				if (Item is null)
+					return false;
+				return Item.State == SubscriptionState.To || Item.State == SubscriptionState.Both;
 			}
 		}
 
@@ -218,7 +283,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 					RemoveSubscriptionViewModel ViewModel = new(this.BareJid);
 					RemoveSubscriptionPopup Page = new(ViewModel);
 
-					await MopupService.Instance.PushAsync(Page);
+					await ServiceRef.PopupService.PushAsync(Page);
 					bool? Remove = await ViewModel.Result;
 
 					if (Remove.HasValue && Remove.Value)
@@ -238,7 +303,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 				SubscribeToViewModel ViewModel = new(this.BareJid);
 				SubscribeToPopup Page = new(ViewModel);
 
-				await MopupService.Instance.PushAsync(Page);
+				await ServiceRef.PopupService.PushAsync(Page);
 				bool? SubscribeTo = await ViewModel.Result;
 
 				if (SubscribeTo.HasValue && SubscribeTo.Value)
@@ -257,6 +322,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 					ServiceRef.XmppService.RequestPresenceSubscription(this.BareJid, IdXml);
 				}
 			}
+
+			this.OnPropertyChanged(nameof(this.IsFriend));
 		}
 
 		/// <summary>
@@ -265,6 +332,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		public void PresenceUpdated()
 		{
 			this.OnPropertyChanged(nameof(this.ConnectionColor));
+			this.OnPropertyChanged(nameof(this.ConnectionSecondaryColor));
+			this.OnPropertyChanged(nameof(this.IsFriend));
 		}
 
 		/// <summary>
@@ -356,6 +425,32 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 					}
 				}
 
+			}
+		}
+
+		[RelayCommand]
+		public async Task ViewContact()
+		{
+			if (this.LegalIdentity is not null)
+			{
+				ViewIdentityNavigationArgs ViewIdentityArgs = new(this.LegalIdentity);
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), ViewIdentityArgs);
+			}
+			else if (!string.IsNullOrEmpty(this.LegalId))
+			{
+				await ServiceRef.ContractOrchestratorService.OpenLegalIdentity(this.LegalId,
+					ServiceRef.Localizer[nameof(AppResources.ScannedQrCode)]);
+			}
+		}
+
+		[RelayCommand]
+		public async Task ViewChat()
+		{
+			if (!string.IsNullOrEmpty(this.BareJid) && this.Contact is not null)
+			{
+				ChatNavigationArgs ChatArgs = new(this.Contact);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, this.BareJid);
 			}
 		}
 	}

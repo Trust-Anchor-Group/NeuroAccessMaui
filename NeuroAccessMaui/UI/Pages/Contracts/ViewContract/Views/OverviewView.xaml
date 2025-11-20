@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <views:BaseViewContractView x:Name="ThisPage"
 									 x:Class="NeuroAccessMaui.UI.Pages.Contracts.ViewContract.Views.OverviewView"
 									 x:DataType="base:ViewContractViewModel"
@@ -56,7 +55,7 @@
 			</Style>
 
 			<!-- Proposed -->
-			<DataTemplate x:Key="ProposedTemplate">
+			<DataTemplate x:Key="ProposedTemplate" x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -71,7 +70,8 @@
 			</DataTemplate>
 
 			<!-- Rejected -->
-			<DataTemplate x:Key="RejectedTemplate">
+			<DataTemplate x:Key="RejectedTemplate"
+						  x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -86,7 +86,8 @@
 			</DataTemplate>
 
 			<!-- Approved -->
-			<DataTemplate x:Key="ApprovedTemplate">
+			<DataTemplate x:Key="ApprovedTemplate"
+						  x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -101,7 +102,8 @@
 			</DataTemplate>
 
 			<!-- BeingSigned -->
-			<DataTemplate x:Key="BeingSignedTemplate">
+			<DataTemplate x:Key="BeingSignedTemplate"
+						  x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -116,7 +118,8 @@
 			</DataTemplate>
 
 			<!-- Signed -->
-			<DataTemplate x:Key="SignedTemplate">
+			<DataTemplate x:Key="SignedTemplate"
+						  x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}" Stroke="Transparent"
@@ -130,7 +133,8 @@
 			</DataTemplate>
 
 			<!-- Failed -->
-			<DataTemplate x:Key="FailedTemplate">
+			<DataTemplate x:Key="FailedTemplate"
+						  x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -145,7 +149,8 @@
 			</DataTemplate>
 
 			<!-- Obsoleted -->
-			<DataTemplate x:Key="ObsoletedTemplate"> 
+			<DataTemplate x:Key="ObsoletedTemplate"
+						  x:DataType="base:ViewContractViewModel"> 
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -160,7 +165,8 @@
 			</DataTemplate>
 
 			<!-- Deleted -->
-			<DataTemplate x:Key="DeletedTemplate">
+			<DataTemplate x:Key="DeletedTemplate"
+						  x:DataType="base:ViewContractViewModel">
 				<Grid ColumnDefinitions="auto"
 						HorizontalOptions="End">
 					<Border Style="{DynamicResource RoundedBorder}"
@@ -212,21 +218,52 @@
 										  WidthRequest="16"
 										  Aspect="Uniform"
 										  Fill="{DynamicResource TnPInfoContentWL}" />
-									<Label Grid.Column="1"
-										   Style="{DynamicResource AccentInfoLabel}"
-										   VerticalOptions="Start"
-										   VerticalTextAlignment="Start"
-										   Margin="{DynamicResource SmallLeftMargins}"
-										   Text="{l:Localize InvitationToSign}" />
 
+									<controls:ConditionView Condition="{Binding ProposalRole, Converter={mct:IsStringNullOrEmptyConverter}}" Grid.Column="1">
+										<controls:ConditionView.True>
+											<Label 
+												   Style="{DynamicResource AccentInfoLabel}"
+												   VerticalOptions="Start"
+												   VerticalTextAlignment="Start"
+												   Margin="{DynamicResource SmallLeftMargins}"
+												   Text="{l:Localize InvitationToSign}" />
+										</controls:ConditionView.True>
+										<controls:ConditionView.False>
+											<Label 
+												   Style="{DynamicResource AccentInfoLabel}"
+												   VerticalOptions="Start"
+												   VerticalTextAlignment="Start"
+												   Margin="{DynamicResource SmallLeftMargins}"
+												   Text="{l:Localize InvitationToSignFormat, Arg={Binding ProposalRole}}"/>
+										</controls:ConditionView.False>
+									</controls:ConditionView>
 								</Grid>
 							</Border>
-							<!--
-						<Label Text="{Binding Path=Contract.Category}"
-								Margin="{DynamicResource SmallSpacing}"
-								Style="{DynamicResource PageTitleLabel}"
-								HorizontalTextAlignment="Center"/>
--->
+							<Border Style="{DynamicResource BorderSubSet}"
+									IsVisible="{Binding IsProposal}"
+									Margin="0">
+								<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+									<Grid ColumnDefinitions="auto, *"
+										  ColumnSpacing="{DynamicResource MediumSpacing}">
+										<Label Grid.Column="0"
+											   Text="{l:Localize From}"
+											   Style="{DynamicResource ItemTitleLabel}" />
+										<Label Grid.Column="1"
+											   Text="{Binding Path=ProposalFriendlyName,Converter={converters:HyphenIfEmpty}}"
+											   Style="{DynamicResource ItemValueLabel}" />
+									</Grid>
+
+									<Grid ColumnDefinitions="auto, *">
+										<Label Grid.Column="0"
+											   Text="{l:Localize Message}"
+											   Style="{DynamicResource ItemTitleLabel}" />
+										<Label Grid.Column="1"
+											   Text="{Binding Path=ProposalMessage,Converter={converters:HyphenIfEmpty}}"
+											   Style="{DynamicResource ItemValueLabel}" />
+									</Grid>
+								</VerticalStackLayout>
+
+							</Border>
 
 
 							<Border Style="{DynamicResource BorderSubSet}"
@@ -278,11 +315,10 @@
 
 					</Border>
 
-					<!-- Parameters Button -->
-					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractEditPath}"
-											  TopLabelText="{l:Localize ViewParametersTitle}"
-											  BottomLabelText="{l:Localize ViewParametersDescription}"
-											  Command="{Binding GoToParametersCommand}" />
+					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractPath}"
+											  TopLabelText="{l:Localize ReviewContractTitle}"
+											  BottomLabelText="{l:Localize ReviewContractDescription2}"
+											  Command="{Binding GoToReviewCommand}" />
 
 					<!-- Roles Button -->
 					<views:OverviewItemButton IconData="{x:Static ui:Geometries.RolesPath}"
@@ -290,10 +326,12 @@
 											  BottomLabelText="{l:Localize ViewRolesDescription}"
 											  Command="{Binding GoToRolesCommand}" />
 
-					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractPath}"
-											  TopLabelText="{l:Localize ReviewContractTitle}"
-											  BottomLabelText="{l:Localize ReviewContractDescription2}"
-											  Command="{Binding GoToReviewCommand}" />
+					<!-- Parameters Button -->
+					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractEditPath}"
+											  TopLabelText="{l:Localize ViewParametersTitle}"
+											  BottomLabelText="{l:Localize ViewParametersDescription}"
+											  Command="{Binding GoToParametersCommand}" />
+
 
 					<views:OverviewItemButton IconData="{x:Static ui:Geometries.ContractIconPath}"
 											  TopLabelText="{l:Localize ServerSignatureButtonTitle}"
@@ -316,28 +354,24 @@
 		</RefreshView>
 
 		<!-- BOTTOM BAR -->
-		<Grid Grid.Row="1"
-				RowDefinitions="*">
-			<Border Style="{DynamicResource BottomBarBorder}"
-					  IsVisible="{Binding CanSign}">
-				<Grid HorizontalOptions="Fill"
-						VerticalOptions="Center"
-						ColumnSpacing="{DynamicResource SmallSpacing}"
-						Padding="{DynamicResource SmallMargins}">
+		<Grid Grid.Row="1" RowDefinitions="*">
+			<!-- Loading bottom bar while awaiting post-create completion -->
+			<Border Style="{DynamicResource BottomBarBorder}" IsVisible="{Binding IsAwaitingPostCreateCompletion}">
+				<Grid HorizontalOptions="Fill" VerticalOptions="Center" Padding="{DynamicResource SmallMargins}">
+					<ActivityIndicator IsRunning="True" IsVisible="True" VerticalOptions="Center" HorizontalOptions="Center" />
+				</Grid>
+			</Border>
+
+			<!-- Sign bottom bar shown only when signable and not awaiting -->
+			<Border Style="{DynamicResource BottomBarBorder}" IsVisible="{Binding CanShowSignBar}">
+				<Grid HorizontalOptions="Fill" VerticalOptions="Center" ColumnSpacing="{DynamicResource SmallSpacing}" Padding="{DynamicResource SmallMargins}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 
-					<controls:TextButton Style="{DynamicResource TransparentTextButton}"
-												Grid.Column="0"
-												LabelData="{l:Localize Back}"
-												Command="{Binding BackCommand}" />
-					<controls:TextButton Style="{DynamicResource FilledTextButton}"
-												Grid.Column="1"
-												LabelData="{l:Localize Sign}"
-												Command="{Binding GoToSignCommand}" />
-
+					<controls:TextButton Style="{DynamicResource TransparentTextButton}" Grid.Column="0" LabelData="{l:Localize Back}" Command="{Binding BackCommand}" />
+					<controls:TextButton Style="{DynamicResource FilledTextButton}" Grid.Column="1" LabelData="{l:Localize Sign}" Command="{Binding GoToSignCommand}" />
 				</Grid>
 			</Border>
 		</Grid>

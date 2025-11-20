@@ -1,17 +1,24 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.ComponentModel;
+using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Text;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using EDaler;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
+using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Converters;
+using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
-using System.ComponentModel;
-using System.Globalization;
-using System.Text;
+using NeuroAccessMaui.UI.Popups.Transaction;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
+using Waher.Networking.XMPP.Contracts.EventArguments;
 using Waher.Networking.XMPP.StanzaErrors;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet
@@ -21,9 +28,14 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 	/// </summary>
 	public partial class EDalerUriViewModel : QrXmppViewModel
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		private readonly EDalerUriNavigationArgs? navigationArguments;
 		private readonly IShareQrCode? shareQrCode;
 		private readonly TaskCompletionSource<string?>? uriToSend = null;
+		private readonly TaskCompletionSource<string?>? messageToSend = null;
+
+		public ObservableTask<bool> GetBalanceTask { get; } = new();
 
 		/// <summary>
 		/// The view model to bind to for when displaying the contents of an eDaler URI.
@@ -37,6 +49,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			this.shareQrCode = ShareQrCode;
 
 			this.uriToSend = Args?.UriToSend;
+			this.messageToSend = Args?.MessageToSend;
 			this.FriendlyName = Args?.FriendlyName;
 
 			if (Args?.Uri is not null)
@@ -85,9 +98,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
+
+			// Subscribe to petitioned identity responses (only once)
+			ServiceRef.XmppService.PetitionedIdentityResponseReceived += this.XmppService_PetitionedIdentityResponseReceived;
 
 			if (this.navigationArguments is not null)
 			{
@@ -111,14 +127,52 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				this.CanEncryptMessage = false;//this.navigationArguments.Uri?.ToType == EntityType.LegalId;
 				this.EncryptMessage = this.CanEncryptMessage;
 			}
+
+			this.GetBalanceTask.Load(this.LoadBalanceAsync);
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			this.uriToSend?.TrySetResult(null);
+			this.messageToSend?.TrySetResult(null);
 
-			await base.OnDispose();
+			ServiceRef.XmppService.PetitionedIdentityResponseReceived -= this.XmppService_PetitionedIdentityResponseReceived;
+
+			await base.OnDisposeAsync();
+		}
+
+		private async Task XmppService_PetitionedIdentityResponseReceived(object? Sender, LegalIdentityPetitionResponseEventArgs e)
+		{
+			try
+			{
+				// If we have petitioned this identity and response is positive, capture JID
+				if (e.Response && e.RequestedIdentity is not null && this.ToType == EntityType.LegalId &&
+					string.Equals(this.To, e.RequestedIdentity.Id, StringComparison.OrdinalIgnoreCase))
+				{
+					string Jid = e.RequestedIdentity.GetJid();
+					if (!string.IsNullOrEmpty(Jid))
+					{
+						MainThread.BeginInvokeOnMainThread(async () =>
+						{
+							this.To = Jid;
+							this.ToType = EntityType.NetworkJid;
+
+							// Enrich contact info if possible
+							ContactInfo? InfoByJid = await ContactInfo.FindByBareJid(Jid);
+							if (InfoByJid is not null)
+							{
+								this.ToContact = new ContactInfoModel(InfoByJid);
+								this.ContactSelected = true;
+							}
+						});
+					}
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		#region Properties
@@ -192,6 +246,49 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					break;
 			}
 		}
+
+		/// <summary>
+		/// The last known update time of the balance.
+		/// </summary>
+		[ObservableProperty]
+		private DateTime? balanceUpdated = ServiceRef.TagProfile.LastEDalerBalanceUpdate;
+
+
+		/// <summary>
+		/// Exposes the current balance as a decimal.
+		/// </summary>
+		public decimal BalanceDecimal =>
+			this.FetchedBalance?.Amount ?? ServiceRef.TagProfile.LastEDalerBalanceDecimal;
+
+		public string BalanceString =>
+			this.BalanceDecimal + " " + this.Currency;
+
+		public decimal ReservedDecimal =>
+			this.FetchedBalance?.Reserved ?? -1;
+
+		public string ReservedString
+		{
+			get
+			{
+				if (this.ReservedDecimal == -1)
+					return ServiceRef.Localizer[nameof(AppResources.UnknownPleaseRefresh)];
+				else
+					return this.ReservedDecimal + " " + this.Currency;
+			}
+		}
+
+		public bool HasReserved => (this.ReservedDecimal > 0 || this.ReservedDecimal == -1) && this.GetBalanceTask.IsSucceeded;
+
+		/// <summary>
+		/// Last fetched balance. Changing this notifies <see cref="BalanceDecimal"/>.
+		/// </summary>
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(BalanceDecimal))]
+		[NotifyPropertyChangedFor(nameof(BalanceString))]
+		[NotifyPropertyChangedFor(nameof(ReservedDecimal))]
+		[NotifyPropertyChangedFor(nameof(ReservedString))]
+		[NotifyPropertyChangedFor(nameof(HasReserved))]
+		Balance? fetchedBalance;
 
 		/// <summary>
 		/// <see cref="Amount"/> as text.
@@ -297,6 +394,18 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		/// </summary>
 		[ObservableProperty]
 		private string? to;
+
+		/// <summary>
+		/// Used for UI rendering of selected contact, use property this.to for transfer
+		/// </summary>
+		[ObservableProperty]
+		private ContactInfoModel? toContact;
+
+		/// <summary>
+		/// If a contact has been selected
+		/// </summary>
+		[ObservableProperty]
+		private bool contactSelected = false;
 
 		/// <summary>
 		/// If <see cref="To"/> is preset
@@ -419,7 +528,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (this.Uri is null)
 					return;
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.AcceptEDalerUri, true))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.AcceptEDalerUri, true))
 					return;
 
 				Transaction? Transaction = await ServiceRef.XmppService.SendEDalerUri(this.Uri);
@@ -460,7 +569,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					return;
 				}
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.PayOnline, true))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.PayOnline, true))
 					return;
 
 				string Uri;
@@ -513,8 +622,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				if (Succeeded)
 				{
 					await this.GoBack();
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-						ServiceRef.Localizer[nameof(AppResources.PaymentSuccess)]);
+					PaymentSuccessPopup Popup = new(Transaction!, this.Message);
+					await ServiceRef.PopupService.PushAsync(Popup);
 				}
 				else
 				{
@@ -544,7 +653,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				return;
 			}
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.PayOffline, true))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.PayOffline, true))
 				return;
 
 			try
@@ -622,15 +731,15 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 
 			try
 			{
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SubmitEDalerUri))
+				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.SubmitEDalerUri))
 					return;
 
 				(bool Succeeded, Transaction? Transaction) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.SendEDalerUri(this.Uri));
 				if (Succeeded)
 				{
 					await this.GoBack();
-					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.SuccessTitle)],
-						ServiceRef.Localizer[nameof(AppResources.PaymentSuccess)]);
+					PaymentSuccessPopup Popup = new(Transaction!, this.Message);
+					await ServiceRef.PopupService.PushAsync(Popup);
 				}
 				else
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
@@ -652,7 +761,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			if (this.Uri is null)
 				return;
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.ShowUriAsQr, true))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ShowUriAsQr, true))
 				return;
 
 			try
@@ -693,7 +802,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				return;
 			}
 
-			if (!await App.AuthenticateUserAsync(AuthenticationPurpose.SendPayment, true))
+			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.SendPayment, true))
 				return;
 
 			try
@@ -723,6 +832,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				// TODO: Offline options: Expiry days
 
 				this.uriToSend?.TrySetResult(Uri);
+				this.messageToSend?.TrySetResult(this.Message);
 				await this.GoBack();
 			}
 			catch (Exception Ex)
@@ -746,13 +856,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 					case "AmountText":
 						CalculatorNavigationArgs AmountArgs = new(this, nameof(this.AmountText));
 
-						await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), AmountArgs, BackMethod.Pop);
+						await ServiceRef.NavigationService.GoToAsync(nameof(CalculatorPage), AmountArgs, BackMethod.Pop);
 						break;
 
 					case "AmountExtraText":
 						CalculatorNavigationArgs ExtraArgs = new(this, nameof(this.AmountExtraText));
 
-						await ServiceRef.UiService.GoToAsync(nameof(CalculatorPage), ExtraArgs, BackMethod.Pop);
+						await ServiceRef.NavigationService.GoToAsync(nameof(CalculatorPage), ExtraArgs, BackMethod.Pop);
 						break;
 				}
 			}
@@ -770,6 +880,145 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 		public override Task<string> Title => Task.FromResult<string>(ServiceRef.Localizer[nameof(AppResources.Payment)]);
 
 		#endregion
+
+		[RelayCommand]
+		private async Task SelectRecipient()
+		{
+			try
+			{
+				TaskCompletionSource<ContactInfoModel?> Selected = new();
+				string Description = ServiceRef.Localizer[nameof(AppResources.SelectFromWhomToRequestPayment)];
+				ContactListNavigationArgs ContactListArgs = new(Description, Selected)
+				{
+					CanScanQrCode = true
+				};
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage), ContactListArgs, BackMethod.Pop);
+
+				ContactInfoModel? Contact = await Selected.Task;
+				if (Contact is null)
+					return;
+
+				this.ToContact = Contact;
+				this.ContactSelected = true;
+
+				if (!string.IsNullOrEmpty(Contact.LegalId))
+				{
+					this.To = Contact.LegalId;
+					this.ToType = EntityType.LegalId;
+				}
+				else if (!string.IsNullOrEmpty(Contact.BareJid))
+				{
+					this.To = Contact.BareJid;
+					this.ToType = EntityType.NetworkJid; // Using Network to represent a bare JID
+				}
+				else
+				{
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.NetworkAddressOfContactUnknown)]);
+					return;
+				}
+
+				this.ToPreset = false;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private Task ClearRecipient()
+		{
+			this.To = string.Empty;
+			this.ToContact = null;
+			this.ContactSelected = false;
+
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Loads the current balance from the backend and updates observable properties.
+		/// </summary>
+		/// <param name="Ctx">Task context</param>
+		private async Task LoadBalanceAsync(TaskContext<bool> Ctx)
+		{
+			ServiceRef.LogService.LogDebug("Refreshing Edaler...");
+
+			if (!await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect))
+				return;
+
+			Balance CurrentBalance = await ServiceRef.XmppService.GetEDalerBalance();
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				this.FetchedBalance = CurrentBalance;
+				this.BalanceUpdated = DateTime.UtcNow;
+				ServiceRef.TagProfile.LastEDalerBalanceDecimal = this.BalanceDecimal;
+				ServiceRef.TagProfile.LastEDalerBalanceUpdate = DateTime.UtcNow;
+			});
+
+			ServiceRef.LogService.LogDebug("Refreshing Edaler Completed");
+		}
+
+		[RelayCommand]
+		private async Task ScanQr()
+		{
+			try
+			{
+				string[] AllowedSchemas = [Constants.UriSchemes.IotId];
+				string? Url = await Services.UI.QR.QrCode.ScanQrCode(ServiceRef.Localizer[nameof(AppResources.QrScanCode)], AllowedSchemas);
+				if (string.IsNullOrEmpty(Url))
+					return;
+
+				string? NeuroId = null;
+
+				// Accept formats:
+				// 1. iotid:LegalIdentityId
+				// 2. Raw LegalIdentityId (no scheme)
+				if (Url.StartsWith(Constants.UriSchemes.IotId + ":", StringComparison.OrdinalIgnoreCase))
+				{
+					int i = Url.IndexOf(':');
+					NeuroId = Url[(i + 1)..].Trim();
+				}
+				else
+					NeuroId = Url.Trim();
+
+				if (string.IsNullOrEmpty(NeuroId))
+				{
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.CodeNotRecognized)]);
+					return;
+				}
+
+				// Set recipient as Legal ID initially
+				this.To = NeuroId;
+				this.ToType = EntityType.LegalId;
+				this.ToPreset = false;
+				this.ToContact = null;
+				this.ContactSelected = false;
+
+				// Petition identity to obtain JID (asynchronous response via event)
+				try
+				{
+					await ServiceRef.NetworkService.TryRequest(() =>
+						ServiceRef.XmppService.PetitionIdentity(NeuroId, Guid.NewGuid().ToString(), ServiceRef.Localizer[nameof(AppResources.Payment)])
+					);
+				}
+				catch (Exception Ex2)
+				{
+					ServiceRef.LogService.LogException(Ex2);
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.UnableToOpenLink)]);
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await ServiceRef.UiService.DisplayException(Ex);
+			}
+		}
 
 	}
 }

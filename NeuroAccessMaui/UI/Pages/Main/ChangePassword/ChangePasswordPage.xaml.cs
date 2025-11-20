@@ -20,42 +20,18 @@ namespace NeuroAccessMaui.UI.Pages.Main.ChangePassword
 			this.ContentPageModel = ViewModel;
 		}
 
-		/// <inheritdoc/>
-		protected override void OnLoaded()
-		{
-			this.OldPasswordEntry.Focus();
-			base.OnLoaded();
-		}
 
 		/// <inheritdoc/>
-		protected override async Task OnAppearingAsync()
+		public override async Task OnAppearingAsync()
 		{
 			await base.OnAppearingAsync();
-			WeakReferenceMessenger.Default.Register<KeyboardSizeMessage>(this, this.HandleKeyboardSizeMessage);
+			this.OldPasswordEntry.Focus();
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDisappearingAsync()
+		public override async Task OnDisappearingAsync()
 		{
-			WeakReferenceMessenger.Default.Unregister<KeyboardSizeMessage>(this);
 			await base.OnDisappearingAsync();
-		}
-
-		private async void HandleKeyboardSizeMessage(object Recipient, KeyboardSizeMessage Message)
-		{
-			await this.Dispatcher.DispatchAsync(() =>
-			{
-				double Bottom = 0;
-				if (DeviceInfo.Platform == DevicePlatform.iOS)
-				{
-					Thickness SafeInsets = this.On<iOS>().SafeAreaInsets();
-					Bottom = SafeInsets.Bottom;
-					Thickness Margin = new(0, 0, 0, Message.KeyboardSize - Bottom);
-					this.TheMainGrid.Margin = Margin;
-				}
-
-
-			});
 		}
 	}
 }

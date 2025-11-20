@@ -16,8 +16,10 @@
     xmlns:skiaLottie="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
     xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
     xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Identity.ViewIdentity"
-    x:Name="ThisPage"
-    x:DataType="viewmodel:ViewIdentityViewModel">
+	xmlns:ext="clr-namespace:NeuroAccessMaui.MarkupExtensions"
+	x:Name="ThisPage"
+    x:DataType="viewmodel:ViewIdentityViewModel"
+	ui:SafeArea.Mode="Top">
 
     <VisualElement.Resources>
         <Style
@@ -31,8 +33,8 @@
             BasedOn="{StaticResource BorderSubSet}"
             TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource SurfaceElevation2WL}" />
-            <Setter Property="StrokeShape" Value="RoundRectangle 16" />
-            <Setter Property="Margin" Value="16" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+            <Setter Property="Margin" Value="16,0,16,16" />
             <Setter Property="Padding" Value="16" />
         </Style>
         <Style
@@ -132,7 +134,7 @@
                 <DataTrigger
                     Binding="{Binding IdentityState}"
                     TargetType="Label"
-                    Value="Compromised">
+                    Value="Compromised"> 
                     <Setter Property="Text" Value="{l:Localize IdentityState_Compromised}" />
                     <Setter Property="TextColor" Value="{DynamicResource TnPWarningContentWL}" />
                 </DataTrigger>
@@ -187,7 +189,7 @@
         <DataTemplate x:Key="ClickableFieldTemplate" x:DataType="objectModel:ObservableFieldItem">
             <Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
                 <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.FieldTappedCommand}" CommandParameter="{Binding Value}" />
+					<TapGestureRecognizer Command="{Binding FieldTappedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ViewIdentityViewModel}}, x:DataType=viewmodel:ViewIdentityViewModel}" CommandParameter="{Binding Value}" />
                 </Grid.GestureRecognizers>
 
                 <Label
@@ -287,7 +289,7 @@
         <!--  TOP BAR  -->
         <Grid
             Grid.Row="0"
-            Margin="16,16,16,8"
+            Margin="16,8,16,0"
             ColumnDefinitions="auto,*,auto"
             RowDefinitions="auto">
             <controls:SvgButton
@@ -510,13 +512,14 @@
                             HorizontalOptions="Center"
                             HorizontalTextAlignment="Center"
                             Text="{l:Localize SwipeForDetails}"
-                            TextColor="{DynamicResource ContentAccessWL}" />
+							   TextColor="{DynamicResource ContentAccessWL}"
+							   Margin="{ext:SafeInsets Type=Bottom}" />
                     </VerticalStackLayout>
                 </controls:BottomSheetView.HeaderContent>
                 <controls:BottomSheetView.MainContent>
                     <ContentView>
                         <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
-                            <VerticalStackLayout>
+                            <VerticalStackLayout Background="{DynamicResource SurfaceElevation1WL}">
                                 <controls:TextButton
                                     Margin="16"
                                     Command="{Binding AddContactCommand}"
@@ -565,7 +568,7 @@
                                                         Source="{Binding Source}"
                                                         WidthRequest="64">
                                                         <Image.GestureRecognizers>
-                                                            <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, Path=BindingContext.ImageTappedCommand}" CommandParameter="{Binding Attachment}" />
+                                                            <TapGestureRecognizer Command="{Binding ImageTappedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:ViewIdentityViewModel}}, x:DataType=viewmodel:ViewIdentityViewModel}" CommandParameter="{Binding Attachment}" />
                                                         </Image.GestureRecognizers>
                                                     </Image>
                                                 </DataTemplate>

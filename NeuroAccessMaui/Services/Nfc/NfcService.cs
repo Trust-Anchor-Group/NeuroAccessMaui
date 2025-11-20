@@ -8,6 +8,7 @@ using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Security;
 using System.Globalization;
+using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.Services.Nfc
 {
@@ -17,6 +18,8 @@ namespace NeuroAccessMaui.Services.Nfc
 	[Singleton]
 	public class NfcService : INfcService
 	{
+		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
 		/// <summary>
 		/// Near-Field Communication (NFC) Service.
 		/// </summary>
@@ -88,7 +91,7 @@ namespace NeuroAccessMaui.Services.Nfc
 								{
 									if (!string.IsNullOrEmpty(Constants.UriSchemes.GetScheme(UriRecord.Uri)))
 									{
-										if (!await App.AuthenticateUserAsync(AuthenticationPurpose.NfcTagDetected))
+										if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.NfcTagDetected))
 											return;
 
 										if (await App.OpenUrlAsync(UriRecord.Uri))
@@ -168,7 +171,7 @@ namespace NeuroAccessMaui.Services.Nfc
 		/// <returns>If process was successful or not.</returns>
 		public static async Task<bool> ProgramNfc(WriteItems Callback)
 		{
-			IUiService Nav = App.Instantiate<IUiService>();
+			INavigationService Nav = App.Instantiate<INavigationService>();
 			if (Nav.CurrentPage is BaseContentPage ContentPage &&
 				ContentPage.ViewModel<BaseViewModel>() is ILinkableView LinkableView &&
 				LinkableView.IsLinkable)
@@ -193,7 +196,7 @@ namespace NeuroAccessMaui.Services.Nfc
 				if (LinkableView.HasMedia)
 					Items.Add(new KeyValuePair<byte[], string>(LinkableView.Media!, LinkableView.MediaContentType!));
 
-				if (!await App.AuthenticateUserAsync(AuthenticationPurpose.NfcTagDetected))
+				if (!await ServiceRef.Provider.GetRequiredService<IAuthenticationService>().AuthenticateUserAsync(AuthenticationPurpose.NfcTagDetected))
 					return false;
 
 				bool Ok = await Callback([.. Items]);

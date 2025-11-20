@@ -15,7 +15,7 @@ namespace NeuroAccessMaui.UI.Pages.Petitions.PetitionPeerReview
 		{
 			this.InitializeComponent();
 			
-			PetitionPeerReviewViewModel ViewModel = new(ServiceRef.UiService.PopLatestArgs<PetitionPeerReviewNavigationArgs>());
+			PetitionPeerReviewViewModel ViewModel = new(ServiceRef.NavigationService.PopLatestArgs<PetitionPeerReviewNavigationArgs>());
 
 			ViewModel.AddView(ReviewStep.Photo, this.PhotoView);
 			ViewModel.AddView(ReviewStep.Name, this.NameView);

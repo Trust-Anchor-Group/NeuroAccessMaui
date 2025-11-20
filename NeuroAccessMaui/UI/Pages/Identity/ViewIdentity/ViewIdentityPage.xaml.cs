@@ -12,16 +12,21 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		/// <summary>
 		/// Creates a new instance of the <see cref="ViewIdentityPage"/> class.
 		/// </summary>
-		public ViewIdentityPage()
+		public ViewIdentityPage(ViewIdentityViewModel Vm)
 		{
 			this.InitializeComponent();
-			this.ContentPageModel = new ViewIdentityViewModel(ServiceRef.UiService.PopLatestArgs<ViewIdentityNavigationArgs>());
+			this.ContentPageModel = Vm;
 		}
 		protected override void OnSizeAllocated(double width, double height)
 		{
 			base.OnSizeAllocated(width, height);
 			try
 			{
+				if(this.RainbowView is null || this.ConfettiView is null)
+				{
+					return;
+				}
+
 				// Set the size of the rainbow view
 				this.RainbowView.WidthRequest = height + 200;
 				this.RainbowView.HeightRequest = width + 200;
@@ -57,7 +62,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		}
 
 		/// <inheritdoc/>
-		protected override Task OnDisappearingAsync()
+		public override Task OnDisappearingAsync()
 		{
 			//!!! this.PhotoViewer.HidePhotos();
 			return base.OnDisappearingAsync();
@@ -120,9 +125,10 @@ namespace NeuroAccessMaui.UI.Pages.Identity.ViewIdentity
 		{
 			try
 			{
-				if (this.ContentPageModel is ViewIdentityViewModel)
+				if (this.ContentPageModel is ViewIdentityViewModel VM)
 				{
-					this.BottomSheet?.ToggleExpanded();
+					if(!this.BottomSheet.IsExpanded)
+						this.BottomSheet?.ToggleExpanded();
 				}
 			}
 			catch (Exception Ex)

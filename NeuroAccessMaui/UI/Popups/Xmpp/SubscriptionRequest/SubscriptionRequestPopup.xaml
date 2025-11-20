@@ -1,62 +1,50 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest.SubscriptionRequestPopup"
-					 x:DataType="viewmodel:SubscriptionRequestViewModel"
-					 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-					 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-					 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-					 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
-					 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
-					 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-					 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
-					 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest"
-					 xmlns:animations="clr-namespace:Mopups.Animations;assembly=Mopups"
-					 xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups">
-
-	<mopups:PopupPage.Animation>
-		<animations:ScaleAnimation DurationIn="500" DurationOut="500" EasingIn="CubicIn" EasingOut="CubicOut" HasBackgroundAnimation="True"
-											PositionIn="Center" PositionOut="Center" />
-	</mopups:PopupPage.Animation>
-
-	<Grid Style="{DynamicResource PopupGrid}">
-
-		<Border WidthRequest="{Binding ViewWidthRequest}" MaximumHeightRequest="{Binding MaximumViewHeightRequest}" Style="{DynamicResource PopupBorder}">
-			<ScrollView x:Name="InnerScrollView" VerticalOptions="Center">
-				<VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
-
-					<Label Text="{l:Localize PresenceSubscriptionRequest}" Style="{DynamicResource SectionTitleLabel}" />
-
-					<Image HorizontalOptions="Center" Source="{Binding PhotoUrl}" WidthRequest="{Binding PhotoWidth}"
-                       HeightRequest="{Binding PhotoHeight}" IsVisible="{Binding HasPhoto}"/>
-
-					<Label>
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{l:Localize PresenceSubscriptionReceived1}"/>
-								<Span Text=" "/>
-								<Span Text="{Binding PrimaryName}" FontAttributes="Bold"/>
-								<Span Text="{Binding SecondaryName}"/>
-								<Span Text=" "/>
-								<Span Text="{l:Localize PresenceSubscriptionReceived2}"/>
-								<Span Text=" "/>
-								<Span Text="{l:Localize PresenceSubscriptionReceived3}"/>
-								<Span Text=" "/>
-								<Span Text="{l:Localize PresenceSubscriptionReceived4}"/>
-								<Span Text=" "/>
-								<Span Text="{l:Localize PresenceSubscriptionReceived5}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
-
-					<controls:TextButton Command="{Binding AcceptCommand}"
-												Style="{DynamicResource FilledTextButton}"
-												LabelData="{l:Localize Accept}" />
-
-					<controls:TextButton Command="{Binding RejectCommand}"
-												Style="{DynamicResource OutlinedTextButton}"
-												LabelData="{l:Localize Reject}" />
-
-				</VerticalStackLayout>
-			</ScrollView>
-		</Border>
-	</Grid>
+                x:DataType="viewmodel:SubscriptionRequestViewModel"
+                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest">
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label Text="{l:Localize PresenceSubscriptionRequest}"
+                   Style="{DynamicResource SectionTitleLabel}" />
+            <Image HorizontalOptions="Center"
+                   Source="{Binding PhotoUrl}"
+                   WidthRequest="{Binding PhotoWidth}"
+                   HeightRequest="{Binding PhotoHeight}"
+                   IsVisible="{Binding HasPhoto}" />
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="{l:Localize PresenceSubscriptionReceived1}" />
+                        <Span Text=" " />
+                        <Span Text="{Binding PrimaryName}" FontAttributes="Bold" />
+                        <Span Text="{Binding SecondaryName}" />
+                        <Span Text=" " />
+                        <Span Text="{l:Localize PresenceSubscriptionReceived2}" />
+                        <Span Text=" " />
+                        <Span Text="{Binding FriendlyName}" FontAttributes="Bold" />
+                        <Span Text="." />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="{DynamicResource MediumSpacing}">
+                <controls:TextButton Command="{Binding AcceptCommand}"
+                                     LabelData="{l:Localize Accept}"
+                                     Style="{DynamicResource PrimaryButton}" />
+                <controls:TextButton Grid.Column="1"
+                                     Command="{Binding RejectCommand}"
+                                     LabelData="{l:Localize Reject}"
+                                     Style="{DynamicResource SecondaryButton}" />
+            </Grid>
+            <controls:TextButton Command="{Binding IgnoreCommand}"
+                                 LabelData="{l:Localize Ignore}"
+                                 Style="{DynamicResource TertiaryButton}" />
+        </VerticalStackLayout>
+    </ScrollView>
 </base:BasePopup>

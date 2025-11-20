@@ -85,14 +85,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		private void Parameters_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
 		{
-			if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null)
+			if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems is not null)
 			{
 				foreach (ObservableParameter param in e.NewItems)
 				{
 					param.PropertyChanged += this.Parameter_OnPropertyChanged;
 				}
 			}
-			else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
+			else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems is not null)
 			{
 				foreach (ObservableParameter param in e.OldItems)
 				{
@@ -103,7 +103,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		private void Roles_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
 		{
-			if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null)
+			if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems is not null)
 			{
 				foreach (ObservableRole role in e.NewItems)
 				{
@@ -111,7 +111,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 					role.Parts.CollectionChanged += this.Parts_CollectionChanged;
 				}
 			}
-			else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
+			else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems is not null)
 			{
 				foreach (ObservableRole role in e.OldItems)
 				{

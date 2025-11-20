@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.PendingPayment
 		/// </summary>
 		public PendingPaymentPage()
 		{
-			this.ContentPageModel = new EDalerUriViewModel(this, ServiceRef.UiService.PopLatestArgs<EDalerUriNavigationArgs>());
+			this.ContentPageModel = new EDalerUriViewModel(this, ServiceRef.NavigationService.PopLatestArgs<EDalerUriNavigationArgs>());
 			this.InitializeComponent();
 		}
 

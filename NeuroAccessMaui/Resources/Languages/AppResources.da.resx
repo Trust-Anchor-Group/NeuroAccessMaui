@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -22,10 +22,8 @@
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing"
-  mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
-  object]</value>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -114,12 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Vælg roller, du vil underskrive som (valgfrit)</value>
@@ -995,7 +991,7 @@
     <value>Foto</value>
   </data>
   <data name="PhotosDescription" xml:space="preserve">
-    <value>Tilføj venligst et billede, hvor du let kan identificeres.</value>
+    <value>Tag et live-billede af dig selv nu, så vi kan bekræfte din identitet. Skærmbilleder eller redigerede billeder er ikke tilladt.</value>
   </data>
   <data name="PhotosSentDescription" xml:space="preserve">
     <value>Følgende billeder er inkluderet i ansøgningen.</value>
@@ -1762,9 +1758,6 @@
   <data name="StreetNumber" xml:space="preserve">
     <value>Gadenummer</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Tag billede</value>
-  </data>
   <data name="TakePhotoToShare" xml:space="preserve">
     <value>Tag et billede for at dele</value>
   </data>
@@ -2225,10 +2218,10 @@
     <value>Angiv mængden af eDaler, du ønsker at købe nedenfor, og tryk på Køb-knappen. Der kan åbnes en webside, hvor du skal udfylde yderligere oplysninger, så betalingsbehandleren kan validere dit krav.</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Beløb:</value>
+    <value>Beløb</value>
   </data>
   <data name="AmountExtra" xml:space="preserve">
-    <value>Beløb ekstra: (valgfrit, forslag)</value>
+    <value>Beløb Ekstra (valgfrit, forslag)</value>
   </data>
   <data name="Wallet" xml:space="preserve">
     <value>Tegnebog</value>
@@ -2623,8 +2616,8 @@
   <data name="ApplyIdInfoMainPage" xml:space="preserve">
     <value>Ansøg om et personligt ID for at få alt ud af Neuro Access</value>
   </data>
-  <data name="CompleteIdButton" xml:space="preserve">
-    <value>Udfyld dit personlige ID</value>
+  <data name="GoToApplications" xml:space="preserve">
+    <value>Gå til applikationer</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Søge</value>
@@ -2809,6 +2802,9 @@
   <data name="SelectContract" xml:space="preserve">
     <value>Vælg en kontrakt</value>
   </data>
+  <data name="LoadMore" xml:space="preserve">
+    <value>Indlæs mere</value>
+  </data>
   <data name="SelectContractEntryDescription" xml:space="preserve">
     <value>Indsæt kontrakt-id, eller vælg fra listen</value>
   </data>
@@ -2841,9 +2837,6 @@
   </data>
   <data name="NFC" xml:space="preserve">
     <value>NFC</value>
-  </data>
-  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
-    <value>Vil du tilføje denne identitet til dine kontakter?</value>
   </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Kommer snart!</value>
@@ -2894,7 +2887,7 @@
     <value>Sidst opdateret: {0}</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
-    <value>Aktivér dit digitale id</value>
+    <value>Vælg din id-udbyder</value>
   </data>
   <data name="HaveAnyQuestions" xml:space="preserve">
     <value>Har du spørgsmål?</value>
@@ -3040,9 +3033,6 @@
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Din ID-ansøgning sendes til gennemgang. Vi giver dig besked, når dit ID er godkendt!</value>
   </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Resumé af ansøgning</value>
-  </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Før du afslutter, bedes du læse igennem og sikre dig, at alt er korrekt</value>
   </data>
@@ -3077,7 +3067,7 @@
     <value>Til din individuelle brug</value>
   </data>
   <data name="BeforeFinalizingSummary" xml:space="preserve">
-    <value>Før du afslutter, bedes du læse igennem og sikre dig, at alt er korrekt</value>
+    <value>Tag venligst et øjeblik til at gennemgå dine oplysninger, før du indsender. Sørg for, at alt er korrekt og komplet</value>
   </data>
   <data name="CompanyInformation" xml:space="preserve">
     <value>Firmaoplysninger</value>
@@ -3091,10 +3081,349 @@
   <data name="Upload" xml:space="preserve">
     <value>Uploade</value>
   </data>
+  <data name="InReview" xml:space="preserve">
+    <value>I gennemgang</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>I gang</value>
+  </data>
+  <data name="IdentityRejected" xml:space="preserve">
+    <value>Identitet afvist. Du kan vende tilbage til applikationssiden og opdatere dine oplysninger for at prøve igen.</value>
+  </data>
+  <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve">
+    <value>En PIN-kode må ikke indeholde en sammenhængende kørsel med {0} identiske symboler.</value>
+  </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Gennemgang af ansøgninger</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Kodeks:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Felter, der skal gennemgås</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Billeder, der skal erstattes</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Disse oplysninger kunne ikke godkendes. Opdater dem på formularen, før du sender dem igen.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Afventende felter</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Afventende billeder</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Løs problemer og rediger formular</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Send igen uden ventende felter</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Din ansøgning gennemgår manuel gennemgang. Du kan vente på resultatet eller justere punkterne nedenfor for at prøve automatisk behandling.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Disse elementer afventer manuel gennemgang. Du kan beholde dem, som de er, eller justere dem for at prøve automatisk behandling.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Nogle indsendte oplysninger kunne ikke verificeres. Tryk for at gennemgå.</value>
+  </data>
+  <data name="AddToBalance" xml:space="preserve">
+    <value>Tilføj til balance</value>
+  </data>
+  <data name="SelectContact" xml:space="preserve">
+    <value>Vælg kontakt</value>
+  </data>
+  <data name="TransactionHistory" xml:space="preserve">
+    <value>Transaktionshistorik</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Resumé</value>
+  </data>
+  <data name="TotalIn" xml:space="preserve">
+    <value>I alt i</value>
+  </data>
+  <data name="TotalOut" xml:space="preserve">
+    <value>Samlet ud</value>
+  </data>
+  <data name="Net" xml:space="preserve">
+    <value>Net</value>
+  </data>
+  <data name="NoTransactionsYet" xml:space="preserve">
+    <value>Ingen transaktioner endnu</value>
+  </data>
+  <data name="Transaction" xml:space="preserve">
+    <value>Transaktion</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Overførsel</value>
+  </data>
+  <data name="BalanceTopUp" xml:space="preserve">
+    <value>Balance Top-Up</value>
+  </data>
+  <data name="TransactionDetails" xml:space="preserve">
+    <value>Oplysninger om transaktionen</value>
+  </data>
+  <data name="Recipient" xml:space="preserve">
+    <value>Modtager</value>
+  </data>
+  <data name="NotInContacts" xml:space="preserve">
+    <value>Ikke i kontakter</value>
+  </data>
+  <data name="FullIdentifier" xml:space="preserve">
+    <value>Fuld identifikator</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Transaktionstype</value>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Transaktionsdato</value>
+  </data>
+  <data name="TransactionStatus" xml:space="preserve">
+    <value>Transaktion Status</value>
+  </data>
+  <data name="ReservedNoColon" xml:space="preserve">
+    <value>Reserveret</value>
+  </data>
+  <data name="Successful" xml:space="preserve">
+    <value>Succesrig</value>
+  </data>
+  <data name="TransactionIDNoColon" xml:space="preserve">
+    <value>Transaktions-id</value>
+  </data>
+  <data name="TransferSuccessful" xml:space="preserve">
+    <value>Overførslen er gennemført</value>
+  </data>
+  <data name="UnknownPleaseRefresh" xml:space="preserve">
+    <value>Ukendt, opdater venligst</value>
+  </data>
+  <data name="SelectForMe" xml:space="preserve">
+    <value>Vælg for mig</value>
+  </data>
+  <data name="ShareDescription" xml:space="preserve">
+    <value>Nedenfor kan du finde yderligere muligheder for at dele QR-koden.</value>
+  </data>
+  <data name="OtherApp" xml:space="preserve">
+    <value>Anden app</value>
+  </data>
+  <data name="SuccessfullyCopiedToClipboard" xml:space="preserve">
+    <value>Kopieret til udklipsholder</value>
+  </data>
+  <data name="MakePayment" xml:space="preserve">
+    <value>Foretag betaling</value>
+  </data>
+  <data name="PayOnline" xml:space="preserve">
+    <value>Betal online</value>
+  </data>
+  <data name="PayOffline" xml:space="preserve">
+    <value>Betal offline</value>
+  </data>
+  <data name="ShareOfflinePaymentDescription" xml:space="preserve">
+    <value>Du kan dele denne QR-kode med en anden bruger til behandling senere, enten når det er nødvendigt, eller når der er forbindelse.</value>
+  </data>
+  <data name="RequestCredits" xml:space="preserve">
+    <value>Bøn</value>
+  </data>
+  <data name="SendCredits" xml:space="preserve">
+    <value>Sende</value>
+  </data>
+  <data name="DurationAndSeparator" xml:space="preserve">
+    <value> og </value>
+  </data>
+  <data name="DurationCommaSeparator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="NoTokens" xml:space="preserve">
+    <value>Ingen tokens</value>
+  </data>
+  <data name="TokenDetails" xml:space="preserve">
+    <value>Oplysninger om token</value>
+  </data>
+  <data name="TokenDetailsDescription" xml:space="preserve">
+    <value>Følgende er detaljer, der er kodet ind i tokenet. Klik på eventuelle links for mere information.</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Beskrivelse</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="TokenId" xml:space="preserve">
+    <value>Token ID</value>
+  </data>
+  <data name="TokenIdMethod" xml:space="preserve">
+    <value>Token-id-metode</value>
+  </data>
+  <data name="TokenVisibility" xml:space="preserve">
+    <value>Synlighed af token</value>
+  </data>
+  <data name="Ordinal" xml:space="preserve">
+    <value>Ordenstal</value>
+  </data>
+  <data name="Valuation" xml:space="preserve">
+    <value>Vurdering</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Rapporter</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>Variabler</value>
+  </data>
+  <data name="States" xml:space="preserve">
+    <value>Stater</value>
+  </data>
+  <data name="TokenPartsInfoText" xml:space="preserve">
+    <value>Følgende er en liste over parter relateret til dette token.</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Ejer</value>
+  </data>
+  <data name="OwnerJid" xml:space="preserve">
+    <value>Ejerens adresse</value>
+  </data>
+  <data name="OwnershipContract" xml:space="preserve">
+    <value>Ejerskabskontrakt</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Skaber</value>
+  </data>
+  <data name="CreatorJid" xml:space="preserve">
+    <value>Skaberens adresse</value>
+  </data>
+  <data name="CreationContract" xml:space="preserve">
+    <value>Kontrakt om oprettelse</value>
+  </data>
+  <data name="TrustProvider" xml:space="preserve">
+    <value>Tillidsfuld udbyder</value>
+  </data>
+  <data name="TrustProviderJid" xml:space="preserve">
+    <value>Tillidsudbyderens adresse</value>
+  </data>
+  <data name="Privileges" xml:space="preserve">
+    <value>Privilegier</value>
+  </data>
+  <data name="TokenPrivilegesInfoText" xml:space="preserve">
+    <value>Følgende er privilegier indgraveret i tokenet.</value>
+  </data>
+  <data name="CreatorCanDestroy" xml:space="preserve">
+    <value>Skaberen kan ødelægge token</value>
+  </data>
+  <data name="OwnerCanDestroyBatch" xml:space="preserve">
+    <value>Ejer kan ødelægge token-batch</value>
+  </data>
+  <data name="OwnerCanDestroyIndividual" xml:space="preserve">
+    <value>Ejer kan destruere individuelle tokens</value>
+  </data>
+  <data name="CertifierCanDestroy" xml:space="preserve">
+    <value>Certificeringsorgan kan ødelægge token</value>
+  </data>
+  <data name="MachineReadableInfoTextToken" xml:space="preserve">
+    <value>En oversigt over de maskinlæsbare data, der er indlejret i tokenet, er vist nedenfor.</value>
+  </data>
+  <data name="DefinitionNamespace" xml:space="preserve">
+    <value>Definition-navneområde</value>
+  </data>
+  <data name="DefinitionSchemaDigest" xml:space="preserve">
+    <value>Oversigt over definitionsskema</value>
+  </data>
+  <data name="ShowM2MInfo" xml:space="preserve">
+    <value>Vis M2M-definition</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Handlinger</value>
+  </data>
+  <data name="SendToContact" xml:space="preserve">
+    <value>Send til kontakt</value>
+  </data>
+  <data name="PublishMarketplace" xml:space="preserve">
+    <value>Udgiv på Marketplace</value>
+  </data>
+  <data name="OfferToBuy" xml:space="preserve">
+    <value>Tilbud om at købe</value>
+  </data>
+  <data name="OfferToSell" xml:space="preserve">
+    <value>Tilbyd at sælge</value>
+  </data>
+  <data name="ViewEvents" xml:space="preserve">
+    <value>Se begivenheder</value>
+  </data>
+  <data name="CurrentState" xml:space="preserve">
+    <value>Nuværende tilstand</value>
+  </data>
+  <data name="MachineHasEnded" xml:space="preserve">
+    <value>State-Machine er slut.</value>
+  </data>
+  <data name="CurrentVariables" xml:space="preserve">
+    <value>Aktuelle variabler</value>
+  </data>
+  <data name="TokenEvents" xml:space="preserve">
+    <value>Token-begivenheder</value>
+  </data>
+  <data name="TokenEventsDescription" xml:space="preserve">
+    <value>Følgende er offentlige begivenheder, der er registreret for tokenet. Dine private arrangementer er også inkluderet.</value>
+  </data>
+  <data name="TextNote" xml:space="preserve">
+    <value>Tekst note</value>
+  </data>
+  <data name="XmlNote" xml:space="preserve">
+    <value>XML-bemærkning</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Tilføj note</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Værdi</value>
+  </data>
+  <data name="InvitationToSignFormat" xml:space="preserve">
+    <value>Du er blevet inviteret til at underskrive denne kontrakt som {0}, sørg for at verificere og gennemgå kontrakten, før du fortsætter</value>
+  </data>
+  <data name="SendProposal" xml:space="preserve">
+    <value>Send forslag</value>
+  </data>
+  <data name="Sender" xml:space="preserve">
+    <value>Afsender:</value>
+  </data>
+  <data name="ShortId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="ProposalDefaultMessage" xml:space="preserve">
+    <value>Hej, jeg vil gerne foreslå en kontrakt med dig. Gennemgå og accepter forslaget, hvis du er enig.</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Vil du tilføje denne identitet til dine kontakter?</value>
+  </data>
   <data name="TakePhoto" xml:space="preserve">
     <value>Tag billede</value>
   </data>
-  <data name="InReview" xml:space="preserve">
-    <value>I gennemgang</value>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Ansøg om en personlig identitet for at bruge denne funktion.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Ansøgning afvist</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Udbyderen kunne ikke godkende din indsendelse. Se grunden nedenfor.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Følgende punkter kræver din opmærksomhed, før du indsender igen:</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Nogle detaljer kræver manuel gennemgang</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} felter og {1} fotos kan ikke valideres automatisk og skal kontrolleres af en operatør. Dette kan forsinke godkendelsen.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Du kan fjerne disse ventende poster og ansøge igen uden dem. Dette anbefales ikke</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Fjern afventende detaljer</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Fjern afventende oplysninger og ansøg igen</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Dette vil tilbagekalde din nuværende ansøgning, fjerne de verserende oplysninger og indsende den igen uden dem. Vil du fortsætte?</value>
   </data>
 </root>

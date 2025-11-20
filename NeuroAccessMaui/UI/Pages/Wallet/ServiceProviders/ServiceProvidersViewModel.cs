@@ -36,12 +36,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders
 		}
 
 		/// <inheritdoc />
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			if (this.navigationArgs?.ServiceProvider is TaskCompletionSource<IServiceProvider> TaskSource)
 				TaskSource.TrySetResult(null);
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		#region Properties

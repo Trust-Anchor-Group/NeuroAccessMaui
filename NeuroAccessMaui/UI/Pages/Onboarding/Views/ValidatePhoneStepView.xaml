@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<onboarding:BaseOnboardingView x:Class="NeuroAccessMaui.UI.Pages.Onboarding.Views.ValidatePhoneStepView"
+                               xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                               xmlns:onboarding="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding"
+                               xmlns:viewmodels="clr-namespace:NeuroAccessMaui.UI.Pages.Onboarding.ViewModels"
+                               xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                               xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                               xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                               xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+                               x:DataType="viewmodels:ValidatePhoneOnboardingStepViewModel">
+    <VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label Style="{DynamicResource PageTitleLabel}"
+                   Text="{l:Localize OnboardingPhonePageTitle}" />
+
+            <Label Text="{l:Localize OnboardingPhonePageDetails}" />
+
+            <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+                <Label Style="{DynamicResource SectionTitleLabel}"
+                       Text="{l:Localize PhoneSectionTitle}" />
+
+                <Border Padding="{DynamicResource EditMediumMargins}"
+                        Style="{DynamicResource ItemOuterBorder}"
+                        BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}"
+                        Stroke="{DynamicResource InputFieldsSurfaceStroke}">
+                    <Grid RowDefinitions="auto"
+                          ColumnDefinitions="auto,*"
+                          ColumnSpacing="{DynamicResource MediumSpacing}">
+                        <HorizontalStackLayout Grid.Column="0"
+                                               VerticalOptions="Fill"
+                                               Spacing="{DynamicResource SmallSpacing}">
+                            <HorizontalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectPhoneCodeCommand}" />
+                            </HorizontalStackLayout.GestureRecognizers>
+
+                            <Label VerticalOptions="Center"
+                                   Text="{Binding SelectedCountry.DialCode}" />
+
+                            <Path VerticalOptions="Center"
+                                  HeightRequest="5"
+                                  WidthRequest="10"
+                                  Aspect="Uniform"
+                                  Data="{x:Static ui:Geometries.DropDownArrowPath}"
+                                  Fill="{DynamicResource InputFieldsContentPrimary}" />
+                        </HorizontalStackLayout>
+
+                        <Entry Grid.Column="1"
+                               VerticalOptions="Center"
+                               IsSpellCheckEnabled="False"
+                               Keyboard="Telephone"
+                               Text="{Binding PhoneNumber}">
+                            <Entry.Behaviors>
+                                <!-- Remove binding of overall IsValid to avoid forcing invalid state; keep individual behaviors -->
+                                <mct:MultiValidationBehavior x:Name="PhoneValidator" Flags="ValidateOnValueChanged">
+                                    <mct:CharactersValidationBehavior IsValid="{Binding TypeIsValid}" RegexPattern="^\d*$" />
+                                    <mct:TextValidationBehavior IsValid="{Binding LengthIsValid}" RegexPattern="^$|^\d{4,}$" />
+                                </mct:MultiValidationBehavior>
+                            </Entry.Behaviors>
+                        </Entry>
+                    </Grid>
+                </Border>
+
+                <Grid RowDefinitions="auto"
+                      ColumnDefinitions="auto,*"
+                      HorizontalOptions="Center"
+                      ColumnSpacing="{DynamicResource SmallSpacing}"
+                      IsVisible="{Binding ShowValidationError}">
+                    <Path Grid.Column="0"
+                          VerticalOptions="Center"
+                          HeightRequest="20"
+                          WidthRequest="20"
+                          Aspect="Uniform"
+                          Data="{x:Static ui:Geometries.InfoCirclePath}"
+                          Fill="{DynamicResource TnPDangerFigureWL}" />
+
+                    <Label Grid.Column="1"
+                           VerticalOptions="Center"
+                           Text="{Binding LocalizedValidationError}"
+                           TextColor="{DynamicResource TnPDangerFigureWL}" />
+                </Grid>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+
+        <controls:TextButton Style="{DynamicResource FilledTextButton}"
+                             Command="{Binding SendCodeCommand}"
+                             LabelData="{Binding LocalizedSendCodeText}" />
+    </VerticalStackLayout>
+</onboarding:BaseOnboardingView>

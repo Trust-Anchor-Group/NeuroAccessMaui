@@ -2,7 +2,6 @@ using System.ComponentModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Mopups.Services;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -70,6 +69,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			};
 
 			await ParameterInfo.InitializeAsync(contract);
+
+			if(ParameterInfo.Parameter is RoleParameter RP)
+			{
+				if(RP.Value is not null && RP.Value is string RoleValue && string.IsNullOrEmpty(RoleValue))
+				{
+					RP.SetValue(null);
+				}
+			}
+			else if (ParameterInfo.Parameter is CalcParameter CP)
+			{
+				if (string.IsNullOrEmpty(CP.StringValue))
+					CP.SetValue(null);
+			}
+
 			return ParameterInfo;
 		}
 		#endregion
@@ -205,7 +218,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			if (string.IsNullOrEmpty(this.ValidationText))
 				return;
 			ShowInfoPopup Popup = new ShowInfoPopup(this.Parameter.ErrorReason?.ToString() ?? ServiceRef.Localizer[nameof(AppResources.Error)], this.ValidationText);
-			await ServiceRef.UiService.PushAsync(Popup);
+			await ServiceRef.PopupService.PushAsync(Popup);
 		}
 		#endregion
 
@@ -475,7 +488,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				TaskCompletionSource<Contract?> TaskCompletionSource = new();
 				MyContractsNavigationArgs Args = new MyContractsNavigationArgs(ContractsListMode.Contracts, TaskCompletionSource);
-				await ServiceRef.UiService.GoToAsync(nameof(MyContractsPage), Args);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args);
 				Contract? Contract = await TaskCompletionSource.Task;
 
 				MainThread.BeginInvokeOnMainThread(() =>

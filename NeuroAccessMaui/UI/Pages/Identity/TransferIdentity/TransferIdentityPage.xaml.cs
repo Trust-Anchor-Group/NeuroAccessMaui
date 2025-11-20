@@ -13,7 +13,7 @@ namespace NeuroAccessMaui.UI.Pages.Identity.TransferIdentity
 		public TransferIdentityPage()
 		{
 			this.InitializeComponent();
-			this.ContentPageModel = new TransferIdentityViewModel(ServiceRef.UiService.PopLatestArgs<TransferIdentityNavigationArgs>());
+			this.ContentPageModel = new TransferIdentityViewModel(ServiceRef.NavigationService.PopLatestArgs<TransferIdentityNavigationArgs>());
 		}
 	}
 }

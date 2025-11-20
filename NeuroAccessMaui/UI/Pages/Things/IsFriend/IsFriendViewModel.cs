@@ -55,9 +55,9 @@ namespace NeuroAccessMaui.UI.Pages.Things.IsFriend
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize();
+			await base.OnInitializeAsync();
 
 			if (this.navigationArguments is not null)
 			{

@@ -110,3 +110,8 @@ Refer to the specific platform documentation for more details on how to manage t
 ---
 
 By following these steps, you should have your development environment set up and your project running on your desired platform. If you encounter any issues, please refer to the (upcoming) Troubleshooting guide.
+
+## Next Steps
+
+- Review the [Navigation & Presenter guide](navigation.md) to learn how pages, popups, and back handling are orchestrated.
+- Explore the [Architecture overview](architecture.md) for a broader understanding of the project structure.

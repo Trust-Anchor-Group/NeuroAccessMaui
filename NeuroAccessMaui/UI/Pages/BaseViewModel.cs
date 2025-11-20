@@ -2,9 +2,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using NeuroAccessMaui;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages
 {
@@ -13,7 +15,7 @@ namespace NeuroAccessMaui.UI.Pages
 	/// <br/>
 	/// NOTE: using this class requires your page/view to inherit from <see cref="BaseContentPage"/> or <see cref="BaseContentView"/>.
 	/// </summary>
-	public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView
+	public abstract partial class BaseViewModel : ObservableObject, ILifeCycleView, IBackButtonHandler
 	{
 		private readonly List<BaseViewModel> childViewModels = [];
 		private bool isOverlayVisible;
@@ -78,7 +80,7 @@ namespace NeuroAccessMaui.UI.Pages
 		}
 
 		/// <summary>
-		/// Called by the parent page when it appears on screen, <em>after</em> the <see cref="DoAppearing"/> method is called.
+		/// Called by the parent page when it appears on screen, <em>after</em> the DoAppearing method is called.
 		/// </summary>
 		public async Task RestoreState()
 		{
@@ -89,7 +91,7 @@ namespace NeuroAccessMaui.UI.Pages
 		}
 
 		/// <summary>
-		/// Called by the parent page when it disappears on screen, <em>before</em> the <see cref="DoDisappearing"/> method is called.
+		/// Called by the parent page when it disappears on screen, <em>before</em> the DoDisappearing" method is called.
 		/// </summary>
 		public async Task SaveState()
 		{
@@ -100,12 +102,12 @@ namespace NeuroAccessMaui.UI.Pages
 		}
 
 		/// <summary>
-		/// Convenience method that calls <see cref="SaveState"/> and then <see cref="DoDisappearing"/>.
+		/// Convenience method that calls SaveState and then DoDisappearing.
 		/// </summary>
 		public async Task Shutdown()
 		{
 			await this.SaveState();
-			await this.DoDisappearing();
+			await this.OnDisposeAsync();
 		}
 
 		/// <summary>
@@ -186,107 +188,6 @@ namespace NeuroAccessMaui.UI.Pages
 			}
 		}
 
-		/// <summary>
-		/// Method called when view is initialized for the first time. Use this method to implement registration
-		/// of event handlers, processing navigation arguments, etc.
-		/// </summary>
-		public async Task DoInitialize()
-		{
-			if (!this.IsInitialized)
-			{
-				this.IsInitialized = true;
-
-				await this.OnInitialize();
-			}
-		}
-
-		/// <summary>
-		/// Method called when view is initialized for the first time. Use this method to implement registration
-		/// of event handlers, processing navigation arguments, etc.
-		/// </summary>
-		protected virtual Task OnInitialize()
-		{
-			return Task.CompletedTask;  // Do nothing by default.
-		}
-
-		/// <summary>
-		/// Method called when the view is disposed, and will not be used more. Use this method to unregister
-		/// event handlers, etc.
-		/// </summary>
-		public async Task DoDispose()
-		{
-			if (this.IsAppearing)
-				await this.DoDisappearing();
-
-			if (this.IsInitialized)
-			{
-				this.IsInitialized = false;
-
-				await this.OnDispose();
-			}
-		}
-
-		/// <summary>
-		/// Method called when the view is disposed, and will not be used more. Use this method to unregister
-		/// event handlers, etc.
-		/// </summary>
-		protected virtual Task OnDispose()
-		{
-			return Task.CompletedTask;  // Do nothing by default.
-		}
-
-		/// <summary>
-		/// Method called when view is appearing on the screen.
-		/// </summary>
-		public virtual async Task DoAppearing()
-		{
-			if (!this.IsInitialized)
-				await this.DoInitialize();
-
-			if (!this.IsAppearing)
-			{
-				DeviceDisplay.KeepScreenOn = true;
-
-				await this.OnAppearing();
-
-				foreach (BaseViewModel ChildViewModel in this.childViewModels)
-					await ChildViewModel.DoAppearing();
-
-				this.IsAppearing = true;
-			}
-		}
-
-		/// <summary>
-		/// Method called when view is appearing on the screen.
-		/// </summary>
-		protected virtual Task OnAppearing()
-		{
-			return Task.CompletedTask;  // Do nothing by default.
-		}
-
-		/// <summary>
-		/// Method called when view is disappearing from the screen.
-		/// </summary>
-		public async Task DoDisappearing()
-		{
-			if (this.IsAppearing)
-			{
-				foreach (BaseViewModel ChildViewModel in this.childViewModels)
-					await ChildViewModel.DoDisappearing();
-
-				await this.OnDisappearing();
-
-				this.IsAppearing = false;
-			}
-		}
-
-		/// <summary>
-		/// Method called when view is disappearing from the screen.
-		/// </summary>
-		protected virtual Task OnDisappearing()
-		{
-			return Task.CompletedTask;  // Do nothing by default.
-		}
 
 		/// <summary>
 		/// Asks the user to confirm an action.
@@ -301,13 +202,21 @@ namespace NeuroAccessMaui.UI.Pages
 				ServiceRef.Localizer[nameof(AppResources.No)]);
 		}
 
+		public async Task<bool> OnBackButtonPressedAsync()
+		{
+			if (this.GoBackCommand.CanExecute(null))
+				_ = this.GoBackCommand.ExecuteAsync(null);
+
+			return true;
+		}
+
 		/// <summary>
 		/// Method called when user wants to navigate to the previous screen.
 		/// </summary>
-		[RelayCommand]
+		[RelayCommand(AllowConcurrentExecutions = false)]
 		public virtual async Task GoBack()
 		{
-			await ServiceRef.UiService.GoBackAsync();
+			await ServiceRef.NavigationService.GoBackAsync();
 		}
 
 		/// <summary>
@@ -335,6 +244,35 @@ namespace NeuroAccessMaui.UI.Pages
 
 			PI.SetValue(this, Value);
 		}
+
+		public virtual async Task OnInitializeAsync()
+		{
+			await App.ServicesReady;
+
+			foreach (BaseViewModel ChildViewModel in this.childViewModels)
+				await ChildViewModel.OnInitializeAsync();
+		}
+
+		public virtual async Task OnDisposeAsync()
+		{
+			foreach (BaseViewModel ChildViewModel in this.childViewModels)
+				await ChildViewModel.OnDisposeAsync();
+		}
+
+		public virtual async Task OnAppearingAsync()
+		{
+			await App.ServicesReady;
+
+			foreach (BaseViewModel ChildViewModel in this.childViewModels)
+				await ChildViewModel.OnAppearingAsync();
+		}
+
+		public virtual async Task OnDisappearingAsync()
+		{
+			foreach (BaseViewModel ChildViewModel in this.childViewModels)
+				await ChildViewModel.OnDisappearingAsync();
+		}
+
 
 	}
 }

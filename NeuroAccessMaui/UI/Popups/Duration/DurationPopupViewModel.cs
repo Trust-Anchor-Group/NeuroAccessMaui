@@ -21,9 +21,7 @@ namespace NeuroAccessMaui.UI.Popups.Duration
 				this.Buttons.Add(new TextButton
 				{
 					LabelData = ServiceRef.Localizer[Unit.ToString() + "Capitalized"],
-					Command = new RelayCommand(() => {
-						this.SelectUnit(Unit);
-					})
+					Command = new AsyncRelayCommand(async () => await this.SelectUnitAsync(Unit))
 				});
 			}
 		}
@@ -32,30 +30,23 @@ namespace NeuroAccessMaui.UI.Popups.Duration
 		[RelayCommand]
 		private static async Task Close()
 		{
-			await ServiceRef.UiService.PopAsync();
+			await ServiceRef.PopupService.PopAsync();
 		}
 
 		// Command that handles unit selection
-		public void SelectUnit(DurationUnits Unit)
+		private async Task SelectUnitAsync(DurationUnits unit)
 		{
-			this.result.TrySetResult(Unit);
-
-			this.CloseCommand.Execute(null);
+			this.TrySetResult(unit);
+			await ServiceRef.PopupService.PopAsync();
 		}
 
-		public override Task OnPop()
+		protected override Task OnPopAsync()
 		{
-			try
+			if (!this.Result.IsCompleted)
 			{
-				if (!this.result.Task.IsCompleted)
-					this.result.TrySetResult(null);
+				this.TrySetResult(null);
 			}
-			catch (Exception)
-			{
-				// ignored
-			}
-
-			return base.OnPop();
+			return base.OnPopAsync();
 		}
 	}
 }

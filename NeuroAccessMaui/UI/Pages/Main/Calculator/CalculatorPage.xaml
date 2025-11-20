@@ -18,8 +18,8 @@
 		<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" Text="{Binding StackString}" Margin="{DynamicResource SmallMargins}"
 			   HorizontalOptions="Fill" VerticalOptions="Fill" HorizontalTextAlignment="End" VerticalTextAlignment="Center"
 			   FontSize="Subtitle"/>
-		<Frame Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" HorizontalOptions="Fill" VerticalOptions="Fill"
-			   BorderColor="Black" Margin="{DynamicResource SmallMargins}" CornerRadius="8" BackgroundColor="Transparent" Padding="20,5,20,5">
+		<Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" HorizontalOptions="Fill" VerticalOptions="Fill"
+			   Stroke="Black" Margin="{DynamicResource SmallMargins}" StrokeShape="RoundRectangle 8" BackgroundColor="Transparent" Padding="20,5,20,5">
 			<Label FontSize="30" HorizontalOptions="Fill" VerticalOptions="Fill"
 				   HorizontalTextAlignment="Start" VerticalTextAlignment="Center">
 				<Label.FormattedText>
@@ -29,7 +29,7 @@
 					</FormattedString>
 				</Label.FormattedText>
 			</Label>
-		</Frame>
+		</Border>
 
 		<!-- Main buttons -->
 

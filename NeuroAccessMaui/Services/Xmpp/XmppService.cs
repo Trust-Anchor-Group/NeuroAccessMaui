@@ -7,13 +7,13 @@ using CommunityToolkit.Mvvm.Messaging;
 using EDaler;
 using EDaler.Events;
 using EDaler.Uris;
-using Mopups.Services;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Notification.Things;
 using NeuroAccessMaui.Services.Notification.Xmpp;
 using NeuroAccessMaui.Services.Push;
@@ -23,7 +23,6 @@ using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Kyc;
-using NeuroAccessMaui.UI.Pages.Registration;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportType;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
@@ -31,7 +30,9 @@ using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.Events;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -81,6 +82,7 @@ using Waher.Script.Constants;
 using Waher.Security.JWT;
 using Waher.Things;
 using Waher.Things.SensorData;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -243,7 +245,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
 					}
 #endif
-
+					this.xmppClient.DefaultRetryTimeout = 30000;
+					this.xmppClient.DefaultNrRetries = 0;
 					this.xmppClient.RequestRosterOnStartup = false;
 					this.xmppClient.TrustServer = !IsIpAddress;
 					this.xmppClient.AllowCramMD5 = false;
@@ -282,18 +285,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						this.contractsClient = new ContractsClient(this.xmppClient, ServiceRef.TagProfile.LegalJid);
 						this.RegisterContractsEventHandlers();
 
-						if (!await this.contractsClient.LoadKeys(false))
-						{
-							if (ServiceRef.TagProfile.LegalIdentity is not null && ServiceRef.TagProfile.IsCompleteOrWaitingForValidation())
-							{
-								Log.Alert("Regeneration of keys not permitted at this time.",
-									string.Empty, string.Empty, string.Empty, EventLevel.Major, string.Empty, string.Empty, Environment.StackTrace);
-
-								throw new Exception("Regeneration of keys not permitted at this time.");
-							}
-
-							await this.GenerateNewKeys();
-						}
+						await this.contractsClient.LoadKeys(false);
 					}
 
 					if (!string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
@@ -1255,7 +1247,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						Client.OnConnectionError -= OnConnectionError;
 						await Client.DisposeAsync();
 						Client = null;
-						
+
 					}
 					catch { /* Swallow to avoid masking original exception */ }
 				}
@@ -1434,7 +1426,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.NeuroFeaturesJid))
 				return false;
 
-			if(string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
+			if (string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
 				return false;
 
 			if (!ServiceRef.TagProfile.SupportsPushNotification)
@@ -1530,7 +1522,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			await RuntimeSettings.SetAsync(Constants.Settings.TransferIdCodeSent, string.Empty);
 			await Database.Provider.Flush();
 			WeakReferenceMessenger.Default.Send(new RegistrationPageMessage(ServiceRef.TagProfile.Step));
-			await App.SetRegistrationPageAsync();
+			await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.FullSetup });
 		}
 
 		/// <summary>
@@ -1622,7 +1614,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			SubscriptionRequestViewModel SubscriptionRequestViewModel = new(e.FromBareJID, FriendlyName, PhotoUrl, PhotoWidth, PhotoHeight);
 			SubscriptionRequestPopup SubscriptionRequestPopup = new(SubscriptionRequestViewModel);
 
-			await MopupService.Instance.PushAsync(SubscriptionRequestPopup);
+			await ServiceRef.PopupService.PushAsync(SubscriptionRequestPopup);
 			PresenceRequestAction Action = await SubscriptionRequestViewModel.Result;
 
 			switch (Action)
@@ -1655,7 +1647,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						SubscribeToViewModel SubscribeToViewModel = new(e.FromBareJID);
 						SubscribeToPopup SubscribeToPopup = new(SubscribeToViewModel);
 
-						await MopupService.Instance.PushAsync(SubscribeToPopup);
+						await ServiceRef.PopupService.PushAsync(SubscribeToPopup);
 						bool? SubscribeTo = await SubscribeToViewModel.Result;
 
 						if (SubscribeTo.HasValue && SubscribeTo.Value)
@@ -1685,7 +1677,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					ReportOrBlockViewModel ReportOrBlockViewModel = new(e.FromBareJID);
 					ReportOrBlockPopup ReportOrBlockPopup = new(ReportOrBlockViewModel);
 
-					await MopupService.Instance.PushAsync(ReportOrBlockPopup);
+					await ServiceRef.PopupService.PushAsync(ReportOrBlockPopup);
 					ReportOrBlockAction ReportOrBlock = await ReportOrBlockViewModel.Result;
 
 					if (ReportOrBlock == ReportOrBlockAction.Block || ReportOrBlock == ReportOrBlockAction.Report)
@@ -1713,7 +1705,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							ReportTypeViewModel ReportTypeViewModel = new(e.FromBareJID);
 							ReportTypePopup ReportTypePopup = new(ReportTypeViewModel);
 
-							await MopupService.Instance.PushAsync(ReportOrBlockPopup);
+							await ServiceRef.PopupService.PushAsync(ReportTypePopup);
 							ReportingReason? ReportType = await ReportTypeViewModel.Result;
 
 							if (ReportType.HasValue)
@@ -1736,6 +1728,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				default:
 					break;
 			}
+
+			await this.OnPresenceSubscribe.Raise(this, e);
 		}
 
 		private async Task XmppClient_OnPresenceUnsubscribed(object? Sender, PresenceEventArgs e)
@@ -1746,6 +1740,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				ContactInfo.AllowSubscriptionFrom = null;
 				await Database.Update(ContactInfo);
 			}
+
+			await this.OnPresenceUnsubscribed.Raise(this, e);
 		}
 
 		#endregion
@@ -2016,8 +2012,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				if (ServiceRef.UiService.CurrentPage is ChatPage &&
-					ServiceRef.UiService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
+				if (ServiceRef.NavigationService.CurrentPage is ChatPage &&
+					ServiceRef.NavigationService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
 					string.Equals(ChatViewModel.BareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
 				{
 					if (string.IsNullOrEmpty(ReplaceObjectId))
@@ -2039,7 +2035,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private Task ContractsClient_ClientMessage(object? Sender, ClientMessageEventArgs e)
 		{
-			string Message = e.Body;
+			string Message = e.Body ?? string.Empty;
 
 
 			if (!string.IsNullOrEmpty(e.Code))
@@ -2049,117 +2045,67 @@ namespace NeuroAccessMaui.Services.Xmpp
 					string Key = "ClientMessage" + e.Code;
 					string LocalizedMessage = ServiceRef.Localizer[Key, false];
 
-					// TODO: Make sure this does not generate logs or errors, as the app
-					// does not control future error codes that can be returned.
-
 					if (!string.IsNullOrEmpty(LocalizedMessage) && !LocalizedMessage.Equals(Key, StringComparison.Ordinal))
+					{
 						Message = LocalizedMessage;
+					}
 				}
 				catch (Exception)
 				{
-					// Ignore
+					// Ignore localization lookup issues.
 				}
 			}
 
+			ApplicationReview? Review = BuildApplicationReview(e, Message);
+
 			// Persist rejection details on current KYC reference, and reflect in UI if open
 			MainThread.BeginInvokeOnMainThread(async () =>
-			{
-				try
 				{
-					KycReference? Ref = null;
-					LegalIdentity? AppId = ServiceRef.TagProfile.IdentityApplication;
-
-					if (AppId is not null)
+					try
 					{
-						try
+						KycReference? Ref = null;
+						LegalIdentity? AppId = ServiceRef.TagProfile.IdentityApplication;
+
+						if (AppId is not null)
 						{
-							Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), AppId.Id));
+							try
+							{
+								Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), AppId.Id));
+							}
+							catch (Exception Ex2)
+							{
+								ServiceRef.LogService.LogException(Ex2);
+							}
 						}
-						catch (Exception Ex2)
+
+						if (Ref is null)
 						{
-							ServiceRef.LogService.LogException(Ex2);
+							try
+							{
+								IEnumerable<KycReference> All = await Database.Find<KycReference>();
+								Ref = All.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
+							}
+							catch (Exception Ex3)
+							{
+								ServiceRef.LogService.LogException(Ex3);
+							}
+						}
+
+						if (Ref is not null && Review is not null)
+						{
+							await ServiceRef.KycService.ApplyApplicationReviewAsync(Ref, Review);
+
+							if (ServiceRef.NavigationService.CurrentPage is KycProcessPage Page && Page.BindingContext is KycProcessViewModel Vm)
+							{
+								await Vm.ApplyApplicationReviewAsync(Review);
+							}
 						}
 					}
-
-					if (Ref is null)
+					catch (Exception Ex)
 					{
-						try
-						{
-							IEnumerable<KycReference> All = await Database.Find<KycReference>();
-							Ref = All.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
-						}
-						catch (Exception Ex3)
-						{
-							ServiceRef.LogService.LogException(Ex3);
-						}
+						ServiceRef.LogService.LogException(Ex);
 					}
-
-					if (Ref is not null)
-					{
-						Ref.RejectionMessage = Message;
-						Ref.RejectionCode = e.Code;
-                    try
-                    {
-                        IEnumerable<InvalidClaim> InvalidClaimsList = e.InvalidClaims ?? Array.Empty<InvalidClaim>();
-                        Ref.InvalidClaims = InvalidClaimsList
-                            .Select(c => c?.Claim)
-                            .Where(s => !string.IsNullOrWhiteSpace(s))
-                            .Select(s => s!.Trim())
-                            .ToArray();
-
-                        Ref.InvalidClaimDetails = InvalidClaimsList
-                            .Where(c => c is not null && !string.IsNullOrWhiteSpace(c.Claim))
-                            .Select(c => new KycInvalidClaim(c.Claim, c.Reason ?? string.Empty, c.ReasonLanguage ?? string.Empty, c.ReasonCode ?? string.Empty, c.Service ?? string.Empty))
-                            .ToArray();
-                    }
-						catch
-						{
-							// Ignore type mismatch; keep null if conversion fails
-						}
-                    try
-                    {
-                        IEnumerable<InvalidPhoto> InvalidPhotosList = e.InvalidPhotos ?? Array.Empty<InvalidPhoto>();
-                        Ref.InvalidPhotos = InvalidPhotosList
-                            .Select(p => p?.FileName)
-                            .Where(s => !string.IsNullOrWhiteSpace(s))
-                            .Select(s => Path.GetFileNameWithoutExtension(s!).Trim())
-                            .ToArray();
-
-                        Ref.InvalidPhotoDetails = InvalidPhotosList
-                            .Where(p => p is not null && !string.IsNullOrWhiteSpace(p.FileName))
-                            .Select(p => new KycInvalidPhoto(
-                                p.FileName,
-                                Path.GetFileNameWithoutExtension(p.FileName) ?? p.FileName,
-                                p.Reason ?? string.Empty,
-                                p.ReasonLanguage ?? string.Empty,
-                                p.ReasonCode ?? string.Empty,
-                                p.Service ?? string.Empty))
-                            .ToArray();
-                    }
-						catch
-						{
-							// Ignore type mismatch; keep null if conversion fails
-						}
-
-						Ref.UpdatedUtc = DateTime.UtcNow;
-						await Database.Update(Ref);
-						await Database.Provider.Flush();
-
-						// If KYC page is open, update it
-						if (ServiceRef.UiService.CurrentPage is KycProcessPage Page && Page.BindingContext is KycProcessViewModel Vm)
-						{
-							await Vm.ApplyRejectionAsync(Message,
-								Ref.InvalidClaims ?? Array.Empty<string>(),
-								Ref.InvalidPhotos ?? Array.Empty<string>(),
-								e.Code);
-						}
-					}
-				}
-				catch (Exception Ex)
-				{
-					ServiceRef.LogService.LogException(Ex);
-				}
-			});
+				});
 
 			// TODO: Event arguments contain more detailed information about:
 			//
@@ -2230,18 +2176,173 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// BankIdRFA20: Would you like to identify yourself or sign with a BankID on this device or with a BankID on another device?
 			// BankIdRFA21: Identification or signing in progress.
 			// BankIdRFA22: Unknown error. Please try again.
+			Message = Message.Trim();
 
-			MainThread.BeginInvokeOnMainThread(async () =>
+			bool ShouldShowAlert = Review is null ||
+				(Review.InvalidClaims.Length == 0 &&
+				Review.InvalidPhotos.Length == 0 &&
+				Review.UnvalidatedClaims.Length == 0 &&
+				Review.UnvalidatedPhotos.Length == 0);
+
+			if (ShouldShowAlert)
 			{
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Message,
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-			});
+				MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], string.IsNullOrEmpty(Message) ? ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)] : Message,
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				});
+			}
 
 			return Task.CompletedTask;
 		}
 
 		#endregion
+
+		private static ApplicationReview? BuildApplicationReview(ClientMessageEventArgs e, string message)
+		{
+			try
+			{
+				ApplicationReview Candidate = new ApplicationReview
+				{
+					Message = message,
+					Code = e.Code,
+					ReceivedUtc = DateTime.UtcNow
+				};
+
+				try
+				{
+					IEnumerable<InvalidClaim> InvalidClaimsEnumerable = e.InvalidClaims as IEnumerable<InvalidClaim> ?? Array.Empty<InvalidClaim>();
+					List<string> InvalidClaimNames = new List<string>();
+					List<ApplicationReviewClaimDetail> InvalidClaimDetailList = new List<ApplicationReviewClaimDetail>();
+
+					foreach (InvalidClaim InvalidClaim in InvalidClaimsEnumerable)
+					{
+						if (InvalidClaim is null || string.IsNullOrWhiteSpace(InvalidClaim.Claim))
+							continue;
+
+						string ClaimValue = InvalidClaim.Claim.Trim();
+						if (ClaimValue.Length == 0)
+							continue;
+
+						InvalidClaimNames.Add(ClaimValue);
+
+						ApplicationReviewClaimDetail Detail = new ApplicationReviewClaimDetail(
+							ClaimValue,
+							InvalidClaim.Reason ?? string.Empty,
+							InvalidClaim.ReasonLanguage,
+							InvalidClaim.ReasonCode,
+							InvalidClaim.Service ?? string.Empty);
+						InvalidClaimDetailList.Add(Detail);
+					}
+
+					Candidate.InvalidClaims = InvalidClaimNames.Count > 0 ? InvalidClaimNames.ToArray() : Array.Empty<string>();
+					Candidate.InvalidClaimDetails = InvalidClaimDetailList.Count > 0 ? InvalidClaimDetailList.ToArray() : Array.Empty<ApplicationReviewClaimDetail>();
+				}
+				catch
+				{
+					// Ignore conversion issues.
+				}
+
+				try
+				{
+					IEnumerable<InvalidPhoto> InvalidPhotosEnumerable = e.InvalidPhotos as IEnumerable<InvalidPhoto> ?? Array.Empty<InvalidPhoto>();
+					List<string> InvalidPhotoNames = new List<string>();
+					List<ApplicationReviewPhotoDetail> InvalidPhotoDetailList = new List<ApplicationReviewPhotoDetail>();
+
+					foreach (InvalidPhoto InvalidPhoto in InvalidPhotosEnumerable)
+					{
+						if (InvalidPhoto is null || string.IsNullOrWhiteSpace(InvalidPhoto.FileName))
+							continue;
+
+						string FileName = InvalidPhoto.FileName.Trim();
+						if (FileName.Length == 0)
+							continue;
+
+						string FileNameWithoutExtension = Path.GetFileNameWithoutExtension(FileName);
+						string DisplayName = string.IsNullOrEmpty(FileNameWithoutExtension) ? FileName : FileNameWithoutExtension;
+						DisplayName = DisplayName.Trim();
+						if (DisplayName.Length == 0)
+							DisplayName = FileName;
+
+						InvalidPhotoNames.Add(DisplayName);
+
+						ApplicationReviewPhotoDetail Detail = new ApplicationReviewPhotoDetail(
+							FileName,
+							DisplayName,
+							InvalidPhoto.Reason ?? string.Empty,
+							InvalidPhoto.ReasonLanguage,
+							InvalidPhoto.ReasonCode,
+							InvalidPhoto.Service ?? string.Empty);
+						InvalidPhotoDetailList.Add(Detail);
+					}
+
+					Candidate.InvalidPhotos = InvalidPhotoNames.Count > 0 ? InvalidPhotoNames.ToArray() : Array.Empty<string>();
+					Candidate.InvalidPhotoDetails = InvalidPhotoDetailList.Count > 0 ? InvalidPhotoDetailList.ToArray() : Array.Empty<ApplicationReviewPhotoDetail>();
+				}
+				catch
+				{
+					// Ignore conversion issues.
+				}
+
+				try
+				{
+					IEnumerable<string> UnvalidatedClaimsEnumerable = e.UnvalidatedClaims as IEnumerable<string> ?? Array.Empty<string>();
+					List<string> UnvalidatedClaimList = new List<string>();
+					foreach (string Claim in UnvalidatedClaimsEnumerable)
+					{
+						if (string.IsNullOrWhiteSpace(Claim))
+							continue;
+
+						string TrimmedClaim = Claim.Trim();
+						if (TrimmedClaim.Length > 0)
+							UnvalidatedClaimList.Add(TrimmedClaim);
+					}
+
+					Candidate.UnvalidatedClaims = UnvalidatedClaimList.Count > 0 ? UnvalidatedClaimList.ToArray() : Array.Empty<string>();
+				}
+				catch
+				{
+					// Ignore conversion issues.
+				}
+
+				try
+				{
+					IEnumerable<string> UnvalidatedPhotosEnumerable = e.UnvalidatedPhotos as IEnumerable<string> ?? Array.Empty<string>();
+					List<string> UnvalidatedPhotoList = new List<string>();
+					foreach (string Photo in UnvalidatedPhotosEnumerable)
+					{
+						if (string.IsNullOrWhiteSpace(Photo))
+							continue;
+
+						string TrimmedPhoto = Photo.Trim();
+						if (TrimmedPhoto.Length > 0)
+							UnvalidatedPhotoList.Add(TrimmedPhoto);
+					}
+
+					Candidate.UnvalidatedPhotos = UnvalidatedPhotoList.Count > 0 ? UnvalidatedPhotoList.ToArray() : Array.Empty<string>();
+				}
+				catch
+				{
+					// Ignore conversion issues.
+				}
+
+				bool HasMeaningfulData =
+					!string.IsNullOrEmpty(Candidate.Message) ||
+					!string.IsNullOrEmpty(Candidate.Code) ||
+					Candidate.InvalidClaims.Length > 0 ||
+					Candidate.InvalidPhotos.Length > 0 ||
+					Candidate.UnvalidatedClaims.Length > 0 ||
+					Candidate.UnvalidatedPhotos.Length > 0;
+
+				return HasMeaningfulData ? Candidate : null;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return null;
+			}
+		}
 
 		#region Presence
 
@@ -2254,6 +2355,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// Event raised when a new presence stanza has been received.
 		/// </summary>
 		public event EventHandlerAsync<PresenceEventArgs>? OnPresence;
+
+		/// <summary>
+		/// Event raised when a new presence subscription request has been received.
+		/// </summary>
+		public event EventHandlerAsync<PresenceEventArgs>? OnPresenceSubscribe;
+
+		/// <summary>
+		/// Event raised when a presence subscription has been revoked.
+		/// </summary>
+		public event EventHandlerAsync<PresenceEventArgs>? OnPresenceUnsubscribed;
 
 		/// <summary>
 		/// Requests subscription of presence information from a contact.
@@ -3149,7 +3260,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					await Database.Provider.Flush();
 				}
 
-				if (ServiceRef.UiService.CurrentPage is ApplicationsPage AppPage)
+				if (ServiceRef.NavigationService.CurrentPage is ApplicationsPage AppPage)
 				{
 					if (AppPage.BindingContext is ApplicationsViewModel Model)
 						Model.Loader.Reload();

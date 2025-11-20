@@ -5,6 +5,7 @@ namespace NeuroAccessMaui.UI.Converters
 	/// <summary>
 	/// Is true if a property is non-empty.
 	/// </summary>
+	[AcceptEmptyServiceProvider]
 	public class OnlyShowNonEmpty : IValueConverter, IMarkupExtension
 	{
 		/// <inheritdoc/>

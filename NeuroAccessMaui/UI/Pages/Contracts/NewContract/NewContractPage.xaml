@@ -13,10 +13,9 @@
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract"
 							 xmlns:views="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.NewContract.Views"
-							 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel"
-							 HideSoftInputOnTapped="True">
+							 xmlns:objectModel="clr-namespace:NeuroAccessMaui.UI.Pages.Contracts.ObjectModel">
 
-	<ContentPage.Resources>
+	<base:BaseContentPage.Resources>
 		<objectModel:ParameterTemplateSelector x:Key="ParameterTemplateSelector"
 		                                 BooleanTemplate="{StaticResource BooleanParameterTemplate}"
 		                                 DateTemplate="{StaticResource DateParameterTemplate}"
@@ -28,7 +27,7 @@
 										 GeoTemplate="{StaticResource GeoParameterTemplate}"
 		                                 DefaultTemplate="{StaticResource DefaultParameterTemplate}" />
 		<converters:StringNotEqualsConverter x:Key="StringNotEqualsConverter" />
-	</ContentPage.Resources>
+	</base:BaseContentPage.Resources>
 
 	<Grid x:Name="TheMainGrid"
 	  RowDefinitions="auto,*,auto"
@@ -47,7 +46,7 @@
 
 			<controls:SvgButton Grid.Row="0"
 								Grid.Column="0"
-								Command="{Binding GoBackCommand}"
+								Command="{Binding BackCommand}"
 								Style="{DynamicResource IconButton}"
 								SvgSource="close.svg" />
 
@@ -56,7 +55,7 @@
 				   Grid.Column="1"
 				   Style="{DynamicResource PageTitleLabel}"
 				   Text="{l:Localize NewContract}"
-				   HorizontalTextAlignment="Center" />
+				   HorizontalTextAlignment="End" />
 		</Grid>
 		<!-- Main Content -->
 		<Grid x:Name="StateGrid"

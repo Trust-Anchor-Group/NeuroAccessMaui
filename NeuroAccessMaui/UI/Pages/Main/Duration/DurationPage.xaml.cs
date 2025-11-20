@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Duration
 		public DurationPage()
 		{
 			this.InitializeComponent();
-			this.ContentPageModel = new DurationViewModel(ServiceRef.UiService.PopLatestArgs<DurationNavigationArgs>());
+			this.ContentPageModel = new DurationViewModel(ServiceRef.NavigationService.PopLatestArgs<DurationNavigationArgs>());
 		}
 	}
 }

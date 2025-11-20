@@ -152,7 +152,7 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 
 			TokenDetailsNavigationArgs Args = new(new TokenItem(this.Token, Events));
 
-			await ServiceRef.UiService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
+			await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
 		}
 	}
 }

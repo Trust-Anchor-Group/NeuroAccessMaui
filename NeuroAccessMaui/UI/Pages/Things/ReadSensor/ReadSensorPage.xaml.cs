@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.ReadSensor
 		/// </summary>
 		public ReadSensorPage()
 		{
-			this.ContentPageModel = new ReadSensorViewModel(ServiceRef.UiService.PopLatestArgs<ViewThingNavigationArgs>());
+			this.ContentPageModel = new ReadSensorViewModel(ServiceRef.NavigationService.PopLatestArgs<ViewThingNavigationArgs>());
 			this.InitializeComponent();
 		}
 	}

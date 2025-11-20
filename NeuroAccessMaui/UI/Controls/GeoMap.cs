@@ -24,11 +24,12 @@ namespace NeuroAccessMaui.UI.Controls
 			// 1) Create underlying Map and add OSM raster tile layer
 			Map map = new Map();
 			map.Layers.Add(OpenStreetMap.CreateTileLayer());                   // :contentReference[oaicite:4]{index=4}
-
+			/*
 			// 2) Register custom style renderer
+			this.mapControl.S
 			this.mapControl.Renderer.StyleRenderers
 					  .Add(typeof(DataUriStyle), new DataUriStyleRenderer()); // :contentReference[oaicite:5]{index=5}
-
+			*/
 			this.mapControl.Map = map;
 
 			// 3) React to bindable property changes
@@ -109,7 +110,6 @@ namespace NeuroAccessMaui.UI.Controls
 			MemoryLayer layer = new MemoryLayer
 			{
 				Name = "ItemsLayer",
-				IsMapInfoLayer = true,
 				Features = features
 			};
 			this.Map.Layers.Add(layer);

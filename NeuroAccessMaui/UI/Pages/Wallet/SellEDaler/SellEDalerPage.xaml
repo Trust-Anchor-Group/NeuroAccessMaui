@@ -22,7 +22,7 @@
 
 				<Label Text="{l:Localize SellEDaler}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
 						<VerticalStackLayout Margin="{DynamicResource SmallMargins}"
                          BackgroundColor="{DynamicResource PageBackgroundColorLightTheme}">
@@ -41,7 +41,7 @@
 														Margin="{DynamicResource SmallBottomMargins}" Style="{DynamicResource FilledTextButton}"/>
 						</VerticalStackLayout>
 					</VerticalStackLayout>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

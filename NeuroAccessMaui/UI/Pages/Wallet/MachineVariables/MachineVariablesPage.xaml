@@ -22,7 +22,7 @@
 
 				<Label Text="{l:Localize Variables}" Style="{DynamicResource PageTitleLabel}"/>
 
-				<Frame Style="{DynamicResource FrameSet}">
+				<Border Style="{DynamicResource BorderSet}">
 					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,auto,*" Margin="{DynamicResource SmallMargins}">
 						<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CurrentState}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Grid.Column="0" Grid.Row="1" Text="{Binding CurrentState}" Margin="{DynamicResource SmallMargins}" VerticalOptions="Start"
@@ -47,7 +47,7 @@
 							</BindableLayout.ItemTemplate>
 						</VerticalStackLayout>
 					</Grid>
-				</Frame>
+				</Border>
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

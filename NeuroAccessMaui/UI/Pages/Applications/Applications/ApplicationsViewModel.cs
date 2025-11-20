@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -11,6 +11,7 @@ using NeuroAccessMaui;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.UI;
@@ -79,8 +80,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		public bool HasApplications => this.Applications.Count > 0; // legacy, not used by current UI
 
 		public bool ShowProgressBar => this.CurrentApplication is not null
-										&& (this.CurrentApplication.CreatedIdentityState is null
-										|| this.CurrentApplication.CreatedIdentityState == IdentityState.Created);
+									&& (this.CurrentApplication.CreatedIdentityState is null
+									|| this.CurrentApplication.CreatedIdentityState == IdentityState.Created);
 
 		partial void OnHasMoreAvailableTemplatesChanged(bool value)
 		{
@@ -93,17 +94,19 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		public ApplicationsViewModel()
 			: base()
 		{
-			// Kick off first load. We also pass commands so they get NotifyCanExecuteChanged when state changes.
+			// Disable auto-start to avoid immediate generation superseding reload in OnAppearing.
 			this.Loader = new ObservableTaskBuilder()
 				.Named("LoadApplications")
+				.AutoStart(false)
 				.WithPolicy(Policies.Retry(3, (attempt, ex) => TimeSpan.FromMilliseconds(250 * attempt * attempt)))
-				.WithTelemetry(new LoggerTelemetry()) // when you have a telemetry sink
-				.UseTaskRun(false) // IO-bound work; keep default path
+				.WithTelemetry(new LoggerTelemetry())
+				.UseTaskRun(false)
 				.Run(this.LoadApplicationsAsync)
 				.Build(this.CreateNewApplicationCommand, this.OpenApplicationCommand);
 
 			this.AvailableLoader = new ObservableTaskBuilder()
 				.Named("LoadAvailableApplications")
+				.AutoStart(false)
 				.WithPolicy(Policies.Retry(3, (attempt, ex) => TimeSpan.FromMilliseconds(250 * attempt * attempt)))
 				.WithTelemetry(new LoggerTelemetry())
 				.UseTaskRun(false)
@@ -111,14 +114,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				.Build(this.CreateNewApplicationCommand, this.LoadMoreAvailableApplicationsCommand);
 		}
 
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			if (ServiceRef.TagProfile.IdentityApplication is not null)
-			{
-				if (ServiceRef.TagProfile.IdentityApplication.IsDiscarded())
-					await ServiceRef.TagProfile.SetIdentityApplication(null, true);
-			}
-
 			this.IdentityApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
 
 			this.HasLegalIdentity = ServiceRef.TagProfile.LegalIdentity is not null &&
@@ -128,14 +125,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			ServiceRef.XmppService.LegalIdentityChanged += this.XmppService_LegalIdentityChanged;
 			ServiceRef.TagProfile.OnPropertiesChanged += this.TagProfile_OnPropertiesChanged;
 
-			await base.OnInitialize();
-
-
+			await base.OnInitializeAsync();
 
 			this.NotifyCommandsCanExecuteChanged();
 		}
 
-		protected override Task OnDispose()
+		public override Task OnDisposeAsync()
 		{
 			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
 			ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
@@ -144,7 +139,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			// If desired, cancel any in-flight load.
 			this.Loader.Cancel();
 
-			return base.OnDispose();
+			return base.OnDisposeAsync();
 		}
 
 		private Task XmppService_IdentityApplicationChanged(object? Sender, LegalIdentityEventArgs e)
@@ -173,15 +168,14 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			// no-op for now
 		}
 
-		protected override async Task OnAppearing()
+		public override async Task OnAppearingAsync()
 		{
-			await base.OnAppearing();
+			await base.OnAppearingAsync();
 
-			// Ensure data reflects latest storage state each time page appears
-			this.Loader.Reload();
-			this.AvailableLoader.Reload();
+			this.Loader.Run();
+			this.AvailableLoader.Run();
 
-			// Page is not correctly updated if changes has happened when viewing a sub-view. Fix by resending notification.
+			// Page is not correctly updated if changes happened when viewing a sub-view. Fix by resending notification.
 			bool IdApplicationSent = ServiceRef.TagProfile.IdentityApplication is not null;
 			if (this.IdentityApplicationSent != IdApplicationSent)
 				this.IdentityApplicationSent = IdApplicationSent;
@@ -211,11 +205,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 			this.CreateNewApplicationCommand.NotifyCanExecuteChanged();
 			this.OpenApplicationCommand.NotifyCanExecuteChanged();
 			this.LoadMoreAvailableApplicationsCommand.NotifyCanExecuteChanged();
-
-			// Optionally also surface loader commands in UI, so keep them fresh:
-	//		this.Loader.CancelCommand.NotifyCanExecuteChanged();
-	//		this.Loader.ReloadCommand.NotifyCanExecuteChanged();
-	//		this.Loader.RefreshCommand.NotifyCanExecuteChanged();
 		}
 
 		#region Properties
@@ -246,7 +235,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		{
 			try
 			{
-				// Capture fields from the most recent application (current or latest previous)
 				KycFieldValue[]? PreviousFields = null;
 
 				if (this.CurrentApplication is not null)
@@ -262,12 +250,12 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 						if (!string.IsNullOrEmpty(this.CurrentApplication.CreatedIdentityId))
 						{
-							// Fetch latest state of the created identity
 							LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(this.CurrentApplication.CreatedIdentityId);
 							if (Identity.State == IdentityState.Created)
 							{
-								// Confirm and authenticate for revoking/obsoleting application
-								if (!await App.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
+								IAuthenticationService Auth = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+
+								if (!await Auth.AuthenticateUserAsync(AuthenticationPurpose.RevokeApplication, true))
 									return;
 
 								await ServiceRef.XmppService.ObsoleteLegalIdentity(Identity.Id);
@@ -312,7 +300,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 				await ServiceRef.KycService.PrepareReferenceForNewApplicationAsync(Ref, Language, PreviousFields);
 
-				await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Ref));
+				await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Ref));
 			}
 			catch (Exception Ex)
 			{
@@ -391,18 +379,18 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					{
 						LegalIdentity? Identity = await ServiceRef.XmppService.GetLegalIdentity(Item.CreatedIdentityId);
 						// Preview in review/approved identity
-						await ServiceRef.UiService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
+						await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 					}
 					else
 					{
 						// Rejected or other states: allow editing in KYC
-						await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
+						await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
 					}
 				}
 				else
 				{
 					// Open KYC process to resume
-					await ServiceRef.UiService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
+					await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
 				}
 			}
 			catch (Exception Ex)

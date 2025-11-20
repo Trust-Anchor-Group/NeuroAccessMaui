@@ -57,11 +57,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.Calculator
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
 			await this.EvaluateStack(true);
 
-			await base.OnDispose();
+			await base.OnDisposeAsync();
 		}
 
 		#region Properties
