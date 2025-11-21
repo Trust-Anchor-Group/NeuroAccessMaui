@@ -6,9 +6,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using Waher.Events;
 using Waher.Persistence;
-using System.Linq;
 
 namespace NeuroAccessMaui.Services.Notification
 {
@@ -17,24 +17,24 @@ namespace NeuroAccessMaui.Services.Notification
 	/// </summary>
 	public sealed class NotificationServiceV2 : LoadableService, INotificationServiceV2
 	{
-	private const int DefaultSchemaVersion = 1;
-	private const int MaxPerChannel = 100;
-	private const int MaxTotal = 1000;
-	private static readonly TimeSpan IdBucket = TimeSpan.FromMinutes(1);
-	private readonly INotificationIntentRouter intentRouter;
-	private readonly INotificationFilterRegistry filterRegistry;
-	private readonly List<Expectation> expectations = [];
-	private readonly Dictionary<string, int> channelCounts = new(StringComparer.OrdinalIgnoreCase);
+		private const int DefaultSchemaVersion = 1;
+		private const int MaxPerChannel = 100;
+		private const int MaxTotal = 1000;
+		private static readonly TimeSpan IdBucket = TimeSpan.FromMinutes(1);
+		private readonly INotificationIntentRouter intentRouter;
+		private readonly INotificationFilterRegistry filterRegistry;
+		private readonly List<Expectation> expectations = [];
+		private readonly Dictionary<string, int> channelCounts = new(StringComparer.OrdinalIgnoreCase);
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="NotificationServiceV2"/> class.
-	/// </summary>
-	/// <param name="IntentRouter">Router used to navigate notification intents.</param>
-	/// <param name="FilterRegistry">Registry for runtime ignore filters.</param>
-	public NotificationServiceV2(INotificationIntentRouter IntentRouter, INotificationFilterRegistry FilterRegistry)
-	{
-		this.intentRouter = IntentRouter;
-		this.filterRegistry = FilterRegistry;
+		/// <summary>
+		/// Initializes a new instance of the <see cref="NotificationServiceV2"/> class.
+		/// </summary>
+		/// <param name="IntentRouter">Router used to navigate notification intents.</param>
+		/// <param name="FilterRegistry">Registry for runtime ignore filters.</param>
+		public NotificationServiceV2(INotificationIntentRouter IntentRouter, INotificationFilterRegistry FilterRegistry)
+		{
+			this.intentRouter = IntentRouter;
+			this.filterRegistry = FilterRegistry;
 		}
 
 		/// <summary>
