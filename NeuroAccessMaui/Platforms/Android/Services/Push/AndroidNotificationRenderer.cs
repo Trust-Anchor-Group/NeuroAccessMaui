@@ -59,7 +59,7 @@ namespace NeuroAccessMaui.Services.Push
 
 			NotificationChannel channel = new(channelId, channelId, NotificationImportance.High)
 			{
-				LockscreenVisibility = NotificationVisibility.Public
+				LockscreenVisibility = NotificationVisibility.Private
 			};
 			manager.CreateNotificationChannel(channel);
 			this.createdChannels.Add(channelId);
