@@ -72,7 +72,7 @@ namespace NeuroAccessMaui.Services.Push
 	public static class PushRuleDefinitions
 	{
 		/// <summary>
-		/// Gets all rule definitions.
+		/// Gets all rule Definitions.
 		/// </summary>
 		public static IReadOnlyList<PushRuleDefinition> All { get; } = Build();
 
@@ -83,23 +83,23 @@ namespace NeuroAccessMaui.Services.Push
 
 		private static IReadOnlyList<PushRuleDefinition> Build()
 		{
-			List<PushRuleDefinition> definitions = new();
+			List<PushRuleDefinition> Definitions = new();
 
-			string petitionFrom = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.PetitionFrom)]);
-			string identityUpdated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityUpdated)]);
-			string contractCreated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractCreated)]);
-			string contractSigned = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractSigned)]);
-			string contractUpdated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractUpdated)]);
-			string contractDeleted = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractDeleted)]);
-			string contractProposed = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractProposed)]);
-			string balanceUpdated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.BalanceUpdated)]);
-			string tokenAdded = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.TokenAdded)]);
-			string tokenRemoved = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.TokenRemoved)]);
-			string accessRequest = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.AccessRequest)]);
-			string readRequest = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ReadRequest)]);
-			string controlRequest = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ControlRequest)]);
+			string PetitionFrom = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.PetitionFrom)]);
+			string IdentityUpdated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityUpdated)]);
+			string ContractCreated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractCreated)]);
+			string ContractSigned = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractSigned)]);
+			string ContractUpdated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractUpdated)]);
+			string ContractDeleted = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractDeleted)]);
+			string ContractProposed = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractProposed)]);
+			string BalanceUpdated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.BalanceUpdated)]);
+			string TokenAdded = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.TokenAdded)]);
+			string TokenRemoved = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.TokenRemoved)]);
+			string AccessRequest = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.AccessRequest)]);
+			string ReadRequest = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ReadRequest)]);
+			string ControlRequest = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ControlRequest)]);
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Chat,
 				string.Empty,
 				string.Empty,
@@ -121,7 +121,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"petitionIdentityMsg",
 				ContractsClient.NamespaceLegalIdentitiesCurrent,
@@ -134,7 +134,7 @@ namespace NeuroAccessMaui.Services.Push
 					"FromJid:=GetAttribute(E,'from');",
 					"FriendlyName:=RosterName(ToJid,FromJid);",
 					"{",
-					$"'myTitle': '{petitionFrom} ' + FriendlyName,",
+					$"'myTitle': '{PetitionFrom} ' + FriendlyName,",
 					"'myBody': GetAttribute(E,'purpose'),",
 					"'fromJid': FromJid,",
 					"'rosterName': FriendlyName,",
@@ -142,7 +142,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"petitionContractMsg",
 				ContractsClient.NamespaceSmartContractsCurrent,
@@ -155,7 +155,7 @@ namespace NeuroAccessMaui.Services.Push
 					"FromJid:=GetAttribute(E,'from');",
 					"FriendlyName:=RosterName(ToJid,FromJid);",
 					"{",
-					$"'myTitle': '{petitionFrom} ' + FriendlyName,",
+					$"'myTitle': '{PetitionFrom} ' + FriendlyName,",
 					"'myBody': GetAttribute(E,'purpose'),",
 					"'fromJid': FromJid,",
 					"'rosterName': FriendlyName,",
@@ -163,7 +163,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"petitionSignatureMsg",
 				ContractsClient.NamespaceLegalIdentitiesCurrent,
@@ -176,7 +176,7 @@ namespace NeuroAccessMaui.Services.Push
 					"FromJid:=GetAttribute(E,'from');",
 					"FriendlyName:=RosterName(ToJid,FromJid);",
 					"{",
-					$"'myTitle': '{petitionFrom} ' + FriendlyName,",
+					$"'myTitle': '{PetitionFrom} ' + FriendlyName,",
 					"'myBody': GetAttribute(E,'purpose'),",
 					"'fromJid': FromJid,",
 					"'rosterName': FriendlyName,",
@@ -184,7 +184,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"identity",
 				ContractsClient.NamespaceLegalIdentitiesCurrent,
@@ -194,13 +194,13 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'identity');",
 					"{",
-					$"'myTitle': '{identityUpdated}',",
+					$"'myTitle': '{IdentityUpdated}',",
 					"'legalId': GetAttribute(E,'id'),",
 					$"'channelId': '{Constants.PushChannels.Identities}',",
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"contractCreated",
 				ContractsClient.NamespaceSmartContractsCurrent,
@@ -210,13 +210,13 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'contractCreated');",
 					"{",
-					$"'myTitle': '{contractCreated}',",
+					$"'myTitle': '{ContractCreated}',",
 					"'contractId': GetAttribute(E,'contractId'),",
 					$"'channelId': '{Constants.PushChannels.Contracts}',",
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"contractSigned",
 				ContractsClient.NamespaceSmartContractsCurrent,
@@ -226,14 +226,14 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'contractSigned');",
 					"{",
-					$"'myTitle': '{contractSigned}',",
+					$"'myTitle': '{ContractSigned}',",
 					"'contractId': GetAttribute(E,'contractId'),",
 					"'legalId': GetAttribute(E,'legalId'),",
 					$"'channelId': '{Constants.PushChannels.Contracts}',",
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"contractUpdated",
 				ContractsClient.NamespaceSmartContractsCurrent,
@@ -243,13 +243,13 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'contractUpdated');",
 					"{",
-					$"'myTitle': '{contractUpdated}',",
+					$"'myTitle': '{ContractUpdated}',",
 					"'contractId': GetAttribute(E,'contractId'),",
 					$"'channelId': '{Constants.PushChannels.Contracts}',",
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"contractDeleted",
 				ContractsClient.NamespaceSmartContractsCurrent,
@@ -259,13 +259,13 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'contractDeleted');",
 					"{",
-					$"'myTitle': '{contractDeleted}',",
+					$"'myTitle': '{ContractDeleted}',",
 					"'contractId': GetAttribute(E,'contractId'),",
 					$"'channelId': '{Constants.PushChannels.Contracts}',",
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"contractProposal",
 				ContractsClient.NamespaceSmartContractsCurrent,
@@ -275,7 +275,7 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'contractProposal');",
 					"{",
-					$"'myTitle': '{contractProposed}',",
+					$"'myTitle': '{ContractProposed}',",
 					"'myBody': GetAttribute(E,'message'),",
 					"'contractId': Num(GetAttribute(E,'contractId')),",
 					"'role': Num(GetAttribute(E,'role')),",
@@ -283,7 +283,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"balance",
 				EDalerClient.NamespaceEDaler,
@@ -293,7 +293,7 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'balance');",
 					"{",
-					$"'myTitle': '{balanceUpdated}',",
+					$"'myTitle': '{BalanceUpdated}',",
 					"'amount': Num(GetAttribute(E,'amount')),",
 					"'currency': GetAttribute(E,'currency'),",
 					"'timestamp': DateTime(GetAttribute(E,'timestamp')),",
@@ -301,7 +301,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"tokenAdded",
 				NeuroFeaturesClient.NamespaceNeuroFeatures,
@@ -312,7 +312,7 @@ namespace NeuroAccessMaui.Services.Push
 					"E:=GetElement(Stanza,'tokenAdded');",
 					"E2:=GetElement(E,'token');",
 					"{",
-					$"'myTitle': '{tokenAdded}',",
+					$"'myTitle': '{TokenAdded}',",
 					"'myBody': GetAttribute(E2,'friendlyName'),",
 					"'value': Num(GetAttribute(E2,'value')),",
 					"'currency': GetAttribute(E2,'currency'),",
@@ -320,7 +320,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"tokenRemoved",
 				NeuroFeaturesClient.NamespaceNeuroFeatures,
@@ -331,7 +331,7 @@ namespace NeuroAccessMaui.Services.Push
 					"E:=GetElement(Stanza,'tokenRemoved');",
 					"E2:=GetElement(E,'token');",
 					"{",
-					$"'myTitle': '{tokenRemoved}',",
+					$"'myTitle': '{TokenRemoved}',",
 					"'myBody': GetAttribute(E2,'friendlyName'),",
 					"'value': Num(GetAttribute(E2,'value')),",
 					"'currency': GetAttribute(E2,'currency'),",
@@ -339,7 +339,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"isFriend",
 				ProvisioningClient.NamespaceProvisioningOwnerCurrent,
@@ -351,7 +351,7 @@ namespace NeuroAccessMaui.Services.Push
 					"E:=GetElement(Stanza,'isFriend');",
 					"RemoteJid:=GetAttribute(E,'remoteJid');",
 					"{",
-					$"'myTitle': '{accessRequest}',",
+					$"'myTitle': '{AccessRequest}',",
 					"'myBody': RosterName(ToJid,RemoteJid),",
 					"'remoteJid': RemoteJid,",
 					"'jid': GetAttribute(E,'jid'),",
@@ -361,7 +361,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"canRead",
 				ProvisioningClient.NamespaceProvisioningOwnerCurrent,
@@ -373,7 +373,7 @@ namespace NeuroAccessMaui.Services.Push
 					"E:=GetElement(Stanza,'canRead');",
 					"RemoteJid:=GetAttribute(E,'remoteJid');",
 					"{",
-					$"'myTitle': '{readRequest}',",
+					$"'myTitle': '{ReadRequest}',",
 					"'myBody': RosterName(ToJid,RemoteJid),",
 					"'remoteJid': RemoteJid,",
 					"'jid': GetAttribute(E,'jid'),",
@@ -383,7 +383,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'content_available': true",
 					"}")));
 
-			definitions.Add(new PushRuleDefinition(
+			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
 				"canControl",
 				ProvisioningClient.NamespaceProvisioningOwnerCurrent,
@@ -395,7 +395,7 @@ namespace NeuroAccessMaui.Services.Push
 					"E:=GetElement(Stanza,'canControl');",
 					"RemoteJid:=GetAttribute(E,'remoteJid');",
 					"{",
-					$"'myTitle': '{controlRequest}',",
+					$"'myTitle': '{ControlRequest}',",
 					"'myBody': RosterName(ToJid,RemoteJid),",
 					"'remoteJid': RemoteJid,",
 					"'jid': GetAttribute(E,'jid'),",
@@ -405,7 +405,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'content_available': true",
 					"}")));
 
-			return definitions;
+			return Definitions;
 		}
 
 		private static string ComputeHash(IEnumerable<PushRuleDefinition> rules)
