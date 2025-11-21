@@ -102,8 +102,16 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		/// <inheritdoc/>
 		public override async Task OnAppearingAsync()
 		{
+			this.notificationService.OnNotificationAdded += this.OnNotificationAddedAsync;
 			await this.LoadAsync();
 			await base.OnAppearingAsync();
+		}
+
+		/// <inheritdoc/>
+		public override async Task OnDisappearingAsync()
+		{
+			this.notificationService.OnNotificationAdded -= this.OnNotificationAddedAsync;
+			await base.OnDisappearingAsync();
 		}
 
 		partial void OnSearchTextChanged(string value)
@@ -150,6 +158,11 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			{
 				this.Items.Add(item);
 			}
+		}
+
+		private async Task OnNotificationAddedAsync(object? Sender, NotificationRecordEventArgs Args)
+		{
+			await MainThread.InvokeOnMainThreadAsync(this.ApplyFilters);
 		}
 
 		private NotificationListItem ToListItem(NotificationRecord record)

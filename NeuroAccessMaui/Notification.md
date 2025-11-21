@@ -5,8 +5,8 @@
 - Single source of truth for in-app notifications across transports (XMPP live events, push taps/cold start, local system notifications).
 - Deterministic ingestion and persistence so notifications are available even when XMPP offline messages are replaced by push.
 - Platform-agnostic intent/deep-link routing: one schema, parsed centrally, used by navigation.
-- Clear lifecycle: created -> stored -> rendered -> consumed/read, with idempotency and dedupe.
-- Extensible for channels (`Constants.PushChannels.*`), grouping, and diagnostics.
+- Clear lifecycle with timestamps (created, delivered, read, consumed), idempotency, and dedupe.
+- Extensible for channels (`Constants.PushChannels.*`), grouping, diagnostics, and per-channel policies.
 
 ## Problems With Current Service
 
@@ -18,35 +18,36 @@
 ## Proposed Domain Model
 
 - **Notification**
-  - `Id` (deterministic e.g., hash of channel+payload or GUID)
+  - `Id` (prefer server correlation IDs; else hash of channel + action + entity + correlation + bucketed timestamp)
   - `Channel` (align with `Constants.PushChannels.*`)
   - `Title`, `Body`
-  - `Action` (enum/string) and `EntityId` / `Extras` (key-value) for routing
-  - `Timestamp` (created/received)
-  - `State` (New, Delivered, Read/Consumed)
+  - `Action` (enum persisted as string) and `EntityId`
+  - `Extras` (well-known keys + raw JSON), `SchemaVersion`, `RawPayload`
+  - Timestamps: `TimestampCreated`, and optional `DeliveredAt`, `ReadAt`, `ConsumedAt`
+  - `State` (New, Delivered, Read, Consumed)
   - `Source` (XMPP, Push, Local)
 - **NotificationIntent** (platform-neutral)
-  - `Action`, `EntityId`, `Extras`, optional `DeepLink`, `Channel`
+  - `Action` (enum), `EntityId`, `Extras` (well-known keys + raw), optional `DeepLink`, `Channel`, `Version`
 - **Events**
   - `OnNotificationAdded`, `OnNotificationUpdated`, `OnNotificationConsumed` for UI binding.
 
 ## Ingestion Flow
 
 1) **XMPP live events** → map to `NotificationIntent` → upsert `Notification` in store → optionally render local notification if foreground rules allow.
-2) **Push arrival (tap/cold start/foreground)** → renderer attaches `NotificationIntent` (UserInfo on iOS; extras/PendingIntent on Android) → on tap/launch, parse intent → upsert `Notification` in store → route navigation.
+2) **Push arrival (tap/cold start/foreground)** → renderer attaches serialized `NotificationIntent` JSON (UserInfo on iOS; extras/PendingIntent on Android) → on tap/launch, parse intent → upsert `Notification` in store → route navigation (queue if shell not ready).
 3) **Deep links** → parse into `NotificationIntent` → upsert/consume as above.
 
 ## Storage & State
 
-- Persist notifications in Waher DB keyed by Id; include `Channel`, `Timestamp`, `State`, `Payload`.
-- Mark read/consumed via explicit API; avoid duplicate inserts by hashing channel+action+entityId+timestamp bucket.
-- Retention policy (e.g., max N per channel or time-based pruning).
+- Persist notifications in Waher DB keyed by Id; include `Channel`, timestamps, `State`, `Payload`, `RawPayload`.
+- Mark read/consumed via explicit API; avoid duplicate inserts by hashing channel+action+entityId+timestamp bucket; prefer correlation IDs when available.
+- Retention policy (e.g., max N per channel or time-based pruning), prune read/consumed first.
 
 ## Migration (Waher DB)
 
-- Add a new `Notification` collection/table (Id, Channel, Action/Entity/Extras, Title/Body, Timestamp, State, Source).
-- Read legacy `NotificationEvent` records, map Type/Category to `Constants.PushChannels.*`, derive Action/Entity when possible, set Source=`XMPP`, and hash a deterministic Id to avoid duplicates.
-- Upsert into the new collection; optionally mark legacy entries as migrated or prune after verification.
+- Add a new `Notification` collection/table (Id, Channel, Action/Entity/Extras, Title/Body, Timestamps, State, Source, RawPayload, SchemaVersion).
+- Read legacy `NotificationEvent` records, map Type/Category to `Constants.PushChannels.*`, derive Action/Entity when possible, set Source=`XMPP`, and hash a deterministic Id to avoid duplicates; store LegacyType/Category for traceability.
+- Upsert into the new collection; optionally mark legacy entries as migrated or prune after verification; make migration idempotent.
 - During rollout, read new model for UI and ingestion; legacy readers can be removed once migration is complete.
 
 ## Rendering
@@ -58,20 +59,24 @@
 
 ## In-App Notification Center
 
-- Provide a page/view that binds to the persisted notifications (Waher DB) and shows channel, title, body, timestamp, state (new/read/consumed), source (XMPP/Push/Local), and action/entity metadata for navigation.
+- Provide a page/view that binds to the persisted notifications (Waher DB) and shows channel, title, body, timestamps, state (new/read/consumed), source (XMPP/Push/Local), and action/entity metadata for navigation.
 - Support actions: mark read, consume/navigate, clear/prune, and optionally filter by channel/state.
-- Ensure the stored payload retains enough metadata (Action, EntityId, Extras, Channel, Timestamp, Source) to render and navigate without additional lookups.
+- Ensure the stored payload retains enough metadata (Action, EntityId, Extras, Channel, Timestamps, Source) to render and navigate without additional lookups.
 
 ## Navigation/Intent Pipeline
 
-- Central parser (likely in `IntentService`) that takes `NotificationIntent` and maps to navigation (via `NavigationService`/`CustomShell`).
+- Central parser (via `NotificationIntentRouter`) that takes `NotificationIntent` and maps to navigation (via `NavigationService`/`CustomShell`); supports ignore rules through `INotificationFilter` (e.g., ignore chat notifications when already in that chat).
 - All entry points (push tap, deep link, in-app selection) call this parser; no platform-specific routing elsewhere.
-- Consumption: `NotificationService.Consume(notificationId)` marks state and invokes parser.
+- Consumption: `NotificationServiceV2.Consume(notificationId)` marks state and invokes the router.
+- Ignoring rules are managed via a runtime filter registry so view models or settings can add/remove filters at runtime.
+
+## Localization Notes
+- New UI strings expected for notifications page redesign: `NotificationSearchPlaceholder`, `NotificationsAllLabel`, `NotificationsUnreadLabel`, `NotificationsClearAllLabel`, `NoNotificationsLabel`.
 
 ## Expectations & Auto-Consume
 
-- Allow view models to register expectations with predicates and timeouts (e.g., “expect a presence subscription response matching X within T”). When a matching notification arrives, auto-consume it, mark state, and optionally trigger a popup or navigation.
-- Provide an API akin to `ExpectEvent` that operates on the new `NotificationIntent`/`Notification` model and dedupes by Id, honoring time windows to avoid stale matches.
+- Allow view models to register expectations with correlation/predicate and timeouts (e.g., “expect a presence subscription response matching X within T”). When a matching notification arrives, auto-consume it, mark state, and optionally trigger a popup or navigation.
+- Provide an API akin to `ExpectEvent` that operates on the new `NotificationIntent`/`Notification` model, prefers correlation IDs, dedupes by Id, and honors time windows to avoid stale matches (implemented as `WaitForAsync` and fire-and-forget `ExpectAsync` in `NotificationServiceV2`).
 
 ## API Sketch (Service)
 
@@ -79,6 +84,8 @@
 - `Task ConsumeAsync(string id)` → mark consumed, emit event, call parser.
 - `Task<IReadOnlyList<Notification>> GetAsync(filter)` → channel/state filters for UI.
 - `Task PruneAsync()` → retention.
+- `Task WaitForAsync(...)` → await matching notification based on predicate/timeout.
+- `Task ExpectAsync(...)` → register a fire-and-forget expectation that auto-routes on match.
 
 ## Diagnostics
 
