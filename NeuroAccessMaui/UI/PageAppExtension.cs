@@ -128,6 +128,7 @@ namespace NeuroAccessMaui.UI
 				return new DefaultNotificationRenderer();
 #endif
 			});
+			Builder.Services.AddSingleton<INotificationFilterRegistry, NotificationFilterRegistry>();
 			Builder.Services.AddSingleton<INotificationIntentRouter, NotificationIntentRouter>();
 			Builder.Services.AddSingleton<INotificationServiceV2, NotificationServiceV2>();
 			Builder.Services.AddSingleton<IPushNotificationService, PushNotificationService>();

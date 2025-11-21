@@ -14,15 +14,15 @@ namespace NeuroAccessMaui.Services.Notification
 	/// </summary>
 	public sealed class NotificationIntentRouter : INotificationIntentRouter
 	{
-		private readonly INotificationFilter filter;
+		private readonly INotificationFilterRegistry filterRegistry;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="NotificationIntentRouter"/> class.
 		/// </summary>
-		/// <param name="Filter">Filter deciding when to ignore a notification.</param>
-		public NotificationIntentRouter(INotificationFilter Filter)
+		/// <param name="FilterRegistry">Filter registry deciding when to ignore a notification.</param>
+		public NotificationIntentRouter(INotificationFilterRegistry FilterRegistry)
 		{
-			this.filter = Filter;
+			this.filterRegistry = FilterRegistry;
 		}
 
 		/// <inheritdoc/>
@@ -30,7 +30,7 @@ namespace NeuroAccessMaui.Services.Notification
 		{
 			try
 			{
-				if (this.filter.ShouldIgnore(Intent, FromUserInteraction, CancellationToken))
+				if (this.filterRegistry.ShouldIgnore(Intent, FromUserInteraction, CancellationToken))
 					return Task.FromResult(NotificationRouteResult.Ignored);
 
 				switch (Intent.Action)

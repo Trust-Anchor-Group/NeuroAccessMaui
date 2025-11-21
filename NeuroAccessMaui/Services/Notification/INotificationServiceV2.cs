@@ -63,5 +63,16 @@ namespace NeuroAccessMaui.Services.Notification
 		/// Event raised when a notification is added or updated.
 		/// </summary>
 		event EventHandlerAsync<NotificationRecordEventArgs>? OnNotificationAdded;
+
+		/// <summary>
+		/// Current counts per channel.
+		/// </summary>
+		IReadOnlyDictionary<string, int> ChannelCounts { get; }
+
+		/// <summary>
+		/// Adds a runtime ignore filter. Dispose the handle to remove it.
+		/// </summary>
+		/// <param name="Predicate">Predicate to decide if an intent should be ignored.</param>
+		IDisposable AddIgnoreFilter(Func<NotificationIntent, bool> Predicate);
 	}
 }
