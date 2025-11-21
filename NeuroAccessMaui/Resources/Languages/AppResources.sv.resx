@@ -3429,4 +3429,19 @@
   <data name="Optional" xml:space="preserve">
     <value>Valfritt</value>
   </data>
+  <data name="NotificationSearchPlaceholder" xml:space="preserve">
+    <value>Sök i aviseringar</value>
+  </data>
+  <data name="NotificationsAllLabel" xml:space="preserve">
+    <value>Alla</value>
+  </data>
+  <data name="NotificationsUnreadLabel" xml:space="preserve">
+    <value>Olästa</value>
+  </data>
+  <data name="NotificationsClearAllLabel" xml:space="preserve">
+    <value>Rensa alla</value>
+  </data>
+  <data name="NoNotificationsLabel" xml:space="preserve">
+    <value>Inga aviseringar ännu</value>
+  </data>
 </root>

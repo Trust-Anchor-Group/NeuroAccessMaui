@@ -3429,4 +3429,19 @@
   <data name="Optional" xml:space="preserve">
     <value>Opcional</value>
   </data>
+  <data name="NotificationSearchPlaceholder" xml:space="preserve">
+    <value>Buscar notificações</value>
+  </data>
+  <data name="NotificationsAllLabel" xml:space="preserve">
+    <value>Todas</value>
+  </data>
+  <data name="NotificationsUnreadLabel" xml:space="preserve">
+    <value>Não lidas</value>
+  </data>
+  <data name="NotificationsClearAllLabel" xml:space="preserve">
+    <value>Limpar todas</value>
+  </data>
+  <data name="NoNotificationsLabel" xml:space="preserve">
+    <value>Ainda não há notificações</value>
+  </data>
 </root>

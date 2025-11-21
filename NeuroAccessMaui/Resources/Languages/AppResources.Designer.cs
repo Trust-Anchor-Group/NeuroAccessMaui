@@ -4822,6 +4822,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No notifications yet.
+        /// </summary>
+        public static string NoNotificationsLabel {
+            get {
+                return ResourceManager.GetString("NoNotificationsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No roles selected — you will not sign this contract now..
         /// </summary>
         public static string NoRolesSelectedWarning {
@@ -4885,11 +4894,47 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string NotificationsAllLabel {
+            get {
+                return ResourceManager.GetString("NotificationsAllLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear all.
+        /// </summary>
+        public static string NotificationsClearAllLabel {
+            get {
+                return ResourceManager.GetString("NotificationsClearAllLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search notifications.
+        /// </summary>
+        public static string NotificationSearchPlaceholder {
+            get {
+                return ResourceManager.GetString("NotificationSearchPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Below you can see a list of notifications resulting from interactions with the thing. Press on each one to display more information and options available..
         /// </summary>
         public static string NotificationsText {
             get {
                 return ResourceManager.GetString("NotificationsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unread.
+        /// </summary>
+        public static string NotificationsUnreadLabel {
+            get {
+                return ResourceManager.GetString("NotificationsUnreadLabel", resourceCulture);
             }
         }
         

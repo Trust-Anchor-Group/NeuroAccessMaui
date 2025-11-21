@@ -45,7 +45,7 @@
 			  Margin="16,8,16,0"
 			  RowSpacing="{DynamicResource MediumSpacing}"
 			  RowDefinitions="auto,auto"
-			  ColumnDefinitions="auto,auto">
+			  ColumnDefinitions="auto, *,auto">
 
 			<controls:SvgButton Command="{Binding ShowSettingsCommand}"
 								SvgSource="cog.svg"
@@ -54,7 +54,7 @@
 			<controls:SvgButton Command="{Binding OpenNotificationsCommand}"
 								SvgSource="notifications.svg"
 								Style="{DynamicResource IconButton}"
-								Grid.Column="1" HorizontalOptions="End" />
+								Grid.Column="2" HorizontalOptions="End" />
 
 			<!-- TODO: Enable when implemented
 			<controls:ImageButton
