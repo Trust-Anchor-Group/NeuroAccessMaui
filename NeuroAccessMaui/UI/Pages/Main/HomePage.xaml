@@ -51,6 +51,11 @@
 								SvgSource="cog.svg"
 								Style="{DynamicResource IconButton}" />
 
+			<controls:SvgButton Command="{Binding OpenNotificationsCommand}"
+								SvgSource="notifications.svg"
+								Style="{DynamicResource IconButton}"
+								Grid.Column="1" HorizontalOptions="End" />
+
 			<!-- TODO: Enable when implemented
 			<controls:ImageButton
 				Grid.Row="0"

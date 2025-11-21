@@ -207,6 +207,28 @@ namespace NeuroAccessMaui.Services.Notification
 			}
 		}
 
+		/// <summary>
+		/// Deletes notifications by identifier.
+		/// </summary>
+		/// <param name="Ids">Identifiers to delete.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		public async Task DeleteAsync(IEnumerable<string> Ids, CancellationToken CancellationToken)
+		{
+			if (Ids is null)
+				return;
+
+			foreach (string Id in Ids)
+			{
+				NotificationRecord? Record = await this.LoadByIdAsync(Id);
+				if (Record is null)
+					continue;
+
+				await Database.Delete(Record);
+				this.DecrementChannelCount(Record.Channel);
+				await this.RaiseAdded(Record);
+			}
+		}
+
 		private NotificationRecord CreateRecord(NotificationIntent Intent, NotificationSource Source, string? RawPayload)
 		{
 			string Channel = Intent.Channel ?? string.Empty;
