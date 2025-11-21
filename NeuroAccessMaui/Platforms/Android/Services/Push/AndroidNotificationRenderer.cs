@@ -5,7 +5,7 @@ using Android.App;
 using Android.Content;
 using Android.OS;
 using AndroidX.Core.App;
-using Microsoft.Maui.Platform;
+using AndroidNotification = Android.App.Notification;
 
 namespace NeuroAccessMaui.Services.Push
 {
@@ -36,16 +36,18 @@ namespace NeuroAccessMaui.Services.Push
 
 			this.EnsureChannel(manager, channelId);
 
+			int iconId = Android.App.Application.Context?.ApplicationInfo?.Icon ?? Android.Resource.Drawable.SymDefAppIcon;
+
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(Android.App.Application.Context, channelId)
 				.SetContentTitle(Title)
 				.SetContentText(Message ?? string.Empty)
-				.SetSmallIcon(Android.App.Application.Context?.GetApplicationIconId() ?? 0)
+				.SetSmallIcon(iconId)
 				.SetAutoCancel(true)
 				.SetPriority((int)NotificationPriority.High);
 
 			if (OperatingSystem.IsAndroidVersionAtLeast(26))
 			{
-				builder.SetCategory(Notification.CategoryMessage);
+				builder.SetCategory(AndroidNotification.CategoryMessage);
 			}
 
 			manager.Notify(System.Guid.NewGuid().GetHashCode(), builder.Build());

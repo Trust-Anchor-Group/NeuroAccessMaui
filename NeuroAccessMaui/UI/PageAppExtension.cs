@@ -10,6 +10,7 @@ using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
@@ -127,6 +128,8 @@ namespace NeuroAccessMaui.UI
 				return new DefaultNotificationRenderer();
 #endif
 			});
+			Builder.Services.AddSingleton<INotificationIntentRouter, NotificationIntentRouter>();
+			Builder.Services.AddSingleton<INotificationServiceV2, NotificationServiceV2>();
 			Builder.Services.AddSingleton<IPushNotificationService, PushNotificationService>();
 			Builder.Services.AddSingleton<IAttachmentCacheService>((_) => Types.InstantiateDefault<IAttachmentCacheService>(false));
 			Builder.Services.AddSingleton<IInternetCacheService>((_) => Types.InstantiateDefault<IInternetCacheService>(false));
