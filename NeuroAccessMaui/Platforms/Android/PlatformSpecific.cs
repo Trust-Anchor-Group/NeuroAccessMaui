@@ -806,11 +806,17 @@ namespace NeuroAccessMaui.Services
 				this.ownerReference = new WeakReference<PlatformSpecific>(owner);
 			}
 
-			public WindowInsetsCompat OnApplyWindowInsets(Android.Views.View v, WindowInsetsCompat insets)
+			/// <summary>
+			/// Applies window insets reported by the system and forwards them to the owning <see cref="PlatformSpecific"/> instance.
+			/// </summary>
+			/// <param name="View">The view receiving the insets, or <c>null</c>.</param>
+			/// <param name="Insets">The window insets information, or <c>null</c>.</param>
+			/// <returns>The provided <paramref name="Insets"/> instance.</returns>
+			public WindowInsetsCompat? OnApplyWindowInsets(Android.Views.View? View, WindowInsetsCompat? Insets)
 			{
-				if (this.ownerReference.TryGetTarget(out PlatformSpecific? owner))
-					owner.ProcessWindowInsets(insets);
-				return insets;
+				if (Insets is not null && this.ownerReference.TryGetTarget(out PlatformSpecific? Owner))
+					Owner.ProcessWindowInsets(Insets);
+				return Insets;
 			}
 		}
 		#endregion
