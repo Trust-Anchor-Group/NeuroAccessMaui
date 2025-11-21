@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Maui.ApplicationModel;
+using NeuroAccessMaui.Services.Xmpp;
 using Waher.Events;
 using Waher.Networking.XMPP.Push;
 using Waher.Runtime.Inventory;
@@ -13,11 +14,11 @@ namespace NeuroAccessMaui.Services.Push
 	/// <summary>
 	/// Push notification service
 	/// </summary>
-	[Singleton]
 	public class PushNotificationService : LoadableService, IPushNotificationService
 	{
 		private readonly IPushTransport pushTransport;
 		private readonly IPushTokenRegistrar tokenRegistrar;
+		private readonly IXmppService xmppService;
 		private readonly Dictionary<PushMessagingService, string> tokens = [];
 		private DateTime lastTokenCheck = DateTime.MinValue;
 		private bool isInitialized;
@@ -29,10 +30,11 @@ namespace NeuroAccessMaui.Services.Push
 		/// </summary>
 		/// <param name="PushTransport">Transport adapter.</param>
 		/// <param name="TokenRegistrar">Token registrar handling broker updates.</param>
-		public PushNotificationService(IPushTransport PushTransport, IPushTokenRegistrar TokenRegistrar)
+		public PushNotificationService(IPushTransport PushTransport, IPushTokenRegistrar TokenRegistrar, IXmppService XmppService)
 		{
 			this.pushTransport = PushTransport;
 			this.tokenRegistrar = TokenRegistrar;
+			this.xmppService = XmppService;
 		}
 
 		/// <summary>
@@ -75,7 +77,7 @@ namespace NeuroAccessMaui.Services.Push
 					this.tokens[TokenInformation.Service] = TokenInformation.Token;
 				}
 
-				await ServiceRef.XmppService.NewPushNotificationToken(TokenInformation);
+				await this.xmppService.NewPushNotificationToken(TokenInformation);
 				await this.OnNewToken.Raise(this, new TokenEventArgs(TokenInformation.Service, TokenInformation.Token, TokenInformation.ClientType));
 			}
 		}
@@ -150,10 +152,12 @@ namespace NeuroAccessMaui.Services.Push
 		{
 			try
 			{
+				await this.xmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
+
 				DateTime Now = DateTime.Now;
 
-				if (ServiceRef.XmppService.IsOnline &&
-					ServiceRef.XmppService.SupportsPushNotification &&
+				if (this.xmppService.IsOnline &&
+					this.xmppService.SupportsPushNotification &&
 					Now.Subtract(this.lastTokenCheck).TotalHours >= 1)
 				{
 					this.lastTokenCheck = Now;
@@ -174,11 +178,11 @@ namespace NeuroAccessMaui.Services.Push
 					if (IsVersionChanged)
 					{
 						await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationConfigurationVersion, string.Empty);
-						await ServiceRef.XmppService.ClearPushNotificationRules();
+						await this.xmppService.ClearPushNotificationRules();
 
 						foreach (PushRuleDefinition rule in PushRuleDefinitions.All)
 						{
-							await ServiceRef.XmppService.AddPushNotificationRule(
+							await this.xmppService.AddPushNotificationRule(
 								rule.MessageType,
 								rule.LocalName,
 								rule.Namespace,

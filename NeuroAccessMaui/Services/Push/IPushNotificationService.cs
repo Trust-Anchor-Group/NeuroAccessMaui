@@ -9,8 +9,7 @@ namespace NeuroAccessMaui.Services.Push
 	/// <summary>
 	/// Interface for push notification services.
 	/// </summary>
-	[DefaultImplementation(typeof(PushNotificationService))]
-	public interface IPushNotificationService
+	public interface IPushNotificationService : ILoadableService
 	{
 		/// <summary>
 		/// New token received from push notification back-end.
