@@ -13,12 +13,14 @@ namespace NeuroAccessMaui.Services.Push
 		/// </summary>
 		/// <param name="Title">Notification title.</param>
 		/// <param name="Message">Notification body.</param>
+		/// <param name="Channel">Notification channel identifier.</param>
 		/// <param name="CancellationToken">Cancellation token.</param>
 		/// <returns>Task representing the asynchronous operation.</returns>
-		public Task RenderAsync(string Title, string? Message, CancellationToken CancellationToken)
+		public Task RenderAsync(string Title, string? Message, string Channel, CancellationToken CancellationToken)
 		{
 			_ = Title;
 			_ = Message;
+			_ = Channel;
 			CancellationToken.ThrowIfCancellationRequested();
 			return Task.CompletedTask;
 		}
