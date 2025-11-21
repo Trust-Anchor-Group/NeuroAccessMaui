@@ -117,7 +117,16 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<IXmppService>((_) => Types.InstantiateDefault<IXmppService>(false));
 			Builder.Services.AddSingleton<IPushTransport, FirebasePushTransport>();
 			Builder.Services.AddSingleton<IPushTokenRegistrar, PushTokenRegistrar>();
-			Builder.Services.AddSingleton<INotificationRenderer, DefaultNotificationRenderer>();
+			Builder.Services.AddSingleton<INotificationRenderer>((_) =>
+			{
+#if ANDROID
+				return new AndroidNotificationRenderer();
+#elif IOS || MACCATALYST
+				return new IosNotificationRenderer();
+#else
+				return new DefaultNotificationRenderer();
+#endif
+			});
 			Builder.Services.AddSingleton<IPushNotificationService, PushNotificationService>();
 			Builder.Services.AddSingleton<IAttachmentCacheService>((_) => Types.InstantiateDefault<IAttachmentCacheService>(false));
 			Builder.Services.AddSingleton<IInternetCacheService>((_) => Types.InstantiateDefault<IInternetCacheService>(false));
