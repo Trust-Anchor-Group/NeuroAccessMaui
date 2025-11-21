@@ -13,6 +13,7 @@ Deliver a provider-agnostic push stack that:
 - ✅ **Bootstrap foundation**: `RegisterFirebaseServices` is active again and `PushNotificationService` now manages activation hooks plus token verification during its `Load` lifecycle.
 - ⚙️ **Token lifecycle**: FCM `TokenChanged` is wired to `PushNotificationService`; retry/backoff added via `PushTokenRegistrar` using `PolicyRunner`, smarter queuing still pending.
 - ⚙️ **Rule provisioning**: All broker rules live in `PushRuleDefinitions`, so scripts are centralized, but platform notification UX + intent refactor remain.
+- ⚙️ **Notification model**: New `NotificationServiceV2` (Waher DB) with `NotificationIntent`, lifecycle timestamps, dedupe hashing, retention pruning, expectations, and intent routing scaffolding (router + ignore filter). XMPP and wallet producers now emit intents; Android/iOS renderers in place.
 - ⏳ **Upcoming work**: Permission/onboarding flow (**deferred for now**), richer platform notification UX, intent pipeline cleanup, and observability tooling.
 
 ## Milestones
@@ -48,11 +49,12 @@ Deliver a provider-agnostic push stack that:
    - Update `IntentService` to parse this schema and route to pages/view models uniformly.
    - Ensure push payloads recorded in local storage sync with `NotificationService` so the in-app notification center mirrors OS alerts.
    - Keep intents platform-agnostic: define a small intent model and let renderers attach it (UserInfo on iOS, extras/PendingIntent on Android) for consistent navigation.
+   - Implement central routing (`NotificationIntentRouter`) with per-action navigation; support ignore rules (e.g., active chat) via `INotificationFilter`; add expectations API to auto-route matching notifications.
 
 8. **Notification Service Redesign**
-   - Rebuild `NotificationService` as the single store over Waher DB using a new `Notification` + `NotificationIntent` model (channels, action/entity, state).
+   - Rebuild `NotificationService` as the single store over Waher DB using a new `Notification` + `NotificationIntent` model (channels, action/entity, state, timestamps, raw payload).
    - Migrate legacy `NotificationEvent` data into the new schema (map categories/types to `Constants.PushChannels`, hash-based IDs for dedupe).
-   - Update all producers (XMPP events, push taps) to ingest via `NotificationIntent` and route consumption through the unified service/UI.
+   - Update all producers (XMPP events, push taps) to ingest via `NotificationIntent` and route consumption through the unified service/UI. XMPP chat/provisioning and wallet producers now emit intents to V2; router in place with basic navigation.
 
 7. **Observability & QA**
    - Add structured logging around token registration, rule provisioning, and notification delivery (with privacy-safe metadata).

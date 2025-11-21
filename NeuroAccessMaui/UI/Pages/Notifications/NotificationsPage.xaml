@@ -6,7 +6,8 @@
                       xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
                       xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Notifications"
                       xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
-                      x:Class="NeuroAccessMaui.UI.Pages.Notifications.NotificationsPage"
+					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+					  x:Class="NeuroAccessMaui.UI.Pages.Notifications.NotificationsPage"
                       x:Name="NotificationsPageRoot"
                       x:DataType="viewmodel:NotificationsViewModel">
     <Grid RowDefinitions="auto, *" Background="Transparent">
@@ -136,7 +137,7 @@
                                            HorizontalTextAlignment="End" />
 									<Border StrokeShape="RoundRectangle 8"
 											BackgroundColor="{Binding StateColor}"
-											IsVisible="{Binding StateLabel, Mode=OneWay}"
+											IsVisible="{Binding StateLabel, Mode=OneWay, Converter={mct:IsStringNotNullOrEmptyConverter}}"
 											Padding="8,2">
 										<Grid>
 										<Label Text="{Binding StateLabel}"
