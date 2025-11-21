@@ -83,6 +83,7 @@ using Waher.Security.JWT;
 using Waher.Things;
 using Waher.Things.SensorData;
 using NeuroAccessMaui.UI.Pages.Onboarding;
+using NeuroAccessMaui.Services.Notification;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -2042,12 +2043,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 				else
 				{
-					await ServiceRef.NotificationService.NewEvent(new ChatMessageNotificationEvent(e)
+					NotificationIntent Intent = new()
 					{
-						ReplaceObjectId = ReplaceObjectId,
-						BareJid = RemoteBareJid,
-						Category = RemoteBareJid
-					});
+						Channel = Constants.PushChannels.Messages,
+						Title = RemoteBareJid,
+						Body = Message.PlainText ?? Message.Markdown ?? Message.Html ?? string.Empty,
+						Action = NotificationAction.OpenChat,
+						EntityId = RemoteBareJid,
+						CorrelationId = ReplaceObjectId
+					};
+
+					await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
 				}
 			});
 		}
@@ -3987,19 +3993,55 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task ProvisioningClient_IsFriendQuestion(object? Sender, IsFriendEventArgs e)
 		{
 			if (e.From.IndexOfAny(clientChars) < 0)
-				await ServiceRef.NotificationService.NewEvent(new IsFriendNotificationEvent(e));
+			{
+				NotificationIntent Intent = new()
+				{
+					Channel = Constants.PushChannels.Provisioning,
+					Title = ServiceRef.Localizer[nameof(AppResources.AccessRequest)],
+					Body = e.From,
+					Action = NotificationAction.OpenPresenceRequest,
+					EntityId = e.From,
+					CorrelationId = e.Key
+				};
+
+				await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
+			}
 		}
 
 		private async Task ProvisioningClient_CanReadQuestion(object? Sender, CanReadEventArgs e)
 		{
 			if (e.From.IndexOfAny(clientChars) < 0)
-				await ServiceRef.NotificationService.NewEvent(new CanReadNotificationEvent(e));
+			{
+				NotificationIntent Intent = new()
+				{
+					Channel = Constants.PushChannels.Provisioning,
+					Title = ServiceRef.Localizer[nameof(AppResources.ReadRequest)],
+					Body = e.From,
+					Action = NotificationAction.OpenPresenceRequest,
+					EntityId = e.From,
+					CorrelationId = e.Key
+				};
+
+				await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
+			}
 		}
 
 		private async Task ProvisioningClient_CanControlQuestion(object? Sender, CanControlEventArgs e)
 		{
 			if (e.From.IndexOfAny(clientChars) < 0)
-				await ServiceRef.NotificationService.NewEvent(new CanControlNotificationEvent(e));
+			{
+				NotificationIntent Intent = new()
+				{
+					Channel = Constants.PushChannels.Provisioning,
+					Title = ServiceRef.Localizer[nameof(AppResources.ControlRequest)],
+					Body = e.From,
+					Action = NotificationAction.OpenPresenceRequest,
+					EntityId = e.From,
+					CorrelationId = e.Key
+				};
+
+				await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
+			}
 		}
 
 		private static readonly char[] clientChars = ['@', '/'];
