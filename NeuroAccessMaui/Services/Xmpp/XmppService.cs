@@ -967,8 +967,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					if (this.xmppFilteredEventSink is not null)
 						ServiceRef.LogService.AddListener(this.xmppFilteredEventSink);
-
-					await ServiceRef.PushNotificationService.CheckPushNotificationToken();
 					break;
 
 				case XmppState.Offline:

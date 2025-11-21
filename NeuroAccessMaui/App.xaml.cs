@@ -396,6 +396,7 @@ namespace NeuroAccessMaui
 
 
             // Set dependency resolver.
+			/*
             DependencyResolver.ResolveUsing(type =>
             {
                 if (Types.GetType(type.FullName) is null)
@@ -411,7 +412,7 @@ namespace NeuroAccessMaui
                     return null;
                 }
             });
-
+			*/
             // Register XML schemas on the DI-managed validator instance.
             try
             {
@@ -568,8 +569,9 @@ namespace NeuroAccessMaui
                 await ServiceRef.ThingRegistryOrchestratorService.Load(isResuming, Token);
                 await ServiceRef.NeuroWalletOrchestratorService.Load(isResuming, Token);
                 await ServiceRef.NotificationService.Load(isResuming, Token);
+				await ServiceRef.PushNotificationService.Load(isResuming, Token);
 
-                RegisterRoutes();
+				RegisterRoutes();
                 ReadySignal?.TrySetResult(true);
                 //	AppShell.AppLoaded();
             }
