@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using EDaler;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroFeatures;
@@ -73,6 +75,11 @@ namespace NeuroAccessMaui.Services.Push
 		/// Gets all rule definitions.
 		/// </summary>
 		public static IReadOnlyList<PushRuleDefinition> All { get; } = Build();
+
+		/// <summary>
+		/// Gets a hash representing the current rule set.
+		/// </summary>
+		public static string RuleSetHash { get; } = ComputeHash(All);
 
 		private static IReadOnlyList<PushRuleDefinition> Build()
 		{
@@ -399,6 +406,33 @@ namespace NeuroAccessMaui.Services.Push
 					"}")));
 
 			return definitions;
+		}
+
+		private static string ComputeHash(IEnumerable<PushRuleDefinition> rules)
+		{
+			StringBuilder builder = new();
+
+			foreach (PushRuleDefinition rule in rules)
+			{
+				builder.Append(rule.MessageType.ToString());
+				builder.Append('|');
+				builder.Append(rule.LocalName);
+				builder.Append('|');
+				builder.Append(rule.Namespace);
+				builder.Append('|');
+				builder.Append(rule.Channel);
+				builder.Append('|');
+				builder.Append(rule.MessageVariable);
+				builder.Append('|');
+				builder.Append(rule.PatternScript);
+				builder.Append('|');
+				builder.Append(rule.ContentScript);
+				builder.AppendLine();
+			}
+
+			byte[] bytes = Encoding.UTF8.GetBytes(builder.ToString());
+			byte[] hash = SHA256.HashData(bytes);
+			return Convert.ToHexString(hash);
 		}
 
 		private static string Script(params string[] lines) => string.Join('\n', lines);

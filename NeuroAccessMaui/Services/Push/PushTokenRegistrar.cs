@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Waher.Networking.XMPP;
+using NeuroAccessMaui.Services.Resilience;
+using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Xmpp;
+using NeuroAccessMaui.UI.MVVM.Policies;
 using Waher.Networking.XMPP.Push;
 using Waher.Runtime.Settings;
-using NeuroAccessMaui.Services.Xmpp;
 
 namespace NeuroAccessMaui.Services.Push
 {
@@ -14,6 +17,7 @@ namespace NeuroAccessMaui.Services.Push
 	public sealed class PushTokenRegistrar : IPushTokenRegistrar
 	{
 		private readonly IXmppService xmppService;
+		private const int MaxAttempts = 3;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="PushTokenRegistrar"/> class.
@@ -42,9 +46,41 @@ namespace NeuroAccessMaui.Services.Push
 			if (string.IsNullOrEmpty(Token))
 				return false;
 
-			await this.xmppService.ReportNewPushNotificationToken(Token, TokenInformation.Service, TokenInformation.ClientType);
-			await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationToken, TokenInformation.Token);
-			await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationReportDate, DateTime.UtcNow);
+			IAsyncPolicy RetryPolicy = Policies.Retry(
+				MaxAttempts,
+				(Attempt, _) => TimeSpan.FromSeconds(Math.Pow(2, Attempt - 1)),
+				(Attempt, ex, delay) => ServiceRef.LogService.LogWarning(
+					"Push token registration retry scheduled.",
+					new KeyValuePair<string, object?>("attempt", Attempt),
+					new KeyValuePair<string, object?>("delayMs", delay.TotalMilliseconds),
+					new KeyValuePair<string, object?>("exception", ex.Message)));
+
+			try
+			{
+				await PolicyRunner.RunAsync(
+					async _ =>
+					{
+						await this.xmppService.ReportNewPushNotificationToken(Token, TokenInformation.Service, TokenInformation.ClientType);
+						await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationToken, TokenInformation.Token);
+						await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationReportDate, DateTime.UtcNow);
+					},
+					CancellationToken,
+					RetryPolicy);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogInformational("Push token registration failed after retries.");
+				ServiceRef.LogService.LogException(
+					ex,
+					new KeyValuePair<string, object?>("service", TokenInformation.Service.ToString()),
+					new KeyValuePair<string, object?>("clientType", TokenInformation.ClientType.ToString()));
+				return false;
+			}
+
+			ServiceRef.LogService.LogInformational(
+				"Push token reported.",
+				new KeyValuePair<string, object?>("service", TokenInformation.Service.ToString()),
+				new KeyValuePair<string, object?>("clientType", TokenInformation.ClientType.ToString()));
 
 			return true;
 		}
