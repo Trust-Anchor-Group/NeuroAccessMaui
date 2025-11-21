@@ -74,5 +74,12 @@ namespace NeuroAccessMaui.Services.Notification
 		/// </summary>
 		/// <param name="Predicate">Predicate to decide if an intent should be ignored.</param>
 		IDisposable AddIgnoreFilter(Func<NotificationIntent, bool> Predicate);
+
+		/// <summary>
+		/// Deletes notifications by identifier.
+		/// </summary>
+		/// <param name="Ids">Notification identifiers.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		Task DeleteAsync(IEnumerable<string> Ids, CancellationToken CancellationToken);
 	}
 }
