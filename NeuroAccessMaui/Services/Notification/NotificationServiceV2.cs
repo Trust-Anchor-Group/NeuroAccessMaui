@@ -17,25 +17,53 @@ namespace NeuroAccessMaui.Services.Notification
 	/// </summary>
 	public sealed class NotificationServiceV2 : LoadableService, INotificationServiceV2
 	{
-		private const int DefaultSchemaVersion = 1;
-		private const int MaxPerChannel = 100;
-		private const int MaxTotal = 1000;
-		private readonly INotificationIntentRouter intentRouter;
-		private readonly List<Expectation> expectations = [];
+	private const int DefaultSchemaVersion = 1;
+	private const int MaxPerChannel = 100;
+	private const int MaxTotal = 1000;
+	private static readonly TimeSpan IdBucket = TimeSpan.FromMinutes(1);
+	private readonly INotificationIntentRouter intentRouter;
+	private readonly INotificationFilterRegistry filterRegistry;
+	private readonly List<Expectation> expectations = [];
+	private readonly Dictionary<string, int> channelCounts = new(StringComparer.OrdinalIgnoreCase);
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="NotificationServiceV2"/> class.
-		/// </summary>
-		/// <param name="IntentRouter">Router used to navigate notification intents.</param>
-		public NotificationServiceV2(INotificationIntentRouter IntentRouter)
-		{
-			this.intentRouter = IntentRouter;
+	/// <summary>
+	/// Initializes a new instance of the <see cref="NotificationServiceV2"/> class.
+	/// </summary>
+	/// <param name="IntentRouter">Router used to navigate notification intents.</param>
+	/// <param name="FilterRegistry">Registry for runtime ignore filters.</param>
+	public NotificationServiceV2(INotificationIntentRouter IntentRouter, INotificationFilterRegistry FilterRegistry)
+	{
+		this.intentRouter = IntentRouter;
+		this.filterRegistry = FilterRegistry;
 		}
 
 		/// <summary>
 		/// Event raised when a notification is added or updated.
 		/// </summary>
 		public event EventHandlerAsync<NotificationRecordEventArgs>? OnNotificationAdded;
+
+		/// <summary>
+		/// Current counts per channel.
+		/// </summary>
+		public IReadOnlyDictionary<string, int> ChannelCounts
+		{
+			get
+			{
+				lock (this.channelCounts)
+				{
+					return new Dictionary<string, int>(this.channelCounts);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Adds a runtime ignore filter. Dispose the handle to remove it.
+		/// </summary>
+		/// <param name="Predicate">Predicate to decide if an intent should be ignored.</param>
+		public IDisposable AddIgnoreFilter(Func<NotificationIntent, bool> Predicate)
+		{
+			return this.filterRegistry.AddFilter(Predicate);
+		}
 
 		/// <summary>
 		/// Loads the service.
@@ -81,6 +109,7 @@ namespace NeuroAccessMaui.Services.Notification
 			Record.DeliveredAt = DateTime.UtcNow;
 
 			await Database.Insert(Record);
+			this.IncrementChannelCount(Record.Channel);
 			await this.RaiseAdded(Record);
 			await this.PruneAsync(CancellationToken);
 		}
@@ -114,14 +143,13 @@ namespace NeuroAccessMaui.Services.Notification
 		public async Task<IReadOnlyList<NotificationRecord>> GetAsync(NotificationQuery Query, CancellationToken CancellationToken)
 		{
 			List<NotificationRecord> Results = new();
+
+			Filter filter = new(Query.Channels, Query.States);
 			IEnumerable<NotificationRecord> FromDb = await Database.Find<NotificationRecord>(nameof(NotificationRecord.TimestampCreated));
 
 			foreach (NotificationRecord Record in FromDb)
 			{
-				if (Query.Channels is not null && Query.Channels.Count > 0 && !Query.Channels.Contains(Record.Channel))
-					continue;
-
-				if (Query.States is not null && Query.States.Count > 0 && !Query.States.Contains(Record.State))
+				if (!filter.Matches(Record))
 					continue;
 
 				Results.Add(Record);
@@ -173,7 +201,10 @@ namespace NeuroAccessMaui.Services.Notification
 			}
 
 			foreach (NotificationRecord Record in ToDelete)
+			{
 				await Database.Delete(Record);
+				this.DecrementChannelCount(Record.Channel);
+			}
 		}
 
 		private NotificationRecord CreateRecord(NotificationIntent Intent, NotificationSource Source, string? RawPayload)
@@ -204,7 +235,15 @@ namespace NeuroAccessMaui.Services.Notification
 		private string ResolveId(NotificationIntent Intent, string Channel)
 		{
 			StringBuilder builder = new();
-			DateTime bucket = DateTime.UtcNow;
+			DateTime now = DateTime.UtcNow;
+			DateTime bucket;
+			if (IdBucket > TimeSpan.Zero)
+			{
+				long ticks = now.Ticks / IdBucket.Ticks;
+				bucket = new DateTime(ticks * IdBucket.Ticks, DateTimeKind.Utc);
+			}
+			else
+				bucket = now;
 			string Correlation = Intent.CorrelationId ?? string.Empty;
 
 			builder.Append(Channel);
@@ -359,5 +398,49 @@ namespace NeuroAccessMaui.Services.Notification
 		}
 
 		private sealed record Expectation(Func<NotificationRecord, bool> Predicate, DateTime ExpiresAt, TaskCompletionSource<NotificationRecord?>? Source, bool RouteOnMatch);
+
+		private void IncrementChannelCount(string Channel)
+		{
+			lock (this.channelCounts)
+			{
+				this.channelCounts.TryGetValue(Channel, out int count);
+				this.channelCounts[Channel] = count + 1;
+			}
+		}
+
+		private void DecrementChannelCount(string Channel)
+		{
+			lock (this.channelCounts)
+			{
+				if (this.channelCounts.TryGetValue(Channel, out int count) && count > 0)
+					this.channelCounts[Channel] = count - 1;
+			}
+		}
+
+		private sealed class Filter
+		{
+			private readonly HashSet<string>? channels;
+			private readonly HashSet<NotificationState>? states;
+
+			public Filter(IReadOnlyList<string>? Channels, IReadOnlyList<NotificationState>? States)
+			{
+				if (Channels is not null && Channels.Count > 0)
+					this.channels = new HashSet<string>(Channels, StringComparer.OrdinalIgnoreCase);
+
+				if (States is not null && States.Count > 0)
+					this.states = new HashSet<NotificationState>(States);
+			}
+
+			public bool Matches(NotificationRecord Record)
+			{
+				if (this.channels is not null && !this.channels.Contains(Record.Channel))
+					return false;
+
+				if (this.states is not null && !this.states.Contains(Record.State))
+					return false;
+
+				return true;
+			}
+		}
 	}
 }
