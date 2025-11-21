@@ -171,7 +171,9 @@ namespace NeuroAccessMaui.Services.Push
 
 					string Version = AppInfo.VersionString + "." + AppInfo.BuildString;
 					string PrevVersion = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationConfigurationVersion, string.Empty);
-					bool IsVersionChanged = Version != PrevVersion;
+					string CurrentRulesHash = PushRuleDefinitions.RuleSetHash;
+					string PrevRulesHash = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationRulesHash, string.Empty);
+					bool IsVersionChanged = Version != PrevVersion || CurrentRulesHash != PrevRulesHash;
 
 					await this.tokenRegistrar.ReportTokenAsync(TokenInformation, IsVersionChanged, CancellationToken);
 
@@ -193,6 +195,7 @@ namespace NeuroAccessMaui.Services.Push
 						}
 
 						await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationConfigurationVersion, Version);
+						await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationRulesHash, CurrentRulesHash);
 					}
 				}
 			}
