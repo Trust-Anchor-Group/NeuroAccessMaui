@@ -1,12 +1,13 @@
-using NeuroAccessMaui.UI.Pages;
-using NeuroAccessMaui.UI.Pages.Main;           // for MainPage
-using NeuroAccessMaui.Services;          // for ServiceRef and ServiceHelper
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NeuroAccessMaui.Services;          // for ServiceRef and ServiceHelper
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.Theme;
-using NeuroAccessMaui.UI.Pages.Onboarding;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Pages;
+using NeuroAccessMaui.UI.Pages.Main;           // for MainPage
+using NeuroAccessMaui.UI.Pages.Onboarding;
 
 namespace NeuroAccessMaui.UI.Pages.Startup
 {
@@ -15,14 +16,16 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 		private readonly ITagProfile tagProfile;
 		private readonly INavigationService navigationService;
 		private readonly IThemeService themeService;
+		private readonly INotificationServiceV2 notificationService;
 
-		public LoadingPage(ITagProfile TagProfile, INavigationService NavigationService, IThemeService ThemeService)
+		public LoadingPage(ITagProfile TagProfile, INavigationService NavigationService, IThemeService ThemeService, INotificationServiceV2 NotificationService)
 		{
 			this.InitializeComponent();
 			this.BindingContext = this;
 			this.tagProfile = TagProfile;
 			this.navigationService = NavigationService;
 			this.themeService = ThemeService;
+			this.notificationService = NotificationService;
 		}
 
 		public override Task OnDisposeAsync() => Task.CompletedTask;
@@ -58,6 +61,14 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 			{
 				await this.themeService.ApplyProviderTheme();
 				await this.navigationService.SetRootAsync(nameof(MainPage));
+				try
+				{
+					await this.notificationService.ProcessPendingAsync(CancellationToken.None);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
 			}
 		}
 

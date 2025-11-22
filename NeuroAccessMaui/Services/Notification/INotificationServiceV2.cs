@@ -76,10 +76,23 @@ namespace NeuroAccessMaui.Services.Notification
 		IDisposable AddIgnoreFilter(Func<NotificationIntent, bool> Predicate);
 
 		/// <summary>
+		/// Computes the stable identifier for an intent using the same logic as storage.
+		/// </summary>
+		/// <param name="Intent">Notification intent.</param>
+		/// <returns>Stable identifier.</returns>
+		string ComputeId(NotificationIntent Intent);
+
+		/// <summary>
 		/// Deletes notifications by identifier.
 		/// </summary>
 		/// <param name="Ids">Notification identifiers.</param>
 		/// <param name="CancellationToken">Cancellation token.</param>
 		Task DeleteAsync(IEnumerable<string> Ids, CancellationToken CancellationToken);
+
+		/// <summary>
+		/// Attempts to route any pending deferred intents.
+		/// </summary>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		Task ProcessPendingAsync(CancellationToken CancellationToken);
 	}
 }

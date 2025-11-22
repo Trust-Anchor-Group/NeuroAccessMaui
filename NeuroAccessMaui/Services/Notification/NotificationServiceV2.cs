@@ -25,6 +25,7 @@ namespace NeuroAccessMaui.Services.Notification
 		private readonly INotificationFilterRegistry filterRegistry;
 		private readonly List<Expectation> expectations = [];
 		private readonly Dictionary<string, int> channelCounts = new(StringComparer.OrdinalIgnoreCase);
+		private readonly Queue<NotificationIntent> pendingRoutes = new();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="NotificationServiceV2"/> class.
@@ -63,6 +64,12 @@ namespace NeuroAccessMaui.Services.Notification
 		public IDisposable AddIgnoreFilter(Func<NotificationIntent, bool> Predicate)
 		{
 			return this.filterRegistry.AddFilter(Predicate);
+		}
+
+		/// <inheritdoc/>
+		public string ComputeId(NotificationIntent Intent)
+		{
+			return this.ResolveId(Intent, Intent.Channel ?? string.Empty);
 		}
 
 		/// <summary>
@@ -131,7 +138,14 @@ namespace NeuroAccessMaui.Services.Notification
 			await this.RaiseAdded(Record);
 
 			NotificationIntent Intent = this.ToIntent(Record);
-			await this.intentRouter.RouteAsync(Intent, true, CancellationToken);
+			NotificationRouteResult result = await this.intentRouter.RouteAsync(Intent, true, CancellationToken);
+			if (result == NotificationRouteResult.Deferred)
+			{
+				lock (this.pendingRoutes)
+				{
+					this.pendingRoutes.Enqueue(Intent);
+				}
+			}
 		}
 
 		/// <summary>
@@ -226,6 +240,25 @@ namespace NeuroAccessMaui.Services.Notification
 				await Database.Delete(Record);
 				this.DecrementChannelCount(Record.Channel);
 				await this.RaiseAdded(Record);
+			}
+		}
+
+		/// <inheritdoc/>
+		public async Task ProcessPendingAsync(CancellationToken CancellationToken)
+		{
+			while (true)
+			{
+				NotificationIntent? intent = null;
+				lock (this.pendingRoutes)
+				{
+					if (this.pendingRoutes.Count > 0)
+						intent = this.pendingRoutes.Dequeue();
+				}
+
+				if (intent is null)
+					break;
+
+				await this.intentRouter.RouteAsync(intent, true, CancellationToken);
 			}
 		}
 
