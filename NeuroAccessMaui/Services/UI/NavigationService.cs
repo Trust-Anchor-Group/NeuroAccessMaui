@@ -33,7 +33,7 @@ namespace NeuroAccessMaui.Services.UI
         #region INavigationService implementation
 
         /// <inheritdoc/>
-        public BaseContentPage CurrentPage => this.screenStack.Count > 0 ? this.screenStack.Peek() : throw new InvalidOperationException("Navigation stack is empty.");
+        public BaseContentPage? CurrentPage => this.screenStack.Count > 0 ? this.screenStack.Peek() : null;
 
         /// <inheritdoc/>
         public Task GoToAsync(string Route) => this.GoToAsync(Route, Services.UI.BackMethod.Inherited, null);

@@ -83,7 +83,7 @@ namespace NeuroAccessMaui.Services.UI
         /// <summary>
         /// Gets the current visible view.
         /// </summary>
-        BaseContentPage CurrentPage { get; }
+        BaseContentPage? CurrentPage { get; }
 
         /// <summary>
         /// Pops the latest navigation arguments if any.
