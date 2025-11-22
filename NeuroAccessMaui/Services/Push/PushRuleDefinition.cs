@@ -3,6 +3,7 @@ using System.Text;
 using EDaler;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroFeatures;
+using NeuroAccessMaui.Services.Notification;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Push;
 using Waher.Networking.XMPP.Contracts;
@@ -117,6 +118,9 @@ namespace NeuroAccessMaui.Services.Push
 					"'fromJid': FromJid,",
 					"'rosterName': FriendlyName,",
 					"'isObject': exists(Content) and !empty(Markdown:= InnerText(Content)) and (Left(Markdown,2)='![' or (Left(Markdown,3)='```' and Right(Markdown,3)='```')),",
+					$"'action': '{NotificationAction.OpenChat}',",
+					"'entityId': FromJid,",
+					"'correlationId': GetAttribute(Stanza,'id'),",
 					$"'channelId': '{Constants.PushChannels.Messages}',",
 					"'content_available': true",
 					"}")));
@@ -138,6 +142,9 @@ namespace NeuroAccessMaui.Services.Push
 					"'myBody': GetAttribute(E,'purpose'),",
 					"'fromJid': FromJid,",
 					"'rosterName': FriendlyName,",
+					$"'action': '{NotificationAction.OpenProfile}',",
+					"'entityId': FromJid,",
+					"'correlationId': GetAttribute(E,'petitionId'),",
 					$"'channelId': '{Constants.PushChannels.Petitions}',",
 					"'content_available': true",
 					"}")));
@@ -159,6 +166,9 @@ namespace NeuroAccessMaui.Services.Push
 					"'myBody': GetAttribute(E,'purpose'),",
 					"'fromJid': FromJid,",
 					"'rosterName': FriendlyName,",
+					$"'action': '{NotificationAction.OpenProfile}',",
+					"'entityId': FromJid,",
+					"'correlationId': GetAttribute(E,'petitionId'),",
 					$"'channelId': '{Constants.PushChannels.Petitions}',",
 					"'content_available': true",
 					"}")));
@@ -180,6 +190,9 @@ namespace NeuroAccessMaui.Services.Push
 					"'myBody': GetAttribute(E,'purpose'),",
 					"'fromJid': FromJid,",
 					"'rosterName': FriendlyName,",
+					$"'action': '{NotificationAction.OpenProfile}',",
+					"'entityId': FromJid,",
+					"'correlationId': GetAttribute(E,'petitionId'),",
 					$"'channelId': '{Constants.PushChannels.Petitions}',",
 					"'content_available': true",
 					"}")));
@@ -196,6 +209,8 @@ namespace NeuroAccessMaui.Services.Push
 					"{",
 					$"'myTitle': '{IdentityUpdated}',",
 					"'legalId': GetAttribute(E,'id'),",
+					$"'action': '{NotificationAction.OpenProfile}',",
+					"'entityId': GetAttribute(E,'id'),",
 					$"'channelId': '{Constants.PushChannels.Identities}',",
 					"'content_available': true",
 					"}")));
@@ -245,6 +260,8 @@ namespace NeuroAccessMaui.Services.Push
 					"{",
 					$"'myTitle': '{ContractUpdated}',",
 					"'contractId': GetAttribute(E,'contractId'),",
+					$"'action': '{NotificationAction.OpenSettings}',",
+					"'entityId': GetAttribute(E,'contractId'),",
 					$"'channelId': '{Constants.PushChannels.Contracts}',",
 					"'content_available': true",
 					"}")));
@@ -261,6 +278,8 @@ namespace NeuroAccessMaui.Services.Push
 					"{",
 					$"'myTitle': '{ContractDeleted}',",
 					"'contractId': GetAttribute(E,'contractId'),",
+					$"'action': '{NotificationAction.OpenSettings}',",
+					"'entityId': GetAttribute(E,'contractId'),",
 					$"'channelId': '{Constants.PushChannels.Contracts}',",
 					"'content_available': true",
 					"}")));
@@ -279,6 +298,8 @@ namespace NeuroAccessMaui.Services.Push
 					"'myBody': GetAttribute(E,'message'),",
 					"'contractId': Num(GetAttribute(E,'contractId')),",
 					"'role': Num(GetAttribute(E,'role')),",
+					$"'action': '{NotificationAction.OpenSettings}',",
+					"'entityId': GetAttribute(E,'contractId'),",
 					$"'channelId': '{Constants.PushChannels.Contracts}',",
 					"'content_available': true",
 					"}")));
@@ -297,6 +318,8 @@ namespace NeuroAccessMaui.Services.Push
 					"'amount': Num(GetAttribute(E,'amount')),",
 					"'currency': GetAttribute(E,'currency'),",
 					"'timestamp': DateTime(GetAttribute(E,'timestamp')),",
+					$"'action': '{NotificationAction.OpenSettings}',",
+					"'entityId': GetAttribute(E,'currency'),",
 					$"'channelId': '{Constants.PushChannels.EDaler}',",
 					"'content_available': true",
 					"}")));
@@ -316,6 +339,8 @@ namespace NeuroAccessMaui.Services.Push
 					"'myBody': GetAttribute(E2,'friendlyName'),",
 					"'value': Num(GetAttribute(E2,'value')),",
 					"'currency': GetAttribute(E2,'currency'),",
+					$"'action': '{NotificationAction.OpenSettings}',",
+					"'entityId': GetAttribute(E2,'tokenId'),",
 					$"'channelId': '{Constants.PushChannels.Tokens}',",
 					"'content_available': true",
 					"}")));
@@ -335,6 +360,8 @@ namespace NeuroAccessMaui.Services.Push
 					"'myBody': GetAttribute(E2,'friendlyName'),",
 					"'value': Num(GetAttribute(E2,'value')),",
 					"'currency': GetAttribute(E2,'currency'),",
+					$"'action': '{NotificationAction.OpenSettings}',",
+					"'entityId': GetAttribute(E2,'tokenId'),",
 					$"'channelId': '{Constants.PushChannels.Tokens}',",
 					"'content_available': true",
 					"}")));
@@ -357,6 +384,8 @@ namespace NeuroAccessMaui.Services.Push
 					"'jid': GetAttribute(E,'jid'),",
 					"'key': GetAttribute(E,'key'),",
 					"'q': 'isFriend',",
+					$"'action': '{NotificationAction.OpenPresenceRequest}',",
+					"'entityId': RemoteJid,",
 					$"'channelId': '{Constants.PushChannels.Provisioning}',",
 					"'content_available': true",
 					"}")));
@@ -379,6 +408,8 @@ namespace NeuroAccessMaui.Services.Push
 					"'jid': GetAttribute(E,'jid'),",
 					"'key': GetAttribute(E,'key'),",
 					"'q': 'canRead',",
+					$"'action': '{NotificationAction.OpenPresenceRequest}',",
+					"'entityId': RemoteJid,",
 					$"'channelId': '{Constants.PushChannels.Provisioning}',",
 					"'content_available': true",
 					"}")));
@@ -401,6 +432,8 @@ namespace NeuroAccessMaui.Services.Push
 					"'jid': GetAttribute(E,'jid'),",
 					"'key': GetAttribute(E,'key'),",
 					"'q': 'canControl',",
+					$"'action': '{NotificationAction.OpenPresenceRequest}',",
+					"'entityId': RemoteJid,",
 					$"'channelId': '{Constants.PushChannels.Provisioning}',",
 					"'content_available': true",
 					"}")));

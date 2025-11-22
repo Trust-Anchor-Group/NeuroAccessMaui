@@ -1,5 +1,7 @@
 using System.Runtime.Versioning;
 using System.Text;
+using System.Text.Json;
+using System.Threading;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -13,8 +15,12 @@ using NeuroAccessMaui.AndroidPlatform.Nfc;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.Services.Nfc;
+using NeuroAccessMaui.Services.Notification;
 using Plugin.Firebase.CloudMessaging;
 using Plugin.Firebase.Core.Platforms.Android;
+using System.Text.Json;
+using System.Threading;
+using NeuroAccessMaui.Services.Push;
 
 namespace NeuroAccessMaui
 {
@@ -158,7 +164,9 @@ namespace NeuroAccessMaui
 				AppIntent? AppIntent = null;
 
 				// Retrieve the shared intent service.
-				IIntentService IntentService = App.Instantiate<IIntentService>();
+				IIntentService IntentService = ServiceRef.Provider.GetRequiredService<IIntentService>();
+				INotificationServiceV2 NotificationService = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+				INotificationRenderer NotificationRenderer = ServiceRef.Provider.GetRequiredService<INotificationRenderer>();
 
 				// Handle deep link URL intent.
 				if (intent.Action == Intent.ActionView)
@@ -172,6 +180,48 @@ namespace NeuroAccessMaui
 							Data = Url
 						};
 					}
+				}
+				// Handle push tap intent carrying NotificationIntent JSON.
+				else if (intent.Extras is not null && intent.Extras.ContainsKey("notificationIntent"))
+				{
+					string? payload = intent.Extras.GetString("notificationIntent");
+					if (!string.IsNullOrEmpty(payload))
+					{
+						try
+						{
+							NotificationIntent? parsed = JsonSerializer.Deserialize<NotificationIntent>(payload);
+							if (parsed is not null)
+							{
+								await NotificationService.AddAsync(parsed, NotificationSource.Push, payload, CancellationToken.None);
+								string id = NotificationService.ComputeId(parsed);
+								await NotificationService.ConsumeAsync(id, CancellationToken.None);
+								return;
+							}
+						}
+						catch (Exception ex)
+						{
+							ServiceRef.LogService.LogException(ex);
+						}
+					}
+				}
+				// Handle data-only push when app is background/terminated: render notification.
+				else if (intent.Extras is not null && intent.Extras.ContainsKey("gcm.notification.body"))
+				{
+					string? body = intent.Extras.GetString("gcm.notification.body");
+					string? title = intent.Extras.GetString("gcm.notification.title");
+					string channel = intent.Extras.GetString("channelId") ?? Constants.PushChannels.Messages;
+
+					NotificationIntent fallback = new()
+					{
+						Title = title ?? string.Empty,
+						Body = body,
+						Channel = channel
+					};
+
+					string raw = intent.Extras.ToString() ?? string.Empty;
+					await NotificationService.AddAsync(fallback, NotificationSource.Push, raw, CancellationToken.None);
+					await NotificationRenderer.RenderAsync(fallback.Title, fallback.Body, fallback.Channel ?? string.Empty, CancellationToken.None);
+					return;
 				}
 				// Handle NFC intents.
 				else if (intent.Action == NfcAdapter.ActionTagDiscovered ||
