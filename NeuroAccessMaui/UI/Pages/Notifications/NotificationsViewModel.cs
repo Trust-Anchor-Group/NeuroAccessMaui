@@ -162,7 +162,7 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 
 		private async Task OnNotificationAddedAsync(object? Sender, NotificationRecordEventArgs Args)
 		{
-			await MainThread.InvokeOnMainThreadAsync(this.ApplyFilters);
+			await this.LoadAsync();
 		}
 
 		private NotificationListItem ToListItem(NotificationRecord record)
