@@ -71,7 +71,7 @@ namespace NeuroAccessMaui
 					try
 					{
 						INotificationRenderer renderer = ServiceRef.Provider.GetRequiredService<INotificationRenderer>();
-						renderer.RenderAsync(intent.Title, intent.Body, intent.Channel ?? string.Empty, CancellationToken.None).ConfigureAwait(false);
+						renderer.RenderAsync(intent, CancellationToken.None).ConfigureAwait(false);
 					}
 					catch (Exception ex)
 					{
@@ -91,6 +91,13 @@ namespace NeuroAccessMaui
 		{
 			try
 			{
+				if (userInfo["notificationIntent"] is NSString intentJson)
+				{
+					NotificationIntent? parsed = JsonSerializer.Deserialize<NotificationIntent>(intentJson.ToString());
+					if (parsed is not null)
+						return parsed;
+				}
+
 				string? channelId = userInfo["channelId"]?.ToString();
 				string? title = userInfo["myTitle"]?.ToString();
 				string? body = userInfo["myBody"]?.ToString();

@@ -220,7 +220,7 @@ namespace NeuroAccessMaui
 
 					string raw = intent.Extras.ToString() ?? string.Empty;
 					await NotificationService.AddAsync(fallback, NotificationSource.Push, raw, CancellationToken.None);
-					await NotificationRenderer.RenderAsync(fallback.Title, fallback.Body, fallback.Channel ?? string.Empty, CancellationToken.None);
+					await NotificationRenderer.RenderAsync(fallback, CancellationToken.None);
 					return;
 				}
 				// Handle NFC intents.
