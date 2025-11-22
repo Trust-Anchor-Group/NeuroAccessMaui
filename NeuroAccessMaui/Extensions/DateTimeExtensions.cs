@@ -1,4 +1,6 @@
-﻿namespace NeuroAccessMaui.Extensions
+﻿using System;
+
+namespace NeuroAccessMaui.Extensions
 {
 	/// <summary>
 	/// Extensions for the <see cref="DateTime"/> class.
@@ -43,6 +45,23 @@
 			if (date >= safeMax || date == DateTime.MaxValue)
 				return safeMax;
 			return date;
+		}
+
+		/// <summary>
+		/// Clamps a nullable date to a safe range, preserving <c>null</c> if no value is present.
+		/// </summary>
+		/// <param name="date">Nullable input date.</param>
+		/// <param name="safeMin">Lower bound (inclusive).</param>
+		/// <param name="safeMax">Upper bound (inclusive).</param>
+		/// <returns>
+		/// <c>null</c> if <paramref name="date"/> is <c>null</c>, otherwise a clamped date in range [safeMin, safeMax].
+		/// </returns>
+		public static DateTime? SanitizeForDatePicker(this DateTime? date, DateTime safeMin, DateTime safeMax)
+		{
+			if (!date.HasValue)
+				return null;
+
+			return date.Value.SanitizeForDatePicker(safeMin, safeMax);
 		}
 	}
 }
