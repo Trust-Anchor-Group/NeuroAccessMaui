@@ -290,7 +290,10 @@ namespace NeuroAccessMaui.UI.Controls
 			(byte[]? ImageBytes, string _) = await CacheService.GetOrFetch(UriValue, Key, this.Permanent);
 
 			if (ImageBytes is null || ImageBytes.Length == 0)
-				throw new InvalidOperationException($"Unable to retrieve image from '{CurrentSource}'.");
+			{
+				ServiceRef.LogService.LogWarning($"UriImage: Failed to load image from '{CurrentSource}'.");
+				return null;
+			}
 
 			byte[] ProcessedBytes = ImageBytes;
 			if (IsSvgUri)
