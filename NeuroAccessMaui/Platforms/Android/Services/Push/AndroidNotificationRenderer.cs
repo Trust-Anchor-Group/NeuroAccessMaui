@@ -6,6 +6,10 @@ using Android.Content;
 using Android.OS;
 using AndroidX.Core.App;
 using AndroidNotification = Android.App.Notification;
+using NeuroAccessMaui.Services.Notification;
+using System.Text.Json;
+using System;
+using NeuroAccessMaui;
 
 namespace NeuroAccessMaui.Services.Push
 {
@@ -24,11 +28,11 @@ namespace NeuroAccessMaui.Services.Push
 		/// <param name="Message">Notification body.</param>
 		/// <param name="Channel">Notification channel identifier.</param>
 		/// <param name="CancellationToken">Cancellation token.</param>
-		public Task RenderAsync(string Title, string? Message, string Channel, CancellationToken CancellationToken)
+		public Task RenderAsync(NotificationIntent notificationIntent, CancellationToken CancellationToken)
 		{
 			CancellationToken.ThrowIfCancellationRequested();
 
-			string channelId = string.IsNullOrWhiteSpace(Channel) ? DefaultChannelId : Channel;
+			string channelId = string.IsNullOrWhiteSpace(notificationIntent.Channel) ? DefaultChannelId : notificationIntent.Channel;
 
 			NotificationManager? manager = Android.App.Application.Context.GetSystemService(Context.NotificationService) as NotificationManager;
 			if (manager is null)
@@ -39,8 +43,8 @@ namespace NeuroAccessMaui.Services.Push
 			int iconId = Android.App.Application.Context?.ApplicationInfo?.Icon ?? Android.Resource.Drawable.SymDefAppIcon;
 
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(Android.App.Application.Context, channelId)
-				.SetContentTitle(Title)
-				.SetContentText(Message ?? string.Empty)
+				.SetContentTitle(notificationIntent.Title)
+				.SetContentText(notificationIntent.Body ?? string.Empty)
 				.SetSmallIcon(iconId)
 				.SetAutoCancel(true)
 				.SetPriority((int)NotificationPriority.High);
@@ -50,7 +54,29 @@ namespace NeuroAccessMaui.Services.Push
 				builder.SetCategory(AndroidNotification.CategoryMessage);
 			}
 
-			manager.Notify(System.Guid.NewGuid().GetHashCode(), builder.Build());
+			try
+			{
+				string payload = JsonSerializer.Serialize(notificationIntent);
+				Intent launchIntent = new(Android.App.Application.Context, typeof(MainActivity));
+				launchIntent.SetAction(Intent.ActionView);
+				launchIntent.PutExtra("notificationIntent", payload);
+				launchIntent.AddFlags(ActivityFlags.SingleTop | ActivityFlags.ClearTop);
+
+				int requestCode = Math.Abs(payload.GetHashCode());
+				PendingIntent pendingIntent = PendingIntent.GetActivity(
+					Android.App.Application.Context,
+					requestCode,
+					launchIntent,
+					PendingIntentFlags.UpdateCurrent | PendingIntentFlags.Immutable | PendingIntentFlags.OneShot);
+
+				builder.SetContentIntent(pendingIntent);
+			}
+			catch (Exception)
+			{
+				// If serialization fails, fall back to a notification without tap handling.
+			}
+
+			manager.Notify(Guid.NewGuid().GetHashCode(), builder.Build());
 			return Task.CompletedTask;
 		}
 

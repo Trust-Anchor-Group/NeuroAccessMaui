@@ -120,11 +120,15 @@
                                                      Spacing="4">
                                     <Label Text="{Binding Title}"
                                            Style="{DynamicResource MenuItemLabel}"
-                                           FontSize="14" />
-                                    <Label Text="{Binding Body}"
-                                           Style="{DynamicResource ItemDescriptionLabel}"
-                                           FontSize="12"
-                                           MaxLines="2" />
+                                           FontSize="12" />
+									<Grid RowDefinitions="*, auto">
+										<Label Text="Has sent you a message!"
+											   Grid.Row="1"
+											   Style="{DynamicResource ItemDescriptionLabel}"
+											   FontSize="14"
+											   MaxLines="2" />
+									</Grid>
+
                                 </VerticalStackLayout>
 
                                 <StackLayout Grid.Column="2"

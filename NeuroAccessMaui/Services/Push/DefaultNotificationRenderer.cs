@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using NeuroAccessMaui.Services.Notification;
 
 namespace NeuroAccessMaui.Services.Push
 {
@@ -9,18 +10,14 @@ namespace NeuroAccessMaui.Services.Push
 	public sealed class DefaultNotificationRenderer : INotificationRenderer
 	{
 		/// <summary>
-		/// Displays a local notification with the provided title and message.
+		/// Displays a local notification with the provided intent.
 		/// </summary>
-		/// <param name="Title">Notification title.</param>
-		/// <param name="Message">Notification body.</param>
-		/// <param name="Channel">Notification channel identifier.</param>
+		/// <param name="Intent">Notification intent to render.</param>
 		/// <param name="CancellationToken">Cancellation token.</param>
 		/// <returns>Task representing the asynchronous operation.</returns>
-		public Task RenderAsync(string Title, string? Message, string Channel, CancellationToken CancellationToken)
+		public Task RenderAsync(NotificationIntent Intent, CancellationToken CancellationToken)
 		{
-			_ = Title;
-			_ = Message;
-			_ = Channel;
+			_ = Intent;
 			CancellationToken.ThrowIfCancellationRequested();
 			return Task.CompletedTask;
 		}
