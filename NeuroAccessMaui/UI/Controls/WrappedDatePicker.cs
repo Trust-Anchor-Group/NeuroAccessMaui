@@ -5,17 +5,19 @@ using NeuroAccessMaui.Extensions;
 namespace NeuroAccessMaui.UI.Controls
 {
 	/// <summary>
-	/// DatePicker wrapper preventing redundant reentrant Date updates and guarding against invalid extreme dates that crash MAUI on some time zones.
+	/// DatePicker wrapper preventing redundant reentrant Date updates and guarding against invalid extreme dates
+	/// that crash MAUI on some time zones. Updated for nullable DateTime? in .NET MAUI 10.
 	/// </summary>
 	public class WrappedDatePicker : DatePicker, IDatePicker
 	{
 		private bool settingDate;
 
-		// Safe bounds used to avoid DateTimeOffset validation exceptions (year0/ >10000 after offset math).
-		private static readonly DateTime SafeMinDate = new DateTime(1900,1,1);
-		private static readonly DateTime SafeMaxDate = new DateTime(2100,12,31);
+		// Safe bounds used to avoid DateTimeOffset validation exceptions (year 0 / >10000 after offset math).
+		private static readonly DateTime SafeMinDate = new DateTime(1900, 1, 1);
+		private static readonly DateTime SafeMaxDate = new DateTime(2100, 12, 31);
 
-		DateTime IDatePicker.Date
+		// NOTE: IDatePicker.Date is now DateTime?
+		DateTime? IDatePicker.Date
 		{
 			get => this.Date;
 			set
@@ -23,23 +25,48 @@ namespace NeuroAccessMaui.UI.Controls
 				if (this.settingDate)
 					return;
 
-				DateTime Sanitized = value.SanitizeForDatePicker(SafeMinDate, SafeMaxDate);
-				if (this.Date == Sanitized)
-					return; // No change needed; avoids useless handler cycles.
+				// Allow "no selection"
+				if (value is null)
+				{
+					if (this.Date is null)
+						return; // no change
+
+					this.settingDate = true;
+					try
+					{
+						this.Date = null;
+					}
+					finally
+					{
+						this.settingDate = false;
+					}
+
+					return;
+				}
+
+				// Non-null value -> sanitize & clamp
+				DateTime sanitized = value.Value.SanitizeForDatePicker(SafeMinDate, SafeMaxDate);
+
+				// If current date has same non-null value, skip
+				if (this.Date.HasValue && this.Date.Value == sanitized)
+					return;
 
 				this.settingDate = true;
 				try
 				{
 					// Ensure bounds before assigning.
-					if (this.MinimumDate < SafeMinDate)
+					if (!this.MinimumDate.HasValue || this.MinimumDate.Value < SafeMinDate)
 						this.MinimumDate = SafeMinDate;
-					if (this.MaximumDate > SafeMaxDate)
+
+					if (!this.MaximumDate.HasValue || this.MaximumDate.Value > SafeMaxDate)
 						this.MaximumDate = SafeMaxDate;
-					if (Sanitized < this.MinimumDate)
-						Sanitized = this.MinimumDate;
-					else if (Sanitized > this.MaximumDate)
-						Sanitized = this.MaximumDate;
-					this.Date = Sanitized; // Triggers normal MAUI property notifications.
+
+					if (sanitized < this.MinimumDate)
+						sanitized = this.MinimumDate.Value;
+					else if (sanitized > this.MaximumDate)
+						sanitized = this.MaximumDate.Value;
+
+					this.Date = sanitized; // nullable DateTime?
 				}
 				finally
 				{
@@ -56,15 +83,25 @@ namespace NeuroAccessMaui.UI.Controls
 			base.OnHandlerChanged();
 
 			// Clamp bounds once handler exists.
-			if (this.MinimumDate < SafeMinDate || this.MinimumDate == DateTime.MinValue)
+			if (!this.MinimumDate.HasValue || this.MinimumDate == DateTime.MinValue || this.MinimumDate < SafeMinDate)
 				this.MinimumDate = SafeMinDate;
-			if (this.MaximumDate > SafeMaxDate || this.MaximumDate == DateTime.MaxValue)
+
+			if (!this.MaximumDate.HasValue || this.MaximumDate == DateTime.MaxValue || this.MaximumDate > SafeMaxDate)
 				this.MaximumDate = SafeMaxDate;
 
-			// Clamp current date to bounds.
-			DateTime Current = this.Date.SanitizeForDatePicker(SafeMinDate, SafeMaxDate);
-			if (Current != this.Date)
-				this.Date = Current;
+			// Clamp current date to bounds, if present.
+			if (this.Date is DateTime currentValue)
+			{
+				DateTime current = currentValue.SanitizeForDatePicker(SafeMinDate, SafeMaxDate);
+
+				if (current < this.MinimumDate)
+					current = this.MinimumDate.Value;
+				else if (current > this.MaximumDate)
+					current = this.MaximumDate.Value;
+
+				if (current != currentValue)
+					this.Date = current;
+			}
 		}
 	}
 }

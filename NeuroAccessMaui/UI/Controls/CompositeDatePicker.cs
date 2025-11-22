@@ -15,8 +15,8 @@ namespace NeuroAccessMaui.UI.Controls
 	/// </summary>
 	public class CompositeDatePicker : CompositeInputView
 	{
-		private static readonly DateTime SafeMinDate = new DateTime(1900,1,1);
-		private static readonly DateTime SafeMaxDate = new DateTime(2100,12,31);
+		private static readonly DateTime SafeMinDate = new DateTime(1900, 1, 1);
+		private static readonly DateTime SafeMaxDate = new DateTime(2100, 12, 31);
 
 		/// <summary>
 		/// The Font property.
@@ -221,7 +221,7 @@ namespace NeuroAccessMaui.UI.Controls
 
 			// Bind internal properties to this control
 			this.picker.SetBinding(DatePicker.DateProperty,
-				new Binding(nameof(this.NullableDate), source: this, mode: BindingMode.TwoWay, converter: new NullableDateTimeConverter()));
+				new Binding(nameof(this.NullableDate), source: this, mode: BindingMode.TwoWay));
 			this.picker.SetBinding(DatePicker.MinimumDateProperty,
 				new Binding(nameof(this.MinimumDate), source: this));
 			this.picker.SetBinding(DatePicker.MaximumDateProperty,
@@ -266,8 +266,18 @@ namespace NeuroAccessMaui.UI.Controls
 		private void OnPickerDateSelected(object? Sender, DateChangedEventArgs E)
 		{
 			DateTime? OldDate = this.NullableDate;
-			DateTime NewDate = E.NewDate.SanitizeForDatePicker(this.MinimumDate, this.MaximumDate);
-			this.NullableDate = NewDate;
+			DateTime? NewDate = E.NewDate;
+
+			if (NewDate.HasValue)
+			{
+				DateTime Clamped = NewDate.Value.SanitizeForDatePicker(this.MinimumDate, this.MaximumDate);
+				this.NullableDate = Clamped;
+			}
+			else
+			{
+				this.NullableDate = null;
+			}
+
 			NullableDateSelected?.Invoke(this, new NullableDateChangedEventArgs(OldDate, this.NullableDate));
 		}
 
@@ -275,9 +285,14 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			if (!this.NullableDate.HasValue)
 			{
-				DateTime Picked = this.picker.Date.SanitizeForDatePicker(this.MinimumDate, this.MaximumDate);
-				this.NullableDate = Picked;
-				NullableDateSelected?.Invoke(this, new NullableDateChangedEventArgs(null, Picked));
+				DateTime? PickerDate = this.picker.Date;
+
+				if (PickerDate.HasValue)
+				{
+					DateTime Picked = PickerDate.Value.SanitizeForDatePicker(this.MinimumDate, this.MaximumDate);
+					this.NullableDate = Picked;
+					NullableDateSelected?.Invoke(this, new NullableDateChangedEventArgs(null, Picked));
+				}
 			}
 		}
 
