@@ -3,6 +3,7 @@ using System.Text;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Notification;
 using Waher.Content.Markdown;
 using Waher.Networking.XMPP.Contracts;
@@ -18,38 +19,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 	public class ContractModel : IUniqueItem, INotifyPropertyChanged
 	{
 		private readonly string contractId;
-		private readonly string category;
-		private readonly string name;
+		private readonly string? category;
+		private readonly string? name;
 		private readonly DateTime timestamp;
-		private readonly Contract contract;
+		private readonly ContractReference contractRef;
 		private NotificationEvent[] events;
 
-		private ContractModel(string ContractId, DateTime Timestamp, Contract Contract, string Category, string Name, NotificationEvent[] Events)
+		public ContractModel(ContractReference ContractRef, NotificationEvent[] Events)
 		{
-			this.contract = Contract;
-			this.contractId = ContractId;
-			this.timestamp = Timestamp;
-			this.category = Category;
-			this.name = Name;
+			this.contractRef = ContractRef;
+			this.contractId = ContractRef.ContractId;
+			this.timestamp = ContractRef.Created;
+			this.category = ContractRef.Category;
+			this.name = ContractRef.Name;
 			this.events = Events;
-		}
-
-		/// <summary>
-		/// Creates an instance of the <see cref="ContractModel"/> class.
-		/// </summary>
-		/// <param name="ContractId">The contract id.</param>
-		/// <param name="Timestamp">The timestamp to show with the contract reference.</param>
-		/// <param name="Contract">Contract</param>
-		/// <param name="Events">Notification events associated with contract.</param>
-		public static async Task<ContractModel> Create(string ContractId, DateTime Timestamp, Contract Contract, NotificationEvent[] Events)
-		{
-			string Category = await GetCategory(Contract) ?? Contract.ForMachinesNamespace + "#" + Contract.ForMachinesLocalName;
-			string Name = await GetName(Contract);
-
-			if (string.IsNullOrEmpty(Name))
-				Name = Contract.ContractId;
-
-			return new ContractModel(ContractId, Timestamp, Contract, Category, Name, Events);
 		}
 
 		/// <summary>
@@ -149,7 +132,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// <summary>
 		/// A reference to the contract.
 		/// </summary>
-		public Contract Contract => this.contract;
+		public ContractReference ContractRef => this.contractRef;
 
 		/// <summary>
 		/// Displayable name for the contract.

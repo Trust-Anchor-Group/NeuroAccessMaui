@@ -27,7 +27,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 	/// </summary>
 	public partial class MyContractsViewModel : BaseViewModel
 	{
-		private readonly Dictionary<string, Contract> contractsMap = [];
+		private readonly Dictionary<string, ContractReference> contractsMap = [];
 		private readonly ContractsListMode contractsListMode;
 		private readonly TaskCompletionSource<Contract?>? selection;
 		private Contract? selectedContract = null;
@@ -209,10 +209,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// </summary>
 		public void ContractSelected(string ContractId)
 		{
+			Contract? Contract;
+
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				if (this.contractsMap.TryGetValue(ContractId, out Contract? Contract))
+				if (this.contractsMap.TryGetValue(ContractId, out ContractReference? Ref) && Ref is not null)
 				{
+					try
+					{
+						Contract = await Ref.GetContract();
+						if (Contract is null)
+							return;
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+						return;
+					}
+
 					switch (this.Action)
 					{
 						case SelectContractAction.ViewContract:
@@ -293,16 +307,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		{
 			try
 			{
-				IEnumerable<ContractReference> ContractReferences;
+				IEnumerable<ContractReference> ContractReferences = [];
 				bool ShowAdditionalEvents;
 				Contract? Contract;
 
 				switch (this.contractsListMode)
 				{
 					case ContractsListMode.Contracts:
-						ContractReferences = await Database.Find<ContractReference>(new FilterAnd(
-							new FilterFieldEqualTo("IsTemplate", false),
-							new FilterFieldEqualTo("ContractLoaded", true)));
+						for (int i =0; i < 50; i++)
+						{
+							IEnumerable<ContractReference> ContractReferences2 = await Database.Find<ContractReference>(new FilterAnd(
+								new FilterFieldEqualTo("IsTemplate", false),
+								new FilterFieldEqualTo("ContractLoaded", true)));
+
+							foreach (ContractReference Ref in ContractReferences2)
+							{
+								ContractReferences = ContractReferences.Append(Ref);
+							}
+						}
 
 						ShowAdditionalEvents = true;
 						break;
@@ -377,19 +399,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 					Found = true;
 
-					try
-					{
-						Contract = await Ref.GetContract();
-						if (Contract is null)
-							continue;
-					}
-					catch (Exception Ex)
-					{
-						ServiceRef.LogService.LogException(Ex);
-						continue;
-					}
-
-					this.contractsMap[Ref.ContractId] = Contract;
+					this.contractsMap[Ref.ContractId] = Ref;
 
 					if (EventsByCategory.TryGetValue(Ref.ContractId, out NotificationEvent[]? Events))
 					{
@@ -417,7 +427,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					else
 						Events = [];
 
-					ContractModel Item = await ContractModel.Create(Ref.ContractId, Ref.Created, Contract, Events);
+					ContractModel Item = new(Ref, Events);
 					string Category = Item.Category;
 
 					if (!ContractsByCategory.TryGetValue(Category, out List<ContractModel>? Contracts2))
