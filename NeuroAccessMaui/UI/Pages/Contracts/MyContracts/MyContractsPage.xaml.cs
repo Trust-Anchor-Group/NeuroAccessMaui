@@ -44,7 +44,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				{
 					this.selectionMade = true;
 
-					MyContractsViewModel.ContractSelected(Contract.ContractId);
+					MyContractsViewModel.ContractSelected(Contract);
 
 					if (Contract.HasEvents)
 						ServiceRef.NotificationService.DeleteEvents(Contract.Events);

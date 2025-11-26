@@ -207,24 +207,24 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// <summary>
 		/// Add or remove the contracts from the collection
 		/// </summary>
-		public void ContractSelected(string ContractId)
+		public void ContractSelected(ContractModel Model)
 		{
-			Contract? Contract;
-
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				if (this.contractsMap.TryGetValue(ContractId, out ContractReference? Ref) && Ref is not null)
+				try
 				{
-					try
+					ContractReference Ref = Model.ContractRef;
+
+					if (Ref.ContractId is null)
 					{
-						Contract = await Ref.GetContract();
-						if (Contract is null)
-							return;
-					}
-					catch (Exception Ex)
-					{
-						ServiceRef.LogService.LogException(Ex);
-						return;
+						if (await ServiceRef.UiService.DisplayAlert(
+								ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
+								ServiceRef.Localizer[nameof(AppResources.Yes)],
+								ServiceRef.Localizer[nameof(AppResources.No)]))
+						{
+							await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", Ref.ContractId));
+							await this.LoadContracts();
+						}
 					}
 
 					switch (this.Action)
@@ -232,45 +232,29 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						case SelectContractAction.ViewContract:
 							if (this.contractsListMode == ContractsListMode.Contracts)
 							{
-								try
-								{
-									Contract ??= await ServiceRef.XmppService.GetContract(ContractId);
-									ViewContractNavigationArgs Args = new(Contract, false);
-									await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
-								}
-								catch (ItemNotFoundException)
-								{
-									if(await ServiceRef.UiService.DisplayAlert(
-										ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
-										ServiceRef.Localizer[nameof(AppResources.Yes)],
-										ServiceRef.Localizer[nameof(AppResources.No)]))
-									{
-										await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", ContractId));
-										await this.LoadContracts();
-									}
-								}
-								catch (Exception Ex)
-								{
-									ServiceRef.LogService.LogException(Ex);
-									await ServiceRef.UiService.DisplayAlert(
-										ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Ex.Message,
-										ServiceRef.Localizer[nameof(AppResources.Ok)]);
-								}
+								ViewContractNavigationArgs Args = new(Ref, false);
+								await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
 							}
 							else
 							{
-								await ServiceRef.ContractOrchestratorService.OpenContract(ContractId, ServiceRef.Localizer[nameof(AppResources.ReferencedID)], null);
+								await ServiceRef.ContractOrchestratorService.OpenContract(Ref.ContractId, ServiceRef.Localizer[nameof(AppResources.ReferencedID)], null);
 								//NewContractNavigationArgs Args = new(Contract, null);
 								//await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), Args, BackMethod.CurrentPage);
 							}
 							break;
 
 						case SelectContractAction.Select:
+							Contract? Contract = await Ref.GetContract(); // TODO FIX
 							this.selectedContract = Contract;
 							await this.GoBack();
 							this.selection?.TrySetResult(Contract);
 							break;
 					}
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+					return;
 				}
 			});
 		}
@@ -307,24 +291,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		{
 			try
 			{
-				IEnumerable<ContractReference> ContractReferences = [];
+				IEnumerable<ContractReference> ContractReferences;
 				bool ShowAdditionalEvents;
 				Contract? Contract;
 
 				switch (this.contractsListMode)
 				{
 					case ContractsListMode.Contracts:
-						for (int i =0; i < 50; i++)
-						{
-							IEnumerable<ContractReference> ContractReferences2 = await Database.Find<ContractReference>(new FilterAnd(
-								new FilterFieldEqualTo("IsTemplate", false),
-								new FilterFieldEqualTo("ContractLoaded", true)));
-
-							foreach (ContractReference Ref in ContractReferences2)
-							{
-								ContractReferences = ContractReferences.Append(Ref);
-							}
-						}
+						ContractReferences = await Database.Find<ContractReference>(new FilterAnd(
+							new FilterFieldEqualTo("IsTemplate", false),
+							new FilterFieldEqualTo("ContractLoaded", true)));
 
 						ShowAdditionalEvents = true;
 						break;

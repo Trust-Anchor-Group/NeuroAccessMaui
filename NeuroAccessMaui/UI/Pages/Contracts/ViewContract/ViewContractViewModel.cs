@@ -704,12 +704,53 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		}
 		private bool ValidateArgs()
 		{
-			return this.args is not null && this.args.Contract is not null;
+			return this.args is not null && (this.args.Contract is not null || this.args.ContractRef is not null);
 		}
 
 		private async Task LoadContractAsync()
 		{
-			this.Contract = await ObservableContract.CreateAsync(this.args!.Contract!);
+			if (this.args!.ContractRef is null)
+			{
+				this.Contract = await ObservableContract.CreateAsync(this.args!.Contract!);
+			}
+			else
+			{
+				Contract? Contract = await this.args!.ContractRef!.GetContract();
+
+				if (this.args.ContractRef.ContractId is null)
+				{
+					await this.GoBack();
+				}
+
+				try
+				{
+					Contract ??= await ServiceRef.XmppService.GetContract(this.args!.ContractRef!.ContractId!);
+				}
+				catch (ItemNotFoundException)
+				{
+					if (await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
+						ServiceRef.Localizer[nameof(AppResources.Yes)],
+						ServiceRef.Localizer[nameof(AppResources.No)]))
+					{
+						await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", this.args.ContractRef.ContractId));
+						await this.GoBack();
+					}
+
+					return;
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], Ex.Message,
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+
+					await this.GoBack();
+				}
+
+				this.Contract = await ObservableContract.CreateAsync(Contract!);
+			}
 		}
 
 		private async Task InitializeUIAsync()

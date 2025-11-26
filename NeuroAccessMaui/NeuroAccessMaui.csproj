@@ -98,6 +98,7 @@
 		<RunAOTCompilation>False</RunAOTCompilation>
 		<DebugSymbols>True</DebugSymbols>
 		<AndroidDebugSymbols>true</AndroidDebugSymbols>
+		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
 	<PropertyGroup>
