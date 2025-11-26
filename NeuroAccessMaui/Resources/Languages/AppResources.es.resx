@@ -766,7 +766,7 @@
     <value>Número personal</value>
   </data>
   <data name="Petition" xml:space="preserve">
-    <value>Pedir</value>
+    <value>Petición</value>
   </data>
   <data name="PetitionSignatureInformationText" xml:space="preserve">
     <value>Se ha recibido una solicitud de firma. Revise el motivo a continuación y la información sobre quién envió la solicitud, y luego elija cómo desea responder.</value>
