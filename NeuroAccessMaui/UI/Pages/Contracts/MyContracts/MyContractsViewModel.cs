@@ -85,8 +85,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// <inheritdoc/>
 		public override async Task OnAppearingAsync()
 		{
-			this.IsBusy = false;
-
 			await base.OnAppearingAsync();
 
 			if (this.selection is not null && this.selection.Task.IsCompleted)
@@ -196,7 +194,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				this.Contracts.Clear();
-				foreach (var c in source)
+				foreach (ContractModel c in source)
 					this.Contracts.Add(c);
 			});
 		}
@@ -221,14 +219,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 				if (Ref.ContractId is null)
 				{
-					bool delete = await MainThread.InvokeOnMainThreadAsync(async () =>
+					bool Delete = await MainThread.InvokeOnMainThreadAsync(async () =>
 						await ServiceRef.UiService.DisplayAlert(
 							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
 							ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
 							ServiceRef.Localizer[nameof(AppResources.Yes)],
 							ServiceRef.Localizer[nameof(AppResources.No)]));
 
-					if (delete)
+					if (Delete)
 					{
 						await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", Ref.ContractId)).ConfigureAwait(false);
 						await this.LoadContracts();
@@ -324,14 +322,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						break;
 
 					case ContractsListMode.TokenCreationTemplates:
-						var refs = await Database.Find<ContractReference>(new FilterAnd(
+						ContractReferences = await Database.Find<ContractReference>(new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true)));
 
 						Dictionary<CaseInsensitiveString, bool> ContractIds = [];
 						LinkedList<ContractReference> TokenCreationTemplates = [];
 
-						foreach (ContractReference Ref in refs)
+						foreach (ContractReference Ref in ContractReferences)
 						{
 							if (Ref.IsTokenCreationTemplate && Ref.ContractId is not null)
 							{
@@ -390,10 +388,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 				while (index < list.Count)
 				{
-					var batch = list.Skip(index).Take(batchSize).ToList();
+					List<ContractReference> batch = list.Skip(index).Take(batchSize).ToList();
 					index += batch.Count;
 
-					foreach (var Ref in batch)
+					foreach (ContractReference Ref in batch)
 					{
 						this.contractsMap[Ref.ContractId] = Ref;
 
