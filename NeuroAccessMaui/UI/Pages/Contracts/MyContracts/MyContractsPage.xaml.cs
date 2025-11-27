@@ -35,12 +35,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			{
 				object SelectedItem = this.Contracts.SelectedItem;
 
-				if (SelectedItem is HeaderModel Category)
-				{
-					Category.Expanded = !Category.Expanded;
-					MyContractsViewModel.AddOrRemoveContracts(Category, Category.Expanded);
-				}
-				else if (SelectedItem is ContractModel Contract)
+				if (SelectedItem is ContractModel Contract)
 				{
 					this.selectionMade = true;
 
@@ -48,11 +43,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 					if (Contract.HasEvents)
 						ServiceRef.NotificationService.DeleteEvents(Contract.Events);
-				}
-				else if (SelectedItem is EventModel Event)
-				{
-					this.selectionMade = true;
-					Event.Clicked();
 				}
 
 				this.Contracts.SelectedItem = null;
@@ -67,15 +57,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				{
 					if (this.ContentPageModel is MyContractsViewModel MyContractsViewModel)
 					{
-						ObservableCollection<IUniqueItem> CategoryCopy = new(MyContractsViewModel.Categories); 
-
-						foreach (IUniqueItem Category in CategoryCopy)
-						{
-							if (Category is HeaderModel Category2)
-							{
-								MyContractsViewModel.SearchContracts(Category2, e.NewTextValue);
-							}
-						}
+						MyContractsViewModel.UpdateSearch(e.NewTextValue);
 					}
 				});
 			}

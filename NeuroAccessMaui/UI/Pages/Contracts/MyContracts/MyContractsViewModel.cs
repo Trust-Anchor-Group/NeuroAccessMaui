@@ -141,71 +141,55 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private bool showContractsMissing;
 
 		/// <summary>
-		/// Holds the list of contracts to display, ordered by category.
+		/// Holds the flat list of contracts to display.
 		/// </summary>
-		public ObservableCollection<IUniqueItem> Categories { get; } = [];
+		public ObservableCollection<ContractModel> Contracts { get; } = [];
 
 		/// <summary>
-		/// Add or remove the contracts from the collection
+		/// Simple in-memory cache of full list for search filtering.
 		/// </summary>
-		public void AddOrRemoveContracts(HeaderModel Category, bool Expanded)
+		private List<ContractModel> allContracts = [];
+
+		/// <summary>
+		/// Search filter text.
+		/// </summary>
+		private string? searchText;
+
+		/// <summary>
+		/// Clears and repopulates the visible Contracts collection based on search.
+		/// </summary>
+		private void ApplySearchFilter()
 		{
+			string? s = this.searchText;
+			IEnumerable<ContractModel> source = this.allContracts;
+
+			if (!string.IsNullOrWhiteSpace(s))
+			{
+				string term = s.Trim();
+				source = source.Where(c =>
+					(c.Category?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false) ||
+					(c.Name?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false));
+			}
+
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				if (Expanded)
-				{
-					int Index = this.Categories.IndexOf(Category);
-
-					foreach (ContractModel Contract in Category.Contracts)
-						this.Categories.Insert(++Index, Contract);
-				}
-				else
-				{
-					foreach (ContractModel Contract in Category.Contracts)
-						this.Categories.Remove(Contract);
-				}
+				this.Contracts.Clear();
+				foreach (var c in source)
+					this.Contracts.Add(c);
 			});
 		}
 
 		/// <summary>
-		/// Add or remove the contracts from the collection based on a search
+		/// Should be called by page on text change.
 		/// </summary>
-		public void SearchContracts(HeaderModel Category, string SearchString)
+		public void UpdateSearch(string? text)
 		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				int Index = this.Categories.IndexOf(Category);
-
-				bool MatchFound = false;
-
-				foreach (ContractModel Contract in Category.Contracts)
-				{
-					if (string.IsNullOrEmpty(SearchString))
-					{
-						this.Categories.Remove(Contract);
-						continue;
-					}
-
-					if (Contract.Category.Contains(SearchString, StringComparison.OrdinalIgnoreCase) ||
-						Contract.Name.Contains(SearchString, StringComparison.OrdinalIgnoreCase))
-					{
-						if (!this.Categories.Contains(Contract))
-							this.Categories.Insert(++Index, Contract);
-
-						MatchFound = true;
-					}
-					else
-					{
-						this.Categories.Remove(Contract);
-					}
-				}
-
-				Category.Expanded = MatchFound;
-			});
+			this.searchText = text;
+			this.ApplySearchFilter();
 		}
 
 		/// <summary>
-		/// Add or remove the contracts from the collection
+		/// Handle contract selection.
 		/// </summary>
 		public void ContractSelected(ContractModel Model)
 		{
@@ -238,8 +222,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 							else
 							{
 								await ServiceRef.ContractOrchestratorService.OpenContract(Ref.ContractId, ServiceRef.Localizer[nameof(AppResources.ReferencedID)], null);
-								//NewContractNavigationArgs Args = new(Contract, null);
-								//await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), Args, BackMethod.CurrentPage);
 							}
 							break;
 
@@ -292,8 +274,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			try
 			{
 				IEnumerable<ContractReference> ContractReferences;
-				bool ShowAdditionalEvents;
-				Contract? Contract;
+				bool Found = false;
 
 				switch (this.contractsListMode)
 				{
@@ -301,27 +282,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						ContractReferences = await Database.Find<ContractReference>(new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", false),
 							new FilterFieldEqualTo("ContractLoaded", true)));
-
-						ShowAdditionalEvents = true;
 						break;
 
 					case ContractsListMode.ContractTemplates:
 						ContractReferences = await Database.Find<ContractReference>(new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true)));
-
-						ShowAdditionalEvents = false;
 						break;
 
 					case ContractsListMode.TokenCreationTemplates:
-						ContractReferences = await Database.Find<ContractReference>(new FilterAnd(
+						var refs = await Database.Find<ContractReference>(new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true)));
 
 						Dictionary<CaseInsensitiveString, bool> ContractIds = [];
 						LinkedList<ContractReference> TokenCreationTemplates = [];
 
-						foreach (ContractReference Ref in ContractReferences)
+						foreach (ContractReference Ref in refs)
 						{
 							if (Ref.IsTokenCreationTemplate && Ref.ContractId is not null)
 							{
@@ -334,7 +311,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						{
 							if (!ContractIds.ContainsKey(TokenTemplateId))
 							{
-								Contract = await ServiceRef.XmppService.GetContract(TokenTemplateId);
+								Contract? Contract = await ServiceRef.XmppService.GetContract(TokenTemplateId);
 								if (Contract is not null)
 								{
 									ContractReference Ref = new()
@@ -357,122 +334,68 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						}
 
 						ContractReferences = TokenCreationTemplates;
-						ShowAdditionalEvents = false;
 						break;
 
 					default:
 						return;
 				}
 
-				SortedDictionary<string, List<ContractModel>> ContractsByCategory = new(StringComparer.CurrentCultureIgnoreCase);
+				// Sort newest first
+				List<ContractReference> list = ContractReferences.Where(r => r.ContractId is not null).ToList();
+				Found = list.Count > 0;
+				list.Sort((a, b) => b.Created.CompareTo(a.Created));
+
+				// Prepare notification map
 				SortedDictionary<CaseInsensitiveString, NotificationEvent[]> EventsByCategory = ServiceRef.NotificationService.GetEventsByCategory(NotificationEventType.Contracts);
-				bool Found = false;
 
-				foreach (ContractReference Ref in ContractReferences)
+				// Incremental loading: process in batches of 15
+				int batchSize = 15;
+				int index = 0;
+
+				this.allContracts.Clear();
+				this.Contracts.Clear();
+
+				while (index < list.Count)
 				{
-					if (Ref.ContractId is null)
-						continue;
+					var batch = list.Skip(index).Take(batchSize).ToList();
+					index += batch.Count;
 
-					Found = true;
-
-					this.contractsMap[Ref.ContractId] = Ref;
-
-					if (EventsByCategory.TryGetValue(Ref.ContractId, out NotificationEvent[]? Events))
+					foreach (var Ref in batch)
 					{
-						EventsByCategory.Remove(Ref.ContractId);
+						this.contractsMap[Ref.ContractId] = Ref;
 
-						List<NotificationEvent> Events2 = [];
-						List<NotificationEvent>? Petitions = null;
-
-						foreach (NotificationEvent Event in Events)
+						NotificationEvent[] Events = [];
+						if (EventsByCategory.TryGetValue(Ref.ContractId, out NotificationEvent[]? evs))
 						{
-							if (Event is ContractPetitionNotificationEvent Petition)
+							// Separate petitions to remain in the service map, only show other events count
+							EventsByCategory.Remove(Ref.ContractId);
+
+							List<NotificationEvent> Events2 = [];
+							foreach (NotificationEvent Event in evs)
 							{
-								Petitions ??= [];
-								Petitions.Add(Petition);
+								if (Event is not ContractPetitionNotificationEvent)
+									Events2.Add(Event);
 							}
-							else
-								Events2.Add(Event);
+
+							Events = [.. Events2];
 						}
 
-						if (Petitions is not null)
-							EventsByCategory[Ref.ContractId] = [.. Petitions];
-
-						Events = [.. Events2];
-					}
-					else
-						Events = [];
-
-					ContractModel Item = new(Ref, Events);
-					string Category = Item.Category;
-
-					if (!ContractsByCategory.TryGetValue(Category, out List<ContractModel>? Contracts2))
-					{
-						Contracts2 = [];
-						ContractsByCategory[Category] = Contracts2;
+						ContractModel Item = new(Ref, Events);
+						this.allContracts.Add(Item);
 					}
 
-					Contracts2.Add(Item);
+					// Push this batch to UI (respecting search filter)
+					this.ApplySearchFilter();
+
+					// Yield to UI
+					await Task.Yield();
 				}
 
-				List<IUniqueItem> NewCategories = [];
-
-				if (ShowAdditionalEvents)
-				{
-					foreach (KeyValuePair<CaseInsensitiveString, NotificationEvent[]> P in EventsByCategory)
-					{
-						foreach (NotificationEvent Event in P.Value)
-						{
-							Geometry Icon = await Event.GetCategoryIcon();
-							string Description = await Event.GetDescription();
-
-							NewCategories.Add(new EventModel(Event.Received, Icon, Description, Event));
-						}
-					}
-				}
-
-				foreach (KeyValuePair<string, List<ContractModel>> P in ContractsByCategory)
-				{
-					int Nr = 0;
-
-					foreach (ContractModel Model in P.Value)
-						Nr += Model.NrEvents;
-
-					P.Value.Sort(new DateTimeDesc());
-					NewCategories.Add(new HeaderModel(P.Key, P.Value.ToArray(), Nr));
-				}
-
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					this.Categories.Clear();
-
-					foreach (IUniqueItem Item in NewCategories)
-						this.Categories.Add(Item);
-
-					this.ShowContractsMissing = !Found;
-				});
+				this.ShowContractsMissing = !Found;
 			}
 			finally
 			{
 				this.IsBusy = false;
-			}
-		}
-
-		private class DateTimeDesc : IComparer<ContractModel>
-		{
-			public int Compare(ContractModel? x, ContractModel? y)
-			{
-				if (x is null)
-				{
-					if (y is null)
-						return 0;
-					else
-						return -1;
-				}
-				else if (y is null)
-					return 1;
-				else
-					return y.Timestamp.CompareTo(x.Timestamp);
 			}
 		}
 
@@ -485,17 +408,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					if (Event.Type != NotificationEventType.Contracts)
 						continue;
 
-					HeaderModel? LastHeader = null;
-
-					foreach (IUniqueItem Group in this.Categories)
+					foreach (ContractModel Contract in this.Contracts)
 					{
-						if (Group is HeaderModel Header)
-							LastHeader = Header;
-						else if (Group is ContractModel Contract && Contract.ContractId == Event.Category)
+						if (Contract.ContractId == Event.Category)
 						{
-							if (Contract.RemoveEvent(Event) && LastHeader is not null)
-								LastHeader.NrEvents--;
-
+							Contract.RemoveEvent(Event);
 							break;
 						}
 					}
@@ -511,17 +428,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			{
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
-					HeaderModel? LastHeader = null;
-
-					foreach (IUniqueItem Group in this.Categories)
+					foreach (ContractModel Contract in this.Contracts)
 					{
-						if (Group is HeaderModel Header)
-							LastHeader = Header;
-						else if (Group is ContractModel Contract && Contract.ContractId == e.Event.Category)
+						if (Contract.ContractId == e.Event.Category)
 						{
-							if (Contract.AddEvent(e.Event) && LastHeader is not null)
-								LastHeader.NrEvents++;
-
+							Contract.AddEvent(e.Event);
 							break;
 						}
 					}
