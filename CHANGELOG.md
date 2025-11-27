@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Various minor UI improvements
 - Fixed scanning Onboarding QR codes outside of app
 - Fix edge cases in ViewSwitcher control
+- Remove first authentication when opening a 'tagsign' uri
 
 ## [2.6.1] - 2025/06/30
 
