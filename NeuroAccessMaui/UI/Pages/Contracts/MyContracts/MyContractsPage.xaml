@@ -15,75 +15,88 @@
 	
 	<VisualElement.Resources>
 		<DataTemplate x:Key="ContractModelTemplate" x:DataType="objectmodel:ContractModel">
-			<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto" Padding="5,5,5,5">
-				<Label Grid.Column="0" Grid.Row="0" LineBreakMode="NoWrap" Padding="5,2,5,0"
-					   Text="{Binding Path=Timestamp, Converter={converters:DateToString}}"
-					   HorizontalOptions="Center" VerticalOptions="Center"/>
-				<Label Grid.Column="0" Grid.Row="1" LineBreakMode="NoWrap" Padding="5,0,5,2"
-					   Text="{Binding Path=Timestamp, Converter={converters:TimeToString}}"
-					   HorizontalOptions="Center" VerticalOptions="Center"/>
-				<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="CharacterWrap" TextType="Text"
-					   HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,2,5,2" Margin="5"
-					   Text="{Binding Path=NameOrCategory}" Style="{DynamicResource ClickableValueLabel}"/>
-				<Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" StrokeShape="RoundRectangle 12" Margin="2" Padding="8,3,8,3"
-						IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
-						Style="{DynamicResource RedButtonActiveBorder}">
-					<Label FontSize="Caption" TextColor="{DynamicResource ContentWhitefixed}"
-					   Text="{Binding NrEvents}" Padding="1"/>
-				</Border>
-				<!-- Share Template QR button -->
-				<controls:SvgButton Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
-									SvgSource="share.svg"
-									Style="{DynamicResource IconButtonOnBackground}"
-									HorizontalOptions="End"
-									VerticalOptions="Center"
-									Command="{Binding ShareTemplateQRCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
-									CommandParameter="{Binding .}"
-									IsVisible="{Binding CanShareTemplate, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}" />
-			</Grid>
+			<Border Style="{DynamicResource BorderSet}">
+				<controls:TemplatedButton Padding="0"
+								 Command="{Binding ContractSelectedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+								 CommandParameter="{Binding .}">
+					<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto">
+						<Label Grid.Column="0" Grid.Row="0" LineBreakMode="NoWrap" Padding="5,2,5,0"
+								Text="{Binding Path=Timestamp, Converter={converters:DateToString}}"
+								HorizontalOptions="Center" VerticalOptions="Center"/>
+						<Label Grid.Column="0" Grid.Row="1" LineBreakMode="NoWrap" Padding="5,0,5,2"
+								Text="{Binding Path=Timestamp, Converter={converters:TimeToString}}"
+								HorizontalOptions="Center" VerticalOptions="Center"/>
+						<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="CharacterWrap" TextType="Text"
+								HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,2,5,2" Margin="5"
+								Text="{Binding Path=NameOrCategory}" Style="{DynamicResource ClickableValueLabel}"/>
+						<Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" StrokeShape="RoundRectangle 12" Margin="2" Padding="8,3,8,3"
+								IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
+								Style="{DynamicResource RedButtonActiveBorder}">
+							<Label FontSize="Caption" TextColor="{DynamicResource ContentWhitefixed}"
+									Text="{Binding NrEvents}" Padding="1"/>
+						</Border>
+						<!-- Share Template QR button -->
+						<controls:SvgButton Grid.Column="2" Grid.Row="0" Grid.RowSpan="2"
+											SvgSource="share.svg"
+											Style="{DynamicResource IconButtonOnBackground}"
+											HorizontalOptions="End"
+											VerticalOptions="Center"
+											Command="{Binding ShareTemplateQRCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+											CommandParameter="{Binding .}"
+											IsVisible="{Binding CanShareTemplate, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}" />
+					</Grid>
+				</controls:TemplatedButton>
+			</Border>
 		</DataTemplate>
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, *">
 
-		<controls:Background/>
+		<controls:Background Grid.RowSpan="2"/>
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="16,8,16,16">
-				<controls:SvgButton
-					Grid.Row="0" Grid.Column="0"
-					Command="{Binding GoBackCommand}"
-					SvgSource="close.svg"
-					Style="{DynamicResource IconButton}"
-					HorizontalOptions="Start"/>
+		<Grid ColumnDefinitions="auto, *, auto" Margin="16,0,16,0">
+			<controls:SvgButton
+				Command="{Binding GoBackCommand}"
+				SvgSource="close.svg"
+				Style="{DynamicResource IconButton}"
+				HorizontalOptions="Start"/>
 
-				<Label Text="{Binding Path=Title}" Style="{DynamicResource PageTitleLabel}" Margin="{DynamicResource SmallLeftMargins}"/>
+			<Label Text="{Binding Path=Title}"
+				   Style="{DynamicResource PageTitleLabel}"
+				   Margin="{DynamicResource SmallLeftMargins}"
+				   Grid.Column="2" HorizontalOptions="End"/>
+		</Grid>
+
+		<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
+						   Color="{DynamicResource TnPInfoContentWL}"
+						   HorizontalOptions="Center"
+						   VerticalOptions="Center"
+						   Margin="0,32,0,32"
+						   Grid.Row="1"/>
+
+		<ScrollView Grid.Row="1" IsVisible="{Binding Path=IsBusy, Converter={mct:InvertedBoolConverter}}">
+			<VerticalStackLayout Margin="8,8,8,16">
 
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-						<Label Text="{Binding Path=Description}" HorizontalOptions="Center" VerticalOptions="Start"/>
 						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
 								 VerticalOptions="Start" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" />
-						<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
-										 HorizontalOptions="Center" VerticalOptions="Center" Margin="{DynamicResource SmallMargins}"
-										 Color="{DynamicResource TnPInfoContentWL}"/>
 
 						<controls:CompositeEntry
 							Style="{DynamicResource RegularCompositeEntry}"
 							Placeholder="{l:Localize Search}"
 						    TextChanged="ContractsSearchChanged"/>
-
-						<CollectionView x:Name="Contracts" VerticalOptions="Start"
-										ItemSizingStrategy="MeasureAllItems" SelectionMode="Single"
-										IsVisible="True"
-										ItemsSource="{Binding Path=Contracts}"
-										ItemTemplate="{StaticResource ContractModelTemplate}"
-										SelectionChanged="ContractsSelectionChanged">
-							<CollectionView.ItemsLayout>
-								<GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5" />
-							</CollectionView.ItemsLayout>
-						</CollectionView>
 					</VerticalStackLayout>
 				</Border>
+
+				<CollectionView x:Name="Contracts" VerticalOptions="Start"
+								ItemSizingStrategy="MeasureAllItems"
+								ItemsSource="{Binding Path=Contracts}"
+								ItemTemplate="{StaticResource ContractModelTemplate}">
+					<CollectionView.ItemsLayout>
+						<GridItemsLayout Orientation="Vertical"/>
+					</CollectionView.ItemsLayout>
+				</CollectionView>
+				
 			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>

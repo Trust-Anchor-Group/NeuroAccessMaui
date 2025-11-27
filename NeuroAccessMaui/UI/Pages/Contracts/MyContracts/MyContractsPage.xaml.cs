@@ -11,8 +11,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MyContractsPage
 	{
-		private bool selectionMade = false;
-
 		/// <summary>
 		/// Creates a new instance of the <see cref="MyContractsPage"/> class.
 		/// </summary>
@@ -21,32 +19,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			MyContractsViewModel ViewModel = new(ServiceRef.NavigationService.PopLatestArgs<MyContractsNavigationArgs>());
 			this.ContentPageModel = ViewModel;
 
-			this.selectionMade = false;
-
 			this.InitializeComponent();
-		}
-
-		private void ContractsSelectionChanged(object? Sender, SelectionChangedEventArgs e)
-		{
-			if (this.selectionMade)
-				return;
-
-			if (this.ContentPageModel is MyContractsViewModel MyContractsViewModel)
-			{
-				object SelectedItem = this.Contracts.SelectedItem;
-
-				if (SelectedItem is ContractModel Contract)
-				{
-					this.selectionMade = true;
-
-					MyContractsViewModel.ContractSelected(Contract);
-
-					if (Contract.HasEvents)
-						ServiceRef.NotificationService.DeleteEvents(Contract.Events);
-				}
-
-				this.Contracts.SelectedItem = null;
-			}
 		}
 
 		private void ContractsSearchChanged(object? Sender, TextChangedEventArgs e)

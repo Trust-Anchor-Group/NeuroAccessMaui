@@ -1,5 +1,4 @@
 ﻿using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
-using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Notification;
@@ -12,12 +11,8 @@ using NeuroAccessMaui.Resources.Languages;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.UI;
-using Microsoft.Maui.Controls.Shapes;
-using Waher.Networking.XMPP.StanzaErrors;
-using Waher.Script.Constants;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.Popups.QR;
-using CommunityToolkit.Maui; // Added for ShowQRPopup/ShowQRViewModel
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -90,6 +85,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// <inheritdoc/>
 		public override async Task OnAppearingAsync()
 		{
+			this.IsBusy = false;
+
 			await base.OnAppearingAsync();
 
 			if (this.selection is not null && this.selection.Task.IsCompleted)
@@ -146,6 +143,31 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		public ObservableCollection<ContractModel> Contracts { get; } = [];
 
 		/// <summary>
+		/// Relay command for contract selection from item template
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task ContractSelected(object? parameter)
+		{
+			if (parameter is not ContractModel model)
+				return;
+
+			try
+			{
+				this.IsBusy = true;				// allow indicator to show
+				await Task.Yield();             // yield so UI can render
+				await this.ContractSelectedAsync(model);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+			finally
+			{
+				this.IsBusy = false;
+			}
+		}
+
+		/// <summary>
 		/// Simple in-memory cache of full list for search filtering.
 		/// </summary>
 		private List<ContractModel> allContracts = [];
@@ -191,54 +213,65 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// <summary>
 		/// Handle contract selection.
 		/// </summary>
+		public async Task ContractSelectedAsync(ContractModel Model)
+		{
+			try
+			{
+				ContractReference Ref = Model.ContractRef;
+
+				if (Ref.ContractId is null)
+				{
+					bool delete = await MainThread.InvokeOnMainThreadAsync(async () =>
+						await ServiceRef.UiService.DisplayAlert(
+							ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+							ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
+							ServiceRef.Localizer[nameof(AppResources.Yes)],
+							ServiceRef.Localizer[nameof(AppResources.No)]));
+
+					if (delete)
+					{
+						await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", Ref.ContractId)).ConfigureAwait(false);
+						await this.LoadContracts();
+					}
+				}
+
+				switch (this.Action)
+				{
+					case SelectContractAction.ViewContract:
+						if (this.contractsListMode == ContractsListMode.Contracts)
+						{
+							ViewContractNavigationArgs Args = new(Ref, false);
+							await MainThread.InvokeOnMainThreadAsync(async () =>
+								await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop));
+						}
+						else
+						{
+							await ServiceRef.ContractOrchestratorService.OpenContract(Ref.ContractId, ServiceRef.Localizer[nameof(AppResources.ReferencedID)], null).ConfigureAwait(false);
+						}
+						break;
+
+					case SelectContractAction.Select:
+						Contract? Contract = await Ref.GetContract().ConfigureAwait(false); // TODO FIX
+						this.selectedContract = Contract;
+						await MainThread.InvokeOnMainThreadAsync(async () =>
+						{
+							await this.GoBack();
+						});
+						this.selection?.TrySetResult(Contract);
+						break;
+				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return;
+			}
+		}
+
+		// Keep old method signature for any existing callers
 		public void ContractSelected(ContractModel Model)
 		{
-			MainThread.BeginInvokeOnMainThread(async () =>
-			{
-				try
-				{
-					ContractReference Ref = Model.ContractRef;
-
-					if (Ref.ContractId is null)
-					{
-						if (await ServiceRef.UiService.DisplayAlert(
-								ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], ServiceRef.Localizer[nameof(AppResources.ContractCouldNotBeFound)],
-								ServiceRef.Localizer[nameof(AppResources.Yes)],
-								ServiceRef.Localizer[nameof(AppResources.No)]))
-						{
-							await Database.FindDelete<ContractReference>(new FilterFieldEqualTo("ContractId", Ref.ContractId));
-							await this.LoadContracts();
-						}
-					}
-
-					switch (this.Action)
-					{
-						case SelectContractAction.ViewContract:
-							if (this.contractsListMode == ContractsListMode.Contracts)
-							{
-								ViewContractNavigationArgs Args = new(Ref, false);
-								await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
-							}
-							else
-							{
-								await ServiceRef.ContractOrchestratorService.OpenContract(Ref.ContractId, ServiceRef.Localizer[nameof(AppResources.ReferencedID)], null);
-							}
-							break;
-
-						case SelectContractAction.Select:
-							Contract? Contract = await Ref.GetContract(); // TODO FIX
-							this.selectedContract = Contract;
-							await this.GoBack();
-							this.selection?.TrySetResult(Contract);
-							break;
-					}
-				}
-				catch (Exception Ex)
-				{
-					ServiceRef.LogService.LogException(Ex);
-					return;
-				}
-			});
+			_ = this.ContractSelectedAsync(Model);
 		}
 
 		[RelayCommand]
