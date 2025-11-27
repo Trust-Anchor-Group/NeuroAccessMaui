@@ -480,6 +480,26 @@ namespace NeuroAccessMaui.UI.Controls
 						newStateKey = descriptor.StateKey;
 					}
 
+					if (itemCount == 0)
+					{
+						this.UpdateNavigationCommands();
+						return;
+					}
+
+					if (descriptor is null)
+					{
+						int FallbackIndex = this.selectionState.SelectedIndex;
+						if (FallbackIndex < 0 || FallbackIndex >= itemCount)
+						{
+							FallbackIndex = 0;
+						}
+
+						descriptor = this.descriptors[FallbackIndex];
+						targetIndex = FallbackIndex;
+						newItem = descriptor.Item;
+						newStateKey = descriptor.StateKey;
+					}
+
 					ViewSwitcherSelectionChangingEventArgs changingArgs = new ViewSwitcherSelectionChangingEventArgs(
 						oldIndex,
 						oldItem,
