@@ -977,8 +977,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 					{
 						this.xmppConnected = false;
 
-						if (this.xmppClient is not null && !this.xmppClient.Disposed)
-							await this.xmppClient.Reconnect();
+						try
+						{
+							if (this.xmppClient is not null && !this.xmppClient.Disposed)
+								await this.xmppClient.Reconnect();						}
+						catch (Exception)
+						{
+							// Ignore
+						}
 					}
 					break;
 			}
@@ -1267,10 +1273,24 @@ namespace NeuroAccessMaui.Services.Xmpp
 				this.xmppLastStateChange = DateTime.Now;
 
 				if (!this.xmppClient.Disposed)
-					this.xmppClient.Reconnect();
+					SafeFireAndForget(this.xmppClient.Reconnect());
 			}
 		}
+		/// <summary>
+		/// Executes a task in a fire-and-forget manner, logging any exceptions.
+		/// </summary>
+		/// <param name="task">The task to execute without awaiting.</param>
+		private static void SafeFireAndForget(Task task)
+		{
+			if (task is null)
+				return;
 
+			_ = task.ContinueWith(t =>
+			{
+				if (t.Exception is not null)
+					ServiceRef.LogService.LogException(t.Exception);
+			}, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.RunContinuationsAsynchronously);
+		}
 		#endregion
 
 		#region Password

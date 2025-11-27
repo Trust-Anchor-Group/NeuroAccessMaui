@@ -731,8 +731,8 @@ namespace NeuroAccessMaui.Services.Contracts
 
 			string IdRef = ServiceRef.TagProfile.LegalIdentity?.Id ?? string.Empty;
 
-			if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.TagSignature))
-				return;
+			//if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.TagSignature))
+			//	return;
 
 			StringBuilder Xml = new();
 

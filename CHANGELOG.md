@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add exception handling for xmpp reconnect operations
+
 ### Changed
 
 - Made field in request and payment page have proper background colors
@@ -15,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix margins on QR code so it is always visible in identity
 - Various minor UI improvements
 - Fixed scanning Onboarding QR codes outside of app
+- Fix edge cases in ViewSwitcher control
+- Remove first authentication when opening a 'tagsign' uri
 
 ## [2.6.1] - 2025/06/30
 
