@@ -93,11 +93,11 @@
 		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
-
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
 		<RunAOTCompilation>False</RunAOTCompilation>
 		<DebugSymbols>True</DebugSymbols>
 		<AndroidDebugSymbols>true</AndroidDebugSymbols>
+		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
 	<PropertyGroup>

@@ -674,16 +674,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				// TODO: Validate To is a Bare JID or proper Legal Identity
 				// TODO: Offline options: Expiry days
 
-				if (this.IsAppearing)
+				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					MainThread.BeginInvokeOnMainThread(async () =>
-					{
-						this.GenerateQrCode(Uri);
+					this.GenerateQrCode(Uri);
 
-						if (this.shareQrCode is not null)
-							await this.shareQrCode.ShowQrCode();
-					});
-				}
+					if (this.shareQrCode is not null)
+						await this.shareQrCode.ShowQrCode();
+				});
 			}
 			catch (Exception Ex)
 			{
