@@ -78,7 +78,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			this.AmountAndCurrency = this.AmountText + " " + this.Currency;
 
 			this.AmountExtraText = this.AmountExtra.HasValue ? MoneyToString.ToString(this.AmountExtra.Value) : string.Empty;
-			this.AmountExtraOk = !this.AmountExtra.HasValue || this.AmountExtra.Value >= 0;
+			this.AmountExtraOk = string.IsNullOrEmpty(this.AmountExtraText) || CommonTypes.TryParse(this.AmountExtraText, out decimal D1) && D1 >= 0;
 			this.AmountExtraPreset = this.AmountExtra.HasValue;
 			this.AmountExtraAndCurrency = this.AmountExtraText + " " + this.Currency;
 
@@ -607,7 +607,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 				}
 				else
 				{
-					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To!, this.Amount ?? 0, this.AmountExtra,
+					Uri = await ServiceRef.XmppService.CreateFullEDalerPaymentUri(this.To!, this.Amount ?? 0, this.AmountExtra == 0 ? null : this.AmountExtra,
 						this.Currency!, 3, this.Message ?? string.Empty);
 				}
 

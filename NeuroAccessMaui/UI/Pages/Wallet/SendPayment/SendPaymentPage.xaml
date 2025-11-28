@@ -156,7 +156,7 @@
 							<Border Grid.Row="1" HeightRequest="70" Style="{DynamicResource BorderSubSet}" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}">
 								<controls:CompositeEntry Style="{DynamicResource ThickCompositeEntry}" EntryData="{Binding Path=AmountText}"
 														 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
-														 IsReadOnly="{Binding Path=AmountPreset}"
+														 IsReadOnly="{Binding Path=AmountPreset}" Keyboard="Numeric"
 														 BorderStroke="Transparent" VerticalOptions="Center">
 									<controls:CompositeEntry.RightView>
 										<Label Text="{Binding Currency}" VerticalOptions="Center" Style="{DynamicResource Brand2HeadlineHeadlineL}" Margin="0,0,4,0"/>
@@ -171,7 +171,7 @@
 							<Border Grid.Row="1" HeightRequest="70" Style="{DynamicResource BorderSubSet}">
 								<controls:CompositeEntry Style="{DynamicResource ThickCompositeEntry}" EntryData="{Binding Path=AmountExtraText}" BackgroundColor="{Binding Path=AmountExtraOk, Converter={converters:ControlBgColor}}" 
 														 Placeholder="{Binding Path=Currency}" IsVisible="{Binding Path=AmountPreset}"
-														 BorderStroke="Transparent" VerticalOptions="Center"/>
+														 BorderStroke="Transparent" VerticalOptions="Center" Keyboard="Numeric"/>
 							</Border>
 						</Grid>
 
