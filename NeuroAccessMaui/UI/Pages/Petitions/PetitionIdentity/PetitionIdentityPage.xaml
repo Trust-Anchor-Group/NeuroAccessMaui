@@ -19,11 +19,12 @@
 
 		<ScrollView>
 			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
+				<Grid ColumnDefinitions="auto, *, auto">
+					<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{DynamicResource ImageOnlyButton}"
+										  PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}" Style="{DynamicResource ImageOnlyButton}"
-											 PathData="{x:Static ui:Geometries.BackButtonPath}" />
-
-				<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize PetitionIdentity}"/>
+					<Label Style="{DynamicResource PageTitleLabel}" Text="{l:Localize PetitionIdentity}" Grid.Column="2"/>
+				</Grid>
 
 				<!-- Photo and QR-code -->
 				<Border Style="{DynamicResource BorderSet}">
