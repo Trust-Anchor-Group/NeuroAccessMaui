@@ -26,6 +26,7 @@ using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
 using Waher.Runtime.Inventory;
+using NeuroAccessMaui.Services.UI.Popups;
 
 namespace NeuroAccessMaui.Services.Contracts
 {
@@ -191,6 +192,7 @@ namespace NeuroAccessMaui.Services.Contracts
 					if (Identity is not null)
 					{
 						RequestIdentityNotificationEvent Event = new(e);
+						await ServiceRef.Provider.GetRequiredService<IPopupService>().PopAsync();
 						//await ServiceRef.NotificationService.NewEvent(Event);
 						await ServiceRef.NavigationService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
 							Identity, e.RequestorFullJid, e.RequestedIdentityId, e.PetitionId, e.Purpose));
