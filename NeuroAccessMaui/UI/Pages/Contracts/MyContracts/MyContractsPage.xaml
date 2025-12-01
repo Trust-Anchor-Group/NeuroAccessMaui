@@ -49,9 +49,10 @@
 			</Border>
 		</DataTemplate>
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, *">
+	
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, auto, *">
 
-		<controls:Background Grid.RowSpan="2"/>
+		<controls:Background Grid.RowSpan="3"/>
 
 		<Grid ColumnDefinitions="auto, *, auto" Margin="16,0,16,0">
 			<controls:SvgButton
@@ -66,28 +67,55 @@
 				   Grid.Column="2" HorizontalOptions="End"/>
 		</Grid>
 
+		<Border Style="{DynamicResource BorderSet}" Grid.Row="1" Padding="16,16,16,0" Margin="16,16,16,0">
+			<VerticalStackLayout>
+				<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
+								VerticalOptions="Start" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" />
+
+				<controls:CompositeEntry
+						Style="{DynamicResource RegularCompositeEntry}"
+						IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}"
+						Placeholder="{l:Localize Search}"
+						TextChanged="ContractsSearchChanged"/>
+
+				<Grid ColumnDefinitions="*, auto"
+					  IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}">
+					<ScrollView Orientation="Horizontal">
+						<HorizontalStackLayout BindableLayout.ItemsSource="{Binding FilterTags}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="viewmodel:MyContractsViewModel+SelectableTag">
+									<controls:TemplatedButton Padding="4,16,4,16"
+															  Command="{Binding FilterChangedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+															  CommandParameter="{Binding .}">
+										<Border StrokeShape="RoundRectangle 16" Padding="8"
+													Background="{DynamicResource TnPSuccessbgWL}">
+											<HorizontalStackLayout>
+												<Label Text="{Binding Category}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="12"/>
+												<Label Text=": " TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="12"/>
+												<Label Text="{Binding Count}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="12"/>
+											</HorizontalStackLayout>
+										</Border>
+									</controls:TemplatedButton>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</HorizontalStackLayout>
+					</ScrollView>
+					<controls:SvgView Source="arrow_forward.svg" TintColor="{DynamicResource ContentPrimaryWL}"
+									  Grid.Column="1"
+									  WidthRequest="0"/>
+				</Grid>
+			</VerticalStackLayout>
+		</Border>
+
 		<ActivityIndicator x:Name="Loading" IsVisible="{Binding Path=IsBusy}" IsRunning="{Binding Path=IsBusy}"
 						   Color="{DynamicResource TnPInfoContentWL}"
 						   HorizontalOptions="Center"
 						   VerticalOptions="Center"
 						   Margin="0,32,0,32"
-						   Grid.Row="1"/>
+						   Grid.Row="2"/>
 
-		<ScrollView Grid.Row="1" IsVisible="{Binding Path=IsBusy, Converter={mct:InvertedBoolConverter}}">
+		<ScrollView Grid.Row="2" IsVisible="{Binding Path=IsBusy, Converter={mct:InvertedBoolConverter}}">
 			<VerticalStackLayout Margin="8,8,8,16">
-
-				<Border Style="{DynamicResource BorderSet}">
-					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-						<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
-								 VerticalOptions="Start" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" />
-
-						<controls:CompositeEntry
-							Style="{DynamicResource RegularCompositeEntry}"
-							Placeholder="{l:Localize Search}"
-						    TextChanged="ContractsSearchChanged"/>
-					</VerticalStackLayout>
-				</Border>
-
 				<CollectionView x:Name="Contracts" VerticalOptions="Start"
 								ItemSizingStrategy="MeasureAllItems"
 								ItemsSource="{Binding Path=Contracts}"
@@ -96,8 +124,8 @@
 						<GridItemsLayout Orientation="Vertical"/>
 					</CollectionView.ItemsLayout>
 				</CollectionView>
-				
 			</VerticalStackLayout>
 		</ScrollView>
+		
 	</Grid>
 </base:BaseContentPage>

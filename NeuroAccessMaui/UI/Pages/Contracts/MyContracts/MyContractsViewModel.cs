@@ -26,6 +26,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private readonly ContractsListMode contractsListMode;
 		private readonly TaskCompletionSource<Contract?>? selection;
 		private Contract? selectedContract = null;
+		private readonly Dictionary<string, SelectableTag> tagMap = new(StringComparer.OrdinalIgnoreCase); // Map for quick tag lookup
+
+		private const string AllCategory = "All";
+
+		public ObservableCollection<SelectableTag> FilterTags { get; } = new();
 
 		[ObservableProperty]
 		private bool canShareTemplate;
@@ -151,7 +156,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			try
 			{
-				this.IsBusy = true;				// allow indicator to show
+				this.IsBusy = true;			// allow indicator to show
 				await Task.Yield();             // yield so UI can render
 				await this.ContractSelectedAsync(model);
 			}
@@ -189,6 +194,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				source = source.Where(c =>
 					(c.Category?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false) ||
 					(c.Name?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false));
+			}
+
+			foreach (SelectableTag Tag in this.FilterTags)
+			{
+				string Filter = Tag.GetFilterString();
+				if (!string.IsNullOrEmpty(Filter))
+				{
+					source = source.Where(c => c.Category.Contains(Filter, StringComparison.OrdinalIgnoreCase));
+				}
 			}
 
 			MainThread.BeginInvokeOnMainThread(() =>
@@ -300,6 +314,28 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 		}
 
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task FilterChanged(object? parameter)
+		{
+			if (parameter is SelectableTag Tag)
+			{
+				// Enforce single-selection behavior. If tag was not selected, select it and deselect others.
+				// If tag was already selected, deselect all.
+				bool wasSelected = Tag.IsSelected;
+				if (wasSelected)
+				{
+					foreach (SelectableTag t in this.FilterTags)
+						t.IsSelected = false;
+				}
+				else
+				{
+					foreach (SelectableTag t in this.FilterTags)
+						t.IsSelected = (t == Tag);
+				}
+				this.ApplySearchFilter();
+			}
+		}
+
 		private async Task LoadContracts()
 		{
 			try
@@ -379,12 +415,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				// Prepare notification map
 				SortedDictionary<CaseInsensitiveString, NotificationEvent[]> EventsByCategory = ServiceRef.NotificationService.GetEventsByCategory(NotificationEventType.Contracts);
 
+				// Reset collections for fresh load
+				this.allContracts.Clear();
+				this.Contracts.Clear();
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.FilterTags.Clear();
+					this.tagMap.Clear();
+				});
+
 				// Incremental loading: process in batches of 15
 				int batchSize = 15;
 				int index = 0;
-
-				this.allContracts.Clear();
-				this.Contracts.Clear();
 
 				while (index < list.Count)
 				{
@@ -413,6 +455,25 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 						ContractModel Item = new(Ref, Events);
 						this.allContracts.Add(Item);
+
+						// Update tag counts for categories
+						string? Category = Item.Category;
+						if (!string.IsNullOrWhiteSpace(Category))
+						{
+							MainThread.BeginInvokeOnMainThread(() =>
+							{
+								if (this.tagMap.TryGetValue(Category, out SelectableTag? Existing))
+								{
+									Existing.Increment();
+								}
+								else
+								{
+									SelectableTag NewTag = new(Category, false, 1);
+									this.tagMap[Category] = NewTag;
+									this.FilterTags.Add(NewTag);
+								}
+							});
+						}
 					}
 
 					// Push this batch to UI (respecting search filter)
@@ -421,6 +482,37 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					// Yield to UI
 					await Task.Yield();
 				}
+
+				// Ensure an "All" tag exists showing total count, selected by default
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					int total = this.allContracts.Count;
+					if (this.tagMap.TryGetValue(AllCategory, out SelectableTag? allTag))
+					{
+						allTag.IsSelected = true;
+						allTag.Count = total;
+					}
+					else
+					{
+						SelectableTag all = new(AllCategory, true, total);
+						this.tagMap[AllCategory] = all;
+						this.FilterTags.Insert(0, all);
+					}
+				});
+
+				// Final sort of tags by descending Count (keep "All" first)
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					List<SelectableTag> others = this.FilterTags.Where(t => !string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase))
+						.OrderByDescending(t => t.Count)
+						.ToList();
+					SelectableTag all = this.FilterTags.FirstOrDefault(t => string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase))!;
+					this.FilterTags.Clear();
+					if (all is not null)
+						this.FilterTags.Add(all);
+					foreach (SelectableTag t in others)
+						this.FilterTags.Add(t);
+				});
 
 				this.ShowContractsMissing = !Found;
 			}
@@ -471,6 +563,27 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 
 			return Task.CompletedTask;
+		}
+
+		public partial class SelectableTag : ObservableObject
+		{
+			[ObservableProperty]
+			private string category;
+			[ObservableProperty]
+			private bool isSelected;
+			[ObservableProperty]
+			private int count;
+
+			public SelectableTag(string Category, bool IsSelected, int Count)
+			{
+				this.category = Category;
+				this.isSelected = IsSelected;
+				this.count = Count;
+			}
+
+			public string GetFilterString() => this.IsSelected && !string.Equals(this.Category, AllCategory, StringComparison.OrdinalIgnoreCase) ? this.Category : string.Empty;
+			public void ToggleSelection() => this.IsSelected = !this.IsSelected; // retained if needed elsewhere
+			public void Increment() => this.Count++;
 		}
 	}
 }
