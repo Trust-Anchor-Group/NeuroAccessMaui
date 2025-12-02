@@ -62,7 +62,7 @@ namespace NeuroAccessMaui.Services.Push
 		public string PatternScript { get; }
 
 		/// <summary>
-		/// Script that produces the payload forwarded to Firebase/APNS.
+		/// Script that produces the transport-agnostic push payload forwarded to the broker.
 		/// </summary>
 		public string ContentScript { get; }
 	}
@@ -113,16 +113,14 @@ namespace NeuroAccessMaui.Services.Push
 					"FriendlyName:=RosterName(ToJid,FromJid);",
 					"Content:=GetElement(Stanza,'content');",
 					"{",
-					"'myTitle': FriendlyName,",
-					"'myBody': InnerText(GetElement(Stanza,'body')),",
-					"'fromJid': FromJid,",
-					"'rosterName': FriendlyName,",
-					"'isObject': exists(Content) and !empty(Markdown:= InnerText(Content)) and (Left(Markdown,2)='![' or (Left(Markdown,3)='```' and Right(Markdown,3)='```')),",
-					$"'action': '{NotificationAction.OpenChat}',",
-					"'entityId': FromJid,",
-					"'correlationId': GetAttribute(Stanza,'id'),",
-					$"'channelId': '{Constants.PushChannels.Messages}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					"'visual': { 'title': FriendlyName, 'body': InnerText(GetElement(Stanza,'body')) },",
+					$"'action': {{ 'type': '{NotificationAction.OpenChat}', 'entityId': FromJid, 'correlationId': GetAttribute(Stanza,'id') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Messages}' }},",
+					"'delivery': { 'priority': 'High', 'silent': true },",
+					"'context': { 'fromJid': FromJid, 'toJid': ToJid, 'rosterName': FriendlyName },",
+					"'data': { 'isObject': exists(Content) and !empty(Markdown:= InnerText(Content)) and (Left(Markdown,2)='![' or (Left(Markdown,3)='```' and Right(Markdown,3)='```')) }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -138,15 +136,14 @@ namespace NeuroAccessMaui.Services.Push
 					"FromJid:=GetAttribute(E,'from');",
 					"FriendlyName:=RosterName(ToJid,FromJid);",
 					"{",
-					$"'myTitle': '{PetitionFrom} ' + FriendlyName,",
-					"'myBody': GetAttribute(E,'purpose'),",
-					"'fromJid': FromJid,",
-					"'rosterName': FriendlyName,",
-					$"'action': '{NotificationAction.OpenProfile}',",
-					"'entityId': FromJid,",
-					"'correlationId': GetAttribute(E,'petitionId'),",
-					$"'channelId': '{Constants.PushChannels.Petitions}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{PetitionFrom} ' + FriendlyName, 'body': GetAttribute(E,'purpose') }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenProfile}', 'entityId': FromJid, 'correlationId': GetAttribute(E,'petitionId') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Petitions}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'context': { 'fromJid': FromJid, 'toJid': ToJid, 'rosterName': FriendlyName },",
+					"'data': { 'petitionId': GetAttribute(E,'petitionId') }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -162,15 +159,14 @@ namespace NeuroAccessMaui.Services.Push
 					"FromJid:=GetAttribute(E,'from');",
 					"FriendlyName:=RosterName(ToJid,FromJid);",
 					"{",
-					$"'myTitle': '{PetitionFrom} ' + FriendlyName,",
-					"'myBody': GetAttribute(E,'purpose'),",
-					"'fromJid': FromJid,",
-					"'rosterName': FriendlyName,",
-					$"'action': '{NotificationAction.OpenProfile}',",
-					"'entityId': FromJid,",
-					"'correlationId': GetAttribute(E,'petitionId'),",
-					$"'channelId': '{Constants.PushChannels.Petitions}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{PetitionFrom} ' + FriendlyName, 'body': GetAttribute(E,'purpose') }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenProfile}', 'entityId': FromJid, 'correlationId': GetAttribute(E,'petitionId') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Petitions}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'context': { 'fromJid': FromJid, 'toJid': ToJid, 'rosterName': FriendlyName },",
+					"'data': { 'petitionId': GetAttribute(E,'petitionId') }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -186,15 +182,14 @@ namespace NeuroAccessMaui.Services.Push
 					"FromJid:=GetAttribute(E,'from');",
 					"FriendlyName:=RosterName(ToJid,FromJid);",
 					"{",
-					$"'myTitle': '{PetitionFrom} ' + FriendlyName,",
-					"'myBody': GetAttribute(E,'purpose'),",
-					"'fromJid': FromJid,",
-					"'rosterName': FriendlyName,",
-					$"'action': '{NotificationAction.OpenProfile}',",
-					"'entityId': FromJid,",
-					"'correlationId': GetAttribute(E,'petitionId'),",
-					$"'channelId': '{Constants.PushChannels.Petitions}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{PetitionFrom} ' + FriendlyName, 'body': GetAttribute(E,'purpose') }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenProfile}', 'entityId': FromJid, 'correlationId': GetAttribute(E,'petitionId') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Petitions}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'context': { 'fromJid': FromJid, 'toJid': ToJid, 'rosterName': FriendlyName },",
+					"'data': { 'petitionId': GetAttribute(E,'petitionId') }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -207,12 +202,13 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'identity');",
 					"{",
-					$"'myTitle': '{IdentityUpdated}',",
-					"'legalId': GetAttribute(E,'id'),",
-					$"'action': '{NotificationAction.OpenProfile}',",
-					"'entityId': GetAttribute(E,'id'),",
-					$"'channelId': '{Constants.PushChannels.Identities}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{IdentityUpdated}' }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenProfile}', 'entityId': GetAttribute(E,'id') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Identities}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'data': { 'legalId': GetAttribute(E,'id') }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -225,10 +221,12 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'contractCreated');",
 					"{",
-					$"'myTitle': '{ContractCreated}',",
-					"'contractId': GetAttribute(E,'contractId'),",
-					$"'channelId': '{Constants.PushChannels.Contracts}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{ContractCreated}' }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Contracts}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'data': { 'contractId': GetAttribute(E,'contractId') }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -241,11 +239,12 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'contractSigned');",
 					"{",
-					$"'myTitle': '{ContractSigned}',",
-					"'contractId': GetAttribute(E,'contractId'),",
-					"'legalId': GetAttribute(E,'legalId'),",
-					$"'channelId': '{Constants.PushChannels.Contracts}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{ContractSigned}' }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Contracts}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'data': { 'contractId': GetAttribute(E,'contractId'), 'legalId': GetAttribute(E,'legalId') }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -258,12 +257,13 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'contractUpdated');",
 					"{",
-					$"'myTitle': '{ContractUpdated}',",
-					"'contractId': GetAttribute(E,'contractId'),",
-					$"'action': '{NotificationAction.OpenSettings}',",
-					"'entityId': GetAttribute(E,'contractId'),",
-					$"'channelId': '{Constants.PushChannels.Contracts}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{ContractUpdated}' }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenSettings}', 'entityId': GetAttribute(E,'contractId') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Contracts}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'data': { 'contractId': GetAttribute(E,'contractId') }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -276,12 +276,13 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'contractDeleted');",
 					"{",
-					$"'myTitle': '{ContractDeleted}',",
-					"'contractId': GetAttribute(E,'contractId'),",
-					$"'action': '{NotificationAction.OpenSettings}',",
-					"'entityId': GetAttribute(E,'contractId'),",
-					$"'channelId': '{Constants.PushChannels.Contracts}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{ContractDeleted}' }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenSettings}', 'entityId': GetAttribute(E,'contractId') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Contracts}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'data': { 'contractId': GetAttribute(E,'contractId') }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -294,14 +295,13 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'contractProposal');",
 					"{",
-					$"'myTitle': '{ContractProposed}',",
-					"'myBody': GetAttribute(E,'message'),",
-					"'contractId': Num(GetAttribute(E,'contractId')),",
-					"'role': Num(GetAttribute(E,'role')),",
-					$"'action': '{NotificationAction.OpenSettings}',",
-					"'entityId': GetAttribute(E,'contractId'),",
-					$"'channelId': '{Constants.PushChannels.Contracts}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{ContractProposed}', 'body': GetAttribute(E,'message') }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenSettings}', 'entityId': GetAttribute(E,'contractId') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Contracts}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'data': { 'contractId': Num(GetAttribute(E,'contractId')), 'role': Num(GetAttribute(E,'role')) }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -314,14 +314,13 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'balance');",
 					"{",
-					$"'myTitle': '{BalanceUpdated}',",
-					"'amount': Num(GetAttribute(E,'amount')),",
-					"'currency': GetAttribute(E,'currency'),",
-					"'timestamp': DateTime(GetAttribute(E,'timestamp')),",
-					$"'action': '{NotificationAction.OpenSettings}',",
-					"'entityId': GetAttribute(E,'currency'),",
-					$"'channelId': '{Constants.PushChannels.EDaler}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{BalanceUpdated}' }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenSettings}', 'entityId': GetAttribute(E,'currency') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.EDaler}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'data': { 'amount': Num(GetAttribute(E,'amount')), 'currency': GetAttribute(E,'currency'), 'timestamp': DateTime(GetAttribute(E,'timestamp')) }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -335,14 +334,13 @@ namespace NeuroAccessMaui.Services.Push
 					"E:=GetElement(Stanza,'tokenAdded');",
 					"E2:=GetElement(E,'token');",
 					"{",
-					$"'myTitle': '{TokenAdded}',",
-					"'myBody': GetAttribute(E2,'friendlyName'),",
-					"'value': Num(GetAttribute(E2,'value')),",
-					"'currency': GetAttribute(E2,'currency'),",
-					$"'action': '{NotificationAction.OpenSettings}',",
-					"'entityId': GetAttribute(E2,'tokenId'),",
-					$"'channelId': '{Constants.PushChannels.Tokens}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{TokenAdded}', 'body': GetAttribute(E2,'friendlyName') }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenSettings}', 'entityId': GetAttribute(E2,'tokenId') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Tokens}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'data': { 'tokenId': GetAttribute(E2,'tokenId'), 'value': Num(GetAttribute(E2,'value')), 'currency': GetAttribute(E2,'currency') }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -356,14 +354,13 @@ namespace NeuroAccessMaui.Services.Push
 					"E:=GetElement(Stanza,'tokenRemoved');",
 					"E2:=GetElement(E,'token');",
 					"{",
-					$"'myTitle': '{TokenRemoved}',",
-					"'myBody': GetAttribute(E2,'friendlyName'),",
-					"'value': Num(GetAttribute(E2,'value')),",
-					"'currency': GetAttribute(E2,'currency'),",
-					$"'action': '{NotificationAction.OpenSettings}',",
-					"'entityId': GetAttribute(E2,'tokenId'),",
-					$"'channelId': '{Constants.PushChannels.Tokens}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{TokenRemoved}', 'body': GetAttribute(E2,'friendlyName') }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenSettings}', 'entityId': GetAttribute(E2,'tokenId') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Tokens}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'data': { 'tokenId': GetAttribute(E2,'tokenId'), 'value': Num(GetAttribute(E2,'value')), 'currency': GetAttribute(E2,'currency') }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -378,16 +375,14 @@ namespace NeuroAccessMaui.Services.Push
 					"E:=GetElement(Stanza,'isFriend');",
 					"RemoteJid:=GetAttribute(E,'remoteJid');",
 					"{",
-					$"'myTitle': '{AccessRequest}',",
-					"'myBody': RosterName(ToJid,RemoteJid),",
-					"'remoteJid': RemoteJid,",
-					"'jid': GetAttribute(E,'jid'),",
-					"'key': GetAttribute(E,'key'),",
-					"'q': 'isFriend',",
-					$"'action': '{NotificationAction.OpenPresenceRequest}',",
-					"'entityId': RemoteJid,",
-					$"'channelId': '{Constants.PushChannels.Provisioning}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{AccessRequest}', 'body': RosterName(ToJid,RemoteJid) }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenPresenceRequest}', 'entityId': RemoteJid }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Provisioning}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'context': { 'toJid': ToJid, 'remoteJid': RemoteJid },",
+					"'data': { 'remoteJid': RemoteJid, 'jid': GetAttribute(E,'jid'), 'key': GetAttribute(E,'key'), 'q': 'isFriend' }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -402,16 +397,14 @@ namespace NeuroAccessMaui.Services.Push
 					"E:=GetElement(Stanza,'canRead');",
 					"RemoteJid:=GetAttribute(E,'remoteJid');",
 					"{",
-					$"'myTitle': '{ReadRequest}',",
-					"'myBody': RosterName(ToJid,RemoteJid),",
-					"'remoteJid': RemoteJid,",
-					"'jid': GetAttribute(E,'jid'),",
-					"'key': GetAttribute(E,'key'),",
-					"'q': 'canRead',",
-					$"'action': '{NotificationAction.OpenPresenceRequest}',",
-					"'entityId': RemoteJid,",
-					$"'channelId': '{Constants.PushChannels.Provisioning}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{ReadRequest}', 'body': RosterName(ToJid,RemoteJid) }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenPresenceRequest}', 'entityId': RemoteJid }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Provisioning}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'context': { 'toJid': ToJid, 'remoteJid': RemoteJid },",
+					"'data': { 'remoteJid': RemoteJid, 'jid': GetAttribute(E,'jid'), 'key': GetAttribute(E,'key'), 'q': 'canRead' }",
 					"}")));
 
 			Definitions.Add(new PushRuleDefinition(
@@ -426,16 +419,14 @@ namespace NeuroAccessMaui.Services.Push
 					"E:=GetElement(Stanza,'canControl');",
 					"RemoteJid:=GetAttribute(E,'remoteJid');",
 					"{",
-					$"'myTitle': '{ControlRequest}',",
-					"'myBody': RosterName(ToJid,RemoteJid),",
-					"'remoteJid': RemoteJid,",
-					"'jid': GetAttribute(E,'jid'),",
-					"'key': GetAttribute(E,'key'),",
-					"'q': 'canControl',",
-					$"'action': '{NotificationAction.OpenPresenceRequest}',",
-					"'entityId': RemoteJid,",
-					$"'channelId': '{Constants.PushChannels.Provisioning}',",
-					"'content_available': true",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{ControlRequest}', 'body': RosterName(ToJid,RemoteJid) }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenPresenceRequest}', 'entityId': RemoteJid }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Provisioning}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'context': { 'toJid': ToJid, 'remoteJid': RemoteJid },",
+					"'data': { 'remoteJid': RemoteJid, 'jid': GetAttribute(E,'jid'), 'key': GetAttribute(E,'key'), 'q': 'canControl' }",
 					"}")));
 
 			return Definitions;
