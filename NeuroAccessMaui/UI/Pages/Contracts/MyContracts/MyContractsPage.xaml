@@ -70,40 +70,44 @@
 		<Border Style="{DynamicResource BorderSet}" Grid.Row="1" Padding="16,16,16,0" Margin="16,16,16,0">
 			<VerticalStackLayout>
 				<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
-								VerticalOptions="Start" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" />
+					   VerticalOptions="Center" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" />
 
 				<controls:CompositeEntry
-						Style="{DynamicResource RegularCompositeEntry}"
-						IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}"
-						Placeholder="{l:Localize Search}"
-						TextChanged="ContractsSearchChanged"/>
+					Style="{DynamicResource RegularCompositeEntry}"
+					IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}"
+					Placeholder="{l:Localize Search}"
+					TextChanged="ContractsSearchChanged"
+					Margin="0,0,0,16"/>
 
-				<Grid ColumnDefinitions="*, auto"
-					  IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}">
-					<ScrollView Orientation="Horizontal">
-						<HorizontalStackLayout BindableLayout.ItemsSource="{Binding FilterTags}">
-							<BindableLayout.ItemTemplate>
-								<DataTemplate x:DataType="viewmodel:MyContractsViewModel+SelectableTag">
-									<controls:TemplatedButton Padding="4,16,4,16"
-															  Command="{Binding FilterChangedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
-															  CommandParameter="{Binding .}">
-										<Border StrokeShape="RoundRectangle 16" Padding="8"
-													Background="{DynamicResource TnPSuccessbgWL}">
-											<HorizontalStackLayout>
-												<Label Text="{Binding Category}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="12"/>
-												<Label Text=": " TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="12"/>
-												<Label Text="{Binding Count}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="12"/>
-											</HorizontalStackLayout>
-										</Border>
-									</controls:TemplatedButton>
-								</DataTemplate>
-							</BindableLayout.ItemTemplate>
-						</HorizontalStackLayout>
-					</ScrollView>
-					<controls:SvgView Source="arrow_forward.svg" TintColor="{DynamicResource ContentPrimaryWL}"
-									  Grid.Column="1"
-									  WidthRequest="0"/>
-				</Grid>
+				<ScrollView Orientation="Horizontal" IsVisible="{Binding Path=IsBusy, Converter={mct:InvertedBoolConverter}}">
+					<HorizontalStackLayout BindableLayout.ItemsSource="{Binding FilterTags}" IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}">
+						<BindableLayout.ItemTemplate>
+							<DataTemplate x:DataType="viewmodel:MyContractsViewModel+SelectableTag">
+								<controls:TemplatedButton Padding="4,0,4,16"
+															Command="{Binding FilterChangedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+															CommandParameter="{Binding .}">
+									<Border StrokeShape="RoundRectangle 24" Padding="8"
+												Background="{DynamicResource TnPSuccessbgWL}">
+										<HorizontalStackLayout>
+											<Label Text="{Binding Category}" Style="{DynamicResource Brand2LabelS}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="14"/>
+											<Label Text=": " Style="{DynamicResource Brand2LabelS}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="14"/>
+											<Label Text="{Binding Count}" Style="{DynamicResource Brand2LabelS}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="14"/>
+										</HorizontalStackLayout>
+
+										<Border.Triggers>
+											<DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
+												<Setter Property="Stroke" Value="{DynamicResource TnPSuccessContentWL}"/>
+											</DataTrigger>
+											<DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="False">
+												<Setter Property="Stroke" Value="Transparent"/>
+											</DataTrigger>
+										</Border.Triggers>
+									</Border>
+								</controls:TemplatedButton>
+							</DataTemplate>
+						</BindableLayout.ItemTemplate>
+					</HorizontalStackLayout>
+				</ScrollView>
 			</VerticalStackLayout>
 		</Border>
 

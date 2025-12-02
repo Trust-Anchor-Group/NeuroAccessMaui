@@ -16,17 +16,13 @@ using NeuroAccessMaui.UI.Popups.QR;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
-	/// <summary>
-	/// The view model to bind to when displaying 'my' contracts.
-	/// TODO: This page and ViewModel should be refactored
-	/// </summary>
 	public partial class MyContractsViewModel : BaseViewModel
 	{
 		private readonly Dictionary<string, ContractReference> contractsMap = [];
 		private readonly ContractsListMode contractsListMode;
 		private readonly TaskCompletionSource<Contract?>? selection;
 		private Contract? selectedContract = null;
-		private readonly Dictionary<string, SelectableTag> tagMap = new(StringComparer.OrdinalIgnoreCase); // Map for quick tag lookup
+		private readonly Dictionary<string, SelectableTag> tagMap = new(StringComparer.OrdinalIgnoreCase);
 
 		private const string AllCategory = "All";
 
@@ -156,8 +152,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			try
 			{
-				this.IsBusy = true;			// allow indicator to show
-				await Task.Yield();             // yield so UI can render
+				this.IsBusy = true;
+				await Task.Yield();
 				await this.ContractSelectedAsync(model);
 			}
 			catch (Exception Ex)
@@ -213,12 +209,53 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			});
 		}
 
+		// Check if a contract matches current filter without refiltering the entire list.
+		private bool MatchesCurrentFilter(ContractModel c)
+		{
+			string? s = this.searchText;
+			if (!string.IsNullOrWhiteSpace(s))
+			{
+				string term = s.Trim();
+				bool textMatch = (c.Category?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false) ||
+					(c.Name?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false);
+				if (!textMatch)
+					return false;
+			}
+
+			foreach (SelectableTag Tag in this.FilterTags)
+			{
+				string Filter = Tag.GetFilterString();
+				if (!string.IsNullOrEmpty(Filter))
+				{
+					if (!(c.Category?.Contains(Filter, StringComparison.OrdinalIgnoreCase) ?? false))
+						return false;
+				}
+			}
+
+			return true;
+		}
+
 		/// <summary>
 		/// Should be called by page on text change.
 		/// </summary>
 		public void UpdateSearch(string? text)
 		{
 			this.searchText = text;
+			// When search text changes, select the "All" tag and deselect others for clarity and performance.
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				SelectableTag? allTag = null;
+				foreach (SelectableTag t in this.FilterTags)
+				{
+					bool isAll = string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase);
+					if (isAll)
+						allTag = t;
+					// Deselect all tags first
+					t.IsSelected = false;
+				}
+				if (allTag is not null)
+					allTag.IsSelected = true;
+			});
 			this.ApplySearchFilter();
 		}
 
@@ -263,7 +300,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						break;
 
 					case SelectContractAction.Select:
-						Contract? Contract = await Ref.GetContract().ConfigureAwait(false); // TODO FIX
+						Contract? Contract = await Ref.GetContract().ConfigureAwait(false);
 						this.selectedContract = Contract;
 						await MainThread.InvokeOnMainThreadAsync(async () =>
 						{
@@ -319,8 +356,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		{
 			if (parameter is SelectableTag Tag)
 			{
-				// Enforce single-selection behavior. If tag was not selected, select it and deselect others.
-				// If tag was already selected, deselect all.
 				bool wasSelected = Tag.IsSelected;
 				if (wasSelected)
 				{
@@ -341,7 +376,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			try
 			{
 				IEnumerable<ContractReference> ContractReferences;
-				bool Found = false;
 
 				switch (this.contractsListMode)
 				{
@@ -407,15 +441,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						return;
 				}
 
-				// Sort newest first
-				List<ContractReference> list = ContractReferences.Where(r => r.ContractId is not null).ToList();
-				Found = list.Count > 0;
-				list.Sort((a, b) => b.Created.CompareTo(a.Created));
-
-				// Prepare notification map
 				SortedDictionary<CaseInsensitiveString, NotificationEvent[]> EventsByCategory = ServiceRef.NotificationService.GetEventsByCategory(NotificationEventType.Contracts);
 
-				// Reset collections for fresh load
 				this.allContracts.Clear();
 				this.Contracts.Clear();
 				MainThread.BeginInvokeOnMainThread(() =>
@@ -424,63 +451,53 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					this.tagMap.Clear();
 				});
 
-				// Incremental loading: process in batches of 15
-				int batchSize = 15;
-				int index = 0;
-
-				while (index < list.Count)
+				// Dynamically add contracts: append to backing list, and only add to visible list if matching current filter.
+				foreach (ContractReference Ref in ContractReferences)
 				{
-					List<ContractReference> batch = list.Skip(index).Take(batchSize).ToList();
-					index += batch.Count;
+					this.contractsMap[Ref.ContractId] = Ref;
 
-					foreach (ContractReference Ref in batch)
+					NotificationEvent[] Events = [];
+					if (EventsByCategory.TryGetValue(Ref.ContractId, out NotificationEvent[]? evs))
 					{
-						this.contractsMap[Ref.ContractId] = Ref;
-
-						NotificationEvent[] Events = [];
-						if (EventsByCategory.TryGetValue(Ref.ContractId, out NotificationEvent[]? evs))
+						EventsByCategory.Remove(Ref.ContractId);
+						List<NotificationEvent> Events2 = [];
+						foreach (NotificationEvent Event in evs)
 						{
-							// Separate petitions to remain in the service map, only show other events count
-							EventsByCategory.Remove(Ref.ContractId);
-
-							List<NotificationEvent> Events2 = [];
-							foreach (NotificationEvent Event in evs)
-							{
-								if (Event is not ContractPetitionNotificationEvent)
-									Events2.Add(Event);
-							}
-
-							Events = [.. Events2];
+							if (Event is not ContractPetitionNotificationEvent)
+								Events2.Add(Event);
 						}
-
-						ContractModel Item = new(Ref, Events);
-						this.allContracts.Add(Item);
-
-						// Update tag counts for categories
-						string? Category = Item.Category;
-						if (!string.IsNullOrWhiteSpace(Category))
-						{
-							MainThread.BeginInvokeOnMainThread(() =>
-							{
-								if (this.tagMap.TryGetValue(Category, out SelectableTag? Existing))
-								{
-									Existing.Increment();
-								}
-								else
-								{
-									SelectableTag NewTag = new(Category, false, 1);
-									this.tagMap[Category] = NewTag;
-									this.FilterTags.Add(NewTag);
-								}
-							});
-						}
+						Events = [.. Events2];
 					}
 
-					// Push this batch to UI (respecting search filter)
-					this.ApplySearchFilter();
+					ContractModel Item = new(Ref, Events);
+					this.allContracts.Add(Item); // append to end
 
-					// Yield to UI
-					await Task.Yield();
+					string? Category = Item.Category;
+					if (!string.IsNullOrWhiteSpace(Category))
+					{
+						MainThread.BeginInvokeOnMainThread(() =>
+						{
+							if (this.tagMap.TryGetValue(Category, out SelectableTag? Existing))
+							{
+								Existing.Increment();
+							}
+							else
+							{
+								SelectableTag NewTag = new(Category, false, 1);
+								this.tagMap[Category] = NewTag;
+								this.FilterTags.Add(NewTag);
+							}
+						});
+					}
+
+					// Only add to visible list if it matches current filter
+					if (this.MatchesCurrentFilter(Item))
+					{
+						MainThread.BeginInvokeOnMainThread(() =>
+						{
+							this.Contracts.Add(Item);
+						});
+					}
 				}
 
 				// Ensure an "All" tag exists showing total count, selected by default
@@ -500,21 +517,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					}
 				});
 
-				// Final sort of tags by descending Count (keep "All" first)
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					List<SelectableTag> others = this.FilterTags.Where(t => !string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase))
-						.OrderByDescending(t => t.Count)
-						.ToList();
-					SelectableTag all = this.FilterTags.FirstOrDefault(t => string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase))!;
-					this.FilterTags.Clear();
-					if (all is not null)
-						this.FilterTags.Add(all);
-					foreach (SelectableTag t in others)
-						this.FilterTags.Add(t);
-				});
-
-				this.ShowContractsMissing = !Found;
+				this.ShowContractsMissing = this.allContracts.Count < 1;
 			}
 			finally
 			{
@@ -582,7 +585,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 
 			public string GetFilterString() => this.IsSelected && !string.Equals(this.Category, AllCategory, StringComparison.OrdinalIgnoreCase) ? this.Category : string.Empty;
-			public void ToggleSelection() => this.IsSelected = !this.IsSelected; // retained if needed elsewhere
+			public void ToggleSelection() => this.IsSelected = !this.IsSelected;
 			public void Increment() => this.Count++;
 		}
 	}
