@@ -104,7 +104,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		// Throttling support for page refresh (avoid per-keystroke SetCurrentPage work)
 		private static readonly TimeSpan pageRefreshThrottle = TimeSpan.FromMilliseconds(250);
+		private static readonly TimeSpan fieldSnapshotThrottle = TimeSpan.FromMilliseconds(500);
 		private readonly ObservableTask<int> pageRefreshTask;
+		private readonly ObservableTask<int> fieldSnapshotTask;
 
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
@@ -251,6 +253,32 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					{
 						ServiceRef.LogService.LogException(Ex);
 					}
+				})
+				.Build();
+			this.fieldSnapshotTask = new ObservableTaskBuilder()
+				.Named("KYC Field Snapshot")
+				.AutoStart(false)
+				.UseTaskRun(true)
+				.WithPolicy(Policies.Debounce(fieldSnapshotThrottle))
+				.Run(async context =>
+				{
+					if (context.CancellationToken.IsCancellationRequested || this.disposedValue)
+					{
+						return;
+					}
+
+					if (this.kycReference is null || this.process is null)
+					{
+						return;
+					}
+
+					KycReference Reference = this.kycReference;
+					KycProcess Process = this.process;
+					string? CurrentPageId = this.CurrentPage?.Id;
+					KycNavigationSnapshot NavigationSnapshot = this.navigation;
+					double ProgressValue = this.Progress;
+
+					await this.kycService.ScheduleSnapshotAsync(Reference, Process, NavigationSnapshot, ProgressValue, CurrentPageId).ConfigureAwait(false);
 				})
 				.Build();
 		}
@@ -545,11 +573,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (e.PropertyName == nameof(ObservableKycField.RawValue))
 			{
 				this.SchedulePageRefresh();
+				this.ScheduleFieldSnapshot();
 			}
 			if (e.PropertyName == nameof(ObservableKycField.IsValid))
 			{
 				MainThread.BeginInvokeOnMainThread(this.NextCommand.NotifyCanExecuteChanged);
 			}
+		}
+
+		private void ScheduleFieldSnapshot()
+		{
+			if (this.disposedValue)
+				return;
+			if (this.kycReference is null || this.process is null)
+				return;
+			this.fieldSnapshotTask.Run();
 		}
 
 		private void SchedulePageRefresh()
@@ -592,19 +630,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				if (firstVisible >=0) index = firstVisible;
 			}
 
+			KycPage Page = this.Pages[index];
+			bool pageChanged = !object.ReferenceEquals(this.CurrentPage, Page) || this.currentPageIndex != index;
+
 			this.currentPageIndex = index;
 			if (this.CurrentPagePosition != index)
 			{
 				this.CurrentPagePosition = index;
 			}
-			KycPage Page = this.Pages[index];
 			this.CurrentPage = Page;
 			this.CurrentPageTitle = Page.Title?.Text ?? Page.Id;
 			this.CurrentPageDescription = Page.Description?.Text;
 			this.HasCurrentPageDescription = !string.IsNullOrWhiteSpace(this.CurrentPageDescription);
 			this.CurrentPageSections = Page.VisibleSections;
 			this.HasSections = this.CurrentPageSections is not null && this.CurrentPageSections.Count >0;
-			if (!this.IsInSummary && this.kycReference is not null && this.process is not null)
+			if (!this.IsInSummary && this.kycReference is not null && this.process is not null && pageChanged)
 				_ = this.kycService.ScheduleSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, Page.Id);
 			this.OnPropertyChanged(nameof(this.Progress));
 			this.NextCommand.NotifyCanExecuteChanged();
