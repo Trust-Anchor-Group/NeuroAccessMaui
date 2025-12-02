@@ -980,7 +980,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 						try
 						{
 							if (this.xmppClient is not null && !this.xmppClient.Disposed)
-								await this.xmppClient.Reconnect();						}
+								await this.xmppClient.Reconnect();
+						}
 						catch (Exception)
 						{
 							// Ignore
@@ -2102,8 +2103,27 @@ namespace NeuroAccessMaui.Services.Xmpp
 						{
 							try
 							{
-								IEnumerable<KycReference> All = await Database.Find<KycReference>();
-								Ref = All.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
+								List<KycReference> All = new List<KycReference>(await Database.Find<KycReference>());
+								if (AppId is not null)
+								{
+									Ref = All.FirstOrDefault(r => string.Equals(r.CreatedIdentityId, AppId.Id, StringComparison.OrdinalIgnoreCase));
+								}
+
+								if (Ref is null)
+								{
+									Ref = All
+										.Where(r => r.CreatedIdentityState == IdentityState.Created && !string.IsNullOrEmpty(r.CreatedIdentityId))
+										.OrderByDescending(r => r.UpdatedUtc)
+										.FirstOrDefault();
+								}
+
+								if (Ref is null)
+								{
+									Ref = All
+										.Where(r => !string.IsNullOrEmpty(r.CreatedIdentityId))
+										.OrderByDescending(r => r.UpdatedUtc)
+										.FirstOrDefault();
+								}
 							}
 							catch (Exception Ex3)
 							{
@@ -3326,6 +3346,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					if (e.Identity.IsDiscarded())
 					{
+						await ServiceRef.TagProfile.SetIdentityApplication(null, false);
 						await this.IdentityApplicationChanged.Raise(this, e);
 					}
 					else if (e.Identity.IsApproved())

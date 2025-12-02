@@ -310,6 +310,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			bool Pending = this.kycReference.CreatedIdentityState == IdentityState.Created && !string.IsNullOrEmpty(this.kycReference.CreatedIdentityId);
 			bool Rejected = this.kycReference.CreatedIdentityState == IdentityState.Rejected && !string.IsNullOrEmpty(this.kycReference.CreatedIdentityId);
+			this.applicationSent = Pending;
 			this.ApplicationSentPublic = Pending;
 			if (!Pending && !Rejected)
 				this.PrefillFieldsFromProfile();
@@ -1008,9 +1009,18 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 						await base.GoBack();
 						return;
 					}
-					else if (E.Identity.State == IdentityState.Rejected)
+					else if (E.Identity.State == IdentityState.Rejected || E.Identity.State == IdentityState.Obsoleted || E.Identity.State == IdentityState.Compromised)
 					{
+						this.applicationSent = false;
 						this.ApplicationSentPublic = false;
+						try
+						{
+							await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+						}
+						catch (Exception Ex)
+						{
+							ServiceRef.LogService.LogException(Ex);
+						}
 						await this.BuildMappedValuesAsync();
 						int AnchorRejected = this.currentPageIndex >=0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
 						this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = AnchorRejected, CurrentPageIndex = AnchorRejected >=0 ? AnchorRejected : this.navigation.CurrentPageIndex };
@@ -1019,7 +1029,24 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 							await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
 						this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 						this.OnPropertyChanged(nameof(this.Progress));
-						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Rejected)], ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)]);
+						string AlertTitle;
+						string AlertMessage;
+						switch (E.Identity.State)
+						{
+							case IdentityState.Obsoleted:
+								AlertTitle = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
+								AlertMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
+								break;
+							case IdentityState.Compromised:
+								AlertTitle = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
+								AlertMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
+								break;
+							default:
+								AlertTitle = ServiceRef.Localizer[nameof(AppResources.Rejected)];
+								AlertMessage = ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)];
+								break;
+						}
+						await ServiceRef.UiService.DisplayAlert(AlertTitle, AlertMessage);
 					}
 				}
 				if (this.ApplicationSentPublic && this.peerReviewServices is null)
