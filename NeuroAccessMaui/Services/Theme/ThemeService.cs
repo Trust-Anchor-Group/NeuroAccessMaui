@@ -292,7 +292,11 @@ namespace NeuroAccessMaui.Services.Theme
 		}
 		private static bool IsTransientNetwork(Exception Ex) => Ex is HttpRequestException or SocketException or TaskCanceledException or TimeoutException;
 
-		private static Uri BuildBrandingItemUrl(string Domain, string ItemId) => new($"https://{Domain}/PubSub/NeuroAccessBranding/{ItemId}");
+		private static Uri BuildBrandingItemUrl(string Domain, string ItemId) => ServiceRef.TagProfile.DomainIsLocal() ?
+			new($"http://{Domain}/PubSub/NeuroAccessBranding/{ItemId}")
+			:
+			new($"https://{Domain}/PubSub/NeuroAccessBranding/{ItemId}");
+
 		/// <summary>
 		/// Returns the absolute URI string for a branding image reference id, or empty string if not present.
 		/// </summary>

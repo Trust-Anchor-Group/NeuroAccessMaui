@@ -494,6 +494,10 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 							string ApiKey = XML.Attribute(E, "key");
 							string Secret = XML.Attribute(E, "secret");
 							string ApiDomain = XML.Attribute(E, "domain");
+							if(string.IsNullOrEmpty(ApiDomain))
+							{
+								ApiDomain = await ServiceRef.UiService.DisplayPrompt("Please enter the IP of your provider", "This is for developers and testers", "Enter", "Cancel");
+							}	
 							ServiceRef.LogService.LogInformational($"Selecting domain (ApiKey) '{ApiDomain}'.");
 							await SelectDomain(ApiDomain, ApiKey, Secret).ConfigureAwait(false);
 							domainSelectedFromInvite = true;
