@@ -70,7 +70,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		}
 
 		/// <summary>
-		/// Handles TagProfile property changes. Updates HasBetaFeatures & BetaButtonStyle if necessary.
+		/// Handles TagProfile property changes. Updates HasBetaFeatures &amp; BetaButtonStyle if necessary.
 		/// </summary>
 		private void TagProfile_OnPropertiesChanged(object? sender, EventArgs e)
 		{

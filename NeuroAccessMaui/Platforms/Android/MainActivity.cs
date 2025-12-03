@@ -1,7 +1,6 @@
 using System.Runtime.Versioning;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -17,9 +16,6 @@ using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Notification;
 using Plugin.Firebase.CloudMessaging;
-using Plugin.Firebase.Core.Platforms.Android;
-using System.Text.Json;
-using System.Threading;
 using NeuroAccessMaui.Services.Push;
 
 namespace NeuroAccessMaui

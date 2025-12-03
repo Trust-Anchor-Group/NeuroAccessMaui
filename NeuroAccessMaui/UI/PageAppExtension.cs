@@ -10,7 +10,6 @@ using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Notification;
-using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;

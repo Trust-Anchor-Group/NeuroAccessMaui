@@ -12,7 +12,7 @@ namespace NeuroAccessMaui.Services.Theme
 {
 	/// <summary>
 	/// Manages application theming. Applies bundled (local) light/dark themes and, when a provider
-	/// domain is available, downloads & applies remote branding descriptors (V2 preferred, V1 fallback).
+	/// domain is available, downloads &amp; applies remote branding descriptors (V2 preferred, V1 fallback).
 	/// Performs XML schema validation, merges resource dictionaries, extracts image references, and
 	/// implements a retry/backoff policy (0s,2s,5s) for transient network issues. Idempotent per domain:
 	/// once Applied / NotSupported / FailedPermanent, subsequent calls are no-ops. Falls back to local
