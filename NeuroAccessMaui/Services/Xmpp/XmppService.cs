@@ -3156,7 +3156,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				await e2.PUT(Attachment.Data, Attachment.ContentType, (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
 				byte[] Signature = await this.ContractsClient.SignAsync(Attachment.Data, SignWith.CurrentKeys);
 
-				Identity = await this.ContractsClient.AddLegalIdAttachmentAsync(Identity.Id, e2.GetUrl, Signature);
+				Identity = await this.ContractsClient.AddLegalIdAttachmentAsync(Identity.Id, e2.GetUrl.Replace("10.0.2.2","localhost"), Signature);
 			}
 
 			await this.ContractsClient.ReadyForApprovalAsync(Identity.Id);
