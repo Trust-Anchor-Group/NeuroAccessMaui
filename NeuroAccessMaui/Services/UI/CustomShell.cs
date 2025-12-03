@@ -5,6 +5,7 @@ using NeuroAccessMaui.UI.Pages.Startup;             // for LoadingPage
 using NeuroAccessMaui.UI;
 using NeuroAccessMaui.UI.Popups;
 using ControlsVisualElement = Microsoft.Maui.Controls.VisualElement;
+using Microsoft.Maui.Devices;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Behaviors;
 using NeuroAccessMaui.Animations;
@@ -463,7 +464,14 @@ namespace NeuroAccessMaui.Services.UI
 
         private double ResolveEffectiveKeyboardInset(Thickness safeArea)
         {
-            double EffectiveInset = this.currentKeyboardInset - safeArea.Bottom;
+            double EffectiveInset = this.currentKeyboardInset;
+
+            // On iOS the reported keyboard height already includes the home-indicator safe area.
+            if (DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                EffectiveInset -= safeArea.Bottom;
+            }
+
             if (EffectiveInset < 0)
                 return 0;
             return EffectiveInset;
