@@ -86,6 +86,13 @@ namespace NeuroAccessMaui.Services.Kyc
 		Task ApplySubmissionAsync(KycReference Reference, LegalIdentity Identity);
 
 		/// <summary>
+		/// Updates stored submission state without clearing any existing application review.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Latest identity state.</param>
+		Task UpdateSubmissionStateAsync(KycReference Reference, LegalIdentity Identity);
+
+		/// <summary>
 		/// Clears stored submission details for revoked or reset applications.
 		/// </summary>
 		Task ClearSubmissionAsync(KycReference Reference);

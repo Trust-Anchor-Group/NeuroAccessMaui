@@ -615,6 +615,27 @@ namespace NeuroAccessMaui.Services.Kyc
 		}
 
 		/// <summary>
+		/// Updates stored submission state without clearing any existing application review.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Latest identity state.</param>
+		public async Task UpdateSubmissionStateAsync(KycReference Reference, LegalIdentity Identity)
+		{
+			if (Reference is null || Identity is null)
+				return;
+
+			AsyncLock Lock = this.GetLockFor(Reference);
+			await using (await Lock.LockAsync().ConfigureAwait(false))
+			{
+				Reference.CreatedIdentityId = Identity.Id;
+				Reference.CreatedIdentityState = Identity.State;
+				Reference.Version++;
+				Reference.UpdatedUtc = DateTime.UtcNow;
+				await SaveReferenceAsync(Reference);
+			}
+		}
+
+		/// <summary>
 		/// Clears stored submission information from the reference.
 		/// </summary>
 		public async Task ClearSubmissionAsync(KycReference Reference)
