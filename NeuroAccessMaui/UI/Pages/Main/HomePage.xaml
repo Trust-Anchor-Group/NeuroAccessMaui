@@ -108,17 +108,11 @@
 											 LabelText="{l:Localize ApplyIdInfoMainPage}"
 											 IsVisible="{Binding ShowApplyIdBox}" />
 
-						<controls:InfoBubble BackgroundColor="{DynamicResource TnPWarningbgWL}"
-											 ContentColor="{DynamicResource TnPWarningContentWL}"
+						<controls:InfoBubble BackgroundColor="{DynamicResource TnPInfobgWL}"
+											 ContentColor="{DynamicResource TnPInfoContentWL}"
 											 SvgSource="hourglass.svg"
 											 LabelText="{l:Localize ApplicationUnderReviewDescription}"
 											 IsVisible="{Binding ShowPendingIdBox}" />
-
-						<controls:InfoBubble BackgroundColor="{DynamicResource TnPWarningbgWL}"
-											 ContentColor="{DynamicResource TnPWarningContentWL}"
-											 SvgSource="info.svg"
-											 LabelText="{l:Localize KycReviewAvailableMainPage}"
-											 IsVisible="{Binding ShowApplicationReviewBox}" />
 
 						<controls:InfoBubble BackgroundColor="{DynamicResource TnPDangerbgWL}"
 											 ContentColor="{DynamicResource TnPDangerContentWL}"

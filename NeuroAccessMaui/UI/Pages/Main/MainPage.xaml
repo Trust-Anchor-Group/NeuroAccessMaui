@@ -86,7 +86,7 @@
 		  Padding="0,0,0,0">
 
 		<controls:ViewSwitcher x:Name="ContentSwitcher"
-							   SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}" />
+							   SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}" CacheViews="True" />
 
 		<Border x:Name="BottomBar" 
 			Grid.Row="1"

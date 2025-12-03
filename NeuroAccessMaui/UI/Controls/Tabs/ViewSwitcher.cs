@@ -837,6 +837,26 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 		}
 
+		/// <summary>
+		/// Notifies the view switcher that the hosting page is appearing.
+		/// Triggers lifecycle callbacks on the currently presented view.
+		/// </summary>
+		public Task NotifyHostAppearingAsync(CancellationToken cancellationToken = default)
+		{
+			View? currentView = this.transitionCoordinator.CurrentView;
+			return this.InvokeLifecycleAppearingAsync(currentView, cancellationToken);
+		}
+
+		/// <summary>
+		/// Notifies the view switcher that the hosting page is disappearing.
+		/// Triggers lifecycle callbacks on the currently presented view.
+		/// </summary>
+		public Task NotifyHostDisappearingAsync(CancellationToken cancellationToken = default)
+		{
+			View? currentView = this.transitionCoordinator.CurrentView;
+			return this.InvokeLifecycleDisappearingAsync(currentView, cancellationToken);
+		}
+
 		private bool CanExecuteNextCommand()
 		{
 			if (this.descriptors.Count == 0)

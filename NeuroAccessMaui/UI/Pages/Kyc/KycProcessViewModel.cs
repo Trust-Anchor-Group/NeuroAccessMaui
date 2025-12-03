@@ -882,7 +882,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			if (this.kycReference is not null && this.process is not null)
 				await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
-			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.Kyc_Exit)])) return;
+
+			if (!this.IsInSummary)
+			{
+				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.Kyc_Exit)]))
+					return;
+			}
+
 			await base.GoBack();
 		}
 
