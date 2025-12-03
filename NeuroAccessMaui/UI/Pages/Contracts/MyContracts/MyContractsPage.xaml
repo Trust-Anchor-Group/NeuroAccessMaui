@@ -70,7 +70,7 @@
 		<Border Style="{DynamicResource BorderSet}" Grid.Row="1" Padding="16,16,16,0" Margin="16,16,16,0">
 			<VerticalStackLayout>
 				<Label Style="{DynamicResource AlertLabel}" HorizontalOptions="Center" HorizontalTextAlignment="Center"
-					   VerticalOptions="Center" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" />
+					   VerticalOptions="Center" IsVisible="{Binding Path=ShowContractsMissing}" Text="{l:Localize NoContractsFound}" Margin="0,40,0,0"/>
 
 				<controls:CompositeEntry
 					Style="{DynamicResource RegularCompositeEntry}"
@@ -118,18 +118,18 @@
 						   Margin="0,32,0,32"
 						   Grid.Row="2"/>
 
-		<ScrollView Grid.Row="2" IsVisible="{Binding Path=IsBusy, Converter={mct:InvertedBoolConverter}}">
-			<VerticalStackLayout Margin="8,8,8,16">
-				<CollectionView x:Name="Contracts" VerticalOptions="Start"
-								ItemSizingStrategy="MeasureAllItems"
-								ItemsSource="{Binding Path=Contracts}"
-								ItemTemplate="{StaticResource ContractModelTemplate}">
-					<CollectionView.ItemsLayout>
-						<GridItemsLayout Orientation="Vertical"/>
-					</CollectionView.ItemsLayout>
-				</CollectionView>
-			</VerticalStackLayout>
-		</ScrollView>
-		
+		<CollectionView x:Name="Contracts" VerticalOptions="Start"
+						Grid.Row="2" IsVisible="{Binding Path=IsBusy, Converter={mct:InvertedBoolConverter}}"
+						Margin="8"
+						ItemSizingStrategy="MeasureFirstItem"
+						ItemsSource="{Binding Path=Contracts}"
+						ItemTemplate="{StaticResource ContractModelTemplate}"
+						RemainingItemsThreshold="{Binding HasMore}"
+						RemainingItemsThresholdReachedCommand="{Binding LoadMoreContractsCommand}">
+			<CollectionView.ItemsLayout>
+				<GridItemsLayout Orientation="Vertical"/>
+			</CollectionView.ItemsLayout>
+		</CollectionView>
+
 	</Grid>
 </base:BaseContentPage>
