@@ -214,7 +214,7 @@ namespace NeuroAccessMaui.Services.Push
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{IdentityTitle}', 'subtitle': '{IdentityStateApproved}', 'body': '{IdentityStateApproved}', icon: 'https://www.pdclipart.org/albums/Small_Icons/small_8_Ball.png' }},",
+					$"'visual': {{ 'title': '{IdentityTitle}', 'subtitle': '{IdentityStateApproved}', 'body': '{IdentityStateApproved}' }},",
 					$"'action': {{ 'type': '{NotificationAction.OpenProfile}', 'entityId': GetAttribute(E,'id') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Identities}' }},",
 					"'delivery': { 'priority': 'High' },",
