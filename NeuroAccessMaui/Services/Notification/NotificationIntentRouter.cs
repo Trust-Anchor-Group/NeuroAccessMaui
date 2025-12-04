@@ -33,7 +33,8 @@ namespace NeuroAccessMaui.Services.Notification
 				if (ServiceRef.NavigationService.CurrentPage is null)
 					return Task.FromResult(NotificationRouteResult.Deferred);
 
-				if (this.filterRegistry.ShouldIgnore(Intent, FromUserInteraction, CancellationToken))
+				NotificationFilterDecision decision = this.filterRegistry.ShouldIgnore(Intent, FromUserInteraction, CancellationToken);
+				if (decision.IgnoreRoute)
 					return Task.FromResult(NotificationRouteResult.Ignored);
 
 				switch (Intent.Action)

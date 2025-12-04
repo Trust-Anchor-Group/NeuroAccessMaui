@@ -22,6 +22,9 @@ namespace NeuroAccessMaui.Services.Push
 		{
 			CancellationToken.ThrowIfCancellationRequested();
 
+			if (Intent.Presentation is NotificationPresentation.StoreOnly or NotificationPresentation.Transient)
+				return;
+
 			UNMutableNotificationContent content = new()
 			{
 				Title = Intent.Title,

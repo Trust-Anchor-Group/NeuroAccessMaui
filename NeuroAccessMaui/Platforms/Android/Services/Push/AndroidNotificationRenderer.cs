@@ -32,6 +32,9 @@ namespace NeuroAccessMaui.Services.Push
 		{
 			CancellationToken.ThrowIfCancellationRequested();
 
+			if (notificationIntent.Presentation is NotificationPresentation.StoreOnly or NotificationPresentation.Transient)
+				return Task.CompletedTask;
+
 			string channelId = string.IsNullOrWhiteSpace(notificationIntent.Channel) ? DefaultChannelId : notificationIntent.Channel;
 
 			NotificationManager? manager = Android.App.Application.Context.GetSystemService(Context.NotificationService) as NotificationManager;

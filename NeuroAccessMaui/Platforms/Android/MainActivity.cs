@@ -188,6 +188,7 @@ namespace NeuroAccessMaui
 							NotificationIntent? parsed = JsonSerializer.Deserialize<NotificationIntent>(payload);
 							if (parsed is not null)
 							{
+								parsed.Presentation = this.ResolvePresentation(intent.Extras, parsed.Presentation);
 								await NotificationService.AddAsync(parsed, NotificationSource.Push, payload, CancellationToken.None);
 								string id = NotificationService.ComputeId(parsed);
 								await NotificationService.ConsumeAsync(id, CancellationToken.None);
@@ -211,12 +212,15 @@ namespace NeuroAccessMaui
 					{
 						Title = title ?? string.Empty,
 						Body = body,
-						Channel = channel
+						Channel = channel,
+						Presentation = this.ResolvePresentation(intent.Extras, NotificationPresentation.RenderAndStore)
 					};
 
 					string raw = intent.Extras.ToString() ?? string.Empty;
 					await NotificationService.AddAsync(fallback, NotificationSource.Push, raw, CancellationToken.None);
-					await NotificationRenderer.RenderAsync(fallback, CancellationToken.None);
+					NotificationFilterDecision decision = ServiceRef.Provider.GetRequiredService<INotificationFilterRegistry>().ShouldIgnore(fallback, false, CancellationToken.None);
+					if (!decision.IgnoreRender)
+						await NotificationRenderer.RenderAsync(fallback, CancellationToken.None);
 					return;
 				}
 				// Handle NFC intents.
@@ -330,6 +334,38 @@ namespace NeuroAccessMaui
 				ServiceRef.LogService.LogException(Ex);
 			}
 			return;
+		}
+
+		private NotificationPresentation ResolvePresentation(Bundle extras, NotificationPresentation current)
+		{
+			if (extras is null)
+				return current;
+
+			if (extras.ContainsKey("silent"))
+			{
+				string? value = extras.GetString("silent");
+				if (this.IsTrue(value))
+					return NotificationPresentation.StoreOnly;
+			}
+
+			if (extras.ContainsKey("delivery.silent"))
+			{
+				string? value = extras.GetString("delivery.silent");
+				if (this.IsTrue(value))
+					return NotificationPresentation.StoreOnly;
+			}
+
+			return current;
+		}
+
+		private bool IsTrue(string? value)
+		{
+			if (string.IsNullOrWhiteSpace(value))
+				return false;
+
+			return value.Equals("1", StringComparison.OrdinalIgnoreCase) ||
+				value.Equals("true", StringComparison.OrdinalIgnoreCase) ||
+				value.Equals("yes", StringComparison.OrdinalIgnoreCase);
 		}
 
 

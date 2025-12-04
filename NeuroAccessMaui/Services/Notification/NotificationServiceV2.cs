@@ -61,7 +61,7 @@ namespace NeuroAccessMaui.Services.Notification
 		/// Adds a runtime ignore filter. Dispose the handle to remove it.
 		/// </summary>
 		/// <param name="Predicate">Predicate to decide if an intent should be ignored.</param>
-		public IDisposable AddIgnoreFilter(Func<NotificationIntent, bool> Predicate)
+		public IDisposable AddIgnoreFilter(Func<NotificationIntent, NotificationFilterDecision> Predicate)
 		{
 			return this.filterRegistry.AddFilter(Predicate);
 		}
@@ -91,7 +91,17 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <param name="CancellationToken">Cancellation token.</param>
 		public async Task AddAsync(NotificationIntent Intent, NotificationSource Source, string? RawPayload, CancellationToken CancellationToken)
 		{
+			NotificationFilterDecision filterDecision = this.filterRegistry.ShouldIgnore(Intent, false, CancellationToken);
+			bool shouldPersist = Intent.Presentation is NotificationPresentation.RenderAndStore or NotificationPresentation.StoreOnly;
+			if (filterDecision.IgnoreStore)
+				shouldPersist = false;
 			NotificationRecord Record = this.CreateRecord(Intent, Source, RawPayload);
+
+			if (!shouldPersist)
+			{
+				this.TrySatisfyExpectations(Record);
+				return;
+			}
 
 			NotificationRecord? ExistingRecord = await this.LoadByIdAsync(Record.Id);
 			if (ExistingRecord is not null)
@@ -105,6 +115,7 @@ namespace NeuroAccessMaui.Services.Notification
 				ExistingRecord.SchemaVersion = Record.SchemaVersion;
 				ExistingRecord.Source = Record.Source;
 				ExistingRecord.State = NotificationState.Delivered;
+				ExistingRecord.Presentation = Record.Presentation;
 				ExistingRecord.DeliveredAt = ExistingRecord.DeliveredAt ?? DateTime.UtcNow;
 
 				await Database.Update(ExistingRecord);
@@ -119,6 +130,26 @@ namespace NeuroAccessMaui.Services.Notification
 			this.IncrementChannelCount(Record.Channel);
 			await this.RaiseAdded(Record);
 			await this.PruneAsync(CancellationToken);
+		}
+
+		/// <summary>
+		/// Marks a notification as read without consuming it.
+		/// </summary>
+		/// <param name="Id">Notification identifier.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		public async Task MarkReadAsync(string Id, CancellationToken CancellationToken)
+		{
+			NotificationRecord? record = await this.LoadByIdAsync(Id);
+			if (record is null)
+				return;
+
+			if (record.State == NotificationState.Consumed || record.State == NotificationState.Read)
+				return;
+
+			record.State = NotificationState.Read;
+			record.ReadAt = DateTime.UtcNow;
+			await Database.Update(record);
+			await this.RaiseAdded(record);
 		}
 
 		/// <summary>
@@ -283,7 +314,8 @@ namespace NeuroAccessMaui.Services.Notification
 				SchemaVersion = Intent.Version > 0 ? Intent.Version : DefaultSchemaVersion,
 				TimestampCreated = DateTime.UtcNow,
 				State = NotificationState.New,
-				Source = Source
+				Source = Source,
+				Presentation = Intent.Presentation
 			};
 		}
 
@@ -292,13 +324,6 @@ namespace NeuroAccessMaui.Services.Notification
 			StringBuilder builder = new();
 			DateTime now = DateTime.UtcNow;
 			DateTime bucket;
-			if (IdBucket > TimeSpan.Zero)
-			{
-				long ticks = now.Ticks / IdBucket.Ticks;
-				bucket = new DateTime(ticks * IdBucket.Ticks, DateTimeKind.Utc);
-			}
-			else
-				bucket = now;
 			string Correlation = Intent.CorrelationId ?? string.Empty;
 
 			builder.Append(Channel);
@@ -308,8 +333,20 @@ namespace NeuroAccessMaui.Services.Notification
 			builder.Append(Intent.EntityId ?? string.Empty);
 			builder.Append('|');
 			builder.Append(Correlation);
-			builder.Append('|');
-			builder.Append(bucket.ToString("o", CultureInfo.InvariantCulture));
+
+			if (string.IsNullOrEmpty(Correlation))
+			{
+				if (IdBucket > TimeSpan.Zero)
+				{
+					long ticks = now.Ticks / IdBucket.Ticks;
+					bucket = new DateTime(ticks * IdBucket.Ticks, DateTimeKind.Utc);
+				}
+				else
+					bucket = now;
+
+				builder.Append('|');
+				builder.Append(bucket.ToString("o", CultureInfo.InvariantCulture));
+			}
 
 			byte[] Input = Encoding.UTF8.GetBytes(builder.ToString());
 			byte[] Hash = SHA256.HashData(Input);
@@ -448,7 +485,8 @@ namespace NeuroAccessMaui.Services.Notification
 				Title = Record.Title,
 				Body = Record.Body,
 				Extras = extras ?? new Dictionary<string, string>(),
-				Version = Record.SchemaVersion
+				Version = Record.SchemaVersion,
+				Presentation = Record.Presentation
 			};
 		}
 

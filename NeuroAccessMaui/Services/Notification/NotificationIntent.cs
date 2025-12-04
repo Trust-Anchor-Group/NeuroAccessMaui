@@ -51,5 +51,10 @@ namespace NeuroAccessMaui.Services.Notification
 		/// Gets or sets an optional correlation identifier.
 		/// </summary>
 		public string? CorrelationId { get; set; }
+
+		/// <summary>
+		/// Gets or sets how the notification should be presented.
+		/// </summary>
+		public NotificationPresentation Presentation { get; set; } = NotificationPresentation.RenderAndStore;
 	}
 }

@@ -65,6 +65,13 @@ namespace NeuroAccessMaui.Services.Notification
 		event EventHandlerAsync<NotificationRecordEventArgs>? OnNotificationAdded;
 
 		/// <summary>
+		/// Marks a notification as read without consuming it.
+		/// </summary>
+		/// <param name="Id">Notification identifier.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		Task MarkReadAsync(string Id, CancellationToken CancellationToken);
+
+		/// <summary>
 		/// Current counts per channel.
 		/// </summary>
 		IReadOnlyDictionary<string, int> ChannelCounts { get; }
@@ -72,8 +79,8 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <summary>
 		/// Adds a runtime ignore filter. Dispose the handle to remove it.
 		/// </summary>
-		/// <param name="Predicate">Predicate to decide if an intent should be ignored.</param>
-		IDisposable AddIgnoreFilter(Func<NotificationIntent, bool> Predicate);
+		/// <param name="Predicate">Predicate to decide which handling to ignore.</param>
+		IDisposable AddIgnoreFilter(Func<NotificationIntent, NotificationFilterDecision> Predicate);
 
 		/// <summary>
 		/// Computes the stable identifier for an intent using the same logic as storage.

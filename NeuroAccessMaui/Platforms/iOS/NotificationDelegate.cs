@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using Firebase.CloudMessaging;
@@ -70,8 +71,13 @@ namespace NeuroAccessMaui
 				{
 					try
 					{
-						INotificationRenderer renderer = ServiceRef.Provider.GetRequiredService<INotificationRenderer>();
-						renderer.RenderAsync(intent, CancellationToken.None).ConfigureAwait(false);
+						INotificationFilterRegistry filterRegistry = ServiceRef.Provider.GetRequiredService<INotificationFilterRegistry>();
+						NotificationFilterDecision decision = filterRegistry.ShouldIgnore(intent, false, CancellationToken.None);
+						if (!decision.IgnoreRender)
+						{
+							INotificationRenderer renderer = ServiceRef.Provider.GetRequiredService<INotificationRenderer>();
+							renderer.RenderAsync(intent, CancellationToken.None).ConfigureAwait(false);
+						}
 					}
 					catch (Exception ex)
 					{
@@ -128,12 +134,32 @@ namespace NeuroAccessMaui
 				if (intent.Extras.TryGetValue("correlationId", out string correlationId))
 					intent.CorrelationId = correlationId;
 
+				intent.Presentation = ResolvePresentation(intent.Extras);
+
 				return intent;
 			}
 			catch
 			{
 				return null;
 			}
+		}
+
+		private static NotificationPresentation ResolvePresentation(Dictionary<string, string> extras)
+		{
+			if (extras.TryGetValue("silent", out string silent) && IsTrue(silent))
+				return NotificationPresentation.StoreOnly;
+
+			if (extras.TryGetValue("delivery.silent", out string deliverySilent) && IsTrue(deliverySilent))
+				return NotificationPresentation.StoreOnly;
+
+			return NotificationPresentation.RenderAndStore;
+		}
+
+		private static bool IsTrue(string value)
+		{
+			return value.Equals("1", StringComparison.OrdinalIgnoreCase) ||
+				value.Equals("true", StringComparison.OrdinalIgnoreCase) ||
+				value.Equals("yes", StringComparison.OrdinalIgnoreCase);
 		}
     }
 }

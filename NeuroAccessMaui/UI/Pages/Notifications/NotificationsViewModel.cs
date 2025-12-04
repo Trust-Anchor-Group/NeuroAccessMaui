@@ -99,6 +99,17 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			await this.LoadAsync();
 		}
 
+		/// <summary>
+		/// Command to mark a notification as read without consuming it.
+		/// </summary>
+		/// <param name="Item">Notification item.</param>
+		[RelayCommand]
+		private async Task MarkReadAsync(NotificationListItem Item)
+		{
+			await this.notificationService.MarkReadAsync(Item.Id, CancellationToken.None);
+			await this.LoadAsync();
+		}
+
 		/// <inheritdoc/>
 		public override async Task OnAppearingAsync()
 		{
@@ -169,7 +180,12 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		{
 			string channelShort = string.IsNullOrEmpty(record.Channel) ? "N" : record.Channel.Substring(0, 1).ToUpperInvariant();
 			string dateText = record.TimestampCreated.ToLocalTime().ToString("MMM d", CultureInfo.CurrentCulture);
-			string stateLabel = record.State is NotificationState.New or NotificationState.Delivered ? "New" : string.Empty;
+			string stateLabel = record.State switch
+			{
+				NotificationState.New or NotificationState.Delivered => "New",
+				NotificationState.Read => "Read",
+				_ => string.Empty
+			};
 
 			return new NotificationListItem(record.Id, record.Title, record.Body, record.Channel, channelShort, dateText, stateLabel);
 		}

@@ -9,10 +9,10 @@ namespace NeuroAccessMaui.Services.Notification
 	/// </summary>
 	public sealed class NotificationFilterRegistry : INotificationFilterRegistry
 	{
-		private readonly List<Func<NotificationIntent, bool>> filters = [];
+		private readonly List<Func<NotificationIntent, NotificationFilterDecision>> filters = [];
 
 		/// <inheritdoc/>
-		public IDisposable AddFilter(Func<NotificationIntent, bool> Predicate)
+		public IDisposable AddFilter(Func<NotificationIntent, NotificationFilterDecision> Predicate)
 		{
 			if (Predicate is null)
 				throw new ArgumentNullException(nameof(Predicate));
@@ -32,24 +32,26 @@ namespace NeuroAccessMaui.Services.Notification
 		}
 
 		/// <inheritdoc/>
-		public bool ShouldIgnore(NotificationIntent Intent, bool FromUserInteraction, CancellationToken CancellationToken)
+		public NotificationFilterDecision ShouldIgnore(NotificationIntent Intent, bool FromUserInteraction, CancellationToken CancellationToken)
 		{
-			List<Func<NotificationIntent, bool>> snapshot;
+			List<Func<NotificationIntent, NotificationFilterDecision>> snapshot;
 			lock (this.filters)
 			{
-				if (this.filters.Count == 0)
-					return false;
-				snapshot = new List<Func<NotificationIntent, bool>>(this.filters);
+				snapshot = new List<Func<NotificationIntent, NotificationFilterDecision>>(this.filters);
 			}
 
-			foreach (Func<NotificationIntent, bool> filter in snapshot)
+			NotificationFilterDecision decision = NotificationFilterDecision.None;
+
+			foreach (Func<NotificationIntent, NotificationFilterDecision> filter in snapshot)
 			{
 				CancellationToken.ThrowIfCancellationRequested();
-				if (filter(Intent))
-					return true;
+				NotificationFilterDecision result = filter(Intent);
+				decision = decision.Merge(result);
+				if (decision.IgnoreRender && decision.IgnoreStore && decision.IgnoreRoute)
+					return decision;
 			}
 
-			return false;
+			return decision;
 		}
 	}
 }

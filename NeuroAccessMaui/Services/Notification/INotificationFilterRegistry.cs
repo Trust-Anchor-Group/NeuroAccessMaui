@@ -11,16 +11,16 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <summary>
 		/// Registers a filter predicate; returns a handle that removes the filter when disposed.
 		/// </summary>
-		/// <param name="Predicate">Predicate to decide if a notification intent should be ignored.</param>
+		/// <param name="Predicate">Predicate to decide which aspects of handling to ignore.</param>
 		/// <returns>Disposable handle that removes the filter.</returns>
-		IDisposable AddFilter(Func<NotificationIntent, bool> Predicate);
+		IDisposable AddFilter(Func<NotificationIntent, NotificationFilterDecision> Predicate);
 
 		/// <summary>
-		/// Returns true if any active filter chooses to ignore the notification.
+		/// Returns filter decisions for the notification.
 		/// </summary>
 		/// <param name="Intent">Notification intent.</param>
 		/// <param name="FromUserInteraction">If triggered by user interaction.</param>
 		/// <param name="CancellationToken">Cancellation token.</param>
-		bool ShouldIgnore(NotificationIntent Intent, bool FromUserInteraction, CancellationToken CancellationToken);
+		NotificationFilterDecision ShouldIgnore(NotificationIntent Intent, bool FromUserInteraction, CancellationToken CancellationToken);
 	}
 }

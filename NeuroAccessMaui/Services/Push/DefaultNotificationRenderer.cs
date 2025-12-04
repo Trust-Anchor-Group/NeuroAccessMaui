@@ -17,6 +17,9 @@ namespace NeuroAccessMaui.Services.Push
 		/// <returns>Task representing the asynchronous operation.</returns>
 		public Task RenderAsync(NotificationIntent Intent, CancellationToken CancellationToken)
 		{
+			if (Intent.Presentation is NotificationPresentation.StoreOnly or NotificationPresentation.Transient)
+				return Task.CompletedTask;
+
 			_ = Intent;
 			CancellationToken.ThrowIfCancellationRequested();
 			return Task.CompletedTask;

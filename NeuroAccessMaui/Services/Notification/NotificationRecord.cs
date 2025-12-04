@@ -94,6 +94,11 @@ namespace NeuroAccessMaui.Services.Notification
 		public NotificationSource Source { get; set; }
 
 		/// <summary>
+		/// Gets or sets the presentation preference.
+		/// </summary>
+		public NotificationPresentation Presentation { get; set; } = NotificationPresentation.RenderAndStore;
+
+		/// <summary>
 		/// Gets or sets the legacy notification type for migration traceability.
 		/// </summary>
 		public string? LegacyType { get; set; }
