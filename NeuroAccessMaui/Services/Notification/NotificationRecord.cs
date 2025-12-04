@@ -9,7 +9,7 @@ namespace NeuroAccessMaui.Services.Notification
 	[CollectionName("NotificationsV2")]
 	[TypeName(TypeNameSerialization.FullName)]
 	[Index(nameof(Id))]
-	[Index(nameof(TimestampCreated))]
+	[Index(nameof(Channel), nameof(TimestampCreated))]
 	public sealed class NotificationRecord
 	{
 		/// <summary>
