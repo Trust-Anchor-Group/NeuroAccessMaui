@@ -57,7 +57,7 @@ namespace NeuroAccessMaui.Services.Push
 		public string MessageVariable { get; }
 
 		/// <summary>
-		/// Optional pattern script (unused today).
+		/// Optional pattern script to filter matching stanzas.
 		/// </summary>
 		public string PatternScript { get; }
 
@@ -87,7 +87,6 @@ namespace NeuroAccessMaui.Services.Push
 			List<PushRuleDefinition> Definitions = new();
 
 			string PetitionFrom = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.PetitionFrom)]);
-			string IdentityUpdated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityUpdated)]);
 			string ContractCreated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractCreated)]);
 			string ContractSigned = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractSigned)]);
 			string ContractUpdated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractUpdated)]);
@@ -99,6 +98,14 @@ namespace NeuroAccessMaui.Services.Push
 			string AccessRequest = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.AccessRequest)]);
 			string ReadRequest = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ReadRequest)]);
 			string ControlRequest = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ControlRequest)]);
+			string IdentityTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)]);
+			string IdentityStateApproved = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityState_Approved)]);
+			string IdentityStateObsoleted = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityState_Obsoleted)]);
+			string IdentityStateRejected = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityState_Rejected)]);
+			string IdentityStateCompromised = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityState_Compromised)]);
+			string IdentityCompromisedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)]);
+			string IdentityObsoletedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)]);
+			string IdentityRejectedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityRejected)]);
 
 			Definitions.Add(new PushRuleDefinition(
 				MessageType.Chat,
@@ -201,15 +208,54 @@ namespace NeuroAccessMaui.Services.Push
 				string.Empty,
 				Script(
 					"E:=GetElement(Stanza,'identity');",
+					"Status:=GetElement(E,'status');",
+					"State:=GetAttribute(Status,'state');",
+					"if (State='Approved') then",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{IdentityUpdated}' }},",
+					$"'visual': {{ 'title': '{IdentityTitle}', 'subtitle': '{IdentityStateApproved}', 'body': '{IdentityStateApproved}', icon: 'https://www.pdclipart.org/albums/Small_Icons/small_8_Ball.png' }},",
 					$"'action': {{ 'type': '{NotificationAction.OpenProfile}', 'entityId': GetAttribute(E,'id') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Identities}' }},",
 					"'delivery': { 'priority': 'High' },",
-					"'data': { 'legalId': GetAttribute(E,'id') }",
-					"}")));
+					"'context': { 'provider': GetAttribute(Status,'provider') },",
+					"'data': { 'legalId': GetAttribute(E,'id'), 'state': State, 'validFrom': GetAttribute(Status,'from'), 'validTo': GetAttribute(Status,'to') }",
+					"}",
+					"else if (State='Obsoleted') then",
+					"{",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{IdentityTitle}', 'subtitle': '{IdentityStateObsoleted}', 'body': '{IdentityObsoletedBody}' }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenProfile}', 'entityId': GetAttribute(E,'id') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Identities}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'context': { 'provider': GetAttribute(Status,'provider') },",
+					"'data': { 'legalId': GetAttribute(E,'id'), 'state': State, 'validFrom': GetAttribute(Status,'from'), 'validTo': GetAttribute(Status,'to') }",
+					"}",
+					"else if (State='Rejected') then",
+					"{",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{IdentityTitle}', 'subtitle': '{IdentityStateRejected}', 'body': '{IdentityRejectedBody}' }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenProfile}', 'entityId': GetAttribute(E,'id') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Identities}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'context': { 'provider': GetAttribute(Status,'provider') },",
+					"'data': { 'legalId': GetAttribute(E,'id'), 'state': State, 'validFrom': GetAttribute(Status,'from'), 'validTo': GetAttribute(Status,'to') }",
+					"}",
+					"else if (State='Compromised') then",
+					"{",
+					"'payloadKind': 'PushNotificationPayload',",
+					"'payloadVersion': 1,",
+					$"'visual': {{ 'title': '{IdentityTitle}', 'subtitle': '{IdentityStateCompromised}', 'body': '{IdentityCompromisedBody}' }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenProfile}', 'entityId': GetAttribute(E,'id') }},",
+					$"'channel': {{ 'channelId': '{Constants.PushChannels.Identities}' }},",
+					"'delivery': { 'priority': 'High' },",
+					"'context': { 'provider': GetAttribute(Status,'provider') },",
+					"'data': { 'legalId': GetAttribute(E,'id'), 'state': State, 'validFrom': GetAttribute(Status,'from'), 'validTo': GetAttribute(Status,'to') }",
+					"}",
+					"else",
+					"null")));
 
 			Definitions.Add(new PushRuleDefinition(
 				MessageType.Normal,
