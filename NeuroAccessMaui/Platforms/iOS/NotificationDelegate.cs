@@ -23,6 +23,21 @@ namespace NeuroAccessMaui
 
             Console.WriteLine("Foreground notification received: " + userInfo);
 
+			try
+			{
+				NotificationIntent? intent = this.ParseIntent(userInfo);
+				if (intent is not null)
+				{
+					INotificationServiceV2 service = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+					string raw = JsonSerializer.Serialize(userInfo);
+					service.AddAsync(intent, NotificationSource.Push, raw, CancellationToken.None).ConfigureAwait(false);
+				}
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+
 			// Suppress foreground banners; store silently.
 			completionHandler(UNNotificationPresentationOptions.None);
         }

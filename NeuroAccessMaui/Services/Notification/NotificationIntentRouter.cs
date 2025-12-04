@@ -6,6 +6,12 @@ using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.Services.Kyc;
+using NeuroAccessMaui.UI.Pages.Kyc;
+using Waher.Networking.XMPP.Contracts;
+using Waher.Persistence;
+using Waher.Persistence.Filters;
 
 namespace NeuroAccessMaui.Services.Notification
 {
@@ -43,6 +49,8 @@ namespace NeuroAccessMaui.Services.Notification
 						return this.RouteChatAsync(Intent, CancellationToken);
 					case NotificationAction.OpenProfile:
 						return this.RouteProfileAsync(Intent, CancellationToken);
+					case NotificationAction.OpenIdentity:
+						return this.RouteIdentityAsync(Intent, CancellationToken);
 					case NotificationAction.OpenPresenceRequest:
 						return this.RoutePresenceAsync(Intent, CancellationToken);
 					case NotificationAction.OpenSettings:
@@ -82,6 +90,48 @@ namespace NeuroAccessMaui.Services.Notification
 		{
 			await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage));
 			return NotificationRouteResult.Deferred;
+		}
+
+		private async Task<NotificationRouteResult> RouteIdentityAsync(NotificationIntent Intent, CancellationToken CancellationToken)
+		{
+			if (string.IsNullOrEmpty(Intent.EntityId))
+				return NotificationRouteResult.NoHandler;
+
+			try
+			{
+				IdentityState? state = null;
+				if (Intent.Extras.TryGetValue("state", out string? stateString) && Enum.TryParse(stateString, out IdentityState parsed))
+					state = parsed;
+
+				KycReference? reference = null;
+				try
+				{
+					reference = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), Intent.EntityId));
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+
+				bool isApproved = state == IdentityState.Approved || reference?.CreatedIdentityState == IdentityState.Approved;
+
+				if (reference is not null && !isApproved)
+				{
+					KycProcessNavigationArgs args = new(reference);
+					await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), args);
+					return NotificationRouteResult.Success;
+				}
+
+				LegalIdentity identity = await ServiceRef.XmppService.GetLegalIdentity(Intent.EntityId);
+				ViewIdentityNavigationArgs viewArgs = new(identity);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), viewArgs);
+				return NotificationRouteResult.Success;
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				return NotificationRouteResult.Failed;
+			}
 		}
 
 		private async Task<NotificationRouteResult> RouteSettingsAsync(CancellationToken CancellationToken)

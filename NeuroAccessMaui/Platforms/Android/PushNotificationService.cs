@@ -10,12 +10,17 @@ using System.Threading.Tasks;
 using AndroidX.Core.App;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Xmpp;
 using Waher.Events;
 using Waher.Networking.XMPP.Push;
 using Waher.Runtime.Inventory;
+using System.Text.Json;
+using System.Threading;
+using Microsoft.Extensions.DependencyInjection;
 
 using Application = Android.App.Application;
+using NeuroAccessMaui.Services.Push;
 
 namespace NeuroAccessMaui.Platforms.Android
 {
@@ -27,59 +32,80 @@ namespace NeuroAccessMaui.Platforms.Android
 	{
 		public override void OnMessageReceived(RemoteMessage Message)
 		{
+			_ = this.HandleMessageAsync(Message);
+		}
+
+		private async Task HandleMessageAsync(RemoteMessage Message)
+		{
 			try
 			{
-				// Extract title and body from the data payload.
-				Message.Data.TryGetValue("myTitle", out string? Title);
-				Message.Data.TryGetValue("myBody", out string? Body);
-				Message.Data.TryGetValue("channelId", out string? ChannelId);
+				Dictionary<string, string> Data = new Dictionary<string, string>(Message.Data, StringComparer.OrdinalIgnoreCase);
+				string Title = Data.TryGetValue("myTitle", out string? T) ? T ?? string.Empty : string.Empty;
+				string? Body = Data.TryGetValue("myBody", out string? B) ? B : null;
+				string ChannelId = Data.TryGetValue("channelId", out string? C) ? C ?? Constants.PushChannels.Messages : Constants.PushChannels.Messages;
 
-				if (string.IsNullOrEmpty(Title) || string.IsNullOrEmpty(Body))
+				NotificationIntent Intent = new NotificationIntent
 				{
-					// Handle the case where title or body is missing
+					Title = Title,
+					Body = Body,
+					Channel = ChannelId,
+					Presentation = this.ResolvePresentation(Data, NotificationPresentation.RenderAndStore)
+				};
+
+				if (Data.TryGetValue("action", out string? ActionValue) && Enum.TryParse(ActionValue, out NotificationAction ParsedAction))
+					Intent.Action = ParsedAction;
+
+				if (Data.TryGetValue("entityId", out string? EntityId))
+					Intent.EntityId = EntityId;
+
+				if (Data.TryGetValue("correlationId", out string? CorrelationId))
+					Intent.CorrelationId = CorrelationId;
+
+				string Raw = JsonSerializer.Serialize(Data);
+
+				IServiceProvider? Provider = ServiceRef.Provider;
+				if (Provider is null)
+				{
 					return;
 				}
 
-				switch (ChannelId)
+				INotificationServiceV2 NotificationService = Provider.GetRequiredService<INotificationServiceV2>();
+				await NotificationService.AddAsync(Intent, NotificationSource.Push, Raw, CancellationToken.None);
+
+				INotificationFilterRegistry FilterRegistry = Provider.GetRequiredService<INotificationFilterRegistry>();
+				NotificationFilterDecision Decision = FilterRegistry.ShouldIgnore(Intent, false, CancellationToken.None);
+				if (!Decision.IgnoreRender)
 				{
-					case Constants.PushChannels.Messages:
-						ServiceRef.PlatformSpecific.ShowMessageNotification(Title, Body, Message.Data);
-						break;
-
-					case Constants.PushChannels.Petitions:
-						ServiceRef.PlatformSpecific.ShowPetitionNotification(Title, Body, Message.Data);
-						break;
-
-					case Constants.PushChannels.Identities:
-						ServiceRef.PlatformSpecific.ShowIdentitiesNotification(Title, Body, Message.Data);
-						break;
-
-					case Constants.PushChannels.Contracts:
-						ServiceRef.PlatformSpecific.ShowContractsNotification(Title, Body, Message.Data);
-						break;
-
-					case Constants.PushChannels.EDaler:
-						ServiceRef.PlatformSpecific.ShowEDalerNotification(Title, Body, Message.Data);
-						break;
-
-					case Constants.PushChannels.Tokens:
-						ServiceRef.PlatformSpecific.ShowTokenNotification(Title, Body, Message.Data);
-						break;
-
-					case Constants.PushChannels.Provisioning:
-						ServiceRef.PlatformSpecific.ShowProvisioningNotification(Title, Body, Message.Data);
-						break;
-
-					default:
-						break;
+					INotificationRenderer Renderer = Provider.GetRequiredService<INotificationRenderer>();
+					await Renderer.RenderAsync(Intent, CancellationToken.None);
 				}
 			}
-			catch (Exception)
+			catch (Exception Ex)
 			{
-				//Log.Critical(ex);
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 
+		private NotificationPresentation ResolvePresentation(Dictionary<string, string> Data, NotificationPresentation Current)
+		{
+			if (Data.TryGetValue("silent", out string? Silent) && this.IsTrue(Silent))
+				return NotificationPresentation.StoreOnly;
+
+			if (Data.TryGetValue("delivery.silent", out string? DeliverySilent) && this.IsTrue(DeliverySilent))
+				return NotificationPresentation.StoreOnly;
+
+			return Current;
+		}
+
+		private bool IsTrue(string? Value)
+		{
+			if (string.IsNullOrWhiteSpace(Value))
+				return false;
+
+			return Value.Equals("1", StringComparison.OrdinalIgnoreCase) ||
+				Value.Equals("true", StringComparison.OrdinalIgnoreCase) ||
+				Value.Equals("yes", StringComparison.OrdinalIgnoreCase);
+		}
 
 
 

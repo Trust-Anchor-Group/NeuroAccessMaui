@@ -23,6 +23,11 @@ namespace NeuroAccessMaui.Services.Notification
 		OpenProfile = 2,
 
 		/// <summary>
+		/// Opens a legal identity or identity application.
+		/// </summary>
+		OpenIdentity = 5,
+
+		/// <summary>
 		/// Opens a presence subscription request.
 		/// </summary>
 		OpenPresenceRequest = 3,
