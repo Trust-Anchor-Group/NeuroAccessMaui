@@ -1083,7 +1083,19 @@ namespace NeuroAccessMaui.Services.Kyc
 				{
 					this.autosaveCts.Cancel();
 					this.autosaveChannel.Writer.TryComplete();
-					this.autosaveWorkerTask.Wait(TimeSpan.FromSeconds(2));
+					try
+					{
+						this.autosaveWorkerTask.Wait(TimeSpan.FromSeconds(2));
+					}
+					catch (AggregateException ex)
+					{
+						if (ex.InnerExceptions.Any(e => e is not TaskCanceledException and not OperationCanceledException))
+							ServiceRef.LogService.LogException(ex);
+					}
+					catch (OperationCanceledException)
+					{
+						// Expected when cancellation is observed; ignore.
+					}
 				}
 				catch (Exception Ex)
 				{
