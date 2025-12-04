@@ -28,6 +28,15 @@ namespace NeuroAccessMaui
 	[IntentFilter([Intent.ActionView],
 			Categories = [Intent.CategoryDefault, Intent.CategoryBrowsable],
 			DataSchemes = ["iotid", "iotdisco", "iotsc", "tagsign", "obinfo", "edaler", "nfeat", "xmpp", "aes256", "neuroaccess"])]
+	[IntentFilter(
+		[
+			nameof(NotificationAction.OpenChat),
+			nameof(NotificationAction.OpenProfile),
+			nameof(NotificationAction.OpenIdentity),
+			nameof(NotificationAction.OpenPresenceRequest),
+			nameof(NotificationAction.OpenSettings)
+		],
+		Categories = [Intent.CategoryDefault, Intent.CategoryBrowsable])]
 	public class MainActivity : MauiAppCompatActivity
 	{
 		private static NfcAdapter? nfcAdapter = null;
