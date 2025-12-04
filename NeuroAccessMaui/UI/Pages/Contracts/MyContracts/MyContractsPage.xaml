@@ -20,16 +20,16 @@
 								 Command="{Binding ContractSelectedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
 								 CommandParameter="{Binding .}">
 					<Grid ColumnDefinitions="auto,*,auto" RowDefinitions="auto,auto">
-						<Label Grid.Column="0" Grid.Row="0" LineBreakMode="NoWrap" Padding="5,2,5,0"
+						<Label Grid.Column="0" Grid.Row="0" LineBreakMode="NoWrap" Padding="5,0,5,0"
 								Text="{Binding Path=Timestamp, Converter={converters:DateToString}}"
 								HorizontalOptions="Center" VerticalOptions="Center"/>
-						<Label Grid.Column="0" Grid.Row="1" LineBreakMode="NoWrap" Padding="5,0,5,2"
+						<Label Grid.Column="0" Grid.Row="1" LineBreakMode="NoWrap" Padding="5,0,5,0"
 								Text="{Binding Path=Timestamp, Converter={converters:TimeToString}}"
 								HorizontalOptions="Center" VerticalOptions="Center"/>
 						<Label Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" LineBreakMode="CharacterWrap" TextType="Text"
-								HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,2,5,2" Margin="5"
-								Text="{Binding Path=NameOrCategory}" Style="{DynamicResource ClickableValueLabel}"/>
-						<Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" StrokeShape="RoundRectangle 12" Margin="2" Padding="8,3,8,3"
+								HorizontalTextAlignment="Start" VerticalTextAlignment="Center" Padding="5,0,5,0" Margin="0"
+								Text="{Binding Path=NameOrCategory}" Style="{DynamicResource ClickableValueLabel}" VerticalOptions="Center"/>
+						<Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" StrokeShape="RoundRectangle 12" Margin="0" Padding="8,3,8,3"
 								IsVisible="{Binding HasEvents}" HorizontalOptions="End" VerticalOptions="Center"
 								Style="{DynamicResource RedButtonActiveBorder}">
 							<Label FontSize="Caption" TextColor="{DynamicResource ContentWhitefixed}"
@@ -84,10 +84,10 @@
 						<BindableLayout.ItemTemplate>
 							<DataTemplate x:DataType="viewmodel:MyContractsViewModel+SelectableTag">
 								<controls:TemplatedButton Padding="4,0,4,16"
-															Command="{Binding FilterChangedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
-															CommandParameter="{Binding .}">
+														  Command="{Binding FilterChangedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+														  CommandParameter="{Binding .}">
 									<Border StrokeShape="RoundRectangle 24" Padding="8"
-												Background="{DynamicResource TnPSuccessbgWL}">
+											Background="{DynamicResource TnPSuccessbgWL}">
 										<HorizontalStackLayout>
 											<Label Text="{Binding Category}" Style="{DynamicResource Brand2LabelS}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="14"/>
 											<Label Text=": " Style="{DynamicResource Brand2LabelS}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="14"/>
@@ -121,6 +121,7 @@
 		<CollectionView x:Name="Contracts" VerticalOptions="Start"
 						Grid.Row="2" IsVisible="{Binding Path=IsBusy, Converter={mct:InvertedBoolConverter}}"
 						Margin="8"
+						SelectionMode="None"
 						ItemSizingStrategy="MeasureFirstItem"
 						ItemsSource="{Binding Path=Contracts}"
 						ItemTemplate="{StaticResource ContractModelTemplate}"

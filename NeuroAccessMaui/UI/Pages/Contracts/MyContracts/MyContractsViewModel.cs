@@ -13,6 +13,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services.UI;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.Popups.QR;
+using Waher.Script;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -25,7 +26,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private readonly Dictionary<string, SelectableTag> tagMap = new(StringComparer.OrdinalIgnoreCase);
 
 		private const string AllCategory = "All";
-		private const int contractBatchSize = 15;
+		private const int contractBatchSize = 10;
 
 		private int loadedContracts;
 
@@ -85,6 +86,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			this.IsBusy = true;
 			this.ShowContractsMissing = false;
+
+			await this.LoadCategories();
 
 			await this.LoadContracts();
 
@@ -386,12 +389,58 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			await this.LoadContracts();
 		}
 
+		private void SortFilterTags()
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				SelectableTag? all = this.FilterTags.FirstOrDefault(t => string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase));
+				List<SelectableTag> others = this.FilterTags.Where(t => !string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase))
+					.OrderByDescending(t => t.Count)
+					.ToList();
+
+				this.FilterTags.Clear();
+				if (all is not null)
+					this.FilterTags.Add(all);
+				foreach (SelectableTag t in others)
+					this.FilterTags.Add(t);
+			});
+		}
+
+		private async Task LoadCategories()
+		{
+			try
+			{
+				object Categories = await Expression.EvalAsync("select distinct Category from NeuroAccessMaui.Services.Contracts.ContractReference");
+
+				/*
+				foreach (object obj in Categories)
+				{
+					if (obj is string category && !string.IsNullOrWhiteSpace(category))
+					{
+						MainThread.BeginInvokeOnMainThread(() =>
+						{
+							if (!this.tagMap.ContainsKey(category))
+							{
+								SelectableTag NewTag = new(category, false, 0);
+								this.tagMap[category] = NewTag;
+								this.FilterTags.Add(NewTag);
+							}
+						});
+					}
+				}
+				*/
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
 		private async Task LoadContracts()
 		{
 			try
 			{
 				IEnumerable<ContractReference> ContractReferences;
-
 				switch (this.contractsListMode)
 				{
 					case ContractsListMode.Contracts:
@@ -493,6 +542,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					}
 				});
 
+				// Sort tags so largest Count comes first, keeping "All" at the top
+				this.SortFilterTags();
+
 				this.ShowContractsMissing = this.allContracts.Count < 1;
 			}
 			finally
@@ -505,7 +557,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				{
 					foreach (string TokenTemplateId in Constants.ContractTemplates.TokenCreationTemplates)
 					{
-						ContractReference? Existing = await Database.FindFirstDeleteRest<ContractReference>(new FilterFieldEqualTo("ContractId", TokenTemplateId)).ConfigureAwait(false);
+						ContractReference? Existing = await Database.FindFirstDeleteRest<ContractReference>(new FilterAnd(
+							new FilterFieldEqualTo("IsTemplate", true),
+							new FilterFieldEqualTo("ContractLoaded", true),
+							new FilterFieldEqualTo("ContractId", TokenTemplateId)
+						));
 
 						if (Existing is null)
 						{
