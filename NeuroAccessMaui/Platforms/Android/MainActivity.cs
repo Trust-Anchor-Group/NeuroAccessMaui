@@ -98,7 +98,7 @@ namespace NeuroAccessMaui
 				msg.AppendLine("An error occurred in the Android MainActivity.OnPostCreate method.");
 				msg.AppendLine("Exception message:");
 				msg.Append(ex.Message);
-				msg.AppendLine();
+				msg.AppendLine("\n\n");
 				msg.AppendLine("```");
 				msg.AppendLine(ex.StackTrace);
 				msg.AppendLine("```");

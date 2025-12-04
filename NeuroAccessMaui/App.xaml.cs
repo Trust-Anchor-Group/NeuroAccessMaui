@@ -942,7 +942,7 @@ namespace NeuroAccessMaui
                     StringBuilder Msg = new();
                     Msg.Append("Unhandled exception caused app to crash. ");
                     Msg.AppendLine("Below you can find the stack trace of the corresponding exception.");
-                    Msg.AppendLine();
+                    Msg.AppendLine("\n\n");
                     Msg.AppendLine("```");
                     Msg.AppendLine(StackTrace);
                     Msg.AppendLine("```\n");
