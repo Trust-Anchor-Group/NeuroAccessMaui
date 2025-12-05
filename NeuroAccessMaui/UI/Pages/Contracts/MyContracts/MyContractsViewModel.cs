@@ -395,7 +395,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			{
 				SelectableTag? all = this.FilterTags.FirstOrDefault(t => string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase));
 				List<SelectableTag> others = this.FilterTags.Where(t => !string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase))
-					.OrderByDescending(t => t.Count)
+					.OrderBy(t => t.Category)
 					.ToList();
 
 				this.FilterTags.Clear();
@@ -410,25 +410,27 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		{
 			try
 			{
-				object Categories = await Expression.EvalAsync("select distinct Category from NeuroAccessMaui.Services.Contracts.ContractReference");
+				object Categories = await Expression.EvalAsync($"select distinct Category from NeuroAccessMaui.Services.Contracts.ContractReference where IsTemplate={this.contractsListMode != ContractsListMode.Contracts}");
 
-				/*
-				foreach (object obj in Categories)
+				if (Categories is not object[] Items)
+					return;
+
+				foreach (object Item in Items)
 				{
-					if (obj is string category && !string.IsNullOrWhiteSpace(category))
+					if (Item is string category && !string.IsNullOrWhiteSpace(category))
 					{
 						MainThread.BeginInvokeOnMainThread(() =>
 						{
 							if (!this.tagMap.ContainsKey(category))
 							{
-								SelectableTag NewTag = new(category, false, 0);
+								SelectableTag NewTag = new(category, false);
 								this.tagMap[category] = NewTag;
 								this.FilterTags.Add(NewTag);
 							}
 						});
 					}
 				}
-				*/
+
 			}
 			catch (Exception Ex)
 			{
@@ -497,24 +499,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					ContractModel Item = new(Ref, Events);
 					this.allContracts.Add(Item); // append to end
 
-					string? Category = Item.Category;
-					if (!string.IsNullOrWhiteSpace(Category))
-					{
-						MainThread.BeginInvokeOnMainThread(() =>
-						{
-							if (this.tagMap.TryGetValue(Category, out SelectableTag? Existing))
-							{
-								Existing.Increment();
-							}
-							else
-							{
-								SelectableTag NewTag = new(Category, false, 1);
-								this.tagMap[Category] = NewTag;
-								this.FilterTags.Add(NewTag);
-							}
-						});
-					}
-
 					// Only add to visible list if it matches current filter
 					if (this.MatchesCurrentFilter(Item))
 					{
@@ -528,15 +512,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				// Ensure an "All" tag exists showing total count, selected by default
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
-					int total = this.allContracts.Count;
 					if (this.tagMap.TryGetValue(AllCategory, out SelectableTag? allTag))
 					{
 						allTag.IsSelected = true;
-						allTag.Count = total;
 					}
 					else
 					{
-						SelectableTag all = new(AllCategory, true, total);
+						SelectableTag all = new(AllCategory, true);
 						this.tagMap[AllCategory] = all;
 						this.FilterTags.Insert(0, all);
 					}
@@ -593,6 +575,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						}
 					}
 				}
+
+				/*
+				foreach (ContractModel Model in this.allContracts)
+				{
+					ContractReference Ref = Model.ContractRef;
+
+					Ref.ObjectId = null;
+
+					await Database.Insert(Ref);
+				}
+				*/
 			}
 		}
 
@@ -645,19 +638,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			private string category;
 			[ObservableProperty]
 			private bool isSelected;
-			[ObservableProperty]
-			private int count;
 
-			public SelectableTag(string Category, bool IsSelected, int Count)
+			public SelectableTag(string Category, bool IsSelected)
 			{
 				this.category = Category;
 				this.isSelected = IsSelected;
-				this.count = Count;
 			}
 
 			public string GetFilterString() => this.IsSelected && !string.Equals(this.Category, AllCategory, StringComparison.OrdinalIgnoreCase) ? this.Category : string.Empty;
 			public void ToggleSelection() => this.IsSelected = !this.IsSelected;
-			public void Increment() => this.Count++;
 		}
 	}
 }
