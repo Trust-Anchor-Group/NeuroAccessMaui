@@ -176,6 +176,17 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			await this.LoadAsync();
 		}
 
+		/// <summary>
+		/// Command to delete a single notification.
+		/// </summary>
+		/// <param name="Item">Notification item.</param>
+		[RelayCommand]
+		private async Task DeleteNotificationAsync(NotificationListItem Item)
+		{
+			await this.notificationService.DeleteAsync(new[] { Item.Id }, CancellationToken.None);
+			await this.LoadAsync();
+		}
+
 		private NotificationListItem ToListItem(NotificationRecord record)
 		{
 			string channelShort = string.IsNullOrEmpty(record.Channel) ? "N" : record.Channel.Substring(0, 1).ToUpperInvariant();
@@ -184,10 +195,11 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			{
 				NotificationState.New or NotificationState.Delivered => "New",
 				NotificationState.Read => "Read",
+				NotificationState.Consumed => "Opened",
 				_ => string.Empty
 			};
 
-			return new NotificationListItem(record.Id, record.Title, record.Body, record.Channel, channelShort, dateText, stateLabel);
+			return new NotificationListItem(record.Id, record.Title, record.Body, record.Channel, channelShort, dateText, stateLabel, record.OccurrenceCount);
 		}
 	}
 }

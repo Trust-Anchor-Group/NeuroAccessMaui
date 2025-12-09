@@ -91,72 +91,130 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="viewmodel:NotificationListItem">
-                        <Border Margin="0,6"
-                                Padding="12"
-                                BackgroundColor="{DynamicResource PageBackgroundWL}"
-                                Style="{DynamicResource BorderSet}">
-                            <Grid ColumnDefinitions="auto,*,auto"
-                                  ColumnSpacing="12"
-                                  RowDefinitions="auto,auto">
-                                <Border Grid.RowSpan="2"
-                                        WidthRequest="48"
-                                        HeightRequest="48"
-										Margin="0" Padding="0"
-                                        Background="{DynamicResource TnPInfobgWL}"
-                                        Style="{DynamicResource BorderSet}">
-									<Grid WidthRequest="32" HeightRequest="32">
-										<Label Text="{Binding ChannelShort}"
-											   HorizontalOptions="Center"
-											   VerticalOptions="Center"
-											   TextColor="{DynamicResource TnPInfoContentWL}"
-											   FontSize="16"
-											   FontAttributes="Bold" />
-									</Grid>
-
-                                </Border>
-
-                                <VerticalStackLayout Grid.Column="1"
-                                                     Spacing="4">
-                                    <Label Text="{Binding Title}"
-                                           Style="{DynamicResource MenuItemLabel}"
-                                           FontSize="12" />
-									<Grid RowDefinitions="*, auto">
-										<Label Text="Has sent you a message!"
-											   Grid.Row="1"
-											   Style="{DynamicResource ItemDescriptionLabel}"
-											   FontSize="14"
-											   MaxLines="2" />
-									</Grid>
-
-                                </VerticalStackLayout>
-
-                                <StackLayout Grid.Column="2"
-                                             Spacing="4"
-                                             HorizontalOptions="End"
-                                             VerticalOptions="Center">
-                                    <Label Text="{Binding DateText}"
-                                           Style="{DynamicResource ItemDescriptionLabel}"
-                                           FontSize="12"
-                                           HorizontalTextAlignment="End" />
-									<Border StrokeShape="RoundRectangle 8"
-											BackgroundColor="{Binding StateColor}"
-											IsVisible="{Binding StateLabel, Mode=OneWay, Converter={mct:IsStringNotNullOrEmptyConverter}}"
-											Padding="8,2">
+                        <SwipeView>
+						<SwipeView.LeftItems>
+							<SwipeItems Mode="Reveal">
+								<SwipeItemView>
+									<Border BackgroundColor="{DynamicResource TnPInfoBg}"
+											StrokeShape="RoundRectangle 0"
+											Padding="16,12">
 										<Grid>
-										<Label Text="{Binding StateLabel}"
-											   FontSize="11"
-											   VerticalOptions="Center" HorizontalOptions="Center"
-											   TextColor="{DynamicResource TnPSuccessContentWL}" />
+											<Grid.GestureRecognizers>
+												<TapGestureRecognizer Command="{Binding BindingContext.MarkReadCommand, Source={x:Reference NotificationsPageRoot}}"
+																		CommandParameter="{Binding .}" />
+											</Grid.GestureRecognizers>
+											<Label Text="{l:Localize NotificationsUnreadLabel}"
+												   TextColor="{DynamicResource TnPInfoContentWL}"
+												   FontAttributes="Bold" />
 										</Grid>
 									</Border>
+								</SwipeItemView>
+							</SwipeItems>
+						</SwipeView.LeftItems>
+						<SwipeView.RightItems>
+							<SwipeItems Mode="Reveal">
+								<SwipeItemView>
+									<Border BackgroundColor="{DynamicResource TnPWarningBg}"
+											StrokeShape="RoundRectangle 0"
+											Padding="16,12">
+										<Grid>
+											<Grid.GestureRecognizers>
+												<TapGestureRecognizer Command="{Binding BindingContext.DeleteNotificationCommand, Source={x:Reference NotificationsPageRoot}}"
+																		CommandParameter="{Binding .}" />
+											</Grid.GestureRecognizers>
+											<Label Text="{l:Localize NotificationsClearAllLabel}"
+												   TextColor="{DynamicResource TnPWarningContent}"
+												   FontAttributes="Bold" />
+										</Grid>
+									</Border>
+								</SwipeItemView>
+							</SwipeItems>
+						</SwipeView.RightItems>
+						<Border Margin="0,6"
+								Padding="12"
+								BackgroundColor="{DynamicResource PageBackgroundWL}"
+									Style="{DynamicResource BorderSet}">
+								<Grid ColumnDefinitions="auto,*,auto"
+									  ColumnSpacing="12"
+									  RowDefinitions="auto,auto">
+									<Grid Grid.RowSpan="2"
+										  WidthRequest="48"
+										  HeightRequest="48"
+										  Margin="0"
+										  Padding="0">
+										<Border Background="{DynamicResource TnPInfobgWL}"
+												Style="{DynamicResource BorderSet}">
+											<Grid WidthRequest="32" HeightRequest="32">
+												<Label Text="{Binding ChannelShort}"
+													   HorizontalOptions="Center"
+													   VerticalOptions="Center"
+													   TextColor="{DynamicResource TnPInfoContentWL}"
+													   FontSize="16"
+													   FontAttributes="Bold" />
+											</Grid>
+										</Border>
+										<Border StrokeShape="RoundRectangle 12"
+												BackgroundColor="{DynamicResource TnPWarningBg}"
+												HorizontalOptions="End"
+												VerticalOptions="End"
+												Padding="6,2">
+											<Border.Triggers>
+												<DataTrigger TargetType="Border" Binding="{Binding OccurrenceCount}" Value="1">
+													<Setter Property="IsVisible" Value="False" />
+												</DataTrigger>
+											</Border.Triggers>
+											<Label Text="{Binding OccurrenceCount}"
+												   FontSize="10"
+												   TextColor="{DynamicResource TnPWarningContent}"
+												   HorizontalOptions="Center"
+												   VerticalOptions="Center" />
+										</Border>
+									</Grid>
 
-                                </StackLayout>
-                            </Grid>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding BindingContext.OpenNotificationCommand, Source={x:Reference NotificationsPageRoot}}"
-                                                      CommandParameter="{Binding .}" />
-                            </Border.GestureRecognizers>
-                        </Border>
+									<VerticalStackLayout Grid.Column="1"
+														 Spacing="4">
+										<Label Text="{Binding Title}"
+											   Style="{DynamicResource MenuItemLabel}"
+											   FontSize="12" />
+										<Grid RowDefinitions="*, auto">
+											<Label Text="{Binding Body}"
+												   Grid.Row="1"
+												   Style="{DynamicResource ItemDescriptionLabel}"
+												   FontSize="14"
+												   MaxLines="2" />
+										</Grid>
+
+									</VerticalStackLayout>
+
+									<StackLayout Grid.Column="2"
+												 Spacing="4"
+												 HorizontalOptions="End"
+												 VerticalOptions="Center">
+										<Label Text="{Binding DateText}"
+											   Style="{DynamicResource ItemDescriptionLabel}"
+											   FontSize="12"
+											   HorizontalTextAlignment="End" />
+										<Border StrokeShape="RoundRectangle 8"
+												BackgroundColor="{Binding StateColor}"
+												IsVisible="{Binding StateLabel, Mode=OneWay, Converter={mct:IsStringNotNullOrEmptyConverter}}"
+												Padding="8,2">
+											<Grid>
+												<Label Text="{Binding StateLabel}"
+													   FontSize="11"
+													   VerticalOptions="Center"
+													   HorizontalOptions="Center"
+													   TextColor="{Binding StateTextColor}" />
+											</Grid>
+										</Border>
+
+									</StackLayout>
+								</Grid>
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding BindingContext.OpenNotificationCommand, Source={x:Reference NotificationsPageRoot}}"
+														  CommandParameter="{Binding .}" />
+								</Border.GestureRecognizers>
+							</Border>
+						</SwipeView>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

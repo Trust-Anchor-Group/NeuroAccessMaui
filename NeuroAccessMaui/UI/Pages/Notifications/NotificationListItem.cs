@@ -18,7 +18,8 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		/// <param name="ChannelShort">Channel short label.</param>
 		/// <param name="DateText">Date text.</param>
 		/// <param name="StateLabel">State label.</param>
-		public NotificationListItem(string Id, string Title, string? Body, string? Channel, string ChannelShort, string DateText, string StateLabel)
+		/// <param name="OccurrenceCount">Number of merged occurrences.</param>
+		public NotificationListItem(string Id, string Title, string? Body, string? Channel, string ChannelShort, string DateText, string StateLabel, int OccurrenceCount)
 		{
 			this.Id = Id;
 			this.Title = Title;
@@ -27,7 +28,21 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			this.ChannelShort = ChannelShort;
 			this.DateText = DateText;
 			this.StateLabel = StateLabel;
-			this.StateColor = string.IsNullOrEmpty(StateLabel) ? Colors.Transparent : AppColors.TnPSuccessBg;
+			this.OccurrenceCount = OccurrenceCount <= 0 ? 1 : OccurrenceCount;
+			this.StateColor = StateLabel switch
+			{
+				"New" => AppColors.TnPWarningBg,
+				"Read" => AppColors.TnPInfoBg,
+				"Opened" => AppColors.TnPInfoBg,
+				_ => Colors.Transparent
+			};
+			this.StateTextColor = StateLabel switch
+			{
+				"New" => AppColors.TnPWarningContent,
+				"Read" => AppColors.TnPInfoContent,
+				"Opened" => AppColors.TnPInfoContent,
+				_ => Colors.Transparent
+			};
 		}
 
 		/// <summary>
@@ -66,8 +81,18 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		public string StateLabel { get; }
 
 		/// <summary>
+		/// Number of occurrences merged into this record.
+		/// </summary>
+		public int OccurrenceCount { get; }
+
+		/// <summary>
 		/// State chip color.
 		/// </summary>
 		public Color StateColor { get; }
+
+		/// <summary>
+		/// State chip text color.
+		/// </summary>
+		public Color StateTextColor { get; }
 	}
 }
