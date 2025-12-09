@@ -77,7 +77,17 @@
 					IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}"
 					Placeholder="{l:Localize Search}"
 					TextChanged="ContractsSearchChanged"
-					Margin="0,0,0,16"/>
+					Margin="0,0,0,16">
+
+					<controls:CompositeEntry.RightView>
+						<controls:SvgButton
+							SvgSource="search.svg"
+							Command="{Binding OpenFilterPopupCommand}"
+							Style="{DynamicResource IconButtonOnBackground}"
+							HorizontalOptions="End"
+							VerticalOptions="Center"/>
+					</controls:CompositeEntry.RightView>
+				</controls:CompositeEntry>
 
 				<ScrollView x:Name="FilterTagsScroll" Orientation="Horizontal" IsVisible="{Binding Path=IsBusy, Converter={mct:InvertedBoolConverter}}">
 					<HorizontalStackLayout x:Name="FilterTagsLayout" BindableLayout.ItemsSource="{Binding FilterTags}" IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}">

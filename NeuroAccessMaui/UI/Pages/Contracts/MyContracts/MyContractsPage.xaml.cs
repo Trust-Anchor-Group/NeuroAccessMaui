@@ -30,12 +30,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			{
 				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					var filterLayout = this.FindByName<HorizontalStackLayout>("FilterTagsLayout");
-					var filterScroll = this.FindByName<ScrollView>("FilterTagsScroll");
+					HorizontalStackLayout filterLayout = this.FindByName<HorizontalStackLayout>("FilterTagsLayout");
+					ScrollView filterScroll = this.FindByName<ScrollView>("FilterTagsScroll");
 					if (filterLayout is null || filterScroll is null)
 						return;
 
-					foreach (var child in filterLayout.Children)
+					foreach (object child in filterLayout.Children)
 					{
 						if (child is VisualElement ve && ve.BindingContext == tag)
 						{

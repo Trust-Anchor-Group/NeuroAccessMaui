@@ -16,6 +16,7 @@ using NeuroAccessMaui.UI.Popups.QR;
 using Waher.Script;
 using NeuroAccessMaui.UI.MVVM;
 using CommunityToolkit.Maui.Core.Extensions;
+using NeuroAccessMaui.UI.Popups;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -182,6 +183,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			{
 				this.IsBusy = false;
 			}
+		}
+
+		[RelayCommand]
+		private async Task OpenFilterPopup()
+		{
+			var vm = new FilterContractsPopupViewModel(this.FilterTags);
+			SelectableTag? selectedTag = await ServiceRef.PopupService.PushAsync<FilterContractsPopup, FilterContractsPopupViewModel, MyContractsViewModel.SelectableTag>(vm);
+			if (selectedTag is not null)
+				await this.FilterChanged(selectedTag);
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
