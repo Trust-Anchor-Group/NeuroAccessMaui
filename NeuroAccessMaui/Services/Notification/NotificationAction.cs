@@ -28,6 +28,26 @@ namespace NeuroAccessMaui.Services.Notification
 		OpenIdentity = 5,
 
 		/// <summary>
+		/// Opens a contract or contract list.
+		/// </summary>
+		OpenContract = 6,
+
+		/// <summary>
+		/// Opens wallet or balance information.
+		/// </summary>
+		OpenBalance = 7,
+
+		/// <summary>
+		/// Opens a token overview.
+		/// </summary>
+		OpenToken = 8,
+
+		/// <summary>
+		/// Opens petition-related content.
+		/// </summary>
+		OpenPetition = 9,
+
+		/// <summary>
 		/// Opens a presence subscription request.
 		/// </summary>
 		OpenPresenceRequest = 3,

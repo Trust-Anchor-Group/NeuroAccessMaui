@@ -30,8 +30,7 @@
                   BackgroundColor="{DynamicResource PageBackgroundWL}"
                   Padding="12"
                   RowSpacing="0"
-                  ColumnSpacing="12"
-                  Style="{DynamicResource RoundedBorder}">
+                  ColumnSpacing="12">
                 <SearchBar Grid.Column="0"
                            Placeholder="{l:Localize NotificationSearchPlaceholder}"
                            Text="{Binding SearchText}"

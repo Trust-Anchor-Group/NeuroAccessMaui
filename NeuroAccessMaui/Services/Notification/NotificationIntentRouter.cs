@@ -7,6 +7,10 @@ using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
+using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
+using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.UI.Pages.Kyc;
 using Waher.Networking.XMPP.Contracts;
@@ -51,6 +55,14 @@ namespace NeuroAccessMaui.Services.Notification
 						return this.RouteProfileAsync(Intent, CancellationToken);
 					case NotificationAction.OpenIdentity:
 						return this.RouteIdentityAsync(Intent, CancellationToken);
+					case NotificationAction.OpenContract:
+						return this.RouteContractAsync(Intent, CancellationToken);
+					case NotificationAction.OpenToken:
+						return this.RouteTokenAsync(CancellationToken);
+					case NotificationAction.OpenBalance:
+						return this.RouteBalanceAsync(CancellationToken);
+					case NotificationAction.OpenPetition:
+						return this.RoutePetitionAsync(CancellationToken);
 					case NotificationAction.OpenPresenceRequest:
 						return this.RoutePresenceAsync(Intent, CancellationToken);
 					case NotificationAction.OpenSettings:
@@ -132,6 +144,47 @@ namespace NeuroAccessMaui.Services.Notification
 				ServiceRef.LogService.LogException(ex);
 				return NotificationRouteResult.Failed;
 			}
+		}
+
+		private async Task<NotificationRouteResult> RouteContractAsync(NotificationIntent Intent, CancellationToken CancellationToken)
+		{
+			if (string.IsNullOrEmpty(Intent.EntityId))
+			{
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage));
+				return NotificationRouteResult.Success;
+			}
+
+			try
+			{
+				Contract contract = await ServiceRef.XmppService.GetContract(Intent.EntityId);
+				ViewContractNavigationArgs args = new(contract, false);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), args);
+				return NotificationRouteResult.Success;
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage));
+				return NotificationRouteResult.Success;
+			}
+		}
+
+		private async Task<NotificationRouteResult> RouteTokenAsync(CancellationToken CancellationToken)
+		{
+			await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage));
+			return NotificationRouteResult.Success;
+		}
+
+		private async Task<NotificationRouteResult> RouteBalanceAsync(CancellationToken CancellationToken)
+		{
+			await ServiceRef.NavigationService.GoToAsync(nameof(WalletPage));
+			return NotificationRouteResult.Success;
+		}
+
+		private async Task<NotificationRouteResult> RoutePetitionAsync(CancellationToken CancellationToken)
+		{
+			await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage));
+			return NotificationRouteResult.Success;
 		}
 
 		private async Task<NotificationRouteResult> RouteSettingsAsync(CancellationToken CancellationToken)
