@@ -99,6 +99,11 @@ namespace NeuroAccessMaui.Services.Notification
 		public NotificationPresentation Presentation { get; set; } = NotificationPresentation.RenderAndStore;
 
 		/// <summary>
+		/// Gets or sets how many times this notification intent has been observed.
+		/// </summary>
+		public int OccurrenceCount { get; set; } = 1;
+
+		/// <summary>
 		/// Gets or sets the legacy notification type for migration traceability.
 		/// </summary>
 		public string? LegacyType { get; set; }

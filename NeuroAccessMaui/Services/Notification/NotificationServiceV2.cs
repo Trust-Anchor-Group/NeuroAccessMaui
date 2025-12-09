@@ -117,6 +117,7 @@ namespace NeuroAccessMaui.Services.Notification
 				ExistingRecord.State = NotificationState.Delivered;
 				ExistingRecord.Presentation = Record.Presentation;
 				ExistingRecord.DeliveredAt = ExistingRecord.DeliveredAt ?? DateTime.UtcNow;
+				ExistingRecord.OccurrenceCount = ExistingRecord.OccurrenceCount > 0 ? ExistingRecord.OccurrenceCount + 1 : 1;
 
 				await Database.Update(ExistingRecord);
 				await this.RaiseAdded(ExistingRecord);
