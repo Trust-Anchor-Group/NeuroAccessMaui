@@ -279,8 +279,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				this.loadedContracts = 0;
 				this.HasMore = 0;
 
-				await this.LoadContracts();
 			});
+
+			await this.LoadContracts();
 		}
 
 		/// <summary>
