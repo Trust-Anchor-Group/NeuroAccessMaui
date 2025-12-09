@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using NeuroAccessMaui.Services;
 using Waher.Events;
 using Waher.Persistence;
 
@@ -100,6 +101,11 @@ namespace NeuroAccessMaui.Services.Notification
 			if (!shouldPersist)
 			{
 				this.TrySatisfyExpectations(Record);
+				ServiceRef.LogService.LogInformational(
+					"Notification ignored",
+					this.BuildLogProperties(Intent, Source, Record.Id)
+						.Append(new KeyValuePair<string, object?>("Reason", "IgnoreStoreOrPresentation"))
+						.ToArray());
 				return;
 			}
 
@@ -120,6 +126,11 @@ namespace NeuroAccessMaui.Services.Notification
 				ExistingRecord.OccurrenceCount = ExistingRecord.OccurrenceCount > 0 ? ExistingRecord.OccurrenceCount + 1 : 1;
 
 				await Database.Update(ExistingRecord);
+				ServiceRef.LogService.LogInformational(
+					"Notification merged",
+					this.BuildLogProperties(Intent, Source, ExistingRecord.Id)
+						.Append(new KeyValuePair<string, object?>("OccurrenceCount", ExistingRecord.OccurrenceCount))
+						.ToArray());
 				await this.RaiseAdded(ExistingRecord);
 				return;
 			}
@@ -129,6 +140,11 @@ namespace NeuroAccessMaui.Services.Notification
 
 			await Database.Insert(Record);
 			this.IncrementChannelCount(Record.Channel);
+			ServiceRef.LogService.LogInformational(
+				"Notification stored",
+				this.BuildLogProperties(Intent, Source, Record.Id)
+					.Append(new KeyValuePair<string, object?>("OccurrenceCount", Record.OccurrenceCount))
+					.ToArray());
 			await this.RaiseAdded(Record);
 			await this.PruneAsync(CancellationToken);
 		}
@@ -509,6 +525,17 @@ namespace NeuroAccessMaui.Services.Notification
 				if (this.channelCounts.TryGetValue(Channel, out int count) && count > 0)
 					this.channelCounts[Channel] = count - 1;
 			}
+		}
+
+		private IEnumerable<KeyValuePair<string, object?>> BuildLogProperties(NotificationIntent Intent, NotificationSource Source, string notificationId)
+		{
+			yield return new KeyValuePair<string, object?>("NotificationId", notificationId);
+			yield return new KeyValuePair<string, object?>("Channel", Intent.Channel ?? string.Empty);
+			yield return new KeyValuePair<string, object?>("Action", Intent.Action.ToString());
+			yield return new KeyValuePair<string, object?>("EntityId", Intent.EntityId ?? string.Empty);
+			yield return new KeyValuePair<string, object?>("CorrelationId", Intent.CorrelationId ?? string.Empty);
+			yield return new KeyValuePair<string, object?>("Presentation", Intent.Presentation.ToString());
+			yield return new KeyValuePair<string, object?>("Source", Source.ToString());
 		}
 
 		private sealed class Filter
