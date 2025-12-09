@@ -95,7 +95,14 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		[RelayCommand]
 		private async Task OpenNotificationAsync(NotificationListItem Item)
 		{
-			await this.notificationService.ConsumeAsync(Item.Id, CancellationToken.None);
+			try
+			{
+				await this.notificationService.ConsumeAsync(Item.Id, CancellationToken.None);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 			await this.LoadAsync();
 		}
 
@@ -106,7 +113,14 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		[RelayCommand]
 		private async Task MarkReadAsync(NotificationListItem Item)
 		{
-			await this.notificationService.MarkReadAsync(Item.Id, CancellationToken.None);
+			try
+			{
+				await this.notificationService.MarkReadAsync(Item.Id, CancellationToken.None);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 			await this.LoadAsync();
 		}
 
@@ -173,7 +187,7 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 
 		private async Task OnNotificationAddedAsync(object? Sender, NotificationRecordEventArgs Args)
 		{
-			await this.LoadAsync();
+			await MainThread.InvokeOnMainThreadAsync(async () => await this.LoadAsync());
 		}
 
 		/// <summary>
@@ -183,7 +197,14 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		[RelayCommand]
 		private async Task DeleteNotificationAsync(NotificationListItem Item)
 		{
-			await this.notificationService.DeleteAsync(new[] { Item.Id }, CancellationToken.None);
+			try
+			{
+				await this.notificationService.DeleteAsync(new[] { Item.Id }, CancellationToken.None);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 			await this.LoadAsync();
 		}
 
@@ -201,5 +222,6 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 
 			return new NotificationListItem(record.Id, record.Title, record.Body, record.Channel, channelShort, dateText, stateLabel, record.OccurrenceCount);
 		}
+
 	}
 }
