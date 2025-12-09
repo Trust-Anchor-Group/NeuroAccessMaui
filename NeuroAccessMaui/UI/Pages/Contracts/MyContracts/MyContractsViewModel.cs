@@ -14,12 +14,12 @@ using NeuroAccessMaui.Services.UI;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.Popups.QR;
 using Waher.Script;
+using NeuroAccessMaui.UI.MVVM;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
 	public partial class MyContractsViewModel : BaseViewModel
 	{
-		private readonly Dictionary<string, ContractReference> contractsMap = [];
 		private readonly ContractsListMode contractsListMode;
 		private readonly TaskCompletionSource<Contract?>? selection;
 		private Contract? selectedContract = null;
@@ -29,6 +29,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private const int contractBatchSize = 10;
 
 		private int loadedContracts;
+		private string currentCategory;
 
 		public ObservableCollection<SelectableTag> FilterTags { get; } = new();
 
@@ -49,6 +50,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			this.loadedContracts = 0;
 			this.hasMore = 0;
+			this.currentCategory = AllCategory;
 
 			if (Args is not null)
 			{
@@ -91,6 +93,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			await this.LoadContracts();
 
+			this.ShowContractsMissing = this.Contracts.Count < 1;
+
 			ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
 			ServiceRef.NotificationService.OnNotificationsDeleted += this.NotificationService_OnNotificationsDeleted;
 		}
@@ -116,7 +120,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			if (this.Action != SelectContractAction.Select)
 			{
 				this.ShowContractsMissing = false;
-				this.contractsMap.Clear();
 			}
 
 			this.selection?.TrySetResult(this.selectedContract);
@@ -178,10 +181,71 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 		}
 
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task FilterChanged(object? parameter)
+		{
+			if (parameter is SelectableTag Tag)
+			{
+				bool wasSelected = Tag.IsSelected;
+				if (wasSelected)
+				{
+					foreach (SelectableTag t in this.FilterTags)
+						t.IsSelected = t.Category == AllCategory;
+
+					this.currentCategory = AllCategory;
+				}
+				else
+				{
+					foreach (SelectableTag t in this.FilterTags)
+						t.IsSelected = (t == Tag);
+
+					this.currentCategory = Tag.Category;
+				}
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.Contracts.Clear();
+
+					this.HasMore = 0;
+					this.loadedContracts = 0;
+				});
+
+				await this.ApplySearchFilter();
+			}
+		}
+
 		/// <summary>
-		/// Simple in-memory cache of full list for search filtering.
+		/// Should be called by page on text change.
 		/// </summary>
-		private List<ContractModel> allContracts = [];
+		public void UpdateSearch(string? text)
+		{
+			if (string.IsNullOrEmpty(text))
+			{
+				foreach (SelectableTag Tag in this.FilterTags)
+				{
+					Tag.IsSelected = false;
+				}
+				this.FilterTags[0].IsSelected = true; // Select "All"
+			}
+			else
+			{
+				foreach (SelectableTag Tag in this.FilterTags)
+				{
+					if (Tag.Category.Contains(text ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+					{
+						Tag.IsSelected = true;
+						this.currentCategory = Tag.Category;
+						break;
+					}
+					else
+					{
+						Tag.IsSelected = false;
+					}
+				}
+			}
+
+			this.ApplySearchFilter().ConfigureAwait(false);
+		}
 
 		/// <summary>
 		/// Search filter text.
@@ -191,85 +255,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// <summary>
 		/// Clears and repopulates the visible Contracts collection based on search.
 		/// </summary>
-		private void ApplySearchFilter()
+		private async Task ApplySearchFilter()
 		{
-			string? s = this.searchText;
-			IEnumerable<ContractModel> source = this.allContracts;
-
-			if (!string.IsNullOrWhiteSpace(s))
-			{
-				string term = s.Trim();
-				source = source.Where(c =>
-					(c.Category?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false) ||
-					(c.Name?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false));
-			}
-
-			foreach (SelectableTag Tag in this.FilterTags)
-			{
-				string Filter = Tag.GetFilterString();
-				if (!string.IsNullOrEmpty(Filter))
-				{
-					source = source.Where(c => c.Category.Contains(Filter, StringComparison.OrdinalIgnoreCase));
-				}
-			}
-
-			MainThread.BeginInvokeOnMainThread(() =>
+			await MainThread.InvokeOnMainThreadAsync(async () =>
 			{
 				this.Contracts.Clear();
-				foreach (ContractModel c in source)
-					this.Contracts.Add(c);
+				this.loadedContracts = 0;
+				this.HasMore = 0;
+
+				await this.LoadContracts();
 			});
 		}
 
 		// Check if a contract matches current filter without refiltering the entire list.
-		private bool MatchesCurrentFilter(ContractModel c)
-		{
-			string? s = this.searchText;
-			if (!string.IsNullOrWhiteSpace(s))
-			{
-				string term = s.Trim();
-				bool textMatch = (c.Category?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false) ||
-					(c.Name?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false);
-				if (!textMatch)
-					return false;
-			}
-
-			foreach (SelectableTag Tag in this.FilterTags)
-			{
-				string Filter = Tag.GetFilterString();
-				if (!string.IsNullOrEmpty(Filter))
-				{
-					if (!(c.Category?.Contains(Filter, StringComparison.OrdinalIgnoreCase) ?? false))
-						return false;
-				}
-			}
-
-			return true;
-		}
-
-		/// <summary>
-		/// Should be called by page on text change.
-		/// </summary>
-		public void UpdateSearch(string? text)
-		{
-			this.searchText = text;
-			// When search text changes, select the "All" tag and deselect others for clarity and performance.
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				SelectableTag? allTag = null;
-				foreach (SelectableTag t in this.FilterTags)
-				{
-					bool isAll = string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase);
-					if (isAll)
-						allTag = t;
-					// Deselect all tags first
-					t.IsSelected = false;
-				}
-				if (allTag is not null)
-					allTag.IsSelected = true;
-			});
-			this.ApplySearchFilter();
-		}
+		private bool MatchesCurrentFilter(ContractModel c) =>
+			string.Equals(this.currentCategory, AllCategory, StringComparison.OrdinalIgnoreCase) ||
+			string.Equals(this.currentCategory, c.Category, StringComparison.OrdinalIgnoreCase);
+		
 
 		/// <summary>
 		/// Handle contract selection.
@@ -364,46 +366,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
-		private async Task FilterChanged(object? parameter)
-		{
-			if (parameter is SelectableTag Tag)
-			{
-				bool wasSelected = Tag.IsSelected;
-				if (wasSelected)
-				{
-					foreach (SelectableTag t in this.FilterTags)
-						t.IsSelected = false;
-				}
-				else
-				{
-					foreach (SelectableTag t in this.FilterTags)
-						t.IsSelected = (t == Tag);
-				}
-				this.ApplySearchFilter();
-			}
-		}
-
-		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task LoadMoreContracts()
 		{
 			await this.LoadContracts();
-		}
-
-		private void SortFilterTags()
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				SelectableTag? all = this.FilterTags.FirstOrDefault(t => string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase));
-				List<SelectableTag> others = this.FilterTags.Where(t => !string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase))
-					.OrderBy(t => t.Category)
-					.ToList();
-
-				this.FilterTags.Clear();
-				if (all is not null)
-					this.FilterTags.Add(all);
-				foreach (SelectableTag t in others)
-					this.FilterTags.Add(t);
-			});
 		}
 
 		private async Task LoadCategories()
@@ -431,84 +396,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					}
 				}
 
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex);
-			}
-		}
-
-		private async Task LoadContracts()
-		{
-			try
-			{
-				IEnumerable<ContractReference> ContractReferences;
-				switch (this.contractsListMode)
-				{
-					case ContractsListMode.Contracts:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
-							new FilterFieldEqualTo("IsTemplate", false),
-							new FilterFieldEqualTo("ContractLoaded", true)));
-
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
-						break;
-
-					case ContractsListMode.ContractTemplates:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
-							new FilterFieldEqualTo("IsTemplate", true),
-							new FilterFieldEqualTo("ContractLoaded", true)));
-
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
-						break;
-
-					case ContractsListMode.TokenCreationTemplates:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
-							new FilterFieldEqualTo("IsTemplate", true),
-							new FilterFieldEqualTo("ContractLoaded", true)));
-
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
-						break;
-
-					default:
-						return;
-				}
-
-				SortedDictionary<CaseInsensitiveString, NotificationEvent[]> EventsByCategory = ServiceRef.NotificationService.GetEventsByCategory(NotificationEventType.Contracts);
-
-				// Dynamically add contracts: append to backing list, and only add to visible list if matching current filter.
-				foreach (ContractReference Ref in ContractReferences)
-				{
-					this.contractsMap[Ref.ContractId] = Ref;
-
-					NotificationEvent[] Events = [];
-					if (EventsByCategory.TryGetValue(Ref.ContractId, out NotificationEvent[]? evs))
-					{
-						EventsByCategory.Remove(Ref.ContractId);
-						List<NotificationEvent> Events2 = [];
-						foreach (NotificationEvent Event in evs)
-						{
-							if (Event is not ContractPetitionNotificationEvent)
-								Events2.Add(Event);
-						}
-						Events = [.. Events2];
-					}
-
-					ContractModel Item = new(Ref, Events);
-					this.allContracts.Add(Item); // append to end
-
-					// Only add to visible list if it matches current filter
-					if (this.MatchesCurrentFilter(Item))
-					{
-						MainThread.BeginInvokeOnMainThread(() =>
-						{
-							this.Contracts.Add(Item);
-						});
-					}
-				}
-
 				// Ensure an "All" tag exists showing total count, selected by default
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
@@ -523,18 +410,59 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						this.FilterTags.Insert(0, all);
 					}
 				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
 
-				// Sort tags so largest Count comes first, keeping "All" at the top
-				this.SortFilterTags();
+		private async Task LoadContracts()
+		{
+			try
+			{
+				IEnumerable<ContractReference>? ContractReferences = await this.LoadFromDatabase();
 
-				this.ShowContractsMissing = this.allContracts.Count < 1;
+				if (ContractReferences is null)
+				{
+					this.HasMore = -1;
+					return;
+				}
+
+				SortedDictionary<CaseInsensitiveString, NotificationEvent[]> EventsByCategory = ServiceRef.NotificationService.GetEventsByCategory(NotificationEventType.Contracts);
+
+				foreach (ContractReference Ref in ContractReferences)
+				{
+					NotificationEvent[] Events = [];
+					if (EventsByCategory.TryGetValue(Ref.ContractId, out NotificationEvent[]? evs))
+					{
+						EventsByCategory.Remove(Ref.ContractId);
+						List<NotificationEvent> Events2 = [];
+						foreach (NotificationEvent Event in evs)
+						{
+							if (Event is not ContractPetitionNotificationEvent)
+								Events2.Add(Event);
+						}
+						Events = [.. Events2];
+					}
+
+					ContractModel Item = new(Ref, Events);
+
+					// Only add to visible list if it matches current filter
+					if (this.MatchesCurrentFilter(Item))
+					{
+						MainThread.BeginInvokeOnMainThread(() =>
+						{
+							this.Contracts.Add(Item);
+						});
+					}
+				}
 			}
 			finally
 			{
 				this.loadedContracts += contractBatchSize;
 				this.IsBusy = false;
 
-				
 				if (this.HasMore == -1 && this.contractsListMode == ContractsListMode.TokenCreationTemplates)
 				{
 					foreach (string TokenTemplateId in Constants.ContractTemplates.TokenCreationTemplates)
@@ -559,8 +487,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 								await Database.Insert(Ref);
 
 								ContractModel Item = new ContractModel(Ref, []);
-
-								this.allContracts.Add(Item);
 
 								// Only add to visible list if it matches current filter
 								if (this.MatchesCurrentFilter(Item))
@@ -630,6 +556,87 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 
 			return Task.CompletedTask;
+		}
+
+		private async Task<IEnumerable<ContractReference>?> LoadFromDatabase()
+		{
+			IEnumerable<ContractReference> ContractReferences;
+
+			if (this.currentCategory == AllCategory)
+			{
+				switch (this.contractsListMode)
+				{
+					case ContractsListMode.Contracts:
+						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
+							new FilterFieldEqualTo("IsTemplate", false),
+							new FilterFieldEqualTo("ContractLoaded", true)));
+
+						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
+						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
+						break;
+
+					case ContractsListMode.ContractTemplates:
+						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
+							new FilterFieldEqualTo("IsTemplate", true),
+							new FilterFieldEqualTo("ContractLoaded", true)));
+
+						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
+						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
+						break;
+
+					case ContractsListMode.TokenCreationTemplates:
+						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
+							new FilterFieldEqualTo("IsTemplate", true),
+							new FilterFieldEqualTo("ContractLoaded", true)));
+
+						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
+						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
+						break;
+
+					default:
+						return null;
+				}
+			}
+			else
+			{
+				switch (this.contractsListMode)
+				{
+					case ContractsListMode.Contracts:
+						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
+							new FilterFieldEqualTo("IsTemplate", false),
+							new FilterFieldEqualTo("ContractLoaded", true),
+							new FilterFieldEqualTo("Category", this.currentCategory)));
+
+						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
+						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
+						break;
+
+					case ContractsListMode.ContractTemplates:
+						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
+							new FilterFieldEqualTo("IsTemplate", true),
+							new FilterFieldEqualTo("ContractLoaded", true),
+							new FilterFieldEqualTo("Category", this.currentCategory)));
+
+						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
+						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
+						break;
+
+					case ContractsListMode.TokenCreationTemplates:
+						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
+							new FilterFieldEqualTo("IsTemplate", true),
+							new FilterFieldEqualTo("ContractLoaded", true),
+							new FilterFieldEqualTo("Category", this.currentCategory)));
+
+						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
+					this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
+						break;
+
+					default:
+						return null;
+				}
+			}
+
+			return ContractReferences;
 		}
 
 		public partial class SelectableTag : ObservableObject
