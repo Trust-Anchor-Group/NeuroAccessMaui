@@ -15,6 +15,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.UI.Popups.QR;
 using Waher.Script;
 using NeuroAccessMaui.UI.MVVM;
+using CommunityToolkit.Maui.Core.Extensions;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
@@ -25,13 +26,15 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private Contract? selectedContract = null;
 		private readonly Dictionary<string, SelectableTag> tagMap = new(StringComparer.OrdinalIgnoreCase);
 
+		public event Action<SelectableTag>? TagSelected;
+
 		private const string AllCategory = "All";
 		private const int contractBatchSize = 10;
 
 		private int loadedContracts;
 		private string currentCategory;
 
-		public ObservableCollection<SelectableTag> FilterTags { get; } = new();
+		public ObservableCollection<SelectableTag> FilterTags { get; set; } = new();
 
 		[ObservableProperty]
 		private int hasMore = 0; // 0 means collectionView will load more when scrolles. -1 means event wont be fired.
@@ -202,13 +205,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					this.currentCategory = Tag.Category;
 				}
 
-				await MainThread.InvokeOnMainThreadAsync(() =>
-				{
-					this.Contracts.Clear();
-
-					this.HasMore = 0;
-					this.loadedContracts = 0;
-				});
+				this.TagSelected?.Invoke(Tag);
 
 				await this.ApplySearchFilter();
 			}
@@ -219,6 +216,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// </summary>
 		public void UpdateSearch(string? text)
 		{
+			string? previousCategory = this.currentCategory;
+
+			SelectableTag? selectedTag = null;
+
 			if (string.IsNullOrEmpty(text))
 			{
 				foreach (SelectableTag Tag in this.FilterTags)
@@ -226,16 +227,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					Tag.IsSelected = false;
 				}
 				this.FilterTags[0].IsSelected = true; // Select "All"
+				selectedTag = this.FilterTags[0];
+				this.currentCategory = AllCategory;
 			}
 			else
 			{
+				bool found = false; // To ensure only one tag is selected
 				foreach (SelectableTag Tag in this.FilterTags)
 				{
-					if (Tag.Category.Contains(text ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+					if (Tag.Category.Contains(text ?? string.Empty, StringComparison.OrdinalIgnoreCase) && !found)
 					{
+						found = true;
 						Tag.IsSelected = true;
+						selectedTag = Tag;
 						this.currentCategory = Tag.Category;
-						break;
 					}
 					else
 					{
@@ -244,13 +249,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				}
 			}
 
-			this.ApplySearchFilter().ConfigureAwait(false);
-		}
+			if (!string.Equals(previousCategory, this.currentCategory, StringComparison.OrdinalIgnoreCase))
+			{
+				if (selectedTag is not null)
+					this.TagSelected?.Invoke(selectedTag);
 
-		/// <summary>
-		/// Search filter text.
-		/// </summary>
-		private string? searchText;
+				this.ApplySearchFilter().ConfigureAwait(false);
+			}
+		}
 
 		/// <summary>
 		/// Clears and repopulates the visible Contracts collection based on search.
@@ -267,7 +273,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			});
 		}
 
-		// Check if a contract matches current filter without refiltering the entire list.
+		/// <summary>
+		/// Determines whether the specified contract matches the currently selected category filter.
+		/// </summary>
+		/// <param name="c">The contract to evaluate against the current category filter. Cannot be null.</param>
+		/// <returns>true if the contract's category matches the current filter or if the filter is set to include all categories;
+		/// otherwise, false.</returns>
 		private bool MatchesCurrentFilter(ContractModel c) =>
 			string.Equals(this.currentCategory, AllCategory, StringComparison.OrdinalIgnoreCase) ||
 			string.Equals(this.currentCategory, c.Category, StringComparison.OrdinalIgnoreCase);

@@ -79,15 +79,15 @@
 					TextChanged="ContractsSearchChanged"
 					Margin="0,0,0,16"/>
 
-				<ScrollView Orientation="Horizontal" IsVisible="{Binding Path=IsBusy, Converter={mct:InvertedBoolConverter}}">
-					<HorizontalStackLayout BindableLayout.ItemsSource="{Binding FilterTags}" IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}">
+				<ScrollView x:Name="FilterTagsScroll" Orientation="Horizontal" IsVisible="{Binding Path=IsBusy, Converter={mct:InvertedBoolConverter}}">
+					<HorizontalStackLayout x:Name="FilterTagsLayout" BindableLayout.ItemsSource="{Binding FilterTags}" IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}">
 						<BindableLayout.ItemTemplate>
 							<DataTemplate x:DataType="viewmodel:MyContractsViewModel+SelectableTag">
 								<controls:TemplatedButton Padding="4,0,4,16"
-														  Command="{Binding FilterChangedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
-														  CommandParameter="{Binding .}">
+													  Command="{Binding FilterChangedCommand, Source={RelativeSource AncestorType={x:Type viewmodel:MyContractsViewModel}}, x:DataType=viewmodel:MyContractsViewModel}"
+													  CommandParameter="{Binding .}">
 									<Border StrokeShape="RoundRectangle 24" Padding="8"
-											Background="{DynamicResource TnPSuccessbgWL}">
+												Background="{DynamicResource TnPSuccessbgWL}">
 										<HorizontalStackLayout>
 											<Label Text="{Binding Category}" Style="{DynamicResource Brand2LabelS}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="14"/>
 										</HorizontalStackLayout>
