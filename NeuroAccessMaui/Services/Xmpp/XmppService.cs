@@ -3421,11 +3421,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.Petitions,
-				Title = string.Concat(ServiceRef.Localizer[nameof(AppResources.PetitionFrom)], " ", e.RequestorFullJid),
+				Title = string.Concat(ServiceRef.Localizer[nameof(AppResources.PetitionFrom)], " ", ToBareJid(e.RequestorFullJid)),
 				Body = e.Purpose ?? string.Empty,
 				Action = NotificationAction.OpenPetition,
 				EntityId = e.RequestorFullJid,
-				CorrelationId = e.PetitionId,
+				CorrelationId = e.RequestorFullJid,
 				Presentation = NotificationPresentation.RenderAndStore
 			};
 
@@ -6008,6 +6008,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+		}
+
+		private static string ToBareJid(string Jid)
+		{
+			if (string.IsNullOrWhiteSpace(Jid))
+				return Jid;
+
+			int SlashIndex = Jid.IndexOf('/');
+			return SlashIndex > -1 ? Jid.Substring(0, SlashIndex) : Jid;
 		}
 		#endregion
 	}

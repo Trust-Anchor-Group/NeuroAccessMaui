@@ -21,7 +21,6 @@ namespace NeuroAccessMaui.Services.Notification
 		private const int DefaultSchemaVersion = 1;
 		private const int MaxPerChannel = 100;
 		private const int MaxTotal = 1000;
-		private static readonly TimeSpan IdBucket = TimeSpan.FromMinutes(1);
 		private readonly INotificationIntentRouter intentRouter;
 		private readonly INotificationFilterRegistry filterRegistry;
 		private readonly List<Expectation> expectations = [];
@@ -70,7 +69,7 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <inheritdoc/>
 		public string ComputeId(NotificationIntent Intent)
 		{
-			return this.ResolveId(Intent, Intent.Channel ?? string.Empty);
+			return this.ResolveId(Intent, Intent.Channel ?? string.Empty, NotificationSource.Local);
 		}
 
 		/// <summary>
@@ -110,12 +109,13 @@ namespace NeuroAccessMaui.Services.Notification
 			}
 
 			NotificationRecord? ExistingRecord = await this.LoadByIdAsync(Record.Id);
-			if (ExistingRecord is not null)
+			if (ExistingRecord is not null && this.AreMergeCompatible(ExistingRecord, Record))
 			{
 				ExistingRecord.Title = Record.Title;
 				ExistingRecord.Body = Record.Body;
 				ExistingRecord.Action = Record.Action;
 				ExistingRecord.EntityId = Record.EntityId;
+				ExistingRecord.CorrelationId = Record.CorrelationId;
 				ExistingRecord.ExtrasJson = Record.ExtrasJson;
 				ExistingRecord.RawPayload = Record.RawPayload ?? ExistingRecord.RawPayload;
 				ExistingRecord.SchemaVersion = Record.SchemaVersion;
@@ -133,6 +133,10 @@ namespace NeuroAccessMaui.Services.Notification
 						.ToArray());
 				await this.RaiseAdded(ExistingRecord);
 				return;
+			}
+			else if (ExistingRecord is not null)
+			{
+				Record.Id = this.ResolveIdWithSalt(Intent, Source);
 			}
 
 			Record.State = NotificationState.Delivered;
@@ -316,7 +320,7 @@ namespace NeuroAccessMaui.Services.Notification
 			string ActionString = Intent.Action.ToString();
 			string ExtrasJson = JsonSerializer.Serialize(Intent.Extras);
 
-			string Id = this.ResolveId(Intent, Channel);
+			string Id = this.ResolveId(Intent, Channel, Source);
 
 			return new NotificationRecord
 			{
@@ -326,6 +330,7 @@ namespace NeuroAccessMaui.Services.Notification
 				Body = Intent.Body,
 				Action = ActionString,
 				EntityId = Intent.EntityId,
+				CorrelationId = Intent.CorrelationId,
 				ExtrasJson = ExtrasJson,
 				RawPayload = RawPayload,
 				SchemaVersion = Intent.Version > 0 ? Intent.Version : DefaultSchemaVersion,
@@ -336,12 +341,10 @@ namespace NeuroAccessMaui.Services.Notification
 			};
 		}
 
-		private string ResolveId(NotificationIntent Intent, string Channel)
+		private string ResolveId(NotificationIntent Intent, string Channel, NotificationSource Source)
 		{
 			StringBuilder builder = new();
-			DateTime now = DateTime.UtcNow;
-			DateTime bucket;
-			string Correlation = Intent.CorrelationId ?? string.Empty;
+			string correlation = Intent.CorrelationId ?? string.Empty;
 
 			builder.Append(Channel);
 			builder.Append('|');
@@ -349,21 +352,15 @@ namespace NeuroAccessMaui.Services.Notification
 			builder.Append('|');
 			builder.Append(Intent.EntityId ?? string.Empty);
 			builder.Append('|');
-			builder.Append(Correlation);
-
-			if (string.IsNullOrEmpty(Correlation))
-			{
-				if (IdBucket > TimeSpan.Zero)
-				{
-					long ticks = now.Ticks / IdBucket.Ticks;
-					bucket = new DateTime(ticks * IdBucket.Ticks, DateTimeKind.Utc);
-				}
-				else
-					bucket = now;
-
-				builder.Append('|');
-				builder.Append(bucket.ToString("o", CultureInfo.InvariantCulture));
-			}
+			builder.Append(correlation);
+			builder.Append('|');
+			builder.Append(Intent.Title ?? string.Empty);
+			builder.Append('|');
+			builder.Append(Intent.Body ?? string.Empty);
+			builder.Append('|');
+			builder.Append(this.SerializeExtras(Intent.Extras));
+			builder.Append('|');
+			builder.Append(Source.ToString());
 
 			byte[] Input = Encoding.UTF8.GetBytes(builder.ToString());
 			byte[] Hash = SHA256.HashData(Input);
@@ -527,6 +524,23 @@ namespace NeuroAccessMaui.Services.Notification
 			}
 		}
 
+		private string SerializeExtras(Dictionary<string, string> extras)
+		{
+			if (extras is null || extras.Count == 0)
+				return string.Empty;
+
+			StringBuilder builder = new StringBuilder();
+			foreach (KeyValuePair<string, string> pair in extras.OrderBy(k => k.Key, StringComparer.Ordinal))
+			{
+				builder.Append(pair.Key);
+				builder.Append('=');
+				builder.Append(pair.Value);
+				builder.Append(';');
+			}
+
+			return builder.ToString();
+		}
+
 		private IEnumerable<KeyValuePair<string, object?>> BuildLogProperties(NotificationIntent Intent, NotificationSource Source, string notificationId)
 		{
 			yield return new KeyValuePair<string, object?>("NotificationId", notificationId);
@@ -537,6 +551,41 @@ namespace NeuroAccessMaui.Services.Notification
 			yield return new KeyValuePair<string, object?>("Presentation", Intent.Presentation.ToString());
 			yield return new KeyValuePair<string, object?>("Source", Source.ToString());
 		}
+
+		private bool AreMergeCompatible(NotificationRecord existing, NotificationRecord incoming)
+		{
+			return string.Equals(existing.Action, incoming.Action, StringComparison.Ordinal) &&
+				string.Equals(existing.EntityId, incoming.EntityId, StringComparison.Ordinal) &&
+				string.Equals(existing.CorrelationId ?? string.Empty, incoming.CorrelationId ?? string.Empty, StringComparison.Ordinal);
+		}
+
+		private string ResolveIdWithSalt(NotificationIntent intent, NotificationSource source)
+		{
+			string salt = Guid.NewGuid().ToString("N");
+			StringBuilder builder = new StringBuilder();
+			builder.Append(intent.Channel ?? string.Empty);
+			builder.Append('|');
+			builder.Append(intent.Action.ToString());
+			builder.Append('|');
+			builder.Append(intent.EntityId ?? string.Empty);
+			builder.Append('|');
+			builder.Append(intent.CorrelationId ?? string.Empty);
+			builder.Append('|');
+			builder.Append(intent.Title ?? string.Empty);
+			builder.Append('|');
+			builder.Append(intent.Body ?? string.Empty);
+			builder.Append('|');
+			builder.Append(this.SerializeExtras(intent.Extras));
+			builder.Append('|');
+			builder.Append(source.ToString());
+			builder.Append('|');
+			builder.Append(salt);
+
+			byte[] input = Encoding.UTF8.GetBytes(builder.ToString());
+			byte[] hash = SHA256.HashData(input);
+			return Convert.ToHexString(hash);
+		}
+
 
 		private sealed class Filter
 		{

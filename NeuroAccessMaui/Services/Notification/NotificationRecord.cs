@@ -39,6 +39,11 @@ namespace NeuroAccessMaui.Services.Notification
 		public string? Body { get; set; }
 
 		/// <summary>
+		/// Gets or sets the correlation identifier used for deduplication.
+		/// </summary>
+		public string? CorrelationId { get; set; }
+
+		/// <summary>
 		/// Gets or sets the action to execute when consumed.
 		/// </summary>
 		public string Action { get; set; } = NotificationAction.Unknown.ToString();

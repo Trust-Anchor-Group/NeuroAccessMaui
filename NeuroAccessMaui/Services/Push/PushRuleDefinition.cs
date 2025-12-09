@@ -125,7 +125,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'visual': { 'title': FriendlyName, 'body': InnerText(GetElement(Stanza,'body')) },",
 					$"'action': {{ 'type': '{NotificationAction.OpenChat}', 'entityId': FromJid, 'correlationId': GetAttribute(Stanza,'id') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Messages}' }},",
-					"'delivery': { 'priority': 'High', 'silent': true },",
+					"'delivery': { 'priority': 'High', 'silent': false },",
 					"'context': { 'fromJid': FromJid, 'toJid': ToJid, 'rosterName': FriendlyName },",
 					"'data': { 'isObject': exists(Content) and !empty(Markdown:= InnerText(Content)) and (Left(Markdown,2)='![' or (Left(Markdown,3)='```' and Right(Markdown,3)='```')) }",
 					"}")));
