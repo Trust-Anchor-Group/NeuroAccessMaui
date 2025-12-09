@@ -11,6 +11,9 @@ namespace NeuroAccessMaui.Services.Notification
 	{
 		private readonly List<Func<NotificationIntent, NotificationFilterDecision>> filters = [];
 
+
+		public NotificationFilterRegistry() { }
+
 		/// <inheritdoc/>
 		public IDisposable AddFilter(Func<NotificationIntent, NotificationFilterDecision> Predicate)
 		{

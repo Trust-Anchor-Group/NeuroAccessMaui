@@ -9,7 +9,6 @@ namespace NeuroAccessMaui.Services.Notification
 	/// <summary>
 	/// Interface for the redesigned notification service.
 	/// </summary>
-	[DefaultImplementation(typeof(NotificationServiceV2))]
 	public interface INotificationServiceV2 : ILoadableService
 	{
 		/// <summary>
