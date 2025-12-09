@@ -3438,8 +3438,14 @@
   <data name="NotificationsUnreadLabel" xml:space="preserve">
     <value>Não lidas</value>
   </data>
+  <data name="NotificationsMarkReadLabel" xml:space="preserve">
+    <value>Marcar como lida</value>
+  </data>
   <data name="NotificationsClearAllLabel" xml:space="preserve">
     <value>Limpar todas</value>
+  </data>
+  <data name="NotificationsDeleteLabel" xml:space="preserve">
+    <value>Excluir</value>
   </data>
   <data name="NoNotificationsLabel" xml:space="preserve">
     <value>Ainda não há notificações</value>

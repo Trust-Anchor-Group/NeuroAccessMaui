@@ -4912,11 +4912,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string NotificationsDeleteLabel {
+            get {
+                return ResourceManager.GetString("NotificationsDeleteLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search notifications.
         /// </summary>
         public static string NotificationSearchPlaceholder {
             get {
                 return ResourceManager.GetString("NotificationSearchPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark as read.
+        /// </summary>
+        public static string NotificationsMarkReadLabel {
+            get {
+                return ResourceManager.GetString("NotificationsMarkReadLabel", resourceCulture);
             }
         }
         

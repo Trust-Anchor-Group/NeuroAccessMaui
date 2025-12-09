@@ -3438,8 +3438,14 @@
   <data name="NotificationsUnreadLabel" xml:space="preserve">
     <value>Olästa</value>
   </data>
+  <data name="NotificationsMarkReadLabel" xml:space="preserve">
+    <value>Markera som läst</value>
+  </data>
   <data name="NotificationsClearAllLabel" xml:space="preserve">
     <value>Rensa alla</value>
+  </data>
+  <data name="NotificationsDeleteLabel" xml:space="preserve">
+    <value>Ta bort</value>
   </data>
   <data name="NoNotificationsLabel" xml:space="preserve">
     <value>Inga aviseringar ännu</value>

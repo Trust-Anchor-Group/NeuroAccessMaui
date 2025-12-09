@@ -103,7 +103,7 @@
 												<TapGestureRecognizer Command="{Binding BindingContext.MarkReadCommand, Source={x:Reference NotificationsPageRoot}}"
 																		CommandParameter="{Binding .}" />
 											</Grid.GestureRecognizers>
-											<Label Text="{l:Localize NotificationsUnreadLabel}"
+											<Label Text="{l:Localize NotificationsMarkReadLabel}"
 												   TextColor="{DynamicResource TnPInfoContentWL}"
 												   FontAttributes="Bold" />
 										</Grid>
@@ -122,7 +122,7 @@
 												<TapGestureRecognizer Command="{Binding BindingContext.DeleteNotificationCommand, Source={x:Reference NotificationsPageRoot}}"
 																		CommandParameter="{Binding .}" />
 											</Grid.GestureRecognizers>
-											<Label Text="{l:Localize NotificationsClearAllLabel}"
+											<Label Text="{l:Localize NotificationsDeleteLabel}"
 												   TextColor="{DynamicResource TnPWarningContent}"
 												   FontAttributes="Bold" />
 										</Grid>
@@ -209,6 +209,20 @@
 
 									</StackLayout>
 								</Grid>
+								<Border.FlyoutBase.ContextFlyout>
+									<OnPlatform x:TypeArguments="FlyoutBase">
+										<On Platform="WinUI">
+											<MenuFlyout>
+												<MenuFlyoutItem Text="{l:Localize NotificationsMarkReadLabel}"
+																Command="{Binding BindingContext.MarkReadCommand, Source={x:Reference NotificationsPageRoot}}"
+																CommandParameter="{Binding .}" />
+												<MenuFlyoutItem Text="{l:Localize NotificationsDeleteLabel}"
+																Command="{Binding BindingContext.DeleteNotificationCommand, Source={x:Reference NotificationsPageRoot}}"
+																CommandParameter="{Binding .}" />
+											</MenuFlyout>
+										</On>
+									</OnPlatform>
+								</Border.FlyoutBase.ContextFlyout>
 								<Border.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding BindingContext.OpenNotificationCommand, Source={x:Reference NotificationsPageRoot}}"
 														  CommandParameter="{Binding .}" />
