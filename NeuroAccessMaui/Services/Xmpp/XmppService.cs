@@ -2051,7 +2051,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						Body = Message.PlainText ?? Message.Markdown ?? Message.Html ?? string.Empty,
 						Action = NotificationAction.OpenChat,
 						EntityId = RemoteBareJid,
-						CorrelationId = ReplaceObjectId
+						CorrelationId = RemoteBareJid
 					};
 
 					await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);

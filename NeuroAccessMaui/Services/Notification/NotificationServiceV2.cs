@@ -10,6 +10,7 @@ using System.Linq;
 using NeuroAccessMaui.Services;
 using Waher.Events;
 using Waher.Persistence;
+using Waher.Persistence.Filters;
 
 namespace NeuroAccessMaui.Services.Notification
 {
@@ -108,7 +109,7 @@ namespace NeuroAccessMaui.Services.Notification
 				return;
 			}
 
-			NotificationRecord? ExistingRecord = await this.LoadByIdAsync(Record.Id);
+			NotificationRecord? ExistingRecord = await this.LoadByCorrelationdAsync(Record.CorrelationId);
 			if (ExistingRecord is not null && this.AreMergeCompatible(ExistingRecord, Record))
 			{
 				ExistingRecord.Title = Record.Title;
@@ -367,11 +368,29 @@ namespace NeuroAccessMaui.Services.Notification
 			return Convert.ToHexString(Hash);
 		}
 
-		private async Task<NotificationRecord?> LoadByIdAsync(string Id)
+		private async Task<NotificationRecord?> LoadByIdAsync(string? Id)
 		{
+			if (Id is null)
+				return null;
+
 			try
 			{
-				return await Database.FindFirstDeleteRest<NotificationRecord>(nameof(NotificationRecord.Id), Id);
+				return await Database.FindFirstDeleteRest<NotificationRecord>(new FilterFieldEqualTo(nameof(NotificationRecord.Id), Id));
+			}
+			catch (KeyNotFoundException)
+			{
+				return null;
+			}
+		}
+
+		private async Task<NotificationRecord?> LoadByCorrelationdAsync(string CorrelationId)
+		{
+			if (CorrelationId is null)
+				return null;
+
+			try
+			{
+				return await Database.FindFirstDeleteRest<NotificationRecord>(new FilterFieldEqualTo(nameof(NotificationRecord.CorrelationId), CorrelationId));
 			}
 			catch (KeyNotFoundException)
 			{

@@ -123,7 +123,7 @@ namespace NeuroAccessMaui.Services.Push
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
 					"'visual': { 'title': FriendlyName, 'body': InnerText(GetElement(Stanza,'body')) },",
-					$"'action': {{ 'type': '{NotificationAction.OpenChat}', 'entityId': FromJid, 'correlationId': GetAttribute(Stanza,'id') }},",
+					$"'action': {{ 'type': '{NotificationAction.OpenChat}', 'entityId': FromJid, 'correlationId': FromJid }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Messages}' }},",
 					"'delivery': { 'priority': 'High', 'silent': false },",
 					"'context': { 'fromJid': FromJid, 'toJid': ToJid, 'rosterName': FriendlyName },",
