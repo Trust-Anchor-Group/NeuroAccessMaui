@@ -3429,4 +3429,7 @@
   <data name="Optional" xml:space="preserve">
     <value>Opcional</value>
   </data>
+  <data name="SelectFilter" xml:space="preserve">
+    <value>Seleccionar filtro</value>
+  </data>
 </root>

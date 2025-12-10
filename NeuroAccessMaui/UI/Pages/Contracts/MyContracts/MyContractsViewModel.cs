@@ -190,7 +190,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		{
 			var vm = new FilterContractsPopupViewModel(this.FilterTags);
 			SelectableTag? selectedTag = await ServiceRef.PopupService.PushAsync<FilterContractsPopup, FilterContractsPopupViewModel, MyContractsViewModel.SelectableTag>(vm);
-			if (selectedTag is not null)
+			if (selectedTag is not null && !string.Equals(selectedTag.Category, this.currentCategory, StringComparison.OrdinalIgnoreCase))
 				await this.FilterChanged(selectedTag);
 		}
 
@@ -278,7 +278,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				this.Contracts.Clear();
 				this.loadedContracts = 0;
 				this.HasMore = 0;
-
 			});
 
 			await this.LoadContracts();
