@@ -3450,8 +3450,6 @@
   <data name="NoNotificationsLabel" xml:space="preserve">
     <value>Aún no hay notificaciones</value>
   </data>
-</root>
-
   <data name="SelectFilter" xml:space="preserve">
     <value>Seleccionar filtro</value>
   </data>
