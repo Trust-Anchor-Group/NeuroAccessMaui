@@ -405,7 +405,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract is null)
 				return;
 
-			if (!await this.ConfirmAsync(AppResources.AreYouSureYouWantToObsoleteContract, AuthenticationPurpose.ObsoleteContract))
+			if (!await this.ConfirmAsync(nameof(AppResources.AreYouSureYouWantToObsoleteContract), AuthenticationPurpose.ObsoleteContract))
 				return;
 
 			await ServiceRef.XmppService.ObsoleteContract(this.Contract.ContractId);
@@ -420,7 +420,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			if (this.Contract is null)
 				return;
 
-			if (!await this.ConfirmAsync(AppResources.AreYouSureYouWantToDeleteContract, AuthenticationPurpose.DeleteContract))
+			if (!await this.ConfirmAsync(nameof(AppResources.AreYouSureYouWantToDeleteContract), AuthenticationPurpose.DeleteContract))
 				return;
 
 			await ServiceRef.XmppService.DeleteContract(this.Contract.ContractId);
