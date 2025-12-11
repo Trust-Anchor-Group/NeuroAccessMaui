@@ -12,6 +12,8 @@ using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Services.Kyc;
+using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
+using NeuroAccessMaui.UI.Pages.Petitions.PetitionContract;
 using NeuroAccessMaui.UI.Pages.Kyc;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
@@ -62,7 +64,7 @@ namespace NeuroAccessMaui.Services.Notification
 					case NotificationAction.OpenBalance:
 						return this.RouteBalanceAsync(CancellationToken);
 					case NotificationAction.OpenPetition:
-						return this.RoutePetitionAsync(CancellationToken);
+						return this.RoutePetitionAsync(Intent, CancellationToken);
 					case NotificationAction.OpenPresenceRequest:
 						return this.RoutePresenceAsync(Intent, CancellationToken);
 					case NotificationAction.OpenSettings:
@@ -181,10 +183,64 @@ namespace NeuroAccessMaui.Services.Notification
 			return NotificationRouteResult.Success;
 		}
 
-		private async Task<NotificationRouteResult> RoutePetitionAsync(CancellationToken CancellationToken)
+		private async Task<NotificationRouteResult> RoutePetitionAsync(NotificationIntent Intent, CancellationToken CancellationToken)
 		{
-			await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage));
-			return NotificationRouteResult.Success;
+			try
+			{
+				if (Intent.Extras.TryGetValue("requestedIdentityId", out string? RequestedIdentityId))
+				{
+					LegalIdentity? RequestorIdentity = null;
+					if (!string.IsNullOrEmpty(Intent.EntityId))
+					{
+						ContactInfo? Info = await ContactInfo.FindByBareJid(Intent.EntityId);
+						RequestorIdentity = Info?.LegalIdentity;
+					}
+
+					(bool Succeeded, LegalIdentity? RequestedIdentity) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(RequestedIdentityId));
+					if (!Succeeded || RequestedIdentity is null)
+					{
+						string Title = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
+						string Message = "Petition has expired or is no longer available.";
+						await ServiceRef.UiService.DisplayAlert(Title, Message);
+						return NotificationRouteResult.Failed;
+					}
+					else
+					{
+						RequestorIdentity = RequestedIdentity;
+					}
+
+					string? PetitionId = Intent.Extras.TryGetValue("petitionId", out string? pid) ? pid : null;
+					PetitionIdentityNavigationArgs Args = new(RequestorIdentity, Intent.EntityId, RequestedIdentityId, PetitionId, Intent.Body);
+					await ServiceRef.NavigationService.GoToAsync(nameof(PetitionIdentityPage), Args);
+					return NotificationRouteResult.Success;
+				}
+
+				if (Intent.Extras.TryGetValue("contractId", out string? contractId))
+				{
+					Contract? Contract = null;
+					try
+					{
+						Contract = await ServiceRef.XmppService.GetContract(contractId);
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+					}
+
+					string? PetitionId = Intent.Extras.TryGetValue("petitionId", out string? Pid) ? Pid : null;
+					PetitionContractNavigationArgs Args = new(null, Intent.EntityId, Contract, PetitionId, Intent.Body);
+					await ServiceRef.NavigationService.GoToAsync(nameof(PetitionContractPage), Args);
+					return NotificationRouteResult.Success;
+				}
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContactsPage));
+				return NotificationRouteResult.Success;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return NotificationRouteResult.Failed;
+			}
 		}
 
 		private async Task<NotificationRouteResult> RouteSettingsAsync(CancellationToken CancellationToken)

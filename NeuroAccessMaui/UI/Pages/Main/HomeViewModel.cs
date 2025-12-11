@@ -311,8 +311,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				if (await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
-					await ServiceRef.NavigationService.GoToAsync(nameof(NotificationsPage));
+				await ServiceRef.NavigationService.GoToAsync(nameof(NotificationsPage));
 			}
 			catch (Exception Ex)
 			{

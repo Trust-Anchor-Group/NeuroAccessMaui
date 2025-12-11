@@ -245,9 +245,6 @@ namespace NeuroAccessMaui.Services.Contracts
 
 					if (Identity is not null)
 					{
-						if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.PetitionForSignatureReceived))
-							return;
-
 						await ServiceRef.NavigationService.GoToAsync(nameof(PetitionSignaturePage), new PetitionSignatureNavigationArgs(
 							Identity, e.RequestorFullJid, e.SignatoryIdentityId, e.ContentToSign, e.PetitionId, e.Purpose));
 					}
@@ -732,9 +729,6 @@ namespace NeuroAccessMaui.Services.Contracts
 				throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.LegalIdNotApproved)]);
 
 			string IdRef = ServiceRef.TagProfile.LegalIdentity?.Id ?? string.Empty;
-
-			//if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.TagSignature))
-			//	return;
 
 			StringBuilder Xml = new();
 
