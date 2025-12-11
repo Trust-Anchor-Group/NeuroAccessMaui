@@ -142,7 +142,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels
 		/// <summary>
 		/// Name, or category if no name.
 		/// </summary>
-		public string NameOrCategory => string.IsNullOrEmpty(this.category) ? this.name: this.category;
+		public string NameOrCategory => string.IsNullOrEmpty(this.name) ? this.category : this.name;
 
 		/// <summary>
 		/// Displayable category for the contract.
