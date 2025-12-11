@@ -3426,12 +3426,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Body = e.Purpose ?? string.Empty,
 				Action = NotificationAction.OpenPetition,
 				EntityId = e.RequestorFullJid,
-				CorrelationId = e.RequestorFullJid,
+				CorrelationId = e.PetitionId,
 				Presentation = NotificationPresentation.StoreOnly
 			};
 
 			Intent.Extras["petitionId"] = e.PetitionId ?? string.Empty;
 			Intent.Extras["requestedIdentityId"] = e.RequestedIdentityId ?? string.Empty;
+			Intent.Extras["requestorIdentityId"] = e.RequestorIdentity?.Id ?? string.Empty;
 
 			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.PetitionForIdentityReceived.Raise(this, e);
