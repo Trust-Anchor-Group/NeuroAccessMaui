@@ -1,4 +1,5 @@
-﻿using NeuroAccessMaui.Services.UI;
+﻿using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.UI;
 using System.Threading.Tasks;
 using Waher.Networking.XMPP.Contracts;
 
@@ -11,13 +12,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 	/// <param name="IsReadOnly"><c>true</c> if the contract is readonly, <c>false</c> otherwise.</param>
 	/// <param name="Role">Contains proposed role, if a proposal, null if not a proposal.</param>
 	/// <param name="Proposal">Proposal text.</param>
-	public class ViewContractNavigationArgs(Contract? Contract, bool IsReadOnly, string? Role, string? Proposal, string? FromJID = null, TaskCompletionSource<Contract?>? PostCreateCompletion = null) : NavigationArgs
+	public class ViewContractNavigationArgs(Contract? Contract, bool IsReadOnly, string? Role, string? Proposal, string? FromJID = null, TaskCompletionSource<Contract?>? PostCreateCompletion = null, ContractReference? ContractRef = null) : NavigationArgs
 	{
 		/// <summary>
 		/// Creates an instance of the <see cref="ViewContractNavigationArgs"/> class.
 		/// </summary>
 		public ViewContractNavigationArgs()
-			: this(null, false)
+			: this(null, false, null, null, null, null, null)
 		{
 		}
 
@@ -30,6 +31,20 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 			: this(Contract, IsReadOnly, null, string.Empty)
 		{
 		}
+
+		/// <summary>
+		/// Creates an instance of the <see cref="ViewContractNavigationArgs"/> class.
+		/// </summary>
+		/// <param name="ContractRef">The contract reference to display.</param>
+		public ViewContractNavigationArgs(ContractReference? ContractRef, bool IsReadOnly)
+			: this(null, IsReadOnly, null, string.Empty, null, null, ContractRef)
+		{
+		}
+
+		/// <summary>
+		/// The contract reference to display.
+		/// </summary>
+		public ContractReference? ContractRef { get; } = ContractRef;
 
 		/// <summary>
 		/// The contract to display.

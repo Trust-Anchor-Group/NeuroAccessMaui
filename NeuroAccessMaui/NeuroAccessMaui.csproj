@@ -98,6 +98,7 @@
 		<RunAOTCompilation>False</RunAOTCompilation>
 		<DebugSymbols>True</DebugSymbols>
 		<AndroidDebugSymbols>true</AndroidDebugSymbols>
+		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -328,6 +329,7 @@
 		<PackageReference Include="Waher.Runtime.Text" Version="1.2.0" />
 		<PackageReference Include="Waher.Script" Version="2.13.3" />
 		<PackageReference Include="Waher.Script.Content" Version="2.2.3" />
+		<PackageReference Include="Waher.Script.Persistence" Version="2.10.4" />
 		<PackageReference Include="Waher.Security" Version="1.0.13" />
 		<PackageReference Include="Waher.Security.JWS" Version="1.1.4" />
 		<PackageReference Include="Waher.Security.JWT" Version="1.5.5" />
@@ -389,9 +391,23 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Resources\Languages\AppResources.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>AppResources.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <EmbeddedResource Update="Resources\Languages\AppResources.resx">
-	    <Generator></Generator>
+	    <Generator>PublicResXFileCodeGenerator</Generator>
 	    <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="UI\Popups\FilterContractsPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 </Project>

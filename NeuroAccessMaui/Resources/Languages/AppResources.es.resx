@@ -1918,7 +1918,7 @@
     <value>Autenticación</value>
   </data>
   <data name="BeingSigned" xml:space="preserve">
-    <value>Estar firmado</value>
+    <value>Esperando firma(s)</value>
   </data>
   <data name="Binding" xml:space="preserve">
     <value>Encuadernación</value>
@@ -3428,5 +3428,8 @@
   </data>
   <data name="Optional" xml:space="preserve">
     <value>Opcional</value>
+  </data>
+  <data name="SelectFilter" xml:space="preserve">
+    <value>Seleccionar filtro</value>
   </data>
 </root>

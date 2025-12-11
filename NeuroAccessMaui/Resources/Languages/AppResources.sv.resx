@@ -3429,4 +3429,7 @@
   <data name="Optional" xml:space="preserve">
     <value>Valfritt</value>
   </data>
+  <data name="SelectFilter" xml:space="preserve">
+    <value>Välj filter</value>
+  </data>
 </root>
