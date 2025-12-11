@@ -57,7 +57,7 @@ namespace NeuroAccessMaui
 					INotificationServiceV2 service = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
 					string raw = JsonSerializer.Serialize(userInfo);
 					service.AddAsync(intent, NotificationSource.Push, raw, CancellationToken.None).ConfigureAwait(false);
-					string id = service.ComputeId(intent);
+					string id = service.ComputeId(intent, NotificationSource.Push);
 					service.ConsumeAsync(id, CancellationToken.None).ConfigureAwait(false);
 				}
 			}

@@ -85,8 +85,9 @@ namespace NeuroAccessMaui.Services.Notification
 		/// Computes the stable identifier for an intent using the same logic as storage.
 		/// </summary>
 		/// <param name="Intent">Notification intent.</param>
+		/// <param name="Source">Source used when hashing the intent.</param>
 		/// <returns>Stable identifier.</returns>
-		string ComputeId(NotificationIntent Intent);
+		string ComputeId(NotificationIntent Intent, NotificationSource Source);
 
 		/// <summary>
 		/// Deletes notifications by identifier.

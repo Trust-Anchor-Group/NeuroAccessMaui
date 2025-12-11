@@ -195,16 +195,16 @@ namespace NeuroAccessMaui
 						try
 						{
 							NotificationIntent? parsed = JsonSerializer.Deserialize<NotificationIntent>(payload);
-							if (parsed is not null)
-							{
-								parsed.Presentation = this.ResolvePresentation(intent.Extras, parsed.Presentation);
-								await NotificationService.AddAsync(parsed, NotificationSource.Push, payload, CancellationToken.None);
-								string id = NotificationService.ComputeId(parsed);
-								await NotificationService.ConsumeAsync(id, CancellationToken.None);
-								return;
+								if (parsed is not null)
+								{
+									parsed.Presentation = this.ResolvePresentation(intent.Extras, parsed.Presentation);
+									await NotificationService.AddAsync(parsed, NotificationSource.Push, payload, CancellationToken.None);
+									string id = NotificationService.ComputeId(parsed, NotificationSource.Push);
+									await NotificationService.ConsumeAsync(id, CancellationToken.None);
+									return;
+								}
 							}
-						}
-						catch (Exception ex)
+							catch (Exception ex)
 						{
 							ServiceRef.LogService.LogException(ex);
 						}

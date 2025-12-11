@@ -68,9 +68,9 @@ namespace NeuroAccessMaui.Services.Notification
 		}
 
 		/// <inheritdoc/>
-		public string ComputeId(NotificationIntent Intent)
+		public string ComputeId(NotificationIntent Intent, NotificationSource Source)
 		{
-			return this.ResolveId(Intent, Intent.Channel ?? string.Empty, NotificationSource.Local);
+			return this.ResolveId(Intent, Intent.Channel ?? string.Empty, Source);
 		}
 
 		/// <summary>
@@ -78,9 +78,10 @@ namespace NeuroAccessMaui.Services.Notification
 		/// </summary>
 		/// <param name="IsResuming">If the app is resuming.</param>
 		/// <param name="CancellationToken">Cancellation token.</param>
-		public override Task Load(bool IsResuming, CancellationToken CancellationToken)
+		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)
 		{
-			return base.Load(IsResuming, CancellationToken);
+			await base.Load(IsResuming, CancellationToken);
+			await this.RebuildChannelCountsAsync(CancellationToken);
 		}
 
 		/// <summary>
@@ -540,6 +541,21 @@ namespace NeuroAccessMaui.Services.Notification
 			{
 				if (this.channelCounts.TryGetValue(Channel, out int count) && count > 0)
 					this.channelCounts[Channel] = count - 1;
+			}
+		}
+
+		private async Task RebuildChannelCountsAsync(CancellationToken CancellationToken)
+		{
+			lock (this.channelCounts)
+			{
+				this.channelCounts.Clear();
+			}
+
+			IEnumerable<NotificationRecord> records = await Database.Find<NotificationRecord>(nameof(NotificationRecord.TimestampCreated));
+			foreach (NotificationRecord record in records)
+			{
+				CancellationToken.ThrowIfCancellationRequested();
+				this.IncrementChannelCount(record.Channel);
 			}
 		}
 
