@@ -217,21 +217,18 @@ namespace NeuroAccessMaui
 					string? title = intent.Extras.GetString("gcm.notification.title");
 					string channel = intent.Extras.GetString("channelId") ?? Constants.PushChannels.Messages;
 
-					NotificationIntent fallback = new()
-					{
-						Title = title ?? string.Empty,
-						Body = body,
-						Channel = channel,
-						Presentation = this.ResolvePresentation(intent.Extras, NotificationPresentation.RenderAndStore)
-					};
+						NotificationIntent fallback = new()
+						{
+							Title = title ?? string.Empty,
+							Body = body,
+							Channel = channel,
+							Presentation = this.ResolvePresentation(intent.Extras, NotificationPresentation.RenderAndStore)
+						};
 
-					string raw = intent.Extras.ToString() ?? string.Empty;
-					await NotificationService.AddAsync(fallback, NotificationSource.Push, raw, CancellationToken.None);
-					NotificationFilterDecision decision = ServiceRef.Provider.GetRequiredService<INotificationFilterRegistry>().ShouldIgnore(fallback, false, CancellationToken.None);
-					if (!decision.IgnoreRender)
-						await NotificationRenderer.RenderAsync(fallback, CancellationToken.None);
-					return;
-				}
+						string raw = intent.Extras.ToString() ?? string.Empty;
+						await NotificationService.AddAsync(fallback, NotificationSource.Push, raw, CancellationToken.None);
+						return;
+					}
 				// Handle NFC intents.
 				else if (intent.Action == NfcAdapter.ActionTagDiscovered ||
 							intent.Action == NfcAdapter.ActionNdefDiscovered ||

@@ -71,14 +71,6 @@ namespace NeuroAccessMaui.Platforms.Android
 
 				INotificationServiceV2 NotificationService = Provider.GetRequiredService<INotificationServiceV2>();
 				await NotificationService.AddAsync(Intent, NotificationSource.Push, Raw, CancellationToken.None);
-
-				INotificationFilterRegistry FilterRegistry = Provider.GetRequiredService<INotificationFilterRegistry>();
-				NotificationFilterDecision Decision = FilterRegistry.ShouldIgnore(Intent, false, CancellationToken.None);
-				if (!Decision.IgnoreRender)
-				{
-					INotificationRenderer Renderer = Provider.GetRequiredService<INotificationRenderer>();
-					await Renderer.RenderAsync(Intent, CancellationToken.None);
-				}
 			}
 			catch (Exception Ex)
 			{

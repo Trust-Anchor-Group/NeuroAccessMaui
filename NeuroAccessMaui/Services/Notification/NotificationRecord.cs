@@ -101,7 +101,7 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <summary>
 		/// Gets or sets the presentation preference.
 		/// </summary>
-		public NotificationPresentation Presentation { get; set; } = NotificationPresentation.RenderAndStore;
+		public NotificationPresentation Presentation { get; set; } = NotificationPresentation.StoreOnly;
 
 		/// <summary>
 		/// Gets or sets how many times this notification intent has been observed.

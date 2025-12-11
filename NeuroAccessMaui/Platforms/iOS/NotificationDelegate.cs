@@ -81,24 +81,6 @@ namespace NeuroAccessMaui
 				INotificationServiceV2 service = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
 				service.AddAsync(intent, NotificationSource.Push, raw, CancellationToken.None).ConfigureAwait(false);
 
-				// Show local notification when app is not active.
-				if (UIApplication.SharedApplication.ApplicationState != UIApplicationState.Active)
-				{
-					try
-					{
-						INotificationFilterRegistry filterRegistry = ServiceRef.Provider.GetRequiredService<INotificationFilterRegistry>();
-						NotificationFilterDecision decision = filterRegistry.ShouldIgnore(intent, false, CancellationToken.None);
-						if (!decision.IgnoreRender)
-						{
-							INotificationRenderer renderer = ServiceRef.Provider.GetRequiredService<INotificationRenderer>();
-							renderer.RenderAsync(intent, CancellationToken.None).ConfigureAwait(false);
-						}
-					}
-					catch (Exception ex)
-					{
-						ServiceRef.LogService.LogException(ex);
-					}
-				}
 			}
 			catch (Exception ex)
 			{

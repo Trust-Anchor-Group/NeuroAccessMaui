@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Push;
 using Waher.Events;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
@@ -24,6 +25,7 @@ namespace NeuroAccessMaui.Services.Notification
 		private const int MaxTotal = 1000;
 		private readonly INotificationIntentRouter intentRouter;
 		private readonly INotificationFilterRegistry filterRegistry;
+		private readonly INotificationRenderer renderer;
 		private readonly List<Expectation> expectations = [];
 		private readonly Dictionary<string, int> channelCounts = new(StringComparer.OrdinalIgnoreCase);
 		private readonly Queue<NotificationIntent> pendingRoutes = new();
@@ -33,10 +35,12 @@ namespace NeuroAccessMaui.Services.Notification
 		/// </summary>
 		/// <param name="IntentRouter">Router used to navigate notification intents.</param>
 		/// <param name="FilterRegistry">Registry for runtime ignore filters.</param>
-		public NotificationServiceV2(INotificationIntentRouter IntentRouter, INotificationFilterRegistry FilterRegistry)
+		/// <param name="Renderer">Platform notification renderer.</param>
+		public NotificationServiceV2(INotificationIntentRouter IntentRouter, INotificationFilterRegistry FilterRegistry, INotificationRenderer Renderer)
 		{
 			this.intentRouter = IntentRouter;
 			this.filterRegistry = FilterRegistry;
+			this.renderer = Renderer;
 		}
 
 		/// <summary>
@@ -95,13 +99,20 @@ namespace NeuroAccessMaui.Services.Notification
 		{
 			NotificationFilterDecision filterDecision = this.filterRegistry.ShouldIgnore(Intent, false, CancellationToken);
 			bool shouldPersist = Intent.Presentation is NotificationPresentation.RenderAndStore or NotificationPresentation.StoreOnly;
+			bool shouldRender = Intent.Presentation is NotificationPresentation.RenderAndStore or NotificationPresentation.RenderOnly;
 			if (filterDecision.IgnoreStore)
 				shouldPersist = false;
+			if (filterDecision.IgnoreRender)
+				shouldRender = false;
 			NotificationRecord Record = this.CreateRecord(Intent, Source, RawPayload);
 
 			if (!shouldPersist)
 			{
 				this.TrySatisfyExpectations(Record);
+				if (shouldRender)
+				{
+					await this.renderer.RenderAsync(Intent, CancellationToken);
+				}
 				ServiceRef.LogService.LogInformational(
 					"Notification ignored",
 					this.BuildLogProperties(Intent, Source, Record.Id)
@@ -113,6 +124,7 @@ namespace NeuroAccessMaui.Services.Notification
 			NotificationRecord? ExistingRecord = await this.LoadByCorrelationdAsync(Record.CorrelationId);
 			if (ExistingRecord is not null && this.AreMergeCompatible(ExistingRecord, Record))
 			{
+				ExistingRecord.TimestampCreated = DateTime.UtcNow;
 				ExistingRecord.Title = Record.Title;
 				ExistingRecord.Body = Record.Body;
 				ExistingRecord.Action = Record.Action;
@@ -134,6 +146,10 @@ namespace NeuroAccessMaui.Services.Notification
 						.Append(new KeyValuePair<string, object?>("OccurrenceCount", ExistingRecord.OccurrenceCount))
 						.ToArray());
 				await this.RaiseAdded(ExistingRecord);
+				if (shouldRender)
+				{
+					await this.renderer.RenderAsync(Intent, CancellationToken);
+				}
 				return;
 			}
 			else if (ExistingRecord is not null)
@@ -153,6 +169,10 @@ namespace NeuroAccessMaui.Services.Notification
 					.ToArray());
 			await this.RaiseAdded(Record);
 			await this.PruneAsync(CancellationToken);
+			if (shouldRender)
+			{
+				await this.renderer.RenderAsync(Intent, CancellationToken);
+			}
 		}
 
 		/// <summary>
