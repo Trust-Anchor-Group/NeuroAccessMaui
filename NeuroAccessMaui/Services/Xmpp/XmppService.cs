@@ -3399,7 +3399,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					Action = NotificationAction.OpenIdentity,
 					EntityId = e.Identity.Id,
 					CorrelationId = e.Identity.Id,
-					Presentation = NotificationPresentation.RenderAndStore
+					Presentation = NotificationPresentation.StoreOnly
 				};
 
 				Intent.Extras["state"] = e.Identity.State.ToString();
@@ -3427,7 +3427,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Action = NotificationAction.OpenPetition,
 				EntityId = e.RequestorFullJid,
 				CorrelationId = e.RequestorFullJid,
-				Presentation = NotificationPresentation.RenderAndStore
+				Presentation = NotificationPresentation.StoreOnly
 			};
 
 			Intent.Extras["petitionId"] = e.PetitionId ?? string.Empty;
@@ -3706,7 +3706,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Action = NotificationAction.OpenPetition,
 				EntityId = e.RequestorFullJid,
 				CorrelationId = e.PetitionId,
-				Presentation = NotificationPresentation.RenderAndStore
+				Presentation = NotificationPresentation.StoreOnly
 			};
 
 			Intent.Extras["contractId"] = e.RequestedContractId ?? string.Empty;
@@ -3790,7 +3790,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Action = NotificationAction.OpenContract,
 				EntityId = e.ContractId,
 				CorrelationId = e.ContractId,
-				Presentation = NotificationPresentation.RenderAndStore
+				Presentation = NotificationPresentation.StoreOnly
 			};
 
 			Intent.Extras["role"] = e.Role ?? string.Empty;
@@ -3816,7 +3816,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Action = NotificationAction.OpenContract,
 				EntityId = e.ContractId,
 				CorrelationId = e.ContractId,
-				Presentation = NotificationPresentation.RenderAndStore
+				Presentation = NotificationPresentation.StoreOnly
 			};
 
 			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
@@ -3849,7 +3849,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Action = NotificationAction.OpenContract,
 				EntityId = e.ContractId,
 				CorrelationId = e.ContractId,
-				Presentation = NotificationPresentation.RenderAndStore
+				Presentation = NotificationPresentation.StoreOnly
 			};
 
 			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
@@ -4050,7 +4050,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Action = NotificationAction.OpenPetition,
 				EntityId = e.RequestorFullJid,
 				CorrelationId = e.PetitionId,
-				Presentation = NotificationPresentation.RenderAndStore
+				Presentation = NotificationPresentation.StoreOnly
 			};
 
 			Intent.Extras["signatoryId"] = e.SignatoryIdentityId ?? string.Empty;
@@ -4642,7 +4642,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Action = NotificationAction.OpenBalance,
 				EntityId = e.Balance?.Currency,
 				CorrelationId = e.Balance?.Currency,
-				Presentation = NotificationPresentation.RenderAndStore
+				Presentation = NotificationPresentation.StoreOnly
 			};
 
 			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
@@ -5363,7 +5363,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Action = NotificationAction.OpenToken,
 				EntityId = e.Token?.TokenId,
 				CorrelationId = e.Token?.TokenId,
-				Presentation = NotificationPresentation.RenderAndStore
+				Presentation = NotificationPresentation.StoreOnly
 			};
 
 			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
@@ -5387,7 +5387,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Action = NotificationAction.OpenToken,
 				EntityId = e.Token?.TokenId,
 				CorrelationId = e.Token?.TokenId,
-				Presentation = NotificationPresentation.RenderAndStore
+				Presentation = NotificationPresentation.StoreOnly
 			};
 
 			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
