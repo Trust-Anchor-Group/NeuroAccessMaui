@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added search and filters to contract lists
 - Add exception handling for xmpp reconnect operations
 
 ### Changed
 
+- Changed the way contracts are loaded to improve performance
 - Made field in request and payment page have proper background colors
 - Handle neuroaccess URIs
 - Add dynamic picture size on View Identity
@@ -21,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed scanning Onboarding QR codes outside of app
 - Fix edge cases in ViewSwitcher control
 - Remove first authentication when opening a 'tagsign' uri
+
+### Fixed
+
+- Stop contract from rendering before selection
 
 ## [2.6.1] - 2025/06/30
 
