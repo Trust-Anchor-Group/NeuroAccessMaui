@@ -122,22 +122,24 @@ namespace NeuroAccessMaui.Services.Notification
 			}
 
 			NotificationRecord? ExistingRecord = await this.LoadByCorrelationdAsync(Record.CorrelationId);
-			if (ExistingRecord is not null && this.AreMergeCompatible(ExistingRecord, Record))
-			{
-				ExistingRecord.TimestampCreated = DateTime.UtcNow;
-				ExistingRecord.Title = Record.Title;
-				ExistingRecord.Body = Record.Body;
-				ExistingRecord.Action = Record.Action;
-				ExistingRecord.EntityId = Record.EntityId;
-				ExistingRecord.CorrelationId = Record.CorrelationId;
-				ExistingRecord.ExtrasJson = Record.ExtrasJson;
-				ExistingRecord.RawPayload = Record.RawPayload ?? ExistingRecord.RawPayload;
-				ExistingRecord.SchemaVersion = Record.SchemaVersion;
-				ExistingRecord.Source = Record.Source;
-				ExistingRecord.State = NotificationState.Delivered;
-				ExistingRecord.Presentation = Record.Presentation;
-				ExistingRecord.DeliveredAt = ExistingRecord.DeliveredAt ?? DateTime.UtcNow;
-				ExistingRecord.OccurrenceCount = ExistingRecord.OccurrenceCount > 0 ? ExistingRecord.OccurrenceCount + 1 : 1;
+				if (ExistingRecord is not null && this.AreMergeCompatible(ExistingRecord, Record))
+				{
+					ExistingRecord.TimestampCreated = DateTime.UtcNow;
+					ExistingRecord.Title = Record.Title;
+					ExistingRecord.Body = Record.Body;
+					ExistingRecord.Action = Record.Action;
+					ExistingRecord.EntityId = Record.EntityId;
+					ExistingRecord.CorrelationId = Record.CorrelationId;
+					ExistingRecord.ExtrasJson = Record.ExtrasJson;
+					ExistingRecord.RawPayload = Record.RawPayload ?? ExistingRecord.RawPayload;
+					ExistingRecord.SchemaVersion = Record.SchemaVersion;
+					ExistingRecord.Source = Record.Source;
+					ExistingRecord.State = NotificationState.New;
+					ExistingRecord.ReadAt = null;
+					ExistingRecord.ConsumedAt = null;
+					ExistingRecord.Presentation = Record.Presentation;
+					ExistingRecord.DeliveredAt = DateTime.UtcNow;
+					ExistingRecord.OccurrenceCount = ExistingRecord.OccurrenceCount > 0 ? ExistingRecord.OccurrenceCount + 1 : 1;
 
 				await Database.Update(ExistingRecord);
 				ServiceRef.LogService.LogInformational(
@@ -206,10 +208,11 @@ namespace NeuroAccessMaui.Services.Notification
 			if (Record is null)
 				return;
 
-			Record.State = NotificationState.Consumed;
-			Record.ConsumedAt = DateTime.UtcNow;
-			await Database.Update(Record);
-			await this.RaiseAdded(Record);
+				Record.State = NotificationState.Consumed;
+				Record.ConsumedAt = DateTime.UtcNow;
+				Record.OccurrenceCount = 1;
+				await Database.Update(Record);
+				await this.RaiseAdded(Record);
 
 			NotificationIntent Intent = this.ToIntent(Record);
 			NotificationRouteResult result = await this.intentRouter.RouteAsync(Intent, true, CancellationToken);
