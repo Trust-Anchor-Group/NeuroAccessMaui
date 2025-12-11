@@ -95,12 +95,26 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			await this.LoadCategories();
 
+			// Ensure an "All" tag exists showing total count, selected by default
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				if (this.tagMap.TryGetValue(AllCategory, out SelectableTag? allTag))
+				{
+					allTag.IsSelected = true;
+				}
+				else
+				{
+					SelectableTag all = new(AllCategory, true);
+					this.tagMap[AllCategory] = all;
+					this.FilterTags.Insert(0, all);
+				}
+			});
+
+			this.currentCategory = AllCategory;
+
 			await this.LoadContracts();
 
 			this.ShowContractsMissing = this.Contracts.Count < 1;
-
-			ServiceRef.NotificationService.OnNewNotification += this.NotificationService_OnNewNotification;
-			ServiceRef.NotificationService.OnNotificationsDeleted += this.NotificationService_OnNotificationsDeleted;
 		}
 
 		/// <inheritdoc/>
@@ -118,9 +132,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// <inheritdoc/>
 		public override async Task OnDisposeAsync()
 		{
-			ServiceRef.NotificationService.OnNewNotification -= this.NotificationService_OnNewNotification;
-			ServiceRef.NotificationService.OnNotificationsDeleted -= this.NotificationService_OnNotificationsDeleted;
-
 			if (this.Action != SelectContractAction.Select)
 			{
 				this.ShowContractsMissing = false;
@@ -203,7 +214,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				if (wasSelected)
 				{
 					foreach (SelectableTag t in this.FilterTags)
+					{
 						t.IsSelected = t.Category == AllCategory;
+						if (string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase))
+							this.TagSelected?.Invoke(t);
+					}
 
 					this.currentCategory = AllCategory;
 				}
@@ -213,9 +228,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						t.IsSelected = (t == Tag);
 
 					this.currentCategory = Tag.Category;
+					this.TagSelected?.Invoke(Tag);
 				}
-
-				this.TagSelected?.Invoke(Tag);
 
 				await this.ApplySearchFilter();
 			}
@@ -282,17 +296,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			await this.LoadContracts();
 		}
-
-		/// <summary>
-		/// Determines whether the specified contract matches the currently selected category filter.
-		/// </summary>
-		/// <param name="c">The contract to evaluate against the current category filter. Cannot be null.</param>
-		/// <returns>true if the contract's category matches the current filter or if the filter is set to include all categories;
-		/// otherwise, false.</returns>
-		private bool MatchesCurrentFilter(ContractModel c) =>
-			string.Equals(this.currentCategory, AllCategory, StringComparison.OrdinalIgnoreCase) ||
-			string.Equals(this.currentCategory, c.Category, StringComparison.OrdinalIgnoreCase);
-		
 
 		/// <summary>
 		/// Handle contract selection.
@@ -386,12 +389,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 		}
 
-		[RelayCommand(AllowConcurrentExecutions = false)]
-		private async Task LoadMoreContracts()
-		{
-			await this.LoadContracts();
-		}
-
 		private async Task LoadCategories()
 		{
 			try
@@ -416,26 +413,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						});
 					}
 				}
-
-				// Ensure an "All" tag exists showing total count, selected by default
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					if (this.tagMap.TryGetValue(AllCategory, out SelectableTag? allTag))
-					{
-						allTag.IsSelected = true;
-					}
-					else
-					{
-						SelectableTag all = new(AllCategory, true);
-						this.tagMap[AllCategory] = all;
-						this.FilterTags.Insert(0, all);
-					}
-				});
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task LoadMoreContracts()
+		{
+			await this.LoadContracts();
 		}
 
 		private async Task LoadContracts()
@@ -450,33 +438,14 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					return;
 				}
 
-				SortedDictionary<CaseInsensitiveString, NotificationEvent[]> EventsByCategory = ServiceRef.NotificationService.GetEventsByCategory(NotificationEventType.Contracts);
-
 				foreach (ContractReference Ref in ContractReferences)
 				{
-					NotificationEvent[] Events = [];
-					if (EventsByCategory.TryGetValue(Ref.ContractId, out NotificationEvent[]? evs))
-					{
-						EventsByCategory.Remove(Ref.ContractId);
-						List<NotificationEvent> Events2 = [];
-						foreach (NotificationEvent Event in evs)
-						{
-							if (Event is not ContractPetitionNotificationEvent)
-								Events2.Add(Event);
-						}
-						Events = [.. Events2];
-					}
+					ContractModel Item = new(Ref, []);
 
-					ContractModel Item = new(Ref, Events);
-
-					// Only add to visible list if it matches current filter
-					if (this.MatchesCurrentFilter(Item))
+					MainThread.BeginInvokeOnMainThread(() =>
 					{
-						MainThread.BeginInvokeOnMainThread(() =>
-						{
-							this.Contracts.Add(Item);
-						});
-					}
+						this.Contracts.Add(Item);
+					});
 				}
 			}
 			finally
@@ -509,74 +478,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 								ContractModel Item = new ContractModel(Ref, []);
 
-								// Only add to visible list if it matches current filter
-								if (this.MatchesCurrentFilter(Item))
+								MainThread.BeginInvokeOnMainThread(() =>
 								{
-									MainThread.BeginInvokeOnMainThread(() =>
-									{
-										this.Contracts.Add(Item);
-										this.OnPropertyChanged(nameof(this.ShowContractsMissing));
-									});
-								}
+									this.Contracts.Add(Item);
+									this.OnPropertyChanged(nameof(this.ShowContractsMissing));
+								});
 							}
 						}
 					}
 				}
-
-				/*
-				foreach (ContractModel Model in this.allContracts)
-				{
-					ContractReference Ref = Model.ContractRef;
-
-					Ref.ObjectId = null;
-
-					await Database.Insert(Ref);
-				}
-				*/
 			}
-		}
-
-		private Task NotificationService_OnNotificationsDeleted(object? Sender, NotificationEventsArgs e)
-		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				foreach (NotificationEvent Event in e.Events)
-				{
-					if (Event.Type != NotificationEventType.Contracts)
-						continue;
-
-					foreach (ContractModel Contract in this.Contracts)
-					{
-						if (Contract.ContractId == Event.Category)
-						{
-							Contract.RemoveEvent(Event);
-							break;
-						}
-					}
-				}
-			});
-
-			return Task.CompletedTask;
-		}
-
-		private Task NotificationService_OnNewNotification(object? Sender, NotificationEventArgs e)
-		{
-			if (e.Event.Type == NotificationEventType.Contracts)
-			{
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					foreach (ContractModel Contract in this.Contracts)
-					{
-						if (Contract.ContractId == e.Event.Category)
-						{
-							Contract.AddEvent(e.Event);
-							break;
-						}
-					}
-				});
-			}
-
-			return Task.CompletedTask;
 		}
 
 		private async Task<IEnumerable<ContractReference>?> LoadFromDatabase()
