@@ -25,7 +25,7 @@
 		<Grid Grid.Row="0"
 				RowDefinitions="*"
 				ColumnDefinitions="auto,*,auto" ColumnSpacing="8"
-				Margin="{DynamicResource MediumMargins}">
+				Margin="16,0,16,16">
 
 
 			<controls:SvgButton Grid.Row="0"

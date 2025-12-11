@@ -533,7 +533,8 @@ namespace NeuroAccessMaui
                         typeof(Graph).Assembly,
                         typeof(GraphEncoder).Assembly,
                         typeof(XmppServerlessMessaging).Assembly,
-                        typeof(HttpxClient).Assembly);
+                        typeof(HttpxClient).Assembly,
+						typeof(Waher.Script.Persistence.SQL.Select).Assembly);
                 }
 
                 // Register exceptions as alerts.

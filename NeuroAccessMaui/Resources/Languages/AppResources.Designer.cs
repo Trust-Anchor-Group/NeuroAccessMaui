@@ -7648,6 +7648,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select filter.
+        /// </summary>
+        public static string SelectFilter {
+            get {
+                return ResourceManager.GetString("SelectFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select for me.
         /// </summary>
         public static string SelectForMe {

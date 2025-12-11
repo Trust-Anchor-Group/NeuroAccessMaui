@@ -3450,4 +3450,7 @@
   <data name="NoNotificationsLabel" xml:space="preserve">
     <value>Inga aviseringar ännu</value>
   </data>
+  <data name="SelectFilter" xml:space="preserve">
+    <value>Välj filter</value>
+  </data>
 </root>

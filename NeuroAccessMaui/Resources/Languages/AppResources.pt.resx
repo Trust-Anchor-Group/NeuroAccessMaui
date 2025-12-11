@@ -3451,3 +3451,8 @@
     <value>Ainda não há notificações</value>
   </data>
 </root>
+
+  <data name="SelectFilter" xml:space="preserve">
+    <value>Selecionar filtro</value>
+  </data>
+</root>
