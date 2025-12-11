@@ -20,6 +20,10 @@ using NeuroAccessMaui.UI.Popups;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 {
+	/// <summary>
+	/// View model responsible for presenting and filtering a list of contracts and templates.
+	/// Handles loading, filtering by category, selection/navigation, and popup interactions.
+	/// </summary>
 	public partial class MyContractsViewModel : BaseViewModel
 	{
 		private readonly ContractsListMode contractsListMode;
@@ -27,19 +31,31 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private Contract? selectedContract = null;
 		private readonly Dictionary<string, SelectableTag> tagMap = new(StringComparer.OrdinalIgnoreCase);
 
+		/// <summary>
+		/// Event raised when a filter tag becomes selected. Consumers can react (e.g., scroll into view).
+		/// </summary>
 		public event Action<SelectableTag>? TagSelected;
 
-		private const string AllCategory = "All";
-		private const int contractBatchSize = 10;
+		private readonly string AllCategory = "All";
+		private readonly int contractBatchSize = 10;
 
 		private int loadedContracts;
 		private string currentCategory;
 
+		/// <summary>
+		/// Collection of available filter tags for categories. One tag can be selected at a time.
+		/// </summary>
 		public ObservableCollection<SelectableTag> FilterTags { get; set; } = new();
 
+		/// <summary>
+		/// Remaining items threshold for incremental loading. 0 enables loading, -1 disables.
+		/// </summary>
 		[ObservableProperty]
 		private int hasMore = 0; // 0 means collectionView will load more when scrolles. -1 means event wont be fired.
 
+		/// <summary>
+		/// Gets or sets whether template sharing via QR is available in the current mode.
+		/// </summary>
 		[ObservableProperty]
 		private bool canShareTemplate;
 
@@ -54,7 +70,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 			this.loadedContracts = 0;
 			this.hasMore = 0;
-			this.currentCategory = AllCategory;
+			this.currentCategory = this.AllCategory;
 
 			if (Args is not null)
 			{
@@ -98,19 +114,19 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			// Ensure an "All" tag exists showing total count, selected by default
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				if (this.tagMap.TryGetValue(AllCategory, out SelectableTag? allTag))
+				if (this.tagMap.TryGetValue(this.AllCategory, out SelectableTag? allTag))
 				{
 					allTag.IsSelected = true;
 				}
 				else
 				{
-					SelectableTag all = new(AllCategory, true);
-					this.tagMap[AllCategory] = all;
+					SelectableTag all = new(this.AllCategory, true);
+					this.tagMap[this.AllCategory] = all;
 					this.FilterTags.Insert(0, all);
 				}
 			});
 
-			this.currentCategory = AllCategory;
+			this.currentCategory = this.AllCategory;
 
 			await this.LoadContracts();
 
@@ -172,7 +188,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		public ObservableCollection<ContractModel> Contracts { get; } = [];
 
 		/// <summary>
-		/// Relay command for contract selection from item template
+		/// Executed when a contract item is tapped; performs navigation or selection based on <see cref="Action"/>.
 		/// </summary>
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task ContractSelected(object? parameter)
@@ -196,15 +212,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 		}
 
+		/// <summary>
+		/// Opens the filter popup and applies the selected tag when the popup returns.
+		/// </summary>
 		[RelayCommand]
 		private async Task OpenFilterPopup()
 		{
-			var vm = new FilterContractsPopupViewModel(this.FilterTags);
+			FilterContractsPopupViewModel vm = new FilterContractsPopupViewModel(this.FilterTags);
 			SelectableTag? selectedTag = await ServiceRef.PopupService.PushAsync<FilterContractsPopup, FilterContractsPopupViewModel, MyContractsViewModel.SelectableTag>(vm);
 			if (selectedTag is not null && !string.Equals(selectedTag.Category, this.currentCategory, StringComparison.OrdinalIgnoreCase))
 				await this.FilterChanged(selectedTag);
 		}
 
+		/// <summary>
+		/// Changes the selected filter tag and refreshes the contract list accordingly.
+		/// </summary>
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task FilterChanged(object? parameter)
 		{
@@ -215,12 +237,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				{
 					foreach (SelectableTag t in this.FilterTags)
 					{
-						t.IsSelected = t.Category == AllCategory;
-						if (string.Equals(t.Category, AllCategory, StringComparison.OrdinalIgnoreCase))
+						t.IsSelected = t.Category == this.AllCategory;
+						if (string.Equals(t.Category, this.AllCategory, StringComparison.OrdinalIgnoreCase))
 							this.TagSelected?.Invoke(t);
 					}
 
-					this.currentCategory = AllCategory;
+					this.currentCategory = this.AllCategory;
 				}
 				else
 				{
@@ -252,7 +274,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				}
 				this.FilterTags[0].IsSelected = true; // Select "All"
 				selectedTag = this.FilterTags[0];
-				this.currentCategory = AllCategory;
+				this.currentCategory = this.AllCategory;
 			}
 			else
 			{
@@ -355,12 +377,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 		}
 
-		// Keep old method signature for any existing callers
+		/// <summary>
+		/// Legacy helper maintained for compatibility with existing callers.
+		/// </summary>
 		public void ContractSelected(ContractModel Model)
 		{
 			_ = this.ContractSelectedAsync(Model);
 		}
 
+		/// <summary>
+		/// Shares a template reference as a QR code in a popup.
+		/// </summary>
 		[RelayCommand]
 		private async Task ShareTemplateQR(object? parameter)
 		{
@@ -389,6 +416,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 		}
 
+		/// <summary>
+		/// Loads available categories and populates <see cref="FilterTags"/>.
+		/// </summary>
 		private async Task LoadCategories()
 		{
 			try
@@ -420,12 +450,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 		}
 
+		/// <summary>
+		/// Command handler that loads additional contracts when the user scrolls near the end of the list.
+		/// </summary>
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task LoadMoreContracts()
 		{
 			await this.LoadContracts();
 		}
 
+		/// <summary>
+		/// Loads a batch of contracts from the database and adds them to the visible list.
+		/// </summary>
 		private async Task LoadContracts()
 		{
 			try
@@ -450,7 +486,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 			finally
 			{
-				this.loadedContracts += contractBatchSize;
+				this.loadedContracts += this.contractBatchSize;
 				this.IsBusy = false;
 
 				if (this.HasMore == -1 && this.contractsListMode == ContractsListMode.TokenCreationTemplates)
@@ -490,39 +526,43 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			}
 		}
 
+		/// <summary>
+		/// Queries the database for a batch of <see cref="ContractReference"/> records consistent with the current filter.
+		/// Also updates <see cref="HasMore"/> based on result count.
+		/// </summary>
 		private async Task<IEnumerable<ContractReference>?> LoadFromDatabase()
 		{
 			IEnumerable<ContractReference> ContractReferences;
 
-			if (this.currentCategory == AllCategory)
+			if (this.currentCategory == this.AllCategory)
 			{
 				switch (this.contractsListMode)
 				{
 					case ContractsListMode.Contracts:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
+						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", false),
 							new FilterFieldEqualTo("ContractLoaded", true)));
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
+						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
 						break;
 
 					case ContractsListMode.ContractTemplates:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
+						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true)));
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
+						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
 						break;
 
 					case ContractsListMode.TokenCreationTemplates:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
+						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true)));
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
+						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
 						break;
 
 					default:
@@ -534,33 +574,33 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				switch (this.contractsListMode)
 				{
 					case ContractsListMode.Contracts:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
+						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", false),
 							new FilterFieldEqualTo("ContractLoaded", true),
 							new FilterFieldEqualTo("Category", this.currentCategory)));
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
+						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
 						break;
 
 					case ContractsListMode.ContractTemplates:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
+						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true),
 							new FilterFieldEqualTo("Category", this.currentCategory)));
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
+						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
 						break;
 
 					case ContractsListMode.TokenCreationTemplates:
-						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, contractBatchSize, new FilterAnd(
+						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true),
 							new FilterFieldEqualTo("Category", this.currentCategory)));
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-					this.HasMore = (ContractReferences.Count() < contractBatchSize) ? -1 : 0;
+					this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
 						break;
 
 					default:
@@ -571,20 +611,36 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			return ContractReferences;
 		}
 
+		/// <summary>
+		/// Container class representing a selectable category tag.
+		/// </summary>
 		public partial class SelectableTag : ObservableObject
 		{
+			/// <summary>
+			/// Category name.
+			/// </summary>
 			[ObservableProperty]
 			private string category;
+			/// <summary>
+			/// True if the tag is currently selected.
+			/// </summary>
 			[ObservableProperty]
 			private bool isSelected;
 
+			/// <summary>
+			/// Creates a new <see cref="SelectableTag"/>.
+			/// </summary>
+			/// <param name="Category">Category name.</param>
+			/// <param name="IsSelected">Initial selection state.</param>
 			public SelectableTag(string Category, bool IsSelected)
 			{
 				this.category = Category;
 				this.isSelected = IsSelected;
 			}
 
-			public string GetFilterString() => this.IsSelected && !string.Equals(this.Category, AllCategory, StringComparison.OrdinalIgnoreCase) ? this.Category : string.Empty;
+			/// <summary>
+			/// Toggles the selection state of the tag.
+			/// </summary>
 			public void ToggleSelection() => this.IsSelected = !this.IsSelected;
 		}
 	}

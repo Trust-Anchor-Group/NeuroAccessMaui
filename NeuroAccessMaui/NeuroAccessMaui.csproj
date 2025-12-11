@@ -400,7 +400,7 @@
 
 	<ItemGroup>
 	  <EmbeddedResource Update="Resources\Languages\AppResources.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
+	    <Generator>PublicResXFileCodeGenerator</Generator>
 	    <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
 	</ItemGroup>
