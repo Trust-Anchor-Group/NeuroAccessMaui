@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -9,6 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.MVVM.Building;
 
 namespace NeuroAccessMaui.UI.Pages.Notifications
 {
@@ -18,7 +20,11 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 	public partial class NotificationsViewModel : BaseViewModel
 	{
 		private readonly INotificationServiceV2 notificationService;
-		private IReadOnlyList<NotificationRecord> loadedRecords = [];
+		private readonly ObservableTask<int> notificationsLoader;
+		private readonly List<NotificationRecord> loadedRecords = [];
+		private readonly int batchSize = 15;
+		private int loadedCount;
+		private bool suppressNotificationReload;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="NotificationsViewModel"/> class.
@@ -28,12 +34,24 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		{
 			this.notificationService = NotificationService;
 			this.Items = new ObservableCollection<NotificationListItem>();
+			this.HasMore = 0;
+			this.notificationsLoader = new ObservableTaskBuilder<int>()
+				.Named("Notifications Loader")
+				.AutoStart(false)
+				.UseTaskRun(false)
+				.Run(async ctx => await this.LoadBatchAsync(ctx.IsRefreshing, ctx.CancellationToken))
+				.Build();
 		}
 
 		/// <summary>
 		/// Notifications to display.
 		/// </summary>
 		public ObservableCollection<NotificationListItem> Items { get; }
+
+		/// <summary>
+		/// Loader task for batched notifications retrieval.
+		/// </summary>
+		public ObservableTask<int> NotificationsLoader => this.notificationsLoader;
 
 		/// <summary>
 		/// Search text.
@@ -46,6 +64,12 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		/// </summary>
 		[ObservableProperty]
 		private bool showUnreadOnly;
+
+		/// <summary>
+		/// Remaining items threshold toggle for incremental loading.
+		/// </summary>
+		[ObservableProperty]
+		private int hasMore;
 
 		/// <summary>
 		/// Command to set unread filter.
@@ -78,14 +102,41 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		}
 
 		/// <summary>
+		/// Command to load the next batch of notifications.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private Task LoadMoreNotifications()
+		{
+			if (this.HasMore == -1)
+				return Task.CompletedTask;
+
+			this.notificationsLoader.Refresh();
+
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
 		/// Command to clear all notifications in current view.
 		/// </summary>
 		[RelayCommand]
 		private async Task ClearAllAsync()
 		{
-			IEnumerable<string> ids = this.Items.Select(x => x.Id).ToArray();
-			await this.notificationService.DeleteAsync(ids, CancellationToken.None);
-			await this.LoadAsync();
+			this.suppressNotificationReload = true;
+			try
+			{
+				List<string> Ids = this.Items.Select(Item => Item.Id).ToList();
+				await this.notificationService.DeleteAsync(Ids, CancellationToken.None);
+				this.RemoveRecords(Ids);
+				this.loadedCount = this.loadedRecords.Count;
+				this.HasMore = 0;
+				this.ApplyFilters();
+				this.notificationsLoader.Run();
+				await this.notificationsLoader.WaitAllAsync();
+			}
+			finally
+			{
+				this.suppressNotificationReload = false;
+			}
 		}
 
 		/// <summary>
@@ -97,13 +148,19 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		{
 			try
 			{
+				this.suppressNotificationReload = true;
 				await this.notificationService.ConsumeAsync(Item.Id, CancellationToken.None);
+				this.UpdateRecordState(Item.Id, NotificationState.Consumed, true);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
-			await this.LoadAsync();
+			finally
+			{
+				this.suppressNotificationReload = false;
+			}
+			this.ApplyFilters();
 		}
 
 		/// <summary>
@@ -115,20 +172,27 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		{
 			try
 			{
+				this.suppressNotificationReload = true;
 				await this.notificationService.MarkReadAsync(Item.Id, CancellationToken.None);
+				this.UpdateRecordState(Item.Id, NotificationState.Read, false);
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
-			await this.LoadAsync();
+			finally
+			{
+				this.suppressNotificationReload = false;
+			}
+			this.ApplyFilters();
 		}
 
 		/// <inheritdoc/>
 		public override async Task OnAppearingAsync()
 		{
 			this.notificationService.OnNotificationAdded += this.OnNotificationAddedAsync;
-			await this.LoadAsync();
+			this.notificationsLoader.Run();
+			await this.notificationsLoader.WaitAllAsync();
 			await base.OnAppearingAsync();
 		}
 
@@ -144,50 +208,116 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			this.ApplyFilters();
 		}
 
-		private async Task LoadAsync()
+		private async Task LoadBatchAsync(bool isRefresh, CancellationToken cancellationToken)
 		{
-			NotificationQuery query = new NotificationQuery
+			if (!isRefresh)
 			{
-				States = this.ShowUnreadOnly ? new[] { NotificationState.New, NotificationState.Delivered } : null
+				this.loadedRecords.Clear();
+				this.loadedCount = 0;
+			}
+
+			NotificationQuery Query = new NotificationQuery
+			{
+				States = this.ShowUnreadOnly ? new[] { NotificationState.New, NotificationState.Delivered } : null,
+				Limit = this.batchSize,
+				Skip = isRefresh ? this.loadedCount : 0
 			};
 
-			this.loadedRecords = await this.notificationService.GetAsync(query, CancellationToken.None);
+			IReadOnlyList<NotificationRecord> Records = await this.notificationService.GetAsync(Query, cancellationToken);
+
+			if (!isRefresh)
+				this.loadedRecords.Clear();
+
+			this.UpsertRecords(Records);
+
+			int FetchedCount = Records.Count;
+			this.HasMore = FetchedCount < this.batchSize ? -1 : 0;
 			this.ApplyFilters();
+		}
+
+		private void UpsertRecords(IEnumerable<NotificationRecord> records)
+		{
+			foreach (NotificationRecord Record in records)
+			{
+				int Index = this.loadedRecords.FindIndex(r => string.Equals(r.Id, Record.Id, StringComparison.Ordinal));
+				if (Index >= 0)
+				{
+					this.loadedRecords[Index] = Record;
+				}
+				else
+				{
+					this.loadedRecords.Add(Record);
+				}
+			}
+
+			this.loadedCount = this.loadedRecords.Count;
+		}
+
+		private void RemoveRecords(IEnumerable<string> ids)
+		{
+			HashSet<string> IdSet = new HashSet<string>(ids);
+			this.loadedRecords.RemoveAll(Record => IdSet.Contains(Record.Id));
+			this.loadedCount = this.loadedRecords.Count;
+		}
+
+		private void UpdateRecordState(string id, NotificationState state, bool markConsumed)
+		{
+			NotificationRecord? Record = this.loadedRecords.FirstOrDefault(r => string.Equals(r.Id, id, StringComparison.Ordinal));
+			if (Record is null)
+				return;
+
+			Record.State = state;
+
+			if (state == NotificationState.Read)
+			{
+				Record.ReadAt = DateTime.UtcNow;
+			}
+
+			if (markConsumed || state == NotificationState.Consumed)
+			{
+				Record.ConsumedAt = DateTime.UtcNow;
+				Record.OccurrenceCount = 1;
+			}
+
+			this.loadedCount = this.loadedRecords.Count;
 		}
 
 		private void ApplyFilters()
 		{
-			IEnumerable<NotificationRecord> query = this.loadedRecords;
+			IEnumerable<NotificationRecord> Query = this.loadedRecords;
 
 			if (this.ShowUnreadOnly)
 			{
-				query = query.Where(r => r.State == NotificationState.New || r.State == NotificationState.Delivered);
+				Query = Query.Where(Record => Record.State == NotificationState.New || Record.State == NotificationState.Delivered);
 			}
 
 			if (!string.IsNullOrWhiteSpace(this.SearchText))
 			{
-				string term = this.SearchText.Trim();
-				query = query.Where(r =>
-					(r.Title?.Contains(term, System.StringComparison.OrdinalIgnoreCase) ?? false) ||
-					(r.Body?.Contains(term, System.StringComparison.OrdinalIgnoreCase) ?? false) ||
-					(r.Channel?.Contains(term, System.StringComparison.OrdinalIgnoreCase) ?? false));
+				string Term = this.SearchText.Trim();
+				Query = Query.Where(Record =>
+					(Record.Title?.Contains(Term, StringComparison.OrdinalIgnoreCase) ?? false) ||
+					(Record.Body?.Contains(Term, StringComparison.OrdinalIgnoreCase) ?? false) ||
+					(Record.Channel?.Contains(Term, StringComparison.OrdinalIgnoreCase) ?? false));
 			}
 
-			List<NotificationListItem> filtered = query
-				.OrderByDescending(r => r.TimestampCreated)
+			List<NotificationListItem> Filtered = Query
+				.OrderByDescending(Record => Record.TimestampCreated)
 				.Select(this.ToListItem)
 				.ToList();
 
 			this.Items.Clear();
-			foreach (NotificationListItem item in filtered)
+			foreach (NotificationListItem Item in Filtered)
 			{
-				this.Items.Add(item);
+				this.Items.Add(Item);
 			}
 		}
 
 		private async Task OnNotificationAddedAsync(object? Sender, NotificationRecordEventArgs Args)
 		{
-			await MainThread.InvokeOnMainThreadAsync(async () => await this.LoadAsync());
+			if (this.suppressNotificationReload)
+				return;
+
+			await MainThread.InvokeOnMainThreadAsync(() => this.notificationsLoader.Run());
 		}
 
 		/// <summary>
@@ -199,20 +329,31 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		{
 			try
 			{
+				this.suppressNotificationReload = true;
 				await this.notificationService.DeleteAsync(new[] { Item.Id }, CancellationToken.None);
+				this.RemoveRecords(new[] { Item.Id });
+				this.loadedCount = this.loadedRecords.Count;
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
-			await this.LoadAsync();
+			finally
+			{
+				this.suppressNotificationReload = false;
+			}
+
+			this.ApplyFilters();
+
+			if (this.HasMore == 0)
+				this.notificationsLoader.Refresh();
 		}
 
 		private NotificationListItem ToListItem(NotificationRecord record)
 		{
-			string channelShort = string.IsNullOrEmpty(record.Channel) ? "N" : record.Channel.Substring(0, 1).ToUpperInvariant();
-			string dateText = record.TimestampCreated.ToLocalTime().ToString("MMM d", CultureInfo.CurrentCulture);
-			string stateLabel = record.State switch
+			string ChannelShort = string.IsNullOrEmpty(record.Channel) ? "N" : record.Channel.Substring(0, 1).ToUpperInvariant();
+			string DateText = record.TimestampCreated.ToLocalTime().ToString("MMM d", CultureInfo.CurrentCulture);
+			string StateLabel = record.State switch
 			{
 				NotificationState.New or NotificationState.Delivered => "New",
 				NotificationState.Read => "Read",
@@ -220,7 +361,7 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 				_ => string.Empty
 			};
 
-			return new NotificationListItem(record.Id, record.Title, record.Body, record.Channel, channelShort, dateText, stateLabel, record.OccurrenceCount);
+			return new NotificationListItem(record.Id, record.Title, record.Body, record.Channel, ChannelShort, DateText, StateLabel, record.OccurrenceCount);
 		}
 
 	}

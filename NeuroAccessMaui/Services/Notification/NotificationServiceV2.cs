@@ -233,19 +233,30 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <returns>Matching notifications.</returns>
 		public async Task<IReadOnlyList<NotificationRecord>> GetAsync(NotificationQuery Query, CancellationToken CancellationToken)
 		{
+			Filter filter = new(Query.Channels, Query.States);
+			int Skip = Query.Skip ?? 0;
+			int Limit = Query.Limit ?? int.MaxValue;
+			int Matched = 0;
 			List<NotificationRecord> Results = new();
 
-			Filter filter = new(Query.Channels, Query.States);
 			IEnumerable<NotificationRecord> FromDb = await Database.Find<NotificationRecord>(nameof(NotificationRecord.TimestampCreated));
+			IEnumerable<NotificationRecord> Ordered = FromDb.OrderByDescending(Record => Record.TimestampCreated);
 
-			foreach (NotificationRecord Record in FromDb)
+			foreach (NotificationRecord Record in Ordered)
 			{
 				if (!filter.Matches(Record))
 					continue;
 
-				Results.Add(Record);
+				if (Matched < Skip)
+				{
+					Matched++;
+					continue;
+				}
 
-				if (Query.Limit is not null && Results.Count >= Query.Limit.Value)
+				Results.Add(Record);
+				Matched++;
+
+				if (Results.Count >= Limit)
 					break;
 			}
 

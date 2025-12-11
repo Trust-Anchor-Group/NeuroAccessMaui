@@ -28,7 +28,7 @@ namespace NeuroAccessMaui.Services.Notification
 		Task ConsumeAsync(string Id, CancellationToken CancellationToken);
 
 		/// <summary>
-		/// Retrieves notifications matching the query.
+		/// Retrieves notifications matching the query with optional paging.
 		/// </summary>
 		/// <param name="Query">Query filter.</param>
 		/// <param name="CancellationToken">Cancellation token.</param>

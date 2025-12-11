@@ -82,17 +82,19 @@
 				</controls:TemplatedButton>
 			</Grid>
 
-			<CollectionView Grid.Row="2"
-							ItemsSource="{Binding Items}"
-							SelectionMode="None"
-							ItemSizingStrategy="MeasureAllItems">
-				<CollectionView.EmptyView>
+			<controls:LoadingCollectionView Grid.Row="2"
+										   ItemsSource="{Binding Items}"
+										   SelectionMode="None"
+										   ItemSizingStrategy="MeasureAllItems"
+										   RemainingItemsThreshold="{Binding HasMore}"
+										   LoadMoreCommand="{Binding LoadMoreNotificationsCommand}">
+				<controls:LoadingCollectionView.EmptyView>
 					<Label Text="{l:Localize NoNotificationsLabel}"
 						   HorizontalOptions="Center"
 						   VerticalOptions="Center"
 						   TextColor="{DynamicResource PrimaryTextColor}" />
-				</CollectionView.EmptyView>
-				<CollectionView.ItemTemplate>
+				</controls:LoadingCollectionView.EmptyView>
+				<controls:LoadingCollectionView.ItemTemplate>
 					<DataTemplate x:DataType="viewmodel:NotificationListItem">
 						<controls:TemplatedButton Command="{Binding OpenNotificationCommand, Source={RelativeSource AncestorType={x:Type viewmodel:NotificationsViewModel}}, x:DataType=viewmodel:NotificationsViewModel}"
 												  CommandParameter="{Binding .}">
@@ -208,8 +210,8 @@
 							</Border>
 						</controls:TemplatedButton>
 					</DataTemplate>
-				</CollectionView.ItemTemplate>
-			</CollectionView>
+				</controls:LoadingCollectionView.ItemTemplate>
+			</controls:LoadingCollectionView>
 		</Grid>
 	</Grid>
 </base:BaseContentPage>

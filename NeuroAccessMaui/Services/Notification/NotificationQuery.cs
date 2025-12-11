@@ -21,5 +21,10 @@ namespace NeuroAccessMaui.Services.Notification
 		/// Gets the maximum number of notifications to return.
 		/// </summary>
 		public int? Limit { get; set; }
+
+		/// <summary>
+		/// Gets the number of notifications to skip before returning results.
+		/// </summary>
+		public int? Skip { get; set; }
 	}
 }
