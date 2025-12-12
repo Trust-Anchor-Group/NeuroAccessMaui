@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.UI.MVVM;
@@ -21,7 +22,7 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 	{
 		private readonly INotificationServiceV2 notificationService;
 		private readonly ObservableTask<int> notificationsLoader;
-		private readonly List<NotificationRecord> loadedRecords = [];
+		private readonly List<NotificationRecord> loadedRecords = new List<NotificationRecord>();
 		private readonly int batchSize = 15;
 		private int loadedCount;
 		private bool suppressNotificationReload;
@@ -38,7 +39,7 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			this.notificationsLoader = new ObservableTaskBuilder<int>()
 				.Named("Notifications Loader")
 				.AutoStart(false)
-				.UseTaskRun(false)
+				.UseTaskRun(true)
 				.Run(async ctx => await this.LoadBatchAsync(ctx.IsRefreshing, ctx.CancellationToken))
 				.Build();
 		}
@@ -203,14 +204,16 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			await base.OnDisappearingAsync();
 		}
 
-		partial void OnSearchTextChanged(string value)
+		partial void OnSearchTextChanged(string Value)
 		{
 			this.ApplyFilters();
 		}
 
-		private async Task LoadBatchAsync(bool isRefresh, CancellationToken cancellationToken)
+		private async Task LoadBatchAsync(bool IsRefresh, CancellationToken CancellationToken)
 		{
-			if (!isRefresh)
+			CancellationToken.ThrowIfCancellationRequested();
+
+			if (!IsRefresh)
 			{
 				this.loadedRecords.Clear();
 				this.loadedCount = 0;
@@ -220,19 +223,39 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			{
 				States = this.ShowUnreadOnly ? new[] { NotificationState.New, NotificationState.Delivered } : null,
 				Limit = this.batchSize,
-				Skip = isRefresh ? this.loadedCount : 0
+				Skip = IsRefresh ? this.loadedCount : 0
 			};
 
-			IReadOnlyList<NotificationRecord> Records = await this.notificationService.GetAsync(Query, cancellationToken);
+			IReadOnlyList<NotificationRecord> Records = await this.notificationService.GetAsync(Query, CancellationToken);
 
-			if (!isRefresh)
+			CancellationToken.ThrowIfCancellationRequested();
+
+			if (!IsRefresh)
 				this.loadedRecords.Clear();
 
 			this.UpsertRecords(Records);
 
+			CancellationToken.ThrowIfCancellationRequested();
+
 			int FetchedCount = Records.Count;
-			this.HasMore = FetchedCount < this.batchSize ? -1 : 0;
-			this.ApplyFilters();
+			int NewHasMore = FetchedCount < this.batchSize ? -1 : 0;
+
+			if (CancellationToken.IsCancellationRequested)
+			{
+				return;
+			}
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				if (CancellationToken.IsCancellationRequested)
+				{
+					return;
+				}
+
+				this.HasMore = NewHasMore;
+			});
+
+			this.ApplyFilters(CancellationToken);
 		}
 
 		private void UpsertRecords(IEnumerable<NotificationRecord> records)
@@ -282,8 +305,13 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 			this.loadedCount = this.loadedRecords.Count;
 		}
 
-		private void ApplyFilters()
+		private void ApplyFilters(CancellationToken CancellationToken = default)
 		{
+			if (CancellationToken.IsCancellationRequested)
+			{
+				return;
+			}
+
 			IEnumerable<NotificationRecord> Query = this.loadedRecords;
 
 			if (this.ShowUnreadOnly)
@@ -305,11 +333,24 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 				.Select(this.ToListItem)
 				.ToList();
 
-			this.Items.Clear();
-			foreach (NotificationListItem Item in Filtered)
+			if (CancellationToken.IsCancellationRequested)
 			{
-				this.Items.Add(Item);
+				return;
 			}
+
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				if (CancellationToken.IsCancellationRequested)
+				{
+					return;
+				}
+
+				this.Items.Clear();
+				foreach (NotificationListItem Item in Filtered)
+				{
+					this.Items.Add(Item);
+				}
+			});
 		}
 
 		private async Task OnNotificationAddedAsync(object? Sender, NotificationRecordEventArgs Args)
