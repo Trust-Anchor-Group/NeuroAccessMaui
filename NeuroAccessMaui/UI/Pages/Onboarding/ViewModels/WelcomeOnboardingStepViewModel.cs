@@ -242,7 +242,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		private async Task ScanQrCode()
 		{
 			ServiceRef.LogService.LogDebug("ScanQrCode command invoked.");
-			string? Url = await QrCode.ScanQrCode(ServiceRef.Localizer[nameof(AppResources.QrPageTitleScanInvitation)], [Constants.UriSchemes.Onboarding]).ConfigureAwait(false);
+			string? Url = await QrCode.ScanQrCode(nameof(AppResources.ScanQRCode), [Constants.UriSchemes.Onboarding]).ConfigureAwait(false);
 			if (string.IsNullOrWhiteSpace(Url))
 			{
 				ServiceRef.LogService.LogWarning("QR scan returned empty URL.");

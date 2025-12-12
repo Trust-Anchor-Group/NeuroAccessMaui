@@ -968,7 +968,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet
 			try
 			{
 				string[] AllowedSchemas = [Constants.UriSchemes.IotId];
-				string? Url = await Services.UI.QR.QrCode.ScanQrCode(ServiceRef.Localizer[nameof(AppResources.QrScanCode)], AllowedSchemas);
+				string? Url = await Services.UI.QR.QrCode.ScanQrCode(nameof(AppResources.ScanQRCode), AllowedSchemas);
 				if (string.IsNullOrEmpty(Url))
 					return;
 
