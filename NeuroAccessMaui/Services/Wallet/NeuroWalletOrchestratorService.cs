@@ -73,7 +73,7 @@ namespace NeuroAccessMaui.Services.Wallet
 				Channel = Constants.PushChannels.EDaler,
 				Title = Title,
 				Body = Body,
-				Action = NotificationAction.OpenSettings,
+				Action = NotificationAction.OpenBalance,
 				EntityId = e.Balance.Currency
 			};
 
@@ -90,7 +90,7 @@ namespace NeuroAccessMaui.Services.Wallet
 				Channel = Constants.PushChannels.Tokens,
 				Title = Title,
 				Body = Body,
-				Action = NotificationAction.OpenSettings,
+				Action = NotificationAction.OpenToken,
 				EntityId = e.Token.TokenId
 			};
 
@@ -107,7 +107,7 @@ namespace NeuroAccessMaui.Services.Wallet
 				Channel = Constants.PushChannels.Tokens,
 				Title = Title,
 				Body = Body,
-				Action = NotificationAction.OpenSettings,
+				Action = NotificationAction.OpenToken,
 				EntityId = e.Token.TokenId
 			};
 
@@ -120,7 +120,8 @@ namespace NeuroAccessMaui.Services.Wallet
 			{
 				Channel = Constants.PushChannels.Tokens,
 				Title = ServiceRef.Localizer[nameof(AppResources.State)],
-				Action = NotificationAction.OpenSettings
+				Action = NotificationAction.OpenToken,
+				EntityId = e.TokenId
 			};
 
 			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
@@ -132,7 +133,8 @@ namespace NeuroAccessMaui.Services.Wallet
 			{
 				Channel = Constants.PushChannels.Tokens,
 				Title = ServiceRef.Localizer[nameof(AppResources.State)],
-				Action = NotificationAction.OpenSettings
+				Action = NotificationAction.OpenToken,
+				EntityId = e.TokenId
 			};
 
 			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);

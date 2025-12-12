@@ -16,6 +16,7 @@ using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionContract;
 using NeuroAccessMaui.UI.Pages.Kyc;
+using NeuroAccessMaui.UI.Pages.Main;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Persistence;
 using Waher.Persistence.Filters;
@@ -180,7 +181,12 @@ namespace NeuroAccessMaui.Services.Notification
 
 		private async Task<NotificationRouteResult> RouteBalanceAsync(CancellationToken CancellationToken)
 		{
-			await ServiceRef.NavigationService.GoToAsync(nameof(WalletPage));
+			MainNavigationArgs args = new()
+			{
+				TargetTabKey = "wallet"
+			};
+
+			await ServiceRef.NavigationService.GoToAsync(nameof(MainPage), args);
 			return NotificationRouteResult.Success;
 		}
 
