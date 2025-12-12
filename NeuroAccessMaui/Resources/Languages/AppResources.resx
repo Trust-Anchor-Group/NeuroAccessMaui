@@ -59,7 +59,10 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root"
+    xmlns=""
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -3452,5 +3455,119 @@
   </data>
   <data name="SelectFilter" xml:space="preserve">
     <value>Select filter</value>
+  </data>
+  <data name="NotificationChatTitle" xml:space="preserve">
+    <value>Message from {0}</value>
+  </data>
+  <data name="NotificationChatBody" xml:space="preserve">
+    <value>Open to read the new message.</value>
+  </data>
+  <data name="NotificationPetitionIdentityTitle" xml:space="preserve">
+    <value>Identity request from {0}</value>
+  </data>
+  <data name="NotificationPetitionIdentityBody" xml:space="preserve">
+    <value>Open to review the identity request.</value>
+  </data>
+  <data name="NotificationPetitionContractTitle" xml:space="preserve">
+    <value>Contract request from {0}</value>
+  </data>
+  <data name="NotificationPetitionContractBody" xml:space="preserve">
+    <value>Open to review the contract request.</value>
+  </data>
+  <data name="NotificationPetitionSignatureTitle" xml:space="preserve">
+    <value>Signature request from {0}</value>
+  </data>
+  <data name="NotificationPetitionSignatureBody" xml:space="preserve">
+    <value>Open to review the signature request.</value>
+  </data>
+  <data name="NotificationIdentityApprovedTitle" xml:space="preserve">
+    <value>Identity status updated</value>
+  </data>
+  <data name="NotificationIdentityApprovedBody" xml:space="preserve">
+    <value>Your legal identity is approved.</value>
+  </data>
+  <data name="NotificationIdentityObsoletedTitle" xml:space="preserve">
+    <value>Identity status updated</value>
+  </data>
+  <data name="NotificationIdentityObsoletedBody" xml:space="preserve">
+    <value>Your legal identity has been obsoleted.</value>
+  </data>
+  <data name="NotificationIdentityRejectedTitle" xml:space="preserve">
+    <value>Identity status updated</value>
+  </data>
+  <data name="NotificationIdentityRejectedBody" xml:space="preserve">
+    <value>Your legal identity was rejected.</value>
+  </data>
+  <data name="NotificationIdentityCompromisedTitle" xml:space="preserve">
+    <value>Identity status updated</value>
+  </data>
+  <data name="NotificationIdentityCompromisedBody" xml:space="preserve">
+    <value>Your legal identity may be compromised.</value>
+  </data>
+  <data name="NotificationContractCreatedTitle" xml:space="preserve">
+    <value>Contract created</value>
+  </data>
+  <data name="NotificationContractCreatedBody" xml:space="preserve">
+    <value>Open to view the new contract.</value>
+  </data>
+  <data name="NotificationContractSignedTitle" xml:space="preserve">
+    <value>Contract signed</value>
+  </data>
+  <data name="NotificationContractSignedBody" xml:space="preserve">
+    <value>Open to review the signed contract.</value>
+  </data>
+  <data name="NotificationContractUpdatedTitle" xml:space="preserve">
+    <value>Contract updated</value>
+  </data>
+  <data name="NotificationContractUpdatedBody" xml:space="preserve">
+    <value>Open to review the latest changes.</value>
+  </data>
+  <data name="NotificationContractDeletedTitle" xml:space="preserve">
+    <value>Contract removed</value>
+  </data>
+  <data name="NotificationContractDeletedBody" xml:space="preserve">
+    <value>Open to view the contract record.</value>
+  </data>
+  <data name="NotificationContractProposalTitle" xml:space="preserve">
+    <value>Contract proposal</value>
+  </data>
+  <data name="NotificationContractProposalBody" xml:space="preserve">
+    <value>Open to review the proposal.</value>
+  </data>
+  <data name="NotificationBalanceUpdatedTitle" xml:space="preserve">
+    <value>Balance updated</value>
+  </data>
+  <data name="NotificationBalanceUpdatedBody" xml:space="preserve">
+    <value>Open to view your latest balance.</value>
+  </data>
+  <data name="NotificationTokenAddedTitle" xml:space="preserve">
+    <value>Token added</value>
+  </data>
+  <data name="NotificationTokenAddedBody" xml:space="preserve">
+    <value>Open to view the wallet update.</value>
+  </data>
+  <data name="NotificationTokenRemovedTitle" xml:space="preserve">
+    <value>Token removed</value>
+  </data>
+  <data name="NotificationTokenRemovedBody" xml:space="preserve">
+    <value>Open to view the wallet update.</value>
+  </data>
+  <data name="NotificationPresenceAccessTitle" xml:space="preserve">
+    <value>Access request from {0}</value>
+  </data>
+  <data name="NotificationPresenceAccessBody" xml:space="preserve">
+    <value>Has requested access to your identity.</value>
+  </data>
+  <data name="NotificationReadAccessTitle" xml:space="preserve">
+    <value>Read access request from {0}</value>
+  </data>
+  <data name="NotificationReadAccessBody" xml:space="preserve">
+    <value>Open to approve or decline the request.</value>
+  </data>
+  <data name="NotificationControlAccessTitle" xml:space="preserve">
+    <value>Control request from {0}</value>
+  </data>
+  <data name="NotificationControlAccessBody" xml:space="preserve">
+    <value>Open to approve or decline the request.</value>
   </data>
 </root>

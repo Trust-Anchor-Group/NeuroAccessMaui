@@ -65,11 +65,14 @@ namespace NeuroAccessMaui.Services.Wallet
 			if (e.Balance.Amount > 0 && !ServiceRef.TagProfile.HasWallet)
 				ServiceRef.TagProfile.HasWallet = true;
 
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationBalanceUpdatedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationBalanceUpdatedBody)];
+
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.EDaler,
-				Title = ServiceRef.Localizer[nameof(AppResources.BalanceUpdated)],
-				Body = $"{e.Balance.Amount} {e.Balance.Currency}",
+				Title = Title,
+				Body = Body,
 				Action = NotificationAction.OpenSettings,
 				EntityId = e.Balance.Currency
 			};
@@ -79,11 +82,14 @@ namespace NeuroAccessMaui.Services.Wallet
 
 		private async Task Wallet_TokenAdded(object? Sender, TokenEventArgs e)
 		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedBody)];
+
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.Tokens,
-				Title = ServiceRef.Localizer[nameof(AppResources.TokenAdded)],
-				Body = e.Token.FriendlyName,
+				Title = Title,
+				Body = Body,
 				Action = NotificationAction.OpenSettings,
 				EntityId = e.Token.TokenId
 			};
@@ -93,11 +99,14 @@ namespace NeuroAccessMaui.Services.Wallet
 
 		private async Task Wallet_TokenRemoved(object? Sender, TokenEventArgs e)
 		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedBody)];
+
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.Tokens,
-				Title = ServiceRef.Localizer[nameof(AppResources.TokenRemoved)],
-				Body = e.Token.FriendlyName,
+				Title = Title,
+				Body = Body,
 				Action = NotificationAction.OpenSettings,
 				EntityId = e.Token.TokenId
 			};

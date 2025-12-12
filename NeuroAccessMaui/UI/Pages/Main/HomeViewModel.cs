@@ -23,6 +23,7 @@ using Waher.Persistence.Filters;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Tag; // Added for ordering
+using NeuroAccessMaui.CustomPermissions;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -66,7 +67,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			{
 				// Load latest stored KYC reference state
 				await this.LoadLatestKycStateAsync();
-				/*
+				
 				try
 				{
 					await Permissions.RequestAsync<NotificationPermission>();
@@ -75,7 +76,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				{
 					//Normal operation if Notification is not supported or denied
 				}
-				*/
+				
 				_ = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
 				await ServiceRef.ThemeService.ThemeLoaded.Task;
 				MainThread.BeginInvokeOnMainThread(() =>

@@ -4885,6 +4885,312 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open to view your latest balance..
+        /// </summary>
+        public static string NotificationBalanceUpdatedBody {
+            get {
+                return ResourceManager.GetString("NotificationBalanceUpdatedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Balance updated.
+        /// </summary>
+        public static string NotificationBalanceUpdatedTitle {
+            get {
+                return ResourceManager.GetString("NotificationBalanceUpdatedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to read the new message..
+        /// </summary>
+        public static string NotificationChatBody {
+            get {
+                return ResourceManager.GetString("NotificationChatBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message from {0}.
+        /// </summary>
+        public static string NotificationChatTitle {
+            get {
+                return ResourceManager.GetString("NotificationChatTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to view the new contract..
+        /// </summary>
+        public static string NotificationContractCreatedBody {
+            get {
+                return ResourceManager.GetString("NotificationContractCreatedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract created.
+        /// </summary>
+        public static string NotificationContractCreatedTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractCreatedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to view the contract record..
+        /// </summary>
+        public static string NotificationContractDeletedBody {
+            get {
+                return ResourceManager.GetString("NotificationContractDeletedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract removed.
+        /// </summary>
+        public static string NotificationContractDeletedTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractDeletedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to review the proposal..
+        /// </summary>
+        public static string NotificationContractProposalBody {
+            get {
+                return ResourceManager.GetString("NotificationContractProposalBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract proposal.
+        /// </summary>
+        public static string NotificationContractProposalTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractProposalTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to review the signed contract..
+        /// </summary>
+        public static string NotificationContractSignedBody {
+            get {
+                return ResourceManager.GetString("NotificationContractSignedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract signed.
+        /// </summary>
+        public static string NotificationContractSignedTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractSignedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to review the latest changes..
+        /// </summary>
+        public static string NotificationContractUpdatedBody {
+            get {
+                return ResourceManager.GetString("NotificationContractUpdatedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract updated.
+        /// </summary>
+        public static string NotificationContractUpdatedTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractUpdatedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to approve or decline the request..
+        /// </summary>
+        public static string NotificationControlAccessBody {
+            get {
+                return ResourceManager.GetString("NotificationControlAccessBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Control request from {0}.
+        /// </summary>
+        public static string NotificationControlAccessTitle {
+            get {
+                return ResourceManager.GetString("NotificationControlAccessTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your legal identity is approved..
+        /// </summary>
+        public static string NotificationIdentityApprovedBody {
+            get {
+                return ResourceManager.GetString("NotificationIdentityApprovedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity status updated.
+        /// </summary>
+        public static string NotificationIdentityApprovedTitle {
+            get {
+                return ResourceManager.GetString("NotificationIdentityApprovedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your legal identity may be compromised..
+        /// </summary>
+        public static string NotificationIdentityCompromisedBody {
+            get {
+                return ResourceManager.GetString("NotificationIdentityCompromisedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity status updated.
+        /// </summary>
+        public static string NotificationIdentityCompromisedTitle {
+            get {
+                return ResourceManager.GetString("NotificationIdentityCompromisedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your legal identity has been obsoleted..
+        /// </summary>
+        public static string NotificationIdentityObsoletedBody {
+            get {
+                return ResourceManager.GetString("NotificationIdentityObsoletedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity status updated.
+        /// </summary>
+        public static string NotificationIdentityObsoletedTitle {
+            get {
+                return ResourceManager.GetString("NotificationIdentityObsoletedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your legal identity was rejected..
+        /// </summary>
+        public static string NotificationIdentityRejectedBody {
+            get {
+                return ResourceManager.GetString("NotificationIdentityRejectedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity status updated.
+        /// </summary>
+        public static string NotificationIdentityRejectedTitle {
+            get {
+                return ResourceManager.GetString("NotificationIdentityRejectedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to review the contract request..
+        /// </summary>
+        public static string NotificationPetitionContractBody {
+            get {
+                return ResourceManager.GetString("NotificationPetitionContractBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract request from {0}.
+        /// </summary>
+        public static string NotificationPetitionContractTitle {
+            get {
+                return ResourceManager.GetString("NotificationPetitionContractTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to review the identity request..
+        /// </summary>
+        public static string NotificationPetitionIdentityBody {
+            get {
+                return ResourceManager.GetString("NotificationPetitionIdentityBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity request from {0}.
+        /// </summary>
+        public static string NotificationPetitionIdentityTitle {
+            get {
+                return ResourceManager.GetString("NotificationPetitionIdentityTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to review the signature request..
+        /// </summary>
+        public static string NotificationPetitionSignatureBody {
+            get {
+                return ResourceManager.GetString("NotificationPetitionSignatureBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signature request from {0}.
+        /// </summary>
+        public static string NotificationPetitionSignatureTitle {
+            get {
+                return ResourceManager.GetString("NotificationPetitionSignatureTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Has requested access to your identity..
+        /// </summary>
+        public static string NotificationPresenceAccessBody {
+            get {
+                return ResourceManager.GetString("NotificationPresenceAccessBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access request from {0}.
+        /// </summary>
+        public static string NotificationPresenceAccessTitle {
+            get {
+                return ResourceManager.GetString("NotificationPresenceAccessTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to approve or decline the request..
+        /// </summary>
+        public static string NotificationReadAccessBody {
+            get {
+                return ResourceManager.GetString("NotificationReadAccessBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read access request from {0}.
+        /// </summary>
+        public static string NotificationReadAccessTitle {
+            get {
+                return ResourceManager.GetString("NotificationReadAccessTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Notifications.
         /// </summary>
         public static string Notifications {
@@ -4953,6 +5259,42 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string NotificationsUnreadLabel {
             get {
                 return ResourceManager.GetString("NotificationsUnreadLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to view the wallet update..
+        /// </summary>
+        public static string NotificationTokenAddedBody {
+            get {
+                return ResourceManager.GetString("NotificationTokenAddedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token added.
+        /// </summary>
+        public static string NotificationTokenAddedTitle {
+            get {
+                return ResourceManager.GetString("NotificationTokenAddedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open to view the wallet update..
+        /// </summary>
+        public static string NotificationTokenRemovedBody {
+            get {
+                return ResourceManager.GetString("NotificationTokenRemovedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token removed.
+        /// </summary>
+        public static string NotificationTokenRemovedTitle {
+            get {
+                return ResourceManager.GetString("NotificationTokenRemovedTitle", resourceCulture);
             }
         }
         

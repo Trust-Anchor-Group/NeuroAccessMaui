@@ -86,26 +86,44 @@ namespace NeuroAccessMaui.Services.Push
 		{
 			List<PushRuleDefinition> Definitions = new();
 
-			string PetitionFrom = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.PetitionFrom)]);
-			string ContractCreated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractCreated)]);
-			string ContractSigned = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractSigned)]);
-			string ContractUpdated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractUpdated)]);
-			string ContractDeleted = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractDeleted)]);
-			string ContractProposed = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractProposed)]);
-			string BalanceUpdated = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.BalanceUpdated)]);
-			string TokenAdded = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.TokenAdded)]);
-			string TokenRemoved = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.TokenRemoved)]);
-			string AccessRequest = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.AccessRequest)]);
-			string ReadRequest = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ReadRequest)]);
-			string ControlRequest = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ControlRequest)]);
-			string IdentityTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)]);
-			string IdentityStateApproved = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityState_Approved)]);
-			string IdentityStateObsoleted = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityState_Obsoleted)]);
-			string IdentityStateRejected = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityState_Rejected)]);
-			string IdentityStateCompromised = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityState_Compromised)]);
-			string IdentityCompromisedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)]);
-			string IdentityObsoletedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)]);
-			string IdentityRejectedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityRejected)]);
+			string NotificationChatTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationChatTitle)]);
+			string NotificationChatBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationChatBody)]);
+			string NotificationPetitionIdentityTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationPetitionIdentityTitle)]);
+			string NotificationPetitionIdentityBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationPetitionIdentityBody)]);
+			string NotificationPetitionContractTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationPetitionContractTitle)]);
+			string NotificationPetitionContractBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationPetitionContractBody)]);
+			string NotificationPetitionSignatureTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationPetitionSignatureTitle)]);
+			string NotificationPetitionSignatureBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationPetitionSignatureBody)]);
+			string NotificationIdentityApprovedTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationIdentityApprovedTitle)]);
+			string NotificationIdentityApprovedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationIdentityApprovedBody)]);
+			string NotificationIdentityObsoletedTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationIdentityObsoletedTitle)]);
+			string NotificationIdentityObsoletedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationIdentityObsoletedBody)]);
+			string NotificationIdentityRejectedTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationIdentityRejectedTitle)]);
+			string NotificationIdentityRejectedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationIdentityRejectedBody)]);
+			string NotificationIdentityCompromisedTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationIdentityCompromisedTitle)]);
+			string NotificationIdentityCompromisedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationIdentityCompromisedBody)]);
+			string NotificationContractCreatedTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationContractCreatedTitle)]);
+			string NotificationContractCreatedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationContractCreatedBody)]);
+			string NotificationContractSignedTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationContractSignedTitle)]);
+			string NotificationContractSignedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationContractSignedBody)]);
+			string NotificationContractUpdatedTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationContractUpdatedTitle)]);
+			string NotificationContractUpdatedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationContractUpdatedBody)]);
+			string NotificationContractDeletedTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationContractDeletedTitle)]);
+			string NotificationContractDeletedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationContractDeletedBody)]);
+			string NotificationContractProposalTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationContractProposalTitle)]);
+			string NotificationContractProposalBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationContractProposalBody)]);
+			string NotificationBalanceUpdatedTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationBalanceUpdatedTitle)]);
+			string NotificationBalanceUpdatedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationBalanceUpdatedBody)]);
+			string NotificationTokenAddedTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedTitle)]);
+			string NotificationTokenAddedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedBody)]);
+			string NotificationTokenRemovedTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedTitle)]);
+			string NotificationTokenRemovedBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedBody)]);
+			string NotificationPresenceAccessTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationPresenceAccessTitle)]);
+			string NotificationPresenceAccessBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationPresenceAccessBody)]);
+			string NotificationReadAccessTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationReadAccessTitle)]);
+			string NotificationReadAccessBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationReadAccessBody)]);
+			string NotificationControlAccessTitle = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationControlAccessTitle)]);
+			string NotificationControlAccessBody = JSON.Encode(ServiceRef.Localizer[nameof(AppResources.NotificationControlAccessBody)]);
 
 			Definitions.Add(new PushRuleDefinition(
 				MessageType.Chat,
@@ -119,10 +137,12 @@ namespace NeuroAccessMaui.Services.Push
 					"ToJid:=GetAttribute(Stanza,'to');",
 					"FriendlyName:=RosterName(ToJid,FromJid);",
 					"Content:=GetElement(Stanza,'content');",
+					$"TitleText:={NotificationChatTitle};",
+					$"BodyText:={NotificationChatBody};",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					"'visual': { 'title': FriendlyName, 'body': InnerText(GetElement(Stanza,'body')) },",
+					"'visual': { 'title': Replace(TitleText,'{0}',FriendlyName), 'body': BodyText },",
 					$"'action': {{ 'type': '{NotificationAction.OpenChat}', 'entityId': FromJid, 'correlationId': FromJid }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Messages}' }},",
 					"'delivery': { 'priority': 'High', 'silent': false },",
@@ -142,10 +162,12 @@ namespace NeuroAccessMaui.Services.Push
 					"ToJid:=GetAttribute(Stanza,'to');",
 					"FromJid:=GetAttribute(E,'from');",
 					"FriendlyName:=RosterName(ToJid,FromJid);",
+					$"TitleText:={NotificationPetitionIdentityTitle};",
+					$"BodyText:={NotificationPetitionIdentityBody};",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{PetitionFrom} ' + FriendlyName, 'body': GetAttribute(E,'purpose') }},",
+					"'visual': { 'title': Replace(TitleText,'{0}',FriendlyName), 'body': BodyText },",
 					$"'action': {{ 'type': '{NotificationAction.OpenProfile}', 'entityId': FromJid, 'correlationId': GetAttribute(E,'petitionId') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Petitions}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -165,10 +187,12 @@ namespace NeuroAccessMaui.Services.Push
 					"ToJid:=GetAttribute(Stanza,'to');",
 					"FromJid:=GetAttribute(E,'from');",
 					"FriendlyName:=RosterName(ToJid,FromJid);",
+					$"TitleText:={NotificationPetitionContractTitle};",
+					$"BodyText:={NotificationPetitionContractBody};",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{PetitionFrom} ' + FriendlyName, 'body': GetAttribute(E,'purpose') }},",
+					"'visual': { 'title': Replace(TitleText,'{0}',FriendlyName), 'body': BodyText },",
 					$"'action': {{ 'type': '{NotificationAction.OpenProfile}', 'entityId': FromJid, 'correlationId': GetAttribute(E,'petitionId') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Petitions}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -188,10 +212,12 @@ namespace NeuroAccessMaui.Services.Push
 					"ToJid:=GetAttribute(Stanza,'to');",
 					"FromJid:=GetAttribute(E,'from');",
 					"FriendlyName:=RosterName(ToJid,FromJid);",
+					$"TitleText:={NotificationPetitionSignatureTitle};",
+					$"BodyText:={NotificationPetitionSignatureBody};",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{PetitionFrom} ' + FriendlyName, 'body': GetAttribute(E,'purpose') }},",
+					"'visual': { 'title': Replace(TitleText,'{0}',FriendlyName), 'body': BodyText },",
 					$"'action': {{ 'type': '{NotificationAction.OpenProfile}', 'entityId': FromJid, 'correlationId': GetAttribute(E,'petitionId') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Petitions}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -214,7 +240,7 @@ namespace NeuroAccessMaui.Services.Push
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{IdentityTitle}', 'subtitle': '{IdentityStateApproved}', 'body': '{IdentityStateApproved}' }},",
+					$"'visual': {{ 'title': {NotificationIdentityApprovedTitle}, 'body': {NotificationIdentityApprovedBody} }},",
 					$"'action': {{ 'type': '{NotificationAction.OpenIdentity}', navigationTarget: '{NotificationAction.OpenIdentity}', 'entityId': GetAttribute(E,'id'), 'correlationId': GetAttribute(E,'id') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Identities}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -225,7 +251,7 @@ namespace NeuroAccessMaui.Services.Push
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{IdentityTitle}', 'subtitle': '{IdentityStateObsoleted}', 'body': '{IdentityObsoletedBody}' }},",
+					$"'visual': {{ 'title': {NotificationIdentityObsoletedTitle}, 'body': {NotificationIdentityObsoletedBody} }},",
 					$"'action': {{ 'type': '{NotificationAction.OpenIdentity}', navigationTarget: '{NotificationAction.OpenIdentity}', 'entityId': GetAttribute(E,'id'), 'correlationId': GetAttribute(E,'id') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Identities}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -236,7 +262,7 @@ namespace NeuroAccessMaui.Services.Push
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{IdentityTitle}', 'subtitle': '{IdentityStateRejected}', 'body': '{IdentityRejectedBody}' }},",
+					$"'visual': {{ 'title': {NotificationIdentityRejectedTitle}, 'body': {NotificationIdentityRejectedBody} }},",
 					$"'action': {{ 'type': '{NotificationAction.OpenIdentity}', navigationTarget: '{NotificationAction.OpenIdentity}', 'entityId': GetAttribute(E,'id'), 'correlationId': GetAttribute(E,'id') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Identities}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -247,7 +273,7 @@ namespace NeuroAccessMaui.Services.Push
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{IdentityTitle}', 'subtitle': '{IdentityStateCompromised}', 'body': '{IdentityCompromisedBody}' }},",
+					$"'visual': {{ 'title': {NotificationIdentityCompromisedTitle}, 'body': {NotificationIdentityCompromisedBody} }},",
 					$"'action': {{ 'type': '{NotificationAction.OpenIdentity}', navigationTarget: '{NotificationAction.OpenIdentity}', 'entityId': GetAttribute(E,'id'), 'correlationId': GetAttribute(E,'id') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Identities}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -269,7 +295,7 @@ namespace NeuroAccessMaui.Services.Push
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{ContractCreated}' }},",
+					$"'visual': {{ 'title': {NotificationContractCreatedTitle}, 'body': {NotificationContractCreatedBody} }},",
 					$"'action': {{ 'type': '{NotificationAction.OpenContract}', 'entityId': GetAttribute(E,'contractId'), 'correlationId': GetAttribute(E,'contractId') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Contracts}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -288,7 +314,7 @@ namespace NeuroAccessMaui.Services.Push
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{ContractSigned}' }},",
+					$"'visual': {{ 'title': {NotificationContractSignedTitle}, 'body': {NotificationContractSignedBody} }},",
 					$"'action': {{ 'type': '{NotificationAction.OpenContract}', 'entityId': GetAttribute(E,'contractId'), 'correlationId': GetAttribute(E,'contractId') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Contracts}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -307,7 +333,7 @@ namespace NeuroAccessMaui.Services.Push
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{ContractUpdated}' }},",
+					$"'visual': {{ 'title': {NotificationContractUpdatedTitle}, 'body': {NotificationContractUpdatedBody} }},",
 					$"'action': {{ 'type': '{NotificationAction.OpenContract}', 'entityId': GetAttribute(E,'contractId'), 'correlationId': GetAttribute(E,'contractId') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Contracts}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -326,7 +352,7 @@ namespace NeuroAccessMaui.Services.Push
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{ContractDeleted}' }},",
+					$"'visual': {{ 'title': {NotificationContractDeletedTitle}, 'body': {NotificationContractDeletedBody} }},",
 					$"'action': {{ 'type': '{NotificationAction.OpenContract}', 'entityId': GetAttribute(E,'contractId'), 'correlationId': GetAttribute(E,'contractId') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Contracts}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -342,10 +368,12 @@ namespace NeuroAccessMaui.Services.Push
 				string.Empty,
 				Script(
 					"E:=GetElement(Stanza,'contractProposal');",
+					$"TitleText:={NotificationContractProposalTitle};",
+					$"BodyText:={NotificationContractProposalBody};",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{ContractProposed}', 'body': GetAttribute(E,'message') }},",
+					"'visual': { 'title': TitleText, 'body': BodyText },",
 					$"'action': {{ 'type': '{NotificationAction.OpenContract}', 'entityId': GetAttribute(E,'contractId'), 'correlationId': GetAttribute(E,'contractId') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Contracts}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -361,10 +389,12 @@ namespace NeuroAccessMaui.Services.Push
 				string.Empty,
 				Script(
 					"E:=GetElement(Stanza,'balance');",
+					$"TitleText:={NotificationBalanceUpdatedTitle};",
+					$"BodyText:={NotificationBalanceUpdatedBody};",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{BalanceUpdated}' }},",
+					"'visual': { 'title': TitleText, 'body': BodyText },",
 					$"'action': {{ 'type': '{NotificationAction.OpenBalance}', 'entityId': GetAttribute(E,'currency'), 'correlationId': GetAttribute(E,'currency') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.EDaler}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -381,10 +411,12 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'tokenAdded');",
 					"E2:=GetElement(E,'token');",
+					$"TitleText:={NotificationTokenAddedTitle};",
+					$"BodyText:={NotificationTokenAddedBody};",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{TokenAdded}', 'body': GetAttribute(E2,'friendlyName') }},",
+					"'visual': { 'title': TitleText, 'body': BodyText },",
 					$"'action': {{ 'type': '{NotificationAction.OpenToken}', 'entityId': GetAttribute(E2,'tokenId'), 'correlationId': GetAttribute(E2,'tokenId') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Tokens}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -401,10 +433,12 @@ namespace NeuroAccessMaui.Services.Push
 				Script(
 					"E:=GetElement(Stanza,'tokenRemoved');",
 					"E2:=GetElement(E,'token');",
+					$"TitleText:={NotificationTokenRemovedTitle};",
+					$"BodyText:={NotificationTokenRemovedBody};",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{TokenRemoved}', 'body': GetAttribute(E2,'friendlyName') }},",
+					"'visual': { 'title': TitleText, 'body': BodyText },",
 					$"'action': {{ 'type': '{NotificationAction.OpenToken}', 'entityId': GetAttribute(E2,'tokenId'), 'correlationId': GetAttribute(E2,'tokenId') }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Tokens}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -422,10 +456,13 @@ namespace NeuroAccessMaui.Services.Push
 					"ToJid:=GetAttribute(Stanza,'to');",
 					"E:=GetElement(Stanza,'isFriend');",
 					"RemoteJid:=GetAttribute(E,'remoteJid');",
+					"FriendlyName:=RosterName(ToJid,RemoteJid);",
+					$"TitleText:={NotificationPresenceAccessTitle};",
+					$"BodyText:={NotificationPresenceAccessBody};",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{AccessRequest}', 'body': RosterName(ToJid,RemoteJid) }},",
+					"'visual': { 'title': Replace(TitleText,'{0}',FriendlyName), 'body': BodyText },",
 					$"'action': {{ 'type': '{NotificationAction.OpenPresenceRequest}', 'entityId': RemoteJid }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Provisioning}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -444,10 +481,13 @@ namespace NeuroAccessMaui.Services.Push
 					"ToJid:=GetAttribute(Stanza,'to');",
 					"E:=GetElement(Stanza,'canRead');",
 					"RemoteJid:=GetAttribute(E,'remoteJid');",
+					"FriendlyName:=RosterName(ToJid,RemoteJid);",
+					$"TitleText:={NotificationReadAccessTitle};",
+					$"BodyText:={NotificationReadAccessBody};",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{ReadRequest}', 'body': RosterName(ToJid,RemoteJid) }},",
+					"'visual': { 'title': Replace(TitleText,'{0}',FriendlyName), 'body': BodyText },",
 					$"'action': {{ 'type': '{NotificationAction.OpenPresenceRequest}', 'entityId': RemoteJid }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Provisioning}' }},",
 					"'delivery': { 'priority': 'High' },",
@@ -466,10 +506,13 @@ namespace NeuroAccessMaui.Services.Push
 					"ToJid:=GetAttribute(Stanza,'to');",
 					"E:=GetElement(Stanza,'canControl');",
 					"RemoteJid:=GetAttribute(E,'remoteJid');",
+					"FriendlyName:=RosterName(ToJid,RemoteJid);",
+					$"TitleText:={NotificationControlAccessTitle};",
+					$"BodyText:={NotificationControlAccessBody};",
 					"{",
 					"'payloadKind': 'PushNotificationPayload',",
 					"'payloadVersion': 1,",
-					$"'visual': {{ 'title': '{ControlRequest}', 'body': RosterName(ToJid,RemoteJid) }},",
+					"'visual': { 'title': Replace(TitleText,'{0}',FriendlyName), 'body': BodyText },",
 					$"'action': {{ 'type': '{NotificationAction.OpenPresenceRequest}', 'entityId': RemoteJid }},",
 					$"'channel': {{ 'channelId': '{Constants.PushChannels.Provisioning}' }},",
 					"'delivery': { 'priority': 'High' },",
