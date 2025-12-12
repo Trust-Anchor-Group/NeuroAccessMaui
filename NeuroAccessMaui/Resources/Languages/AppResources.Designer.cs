@@ -2905,6 +2905,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable Notifications.
+        /// </summary>
+        public static string EnableNotifications {
+            get {
+                return ResourceManager.GetString("EnableNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open device settings to enable notifications..
+        /// </summary>
+        public static string EnableNotificationsDescription {
+            get {
+                return ResourceManager.GetString("EnableNotificationsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Encrypted.
         /// </summary>
         public static string Encrypted {
@@ -4885,7 +4903,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to view your latest balance..
+        ///   Looks up a localized string similar to Your balance was updated..
         /// </summary>
         public static string NotificationBalanceUpdatedBody {
             get {
@@ -4903,7 +4921,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to read the new message..
+        ///   Looks up a localized string similar to Has sent you a message..
         /// </summary>
         public static string NotificationChatBody {
             get {
@@ -4912,7 +4930,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message from {0}.
+        ///   Looks up a localized string similar to {0}.
         /// </summary>
         public static string NotificationChatTitle {
             get {
@@ -4921,7 +4939,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to view the new contract..
+        ///   Looks up a localized string similar to A new contract was created..
         /// </summary>
         public static string NotificationContractCreatedBody {
             get {
@@ -4939,7 +4957,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to view the contract record..
+        ///   Looks up a localized string similar to A contract was removed..
         /// </summary>
         public static string NotificationContractDeletedBody {
             get {
@@ -4957,7 +4975,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to review the proposal..
+        ///   Looks up a localized string similar to A contract proposal is available..
         /// </summary>
         public static string NotificationContractProposalBody {
             get {
@@ -4975,7 +4993,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to review the signed contract..
+        ///   Looks up a localized string similar to A contract was signed..
         /// </summary>
         public static string NotificationContractSignedBody {
             get {
@@ -4993,7 +5011,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to review the latest changes..
+        ///   Looks up a localized string similar to A contract was updated..
         /// </summary>
         public static string NotificationContractUpdatedBody {
             get {
@@ -5011,7 +5029,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to approve or decline the request..
+        ///   Looks up a localized string similar to Requested control access..
         /// </summary>
         public static string NotificationControlAccessBody {
             get {
@@ -5029,7 +5047,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your legal identity is approved..
+        ///   Looks up a localized string similar to Your identity was approved..
         /// </summary>
         public static string NotificationIdentityApprovedBody {
             get {
@@ -5047,7 +5065,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your legal identity may be compromised..
+        ///   Looks up a localized string similar to Your identity may be compromised..
         /// </summary>
         public static string NotificationIdentityCompromisedBody {
             get {
@@ -5065,7 +5083,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your legal identity has been obsoleted..
+        ///   Looks up a localized string similar to Your identity has been obsoleted..
         /// </summary>
         public static string NotificationIdentityObsoletedBody {
             get {
@@ -5083,7 +5101,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your legal identity was rejected..
+        ///   Looks up a localized string similar to Your identity was rejected..
         /// </summary>
         public static string NotificationIdentityRejectedBody {
             get {
@@ -5101,7 +5119,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to review the contract request..
+        ///   Looks up a localized string similar to A new contract request is waiting..
         /// </summary>
         public static string NotificationPetitionContractBody {
             get {
@@ -5119,7 +5137,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to review the identity request..
+        ///   Looks up a localized string similar to A new identity request is waiting..
         /// </summary>
         public static string NotificationPetitionIdentityBody {
             get {
@@ -5137,7 +5155,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to review the signature request..
+        ///   Looks up a localized string similar to A new signature request is waiting..
         /// </summary>
         public static string NotificationPetitionSignatureBody {
             get {
@@ -5155,7 +5173,25 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Has requested access to your identity..
+        ///   Looks up a localized string similar to To use this feature, please enable notifications in your device settings..
+        /// </summary>
+        public static string NotificationPopupDescription {
+            get {
+                return ResourceManager.GetString("NotificationPopupDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open settings and click on - &quot;Notifications&quot; - &quot;Allow Notifications&quot;..
+        /// </summary>
+        public static string NotificationPopupDescriptionSecondary {
+            get {
+                return ResourceManager.GetString("NotificationPopupDescriptionSecondary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requested access to your identity..
         /// </summary>
         public static string NotificationPresenceAccessBody {
             get {
@@ -5173,7 +5209,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to approve or decline the request..
+        ///   Looks up a localized string similar to Requested read access..
         /// </summary>
         public static string NotificationReadAccessBody {
             get {
@@ -5236,6 +5272,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notification Settings.
+        /// </summary>
+        public static string NotificationSettings {
+            get {
+                return ResourceManager.GetString("NotificationSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mark as read.
         /// </summary>
         public static string NotificationsMarkReadLabel {
@@ -5263,7 +5308,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to view the wallet update..
+        ///   Looks up a localized string similar to Your wallet was updated..
         /// </summary>
         public static string NotificationTokenAddedBody {
             get {
@@ -5281,7 +5326,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open to view the wallet update..
+        ///   Looks up a localized string similar to Your wallet was updated..
         /// </summary>
         public static string NotificationTokenRemovedBody {
             get {

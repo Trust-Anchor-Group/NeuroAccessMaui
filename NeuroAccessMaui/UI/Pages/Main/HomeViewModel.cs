@@ -24,6 +24,7 @@ using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Tag; // Added for ordering
 using NeuroAccessMaui.CustomPermissions;
+using NeuroAccessMaui.Services.Settings;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -62,7 +63,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			await base.OnAppearingAsync();
 
-
 			try
 			{
 				// Load latest stored KYC reference state
@@ -70,7 +70,10 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				
 				try
 				{
-					await Permissions.RequestAsync<NotificationPermission>();
+					if (!await ServiceRef.SettingsService.RestoreBoolState(Constants.Settings.PushNotificationAsked, false))
+						await ServiceRef.PermissionService.CheckNotificationPermissionAsync();
+
+					await ServiceRef.SettingsService.SaveState(Constants.Settings.PushNotificationAsked, true);
 				}
 				catch
 				{

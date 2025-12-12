@@ -1043,6 +1043,11 @@ namespace NeuroAccessMaui
 			public const string PushNotificationToken = "PUSH.TOKEN";
 
 			/// <summary>
+			/// Push-notification asked.
+			/// </summary>
+			public const string PushNotificationAsked = "PERMISSIONS.NOTIFICATIONS.ASKED";
+
+			/// <summary>
 			/// Transfer ID code
 			/// </summary>
 			public const string TransferIdCodeSent = "TransferId.CodesSent";

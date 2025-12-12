@@ -16,5 +16,7 @@ namespace NeuroAccessMaui.Services.AppPermissions
 	public interface IPermissionService
 	{
 		Task<bool> CheckCameraPermissionAsync();
+
+		Task<bool> CheckNotificationPermissionAsync(bool SkipRequest = false);
 	}
 }

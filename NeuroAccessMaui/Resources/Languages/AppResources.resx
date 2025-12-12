@@ -3570,4 +3570,19 @@
   <data name="NotificationControlAccessBody" xml:space="preserve">
     <value>Requested control access.</value>
   </data>
+  <data name="NotificationPopupDescription" xml:space="preserve">
+    <value>To use this feature, please enable notifications in your device settings.</value>
+  </data>
+  <data name="NotificationPopupDescriptionSecondary" xml:space="preserve">
+    <value>Open settings and click on - "Notifications" - "Allow Notifications".</value>
+  </data>
+  <data name="NotificationSettings" xml:space="preserve">
+    <value>Notification Settings</value>
+  </data>
+  <data name="EnableNotifications" xml:space="preserve">
+    <value>Enable Notifications</value>
+  </data>
+  <data name="EnableNotificationsDescription" xml:space="preserve">
+    <value>Open device settings to enable notifications.</value>
+  </data>
 </root>
