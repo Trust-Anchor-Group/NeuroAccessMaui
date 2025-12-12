@@ -84,7 +84,6 @@ using Waher.Security.JWT;
 using Waher.Things;
 using Waher.Things.SensorData;
 using NeuroAccessMaui.UI.Pages.Onboarding;
-using NeuroAccessMaui.Services.Notification;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -1054,7 +1053,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			Assembly ApplicationAssembly, Func<XmppClient, Task> ConnectedFunc, ConnectOperation Operation)
 		{
 			// Use TaskCompletionSource for single completion
-			var Tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+			TaskCompletionSource<bool> Tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
 			// Flags for tracking progress and outcome
 			bool StreamNegotiation = false, StreamOpened = false, StartingEncryption = false, Authenticating = false, Registering = false, IsTimeout = false;
@@ -1063,7 +1062,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			string[]? Alternatives = null;
 
 			XmppClient? Client = null;
-			var Disposed = 0; // 0 = not disposed, 1 = disposing/disposing done
+			int Disposed = 0; // 0 = not disposed, 1 = disposing/disposing done
 
 			// Local guard function for tcs
 			void TrySetResult(bool result)
@@ -1168,12 +1167,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Client.OnStateChanged += OnStateChanged;
 
 				// Begin connect
-				var ConnectTask = Client.Connect(IsIpAddress ? string.Empty : Domain);
+				Task ConnectTask = Client.Connect(IsIpAddress ? string.Empty : Domain);
 
 				// Set up timeout with cancellation
-				using var Cts = new CancellationTokenSource(Constants.Timeouts.XmppConnect);
+				using CancellationTokenSource Cts = new (Constants.Timeouts.XmppConnect);
 
-				var CompletedTask = await Task.WhenAny(Tcs.Task, ConnectTask, Task.Delay(TimeSpan.FromSeconds(5), Cts.Token));
+				Task CompletedTask = await Task.WhenAny(Tcs.Task, ConnectTask, Task.Delay(TimeSpan.FromSeconds(5), Cts.Token));
 				bool Succeeded = false;
 
 				if (CompletedTask == Tcs.Task)
@@ -3204,7 +3203,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>If the legal identity is in the contacts list.</returns>
 		public async Task<bool> IsContact(CaseInsensitiveString legalIdentityId)
 		{
-			ContactInfo Info = await ContactInfo.FindByLegalId(legalIdentityId);
+			ContactInfo? Info = await ContactInfo.FindByLegalId(legalIdentityId);
 			return (Info is not null && Info.LegalIdentity is not null);
 		}
 

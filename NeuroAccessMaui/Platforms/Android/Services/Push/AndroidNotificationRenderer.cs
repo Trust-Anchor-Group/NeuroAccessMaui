@@ -19,81 +19,99 @@ namespace NeuroAccessMaui.Services.Push
 	public sealed class AndroidNotificationRenderer : INotificationRenderer
 	{
 		private const string DefaultChannelId = "default";
-		private readonly HashSet<string> createdChannels = new();
+		private readonly HashSet<string> createdChannels = new HashSet<string>();
 
 		/// <summary>
 		/// Displays a local notification with the provided title and message.
 		/// </summary>
-		/// <param name="Title">Notification title.</param>
-		/// <param name="Message">Notification body.</param>
-		/// <param name="Channel">Notification channel identifier.</param>
+		/// <param name="NotificationIntent">Notification data to render.</param>
 		/// <param name="CancellationToken">Cancellation token.</param>
-		public Task RenderAsync(NotificationIntent notificationIntent, CancellationToken CancellationToken)
+		/// <returns>A task representing the asynchronous render operation.</returns>
+		public Task RenderAsync(NotificationIntent NotificationIntent, CancellationToken CancellationToken)
 		{
+			ArgumentNullException.ThrowIfNull(NotificationIntent);
 			CancellationToken.ThrowIfCancellationRequested();
 
-			if (notificationIntent.Presentation is NotificationPresentation.StoreOnly or NotificationPresentation.Transient)
+			if (NotificationIntent.Presentation is NotificationPresentation.StoreOnly or NotificationPresentation.Transient)
+			{
 				return Task.CompletedTask;
+			}
 
-			string channelId = string.IsNullOrWhiteSpace(notificationIntent.Channel) ? DefaultChannelId : notificationIntent.Channel;
-
-			NotificationManager? manager = Android.App.Application.Context.GetSystemService(Context.NotificationService) as NotificationManager;
-			if (manager is null)
+			Context? ApplicationContext = Android.App.Application.Context;
+			if (ApplicationContext is null)
+			{
 				return Task.CompletedTask;
+			}
+			Context ApplicationContextInstance = ApplicationContext;
 
-			this.EnsureChannel(manager, channelId);
+			string ChannelId = string.IsNullOrWhiteSpace(NotificationIntent.Channel) ? DefaultChannelId : NotificationIntent.Channel!;
 
-			int iconId = Android.App.Application.Context?.ApplicationInfo?.Icon ?? Android.Resource.Drawable.SymDefAppIcon;
+			NotificationManager? NotificationManagerInstance = ApplicationContextInstance.GetSystemService(Context.NotificationService) as NotificationManager;
+			if (NotificationManagerInstance is null)
+			{
+				return Task.CompletedTask;
+			}
+			NotificationManager NotificationManager = NotificationManagerInstance;
 
-			NotificationCompat.Builder builder = new NotificationCompat.Builder(Android.App.Application.Context, channelId)
-				.SetContentTitle(notificationIntent.Title)
-				.SetContentText(notificationIntent.Body ?? string.Empty)
-				.SetSmallIcon(iconId)
-				.SetAutoCancel(true)
+			this.EnsureChannel(NotificationManager, ChannelId);
+
+			//int IconId = ApplicationContextInstance.ApplicationInfo?.Icon ?? Android.Resource.Drawable.SymDefAppIcon;
+
+			NotificationCompat.Builder? Builder = new NotificationCompat.Builder(ApplicationContextInstance, ChannelId)
+				.SetContentTitle(NotificationIntent.Title ?? string.Empty)?
+				.SetContentText(NotificationIntent.Body ?? string.Empty)?
+			//	.SetSmallIcon(IconId)?
+				.SetAutoCancel(true)?
 				.SetPriority((int)NotificationPriority.High);
 
 			if (OperatingSystem.IsAndroidVersionAtLeast(26))
 			{
-				builder.SetCategory(AndroidNotification.CategoryMessage);
+				Builder?.SetCategory(AndroidNotification.CategoryMessage);
 			}
 
 			try
 			{
-				string payload = JsonSerializer.Serialize(notificationIntent);
-				Intent launchIntent = new(Android.App.Application.Context, typeof(MainActivity));
-				launchIntent.SetAction(Intent.ActionView);
-				launchIntent.PutExtra("notificationIntent", payload);
-				launchIntent.AddFlags(ActivityFlags.SingleTop | ActivityFlags.ClearTop);
+				string Payload = JsonSerializer.Serialize(NotificationIntent);
+				Intent LaunchIntent = new Intent(ApplicationContextInstance, typeof(MainActivity));
+				LaunchIntent.SetAction(Intent.ActionView);
+				LaunchIntent.PutExtra("notificationIntent", Payload);
+				LaunchIntent.AddFlags(ActivityFlags.SingleTop | ActivityFlags.ClearTop);
 
-				int requestCode = Math.Abs(payload.GetHashCode());
-				PendingIntent pendingIntent = PendingIntent.GetActivity(
-					Android.App.Application.Context,
-					requestCode,
-					launchIntent,
+				int RequestCode = Math.Abs(Payload.GetHashCode());
+				PendingIntent? PendingIntentInstance = PendingIntent.GetActivity(
+					ApplicationContextInstance,
+					RequestCode,
+					LaunchIntent,
 					PendingIntentFlags.UpdateCurrent | PendingIntentFlags.Immutable | PendingIntentFlags.OneShot);
 
-				builder.SetContentIntent(pendingIntent);
+				if (PendingIntentInstance is not null)
+				{
+					Builder?.SetContentIntent(PendingIntentInstance);
+				}
 			}
 			catch (Exception)
 			{
 				// If serialization fails, fall back to a notification without tap handling.
 			}
 
-			manager.Notify(Guid.NewGuid().GetHashCode(), builder.Build());
+			if(Builder is null)
+				return Task.CompletedTask;
+
+			NotificationManager.Notify(Guid.NewGuid().GetHashCode(), Builder.Build());
 			return Task.CompletedTask;
 		}
 
-		private void EnsureChannel(NotificationManager manager, string channelId)
+		private void EnsureChannel(NotificationManager NotificationManagerInstance, string ChannelId)
 		{
-			if (this.createdChannels.Contains(channelId) || !OperatingSystem.IsAndroidVersionAtLeast(26))
+			if (this.createdChannels.Contains(ChannelId) || !OperatingSystem.IsAndroidVersionAtLeast(26))
 				return;
 
-			NotificationChannel channel = new(channelId, channelId, NotificationImportance.High)
+			NotificationChannel Channel = new NotificationChannel(ChannelId, ChannelId, NotificationImportance.High)
 			{
 				LockscreenVisibility = NotificationVisibility.Private
 			};
-			manager.CreateNotificationChannel(channel);
-			this.createdChannels.Add(channelId);
+			NotificationManagerInstance.CreateNotificationChannel(Channel);
+			this.createdChannels.Add(ChannelId);
 		}
 	}
 }
