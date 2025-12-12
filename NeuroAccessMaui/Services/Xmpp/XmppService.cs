@@ -2043,11 +2043,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 				else
 				{
+					string Title = ServiceRef.Localizer[nameof(AppResources.NotificationChatTitle), RemoteBareJid];
+					string Body = ServiceRef.Localizer[nameof(AppResources.NotificationChatBody)];
+
 					NotificationIntent Intent = new()
 					{
 						Channel = Constants.PushChannels.Messages,
-						Title = RemoteBareJid,
-						Body = Message.PlainText ?? Message.Markdown ?? Message.Html ?? string.Empty,
+						Title = Title,
+						Body = Body,
 						Action = NotificationAction.OpenChat,
 						EntityId = RemoteBareJid,
 						CorrelationId = RemoteBareJid,
@@ -3390,11 +3393,38 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			try
 			{
+				string Title;
+				string Body;
+
+				switch (e.Identity.State)
+				{
+					case IdentityState.Approved:
+						Title = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityApprovedTitle)];
+						Body = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityApprovedBody)];
+						break;
+					case IdentityState.Obsoleted:
+						Title = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityObsoletedTitle)];
+						Body = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityObsoletedBody)];
+						break;
+					case IdentityState.Rejected:
+						Title = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityRejectedTitle)];
+						Body = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityRejectedBody)];
+						break;
+					case IdentityState.Compromised:
+						Title = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityCompromisedTitle)];
+						Body = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityCompromisedBody)];
+						break;
+					default:
+						Title = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityApprovedTitle)];
+						Body = e.Identity.State.ToString();
+						break;
+				}
+
 				NotificationIntent Intent = new()
 				{
 					Channel = Constants.PushChannels.Identities,
-					Title = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)],
-					Body = e.Identity.State.ToString(),
+					Title = Title,
+					Body = Body,
 					Action = NotificationAction.OpenIdentity,
 					EntityId = e.Identity.Id,
 					CorrelationId = e.Identity.Id,
@@ -3418,11 +3448,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_PetitionForIdentityReceived(object? Sender, LegalIdentityPetitionEventArgs e)
 		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionIdentityTitle), ToBareJid(e.RequestorFullJid)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionIdentityBody)];
+
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.Petitions,
-				Title = string.Concat(ServiceRef.Localizer[nameof(AppResources.PetitionFrom)], " ", ToBareJid(e.RequestorFullJid)),
-				Body = e.Purpose ?? string.Empty,
+				Title = Title,
+				Body = Body,
 				Action = NotificationAction.OpenPetition,
 				EntityId = e.RequestorFullJid,
 				CorrelationId = e.PetitionId,
@@ -3698,11 +3731,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_PetitionForContractReceived(object? Sender, ContractPetitionEventArgs e)
 		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionContractTitle), ToBareJid(e.RequestorFullJid)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionContractBody)];
+
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.Petitions,
-				Title = string.Concat(ServiceRef.Localizer[nameof(AppResources.PetitionFrom)], " ", e.RequestorFullJid),
-				Body = e.Purpose ?? string.Empty,
+				Title = Title,
+				Body = Body,
 				Action = NotificationAction.OpenPetition,
 				EntityId = e.RequestorFullJid,
 				CorrelationId = e.PetitionId,
@@ -3782,11 +3818,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_ContractProposalReceived(object? Sender, ContractProposalEventArgs e)
 		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationContractProposalTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationContractProposalBody)];
+
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.Contracts,
-				Title = ServiceRef.Localizer[nameof(AppResources.ContractProposed)],
-				Body = e.MessageText ?? string.Empty,
+				Title = Title,
+				Body = Body,
 				Action = NotificationAction.OpenContract,
 				EntityId = e.ContractId,
 				CorrelationId = e.ContractId,
@@ -3809,10 +3848,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			await this.ContractUpdatedOrSigned(e);
 
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationContractUpdatedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationContractUpdatedBody)];
+
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.Contracts,
-				Title = ServiceRef.Localizer[nameof(AppResources.ContractUpdated)],
+				Title = Title,
+				Body = Body,
 				Action = NotificationAction.OpenContract,
 				EntityId = e.ContractId,
 				CorrelationId = e.ContractId,
@@ -3842,10 +3885,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			await this.ContractUpdatedOrSigned(e);
 
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationContractSignedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationContractSignedBody)];
+
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.Contracts,
-				Title = ServiceRef.Localizer[nameof(AppResources.ContractSigned)],
+				Title = Title,
+				Body = Body,
 				Action = NotificationAction.OpenContract,
 				EntityId = e.ContractId,
 				CorrelationId = e.ContractId,
@@ -4042,11 +4089,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_PetitionForSignatureReceived(object? Sender, SignaturePetitionEventArgs e)
 		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionSignatureTitle), ToBareJid(e.RequestorFullJid)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionSignatureBody)];
+
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.Petitions,
-				Title = string.Concat(ServiceRef.Localizer[nameof(AppResources.PetitionFrom)], " ", e.RequestorFullJid),
-				Body = e.Purpose ?? string.Empty,
+				Title = Title,
+				Body = Body,
 				Action = NotificationAction.OpenPetition,
 				EntityId = e.RequestorFullJid,
 				CorrelationId = e.PetitionId,
@@ -4102,11 +4152,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			if (e.From.IndexOfAny(clientChars) < 0)
 			{
+				string Title = ServiceRef.Localizer[nameof(AppResources.NotificationPresenceAccessTitle), e.From];
+				string Body = ServiceRef.Localizer[nameof(AppResources.NotificationPresenceAccessBody)];
+
 				NotificationIntent Intent = new()
 				{
 					Channel = Constants.PushChannels.Provisioning,
-					Title = ServiceRef.Localizer[nameof(AppResources.AccessRequest)],
-					Body = e.From,
+					Title = Title,
+					Body = Body,
 					Action = NotificationAction.OpenPresenceRequest,
 					EntityId = e.From,
 					CorrelationId = e.Key
@@ -4120,11 +4173,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			if (e.From.IndexOfAny(clientChars) < 0)
 			{
+				string Title = ServiceRef.Localizer[nameof(AppResources.NotificationReadAccessTitle), e.From];
+				string Body = ServiceRef.Localizer[nameof(AppResources.NotificationReadAccessBody)];
+
 				NotificationIntent Intent = new()
 				{
 					Channel = Constants.PushChannels.Provisioning,
-					Title = ServiceRef.Localizer[nameof(AppResources.ReadRequest)],
-					Body = e.From,
+					Title = Title,
+					Body = Body,
 					Action = NotificationAction.OpenPresenceRequest,
 					EntityId = e.From,
 					CorrelationId = e.Key
@@ -4138,11 +4194,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			if (e.From.IndexOfAny(clientChars) < 0)
 			{
+				string Title = ServiceRef.Localizer[nameof(AppResources.NotificationControlAccessTitle), e.From];
+				string Body = ServiceRef.Localizer[nameof(AppResources.NotificationControlAccessBody)];
+
 				NotificationIntent Intent = new()
 				{
 					Channel = Constants.PushChannels.Provisioning,
-					Title = ServiceRef.Localizer[nameof(AppResources.ControlRequest)],
-					Body = e.From,
+					Title = Title,
+					Body = Body,
 					Action = NotificationAction.OpenPresenceRequest,
 					EntityId = e.From,
 					CorrelationId = e.Key
@@ -4630,14 +4689,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.lastBalance = e.Balance;
 			this.lastEDalerEvent = DateTime.Now;
 
-			string Body = string.Empty;
-			if (e.Balance is not null)
-				Body = string.Format(CultureInfo.CurrentCulture, "{0} {1}", e.Balance.Amount, e.Balance.Currency);
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationBalanceUpdatedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationBalanceUpdatedBody)];
 
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.EDaler,
-				Title = ServiceRef.Localizer[nameof(AppResources.BalanceUpdated)],
+				Title = Title,
 				Body = Body,
 				Action = NotificationAction.OpenBalance,
 				EntityId = e.Balance?.Currency,
@@ -5355,11 +5413,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			this.lastTokenEvent = DateTime.Now;
 
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedBody)];
+
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.Tokens,
-				Title = ServiceRef.Localizer[nameof(AppResources.TokenRemoved)],
-				Body = e.Token?.FriendlyName ?? string.Empty,
+				Title = Title,
+				Body = Body,
 				Action = NotificationAction.OpenToken,
 				EntityId = e.Token?.TokenId,
 				CorrelationId = e.Token?.TokenId,
@@ -5379,11 +5440,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			this.lastTokenEvent = DateTime.Now;
 
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedBody)];
+
 			NotificationIntent Intent = new()
 			{
 				Channel = Constants.PushChannels.Tokens,
-				Title = ServiceRef.Localizer[nameof(AppResources.TokenAdded)],
-				Body = e.Token?.FriendlyName ?? string.Empty,
+				Title = Title,
+				Body = Body,
 				Action = NotificationAction.OpenToken,
 				EntityId = e.Token?.TokenId,
 				CorrelationId = e.Token?.TokenId,

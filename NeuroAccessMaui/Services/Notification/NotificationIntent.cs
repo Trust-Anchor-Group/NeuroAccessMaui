@@ -55,6 +55,6 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <summary>
 		/// Gets or sets how the notification should be presented.
 		/// </summary>
-		public NotificationPresentation Presentation { get; set; } = NotificationPresentation.RenderAndStore;
+		public NotificationPresentation Presentation { get; set; } = NotificationPresentation.StoreOnly;
 	}
 }

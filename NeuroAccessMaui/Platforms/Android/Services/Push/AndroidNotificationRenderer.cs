@@ -55,12 +55,14 @@ namespace NeuroAccessMaui.Services.Push
 
 			this.EnsureChannel(NotificationManager, ChannelId);
 
-			//int IconId = ApplicationContextInstance.ApplicationInfo?.Icon ?? Android.Resource.Drawable.SymDefAppIcon;
-
+			int IconId = ApplicationContextInstance.Resources?.GetIdentifier(
+			"ic_stat_appiconfg",
+			"drawable",
+			ApplicationContextInstance.PackageName) ?? ApplicationContextInstance.ApplicationInfo?.Icon ?? Android.Resource.Drawable.SymDefAppIcon;
 			NotificationCompat.Builder? Builder = new NotificationCompat.Builder(ApplicationContextInstance, ChannelId)
 				.SetContentTitle(NotificationIntent.Title ?? string.Empty)?
 				.SetContentText(NotificationIntent.Body ?? string.Empty)?
-			//	.SetSmallIcon(IconId)?
+				.SetSmallIcon(IconId)?
 				.SetAutoCancel(true)?
 				.SetPriority((int)NotificationPriority.High);
 
@@ -94,7 +96,7 @@ namespace NeuroAccessMaui.Services.Push
 				// If serialization fails, fall back to a notification without tap handling.
 			}
 
-			if(Builder is null)
+			if (Builder is null)
 				return Task.CompletedTask;
 
 			NotificationManager.Notify(Guid.NewGuid().GetHashCode(), Builder.Build());
