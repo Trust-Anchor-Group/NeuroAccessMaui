@@ -5173,7 +5173,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To use this feature, please enable notifications in your device settings..
+        ///   Looks up a localized string similar to Don’t miss important activity..
         /// </summary>
         public static string NotificationPopupDescription {
             get {
@@ -5182,7 +5182,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open settings and click on - &quot;Notifications&quot; - &quot;Allow Notifications&quot;..
+        ///   Looks up a localized string similar to Turn on notifications in your device settings to receive alerts for messages and requests..
         /// </summary>
         public static string NotificationPopupDescriptionSecondary {
             get {
