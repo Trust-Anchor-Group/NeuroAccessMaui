@@ -392,7 +392,7 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 
 		private NotificationListItem ToListItem(NotificationRecord record)
 		{
-			string ChannelShort = string.IsNullOrEmpty(record.Channel) ? "N" : record.Channel.Substring(0, 1).ToUpperInvariant();
+			string Channel = record.Channel?.Trim() ?? string.Empty;
 			string DateText = record.TimestampCreated.ToLocalTime().ToString("MMM d", CultureInfo.CurrentCulture);
 			string StateLabel = record.State switch
 			{
@@ -402,7 +402,7 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 				_ => string.Empty
 			};
 
-			return new NotificationListItem(record.Id, record.Title, record.Body, record.Channel, ChannelShort, DateText, StateLabel, record.OccurrenceCount);
+			return new NotificationListItem(record.Id, record.Title, record.Body, Channel, DateText, StateLabel, record.OccurrenceCount);
 		}
 
 	}

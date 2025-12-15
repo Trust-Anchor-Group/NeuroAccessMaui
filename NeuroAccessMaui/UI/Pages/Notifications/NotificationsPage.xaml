@@ -7,8 +7,14 @@
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Notifications"
 					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
 					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+					  xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Pages.Notifications"
 					  x:Class="NeuroAccessMaui.UI.Pages.Notifications.NotificationsPage"
 					  x:DataType="viewmodel:NotificationsViewModel">
+	<base:BaseContentPage.Resources>
+		<ResourceDictionary>
+			<converters:NotificationChannelToSvgConverter x:Key="NotificationChannelToSvgConverter" />
+		</ResourceDictionary>
+	</base:BaseContentPage.Resources>
 	<Grid RowDefinitions="auto, *"
 		  Background="Transparent">
 		<Grid Padding="16,16,16,8"
@@ -113,16 +119,16 @@
 											  Margin="0"
 											  Padding="0">
 											<Border Background="{DynamicResource TnPInfobgWL}"
-													Style="{DynamicResource BorderSet}">
-												<Grid WidthRequest="32"
-													  HeightRequest="32">
-													<Label Text="{Binding ChannelShort}"
-														   HorizontalOptions="Center"
-														   VerticalOptions="Center"
-														   TextColor="{DynamicResource TnPInfoContentWL}"
-														   FontSize="16"
-														   FontAttributes="Bold" />
-												</Grid>
+													Style="{DynamicResource BorderSet}"
+													WidthRequest="38"
+													  HeightRequest="38">
+													<controls:SvgView Source="{Binding Channel, Converter={StaticResource NotificationChannelToSvgConverter}}"
+																	  HorizontalOptions="Center"
+																	  VerticalOptions="Center"
+																	  TintColor="{DynamicResource TnPInfoContentWL}"
+																	  Aspect="AspectFit" 
+																	  WidthRequest="24"
+																	HeightRequest="24"/>
 											</Border>
 											<Border StrokeShape="RoundRectangle 12"
 													BackgroundColor="{DynamicResource TnPWarningbgWL}"

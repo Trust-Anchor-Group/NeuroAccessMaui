@@ -14,18 +14,16 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		/// <param name="Id">Identifier.</param>
 		/// <param name="Title">Title.</param>
 		/// <param name="Body">Body.</param>
-		/// <param name="Channel">Channel.</param>
-		/// <param name="ChannelShort">Channel short label.</param>
+		/// <param name="Channel">Channel label used for icon selection.</param>
 		/// <param name="DateText">Date text.</param>
 		/// <param name="StateLabel">State label.</param>
 		/// <param name="OccurrenceCount">Number of merged occurrences.</param>
-		public NotificationListItem(string Id, string Title, string? Body, string? Channel, string ChannelShort, string DateText, string StateLabel, int OccurrenceCount)
+		public NotificationListItem(string Id, string Title, string? Body, string? Channel, string DateText, string StateLabel, int OccurrenceCount)
 		{
 			this.Id = Id;
 			this.Title = Title;
 			this.Body = Body ?? string.Empty;
 			this.Channel = Channel ?? string.Empty;
-			this.ChannelShort = ChannelShort;
 			this.DateText = DateText;
 			this.StateLabel = StateLabel;
 			this.OccurrenceCount = OccurrenceCount <= 0 ? 1 : OccurrenceCount;
@@ -61,14 +59,9 @@ namespace NeuroAccessMaui.UI.Pages.Notifications
 		public string Body { get; }
 
 		/// <summary>
-		/// Channel.
+		/// Channel label used for display and icon resolution.
 		/// </summary>
 		public string Channel { get; }
-
-		/// <summary>
-		/// Short channel label.
-		/// </summary>
-		public string ChannelShort { get; }
 
 		/// <summary>
 		/// Date text.

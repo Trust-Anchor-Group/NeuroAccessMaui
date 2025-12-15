@@ -3571,10 +3571,10 @@
     <value>Requested control access.</value>
   </data>
   <data name="NotificationPopupDescription" xml:space="preserve">
-    <value>To use this feature, please enable notifications in your device settings.</value>
+    <value>Don’t miss important activity.</value>
   </data>
   <data name="NotificationPopupDescriptionSecondary" xml:space="preserve">
-    <value>Open settings and click on - "Notifications" - "Allow Notifications".</value>
+    <value>Turn on notifications in your device settings to receive alerts for messages and requests.</value>
   </data>
   <data name="NotificationSettings" xml:space="preserve">
     <value>Notification Settings</value>

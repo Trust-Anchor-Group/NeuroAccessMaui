@@ -34,9 +34,10 @@ namespace NeuroAccessMaui.Services.Push
 			};
 
 			UNNotificationRequest request = UNNotificationRequest.FromIdentifier(
-				NSUuid.NewUuid().AsString(),
+				Guid.NewGuid().ToString(),
 				content,
 				trigger: null);
+
 
 			await UNUserNotificationCenter.Current.AddNotificationRequestAsync(request);
 		}

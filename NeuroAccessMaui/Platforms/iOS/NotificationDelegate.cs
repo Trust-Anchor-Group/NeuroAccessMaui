@@ -96,9 +96,9 @@ namespace NeuroAccessMaui
 			{
 				if (userInfo["notificationIntent"] is NSString intentJson)
 				{
-					NotificationIntent? parsed = JsonSerializer.Deserialize<NotificationIntent>(intentJson.ToString());
-					if (parsed is not null)
-						return parsed;
+					NotificationIntent? parsedNotification = JsonSerializer.Deserialize<NotificationIntent>(intentJson.ToString());
+					if (parsedNotification is not null)
+						return parsedNotification;
 				}
 
 				string? channelId = userInfo["channelId"]?.ToString();
@@ -122,13 +122,13 @@ namespace NeuroAccessMaui
 					intent.Extras[k] = v;
 				}
 
-				if (intent.Extras.TryGetValue("action", out string action) && Enum.TryParse(action, out NotificationAction parsed))
+				if (intent.Extras.TryGetValue("action", out string? action) && Enum.TryParse(action, out NotificationAction parsed))
 					intent.Action = parsed;
 
-				if (intent.Extras.TryGetValue("entityId", out string entityId))
+				if (intent.Extras.TryGetValue("entityId", out string? entityId))
 					intent.EntityId = entityId;
 
-				if (intent.Extras.TryGetValue("correlationId", out string correlationId))
+				if (intent.Extras.TryGetValue("correlationId", out string? correlationId))
 					intent.CorrelationId = correlationId;
 
 				intent.Presentation = ResolvePresentation(intent.Extras);
