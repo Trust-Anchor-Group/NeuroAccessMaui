@@ -9,6 +9,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Adds new notification service v2 and intent routing
+- Adds page for viewing notifications
+- Adds runtime notification filter registry
+- Adds notification action labels and context menu
+
+### Changed
+
+- Refactors push notification handling
+- Update Rule Definitions to match new contract
+- Use correlation id for notification matching
+- Updates notification merging and consumption
+- Updates notification presentation to store only
+- Considers push source when computing id
+- Improves notification deduplication and correlation
+- Unifies notification rendering to use intent payload
+- Enhances notification model, routing & UI
+- Improves push handling and identity routing
+- Improves notifications loading and cancellation
+
+### Fixed
+
+- Fixes rules
+- Fixes DI issues
+- Fixes filter button visibility
+- Fix merge issues
+- Fix warnings in renderer
+
+## [2.7.4]
+
+### Added
+
 - Added search and filters to contract lists
 - Add exception handling for xmpp reconnect operations
 
