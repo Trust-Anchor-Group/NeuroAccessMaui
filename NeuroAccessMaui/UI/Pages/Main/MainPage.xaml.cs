@@ -2,6 +2,7 @@ using Microsoft.Maui.Controls;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
+using System.Linq;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -24,6 +25,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			await base.OnAppearingAsync();
 			try
 			{
+				this.ApplyNavigationArgs();
+
 				if (this.ContentSwitcher is not null && !this.isFirstAppear)
 					await this.ContentSwitcher.NotifyHostAppearingAsync();
 				else
@@ -83,6 +86,39 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			this.ContentSwitcher.Views.Add(AppsView);
 
 			this.EnsureSelectedTabIndex();
+		}
+
+		private void ApplyNavigationArgs()
+		{
+			MainNavigationArgs? args = ServiceRef.NavigationService.PopLatestArgs<MainNavigationArgs>();
+			if (args is null)
+				return;
+
+			if (this.BindingContext is not MainViewModel viewModel)
+				return;
+
+			int? targetIndex = null;
+
+			if (!string.IsNullOrWhiteSpace(args.TargetTabKey))
+			{
+				int? index = viewModel.Tabs
+					.Select((tab, i) => new { Tab = tab, Index = i })
+					.Where(pair => string.Equals(pair.Tab.Key, args.TargetTabKey, StringComparison.OrdinalIgnoreCase))
+					.Select(pair => (int?)pair.Index)
+					.FirstOrDefault();
+
+				targetIndex = index;
+			}
+
+			if (!targetIndex.HasValue && args.TargetTabIndex.HasValue)
+			{
+				int candidate = args.TargetTabIndex.Value;
+				if (candidate >= 0 && candidate < viewModel.Tabs.Count)
+					targetIndex = candidate;
+			}
+
+			if (targetIndex.HasValue)
+				viewModel.SelectedTabIndex = targetIndex.Value;
 		}
 
 		private View ResolveView<T>(string viewKey)

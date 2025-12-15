@@ -3429,7 +3429,157 @@
   <data name="Optional" xml:space="preserve">
     <value>Valfritt</value>
   </data>
+  <data name="NotificationSearchPlaceholder" xml:space="preserve">
+    <value>Sök i aviseringar</value>
+  </data>
+  <data name="NotificationsAllLabel" xml:space="preserve">
+    <value>Alla</value>
+  </data>
+  <data name="NotificationsUnreadLabel" xml:space="preserve">
+    <value>Olästa</value>
+  </data>
+  <data name="NotificationsMarkReadLabel" xml:space="preserve">
+    <value>Markera som läst</value>
+  </data>
+  <data name="NotificationsClearAllLabel" xml:space="preserve">
+    <value>Rensa alla</value>
+  </data>
+  <data name="NotificationsDeleteLabel" xml:space="preserve">
+    <value>Ta bort</value>
+  </data>
+  <data name="NoNotificationsLabel" xml:space="preserve">
+    <value>Inga aviseringar ännu</value>
+  </data>
   <data name="SelectFilter" xml:space="preserve">
     <value>Välj filter</value>
+  </data>
+  <data name="NotificationChatTitle" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="NotificationChatBody" xml:space="preserve">
+    <value>Har skickat ett meddelande till dig.</value>
+  </data>
+  <data name="NotificationPetitionIdentityTitle" xml:space="preserve">
+    <value>Identitetsförfrågan från {0}</value>
+  </data>
+  <data name="NotificationPetitionIdentityBody" xml:space="preserve">
+    <value>En ny identitetsförfrågan väntar.</value>
+  </data>
+  <data name="NotificationPetitionContractTitle" xml:space="preserve">
+    <value>Avtalsförfrågan från {0}</value>
+  </data>
+  <data name="NotificationPetitionContractBody" xml:space="preserve">
+    <value>En ny avtalsförfrågan väntar.</value>
+  </data>
+  <data name="NotificationPetitionSignatureTitle" xml:space="preserve">
+    <value>Signeringsförfrågan från {0}</value>
+  </data>
+  <data name="NotificationPetitionSignatureBody" xml:space="preserve">
+    <value>En ny signeringsförfrågan väntar.</value>
+  </data>
+  <data name="NotificationIdentityApprovedTitle" xml:space="preserve">
+    <value>Identitetsstatus uppdaterad</value>
+  </data>
+  <data name="NotificationIdentityApprovedBody" xml:space="preserve">
+    <value>Din identitet har godkänts.</value>
+  </data>
+  <data name="NotificationIdentityObsoletedTitle" xml:space="preserve">
+    <value>Identitetsstatus uppdaterad</value>
+  </data>
+  <data name="NotificationIdentityObsoletedBody" xml:space="preserve">
+    <value>Din identitet har blivit föråldrad.</value>
+  </data>
+  <data name="NotificationIdentityRejectedTitle" xml:space="preserve">
+    <value>Identitetsstatus uppdaterad</value>
+  </data>
+  <data name="NotificationIdentityRejectedBody" xml:space="preserve">
+    <value>Din identitet har blivit nekad.</value>
+  </data>
+  <data name="NotificationIdentityCompromisedTitle" xml:space="preserve">
+    <value>Identitetsstatus uppdaterad</value>
+  </data>
+  <data name="NotificationIdentityCompromisedBody" xml:space="preserve">
+    <value>Din identitet kan vara komprometterad.</value>
+  </data>
+  <data name="NotificationContractCreatedTitle" xml:space="preserve">
+    <value>Kontrakt skapat</value>
+  </data>
+  <data name="NotificationContractCreatedBody" xml:space="preserve">
+    <value>Ett nytt kontrakt har skapats.</value>
+  </data>
+  <data name="NotificationContractSignedTitle" xml:space="preserve">
+    <value>Kontrakt signerat</value>
+  </data>
+  <data name="NotificationContractSignedBody" xml:space="preserve">
+    <value>Ett kontrakt har signerats.</value>
+  </data>
+  <data name="NotificationContractUpdatedTitle" xml:space="preserve">
+    <value>Kontrakt uppdaterat</value>
+  </data>
+  <data name="NotificationContractUpdatedBody" xml:space="preserve">
+    <value>Ett kontrakt har uppdaterats.</value>
+  </data>
+  <data name="NotificationContractDeletedTitle" xml:space="preserve">
+    <value>Kontrakt borttaget</value>
+  </data>
+  <data name="NotificationContractDeletedBody" xml:space="preserve">
+    <value>Ett kontrakt har tagits bort.</value>
+  </data>
+  <data name="NotificationContractProposalTitle" xml:space="preserve">
+    <value>Kontraktsförslag</value>
+  </data>
+  <data name="NotificationContractProposalBody" xml:space="preserve">
+    <value>Ett kontraktsförslag är tillgängligt.</value>
+  </data>
+  <data name="NotificationBalanceUpdatedTitle" xml:space="preserve">
+    <value>Saldo uppdaterat</value>
+  </data>
+  <data name="NotificationBalanceUpdatedBody" xml:space="preserve">
+    <value>Ditt saldo har uppdaterats.</value>
+  </data>
+  <data name="NotificationTokenAddedTitle" xml:space="preserve">
+    <value>Token tillagd</value>
+  </data>
+  <data name="NotificationTokenAddedBody" xml:space="preserve">
+    <value>Din plånbok har uppdaterats.</value>
+  </data>
+  <data name="NotificationTokenRemovedTitle" xml:space="preserve">
+    <value>Token borttagen</value>
+  </data>
+  <data name="NotificationTokenRemovedBody" xml:space="preserve">
+    <value>Din plånbok har uppdaterats.</value>
+  </data>
+  <data name="NotificationPresenceAccessTitle" xml:space="preserve">
+    <value>Åtkomstförfrågan från {0}</value>
+  </data>
+  <data name="NotificationPresenceAccessBody" xml:space="preserve">
+    <value>Har begärt åtkomst till din identitet.</value>
+  </data>
+  <data name="NotificationReadAccessTitle" xml:space="preserve">
+    <value>Läsåtkomstförfrågan från {0}</value>
+  </data>
+  <data name="NotificationReadAccessBody" xml:space="preserve">
+    <value>Har begärt läsåtkomst.</value>
+  </data>
+  <data name="NotificationControlAccessTitle" xml:space="preserve">
+    <value>Kontrollförfrågan från {0}</value>
+  </data>
+  <data name="NotificationControlAccessBody" xml:space="preserve">
+    <value>Har begärt kontrollåtkomst.</value>
+  </data>
+  <data name="NotificationPopupDescription" xml:space="preserve">
+    <value>Missa inte viktiga händelser.</value>
+  </data>
+  <data name="NotificationPopupDescriptionSecondary" xml:space="preserve">
+    <value>Aktivera aviseringar i enhetens inställningar för att få meddelanden om meddelanden och förfrågningar.</value>
+  </data>
+  <data name="NotificationSettings" xml:space="preserve">
+    <value>Aviseringsinställningar</value>
+  </data>
+  <data name="EnableNotifications" xml:space="preserve">
+    <value>Aktivera aviseringar</value>
+  </data>
+  <data name="EnableNotificationsDescription" xml:space="preserve">
+    <value>Öppna enhetens inställningar för att aktivera aviseringar.</value>
   </data>
 </root>

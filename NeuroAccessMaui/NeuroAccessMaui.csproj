@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-maccatalyst</TargetFrameworks> -->
-		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks> -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net10.0-maccatalyst</TargetFrameworks> -->
+		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks> -->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net10.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
 		<RootNamespace>NeuroAccessMaui</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -14,14 +14,14 @@
 		<ApplicationTitle>Neuro-Access</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId Condition="$(TargetFramework) == 'net9.0-android'">com.tag.NeuroAccess</ApplicationId>
-		<ApplicationId Condition="$(TargetFramework) != 'net9.0-android'">com.trustanchorgroup.NeuroAccess</ApplicationId>
+		<ApplicationId Condition="$(TargetFramework) == 'net10.0-android'">com.tag.NeuroAccess</ApplicationId>
+		<ApplicationId Condition="$(TargetFramework) != 'net10.0-android'">com.trustanchorgroup.NeuroAccess</ApplicationId>
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2.7.2</ApplicationDisplayVersion>
-		<Version>2.7.2</Version>
-		<ApplicationVersion>670</ApplicationVersion>
+		<ApplicationDisplayVersion>2.8.0</ApplicationDisplayVersion>
+		<Version>2.8.0</Version>
+		<ApplicationVersion>712</ApplicationVersion>
 
 		<NeutralLanguage>en</NeutralLanguage>
 
@@ -51,50 +51,47 @@
 
 	<!-- If on Mac, add iOS as well -->
 	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-		<TargetFrameworks>net9.0-ios;net9.0-android</TargetFrameworks>
+		<TargetFrameworks>net10.0-ios;net10.0-android</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('windows'))">
 		<!-- On Windows build Android + Windows (WinUI) -->
-		<TargetFrameworks>net9.0-android;net9.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks>net10.0-android;net10.0-windows10.0.19041.0</TargetFrameworks>
 
 		<WindowsPackageType>None</WindowsPackageType>
 
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
-		<ProvisioningType>manual</ProvisioningType>
-		<CodesignKey>iPhone Developer: Maximiliam Berggren (6C6VB862B9)</CodesignKey>
-		<CodesignProvision>Maximiliam Dev</CodesignProvision>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
 		<UseInterpreter>True</UseInterpreter>
 		<MtouchLink>SdkOnly</MtouchLink>
 		<NoSymbolStrip>True</NoSymbolStrip>
 		<MtouchExtraArgs>--optimize:-static-block-to-delegate-lookup</MtouchExtraArgs>
 	</PropertyGroup>
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
 		<TrimmerRootAssembly Include="CommunityToolkit.Maui" RootMode="All" />
 	</ItemGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-ios|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-ios|AnyCPU'">
 		<DebugSymbols>True</DebugSymbols>
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>True</UseInterpreter>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
 		<DebugSymbols>False</DebugSymbols>
 		<RunAOTCompilation>True</RunAOTCompilation>
 		<UseInterpreter>False</UseInterpreter>
 	</PropertyGroup>
 
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
 		<RunAOTCompilation>False</RunAOTCompilation>
 		<DebugSymbols>True</DebugSymbols>
 		<AndroidDebugSymbols>true</AndroidDebugSymbols>
@@ -111,11 +108,11 @@
 	</PropertyGroup>
 
 	<!-- Firebase -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android' and Exists('google-services.json')">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-android' and Exists('google-services.json')">
 		<GoogleServicesJson Include="google-services.json" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-ios' and Exists('GoogleService-Info.plist')">
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0-ios' and Exists('GoogleService-Info.plist')">
 		<BundleResource Include="GoogleService-Info.plist" />
 	</ItemGroup>
 
@@ -264,26 +261,24 @@
 
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Common" Version="8.4.0" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="12.2.0" />
-		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="6.0.1" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="13.0.0" />
+		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="7.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="DotNetMeteor.HotReload.Plugin" Version="3.*" />
-		<PackageReference Include="Mapsui" Version="5.0.0-rc.2" />
-		<PackageReference Include="Mapsui.Maui" Version="5.0.0-rc.2" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.110" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.110" />
+		<PackageReference Include="Mapsui" Version="5.0.0" />
+		<PackageReference Include="Mapsui.Maui" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.10" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.10" />
 		<PackageReference Include="Plugin.Fingerprint" Version="2.1.5" />
 		<PackageReference Include="SkiaSharp" Version="3.119.1" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls" Version="3.119.1" />
-		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0" />
+		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="3.0.0" />
 		<PackageReference Include="Plugin.Firebase.Core" Version="3.1.1" />
 		<PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.2" />
 		<PackageReference Include="Svg.Skia" Version="3.2.1" />
-		<PackageReference Include="System.Net.Http" Version="4.3.4" />
-		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.5.2" />
+		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.6.0" />
 
 		<PackageReference Include="EDaler" Version="3.1.2" />
 		<PackageReference Include="NeuroFeatures" Version="2.1.5" />
@@ -390,19 +385,17 @@
 		<ProjectReference Include="..\NeuroAccessMaui.Generator\NeuroAccessMaui.Generator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Compile Update="Resources\Languages\AppResources.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>AppResources.resx</DependentUpon>
-	  </Compile>
+	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+		<PackageReference Include="Xamarin.AndroidX.Tracing.Tracing" Version="1.3.0.1" />
+		<PackageReference Include="Xamarin.AndroidX.Tracing.Tracing.Ktx" Version="1.3.0.1" />
+		<PackageReference Include="Xamarin.AndroidX.Concurrent.Futures" Version="1.3.0.1" />
+		<PackageReference Include="Xamarin.AndroidX.Concurrent.Futures.Ktx" Version="1.3.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Update="Resources\Languages\AppResources.resx">
-	    <Generator>PublicResXFileCodeGenerator</Generator>
-	    <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
+		<EmbeddedResource Update="Resources\Languages\AppResources.resx">
+			<Generator></Generator>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>

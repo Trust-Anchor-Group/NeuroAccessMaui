@@ -1,4 +1,5 @@
-﻿using Waher.Events;
+﻿using System.Threading;
+using Waher.Events;
 using Waher.Networking.XMPP.Push;
 using Waher.Runtime.Inventory;
 
@@ -8,8 +9,7 @@ namespace NeuroAccessMaui.Services.Push
 	/// <summary>
 	/// Interface for push notification services.
 	/// </summary>
-	[DefaultImplementation(typeof(PushNotificationService))]
-	public interface IPushNotificationService
+	public interface IPushNotificationService : ILoadableService
 	{
 		/// <summary>
 		/// New token received from push notification back-end.
@@ -34,6 +34,7 @@ namespace NeuroAccessMaui.Services.Push
 		/// Checks if the Push Notification Token is current and registered properly.
 		/// </summary>
 		/// <param name="TokenInformation">Non null if we got it from the OnNewToken</param>
-		Task CheckPushNotificationToken(TokenInformation? TokenInformation = null);
+		/// <param name="CancellationToken">Cancellation token.</param>
+		Task CheckPushNotificationToken(TokenInformation? TokenInformation = null, CancellationToken CancellationToken = default);
 	}
 }

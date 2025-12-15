@@ -5,7 +5,7 @@ using System.Linq;
 namespace NeuroAccessMaui.Services.Kyc.Domain
 {
 	/// <summary>
-	/// Pure transition helpers for KYC navigation & flow. No side-effects, deterministic.
+	/// Pure transition helpers for KYC navigation &amp; flow. No side-effects, deterministic.
 	/// </summary>
 	internal static class KycTransitions
 	{

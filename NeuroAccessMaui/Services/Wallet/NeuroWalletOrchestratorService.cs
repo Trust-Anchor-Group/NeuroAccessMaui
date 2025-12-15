@@ -65,33 +65,79 @@ namespace NeuroAccessMaui.Services.Wallet
 			if (e.Balance.Amount > 0 && !ServiceRef.TagProfile.HasWallet)
 				ServiceRef.TagProfile.HasWallet = true;
 
-			await ServiceRef.NotificationService.NewEvent(new BalanceNotificationEvent(e));
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationBalanceUpdatedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationBalanceUpdatedBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.EDaler,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenBalance,
+				EntityId = e.Balance.Currency
+			};
+
+			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
 		}
 
 		private async Task Wallet_TokenAdded(object? Sender, TokenEventArgs e)
 		{
-			await ServiceRef.NotificationService.NewEvent(new TokenAddedNotificationEvent(e));
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Tokens,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenToken,
+				EntityId = e.Token.TokenId
+			};
+
+			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
 		}
 
 		private async Task Wallet_TokenRemoved(object? Sender, TokenEventArgs e)
 		{
-			if (ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, e.Token.TokenId,
-				out NotificationEvent[]? Events) && Events is not null)
-			{
-				await ServiceRef.NotificationService.DeleteEvents(Events);
-			}
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedBody)];
 
-			await ServiceRef.NotificationService.NewEvent(new TokenRemovedNotificationEvent(e));
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Tokens,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenToken,
+				EntityId = e.Token.TokenId
+			};
+
+			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
 		}
 
 		private static async Task Wallet_StateUpdated(object? Sender, NewStateEventArgs e)
 		{
-			await ServiceRef.NotificationService.NewEvent(new StateMachineNewStateNotificationEvent(e));
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Tokens,
+				Title = ServiceRef.Localizer[nameof(AppResources.State)],
+				Action = NotificationAction.OpenToken,
+				EntityId = e.TokenId
+			};
+
+			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
 		}
 
 		private async Task Wallet_VariablesUpdated(object? Sender, VariablesUpdatedEventArgs e)
 		{
-			await ServiceRef.NotificationService.NewEvent(new StateMachineVariablesUpdatedNotificationEvent(e));
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Tokens,
+				Title = ServiceRef.Localizer[nameof(AppResources.State)],
+				Action = NotificationAction.OpenToken,
+				EntityId = e.TokenId
+			};
+
+			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
 		}
 
 		#endregion

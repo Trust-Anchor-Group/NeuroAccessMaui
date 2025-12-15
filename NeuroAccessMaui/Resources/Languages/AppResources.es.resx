@@ -766,7 +766,7 @@
     <value>Número personal</value>
   </data>
   <data name="Petition" xml:space="preserve">
-    <value>Pedir</value>
+    <value>Petición</value>
   </data>
   <data name="PetitionSignatureInformationText" xml:space="preserve">
     <value>Se ha recibido una solicitud de firma. Revise el motivo a continuación y la información sobre quién envió la solicitud, y luego elija cómo desea responder.</value>
@@ -3429,7 +3429,157 @@
   <data name="Optional" xml:space="preserve">
     <value>Opcional</value>
   </data>
+  <data name="NotificationSearchPlaceholder" xml:space="preserve">
+    <value>Buscar notificaciones</value>
+  </data>
+  <data name="NotificationsAllLabel" xml:space="preserve">
+    <value>Todas</value>
+  </data>
+  <data name="NotificationsUnreadLabel" xml:space="preserve">
+    <value>No leídas</value>
+  </data>
+  <data name="NotificationsMarkReadLabel" xml:space="preserve">
+    <value>Marcar como leído</value>
+  </data>
+  <data name="NotificationsClearAllLabel" xml:space="preserve">
+    <value>Borrar todas</value>
+  </data>
+  <data name="NotificationsDeleteLabel" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="NoNotificationsLabel" xml:space="preserve">
+    <value>Aún no hay notificaciones</value>
+  </data>
   <data name="SelectFilter" xml:space="preserve">
     <value>Seleccionar filtro</value>
+  </data>
+  <data name="NotificationChatTitle" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="NotificationChatBody" xml:space="preserve">
+    <value>Te ha enviado un mensaje.</value>
+  </data>
+  <data name="NotificationPetitionIdentityTitle" xml:space="preserve">
+    <value>Solicitud de identidad de {0}</value>
+  </data>
+  <data name="NotificationPetitionIdentityBody" xml:space="preserve">
+    <value>Hay una nueva solicitud de identidad pendiente.</value>
+  </data>
+  <data name="NotificationPetitionContractTitle" xml:space="preserve">
+    <value>Solicitud de contrato de {0}</value>
+  </data>
+  <data name="NotificationPetitionContractBody" xml:space="preserve">
+    <value>Hay una nueva solicitud de contrato pendiente.</value>
+  </data>
+  <data name="NotificationPetitionSignatureTitle" xml:space="preserve">
+    <value>Solicitud de firma de {0}</value>
+  </data>
+  <data name="NotificationPetitionSignatureBody" xml:space="preserve">
+    <value>Hay una nueva solicitud de firma pendiente.</value>
+  </data>
+  <data name="NotificationIdentityApprovedTitle" xml:space="preserve">
+    <value>Estado de identidad actualizado</value>
+  </data>
+  <data name="NotificationIdentityApprovedBody" xml:space="preserve">
+    <value>Tu identidad fue aprobada.</value>
+  </data>
+  <data name="NotificationIdentityObsoletedTitle" xml:space="preserve">
+    <value>Estado de identidad actualizado</value>
+  </data>
+  <data name="NotificationIdentityObsoletedBody" xml:space="preserve">
+    <value>Tu identidad ha quedado obsoleta.</value>
+  </data>
+  <data name="NotificationIdentityRejectedTitle" xml:space="preserve">
+    <value>Estado de identidad actualizado</value>
+  </data>
+  <data name="NotificationIdentityRejectedBody" xml:space="preserve">
+    <value>Tu identidad fue rechazada.</value>
+  </data>
+  <data name="NotificationIdentityCompromisedTitle" xml:space="preserve">
+    <value>Estado de identidad actualizado</value>
+  </data>
+  <data name="NotificationIdentityCompromisedBody" xml:space="preserve">
+    <value>Tu identidad puede estar comprometida.</value>
+  </data>
+  <data name="NotificationContractCreatedTitle" xml:space="preserve">
+    <value>Contrato creado</value>
+  </data>
+  <data name="NotificationContractCreatedBody" xml:space="preserve">
+    <value>Se creó un nuevo contrato.</value>
+  </data>
+  <data name="NotificationContractSignedTitle" xml:space="preserve">
+    <value>Contrato firmado</value>
+  </data>
+  <data name="NotificationContractSignedBody" xml:space="preserve">
+    <value>Se firmó un contrato.</value>
+  </data>
+  <data name="NotificationContractUpdatedTitle" xml:space="preserve">
+    <value>Contrato actualizado</value>
+  </data>
+  <data name="NotificationContractUpdatedBody" xml:space="preserve">
+    <value>Se actualizó un contrato.</value>
+  </data>
+  <data name="NotificationContractDeletedTitle" xml:space="preserve">
+    <value>Contrato eliminado</value>
+  </data>
+  <data name="NotificationContractDeletedBody" xml:space="preserve">
+    <value>Se eliminó un contrato.</value>
+  </data>
+  <data name="NotificationContractProposalTitle" xml:space="preserve">
+    <value>Propuesta de contrato</value>
+  </data>
+  <data name="NotificationContractProposalBody" xml:space="preserve">
+    <value>Hay una propuesta de contrato disponible.</value>
+  </data>
+  <data name="NotificationBalanceUpdatedTitle" xml:space="preserve">
+    <value>Saldo actualizado</value>
+  </data>
+  <data name="NotificationBalanceUpdatedBody" xml:space="preserve">
+    <value>Tu saldo fue actualizado.</value>
+  </data>
+  <data name="NotificationTokenAddedTitle" xml:space="preserve">
+    <value>Token agregado</value>
+  </data>
+  <data name="NotificationTokenAddedBody" xml:space="preserve">
+    <value>Tu billetera fue actualizada.</value>
+  </data>
+  <data name="NotificationTokenRemovedTitle" xml:space="preserve">
+    <value>Token eliminado</value>
+  </data>
+  <data name="NotificationTokenRemovedBody" xml:space="preserve">
+    <value>Tu billetera fue actualizada.</value>
+  </data>
+  <data name="NotificationPresenceAccessTitle" xml:space="preserve">
+    <value>Solicitud de acceso de {0}</value>
+  </data>
+  <data name="NotificationPresenceAccessBody" xml:space="preserve">
+    <value>Solicitó acceso a tu identidad.</value>
+  </data>
+  <data name="NotificationReadAccessTitle" xml:space="preserve">
+    <value>Solicitud de acceso de lectura de {0}</value>
+  </data>
+  <data name="NotificationReadAccessBody" xml:space="preserve">
+    <value>Solicitó acceso de lectura.</value>
+  </data>
+  <data name="NotificationControlAccessTitle" xml:space="preserve">
+    <value>Solicitud de control de {0}</value>
+  </data>
+  <data name="NotificationControlAccessBody" xml:space="preserve">
+    <value>Solicitó acceso de control.</value>
+  </data>
+  <data name="NotificationPopupDescription" xml:space="preserve">
+    <value>No te pierdas actividades importantes.</value>
+  </data>
+  <data name="NotificationPopupDescriptionSecondary" xml:space="preserve">
+    <value>Activa las notificaciones en la configuración del dispositivo para recibir alertas de mensajes y solicitudes.</value>
+  </data>
+  <data name="NotificationSettings" xml:space="preserve">
+    <value>Configuración de notificaciones</value>
+  </data>
+  <data name="EnableNotifications" xml:space="preserve">
+    <value>Habilitar notificaciones</value>
+  </data>
+  <data name="EnableNotificationsDescription" xml:space="preserve">
+    <value>Abre la configuración del dispositivo para habilitar las notificaciones.</value>
   </data>
 </root>

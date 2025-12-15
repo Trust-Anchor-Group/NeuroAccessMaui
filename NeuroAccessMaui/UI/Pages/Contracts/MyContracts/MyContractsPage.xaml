@@ -74,10 +74,10 @@
 
 				<Grid ColumnDefinitions="*, auto"
 					  Margin="0,0,0,16"
+					  IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}"
 					  ColumnSpacing="8">
 					<controls:CompositeEntry
 						Style="{DynamicResource RegularCompositeEntry}"
-						IsVisible="{Binding Path=ShowContractsMissing, Converter={mct:InvertedBoolConverter}}"
 						Placeholder="{l:Localize Search}"
 						TextChanged="ContractsSearchChanged">
 					</controls:CompositeEntry>

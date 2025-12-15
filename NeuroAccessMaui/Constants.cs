@@ -1028,6 +1028,11 @@ namespace NeuroAccessMaui
 			public const string PushNotificationConfigurationVersion = "PUSH.CONFIG_VERSION";
 
 			/// <summary>
+			/// Hash of the push-notification rules used when provisioning.
+			/// </summary>
+			public const string PushNotificationRulesHash = "PUSH.RULES_HASH";
+
+			/// <summary>
 			/// When push-notification token was reported.
 			/// </summary>
 			public const string PushNotificationReportDate = "PUSH.REPORT_DATE";
@@ -1036,6 +1041,11 @@ namespace NeuroAccessMaui
 			/// Push-notification token.
 			/// </summary>
 			public const string PushNotificationToken = "PUSH.TOKEN";
+
+			/// <summary>
+			/// Push-notification asked.
+			/// </summary>
+			public const string PushNotificationAsked = "PERMISSIONS.NOTIFICATIONS.ASKED";
 
 			/// <summary>
 			/// Transfer ID code

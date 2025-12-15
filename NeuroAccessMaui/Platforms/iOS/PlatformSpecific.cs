@@ -136,7 +136,7 @@ namespace NeuroAccessMaui.Services
 					StringBuilder msg = new();
 
 					msg.Append(ex.Message);
-					msg.AppendLine();
+					msg.AppendLine("\n\n");
 					msg.AppendLine("```");
 					msg.AppendLine(ex.StackTrace);
 					msg.AppendLine("```");

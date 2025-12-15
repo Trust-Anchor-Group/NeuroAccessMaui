@@ -497,6 +497,11 @@ namespace NeuroAccessMaui.Services.Tag
 		void CheckContractReference(ContractReference Reference);
 
 		/// <summary>
+		/// If the connected domain is a local domain.
+		/// </summary>
+		bool DomainIsLocal();
+
+		/// <summary>
 		/// Event raised when properties have been changed.
 		/// </summary>
 		event EventHandler OnPropertiesChanged;

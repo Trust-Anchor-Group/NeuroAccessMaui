@@ -1,5 +1,6 @@
 using System.Runtime.Versioning;
 using System.Text;
+using System.Text.Json;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -13,7 +14,9 @@ using NeuroAccessMaui.AndroidPlatform.Nfc;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.Services.Nfc;
+using NeuroAccessMaui.Services.Notification;
 using Plugin.Firebase.CloudMessaging;
+using NeuroAccessMaui.Services.Push;
 
 namespace NeuroAccessMaui
 {
@@ -25,6 +28,15 @@ namespace NeuroAccessMaui
 	[IntentFilter([Intent.ActionView],
 			Categories = [Intent.CategoryDefault, Intent.CategoryBrowsable],
 			DataSchemes = ["iotid", "iotdisco", "iotsc", "tagsign", "obinfo", "edaler", "nfeat", "xmpp", "aes256", "neuroaccess"])]
+	[IntentFilter(
+		[
+			nameof(NotificationAction.OpenChat),
+			nameof(NotificationAction.OpenProfile),
+			nameof(NotificationAction.OpenIdentity),
+			nameof(NotificationAction.OpenPresenceRequest),
+			nameof(NotificationAction.OpenSettings)
+		],
+		Categories = [Intent.CategoryDefault, Intent.CategoryBrowsable])]
 	public class MainActivity : MauiAppCompatActivity
 	{
 		private static NfcAdapter? nfcAdapter = null;
@@ -84,7 +96,6 @@ namespace NeuroAccessMaui
 			try
 			{
 				base.OnCreate(savedInstanceState);
-
 				this.CreateNotificationChannelsIfNeeded();
 				nfcAdapter = NfcAdapter.GetDefaultAdapter(this);
 				await this.HandleIntent(this.Intent);
@@ -96,7 +107,7 @@ namespace NeuroAccessMaui
 				msg.AppendLine("An error occurred in the Android MainActivity.OnPostCreate method.");
 				msg.AppendLine("Exception message:");
 				msg.Append(ex.Message);
-				msg.AppendLine();
+				msg.AppendLine("\n\n");
 				msg.AppendLine("```");
 				msg.AppendLine(ex.StackTrace);
 				msg.AppendLine("```");
@@ -158,7 +169,9 @@ namespace NeuroAccessMaui
 				AppIntent? AppIntent = null;
 
 				// Retrieve the shared intent service.
-				IIntentService IntentService = App.Instantiate<IIntentService>();
+				IIntentService IntentService = ServiceRef.Provider.GetRequiredService<IIntentService>();
+				INotificationServiceV2 NotificationService = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+				INotificationRenderer NotificationRenderer = ServiceRef.Provider.GetRequiredService<INotificationRenderer>();
 
 				// Handle deep link URL intent.
 				if (intent.Action == Intent.ActionView)
@@ -173,6 +186,49 @@ namespace NeuroAccessMaui
 						};
 					}
 				}
+				// Handle push tap intent carrying NotificationIntent JSON.
+				else if (intent.Extras is not null && intent.Extras.ContainsKey("notificationIntent"))
+				{
+					string? payload = intent.Extras.GetString("notificationIntent");
+					if (!string.IsNullOrEmpty(payload))
+					{
+						try
+						{
+							NotificationIntent? parsed = JsonSerializer.Deserialize<NotificationIntent>(payload);
+								if (parsed is not null)
+								{
+									parsed.Presentation = this.ResolvePresentation(intent.Extras, parsed.Presentation);
+									await NotificationService.AddAsync(parsed, NotificationSource.Push, payload, CancellationToken.None);
+									string id = NotificationService.ComputeId(parsed, NotificationSource.Push);
+									await NotificationService.ConsumeAsync(id, CancellationToken.None);
+									return;
+								}
+							}
+							catch (Exception ex)
+						{
+							ServiceRef.LogService.LogException(ex);
+						}
+					}
+				}
+				// Handle data-only push when app is background/terminated: render notification.
+				else if (intent.Extras is not null && intent.Extras.ContainsKey("gcm.notification.body"))
+				{
+					string? body = intent.Extras.GetString("gcm.notification.body");
+					string? title = intent.Extras.GetString("gcm.notification.title");
+					string channel = intent.Extras.GetString("channelId") ?? Constants.PushChannels.Messages;
+
+						NotificationIntent fallback = new()
+						{
+							Title = title ?? string.Empty,
+							Body = body,
+							Channel = channel,
+							Presentation = this.ResolvePresentation(intent.Extras, NotificationPresentation.RenderAndStore)
+						};
+
+						string raw = intent.Extras.ToString() ?? string.Empty;
+						await NotificationService.AddAsync(fallback, NotificationSource.Push, raw, CancellationToken.None);
+						return;
+					}
 				// Handle NFC intents.
 				else if (intent.Action == NfcAdapter.ActionTagDiscovered ||
 							intent.Action == NfcAdapter.ActionNdefDiscovered ||
@@ -284,6 +340,38 @@ namespace NeuroAccessMaui
 				ServiceRef.LogService.LogException(Ex);
 			}
 			return;
+		}
+
+		private NotificationPresentation ResolvePresentation(Bundle extras, NotificationPresentation current)
+		{
+			if (extras is null)
+				return current;
+
+			if (extras.ContainsKey("silent"))
+			{
+				string? value = extras.GetString("silent");
+				if (this.IsTrue(value))
+					return NotificationPresentation.StoreOnly;
+			}
+
+			if (extras.ContainsKey("delivery.silent"))
+			{
+				string? value = extras.GetString("delivery.silent");
+				if (this.IsTrue(value))
+					return NotificationPresentation.StoreOnly;
+			}
+
+			return current;
+		}
+
+		private bool IsTrue(string? value)
+		{
+			if (string.IsNullOrWhiteSpace(value))
+				return false;
+
+			return value.Equals("1", StringComparison.OrdinalIgnoreCase) ||
+				value.Equals("true", StringComparison.OrdinalIgnoreCase) ||
+				value.Equals("yes", StringComparison.OrdinalIgnoreCase);
 		}
 
 

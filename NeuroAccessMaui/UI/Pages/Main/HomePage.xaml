@@ -45,11 +45,30 @@
 			  Margin="16,8,16,0"
 			  RowSpacing="{DynamicResource MediumSpacing}"
 			  RowDefinitions="auto,auto"
-			  ColumnDefinitions="auto,auto">
+			  ColumnDefinitions="auto, *,auto">
 
 			<controls:SvgButton Command="{Binding ShowSettingsCommand}"
 								SvgSource="cog.svg"
 								Style="{DynamicResource IconButton}" />
+
+			<Grid Grid.Column="2"
+				  HorizontalOptions="End">
+				<controls:SvgButton Command="{Binding OpenNotificationsCommand}"
+									SvgSource="notifications.svg"
+									Style="{DynamicResource IconButton}" />
+				<controls:Badge Text="{Binding UnreadNotificationCount}"
+								IsVisible="{Binding HasUnreadNotifications}"
+								BackgroundColor="{DynamicResource TnPDangerbgWL}"
+								TextColor="{DynamicResource TnPDangerContentWL}"
+								FontFamily="SpaceGroteskBold"
+								TextMargin="4,2"
+								Stroke="White"
+								InputTransparent="True"
+								HorizontalOptions="End"
+								VerticalOptions="Start"
+								TranslationX="10"
+								TranslationY="-6" />
+			</Grid>
 
 			<!-- TODO: Enable when implemented
 			<controls:ImageButton

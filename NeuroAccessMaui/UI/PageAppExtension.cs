@@ -1,8 +1,5 @@
-using System.Reflection;
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Services;
-using EDaler;
-using Microsoft.Extensions.DependencyInjection;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Cache.AttachmentCache;
 using NeuroAccessMaui.Services.Cache.InternetCache;
@@ -13,6 +10,7 @@ using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Notification;
+using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
@@ -89,41 +87,7 @@ using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportType;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
-using NeuroFeatures;
-using Waher.Content;
-using Waher.Content.Images;
-using Waher.Content.Markdown;
-using Waher.Content.Xml;
-using Waher.Events;
-using Waher.Events.Persistence;
-using Waher.Networking.DNS;
-using Waher.Networking.XMPP;
-using Waher.Networking.XMPP.Avatar;
-using Waher.Networking.XMPP.Concentrator;
-using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.Control;
-using Waher.Networking.XMPP.Geo;
-using Waher.Networking.XMPP.HTTPX;
-using Waher.Networking.XMPP.Mail;
-using Waher.Networking.XMPP.P2P;
-using Waher.Networking.XMPP.P2P.E2E;
-using Waher.Networking.XMPP.PEP;
-using Waher.Networking.XMPP.Provisioning;
-using Waher.Networking.XMPP.PubSub;
-using Waher.Networking.XMPP.Push;
-using Waher.Networking.XMPP.Sensor;
-using Waher.Persistence;
-using Waher.Persistence.Files;
-using Waher.Persistence.Serialization;
-using Waher.Runtime.Geo;
 using Waher.Runtime.Inventory;
-using Waher.Runtime.Settings;
-using Waher.Script;
-using Waher.Script.Content;
-using Waher.Script.Graphs;
-using Waher.Security.JWS;
-using Waher.Security.JWT;
-using Waher.Things;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 using NeuroAccessMaui.UI.Popups.OnboardingHelp;
 
@@ -151,6 +115,22 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<ISettingsService>((_) => Types.InstantiateDefault<ISettingsService>(false));
 			Builder.Services.AddSingleton<IAuthenticationService>((_) => Types.InstantiateDefault<IAuthenticationService>(false));
 			Builder.Services.AddSingleton<IXmppService>((_) => Types.InstantiateDefault<IXmppService>(false));
+			Builder.Services.AddSingleton<IPushTransport, FirebasePushTransport>();
+			Builder.Services.AddSingleton<IPushTokenRegistrar, PushTokenRegistrar>();
+			Builder.Services.AddSingleton<INotificationRenderer>((_) =>
+			{
+#if ANDROID
+				return new AndroidNotificationRenderer();
+#elif IOS || MACCATALYST
+				return new IosNotificationRenderer();
+#else
+				return new DefaultNotificationRenderer();
+#endif
+			});
+			Builder.Services.AddSingleton<INotificationFilterRegistry, NotificationFilterRegistry>();
+			Builder.Services.AddSingleton<INotificationIntentRouter, NotificationIntentRouter>();
+			Builder.Services.AddSingleton<INotificationServiceV2, NotificationServiceV2>();
+			Builder.Services.AddSingleton<IPushNotificationService, PushNotificationService>();
 			Builder.Services.AddSingleton<IAttachmentCacheService>((_) => Types.InstantiateDefault<IAttachmentCacheService>(false));
 			Builder.Services.AddSingleton<IInternetCacheService>((_) => Types.InstantiateDefault<IInternetCacheService>(false));
 			Builder.Services.AddSingleton<IContractOrchestratorService>((_) => Types.InstantiateDefault<IContractOrchestratorService>(false));

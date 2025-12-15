@@ -242,7 +242,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		private async Task ScanQrCode()
 		{
 			ServiceRef.LogService.LogDebug("ScanQrCode command invoked.");
-			string? Url = await QrCode.ScanQrCode(ServiceRef.Localizer[nameof(AppResources.QrPageTitleScanInvitation)], [Constants.UriSchemes.Onboarding]).ConfigureAwait(false);
+			string? Url = await QrCode.ScanQrCode(nameof(AppResources.ScanQRCode), [Constants.UriSchemes.Onboarding]).ConfigureAwait(false);
 			if (string.IsNullOrWhiteSpace(Url))
 			{
 				ServiceRef.LogService.LogWarning("QR scan returned empty URL.");
@@ -494,6 +494,10 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 							string ApiKey = XML.Attribute(E, "key");
 							string Secret = XML.Attribute(E, "secret");
 							string ApiDomain = XML.Attribute(E, "domain");
+							if(string.IsNullOrEmpty(ApiDomain))
+							{
+								ApiDomain = await ServiceRef.UiService.DisplayPrompt("Please enter the IP of your provider", "This is for developers and testers", "Enter", "Cancel");
+							}	
 							ServiceRef.LogService.LogInformational($"Selecting domain (ApiKey) '{ApiDomain}'.");
 							await SelectDomain(ApiDomain, ApiKey, Secret).ConfigureAwait(false);
 							domainSelectedFromInvite = true;

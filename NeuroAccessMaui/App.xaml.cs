@@ -396,6 +396,7 @@ namespace NeuroAccessMaui
 
 
             // Set dependency resolver.
+			/*
             DependencyResolver.ResolveUsing(type =>
             {
                 if (Types.GetType(type.FullName) is null)
@@ -411,7 +412,7 @@ namespace NeuroAccessMaui
                     return null;
                 }
             });
-
+			*/
             // Register XML schemas on the DI-managed validator instance.
             try
             {
@@ -569,8 +570,9 @@ namespace NeuroAccessMaui
                 await ServiceRef.ThingRegistryOrchestratorService.Load(isResuming, Token);
                 await ServiceRef.NeuroWalletOrchestratorService.Load(isResuming, Token);
                 await ServiceRef.NotificationService.Load(isResuming, Token);
+				await ServiceRef.PushNotificationService.Load(isResuming, Token);
 
-                RegisterRoutes();
+				RegisterRoutes();
                 ReadySignal?.TrySetResult(true);
                 //	AppShell.AppLoaded();
             }
@@ -941,10 +943,10 @@ namespace NeuroAccessMaui
                     StringBuilder Msg = new();
                     Msg.Append("Unhandled exception caused app to crash. ");
                     Msg.AppendLine("Below you can find the stack trace of the corresponding exception.");
-                    Msg.AppendLine();
+                    Msg.AppendLine("\n\n");
                     Msg.AppendLine("```");
                     Msg.AppendLine(StackTrace);
-                    Msg.AppendLine("```");
+                    Msg.AppendLine("```\n");
 
                     Log.Alert(Msg.ToString(), [.. Tags]);
 
