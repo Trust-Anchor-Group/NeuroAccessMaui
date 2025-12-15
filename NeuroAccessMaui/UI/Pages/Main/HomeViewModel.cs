@@ -25,12 +25,17 @@ using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Tag; // Added for ordering
 using NeuroAccessMaui.CustomPermissions;
 using NeuroAccessMaui.Services.Settings;
+using NeuroAccessMaui.Services.Notification;
+using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
 	public partial class HomeViewModel : QrXmppViewModel
 	{
 		private readonly IAuthenticationService authenticationService = ServiceRef.AuthenticationService;
+		private readonly INotificationServiceV2 notificationService;
 
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeDark);
@@ -53,6 +58,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		public HomeViewModel()
 			: base()
 		{
+			this.notificationService = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+
 			Application.Current.RequestedThemeChanged += (_, __) =>
 				OnPropertyChanged(nameof(BannerUri));
 		}
@@ -109,6 +116,9 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				ServiceRef.KycService.ApplicationReviewUpdated += this.KycService_ApplicationReviewUpdated;
 				this.reviewEventSubscribed = true;
 			}
+
+			this.notificationService.OnNotificationAdded += this.NotificationService_OnNotificationAdded;
+			await this.RefreshUnreadNotificationsAsync();
 		}
 
 		public override Task OnDisappearingAsync()
@@ -122,6 +132,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				ServiceRef.KycService.ApplicationReviewUpdated -= this.KycService_ApplicationReviewUpdated;
 				this.reviewEventSubscribed = false;
 			}
+			this.notificationService.OnNotificationAdded -= this.NotificationService_OnNotificationAdded;
 			return base.OnDisappearingAsync();
 		}
 
@@ -217,6 +228,52 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			IdentityState? state = this.latestCreatedIdentityState ?? ServiceRef.TagProfile.IdentityApplication?.State;
 			return state == IdentityState.Rejected;
+		}
+
+		private Task NotificationService_OnNotificationAdded(object? Sender, NotificationRecordEventArgs e)
+		{
+			return this.RefreshUnreadNotificationsAsync();
+		}
+
+		private async Task RefreshUnreadNotificationsAsync()
+		{
+			try
+			{
+				NotificationQuery Query = new()
+				{
+					States = new List<NotificationState>
+					{
+						NotificationState.New,
+						NotificationState.Delivered
+					}
+				};
+
+				IReadOnlyList<NotificationRecord> Records = await this.notificationService.GetAsync(Query, CancellationToken.None);
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.UnreadNotificationCount = Records.Count;
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether there are unread notifications.
+		/// </summary>
+		public bool HasUnreadNotifications => this.UnreadNotificationCount > 0;
+
+		/// <summary>
+		/// Gets or sets the unread notification count.
+		/// </summary>
+		[ObservableProperty]
+		private int unreadNotificationCount;
+
+		partial void OnUnreadNotificationCountChanged(int value)
+		{
+			this.OnPropertyChanged(nameof(this.HasUnreadNotifications));
 		}
 
 		private async Task LoadLatestKycStateAsync()

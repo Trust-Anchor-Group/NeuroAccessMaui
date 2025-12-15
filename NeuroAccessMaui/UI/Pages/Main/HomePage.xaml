@@ -51,10 +51,24 @@
 								SvgSource="cog.svg"
 								Style="{DynamicResource IconButton}" />
 
-			<controls:SvgButton Command="{Binding OpenNotificationsCommand}"
-								SvgSource="notifications.svg"
-								Style="{DynamicResource IconButton}"
-								Grid.Column="2" HorizontalOptions="End" />
+			<Grid Grid.Column="2"
+				  HorizontalOptions="End">
+				<controls:SvgButton Command="{Binding OpenNotificationsCommand}"
+									SvgSource="notifications.svg"
+									Style="{DynamicResource IconButton}" />
+				<controls:Badge Text="{Binding UnreadNotificationCount}"
+								IsVisible="{Binding HasUnreadNotifications}"
+								BackgroundColor="{DynamicResource TnPDangerbgWL}"
+								TextColor="{DynamicResource TnPDangerContentWL}"
+								FontFamily="SpaceGroteskBold"
+								TextMargin="4,2"
+								Stroke="White"
+								InputTransparent="True"
+								HorizontalOptions="End"
+								VerticalOptions="Start"
+								TranslationX="10"
+								TranslationY="-6" />
+			</Grid>
 
 			<!-- TODO: Enable when implemented
 			<controls:ImageButton
