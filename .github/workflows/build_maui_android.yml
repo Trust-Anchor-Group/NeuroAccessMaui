@@ -7,10 +7,6 @@ on:
 jobs:
   build-android:
     runs-on: windows-latest
-
-    env:
-      NUGET_PACKAGES: ${{ runner.temp }}\.nuget\packages
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,7 +22,7 @@ jobs:
       - name: Cache NuGet
         uses: actions/cache@v4
         with:
-          path: ${{ env.NUGET_PACKAGES }}
+          path: ~/.nuget/packages
           key: nuget-${{ runner.os }}-${{ hashFiles('**/*.sln', '**/*.csproj') }}
           restore-keys: |
             nuget-${{ runner.os }}-
@@ -54,7 +50,8 @@ jobs:
         with:
           name: android-${{ github.run_number }}-aab
           path: |
-            **/bin/**/Release/**/*.aab
+            ./**/*.aab
+            ./**/*.apk
           if-no-files-found: error
 
       # Signing is handled during build when secrets are provided.
