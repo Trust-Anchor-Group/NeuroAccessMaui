@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.1] - 2025/12/16
+
 ### Added
 
 - Adds new notification service v2 and intent routing
@@ -112,7 +114,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Portuguese translations
 - Fixed Profile configuration not loading properly
 - Ensured authentication method set to Password when Later is selected in biometrics step
+
 - --
+
 - A bug which could cause a crash when opening a contract from the Wallet page
 - Dangerous setting of properties in ViewContract which are not marshalled to Main Thread
 - Bottom sheet in ViewId page is now more performant on most devices
@@ -126,6 +130,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Legacy  implementation superseded by the new  infrastructure.
 - Unused contract overview views and associated XAML files (, )
 - Usage of AppThemeBinding, except for images
+
 - --
 
 ### Refactored
@@ -193,4 +198,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated all localization resources
 
 ## [2.4.1] - 2025-04-16
-
