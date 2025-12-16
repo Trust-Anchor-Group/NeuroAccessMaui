@@ -1,9 +1,7 @@
 name: Build MAUI Android
 
 on:
-  push:
-    branches:
-      - feature/build
+  workflow_dispatch:
 
 jobs:
   build-android:
@@ -39,7 +37,7 @@ jobs:
             $signArgs += "-p:AndroidSigningStorePass=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"
             $signArgs += "-p:AndroidSigningKeyPass=${{ secrets.ANDROID_KEY_PASSWORD }}"
           }
-          dotnet build NeuroAccessMaui/NeuroAccessMaui.csproj -c Release -f ${{ env.DOTNET }}-android -p:AndroidPackageFormat=aab @signArgs --no-restore 
+          dotnet publish NeuroAccessMaui/NeuroAccessMaui.csproj -c Release -f ${{ env.DOTNET }}-android -p:AndroidPackageFormat=aab @signArgs --no-restore 
 
       - name: Upload to Google Play (internal)
         uses: r0adkll/upload-google-play@v1
@@ -48,3 +46,57 @@ jobs:
           packageName: com.tag.NeuroAccess
           releaseFiles: NeuroAccessMaui/bin/Release/${{ env.DOTNET }}-android/**/com.tag.NeuroAccess-Signed.aab
           track: internal
+
+  build-ios:
+    runs-on: macos-latest
+    env:
+      DOTNET: net10.0
+      DOTNET_SDK_VERSION: 10.0.x
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1.6.0
+        with:
+          xcode-version: latest
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+
+      - name: Install .NET MAUI
+        run: dotnet workload install maui
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Import Apple Certificate
+        uses: apple-actions/import-codesign-certs@v4
+        with:
+          create-keychain: true
+          keychain-password: ${{ secrets.APPSTORE_CERTIFICATE_P12_PASSWORD }}
+          p12-file-base64: ${{ secrets.APPSTORE_CERTIFICATE_P12 }}
+          p12-password: ${{ secrets.APPSTORE_CERTIFICATE_P12_PASSWORD }}
+
+      - name: Download Provisioning Profile
+        uses: apple-actions/download-provisioning-profiles@v4
+        with: 
+          bundle-id: 'com.example.myapp'
+          profile-type: 'IOS_APP_STORE'
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
+
+      - name: Build
+        run: |
+          dotnet publish -c Release -f ${{env.DOTNET_VERSION}}-ios -p:ArchiveOnBuild=true -p:RuntimeIdentifier=ios-arm64 "/p:CodesignKey=\"Apple Distribution: My Awesome Company, Inc. (XXX12AB34C)\"" MyApp/MyApp.csproj
+
+      - name: Upload to TestFlight
+        uses: apple-actions/upload-testflight-build@v1
+        with:
+          app-path: 'MyApp/bin/Release/${{env.DOTNET_VERSION}}-ios/ios-arm64/publish/MyApp.ipa'
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
