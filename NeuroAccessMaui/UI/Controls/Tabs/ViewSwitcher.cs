@@ -480,6 +480,26 @@ namespace NeuroAccessMaui.UI.Controls
 						newStateKey = descriptor.StateKey;
 					}
 
+					if (itemCount == 0)
+					{
+						this.UpdateNavigationCommands();
+						return;
+					}
+
+					if (descriptor is null)
+					{
+						int FallbackIndex = this.selectionState.SelectedIndex;
+						if (FallbackIndex < 0 || FallbackIndex >= itemCount)
+						{
+							FallbackIndex = 0;
+						}
+
+						descriptor = this.descriptors[FallbackIndex];
+						targetIndex = FallbackIndex;
+						newItem = descriptor.Item;
+						newStateKey = descriptor.StateKey;
+					}
+
 					ViewSwitcherSelectionChangingEventArgs changingArgs = new ViewSwitcherSelectionChangingEventArgs(
 						oldIndex,
 						oldItem,
@@ -815,6 +835,26 @@ namespace NeuroAccessMaui.UI.Controls
 
 		private void OnUnloaded(object? sender, EventArgs e)
 		{
+		}
+
+		/// <summary>
+		/// Notifies the view switcher that the hosting page is appearing.
+		/// Triggers lifecycle callbacks on the currently presented view.
+		/// </summary>
+		public Task NotifyHostAppearingAsync(CancellationToken cancellationToken = default)
+		{
+			View? currentView = this.transitionCoordinator.CurrentView;
+			return this.InvokeLifecycleAppearingAsync(currentView, cancellationToken);
+		}
+
+		/// <summary>
+		/// Notifies the view switcher that the hosting page is disappearing.
+		/// Triggers lifecycle callbacks on the currently presented view.
+		/// </summary>
+		public Task NotifyHostDisappearingAsync(CancellationToken cancellationToken = default)
+		{
+			View? currentView = this.transitionCoordinator.CurrentView;
+			return this.InvokeLifecycleDisappearingAsync(currentView, cancellationToken);
 		}
 
 		private bool CanExecuteNextCommand()

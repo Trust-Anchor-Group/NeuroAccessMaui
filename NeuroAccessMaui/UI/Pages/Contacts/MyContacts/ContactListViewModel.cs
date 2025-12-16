@@ -546,7 +546,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.MyContacts
 		[RelayCommand]
 		private async Task ScanQrCode()
 		{
-			string? Code = await QrCode.ScanQrCode(ServiceRef.Localizer[nameof(AppResources.ScanQRCode)], [Constants.UriSchemes.IotId]);
+			string? Code = await QrCode.ScanQrCode(nameof(AppResources.ScanQRCode), [Constants.UriSchemes.IotId]);
 			if (string.IsNullOrEmpty(Code))
 				return;
 

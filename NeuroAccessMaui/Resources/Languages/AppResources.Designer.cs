@@ -2905,6 +2905,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable Notifications.
+        /// </summary>
+        public static string EnableNotifications {
+            get {
+                return ResourceManager.GetString("EnableNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open device settings to enable notifications..
+        /// </summary>
+        public static string EnableNotificationsDescription {
+            get {
+                return ResourceManager.GetString("EnableNotificationsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Encrypted.
         /// </summary>
         public static string Encrypted {
@@ -4165,7 +4183,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you prefer, you can remove these pending entries to continue without them, but this is optional..
+        ///   Looks up a localized string similar to You can remove these pending entries and reapply without them. This is not recommended.
         /// </summary>
         public static string KycUnvalidatedActionHint {
             get {
@@ -4822,6 +4840,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No notifications yet.
+        /// </summary>
+        public static string NoNotificationsLabel {
+            get {
+                return ResourceManager.GetString("NoNotificationsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No roles selected — you will not sign this contract now..
         /// </summary>
         public static string NoRolesSelectedWarning {
@@ -4876,6 +4903,330 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your balance was updated..
+        /// </summary>
+        public static string NotificationBalanceUpdatedBody {
+            get {
+                return ResourceManager.GetString("NotificationBalanceUpdatedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Balance updated.
+        /// </summary>
+        public static string NotificationBalanceUpdatedTitle {
+            get {
+                return ResourceManager.GetString("NotificationBalanceUpdatedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Has sent you a message..
+        /// </summary>
+        public static string NotificationChatBody {
+            get {
+                return ResourceManager.GetString("NotificationChatBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.
+        /// </summary>
+        public static string NotificationChatTitle {
+            get {
+                return ResourceManager.GetString("NotificationChatTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new contract was created..
+        /// </summary>
+        public static string NotificationContractCreatedBody {
+            get {
+                return ResourceManager.GetString("NotificationContractCreatedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract created.
+        /// </summary>
+        public static string NotificationContractCreatedTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractCreatedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A contract was removed..
+        /// </summary>
+        public static string NotificationContractDeletedBody {
+            get {
+                return ResourceManager.GetString("NotificationContractDeletedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract removed.
+        /// </summary>
+        public static string NotificationContractDeletedTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractDeletedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A contract proposal is available..
+        /// </summary>
+        public static string NotificationContractProposalBody {
+            get {
+                return ResourceManager.GetString("NotificationContractProposalBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract proposal.
+        /// </summary>
+        public static string NotificationContractProposalTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractProposalTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A contract was signed..
+        /// </summary>
+        public static string NotificationContractSignedBody {
+            get {
+                return ResourceManager.GetString("NotificationContractSignedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract signed.
+        /// </summary>
+        public static string NotificationContractSignedTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractSignedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A contract was updated..
+        /// </summary>
+        public static string NotificationContractUpdatedBody {
+            get {
+                return ResourceManager.GetString("NotificationContractUpdatedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract updated.
+        /// </summary>
+        public static string NotificationContractUpdatedTitle {
+            get {
+                return ResourceManager.GetString("NotificationContractUpdatedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requested control access..
+        /// </summary>
+        public static string NotificationControlAccessBody {
+            get {
+                return ResourceManager.GetString("NotificationControlAccessBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Control request from {0}.
+        /// </summary>
+        public static string NotificationControlAccessTitle {
+            get {
+                return ResourceManager.GetString("NotificationControlAccessTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your identity was approved..
+        /// </summary>
+        public static string NotificationIdentityApprovedBody {
+            get {
+                return ResourceManager.GetString("NotificationIdentityApprovedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity status updated.
+        /// </summary>
+        public static string NotificationIdentityApprovedTitle {
+            get {
+                return ResourceManager.GetString("NotificationIdentityApprovedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your identity may be compromised..
+        /// </summary>
+        public static string NotificationIdentityCompromisedBody {
+            get {
+                return ResourceManager.GetString("NotificationIdentityCompromisedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity status updated.
+        /// </summary>
+        public static string NotificationIdentityCompromisedTitle {
+            get {
+                return ResourceManager.GetString("NotificationIdentityCompromisedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your identity has been obsoleted..
+        /// </summary>
+        public static string NotificationIdentityObsoletedBody {
+            get {
+                return ResourceManager.GetString("NotificationIdentityObsoletedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity status updated.
+        /// </summary>
+        public static string NotificationIdentityObsoletedTitle {
+            get {
+                return ResourceManager.GetString("NotificationIdentityObsoletedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your identity was rejected..
+        /// </summary>
+        public static string NotificationIdentityRejectedBody {
+            get {
+                return ResourceManager.GetString("NotificationIdentityRejectedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity status updated.
+        /// </summary>
+        public static string NotificationIdentityRejectedTitle {
+            get {
+                return ResourceManager.GetString("NotificationIdentityRejectedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new contract request is waiting..
+        /// </summary>
+        public static string NotificationPetitionContractBody {
+            get {
+                return ResourceManager.GetString("NotificationPetitionContractBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contract request from {0}.
+        /// </summary>
+        public static string NotificationPetitionContractTitle {
+            get {
+                return ResourceManager.GetString("NotificationPetitionContractTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new identity request is waiting..
+        /// </summary>
+        public static string NotificationPetitionIdentityBody {
+            get {
+                return ResourceManager.GetString("NotificationPetitionIdentityBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Identity request from {0}.
+        /// </summary>
+        public static string NotificationPetitionIdentityTitle {
+            get {
+                return ResourceManager.GetString("NotificationPetitionIdentityTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new signature request is waiting..
+        /// </summary>
+        public static string NotificationPetitionSignatureBody {
+            get {
+                return ResourceManager.GetString("NotificationPetitionSignatureBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signature request from {0}.
+        /// </summary>
+        public static string NotificationPetitionSignatureTitle {
+            get {
+                return ResourceManager.GetString("NotificationPetitionSignatureTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don’t miss important activity..
+        /// </summary>
+        public static string NotificationPopupDescription {
+            get {
+                return ResourceManager.GetString("NotificationPopupDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turn on notifications in your device settings to receive alerts for messages and requests..
+        /// </summary>
+        public static string NotificationPopupDescriptionSecondary {
+            get {
+                return ResourceManager.GetString("NotificationPopupDescriptionSecondary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requested access to your identity..
+        /// </summary>
+        public static string NotificationPresenceAccessBody {
+            get {
+                return ResourceManager.GetString("NotificationPresenceAccessBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Access request from {0}.
+        /// </summary>
+        public static string NotificationPresenceAccessTitle {
+            get {
+                return ResourceManager.GetString("NotificationPresenceAccessTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requested read access..
+        /// </summary>
+        public static string NotificationReadAccessBody {
+            get {
+                return ResourceManager.GetString("NotificationReadAccessBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read access request from {0}.
+        /// </summary>
+        public static string NotificationReadAccessTitle {
+            get {
+                return ResourceManager.GetString("NotificationReadAccessTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Notifications.
         /// </summary>
         public static string Notifications {
@@ -4885,11 +5236,110 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string NotificationsAllLabel {
+            get {
+                return ResourceManager.GetString("NotificationsAllLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear all.
+        /// </summary>
+        public static string NotificationsClearAllLabel {
+            get {
+                return ResourceManager.GetString("NotificationsClearAllLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string NotificationsDeleteLabel {
+            get {
+                return ResourceManager.GetString("NotificationsDeleteLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search notifications.
+        /// </summary>
+        public static string NotificationSearchPlaceholder {
+            get {
+                return ResourceManager.GetString("NotificationSearchPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notification Settings.
+        /// </summary>
+        public static string NotificationSettings {
+            get {
+                return ResourceManager.GetString("NotificationSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark as read.
+        /// </summary>
+        public static string NotificationsMarkReadLabel {
+            get {
+                return ResourceManager.GetString("NotificationsMarkReadLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Below you can see a list of notifications resulting from interactions with the thing. Press on each one to display more information and options available..
         /// </summary>
         public static string NotificationsText {
             get {
                 return ResourceManager.GetString("NotificationsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unread.
+        /// </summary>
+        public static string NotificationsUnreadLabel {
+            get {
+                return ResourceManager.GetString("NotificationsUnreadLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your wallet was updated..
+        /// </summary>
+        public static string NotificationTokenAddedBody {
+            get {
+                return ResourceManager.GetString("NotificationTokenAddedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token added.
+        /// </summary>
+        public static string NotificationTokenAddedTitle {
+            get {
+                return ResourceManager.GetString("NotificationTokenAddedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your wallet was updated..
+        /// </summary>
+        public static string NotificationTokenRemovedBody {
+            get {
+                return ResourceManager.GetString("NotificationTokenRemovedBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Token removed.
+        /// </summary>
+        public static string NotificationTokenRemovedTitle {
+            get {
+                return ResourceManager.GetString("NotificationTokenRemovedTitle", resourceCulture);
             }
         }
         
@@ -5074,7 +5524,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you do not have access to your account, please contact our support team at.
+        ///   Looks up a localized string similar to If you do not have access to your account, please contact your ID provider..
         /// </summary>
         public static string OnboardingContactSupportDetailsPart2 {
             get {
@@ -5286,6 +5736,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string OperatorDoesNotSupportRegisteringNewAccounts {
             get {
                 return ResourceManager.GetString("OperatorDoesNotSupportRegisteringNewAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optional.
+        /// </summary>
+        public static string Optional {
+            get {
+                return ResourceManager.GetString("Optional", resourceCulture);
             }
         }
         
@@ -7572,6 +8031,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string SelectedRoleHasReachedMaximumNumberOfParts {
             get {
                 return ResourceManager.GetString("SelectedRoleHasReachedMaximumNumberOfParts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select filter.
+        /// </summary>
+        public static string SelectFilter {
+            get {
+                return ResourceManager.GetString("SelectFilter", resourceCulture);
             }
         }
         

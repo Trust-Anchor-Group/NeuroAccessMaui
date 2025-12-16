@@ -20,12 +20,12 @@
 		/// <returns>The service object, or null if not found.</returns>
 		public object? GetService(Type serviceType)
 		{
-			// Try custom system first
-			object? Service = Waher.Runtime.Inventory.Types.Instantiate(true, serviceType);
+			// Prefer the built DI container so constructor injection is honored, then fall back to the inventory.
+			object? Service = this.fallbackProvider.GetService(serviceType);
 			if (Service is not null)
 				return Service;
-			// Fallback to MS DI
-			return this.fallbackProvider.GetService(serviceType);
+
+			return Waher.Runtime.Inventory.Types.Instantiate(true, serviceType);
 		}
 
 

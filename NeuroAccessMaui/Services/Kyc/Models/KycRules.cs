@@ -129,7 +129,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		{
 			Error = string.Empty;
 			string? Text = Field.StringValue;
-			if (Text is not null && !this.regex.IsMatch(Text))
+			if (!string.IsNullOrEmpty(Text) && !this.regex.IsMatch(Text))
 				Error = this.message ?? $"{Field.Label?.Get(Lang) ?? Field.Id} format is invalid";
 			return string.IsNullOrEmpty(Error);
 		}

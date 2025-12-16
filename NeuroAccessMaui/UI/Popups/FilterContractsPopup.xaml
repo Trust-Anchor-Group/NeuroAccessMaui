@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.FilterContractsPopup"
+                x:Name="ThisPopup"
+                x:DataType="viewmodel:FilterContractsPopupViewModel"
+                xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+                xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+                xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups">
+    <ScrollView VerticalOptions="Center">
+        <VerticalStackLayout Spacing="{DynamicResource MediumSpacing}">
+            <Label HorizontalTextAlignment="Center"
+                   Style="{DynamicResource PageTitleLabel}"
+                   Text="{l:Localize SelectFilter}" />
+
+            <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Start">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="controls:TextButton">
+						<controls:TemplatedButton Command="{Binding Command}"
+												  Padding="4">
+							<Border StrokeShape="RoundRectangle 24" Padding="8"
+									Background="{DynamicResource TnPSuccessbgWL}">
+								
+								<Label Text="{Binding LabelData}" Style="{DynamicResource Brand2LabelS}" TextColor="{DynamicResource TnPSuccessContentWL}" FontSize="14"/>
+							</Border>
+						</controls:TemplatedButton>
+					</DataTemplate>
+                </BindableLayout.ItemTemplate>
+                <BindableLayout.ItemsSource>
+                    <Binding Path="Buttons" />
+                </BindableLayout.ItemsSource>
+            </FlexLayout>
+
+			<controls:TextButton Style="{DynamicResource SecondaryButton}"
+								 LabelData="{l:Localize Close}"
+								 Command="{Binding CloseCommand}" />
+		</VerticalStackLayout>
+    </ScrollView>
+</base:BasePopup>

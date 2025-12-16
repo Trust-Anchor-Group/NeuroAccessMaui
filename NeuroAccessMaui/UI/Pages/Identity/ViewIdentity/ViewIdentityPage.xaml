@@ -266,14 +266,15 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="90" />
             <!--  Padding between Card and bottom  -->
-            <RowDefinition Height="50" />
-            <!--  Bottom sheet  -->
+			<RowDefinition Height="50" />
+			<RowDefinition Height="{Binding SuperSafeAreaBottom}" />
+			<!--  Bottom sheet  -->
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <controls:Background Grid.Row="1" Grid.RowSpan="3" />
+        <controls:Background Grid.Row="1" Grid.RowSpan="5" />
 
         <skiaLottie:SKLottieView
             x:Name="RainbowView"
@@ -286,7 +287,8 @@
             RepeatCount="-1"
             Rotation="90"
             Source="background.json" />
-        <!--  TOP BAR  -->
+
+		<!--  TOP BAR  -->
         <Grid
             Grid.Row="0"
             Margin="16,8,16,0"
@@ -392,7 +394,7 @@
                 Padding="0"
                 HorizontalOptions="Center"
                 Spacing="{DynamicResource SmallSpacing}">
-                <Grid HeightRequest="200" WidthRequest="200">
+				<Grid HeightRequest="{Binding ProfileImageSideLength}" WidthRequest="{Binding ProfileImageSideLength}">
                     <controls:ConditionView Condition="{Binding LoadPhotosTask.IsRunning}">
                         <controls:ConditionView.True>
                             <ActivityIndicator
@@ -408,9 +410,9 @@
                                     <controls:ConditionView.True>
                                         <Image
                                             Aspect="AspectFit"
-                                            HeightRequest="200"
                                             Source="{Binding ProfilePhoto}"
-                                            WidthRequest="200" />
+                                            HeightRequest="{Binding ProfileImageSideLength}"
+                                            WidthRequest="{Binding ProfileImageSideLength}" />
                                     </controls:ConditionView.True>
                                     <controls:ConditionView.False>
                                         <controls:SvgView
@@ -493,7 +495,7 @@
             IsAnimationEnabled="{Binding ShouldCelebrate}"
             VerticalOptions="Fill" />
 
-        <Grid Grid.Row="1" Grid.RowSpan="4">
+        <Grid Grid.Row="1" Grid.RowSpan="5">
             <controls:BottomSheetView
                 x:Name="BottomSheet"
                 MaxExpandedHeight="-1"

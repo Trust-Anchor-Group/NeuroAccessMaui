@@ -680,6 +680,16 @@
 		</Setter>
 	</Style>
 
+	<Style x:Key="IconButtonBorderStroke" ApplyToDerivedTypes="False" TargetType="Border" BasedOn="{StaticResource IconButtonBorder}">
+		<Setter Property="Stroke" Value="{DynamicResource InputFieldsSurfaceStroke}" />
+		<Setter Property="StrokeThickness" Value="1" />
+		<Setter Property="Shadow">
+			<Setter.Value>
+				<Shadow Brush="Transparent"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 	<Style x:Key="IconButtonSvg"
 		   TargetType="controls:SvgView">
 		<Setter Property="HeightRequest"
@@ -688,6 +698,7 @@
 				Value="24" />
 	</Style>
 
+	<!-- IconButton Secondary -->
 	<Style x:Key="IconButtonSecondarySvg"
 		   TargetType="controls:SvgView">
 		<Setter Property="HeightRequest" Value="14"/>

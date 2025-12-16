@@ -104,7 +104,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 		// Throttling support for page refresh (avoid per-keystroke SetCurrentPage work)
 		private static readonly TimeSpan pageRefreshThrottle = TimeSpan.FromMilliseconds(250);
+		private static readonly TimeSpan fieldSnapshotThrottle = TimeSpan.FromMilliseconds(500);
 		private readonly ObservableTask<int> pageRefreshTask;
+		private readonly ObservableTask<int> fieldSnapshotTask;
 
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
@@ -253,6 +255,32 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					}
 				})
 				.Build();
+			this.fieldSnapshotTask = new ObservableTaskBuilder()
+				.Named("KYC Field Snapshot")
+				.AutoStart(false)
+				.UseTaskRun(true)
+				.WithPolicy(Policies.Debounce(fieldSnapshotThrottle))
+				.Run(async context =>
+				{
+					if (context.CancellationToken.IsCancellationRequested || this.disposedValue)
+					{
+						return;
+					}
+
+					if (this.kycReference is null || this.process is null)
+					{
+						return;
+					}
+
+					KycReference Reference = this.kycReference;
+					KycProcess Process = this.process;
+					string? CurrentPageId = this.CurrentPage?.Id;
+					KycNavigationSnapshot NavigationSnapshot = this.navigation;
+					double ProgressValue = this.Progress;
+
+					await this.kycService.ScheduleSnapshotAsync(Reference, Process, NavigationSnapshot, ProgressValue, CurrentPageId).ConfigureAwait(false);
+				})
+				.Build();
 		}
 
 		public override async Task OnInitializeAsync()
@@ -282,6 +310,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			bool Pending = this.kycReference.CreatedIdentityState == IdentityState.Created && !string.IsNullOrEmpty(this.kycReference.CreatedIdentityId);
 			bool Rejected = this.kycReference.CreatedIdentityState == IdentityState.Rejected && !string.IsNullOrEmpty(this.kycReference.CreatedIdentityId);
+			this.applicationSent = Pending;
 			this.ApplicationSentPublic = Pending;
 			if (!Pending && !Rejected)
 				this.PrefillFieldsFromProfile();
@@ -545,11 +574,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (e.PropertyName == nameof(ObservableKycField.RawValue))
 			{
 				this.SchedulePageRefresh();
+				this.ScheduleFieldSnapshot();
 			}
 			if (e.PropertyName == nameof(ObservableKycField.IsValid))
 			{
 				MainThread.BeginInvokeOnMainThread(this.NextCommand.NotifyCanExecuteChanged);
 			}
+		}
+
+		private void ScheduleFieldSnapshot()
+		{
+			if (this.disposedValue)
+				return;
+			if (this.kycReference is null || this.process is null)
+				return;
+			this.fieldSnapshotTask.Run();
 		}
 
 		private void SchedulePageRefresh()
@@ -592,19 +631,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				if (firstVisible >=0) index = firstVisible;
 			}
 
+			KycPage Page = this.Pages[index];
+			bool pageChanged = !object.ReferenceEquals(this.CurrentPage, Page) || this.currentPageIndex != index;
+
 			this.currentPageIndex = index;
 			if (this.CurrentPagePosition != index)
 			{
 				this.CurrentPagePosition = index;
 			}
-			KycPage Page = this.Pages[index];
 			this.CurrentPage = Page;
 			this.CurrentPageTitle = Page.Title?.Text ?? Page.Id;
 			this.CurrentPageDescription = Page.Description?.Text;
 			this.HasCurrentPageDescription = !string.IsNullOrWhiteSpace(this.CurrentPageDescription);
 			this.CurrentPageSections = Page.VisibleSections;
 			this.HasSections = this.CurrentPageSections is not null && this.CurrentPageSections.Count >0;
-			if (!this.IsInSummary && this.kycReference is not null && this.process is not null)
+			if (!this.IsInSummary && this.kycReference is not null && this.process is not null && pageChanged)
 				_ = this.kycService.ScheduleSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, Page.Id);
 			this.OnPropertyChanged(nameof(this.Progress));
 			this.NextCommand.NotifyCanExecuteChanged();
@@ -841,7 +882,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			if (this.kycReference is not null && this.process is not null)
 				await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
-			if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.Kyc_Exit)])) return;
+
+			if (!this.IsInSummary)
+			{
+				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.Kyc_Exit)]))
+					return;
+			}
+
 			await base.GoBack();
 		}
 
@@ -962,15 +1009,24 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.NrReviews = ServiceRef.TagProfile.NrReviews;
 				if (this.kycReference is not null && this.kycReference.CreatedIdentityId == E.Identity.Id)
 				{
-					try { await this.kycService.ApplySubmissionAsync(this.kycReference, E.Identity); } catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
+					try { await this.kycService.UpdateSubmissionStateAsync(this.kycReference, E.Identity); } catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
 					if (E.Identity.State == IdentityState.Approved)
 					{
 						await base.GoBack();
 						return;
 					}
-					else if (E.Identity.State == IdentityState.Rejected)
+					else if (E.Identity.State == IdentityState.Rejected || E.Identity.State == IdentityState.Obsoleted || E.Identity.State == IdentityState.Compromised)
 					{
+						this.applicationSent = false;
 						this.ApplicationSentPublic = false;
+						try
+						{
+							await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+						}
+						catch (Exception Ex)
+						{
+							ServiceRef.LogService.LogException(Ex);
+						}
 						await this.BuildMappedValuesAsync();
 						int AnchorRejected = this.currentPageIndex >=0 ? this.currentPageIndex : this.navigation.AnchorPageIndex;
 						this.navigation = this.navigation with { State = KycFlowState.Summary, AnchorPageIndex = AnchorRejected, CurrentPageIndex = AnchorRejected >=0 ? AnchorRejected : this.navigation.CurrentPageIndex };
@@ -979,7 +1035,24 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 							await this.kycService.FlushSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, this.CurrentPage?.Id);
 						this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 						this.OnPropertyChanged(nameof(this.Progress));
-						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Rejected)], ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)]);
+						string AlertTitle;
+						string AlertMessage;
+						switch (E.Identity.State)
+						{
+							case IdentityState.Obsoleted:
+								AlertTitle = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
+								AlertMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
+								break;
+							case IdentityState.Compromised:
+								AlertTitle = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
+								AlertMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
+								break;
+							default:
+								AlertTitle = ServiceRef.Localizer[nameof(AppResources.Rejected)];
+								AlertMessage = ServiceRef.Localizer[nameof(AppResources.YourApplicationWasRejected)];
+								break;
+						}
+						await ServiceRef.UiService.DisplayAlert(AlertTitle, AlertMessage);
 					}
 				}
 				if (this.ApplicationSentPublic && this.peerReviewServices is null)

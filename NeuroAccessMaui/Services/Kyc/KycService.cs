@@ -601,6 +601,34 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				Reference.CreatedIdentityId = Identity.Id;
 				Reference.CreatedIdentityState = Identity.State;
+				Reference.ApplicationReview = null;
+				Reference.RejectionMessage = null;
+				Reference.RejectionCode = null;
+				Reference.InvalidClaims = null;
+				Reference.InvalidPhotos = null;
+				Reference.InvalidClaimDetails = null;
+				Reference.InvalidPhotoDetails = null;
+				Reference.Version++;
+				Reference.UpdatedUtc = DateTime.UtcNow;
+				await SaveReferenceAsync(Reference);
+			}
+		}
+
+		/// <summary>
+		/// Updates stored submission state without clearing any existing application review.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Latest identity state.</param>
+		public async Task UpdateSubmissionStateAsync(KycReference Reference, LegalIdentity Identity)
+		{
+			if (Reference is null || Identity is null)
+				return;
+
+			AsyncLock Lock = this.GetLockFor(Reference);
+			await using (await Lock.LockAsync().ConfigureAwait(false))
+			{
+				Reference.CreatedIdentityId = Identity.Id;
+				Reference.CreatedIdentityState = Identity.State;
 				Reference.Version++;
 				Reference.UpdatedUtc = DateTime.UtcNow;
 				await SaveReferenceAsync(Reference);
@@ -765,41 +793,45 @@ namespace NeuroAccessMaui.Services.Kyc
 		private async Task SaveSnapshotAsync(KycReference Reference, KycReferenceSnapshot Snapshot, bool IsImmediate)
 		{
 			Stopwatch Sw = Stopwatch.StartNew();
+			AsyncLock Lock = this.GetLockFor(Reference);
 			try
 			{
-				ServiceRef.LogService.LogDebug("KycSnapshotPersistAttempt",
-					new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
-					new KeyValuePair<string, object?>("Version", Snapshot.Version),
-					new KeyValuePair<string, object?>("IsImmediate", IsImmediate));
-
-				// Stale check
-				if (Snapshot.Version < Reference.Version)
+				await using (await Lock.LockAsync().ConfigureAwait(false))
 				{
-					Interlocked.Increment(ref this.snapshotsSkipped);
-					ServiceRef.LogService.LogDebug("KycSnapshotStaleSkipped",
+					ServiceRef.LogService.LogDebug("KycSnapshotPersistAttempt",
 						new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
-						new KeyValuePair<string, object?>("SnapshotVersion", Snapshot.Version),
-						new KeyValuePair<string, object?>("CurrentVersion", Reference.Version));
-					return;
+						new KeyValuePair<string, object?>("Version", Snapshot.Version),
+						new KeyValuePair<string, object?>("IsImmediate", IsImmediate));
+
+					// Stale check
+					if (Snapshot.Version < Reference.Version)
+					{
+						Interlocked.Increment(ref this.snapshotsSkipped);
+						ServiceRef.LogService.LogDebug("KycSnapshotStaleSkipped",
+							new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
+							new KeyValuePair<string, object?>("SnapshotVersion", Snapshot.Version),
+							new KeyValuePair<string, object?>("CurrentVersion", Reference.Version));
+						return;
+					}
+
+					if (Reference.Fields != Snapshot.Fields)
+						Reference.Fields = Snapshot.Fields;
+					Reference.Progress = Snapshot.Progress;
+					Reference.LastVisitedPageId = Snapshot.LastVisitedPageId;
+					Reference.LastVisitedMode = Snapshot.LastVisitedMode;
+					Reference.ApplicationReview = CloneReview(Snapshot.ApplicationReview);
+					Reference.UpdatedUtc = Snapshot.UpdatedUtc;
+					await SaveReferenceAsync(Reference).ConfigureAwait(false);
+
+					Interlocked.Increment(ref this.snapshotsPersisted);
+					string Hash = ComputeFieldsHash(Snapshot.Fields);
+					ServiceRef.LogService.LogInformational("KycSnapshotPersisted",
+						new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
+						new KeyValuePair<string, object?>("Version", Snapshot.Version),
+						new KeyValuePair<string, object?>("FieldCount", Snapshot.Fields?.Length ?? 0),
+						new KeyValuePair<string, object?>("DurationMs", Sw.ElapsedMilliseconds),
+						new KeyValuePair<string, object?>("Hash", Hash));
 				}
-
-				if (Reference.Fields != Snapshot.Fields)
-					Reference.Fields = Snapshot.Fields;
-				Reference.Progress = Snapshot.Progress;
-				Reference.LastVisitedPageId = Snapshot.LastVisitedPageId;
-				Reference.LastVisitedMode = Snapshot.LastVisitedMode;
-				Reference.ApplicationReview = CloneReview(Snapshot.ApplicationReview);
-				Reference.UpdatedUtc = Snapshot.UpdatedUtc;
-				await SaveReferenceAsync(Reference).ConfigureAwait(false);
-
-				Interlocked.Increment(ref this.snapshotsPersisted);
-				string Hash = ComputeFieldsHash(Snapshot.Fields);
-				ServiceRef.LogService.LogInformational("KycSnapshotPersisted",
-					new KeyValuePair<string, object?>("ReferenceId", Reference.ObjectId ?? string.Empty),
-					new KeyValuePair<string, object?>("Version", Snapshot.Version),
-					new KeyValuePair<string, object?>("FieldCount", Snapshot.Fields?.Length ?? 0),
-					new KeyValuePair<string, object?>("DurationMs", Sw.ElapsedMilliseconds),
-					new KeyValuePair<string, object?>("Hash", Hash));
 			}
 			finally
 			{
@@ -1051,7 +1083,19 @@ namespace NeuroAccessMaui.Services.Kyc
 				{
 					this.autosaveCts.Cancel();
 					this.autosaveChannel.Writer.TryComplete();
-					this.autosaveWorkerTask.Wait(TimeSpan.FromSeconds(2));
+					try
+					{
+						this.autosaveWorkerTask.Wait(TimeSpan.FromSeconds(2));
+					}
+					catch (AggregateException ex)
+					{
+						if (ex.InnerExceptions.Any(e => e is not TaskCanceledException and not OperationCanceledException))
+							ServiceRef.LogService.LogException(ex);
+					}
+					catch (OperationCanceledException)
+					{
+						// Expected when cancellation is observed; ignore.
+					}
 				}
 				catch (Exception Ex)
 				{

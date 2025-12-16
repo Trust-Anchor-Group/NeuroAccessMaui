@@ -31,13 +31,7 @@ using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.Services.Xmpp;
 using NeuroAccessMaui.Services.Xml;
-using Waher.Content;
 using ZXing;
-using NeuroAccessMaui.Services.Intents;
-using Waher.Content;
-using NeuroAccessMaui.Services.Cache.AttachmentCache;
-using NeuroAccessMaui.Services.Cache.InternetCache;
-using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.Services

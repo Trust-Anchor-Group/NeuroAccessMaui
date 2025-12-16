@@ -16,6 +16,7 @@ using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Notification.Things;
 using NeuroAccessMaui.Services.Notification.Xmpp;
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI.Photos;
@@ -967,8 +968,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					if (this.xmppFilteredEventSink is not null)
 						ServiceRef.LogService.AddListener(this.xmppFilteredEventSink);
-
-					await ServiceRef.PushNotificationService.CheckPushNotificationToken();
 					break;
 
 				case XmppState.Offline:
@@ -977,8 +976,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 					{
 						this.xmppConnected = false;
 
-						if (this.xmppClient is not null && !this.xmppClient.Disposed)
-							await this.xmppClient.Reconnect();
+						try
+						{
+							if (this.xmppClient is not null && !this.xmppClient.Disposed)
+								await this.xmppClient.Reconnect();
+						}
+						catch (Exception)
+						{
+							// Ignore
+						}
 					}
 					break;
 			}
@@ -1047,7 +1053,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			Assembly ApplicationAssembly, Func<XmppClient, Task> ConnectedFunc, ConnectOperation Operation)
 		{
 			// Use TaskCompletionSource for single completion
-			var Tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+			TaskCompletionSource<bool> Tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
 
 			// Flags for tracking progress and outcome
 			bool StreamNegotiation = false, StreamOpened = false, StartingEncryption = false, Authenticating = false, Registering = false, IsTimeout = false;
@@ -1056,7 +1062,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			string[]? Alternatives = null;
 
 			XmppClient? Client = null;
-			var Disposed = 0; // 0 = not disposed, 1 = disposing/disposing done
+			int Disposed = 0; // 0 = not disposed, 1 = disposing/disposing done
 
 			// Local guard function for tcs
 			void TrySetResult(bool result)
@@ -1161,12 +1167,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Client.OnStateChanged += OnStateChanged;
 
 				// Begin connect
-				var ConnectTask = Client.Connect(IsIpAddress ? string.Empty : Domain);
+				Task ConnectTask = Client.Connect(IsIpAddress ? string.Empty : Domain);
 
 				// Set up timeout with cancellation
-				using var Cts = new CancellationTokenSource(Constants.Timeouts.XmppConnect);
+				using CancellationTokenSource Cts = new (Constants.Timeouts.XmppConnect);
 
-				var CompletedTask = await Task.WhenAny(Tcs.Task, ConnectTask, Task.Delay(TimeSpan.FromSeconds(5), Cts.Token));
+				Task CompletedTask = await Task.WhenAny(Tcs.Task, ConnectTask, Task.Delay(TimeSpan.FromSeconds(5), Cts.Token));
 				bool Succeeded = false;
 
 				if (CompletedTask == Tcs.Task)
@@ -1267,10 +1273,24 @@ namespace NeuroAccessMaui.Services.Xmpp
 				this.xmppLastStateChange = DateTime.Now;
 
 				if (!this.xmppClient.Disposed)
-					this.xmppClient.Reconnect();
+					SafeFireAndForget(this.xmppClient.Reconnect());
 			}
 		}
+		/// <summary>
+		/// Executes a task in a fire-and-forget manner, logging any exceptions.
+		/// </summary>
+		/// <param name="task">The task to execute without awaiting.</param>
+		private static void SafeFireAndForget(Task task)
+		{
+			if (task is null)
+				return;
 
+			_ = task.ContinueWith(t =>
+			{
+				if (t.Exception is not null)
+					ServiceRef.LogService.LogException(t.Exception);
+			}, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.RunContinuationsAsynchronously);
+		}
 		#endregion
 
 		#region Password
@@ -2023,12 +2043,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 				else
 				{
-					await ServiceRef.NotificationService.NewEvent(new ChatMessageNotificationEvent(e)
+					string Title = ServiceRef.Localizer[nameof(AppResources.NotificationChatTitle), RemoteBareJid];
+					string Body = ServiceRef.Localizer[nameof(AppResources.NotificationChatBody)];
+
+					NotificationIntent Intent = new()
 					{
-						ReplaceObjectId = ReplaceObjectId,
-						BareJid = RemoteBareJid,
-						Category = RemoteBareJid
-					});
+						Channel = Constants.PushChannels.Messages,
+						Title = Title,
+						Body = Body,
+						Action = NotificationAction.OpenChat,
+						EntityId = RemoteBareJid,
+						CorrelationId = RemoteBareJid,
+						Presentation = NotificationPresentation.StoreOnly
+					};
+
+					await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
 				}
 			});
 		}
@@ -2082,8 +2111,27 @@ namespace NeuroAccessMaui.Services.Xmpp
 						{
 							try
 							{
-								IEnumerable<KycReference> All = await Database.Find<KycReference>();
-								Ref = All.OrderByDescending(r => r.UpdatedUtc).FirstOrDefault();
+								List<KycReference> All = new List<KycReference>(await Database.Find<KycReference>());
+								if (AppId is not null)
+								{
+									Ref = All.FirstOrDefault(r => string.Equals(r.CreatedIdentityId, AppId.Id, StringComparison.OrdinalIgnoreCase));
+								}
+
+								if (Ref is null)
+								{
+									Ref = All
+										.Where(r => r.CreatedIdentityState == IdentityState.Created && !string.IsNullOrEmpty(r.CreatedIdentityId))
+										.OrderByDescending(r => r.UpdatedUtc)
+										.FirstOrDefault();
+								}
+
+								if (Ref is null)
+								{
+									Ref = All
+										.Where(r => !string.IsNullOrEmpty(r.CreatedIdentityId))
+										.OrderByDescending(r => r.UpdatedUtc)
+										.FirstOrDefault();
+								}
 							}
 							catch (Exception Ex3)
 							{
@@ -3112,7 +3160,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				await e2.PUT(Attachment.Data, Attachment.ContentType, (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
 				byte[] Signature = await this.ContractsClient.SignAsync(Attachment.Data, SignWith.CurrentKeys);
 
-				Identity = await this.ContractsClient.AddLegalIdAttachmentAsync(Identity.Id, e2.GetUrl, Signature);
+				Identity = await this.ContractsClient.AddLegalIdAttachmentAsync(Identity.Id, e2.GetUrl.Replace("10.0.2.2", "localhost"), Signature);
 			}
 
 			await this.ContractsClient.ReadyForApprovalAsync(Identity.Id);
@@ -3158,7 +3206,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>If the legal identity is in the contacts list.</returns>
 		public async Task<bool> IsContact(CaseInsensitiveString legalIdentityId)
 		{
-			ContactInfo Info = await ContactInfo.FindByLegalId(legalIdentityId);
+			ContactInfo? Info = await ContactInfo.FindByLegalId(legalIdentityId);
 			return (Info is not null && Info.LegalIdentity is not null);
 		}
 
@@ -3306,6 +3354,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					if (e.Identity.IsDiscarded())
 					{
+						await ServiceRef.TagProfile.SetIdentityApplication(null, false);
 						await this.IdentityApplicationChanged.Raise(this, e);
 					}
 					else if (e.Identity.IsApproved())
@@ -3341,6 +3390,55 @@ namespace NeuroAccessMaui.Services.Xmpp
 				ServiceRef.LogService.LogException(ex);
 				await ServiceRef.UiService.DisplayException(ex);
 			}
+
+			try
+			{
+				string Title;
+				string Body;
+
+				switch (e.Identity.State)
+				{
+					case IdentityState.Approved:
+						Title = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityApprovedTitle)];
+						Body = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityApprovedBody)];
+						break;
+					case IdentityState.Obsoleted:
+						Title = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityObsoletedTitle)];
+						Body = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityObsoletedBody)];
+						break;
+					case IdentityState.Rejected:
+						Title = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityRejectedTitle)];
+						Body = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityRejectedBody)];
+						break;
+					case IdentityState.Compromised:
+						Title = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityCompromisedTitle)];
+						Body = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityCompromisedBody)];
+						break;
+					default:
+						Title = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityApprovedTitle)];
+						Body = e.Identity.State.ToString();
+						break;
+				}
+
+				NotificationIntent Intent = new()
+				{
+					Channel = Constants.PushChannels.Identities,
+					Title = Title,
+					Body = Body,
+					Action = NotificationAction.OpenIdentity,
+					EntityId = e.Identity.Id,
+					CorrelationId = e.Identity.Id,
+					Presentation = NotificationPresentation.StoreOnly
+				};
+
+				Intent.Extras["state"] = e.Identity.State.ToString();
+
+				await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
 		}
 
 		/// <summary>
@@ -3350,6 +3448,25 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_PetitionForIdentityReceived(object? Sender, LegalIdentityPetitionEventArgs e)
 		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionIdentityTitle), ToBareJid(e.RequestorFullJid)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionIdentityBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Petitions,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenPetition,
+				EntityId = e.RequestorFullJid,
+				CorrelationId = e.PetitionId,
+				Presentation = NotificationPresentation.StoreOnly
+			};
+
+			Intent.Extras["petitionId"] = e.PetitionId ?? string.Empty;
+			Intent.Extras["requestedIdentityId"] = e.RequestedIdentityId ?? string.Empty;
+			Intent.Extras["requestorIdentityId"] = e.RequestorIdentity?.Id ?? string.Empty;
+
+			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.PetitionForIdentityReceived.Raise(this, e);
 		}
 
@@ -3614,6 +3731,24 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_PetitionForContractReceived(object? Sender, ContractPetitionEventArgs e)
 		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionContractTitle), ToBareJid(e.RequestorFullJid)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionContractBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Petitions,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenPetition,
+				EntityId = e.RequestorFullJid,
+				CorrelationId = e.PetitionId,
+				Presentation = NotificationPresentation.StoreOnly
+			};
+
+			Intent.Extras["contractId"] = e.RequestedContractId ?? string.Empty;
+			Intent.Extras["petitionId"] = e.PetitionId ?? string.Empty;
+
+			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.PetitionForContractReceived.Raise(this, e);
 		}
 
@@ -3683,6 +3818,24 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_ContractProposalReceived(object? Sender, ContractProposalEventArgs e)
 		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationContractProposalTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationContractProposalBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Contracts,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenContract,
+				EntityId = e.ContractId,
+				CorrelationId = e.ContractId,
+				Presentation = NotificationPresentation.StoreOnly
+			};
+
+			Intent.Extras["role"] = e.Role ?? string.Empty;
+			Intent.Extras["fromJid"] = e.FromBareJID ?? string.Empty;
+
+			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.ContractProposalReceived.Raise(this, e);
 		}
 
@@ -3694,6 +3847,22 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task ContractsClient_ContractUpdated(object? Sender, ContractReferenceEventArgs e)
 		{
 			await this.ContractUpdatedOrSigned(e);
+
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationContractUpdatedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationContractUpdatedBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Contracts,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenContract,
+				EntityId = e.ContractId,
+				CorrelationId = e.ContractId,
+				Presentation = NotificationPresentation.StoreOnly
+			};
+
+			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.ContractUpdated.Raise(this, e);
 		}
 
@@ -3715,6 +3884,22 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task ContractsClient_ContractSigned(object? Sender, ContractSignedEventArgs e)
 		{
 			await this.ContractUpdatedOrSigned(e);
+
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationContractSignedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationContractSignedBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Contracts,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenContract,
+				EntityId = e.ContractId,
+				CorrelationId = e.ContractId,
+				Presentation = NotificationPresentation.StoreOnly
+			};
+
+			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.ContractSigned.Raise(this, e);
 		}
 
@@ -3904,6 +4089,24 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_PetitionForSignatureReceived(object? Sender, SignaturePetitionEventArgs e)
 		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionSignatureTitle), ToBareJid(e.RequestorFullJid)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionSignatureBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Petitions,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenPetition,
+				EntityId = e.RequestorFullJid,
+				CorrelationId = e.PetitionId,
+				Presentation = NotificationPresentation.StoreOnly
+			};
+
+			Intent.Extras["signatoryId"] = e.SignatoryIdentityId ?? string.Empty;
+			Intent.Extras["petitionId"] = e.PetitionId ?? string.Empty;
+
+			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.PetitionForSignatureReceived.Raise(this, e);
 		}
 
@@ -3948,19 +4151,64 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task ProvisioningClient_IsFriendQuestion(object? Sender, IsFriendEventArgs e)
 		{
 			if (e.From.IndexOfAny(clientChars) < 0)
-				await ServiceRef.NotificationService.NewEvent(new IsFriendNotificationEvent(e));
+			{
+				string Title = ServiceRef.Localizer[nameof(AppResources.NotificationPresenceAccessTitle), e.From];
+				string Body = ServiceRef.Localizer[nameof(AppResources.NotificationPresenceAccessBody)];
+
+				NotificationIntent Intent = new()
+				{
+					Channel = Constants.PushChannels.Provisioning,
+					Title = Title,
+					Body = Body,
+					Action = NotificationAction.OpenPresenceRequest,
+					EntityId = e.From,
+					CorrelationId = e.Key
+				};
+
+				await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
+			}
 		}
 
 		private async Task ProvisioningClient_CanReadQuestion(object? Sender, CanReadEventArgs e)
 		{
 			if (e.From.IndexOfAny(clientChars) < 0)
-				await ServiceRef.NotificationService.NewEvent(new CanReadNotificationEvent(e));
+			{
+				string Title = ServiceRef.Localizer[nameof(AppResources.NotificationReadAccessTitle), e.From];
+				string Body = ServiceRef.Localizer[nameof(AppResources.NotificationReadAccessBody)];
+
+				NotificationIntent Intent = new()
+				{
+					Channel = Constants.PushChannels.Provisioning,
+					Title = Title,
+					Body = Body,
+					Action = NotificationAction.OpenPresenceRequest,
+					EntityId = e.From,
+					CorrelationId = e.Key
+				};
+
+				await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
+			}
 		}
 
 		private async Task ProvisioningClient_CanControlQuestion(object? Sender, CanControlEventArgs e)
 		{
 			if (e.From.IndexOfAny(clientChars) < 0)
-				await ServiceRef.NotificationService.NewEvent(new CanControlNotificationEvent(e));
+			{
+				string Title = ServiceRef.Localizer[nameof(AppResources.NotificationControlAccessTitle), e.From];
+				string Body = ServiceRef.Localizer[nameof(AppResources.NotificationControlAccessBody)];
+
+				NotificationIntent Intent = new()
+				{
+					Channel = Constants.PushChannels.Provisioning,
+					Title = Title,
+					Body = Body,
+					Action = NotificationAction.OpenPresenceRequest,
+					EntityId = e.From,
+					CorrelationId = e.Key
+				};
+
+				await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
+			}
 		}
 
 		private static readonly char[] clientChars = ['@', '/'];
@@ -4441,6 +4689,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.lastBalance = e.Balance;
 			this.lastEDalerEvent = DateTime.Now;
 
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationBalanceUpdatedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationBalanceUpdatedBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.EDaler,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenBalance,
+				EntityId = e.Balance?.Currency,
+				CorrelationId = e.Balance?.Currency,
+				Presentation = NotificationPresentation.StoreOnly
+			};
+
+			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.EDalerBalanceUpdated.Raise(this, e);
 		}
 
@@ -5150,6 +5413,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			this.lastTokenEvent = DateTime.Now;
 
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationTokenRemovedBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Tokens,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenToken,
+				EntityId = e.Token?.TokenId,
+				CorrelationId = e.Token?.TokenId,
+				Presentation = NotificationPresentation.StoreOnly
+			};
+
+			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.NeuroFeatureRemoved.Raise(this, e);
 		}
 
@@ -5162,6 +5440,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			this.lastTokenEvent = DateTime.Now;
 
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedTitle)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Tokens,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenToken,
+				EntityId = e.Token?.TokenId,
+				CorrelationId = e.Token?.TokenId,
+				Presentation = NotificationPresentation.StoreOnly
+			};
+
+			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.NeuroFeatureAdded.Raise(this, e);
 		}
 
@@ -5765,6 +6058,30 @@ namespace NeuroAccessMaui.Services.Xmpp
 			else
 				Tcs.TrySetException(e.StanzaError ?? new Exception());
 			return Task.CompletedTask;
+		}
+		#endregion
+
+		#region Helpers
+		private static async Task AddNotificationAsync(NotificationIntent Intent, NotificationSource Source, string? RawPayload)
+		{
+			try
+			{
+				INotificationServiceV2 NotificationService = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+				await NotificationService.AddAsync(Intent, Source, RawPayload, CancellationToken.None);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private static string ToBareJid(string Jid)
+		{
+			if (string.IsNullOrWhiteSpace(Jid))
+				return Jid;
+
+			int SlashIndex = Jid.IndexOf('/');
+			return SlashIndex > -1 ? Jid.Substring(0, SlashIndex) : Jid;
 		}
 		#endregion
 	}

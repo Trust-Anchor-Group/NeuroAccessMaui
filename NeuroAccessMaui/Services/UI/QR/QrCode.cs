@@ -39,7 +39,15 @@ namespace NeuroAccessMaui.Services.UI.QR
 			}
 
 			return [.. AllowedSchemas];
+		}
 
+		public static string[] GetBaseSchemas()
+		{
+			return
+			[
+				Constants.UriSchemes.NeuroAccess,
+				Constants.UriSchemes.Onboarding,
+			];
 		}
 
 		/// <summary>
@@ -90,7 +98,12 @@ namespace NeuroAccessMaui.Services.UI.QR
 
 			string UrlSchema = Constants.UriSchemes.GetScheme(Url) ?? string.Empty;
 
-			if (!string.IsNullOrEmpty(UrlSchema) && !AllowedSchemas.Contains(UrlSchema) && !string.Equals(UrlSchema, Constants.UriSchemes.Onboarding, StringComparison.Ordinal))
+			if (string.Equals(UrlSchema, Constants.UriSchemes.NeuroAccess, StringComparison.Ordinal))
+				return true; // TODO: Implement usage of Neuroacces links
+
+			if (!string.IsNullOrEmpty(UrlSchema) &&
+				!AllowedSchemas.Contains(UrlSchema) &&
+				!GetBaseSchemas().Contains(UrlSchema))
 			{
 				if (ShowErrorIfUnable)
 				{

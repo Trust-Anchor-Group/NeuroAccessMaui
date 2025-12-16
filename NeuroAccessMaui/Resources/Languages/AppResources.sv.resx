@@ -23,8 +23,7 @@
         <value>[base64 mime encoded serialized .NET Framework object]</value>
     </data>
     <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework
-  object]</value>
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
                 
@@ -60,8 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -114,12 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0,
-      Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SelectRolesYouWillSignAsOptional" xml:space="preserve">
     <value>Välj roller du vill signera som (valfritt)</value>
@@ -1762,9 +1758,6 @@
   <data name="StreetNumber" xml:space="preserve">
     <value>Gatunummer</value>
   </data>
-  <data name="TakePhoto" xml:space="preserve">
-    <value>Ta foto</value>
-  </data>
   <data name="TakePhotoToShare" xml:space="preserve">
     <value>Ta ett foto som du vill dela</value>
   </data>
@@ -2465,22 +2458,22 @@
     <value>Jag har läst och förstått villkoren i detta kontrakt</value>
   </data>
   <data name="Status" xml:space="preserve">
-      <value>Status</value>
+    <value>Status</value>
   </data>
   <data name="Encrypted" xml:space="preserve">
-      <value>Krypterad</value>
+    <value>Krypterad</value>
   </data>
   <data name="ViewParametersTitle" xml:space="preserve">
-      <value>Visa parametrar</value>
+    <value>Visa parametrar</value>
   </data>
   <data name="ViewParametersDescription" xml:space="preserve">
-      <value>Visa de variabler som styr kontraktet</value>
+    <value>Visa de variabler som styr kontraktet</value>
   </data>
   <data name="ViewRolesTitle" xml:space="preserve">
-      <value>Granska tilldelade roller</value>
+    <value>Granska tilldelade roller</value>
   </data>
   <data name="ViewRolesDescription" xml:space="preserve">
-      <value>Granska rollerna och se vem som har signerat varje roll</value>
+    <value>Granska rollerna och se vem som har signerat varje roll</value>
   </data>
   <data name="InvitationToSign" xml:space="preserve">
     <value>Du har blivit inbjuden att signera detta kontrakt. Se till att verifiera och granska kontraktet innan du fortsätter.</value>
@@ -2501,7 +2494,7 @@
     <value>Granska kontraktets villkor</value>
   </data>
   <data name="ServerSignatureButtonTitle" xml:space="preserve">
-    <value>Visa serversignatur</value> 
+    <value>Visa serversignatur</value>
   </data>
   <data name="ServerSignatureButtonDescription" xml:space="preserve">
     <value>Visa serversignaturen, som skyddar avtalets integritet</value>
@@ -2523,7 +2516,7 @@
   </data>
   <data name="iOS_CameraPermissionDescriptionSecondary" xml:space="preserve">
     <value>Öppna inställningar - Aktivera kamerabehörigheter</value>
-	</data>
+  </data>
   <data name="GoToSettings" xml:space="preserve">
     <value>Öppna inställningar</value>
   </data>
@@ -2824,11 +2817,11 @@
   <data name="ClearCache" xml:space="preserve">
     <value>Rensa cache</value>
   </data>
-  <data name="ClearCacheDescription" xml:space="preserve">
-    <value>Tar bort tillfälliga data som bilder och bilagor för att frigöra utrymme</value>
+  <data name="ClearBrandingAndKycCacheDescription" xml:space="preserve">
+    <value>Tar bort branding och KYC data för den nuvarande domänen</value>
   </data>
   <data name="Apps" xml:space="preserve">
-      <value>Appar</value>
+    <value>Appar</value>
   </data>
   <data name="BetaFeaturesDescription" xml:space="preserve">
     <value>Betafunktioner är under utveckling och kan sakna fullständig funktionalitet eller design. Vissa av deras kärnfunktioner är dock redan tillgängliga.</value>
@@ -2844,9 +2837,6 @@
   </data>
   <data name="NFC" xml:space="preserve">
     <value>NFC</value>
-  </data>
-  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
-    <value>Vill du lägga till denna identitet i dina kontakter?</value>
   </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Kommer snart!</value>
@@ -2878,6 +2868,9 @@
   <data name="LanguageChangedMessage" xml:space="preserve">
     <value>Språket har ändrats. Starta om appen för att säkerställa att alla ändringar tillämpas.</value>
   </data>
+  <data name="ContinueSecondsFormat" xml:space="preserve">
+    <value>Fortsätt ({0})</value>
+  </data>
   <data name="Never" xml:space="preserve">
     <value>Aldrig</value>
   </data>
@@ -2892,9 +2885,6 @@
   </data>
   <data name="LastUpdatedFormat" xml:space="preserve">
     <value>Senast uppdaterad: {0}</value>
-  </data>
-  <data name="ContinueSecondsFormat" xml:space="preserve">
-    <value>Fortsätt ({0})</value>
   </data>
   <data name="ActivateYourDigitalIdentity" xml:space="preserve">
     <value>Aktivera ditt digitala ID</value>
@@ -2995,42 +2985,6 @@
   <data name="Kyc_Exit" xml:space="preserve">
     <value>Är du säker på att du vill lämna identitetsansökningsprocessen?</value>
   </data>
-  <data name="KycReviewTitle" xml:space="preserve">
-    <value>Granskning av ansökan</value>
-  </data>
-  <data name="KycReviewCodeLabel" xml:space="preserve">
-    <value>Kod:</value>
-  </data>
-  <data name="KycInvalidClaimsHeader" xml:space="preserve">
-    <value>Fält att åtgärda</value>
-  </data>
-  <data name="KycInvalidPhotosHeader" xml:space="preserve">
-    <value>Foton att ersätta</value>
-  </data>
-  <data name="KycInvalidGuidance" xml:space="preserve">
-    <value>Dessa uppgifter kunde inte godkännas. Uppdatera dem i formuläret innan du skickar igen.</value>
-  </data>
-  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
-    <value>Fält som väntar</value>
-  </data>
-  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
-    <value>Foton som väntar</value>
-  </data>
-  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
-    <value>Åtgärda problem och redigera formulär</value>
-  </data>
-  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
-    <value>Skicka igen utan väntande fält</value>
-  </data>
-  <data name="KycManualReviewInfo" xml:space="preserve">
-    <value>Din ansökan genomgår manuell granskning. Du kan invänta resultatet eller justera posterna nedan för att prova automatisk hantering.</value>
-  </data>
-  <data name="KycPendingManualReviewHint" xml:space="preserve">
-    <value>Dessa poster väntar på manuell granskning. Du kan låta dem vara eller justera dem för att prova automatisk hantering.</value>
-  </data>
-  <data name="KycReviewAvailableMainPage" xml:space="preserve">
-    <value>Vissa uppgifter kunde inte verifieras. Tryck för att granska.</value>
-  </data>
   <data name="Progress" xml:space="preserve">
     <value>Framsteg</value>
   </data>
@@ -3078,9 +3032,6 @@
   </data>
   <data name="ApplicationUnderReviewDescription" xml:space="preserve">
     <value>Din ID-ansökan har skickats för granskning. Vi meddelar dig när din ID har godkänts!</value>
-  </data>
-  <data name="ApplicationSummary" xml:space="preserve">
-    <value>Ansökningssammanfattning</value>
   </data>
   <data name="ApplicationSummaryDescription" xml:space="preserve">
     <value>Innan du slutför, vänligen läs igenom och säkerställ att allt är korrekt</value>
@@ -3138,6 +3089,45 @@
   </data>
   <data name="IdentityRejected" xml:space="preserve">
     <value>Identitet avslogs. Du kan gå tillbaka till sidan för ansökningar och uppdatera din information för att försöka igen.</value>
+  </data>
+  <data name="PasswordWithTooManyRepeatingSymbols" xml:space="preserve">
+    <value>Ett PINfår inte innehålla mer än {0} identiska symbåler på rad.</value>
+  </data>
+  <data name="KycReviewTitle" xml:space="preserve">
+    <value>Granskning av ansökan</value>
+  </data>
+  <data name="KycReviewCodeLabel" xml:space="preserve">
+    <value>Kod:</value>
+  </data>
+  <data name="KycInvalidClaimsHeader" xml:space="preserve">
+    <value>Fält att åtgärda</value>
+  </data>
+  <data name="KycInvalidPhotosHeader" xml:space="preserve">
+    <value>Foton att ersätta</value>
+  </data>
+  <data name="KycInvalidGuidance" xml:space="preserve">
+    <value>Dessa uppgifter kunde inte godkännas. Uppdatera dem i formuläret innan du skickar igen.</value>
+  </data>
+  <data name="KycUnvalidatedClaimsHeader" xml:space="preserve">
+    <value>Fält som väntar</value>
+  </data>
+  <data name="KycUnvalidatedPhotosHeader" xml:space="preserve">
+    <value>Foton som väntar</value>
+  </data>
+  <data name="KycFixInvalidClaimsButton" xml:space="preserve">
+    <value>Åtgärda problem och redigera formulär</value>
+  </data>
+  <data name="KycReapplyWithoutPendingButton" xml:space="preserve">
+    <value>Skicka igen utan väntande fält</value>
+  </data>
+  <data name="KycManualReviewInfo" xml:space="preserve">
+    <value>Din ansökan genomgår manuell granskning. Du kan invänta resultatet eller justera posterna nedan för att prova automatisk hantering.</value>
+  </data>
+  <data name="KycPendingManualReviewHint" xml:space="preserve">
+    <value>Dessa poster väntar på manuell granskning. Du kan låta dem vara eller justera dem för att prova automatisk hantering.</value>
+  </data>
+  <data name="KycReviewAvailableMainPage" xml:space="preserve">
+    <value>Vissa uppgifter kunde inte verifieras. Tryck för att granska.</value>
   </data>
   <data name="AddToBalance" xml:space="preserve">
     <value>Lägg till saldo</value>
@@ -3238,42 +3228,6 @@
   <data name="SendCredits" xml:space="preserve">
     <value>Skicka krediter</value>
   </data>
-  <data name="Year" xml:space="preserve">
-    <value>år</value>
-  </data>
-  <data name="Years" xml:space="preserve">
-    <value>år</value>
-  </data>
-  <data name="Month" xml:space="preserve">
-    <value>månad</value>
-  </data>
-  <data name="Months" xml:space="preserve">
-    <value>månader</value>
-  </data>
-  <data name="Day" xml:space="preserve">
-    <value>dag</value>
-  </data>
-  <data name="Days" xml:space="preserve">
-    <value>dagar</value>
-  </data>
-  <data name="Hour" xml:space="preserve">
-    <value>timme</value>
-  </data>
-  <data name="Hours" xml:space="preserve">
-    <value>timmar</value>
-  </data>
-  <data name="Minute" xml:space="preserve">
-    <value>minut</value>
-  </data>
-  <data name="Minutes" xml:space="preserve">
-    <value>minuter</value>
-  </data>
-  <data name="Second" xml:space="preserve">
-    <value>sekund</value>
-  </data>
-  <data name="Seconds" xml:space="preserve">
-    <value>sekunder</value>
-  </data>
   <data name="DurationAndSeparator" xml:space="preserve">
     <value> och </value>
   </data>
@@ -3364,9 +3318,6 @@
   <data name="CertifierCanDestroy" xml:space="preserve">
     <value>Certifierare kan förstöra token</value>
   </data>
-  <data name="MachineReadableText" xml:space="preserve">
-    <value>Maskinläsbar information</value>
-  </data>
   <data name="MachineReadableInfoTextToken" xml:space="preserve">
     <value>Nedan visas en översikt över maskinläsbar data som är inbäddad i token.</value>
   </data>
@@ -3435,5 +3386,200 @@
   </data>
   <data name="ShortId" xml:space="preserve">
     <value>ID</value>
+  </data>
+  <data name="ProposalDefaultMessage" xml:space="preserve">
+    <value>Hej, jag vill föreslå ett kontrakt med dig. Vänligen granska innehållet och godkänn förslaget om du samtycker.</value>
+  </data>
+  <data name="WouldYouLikeToAddThisIdentityToYourContacts" xml:space="preserve">
+    <value>Vill du lägga till denna identitet i dina kontakter?</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Ta foto</value>
+  </data>
+  <data name="UrlSchemaNotPermitted" xml:space="preserve">
+    <value>Ansök om en personlig identitet för att använda denna funktion.</value>
+  </data>
+  <data name="KycRejectedHeader" xml:space="preserve">
+    <value>Ansökan nekad</value>
+  </data>
+  <data name="KycRejectedDescription" xml:space="preserve">
+    <value>Leverantören kunde inte godkänna din ansökan. Se anledning nedan.</value>
+  </data>
+  <data name="KycRejectedInvalidationHint" xml:space="preserve">
+    <value>Följande fält behöver din uppmärksamhet innan återansökan:</value>
+  </data>
+  <data name="KycUnvalidatedWarningTitle" xml:space="preserve">
+    <value>Vissa detaljer kräver manuellt godkännande</value>
+  </data>
+  <data name="KycUnvalidatedWarningDescription" xml:space="preserve">
+    <value>{0} detaljer och {1} foton kunde inte valideras automatiskt och måste godkännas av leverantören. Detta kan försena din ansökan.</value>
+  </data>
+  <data name="KycUnvalidatedActionHint" xml:space="preserve">
+    <value>Du kan återansöka utan följande detaljer. Detta är inte rekommenderat</value>
+  </data>
+  <data name="KycClearUnvalidatedButton" xml:space="preserve">
+    <value>Ta bort väntande detaljer</value>
+  </data>
+  <data name="KycRemovePendingAndReapplyButton" xml:space="preserve">
+    <value>Ta bort väntande detaljer och återansök</value>
+  </data>
+  <data name="KycConfirmRemovePending" xml:space="preserve">
+    <value>Detta kommer ta bort din nuvarande ansökan, ta bort väntande detaljer och återansöka utan dem. Vill du fortsätta?</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>Valfritt</value>
+  </data>
+  <data name="NotificationSearchPlaceholder" xml:space="preserve">
+    <value>Sök i aviseringar</value>
+  </data>
+  <data name="NotificationsAllLabel" xml:space="preserve">
+    <value>Alla</value>
+  </data>
+  <data name="NotificationsUnreadLabel" xml:space="preserve">
+    <value>Olästa</value>
+  </data>
+  <data name="NotificationsMarkReadLabel" xml:space="preserve">
+    <value>Markera som läst</value>
+  </data>
+  <data name="NotificationsClearAllLabel" xml:space="preserve">
+    <value>Rensa alla</value>
+  </data>
+  <data name="NotificationsDeleteLabel" xml:space="preserve">
+    <value>Ta bort</value>
+  </data>
+  <data name="NoNotificationsLabel" xml:space="preserve">
+    <value>Inga aviseringar ännu</value>
+  </data>
+  <data name="SelectFilter" xml:space="preserve">
+    <value>Välj filter</value>
+  </data>
+  <data name="NotificationChatTitle" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="NotificationChatBody" xml:space="preserve">
+    <value>Har skickat ett meddelande till dig.</value>
+  </data>
+  <data name="NotificationPetitionIdentityTitle" xml:space="preserve">
+    <value>Identitetsförfrågan från {0}</value>
+  </data>
+  <data name="NotificationPetitionIdentityBody" xml:space="preserve">
+    <value>En ny identitetsförfrågan väntar.</value>
+  </data>
+  <data name="NotificationPetitionContractTitle" xml:space="preserve">
+    <value>Avtalsförfrågan från {0}</value>
+  </data>
+  <data name="NotificationPetitionContractBody" xml:space="preserve">
+    <value>En ny avtalsförfrågan väntar.</value>
+  </data>
+  <data name="NotificationPetitionSignatureTitle" xml:space="preserve">
+    <value>Signeringsförfrågan från {0}</value>
+  </data>
+  <data name="NotificationPetitionSignatureBody" xml:space="preserve">
+    <value>En ny signeringsförfrågan väntar.</value>
+  </data>
+  <data name="NotificationIdentityApprovedTitle" xml:space="preserve">
+    <value>Identitetsstatus uppdaterad</value>
+  </data>
+  <data name="NotificationIdentityApprovedBody" xml:space="preserve">
+    <value>Din identitet har godkänts.</value>
+  </data>
+  <data name="NotificationIdentityObsoletedTitle" xml:space="preserve">
+    <value>Identitetsstatus uppdaterad</value>
+  </data>
+  <data name="NotificationIdentityObsoletedBody" xml:space="preserve">
+    <value>Din identitet har blivit föråldrad.</value>
+  </data>
+  <data name="NotificationIdentityRejectedTitle" xml:space="preserve">
+    <value>Identitetsstatus uppdaterad</value>
+  </data>
+  <data name="NotificationIdentityRejectedBody" xml:space="preserve">
+    <value>Din identitet har blivit nekad.</value>
+  </data>
+  <data name="NotificationIdentityCompromisedTitle" xml:space="preserve">
+    <value>Identitetsstatus uppdaterad</value>
+  </data>
+  <data name="NotificationIdentityCompromisedBody" xml:space="preserve">
+    <value>Din identitet kan vara komprometterad.</value>
+  </data>
+  <data name="NotificationContractCreatedTitle" xml:space="preserve">
+    <value>Kontrakt skapat</value>
+  </data>
+  <data name="NotificationContractCreatedBody" xml:space="preserve">
+    <value>Ett nytt kontrakt har skapats.</value>
+  </data>
+  <data name="NotificationContractSignedTitle" xml:space="preserve">
+    <value>Kontrakt signerat</value>
+  </data>
+  <data name="NotificationContractSignedBody" xml:space="preserve">
+    <value>Ett kontrakt har signerats.</value>
+  </data>
+  <data name="NotificationContractUpdatedTitle" xml:space="preserve">
+    <value>Kontrakt uppdaterat</value>
+  </data>
+  <data name="NotificationContractUpdatedBody" xml:space="preserve">
+    <value>Ett kontrakt har uppdaterats.</value>
+  </data>
+  <data name="NotificationContractDeletedTitle" xml:space="preserve">
+    <value>Kontrakt borttaget</value>
+  </data>
+  <data name="NotificationContractDeletedBody" xml:space="preserve">
+    <value>Ett kontrakt har tagits bort.</value>
+  </data>
+  <data name="NotificationContractProposalTitle" xml:space="preserve">
+    <value>Kontraktsförslag</value>
+  </data>
+  <data name="NotificationContractProposalBody" xml:space="preserve">
+    <value>Ett kontraktsförslag är tillgängligt.</value>
+  </data>
+  <data name="NotificationBalanceUpdatedTitle" xml:space="preserve">
+    <value>Saldo uppdaterat</value>
+  </data>
+  <data name="NotificationBalanceUpdatedBody" xml:space="preserve">
+    <value>Ditt saldo har uppdaterats.</value>
+  </data>
+  <data name="NotificationTokenAddedTitle" xml:space="preserve">
+    <value>Token tillagd</value>
+  </data>
+  <data name="NotificationTokenAddedBody" xml:space="preserve">
+    <value>Din plånbok har uppdaterats.</value>
+  </data>
+  <data name="NotificationTokenRemovedTitle" xml:space="preserve">
+    <value>Token borttagen</value>
+  </data>
+  <data name="NotificationTokenRemovedBody" xml:space="preserve">
+    <value>Din plånbok har uppdaterats.</value>
+  </data>
+  <data name="NotificationPresenceAccessTitle" xml:space="preserve">
+    <value>Åtkomstförfrågan från {0}</value>
+  </data>
+  <data name="NotificationPresenceAccessBody" xml:space="preserve">
+    <value>Har begärt åtkomst till din identitet.</value>
+  </data>
+  <data name="NotificationReadAccessTitle" xml:space="preserve">
+    <value>Läsåtkomstförfrågan från {0}</value>
+  </data>
+  <data name="NotificationReadAccessBody" xml:space="preserve">
+    <value>Har begärt läsåtkomst.</value>
+  </data>
+  <data name="NotificationControlAccessTitle" xml:space="preserve">
+    <value>Kontrollförfrågan från {0}</value>
+  </data>
+  <data name="NotificationControlAccessBody" xml:space="preserve">
+    <value>Har begärt kontrollåtkomst.</value>
+  </data>
+  <data name="NotificationPopupDescription" xml:space="preserve">
+    <value>Missa inte viktiga händelser.</value>
+  </data>
+  <data name="NotificationPopupDescriptionSecondary" xml:space="preserve">
+    <value>Aktivera aviseringar i enhetens inställningar för att få meddelanden om meddelanden och förfrågningar.</value>
+  </data>
+  <data name="NotificationSettings" xml:space="preserve">
+    <value>Aviseringsinställningar</value>
+  </data>
+  <data name="EnableNotifications" xml:space="preserve">
+    <value>Aktivera aviseringar</value>
+  </data>
+  <data name="EnableNotificationsDescription" xml:space="preserve">
+    <value>Öppna enhetens inställningar för att aktivera aviseringar.</value>
   </data>
 </root>

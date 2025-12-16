@@ -11,8 +11,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MyContractsPage
 	{
-		private bool selectionMade = false;
-
 		/// <summary>
 		/// Creates a new instance of the <see cref="MyContractsPage"/> class.
 		/// </summary>
@@ -21,41 +19,35 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 			MyContractsViewModel ViewModel = new(ServiceRef.NavigationService.PopLatestArgs<MyContractsNavigationArgs>());
 			this.ContentPageModel = ViewModel;
 
-			this.selectionMade = false;
-
 			this.InitializeComponent();
+
+			ViewModel.TagSelected += this.OnTagSelected;
 		}
 
-		private void ContractsSelectionChanged(object? Sender, SelectionChangedEventArgs e)
+		private void OnTagSelected(MyContractsViewModel.SelectableTag tag)
 		{
-			if (this.selectionMade)
-				return;
-
-			if (this.ContentPageModel is MyContractsViewModel MyContractsViewModel)
+			try
 			{
-				object SelectedItem = this.Contracts.SelectedItem;
-
-				if (SelectedItem is HeaderModel Category)
+				MainThread.BeginInvokeOnMainThread(async () =>
 				{
-					Category.Expanded = !Category.Expanded;
-					MyContractsViewModel.AddOrRemoveContracts(Category, Category.Expanded);
-				}
-				else if (SelectedItem is ContractModel Contract)
-				{
-					this.selectionMade = true;
+					HorizontalStackLayout filterLayout = this.FindByName<HorizontalStackLayout>("FilterTagsLayout");
+					ScrollView filterScroll = this.FindByName<ScrollView>("FilterTagsScroll");
+					if (filterLayout is null || filterScroll is null)
+						return;
 
-					MyContractsViewModel.ContractSelected(Contract.ContractId);
-
-					if (Contract.HasEvents)
-						ServiceRef.NotificationService.DeleteEvents(Contract.Events);
-				}
-				else if (SelectedItem is EventModel Event)
-				{
-					this.selectionMade = true;
-					Event.Clicked();
-				}
-
-				this.Contracts.SelectedItem = null;
+					foreach (object child in filterLayout.Children)
+					{
+						if (child is VisualElement ve && ve.BindingContext == tag)
+						{
+							await filterScroll.ScrollToAsync(ve, ScrollToPosition.Center, true);
+							break;
+						}
+					}
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 
@@ -67,15 +59,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 				{
 					if (this.ContentPageModel is MyContractsViewModel MyContractsViewModel)
 					{
-						ObservableCollection<IUniqueItem> CategoryCopy = new(MyContractsViewModel.Categories); 
-
-						foreach (IUniqueItem Category in CategoryCopy)
-						{
-							if (Category is HeaderModel Category2)
-							{
-								MyContractsViewModel.SearchContracts(Category2, e.NewTextValue);
-							}
-						}
+						MyContractsViewModel.UpdateSearch(e.NewTextValue);
 					}
 				});
 			}

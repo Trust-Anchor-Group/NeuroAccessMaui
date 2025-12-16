@@ -287,6 +287,12 @@ namespace NeuroAccessMaui.Services.Tag
 		bool IsDirty { get; }
 
 		/// <summary>
+		/// TODO: When implemented, is property to determine if the user is a merchant.
+		/// Can be used to hide or show certain features.
+		/// </summary>
+		bool IsMerchant { get; }
+
+		/// <summary>
 		/// Converts the current <see cref="ITagProfile"/> to a <see cref="TagConfiguration"/> object that can be persisted to the <see cref="IStorageService"/>.
 		/// </summary>
 		/// <returns>Configuration object</returns>
@@ -489,6 +495,11 @@ namespace NeuroAccessMaui.Services.Tag
 		/// </summary>
 		/// <param name="Reference">Contract reference.</param>
 		void CheckContractReference(ContractReference Reference);
+
+		/// <summary>
+		/// If the connected domain is a local domain.
+		/// </summary>
+		bool DomainIsLocal();
 
 		/// <summary>
 		/// Event raised when properties have been changed.

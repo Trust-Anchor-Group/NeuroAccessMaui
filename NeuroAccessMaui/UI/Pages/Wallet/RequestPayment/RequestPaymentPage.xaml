@@ -26,18 +26,16 @@
 
 				<Border Style="{DynamicResource BorderSet}">
 					<VerticalStackLayout>
-						<Label Text="{l:Localize RequestPayment}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize RequestPaymentDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start" Margin="0,8,0,16"/>
-
 						<!-- AMOUNT -->
 						<Label Text="{l:Localize Amount}" Style="{DynamicResource Brand2BodySHeadSHeadL}"/>
 						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
-							<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+							<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}">
 								<controls:CompositeEntry EntryData="{Binding AmountText}"
-																 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
-																 Placeholder="{Binding Path=Currency}"
-																 Style="{DynamicResource ThickCompositeEntry}"
-																 BorderStroke="Transparent"/>
+														 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
+														 Placeholder="{Binding Path=Currency}"
+														 Style="{DynamicResource ThickCompositeEntry}"
+														 BorderStroke="Transparent"
+														 Keyboard="Numeric"/>
 							</Border>
 							<controls:ImageButton Grid.Column="1" Grid.Row="0" PathData="{x:Static ui:Geometries.CalculatorPath}"
 												  Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountText"
@@ -48,12 +46,13 @@
 						<!-- AMOUNT EXTRA -->
 						<Label Text="{l:Localize AmountExtra}" Style="{DynamicResource Brand2BodySHeadSHeadL}" Margin="0,16,0,0"/>
 						<Grid ColumnDefinitions="*,auto" RowDefinitions="auto" Padding="0" Margin="0" ColumnSpacing="0" RowSpacing="0">
-							<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+							<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}">
 								<controls:CompositeEntry EntryData="{Binding AmountExtraText}"
 														 BackgroundColor="{Binding Path=AmountExtraOk, Converter={converters:ControlBgColor}}"
 														 Placeholder="{Binding Path=Currency}"
 														 Style="{DynamicResource ThickCompositeEntry}"
-														 BorderStroke="Transparent"/>
+														 BorderStroke="Transparent"
+														 Keyboard="Numeric"/>
 							</Border>
 							<controls:ImageButton Grid.Column="1" Grid.Row="0" PathData="{x:Static ui:Geometries.CalculatorPath}"
 												  Command="{Binding OpenCalculatorCommand}" CommandParameter="AmountExtraText"
@@ -62,9 +61,12 @@
 						</Grid>
 
 						<!-- MESSAGE -->
-						<Label Text="{l:Localize Message}" Style="{DynamicResource Brand2BodySHeadSHeadL}" Margin="0,16,0,0"/>
-						<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
-							<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}" EntryData="{Binding Path=Message}" BorderStroke="Transparent"/>
+						<Label Text="{l:Localize Message}" Style="{DynamicResource Brand2BodySHeadSHeadL}" Margin="0,16,0,0" IsVisible="{Binding IsMerchant}"/>
+						<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}" IsVisible="{Binding IsMerchant}">
+							<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
+													 EntryData="{Binding Path=Message}"
+													 BorderStroke="Transparent"
+													 Placeholder="{l:Localize Optional}"/>
 						</Border>
 
 						<!-- BUTTONS -->
@@ -80,12 +82,6 @@
 									   IsVisible="{Binding Path=HasQrCode}" WidthRequest="{Binding Path=QrCodeWidth}" 
 									   HeightRequest="{Binding Path=QrCodeHeight}" HorizontalOptions="Center" VerticalOptions="Start" 
 									   Margin="0" />
-						<Label Text="{l:Localize Share}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"
-							   IsVisible="{Binding Path=HasQrCode}" />
-						<Label Text="{l:Localize ShareDescription}"
-							   Style="{DynamicResource InfoLabel}" VerticalOptions="Start"
-							   IsVisible="{Binding Path=HasQrCode}"
-							   Margin="0,8,0,8"/>
 
 						<controls:TextButton x:Name="ShareContactButton" LabelData="{l:Localize Contacts}" Command="{Binding ShareContactCommand}"
 											 IsVisible="{Binding Path=HasQrCode}" Margin="{DynamicResource SmallBottomMargins}"

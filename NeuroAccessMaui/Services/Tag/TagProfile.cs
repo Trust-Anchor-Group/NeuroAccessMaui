@@ -100,6 +100,12 @@ namespace NeuroAccessMaui.Services.Tag
 		private DateTime? lastEDalerBalanceUpdate;
 
 		/// <summary>
+		/// TODO: When implemented, is property to determine if the user is a merchant.
+		/// Can be used to hide or show certain features.
+		/// </summary>
+		public bool IsMerchant => false;
+
+		/// <summary>
 		/// Creates an instance of a <see cref="TagProfile"/>.
 		/// </summary>
 		public TagProfile()
@@ -1663,8 +1669,34 @@ namespace NeuroAccessMaui.Services.Tag
 				this.HasContractTokenCreationTemplatesReferences = true;
 		}
 
+		/// <summary>
+		/// Determines if the current <see cref="Domain"/> represents the local machine.
+		/// Returns <c>true</c> for case-insensitive "localhost" or when the domain parses as an IPv4/IPv6 address.
+		/// Supports IPv6 bracket notation and optional port suffixes.
+		/// </summary>
+		/// <returns><c>true</c> if the domain is localhost or an IP address; otherwise, <c>false</c>.</returns>
+		public bool DomainIsLocal()
+		{
+			string? d = this.Domain;
+			if (string.IsNullOrWhiteSpace(d))
+				return false;
 
+			d = d.Trim();
+			if (string.Equals(d, "localhost", StringComparison.OrdinalIgnoreCase))
+				return true;
 
+			// Handle IPv6 bracket notation: [::1]
+			if (d.Length > 2 && d[0] == '[' && d[^1] == ']')
+				d = d.Substring(1, d.Length - 2);
+
+			// If an IPv4 host is provided with a port (e.g., 127.0.0.1:5222), strip the port.
+			// Note: IPv6 with ports uses bracket notation and was handled above.
+			int lastColon = d.LastIndexOf(':');
+			if (lastColon > 0 && d.IndexOf(':') == lastColon) // Single colon implies IPv4:port
+				d = d.Substring(0, lastColon);
+
+			return System.Net.IPAddress.TryParse(d, out _);
+		}
 	}
 
 }

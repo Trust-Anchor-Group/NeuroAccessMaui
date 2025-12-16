@@ -1,4 +1,5 @@
 using Microsoft.Maui.Controls.Shapes;
+using NeuroAccessMaui.CustomPermissions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.UI;
 using NeuroAccessMaui.UI.Popups.Permission;
@@ -38,6 +39,49 @@ namespace NeuroAccessMaui.Services.AppPermissions
 			{
 				return PermissionStatus.Unknown;
 			}
+		}
+
+		/// <summary>
+		/// Checks the Notification Permission, requests it if necessary, and show a rationale popup if denied
+		/// </summary>
+		/// <returns>true if permission is granted; otherwise, false.</returns>
+		public async Task<bool> CheckNotificationPermissionAsync(bool SkipRequest = false)
+		{
+			PermissionStatus Status;
+
+			if (SkipRequest)
+			{
+				Status = await Permissions.CheckStatusAsync<NotificationPermission>();
+			}
+			else
+			{
+				Status = await CheckAndRequestPermissionAsync<NotificationPermission>();
+			}
+
+			if (Status == PermissionStatus.Granted)
+				return true;
+
+			string Title = ServiceRef.Localizer[nameof(AppResources.Notifications)];
+			string Description = ServiceRef.Localizer[nameof(AppResources.NotificationPopupDescription)];
+			string DescriptionSecondary = ServiceRef.Localizer[nameof(AppResources.NotificationPopupDescriptionSecondary)];
+			Geometry IconGeometry = Geometries.NotificationIconPath;
+
+			// Display the permission popup so the user can enable it from the settings.
+			ShowPermissionViewModel ViewModel = new(Title, Description, DescriptionSecondary, IconGeometry);
+			ShowPermissionPopup PermissionPopup = new(ViewModel);
+
+			await ServiceRef.PopupService.PushAsync(PermissionPopup);
+
+			if (SkipRequest)
+			{
+				Status = await Permissions.CheckStatusAsync<NotificationPermission>();
+			}
+			else
+			{
+				Status = await CheckAndRequestPermissionAsync<NotificationPermission>();
+			}
+
+			return Status == PermissionStatus.Granted;
 		}
 
 		/// <summary>

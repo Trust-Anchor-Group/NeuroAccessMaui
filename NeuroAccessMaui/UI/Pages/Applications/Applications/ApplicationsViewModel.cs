@@ -433,7 +433,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		#region Loading (refactored to ObservableTask)
 
 		/// <summary>
-		/// Factory for the loader. Uses generation & cancellation from TaskContext,
+		/// Factory for the loader. Uses generation &amp; cancellation from TaskContext,
 		/// reports simple progress, and performs UI changes on the main thread.
 		/// </summary>
 		private async Task LoadApplicationsAsync(TaskContext<int> ctx)

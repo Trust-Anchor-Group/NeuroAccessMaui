@@ -128,7 +128,7 @@
 								</controls:ConditionView.True>
 								
 								<controls:ConditionView.False>
-									<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+									<Border HeightRequest="70" Style="{DynamicResource BorderSubSet}" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}">
 										<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
 																 BorderStroke="Transparent"
 																 EntryData="{Binding Path=To}"
@@ -153,10 +153,10 @@
 						<!-- Amount -->
 						<Grid RowDefinitions="auto, auto">
 							<Label Text="{l:Localize Amount}" Style="{DynamicResource Brand2BodySHeadSHeadL}"/>
-							<Border Grid.Row="1" HeightRequest="70" Style="{DynamicResource BorderSubSet}" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+							<Border Grid.Row="1" HeightRequest="70" Style="{DynamicResource BorderSubSet}" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}">
 								<controls:CompositeEntry Style="{DynamicResource ThickCompositeEntry}" EntryData="{Binding Path=AmountText}"
 														 BackgroundColor="{Binding Path=AmountOk, Converter={converters:ControlBgColor}}"
-														 Placeholder="{Binding Path=Currency}" IsReadOnly="{Binding Path=AmountPreset}"
+														 IsReadOnly="{Binding Path=AmountPreset}" Keyboard="Numeric"
 														 BorderStroke="Transparent" VerticalOptions="Center">
 									<controls:CompositeEntry.RightView>
 										<Label Text="{Binding Currency}" VerticalOptions="Center" Style="{DynamicResource Brand2HeadlineHeadlineL}" Margin="0,0,4,0"/>
@@ -171,15 +171,18 @@
 							<Border Grid.Row="1" HeightRequest="70" Style="{DynamicResource BorderSubSet}">
 								<controls:CompositeEntry Style="{DynamicResource ThickCompositeEntry}" EntryData="{Binding Path=AmountExtraText}" BackgroundColor="{Binding Path=AmountExtraOk, Converter={converters:ControlBgColor}}" 
 														 Placeholder="{Binding Path=Currency}" IsVisible="{Binding Path=AmountPreset}"
-														 BorderStroke="Transparent" VerticalOptions="Center"/>
+														 BorderStroke="Transparent" VerticalOptions="Center" Keyboard="Numeric"/>
 							</Border>
 						</Grid>
 
 						<!-- Message -->
 						<Grid RowDefinitions="auto, auto">
 							<Label Text="{l:Localize Message}" Style="{DynamicResource Brand2BodySHeadSHeadL}"/>
-							<Border Style="{DynamicResource BorderSubSet}" Grid.Row="1" BackgroundColor="{DynamicResource InputFieldsSurfaceBackgroundActive}">
-								<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}" EntryData="{Binding Path=Message}" IsReadOnly="{Binding Path=MessagePreset}"
+							<Border Style="{DynamicResource BorderSubSet}" Grid.Row="1" Background="{DynamicResource InputFieldsSurfaceBackgroundActive}">
+								<controls:CompositeEntry Style="{DynamicResource RegularCompositeEntry}"
+														 EntryData="{Binding Path=Message}"
+														 IsReadOnly="{Binding Path=MessagePreset}"
+														 Placeholder="{l:Localize Optional}"
 														 BorderStroke="Transparent"/>
 							</Border>
 							

@@ -25,8 +25,6 @@ using SkiaSharp.Views.Maui.Handlers;
 
 #if DEBUG
 using DotNet.Meteor.HotReload.Plugin;
-using SkiaSharp.Views.Maui.Handlers;
-using Microsoft.Maui.Hosting;
 #endif
 #if ANDROID
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
@@ -94,7 +92,7 @@ namespace NeuroAccessMaui
 			});
 
 			Builder.UseSkiaSharp();
-			//Builder.RegisterFirebaseServices();
+			Builder.RegisterFirebaseServices();
 #if DEBUG
 			Builder.EnableHotReload();
 			Builder.Logging.AddDebug();

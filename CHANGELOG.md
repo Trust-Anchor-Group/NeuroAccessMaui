@@ -7,6 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.1] - 2025/12/16
+
+### Added
+
+- Adds new notification service v2 and intent routing
+- Adds page for viewing notifications
+- Adds runtime notification filter registry
+- Adds notification action labels and context menu
+
+### Changed
+
+- Refactors push notification handling
+- Update Rule Definitions to match new contract
+- Use correlation id for notification matching
+- Updates notification merging and consumption
+- Updates notification presentation to store only
+- Considers push source when computing id
+- Improves notification deduplication and correlation
+- Unifies notification rendering to use intent payload
+- Enhances notification model, routing & UI
+- Improves push handling and identity routing
+- Improves notifications loading and cancellation
+
+### Fixed
+
+- Fixes rules
+- Fixes DI issues
+- Fixes filter button visibility
+- Fix merge issues
+- Fix warnings in renderer
+
+## [2.7.4]
+
+### Added
+
+- Added search and filters to contract lists
+- Add exception handling for xmpp reconnect operations
+
+### Changed
+
+- Changed the way contracts are loaded to improve performance
+- Made field in request and payment page have proper background colors
+- Handle neuroaccess URIs
+- Add dynamic picture size on View Identity
+- Fix margins on QR code so it is always visible in identity
+- Various minor UI improvements
+- Fixed scanning Onboarding QR codes outside of app
+- Fix edge cases in ViewSwitcher control
+- Remove first authentication when opening a 'tagsign' uri
+
+### Fixed
+
+- Stop contract from rendering before selection
+
 ## [2.6.1] - 2025/06/30
 
 ### Added
@@ -60,7 +114,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Portuguese translations
 - Fixed Profile configuration not loading properly
 - Ensured authentication method set to Password when Later is selected in biometrics step
+
 - --
+
 - A bug which could cause a crash when opening a contract from the Wallet page
 - Dangerous setting of properties in ViewContract which are not marshalled to Main Thread
 - Bottom sheet in ViewId page is now more performant on most devices
@@ -74,6 +130,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Legacy  implementation superseded by the new  infrastructure.
 - Unused contract overview views and associated XAML files (, )
 - Usage of AppThemeBinding, except for images
+
 - --
 
 ### Refactored
@@ -141,4 +198,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated all localization resources
 
 ## [2.4.1] - 2025-04-16
-

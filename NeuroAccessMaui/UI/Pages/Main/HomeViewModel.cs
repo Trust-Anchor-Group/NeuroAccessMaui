@@ -23,12 +23,19 @@ using Waher.Persistence.Filters;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Tag; // Added for ordering
+using NeuroAccessMaui.CustomPermissions;
+using NeuroAccessMaui.Services.Settings;
+using NeuroAccessMaui.Services.Notification;
+using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
 	public partial class HomeViewModel : QrXmppViewModel
 	{
 		private readonly IAuthenticationService authenticationService = ServiceRef.AuthenticationService;
+		private readonly INotificationServiceV2 notificationService;
 
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeLight);
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerLargeDark);
@@ -51,6 +58,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		public HomeViewModel()
 			: base()
 		{
+			this.notificationService = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+
 			Application.Current.RequestedThemeChanged += (_, __) =>
 				OnPropertyChanged(nameof(BannerUri));
 		}
@@ -59,32 +68,25 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		public override async Task OnAppearingAsync()
 		{
-			MainThread.BeginInvokeOnMainThread(() =>
-			{
-				this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
-				this.OnPropertyChanged(nameof(this.HasPendingIdentity));
-				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
-				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
-				this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
-				this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
-				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
-			});
-
 			await base.OnAppearingAsync();
+
 			try
 			{
 				// Load latest stored KYC reference state
 				await this.LoadLatestKycStateAsync();
-				/*
+				
 				try
 				{
-					await Permissions.RequestAsync<NotificationPermission>();
+					if (!await ServiceRef.SettingsService.RestoreBoolState(Constants.Settings.PushNotificationAsked, false))
+						await ServiceRef.PermissionService.CheckNotificationPermissionAsync();
+
+					await ServiceRef.SettingsService.SaveState(Constants.Settings.PushNotificationAsked, true);
 				}
 				catch
 				{
 					//Normal operation if Notification is not supported or denied
 				}
-				*/
+				
 				_ = await ServiceRef.XmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
 				await ServiceRef.ThemeService.ThemeLoaded.Task;
 				MainThread.BeginInvokeOnMainThread(() =>
@@ -114,9 +116,12 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				ServiceRef.KycService.ApplicationReviewUpdated += this.KycService_ApplicationReviewUpdated;
 				this.reviewEventSubscribed = true;
 			}
+
+			this.notificationService.OnNotificationAdded += this.NotificationService_OnNotificationAdded;
+			await this.RefreshUnreadNotificationsAsync();
 		}
 
-		public override Task OnDisposeAsync()
+		public override Task OnDisappearingAsync()
 		{
 			ServiceRef.XmppService.IdentityApplicationChanged -= this.XmppService_IdentityApplicationChanged;
 			ServiceRef.XmppService.LegalIdentityChanged -= this.XmppService_LegalIdentityChanged;
@@ -127,8 +132,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				ServiceRef.KycService.ApplicationReviewUpdated -= this.KycService_ApplicationReviewUpdated;
 				this.reviewEventSubscribed = false;
 			}
-
-			return base.OnDisposeAsync();
+			this.notificationService.OnNotificationAdded -= this.NotificationService_OnNotificationAdded;
+			return base.OnDisappearingAsync();
 		}
 
 		private void TagProfile_OnPropertiesChanged(object? Sender, EventArgs e)
@@ -146,7 +151,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				{
 					this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
 					this.OnPropertyChanged(nameof(this.HasPendingIdentity));
-					this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
 					this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
 					this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
 					this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
@@ -208,13 +212,11 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
 		public bool HasPendingIdentity => this.CheckPendingIdentity();
 
-		public bool ShowInfoBubble => this.ShowApplyIdBox || this.ShowPendingIdBox || this.ShowRejectedIdBox || this.ShowApplicationReviewBox;
-		public bool ShowApplyIdBox => !(ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false) && !this.CheckPendingIdentity() && !this.CheckRejectedIdentity() && !this.ShowApplicationReviewBox;
-		// Only show the application review box while the identity application is in the Created (pending) state.
-		// If the application has been Rejected, the rejected box should take precedence.
-		public bool ShowApplicationReviewBox => this.CheckPendingIdentity() && this.HasActionableReview();
-		public bool ShowPendingIdBox => !this.ShowApplicationReviewBox && this.CheckPendingIdentity();
-		public bool ShowRejectedIdBox => !this.ShowApplicationReviewBox && this.CheckRejectedIdentity();
+		public bool ShowInfoBubble => this.ShowApplyIdBox || this.ShowPendingIdBox || this.ShowRejectedIdBox;
+		public bool ShowApplyIdBox => !(ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false) && !this.CheckPendingIdentity() && !this.CheckRejectedIdentity();
+		// Only show pending while the application is in Created (review may be ongoing but not rejected).
+		public bool ShowPendingIdBox => this.CheckPendingIdentity();
+		public bool ShowRejectedIdBox => this.CheckRejectedIdentity();
 
 		private bool CheckPendingIdentity()
 		{
@@ -226,6 +228,52 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			IdentityState? state = this.latestCreatedIdentityState ?? ServiceRef.TagProfile.IdentityApplication?.State;
 			return state == IdentityState.Rejected;
+		}
+
+		private Task NotificationService_OnNotificationAdded(object? Sender, NotificationRecordEventArgs e)
+		{
+			return this.RefreshUnreadNotificationsAsync();
+		}
+
+		private async Task RefreshUnreadNotificationsAsync()
+		{
+			try
+			{
+				NotificationQuery Query = new()
+				{
+					States = new List<NotificationState>
+					{
+						NotificationState.New,
+						NotificationState.Delivered
+					}
+				};
+
+				IReadOnlyList<NotificationRecord> Records = await this.notificationService.GetAsync(Query, CancellationToken.None);
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.UnreadNotificationCount = Records.Count;
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether there are unread notifications.
+		/// </summary>
+		public bool HasUnreadNotifications => this.UnreadNotificationCount > 0;
+
+		/// <summary>
+		/// Gets or sets the unread notification count.
+		/// </summary>
+		[ObservableProperty]
+		private int unreadNotificationCount;
+
+		partial void OnUnreadNotificationCountChanged(int value)
+		{
+			this.OnPropertyChanged(nameof(this.HasUnreadNotifications));
 		}
 
 		private async Task LoadLatestKycStateAsync()
@@ -242,7 +290,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 					this.OnPropertyChanged(nameof(this.HasPendingIdentity));
 					this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
 					this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
-					this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
 					this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
 					this.OnPropertyChanged(nameof(this.ShowInfoBubble));
 				});
@@ -258,7 +305,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			this.latestApplicationReview = e.Review;
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
-				this.OnPropertyChanged(nameof(this.ShowApplicationReviewBox));
 				this.OnPropertyChanged(nameof(this.ShowInfoBubble));
 				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
 				this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
@@ -296,18 +342,6 @@ namespace NeuroAccessMaui.UI.Pages.Main
 			return null;
 		}
 
-		private bool HasActionableReview()
-		{
-			ApplicationReview? review = this.latestApplicationReview;
-			if (review is null)
-				return false;
-
-			int invalidClaimsCount = review.InvalidClaims?.Length ?? 0;
-			int invalidPhotosCount = review.InvalidPhotos?.Length ?? 0;
-
-			return invalidClaimsCount > 0 || invalidPhotosCount > 0;
-		}
-
 		public bool CanScanQrCode => true;
 
 		[RelayCommand(CanExecute = nameof(CanScanQrCode))]
@@ -338,8 +372,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		{
 			try
 			{
-				if (await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.ViewId))
-					await ServiceRef.NavigationService.GoToAsync(nameof(NotificationsPage));
+				await ServiceRef.NavigationService.GoToAsync(nameof(NotificationsPage));
 			}
 			catch (Exception Ex)
 			{

@@ -1,16 +1,10 @@
-using EDaler;
-using NeuroAccessMaui.Resources.Languages;
-using NeuroFeatures;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Plugin.Firebase.CloudMessaging;
-using Plugin.Firebase.CloudMessaging.EventArgs;
-using Waher.Content;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Maui.ApplicationModel;
+using NeuroAccessMaui.Services.Xmpp;
 using Waher.Events;
-using Waher.Networking.XMPP;
-using Waher.Networking.XMPP.Contracts;
-using Waher.Networking.XMPP.Provisioning;
 using Waher.Networking.XMPP.Push;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
@@ -20,19 +14,54 @@ namespace NeuroAccessMaui.Services.Push
 	/// <summary>
 	/// Push notification service
 	/// </summary>
-	[Singleton]
 	public class PushNotificationService : LoadableService, IPushNotificationService
 	{
+		private readonly IPushTransport pushTransport;
+		private readonly IPushTokenRegistrar tokenRegistrar;
+		private readonly IXmppService xmppService;
 		private readonly Dictionary<PushMessagingService, string> tokens = [];
 		private DateTime lastTokenCheck = DateTime.MinValue;
+		private bool isInitialized;
+		private readonly object tokenVerificationSync = new();
+		private Task? pendingTokenVerificationTask;
 
 		/// <summary>
 		/// Push notification service
 		/// </summary>
-		public PushNotificationService()
+		/// <param name="PushTransport">Transport adapter.</param>
+		/// <param name="TokenRegistrar">Token registrar handling broker updates.</param>
+		public PushNotificationService(IPushTransport PushTransport, IPushTokenRegistrar TokenRegistrar, IXmppService XmppService)
 		{
-			//	CrossFirebaseCloudMessaging.Current.NotificationReceived += OnNotificationReceived;
-			//	CrossFirebaseCloudMessaging.Current.NotificationTapped += OnNotificationTapped;
+			this.pushTransport = PushTransport;
+			this.tokenRegistrar = TokenRegistrar;
+			this.xmppService = XmppService;
+		}
+
+		/// <summary>
+		/// Loads the specified service.
+		/// </summary>
+		/// <param name="IsResuming">Set to <c>true</c> when app is resuming.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)
+		{
+			if (!this.isInitialized)
+			{
+				this.isInitialized = true;
+				App.AppActivated += this.App_AppActivated;
+				this.pushTransport.TokenChanged += this.PushTransport_TokenChanged;
+				try
+				{
+					await this.pushTransport.InitializeAsync(CancellationToken);
+				}
+				catch (Exception ex)
+				{
+					ServiceRef.LogService.LogException(ex);
+				}
+
+				this.ScheduleTokenVerification();
+			}
+
+			await base.Load(IsResuming, CancellationToken);
 		}
 
 		/// <summary>
@@ -48,9 +77,51 @@ namespace NeuroAccessMaui.Services.Push
 					this.tokens[TokenInformation.Service] = TokenInformation.Token;
 				}
 
-				await ServiceRef.XmppService.NewPushNotificationToken(TokenInformation);
+				await this.xmppService.NewPushNotificationToken(TokenInformation);
 				await this.OnNewToken.Raise(this, new TokenEventArgs(TokenInformation.Service, TokenInformation.Token, TokenInformation.ClientType));
 			}
+		}
+
+		private void App_AppActivated(object? Sender, EventArgs EventArgs)
+		{
+			this.ScheduleTokenVerification();
+		}
+
+		private async Task PushTransport_TokenChanged(object? Sender, TokenInformation TokenInformation)
+		{
+			try
+			{
+				await this.CheckPushNotificationToken(TokenInformation, CancellationToken.None);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		private void ScheduleTokenVerification()
+		{
+			Task VerificationTask;
+
+			lock (this.tokenVerificationSync)
+			{
+				if (this.pendingTokenVerificationTask is not null && !this.pendingTokenVerificationTask.IsCompleted)
+					return;
+
+				VerificationTask = MainThread.InvokeOnMainThreadAsync(async () =>
+				{
+					await this.CheckPushNotificationToken(null);
+				});
+
+				this.pendingTokenVerificationTask = VerificationTask;
+			}
+
+			VerificationTask.ContinueWith(t =>
+			{
+				Exception? Exception = t.Exception?.GetBaseException() ?? t.Exception;
+				if (Exception is not null)
+					ServiceRef.LogService.LogException(Exception);
+			}, TaskContinuationOptions.OnlyOnFaulted);
 		}
 
 		/// <summary>
@@ -72,26 +143,21 @@ namespace NeuroAccessMaui.Services.Push
 			}
 		}
 
-		private static async Task<bool> ForceTokenReport(TokenInformation TokenInformation)
-		{
-			string OldToken = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationToken, string.Empty);
-			DateTime ReportDate = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationReportDate, DateTime.MinValue);
-
-			return (DateTime.UtcNow.Subtract(ReportDate).TotalDays > 7) || (TokenInformation.Token != OldToken);
-		}
-
 		/// <summary>
 		/// Checks if the Push Notification Token is current and registered properly.
 		/// </summary>
 		/// <param name="TokenInformation">Non null if we got it from the OnNewToken</param>
-		public async Task CheckPushNotificationToken(TokenInformation? TokenInformation)
+		/// <param name="CancellationToken">Cancellation token.</param>
+		public async Task CheckPushNotificationToken(TokenInformation? TokenInformation, CancellationToken CancellationToken = default)
 		{
 			try
 			{
+				await this.xmppService.WaitForConnectedState(Constants.Timeouts.XmppConnect);
+
 				DateTime Now = DateTime.Now;
 
-				if (ServiceRef.XmppService.IsOnline &&
-					ServiceRef.XmppService.SupportsPushNotification &&
+				if (this.xmppService.IsOnline &&
+					this.xmppService.SupportsPushNotification &&
 					Now.Subtract(this.lastTokenCheck).TotalHours >= 1)
 				{
 					this.lastTokenCheck = Now;
@@ -103,320 +169,33 @@ namespace NeuroAccessMaui.Services.Push
 							return;
 					}
 
-					bool ForceReport = await ForceTokenReport(TokenInformation);
-
 					string Version = AppInfo.VersionString + "." + AppInfo.BuildString;
 					string PrevVersion = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationConfigurationVersion, string.Empty);
-					bool IsVersionChanged = Version != PrevVersion;
+					string CurrentRulesHash = PushRuleDefinitions.RuleSetHash;
+					string PrevRulesHash = await RuntimeSettings.GetAsync(Constants.Settings.PushNotificationRulesHash, string.Empty);
+					bool IsVersionChanged = Version != PrevVersion || CurrentRulesHash != PrevRulesHash;
 
-					if (IsVersionChanged || ForceReport)
-					{
-						string? Token = TokenInformation.Token;
-
-						if (!string.IsNullOrEmpty(Token))
-						{
-							PushMessagingService Service = TokenInformation.Service;
-							ClientType ClientType = TokenInformation.ClientType;
-							await ServiceRef.XmppService.ReportNewPushNotificationToken(Token, Service, ClientType);
-
-							await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationToken, TokenInformation.Token);
-							await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationReportDate, DateTime.UtcNow);
-						}
-					}
+					await this.tokenRegistrar.ReportTokenAsync(TokenInformation, IsVersionChanged, CancellationToken);
 
 					if (IsVersionChanged)
 					{
-						// it will force the rules update if somehing goes wrong.
 						await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationConfigurationVersion, string.Empty);
-						await ServiceRef.XmppService.ClearPushNotificationRules();
+						await this.xmppService.ClearPushNotificationRules();
 
-						#region Message Rules
+						foreach (PushRuleDefinition rule in PushRuleDefinitions.All)
+						{
+							await this.xmppService.AddPushNotificationRule(
+								rule.MessageType,
+								rule.LocalName,
+								rule.Namespace,
+								rule.Channel,
+								rule.MessageVariable,
+								rule.PatternScript,
+								rule.ContentScript);
+						}
 
-						#region Messages
-
-						string MessagesContent = $"""
-    FromJid:=GetAttribute(Stanza,'from');
-    ToJid:=GetAttribute(Stanza,'to');
-    FriendlyName:=RosterName(ToJid,FromJid);
-    Content:=GetElement(Stanza,'content');
-    {'{'}'myTitle': FriendlyName,
-    'myBody': InnerText(GetElement(Stanza,'body')),
-    'fromJid': FromJid,
-    'rosterName': FriendlyName,
-    'isObject': exists(Content) and !empty(Markdown:= InnerText(Content)) and (Left(Markdown,2)='![' or (Left(Markdown,3)='```' and Right(Markdown,3)='```')),
-    'channelId': '{Constants.PushChannels.Messages}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Chat, string.Empty, string.Empty,
-							 Constants.PushChannels.Messages, "Stanza", string.Empty, MessagesContent);
-
-						#endregion
-
-						#region Petitions
-
-						// Identity Petition
-						string PetitionIdentityContent = $"""
-    E:=GetElement(Stanza,'petitionIdentityMsg');
-    ToJid:=GetAttribute(Stanza,'to');
-    FromJid:=GetAttribute(E,'from');
-    FriendlyName:=RosterName(ToJid,FromJid);
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.PetitionFrom)])} ' + FriendlyName,
-    'myBody': GetAttribute(E,'purpose'),
-    'fromJid': FromJid,
-    'rosterName': FriendlyName,
-    'channelId': '{Constants.PushChannels.Petitions}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "petitionIdentityMsg", ContractsClient.NamespaceLegalIdentitiesCurrent,
-							 Constants.PushChannels.Petitions, "Stanza", string.Empty, PetitionIdentityContent);
-
-						// Contract Petition
-						string PetitionContractContent = $"""
-    E:=GetElement(Stanza,'petitionContractMsg');
-    ToJid:=GetAttribute(Stanza,'to');
-    FromJid:=GetAttribute(E,'from');
-    FriendlyName:=RosterName(ToJid,FromJid);
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.PetitionFrom)])} ' + FriendlyName,
-    'myBody': GetAttribute(E,'purpose'),
-    'fromJid': FromJid,
-    'rosterName': FriendlyName,
-    'channelId': '{Constants.PushChannels.Petitions}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "petitionContractMsg", ContractsClient.NamespaceSmartContractsCurrent,
-							 Constants.PushChannels.Petitions, "Stanza", string.Empty, PetitionContractContent);
-
-						// Signature Petition
-						string PetitionSignatureContent = $"""
-    E:=GetElement(Stanza,'petitionSignatureMsg');
-    ToJid:=GetAttribute(Stanza,'to');
-    FromJid:=GetAttribute(E,'from');
-    FriendlyName:=RosterName(ToJid,FromJid);
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.PetitionFrom)])} ' + FriendlyName,
-    'myBody': GetAttribute(E,'purpose'),
-    'fromJid': FromJid,
-    'rosterName': FriendlyName,
-    'channelId': '{Constants.PushChannels.Petitions}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "petitionSignatureMsg", ContractsClient.NamespaceLegalIdentitiesCurrent,
-							 Constants.PushChannels.Petitions, "Stanza", string.Empty, PetitionSignatureContent);
-
-						#endregion
-
-						#region Identities
-
-						string IdentityContent = $"""
-    E:=GetElement(Stanza,'identity');
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.IdentityUpdated)])}',
-    'legalId': GetAttribute(E,'id'),
-    'channelId': '{Constants.PushChannels.Identities}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "identity", ContractsClient.NamespaceLegalIdentitiesCurrent,
-							 Constants.PushChannels.Identities, "Stanza", string.Empty, IdentityContent);
-
-						#endregion
-
-						#region Contracts
-
-						// Contract Created
-						string ContractCreatedContent = $"""
-    E:=GetElement(Stanza,'contractCreated');
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractCreated)])}',
-    'contractId': GetAttribute(E,'contractId'),
-    'channelId': '{Constants.PushChannels.Contracts}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "contractCreated", ContractsClient.NamespaceSmartContractsCurrent,
-							 Constants.PushChannels.Contracts, "Stanza", string.Empty, ContractCreatedContent);
-
-						// Contract Signed
-						string ContractSignedContent = $"""
-    E:=GetElement(Stanza,'contractSigned');
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractSigned)])}',
-    'contractId': GetAttribute(E,'contractId'),
-    'legalId': GetAttribute(E,'legalId'),
-    'channelId': '{Constants.PushChannels.Contracts}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "contractSigned", ContractsClient.NamespaceSmartContractsCurrent,
-							 Constants.PushChannels.Contracts, "Stanza", string.Empty, ContractSignedContent);
-
-						// Contract Updated
-						string ContractUpdatedContent = $"""
-    E:=GetElement(Stanza,'contractUpdated');
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractUpdated)])}',
-    'contractId': GetAttribute(E,'contractId'),
-    'channelId': '{Constants.PushChannels.Contracts}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "contractUpdated", ContractsClient.NamespaceSmartContractsCurrent,
-							 Constants.PushChannels.Contracts, "Stanza", string.Empty, ContractUpdatedContent);
-
-						// Contract Deleted
-						string ContractDeletedContent = $"""
-    E:=GetElement(Stanza,'contractDeleted');
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractDeleted)])}',
-    'contractId': GetAttribute(E,'contractId'),
-    'channelId': '{Constants.PushChannels.Contracts}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "contractDeleted", ContractsClient.NamespaceSmartContractsCurrent,
-							 Constants.PushChannels.Contracts, "Stanza", string.Empty, ContractDeletedContent);
-
-						// Contract Proposal
-						string ContractProposalContent = $"""
-    E:=GetElement(Stanza,'contractProposal');
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ContractProposed)])}',
-    'myBody': GetAttribute(E,'message'),
-    'contractId': Num(GetAttribute(E,'contractId')),
-    'role': Num(GetAttribute(E,'role')),
-    'channelId': '{Constants.PushChannels.Contracts}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "contractProposal", ContractsClient.NamespaceSmartContractsCurrent,
-							 Constants.PushChannels.Contracts, "Stanza", string.Empty, ContractProposalContent);
-
-						#endregion
-
-						#region eDaler
-
-						string EdalerContent = $"""
-    E:=GetElement(Stanza,'balance');
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.BalanceUpdated)])}',
-    'amount': Num(GetAttribute(E,'amount')),
-    'currency': GetAttribute(E,'currency'),
-    'timestamp': DateTime(GetAttribute(E,'timestamp')),
-    'channelId': '{Constants.PushChannels.EDaler}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "balance", EDalerClient.NamespaceEDaler,
-							 Constants.PushChannels.EDaler, "Stanza", string.Empty, EdalerContent);
-
-						#endregion
-
-						#region Neuro-Features
-
-						// Token Added
-						string TokenAddedContent = $"""
-    E:=GetElement(Stanza,'tokenAdded');
-    E2:=GetElement(E,'token');
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.TokenAdded)])}',
-    'myBody': GetAttribute(E2,'friendlyName'),
-    'value': Num(GetAttribute(E2,'value')),
-    'currency': GetAttribute(E2,'currency'),
-    'channelId': '{Constants.PushChannels.Tokens}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "tokenAdded", NeuroFeaturesClient.NamespaceNeuroFeatures,
-							 Constants.PushChannels.Tokens, "Stanza", string.Empty, TokenAddedContent);
-
-						// Token Removed
-						string TokenRemovedContent = $"""
-    E:=GetElement(Stanza,'tokenRemoved');
-    E2:=GetElement(E,'token');
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.TokenRemoved)])}',
-    'myBody': GetAttribute(E2,'friendlyName'),
-    'value': Num(GetAttribute(E2,'value')),
-    'currency': GetAttribute(E2,'currency'),
-    'channelId': '{Constants.PushChannels.Tokens}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "tokenRemoved", NeuroFeaturesClient.NamespaceNeuroFeatures,
-							 Constants.PushChannels.Tokens, "Stanza", string.Empty, TokenRemovedContent);
-
-						#endregion
-
-						#region Provisioning
-
-						// Friendship Requests
-						string FriendRequestContent = $"""
-    ToJid:=GetAttribute(Stanza,'to');
-    E:=GetElement(Stanza,'isFriend');
-    RemoteJid:=GetAttribute(E,'remoteJid');
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.AccessRequest)])}',
-    'myBody': RosterName(ToJid,RemoteJid),
-    'remoteJid': RemoteJid,
-    'jid': GetAttribute(E,'jid'),
-    'key': GetAttribute(E,'key'),
-    'q': 'isFriend',
-    'channelId': '{Constants.PushChannels.Provisioning}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "isFriend", ProvisioningClient.NamespaceProvisioningOwnerCurrent,
-							 Constants.PushChannels.Provisioning, "Stanza", string.Empty, FriendRequestContent);
-
-						// Readout Requests
-						string ReadRequestContent = $"""
-    ToJid:=GetAttribute(Stanza,'to');
-    E:=GetElement(Stanza,'canRead');
-    RemoteJid:=GetAttribute(E,'remoteJid');
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ReadRequest)])}',
-    'myBody': RosterName(ToJid,RemoteJid),
-    'remoteJid': RemoteJid,
-    'jid': GetAttribute(E,'jid'),
-    'key': GetAttribute(E,'key'),
-    'q': 'canRead',
-    'channelId': '{Constants.PushChannels.Provisioning}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "canRead", ProvisioningClient.NamespaceProvisioningOwnerCurrent,
-							 Constants.PushChannels.Provisioning, "Stanza", string.Empty, ReadRequestContent);
-
-						// Control Requests
-						string ControlRequestContent = $"""
-    ToJid:=GetAttribute(Stanza,'to');
-    E:=GetElement(Stanza,'canControl');
-    RemoteJid:=GetAttribute(E,'remoteJid');
-    {'{'}'myTitle': '{JSON.Encode(ServiceRef.Localizer[nameof(AppResources.ControlRequest)])}',
-    'myBody': RosterName(ToJid,RemoteJid),
-    'remoteJid': RemoteJid,
-    'jid': GetAttribute(E,'jid'),
-    'key': GetAttribute(E,'key'),
-    'q': 'canControl',
-    'channelId': '{Constants.PushChannels.Provisioning}',
-    'content_available': true{'}'}
-    """;
-
-						await ServiceRef.XmppService.AddPushNotificationRule(
-							 MessageType.Normal, "canControl", ProvisioningClient.NamespaceProvisioningOwnerCurrent,
-							 Constants.PushChannels.Provisioning, "Stanza", string.Empty, ControlRequestContent);
-
-						#endregion
-
-						#endregion
 						await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationConfigurationVersion, Version);
+						await RuntimeSettings.SetAsync(Constants.Settings.PushNotificationRulesHash, CurrentRulesHash);
 					}
 				}
 			}

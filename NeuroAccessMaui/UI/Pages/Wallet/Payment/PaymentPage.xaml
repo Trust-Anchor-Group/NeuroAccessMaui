@@ -16,18 +16,16 @@
 		<controls:Background/>
 
 		<ScrollView x:Name="ScrollView">
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}" >
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-									  Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="16" >
+				<Grid ColumnDefinitions="auto, *, auto">
+					<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+										  Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
 
-				<Label Text="{l:Localize MakePayment}" Style="{DynamicResource PageTitleLabel}"/>
+					<Label Text="{l:Localize MakePayment}" Style="{DynamicResource PageTitleLabel}" Grid.Column="2"/>
+				</Grid>
 
-				<Border Style="{DynamicResource BorderSet}">
+				<Border Style="{DynamicResource BorderSet}" Margin="0">
 					<VerticalStackLayout Spacing="0">
-						<Label Text="{l:Localize Payment}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
-						<Label Text="{l:Localize PaymentDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
-						
-						<!-- Note -->
 						<controls:CompositeEntry LabelText="{l:Localize To}"
 												 Placeholder="{Binding Path=To}"
 												 IsReadOnly="True"
@@ -41,7 +39,8 @@
 													 IsReadOnly="{Binding Path=AmountPreset}"
 													 Style="{DynamicResource RegularCompositeEntry}"
 													 LabelText="{l:Localize Amount}"
-													 Margin="0,8,0,0">
+													 Margin="0,8,0,0"
+													 Keyboard="Numeric">
 								<controls:CompositeEntry.RightView>
 									<Label Text="{Binding Currency}" VerticalOptions="Center"/>
 								</controls:CompositeEntry.RightView>
@@ -56,7 +55,8 @@
 							<controls:CompositeEntry EntryData="{Binding Path=AmountExtraText}"
 													 BackgroundColor="{Binding Path=AmountExtraOk, Converter={converters:ControlBgColor}}"
 													 Style="{DynamicResource RegularCompositeEntry}"
-													 LabelText="{l:Localize AmountExtra}">
+													 LabelText="{l:Localize AmountExtra}"
+													 Keyboard="Numeric">
 								<controls:CompositeEntry.RightView>
 									<Label Text="{Binding Currency}" VerticalOptions="Center"/>
 								</controls:CompositeEntry.RightView>
