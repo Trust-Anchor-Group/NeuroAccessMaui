@@ -1,14 +1,15 @@
 name: Build MAUI Android
 
 on:
-  workflow_dispatch:
-    inputs: {}
+  push:
+    branches:
+      - feature/build
 
 jobs:
   build-android:
     runs-on: windows-latest
     env:
-      TFM: net10.0
+      DOTNET: net10.0
       DOTNET_SDK_VERSION: 10.0.x
     steps:
       - name: Checkout
@@ -38,12 +39,12 @@ jobs:
             $signArgs += "-p:AndroidSigningStorePass=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}"
             $signArgs += "-p:AndroidSigningKeyPass=${{ secrets.ANDROID_KEY_PASSWORD }}"
           }
-          dotnet build NeuroAccessMaui/NeuroAccessMaui.csproj -c Release -f ${{ env.TFM }}-android -p:AndroidPackageFormat=aab @signArgs --no-restore 
+          dotnet build NeuroAccessMaui/NeuroAccessMaui.csproj -c Release -f ${{ env.DOTNET }}-android -p:AndroidPackageFormat=aab @signArgs --no-restore 
 
       - name: Upload to Google Play (internal)
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: com.tag.NeuroAccess
-          releaseFiles: NeuroAccessMaui/bin/Release/${{ env.TFM }}-android/**/com.tag.NeuroAccess-Signed.aab
+          releaseFiles: NeuroAccessMaui/bin/Release/${{ env.DOTNET }}-android/**/com.tag.NeuroAccess-Signed.aab
           track: internal
