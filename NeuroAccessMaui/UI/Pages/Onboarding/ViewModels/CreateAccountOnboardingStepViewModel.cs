@@ -3,11 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.ApplicationModel;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Tag;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
@@ -158,6 +160,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 					{
 						identity = addedIdentity;
 						await ServiceRef.TagProfile.SetLegalIdentity(identity, true);
+						this.RegisterIdentityNotificationIgnoreFilter(identity.Id);
 						appliedSuccessfully = true;
 						this.StatusMessage = ServiceRef.Localizer[nameof(AppResources.IdApplicationSentDescription)];
 						break;
@@ -280,6 +283,25 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 			if (!string.IsNullOrWhiteSpace(value = ServiceRef.TagProfile?.SelectedCountry?.Trim() ?? string.Empty))
 				model.CountryCode = value;
 			return model;
+		}
+
+		private void RegisterIdentityNotificationIgnoreFilter(string IdentityId)
+		{
+			if (string.IsNullOrWhiteSpace(IdentityId))
+				return;
+
+			INotificationServiceV2 NotificationService = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+			string IgnoredIdentityId = IdentityId;
+			NotificationService.AddIgnoreFilter((NotificationIntent Intent) =>
+			{
+				if (!string.Equals(Intent.Channel, NeuroAccessMaui.Constants.PushChannels.Identities, StringComparison.OrdinalIgnoreCase))
+					return NotificationFilterDecision.None;
+
+				if (!string.Equals(Intent.EntityId, IgnoredIdentityId, StringComparison.OrdinalIgnoreCase))
+					return NotificationFilterDecision.None;
+
+				return new NotificationFilterDecision(true, true, true);
+			});
 		}
 
 		partial void OnStatusMessageChanged(string value)
