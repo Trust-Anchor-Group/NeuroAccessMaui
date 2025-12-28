@@ -32,59 +32,13 @@ namespace NeuroAccessMaui
 		{
 			Console.WriteLine("Silent data notification received: " + userInfo);
 
-			// Extract values from the NSDictionary.
-			string? Title = userInfo["myTitle"]?.ToString();
-			string? Body = userInfo["myBody"]?.ToString();
-			string? ChannelId = userInfo["channelId"]?.ToString();
-
-			if (Title is null || Body is null)
+			try
 			{
-				ServiceRef.LogService.LogWarning("NotificationDelegate, Received notification with missing title or body.");
-				return;
+				NotificationDelegate.ProcessSilentNotification(userInfo);
 			}
-
-			// Convert the NSDictionary to an IDictionary<string, string>
-			Dictionary<string, string> Payload = new Dictionary<string, string>();
-			foreach (NSObject Key in userInfo.Keys)
+			catch (Exception Ex)
 			{
-				Payload[Key.ToString()] = userInfo[Key]?.ToString() ?? string.Empty;
-			}
-
-
-			// Switch based on channelId to handle different types of notifications.
-			switch (ChannelId)
-			{
-				case Constants.PushChannels.Messages:
-					ServiceRef.PlatformSpecific.ShowMessageNotification(Title, Body, Payload);
-					break;
-
-				case Constants.PushChannels.Petitions:
-					ServiceRef.PlatformSpecific.ShowPetitionNotification(Title, Body, Payload);
-					break;
-
-				case Constants.PushChannels.Identities:
-					ServiceRef.PlatformSpecific.ShowIdentitiesNotification(Title, Body, Payload);
-					break;
-
-				case Constants.PushChannels.Contracts:
-					ServiceRef.PlatformSpecific.ShowContractsNotification(Title, Body, Payload);
-					break;
-
-				case Constants.PushChannels.EDaler:
-					ServiceRef.PlatformSpecific.ShowEDalerNotification(Title, Body, Payload);
-					break;
-
-				case Constants.PushChannels.Tokens:
-					ServiceRef.PlatformSpecific.ShowTokenNotification(Title, Body, Payload);
-					break;
-
-				case Constants.PushChannels.Provisioning:
-					ServiceRef.PlatformSpecific.ShowProvisioningNotification(Title, Body, Payload);
-					break;
-
-				default:
-					// ignore
-					break;
+				ServiceRef.LogService.LogException(Ex);
 			}
 
 			completionHandler(UIBackgroundFetchResult.NewData);
