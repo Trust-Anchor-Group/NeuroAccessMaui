@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using CommunityToolkit.Maui.Core;
 using NeuroAccessMaui.Resources.Styles;
@@ -14,9 +15,9 @@ namespace NeuroAccessMaui.Services.Theme
 	/// Manages application theming. Applies bundled (local) light/dark themes and, when a provider
 	/// domain is available, downloads &amp; applies remote branding descriptors (V2 preferred, V1 fallback).
 	/// Performs XML schema validation, merges resource dictionaries, extracts image references, and
-	/// implements a retry/backoff policy (0s,2s,5s) for transient network issues. Idempotent per domain:
-	/// once Applied / NotSupported / FailedPermanent, subsequent calls are no-ops. Falls back to local
-	/// theme on unsupported or permanent failures.
+	/// supports background refresh with short timeouts. Idempotent per domain: once Applied /
+	/// NotSupported / FailedPermanent, subsequent calls are no-ops. Falls back to local theme on
+	/// unsupported or permanent failures.
 	/// </summary>
 	[Singleton]
 	public sealed class ThemeService : IThemeService, IDisposable
@@ -28,16 +29,18 @@ namespace NeuroAccessMaui.Services.Theme
 		// Keys used for validation (registered in MauiProgram) now use the namespace URNs directly.
 		private static readonly string brandingSchemaKeyV1 = Constants.Schemes.NeuroAccessBrandingV1;
 
-		// Provider theme application state & retry
-		private enum ProviderThemeStatus { NotStarted, InProgress, Applied, NotSupported, FailedPermanent }
-		private enum ProviderAttemptOutcome { AppliedV2, AppliedV1, Unsupported, TransientFailure, PermanentFailure }
+		// Provider theme application state & refresh
+		private enum ProviderThemeStatus { NotStarted, InProgress, Applied, NotSupported, FailedPermanent, FailedTransient }
 		private enum BrandingFetchClassification { Success, NotFound, TransientFailure, PermanentFailure }
 		private ProviderThemeStatus providerThemeState = ProviderThemeStatus.NotStarted;
 		private string? lastDomainAttempted;
-		private int providerThemeAttemptCount;
-		private static readonly TimeSpan[] providerRetryDelays = { TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2) };
-		private const int maxProviderThemeAttempts = 3;
-		private static readonly HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(10) };
+		private Task? backgroundRefreshTask;
+		private const string unsupportedCachePrefix = "BrandingUnsupported:";
+		private static readonly TimeSpan blockingFetchTimeout = TimeSpan.FromSeconds(6);
+		private static readonly TimeSpan backgroundFetchTimeout = TimeSpan.FromSeconds(2);
+		private static readonly TimeSpan manualFetchTimeout = TimeSpan.FromSeconds(8);
+		private static readonly TimeSpan probeTimeout = TimeSpan.FromSeconds(2);
+		private static readonly HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(5) };
 
 		private readonly FileCacheManager cacheManager;
 		private readonly Dictionary<string, Uri> imageUrisMap;
@@ -131,66 +134,89 @@ namespace NeuroAccessMaui.Services.Theme
 		}
 
 		/// <summary>
-		/// Attempts to fetch and apply provider branding (V2 then V1) with retries for transient failures.
-		/// Falls back to local theme for unsupported or permanent failures. Safe to call multiple times;
-		/// after reaching a final state for a domain subsequent calls are ignored.
+		/// Attempts to fetch and apply provider branding using the background refresh policy.
 		/// </summary>
-		public async Task ApplyProviderTheme()
+		public async Task ApplyProviderThemeAsync()
+		{
+			await this.ApplyProviderThemeAsync(ThemeFetchPolicy.BackgroundRefresh, CancellationToken.None);
+		}
+
+		/// <summary>
+		/// Attempts to fetch and apply provider branding according to the specified policy.
+		/// </summary>
+		/// <param name="Policy">The fetch policy to apply.</param>
+		/// <param name="CancellationToken">A token that can be used to cancel the operation.</param>
+		/// <returns>An outcome describing how the provider theme was resolved.</returns>
+		public async Task<ThemeApplyOutcome> ApplyProviderThemeAsync(ThemeFetchPolicy Policy, CancellationToken CancellationToken = default)
 		{
 			string? Domain = ServiceRef.TagProfile.Domain;
 			if (string.IsNullOrWhiteSpace(Domain))
 			{
-				ServiceRef.LogService.LogDebug("ApplyProviderTheme: Skipped (no domain). ");
-				return;
+				ServiceRef.LogService.LogDebug("ApplyProviderThemeAsync: Skipped (no domain). ");
+				this.ThemeLoaded.TrySetResult();
+				return ThemeApplyOutcome.SkippedNoDomain;
 			}
+
+			if (this.lastDomainAttempted is not null && this.lastDomainAttempted.Equals(Domain, StringComparison.OrdinalIgnoreCase) &&
+				this.providerThemeState is ProviderThemeStatus.Applied or ProviderThemeStatus.NotSupported or ProviderThemeStatus.FailedPermanent)
+			{
+				ServiceRef.LogService.LogDebug($"ApplyProviderThemeAsync: Already finalized for {Domain} state={this.providerThemeState}.");
+				this.ThemeLoaded.TrySetResult();
+				return this.providerThemeState switch
+				{
+					ProviderThemeStatus.NotSupported => ThemeApplyOutcome.NotSupported,
+					ProviderThemeStatus.FailedPermanent => ThemeApplyOutcome.FailedPermanent,
+					_ => ThemeApplyOutcome.AppliedFromCache
+				};
+			}
+
+			this.providerThemeState = ProviderThemeStatus.InProgress;
+			this.lastDomainAttempted = Domain;
 
 			try
 			{
-				if (this.lastDomainAttempted is not null && this.lastDomainAttempted.Equals(Domain, StringComparison.OrdinalIgnoreCase) &&
-					this.providerThemeState is ProviderThemeStatus.Applied or ProviderThemeStatus.NotSupported or ProviderThemeStatus.FailedPermanent)
+				if (Policy != ThemeFetchPolicy.ManualRefresh && await this.IsBrandingUnsupportedAsync(Domain))
 				{
-					ServiceRef.LogService.LogDebug($"ApplyProviderTheme: Already finalized for {Domain} state={this.providerThemeState}.");
-					return;
+					ServiceRef.LogService.LogDebug($"ApplyProviderThemeAsync: Unsupported cached for {Domain}.");
+					this.providerThemeState = ProviderThemeStatus.NotSupported;
+					await this.SetLocalThemeFromBackgroundThread();
+					return ThemeApplyOutcome.NotSupported;
 				}
-				this.providerThemeState = ProviderThemeStatus.InProgress;
-				this.lastDomainAttempted = Domain;
-				this.providerThemeAttemptCount = 0;
-				while (this.providerThemeAttemptCount < maxProviderThemeAttempts && this.providerThemeState == ProviderThemeStatus.InProgress)
+
+				(bool AppliedFromCache, bool CacheExpired) = await this.TryApplyCachedProviderThemeAsync(Domain, Policy, CancellationToken);
+				if (AppliedFromCache)
 				{
-					int Attempt = ++this.providerThemeAttemptCount;
-					TimeSpan Delay = providerRetryDelays[Math.Min(Attempt - 1, providerRetryDelays.Length - 1)];
-					if (Delay > TimeSpan.Zero)
-						await Task.Delay(Delay);
-					ProviderAttemptOutcome Outcome = await this.TryFetchAndApplyProviderThemeAsync(Domain);
-					switch (Outcome)
+					this.providerThemeState = ProviderThemeStatus.Applied;
+					if (Policy == ThemeFetchPolicy.ManualRefresh)
 					{
-						case ProviderAttemptOutcome.AppliedV2:
-						case ProviderAttemptOutcome.AppliedV1:
-							this.providerThemeState = ProviderThemeStatus.Applied;
-							ServiceRef.LogService.LogDebug($"ApplyProviderTheme: Success {Outcome} attempt {Attempt} domain {Domain}.");
-							break;
-						case ProviderAttemptOutcome.Unsupported:
-							this.providerThemeState = ProviderThemeStatus.NotSupported;
-							ServiceRef.LogService.LogDebug($"ApplyProviderTheme: Unsupported domain {Domain}.");
-							await this.SetLocalThemeFromBackgroundThread();
-							break;
-						case ProviderAttemptOutcome.TransientFailure:
-							if (Attempt >= maxProviderThemeAttempts)
-							{
-								this.providerThemeState = ProviderThemeStatus.FailedPermanent;
-								ServiceRef.LogService.LogDebug($"ApplyProviderTheme: Exhausted retries domain {Domain}.");
-								await this.SetLocalThemeFromBackgroundThread();
-							}
-							else
-								ServiceRef.LogService.LogDebug($"ApplyProviderTheme: Transient failure attempt {Attempt} domain {Domain} retrying.");
-							break;
-						case ProviderAttemptOutcome.PermanentFailure:
-							this.providerThemeState = ProviderThemeStatus.FailedPermanent;
-							ServiceRef.LogService.LogDebug($"ApplyProviderTheme: Permanent failure domain {Domain}.");
-							await this.SetLocalThemeFromBackgroundThread();
-							break;
+						ThemeApplyOutcome RefreshOutcome = await this.FetchAndApplyProviderThemeAsync(Domain, Policy, false, CancellationToken, true);
+						return RefreshOutcome == ThemeApplyOutcome.Applied ? ThemeApplyOutcome.Applied : ThemeApplyOutcome.AppliedFromCache;
 					}
+					if (CacheExpired)
+						this.StartBackgroundRefresh(Domain);
+					return ThemeApplyOutcome.AppliedFromCache;
 				}
+
+				if (Policy == ThemeFetchPolicy.BackgroundRefresh)
+				{
+					this.StartBackgroundRefresh(Domain);
+					this.providerThemeState = ProviderThemeStatus.FailedTransient;
+					await this.SetLocalThemeFromBackgroundThread();
+					return ThemeApplyOutcome.FailedTransient;
+				}
+
+				bool ForceNetwork = Policy == ThemeFetchPolicy.ManualRefresh;
+				ThemeApplyOutcome Outcome = await this.FetchAndApplyProviderThemeAsync(Domain, Policy, true, CancellationToken, ForceNetwork);
+				this.providerThemeState = Outcome switch
+				{
+					ThemeApplyOutcome.Applied => ProviderThemeStatus.Applied,
+					ThemeApplyOutcome.AppliedFromCache => ProviderThemeStatus.Applied,
+					ThemeApplyOutcome.NotSupported => ProviderThemeStatus.NotSupported,
+					ThemeApplyOutcome.FailedPermanent => ProviderThemeStatus.FailedPermanent,
+					ThemeApplyOutcome.FailedTransient => ProviderThemeStatus.FailedTransient,
+					_ => this.providerThemeState
+				};
+				return Outcome;
 			}
 			finally
 			{
@@ -210,43 +236,178 @@ namespace NeuroAccessMaui.Services.Theme
 			}
 		}
 
-		private async Task<ProviderAttemptOutcome> TryFetchAndApplyProviderThemeAsync(string Domain)
+		private void StartBackgroundRefresh(string Domain)
 		{
-			(bool Success, XmlDocument? Document, BrandingFetchClassification Classification) V2 = await this.TryGetBrandingXmlAsync(Domain, true);
+			if (!ServiceRef.NetworkService.IsOnline)
+				return;
+			if (this.backgroundRefreshTask is not null && !this.backgroundRefreshTask.IsCompleted)
+				return;
+			this.backgroundRefreshTask = Task.Run(async () =>
+			{
+				try
+				{
+					ThemeApplyOutcome Outcome = await this.FetchAndApplyProviderThemeAsync(Domain, ThemeFetchPolicy.BackgroundRefresh, false, CancellationToken.None, true);
+					if (Outcome == ThemeApplyOutcome.Applied)
+						this.providerThemeState = ProviderThemeStatus.Applied;
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(new Exception($"Background provider theme refresh failed for {Domain}.", Ex));
+				}
+			});
+		}
+
+		private async Task<(bool Applied, bool CacheExpired)> TryApplyCachedProviderThemeAsync(string Domain, ThemeFetchPolicy Policy, CancellationToken CancellationToken)
+		{
+			(bool Applied, bool CacheExpired) = await this.TryApplyCachedBrandingAsync(Domain, true, Policy, CancellationToken);
+			if (Applied)
+				return (true, CacheExpired);
+			return await this.TryApplyCachedBrandingAsync(Domain, false, Policy, CancellationToken);
+		}
+
+		private async Task<(bool Applied, bool CacheExpired)> TryApplyCachedBrandingAsync(string Domain, bool IsV2, ThemeFetchPolicy Policy, CancellationToken CancellationToken)
+		{
+			(XmlDocument? Document, bool IsExpired) = await this.TryGetCachedBrandingXmlAsync(Domain, IsV2);
+			if (Document is null)
+				return (false, false);
+
+			if (IsV2)
+				await this.ApplyV2Async(Document, Policy, CancellationToken, false);
+			else
+				await this.ApplyV1Async(Document, Policy, CancellationToken, false);
+
+			return (true, IsExpired);
+		}
+
+		private async Task<ThemeApplyOutcome> FetchAndApplyProviderThemeAsync(string Domain, ThemeFetchPolicy Policy, bool ApplyFallbackOnFailure, CancellationToken CancellationToken, bool ForceNetwork)
+		{
+			if (!ServiceRef.NetworkService.IsOnline)
+				return this.HandleFetchFailure(ThemeApplyOutcome.FailedTransient, ApplyFallbackOnFailure);
+
+			(bool Success, XmlDocument? Document, BrandingFetchClassification Classification) V2 = await this.TryGetBrandingXmlAsync(Domain, true, Policy, ForceNetwork, CancellationToken);
 			if (V2.Success && V2.Document is not null)
 			{
-				await this.ApplyV2Async(V2.Document);
-				return ProviderAttemptOutcome.AppliedV2;
+				await this.ApplyV2Async(V2.Document, Policy, CancellationToken, ForceNetwork);
+				await this.ClearBrandingUnsupportedAsync(Domain);
+				return ThemeApplyOutcome.Applied;
 			}
 			if (V2.Classification == BrandingFetchClassification.TransientFailure)
-				return ProviderAttemptOutcome.TransientFailure;
+				return this.HandleFetchFailure(ThemeApplyOutcome.FailedTransient, ApplyFallbackOnFailure);
 			if (V2.Classification == BrandingFetchClassification.PermanentFailure)
-				return ProviderAttemptOutcome.PermanentFailure;
-			(bool Success, XmlDocument? Document, BrandingFetchClassification Classification) V1 = await this.TryGetBrandingXmlAsync(Domain, false);
+				return this.HandleFetchFailure(ThemeApplyOutcome.FailedPermanent, ApplyFallbackOnFailure);
+
+			(bool Success, XmlDocument? Document, BrandingFetchClassification Classification) V1 = await this.TryGetBrandingXmlAsync(Domain, false, Policy, ForceNetwork, CancellationToken);
 			if (V1.Success && V1.Document is not null)
 			{
-				await this.ApplyV1Async(V1.Document);
-				return ProviderAttemptOutcome.AppliedV1;
+				await this.ApplyV1Async(V1.Document, Policy, CancellationToken, ForceNetwork);
+				await this.ClearBrandingUnsupportedAsync(Domain);
+				return ThemeApplyOutcome.Applied;
 			}
+
 			return V1.Classification switch
 			{
-				BrandingFetchClassification.NotFound => ProviderAttemptOutcome.Unsupported,
-				BrandingFetchClassification.TransientFailure => ProviderAttemptOutcome.TransientFailure,
-				_ => ProviderAttemptOutcome.PermanentFailure
+				BrandingFetchClassification.NotFound => await this.HandleNotSupportedAsync(Domain, ApplyFallbackOnFailure),
+				BrandingFetchClassification.TransientFailure => this.HandleFetchFailure(ThemeApplyOutcome.FailedTransient, ApplyFallbackOnFailure),
+				_ => this.HandleFetchFailure(ThemeApplyOutcome.FailedPermanent, ApplyFallbackOnFailure)
 			};
 		}
 
-		private async Task<(bool Success, XmlDocument? Document, BrandingFetchClassification Classification)> TryGetBrandingXmlAsync(string Domain, bool IsV2)
+		private async Task<ThemeApplyOutcome> HandleNotSupportedAsync(string Domain, bool ApplyFallbackOnFailure)
+		{
+			await this.MarkBrandingUnsupportedAsync(Domain);
+			if (ApplyFallbackOnFailure)
+				await this.SetLocalThemeFromBackgroundThread();
+			return ThemeApplyOutcome.NotSupported;
+		}
+
+		private ThemeApplyOutcome HandleFetchFailure(ThemeApplyOutcome Outcome, bool ApplyFallbackOnFailure)
+		{
+			if (ApplyFallbackOnFailure)
+			{
+				_ = this.SetLocalThemeFromBackgroundThread();
+			}
+			return Outcome;
+		}
+
+		private async Task<bool> IsBrandingUnsupportedAsync(string Domain)
+		{
+			string Key = GetUnsupportedCacheKey(Domain);
+			(byte[]? Data, string _, bool IsExpired) = await this.cacheManager.TryGetWithExpiry(Key);
+			return Data is not null && !IsExpired;
+		}
+
+		private async Task MarkBrandingUnsupportedAsync(string Domain)
+		{
+			string Key = GetUnsupportedCacheKey(Domain);
+			byte[] Data = Encoding.ASCII.GetBytes("1");
+			await this.cacheManager.AddOrUpdate(Key, Domain, false, Data, "text/plain");
+		}
+
+		private Task<bool> ClearBrandingUnsupportedAsync(string Domain)
+		{
+			string Key = GetUnsupportedCacheKey(Domain);
+			return this.cacheManager.Remove(Key);
+		}
+
+		private static string GetUnsupportedCacheKey(string Domain)
+		{
+			string KeyDomain = Domain.ToLowerInvariant();
+			return $"{unsupportedCachePrefix}{KeyDomain}";
+		}
+
+		private static TimeSpan GetFetchTimeout(ThemeFetchPolicy Policy)
+		{
+			return Policy switch
+			{
+				ThemeFetchPolicy.BlockingFirstRun => blockingFetchTimeout,
+				ThemeFetchPolicy.ManualRefresh => manualFetchTimeout,
+				_ => backgroundFetchTimeout
+			};
+		}
+
+		private async Task<(XmlDocument? Document, bool IsExpired)> TryGetCachedBrandingXmlAsync(string Domain, bool IsV2)
 		{
 			Uri Uri = BuildBrandingItemUrl(Domain, IsV2 ? "BrandingV2" : "Branding");
 			string Key = Uri.AbsoluteUri;
-			byte[]? Bytes = await this.FetchOrGetCachedAsync(Uri, Key);
+			(byte[]? Cached, string _, bool IsExpired) = await this.cacheManager.TryGetWithExpiry(Key);
+			if (Cached is null)
+				return (null, false);
+
+			string XmlString = Encoding.UTF8.GetString(Cached);
+			bool Valid = await this.ValidateBrandingXmlAsync(XmlString, IsV2, Domain);
+			if (!Valid)
+			{
+				await this.cacheManager.Remove(Key);
+				return (null, false);
+			}
+			try
+			{
+				XmlDocument Doc = new();
+				Doc.LoadXml(XmlString);
+				return (Doc, IsExpired);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(new Exception($"TryGetCachedBrandingXmlAsync parse {(IsV2 ? "V2" : "V1")} {Uri}", Ex));
+				await this.cacheManager.Remove(Key);
+				return (null, false);
+			}
+		}
+
+		private async Task<(bool Success, XmlDocument? Document, BrandingFetchClassification Classification)> TryGetBrandingXmlAsync(string Domain, bool IsV2, ThemeFetchPolicy Policy, bool ForceNetwork, CancellationToken CancellationToken)
+		{
+			Uri Uri = BuildBrandingItemUrl(Domain, IsV2 ? "BrandingV2" : "Branding");
+			string Key = Uri.AbsoluteUri;
+			(byte[]? Bytes, bool _, bool AttemptedNetwork) = await this.FetchOrGetCachedAsync(Uri, Key, Policy, ForceNetwork, CancellationToken);
 			if (Bytes is not null)
 			{
 				string XmlString = Encoding.UTF8.GetString(Bytes);
 				bool Valid = await this.ValidateBrandingXmlAsync(XmlString, IsV2, Domain);
 				if (!Valid)
+				{
+					await this.cacheManager.Remove(Key);
 					return (false, null, BrandingFetchClassification.PermanentFailure);
+				}
 				try
 				{
 					XmlDocument Doc = new();
@@ -256,10 +417,17 @@ namespace NeuroAccessMaui.Services.Theme
 				catch (Exception Ex)
 				{
 					ServiceRef.LogService.LogException(new Exception($"TryGetBrandingXmlAsync parse {(IsV2 ? "V2" : "V1")} {Uri}", Ex));
+					await this.cacheManager.Remove(Key);
 					return (false, null, BrandingFetchClassification.PermanentFailure);
 				}
 			}
-			HttpStatusCode Probe = await ProbeUriAsync(Uri);
+			if (!AttemptedNetwork)
+				return (false, null, BrandingFetchClassification.TransientFailure);
+
+			TimeSpan ProbeTimeout = GetFetchTimeout(Policy);
+			if (ProbeTimeout > probeTimeout)
+				ProbeTimeout = probeTimeout;
+			HttpStatusCode Probe = await ProbeUriAsync(Uri, ProbeTimeout, CancellationToken);
 			return Probe switch
 			{
 				HttpStatusCode.NotFound => (false, null, BrandingFetchClassification.NotFound),
@@ -270,18 +438,21 @@ namespace NeuroAccessMaui.Services.Theme
 			};
 		}
 
-		private static async Task<HttpStatusCode> ProbeUriAsync(Uri Uri)
+		private static async Task<HttpStatusCode> ProbeUriAsync(Uri Uri, TimeSpan Timeout, CancellationToken CancellationToken)
 		{
 			try
 			{
+				using CancellationTokenSource LinkedCts = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken);
+				LinkedCts.CancelAfter(Timeout);
 				using HttpRequestMessage Req = new HttpRequestMessage(HttpMethod.Head, Uri);
-				using HttpResponseMessage Resp = await httpClient.SendAsync(Req); return Resp.StatusCode;
+				using HttpResponseMessage Resp = await httpClient.SendAsync(Req, LinkedCts.Token);
+				return Resp.StatusCode;
 			}
 			catch (HttpRequestException Ex) when (IsTransientNetwork(Ex))
 			{
 				return 0;
 			}
-			catch (TaskCanceledException)
+			catch (OperationCanceledException)
 			{
 				return 0;
 			}
@@ -303,7 +474,7 @@ namespace NeuroAccessMaui.Services.Theme
 		/// <param name="Id">Branding image identifier.</param>
 		public string GetImageUri(string Id) => this.imageUrisMap.TryGetValue(Id, out Uri? ImageUri) ? ImageUri.AbsoluteUri : string.Empty;
 
-		private async Task ApplyV2Async(XmlDocument Doc)
+		private async Task ApplyV2Async(XmlDocument Doc, ThemeFetchPolicy Policy, CancellationToken CancellationToken, bool ForceNetwork)
 		{
 			XmlElement? Root = Doc.DocumentElement;
 			if (Root is null)
@@ -342,12 +513,12 @@ namespace NeuroAccessMaui.Services.Theme
 				this.localDarkDict.Clear();
 				if (LightUri is not null)
 				{
-					ResourceDictionary? LightDict = await this.LoadProviderDictionaryAsync(LightUri, "Light");
+					ResourceDictionary? LightDict = await this.LoadProviderDictionaryAsync(LightUri, "Light", Policy, CancellationToken, ForceNetwork);
 					if (LightDict is not null) foreach (string K in LightDict.Keys.OfType<string>()) this.localLightDict[K] = LightDict[K];
 				}
 				if (DarkUri is not null)
 				{
-					ResourceDictionary? DarkDict = await this.LoadProviderDictionaryAsync(DarkUri, "Dark");
+					ResourceDictionary? DarkDict = await this.LoadProviderDictionaryAsync(DarkUri, "Dark", Policy, CancellationToken, ForceNetwork);
 					if (DarkDict is not null) foreach (string K in DarkDict.Keys.OfType<string>()) this.localDarkDict[K] = DarkDict[K];
 				}
 				this.localLightDict[localFlagKey] = true;
@@ -361,7 +532,7 @@ namespace NeuroAccessMaui.Services.Theme
 			});
 		}
 
-		private async Task ApplyV1Async(XmlDocument Doc)
+		private async Task ApplyV1Async(XmlDocument Doc, ThemeFetchPolicy Policy, CancellationToken CancellationToken, bool ForceNetwork)
 		{
 			XmlElement? Root = Doc.DocumentElement;
 			if (Root is null || Root.NamespaceURI != Constants.Schemes.NeuroAccessBrandingV1)
@@ -375,11 +546,11 @@ namespace NeuroAccessMaui.Services.Theme
 			if (Root.SelectSingleNode("//*[local-name()='ColorsUri']") is not XmlElement ColorsNode) 
 				return;
 			Uri ColorsUri = new(ColorsNode.InnerText.Trim());
-			ResourceDictionary? Orig = await this.LoadProviderDictionaryAsync(ColorsUri, "V1");
+			ResourceDictionary? Orig = await this.LoadProviderDictionaryAsync(ColorsUri, "V1", Policy, CancellationToken, ForceNetwork);
 			if (Orig is null)
 				return;
 			Dictionary<string, object> Light = [];
-			 Dictionary<string, object> Dark = [];
+			Dictionary<string, object> Dark = [];
 			foreach (string K in Orig.Keys.OfType<string>())
 			{
 				if (K.EndsWith("Light", StringComparison.OrdinalIgnoreCase)) Light[K[..^5]] = Orig[K];
@@ -411,9 +582,9 @@ namespace NeuroAccessMaui.Services.Theme
 			});
 		}
 
-		private async Task<ResourceDictionary?> LoadProviderDictionaryAsync(Uri Uri, string Tag)
+		private async Task<ResourceDictionary?> LoadProviderDictionaryAsync(Uri Uri, string Tag, ThemeFetchPolicy Policy, CancellationToken CancellationToken, bool ForceNetwork)
 		{
-			byte[]? Bytes = await this.FetchOrGetCachedAsync(Uri, Uri.AbsoluteUri);
+			(byte[]? Bytes, bool _, bool _) = await this.FetchOrGetCachedAsync(Uri, Uri.AbsoluteUri, Policy, ForceNetwork, CancellationToken);
 			if (Bytes is null)
 				return null;
 			try
@@ -429,20 +600,32 @@ namespace NeuroAccessMaui.Services.Theme
 			}
 		}
 
-		private async Task<byte[]?> FetchOrGetCachedAsync(Uri Uri, string Key)
+		private async Task<(byte[]? Data, bool CacheExpired, bool AttemptedNetwork)> FetchOrGetCachedAsync(Uri Uri, string Key, ThemeFetchPolicy Policy, bool ForceNetwork, CancellationToken CancellationToken)
 		{
 			try
 			{
-                (byte[]? Cached, _) = await this.cacheManager.TryGet(Key); if (Cached is not null) return Cached;
-                (byte[]? Fetched, _) = await ServiceRef.InternetCacheService.GetOrFetch(Uri, ServiceRef.TagProfile.PubSubJid!, false);
-                if (Fetched is not null)
-                    await this.cacheManager.AddOrUpdate(Key, ServiceRef.TagProfile.PubSubJid!, false, Fetched, "application/xml");
-                return Fetched;
-            }
-            catch (Exception Ex)
-            {
-                ServiceRef.LogService.LogException(new Exception($"FetchOrGetCachedAsync failed for {Uri}", Ex));
-				return null;
+				if (CancellationToken.IsCancellationRequested)
+					return (null, false, false);
+				(byte[]? Cached, string _, bool IsExpired) = await this.cacheManager.TryGetWithExpiry(Key);
+				if (Cached is not null && !ForceNetwork)
+					return (Cached, IsExpired, false);
+
+				if (!ServiceRef.NetworkService.IsOnline)
+					return (Cached, IsExpired, false);
+
+				TimeSpan Timeout = GetFetchTimeout(Policy);
+				(byte[]? Fetched, _) = await ServiceRef.InternetCacheService.GetOrFetch(Uri, ServiceRef.TagProfile.PubSubJid!, false, Timeout);
+				if (Fetched is not null)
+				{
+					await this.cacheManager.AddOrUpdate(Key, ServiceRef.TagProfile.PubSubJid!, false, Fetched, "application/xml");
+					return (Fetched, false, true);
+				}
+				return (Cached, IsExpired, true);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(new Exception($"FetchOrGetCachedAsync failed for {Uri}", Ex));
+				return (null, false, false);
 			}
 		}
 
@@ -505,12 +688,17 @@ namespace NeuroAccessMaui.Services.Theme
 		/// <summary>
 		/// Clears locally cached branding descriptors for the current provider domain.
 		/// </summary>
-		public Task<int> ClearBrandingCacheForCurrentDomain()
+		public async Task<int> ClearBrandingCacheForCurrentDomain()
 		{
-			string? parentId = ServiceRef.TagProfile.PubSubJid;
-			if (string.IsNullOrWhiteSpace(parentId))
-				return Task.FromResult(0);
-			return this.cacheManager.RemoveByParentId(parentId);
+			string? ParentId = ServiceRef.TagProfile.PubSubJid;
+			if (string.IsNullOrWhiteSpace(ParentId))
+				return 0;
+
+			int Removed = await this.cacheManager.RemoveByParentId(ParentId);
+			string? Domain = ServiceRef.TagProfile.Domain;
+			if (!string.IsNullOrWhiteSpace(Domain))
+				await this.cacheManager.Remove(GetUnsupportedCacheKey(Domain));
+			return Removed;
 		}
 
 		private void Dispose(bool disposing)

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.Services;          // for ServiceRef and ServiceHelper
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Tag;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Theme;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages;
@@ -59,15 +60,26 @@ namespace NeuroAccessMaui.UI.Pages.Startup
 			}
 			else
 			{
-				await this.themeService.ApplyProviderTheme();
+				ThemeApplyOutcome ThemeOutcome = await this.themeService.ApplyProviderThemeAsync(ThemeFetchPolicy.BlockingFirstRun, CancellationToken.None);
+				// Edge case: a reachable but unavailable branding endpoint times out and stays transient.
+				// This loop intentionally blocks first-run until branding resolves; revisit if we add a
+				// "continue without branding" path.
+				while (ThemeOutcome == ThemeApplyOutcome.FailedTransient)
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.ErrorTitle)],
+						ServiceRef.Localizer[nameof(AppResources.NetworkSeemsToBeMissing)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					ThemeOutcome = await this.themeService.ApplyProviderThemeAsync(ThemeFetchPolicy.BlockingFirstRun, CancellationToken.None);
+				}
 				await this.navigationService.SetRootAsync(nameof(MainPage));
 				try
 				{
 					await this.notificationService.ProcessPendingAsync(CancellationToken.None);
 				}
-				catch (Exception ex)
+				catch (Exception Ex)
 				{
-					ServiceRef.LogService.LogException(ex);
+					ServiceRef.LogService.LogException(Ex);
 				}
 			}
 		}

@@ -27,6 +27,16 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 		/// <param name="Permanent">If true, store with Expires = DateTime.MaxValue; if false, temporary expiry.</param>
 		/// <returns>A tuple containing the file bytes and content type.</returns>
 		Task<(byte[]? Data, string ContentType)> GetOrFetch(Uri Uri, string ParentId, bool Permanent);
+		
+		/// <summary>
+		/// Retrieves content for the specified URI from cache or fetches and caches it if missing, using a custom timeout.
+		/// </summary>
+		/// <param name="Uri">The URI key of the content.</param>
+		/// <param name="ParentId">An optional parent ID to group related cache entries.</param>
+		/// <param name="Permanent">If true, store with Expires = DateTime.MaxValue; if false, temporary expiry.</param>
+		/// <param name="Timeout">The maximum time allowed for the network fetch.</param>
+		/// <returns>A tuple containing the file bytes and content type.</returns>
+		Task<(byte[]? Data, string ContentType)> GetOrFetch(Uri Uri, string ParentId, bool Permanent, TimeSpan Timeout);
 
 		/// <summary>
 		/// Removes the cached entry for the specified URI, if it exists.

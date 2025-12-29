@@ -45,15 +45,23 @@ namespace NeuroAccessMaui.Services.Cache.InternetCache
 
 		public async Task<(byte[]? Data, string ContentType)> GetOrFetch(Uri Uri, string ParentId, bool Permanent)
 		{
+			return await this.GetOrFetch(Uri, ParentId, Permanent, TimeSpan.FromSeconds(60));
+		}
+
+		public async Task<(byte[]? Data, string ContentType)> GetOrFetch(Uri Uri, string ParentId, bool Permanent, TimeSpan Timeout)
+		{
 			// Check cache (allow expired entries as fallback)
 			(byte[]? Cached, string CachedType, bool IsExpired) = await this.cacheManager.TryGetWithExpiry(Uri.AbsoluteUri);
 			if (Cached is not null && !IsExpired)
 				return (Cached, CachedType);
 
+			double TimeoutMsDouble = Math.Min(Math.Max(Timeout.TotalMilliseconds, 1d), int.MaxValue);
+			int TimeoutMs = (int)TimeoutMsDouble;
 			ContentResponse Response = await InternetContent.GetAsync(
 				Uri,
 				null,
-				App.ValidateCertificateCallback);
+				App.ValidateCertificateCallback,
+				TimeoutMs);
 
 			if (Response.HasError || Response.Encoded is null || string.IsNullOrEmpty(Response.ContentType))
 			{

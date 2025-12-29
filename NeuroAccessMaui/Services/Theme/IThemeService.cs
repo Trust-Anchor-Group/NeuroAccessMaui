@@ -1,4 +1,5 @@
-﻿using Waher.Runtime.Inventory;
+﻿using System.Threading;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Theme
 {
@@ -10,9 +11,17 @@ namespace NeuroAccessMaui.Services.Theme
 	public interface IThemeService
 	{
 		/// <summary>
-		/// Loads and applies the provider-supplied theme, if available.
+		/// Loads and applies the provider-supplied theme, if available, using the background refresh policy.
 		/// </summary>
-		Task ApplyProviderTheme();
+		Task ApplyProviderThemeAsync();
+
+		/// <summary>
+		/// Loads and applies the provider-supplied theme according to the specified policy.
+		/// </summary>
+		/// <param name="Policy">The fetch policy to apply.</param>
+		/// <param name="CancellationToken">A token that can be used to cancel the operation.</param>
+		/// <returns>An outcome describing how the provider theme was resolved.</returns>
+		Task<ThemeApplyOutcome> ApplyProviderThemeAsync(ThemeFetchPolicy Policy, CancellationToken CancellationToken = default);
 
 		/// <summary>
 		/// Retrieves the current application theme.
@@ -26,10 +35,10 @@ namespace NeuroAccessMaui.Services.Theme
 		void SetTheme(AppTheme Theme);
 
 		/// <summary>
-		/// Sets the active theme
+		/// Sets the active theme.
 		/// </summary>
-		/// <param name="theme"></param>
-		void SetLocalTheme(AppTheme theme);
+		/// <param name="Theme">The theme to apply locally.</param>
+		void SetLocalTheme(AppTheme Theme);
 
 		/// <summary>
 		/// Gets the mapping of image identifiers to their URIs.
@@ -44,7 +53,7 @@ namespace NeuroAccessMaui.Services.Theme
 		/// <summary>
 		/// Clears locally cached branding descriptors for the current provider domain.
 		/// </summary>
-		public Task<int> ClearBrandingCacheForCurrentDomain();
+		Task<int> ClearBrandingCacheForCurrentDomain();
 
 		/// <summary>
 		/// Returns the image URI for the given identifier, or empty string if not found.
