@@ -173,21 +173,8 @@ namespace NeuroAccessMaui
 				INotificationServiceV2 NotificationService = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
 				INotificationRenderer NotificationRenderer = ServiceRef.Provider.GetRequiredService<INotificationRenderer>();
 
-				// Handle deep link URL intent.
-				if (intent.Action == Intent.ActionView)
-				{
-					string? Url = intent.Data?.ToString();
-					if (!string.IsNullOrEmpty(Url))
-					{
-						AppIntent = new AppIntent
-						{
-							Action = Constants.IntentActions.OpenUrl,
-							Data = Url
-						};
-					}
-				}
 				// Handle push tap intent carrying NotificationIntent JSON.
-				else if (intent.Extras is not null && intent.Extras.ContainsKey("notificationIntent"))
+				if (intent.Extras is not null && intent.Extras.ContainsKey("notificationIntent"))
 				{
 					string? payload = intent.Extras.GetString("notificationIntent");
 					if (!string.IsNullOrEmpty(payload))
@@ -208,6 +195,19 @@ namespace NeuroAccessMaui
 						{
 							ServiceRef.LogService.LogException(ex);
 						}
+					}
+				}
+				// Handle deep link URL intent.
+				else if (intent.Action == Intent.ActionView)
+				{
+					string? Url = intent.Data?.ToString();
+					if (!string.IsNullOrEmpty(Url))
+					{
+						AppIntent = new AppIntent
+						{
+							Action = Constants.IntentActions.OpenUrl,
+							Data = Url
+						};
 					}
 				}
 				// Handle data-only push when app is background/terminated: render notification.
