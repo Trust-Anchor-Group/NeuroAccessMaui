@@ -221,11 +221,11 @@ namespace NeuroAccessMaui.Services.UI
             double currentOpacity = this.popupBackground.Opacity;
             if (!overlayWasVisible)
             {
-                await this.popupBackground.FadeTo(targetOpacity, 150, Easing.CubicOut);
+                await this.popupBackground.FadeToAsync(targetOpacity, 150, Easing.CubicOut);
             }
             else if (Math.Abs(currentOpacity - targetOpacity) > 0.01)
             {
-                await this.popupBackground.FadeTo(targetOpacity, 120, Easing.CubicOut);
+                await this.popupBackground.FadeToAsync(targetOpacity, 120, Easing.CubicOut);
             }
 
             if (popup is BasePopupView popupView)
@@ -304,7 +304,7 @@ namespace NeuroAccessMaui.Services.UI
 
             if (nextVisualState is null)
             {
-                await this.popupBackground.FadeTo(0, 150, Easing.CubicOut);
+                await this.popupBackground.FadeToAsync(0, 150, Easing.CubicOut);
                 this.popupOverlay.IsVisible = false;
                 this.popupOverlay.InputTransparent = true;
                 this.currentPopupState = null;
@@ -317,7 +317,7 @@ namespace NeuroAccessMaui.Services.UI
                 if (!this.popupOverlay.IsVisible)
                     this.popupOverlay.IsVisible = true;
                 if (Math.Abs(currentOpacity - targetOpacity) > 0.01)
-                    await this.popupBackground.FadeTo(targetOpacity, 120, Easing.CubicOut);
+                    await this.popupBackground.FadeToAsync(targetOpacity, 120, Easing.CubicOut);
                 this.currentPopupState = nextVisualState;
             }
         }

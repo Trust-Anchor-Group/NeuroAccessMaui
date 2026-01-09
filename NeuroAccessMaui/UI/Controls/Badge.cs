@@ -429,8 +429,8 @@ namespace NeuroAccessMaui.UI.Controls
 		/// <returns>A task representing the asynchronous animation operation.</returns>
 		private async Task AnimateBounceAsync()
 		{
-			await this.ScaleTo(1.2, 50);
-			await this.ScaleTo(1.0, 50);
+			await this.ScaleToAsync(1.2, 50);
+			await this.ScaleToAsync(1.0, 50);
 		}
 
 		/// <summary>

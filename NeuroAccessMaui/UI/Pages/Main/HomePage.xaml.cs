@@ -51,11 +51,11 @@ namespace NeuroAccessMaui.UI.Pages.Main
 						this.NoIDPopup.Scale = 1;
 						this.NoIDPopup.IsVisible = !Vm.HasPersonalIdentity;
 
-						_ = this.NoWalletPopup.FadeTo(1, 500, Easing.CubicIn);
-						_ = this.NoWalletPopup.ScaleTo(1, 500, Easing.CubicIn);
+						_ = this.NoWalletPopup.FadeToAsync(1, 500, Easing.CubicIn);
+						_ = this.NoWalletPopup.ScaleToAsync(1, 500, Easing.CubicIn);
 
-						_ = this.NoIDPopup.FadeTo(0.8, 500, Easing.CubicOut);
-						await this.NoIDPopup.ScaleTo(0.8, 500, Easing.CubicOut);
+						_ = this.NoIDPopup.FadeToAsync(0.8, 500, Easing.CubicOut);
+						await this.NoIDPopup.ScaleToAsync(0.8, 500, Easing.CubicOut);
 
 						this.NoIDPopup.IsVisible = false;
 					}
@@ -69,11 +69,11 @@ namespace NeuroAccessMaui.UI.Pages.Main
 						this.NoWalletPopup.Scale = 1;
 						this.NoWalletPopup.IsVisible = true;
 
-						_ = this.NoIDPopup.FadeTo(1, 1000, Easing.CubicIn);
-						_ = this.NoIDPopup.ScaleTo(1, 1000, Easing.CubicIn);
+						_ = this.NoIDPopup.FadeToAsync(1, 1000, Easing.CubicIn);
+						_ = this.NoIDPopup.ScaleToAsync(1, 1000, Easing.CubicIn);
 
-						_ = this.NoWalletPopup.FadeTo(0, 1000, Easing.CubicOut);
-						await this.NoWalletPopup.ScaleTo(0.8, 1000, Easing.CubicOut);
+						_ = this.NoWalletPopup.FadeToAsync(0, 1000, Easing.CubicOut);
+						await this.NoWalletPopup.ScaleToAsync(0.8, 1000, Easing.CubicOut);
 
 						this.NoWalletPopup.IsVisible = false;
 					}

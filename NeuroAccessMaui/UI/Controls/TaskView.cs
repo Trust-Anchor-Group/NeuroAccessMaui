@@ -394,16 +394,16 @@ namespace NeuroAccessMaui.UI.Controls
 				if (this.Content is not null)
 				{
 					View OldContent = this.Content;
-					await OldContent.FadeTo(0, 250);
+					await OldContent.FadeToAsync(0, 250);
 					this.Content = NewContent;
 					NewContent.Opacity = 0;
-					await NewContent.FadeTo(1, 250);
+					await NewContent.FadeToAsync(1, 250);
 				}
 				else
 				{
 					this.Content = NewContent;
 					NewContent.Opacity = 0;
-					await NewContent.FadeTo(1, 250);
+					await NewContent.FadeToAsync(1, 250);
 				}
 			}
 			catch (Exception)

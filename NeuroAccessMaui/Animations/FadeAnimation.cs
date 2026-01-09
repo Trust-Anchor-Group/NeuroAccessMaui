@@ -50,7 +50,7 @@ namespace NeuroAccessMaui.Animations
 				Target.Opacity = this.fromOpacity.Value;
 
 			uint DurationMs = this.ResolveDurationMilliseconds(Context, Options);
-			Func<CancellationToken, Task> Execute = _ => Target.FadeTo(this.toOpacity, DurationMs, this.Easing);
+			Func<CancellationToken, Task> Execute = _ => Target.FadeToAsync(this.toOpacity, DurationMs, this.Easing);
 			ExceptionDispatchInfo? DispatchInfo = null;
 			try
 			{

@@ -28,14 +28,14 @@ namespace NeuroAccessMaui.UI.Controls
 			Task? fadeOutTask = null;
 			if (oldElement is not null)
 			{
-				fadeOutTask = oldElement.FadeTo(0.0, request.Duration / 2, request.Easing);
+				fadeOutTask = oldElement.FadeToAsync(0.0, request.Duration / 2, request.Easing);
 			}
 
 			Task? fadeInTask = null;
 			if (newElement is not null)
 			{
 				newElement.Opacity = 0.0;
-				fadeInTask = newElement.FadeTo(1.0, request.Duration / 2, request.Easing);
+				fadeInTask = newElement.FadeToAsync(1.0, request.Duration / 2, request.Easing);
 			}
 
 			if (fadeOutTask is not null && fadeInTask is not null)

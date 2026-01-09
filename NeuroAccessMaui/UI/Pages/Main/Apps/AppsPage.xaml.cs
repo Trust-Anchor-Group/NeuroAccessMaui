@@ -37,10 +37,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 
 						this.MainContent.Opacity = 1;
 
-						_ = this.ComingSoonPopup.FadeTo(1, 500, Easing.CubicIn);
-						_ = this.ComingSoonPopup.ScaleTo(1, 500, Easing.CubicIn);
+						_ = this.ComingSoonPopup.FadeToAsync(1, 500, Easing.CubicIn);
+						_ = this.ComingSoonPopup.ScaleToAsync(1, 500, Easing.CubicIn);
 
-						await this.MainContent.FadeTo(0.6, 500, Easing.CubicOut);
+						await this.MainContent.FadeToAsync(0.6, 500, Easing.CubicOut);
 					}
 					else
 					{
@@ -50,10 +50,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 						this.ComingSoonPopup.Scale = 1;
 						this.ComingSoonPopup.IsVisible = true;
 
-						_ = this.MainContent.FadeTo(1, 500, Easing.CubicIn);
+						_ = this.MainContent.FadeToAsync(1, 500, Easing.CubicIn);
 
-						_ = this.ComingSoonPopup.FadeTo(0, 500, Easing.CubicOut);
-						await this.ComingSoonPopup.ScaleTo(0.8, 500, Easing.CubicOut);
+						_ = this.ComingSoonPopup.FadeToAsync(0, 500, Easing.CubicOut);
+						await this.ComingSoonPopup.ScaleToAsync(0.8, 500, Easing.CubicOut);
 
 						this.ComingSoonPopup.IsVisible = false;
 					}
@@ -69,13 +69,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 					{
 						this.BetaText.Scale = 1;
 
-						await this.BetaText.ScaleTo(1.05, 100, Easing.CubicOut);
+						await this.BetaText.ScaleToAsync(1.05, 100, Easing.CubicOut);
 					}
 					else
 					{
 						this.BetaText.Scale = 1.05;
 
-						await this.BetaText.ScaleTo(1, 100, Easing.CubicIn);
+						await this.BetaText.ScaleToAsync(1, 100, Easing.CubicIn);
 					}
 				}
 			}
