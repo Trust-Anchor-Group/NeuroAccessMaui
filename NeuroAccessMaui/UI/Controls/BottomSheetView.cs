@@ -219,8 +219,6 @@ namespace NeuroAccessMaui.UI.Controls
 			return base.MeasureOverride(widthConstraint, heightConstraint);
 		}
 
-		private double initialPanY = 0;
-		private double initialTranslationY = 0;
 		private double previousPanY = 0;
 
 		private DateTime panStartTime;
