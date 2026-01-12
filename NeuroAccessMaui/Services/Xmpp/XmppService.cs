@@ -3,6 +3,17 @@
 //#define DEBUG_LOG_REMOTE
 //#define DEBUG_DB_REMOTE
 
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Xml;
 using CommunityToolkit.Mvvm.Messaging;
 using EDaler;
 using EDaler.Events;
@@ -11,12 +22,12 @@ using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
-using NeuroAccessMaui.Services.Identity;
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Things;
 using NeuroAccessMaui.Services.Notification.Xmpp;
-using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.UI.Photos;
@@ -24,6 +35,7 @@ using NeuroAccessMaui.Services.Wallet;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Kyc;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportOrBlock;
 using NeuroAccessMaui.UI.Popups.Xmpp.ReportType;
 using NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo;
@@ -31,17 +43,6 @@ using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.Events;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Xml;
 using Waher.Content;
 using Waher.Content.Html;
 using Waher.Content.Markdown;
@@ -83,7 +84,6 @@ using Waher.Script.Constants;
 using Waher.Security.JWT;
 using Waher.Things;
 using Waher.Things.SensorData;
-using NeuroAccessMaui.UI.Pages.Onboarding;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -3430,9 +3430,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						Body = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityCompromisedBody)];
 						break;
 					default:
-						Title = ServiceRef.Localizer[nameof(AppResources.NotificationIdentityApprovedTitle)];
-						Body = e.Identity.State.ToString();
-						break;
+						return;
 				}
 
 				NotificationIntent Intent = new()
