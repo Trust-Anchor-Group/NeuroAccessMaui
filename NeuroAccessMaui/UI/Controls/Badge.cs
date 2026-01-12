@@ -512,8 +512,8 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			base.OnSizeAllocated(width, height);
 
-			// Update the corner radius based on the new size.
-			this.UpdateSizeAndShape();
+			// Update the shape based on the new size without resetting width/height requests.
+			this.UpdateCornerRadius();
 
 			// For multi-character text, ensure the width is at least the measured text width plus padding,
 			// and also at least equal to the height (to maintain a pill shape).
