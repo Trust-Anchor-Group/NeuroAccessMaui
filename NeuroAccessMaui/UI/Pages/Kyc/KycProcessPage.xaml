@@ -638,12 +638,6 @@
 															   Style="{DynamicResource FieldTitleLabel}"
 															   TextColor="{DynamicResource TnPDangerContentWL}" />
 													</Grid>
-													<Label Text="{l:Localize KycRejectedDescription}"
-														   Style="{DynamicResource InfoLabel}"
-														   TextColor="{DynamicResource TnPDangerContentWL}" />
-													<Label Text="{Binding ErrorDescription}"
-														   Style="{DynamicResource InfoLabel}" FontAttributes="Bold"
-														   TextColor="{DynamicResource TnPDangerContentWL}" />
 													<Label Text="{l:Localize KycRejectedInvalidationHint}"
 														   Style="{DynamicResource InfoLabel}"
 														   TextColor="{DynamicResource TnPDangerContentWL}"
@@ -691,34 +685,34 @@
 															   Style="{DynamicResource FieldTitleLabel}"
 															   TextColor="{DynamicResource TnPWarningContentWL}" />
 													</Grid>
-														<mct:Expander IsExpanded="False">
-															<mct:Expander.Header>
-																<Label Text="{Binding UnvalidatedSummaryText}"
+													<mct:Expander IsExpanded="False">
+														<mct:Expander.Header>
+															<Label Text="{Binding UnvalidatedSummaryText}"
 																	   Style="{DynamicResource InfoLabel}"
 																	   TextColor="{DynamicResource TnPWarningContentWL}" />
-															</mct:Expander.Header>
+														</mct:Expander.Header>
+														<VerticalStackLayout>
 															<CollectionView ItemsSource="{Binding UnvalidatedItems}"
-																		ItemSizingStrategy="MeasureAllItems"
-																		SelectionMode="None">
-																	<CollectionView.ItemsLayout>
-																		<LinearItemsLayout Orientation="Vertical"
-																			   ItemSpacing="{DynamicResource TinySpacing}" />
-																	</CollectionView.ItemsLayout>
-																	<CollectionView.ItemTemplate>
-																		<DataTemplate x:DataType="x:String">
-																			<Label Text="{Binding}"
-																				   TextColor="{DynamicResource TnPWarningContentWL}"
-																				   Style="{DynamicResource InfoLabel}" />
-																			</DataTemplate>
-																	</CollectionView.ItemTemplate>
-																</CollectionView>
+																			ItemSizingStrategy="MeasureAllItems"
+																			SelectionMode="None"
+																			Margin="8">
+																<CollectionView.ItemsLayout>
+																	<LinearItemsLayout Orientation="Vertical"
+																				   ItemSpacing="{DynamicResource SmallSpacing}" />
+																</CollectionView.ItemsLayout>
+																<CollectionView.ItemTemplate>
+																	<DataTemplate x:DataType="x:String">
+																		<Label Text="{Binding}"
+																					   TextColor="{DynamicResource TnPWarningContentWL}"
+																					   Style="{DynamicResource InfoLabel}" />
+																	</DataTemplate>
+																</CollectionView.ItemTemplate>
+															</CollectionView>
+															<controls:TextButton Style="{DynamicResource RedButton}"
+																				 LabelData="{l:Localize KycRemovePendingAndReapplyButton}"
+																				 Command="{Binding RemovePendingAndResubmitCommand}"/>
+														</VerticalStackLayout>
 														</mct:Expander>
-													<Label Text="{l:Localize KycUnvalidatedActionHint}"
-														   Style="{DynamicResource InfoLabel}"
-														   TextColor="{DynamicResource TnPWarningContentWL}" />
-													<controls:TextButton Style="{DynamicResource FilledTextButton}"
-																		 LabelData="{l:Localize KycRemovePendingAndReapplyButton}"
-																		 Command="{Binding RemovePendingAndResubmitCommand}" />
 												</VerticalStackLayout>
 											</Border>
 										</controls:ConditionView.True>

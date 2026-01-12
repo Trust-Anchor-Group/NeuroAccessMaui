@@ -3361,6 +3361,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 					{
 						LegalIdentity? ToObsolete = ServiceRef.TagProfile.LegalIdentity;
 
+						if (ToObsolete is not null)
+						{
+							INotificationServiceV2 NotificationService = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+							NotificationService.AddIgnoreFilter((NotificationIntent Intent) =>
+							{
+								if (!string.Equals(Intent.Channel, NeuroAccessMaui.Constants.PushChannels.Identities, StringComparison.OrdinalIgnoreCase))
+									return NotificationFilterDecision.None;
+
+								if (!string.Equals(Intent.EntityId, ToObsolete.Id, StringComparison.OrdinalIgnoreCase))
+									return NotificationFilterDecision.None;
+
+								return new NotificationFilterDecision(true, true, true);
+							});
+						}
+
 						await ServiceRef.TagProfile.SetLegalIdentity(e.Identity, true);
 						await ServiceRef.TagProfile.SetIdentityApplication(null, false);
 
