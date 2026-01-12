@@ -220,6 +220,7 @@ namespace NeuroAccessMaui.UI.Controls
 		}
 
 		private double previousPanY = 0;
+		private double initialTranslationY = 0;
 
 		private DateTime panStartTime;
 
