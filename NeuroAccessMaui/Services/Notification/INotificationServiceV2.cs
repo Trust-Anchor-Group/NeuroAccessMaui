@@ -28,6 +28,13 @@ namespace NeuroAccessMaui.Services.Notification
 		Task ConsumeAsync(string Id, CancellationToken CancellationToken);
 
 		/// <summary>
+		/// Marks a notification as consumed without routing it.
+		/// </summary>
+		/// <param name="Id">Notification identifier.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		Task MarkConsumedAsync(string Id, CancellationToken CancellationToken);
+
+		/// <summary>
 		/// Retrieves notifications matching the query with optional paging.
 		/// </summary>
 		/// <param name="Query">Query filter.</param>

@@ -4116,8 +4116,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Presentation = NotificationPresentation.StoreOnly
 			};
 
+			byte[] ContentToSign = e.ContentToSign ?? Array.Empty<byte>();
+			string ContentToSignBase64 = Convert.ToBase64String(ContentToSign);
+			string Purpose = e.Purpose ?? string.Empty;
+			string RequestorIdentityId = e.RequestorIdentity?.Id ?? string.Empty;
+
 			Intent.Extras["signatoryId"] = e.SignatoryIdentityId ?? string.Empty;
 			Intent.Extras["petitionId"] = e.PetitionId ?? string.Empty;
+			Intent.Extras["requestorIdentityId"] = RequestorIdentityId;
+			Intent.Extras["purpose"] = Purpose;
+			Intent.Extras["contentToSign"] = ContentToSignBase64;
 
 			await AddNotificationAsync(Intent, NotificationSource.Xmpp, null);
 			await this.PetitionForSignatureReceived.Raise(this, e);
