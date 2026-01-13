@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhances notification model, routing & UI
 - Improves push handling and identity routing
 - Improves notifications loading and cancellation
+- Update Waher dependencies
+
 
 ### Fixed
 
@@ -39,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix merge issues
 - Fix warnings in renderer
 - KYC issues on windows
+- Personal numbers not validating if country is not supported
 
 ## [2.7.4]
 
