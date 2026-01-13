@@ -26,6 +26,11 @@ namespace NeuroAccessMaui.Services.Storage
 		{
 			string AppDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			this.dataFolder = Path.Combine(AppDataFolder, "Data");
+
+#if DEBUG && WINDOWS
+            string name = Environment.GetEnvironmentVariable("NEUROACCESS_DATA_PROFILE") ?? "";
+            this.dataFolder = Path.Combine(AppDataFolder, "Data" + name);
+#endif
 		}
 
 		/// <summary>

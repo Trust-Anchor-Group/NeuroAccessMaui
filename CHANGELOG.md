@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adds page for viewing notifications
 - Adds runtime notification filter registry
 - Adds notification action labels and context menu
+- Added launch settings for windows to run multiple access configurations
 
 ### Changed
 
@@ -37,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixes filter button visibility
 - Fix merge issues
 - Fix warnings in renderer
+- KYC issues on windows
 
 ## [2.7.4]
 

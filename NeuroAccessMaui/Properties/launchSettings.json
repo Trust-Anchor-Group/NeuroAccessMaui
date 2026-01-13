@@ -3,6 +3,13 @@
 		"Windows Machine": {
 			"commandName": "Project",
 			"nativeDebugging": false
+		},
+		"Windows Machine 2": {
+			"commandName": "Project",
+			"nativeDebugging": false,
+			"environmentVariables": {
+				"NEUROACCESS_DATA_PROFILE": "Profile2"
+			}
 		}
 	}
 }
