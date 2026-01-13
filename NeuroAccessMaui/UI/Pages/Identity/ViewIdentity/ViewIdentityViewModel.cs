@@ -15,6 +15,7 @@ using NeuroAccessMaui.Extensions;
 using Waher.Persistence;
 using Waher.Networking.XMPP;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat.Session;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.Identity;
 

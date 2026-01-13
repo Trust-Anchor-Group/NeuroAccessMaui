@@ -24,6 +24,7 @@ using NeuroAccessMaui.UI.Controls;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat.Session;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
@@ -168,6 +169,7 @@ namespace NeuroAccessMaui.UI
 
 			// Contacts
 			Builder.Services.AddTransient<ChatPage, ChatViewModel>();
+			Builder.Services.AddTransient<ChatSessionPage, ChatSessionViewModel>();
 			Builder.Services.AddTransient<MyContactsPage, ContactListViewModel>();
 
 			// Contracts

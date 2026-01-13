@@ -2304,6 +2304,39 @@
   <data name="Chat" xml:space="preserve">
     <value>Chatt</value>
   </data>
+  <data name="ChatActionCopy" xml:space="preserve">
+    <value>Kopiera</value>
+  </data>
+  <data name="ChatActionDelete" xml:space="preserve">
+    <value>Ta bort</value>
+  </data>
+  <data name="ChatActionEdit" xml:space="preserve">
+    <value>Redigera</value>
+  </data>
+  <data name="ChatActionReply" xml:space="preserve">
+    <value>Svara</value>
+  </data>
+  <data name="ChatMessageActions" xml:space="preserve">
+    <value>Meddelandeåtgärder</value>
+  </data>
+  <data name="ChatEditedTimestamp" xml:space="preserve">
+    <value>Redigerad {0}</value>
+  </data>
+  <data name="ChatEditingMessage" xml:space="preserve">
+    <value>Redigerar meddelande</value>
+  </data>
+  <data name="ChatReplyingToMessage" xml:space="preserve">
+    <value>Svarar till {0}</value>
+  </data>
+  <data name="ChatYou" xml:space="preserve">
+    <value>Du</value>
+  </data>
+  <data name="ChatTypingIndicatorComposing" xml:space="preserve">
+    <value>Skriver...</value>
+  </data>
+  <data name="ChatTypingIndicatorPaused" xml:space="preserve">
+    <value>Skrivning pausad</value>
+  </data>
   <data name="ConnectToDevice" xml:space="preserve">
     <value>Anslut till enhet</value>
   </data>

@@ -1,4 +1,4 @@
-﻿using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
+using NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events;
 using NeuroFeatures.Events;
 using System.Text;
 using System.Windows.Input;
@@ -7,6 +7,7 @@ using Waher.Networking.XMPP.HttpFileUpload;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat.Session;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.UI;
 

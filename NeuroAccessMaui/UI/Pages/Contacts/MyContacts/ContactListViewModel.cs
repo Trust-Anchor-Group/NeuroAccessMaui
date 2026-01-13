@@ -1,10 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using EDaler;
 using EDaler.Uris;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI.QR;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat.Session;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using System.Collections.ObjectModel;
 using System.Globalization;

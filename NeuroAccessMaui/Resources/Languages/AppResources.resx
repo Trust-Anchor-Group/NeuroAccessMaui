@@ -2307,6 +2307,39 @@
   <data name="Chat" xml:space="preserve">
     <value>Chat</value>
   </data>
+  <data name="ChatActionCopy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="ChatActionDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ChatActionEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="ChatActionReply" xml:space="preserve">
+    <value>Reply</value>
+  </data>
+  <data name="ChatMessageActions" xml:space="preserve">
+    <value>Message actions</value>
+  </data>
+  <data name="ChatEditedTimestamp" xml:space="preserve">
+    <value>Edited {0}</value>
+  </data>
+  <data name="ChatEditingMessage" xml:space="preserve">
+    <value>Editing message</value>
+  </data>
+  <data name="ChatReplyingToMessage" xml:space="preserve">
+    <value>Replying to {0}</value>
+  </data>
+  <data name="ChatYou" xml:space="preserve">
+    <value>You</value>
+  </data>
+  <data name="ChatTypingIndicatorComposing" xml:space="preserve">
+    <value>Typing...</value>
+  </data>
+  <data name="ChatTypingIndicatorPaused" xml:space="preserve">
+    <value>Typing paused</value>
+  </data>
   <data name="ConnectToDevice" xml:space="preserve">
     <value>Connect to Device</value>
   </data>

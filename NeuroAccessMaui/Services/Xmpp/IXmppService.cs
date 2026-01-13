@@ -206,6 +206,10 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <exception cref="XmppException">If an IQ error is returned.</exception>
 		Task<XmlElement> IqSetAsync(string To, string Xml);
 
+		bool IsChatStateSupported(string RemoteBareJid);
+
+		Task SendChatStateAsync(string RemoteBareJid, ChatState State, CancellationToken CancellationToken);
+
 		#endregion
 
 		#region Messages

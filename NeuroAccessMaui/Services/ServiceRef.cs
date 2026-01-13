@@ -11,6 +11,7 @@ using NeuroAccessMaui.Services.AppPermissions;
 using NeuroAccessMaui.Services.Cache.AttachmentCache;
 using NeuroAccessMaui.Services.Cache.InternetCache;
 using NeuroAccessMaui.Services.Contracts;
+using NeuroAccessMaui.Services.Chat;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
 using NeuroAccessMaui.Services.Intents;

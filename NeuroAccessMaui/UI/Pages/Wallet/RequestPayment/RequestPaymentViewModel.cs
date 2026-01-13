@@ -1,14 +1,16 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat.Session;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;
+using System.Threading;
 using Waher.Content;
 
 namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
@@ -194,23 +196,27 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 					return;
 				}
 
-				StringBuilder Markdown = new();
+			StringBuilder Markdown = new();
 
-				Markdown.Append("![");
-				Markdown.Append(ServiceRef.Localizer[nameof(AppResources.RequestPayment)]);
-				Markdown.Append("](");
-				Markdown.Append(this.QrCodeUri);
-				Markdown.Append(')');
+			Markdown.Append("![");
+			Markdown.Append(ServiceRef.Localizer[nameof(AppResources.RequestPayment)]);
+			Markdown.Append("](");
+			Markdown.Append(this.QrCodeUri);
+			Markdown.Append(')');
 
-				await ChatViewModel.ExecuteSendMessage(string.Empty, Markdown.ToString(), Contact.BareJid);
+			string bareJid = Contact.BareJid?.ToString() ?? string.Empty;
+			if (string.IsNullOrEmpty(bareJid))
+				return;
+			await ServiceRef.ChatMessageService.SendMarkdownAsync(bareJid, Markdown.ToString(), CancellationToken.None).ConfigureAwait(false);
 
-				if (Contact.Contact is not null)
-				{
-					await Task.Delay(100);  // Otherwise, page doesn't show properly. (Underlying timing issue. TODO: Find better solution.)
+			if (Contact.Contact is not null)
+			{
+				await Task.Delay(100);  // Otherwise, page doesn't show properly. (Underlying timing issue. TODO: Find better solution.)
 
 					ChatNavigationArgs ChatArgs = new(Contact.Contact);
 					await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 				}
+			}
 			}
 			catch (Exception ex)
 			{

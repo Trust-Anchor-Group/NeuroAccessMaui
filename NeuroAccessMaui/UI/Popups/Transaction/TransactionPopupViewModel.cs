@@ -8,6 +8,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat.Session;
 using NeuroAccessMaui.Services.Contacts; // Added for ContactInfo lookup
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using Waher.Networking.XMPP.Contracts;

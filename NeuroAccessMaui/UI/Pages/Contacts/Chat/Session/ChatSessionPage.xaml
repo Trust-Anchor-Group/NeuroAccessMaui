@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Contacts.Chat.Session.ChatSessionPage"
+                      x:Name="ThisPage"
+                      x:DataType="session:ChatSessionViewModel"
+                      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+                      xmlns:session="clr-namespace:NeuroAccessMaui.UI.Pages.Contacts.Chat.Session"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                      xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+
+    <base:BaseContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="SentMessageTemplate"
+                          x:DataType="session:ChatMessageItemViewModel">
+                <VerticalStackLayout HorizontalOptions="End"
+                                      Spacing="{DynamicResource SmallSpacing}">
+                    <VerticalStackLayout.Behaviors>
+                        <mct:TouchBehavior LongPressCommand="{Binding Source={x:Reference ThisPage}, Path=BindingContext.LongPressMessageCommand}"
+                                           LongPressCommandParameter="{Binding}"
+                                           LongPressDuration="600" />
+                    </VerticalStackLayout.Behaviors>
+
+                    <Frame Style="{DynamicResource FrameSet}"
+                           HasShadow="False"
+                           Margin="0,8"
+                           Padding="{DynamicResource MediumSpacing}"
+                           HorizontalOptions="End">
+                        <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+                            <Label Text="{Binding DisplayText}"
+                                   TextColor="{DynamicResource ContentPrimaryWL}"
+                                   LineBreakMode="WordWrap" />
+                            <Label Text="{Binding EditedCaption}"
+                                   IsVisible="{Binding IsEdited}"
+                                   FontSize="12"
+                                   Opacity="0.6"
+                                   TextColor="{DynamicResource ContentPrimaryWL}" />
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}"
+                                           HorizontalOptions="End">
+                        <Label Text="{Binding CreatedLocal, StringFormat='{0:t}'}"
+                               FontSize="12"
+                               Opacity="0.6" />
+                        <Label Text="{Binding DeliveryStatus}"
+                               FontSize="12"
+                               Opacity="0.6" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </DataTemplate>
+
+            <DataTemplate x:Key="ReceivedMessageTemplate"
+                          x:DataType="session:ChatMessageItemViewModel">
+                <VerticalStackLayout HorizontalOptions="Start"
+                                      Spacing="{DynamicResource SmallSpacing}"
+                                      Margin="0,8">
+                    <VerticalStackLayout.Behaviors>
+                        <mct:TouchBehavior LongPressCommand="{Binding Source={x:Reference ThisPage}, Path=BindingContext.LongPressMessageCommand}"
+                                           LongPressCommandParameter="{Binding}"
+                                           LongPressDuration="600" />
+                    </VerticalStackLayout.Behaviors>
+
+                    <Frame Style="{DynamicResource FrameSet}"
+                           HasShadow="False"
+                           Margin="0,0"
+                           Padding="{DynamicResource MediumSpacing}"
+                           HorizontalOptions="Start">
+                        <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+                            <Label Text="{Binding DisplayText}"
+                                   TextColor="{DynamicResource ContentPrimaryWL}"
+                                   LineBreakMode="WordWrap" />
+                            <Label Text="{Binding EditedCaption}"
+                                   IsVisible="{Binding IsEdited}"
+                                   FontSize="12"
+                                   Opacity="0.6"
+                                   TextColor="{DynamicResource ContentPrimaryWL}" />
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <Label Text="{Binding CreatedLocal, StringFormat='{0:t}'}"
+                           FontSize="12"
+                           Opacity="0.6"
+                           HorizontalOptions="Start" />
+                </VerticalStackLayout>
+            </DataTemplate>
+
+            <session:ChatMessageTemplateSelector x:Key="ChatMessageTemplateSelector"
+                                                 SentMessageTemplate="{StaticResource SentMessageTemplate}"
+                                                 ReceivedMessageTemplate="{StaticResource ReceivedMessageTemplate}" />
+        </ResourceDictionary>
+    </base:BaseContentPage.Resources>
+
+    <Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+          Padding="{DynamicResource MediumMargins}"
+          RowDefinitions="Auto,*,Auto">
+
+        <Grid ColumnDefinitions="Auto,*"
+              ColumnSpacing="{DynamicResource MediumSpacing}"
+              VerticalOptions="Center">
+            <controls:ImageButton PathData="{x:Static ui:Geometries.BackButtonPath}"
+                                  Style="{DynamicResource ImageOnlyButton}"
+                                  Command="{Binding GoBackCommand}" />
+            <Label Grid.Column="1"
+                   Style="{DynamicResource PageTitleLabel}"
+                   Text="{Binding FriendlyName}"
+                   MaxLines="2"
+                   LineBreakMode="TailTruncation" />
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <CollectionView ItemsSource="{Binding Messages}"
+                            RemainingItemsThreshold="4"
+                            RemainingItemsThresholdReached="OnRemainingItemsThresholdReached"
+                            ItemSizingStrategy="MeasureAllItems"
+                            ItemsLayout="VerticalList"
+                            SelectionMode="None"
+                            VerticalScrollBarVisibility="Always"
+                            ItemTemplate="{StaticResource ChatMessageTemplateSelector}" />
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"/>
+        </Grid>
+
+        <Grid Grid.Row="2"
+              RowDefinitions="Auto,Auto,Auto,Auto"
+              ColumnDefinitions="*,Auto"
+              ColumnSpacing="{DynamicResource MediumSpacing}"
+              Margin="{DynamicResource SmallTopMargins}">
+            <Label Grid.Row="0"
+                   Grid.ColumnSpan="2"
+                   Text="{Binding RemoteTypingState}"
+                   IsVisible="{Binding IsRemoteTyping}"
+                   FontSize="12"
+                   Opacity="0.7"
+                   TextColor="{DynamicResource ContentPrimaryWL}"
+                   Margin="4,0,4,4" />
+
+            <Frame Grid.Row="1"
+                   Grid.ColumnSpan="2"
+                   IsVisible="{Binding IsActionContextVisible}"
+                   Padding="{DynamicResource SmallMargins}"
+                   CornerRadius="6"
+                   HasShadow="False"
+                   BorderColor="{DynamicResource ContentPrimaryWL}"
+                   Margin="0,0,0,4">
+                <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+                    <Label Text="{Binding ActionContextTitle}"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource ContentPrimaryWL}" />
+                    <Label Text="{Binding ActionContextPreview}"
+                           TextColor="{DynamicResource ContentPrimaryWL}"
+                           LineBreakMode="TailTruncation"
+                           MaxLines="2" />
+                    <HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}">
+                        <Button Text="{l:Localize ChatActionReply}"
+                                Command="{Binding ReplyToMessageCommand}"
+                                CommandParameter="{Binding ActionContextMessage}"
+                                IsEnabled="{Binding IsActionContextVisible}" />
+                        <Button Text="{l:Localize ChatActionEdit}"
+                                Command="{Binding EditMessageCommand}"
+                                CommandParameter="{Binding ActionContextMessage}"
+                                IsEnabled="{Binding IsActionEditEnabled}" />
+                        <Button Text="{l:Localize ChatActionCopy}"
+                                Command="{Binding CopyMessageCommand}"
+                                CommandParameter="{Binding ActionContextMessage}" />
+                        <Button Text="{l:Localize ChatActionDelete}"
+                                Command="{Binding DeleteMessageCommand}"
+                                CommandParameter="{Binding ActionContextMessage}" />
+                        <Button Text="{l:Localize Cancel}"
+                                Command="{Binding ClearActionContextCommand}" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame Grid.Row="2"
+                   Grid.ColumnSpan="2"
+                   IsVisible="{Binding HasComposerContext}"
+                   Padding="{DynamicResource SmallMargins}"
+                   CornerRadius="6"
+                   HasShadow="False"
+                   BorderColor="{DynamicResource ContentPrimaryWL}"
+                   Margin="0,0,0,4">
+                <Grid ColumnDefinitions="*,Auto"
+                      ColumnSpacing="{DynamicResource SmallSpacing}">
+                    <VerticalStackLayout Spacing="2">
+                        <Label Text="{Binding ComposerContextTitle}"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource ContentPrimaryWL}" />
+                        <Label Text="{Binding ComposerContextPreview}"
+                               TextColor="{DynamicResource ContentPrimaryWL}"
+                               LineBreakMode="TailTruncation"
+                               MaxLines="2" />
+                    </VerticalStackLayout>
+                    <Button Grid.Column="1"
+                            Text="{l:Localize Cancel}"
+                            Command="{Binding ClearComposerContextCommand}"
+                            VerticalOptions="Center"
+                            HorizontalOptions="End" />
+                </Grid>
+            </Frame>
+
+            <Frame Grid.Row="3"
+                   Padding="{DynamicResource SmallMargins}"
+                   CornerRadius="6"
+                   HasShadow="False"
+                   BorderColor="{DynamicResource ContentPrimaryWL}">
+                <Editor Text="{Binding MarkdownInput}"
+                        Placeholder="Write a message"
+                        AutoSize="TextChanges"
+                        Keyboard="Chat"
+                        IsEnabled="{Binding IsComposerEnabled}"
+                        BackgroundColor="Transparent"
+                        TextColor="{DynamicResource ContentPrimaryWL}" />
+            </Frame>
+
+            <Grid Grid.Row="3"
+                  Grid.Column="1">
+                <Button Text="Send"
+                        Command="{Binding SendMessageCommand}"
+                        IsEnabled="{Binding IsComposerEnabled}"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center" />
+                <ActivityIndicator IsRunning="{Binding IsSendingMessage}"
+                                   IsVisible="{Binding IsSendingMessage}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+            </Grid>
+        </Grid>
+    </Grid>
+</base:BaseContentPage>
