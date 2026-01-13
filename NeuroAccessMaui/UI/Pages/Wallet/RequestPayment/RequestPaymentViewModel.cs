@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Chat;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat.Session;
@@ -207,7 +208,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 			string bareJid = Contact.BareJid?.ToString() ?? string.Empty;
 			if (string.IsNullOrEmpty(bareJid))
 				return;
-			await ServiceRef.ChatMessageService.SendMarkdownAsync(bareJid, Markdown.ToString(), CancellationToken.None).ConfigureAwait(false);
+			await ServiceRef.Provider.GetRequiredService<ChatMessageService>().SendMarkdownAsync(bareJid, Markdown.ToString(), CancellationToken.None).ConfigureAwait(false);
 
 			if (Contact.Contact is not null)
 			{
@@ -216,7 +217,6 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.RequestPayment
 					ChatNavigationArgs ChatArgs = new(Contact.Contact);
 					await ServiceRef.NavigationService.GoToAsync(nameof(ChatPage), ChatArgs, BackMethod.Inherited, Contact.BareJid);
 				}
-			}
 			}
 			catch (Exception ex)
 			{

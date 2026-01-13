@@ -53,8 +53,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.Session
 			this.chatMessageRepository = ServiceRef.ChatMessageRepository;
 			this.chatTransportService = ServiceRef.ChatTransportService;
 			this.markdownRenderService = ServiceRef.MarkdownRenderService;
-			this.chatEventStream = ServiceRef.ChatEventStream;
-			this.chatMessageService = ServiceRef.ChatMessageService;
+			this.chatEventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
+			this.chatMessageService = ServiceRef.Provide.GetRequiredServicer<ChatMessageService>();
 
 			this.messages = new ObservableCollection<ChatMessageItemViewModel>();
 			this.messageIndex = new Dictionary<string, ChatMessageItemViewModel>(StringComparer.OrdinalIgnoreCase);

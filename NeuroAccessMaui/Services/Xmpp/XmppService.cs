@@ -87,6 +87,7 @@ using Waher.Script.Constants;
 using Waher.Security.JWT;
 using Waher.Things;
 using Waher.Things.SensorData;
+using NeuroAccessMaui.UI.Pages.Contacts.Chat.Session;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -2118,8 +2119,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 					ContentFingerprint = string.Empty
 				};
 
-				IChatMessageRepository repository = ServiceRef.ChatMessageRepository;
-				IChatEventStream eventStream = ServiceRef.ChatEventStream;
+				IChatMessageRepository repository = ServiceRef.Provider.GetRequiredService<ChatMessageRepository>();
+				IChatEventStream eventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
 
                 if (isReplacement)
                 {
@@ -2145,7 +2146,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			{
 				try
 				{
-					await ServiceRef.ChatTransportService.AcknowledgeAsync(RemoteBareJid, Message.RemoteObjectId, CancellationToken.None).ConfigureAwait(false);
+					await ServiceRef.Provider.GetRequiredService<ChatTransportService>().AcknowledgeAsync(RemoteBareJid, Message.RemoteObjectId, CancellationToken.None).ConfigureAwait(false);
 				}
 				catch (Exception ex)
 				{
@@ -2160,7 +2161,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		MainThread.BeginInvokeOnMainThread(async () =>
 		{
-			if (ServiceRef.UiService.CurrentPage is ChatSessionPage sessionPage &&
+			if (ServiceRef.NavigationService.CurrentPage is ChatSessionPage sessionPage &&
 				sessionPage.BindingContext is ChatSessionViewModel sessionViewModel &&
 				string.Equals(sessionViewModel.RemoteBareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
 			{
@@ -2191,6 +2192,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
 				}
+			}
 			});
 		}
 
@@ -2201,7 +2203,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			try
 			{
-				IChatEventStream eventStream = ServiceRef.ChatEventStream;
+				IChatEventStream eventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
 				Dictionary<string, string> additionalData = new Dictionary<string, string>(StringComparer.Ordinal)
 				{
 					{ "Type", "Support" },
@@ -2232,7 +2234,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			try
 			{
-				IChatEventStream eventStream = ServiceRef.ChatEventStream;
+				IChatEventStream eventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
 				Dictionary<string, string> additionalData = new Dictionary<string, string>(StringComparer.Ordinal)
 				{
 					{ "Type", "StateChanged" },
@@ -2272,8 +2274,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			try
 			{
-				IChatMessageRepository repository = ServiceRef.ChatMessageRepository;
-				IChatEventStream eventStream = ServiceRef.ChatEventStream;
+				IChatMessageRepository repository = ServiceRef.Provider.GetRequiredService<ChatMessageRepository>();
+				IChatEventStream eventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
 
 				await repository.UpdateDeliveryStatusAsync(remoteBareJid, id, ChatDeliveryStatus.Received, DateTime.UtcNow, CancellationToken.None).ConfigureAwait(false);
 
@@ -2315,8 +2317,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			try
 			{
-				IChatMessageRepository repository = ServiceRef.ChatMessageRepository;
-				IChatEventStream eventStream = ServiceRef.ChatEventStream;
+				IChatMessageRepository repository = ServiceRef.Provider.GetRequiredService<ChatMessageRepository>();
+				IChatEventStream eventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
 
 				ChatMessageDescriptor? existing = await repository.GetAsync(remoteBareJid, replaceId, CancellationToken.None).ConfigureAwait(false);
 				if (existing is null)

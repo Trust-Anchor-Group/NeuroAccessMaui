@@ -30,7 +30,7 @@ namespace NeuroAccessMaui.Services.Chat
 
 			IChatMessageRepository repository = ServiceRef.ChatMessageRepository;
 			IChatTransportService transport = ServiceRef.ChatTransportService;
-			IChatEventStream eventStream = ServiceRef.ChatEventStream;
+			IChatEventStream eventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
 
 			CancellationToken.ThrowIfCancellationRequested();
 

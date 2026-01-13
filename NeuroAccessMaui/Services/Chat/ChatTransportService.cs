@@ -85,7 +85,6 @@ namespace NeuroAccessMaui.Services.Chat
 			string identifier = Guid.NewGuid().ToString("N", System.Globalization.CultureInfo.InvariantCulture);
 			string xml = this.BuildContentXml(Message, RemoteObjectId);
 			string body = Message.PlainText ?? string.Empty;
-
 			ServiceRef.XmppService.SendMessage(QoSLevel.Unacknowledged, Waher.Networking.XMPP.MessageType.Chat, identifier,
 				RemoteBareJid, xml, body, string.Empty, string.Empty, string.Empty, string.Empty, null, null);
 		}

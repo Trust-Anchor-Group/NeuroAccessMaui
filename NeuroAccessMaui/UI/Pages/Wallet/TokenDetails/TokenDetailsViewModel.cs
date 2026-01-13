@@ -699,7 +699,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		if (string.IsNullOrEmpty(contactBareJid))
 			return;
 
-		await ServiceRef.ChatMessageService.SendMarkdownAsync(contactBareJid, Markdown.ToString(), CancellationToken.None).ConfigureAwait(false);
+		await ServiceRef.Provide.GetRequiredServicer<ChatMessageService>().SendMarkdownAsync(contactBareJid, Markdown.ToString(), CancellationToken.None).ConfigureAwait(false);
 
 		if (Contact.Contact is not null)
 		{
