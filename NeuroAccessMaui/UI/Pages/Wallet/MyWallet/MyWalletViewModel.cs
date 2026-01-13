@@ -743,7 +743,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet
 
 						foreach (TokenNotificationEvent TokenEvent in P.Value)
 						{
-							Token = TokenEvent.Token;
+							Token = await TokenEvent.GetTokenAsync();
 							if (Token is not null)
 								break;
 						}

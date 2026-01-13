@@ -36,26 +36,29 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 		/// <summary>
 		/// Generates Maui XAML
 		/// </summary>
-		public Task<bool> RenderMauiXaml(MauiXamlRenderer Renderer, string[] Rows, string Language, int Indent, MarkdownDocument Document)
+		public async Task<bool> RenderMauiXaml(MauiXamlRenderer Renderer, string[] Rows, string Language, int Indent, MarkdownDocument Document)
 		{
 			XmlWriter Output = Renderer.XmlOutput;
 			Token Token;
 
 			try
 			{
-				StringBuilder sb = new();
+				StringBuilder Sb = new();
 
 				foreach (string Row in Rows)
-					sb.AppendLine(Row);
+					Sb.AppendLine(Row);
 
 				XmlDocument Doc = new()
 				{
 					PreserveWhitespace = true
 				};
-				Doc.LoadXml(sb.ToString());
+				Doc.LoadXml(Sb.ToString());
 
-				if (!NeuroFeatures.Token.TryParse(Doc.DocumentElement, out Token))
+				Token? ParsedToken = await NeuroFeatures.Token.TryParse(Doc.DocumentElement);
+				if (ParsedToken is null)
 					throw new Exception(ServiceRef.Localizer[nameof(AppResources.InvalidNeuroFeatureToken)]);
+
+				Token = ParsedToken;
 			}
 			catch (Exception ex)
 			{
@@ -66,7 +69,7 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 				Output.WriteAttributeString("LineBreakMode", "WordWrap");
 				Output.WriteEndElement();
 
-				return Task.FromResult(false);
+				return false;
 			}
 
 			Output.WriteStartElement("VerticalStackLayout");
@@ -99,7 +102,7 @@ namespace NeuroAccessMaui.UI.Rendering.CodeContent
 			Output.WriteEndElement();
 			Output.WriteEndElement();
 
-			return Task.FromResult(true);
+			return true;
 		}
 
 		/// <summary>

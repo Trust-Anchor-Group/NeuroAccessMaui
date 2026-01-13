@@ -1414,7 +1414,8 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat
 								break;
 
 							case UriScheme.NeuroFeature:
-								if (!Token.TryParse(Doc.DocumentElement, out Token ParsedToken))
+								Token? ParsedToken = await Token.TryParse(Doc.DocumentElement);
+								if (ParsedToken is null)
 									throw new Exception(ServiceRef.Localizer[nameof(AppResources.InvalidNeuroFeatureToken)]);
 
 								if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, ParsedToken.TokenId, out NotificationEvent[]? Events))

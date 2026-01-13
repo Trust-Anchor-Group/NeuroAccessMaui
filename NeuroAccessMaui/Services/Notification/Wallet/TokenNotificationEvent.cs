@@ -17,6 +17,7 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 	public abstract class TokenNotificationEvent : WalletNotificationEvent
 	{
 		private Token? token;
+		private Task<Token?>? tokenParseTask;
 
 		/// <summary>
 		/// Abstract base class for token notification events.
@@ -83,26 +84,12 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 		[IgnoreMember]
 		public Token? Token
 		{
-			get
-			{
-				if (this.token is null && !string.IsNullOrEmpty(this.TokenXml))
-				{
-					XmlDocument Doc = new()
-					{
-						PreserveWhitespace = true
-					};
-					Doc.LoadXml(this.TokenXml);
-
-					if (Token.TryParse(Doc.DocumentElement, out Token T))
-						this.token = T;
-				}
-
-				return this.token;
-			}
+			get => this.token;
 
 			set
 			{
 				this.token = value;
+				this.tokenParseTask = null;
 
 				if (value is null)
 					this.TokenXml = null;
@@ -113,6 +100,42 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 					this.TokenXml = Xml.ToString();
 				}
 			}
+		}
+
+		/// <summary>
+		/// Gets the parsed token asynchronously, using cached XML if available.
+		/// </summary>
+		/// <returns>The parsed token, or null if parsing fails or no XML is available.</returns>
+		public async Task<Token?> GetTokenAsync()
+		{
+			if (this.token is not null)
+				return this.token;
+
+			if (string.IsNullOrEmpty(this.TokenXml))
+				return null;
+
+			if (this.tokenParseTask is null)
+				this.tokenParseTask = this.ParseTokenAsync();
+
+			Token? ParsedToken = await this.tokenParseTask;
+			if (ParsedToken is not null)
+				this.token = ParsedToken;
+
+			return this.token;
+		}
+
+		private async Task<Token?> ParseTokenAsync()
+		{
+			if (string.IsNullOrEmpty(this.TokenXml))
+				return null;
+
+			XmlDocument Doc = new()
+			{
+				PreserveWhitespace = true
+			};
+			Doc.LoadXml(this.TokenXml);
+
+			return await Token.TryParse(Doc.DocumentElement);
 		}
 
 		/// <summary>
@@ -145,12 +168,20 @@ namespace NeuroAccessMaui.Services.Notification.Wallet
 			if (string.IsNullOrEmpty(this.TokenId))
 				return;
 
-			this.Token ??= await ServiceRef.XmppService.GetNeuroFeature(this.TokenId);
+			Token? Token = await this.GetTokenAsync();
+			if (Token is null)
+			{
+				Token = await ServiceRef.XmppService.GetNeuroFeature(this.TokenId);
+				this.token = Token;
+			}
+
+			if (Token is null)
+				return;
 
 			if (!ServiceRef.NotificationService.TryGetNotificationEvents(NotificationEventType.Wallet, this.TokenId, out NotificationEvent[]? Events))
 				Events = [];
 
-			TokenDetailsNavigationArgs Args = new(new TokenItem(this.Token, Events));
+			TokenDetailsNavigationArgs Args = new(new TokenItem(Token, Events));
 
 			await ServiceRef.NavigationService.GoToAsync(nameof(TokenDetailsPage), Args, BackMethod.Pop);
 		}
