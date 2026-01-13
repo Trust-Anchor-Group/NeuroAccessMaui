@@ -82,19 +82,7 @@ namespace NeuroAccessMaui.Services.Wallet
 
 		private async Task Wallet_TokenAdded(object? Sender, TokenEventArgs e)
 		{
-			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedTitle)];
-			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationTokenAddedBody)];
-
-			NotificationIntent Intent = new()
-			{
-				Channel = Constants.PushChannels.Tokens,
-				Title = Title,
-				Body = Body,
-				Action = NotificationAction.OpenToken,
-				EntityId = e.Token.TokenId
-			};
-
-			await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
+			// Do nothing here. Check XMPPService
 		}
 
 		private async Task Wallet_TokenRemoved(object? Sender, TokenEventArgs e)

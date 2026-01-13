@@ -24,7 +24,7 @@ namespace NeuroAccessMaui.Helpers
 
 		public bool Decodes(string ContentType, out Grade Grade)
 		{
-			if (string.Compare(ContentType, ImageCodec.ContentTypeSvg, true) == 0)
+			if (string.Equals(ContentType, ImageCodec.ContentTypeSvg, StringComparison.OrdinalIgnoreCase))
 			{
 				Grade = Grade.Excellent;
 				return true;
@@ -96,28 +96,26 @@ namespace NeuroAccessMaui.Helpers
 
 		public bool TryGetContentType(string FileExtension, out string ContentType)
 		{
-			switch (FileExtension.ToLower())
+			if (string.Equals(FileExtension, "svg", StringComparison.OrdinalIgnoreCase))
 			{
-				case "svg":
-					ContentType = ImageCodec.ContentTypeSvg;
-					return true;
-				default:
-					ContentType = string.Empty;
-					return false;
+				ContentType = ImageCodec.ContentTypeSvg;
+				return true;
 			}
+
+			ContentType = string.Empty;
+			return false;
 		}
 
 		public bool TryGetFileExtension(string ContentType, out string FileExtension)
 		{
-			switch (ContentType.ToLower())
+			if (string.Equals(ContentType, ImageCodec.ContentTypeSvg, StringComparison.OrdinalIgnoreCase))
 			{
-				case "image/svg+xml":
-					FileExtension = "svg";
-					return true;
-				default:
-					FileExtension = string.Empty;
-					return false;
+				FileExtension = "svg";
+				return true;
 			}
+
+			FileExtension = string.Empty;
+			return false;
 		}
 	}
 }

@@ -6,6 +6,7 @@ using EDaler;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Authentication;
+using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Identities;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
@@ -196,6 +197,8 @@ namespace NeuroAccessMaui.Services.Contracts
 						//await ServiceRef.NotificationService.NewEvent(Event);
 						await ServiceRef.NavigationService.GoToAsync(nameof(PetitionIdentityPage), new PetitionIdentityNavigationArgs(
 							Identity, e.RequestorFullJid, e.RequestedIdentityId, e.PetitionId, e.Purpose));
+						NotificationIntent Intent = CreateIdentityPetitionNotificationIntent(e);
+						await this.MarkPetitionNotificationConsumedAsync(Intent);
 					}
 				}
 			}
@@ -247,6 +250,8 @@ namespace NeuroAccessMaui.Services.Contracts
 					{
 						await ServiceRef.NavigationService.GoToAsync(nameof(PetitionSignaturePage), new PetitionSignatureNavigationArgs(
 							Identity, e.RequestorFullJid, e.SignatoryIdentityId, e.ContentToSign, e.PetitionId, e.Purpose));
+						NotificationIntent Intent = CreateSignaturePetitionNotificationIntent(e);
+						await this.MarkPetitionNotificationConsumedAsync(Intent);
 					}
 				}
 			}
@@ -355,6 +360,82 @@ namespace NeuroAccessMaui.Services.Contracts
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
+		}
+
+		private static NotificationIntent CreateIdentityPetitionNotificationIntent(LegalIdentityPetitionEventArgs e)
+		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionIdentityTitle), ToBareJid(e.RequestorFullJid)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionIdentityBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Petitions,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenPetition,
+				EntityId = e.RequestorFullJid,
+				CorrelationId = e.PetitionId,
+				Presentation = NotificationPresentation.StoreOnly
+			};
+
+			Intent.Extras["petitionId"] = e.PetitionId ?? string.Empty;
+			Intent.Extras["requestedIdentityId"] = e.RequestedIdentityId ?? string.Empty;
+			Intent.Extras["requestorIdentityId"] = e.RequestorIdentity?.Id ?? string.Empty;
+
+			return Intent;
+		}
+
+		private static NotificationIntent CreateSignaturePetitionNotificationIntent(SignaturePetitionEventArgs e)
+		{
+			string Title = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionSignatureTitle), ToBareJid(e.RequestorFullJid)];
+			string Body = ServiceRef.Localizer[nameof(AppResources.NotificationPetitionSignatureBody)];
+
+			NotificationIntent Intent = new()
+			{
+				Channel = Constants.PushChannels.Petitions,
+				Title = Title,
+				Body = Body,
+				Action = NotificationAction.OpenPetition,
+				EntityId = e.RequestorFullJid,
+				CorrelationId = e.PetitionId,
+				Presentation = NotificationPresentation.StoreOnly
+			};
+
+			byte[] ContentToSign = e.ContentToSign ?? Array.Empty<byte>();
+			string ContentToSignBase64 = Convert.ToBase64String(ContentToSign);
+			string Purpose = e.Purpose ?? string.Empty;
+			string RequestorIdentityId = e.RequestorIdentity?.Id ?? string.Empty;
+
+			Intent.Extras["signatoryId"] = e.SignatoryIdentityId ?? string.Empty;
+			Intent.Extras["petitionId"] = e.PetitionId ?? string.Empty;
+			Intent.Extras["requestorIdentityId"] = RequestorIdentityId;
+			Intent.Extras["purpose"] = Purpose;
+			Intent.Extras["contentToSign"] = ContentToSignBase64;
+
+			return Intent;
+		}
+
+		private async Task MarkPetitionNotificationConsumedAsync(NotificationIntent Intent)
+		{
+			try
+			{
+				INotificationServiceV2 NotificationService = ServiceRef.Provider.GetRequiredService<INotificationServiceV2>();
+				string NotificationId = NotificationService.ComputeId(Intent, NotificationSource.Xmpp);
+				await NotificationService.MarkConsumedAsync(NotificationId, CancellationToken.None);
+			}
+			catch (Exception ex)
+			{
+				ServiceRef.LogService.LogException(ex);
+			}
+		}
+
+		private static string ToBareJid(string Jid)
+		{
+			if (string.IsNullOrWhiteSpace(Jid))
+				return Jid;
+
+			int SlashIndex = Jid.IndexOf('/');
+			return SlashIndex > -1 ? Jid.Substring(0, SlashIndex) : Jid;
 		}
 
 		private async Task Contracts_ContractProposalRecieved(object? sender, ContractProposalEventArgs e)

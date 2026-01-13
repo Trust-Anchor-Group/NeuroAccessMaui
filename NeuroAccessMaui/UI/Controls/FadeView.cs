@@ -182,8 +182,8 @@
 
 			List<Task> Tasks = 
 			[
-				Task.Run(async () => await this.FrontView.FadeTo(0.5, durationInMs, this.easingType)),
-				Task.Run(async () => await this.BackView.FadeTo(0.5, durationInMs, this.easingType))
+				Task.Run(async () => await this.FrontView.FadeToAsync(0.5, durationInMs, this.easingType)),
+				Task.Run(async () => await this.BackView.FadeToAsync(0.5, durationInMs, this.easingType))
 			];
 
 			await Task.WhenAll(Tasks);
@@ -199,8 +199,8 @@
 
 			List<Task> Tasks = 
 			[
-				Task.Run(async () => await this.FrontView.FadeTo(0, durationInMs, this.easingType)),
-				Task.Run(async () => await this.BackView.FadeTo(1, durationInMs, this.easingType))
+				Task.Run(async () => await this.FrontView.FadeToAsync(0, durationInMs, this.easingType)),
+				Task.Run(async () => await this.BackView.FadeToAsync(1, durationInMs, this.easingType))
 			];
 
 			await Task.WhenAll(Tasks);
@@ -217,8 +217,8 @@
 
 			List<Task> Tasks = 
 			[
-				Task.Run(async () => await this.FrontView.FadeTo(0.5, durationInMs, this.easingType)),
-				Task.Run(async () => await this.BackView.FadeTo(0.5, durationInMs, this.easingType))
+				Task.Run(async () => await this.FrontView.FadeToAsync(0.5, durationInMs, this.easingType)),
+				Task.Run(async () => await this.BackView.FadeToAsync(0.5, durationInMs, this.easingType))
 			];
 
 			await Task.WhenAll(Tasks);
@@ -234,8 +234,8 @@
 
 			List<Task> Tasks =
 			[
-				Task.Run(async () => await this.FrontView.FadeTo(1, durationInMs, this.easingType)),
-				Task.Run(async () => await this.BackView.FadeTo(0, durationInMs, this.easingType))
+				Task.Run(async () => await this.FrontView.FadeToAsync(1, durationInMs, this.easingType)),
+				Task.Run(async () => await this.BackView.FadeToAsync(0, durationInMs, this.easingType))
 			];
 
 			await Task.WhenAll(Tasks);

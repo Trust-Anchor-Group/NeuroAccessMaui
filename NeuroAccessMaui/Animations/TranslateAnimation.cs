@@ -54,7 +54,7 @@ namespace NeuroAccessMaui.Animations
 				Target.TranslationY = this.fromY.Value;
 
 			uint DurationMs = this.ResolveDurationMilliseconds(Context, Options);
-			Func<CancellationToken, Task> Execute = _ => Target.TranslateTo(this.toX, this.toY, DurationMs, this.Easing);
+			Func<CancellationToken, Task> Execute = _ => Target.TranslateToAsync(this.toX, this.toY, DurationMs, this.Easing);
 			ExceptionDispatchInfo? DispatchInfo = null;
 			try
 			{

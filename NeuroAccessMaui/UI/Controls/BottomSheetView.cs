@@ -219,9 +219,8 @@ namespace NeuroAccessMaui.UI.Controls
 			return base.MeasureOverride(widthConstraint, heightConstraint);
 		}
 
-		private double initialPanY = 0;
-		private double initialTranslationY = 0;
 		private double previousPanY = 0;
+		private double initialTranslationY = 0;
 
 		private DateTime panStartTime;
 
@@ -301,7 +300,7 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			double HeaderHeight = this.headerContainer.Height > 0 ? this.headerContainer.Height : defaultHeaderHeight;
 			double CollapsedY = this.sheetHeight - HeaderHeight;
-			this.cardBorder.TranslateTo(0, CollapsedY, animationDuration, Easing.SinOut);
+			this.cardBorder.TranslateToAsync(0, CollapsedY, animationDuration, Easing.SinOut);
 		}
 
 		/// <summary>
@@ -309,7 +308,7 @@ namespace NeuroAccessMaui.UI.Controls
 		/// </summary>
 		private void AnimateToExpanded()
 		{
-			this.cardBorder.TranslateTo(0, 0, animationDuration, Easing.SinOut);
+			this.cardBorder.TranslateToAsync(0, 0, animationDuration, Easing.SinOut);
 		}
 
 		/// <summary>

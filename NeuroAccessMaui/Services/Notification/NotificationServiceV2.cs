@@ -204,15 +204,9 @@ namespace NeuroAccessMaui.Services.Notification
 		/// <param name="CancellationToken">Cancellation token.</param>
 		public async Task ConsumeAsync(string Id, CancellationToken CancellationToken)
 		{
-			NotificationRecord? Record = await this.LoadByIdAsync(Id);
+			NotificationRecord? Record = await this.MarkConsumedCoreAsync(Id);
 			if (Record is null)
 				return;
-
-				Record.State = NotificationState.Consumed;
-				Record.ConsumedAt = DateTime.UtcNow;
-				Record.OccurrenceCount = 1;
-				await Database.Update(Record);
-				await this.RaiseAdded(Record);
 
 			NotificationIntent Intent = this.ToIntent(Record);
 			NotificationRouteResult result = await this.intentRouter.RouteAsync(Intent, true, CancellationToken);
@@ -223,6 +217,31 @@ namespace NeuroAccessMaui.Services.Notification
 					this.pendingRoutes.Enqueue(Intent);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Marks a notification as consumed without routing it.
+		/// </summary>
+		/// <param name="Id">Notification identifier.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		public async Task MarkConsumedAsync(string Id, CancellationToken CancellationToken)
+		{
+			_ = CancellationToken;
+			await this.MarkConsumedCoreAsync(Id);
+		}
+
+		private async Task<NotificationRecord?> MarkConsumedCoreAsync(string Id)
+		{
+			NotificationRecord? Record = await this.LoadByIdAsync(Id);
+			if (Record is null)
+				return null;
+
+			Record.State = NotificationState.Consumed;
+			Record.ConsumedAt = DateTime.UtcNow;
+			Record.OccurrenceCount = 1;
+			await Database.Update(Record);
+			await this.RaiseAdded(Record);
+			return Record;
 		}
 
 		/// <summary>

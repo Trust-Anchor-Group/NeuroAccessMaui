@@ -15,6 +15,7 @@ using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionIdentity;
 using NeuroAccessMaui.UI.Pages.Petitions.PetitionContract;
+using NeuroAccessMaui.UI.Pages.Petitions.PetitionSignature;
 using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Main;
 using Waher.Networking.XMPP.Contracts;
@@ -219,6 +220,62 @@ namespace NeuroAccessMaui.Services.Notification
 					string? PetitionId = Intent.Extras.TryGetValue("petitionId", out string? pid) ? pid : null;
 					PetitionIdentityNavigationArgs Args = new(RequestorIdentity, Intent.EntityId, RequestedIdentityId, PetitionId, Intent.Body);
 					await ServiceRef.NavigationService.GoToAsync(nameof(PetitionIdentityPage), Args);
+					return NotificationRouteResult.Success;
+				}
+
+				if (Intent.Extras.TryGetValue("signatoryId", out string? SignatoryIdentityId) &&
+					Intent.Extras.TryGetValue("contentToSign", out string? ContentToSignBase64) &&
+					!string.IsNullOrEmpty(SignatoryIdentityId) &&
+					!string.IsNullOrEmpty(ContentToSignBase64))
+				{
+					LegalIdentity? RequestorIdentity = null;
+					string? RequestorFullJid = Intent.EntityId;
+					if (Intent.Extras.TryGetValue("requestorIdentityId", out string? RequestorIdentityId) &&
+						!string.IsNullOrEmpty(RequestorIdentityId))
+					{
+						(bool Succeeded, LegalIdentity? LegalId) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.GetLegalIdentity(RequestorIdentityId));
+						if (Succeeded && LegalId is not null)
+							RequestorIdentity = LegalId;
+					}
+
+					if (RequestorIdentity is null && !string.IsNullOrEmpty(RequestorFullJid))
+					{
+						ContactInfo? Info = await ContactInfo.FindByBareJid(RequestorFullJid);
+						RequestorIdentity = Info?.LegalIdentity;
+					}
+
+					if (RequestorIdentity is null || string.IsNullOrEmpty(RequestorFullJid))
+					{
+						string Title = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
+						string Message = "Petition has expired or is no longer available.";
+						await ServiceRef.UiService.DisplayAlert(Title, Message);
+						return NotificationRouteResult.Failed;
+					}
+
+					byte[] ContentToSign;
+					try
+					{
+						ContentToSign = Convert.FromBase64String(ContentToSignBase64);
+					}
+					catch (FormatException ex)
+					{
+						ServiceRef.LogService.LogException(ex);
+						string Title = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
+						string Message = "Petition has expired or is no longer available.";
+						await ServiceRef.UiService.DisplayAlert(Title, Message);
+						return NotificationRouteResult.Failed;
+					}
+
+					string Purpose = Intent.Extras.TryGetValue("purpose", out string? PurposeValue)
+						? PurposeValue ?? string.Empty
+						: string.Empty;
+					string PetitionId = Intent.Extras.TryGetValue("petitionId", out string? Pid)
+						? Pid ?? string.Empty
+						: string.Empty;
+
+					PetitionSignatureNavigationArgs Args = new(RequestorIdentity, RequestorFullJid, SignatoryIdentityId,
+						ContentToSign, PetitionId, Purpose);
+					await ServiceRef.NavigationService.GoToAsync(nameof(PetitionSignaturePage), Args);
 					return NotificationRouteResult.Success;
 				}
 

@@ -648,8 +648,8 @@ namespace NeuroAccessMaui.UI.Controls
 			const uint Duration = 80;
 
 			double OriginalOpacity = Element.Opacity;
-			await Element.FadeTo(TargetOpacity, Duration, Easing.SinOut);
-			await Element.FadeTo(OriginalOpacity, Duration, Easing.SinIn);
+			await Element.FadeToAsync(TargetOpacity, Duration, Easing.SinOut);
+			await Element.FadeToAsync(OriginalOpacity, Duration, Easing.SinIn);
 		}
 
 		private async Task AnimateScaleAsync(VisualElement Element)
@@ -658,8 +658,8 @@ namespace NeuroAccessMaui.UI.Controls
 			const uint Duration = 80;
 
 			double OriginalScale = Element.Scale;
-			await Element.ScaleTo(TargetScale, Duration, Easing.CubicOut);
-			await Element.ScaleTo(OriginalScale, Duration, Easing.CubicIn);
+			await Element.ScaleToAsync(TargetScale, Duration, Easing.CubicOut);
+			await Element.ScaleToAsync(OriginalScale, Duration, Easing.CubicIn);
 		}
 
 		private void UpdatePresenterRoot()
@@ -746,8 +746,8 @@ namespace NeuroAccessMaui.UI.Controls
 
 			double OriginalScale = Element.Scale;
 
-			await Element.ScaleTo(TargetScale, ScaleInDuration, Easing.CubicOut);
-			await Element.ScaleTo(OriginalScale, ScaleOutDuration, Easing.CubicIn);
+			await Element.ScaleToAsync(TargetScale, ScaleInDuration, Easing.CubicOut);
+			await Element.ScaleToAsync(OriginalScale, ScaleOutDuration, Easing.CubicIn);
 		}
 
 		private sealed class TabNavigationItemContainer : ContentView, IDisposable

@@ -38,7 +38,7 @@ namespace NeuroAccessMaui.UI.Popups.Photos.Image
 			this.ViewModel<ImageViewModel>().LoadPhotos(attachments);
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				await this.PhotoViewer.FadeTo(1d, durationInMs, Easing.SinIn);
+				await this.PhotoViewer.FadeToAsync(1d, durationInMs, Easing.SinIn);
 			});
 		}
 

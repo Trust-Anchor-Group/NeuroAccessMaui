@@ -17,11 +17,11 @@
 	</base:BaseContentPage.Resources>
 	<Grid RowDefinitions="auto, *"
 		  Background="Transparent">
-		<Grid Padding="16,16,16,8"
+		<Grid Padding="16,8,16,8"
 			  ColumnDefinitions="auto,*">
-			<controls:ImageButton Command="{Binding GoBackCommand}"
-								  Style="{DynamicResource ImageOnlyButton}"
-								  PathData="{x:Static ui:Geometries.BackButtonPath}" />
+			<controls:SvgButton Command="{Binding GoBackCommand}"
+								Style="{DynamicResource IconButton}"
+								SvgSource="close.svg" />
 			<Label Grid.Column="1"
 				   HorizontalTextAlignment="End"
 				   Style="{DynamicResource PageTitleLabel}"

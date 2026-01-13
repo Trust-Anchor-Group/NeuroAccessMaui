@@ -50,7 +50,7 @@ namespace NeuroAccessMaui.Animations
 				Target.Scale = this.fromScale.Value;
 
 			uint DurationMs = this.ResolveDurationMilliseconds(Context, Options);
-			Func<CancellationToken, Task> Execute = _ => Target.ScaleTo(this.toScale, DurationMs, this.Easing);
+			Func<CancellationToken, Task> Execute = _ => Target.ScaleToAsync(this.toScale, DurationMs, this.Easing);
 			ExceptionDispatchInfo? DispatchInfo = null;
 			try
 			{
