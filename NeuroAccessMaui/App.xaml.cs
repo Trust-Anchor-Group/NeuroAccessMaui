@@ -607,6 +607,7 @@ namespace NeuroAccessMaui
 
 			// Contacts
 			Routing.RegisterRoute(nameof(ChatPage), typeof(ChatPage));
+			Routing.RegisterRoute(nameof(ChatSessionPage), typeof(ChatSessionPage));
 			Routing.RegisterRoute(nameof(MyContactsPage), typeof(MyContactsPage));
 
 			// Contracts

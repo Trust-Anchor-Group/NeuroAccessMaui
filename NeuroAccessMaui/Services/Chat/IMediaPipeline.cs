@@ -9,7 +9,6 @@ namespace NeuroAccessMaui.Services.Chat
 	/// <summary>
 	/// Coordinates media capture, encryption, upload, and markdown generation.
 	/// </summary>
-	[DefaultImplementation(typeof(MediaPipeline))]
 	public interface IMediaPipeline
 	{
 		/// <summary>

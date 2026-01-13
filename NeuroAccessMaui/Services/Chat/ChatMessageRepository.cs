@@ -17,7 +17,6 @@ namespace NeuroAccessMaui.Services.Chat
 	/// <summary>
 	/// Repository implementation backed by Waher persistence.
 	/// </summary>
-	[Singleton]
 	internal class ChatMessageRepository : LoadableService, IChatMessageRepository
 	{
 		public override async Task Load(bool IsResuming, CancellationToken CancellationToken)

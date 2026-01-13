@@ -11,7 +11,6 @@ namespace NeuroAccessMaui.Services.Chat
 	/// <summary>
 	/// In-memory event stream used to batch transport and repository events before they reach the UI thread.
 	/// </summary>
-	[Singleton]
 	internal class ChatEventStream : LoadableService, IChatEventStream
 	{
 		private readonly Dictionary<string, Queue<ChatSessionEvent>> queues = new Dictionary<string, Queue<ChatSessionEvent>>(StringComparer.OrdinalIgnoreCase);

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Chat;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
@@ -699,7 +700,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		if (string.IsNullOrEmpty(contactBareJid))
 			return;
 
-		await ServiceRef.Provide.GetRequiredServicer<ChatMessageService>().SendMarkdownAsync(contactBareJid, Markdown.ToString(), CancellationToken.None).ConfigureAwait(false);
+		await ServiceRef.Provider.GetRequiredService<ChatMessageService>().SendMarkdownAsync(contactBareJid, Markdown.ToString(), CancellationToken.None).ConfigureAwait(false);
 
 		if (Contact.Contact is not null)
 		{

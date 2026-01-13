@@ -11,7 +11,6 @@ namespace NeuroAccessMaui.Services.Chat
 	/// <summary>
 	/// Abstraction over the underlying XMPP transport for chat messaging.
 	/// </summary>
-	[DefaultImplementation(typeof(ChatTransportService))]
 	public interface IChatTransportService
 	{
 		/// <summary>
@@ -52,6 +51,14 @@ namespace NeuroAccessMaui.Services.Chat
 		/// <param name="RemoteObjectId">Remote object id.</param>
 		/// <param name="CancellationToken">Cancellation token.</param>
 		Task AcknowledgeAsync(string RemoteBareJid, string RemoteObjectId, CancellationToken CancellationToken);
+
+		/// <summary>
+		/// Sends a displayed marker for a received message.
+		/// </summary>
+		/// <param name="RemoteBareJid">Remote bare JID.</param>
+		/// <param name="RemoteObjectId">Remote object id.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		Task SendDisplayedMarkerAsync(string RemoteBareJid, string RemoteObjectId, CancellationToken CancellationToken);
 
 		/// <summary>
 		/// Ensures subscriptions and listeners are active for a chat session.

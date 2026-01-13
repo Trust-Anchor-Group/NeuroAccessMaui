@@ -1141,6 +1141,105 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string ChatActionCopy {
+            get {
+                return ResourceManager.GetString("ChatActionCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string ChatActionDelete {
+            get {
+                return ResourceManager.GetString("ChatActionDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit.
+        /// </summary>
+        public static string ChatActionEdit {
+            get {
+                return ResourceManager.GetString("ChatActionEdit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reply.
+        /// </summary>
+        public static string ChatActionReply {
+            get {
+                return ResourceManager.GetString("ChatActionReply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edited {0}.
+        /// </summary>
+        public static string ChatEditedTimestamp {
+            get {
+                return ResourceManager.GetString("ChatEditedTimestamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Editing message.
+        /// </summary>
+        public static string ChatEditingMessage {
+            get {
+                return ResourceManager.GetString("ChatEditingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Message actions.
+        /// </summary>
+        public static string ChatMessageActions {
+            get {
+                return ResourceManager.GetString("ChatMessageActions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replying to {0}.
+        /// </summary>
+        public static string ChatReplyingToMessage {
+            get {
+                return ResourceManager.GetString("ChatReplyingToMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Typing....
+        /// </summary>
+        public static string ChatTypingIndicatorComposing {
+            get {
+                return ResourceManager.GetString("ChatTypingIndicatorComposing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Typing paused.
+        /// </summary>
+        public static string ChatTypingIndicatorPaused {
+            get {
+                return ResourceManager.GetString("ChatTypingIndicatorPaused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You.
+        /// </summary>
+        public static string ChatYou {
+            get {
+                return ResourceManager.GetString("ChatYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to City.
         /// </summary>
         public static string City {

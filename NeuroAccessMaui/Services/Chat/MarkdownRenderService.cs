@@ -15,7 +15,6 @@ namespace NeuroAccessMaui.Services.Chat
 	/// <summary>
 	/// Renders markdown content into UI-agnostic segments with caching.
 	/// </summary>
-	[Singleton]
 	internal class MarkdownRenderService : LoadableService, IMarkdownRenderService
 	{
 		private const int cacheCapacity = 128;

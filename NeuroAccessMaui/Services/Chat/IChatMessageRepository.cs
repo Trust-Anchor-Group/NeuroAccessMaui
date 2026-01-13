@@ -10,7 +10,6 @@ namespace NeuroAccessMaui.Services.Chat
 	/// <summary>
 	/// Abstraction for retrieving and persisting chat messages.
 	/// </summary>
-	[DefaultImplementation(typeof(ChatMessageRepository))]
 	public interface IChatMessageRepository
 	{
 		/// <summary>

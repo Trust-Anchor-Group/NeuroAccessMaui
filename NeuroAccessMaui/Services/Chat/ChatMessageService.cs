@@ -12,7 +12,6 @@ using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.Services.Chat
 {
-	[Singleton]
 	internal class ChatMessageService : LoadableService, IChatMessageService
 	{
 		public Task<ChatMessageDescriptor> SendMarkdownAsync(string RemoteBareJid, string Markdown, CancellationToken CancellationToken, string? ReplyToId = null, string? ReplaceMessageId = null)
@@ -28,8 +27,8 @@ namespace NeuroAccessMaui.Services.Chat
 			if (string.IsNullOrWhiteSpace(Markdown))
 				throw new ArgumentException("Markdown is required.", nameof(Markdown));
 
-			IChatMessageRepository repository = ServiceRef.ChatMessageRepository;
-			IChatTransportService transport = ServiceRef.ChatTransportService;
+			IChatMessageRepository repository = ServiceRef.Provider.GetRequiredService < ChatMessageRepository>();
+			IChatTransportService transport = ServiceRef.Provider.GetRequiredService < ChatTransportService>();
 			IChatEventStream eventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
 
 			CancellationToken.ThrowIfCancellationRequested();

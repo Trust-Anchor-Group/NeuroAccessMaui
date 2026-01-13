@@ -23,11 +23,12 @@
                                            LongPressDuration="600" />
                     </VerticalStackLayout.Behaviors>
 
-                    <Frame Style="{DynamicResource FrameSet}"
-                           HasShadow="False"
+                    <Border Style="{DynamicResource BorderSet}"
                            Margin="0,8"
                            Padding="{DynamicResource MediumSpacing}"
-                           HorizontalOptions="End">
+							Background="{DynamicResource TnPInfobgWL}"
+							HorizontalOptions="End"
+							Shadow="{x:Null}">
                         <VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
                             <Label Text="{Binding DisplayText}"
                                    TextColor="{DynamicResource ContentPrimaryWL}"
@@ -38,7 +39,7 @@
                                    Opacity="0.6"
                                    TextColor="{DynamicResource ContentPrimaryWL}" />
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
                     <HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}"
                                            HorizontalOptions="End">
@@ -63,8 +64,7 @@
                                            LongPressDuration="600" />
                     </VerticalStackLayout.Behaviors>
 
-                    <Frame Style="{DynamicResource FrameSet}"
-                           HasShadow="False"
+                    <Border Style="{DynamicResource BorderSet}"
                            Margin="0,0"
                            Padding="{DynamicResource MediumSpacing}"
                            HorizontalOptions="Start">
@@ -78,13 +78,18 @@
                                    Opacity="0.6"
                                    TextColor="{DynamicResource ContentPrimaryWL}" />
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
-                    <Label Text="{Binding CreatedLocal, StringFormat='{0:t}'}"
-                           FontSize="12"
-                           Opacity="0.6"
-                           HorizontalOptions="Start" />
-                </VerticalStackLayout>
+					<HorizontalStackLayout Spacing="{DynamicResource SmallSpacing}"
+										   HorizontalOptions="End">
+						<Label Text="{Binding CreatedLocal, StringFormat='{0:t}'}"
+							   FontSize="12"
+							   Opacity="0.6" />
+						<Label Text="{Binding DeliveryStatus}"
+							   FontSize="12"
+							   Opacity="0.6" />
+					</HorizontalStackLayout>
+				</VerticalStackLayout>
             </DataTemplate>
 
             <session:ChatMessageTemplateSelector x:Key="ChatMessageTemplateSelector"
@@ -97,23 +102,34 @@
           Padding="{DynamicResource MediumMargins}"
           RowDefinitions="Auto,*,Auto">
 
-        <Grid ColumnDefinitions="Auto,*"
+        <Grid RowDefinitions="auto, *"
+			  ColumnDefinitions="Auto,*"
               ColumnSpacing="{DynamicResource MediumSpacing}"
               VerticalOptions="Center">
             <controls:ImageButton PathData="{x:Static ui:Geometries.BackButtonPath}"
                                   Style="{DynamicResource ImageOnlyButton}"
-                                  Command="{Binding GoBackCommand}" />
-            <Label Grid.Column="1"
+                                  Command="{Binding GoBackCommand}"
+								  Grid.RowSpan="2" />
+            <Label Grid.Column="1" Grid.Row="0"
                    Style="{DynamicResource PageTitleLabel}"
                    Text="{Binding FriendlyName}"
-                   MaxLines="2"
+				   FontSize="14"
+                   MaxLines="1"
                    LineBreakMode="TailTruncation" />
-        </Grid>
+			<Label Grid.Column="1"
+				   Grid.Row="1"
+				   Style="{DynamicResource InfoLabel}"
+				   Text="Last online: 14:34"
+				   FontSize="12"
+				   MaxLines="1"
+				   LineBreakMode="TailTruncation" />
+		</Grid>
 
         <Grid Grid.Row="1">
             <CollectionView ItemsSource="{Binding Messages}"
                             RemainingItemsThreshold="4"
                             RemainingItemsThresholdReached="OnRemainingItemsThresholdReached"
+                            Scrolled="OnItemsViewScrolled"
                             ItemSizingStrategy="MeasureAllItems"
                             ItemsLayout="VerticalList"
                             SelectionMode="None"

@@ -91,6 +91,7 @@ using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
 using Waher.Runtime.Inventory;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 using NeuroAccessMaui.UI.Popups.OnboardingHelp;
+using NeuroAccessMaui.Services.Chat;
 
 namespace NeuroAccessMaui.UI
 {
@@ -152,6 +153,13 @@ namespace NeuroAccessMaui.UI
 			});
 			Builder.Services.AddSingleton<IAnimationContextProvider, AnimationContextProvider>();
 			Builder.Services.AddSingleton<IAnimationCoordinator, AnimationCoordinator>();
+
+			Builder.Services.AddSingleton<IChatEventStream, ChatEventStream>();
+			Builder.Services.AddSingleton<IChatMessageRepository, ChatMessageRepository>();
+			Builder.Services.AddSingleton<IChatMessageService, ChatMessageService>();
+			Builder.Services.AddSingleton<IChatTransportService, ChatTransportService>();
+			Builder.Services.AddSingleton<IMarkdownRenderService, MarkdownRenderService>();
+			Builder.Services.AddSingleton<IMediaPipeline, MediaPipeline>();
 
 			return Builder;
 		}

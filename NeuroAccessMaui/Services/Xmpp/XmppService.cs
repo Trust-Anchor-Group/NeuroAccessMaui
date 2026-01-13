@@ -55,6 +55,8 @@ using Waher.Events.XMPP;
 using Waher.Networking;
 using Waher.Networking.Sniffers;
 using Waher.Networking.XMPP;
+using Waher.Networking.XMPP.Chat;
+using Waher.Networking.XMPP.Chat.Markers;
 using Waher.Networking.XMPP.Abuse;
 using Waher.Networking.XMPP.Concentrator;
 using Waher.Networking.XMPP.Contracts;
@@ -102,6 +104,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 	{
 		//private bool isDisposed;
 		private XmppClient? xmppClient;
+		private ChatClient? chatClient;
 		private ContractsClient? contractsClient;
 		private HttpFileUploadClient? fileUploadClient;
 		private ThingRegistryClient? thingRegistryClient;
@@ -267,8 +270,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.OnConnectionError += this.XmppClient_ConnectionError;
 					this.xmppClient.OnError += this.XmppClient_Error;
 					this.xmppClient.OnChatMessage += this.XmppClient_OnChatMessage;
-					this.xmppClient.OnChatStateSupportDetermined += this.XmppClient_OnChatStateSupportDetermined;
-					this.xmppClient.OnChatStateChanged += this.XmppClient_OnChatStateChanged;
 					this.xmppClient.OnNormalMessage += this.XmppClient_OnNormalMessage;
 					this.xmppClient.OnPresenceSubscribe += this.XmppClient_OnPresenceSubscribe;
 					this.xmppClient.OnPresenceUnsubscribed += this.XmppClient_OnPresenceUnsubscribed;
@@ -276,9 +277,20 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.OnRosterItemUpdated += this.XmppClient_OnRosterItemUpdated;
 					this.xmppClient.OnRosterItemRemoved += this.XmppClient_OnRosterItemRemoved;
                     this.xmppClient.OnPresence += this.XmppClient_OnPresence;
+					ChatClient ChatClientInstance = new ChatClient(this.xmppClient);
+					ChatClientInstance.EnableChatStateNotifications = true;
+					ChatClientInstance.EnableDeliveryReceipts = true;
+					ChatClientInstance.EnableChatMarkers = true;
+					ChatClientInstance.EnableMessageCorrection = true;
+					ChatClientInstance.AutoRespondToReceiptRequests = true;
+					ChatClientInstance.AutoSendDisplayedMarkers = false;
 
-                    this.xmppClient.RegisterMessageHandler("received", "urn:xmpp:receipts", this.XmppClient_OnReceiptReceived, false);
-                    this.xmppClient.RegisterMessageHandler("replace", "urn:xmpp:message-correct:0", this.XmppClient_OnMessageCorrection, false);
+					ChatClientInstance.OnChatStateSupportDetermined += this.XmppClient_OnChatStateSupportDetermined;
+					ChatClientInstance.OnChatStateChanged += this.XmppClient_OnChatStateChanged;
+					ChatClientInstance.OnReceiptReceived += this.ChatClient_OnReceiptReceived;
+					ChatClientInstance.OnChatMarker += this.ChatClient_OnChatMarker;
+					ChatClientInstance.OnMessageCorrected += this.ChatClient_OnMessageCorrected;
+					this.chatClient = ChatClientInstance;
 
 					this.xmppClient.RegisterMessageHandler("Delivered", ContractsClient.NamespaceOnboarding, this.TransferIdDelivered, true);
 
@@ -539,6 +551,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			this.abuseClient?.Dispose();
 			this.abuseClient = null;
+
+			this.chatClient?.Dispose();
+			this.chatClient = null;
 
 #if DEBUG_DB_REMOTE
 			this.debugSniffer = null;
@@ -908,8 +923,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 					this.xmppConnected = true;
 
-					if (this.xmppClient is not null)
-						this.xmppClient.EnableChatStateNotifications = true;
+					if (this.chatClient is not null)
+						this.chatClient.EnableChatStateNotifications = true;
 
 					this.RecreateReconnectTimer();
 
@@ -1835,49 +1850,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 			//TODO: ENABLE E2E
 		}
 
-		public Task SendChatStateAsync(string RemoteBareJid, ChatState State, CancellationToken CancellationToken)
-		{
-			if (string.IsNullOrEmpty(RemoteBareJid))
-				throw new ArgumentException("Remote bare JID is required.", nameof(RemoteBareJid));
 
-			CancellationToken.ThrowIfCancellationRequested();
 
-			Task sendTask;
+		/// <summary>
+		/// Gets the chat-focused client used for receipts, markers, and corrections.
+		/// </summary> 
+		public ChatClient? ChatClient => this.chatClient;
 
-			switch (State)
-			{
-				case ChatState.Composing:
-					sendTask = this.XmppClient.SendComposing(RemoteBareJid);
-					break;
-
-				case ChatState.Paused:
-					sendTask = this.XmppClient.SendPaused(RemoteBareJid);
-					break;
-
-				case ChatState.Inactive:
-					sendTask = this.XmppClient.SendInactive(RemoteBareJid);
-					break;
-
-				case ChatState.Gone:
-					sendTask = this.XmppClient.SendGone(RemoteBareJid);
-					break;
-
-				case ChatState.Active:
-				default:
-					sendTask = this.XmppClient.SendActive(RemoteBareJid);
-					break;
-			}
-
-			return sendTask;
-		}
-
-		public bool IsChatStateSupported(string RemoteBareJid)
-		{
-			if (string.IsNullOrEmpty(RemoteBareJid))
-				return false;
-
-			return this.xmppClient is not null && this.xmppClient.IsChatStateSupported(RemoteBareJid);
-		}
 
 		private Task XmppClient_OnNormalMessage(object? Sender, MessageEventArgs e)
 		{
@@ -1890,7 +1869,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private async Task XmppClient_OnChatMessage(object? Sender, MessageEventArgs e)
 		{
 			string RemoteBareJid = e.FromBareJID;
-			bool requestReceipt = false;
+
+			if (this.chatClient is not null && HasMessageCorrection(e.Message))
+				return;
 
 			foreach (XmlNode N in e.Message.ChildNodes)
 			{
@@ -1949,10 +1930,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 					}
 				}
 			}
-
-			ContactInfo ContactInfo = await ContactInfo.FindByBareJid(RemoteBareJid);
-			string FriendlyName = ContactInfo?.FriendlyName ?? RemoteBareJid;
-			string? ReplaceObjectId = null;
 
 			ChatMessage Message = new()
 			{
@@ -2014,16 +1991,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 							}
 							break;
 
-					case "replace":
-						if (E.NamespaceURI == "urn:xmpp:message-correct:0")
-							ReplaceObjectId = XML.Attribute(E, "id");
-						break;
-
-					case "request":
-						if (E.NamespaceURI == "urn:xmpp:receipts")
-							requestReceipt = true;
-						break;
-
 						case "delay":
 							if (E.NamespaceURI == PubSubClient.NamespaceDelayedDelivery &&
 								E.HasAttribute("stamp") &&
@@ -2066,33 +2033,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 			}
 
-		if (string.IsNullOrEmpty(ReplaceObjectId))
 			await Database.Insert(Message);
-		else
-		{
-			ChatMessage Old = await Database.FindFirstIgnoreRest<ChatMessage>(new FilterAnd(
-				new FilterFieldEqualTo("RemoteBareJid", RemoteBareJid),
-				new FilterFieldEqualTo("RemoteObjectId", ReplaceObjectId)));
-
-			if (Old is null)
-			{
-				ReplaceObjectId = null;
-				await Database.Insert(Message);
-			}
-			else
-			{
-				Old.Updated = Message.Created;
-				Old.Html = Message.Html;
-				Old.PlainText = Message.PlainText;
-				Old.Markdown = Message.Markdown;
-
-				await Database.Update(Old);
-
-				Message = Old;
-			}
-		}
-
-		bool isReplacement = !string.IsNullOrEmpty(ReplaceObjectId);
 
 			try
 			{
@@ -2111,7 +2052,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					Created = Message.Created,
 					Updated = Message.Updated == DateTime.MinValue ? Message.Created : Message.Updated,
 					OriginalCreated = Message.Created,
-					IsEdited = isReplacement,
+					IsEdited = false,
 					ReplyToId = null,
 					Markdown = Message.Markdown ?? string.Empty,
 					PlainText = Message.PlainText ?? string.Empty,
@@ -2122,78 +2063,69 @@ namespace NeuroAccessMaui.Services.Xmpp
 				IChatMessageRepository repository = ServiceRef.Provider.GetRequiredService<ChatMessageRepository>();
 				IChatEventStream eventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
 
-                if (isReplacement)
-                {
-                    await repository.ReplaceAsync(descriptor, CancellationToken.None).ConfigureAwait(false);
-                }
-                else
-                {
-                    try
-                    {
-                        await repository.SaveAsync(descriptor, CancellationToken.None).ConfigureAwait(false);
-                    }
-                    catch (KeyAlreadyExistsException)
-                    {
-                        await repository.ReplaceAsync(descriptor, CancellationToken.None).ConfigureAwait(false);
-                        isReplacement = true;
-                    }
-                }
-
-			ChatSessionEventType eventType = isReplacement ? ChatSessionEventType.MessageUpdated : ChatSessionEventType.MessagesAppended;
-			eventStream.Publish(new ChatSessionEvent(eventType, RemoteBareJid, new[] { descriptor }));
-
-			if (requestReceipt && !string.IsNullOrEmpty(Message.RemoteObjectId))
-			{
 				try
 				{
-					await ServiceRef.Provider.GetRequiredService<ChatTransportService>().AcknowledgeAsync(RemoteBareJid, Message.RemoteObjectId, CancellationToken.None).ConfigureAwait(false);
+					await repository.SaveAsync(descriptor, CancellationToken.None).ConfigureAwait(false);
 				}
-				catch (Exception ex)
+				catch (KeyAlreadyExistsException)
 				{
-					ServiceRef.LogService.LogException(ex);
+					await repository.ReplaceAsync(descriptor, CancellationToken.None).ConfigureAwait(false);
 				}
-			}
+
+				eventStream.Publish(new ChatSessionEvent(ChatSessionEventType.MessagesAppended, RemoteBareJid, new[] { descriptor }));
 			}
 			catch (Exception ex)
 			{
 				ServiceRef.LogService.LogException(ex);
 			}
 
-		MainThread.BeginInvokeOnMainThread(async () =>
-		{
-			if (ServiceRef.NavigationService.CurrentPage is ChatSessionPage sessionPage &&
-				sessionPage.BindingContext is ChatSessionViewModel sessionViewModel &&
-				string.Equals(sessionViewModel.RemoteBareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
+			MainThread.BeginInvokeOnMainThread(async () =>
 			{
-				if (ServiceRef.NavigationService.CurrentPage is ChatPage &&
-					ServiceRef.NavigationService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
-					string.Equals(ChatViewModel.BareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
+				if (ServiceRef.NavigationService.CurrentPage is ChatSessionPage sessionPage &&
+					sessionPage.BindingContext is ChatSessionViewModel sessionViewModel &&
+					string.Equals(sessionViewModel.RemoteBareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
 				{
-					if (string.IsNullOrEmpty(ReplaceObjectId))
-						await ChatViewModel.MessageAddedAsync(Message);
-					else
-						await ChatViewModel.MessageUpdatedAsync(Message);
-				}
-				else
-				{
-					string Title = ServiceRef.Localizer[nameof(AppResources.NotificationChatTitle), RemoteBareJid];
-					string Body = ServiceRef.Localizer[nameof(AppResources.NotificationChatBody)];
-
-					NotificationIntent Intent = new()
+					if (ServiceRef.NavigationService.CurrentPage is ChatPage &&
+						ServiceRef.NavigationService.CurrentPage.BindingContext is ChatViewModel ChatViewModel &&
+						string.Equals(ChatViewModel.BareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
 					{
-						Channel = Constants.PushChannels.Messages,
-						Title = Title,
-						Body = Body,
-						Action = NotificationAction.OpenChat,
-						EntityId = RemoteBareJid,
-						CorrelationId = RemoteBareJid,
-						Presentation = NotificationPresentation.StoreOnly
-					};
+						await ChatViewModel.MessageAddedAsync(Message);
+					}
+					else
+					{
+						string Title = ServiceRef.Localizer[nameof(AppResources.NotificationChatTitle), RemoteBareJid];
+						string Body = ServiceRef.Localizer[nameof(AppResources.NotificationChatBody)];
 
-					await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
+						NotificationIntent Intent = new()
+						{
+							Channel = Constants.PushChannels.Messages,
+							Title = Title,
+							Body = Body,
+							Action = NotificationAction.OpenChat,
+							EntityId = RemoteBareJid,
+							CorrelationId = RemoteBareJid,
+							Presentation = NotificationPresentation.StoreOnly
+						};
+
+						await ServiceRef.Provider.GetRequiredService<INotificationServiceV2>().AddAsync(Intent, NotificationSource.Xmpp, null, CancellationToken.None);
+					}
+				}
+			});
+		}
+
+		private static bool HasMessageCorrection(XmlElement MessageElement)
+		{
+			foreach (XmlNode Node in MessageElement.ChildNodes)
+			{
+				if (Node is XmlElement Element &&
+					Element.LocalName == "replace" &&
+					Element.NamespaceURI == "urn:xmpp:message-correct:0")
+				{
+					return true;
 				}
 			}
-			});
+
+			return false;
 		}
 
 		private Task XmppClient_OnChatStateSupportDetermined(string BareJid, bool Supported)
@@ -2255,129 +2187,208 @@ namespace NeuroAccessMaui.Services.Xmpp
 			return Task.CompletedTask;
 		}
 
-		private async Task XmppClient_OnReceiptReceived(object Sender, MessageEventArgs e)
+		private async Task ChatClient_OnReceiptReceived(object Sender, DeliveryReceiptEventArgs e)
 		{
-			XmlElement? element = e.Content;
-			if (element is null)
+			if (e is null || e.IsRequest)
 				return;
 
-			string? id = XML.Attribute(element, "id");
-			if (string.IsNullOrEmpty(id))
+			string MessageId = e.Id;
+			if (string.IsNullOrEmpty(MessageId))
 				return;
 
-			string remoteBareJid = e.FromBareJID ?? string.Empty;
-			if (string.IsNullOrEmpty(remoteBareJid))
-				remoteBareJid = e.From ?? string.Empty;
+			MessageEventArgs MessageArgs = e.Message;
+			string RemoteBareJid = MessageArgs?.FromBareJID ?? string.Empty;
+			if (string.IsNullOrEmpty(RemoteBareJid))
+				RemoteBareJid = MessageArgs?.From ?? string.Empty;
 
-			if (string.IsNullOrEmpty(remoteBareJid))
+			if (string.IsNullOrEmpty(RemoteBareJid))
 				return;
 
 			try
 			{
-				IChatMessageRepository repository = ServiceRef.Provider.GetRequiredService<ChatMessageRepository>();
-				IChatEventStream eventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
+				IChatMessageRepository Repository = ServiceRef.Provider.GetRequiredService<ChatMessageRepository>();
+				IChatEventStream EventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
 
-				await repository.UpdateDeliveryStatusAsync(remoteBareJid, id, ChatDeliveryStatus.Received, DateTime.UtcNow, CancellationToken.None).ConfigureAwait(false);
+				await Repository.UpdateDeliveryStatusAsync(RemoteBareJid, MessageId, ChatDeliveryStatus.Received, DateTime.UtcNow, CancellationToken.None).ConfigureAwait(false);
 
-				ChatMessageDescriptor? descriptor = await repository.GetAsync(remoteBareJid, id, CancellationToken.None).ConfigureAwait(false);
+				ChatMessageDescriptor? Descriptor = await Repository.GetAsync(RemoteBareJid, MessageId, CancellationToken.None).ConfigureAwait(false);
 
-				Dictionary<string, string> additionalData = new Dictionary<string, string>(StringComparer.Ordinal)
+				Dictionary<string, string> AdditionalData = new Dictionary<string, string>(StringComparer.Ordinal)
 				{
-					{ "MessageId", id },
+					{ "MessageId", MessageId },
 					{ "DeliveryStatus", ChatDeliveryStatus.Received.ToString() }
 				};
 
-				if (descriptor is not null && !string.IsNullOrEmpty(descriptor.LocalTempId))
-					additionalData["LocalTempId"] = descriptor.LocalTempId;
+				if (Descriptor is not null && !string.IsNullOrEmpty(Descriptor.LocalTempId))
+					AdditionalData["LocalTempId"] = Descriptor.LocalTempId;
 
-				eventStream.Publish(new ChatSessionEvent(ChatSessionEventType.DeliveryReceipt, remoteBareJid, descriptor is null ? null : new[] { descriptor }, additionalData));
+				EventStream.Publish(new ChatSessionEvent(ChatSessionEventType.DeliveryReceipt, RemoteBareJid, Descriptor is null ? null : new[] { Descriptor }, AdditionalData));
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 
-		private async Task XmppClient_OnMessageCorrection(object Sender, MessageEventArgs e)
+		private async Task ChatClient_OnChatMarker(object Sender, ChatMarkerEventArgs e)
 		{
-			XmlElement? element = e.Content;
-			if (element is null)
+			if (e is null || e.MarkerType != ChatMarkerType.Displayed)
 				return;
 
-			string? replaceId = XML.Attribute(element, "id");
-			if (string.IsNullOrEmpty(replaceId))
+			string MessageId = e.Id;
+			if (string.IsNullOrEmpty(MessageId))
 				return;
 
-			string remoteBareJid = e.FromBareJID ?? string.Empty;
-			if (string.IsNullOrEmpty(remoteBareJid))
-				remoteBareJid = e.From ?? string.Empty;
+			MessageEventArgs MessageArgs = e.Message;
+			string RemoteBareJid = MessageArgs?.FromBareJID ?? string.Empty;
+			if (string.IsNullOrEmpty(RemoteBareJid))
+				RemoteBareJid = MessageArgs?.From ?? string.Empty;
 
-			if (string.IsNullOrEmpty(remoteBareJid))
+			if (string.IsNullOrEmpty(RemoteBareJid))
 				return;
 
 			try
 			{
-				IChatMessageRepository repository = ServiceRef.Provider.GetRequiredService<ChatMessageRepository>();
-				IChatEventStream eventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
+				IChatMessageRepository Repository = ServiceRef.Provider.GetRequiredService<ChatMessageRepository>();
+				IChatEventStream EventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
 
-				ChatMessageDescriptor? existing = await repository.GetAsync(remoteBareJid, replaceId, CancellationToken.None).ConfigureAwait(false);
-				if (existing is null)
+				await Repository.UpdateDeliveryStatusAsync(RemoteBareJid, MessageId, ChatDeliveryStatus.Displayed, DateTime.UtcNow, CancellationToken.None).ConfigureAwait(false);
+
+				ChatMessageDescriptor? Descriptor = await Repository.GetAsync(RemoteBareJid, MessageId, CancellationToken.None).ConfigureAwait(false);
+
+				Dictionary<string, string> AdditionalData = new Dictionary<string, string>(StringComparer.Ordinal)
+				{
+					{ "MessageId", MessageId },
+					{ "DeliveryStatus", ChatDeliveryStatus.Displayed.ToString() }
+				};
+
+				if (Descriptor is not null && !string.IsNullOrEmpty(Descriptor.LocalTempId))
+					AdditionalData["LocalTempId"] = Descriptor.LocalTempId;
+
+				EventStream.Publish(new ChatSessionEvent(ChatSessionEventType.DeliveryReceipt, RemoteBareJid, Descriptor is null ? null : new[] { Descriptor }, AdditionalData));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private async Task ChatClient_OnMessageCorrected(object Sender, MessageCorrectionEventArgs e)
+		{
+			if (e is null)
+				return;
+
+			string ReplaceId = e.ReplaceId;
+			if (string.IsNullOrEmpty(ReplaceId))
+				return;
+
+			MessageEventArgs MessageArgs = e.Message;
+			string RemoteBareJid = MessageArgs?.FromBareJID ?? string.Empty;
+			if (string.IsNullOrEmpty(RemoteBareJid))
+				RemoteBareJid = MessageArgs?.From ?? string.Empty;
+
+			if (string.IsNullOrEmpty(RemoteBareJid))
+				return;
+
+			try
+			{
+				IChatMessageRepository Repository = ServiceRef.Provider.GetRequiredService<ChatMessageRepository>();
+				IChatEventStream EventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
+
+				ChatMessageDescriptor? Existing = await Repository.GetAsync(RemoteBareJid, ReplaceId, CancellationToken.None).ConfigureAwait(false);
+				if (Existing is null)
 					return;
 
-				string markdown = existing.Markdown;
-				string plainText = existing.PlainText;
-				string html = existing.Html;
-				DateTime timestamp = DateTime.UtcNow;
+				string Markdown = Existing.Markdown;
+				string PlainText = Existing.PlainText;
+				string Html = Existing.Html;
+				DateTime Timestamp = DateTime.UtcNow;
 
-				XmlElement messageElement = e.Message;
+				XmlElement MessageElement = MessageArgs.Message;
 
-				foreach (XmlNode n in messageElement.ChildNodes)
+				foreach (XmlNode Node in MessageElement.ChildNodes)
 				{
-					if (n is not XmlElement child)
+					if (Node is not XmlElement Child)
 						continue;
 
-					if (child.NamespaceURI == messageElement.NamespaceURI)
+					if (Child.NamespaceURI == MessageElement.NamespaceURI)
 					{
-						switch (child.LocalName)
+						switch (Child.LocalName)
 						{
 							case "body":
-								plainText = child.InnerText;
+								PlainText = Child.InnerText;
 								break;
 							case "html":
-								html = child.InnerXml;
+								Html = Child.InnerXml;
 								break;
 						}
 					}
-					else if (child.NamespaceURI == "urn:xmpp:content" && child.LocalName == "content")
+					else if (Child.NamespaceURI == "urn:xmpp:content" && Child.LocalName == "content")
 					{
-						string type = XML.Attribute(child, "type");
-						if (type == "text/markdown")
-							markdown = child.InnerText;
-						else if (type == "text/plain")
-							plainText = child.InnerText;
-						else if (type == "text/html")
-							html = child.InnerText;
-						}
-					else if (child.NamespaceURI == "http://jabber.org/protocol/xhtml-im" && child.LocalName == "html")
+						string Type = XML.Attribute(Child, "type");
+						if (Type == "text/markdown")
+							Markdown = Child.InnerText;
+						else if (Type == "text/plain")
+							PlainText = Child.InnerText;
+						else if (Type == "text/html")
+							Html = Child.InnerText;
+					}
+					else if (Child.NamespaceURI == "http://jabber.org/protocol/xhtml-im" && Child.LocalName == "html")
 					{
-						html = child.InnerXml;
+						Html = Child.InnerXml;
 					}
 				}
 
-				existing.Markdown = markdown;
-				existing.PlainText = plainText;
-				existing.Html = html;
-				existing.IsEdited = true;
-				existing.Updated = timestamp;
-				existing.OriginalCreated ??= existing.Created;
+				Existing.Markdown = Markdown;
+				Existing.PlainText = PlainText;
+				Existing.Html = Html;
+				Existing.IsEdited = true;
+				Existing.Updated = Timestamp;
+				Existing.OriginalCreated ??= Existing.Created;
 
-				await repository.ReplaceAsync(existing, CancellationToken.None).ConfigureAwait(false);
+				await Repository.ReplaceAsync(Existing, CancellationToken.None).ConfigureAwait(false);
 
-				eventStream.Publish(new ChatSessionEvent(ChatSessionEventType.MessageUpdated, remoteBareJid, new[] { existing }));
+				EventStream.Publish(new ChatSessionEvent(ChatSessionEventType.MessageUpdated, RemoteBareJid, new[] { Existing }));
+
+				await this.UpdateLegacyChatMessageAsync(RemoteBareJid, ReplaceId, Markdown, PlainText, Html, Timestamp).ConfigureAwait(false);
 			}
-			catch (Exception ex)
+			catch (Exception Ex)
 			{
-				ServiceRef.LogService.LogException(ex);
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private async Task UpdateLegacyChatMessageAsync(string RemoteBareJid, string RemoteObjectId, string Markdown, string PlainText, string Html, DateTime Timestamp)
+		{
+			try
+			{
+				ChatMessage? LegacyMessage = await Database.FindFirstIgnoreRest<ChatMessage>(new FilterAnd(
+					new FilterFieldEqualTo("RemoteBareJid", RemoteBareJid),
+					new FilterFieldEqualTo("RemoteObjectId", RemoteObjectId)));
+
+				if (LegacyMessage is null)
+					return;
+
+				LegacyMessage.Updated = Timestamp;
+				LegacyMessage.Markdown = Markdown ?? string.Empty;
+				LegacyMessage.PlainText = PlainText ?? string.Empty;
+				LegacyMessage.Html = Html ?? string.Empty;
+
+				await Database.Update(LegacyMessage);
+
+				MainThread.BeginInvokeOnMainThread(async () =>
+				{
+					if (ServiceRef.NavigationService.CurrentPage is ChatPage Page &&
+						Page.BindingContext is ChatViewModel ChatViewModel &&
+						string.Equals(ChatViewModel.BareJid, RemoteBareJid, StringComparison.OrdinalIgnoreCase))
+					{
+						await ChatViewModel.MessageUpdatedAsync(LegacyMessage);
+					}
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 

@@ -20,7 +20,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.Session
 	/// <summary>
 	/// View model orchestrating chat session state.
 	/// </summary>
-	public partial class ChatSessionViewModel : XmppViewModel
+	public partial class ChatSessionViewModel : XmppViewModel, IDisposable
 	{
 		private const int defaultPageSize = Constants.BatchSizes.MessageBatchSize;
 
@@ -32,6 +32,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.Session
 		private readonly IChatMessageService chatMessageService;
 		private readonly ObservableCollection<ChatMessageItemViewModel> messages;
 		private readonly Dictionary<string, ChatMessageItemViewModel> messageIndex;
+		private readonly HashSet<string> displayedMarkerIds;
+		private readonly object displayedMarkerLock = new object();
+		private int disposeSignaled;
 		private CancellationTokenSource? loadCancellationTokenSource;
 		private bool isLoadingOlder;
 		private readonly TimeSpan typingPauseDelay = TimeSpan.FromSeconds(5);
@@ -50,14 +53,15 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.Session
 		public ChatSessionViewModel(ChatNavigationArgs Args)
 		{
 			this.navigationArgs = Args ?? throw new ArgumentNullException(nameof(Args));
-			this.chatMessageRepository = ServiceRef.ChatMessageRepository;
-			this.chatTransportService = ServiceRef.ChatTransportService;
-			this.markdownRenderService = ServiceRef.MarkdownRenderService;
+			this.chatMessageRepository = ServiceRef.Provider.GetRequiredService<ChatMessageRepository>();
+			this.chatTransportService = ServiceRef.Provider.GetRequiredService < ChatTransportService>();
+			this.markdownRenderService = ServiceRef.Provider.GetRequiredService < MarkdownRenderService>();
 			this.chatEventStream = ServiceRef.Provider.GetRequiredService<ChatEventStream>();
-			this.chatMessageService = ServiceRef.Provide.GetRequiredServicer<ChatMessageService>();
+			this.chatMessageService = ServiceRef.Provider.GetRequiredService<ChatMessageService>();
 
 			this.messages = new ObservableCollection<ChatMessageItemViewModel>();
 			this.messageIndex = new Dictionary<string, ChatMessageItemViewModel>(StringComparer.OrdinalIgnoreCase);
+			this.displayedMarkerIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 			this.HasMoreHistory = true;
 			this.GoBackCommand = new AsyncRelayCommand(this.ExecuteGoBackAsync);
 			this.LongPressMessageCommand = new AsyncRelayCommand<ChatMessageItemViewModel>(this.OnMessageLongPressAsync);
@@ -268,9 +272,9 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.Session
 		public bool IsActionEditEnabled => this.actionContextMessage?.Direction == ChatMessageDirection.Outgoing;
 
 		/// <inheritdoc/>
-		protected override async Task OnInitialize()
+		public override async Task OnInitializeAsync()
 		{
-			await base.OnInitialize().ConfigureAwait(false);
+			await base.OnInitializeAsync().ConfigureAwait(false);
 
 			if (!string.IsNullOrEmpty(this.RemoteBareJid))
 			{
@@ -282,8 +286,11 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.Session
 		}
 
 		/// <inheritdoc/>
-		protected override async Task OnDispose()
+		public override async Task OnDisposeAsync()
 		{
+			if (Interlocked.Exchange(ref this.disposeSignaled, 1) == 1)
+				return;
+
 			this.chatEventStream.EventsAvailable -= this.ChatEventStream_EventsAvailable;
 			this.CancelTypingPauseTimer();
 
@@ -294,7 +301,27 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.Session
 				this.loadCancellationTokenSource = null;
 			}
 
-			await base.OnDispose().ConfigureAwait(false);
+			await base.OnDisposeAsync().ConfigureAwait(false);
+		}
+
+		/// <summary>
+		/// Releases resources used by the view model.
+		/// </summary>
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Releases managed resources.
+		/// </summary>
+		/// <param name="disposing">Whether the method is invoked from <see cref="Dispose"/>.</param>
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!disposing)
+				return;
+
 		}
 
 		private async Task LoadRecentMessagesAsync()
@@ -872,7 +899,7 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.Session
 
 		private Task ExecuteGoBackAsync()
 		{
-			return ServiceRef.UiService.GoBackAsync();
+			return ServiceRef.NavigationService.GoBackAsync();
 		}
 
 		private async Task CopyMessageAsync(ChatMessageItemViewModel? item)
@@ -1059,6 +1086,48 @@ namespace NeuroAccessMaui.UI.Pages.Contacts.Chat.Session
 			this.OnPropertyChanged(nameof(this.HasComposerContext));
 			this.OnPropertyChanged(nameof(this.ComposerContextTitle));
 			this.OnPropertyChanged(nameof(this.ComposerContextPreview));
+		}
+
+		/// <summary>
+		/// Marks an incoming message as displayed when it becomes visible.
+		/// </summary>
+		/// <param name="Item">Message item that appeared.</param>
+		public async Task HandleMessageAppearingAsync(ChatMessageItemViewModel? Item)
+		{
+			if (Item is null)
+				return;
+
+			if (Item.Direction != ChatMessageDirection.Incoming)
+				return;
+
+			string RemoteObjectId = Item.Descriptor.RemoteObjectId ?? string.Empty;
+			if (string.IsNullOrEmpty(RemoteObjectId))
+				return;
+
+			string RemoteBareJid = string.IsNullOrEmpty(Item.Descriptor.RemoteBareJid)
+				? this.RemoteBareJid
+				: Item.Descriptor.RemoteBareJid;
+
+			if (string.IsNullOrEmpty(RemoteBareJid))
+				return;
+
+			bool ShouldSend;
+			lock (this.displayedMarkerLock)
+			{
+				ShouldSend = this.displayedMarkerIds.Add(RemoteObjectId);
+			}
+
+			if (!ShouldSend)
+				return;
+
+			try
+			{
+				await this.chatTransportService.SendDisplayedMarkerAsync(RemoteBareJid, RemoteObjectId, CancellationToken.None).ConfigureAwait(false);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 	}
 }

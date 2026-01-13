@@ -9,7 +9,6 @@ namespace NeuroAccessMaui.Services.Chat
 	/// <summary>
 	/// Placeholder media pipeline until full encryption and upload orchestration is implemented.
 	/// </summary>
-	[Singleton]
 	internal class MediaPipeline : LoadableService, IMediaPipeline
 	{
 		public override Task Load(bool IsResuming, CancellationToken CancellationToken)

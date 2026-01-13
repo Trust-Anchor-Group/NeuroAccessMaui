@@ -9,10 +9,12 @@ using NeuroFeatures.Events;
 using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Threading;
 using System.Xml;
 using Waher.Content;
 using Waher.Events;
 using Waher.Networking;
+using Waher.Networking.XMPP.Chat;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
@@ -206,9 +208,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <exception cref="XmppException">If an IQ error is returned.</exception>
 		Task<XmlElement> IqSetAsync(string To, string Xml);
 
-		bool IsChatStateSupported(string RemoteBareJid);
 
-		Task SendChatStateAsync(string RemoteBareJid, ChatState State, CancellationToken CancellationToken);
+		/// <summary>
+		/// Gets the chat-focused client used for receipts, markers, and corrections.
+		/// </summary>
+		ChatClient? ChatClient { get; }
+
 
 		#endregion
 
@@ -1797,3 +1802,4 @@ namespace NeuroAccessMaui.Services.Xmpp
 		#endregion
 	}
 }
+

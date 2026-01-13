@@ -8,7 +8,6 @@ namespace NeuroAccessMaui.Services.Chat
 	/// <summary>
 	/// Handles markdown rendering and caching responsibilities for chat messages.
 	/// </summary>
-	[DefaultImplementation(typeof(MarkdownRenderService))]
 	public interface IMarkdownRenderService
 	{
 		/// <summary>

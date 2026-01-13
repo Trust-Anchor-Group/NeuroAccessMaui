@@ -10,7 +10,6 @@ namespace NeuroAccessMaui.Services.Chat
 	/// <summary>
 	/// Provides event queuing and batching for chat sessions.
 	/// </summary>
-	[DefaultImplementation(typeof(ChatEventStream))]
 	public interface IChatEventStream
 	{
 		/// <summary>
