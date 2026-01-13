@@ -26,6 +26,7 @@ using MarkdownContent = Waher.Content.Markdown.MarkdownContent;
 using Svg;
 using Microsoft.Maui.Controls.Shapes;
 using Waher.Script.Functions.Strings;
+using System.Runtime.Intrinsics.Arm;
 
 namespace NeuroAccessMaui.UI.Rendering
 {
@@ -1528,9 +1529,23 @@ namespace NeuroAccessMaui.UI.Rendering
 			{
 				try
 				{
-					// TODO ?
-					if (await Renderer.RenderMauiXaml(Rend, Element.Rows, Element.Language, Element.Indent, Element.Document))
+					if (Element.Language.Equals("image/png", StringComparison.OrdinalIgnoreCase))
+					{
+						string Bin = Element.Rows[0];
+						byte[] Data = Convert.FromBase64String(Bin);
+						string Uri = "data:image/png;base64," + Convert.ToBase64String(Data, 0, Data.Length);
+
+						await this.OutputMaui(new Waher.Content.Emoji.ImageSource()
+						{
+							Url = Uri
+						});
+
 						return;
+					}
+
+					// TODO ?
+					//if (await Renderer.RenderMauiXaml(Rend, Element.Rows, Element.Language, Element.Indent, Element.Document))
+					//	return;
 				}
 				catch (Exception Ex)
 				{
@@ -2215,9 +2230,6 @@ namespace NeuroAccessMaui.UI.Rendering
 				Vsl.Add(Label);
 			}
 
-			if (Source.Width.HasValue)
-				Sv.WidthRequest = Source.Width.Value;
-
 			if (Source.Height.HasValue)
 				Sv.HeightRequest = Source.Height.Value;
 
@@ -2273,6 +2285,7 @@ namespace NeuroAccessMaui.UI.Rendering
 				int? Width = Source.Width;
 				int? Height = Source.Height;
 				byte[] Data = Convert.FromBase64String(Url.Substring(i + 7));
+
 				using (SKBitmap Bitmap = SKBitmap.Decode(Data))
 				{
 					Width = Bitmap.Width;

@@ -1602,10 +1602,22 @@ namespace NeuroAccessMaui.Services.Xmpp
 		Task<string> GenerateNeuroFeatureStateDiagramReport(string TokenId);
 
 		/// <summary>
+		/// Generates a MAUI report for a state diagram corresponding to the token.
+		/// </summary>
+		/// <returns>String-representation of MAUI of report.</returns>
+		Task<VerticalStackLayout> GenerateNeuroFeatureStateDiagramReportMaui(string TokenId);
+
+		/// <summary>
 		/// Generates a XAML report for a timing diagram corresponding to the token.
 		/// </summary>
 		/// <returns>String-representation of XAML of report.</returns>
 		Task<string> GenerateNeuroFeatureProfilingReport(string TokenId);
+
+		/// <summary>
+		/// Generates a Maui report for a timing diagram corresponding to the token.
+		/// </summary>
+		/// <returns>String-representation of Maui of report.</returns>
+		Task<VerticalStackLayout> GenerateNeuroFeatureProfilingReportMaui(string TokenId);
 
 		/// <summary>
 		/// Generates a XAML present report for a token.
@@ -1614,10 +1626,20 @@ namespace NeuroAccessMaui.Services.Xmpp
 		Task<string> GenerateNeuroFeaturePresentReport(string TokenId);
 
 		/// <summary>
+		/// Generates a MAUI present report for a token.
+		/// </summary>
+		Task<VerticalStackLayout> GenerateNeuroFeaturePresentReportMaui(string TokenId);
+
+		/// <summary>
 		/// Generates a XAML history report for a token.
 		/// </summary>
 		/// <returns>String-representation of XAML of report.</returns>
 		Task<string> GenerateNeuroFeatureHistoryReport(string TokenId);
+
+		/// <summary>
+		/// Generates a MAUI history report for a token.
+		/// </summary>
+		Task<VerticalStackLayout> GenerateNeuroFeatureHistoryReportMaui(string TokenId);
 
 		/// <summary>
 		/// Gets the current state of a Neuro-Feature token.

@@ -118,7 +118,7 @@
                        WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" 
                        VerticalOptions="Start" HorizontalOptions="Center" Margin="{DynamicResource SmallTopMargins}" />
 
-							<VerticalStackLayout IsVisible="False">
+							<VerticalStackLayout>
 								<Label Text="{l:Localize Reports}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"
 										 IsVisible="{Binding HasStateMachine}"/>
 

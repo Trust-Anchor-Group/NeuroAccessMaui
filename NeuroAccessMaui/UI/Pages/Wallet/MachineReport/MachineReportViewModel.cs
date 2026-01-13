@@ -31,7 +31,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 			else
 			{
 				this.Title = await this.TokenReport.GetTitle();
-				await this.TokenReport.GenerateReport(this);
+
+				await this.TokenReport.GenerateReportMaui(this);
+				//await this.TokenReport.GenerateReport(this);
 			}
 
 			ServiceRef.XmppService.NeuroFeatureVariablesUpdated += this.Wallet_VariablesUpdated;

@@ -40,6 +40,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 		public abstract Task<string> GetReportXaml();
 
 		/// <summary>
+		/// Gets the MAUI representation of the report.
+		/// </summary>
+		/// <returns>MAUI representation of report.</returns>
+		public abstract Task<VerticalStackLayout> GetReportMaui();
+
+		/// <summary>
 		/// Parses report XAML
 		/// </summary>
 		/// <param name="Xaml">String-representation of XAML</param>
@@ -229,6 +235,26 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 					{
 						this.temporaryFiles.AddRange(TempFiles);
 					}
+				}
+				catch (Exception ex)
+				{
+					await ServiceRef.UiService.DisplayException(ex);
+				}
+			});
+		}
+
+		/// <summary>
+		/// Generates the report using the new custom MAUI renderer.
+		/// </summary>
+		public async Task GenerateReportMaui(MachineReportViewModel ReportView)
+		{
+			this.view = ReportView;
+			VerticalStackLayout MauiContent = await this.GetReportMaui();
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				try
+				{
+					this.view.Report = MauiContent;
 				}
 				catch (Exception ex)
 				{

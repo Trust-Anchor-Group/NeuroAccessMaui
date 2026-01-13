@@ -23,5 +23,10 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports
 		{
 			return ServiceRef.XmppService.GenerateNeuroFeatureHistoryReport(this.TokenId);
 		}
+
+		public override Task<VerticalStackLayout> GetReportMaui()
+		{
+			return ServiceRef.XmppService.GenerateNeuroFeatureHistoryReportMaui(this.TokenId);
+		}
 	}
 }
