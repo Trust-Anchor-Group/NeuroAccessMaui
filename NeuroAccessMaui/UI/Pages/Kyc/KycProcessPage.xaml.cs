@@ -18,7 +18,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				await this.Dispatcher.DispatchAsync(() =>
 				{
-					// NOTE: can still crash if the ItemSource is empty, but as of the moment it never is.
+#warning Can still crash if the ItemSource is empty, but as of the moment it never is
 					if (this.FormCollectionView is not null && this.FormCollectionView.ItemsSource != null)
 					{
 						this.FormCollectionView.ScrollTo(0, position: ScrollToPosition.Start, animate: false);

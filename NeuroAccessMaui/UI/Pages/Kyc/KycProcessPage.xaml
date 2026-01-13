@@ -650,10 +650,16 @@
 														   Style="{DynamicResource InfoLabel}"
 														   TextColor="{DynamicResource TnPDangerContentWL}"
 														   IsVisible="{Binding HasInvalidatedItems}" />
-													<VerticalStackLayout IsVisible="{Binding HasInvalidatedItems}"
-																		 BindableLayout.ItemsSource="{Binding InvalidatedItems}"
-																		 BindableLayout.ItemTemplate="{StaticResource InvalidatedItemTemplate}"
-																		 Spacing="4" />
+													<VerticalStackLayout BindableLayout.ItemsSource="{Binding InvalidatedItems}"
+																		 Spacing="4">
+														<BindableLayout.ItemTemplate>
+															<DataTemplate x:DataType="x:String">
+																<Label Text="{Binding}"
+																	   Style="{DynamicResource InfoLabel}"
+																	   TextColor="{DynamicResource TnPDangerContentWL}" FontAttributes="Bold" />
+															</DataTemplate>
+														</BindableLayout.ItemTemplate>
+													</VerticalStackLayout>
 												</VerticalStackLayout>
 											</Border>
 										</controls:ConditionView.True>
