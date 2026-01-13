@@ -296,7 +296,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 
 				NumberInformation Info = await PersonalNumberSchemes.Validate(CountryCode, Pnr);
 
-				if (Info.IsValid is not true)
+				if (Info.IsValid == false)
 					Error = this.message ?? $"{Field.Label?.Get(Lang) ?? Field.Id} is not a valid personal number";
 			}
 
