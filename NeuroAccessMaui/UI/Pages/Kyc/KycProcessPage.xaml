@@ -22,6 +22,8 @@
 				   x:Key="SectionHeaderLabel">
 				<Setter Property="FontSize"
 						Value="24" />
+				<Setter Property="LineHeight"
+						Value="1.1"/>
 			</Style>
 
 			<!--  Field Styles  -->
@@ -648,21 +650,10 @@
 														   Style="{DynamicResource InfoLabel}"
 														   TextColor="{DynamicResource TnPDangerContentWL}"
 														   IsVisible="{Binding HasInvalidatedItems}" />
-													<CollectionView ItemsSource="{Binding InvalidatedItems}"
-																	ItemSizingStrategy="MeasureAllItems"
-																	SelectionMode="None">
-														<CollectionView.ItemsLayout>
-															<LinearItemsLayout Orientation="Vertical"
-																			   ItemSpacing="4" />
-														</CollectionView.ItemsLayout>
-														<CollectionView.ItemTemplate>
-															<DataTemplate x:DataType="x:String">
-																	<Label Text="{Binding}"
-																		   Style="{DynamicResource InfoLabel}"
-																	   TextColor="{DynamicResource TnPDangerContentWL}" FontAttributes="Bold" />
-															</DataTemplate>
-														</CollectionView.ItemTemplate>
-													</CollectionView>
+													<VerticalStackLayout IsVisible="{Binding HasInvalidatedItems}"
+																		 BindableLayout.ItemsSource="{Binding InvalidatedItems}"
+																		 BindableLayout.ItemTemplate="{StaticResource InvalidatedItemTemplate}"
+																		 Spacing="4" />
 												</VerticalStackLayout>
 											</Border>
 										</controls:ConditionView.True>
@@ -691,28 +682,25 @@
 															   Style="{DynamicResource FieldTitleLabel}"
 															   TextColor="{DynamicResource TnPWarningContentWL}" />
 													</Grid>
-														<mct:Expander IsExpanded="False">
-															<mct:Expander.Header>
-																<Label Text="{Binding UnvalidatedSummaryText}"
+													<mct:Expander IsExpanded="False">
+														<mct:Expander.Header>
+															<Label Text="{Binding UnvalidatedSummaryText}"
 																	   Style="{DynamicResource InfoLabel}"
 																	   TextColor="{DynamicResource TnPWarningContentWL}" />
-															</mct:Expander.Header>
-															<CollectionView ItemsSource="{Binding UnvalidatedItems}"
-																		ItemSizingStrategy="MeasureAllItems"
-																		SelectionMode="None">
-																	<CollectionView.ItemsLayout>
-																		<LinearItemsLayout Orientation="Vertical"
-																			   ItemSpacing="{DynamicResource TinySpacing}" />
-																	</CollectionView.ItemsLayout>
-																	<CollectionView.ItemTemplate>
-																		<DataTemplate x:DataType="x:String">
-																			<Label Text="{Binding}"
-																				   TextColor="{DynamicResource TnPWarningContentWL}"
-																				   Style="{DynamicResource InfoLabel}" />
-																			</DataTemplate>
-																	</CollectionView.ItemTemplate>
-																</CollectionView>
-														</mct:Expander>
+														</mct:Expander.Header>
+														<!-- vvv HAD Spacing="{DynamicResource TinySpacing}" but tiny spacing does not exist.
+														Is this just old unused code? -->
+														<VerticalStackLayout BindableLayout.ItemsSource="{Binding UnvalidatedItems}">
+															<BindableLayout.ItemTemplate>
+																<DataTemplate x:DataType="x:String">
+																	<Label Text="{Binding}"
+																		TextColor="{DynamicResource TnPWarningContentWL}"
+																		Style="{DynamicResource InfoLabel}" />
+																</DataTemplate>
+															</BindableLayout.ItemTemplate>
+														</VerticalStackLayout>
+
+													</mct:Expander>
 													<Label Text="{l:Localize KycUnvalidatedActionHint}"
 														   Style="{DynamicResource InfoLabel}"
 														   TextColor="{DynamicResource TnPWarningContentWL}" />
@@ -736,15 +724,9 @@
 																	 Padding="{DynamicResource SmallMargins}">
 													<Label Text="{l:Localize PersonalDetails}"
 														   Style="{DynamicResource FieldTitleLabel}" />
-													<CollectionView ItemsSource="{Binding PersonalInformationSummary}"
-																	ItemTemplate="{StaticResource SummaryDisplayTemplate}"
-																	ItemSizingStrategy="MeasureAllItems"
-																	SelectionMode="None">
-														<CollectionView.ItemsLayout>
-															<LinearItemsLayout Orientation="Vertical"
-																			   ItemSpacing="8" />
-														</CollectionView.ItemsLayout>
-													</CollectionView>
+													<VerticalStackLayout BindableLayout.ItemsSource="{Binding PersonalInformationSummary}"
+																		 BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
+																		 Spacing="8"/>
 												</VerticalStackLayout>
 											</Border>
 
@@ -754,15 +736,10 @@
 																	 Padding="8">
 													<Label Text="{l:Localize AddressDetails}"
 														   Style="{DynamicResource FieldTitleLabel}" />
-													<CollectionView ItemsSource="{Binding AddressInformationSummary}"
-																	ItemTemplate="{StaticResource SummaryDisplayTemplate}"
-																	ItemSizingStrategy="MeasureAllItems"
-																	SelectionMode="None">
-														<CollectionView.ItemsLayout>
-															<LinearItemsLayout Orientation="Vertical"
-																			   ItemSpacing="8" />
-														</CollectionView.ItemsLayout>
-													</CollectionView>
+
+													<VerticalStackLayout BindableLayout.ItemsSource="{Binding AddressInformationSummary}"
+																		 BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
+																		 Spacing="8"/>
 												</VerticalStackLayout>
 											</Border>
 
@@ -773,15 +750,9 @@
 																	 Padding="{DynamicResource SmallMargins}">
 													<Label Text="{l:Localize CompanyInformation}"
 														   Style="{DynamicResource FieldTitleLabel}" />
-													<CollectionView ItemsSource="{Binding CompanyInformationSummary}"
-																	ItemTemplate="{StaticResource SummaryDisplayTemplate}"
-																	ItemSizingStrategy="MeasureAllItems"
-																	SelectionMode="None">
-														<CollectionView.ItemsLayout>
-															<LinearItemsLayout Orientation="Vertical"
-																			   ItemSpacing="8" />
-														</CollectionView.ItemsLayout>
-													</CollectionView>
+													<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyInformationSummary}"
+																		 BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
+																		 Spacing="8"/>
 												</VerticalStackLayout>
 											</Border>
 
@@ -792,15 +763,9 @@
 																	 Padding="{DynamicResource SmallMargins}">
 													<Label Text="{l:Localize CompanyAddress}"
 														   Style="{DynamicResource FieldTitleLabel}" />
-													<CollectionView ItemsSource="{Binding CompanyAddressSummary}"
-																	ItemTemplate="{StaticResource SummaryDisplayTemplate}"
-																	ItemSizingStrategy="MeasureAllItems"
-																	SelectionMode="None">
-														<CollectionView.ItemsLayout>
-															<LinearItemsLayout Orientation="Vertical"
-																			   ItemSpacing="8" />
-														</CollectionView.ItemsLayout>
-													</CollectionView>
+													<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyAddressSummary}"
+																		 BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
+																		 Spacing="8"/>
 												</VerticalStackLayout>
 											</Border>
 
@@ -811,15 +776,10 @@
 																	 Padding="{DynamicResource SmallMargins}">
 													<Label Text="{l:Localize CompanyRepresentative}"
 														   Style="{DynamicResource FieldTitleLabel}" />
-													<CollectionView ItemsSource="{Binding CompanyRepresentativeSummary}"
-																	ItemTemplate="{StaticResource SummaryDisplayTemplate}"
-																	ItemSizingStrategy="MeasureAllItems"
-																	SelectionMode="None">
-														<CollectionView.ItemsLayout>
-															<LinearItemsLayout Orientation="Vertical"
-																			   ItemSpacing="8" />
-														</CollectionView.ItemsLayout>
-													</CollectionView>
+													<VerticalStackLayout BindableLayout.ItemsSource="{Binding CompanyRepresentativeSummary}"
+																		 BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
+																		 Spacing="8"/>
+
 												</VerticalStackLayout>
 											</Border>
 
@@ -829,15 +789,9 @@
 																	 Padding="{DynamicResource SmallMargins}">
 													<Label Text="{l:Localize DocumentDetails}"
 														   Style="{DynamicResource FieldTitleLabel}" />
-													<CollectionView ItemsSource="{Binding AttachmentInformationSummary}"
-																	ItemTemplate="{StaticResource SummaryDisplayTemplate}"
-																	ItemSizingStrategy="MeasureAllItems"
-																	SelectionMode="None">
-														<CollectionView.ItemsLayout>
-															<LinearItemsLayout Orientation="Vertical"
-																			   ItemSpacing="8" />
-														</CollectionView.ItemsLayout>
-													</CollectionView>
+													<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}"
+															             BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
+																		 Spacing="8"/>
 												</VerticalStackLayout>
 											</Border>
 										</VerticalStackLayout>
@@ -868,39 +822,27 @@
 										   Margin="0,0,0,16" />
 
 									<!-- Direct fields -->
-									<CollectionView IsVisible="{Binding CurrentPage.VisibleFields.Count, Converter={converters:GreaterThanZero}}"
-													ItemsSource="{Binding CurrentPage.VisibleFields}"
-													ItemTemplate="{StaticResource KycFieldTemplateSelector}"
-													ItemSizingStrategy="MeasureAllItems"
-													SelectionMode="None">
-										<CollectionView.ItemsLayout>
-											<LinearItemsLayout Orientation="Vertical"
-															   ItemSpacing="8" />
-										</CollectionView.ItemsLayout>
-									</CollectionView>
+									<VerticalStackLayout IsVisible="{Binding CurrentPage.VisibleFields.Count, Converter={converters:GreaterThanZero}}"
+														 BindableLayout.ItemsSource="{Binding CurrentPage.VisibleFields}"
+														 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}"
+														 Spacing="8"/>
 								</VerticalStackLayout>
 							</CollectionView.Header>
-							<CollectionView.ItemTemplate>
+							<CollectionView.ItemTemplate >
 								<DataTemplate x:DataType="models:KycSection">
 									<VerticalStackLayout Spacing="8"
 														 Margin="{DynamicResource SmallMargins}">
 										<Label FontAttributes="Bold"
 											   IsVisible="{Binding Label, Converter={mct:IsNotNullConverter}}"
 											   Style="{DynamicResource SectionHeaderLabel}"
-											   Text="{Binding Label.Text}" />
+											   Text="{Binding Label.Text}"/>
 										<Label FontAttributes="Bold"
 											   FontSize="Medium"
 											   IsVisible="{Binding Description, Converter={mct:IsNotNullConverter}}"
 											   Text="{Binding Description }" />
-										<CollectionView ItemsSource="{Binding VisibleFields}"
-														ItemTemplate="{StaticResource KycFieldTemplateSelector}"
-														ItemSizingStrategy="MeasureAllItems"
-														SelectionMode="None">
-											<CollectionView.ItemsLayout>
-												<LinearItemsLayout Orientation="Vertical"
-																   ItemSpacing="16" />
-											</CollectionView.ItemsLayout>
-										</CollectionView>
+										<VerticalStackLayout BindableLayout.ItemsSource="{Binding VisibleFields}"
+															 BindableLayout.ItemTemplateSelector="{StaticResource KycFieldTemplateSelector}"
+															 Spacing="16"/>
 									</VerticalStackLayout>
 								</DataTemplate>
 							</CollectionView.ItemTemplate>
@@ -957,7 +899,7 @@
 
 						<controls:ConditionView Condition="{Binding IsEditingFromSummary}">
 							<controls:ConditionView.True>
-								<controls:TextButton LabelData="{Binding NextButtonText}"
+								<controls:TextButton LabelData="{l:Localize Kyc_Return}"
 													 Style="{DynamicResource FilledTextButton}"
 													 Command="{Binding GoToSummaryCommand}" />
 							</controls:ConditionView.True>
