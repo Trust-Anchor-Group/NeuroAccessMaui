@@ -433,7 +433,7 @@ namespace NeuroAccessMaui.Services.Theme
 				HttpStatusCode.NotFound => (false, null, BrandingFetchClassification.NotFound),
 				HttpStatusCode.ServiceUnavailable or HttpStatusCode.GatewayTimeout or HttpStatusCode.BadGateway => (false, null, BrandingFetchClassification.TransientFailure),
 				HttpStatusCode.RequestTimeout => (false, null, BrandingFetchClassification.TransientFailure),
-				0 => (false, null, BrandingFetchClassification.TransientFailure),
+				0 => (false, null, BrandingFetchClassification.PermanentFailure),
 				_ => (false, null, BrandingFetchClassification.PermanentFailure)
 			};
 		}
