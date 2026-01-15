@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Main.Nfc.NfcPage"
+                      x:DataType="viewmodel:NfcViewModel"
+                      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                      xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+                      xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+                      xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+                      xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Nfc">
+	<base:BaseContentPage.Resources>
+		<ResourceDictionary>
+			<!-- Field Styles (copied from existing key/value UI patterns) -->
+			<Style x:Key="FieldKeyLabel" TargetType="Label">
+				<Setter Property="FontSize" Value="14" />
+				<Setter Property="FontFamily" Value="SpaceGroteskRegular" />
+				<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
+			</Style>
+			<Style x:Key="FieldValueLabel" TargetType="Label">
+				<Setter Property="FontSize" Value="16" />
+				<Setter Property="FontFamily" Value="SpaceGroteskRegular" />
+				<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
+			</Style>
+			<Style x:Key="FieldTitleLabel" TargetType="Label">
+				<Setter Property="FontSize" Value="14" />
+				<Setter Property="FontFamily" Value="SpaceGroteskBold" />
+				<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}" />
+			</Style>
+		</ResourceDictionary>
+	</base:BaseContentPage.Resources>
+
+	<Grid RowDefinitions="auto,auto,*"
+	      BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+	      Padding="{DynamicResource LargeMargins}">
+		<Grid ColumnDefinitions="auto,*"
+		      ColumnSpacing="16">
+			<controls:SvgButton Grid.Row="0"
+								Grid.Column="0"
+								Command="{Binding GoBackCommand}"
+								SvgSource="close.svg"
+								Style="{DynamicResource IconButton}"
+								HorizontalOptions="Start"
+								WidthRequest="44"
+								HeightRequest="44" />
+			<Label Grid.Column="1"
+			       Text="{l:Localize NFC}"
+			       Style="{DynamicResource PageTitleLabel}"
+			       VerticalOptions="Center" />
+		</Grid>
+
+		<Grid Grid.Row="1"
+		      ColumnDefinitions="*,*"
+		      ColumnSpacing="12"
+		      Margin="0,16,0,0">
+			<controls:TextButton Grid.Column="0"
+			                     Command="{Binding SelectReadTabCommand}"
+			                     Style="{Binding ReadTabButtonStyle}"
+			                     LabelData="{l:Localize NfcRead}" />
+			<controls:TextButton Grid.Column="1"
+			                     Command="{Binding SelectWriteTabCommand}"
+			                     Style="{Binding WriteTabButtonStyle}"
+			                     LabelData="{l:Localize NfcWrite}" />
+		</Grid>
+
+		<controls:ViewSwitcher Grid.Row="2"
+		                      Margin="0,16,0,0"
+		                      SelectedStateKey="{Binding SelectedTabKey, Mode=TwoWay}">
+			<controls:ViewSwitcher.StateViews>
+				<controls:ViewSwitcherStateView StateKey="Read">
+					<ScrollView>
+						<VerticalStackLayout Spacing="12">
+							<Label Text="{l:Localize NfcTapTag}" Style="{DynamicResource InfoLabel}" />
+
+							<Border Style="{DynamicResource BorderSet}">
+								<VerticalStackLayout Spacing="12">
+									<Label Text="{Binding LastTagStatusText}" Style="{DynamicResource FieldTitleLabel}" />
+
+									<VerticalStackLayout Spacing="10">
+										<VerticalStackLayout Spacing="2">
+											<Label Text="{l:Localize NfcFieldId}" Style="{DynamicResource FieldKeyLabel}" />
+											<Label Text="{Binding LastTagIdHex}" Style="{DynamicResource FieldValueLabel}" />
+										</VerticalStackLayout>
+
+										<VerticalStackLayout Spacing="2">
+											<Label Text="{l:Localize NfcFieldType}" Style="{DynamicResource FieldKeyLabel}" />
+											<Label Text="{Binding LastTagType}" Style="{DynamicResource FieldValueLabel}" />
+										</VerticalStackLayout>
+
+										<VerticalStackLayout Spacing="2">
+											<Label Text="{l:Localize NfcFieldDetectedUtc}" Style="{DynamicResource FieldKeyLabel}" />
+											<Label Text="{Binding LastDetectedAtUtc, StringFormat='{0:O}', TargetNullValue='—'}" Style="{DynamicResource FieldValueLabel}" />
+										</VerticalStackLayout>
+
+										<VerticalStackLayout Spacing="2">
+											<Label Text="{l:Localize NfcFieldTechnologies}" Style="{DynamicResource FieldKeyLabel}" />
+											<Label Text="{Binding LastInterfacesSummary}" Style="{DynamicResource FieldValueLabel}" />
+										</VerticalStackLayout>
+
+										<VerticalStackLayout Spacing="2" IsVisible="{Binding HasNdefSummary}">
+											<Label Text="{l:Localize NfcFieldNdef}" Style="{DynamicResource FieldKeyLabel}" />
+											<Label Text="{Binding LastNdefSummary}" Style="{DynamicResource FieldValueLabel}" />
+										</VerticalStackLayout>
+
+										<VerticalStackLayout Spacing="2" IsVisible="{Binding HasExtractedUri}">
+											<Label Text="{l:Localize Uri}" Style="{DynamicResource FieldKeyLabel}" />
+											<Label Text="{Binding LastExtractedUri}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap" />
+										</VerticalStackLayout>
+									</VerticalStackLayout>
+								</VerticalStackLayout>
+							</Border>
+
+							<Grid ColumnDefinitions="*,*,*"
+							      ColumnSpacing="12"
+							      IsVisible="{OnPlatform iOS=True, Default=False}">
+								<controls:TextButton Grid.Column="0"
+								                     Command="{Binding StartReadScanCommand}"
+								                     Style="{DynamicResource FilledTextButton}"
+								                     LabelData="{l:Localize NfcStartScan}" />
+								<controls:TextButton Grid.Column="1"
+								                     Command="{Binding RefreshCommand}"
+								                     Style="{DynamicResource OutlinedTextButton}"
+								                     LabelData="{l:Localize Refresh}" />
+								<controls:TextButton Grid.Column="2"
+								                     Command="{Binding ClearCommand}"
+								                     Style="{DynamicResource OutlinedTextButton}"
+								                     LabelData="{l:Localize Clear}" />
+							</Grid>
+
+							<Grid ColumnDefinitions="*,*"
+							      ColumnSpacing="12"
+							      IsVisible="{OnPlatform iOS=False, Default=True}">
+								<controls:TextButton Grid.Column="0"
+								                     Command="{Binding RefreshCommand}"
+								                     Style="{DynamicResource OutlinedTextButton}"
+								                     LabelData="{l:Localize Refresh}" />
+								<controls:TextButton Grid.Column="1"
+								                     Command="{Binding ClearCommand}"
+								                     Style="{DynamicResource OutlinedTextButton}"
+								                     LabelData="{l:Localize Clear}" />
+							</Grid>
+						</VerticalStackLayout>
+					</ScrollView>
+				</controls:ViewSwitcherStateView>
+
+				<controls:ViewSwitcherStateView StateKey="Write">
+					<ScrollView>
+						<VerticalStackLayout Spacing="12">
+							<Label Text="{l:Localize NfcWriteUri}" Style="{DynamicResource InfoLabel}" />
+
+							<Border Style="{DynamicResource BorderSet}">
+								<VerticalStackLayout Spacing="10">
+									<VerticalStackLayout Spacing="2">
+										<Label Text="{l:Localize Uri}" Style="{DynamicResource FieldKeyLabel}" />
+										<Entry Text="{Binding UriToWrite, Mode=TwoWay}"
+										       Placeholder="{l:Localize Uri}"
+										       Keyboard="Url" />
+									</VerticalStackLayout>
+								</VerticalStackLayout>
+							</Border>
+
+							<Grid ColumnDefinitions="*,*"
+							      ColumnSpacing="12">
+								<controls:TextButton Grid.Column="0"
+								                     Command="{Binding StartWriteCommand}"
+								                     Style="{DynamicResource FilledTextButton}"
+								                     LabelData="{l:Localize NfcWriteStart}" />
+								<controls:TextButton Grid.Column="1"
+								                     Command="{Binding CancelWriteCommand}"
+								                     Style="{DynamicResource OutlinedTextButton}"
+								                     LabelData="{l:Localize Cancel}" />
+							</Grid>
+
+							<Label Text="{Binding WriteStatusText}" Style="{DynamicResource FieldValueLabel}" />
+						</VerticalStackLayout>
+					</ScrollView>
+				</controls:ViewSwitcherStateView>
+			</controls:ViewSwitcher.StateViews>
+		</controls:ViewSwitcher>
+	</Grid>
+</base:BaseContentPage>

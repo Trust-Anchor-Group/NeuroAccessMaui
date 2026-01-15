@@ -14,7 +14,7 @@
 		<ApplicationTitle>Neuro-Access</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId Condition="$(TargetFramework) == 'net10.0-android'">com.tag.NeuroAccess</ApplicationId>
+		<ApplicationId Condition="$(TargetFramework) == 'net10.0-android'">com.tag.NeuroAccess.debug</ApplicationId>
 		<ApplicationId Condition="$(TargetFramework) != 'net10.0-android'">com.trustanchorgroup.NeuroAccess</ApplicationId>
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 

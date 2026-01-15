@@ -334,7 +334,7 @@
 				<Text lang="fr">Téléversement de document</Text>
 			</Label>
 			<!-- Passport Upload Field (shown if passport is selected) -->
-			<Field id="passportUpload" type="image" required="true">
+			<Field id="passportUpload" type="image" required="true" specialType="passport">
 				<Label>
 					<Text lang="en">Passport Upload</Text>
 					<Text lang="sv">Passuppladdning</Text>

@@ -32,6 +32,7 @@ using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using NeuroAccessMaui.UI.Pages.Main.ChangePassword;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
+using NeuroAccessMaui.UI.Pages.Main.Nfc;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
@@ -627,6 +628,7 @@ namespace NeuroAccessMaui
 			Routing.RegisterRoute(nameof(VerifyCodePage), typeof(VerifyCodePage));
 			Routing.RegisterRoute(nameof(XmppFormPage), typeof(XmppFormPage));
 			Routing.RegisterRoute(nameof(AppsPage), typeof(AppsPage));
+			Routing.RegisterRoute(nameof(NfcPage), typeof(NfcPage));
 
 			//Notifications
 			Routing.RegisterRoute(nameof(NotificationsPage), typeof(NotificationsPage));

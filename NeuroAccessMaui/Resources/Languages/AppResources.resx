@@ -2838,6 +2838,63 @@
   <data name="NFC" xml:space="preserve">
     <value>NFC</value>
   </data>
+  <data name="NfcRead" xml:space="preserve">
+    <value>Read</value>
+  </data>
+  <data name="NfcWrite" xml:space="preserve">
+    <value>Write</value>
+  </data>
+  <data name="NfcTapTag" xml:space="preserve">
+    <value>Tap an NFC tag to read it</value>
+  </data>
+  <data name="NfcNoTagYet" xml:space="preserve">
+    <value>No tag detected yet</value>
+  </data>
+  <data name="NfcLastTag" xml:space="preserve">
+    <value>Last detected tag</value>
+  </data>
+  <data name="NfcFieldId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="NfcFieldType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="NfcFieldDetectedUtc" xml:space="preserve">
+    <value>Detected (UTC)</value>
+  </data>
+  <data name="NfcFieldTechnologies" xml:space="preserve">
+    <value>Technologies</value>
+  </data>
+  <data name="NfcFieldNdef" xml:space="preserve">
+    <value>NDEF</value>
+  </data>
+  <data name="NfcWriteUri" xml:space="preserve">
+    <value>Write a URI to an NFC tag</value>
+  </data>
+  <data name="NfcStartScan" xml:space="preserve">
+    <value>Start scan</value>
+  </data>
+  <data name="NfcWriteStart" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="NfcWritePending" xml:space="preserve">
+    <value>Tap a writable tag to program it…</value>
+  </data>
+  <data name="NfcWriteSucceeded" xml:space="preserve">
+    <value>Write succeeded</value>
+  </data>
+  <data name="NfcWriteFailed" xml:space="preserve">
+    <value>Write failed</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Uri" xml:space="preserve">
+    <value>URI</value>
+  </data>
   <data name="ComingSoon" xml:space="preserve">
     <value>Coming soon!</value>
   </data>

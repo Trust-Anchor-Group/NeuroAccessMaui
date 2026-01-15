@@ -1168,6 +1168,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string Clear {
+            get {
+                return ResourceManager.GetString("Clear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear branding &amp; KYC cache.
         /// </summary>
         public static string ClearBrandingAndKycCache {
@@ -4786,6 +4795,150 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Detected (UTC).
+        /// </summary>
+        public static string NfcFieldDetectedUtc {
+            get {
+                return ResourceManager.GetString("NfcFieldDetectedUtc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ID.
+        /// </summary>
+        public static string NfcFieldId {
+            get {
+                return ResourceManager.GetString("NfcFieldId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NDEF.
+        /// </summary>
+        public static string NfcFieldNdef {
+            get {
+                return ResourceManager.GetString("NfcFieldNdef", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Technologies.
+        /// </summary>
+        public static string NfcFieldTechnologies {
+            get {
+                return ResourceManager.GetString("NfcFieldTechnologies", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string NfcFieldType {
+            get {
+                return ResourceManager.GetString("NfcFieldType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last detected tag.
+        /// </summary>
+        public static string NfcLastTag {
+            get {
+                return ResourceManager.GetString("NfcLastTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No tag detected yet.
+        /// </summary>
+        public static string NfcNoTagYet {
+            get {
+                return ResourceManager.GetString("NfcNoTagYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read.
+        /// </summary>
+        public static string NfcRead {
+            get {
+                return ResourceManager.GetString("NfcRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start scan.
+        /// </summary>
+        public static string NfcStartScan {
+            get {
+                return ResourceManager.GetString("NfcStartScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap an NFC tag to read it.
+        /// </summary>
+        public static string NfcTapTag {
+            get {
+                return ResourceManager.GetString("NfcTapTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write.
+        /// </summary>
+        public static string NfcWrite {
+            get {
+                return ResourceManager.GetString("NfcWrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write failed.
+        /// </summary>
+        public static string NfcWriteFailed {
+            get {
+                return ResourceManager.GetString("NfcWriteFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap a writable tag to program it….
+        /// </summary>
+        public static string NfcWritePending {
+            get {
+                return ResourceManager.GetString("NfcWritePending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string NfcWriteStart {
+            get {
+                return ResourceManager.GetString("NfcWriteStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write succeeded.
+        /// </summary>
+        public static string NfcWriteSucceeded {
+            get {
+                return ResourceManager.GetString("NfcWriteSucceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Write a URI to an NFC tag.
+        /// </summary>
+        public static string NfcWriteUri {
+            get {
+                return ResourceManager.GetString("NfcWriteUri", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nickname.
         /// </summary>
         public static string Nickname {
@@ -7387,6 +7540,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string Refresh {
+            get {
+                return ResourceManager.GetString("Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to We couldn’t load the latest version of this contract. The details you see may be out of date. Request access now?.
         /// </summary>
         public static string RefreshContract_Forbidden_Description {
@@ -9876,6 +10038,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string Upload {
             get {
                 return ResourceManager.GetString("Upload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URI.
+        /// </summary>
+        public static string Uri {
+            get {
+                return ResourceManager.GetString("Uri", resourceCulture);
             }
         }
         

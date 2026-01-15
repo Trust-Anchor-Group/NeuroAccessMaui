@@ -386,13 +386,20 @@ namespace NeuroAccess.Nfc.Extensions
 			];
 
 			byte[] Response = await TagInterface.ExecuteCommand(Command);
-			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)
+			if (Response.Length < 2)
+				return null;
+
+			int StatusIndex = Response.Length - 2;
+			if (Response[StatusIndex] != 0x90 || Response[StatusIndex + 1] != 0x00)
+				return null;
+
+			if (StatusIndex != 8)
 				return null;
 
 			byte[] Challenge = new byte[8];
-			Array.Copy(Response, 0, Challenge, 0, 8);
+			Array.Copy(Response, 0, Challenge, 0, Challenge.Length);
 
-			return Response;
+			return Challenge;
 		}
 
 		/// <summary>
@@ -418,13 +425,16 @@ namespace NeuroAccess.Nfc.Extensions
 			]);
 
 			byte[] Response = await TagInterface.ExecuteCommand(Command);
-			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)
+			if (Response.Length < 2)
 				return null;
 
-			byte[] Challenge = new byte[8];
-			Array.Copy(Response, 0, Challenge, 0, 8);
+			int StatusIndex = Response.Length - 2;
+			if (Response[StatusIndex] != 0x90 || Response[StatusIndex + 1] != 0x00)
+				return null;
 
-			return Response;
+			byte[] ResponseData = new byte[StatusIndex];
+			Array.Copy(Response, 0, ResponseData, 0, StatusIndex);
+			return ResponseData;
 		}
 	}
 }

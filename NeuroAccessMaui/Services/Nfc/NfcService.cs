@@ -9,6 +9,7 @@ using Waher.Runtime.Settings;
 using Waher.Security;
 using System.Globalization;
 using NeuroAccessMaui.Services.Authentication;
+using NeuroAccessMaui.Services.Nfc.Ui;
 
 namespace NeuroAccessMaui.Services.Nfc
 {
@@ -19,6 +20,9 @@ namespace NeuroAccessMaui.Services.Nfc
 	public class NfcService : INfcService
 	{
 		private readonly IAuthenticationService authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
+		private readonly INfcScanService nfcScanService = ServiceRef.Provider.GetRequiredService<INfcScanService>();
+		private readonly INfcTagSnapshotService nfcTagSnapshotService = ServiceRef.Provider.GetRequiredService<INfcTagSnapshotService>();
+		private readonly INfcWriteService nfcWriteService = ServiceRef.Provider.GetRequiredService<INfcWriteService>();
 
 		/// <summary>
 		/// Near-Field Communication (NFC) Service.
@@ -37,6 +41,7 @@ namespace NeuroAccessMaui.Services.Nfc
 			try
 			{
 				string TagId = Hashes.BinaryToString(Tag.ID).ToUpper(CultureInfo.InvariantCulture);
+				this.PublishSnapshot(Tag, TagId);
 				NfcTagReference TagReference = await NfcTagReference.FindByTagId(TagId);
 
 				foreach (INfcInterface Interface in Tag.Interfaces)
@@ -56,6 +61,7 @@ namespace NeuroAccessMaui.Services.Nfc
 						// ISO 14443-4
 
 						string Mrz = await RuntimeSettings.GetAsync("NFC.LastMrz", string.Empty);
+						bool ScanRequested = await RuntimeSettings.GetAsync("NFC.Passport.ScanRequested", false);
 
 						if (!string.IsNullOrEmpty(Mrz) &&
 							BasicAccessControl.ParseMrz(Mrz, out DocumentInformation? DocInfo))
@@ -67,9 +73,21 @@ namespace NeuroAccessMaui.Services.Nfc
 							{
 								byte[] ChallengeResponse = DocInfo.CalcChallengeResponse(Challenge);
 								byte[]? Response = await IsoDep.ExternalAuthenticate(ChallengeResponse);
-
-								// TODO
+								if (Response is not null)
+								{
+									await RuntimeSettings.SetAsync("NFC.Passport.BacOk", true);
+									await RuntimeSettings.SetAsync("NFC.Passport.LastBacAt", DateTime.UtcNow.ToString("O"));
+								}
+								else
+								{
+									await RuntimeSettings.SetAsync("NFC.Passport.BacOk", false);
+								}
 							}
+						}
+						else if (ScanRequested)
+						{
+							// A user-initiated passport scan is active, but we cannot attempt BAC due to missing/invalid MRZ.
+							await RuntimeSettings.SetAsync("NFC.Passport.BacOk", false);
 						}
 					}
 					else if (Interface is INdefInterface Ndef)
@@ -78,6 +96,14 @@ namespace NeuroAccessMaui.Services.Nfc
 						bool IsWritable = await Ndef.IsWritable();
 						INdefRecord[] Records = await Ndef.GetMessage();
 
+						// User-initiated write takes precedence over auto-engraving or auto-open.
+						if (this.nfcWriteService.HasPendingWrite)
+						{
+							bool Handled = await this.nfcWriteService.TryHandleWriteAsync(Items => Ndef.SetMessage(Items));
+							if (Handled)
+								return;
+						}
+
 						if (Records.Length == 0 && IsWritable)
 						{
 							await ProgramNfc(Items => Ndef.SetMessage(Items));
@@ -85,26 +111,56 @@ namespace NeuroAccessMaui.Services.Nfc
 						}
 						else
 						{
+							List<string> RecordTypes = [];
+							string? ExtractedUri = null;
+
 							foreach (INdefRecord Record in Records)
 							{
 								if (Record is INdefUriRecord UriRecord)
 								{
-									if (!string.IsNullOrEmpty(Constants.UriSchemes.GetScheme(UriRecord.Uri)))
+									RecordTypes.Add("URI");
+									ExtractedUri ??= UriRecord.Uri;
+									if (this.TryHandleNfcUri(UriRecord.Uri))
 									{
-										if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.NfcTagDetected))
-											return;
-
-										if (await App.OpenUrlAsync(UriRecord.Uri))
-											return;
+										this.nfcTagSnapshotService.UpdateNdef(TagId, string.Join(", ", RecordTypes), ExtractedUri);
+										return;
 									}
 								}
+								else if (Record is INdefWellKnownTypeRecord WellKnown &&
+									string.Equals(WellKnown.WellKnownType, "T", StringComparison.OrdinalIgnoreCase))
+								{
+									string? Text = TryDecodeNdefTextRecord(WellKnown.Data);
+									RecordTypes.Add("Text");
+									if (!string.IsNullOrEmpty(Text) && System.Uri.TryCreate(Text, UriKind.Absolute, out _))
+										ExtractedUri ??= Text;
+									if (!string.IsNullOrEmpty(Text) && this.TryHandleNfcUri(Text))
+									{
+										this.nfcTagSnapshotService.UpdateNdef(TagId, string.Join(", ", RecordTypes), ExtractedUri);
+										return;
+									}
+								}
+								else
+								{
+									RecordTypes.Add(Record.GetType().Name);
+								}
 							}
+
+							string? NdefSummary = RecordTypes.Count > 0 ? string.Join(", ", RecordTypes) : "";
+							this.nfcTagSnapshotService.UpdateNdef(TagId, NdefSummary, ExtractedUri);
 
 							// TODO: Open NFC view
 						}
 					}
 					else if (Interface is INdefFormatableInterface NdefFormatable)
 					{
+						// User-initiated write takes precedence.
+						if (this.nfcWriteService.HasPendingWrite)
+						{
+							bool Handled = await this.nfcWriteService.TryHandleWriteAsync(Items => NdefFormatable.Format(false, Items));
+							if (Handled)
+								return;
+						}
+
 						await ProgramNfc(Items => NdefFormatable.Format(false, Items));
 						// TODO: Make read-only if able
 					}
@@ -160,6 +216,89 @@ namespace NeuroAccessMaui.Services.Nfc
 			{
 				await ServiceRef.UiService.DisplayException(ex);
 			}
+		}
+
+		private void PublishSnapshot(INfcTag Tag, string TagId)
+		{
+			try
+			{
+				List<string> InterfaceNames = [];
+				bool HasNdef = false;
+				bool HasIsoDep = false;
+
+				foreach (INfcInterface Interface in Tag.Interfaces)
+				{
+					InterfaceNames.Add(Interface.GetType().Name);
+					HasNdef |= Interface is INdefInterface || Interface is INdefFormatableInterface;
+					HasIsoDep |= Interface is IIsoDepInterface;
+				}
+
+				string TagType = HasIsoDep ? "ISO-DEP" : (HasNdef ? "NDEF" : "Unknown");
+				string InterfacesSummary = string.Join(", ", InterfaceNames);
+
+				NfcTagSnapshot Snapshot = new(
+					TagId,
+					DateTimeOffset.UtcNow,
+					TagType,
+					InterfacesSummary,
+					NdefSummary: null,
+					ExtractedUri: null);
+
+				this.nfcTagSnapshotService.Publish(Snapshot);
+			}
+			catch
+			{
+			}
+		}
+
+		private bool TryHandleNfcUri(string Uri)
+		{
+			string Candidate = Uri?.Trim() ?? string.Empty;
+			if (string.IsNullOrEmpty(Candidate))
+				return false;
+
+			if (string.IsNullOrEmpty(Constants.UriSchemes.GetScheme(Candidate)))
+				return false;
+
+			// If a user-initiated scan is active (e.g., from the QR scan page), prefer completing that flow
+			// rather than navigating immediately.
+			if (this.nfcScanService.TryHandleDetectedUri(Candidate))
+				return true;
+
+			// Default behavior: authenticate and open.
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				try
+				{
+					if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.NfcTagDetected))
+						return;
+
+					await App.OpenUrlAsync(Candidate);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+			});
+
+			return true;
+		}
+
+		private static string? TryDecodeNdefTextRecord(byte[] Data)
+		{
+			if (Data is null || Data.Length < 2)
+				return null;
+
+			byte Status = Data[0];
+			int LanguageCodeLength = Status & 0x3F;
+			bool IsUtf16 = (Status & 0x80) != 0;
+
+			int TextIndex = 1 + LanguageCodeLength;
+			if (TextIndex >= Data.Length)
+				return null;
+
+			System.Text.Encoding Encoding = IsUtf16 ? System.Text.Encoding.Unicode : System.Text.Encoding.UTF8;
+			return Encoding.GetString(Data, TextIndex, Data.Length - TextIndex).Trim();
 		}
 
 		public delegate Task<bool> WriteItems(object[] Items);

@@ -37,7 +37,7 @@
 				<!-- Apps -->
 				<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource SmallLeftRightBottomMargins}">
 					<!-- Common apps -->
-					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *" RowSpacing="{DynamicResource MediumSpacing}">
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, *" RowSpacing="{DynamicResource MediumSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}"
 							   Text="{l:Localize Apps}"
 							   Grid.ColumnSpan="3"/>
@@ -58,6 +58,12 @@
 												SvgSource="applications.svg"
 												Command="{Binding ShowApplicationsCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Applications}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+										SvgSource="nfc.svg"
+										Command="{Binding ShowNfcAppCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize NFC}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 					</Grid>
 				</Border>
@@ -120,12 +126,6 @@
 												SvgSource="microloan.svg"
 												Command="{Binding ShowComingSoonPopupCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize MicroLoan}" HorizontalOptions="Center"/>
-						</VerticalStackLayout>
-						<VerticalStackLayout Grid.Column="2" Grid.Row="1">
-							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"
-												SvgSource="nfc.svg"
-												Command="{Binding ShowComingSoonPopupCommand}"/>
-							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize NFC}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
 							<controls:SvgButton Style="{DynamicResource NeuroIconButtonDisabled}"

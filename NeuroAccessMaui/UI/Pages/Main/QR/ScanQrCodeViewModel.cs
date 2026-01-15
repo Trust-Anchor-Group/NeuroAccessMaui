@@ -2,8 +2,11 @@
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Localization;
+using NeuroAccessMaui.Services.Nfc;
 using ZXing.Net.Maui;
 
 namespace NeuroAccessMaui.UI.Pages.Main.QR
@@ -16,6 +19,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		private readonly ScanQrCodeNavigationArgs? navigationArgs;
 		private IDispatcherTimer? countDownTimer;
 		private bool suppressModeHandler;
+		private CancellationTokenSource? nfcScanCancellationTokenSource;
 
 		/// <summary>
 		/// The view model to bind to when scanning a QR code.
@@ -133,6 +137,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		/// <inheritdoc/>
 		public override async Task OnDisposeAsync()
 		{
+			if (this.nfcScanCancellationTokenSource is not null)
+			{
+				this.nfcScanCancellationTokenSource.Cancel();
+				this.nfcScanCancellationTokenSource.Dispose();
+				this.nfcScanCancellationTokenSource = null;
+			}
+
 			LocalizationManager.Current.PropertyChanged -= this.LocalizationManagerEventHandler;
 
 			if (this.countDownTimer is not null)
@@ -146,6 +157,39 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 				TaskSource.TrySetResult(string.Empty);
 
 			await base.OnDisposeAsync();
+		}
+
+		[RelayCommand]
+		private async Task ScanNfc()
+		{
+			try
+			{
+				INfcScanService ScanService = ServiceRef.Provider.GetRequiredService<INfcScanService>();
+
+				if (this.nfcScanCancellationTokenSource is not null)
+				{
+					this.nfcScanCancellationTokenSource.Cancel();
+					this.nfcScanCancellationTokenSource.Dispose();
+				}
+
+				this.nfcScanCancellationTokenSource = new CancellationTokenSource();
+				string Prompt = ServiceRef.Localizer[nameof(AppResources.NFC)];
+
+				string? Uri = await ScanService.ScanUriAsync(
+					Prompt,
+					this.navigationArgs?.AllowedSchemas,
+					this.nfcScanCancellationTokenSource.Token);
+
+				if (!string.IsNullOrWhiteSpace(Uri) && this.CanOpen(Uri))
+					await this.TrySetResultAndClosePage(Uri.Trim());
+			}
+			catch (OperationCanceledException)
+			{
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		private void CountDownEventHandler(object? sender, EventArgs e)

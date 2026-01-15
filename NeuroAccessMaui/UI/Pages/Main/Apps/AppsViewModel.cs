@@ -8,6 +8,7 @@ using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
+using NeuroAccessMaui.UI.Pages.Main.Nfc;
 using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
 using NeuroAccessMaui.Resources.Languages;
@@ -116,6 +117,19 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 			try
 			{
 				await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private static async Task ShowNfcApp()
+		{
+			try
+			{
+				await ServiceRef.NavigationService.GoToAsync(nameof(NfcPage));
 			}
 			catch (Exception Ex)
 			{
