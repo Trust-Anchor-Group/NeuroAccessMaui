@@ -19,7 +19,7 @@ namespace NeuroAccessMaui.IosPlatform.Nfc
 		/// </summary>
 		/// <param name="Tag">CoreNFC ISO7816 tag.</param>
 		/// <param name="Session">Owning tag reader session.</param>
-		public IosIsoDepTag(NFCISO7816Tag Tag, NFCTagReaderSession Session)
+		public IosIsoDepTag(INFCIso7816Tag Tag, NFCTagReaderSession Session)
 		{
 			this.ID = Tag?.Identifier?.ToArray() ?? Array.Empty<byte>();
 			this.interfaces = [new IosIsoDepInterface(this, Tag, Session)];

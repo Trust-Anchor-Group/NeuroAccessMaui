@@ -12,7 +12,7 @@ namespace NeuroAccessMaui.IosPlatform.Nfc
 	/// </summary>
 	public sealed class IosIsoDepInterface : IIsoDepInterface
 	{
-		private readonly NFCISO7816Tag iso7816Tag;
+		private readonly INFCIso7816Tag iso7816Tag;
 		private readonly NFCTagReaderSession session;
 		private bool isDisposed;
 
@@ -22,7 +22,7 @@ namespace NeuroAccessMaui.IosPlatform.Nfc
 		/// <param name="Tag">Owning NFC tag wrapper.</param>
 		/// <param name="Iso7816Tag">CoreNFC ISO7816 tag.</param>
 		/// <param name="Session">CoreNFC tag reader session.</param>
-		public IosIsoDepInterface(INfcTag Tag, NFCISO7816Tag Iso7816Tag, NFCTagReaderSession Session)
+		public IosIsoDepInterface(INfcTag Tag, INFCIso7816Tag Iso7816Tag, NFCTagReaderSession Session)
 		{
 			this.Tag = Tag;
 			this.iso7816Tag = Iso7816Tag;
@@ -74,9 +74,8 @@ namespace NeuroAccessMaui.IosPlatform.Nfc
 			try
 			{
 				NSData CommandData = NSData.FromArray(Command);
-				NFCISO7816APDU Apdu = new(CommandData);
-
-				this.iso7816Tag.SendCommandApdu(Apdu, (NSData ResponseData, byte Sw1, byte Sw2, NSError Error) =>
+				NFCIso7816Apdu Apdu = new(CommandData);
+				this.iso7816Tag.SendCommand(Apdu, (NSData ResponseData, byte Sw1, byte Sw2, NSError Error) =>
 				{
 					if (Error is not null)
 					{

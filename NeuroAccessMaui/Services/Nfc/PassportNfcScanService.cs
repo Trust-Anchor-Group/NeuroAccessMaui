@@ -132,7 +132,7 @@ namespace NeuroAccessMaui.Services.Nfc
 				this.taskSource.TrySetResult(false);
 			}
 
-			public override void DidDetectTags(NFCTagReaderSession Session, NFCTag[] Tags)
+			public override void DidDetectTags(NFCTagReaderSession Session, INFCTag[] Tags)
 			{
 				if (Tags is null || Tags.Length == 0)
 					return;
@@ -143,7 +143,7 @@ namespace NeuroAccessMaui.Services.Nfc
 				_ = this.HandleTagAsync(Session, Tags[0]);
 			}
 
-			private async Task HandleTagAsync(NFCTagReaderSession Session, NFCTag Tag)
+			private async Task HandleTagAsync(NFCTagReaderSession Session, INFCTag Tag)
 			{
 				try
 				{
@@ -156,12 +156,19 @@ namespace NeuroAccessMaui.Services.Nfc
 						return;
 					}
 
-					NFCISO7816Tag Iso7816Tag = Tag.GetIso7816Tag();
-					IosIsoDepTag NfcTag = new(Iso7816Tag, Session);
-
-					using (NfcTag)
+					INFCIso7816Tag? iso7816 = Tag.AsNFCIso7816Tag;
+					if (iso7816 is null)
 					{
-						await this.owner.nfcService.TagDetected(NfcTag);
+						try { Session.InvalidateSession("Unsupported tag."); } catch { }
+						this.taskSource.TrySetResult(false);
+						return;
+					}
+
+					IosIsoDepTag nfcTag = new(iso7816, Session); // <-- update ctor type if needed
+
+					using (nfcTag)
+					{
+						await this.owner.nfcService.TagDetected(nfcTag);
 					}
 
 					bool BacOk = await this.TryGetLastBacOkAsync();
@@ -180,6 +187,19 @@ namespace NeuroAccessMaui.Services.Nfc
 				}
 			}
 
+			private Task ConnectAsync(NFCTagReaderSession Session, INFCTag Tag)
+			{
+				TaskCompletionSource<bool> TaskSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
+				Session.ConnectTo(Tag, (NSError? Error) =>
+				{
+					if (Error is not null)
+						TaskSource.TrySetException(new NSErrorException(Error));
+					else
+						TaskSource.TrySetResult(true);
+				});
+				return TaskSource.Task;
+			}
+
 			private async Task<bool> TryGetLastBacOkAsync()
 			{
 				try
@@ -193,18 +213,6 @@ namespace NeuroAccessMaui.Services.Nfc
 				}
 			}
 
-			private Task ConnectAsync(NFCTagReaderSession Session, NFCTag Tag)
-			{
-				TaskCompletionSource<bool> TaskSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
-				Session.ConnectToTag(Tag, (NSError? Error) =>
-				{
-					if (Error is not null)
-						TaskSource.TrySetException(new NSErrorException(Error));
-					else
-						TaskSource.TrySetResult(true);
-				});
-				return TaskSource.Task;
-			}
 		}
 #endif
     }

@@ -16,7 +16,7 @@ namespace NeuroAccessMaui.Services.Nfc
     /// </summary>
     /// <remarks>
     /// On Android, this service waits for the app's NFC intent pipeline to detect a tag and then completes the pending scan.
-    /// On iOS, this service creates an <see cref="NFCNDEFReaderSession"/> and extracts a URI from NDEF records.
+    /// On iOS, this service creates an <see cref="NFCNdefReaderSession"/> and extracts a URI from NDEF records.
     /// </remarks>
     [Singleton]
     public class NfcScanService : INfcScanService
@@ -129,13 +129,13 @@ namespace NeuroAccessMaui.Services.Nfc
 #if IOS
 		private Task<string?> ScanUriIosAsync(string Prompt, string[]? AllowedSchemes, CancellationToken CancellationToken)
 		{
-			if (!NFCNDEFReaderSession.ReadingAvailable)
+			if (!NFCNdefReaderSession.ReadingAvailable)
 				return Task.FromResult<string?>(null);
 
 			TaskCompletionSource<string?> TaskSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
 			NdefSessionDelegate Delegate = new(this, TaskSource, AllowedSchemes);
-			NFCNDEFReaderSession Session = new(Delegate, DispatchQueue.MainQueue, true)
+			NFCNdefReaderSession Session = new(Delegate, DispatchQueue.MainQueue, true)
 			{
 				AlertMessage = Prompt ?? string.Empty
 			};
@@ -155,12 +155,12 @@ namespace NeuroAccessMaui.Services.Nfc
 			return TaskSource.Task;
 		}
 
-		private sealed class NdefSessionDelegate : NFCNDEFReaderSessionDelegate
+		private sealed class NdefSessionDelegate : NFCNdefReaderSessionDelegate
 		{
 			private readonly NfcScanService owner;
 			private readonly TaskCompletionSource<string?> taskSource;
 			private readonly string[]? allowedSchemes;
-			private NFCNDEFReaderSession? session;
+			private NFCNdefReaderSession? session;
 
 			public NdefSessionDelegate(NfcScanService Owner, TaskCompletionSource<string?> TaskSource, string[]? AllowedSchemes)
 			{
@@ -169,23 +169,23 @@ namespace NeuroAccessMaui.Services.Nfc
 				this.allowedSchemes = AllowedSchemes;
 			}
 
-			public void SetSession(NFCNDEFReaderSession Session)
+			public void SetSession(NFCNdefReaderSession Session)
 			{
 				this.session = Session;
 			}
 
-			public override void DidInvalidate(NFCNDEFReaderSession Session, NSError Error)
+			public override void DidInvalidate(NFCNdefReaderSession Session, NSError Error)
 			{
 				this.taskSource.TrySetResult(null);
 			}
 
-			public override void DidDetect(NFCNDEFReaderSession Session, NFCNDEFMessage[] Messages)
+			public override void DidDetect(NFCNdefReaderSession Session, NFCNdefMessage[] Messages)
 			{
 				try
 				{
-					foreach (NFCNDEFMessage Message in Messages)
+					foreach (NFCNdefMessage Message in Messages)
 					{
-						foreach (NFCNDEFPayload Record in Message.Records)
+						foreach (NFCNdefPayload Record in Message.Records)
 						{
 							string? Uri = TryExtractUri(Record);
 							if (string.IsNullOrWhiteSpace(Uri))
@@ -206,12 +206,11 @@ namespace NeuroAccessMaui.Services.Nfc
 				}
 			}
 
-			private static string? TryExtractUri(NFCNDEFPayload Record)
+			private static string? TryExtractUri(NFCNdefPayload Record)
 			{
 				if (Record is null)
 					return null;
-
-				if (Record.TypeNameFormat != NFCTypeNameFormat.NfcWellKnown)
+				if (Record.TypeNameFormat != NFCTypeNameFormat.NFCWellKnown)
 					return null;
 
 				string Type = NSString.FromData(Record.Type, NSStringEncoding.UTF8);

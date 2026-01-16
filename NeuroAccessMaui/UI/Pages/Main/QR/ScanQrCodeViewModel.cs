@@ -14,7 +14,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 	/// <summary>
 	/// The view model to bind to when scanning a QR code.
 	/// </summary>
-	public partial class ScanQrCodeViewModel : BaseViewModel
+	public partial class ScanQrCodeViewModel : BaseViewModel, IDisposable
 	{
 		private readonly ScanQrCodeNavigationArgs? navigationArgs;
 		private IDispatcherTimer? countDownTimer;
@@ -416,6 +416,39 @@ namespace NeuroAccessMaui.UI.Pages.Main.QR
 		public override Task GoBack()
 		{
 			return this.TrySetResultAndClosePage(null);
+		}
+
+		private int disposed;
+
+		public void Dispose()
+		{
+			Dispose(disposing: true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (Interlocked.Exchange(ref disposed, 1) == 1)
+				return;
+
+			if (!disposing)
+			{
+				// Only unmanaged/native cleanup here.
+				// You currently have none, so do nothing.
+				return;
+			}
+
+			// Managed cleanup:
+			CancelAndDispose(ref this.nfcScanCancellationTokenSource);
+		}
+
+		private static void CancelAndDispose(ref CancellationTokenSource? cts)
+		{
+			var old = Interlocked.Exchange(ref cts, null);
+			if (old is null) return;
+
+			try { old.Cancel(); } catch { /* ignore */ }
+			old.Dispose();
 		}
 	}
 }
