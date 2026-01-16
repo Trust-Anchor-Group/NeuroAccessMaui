@@ -3582,4 +3582,7 @@
   <data name="EnableNotificationsDescription" xml:space="preserve">
     <value>Öppna enhetens inställningar för att aktivera aviseringar.</value>
   </data>
+  <data name="ShowAccount" xml:space="preserve">
+    <value>Visa konto</value>
+  </data>
 </root>

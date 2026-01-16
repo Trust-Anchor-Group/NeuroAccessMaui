@@ -227,7 +227,7 @@
 						<Label Grid.Column="1"
 							   Style="{DynamicResource FilledTemplateButtonLabel}"
 							   Margin="{DynamicResource SmallLeftMargins}"
-							   Text="{l:Localize ShowIDShort}" />
+							   Text="{Binding ShowIdButtonText}" />
 					</Grid>
 				</Border>
 			</controls:TemplatedButton>

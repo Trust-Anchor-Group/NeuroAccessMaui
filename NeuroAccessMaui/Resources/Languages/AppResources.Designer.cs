@@ -8629,6 +8629,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show account.
+        /// </summary>
+        public static string ShowAccount {
+            get {
+                return ResourceManager.GetString("ShowAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show details.
         /// </summary>
         public static string ShowDetails {

@@ -3582,4 +3582,7 @@
   <data name="EnableNotificationsDescription" xml:space="preserve">
     <value>Abre la configuración del dispositivo para habilitar las notificaciones.</value>
   </data>
+  <data name="ShowAccount" xml:space="preserve">
+    <value>Mostrar cuenta</value>
+  </data>
 </root>

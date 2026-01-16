@@ -29,6 +29,7 @@ using NeuroAccessMaui.Services.Notification;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Threading;
+using NeuroAccessMaui.Resources.Languages;
 
 namespace NeuroAccessMaui.UI.Pages.Main
 {
@@ -155,6 +156,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 					this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
 					this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
 					this.OnPropertyChanged(nameof(this.ShowInfoBubble));
+					this.OnPropertyChanged(nameof(this.ShowIdButtonText));
 				});
 			}
 		}
@@ -208,6 +210,8 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				this.ScanQrCodeCommand.NotifyCanExecuteChanged();
 			}
 		}
+
+		public string ShowIdButtonText => this.HasPersonalIdentity ? ServiceRef.Localizer[nameof(AppResources.ShowIDShort)] : ServiceRef.Localizer[nameof(AppResources.ShowAccount)];
 
 		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
 		public bool HasPendingIdentity => this.CheckPendingIdentity();
@@ -292,6 +296,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 					this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
 					this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
 					this.OnPropertyChanged(nameof(this.ShowInfoBubble));
+					this.OnPropertyChanged(nameof(this.ShowIdButtonText));
 				});
 			}
 			catch (Exception Ex)
@@ -309,6 +314,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
 				this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
 				this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
+				this.OnPropertyChanged(nameof(this.ShowIdButtonText));
 			});
 		}
 
