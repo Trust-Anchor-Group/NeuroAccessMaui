@@ -8645,11 +8645,22 @@ namespace NeuroAccessMaui.Resources.Languages {
                 return ResourceManager.GetString("ShowIDShort", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show M2M Definition.
-        /// </summary>
-        public static string ShowM2MInfo {
+
+		/// <summary>
+		///   Looks up a localized string similar to Show Account.
+		/// </summary>
+		public static string ShowAccount
+		{
+			get
+			{
+				return ResourceManager.GetString("ShowAccount", resourceCulture);
+			}
+		}
+
+		/// <summary>
+		///   Looks up a localized string similar to Show M2M Definition.
+		/// </summary>
+		public static string ShowM2MInfo {
             get {
                 return ResourceManager.GetString("ShowM2MInfo", resourceCulture);
             }
