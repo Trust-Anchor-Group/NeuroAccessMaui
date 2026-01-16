@@ -254,7 +254,7 @@
 			</Grid>
 		</Border>
 
-		<Grid VerticalOptions="End" Grid.Row="2" ColumnDefinitions="*,*" Margin="16" ColumnSpacing="8" RowDefinitions="auto">
+		<Grid VerticalOptions="End" Grid.Row="2" ColumnDefinitions="*,*" Margin="16" ColumnSpacing="16" RowDefinitions="auto">
 			<controls:SvgButton Style="{DynamicResource IconButtonSecondary}"
 								LabelText="{l:Localize RequestCredits}"
 								LabelPosition="Right"
