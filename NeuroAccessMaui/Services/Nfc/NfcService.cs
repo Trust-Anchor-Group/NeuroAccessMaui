@@ -10,6 +10,7 @@ using Waher.Security;
 using System.Globalization;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Nfc.Ui;
+using System.Text;
 
 namespace NeuroAccessMaui.Services.Nfc
 {
@@ -113,40 +114,112 @@ namespace NeuroAccessMaui.Services.Nfc
 						{
 							List<string> RecordTypes = [];
 							string? ExtractedUri = null;
+							List<NfcNdefRecordSnapshot> NdefRecords = [];
+							bool ScanHandled = false;
 
-							foreach (INdefRecord Record in Records)
+							for (int i = 0; i < Records.Length; i++)
 							{
+								INdefRecord Record = Records[i];
+								string RecordTnf = Record.Type.ToString();
+
 								if (Record is INdefUriRecord UriRecord)
 								{
 									RecordTypes.Add("URI");
 									ExtractedUri ??= UriRecord.Uri;
-									if (this.TryHandleNfcUri(UriRecord.Uri))
-									{
-										this.nfcTagSnapshotService.UpdateNdef(TagId, string.Join(", ", RecordTypes), ExtractedUri);
-										return;
-									}
+									NdefRecords.Add(new NfcNdefRecordSnapshot(
+										i,
+										"URI",
+										RecordTnf,
+										WellKnownType: "U",
+										ContentType: null,
+										ExternalType: null,
+										Uri: UriRecord.Uri,
+										Text: null));
+
+									if (!ScanHandled)
+										ScanHandled = await this.TryHandleNfcUriAsync(UriRecord.Uri);
 								}
 								else if (Record is INdefWellKnownTypeRecord WellKnown &&
 									string.Equals(WellKnown.WellKnownType, "T", StringComparison.OrdinalIgnoreCase))
 								{
 									string? Text = TryDecodeNdefTextRecord(WellKnown.Data);
 									RecordTypes.Add("Text");
+
 									if (!string.IsNullOrEmpty(Text) && System.Uri.TryCreate(Text, UriKind.Absolute, out _))
 										ExtractedUri ??= Text;
-									if (!string.IsNullOrEmpty(Text) && this.TryHandleNfcUri(Text))
-									{
-										this.nfcTagSnapshotService.UpdateNdef(TagId, string.Join(", ", RecordTypes), ExtractedUri);
-										return;
-									}
+
+									NdefRecords.Add(new NfcNdefRecordSnapshot(
+										i,
+										"Text",
+										RecordTnf,
+										WellKnownType: "T",
+										ContentType: null,
+										ExternalType: null,
+										Uri: null,
+										Text: Text));
+
+									if (!string.IsNullOrEmpty(Text) && !ScanHandled)
+										ScanHandled = await this.TryHandleNfcUriAsync(Text);
+								}
+								else if (Record is INdefMimeTypeRecord Mime)
+								{
+									RecordTypes.Add("MIME");
+									NdefRecords.Add(new NfcNdefRecordSnapshot(
+										i,
+										"MIME",
+										RecordTnf,
+										WellKnownType: null,
+										ContentType: Mime.ContentType,
+										ExternalType: null,
+										Uri: null,
+										Text: TryDecodeUtf8(Mime.Data)));
+								}
+								else if (Record is INdefExternalTypeRecord External)
+								{
+									RecordTypes.Add("External");
+									NdefRecords.Add(new NfcNdefRecordSnapshot(
+										i,
+										"External",
+										RecordTnf,
+										WellKnownType: null,
+										ContentType: null,
+										ExternalType: External.ExternalType,
+										Uri: null,
+										Text: TryDecodeUtf8(External.Data)));
+								}
+								else if (Record is INdefWellKnownTypeRecord OtherWellKnown)
+								{
+									RecordTypes.Add("WellKnown");
+									NdefRecords.Add(new NfcNdefRecordSnapshot(
+										i,
+										"WellKnown",
+										RecordTnf,
+										WellKnownType: OtherWellKnown.WellKnownType,
+										ContentType: null,
+										ExternalType: null,
+										Uri: null,
+										Text: TryDecodeUtf8(OtherWellKnown.Data)));
 								}
 								else
 								{
 									RecordTypes.Add(Record.GetType().Name);
+									NdefRecords.Add(new NfcNdefRecordSnapshot(
+										i,
+										Record.GetType().Name,
+										RecordTnf,
+										WellKnownType: null,
+										ContentType: null,
+										ExternalType: null,
+										Uri: null,
+										Text: null));
 								}
 							}
 
 							string? NdefSummary = RecordTypes.Count > 0 ? string.Join(", ", RecordTypes) : "";
-							this.nfcTagSnapshotService.UpdateNdef(TagId, NdefSummary, ExtractedUri);
+							this.nfcTagSnapshotService.UpdateNdefDetails(TagId, NdefSummary, ExtractedUri, NdefRecords);
+
+							if (ScanHandled)
+								return;
 
 							// TODO: Open NFC view
 						}
@@ -251,7 +324,7 @@ namespace NeuroAccessMaui.Services.Nfc
 			}
 		}
 
-		private bool TryHandleNfcUri(string Uri)
+		private async Task<bool> TryHandleNfcUriAsync(string Uri)
 		{
 			string Candidate = Uri?.Trim() ?? string.Empty;
 			if (string.IsNullOrEmpty(Candidate))
@@ -264,6 +337,10 @@ namespace NeuroAccessMaui.Services.Nfc
 			// rather than navigating immediately.
 			if (this.nfcScanService.TryHandleDetectedUri(Candidate))
 				return true;
+
+			bool SafeScanEnabled = await RuntimeSettings.GetAsync("NFC.SafeScan.Enabled", false);
+			if (SafeScanEnabled)
+				return false;
 
 			// Default behavior: authenticate and open.
 			MainThread.BeginInvokeOnMainThread(async () =>
@@ -282,6 +359,22 @@ namespace NeuroAccessMaui.Services.Nfc
 			});
 
 			return true;
+		}
+
+		private static string? TryDecodeUtf8(byte[] Data)
+		{
+			if (Data is null || Data.Length == 0)
+				return null;
+
+			try
+			{
+				string Text = Encoding.UTF8.GetString(Data).Trim();
+				return string.IsNullOrEmpty(Text) ? null : Text;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
 		private static string? TryDecodeNdefTextRecord(byte[] Data)

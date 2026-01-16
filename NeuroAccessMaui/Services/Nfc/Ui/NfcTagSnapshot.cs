@@ -16,13 +16,15 @@ namespace NeuroAccessMaui.Services.Nfc.Ui
 		/// <param name="InterfacesSummary">Human-readable summary of available tag interfaces/technologies.</param>
 		/// <param name="NdefSummary">Optional summary of decoded NDEF records.</param>
 		/// <param name="ExtractedUri">Optional extracted URI (if present).</param>
+		/// <param name="NdefRecords">Optional decoded NDEF record details (best-effort).</param>
 		public NfcTagSnapshot(
 			string TagIdHex,
 			DateTimeOffset DetectedAtUtc,
 			string TagType,
 			string InterfacesSummary,
 			string? NdefSummary,
-			string? ExtractedUri)
+			string? ExtractedUri,
+			IReadOnlyList<NfcNdefRecordSnapshot>? NdefRecords = null)
 		{
 			this.TagIdHex = TagIdHex;
 			this.DetectedAtUtc = DetectedAtUtc;
@@ -30,6 +32,7 @@ namespace NeuroAccessMaui.Services.Nfc.Ui
 			this.InterfacesSummary = InterfacesSummary;
 			this.NdefSummary = NdefSummary;
 			this.ExtractedUri = ExtractedUri;
+			this.NdefRecords = NdefRecords;
 		}
 
 		/// <summary>
@@ -63,6 +66,11 @@ namespace NeuroAccessMaui.Services.Nfc.Ui
 		public string? ExtractedUri { get; }
 
 		/// <summary>
+		/// Gets optional decoded NDEF record details (best-effort).
+		/// </summary>
+		public IReadOnlyList<NfcNdefRecordSnapshot>? NdefRecords { get; }
+
+		/// <summary>
 		/// Creates a copy with updated NDEF-related data.
 		/// </summary>
 		/// <param name="NdefSummary">New NDEF summary.</param>
@@ -70,13 +78,26 @@ namespace NeuroAccessMaui.Services.Nfc.Ui
 		/// <returns>Updated snapshot instance.</returns>
 		public NfcTagSnapshot WithNdef(string? NdefSummary, string? ExtractedUri)
 		{
+			return this.WithNdefDetails(NdefSummary, ExtractedUri, null);
+		}
+
+		/// <summary>
+		/// Creates a copy with updated NDEF-related data.
+		/// </summary>
+		/// <param name="NdefSummary">New NDEF summary.</param>
+		/// <param name="ExtractedUri">New extracted URI.</param>
+		/// <param name="NdefRecords">New decoded NDEF records.</param>
+		/// <returns>Updated snapshot instance.</returns>
+		public NfcTagSnapshot WithNdefDetails(string? NdefSummary, string? ExtractedUri, IReadOnlyList<NfcNdefRecordSnapshot>? NdefRecords)
+		{
 			return new NfcTagSnapshot(
 				this.TagIdHex,
 				this.DetectedAtUtc,
 				this.TagType,
 				this.InterfacesSummary,
 				NdefSummary,
-				ExtractedUri);
+				ExtractedUri,
+				NdefRecords);
 		}
 	}
 }

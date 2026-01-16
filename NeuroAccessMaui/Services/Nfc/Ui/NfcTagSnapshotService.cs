@@ -41,6 +41,12 @@ namespace NeuroAccessMaui.Services.Nfc.Ui
 		/// <inheritdoc />
 		public void UpdateNdef(string TagIdHex, string? NdefSummary, string? ExtractedUri)
 		{
+			this.UpdateNdefDetails(TagIdHex, NdefSummary, ExtractedUri, null);
+		}
+
+		/// <inheritdoc />
+		public void UpdateNdefDetails(string TagIdHex, string? NdefSummary, string? ExtractedUri, IReadOnlyList<NfcNdefRecordSnapshot>? NdefRecords)
+		{
 			bool Changed = false;
 			lock (this.gate)
 			{
@@ -50,7 +56,7 @@ namespace NeuroAccessMaui.Services.Nfc.Ui
 				if (!string.Equals(this.lastSnapshot.TagIdHex, TagIdHex, StringComparison.OrdinalIgnoreCase))
 					return;
 
-				this.lastSnapshot = this.lastSnapshot.WithNdef(NdefSummary, ExtractedUri);
+				this.lastSnapshot = this.lastSnapshot.WithNdefDetails(NdefSummary, ExtractedUri, NdefRecords);
 				Changed = true;
 			}
 

@@ -1749,6 +1749,9 @@
   <data name="Share" xml:space="preserve">
     <value>Share</value>
   </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
   <data name="StateDiagram" xml:space="preserve">
     <value>State Diagram</value>
   </data>
@@ -2844,8 +2847,17 @@
   <data name="NfcWrite" xml:space="preserve">
     <value>Write</value>
   </data>
+  <data name="NfcHistory" xml:space="preserve">
+    <value>History</value>
+  </data>
   <data name="NfcTapTag" xml:space="preserve">
     <value>Tap an NFC tag to read it</value>
+  </data>
+  <data name="NfcSafeScan" xml:space="preserve">
+    <value>Safe scan</value>
+  </data>
+  <data name="NfcSafeScanDescription" xml:space="preserve">
+    <value>When enabled, NFC links will not open automatically.</value>
   </data>
   <data name="NfcNoTagYet" xml:space="preserve">
     <value>No tag detected yet</value>
@@ -2867,6 +2879,21 @@
   </data>
   <data name="NfcFieldNdef" xml:space="preserve">
     <value>NDEF</value>
+  </data>
+  <data name="NfcFieldNdefRecords" xml:space="preserve">
+    <value>NDEF records</value>
+  </data>
+  <data name="NfcHistoryInfo" xml:space="preserve">
+    <value>Recent NFC scans stored on this device</value>
+  </data>
+  <data name="NfcNoHistoryYet" xml:space="preserve">
+    <value>No history yet</value>
+  </data>
+  <data name="NfcHistoryClearQuestion" xml:space="preserve">
+    <value>Clear NFC scan history?</value>
+  </data>
+  <data name="NfcHistoryExportTitle" xml:space="preserve">
+    <value>Export NFC scan</value>
   </data>
   <data name="NfcWriteUri" xml:space="preserve">
     <value>Write a URI to an NFC tag</value>

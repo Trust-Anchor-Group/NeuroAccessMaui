@@ -3103,6 +3103,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string Export {
+            get {
+                return ResourceManager.GetString("Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Face ID.
         /// </summary>
         public static string FaceId {
@@ -4822,6 +4831,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NDEF records.
+        /// </summary>
+        public static string NfcFieldNdefRecords {
+            get {
+                return ResourceManager.GetString("NfcFieldNdefRecords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Technologies.
         /// </summary>
         public static string NfcFieldTechnologies {
@@ -4840,11 +4858,56 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to History.
+        /// </summary>
+        public static string NfcHistory {
+            get {
+                return ResourceManager.GetString("NfcHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear NFC scan history?.
+        /// </summary>
+        public static string NfcHistoryClearQuestion {
+            get {
+                return ResourceManager.GetString("NfcHistoryClearQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export NFC scan.
+        /// </summary>
+        public static string NfcHistoryExportTitle {
+            get {
+                return ResourceManager.GetString("NfcHistoryExportTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent NFC scans stored on this device.
+        /// </summary>
+        public static string NfcHistoryInfo {
+            get {
+                return ResourceManager.GetString("NfcHistoryInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last detected tag.
         /// </summary>
         public static string NfcLastTag {
             get {
                 return ResourceManager.GetString("NfcLastTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No history yet.
+        /// </summary>
+        public static string NfcNoHistoryYet {
+            get {
+                return ResourceManager.GetString("NfcNoHistoryYet", resourceCulture);
             }
         }
         
@@ -4863,6 +4926,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string NfcRead {
             get {
                 return ResourceManager.GetString("NfcRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Safe scan.
+        /// </summary>
+        public static string NfcSafeScan {
+            get {
+                return ResourceManager.GetString("NfcSafeScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled, NFC links will not open automatically..
+        /// </summary>
+        public static string NfcSafeScanDescription {
+            get {
+                return ResourceManager.GetString("NfcSafeScanDescription", resourceCulture);
             }
         }
         

@@ -6,6 +6,7 @@
                       xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                       xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
                       xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:nfc="clr-namespace:NeuroAccessMaui.Services.Nfc.Ui"
                       xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Nfc">
 	<base:BaseContentPage.Resources>
 		<ResourceDictionary>
@@ -48,7 +49,7 @@
 		</Grid>
 
 		<Grid Grid.Row="1"
-		      ColumnDefinitions="*,*"
+		      ColumnDefinitions="*,*,*"
 		      ColumnSpacing="12"
 		      Margin="0,16,0,0">
 			<controls:TextButton Grid.Column="0"
@@ -59,6 +60,10 @@
 			                     Command="{Binding SelectWriteTabCommand}"
 			                     Style="{Binding WriteTabButtonStyle}"
 			                     LabelData="{l:Localize NfcWrite}" />
+			<controls:TextButton Grid.Column="2"
+			                     Command="{Binding SelectHistoryTabCommand}"
+			                     Style="{Binding HistoryTabButtonStyle}"
+			                     LabelData="{l:Localize NfcHistory}" />
 		</Grid>
 
 		<controls:ViewSwitcher Grid.Row="2"
@@ -70,7 +75,24 @@
 						<VerticalStackLayout Spacing="12">
 							<Label Text="{l:Localize NfcTapTag}" Style="{DynamicResource InfoLabel}" />
 
-							<Border Style="{DynamicResource BorderSet}">
+							<Border Style="{DynamicResource BorderSet}" Margin="0">
+								<Grid ColumnDefinitions="*,auto"
+								      RowDefinitions="auto,auto"
+								      ColumnSpacing="12"
+								      RowSpacing="6">
+									<Label Grid.Row="0" Grid.Column="0"
+									       Text="{l:Localize NfcSafeScan}"
+									       Style="{DynamicResource FieldTitleLabel}" />
+									<Switch Grid.Row="0" Grid.Column="1"
+									        IsToggled="{Binding SafeScanEnabled, Mode=TwoWay}" />
+									<Label Grid.Row="1" Grid.ColumnSpan="2"
+									       Text="{l:Localize NfcSafeScanDescription}"
+									       Style="{DynamicResource FieldKeyLabel}" />
+								</Grid>
+							</Border>
+
+							<Border Style="{DynamicResource BorderSet}"
+									Margin="0">
 								<VerticalStackLayout Spacing="12">
 									<Label Text="{Binding LastTagStatusText}" Style="{DynamicResource FieldTitleLabel}" />
 
@@ -104,9 +126,37 @@
 											<Label Text="{l:Localize Uri}" Style="{DynamicResource FieldKeyLabel}" />
 											<Label Text="{Binding LastExtractedUri}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap" />
 										</VerticalStackLayout>
+
+										<VerticalStackLayout Spacing="8" IsVisible="{Binding HasNdefRecords}">
+											<Label Text="{l:Localize NfcFieldNdefRecords}" Style="{DynamicResource FieldKeyLabel}" />
+											<CollectionView ItemsSource="{Binding LastNdefRecords}"
+											              SelectionMode="None">
+												<CollectionView.ItemTemplate>
+														<DataTemplate x:DataType="nfc:NfcNdefRecordSnapshot">
+														<VerticalStackLayout Spacing="2" Padding="0,6">
+															<Label Text="{Binding RecordType}" Style="{DynamicResource FieldTitleLabel}" />
+															<Label Text="{Binding DisplayValue}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap" />
+														</VerticalStackLayout>
+													</DataTemplate>
+												</CollectionView.ItemTemplate>
+											</CollectionView>
+										</VerticalStackLayout>
 									</VerticalStackLayout>
 								</VerticalStackLayout>
 							</Border>
+
+							<Grid ColumnDefinitions="*,*"
+							      ColumnSpacing="12"
+							      IsVisible="{Binding HasExtractedUri}">
+								<controls:TextButton Grid.Column="0"
+								                     Command="{Binding CopyLastUriCommand}"
+								                     Style="{DynamicResource OutlinedTextButton}"
+								                     LabelData="{l:Localize CopyToClipboard}" />
+								<controls:TextButton Grid.Column="1"
+								                     Command="{Binding OpenLastUriCommand}"
+								                     Style="{DynamicResource FilledTextButton}"
+								                     LabelData="{l:Localize Open}" />
+							</Grid>
 
 							<Grid ColumnDefinitions="*,*,*"
 							      ColumnSpacing="12"
@@ -170,6 +220,82 @@
 							</Grid>
 
 							<Label Text="{Binding WriteStatusText}" Style="{DynamicResource FieldValueLabel}" />
+						</VerticalStackLayout>
+					</ScrollView>
+				</controls:ViewSwitcherStateView>
+
+				<controls:ViewSwitcherStateView StateKey="History">
+					<ScrollView>
+						<VerticalStackLayout Spacing="12">
+							<Label Text="{l:Localize NfcHistoryInfo}" Style="{DynamicResource InfoLabel}" />
+
+							<Grid ColumnDefinitions="*"
+							      ColumnSpacing="12">
+								<controls:TextButton Grid.Column="0"
+								                     Command="{Binding ClearHistoryCommand}"
+								                     Style="{DynamicResource OutlinedTextButton}"
+								                     LabelData="{l:Localize Clear}" />
+							</Grid>
+
+							<Label Text="{l:Localize NfcNoHistoryYet}"
+							       Style="{DynamicResource FieldValueLabel}"
+							       IsVisible="{Binding HasNoHistoryItems}" />
+
+							<CollectionView ItemsSource="{Binding HistoryItems}"
+							              SelectedItem="{Binding SelectedHistoryItem, Mode=TwoWay}"
+							              SelectionMode="Single"
+							              IsVisible="{Binding HasHistoryItems}">
+								<CollectionView.ItemTemplate>
+									<DataTemplate x:DataType="viewmodel:NfcScanHistoryListItem">
+										<Border Style="{DynamicResource BorderSet}" Margin="0,0,0,12">
+											<VerticalStackLayout Spacing="6">
+												<Label Text="{Binding TagType}" Style="{DynamicResource FieldTitleLabel}" />
+												<Label Text="{Binding TagIdHex}" Style="{DynamicResource FieldValueLabel}" />
+												<Label Text="{Binding DetectedAtUtc, StringFormat='{0:O}'}" Style="{DynamicResource FieldKeyLabel}" />
+												<Label Text="{Binding ExtractedUri}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap" />
+											</VerticalStackLayout>
+										</Border>
+									</DataTemplate>
+								</CollectionView.ItemTemplate>
+							</CollectionView>
+
+							<Border Style="{DynamicResource BorderSet}" IsVisible="{Binding HasSelectedHistoryItem}" Margin="0">
+								<VerticalStackLayout Spacing="10">
+									<Label Text="{l:Localize Details}" Style="{DynamicResource FieldTitleLabel}" />
+									<Label Text="{Binding SelectedHistoryItem.NdefSummary}" Style="{DynamicResource FieldValueLabel}" />
+
+									<Grid ColumnDefinitions="*,*,*" ColumnSpacing="4">
+										<controls:TextButton Grid.Column="0"
+										                     Command="{Binding CopySelectedHistoryUriCommand}"
+										                     Style="{DynamicResource OutlinedTextButton}" 
+										                     LabelData="{l:Localize CopyToClipboard}"
+										                     IsVisible="{Binding HasSelectedHistoryUri}" />
+										<controls:TextButton Grid.Column="1"
+										                     Command="{Binding OpenSelectedHistoryUriCommand}"
+										                     Style="{DynamicResource FilledTextButton}"
+										                     LabelData="{l:Localize Open}"
+										                     IsVisible="{Binding HasSelectedHistoryUri}" />
+										<controls:TextButton Grid.Column="2"
+										                     Command="{Binding ExportSelectedHistoryJsonCommand}"
+										                     Style="{DynamicResource OutlinedTextButton}"
+										                     LabelData="{l:Localize Export}" />
+									</Grid>
+
+									<VerticalStackLayout Spacing="8" IsVisible="{Binding HasSelectedHistoryNdefRecords}">
+										<Label Text="{l:Localize NfcFieldNdefRecords}" Style="{DynamicResource FieldKeyLabel}" />
+										<CollectionView ItemsSource="{Binding SelectedHistoryItem.NdefRecords}" SelectionMode="None">
+											<CollectionView.ItemTemplate>
+												<DataTemplate x:DataType="nfc:NfcNdefRecordSnapshot">
+													<VerticalStackLayout Spacing="2" Padding="0,6">
+														<Label Text="{Binding RecordType}" Style="{DynamicResource FieldTitleLabel}" />
+														<Label Text="{Binding DisplayValue}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap" />
+													</VerticalStackLayout>
+												</DataTemplate>
+											</CollectionView.ItemTemplate>
+										</CollectionView>
+									</VerticalStackLayout>
+								</VerticalStackLayout>
+							</Border>
 						</VerticalStackLayout>
 					</ScrollView>
 				</controls:ViewSwitcherStateView>

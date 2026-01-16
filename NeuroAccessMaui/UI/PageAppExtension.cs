@@ -141,6 +141,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<INfcService>((_) => Types.InstantiateDefault<INfcService>(false));
 			Builder.Services.AddSingleton<INfcScanService>((_) => Types.InstantiateDefault<INfcScanService>(false));
 			Builder.Services.AddSingleton<INfcTagSnapshotService>((_) => Types.InstantiateDefault<INfcTagSnapshotService>(false));
+			Builder.Services.AddSingleton<INfcScanHistoryService>((_) => Types.InstantiateDefault<INfcScanHistoryService>(false));
 			Builder.Services.AddSingleton<INfcWriteService>((_) => Types.InstantiateDefault<INfcWriteService>(false));
 			Builder.Services.AddSingleton<IPassportNfcScanService>((_) => Types.InstantiateDefault<IPassportNfcScanService>(false));
 			Builder.Services.AddSingleton<INotificationService>((_) => Types.InstantiateDefault<INotificationService>(false));

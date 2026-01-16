@@ -34,6 +34,15 @@ namespace NeuroAccessMaui.Services.Nfc.Ui
 		void UpdateNdef(string TagIdHex, string? NdefSummary, string? ExtractedUri);
 
 		/// <summary>
+		/// Updates NDEF-related fields for the last snapshot if it matches the provided tag id.
+		/// </summary>
+		/// <param name="TagIdHex">Tag identifier represented as a hex string.</param>
+		/// <param name="NdefSummary">Optional NDEF summary.</param>
+		/// <param name="ExtractedUri">Optional extracted URI.</param>
+		/// <param name="NdefRecords">Optional decoded record details.</param>
+		void UpdateNdefDetails(string TagIdHex, string? NdefSummary, string? ExtractedUri, IReadOnlyList<NfcNdefRecordSnapshot>? NdefRecords);
+
+		/// <summary>
 		/// Clears the last snapshot.
 		/// </summary>
 		void Clear();
