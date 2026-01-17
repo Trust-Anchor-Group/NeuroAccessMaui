@@ -17,6 +17,9 @@ using NeuroAccessMaui.UI;
 using Waher.Runtime.Settings;
 using System.IO;
 using System.Text.Json;
+using System.Linq;
+using System.Net;
+using System.Text;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 {
@@ -103,6 +106,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 		private string lastTagStatusText = string.Empty;
 
 		[ObservableProperty]
+		private string scanStateText = string.Empty;
+
+		[ObservableProperty]
+		private bool hasScanStateText;
+
+		[ObservableProperty]
 		private string lastTagIdHex = string.Empty;
 
 		[ObservableProperty]
@@ -121,13 +130,40 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 		private string lastExtractedUri = string.Empty;
 
 		[ObservableProperty]
+		private string lastExtractedUriScheme = string.Empty;
+
+		[ObservableProperty]
+		private string lastExtractedUriHost = string.Empty;
+
+		[ObservableProperty]
+		private ObservableCollection<string> lastExtractedUriWarnings = new();
+
+		[ObservableProperty]
+		private bool hasLastExtractedUriWarnings;
+
+		[ObservableProperty]
+		private bool isLastExtractedUriDomainTrusted;
+
+		[ObservableProperty]
+		private bool canTrustLastExtractedUriDomain;
+
+		[ObservableProperty]
 		private ObservableCollection<NfcNdefRecordSnapshot> lastNdefRecords = new();
 
 		[ObservableProperty]
 		private bool hasNdefRecords;
 
 		[ObservableProperty]
+		private NfcNdefRecordSnapshot? selectedLastNdefRecord;
+
+		[ObservableProperty]
+		private bool hasSelectedLastNdefRecord;
+
+		[ObservableProperty]
 		private bool safeScanEnabled;
+
+		[ObservableProperty]
+		private bool hasSafeScanLinkPreview;
 
 		[ObservableProperty]
 		private bool hasNdefSummary;
@@ -286,6 +322,97 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task ExportHistoryJsonAsync()
+		{
+			try
+			{
+				IReadOnlyList<NfcScanHistoryRecord> Records = await this.nfcScanHistoryService.GetRecentAsync(1000, CancellationToken.None);
+				if (Records.Count == 0)
+					return;
+
+				string FileName = $"nfc-history-{DateTime.UtcNow:yyyyMMddTHHmmssZ}.json";
+				string Path = System.IO.Path.Combine(FileSystem.CacheDirectory, FileName);
+
+				JsonSerializerOptions Options = new()
+				{
+					WriteIndented = true
+				};
+
+				string Json = JsonSerializer.Serialize(Records, Options);
+				await File.WriteAllTextAsync(Path, Json);
+
+				await Share.Default.RequestAsync(new ShareFileRequest
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.NfcHistoryExportAllTitle)],
+					File = new ShareFile(Path)
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task ExportHistoryCsvAsync()
+		{
+			try
+			{
+				IReadOnlyList<NfcScanHistoryRecord> Records = await this.nfcScanHistoryService.GetRecentAsync(1000, CancellationToken.None);
+				if (Records.Count == 0)
+					return;
+
+				string FileName = $"nfc-history-{DateTime.UtcNow:yyyyMMddTHHmmssZ}.csv";
+				string Path = System.IO.Path.Combine(FileSystem.CacheDirectory, FileName);
+
+				StringBuilder Csv = new();
+				Csv.AppendLine("DetectedAtUtc,TagId,TagType,Technologies,ExtractedUri,NdefSummary,NdefRecordCount");
+
+				foreach (NfcScanHistoryRecord Record in Records)
+				{
+					int Count = Record.NdefRecords?.Length ?? 0;
+					Csv.Append(this.EscapeCsv(Record.DetectedAtUtc.ToString("O")));
+					Csv.Append(',');
+					Csv.Append(this.EscapeCsv(Record.TagId.ToString()));
+					Csv.Append(',');
+					Csv.Append(this.EscapeCsv(Record.TagType));
+					Csv.Append(',');
+					Csv.Append(this.EscapeCsv(Record.InterfacesSummary));
+					Csv.Append(',');
+					Csv.Append(this.EscapeCsv(Record.ExtractedUri));
+					Csv.Append(',');
+					Csv.Append(this.EscapeCsv(Record.NdefSummary));
+					Csv.Append(',');
+					Csv.Append(Count.ToString());
+					Csv.AppendLine();
+				}
+
+				await File.WriteAllTextAsync(Path, Csv.ToString(), Encoding.UTF8);
+
+				await Share.Default.RequestAsync(new ShareFileRequest
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.NfcHistoryExportAllTitle)],
+					File = new ShareFile(Path)
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private string EscapeCsv(string? Value)
+		{
+			string Text = Value ?? string.Empty;
+			bool MustQuote = Text.Contains(',') || Text.Contains('"') || Text.Contains('\n') || Text.Contains('\r');
+			if (!MustQuote)
+				return Text;
+
+			string Escaped = Text.Replace("\"", "\"\"");
+			return "\"" + Escaped + "\"";
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task StartReadScan()
 		{
 			try
@@ -434,6 +561,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			if (Snapshot is null)
 			{
 				this.LastTagStatusText = ServiceRef.Localizer["NfcNoTagYet"];
+				this.ScanStateText = string.Empty;
+				this.HasScanStateText = false;
 				this.LastTagIdHex = string.Empty;
 				this.LastTagType = string.Empty;
 				this.LastDetectedAtUtc = null;
@@ -442,8 +571,17 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				this.HasNdefSummary = false;
 				this.LastExtractedUri = string.Empty;
 				this.HasExtractedUri = false;
+				this.HasSafeScanLinkPreview = false;
+				this.LastExtractedUriScheme = string.Empty;
+				this.LastExtractedUriHost = string.Empty;
+				this.LastExtractedUriWarnings.Clear();
+				this.HasLastExtractedUriWarnings = false;
+				this.IsLastExtractedUriDomainTrusted = false;
+				this.CanTrustLastExtractedUriDomain = false;
 				this.LastNdefRecords.Clear();
 				this.HasNdefRecords = false;
+				this.SelectedLastNdefRecord = null;
+				this.HasSelectedLastNdefRecord = false;
 				return;
 			}
 
@@ -458,6 +596,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 
 			this.LastExtractedUri = Snapshot.ExtractedUri ?? string.Empty;
 			this.HasExtractedUri = !string.IsNullOrWhiteSpace(this.LastExtractedUri);
+			this.HasSafeScanLinkPreview = this.SafeScanEnabled && this.HasExtractedUri;
+			this.UpdateUriPreview(this.LastExtractedUri);
 
 			this.LastNdefRecords.Clear();
 			if (Snapshot.NdefRecords is not null)
@@ -466,6 +606,14 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 					this.LastNdefRecords.Add(Record);
 			}
 			this.HasNdefRecords = this.LastNdefRecords.Count > 0;
+			this.SelectedLastNdefRecord = null;
+			this.HasSelectedLastNdefRecord = false;
+			this.UpdateScanState();
+
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				await this.UpdateTrustedDomainStateAsync();
+			});
 		}
 
 		partial void OnSelectedTabKeyChanged(string value)
@@ -494,12 +642,100 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				try
 				{
 					await RuntimeSettings.SetAsync("NFC.SafeScan.Enabled", value);
+					this.HasSafeScanLinkPreview = this.SafeScanEnabled && this.HasExtractedUri;
+					this.UpdateUriPreview(this.LastExtractedUri);
+					await this.UpdateTrustedDomainStateAsync();
 				}
 				catch (Exception Ex)
 				{
 					ServiceRef.LogService.LogException(Ex);
 				}
 			});
+		}
+
+		partial void OnSelectedLastNdefRecordChanged(NfcNdefRecordSnapshot? value)
+		{
+			this.HasSelectedLastNdefRecord = value is not null;
+		}
+
+		private void UpdateScanState()
+		{
+			if (!this.HasNdefSummary && !this.HasNdefRecords)
+			{
+				this.ScanStateText = ServiceRef.Localizer[nameof(AppResources.NfcScanStateNoNdef)];
+				this.HasScanStateText = true;
+				return;
+			}
+
+			if (this.HasNdefRecords)
+			{
+				this.ScanStateText = ServiceRef.Localizer[nameof(AppResources.NfcScanStateValidNdef)];
+				this.HasScanStateText = true;
+				return;
+			}
+
+			this.ScanStateText = ServiceRef.Localizer[nameof(AppResources.NfcScanStateNdefPresent)];
+			this.HasScanStateText = true;
+		}
+
+		private void UpdateUriPreview(string UriText)
+		{
+			this.LastExtractedUriScheme = string.Empty;
+			this.LastExtractedUriHost = string.Empty;
+			this.LastExtractedUriWarnings.Clear();
+			this.HasLastExtractedUriWarnings = false;
+			this.IsLastExtractedUriDomainTrusted = false;
+			this.CanTrustLastExtractedUriDomain = false;
+
+			string Candidate = UriText?.Trim() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(Candidate))
+				return;
+
+			if (!Uri.TryCreate(Candidate, UriKind.Absolute, out Uri? Parsed))
+				return;
+
+			this.LastExtractedUriScheme = Parsed.Scheme ?? string.Empty;
+			this.LastExtractedUriHost = Parsed.Host ?? string.Empty;
+
+			string HostLower = this.LastExtractedUriHost.Trim().ToLowerInvariant();
+			if (!string.IsNullOrWhiteSpace(HostLower) && this.SafeScanEnabled)
+				this.CanTrustLastExtractedUriDomain = true;
+
+			if (!string.Equals(Parsed.Scheme, "https", StringComparison.OrdinalIgnoreCase) &&
+				!string.Equals(Parsed.Scheme, "http", StringComparison.OrdinalIgnoreCase))
+			{
+				this.LastExtractedUriWarnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningNonHttp)]);
+			}
+
+			if (!string.IsNullOrWhiteSpace(HostLower) && HostLower.Contains("xn--", StringComparison.OrdinalIgnoreCase))
+			{
+				this.LastExtractedUriWarnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningPunycode)]);
+			}
+
+			if (!string.IsNullOrWhiteSpace(HostLower) && IPAddress.TryParse(HostLower, out _))
+			{
+				this.LastExtractedUriWarnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningIpHost)]);
+			}
+
+			if (this.IsKnownShortenerHost(HostLower))
+			{
+				this.LastExtractedUriWarnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningShortener)]);
+			}
+
+			this.HasLastExtractedUriWarnings = this.LastExtractedUriWarnings.Count > 0;
+		}
+
+		private bool IsKnownShortenerHost(string HostLower)
+		{
+			if (string.IsNullOrWhiteSpace(HostLower))
+				return false;
+
+			return HostLower == "t.co" ||
+				HostLower == "bit.ly" ||
+				HostLower == "tinyurl.com" ||
+				HostLower == "goo.gl" ||
+				HostLower == "ow.ly" ||
+				HostLower == "is.gd";
 		}
 
 		private async Task LoadSafeScanSettingAsync()
@@ -540,6 +776,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				if (string.IsNullOrWhiteSpace(Candidate))
 					return;
 
+				if (!await this.ConfirmOpenLastUriAsync())
+					return;
+
 				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.NfcTagDetected))
 					return;
 
@@ -548,6 +787,179 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task TrustLastExtractedUriDomainAsync()
+		{
+			try
+			{
+				string Host = this.LastExtractedUriHost?.Trim().ToLowerInvariant() ?? string.Empty;
+				if (string.IsNullOrWhiteSpace(Host))
+					return;
+
+				if (!this.SafeScanEnabled)
+					return;
+
+				if (!await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Question)],
+					string.Format(ServiceRef.Localizer[nameof(AppResources.NfcTrustDomainQuestion)], Host),
+					ServiceRef.Localizer[nameof(AppResources.Yes)],
+					ServiceRef.Localizer[nameof(AppResources.Cancel)]))
+				{
+					return;
+				}
+
+				HashSet<string> Trusted = await this.GetTrustedDomainsAsync();
+				Trusted.Add(Host);
+				await this.SetTrustedDomainsAsync(Trusted);
+				await this.UpdateTrustedDomainStateAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task CopySelectedLastNdefRecordAsync()
+		{
+			try
+			{
+				if (this.SelectedLastNdefRecord is null)
+					return;
+
+				string Candidate = this.SelectedLastNdefRecord.DisplayValue ?? string.Empty;
+				if (string.IsNullOrWhiteSpace(Candidate))
+					return;
+
+				await Clipboard.Default.SetTextAsync(Candidate);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task ShareSelectedLastNdefRecordJsonAsync()
+		{
+			try
+			{
+				if (this.SelectedLastNdefRecord is null)
+					return;
+
+				string FileName = $"nfc-ndef-record-{DateTime.UtcNow:yyyyMMddTHHmmssZ}.json";
+				string Path = System.IO.Path.Combine(FileSystem.CacheDirectory, FileName);
+
+				JsonSerializerOptions Options = new()
+				{
+					WriteIndented = true
+				};
+
+				string Json = JsonSerializer.Serialize(this.SelectedLastNdefRecord, Options);
+				await File.WriteAllTextAsync(Path, Json);
+
+				await Share.Default.RequestAsync(new ShareFileRequest
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.NfcRecordExportTitle)],
+					File = new ShareFile(Path)
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private async Task<bool> ConfirmOpenLastUriAsync()
+		{
+			try
+			{
+				if (!this.SafeScanEnabled)
+					return true;
+
+				if (this.IsLastExtractedUriDomainTrusted)
+					return true;
+
+				string Message = ServiceRef.Localizer[nameof(AppResources.NfcOpenUnsafeLinkPrompt)];
+				if (this.HasLastExtractedUriWarnings)
+				{
+					string WarningList = string.Join("\n- ", this.LastExtractedUriWarnings);
+					Message = Message + "\n\n- " + WarningList;
+				}
+
+				return await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.NfcPotentiallyUnsafe)],
+					Message,
+					ServiceRef.Localizer[nameof(AppResources.Open)],
+					ServiceRef.Localizer[nameof(AppResources.Cancel)]);
+			}
+			catch
+			{
+				return true;
+			}
+		}
+
+		private async Task<HashSet<string>> GetTrustedDomainsAsync()
+		{
+			string Json = await RuntimeSettings.GetAsync("NFC.SafeScan.TrustedDomains", "[]");
+			try
+			{
+				string[]? Items = JsonSerializer.Deserialize<string[]>(Json);
+				if (Items is null)
+					return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+				IEnumerable<string> Cleaned = Items
+					.Where(x => !string.IsNullOrWhiteSpace(x))
+					.Select(x => x.Trim().ToLowerInvariant());
+
+				return new HashSet<string>(Cleaned, StringComparer.OrdinalIgnoreCase);
+			}
+			catch
+			{
+				return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			}
+		}
+
+		private async Task SetTrustedDomainsAsync(HashSet<string> Trusted)
+		{
+			string[] Array = Trusted
+				.Where(x => !string.IsNullOrWhiteSpace(x))
+				.Select(x => x.Trim().ToLowerInvariant())
+				.Distinct(StringComparer.OrdinalIgnoreCase)
+				.OrderBy(x => x, StringComparer.OrdinalIgnoreCase)
+				.ToArray();
+
+			string Json = JsonSerializer.Serialize(Array);
+			await RuntimeSettings.SetAsync("NFC.SafeScan.TrustedDomains", Json);
+		}
+
+		private async Task UpdateTrustedDomainStateAsync()
+		{
+			try
+			{
+				if (!this.SafeScanEnabled)
+				{
+					this.IsLastExtractedUriDomainTrusted = false;
+					return;
+				}
+
+				string Host = this.LastExtractedUriHost?.Trim().ToLowerInvariant() ?? string.Empty;
+				if (string.IsNullOrWhiteSpace(Host))
+				{
+					this.IsLastExtractedUriDomainTrusted = false;
+					return;
+				}
+
+				HashSet<string> Trusted = await this.GetTrustedDomainsAsync();
+				this.IsLastExtractedUriDomainTrusted = Trusted.Contains(Host);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				this.IsLastExtractedUriDomainTrusted = false;
 			}
 		}
 

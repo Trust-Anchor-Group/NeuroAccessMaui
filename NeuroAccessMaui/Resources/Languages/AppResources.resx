@@ -2859,6 +2859,54 @@
   <data name="NfcSafeScanDescription" xml:space="preserve">
     <value>When enabled, NFC links will not open automatically.</value>
   </data>
+  <data name="NfcScanStateValidNdef" xml:space="preserve">
+    <value>Valid NDEF</value>
+  </data>
+  <data name="NfcScanStateNdefPresent" xml:space="preserve">
+    <value>NDEF detected</value>
+  </data>
+  <data name="NfcScanStateNoNdef" xml:space="preserve">
+    <value>No NDEF detected</value>
+  </data>
+  <data name="NfcLinkPreview" xml:space="preserve">
+    <value>Link preview</value>
+  </data>
+  <data name="NfcTrustDomain" xml:space="preserve">
+    <value>Trust domain</value>
+  </data>
+  <data name="NfcTrustedDomain" xml:space="preserve">
+    <value>Trusted domain</value>
+  </data>
+  <data name="NfcTrustDomainQuestion" xml:space="preserve">
+    <value>Trust “{0}” for NFC links on this device?</value>
+  </data>
+  <data name="NfcPotentiallyUnsafe" xml:space="preserve">
+    <value>Potentially unsafe link</value>
+  </data>
+  <data name="NfcOpenUnsafeLinkPrompt" xml:space="preserve">
+    <value>This link was read from an NFC tag. Review it before opening.</value>
+  </data>
+  <data name="NfcUriWarningNonHttp" xml:space="preserve">
+    <value>Non-web URI scheme</value>
+  </data>
+  <data name="NfcUriWarningPunycode" xml:space="preserve">
+    <value>Domain uses punycode (possible homograph)</value>
+  </data>
+  <data name="NfcUriWarningIpHost" xml:space="preserve">
+    <value>Host is an IP address</value>
+  </data>
+  <data name="NfcUriWarningShortener" xml:space="preserve">
+    <value>Known link shortener</value>
+  </data>
+  <data name="Warnings" xml:space="preserve">
+    <value>Warnings</value>
+  </data>
+  <data name="NfcRecordDetails" xml:space="preserve">
+    <value>Record details</value>
+  </data>
+  <data name="NfcRecordExportTitle" xml:space="preserve">
+    <value>Export NDEF record</value>
+  </data>
   <data name="NfcNoTagYet" xml:space="preserve">
     <value>No tag detected yet</value>
   </data>
@@ -2894,6 +2942,15 @@
   </data>
   <data name="NfcHistoryExportTitle" xml:space="preserve">
     <value>Export NFC scan</value>
+  </data>
+  <data name="NfcHistoryExportAllTitle" xml:space="preserve">
+    <value>Export NFC history</value>
+  </data>
+  <data name="NfcExportAllJson" xml:space="preserve">
+    <value>Export all (JSON)</value>
+  </data>
+  <data name="NfcExportAllCsv" xml:space="preserve">
+    <value>Export all (CSV)</value>
   </data>
   <data name="NfcWriteUri" xml:space="preserve">
     <value>Write a URI to an NFC tag</value>

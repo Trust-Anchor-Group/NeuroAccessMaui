@@ -4804,6 +4804,24 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export all (CSV).
+        /// </summary>
+        public static string NfcExportAllCsv {
+            get {
+                return ResourceManager.GetString("NfcExportAllCsv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export all (JSON).
+        /// </summary>
+        public static string NfcExportAllJson {
+            get {
+                return ResourceManager.GetString("NfcExportAllJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Detected (UTC).
         /// </summary>
         public static string NfcFieldDetectedUtc {
@@ -4876,6 +4894,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export NFC history.
+        /// </summary>
+        public static string NfcHistoryExportAllTitle {
+            get {
+                return ResourceManager.GetString("NfcHistoryExportAllTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export NFC scan.
         /// </summary>
         public static string NfcHistoryExportTitle {
@@ -4903,6 +4930,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Link preview.
+        /// </summary>
+        public static string NfcLinkPreview {
+            get {
+                return ResourceManager.GetString("NfcLinkPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No history yet.
         /// </summary>
         public static string NfcNoHistoryYet {
@@ -4921,11 +4957,47 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This link was read from an NFC tag. Review it before opening..
+        /// </summary>
+        public static string NfcOpenUnsafeLinkPrompt {
+            get {
+                return ResourceManager.GetString("NfcOpenUnsafeLinkPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Potentially unsafe link.
+        /// </summary>
+        public static string NfcPotentiallyUnsafe {
+            get {
+                return ResourceManager.GetString("NfcPotentiallyUnsafe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Read.
         /// </summary>
         public static string NfcRead {
             get {
                 return ResourceManager.GetString("NfcRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Record details.
+        /// </summary>
+        public static string NfcRecordDetails {
+            get {
+                return ResourceManager.GetString("NfcRecordDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export NDEF record.
+        /// </summary>
+        public static string NfcRecordExportTitle {
+            get {
+                return ResourceManager.GetString("NfcRecordExportTitle", resourceCulture);
             }
         }
         
@@ -4948,6 +5020,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NDEF detected.
+        /// </summary>
+        public static string NfcScanStateNdefPresent {
+            get {
+                return ResourceManager.GetString("NfcScanStateNdefPresent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No NDEF detected.
+        /// </summary>
+        public static string NfcScanStateNoNdef {
+            get {
+                return ResourceManager.GetString("NfcScanStateNoNdef", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valid NDEF.
+        /// </summary>
+        public static string NfcScanStateValidNdef {
+            get {
+                return ResourceManager.GetString("NfcScanStateValidNdef", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start scan.
         /// </summary>
         public static string NfcStartScan {
@@ -4962,6 +5061,69 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string NfcTapTag {
             get {
                 return ResourceManager.GetString("NfcTapTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trust domain.
+        /// </summary>
+        public static string NfcTrustDomain {
+            get {
+                return ResourceManager.GetString("NfcTrustDomain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trust “{0}” for NFC links on this device?.
+        /// </summary>
+        public static string NfcTrustDomainQuestion {
+            get {
+                return ResourceManager.GetString("NfcTrustDomainQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trusted domain.
+        /// </summary>
+        public static string NfcTrustedDomain {
+            get {
+                return ResourceManager.GetString("NfcTrustedDomain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Host is an IP address.
+        /// </summary>
+        public static string NfcUriWarningIpHost {
+            get {
+                return ResourceManager.GetString("NfcUriWarningIpHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Non-web URI scheme.
+        /// </summary>
+        public static string NfcUriWarningNonHttp {
+            get {
+                return ResourceManager.GetString("NfcUriWarningNonHttp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Domain uses punycode (possible homograph).
+        /// </summary>
+        public static string NfcUriWarningPunycode {
+            get {
+                return ResourceManager.GetString("NfcUriWarningPunycode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Known link shortener.
+        /// </summary>
+        public static string NfcUriWarningShortener {
+            get {
+                return ResourceManager.GetString("NfcUriWarningShortener", resourceCulture);
             }
         }
         
@@ -10380,6 +10542,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string Wallet {
             get {
                 return ResourceManager.GetString("Wallet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warnings.
+        /// </summary>
+        public static string Warnings {
+            get {
+                return ResourceManager.GetString("Warnings", resourceCulture);
             }
         }
         

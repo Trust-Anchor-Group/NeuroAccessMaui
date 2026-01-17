@@ -134,7 +134,9 @@ namespace NeuroAccessMaui.Services.Nfc
 										ContentType: null,
 										ExternalType: null,
 										Uri: UriRecord.Uri,
-										Text: null));
+										Text: null,
+										Payload: Encoding.UTF8.GetBytes(UriRecord.Uri ?? string.Empty),
+										IsPayloadDerived: true));
 
 									if (!ScanHandled)
 										ScanHandled = await this.TryHandleNfcUriAsync(UriRecord.Uri);
@@ -156,7 +158,9 @@ namespace NeuroAccessMaui.Services.Nfc
 										ContentType: null,
 										ExternalType: null,
 										Uri: null,
-										Text: Text));
+										Text: Text,
+										Payload: WellKnown.Data,
+										IsPayloadDerived: false));
 
 									if (!string.IsNullOrEmpty(Text) && !ScanHandled)
 										ScanHandled = await this.TryHandleNfcUriAsync(Text);
@@ -172,7 +176,9 @@ namespace NeuroAccessMaui.Services.Nfc
 										ContentType: Mime.ContentType,
 										ExternalType: null,
 										Uri: null,
-										Text: TryDecodeUtf8(Mime.Data)));
+										Text: TryDecodeUtf8(Mime.Data),
+										Payload: Mime.Data,
+										IsPayloadDerived: false));
 								}
 								else if (Record is INdefExternalTypeRecord External)
 								{
@@ -185,7 +191,9 @@ namespace NeuroAccessMaui.Services.Nfc
 										ContentType: null,
 										ExternalType: External.ExternalType,
 										Uri: null,
-										Text: TryDecodeUtf8(External.Data)));
+										Text: TryDecodeUtf8(External.Data),
+										Payload: External.Data,
+										IsPayloadDerived: false));
 								}
 								else if (Record is INdefWellKnownTypeRecord OtherWellKnown)
 								{
@@ -198,7 +206,9 @@ namespace NeuroAccessMaui.Services.Nfc
 										ContentType: null,
 										ExternalType: null,
 										Uri: null,
-										Text: TryDecodeUtf8(OtherWellKnown.Data)));
+										Text: TryDecodeUtf8(OtherWellKnown.Data),
+										Payload: OtherWellKnown.Data,
+										IsPayloadDerived: false));
 								}
 								else
 								{
@@ -211,7 +221,9 @@ namespace NeuroAccessMaui.Services.Nfc
 										ContentType: null,
 										ExternalType: null,
 										Uri: null,
-										Text: null));
+										Text: null,
+										Payload: null,
+										IsPayloadDerived: false));
 								}
 							}
 
@@ -301,7 +313,23 @@ namespace NeuroAccessMaui.Services.Nfc
 
 				foreach (INfcInterface Interface in Tag.Interfaces)
 				{
-					InterfaceNames.Add(Interface.GetType().Name);
+					if (Interface is IIsoDepInterface)
+						InterfaceNames.Add("ISO-DEP (ISO 14443-4)");
+					else if (Interface is INdefInterface)
+						InterfaceNames.Add("NDEF");
+					else if (Interface is INdefFormatableInterface)
+						InterfaceNames.Add("NDEF (formatable)");
+					else if (Interface is INfcAInterface)
+						InterfaceNames.Add("NFC-A (ISO 14443-3A)");
+					else if (Interface is INfcBInterface)
+						InterfaceNames.Add("NFC-B (ISO 14443-3B)");
+					else if (Interface is INfcFInterface)
+						InterfaceNames.Add("NFC-F (FeliCa)");
+					else if (Interface is INfcVInterface)
+						InterfaceNames.Add("NFC-V (ISO 15693)");
+					else
+						InterfaceNames.Add(Interface.GetType().Name);
+
 					HasNdef |= Interface is INdefInterface || Interface is INdefFormatableInterface;
 					HasIsoDep |= Interface is IIsoDepInterface;
 				}
@@ -340,7 +368,26 @@ namespace NeuroAccessMaui.Services.Nfc
 
 			bool SafeScanEnabled = await RuntimeSettings.GetAsync("NFC.SafeScan.Enabled", false);
 			if (SafeScanEnabled)
-				return false;
+			{
+				if (!System.Uri.TryCreate(Candidate, UriKind.Absolute, out System.Uri? Parsed))
+					return false;
+
+				string Host = Parsed.Host?.Trim().ToLowerInvariant() ?? string.Empty;
+				if (string.IsNullOrWhiteSpace(Host))
+					return false;
+
+				string TrustedJson = await RuntimeSettings.GetAsync("NFC.SafeScan.TrustedDomains", "[]");
+				try
+				{
+					string[]? Trusted = System.Text.Json.JsonSerializer.Deserialize<string[]>(TrustedJson);
+					if (Trusted is null || Array.IndexOf(Trusted, Host) < 0)
+						return false;
+				}
+				catch
+				{
+					return false;
+				}
+			}
 
 			// Default behavior: authenticate and open.
 			MainThread.BeginInvokeOnMainThread(async () =>
@@ -473,6 +520,5 @@ namespace NeuroAccessMaui.Services.Nfc
 			else
 				return false;
 		}
-
 	}
 }
