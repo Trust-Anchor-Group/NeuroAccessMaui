@@ -527,7 +527,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 		{
 			try
 			{
-				string? SelectedObjectId = this.SelectedHistoryItem?.ObjectId;
 				IReadOnlyList<NfcScanHistoryRecord> Records = await this.nfcScanHistoryService.GetRecentAsync(100, CancellationToken.None);
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
@@ -537,17 +536,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 						this.HistoryItems.Add(NfcScanHistoryListItem.FromRecord(Record));
 					}
 					this.HasHistoryItems = this.HistoryItems.Count > 0;
-
-					if (this.HistoryItems.Count == 0)
-					{
-						this.SelectedHistoryItem = null;
-					}
-					else if (!string.IsNullOrEmpty(SelectedObjectId))
-					{
-						NfcScanHistoryListItem? StillSelected = this.HistoryItems.FirstOrDefault(x =>
-							string.Equals(x.ObjectId, SelectedObjectId, StringComparison.OrdinalIgnoreCase));
-						this.SelectedHistoryItem = StillSelected;
-					}
+					this.SelectedHistoryItem = null;
 				});
 			}
 			catch (Exception Ex)
@@ -633,6 +622,26 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			this.HasSelectedHistoryItem = value is not null;
 			this.HasSelectedHistoryUri = !string.IsNullOrWhiteSpace(value?.ExtractedUri);
 			this.HasSelectedHistoryNdefRecords = value?.NdefRecords is not null && value.NdefRecords.Count > 0;
+
+			if (value is null)
+				return;
+
+			MainThread.BeginInvokeOnMainThread(async () =>
+			{
+				try
+				{
+					NeuroAccessMaui.UI.Popups.Nfc.NfcHistoryDetailsPopup Popup = new(value);
+					await ServiceRef.PopupService.PushAsync(Popup);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+				}
+				finally
+				{
+					this.SelectedHistoryItem = null;
+				}
+			});
 		}
 
 		partial void OnSafeScanEnabledChanged(bool value)

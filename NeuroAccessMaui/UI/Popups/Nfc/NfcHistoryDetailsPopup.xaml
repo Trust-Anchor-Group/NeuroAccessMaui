@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopupView x:Class="NeuroAccessMaui.UI.Popups.Nfc.NfcHistoryDetailsPopup"
+				x:DataType="viewmodel:NfcHistoryDetailsPopupViewModel"
+				xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+				xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+				xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+				xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+				xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Nfc"
+				xmlns:nfc="clr-namespace:NeuroAccessMaui.Services.Nfc.Ui">
+
+	<Grid Style="{DynamicResource PopupGrid}">
+		<Border
+			WidthRequest="{Binding ViewWidthRequest}"
+			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
+			Style="{DynamicResource PopupBorder}">
+
+			<ScrollView VerticalOptions="Center">
+				<VerticalStackLayout Spacing="12">
+					<Label Style="{DynamicResource PageTitleLabelSmall}"
+						   Text="{l:Localize Details}"/>
+
+					<Border Style="{DynamicResource BorderSubSet}">
+						<VerticalStackLayout Spacing="6">
+							<Label Text="{l:Localize NfcFieldType}" Style="{DynamicResource FieldKeyLabel}"/>
+							<Label Text="{Binding Item.TagType}" Style="{DynamicResource FieldValueLabel}"/>
+
+							<Label Text="{l:Localize NfcFieldId}" Style="{DynamicResource FieldKeyLabel}"/>
+							<Label Text="{Binding Item.TagIdHex}" Style="{DynamicResource FieldValueLabel}"/>
+
+							<Label Text="{l:Localize NfcFieldDetectedUtc}" Style="{DynamicResource FieldKeyLabel}"/>
+							<Label Text="{Binding Item.DetectedAtUtc, StringFormat='{0:O}'}" Style="{DynamicResource FieldValueLabel}"/>
+
+							<Label Text="{l:Localize NfcFieldTechnologies}" Style="{DynamicResource FieldKeyLabel}"/>
+							<Label Text="{Binding Item.InterfacesSummary}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap"/>
+						</VerticalStackLayout>
+					</Border>
+
+					<Border Style="{DynamicResource BorderSubSet}">
+						<VerticalStackLayout Spacing="6">
+							<Label Text="{l:Localize NfcFieldNdef}" Style="{DynamicResource FieldKeyLabel}"/>
+							<Label Text="{Binding Item.NdefSummary}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap"/>
+
+							<Label Text="URI" Style="{DynamicResource FieldKeyLabel}"/>
+							<Label Text="{Binding Item.ExtractedUri}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap"/>
+						</VerticalStackLayout>
+					</Border>
+
+					<Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+						<controls:TextButton Grid.Column="0"
+									 Command="{Binding CopyUriCommand}"
+									 Style="{DynamicResource OutlinedTextButton}"
+									 LabelData="{l:Localize CopyToClipboard}"
+									 IsVisible="{Binding HasUri}"/>
+						<controls:TextButton Grid.Column="1"
+									 Command="{Binding OpenUriCommand}"
+									 Style="{DynamicResource FilledTextButton}"
+									 LabelData="{l:Localize Open}"
+									 IsVisible="{Binding HasUri}"/>
+						<controls:TextButton Grid.Column="2"
+									 Command="{Binding ExportJsonCommand}"
+									 Style="{DynamicResource OutlinedTextButton}"
+									 LabelData="{l:Localize Export}"/>
+					</Grid>
+
+					<Border Style="{DynamicResource BorderSubSet}"
+							IsVisible="{Binding HasNdefRecords}">
+						<VerticalStackLayout Spacing="8">
+							<Label Text="{l:Localize NfcFieldNdefRecords}"
+								   Style="{DynamicResource FieldKeyLabel}"/>
+							<CollectionView ItemsSource="{Binding Item.NdefRecords}"
+										SelectionMode="None">
+								<CollectionView.ItemTemplate>
+									<DataTemplate x:DataType="nfc:NfcNdefRecordSnapshot">
+										<VerticalStackLayout Spacing="2" Padding="0,6">
+											<Label Text="{Binding RecordType}" Style="{DynamicResource FieldTitleLabel}"/>
+											<Label Text="{Binding DisplayValue}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap"/>
+										</VerticalStackLayout>
+									</DataTemplate>
+								</CollectionView.ItemTemplate>
+							</CollectionView>
+						</VerticalStackLayout>
+					</Border>
+
+					<controls:TextButton
+							Command="{Binding CloseCommand}"
+							Style="{DynamicResource OutlinedTextButton}"
+							LabelData="{l:Localize Cancel}"/>
+				</VerticalStackLayout>
+			</ScrollView>
+		</Border>
+	</Grid>
+</base:BasePopupView>
