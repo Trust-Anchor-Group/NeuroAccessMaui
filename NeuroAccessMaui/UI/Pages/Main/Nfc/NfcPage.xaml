@@ -298,18 +298,10 @@
 													 LabelData="{l:Localize Clear}"/>
 							</Grid>
 
-							<Grid ColumnDefinitions="*,*"
-								  ColumnSpacing="12"
-								  IsVisible="{OnPlatform iOS=False, Default=True}">
-								<controls:TextButton Grid.Column="0"
-													 Command="{Binding RefreshCommand}"
-													 Style="{DynamicResource OutlinedTextButton}"
-													 LabelData="{l:Localize Refresh}"/>
-								<controls:TextButton Grid.Column="1"
-													 Command="{Binding ClearCommand}"
-													 Style="{DynamicResource OutlinedTextButton}"
-													 LabelData="{l:Localize Clear}"/>
-							</Grid>
+							<controls:TextButton Grid.Column="1"
+													Command="{Binding ClearCommand}"
+													Style="{DynamicResource OutlinedTextButton}"
+													LabelData="{l:Localize Clear}"/>
 						</VerticalStackLayout>
 					</ScrollView>
 				</controls:ViewSwitcherStateView>
