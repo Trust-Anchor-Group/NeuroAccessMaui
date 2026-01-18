@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Main.Nfc.NfcPage"
+					  x:Name="NfcPageRoot"
 					  x:DataType="viewmodel:NfcViewModel"
 					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -205,60 +206,26 @@
 											<Label Text="{l:Localize NfcFieldNdefRecords}"
 												   Style="{DynamicResource FieldKeyLabel}"/>
 											<CollectionView ItemsSource="{Binding LastNdefRecords}"
-															SelectionMode="Single"
-															SelectedItem="{Binding SelectedLastNdefRecord, Mode=TwoWay}">
+													SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
 												<CollectionView.ItemTemplate>
 													<DataTemplate x:DataType="nfc:NfcNdefRecordSnapshot">
-														<VerticalStackLayout Spacing="2"
-																			 Padding="0,6">
-															<Label Text="{Binding RecordType}"
-																   Style="{DynamicResource FieldTitleLabel}"/>
-															<Label Text="{Binding DisplayValue}"
-																   Style="{DynamicResource FieldValueLabel}"
-																   LineBreakMode="CharacterWrap"/>
-														</VerticalStackLayout>
+															<controls:TemplatedButton
+																Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:NfcViewModel}}, Path=OpenNdefRecordDetailsCommand, x:DataType=viewmodel:NfcViewModel}"
+																CommandParameter="{Binding .}">
+																<Border Style="{DynamicResource BorderSubSet}"
+																		Margin="0,6,0,0">
+																	<VerticalStackLayout Spacing="2">
+																		<Label Text="{Binding RecordType}"
+																			Style="{DynamicResource FieldTitleLabel}"/>
+																		<Label Text="{Binding DisplayValue}"
+																			Style="{DynamicResource FieldValueLabel}"
+																			LineBreakMode="CharacterWrap"/>
+																</VerticalStackLayout>
+															</Border>
+														</controls:TemplatedButton>
 													</DataTemplate>
 												</CollectionView.ItemTemplate>
 											</CollectionView>
-
-											<Border Style="{DynamicResource BorderSet}"
-													Margin="0"
-													IsVisible="{Binding HasSelectedLastNdefRecord}">
-												<VerticalStackLayout Spacing="10">
-													<Label Text="{l:Localize NfcRecordDetails}"
-														   Style="{DynamicResource FieldTitleLabel}"/>
-													<Label Text="{Binding SelectedLastNdefRecord.RecordType, StringFormat='Type: {0}'}"
-														   Style="{DynamicResource FieldKeyLabel}"/>
-													<Label Text="{Binding SelectedLastNdefRecord.RecordTnf, StringFormat='TNF: {0}'}"
-														   Style="{DynamicResource FieldKeyLabel}"/>
-													<Label Text="{Binding SelectedLastNdefRecord.PayloadSizeBytes, StringFormat='Payload bytes: {0}'}"
-														   Style="{DynamicResource FieldKeyLabel}"/>
-													<Label Text="{Binding SelectedLastNdefRecord.DisplayValue}"
-														   Style="{DynamicResource FieldValueLabel}"
-														   LineBreakMode="CharacterWrap"/>
-
-													<Label Text="{Binding SelectedLastNdefRecord.PayloadBase64, StringFormat='Base64: {0}'}"
-														   Style="{DynamicResource FieldKeyLabel}"
-														   LineBreakMode="CharacterWrap"
-														   MaxLines="3"/>
-													<Label Text="{Binding SelectedLastNdefRecord.PayloadHex, StringFormat='Hex: {0}'}"
-														   Style="{DynamicResource FieldKeyLabel}"
-														   LineBreakMode="CharacterWrap"
-														   MaxLines="3"/>
-
-													<Grid ColumnDefinitions="*,*"
-														  ColumnSpacing="12">
-														<controls:TextButton Grid.Column="0"
-																			 Command="{Binding CopySelectedLastNdefRecordCommand}"
-																			 Style="{DynamicResource OutlinedTextButton}"
-																			 LabelData="{l:Localize CopyToClipboard}"/>
-														<controls:TextButton Grid.Column="1"
-																			 Command="{Binding ShareSelectedLastNdefRecordJsonCommand}"
-																			 Style="{DynamicResource OutlinedTextButton}"
-																			 LabelData="{l:Localize Export}"/>
-													</Grid>
-												</VerticalStackLayout>
-											</Border>
 										</VerticalStackLayout>
 									</VerticalStackLayout>
 								</VerticalStackLayout>

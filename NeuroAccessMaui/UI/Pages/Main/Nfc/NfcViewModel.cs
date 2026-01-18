@@ -1685,6 +1685,28 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			}
 		}
 
+		/// <summary>
+		/// Opens a popup with detailed information about a decoded NDEF record.
+		/// </summary>
+		/// <param name="Record">Record to display.</param>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task OpenNdefRecordDetailsAsync(NfcNdefRecordSnapshot? Record)
+		{
+			try
+			{
+				if (Record is null)
+					return;
+
+				NfcNdefRecordDetailsPopup Popup = new(Record);
+				PopupOptions Options = PopupOptions.CreateModal();
+				await ServiceRef.PopupService.PushAsync(Popup, Options);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
 		private async Task<bool> ConfirmOpenLastUriAsync()
 		{
 			try

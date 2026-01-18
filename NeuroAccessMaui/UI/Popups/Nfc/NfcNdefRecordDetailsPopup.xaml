@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Nfc.NfcNdefRecordDetailsPopup"
+			   x:DataType="viewmodel:NfcNdefRecordDetailsPopupViewModel"
+			   xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+			   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			   xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+			   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+			   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+			   xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Nfc">
+	<base:BasePopup.Resources>
+		<ResourceDictionary>
+			<Style x:Key="FieldKeyLabel" TargetType="Label">
+				<Setter Property="FontSize" Value="14"/>
+				<Setter Property="FontFamily" Value="SpaceGroteskRegular"/>
+				<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
+			</Style>
+			<Style x:Key="FieldValueLabel" TargetType="Label">
+				<Setter Property="FontSize" Value="16"/>
+				<Setter Property="FontFamily" Value="SpaceGroteskRegular"/>
+				<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
+			</Style>
+			<Style x:Key="FieldTitleLabel" TargetType="Label">
+				<Setter Property="FontSize" Value="14"/>
+				<Setter Property="FontFamily" Value="SpaceGroteskBold"/>
+				<Setter Property="TextColor" Value="{DynamicResource ContentSecondaryWL}"/>
+			</Style>
+		</ResourceDictionary>
+	</base:BasePopup.Resources>
+
+	<Grid RowDefinitions="auto,*">
+		<Label Grid.Row="0"
+			   Text="{l:Localize NfcRecordDetails}"
+			   Style="{DynamicResource PageTitleLabel}"
+			   Margin="0,0,0,12"/>
+
+		<ScrollView Grid.Row="1">
+			<VerticalStackLayout Spacing="12">
+				<Border Style="{DynamicResource BorderSet}" Margin="0">
+					<VerticalStackLayout Spacing="10">
+						<Label Text="{Binding Record.RecordType, StringFormat='Type: {0}'}"
+							   Style="{StaticResource FieldKeyLabel}"/>
+						<Label Text="{Binding Record.RecordTnf, StringFormat='TNF: {0}'}"
+							   Style="{StaticResource FieldKeyLabel}"/>
+
+						<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+							<Grid.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding CopyValueCommand}"
+											CommandParameter="{Binding Record.PayloadSizeBytes}"/>
+							</Grid.GestureRecognizers>
+							<Label Grid.Row="0" Grid.Column="0" Text="Payload (bytes)" Style="{StaticResource FieldKeyLabel}"/>
+							<controls:SvgView Grid.Row="0" Grid.Column="1" Aspect="AspectFit" HeightRequest="16" WidthRequest="16" Source="content_copy.svg" TintColor="{DynamicResource ContentSecondaryWL}"/>
+							<Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Record.PayloadSizeBytes}" Style="{StaticResource FieldValueLabel}" TextColor="{DynamicResource ContentLinkWL}"/>
+						</Grid>
+
+						<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+							<Grid.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding CopyValueCommand}"
+											CommandParameter="{Binding Record.DisplayValue}"/>
+							</Grid.GestureRecognizers>
+							<Label Grid.Row="0" Grid.Column="0" Text="Value" Style="{StaticResource FieldKeyLabel}"/>
+							<controls:SvgView Grid.Row="0" Grid.Column="1" Aspect="AspectFit" HeightRequest="16" WidthRequest="16" Source="content_copy.svg" TintColor="{DynamicResource ContentSecondaryWL}"/>
+							<Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Record.DisplayValue}" Style="{StaticResource FieldValueLabel}" TextColor="{DynamicResource ContentLinkWL}" LineBreakMode="CharacterWrap"/>
+						</Grid>
+
+						<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto"
+								IsVisible="{Binding Record.PayloadBase64, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=''}">
+							<Grid.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding CopyValueCommand}"
+											CommandParameter="{Binding Record.PayloadBase64}"/>
+							</Grid.GestureRecognizers>
+							<Label Grid.Row="0" Grid.Column="0" Text="Payload (Base64)" Style="{StaticResource FieldKeyLabel}"/>
+							<controls:SvgView Grid.Row="0" Grid.Column="1" Aspect="AspectFit" HeightRequest="16" WidthRequest="16" Source="content_copy.svg" TintColor="{DynamicResource ContentSecondaryWL}"/>
+							<Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Record.PayloadBase64}" Style="{StaticResource FieldValueLabel}" TextColor="{DynamicResource ContentLinkWL}" LineBreakMode="TailTruncation" MaxLines="3"/>
+						</Grid>
+
+						<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto"
+								IsVisible="{Binding Record.PayloadHex, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=''}">
+							<Grid.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding CopyValueCommand}"
+											CommandParameter="{Binding Record.PayloadHex}"/>
+							</Grid.GestureRecognizers>
+							<Label Grid.Row="0" Grid.Column="0" Text="Payload (hex)" Style="{StaticResource FieldKeyLabel}"/>
+							<controls:SvgView Grid.Row="0" Grid.Column="1" Aspect="AspectFit" HeightRequest="16" WidthRequest="16" Source="content_copy.svg" TintColor="{DynamicResource ContentSecondaryWL}"/>
+							<Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Record.PayloadHex}" Style="{StaticResource FieldValueLabel}" TextColor="{DynamicResource ContentLinkWL}" LineBreakMode="TailTruncation" MaxLines="3"/>
+						</Grid>
+					</VerticalStackLayout>
+				</Border>
+
+				<Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+					<controls:TextButton Grid.Column="0"
+								 Command="{Binding ExportJsonCommand}"
+								 Style="{DynamicResource OutlinedTextButton}"
+								 LabelData="{l:Localize Export}"/>
+					<controls:TextButton Grid.Column="1"
+								 Command="{Binding CloseCommand}"
+								 Style="{DynamicResource FilledTextButton}"
+								 LabelData="{l:Localize Ok}"/>
+				</Grid>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BasePopup>
