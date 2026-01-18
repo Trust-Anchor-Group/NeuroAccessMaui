@@ -401,6 +401,102 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			}
 		}
 
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task ExportHistoryXmlAsync()
+		{
+			try
+			{
+				IReadOnlyList<NfcScanHistoryRecord> Records = await this.nfcScanHistoryService.GetRecentAsync(1000, CancellationToken.None);
+				if (Records.Count == 0)
+					return;
+
+				string FileName = $"nfc-history-{DateTime.UtcNow:yyyyMMddTHHmmssZ}.xml";
+				string Path = System.IO.Path.Combine(FileSystem.CacheDirectory, FileName);
+
+				System.Xml.XmlWriterSettings Settings = new()
+				{
+					Indent = true,
+					NewLineHandling = System.Xml.NewLineHandling.Entitize,
+					OmitXmlDeclaration = false
+				};
+
+				await using (FileStream Stream = File.Create(Path))
+				using (System.Xml.XmlWriter Writer = System.Xml.XmlWriter.Create(Stream, Settings))
+				{
+					Writer.WriteStartDocument();
+					Writer.WriteStartElement("NfcHistory");
+					Writer.WriteAttributeString("ExportedAtUtc", DateTime.UtcNow.ToString("O"));
+
+					foreach (NfcScanHistoryRecord Record in Records)
+						this.WriteHistoryRecordXml(Writer, Record);
+
+					Writer.WriteEndElement();
+					Writer.WriteEndDocument();
+					Writer.Flush();
+					await Stream.FlushAsync();
+				}
+
+				await Share.Default.RequestAsync(new ShareFileRequest
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.NfcHistoryExportAllTitle)],
+					File = new ShareFile(Path)
+				});
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private void WriteHistoryRecordXml(System.Xml.XmlWriter Writer, NfcScanHistoryRecord Record)
+		{
+			Writer.WriteStartElement("Scan");
+			Writer.WriteAttributeString("ObjectId", Record.ObjectId ?? string.Empty);
+			Writer.WriteAttributeString("DetectedAtUtc", Record.DetectedAtUtc.ToString("O"));
+			Writer.WriteAttributeString("TagId", Record.TagId.ToString());
+			Writer.WriteAttributeString("TagType", Record.TagType ?? string.Empty);
+			Writer.WriteAttributeString("InterfacesSummary", Record.InterfacesSummary ?? string.Empty);
+
+			if (!string.IsNullOrWhiteSpace(Record.NdefSummary))
+				Writer.WriteElementString("NdefSummary", Record.NdefSummary);
+
+			if (!string.IsNullOrWhiteSpace(Record.ExtractedUri))
+				Writer.WriteElementString("ExtractedUri", Record.ExtractedUri);
+
+			if (Record.NdefRecords is not null && Record.NdefRecords.Length > 0)
+			{
+				Writer.WriteStartElement("NdefRecords");
+				foreach (Services.Nfc.Ui.NfcNdefRecordSnapshot NdefRecord in Record.NdefRecords)
+				{
+					Writer.WriteStartElement("Record");
+					Writer.WriteAttributeString("Index", NdefRecord.Index.ToString());
+					Writer.WriteAttributeString("RecordType", NdefRecord.RecordType);
+					Writer.WriteAttributeString("RecordTnf", NdefRecord.RecordTnf);
+					Writer.WriteAttributeString("WellKnownType", NdefRecord.WellKnownType ?? string.Empty);
+					Writer.WriteAttributeString("ContentType", NdefRecord.ContentType ?? string.Empty);
+					Writer.WriteAttributeString("ExternalType", NdefRecord.ExternalType ?? string.Empty);
+					Writer.WriteAttributeString("IsPayloadDerived", NdefRecord.IsPayloadDerived ? "true" : "false");
+					Writer.WriteAttributeString("PayloadSizeBytes", NdefRecord.PayloadSizeBytes.ToString());
+
+					if (!string.IsNullOrWhiteSpace(NdefRecord.Uri))
+						Writer.WriteElementString("Uri", NdefRecord.Uri);
+					if (!string.IsNullOrWhiteSpace(NdefRecord.Text))
+						Writer.WriteElementString("Text", NdefRecord.Text);
+					if (!string.IsNullOrWhiteSpace(NdefRecord.DisplayValue))
+						Writer.WriteElementString("DisplayValue", NdefRecord.DisplayValue);
+					if (!string.IsNullOrWhiteSpace(NdefRecord.PayloadBase64))
+						Writer.WriteElementString("PayloadBase64", NdefRecord.PayloadBase64);
+					if (!string.IsNullOrWhiteSpace(NdefRecord.PayloadHex))
+						Writer.WriteElementString("PayloadHex", NdefRecord.PayloadHex);
+
+					Writer.WriteEndElement();
+				}
+				Writer.WriteEndElement();
+			}
+
+			Writer.WriteEndElement();
+		}
+
 		private string EscapeCsv(string? Value)
 		{
 			string Text = Value ?? string.Empty;

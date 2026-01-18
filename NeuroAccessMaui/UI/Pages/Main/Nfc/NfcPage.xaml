@@ -299,9 +299,9 @@
 							</Grid>
 
 							<controls:TextButton Grid.Column="1"
-													Command="{Binding ClearCommand}"
-													Style="{DynamicResource OutlinedTextButton}"
-													LabelData="{l:Localize Clear}"/>
+												 Command="{Binding ClearCommand}"
+												 Style="{DynamicResource OutlinedTextButton}"
+												 LabelData="{l:Localize Clear}"/>
 						</VerticalStackLayout>
 					</ScrollView>
 				</controls:ViewSwitcherStateView>
@@ -351,22 +351,33 @@
 								<Label Text="{l:Localize NfcHistoryInfo}"
 									   Style="{DynamicResource InfoLabel}"/>
 
-								<Grid ColumnDefinitions="*,*,*"
-									  ColumnSpacing="12">
-									<controls:TextButton Grid.Column="0"
-												 Command="{Binding ClearHistoryCommand}"
-												 Style="{DynamicResource OutlinedTextButton}"
-												 LabelData="{l:Localize Clear}"/>
-									<controls:TextButton Grid.Column="1"
-												 Command="{Binding ExportHistoryJsonCommand}"
-												 Style="{DynamicResource OutlinedTextButton}"
-												 LabelData="{l:Localize NfcExportAllJson}"
-												 IsVisible="{Binding HasHistoryItems}"/>
-									<controls:TextButton Grid.Column="2"
-												 Command="{Binding ExportHistoryCsvCommand}"
-												 Style="{DynamicResource OutlinedTextButton}"
-												 LabelData="{l:Localize NfcExportAllCsv}"
-												 IsVisible="{Binding HasHistoryItems}"/>
+								<Grid RowDefinitions="Auto,Auto"
+									  ColumnDefinitions="*,*"
+									  ColumnSpacing="12"
+									  RowSpacing="12">
+									<controls:TextButton Grid.Row="0"
+											Grid.Column="0"
+														 Command="{Binding ClearHistoryCommand}"
+														 Style="{DynamicResource OutlinedTextButton}"
+														 LabelData="{l:Localize Clear}"/>
+									<controls:TextButton Grid.Row="0"
+											Grid.Column="1"
+														 Command="{Binding ExportHistoryJsonCommand}"
+														 Style="{DynamicResource OutlinedTextButton}"
+														 LabelData="{l:Localize NfcExportAllJson}"
+														 IsVisible="{Binding HasHistoryItems}"/>
+									<controls:TextButton Grid.Row="1"
+											Grid.Column="0"
+														 Command="{Binding ExportHistoryCsvCommand}"
+														 Style="{DynamicResource OutlinedTextButton}"
+														 LabelData="{l:Localize NfcExportAllCsv}"
+														 IsVisible="{Binding HasHistoryItems}"/>
+									<controls:TextButton Grid.Row="1"
+											Grid.Column="1"
+														 Command="{Binding ExportHistoryXmlCommand}"
+														 Style="{DynamicResource OutlinedTextButton}"
+														 LabelData="{l:Localize NfcExportAllXml}"
+														 IsVisible="{Binding HasHistoryItems}"/>
 								</Grid>
 							</VerticalStackLayout>
 						</CollectionView.Header>

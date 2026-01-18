@@ -2952,6 +2952,12 @@
   <data name="NfcExportAllCsv" xml:space="preserve">
     <value>Export all (CSV)</value>
   </data>
+  <data name="NfcExportAllXml" xml:space="preserve">
+    <value>Export all (XML)</value>
+  </data>
+  <data name="NfcExportXml" xml:space="preserve">
+    <value>Export (XML)</value>
+  </data>
   <data name="NfcWriteUri" xml:space="preserve">
     <value>Write a URI to an NFC tag</value>
   </data>

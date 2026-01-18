@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<base:BasePopupView x:Class="NeuroAccessMaui.UI.Popups.Nfc.NfcHistoryDetailsPopup"
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Nfc.NfcHistoryDetailsPopup"
 				x:DataType="viewmodel:NfcHistoryDetailsPopupViewModel"
 				xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -21,46 +21,190 @@
 						   Text="{l:Localize Details}"/>
 
 					<Border Style="{DynamicResource BorderSubSet}">
-						<VerticalStackLayout Spacing="6">
-							<Label Text="{l:Localize NfcFieldType}" Style="{DynamicResource FieldKeyLabel}"/>
-							<Label Text="{Binding Item.TagType}" Style="{DynamicResource FieldValueLabel}"/>
+						<VerticalStackLayout Spacing="12">
+							<Grid ColumnDefinitions="*, auto"
+									RowDefinitions="auto, auto">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyValueCommand}"
+											CommandParameter="{Binding Item.TagType}"/>
+								</Grid.GestureRecognizers>
 
-							<Label Text="{l:Localize NfcFieldId}" Style="{DynamicResource FieldKeyLabel}"/>
-							<Label Text="{Binding Item.TagIdHex}" Style="{DynamicResource FieldValueLabel}"/>
+								<Label Grid.Row="0"
+										Grid.Column="0"
+										Text="{l:Localize NfcFieldType}"
+										Style="{DynamicResource FieldKeyLabel}"/>
+								<controls:SvgView Grid.Row="0"
+										Grid.Column="1"
+										Aspect="AspectFit"
+										HeightRequest="16"
+										WidthRequest="16"
+										Source="content_copy.svg"
+										TintColor="{DynamicResource ContentSecondaryWL}"/>
+								<Label Grid.Row="1"
+										Grid.ColumnSpan="2"
+										Text="{Binding Item.TagType}"
+										Style="{DynamicResource FieldValueLabel}"
+										TextColor="{DynamicResource ContentLinkWL}"
+										LineBreakMode="CharacterWrap"/>
+							</Grid>
 
-							<Label Text="{l:Localize NfcFieldDetectedUtc}" Style="{DynamicResource FieldKeyLabel}"/>
-							<Label Text="{Binding Item.DetectedAtUtc, StringFormat='{0:O}'}" Style="{DynamicResource FieldValueLabel}"/>
+							<Grid ColumnDefinitions="*, auto"
+									RowDefinitions="auto, auto">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyValueCommand}"
+											CommandParameter="{Binding Item.TagIdHex}"/>
+								</Grid.GestureRecognizers>
 
-							<Label Text="{l:Localize NfcFieldTechnologies}" Style="{DynamicResource FieldKeyLabel}"/>
-							<Label Text="{Binding Item.InterfacesSummary}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap"/>
+								<Label Grid.Row="0"
+										Grid.Column="0"
+										Text="{l:Localize NfcFieldId}"
+										Style="{DynamicResource FieldKeyLabel}"/>
+								<controls:SvgView Grid.Row="0"
+										Grid.Column="1"
+										Aspect="AspectFit"
+										HeightRequest="16"
+										WidthRequest="16"
+										Source="content_copy.svg"
+										TintColor="{DynamicResource ContentSecondaryWL}"/>
+								<Label Grid.Row="1"
+										Grid.ColumnSpan="2"
+										Text="{Binding Item.TagIdHex}"
+										Style="{DynamicResource FieldValueLabel}"
+										TextColor="{DynamicResource ContentLinkWL}"
+										LineBreakMode="CharacterWrap"/>
+							</Grid>
+
+							<Grid ColumnDefinitions="*, auto"
+									RowDefinitions="auto, auto">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyValueCommand}"
+											CommandParameter="{Binding Item.DetectedAtUtc, StringFormat='{0:O}'}"/>
+								</Grid.GestureRecognizers>
+
+								<Label Grid.Row="0"
+										Grid.Column="0"
+										Text="{l:Localize NfcFieldDetectedUtc}"
+										Style="{DynamicResource FieldKeyLabel}"/>
+								<controls:SvgView Grid.Row="0"
+										Grid.Column="1"
+										Aspect="AspectFit"
+										HeightRequest="16"
+										WidthRequest="16"
+										Source="content_copy.svg"
+										TintColor="{DynamicResource ContentSecondaryWL}"/>
+								<Label Grid.Row="1"
+										Grid.ColumnSpan="2"
+										Text="{Binding Item.DetectedAtUtc, StringFormat='{0:O}'}"
+										Style="{DynamicResource FieldValueLabel}"
+										TextColor="{DynamicResource ContentLinkWL}"
+										LineBreakMode="CharacterWrap"/>
+							</Grid>
+
+							<Grid ColumnDefinitions="*, auto"
+									RowDefinitions="auto, auto">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyValueCommand}"
+											CommandParameter="{Binding Item.InterfacesSummary}"/>
+								</Grid.GestureRecognizers>
+
+								<Label Grid.Row="0"
+										Grid.Column="0"
+										Text="{l:Localize NfcFieldTechnologies}"
+										Style="{DynamicResource FieldKeyLabel}"/>
+								<controls:SvgView Grid.Row="0"
+										Grid.Column="1"
+										Aspect="AspectFit"
+										HeightRequest="16"
+										WidthRequest="16"
+										Source="content_copy.svg"
+										TintColor="{DynamicResource ContentSecondaryWL}"/>
+								<Label Grid.Row="1"
+										Grid.ColumnSpan="2"
+										Text="{Binding Item.InterfacesSummary}"
+										Style="{DynamicResource FieldValueLabel}"
+										TextColor="{DynamicResource ContentLinkWL}"
+										LineBreakMode="CharacterWrap"/>
+							</Grid>
 						</VerticalStackLayout>
 					</Border>
 
 					<Border Style="{DynamicResource BorderSubSet}">
-						<VerticalStackLayout Spacing="6">
-							<Label Text="{l:Localize NfcFieldNdef}" Style="{DynamicResource FieldKeyLabel}"/>
-							<Label Text="{Binding Item.NdefSummary}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap"/>
+						<VerticalStackLayout Spacing="12">
+							<Grid ColumnDefinitions="*, auto"
+									RowDefinitions="auto, auto">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyValueCommand}"
+											CommandParameter="{Binding Item.NdefSummary}"/>
+								</Grid.GestureRecognizers>
 
-							<Label Text="URI" Style="{DynamicResource FieldKeyLabel}"/>
-							<Label Text="{Binding Item.ExtractedUri}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap"/>
+								<Label Grid.Row="0"
+										Grid.Column="0"
+										Text="{l:Localize NfcFieldNdef}"
+										Style="{DynamicResource FieldKeyLabel}"/>
+								<controls:SvgView Grid.Row="0"
+										Grid.Column="1"
+										Aspect="AspectFit"
+										HeightRequest="16"
+										WidthRequest="16"
+										Source="content_copy.svg"
+										TintColor="{DynamicResource ContentSecondaryWL}"/>
+								<Label Grid.Row="1"
+										Grid.ColumnSpan="2"
+										Text="{Binding Item.NdefSummary}"
+										Style="{DynamicResource FieldValueLabel}"
+										TextColor="{DynamicResource ContentLinkWL}"
+										LineBreakMode="CharacterWrap"/>
+							</Grid>
+
+							<Grid ColumnDefinitions="*, auto"
+									RowDefinitions="auto, auto"
+									IsVisible="{Binding HasUri}">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyValueCommand}"
+											CommandParameter="{Binding Item.ExtractedUri}"/>
+								</Grid.GestureRecognizers>
+
+								<Label Grid.Row="0"
+										Grid.Column="0"
+										Text="URI"
+										Style="{DynamicResource FieldKeyLabel}"/>
+								<controls:SvgView Grid.Row="0"
+										Grid.Column="1"
+										Aspect="AspectFit"
+										HeightRequest="16"
+										WidthRequest="16"
+										Source="content_copy.svg"
+										TintColor="{DynamicResource ContentSecondaryWL}"/>
+								<Label Grid.Row="1"
+										Grid.ColumnSpan="2"
+										Text="{Binding Item.ExtractedUri}"
+										Style="{DynamicResource FieldValueLabel}"
+										TextColor="{DynamicResource ContentLinkWL}"
+										LineBreakMode="CharacterWrap"/>
+							</Grid>
 						</VerticalStackLayout>
 					</Border>
 
-					<Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+					<Grid ColumnDefinitions="*,*,*,*"
+							ColumnSpacing="8">
 						<controls:TextButton Grid.Column="0"
-									 Command="{Binding CopyUriCommand}"
-									 Style="{DynamicResource OutlinedTextButton}"
-									 LabelData="{l:Localize CopyToClipboard}"
-									 IsVisible="{Binding HasUri}"/>
+											 Command="{Binding CopyUriCommand}"
+											 Style="{DynamicResource OutlinedTextButton}"
+											 LabelData="{l:Localize CopyToClipboard}"
+											 IsVisible="{Binding HasUri}"/>
 						<controls:TextButton Grid.Column="1"
-									 Command="{Binding OpenUriCommand}"
-									 Style="{DynamicResource FilledTextButton}"
-									 LabelData="{l:Localize Open}"
-									 IsVisible="{Binding HasUri}"/>
+											 Command="{Binding OpenUriCommand}"
+											 Style="{DynamicResource FilledTextButton}"
+											 LabelData="{l:Localize Open}"
+											 IsVisible="{Binding HasUri}"/>
 						<controls:TextButton Grid.Column="2"
-									 Command="{Binding ExportJsonCommand}"
-									 Style="{DynamicResource OutlinedTextButton}"
-									 LabelData="{l:Localize Export}"/>
+											 Command="{Binding ExportJsonCommand}"
+											 Style="{DynamicResource OutlinedTextButton}"
+											 LabelData="{l:Localize Export}"/>
+						<controls:TextButton Grid.Column="3"
+											 Command="{Binding ExportXmlCommand}"
+											 Style="{DynamicResource OutlinedTextButton}"
+											 LabelData="{l:Localize NfcExportXml}"/>
 					</Grid>
 
 					<Border Style="{DynamicResource BorderSubSet}"
@@ -69,12 +213,16 @@
 							<Label Text="{l:Localize NfcFieldNdefRecords}"
 								   Style="{DynamicResource FieldKeyLabel}"/>
 							<CollectionView ItemsSource="{Binding Item.NdefRecords}"
-										SelectionMode="None">
+											SelectionMode="None">
 								<CollectionView.ItemTemplate>
 									<DataTemplate x:DataType="nfc:NfcNdefRecordSnapshot">
-										<VerticalStackLayout Spacing="2" Padding="0,6">
-											<Label Text="{Binding RecordType}" Style="{DynamicResource FieldTitleLabel}"/>
-											<Label Text="{Binding DisplayValue}" Style="{DynamicResource FieldValueLabel}" LineBreakMode="CharacterWrap"/>
+										<VerticalStackLayout Spacing="2"
+												Padding="0,6">
+											<Label Text="{Binding RecordType}"
+													Style="{DynamicResource FieldTitleLabel}"/>
+											<Label Text="{Binding DisplayValue}"
+													Style="{DynamicResource FieldValueLabel}"
+													LineBreakMode="CharacterWrap"/>
 										</VerticalStackLayout>
 									</DataTemplate>
 								</CollectionView.ItemTemplate>
@@ -83,11 +231,11 @@
 					</Border>
 
 					<controls:TextButton
-							Command="{Binding CloseCommand}"
-							Style="{DynamicResource OutlinedTextButton}"
-							LabelData="{l:Localize Cancel}"/>
+						Command="{Binding CloseCommand}"
+						Style="{DynamicResource OutlinedTextButton}"
+						LabelData="{l:Localize Cancel}"/>
 				</VerticalStackLayout>
 			</ScrollView>
 		</Border>
 	</Grid>
-</base:BasePopupView>
+</base:BasePopup>
