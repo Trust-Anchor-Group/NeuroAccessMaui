@@ -218,6 +218,7 @@ namespace NeuroAccessMaui
 					NeuroFeature or
 					Onboarding or
 					Xmpp or
+					Aes256 or
 					NeuroAccess => Url,
 					_ => null,
 				};

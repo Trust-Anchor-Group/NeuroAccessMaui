@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Nfc.NfcOpenLinkDecisionPopup"
+				x:DataType="viewmodel:NfcOpenLinkDecisionPopupViewModel"
+				xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+				xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+				xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+				xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+				xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Nfc">
+
+	<Grid Style="{DynamicResource PopupGrid}">
+		<Border
+			WidthRequest="{Binding ViewWidthRequest}"
+			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
+			Style="{DynamicResource PopupBorder}">
+
+			<ScrollView VerticalOptions="Center">
+				<VerticalStackLayout Spacing="12">
+					<Label Style="{DynamicResource PageTitleLabelSmall}"
+						   Text="{l:Localize NfcPotentiallyUnsafe}"/>
+
+					<Border Style="{DynamicResource BorderSubSet}">
+						<VerticalStackLayout Spacing="12">
+							<Grid ColumnDefinitions="*, auto"
+								  RowDefinitions="auto, auto">
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyUriCommand}"/>
+								</Grid.GestureRecognizers>
+
+								<Label Grid.Row="0"
+									   Grid.Column="0"
+									   Text="{l:Localize Uri}"
+									   Style="{DynamicResource FieldKeyLabel}"/>
+								<controls:SvgView Grid.Row="0"
+												  Grid.Column="1"
+												  Aspect="AspectFit"
+												  HeightRequest="16"
+												  WidthRequest="16"
+												  Source="content_copy.svg"
+												  TintColor="{DynamicResource ContentSecondaryWL}"/>
+								<Label Grid.Row="1"
+									   Grid.ColumnSpan="2"
+									   Text="{Binding Uri}"
+									   Style="{DynamicResource FieldValueLabel}"
+									   TextColor="{DynamicResource ContentLinkWL}"
+									   LineBreakMode="CharacterWrap"/>
+							</Grid>
+
+							<VerticalStackLayout Spacing="6"
+										 IsVisible="{Binding HasWarnings}">
+								<Label Text="{l:Localize Warnings}"
+									   Style="{DynamicResource FieldKeyLabel}"/>
+								<CollectionView ItemsSource="{Binding Warnings}"
+											SelectionMode="None">
+									<CollectionView.ItemTemplate>
+										<DataTemplate>
+											<Label Text="{Binding ., StringFormat='- {0}'}"
+												   Style="{DynamicResource FieldKeyLabel}"
+												   LineBreakMode="CharacterWrap"/>
+										</DataTemplate>
+									</CollectionView.ItemTemplate>
+								</CollectionView>
+							</VerticalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+
+					<Grid ColumnDefinitions="*,*"
+						  ColumnSpacing="8">
+						<controls:TextButton Grid.Column="0"
+									 Command="{Binding OpenOnceCommand}"
+									 Style="{DynamicResource FilledTextButton}"
+									 LabelData="{l:Localize NfcOpenOnce}"/>
+						<controls:TextButton Grid.Column="1"
+									 Command="{Binding TrustAndOpenCommand}"
+									 Style="{DynamicResource OutlinedTextButton}"
+									 LabelData="{l:Localize NfcTrustAndOpen}"
+									 IsVisible="{Binding CanTrustDomain}"/>
+					</Grid>
+
+					<Grid ColumnDefinitions="*,*"
+						  ColumnSpacing="8">
+						<controls:TextButton Grid.Column="0"
+									 Command="{Binding CopyUriCommand}"
+									 Style="{DynamicResource OutlinedTextButton}"
+									 LabelData="{l:Localize NfcCopyLink}"/>
+						<controls:TextButton Grid.Column="1"
+									 Command="{Binding CancelCommand}"
+									 Style="{DynamicResource OutlinedTextButton}"
+									 LabelData="{l:Localize Cancel}"/>
+					</Grid>
+				</VerticalStackLayout>
+			</ScrollView>
+		</Border>
+	</Grid>
+</base:BasePopup>

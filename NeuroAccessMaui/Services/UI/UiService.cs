@@ -322,7 +322,7 @@ namespace NeuroAccessMaui.Services.UI
 
 				// Create a default navigation arguments if Args are null
 				NavigationArgs NavigationArgs = Args ?? new();
-		
+
 				NavigationArgs.SetBackArguments(ParentArgs, BackMethod, UniqueId);
 				this.PushArgs(Route, NavigationArgs);
 
@@ -435,13 +435,13 @@ namespace NeuroAccessMaui.Services.UI
 				NavigationArgs = this.TryGetArgs(Page.GetType().Name, UniqueId);
 				string Route = Routing.GetRoute(Page);
 				NavigationArgs ??= this.TryGetArgs(Route, UniqueId);
-/*
-				if ((NavigationArgs is null) && (UniqueId is null) &&
-					(Page is BaseContentPage BasePage) && (BasePage.UniqueId is not null))
-				{
-					return this.TryGetArgs(out Args, BasePage.UniqueId);
-				}
-*/
+				/*
+								if ((NavigationArgs is null) && (UniqueId is null) &&
+									(Page is BaseContentPage BasePage) && (BasePage.UniqueId is not null))
+								{
+									return this.TryGetArgs(out Args, BasePage.UniqueId);
+								}
+				*/
 			}
 
 			if (NavigationArgs is TArgs TArgsArgs)

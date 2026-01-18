@@ -7,6 +7,7 @@
 					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
 					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 					  xmlns:nfc="clr-namespace:NeuroAccessMaui.Services.Nfc.Ui"
+					  xmlns:sys="clr-namespace:System;assembly=System.Runtime"
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Nfc">
 	<base:BaseContentPage.Resources>
 		<ResourceDictionary>
@@ -108,6 +109,56 @@
 								</Grid>
 							</Border>
 
+								<Border Style="{DynamicResource BorderSet}"
+										Margin="0"
+										IsVisible="{Binding SafeScanEnabled}">
+									<VerticalStackLayout Spacing="10">
+										<Label Text="{l:Localize NfcTrustedDomains}"
+											   Style="{DynamicResource FieldTitleLabel}"/>
+										<Label Text="{l:Localize NfcTrustedDomainsDescription}"
+											   Style="{DynamicResource FieldKeyLabel}"/>
+
+										<Grid ColumnDefinitions="*,auto"
+											  ColumnSpacing="12">
+											<Entry Grid.Column="0"
+												   Text="{Binding TrustedDomainToAdd, Mode=TwoWay}"
+												   Placeholder="{l:Localize NfcTrustedDomainPlaceholder}"
+												   Keyboard="Url"/>
+											<controls:TextButton Grid.Column="1"
+															 Command="{Binding AddTrustedDomainCommand}"
+															 Style="{DynamicResource OutlinedTextButton}"
+															 LabelData="{l:Localize Add}"/>
+										</Grid>
+
+										<Label Text="{l:Localize NfcNoTrustedDomainsYet}"
+											   Style="{DynamicResource FieldKeyLabel}"
+											   IsVisible="{Binding HasNoTrustedDomainHosts}"/>
+
+										<CollectionView ItemsSource="{Binding TrustedDomainHosts}"
+													SelectionMode="None"
+													IsVisible="{Binding HasTrustedDomainHosts}">
+											<CollectionView.ItemTemplate>
+												<DataTemplate x:DataType="sys:String">
+													<Grid ColumnDefinitions="*,auto"
+														  ColumnSpacing="12"
+														  Padding="0,6">
+															<Label Grid.Column="0"
+																   Text="{Binding .}"
+																   Style="{DynamicResource FieldValueLabel}"/>
+															<controls:SvgButton Grid.Column="1"
+																		 SvgSource="close.svg"
+																		 Style="{DynamicResource IconButton}"
+																		 WidthRequest="32"
+																		 HeightRequest="32"
+																		 Command="{Binding RemoveTrustedDomainCommand, Source={RelativeSource AncestorType={x:Type viewmodel:NfcViewModel}}, x:DataType=viewmodel:NfcViewModel}"
+																		 CommandParameter="{Binding .}"/>
+													</Grid>
+												</DataTemplate>
+											</CollectionView.ItemTemplate>
+										</CollectionView>
+									</VerticalStackLayout>
+								</Border>
+
 							<Border Style="{DynamicResource BorderSet}"
 									Margin="0">
 								<VerticalStackLayout Spacing="12">
@@ -116,6 +167,9 @@
 									<Label Text="{Binding ScanStateText}"
 										   Style="{DynamicResource FieldKeyLabel}"
 										   IsVisible="{Binding HasScanStateText}"/>
+									<Label Text="{Binding ScanRiskLabel}"
+										   Style="{DynamicResource FieldKeyLabel}"
+										   IsVisible="{Binding HasScanRiskLabel}"/>
 
 									<VerticalStackLayout Spacing="10">
 										<VerticalStackLayout Spacing="2">
@@ -392,6 +446,9 @@
 									<VerticalStackLayout Spacing="6">
 										<Label Text="{Binding TagType}"
 											   Style="{DynamicResource FieldTitleLabel}"/>
+										<Label Text="{Binding ScanRiskLabel}"
+											   Style="{DynamicResource FieldKeyLabel}"
+											   IsVisible="{Binding HasScanRiskLabel}"/>
 										<Label Text="{Binding TagIdHex}"
 											   Style="{DynamicResource FieldValueLabel}"/>
 										<Label Text="{Binding DetectedAtUtc, StringFormat='{0:O}'}"

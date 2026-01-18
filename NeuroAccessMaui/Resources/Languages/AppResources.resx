@@ -2874,6 +2874,18 @@
   <data name="NfcTrustDomain" xml:space="preserve">
     <value>Trust domain</value>
   </data>
+  <data name="NfcTrustedDomains" xml:space="preserve">
+    <value>Trusted domains</value>
+  </data>
+  <data name="NfcTrustedDomainsDescription" xml:space="preserve">
+    <value>Links to these hosts will open without an extra confirmation when Safe scan is enabled.</value>
+  </data>
+  <data name="NfcTrustedDomainPlaceholder" xml:space="preserve">
+    <value>example.com</value>
+  </data>
+  <data name="NfcNoTrustedDomainsYet" xml:space="preserve">
+    <value>No trusted domains yet.</value>
+  </data>
   <data name="NfcTrustedDomain" xml:space="preserve">
     <value>Trusted domain</value>
   </data>
@@ -2885,6 +2897,15 @@
   </data>
   <data name="NfcOpenUnsafeLinkPrompt" xml:space="preserve">
     <value>This link was read from an NFC tag. Review it before opening.</value>
+  </data>
+  <data name="NfcOpenOnce" xml:space="preserve">
+    <value>Open once</value>
+  </data>
+  <data name="NfcTrustAndOpen" xml:space="preserve">
+    <value>Trust domain &amp; open</value>
+  </data>
+  <data name="NfcCopyLink" xml:space="preserve">
+    <value>Copy link</value>
   </data>
   <data name="NfcUriWarningNonHttp" xml:space="preserve">
     <value>Non-web URI scheme</value>
@@ -2930,6 +2951,24 @@
   </data>
   <data name="NfcFieldNdefRecords" xml:space="preserve">
     <value>NDEF records</value>
+  </data>
+  <data name="NfcFieldRisk" xml:space="preserve">
+    <value>Risk</value>
+  </data>
+  <data name="NfcRiskSafe" xml:space="preserve">
+    <value>Safe</value>
+  </data>
+  <data name="NfcRiskCaution" xml:space="preserve">
+    <value>Caution</value>
+  </data>
+  <data name="NfcRiskDangerous" xml:space="preserve">
+    <value>Dangerous</value>
+  </data>
+  <data name="NfcRiskSecured" xml:space="preserve">
+    <value>Secured</value>
+  </data>
+  <data name="NfcRiskWarning" xml:space="preserve">
+    <value>Warning</value>
   </data>
   <data name="NfcPayloadBytes" xml:space="preserve">
     <value>Payload (bytes)</value>

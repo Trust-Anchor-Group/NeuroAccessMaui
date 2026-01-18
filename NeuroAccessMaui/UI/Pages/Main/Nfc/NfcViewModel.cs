@@ -112,6 +112,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 		private bool hasScanStateText;
 
 		[ObservableProperty]
+		private string scanRiskLabel = string.Empty;
+
+		[ObservableProperty]
+		private bool hasScanRiskLabel;
+
+		[ObservableProperty]
 		private string lastTagIdHex = string.Empty;
 
 		[ObservableProperty]
@@ -161,6 +167,20 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 
 		[ObservableProperty]
 		private bool safeScanEnabled;
+
+		[ObservableProperty]
+		private ObservableCollection<string> trustedDomainHosts = new();
+
+		[ObservableProperty]
+		private bool hasTrustedDomainHosts;
+
+		/// <summary>
+		/// Gets a value indicating whether there are no trusted domains.
+		/// </summary>
+		public bool HasNoTrustedDomainHosts => !this.HasTrustedDomainHosts;
+
+		[ObservableProperty]
+		private string trustedDomainToAdd = string.Empty;
 
 		[ObservableProperty]
 		private bool hasSafeScanLinkPreview;
@@ -278,6 +298,73 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				string Candidate = this.SelectedHistoryItem?.ExtractedUri?.Trim() ?? string.Empty;
 				if (string.IsNullOrWhiteSpace(Candidate))
 					return;
+
+				if (this.SafeScanEnabled)
+				{
+					string? KnownAppScheme = NeuroAccessMaui.Constants.UriSchemes.GetScheme(Candidate);
+					if (string.IsNullOrWhiteSpace(KnownAppScheme))
+					{
+						List<string> Warnings = new();
+						string HostLower = string.Empty;
+
+						if (Uri.TryCreate(Candidate, UriKind.Absolute, out Uri? Parsed))
+						{
+							HostLower = (Parsed.Host ?? string.Empty).Trim().ToLowerInvariant();
+
+							if (!string.Equals(Parsed.Scheme, "https", StringComparison.OrdinalIgnoreCase) &&
+								!string.Equals(Parsed.Scheme, "http", StringComparison.OrdinalIgnoreCase))
+							{
+								Warnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningNonHttp)]);
+							}
+
+							if (!string.IsNullOrWhiteSpace(HostLower) && HostLower.Contains("xn--", StringComparison.OrdinalIgnoreCase))
+								Warnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningPunycode)]);
+
+							if (!string.IsNullOrWhiteSpace(HostLower) && IPAddress.TryParse(HostLower, out _))
+								Warnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningIpHost)]);
+
+							if (this.IsKnownShortenerHost(HostLower))
+								Warnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningShortener)]);
+						}
+
+						bool IsTrusted = false;
+						if (!string.IsNullOrWhiteSpace(HostLower))
+						{
+							HashSet<string> Trusted = await this.GetTrustedDomainsAsync();
+							IsTrusted = Trusted.Contains(HostLower);
+						}
+
+						if (!IsTrusted)
+						{
+							UI.Popups.Nfc.NfcOpenLinkDecisionPopupViewModel ViewModel = new(
+								Candidate,
+								Warnings,
+								!string.IsNullOrWhiteSpace(HostLower));
+							UI.Popups.Nfc.NfcOpenLinkDecisionPopup Popup = new(ViewModel);
+
+							Services.UI.Popups.PopupOptions Options = Services.UI.Popups.PopupOptions.CreateModal();
+							await ServiceRef.PopupService.PushAsync(Popup, Options);
+
+							UI.Popups.Nfc.NfcOpenLinkDecision Decision = await ViewModel.Result;
+							switch (Decision)
+							{
+								case UI.Popups.Nfc.NfcOpenLinkDecision.OpenOnce:
+									break;
+								case UI.Popups.Nfc.NfcOpenLinkDecision.TrustAndOpen:
+									if (!string.IsNullOrWhiteSpace(HostLower))
+										await this.TrustDomainInternalAsync(HostLower);
+									break;
+								case UI.Popups.Nfc.NfcOpenLinkDecision.CopyLink:
+									await Clipboard.Default.SetTextAsync(Candidate);
+									return;
+								case UI.Popups.Nfc.NfcOpenLinkDecision.Cancel:
+								case UI.Popups.Nfc.NfcOpenLinkDecision.None:
+								default:
+									return;
+							}
+						}
+					}
+				}
 
 				if (!await this.authenticationService.AuthenticateUserAsync(AuthenticationPurpose.NfcTagDetected))
 					return;
@@ -624,12 +711,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			try
 			{
 				IReadOnlyList<NfcScanHistoryRecord> Records = await this.nfcScanHistoryService.GetRecentAsync(100, CancellationToken.None);
+				HashSet<string> TrustedDomains = await this.GetTrustedDomainsAsync();
 				MainThread.BeginInvokeOnMainThread(() =>
 				{
 					this.HistoryItems.Clear();
 					foreach (NfcScanHistoryRecord Record in Records)
 					{
-						this.HistoryItems.Add(NfcScanHistoryListItem.FromRecord(Record));
+						this.HistoryItems.Add(NfcScanHistoryListItem.FromRecord(Record, this.SafeScanEnabled, TrustedDomains));
 					}
 					this.HasHistoryItems = this.HistoryItems.Count > 0;
 					this.SelectedHistoryItem = null;
@@ -648,6 +736,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				this.LastTagStatusText = ServiceRef.Localizer["NfcNoTagYet"];
 				this.ScanStateText = string.Empty;
 				this.HasScanStateText = false;
+				this.ScanRiskLabel = string.Empty;
+				this.HasScanRiskLabel = false;
 				this.LastTagIdHex = string.Empty;
 				this.LastTagType = string.Empty;
 				this.LastDetectedAtUtc = null;
@@ -713,6 +803,11 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			this.OnPropertyChanged(nameof(this.HasNoHistoryItems));
 		}
 
+		partial void OnHasTrustedDomainHostsChanged(bool value)
+		{
+			this.OnPropertyChanged(nameof(this.HasNoTrustedDomainHosts));
+		}
+
 		partial void OnSelectedHistoryItemChanged(NfcScanHistoryListItem? value)
 		{
 			this.HasSelectedHistoryItem = value is not null;
@@ -749,6 +844,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 					await RuntimeSettings.SetAsync("NFC.SafeScan.Enabled", value);
 					this.HasSafeScanLinkPreview = this.SafeScanEnabled && this.HasExtractedUri;
 					this.UpdateUriPreview(this.LastExtractedUri);
+					this.UpdateScanRiskState();
+					await this.RefreshTrustedDomainHostsAsync();
 					await this.UpdateTrustedDomainStateAsync();
 				}
 				catch (Exception Ex)
@@ -769,6 +866,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			{
 				this.ScanStateText = ServiceRef.Localizer[nameof(AppResources.NfcScanStateNoNdef)];
 				this.HasScanStateText = true;
+				this.UpdateScanRiskState();
 				return;
 			}
 
@@ -776,11 +874,79 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			{
 				this.ScanStateText = ServiceRef.Localizer[nameof(AppResources.NfcScanStateValidNdef)];
 				this.HasScanStateText = true;
+				this.UpdateScanRiskState();
 				return;
 			}
 
 			this.ScanStateText = ServiceRef.Localizer[nameof(AppResources.NfcScanStateNdefPresent)];
 			this.HasScanStateText = true;
+			this.UpdateScanRiskState();
+		}
+
+		private enum NfcScanRiskLevel
+		{
+			Unknown = 0,
+			Safe = 1,
+			Caution = 2,
+			Dangerous = 3,
+			Secured = 4,
+			Warning = 5
+		}
+
+		private void UpdateScanRiskState()
+		{
+			NfcScanRiskLevel Level = this.ComputeCurrentScanRiskLevel();
+
+			if (Level == NfcScanRiskLevel.Unknown)
+			{
+				this.ScanRiskLabel = string.Empty;
+				this.HasScanRiskLabel = false;
+				return;
+			}
+
+			this.ScanRiskLabel = Level switch
+			{
+				NfcScanRiskLevel.Safe => ServiceRef.Localizer[nameof(AppResources.NfcRiskSafe)],
+				NfcScanRiskLevel.Caution => ServiceRef.Localizer[nameof(AppResources.NfcRiskCaution)],
+				NfcScanRiskLevel.Dangerous => ServiceRef.Localizer[nameof(AppResources.NfcRiskDangerous)],
+				NfcScanRiskLevel.Secured => ServiceRef.Localizer[nameof(AppResources.NfcRiskSecured)],
+				NfcScanRiskLevel.Warning => ServiceRef.Localizer[nameof(AppResources.NfcRiskWarning)],
+				_ => string.Empty
+			};
+
+			this.HasScanRiskLabel = !string.IsNullOrWhiteSpace(this.ScanRiskLabel);
+		}
+
+		private NfcScanRiskLevel ComputeCurrentScanRiskLevel()
+		{
+			bool HasNdef = this.HasNdefSummary || this.HasNdefRecords;
+			bool HasUri = this.HasExtractedUri;
+
+			if (!HasNdef)
+				return NfcScanRiskLevel.Warning;
+
+			if (!HasUri)
+				return NfcScanRiskLevel.Safe;
+
+			string Candidate = this.LastExtractedUri?.Trim() ?? string.Empty;
+			string? KnownAppScheme = NeuroAccessMaui.Constants.UriSchemes.GetScheme(Candidate);
+
+			bool IsNonHttp = !string.Equals(this.LastExtractedUriScheme, "https", StringComparison.OrdinalIgnoreCase) &&
+				!string.Equals(this.LastExtractedUriScheme, "http", StringComparison.OrdinalIgnoreCase);
+
+			if (IsNonHttp && string.IsNullOrWhiteSpace(KnownAppScheme))
+				return NfcScanRiskLevel.Dangerous;
+
+			if (this.HasLastExtractedUriWarnings)
+				return NfcScanRiskLevel.Caution;
+
+			if (this.SafeScanEnabled && this.IsLastExtractedUriDomainTrusted)
+				return NfcScanRiskLevel.Secured;
+
+			if (this.SafeScanEnabled)
+				return NfcScanRiskLevel.Caution;
+
+			return NfcScanRiskLevel.Safe;
 		}
 
 		private void UpdateUriPreview(string UriText)
@@ -806,10 +972,13 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			if (!string.IsNullOrWhiteSpace(HostLower) && this.SafeScanEnabled)
 				this.CanTrustLastExtractedUriDomain = true;
 
+			string? KnownAppScheme = NeuroAccessMaui.Constants.UriSchemes.GetScheme(Candidate);
+
 			if (!string.Equals(Parsed.Scheme, "https", StringComparison.OrdinalIgnoreCase) &&
 				!string.Equals(Parsed.Scheme, "http", StringComparison.OrdinalIgnoreCase))
 			{
-				this.LastExtractedUriWarnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningNonHttp)]);
+				if (string.IsNullOrWhiteSpace(KnownAppScheme))
+					this.LastExtractedUriWarnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningNonHttp)]);
 			}
 
 			if (!string.IsNullOrWhiteSpace(HostLower) && HostLower.Contains("xn--", StringComparison.OrdinalIgnoreCase))
@@ -849,6 +1018,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			{
 				bool Enabled = await RuntimeSettings.GetAsync("NFC.SafeScan.Enabled", false);
 				this.SafeScanEnabled = Enabled;
+				await this.RefreshTrustedDomainHostsAsync();
 			}
 			catch (Exception Ex)
 			{
@@ -916,10 +1086,141 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 					return;
 				}
 
+				await this.TrustDomainInternalAsync(Host);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private async Task TrustDomainInternalAsync(string Host)
+		{
+			if (string.IsNullOrWhiteSpace(Host))
+				return;
+
+			HashSet<string> Trusted = await this.GetTrustedDomainsAsync();
+			Trusted.Add(Host.Trim().ToLowerInvariant());
+			await this.SetTrustedDomainsAsync(Trusted);
+			await this.RefreshTrustedDomainHostsAsync();
+			await this.UpdateTrustedDomainStateAsync();
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task AddTrustedDomainAsync()
+		{
+			try
+			{
+				if (!this.SafeScanEnabled)
+					return;
+
+				string Input = this.TrustedDomainToAdd?.Trim() ?? string.Empty;
+				if (string.IsNullOrWhiteSpace(Input))
+					return;
+
+				if (!this.TryNormalizeTrustedDomainInput(Input, out string Host))
+					return;
+
+				await this.TrustDomainInternalAsync(Host);
+				this.TrustedDomainToAdd = string.Empty;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task RemoveTrustedDomainAsync(string Domain)
+		{
+			try
+			{
+				if (!this.SafeScanEnabled)
+					return;
+
+				string Host = Domain?.Trim().ToLowerInvariant() ?? string.Empty;
+				if (string.IsNullOrWhiteSpace(Host))
+					return;
+
 				HashSet<string> Trusted = await this.GetTrustedDomainsAsync();
-				Trusted.Add(Host);
+				if (!Trusted.Remove(Host))
+					return;
+
 				await this.SetTrustedDomainsAsync(Trusted);
+				await this.RefreshTrustedDomainHostsAsync();
 				await this.UpdateTrustedDomainStateAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private bool TryNormalizeTrustedDomainInput(string Input, out string Host)
+		{
+			Host = string.Empty;
+
+			string Candidate = Input?.Trim() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(Candidate))
+				return false;
+
+			if (Candidate.Contains("://", StringComparison.OrdinalIgnoreCase))
+			{
+				if (!Uri.TryCreate(Candidate, UriKind.Absolute, out Uri? Parsed))
+					return false;
+
+				Host = (Parsed.Host ?? string.Empty).Trim().ToLowerInvariant();
+				return !string.IsNullOrWhiteSpace(Host);
+			}
+
+			if (Candidate.Contains(':'))
+			{
+				int ColonIndex = Candidate.IndexOf(':');
+				int SlashIndex = Candidate.IndexOf('/');
+				if (ColonIndex >= 0 && (SlashIndex < 0 || ColonIndex < SlashIndex))
+				{
+					// Looks like scheme-like input (e.g. xmpp: or iotid:). Not a domain allowlist entry.
+					return false;
+				}
+			}
+
+			string WithScheme = "https://" + Candidate;
+			if (!Uri.TryCreate(WithScheme, UriKind.Absolute, out Uri? ParsedWithScheme))
+				return false;
+
+			Host = (ParsedWithScheme.Host ?? string.Empty).Trim().ToLowerInvariant();
+			return !string.IsNullOrWhiteSpace(Host);
+		}
+
+		private async Task RefreshTrustedDomainHostsAsync()
+		{
+			try
+			{
+				if (!this.SafeScanEnabled)
+				{
+					MainThread.BeginInvokeOnMainThread(() =>
+					{
+						this.TrustedDomainHosts.Clear();
+						this.HasTrustedDomainHosts = false;
+					});
+					return;
+				}
+
+				HashSet<string> Trusted = await this.GetTrustedDomainsAsync();
+				string[] Sorted = Trusted
+					.Where(x => !string.IsNullOrWhiteSpace(x))
+					.Select(x => x.Trim().ToLowerInvariant())
+					.Distinct(StringComparer.OrdinalIgnoreCase)
+					.OrderBy(x => x, StringComparer.OrdinalIgnoreCase)
+					.ToArray();
+
+				MainThread.BeginInvokeOnMainThread(() =>
+				{
+					this.TrustedDomainHosts.Clear();
+					foreach (string Item in Sorted)
+						this.TrustedDomainHosts.Add(Item);
+					this.HasTrustedDomainHosts = this.TrustedDomainHosts.Count > 0;
+				});
 			}
 			catch (Exception Ex)
 			{
@@ -985,21 +1286,44 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				if (!this.SafeScanEnabled)
 					return true;
 
+				string Candidate = this.LastExtractedUri?.Trim() ?? string.Empty;
+				if (string.IsNullOrWhiteSpace(Candidate))
+					return false;
+
+				string? KnownAppScheme = NeuroAccessMaui.Constants.UriSchemes.GetScheme(Candidate);
+				if (!string.IsNullOrWhiteSpace(KnownAppScheme))
+					return true;
+
 				if (this.IsLastExtractedUriDomainTrusted)
 					return true;
 
-				string Message = ServiceRef.Localizer[nameof(AppResources.NfcOpenUnsafeLinkPrompt)];
-				if (this.HasLastExtractedUriWarnings)
-				{
-					string WarningList = string.Join("\n- ", this.LastExtractedUriWarnings);
-					Message = Message + "\n\n- " + WarningList;
-				}
+				string Host = this.LastExtractedUriHost?.Trim().ToLowerInvariant() ?? string.Empty;
+				bool CanTrustDomain = this.SafeScanEnabled && !string.IsNullOrWhiteSpace(Host);
 
-				return await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.NfcPotentiallyUnsafe)],
-					Message,
-					ServiceRef.Localizer[nameof(AppResources.Open)],
-					ServiceRef.Localizer[nameof(AppResources.Cancel)]);
+				UI.Popups.Nfc.NfcOpenLinkDecisionPopupViewModel ViewModel = new(
+					Candidate,
+					this.HasLastExtractedUriWarnings ? this.LastExtractedUriWarnings : Array.Empty<string>(),
+					CanTrustDomain);
+				UI.Popups.Nfc.NfcOpenLinkDecisionPopup Popup = new(ViewModel);
+
+				Services.UI.Popups.PopupOptions Options = Services.UI.Popups.PopupOptions.CreateModal();
+				await ServiceRef.PopupService.PushAsync(Popup, Options);
+
+				UI.Popups.Nfc.NfcOpenLinkDecision Decision = await ViewModel.Result;
+				switch (Decision)
+				{
+					case UI.Popups.Nfc.NfcOpenLinkDecision.OpenOnce:
+						return true;
+					case UI.Popups.Nfc.NfcOpenLinkDecision.TrustAndOpen:
+						if (!string.IsNullOrWhiteSpace(Host))
+							await this.TrustDomainInternalAsync(Host);
+						return true;
+					case UI.Popups.Nfc.NfcOpenLinkDecision.CopyLink:
+					case UI.Popups.Nfc.NfcOpenLinkDecision.Cancel:
+					case UI.Popups.Nfc.NfcOpenLinkDecision.None:
+					default:
+						return false;
+				}
 			}
 			catch
 			{
@@ -1048,6 +1372,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				if (!this.SafeScanEnabled)
 				{
 					this.IsLastExtractedUriDomainTrusted = false;
+					this.UpdateScanRiskState();
 					return;
 				}
 
@@ -1055,16 +1380,19 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				if (string.IsNullOrWhiteSpace(Host))
 				{
 					this.IsLastExtractedUriDomainTrusted = false;
+					this.UpdateScanRiskState();
 					return;
 				}
 
 				HashSet<string> Trusted = await this.GetTrustedDomainsAsync();
 				this.IsLastExtractedUriDomainTrusted = Trusted.Contains(Host);
+				this.UpdateScanRiskState();
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 				this.IsLastExtractedUriDomainTrusted = false;
+				this.UpdateScanRiskState();
 			}
 		}
 
@@ -1116,6 +1444,15 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 	/// </summary>
 	public sealed class NfcScanHistoryListItem
 	{
+		private enum NfcScanRiskLevel
+		{
+			Unknown = 0,
+			Safe = 1,
+			Caution = 2,
+			Dangerous = 3,
+			Secured = 4,
+			Warning = 5
+		}
 		/// <summary>
 		/// Gets the record identifier.
 		/// </summary>
@@ -1157,12 +1494,35 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 		public IReadOnlyList<NfcNdefRecordSnapshot>? NdefRecords { get; init; }
 
 		/// <summary>
+		/// Gets a scan risk label suitable for display.
+		/// </summary>
+		public string ScanRiskLabel { get; init; } = string.Empty;
+
+		/// <summary>
+		/// Gets a value indicating whether <see cref="ScanRiskLabel"/> is present.
+		/// </summary>
+		public bool HasScanRiskLabel => !string.IsNullOrWhiteSpace(this.ScanRiskLabel);
+
+		/// <summary>
 		/// Creates an instance from a persisted history record.
 		/// </summary>
 		/// <param name="Record">Record to convert.</param>
 		/// <returns>Converted list item.</returns>
-		public static NfcScanHistoryListItem FromRecord(NfcScanHistoryRecord Record)
+		public static NfcScanHistoryListItem FromRecord(NfcScanHistoryRecord Record, bool SafeScanEnabled, ISet<string>? TrustedDomains)
 		{
+			string ExtractedUri = Record.ExtractedUri?.Trim() ?? string.Empty;
+			bool HasNdef = !string.IsNullOrWhiteSpace(Record.NdefSummary) || (Record.NdefRecords?.Length ?? 0) > 0;
+			NfcScanRiskLevel RiskLevel = ComputeHistoryRiskLevel(ExtractedUri, HasNdef, SafeScanEnabled, TrustedDomains);
+			string RiskLabel = RiskLevel switch
+			{
+				NfcScanRiskLevel.Safe => ServiceRef.Localizer[nameof(AppResources.NfcRiskSafe)],
+				NfcScanRiskLevel.Caution => ServiceRef.Localizer[nameof(AppResources.NfcRiskCaution)],
+				NfcScanRiskLevel.Dangerous => ServiceRef.Localizer[nameof(AppResources.NfcRiskDangerous)],
+				NfcScanRiskLevel.Secured => ServiceRef.Localizer[nameof(AppResources.NfcRiskSecured)],
+				NfcScanRiskLevel.Warning => ServiceRef.Localizer[nameof(AppResources.NfcRiskWarning)],
+				_ => string.Empty
+			};
+
 			return new NfcScanHistoryListItem
 			{
 				ObjectId = Record.ObjectId,
@@ -1172,8 +1532,64 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				InterfacesSummary = Record.InterfacesSummary,
 				NdefSummary = Record.NdefSummary,
 				ExtractedUri = Record.ExtractedUri,
-				NdefRecords = Record.NdefRecords
+				NdefRecords = Record.NdefRecords,
+				ScanRiskLabel = RiskLabel
 			};
+		}
+
+		private static NfcScanRiskLevel ComputeHistoryRiskLevel(string ExtractedUri, bool HasNdef, bool SafeScanEnabled, ISet<string>? TrustedDomains)
+		{
+			if (!HasNdef)
+				return NfcScanRiskLevel.Warning;
+
+			if (string.IsNullOrWhiteSpace(ExtractedUri))
+				return NfcScanRiskLevel.Safe;
+
+			if (!Uri.TryCreate(ExtractedUri, UriKind.Absolute, out Uri? Parsed))
+				return NfcScanRiskLevel.Caution;
+
+			string? KnownAppScheme = NeuroAccessMaui.Constants.UriSchemes.GetScheme(ExtractedUri);
+
+			bool IsNonHttp = !string.Equals(Parsed.Scheme, "https", StringComparison.OrdinalIgnoreCase) &&
+				!string.Equals(Parsed.Scheme, "http", StringComparison.OrdinalIgnoreCase);
+			if (IsNonHttp && string.IsNullOrWhiteSpace(KnownAppScheme))
+				return NfcScanRiskLevel.Dangerous;
+
+			string HostLower = (Parsed.Host ?? string.Empty).Trim().ToLowerInvariant();
+			bool HasWarnings = false;
+
+			if (!string.IsNullOrWhiteSpace(HostLower) && HostLower.Contains("xn--", StringComparison.OrdinalIgnoreCase))
+				HasWarnings = true;
+
+			if (!string.IsNullOrWhiteSpace(HostLower) && IPAddress.TryParse(HostLower, out _))
+				HasWarnings = true;
+
+			if (IsKnownShortenerHost(HostLower))
+				HasWarnings = true;
+
+			if (HasWarnings)
+				return NfcScanRiskLevel.Caution;
+
+			if (SafeScanEnabled && !string.IsNullOrWhiteSpace(HostLower) && TrustedDomains is not null && TrustedDomains.Contains(HostLower))
+				return NfcScanRiskLevel.Secured;
+
+			if (SafeScanEnabled)
+				return NfcScanRiskLevel.Caution;
+
+			return NfcScanRiskLevel.Safe;
+		}
+
+		private static bool IsKnownShortenerHost(string HostLower)
+		{
+			if (string.IsNullOrWhiteSpace(HostLower))
+				return false;
+
+			return HostLower == "t.co" ||
+				HostLower == "bit.ly" ||
+				HostLower == "tinyurl.com" ||
+				HostLower == "goo.gl" ||
+				HostLower == "ow.ly" ||
+				HostLower == "is.gd";
 		}
 	}
 }
