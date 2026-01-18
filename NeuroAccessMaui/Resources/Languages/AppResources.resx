@@ -144,6 +144,24 @@
   <data name="IdentityState_Rejected" xml:space="preserve">
     <value>Rejected</value>
   </data>
+    <data name="NfcDebugToolsTitle" xml:space="preserve">
+      <value>Debug tools</value>
+    </data>
+    <data name="NfcDebugToolsDescription" xml:space="preserve">
+      <value>Fake scans for testing/demo. (Enable by tapping the title 7 times.)</value>
+    </data>
+    <data name="NfcDebugFakeScanUri" xml:space="preserve">
+      <value>Fake scan (URI)</value>
+    </data>
+    <data name="NfcDebugFakeScanNoNdef" xml:space="preserve">
+      <value>Fake scan (no NDEF)</value>
+    </data>
+    <data name="NfcDebugToolsEnabled" xml:space="preserve">
+      <value>Debug tools enabled.</value>
+    </data>
+    <data name="NfcDebugToolsDisabled" xml:space="preserve">
+      <value>Debug tools disabled.</value>
+    </data>
   <data name="TagEngraved" xml:space="preserve">
     <value>Tag Engraved with link to {0}.</value>
   </data>
@@ -3008,6 +3026,66 @@
   </data>
   <data name="NfcWriteUri" xml:space="preserve">
     <value>Write a URI to an NFC tag</value>
+  </data>
+  <data name="NfcWriteInfo" xml:space="preserve">
+    <value>Write an NDEF record to an NFC tag</value>
+  </data>
+  <data name="NfcSafetySettingsTitle" xml:space="preserve">
+    <value>Safety settings</value>
+  </data>
+  <data name="NfcWriteInsertFromTitle" xml:space="preserve">
+    <value>Insert from</value>
+  </data>
+  <data name="NfcWriteInsertFromDescription" xml:space="preserve">
+    <value>Quickly compose a payload from your wallet, contracts, or tokens.</value>
+  </data>
+  <data name="NfcWriteInsertEdalerUri" xml:space="preserve">
+    <value>eDaler</value>
+  </data>
+  <data name="NfcWriteInsertContract" xml:space="preserve">
+    <value>Contract</value>
+  </data>
+  <data name="NfcWriteInsertToken" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="NfcWritePayloadTypeLabel" xml:space="preserve">
+    <value>Payload type</value>
+  </data>
+  <data name="NfcWritePayloadTypeUri" xml:space="preserve">
+    <value>URI</value>
+  </data>
+  <data name="NfcWritePayloadTypeText" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="NfcWriteTextLabel" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="NfcWriteTextPlaceholder" xml:space="preserve">
+    <value>Enter text</value>
+  </data>
+  <data name="NfcWriteSizeSummary" xml:space="preserve">
+    <value>Estimated size: {1} bytes (payload {0} bytes)</value>
+  </data>
+  <data name="NfcWriteVerifyAfterWrite" xml:space="preserve">
+    <value>Verify after write</value>
+  </data>
+  <data name="NfcWriteVerifyAfterWriteDescription" xml:space="preserve">
+    <value>After writing, tap the same tag again to confirm the content.</value>
+  </data>
+  <data name="NfcWriteVerificationPending" xml:space="preserve">
+    <value>Write succeeded. Tap tag again to verify…</value>
+  </data>
+  <data name="NfcWriteVerificationSucceeded" xml:space="preserve">
+    <value>Verification succeeded</value>
+  </data>
+  <data name="NfcWriteVerificationFailed" xml:space="preserve">
+    <value>Verification failed</value>
+  </data>
+  <data name="NfcWriteInvalidUri" xml:space="preserve">
+    <value>Invalid URI</value>
+  </data>
+  <data name="NfcWriteInvalidText" xml:space="preserve">
+    <value>Text is empty</value>
   </data>
   <data name="NfcStartScan" xml:space="preserve">
     <value>Start scan</value>

@@ -133,10 +133,12 @@
 						</VerticalStackLayout>
 					</Border>
 
-					<Border Style="{DynamicResource BorderSubSet}">
+					<Border Style="{DynamicResource BorderSubSet}"
+							IsVisible="{Binding HasNdefInfo}">
 						<VerticalStackLayout Spacing="12">
 							<Grid ColumnDefinitions="*, auto"
 									RowDefinitions="auto, auto">
+									IsVisible="{Binding HasNdefSummary}">
 								<Grid.GestureRecognizers>
 									<TapGestureRecognizer Command="{Binding CopyValueCommand}"
 											CommandParameter="{Binding Item.NdefSummary}"/>

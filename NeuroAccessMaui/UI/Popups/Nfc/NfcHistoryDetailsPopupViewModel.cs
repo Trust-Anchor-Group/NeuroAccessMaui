@@ -10,6 +10,7 @@ using Microsoft.Maui.Storage;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages.Main.Nfc;
+using Waher.Runtime.Settings;
 
 namespace NeuroAccessMaui.UI.Popups.Nfc
 {
@@ -27,7 +28,9 @@ namespace NeuroAccessMaui.UI.Popups.Nfc
 		{
 			this.Item = Item ?? throw new ArgumentNullException(nameof(Item));
 			this.HasUri = !string.IsNullOrWhiteSpace(this.Item.ExtractedUri);
+			this.HasNdefSummary = !string.IsNullOrWhiteSpace(this.Item.NdefSummary);
 			this.HasNdefRecords = this.Item.NdefRecords is not null && this.Item.NdefRecords.Count > 0;
+			this.HasNdefInfo = this.HasNdefSummary || this.HasUri;
 		}
 
 		/// <summary>
@@ -41,6 +44,18 @@ namespace NeuroAccessMaui.UI.Popups.Nfc
 		/// </summary>
 		[ObservableProperty]
 		private bool hasUri;
+
+		/// <summary>
+		/// Gets a value indicating whether the item has an NDEF summary string.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasNdefSummary;
+
+		/// <summary>
+		/// Gets a value indicating whether the item has any NDEF-related information to show.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasNdefInfo;
 
 		/// <summary>
 		/// Gets a value indicating whether the item has decoded NDEF records.
@@ -104,6 +119,9 @@ namespace NeuroAccessMaui.UI.Popups.Nfc
 				if (string.IsNullOrWhiteSpace(Candidate))
 					return;
 
+				if (!await this.ConfirmOpenUriAsync(Candidate))
+					return;
+
 				if (!await ServiceRef.AuthenticationService.AuthenticateUserAsync(AuthenticationPurpose.NfcTagDetected))
 					return;
 
@@ -112,6 +130,87 @@ namespace NeuroAccessMaui.UI.Popups.Nfc
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private async Task<bool> ConfirmOpenUriAsync(string UriString)
+		{
+			try
+			{
+				bool SafeScanEnabled = await RuntimeSettings.GetAsync("NFC.SafeScan.Enabled", false);
+				if (!SafeScanEnabled)
+					return true;
+
+				string? KnownAppScheme = NeuroAccessMaui.Constants.UriSchemes.GetScheme(UriString);
+				if (!string.IsNullOrWhiteSpace(KnownAppScheme))
+					return true;
+
+				string Host = string.Empty;
+				if (System.Uri.TryCreate(UriString, System.UriKind.Absolute, out System.Uri? Parsed))				
+					Host = (Parsed.Host ?? string.Empty).Trim().ToLowerInvariant();
+
+				if (!string.IsNullOrWhiteSpace(Host))
+				{
+					string Json = await RuntimeSettings.GetAsync("NFC.SafeScan.TrustedDomains", "[]");
+					string[]? Items = null;
+					try
+					{
+						Items = JsonSerializer.Deserialize<string[]>(Json);
+					}
+					catch
+					{
+						Items = null;
+					}
+
+					if (Items is not null && Items.Any(x => string.Equals((x ?? string.Empty).Trim(), Host, StringComparison.OrdinalIgnoreCase)))
+						return true;
+				}
+
+				bool CanTrustDomain = !string.IsNullOrWhiteSpace(Host);
+				UI.Popups.Nfc.NfcOpenLinkDecisionPopupViewModel ViewModel = new(
+					UriString,
+					Warnings: Array.Empty<string>(),
+					CanTrustDomain: CanTrustDomain);
+				UI.Popups.Nfc.NfcOpenLinkDecisionPopup Popup = new(ViewModel);
+
+				Services.UI.Popups.PopupOptions Options = Services.UI.Popups.PopupOptions.CreateModal();
+				await ServiceRef.PopupService.PushAsync(Popup, Options);
+
+				UI.Popups.Nfc.NfcOpenLinkDecision Decision = await ViewModel.Result;
+				switch (Decision)
+				{
+					case UI.Popups.Nfc.NfcOpenLinkDecision.OpenOnce:
+						return true;
+					case UI.Popups.Nfc.NfcOpenLinkDecision.TrustAndOpen:
+						if (!string.IsNullOrWhiteSpace(Host))
+						{
+							string Json = await RuntimeSettings.GetAsync("NFC.SafeScan.TrustedDomains", "[]");
+							HashSet<string> Trusted;
+							try
+							{
+								string[]? Items = JsonSerializer.Deserialize<string[]>(Json);
+								Trusted = new HashSet<string>((Items ?? System.Array.Empty<string>()).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim().ToLowerInvariant()), StringComparer.OrdinalIgnoreCase);
+							}
+							catch
+							{
+								Trusted = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+							}
+
+							Trusted.Add(Host);
+							string[] Array = Trusted.OrderBy(x => x, StringComparer.OrdinalIgnoreCase).ToArray();
+							await RuntimeSettings.SetAsync("NFC.SafeScan.TrustedDomains", JsonSerializer.Serialize(Array));
+						}
+						return true;
+					case UI.Popups.Nfc.NfcOpenLinkDecision.CopyLink:
+					case UI.Popups.Nfc.NfcOpenLinkDecision.Cancel:
+					case UI.Popups.Nfc.NfcOpenLinkDecision.None:
+					default:
+						return false;
+				}
+			}
+			catch
+			{
+				return true;
 			}
 		}
 

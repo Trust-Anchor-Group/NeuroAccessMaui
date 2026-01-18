@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using EDaler.Uris;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,12 +15,22 @@ using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Nfc.Ui;
 using NeuroAccessMaui.UI;
+using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
+using NeuroAccessMaui.UI.Pages.Wallet;
+using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
+using NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels;
+using NeuroAccessMaui.UI.Pages.Wallet.SendPayment;
+using NeuroAccessMaui.UI.Popups.Nfc;
+using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Settings;
 using System.IO;
 using System.Text.Json;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Security.Cryptography;
+using NeuroAccessMaui.Services.UI.Popups;
+using NeuroAccessMaui.Services.UI;
 
 namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 {
@@ -36,6 +47,18 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 
 		private CancellationTokenSource? writeCancellationTokenSource;
 		private CancellationTokenSource? readCancellationTokenSource;
+		private DateTimeOffset? debugToolsLastTapAtUtc;
+		private int debugToolsTapCount;
+
+		private const string DebugToolsEnabledSettingsKey = "NFC.DebugTools.Enabled";
+		private static readonly TimeSpan DebugToolsTapWindow = TimeSpan.FromSeconds(2);
+		private const int DebugToolsTapThreshold = 7;
+
+#if DEBUG
+		private const bool DefaultDebugToolsEnabled = true;
+#else
+		private const bool DefaultDebugToolsEnabled = false;
+#endif
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="NfcViewModel"/> class.
@@ -49,6 +72,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			this.authenticationService = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
 
 			this.SelectedTabKey = "Read";
+			this.BuildWritePayloadTypeOptions();
+			this.UpdateWriteComposerState();
 			this.UpdateFromSnapshot(this.nfcTagSnapshotService.LastSnapshot);
 		}
 
@@ -59,6 +84,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			this.nfcTagSnapshotService.SnapshotChanged += this.NfcTagSnapshotService_SnapshotChanged;
 			this.nfcScanHistoryService.HistoryChanged += this.NfcScanHistoryService_HistoryChanged;
 			await this.LoadSafeScanSettingAsync();
+			await this.LoadDebugToolsSettingAsync();
 		}
 
 		/// <inheritdoc />
@@ -169,6 +195,9 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 		private bool safeScanEnabled;
 
 		[ObservableProperty]
+		private bool isDebugToolsEnabled;
+
+		[ObservableProperty]
 		private ObservableCollection<string> trustedDomainHosts = new();
 
 		[ObservableProperty]
@@ -192,7 +221,37 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 		private bool hasExtractedUri;
 
 		[ObservableProperty]
+		private ObservableCollection<NfcWritePayloadTypeOption> writePayloadTypeOptions = new();
+
+		[ObservableProperty]
+		private NfcWritePayloadTypeOption? selectedWritePayload;
+
+		[ObservableProperty]
+		private bool isWritePayloadUri;
+
+		[ObservableProperty]
+		private bool isWritePayloadText;
+
+		[ObservableProperty]
 		private string uriToWrite = string.Empty;
+
+		[ObservableProperty]
+		private string textToWrite = string.Empty;
+
+		[ObservableProperty]
+		private string writeSizeText = string.Empty;
+
+		[ObservableProperty]
+		private bool hasWriteSizeText;
+
+		[ObservableProperty]
+		private bool verifyAfterWrite;
+
+		private bool isVerificationPending;
+		private DateTimeOffset? verificationStartedAtUtc;
+		private string verificationExpectedTagIdHex = string.Empty;
+		private string verificationExpectedValue = string.Empty;
+		private NfcWritePayloadKind verificationExpectedKind = NfcWritePayloadKind.Uri;
 
 		[ObservableProperty]
 		private string writeStatusText = string.Empty;
@@ -649,10 +708,27 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 		{
 			try
 			{
-				if (string.IsNullOrWhiteSpace(this.UriToWrite))
+				if (this.SelectedWritePayload is null)
 				{
 					this.WriteStatusText = ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
 					return;
+				}
+
+				if (this.SelectedWritePayload.Kind == NfcWritePayloadKind.Uri)
+				{
+					if (!Uri.TryCreate(this.UriToWrite?.Trim(), UriKind.Absolute, out _))
+					{
+						this.WriteStatusText = ServiceRef.Localizer[nameof(AppResources.NfcWriteInvalidUri)];
+						return;
+					}
+				}
+				else
+				{
+					if (string.IsNullOrWhiteSpace(this.TextToWrite))
+					{
+						this.WriteStatusText = ServiceRef.Localizer[nameof(AppResources.NfcWriteInvalidText)];
+						return;
+					}
 				}
 
 				if (this.writeCancellationTokenSource is not null)
@@ -662,10 +738,38 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				}
 
 				this.writeCancellationTokenSource = new CancellationTokenSource();
-				this.WriteStatusText = ServiceRef.Localizer["NfcWritePending"];
+				this.WriteStatusText = ServiceRef.Localizer[nameof(AppResources.NfcWritePending)];
 
-				bool Ok = await this.nfcWriteService.WriteUriAsync(this.UriToWrite.Trim(), this.writeCancellationTokenSource.Token);
-				this.WriteStatusText = Ok ? ServiceRef.Localizer["NfcWriteSucceeded"] : ServiceRef.Localizer["NfcWriteFailed"];
+				this.isVerificationPending = false;
+				this.verificationStartedAtUtc = null;
+				this.verificationExpectedTagIdHex = string.Empty;
+				this.verificationExpectedValue = string.Empty;
+
+				bool Ok;
+				if (this.SelectedWritePayload.Kind == NfcWritePayloadKind.Uri)
+					Ok = await this.nfcWriteService.WriteUriAsync(this.UriToWrite.Trim(), this.writeCancellationTokenSource.Token);
+				else
+					Ok = await this.nfcWriteService.WriteTextAsync(this.TextToWrite.Trim(), this.writeCancellationTokenSource.Token);
+
+				if (!Ok)
+				{
+					this.WriteStatusText = ServiceRef.Localizer[nameof(AppResources.NfcWriteFailed)];
+					return;
+				}
+
+				if (this.VerifyAfterWrite)
+				{
+					this.isVerificationPending = true;
+					this.verificationStartedAtUtc = DateTimeOffset.UtcNow;
+					this.verificationExpectedTagIdHex = this.LastTagIdHex ?? string.Empty;
+					this.verificationExpectedKind = this.SelectedWritePayload.Kind;
+					this.verificationExpectedValue = this.SelectedWritePayload.Kind == NfcWritePayloadKind.Uri ? this.UriToWrite.Trim() : this.TextToWrite.Trim();
+					this.WriteStatusText = ServiceRef.Localizer[nameof(AppResources.NfcWriteVerificationPending)];
+				}
+				else
+				{
+					this.WriteStatusText = ServiceRef.Localizer[nameof(AppResources.NfcWriteSucceeded)];
+				}
 			}
 			catch (OperationCanceledException)
 			{
@@ -684,6 +788,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			try
 			{
 				this.writeCancellationTokenSource?.Cancel();
+				this.nfcWriteService.CancelPendingWrite();
 			}
 			catch
 			{
@@ -692,7 +797,172 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 
 		private void NfcTagSnapshotService_SnapshotChanged(object? Sender, EventArgs e)
 		{
-			this.UpdateFromSnapshot(this.nfcTagSnapshotService.LastSnapshot);
+			NfcTagSnapshot? Snapshot = this.nfcTagSnapshotService.LastSnapshot;
+			this.UpdateFromSnapshot(Snapshot);
+			this.TryCompleteWriteVerification(Snapshot);
+		}
+
+		private void BuildWritePayloadTypeOptions()
+		{
+			this.WritePayloadTypeOptions.Clear();
+			this.WritePayloadTypeOptions.Add(new NfcWritePayloadTypeOption(NfcWritePayloadKind.Uri, ServiceRef.Localizer[nameof(AppResources.NfcWritePayloadTypeUri)]));
+			this.WritePayloadTypeOptions.Add(new NfcWritePayloadTypeOption(NfcWritePayloadKind.Text, ServiceRef.Localizer[nameof(AppResources.NfcWritePayloadTypeText)]));
+
+			this.SelectedWritePayload = this.WritePayloadTypeOptions.FirstOrDefault();
+		}
+
+		private void UpdateWriteComposerState()
+		{
+			NfcWritePayloadKind Kind = this.SelectedWritePayload?.Kind ?? NfcWritePayloadKind.Uri;
+			this.IsWritePayloadUri = Kind == NfcWritePayloadKind.Uri;
+			this.IsWritePayloadText = Kind == NfcWritePayloadKind.Text;
+			this.UpdateWriteSizeEstimate();
+		}
+
+		private void UpdateWriteSizeEstimate()
+		{
+			int PayloadBytes = 0;
+			int EstimatedRecordBytes = 0;
+
+			NfcWritePayloadKind Kind = this.SelectedWritePayload?.Kind ?? NfcWritePayloadKind.Uri;
+			if (Kind == NfcWritePayloadKind.Uri)
+			{
+				string Candidate = this.UriToWrite?.Trim() ?? string.Empty;
+				if (!string.IsNullOrWhiteSpace(Candidate))
+				{
+					PayloadBytes = Encoding.UTF8.GetByteCount(Candidate);
+					int NdefPayloadBytes = 1 + PayloadBytes;
+					EstimatedRecordBytes = 4 + NdefPayloadBytes;
+				}
+			}
+			else
+			{
+				string Candidate = this.TextToWrite?.Trim() ?? string.Empty;
+				if (!string.IsNullOrWhiteSpace(Candidate))
+				{
+					PayloadBytes = Encoding.UTF8.GetByteCount(Candidate);
+					int NdefPayloadBytes = 1 + 2 + PayloadBytes;
+					EstimatedRecordBytes = 4 + NdefPayloadBytes;
+				}
+			}
+
+			if (EstimatedRecordBytes > 0)
+			{
+				this.WriteSizeText = ServiceRef.Localizer[nameof(AppResources.NfcWriteSizeSummary), PayloadBytes, EstimatedRecordBytes];
+				this.HasWriteSizeText = true;
+			}
+			else
+			{
+				this.WriteSizeText = string.Empty;
+				this.HasWriteSizeText = false;
+			}
+		}
+
+		private void TryCompleteWriteVerification(NfcTagSnapshot? Snapshot)
+		{
+			if (!this.isVerificationPending)
+				return;
+
+			if (Snapshot is null)
+				return;
+
+			if (this.verificationStartedAtUtc.HasValue && (DateTimeOffset.UtcNow - this.verificationStartedAtUtc.Value) > TimeSpan.FromMinutes(2))
+			{
+				this.isVerificationPending = false;
+				return;
+			}
+
+			string ExpectedTagIdHex = this.verificationExpectedTagIdHex?.Trim() ?? string.Empty;
+			if (!string.IsNullOrWhiteSpace(ExpectedTagIdHex) &&
+				!string.Equals(ExpectedTagIdHex, Snapshot.TagIdHex ?? string.Empty, StringComparison.OrdinalIgnoreCase))
+			{
+				return;
+			}
+
+			bool Matches;
+			if (this.verificationExpectedKind == NfcWritePayloadKind.Uri)
+			{
+				string Candidate = Snapshot.ExtractedUri?.Trim() ?? string.Empty;
+				Matches = string.Equals(Candidate, this.verificationExpectedValue, StringComparison.OrdinalIgnoreCase);
+			}
+			else
+			{
+				string Expected = this.verificationExpectedValue;
+				IReadOnlyList<NfcNdefRecordSnapshot>? Records = Snapshot.NdefRecords;
+				Matches = Records is not null && Records.Any(r =>
+					string.Equals(r.WellKnownType, "T", StringComparison.OrdinalIgnoreCase) &&
+					string.Equals((r.Text ?? string.Empty).Trim(), Expected, StringComparison.Ordinal));
+			}
+
+			this.isVerificationPending = false;
+			this.verificationStartedAtUtc = null;
+			this.WriteStatusText = Matches
+				? ServiceRef.Localizer[nameof(AppResources.NfcWriteVerificationSucceeded)]
+				: ServiceRef.Localizer[nameof(AppResources.NfcWriteVerificationFailed)];
+		}
+
+		partial void OnSelectedWritePayloadChanged(NfcWritePayloadTypeOption? value)
+		{
+			this.UpdateWriteComposerState();
+		}
+
+		partial void OnUriToWriteChanged(string value)
+		{
+			this.UpdateWriteSizeEstimate();
+		}
+
+		partial void OnTextToWriteChanged(string value)
+		{
+			this.UpdateWriteSizeEstimate();
+		}
+
+		/// <summary>
+		/// Enumerates supported NFC write payload kinds.
+		/// </summary>
+		public enum NfcWritePayloadKind
+		{
+			/// <summary>
+			/// A URI record.
+			/// </summary>
+			Uri,
+
+			/// <summary>
+			/// A text record.
+			/// </summary>
+			Text
+		}
+
+		/// <summary>
+		/// Represents a selectable payload type option in the NFC write composer.
+		/// </summary>
+		public sealed class NfcWritePayloadTypeOption
+		{
+			/// <summary>
+			/// Initializes a new instance of the <see cref="NfcWritePayloadTypeOption"/> class.
+			/// </summary>
+			/// <param name="Kind">Payload kind.</param>
+			/// <param name="Label">User-visible label.</param>
+			public NfcWritePayloadTypeOption(NfcWritePayloadKind Kind, string Label)
+			{
+				this.Kind = Kind;
+				this.Label = Label ?? string.Empty;
+			}
+
+			/// <summary>
+			/// Gets the payload kind.
+			/// </summary>
+			public NfcWritePayloadKind Kind { get; }
+
+			/// <summary>
+			/// Gets the user-visible label.
+			/// </summary>
+			public string Label { get; }
+
+			/// <inheritdoc/>
+			public override string ToString()
+			{
+				return this.Label;
+			}
 		}
 
 		private void NfcScanHistoryService_HistoryChanged(object? Sender, EventArgs e)
@@ -1024,6 +1294,142 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			{
 				ServiceRef.LogService.LogException(Ex);
 			}
+		}
+
+		private async Task LoadDebugToolsSettingAsync()
+		{
+			try
+			{
+				bool Enabled = await RuntimeSettings.GetAsync(DebugToolsEnabledSettingsKey, DefaultDebugToolsEnabled);
+				this.IsDebugToolsEnabled = Enabled;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task TitleTappedAsync()
+		{
+			try
+			{
+				DateTimeOffset NowUtc = DateTimeOffset.UtcNow;
+				if (this.debugToolsLastTapAtUtc is null || (NowUtc - this.debugToolsLastTapAtUtc.Value) > DebugToolsTapWindow)
+					this.debugToolsTapCount = 0;
+
+				this.debugToolsTapCount++;
+				this.debugToolsLastTapAtUtc = NowUtc;
+
+				if (this.debugToolsTapCount < DebugToolsTapThreshold)
+					return;
+
+				this.debugToolsTapCount = 0;
+
+				bool NewValue = !this.IsDebugToolsEnabled;
+				await RuntimeSettings.SetAsync(DebugToolsEnabledSettingsKey, NewValue);
+				this.IsDebugToolsEnabled = NewValue;
+
+				string Message = NewValue
+					? ServiceRef.Localizer[nameof(AppResources.NfcDebugToolsEnabled)]
+					: ServiceRef.Localizer[nameof(AppResources.NfcDebugToolsDisabled)];
+
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.NFC)],
+					Message,
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private void FakeScanUri()
+		{
+			try
+			{
+				if (!this.IsDebugToolsEnabled)
+					return;
+
+				string Timestamp = DateTimeOffset.UtcNow.ToString("O");
+				string Uri = "https://example.org/neuroaccess/nfc-test?ts=" + WebUtility.UrlEncode(Timestamp);
+				string TagIdHex = this.CreateFakeTagIdHex();
+
+				List<NfcNdefRecordSnapshot> Records = new()
+				{
+					new NfcNdefRecordSnapshot(
+						0,
+						"URI",
+						"WellKnown",
+						"U",
+						null,
+						null,
+						Uri,
+						null,
+						Encoding.UTF8.GetBytes(Uri),
+						IsPayloadDerived: true),
+					new NfcNdefRecordSnapshot(
+						1,
+						"Text",
+						"WellKnown",
+						"T",
+						null,
+						null,
+						null,
+						"Hello from fake NFC",
+						Encoding.UTF8.GetBytes("Hello from fake NFC"),
+						IsPayloadDerived: true),
+				};
+
+				NfcTagSnapshot Snapshot = new(
+					TagIdHex,
+					DateTimeOffset.UtcNow,
+					"NDEF",
+					"NfcA, NDEF",
+					"URI + Text",
+					Uri,
+					Records);
+
+				MainThread.BeginInvokeOnMainThread(() => this.nfcTagSnapshotService.Publish(Snapshot));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private void FakeScanNoNdef()
+		{
+			try
+			{
+				if (!this.IsDebugToolsEnabled)
+					return;
+
+				NfcTagSnapshot Snapshot = new(
+					this.CreateFakeTagIdHex(),
+					DateTimeOffset.UtcNow,
+					"IsoDep",
+					"IsoDep, NfcA",
+					null,
+					null,
+					null);
+
+				MainThread.BeginInvokeOnMainThread(() => this.nfcTagSnapshotService.Publish(Snapshot));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private string CreateFakeTagIdHex()
+		{
+			Span<byte> Data = stackalloc byte[7];
+			RandomNumberGenerator.Fill(Data);
+			return Convert.ToHexString(Data);
 		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
@@ -1393,6 +1799,133 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				ServiceRef.LogService.LogException(Ex);
 				this.IsLastExtractedUriDomainTrusted = false;
 				this.UpdateScanRiskState();
+			}
+		}
+
+		/// <summary>
+		/// Opens the NFC safety settings popup.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task OpenSafetySettingsAsync()
+		{
+			try
+			{
+				NfcSafetySettingsPopup Popup = new(this);
+				PopupOptions Options = PopupOptions.CreateModal();
+				await ServiceRef.PopupService.PushAsync(Popup, Options);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Closes the NFC safety settings popup.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task CloseSafetySettingsPopupAsync()
+		{
+			try
+			{
+				await ServiceRef.PopupService.PopAsync();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Inserts an eDaler URI into the NFC write composer.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task InsertEdalerUriAsync()
+		{
+			try
+			{
+				EDaler.Balance CurrentBalance = await ServiceRef.XmppService.GetEDalerBalance();
+				string Candidate = "edaler:cu=" + (CurrentBalance.Currency ?? string.Empty);
+				if (!EDalerUri.TryParse(Candidate, out EDalerUri Parsed))
+					return;
+
+				TaskCompletionSource<string?> UriToSend = new();
+				TaskCompletionSource<string?> MessageToSend = new();
+				EDalerUriNavigationArgs Args = new(Parsed, string.Empty, UriToSend, MessageToSend);
+				await ServiceRef.NavigationService.GoToAsync(nameof(SendPaymentPage), Args, BackMethod.Pop);
+
+				string? Uri = await UriToSend.Task;
+				if (string.IsNullOrWhiteSpace(Uri))
+					return;
+
+				this.SelectedWritePayload = this.WritePayloadTypeOptions.FirstOrDefault(x => x.Kind == NfcWritePayloadKind.Uri) ?? this.SelectedWritePayload;
+				this.UriToWrite = Uri;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Inserts a contract payload into the NFC write composer.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task InsertContractPayloadAsync()
+		{
+			try
+			{
+				TaskCompletionSource<Contract?> SelectedContract = new();
+				MyContractsNavigationArgs Args = new(ContractsListMode.Contracts, SelectedContract);
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyContractsPage), Args, Services.UI.BackMethod.Pop);
+
+				Contract? Contract = await SelectedContract.Task;
+				if (Contract is null)
+					return;
+
+				StringBuilder Markdown = new();
+				Markdown.Append("```");
+				Markdown.AppendLine(NeuroAccessMaui.Constants.UriSchemes.IotSc);
+				Contract.Serialize(Markdown, true, true, true, true, true, true, true);
+				Markdown.AppendLine();
+				Markdown.AppendLine("```");
+
+				this.SelectedWritePayload = this.WritePayloadTypeOptions.FirstOrDefault(x => x.Kind == NfcWritePayloadKind.Text) ?? this.SelectedWritePayload;
+				this.TextToWrite = Markdown.ToString();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		/// <summary>
+		/// Inserts a token payload into the NFC write composer.
+		/// </summary>
+		[RelayCommand(AllowConcurrentExecutions = false)]
+		private async Task InsertTokenPayloadAsync()
+		{
+			try
+			{
+				MyTokensNavigationArgs Args = new();
+				await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage), Args, BackMethod.Pop);
+
+				TokenItem? Selected = await Args.TokenItemProvider.Task;
+				if (Selected is null)
+					return;
+
+				StringBuilder Markdown = new();
+				Markdown.AppendLine("```nfeat");
+				Selected.Token.Serialize(Markdown);
+				Markdown.AppendLine();
+				Markdown.AppendLine("```");
+
+				this.SelectedWritePayload = this.WritePayloadTypeOptions.FirstOrDefault(x => x.Kind == NfcWritePayloadKind.Text) ?? this.SelectedWritePayload;
+				this.TextToWrite = Markdown.ToString();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
 			}
 		}
 

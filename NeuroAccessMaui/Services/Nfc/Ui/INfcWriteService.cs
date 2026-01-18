@@ -24,6 +24,14 @@ namespace NeuroAccessMaui.Services.Nfc.Ui
 		Task<bool> WriteUriAsync(string Uri, CancellationToken CancellationToken);
 
 		/// <summary>
+		/// Begins writing a text record to the next detected writable NFC tag.
+		/// </summary>
+		/// <param name="Text">Text to write.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		/// <returns>True if the write succeeded; otherwise false.</returns>
+		Task<bool> WriteTextAsync(string Text, CancellationToken CancellationToken);
+
+		/// <summary>
 		/// Attempts to apply a pending write request to a detected tag.
 		/// </summary>
 		/// <param name="WriteCallback">Callback that writes the prepared NDEF items to the tag.</param>

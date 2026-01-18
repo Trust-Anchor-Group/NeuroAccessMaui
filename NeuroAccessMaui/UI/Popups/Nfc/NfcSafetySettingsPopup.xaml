@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Nfc.NfcSafetySettingsPopup"
+				x:DataType="viewmodel:NfcViewModel"
+				xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+				xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+				xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+				xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
+				xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+				xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Nfc">
+
+	<Grid Style="{DynamicResource PopupGrid}">
+		<Border
+			WidthRequest="{Binding ViewWidthRequest}"
+			MaximumHeightRequest="{Binding MaximumViewHeightRequest}"
+			Style="{DynamicResource PopupBorder}">
+
+			<ScrollView VerticalOptions="Center">
+				<VerticalStackLayout Spacing="12">
+					<Label Style="{DynamicResource PageTitleLabelSmall}"
+						   Text="{l:Localize NfcSafetySettingsTitle}"/>
+
+					<Border Style="{DynamicResource BorderSet}"
+							Margin="0">
+						<Grid ColumnDefinitions="*,auto"
+							  RowDefinitions="auto,auto"
+							  ColumnSpacing="12"
+							  RowSpacing="6">
+							<Label Grid.Row="0"
+								   Grid.Column="0"
+								   Text="{l:Localize NfcSafeScan}"
+								   Style="{DynamicResource FieldTitleLabel}"/>
+							<Switch Grid.Row="0"
+									Grid.Column="1"
+									IsToggled="{Binding SafeScanEnabled, Mode=TwoWay}"/>
+							<Label Grid.Row="1"
+								   Grid.ColumnSpan="2"
+								   Text="{l:Localize NfcSafeScanDescription}"
+								   Style="{DynamicResource FieldKeyLabel}"/>
+						</Grid>
+					</Border>
+
+					<Border Style="{DynamicResource BorderSet}"
+							Margin="0"
+							IsVisible="{Binding SafeScanEnabled}">
+						<VerticalStackLayout Spacing="10">
+							<Label Text="{l:Localize NfcTrustedDomains}"
+								   Style="{DynamicResource FieldTitleLabel}"/>
+							<Label Text="{l:Localize NfcTrustedDomainsDescription}"
+								   Style="{DynamicResource FieldKeyLabel}"/>
+
+							<Grid ColumnDefinitions="*,auto"
+								  ColumnSpacing="12">
+								<controls:CompositeEntry Grid.Column="0"
+												Style="{DynamicResource RegularCompositeEntry}"
+												Placeholder="{l:Localize NfcTrustedDomainPlaceholder}"
+												Keyboard="Url"
+												EntryData="{Binding TrustedDomainToAdd, Mode=TwoWay}"/>
+								<controls:TextButton Grid.Column="1"
+												 Command="{Binding AddTrustedDomainCommand}"
+												 Style="{DynamicResource OutlinedTextButton}"
+												 LabelData="{l:Localize Add}"/>
+							</Grid>
+
+							<Label Text="{l:Localize NfcNoTrustedDomainsYet}"
+								   Style="{DynamicResource FieldKeyLabel}"
+								   IsVisible="{Binding HasNoTrustedDomainHosts}"/>
+
+							<CollectionView ItemsSource="{Binding TrustedDomainHosts}"
+										SelectionMode="None"
+										IsVisible="{Binding HasTrustedDomainHosts}">
+								<CollectionView.ItemTemplate>
+									<DataTemplate x:DataType="sys:String">
+										<Grid ColumnDefinitions="*,auto"
+											  ColumnSpacing="12"
+											  Padding="0,6">
+											<Label Grid.Column="0"
+												   Text="{Binding .}"
+												   Style="{DynamicResource FieldValueLabel}"/>
+											<controls:SvgButton Grid.Column="1"
+														 SvgSource="close.svg"
+														 Style="{DynamicResource IconButton}"
+														 WidthRequest="32"
+														 HeightRequest="32"
+														 Command="{Binding BindingContext.RemoveTrustedDomainCommand, Source={RelativeSource AncestorType={x:Type base:BasePopup}}}"
+														 CommandParameter="{Binding .}"/>
+										</Grid>
+									</DataTemplate>
+								</CollectionView.ItemTemplate>
+							</CollectionView>
+						</VerticalStackLayout>
+					</Border>
+
+					<controls:TextButton Command="{Binding CloseSafetySettingsPopupCommand}"
+									 Style="{DynamicResource OutlinedTextButton}"
+									 LabelData="{l:Localize Close}"/>
+				</VerticalStackLayout>
+			</ScrollView>
+		</Border>
+	</Grid>
+</base:BasePopup>

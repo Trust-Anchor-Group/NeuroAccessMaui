@@ -33,13 +33,28 @@ namespace NeuroAccessMaui.Services.Nfc.Ui
 			if (!System.Uri.TryCreate(Uri?.Trim(), UriKind.Absolute, out System.Uri? Parsed))
 				return Task.FromResult(false);
 
+			return this.BeginWrite([Parsed], CancellationToken);
+		}
+
+		/// <inheritdoc />
+		public Task<bool> WriteTextAsync(string Text, CancellationToken CancellationToken)
+		{
+			string Value = Text?.Trim() ?? string.Empty;
+			if (string.IsNullOrEmpty(Value))
+				return Task.FromResult(false);
+
+			return this.BeginWrite([Value], CancellationToken);
+		}
+
+		private Task<bool> BeginWrite(object[] Items, CancellationToken CancellationToken)
+		{
 			TaskCompletionSource<bool> TaskSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
 			lock (this.gate)
 			{
 				this.pendingWrite?.TrySetResult(false);
 				this.pendingWrite = TaskSource;
-				this.pendingItems = [Parsed];
+				this.pendingItems = Items;
 			}
 
 			if (CancellationToken.CanBeCanceled)
