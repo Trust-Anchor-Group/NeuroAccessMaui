@@ -138,10 +138,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 		private bool hasScanStateText;
 
 		[ObservableProperty]
-		private string scanRiskLabel = string.Empty;
+		private ObservableCollection<NfcScanHint> scanHints = new();
 
 		[ObservableProperty]
-		private bool hasScanRiskLabel;
+		private bool hasScanHints;
 
 		[ObservableProperty]
 		private string lastTagIdHex = string.Empty;
@@ -166,12 +166,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 
 		[ObservableProperty]
 		private string lastExtractedUriHost = string.Empty;
-
-		[ObservableProperty]
-		private ObservableCollection<string> lastExtractedUriWarnings = new();
-
-		[ObservableProperty]
-		private bool hasLastExtractedUriWarnings;
 
 		[ObservableProperty]
 		private bool isLastExtractedUriDomainTrusted;
@@ -373,17 +367,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 							if (!string.Equals(Parsed.Scheme, "https", StringComparison.OrdinalIgnoreCase) &&
 								!string.Equals(Parsed.Scheme, "http", StringComparison.OrdinalIgnoreCase))
 							{
-								Warnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningNonHttp)]);
+								Warnings.Add(string.Format(ServiceRef.Localizer[nameof(AppResources.NfcHintUnknownScheme)], Parsed.Scheme));
 							}
-
-							if (!string.IsNullOrWhiteSpace(HostLower) && HostLower.Contains("xn--", StringComparison.OrdinalIgnoreCase))
-								Warnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningPunycode)]);
-
-							if (!string.IsNullOrWhiteSpace(HostLower) && IPAddress.TryParse(HostLower, out _))
-								Warnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningIpHost)]);
-
-							if (this.IsKnownShortenerHost(HostLower))
-								Warnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningShortener)]);
 						}
 
 						bool IsTrusted = false;
@@ -1006,8 +991,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				this.LastTagStatusText = ServiceRef.Localizer["NfcNoTagYet"];
 				this.ScanStateText = string.Empty;
 				this.HasScanStateText = false;
-				this.ScanRiskLabel = string.Empty;
-				this.HasScanRiskLabel = false;
 				this.LastTagIdHex = string.Empty;
 				this.LastTagType = string.Empty;
 				this.LastDetectedAtUtc = null;
@@ -1019,10 +1002,10 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				this.HasSafeScanLinkPreview = false;
 				this.LastExtractedUriScheme = string.Empty;
 				this.LastExtractedUriHost = string.Empty;
-				this.LastExtractedUriWarnings.Clear();
-				this.HasLastExtractedUriWarnings = false;
 				this.IsLastExtractedUriDomainTrusted = false;
 				this.CanTrustLastExtractedUriDomain = false;
+				this.ScanHints.Clear();
+				this.HasScanHints = false;
 				this.LastNdefRecords.Clear();
 				this.HasNdefRecords = false;
 				this.SelectedLastNdefRecord = null;
@@ -1054,6 +1037,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			this.SelectedLastNdefRecord = null;
 			this.HasSelectedLastNdefRecord = false;
 			this.UpdateScanState();
+			this.UpdateScanHints();
 
 			MainThread.BeginInvokeOnMainThread(async () =>
 			{
@@ -1114,7 +1098,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 					await RuntimeSettings.SetAsync("NFC.SafeScan.Enabled", value);
 					this.HasSafeScanLinkPreview = this.SafeScanEnabled && this.HasExtractedUri;
 					this.UpdateUriPreview(this.LastExtractedUri);
-					this.UpdateScanRiskState();
 					await this.RefreshTrustedDomainHostsAsync();
 					await this.UpdateTrustedDomainStateAsync();
 				}
@@ -1136,7 +1119,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			{
 				this.ScanStateText = ServiceRef.Localizer[nameof(AppResources.NfcScanStateNoNdef)];
 				this.HasScanStateText = true;
-				this.UpdateScanRiskState();
 				return;
 			}
 
@@ -1144,87 +1126,58 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			{
 				this.ScanStateText = ServiceRef.Localizer[nameof(AppResources.NfcScanStateValidNdef)];
 				this.HasScanStateText = true;
-				this.UpdateScanRiskState();
 				return;
 			}
 
 			this.ScanStateText = ServiceRef.Localizer[nameof(AppResources.NfcScanStateNdefPresent)];
 			this.HasScanStateText = true;
-			this.UpdateScanRiskState();
 		}
 
-		private enum NfcScanRiskLevel
+		private void UpdateScanHints()
 		{
-			Unknown = 0,
-			Safe = 1,
-			Caution = 2,
-			Dangerous = 3,
-			Secured = 4,
-			Warning = 5
-		}
+			this.ScanHints.Clear();
+			this.HasScanHints = false;
 
-		private void UpdateScanRiskState()
-		{
-			NfcScanRiskLevel Level = this.ComputeCurrentScanRiskLevel();
+			bool HasNdef = this.HasNdefSummary || this.HasNdefRecords;
+			bool IsIsoDep =
+				string.Equals(this.LastTagType?.Trim(), "IsoDep", StringComparison.OrdinalIgnoreCase) ||
+				(!string.IsNullOrWhiteSpace(this.LastInterfacesSummary) && this.LastInterfacesSummary.Contains("IsoDep", StringComparison.OrdinalIgnoreCase));
 
-			if (Level == NfcScanRiskLevel.Unknown)
+			if (!HasNdef && IsIsoDep)
 			{
-				this.ScanRiskLabel = string.Empty;
-				this.HasScanRiskLabel = false;
-				return;
+				this.ScanHints.Add(new NfcScanHint(
+					NfcScanHintSeverity.Warning,
+					ServiceRef.Localizer[nameof(AppResources.NfcHintIsoDepNoNdef)]));
 			}
 
-			this.ScanRiskLabel = Level switch
-			{
-				NfcScanRiskLevel.Safe => ServiceRef.Localizer[nameof(AppResources.NfcRiskSafe)],
-				NfcScanRiskLevel.Caution => ServiceRef.Localizer[nameof(AppResources.NfcRiskCaution)],
-				NfcScanRiskLevel.Dangerous => ServiceRef.Localizer[nameof(AppResources.NfcRiskDangerous)],
-				NfcScanRiskLevel.Secured => ServiceRef.Localizer[nameof(AppResources.NfcRiskSecured)],
-				NfcScanRiskLevel.Warning => ServiceRef.Localizer[nameof(AppResources.NfcRiskWarning)],
-				_ => string.Empty
-			};
-
-			this.HasScanRiskLabel = !string.IsNullOrWhiteSpace(this.ScanRiskLabel);
-		}
-
-		private NfcScanRiskLevel ComputeCurrentScanRiskLevel()
-		{
-			bool HasNdef = this.HasNdefSummary || this.HasNdefRecords;
-			bool HasUri = this.HasExtractedUri;
-
-			if (!HasNdef)
-				return NfcScanRiskLevel.Warning;
-
-			if (!HasUri)
-				return NfcScanRiskLevel.Safe;
-
 			string Candidate = this.LastExtractedUri?.Trim() ?? string.Empty;
-			string? KnownAppScheme = NeuroAccessMaui.Constants.UriSchemes.GetScheme(Candidate);
+			if (!string.IsNullOrWhiteSpace(Candidate) && Uri.TryCreate(Candidate, UriKind.Absolute, out Uri? Parsed))
+			{
+				string Scheme = Parsed.Scheme ?? string.Empty;
+				string? KnownAppScheme = NeuroAccessMaui.Constants.UriSchemes.GetScheme(Candidate);
 
-			bool IsNonHttp = !string.Equals(this.LastExtractedUriScheme, "https", StringComparison.OrdinalIgnoreCase) &&
-				!string.Equals(this.LastExtractedUriScheme, "http", StringComparison.OrdinalIgnoreCase);
+				if (!string.IsNullOrWhiteSpace(KnownAppScheme))
+				{
+					this.ScanHints.Add(new NfcScanHint(
+						NfcScanHintSeverity.Info,
+						string.Format(ServiceRef.Localizer[nameof(AppResources.NfcHintKnownAppLink)], KnownAppScheme)));
+				}
+				else if (!string.Equals(Scheme, "https", StringComparison.OrdinalIgnoreCase) &&
+					!string.Equals(Scheme, "http", StringComparison.OrdinalIgnoreCase))
+				{
+					this.ScanHints.Add(new NfcScanHint(
+						NfcScanHintSeverity.Warning,
+						string.Format(ServiceRef.Localizer[nameof(AppResources.NfcHintUnknownScheme)], Scheme)));
+				}
+			}
 
-			if (IsNonHttp && string.IsNullOrWhiteSpace(KnownAppScheme))
-				return NfcScanRiskLevel.Dangerous;
-
-			if (this.HasLastExtractedUriWarnings)
-				return NfcScanRiskLevel.Caution;
-
-			if (this.SafeScanEnabled && this.IsLastExtractedUriDomainTrusted)
-				return NfcScanRiskLevel.Secured;
-
-			if (this.SafeScanEnabled)
-				return NfcScanRiskLevel.Caution;
-
-			return NfcScanRiskLevel.Safe;
+			this.HasScanHints = this.ScanHints.Count > 0;
 		}
 
 		private void UpdateUriPreview(string UriText)
 		{
 			this.LastExtractedUriScheme = string.Empty;
 			this.LastExtractedUriHost = string.Empty;
-			this.LastExtractedUriWarnings.Clear();
-			this.HasLastExtractedUriWarnings = false;
 			this.IsLastExtractedUriDomainTrusted = false;
 			this.CanTrustLastExtractedUriDomain = false;
 
@@ -1242,44 +1195,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 			if (!string.IsNullOrWhiteSpace(HostLower) && this.SafeScanEnabled)
 				this.CanTrustLastExtractedUriDomain = true;
 
-			string? KnownAppScheme = NeuroAccessMaui.Constants.UriSchemes.GetScheme(Candidate);
-
-			if (!string.Equals(Parsed.Scheme, "https", StringComparison.OrdinalIgnoreCase) &&
-				!string.Equals(Parsed.Scheme, "http", StringComparison.OrdinalIgnoreCase))
-			{
-				if (string.IsNullOrWhiteSpace(KnownAppScheme))
-					this.LastExtractedUriWarnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningNonHttp)]);
-			}
-
-			if (!string.IsNullOrWhiteSpace(HostLower) && HostLower.Contains("xn--", StringComparison.OrdinalIgnoreCase))
-			{
-				this.LastExtractedUriWarnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningPunycode)]);
-			}
-
-			if (!string.IsNullOrWhiteSpace(HostLower) && IPAddress.TryParse(HostLower, out _))
-			{
-				this.LastExtractedUriWarnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningIpHost)]);
-			}
-
-			if (this.IsKnownShortenerHost(HostLower))
-			{
-				this.LastExtractedUriWarnings.Add(ServiceRef.Localizer[nameof(AppResources.NfcUriWarningShortener)]);
-			}
-
-			this.HasLastExtractedUriWarnings = this.LastExtractedUriWarnings.Count > 0;
-		}
-
-		private bool IsKnownShortenerHost(string HostLower)
-		{
-			if (string.IsNullOrWhiteSpace(HostLower))
-				return false;
-
-			return HostLower == "t.co" ||
-				HostLower == "bit.ly" ||
-				HostLower == "tinyurl.com" ||
-				HostLower == "goo.gl" ||
-				HostLower == "ow.ly" ||
-				HostLower == "is.gd";
 		}
 
 		private async Task LoadSafeScanSettingAsync()
@@ -1389,6 +1304,94 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 					"NDEF",
 					"NfcA, NDEF",
 					"URI + Text",
+					Uri,
+					Records);
+
+				MainThread.BeginInvokeOnMainThread(() => this.nfcTagSnapshotService.Publish(Snapshot));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private void FakeScanUnknownScheme()
+		{
+			try
+			{
+				if (!this.IsDebugToolsEnabled)
+					return;
+
+				string Timestamp = DateTimeOffset.UtcNow.ToString("O");
+				string Uri = "ftp://example.org/neuroaccess/nfc-test?ts=" + WebUtility.UrlEncode(Timestamp);
+				string TagIdHex = this.CreateFakeTagIdHex();
+
+				List<NfcNdefRecordSnapshot> Records = new()
+				{
+					new NfcNdefRecordSnapshot(
+						0,
+						"URI",
+						"WellKnown",
+						"U",
+						null,
+						null,
+						Uri,
+						null,
+						Encoding.UTF8.GetBytes(Uri),
+						IsPayloadDerived: true),
+				};
+
+				NfcTagSnapshot Snapshot = new(
+					TagIdHex,
+					DateTimeOffset.UtcNow,
+					"NDEF",
+					"NfcA, NDEF",
+					"URI",
+					Uri,
+					Records);
+
+				MainThread.BeginInvokeOnMainThread(() => this.nfcTagSnapshotService.Publish(Snapshot));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private void FakeScanKnownAppScheme()
+		{
+			try
+			{
+				if (!this.IsDebugToolsEnabled)
+					return;
+
+				string Timestamp = DateTimeOffset.UtcNow.ToString("O");
+				string Uri = "iotsc:example@id.tagroot.io?ts=" + WebUtility.UrlEncode(Timestamp);
+				string TagIdHex = this.CreateFakeTagIdHex();
+
+				List<NfcNdefRecordSnapshot> Records = new()
+				{
+					new NfcNdefRecordSnapshot(
+						0,
+						"URI",
+						"WellKnown",
+						"U",
+						null,
+						null,
+						Uri,
+						null,
+						Encoding.UTF8.GetBytes(Uri),
+						IsPayloadDerived: true),
+				};
+
+				NfcTagSnapshot Snapshot = new(
+					TagIdHex,
+					DateTimeOffset.UtcNow,
+					"NDEF",
+					"NfcA, NDEF",
+					"URI",
 					Uri,
 					Records);
 
@@ -1728,9 +1731,17 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				string Host = this.LastExtractedUriHost?.Trim().ToLowerInvariant() ?? string.Empty;
 				bool CanTrustDomain = this.SafeScanEnabled && !string.IsNullOrWhiteSpace(Host);
 
+				List<string> Warnings = new();
+				if (Uri.TryCreate(Candidate, UriKind.Absolute, out Uri? Parsed) &&
+					!string.Equals(Parsed.Scheme, "https", StringComparison.OrdinalIgnoreCase) &&
+					!string.Equals(Parsed.Scheme, "http", StringComparison.OrdinalIgnoreCase))
+				{
+					Warnings.Add(string.Format(ServiceRef.Localizer[nameof(AppResources.NfcHintUnknownScheme)], Parsed.Scheme));
+				}
+
 				UI.Popups.Nfc.NfcOpenLinkDecisionPopupViewModel ViewModel = new(
 					Candidate,
-					this.HasLastExtractedUriWarnings ? this.LastExtractedUriWarnings : Array.Empty<string>(),
+					Warnings,
 					CanTrustDomain);
 				UI.Popups.Nfc.NfcOpenLinkDecisionPopup Popup = new(ViewModel);
 
@@ -1800,7 +1811,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				if (!this.SafeScanEnabled)
 				{
 					this.IsLastExtractedUriDomainTrusted = false;
-					this.UpdateScanRiskState();
 					return;
 				}
 
@@ -1808,19 +1818,16 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				if (string.IsNullOrWhiteSpace(Host))
 				{
 					this.IsLastExtractedUriDomainTrusted = false;
-					this.UpdateScanRiskState();
 					return;
 				}
 
 				HashSet<string> Trusted = await this.GetTrustedDomainsAsync();
 				this.IsLastExtractedUriDomainTrusted = Trusted.Contains(Host);
-				this.UpdateScanRiskState();
 			}
 			catch (Exception Ex)
 			{
 				ServiceRef.LogService.LogException(Ex);
 				this.IsLastExtractedUriDomainTrusted = false;
-				this.UpdateScanRiskState();
 			}
 		}
 
@@ -1999,15 +2006,6 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 	/// </summary>
 	public sealed class NfcScanHistoryListItem
 	{
-		private enum NfcScanRiskLevel
-		{
-			Unknown = 0,
-			Safe = 1,
-			Caution = 2,
-			Dangerous = 3,
-			Secured = 4,
-			Warning = 5
-		}
 		/// <summary>
 		/// Gets the record identifier.
 		/// </summary>
@@ -2049,35 +2047,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 		public IReadOnlyList<NfcNdefRecordSnapshot>? NdefRecords { get; init; }
 
 		/// <summary>
-		/// Gets a scan risk label suitable for display.
-		/// </summary>
-		public string ScanRiskLabel { get; init; } = string.Empty;
-
-		/// <summary>
-		/// Gets a value indicating whether <see cref="ScanRiskLabel"/> is present.
-		/// </summary>
-		public bool HasScanRiskLabel => !string.IsNullOrWhiteSpace(this.ScanRiskLabel);
-
-		/// <summary>
 		/// Creates an instance from a persisted history record.
 		/// </summary>
 		/// <param name="Record">Record to convert.</param>
 		/// <returns>Converted list item.</returns>
 		public static NfcScanHistoryListItem FromRecord(NfcScanHistoryRecord Record, bool SafeScanEnabled, ISet<string>? TrustedDomains)
 		{
-			string ExtractedUri = Record.ExtractedUri?.Trim() ?? string.Empty;
-			bool HasNdef = !string.IsNullOrWhiteSpace(Record.NdefSummary) || (Record.NdefRecords?.Length ?? 0) > 0;
-			NfcScanRiskLevel RiskLevel = ComputeHistoryRiskLevel(ExtractedUri, HasNdef, SafeScanEnabled, TrustedDomains);
-			string RiskLabel = RiskLevel switch
-			{
-				NfcScanRiskLevel.Safe => ServiceRef.Localizer[nameof(AppResources.NfcRiskSafe)],
-				NfcScanRiskLevel.Caution => ServiceRef.Localizer[nameof(AppResources.NfcRiskCaution)],
-				NfcScanRiskLevel.Dangerous => ServiceRef.Localizer[nameof(AppResources.NfcRiskDangerous)],
-				NfcScanRiskLevel.Secured => ServiceRef.Localizer[nameof(AppResources.NfcRiskSecured)],
-				NfcScanRiskLevel.Warning => ServiceRef.Localizer[nameof(AppResources.NfcRiskWarning)],
-				_ => string.Empty
-			};
-
 			return new NfcScanHistoryListItem
 			{
 				ObjectId = Record.ObjectId,
@@ -2087,64 +2062,8 @@ namespace NeuroAccessMaui.UI.Pages.Main.Nfc
 				InterfacesSummary = Record.InterfacesSummary,
 				NdefSummary = Record.NdefSummary,
 				ExtractedUri = Record.ExtractedUri,
-				NdefRecords = Record.NdefRecords,
-				ScanRiskLabel = RiskLabel
+				NdefRecords = Record.NdefRecords
 			};
-		}
-
-		private static NfcScanRiskLevel ComputeHistoryRiskLevel(string ExtractedUri, bool HasNdef, bool SafeScanEnabled, ISet<string>? TrustedDomains)
-		{
-			if (!HasNdef)
-				return NfcScanRiskLevel.Warning;
-
-			if (string.IsNullOrWhiteSpace(ExtractedUri))
-				return NfcScanRiskLevel.Safe;
-
-			if (!Uri.TryCreate(ExtractedUri, UriKind.Absolute, out Uri? Parsed))
-				return NfcScanRiskLevel.Caution;
-
-			string? KnownAppScheme = NeuroAccessMaui.Constants.UriSchemes.GetScheme(ExtractedUri);
-
-			bool IsNonHttp = !string.Equals(Parsed.Scheme, "https", StringComparison.OrdinalIgnoreCase) &&
-				!string.Equals(Parsed.Scheme, "http", StringComparison.OrdinalIgnoreCase);
-			if (IsNonHttp && string.IsNullOrWhiteSpace(KnownAppScheme))
-				return NfcScanRiskLevel.Dangerous;
-
-			string HostLower = (Parsed.Host ?? string.Empty).Trim().ToLowerInvariant();
-			bool HasWarnings = false;
-
-			if (!string.IsNullOrWhiteSpace(HostLower) && HostLower.Contains("xn--", StringComparison.OrdinalIgnoreCase))
-				HasWarnings = true;
-
-			if (!string.IsNullOrWhiteSpace(HostLower) && IPAddress.TryParse(HostLower, out _))
-				HasWarnings = true;
-
-			if (IsKnownShortenerHost(HostLower))
-				HasWarnings = true;
-
-			if (HasWarnings)
-				return NfcScanRiskLevel.Caution;
-
-			if (SafeScanEnabled && !string.IsNullOrWhiteSpace(HostLower) && TrustedDomains is not null && TrustedDomains.Contains(HostLower))
-				return NfcScanRiskLevel.Secured;
-
-			if (SafeScanEnabled)
-				return NfcScanRiskLevel.Caution;
-
-			return NfcScanRiskLevel.Safe;
-		}
-
-		private static bool IsKnownShortenerHost(string HostLower)
-		{
-			if (string.IsNullOrWhiteSpace(HostLower))
-				return false;
-
-			return HostLower == "t.co" ||
-				HostLower == "bit.ly" ||
-				HostLower == "tinyurl.com" ||
-				HostLower == "goo.gl" ||
-				HostLower == "ow.ly" ||
-				HostLower == "is.gd";
 		}
 	}
 }

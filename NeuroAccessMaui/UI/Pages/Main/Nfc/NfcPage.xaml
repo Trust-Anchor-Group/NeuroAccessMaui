@@ -12,6 +12,26 @@
 					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.Nfc">
 	<base:BaseContentPage.Resources>
 		<ResourceDictionary>
+			<Style x:Key="NfcHintBubble"
+				   TargetType="controls:InfoBubble">
+				<Setter Property="BackgroundColor"
+						Value="{DynamicResource TnPInfobgWL}"/>
+				<Setter Property="ContentColor"
+						Value="{DynamicResource TnPInfoContentWL}"/>
+				<Setter Property="SvgSource"
+						Value="info.svg"/>
+				<Style.Triggers>
+					<DataTrigger TargetType="controls:InfoBubble"
+								 Binding="{Binding Severity}"
+								 Value="{x:Static nfc:NfcScanHintSeverity.Warning}">
+						<Setter Property="BackgroundColor"
+								Value="{DynamicResource TnPDangerbgWL}"/>
+						<Setter Property="ContentColor"
+								Value="{DynamicResource TnPDangerContentWL}"/>
+					</DataTrigger>
+				</Style.Triggers>
+			</Style>
+
 			<!-- Field Styles (copied from existing key/value UI patterns) -->
 			<Style x:Key="FieldKeyLabel"
 				   TargetType="Label">
@@ -110,35 +130,41 @@
 									<Label Text="{Binding ScanStateText}"
 										   Style="{DynamicResource FieldKeyLabel}"
 										   IsVisible="{Binding HasScanStateText}"/>
-									<Label Text="{Binding ScanRiskLabel}"
-										   Style="{DynamicResource FieldKeyLabel}"
-										   IsVisible="{Binding HasScanRiskLabel}"/>
-
+									<VerticalStackLayout Spacing="8"
+												IsVisible="{Binding HasScanHints}"
+												BindableLayout.ItemsSource="{Binding ScanHints}">
+										<BindableLayout.ItemTemplate>
+											<DataTemplate x:DataType="nfc:NfcScanHint">
+												<controls:InfoBubble Style="{StaticResource NfcHintBubble}"
+																 LabelText="{Binding Text}"/>
+											</DataTemplate>
+										</BindableLayout.ItemTemplate>
+									</VerticalStackLayout>
 									<VerticalStackLayout Spacing="10">
 										<VerticalStackLayout Spacing="2">
 											<Label Text="{l:Localize NfcFieldId}"
-												   Style="{DynamicResource FieldKeyLabel}"/>
+												   Style="{DynamicResource FieldTitleLabel}"/>
 											<Label Text="{Binding LastTagIdHex}"
 												   Style="{DynamicResource FieldValueLabel}"/>
 										</VerticalStackLayout>
 
 										<VerticalStackLayout Spacing="2">
 											<Label Text="{l:Localize NfcFieldType}"
-												   Style="{DynamicResource FieldKeyLabel}"/>
+												   Style="{DynamicResource FieldTitleLabel}"/>
 											<Label Text="{Binding LastTagType}"
 												   Style="{DynamicResource FieldValueLabel}"/>
 										</VerticalStackLayout>
 
 										<VerticalStackLayout Spacing="2">
 											<Label Text="{l:Localize NfcFieldDetectedUtc}"
-												   Style="{DynamicResource FieldKeyLabel}"/>
+												   Style="{DynamicResource FieldTitleLabel}"/>
 											<Label Text="{Binding LastDetectedAtUtc, StringFormat='{0:O}', TargetNullValue='—'}"
 												   Style="{DynamicResource FieldValueLabel}"/>
 										</VerticalStackLayout>
 
 										<VerticalStackLayout Spacing="2">
 											<Label Text="{l:Localize NfcFieldTechnologies}"
-												   Style="{DynamicResource FieldKeyLabel}"/>
+												   Style="{DynamicResource FieldTitleLabel}"/>
 											<Label Text="{Binding LastInterfacesSummary}"
 												   Style="{DynamicResource FieldValueLabel}"/>
 										</VerticalStackLayout>
@@ -146,7 +172,7 @@
 										<VerticalStackLayout Spacing="2"
 															 IsVisible="{Binding HasNdefSummary}">
 											<Label Text="{l:Localize NfcFieldNdef}"
-												   Style="{DynamicResource FieldKeyLabel}"/>
+												   Style="{DynamicResource FieldTitleLabel}"/>
 											<Label Text="{Binding LastNdefSummary}"
 												   Style="{DynamicResource FieldValueLabel}"/>
 										</VerticalStackLayout>
@@ -154,7 +180,7 @@
 										<VerticalStackLayout Spacing="2"
 															 IsVisible="{Binding HasExtractedUri}">
 											<Label Text="{l:Localize Uri}"
-												   Style="{DynamicResource FieldKeyLabel}"/>
+												   Style="{DynamicResource FieldTitleLabel}"/>
 											<Label Text="{Binding LastExtractedUri}"
 												   Style="{DynamicResource FieldValueLabel}"
 												   LineBreakMode="CharacterWrap"/>
@@ -204,7 +230,7 @@
 										<VerticalStackLayout Spacing="8"
 															 IsVisible="{Binding HasNdefRecords}">
 											<Label Text="{l:Localize NfcFieldNdefRecords}"
-												   Style="{DynamicResource FieldKeyLabel}"/>
+												   Style="{DynamicResource FieldTitleLabel}"/>
 											<CollectionView ItemsSource="{Binding LastNdefRecords}"
 													SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
 												<CollectionView.ItemTemplate>
@@ -270,15 +296,29 @@
 										<Label Text="{l:Localize NfcDebugToolsDescription}"
 											   Style="{DynamicResource FieldKeyLabel}"/>
 										<Grid ColumnDefinitions="*,*"
-											  ColumnSpacing="12">
+											  RowDefinitions="auto, auto"
+											  ColumnSpacing="12"
+											  RowSpacing="12">
 											<controls:TextButton Grid.Column="0"
+															 Grid.Row="0"
 														 Command="{Binding FakeScanUriCommand}"
 														 Style="{DynamicResource OutlinedTextButton}"
 														 LabelData="{l:Localize NfcDebugFakeScanUri}"/>
 											<controls:TextButton Grid.Column="1"
+															 Grid.Row="0"
 														 Command="{Binding FakeScanNoNdefCommand}"
 														 Style="{DynamicResource OutlinedTextButton}"
 														 LabelData="{l:Localize NfcDebugFakeScanNoNdef}"/>
+											<controls:TextButton Grid.Column="0"
+															 Grid.Row="1"
+														 Command="{Binding FakeScanUnknownSchemeCommand}"
+														 Style="{DynamicResource OutlinedTextButton}"
+														 LabelData="{l:Localize NfcDebugFakeScanUnknownScheme}"/>
+											<controls:TextButton Grid.Column="1"
+															 Grid.Row="1"
+														 Command="{Binding FakeScanKnownAppSchemeCommand}"
+														 Style="{DynamicResource OutlinedTextButton}"
+														 LabelData="{l:Localize NfcDebugFakeScanKnownAppScheme}"/>
 										</Grid>
 									</VerticalStackLayout>
 								</Border>
@@ -322,7 +362,7 @@
 								</VerticalStackLayout>
 							</Border>
 
-							<Border Style="{DynamicResource BorderSet}">
+							<Border Style="{DynamicResource BorderSet}" Margin="0">
 								<VerticalStackLayout Spacing="10">
 									<controls:CompositePicker ItemsSource="{Binding WritePayloadTypeOptions}"
 														SelectedItem="{Binding SelectedWritePayload, Mode=TwoWay}"
@@ -403,7 +443,8 @@
 								<Grid RowDefinitions="Auto,Auto"
 									  ColumnDefinitions="*,*"
 									  ColumnSpacing="12"
-									  RowSpacing="12">
+									  RowSpacing="12"
+									  Margin="0,0,0,16">
 									<controls:TextButton Grid.Row="0"
 											Grid.Column="0"
 														 Command="{Binding ClearHistoryCommand}"
@@ -441,9 +482,6 @@
 									<VerticalStackLayout Spacing="6">
 										<Label Text="{Binding TagType}"
 											   Style="{DynamicResource FieldTitleLabel}"/>
-										<Label Text="{Binding ScanRiskLabel}"
-											   Style="{DynamicResource FieldKeyLabel}"
-											   IsVisible="{Binding HasScanRiskLabel}"/>
 										<Label Text="{Binding TagIdHex}"
 											   Style="{DynamicResource FieldValueLabel}"/>
 										<Label Text="{Binding DetectedAtUtc, StringFormat='{0:O}'}"

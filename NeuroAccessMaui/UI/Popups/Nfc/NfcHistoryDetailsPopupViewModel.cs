@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Microsoft.Maui.ApplicationModel.DataTransfer;
 using Microsoft.Maui.Storage;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Nfc.Ui;
 using NeuroAccessMaui.UI.Pages.Main.Nfc;
 using Waher.Runtime.Settings;
 
@@ -31,6 +33,7 @@ namespace NeuroAccessMaui.UI.Popups.Nfc
 			this.HasNdefSummary = !string.IsNullOrWhiteSpace(this.Item.NdefSummary);
 			this.HasNdefRecords = this.Item.NdefRecords is not null && this.Item.NdefRecords.Count > 0;
 			this.HasNdefInfo = this.HasNdefSummary || this.HasUri;
+			this.UpdateScanHints();
 		}
 
 		/// <summary>
@@ -62,6 +65,59 @@ namespace NeuroAccessMaui.UI.Popups.Nfc
 		/// </summary>
 		[ObservableProperty]
 		private bool hasNdefRecords;
+
+		/// <summary>
+		/// Gets the scan hints derived from the history item.
+		/// </summary>
+		[ObservableProperty]
+		private ObservableCollection<NfcScanHint> scanHints = new();
+
+		/// <summary>
+		/// Gets a value indicating whether <see cref="ScanHints"/> contains any items.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasScanHints;
+
+		private void UpdateScanHints()
+		{
+			this.ScanHints.Clear();
+			this.HasScanHints = false;
+
+			bool HasNdef = this.HasNdefSummary || this.HasNdefRecords;
+			bool IsIsoDep =
+				string.Equals(this.Item.TagType?.Trim(), "IsoDep", StringComparison.OrdinalIgnoreCase) ||
+				(!string.IsNullOrWhiteSpace(this.Item.InterfacesSummary) && this.Item.InterfacesSummary.Contains("IsoDep", StringComparison.OrdinalIgnoreCase));
+
+			if (!HasNdef && IsIsoDep)
+			{
+				this.ScanHints.Add(new NfcScanHint(
+					NfcScanHintSeverity.Warning,
+					ServiceRef.Localizer[nameof(AppResources.NfcHintIsoDepNoNdef)]));
+			}
+
+			string Candidate = this.Item.ExtractedUri?.Trim() ?? string.Empty;
+			if (!string.IsNullOrWhiteSpace(Candidate) && Uri.TryCreate(Candidate, UriKind.Absolute, out Uri? Parsed))
+			{
+				string Scheme = Parsed.Scheme ?? string.Empty;
+				string? KnownAppScheme = NeuroAccessMaui.Constants.UriSchemes.GetScheme(Candidate);
+
+				if (!string.IsNullOrWhiteSpace(KnownAppScheme))
+				{
+					this.ScanHints.Add(new NfcScanHint(
+						NfcScanHintSeverity.Info,
+						string.Format(ServiceRef.Localizer[nameof(AppResources.NfcHintKnownAppLink)], KnownAppScheme)));
+				}
+				else if (!string.Equals(Scheme, "https", StringComparison.OrdinalIgnoreCase) &&
+					!string.Equals(Scheme, "http", StringComparison.OrdinalIgnoreCase))
+				{
+					this.ScanHints.Add(new NfcScanHint(
+						NfcScanHintSeverity.Warning,
+						string.Format(ServiceRef.Localizer[nameof(AppResources.NfcHintUnknownScheme)], Scheme)));
+				}
+			}
+
+			this.HasScanHints = this.ScanHints.Count > 0;
+		}
 
 		[RelayCommand(AllowConcurrentExecutions = false)]
 		private async Task CloseAsync()
@@ -167,9 +223,17 @@ namespace NeuroAccessMaui.UI.Popups.Nfc
 				}
 
 				bool CanTrustDomain = !string.IsNullOrWhiteSpace(Host);
+				List<string> Warnings = new();
+				if (System.Uri.TryCreate(UriString, System.UriKind.Absolute, out System.Uri? ParsedScheme) &&
+					!string.Equals(ParsedScheme.Scheme, "https", StringComparison.OrdinalIgnoreCase) &&
+					!string.Equals(ParsedScheme.Scheme, "http", StringComparison.OrdinalIgnoreCase))
+				{
+					Warnings.Add(string.Format(ServiceRef.Localizer[nameof(AppResources.NfcHintUnknownScheme)], ParsedScheme.Scheme));
+				}
+
 				UI.Popups.Nfc.NfcOpenLinkDecisionPopupViewModel ViewModel = new(
 					UriString,
-					Warnings: Array.Empty<string>(),
+					Warnings: Warnings,
 					CanTrustDomain: CanTrustDomain);
 				UI.Popups.Nfc.NfcOpenLinkDecisionPopup Popup = new(ViewModel);
 

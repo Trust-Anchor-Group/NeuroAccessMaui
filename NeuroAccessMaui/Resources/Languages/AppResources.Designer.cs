@@ -4813,11 +4813,29 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Fake scan (known app scheme).
+        /// </summary>
+        public static string NfcDebugFakeScanKnownAppScheme {
+            get {
+                return ResourceManager.GetString("NfcDebugFakeScanKnownAppScheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fake scan (no NDEF).
         /// </summary>
         public static string NfcDebugFakeScanNoNdef {
             get {
                 return ResourceManager.GetString("NfcDebugFakeScanNoNdef", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fake scan (unknown scheme).
+        /// </summary>
+        public static string NfcDebugFakeScanUnknownScheme {
+            get {
+                return ResourceManager.GetString("NfcDebugFakeScanUnknownScheme", resourceCulture);
             }
         }
         
@@ -4962,6 +4980,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string NfcFieldType {
             get {
                 return ResourceManager.GetString("NfcFieldType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Protected NFC card. It doesn’t provide standard tag data and might need a secure protocol in order to be read.
+        /// </summary>
+        public static string NfcHintIsoDepNoNdef {
+            get {
+                return ResourceManager.GetString("NfcHintIsoDepNoNdef", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The tag contains a link recognized by this app.Link uses the app scheme “{0}”.
+        /// </summary>
+        public static string NfcHintKnownAppLink {
+            get {
+                return ResourceManager.GetString("NfcHintKnownAppLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The tag contains a link not recognized by this app. Open only if you trust the source of the link. Unknown link scheme “{0}”.
+        /// </summary>
+        public static string NfcHintUnknownScheme {
+            get {
+                return ResourceManager.GetString("NfcHintUnknownScheme", resourceCulture);
             }
         }
         

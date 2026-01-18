@@ -144,24 +144,30 @@
   <data name="IdentityState_Rejected" xml:space="preserve">
     <value>Rejected</value>
   </data>
-    <data name="NfcDebugToolsTitle" xml:space="preserve">
-      <value>Debug tools</value>
-    </data>
-    <data name="NfcDebugToolsDescription" xml:space="preserve">
-      <value>Fake scans for testing/demo. (Enable by tapping the title 7 times.)</value>
-    </data>
-    <data name="NfcDebugFakeScanUri" xml:space="preserve">
-      <value>Fake scan (URI)</value>
-    </data>
-    <data name="NfcDebugFakeScanNoNdef" xml:space="preserve">
-      <value>Fake scan (no NDEF)</value>
-    </data>
-    <data name="NfcDebugToolsEnabled" xml:space="preserve">
-      <value>Debug tools enabled.</value>
-    </data>
-    <data name="NfcDebugToolsDisabled" xml:space="preserve">
-      <value>Debug tools disabled.</value>
-    </data>
+  <data name="NfcDebugToolsTitle" xml:space="preserve">
+    <value>Debug tools</value>
+  </data>
+  <data name="NfcDebugToolsDescription" xml:space="preserve">
+    <value>Fake scans for testing/demo. (Enable by tapping the title 7 times.)</value>
+  </data>
+  <data name="NfcDebugFakeScanUri" xml:space="preserve">
+    <value>Fake scan (URI)</value>
+  </data>
+  <data name="NfcDebugFakeScanNoNdef" xml:space="preserve">
+    <value>Fake scan (no NDEF)</value>
+  </data>
+  <data name="NfcDebugFakeScanUnknownScheme" xml:space="preserve">
+    <value>Fake scan (unknown scheme)</value>
+  </data>
+  <data name="NfcDebugFakeScanKnownAppScheme" xml:space="preserve">
+    <value>Fake scan (known app scheme)</value>
+  </data>
+  <data name="NfcDebugToolsEnabled" xml:space="preserve">
+    <value>Debug tools enabled.</value>
+  </data>
+  <data name="NfcDebugToolsDisabled" xml:space="preserve">
+    <value>Debug tools disabled.</value>
+  </data>
   <data name="TagEngraved" xml:space="preserve">
     <value>Tag Engraved with link to {0}.</value>
   </data>
@@ -2987,6 +2993,15 @@
   </data>
   <data name="NfcRiskWarning" xml:space="preserve">
     <value>Warning</value>
+  </data>
+  <data name="NfcHintIsoDepNoNdef" xml:space="preserve">
+    <value>Protected NFC card. It doesn’t provide standard tag data and might need a secure protocol in order to be read</value>
+  </data>
+  <data name="NfcHintKnownAppLink" xml:space="preserve">
+    <value>The tag contains a link recognized by this app.Link uses the app scheme “{0}”</value>
+  </data>
+  <data name="NfcHintUnknownScheme" xml:space="preserve">
+    <value>The tag contains a link not recognized by this app. Open only if you trust the source of the link. Unknown link scheme “{0}”</value>
   </data>
   <data name="NfcPayloadBytes" xml:space="preserve">
     <value>Payload (bytes)</value>

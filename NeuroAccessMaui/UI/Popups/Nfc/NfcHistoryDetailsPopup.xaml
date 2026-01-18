@@ -12,6 +12,25 @@
 
 	<base:BasePopup.Resources>
 		<converters:StringNotEqualsConverter x:Key="StringNotEqualsConverter" />
+		<Style x:Key="NfcHintBubble"
+			   TargetType="controls:InfoBubble">
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource TnPInfobgWL}"/>
+			<Setter Property="ContentColor"
+					Value="{DynamicResource TnPInfoContentWL}"/>
+			<Setter Property="SvgSource"
+					Value="info.svg"/>
+			<Style.Triggers>
+				<DataTrigger TargetType="controls:InfoBubble"
+							 Binding="{Binding Severity}"
+							 Value="{x:Static nfc:NfcScanHintSeverity.Warning}">
+					<Setter Property="BackgroundColor"
+							Value="{DynamicResource TnPDangerbgWL}"/>
+					<Setter Property="ContentColor"
+							Value="{DynamicResource TnPDangerContentWL}"/>
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
 	</base:BasePopup.Resources>
 
 	<Grid Style="{DynamicResource PopupGrid}">
@@ -132,6 +151,17 @@
 							</Grid>
 						</VerticalStackLayout>
 					</Border>
+
+						<VerticalStackLayout Spacing="8"
+										IsVisible="{Binding HasScanHints}"
+										BindableLayout.ItemsSource="{Binding ScanHints}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="nfc:NfcScanHint">
+									<controls:InfoBubble Style="{StaticResource NfcHintBubble}"
+													 LabelText="{Binding Text}"/>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</VerticalStackLayout>
 
 					<Border Style="{DynamicResource BorderSubSet}"
 							IsVisible="{Binding HasNdefInfo}">
