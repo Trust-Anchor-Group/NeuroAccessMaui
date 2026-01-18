@@ -2931,6 +2931,15 @@
   <data name="NfcFieldNdefRecords" xml:space="preserve">
     <value>NDEF records</value>
   </data>
+  <data name="NfcPayloadBytes" xml:space="preserve">
+    <value>Payload (bytes)</value>
+  </data>
+  <data name="NfcPayloadBase64" xml:space="preserve">
+    <value>Payload (Base64)</value>
+  </data>
+  <data name="NfcPayloadHex" xml:space="preserve">
+    <value>Payload (hex)</value>
+  </data>
   <data name="NfcHistoryInfo" xml:space="preserve">
     <value>Recent NFC scans stored on this device</value>
   </data>

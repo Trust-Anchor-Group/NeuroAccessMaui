@@ -5,9 +5,14 @@
 				xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 				xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 				xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+				xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 				xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
 				xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Nfc"
 				xmlns:nfc="clr-namespace:NeuroAccessMaui.Services.Nfc.Ui">
+
+	<base:BasePopup.Resources>
+		<converters:StringNotEqualsConverter x:Key="StringNotEqualsConverter" />
+	</base:BasePopup.Resources>
 
 	<Grid Style="{DynamicResource PopupGrid}">
 		<Border
@@ -185,27 +190,26 @@
 						</VerticalStackLayout>
 					</Border>
 
-					<Grid ColumnDefinitions="*,*,*,*"
-							ColumnSpacing="8">
-						<controls:TextButton Grid.Column="0"
+					<VerticalStackLayout Spacing="8">
+						<controls:TextButton 
 											 Command="{Binding CopyUriCommand}"
 											 Style="{DynamicResource OutlinedTextButton}"
 											 LabelData="{l:Localize CopyToClipboard}"
 											 IsVisible="{Binding HasUri}"/>
-						<controls:TextButton Grid.Column="1"
+						<controls:TextButton 
 											 Command="{Binding OpenUriCommand}"
 											 Style="{DynamicResource FilledTextButton}"
 											 LabelData="{l:Localize Open}"
 											 IsVisible="{Binding HasUri}"/>
-						<controls:TextButton Grid.Column="2"
+						<controls:TextButton 
 											 Command="{Binding ExportJsonCommand}"
 											 Style="{DynamicResource OutlinedTextButton}"
 											 LabelData="{l:Localize Export}"/>
-						<controls:TextButton Grid.Column="3"
+						<controls:TextButton 
 											 Command="{Binding ExportXmlCommand}"
 											 Style="{DynamicResource OutlinedTextButton}"
 											 LabelData="{l:Localize NfcExportXml}"/>
-					</Grid>
+					</VerticalStackLayout>
 
 					<Border Style="{DynamicResource BorderSubSet}"
 							IsVisible="{Binding HasNdefRecords}">
@@ -216,13 +220,47 @@
 											SelectionMode="None">
 								<CollectionView.ItemTemplate>
 									<DataTemplate x:DataType="nfc:NfcNdefRecordSnapshot">
-										<VerticalStackLayout Spacing="2"
-												Padding="0,6">
+										<VerticalStackLayout Spacing="8" Padding="0,6">
 											<Label Text="{Binding RecordType}"
-													Style="{DynamicResource FieldTitleLabel}"/>
+												   Style="{DynamicResource FieldTitleLabel}"/>
 											<Label Text="{Binding DisplayValue}"
-													Style="{DynamicResource FieldValueLabel}"
-													LineBreakMode="CharacterWrap"/>
+												   Style="{DynamicResource FieldValueLabel}"
+												   LineBreakMode="CharacterWrap"/>
+
+											<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto">
+												<Grid.GestureRecognizers>
+													<TapGestureRecognizer
+														Command="{Binding BindingContext.CopyValueCommand, Source={RelativeSource AncestorType={x:Type base:BasePopup}}}"
+														CommandParameter="{Binding PayloadSizeBytes}" />
+												</Grid.GestureRecognizers>
+												<Label Grid.Row="0" Grid.Column="0" Text="Payload (bytes)" Style="{DynamicResource FieldKeyLabel}"/>
+												<controls:SvgView Grid.Row="0" Grid.Column="1" Aspect="AspectFit" HeightRequest="16" WidthRequest="16" Source="content_copy.svg" TintColor="{DynamicResource ContentSecondaryWL}"/>
+												<Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding PayloadSizeBytes}" Style="{DynamicResource FieldValueLabel}" TextColor="{DynamicResource ContentLinkWL}"/>
+											</Grid>
+
+											<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto"
+													IsVisible="{Binding PayloadBase64, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=''}">
+												<Grid.GestureRecognizers>
+													<TapGestureRecognizer
+														Command="{Binding BindingContext.CopyValueCommand, Source={RelativeSource AncestorType={x:Type base:BasePopup}}}"
+														CommandParameter="{Binding PayloadBase64}" />
+												</Grid.GestureRecognizers>
+												<Label Grid.Row="0" Grid.Column="0" Text="Payload (Base64)" Style="{DynamicResource FieldKeyLabel}"/>
+												<controls:SvgView Grid.Row="0" Grid.Column="1" Aspect="AspectFit" HeightRequest="16" WidthRequest="16" Source="content_copy.svg" TintColor="{DynamicResource ContentSecondaryWL}"/>
+												<Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding PayloadBase64}" Style="{DynamicResource FieldValueLabel}" TextColor="{DynamicResource ContentLinkWL}" LineBreakMode="TailTruncation" MaxLines="3"/>
+											</Grid>
+
+											<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto"
+													IsVisible="{Binding PayloadHex, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=''}">
+												<Grid.GestureRecognizers>
+													<TapGestureRecognizer
+														Command="{Binding BindingContext.CopyValueCommand, Source={RelativeSource AncestorType={x:Type base:BasePopup}}}"
+														CommandParameter="{Binding PayloadHex}" />
+												</Grid.GestureRecognizers>
+												<Label Grid.Row="0" Grid.Column="0" Text="Payload (hex)" Style="{DynamicResource FieldKeyLabel}"/>
+												<controls:SvgView Grid.Row="0" Grid.Column="1" Aspect="AspectFit" HeightRequest="16" WidthRequest="16" Source="content_copy.svg" TintColor="{DynamicResource ContentSecondaryWL}"/>
+												<Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding PayloadHex}" Style="{DynamicResource FieldValueLabel}" TextColor="{DynamicResource ContentLinkWL}" LineBreakMode="TailTruncation" MaxLines="3"/>
+											</Grid>
 										</VerticalStackLayout>
 									</DataTemplate>
 								</CollectionView.ItemTemplate>
