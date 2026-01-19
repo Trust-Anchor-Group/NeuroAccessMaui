@@ -1,118 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>remote-notification</string>
-	</array>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>UIDeviceFamily</key>
-	<array>
-		<integer>1</integer>
-	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>arm64</string>
-	</array>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>XSAppIconAssets</key>
-	<string>Assets.xcassets/appicon_ios.appiconset</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Neuro-Access needs access to the camera to take photos for your digital ID, and when you want it to scan QR codes.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Neuro-Access needs access to the photo gallery for you to be able to select a profile photo for your ID, get QR codes from other apps, or share images with contacts in chats.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Neuro-Access needs to be able to add photos to your galleries, if you want to save photos you take for later use.</string>
-	<key>NFCReaderUsageDescription</key>
-	<string>Neuro-Access needs access the NFC reader, to be able to read NFC tags containing references to IDs, contracts, tokens, things, etc.</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Neuro-Access needs access to Bluetooth, allowing you to connect with other Neuro-Access apps, and exchange information with other users.</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Neuro-Access needs access to Face ID to authenticate you in order to protect your digital ID.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Neuro-Access needs access to your location while entering location coordinates and to provide location-based services.</string>
-	
-	<!-- Privacy Usage Descriptions for Neuro-Access -->
+	<dict>
+		<key>UIBackgroundModes</key>
+		<array>
+			<string>fetch</string>
+			<string>remote-notification</string>
+		</array>
+		<key>LSRequiresIPhoneOS</key>
+		<true/>
+		<key>UIDeviceFamily</key>
+		<array>
+			<integer>1</integer>
+		</array>
+		<key>UIViewControllerBasedStatusBarAppearance</key>
+		<false/>
+		<key>UIRequiredDeviceCapabilities</key>
+		<array>
+			<string>arm64</string>
+		</array>
+		<key>UISupportedInterfaceOrientations</key>
+		<array>
+			<string>UIInterfaceOrientationPortrait</string>
+		</array>
+		<key>UISupportedInterfaceOrientations~ipad</key>
+		<array>
+			<string>UIInterfaceOrientationPortrait</string>
+		</array>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
+		<key>XSAppIconAssets</key>
+		<string>Assets.xcassets/appicon_ios.appiconset</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Neuro-Access needs access to the camera to take photos for your digital ID, and when you want it to scan QR codes.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Neuro-Access needs access to the photo gallery for you to be able to select a profile photo for your ID, get QR codes from other apps, or share images with contacts in chats.</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>Neuro-Access needs to be able to add photos to your galleries, if you want to save photos you take for later use.</string>
+		<key>NFCReaderUsageDescription</key>
+		<string>Neuro-Access needs access the NFC reader, to be able to read NFC tags containing references to IDs, contracts, tokens, things, etc.</string>
+		<key>NSBluetoothAlwaysUsageDescription</key>
+		<string>Neuro-Access needs access to Bluetooth, allowing you to connect with other Neuro-Access apps, and exchange information with other users.</string>
+		<key>NSFaceIDUsageDescription</key>
+		<string>Neuro-Access needs access to Face ID to authenticate you in order to protect your digital ID.</string>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Neuro-Access needs access to your location while entering location coordinates and to provide location-based services.</string>
 
-	<key>NSCameraUsageDescription</key>
-	<string>Neuro-Access uses your camera to take your digital ID photo and to scan QR codes that help you verify or connect with others.</string>
+		<!-- Privacy Usage Descriptions for Neuro-Access -->
 
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Neuro-Access lets you choose photos from your library for your digital ID, scan QR codes saved from other apps, and share images in chats.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Neuro-Access uses your camera to take your digital ID photo and to scan QR codes that help you verify or connect with others.</string>
 
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Neuro-Access can save photos you take or receive—such as ID images or shared pictures—back to your photo library.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Neuro-Access lets you choose photos from your library for your digital ID, scan QR codes saved from other apps, and share images in chats.</string>
 
-	<key>NFCReaderUsageDescription</key>
-	<string>Neuro-Access uses the NFC reader to scan and verify tags related to digital IDs, tokens, or smart contracts.</string>
+		<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>Neuro-Access can save photos you take or receive—such as ID images or shared pictures—back to your photo library.</string>
 
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Neuro-Access uses Bluetooth to connect securely with nearby devices and exchange digital credentials or tokens.</string>
+		<key>NFCReaderUsageDescription</key>
+		<string>Neuro-Access uses the NFC reader to scan and verify tags related to digital IDs, tokens, or smart contracts.</string>
 
-	<key>NSFaceIDUsageDescription</key>
-	<string>Neuro-Access uses Face ID to confirm your identity and keep your digital ID secure.</string>
+		<key>NSBluetoothAlwaysUsageDescription</key>
+		<string>Neuro-Access uses Bluetooth to connect securely with nearby devices and exchange digital credentials or tokens.</string>
 
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Neuro-Access uses your location to fill in coordinates for digital records and provide relevant location-based services.</string>
+		<key>NSFaceIDUsageDescription</key>
+		<string>Neuro-Access uses Face ID to confirm your identity and keep your digital ID secure.</string>
 
-	<key>CFBundleLocalizations</key>
-	<array>
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Neuro-Access uses your location to fill in coordinates for digital records and provide relevant location-based services.</string>
+
+		<key>CFBundleLocalizations</key>
+		<array>
+			<string>en</string>
+			<string>sv</string>
+			<string>es</string>
+			<string>fr</string>
+			<string>de</string>
+			<string>da</string>
+			<string>no</string>
+			<string>fi</string>
+			<string>sr</string>
+			<string>pt</string>
+			<string>ro</string>
+			<string>ru</string>
+		</array>
+		<key>CFBundleShortVersionString</key>
+		<string>2.8.1</string>
+		<key>CFBundleDevelopmentRegion</key>
 		<string>en</string>
-		<string>sv</string>
-		<string>es</string>
-		<string>fr</string>
-		<string>de</string>
-		<string>da</string>
-		<string>no</string>
-		<string>fi</string>
-		<string>sr</string>
-		<string>pt</string>
-		<string>ro</string>
-		<string>ru</string>
-	</array>
-	<key>CFBundleShortVersionString</key>
-	<string>2.8.1</string>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>Neuro-Access</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>iotid</string>
-				<string>iotdisco</string>
-				<string>iotsc</string>
-				<string>tagsign</string>
-				<string>obinfo</string>
-				<string>edaler</string>
-				<string>nfeat</string>
-				<string>xmpp</string>
-				<string>aes256</string>
-				<string>neuroaccess</string>
-			</array>
-		</dict>
-	</array>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>https</string>
-	</array>
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<false/>
-</dict>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleURLName</key>
+				<string>Neuro-Access</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>iotid</string>
+					<string>iotdisco</string>
+					<string>iotsc</string>
+					<string>tagsign</string>
+					<string>obinfo</string>
+					<string>edaler</string>
+					<string>nfeat</string>
+					<string>xmpp</string>
+					<string>aes256</string>
+					<string>neuroaccess</string>
+				</array>
+			</dict>
+		</array>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>https</string>
+		</array>
+		<key>FirebaseAppDelegateProxyEnabled</key>
+		<false/>
+		<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+		<array>
+			<string>com.apple.developer.nfc.readersession.iso7816.select-identifiers</string>
+			<string>D2760000850100</string>
+			<string>D2760000850101</string>
+			<string>A0000002471001</string>
+			<!--  Add other AID here if needed  https://www.eftlab.com/knowledge-base/complete-list-of-application-identifiers-aid -->
+		</array>
+	</dict>
 </plist>
