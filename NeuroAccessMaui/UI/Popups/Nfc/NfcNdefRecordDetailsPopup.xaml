@@ -6,7 +6,8 @@
 			   xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
 			   xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
 			   xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
-			   xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Nfc">
+			   xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Popups.Nfc"
+			   xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters">
 	<base:BasePopup.Resources>
 		<ResourceDictionary>
 			<Style x:Key="FieldKeyLabel" TargetType="Label">
@@ -63,7 +64,7 @@
 						</Grid>
 
 						<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto"
-								IsVisible="{Binding Record.PayloadBase64, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=''}">
+								IsVisible="{Binding Record.PayloadBase64, Converter={converters:StringNotEqualsConverter}, ConverterParameter=''}">
 							<Grid.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding CopyValueCommand}"
 											CommandParameter="{Binding Record.PayloadBase64}"/>
@@ -74,7 +75,7 @@
 						</Grid>
 
 						<Grid ColumnDefinitions="*, auto" RowDefinitions="auto, auto"
-								IsVisible="{Binding Record.PayloadHex, Converter={StaticResource StringNotEqualsConverter}, ConverterParameter=''}">
+								IsVisible="{Binding Record.PayloadHex, Converter={converters:StringNotEqualsConverter}, ConverterParameter=''}">
 							<Grid.GestureRecognizers>
 								<TapGestureRecognizer Command="{Binding CopyValueCommand}"
 											CommandParameter="{Binding Record.PayloadHex}"/>

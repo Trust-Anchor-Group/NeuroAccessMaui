@@ -15,8 +15,8 @@ namespace NeuroAccessMaui.Services.Nfc.Ui
     /// Default implementation of <see cref="INfcScanHistoryService"/>.
     /// </summary>
     [Singleton]
-    public sealed class NfcScanHistoryService : INfcScanHistoryService
-    {
+    public sealed class NfcScanHistoryService : INfcScanHistoryService, IDisposable
+	{
         private const int DefaultRetentionCount = 200;
         private readonly SemaphoreSlim gate = new(1, 1);
         private readonly INfcTagSnapshotService nfcTagSnapshotService;
@@ -196,5 +196,10 @@ namespace NeuroAccessMaui.Services.Nfc.Ui
 
             await Database.Provider.Flush();
         }
-    }
+
+		public void Dispose()
+        {
+            this.gate?.Dispose();
+        }
+	}
 }
