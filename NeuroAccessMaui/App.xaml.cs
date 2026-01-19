@@ -31,6 +31,7 @@ using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using NeuroAccessMaui.UI.Pages.Main.ChangePassword;
+using NeuroAccessMaui.UI.Pages.Main.CameraTest;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
@@ -622,6 +623,7 @@ namespace NeuroAccessMaui
 			Routing.RegisterRoute(nameof(CalculatorPage), typeof(CalculatorPage));
 			Routing.RegisterRoute(nameof(ChangePasswordPage), typeof(ChangePasswordPage));
 			Routing.RegisterRoute(nameof(DurationPage), typeof(DurationPage));
+			Routing.RegisterRoute(nameof(CameraTestPage), typeof(CameraTestPage));
 			Routing.RegisterRoute(nameof(ScanQrCodePage), typeof(ScanQrCodePage));
 			Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
 			Routing.RegisterRoute(nameof(VerifyCodePage), typeof(VerifyCodePage));

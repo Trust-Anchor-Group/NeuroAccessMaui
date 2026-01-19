@@ -37,7 +37,7 @@
 				<!-- Apps -->
 				<Border Style="{DynamicResource BorderSet}" Margin="{DynamicResource SmallLeftRightBottomMargins}">
 					<!-- Common apps -->
-					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *" RowSpacing="{DynamicResource MediumSpacing}">
+					<Grid ColumnDefinitions="*,*,*" RowDefinitions="auto, *, *" RowSpacing="{DynamicResource MediumSpacing}">
 						<Label Style="{DynamicResource SectionTitleLabel}"
 							   Text="{l:Localize Apps}"
 							   Grid.ColumnSpan="3"/>
@@ -58,6 +58,12 @@
 												SvgSource="applications.svg"
 												Command="{Binding ShowApplicationsCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Applications}" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+											SvgSource="nfc.svg"
+											Command="{Binding ShowCameraTestCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="Camera test page" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
 					</Grid>
 				</Border>
