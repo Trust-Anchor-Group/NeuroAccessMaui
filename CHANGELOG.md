@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added rendering of Token reports
+
+### Changed
+
+- Updated layout on Token page
+
 ## [2.6.1] - 2025/12/16
 
 ### Added
@@ -31,7 +39,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improves push handling and identity routing
 - Improves notifications loading and cancellation
 - Update Waher dependencies
-
 
 ### Fixed
 
@@ -203,3 +210,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated all localization resources
 
 ## [2.4.1] - 2025-04-16
+
