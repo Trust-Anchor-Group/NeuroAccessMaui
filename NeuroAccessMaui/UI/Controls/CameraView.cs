@@ -2,6 +2,9 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.UI.Pages;
 using SkiaSharp;
@@ -13,6 +16,21 @@ namespace NeuroAccessMaui.UI.Controls
 	/// </summary>
 	public partial class CameraView : CommunityToolkit.Maui.Views.CameraView
 	{
+		/// <summary>
+		/// Message sent when an image has been captured.
+		/// </summary>
+		public sealed class ImageCapturedMessage : ValueChangedMessage<byte[]>
+		{
+			/// <summary>
+			/// Initializes a new instance of the <see cref="ImageCapturedMessage"/> class.
+			/// </summary>
+			/// <param name="Value">The captured image bytes.</param>
+			public ImageCapturedMessage(byte[] Value)
+				: base(Value)
+			{
+			}
+		}
+
 		#region Local Fields
 
 		private PeriodicTimer? captureTimer;
@@ -119,12 +137,11 @@ namespace NeuroAccessMaui.UI.Controls
 						await this.TakePhoto();
 					}
 				}
-				catch (OperationCanceledException)
+				catch
 				{
+					// Not handled
 				}
-				catch (ObjectDisposedException)
-				{
-				}
+
 			}, Token);
 		}
 
@@ -132,13 +149,16 @@ namespace NeuroAccessMaui.UI.Controls
 		{
 			CancellationTokenSource? TokenSource = this.captureTimerTokenSource;
 			this.captureTimerTokenSource = null;
+
 			try
 			{
 				TokenSource?.Cancel();
 			}
-			catch (ObjectDisposedException)
+			catch
 			{
+				// Not handled
 			}
+
 			TokenSource?.Dispose();
 
 			PeriodicTimer? Timer = this.captureTimer;
@@ -161,21 +181,13 @@ namespace NeuroAccessMaui.UI.Controls
 				CancellationTokenSource captureImageCTS = new CancellationTokenSource(TimeSpan.FromSeconds(3));
 				Stream Stream = await this.CaptureImage(captureImageCTS.Token);
 
-				// Convert stream to byte array
 				if (Stream is MemoryStream memoryStream)
 				{
-					byte[] imageBytes = memoryStream.ToArray();
-
-					// Use SkiaSharp to decode the image
-					//using SKBitmap bitmap = SKBitmap.Decode(imageBytes);
-
-					// For testing
-					await Clipboard.Default.SetTextAsync(Convert.ToBase64String(imageBytes));
-
-					// Send event for photo captured
+					byte[] ImageData = memoryStream.ToArray();
+					WeakReferenceMessenger.Default.Send(new ImageCapturedMessage(ImageData));
 				}
 			}
-			catch (Exception Ex)
+			catch
 			{
 				// Do nothing for now
 			}
