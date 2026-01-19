@@ -11,6 +11,9 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 	{
 		private bool isDisposed;
 
+		[ObservableProperty]
+		private bool loaded = false;
+
 		/// <summary>
 		/// The view model to bind to for when displaying information about the current state of a state-machine.
 		/// </summary>
@@ -19,6 +22,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 			: base()
 		{
 			this.TokenReport = Args?.Report;
+			this.Loaded = false;
 		}
 
 		/// <inheritdoc/>
@@ -31,7 +35,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MachineReport
 			else
 			{
 				this.Title = await this.TokenReport.GetTitle();
-				await this.TokenReport.GenerateReport(this);
+
+				await this.TokenReport.GenerateReportMaui(this);
+				//await this.TokenReport.GenerateReport(this);
+
+				MainThread.BeginInvokeOnMainThread(() =>
+					this.Loaded = true);
 			}
 
 			ServiceRef.XmppService.NeuroFeatureVariablesUpdated += this.Wallet_VariablesUpdated;

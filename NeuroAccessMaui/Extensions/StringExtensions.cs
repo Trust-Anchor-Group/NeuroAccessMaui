@@ -88,6 +88,35 @@ namespace NeuroAccessMaui.Extensions
 		}
 
 		/// <summary>
+		/// Converts Markdown text to Maui
+		/// </summary>
+		public static async Task<VerticalStackLayout> MarkdownToMaui(this string Markdown)
+		{
+			MarkdownSettings Settings = new()
+			{
+				AllowScriptTag = false,
+				EmbedEmojis = false,    // TODO: Emojis
+				AudioAutoplay = false,
+				AudioControls = false,
+				ParseMetaData = false,
+				VideoAutoplay = false,
+				VideoControls = false
+			};
+
+			MarkdownDocument Doc = await MarkdownDocument.CreateAsync(Markdown, Settings);
+
+			using MauiRenderer Renderer = new(Doc);
+			await Doc.RenderDocument(Renderer);
+
+			VerticalStackLayout? Layout = Renderer.Output();
+
+			if (Layout is null)
+				return new VerticalStackLayout();
+
+			return Layout;
+		}
+
+		/// <summary>
 		/// Converts Markdown text to Maui XAML
 		/// </summary>
 		/// <param name="Markdown">Markdown</param>

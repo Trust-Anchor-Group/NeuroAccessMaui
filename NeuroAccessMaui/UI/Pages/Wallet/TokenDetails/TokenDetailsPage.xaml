@@ -15,324 +15,327 @@
 
 		<controls:Background/>
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+		<Grid RowDefinitions="auto,*" Margin="8">
+			<Grid ColumnDefinitions="auto, *, auto" Margin="8,0,8,8">
+				<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+									Style="{DynamicResource IconButton}" SvgSource="close.svg" />
 
-				<Label Text="{l:Localize TokenDetails}" Style="{DynamicResource PageTitleLabel}"/>
+				<Label Grid.Column="2" Text="{l:Localize TokenDetails}" Style="{DynamicResource PageTitleLabel}"/>
+			</Grid>
+			<ScrollView Grid.Row="1">
+				<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+					<Border Style="{DynamicResource BorderSet}">
+						<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+							<VerticalStackLayout Margin="{DynamicResource SmallMargins}">
+								<Label Text="{l:Localize TokenDetails}" Margin="{DynamicResource SmallTopMargins}"
+										 VerticalOptions="Start"/>
+								<Label Text="{l:Localize TokenDetailsDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
+								<Label Text="{l:Localize Description}" Margin="{DynamicResource SmallTopMargins}"
+										 VerticalOptions="Start"/>
+								<ContentView Content="{Binding Description}" VerticalOptions="Start" Margin="{DynamicResource SmallLeftRightBottomMargins}"/>
+								<Grid x:Name="GeneralInfoGrid">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+									</Grid.RowDefinitions>
 
-				<Border Style="{DynamicResource BorderSet}">
-					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-						<VerticalStackLayout Margin="{DynamicResource SmallMargins}">
-							<Label Text="{l:Localize TokenDetails}" Margin="{DynamicResource SmallTopMargins}"
-									 VerticalOptions="Start"/>
-							<Label Text="{l:Localize TokenDetailsDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
-							<Label Text="{l:Localize Description}" Margin="{DynamicResource SmallTopMargins}"
-									 VerticalOptions="Start"/>
-							<ContentView Content="{Binding Description}" VerticalOptions="Start" Margin="{DynamicResource SmallLeftRightBottomMargins}"/>
-							<Grid x:Name="GeneralInfoGrid">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="*"/>
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-								</Grid.RowDefinitions>
+									<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize Name}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="0" Text="{Binding FriendlyName}" Style="{DynamicResource ValueLabel}"/>
 
-								<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize Name}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="0" Text="{Binding FriendlyName}" Style="{DynamicResource ValueLabel}"/>
+									<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Category}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="1" Text="{Binding Category}" Style="{DynamicResource ValueLabel}"/>
 
-								<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Category}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="1" Text="{Binding Category}" Style="{DynamicResource ValueLabel}"/>
+									<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize TokenId}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="2" Text="{Binding TokenId}" Style="{DynamicResource ClickableValueLabel}">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding TokenId}" />
+										</Label.GestureRecognizers>
+									</Label>
 
-								<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize TokenId}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="2" Text="{Binding TokenId}" Style="{DynamicResource ClickableValueLabel}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding TokenId}" />
-									</Label.GestureRecognizers>
-								</Label>
+									<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize ShortId}" Style="{DynamicResource KeyLabel}"
+											 IsVisible="{Binding HasShortTokenId}"/>
+									<Label Grid.Column="1" Grid.Row="3" Text="{Binding ShortTokenId}" Style="{DynamicResource ClickableValueLabel}"
+											 IsVisible="{Binding HasShortTokenId}">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding ShortTokenId}" />
+										</Label.GestureRecognizers>
+									</Label>
 
-								<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize ShortId}" Style="{DynamicResource KeyLabel}"
-										 IsVisible="{Binding HasShortTokenId}"/>
-								<Label Grid.Column="1" Grid.Row="3" Text="{Binding ShortTokenId}" Style="{DynamicResource ClickableValueLabel}"
-										 IsVisible="{Binding HasShortTokenId}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding ShortTokenId}" />
-									</Label.GestureRecognizers>
-								</Label>
+									<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize TokenIdMethod}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="4" Text="{Binding TokenIdMethod}" Style="{DynamicResource ValueLabel}"/>
 
-								<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize TokenIdMethod}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="4" Text="{Binding TokenIdMethod}" Style="{DynamicResource ValueLabel}"/>
+									<Label Grid.Column="0" Grid.Row="5" Text="{l:Localize TokenVisibility}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="5" Text="{Binding Visibility, Converter={converters:LocalizedState}}" Style="{DynamicResource ValueLabel}"/>
 
-								<Label Grid.Column="0" Grid.Row="5" Text="{l:Localize TokenVisibility}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="5" Text="{Binding Visibility, Converter={converters:LocalizedState}}" Style="{DynamicResource ValueLabel}"/>
+									<Label Grid.Column="0" Grid.Row="6" Text="{l:Localize Ordinal}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="6" Style="{DynamicResource ValueLabel}">
+										<Label.FormattedText>
+											<FormattedString>
+												<Span Text="{Binding Ordinal}"/>
+												<Span Text=" of "/>
+												<Span Text="{Binding BatchSize}"/>
+											</FormattedString>
+										</Label.FormattedText>
+									</Label>
 
-								<Label Grid.Column="0" Grid.Row="6" Text="{l:Localize Ordinal}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="6" Style="{DynamicResource ValueLabel}">
-									<Label.FormattedText>
-										<FormattedString>
-											<Span Text="{Binding Ordinal}"/>
-											<Span Text=" of "/>
-											<Span Text="{Binding BatchSize}"/>
-										</FormattedString>
-									</Label.FormattedText>
-								</Label>
+									<Label Grid.Column="0" Grid.Row="7" Text="{l:Localize Valuation}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="7" Style="{DynamicResource ValueLabel}">
+										<Label.FormattedText>
+											<FormattedString>
+												<Span Text="{Binding Value}"/>
+												<Span Text=" "/>
+												<Span Text="{Binding Currency}"/>
+											</FormattedString>
+										</Label.FormattedText>
+									</Label>
 
-								<Label Grid.Column="0" Grid.Row="7" Text="{l:Localize Valuation}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="7" Style="{DynamicResource ValueLabel}">
-									<Label.FormattedText>
-										<FormattedString>
-											<Span Text="{Binding Value}"/>
-											<Span Text=" "/>
-											<Span Text="{Binding Currency}"/>
-										</FormattedString>
-									</Label.FormattedText>
-								</Label>
+									<Label Grid.Column="0" Grid.Row="8" Text="{l:Localize Created}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="8" Text="{Binding Created, Converter={converters:DateTimeToString}}" Style="{DynamicResource ValueLabel}"/>
 
-								<Label Grid.Column="0" Grid.Row="8" Text="{l:Localize Created}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="8" Text="{Binding Created, Converter={converters:DateTimeToString}}" Style="{DynamicResource ValueLabel}"/>
+									<Label Grid.Column="0" Grid.Row="9" Text="{l:Localize Updated}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="9" Text="{Binding Updated, Converter={converters:DateTimeToString}}" Style="{DynamicResource ValueLabel}"/>
 
-								<Label Grid.Column="0" Grid.Row="9" Text="{l:Localize Updated}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="9" Text="{Binding Updated, Converter={converters:DateTimeToString}}" Style="{DynamicResource ValueLabel}"/>
+									<Label Grid.Column="0" Grid.Row="10" Text="{l:Localize Expires}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="10" Text="{Binding Expires, Converter={converters:DateTimeToString}}" Style="{DynamicResource ValueLabel}"/>
+								</Grid>
 
-								<Label Grid.Column="0" Grid.Row="10" Text="{l:Localize Expires}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="10" Text="{Binding Expires, Converter={converters:DateTimeToString}}" Style="{DynamicResource ValueLabel}"/>
-							</Grid>
+								<Image Source="{Binding Path=GlyphImage}" IsVisible="{Binding Path=HasGlyphImage}"
+						   WidthRequest="{Binding Path=GlyphWidth, Mode=OneTime}" HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}" 
+						   VerticalOptions="Start" HorizontalOptions="Center" Margin="{DynamicResource SmallTopMargins}" />
 
-							<Image Source="{Binding Path=GlyphImage}" IsVisible="{Binding Path=HasGlyphImage}"
-                       WidthRequest="{Binding Path=GlyphWidth, Mode=OneTime}" HeightRequest="{Binding Path=GlyphHeight, Mode=OneTime}" 
-                       VerticalOptions="Start" HorizontalOptions="Center" Margin="{DynamicResource SmallTopMargins}" />
+								<Image Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" 
+						   WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" 
+						   VerticalOptions="Start" HorizontalOptions="Center" Margin="{DynamicResource SmallTopMargins}" />
 
-							<Image Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" 
-                       WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" 
-                       VerticalOptions="Start" HorizontalOptions="Center" Margin="{DynamicResource SmallTopMargins}" />
+								<VerticalStackLayout>
+									<Label Text="{l:Localize Reports}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"
+											 IsVisible="{Binding HasStateMachine}"/>
 
-							<VerticalStackLayout IsVisible="False">
-								<Label Text="{l:Localize Reports}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"
-										 IsVisible="{Binding HasStateMachine}"/>
+									<controls:TextButton LabelData="{l:Localize Present}" Margin="{DynamicResource SmallBottomMargins}"
+																Command="{Binding Path=PresentReportCommand}" IsVisible="{Binding HasStateMachine}"
+																IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+																Style="{DynamicResource FilledTextButton}"/>
 
-								<controls:TextButton LabelData="{l:Localize Present}" Margin="{DynamicResource SmallBottomMargins}"
-															Command="{Binding Path=PresentReportCommand}" IsVisible="{Binding HasStateMachine}"
+									<controls:TextButton LabelData="{l:Localize History}" Margin="{DynamicResource SmallBottomMargins}"
+																Command="{Binding Path=HistoryReportCommand}"
+																IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+																IsVisible="{Binding HasStateMachine}" Style="{DynamicResource FilledTextButton}"/>
+
+									<controls:TextButton LabelData="{l:Localize Variables}" Margin="{DynamicResource SmallBottomMargins}"
+																Command="{Binding Path=VariablesReportCommand}" Style="{DynamicResource FilledTextButton}"
+																IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+																IsVisible="{Binding HasStateMachine}"/>
+
+									<controls:TextButton LabelData="{l:Localize States}" Margin="{DynamicResource SmallBottomMargins}"
+																Command="{Binding Path=StatesReportCommand}" Style="{DynamicResource FilledTextButton}"
+																IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+																IsVisible="{Binding HasStateMachine}"/>
+
+									<controls:TextButton LabelData="{l:Localize Profiling}" Margin="{DynamicResource SmallBottomMargins}"
+																Command="{Binding Path=ProfilingReportCommand}" Style="{DynamicResource FilledTextButton}"
+																IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+																IsVisible="{Binding HasStateMachine}"/>
+								</VerticalStackLayout>
+
+								<Label Text="{l:Localize Parts}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
+								<Label Text="{l:Localize TokenPartsInfoText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
+
+								<Grid x:Name="PartsGrid">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+									</Grid.RowDefinitions>
+
+									<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize Owner}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="0" Text="{Binding OwnerFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
+										</Label.GestureRecognizers>
+									</Label>
+
+									<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize OwnerJid}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="1" Text="{Binding OwnerJid}" Style="{DynamicResource ClickableValueLabel}">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding OpenChatCommand}" CommandParameter="Owner" />
+										</Label.GestureRecognizers>
+									</Label>
+
+									<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize OwnershipContract}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnershipContract}" Style="{DynamicResource ClickableValueLabel}">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
+										</Label.GestureRecognizers>
+									</Label>
+
+									<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize Creator}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="3" Text="{Binding CreatorFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Creator}" />
+										</Label.GestureRecognizers>
+									</Label>
+
+									<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize CreatorJid}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="4" Text="{Binding CreatorJid}" Style="{DynamicResource ClickableValueLabel}">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding OpenChatCommand}" CommandParameter="Creator" />
+										</Label.GestureRecognizers>
+									</Label>
+
+									<Label Grid.Column="0" Grid.Row="5" Text="{l:Localize CreationContract}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="5" Text="{Binding CreationContract}" Style="{DynamicResource ClickableValueLabel}">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding CreationContract}" />
+										</Label.GestureRecognizers>
+									</Label>
+
+									<Label Grid.Column="0" Grid.Row="6" Text="{l:Localize TrustProvider}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="6" Text="{Binding TrustProviderFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding TrustProvider}" />
+										</Label.GestureRecognizers>
+									</Label>
+
+									<Label Grid.Column="0" Grid.Row="7" Text="{l:Localize TrustProviderJid}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="7" Text="{Binding TrustProviderJid}" Style="{DynamicResource ClickableValueLabel}">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding OpenChatCommand}" CommandParameter="TrustProvider" />
+										</Label.GestureRecognizers>
+									</Label>
+								</Grid>
+
+								<Label Text="{l:Localize Privileges}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
+								<Label Text="{l:Localize TokenPrivilegesInfoText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
+
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="4*"/>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+									</Grid.RowDefinitions>
+
+									<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CreatorCanDestroy}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="0" Text="{Binding CreatorCanDestroy, Converter={converters:BooleanToYesNo}}" Style="{DynamicResource ValueLabel}" HorizontalOptions="Center"/>
+
+									<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize OwnerCanDestroyBatch}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="1" Text="{Binding OwnerCanDestroyBatch, Converter={converters:BooleanToYesNo}}" Style="{DynamicResource ValueLabel}" HorizontalOptions="Center"/>
+
+									<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize OwnerCanDestroyIndividual}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnerCanDestroyIndividual, Converter={converters:BooleanToYesNo}}" Style="{DynamicResource ValueLabel}" HorizontalOptions="Center"/>
+
+									<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize CertifierCanDestroy}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="3" Text="{Binding CertifierCanDestroy, Converter={converters:BooleanToYesNo}}" Style="{DynamicResource ValueLabel}" HorizontalOptions="Center"/>
+								</Grid>
+
+								<Label Text="{l:Localize MachineReadableText}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
+								<Label Text="{l:Localize MachineReadableInfoTextToken}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
+
+								<Grid Margin="{DynamicResource SmallBottomMargins}">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+									</Grid.RowDefinitions>
+
+									<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize Signature}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="0" Text="{Binding Signature, Converter={converters:BinaryToBase64}}" Style="{DynamicResource ClickableValueLabel}">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding Signature, Converter={converters:BinaryToBase64}}" />
+										</Label.GestureRecognizers>
+									</Label>
+
+									<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Timestamp}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="1" Text="{Binding SignatureTimestamp, Converter={converters:DateTimeToString}}" Style="{DynamicResource ValueLabel}"/>
+
+									<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize DefinitionNamespace}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="2" Text="{Binding DefinitionNamespace}" Style="{DynamicResource ClickableValueLabel}" HorizontalOptions="Center">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding OpenLinkCommand}" CommandParameter="{Binding DefinitionNamespace}" />
+										</Label.GestureRecognizers>
+									</Label>
+
+									<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize DefinitionSchemaDigest}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="3" Text="{Binding DefinitionSchemaDigest, Converter={converters:BinaryToBase64}}" Style="{DynamicResource ClickableValueLabel}">
+										<Label.GestureRecognizers>
+											<TapGestureRecognizer Command="{Binding OpenLinkCommand}" CommandParameter="{Binding DefinitionSchemaUrl}" />
+										</Label.GestureRecognizers>
+									</Label>
+
+									<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize HashFunction}" Style="{DynamicResource KeyLabel}"/>
+									<Label Grid.Column="1" Grid.Row="4" Text="{Binding DefinitionSchemaHashFunction}" Style="{DynamicResource ValueLabel}"/>
+								</Grid>
+
+								<controls:TextButton LabelData="{l:Localize ShowM2MInfo}" Margin="{DynamicResource SmallBottomMargins}"
+															Command="{Binding Path=ShowM2mInfoCommand}" Style="{DynamicResource FilledTextButton}"
+															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+
+								<Label Text="{l:Localize Actions}" Margin="{DynamicResource SmallTopMargins}"
+										 VerticalOptions="Start"/>
+
+								<controls:TextButton LabelData="{l:Localize SendToContact}" Margin="{DynamicResource SmallBottomMargins}"
+															Command="{Binding Path=SendToContactCommand}" Style="{DynamicResource FilledTextButton}"
+															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+
+								<controls:TextButton LabelData="{l:Localize Share}" Margin="{DynamicResource SmallBottomMargins}"
+															Command="{Binding Path=ShareCommand}" Style="{DynamicResource FilledTextButton}"
+															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+
+								<controls:TextButton LabelData="{l:Localize PublishMarketplace}" Margin="{DynamicResource SmallBottomMargins}"
+													Command="{Binding Path=PublishMarketplaceCommand}" Style="{DynamicResource FilledTextButton}"
+													IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+													IsVisible="{Binding IsMyToken}"/>
+
+								<controls:TextButton LabelData="{l:Localize OfferToSell}" Margin="{DynamicResource SmallBottomMargins}"
+															Command="{Binding Path=OfferToSellCommand}" Style="{DynamicResource FilledTextButton}"
 															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-															Style="{DynamicResource FilledTextButton}"/>
+															IsVisible="{Binding IsMyToken}"/>
 
-								<controls:TextButton LabelData="{l:Localize History}" Margin="{DynamicResource SmallBottomMargins}"
-															Command="{Binding Path=HistoryReportCommand}"
+								<controls:TextButton LabelData="{l:Localize OfferToBuy}" Margin="{DynamicResource SmallBottomMargins}"
+															Command="{Binding Path=OfferToBuyCommand}" Style="{DynamicResource FilledTextButton}"
 															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-															IsVisible="{Binding HasStateMachine}" Style="{DynamicResource FilledTextButton}"/>
+															IsVisible="{Binding IsMyToken, Converter={StaticResource InvertedBoolConverter}}"/>
 
-								<controls:TextButton LabelData="{l:Localize Variables}" Margin="{DynamicResource SmallBottomMargins}"
-															Command="{Binding Path=VariablesReportCommand}" Style="{DynamicResource FilledTextButton}"
-															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-															IsVisible="{Binding HasStateMachine}"/>
-
-								<controls:TextButton LabelData="{l:Localize States}" Margin="{DynamicResource SmallBottomMargins}"
-															Command="{Binding Path=StatesReportCommand}" Style="{DynamicResource FilledTextButton}"
-															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-															IsVisible="{Binding HasStateMachine}"/>
-
-								<controls:TextButton LabelData="{l:Localize Profiling}" Margin="{DynamicResource SmallBottomMargins}"
-															Command="{Binding Path=ProfilingReportCommand}" Style="{DynamicResource FilledTextButton}"
-															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-															IsVisible="{Binding HasStateMachine}"/>
+								<controls:TextButton LabelData="{l:Localize ViewEvents}" Margin="{DynamicResource SmallBottomMargins}"
+															Command="{Binding Path=ViewEventsCommand}" Style="{DynamicResource FilledTextButton}"
+															IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
 							</VerticalStackLayout>
-
-							<Label Text="{l:Localize Parts}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
-							<Label Text="{l:Localize TokenPartsInfoText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
-
-							<Grid x:Name="PartsGrid">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="*"/>
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-								</Grid.RowDefinitions>
-
-								<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize Owner}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="0" Text="{Binding OwnerFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
-									</Label.GestureRecognizers>
-								</Label>
-
-								<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize OwnerJid}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="1" Text="{Binding OwnerJid}" Style="{DynamicResource ClickableValueLabel}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding OpenChatCommand}" CommandParameter="Owner" />
-									</Label.GestureRecognizers>
-								</Label>
-
-								<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize OwnershipContract}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnershipContract}" Style="{DynamicResource ClickableValueLabel}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
-									</Label.GestureRecognizers>
-								</Label>
-
-								<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize Creator}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="3" Text="{Binding CreatorFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Creator}" />
-									</Label.GestureRecognizers>
-								</Label>
-
-								<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize CreatorJid}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="4" Text="{Binding CreatorJid}" Style="{DynamicResource ClickableValueLabel}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding OpenChatCommand}" CommandParameter="Creator" />
-									</Label.GestureRecognizers>
-								</Label>
-
-								<Label Grid.Column="0" Grid.Row="5" Text="{l:Localize CreationContract}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="5" Text="{Binding CreationContract}" Style="{DynamicResource ClickableValueLabel}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding CreationContract}" />
-									</Label.GestureRecognizers>
-								</Label>
-
-								<Label Grid.Column="0" Grid.Row="6" Text="{l:Localize TrustProvider}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="6" Text="{Binding TrustProviderFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding TrustProvider}" />
-									</Label.GestureRecognizers>
-								</Label>
-
-								<Label Grid.Column="0" Grid.Row="7" Text="{l:Localize TrustProviderJid}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="7" Text="{Binding TrustProviderJid}" Style="{DynamicResource ClickableValueLabel}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding OpenChatCommand}" CommandParameter="TrustProvider" />
-									</Label.GestureRecognizers>
-								</Label>
-							</Grid>
-
-							<Label Text="{l:Localize Privileges}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
-							<Label Text="{l:Localize TokenPrivilegesInfoText}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
-
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="4*"/>
-									<ColumnDefinition Width="*"/>
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-								</Grid.RowDefinitions>
-
-								<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize CreatorCanDestroy}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="0" Text="{Binding CreatorCanDestroy, Converter={converters:BooleanToYesNo}}" Style="{DynamicResource ValueLabel}" HorizontalOptions="Center"/>
-
-								<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize OwnerCanDestroyBatch}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="1" Text="{Binding OwnerCanDestroyBatch, Converter={converters:BooleanToYesNo}}" Style="{DynamicResource ValueLabel}" HorizontalOptions="Center"/>
-
-								<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize OwnerCanDestroyIndividual}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnerCanDestroyIndividual, Converter={converters:BooleanToYesNo}}" Style="{DynamicResource ValueLabel}" HorizontalOptions="Center"/>
-
-								<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize CertifierCanDestroy}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="3" Text="{Binding CertifierCanDestroy, Converter={converters:BooleanToYesNo}}" Style="{DynamicResource ValueLabel}" HorizontalOptions="Center"/>
-							</Grid>
-
-							<Label Text="{l:Localize MachineReadableText}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
-							<Label Text="{l:Localize MachineReadableInfoTextToken}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
-
-							<Grid Margin="{DynamicResource SmallBottomMargins}">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="*"/>
-									<ColumnDefinition Width="*"/>
-								</Grid.ColumnDefinitions>
-								<Grid.RowDefinitions>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
-								</Grid.RowDefinitions>
-
-								<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize Signature}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="0" Text="{Binding Signature, Converter={converters:BinaryToBase64}}" Style="{DynamicResource ClickableValueLabel}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding Signature, Converter={converters:BinaryToBase64}}" />
-									</Label.GestureRecognizers>
-								</Label>
-
-								<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Timestamp}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="1" Text="{Binding SignatureTimestamp, Converter={converters:DateTimeToString}}" Style="{DynamicResource ValueLabel}"/>
-
-								<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize DefinitionNamespace}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="2" Text="{Binding DefinitionNamespace}" Style="{DynamicResource ClickableValueLabel}" HorizontalOptions="Center">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding OpenLinkCommand}" CommandParameter="{Binding DefinitionNamespace}" />
-									</Label.GestureRecognizers>
-								</Label>
-
-								<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize DefinitionSchemaDigest}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="3" Text="{Binding DefinitionSchemaDigest, Converter={converters:BinaryToBase64}}" Style="{DynamicResource ClickableValueLabel}">
-									<Label.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding OpenLinkCommand}" CommandParameter="{Binding DefinitionSchemaUrl}" />
-									</Label.GestureRecognizers>
-								</Label>
-
-								<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize HashFunction}" Style="{DynamicResource KeyLabel}"/>
-								<Label Grid.Column="1" Grid.Row="4" Text="{Binding DefinitionSchemaHashFunction}" Style="{DynamicResource ValueLabel}"/>
-							</Grid>
-
-							<controls:TextButton LabelData="{l:Localize ShowM2MInfo}" Margin="{DynamicResource SmallBottomMargins}"
-														Command="{Binding Path=ShowM2mInfoCommand}" Style="{DynamicResource FilledTextButton}"
-														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
-
-							<Label Text="{l:Localize Actions}" Margin="{DynamicResource SmallTopMargins}"
-									 VerticalOptions="Start"/>
-
-							<controls:TextButton LabelData="{l:Localize SendToContact}" Margin="{DynamicResource SmallBottomMargins}"
-														Command="{Binding Path=SendToContactCommand}" Style="{DynamicResource FilledTextButton}"
-														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
-
-							<controls:TextButton LabelData="{l:Localize Share}" Margin="{DynamicResource SmallBottomMargins}"
-														Command="{Binding Path=ShareCommand}" Style="{DynamicResource FilledTextButton}"
-														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
-
-							<controls:TextButton LabelData="{l:Localize PublishMarketplace}" Margin="{DynamicResource SmallBottomMargins}"
-												Command="{Binding Path=PublishMarketplaceCommand}" Style="{DynamicResource FilledTextButton}"
-												IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-												IsVisible="{Binding IsMyToken}"/>
-
-							<controls:TextButton LabelData="{l:Localize OfferToSell}" Margin="{DynamicResource SmallBottomMargins}"
-														Command="{Binding Path=OfferToSellCommand}" Style="{DynamicResource FilledTextButton}"
-														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-														IsVisible="{Binding IsMyToken}"/>
-
-							<controls:TextButton LabelData="{l:Localize OfferToBuy}" Margin="{DynamicResource SmallBottomMargins}"
-														Command="{Binding Path=OfferToBuyCommand}" Style="{DynamicResource FilledTextButton}"
-														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-														IsVisible="{Binding IsMyToken, Converter={StaticResource InvertedBoolConverter}}"/>
-
-							<controls:TextButton LabelData="{l:Localize ViewEvents}" Margin="{DynamicResource SmallBottomMargins}"
-														Command="{Binding Path=ViewEventsCommand}" Style="{DynamicResource FilledTextButton}"
-														IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"/>
 						</VerticalStackLayout>
-					</VerticalStackLayout>
-				</Border>
-			</VerticalStackLayout>
-		</ScrollView>
+					</Border>
+				</VerticalStackLayout>
+			</ScrollView>
+		</Grid>
 	</Grid>
 </base:BaseContentPage>

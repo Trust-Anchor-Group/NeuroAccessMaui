@@ -11,23 +11,32 @@
 							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
 							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MachineReport">
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, *">
 
-		<controls:Background/>
+		<controls:Background Grid.RowSpan="2"/>
 
-		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
+		<Grid ColumnDefinitions="auto, *, auto" Margin="16,8,16,8">
+			<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+								Style="{DynamicResource IconButton}" SvgSource="close.svg" />
 
-				<Label Text="{Binding Title}" Style="{DynamicResource PageTitleLabel}"/>
+			<Label Grid.Column="2" Text="{Binding Title}" Style="{DynamicResource PageTitleLabel}"/>
+		</Grid>
 
-				<Border Style="{DynamicResource BorderSet}">
-					<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
-						<ContentView Content="{Binding Report}"/>
+		<controls:ConditionView Grid.Row="1" Condition="{Binding Loaded}">
+			<controls:ConditionView.False>
+				<ActivityIndicator IsRunning="True" Color="{DynamicResource PrimaryWL}" HorizontalOptions="Center" VerticalOptions="Center"/>
+			</controls:ConditionView.False>
+			<controls:ConditionView.True>
+				<ScrollView>
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Border Style="{DynamicResource BorderSet}">
+							<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+								<ContentView Content="{Binding Report}"/>
+							</VerticalStackLayout>
+						</Border>
 					</VerticalStackLayout>
-				</Border>
-			</VerticalStackLayout>
-		</ScrollView>
+				</ScrollView>
+			</controls:ConditionView.True>
+		</controls:ConditionView>
 	</Grid>
 </base:BaseContentPage>

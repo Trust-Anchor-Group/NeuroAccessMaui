@@ -5702,6 +5702,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 		}
 
 		/// <summary>
+		/// Generates a Maui report for a state diagram corresponding to the token.
+		/// </summary>
+		/// <returns>String-representation of XAML of report.</returns>
+		public async Task<VerticalStackLayout> GenerateNeuroFeatureStateDiagramReportMaui(string TokenId)
+		{
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateStateDiagramAsync(TokenId, ReportFormat.Markdown);
+			if (!e.Ok)
+				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetStateDiagram)]);
+
+			return await e.ReportText.MarkdownToMaui();
+		}
+
+		/// <summary>
 		/// Generates a XAML report for a timing diagram corresponding to the token.
 		/// </summary>
 		/// <returns>String-representation of XAML of report.</returns>
@@ -5712,6 +5725,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetProfiling)]);
 
 			return await e.ReportText.MarkdownToXaml();
+		}
+
+		/// <summary>
+		/// Generates a Maui report for a timing diagram corresponding to the token.
+		/// </summary>
+		/// <returns>String-representation of XAML of report.</returns>
+		public async Task<VerticalStackLayout> GenerateNeuroFeatureProfilingReportMaui(string TokenId)
+		{
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateProfilingReportAsync(TokenId, ReportFormat.Markdown);
+			if (!e.Ok)
+				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetProfiling)]);
+
+			return await e.ReportText.MarkdownToMaui();
 		}
 
 		/// <summary>
@@ -5728,6 +5754,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 		}
 
 		/// <summary>
+		/// Generates a MAUI present report for a token.
+		/// </summary>
+		/// <returns>String-representation of XAML of report.</returns>
+		public async Task<VerticalStackLayout> GenerateNeuroFeaturePresentReportMaui(string TokenId)
+		{
+			ReportEventArgs e = await this.NeuroFeaturesClient.GeneratePresentReportAsync(TokenId, ReportFormat.Markdown);
+			if (!e.Ok)
+				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetPresent)]);
+
+			return await e.ReportText.MarkdownToMaui();
+		}
+
+		/// <summary>
 		/// Generates a XAML history report for a token.
 		/// </summary>
 		/// <returns>String-representation of XAML of report.</returns>
@@ -5739,6 +5778,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			return await e.ReportText.MarkdownToXaml();
 		}
+
+		/// <summary>
+		/// Generates a MAUI history report for a token.
+		/// </summary>
+		public async Task<VerticalStackLayout> GenerateNeuroFeatureHistoryReportMaui(string TokenId)
+		{
+			ReportEventArgs e = await this.NeuroFeaturesClient.GenerateHistoryReportAsync(TokenId, ReportFormat.Markdown);
+			if (!e.Ok)
+				throw e.StanzaError ?? new Exception(ServiceRef.Localizer[nameof(AppResources.UnableToGetHistory)]);
+
+			return await e.ReportText.MarkdownToMaui();
+		}
+
 
 		/// <summary>
 		/// Gets the current state of a Neuro-Feature token.

@@ -14,7 +14,7 @@
 							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.MyTokens">
 	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto,*">
 		<!-- Top Bar -->
-		<Grid ColumnDefinitions="auto,*" Margin="16,8,16,8" RowSpacing="0" ColumnSpacing="8">
+		<Grid ColumnDefinitions="auto,*" Margin="16,8,16,16" RowSpacing="0" ColumnSpacing="8">
 			<controls:SvgButton Grid.Column="0"
 								HorizontalOptions="Start"
 								Command="{Binding GoBackCommand}"
