@@ -34,7 +34,7 @@ namespace NeuroAccessMaui.Services.Push
 #if IOS
 				events.AddiOS(iOS => iOS.WillFinishLaunching((_, _) =>
 				{
-					CrossFirebase.Initialize(CreateCrossFirebaseSettings());
+					CrossFirebase.Initialize();
 					UNUserNotificationCenter.Current.Delegate = new NotificationDelegate();
 					return false;
 				}));

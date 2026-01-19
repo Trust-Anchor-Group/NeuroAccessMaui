@@ -19,9 +19,9 @@
 		<ApplicationIdGuid>2a4dd0f3-35d6-48a3-a76d-1fa94e567eee</ApplicationIdGuid>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>2.8.0</ApplicationDisplayVersion>
-		<Version>2.8.0</Version>
-		<ApplicationVersion>712</ApplicationVersion>
+		<ApplicationDisplayVersion>2.8.1</ApplicationDisplayVersion>
+		<Version>2.8.1</Version>
+		<ApplicationVersion>721</ApplicationVersion>
 
 		<NeutralLanguage>en</NeutralLanguage>
 
