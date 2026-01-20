@@ -1,13 +1,7 @@
 using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Maui.Views;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.Mvvm.Messaging.Messages;
-using NeuroAccessMaui.Extensions;
-using NeuroAccessMaui.Services;
-using NeuroAccessMaui.UI.Pages;
-using SkiaSharp;
 
 namespace NeuroAccessMaui.UI.Controls
 {
