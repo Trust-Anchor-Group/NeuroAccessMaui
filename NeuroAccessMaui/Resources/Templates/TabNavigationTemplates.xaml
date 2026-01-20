@@ -249,7 +249,7 @@
 		</Border>
 	</DataTemplate>
 
-	<DataTemplate x:Key="DefaultIconOnlyTabTemplate">
+	<DataTemplate x:Key="DefaultIconOnlyTabTemplate" x:DataType="controls:TabDefinition">
 		<Grid Padding="0,6"
 			  HeightRequest="56"
 			  WidthRequest="64">
@@ -277,7 +277,7 @@
 							IsVisible="{Binding BadgeCount, Converter={StaticResource NumberToBoolConverter}}">
 				<controls:Badge.Triggers>
 					<DataTrigger TargetType="controls:Badge"
-								 Binding="{Binding Source={RelativeSource AncestorType={x:Type controls:TabNavigationHost}}, Path=BadgeTemplate, Converter={StaticResource NullToBooleanConverter}}"
+								 Binding="{Binding Source={RelativeSource AncestorType={x:Type controls:TabNavigationHost}}, Path=BadgeTemplate, Converter={StaticResource NullToBooleanConverter}, x:DataType=controls:TabNavigationHost}"
 								 Value="True">
 						<Setter Property="IsVisible" Value="False" />
 					</DataTrigger>
@@ -288,7 +288,7 @@
 				  HorizontalOptions="End"
 				  VerticalOptions="Start"
 				  Margin="0,-6,-6,0"
-				  IsVisible="{Binding Source={RelativeSource AncestorType={x:Type controls:TabNavigationHost}}, Path=BadgeTemplate, Converter={StaticResource NullToBooleanConverter}}"
+				  IsVisible="{Binding Source={RelativeSource AncestorType={x:Type controls:TabNavigationHost}}, Path=BadgeTemplate, Converter={StaticResource NullToBooleanConverter}, x:DataType=controls:TabNavigationHost}"
 				  InputTransparent="True" />
 		</Grid>
 	</DataTemplate>
