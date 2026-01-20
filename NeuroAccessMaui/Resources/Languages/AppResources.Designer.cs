@@ -2896,6 +2896,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Embedded layout.
+        /// </summary>
+        public static string EmbeddedLayout {
+            get {
+                return ResourceManager.GetString("EmbeddedLayout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
         public static string Enable {
@@ -10029,6 +10038,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ViewContract {
             get {
                 return ResourceManager.GetString("ViewContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View embedded layout.
+        /// </summary>
+        public static string ViewEmbeddedLayout {
+            get {
+                return ResourceManager.GetString("ViewEmbeddedLayout", resourceCulture);
             }
         }
         

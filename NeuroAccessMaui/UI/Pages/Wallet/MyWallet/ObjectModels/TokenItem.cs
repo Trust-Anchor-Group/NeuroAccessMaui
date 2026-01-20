@@ -1,11 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Xml;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Wallet.TokenDetails;
 using NeuroFeatures;
 using NeuroFeatures.Tags;
+using SkiaSharp;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Security;
@@ -299,6 +302,16 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 		public bool HasStateMachine => this.token.HasStateMachine;
 
 		/// <summary>
+		/// If the token have an embedded layout.
+		/// </summary>
+		public bool HasEmbeddedLayout => this.token.HasEmbeddedLayout;
+
+		/// <summary>
+		/// The embedded layout of the token.
+		/// </summary>
+		public XmlElement EmbeddedLayoutDefinition => this.token.EmbeddedLayoutDefinition;
+
+		/// <summary>
 		/// Gets or sets the image representing the glyph.
 		/// </summary>
 		[ObservableProperty]
@@ -369,6 +382,21 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 					Task.Run(() => ServiceRef.NotificationService.DeleteEvents(ToDelete));
 				}
 			}
+		}
+
+		public async Task<ImageSource?> RenderEmbeddedLayout()
+		{
+			if (!this.Token.HasEmbeddedLayout)
+				return null;
+
+			SkiaSharp.SKImage Img = await this.Token?.RenderEmbeddedLayout();
+
+
+			return ImageSource.FromStream(() =>
+			{
+				SKData Data = Img.Encode(SKEncodedImageFormat.Png, 100);
+				return Data.AsStream();
+			});
 		}
 
 		/// <summary>
