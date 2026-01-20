@@ -389,8 +389,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.MyWallet.ObjectModels
 			if (!this.Token.HasEmbeddedLayout)
 				return null;
 
-			SkiaSharp.SKImage Img = await this.Token?.RenderEmbeddedLayout();
-
+			SkiaSharp.SKImage Img = await this.Token.RenderEmbeddedLayout();
 
 			return ImageSource.FromStream(() =>
 			{

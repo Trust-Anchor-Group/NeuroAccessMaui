@@ -4012,6 +4012,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Killed.
+        /// </summary>
+        public static string Killed {
+            get {
+                return ResourceManager.GetString("Killed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Killer id.
+        /// </summary>
+        public static string KillerId {
+            get {
+                return ResourceManager.GetString("KillerId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Killer user.
+        /// </summary>
+        public static string KillerUser {
+            get {
+                return ResourceManager.GetString("KillerUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
         public static string Kyc_Apply {
