@@ -16,6 +16,7 @@ using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.Events;
 using NeuroFeatures.Tags;
+using ShimSkiaSharp;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -93,6 +94,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 				this.TokenXml = this.navigationArguments.Token?.Token.ToXml();
 				this.IsMyToken = string.Equals(this.OwnerJid, ServiceRef.XmppService.BareJid, StringComparison.OrdinalIgnoreCase);
 				this.HasStateMachine = this.navigationArguments.Token?.HasStateMachine ?? false;
+				this.HasEmbeddedLayout = this.navigationArguments.Token?.HasEmbeddedLayout ?? false;
 
 				if (!string.IsNullOrEmpty(this.navigationArguments.Token?.Reference))
 				{
@@ -495,6 +497,13 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 		/// </summary>
 		[ObservableProperty]
 		private bool hasStateMachine;
+
+		/// <summary>
+		/// If the token have an embedded layout.
+		/// </summary>
+		[ObservableProperty]
+		private bool hasEmbeddedLayout;
+
 
 		#endregion
 
@@ -995,6 +1004,17 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenDetails
 			{
 				await ServiceRef.UiService.DisplayException(ex);
 			}
+		}
+
+		[RelayCommand]
+		private async Task PresentEmbeddedLayout()
+		{
+			if (this.TokenId is null)
+				return;
+
+			EmbeddedLayoutNavigationArgs Args = new(this.navigationArguments.Token);
+
+			await ServiceRef.NavigationService.GoToAsync(nameof(EmbeddedLayoutPage), Args, BackMethod.Pop);
 		}
 
 		/// <summary>
