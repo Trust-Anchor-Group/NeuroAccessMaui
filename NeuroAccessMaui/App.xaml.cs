@@ -52,6 +52,7 @@ using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Things.ReadSensor;
 using NeuroAccessMaui.UI.Pages.Things.ViewClaimThing;
 using NeuroAccessMaui.UI.Pages.Things.ViewThing;
+using NeuroAccessMaui.UI.Pages.Utility;
 using NeuroAccessMaui.UI.Pages.Utility.Images;
 using NeuroAccessMaui.UI.Pages.Wallet.AccountEvent;
 using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
@@ -674,6 +675,7 @@ namespace NeuroAccessMaui
 
 			// Utility
 			Routing.RegisterRoute(nameof(ImageCroppingPage), typeof(ImageCroppingPage));
+			Routing.RegisterRoute(nameof(ScriptConsolePage), typeof(ScriptConsolePage));
 		}
 
 		#endregion

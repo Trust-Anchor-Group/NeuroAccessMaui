@@ -16,6 +16,7 @@ using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.UI.Pages.Identity.TransferIdentity;
 using NeuroAccessMaui.UI.Pages.Onboarding;
+using NeuroAccessMaui.UI.Pages.Utility;
 using NeuroAccessMaui.UI.Popups.Settings;
 using Waher.Content.Xml;
 using Waher.Networking.XMPP;
@@ -84,6 +85,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		{
 			await base.OnInitializeAsync();
 			this.NotifyCommandsCanExecuteChanged();
+			await this.CheckSciptConsoleEnabled();
 		}
 
 		/// <inheritdoc/>
@@ -110,6 +112,19 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			this.CompromiseCommand.NotifyCanExecuteChanged();
 			this.TransferCommand.NotifyCanExecuteChanged();
 			this.ChangePasswordCommand.NotifyCanExecuteChanged();
+		}
+
+		private async Task CheckSciptConsoleEnabled()
+		{
+			if (ServiceRef.XmppService.BareJid is null)
+				return;
+
+			string Neuron = ServiceRef.XmppService.BareJid.Split("@")[1];
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.ScriptConsoleEnabled = Neuron is not null && Neuron.ToLower(CultureInfo.InvariantCulture) == "lab.tagroot.io.test";
+			});
 		}
 
 		public bool IsBetaEnabled
@@ -215,6 +230,12 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		/// </summary>
 		[ObservableProperty]
 		private string buildTime;
+
+		/// <summary>
+		/// If usage of the script console is enabled;
+		/// </summary>
+		[ObservableProperty]
+		private bool scriptConsoleEnabled = true;
 
 		/// <summary>
 		/// Current display mode
@@ -660,6 +681,15 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 		public void SetBetaFeaturesEnabled(bool Enabled)
 		{
 			this.IsBetaEnabled = Enabled;
+		}
+
+		[RelayCommand]
+		private async Task OpenScriptConsole()
+		{
+			MainThread.BeginInvokeOnMainThread(() =>
+			{
+				ServiceRef.NavigationService.GoToAsync(nameof(ScriptConsolePage));
+			});
 		}
 	}
 }

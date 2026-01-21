@@ -90,6 +90,8 @@ using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
 using Waher.Runtime.Inventory;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 using NeuroAccessMaui.UI.Popups.OnboardingHelp;
+using NeuroAccessMaui.UI.Pages.Utility;
+
 
 namespace NeuroAccessMaui.UI
 {
@@ -290,6 +292,8 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<SubscriptionRequestViewModel>();
 
 			//Utility
+			Builder.Services.AddTransient<ScriptConsoleViewModel>();
+			Builder.Services.AddTransient<ScriptConsolePage>();
 			Builder.Services.AddTransient<ImageCropperView, ImageCroppingViewModel>();
 
 			return Builder;
