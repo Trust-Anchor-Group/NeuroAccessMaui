@@ -26,7 +26,7 @@ namespace NeuroAccessMaui.Services.UI.QR
 		/// <returns>Array of schemas the user can scan.</returns>
 		public static string[] GetAllowedSchemas()
 		{
-			List<string> AllowedSchemas = [Constants.UriSchemes.TagSign];
+			List<string> AllowedSchemas = [Constants.UriSchemes.TagSign, Constants.UriSchemes.OtpAuth];
 
 			if (ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false)
 			{

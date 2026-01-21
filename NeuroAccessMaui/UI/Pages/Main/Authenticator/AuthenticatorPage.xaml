@@ -23,5 +23,16 @@
 				   Grid.Column="2"/>
 		</Grid>
 
+		<CollectionView ItemsSource="{Binding CredentialModels}">
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="viewmodel:CredentialModel">
+					<StackLayout>
+						<Label Text="{Binding Issuer}" />
+						<Label Text="{Binding Label}" />
+					</StackLayout>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+		</CollectionView>
+
 	</Grid>
 </base:BaseContentPage>

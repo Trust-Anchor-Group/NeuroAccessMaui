@@ -278,6 +278,7 @@
 		<PackageReference Include="Plugin.Firebase.Core" Version="3.1.1" />
 		<PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.1.2" />
 		<PackageReference Include="Svg.Skia" Version="3.2.1" />
+		<PackageReference Include="Waher.Security.TOTP" Version="1.0.1" />
 		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.6.0" />
 
 		<PackageReference Include="EDaler" Version="3.1.3" />

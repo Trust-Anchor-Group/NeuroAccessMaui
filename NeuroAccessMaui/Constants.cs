@@ -193,6 +193,11 @@ namespace NeuroAccessMaui
 			public const string Aes256 = "aes256";
 
 			/// <summary>
+			/// OTP Auth Schema
+			/// </summary>
+			public const string OtpAuth = "otpauth";
+
+			/// <summary>
 			/// Gets the predefined scheme from an IoT Code
 			/// </summary>
 			/// <param name="Url">The URL to parse.</param>
@@ -218,6 +223,7 @@ namespace NeuroAccessMaui
 					NeuroFeature or
 					Onboarding or
 					Xmpp or
+					OtpAuth or
 					NeuroAccess => Url,
 					_ => null,
 				};
