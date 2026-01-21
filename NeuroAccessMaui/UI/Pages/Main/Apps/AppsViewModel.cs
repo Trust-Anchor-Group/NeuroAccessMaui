@@ -14,6 +14,7 @@ using NeuroAccessMaui.Resources.Languages;
 using System.Runtime.CompilerServices;
 using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.Services.Authentication;
+using NeuroAccessMaui.UI.Pages.Main.Authenticator;
 using System; // For EventHandler
 
 namespace NeuroAccessMaui.UI.Pages.Main.Apps
@@ -209,6 +210,19 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 				{
 					await ServiceRef.NavigationService.GoToAsync(nameof(MyTokensPage), BackMethod.Pop);
 				}
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		[RelayCommand]
+		private static async Task ShowAuthenticator()
+		{
+			try
+			{
+				await ServiceRef.NavigationService.GoToAsync(nameof(AuthenticatorPage));
 			}
 			catch (Exception Ex)
 			{

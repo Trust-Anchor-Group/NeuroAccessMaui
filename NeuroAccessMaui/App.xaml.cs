@@ -29,6 +29,7 @@ using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Kyc;
 using NeuroAccessMaui.UI.Pages.Main;
 using NeuroAccessMaui.UI.Pages.Main.Apps;
+using NeuroAccessMaui.UI.Pages.Main.Authenticator;
 using NeuroAccessMaui.UI.Pages.Main.Calculator;
 using NeuroAccessMaui.UI.Pages.Main.ChangePassword;
 using NeuroAccessMaui.UI.Pages.Main.Duration;
@@ -630,6 +631,9 @@ namespace NeuroAccessMaui
 
 			//Notifications
 			Routing.RegisterRoute(nameof(NotificationsPage), typeof(NotificationsPage));
+
+			// Authenticator
+			Routing.RegisterRoute(nameof(AuthenticatorPage), typeof(AuthenticatorPage));
 
 			// Petitions
 			Routing.RegisterRoute(nameof(PetitionContractPage), typeof(PetitionContractPage));
