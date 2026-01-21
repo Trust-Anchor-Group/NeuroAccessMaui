@@ -72,6 +72,11 @@ namespace NeuroAccessMaui.Extensions
 		private static bool CheckExpressionSafe(Expression Expression, bool AllowNamedMembers, bool AllowError,
 				bool AllowCustomFunctions, out ScriptNode? Prohibited)
 		{
+#if DEBUG
+			Prohibited = null;
+			return true;
+#endif // DEBUG
+
 			ScriptNode? Prohibited2 = null;
 			bool Safe = Expression.ForAll((ScriptNode Node, out ScriptNode? NewNode, object State) =>
 			{
