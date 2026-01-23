@@ -23,13 +23,60 @@
 				   Grid.Column="2"/>
 		</Grid>
 
-		<CollectionView ItemsSource="{Binding CredentialModels}">
+		<CollectionView ItemsSource="{Binding CredentialModels}" Grid.Row="1" Margin="8,0" SelectionMode="None" ItemSizingStrategy="MeasureAllItems">
 			<CollectionView.ItemTemplate>
 				<DataTemplate x:DataType="viewmodel:CredentialModel">
-					<StackLayout>
-						<Label Text="{Binding Issuer}" />
-						<Label Text="{Binding Label}" />
-					</StackLayout>
+					<Border Style="{DynamicResource BorderSet}" StrokeShape="RoundRectangle 32">
+						<Grid RowDefinitions="auto, auto" ColumnDefinitions="auto, *, auto">
+							<!-- TOP ROW -->
+							<Grid ColumnDefinitions="auto, *, auto" ColumnSpacing="16" Grid.ColumnSpan="2">
+								<controls:UriImage Source="{Binding ImageUri}"
+													HeightRequest="40"
+													WidthRequest="40"/>
+
+								<Grid Grid.Column="1" RowDefinitions="auto, auto">
+									<Label Text="{Binding Issuer}" Style="{DynamicResource BoldItemTitleLabel}" FontSize="18"/>
+									<Label Text="{Binding Account}" Style="{DynamicResource BoldItemTitleLabel}" Grid.Row="1" />
+								</Grid>
+
+								<controls:ConditionView Condition="{Binding HasCode}" Grid.Column="2" HorizontalOptions="End">
+									<controls:ConditionView.True>
+										<controls:SvgView Source="arrow_forward.svg" Rotation="90" HeightRequest="24" WidthRequest="24" VerticalOptions="Center" Margin="0,0,8,0"/>
+									</controls:ConditionView.True>
+									<controls:ConditionView.False>
+										<controls:SvgView Source="arrow_forward.svg" HeightRequest="24" WidthRequest="24" VerticalOptions="Center" Margin="0,0,8,0"/>
+									</controls:ConditionView.False>
+								</controls:ConditionView>
+
+								<Grid.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding UpdateCodeCommand}"/>
+								</Grid.GestureRecognizers>
+							</Grid>
+
+								<!-- BOTTOM ROW / Code -->
+							<Border Margin="0,8,0,0" Grid.Row="1" IsVisible="{Binding HasCode}">
+								<Label Text="{Binding Code}"
+									   Style="{DynamicResource AccentInfoLabel}"
+									   FontSize="24"
+									   CharacterSpacing="10"
+									   FontAttributes="Bold"
+									   VerticalOptions="Center"/>
+
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding CopyCodeCommand}"/>
+								</Border.GestureRecognizers>
+							</Border>
+
+							<Border Grid.Column="1" Grid.Row="1" IsVisible="{Binding HasCode}">
+								<Label Text="{Binding SecondsRemaining}"
+									   Style="{DynamicResource AccentInfoLabel}"
+									   FontSize="14"
+									   VerticalOptions="Center"
+									   HorizontalOptions="End"
+									   Margin="0,0,8,0"/>
+							</Border>
+						</Grid>
+					</Border>
 				</DataTemplate>
 			</CollectionView.ItemTemplate>
 		</CollectionView>

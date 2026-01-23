@@ -1,15 +1,16 @@
+using System.Runtime.CompilerServices;
 using CommunityToolkit.Maui.Views;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Links;
 using NeuroAccessMaui.Resources.Languages;
-using NeuroAccessMaui.UI.Popups.Info;
 using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
+using NeuroAccessMaui.UI.Popups.Info;
 using SkiaSharp;
 using Waher.Content.QR;
 using Waher.Content.QR.Encoding;
 using Waher.Runtime.Inventory;
-using System.Runtime.CompilerServices;
+using Waher.Security.TOTP;
 
 namespace NeuroAccessMaui.Services.UI.QR
 {
@@ -97,6 +98,15 @@ namespace NeuroAccessMaui.Services.UI.QR
 			AllowedSchemas ??= GetAllowedSchemas();
 
 			string UrlSchema = Constants.UriSchemes.GetScheme(Url) ?? string.Empty;
+
+			// TODO: Replace with link openers. System.Uri.TryCreate currently fails for otpauth URIs.
+			if (string.Equals(UrlSchema, Constants.UriSchemes.OtpAuth, StringComparison.Ordinal))
+			{
+				ExternalCredential NewOtp = await ExternalCredential.CreateAsync(Url);
+
+				if (NewOtp is not null)
+					return true;
+			}
 
 			if (string.Equals(UrlSchema, Constants.UriSchemes.NeuroAccess, StringComparison.Ordinal))
 				return true; // TODO: Implement usage of Neuroacces links
