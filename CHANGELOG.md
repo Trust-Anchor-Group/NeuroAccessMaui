@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Viewing tokens embedded layouts.
+- State machine killed events on tokens event view
 - Added rendering of Token reports
 
 ### Changed
