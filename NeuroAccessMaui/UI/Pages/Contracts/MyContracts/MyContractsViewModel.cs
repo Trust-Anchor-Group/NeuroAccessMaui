@@ -31,7 +31,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private Contract? selectedContract = null;
 		private readonly Dictionary<string, SelectableTag> tagMap = new(StringComparer.OrdinalIgnoreCase);
 		private readonly string AllCategory = "All";
-		private readonly int contractBatchSize = 1;
+		private readonly int contractBatchSize = 10;
 
 		private readonly string[] sortOrder = ["-Created"];
 		private int loadedContracts;
