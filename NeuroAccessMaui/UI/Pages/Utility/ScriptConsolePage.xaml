@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage
+    x:Class="NeuroAccessMaui.UI.Pages.Utility.ScriptConsolePage"
+	x:DataType="viewmodel:ScriptConsoleViewModel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+    xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+    xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Utility"
+	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+	xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization">
+
+	<Grid RowDefinitions="auto, *">
+		<Grid ColumnDefinitions="auto, *, auto" Margin="16,8,16,0">
+			<controls:SvgButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
+								Style="{DynamicResource IconButton}" SvgSource="close.svg" />
+
+			<Label Grid.Column="2" Text="{l:Localize TokenDetails}" Style="{DynamicResource PageTitleLabel}"/>
+		</Grid>
+		<Grid Grid.Row="1" ColumnDefinitions="auto, *, auto" RowDefinitions="auto, auto, *" Margin="8">
+			<Button Text="Clear Output" Command="{Binding ClearOutputCommand}" Margin="8" />
+			
+			<Border Style="{DynamicResource BorderSet}" Grid.Row="1" Grid.ColumnSpan="3">
+				<Editor HeightRequest="50" Text="{Binding Path=PromptInput, Mode=TwoWay}" />
+			</Border>
+
+			<Button Grid.Column="2"
+        			Text="Run"
+        			Command="{Binding ExecutePromptCommand}"
+        			VerticalOptions="Center"
+					Margin="8"/>
+
+			<Border Grid.Row="2" Grid.ColumnSpan="3"
+					Style="{DynamicResource BorderSet}">
+				<CollectionView ItemsSource="{Binding PromptResults,Mode=TwoWay}"
+							SelectionMode="None"
+							VerticalScrollBarVisibility="Always"
+							ItemsUpdatingScrollMode="KeepLastItemInView"
+							ItemSizingStrategy="MeasureAllItems" >
+					<CollectionView.ItemTemplate>
+						<DataTemplate x:DataType="x:String">
+							<Border Style="{DynamicResource BorderSubSet}" Margin="0, 4">
+								<Grid>
+									<Label Text="{Binding .}" />
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</CollectionView.ItemTemplate>
+				</CollectionView>
+			</Border>
+		</Grid>
+	</Grid>
+
+</base:BaseContentPage>

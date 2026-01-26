@@ -210,6 +210,19 @@
 						</Border>
 					</VerticalStackLayout>
 				</Border>
+				
+
+				<!-- Debug Settings-->
+				<Border Style="{DynamicResource BorderSet}">
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize DeveloperSettings}"/>
+						<Border Style="{DynamicResource BorderSubSet}">
+							<controls:TextButton LabelData="{l:Localize ScriptConsole}"
+								 Command="{Binding Path=OpenScriptConsoleCommand}"
+								 Style="{DynamicResource FilledTextButton}" />
+						</Border>
+					</VerticalStackLayout>
+				</Border>
 
 				<!-- Version Information -->
 				<Border Style="{DynamicResource BorderSet}">

@@ -3585,4 +3585,10 @@
   <data name="ShowAccount" xml:space="preserve">
     <value>Show account</value>
   </data>
+  <data name="DeveloperSettings" xml:space="preserve">
+    <value>Developer settings</value>
+  </data>
+  <data name="ScriptConsole" xml:space="preserve">
+    <value>Script console</value>
+  </data>
 </root>
