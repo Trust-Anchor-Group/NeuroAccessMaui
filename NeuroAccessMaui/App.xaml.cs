@@ -52,10 +52,12 @@ using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Things.ReadSensor;
 using NeuroAccessMaui.UI.Pages.Things.ViewClaimThing;
 using NeuroAccessMaui.UI.Pages.Things.ViewThing;
+using NeuroAccessMaui.UI.Pages.Utility;
 using NeuroAccessMaui.UI.Pages.Utility.Images;
 using NeuroAccessMaui.UI.Pages.Wallet.AccountEvent;
 using NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.EDalerReceived;
+using NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout;
 using NeuroAccessMaui.UI.Pages.Wallet.IssueEDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineReport;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineVariables;
@@ -109,6 +111,7 @@ using Waher.Security.JWS;
 using Waher.Security.JWT;
 using Waher.Security.LoginMonitor;
 using Waher.Things;
+using Waher.Layout;
 
 namespace NeuroAccessMaui
 {
@@ -534,7 +537,8 @@ namespace NeuroAccessMaui
                         typeof(GraphEncoder).Assembly,
                         typeof(XmppServerlessMessaging).Assembly,
                         typeof(HttpxClient).Assembly,
-						typeof(Waher.Script.Persistence.SQL.Select).Assembly);
+						typeof(Waher.Script.Persistence.SQL.Select).Assembly,
+						typeof(Waher.Layout.Layout2D.Layout2DDocument).Assembly);
                 }
 
                 // Register exceptions as alerts.
@@ -671,6 +675,7 @@ namespace NeuroAccessMaui
 			Routing.RegisterRoute(nameof(TokenEventsPage), typeof(TokenEventsPage));
 			Routing.RegisterRoute(nameof(WalletPage), typeof(WalletPage));
 			Routing.RegisterRoute(nameof(TransactionHistoryPage), typeof(TransactionHistoryPage));
+			Routing.RegisterRoute(nameof(EmbeddedLayoutPage), typeof(EmbeddedLayoutPage));
 
 			// Utility
 			Routing.RegisterRoute(nameof(ImageCroppingPage), typeof(ImageCroppingPage));

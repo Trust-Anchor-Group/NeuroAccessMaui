@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Name="ThisPage"
+							 x:Class="NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout.EmbeddedLayoutPage"
+							 x:DataType="viewmodel:EmbeddedLayoutViewModel"
+							 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+							 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+							 xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+							 xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+							 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+							 xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+							 xmlns:converters="clr-namespace:NeuroAccessMaui.UI.Converters"
+							 xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, *">
+		<controls:Background Grid.RowSpan="2"/>
+
+		<Grid ColumnDefinitions="auto, *"  Margin="16,8,16,8" ColumnSpacing="16">
+			<controls:SvgButton HorizontalOptions="Start" VerticalOptions="Center" Command="{Binding GoBackCommand}"
+								Style="{DynamicResource IconButton}" SvgSource="close.svg" />
+		</Grid>
+
+		<controls:ConditionView Grid.Row="1" Condition="{Binding Loaded}">
+			<controls:ConditionView.False>
+				<ActivityIndicator IsRunning="True" Color="{DynamicResource PrimaryWL}" HorizontalOptions="Center" VerticalOptions="Center"/>
+			</controls:ConditionView.False>
+			<controls:ConditionView.True>
+				<ScrollView>
+					<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+						<Border Style="{DynamicResource BorderSet}">
+							<VerticalStackLayout Spacing="{DynamicResource LargeSpacing}">
+								<Image Grid.Row="1" Source="{Binding RenderedLayout}" />
+							</VerticalStackLayout>
+						</Border>
+					</VerticalStackLayout>
+				</ScrollView>
+			</controls:ConditionView.True>
+		</controls:ConditionView>
+	</Grid>
+
+</base:BaseContentPage>
