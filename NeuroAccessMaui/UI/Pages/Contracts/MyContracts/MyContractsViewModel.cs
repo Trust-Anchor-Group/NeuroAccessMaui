@@ -30,18 +30,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		private readonly TaskCompletionSource<Contract?>? selection;
 		private Contract? selectedContract = null;
 		private readonly Dictionary<string, SelectableTag> tagMap = new(StringComparer.OrdinalIgnoreCase);
+		private readonly string AllCategory = "All";
+		private readonly int contractBatchSize = 1;
+
+		private readonly string[] sortOrder = ["-Created"];
+		private int loadedContracts;
+		private string currentCategory;
 
 		/// <summary>
 		/// Event raised when a filter tag becomes selected. Consumers can react (e.g., scroll into view).
 		/// </summary>
 		public event Action<SelectableTag>? TagSelected;
-
-		private readonly string AllCategory = "All";
-		private readonly int contractBatchSize = 10;
-		private readonly string[] sortOrder = ["-Created"];
-
-		private int loadedContracts;
-		private string currentCategory;
 
 		/// <summary>
 		/// Collection of available filter tags for categories. One tag can be selected at a time.
@@ -52,7 +51,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 		/// Remaining items threshold for incremental loading. 0 enables loading, -1 disables.
 		/// </summary>
 		[ObservableProperty]
-		private int hasMore = 0; // 0 means collectionView will load more when scrolles. -1 means event wont be fired.
+		private int hasMore = 0; // 0 means collectionView will load more when scrolled. -1 means event wont be fired.
 
 		/// <summary>
 		/// Gets or sets whether template sharing via QR is available in the current mode.
@@ -543,30 +542,21 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", false),
 							new FilterFieldEqualTo("ContractLoaded", true)),
-							this.sortOrder);
-
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
+							this.sortOrder.Clone() as string[]);
 						break;
 
 					case ContractsListMode.ContractTemplates:
 						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true)),
-							this.sortOrder);
-
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
+							this.sortOrder.Clone() as string[]);
 						break;
 
 					case ContractsListMode.TokenCreationTemplates:
 						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true)),
-							this.sortOrder);
-
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
+							this.sortOrder.Clone() as string[]);
 						break;
 
 					default:
@@ -582,10 +572,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 							new FilterFieldEqualTo("IsTemplate", false),
 							new FilterFieldEqualTo("ContractLoaded", true),
 							new FilterFieldEqualTo("Category", this.currentCategory)),
-							this.sortOrder);
-
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
+							this.sortOrder.Clone() as string[]);
 						break;
 
 					case ContractsListMode.ContractTemplates:
@@ -593,10 +580,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true),
 							new FilterFieldEqualTo("Category", this.currentCategory)),
-							this.sortOrder);
-
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
+							this.sortOrder.Clone() as string[]);
 						break;
 
 					case ContractsListMode.TokenCreationTemplates:
@@ -604,16 +588,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true),
 							new FilterFieldEqualTo("Category", this.currentCategory)),
-							this.sortOrder);
-
-						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
-					this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
+							this.sortOrder.Clone() as string[]);
 						break;
 
 					default:
 						return null;
 				}
 			}
+
+			// If fetched amount is less than batch size, tell collectionview to not fire load more event.
+			this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
 
 			return ContractReferences;
 		}
