@@ -34,8 +34,14 @@ namespace NeuroAccessMaui.Services.Push
 #if IOS
 				events.AddiOS(iOS => iOS.WillFinishLaunching((_, _) =>
 				{
-					CrossFirebase.Initialize();
-					UNUserNotificationCenter.Current.Delegate = new NotificationDelegate();
+					try
+					{
+						CrossFirebase.Initialize();
+						UNUserNotificationCenter.Current.Delegate = new NotificationDelegate();
+					}
+					catch (Exception)
+					{ //ignore if firebasefile does not exist
+					}
 					return false;
 				}));
 #elif ANDROID
