@@ -38,6 +38,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 
 		private readonly string AllCategory = "All";
 		private readonly int contractBatchSize = 10;
+		private readonly string[] sortOrder = ["-Created"];
 
 		private int loadedContracts;
 		private string currentCategory;
@@ -541,7 +542,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					case ContractsListMode.Contracts:
 						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", false),
-							new FilterFieldEqualTo("ContractLoaded", true)));
+							new FilterFieldEqualTo("ContractLoaded", true)),
+							this.sortOrder);
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
 						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
@@ -550,7 +552,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					case ContractsListMode.ContractTemplates:
 						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
-							new FilterFieldEqualTo("ContractLoaded", true)));
+							new FilterFieldEqualTo("ContractLoaded", true)),
+							this.sortOrder);
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
 						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
@@ -559,7 +562,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 					case ContractsListMode.TokenCreationTemplates:
 						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
-							new FilterFieldEqualTo("ContractLoaded", true)));
+							new FilterFieldEqualTo("ContractLoaded", true)),
+							this.sortOrder);
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
 						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
@@ -577,7 +581,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", false),
 							new FilterFieldEqualTo("ContractLoaded", true),
-							new FilterFieldEqualTo("Category", this.currentCategory)));
+							new FilterFieldEqualTo("Category", this.currentCategory)),
+							this.sortOrder);
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
 						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
@@ -587,7 +592,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true),
-							new FilterFieldEqualTo("Category", this.currentCategory)));
+							new FilterFieldEqualTo("Category", this.currentCategory)),
+							this.sortOrder);
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
 						this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
@@ -597,7 +603,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 						ContractReferences = await Database.Find<ContractReference>(this.loadedContracts, this.contractBatchSize, new FilterAnd(
 							new FilterFieldEqualTo("IsTemplate", true),
 							new FilterFieldEqualTo("ContractLoaded", true),
-							new FilterFieldEqualTo("Category", this.currentCategory)));
+							new FilterFieldEqualTo("Category", this.currentCategory)),
+							this.sortOrder);
 
 						// If fetched amount is less than batch size, tell collectionview to not fire load more event.
 					this.HasMore = (ContractReferences.Count() < this.contractBatchSize) ? -1 : 0;
