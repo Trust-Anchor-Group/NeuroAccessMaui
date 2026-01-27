@@ -2,6 +2,7 @@
 
 using IdApp.Cv;
 using IdApp.Cv.ColorModels;
+using NeuroAccessMaui.Exceptions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.UI.Tasks;
 using NeuroAccessMaui.UI.Pages;
@@ -12,7 +13,7 @@ using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
+using Waher.Networking.XMPP.StanzaErrors;
 using Waher.Events;
 using Waher.Runtime.Inventory;
 
@@ -90,24 +91,45 @@ namespace NeuroAccessMaui.Services.UI
 		{
 			Exception = Log.UnnestException(Exception);
 
-			StringBuilder sb = new();
-
-			if (Exception is not null)
-			{
-				sb.AppendLine(Exception.Message);
-
-				while (Exception.InnerException is not null)
-				{
-					Exception = Exception.InnerException;
-					sb.AppendLine(Exception.Message);
-				}
-			}
-			else
-				sb.AppendLine(ServiceRef.Localizer[nameof(AppResources.ErrorTitle)]);
-
 			return this.DisplayAlert(
-				Title ?? ServiceRef.Localizer[nameof(AppResources.ErrorTitle)], sb.ToString(),
+				Title ?? ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)], GetUserFriendlyMessage(Exception),
 				ServiceRef.Localizer[nameof(AppResources.Ok)]);
+		}
+
+		private static string GetUserFriendlyMessage(Exception? Exception)
+		{
+			if (Exception is null)
+				return ServiceRef.Localizer[nameof(AppResources.ErrorTitle)];
+
+			Exception? Current = Exception;
+
+			while (Current is not null)
+			{
+				if (Current is MissingNetworkException)
+					return ServiceRef.Localizer[nameof(AppResources.ThereIsNoNetwork)];
+
+				if (Current is TimeoutException)
+					return ServiceRef.Localizer[nameof(AppResources.RequestTimedOut)];
+
+				if (Current is TaskCanceledException || Current is OperationCanceledException)
+					return ServiceRef.Localizer[nameof(AppResources.RequestWasCancelled)];
+
+				if (Current is RecipientUnavailableException)
+					return ServiceRef.Localizer[nameof(AppResources.ServiceUnavailable)];
+
+				if (Current is NotAuthorizedException || Current is UnauthorizedAccessException)
+					return ServiceRef.Localizer[nameof(AppResources.NotAuthorized)];
+
+				if (Current is NotAllowedException)
+					return ServiceRef.Localizer[nameof(AppResources.ActionNotAllowed)];
+
+				if (Current is InternalServerErrorException)
+					return ServiceRef.Localizer[nameof(AppResources.ServiceUnavailable)];
+
+				Current = Current.InnerException;
+			}
+
+			return ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)];
 		}
 
 		#endregion
@@ -322,7 +344,7 @@ namespace NeuroAccessMaui.Services.UI
 
 				// Create a default navigation arguments if Args are null
 				NavigationArgs NavigationArgs = Args ?? new();
-		
+
 				NavigationArgs.SetBackArguments(ParentArgs, BackMethod, UniqueId);
 				this.PushArgs(Route, NavigationArgs);
 
@@ -435,13 +457,13 @@ namespace NeuroAccessMaui.Services.UI
 				NavigationArgs = this.TryGetArgs(Page.GetType().Name, UniqueId);
 				string Route = Routing.GetRoute(Page);
 				NavigationArgs ??= this.TryGetArgs(Route, UniqueId);
-/*
-				if ((NavigationArgs is null) && (UniqueId is null) &&
-					(Page is BaseContentPage BasePage) && (BasePage.UniqueId is not null))
-				{
-					return this.TryGetArgs(out Args, BasePage.UniqueId);
-				}
-*/
+				/*
+								if ((NavigationArgs is null) && (UniqueId is null) &&
+									(Page is BaseContentPage BasePage) && (BasePage.UniqueId is not null))
+								{
+									return this.TryGetArgs(out Args, BasePage.UniqueId);
+								}
+				*/
 			}
 
 			if (NavigationArgs is TArgs TArgsArgs)

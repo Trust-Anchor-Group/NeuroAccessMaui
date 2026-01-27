@@ -228,6 +228,15 @@
   <data name="RequestWasCancelled" xml:space="preserve">
     <value>The request was cancelled</value>
   </data>
+  <data name="ServiceUnavailable" xml:space="preserve">
+    <value>The service is currently unavailable. Please try again later.</value>
+  </data>
+  <data name="NotAuthorized" xml:space="preserve">
+    <value>You're not authorized to perform this action.</value>
+  </data>
+  <data name="ActionNotAllowed" xml:space="preserve">
+    <value>This action isn't allowed.</value>
+  </data>
   <data name="XmppState_Authenticating" xml:space="preserve">
     <value>Authenticating network identity</value>
   </data>
