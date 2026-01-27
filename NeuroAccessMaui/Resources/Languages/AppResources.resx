@@ -3594,4 +3594,19 @@
   <data name="ShowAccount" xml:space="preserve">
     <value>Show account</value>
   </data>
+  <data name="EmbeddedLayout">
+    <value>Embedded layout</value>
+  </data>
+  <data name="ViewEmbeddedLayout">
+    <value>View embedded layout</value>
+  </data>
+  <data name="Killed">
+    <value>Killed</value>
+  </data>
+  <data name="KillerUser">
+    <value>Killer user</value>
+  </data>
+  <data name="KillerId">
+    <value>Killer id</value>
+  </data>
 </root>

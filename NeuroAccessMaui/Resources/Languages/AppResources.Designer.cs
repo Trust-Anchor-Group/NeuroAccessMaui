@@ -2896,6 +2896,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Embedded layout.
+        /// </summary>
+        public static string EmbeddedLayout {
+            get {
+                return ResourceManager.GetString("EmbeddedLayout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable.
         /// </summary>
         public static string Enable {
@@ -3999,6 +4008,33 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string Key {
             get {
                 return ResourceManager.GetString("Key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Killed.
+        /// </summary>
+        public static string Killed {
+            get {
+                return ResourceManager.GetString("Killed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Killer id.
+        /// </summary>
+        public static string KillerId {
+            get {
+                return ResourceManager.GetString("KillerId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Killer user.
+        /// </summary>
+        public static string KillerUser {
+            get {
+                return ResourceManager.GetString("KillerUser", resourceCulture);
             }
         }
         
@@ -10029,6 +10065,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ViewContract {
             get {
                 return ResourceManager.GetString("ViewContract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View embedded layout.
+        /// </summary>
+        public static string ViewEmbeddedLayout {
+            get {
+                return ResourceManager.GetString("ViewEmbeddedLayout", resourceCulture);
             }
         }
         

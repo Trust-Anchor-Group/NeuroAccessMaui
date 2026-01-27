@@ -50,13 +50,13 @@
 	</PropertyGroup>
 
 	<!-- If on Mac, add iOS as well -->
-	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+	<PropertyGroup>
 		<TargetFrameworks>net10.0-ios;net10.0-android</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('windows'))">
 		<!-- On Windows build Android + Windows (WinUI) -->
-		<TargetFrameworks>net10.0-android;net10.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks>net10.0-windows10.0.19041.0</TargetFrameworks>
 
 		<WindowsPackageType>None</WindowsPackageType>
 

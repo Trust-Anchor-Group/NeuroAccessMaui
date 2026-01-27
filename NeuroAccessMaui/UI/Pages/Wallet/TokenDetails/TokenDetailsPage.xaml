@@ -119,10 +119,21 @@
 								<Image Source="{Binding Path=QrCode}" IsVisible="{Binding Path=HasQrCode}" 
 						   WidthRequest="{Binding Path=QrCodeWidth, Mode=OneTime}" HeightRequest="{Binding Path=QrCodeHeight, Mode=OneTime}" 
 						   VerticalOptions="Start" HorizontalOptions="Center" Margin="{DynamicResource SmallTopMargins}" />
-
+								<VerticalStackLayout>
+									<Label Text="{l:Localize EmbeddedLayout}" 
+										   Margin="{DynamicResource SmallTopMargins}" 
+										   VerticalOptions="Start"
+										   IsVisible="{Binding HasEmbeddedLayout}" />
+									<controls:TextButton LabelData="{l:Localize ViewEmbeddedLayout}"
+										  				 Margin="{DynamicResource SmallBottomMargins}"
+							  							 Command="{Binding Path=PresentEmbeddedLayoutCommand}" IsVisible="{Binding HasEmbeddedLayout}"
+														 IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+														 Style="{DynamicResource FilledTextButton}"/>
+								</VerticalStackLayout>
 								<VerticalStackLayout>
 									<Label Text="{l:Localize Reports}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"
 											 IsVisible="{Binding HasStateMachine}"/>
+
 
 									<controls:TextButton LabelData="{l:Localize Present}" Margin="{DynamicResource SmallBottomMargins}"
 																Command="{Binding Path=PresentReportCommand}" IsVisible="{Binding HasStateMachine}"
