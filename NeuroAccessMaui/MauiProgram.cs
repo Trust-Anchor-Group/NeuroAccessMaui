@@ -120,6 +120,7 @@ namespace NeuroAccessMaui
 			});
 #endif
 			Builder.UseMauiCommunityToolkitMarkup();
+			Builder.UseMauiCommunityToolkitCamera();
 			Builder.UseBarcodeReader();
 			Builder.UseLocalizationManager<AppResources>();
 

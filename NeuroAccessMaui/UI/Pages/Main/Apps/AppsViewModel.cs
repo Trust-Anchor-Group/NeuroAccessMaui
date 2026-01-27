@@ -8,13 +8,10 @@ using NeuroAccessMaui.UI.Pages.Contracts.MyContracts;
 using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Things.MyThings;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
-using EDaler;
 using NeuroAccessMaui.UI.Pages.Wallet.MyWallet;
-using NeuroAccessMaui.Resources.Languages;
-using System.Runtime.CompilerServices;
 using NeuroAccessMaui.UI.Pages.Wallet.MyTokens;
 using NeuroAccessMaui.Services.Authentication;
-using System; // For EventHandler
+using NeuroAccessMaui.UI.Pages.Main.CameraTest; // For EventHandler
 
 namespace NeuroAccessMaui.UI.Pages.Main.Apps
 {
@@ -25,6 +22,19 @@ namespace NeuroAccessMaui.UI.Pages.Main.Apps
 		public AppsViewModel() : base()
 		{
 			this.hasBetaFeatures = ServiceRef.TagProfile.HasBetaFeatures;
+		}
+
+		[RelayCommand]
+		private static async Task ShowCameraTest()
+		{
+			try
+			{
+				await ServiceRef.NavigationService.GoToAsync(nameof(CameraTestPage));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
 		}
 
 		/// <summary>

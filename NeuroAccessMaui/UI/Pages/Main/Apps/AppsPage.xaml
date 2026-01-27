@@ -59,6 +59,14 @@
 												Command="{Binding ShowApplicationsCommand}"/>
 							<Label Style="{StaticResource AppCardLabel}" Text="{l:Localize Applications}" HorizontalOptions="Center"/>
 						</VerticalStackLayout>
+						<!---
+						<VerticalStackLayout Grid.Column="0" Grid.Row="2">
+							<controls:SvgButton Style="{DynamicResource NeuroIconButton}"
+											SvgSource="nfc.svg"
+											Command="{Binding ShowCameraTestCommand}"/>
+							<Label Style="{StaticResource AppCardLabel}" Text="Camera test page" HorizontalOptions="Center"/>
+						</VerticalStackLayout>
+						-->
 					</Grid>
 				</Border>
 
