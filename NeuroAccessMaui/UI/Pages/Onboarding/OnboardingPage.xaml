@@ -25,12 +25,12 @@
                                 Command="{Binding ExistingAccountCommand}"
                                 IsVisible="{Binding IsOnWelcomeStep}" />
             <!-- Back button matches RegistrationPage using ImageButton geometry -->
-            <controls:ImageButton Grid.Column="1"
-                                  Style="{DynamicResource ImageOnlyButton}"
-                                  PathData="{x:Static ui:Geometries.BackButtonPath}"
-                                  Command="{Binding GoBackCommand}"
-                                  IsVisible="{Binding CanGoBack}" />
-            <!-- Language change button with label -->
+			<controls:SvgButton Grid.Column="0"
+                                Style="{DynamicResource IconButton}"
+                                SvgSource="close.svg"
+                                Command="{Binding GoBackCommand}"
+                                IsVisible="{Binding CanGoBack}" />
+			<!-- Language change button with label -->
             <controls:SvgButton Grid.Column="2"
                                 SvgSource="globe.svg"
                                 Style="{DynamicResource IconButton}"

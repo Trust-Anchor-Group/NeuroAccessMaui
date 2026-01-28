@@ -228,6 +228,15 @@
   <data name="RequestWasCancelled" xml:space="preserve">
     <value>The request was cancelled</value>
   </data>
+  <data name="ServiceUnavailable" xml:space="preserve">
+    <value>The service is currently unavailable. Please try again later.</value>
+  </data>
+  <data name="NotAuthorized" xml:space="preserve">
+    <value>You're not authorized to perform this action.</value>
+  </data>
+  <data name="ActionNotAllowed" xml:space="preserve">
+    <value>This action isn't allowed.</value>
+  </data>
   <data name="XmppState_Authenticating" xml:space="preserve">
     <value>Authenticating network identity</value>
   </data>
@@ -3584,5 +3593,20 @@
   </data>
   <data name="ShowAccount" xml:space="preserve">
     <value>Show account</value>
+  </data>
+  <data name="EmbeddedLayout">
+    <value>Embedded layout</value>
+  </data>
+  <data name="ViewEmbeddedLayout">
+    <value>View embedded layout</value>
+  </data>
+  <data name="Killed">
+    <value>Killed</value>
+  </data>
+  <data name="KillerUser">
+    <value>Killer user</value>
+  </data>
+  <data name="KillerId">
+    <value>Killer id</value>
   </data>
 </root>

@@ -90,6 +90,8 @@ using NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest;
 using Waher.Runtime.Inventory;
 using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 using NeuroAccessMaui.UI.Popups.OnboardingHelp;
+using NeuroAccessMaui.UI.Pages.Utility;
+using NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout;
 
 namespace NeuroAccessMaui.UI
 {
@@ -264,6 +266,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<TokenEventsPage, TokenEventsViewModel>();
 			Builder.Services.AddTransient<WalletPage, WalletViewModel>();
 			Builder.Services.AddTransient<TransactionHistoryPage, TransactionHistoryViewModel>();
+			Builder.Services.AddTransient<EmbeddedLayoutPage, EmbeddedLayoutViewModel>();
 
 			// Popups
 			Builder.Services.AddTransient<ImageView>();

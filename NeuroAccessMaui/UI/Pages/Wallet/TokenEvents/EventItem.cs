@@ -55,7 +55,12 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 		/// <summary>
 		/// XML note made by an external source at the time.
 		/// </summary>
-		ExternalNoteXml
+		ExternalNoteXml,
+
+		/// <summary>
+		/// Statemachine killed.
+		/// </summary>
+		Killed,
 	}
 
 	/// <summary>
@@ -163,6 +168,8 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.TokenEvents
 				return new TransferredItem(Transferred);
 			else if (Event is Donated Donated)
 				return new DonatedItem(Donated);
+			else if (Event is Killed Killed)
+				return new KilledItem(Killed);
 			else
 			{
 				return new NoteTextItem(new NoteText()

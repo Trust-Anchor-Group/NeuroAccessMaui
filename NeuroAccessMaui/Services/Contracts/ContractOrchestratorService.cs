@@ -274,7 +274,7 @@ namespace NeuroAccessMaui.Services.Contracts
 						ServiceRef.Localizer[nameof(AppResources.SignaturePetitionDenied)],
 						ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
-				else if(ServiceRef.NavigationService.CurrentPage is not (NewContractPage or ViewContractPage))
+				else if (ServiceRef.NavigationService.CurrentPage is not (NewContractPage or ViewContractPage))
 					await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
 			}
 			catch (Exception ex)
@@ -444,12 +444,12 @@ namespace NeuroAccessMaui.Services.Contracts
 			{
 				Contract Contract = await ServiceRef.XmppService.GetContract(e.ContractId);
 
-				while(ServiceRef.NavigationService.CurrentPage is not MainPage)
+				while (ServiceRef.NavigationService.CurrentPage is not MainPage)
 				{
 					await Task.Delay(500);
 				}
 				await Task.Delay(500);
-				
+
 				await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), new ViewContractNavigationArgs(
 							Contract, false, e.Role, e.MessageText, e.FromBareJID));
 			}
@@ -513,7 +513,7 @@ namespace NeuroAccessMaui.Services.Contracts
 			catch (ForbiddenException)    // Old ID belonging to a previous account, for example. Simply discard.
 			{
 				await ServiceRef.TagProfile.ClearLegalIdentity();
-				await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.FullSetup});
+				await ServiceRef.NavigationService.GoToAsync(nameof(OnboardingPage), new OnboardingNavigationArgs() { Scenario = OnboardingScenario.FullSetup });
 				return;
 			}
 			catch (Exception ex)
@@ -529,23 +529,23 @@ namespace NeuroAccessMaui.Services.Contracts
 					try
 					{
 
-					string? UserMessage = null;
-					bool GotoRegistrationPage = false;
+						string? UserMessage = null;
+						bool GotoRegistrationPage = false;
 
-					if (Identity.State == IdentityState.Compromised)
-					{
-						UserMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
-						await ServiceRef.TagProfile.CompromiseLegalIdentity(Identity);
-						GotoRegistrationPage = true;
-					}
-					else if (Identity.State == IdentityState.Obsoleted)
-					{
-						UserMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
-						await ServiceRef.TagProfile.RevokeLegalIdentity(Identity);
-						GotoRegistrationPage = true;
-					}
-					else if (Identity.State == IdentityState.Approved)
-					{
+						if (Identity.State == IdentityState.Compromised)
+						{
+							UserMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenCompromised)];
+							await ServiceRef.TagProfile.CompromiseLegalIdentity(Identity);
+							GotoRegistrationPage = true;
+						}
+						else if (Identity.State == IdentityState.Obsoleted)
+						{
+							UserMessage = ServiceRef.Localizer[nameof(AppResources.YourLegalIdentityHasBeenObsoleted)];
+							await ServiceRef.TagProfile.RevokeLegalIdentity(Identity);
+							GotoRegistrationPage = true;
+						}
+						else if (Identity.State == IdentityState.Approved)
+						{
 							bool HasPrivateKeys = false;
 							try
 							{
@@ -569,44 +569,44 @@ namespace NeuroAccessMaui.Services.Contracts
 							ServiceRef.Localizer[nameof(AppResources.Continue)],
 							ServiceRef.Localizer[nameof(AppResources.Repair)]);
 
-						if (Response)
-							await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
+							if (Response)
+								await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
+							else
+							{
+								try
+								{
+									File.WriteAllText(Path.Combine(ServiceRef.StorageService.DataFolder, "Start.txt"),
+										DateTime.Now.AddHours(1).Ticks.ToString(CultureInfo.InvariantCulture));
+								}
+								catch (Exception ex)
+								{
+									ServiceRef.LogService.LogException(ex);
+								}
+
+								await App.StopAsync();
+								return;
+							}
+						}
 						else
+							await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
+
+						if (GotoRegistrationPage)
 						{
-							try
+							//await App.SetRegistrationPageAsync();
+
+							// After navigating to the registration page, show the user why this happened.
+							if (!string.IsNullOrWhiteSpace(UserMessage))
 							{
-								File.WriteAllText(Path.Combine(ServiceRef.StorageService.DataFolder, "Start.txt"),
-									DateTime.Now.AddHours(1).Ticks.ToString(CultureInfo.InvariantCulture));
+								// Do a begin invoke here so the page animation has time to finish,
+								// and the view model loads state et.c. before showing the alert.
+								// This gives a better UX experience.
+								MainThread.BeginInvokeOnMainThread(async () =>
+								{
+									await ServiceRef.UiService.DisplayAlert(
+										ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)], UserMessage);
+								});
 							}
-							catch (Exception ex)
-							{
-								ServiceRef.LogService.LogException(ex);
-							}
-
-							await App.StopAsync();
-							return;
 						}
-					}
-					else
-						await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
-
-					if (GotoRegistrationPage)
-					{
-						//await App.SetRegistrationPageAsync();
-
-						// After navigating to the registration page, show the user why this happened.
-						if (!string.IsNullOrWhiteSpace(UserMessage))
-						{
-							// Do a begin invoke here so the page animation has time to finish,
-							// and the view model loads state et.c. before showing the alert.
-							// This gives a better UX experience.
-							MainThread.BeginInvokeOnMainThread(async () =>
-							{
-								await ServiceRef.UiService.DisplayAlert(
-									ServiceRef.Localizer[nameof(AppResources.YourLegalIdentity)], UserMessage);
-							});
-						}
-					}
 					}
 					catch (Exception E)
 					{
@@ -688,7 +688,7 @@ namespace NeuroAccessMaui.Services.Contracts
 				// This happens if you try to view someone else's legal identity.
 				// When this happens, try to send a petition to view it instead.
 				// Normal operation. Should not be logged.
-				if(!string.IsNullOrEmpty(Purpose))
+				if (!string.IsNullOrEmpty(Purpose))
 					await ServiceRef.XmppService.PetitionIdentity(LegalId, Guid.NewGuid().ToString(), Purpose);
 				return null;
 			}
@@ -803,11 +803,23 @@ namespace NeuroAccessMaui.Services.Contracts
 			string JID = System.Web.HttpUtility.UrlDecode(Request[..i]);
 			string Key = Request[(i + 1)..];
 
-			LegalIdentity ID = (ServiceRef.TagProfile.LegalIdentity)
-				?? throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.NoLegalIdSelected)]);
+			LegalIdentity? ID = ServiceRef.TagProfile.LegalIdentity;
+
+			if (ID is null)
+			{
+				await ServiceRef.Provider.GetRequiredService<UiService>().DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)], ServiceRef.Localizer[nameof(AppResources.NotCompletedOnboardingError)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				return;
+			}
 
 			if (ID.State != IdentityState.Approved)
-				throw new InvalidOperationException(ServiceRef.Localizer[nameof(AppResources.LegalIdNotApproved)]);
+			{
+				await ServiceRef.Provider.GetRequiredService<UiService>().DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)], ServiceRef.Localizer[nameof(AppResources.LegalIdNotApproved)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				return;
+			}
 
 			string IdRef = ServiceRef.TagProfile.LegalIdentity?.Id ?? string.Empty;
 

@@ -15,284 +15,289 @@
 							 xmlns:events="clr-namespace:NeuroAccessMaui.UI.Pages.Wallet.TokenEvents.Events">
 	<VisualElement.Resources>
 		<DataTemplate x:Key="CreatedEvent" x:DataType="events:CreatedItem">
-			<ViewCell>
-				<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto,auto,auto,auto" Margin="{DynamicResource SmallBottomMargins}">
-					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
-								<Span Text=", "/>
-								<Span Text="{l:Localize Created}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
+			<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto,auto,auto,auto" Margin="{DynamicResource SmallBottomMargins}">
+				<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+							<Span Text=", "/>
+							<Span Text="{l:Localize Created}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Creator}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="1" Text="{Binding CreatorFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Creator}" />
-						</Label.GestureRecognizers>
-					</Label>
+				<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Creator}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="1" Text="{Binding CreatorFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Creator}" />
+					</Label.GestureRecognizers>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize Owner}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnerFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
-						</Label.GestureRecognizers>
-					</Label>
+				<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize Owner}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnerFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
+					</Label.GestureRecognizers>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize OwnershipContract}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="3" Text="{Binding OwnershipContract}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
-						</Label.GestureRecognizers>
-					</Label>
+				<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize OwnershipContract}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="3" Text="{Binding OwnershipContract}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
+					</Label.GestureRecognizers>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize Value}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="4" Style="{DynamicResource ValueLabel}">
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{Binding Value, Converter={converters:MoneyToString}}"/>
-								<Span Text=" "/>
-								<Span Text="{Binding Currency}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
-				</Grid>
-			</ViewCell>
+				<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize Value}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="4" Style="{DynamicResource ValueLabel}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Value, Converter={converters:MoneyToString}}"/>
+							<Span Text=" "/>
+							<Span Text="{Binding Currency}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+			</Grid>
 		</DataTemplate>
 		<DataTemplate x:Key="DestroyedEvent" x:DataType="events:DestroyedItem">
-			<ViewCell>
-				<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto,auto,auto" Margin="{DynamicResource SmallBottomMargins}">
-					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
-								<Span Text=", "/>
-								<Span Text="{l:Localize Destroyed}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
+			<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto,auto,auto" Margin="{DynamicResource SmallBottomMargins}">
+				<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+							<Span Text=", "/>
+							<Span Text="{l:Localize Destroyed}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Owner}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="1" Text="{Binding OwnerFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
-						</Label.GestureRecognizers>
-					</Label>
+				<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Owner}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="1" Text="{Binding OwnerFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
+					</Label.GestureRecognizers>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize OwnershipContract}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnershipContract}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
-						</Label.GestureRecognizers>
-					</Label>
+				<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize OwnershipContract}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnershipContract}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
+					</Label.GestureRecognizers>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize Value}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="3" Style="{DynamicResource ValueLabel}">
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{Binding Value, Converter={converters:MoneyToString}}"/>
-								<Span Text=" "/>
-								<Span Text="{Binding Currency}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
-				</Grid>
-			</ViewCell>
+				<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize Value}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="3" Style="{DynamicResource ValueLabel}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Value, Converter={converters:MoneyToString}}"/>
+							<Span Text=" "/>
+							<Span Text="{Binding Currency}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+			</Grid>
 		</DataTemplate>
 		<DataTemplate x:Key="TransferredEvent" x:DataType="events:TransferredItem">
-			<ViewCell>
-				<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto,auto,auto,auto" Margin="{DynamicResource SmallBottomMargins}">
-					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
-								<Span Text=", "/>
-								<Span Text="{l:Localize Transferred}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
+			<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto,auto,auto,auto" Margin="{DynamicResource SmallBottomMargins}">
+				<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+							<Span Text=", "/>
+							<Span Text="{l:Localize Transferred}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Seller}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="1" Text="{Binding SellerFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Seller}" />
-						</Label.GestureRecognizers>
-					</Label>
+				<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Seller}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="1" Text="{Binding SellerFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Seller}" />
+					</Label.GestureRecognizers>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize Owner}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnerFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
-						</Label.GestureRecognizers>
-					</Label>
+				<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize Owner}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnerFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
+					</Label.GestureRecognizers>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize OwnershipContract}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="3" Text="{Binding OwnershipContract}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
-						</Label.GestureRecognizers>
-					</Label>
+				<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize OwnershipContract}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="3" Text="{Binding OwnershipContract}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
+					</Label.GestureRecognizers>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize Value}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="4" Style="{DynamicResource ValueLabel}">
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{Binding Value, Converter={converters:MoneyToString}}"/>
-								<Span Text=" "/>
-								<Span Text="{Binding Currency}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
-				</Grid>
-			</ViewCell>
+				<Label Grid.Column="0" Grid.Row="4" Text="{l:Localize Value}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="4" Style="{DynamicResource ValueLabel}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Value, Converter={converters:MoneyToString}}"/>
+							<Span Text=" "/>
+							<Span Text="{Binding Currency}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+			</Grid>
 		</DataTemplate>
 		<DataTemplate x:Key="DonatedEvent" x:DataType="events:DonatedItem">
-			<ViewCell>
-				<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto,auto,auto" Margin="{DynamicResource SmallBottomMargins}">
-					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
-								<Span Text=", "/>
-								<Span Text="{l:Localize Donated}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
+			<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto,auto,auto" Margin="{DynamicResource SmallBottomMargins}">
+				<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+							<Span Text=", "/>
+							<Span Text="{l:Localize Donated}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Donor}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="1" Text="{Binding DonorFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Donor}" />
-						</Label.GestureRecognizers>
-					</Label>
+				<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize Donor}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="1" Text="{Binding DonorFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Donor}" />
+					</Label.GestureRecognizers>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize Owner}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnerFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
-						</Label.GestureRecognizers>
-					</Label>
+				<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize Owner}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="2" Text="{Binding OwnerFriendlyName}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
+					</Label.GestureRecognizers>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize OwnershipContract}" Style="{DynamicResource KeyLabel}"/>
-					<Label Grid.Column="1" Grid.Row="3" Text="{Binding OwnershipContract}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
-						</Label.GestureRecognizers>
-					</Label>
-				</Grid>
-			</ViewCell>
+				<Label Grid.Column="0" Grid.Row="3" Text="{l:Localize OwnershipContract}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="3" Text="{Binding OwnershipContract}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewContractCommand}" CommandParameter="{Binding OwnershipContract}" />
+					</Label.GestureRecognizers>
+				</Label>
+			</Grid>
 		</DataTemplate>
 		<DataTemplate x:Key="NoteText" x:DataType="events:NoteTextItem">
-			<ViewCell>
-				<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{DynamicResource SmallBottomMargins}">
-					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
-								<Span Text=", "/>
-								<Span Text="{l:Localize TextNote}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
+			<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{DynamicResource SmallBottomMargins}">
+				<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+							<Span Text=", "/>
+							<Span Text="{l:Localize TextNote}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Note}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding Note}" />
-						</Label.GestureRecognizers>
-					</Label>
-				</Grid>
-			</ViewCell>
+				<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Note}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding Note}" />
+					</Label.GestureRecognizers>
+				</Label>
+			</Grid>
 		</DataTemplate>
 		<DataTemplate x:Key="NoteXml" x:DataType="events:NoteXmlItem">
-			<ViewCell>
-				<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{DynamicResource SmallBottomMargins}">
-					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
-								<Span Text=", "/>
-								<Span Text="{l:Localize XmlNote}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
-					<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{l:Localize ViewXmlInBrowser}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewXmlInBrowserCommand}" CommandParameter="{Binding Note}" />
-						</Label.GestureRecognizers>
-					</Label>
-				</Grid>
-			</ViewCell>
+			<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{DynamicResource SmallBottomMargins}">
+				<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+							<Span Text=", "/>
+							<Span Text="{l:Localize XmlNote}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+				<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{l:Localize ViewXmlInBrowser}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewXmlInBrowserCommand}" CommandParameter="{Binding Note}" />
+					</Label.GestureRecognizers>
+				</Label>
+			</Grid>
 		</DataTemplate>
 		<DataTemplate x:Key="ExternalNoteText" x:DataType="events:ExternalNoteTextItem">
-			<ViewCell>
-				<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{DynamicResource SmallBottomMargins}">
-					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
-								<Span Text=", "/>
-								<Span Text="{l:Localize TextNote}"/>
-								<Span Text="{x:Static system:Environment.NewLine}"/>
-								<Span Text="(" Style="{DynamicResource ValueSpan}"/>
-								<Span Text="{l:Localize From}" Style="{DynamicResource ValueSpan}"/>
-								<Span Text=" " Style="{DynamicResource ValueSpan}"/>
-								<Span Text="{Binding Source}" Style="{DynamicResource ClickableValueSpan}">
-									<Span.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding ViewSourceCommand}" CommandParameter="{Binding Source}" />
-									</Span.GestureRecognizers>
-								</Span>
-								<Span Text=")" Style="{DynamicResource ValueSpan}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
+			<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{DynamicResource SmallBottomMargins}">
+				<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+							<Span Text=", "/>
+							<Span Text="{l:Localize TextNote}"/>
+							<Span Text="{x:Static system:Environment.NewLine}"/>
+							<Span Text="(" Style="{DynamicResource ValueSpan}"/>
+							<Span Text="{l:Localize From}" Style="{DynamicResource ValueSpan}"/>
+							<Span Text=" " Style="{DynamicResource ValueSpan}"/>
+							<Span Text="{Binding Source}" Style="{DynamicResource ClickableValueSpan}">
+								<Span.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding ViewSourceCommand}" CommandParameter="{Binding Source}" />
+								</Span.GestureRecognizers>
+							</Span>
+							<Span Text=")" Style="{DynamicResource ValueSpan}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
 
-					<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Note}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding Note}" />
-						</Label.GestureRecognizers>
-					</Label>
-				</Grid>
-			</ViewCell>
+				<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Note}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding CopyToClipboardCommand}" CommandParameter="{Binding Note}" />
+					</Label.GestureRecognizers>
+				</Label>
+			</Grid>
 		</DataTemplate>
 		<DataTemplate x:Key="ExternalNoteXml" x:DataType="events:ExternalNoteXmlItem">
-			<ViewCell>
-				<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{DynamicResource SmallBottomMargins}">
-					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
-						<Label.FormattedText>
-							<FormattedString>
-								<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
-								<Span Text=", "/>
-								<Span Text="{l:Localize XmlNote}"/>
-								<Span Text="{x:Static system:Environment.NewLine}"/>
-								<Span Text="(" Style="{DynamicResource ValueSpan}"/>
-								<Span Text="{l:Localize From}" Style="{DynamicResource ValueSpan}"/>
-								<Span Text=" " Style="{DynamicResource ValueSpan}"/>
-								<Span Text="{Binding Source}" Style="{DynamicResource ClickableValueSpan}">
-									<Span.GestureRecognizers>
-										<TapGestureRecognizer Command="{Binding ViewSourceCommand}" CommandParameter="{Binding Source}" />
-									</Span.GestureRecognizers>
-								</Span>
-								<Span Text=")" Style="{DynamicResource ValueSpan}"/>
-							</FormattedString>
-						</Label.FormattedText>
-					</Label>
-					<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{l:Localize ViewXmlInBrowser}" Style="{DynamicResource ClickableValueLabel}">
-						<Label.GestureRecognizers>
-							<TapGestureRecognizer Command="{Binding ViewXmlInBrowserCommand}" CommandParameter="{Binding Note}" />
-						</Label.GestureRecognizers>
-					</Label>
-				</Grid>
-			</ViewCell>
+			<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{DynamicResource SmallBottomMargins}">
+				<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+							<Span Text=", "/>
+							<Span Text="{l:Localize XmlNote}"/>
+							<Span Text="{x:Static system:Environment.NewLine}"/>
+							<Span Text="(" Style="{DynamicResource ValueSpan}"/>
+							<Span Text="{l:Localize From}" Style="{DynamicResource ValueSpan}"/>
+							<Span Text=" " Style="{DynamicResource ValueSpan}"/>
+							<Span Text="{Binding Source}" Style="{DynamicResource ClickableValueSpan}">
+								<Span.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding ViewSourceCommand}" CommandParameter="{Binding Source}" />
+								</Span.GestureRecognizers>
+							</Span>
+							<Span Text=")" Style="{DynamicResource ValueSpan}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+				<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{l:Localize ViewXmlInBrowser}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewXmlInBrowserCommand}" CommandParameter="{Binding Note}" />
+					</Label.GestureRecognizers>
+				</Label>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="Killed" x:DataType="events:KilledItem">
+			<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto,auto" Margin="{DynamicResource SmallBottomMargins}">
+				<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Style="{DynamicResource TableHeader}">
+					<Label.FormattedText>
+						<FormattedString>
+							<Span Text="{Binding Timestamp, Converter={converters:DateTimeToString}}"/>
+							<Span Text=", "/>
+							<Span Text="{l:Localize Killed}"/>
+						</FormattedString>
+					</Label.FormattedText>
+				</Label>
+
+				<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize KillerUser}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="1" Text="{Binding User}" Style="{DynamicResource ClickableValueLabel}"/>
+
+				<Label Grid.Column="0" Grid.Row="2" Text="{l:Localize KillerId}" Style="{DynamicResource KeyLabel}"/>
+				<Label Grid.Column="1" Grid.Row="2" Text="{Binding LegalId}" Style="{DynamicResource ClickableValueLabel}">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding ViewIdCommand}" CommandParameter="{Binding Owner}" />
+					</Label.GestureRecognizers>
+				</Label>
+			</Grid>
 		</DataTemplate>
 		<DataTemplate x:Key="OtherEvents" x:DataType="viewmodel:EventItem">
-			<ViewCell>
-				<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{DynamicResource SmallBottomMargins}">
-					<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{DynamicResource TableHeader}"/>
-					<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{l:Localize UnrecognizedEventType}" Style="{DynamicResource ValueLabel}"/>
-				</Grid>
-			</ViewCell>
+			<Grid ColumnDefinitions="*,*" RowDefinitions="auto,auto" Margin="{DynamicResource SmallBottomMargins}">
+				<Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Timestamp, Converter={converters:DateTimeToString}}" Style="{DynamicResource TableHeader}"/>
+				<Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{l:Localize UnrecognizedEventType}" Style="{DynamicResource ValueLabel}"/>
+			</Grid>
 		</DataTemplate>
 		<viewmodel:EventTypeTemplateSelector x:Key="EventStyleSelector" 
 														 CreatedTemplate="{StaticResource CreatedEvent}" 
@@ -303,25 +308,25 @@
 														 NoteXmlTemplate="{StaticResource NoteXml}"
 														 ExternalNoteTextTemplate="{StaticResource ExternalNoteText}" 
 														 ExternalNoteXmlTemplate="{StaticResource ExternalNoteXml}"
+														 KilledTemplate="{StaticResource Killed}"
 														 DefaultTemplate="{StaticResource OtherEvents}"/>
 	</VisualElement.Resources>
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
-
-		<controls:Background/>
-
-		<ScrollView>
-			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" Margin="{DynamicResource MediumSpacing}">
-				<controls:ImageButton HorizontalOptions="Start" Command="{Binding GoBackCommand}"
-											 Style="{DynamicResource ImageOnlyButton}" PathData="{x:Static ui:Geometries.BackButtonPath}" />
-
-				<Label Text="{l:Localize TokenEvents}" Style="{DynamicResource PageTitleLabel}"/>
-
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}" RowDefinitions="auto, *">
+		<controls:Background Grid.RowSpan="2"/>
+		<Grid ColumnDefinitions="auto, *, auto" Margin="16,8,16,0">
+			<controls:SvgButton Command="{Binding GoBackCommand}"
+								  Style="{DynamicResource IconButton}"
+								  SvgSource="close.svg"/>
+			<Label Grid.Column="2" Text="{l:Localize TokenEvents}" Style="{DynamicResource PageTitleLabel}"/>
+		</Grid>
+		<ScrollView Grid.Row="1" Margin="8">
+			<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}" >
 				<Border Style="{DynamicResource BorderSet}">
-					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,*,auto" Margin="{DynamicResource SmallMargins}">
+					<Grid ColumnDefinitions="*" RowDefinitions="auto,auto,*,auto">
 						<Label Grid.Column="0" Grid.Row="0" Text="{l:Localize TokenEvents}" Margin="{DynamicResource SmallTopMargins}" VerticalOptions="Start"/>
 						<Label Grid.Column="0" Grid.Row="1" Text="{l:Localize TokenEventsDescription}" Style="{DynamicResource InfoLabel}" VerticalOptions="Start"/>
-						<ListView Grid.Column="0" Grid.Row="2" HasUnevenRows="True" SeparatorVisibility="None" VerticalOptions="Start"
-								  ItemsSource="{Binding Path=Events}" ItemTemplate="{StaticResource EventStyleSelector}"/>
+						<VerticalStackLayout Grid.Column="0" Grid.Row="2" VerticalOptions="Start"
+								  BindableLayout.ItemsSource="{Binding Path=Events}" BindableLayout.ItemTemplateSelector="{StaticResource EventStyleSelector}" />
 						<controls:TextButton Grid.Column="0" Grid.Row="3" LabelData="{l:Localize AddNote}" Margin="{DynamicResource SmallBottomMargins}"
 													Command="{Binding Path=AddNoteCommand}" Style="{DynamicResource FilledTextButton}"
 													IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertedBoolConverter}}" />

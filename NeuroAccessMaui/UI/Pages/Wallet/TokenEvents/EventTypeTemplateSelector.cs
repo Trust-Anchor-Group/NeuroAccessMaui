@@ -46,6 +46,11 @@
 		public DataTemplate? ExternalNoteXmlTemplate { get; set; }
 
 		/// <summary>
+		/// Template to use for killed events.
+		/// </summary>
+		public DataTemplate? KilledTemplate { get; set; }
+
+		/// <summary>
 		/// Template to use for other items.
 		/// </summary>
 		public DataTemplate? DefaultTemplate { get; set; }
@@ -65,6 +70,7 @@
 					EventType.NoteXml => this.NoteXmlTemplate ?? this.DefaultTemplate,
 					EventType.ExternalNoteText => this.ExternalNoteTextTemplate ?? this.DefaultTemplate,
 					EventType.ExternalNoteXml => this.ExternalNoteXmlTemplate ?? this.DefaultTemplate,
+					EventType.Killed => this.KilledTemplate ?? this.DefaultTemplate,
 					_ => this.DefaultTemplate,
 				};
 			}
