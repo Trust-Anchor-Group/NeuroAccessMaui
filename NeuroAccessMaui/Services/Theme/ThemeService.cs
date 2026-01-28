@@ -80,8 +80,6 @@ namespace NeuroAccessMaui.Services.Theme
 		/// <param name="Theme">Desired theme or <see cref="AppTheme.Unspecified"/>.</param>
 		public void SetTheme(AppTheme Theme)
 		{
-			if (Theme is AppTheme.Unspecified)
-				Theme = Application.Current!.RequestedTheme;
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				try
@@ -113,6 +111,9 @@ namespace NeuroAccessMaui.Services.Theme
 		/// <param name="Theme">Theme to apply locally.</param>
 		public void SetLocalTheme(AppTheme Theme)
 		{
+			if (Theme == AppTheme.Unspecified)
+				Theme = Application.Current?.RequestedTheme ?? AppTheme.Unspecified;
+
 			MainThread.BeginInvokeOnMainThread(() =>
 			{
 				try

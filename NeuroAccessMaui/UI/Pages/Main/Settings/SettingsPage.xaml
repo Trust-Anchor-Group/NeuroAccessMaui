@@ -40,7 +40,7 @@
 						<Border Style="{DynamicResource BorderSubSet}">
 							<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
 								<Label Style="{DynamicResource SectionTitleLabel}" Text="{l:Localize SelectDisplayMode}"/>
-								<Grid RowDefinitions="auto,auto"
+								<Grid RowDefinitions="auto, auto, auto"
 									  ColumnDefinitions="auto,*,auto"
 									  RadioButtonGroup.GroupName="DisplayMode"
 									  RadioButtonGroup.SelectedValue="{Binding DisplayMode}"
@@ -48,12 +48,16 @@
 									  RowSpacing="{DynamicResource SmallSpacing}">
 
 									<Image Grid.Column="0" Grid.Row="0" Source="{AppThemeBinding Light=light_mode_light, Dark=light_mode_dark}"/>
-									<Label Grid.Column="1" Grid.Row="0" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize LightMode}"/>
+									<Label Grid.Column="1" Grid.Row="0" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize LightMode}" VerticalOptions="Center"/>
 									<RadioButton Grid.Column="2" Grid.Row="0" x:Name="LightMode" Value="Light"/>
 
 									<Image Grid.Column="0" Grid.Row="1" Source="{AppThemeBinding Light=dark_mode_light, Dark=dark_mode_dark}"/>
-									<Label Grid.Column="1" Grid.Row="1" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize DarkMode}"/>
+									<Label Grid.Column="1" Grid.Row="1" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize DarkMode}" VerticalOptions="Center"/>
 									<RadioButton Grid.Column="2" Grid.Row="1" x:Name="DarkMode" Value="Dark"/>
+
+									<controls:SvgView Grid.Column="0" Grid.Row="2" Source="cog.svg" Style="{DynamicResource IconButtonSvg}" TintColor="{AppThemeBinding Light={DynamicResource BrandColorsGreyScalesBlackf}, Dark={DynamicResource ContentWhitefixed}}"/>
+									<Label Grid.Column="1" Grid.Row="2" Style="{DynamicResource ItemDescriptionLabel}" Text="{l:Localize Device}" VerticalOptions="Center"/>
+									<RadioButton Grid.Column="2" Grid.Row="2" x:Name="System" Value="Unspecified"/>
 								</Grid>
 							</VerticalStackLayout>
 						</Border>

@@ -225,7 +225,7 @@ namespace NeuroAccessMaui.UI.Pages.Main.Settings
 			{
 				AppTheme? Result = Application.Current?.UserAppTheme;
 
-				if (!Result.HasValue || Result.Value == AppTheme.Unspecified)
+				if (!Result.HasValue)
 					Result = Application.Current?.PlatformAppTheme;
 
 				return Result ?? AppTheme.Unspecified;

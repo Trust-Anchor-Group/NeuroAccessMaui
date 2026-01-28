@@ -287,9 +287,6 @@ namespace NeuroAccessMaui
             {
                 this.InitializeComponent();
 
-                AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
-                this.SetTheme(CurrentTheme ?? AppTheme.Light);
-                ServiceRef.ThemeService.SetTheme(CurrentTheme ?? AppTheme.Light);
                 // Show CustomShell directly as MainPage
                 // this.MainPage = ServiceHelper.GetService<CustomShell>();
             }
@@ -366,6 +363,14 @@ namespace NeuroAccessMaui
                     this.InitializeInstances();
                     await ServiceRef.CryptoService.InitializeJwtFactory();
                     await this.PerformStartupAsync(isResuming: false, backgroundStart);
+
+					if (!backgroundStart)
+					{
+						AppTheme? CurrentTheme = ServiceRef.TagProfile.Theme;
+						this.SetTheme(CurrentTheme ?? AppTheme.Unspecified);
+						ServiceRef.ThemeService.SetTheme(CurrentTheme ?? AppTheme.Unspecified);
+					}
+
                     initCompletedTcs.TrySetResult(true);
                 }
                 catch (Exception Ex)
