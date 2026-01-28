@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.FilterContractsPopup"
+<base:SimplePopup x:Class="NeuroAccessMaui.UI.Popups.FilterContractsPopup"
                 x:Name="ThisPopup"
                 x:DataType="viewmodel:FilterContractsPopupViewModel"
                 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -38,4 +38,4 @@
 								 Command="{Binding CloseCommand}" />
 		</VerticalStackLayout>
     </ScrollView>
-</base:BasePopup>
+</base:SimplePopup>

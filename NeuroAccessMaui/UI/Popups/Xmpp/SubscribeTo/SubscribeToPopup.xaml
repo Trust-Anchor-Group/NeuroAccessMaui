@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo.SubscribeToPopup"
+<base:SimplePopup x:Class="NeuroAccessMaui.UI.Popups.Xmpp.SubscribeTo.SubscribeToPopup"
                 x:DataType="viewmodel:SubscribeToViewModel"
                 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -38,4 +38,4 @@
                                  Style="{DynamicResource TertiaryButton}" />
         </VerticalStackLayout>
     </ScrollView>
-</base:BasePopup>
+</base:SimplePopup>

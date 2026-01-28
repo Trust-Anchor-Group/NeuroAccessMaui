@@ -3,59 +3,80 @@ using Microsoft.Maui.Controls;
 namespace NeuroAccessMaui.UI.Popups
 {
 	/// <summary>
-	/// Provides a centered card layout with configurable sizing constraints.
+	/// Popup with a centered card layout and size constraints.
 	/// </summary>
 	[ContentProperty(nameof(CardContent))]
-	public class BasicPopup : BasePopupView
+	public class SimplePopup : BasePopup
 	{
+		/// <summary>
+		/// Identifies the <see cref="CardContent"/> bindable property.
+		/// </summary>
 		public static readonly BindableProperty CardContentProperty = BindableProperty.Create(
 			nameof(CardContent),
 			typeof(View),
-			typeof(BasicPopup),
+			typeof(SimplePopup),
 			null,
 			propertyChanged: OnCardContentChanged);
 
+		/// <summary>
+		/// Identifies the <see cref="CardStyle"/> bindable property.
+		/// </summary>
 		public static readonly BindableProperty CardStyleProperty = BindableProperty.Create(
 			nameof(CardStyle),
 			typeof(Style),
-			typeof(BasicPopup),
+			typeof(SimplePopup),
 			null,
 			propertyChanged: OnCardStyleChanged);
 
+		/// <summary>
+		/// Identifies the <see cref="CardPadding"/> bindable property.
+		/// </summary>
 		public static readonly BindableProperty CardPaddingProperty = BindableProperty.Create(
 			nameof(CardPadding),
 			typeof(Thickness),
-			typeof(BasicPopup),
+			typeof(SimplePopup),
 			new Thickness(16),
 			propertyChanged: OnCardPaddingChanged);
 
+		/// <summary>
+		/// Identifies the <see cref="CardMargin"/> bindable property.
+		/// </summary>
 		public static readonly BindableProperty CardMarginProperty = BindableProperty.Create(
 			nameof(CardMargin),
 			typeof(Thickness),
-			typeof(BasicPopup),
+			typeof(SimplePopup),
 			new Thickness(0),
 			propertyChanged: OnCardMarginChanged);
 
+		/// <summary>
+		/// Identifies the <see cref="CardWidthFraction"/> bindable property.
+		/// </summary>
 		public static readonly BindableProperty CardWidthFractionProperty = BindableProperty.Create(
 			nameof(CardWidthFraction),
 			typeof(double),
-			typeof(BasicPopup),
+			typeof(SimplePopup),
 			0.875,
 			propertyChanged: OnSizingPropertyChanged);
 
+		/// <summary>
+		/// Identifies the <see cref="CardMaxHeightFraction"/> bindable property.
+		/// </summary>
 		public static readonly BindableProperty CardMaxHeightFractionProperty = BindableProperty.Create(
 			nameof(CardMaxHeightFraction),
 			typeof(double),
-			typeof(BasicPopup),
+			typeof(SimplePopup),
 			0.8,
 			propertyChanged: OnSizingPropertyChanged);
 
 		private readonly Border cardFrame;
 		private readonly ContentView contentHost;
 
-		public BasicPopup()
+		/// <summary>
+		/// Initializes a new instance of the <see cref="SimplePopup"/> class.
+		/// </summary>
+		public SimplePopup()
 		{
-			this.contentHost = new ContentView() { HorizontalOptions = LayoutOptions.Fill };
+			this.contentHost = new ContentView { HorizontalOptions = LayoutOptions.Fill };
 
 			this.cardFrame = new Border
 			{
@@ -66,9 +87,11 @@ namespace NeuroAccessMaui.UI.Popups
 			};
 			this.cardFrame.Content = this.contentHost;
 
+			this.AllowLayoutOverrides = true;
 			this.Placement = PopupPlacement.Center;
 			this.PopupMargin = new Thickness(16);
 			this.StretchContentWidth = true;
+			this.StretchContentHeight = false;
 			this.PopupContent = this.cardFrame;
 
 			this.SetDynamicResource(CardStyleProperty, "PopupBorder");
@@ -130,47 +153,47 @@ namespace NeuroAccessMaui.UI.Popups
 			set => this.SetValue(CardMaxHeightFractionProperty, value);
 		}
 
-		private static void OnCardContentChanged(BindableObject bindable, object? oldValue, object? newValue)
+		private static void OnCardContentChanged(BindableObject Bindable, object? OldValue, object? NewValue)
 		{
-			if (bindable is BasicPopup popup)
-				popup.contentHost.Content = newValue as View;
+			if (Bindable is SimplePopup Popup)
+				Popup.contentHost.Content = NewValue as View;
 		}
 
-		private static void OnCardStyleChanged(BindableObject bindable, object? oldValue, object? newValue)
+		private static void OnCardStyleChanged(BindableObject Bindable, object? OldValue, object? NewValue)
 		{
-			if (bindable is BasicPopup popup)
-				popup.cardFrame.Style = newValue as Style;
+			if (Bindable is SimplePopup Popup)
+				Popup.cardFrame.Style = NewValue as Style;
 		}
 
-		private static void OnCardPaddingChanged(BindableObject bindable, object? oldValue, object? newValue)
+		private static void OnCardPaddingChanged(BindableObject Bindable, object? OldValue, object? NewValue)
 		{
-			if (bindable is BasicPopup popup && newValue is Thickness padding)
-				popup.cardFrame.Padding = padding;
+			if (Bindable is SimplePopup Popup && NewValue is Thickness Padding)
+				Popup.cardFrame.Padding = Padding;
 		}
 
-		private static void OnCardMarginChanged(BindableObject bindable, object? oldValue, object? newValue)
+		private static void OnCardMarginChanged(BindableObject Bindable, object? OldValue, object? NewValue)
 		{
-			if (bindable is BasicPopup popup && newValue is Thickness margin)
-				popup.cardFrame.Margin = margin;
+			if (Bindable is SimplePopup Popup && NewValue is Thickness Margin)
+				Popup.cardFrame.Margin = Margin;
 		}
 
-		private static void OnSizingPropertyChanged(BindableObject bindable, object? oldValue, object? newValue)
+		private static void OnSizingPropertyChanged(BindableObject Bindable, object? OldValue, object? NewValue)
 		{
-			if (bindable is BasicPopup popup)
-				popup.UpdateCardSizing();
+			if (Bindable is SimplePopup Popup)
+				Popup.UpdateCardSizing();
 		}
 
-		private void OnSizeChanged(object? sender, System.EventArgs e) => this.UpdateCardSizing();
+		private void OnSizeChanged(object? Sender, System.EventArgs Args) => this.UpdateCardSizing();
 
 		private void UpdateCardSizing()
 		{
 			if (this.Width <= 0 || this.Height <= 0)
 				return;
 
-			double maxWidth = this.Width * this.CardWidthFraction;
-			double maxHeight = this.Height * this.CardMaxHeightFraction;
-			this.cardFrame.WidthRequest = maxWidth;
-			this.cardFrame.MaximumHeightRequest = maxHeight;
+			double MaxWidth = this.Width * this.CardWidthFraction;
+			double MaxHeight = this.Height * this.CardMaxHeightFraction;
+			this.cardFrame.WidthRequest = MaxWidth;
+			this.cardFrame.MaximumHeightRequest = MaxHeight;
 		}
 	}
 }

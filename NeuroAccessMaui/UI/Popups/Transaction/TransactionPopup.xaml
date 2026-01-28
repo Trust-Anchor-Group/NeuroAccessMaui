@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Transaction.TransactionPopup"
+<base:SimplePopup x:Class="NeuroAccessMaui.UI.Popups.Transaction.TransactionPopup"
 							x:DataType="viewmodel:TransactionPopupViewModel"
 							xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 							xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -133,4 +133,4 @@
 			</ScrollView>
 		</Border>
 	</Grid>
-</base:BasePopup>
+</base:SimplePopup>

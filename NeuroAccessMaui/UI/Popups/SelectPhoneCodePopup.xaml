@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<viewmodel:BasePopup x:Class="NeuroAccessMaui.UI.Popups.SelectPhoneCodePopup"
+<viewmodel:SimplePopup x:Class="NeuroAccessMaui.UI.Popups.SelectPhoneCodePopup"
                      x:DataType="viewmodel:SelectPhoneCodePopup"
                      xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -14,21 +14,37 @@
                    Placeholder="{l:Localize Search}" />
         <CollectionView x:Name="InnerListView"
                         Grid.Row="1"
-                        Margin="{DynamicResource MediumSpacing}"
+                        Margin="16"
                         ItemsSource="{x:Static viewmodel:SelectPhoneCodePopup.Countries}"
+						ItemSizingStrategy="MeasureAllItems"
                         SelectionMode="Single"
                         SelectionChanged="InnerListView_SelectionChanged">
-            <CollectionView.ItemTemplate>
+			<CollectionView.ItemsLayout>
+				<LinearItemsLayout Orientation="Vertical"
+								   ItemSpacing="8" />
+			</CollectionView.ItemsLayout>
+			<CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="data:ISO_3166_Country">
-                    <Grid ColumnDefinitions="Auto,*" Padding="{DynamicResource SmallSpacing}" ColumnSpacing="8">
-                        <Label Text="{Binding DialCode}"
-                               VerticalOptions="Center" />
-                        <Label Grid.Column="1"
-                               Text="{Binding Name}"
-                               VerticalOptions="Center" />
-                    </Grid>
-                </DataTemplate>
+						<Border Style="{DynamicResource BorderSubSet}"
+								Margin="0" HorizontalOptions="Fill">
+						<Grid ColumnDefinitions="48,*" RowDefinitions="auto" Padding="{DynamicResource SmallSpacing}" ColumnSpacing="8">
+								<Label Text="{Binding DialCode, StringFormat='+{0}'}"
+									   Style="{DynamicResource KeyLabel}"
+									   Margin="0"
+									   VerticalOptions="Center"
+									   Grid.Row="0" />
+
+								<Label Grid.Column="1"
+									   Grid.Row="0"
+									   FontSize="16"
+									   FontFamily="HaasGroteskBold"
+									   HorizontalTextAlignment="Center"
+									   Text="{Binding Name}"
+									   VerticalOptions="Center" HorizontalOptions="Fill" />
+						</Grid>
+						</Border>
+				</DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
     </Grid>
-</viewmodel:BasePopup>
+</viewmodel:SimplePopup>

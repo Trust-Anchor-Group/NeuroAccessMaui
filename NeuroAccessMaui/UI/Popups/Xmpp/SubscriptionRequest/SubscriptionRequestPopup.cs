@@ -5,7 +5,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.SubscriptionRequest
 	/// <summary>
 	/// Prompts the user for a response of a presence subscription request.
 	/// </summary>
-	public partial class SubscriptionRequestPopup : BasePopup
+	public partial class SubscriptionRequestPopup : SimplePopup
 	{
 		private readonly SubscriptionRequestViewModel viewModel;
 

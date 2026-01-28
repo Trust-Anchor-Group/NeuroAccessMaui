@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Settings.SelectLanguagePopup"
+<base:SimplePopup x:Class="NeuroAccessMaui.UI.Popups.Settings.SelectLanguagePopup"
 				x:Name="thisPopup"
 				x:DataType="vm:SelectLanguagePopupViewModel"
 				xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -8,7 +8,7 @@
                 xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
                 xmlns:base="clr-namespace:NeuroAccessMaui.UI.Popups"
                 xmlns:vm="clr-namespace:NeuroAccessMaui.UI.Popups.Settings">
-	<base:BasePopup.Resources>
+	<base:SimplePopup.Resources>
 		<!-- one DataTemplate only -->
 		<DataTemplate x:Key="SelectLanguageDataTemplate"
 					  x:DataType="vm:ObservableLanguage">
@@ -48,7 +48,7 @@
 				</Label>
 			</Border>
 		</DataTemplate>
-	</base:BasePopup.Resources>
+	</base:SimplePopup.Resources>
 
 	<ScrollView x:Name="InnerScrollView"
 				x:DataType="vm:SelectLanguagePopupViewModel"
@@ -58,4 +58,4 @@
 							 BindableLayout.ItemsSource="{Binding Languages}"
 							 BindableLayout.ItemTemplate="{StaticResource SelectLanguageDataTemplate}" />
 	</ScrollView>
-</base:BasePopup>
+</base:SimplePopup>

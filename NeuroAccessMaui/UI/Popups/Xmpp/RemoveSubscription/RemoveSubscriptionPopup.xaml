@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription.RemoveSubscriptionPopup"
+<base:SimplePopup x:Class="NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription.RemoveSubscriptionPopup"
                 x:DataType="viewmodel:RemoveSubscriptionViewModel"
                 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -32,4 +32,4 @@
             </Grid>
         </VerticalStackLayout>
     </ScrollView>
-</base:BasePopup>
+</base:SimplePopup>

@@ -228,7 +228,7 @@ namespace NeuroAccessMaui.Services.UI
                 await this.popupBackground.FadeToAsync(targetOpacity, 120, Easing.CubicOut);
             }
 
-            if (popup is BasePopupView popupView)
+            if (popup is BasePopup popupView)
             {
                 popupView.BackgroundTapped -= this.OnPopupBackgroundTapped;
                 popupView.BackgroundTapped += this.OnPopupBackgroundTapped;
@@ -297,7 +297,7 @@ namespace NeuroAccessMaui.Services.UI
 			popup.TranslationY = 0;
 			popup.Scale = 1;
 			popup.Opacity = 0;
-			if (popup is BasePopupView popupView)
+			if (popup is BasePopup popupView)
 				popupView.BackgroundTapped -= this.OnPopupBackgroundTapped;
 
 			this.popupHost.Children.Remove(popup);

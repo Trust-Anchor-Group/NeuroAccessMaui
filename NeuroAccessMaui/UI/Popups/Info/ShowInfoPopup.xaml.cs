@@ -2,7 +2,7 @@ using NeuroAccessMaui.Services;
 
 namespace NeuroAccessMaui.UI.Popups.Info
 {
-	public partial class ShowInfoPopup : BasePopup
+	public partial class ShowInfoPopup : SimplePopup
 	{
 		public ShowInfoPopup(string infoTitle, string infoText)
 		{

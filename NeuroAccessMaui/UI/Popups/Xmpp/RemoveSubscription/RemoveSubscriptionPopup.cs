@@ -5,7 +5,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.RemoveSubscription
 	/// <summary>
 	/// Asks the user if it wants to remove an existing presence subscription request as well.
 	/// </summary>
-	public partial class RemoveSubscriptionPopup : BasePopup
+	public partial class RemoveSubscriptionPopup : SimplePopup
 	{
 		private readonly RemoveSubscriptionViewModel viewModel;
 

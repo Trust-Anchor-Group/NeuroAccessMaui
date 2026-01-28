@@ -7,7 +7,7 @@ namespace NeuroAccessMaui.UI.Popups.Password
 	/// <summary>
 	/// Popup view for entering a password that will be validated against the stored credentials.
 	/// </summary>
-	public partial class CheckPasswordPopup : BasePopup
+	public partial class CheckPasswordPopup : SimplePopup
 	{
 		public CheckPasswordPopup()
 		{

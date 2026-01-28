@@ -1,6 +1,6 @@
 namespace NeuroAccessMaui.UI.Popups.QR
 {
-	public partial class ShowQRPopup : BasePopup
+	public partial class ShowQRPopup : SimplePopup
 	{
 		public ShowQRPopup(byte[] QrCodeBin, string? QrCodeUri)
 		{

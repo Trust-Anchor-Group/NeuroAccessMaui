@@ -11,7 +11,7 @@ namespace NeuroAccessMaui.UI.Popups.Password
 	/// <summary>
 	/// Displays an interactive map to pick a geographic coordinate.
 	/// </summary>
-	public partial class GeoMapPopup : BasePopup
+	public partial class GeoMapPopup : SimplePopup
 	{
 		public GeoMapPopup(GeoMapViewModel viewModel)
 		{

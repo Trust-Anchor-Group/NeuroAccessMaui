@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<base:BasePopup x:Class="NeuroAccessMaui.UI.Popups.Password.GeoMapPopup"
+<base:SimplePopup x:Class="NeuroAccessMaui.UI.Popups.Password.GeoMapPopup"
                 x:DataType="viewmodel:GeoMapViewModel"
                 xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -18,4 +18,4 @@
                 Command="{Binding ConfirmCommand}"
                 HorizontalOptions="Center" />
     </Grid>
-</base:BasePopup>
+</base:SimplePopup>

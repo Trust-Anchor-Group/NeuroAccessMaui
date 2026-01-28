@@ -5,7 +5,7 @@ namespace NeuroAccessMaui.UI.Popups.Xmpp.ReportType
 	/// <summary>
 	/// Prompts the user for a response of a presence subscription request.
 	/// </summary>
-	public partial class ReportTypePopup : BasePopup
+	public partial class ReportTypePopup : SimplePopup
 	{
 		private readonly ReportTypeViewModel viewModel;
 

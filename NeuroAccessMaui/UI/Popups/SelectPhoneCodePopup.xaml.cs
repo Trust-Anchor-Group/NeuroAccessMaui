@@ -9,7 +9,7 @@ using NeuroAccessMaui.Services.Data;
 
 namespace NeuroAccessMaui.UI.Popups
 {
-	public partial class SelectPhoneCodePopup : BasePopup, IDisposable
+	public partial class SelectPhoneCodePopup : SimplePopup, IDisposable
 	{
 		private readonly TaskCompletionSource<ISO_3166_Country?> result = new(TaskCreationOptions.RunContinuationsAsynchronously);
 		private CancellationTokenSource? cancellationTokenSource;

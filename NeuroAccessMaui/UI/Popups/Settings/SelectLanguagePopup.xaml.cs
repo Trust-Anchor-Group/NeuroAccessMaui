@@ -8,7 +8,7 @@ using NeuroAccessMaui.Services.Localization;
 
 namespace NeuroAccessMaui.UI.Popups.Settings
 {
-	public partial class SelectLanguagePopup : BasePopup
+	public partial class SelectLanguagePopup : SimplePopup
 	{
 
 		public SelectLanguagePopup()

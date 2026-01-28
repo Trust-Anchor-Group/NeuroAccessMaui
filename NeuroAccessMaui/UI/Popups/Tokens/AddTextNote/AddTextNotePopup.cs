@@ -5,7 +5,7 @@ namespace NeuroAccessMaui.UI.Popups.Tokens.AddTextNote
 	/// <summary>
 	/// Prompts the user for text to add as a note for a token.
 	/// </summary>
-	public partial class AddTextNotePopup : BasePopup
+	public partial class AddTextNotePopup : SimplePopup
 	{
 		private readonly AddTextNoteViewModel viewModel;
 

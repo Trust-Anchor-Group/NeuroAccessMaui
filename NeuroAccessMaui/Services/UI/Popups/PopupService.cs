@@ -329,13 +329,16 @@ namespace NeuroAccessMaui.Services.UI.Popups
 
 		private static void ApplyOptionsToPopup(ContentView popupView, PopupOptions options)
 		{
-			if (popupView is BasePopupView basePopup)
+			if (popupView is IPopupLayoutTarget LayoutTarget)
 			{
-				basePopup.Placement = options.Placement;
-				basePopup.AnchorPoint = options.AnchorPoint;
-				basePopup.PopupMargin = options.Margin;
-				basePopup.PopupPadding = options.Padding;
-				basePopup.CloseOnBackgroundTap = options.CloseOnBackgroundTap && !options.DisableBackgroundTap;
+				LayoutTarget.CloseOnBackgroundTap = options.CloseOnBackgroundTap && !options.DisableBackgroundTap;
+				if (LayoutTarget.AllowLayoutOverrides)
+				{
+					LayoutTarget.Placement = options.Placement;
+					LayoutTarget.AnchorPoint = options.AnchorPoint;
+					LayoutTarget.PopupMargin = options.Margin;
+					LayoutTarget.PopupPadding = options.Padding;
+				}
 			}
 		}
 
