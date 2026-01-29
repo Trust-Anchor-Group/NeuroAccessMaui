@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -42,19 +43,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			try
 			{
 				// Set the description based on the contract language
-				string UntrimmedDescription = await contract.ToPlainText(this.Role.Descriptions, contract.DeviceLanguage());
-				this.Description = UntrimmedDescription.Trim();
-
-				// Add the parts associated with the role
-				if (contract.Parts is null)
-					return;
-				foreach (Part Part in contract.Parts)
+				string UntrimmedDescription = await contract.ToPlainText(this.Role.Descriptions, contract.DeviceLanguage()).ConfigureAwait(false);
+				string DescriptionValue = UntrimmedDescription.Trim();
+				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
-					if (Part.Role == this.Name)
-					{
-						await this.AddPart(Part);
-					}
-				}
+					this.Description = DescriptionValue;
+				});
 			}
 			catch (Exception E)
 			{
@@ -202,7 +196,6 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				IsPresetFromArgs = PresetFromArgs
 			};
-			await ObservablePart.InitializeAsync(AutoPetition);
 
 			//Notify changes
 			TaskCompletionSource TaskCompletionSource = new();
@@ -216,7 +209,8 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 					this.OnPropertyChanged(nameof(this.Parts));
 				TaskCompletionSource.SetResult();
 			});
-			await TaskCompletionSource.Task;
+			await TaskCompletionSource.Task.ConfigureAwait(false);
+			ObservablePart.StartIdentityResolution(AutoPetition);
 		}
 
 		/// <summary>
@@ -240,7 +234,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 				{
 					Found.Signature = signature;
 				});
-				await Found.InitializeAsync(false);
+				Found.StartIdentityResolution(false);
 			}
 		}
 

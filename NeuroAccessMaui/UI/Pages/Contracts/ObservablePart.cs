@@ -3,15 +3,20 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.ApplicationModel;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.Notification;
 using NeuroAccessMaui.Services.Notification.Identities;
+using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.MVVM.Building;
+using NeuroAccessMaui.UI.MVVM.Policies;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.Pages.Signatures.ClientSignature;
 using Waher.Networking.XMPP.Contracts;
@@ -23,10 +28,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 {
 	public partial class ObservablePart : ObservableObject, IDisposable
 	{
+		private static readonly IAsyncPolicy IdentityResolutionBulkhead = Policies.Bulkhead(4, 20);
+		private const int IdentityResolutionTimeoutSeconds = 10;
+		private const int IdentityResolutionRetryAttempts = 2;
+
+		private readonly ObservableTask<int> resolveIdentityTask;
+		private bool shouldSendPetition = true;
+
 		public ObservablePart(Part part)
 		{
 			this.Part = part;
 			ServiceRef.XmppService.PetitionedIdentityResponseReceived += this.XmppService_OnPetitionedIdentityResponseReceived;
+			this.resolveIdentityTask = this.BuildResolveIdentityTask();
 		}
 
 		public ObservablePart(Part part, ClientSignature signature)
@@ -34,44 +47,73 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			this.Part = part;
 			ServiceRef.XmppService.PetitionedIdentityResponseReceived += this.XmppService_OnPetitionedIdentityResponseReceived;
 			this.Signature = signature;
+			this.resolveIdentityTask = this.BuildResolveIdentityTask();
 
 		}
+
+		/// <summary>
+		/// Gets the task that resolves identity information for this part.
+		/// </summary>
+		public ObservableTask<int> ResolveIdentityTask => this.resolveIdentityTask;
 		/// <summary>
 		/// Initializes the part, setting properties which needs to be set asynchronosly
 		/// </summary>
-		public async Task InitializeAsync(bool sendPetition = true)
+		public Task InitializeAsync(bool sendPetition = true)
 		{
-			try
+			this.StartIdentityResolution(sendPetition);
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Starts resolving identity information for this part in the background.
+		/// </summary>
+		/// <param name="sendPetition">If true, sends a petition when identity cannot be retrieved directly.</param>
+		public void StartIdentityResolution(bool sendPetition = true)
+		{
+			this.shouldSendPetition = sendPetition;
+			this.resolveIdentityTask.Run();
+		}
+
+		private ObservableTask<int> BuildResolveIdentityTask()
+		{
+			ObservableTaskBuilder<int> Builder = new ObservableTaskBuilder<int>()
+				.Named(nameof(this.ResolveIdentityTask))
+				.AutoStart(false)
+				.WithPolicy(Policies.Timeout(TimeSpan.FromSeconds(IdentityResolutionTimeoutSeconds)))
+				.WithPolicy(Policies.Retry(IdentityResolutionRetryAttempts, (Attempt, Ex) => TimeSpan.FromMilliseconds(500 * Attempt), Ex => Ex is not OperationCanceledException))
+				.Run(this.ResolveIdentityAsync);
+
+			return Builder.Build();
+		}
+
+		private async Task ResolveIdentityAsync(TaskContext<int> Context)
+		{
+			CancellationToken CancellationToken = Context.CancellationToken;
+			IProgress<int> Progress = Context.Progress;
+
+			Progress.Report(0);
+			await IdentityResolutionBulkhead.ExecuteAsync(async InnerToken =>
 			{
-				// Set Friendly name before anything can go wrong
-				this.FriendlyName = await this.GetFriendlyNameAsync();
-				if (sendPetition)
-					await this.PetitionIdentityAsync();
+				await this.UpdateFriendlyNameAsync(InnerToken).ConfigureAwait(false);
+				InnerToken.ThrowIfCancellationRequested();
+
+				if (this.shouldSendPetition)
+					await this.ResolveIdentityWithPetitionAsync(InnerToken).ConfigureAwait(false);
 				else
-				{
-					try
-					{
-						LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(this.LegalId);
-						this.identity = Identity;
+					await this.ResolveIdentityWithoutPetitionAsync(InnerToken).ConfigureAwait(false);
+			}, CancellationToken).ConfigureAwait(false);
 
-						string FriendlyName = await this.GetFriendlyNameAsync();
+			Progress.Report(100);
+		}
 
-						MainThread.BeginInvokeOnMainThread(() =>
-						{
-							this.OnPropertyChanged(nameof(this.HasIdentity));
-							this.FriendlyName = FriendlyName;
-						});
-					}
-					catch (Exception)
-					{
-						//Ignore, OK if forbidden or network error
-					}
-				}
-			}
-			catch (Exception E)
+		private async Task UpdateFriendlyNameAsync(CancellationToken cancellationToken)
+		{
+			string FriendlyName = await this.GetFriendlyNameAsync().ConfigureAwait(false);
+			cancellationToken.ThrowIfCancellationRequested();
+			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
-				ServiceRef.LogService.LogException(E);
-			}
+				this.FriendlyName = FriendlyName;
+			});
 		}
 
 		private async Task XmppService_OnPetitionedIdentityResponseReceived(object? Sender, LegalIdentityPetitionResponseEventArgs e)
@@ -92,24 +134,47 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			}
 		}
 
-		private async Task PetitionIdentityAsync()
+		private async Task ResolveIdentityWithPetitionAsync(CancellationToken cancellationToken)
 		{
+			cancellationToken.ThrowIfCancellationRequested();
 			this.identity = await ServiceRef.ContractOrchestratorService.TryGetLegalIdentity(this.LegalId,
-							ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]);
+							ServiceRef.Localizer[nameof(AppResources.ForInclusionInContract)]).ConfigureAwait(false);
 
-			string FriendlyName = await this.GetFriendlyNameAsync();
+			string FriendlyName = await this.GetFriendlyNameAsync().ConfigureAwait(false);
 
-			MainThread.BeginInvokeOnMainThread(() =>
+			await MainThread.InvokeOnMainThreadAsync(() =>
 			{
-
-				if (this.identity is null)
-					this.HasSentPetition = true;
+				this.HasSentPetition = this.identity is null;
 				this.OnPropertyChanged(nameof(this.HasIdentity));
 				this.OnPropertyChanged(nameof(this.CanSendProposal));
 				this.OnPropertyChanged(nameof(this.HasSentPetition));
 				this.FriendlyName = FriendlyName;
 			});
+		}
 
+		private async Task ResolveIdentityWithoutPetitionAsync(CancellationToken cancellationToken)
+		{
+			cancellationToken.ThrowIfCancellationRequested();
+			try
+			{
+				LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(this.LegalId).ConfigureAwait(false);
+				this.identity = Identity;
+			}
+			catch (Exception)
+			{
+				// Ignore, OK if forbidden or network error
+			}
+
+			string FriendlyName = await this.GetFriendlyNameAsync().ConfigureAwait(false);
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.HasSentPetition = false;
+				this.OnPropertyChanged(nameof(this.HasIdentity));
+				this.OnPropertyChanged(nameof(this.CanSendProposal));
+				this.OnPropertyChanged(nameof(this.HasSentPetition));
+				this.FriendlyName = FriendlyName;
+			});
 		}
 
 		private async Task<string> GetFriendlyNameAsync()
@@ -171,7 +236,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 		/// <summary>
 		/// The friendly name for the part
-		/// Has to be initialized with <see cref="InitializeAsync"/>
+		/// Has to be initialized with <see cref="InitializeAsync"/> or <see cref="StartIdentityResolution"/>
 		/// </summary>
 		public string? FriendlyName
 		{
@@ -240,7 +305,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 			{
 				try
 				{
-					await this.PetitionIdentityAsync();
+					await this.ResolveIdentityWithPetitionAsync(CancellationToken.None);
 					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.Petition)], ServiceRef.Localizer[nameof(AppResources.PetitionIdentitySent)], ServiceRef.Localizer[nameof(AppResources.Ok)]);
 				}
 				catch (Exception)
@@ -282,6 +347,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 
 			if (disposing)
 			{
+				this.resolveIdentityTask.Dispose();
 				// Unsubscribe from the event to prevent memory leaks
 				ServiceRef.XmppService.PetitionedIdentityResponseReceived -= this.XmppService_OnPetitionedIdentityResponseReceived;
 			}

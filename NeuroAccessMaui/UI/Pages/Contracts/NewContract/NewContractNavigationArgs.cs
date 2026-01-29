@@ -10,7 +10,9 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 	/// <param name="Template">The contract to use as template.</param>
 	/// <param name="SetVisibility">If visibility should be set by default.</param>
 	/// <param name="ParameterValues">Parameter values to set in new contract.</param>
-	public class NewContractNavigationArgs(Contract? Template, bool SetVisibility, Dictionary<CaseInsensitiveString, object>? ParameterValues) : NavigationArgs
+	/// <param name="TemplateContractId">The contract identifier to load as template if the template instance is not provided.</param>
+	/// <param name="Purpose">The purpose to state if access to the template requires a petition.</param>
+	public class NewContractNavigationArgs(Contract? Template, bool SetVisibility, Dictionary<CaseInsensitiveString, object>? ParameterValues, string? TemplateContractId = null, string? Purpose = null) : NavigationArgs
 	{
 		private List<CaseInsensitiveString>? suppressProposals = null;
 
@@ -18,7 +20,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// Creates an instance of the <see cref="NewContractNavigationArgs"/> class.
 		/// </summary>
 		public NewContractNavigationArgs()
-			: this(null, false, null)
+			: this(null, false, null, null, null)
 		{
 		}
 
@@ -27,7 +29,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// </summary>
 		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
 		public NewContractNavigationArgs(Dictionary<CaseInsensitiveString, object>? ParameterValues)
-			: this(null, false, ParameterValues)
+			: this(null, false, ParameterValues, null, null)
 		{
 		}
 
@@ -37,7 +39,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <param name="Template">The contract to use as template.</param>
 		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
 		public NewContractNavigationArgs(Contract? Template, Dictionary<CaseInsensitiveString, object>? ParameterValues)
-			: this(Template, false, ParameterValues)
+			: this(Template, false, ParameterValues, Template?.ContractId, null)
+		{
+		}
+
+		/// <summary>
+		/// Creates an instance of the <see cref="NewContractNavigationArgs"/> class.
+		/// </summary>
+		/// <param name="TemplateContractId">The contract identifier to load as template.</param>
+		/// <param name="ParameterValues">Parameter values to set in new contract.</param>
+		/// <param name="Purpose">The purpose to state if access to the template requires a petition.</param>
+		public NewContractNavigationArgs(string TemplateContractId, Dictionary<CaseInsensitiveString, object>? ParameterValues, string? Purpose = null)
+			: this(null, false, ParameterValues, TemplateContractId, Purpose)
 		{
 		}
 
@@ -45,6 +58,16 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// The contract to use as template.
 		/// </summary>
 		public Contract? Template { get; } = Template;
+
+		/// <summary>
+		/// The contract identifier to load as template if the template instance is not provided.
+		/// </summary>
+		public string? TemplateContractId { get; } = TemplateContractId ?? Template?.ContractId;
+
+		/// <summary>
+		/// The purpose to state if access to the template requires a petition.
+		/// </summary>
+		public string? Purpose { get; } = Purpose;
 
 		/// <summary>
 		/// If visibility should be set by default.

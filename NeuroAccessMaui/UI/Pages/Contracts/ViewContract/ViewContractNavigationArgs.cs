@@ -12,13 +12,17 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 	/// <param name="IsReadOnly"><c>true</c> if the contract is readonly, <c>false</c> otherwise.</param>
 	/// <param name="Role">Contains proposed role, if a proposal, null if not a proposal.</param>
 	/// <param name="Proposal">Proposal text.</param>
-	public class ViewContractNavigationArgs(Contract? Contract, bool IsReadOnly, string? Role, string? Proposal, string? FromJID = null, TaskCompletionSource<Contract?>? PostCreateCompletion = null, ContractReference? ContractRef = null) : NavigationArgs
+	/// <param name="FromJID">The JID of the sender of proposal.</param>
+	/// <param name="PostCreateCompletion">Optional completion source that will complete once post-create signing completes.</param>
+	/// <param name="ContractRef">The contract reference to display.</param>
+	/// <param name="Purpose">The purpose to state if access to the contract requires a petition.</param>
+	public class ViewContractNavigationArgs(Contract? Contract, bool IsReadOnly, string? Role, string? Proposal, string? FromJID = null, TaskCompletionSource<Contract?>? PostCreateCompletion = null, ContractReference? ContractRef = null, string? Purpose = null) : NavigationArgs
 	{
 		/// <summary>
 		/// Creates an instance of the <see cref="ViewContractNavigationArgs"/> class.
 		/// </summary>
 		public ViewContractNavigationArgs()
-			: this(null, false, null, null, null, null, null)
+			: this(null, false, null, null, null, null, null, null)
 		{
 		}
 
@@ -28,7 +32,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// <param name="Contract">The contract to display.</param>
 		/// <param name="IsReadOnly"><c>true</c> if the contract is readonly, <c>false</c> otherwise.</param>
 		public ViewContractNavigationArgs(Contract? Contract, bool IsReadOnly)
-			: this(Contract, IsReadOnly, null, string.Empty)
+			: this(Contract, IsReadOnly, null, string.Empty, null, null, null, null)
 		{
 		}
 
@@ -37,7 +41,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// </summary>
 		/// <param name="ContractRef">The contract reference to display.</param>
 		public ViewContractNavigationArgs(ContractReference? ContractRef, bool IsReadOnly)
-			: this(null, IsReadOnly, null, string.Empty, null, null, ContractRef)
+			: this(null, IsReadOnly, null, string.Empty, null, null, ContractRef, null)
+		{
+		}
+
+		/// <summary>
+		/// Creates an instance of the <see cref="ViewContractNavigationArgs"/> class.
+		/// </summary>
+		/// <param name="ContractRef">The contract reference to display.</param>
+		/// <param name="IsReadOnly"><c>true</c> if the contract is readonly, <c>false</c> otherwise.</param>
+		/// <param name="Purpose">The purpose to state if access to the contract requires a petition.</param>
+		public ViewContractNavigationArgs(ContractReference? ContractRef, bool IsReadOnly, string? Purpose)
+			: this(null, IsReadOnly, null, string.Empty, null, null, ContractRef, Purpose)
 		{
 		}
 
@@ -76,5 +91,10 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ViewContract
 		/// If set, the View will await this before enabling signing UI. If it returns a non-null Contract, it will be shown.
 		/// </summary>
 		public TaskCompletionSource<Contract?>? PostCreateCompletion { get; } = PostCreateCompletion;
+
+		/// <summary>
+		/// The purpose to state if access to the contract requires a petition.
+		/// </summary>
+		public string? Purpose { get; } = Purpose;
 	}
 }

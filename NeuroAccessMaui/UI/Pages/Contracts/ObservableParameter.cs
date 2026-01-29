@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Globalization;
+using Microsoft.Maui.ApplicationModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
@@ -35,8 +36,12 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		{
 			try
 			{
-				string UntrimmedDescription = await contract.ToPlainText(this.Parameter.Descriptions, contract.DeviceLanguage());
-				this.Description = UntrimmedDescription.Trim();
+				string UntrimmedDescription = await contract.ToPlainText(this.Parameter.Descriptions, contract.DeviceLanguage()).ConfigureAwait(false);
+				string DescriptionValue = UntrimmedDescription.Trim();
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.Description = DescriptionValue;
+				});
 			}
 			catch (Exception E)
 			{

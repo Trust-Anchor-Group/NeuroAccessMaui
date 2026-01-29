@@ -709,78 +709,33 @@ namespace NeuroAccessMaui.Services.Contracts
 		{
 			try
 			{
-				Contract Contract = await ServiceRef.XmppService.GetContract(ContractId);
-
-				ContractReference Ref = await Database.FindFirstDeleteRest<ContractReference>(
-					new FilterFieldEqualTo("ContractId", Contract.ContractId));
+				ContractReference? Ref = await Database.FindFirstDeleteRest<ContractReference>(
+					new FilterFieldEqualTo("ContractId", ContractId));
 
 				if (Ref is not null)
 				{
-					if (Ref.Updated != Contract.Updated || !Ref.ContractLoaded)
-					{
-						await Ref.SetContract(Contract);
-						await Database.Update(Ref);
-					}
-
 					ServiceRef.TagProfile.CheckContractReference(Ref);
 				}
 
-				MainThread.BeginInvokeOnMainThread(async () =>
+				bool IsTemplate = Ref?.IsTemplate == true && Ref.State == ContractState.Approved;
+
+				if (IsTemplate)
 				{
-					if (Contract.PartsMode == ContractParts.TemplateOnly && Contract.State == ContractState.Approved)
+					NewContractNavigationArgs Args = new(ContractId, ParameterValues, Purpose);
+					await MainThread.InvokeOnMainThreadAsync(async () =>
 					{
-						if (Ref is null)
-						{
-							Ref = new()
-							{
-								ContractId = Contract.ContractId
-							};
-
-							await Ref.SetContract(Contract);
-							await Database.Insert(Ref);
-
-							ServiceRef.TagProfile.CheckContractReference(Ref);
-						}
-						if (Contract.ForMachinesNamespace == NeuroFeaturesClient.NamespaceNeuroFeatures
-						|| Contract.ForMachinesNamespace == Constants.ContractMachineNames.PaymentInstructionsNamespace)
-						{
-							CreationAttributesEventArgs CreationAttr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes();
-							ServiceRef.TagProfile.TrustProviderId = CreationAttr.TrustProviderId;
-							ParameterValues ??= [];
-							ParameterValues.TryAdd(new CaseInsensitiveString("TrustProvider"), CreationAttr.TrustProviderId);
-							ParameterValues.TryAdd(new CaseInsensitiveString("Currency"), CreationAttr.Currency);
-							ParameterValues.TryAdd(new CaseInsensitiveString("CommissionPercent"), CreationAttr.Commission);
-						}
-
-						NewContractNavigationArgs e = new(Contract, ParameterValues);
-
-						await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), e, BackMethod.CurrentPage);
-					}
-					else
-					{
-						ViewContractNavigationArgs e = new(Contract, false);
-
-						await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), e, BackMethod.Pop);
-					}
-				});
-			}
-			catch (ForbiddenException)
-			{
-				// This happens if you try to view someone else's contract.
-				// When this happens, try to send a petition to view it instead.
-				// Normal operation. Should not be logged.
-
-				MainThread.BeginInvokeOnMainThread(async () =>
+						await ServiceRef.NavigationService.GoToAsync(nameof(NewContractPage), Args, BackMethod.CurrentPage);
+					});
+				}
+				else
 				{
-					bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
-						ServiceRef.XmppService.PetitionContract(ContractId, Guid.NewGuid().ToString(), Purpose));
-
-					if (Succeeded)
+					ContractReference NavigationRef = Ref ?? new ContractReference { ContractId = ContractId };
+					ViewContractNavigationArgs Args = new(NavigationRef, false, Purpose);
+					await MainThread.InvokeOnMainThreadAsync(async () =>
 					{
-						await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
-							ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheContract)]);
-					}
-				});
+						await ServiceRef.NavigationService.GoToAsync(nameof(ViewContractPage), Args, BackMethod.Pop);
+					});
+				}
 			}
 			catch (Exception ex)
 			{

@@ -30,7 +30,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.MyContracts
 	public enum SelectContractAction
 	{
 		/// <summary>
-		/// View the identity.
+		/// View the contract.
 		/// </summary>
 		ViewContract,
 

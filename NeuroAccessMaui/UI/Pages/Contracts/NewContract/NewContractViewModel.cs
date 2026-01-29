@@ -4,22 +4,31 @@ using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Extensions;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Contacts;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contracts.ViewContract;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract.ObjectModel;
 using NeuroAccessMaui.UI.Pages.Contracts.ObjectModel;
+using NeuroFeatures;
+using NeuroFeatures.EventArguments;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using System.Threading;
 using Waher.Content;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Script;
 using Waher.Persistence;
+using Waher.Persistence.Filters;
 using System.Linq;
+using NeuroAccessMaui.UI.MVVM;
+using NeuroAccessMaui.UI.MVVM.Building;
+using NeuroAccessMaui.UI.MVVM.Policies;
 
 using Timer = System.Timers.Timer;
+using Waher.Networking.HTTP;
 
 namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 {
@@ -35,6 +44,13 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			this.args = ServiceRef.NavigationService.PopLatestArgs<NewContractNavigationArgs>();
 
 			this.SelectedContractVisibilityItem = this.ContractVisibilityItems[0];
+			this.templateLoadTask = new ObservableTaskBuilder<int>()
+				.Named("LoadTemplateContract")
+				.AutoStart(false)
+				.WithPolicy(Policies.Timeout(TimeSpan.FromSeconds(15)))
+				.WithPolicy(Policies.Retry(2, (Attempt, Ex) => TimeSpan.FromMilliseconds(500 * Attempt), Ex => Ex is not OperationCanceledException))
+				.Run(this.LoadTemplateAsync)
+				.Build();
 		}
 
 		#endregion
@@ -47,6 +63,7 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		private Task? latestValidationTask;
 		private bool suppressParameterValidation;
 		private TaskCompletionSource<Contract?>? postCreateCompletion;
+		private readonly ObservableTask<int> templateLoadTask;
 
 
 		#endregion
@@ -76,6 +93,11 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 
 		// Wizard steps (Phase 1 skeleton)
 		public ObservableCollection<StepDescriptor> Steps { get; } = new();
+
+		/// <summary>
+		/// Gets the task responsible for loading the template contract.
+		/// </summary>
+		public ObservableTask<int> TemplateLoadTask => this.templateLoadTask;
 
 		[ObservableProperty]
 		private StepDescriptor? currentStep;
@@ -251,109 +273,23 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 		/// <inheritdoc/>
 		public override async Task OnInitializeAsync()
 		{
-
 			await base.OnInitializeAsync();
 
-			if (this.args is null || this.args?.Template is null)
+			if (this.args is null || (this.args.Template is null && string.IsNullOrWhiteSpace(this.args.TemplateContractId)))
 			{
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.Error)],
-					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				await this.GoBack();
+				await MainThread.InvokeOnMainThreadAsync(async () =>
+				{
+					await ServiceRef.UiService.DisplayAlert(
+						ServiceRef.Localizer[nameof(AppResources.Error)],
+						ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+						ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					await this.GoBack();
+				});
 				return;
 			}
 
-			try
-			{
-				this.Contract = await ObservableContract.CreateAsync(this.args.Template);
-				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
-				this.Contract.PartChanged += (_, __) =>
-				{
-					this.OnPropertyChanged(nameof(this.HasSelectedRoles));
-					this.OnPropertyChanged(nameof(this.ShowNoRolesWarning));
-					_ = this.UpdateCurrentStepValidityAsync();
-				};
-
-
-				TaskCompletionSource<bool> HasInitializedParameters = new();
-
-				MainThread.BeginInvokeOnMainThread(async () =>
-				{
-					if (this.args.ParameterValues is not null)
-					{
-						// Set the parameter values
-						foreach (ObservableParameter Parameter in this.Contract.Parameters)
-						{
-							if (this.args.ParameterValues.TryGetValue(Parameter.Parameter.Name, out object? Value))
-								Parameter.Value = Value;
-						}
-
-						lock (this.debounceLock)
-						{
-							if (this.debounceValidationTimer is not null)
-							{
-								this.debounceValidationTimer.Stop();
-								this.debounceValidationTimer.Dispose();
-								this.debounceValidationTimer = null;
-							}
-						}
-						// Set Role values
-						foreach (ObservableRole RoleItem in this.Contract.Roles)
-						{
-							if (this.args.ParameterValues.TryGetValue(RoleItem.Role.Name, out object? RoleValue))
-							{
-								if (RoleValue is string LegalID)
-									await RoleItem.AddPart(LegalID, PresetFromArgs: true);
-							}
-						}
-						// If my own ID was preselected for any role, lock role selection
-						string? MyIdInit = ServiceRef.TagProfile.LegalIdentity?.Id;
-						if (!string.IsNullOrEmpty(MyIdInit))
-						{
-							this.AreRolesLockedForMe = this.Contract.Roles.Any(r => r.Parts.Any(p => p.LegalId == MyIdInit));
-						}
-					}
-					foreach (ObservableParameter Parameter in this.Contract.Parameters)
-					{
-						if (Parameter.Parameter is BooleanParameter
-							|| Parameter.Parameter is StringParameter
-							|| Parameter.Parameter is NumericalParameter
-							|| Parameter.Parameter is DateParameter
-							|| Parameter.Parameter is DateTimeParameter
-							|| Parameter.Parameter is TimeParameter
-							|| Parameter.Parameter is DurationParameter
-							|| Parameter.Parameter is ContractReferenceParameter
-							|| Parameter.Parameter is GeoParameter)
-						{
-							this.EditableParameters.Add(Parameter);
-						}
-					}
-					this.OnPropertyChanged(nameof(this.HasRoles));
-					this.OnPropertyChanged(nameof(this.HasParameters));
-
-					HasInitializedParameters.SetResult(true);
-				});
-				await HasInitializedParameters.Task;
-				// One-time validation after presets, no debounce
-				await this.ValidateParametersAsync();
-				this.InitializeSteps();
-
-				// Multi-select: do not auto-select any role. Keep user in control.
-
-				await this.GoToState(NewContractStep.Intro);
-				this.CurrentStep = this.Steps.FirstOrDefault(Step => Step.Key == nameof(NewContractStep.Intro));
-			}
-			catch (Exception Ex4)
-			{
-				ServiceRef.LogService.LogException(Ex4);
-				await ServiceRef.UiService.DisplayAlert(
-					ServiceRef.Localizer[nameof(AppResources.Error)],
-					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
-					ServiceRef.Localizer[nameof(AppResources.Ok)]);
-				await this.GoBack();
-				// TODO: Handle error, perhaps change to an error state
-			}
+			this.IsBusy = true;
+			this.templateLoadTask.Run();
 		}
 
 		/// <inheritdoc/>
@@ -363,7 +299,276 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.NewContract
 			{
 				this.Contract.ParameterChanged -= this.Parameter_PropertyChanged;
 			}
+			this.templateLoadTask.Cancel();
+			this.templateLoadTask.Dispose();
 			await base.OnDisposeAsync();
+		}
+
+		private async Task LoadTemplateAsync(TaskContext<int> Context)
+		{
+			CancellationToken CancellationToken = Context.CancellationToken;
+			IProgress<int> Progress = Context.Progress;
+
+			try
+			{
+				Progress.Report(0);
+				Contract? Template = await this.ResolveTemplateContractAsync(CancellationToken).ConfigureAwait(false);
+				if (Template is null)
+				{
+					await this.DisplayTemplateLoadErrorAsync().ConfigureAwait(false);
+					return;
+				}
+
+				Progress.Report(10);
+				await this.UpdateContractReferenceAsync(Template, CancellationToken).ConfigureAwait(false);
+
+				Progress.Report(30);
+				ObservableContract ObservableContract = await ObservableContract.CreateAsync(Template, CancellationToken).ConfigureAwait(false);
+				await this.InitializeContractAsync(ObservableContract).ConfigureAwait(false);
+
+				Progress.Report(60);
+				await this.ApplyParameterValuesAsync(this.args?.ParameterValues, false, CancellationToken).ConfigureAwait(false);
+
+				Progress.Report(75);
+				await this.ValidateParametersAsync().ConfigureAwait(false);
+
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.InitializeSteps();
+				});
+
+				await this.GoToState(NewContractStep.Intro).ConfigureAwait(false);
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.CurrentStep = this.Steps.FirstOrDefault(Step => Step.Key == nameof(NewContractStep.Intro));
+					this.IsBusy = false;
+				});
+
+				Progress.Report(85);
+				await this.TryApplyTemplateAttributesAsync(Template, CancellationToken).ConfigureAwait(false);
+				await this.ValidateParametersAsync().ConfigureAwait(false);
+				Progress.Report(100);
+			}
+			catch (OperationCanceledException)
+			{
+				throw;
+			}
+			catch (ForbiddenException)
+			{
+				await this.HandleTemplateForbiddenAsync().ConfigureAwait(false);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await this.DisplayTemplateLoadErrorAsync().ConfigureAwait(false);
+			}
+		}
+
+		private async Task<Contract?> ResolveTemplateContractAsync(CancellationToken CancellationToken)
+		{
+			Contract? Template = this.args?.Template;
+			string? TemplateContractId = this.args?.TemplateContractId;
+
+			if (Template is null && !string.IsNullOrWhiteSpace(TemplateContractId))
+			{
+				ContractReference? Ref = await Database.FindFirstDeleteRest<ContractReference>(
+					new FilterFieldEqualTo("ContractId", TemplateContractId)).ConfigureAwait(false);
+
+				if (Ref is not null)
+					Template = await Ref.GetContract().ConfigureAwait(false);
+
+				if (Template is null)
+				{
+					CancellationToken.ThrowIfCancellationRequested();
+					Template = await ServiceRef.XmppService.GetContract(TemplateContractId).ConfigureAwait(false);
+				}
+			}
+
+			return Template;
+		}
+
+		private async Task InitializeContractAsync(ObservableContract ObservableContract)
+		{
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				if (this.Contract is not null)
+				{
+					this.Contract.ParameterChanged -= this.Parameter_PropertyChanged;
+				}
+
+				this.Contract = ObservableContract;
+				this.Contract.ParameterChanged += this.Parameter_PropertyChanged;
+				this.Contract.PartChanged += (_, __) =>
+				{
+					this.OnPropertyChanged(nameof(this.HasSelectedRoles));
+					this.OnPropertyChanged(nameof(this.ShowNoRolesWarning));
+					_ = this.UpdateCurrentStepValidityAsync();
+				};
+
+				this.EditableParameters.Clear();
+				foreach (ObservableParameter Parameter in this.Contract.Parameters)
+				{
+					if (Parameter.Parameter is BooleanParameter
+						|| Parameter.Parameter is StringParameter
+						|| Parameter.Parameter is NumericalParameter
+						|| Parameter.Parameter is DateParameter
+						|| Parameter.Parameter is DateTimeParameter
+						|| Parameter.Parameter is TimeParameter
+						|| Parameter.Parameter is DurationParameter
+						|| Parameter.Parameter is ContractReferenceParameter
+						|| Parameter.Parameter is GeoParameter)
+					{
+						this.EditableParameters.Add(Parameter);
+					}
+				}
+
+				this.OnPropertyChanged(nameof(this.HasRoles));
+				this.OnPropertyChanged(nameof(this.HasParameters));
+			});
+		}
+
+		private async Task ApplyParameterValuesAsync(Dictionary<CaseInsensitiveString, object>? ParameterValues, bool OnlyIfEmpty, CancellationToken CancellationToken)
+		{
+			if (this.Contract is null || ParameterValues is null)
+				return;
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				foreach (ObservableParameter Parameter in this.Contract.Parameters)
+				{
+					if (ParameterValues.TryGetValue(Parameter.Parameter.Name, out object? Value))
+					{
+						bool IsEmptyValue = Parameter.Value is null
+							|| (Parameter.Value is string StringValue && string.IsNullOrWhiteSpace(StringValue));
+						if (!OnlyIfEmpty || IsEmptyValue)
+							Parameter.Value = Value;
+					}
+				}
+			});
+
+			lock (this.debounceLock)
+			{
+				if (this.debounceValidationTimer is not null)
+				{
+					this.debounceValidationTimer.Stop();
+					this.debounceValidationTimer.Dispose();
+					this.debounceValidationTimer = null;
+				}
+			}
+
+			foreach (ObservableRole RoleItem in this.Contract.Roles)
+			{
+				CancellationToken.ThrowIfCancellationRequested();
+				if (ParameterValues.TryGetValue(RoleItem.Role.Name, out object? RoleValue))
+				{
+					if (RoleValue is string LegalID)
+						await RoleItem.AddPart(LegalID, PresetFromArgs: true).ConfigureAwait(false);
+				}
+			}
+
+			string? MyIdInit = ServiceRef.TagProfile.LegalIdentity?.Id;
+			if (!string.IsNullOrEmpty(MyIdInit))
+			{
+				await MainThread.InvokeOnMainThreadAsync(() =>
+				{
+					this.AreRolesLockedForMe = this.Contract.Roles.Any(r => r.Parts.Any(p => p.LegalId == MyIdInit));
+				});
+			}
+		}
+
+		private async Task UpdateContractReferenceAsync(Contract Contract, CancellationToken CancellationToken)
+		{
+			CancellationToken.ThrowIfCancellationRequested();
+			ContractReference? Ref = await Database.FindFirstDeleteRest<ContractReference>(
+				new FilterFieldEqualTo("ContractId", Contract.ContractId)).ConfigureAwait(false);
+
+			if (Ref is not null)
+			{
+				if (Ref.Updated != Contract.Updated || !Ref.ContractLoaded)
+				{
+					await Ref.SetContract(Contract).ConfigureAwait(false);
+					await Database.Update(Ref).ConfigureAwait(false);
+				}
+
+				ServiceRef.TagProfile.CheckContractReference(Ref);
+			}
+			else
+			{
+				ContractReference NewRef = new()
+				{
+					ContractId = Contract.ContractId
+				};
+
+				await NewRef.SetContract(Contract).ConfigureAwait(false);
+				await Database.Insert(NewRef).ConfigureAwait(false);
+				ServiceRef.TagProfile.CheckContractReference(NewRef);
+			}
+		}
+
+		private async Task TryApplyTemplateAttributesAsync(Contract Template, CancellationToken CancellationToken)
+		{
+			if (Template.ForMachinesNamespace != NeuroFeaturesClient.NamespaceNeuroFeatures
+				&& Template.ForMachinesNamespace != Constants.ContractMachineNames.PaymentInstructionsNamespace)
+			{
+				return;
+			}
+
+			try
+			{
+				CancellationToken.ThrowIfCancellationRequested();
+				CreationAttributesEventArgs CreationAttr = await ServiceRef.XmppService.GetNeuroFeatureCreationAttributes().ConfigureAwait(false);
+				ServiceRef.TagProfile.TrustProviderId = CreationAttr.TrustProviderId;
+
+				Dictionary<CaseInsensitiveString, object> Defaults = new()
+				{
+					[new CaseInsensitiveString("TrustProvider")] = CreationAttr.TrustProviderId,
+					[new CaseInsensitiveString("Currency")] = CreationAttr.Currency,
+					[new CaseInsensitiveString("CommissionPercent")] = CreationAttr.Commission
+				};
+
+				await this.ApplyParameterValuesAsync(Defaults, true, CancellationToken).ConfigureAwait(false);
+			}
+			catch (OperationCanceledException)
+			{
+				throw;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+			}
+		}
+
+		private async Task DisplayTemplateLoadErrorAsync()
+		{
+			await MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				this.IsBusy = false;
+				await ServiceRef.UiService.DisplayAlert(
+					ServiceRef.Localizer[nameof(AppResources.Error)],
+					ServiceRef.Localizer[nameof(AppResources.SomethingWentWrong)],
+					ServiceRef.Localizer[nameof(AppResources.Ok)]);
+				await this.GoBack();
+			});
+		}
+
+		private async Task HandleTemplateForbiddenAsync()
+		{
+			string Purpose = this.args?.Purpose ?? ServiceRef.Localizer[nameof(AppResources.RequestToAccessContract)];
+			string TemplateContractId = this.args?.TemplateContractId ?? this.args?.Template?.ContractId ?? string.Empty;
+			await MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				this.IsBusy = false;
+				bool Succeeded = await ServiceRef.NetworkService.TryRequest(() =>
+					ServiceRef.XmppService.PetitionContract(TemplateContractId, Guid.NewGuid().ToString(), Purpose));
+
+				if (Succeeded)
+				{
+					await ServiceRef.UiService.DisplayAlert(ServiceRef.Localizer[nameof(AppResources.PetitionSent)],
+						ServiceRef.Localizer[nameof(AppResources.APetitionHasBeenSentToTheContract)]);
+				}
+
+				await this.GoBack();
+			});
 		}
 
 		/// <summary>

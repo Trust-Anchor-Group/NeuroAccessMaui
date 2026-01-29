@@ -1,6 +1,9 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Threading;
+using Microsoft.Maui.ApplicationModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using NeuroAccessMaui.UI.Pages.Contracts.MyContracts.ObjectModels;
 using Waher.Networking.XMPP.Contracts;
@@ -34,8 +37,18 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// <param name="contract">The Contract object to wrap.</param>
 		public static async Task<ObservableContract> CreateAsync(Contract contract)
 		{
+			return await CreateAsync(contract, CancellationToken.None);
+		}
+
+		/// <summary>
+		/// Creates a new instance of <see cref="ObservableContract"/> and initializes the roles and parameters.
+		/// </summary>
+		/// <param name="contract">The Contract object to wrap.</param>
+		/// <param name="cancellationToken">Token used to cancel initialization.</param>
+		public static async Task<ObservableContract> CreateAsync(Contract contract, CancellationToken cancellationToken)
+		{
 			ObservableContract ContractWrapper = new(contract);
-			await ContractWrapper.InitializeAsync();
+			await ContractWrapper.InitializeAsync(cancellationToken).ConfigureAwait(false);
 			return ContractWrapper;
 		}
 
@@ -44,39 +57,69 @@ namespace NeuroAccessMaui.UI.Pages.Contracts.ObjectModel
 		/// </summary>
 		public async Task InitializeAsync()
 		{
-			this.Category = await ContractModel.GetCategory(this.Contract) ?? string.Empty;
+			await this.InitializeAsync(CancellationToken.None);
+		}
+
+		/// <summary>
+		/// Initializes the contract data, such as category and parameters, with cancellation support.
+		/// </summary>
+		/// <param name="cancellationToken">Token used to cancel initialization.</param>
+		public async Task InitializeAsync(CancellationToken cancellationToken)
+		{
+			string CategoryValue = await ContractModel.GetCategory(this.Contract).ConfigureAwait(false) ?? string.Empty;
+			List<ObservableParameter> ParameterList = [];
+			List<ObservableRole> RoleList = [];
 
 			foreach (Parameter Param in this.Contract.Parameters ?? Enumerable.Empty<Parameter>())
 			{
-				ObservableParameter ObservableParam = await ObservableParameter.CreateAsync(Param, this.Contract);
-				this.Parameters.Add(ObservableParam);
+				cancellationToken.ThrowIfCancellationRequested();
+				ObservableParameter ObservableParam = await ObservableParameter.CreateAsync(Param, this.Contract).ConfigureAwait(false);
+				ParameterList.Add(ObservableParam);
 			}
 
 			foreach (Role Role in this.Contract.Roles ?? Enumerable.Empty<Role>())
 			{
+				cancellationToken.ThrowIfCancellationRequested();
 				ObservableRole ObservableRole = new(Role);
-				await ObservableRole.InitializeAsync(this.Contract);
-				this.Roles.Add(ObservableRole);
+				await ObservableRole.InitializeAsync(this.Contract).ConfigureAwait(false);
+				RoleList.Add(ObservableRole);
 			}
+
+			cancellationToken.ThrowIfCancellationRequested();
+
+			await MainThread.InvokeOnMainThreadAsync(() =>
+			{
+				this.Category = CategoryValue;
+				foreach (ObservableParameter ObservableParam in ParameterList)
+				{
+					this.Parameters.Add(ObservableParam);
+				}
+				foreach (ObservableRole ObservableRole in RoleList)
+				{
+					this.Roles.Add(ObservableRole);
+				}
+			});
+
 			if (this.IsTemplate)
 			{
-				foreach (Part part in this.Contract.Parts ?? Enumerable.Empty<Part>())
+				foreach (Part Part in this.Contract.Parts ?? Enumerable.Empty<Part>())
 				{
-					ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == part.Role);
+					cancellationToken.ThrowIfCancellationRequested();
+					ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == Part.Role);
 					if (Role is not null)
-						await Role.AddPart(part);
+						await Role.AddPart(Part).ConfigureAwait(false);
 				}
 			}
 			else
 			{
-				foreach (ClientSignature signature in this.Contract.ClientSignatures ?? Enumerable.Empty<ClientSignature>())
+				foreach (ClientSignature Signature in this.Contract.ClientSignatures ?? Enumerable.Empty<ClientSignature>())
 				{
-					ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == signature.Role);
+					cancellationToken.ThrowIfCancellationRequested();
+					ObservableRole? Role = this.Roles.FirstOrDefault(r => r.Name == Signature.Role);
 					if (Role is not null)
-						await Role.AddPart(signature);
+						await Role.AddPart(Signature).ConfigureAwait(false);
 				}
 			}
-
 		}
 
 		#endregion
