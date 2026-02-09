@@ -8,11 +8,13 @@ namespace NeuroAccess.Nfc.Test
 	public class BacTests
 	{
 		// Testing parsing of Machine-Readable string on identity documents, in accordance with ICAO Doc 9303
-		// Reference tests: §D, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
+		// Reference tests: §D, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 		[TestMethod]
 		public void Test_01_Parse_MRZ_TD2_9charsplus()
 		{
+			// Example from §D.2, Example 1, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+
 			string Mrz = "I<UTOSTEVENSON<<PETER<JOHN<<<<<<<<<<\nD23145890<UTO3407127M95071227349<<<8";
 			Assert.IsTrue(BasicAccessControl.ParseMrz(Mrz, out DocumentInformation? Info));
 			Assert.AreEqual("I", Info!.DocumentType);
@@ -42,6 +44,8 @@ namespace NeuroAccess.Nfc.Test
 		[TestMethod]
 		public void Test_02_Parse_MRZ_TD2_9chars()
 		{
+			// Example from §D.2, Example 2, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+
 			string Mrz = "I<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<\nL898902C<3UTO6908061F9406236<<<<<<<8";
 			Assert.IsTrue(BasicAccessControl.ParseMrz(Mrz, out DocumentInformation? Info));
 			Assert.AreEqual("I", Info!.DocumentType);
@@ -57,6 +61,9 @@ namespace NeuroAccess.Nfc.Test
 			Assert.AreEqual("690806", Info.DateOfBirth);
 			Assert.AreEqual("940623", Info.ExpiryDate);
 			Assert.AreEqual("L898902C<369080619406236", Info.MRZ_Information);
+
+			// Example from §D.1, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+			// Example from §D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 			string KSeed = Hashes.BinaryToString(Info.KSeed());
 			Console.Out.WriteLine("KSeed: " + KSeed);
@@ -74,6 +81,8 @@ namespace NeuroAccess.Nfc.Test
 		[TestMethod]
 		public void Test_03_Parse_MRZ_TD1_9charsplus()
 		{
+			// Example from §D.2, Example 3, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+
 			string Mrz = "I<UTOD23145890<7349<<<<<<<<<<<\n3407127M9507122UTO<<<<<<<<<<<2\nSTEVENSON<<PETER<JOHN<<<<<<<<<";
 			Assert.IsTrue(BasicAccessControl.ParseMrz(Mrz, out DocumentInformation? Info));
 			Assert.AreEqual("I", Info!.DocumentType);
