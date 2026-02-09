@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -25,7 +24,7 @@ namespace NeuroAccess.Nfc.Extensions
 		public static class ElementaryFiles
 		{
 			/// <summary>
-			/// EF.CardAccess. §3.11.3, https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+			/// EF.CardAccess. §3.11.3 ICAO Doc 9303, https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
 			/// </summary>
 			public const ushort CardAccess = 0x011c;
 		}
