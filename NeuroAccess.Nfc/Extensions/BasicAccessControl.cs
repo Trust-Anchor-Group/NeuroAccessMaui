@@ -420,6 +420,8 @@ namespace NeuroAccess.Nfc.Extensions
 			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)
 				return null;
 
+			// if "68 85" is returned: Conditions of use not satisfied => Use PACE instead.
+
 			byte[] Challenge = new byte[8];
 			Array.Copy(Response, 0, Challenge, 0, 8);
 
