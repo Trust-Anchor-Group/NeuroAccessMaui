@@ -58,17 +58,30 @@ namespace NeuroAccessMaui.Services.Nfc
 						string Mrz = await RuntimeSettings.GetAsync("NFC.LastMrz", string.Empty);
 
 						if (!string.IsNullOrEmpty(Mrz) &&
-							BasicAccessControl.ParseMrz(Mrz, out DocumentInformation? DocInfo))
+							TravelDocuments.ParseMrz(Mrz, out DocumentInformation? DocInfo))
 						{
-							// §4.3, §D.3, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
-
-							byte[]? Challenge = await IsoDep.GetChallenge();
-							if (Challenge is not null && DocInfo is not null)
+							try
 							{
-								byte[] ChallengeResponse = DocInfo.CalcChallengeResponse(Challenge);
-								byte[]? Response = await IsoDep.ExternalAuthenticate(ChallengeResponse);
+								byte[]? Data = await IsoDep.DownloadFile(TravelDocuments.ElementaryFiles.CardAccess);
+								if (Data is not null)
+								{
 
-								// TODO
+
+									// §4.3, §D.3, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
+
+									byte[]? Challenge = await IsoDep.GetChallenge();
+									if (Challenge is not null && DocInfo is not null)
+									{
+										byte[] ChallengeResponse = DocInfo.CalcChallengeResponse(Challenge);
+										byte[]? Response = await IsoDep.ExternalAuthenticate(ChallengeResponse);
+
+										// TODO
+									}
+								}
+							}
+							catch (Exception ex)
+							{
+								IsoDep.Exception(ex);
 							}
 						}
 					}

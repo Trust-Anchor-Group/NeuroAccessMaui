@@ -1,23 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Waher.Content;
-using Waher.Runtime.Inventory;
-using Waher.Script.Functions.Runtime;
 using Waher.Security;
 
 namespace NeuroAccess.Nfc.Extensions
 {
 	/// <summary>
-	/// Contains NFC Extensions for Basic Access Control.
+	/// Contains NFC Extensions for Machine-Readable Travel Documents.
 	/// 
-	/// Reference:
-	/// §4.3, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+	/// References:
+	/// https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+	/// https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 	/// </summary>
-	public static class BasicAccessControl
+	public static class TravelDocuments
 	{
+		/// <summary>
+		/// Elementary Files in travel documents.
+		/// </summary>
+		public static class ElementaryFiles
+		{
+			/// <summary>
+			/// EF.CardAccess. §3.11.3, https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+			/// </summary>
+			public const ushort CardAccess = 0x011c;
+		}
+
 		/// <summary>
 		/// Derives Basic Access Control Keys from the second row of the 
 		/// Machine-Readable string in passport (MRZ).
@@ -621,10 +633,128 @@ namespace NeuroAccess.Nfc.Extensions
 					}
 					return false;
 
+				case Iso7816StatusCategory.WrongLeField:
+					TagInterface.Error("Le field incorrect. Should be " + SW2.ToString("X2"));
+					return false;
+
 				default:
 					TagInterface.Error("Unexpected response received. SW1=" + SW1.ToString("X2") +
 						", SW2=" + SW2.ToString("X2"));
 					return false;
+			}
+		}
+
+		/// <summary>
+		/// Selects a File
+		/// </summary>
+		/// <param name="TagInterface">NFC interface to tag.</param>
+		/// <param name="FileId">File to select.</param>
+		/// <returns>If file was selected.</returns>
+		public static async Task<bool> SelectFile(this IIsoDepInterface TagInterface, ushort FileId)
+		{
+			TagInterface.Information("SelectFile");
+
+			byte[] Command =
+			[
+				ISO_7816.Classes.Basic,
+				ISO_7816.Instructions.Select,
+				0x02,	// P1 (Select by File ID)
+				0x0c,	// P2 (No File Control Information returned)
+				0x02,	// Length of data
+				(byte)(FileId >> 8),
+				(byte)FileId
+			];
+
+			byte[] Response = await TagInterface.ExecuteCommand(Command);
+
+			return TagInterface.CheckResponse(Response);
+		}
+
+		/// <summary>
+		/// Reads binary information from the currently selected file.
+		/// </summary>
+		/// <param name="TagInterface">NFC interface to tag.</param>
+		/// <returns>Read data, or null if an error occurred.</returns>
+		public static Task<KeyValuePair<byte[]?, bool>> ReadBinary(this IIsoDepInterface TagInterface, 
+			ushort Offset)
+		{
+			return TagInterface.ReadBinary(Offset, 0);
+		}
+
+		/// <summary>
+		/// Reads binary information from the currently selected file.
+		/// </summary>
+		/// <param name="TagInterface">NFC interface to tag.</param>
+		/// <param name="NrBytes">Number of bytes to read.</param>
+		/// <returns>Read data, or null if an error occurred.</returns>
+		public static async Task<KeyValuePair<byte[]?, bool>> ReadBinary(this IIsoDepInterface TagInterface, 
+			ushort Offset, byte NrBytes)
+		{
+			TagInterface.Information("ReadBinary");
+
+			byte[] Command =
+			[
+				ISO_7816.Classes.Basic,
+				ISO_7816.Instructions.ReadBinary,
+				(byte)(Offset >> 8),	// P1
+				(byte)Offset,			// P2
+				NrBytes					// Le
+			];
+
+			byte[] Response = await TagInterface.ExecuteCommand(Command);
+			int c = Response.Length;
+
+			if (!TagInterface.CheckResponse(Response))
+			{
+				if (Response is not null &&
+					c >= 2 &&
+					Response[^2] == (byte)Iso7816StatusCategory.WrongLeField)
+				{
+					Command[4] = Response[^1];
+					Response = await TagInterface.ExecuteCommand(Command);
+
+					if (!TagInterface.CheckResponse(Response))
+						return new KeyValuePair<byte[]?, bool>(null, false);
+				}
+				else
+					return new KeyValuePair<byte[]?, bool>(null, false);
+			}
+
+			bool More = Response[^1] == (byte)Iso7816StatusCategory.DataStillAvailable;
+			byte[] Data = new byte[c - 2];
+			Buffer.BlockCopy(Response, 0, Data, 0, c - 2);
+
+			return new KeyValuePair<byte[]?, bool>(Data, More);
+		}
+
+		/// <summary>
+		/// Get Challenge (§7.1.5.4, §D.3)
+		/// </summary>
+		/// <param name="TagInterface">NFC interface to tag.</param>
+		/// <returns>Challenge</returns>
+		public static async Task<byte[]?> DownloadFile(this IIsoDepInterface TagInterface, ushort FileId)
+		{
+			if (!await TagInterface.SelectFile(FileId))
+				return null;
+
+			using MemoryStream File = new();
+			ushort Offset = 0;
+
+			while (true)
+			{
+				KeyValuePair<byte[]?, bool> P = await TagInterface.ReadBinary(Offset);
+				if (P.Key is null)
+					return null;
+
+				File.Write(P.Key, 0, P.Key.Length);
+				if (!P.Value)
+					return File.ToArray();
+
+				ushort Offset2 = (ushort)(Offset + P.Key.Length);
+				if (Offset2 < Offset)
+					return null;
+
+				Offset = Offset2;
 			}
 		}
 
