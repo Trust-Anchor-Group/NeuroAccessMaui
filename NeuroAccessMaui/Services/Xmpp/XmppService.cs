@@ -2,6 +2,7 @@
 #define DEBUG_XMPP_LOCAL
 //#define DEBUG_LOG_REMOTE
 //#define DEBUG_DB_REMOTE
+#define DEBUG_NFC_REMOTE
 
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -120,15 +121,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private string? passwordHashMethod;
 		private bool xmppConnected = false;
 		private DateTime xmppLastStateChange = DateTime.MinValue;
-		private readonly InMemorySniffer? sniffer = new(250);
+		private readonly InMemorySniffer? sniffer = new(250, "Connection In-memory sniffer.");
 		private bool isCreatingClient;
 		private EventFilter? xmppFilteredEventSink;
 		private string? token = null;
 		private DateTime tokenCreated = DateTime.MinValue;
-#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
-		private const string debugRecipient = "";     // TODO: Set JID of recipient of debug messages.
+#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
+		private const string debugRecipient = "admin@waher.se";     // TODO: Set JID of recipient of debug messages.
 #endif
-#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
 		private RemoteSniffer? debugSniffer = null;
 #endif
 #if DEBUG_LOG_REMOTE
@@ -205,7 +206,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					if (!string.IsNullOrEmpty(debugRecipient))
 					{
 #endif
-#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
 						this.debugSniffer = new RemoteSniffer(debugRecipient, DateTime.MaxValue, this.xmppClient, this.xmppClient,
 							ConcentratorServer.NamespaceConcentratorCurrent);
 #endif
@@ -531,7 +532,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.abuseClient?.Dispose();
 			this.abuseClient = null;
 
-#if DEBUG_DB_REMOTE
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
 			this.debugSniffer = null;
 #endif
 #if DEBUG_LOG_REMOTE
@@ -555,6 +556,22 @@ namespace NeuroAccessMaui.Services.Xmpp
 				this.xmppClient.State == XmppState.Offline ||
 				this.xmppClient.State == XmppState.Error ||
 				(this.xmppClient.State != XmppState.Connected && (DateTime.Now - this.xmppLastStateChange).TotalSeconds >= 10);
+		}
+
+		public ISniffer[] RemoteSniffers
+		{
+			get
+			{
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
+				if (this.debugSniffer is null)
+					return Array.Empty<ISniffer>();
+				else
+					return new ISniffer[] { this.debugSniffer };
+
+#else
+				return Array.Empty<ISniffer>();
+#endif
+			}
 		}
 
 		private bool XmppParametersCurrent()
@@ -704,7 +721,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.isDisposed = true;
 		}
 		*/
-		#endregion
+#endregion
 
 		#region Lifecycle
 
@@ -3191,7 +3208,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>Legal identity object</returns>
 		public async Task<LegalIdentity> GetLegalIdentity(CaseInsensitiveString legalIdentityId)
 		{
-			ContactInfo Info = await ContactInfo.FindByLegalId(legalIdentityId);
+			ContactInfo? Info = await ContactInfo.FindByLegalId(legalIdentityId);
 
 			if (Info is not null && Info.LegalIdentity is not null)
 				return Info.LegalIdentity;

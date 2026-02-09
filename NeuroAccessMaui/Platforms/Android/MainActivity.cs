@@ -250,7 +250,7 @@ namespace NeuroAccessMaui
 					if (TechList is null)
 						return;
 
-					List<INfcInterface> Interfaces = new List<INfcInterface>();
+					List<INfcInterface> Interfaces = [];
 
 					foreach (string Tech in TechList)
 					{
@@ -259,7 +259,7 @@ namespace NeuroAccessMaui
 							case "android.nfc.tech.IsoDep":
 								IsoDep? IsoDep = IsoDep.Get(Tag);
 								if (IsoDep is not null)
-									Interfaces.Add(new IsoDepInterface(Tag, IsoDep));
+									Interfaces.Add(new IsoDepInterface(Tag, IsoDep, ServiceRef.XmppService.RemoteSniffers));
 								break;
 
 							case "android.nfc.tech.MifareClassic":

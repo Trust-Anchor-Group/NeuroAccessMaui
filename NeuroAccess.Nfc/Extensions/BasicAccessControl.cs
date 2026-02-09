@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Waher.Content;
+using Waher.Runtime.Inventory;
+using Waher.Script.Functions.Runtime;
 using Waher.Security;
 
 namespace NeuroAccess.Nfc.Extensions
@@ -369,24 +372,290 @@ namespace NeuroAccess.Nfc.Extensions
 		}
 
 		/// <summary>
+		/// Processes basic status word response codes.
+		/// </summary>
+		/// <param name="TagInterface">Interfacer performing communication.</param>
+		/// <param name="CheckResponse">Response received.</param>
+		/// <returns>If processing can continue.</returns>
+		private static bool CheckResponse(this IIsoDepInterface TagInterface, byte[] CheckResponse)
+		{
+			if (CheckResponse is null || CheckResponse.Length < 2)
+				return false;
+
+			byte SW1 = CheckResponse[CheckResponse.Length - 2];
+			byte SW2 = CheckResponse[CheckResponse.Length - 1];
+
+			switch ((Iso7816StatusCategory)SW1)
+			{
+				case Iso7816StatusCategory.Ok:
+					return true;
+
+				case Iso7816StatusCategory.DataStillAvailable:
+					TagInterface.Information(SW2.ToString() + " bytes still available");
+					return true;
+
+				case Iso7816StatusCategory.WarningUnchanged:
+					switch (SW2)
+					{
+						case 0:
+							TagInterface.Warning("Warning, state unchanged. No information given.");
+							break;
+
+						default:
+							TagInterface.Warning("Warning " + SW2.ToString("X2") + " triggered by card. State unchanged.");
+							break;
+
+						case 0x81:
+							TagInterface.Warning("Part of returned data may be corrupted");
+							break;
+
+						case 0x82:
+							TagInterface.Warning("End of file or record reached before reading Ne bytes.");
+							break;
+
+						case 0x83:
+							TagInterface.Warning("Selected file deactivated.");
+							break;
+
+						case 0x84:
+							TagInterface.Warning("File control information not formatted correctly.");
+							break;
+
+						case 0x85:
+							TagInterface.Warning("Selected file in termination state.");
+							break;
+
+						case 0x86:
+							TagInterface.Warning("No input data available from a sensor on the card.");
+							break;
+					}
+					return true;
+
+				case Iso7816StatusCategory.WarningChanged:
+					switch (SW2)
+					{
+						case 0:
+							TagInterface.Warning("Warning, state changed. No information given.");
+							break;
+
+						default:
+							TagInterface.Warning("Warning " + SW2.ToString("X2") + " triggered by card. State changed.");
+							break;
+
+						case 0x81:
+							TagInterface.Warning("File filled up by the last write.");
+							break;
+					}
+					return true;
+
+				case Iso7816StatusCategory.ErrorUnchanged:
+					switch (SW2)
+					{
+						case 0:
+							TagInterface.Error("Error, state unchanged. No information given.");
+							break;
+
+						default:
+							TagInterface.Error("Error " + SW2.ToString("X2") + " triggered by card. State unchanged.");
+							break;
+
+						case 0x01:
+							TagInterface.Error("Immediate response required by the card.");
+							break;
+					}
+					return false;
+
+				case Iso7816StatusCategory.ErrorChanged:
+					switch (SW2)
+					{
+						case 0:
+							TagInterface.Error("Error, state changed. No information given.");
+							break;
+
+						default:
+							TagInterface.Error("Error " + SW2.ToString("X2") + " triggered by card. State changed.");
+							break;
+
+						case 0x81:
+							TagInterface.Error("Memory failure.");
+							break;
+					}
+					return false;
+
+				case Iso7816StatusCategory.SecurityIssue:
+					TagInterface.Error("Security issue detected.");
+					return false;
+
+				case Iso7816StatusCategory.WrongLength:
+					TagInterface.Error("Wrong length.");
+					return false;
+
+				case Iso7816StatusCategory.FunctionNotSupported:
+					switch (SW2)
+					{
+						case 0:
+							TagInterface.Error("Function Not Supported. No information given.");
+							break;
+
+						default:
+							TagInterface.Error("Function Not Supported " + SW2.ToString("X2") + " triggered by card.");
+							break;
+
+						case 0x81:
+							TagInterface.Error("Logical channel not supported.");
+							break;
+
+						case 0x82:
+							TagInterface.Error("Secure messaging not supported.");
+							break;
+
+						case 0x83:
+							TagInterface.Error("Last command of the chain expected.");
+							break;
+
+						case 0x84:
+							TagInterface.Error("Command chaining not supported.");
+							break;
+					}
+					return false;
+
+				case Iso7816StatusCategory.NotAllowed:
+					switch (SW2)
+					{
+						case 0:
+							TagInterface.Error("Not Allowed. No information given.");
+							break;
+
+						default:
+							TagInterface.Error("Not Allowed " + SW2.ToString("X2") + " triggered by card.");
+							break;
+
+						case 0x81:
+							TagInterface.Error("Command incompatible with file structure.");
+							break;
+
+						case 0x82:
+							TagInterface.Error("Security status not satisfied.");
+							break;
+
+						case 0x83:
+							TagInterface.Error("Authentication method blocked.");
+							break;
+
+						case 0x84:
+							TagInterface.Error("Reference data not usable.");
+							break;
+
+						case 0x85:
+							TagInterface.Error("Conditions of use not satisfied.");
+							break;
+
+						case 0x86:
+							TagInterface.Error("Command not allowed (no current EF).");
+							break;
+
+						case 0x87:
+							TagInterface.Error("Expected secure messaging data objects missing.");
+							break;
+
+						case 0x88:
+							TagInterface.Error("Incorrect secure messaging data objects.");
+							break;
+					}
+					return false;
+
+				case Iso7816StatusCategory.WrongParameters:
+					switch (SW2)
+					{
+						case 0:
+							TagInterface.Error("Wrong Parameters. No information given.");
+							break;
+
+						default:
+							TagInterface.Error("Wrong Parameters " + SW2.ToString("X2") + " triggered by card.");
+							break;
+
+						case 0x80:
+							TagInterface.Error("Incorrect parameters in the command data field.");
+							break;
+
+						case 0x81:
+							TagInterface.Error("Function not supported.");
+							break;
+
+						case 0x82:
+							TagInterface.Error("File or application not found.");
+							break;
+
+						case 0x83:
+							TagInterface.Error("Record not found.");
+							break;
+
+						case 0x84:
+							TagInterface.Error("Not enough memory space in the file.");
+							break;
+
+						case 0x85:
+							TagInterface.Error("Nc inconsistent with TLV structure.");
+							break;
+
+						case 0x86:
+							TagInterface.Error("Incorrect parameters P1-P2.");
+							break;
+
+						case 0x87:
+							TagInterface.Error("Nc inconsistent with parameters P1-P2.");
+							break;
+
+						case 0x88:
+							TagInterface.Error("Referenced data or reference data not found (exact meaning depending on the command).");
+							break;
+
+						case 0x89:
+							TagInterface.Error("File already exists.");
+							break;
+
+						case 0x8A:
+							TagInterface.Error("DF name already exists.");
+							break;
+					}
+					return false;
+
+				default:
+					TagInterface.Error("Unexpected response received. SW1=" + SW1.ToString("X2") +
+						", SW2=" + SW2.ToString("X2"));
+					return false;
+			}
+		}
+
+		/// <summary>
 		/// Get Challenge (§7.1.5.4, §D.3)
 		/// </summary>
 		/// <param name="TagInterface">NFC interface to tag.</param>
 		/// <returns>Challenge</returns>
 		public static async Task<byte[]?> GetChallenge(this IIsoDepInterface TagInterface)
 		{
+			TagInterface.Information("GetChallenge");
+
 			byte[] Command =
 			[
-				0x00,	// CLA
-				0x84,	// INS
+				ISO_7816.Classes.Basic,
+				ISO_7816.Instructions.GetChallenge,
 				0x00,	// P1
 				0x00,	// P2
 				0x08	// Le
 			];
 
 			byte[] Response = await TagInterface.ExecuteCommand(Command);
-			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)
+
+			if (!TagInterface.CheckResponse(Response))
 				return null;
+
+			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)
+			{
+				TagInterface.Error("Unexpected response received.");
+				return null;
+			}
 
 			byte[] Challenge = new byte[8];
 			Array.Copy(Response, 0, Challenge, 0, 8);
@@ -403,11 +672,13 @@ namespace NeuroAccess.Nfc.Extensions
 		public static async Task<byte[]?> ExternalAuthenticate(this IIsoDepInterface TagInterface,
 			byte[] ChallengeResponse)
 		{
+			TagInterface.Information("ChallengeResponse");
+
 			byte Lc = (byte)ChallengeResponse.Length;
 			byte[] Command = new byte[]
 			{
-				0x00,	// CLA
-				0x82,	// INS
+				ISO_7816.Classes.Basic,
+				ISO_7816.Instructions.ExternalAuthenticate,
 				0x00,	// P1
 				0x00,	// P2
 				Lc
@@ -417,10 +688,15 @@ namespace NeuroAccess.Nfc.Extensions
 			]);
 
 			byte[] Response = await TagInterface.ExecuteCommand(Command);
-			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)
+
+			if (!TagInterface.CheckResponse(Response))
 				return null;
 
-			// if "68 85" is returned: Conditions of use not satisfied => Use PACE instead.
+			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)
+			{
+				TagInterface.Error("Unexpected response received.");
+				return null;
+			}
 
 			byte[] Challenge = new byte[8];
 			Array.Copy(Response, 0, Challenge, 0, 8);

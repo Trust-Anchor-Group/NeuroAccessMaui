@@ -1,11 +1,12 @@
 ﻿using System.Threading.Tasks;
+using Waher.Networking;
 
 namespace NeuroAccess.Nfc
 {
 	/// <summary>
 	/// ISO DEP interface, for communication with an NFC Tag.
 	/// </summary>
-	public interface IIsoDepInterface : INfcInterface
+	public interface IIsoDepInterface : INfcInterface, ICommunicationLayer
 	{
 		/// <summary>
 		/// Return the higher layer response bytes for NfcB tags.
