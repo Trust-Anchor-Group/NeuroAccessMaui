@@ -3,7 +3,6 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Waher.Content;
-using Waher.Runtime.IO;
 using Waher.Security;
 
 namespace NeuroAccess.Nfc.Extensions
@@ -12,7 +11,7 @@ namespace NeuroAccess.Nfc.Extensions
 	/// Contains NFC Extensions for Basic Access Control.
 	/// 
 	/// Reference:
-	/// §4.3, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
+	/// §4.3, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 	/// </summary>
 	public static class BasicAccessControl
 	{

@@ -112,6 +112,8 @@ namespace NeuroAccess.Nfc.Test
 		[TestMethod]
 		public void Test_04_Parse_MRZ_TD1_9chars()
 		{
+			// Example from §D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+
 			string Mrz = "I<UTOL898902C<3<<<<<<<<<<<<<<<\n6908061F9406236UTO<<<<<<<<<<<1\nERIKSSON<<ANNA<MARIA<<<<<<<<<<";
 			Assert.IsTrue(BasicAccessControl.ParseMrz(Mrz, out DocumentInformation? Info));
 			Assert.AreEqual("I", Info!.DocumentType);
@@ -171,6 +173,9 @@ namespace NeuroAccess.Nfc.Test
 		[TestMethod]
 		public void Test_08_BAC_ChallengeResponse()
 		{
+			// Example from §D.3, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+			// Example from §D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+
 			byte[] Challenge = Hashes.StringToBinary("4608F91988702212");
 			byte[] Rnd1 = Hashes.StringToBinary("781723860C06C226");
 			byte[] Rnd2 = Hashes.StringToBinary("0B795240CB7049B01C19B33E32804F0B");
@@ -199,13 +204,14 @@ namespace NeuroAccess.Nfc.Test
 			byte[] KMac = Info.KMac();
 			Assert.AreEqual("EA6445CD622CEAECBF7C9B7CB020B95D", Hashes.BinaryToString(KMac).ToUpper(CultureInfo.InvariantCulture));
 
-			byte[] Challenge = Hashes.StringToBinary("8EAF826F89F1E525");
-			byte[] Rnd1 = Hashes.StringToBinary("23E85A993A9AC5B4");
-			byte[] Rnd2 = Hashes.StringToBinary("75DC87E50C8EF30047D0B5325E83204D");
+			byte[] Challenge = Hashes.StringToBinary("8EAF826F89F1E525");				// RND.ICC
+			byte[] Rnd1 = Hashes.StringToBinary("23E85A993A9AC5B4");					// RND.IFD
+			byte[] Rnd2 = Hashes.StringToBinary("75DC87E50C8EF30047D0B5325E83204D");	// K.IFD
 
 			byte[] Response = BasicAccessControl.CalcChallengeResponse(Challenge, Rnd1, Rnd2, KEnc, KMac);
 
-			Assert.AreEqual("4782B1700DD4F60373DA6632FCD1AB1E500D46FA11DEBDF9B88C39FCA7FDF8DBBE51F41D52D4B879",
+			Assert.AreEqual("4782B1700DD4F60373DA6632FCD1AB1E500D46FA11DEBDF9B88C39FCA7FDF8DB" +	// E.IFD
+				"BE51F41D52D4B879",																	// MAC
 				Hashes.BinaryToString(Response).ToUpper(CultureInfo.InvariantCulture));
 		}
 	}
