@@ -8,6 +8,7 @@ using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages.Contacts.Chat;
 using NeuroAccessMaui.UI.Pages.Contacts.MyContacts;
 using NeuroAccessMaui.UI.Pages.Contracts.NewContract;
+using NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineReport;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineReport.Reports;
 using NeuroAccessMaui.UI.Pages.Wallet.MachineVariables;
