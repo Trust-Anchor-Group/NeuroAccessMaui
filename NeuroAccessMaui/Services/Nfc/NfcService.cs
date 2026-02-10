@@ -69,13 +69,19 @@ namespace NeuroAccessMaui.Services.Nfc
 
 								if (Data is not null &&
 									TravelDocuments.TryDecodeDER(Data, out object? CardAccess) &&
-									TryFindPaceProtocol(CardAccess, out IPaceProtocol? Protocol))
+									TryFindPaceProtocol(IsoDep, CardAccess, out IPaceProtocol? Protocol))
 								{
 									// PACE
+
+									if (IsoDep.HasSniffers)
+										IsoDep.Information("PACE protocol " + Protocol.GetType().Name.Replace('_', '-') + " selected.");
+
 								}
 								else
 								{
 									// BAC
+
+									IsoDep.Information("Attempting legacy BAC protocol.");
 
 									// §4.3, §D.3, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
@@ -187,7 +193,7 @@ namespace NeuroAccessMaui.Services.Nfc
 
 		public delegate Task<bool> WriteItems(object[] Items);
 
-		public static bool TryFindPaceProtocol(object? CardAccess,
+		public static bool TryFindPaceProtocol(IIsoDepInterface IsoDep, object? CardAccess,
 			[NotNullWhen(true)] out IPaceProtocol? Protocol)
 		{
 			/*
@@ -222,7 +228,15 @@ namespace NeuroAccessMaui.Services.Nfc
 
 				Current = Types.FindBest<IPaceProtocol, string>(Oid);
 				if (Current is null)
+				{
+					if (IsoDep.HasSniffers)
+						IsoDep.Information("OID " + Oid + " lacks implemented support.");
+
 					continue;
+				}
+
+				if (IsoDep.HasSniffers)
+					IsoDep.Information("OID " + Oid + " (" + Current.GetType().Name.Replace('_', '-') + ") supported.");
 
 				if (!Current.Configure(SecurityInfo))
 					continue;

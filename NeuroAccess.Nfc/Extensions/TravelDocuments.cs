@@ -657,7 +657,8 @@ namespace NeuroAccess.Nfc.Extensions
 		/// <returns>If file was selected.</returns>
 		public static async Task<bool> SelectFile(this IIsoDepInterface TagInterface, ushort FileId)
 		{
-			TagInterface.Information("SelectFile");
+			if (TagInterface.HasSniffers)
+				TagInterface.Information("SelectFile(" + FileId.ToString("X4") + ")");
 
 			byte[] Command =
 			[
@@ -695,7 +696,8 @@ namespace NeuroAccess.Nfc.Extensions
 		public static async Task<KeyValuePair<byte[]?, bool>> ReadBinary(this IIsoDepInterface TagInterface,
 			ushort Offset, byte NrBytes)
 		{
-			TagInterface.Information("ReadBinary");
+			if (TagInterface.HasSniffers)
+					TagInterface.Information("ReadBinary(" + Offset.ToString("X4") + "," + NrBytes.ToString("X2") + ")");
 
 			byte[] Command =
 			[
@@ -816,7 +818,7 @@ namespace NeuroAccess.Nfc.Extensions
 					Value = Reader.ReadObjectIdentifier();
 					return true;
 
-				case (int)UniversalTagNumber.ObjectDescriptor:	// Obsolete
+				case (int)UniversalTagNumber.ObjectDescriptor:  // Obsolete
 				case (int)UniversalTagNumber.UTF8String:
 				case (int)UniversalTagNumber.NumericString:
 				case (int)UniversalTagNumber.PrintableString:
