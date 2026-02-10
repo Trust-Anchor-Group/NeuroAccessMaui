@@ -1,10 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Formats.Asn1;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Waher.Content;
+using Waher.Runtime.Collections;
+using Waher.Script.Abstraction.Sets;
+using Waher.Script.Operators;
 using Waher.Security;
 
 namespace NeuroAccess.Nfc.Extensions
@@ -674,7 +680,7 @@ namespace NeuroAccess.Nfc.Extensions
 		/// </summary>
 		/// <param name="TagInterface">NFC interface to tag.</param>
 		/// <returns>Read data, or null if an error occurred.</returns>
-		public static Task<KeyValuePair<byte[]?, bool>> ReadBinary(this IIsoDepInterface TagInterface, 
+		public static Task<KeyValuePair<byte[]?, bool>> ReadBinary(this IIsoDepInterface TagInterface,
 			ushort Offset)
 		{
 			return TagInterface.ReadBinary(Offset, 0);
@@ -686,7 +692,7 @@ namespace NeuroAccess.Nfc.Extensions
 		/// <param name="TagInterface">NFC interface to tag.</param>
 		/// <param name="NrBytes">Number of bytes to read.</param>
 		/// <returns>Read data, or null if an error occurred.</returns>
-		public static async Task<KeyValuePair<byte[]?, bool>> ReadBinary(this IIsoDepInterface TagInterface, 
+		public static async Task<KeyValuePair<byte[]?, bool>> ReadBinary(this IIsoDepInterface TagInterface,
 			ushort Offset, byte NrBytes)
 		{
 			TagInterface.Information("ReadBinary");
@@ -754,6 +760,123 @@ namespace NeuroAccess.Nfc.Extensions
 					return null;
 
 				Offset = Offset2;
+			}
+		}
+
+		public static bool TryDecodeDER(this byte[] Data, out object? Value)
+		{
+			AsnReader Reader = new(Data, AsnEncodingRules.DER);
+			return Reader.TryDecodeDERNext(out Value);
+		}
+
+		private static bool TryDecodeDERNext(this AsnReader Reader, out object? Value)
+		{
+			if (!Reader.HasData)
+			{
+				Value = null;
+				return false;
+			}
+
+			Asn1Tag Tag = Reader.PeekTag();
+
+			switch (Tag.TagValue)
+			{
+				case (int)UniversalTagNumber.EndOfContents:
+					Value = null;
+					return false;
+
+				case (int)UniversalTagNumber.Boolean:
+					Value = Reader.ReadBoolean();
+					return true;
+
+				case (int)UniversalTagNumber.Integer:
+				case (int)UniversalTagNumber.Enumerated:
+					Value = Reader.ReadInteger();
+					return true;
+
+				case (int)UniversalTagNumber.BitString:
+					byte[] Bin = Reader.ReadBitString(out int BitCount);
+					BitArray Bits = new(Bin)
+					{
+						Length = BitCount
+					};
+					Value = Bits;
+					return true;
+
+				case (int)UniversalTagNumber.OctetString:
+					Value = Reader.ReadOctetString();
+					return true;
+
+				case (int)UniversalTagNumber.Null:
+					Reader.ReadNull();
+					Value = null;
+					return true;
+
+				case (int)UniversalTagNumber.ObjectIdentifier:
+					Value = Reader.ReadObjectIdentifier();
+					return true;
+
+				case (int)UniversalTagNumber.ObjectDescriptor:	// Obsolete
+				case (int)UniversalTagNumber.UTF8String:
+				case (int)UniversalTagNumber.NumericString:
+				case (int)UniversalTagNumber.PrintableString:
+				case (int)UniversalTagNumber.TeletexString:     // Same as UniversalTagNumber.T61String:
+				case (int)UniversalTagNumber.VideotexString:
+				case (int)UniversalTagNumber.IA5String:
+				case (int)UniversalTagNumber.GraphicString:
+				case (int)UniversalTagNumber.VisibleString:     // Same as UniversalTagNumber.ISO646String:
+				case (int)UniversalTagNumber.GeneralString:
+				case (int)UniversalTagNumber.UniversalString:
+				case (int)UniversalTagNumber.UnrestrictedCharacterString:
+				case (int)UniversalTagNumber.BMPString:
+					Value = Reader.ReadCharacterString((UniversalTagNumber)Tag.TagValue);
+					return true;
+
+				case (int)UniversalTagNumber.External:          // Same as UniversalTagNumber.InstanceOf:
+				case (int)UniversalTagNumber.Set:               // Same as UniversalTagNumber.SetOf:
+				case (int)UniversalTagNumber.Embedded:
+					AsnReader Inner = Reader.ReadSetOf();
+					ChunkedList<object?> Elements = [];
+
+					while (TryDecodeDERNext(Inner, out object? Element))
+						Elements.Add(Element);
+
+					Value = Elements.ToArray();
+					return true;
+
+				case (int)UniversalTagNumber.Real:
+				case (int)UniversalTagNumber.RelativeObjectIdentifier:
+				case (int)UniversalTagNumber.Time:
+				case (int)UniversalTagNumber.Date:
+				case (int)UniversalTagNumber.TimeOfDay:
+				case (int)UniversalTagNumber.DateTime:
+				case (int)UniversalTagNumber.Duration:
+				case (int)UniversalTagNumber.ObjectIdentifierIRI:
+				case (int)UniversalTagNumber.RelativeObjectIdentifierIRI:
+					Value = Reader.ReadEncodedValue();
+					return true;
+
+				case (int)UniversalTagNumber.Sequence:          // Same as UniversalTagNumber.SequenceOf:
+					Inner = Reader.ReadSequence();
+					Elements = [];
+
+					while (TryDecodeDERNext(Inner, out object? Element))
+						Elements.Add(Element);
+
+					Value = Elements.ToArray();
+					return true;
+
+				case (int)UniversalTagNumber.UtcTime:
+					Value = Reader.ReadUtcTime();
+					return true;
+
+				case (int)UniversalTagNumber.GeneralizedTime:
+					Value = Reader.ReadGeneralizedTime();
+					return true;
+
+				default:
+					Value = null;
+					return false;
 			}
 		}
 

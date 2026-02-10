@@ -63,7 +63,7 @@ namespace NeuroAccessMaui.Services.Nfc
 							try
 							{
 								byte[]? Data = await IsoDep.DownloadFile(TravelDocuments.ElementaryFiles.CardAccess);
-								if (Data is not null)
+								if (Data is not null && TravelDocuments.TryDecodeDER(Data, out object? CardAccess))
 								{
 
 
