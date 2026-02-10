@@ -65,13 +65,18 @@ namespace NeuroAccessMaui.Services.Nfc
 						{
 							try
 							{
+								// §4.2 1. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+
 								byte[]? Data = await IsoDep.DownloadFile(TravelDocuments.ElementaryFiles.CardAccess);
 
 								if (Data is not null &&
 									TravelDocuments.TryDecodeDER(Data, out object? CardAccess) &&
 									TryFindPaceProtocol(IsoDep, CardAccess, out IPaceProtocol? Protocol))
 								{
+									// Optional: Read EF.DIR	§4.2 2. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+
 									// PACE
+									// §4.2 3. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 									if (IsoDep.HasSniffers)
 										IsoDep.Information("PACE protocol " + Protocol.GetType().Name.Replace('_', '-') + " selected.");
@@ -80,6 +85,7 @@ namespace NeuroAccessMaui.Services.Nfc
 								else
 								{
 									// BAC
+									// §4.2 4. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 									IsoDep.Information("Attempting legacy BAC protocol.");
 
@@ -88,7 +94,7 @@ namespace NeuroAccessMaui.Services.Nfc
 									byte[]? Challenge = await IsoDep.GetChallenge();
 									if (Challenge is not null && DocInfo is not null)
 									{
-										byte[] ChallengeResponse = DocInfo.CalcChallengeResponse(Challenge);
+										byte[] ChallengeResponse = DocInfo.CalcChallengeResponse3DES(Challenge);
 										byte[]? Response = await IsoDep.ExternalAuthenticate(ChallengeResponse);
 									}
 

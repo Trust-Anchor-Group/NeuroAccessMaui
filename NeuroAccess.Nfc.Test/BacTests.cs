@@ -34,10 +34,10 @@ namespace NeuroAccess.Nfc.Test
 			string KSeed = Hashes.BinaryToString(Info.KSeed());
 			Console.Out.WriteLine("KSeed: " + KSeed);
 
-			string KEnc = Hashes.BinaryToString(Info.KEnc());
+			string KEnc = Hashes.BinaryToString(Info.KEnc3DES());
 			Console.Out.WriteLine("KEnc: " + KEnc);
 
-			string KMac = Hashes.BinaryToString(Info.KMac());
+			string KMac = Hashes.BinaryToString(Info.KMac3DES());
 			Console.Out.WriteLine("KMac: " + KMac);
 		}
 
@@ -69,11 +69,11 @@ namespace NeuroAccess.Nfc.Test
 			Console.Out.WriteLine("KSeed: " + KSeed);
 			Assert.AreEqual("239AB9CB282DAF66231DC5A4DF6BFBAE", KSeed.ToUpper(CultureInfo.InvariantCulture));
 
-			string KEnc = Hashes.BinaryToString(Info.KEnc());
+			string KEnc = Hashes.BinaryToString(Info.KEnc3DES());
 			Console.Out.WriteLine("KEnc: " + KEnc);
 			Assert.AreEqual("AB94FDECF2674FDFB9B391F85D7F76F2", KEnc.ToUpper(CultureInfo.InvariantCulture));
 
-			string KMac = Hashes.BinaryToString(Info.KMac());
+			string KMac = Hashes.BinaryToString(Info.KMac3DES());
 			Console.Out.WriteLine("KMac: " + KMac);
 			Assert.AreEqual("7962D9ECE03D1ACD4C76089DCE131543", KMac.ToUpper(CultureInfo.InvariantCulture));
 		}
@@ -102,10 +102,10 @@ namespace NeuroAccess.Nfc.Test
 			string KSeed = Hashes.BinaryToString(Info.KSeed());
 			Console.Out.WriteLine("KSeed: " + KSeed);
 
-			string KEnc = Hashes.BinaryToString(Info.KEnc());
+			string KEnc = Hashes.BinaryToString(Info.KEnc3DES());
 			Console.Out.WriteLine("KEnc: " + KEnc);
 
-			string KMac = Hashes.BinaryToString(Info.KMac());
+			string KMac = Hashes.BinaryToString(Info.KMac3DES());
 			Console.Out.WriteLine("KMac: " + KMac);
 		}
 
@@ -134,11 +134,11 @@ namespace NeuroAccess.Nfc.Test
 			Console.Out.WriteLine("KSeed: " + KSeed);
 			Assert.AreEqual("239AB9CB282DAF66231DC5A4DF6BFBAE", KSeed.ToUpper(CultureInfo.InvariantCulture));
 
-			string KEnc = Hashes.BinaryToString(Info.KEnc());
+			string KEnc = Hashes.BinaryToString(Info.KEnc3DES());
 			Console.Out.WriteLine("KEnc: " + KEnc);
 			Assert.AreEqual("AB94FDECF2674FDFB9B391F85D7F76F2", KEnc.ToUpper(CultureInfo.InvariantCulture));
 
-			string KMac = Hashes.BinaryToString(Info.KMac());
+			string KMac = Hashes.BinaryToString(Info.KMac3DES());
 			Console.Out.WriteLine("KMac: " + KMac);
 			Assert.AreEqual("7962D9ECE03D1ACD4C76089DCE131543", KMac.ToUpper(CultureInfo.InvariantCulture));
 		}
@@ -182,7 +182,7 @@ namespace NeuroAccess.Nfc.Test
 			byte[] KEnc = Hashes.StringToBinary("AB94FDECF2674FDFB9B391F85D7F76F2");
 			byte[] KMac = Hashes.StringToBinary("7962D9ECE03D1ACD4C76089DCE131543");
 
-			byte[] Response = TravelDocuments.CalcChallengeResponse(Challenge, Rnd1, Rnd2, KEnc, KMac);
+			byte[] Response = TravelDocuments.CalcChallengeResponse3DES(Challenge, Rnd1, Rnd2, KEnc, KMac);
 
 			Assert.AreEqual("72C29C2371CC9BDB65B779B8E8D37B29ECC154AA56A8799FAE2F498F76ED92F25F1448EEA8AD90A7",
 				Hashes.BinaryToString(Response).ToUpper(CultureInfo.InvariantCulture));
@@ -198,17 +198,17 @@ namespace NeuroAccess.Nfc.Test
 				MRZ_Information = "GF043591<586012072309062"
 			};
 
-			byte[] KEnc = Info.KEnc();
+			byte[] KEnc = Info.KEnc3DES();
 			Assert.AreEqual("BA43433BF47AAEF875234FDF3208206D", Hashes.BinaryToString(KEnc).ToUpper(CultureInfo.InvariantCulture));
 
-			byte[] KMac = Info.KMac();
+			byte[] KMac = Info.KMac3DES();
 			Assert.AreEqual("EA6445CD622CEAECBF7C9B7CB020B95D", Hashes.BinaryToString(KMac).ToUpper(CultureInfo.InvariantCulture));
 
 			byte[] Challenge = Hashes.StringToBinary("8EAF826F89F1E525");				// RND.ICC
 			byte[] Rnd1 = Hashes.StringToBinary("23E85A993A9AC5B4");					// RND.IFD
 			byte[] Rnd2 = Hashes.StringToBinary("75DC87E50C8EF30047D0B5325E83204D");	// K.IFD
 
-			byte[] Response = TravelDocuments.CalcChallengeResponse(Challenge, Rnd1, Rnd2, KEnc, KMac);
+			byte[] Response = TravelDocuments.CalcChallengeResponse3DES(Challenge, Rnd1, Rnd2, KEnc, KMac);
 
 			Assert.AreEqual("4782B1700DD4F60373DA6632FCD1AB1E500D46FA11DEBDF9B88C39FCA7FDF8DB" +	// E.IFD
 				"BE51F41D52D4B879",																	// MAC

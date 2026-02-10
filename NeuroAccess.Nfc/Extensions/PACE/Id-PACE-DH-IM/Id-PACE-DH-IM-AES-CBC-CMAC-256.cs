@@ -4,6 +4,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_DH_IM
 {
 	/// <summary>
 	/// PACE protocol id-PACE-DH-IM-AES-CBC-CMAC-256
+	/// Integrated Mapping, Diffie-Hellman, AES-CBC with CMAC, 256 bit key.
 	/// </summary>
 	public class Id_PACE_DH_IM_AES_CBC_CMAC_256() : PaceProtocol()
 	{

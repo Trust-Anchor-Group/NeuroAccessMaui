@@ -4,6 +4,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_CAM
 {
 	/// <summary>
 	/// PACE protocol id-PACE-ECDH-CAM-AES-CBC-CMAC-128
+	/// Chip Authentication Mapping, Elliptic Curve Diffie-Hellman, AES-CBC with CMAC, 128 bit key.
 	/// </summary>
 	public class Id_PACE_ECDH_CAM_AES_CBC_CMAC_128() : PaceProtocol()
 	{

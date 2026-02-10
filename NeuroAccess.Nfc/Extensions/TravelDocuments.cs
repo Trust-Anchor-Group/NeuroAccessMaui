@@ -199,27 +199,27 @@ namespace NeuroAccess.Nfc.Extensions
 		{
 			byte[] Data = InternetContent.ISO_8859_1.GetBytes(Info.MRZ_Information);
 			byte[] H = Hashes.ComputeSHA1Hash(Data);
-			Array.Resize<byte>(ref H, 16);
+			Array.Resize(ref H, 16);
 			return H;
 		}
 
 		/// <summary>
 		/// 3DES Encryption Key (§D.1)
 		/// </summary>
-		public static byte[] KEnc(this DocumentInformation Info)
+		public static byte[] KEnc3DES(this DocumentInformation Info)
 		{
-			return CalcKey(Info, 1);
+			return CalcKey3DES(Info, 1);
 		}
 
 		/// <summary>
 		/// DES MAC Key (§D.1)
 		/// </summary>
-		public static byte[] KMac(this DocumentInformation Info)
+		public static byte[] KMac3DES(this DocumentInformation Info)
 		{
-			return CalcKey(Info, 2);
+			return CalcKey3DES(Info, 2);
 		}
 
-		private static byte[] CalcKey(this DocumentInformation Info, int Counter)
+		private static byte[] CalcKey3DES(this DocumentInformation Info, int Counter)
 		{
 			byte[] KSeed = Info.KSeed();
 			byte[] D = new byte[20];
@@ -228,7 +228,7 @@ namespace NeuroAccess.Nfc.Extensions
 
 			for (i = 19; i >= 16; i--)
 			{
-				D[i] = (byte)(Counter);
+				D[i] = (byte)Counter;
 				Counter >>= 8;
 			}
 
@@ -288,7 +288,7 @@ namespace NeuroAccess.Nfc.Extensions
 		}
 
 		/// <summary>
-		/// Calculates a response to a challenge.
+		/// Calculates a response to a challenge using 3DES & SHA1.
 		/// </summary>
 		/// <param name="Challenge">Challenge</param>
 		/// <param name="Rnd1">Random number 1</param>
@@ -296,7 +296,7 @@ namespace NeuroAccess.Nfc.Extensions
 		/// <param name="KEnc">Encryption Key</param>
 		/// <param name="KMac">MAC Key</param>
 		/// <returns>Response</returns>
-		public static byte[] CalcChallengeResponse(byte[] Challenge, byte[] Rnd1, byte[] Rnd2,
+		public static byte[] CalcChallengeResponse3DES(byte[] Challenge, byte[] Rnd1, byte[] Rnd2,
 			byte[] KEnc, byte[] KMac)
 		{
 			byte[] S = Rnd1.CONCAT(Challenge, Rnd2);
@@ -369,12 +369,12 @@ namespace NeuroAccess.Nfc.Extensions
 		}
 
 		/// <summary>
-		/// Calculates a response to a challenge.
+		/// Calculates a response to a challenge using 3DES & SHA1.
 		/// </summary>
 		/// <param name="Info">Document Information</param>
 		/// <param name="Challenge">Challenge</param>
 		/// <returns>Response</returns>
-		public static byte[] CalcChallengeResponse(this DocumentInformation Info, byte[] Challenge)
+		public static byte[] CalcChallengeResponse3DES(this DocumentInformation Info, byte[] Challenge)
 		{
 			byte[] Rnd1 = new byte[8];
 			byte[] Rnd2 = new byte[16];
@@ -385,7 +385,7 @@ namespace NeuroAccess.Nfc.Extensions
 				Rnd.GetBytes(Rnd2);
 			}
 
-			return CalcChallengeResponse(Challenge, Rnd1, Rnd2, Info.KEnc(), Info.KMac());
+			return CalcChallengeResponse3DES(Challenge, Rnd1, Rnd2, Info.KEnc3DES(), Info.KMac3DES());
 		}
 
 		/// <summary>

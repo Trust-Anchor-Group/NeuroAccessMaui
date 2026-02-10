@@ -4,6 +4,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_GM
 {
 	/// <summary>
 	/// PACE protocol id-PACE-ECDH-GM-3DES-CBC-CBC
+	/// Generic Mapping, Elliptic Curve Diffie-Hellman, 3DES in CBC mode for encryption, and 3DES in CBC mode for message authentication.
 	/// </summary>
 	public class Id_PACE_ECDH_GM_3DES_CBC_CBC() : PaceProtocol()
 	{
