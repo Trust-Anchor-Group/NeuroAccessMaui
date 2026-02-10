@@ -9,6 +9,9 @@ using Waher.Runtime.Settings;
 using Waher.Security;
 using System.Globalization;
 using NeuroAccessMaui.Services.Authentication;
+using NeuroAccess.Nfc.Extensions.PACE;
+using System.Diagnostics.CodeAnalysis;
+using Waher.Networking.XMPP.Provisioning.Events;
 
 namespace NeuroAccessMaui.Services.Nfc
 {
@@ -63,9 +66,16 @@ namespace NeuroAccessMaui.Services.Nfc
 							try
 							{
 								byte[]? Data = await IsoDep.DownloadFile(TravelDocuments.ElementaryFiles.CardAccess);
-								if (Data is not null && TravelDocuments.TryDecodeDER(Data, out object? CardAccess))
-								{
 
+								if (Data is not null &&
+									TravelDocuments.TryDecodeDER(Data, out object? CardAccess) &&
+									TryFindPaceProtocol(CardAccess, out IPaceProtocol? Protocol))
+								{
+									// PACE
+								}
+								else
+								{
+									// BAC
 
 									// §4.3, §D.3, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
@@ -74,9 +84,9 @@ namespace NeuroAccessMaui.Services.Nfc
 									{
 										byte[] ChallengeResponse = DocInfo.CalcChallengeResponse(Challenge);
 										byte[]? Response = await IsoDep.ExternalAuthenticate(ChallengeResponse);
-
-										// TODO
 									}
+
+									// TODO
 								}
 							}
 							catch (Exception ex)
@@ -176,6 +186,60 @@ namespace NeuroAccessMaui.Services.Nfc
 		}
 
 		public delegate Task<bool> WriteItems(object[] Items);
+
+		public static bool TryFindPaceProtocol(object? CardAccess,
+			[NotNullWhen(true)] out IPaceProtocol? Protocol)
+		{
+			/*
+			 * Contents of EF.CardAccess:
+			 * 
+			 * SecurityInfos ::= SET of SecurityInfo 
+			 * 
+			 * SecurityInfo ::= SEQUENCE 
+			 * {
+			 *		protocol		OBJECT IDENTIFIER, 
+			 *		requiredData	ANY DEFINED BY protocol, 
+			 *		optionalData	ANY DEFINED BY protocol OPTIONAL 
+			 * }
+			*/
+
+			Protocol = null;
+
+			if (CardAccess is not Array SecurityInfos)
+				return false;
+
+			IPaceProtocol? Best = null;
+			IPaceProtocol? Current;
+
+			foreach (object Item in SecurityInfos)
+			{
+				if (Item is not Array SecurityInfo ||
+					SecurityInfo.Length == 0 ||
+					SecurityInfo.GetValue(0) is not string Oid)
+				{
+					continue;
+				}
+
+				Current = Types.FindBest<IPaceProtocol, string>(Oid);
+				if (Current is null)
+					continue;
+
+				if (!Current.Configure(SecurityInfo))
+					continue;
+
+				if (Best is null ||
+					Current.SecurityStrength > Best.SecurityStrength ||
+					(Current.SecurityStrength == Best.SecurityStrength &&
+					Current.ChipAuthenticationMapping && !Best.ChipAuthenticationMapping))
+				{
+					Best = Current;
+				}
+			}
+
+			Protocol = Best;
+
+			return Protocol is not null;
+		}
 
 		/// <summary>
 		/// Programs an NFC tag.

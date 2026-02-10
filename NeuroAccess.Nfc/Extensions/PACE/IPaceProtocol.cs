@@ -1,4 +1,5 @@
-﻿using Waher.Runtime.Inventory;
+﻿using System;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccess.Nfc.Extensions.PACE
 {
@@ -16,5 +17,17 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// Security strength mapped as a grade.
 		/// </summary>
 		Grade SecurityStrength { get; }
+
+		/// <summary>
+		/// If Chip-Authentication-Mapping is supported by the protocol.
+		/// </summary>
+		bool ChipAuthenticationMapping { get; }
+
+		/// <summary>
+		/// If the protocol could be configured by the security information provided.
+		/// </summary>
+		/// <param name="SecurityInfo">Security information.</param>
+		/// <returns>If the protocol could be configured, given the security information.</returns>
+		bool Configure(Array SecurityInfo);
 	}
 }

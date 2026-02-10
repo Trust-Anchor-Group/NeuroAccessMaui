@@ -16,5 +16,10 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_CAM
 		/// Security strength mapped as a grade.
 		/// </summary>
 		public override Grade SecurityStrength => Grade.Excellent;
+
+		/// <summary>
+		/// If Chip-Authentication-Mapping is supported by the protocol.
+		/// </summary>
+		public override bool ChipAuthenticationMapping => true;
 	}
 }
