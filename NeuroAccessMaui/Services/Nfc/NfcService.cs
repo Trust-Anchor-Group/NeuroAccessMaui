@@ -63,6 +63,12 @@ namespace NeuroAccessMaui.Services.Nfc
 						if (!string.IsNullOrEmpty(Mrz) &&
 							TravelDocuments.ParseMrz(Mrz, out DocumentInformation? DocInfo))
 						{
+							if (DocInfo is null)
+							{
+								IsoDep.Error("Unable to parse MRZ information.");
+								return;
+							}
+
 							try
 							{
 								// §4.2 1. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
@@ -86,8 +92,18 @@ namespace NeuroAccessMaui.Services.Nfc
 										IsoDep.Error("Unable to initialize PACE protocol.");
 										return;
 									}
+									else if (Protocol is PaceEecProtocol EecProtocol)
+										IsoDep.Information("PACE protocol initialized (" + EecProtocol.Curve?.CurveName + ").");
 									else
 										IsoDep.Information("PACE protocol initialized.");
+
+									byte[]? Nonce = await IsoDep.GetPaceNonce();
+
+									if (Nonce is null)
+									{
+										IsoDep.Error("Unable to get PACE nonce.");
+										return;
+									}
 
 									// TODO
 								}
@@ -100,12 +116,16 @@ namespace NeuroAccessMaui.Services.Nfc
 
 									// §4.3, §D.3, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
-									byte[]? Challenge = await IsoDep.GetChallenge();
-									if (Challenge is not null && DocInfo is not null)
+									byte[]? Challenge = await IsoDep.GetBacChallenge();
+
+									if (Challenge is null)
 									{
-										byte[] ChallengeResponse = DocInfo.CalcChallengeResponse3DES(Challenge);
-										byte[]? Response = await IsoDep.ExternalAuthenticate(ChallengeResponse);
+										IsoDep.Error("Unable to get BAC challenge.");
+										return;
 									}
+
+									byte[] ChallengeResponse = DocInfo.CalcChallengeResponse3DES(Challenge);
+									byte[]? Response = await IsoDep.ExternalBacAuthenticate(ChallengeResponse);
 
 									// TODO
 								}

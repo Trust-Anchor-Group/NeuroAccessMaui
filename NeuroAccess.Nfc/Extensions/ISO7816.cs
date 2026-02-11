@@ -98,6 +98,11 @@
 			/// Standard Command, Basic Channel, No Secure Messaging.
 			/// </summary>
 			public const byte Basic = 0x00;
+
+			/// <summary>
+			/// Command Chaining.
+			/// </summary>
+			public const byte Chaining = 0x10;
 		}
 
 		/// <summary>
@@ -110,6 +115,7 @@
 			public const byte EraseBinary = 0x0E;
 			public const byte ExternalAuthenticate = 0x82;
 			public const byte GetChallenge = 0x84;
+			public const byte GeneralAuthenticate = 0x86;
 			public const byte GetData = 0xCA;
 			public const byte InternalAuthenticate = 0x88;
 			public const byte ManageChannel = 0x70;

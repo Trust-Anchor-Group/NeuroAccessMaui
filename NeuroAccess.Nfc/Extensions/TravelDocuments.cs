@@ -224,7 +224,7 @@ namespace NeuroAccess.Nfc.Extensions
 		{
 			byte[] KSeed = Info.KSeed();
 			byte[] D = new byte[20];
-			Array.Copy(KSeed, 0, D, 0, 16);
+			Buffer.BlockCopy(KSeed, 0, D, 0, 16);
 			int i;
 
 			for (i = 19; i >= 16; i--)
@@ -277,11 +277,11 @@ namespace NeuroAccess.Nfc.Extensions
 
 			byte[] Result = new byte[c];
 
-			Array.Copy(Bytes, 0, Result, 0, i);
+			Buffer.BlockCopy(Bytes, 0, Result, 0, i);
 
 			foreach (byte[] A in MoreBytes)
 			{
-				Array.Copy(A, 0, Result, i, c = A.Length);
+				Buffer.BlockCopy(A, 0, Result, i, c = A.Length);
 				i += c;
 			}
 
@@ -326,14 +326,14 @@ namespace NeuroAccess.Nfc.Extensions
 				int j;
 
 				byte[] Data = new byte[c + 8];
-				Array.Copy(EIFD, 0, Data, 0, c);
+				Buffer.BlockCopy(EIFD, 0, Data, 0, c);
 				Data[c] = 0x80;   // Padding method 2, append 80 00 00 00 00 00 00 00
 
 				byte[] Ka = new byte[8];
 				byte[] Kb = new byte[8];
 
-				Array.Copy(KMac, 0, Ka, 0, 8);
-				Array.Copy(KMac, 8, Kb, 0, 8);
+				Buffer.BlockCopy(KMac, 0, Ka, 0, 8);
+				Buffer.BlockCopy(KMac, 8, Kb, 0, 8);
 
 				byte[] Block = new byte[8];
 				byte[]? H = null;
@@ -343,7 +343,7 @@ namespace NeuroAccess.Nfc.Extensions
 				{
 					while (i < c)
 					{
-						Array.Copy(Data, i, Block, 0, 8);
+						Buffer.BlockCopy(Data, i, Block, 0, 8);
 						i += 8;
 
 						if (H is not null)
@@ -778,7 +778,7 @@ namespace NeuroAccess.Nfc.Extensions
 
 			for (i = 0; i < c; i++)
 			{
-				if (!byte.TryParse(Parts[i + 1], out PartBytes[i]))		// Skip first 0.
+				if (!byte.TryParse(Parts[i + 1], out PartBytes[i]))     // Skip first 0.
 					return false;
 			}
 
@@ -930,11 +930,56 @@ namespace NeuroAccess.Nfc.Extensions
 		}
 
 		/// <summary>
+		/// Get PACE Nonce
+		/// </summary>
+		/// <param name="TagInterface">NFC interface to tag.</param>
+		/// <returns>Nonce</returns>
+		public static async Task<byte[]?> GetPaceNonce(this IIsoDepInterface TagInterface)
+		{
+			TagInterface.Information("GetNonce");
+
+			byte[] Command =
+			[
+				ISO_7816.Classes.Chaining,
+				ISO_7816.Instructions.GeneralAuthenticate,
+				0x00,		// P1
+				0x00,		// P2
+				0x02,		// Lc
+				0x7c, 0x00,	// Absent
+				0x00		// Le (Maximal response length: 256 bytes)
+			];
+
+			byte[] Response = await TagInterface.ExecuteCommand(Command);
+
+			if (!TagInterface.CheckResponse(Response))
+				return null;
+
+			if (Response.Length < 6 ||
+				Response[0] != 0x7c ||
+				Response.Length != Response[1] + 4 ||
+				Response[2] != 0x80 ||
+				Response.Length != Response[3] + 6 ||
+				Response[^2] != 0x90 ||
+				Response[^1] != 0x00)
+			{
+				TagInterface.Error("Unexpected response received.");
+				return null;
+			}
+
+			int c = Response[3];
+			byte[] Nonce = new byte[c];
+
+			Buffer.BlockCopy(Response, 4, Nonce, 0, c);
+
+			return Response;
+		}
+
+		/// <summary>
 		/// Get Challenge (§7.1.5.4, §D.3)
 		/// </summary>
 		/// <param name="TagInterface">NFC interface to tag.</param>
 		/// <returns>Challenge</returns>
-		public static async Task<byte[]?> GetChallenge(this IIsoDepInterface TagInterface)
+		public static async Task<byte[]?> GetBacChallenge(this IIsoDepInterface TagInterface)
 		{
 			TagInterface.Information("GetChallenge");
 
@@ -959,7 +1004,7 @@ namespace NeuroAccess.Nfc.Extensions
 			}
 
 			byte[] Challenge = new byte[8];
-			Array.Copy(Response, 0, Challenge, 0, 8);
+			Buffer.BlockCopy(Response, 0, Challenge, 0, 8);
 
 			return Response;
 		}
@@ -970,7 +1015,7 @@ namespace NeuroAccess.Nfc.Extensions
 		/// <param name="TagInterface">NFC interface to tag.</param>
 		/// <param name="ChallengeResponse">ChallengeResponse.</param>
 		/// <returns>Challenge</returns>
-		public static async Task<byte[]?> ExternalAuthenticate(this IIsoDepInterface TagInterface,
+		public static async Task<byte[]?> ExternalBacAuthenticate(this IIsoDepInterface TagInterface,
 			byte[] ChallengeResponse)
 		{
 			TagInterface.Information("ChallengeResponse");
@@ -1000,7 +1045,7 @@ namespace NeuroAccess.Nfc.Extensions
 			}
 
 			byte[] Challenge = new byte[8];
-			Array.Copy(Response, 0, Challenge, 0, 8);
+			Buffer.BlockCopy(Response, 0, Challenge, 0, 8);
 
 			return Response;
 		}
