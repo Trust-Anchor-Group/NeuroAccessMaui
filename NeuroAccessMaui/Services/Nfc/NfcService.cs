@@ -81,6 +81,15 @@ namespace NeuroAccessMaui.Services.Nfc
 									if (IsoDep.HasSniffers)
 										IsoDep.Information("PACE protocol " + Protocol.GetType().Name.Replace('_', '-') + " selected.");
 
+									if (!await TravelDocuments.InitializePACE(IsoDep, Protocol))
+									{
+										IsoDep.Error("Unable to initialize PACE protocol.");
+										return;
+									}
+									else
+										IsoDep.Information("PACE protocol initialized.");
+
+									// TODO
 								}
 								else
 								{

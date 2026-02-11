@@ -113,6 +113,7 @@
 			public const byte GetData = 0xCA;
 			public const byte InternalAuthenticate = 0x88;
 			public const byte ManageChannel = 0x70;
+			public const byte MessageSecurityEnvironment = 0x22;
 			public const byte PutData = 0xDA;
 			public const byte ReadBinary = 0xB0;
 			public const byte ReadRecord = 0xB2;

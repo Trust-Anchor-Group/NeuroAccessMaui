@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using NeuroAccess.Nfc.Extensions.PACE;
 using Waher.Content;
 using Waher.Runtime.Collections;
 using Waher.Script.Abstraction.Sets;
@@ -399,8 +400,8 @@ namespace NeuroAccess.Nfc.Extensions
 			if (CheckResponse is null || CheckResponse.Length < 2)
 				return false;
 
-			byte SW1 = CheckResponse[CheckResponse.Length - 2];
-			byte SW2 = CheckResponse[CheckResponse.Length - 1];
+			byte SW1 = CheckResponse[^2];
+			byte SW2 = CheckResponse[^1];
 
 			switch ((Iso7816StatusCategory)SW1)
 			{
@@ -697,7 +698,7 @@ namespace NeuroAccess.Nfc.Extensions
 			ushort Offset, byte NrBytes)
 		{
 			if (TagInterface.HasSniffers)
-					TagInterface.Information("ReadBinary(" + Offset.ToString("X4") + "," + NrBytes.ToString("X2") + ")");
+				TagInterface.Information("ReadBinary(" + Offset.ToString("X4") + "," + NrBytes.ToString("X2") + ")");
 
 			byte[] Command =
 			[
@@ -735,10 +736,11 @@ namespace NeuroAccess.Nfc.Extensions
 		}
 
 		/// <summary>
-		/// Get Challenge (§7.1.5.4, §D.3)
+		/// Selects and downloads a file from the travel document.
 		/// </summary>
 		/// <param name="TagInterface">NFC interface to tag.</param>
-		/// <returns>Challenge</returns>
+		/// <param name="FileId">File to download.</param>
+		/// <returns>Downloaded file, or null if unable to download file.</returns>
 		public static async Task<byte[]?> DownloadFile(this IIsoDepInterface TagInterface, ushort FileId)
 		{
 			if (!await TagInterface.SelectFile(FileId))
@@ -765,6 +767,51 @@ namespace NeuroAccess.Nfc.Extensions
 			}
 		}
 
+		public static async Task<bool> InitializePACE(this IIsoDepInterface TagInterface, IPaceProtocol Protocol)
+		{
+			if (TagInterface.HasSniffers)
+				TagInterface.Information("MSE:Set AT(" + Protocol.Oid + ",MRZ)");
+
+			string[] Parts = Protocol.Oid.Split('.');
+			int i, c = Parts.Length - 1;
+			byte[] PartBytes = new byte[c];
+
+			for (i = 0; i < c; i++)
+			{
+				if (!byte.TryParse(Parts[i + 1], out PartBytes[i]))		// Skip first 0.
+					return false;
+			}
+
+			byte[] Command = CONCAT(
+				[
+					ISO_7816.Classes.Basic,
+					ISO_7816.Instructions.MessageSecurityEnvironment,
+					0xC1,			// P1 - Set
+					0xA4,			// P2 - PACE
+					(byte)(5 + c),	// Le
+					0x80,			// Algorithm reference
+					(byte)c			// OID Length (excluding first zero)
+				],
+				[
+					PartBytes,
+					[
+						0x83,		// Key reference
+						0x01,		// Key reference length
+						0x01		// MRZ key reference
+					]
+				]);
+
+			byte[] Response = await TagInterface.ExecuteCommand(Command);
+
+			return TagInterface.CheckResponse(Response);
+		}
+
+		/// <summary>
+		/// Decodes a DER-encoded object.
+		/// </summary>
+		/// <param name="Data">Binary data</param>
+		/// <param name="Value">Decoded object.</param>
+		/// <returns>If successful.</returns>
 		public static bool TryDecodeDER(this byte[] Data, out object? Value)
 		{
 			AsnReader Reader = new(Data, AsnEncodingRules.DER);
