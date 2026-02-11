@@ -29,5 +29,11 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// <param name="SecurityInfo">Security information.</param>
 		/// <returns>If the protocol could be configured, given the security information.</returns>
 		bool Configure(Array SecurityInfo);
+
+		/// <summary>
+		/// Creates a new ephemeral key, used in the PACE protocol.
+		/// </summary>
+		/// <returns>Public part of the ephemeral key.</returns>
+		byte[] CreateNewEphemeralKey();
 	}
 }

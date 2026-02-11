@@ -957,7 +957,7 @@ namespace NeuroAccess.Nfc.Extensions
 			if (Response.Length < 6 ||
 				Response[0] != 0x7c ||
 				Response.Length != Response[1] + 4 ||
-				Response[2] != 0x80 ||
+				Response[2] != 0x80 ||      // Encrypted nonce
 				Response.Length != Response[3] + 6 ||
 				Response[^2] != 0x90 ||
 				Response[^1] != 0x00)
@@ -970,6 +970,63 @@ namespace NeuroAccess.Nfc.Extensions
 			byte[] Nonce = new byte[c];
 
 			Buffer.BlockCopy(Response, 4, Nonce, 0, c);
+
+			return Response;
+		}
+
+		/// <summary>
+		/// Get PACE Remote Public Key
+		/// </summary>
+		/// <param name="TagInterface">NFC interface to tag.</param>
+		/// <param name="LocalPublicKey">Local Public Key</param>
+		/// <returns>Remote Public Key</returns>
+		public static async Task<byte[]?> GetPaceRemotePublicKey(this IIsoDepInterface TagInterface,
+			byte[] LocalPublicKey)
+		{
+			TagInterface.Information("GetRemotePublicKey");
+
+			byte[] Command = CONCAT(
+				[
+					ISO_7816.Classes.Chaining,
+					ISO_7816.Instructions.GeneralAuthenticate,
+					0x00,									// P1
+					0x00,									// P2
+					(byte)(LocalPublicKey.Length + 5)		// Lc
+				],
+				[
+					[
+						0x7c,			// Dynamic Authentication Data
+						(byte)(LocalPublicKey.Length + 3),
+						0x81,			// Mapping Data
+						(byte)(LocalPublicKey.Length + 1),
+						0x04			// X coordinate following by Y coordinate (default for EEC curves)
+					],
+					LocalPublicKey,
+					[ 0x00 ]	// Le (Maximal response length: 256 bytes)
+				]);
+
+			byte[] Response = await TagInterface.ExecuteCommand(Command);
+
+			if (!TagInterface.CheckResponse(Response))
+				return null;
+
+			if (Response.Length < 6 ||
+				Response[0] != 0x7c ||
+				Response.Length != Response[1] + 4 ||
+				Response[2] != 0x82 ||      // Mapping data
+				Response.Length != Response[3] + 6 ||
+				Response[4] != 0x04 ||      // X coordinate following by Y coordinate (default for EEC curves)
+				Response[^2] != 0x90 ||
+				Response[^1] != 0x00)
+			{
+				TagInterface.Error("Unexpected response received.");
+				return null;
+			}
+
+			int c = Response[3] - 1;
+			byte[] RemotePublicKey = new byte[c];
+
+			Buffer.BlockCopy(Response, 5, RemotePublicKey, 0, c);
 
 			return Response;
 		}

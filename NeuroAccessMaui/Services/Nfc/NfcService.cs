@@ -63,14 +63,14 @@ namespace NeuroAccessMaui.Services.Nfc
 						if (!string.IsNullOrEmpty(Mrz) &&
 							TravelDocuments.ParseMrz(Mrz, out DocumentInformation? DocInfo))
 						{
-							if (DocInfo is null)
-							{
-								IsoDep.Error("Unable to parse MRZ information.");
-								return;
-							}
-
 							try
 							{
+								if (DocInfo is null)
+								{
+									IsoDep.Error("Unable to parse MRZ information.");
+									return;
+								}
+
 								// §4.2 1. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 								byte[]? Data = await IsoDep.DownloadFile(TravelDocuments.ElementaryFiles.CardAccess);
@@ -105,6 +105,15 @@ namespace NeuroAccessMaui.Services.Nfc
 										return;
 									}
 
+									byte[] LocalPublicKey = Protocol.CreateNewEphemeralKey();
+									byte[]? RemotePublicKey = await IsoDep.GetPaceRemotePublicKey(LocalPublicKey);
+
+									if (RemotePublicKey is null)
+									{
+										IsoDep.Error("Unable to get PACE remote public key.");
+										return;
+									}
+
 									// TODO
 								}
 								else
@@ -133,6 +142,10 @@ namespace NeuroAccessMaui.Services.Nfc
 							catch (Exception ex)
 							{
 								IsoDep.Exception(ex);
+							}
+							finally
+							{
+								IsoDep.CloseIfOpen();
 							}
 						}
 					}

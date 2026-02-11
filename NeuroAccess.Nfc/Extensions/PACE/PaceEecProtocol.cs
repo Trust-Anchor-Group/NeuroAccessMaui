@@ -95,5 +95,20 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 					return false;
 			}
 		}
+
+		/// <summary>
+		/// Creates a new ephemeral key, used in the PACE protocol.
+		/// </summary>
+		/// <returns>Public part of the ephemeral key.</returns>
+		public override byte[] CreateNewEphemeralKey()
+		{
+			if (this.curve is null)
+				throw new NotSupportedException("EEC Curve not configured.");
+
+			this.curve.GenerateKeys();
+
+			return this.curve.PublicKey;
+		}
+
 	}
 }
