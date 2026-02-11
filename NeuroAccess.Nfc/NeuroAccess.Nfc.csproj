@@ -18,6 +18,7 @@
     <PackageReference Include="Waher.Content" Version="3.4.5" />
 	  <PackageReference Include="Waher.Networking" Version="4.6.3" />
 	  <PackageReference Include="Waher.Security" Version="1.1.1" />
+	  <PackageReference Include="Waher.Security.EllipticCurves" Version="1.1.0" />
   </ItemGroup>
 
 </Project>

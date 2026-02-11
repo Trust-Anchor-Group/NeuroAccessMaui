@@ -59,7 +59,7 @@
 		public string? OptionalData;
 
 		/// <summary>
-		/// MRZ-information for use with Basic Access Control (BAC).
+		/// MRZ-information for use with Basic Access Control (BAC) and PACE.
 		/// </summary>
 		public string? MRZ_Information;
 	}

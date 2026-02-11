@@ -5,7 +5,7 @@ using Waher.Runtime.Inventory;
 namespace NeuroAccess.Nfc.Extensions.PACE
 {
 	/// <summary>
-	/// Basic interface for PACE protocols.
+	/// Abstract base class for PACE protocols.
 	/// </summary>
 	public abstract class PaceProtocol() : IPaceProtocol
 	{
