@@ -37,6 +37,15 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		}
 
 		/// <summary>
+		/// Sets communication timeout.
+		/// </summary>
+		/// <param name="Timeout">Timeout, in milliseconds.</param>
+		public void SetTimeout(int Timeout)
+		{
+			this.isoDep.SetTimeout(Timeout);
+		}
+
+		/// <summary>
 		/// Executes an ISO 14443-4 command on the tag.
 		/// </summary>
 		/// <param name="Command">Command</param>

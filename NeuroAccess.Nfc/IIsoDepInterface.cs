@@ -19,6 +19,12 @@ namespace NeuroAccess.Nfc
 		Task<byte[]> GetHistoricalBytes();
 
 		/// <summary>
+		/// Sets communication timeout.
+		/// </summary>
+		/// <param name="Timeout">Timeout, in milliseconds.</param>
+		void SetTimeout(int Timeout);
+
+		/// <summary>
 		/// Executes an ISO 14443-4 command on the tag.
 		/// </summary>
 		/// <param name="Command">Command</param>
