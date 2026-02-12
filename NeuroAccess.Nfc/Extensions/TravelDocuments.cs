@@ -797,7 +797,7 @@ namespace NeuroAccess.Nfc.Extensions
 					[
 						0x83,		// Key reference
 						0x01,		// Key reference length
-						0x01		// MRZ key reference
+						0x01		// MRZ key reference (0x02 = CAN, 0x03 = PIN, 0x04 = PUK)
 					]
 				]);
 
