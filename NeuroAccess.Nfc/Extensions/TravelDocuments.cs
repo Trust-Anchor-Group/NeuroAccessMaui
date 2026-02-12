@@ -985,20 +985,27 @@ namespace NeuroAccess.Nfc.Extensions
 		{
 			TagInterface.Information("GetRemotePublicKey");
 
+			LocalPublicKey = (byte[])LocalPublicKey.Clone();
+			int c = LocalPublicKey.Length;
+			int c2 = c >> 1;
+
+			Array.Reverse(LocalPublicKey, 0, c2);
+			Array.Reverse(LocalPublicKey, c2, c2);
+
 			byte[] Command = CONCAT(
 				[
 					ISO_7816.Classes.Chaining,
 					ISO_7816.Instructions.GeneralAuthenticate,
 					0x00,									// P1
 					0x00,									// P2
-					(byte)(LocalPublicKey.Length + 5)		// Lc
+					(byte)(c + 5)		// Lc
 				],
 				[
 					[
 						0x7c,			// Dynamic Authentication Data
-						(byte)(LocalPublicKey.Length + 3),
+						(byte)(c + 3),
 						0x81,			// Mapping Data
-						(byte)(LocalPublicKey.Length + 1),
+						(byte)(c + 1),
 						0x04			// X coordinate following by Y coordinate (default for EEC curves)
 					],
 					LocalPublicKey,
@@ -1023,10 +1030,15 @@ namespace NeuroAccess.Nfc.Extensions
 				return null;
 			}
 
-			int c = Response[3] - 1;
+			c = Response[3] - 1;
 			byte[] RemotePublicKey = new byte[c];
 
 			Buffer.BlockCopy(Response, 5, RemotePublicKey, 0, c);
+
+			c2 = c >> 1;
+
+			Array.Reverse(RemotePublicKey, 0, c2);
+			Array.Reverse(RemotePublicKey, c2, c2);
 
 			return Response;
 		}
