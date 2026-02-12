@@ -58,6 +58,8 @@ namespace NeuroAccessMaui.Services.Nfc
 					{
 						// ISO 14443-4
 
+						IsoDep.SetTimeout(60000);	// Electronic documents may introduce latency to stall spamming.
+
 						string Mrz = await RuntimeSettings.GetAsync("NFC.LastMrz", string.Empty);
 
 						if (!string.IsNullOrEmpty(Mrz) &&
