@@ -304,7 +304,7 @@
 		<PackageReference Include="Waher.Networking.XMPP.Geo" Version="1.0.1" />
 		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.2.9" />
 		<PackageReference Include="Waher.Networking.XMPP.Mail" Version="3.1.0" />
-		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="4.2.4" />
+		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="4.2.5" />
 		<PackageReference Include="Waher.Networking.XMPP.PEP" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Provisioning" Version="4.2.1" />
 		<PackageReference Include="Waher.Networking.XMPP.PubSub" Version="3.1.1" />
