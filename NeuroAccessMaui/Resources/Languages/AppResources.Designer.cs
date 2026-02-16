@@ -133,6 +133,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This action isn&apos;t allowed..
+        /// </summary>
+        public static string ActionNotAllowed {
+            get {
+                return ResourceManager.GetString("ActionNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Actions.
         /// </summary>
         public static string Actions {
@@ -4894,6 +4903,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You&apos;re not authorized to perform this action..
+        /// </summary>
+        public static string NotAuthorized {
+            get {
+                return ResourceManager.GetString("NotAuthorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not Available.
         /// </summary>
         public static string NotAvailable {
@@ -8589,6 +8607,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         public static string ServiceProviderInfo {
             get {
                 return ResourceManager.GetString("ServiceProviderInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The service is currently unavailable. Please try again later..
+        /// </summary>
+        public static string ServiceUnavailable {
+            get {
+                return ResourceManager.GetString("ServiceUnavailable", resourceCulture);
             }
         }
         
