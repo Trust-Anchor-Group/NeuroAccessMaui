@@ -127,7 +127,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private string? token = null;
 		private DateTime tokenCreated = DateTime.MinValue;
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
-		private const string debugRecipient = "";     // TODO: Set JID of recipient of debug messages.
+		private const string debugRecipient = "admin@waher.se";     // TODO: Set JID of recipient of debug messages.
 #endif
 #if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
 		private RemoteSniffer? debugSniffer = null;
@@ -564,12 +564,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 			{
 #if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
 				if (this.debugSniffer is null)
-					return Array.Empty<ISniffer>();
+					return [];
 				else
-					return new ISniffer[] { this.debugSniffer };
+					return [this.debugSniffer];
 
 #else
-				return Array.Empty<ISniffer>();
+				return [];
 #endif
 			}
 		}

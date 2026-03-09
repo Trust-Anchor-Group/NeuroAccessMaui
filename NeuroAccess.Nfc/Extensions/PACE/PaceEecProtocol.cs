@@ -107,7 +107,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 
 			this.curve.GenerateKeys();
 
-			return this.curve.PublicKey;
+			return this.curve.PublicKeyBigEndian;
 		}
 
 	}

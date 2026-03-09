@@ -11,7 +11,6 @@ using System.Globalization;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccess.Nfc.Extensions.PACE;
 using System.Diagnostics.CodeAnalysis;
-using Waher.Networking.XMPP.Provisioning.Events;
 
 namespace NeuroAccessMaui.Services.Nfc
 {
@@ -58,7 +57,7 @@ namespace NeuroAccessMaui.Services.Nfc
 					{
 						// ISO 14443-4
 
-						IsoDep.SetTimeout(60000);	// Electronic documents may introduce latency to stall spamming.
+						IsoDep.SetTimeout(60000);   // Electronic documents may introduce latency to stall spamming.
 
 						string Mrz = await RuntimeSettings.GetAsync("NFC.LastMrz", string.Empty);
 

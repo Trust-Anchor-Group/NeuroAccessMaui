@@ -3,15 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NeuroAccess.Nfc.Extensions.PACE;
 using Waher.Content;
 using Waher.Runtime.Collections;
-using Waher.Script.Abstraction.Sets;
-using Waher.Script.Operators;
 using Waher.Security;
 
 namespace NeuroAccess.Nfc.Extensions
@@ -985,12 +982,7 @@ namespace NeuroAccess.Nfc.Extensions
 		{
 			TagInterface.Information("GetRemotePublicKey");
 
-			LocalPublicKey = (byte[])LocalPublicKey.Clone();
 			int c = LocalPublicKey.Length;
-			int c2 = c >> 1;
-
-			Array.Reverse(LocalPublicKey, 0, c2);
-			Array.Reverse(LocalPublicKey, c2, c2);
 
 			byte[] Command = CONCAT(
 				[
@@ -1034,11 +1026,6 @@ namespace NeuroAccess.Nfc.Extensions
 			byte[] RemotePublicKey = new byte[c];
 
 			Buffer.BlockCopy(Response, 5, RemotePublicKey, 0, c);
-
-			c2 = c >> 1;
-
-			Array.Reverse(RemotePublicKey, 0, c2);
-			Array.Reverse(RemotePublicKey, c2, c2);
 
 			return Response;
 		}

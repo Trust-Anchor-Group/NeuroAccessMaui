@@ -17,7 +17,6 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		: NfcInterface(Tag, Technology), IIsoDepInterface, ICommunicationLayer
 	{
 		private readonly IsoDep isoDep = Technology;
-		private readonly ISniffer[] sniffers = Sniffers;
 		private readonly CommunicationLayer sniffable = new(true, Sniffers);
 
 		/// <summary>
