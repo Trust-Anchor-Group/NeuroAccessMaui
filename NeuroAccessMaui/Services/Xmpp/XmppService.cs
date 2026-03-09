@@ -2128,27 +2128,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 						{
 							try
 							{
-								List<KycReference> All = new List<KycReference>(await Database.Find<KycReference>());
+								List<KycReference> All = [.. await Database.Find<KycReference>()];
 								if (AppId is not null)
 								{
 									Ref = All.FirstOrDefault(r => string.Equals(r.CreatedIdentityId, AppId.Id, StringComparison.OrdinalIgnoreCase));
 								}
 
-								if (Ref is null)
-								{
-									Ref = All
-										.Where(r => r.CreatedIdentityState == IdentityState.Created && !string.IsNullOrEmpty(r.CreatedIdentityId))
-										.OrderByDescending(r => r.UpdatedUtc)
-										.FirstOrDefault();
-								}
+								Ref ??= All
+									.Where(r => r.CreatedIdentityState == IdentityState.Created && !string.IsNullOrEmpty(r.CreatedIdentityId))
+									.OrderByDescending(r => r.UpdatedUtc)
+									.FirstOrDefault();
 
-								if (Ref is null)
-								{
-									Ref = All
-										.Where(r => !string.IsNullOrEmpty(r.CreatedIdentityId))
-										.OrderByDescending(r => r.UpdatedUtc)
-										.FirstOrDefault();
-								}
+								Ref ??= All
+									.Where(r => !string.IsNullOrEmpty(r.CreatedIdentityId))
+									.OrderByDescending(r => r.UpdatedUtc)
+									.FirstOrDefault();
 							}
 							catch (Exception Ex3)
 							{
