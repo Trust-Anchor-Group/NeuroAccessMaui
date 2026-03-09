@@ -84,5 +84,24 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 			// TODO
 			throw new NotImplementedException("This protocol does not implement ephemeral key generation.");
 		}
+
+		/// <summary>
+		/// Hash function to use when deriving keys from the shared secret.
+		/// </summary>
+		/// <param name="Data">Data to hash.</param>
+		/// <returns>Hash digest.</returns>
+		public abstract byte[] HashFunction(byte[] Data);
+
+		/// <summary>
+		/// Gets the shared secret, given the local private key previously generated using
+		/// <see cref="CreateNewEphemeralKey"/> and a remote public key.
+		/// </summary>
+		/// <param name="RemotePublicKey">Remote public key.</param>
+		/// <returns></returns>
+		public virtual byte[] GetSharedSecret(byte[] RemotePublicKey)
+		{
+			// TODO
+			throw new NotImplementedException("This protocol does not implement ephemeral key generation.");
+		}
 	}
 }

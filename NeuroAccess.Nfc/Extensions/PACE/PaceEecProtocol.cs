@@ -110,5 +110,27 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 			return this.curve.PublicKeyBigEndian;
 		}
 
+		/// <summary>
+		/// Sets the private key.
+		/// </summary>
+		/// <param name="PrivateKey">Private key.</param>
+		public void SetPrivateKey(byte[] PrivateKey)
+		{
+			if (this.curve is null)
+				throw new NotSupportedException("EEC Curve not configured.");
+
+			this.curve.SetPrivateKey(PrivateKey);
+		}
+
+		/// <summary>
+		/// Gets the shared secret, given the local private key previously generated using
+		/// <see cref="CreateNewEphemeralKey"/> and a remote public key.
+		/// </summary>
+		/// <param name="RemotePublicKey">Remote public key.</param>
+		/// <returns>Shared secret</returns>
+		public override byte[] GetSharedSecret(byte[] RemotePublicKey)
+		{
+			return this.curve!.GetSharedKey(RemotePublicKey, this.HashFunction);
+		}
 	}
 }

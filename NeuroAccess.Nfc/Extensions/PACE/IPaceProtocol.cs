@@ -35,5 +35,20 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// </summary>
 		/// <returns>Public part of the ephemeral key.</returns>
 		byte[] CreateNewEphemeralKey();
+
+		/// <summary>
+		/// Hash function to use when deriving keys from the shared secret.
+		/// </summary>
+		/// <param name="Data">Data to hash.</param>
+		/// <returns>Hash digest.</returns>
+		byte[] HashFunction(byte[] Data);
+
+		/// <summary>
+		/// Gets the shared secret, given the local private key previously generated using
+		/// <see cref="CreateNewEphemeralKey"/> and a remote public key.
+		/// </summary>
+		/// <param name="RemotePublicKey">Remote public key.</param>
+		/// <returns></returns>
+		byte[] GetSharedSecret(byte[] RemotePublicKey);
 	}
 }

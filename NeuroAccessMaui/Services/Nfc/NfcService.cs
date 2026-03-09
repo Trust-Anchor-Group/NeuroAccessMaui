@@ -115,6 +115,8 @@ namespace NeuroAccessMaui.Services.Nfc
 										return;
 									}
 
+									byte[] SharedSecret = Protocol.GetSharedSecret(RemotePublicKey);
+
 									// TODO
 								}
 								else
