@@ -803,7 +803,7 @@ namespace NeuroAccess.Nfc.Extensions
 
 			Buffer.BlockCopy(Response, 4, Nonce, 0, c);
 
-			return Response;
+			return Nonce;
 		}
 
 		/// <summary>

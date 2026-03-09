@@ -192,20 +192,49 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// <param name="Kπ">Key derived from the document information.</param>
 		/// <param name="EncryptedNonce">Encrypted nonce.</param>
 		/// <returns>Decrypted nonce.</returns>
-		public byte[] DecryptNonce(byte[] Kπ, byte[] EncryptedNonce)
+		public virtual byte[] DecryptNonce(byte[] Kπ, byte[] EncryptedNonce)
+		{
+			return DecryptNonceAes(Kπ, EncryptedNonce);
+		}
+
+		/// <summary>
+		/// Decrypts an encrypted nonce value.
+		/// </summary>
+		/// <param name="Kπ">Key derived from the document information.</param>
+		/// <param name="EncryptedNonce">Encrypted nonce.</param>
+		/// <returns>Decrypted nonce.</returns>
+		public static byte[] DecryptNonceAes(byte[] Kπ, byte[] EncryptedNonce)
 		{
 			using Aes Cipher = Aes.Create();
 			Cipher.Mode = CipherMode.CBC;
 			Cipher.Padding = PaddingMode.None;
 			Cipher.BlockSize = 128;
-			Cipher.KeySize = this.Bits;
+			Cipher.KeySize = 128;
 
-			using ICryptoTransform Decryptor = Cipher.CreateDecryptor(Kπ, zeroIv);
+			using ICryptoTransform Decryptor = Cipher.CreateDecryptor(Kπ, zeroIv16);
 
 			return Decryptor.TransformFinalBlock(EncryptedNonce, 0, EncryptedNonce.Length);
 		}
 
-		private static readonly byte[] zeroIv = new byte[16];
+		/// <summary>
+		/// Decrypts an encrypted nonce value.
+		/// </summary>
+		/// <param name="Kπ">Key derived from the document information.</param>
+		/// <param name="EncryptedNonce">Encrypted nonce.</param>
+		/// <returns>Decrypted nonce.</returns>
+		public static byte[] DecryptNonce3Des(byte[] Kπ, byte[] EncryptedNonce)
+		{
+			using TripleDES Cipher = TripleDES.Create();
+			Cipher.Mode = CipherMode.CBC;
+			Cipher.Padding = PaddingMode.None;
+
+			using ICryptoTransform Decryptor = Cipher.CreateDecryptor(Kπ, zeroIv8);
+
+			return Decryptor.TransformFinalBlock(EncryptedNonce, 0, EncryptedNonce.Length);
+		}
+
+		private static readonly byte[] zeroIv16 = new byte[16];
+		private static readonly byte[] zeroIv8 = new byte[8];
 
 	}
 }

@@ -22,5 +22,16 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_GM
 		/// If parity of bytes in Kπ should be adjusted (3DES).
 		/// </summary>
 		public override bool AdjustParity => true;
+
+		/// <summary>
+		/// Decrypts an encrypted nonce value.
+		/// </summary>
+		/// <param name="Kπ">Key derived from the document information.</param>
+		/// <param name="EncryptedNonce">Encrypted nonce.</param>
+		/// <returns>Decrypted nonce.</returns>
+		public override byte[] DecryptNonce(byte[] Kπ, byte[] EncryptedNonce)
+		{
+			return DecryptNonce3Des(Kπ, EncryptedNonce);
+		}
 	}
 }
