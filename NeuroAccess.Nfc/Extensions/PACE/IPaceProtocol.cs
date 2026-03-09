@@ -50,5 +50,20 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// <param name="RemotePublicKey">Remote public key.</param>
 		/// <returns></returns>
 		byte[] GetSharedSecret(byte[] RemotePublicKey);
+
+		/// <summary>
+		/// Calculates Kπ, given the shared secret and the document information.
+		/// </summary>
+		/// <param name="DocInfo">Document information.</param>
+		/// <returns>Kπ value.</returns>
+		byte[] Kπ(DocumentInformation DocInfo);
+
+		/// <summary>
+		/// Decrypts an encrypted nonce value.
+		/// </summary>
+		/// <param name="Kπ">Key derived from the document information.</param>
+		/// <param name="EncryptedNonce">Encrypted nonce.</param>
+		/// <returns>Decrypted nonce.</returns>
+		byte[] DecryptNonce(byte[] Kπ, byte[] EncryptedNonce);
 	}
 }

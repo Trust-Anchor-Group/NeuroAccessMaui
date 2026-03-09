@@ -766,9 +766,9 @@ namespace NeuroAccess.Nfc.Extensions
 		/// </summary>
 		/// <param name="TagInterface">NFC interface to tag.</param>
 		/// <returns>Nonce</returns>
-		public static async Task<byte[]?> GetPaceNonce(this IIsoDepInterface TagInterface)
+		public static async Task<byte[]?> GetPaceEncryptedNonce(this IIsoDepInterface TagInterface)
 		{
-			TagInterface.Information("GetNonce");
+			TagInterface.Information("GetEncryptedNonce");
 
 			byte[] Command =
 			[

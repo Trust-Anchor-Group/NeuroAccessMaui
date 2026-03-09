@@ -4,7 +4,6 @@ using System.Security.Cryptography;
 using NeuroAccess.Nfc.Extensions.BAC;
 using Waher.Content;
 using Waher.Runtime.Inventory;
-using Waher.Script.Constants;
 using Waher.Security;
 
 namespace NeuroAccess.Nfc.Extensions.PACE
@@ -160,13 +159,40 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		}
 
 		/// <summary>
+		/// Calculates Kπ, given the shared secret and the document information.
+		/// </summary>
+		/// <param name="DocInfo">Document information.</param>
+		/// <returns>Kπ value.</returns>
+		public byte[] Kπ(DocumentInformation DocInfo)
+		{
+			return KDFπ(DocInfo, this.AdjustParity);
+		}
+
+		/// <summary>
+		/// If parity of bytes in Kπ should be adjusted (3DES).
+		/// </summary>
+		public virtual bool AdjustParity => false;
+
+		/// <summary>
 		/// Decrypts an encrypted nonce value.
 		/// </summary>
 		/// <param name="Info">Document information.</param>
-		/// <param name="AdjustParity"></param>
-		/// <param name="EncryptedNonce"></param>
-		/// <returns></returns>
+		/// <param name="AdjustParity">If parity of bytes in Kπ should be adjusted (3DES).</param>
+		/// <param name="EncryptedNonce">Encrypted nonce.</param>
+		/// <returns>Decrypted nonce.</returns>
 		public byte[] DecryptNonce(DocumentInformation Info, bool AdjustParity, byte[] EncryptedNonce)
+		{
+			byte[] Kπ = KDFπ(Info, AdjustParity);
+			return this.DecryptNonce(Kπ, EncryptedNonce);
+		}
+
+		/// <summary>
+		/// Decrypts an encrypted nonce value.
+		/// </summary>
+		/// <param name="Kπ">Key derived from the document information.</param>
+		/// <param name="EncryptedNonce">Encrypted nonce.</param>
+		/// <returns>Decrypted nonce.</returns>
+		public byte[] DecryptNonce(byte[] Kπ, byte[] EncryptedNonce)
 		{
 			using Aes Cipher = Aes.Create();
 			Cipher.Mode = CipherMode.CBC;
@@ -174,7 +200,6 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 			Cipher.BlockSize = 128;
 			Cipher.KeySize = this.Bits;
 
-			byte[] Kπ = KDFπ(Info, AdjustParity);
 			using ICryptoTransform Decryptor = Cipher.CreateDecryptor(Kπ, zeroIv);
 
 			return Decryptor.TransformFinalBlock(EncryptedNonce, 0, EncryptedNonce.Length);

@@ -101,13 +101,20 @@ namespace NeuroAccessMaui.Services.Nfc
 									else
 										IsoDep.Information("PACE protocol initialized.");
 
-									byte[]? Nonce = await IsoDep.GetPaceNonce();
+									byte[]? EncryptedNonce = await IsoDep.GetPaceEncryptedNonce();
 
-									if (Nonce is null)
+									if (EncryptedNonce is null)
 									{
-										IsoDep.Error("Unable to get PACE nonce.");
+										IsoDep.Error("Unable to get PACE encrypted nonce.");
 										return;
 									}
+
+									IsoDep.Information("Encrypted nonce: " + Hashes.BinaryToString(EncryptedNonce));
+
+									byte[] Kπ = Protocol.Kπ(DocInfo);
+									byte[] DecryptedNonce = Protocol.DecryptNonce(Kπ, EncryptedNonce);
+
+									IsoDep.Information("Decrypted nonce: " + Hashes.BinaryToString(DecryptedNonce));
 
 									byte[] LocalPublicKey = Protocol.CreateNewEphemeralKey();
 									byte[]? RemotePublicKey = await IsoDep.GetPaceRemotePublicKey(LocalPublicKey);

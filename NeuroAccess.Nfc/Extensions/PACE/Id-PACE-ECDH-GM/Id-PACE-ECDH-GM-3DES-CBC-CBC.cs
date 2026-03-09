@@ -17,5 +17,10 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_GM
 		/// Security strength mapped as a grade.
 		/// </summary>
 		public override Grade SecurityStrength => Grade.Barely;
+
+		/// <summary>
+		/// If parity of bytes in Kπ should be adjusted (3DES).
+		/// </summary>
+		public override bool AdjustParity => true;
 	}
 }
