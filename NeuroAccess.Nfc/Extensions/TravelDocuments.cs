@@ -7,9 +7,8 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NeuroAccess.Nfc.Extensions.PACE;
-using Waher.Content;
 using Waher.Runtime.Collections;
-using Waher.Security;
+using Waher.Script.Functions.Scalar;
 
 namespace NeuroAccess.Nfc.Extensions
 {
@@ -130,6 +129,12 @@ namespace NeuroAccess.Nfc.Extensions
 
 			Info.DocumentNumber = Info.DocumentNumber.Replace("<", string.Empty);
 
+			// TODO: Check note in §9.7.3 ICAO 9303-p11:
+			//
+			// TD1-documents with document numbers longer than nine characters, the
+			// document number needs to be concatenated from the document number field
+			// and the optional data field of the MRZ, excluding the filler character.
+
 			return true;
 		}
 
@@ -188,203 +193,6 @@ namespace NeuroAccess.Nfc.Extensions
 		// TD1, ref: ICAO 9303-5, §B: https://www.icao.int/publications/Documents/9303_p5_cons_en.pdf
 		private static readonly Regex td1_mrz_nr9charsplus = new(@"^(?'DocType'.{1,2})<(?'Issuer'\w{3})(?'Nr1'[^<]{9})<(?'Nr2'.{3})(?'NrCheck'\d)((?'Optional'.*)(?'OptionalCheck'\d))?<*\n(?'Birth'[^<]{6})(?'BirthCheck'\d)(?'Gender'[MF])(?'Expires'[^<]{6})(?'ExpiryCheck'\d)(?'Nationality'\w{3})<*(?'OverallCheck'\d)\n(?'PID'[^<]+(<[^<]+)*)<<(?'SID'[^<]+(<[^<]+)*).*$", RegexOptions.Multiline);
 		private static readonly Regex td1_mrz_nr9chars = new(@"^(?'DocType'.{1,2})<(?'Issuer'\w{3})(?'Nr'.{9})(?'NrCheck'.)((?'Optional'.*)(?'OptionalCheck'\d))?<*\n(?'Birth'[^<]{6})(?'BirthCheck'\d)(?'Gender'[MF])(?'Expires'[^<]{6})(?'ExpiryCheck'\d)(?'Nationality'\w{3})<*(?'OverallCheck'\d)\n(?'PID'[^<]+(<[^<]+)*)<<(?'SID'[^<]+(<[^<]+)*).*$", RegexOptions.Multiline);
-
-		/// <summary>
-		/// Seed for computing cryptographic keys (§D.2)
-		/// </summary>
-		/// <param name="Info">Document Information</param>
-		public static byte[] KSeed(this DocumentInformation Info)
-		{
-			byte[] Data = InternetContent.ISO_8859_1.GetBytes(Info.MRZ_Information);
-			byte[] H = Hashes.ComputeSHA1Hash(Data);
-			Array.Resize(ref H, 16);
-			return H;
-		}
-
-		/// <summary>
-		/// 3DES Encryption Key (§D.1)
-		/// </summary>
-		public static byte[] KEnc3DES(this DocumentInformation Info)
-		{
-			return CalcKey3DES(Info, 1);
-		}
-
-		/// <summary>
-		/// DES MAC Key (§D.1)
-		/// </summary>
-		public static byte[] KMac3DES(this DocumentInformation Info)
-		{
-			return CalcKey3DES(Info, 2);
-		}
-
-		private static byte[] CalcKey3DES(this DocumentInformation Info, int Counter)
-		{
-			byte[] KSeed = Info.KSeed();
-			byte[] D = new byte[20];
-			Buffer.BlockCopy(KSeed, 0, D, 0, 16);
-			int i;
-
-			for (i = 19; i >= 16; i--)
-			{
-				D[i] = (byte)Counter;
-				Counter >>= 8;
-			}
-
-			byte[] H = Hashes.ComputeSHA1Hash(D);
-			Array.Resize<byte>(ref H, 16);
-			OddParity(H);
-
-			return H;
-		}
-
-		private static void OddParity(byte[] H)
-		{
-			int i, j, c = H.Length;
-			byte b;
-
-			for (i = 0; i < c; i++)
-			{
-				b = H[i];
-				j = 0;
-
-				while (b != 0)
-				{
-					j += (b & 1);
-					b >>= 1;
-				}
-
-				if ((j & 1) == 0)
-					H[i] ^= 1;
-			}
-		}
-
-		/// <summary>
-		/// Concatenates a series of byte arrays.
-		/// </summary>
-		/// <param name="Bytes">First byte array</param>
-		/// <param name="MoreBytes">following bytes arrays.</param>
-		/// <returns>Concatenated byte array.</returns>
-		public static byte[] CONCAT(this byte[] Bytes, params byte[][] MoreBytes)
-		{
-			int c = Bytes.Length;
-			int i = c;
-
-			foreach (byte[] A in MoreBytes)
-				c += A.Length;
-
-			byte[] Result = new byte[c];
-
-			Buffer.BlockCopy(Bytes, 0, Result, 0, i);
-
-			foreach (byte[] A in MoreBytes)
-			{
-				Buffer.BlockCopy(A, 0, Result, i, c = A.Length);
-				i += c;
-			}
-
-			return Result;
-		}
-
-		/// <summary>
-		/// Calculates a response to a challenge using 3DES & SHA1.
-		/// </summary>
-		/// <param name="Challenge">Challenge</param>
-		/// <param name="Rnd1">Random number 1</param>
-		/// <param name="Rnd2">Random number 2</param>
-		/// <param name="KEnc">Encryption Key</param>
-		/// <param name="KMac">MAC Key</param>
-		/// <returns>Response</returns>
-		public static byte[] CalcChallengeResponse3DES(byte[] Challenge, byte[] Rnd1, byte[] Rnd2,
-			byte[] KEnc, byte[] KMac)
-		{
-			byte[] S = Rnd1.CONCAT(Challenge, Rnd2);
-			byte[] EIFD;
-			byte[] MIFD;
-
-			using (TripleDES Cipher = TripleDES.Create())
-			{
-				Cipher.Mode = CipherMode.CBC;
-				Cipher.Padding = PaddingMode.None;
-
-				using ICryptoTransform Encryptor = Cipher.CreateEncryptor(KEnc, new byte[8]);
-				EIFD = Encryptor.TransformFinalBlock(S, 0, 32);
-			}
-
-			// MAC Algorithm described in ISO/IEC 9797-1
-			// Ref: https://en.wikipedia.org/wiki/ISO/IEC_9797-1
-
-			using (DES Cipher = DES.Create())
-			{
-				Cipher.Mode = CipherMode.CBC;
-				Cipher.Padding = PaddingMode.None;
-
-				int i = 0;
-				int c = EIFD.Length;
-				int j;
-
-				byte[] Data = new byte[c + 8];
-				Buffer.BlockCopy(EIFD, 0, Data, 0, c);
-				Data[c] = 0x80;   // Padding method 2, append 80 00 00 00 00 00 00 00
-
-				byte[] Ka = new byte[8];
-				byte[] Kb = new byte[8];
-
-				Buffer.BlockCopy(KMac, 0, Ka, 0, 8);
-				Buffer.BlockCopy(KMac, 8, Kb, 0, 8);
-
-				byte[] Block = new byte[8];
-				byte[]? H = null;
-
-				c += 8;
-				using (ICryptoTransform Encryptor2 = Cipher.CreateEncryptor(Ka, new byte[8]))
-				{
-					while (i < c)
-					{
-						Buffer.BlockCopy(Data, i, Block, 0, 8);
-						i += 8;
-
-						if (H is not null)
-						{
-							for (j = 0; j < 8; j++)
-								Block[j] ^= H[j];
-						}
-
-						H = Encryptor2.TransformFinalBlock(Block, 0, 8);
-					}
-
-					using (ICryptoTransform FinalDecryptor = Cipher.CreateDecryptor(Kb, new byte[8]))
-					{
-						H = FinalDecryptor.TransformFinalBlock(H, 0, 8);
-					}
-
-					H = Encryptor2.TransformFinalBlock(H, 0, 8);
-				}
-
-				MIFD = H;
-			}
-
-			return EIFD.CONCAT(MIFD);
-		}
-
-		/// <summary>
-		/// Calculates a response to a challenge using 3DES & SHA1.
-		/// </summary>
-		/// <param name="Info">Document Information</param>
-		/// <param name="Challenge">Challenge</param>
-		/// <returns>Response</returns>
-		public static byte[] CalcChallengeResponse3DES(this DocumentInformation Info, byte[] Challenge)
-		{
-			byte[] Rnd1 = new byte[8];
-			byte[] Rnd2 = new byte[16];
-
-			using (RandomNumberGenerator Rnd = RandomNumberGenerator.Create())
-			{
-				Rnd.GetBytes(Rnd1);
-				Rnd.GetBytes(Rnd2);
-			}
-
-			return CalcChallengeResponse3DES(Challenge, Rnd1, Rnd2, Info.KEnc3DES(), Info.KMac3DES());
-		}
 
 		/// <summary>
 		/// Processes basic status word response codes.
@@ -801,6 +609,33 @@ namespace NeuroAccess.Nfc.Extensions
 			byte[] Response = await TagInterface.ExecuteCommand(Command);
 
 			return TagInterface.CheckResponse(Response);
+		}
+
+		/// <summary>
+		/// Concatenates a series of byte arrays.
+		/// </summary>
+		/// <param name="Bytes">First byte array</param>
+		/// <param name="MoreBytes">following bytes arrays.</param>
+		/// <returns>Concatenated byte array.</returns>
+		public static byte[] CONCAT(this byte[] Bytes, params byte[][] MoreBytes)
+		{
+			int c = Bytes.Length;
+			int i = c;
+
+			foreach (byte[] A in MoreBytes)
+				c += A.Length;
+
+			byte[] Result = new byte[c];
+
+			Buffer.BlockCopy(Bytes, 0, Result, 0, i);
+
+			foreach (byte[] A in MoreBytes)
+			{
+				Buffer.BlockCopy(A, 0, Result, i, c = A.Length);
+				i += c;
+			}
+
+			return Result;
 		}
 
 		/// <summary>

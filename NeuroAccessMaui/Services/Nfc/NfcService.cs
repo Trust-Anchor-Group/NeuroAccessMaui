@@ -1,16 +1,19 @@
 ﻿using NeuroAccess.Nfc;
 using NeuroAccess.Nfc.Extensions;
+using NeuroAccess.Nfc.Extensions.BAC;
+using NeuroAccess.Nfc.Extensions.PACE;
 using NeuroAccess.Nfc.Records;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.UI;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Security;
-using System.Globalization;
-using NeuroAccessMaui.Services.Authentication;
-using NeuroAccess.Nfc.Extensions.PACE;
-using System.Diagnostics.CodeAnalysis;
+using Waher.Runtime.Collections;
+using Waher.Events;
 
 namespace NeuroAccessMaui.Services.Nfc
 {
@@ -78,7 +81,7 @@ namespace NeuroAccessMaui.Services.Nfc
 
 								if (Data is not null &&
 									TravelDocuments.TryDecodeDER(Data, out object? CardAccess) &&
-									TryFindPaceProtocol(IsoDep, CardAccess, out IPaceProtocol? Protocol))
+									TryFindPaceProtocol(IsoDep, CardAccess, DocInfo, out IPaceProtocol? Protocol))
 								{
 									// Optional: Read EF.DIR	§4.2 2. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
@@ -136,7 +139,7 @@ namespace NeuroAccessMaui.Services.Nfc
 										return;
 									}
 
-									byte[] ChallengeResponse = DocInfo.CalcChallengeResponse3DES(Challenge);
+									byte[] ChallengeResponse = BacProtocol.CalcChallengeResponse3DES(DocInfo, Challenge);
 									byte[]? Response = await IsoDep.ExternalBacAuthenticate(ChallengeResponse);
 
 									// TODO
@@ -245,7 +248,7 @@ namespace NeuroAccessMaui.Services.Nfc
 		public delegate Task<bool> WriteItems(object[] Items);
 
 		public static bool TryFindPaceProtocol(IIsoDepInterface IsoDep, object? CardAccess,
-			[NotNullWhen(true)] out IPaceProtocol? Protocol)
+			DocumentInformation DocumentInfo, [NotNullWhen(true)] out IPaceProtocol? Protocol)
 		{
 			/*
 			 * Contents of EF.CardAccess:
@@ -265,6 +268,7 @@ namespace NeuroAccessMaui.Services.Nfc
 			if (CardAccess is not Array SecurityInfos)
 				return false;
 
+			ChunkedList<string> OidsFound = [];
 			IPaceProtocol? Best = null;
 			IPaceProtocol? Current;
 
@@ -276,6 +280,8 @@ namespace NeuroAccessMaui.Services.Nfc
 				{
 					continue;
 				}
+
+				OidsFound.Add(Oid);
 
 				Current = Types.FindBest<IPaceProtocol, string>(Oid);
 				if (Current is null)
@@ -299,6 +305,20 @@ namespace NeuroAccessMaui.Services.Nfc
 				{
 					Best = Current;
 				}
+			}
+
+			if (Best is null || OidsFound.HasFirstItem)
+			{
+				// Notify operators & developers that ciphers have been detected that
+				// require implementation.
+				//
+				// Note: Do not include sensitive personal information in the log entry.
+
+				Log.Alert("No supported PACE protocol found. OIDs found: " +
+					string.Join(", ", OidsFound),
+					new KeyValuePair<string, object>("DocumentType", DocumentInfo.DocumentType ?? string.Empty),
+					new KeyValuePair<string, object>("IssuingState", DocumentInfo.IssuingState ?? string.Empty),
+					new KeyValuePair<string, object>("Nationality", DocumentInfo.Nationality ?? string.Empty));
 			}
 
 			Protocol = Best;
