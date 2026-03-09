@@ -6,7 +6,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_DH_IM
 	/// PACE protocol id-PACE-DH-IM-3DES-CBC-CBC
 	/// Integrated Mapping, Diffie-Hellman, 3DES in CBC mode for encryption, and 3DES in CBC mode for message authentication.
 	/// </summary>
-	public class Id_PACE_DH_IM_3DES_CBC_CBC() : PaceProtocol128()
+	public class Id_PACE_DH_IM_3DES_CBC_CBC() : PaceProtocol112()
 	{
 		/// <summary>
 		/// OID identifying the PACE protocol.
