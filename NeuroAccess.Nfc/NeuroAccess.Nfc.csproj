@@ -15,10 +15,10 @@
 
   <ItemGroup>
     <PackageReference Include="System.Formats.Asn1" Version="10.0.2" />
-    <PackageReference Include="Waher.Content" Version="3.4.5" />
-	  <PackageReference Include="Waher.Networking" Version="4.6.3" />
-	  <PackageReference Include="Waher.Security" Version="1.1.1" />
-	  <PackageReference Include="Waher.Security.EllipticCurves" Version="1.2.0" />
+    <PackageReference Include="Waher.Content" Version="3.4.6" />
+	  <PackageReference Include="Waher.Networking" Version="4.6.4" />
+	  <PackageReference Include="Waher.Security" Version="1.2.0" />
+	  <PackageReference Include="Waher.Security.EllipticCurves" Version="1.2.2" />
   </ItemGroup>
 
 </Project>
