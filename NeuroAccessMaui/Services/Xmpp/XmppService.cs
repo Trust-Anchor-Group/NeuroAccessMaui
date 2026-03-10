@@ -2,7 +2,7 @@
 #define DEBUG_XMPP_LOCAL
 //#define DEBUG_LOG_REMOTE
 //#define DEBUG_DB_REMOTE
-#define DEBUG_NFC_REMOTE
+//#define DEBUG_NFC_REMOTE
 
 using System.Collections.Generic;
 using System.ComponentModel;
