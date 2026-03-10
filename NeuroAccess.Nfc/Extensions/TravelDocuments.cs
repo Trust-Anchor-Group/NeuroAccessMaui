@@ -862,7 +862,7 @@ namespace NeuroAccess.Nfc.Extensions
 
 			Buffer.BlockCopy(Response, 5, RemotePublicKey, 0, c);
 
-			return Response;
+			return RemotePublicKey;
 		}
 
 		/// <summary>
