@@ -16,6 +16,6 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_IM
 		/// <summary>
 		/// Security strength mapped as a grade.
 		/// </summary>
-		public override Grade SecurityStrength => Grade.Ok;
+		public override Grade SecurityStrength => Grade.NotAtAll;   // TODO: When implemented: Grade.Ok;
 	}
 }

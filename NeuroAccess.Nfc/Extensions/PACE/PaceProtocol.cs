@@ -129,6 +129,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// KDF_Enc
 		/// </summary>
 		/// <param name="Info">Document Information</param>
+		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
 		public static byte[] KDF_Enc(DocumentInformation Info, bool AdjustParity)
 		{
 			return BacProtocol.KEnc(Info);  // Only uses the first 16 bytes of K.
@@ -139,6 +140,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// KDF_Mac
 		/// </summary>
 		/// <param name="Info">Document Information</param>
+		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
 		public static byte[] KDF_Mac(DocumentInformation Info, bool AdjustParity)
 		{
 			return BacProtocol.KMac(Info);  // Only uses the first 16 bytes of K.
@@ -149,6 +151,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// KDFπ, as defined in §9.7.3 of ICAO 9303-11.
 		/// </summary>
 		/// <param name="Info">Document Information</param>
+		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
 		public static byte[] KDFπ(DocumentInformation Info, bool AdjustParity)
 		{
 			return KDF(Info, 3, AdjustParity);  // KDF(K,3)
@@ -168,6 +171,26 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		public byte[] Kπ(DocumentInformation DocInfo)
 		{
 			return KDFπ(DocInfo, this.AdjustParity);
+		}
+
+		/// <summary>
+		/// KDF_Enc
+		/// </summary>
+		/// <param name="KSeed">Key derivation seed value.</param>
+		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
+		public static byte[] KDF_Enc(byte[] KSeed, bool AdjustParity)
+		{
+			return BacProtocol.KDF(KSeed, 1, AdjustParity);
+		}
+
+		/// <summary>
+		/// KDF_Mac
+		/// </summary>
+		/// <param name="KSeed">Key derivation seed value.</param>
+		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
+		public static byte[] KDF_Mac(byte[] KSeed, bool AdjustParity)
+		{
+			return BacProtocol.KDF(KSeed, 2, AdjustParity);
 		}
 
 		/// <summary>

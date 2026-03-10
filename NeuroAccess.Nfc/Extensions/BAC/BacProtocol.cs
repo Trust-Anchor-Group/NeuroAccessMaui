@@ -44,7 +44,14 @@ namespace NeuroAccess.Nfc.Extensions.BAC
 			return KDF(KSeed, Counter, AdjustParity);
 		}
 
-		internal static byte[] KDF(byte[] KSeed, int Counter, bool AdjustParity)
+		/// <summary>
+		/// Basic Key-Derivation Function
+		/// </summary>
+		/// <param name="KSeed">Seed value</param>
+		/// <param name="Counter">Counter</param>
+		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
+		/// <returns>Key</returns>
+		public static byte[] KDF(byte[] KSeed, int Counter, bool AdjustParity)
 		{
 			int c = KSeed.Length;
 			byte[] D = new byte[c + 4];

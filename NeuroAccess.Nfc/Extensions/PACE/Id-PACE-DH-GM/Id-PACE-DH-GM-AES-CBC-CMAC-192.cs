@@ -16,6 +16,6 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_DH_GM
 		/// <summary>
 		/// Security strength mapped as a grade.
 		/// </summary>
-		public override Grade SecurityStrength => Grade.Ok;     // RSA cannot have a higher than Ok grade.
+		public override Grade SecurityStrength => Grade.NotAtAll;   // TODO: When implemented: Grade.Ok;     // RSA cannot have a higher than Ok grade.
 	}
 }
