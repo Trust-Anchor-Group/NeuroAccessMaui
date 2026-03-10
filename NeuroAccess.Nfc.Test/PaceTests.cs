@@ -147,22 +147,14 @@ namespace NeuroAccess.Nfc.Test
 			// Chip keys:
 			new uint[] { 0x498FF497, 0x56F2DC15, 0x87840041, 0x839A8598, 0x2BE7761D, 0x14715FB0, 0x91EFA7BC, 0xE9058560 },
 			"824FBA91 C9CBE26B EF53A0EB E7342A3B F178CEA9 F45DE0B7 0AA60165 1FBA3F57 30D8C879 AAA9C9F7 3991E61B 58F4D52E B87A0A0C 709A49DC 63719363 CCD13C54",
-			// Terminal ephemeral keys:
-			new uint[] { 0xA73FB703, 0xAC1436A1, 0x8E0CFA5A, 0xBB3F7BEC, 0x7A070E7A, 0x6788486B, 0xEE230C4A, 0x22762595 },
-			"2DB7A64C 0355044E C9DF1905 14C625CB A2CEA487 54887122 F3A5EF0D 5EDD301C 3556F3B3 B186DF10 B857B58F 6A7EB80F 20BA5DC7 BE1D43D9 BF850149 FBB36462",
-			// Chip ephemeral keys:
-			new uint[] { 0x107CF586, 0x96EF6155, 0x053340FD, 0x633392BA, 0x81909DF7, 0xB9706F22, 0x6F32086C, 0x7AFF974A },
-			"9E880F84 2905B8B3 181F7AF7 CAA9F0EF B743847F 44A306D2 D28C1D9E C65DF6DB 7764B222 77A2EDDC 3C265A9F 018F9CB8 52E111B7 68B32690 4B59A019 3776F094",
-			"28768D20 701247DA E81804C9 E780EDE5 82A9996D B4A31502 0B273319 7DB84925",
 			"60332EF2 450B5D24 7EF6D386 8397D398 852ED6E8 CAF6FFEE F6BF85CA 57057FD5 0840CA74 15BAF3E4 3BD414D3 5AA4608B 93A2CAF3 A4E3EA4E 82C9C13D 03EB7181",
+			"8CED63C9 1426D4F0 EB1435E7 CB1D74A4 6723A0AF 21C89634 F65A9AE8 7A9265E2 8C879506 743F8611 AC33645C 5B985C80 B5F09A0B 83407C1B 6A4D857A E76FE522",
 			false, typeof(Id_PACE_ECDH_GM_AES_CBC_CMAC_128), typeof(BrainpoolP256))]
 		public void Test_05_MapNonce_GM(string Mrz, string CardAccess,
 			string DecryptedNonce, string EncryptedNonce,
 			uint[] TerminalPrivateKey, string TerminalPublicKey,
 			uint[] ChipPrivateKey, string ChipPublicKey,
-			uint[] TerminalEphemeralPrivateKey, string TerminalEphemeralPublicKey,
-			uint[] ChipEphemeralPrivateKey, string ChipEphemeralPublicKey,
-			string EphemeralSharedSecret, string SharedSecret, bool IsBase64,
+			string SharedSecret, string MappedGenerator, bool IsBase64,
 			Type AlgorithmType, Type CurveType)
 		{
 			Assert.IsTrue(TravelDocuments.ParseMrz(Mrz, out DocumentInformation? Info));
@@ -186,7 +178,7 @@ namespace NeuroAccess.Nfc.Test
 				DecryptedNonce.Replace(" ", string.Empty),
 				Hashes.BinaryToString(s).ToUpperInvariant());
 
-			// Map Nonce, Shared Secret
+			// Shared Secret
 
 			EecProtocol.SetPrivateKey(PrimeFieldCurve.ToByteSecret(TerminalPrivateKey));
 			Assert.AreEqual(TerminalPublicKey.Replace(" ", string.Empty),
@@ -201,6 +193,14 @@ namespace NeuroAccess.Nfc.Test
 
 			Assert.AreEqual(SharedSecret.Replace(" ", string.Empty),
 				Hashes.BinaryToString(H).ToUpperInvariant());
+
+			// Map
+
+			PointOnCurve Ĝ = EecProtocol.GetGenericMap(s, ChipCurve.PublicKey);
+			byte[] Generator = EecProtocol.Curve.Encode(Ĝ, true);
+
+			Assert.AreEqual(MappedGenerator.Replace(" ", string.Empty),
+				Hashes.BinaryToString(Generator).ToUpperInvariant());
 		}
 	}
 }

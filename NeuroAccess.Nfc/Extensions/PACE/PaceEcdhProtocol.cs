@@ -169,5 +169,26 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 
 			return Result;
 		}
+
+		/// <summary>
+		/// Gets the map used in Generic Mapping.
+		/// </summary>
+		/// <param name="s">Decrypted nonce.</param>
+		/// <param name="RemotePublicKey">Remote public key.</param>
+		/// <returns>Generic Map G → Ĝ is defined as Ĝ = s×G+H, where H is calculated
+		/// using ECDH.</returns>
+		public PointOnCurve GetGenericMap(byte[] s, byte[] RemotePublicKey)
+		{
+			PointOnCurve G = this.curve!.BasePoint;
+			PointOnCurve H = this.curve.GetSharedPoint(RemotePublicKey, false);
+
+			byte[] s2 = (byte[])s.Clone();
+			Array.Reverse(s2);
+
+			PointOnCurve Ĝ = this.curve.ScalarMultiplication(s2, G, true);
+			this.curve.AddTo(ref Ĝ, H);
+
+			return Ĝ;
+		}
 	}
 }
