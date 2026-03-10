@@ -1,4 +1,5 @@
 ﻿using System;
+using Waher.Runtime.Inventory;
 using Waher.Security.EllipticCurves;
 
 namespace NeuroAccess.Nfc.Extensions.PACE
@@ -6,7 +7,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 	/// <summary>
 	/// Abstract base class for PACE protocols using Elliptic Curve Cryptography (EEC).
 	/// </summary>
-	public abstract class PaceEecProtocol() : PaceProtocol()
+	public abstract class PaceEcdhProtocol() : PaceProtocol()
 	{
 		private EllipticCurve? curve;
 
@@ -100,7 +101,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// Creates a new ephemeral key, used in the PACE protocol.
 		/// </summary>
 		/// <returns>Public part of the ephemeral key.</returns>
-		public override byte[] CreateNewEphemeralKey()
+		public override byte[] CreateNewKey()
 		{
 			if (this.curve is null)
 				throw new NotSupportedException("EEC Curve not configured.");
@@ -108,6 +109,20 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 			this.curve.GenerateKeys();
 
 			return this.curve.PublicKeyBigEndian;
+		}
+
+		/// <summary>
+		/// Creates an ephemeral key using the same algorithm, cipher and configuration.
+		/// </summary>
+		/// <returns>Ephemeral key</returns>
+		public override IPaceProtocol CreateEphemeralKey()
+		{
+			PaceEcdhProtocol Result = (PaceEcdhProtocol)Types.Instantiate(this.GetType());
+
+			if (this.curve is not null)
+				Result.curve = (EllipticCurve)Types.Instantiate(this.curve.GetType());
+
+			return Result;
 		}
 
 		/// <summary>
@@ -124,13 +139,35 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 
 		/// <summary>
 		/// Gets the shared secret, given the local private key previously generated using
-		/// <see cref="CreateNewEphemeralKey"/> and a remote public key.
+		/// <see cref="CreateNewKey"/> and a remote public key.
 		/// </summary>
 		/// <param name="RemotePublicKey">Remote public key.</param>
 		/// <returns>Shared secret</returns>
 		public override byte[] GetSharedSecret(byte[] RemotePublicKey)
 		{
-			return this.curve!.GetSharedKey(RemotePublicKey, this.HashFunction);
+			//return this.curve!.GetSharedKey(RemotePublicKey, this.HashFunction);
+
+			PointOnCurve H = this.curve!.GetSharedPoint(RemotePublicKey, false);
+
+			byte[] X = H.X.ToByteArray();   // Little endian
+			byte[] Y = H.Y.ToByteArray();   // Little endian
+			int c = this.curve.OrderBytes;
+
+			if (X.Length != c)
+				Array.Resize(ref X, c);
+
+			if (Y.Length != c)
+				Array.Resize(ref Y, c);
+
+			Array.Reverse(X);   // Most significant byte first.
+			Array.Reverse(Y);   // Most significant byte first.
+
+			byte[] Result = new byte[c << 1];
+
+			Buffer.BlockCopy(X, 0, Result, 0, c);
+			Buffer.BlockCopy(Y, 0, Result, c, c);
+
+			return Result;
 		}
 	}
 }

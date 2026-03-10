@@ -6,7 +6,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_DH_GM
 	/// PACE protocol id-PACE-DH-GM-AES-CBC-CMAC-256
 	/// Generic Mapping, Diffie-Hellman, AES-CBC with CMAC, 256 bit key.
 	/// </summary>
-	public class Id_PACE_DH_GM_AES_CBC_CMAC_256() : PaceProtocol256()
+	public class Id_PACE_DH_GM_AES_CBC_CMAC_256() : PaceDhProtocol256()
 	{
 		/// <summary>
 		/// OID identifying the PACE protocol.

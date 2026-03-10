@@ -31,10 +31,16 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		bool Configure(Array SecurityInfo);
 
 		/// <summary>
-		/// Creates a new ephemeral key, used in the PACE protocol.
+		/// Creates a new private and public key, used in the PACE protocol.
 		/// </summary>
 		/// <returns>Public part of the ephemeral key.</returns>
-		byte[] CreateNewEphemeralKey();
+		byte[] CreateNewKey();
+
+		/// <summary>
+		/// Creates an ephemeral key using the same algorithm, cipher and configuration.
+		/// </summary>
+		/// <returns>Ephemeral key</returns>
+		IPaceProtocol CreateEphemeralKey();
 
 		/// <summary>
 		/// Hash function to use when deriving keys from the shared secret.
@@ -45,7 +51,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 
 		/// <summary>
 		/// Gets the shared secret, given the local private key previously generated using
-		/// <see cref="CreateNewEphemeralKey"/> and a remote public key.
+		/// <see cref="CreateNewKey"/> and a remote public key.
 		/// </summary>
 		/// <param name="RemotePublicKey">Remote public key.</param>
 		/// <returns></returns>

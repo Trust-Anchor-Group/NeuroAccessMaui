@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -812,14 +813,36 @@ namespace NeuroAccess.Nfc.Extensions
 		/// <param name="TagInterface">NFC interface to tag.</param>
 		/// <param name="LocalPublicKey">Local Public Key</param>
 		/// <returns>Remote Public Key</returns>
-		public static async Task<byte[]?> GetPaceRemotePublicKey(this IIsoDepInterface TagInterface,
+		public static Task<byte[]?> GetPaceRemotePublicKey(this IIsoDepInterface TagInterface,
 			byte[] LocalPublicKey)
+		{
+			return GetPaceRemotePublicKey(TagInterface, LocalPublicKey,
+				0x81,	// Mapping Data
+				0x82);  // Mapping Data response
+		}
+
+		/// <summary>
+		/// Get PACE Remote Ephemeral Key
+		/// </summary>
+		/// <param name="TagInterface">NFC interface to tag.</param>
+		/// <param name="LocalPublicEphemeralKey">Local Public Ephemeral Key</param>
+		/// <returns>Remote Public Ephemeral Key</returns>
+		public static Task<byte[]?> GetPaceRemotePublicEphemeralKey(this IIsoDepInterface TagInterface,
+			byte[] LocalPublicEphemeralKey)
+		{
+			return GetPaceRemotePublicKey(TagInterface, LocalPublicEphemeralKey,
+				0x83,   // Terminal's Ephemeral Public Key 
+				0x84);  // Terminal's Ephemeral Public Key response
+		}
+
+		private static async Task<byte[]?> GetPaceRemotePublicKey(this IIsoDepInterface TagInterface,
+			byte[] LocalPublicKey, byte Command, byte ExpectedResponse)
 		{
 			TagInterface.Information("GetRemotePublicKey");
 
 			int c = LocalPublicKey.Length;
 
-			byte[] Command = CONCAT(
+			byte[] Request = CONCAT(
 				[
 					ISO_7816.Classes.Chaining,
 					ISO_7816.Instructions.GeneralAuthenticate,
@@ -831,7 +854,7 @@ namespace NeuroAccess.Nfc.Extensions
 					[
 						0x7c,			// Dynamic Authentication Data
 						(byte)(c + 3),
-						0x81,			// Mapping Data
+						Command,			
 						(byte)(c + 1),
 						0x04			// X coordinate following by Y coordinate (default for EEC curves)
 					],
@@ -839,7 +862,7 @@ namespace NeuroAccess.Nfc.Extensions
 					[ 0x00 ]	// Le (Maximal response length: 256 bytes)
 				]);
 
-			byte[] Response = await TagInterface.ExecuteCommand(Command);
+			byte[] Response = await TagInterface.ExecuteCommand(Request);
 
 			if (!TagInterface.CheckResponse(Response))
 				return null;
@@ -847,7 +870,7 @@ namespace NeuroAccess.Nfc.Extensions
 			if (Response.Length < 6 ||
 				Response[0] != 0x7c ||
 				Response.Length != Response[1] + 4 ||
-				Response[2] != 0x82 ||      // Mapping data
+				Response[2] != ExpectedResponse ||
 				Response.Length != Response[3] + 6 ||
 				Response[4] != 0x04 ||      // X coordinate following by Y coordinate (default for EEC curves)
 				Response[^2] != 0x90 ||

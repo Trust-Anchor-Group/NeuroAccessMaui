@@ -96,7 +96,7 @@ namespace NeuroAccessMaui.Services.Nfc
 										IsoDep.Error("Unable to initialize PACE protocol.");
 										return;
 									}
-									else if (Protocol is PaceEecProtocol EecProtocol)
+									else if (Protocol is PaceEcdhProtocol EecProtocol)
 										IsoDep.Information("PACE protocol initialized (" + EecProtocol.Curve?.CurveName + ").");
 									else
 										IsoDep.Information("PACE protocol initialized.");
@@ -116,7 +116,7 @@ namespace NeuroAccessMaui.Services.Nfc
 
 									IsoDep.Information("Decrypted nonce: " + Hashes.BinaryToString(DecryptedNonce));
 
-									byte[] LocalPublicKey = Protocol.CreateNewEphemeralKey();
+									byte[] LocalPublicKey = Protocol.CreateNewKey();
 									byte[]? RemotePublicKey = await IsoDep.GetPaceRemotePublicKey(LocalPublicKey);
 
 									if (RemotePublicKey is null)

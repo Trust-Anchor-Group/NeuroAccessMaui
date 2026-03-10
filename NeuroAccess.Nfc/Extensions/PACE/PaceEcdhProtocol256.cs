@@ -3,14 +3,15 @@
 namespace NeuroAccess.Nfc.Extensions.PACE
 {
 	/// <summary>
-	/// Abstract base class for PACE protocols having 192 bit security.
+	/// Abstract base class for PACE protocols using Elliptic Curve Cryptography (EEC)
+	/// having 256 bit security.
 	/// </summary>
-	public abstract class PaceProtocol192 : PaceProtocol
+	public abstract class PaceEcdhProtocol256 : PaceEcdhProtocol
 	{
 		/// <summary>
 		/// Bits of security provided by the protocol.
 		/// </summary>
-		public override int Bits => 192;
+		public override int Bits => 256;
 
 		/// <summary>
 		/// Hash function to use when deriving keys from the shared secret.

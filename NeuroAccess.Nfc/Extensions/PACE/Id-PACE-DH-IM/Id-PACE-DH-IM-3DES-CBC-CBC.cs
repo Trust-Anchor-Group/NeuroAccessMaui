@@ -1,4 +1,5 @@
-﻿using Waher.Runtime.Inventory;
+﻿using System;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_DH_IM
 {
@@ -6,7 +7,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_DH_IM
 	/// PACE protocol id-PACE-DH-IM-3DES-CBC-CBC
 	/// Integrated Mapping, Diffie-Hellman, 3DES in CBC mode for encryption, and 3DES in CBC mode for message authentication.
 	/// </summary>
-	public class Id_PACE_DH_IM_3DES_CBC_CBC() : PaceProtocol112()
+	public class Id_PACE_DH_IM_3DES_CBC_CBC() : PaceDhProtocol112()
 	{
 		/// <summary>
 		/// OID identifying the PACE protocol.
@@ -22,6 +23,15 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_DH_IM
 		/// If parity of bytes in Kπ should be adjusted (3DES).
 		/// </summary>
 		public override bool AdjustParity => true;
+
+		/// <summary>
+		/// Creates a new ephemeral key, used in the PACE protocol.
+		/// </summary>
+		/// <returns>Public part of the ephemeral key.</returns>
+		public override byte[] CreateNewKey()
+		{
+			throw new NotImplementedException("3DES not implemented.");  // TODO
+		}
 
 		/// <summary>
 		/// Decrypts an encrypted nonce value.

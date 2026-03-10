@@ -6,7 +6,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 	/// Abstract base class for PACE protocols using Elliptic Curve Cryptography (EEC)
 	/// having 128 bit security.
 	/// </summary>
-	public abstract class PaceEecProtocol128 : PaceEecProtocol
+	public abstract class PaceEcdhProtocol128 : PaceEcdhProtocol
 	{
 		/// <summary>
 		/// Bits of security provided by the protocol.

@@ -6,7 +6,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_IM
 	/// PACE protocol id-PACE-ECDH-IM-AES-CBC-CMAC-256
 	/// Integrated Mapping, Elliptic Curve Diffie-Hellman, AES-CBC with CMAC, 256 bit key.
 	/// </summary>
-	public class Id_PACE_ECDH_IM_AES_CBC_CMAC_256() : PaceEecProtocol256()
+	public class Id_PACE_ECDH_IM_AES_CBC_CMAC_256() : PaceEcdhProtocol256()
 	{
 		/// <summary>
 		/// OID identifying the PACE protocol.
