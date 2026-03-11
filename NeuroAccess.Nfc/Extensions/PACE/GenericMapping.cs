@@ -156,10 +156,8 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 				CMac Mac = Protocol.GetAuthenticator(KS_Mac);
 
 				byte[] T_IFD = Mac.Sign(AD_IFD, 8);
-				byte[] T_IC = Mac.Sign(AD_IC, 8);
 
 				IsoDep.Information("T_IFD: " + Hashes.BinaryToString(T_IFD));
-				IsoDep.Information("T_IC: " + Hashes.BinaryToString(T_IC));
 
 				byte[]? RemoteToken = await IsoDep.GetPaceRemoteVerificationToken(T_IFD);
 
@@ -171,7 +169,10 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 
 				IsoDep.Information("Remote Token: " + Hashes.BinaryToString(RemoteToken));
 
-				if (Convert.ToBase64String(T_IC) != Convert.ToBase64String(RemoteToken))
+				byte[] T_IC = Mac.Sign(AD_IC, 8);
+				IsoDep.Information("T_IC: " + Hashes.BinaryToString(T_IC));
+
+				if (!Mac.Verify(T_IC, RemoteToken))
 				{
 					IsoDep.Error("PACE token validation failed.");
 					return false;
