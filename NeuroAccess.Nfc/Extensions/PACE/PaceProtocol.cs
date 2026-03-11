@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Globalization;
 using System.Numerics;
 using System.Security.Cryptography;
 using NeuroAccess.Nfc.Extensions.BAC;
 using Waher.Content;
 using Waher.Runtime.Inventory;
+using Waher.Script.Constants;
 using Waher.Security;
 
 namespace NeuroAccess.Nfc.Extensions.PACE
@@ -261,5 +263,40 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		private static readonly byte[] zeroIv16 = new byte[16];
 		private static readonly byte[] zeroIv8 = new byte[8];
 
+		/// <summary>
+		/// Creates a block of associated data used for MAC signatures.
+		/// </summary>
+		/// <param name="Oid">OID of cipher.</param>
+		/// <param name="PublicKey">Public key.</param>
+		/// <returns>Associated Data block.</returns>
+		public static byte[] CreateAssociatedData(string Oid, byte[] PublicKey)
+		{
+			string[] OidParts = Oid.Split('.');
+			int i, c = OidParts.Length;
+			byte[] OidBytes = new byte[c];
+
+			for (i = 0; i < c; i++)
+				OidBytes[i] = byte.Parse(OidParts[i], CultureInfo.InvariantCulture);
+
+			int d = PublicKey.Length;
+			byte[] AssociatedData = new byte[7 + c + d];
+
+			AssociatedData[0] = 0x7f;
+			AssociatedData[1] = 0x49;
+			AssociatedData[2] = (byte)(4 + c + d);
+			AssociatedData[3] = 0x06;
+			AssociatedData[4] = (byte)(c - 1);
+
+			Buffer.BlockCopy(OidBytes, 1, AssociatedData, 5, c - 1);
+			i = 4 + c;
+
+			AssociatedData[i++] = 0x86;
+			AssociatedData[i++] = (byte)(1 + d);
+			AssociatedData[i++] = 0x04;
+
+			Buffer.BlockCopy(PublicKey, 0, AssociatedData, i, d);
+
+			return AssociatedData;
+		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using NeuroAccess.Nfc.Extensions;
+﻿using System.Globalization;
+using NeuroAccess.Nfc.Extensions;
 using NeuroAccess.Nfc.Extensions.PACE;
 using NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_GM;
 using Waher.Runtime.Inventory;
@@ -158,6 +159,9 @@ namespace NeuroAccess.Nfc.Test
 			// Session keys:
 			"F5F0E35C 0D7161EE 6724EE51 3A0D9A7F",
 			"FE251C78 58B356B2 4514B3BD 5F4297D1",
+			// Input data
+			"7F494F06 0A04007F 00070202 04020286 41049E88 0F842905 B8B3181F 7AF7CAA9 F0EFB743 847F44A3 06D2D28C 1D9EC65D F6DB7764 B22277A2 EDDC3C26 5A9F018F 9CB852E1 11B768B3 26904B59 A0193776 F094",
+			"7F494F06 0A04007F 00070202 04020286 41042DB7 A64C0355 044EC9DF 190514C6 25CBA2CE A4875488 7122F3A5 EF0D5EDD 301C3556 F3B3B186 DF10B857 B58F6A7E B80F20BA 5DC7BE1D 43D9BF85 0149FBB3 6462",
 			false, typeof(Id_PACE_ECDH_GM_AES_CBC_CMAC_128), typeof(BrainpoolP256))]
 		public void Test_05_GenericMapping(string Mrz, string CardAccess,
 			string DecryptedNonce, string EncryptedNonce,
@@ -168,6 +172,7 @@ namespace NeuroAccess.Nfc.Test
 			uint[] EphemeralChipPrivateKey, string EphemeralChipPublicKey,
 			string EphemeralSharedSecret,
 			string EncryptionKey, string SignatureKey,
+			string InputDataTerminal, string InputDataChip,
 			bool IsBase64, Type AlgorithmType, Type CurveType)
 		{
 			Assert.IsTrue(TravelDocuments.ParseMrz(Mrz, out DocumentInformation? Info));
@@ -272,6 +277,18 @@ namespace NeuroAccess.Nfc.Test
 			byte[] KS_Mac = PaceProtocol.KDF_Mac(EphemeralSharedPointX, false);
 			Assert.AreEqual(SignatureKey.Replace(" ", string.Empty),
 				Hashes.BinaryToString(KS_Mac).ToUpperInvariant());
+
+			// Input data
+
+			byte[] T_IFD = PaceProtocol.CreateAssociatedData(Oid, RemotePublicEphemeralKey);
+			byte[] T_IC = PaceProtocol.CreateAssociatedData(Oid, LocalPublicEphemeralKey);
+
+			Assert.AreEqual(InputDataTerminal.Replace(" ", string.Empty),
+				Hashes.BinaryToString(T_IFD).ToUpperInvariant());
+
+			Assert.AreEqual(InputDataChip.Replace(" ", string.Empty),
+				Hashes.BinaryToString(T_IC).ToUpperInvariant());
+
 		}
 	}
 }
