@@ -282,7 +282,7 @@ namespace NeuroAccess.Nfc.Test
 			Assert.AreEqual(SignatureKey.Replace(" ", string.Empty),
 				Hashes.BinaryToString(KS_Mac).ToUpperInvariant());
 
-			// Input data
+			// Associated Data
 
 			byte[] AD_IFD = PaceProtocol.CreateAssociatedData(Oid, RemotePublicEphemeralKey);
 			byte[] AD_IC = PaceProtocol.CreateAssociatedData(Oid, LocalPublicEphemeralKey);

@@ -2,10 +2,10 @@
 using System.Globalization;
 using System.Numerics;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using NeuroAccess.Nfc.Extensions.BAC;
 using Waher.Content;
 using Waher.Runtime.Inventory;
-using Waher.Script.Constants;
 using Waher.Security;
 
 namespace NeuroAccess.Nfc.Extensions.PACE
@@ -115,6 +115,17 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		{
 			// TODO
 			throw new NotImplementedException("This protocol does not implement ephemeral key generation.");
+		}
+
+		/// <summary>
+		/// Authenticates the application with the document, using the PACE protocol.
+		/// </summary>
+		/// <param name="IsoDep">NFC interface for communicating with the document.</param>
+		/// <param name="DocInfo">Document information.</param>
+		/// <returns>true if authenticated, false if unable to authenticate with the document.</returns>
+		public virtual Task<bool> Authenticate(IIsoDepInterface IsoDep, DocumentInformation DocInfo)
+		{
+			return Task.FromResult(false);
 		}
 
 		/// <summary>
@@ -298,5 +309,12 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 
 			return AssociatedData;
 		}
+
+		/// <summary>
+		/// Gets the authenticator
+		/// </summary>
+		/// <param name="Key">Key to use for authenticator.</param>
+		/// <returns>Authenticator</returns>
+		public abstract CMac GetAuthenticator(byte[] Key);
 	}
 }

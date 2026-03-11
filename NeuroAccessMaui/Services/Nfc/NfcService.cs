@@ -101,33 +101,11 @@ namespace NeuroAccessMaui.Services.Nfc
 									else
 										IsoDep.Information("PACE protocol initialized.");
 
-									byte[]? EncryptedNonce = await IsoDep.GetPaceEncryptedNonce();
-
-									if (EncryptedNonce is null)
+									if (!await Protocol.Authenticate(IsoDep, DocInfo))
 									{
-										IsoDep.Error("Unable to get PACE encrypted nonce.");
+										IsoDep.Error("Authentication unsuccessful.");
 										return;
 									}
-
-									IsoDep.Information("Encrypted nonce: " + Hashes.BinaryToString(EncryptedNonce));
-
-									byte[] Kπ = Protocol.Kπ(DocInfo);
-									byte[] DecryptedNonce = Protocol.DecryptNonce(Kπ, EncryptedNonce);
-
-									IsoDep.Information("Decrypted nonce: " + Hashes.BinaryToString(DecryptedNonce));
-
-									byte[] LocalPublicKey = Protocol.CreateNewKey();
-									byte[]? RemotePublicKey = await IsoDep.GetPaceRemotePublicKey(LocalPublicKey);
-
-									if (RemotePublicKey is null)
-									{
-										IsoDep.Error("Unable to get PACE remote public key.");
-										return;
-									}
-
-									byte[] SharedSecret = Protocol.GetSharedSecret(RemotePublicKey);
-
-									// TODO
 								}
 								else
 								{
@@ -148,9 +126,9 @@ namespace NeuroAccessMaui.Services.Nfc
 
 									byte[] ChallengeResponse = BacProtocol.CalcChallengeResponse3DES(DocInfo, Challenge);
 									byte[]? Response = await IsoDep.ExternalBacAuthenticate(ChallengeResponse);
-
-									// TODO
 								}
+
+								// TODO: Read document
 							}
 							catch (Exception ex)
 							{

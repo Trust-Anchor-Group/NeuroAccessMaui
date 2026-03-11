@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccess.Nfc.Extensions.PACE
@@ -71,5 +72,20 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// <param name="EncryptedNonce">Encrypted nonce.</param>
 		/// <returns>Decrypted nonce.</returns>
 		byte[] DecryptNonce(byte[] Kπ, byte[] EncryptedNonce);
+
+		/// <summary>
+		/// Authenticates the application with the document, using the PACE protocol.
+		/// </summary>
+		/// <param name="IsoDep">NFC interface for communicating with the document.</param>
+		/// <param name="DocInfo">Document information.</param>
+		/// <returns>true if authenticated, false if unable to authenticate with the document.</returns>
+		Task<bool> Authenticate(IIsoDepInterface IsoDep, DocumentInformation DocInfo);
+
+		/// <summary>
+		/// Gets the authenticator
+		/// </summary>
+		/// <param name="Key">Key to use for authenticator.</param>
+		/// <returns>Authenticator</returns>
+		CMac GetAuthenticator(byte[] Key);
 	}
 }

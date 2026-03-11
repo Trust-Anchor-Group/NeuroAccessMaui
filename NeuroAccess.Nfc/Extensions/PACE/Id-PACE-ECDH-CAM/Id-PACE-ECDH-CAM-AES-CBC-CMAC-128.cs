@@ -22,5 +22,12 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_CAM
 		/// If Chip-Authentication-Mapping is supported by the protocol.
 		/// </summary>
 		public override bool ChipAuthenticationMapping => true;
+
+		/// <summary>
+		/// Gets the authenticator
+		/// </summary>
+		/// <param name="Key">Key to use for authenticator.</param>
+		/// <returns>Authenticator</returns>
+		public override CMac GetAuthenticator(byte[] Key) => CMac.CreateAes128CMac(Key);
 	}
 }

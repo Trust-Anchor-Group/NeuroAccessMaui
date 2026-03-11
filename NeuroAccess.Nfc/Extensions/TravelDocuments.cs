@@ -813,12 +813,14 @@ namespace NeuroAccess.Nfc.Extensions
 		/// <param name="TagInterface">NFC interface to tag.</param>
 		/// <param name="LocalPublicKey">Local Public Key</param>
 		/// <returns>Remote Public Key</returns>
-		public static Task<byte[]?> GetPaceRemotePublicKey(this IIsoDepInterface TagInterface,
+		public static async Task<byte[]?> GetPaceRemotePublicKey(this IIsoDepInterface TagInterface,
 			byte[] LocalPublicKey)
 		{
-			return GetPaceRemotePublicKey(TagInterface, LocalPublicKey,
-				0x81,	// Mapping Data
-				0x82);  // Mapping Data response
+			return DecodePublicKey(await GeneralAuthenticate(TagInterface,
+				EncodePublicKey(LocalPublicKey),
+				"Get Remote Public Key",
+				0x81,   // Mapping Data
+				0x82));  // Mapping Data response
 		}
 
 		/// <summary>
@@ -827,20 +829,61 @@ namespace NeuroAccess.Nfc.Extensions
 		/// <param name="TagInterface">NFC interface to tag.</param>
 		/// <param name="LocalPublicEphemeralKey">Local Public Ephemeral Key</param>
 		/// <returns>Remote Public Ephemeral Key</returns>
-		public static Task<byte[]?> GetPaceRemotePublicEphemeralKey(this IIsoDepInterface TagInterface,
+		public static async Task<byte[]?> GetPaceRemotePublicEphemeralKey(this IIsoDepInterface TagInterface,
 			byte[] LocalPublicEphemeralKey)
 		{
-			return GetPaceRemotePublicKey(TagInterface, LocalPublicEphemeralKey,
+			return DecodePublicKey(await GeneralAuthenticate(TagInterface,
+				EncodePublicKey(LocalPublicEphemeralKey),
+				"Get Remote Ephemeral Public Key",
 				0x83,   // Terminal's Ephemeral Public Key 
-				0x84);  // Terminal's Ephemeral Public Key response
+				0x84));  // Chip's Ephemeral Public Key
 		}
 
-		private static async Task<byte[]?> GetPaceRemotePublicKey(this IIsoDepInterface TagInterface,
-			byte[] LocalPublicKey, byte Command, byte ExpectedResponse)
+		/// <summary>
+		/// Get PACE Remote Verification Token
+		/// </summary>
+		/// <param name="TagInterface">NFC interface to tag.</param>
+		/// <param name="LocalVerificationToken">Local Verification Token</param>
+		/// <returns>Remote Verification Token</returns>
+		public static Task<byte[]?> GetPaceRemoteVerificationToken(this IIsoDepInterface TagInterface,
+			byte[] LocalVerificationToken)
 		{
-			TagInterface.Information("GetRemotePublicKey");
+			return GeneralAuthenticate(TagInterface, LocalVerificationToken,
+				"Get Remote Verification Token",
+				0x85,   // Terminal's Verification Token
+				0x86);  // Chip's Verification Token
+		}
 
+		private static byte[] EncodePublicKey(byte[] LocalPublicKey)
+		{
 			int c = LocalPublicKey.Length;
+			byte[] EncodedPublicKey = new byte[c + 1];
+
+			EncodedPublicKey[0] = 4;    // X coordinate following by Y coordinate (default for EEC curves)
+			Buffer.BlockCopy(LocalPublicKey, 0, EncodedPublicKey, 1, c);
+
+			return EncodedPublicKey;
+		}
+
+		private static byte[]? DecodePublicKey(byte[]? Data)
+		{
+			int c;
+
+			if (Data is null || (c = Data.Length) == 0 || Data[0] != 4)   // X coordinate following by Y coordinate (default for EEC curves)
+				return null;
+
+			byte[] DecodedPublicKey = new byte[c - 1];
+			Buffer.BlockCopy(Data, 1, DecodedPublicKey, 0, c - 1);
+
+			return DecodedPublicKey;
+		}
+
+		private static async Task<byte[]?> GeneralAuthenticate(this IIsoDepInterface TagInterface,
+			byte[] Data, string Comment, byte Command, byte ExpectedResponse)
+		{
+			TagInterface.Information("General Authenticate (" + Comment + ")");
+
+			int c = Data.Length;
 
 			byte[] Request = CONCAT(
 				[
@@ -848,17 +891,16 @@ namespace NeuroAccess.Nfc.Extensions
 					ISO_7816.Instructions.GeneralAuthenticate,
 					0x00,									// P1
 					0x00,									// P2
-					(byte)(c + 5)		// Lc
+					(byte)(c + 4)		// Lc
 				],
 				[
 					[
 						0x7c,			// Dynamic Authentication Data
 						(byte)(c + 3),
-						Command,			
-						(byte)(c + 1),
-						0x04			// X coordinate following by Y coordinate (default for EEC curves)
+						Command,
+						(byte)c
 					],
-					LocalPublicKey,
+					Data,
 					[ 0x00 ]	// Le (Maximal response length: 256 bytes)
 				]);
 
@@ -872,7 +914,6 @@ namespace NeuroAccess.Nfc.Extensions
 				Response.Length != Response[1] + 4 ||
 				Response[2] != ExpectedResponse ||
 				Response.Length != Response[3] + 6 ||
-				Response[4] != 0x04 ||      // X coordinate following by Y coordinate (default for EEC curves)
 				Response[^2] != 0x90 ||
 				Response[^1] != 0x00)
 			{
@@ -880,12 +921,12 @@ namespace NeuroAccess.Nfc.Extensions
 				return null;
 			}
 
-			c = Response[3] - 1;
-			byte[] RemotePublicKey = new byte[c];
+			c = Response[3];
+			byte[] ResponseData = new byte[c];
 
-			Buffer.BlockCopy(Response, 5, RemotePublicKey, 0, c);
+			Buffer.BlockCopy(Response, 4, ResponseData, 0, c);
 
-			return RemotePublicKey;
+			return ResponseData;
 		}
 
 		/// <summary>

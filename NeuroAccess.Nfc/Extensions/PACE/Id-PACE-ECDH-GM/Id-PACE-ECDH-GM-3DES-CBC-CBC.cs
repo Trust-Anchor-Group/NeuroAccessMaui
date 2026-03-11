@@ -1,4 +1,5 @@
-﻿using Waher.Runtime.Inventory;
+﻿using System;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_GM
 {
@@ -33,5 +34,12 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_GM
 		{
 			return DecryptNonce3Des(Kπ, EncryptedNonce);
 		}
+
+		/// <summary>
+		/// Gets the authenticator
+		/// </summary>
+		/// <param name="Key">Key to use for authenticator.</param>
+		/// <returns>Authenticator</returns>
+		public override CMac GetAuthenticator(byte[] Key) => throw new NotImplementedException("CMAC 3DES not implemented.");  // TODO
 	}
 }

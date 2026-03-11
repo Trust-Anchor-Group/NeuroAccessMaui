@@ -1,4 +1,5 @@
-﻿using Waher.Runtime.Inventory;
+﻿using System.Threading.Tasks;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_GM
 {
@@ -17,5 +18,23 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_GM
 		/// Security strength mapped as a grade.
 		/// </summary>
 		public override Grade SecurityStrength => Grade.Excellent;
+
+		/// <summary>
+		/// Authenticates the application with the document, using the PACE protocol.
+		/// </summary>
+		/// <param name="IsoDep">NFC interface for communicating with the document.</param>
+		/// <param name="DocInfo">Document information.</param>
+		/// <returns>true if authenticated, false if unable to authenticate with the document.</returns>
+		public override Task<bool> Authenticate(IIsoDepInterface IsoDep, DocumentInformation DocInfo)
+		{
+			return GenericMapping.Authenticate(IsoDep, DocInfo, this);
+		}
+
+		/// <summary>
+		/// Gets the authenticator
+		/// </summary>
+		/// <param name="Key">Key to use for authenticator.</param>
+		/// <returns>Authenticator</returns>
+		public override CMac GetAuthenticator(byte[] Key) => CMac.CreateAes192CMac(Key);
 	}
 }

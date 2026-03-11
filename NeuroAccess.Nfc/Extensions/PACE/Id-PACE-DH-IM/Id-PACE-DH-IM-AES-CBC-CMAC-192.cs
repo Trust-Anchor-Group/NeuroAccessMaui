@@ -17,5 +17,12 @@ namespace NeuroAccess.Nfc.Extensions.PACE.Id_PACE_DH_IM
 		/// Security strength mapped as a grade.
 		/// </summary>
 		public override Grade SecurityStrength => Grade.NotAtAll;   // TODO: When implemented: Grade.Ok;     // RSA cannot have a higher than Ok grade.
+
+		/// <summary>
+		/// Gets the authenticator
+		/// </summary>
+		/// <param name="Key">Key to use for authenticator.</param>
+		/// <returns>Authenticator</returns>
+		public override CMac GetAuthenticator(byte[] Key) => CMac.CreateAes192CMac(Key);
 	}
 }
