@@ -213,14 +213,14 @@ namespace NeuroAccess.Nfc.Test
 
 			// Shared Secret
 
-			byte[] H = EecProtocol.GetSharedSecret(ChipCurve.PublicKey);
+			byte[] H = EecProtocol.GetSharedSecret(ChipCurve.PublicKeyBigEndian);
 
 			Assert.AreEqual(SharedSecret.Replace(" ", string.Empty),
 				Hashes.BinaryToString(H).ToUpperInvariant());
 
 			// Map
 
-			PointOnCurve Ĝ = EecProtocol.GetGenericMap(s, ChipCurve.PublicKey);
+			PointOnCurve Ĝ = EecProtocol.GetGenericMap(s, ChipCurve.PublicKeyBigEndian);
 			byte[] Generator = EecProtocol.Curve.Encode(Ĝ, true);
 
 			Assert.AreEqual(MappedGenerator.Replace(" ", string.Empty),

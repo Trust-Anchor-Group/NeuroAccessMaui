@@ -769,7 +769,7 @@ namespace NeuroAccess.Nfc.Extensions
 		/// <returns>Nonce</returns>
 		public static async Task<byte[]?> GetPaceEncryptedNonce(this IIsoDepInterface TagInterface)
 		{
-			TagInterface.Information("GetEncryptedNonce");
+			TagInterface.Information("General Authenticate (Get Encrypted Nonce)");
 
 			byte[] Command =
 			[
@@ -819,6 +819,7 @@ namespace NeuroAccess.Nfc.Extensions
 			return DecodePublicKey(await GeneralAuthenticate(TagInterface,
 				EncodePublicKey(LocalPublicKey),
 				"Get Remote Public Key",
+				false,	// More commands in chain expected
 				0x81,   // Mapping Data
 				0x82));  // Mapping Data response
 		}
@@ -835,6 +836,7 @@ namespace NeuroAccess.Nfc.Extensions
 			return DecodePublicKey(await GeneralAuthenticate(TagInterface,
 				EncodePublicKey(LocalPublicEphemeralKey),
 				"Get Remote Ephemeral Public Key",
+				false,	// More commands in chain expected
 				0x83,   // Terminal's Ephemeral Public Key 
 				0x84));  // Chip's Ephemeral Public Key
 		}
@@ -850,6 +852,7 @@ namespace NeuroAccess.Nfc.Extensions
 		{
 			return GeneralAuthenticate(TagInterface, LocalVerificationToken,
 				"Get Remote Verification Token",
+				true,	// Last command in chain
 				0x85,   // Terminal's Verification Token
 				0x86);  // Chip's Verification Token
 		}
@@ -879,7 +882,7 @@ namespace NeuroAccess.Nfc.Extensions
 		}
 
 		private static async Task<byte[]?> GeneralAuthenticate(this IIsoDepInterface TagInterface,
-			byte[] Data, string Comment, byte Command, byte ExpectedResponse)
+			byte[] Data, string Comment, bool LastInChain, byte Command, byte ExpectedResponse)
 		{
 			TagInterface.Information("General Authenticate (" + Comment + ")");
 
@@ -887,7 +890,7 @@ namespace NeuroAccess.Nfc.Extensions
 
 			byte[] Request = CONCAT(
 				[
-					ISO_7816.Classes.Chaining,
+					LastInChain ? ISO_7816.Classes.Basic : ISO_7816.Classes.Chaining,
 					ISO_7816.Instructions.GeneralAuthenticate,
 					0x00,									// P1
 					0x00,									// P2
@@ -896,7 +899,7 @@ namespace NeuroAccess.Nfc.Extensions
 				[
 					[
 						0x7c,			// Dynamic Authentication Data
-						(byte)(c + 3),
+						(byte)(c + 2),
 						Command,
 						(byte)c
 					],

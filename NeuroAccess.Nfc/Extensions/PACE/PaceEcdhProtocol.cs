@@ -147,7 +147,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		{
 			//return this.curve!.GetSharedKey(RemotePublicKey, this.HashFunction);
 
-			PointOnCurve H = this.curve!.GetSharedPoint(RemotePublicKey, false);
+			PointOnCurve H = this.curve!.GetSharedPoint(RemotePublicKey, true);
 
 			byte[] X = H.X.ToByteArray();   // Little endian
 			byte[] Y = H.Y.ToByteArray();   // Little endian
@@ -180,7 +180,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		public PointOnCurve GetGenericMap(byte[] s, byte[] RemotePublicKey)
 		{
 			PointOnCurve G = this.curve!.BasePoint;
-			PointOnCurve H = this.curve.GetSharedPoint(RemotePublicKey, false);
+			PointOnCurve H = this.curve.GetSharedPoint(RemotePublicKey, true);
 
 			byte[] s2 = (byte[])s.Clone();
 			Array.Reverse(s2);

@@ -44,12 +44,24 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 
 				// Main keys
 
-				byte[] LocalPublicKey = Protocol.CreateNewKey();
-				byte[]? RemotePublicKey = await IsoDep.GetPaceRemotePublicKey(LocalPublicKey);
+				byte[] LocalPublicKey = Protocol.CreateNewKey();	// Creates a public key in big-endian format.
+
+				IsoDep.Information("Local public key: " + Hashes.BinaryToString(LocalPublicKey));
+				IsoDep.Information("Local private key: " + Protocol.Curve.Export());
+
+				byte[]? RemotePublicKey = await IsoDep.GetPaceRemotePublicKey(LocalPublicKey);  // Big-endian format.
 
 				if (RemotePublicKey is null)
 				{
 					IsoDep.Error("Unable to get PACE remote public key.");
+					return false;
+				}
+
+				IsoDep.Information("Remote public key: " + Hashes.BinaryToString(RemotePublicKey));
+
+				if (!Protocol.Curve.IsPoint(RemotePublicKey, true))
+				{
+					IsoDep.Error("Remote public key not on curve.");
 					return false;
 				}
 
@@ -62,19 +74,35 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 				// Map
 
 				PointOnCurve Ĝ = Protocol.GetGenericMap(s, RemotePublicKey);
-				byte[] Generator = Protocol.Curve!.Encode(Ĝ, true);
+				byte[] Generator = Protocol.Curve.Encode(Ĝ, true);
+
+				IsoDep.Information("Generator Ĝ: " + Hashes.BinaryToString(Generator));
+
 
 				// Ephemeral keys
 
 				byte[] LocalEphemeralPrivateKey = Protocol.Curve.GenerateSecret();
+
+				IsoDep.Information("Local ephemeral private key: " + Hashes.BinaryToString(LocalEphemeralPrivateKey));
+
 				PointOnCurve P1 = Protocol.Curve.ScalarMultiplication(LocalEphemeralPrivateKey, Ĝ, true);
 				byte[] LocalEphemeralPublicKey = Protocol.Curve.Encode(P1, true);
+
+				IsoDep.Information("Local ephemeral public key: " + Hashes.BinaryToString(LocalEphemeralPublicKey));
 
 				byte[]? RemoteEphemeralPublicKey = await IsoDep.GetPaceRemotePublicEphemeralKey(LocalEphemeralPublicKey);
 
 				if (RemoteEphemeralPublicKey is null)
 				{
 					IsoDep.Error("Unable to get PACE remote ephemeral public key.");
+					return false;
+				}
+
+				IsoDep.Information("Remote ephemeral public key: " + Hashes.BinaryToString(RemoteEphemeralPublicKey));
+
+				if (!Protocol.Curve.IsPoint(RemoteEphemeralPublicKey, true))
+				{
+					IsoDep.Error("Remote ephemeral public key not on curve.");
 					return false;
 				}
 
@@ -98,22 +126,30 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 				PointOnCurve EphemeralSharedPoint = Protocol.Curve.ScalarMultiplication(
 					LocalEphemeralPrivateKey, RemoteEphemeralPublicPoint, true);
 
-				byte[] EphemeralSharedPointX = EphemeralSharedPoint.X.ToByteArray();
+				byte[] EphemeralSharedPointX = EphemeralSharedPoint.X.ToByteArray();	// Little-endian
 
 				if (EphemeralSharedPointX.Length != Protocol.Curve.OrderBytes)
 					Array.Resize(ref EphemeralSharedPointX, Protocol.Curve.OrderBytes);
 
-				Array.Reverse(EphemeralSharedPointX);
+				Array.Reverse(EphemeralSharedPointX);                                   // Big-endian
+
+				IsoDep.Information("Ephemeral shared secret: " + Hashes.BinaryToString(EphemeralSharedPointX));
 
 				// Session keys
 
 				byte[] KS_Enc = PaceProtocol.KDF_Enc(EphemeralSharedPointX, false);
 				byte[] KS_Mac = PaceProtocol.KDF_Mac(EphemeralSharedPointX, false);
 
+				IsoDep.Information("KS_Enc: " + Hashes.BinaryToString(KS_Enc));
+				IsoDep.Information("KS_Mac: " + Hashes.BinaryToString(KS_Mac));
+
 				// Associated Data
 
 				byte[] AD_IFD = PaceProtocol.CreateAssociatedData(Protocol.Oid, RemoteEphemeralPublicKey);
 				byte[] AD_IC = PaceProtocol.CreateAssociatedData(Protocol.Oid, LocalEphemeralPublicKey);
+
+				IsoDep.Information("AD_IFD: " + Hashes.BinaryToString(AD_IFD));
+				IsoDep.Information("AD_IC: " + Hashes.BinaryToString(AD_IC));
 
 				// Computing MAC
 
@@ -122,9 +158,20 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 				byte[] T_IFD = Mac.Sign(AD_IFD, 8);
 				byte[] T_IC = Mac.Sign(AD_IC, 8);
 
+				IsoDep.Information("T_IFD: " + Hashes.BinaryToString(T_IFD));
+				IsoDep.Information("T_IC: " + Hashes.BinaryToString(T_IC));
+
 				byte[]? RemoteToken = await IsoDep.GetPaceRemoteVerificationToken(T_IFD);
-				if (RemoteToken is null || RemoteToken.Length != T_IC.Length ||
-					Convert.ToBase64String(T_IC) != Convert.ToBase64String(RemoteToken))
+
+				if (RemoteToken is null)
+				{
+					IsoDep.Error("Unable to get remote token.");
+					return false;
+				}
+
+				IsoDep.Information("Remote Token: " + Hashes.BinaryToString(RemoteToken));
+
+				if (Convert.ToBase64String(T_IC) != Convert.ToBase64String(RemoteToken))
 				{
 					IsoDep.Error("PACE token validation failed.");
 					return false;
