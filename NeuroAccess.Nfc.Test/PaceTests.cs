@@ -162,6 +162,9 @@ namespace NeuroAccess.Nfc.Test
 			// Input data
 			"7F494F06 0A04007F 00070202 04020286 41049E88 0F842905 B8B3181F 7AF7CAA9 F0EFB743 847F44A3 06D2D28C 1D9EC65D F6DB7764 B22277A2 EDDC3C26 5A9F018F 9CB852E1 11B768B3 26904B59 A0193776 F094",
 			"7F494F06 0A04007F 00070202 04020286 41042DB7 A64C0355 044EC9DF 190514C6 25CBA2CE A4875488 7122F3A5 EF0D5EDD 301C3556 F3B3B186 DF10B857 B58F6A7E B80F20BA 5DC7BE1D 43D9BF85 0149FBB3 6462",
+			// MAC tokens
+			"C2B0BD78 D94BA866",
+			"3ABB9674 BCE93C08",
 			false, typeof(Id_PACE_ECDH_GM_AES_CBC_CMAC_128), typeof(BrainpoolP256))]
 		public void Test_05_GenericMapping(string Mrz, string CardAccess,
 			string DecryptedNonce, string EncryptedNonce,
@@ -173,6 +176,7 @@ namespace NeuroAccess.Nfc.Test
 			string EphemeralSharedSecret,
 			string EncryptionKey, string SignatureKey,
 			string InputDataTerminal, string InputDataChip,
+			string TokenTerminal, string TokenChip,
 			bool IsBase64, Type AlgorithmType, Type CurveType)
 		{
 			Assert.IsTrue(TravelDocuments.ParseMrz(Mrz, out DocumentInformation? Info));
@@ -280,15 +284,27 @@ namespace NeuroAccess.Nfc.Test
 
 			// Input data
 
-			byte[] T_IFD = PaceProtocol.CreateAssociatedData(Oid, RemotePublicEphemeralKey);
-			byte[] T_IC = PaceProtocol.CreateAssociatedData(Oid, LocalPublicEphemeralKey);
+			byte[] AD_IFD = PaceProtocol.CreateAssociatedData(Oid, RemotePublicEphemeralKey);
+			byte[] AD_IC = PaceProtocol.CreateAssociatedData(Oid, LocalPublicEphemeralKey);
 
 			Assert.AreEqual(InputDataTerminal.Replace(" ", string.Empty),
-				Hashes.BinaryToString(T_IFD).ToUpperInvariant());
+				Hashes.BinaryToString(AD_IFD).ToUpperInvariant());
 
 			Assert.AreEqual(InputDataChip.Replace(" ", string.Empty),
-				Hashes.BinaryToString(T_IC).ToUpperInvariant());
+				Hashes.BinaryToString(AD_IC).ToUpperInvariant());
 
+			// Computing MAC
+
+			CMac Mac = CMac.CreateAes128CMac(KS_Mac);
+
+			byte[] T_IFD = Mac.Sign(AD_IFD, 8);
+			byte[] T_IC = Mac.Sign(AD_IC, 8);
+
+			Assert.AreEqual(TokenTerminal.Replace(" ", string.Empty),
+				Hashes.BinaryToString(T_IFD).ToUpperInvariant());
+
+			Assert.AreEqual(TokenChip.Replace(" ", string.Empty),
+				Hashes.BinaryToString(T_IC).ToUpperInvariant());
 		}
 	}
 }
