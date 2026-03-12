@@ -137,8 +137,8 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 
 				// Session keys
 
-				byte[] KS_Enc = PaceProtocol.KDF_Enc(EphemeralSharedPointX, false);
-				byte[] KS_Mac = PaceProtocol.KDF_Mac(EphemeralSharedPointX, false);
+				byte[] KS_Enc = Protocol.KDF_Enc(EphemeralSharedPointX, false);
+				byte[] KS_Mac = Protocol.KDF_Mac(EphemeralSharedPointX, false);
 
 				IsoDep.Information("KS_Enc: " + Hashes.BinaryToString(KS_Enc));
 				IsoDep.Information("KS_Mac: " + Hashes.BinaryToString(KS_Mac));

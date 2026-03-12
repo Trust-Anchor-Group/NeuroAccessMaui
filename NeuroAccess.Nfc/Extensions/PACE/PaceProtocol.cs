@@ -155,9 +155,9 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// </summary>
 		/// <param name="KSeed">Key derivation seed value.</param>
 		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
-		public static byte[] KDF_Enc(byte[] KSeed, bool AdjustParity)
+		public byte[] KDF_Enc(byte[] KSeed, bool AdjustParity)
 		{
-			return TravelDocuments.KDF(KSeed, 1, AdjustParity, Hashes.ComputeSHA1Hash, 16);
+			return TravelDocuments.KDF(KSeed, 1, AdjustParity, this.KdfHashFunction, this.KdfHashKeyLength);
 		}
 
 		/// <summary>
@@ -165,9 +165,9 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// </summary>
 		/// <param name="KSeed">Key derivation seed value.</param>
 		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
-		public static byte[] KDF_Mac(byte[] KSeed, bool AdjustParity)
+		public byte[] KDF_Mac(byte[] KSeed, bool AdjustParity)
 		{
-			return TravelDocuments.KDF(KSeed, 2, AdjustParity, Hashes.ComputeSHA1Hash, 16);
+			return TravelDocuments.KDF(KSeed, 2, AdjustParity, this.KdfHashFunction, this.KdfHashKeyLength);
 		}
 
 		/// <summary>

@@ -274,11 +274,11 @@ namespace NeuroAccess.Nfc.Test
 
 			// Session keys
 
-			byte[] KS_Enc = PaceProtocol.KDF_Enc(EphemeralSharedPointX, false);
+			byte[] KS_Enc = EecProtocol.KDF_Enc(EphemeralSharedPointX, false);
 			Assert.AreEqual(EncryptionKey.Replace(" ", string.Empty),
 				Hashes.BinaryToString(KS_Enc).ToUpperInvariant());
 
-			byte[] KS_Mac = PaceProtocol.KDF_Mac(EphemeralSharedPointX, false);
+			byte[] KS_Mac = EecProtocol.KDF_Mac(EphemeralSharedPointX, false);
 			Assert.AreEqual(SignatureKey.Replace(" ", string.Empty),
 				Hashes.BinaryToString(KS_Mac).ToUpperInvariant());
 
