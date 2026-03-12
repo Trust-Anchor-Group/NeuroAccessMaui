@@ -22,12 +22,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE.Id_PACE_ECDH_GM
 		/// <summary>
 		/// Authenticates the application with the document, using the PACE protocol.
 		/// </summary>
-		/// <param name="IsoDep">NFC interface for communicating with the document.</param>
-		/// <param name="DocInfo">Document information.</param>
+		/// <param name="Client">Client connected to the document.</param>
 		/// <returns>true if authenticated, false if unable to authenticate with the document.</returns>
-		public override Task<bool> Authenticate(IIsoDepInterface IsoDep, DocumentInformation DocInfo)
+		public override Task<bool> Authenticate(TravelDocumentsClient Client)
 		{
-			return GenericMapping.Authenticate(IsoDep, DocInfo, this);
+			return Client.AuthenticateGenericMapping(this);
 		}
 
 		/// <summary>

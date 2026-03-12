@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Waher.Content;
 using Waher.Runtime.Inventory;
 using Waher.Security;
 
@@ -112,62 +111,39 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// <summary>
 		/// Authenticates the application with the document, using the PACE protocol.
 		/// </summary>
-		/// <param name="IsoDep">NFC interface for communicating with the document.</param>
-		/// <param name="DocInfo">Document information.</param>
+		/// <param name="Client">Client connected to the document.</param>
 		/// <returns>true if authenticated, false if unable to authenticate with the document.</returns>
-		public virtual Task<bool> Authenticate(IIsoDepInterface IsoDep, DocumentInformation DocInfo)
+		public virtual Task<bool> Authenticate(TravelDocumentsClient Client)
 		{
 			return Task.FromResult(false);
-		}
-
-		/// <summary>
-		/// Seed for computing cryptographic keys (§D.2)
-		/// </summary>
-		/// <param name="Info">Document Information</param>
-		public static byte[] K(DocumentInformation Info)
-		{
-			byte[] Data = InternetContent.ISO_8859_1.GetBytes(Info.MRZ_Information);
-			return Hashes.ComputeSHA1Hash(Data);
 		}
 
 		/// <summary>
 		/// KDFπ, as defined in §9.7.3 of ICAO 9303-11.
 		/// </summary>
 		/// <param name="Info">Document Information</param>
-		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
-		public byte[] KDFπ(DocumentInformation Info, bool AdjustParity)
+		public byte[] KDFπ(DocumentInformation Info)
 		{
-			return TravelDocumentsExtensions.KDF(K(Info), 3, AdjustParity, this.KdfHashFunction, this.KdfHashKeyLength);
-		}
-
-		/// <summary>
-		/// Calculates Kπ, given the shared secret and the document information.
-		/// </summary>
-		/// <param name="DocInfo">Document information.</param>
-		/// <returns>Kπ value.</returns>
-		public byte[] Kπ(DocumentInformation DocInfo)
-		{
-			return this.KDFπ(DocInfo, this.AdjustParity);
+			return TravelDocumentsClient.KDF(TravelDocumentsClient.K(Info), 3,
+				this.AdjustParity, this.KdfHashFunction, this.KdfHashKeyLength);
 		}
 
 		/// <summary>
 		/// KDF_Enc
 		/// </summary>
 		/// <param name="KSeed">Key derivation seed value.</param>
-		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
-		public byte[] KDF_Enc(byte[] KSeed, bool AdjustParity)
+		public byte[] KDF_Enc(byte[] KSeed)
 		{
-			return TravelDocumentsExtensions.KDF(KSeed, 1, AdjustParity, this.KdfHashFunction, this.KdfHashKeyLength);
+			return TravelDocumentsClient.KDF(KSeed, 1, this.AdjustParity, this.KdfHashFunction, this.KdfHashKeyLength);
 		}
 
 		/// <summary>
 		/// KDF_Mac
 		/// </summary>
 		/// <param name="KSeed">Key derivation seed value.</param>
-		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
-		public byte[] KDF_Mac(byte[] KSeed, bool AdjustParity)
+		public byte[] KDF_Mac(byte[] KSeed)
 		{
-			return TravelDocumentsExtensions.KDF(KSeed, 2, AdjustParity, this.KdfHashFunction, this.KdfHashKeyLength);
+			return TravelDocumentsClient.KDF(KSeed, 2, this.AdjustParity, this.KdfHashFunction, this.KdfHashKeyLength);
 		}
 
 		/// <summary>
@@ -192,9 +168,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// <param name="AdjustParity">If parity of bytes in Kπ should be adjusted (3DES).</param>
 		/// <param name="EncryptedNonce">Encrypted nonce.</param>
 		/// <returns>Decrypted nonce.</returns>
-		public byte[] DecryptNonce(DocumentInformation Info, bool AdjustParity, byte[] EncryptedNonce)
+		public byte[] DecryptNonce(DocumentInformation Info, byte[] EncryptedNonce)
 		{
-			byte[] Kπ = this.KDFπ(Info, AdjustParity);
+			byte[] Kπ = this.KDFπ(Info);
 			return this.DecryptNonce(Kπ, EncryptedNonce);
 		}
 

@@ -67,7 +67,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// </summary>
 		/// <param name="DocInfo">Document information.</param>
 		/// <returns>Kπ value.</returns>
-		byte[] Kπ(DocumentInformation DocInfo);
+		byte[] KDFπ(DocumentInformation DocInfo);
 
 		/// <summary>
 		/// Decrypts an encrypted nonce value.
@@ -80,10 +80,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// <summary>
 		/// Authenticates the application with the document, using the PACE protocol.
 		/// </summary>
-		/// <param name="IsoDep">NFC interface for communicating with the document.</param>
-		/// <param name="DocInfo">Document information.</param>
+		/// <param name="Client">Client connected to the document.</param>
 		/// <returns>true if authenticated, false if unable to authenticate with the document.</returns>
-		Task<bool> Authenticate(IIsoDepInterface IsoDep, DocumentInformation DocInfo);
+		Task<bool> Authenticate(TravelDocumentsClient Client);
 
 		/// <summary>
 		/// Gets the authenticator

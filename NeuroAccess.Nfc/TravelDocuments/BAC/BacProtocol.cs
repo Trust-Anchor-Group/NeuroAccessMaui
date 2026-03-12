@@ -41,7 +41,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.BAC
 		private static byte[] KDF(DocumentInformation Info, int Counter, bool AdjustParity)
 		{
 			byte[] KSeed = BacProtocol.KSeed(Info);
-			return TravelDocumentsExtensions.KDF(KSeed, Counter, AdjustParity, Hashes.ComputeSHA1Hash, 16);
+			return TravelDocumentsClient.KDF(KSeed, Counter, AdjustParity, Hashes.ComputeSHA1Hash, 16);
 		}
 
 		/// <summary>
@@ -56,7 +56,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.BAC
 		public static byte[] CalcChallengeResponse3DES(byte[] Challenge, byte[] Rnd1, byte[] Rnd2,
 			byte[] KEnc, byte[] KMac)
 		{
-			byte[] S = Rnd1.CONCAT(Challenge, Rnd2);
+			byte[] S = TravelDocumentsClient.CONCAT(Rnd1, Challenge, Rnd2);
 			byte[] EIFD;
 			byte[] MIFD;
 
@@ -122,7 +122,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.BAC
 				MIFD = H;
 			}
 
-			return EIFD.CONCAT(MIFD);
+			return TravelDocumentsClient.CONCAT(EIFD, MIFD);
 		}
 
 		/// <summary>

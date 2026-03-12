@@ -75,59 +75,18 @@ namespace NeuroAccessMaui.Services.Nfc
 									return;
 								}
 
-								// §4.2 1. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+								TravelDocumentsClient Client = new(IsoDep, DocInfo);
 
-								byte[]? Data = await IsoDep.DownloadFile(TravelDocumentsExtensions.ElementaryFiles.CardAccess);
-
-								if (Data is not null &&
-									TravelDocumentsExtensions.TryDecodeDER(Data, out object? CardAccess) &&
-									TryFindPaceProtocol(IsoDep, CardAccess, DocInfo, out IPaceProtocol? Protocol))
+								Client.StateChanged += (_, e) =>
 								{
-									// Optional: Read EF.DIR	§4.2 2. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+									// TODO: Forward state-information to UI.
+									return Task.CompletedTask;
+								};
 
-									// PACE
-									// §4.2 3. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
-
-									if (IsoDep.HasSniffers)
-										IsoDep.Information("PACE protocol " + Protocol.GetType().Name.Replace('_', '-') + " selected.");
-
-									if (!await TravelDocumentsExtensions.InitializePACE(IsoDep, Protocol))
-									{
-										IsoDep.Error("Unable to initialize PACE protocol.");
-										return;
-									}
-									else if (Protocol is PaceEcdhProtocol EecProtocol)
-										IsoDep.Information("PACE protocol initialized (" + EecProtocol.Curve?.CurveName + ").");
-									else
-										IsoDep.Information("PACE protocol initialized.");
-
-									if (!await Protocol.Authenticate(IsoDep, DocInfo))
-									{
-										IsoDep.Error("Authentication unsuccessful.");
-										return;
-									}
-								}
-								else
+								if (!await Client.Authenticate())
 								{
-									// BAC
-									// §4.2 4. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
-
-									IsoDep.Information("Attempting legacy BAC protocol.");
-
-									// §4.3, §D.3, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
-
-									byte[]? Challenge = await IsoDep.GetBacChallenge();
-
-									if (Challenge is null)
-									{
-										IsoDep.Error("Unable to get BAC challenge.");
-										return;
-									}
-
-									byte[] ChallengeResponse = BacProtocol.CalcChallengeResponse3DES(DocInfo, Challenge);
-									byte[]? Response = await IsoDep.ExternalBacAuthenticate(ChallengeResponse);
-
-									// TODO: Implement/Test BAC
+									// TODO: Forward failure to UI.
+									return;
 								}
 
 								// TODO: Read document
@@ -233,85 +192,6 @@ namespace NeuroAccessMaui.Services.Nfc
 		}
 
 		public delegate Task<bool> WriteItems(object[] Items);
-
-		public static bool TryFindPaceProtocol(IIsoDepInterface IsoDep, object? CardAccess,
-			DocumentInformation DocumentInfo, [NotNullWhen(true)] out IPaceProtocol? Protocol)
-		{
-			/*
-			 * Contents of EF.CardAccess:
-			 * 
-			 * SecurityInfos ::= SET of SecurityInfo 
-			 * 
-			 * SecurityInfo ::= SEQUENCE 
-			 * {
-			 *		protocol		OBJECT IDENTIFIER, 
-			 *		requiredData	ANY DEFINED BY protocol, 
-			 *		optionalData	ANY DEFINED BY protocol OPTIONAL 
-			 * }
-			*/
-
-			Protocol = null;
-
-			if (CardAccess is not Array SecurityInfos)
-				return false;
-
-			ChunkedList<string> OidsFound = [];
-			IPaceProtocol? Best = null;
-			IPaceProtocol? Current;
-
-			foreach (object Item in SecurityInfos)
-			{
-				if (Item is not Array SecurityInfo ||
-					SecurityInfo.Length == 0 ||
-					SecurityInfo.GetValue(0) is not string Oid)
-				{
-					continue;
-				}
-
-				OidsFound.Add(Oid);
-
-				Current = Types.FindBest<IPaceProtocol, string>(Oid);
-				if (Current is null)
-				{
-					if (IsoDep.HasSniffers)
-						IsoDep.Information("OID " + Oid + " lacks implemented support.");
-
-					continue;
-				}
-
-				if (IsoDep.HasSniffers)
-					IsoDep.Information("OID " + Oid + " (" + Current.GetType().Name.Replace('_', '-') + ") supported.");
-
-				if (!Current.Configure(SecurityInfo))
-					continue;
-
-				if (Best is null ||
-					Current.SecurityStrength > Best.SecurityStrength ||
-					(Current.SecurityStrength == Best.SecurityStrength &&
-					Current.ChipAuthenticationMapping && !Best.ChipAuthenticationMapping))
-				{
-					Best = Current;
-				}
-			}
-
-			if (Best is null || OidsFound.HasFirstItem)
-			{
-				// Notify operators & developers that ciphers have been detected that
-				// require implementation.
-				//
-				// Note: Do not include sensitive personal information in the log entry.
-
-				Log.Alert("No supported PACE protocol found. OIDs found: " +
-					string.Join(", ", OidsFound),
-					new KeyValuePair<string, object>("DocumentType", DocumentInfo.DocumentType ?? string.Empty),
-					new KeyValuePair<string, object>("IssuingState", DocumentInfo.IssuingState ?? string.Empty),
-					new KeyValuePair<string, object>("Nationality", DocumentInfo.Nationality ?? string.Empty));
-			}
-
-			Protocol = Best;
-
-			return Protocol is not null;
-		}
 
 		/// <summary>
 		/// Programs an NFC tag.

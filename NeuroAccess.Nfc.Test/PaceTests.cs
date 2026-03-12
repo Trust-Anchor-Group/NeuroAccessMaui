@@ -36,7 +36,7 @@ namespace NeuroAccess.Nfc.Test
 			Assert.AreEqual(DateOfBirth, Info.DateOfBirth);
 			Assert.AreEqual(ExpiryDate, Info.ExpiryDate);
 			Assert.AreEqual(MrzInformation, Info.MRZ_Information);
-			Assert.AreEqual(Kπ, Hashes.BinaryToString(new Id_PACE_ECDH_GM_AES_CBC_CMAC_128().KDFπ(Info, false)).ToUpperInvariant());
+			Assert.AreEqual(Kπ, Hashes.BinaryToString(new Id_PACE_ECDH_GM_AES_CBC_CMAC_128().KDFπ(Info)).ToUpperInvariant());
 		}
 
 		[TestMethod]
@@ -44,7 +44,7 @@ namespace NeuroAccess.Nfc.Test
 		public void Test_02_Parse_EF_CardAccess(string CardAccess, bool IsBase64)
 		{
 			byte[] Bin = Decode(CardAccess, IsBase64);
-			Assert.IsTrue(TravelDocumentsExtensions.TryDecodeDER(Bin, out object? Value));
+			Assert.IsTrue(TravelDocumentsClient.TryDecodeDER(Bin, out object? Value));
 			Assert.IsNotNull(Value);
 
 			Array? SecurityInfos = Value as Array;
@@ -73,7 +73,7 @@ namespace NeuroAccess.Nfc.Test
 			Type CurveType)
 		{
 			byte[] Bin = Decode(CardAccess, IsBase64);
-			Assert.IsTrue(TravelDocumentsExtensions.TryDecodeDER(Bin, out object? Value));
+			Assert.IsTrue(TravelDocumentsClient.TryDecodeDER(Bin, out object? Value));
 			Assert.IsNotNull(Value);
 
 			Array? SecurityInfo = Value as Array;
@@ -114,7 +114,7 @@ namespace NeuroAccess.Nfc.Test
 			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 
 			byte[] Bin = Decode(CardAccess, IsBase64);
-			Assert.IsTrue(TravelDocumentsExtensions.TryDecodeDER(Bin, out object? Value));
+			Assert.IsTrue(TravelDocumentsClient.TryDecodeDER(Bin, out object? Value));
 			Array? SecurityInfo = Value as Array;
 			string? Oid = SecurityInfo!.GetValue(0) as string;
 			IPaceProtocol? Protocol = Types.FindBest<IPaceProtocol, string>(Oid!);
@@ -122,7 +122,7 @@ namespace NeuroAccess.Nfc.Test
 			PaceEcdhProtocol? EecProtocol = (PaceEcdhProtocol)Protocol;
 
 			byte[] z = Decode(EncryptedNonce, IsBase64);
-			byte[] s = EecProtocol.DecryptNonce(Info!, false, z);
+			byte[] s = EecProtocol.DecryptNonce(Info!, z);
 
 			Assert.AreEqual(
 				DecryptedNonce.Replace(" ", string.Empty),
@@ -184,7 +184,7 @@ namespace NeuroAccess.Nfc.Test
 			// Elliptic Curve Parameters
 
 			byte[] Bin = Decode(CardAccess, IsBase64);
-			Assert.IsTrue(TravelDocumentsExtensions.TryDecodeDER(Bin, out object? Value));
+			Assert.IsTrue(TravelDocumentsClient.TryDecodeDER(Bin, out object? Value));
 			Array? SecurityInfo = (Array)Value!;
 			string? Oid = (string)SecurityInfo.GetValue(0)!;
 			PaceEcdhProtocol? EecProtocol = (PaceEcdhProtocol)Types.FindBest<IPaceProtocol, string>(Oid);
@@ -194,7 +194,7 @@ namespace NeuroAccess.Nfc.Test
 			// Encrypted Nonce
 
 			byte[] z = Decode(EncryptedNonce, IsBase64);
-			byte[] s = EecProtocol.DecryptNonce(Info!, false, z);
+			byte[] s = EecProtocol.DecryptNonce(Info!, z);
 
 			Assert.AreEqual(
 				DecryptedNonce.Replace(" ", string.Empty),
@@ -274,11 +274,11 @@ namespace NeuroAccess.Nfc.Test
 
 			// Session keys
 
-			byte[] KS_Enc = EecProtocol.KDF_Enc(EphemeralSharedPointX, false);
+			byte[] KS_Enc = EecProtocol.KDF_Enc(EphemeralSharedPointX);
 			Assert.AreEqual(EncryptionKey.Replace(" ", string.Empty),
 				Hashes.BinaryToString(KS_Enc).ToUpperInvariant());
 
-			byte[] KS_Mac = EecProtocol.KDF_Mac(EphemeralSharedPointX, false);
+			byte[] KS_Mac = EecProtocol.KDF_Mac(EphemeralSharedPointX);
 			Assert.AreEqual(SignatureKey.Replace(" ", string.Empty),
 				Hashes.BinaryToString(KS_Mac).ToUpperInvariant());
 
