@@ -42,9 +42,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			this.tagInterface = TagInterface;
 			this.documentInformation = DocumentInformation;
 			this.state = TravelDocumentsState.Detected;
-
-			foreach (ISniffer Sniffer in Sniffers)
-				TagInterface.Add(Sniffer);
 		}
 
 		/// <summary>
@@ -77,8 +74,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		{
 			await this.SetState(TravelDocumentsState.SelectingFile, FileId);
 
-			if (this.tagInterface.HasSniffers)
-				this.tagInterface.Information("SelectFile(" + FileId.ToString("X4") + ")");
+			if (this.HasSniffers)
+				this.Information("SelectFile(" + FileId.ToString("X4") + ")");
 
 			byte[] Command =
 			[
@@ -91,7 +88,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				(byte)FileId
 			];
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Command);
+			byte[] Response = await this.tagInterface.ExecuteCommand(Command, this);
 
 			return this.CheckResponse(Response);
 		}
@@ -115,42 +112,42 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return true;
 
 				case Iso7816StatusCategory.DataStillAvailable:
-					this.tagInterface.Information(SW2.ToString() + " bytes still available");
+					this.Information(SW2.ToString() + " bytes still available");
 					return true;
 
 				case Iso7816StatusCategory.WarningUnchanged:
 					switch (SW2)
 					{
 						case 0:
-							this.tagInterface.Warning("Warning, state unchanged. No information given.");
+							this.Warning("Warning, state unchanged. No information given.");
 							break;
 
 						default:
-							this.tagInterface.Warning("Warning " + SW2.ToString("X2") + " triggered by card. State unchanged.");
+							this.Warning("Warning " + SW2.ToString("X2") + " triggered by card. State unchanged.");
 							break;
 
 						case 0x81:
-							this.tagInterface.Warning("Part of returned data may be corrupted");
+							this.Warning("Part of returned data may be corrupted");
 							break;
 
 						case 0x82:
-							this.tagInterface.Warning("End of file or record reached before reading Ne bytes.");
+							this.Warning("End of file or record reached before reading Ne bytes.");
 							break;
 
 						case 0x83:
-							this.tagInterface.Warning("Selected file deactivated.");
+							this.Warning("Selected file deactivated.");
 							break;
 
 						case 0x84:
-							this.tagInterface.Warning("File control information not formatted correctly.");
+							this.Warning("File control information not formatted correctly.");
 							break;
 
 						case 0x85:
-							this.tagInterface.Warning("Selected file in termination state.");
+							this.Warning("Selected file in termination state.");
 							break;
 
 						case 0x86:
-							this.tagInterface.Warning("No input data available from a sensor on the card.");
+							this.Warning("No input data available from a sensor on the card.");
 							break;
 					}
 					return true;
@@ -159,15 +156,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					switch (SW2)
 					{
 						case 0:
-							this.tagInterface.Warning("Warning, state changed. No information given.");
+							this.Warning("Warning, state changed. No information given.");
 							break;
 
 						default:
-							this.tagInterface.Warning("Warning " + SW2.ToString("X2") + " triggered by card. State changed.");
+							this.Warning("Warning " + SW2.ToString("X2") + " triggered by card. State changed.");
 							break;
 
 						case 0x81:
-							this.tagInterface.Warning("File filled up by the last write.");
+							this.Warning("File filled up by the last write.");
 							break;
 					}
 					return true;
@@ -176,15 +173,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					switch (SW2)
 					{
 						case 0:
-							this.tagInterface.Error("Error, state unchanged. No information given.");
+							this.Error("Error, state unchanged. No information given.");
 							break;
 
 						default:
-							this.tagInterface.Error("Error " + SW2.ToString("X2") + " triggered by card. State unchanged.");
+							this.Error("Error " + SW2.ToString("X2") + " triggered by card. State unchanged.");
 							break;
 
 						case 0x01:
-							this.tagInterface.Error("Immediate response required by the card.");
+							this.Error("Immediate response required by the card.");
 							break;
 					}
 					return false;
@@ -193,52 +190,52 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					switch (SW2)
 					{
 						case 0:
-							this.tagInterface.Error("Error, state changed. No information given.");
+							this.Error("Error, state changed. No information given.");
 							break;
 
 						default:
-							this.tagInterface.Error("Error " + SW2.ToString("X2") + " triggered by card. State changed.");
+							this.Error("Error " + SW2.ToString("X2") + " triggered by card. State changed.");
 							break;
 
 						case 0x81:
-							this.tagInterface.Error("Memory failure.");
+							this.Error("Memory failure.");
 							break;
 					}
 					return false;
 
 				case Iso7816StatusCategory.SecurityIssue:
-					this.tagInterface.Error("Security issue detected.");
+					this.Error("Security issue detected.");
 					return false;
 
 				case Iso7816StatusCategory.WrongLength:
-					this.tagInterface.Error("Wrong length.");
+					this.Error("Wrong length.");
 					return false;
 
 				case Iso7816StatusCategory.FunctionNotSupported:
 					switch (SW2)
 					{
 						case 0:
-							this.tagInterface.Error("Function Not Supported. No information given.");
+							this.Error("Function Not Supported. No information given.");
 							break;
 
 						default:
-							this.tagInterface.Error("Function Not Supported " + SW2.ToString("X2") + " triggered by card.");
+							this.Error("Function Not Supported " + SW2.ToString("X2") + " triggered by card.");
 							break;
 
 						case 0x81:
-							this.tagInterface.Error("Logical channel not supported.");
+							this.Error("Logical channel not supported.");
 							break;
 
 						case 0x82:
-							this.tagInterface.Error("Secure messaging not supported.");
+							this.Error("Secure messaging not supported.");
 							break;
 
 						case 0x83:
-							this.tagInterface.Error("Last command of the chain expected.");
+							this.Error("Last command of the chain expected.");
 							break;
 
 						case 0x84:
-							this.tagInterface.Error("Command chaining not supported.");
+							this.Error("Command chaining not supported.");
 							break;
 					}
 					return false;
@@ -247,43 +244,43 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					switch (SW2)
 					{
 						case 0:
-							this.tagInterface.Error("Not Allowed. No information given.");
+							this.Error("Not Allowed. No information given.");
 							break;
 
 						default:
-							this.tagInterface.Error("Not Allowed " + SW2.ToString("X2") + " triggered by card.");
+							this.Error("Not Allowed " + SW2.ToString("X2") + " triggered by card.");
 							break;
 
 						case 0x81:
-							this.tagInterface.Error("Command incompatible with file structure.");
+							this.Error("Command incompatible with file structure.");
 							break;
 
 						case 0x82:
-							this.tagInterface.Error("Security status not satisfied.");
+							this.Error("Security status not satisfied.");
 							break;
 
 						case 0x83:
-							this.tagInterface.Error("Authentication method blocked.");
+							this.Error("Authentication method blocked.");
 							break;
 
 						case 0x84:
-							this.tagInterface.Error("Reference data not usable.");
+							this.Error("Reference data not usable.");
 							break;
 
 						case 0x85:
-							this.tagInterface.Error("Conditions of use not satisfied.");
+							this.Error("Conditions of use not satisfied.");
 							break;
 
 						case 0x86:
-							this.tagInterface.Error("Command not allowed (no current EF).");
+							this.Error("Command not allowed (no current EF).");
 							break;
 
 						case 0x87:
-							this.tagInterface.Error("Expected secure messaging data objects missing.");
+							this.Error("Expected secure messaging data objects missing.");
 							break;
 
 						case 0x88:
-							this.tagInterface.Error("Incorrect secure messaging data objects.");
+							this.Error("Incorrect secure messaging data objects.");
 							break;
 					}
 					return false;
@@ -292,65 +289,65 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					switch (SW2)
 					{
 						case 0:
-							this.tagInterface.Error("Wrong Parameters. No information given.");
+							this.Error("Wrong Parameters. No information given.");
 							break;
 
 						default:
-							this.tagInterface.Error("Wrong Parameters " + SW2.ToString("X2") + " triggered by card.");
+							this.Error("Wrong Parameters " + SW2.ToString("X2") + " triggered by card.");
 							break;
 
 						case 0x80:
-							this.tagInterface.Error("Incorrect parameters in the command data field.");
+							this.Error("Incorrect parameters in the command data field.");
 							break;
 
 						case 0x81:
-							this.tagInterface.Error("Function not supported.");
+							this.Error("Function not supported.");
 							break;
 
 						case 0x82:
-							this.tagInterface.Error("File or application not found.");
+							this.Error("File or application not found.");
 							break;
 
 						case 0x83:
-							this.tagInterface.Error("Record not found.");
+							this.Error("Record not found.");
 							break;
 
 						case 0x84:
-							this.tagInterface.Error("Not enough memory space in the file.");
+							this.Error("Not enough memory space in the file.");
 							break;
 
 						case 0x85:
-							this.tagInterface.Error("Nc inconsistent with TLV structure.");
+							this.Error("Nc inconsistent with TLV structure.");
 							break;
 
 						case 0x86:
-							this.tagInterface.Error("Incorrect parameters P1-P2.");
+							this.Error("Incorrect parameters P1-P2.");
 							break;
 
 						case 0x87:
-							this.tagInterface.Error("Nc inconsistent with parameters P1-P2.");
+							this.Error("Nc inconsistent with parameters P1-P2.");
 							break;
 
 						case 0x88:
-							this.tagInterface.Error("Referenced data or reference data not found (exact meaning depending on the command).");
+							this.Error("Referenced data or reference data not found (exact meaning depending on the command).");
 							break;
 
 						case 0x89:
-							this.tagInterface.Error("File already exists.");
+							this.Error("File already exists.");
 							break;
 
 						case 0x8A:
-							this.tagInterface.Error("DF name already exists.");
+							this.Error("DF name already exists.");
 							break;
 					}
 					return false;
 
 				case Iso7816StatusCategory.WrongLeField:
-					this.tagInterface.Error("Le field incorrect. Should be " + SW2.ToString("X2"));
+					this.Error("Le field incorrect. Should be " + SW2.ToString("X2"));
 					return false;
 
 				default:
-					this.tagInterface.Error("Unexpected response received. SW1=" + SW1.ToString("X2") +
+					this.Error("Unexpected response received. SW1=" + SW1.ToString("X2") +
 						", SW2=" + SW2.ToString("X2"));
 					return false;
 			}
@@ -374,8 +371,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		{
 			await this.SetState(TravelDocumentsState.ReadingBinary, Offset);
 
-			if (this.tagInterface.HasSniffers)
-				this.tagInterface.Information("ReadBinary(" + Offset.ToString("X4") + "," + NrBytes.ToString("X2") + ")");
+			if (this.HasSniffers)
+				this.Information("ReadBinary(" + Offset.ToString("X4") + "," + NrBytes.ToString("X2") + ")");
 
 			byte[] Command =
 			[
@@ -386,7 +383,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				NrBytes					// Le
 			];
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Command);
+			byte[] Response = await this.tagInterface.ExecuteCommand(Command, this);
 			int c = Response.Length;
 
 			if (!this.CheckResponse(Response))
@@ -396,7 +393,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					Response[^2] == (byte)Iso7816StatusCategory.WrongLeField)
 				{
 					Command[4] = Response[^1];
-					Response = await this.tagInterface.ExecuteCommand(Command);
+					Response = await this.tagInterface.ExecuteCommand(Command, this);
 
 					if (!this.CheckResponse(Response))
 						return new KeyValuePair<byte[]?, bool>(null, false);
@@ -487,14 +484,14 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				Current = Types.FindBest<IPaceProtocol, string>(Oid);
 				if (Current is null)
 				{
-					if (this.tagInterface.HasSniffers)
-						this.tagInterface.Information("OID " + Oid + " lacks implemented support.");
+					if (this.HasSniffers)
+						this.Information("OID " + Oid + " lacks implemented support.");
 
 					continue;
 				}
 
-				if (this.tagInterface.HasSniffers)
-					this.tagInterface.Information("OID " + Oid + " (" + Current.GetType().Name.Replace('_', '-') + ") supported.");
+				if (this.HasSniffers)
+					this.Information("OID " + Oid + " (" + Current.GetType().Name.Replace('_', '-') + ") supported.");
 
 				if (!Current.Configure(SecurityInfo))
 					continue;
@@ -534,8 +531,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		{
 			await this.SetState(TravelDocumentsState.SelectingCipher);
 
-			if (this.tagInterface.HasSniffers)
-				this.tagInterface.Information("MSE:Set AT(" + Protocol.Oid + ",MRZ)");
+			if (this.HasSniffers)
+				this.Information("MSE:Set AT(" + Protocol.Oid + ",MRZ)");
 
 			string[] Parts = Protocol.Oid.Split('.');
 			int i, c = Parts.Length - 1;
@@ -566,7 +563,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					]
 				]);
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Command);
+			byte[] Response = await this.tagInterface.ExecuteCommand(Command, this);
 
 			return this.CheckResponse(Response);
 		}
@@ -828,7 +825,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		{
 			await this.SetState(TravelDocumentsState.GettingNonce);
 
-			this.tagInterface.Information("General Authenticate (Get Encrypted Nonce)");
+			this.Information("General Authenticate (Get Encrypted Nonce)");
 
 			byte[] Command =
 			[
@@ -841,7 +838,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				0x00		// Le (Maximal response length: 256 bytes)
 			];
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Command);
+			byte[] Response = await this.tagInterface.ExecuteCommand(Command, this);
 
 			if (!this.CheckResponse(Response))
 				return null;
@@ -854,7 +851,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				Response[^2] != 0x90 ||
 				Response[^1] != 0x00)
 			{
-				this.tagInterface.Error("Unexpected response received.");
+				this.Error("Unexpected response received.");
 				return null;
 			}
 
@@ -944,7 +941,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		private async Task<byte[]?> GeneralAuthenticate(byte[] Data, string Comment, bool LastInChain,
 			byte Command, byte ExpectedResponse)
 		{
-			this.tagInterface.Information("General Authenticate (" + Comment + ")");
+			this.Information("General Authenticate (" + Comment + ")");
 
 			int c = Data.Length;
 
@@ -967,7 +964,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					[ 0x00 ]	// Le (Maximal response length: 256 bytes)
 				]);
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Request);
+			byte[] Response = await this.tagInterface.ExecuteCommand(Request, this);
 
 			if (!this.CheckResponse(Response))
 				return null;
@@ -980,7 +977,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				Response[^2] != 0x90 ||
 				Response[^1] != 0x00)
 			{
-				this.tagInterface.Error("Unexpected response received.");
+				this.Error("Unexpected response received.");
 				return null;
 			}
 
@@ -1000,7 +997,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		{
 			await this.SetState(TravelDocumentsState.GettingChallenge);
 
-			this.tagInterface.Information("GetChallenge");
+			this.Information("GetChallenge");
 
 			byte[] Command =
 			[
@@ -1011,14 +1008,14 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				0x08	// Le
 			];
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Command);
+			byte[] Response = await this.tagInterface.ExecuteCommand(Command, this);
 
 			if (!this.CheckResponse(Response))
 				return null;
 
 			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)
 			{
-				this.tagInterface.Error("Unexpected response received.");
+				this.Error("Unexpected response received.");
 				return null;
 			}
 
@@ -1037,7 +1034,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		{
 			await this.SetState(TravelDocumentsState.RespondingToChallenge);
 
-			this.tagInterface.Information("ChallengeResponse");
+			this.Information("ChallengeResponse");
 
 			byte Lc = (byte)ChallengeResponse.Length;
 			byte[] Command = CONCAT(
@@ -1053,14 +1050,14 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					0x28	// Le
 				]);
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Command);
+			byte[] Response = await this.tagInterface.ExecuteCommand(Command, this);
 
 			if (!this.CheckResponse(Response))
 				return null;
 
 			if (Response.Length != 10 || Response[8] != 0x90 || Response[9] != 0x00)
 			{
-				this.tagInterface.Error("Unexpected response received.");
+				this.Error("Unexpected response received.");
 				return null;
 			}
 
@@ -1091,22 +1088,22 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				// PACE
 				// §4.2 3. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
-				if (this.tagInterface.HasSniffers)
-					this.tagInterface.Information("PACE protocol " + Protocol.GetType().Name.Replace('_', '-') + " selected.");
+				if (this.HasSniffers)
+					this.Information("PACE protocol " + Protocol.GetType().Name.Replace('_', '-') + " selected.");
 
 				if (!await this.InitializePACE(Protocol))
 				{
-					this.tagInterface.Error("Unable to initialize PACE protocol.");
+					this.Error("Unable to initialize PACE protocol.");
 					return false;
 				}
 				else if (Protocol is PaceEcdhProtocol EecProtocol)
-					this.tagInterface.Information("PACE protocol initialized (" + EecProtocol.Curve?.CurveName + ").");
+					this.Information("PACE protocol initialized (" + EecProtocol.Curve?.CurveName + ").");
 				else
-					this.tagInterface.Information("PACE protocol initialized.");
+					this.Information("PACE protocol initialized.");
 
 				if (!await Protocol.Authenticate(this))
 				{
-					this.tagInterface.Error("Authentication unsuccessful.");
+					this.Error("Authentication unsuccessful.");
 					return false;
 				}
 			}
@@ -1115,7 +1112,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				// BAC
 				// §4.2 4. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
-				this.tagInterface.Information("Attempting legacy BAC protocol.");
+				this.Information("Attempting legacy BAC protocol.");
 
 				// §4.3, §D.3, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
@@ -1123,7 +1120,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				if (Challenge is null)
 				{
-					this.tagInterface.Error("Unable to get BAC challenge.");
+					this.Error("Unable to get BAC challenge.");
 					return false;
 				}
 
@@ -1255,37 +1252,37 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				byte[]? z = await this.GetPaceEncryptedNonce();
 				if (z is null)
 				{
-					this.tagInterface.Error("Unable to get PACE encrypted nonce.");
+					this.Error("Unable to get PACE encrypted nonce.");
 					return false;
 				}
 
-				this.tagInterface.Information("Encrypted nonce: " + Hashes.BinaryToString(z));
+				this.Information("Encrypted nonce: " + Hashes.BinaryToString(z));
 
 				byte[] Kπ = Protocol.KDFπ(this.documentInformation);
 				byte[] s = Protocol.DecryptNonce(Kπ, z);
 
-				this.tagInterface.Information("Decrypted nonce: " + Hashes.BinaryToString(s));
+				this.Information("Decrypted nonce: " + Hashes.BinaryToString(s));
 
 				// Main keys
 
 				byte[] LocalPublicKey = Protocol.CreateNewKey();    // Creates a public key in big-endian format.
 
-				this.tagInterface.Information("Local public key: " + Hashes.BinaryToString(LocalPublicKey));
-				this.tagInterface.Information("Local private key: " + Protocol.Curve.Export());
+				this.Information("Local public key: " + Hashes.BinaryToString(LocalPublicKey));
+				this.Information("Local private key: " + Protocol.Curve.Export());
 
 				byte[]? RemotePublicKey = await this.GetPaceRemotePublicKey(LocalPublicKey);  // Big-endian format.
 
 				if (RemotePublicKey is null)
 				{
-					this.tagInterface.Error("Unable to get PACE remote public key.");
+					this.Error("Unable to get PACE remote public key.");
 					return false;
 				}
 
-				this.tagInterface.Information("Remote public key: " + Hashes.BinaryToString(RemotePublicKey));
+				this.Information("Remote public key: " + Hashes.BinaryToString(RemotePublicKey));
 
 				if (!Protocol.Curve.IsPoint(RemotePublicKey, true))
 				{
-					this.tagInterface.Error("Remote public key not on curve.");
+					this.Error("Remote public key not on curve.");
 					return false;
 				}
 
@@ -1293,40 +1290,40 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				byte[] SharedSecret = Protocol.GetSharedSecret(RemotePublicKey);
 
-				this.tagInterface.Information("Shared secret: " + Hashes.BinaryToString(SharedSecret));
+				this.Information("Shared secret: " + Hashes.BinaryToString(SharedSecret));
 
 				// Map
 
 				PointOnCurve Ĝ = Protocol.GetGenericMap(s, RemotePublicKey);
 				byte[] Generator = Protocol.Curve.Encode(Ĝ, true);
 
-				this.tagInterface.Information("Generator Ĝ: " + Hashes.BinaryToString(Generator));
+				this.Information("Generator Ĝ: " + Hashes.BinaryToString(Generator));
 
 
 				// Ephemeral keys
 
 				byte[] LocalEphemeralPrivateKey = Protocol.Curve.GenerateSecret();
 
-				this.tagInterface.Information("Local ephemeral private key: " + Hashes.BinaryToString(LocalEphemeralPrivateKey));
+				this.Information("Local ephemeral private key: " + Hashes.BinaryToString(LocalEphemeralPrivateKey));
 
 				PointOnCurve P1 = Protocol.Curve.ScalarMultiplication(LocalEphemeralPrivateKey, Ĝ, true);
 				byte[] LocalEphemeralPublicKey = Protocol.Curve.Encode(P1, true);
 
-				this.tagInterface.Information("Local ephemeral public key: " + Hashes.BinaryToString(LocalEphemeralPublicKey));
+				this.Information("Local ephemeral public key: " + Hashes.BinaryToString(LocalEphemeralPublicKey));
 
 				byte[]? RemoteEphemeralPublicKey = await this.GetPaceRemotePublicEphemeralKey(LocalEphemeralPublicKey);
 
 				if (RemoteEphemeralPublicKey is null)
 				{
-					this.tagInterface.Error("Unable to get PACE remote ephemeral public key.");
+					this.Error("Unable to get PACE remote ephemeral public key.");
 					return false;
 				}
 
-				this.tagInterface.Information("Remote ephemeral public key: " + Hashes.BinaryToString(RemoteEphemeralPublicKey));
+				this.Information("Remote ephemeral public key: " + Hashes.BinaryToString(RemoteEphemeralPublicKey));
 
 				if (!Protocol.Curve.IsPoint(RemoteEphemeralPublicKey, true))
 				{
-					this.tagInterface.Error("Remote ephemeral public key not on curve.");
+					this.Error("Remote ephemeral public key not on curve.");
 					return false;
 				}
 
@@ -1357,23 +1354,23 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				Array.Reverse(EphemeralSharedPointX);                                   // Big-endian
 
-				this.tagInterface.Information("Ephemeral shared secret: " + Hashes.BinaryToString(EphemeralSharedPointX));
+				this.Information("Ephemeral shared secret: " + Hashes.BinaryToString(EphemeralSharedPointX));
 
 				// Session keys
 
 				byte[] KS_Enc = Protocol.KDF_Enc(EphemeralSharedPointX);
 				byte[] KS_Mac = Protocol.KDF_Mac(EphemeralSharedPointX);
 
-				this.tagInterface.Information("KS_Enc: " + Hashes.BinaryToString(KS_Enc));
-				this.tagInterface.Information("KS_Mac: " + Hashes.BinaryToString(KS_Mac));
+				this.Information("KS_Enc: " + Hashes.BinaryToString(KS_Enc));
+				this.Information("KS_Mac: " + Hashes.BinaryToString(KS_Mac));
 
 				// Associated Data
 
 				byte[] AD_IFD = PaceProtocol.CreateAssociatedData(Protocol.Oid, RemoteEphemeralPublicKey);
 				byte[] AD_IC = PaceProtocol.CreateAssociatedData(Protocol.Oid, LocalEphemeralPublicKey);
 
-				this.tagInterface.Information("AD_IFD: " + Hashes.BinaryToString(AD_IFD));
-				this.tagInterface.Information("AD_IC: " + Hashes.BinaryToString(AD_IC));
+				this.Information("AD_IFD: " + Hashes.BinaryToString(AD_IFD));
+				this.Information("AD_IC: " + Hashes.BinaryToString(AD_IC));
 
 				// Computing MAC
 
@@ -1381,34 +1378,33 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				byte[] T_IFD = Mac.Sign(AD_IFD, 8);
 
-				this.tagInterface.Information("T_IFD: " + Hashes.BinaryToString(T_IFD));
+				this.Information("T_IFD: " + Hashes.BinaryToString(T_IFD));
 
 				byte[]? RemoteToken = await this.GetPaceRemoteVerificationToken(T_IFD);
 
 				if (RemoteToken is null)
 				{
-					this.tagInterface.Error("Unable to get remote token.");
+					this.Error("Unable to get remote token.");
 					return false;
 				}
 
-				this.tagInterface.Information("Remote Token: " + Hashes.BinaryToString(RemoteToken));
+				this.Information("Remote Token: " + Hashes.BinaryToString(RemoteToken));
 
 				if (!Mac.Verify(AD_IC, RemoteToken))
 				{
 					byte[] T_IC = Mac.Sign(AD_IC, 8);
 
-					this.tagInterface.Error("PACE token validation failed. Expected _IC: " + Hashes.BinaryToString(T_IC));
+					this.Error("PACE token validation failed. Expected _IC: " + Hashes.BinaryToString(T_IC));
 					return false;
 				}
 
-				this.tagInterface.Information("Authentication successful.");
+				this.Information("Authentication successful.");
 
 				return true;
 			}
 			catch (Exception ex)
 			{
-				Log.Exception(ex);
-				this.tagInterface.Exception(ex);
+				this.Exception(ex);
 				return false;
 			}
 		}

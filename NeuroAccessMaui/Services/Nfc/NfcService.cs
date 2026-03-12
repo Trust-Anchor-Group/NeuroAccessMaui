@@ -62,16 +62,11 @@ namespace NeuroAccessMaui.Services.Nfc
 						if (!string.IsNullOrEmpty(Mrz) &&
 							TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? DocInfo))
 						{
+							TravelDocumentsClient Client = new(IsoDep, DocInfo,
+								ServiceRef.XmppService.RemoteSniffers);
+
 							try
 							{
-								if (DocInfo is null)
-								{
-									IsoDep.Error("Unable to parse MRZ information.");
-									return;
-								}
-
-								TravelDocumentsClient Client = new(IsoDep, DocInfo);
-
 								Client.StateChanged += (_, e) =>
 								{
 									// TODO: Forward state-information to UI.
@@ -88,7 +83,7 @@ namespace NeuroAccessMaui.Services.Nfc
 							}
 							catch (Exception ex)
 							{
-								IsoDep.Exception(ex);
+								Client.Exception(ex);
 							}
 							finally
 							{

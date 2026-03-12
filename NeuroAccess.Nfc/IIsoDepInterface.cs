@@ -6,7 +6,7 @@ namespace NeuroAccess.Nfc
 	/// <summary>
 	/// ISO DEP interface, for communication with an NFC Tag.
 	/// </summary>
-	public interface IIsoDepInterface : INfcInterface, ICommunicationLayer
+	public interface IIsoDepInterface : INfcInterface
 	{
 		/// <summary>
 		/// Return the higher layer response bytes for NfcB tags.
@@ -28,7 +28,8 @@ namespace NeuroAccess.Nfc
 		/// Executes an ISO 14443-4 command on the tag.
 		/// </summary>
 		/// <param name="Command">Command</param>
+		/// <param name="CommunicationLayer">Communication Layer</param>
 		/// <returns>Response</returns>
-		Task<byte[]> ExecuteCommand(byte[] Command);
+		Task<byte[]> ExecuteCommand(byte[] Command, ICommunicationLayer CommunicationLayer);
 	}
 }

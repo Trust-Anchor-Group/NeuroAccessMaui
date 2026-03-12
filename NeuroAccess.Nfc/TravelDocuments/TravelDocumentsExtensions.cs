@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 
 namespace NeuroAccess.Nfc.TravelDocuments
 {
@@ -29,7 +30,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <param name="MRZ">Machine-Readable text.</param>
 		/// <param name="Info">Parsed Document Information.</param>
 		/// <returns>If the string could be parsed.</returns>
-		public static bool ParseMrz(string MRZ, out DocumentInformation? Info)
+		public static bool ParseMrz(string MRZ, [NotNullWhen(true)] out DocumentInformation? Info)
 		{
 			Match M = td2_mrz_nr9charsplus.Match(MRZ);
 			if (M.Success)
