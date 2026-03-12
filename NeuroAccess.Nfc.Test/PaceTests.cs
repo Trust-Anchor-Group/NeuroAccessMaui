@@ -36,7 +36,7 @@ namespace NeuroAccess.Nfc.Test
 			Assert.AreEqual(DateOfBirth, Info.DateOfBirth);
 			Assert.AreEqual(ExpiryDate, Info.ExpiryDate);
 			Assert.AreEqual(MrzInformation, Info.MRZ_Information);
-			Assert.AreEqual(Kπ, Hashes.BinaryToString(PaceProtocol.KDFπ(Info, false)).ToUpperInvariant());
+			Assert.AreEqual(Kπ, Hashes.BinaryToString(new Id_PACE_ECDH_GM_AES_CBC_CMAC_128().KDFπ(Info, false)).ToUpperInvariant());
 		}
 
 		[TestMethod]

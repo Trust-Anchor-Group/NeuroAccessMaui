@@ -41,57 +41,7 @@ namespace NeuroAccess.Nfc.Extensions.BAC
 		private static byte[] KDF(DocumentInformation Info, int Counter, bool AdjustParity)
 		{
 			byte[] KSeed = BacProtocol.KSeed(Info);
-			return KDF(KSeed, Counter, AdjustParity);
-		}
-
-		/// <summary>
-		/// Basic Key-Derivation Function
-		/// </summary>
-		/// <param name="KSeed">Seed value</param>
-		/// <param name="Counter">Counter</param>
-		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
-		/// <returns>Key</returns>
-		public static byte[] KDF(byte[] KSeed, int Counter, bool AdjustParity)
-		{
-			int c = KSeed.Length;
-			byte[] D = new byte[c + 4];
-			Buffer.BlockCopy(KSeed, 0, D, 0, c);
-			int i;
-
-			for (i = c + 3; i >= c; i--)
-			{
-				D[i] = (byte)Counter;
-				Counter >>= 8;
-			}
-
-			byte[] H = Hashes.ComputeSHA1Hash(D);
-			Array.Resize(ref H, 16);
-
-			if (AdjustParity)
-				OddParity(H);
-
-			return H;
-		}
-
-		private static void OddParity(byte[] H)
-		{
-			int i, j, c = H.Length;
-			byte b;
-
-			for (i = 0; i < c; i++)
-			{
-				b = H[i];
-				j = 0;
-
-				while (b != 0)
-				{
-					j += b & 1;
-					b >>= 1;
-				}
-
-				if ((j & 1) == 0)
-					H[i] ^= 1;
-			}
+			return TravelDocuments.KDF(KSeed, Counter, AdjustParity, Hashes.ComputeSHA1Hash, 16);
 		}
 
 		/// <summary>

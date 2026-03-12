@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Waher.Runtime.Inventory;
+using Waher.Security;
 
 namespace NeuroAccess.Nfc.Extensions.PACE
 {
@@ -44,11 +45,14 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		IPaceProtocol CreateEphemeralKey();
 
 		/// <summary>
-		/// Hash function to use when deriving keys from the shared secret.
+		/// Hash function to use in the KDF function.
 		/// </summary>
-		/// <param name="Data">Data to hash.</param>
-		/// <returns>Hash digest.</returns>
-		byte[] HashFunction(byte[] Data);
+		HashFunctionArray KdfHashFunction { get; }
+
+		/// <summary>
+		/// Number of bytes of hash output to use as key material in the KDF function.
+		/// </summary>
+		int KdfHashKeyLength { get; }
 
 		/// <summary>
 		/// Gets the shared secret, given the local private key previously generated using

@@ -13,10 +13,13 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		public override int Bits => 256;
 
 		/// <summary>
-		/// Hash function to use when deriving keys from the shared secret.
+		/// Hash function to use in the KDF function.
 		/// </summary>
-		/// <param name="Data">Data to hash.</param>
-		/// <returns>Hash digest.</returns>
-		public override byte[] HashFunction(byte[] Data) => Hashes.ComputeSHA256Hash(Data);
+		public override HashFunctionArray KdfHashFunction => Hashes.ComputeSHA256Hash;
+
+		/// <summary>
+		/// Number of bytes of hash output to use as key material in the KDF function.
+		/// </summary>
+		public override int KdfHashKeyLength => 32;
 	}
 }

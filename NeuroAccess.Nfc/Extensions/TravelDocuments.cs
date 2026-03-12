@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using NeuroAccess.Nfc.Extensions.PACE;
 using Waher.Runtime.Collections;
 using Waher.Script.Functions.Scalar;
+using Waher.Security;
 
 namespace NeuroAccess.Nfc.Extensions
 {
@@ -640,6 +641,61 @@ namespace NeuroAccess.Nfc.Extensions
 		}
 
 		/// <summary>
+		/// Basic Key-Derivation Function
+		/// </summary>
+		/// <param name="KSeed">Seed value</param>
+		/// <param name="Counter">Counter</param>
+		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
+		/// <param name="HashFunction">Hash function to use.</param>
+		/// <param name="NrBytes">Maximum number of bytes to use for key.</param>
+		/// <returns>Key</returns>
+		public static byte[] KDF(byte[] KSeed, int Counter, bool AdjustParity,
+			HashFunctionArray HashFunction, int NrBytes)
+		{
+			int c = KSeed.Length;
+			byte[] D = new byte[c + 4];
+			Buffer.BlockCopy(KSeed, 0, D, 0, c);
+			int i;
+
+			for (i = c + 3; i >= c; i--)
+			{
+				D[i] = (byte)Counter;
+				Counter >>= 8;
+			}
+
+			byte[] H = HashFunction(D);
+
+			if (H.Length > NrBytes)
+				Array.Resize(ref H, NrBytes);
+
+			if (AdjustParity)
+				OddParity(H);
+
+			return H;
+		}
+
+		private static void OddParity(byte[] H)
+		{
+			int i, j, c = H.Length;
+			byte b;
+
+			for (i = 0; i < c; i++)
+			{
+				b = H[i];
+				j = 0;
+
+				while (b != 0)
+				{
+					j += b & 1;
+					b >>= 1;
+				}
+
+				if ((j & 1) == 0)
+					H[i] ^= 1;
+			}
+		}
+
+		/// <summary>
 		/// Decodes a DER-encoded object.
 		/// </summary>
 		/// <param name="Data">Binary data</param>
@@ -819,7 +875,7 @@ namespace NeuroAccess.Nfc.Extensions
 			return DecodePublicKey(await GeneralAuthenticate(TagInterface,
 				EncodePublicKey(LocalPublicKey),
 				"Get Remote Public Key",
-				false,	// More commands in chain expected
+				false,  // More commands in chain expected
 				0x81,   // Mapping Data
 				0x82));  // Mapping Data response
 		}
@@ -836,7 +892,7 @@ namespace NeuroAccess.Nfc.Extensions
 			return DecodePublicKey(await GeneralAuthenticate(TagInterface,
 				EncodePublicKey(LocalPublicEphemeralKey),
 				"Get Remote Ephemeral Public Key",
-				false,	// More commands in chain expected
+				false,  // More commands in chain expected
 				0x83,   // Terminal's Ephemeral Public Key 
 				0x84));  // Chip's Ephemeral Public Key
 		}
@@ -852,7 +908,7 @@ namespace NeuroAccess.Nfc.Extensions
 		{
 			return GeneralAuthenticate(TagInterface, LocalVerificationToken,
 				"Get Remote Verification Token",
-				true,	// Last command in chain
+				true,   // Last command in chain
 				0x85,   // Terminal's Verification Token
 				0x86);  // Chip's Verification Token
 		}

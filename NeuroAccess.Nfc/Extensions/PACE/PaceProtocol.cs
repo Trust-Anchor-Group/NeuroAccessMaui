@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using NeuroAccess.Nfc.Extensions.BAC;
 using Waher.Content;
 using Waher.Runtime.Inventory;
 using Waher.Security;
@@ -99,13 +98,6 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		public abstract IPaceProtocol CreateEphemeralKey();
 
 		/// <summary>
-		/// Hash function to use when deriving keys from the shared secret.
-		/// </summary>
-		/// <param name="Data">Data to hash.</param>
-		/// <returns>Hash digest.</returns>
-		public abstract byte[] HashFunction(byte[] Data);
-
-		/// <summary>
 		/// Gets the shared secret, given the local private key previously generated using
 		/// <see cref="CreateNewKey"/> and a remote public key.
 		/// </summary>
@@ -139,41 +131,13 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		}
 
 		/// <summary>
-		/// KDF_Enc
-		/// </summary>
-		/// <param name="Info">Document Information</param>
-		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
-		public static byte[] KDF_Enc(DocumentInformation Info, bool AdjustParity)
-		{
-			return BacProtocol.KEnc(Info);  // Only uses the first 16 bytes of K.
-			//return KDF(Info, 1, AdjustParity);  // KDF(K,1)
-		}
-
-		/// <summary>
-		/// KDF_Mac
-		/// </summary>
-		/// <param name="Info">Document Information</param>
-		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
-		public static byte[] KDF_Mac(DocumentInformation Info, bool AdjustParity)
-		{
-			return BacProtocol.KMac(Info);  // Only uses the first 16 bytes of K.
-			//return KDF(Info, 2, AdjustParity);  // KDF(K,2)
-		}
-
-		/// <summary>
 		/// KDFπ, as defined in §9.7.3 of ICAO 9303-11.
 		/// </summary>
 		/// <param name="Info">Document Information</param>
 		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
-		public static byte[] KDFπ(DocumentInformation Info, bool AdjustParity)
+		public byte[] KDFπ(DocumentInformation Info, bool AdjustParity)
 		{
-			return KDF(Info, 3, AdjustParity);  // KDF(K,3)
-		}
-
-		private static byte[] KDF(DocumentInformation Info, int Counter, bool AdjustParity)
-		{
-			byte[] K = PaceProtocol.K(Info);
-			return BacProtocol.KDF(K, Counter, AdjustParity);
+			return TravelDocuments.KDF(K(Info), 3, AdjustParity, this.KdfHashFunction, this.KdfHashKeyLength);
 		}
 
 		/// <summary>
@@ -183,7 +147,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// <returns>Kπ value.</returns>
 		public byte[] Kπ(DocumentInformation DocInfo)
 		{
-			return KDFπ(DocInfo, this.AdjustParity);
+			return this.KDFπ(DocInfo, this.AdjustParity);
 		}
 
 		/// <summary>
@@ -193,7 +157,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
 		public static byte[] KDF_Enc(byte[] KSeed, bool AdjustParity)
 		{
-			return BacProtocol.KDF(KSeed, 1, AdjustParity);
+			return TravelDocuments.KDF(KSeed, 1, AdjustParity, Hashes.ComputeSHA1Hash, 16);
 		}
 
 		/// <summary>
@@ -203,13 +167,23 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// <param name="AdjustParity">If parity in bytes should be adjusted (for 3DES only).</param>
 		public static byte[] KDF_Mac(byte[] KSeed, bool AdjustParity)
 		{
-			return BacProtocol.KDF(KSeed, 2, AdjustParity);
+			return TravelDocuments.KDF(KSeed, 2, AdjustParity, Hashes.ComputeSHA1Hash, 16);
 		}
 
 		/// <summary>
 		/// If parity of bytes in Kπ should be adjusted (3DES).
 		/// </summary>
 		public virtual bool AdjustParity => false;
+
+		/// <summary>
+		/// Hash function to use in the KDF function.
+		/// </summary>
+		public virtual HashFunctionArray KdfHashFunction => Hashes.ComputeSHA1Hash;
+
+		/// <summary>
+		/// Number of bytes of hash output to use as key material in the KDF function.
+		/// </summary>
+		public virtual int KdfHashKeyLength => 16;
 
 		/// <summary>
 		/// Decrypts an encrypted nonce value.
@@ -220,7 +194,7 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 		/// <returns>Decrypted nonce.</returns>
 		public byte[] DecryptNonce(DocumentInformation Info, bool AdjustParity, byte[] EncryptedNonce)
 		{
-			byte[] Kπ = KDFπ(Info, AdjustParity);
+			byte[] Kπ = this.KDFπ(Info, AdjustParity);
 			return this.DecryptNonce(Kπ, EncryptedNonce);
 		}
 
