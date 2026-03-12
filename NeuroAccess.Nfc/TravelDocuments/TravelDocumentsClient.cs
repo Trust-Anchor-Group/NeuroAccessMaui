@@ -72,6 +72,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>If file was selected.</returns>
 		public async Task<bool> SelectFile(ushort FileId)
 		{
+			// Ref §3.6.2, ISOC 9303-10: https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+
 			await this.SetState(TravelDocumentsState.SelectingFile, FileId);
 
 			if (this.HasSniffers)
@@ -369,6 +371,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>Read data, or null if an error occurred.</returns>
 		public async Task<KeyValuePair<byte[]?, bool>> ReadBinary(ushort Offset, byte NrBytes)
 		{
+			// Ref §3.6.3, ISOC 9303-10: https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+
 			await this.SetState(TravelDocumentsState.ReadingBinary, Offset);
 
 			if (this.HasSniffers)
