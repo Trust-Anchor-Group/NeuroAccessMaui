@@ -83,6 +83,7 @@ namespace NeuroAccessMaui.Services.Nfc
 							}
 							catch (Exception ex)
 							{
+								// TODO: Forward error to UI.
 								Client.Exception(ex);
 							}
 							finally
