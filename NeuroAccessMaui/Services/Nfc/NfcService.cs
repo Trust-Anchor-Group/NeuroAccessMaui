@@ -126,6 +126,8 @@ namespace NeuroAccessMaui.Services.Nfc
 
 									byte[] ChallengeResponse = BacProtocol.CalcChallengeResponse3DES(DocInfo, Challenge);
 									byte[]? Response = await IsoDep.ExternalBacAuthenticate(ChallengeResponse);
+
+									// TODO: Implement/Test BAC
 								}
 
 								// TODO: Read document

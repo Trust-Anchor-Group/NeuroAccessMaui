@@ -169,14 +169,15 @@ namespace NeuroAccess.Nfc.Extensions.PACE
 
 				IsoDep.Information("Remote Token: " + Hashes.BinaryToString(RemoteToken));
 
-				byte[] T_IC = Mac.Sign(AD_IC, 8);
-				IsoDep.Information("T_IC: " + Hashes.BinaryToString(T_IC));
-
-				if (!Mac.Verify(T_IC, RemoteToken))
+				if (!Mac.Verify(AD_IC, RemoteToken))
 				{
-					IsoDep.Error("PACE token validation failed.");
+					byte[] T_IC = Mac.Sign(AD_IC, 8);
+
+					IsoDep.Error("PACE token validation failed. Expected _IC: " + Hashes.BinaryToString(T_IC));
 					return false;
 				}
+
+				IsoDep.Information("Authentication successful.");
 
 				return true;
 			}
