@@ -112,7 +112,7 @@ using Waher.Security.JWT;
 using Waher.Security.LoginMonitor;
 using Waher.Things;
 using Waher.Layout;
-using NeuroAccess.Nfc.Extensions.PACE;
+using NeuroAccess.Nfc.TravelDocuments.PACE;
 
 namespace NeuroAccessMaui
 {

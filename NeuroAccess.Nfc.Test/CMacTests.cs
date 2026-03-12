@@ -1,4 +1,4 @@
-﻿using NeuroAccess.Nfc.Extensions.PACE;
+﻿using NeuroAccess.Nfc.TravelDocuments.PACE;
 using Waher.Security;
 
 namespace NeuroAccess.Nfc.Test

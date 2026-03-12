@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
-using NeuroAccess.Nfc.Extensions;
-using NeuroAccess.Nfc.Extensions.PACE;
-using NeuroAccess.Nfc.Extensions.PACE.Id_PACE_ECDH_GM;
+using NeuroAccess.Nfc.TravelDocuments;
+using NeuroAccess.Nfc.TravelDocuments.PACE;
+using NeuroAccess.Nfc.TravelDocuments.PACE.Id_PACE_ECDH_GM;
 using Waher.Runtime.Inventory;
 using Waher.Script.Constants;
 using Waher.Security;
@@ -31,7 +31,7 @@ namespace NeuroAccess.Nfc.Test
 		public void Test_01_Seed(string Mrz, string DocumentNumber, string DateOfBirth,
 			string ExpiryDate, string MrzInformation, string Kπ)
 		{
-			Assert.IsTrue(TravelDocuments.ParseMrz(Mrz, out DocumentInformation? Info));
+			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 			Assert.AreEqual(DocumentNumber, Info!.DocumentNumber);
 			Assert.AreEqual(DateOfBirth, Info.DateOfBirth);
 			Assert.AreEqual(ExpiryDate, Info.ExpiryDate);
@@ -44,7 +44,7 @@ namespace NeuroAccess.Nfc.Test
 		public void Test_02_Parse_EF_CardAccess(string CardAccess, bool IsBase64)
 		{
 			byte[] Bin = Decode(CardAccess, IsBase64);
-			Assert.IsTrue(TravelDocuments.TryDecodeDER(Bin, out object? Value));
+			Assert.IsTrue(TravelDocumentsExtensions.TryDecodeDER(Bin, out object? Value));
 			Assert.IsNotNull(Value);
 
 			Array? SecurityInfos = Value as Array;
@@ -73,7 +73,7 @@ namespace NeuroAccess.Nfc.Test
 			Type CurveType)
 		{
 			byte[] Bin = Decode(CardAccess, IsBase64);
-			Assert.IsTrue(TravelDocuments.TryDecodeDER(Bin, out object? Value));
+			Assert.IsTrue(TravelDocumentsExtensions.TryDecodeDER(Bin, out object? Value));
 			Assert.IsNotNull(Value);
 
 			Array? SecurityInfo = Value as Array;
@@ -111,10 +111,10 @@ namespace NeuroAccess.Nfc.Test
 		public void Test_04_DecryptNonce(string Mrz, string CardAccess,
 			string DecryptedNonce, string EncryptedNonce, bool IsBase64)
 		{
-			Assert.IsTrue(TravelDocuments.ParseMrz(Mrz, out DocumentInformation? Info));
+			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 
 			byte[] Bin = Decode(CardAccess, IsBase64);
-			Assert.IsTrue(TravelDocuments.TryDecodeDER(Bin, out object? Value));
+			Assert.IsTrue(TravelDocumentsExtensions.TryDecodeDER(Bin, out object? Value));
 			Array? SecurityInfo = Value as Array;
 			string? Oid = SecurityInfo!.GetValue(0) as string;
 			IPaceProtocol? Protocol = Types.FindBest<IPaceProtocol, string>(Oid!);
@@ -179,12 +179,12 @@ namespace NeuroAccess.Nfc.Test
 			string TokenTerminal, string TokenChip,
 			bool IsBase64, Type AlgorithmType, Type CurveType)
 		{
-			Assert.IsTrue(TravelDocuments.ParseMrz(Mrz, out DocumentInformation? Info));
+			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 
 			// Elliptic Curve Parameters
 
 			byte[] Bin = Decode(CardAccess, IsBase64);
-			Assert.IsTrue(TravelDocuments.TryDecodeDER(Bin, out object? Value));
+			Assert.IsTrue(TravelDocumentsExtensions.TryDecodeDER(Bin, out object? Value));
 			Array? SecurityInfo = (Array)Value!;
 			string? Oid = (string)SecurityInfo.GetValue(0)!;
 			PaceEcdhProtocol? EecProtocol = (PaceEcdhProtocol)Types.FindBest<IPaceProtocol, string>(Oid);

@@ -1,7 +1,7 @@
 ﻿using NeuroAccess.Nfc;
-using NeuroAccess.Nfc.Extensions;
-using NeuroAccess.Nfc.Extensions.BAC;
-using NeuroAccess.Nfc.Extensions.PACE;
+using NeuroAccess.Nfc.TravelDocuments;
+using NeuroAccess.Nfc.TravelDocuments.BAC;
+using NeuroAccess.Nfc.TravelDocuments.PACE;
 using NeuroAccess.Nfc.Records;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.Resources.Languages;
@@ -65,7 +65,7 @@ namespace NeuroAccessMaui.Services.Nfc
 						string Mrz = await RuntimeSettings.GetAsync("NFC.LastMrz", string.Empty);
 
 						if (!string.IsNullOrEmpty(Mrz) &&
-							TravelDocuments.ParseMrz(Mrz, out DocumentInformation? DocInfo))
+							TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? DocInfo))
 						{
 							try
 							{
@@ -77,10 +77,10 @@ namespace NeuroAccessMaui.Services.Nfc
 
 								// §4.2 1. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
-								byte[]? Data = await IsoDep.DownloadFile(TravelDocuments.ElementaryFiles.CardAccess);
+								byte[]? Data = await IsoDep.DownloadFile(TravelDocumentsExtensions.ElementaryFiles.CardAccess);
 
 								if (Data is not null &&
-									TravelDocuments.TryDecodeDER(Data, out object? CardAccess) &&
+									TravelDocumentsExtensions.TryDecodeDER(Data, out object? CardAccess) &&
 									TryFindPaceProtocol(IsoDep, CardAccess, DocInfo, out IPaceProtocol? Protocol))
 								{
 									// Optional: Read EF.DIR	§4.2 2. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
@@ -91,7 +91,7 @@ namespace NeuroAccessMaui.Services.Nfc
 									if (IsoDep.HasSniffers)
 										IsoDep.Information("PACE protocol " + Protocol.GetType().Name.Replace('_', '-') + " selected.");
 
-									if (!await TravelDocuments.InitializePACE(IsoDep, Protocol))
+									if (!await TravelDocumentsExtensions.InitializePACE(IsoDep, Protocol))
 									{
 										IsoDep.Error("Unable to initialize PACE protocol.");
 										return;
