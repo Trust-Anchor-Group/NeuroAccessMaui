@@ -124,7 +124,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// <param name="Info">Document Information</param>
 		public byte[] KDFπ(DocumentInformation Info)
 		{
-			return TravelDocumentsClient.KDF(TravelDocumentsClient.K(Info), 3,
+			return TravelDocumentsClient.KDF(TravelDocumentsClient.PACE_K(Info), 3,
 				this.AdjustParity, this.KdfHashFunction, this.KdfHashKeyLength);
 		}
 

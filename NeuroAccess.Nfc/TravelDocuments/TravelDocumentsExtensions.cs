@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Formats.Asn1;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using NeuroAccess.Nfc.TravelDocuments.PACE;
-using Waher.Runtime.Collections;
-using Waher.Security;
+﻿using System.Text.RegularExpressions;
 
 namespace NeuroAccess.Nfc.TravelDocuments
 {

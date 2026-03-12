@@ -1,19 +1,14 @@
 ﻿using NeuroAccess.Nfc;
 using NeuroAccess.Nfc.TravelDocuments;
-using NeuroAccess.Nfc.TravelDocuments.BAC;
-using NeuroAccess.Nfc.TravelDocuments.PACE;
 using NeuroAccess.Nfc.Records;
 using NeuroAccessMaui.UI.Pages;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.UI;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Security;
-using Waher.Runtime.Collections;
-using Waher.Events;
 
 namespace NeuroAccessMaui.Services.Nfc
 {

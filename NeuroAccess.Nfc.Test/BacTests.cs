@@ -1,5 +1,4 @@
 using NeuroAccess.Nfc.TravelDocuments;
-using NeuroAccess.Nfc.TravelDocuments.BAC;
 using System.Globalization;
 using Waher.Security;
 
@@ -32,13 +31,13 @@ namespace NeuroAccess.Nfc.Test
 			Assert.AreEqual("950712", Info.ExpiryDate);
 			Assert.AreEqual("D23145890734934071279507122", Info.MRZ_Information);
 
-			string KSeed = Hashes.BinaryToString(BacProtocol.KSeed(Info));
+			string KSeed = Hashes.BinaryToString(TravelDocumentsClient.BAC_KSeed(Info));
 			Console.Out.WriteLine("KSeed: " + KSeed);
 
-			string KEnc = Hashes.BinaryToString(BacProtocol.KEnc(Info));
+			string KEnc = Hashes.BinaryToString(TravelDocumentsClient.BAC_KEnc(Info));
 			Console.Out.WriteLine("KEnc: " + KEnc);
 
-			string KMac = Hashes.BinaryToString(BacProtocol.KMac(Info));
+			string KMac = Hashes.BinaryToString(TravelDocumentsClient.BAC_KMac(Info));
 			Console.Out.WriteLine("KMac: " + KMac);
 		}
 
@@ -66,15 +65,15 @@ namespace NeuroAccess.Nfc.Test
 			// Example from §D.1, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 			// Example from §D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
-			string KSeed = Hashes.BinaryToString(BacProtocol.KSeed(Info));
+			string KSeed = Hashes.BinaryToString(TravelDocumentsClient.BAC_KSeed(Info));
 			Console.Out.WriteLine("KSeed: " + KSeed);
 			Assert.AreEqual("239AB9CB282DAF66231DC5A4DF6BFBAE", KSeed.ToUpper(CultureInfo.InvariantCulture));
 
-			string KEnc = Hashes.BinaryToString(BacProtocol.KEnc(Info));
+			string KEnc = Hashes.BinaryToString(TravelDocumentsClient.BAC_KEnc(Info));
 			Console.Out.WriteLine("KEnc: " + KEnc);
 			Assert.AreEqual("AB94FDECF2674FDFB9B391F85D7F76F2", KEnc.ToUpper(CultureInfo.InvariantCulture));
 
-			string KMac = Hashes.BinaryToString(BacProtocol.KMac(Info));
+			string KMac = Hashes.BinaryToString(TravelDocumentsClient.BAC_KMac(Info));
 			Console.Out.WriteLine("KMac: " + KMac);
 			Assert.AreEqual("7962D9ECE03D1ACD4C76089DCE131543", KMac.ToUpper(CultureInfo.InvariantCulture));
 		}
@@ -100,13 +99,13 @@ namespace NeuroAccess.Nfc.Test
 			Assert.AreEqual("950712", Info.ExpiryDate);
 			Assert.AreEqual("D23145890734934071279507122", Info.MRZ_Information);
 
-			string KSeed = Hashes.BinaryToString(BacProtocol.KSeed(Info));
+			string KSeed = Hashes.BinaryToString(TravelDocumentsClient.BAC_KSeed(Info));
 			Console.Out.WriteLine("KSeed: " + KSeed);
 
-			string KEnc = Hashes.BinaryToString(BacProtocol.KEnc(Info));
+			string KEnc = Hashes.BinaryToString(TravelDocumentsClient.BAC_KEnc(Info));
 			Console.Out.WriteLine("KEnc: " + KEnc);
 
-			string KMac = Hashes.BinaryToString(BacProtocol.KMac(Info));
+			string KMac = Hashes.BinaryToString(TravelDocumentsClient.BAC_KMac(Info));
 			Console.Out.WriteLine("KMac: " + KMac);
 		}
 
@@ -131,15 +130,15 @@ namespace NeuroAccess.Nfc.Test
 			Assert.AreEqual("940623", Info.ExpiryDate);
 			Assert.AreEqual("L898902C<369080619406236", Info.MRZ_Information);
 
-			string KSeed = Hashes.BinaryToString(BacProtocol.KSeed(Info));
+			string KSeed = Hashes.BinaryToString(TravelDocumentsClient.BAC_KSeed(Info));
 			Console.Out.WriteLine("KSeed: " + KSeed);
 			Assert.AreEqual("239AB9CB282DAF66231DC5A4DF6BFBAE", KSeed.ToUpper(CultureInfo.InvariantCulture));
 
-			string KEnc = Hashes.BinaryToString(BacProtocol.KEnc(Info));
+			string KEnc = Hashes.BinaryToString(TravelDocumentsClient.BAC_KEnc(Info));
 			Console.Out.WriteLine("KEnc: " + KEnc);
 			Assert.AreEqual("AB94FDECF2674FDFB9B391F85D7F76F2", KEnc.ToUpper(CultureInfo.InvariantCulture));
 
-			string KMac = Hashes.BinaryToString(BacProtocol.KMac(Info));
+			string KMac = Hashes.BinaryToString(TravelDocumentsClient.BAC_KMac(Info));
 			Console.Out.WriteLine("KMac: " + KMac);
 			Assert.AreEqual("7962D9ECE03D1ACD4C76089DCE131543", KMac.ToUpper(CultureInfo.InvariantCulture));
 		}
@@ -183,7 +182,7 @@ namespace NeuroAccess.Nfc.Test
 			byte[] KEnc = Hashes.StringToBinary("AB94FDECF2674FDFB9B391F85D7F76F2");
 			byte[] KMac = Hashes.StringToBinary("7962D9ECE03D1ACD4C76089DCE131543");
 
-			byte[] Response = BacProtocol.CalcChallengeResponse3DES(Challenge, Rnd1, Rnd2, KEnc, KMac);
+			byte[] Response = TravelDocumentsClient.CalcChallengeResponse3DES(Challenge, Rnd1, Rnd2, KEnc, KMac);
 
 			Assert.AreEqual("72C29C2371CC9BDB65B779B8E8D37B29ECC154AA56A8799FAE2F498F76ED92F25F1448EEA8AD90A7",
 				Hashes.BinaryToString(Response).ToUpper(CultureInfo.InvariantCulture));
@@ -199,17 +198,17 @@ namespace NeuroAccess.Nfc.Test
 				MRZ_Information = "GF043591<586012072309062"
 			};
 
-			byte[] KEnc = BacProtocol.KEnc(Info);
+			byte[] KEnc = TravelDocumentsClient.BAC_KEnc(Info);
 			Assert.AreEqual("BA43433BF47AAEF875234FDF3208206D", Hashes.BinaryToString(KEnc).ToUpper(CultureInfo.InvariantCulture));
 
-			byte[] KMac = BacProtocol.KMac(Info);
+			byte[] KMac = TravelDocumentsClient.BAC_KMac(Info);
 			Assert.AreEqual("EA6445CD622CEAECBF7C9B7CB020B95D", Hashes.BinaryToString(KMac).ToUpper(CultureInfo.InvariantCulture));
 
 			byte[] Challenge = Hashes.StringToBinary("8EAF826F89F1E525");				// RND.ICC
 			byte[] Rnd1 = Hashes.StringToBinary("23E85A993A9AC5B4");					// RND.IFD
 			byte[] Rnd2 = Hashes.StringToBinary("75DC87E50C8EF30047D0B5325E83204D");	// K.IFD
 
-			byte[] Response = BacProtocol.CalcChallengeResponse3DES(Challenge, Rnd1, Rnd2, KEnc, KMac);
+			byte[] Response = TravelDocumentsClient.CalcChallengeResponse3DES(Challenge, Rnd1, Rnd2, KEnc, KMac);
 
 			Assert.AreEqual("4782B1700DD4F60373DA6632FCD1AB1E500D46FA11DEBDF9B88C39FCA7FDF8DB" +	// E.IFD
 				"BE51F41D52D4B879",																	// MAC
