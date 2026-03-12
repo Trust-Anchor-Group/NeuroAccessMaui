@@ -1,5 +1,6 @@
 ﻿using Android.Nfc;
 using Android.Nfc.Tech;
+using NeuroAccess.Nfc;
 using Waher.Networking;
 
 namespace NeuroAccessMaui.AndroidPlatform.Nfc
@@ -10,7 +11,7 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 	/// <param name="Tag">Underlying Android Tag object.</param>
 	/// <param name="Technology">NFC interface.</param>
 	public class IsoDepInterface(Tag Tag, IsoDep Technology)
-		: NfcInterface(Tag, Technology)
+		: NfcInterface(Tag, Technology), IIsoDepInterface
 	{
 		private readonly IsoDep isoDep = Technology;
 
