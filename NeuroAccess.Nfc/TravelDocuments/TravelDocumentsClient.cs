@@ -76,8 +76,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				this.encrypted = false;
 
-				this.tagInterface?.CloseIfOpen();
-				this.tagInterface = null;
+				this.tagInterface.CloseIfOpen();
 			}
 		}
 
@@ -206,8 +205,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			byte P1 = Command[2];
 			byte P2 = Command[3];
 			byte Lc = Command[4];
-			bool HasLe = Lc + 5 < Command.Length;
-			byte Le = HasLe ? Command[Lc + 5] : (byte)0;
+			byte Le = Lc + 5 < Command.Length ? Command[Lc + 5] : (byte)0;
 
 			byte[] Header =
 			[
@@ -250,28 +248,17 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			if (this.HasSniffers)
 				this.Information("Encrypted data: " + Hashes.BinaryToString(EncryptedData));
 
-			byte[] Footer;
-			byte[] FooterPadding;
+			byte[] Footer =
+			[
+				0x97,
+				1,
+				Le
+			];
 
-			if (HasLe)
-			{
-				Footer =
-				[
-					0x97,
-					1,
-					Le
-				];
+			byte[] FooterPadding = new byte[BlockSize - 3];
+			FooterPadding[0] = 0x80;
 
-				FooterPadding = new byte[BlockSize - 3];
-				FooterPadding[0] = 0x80;
-			}
-			else
-			{
-				Footer = [];
-				FooterPadding = [];
-			}
-
-			byte[] EncryptedDataHeader =
+			byte[] EncryptedDataHeader = PaddedDataLen == 0 ? [] :
 			[
 				(INS & 1) == 0 ? (byte)0x87 : (byte)0x85,
 				(byte)(PaddedDataLen + 1),
@@ -305,7 +292,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			byte[] EncryptedCommand = CONCAT(
 				Header,
-				[(byte)(EncryptedData.Length + Footer.Length + 13)],
+				[(byte)(EncryptedDataHeader.Length + EncryptedData.Length + Footer.Length + 10)],
 				EncryptedDataHeader,
 				EncryptedData,
 				Footer,
@@ -336,7 +323,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				switch (Response[i++])
 				{
 					case 0x87:
-						if (i == 0)
+						if (i >= c)
 						{
 							this.UnexpectedEndOfResponse();
 							return Response;
@@ -344,9 +331,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 						int L = Response[i++];
 
-						if (i == 0)
+						if (i >= c)
 						{
 							this.UnexpectedEndOfResponse();
+							return Response;
+						}
+
+						if (L == 0)
+						{
+							this.Error("Expected length of DO'87' block.");
 							return Response;
 						}
 
@@ -356,6 +349,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							return Response;
 						}
 
+						L--;
 						if (i + L > c)
 						{
 							this.UnexpectedEndOfResponse();
@@ -368,7 +362,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						break;
 
 					case 0x99:
-						if (i == 0)
+						if (i >= c)
 						{
 							this.UnexpectedEndOfResponse();
 							return Response;
@@ -395,7 +389,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					case 0x8e:
 						StartOfSignature = i - 1;
 
-						if (i == 0)
+						if (i >= c)
 						{
 							this.UnexpectedEndOfResponse();
 							return Response;
@@ -1894,8 +1888,11 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				return false;
 			}
 
-			this.Information("LDS1 eMRTD application selected.");
+			this.Information("LDS1 eMRTD application selected. Downloading EF.COM...");
 
+			byte[]? Data = await this.DownloadFile(EF.COM);
+			if (Data is null)
+				return false;
 
 			// TODO
 

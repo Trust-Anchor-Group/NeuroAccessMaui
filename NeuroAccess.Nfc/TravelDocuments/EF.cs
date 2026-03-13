@@ -42,6 +42,11 @@
 		public const ushort CardSecurity = 0x011d;
 
 		/// <summary>
+		/// Common Data
+		/// </summary>
+		public const ushort COM = 0x011e;
+
+		/// <summary>
 		/// EF.Biometrics1-64 = 0x0201-0x0240. §5.3.3 ICAO Doc 9303-10:
 		/// https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
 		/// </summary>
