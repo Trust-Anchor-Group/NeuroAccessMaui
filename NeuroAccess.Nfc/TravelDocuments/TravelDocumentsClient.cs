@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using NeuroAccess.Nfc.TravelDocuments.Events;
 using NeuroAccess.Nfc.TravelDocuments.PACE;
 using Waher.Content;
+using Waher.Content.Json.ValueTypes;
 using Waher.Events;
 using Waher.Networking;
 using Waher.Networking.Sniffers;
 using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
+using Waher.Script.Functions.Strings;
 using Waher.Security;
 using Waher.Security.EllipticCurves;
 
@@ -1888,15 +1892,201 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				return false;
 			}
 
+			// Reading EF.COM
+
 			this.Information("LDS1 eMRTD application selected. Downloading EF.COM...");
 
 			byte[]? Data = await this.DownloadFile(EF.COM);
-			if (Data is null)
+			if (Data is null || !TryParseDataGroups(Data, out DataGroup[]? DataGroups))
 				return false;
+
+			double LdsVersion = 0;
+			double UnicodeVersion = 0;
+
+			foreach (DataGroup Group in DataGroups)
+			{
+				switch (Group.Tag)
+				{
+					case 0x60:  // Application level information
+						if (TryParseDataGroups(Group.Value, out DataGroup[]? Info))
+						{
+							foreach (DataGroup SubGroup in Info)
+							{
+								switch (SubGroup.Tag)
+								{
+									case 0x5f01:    // LDS version number
+										if (SubGroup.Value.Length == 4)
+										{
+											string MajorVersion = Encoding.ASCII.GetString(SubGroup.Value, 0, 2);
+											string MinorVersion = Encoding.ASCII.GetString(SubGroup.Value, 2, 2);
+
+											this.Information("LDS version: " + MajorVersion.ToString() +
+												"." + MinorVersion.ToString());
+
+											if (double.TryParse(MajorVersion + "." + MinorVersion, out double d))
+												LdsVersion = d;
+										}
+										else
+											this.Warning("LDS version: " + Hashes.BinaryToString(SubGroup.Value));
+										break;
+
+									case 0x5f36:    // Unicode version number
+										if (SubGroup.Value.Length == 6)
+										{
+											string MajorVersion = Encoding.ASCII.GetString(SubGroup.Value, 0, 2);
+											string MinorVersion = Encoding.ASCII.GetString(SubGroup.Value, 2, 2);
+											string ReleaseLevel = Encoding.ASCII.GetString(SubGroup.Value, 4, 2);
+
+											this.Information("Unicode version: " + MajorVersion.ToString() + "." +
+												MinorVersion.ToString() + "." + ReleaseLevel.ToString());
+
+											if (double.TryParse(MajorVersion + "." + MinorVersion, out double d))
+												UnicodeVersion = d;
+										}
+										else
+											this.Warning("Unicode version: " + Hashes.BinaryToString(SubGroup.Value));
+										break;
+
+									case 0x5c:      // Tag list
+										this.Information("Tag list: " + Hashes.BinaryToString(SubGroup.Value));
+										break;
+
+									default:
+										this.Warning("Unknown application level information tag: " + SubGroup.Tag.ToString("X4"));
+										break;
+								}
+							}
+						}
+						break;
+
+					default:
+						this.Warning("Unknown application level information tag: " + Group.Tag.ToString("X4"));
+						break;
+				}
+			}
+
+			// Reading EF.SOD, §4.6.2 ICAO 9303-10
+
+			this.Information("Downloading EF.SOD...");
+
+			Data = await this.DownloadFile(EF.SOD);
+			if (Data is null || !TryParseDataGroups(Data, out DataGroups))
+				return false;
+
+			foreach (DataGroup Group in DataGroups)
+			{
+				switch (Group.Tag)
+				{
+					case 0x77:  // Document Security Object
+						if (LdsVersion >= 1.8)
+						{
+							if (TryDecodeDER(Group.Value, out object? SecurityObj))
+							{
+								this.Information(JSON.Encode(SecurityObj, false));	// TODO
+							}
+							else
+								this.Warning("Unable to decode security object.");
+						}
+						else
+						{
+							// TODO
+						}
+						break;
+
+					default:
+						this.Warning("Unknown application level information tag: " + Group.Tag.ToString("X4"));
+						break;
+				}
+			}
 
 			// TODO
 
 			return true;
+		}
+
+		/// <summary>
+		/// Parses TLV-encoded data groups.
+		/// </summary>
+		/// <param name="Data">Binary data.</param>
+		/// <returns>Array of data groups, or null if not correctly encoded.</returns>
+		public static bool TryParseDataGroups(byte[] Data,
+			[NotNullWhen(true)] out DataGroup[]? DataGroups)
+		{
+			DataGroups = null;
+
+			ChunkedList<DataGroup> Found = [];
+			int i = 0;
+			int c = Data.Length;
+			ushort Tag;
+			ushort Len;
+			byte[] Value;
+
+			while (i < c)
+			{
+				Tag = Data[i++];
+
+				if (Tag == 0x80)
+				{
+					int j;
+
+					for (j = i; j < c; j++)
+					{
+						if (Data[j] != 0)
+							break;
+					}
+
+					if (j == c)
+						break;  // Padding
+				}
+
+				if ((Tag & 31) == 31)
+				{
+					if (i == c)
+						return false;
+
+					Tag <<= 8;
+					Tag |= Data[i++];
+				}
+
+				if (i == c)
+					return false;
+
+				Len = Data[i++];
+
+				if (i + Len > c)
+					return false;
+
+				Value = new byte[Len];
+				if (Len > 0)
+				{
+					Buffer.BlockCopy(Data, i, Value, 0, Len);
+					i += Len;
+				}
+
+				Found.Add(new DataGroup(Tag, Value));
+			}
+
+			DataGroups = [.. Found];
+
+			return true;
+		}
+
+		/// <summary>
+		/// Decoded Data Group.
+		/// </summary>
+		/// <param name="Tag">Tag value.</param>
+		/// <param name="Value">Binary value of data group.</param>
+		public readonly struct DataGroup(ushort Tag, byte[] Value)
+		{
+			/// <summary>
+			/// Tag value.
+			/// </summary>
+			public ushort Tag { get; } = Tag;
+
+			/// <summary>
+			/// Binary value.
+			/// </summary>
+			public byte[] Value { get; } = Value;
 		}
 	}
 }

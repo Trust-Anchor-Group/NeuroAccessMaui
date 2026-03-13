@@ -42,9 +42,14 @@
 		public const ushort CardSecurity = 0x011d;
 
 		/// <summary>
-		/// Common Data
+		/// Common Data (In LDS1 eMRTD Application)
 		/// </summary>
 		public const ushort COM = 0x011e;
+
+		/// <summary>
+		/// Security Object Data (In LDS1 eMRTD Application)
+		/// </summary>
+		public const ushort SOD = 0x011d;
 
 		/// <summary>
 		/// EF.Biometrics1-64 = 0x0201-0x0240. §5.3.3 ICAO Doc 9303-10:
