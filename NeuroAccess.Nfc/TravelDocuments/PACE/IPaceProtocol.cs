@@ -55,6 +55,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		int KdfHashKeyLength { get; }
 
 		/// <summary>
+		/// Number of bytes used for blocks.
+		/// </summary>
+		int BlockLength { get; }
+
+		/// <summary>
 		/// Gets the shared secret, given the local private key previously generated using
 		/// <see cref="CreateNewKey"/> and a remote public key.
 		/// </summary>
@@ -68,6 +73,18 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// <param name="DocInfo">Document information.</param>
 		/// <returns>Kπ value.</returns>
 		byte[] KDFπ(DocumentInformation DocInfo);
+
+		/// <summary>
+		/// KDF_Enc
+		/// </summary>
+		/// <param name="KSeed">Key derivation seed value.</param>
+		byte[] KDF_Enc(byte[] KSeed);
+
+		/// <summary>
+		/// KDF_Mac
+		/// </summary>
+		/// <param name="KSeed">Key derivation seed value.</param>
+		byte[] KDF_Mac(byte[] KSeed);
 
 		/// <summary>
 		/// Decrypts an encrypted nonce value.
@@ -90,5 +107,23 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// <param name="Key">Key to use for authenticator.</param>
 		/// <returns>Authenticator</returns>
 		CMac GetAuthenticator(byte[] Key);
+
+		/// <summary>
+		/// Encrypts data.
+		/// </summary>
+		/// <param name="KS_Enc">Session encryption key.</param>
+		/// <param name="IV">Initialization vector.</param>
+		/// <param name="Data">Data to be encrypted.</param>
+		/// <returns>Encrypted data.</returns>
+		byte[] Encrypt(byte[] KS_Enc, byte[] IV, byte[] Data);
+
+		/// <summary>
+		/// Decrypts data.
+		/// </summary>
+		/// <param name="KS_Enc">Session encryption key.</param>
+		/// <param name="IV">Initialization vector.</param>
+		/// <param name="Data">Data to be decrypted.</param>
+		/// <returns>Decrypted data.</returns>
+		byte[] Decrypt(byte[] KS_Enc, byte[] IV, byte[] Data);
 	}
 }

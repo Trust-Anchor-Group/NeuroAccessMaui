@@ -22,11 +22,19 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	/// Travel Documents Client, implementing ICAO 9303 to communicate with machine-readable
 	/// travel documents, such as passports, visas, and identity cards.
 	/// </summary>
-	public class TravelDocumentsClient : CommunicationLayer
+	public class TravelDocumentsClient : CommunicationLayer, IDisposable
 	{
 		private readonly IIsoDepInterface tagInterface;
 		private readonly DocumentInformation documentInformation;
 		private TravelDocumentsState state;
+		private IPaceProtocol? protocol;
+		private CMac? cMac = null;
+		private byte[]? ks_Enc = null;
+		private byte[]? ks_Mac = null;
+		private byte[]? sendSequenceCounter = null;
+		private byte[]? zeroIv = null;
+		private bool encrypted = false;
+		private bool disposed = false;
 
 		/// <summary>
 		/// Travel Documents Client, implementing ICAO 9303 to communicate with machine-readable
@@ -42,6 +50,38 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			this.tagInterface = TagInterface;
 			this.documentInformation = DocumentInformation;
 			this.state = TravelDocumentsState.Detected;
+		}
+
+		/// <summary>
+		/// Disposes of the client and clears any keys.
+		/// </summary>
+		public void Dispose()
+		{
+			if (!this.disposed)
+			{
+				this.disposed = true;
+
+				if (this.ks_Enc is not null)
+				{
+					Array.Clear(this.ks_Enc, 0, this.ks_Enc.Length);
+					this.ks_Enc = null;
+				}
+
+				if (this.ks_Mac is not null)
+				{
+					Array.Clear(this.ks_Mac, 0, this.ks_Mac.Length);
+					this.ks_Mac = null;
+					this.cMac = null;
+				}
+
+				this.encrypted = false;
+
+				if (this.tagInterface is not null)
+				{
+					this.tagInterface.CloseIfOpen();
+					this.tagInterface.Dispose();
+				}
+			}
 		}
 
 		/// <summary>
@@ -64,6 +104,62 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// Event raised when the state of the client changes.
 		/// </summary>
 		public event EventHandlerAsync<TravelDocumentsStateEventArgs>? StateChanged;
+
+		/// <summary>
+		/// Selects the master application
+		/// </summary>
+		/// <returns>If application was selected.</returns>
+		public async Task<bool> SelectMaster()
+		{
+			// Ref §3.6.1.1, ISOC 9303-10: https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+
+			await this.SetState(TravelDocumentsState.SelectingMaster);
+
+			if (this.HasSniffers)
+				this.Information("SelectMaster()");
+
+			byte[] Command =
+			[
+				ISO_7816.Classes.Basic,
+				ISO_7816.Instructions.Select,
+				0x00,	// P1 (Select master)
+				0x0c	// P2 (No File Control Information returned)
+			];
+
+			byte[] Response = await this.ExecuteCommand(Command);
+
+			return this.CheckResponse(Response);
+		}
+
+		/// <summary>
+		/// Selects an application
+		/// </summary>
+		/// <param name="ApplicationId">Application ID (AID)</param>
+		/// <returns>If application was selected.</returns>
+		public async Task<bool> SelectApplication(byte[] ApplicationId)
+		{
+			// Ref §3.6.1.2, ISOC 9303-10: https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
+
+			await this.SetState(TravelDocumentsState.SelectingApplication, ApplicationId);
+
+			if (this.HasSniffers)
+				this.Information("SelectApplication(" + Hashes.BinaryToString(ApplicationId) + ")");
+
+			byte[] Command =
+				CONCAT(
+					[
+						ISO_7816.Classes.Basic,
+						ISO_7816.Instructions.Select,
+						0x04,	// P1 (Select by Application ID)
+						0x0c,	// P2 (No File Control Information returned)
+						(byte)ApplicationId.Length	// Length of data
+					],
+					ApplicationId);
+
+			byte[] Response = await this.ExecuteCommand(Command);
+
+			return this.CheckResponse(Response);
+		}
 
 		/// <summary>
 		/// Selects a file
@@ -90,9 +186,157 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				(byte)FileId
 			];
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Command, this);
+			byte[] Response = await this.ExecuteCommand(Command);
 
 			return this.CheckResponse(Response);
+		}
+
+		private async Task<byte[]> ExecuteCommand(byte[] Command)
+		{
+			if (!this.encrypted)
+				return await this.tagInterface.ExecuteCommand(Command, this);
+
+			// Ref §9.8.4, ISOC 9303-11: https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+
+			if (this.HasSniffers)
+				this.Information("Encrypting APDU: " + Hashes.BinaryToString(Command));
+
+			if (Command.Length < 5)
+				throw new ArgumentException("Command too short.", nameof(Command));
+
+			int BlockSize = this.protocol!.BlockLength;
+			byte INS = Command[1];
+			byte P1 = Command[2];
+			byte P2 = Command[3];
+			byte Lc = Command[4];
+			bool HasLe = Lc + 5 < Command.Length;
+			byte Le = HasLe ? Command[Lc + 5] : (byte)0;
+
+			byte[] Header =
+			[
+				ISO_7816.Classes.SecureMessaging,
+				INS,
+				P1,
+				P2
+			];
+			byte[] HeaderPadding = new byte[BlockSize - 4];
+			HeaderPadding[0] = 0x80;
+
+			int PaddedDataLen = (Lc + BlockSize - 1) & ~(BlockSize - 1);
+
+			if (PaddedDataLen + 17 > byte.MaxValue)
+				throw new ArgumentException("Command data too long.", nameof(Command));
+
+			byte[] PaddedData = new byte[PaddedDataLen];
+
+			if (Lc > 0)
+				Buffer.BlockCopy(Command, 5, PaddedData, 0, Lc);
+
+			if (Lc < PaddedDataLen)
+				PaddedData[Lc] = 0x80;
+
+			this.IncrementCounter();
+
+			if (this.HasSniffers)
+				this.Information("Send Sequence Number: " + Hashes.BinaryToString(this.sendSequenceCounter));
+
+			byte[] IV = this.protocol.Encrypt(this.ks_Enc!, this.zeroIv!, this.sendSequenceCounter!);
+
+			if (this.HasSniffers)
+			{
+				this.Information("IV: " + Hashes.BinaryToString(IV));
+				this.Information("Padded data to encrypt: " + Hashes.BinaryToString(PaddedData));
+			}
+
+			byte[] EncryptedData = this.protocol.Encrypt(this.ks_Enc!, IV, PaddedData);
+
+			if (this.HasSniffers)
+				this.Information("Encrypted data: " + Hashes.BinaryToString(EncryptedData));
+
+			byte[] Footer;
+			byte[] FooterPadding;
+
+			if (HasLe)
+			{
+				Footer =
+				[
+					0x97,
+					1,
+					Le
+				];
+
+				FooterPadding = new byte[BlockSize - 3];
+				FooterPadding[0] = 0x80;
+			}
+			else
+			{
+				Footer = [];
+				FooterPadding = [];
+			}
+
+			byte[] EncryptedDataHeader =
+			[
+				(INS & 1) == 0 ? (byte)0x87 : (byte)0x85,
+				(byte)(PaddedDataLen + 1),
+				1
+			];
+
+			int AssociatedDataPadLen = (EncryptedDataHeader.Length + Footer.Length) % BlockSize;    // Len(SSC+Header+HeaderPading+EncryptedData)=0 mod BlockSize
+			byte[] AssociatedDataPadding;
+
+			if (AssociatedDataPadLen == 0)
+				AssociatedDataPadding = [];
+			else
+			{
+				AssociatedDataPadding = new byte[BlockSize - AssociatedDataPadLen];
+				AssociatedDataPadding[0] = 0x80;
+			}
+
+			byte[] AssociatedData = CONCAT(
+				this.sendSequenceCounter!,
+				Header,
+				HeaderPadding,
+				EncryptedDataHeader,
+				EncryptedData,
+				Footer,
+				AssociatedDataPadding);
+
+			if (this.HasSniffers)
+				this.Information("Associated data to sign: " + Hashes.BinaryToString(AssociatedData));
+
+			byte[] Signature = this.cMac!.Sign(AssociatedData, 8);
+
+			byte[] EncryptedCommand = CONCAT(
+				Header,
+				[(byte)(EncryptedData.Length + Footer.Length + 13)],
+				EncryptedDataHeader,
+				EncryptedData,
+				Footer,
+				[
+					0x8e,
+					0x08
+				],
+				Signature,
+				[
+					0	// Standard length
+				]);
+
+			byte[] Response = await this.tagInterface.ExecuteCommand(EncryptedCommand, this);
+
+			this.IncrementCounter();
+
+			return Response;
+		}
+
+		private void IncrementCounter()
+		{
+			if (this.sendSequenceCounter is null)
+				throw new InvalidOperationException("Send Sequence Counter is not initialized.");
+
+			int i = this.sendSequenceCounter.Length;
+
+			while (++this.sendSequenceCounter[--i] == 0 && i >= 0)
+				;
 		}
 
 		/// <summary>
@@ -367,27 +611,67 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <summary>
 		/// Reads binary information from the currently selected file.
 		/// </summary>
-		/// <param name="NrBytes">Number of bytes to read.</param>
+		/// <param name="NrBytes">Number of bytes to read. 0=256 bytes.</param>
 		/// <returns>Read data, or null if an error occurred.</returns>
-		public async Task<KeyValuePair<byte[]?, bool>> ReadBinary(ushort Offset, byte NrBytes)
+		public async Task<KeyValuePair<byte[]?, bool>> ReadBinary(uint Offset, byte NrBytes)
 		{
 			// Ref §3.6.3, ISOC 9303-10: https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
 
 			await this.SetState(TravelDocumentsState.ReadingBinary, Offset);
 
 			if (this.HasSniffers)
-				this.Information("ReadBinary(" + Offset.ToString("X4") + "," + NrBytes.ToString("X2") + ")");
+				this.Information("ReadBinary(" + Offset.ToString() + "," + NrBytes.ToString() + ")");
 
-			byte[] Command =
-			[
-				ISO_7816.Classes.Basic,
-				ISO_7816.Instructions.ReadBinary,
-				(byte)(Offset >> 8),	// P1
-				(byte)Offset,			// P2
-				NrBytes					// Le
-			];
+			byte[] Command;
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Command, this);
+			if (Offset <= short.MaxValue)
+			{
+				Command =
+				[
+					ISO_7816.Classes.Basic,
+					ISO_7816.Instructions.ReadBinary,
+					(byte)(Offset >> 8),	// P1
+					(byte)Offset,			// P2
+					NrBytes                 // Le
+				];
+			}
+			else if (Offset < 0x1000000)
+			{
+				Command =
+				[
+					ISO_7816.Classes.Basic,
+					ISO_7816.Instructions.ReadBinary + 1,
+					0,						// P1
+					0,						// P2
+					5,						// Lc=5 bytes
+					0x54,					// DO'54'
+					3,						// Length of DO'54' value
+					(byte)(Offset >> 16),
+					(byte)(Offset >> 8),
+					(byte)Offset,
+					NrBytes                 // Le
+				];
+			}
+			else
+			{
+				Command =
+				[
+					ISO_7816.Classes.Basic,
+					ISO_7816.Instructions.ReadBinary + 1,
+					0,						// P1
+					0,						// P2
+					6,						// Lc=6 bytes
+					0x54,					// DO'54'
+					4,						// Length of DO'54' value
+					(byte)(Offset >> 24),
+					(byte)(Offset >> 16),
+					(byte)(Offset >> 8),
+					(byte)Offset,
+					NrBytes                 // Le
+				];
+			}
+
+			byte[] Response = await this.ExecuteCommand(Command);
 			int c = Response.Length;
 
 			if (!this.CheckResponse(Response))
@@ -397,7 +681,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					Response[^2] == (byte)Iso7816StatusCategory.WrongLeField)
 				{
 					Command[4] = Response[^1];
-					Response = await this.tagInterface.ExecuteCommand(Command, this);
+					Response = await this.ExecuteCommand(Command);
 
 					if (!this.CheckResponse(Response))
 						return new KeyValuePair<byte[]?, bool>(null, false);
@@ -448,9 +732,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// Tries to fins a PACE protocol matching information available in the EF.CardAccess file.
 		/// </summary>
 		/// <param name="CardAccess">Contents of EF.CardAccess file.</param>
-		/// <param name="Protocol">Best protocol found.</param>
-		/// <returns>Best protocol found, or null if no implementation found matching available options in the EF.CardAccess file.</returns>
-		private async Task<IPaceProtocol?> TryFindPaceProtocol(object? CardAccess)
+		/// <returns>if a protocol was found matching the contents of the EF.CardAccess file.</returns>
+		private async Task<bool> TryFindPaceProtocol(object? CardAccess)
 		{
 			await this.SetState(TravelDocumentsState.FindingCipher);
 
@@ -468,7 +751,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			*/
 
 			if (CardAccess is not Array SecurityInfos)
-				return null;
+				return false;
 
 			ChunkedList<string> OidsFound = [];
 			IPaceProtocol? Best = null;
@@ -523,22 +806,24 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					new KeyValuePair<string, object>("Nationality", this.documentInformation.Nationality ?? string.Empty));
 			}
 
-			return Best;
+			this.protocol = Best;
+			this.zeroIv = new byte[this.protocol?.BlockLength ?? 0];
+
+			return Best is not null;
 		}
 
 		/// <summary>
 		/// Initializes PACE authentication.
 		/// </summary>
-		/// <param name="Protocol">Selected cipher protocol to use.</param>
 		/// <returns>If successful.</returns>
-		private async Task<bool> InitializePACE(IPaceProtocol Protocol)
+		private async Task<bool> InitializePACE()
 		{
 			await this.SetState(TravelDocumentsState.SelectingCipher);
 
 			if (this.HasSniffers)
-				this.Information("MSE:Set AT(" + Protocol.Oid + ",MRZ)");
+				this.Information("MSE:Set AT(" + this.protocol!.Oid + ",MRZ)");
 
-			string[] Parts = Protocol.Oid.Split('.');
+			string[] Parts = this.protocol!.Oid.Split('.');
 			int i, c = Parts.Length - 1;
 			byte[] PartBytes = new byte[c];
 
@@ -567,7 +852,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					]
 				]);
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Command, this);
+			byte[] Response = await this.ExecuteCommand(Command);
 
 			return this.CheckResponse(Response);
 		}
@@ -842,7 +1127,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				0x00		// Le (Maximal response length: 256 bytes)
 			];
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Command, this);
+			byte[] Response = await this.ExecuteCommand(Command);
 
 			if (!this.CheckResponse(Response))
 				return null;
@@ -968,7 +1253,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					[ 0x00 ]	// Le (Maximal response length: 256 bytes)
 				]);
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Request, this);
+			byte[] Response = await this.ExecuteCommand(Request);
 
 			if (!this.CheckResponse(Response))
 				return null;
@@ -1012,7 +1297,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				0x08	// Le
 			];
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Command, this);
+			byte[] Response = await this.ExecuteCommand(Command);
 
 			if (!this.CheckResponse(Response))
 				return null;
@@ -1054,7 +1339,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					0x28	// Le
 				]);
 
-			byte[] Response = await this.tagInterface.ExecuteCommand(Command, this);
+			byte[] Response = await this.ExecuteCommand(Command);
 
 			if (!this.CheckResponse(Response))
 				return null;
@@ -1080,32 +1365,32 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		{
 			// §4.2 1. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
-			byte[]? Data = await this.DownloadFile(TravelDocumentsExtensions.ElementaryFiles.CardAccess);
-			IPaceProtocol? Protocol;
+			byte[]? Data = await this.DownloadFile(EF.CardAccess);
 
 			if (Data is not null &&
 				TryDecodeDER(Data, out object? CardAccess) &&
-				(Protocol = await this.TryFindPaceProtocol(CardAccess)) is not null)
+				await this.TryFindPaceProtocol(CardAccess))
 			{
-				// Optional: Read EF.DIR	§4.2 2. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+				if (this.encrypted)
+					return false;   // TODO: Renegotiate session keys, see §9.8.2, ICAO 9303-11.
 
 				// PACE
 				// §4.2 3. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 				if (this.HasSniffers)
-					this.Information("PACE protocol " + Protocol.GetType().Name.Replace('_', '-') + " selected.");
+					this.Information("PACE protocol " + this.protocol!.GetType().Name.Replace('_', '-') + " selected.");
 
-				if (!await this.InitializePACE(Protocol))
+				if (!await this.InitializePACE())
 				{
 					this.Error("Unable to initialize PACE protocol.");
 					return false;
 				}
-				else if (Protocol is PaceEcdhProtocol EecProtocol)
+				else if (this.protocol is PaceEcdhProtocol EecProtocol)
 					this.Information("PACE protocol initialized (" + EecProtocol.Curve?.CurveName + ").");
 				else
 					this.Information("PACE protocol initialized.");
 
-				if (!await Protocol.Authenticate(this))
+				if (!await this.protocol!.Authenticate(this))
 				{
 					this.Error("Authentication unsuccessful.");
 					return false;
@@ -1131,7 +1416,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				byte[] ChallengeResponse = CalcChallengeResponse3DES(this.documentInformation, Challenge);
 				byte[]? Response = await this.ExternalBacAuthenticate(ChallengeResponse);
 
-				// TODO: Implement/Test BAC
+				return false;   // TODO: Implement/Test BAC
 			}
 
 			return true;
@@ -1149,7 +1434,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		public static byte[] CalcChallengeResponse3DES(byte[] Challenge, byte[] Rnd1, byte[] Rnd2,
 			byte[] KEnc, byte[] KMac)
 		{
-			byte[] S = TravelDocumentsClient.CONCAT(Rnd1, Challenge, Rnd2);
+			byte[] S = CONCAT(Rnd1, Challenge, Rnd2);
 			byte[] EIFD;
 			byte[] MIFD;
 
@@ -1215,7 +1500,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				MIFD = H;
 			}
 
-			return TravelDocumentsClient.CONCAT(EIFD, MIFD);
+			return CONCAT(EIFD, MIFD);
 		}
 
 		/// <summary>
@@ -1242,11 +1527,14 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// Authenticates the application with the document, using Generic Mapping defined for
 		/// the PACE protocol.
 		/// </summary>
-		/// <param name="Protocol">Cipher suite selected.</param>
 		/// <returns>true if authenticated, false if unable to authenticate with the document.</returns>
-		internal async Task<bool> AuthenticateGenericMapping(PaceEcdhProtocol Protocol)
+		internal async Task<bool> AuthenticateGenericMapping()
 		{
-			if (Protocol?.Curve is null)
+			if (this.protocol is not PaceEcdhProtocol EcdhProtocol)
+				return false;
+
+			EllipticCurve? Curve = EcdhProtocol!.Curve;
+			if (Curve is null)
 				return false;
 
 			try
@@ -1262,17 +1550,17 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				this.Information("Encrypted nonce: " + Hashes.BinaryToString(z));
 
-				byte[] Kπ = Protocol.KDFπ(this.documentInformation);
-				byte[] s = Protocol.DecryptNonce(Kπ, z);
+				byte[] Kπ = this.protocol.KDFπ(this.documentInformation);
+				byte[] s = this.protocol.DecryptNonce(Kπ, z);
 
 				this.Information("Decrypted nonce: " + Hashes.BinaryToString(s));
 
 				// Main keys
 
-				byte[] LocalPublicKey = Protocol.CreateNewKey();    // Creates a public key in big-endian format.
+				byte[] LocalPublicKey = this.protocol.CreateNewKey();    // Creates a public key in big-endian format.
 
 				this.Information("Local public key: " + Hashes.BinaryToString(LocalPublicKey));
-				this.Information("Local private key: " + Protocol.Curve.Export());
+				this.Information("Local private key: " + Curve.Export());
 
 				byte[]? RemotePublicKey = await this.GetPaceRemotePublicKey(LocalPublicKey);  // Big-endian format.
 
@@ -1284,7 +1572,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				this.Information("Remote public key: " + Hashes.BinaryToString(RemotePublicKey));
 
-				if (!Protocol.Curve.IsPoint(RemotePublicKey, true))
+				if (!Curve.IsPoint(RemotePublicKey, true))
 				{
 					this.Error("Remote public key not on curve.");
 					return false;
@@ -1292,26 +1580,26 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				// Shared Secret
 
-				byte[] SharedSecret = Protocol.GetSharedSecret(RemotePublicKey);
+				byte[] SharedSecret = this.protocol.GetSharedSecret(RemotePublicKey);
 
 				this.Information("Shared secret: " + Hashes.BinaryToString(SharedSecret));
 
 				// Map
 
-				PointOnCurve Ĝ = Protocol.GetGenericMap(s, RemotePublicKey);
-				byte[] Generator = Protocol.Curve.Encode(Ĝ, true);
+				PointOnCurve Ĝ = EcdhProtocol.GetGenericMap(s, RemotePublicKey);
+				byte[] Generator = Curve.Encode(Ĝ, true);
 
 				this.Information("Generator Ĝ: " + Hashes.BinaryToString(Generator));
 
 
 				// Ephemeral keys
 
-				byte[] LocalEphemeralPrivateKey = Protocol.Curve.GenerateSecret();
+				byte[] LocalEphemeralPrivateKey = Curve.GenerateSecret();
 
 				this.Information("Local ephemeral private key: " + Hashes.BinaryToString(LocalEphemeralPrivateKey));
 
-				PointOnCurve P1 = Protocol.Curve.ScalarMultiplication(LocalEphemeralPrivateKey, Ĝ, true);
-				byte[] LocalEphemeralPublicKey = Protocol.Curve.Encode(P1, true);
+				PointOnCurve P1 = Curve.ScalarMultiplication(LocalEphemeralPrivateKey, Ĝ, true);
+				byte[] LocalEphemeralPublicKey = Curve.Encode(P1, true);
 
 				this.Information("Local ephemeral public key: " + Hashes.BinaryToString(LocalEphemeralPublicKey));
 
@@ -1325,7 +1613,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				this.Information("Remote ephemeral public key: " + Hashes.BinaryToString(RemoteEphemeralPublicKey));
 
-				if (!Protocol.Curve.IsPoint(RemoteEphemeralPublicKey, true))
+				if (!Curve.IsPoint(RemoteEphemeralPublicKey, true))
 				{
 					this.Error("Remote ephemeral public key not on curve.");
 					return false;
@@ -1348,13 +1636,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					EllipticCurve.ToInt(RemoteEphemeralPublicKeyX),
 					EllipticCurve.ToInt(RemoteEphemeralPublicKeyY));
 
-				PointOnCurve EphemeralSharedPoint = Protocol.Curve.ScalarMultiplication(
+				PointOnCurve EphemeralSharedPoint = Curve.ScalarMultiplication(
 					LocalEphemeralPrivateKey, RemoteEphemeralPublicPoint, true);
 
 				byte[] EphemeralSharedPointX = EphemeralSharedPoint.X.ToByteArray();    // Little-endian
 
-				if (EphemeralSharedPointX.Length != Protocol.Curve.OrderBytes)
-					Array.Resize(ref EphemeralSharedPointX, Protocol.Curve.OrderBytes);
+				if (EphemeralSharedPointX.Length != Curve.OrderBytes)
+					Array.Resize(ref EphemeralSharedPointX, Curve.OrderBytes);
 
 				Array.Reverse(EphemeralSharedPointX);                                   // Big-endian
 
@@ -1362,25 +1650,25 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				// Session keys
 
-				byte[] KS_Enc = Protocol.KDF_Enc(EphemeralSharedPointX);
-				byte[] KS_Mac = Protocol.KDF_Mac(EphemeralSharedPointX);
+				this.ks_Enc = this.protocol.KDF_Enc(EphemeralSharedPointX);
+				this.ks_Mac = this.protocol.KDF_Mac(EphemeralSharedPointX);
 
-				this.Information("KS_Enc: " + Hashes.BinaryToString(KS_Enc));
-				this.Information("KS_Mac: " + Hashes.BinaryToString(KS_Mac));
+				this.Information("KS_Enc: " + Hashes.BinaryToString(this.ks_Enc));
+				this.Information("KS_Mac: " + Hashes.BinaryToString(this.ks_Mac));
 
 				// Associated Data
 
-				byte[] AD_IFD = PaceProtocol.CreateAssociatedData(Protocol.Oid, RemoteEphemeralPublicKey);
-				byte[] AD_IC = PaceProtocol.CreateAssociatedData(Protocol.Oid, LocalEphemeralPublicKey);
+				byte[] AD_IFD = PaceProtocol.CreateAssociatedData(this.protocol.Oid, RemoteEphemeralPublicKey);
+				byte[] AD_IC = PaceProtocol.CreateAssociatedData(this.protocol.Oid, LocalEphemeralPublicKey);
 
 				this.Information("AD_IFD: " + Hashes.BinaryToString(AD_IFD));
 				this.Information("AD_IC: " + Hashes.BinaryToString(AD_IC));
 
 				// Computing MAC
 
-				CMac Mac = Protocol.GetAuthenticator(KS_Mac);
+				this.cMac = this.protocol.GetAuthenticator(this.ks_Mac);
 
-				byte[] T_IFD = Mac.Sign(AD_IFD, 8);
+				byte[] T_IFD = this.cMac.Sign(AD_IFD, 8);
 
 				this.Information("T_IFD: " + Hashes.BinaryToString(T_IFD));
 
@@ -1394,15 +1682,18 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				this.Information("Remote Token: " + Hashes.BinaryToString(RemoteToken));
 
-				if (!Mac.Verify(AD_IC, RemoteToken))
+				if (!this.cMac.Verify(AD_IC, RemoteToken))
 				{
-					byte[] T_IC = Mac.Sign(AD_IC, 8);
+					byte[] T_IC = this.cMac.Sign(AD_IC, 8);
 
 					this.Error("PACE token validation failed. Expected _IC: " + Hashes.BinaryToString(T_IC));
 					return false;
 				}
 
 				this.Information("Authentication successful.");
+
+				this.encrypted = true;
+				this.sendSequenceCounter = new byte[this.protocol.BlockLength];
 
 				return true;
 			}
@@ -1413,5 +1704,45 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			}
 		}
 
+		/// <summary>
+		/// Reads the EF.DIR file to view what applications are available.
+		/// </summary>
+		/// <returns></returns>
+		public async Task GetDirectory()
+		{
+			// Optional: Read EF.DIR	§4.2 2. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+
+			try
+			{
+				byte[]? Data = await this.DownloadFile(EF.DIR);
+				if (Data is null)
+					return;
+
+				// Note: EF.DIR not required to be available in passports.
+
+				// TODO: Parse applications.
+			}
+			catch (Exception ex)
+			{
+				this.Exception(ex);
+			}
+		}
+
+		/// <summary>
+		/// Reads the travel document.
+		/// </summary>
+		/// <returns>If able to read the travel document.</returns>
+		public async Task<bool> ReadTravelDocument()
+		{
+			if (!await this.SelectApplication(Applications.DF1))
+			{
+				this.Error("Unable to select the LDS1 eMRTD application.");
+				return false;
+			}
+
+			// TODO
+
+			return true;
+		}
 	}
 }

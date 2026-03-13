@@ -25,6 +25,35 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE.Id_PACE_ECDH_IM
 		public override bool AdjustParity => true;
 
 		/// <summary>
+		/// Number of bytes used for sequence counter.
+		/// </summary>
+		public override int BlockLength => 8;
+
+		/// <summary>
+		/// Encrypts data.
+		/// </summary>
+		/// <param name="Key">Encryption key.</param>
+		/// <param name="IV">Initialization vector.</param>
+		/// <param name="Data">Data to be encrypted.</param>
+		/// <returns>Encrypted data.</returns>
+		public override byte[] Encrypt(byte[] Key, byte[] IV, byte[] Data)
+		{
+			return this.Encrypt3Des(Key, IV, Data);
+		}
+
+		/// <summary>
+		/// Decrypts data.
+		/// </summary>
+		/// <param name="Key">Encryption key.</param>
+		/// <param name="IV">Initialization vector.</param>
+		/// <param name="Data">Data to be decrypted.</param>
+		/// <returns>Decrypted data.</returns>
+		public override byte[] Decrypt(byte[] Key, byte[] IV, byte[] Data)
+		{
+			return this.Decrypt3Des(Key, IV, Data);
+		}
+
+		/// <summary>
 		/// Decrypts an encrypted nonce value.
 		/// </summary>
 		/// <param name="Kπ">Key derived from the document information.</param>
@@ -32,7 +61,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE.Id_PACE_ECDH_IM
 		/// <returns>Decrypted nonce.</returns>
 		public override byte[] DecryptNonce(byte[] Kπ, byte[] EncryptedNonce)
 		{
-			return DecryptNonce3Des(Kπ, EncryptedNonce);
+			return this.Decrypt3Des(Kπ, zeroIv8, EncryptedNonce);
 		}
 
 		/// <summary>

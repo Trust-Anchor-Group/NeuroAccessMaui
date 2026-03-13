@@ -11,6 +11,17 @@
 		Detected,
 
 		/// <summary>
+		/// The master file is being selected.
+		/// </summary>
+		SelectingMaster,
+
+		/// <summary>
+		/// An application is being selected. Associated data will contain a <see cref="byte[]"/> value
+		/// identifying the application being selected.
+		/// </summary>
+		SelectingApplication,
+
+		/// <summary>
 		/// A file is being selected. Associated data will contain a <see cref="ushort"/> value
 		/// identifying the file being selected.
 		/// </summary>
@@ -18,7 +29,7 @@
 
 		/// <summary>
 		/// Binary data is being read from the selected file. Associated data will contain a
-		/// <see cref="ushort"/> value indicating the current offset being read.
+		/// <see cref="uint"/> value indicating the current offset being read.
 		/// </summary>
 		ReadingBinary,
 

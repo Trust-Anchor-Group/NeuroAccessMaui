@@ -26,7 +26,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE.Id_PACE_ECDH_GM
 		/// <returns>true if authenticated, false if unable to authenticate with the document.</returns>
 		public override Task<bool> Authenticate(TravelDocumentsClient Client)
 		{
-			return Client.AuthenticateGenericMapping(this);
+			return Client.AuthenticateGenericMapping();
 		}
 
 		/// <summary>

@@ -31,7 +31,7 @@ namespace NeuroAccess.Nfc.Test
 		public void Test_01_Seed(string Mrz, string DocumentNumber, string DateOfBirth,
 			string ExpiryDate, string MrzInformation, string Kπ)
 		{
-			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
+			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 			Assert.AreEqual(DocumentNumber, Info!.DocumentNumber);
 			Assert.AreEqual(DateOfBirth, Info.DateOfBirth);
 			Assert.AreEqual(ExpiryDate, Info.ExpiryDate);
@@ -111,7 +111,7 @@ namespace NeuroAccess.Nfc.Test
 		public void Test_04_DecryptNonce(string Mrz, string CardAccess,
 			string DecryptedNonce, string EncryptedNonce, bool IsBase64)
 		{
-			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
+			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 
 			byte[] Bin = Decode(CardAccess, IsBase64);
 			Assert.IsTrue(TravelDocumentsClient.TryDecodeDER(Bin, out object? Value));
@@ -179,7 +179,7 @@ namespace NeuroAccess.Nfc.Test
 			string TokenTerminal, string TokenChip,
 			bool IsBase64, Type AlgorithmType, Type CurveType)
 		{
-			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
+			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 
 			// Elliptic Curve Parameters
 

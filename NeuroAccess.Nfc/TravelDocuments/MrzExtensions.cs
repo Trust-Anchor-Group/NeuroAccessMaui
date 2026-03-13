@@ -4,25 +4,10 @@ using System.Text.RegularExpressions;
 namespace NeuroAccess.Nfc.TravelDocuments
 {
 	/// <summary>
-	/// Contains NFC Extensions for Machine-Readable Travel Documents.
-	/// 
-	/// References:
-	/// https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
-	/// https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+	/// Contains MRZ-related Extensions for Machine-Readable Travel Documents.
 	/// </summary>
-	public static class TravelDocumentsExtensions
+	public static class MrzExtensions
 	{
-		/// <summary>
-		/// Elementary Files in travel documents.
-		/// </summary>
-		public static class ElementaryFiles
-		{
-			/// <summary>
-			/// EF.CardAccess. §3.11.3 ICAO Doc 9303, https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
-			/// </summary>
-			public const ushort CardAccess = 0x011c;
-		}
-
 		/// <summary>
 		/// Derives Basic Access Control Keys from the second row of the 
 		/// Machine-Readable string in passport (MRZ).

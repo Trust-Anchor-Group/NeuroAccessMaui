@@ -16,7 +16,7 @@ namespace NeuroAccess.Nfc.Test
 			// Example from §D.2, Example 1, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 			string Mrz = "I<UTOSTEVENSON<<PETER<JOHN<<<<<<<<<<\nD23145890<UTO3407127M95071227349<<<8";
-			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
+			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 			Assert.AreEqual("I", Info!.DocumentType);
 			Assert.AreEqual("UTO", Info.IssuingState);
 			Assert.AreEqual("UTO", Info.Nationality);
@@ -47,7 +47,7 @@ namespace NeuroAccess.Nfc.Test
 			// Example from §D.2, Example 2, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 			string Mrz = "I<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<\nL898902C<3UTO6908061F9406236<<<<<<<8";
-			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
+			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 			Assert.AreEqual("I", Info!.DocumentType);
 			Assert.AreEqual("UTO", Info.IssuingState);
 			Assert.AreEqual("UTO", Info.Nationality);
@@ -84,7 +84,7 @@ namespace NeuroAccess.Nfc.Test
 			// Example from §D.2, Example 3, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 			string Mrz = "I<UTOD23145890<7349<<<<<<<<<<<\n3407127M9507122UTO<<<<<<<<<<<2\nSTEVENSON<<PETER<JOHN<<<<<<<<<";
-			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
+			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 			Assert.AreEqual("I", Info!.DocumentType);
 			Assert.AreEqual("UTO", Info.IssuingState);
 			Assert.AreEqual("UTO", Info.Nationality);
@@ -115,7 +115,7 @@ namespace NeuroAccess.Nfc.Test
 			// Example from §D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 			string Mrz = "I<UTOL898902C<3<<<<<<<<<<<<<<<\n6908061F9406236UTO<<<<<<<<<<<1\nERIKSSON<<ANNA<MARIA<<<<<<<<<<";
-			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
+			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 			Assert.AreEqual("I", Info!.DocumentType);
 			Assert.AreEqual("UTO", Info.IssuingState);
 			Assert.AreEqual("UTO", Info.Nationality);
@@ -149,7 +149,7 @@ namespace NeuroAccess.Nfc.Test
 			// §3.1, ICAO 9303-3, https://www.icao.int/publications/Documents/9303_p3_cons_en.pdf
 
 			string Mrz = "P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<\nL898902C36UTO7408122F1204159ZE184226B<<<<<10";
-			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out _));
+			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out _));
 		}
 
 		[TestMethod]
@@ -158,7 +158,7 @@ namespace NeuroAccess.Nfc.Test
 			// §B, ICAO 9303-5, https://www.icao.int/publications/Documents/9303_p5_cons_en.pdf
 
 			string Mrz = "I<UTOD231458907<<<<<<<<<<<<<<<\n7408122F1204159UTO<<<<<<<<<<<6\nERIKSSON<<ANNA<MARIA<<<<<<<<<<";
-			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out _));
+			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out _));
 		}
 
 		[TestMethod]
@@ -167,7 +167,7 @@ namespace NeuroAccess.Nfc.Test
 			// §B, ICAO 9303-6, https://www.icao.int/publications/Documents/9303_p6_cons_en.pdf
 
 			string Mrz = "I<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<\nD231458907UTO7408122F1204159<<<<<<<6";
-			Assert.IsTrue(TravelDocumentsExtensions.ParseMrz(Mrz, out _));
+			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out _));
 		}
 
 		[TestMethod]

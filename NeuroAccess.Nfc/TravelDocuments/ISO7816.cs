@@ -100,6 +100,11 @@
 			public const byte Basic = 0x00;
 
 			/// <summary>
+			/// Secure messaging.
+			/// </summary>
+			public const byte SecureMessaging = 0x0C;
+
+			/// <summary>
 			/// Command Chaining.
 			/// </summary>
 			public const byte Chaining = 0x10;
@@ -113,17 +118,17 @@
 			public const byte DeactivateFile = 0x04;
 			public const byte EraseRecord = 0x0C;
 			public const byte EraseBinary = 0x0E;
+			public const byte MessageSecurityEnvironment = 0x22;
+			public const byte ManageChannel = 0x70;
 			public const byte ExternalAuthenticate = 0x82;
 			public const byte GetChallenge = 0x84;
 			public const byte GeneralAuthenticate = 0x86;
-			public const byte GetData = 0xCA;
 			public const byte InternalAuthenticate = 0x88;
-			public const byte ManageChannel = 0x70;
-			public const byte MessageSecurityEnvironment = 0x22;
-			public const byte PutData = 0xDA;
+			public const byte Select = 0xA4;
 			public const byte ReadBinary = 0xB0;
 			public const byte ReadRecord = 0xB2;
-			public const byte Select = 0xA4;
+			public const byte GetData = 0xCA;
+			public const byte PutData = 0xDA;
 			public const byte UpdateBinary = 0xD6;
 			public const byte UpdateRecord = 0xDC;
 		}

@@ -162,6 +162,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		public virtual int KdfHashKeyLength => 16;
 
 		/// <summary>
+		/// Number of bytes used for sequence counter.
+		/// </summary>
+		public virtual int BlockLength => 16;
+
+		/// <summary>
 		/// Decrypts an encrypted nonce value.
 		/// </summary>
 		/// <param name="Info">Document information.</param>
@@ -182,47 +187,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// <returns>Decrypted nonce.</returns>
 		public virtual byte[] DecryptNonce(byte[] Kπ, byte[] EncryptedNonce)
 		{
-			return DecryptNonceAes(Kπ, EncryptedNonce);
+			return this.DecryptAes(Kπ, zeroIv16, EncryptedNonce);
 		}
-
-		/// <summary>
-		/// Decrypts an encrypted nonce value.
-		/// </summary>
-		/// <param name="Kπ">Key derived from the document information.</param>
-		/// <param name="EncryptedNonce">Encrypted nonce.</param>
-		/// <returns>Decrypted nonce.</returns>
-		public static byte[] DecryptNonceAes(byte[] Kπ, byte[] EncryptedNonce)
-		{
-			using Aes Cipher = Aes.Create();
-			Cipher.Mode = CipherMode.CBC;
-			Cipher.Padding = PaddingMode.None;
-			Cipher.BlockSize = 128;
-			Cipher.KeySize = 128;
-
-			using ICryptoTransform Decryptor = Cipher.CreateDecryptor(Kπ, zeroIv16);
-
-			return Decryptor.TransformFinalBlock(EncryptedNonce, 0, EncryptedNonce.Length);
-		}
-
-		/// <summary>
-		/// Decrypts an encrypted nonce value.
-		/// </summary>
-		/// <param name="Kπ">Key derived from the document information.</param>
-		/// <param name="EncryptedNonce">Encrypted nonce.</param>
-		/// <returns>Decrypted nonce.</returns>
-		public static byte[] DecryptNonce3Des(byte[] Kπ, byte[] EncryptedNonce)
-		{
-			using TripleDES Cipher = TripleDES.Create();
-			Cipher.Mode = CipherMode.CBC;
-			Cipher.Padding = PaddingMode.None;
-
-			using ICryptoTransform Decryptor = Cipher.CreateDecryptor(Kπ, zeroIv8);
-
-			return Decryptor.TransformFinalBlock(EncryptedNonce, 0, EncryptedNonce.Length);
-		}
-
-		private static readonly byte[] zeroIv16 = new byte[16];
-		private static readonly byte[] zeroIv8 = new byte[8];
 
 		/// <summary>
 		/// Creates a block of associated data used for MAC signatures.
@@ -266,5 +232,114 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// <param name="Key">Key to use for authenticator.</param>
 		/// <returns>Authenticator</returns>
 		public abstract CMac GetAuthenticator(byte[] Key);
+
+		/// <summary>
+		/// Encrypts data.
+		/// </summary>
+		/// <param name="Key">Encryption key.</param>
+		/// <param name="IV">Initialization vector.</param>
+		/// <param name="Data">Data to be encrypted.</param>
+		/// <returns>Encrypted data.</returns>
+		public virtual byte[] Encrypt(byte[] Key, byte[] IV, byte[] Data)
+		{
+			return this.EncryptAes(Key, IV, Data);
+		}
+
+		/// <summary>
+		/// Decrypts data.
+		/// </summary>
+		/// <param name="Key">Encryption key.</param>
+		/// <param name="IV">Initialization vector.</param>
+		/// <param name="Data">Data to be decrypted.</param>
+		/// <returns>Decrypted data.</returns>
+		public virtual byte[] Decrypt(byte[] Key, byte[] IV, byte[] Data)
+		{
+			return this.DecryptAes(Key, IV, Data);
+		}
+		/// <summary>
+		/// Encrypts data.
+		/// </summary>
+		/// <param name="Key">Encryption key.</param>
+		/// <param name="IV">Initialization vector.</param>
+		/// <param name="Data">Data.</param>
+		/// <returns>Encrypted data.</returns>
+		protected byte[] EncryptAes(byte[] Key, byte[] IV, byte[] Data)
+		{
+			using Aes Cipher = Aes.Create();
+			Cipher.Mode = CipherMode.CBC;
+			Cipher.Padding = PaddingMode.None;
+			Cipher.BlockSize = this.BlockLength << 3;
+			Cipher.KeySize = Key.Length << 3;
+
+			using ICryptoTransform Encryptor = Cipher.CreateEncryptor(Key, IV);
+
+			return Encryptor.TransformFinalBlock(Data, 0, Data.Length);
+		}
+
+		/// <summary>
+		/// Encrypts data.
+		/// </summary>
+		/// <param name="Key">Encryption key.</param>
+		/// <param name="IV">Initialization vector.</param>
+		/// <param name="Data">Data.</param>
+		/// <returns>Encrypted data.</returns>
+		protected byte[] Encrypt3Des(byte[] Key, byte[] IV, byte[] Data)
+		{
+			using TripleDES Cipher = TripleDES.Create();
+			Cipher.Mode = CipherMode.CBC;
+			Cipher.Padding = PaddingMode.None;
+
+			using ICryptoTransform Encryptor = Cipher.CreateEncryptor(Key, IV);
+
+			return Encryptor.TransformFinalBlock(Data, 0, Data.Length);
+		}
+
+		/// <summary>
+		/// Decrypts encrypted data.
+		/// </summary>
+		/// <param name="Key">Encryption key.</param>
+		/// <param name="IV">Initialization vector.</param>
+		/// <param name="EncryptedData">Encrypted data.</param>
+		/// <returns>Decrypted data.</returns>
+		protected byte[] DecryptAes(byte[] Key, byte[] IV, byte[] EncryptedData)
+		{
+			using Aes Cipher = Aes.Create();
+			Cipher.Mode = CipherMode.CBC;
+			Cipher.Padding = PaddingMode.None;
+			Cipher.BlockSize = this.BlockLength << 3;
+			Cipher.KeySize = Key.Length << 3;
+
+			using ICryptoTransform Decryptor = Cipher.CreateDecryptor(Key, IV);
+
+			return Decryptor.TransformFinalBlock(EncryptedData, 0, EncryptedData.Length);
+		}
+
+		/// <summary>
+		/// Decrypts encrypted data.
+		/// </summary>
+		/// <param name="Key">Encryption key.</param>
+		/// <param name="IV">Initialization vector.</param>
+		/// <param name="EncryptedData">Encrypted data.</param>
+		/// <returns>Decrypted data.</returns>
+		protected byte[] Decrypt3Des(byte[] Key, byte[] IV, byte[] EncryptedData)
+		{
+			using TripleDES Cipher = TripleDES.Create();
+			Cipher.Mode = CipherMode.CBC;
+			Cipher.Padding = PaddingMode.None;
+
+			using ICryptoTransform Decryptor = Cipher.CreateDecryptor(Key, IV);
+			
+			return Decryptor.TransformFinalBlock(EncryptedData, 0, EncryptedData.Length);
+		}
+
+		/// <summary>
+		/// Initialization Vector of 16 zero bytes.
+		/// </summary>
+		protected static readonly byte[] zeroIv16 = new byte[16];
+
+		/// <summary>
+		/// Initialization Vector of 8 zero bytes.
+		/// </summary>
+		protected static readonly byte[] zeroIv8 = new byte[8];
 	}
 }

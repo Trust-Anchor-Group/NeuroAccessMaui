@@ -60,9 +60,9 @@ namespace NeuroAccessMaui.Services.Nfc
 						string Mrz = await RuntimeSettings.GetAsync("NFC.LastMrz", string.Empty);
 
 						if (!string.IsNullOrEmpty(Mrz) &&
-							TravelDocumentsExtensions.ParseMrz(Mrz, out DocumentInformation? DocInfo))
+							MrzExtensions.ParseMrz(Mrz, out DocumentInformation? DocInfo))
 						{
-							TravelDocumentsClient Client = new(IsoDep, DocInfo,
+							using TravelDocumentsClient Client = new(IsoDep, DocInfo,
 								ServiceRef.XmppService.RemoteSniffers);
 
 							try
@@ -79,7 +79,11 @@ namespace NeuroAccessMaui.Services.Nfc
 									return;
 								}
 
-								// TODO: Read document
+								if (!await Client.ReadTravelDocument())
+								{
+									// TODO: Forward failure to UI.
+									return;
+								}
 							}
 							catch (Exception ex)
 							{
