@@ -76,11 +76,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				this.encrypted = false;
 
-				if (this.tagInterface is not null)
-				{
-					this.tagInterface.CloseIfOpen();
-					this.tagInterface.Dispose();
-				}
+				this.tagInterface?.CloseIfOpen();
+				this.tagInterface = null;
 			}
 		}
 
@@ -322,10 +319,167 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				]);
 
 			byte[] Response = await this.tagInterface.ExecuteCommand(EncryptedCommand, this);
+			int c = Response.Length - 2;
+
+			if (c <= 0)
+				return Response ?? [];
+
+			byte[]? EncryptedResponseData = null;
+			byte[]? ResponseSignature = null;
+			int i = 0;
+			byte SW1 = Response[c];
+			byte SW2 = Response[c + 1];
+			int StartOfSignature = 0;
+
+			while (i < c)
+			{
+				switch (Response[i++])
+				{
+					case 0x87:
+						if (i == 0)
+						{
+							this.UnexpectedEndOfResponse();
+							return Response;
+						}
+
+						int L = Response[i++];
+
+						if (i == 0)
+						{
+							this.UnexpectedEndOfResponse();
+							return Response;
+						}
+
+						if (Response[i++] != 1)
+						{
+							this.Error("Expected 01 in DO'87' block.");
+							return Response;
+						}
+
+						if (i + L > c)
+						{
+							this.UnexpectedEndOfResponse();
+							return Response;
+						}
+
+						EncryptedResponseData = new byte[L];
+						Buffer.BlockCopy(Response, i, EncryptedResponseData, 0, L);
+						i += L;
+						break;
+
+					case 0x99:
+						if (i == 0)
+						{
+							this.UnexpectedEndOfResponse();
+							return Response;
+						}
+
+						L = Response[i++];
+
+						if (L != 2)
+						{
+							this.Error("Expected DO'99' block to have a length of 02.");
+							return Response;
+						}
+
+						if (i + L > c)
+						{
+							this.UnexpectedEndOfResponse();
+							return Response;
+						}
+
+						SW1 = Response[i++];
+						SW2 = Response[i++];
+						break;
+
+					case 0x8e:
+						StartOfSignature = i - 1;
+
+						if (i == 0)
+						{
+							this.UnexpectedEndOfResponse();
+							return Response;
+						}
+
+						L = Response[i++];
+
+						if (L != 8)
+						{
+							this.Error("Expected DO'8E' block to have a length of 08.");
+							return Response;
+						}
+
+						if (i + L > c)
+						{
+							this.UnexpectedEndOfResponse();
+							return Response;
+						}
+
+						ResponseSignature = new byte[L];
+						Buffer.BlockCopy(Response, i, ResponseSignature, 0, L);
+						i += L;
+						break;
+
+					default:
+						this.Error("Unexpected DO block: " + Response[i - 1].ToString("X2"));
+						return Response;
+				}
+			}
+
+			if (ResponseSignature is null)
+			{
+				this.Error("Missing DO'8E' block with response signature.");
+				return Response;
+			}
+
+			int ResponsePadLength = StartOfSignature % BlockSize;
+			byte[] ResponsePadding;
+
+			if (ResponsePadLength == 0)
+				ResponsePadding = [];
+			else
+			{
+				ResponsePadding = new byte[BlockSize - ResponsePadLength];
+				ResponsePadding[0] = 0x80;
+			}
 
 			this.IncrementCounter();
 
+			AssociatedData = new byte[StartOfSignature];
+			Buffer.BlockCopy(Response, 0, AssociatedData, 0, StartOfSignature);
+
+			AssociatedData = CONCAT(
+				this.sendSequenceCounter!,
+				AssociatedData,
+				ResponsePadding);
+
+			if (this.HasSniffers)
+				this.Information("Associated data to verify: " + Hashes.BinaryToString(AssociatedData));
+
+			if (!this.cMac.Verify(AssociatedData, ResponseSignature))
+			{
+				this.Error("Invalid response signature.");
+				return Response;
+			}
+
+			if (EncryptedResponseData is null)
+				Response = [SW1, SW2];
+			else
+			{
+				IV = this.protocol.Encrypt(this.ks_Enc!, this.zeroIv!, this.sendSequenceCounter!);
+				Response = this.protocol.Decrypt(this.ks_Enc!, IV, EncryptedResponseData);
+				Response = CONCAT(Response, [SW1, SW2]);
+			}
+
+			if (this.HasSniffers)
+				this.Information("Decrypted response: " + Hashes.BinaryToString(Response));
+
 			return Response;
+		}
+
+		private void UnexpectedEndOfResponse()
+		{
+			this.Error("Unexpected end of encrypted response.");
 		}
 
 		private void IncrementCounter()
@@ -792,7 +946,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				}
 			}
 
-			if (Best is null || OidsFound.HasFirstItem)
+			if (Best is null && OidsFound.HasFirstItem)
 			{
 				// Notify operators & developers that ciphers have been detected that
 				// require implementation.
@@ -1739,6 +1893,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				this.Error("Unable to select the LDS1 eMRTD application.");
 				return false;
 			}
+
+			this.Information("LDS1 eMRTD application selected.");
+
 
 			// TODO
 
