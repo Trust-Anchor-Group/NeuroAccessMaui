@@ -978,15 +978,26 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			using MemoryStream File = new();
 			ushort Offset = 0;
+			int? ExpectedLength = null;
+			int BytesDownloaded = 0;
 
-			while (true)
+			while (!ExpectedLength.HasValue || BytesDownloaded < ExpectedLength.Value)
 			{
 				KeyValuePair<byte[]?, bool> P = await this.ReadBinary(Offset);
 				if (P.Key is null)
 					return null;
 
 				File.Write(P.Key, 0, P.Key.Length);
-				if (!P.Value)
+				BytesDownloaded += P.Key.Length;
+
+				if (!ExpectedLength.HasValue)
+				{
+					ExpectedLength = GetExpectedLength(P.Key);
+					if (ExpectedLength.HasValue)
+						this.Information("Expected length of file: " + ExpectedLength.Value.ToString());
+				}
+
+				if (!P.Value && !ExpectedLength.HasValue)
 				{
 					await this.SetState(TravelDocumentsState.DownloadedFile, FileName);
 					return File.ToArray();
@@ -998,6 +1009,57 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				Offset = Offset2;
 			}
+
+			await this.SetState(TravelDocumentsState.DownloadedFile, FileName);
+			return File.ToArray();
+		}
+
+		private static int? GetExpectedLength(byte[] Bin)
+		{
+			if (Bin is null)
+				return null;
+
+			int i = 0;
+			int c = Bin.Length;
+			byte b;
+
+			if (c == 0)
+				return null;
+
+			b = Bin[i++];
+			if ((b & 0x1f) == 0x1f)
+				i++;
+
+			if (i >= c)
+				return null;
+
+			b = Bin[i++];
+
+			switch (b)
+			{
+				case 0x81:
+					if (i >= c)
+						return null;
+
+					c = Bin[i++];
+					break;
+
+				case 0x82:
+					if (i + 1 >= c)
+						return null;
+
+					c = Bin[i++];
+					c <<= 8;
+					c |= Bin[i++];
+
+					break;
+
+				default:
+					c = b & 0x7f;
+					break;
+			}
+
+			return c + i;
 		}
 
 		/// <summary>
@@ -2089,6 +2151,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				this.Error("Unable to decode DG2 (Encoded Identification Features — Face).");
 				return false;
 			}
+
+			this.Warning(Convert.ToBase64String(Data, Base64FormattingOptions.InsertLineBreaks));
 
 			// TODO: Data Group 3 (Additional Identification Feature — Finger(s)) (In LDS1 eMRTD Application)
 			// TODO: Data Group 4 (Additional Identification Feature — Iris(es)) (In LDS1 eMRTD Application)
