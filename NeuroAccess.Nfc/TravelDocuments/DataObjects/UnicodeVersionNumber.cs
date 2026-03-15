@@ -61,8 +61,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 				string MinorVersion = Encoding.ASCII.GetString(Value, 2, 2);
 				string ReleaseVersion = Encoding.ASCII.GetString(Value, 4, 2);
 
-				Client.Information("Unicode version: " + MajorVersion.ToString() + "." +
-					MinorVersion.ToString() + "." + ReleaseVersion.ToString());
+				Client.Information("Unicode version: " + MajorVersion.TrimStart('0') + "." +
+					MinorVersion.TrimStart('0') + "." + ReleaseVersion.TrimStart('0'));
 
 				if (double.TryParse(MajorVersion + "." + MinorVersion, out double d) &&
 					int.TryParse(ReleaseVersion, out int i))

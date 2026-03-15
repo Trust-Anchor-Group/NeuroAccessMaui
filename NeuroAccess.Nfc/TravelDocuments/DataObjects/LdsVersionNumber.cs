@@ -53,8 +53,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 				string MajorVersion = Encoding.ASCII.GetString(Value, 0, 2);
 				string MinorVersion = Encoding.ASCII.GetString(Value, 2, 2);
 
-				Client.Information("LDS version: " + MajorVersion.ToString() +
-					"." + MinorVersion.ToString());
+				Client.Information("LDS version: " + MajorVersion.TrimStart('0') +
+					"." + MinorVersion.TrimStart('0'));
 
 				if (double.TryParse(MajorVersion + "." + MinorVersion, out double d))
 				{

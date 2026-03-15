@@ -552,6 +552,10 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			{
 				IV = this.protocol.Encrypt(this.ks_Enc!, this.zeroIv!, this.sendSequenceCounter!);
 				Response = this.protocol.Decrypt(this.ks_Enc!, IV, EncryptedResponseData);
+
+				if (IsPadded(Response, out int NrBytesPadding))
+					Array.Resize(ref Response, Response.Length - NrBytesPadding);
+
 				Response = CONCAT(Response, [SW1, SW2]);
 			}
 
@@ -559,6 +563,28 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				this.Information("Decrypted response: " + Hashes.BinaryToString(Response));
 
 			return Response;
+		}
+
+		private static bool IsPadded(byte[] Data, out int NrBytesPadding)
+		{
+			NrBytesPadding = 0;
+
+			if (Data is null)
+				return false;
+
+			int c = Data.Length;
+			if (c == 0)
+				return false;
+
+			while (c > 0 && Data[--c] == 0)
+				;
+
+			if (Data[c] != 0x80)
+				return false;
+
+			NrBytesPadding = Data.Length - c;
+
+			return true;
 		}
 
 		private void UnexpectedEndOfResponse()
@@ -2047,7 +2073,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			this.mrz = DataGroup1.Mrz;
 			await this.MrzUpdated.Raise(this, EventArgs.Empty);
 
-			/*
 			// Reading EF.DG2 (Encoded Identification Features — Face), §4.7.2 ICAO 9303-10
 
 			// TODO: Reading long files
@@ -2064,7 +2089,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				this.Error("Unable to decode DG2 (Encoded Identification Features — Face).");
 				return false;
 			}
-			*/
 
 			// TODO: Data Group 3 (Additional Identification Feature — Finger(s)) (In LDS1 eMRTD Application)
 			// TODO: Data Group 4 (Additional Identification Feature — Iris(es)) (In LDS1 eMRTD Application)
