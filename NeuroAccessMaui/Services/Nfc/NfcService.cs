@@ -79,6 +79,25 @@ namespace NeuroAccessMaui.Services.Nfc
 									return;
 								}
 
+								Client.AppInfoUpdated += (_, e) =>
+								{
+									// TODO: Forward Application-level information to UI.
+									return Task.CompletedTask;
+								};
+
+								Client.SecurityInfoUpdated += (_, e) =>
+								{
+									// TODO: Forward Security information to UI.
+									return Task.CompletedTask;
+								};
+
+								Client.MrzUpdated += (_, e) =>
+								{
+									// TODO: Forward MRZ information to UI.
+									// TODO: Compare with OCR MRZ to ensure consistency.
+									return Task.CompletedTask;
+								};
+
 								if (!await Client.ReadTravelDocument())
 								{
 									// TODO: Forward failure to UI.

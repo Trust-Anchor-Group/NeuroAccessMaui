@@ -52,6 +52,11 @@
 		public const ushort SOD = 0x011d;
 
 		/// <summary>
+		/// Data Group 1 (MRZ) (In LDS1 eMRTD Application)
+		/// </summary>
+		public const ushort DG1 = 0x0101;
+
+		/// <summary>
 		/// EF.Biometrics1-64 = 0x0201-0x0240. §5.3.3 ICAO Doc 9303-10:
 		/// https://www2023.icao.int/publications/Documents/9303_p10_cons_en.pdf
 		/// </summary>

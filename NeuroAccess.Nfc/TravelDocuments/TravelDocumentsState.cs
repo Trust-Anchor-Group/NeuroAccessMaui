@@ -71,6 +71,18 @@
 		/// <summary>
 		/// Responding to BAC challenge (BAC is obsolete, but still an option for older documents).
 		/// </summary>
-		RespondingToChallenge
+		RespondingToChallenge,
+
+		/// <summary>
+		/// Starting the downloading of a file. Associated data will contain a <see cref="string"/> value
+		/// referencing the file being downloaded.
+		/// </summary>
+		DownloadingFile,
+
+		/// <summary>
+		/// Completed the downloading of a file. Associated data will contain a <see cref="string"/> value
+		/// referencing the file that was downloaded.
+		/// </summary>
+		DownloadedFile
 	}
 }

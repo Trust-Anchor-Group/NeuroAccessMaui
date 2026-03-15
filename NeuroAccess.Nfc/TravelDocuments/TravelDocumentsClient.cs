@@ -4,19 +4,19 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
 using System.IO;
+using System.Reflection;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
+using NeuroAccess.Nfc.TravelDocuments.DataObjects;
 using NeuroAccess.Nfc.TravelDocuments.Events;
 using NeuroAccess.Nfc.TravelDocuments.PACE;
 using Waher.Content;
-using Waher.Content.Json.ValueTypes;
 using Waher.Events;
 using Waher.Networking;
 using Waher.Networking.Sniffers;
 using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
-using Waher.Script.Functions.Strings;
+using Waher.Script.Functions.Analytic;
 using Waher.Security;
 using Waher.Security.EllipticCurves;
 
@@ -28,6 +28,10 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	/// </summary>
 	public class TravelDocumentsClient : CommunicationLayer, IDisposable
 	{
+		private static readonly Dictionary<ushort, IDataObject> dataObjects = GetDataObjects();
+		private ApplicationLevelInformation? appInfo;
+		private DocumentSecurityObject? securityinfo;
+		private MrzDataObject? mrz;
 		private readonly IIsoDepInterface tagInterface;
 		private readonly DocumentInformation documentInformation;
 		private TravelDocumentsState state;
@@ -83,6 +87,36 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				this.tagInterface.CloseIfOpen();
 			}
 		}
+
+		/// <summary>
+		/// Application-level information, if available.
+		/// </summary>
+		public ApplicationLevelInformation? AppInfo => this.appInfo;
+
+		/// <summary>
+		/// Event raised when <see cref="AppInfo"/> is updated.
+		/// </summary>
+		public event EventHandlerAsync? AppInfoUpdated;
+
+		/// <summary>
+		/// Security information, if available.
+		/// </summary>
+		public DocumentSecurityObject? SecurityInfo => this.securityinfo;
+
+		/// <summary>
+		/// Event raised when <see cref="SecurityInfo"/> is updated.
+		/// </summary>
+		public event EventHandlerAsync? SecurityInfoUpdated;
+
+		/// <summary>
+		/// MRZ information, if available.
+		/// </summary>
+		public MrzDataObject? Mrz => this.mrz;
+
+		/// <summary>
+		/// Event raised when <see cref="Mrz"/> is updated.
+		/// </summary>
+		public event EventHandlerAsync? MrzUpdated;
 
 		/// <summary>
 		/// Current state of client.
@@ -335,6 +369,35 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 						int L = Response[i++];
 
+						switch (L)
+						{
+							case 0x81:
+								if (i >= c)
+								{
+									this.UnexpectedEndOfResponse();
+									return Response;
+								}
+
+								L = Response[i++];
+								break;
+
+							case 0x82:
+								if (i + 1 >= c)
+								{
+									this.UnexpectedEndOfResponse();
+									return Response;
+								}
+
+								L = Response[i++];
+								L <<= 8;
+								L |= Response[i++];
+								break;
+
+							default:
+								L &= 0x7f;
+								break;
+						}
+
 						if (i >= c)
 						{
 							this.UnexpectedEndOfResponse();
@@ -347,9 +410,11 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							return Response;
 						}
 
-						if (Response[i++] != 1)
+						byte PaddingByte = Response[i++];
+
+						if (PaddingByte != 1 && PaddingByte != 2)
 						{
-							this.Error("Expected 01 in DO'87' block.");
+							this.Error("Expected 01 or 02 as padding byte in DO'87' block.");
 							return Response;
 						}
 
@@ -363,6 +428,17 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						EncryptedResponseData = new byte[L];
 						Buffer.BlockCopy(Response, i, EncryptedResponseData, 0, L);
 						i += L;
+
+						if (PaddingByte == 2)
+						{
+							if (i < c && Response[i] == 0x80)
+							{
+								i++;
+
+								while (i < c && Response[i] == 0x00)
+									i++;
+							}
+						}
 						break;
 
 					case 0x99:
@@ -853,9 +929,14 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// Selects and downloads a file from the travel document.
 		/// </summary>
 		/// <param name="FileId">File to download.</param>
+		/// <param name="FileName">Name of file.</param>
 		/// <returns>Downloaded file, or null if unable to download file.</returns>
-		public async Task<byte[]?> DownloadFile(ushort FileId)
+		public async Task<byte[]?> DownloadFile(ushort FileId, string FileName)
 		{
+			await this.SetState(TravelDocumentsState.DownloadingFile, FileName);
+
+			this.Information("Downloading " + FileName + "...");
+
 			if (!await this.SelectFile(FileId))
 				return null;
 
@@ -870,7 +951,10 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				File.Write(P.Key, 0, P.Key.Length);
 				if (!P.Value)
+				{
+					await this.SetState(TravelDocumentsState.DownloadedFile, FileName);
 					return File.ToArray();
+				}
 
 				ushort Offset2 = (ushort)(Offset + P.Key.Length);
 				if (Offset2 < Offset)
@@ -1517,7 +1601,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		{
 			// §4.2 1. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
-			byte[]? Data = await this.DownloadFile(EF.CardAccess);
+			byte[]? Data = await this.DownloadFile(EF.CardAccess, "EF.CardAccess");
 
 			if (Data is not null &&
 				TryDecodeDER(Data, out object? CardAccess) &&
@@ -1866,7 +1950,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			try
 			{
-				byte[]? Data = await this.DownloadFile(EF.DIR);
+				byte[]? Data = await this.DownloadFile(EF.DIR, "EF.DIR");
 				if (Data is null)
 					return;
 
@@ -1894,110 +1978,62 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			// Reading EF.COM
 
-			this.Information("LDS1 eMRTD application selected. Downloading EF.COM...");
+			this.Information("LDS1 eMRTD application selected.");
 
-			byte[]? Data = await this.DownloadFile(EF.COM);
-			if (Data is null || !TryParseDataGroups(Data, out DataGroup[]? DataGroups))
-				return false;
-
-			double LdsVersion = 0;
-			double UnicodeVersion = 0;
-
-			foreach (DataGroup Group in DataGroups)
+			byte[]? Data = await this.DownloadFile(EF.COM, "EF.COM");
+			if (Data is null)
 			{
-				switch (Group.Tag)
-				{
-					case 0x60:  // Application level information
-						if (TryParseDataGroups(Group.Value, out DataGroup[]? Info))
-						{
-							foreach (DataGroup SubGroup in Info)
-							{
-								switch (SubGroup.Tag)
-								{
-									case 0x5f01:    // LDS version number
-										if (SubGroup.Value.Length == 4)
-										{
-											string MajorVersion = Encoding.ASCII.GetString(SubGroup.Value, 0, 2);
-											string MinorVersion = Encoding.ASCII.GetString(SubGroup.Value, 2, 2);
-
-											this.Information("LDS version: " + MajorVersion.ToString() +
-												"." + MinorVersion.ToString());
-
-											if (double.TryParse(MajorVersion + "." + MinorVersion, out double d))
-												LdsVersion = d;
-										}
-										else
-											this.Warning("LDS version: " + Hashes.BinaryToString(SubGroup.Value));
-										break;
-
-									case 0x5f36:    // Unicode version number
-										if (SubGroup.Value.Length == 6)
-										{
-											string MajorVersion = Encoding.ASCII.GetString(SubGroup.Value, 0, 2);
-											string MinorVersion = Encoding.ASCII.GetString(SubGroup.Value, 2, 2);
-											string ReleaseLevel = Encoding.ASCII.GetString(SubGroup.Value, 4, 2);
-
-											this.Information("Unicode version: " + MajorVersion.ToString() + "." +
-												MinorVersion.ToString() + "." + ReleaseLevel.ToString());
-
-											if (double.TryParse(MajorVersion + "." + MinorVersion, out double d))
-												UnicodeVersion = d;
-										}
-										else
-											this.Warning("Unicode version: " + Hashes.BinaryToString(SubGroup.Value));
-										break;
-
-									case 0x5c:      // Tag list
-										this.Information("Tag list: " + Hashes.BinaryToString(SubGroup.Value));
-										break;
-
-									default:
-										this.Warning("Unknown application level information tag: " + SubGroup.Tag.ToString("X4"));
-										break;
-								}
-							}
-						}
-						break;
-
-					default:
-						this.Warning("Unknown application level information tag: " + Group.Tag.ToString("X4"));
-						break;
-				}
+				this.Error("Unable to download EF.COM.");
+				return false;
 			}
 
+			if (!TryParseDataObject(Data, this, out ApplicationLevelInformation? AppInfo))
+			{
+				this.Error("Unable to parse application level information.");
+				return false;
+			}
+
+			this.appInfo = AppInfo;
+			await this.AppInfoUpdated.Raise(this, EventArgs.Empty);
+
+			/*
 			// Reading EF.SOD, §4.6.2 ICAO 9303-10
 
-			this.Information("Downloading EF.SOD...");
-
-			Data = await this.DownloadFile(EF.SOD);
-			if (Data is null || !TryParseDataGroups(Data, out DataGroups))
-				return false;
-
-			foreach (DataGroup Group in DataGroups)
+			Data = await this.DownloadFile(EF.SOD, "EF.SOD");
+			if (Data is null)
 			{
-				switch (Group.Tag)
-				{
-					case 0x77:  // Document Security Object
-						if (LdsVersion >= 1.8)
-						{
-							if (TryDecodeDER(Group.Value, out object? SecurityObj))
-							{
-								this.Information(JSON.Encode(SecurityObj, false));	// TODO
-							}
-							else
-								this.Warning("Unable to decode security object.");
-						}
-						else
-						{
-							// TODO
-						}
-						break;
-
-					default:
-						this.Warning("Unknown application level information tag: " + Group.Tag.ToString("X4"));
-						break;
-				}
+				this.Error("Unable to download EF.SOD.");
+				return false;
 			}
+
+			if (!TryParseDataObject(Data, this, out DocumentSecurityObject? SecurityInfo))
+			{
+				this.Error("Unable to decode Document Security Object.");
+				return false;
+			}
+
+			this.securityinfo = SecurityInfo;
+			await this.SecurityInfoUpdated.Raise(this, EventArgs.Empty);
+			*/
+
+			// Reading EF.DG1 (MRZ), §4.7.1 ICAO 9303-10
+
+			Data = await this.DownloadFile(EF.DG1, "EF.DG1");
+			if (Data is null)
+			{
+				this.Error("Unable to download EF.DG1.");
+				return false;
+			}
+
+			if (!TryParseDataObject(Data, this, out DataGroup1? DataGroup1) ||
+				DataGroup1.Mrz is null)
+			{
+				this.Error("Unable to decode DG1 (MRZ Information).");
+				return false;
+			}
+
+			this.mrz = DataGroup1.Mrz;
+			await this.MrzUpdated.Raise(this, EventArgs.Empty);
 
 			// TODO
 
@@ -2005,16 +2041,45 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		}
 
 		/// <summary>
-		/// Parses TLV-encoded data groups.
+		/// Parses a specific TLV-encoded data object.
 		/// </summary>
 		/// <param name="Data">Binary data.</param>
-		/// <returns>Array of data groups, or null if not correctly encoded.</returns>
-		public static bool TryParseDataGroups(byte[] Data,
-			[NotNullWhen(true)] out DataGroup[]? DataGroups)
+		/// <param name="Client">Client parsing the information.</param>
+		/// <param name="DataObject">Parsed data object, if successful.</param>
+		/// <returns>If parsing was successful.</returns>
+		public static bool TryParseDataObject<T>(byte[] Data, TravelDocumentsClient Client,
+			[NotNullWhen(true)] out T? DataObject)
+			where T : IDataObject
 		{
-			DataGroups = null;
+			if (TryParseDataObjects(Data, Client, out IDataObject[]? DataObjects))
+			{
+				foreach (IDataObject Object in DataObjects)
+				{
+					if (Object is T TypedObject)
+					{
+						DataObject = TypedObject;
+						return true;
+					}
+				}
+			}
 
-			ChunkedList<DataGroup> Found = [];
+			DataObject = default;
+			return false;
+		}
+
+		/// <summary>
+		/// Parses TLV-encoded data objects.
+		/// </summary>
+		/// <param name="Data">Binary data.</param>
+		/// <param name="Client">Client parsing the information.</param>
+		/// <param name="DataObjects">Array of data objects, or null if not correctly encoded.</param>
+		/// <returns>If parsing was successful.</returns>
+		public static bool TryParseDataObjects(byte[] Data, TravelDocumentsClient Client,
+			[NotNullWhen(true)] out IDataObject[]? DataObjects)
+		{
+			DataObjects = null;
+
+			ChunkedList<IDataObject> Found = [];
 			int i = 0;
 			int c = Data.Length;
 			ushort Tag;
@@ -2053,6 +2118,29 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				Len = Data[i++];
 
+				switch (Len)
+				{
+					case 0x81:
+						if (i == c)
+							return false;
+
+						Len = Data[i++];
+						break;
+
+					case 0x82:
+						if (i + 1 >= c)
+							return false;
+
+						Len = Data[i++];
+						Len <<= 8;
+						Len |= Data[i++];
+						break;
+
+					default:
+						Len &= 0x7f;
+						break;
+				}
+
 				if (i + Len > c)
 					return false;
 
@@ -2063,30 +2151,50 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					i += Len;
 				}
 
-				Found.Add(new DataGroup(Tag, Value));
+				if (dataObjects.TryGetValue(Tag, out IDataObject? TypedObject))
+				{
+					if (TypedObject.TryParse(Value, Client, out IDataObject? ParsedObject))
+						Found.Add(ParsedObject);
+					else
+					{
+						Client.Warning("Unable to parse data object with tag: " + Tag.ToString("X4"));
+						Found.Add(new BinaryDataObject(Tag, Value));
+					}
+				}
+				else
+				{
+					Client.Warning("Unknown application level information tag: " + Tag.ToString("X4"));
+					Found.Add(new BinaryDataObject(Tag, Value));
+				}
 			}
 
-			DataGroups = [.. Found];
+			DataObjects = [.. Found];
 
 			return true;
 		}
 
-		/// <summary>
-		/// Decoded Data Group.
-		/// </summary>
-		/// <param name="Tag">Tag value.</param>
-		/// <param name="Value">Binary value of data group.</param>
-		public readonly struct DataGroup(ushort Tag, byte[] Value)
+		private static Dictionary<ushort, IDataObject> GetDataObjects()
 		{
-			/// <summary>
-			/// Tag value.
-			/// </summary>
-			public ushort Tag { get; } = Tag;
+			Dictionary<ushort, IDataObject> Result = [];
 
-			/// <summary>
-			/// Binary value.
-			/// </summary>
-			public byte[] Value { get; } = Value;
+			foreach (Type T in Types.GetTypesImplementingInterface(typeof(IDataObject)))
+			{
+				ConstructorInfo? CI = Types.GetDefaultConstructor(T);
+				if (CI is null)
+					continue;
+
+				try
+				{
+					IDataObject DO = (IDataObject)CI.Invoke(Types.NoParameters);
+					Result[DO.Tag] = DO;
+				}
+				catch (Exception ex)
+				{
+					Log.Exception(ex);
+				}
+			}
+
+			return Result;
 		}
 	}
 }
