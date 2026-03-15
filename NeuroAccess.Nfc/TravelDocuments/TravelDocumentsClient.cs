@@ -2135,9 +2135,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			this.mrz = DataGroup1.Mrz;
 			await this.MrzUpdated.Raise(this, EventArgs.Empty);
 
+			/*
 			// Reading EF.DG2 (Encoded Identification Features — Face), §4.7.2 ICAO 9303-10
-
-			// TODO: Reading long files
 
 			Data = await this.DownloadFile(EF.DG2, "EF.DG2");
 			if (Data is null)
@@ -2151,16 +2150,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				this.Error("Unable to decode DG2 (Encoded Identification Features — Face).");
 				return false;
 			}
-
-			this.Warning(Convert.ToBase64String(Data, Base64FormattingOptions.InsertLineBreaks));
+			*/
 
 			// TODO: Data Group 3 (Additional Identification Feature — Finger(s)) (In LDS1 eMRTD Application)
 			// TODO: Data Group 4 (Additional Identification Feature — Iris(es)) (In LDS1 eMRTD Application)
 
-			/*
 			// Reading EF.DG5 (Displayed Portrait), §4.7.5 ICAO 9303-10
-
-			// TODO: Reading long files
 
 			Data = await this.DownloadFile(EF.DG5, "EF.DG5");
 			if (Data is null)
@@ -2174,14 +2169,17 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				this.Error("Unable to decode DG5 (Displayed Portrait).");
 				return false;
 			}
-			*/
+
+			if ((DataGroup5?.Photos?.Length ?? 0) > 0)
+			{
+				foreach (DisplayedPortrait Photo in DataGroup5!.Photos!)
+					this.Warning(Convert.ToBase64String(Photo.Value));
+			}
+
 
 			// TODO: Data Group 7 (Displayed Signature or Usual Mark) (In LDS1 eMRTD Application)
 
-			/*
 			// Reading EF.DG11 (Additional Personal Detail(s)), §4.7.11 ICAO 9303-10
-
-			// Not availale in swedish passports....
 
 			Data = await this.DownloadFile(EF.DG11, "EF.DG11");
 			if (Data is null)
@@ -2198,9 +2196,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			this.personalInformation = DataGroup11;
 			await this.PersonalInformationUpdated.Raise(this, EventArgs.Empty);
-			*/
-
-			// TODO
 
 			return true;
 		}
