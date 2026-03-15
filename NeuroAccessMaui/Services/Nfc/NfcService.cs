@@ -98,6 +98,12 @@ namespace NeuroAccessMaui.Services.Nfc
 									return Task.CompletedTask;
 								};
 
+								Client.PersonalInformationUpdated += (_, e) =>
+								{
+									// TODO: Forward Personal Information to UI.
+									return Task.CompletedTask;
+								};
+
 								if (!await Client.ReadTravelDocument())
 								{
 									// TODO: Forward failure to UI.

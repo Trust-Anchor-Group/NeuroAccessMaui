@@ -16,7 +16,6 @@ using Waher.Networking;
 using Waher.Networking.Sniffers;
 using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
-using Waher.Script.Functions.Analytic;
 using Waher.Security;
 using Waher.Security.EllipticCurves;
 
@@ -32,6 +31,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		private ApplicationLevelInformation? appInfo;
 		private DocumentSecurityObject? securityinfo;
 		private MrzDataObject? mrz;
+		private DataGroup11? personalInformation;
 		private readonly IIsoDepInterface tagInterface;
 		private readonly DocumentInformation documentInformation;
 		private TravelDocumentsState state;
@@ -117,6 +117,16 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// Event raised when <see cref="Mrz"/> is updated.
 		/// </summary>
 		public event EventHandlerAsync? MrzUpdated;
+
+		/// <summary>
+		/// MRZ information, if available.
+		/// </summary>
+		public DataGroup11? PersonalInformation => this.personalInformation;
+
+		/// <summary>
+		/// Event raised when <see cref="PersonalInformation"/> is updated.
+		/// </summary>
+		public event EventHandlerAsync? PersonalInformationUpdated;
 
 		/// <summary>
 		/// Current state of client.
@@ -1999,6 +2009,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			/*
 			// Reading EF.SOD, §4.6.2 ICAO 9303-10
 
+			// TODO: Reading long files
+
 			Data = await this.DownloadFile(EF.SOD, "EF.SOD");
 			if (Data is null)
 			{
@@ -2034,6 +2046,71 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			this.mrz = DataGroup1.Mrz;
 			await this.MrzUpdated.Raise(this, EventArgs.Empty);
+
+			/*
+			// Reading EF.DG2 (Encoded Identification Features — Face), §4.7.2 ICAO 9303-10
+
+			// TODO: Reading long files
+
+			Data = await this.DownloadFile(EF.DG2, "EF.DG2");
+			if (Data is null)
+			{
+				this.Error("Unable to download EF.DG2.");
+				return false;
+			}
+
+			if (!TryParseDataObject(Data, this, out DataGroup2? DataGroup2))
+			{
+				this.Error("Unable to decode DG2 (Encoded Identification Features — Face).");
+				return false;
+			}
+			*/
+
+			// TODO: Data Group 3 (Additional Identification Feature — Finger(s)) (In LDS1 eMRTD Application)
+			// TODO: Data Group 4 (Additional Identification Feature — Iris(es)) (In LDS1 eMRTD Application)
+
+			/*
+			// Reading EF.DG5 (Displayed Portrait), §4.7.5 ICAO 9303-10
+
+			// TODO: Reading long files
+
+			Data = await this.DownloadFile(EF.DG5, "EF.DG5");
+			if (Data is null)
+			{
+				this.Error("Unable to download EF.DG5.");
+				return false;
+			}
+
+			if (!TryParseDataObject(Data, this, out DataGroup5? DataGroup5))
+			{
+				this.Error("Unable to decode DG5 (Displayed Portrait).");
+				return false;
+			}
+			*/
+
+			// TODO: Data Group 7 (Displayed Signature or Usual Mark) (In LDS1 eMRTD Application)
+
+			/*
+			// Reading EF.DG11 (Additional Personal Detail(s)), §4.7.11 ICAO 9303-10
+
+			// Not availale in swedish passports....
+
+			Data = await this.DownloadFile(EF.DG11, "EF.DG11");
+			if (Data is null)
+			{
+				this.Error("Unable to download EF.DG11.");
+				return false;
+			}
+
+			if (!TryParseDataObject(Data, this, out DataGroup11? DataGroup11))
+			{
+				this.Error("Unable to decode DG11 (Additional Personal Detail(s)).");
+				return false;
+			}
+
+			this.personalInformation = DataGroup11;
+			await this.PersonalInformationUpdated.Raise(this, EventArgs.Empty);
+			*/
 
 			// TODO
 
