@@ -56,7 +56,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 
 			foreach (IDataObject Object in Inner)
 			{
-				if (Object is NrInstances NrInstances)
+				if (Object is NumberOfInstances NrInstances)
 					Count = NrInstances.Count;
 				else if (Object is DisplayedPortrait Photo)
 					Photos.Add(Photo);

@@ -3,38 +3,31 @@
 namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
 	/// <summary>
-	/// Number of instances
+	/// Format Type
 	/// </summary>
-	public class NrInstances : DataObject
+	public class FormatType : DataObject
 	{
 		/// <summary>
-		/// Number of instances
+		/// Format Type
 		/// </summary>
-		public NrInstances()
+		public FormatType()
 			: base([])
 		{
 		}
 
 		/// <summary>
-		/// Number of instances
+		/// Format Type
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
-		/// <param name="Count">Instance count.</param>
-		public NrInstances(byte[] Value, int Count)
+		public FormatType(byte[] Value)
 			: base(Value)
 		{
-			this.Count = Count;
 		}
 
 		/// <summary>
 		/// Tag value.
 		/// </summary>
-		public override ushort Tag => 0x02;
-
-		/// <summary>
-		/// Instance count.
-		/// </summary>
-		public int Count { get; }
+		public override ushort Tag => 0x88;
 
 		/// <summary>
 		/// Tries to parse a binary representation of the data object.
@@ -46,30 +39,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		public override bool TryParse(byte[] Value, TravelDocumentsClient Client,
 			[NotNullWhen(true)] out IDataObject? Parsed)
 		{
-			int Count;
-
-			switch (Value.Length)
-			{
-				case 0:
-					Count = 0;
-					break;
-
-				case 1:
-					Count = Value[0];
-					break;
-
-				case 2:
-					Count = Value[0];
-					Count <<= 8;
-					Count |= Value[1];
-					break;
-
-				default:
-					Parsed = null;
-					return false;
-			}
-
-			Parsed = new NrInstances(Value, Count);
+			// TODO: Parse
+			Parsed = new FormatType(Value);
 			return true;
 		}
 	}
