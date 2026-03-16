@@ -2133,6 +2133,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			}
 
 			this.mrz = DataGroup1.Mrz;
+			if (this.mrz.DocumentInformation is null)
+				this.Warning("Unable to parse MRZ information.");
+
 			await this.MrzUpdated.Raise(this, EventArgs.Empty);
 
 			/*

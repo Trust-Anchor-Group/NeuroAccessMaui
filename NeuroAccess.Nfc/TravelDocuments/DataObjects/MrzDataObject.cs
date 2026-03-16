@@ -21,7 +21,11 @@
 		public MrzDataObject(byte[] Value, string StringValue)
 			: base(Value, StringValue)
 		{
+			if (MrzExtensions.ParseMrz(StringValue, out DocumentInformation? Info))
+				this.DocumentInformation = Info;
 		}
+
+		public DocumentInformation? DocumentInformation { get; }
 
 		/// <summary>
 		/// Tag value.

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace NeuroAccess.Nfc.TravelDocuments
@@ -17,32 +18,14 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>If the string could be parsed.</returns>
 		public static bool ParseMrz(string MRZ, [NotNullWhen(true)] out DocumentInformation? Info)
 		{
-			Match M = td2_mrz_nr9charsplus.Match(MRZ);
-			if (M.Success)
+			foreach (KeyValuePair<Regex, DocumentInformationFromMatch> P in orderedPatterns)
 			{
-				Info = AssembleInfo2(M);
-				return Info is not null;
-			}
-
-			M = td2_mrz_nr9chars.Match(MRZ);
-			if (M.Success)
-			{
-				Info = AssembleInfo1(M);
-				return Info is not null;
-			}
-
-			M = td1_mrz_nr9charsplus.Match(MRZ);
-			if (M.Success)
-			{
-				Info = AssembleInfo2(M);
-				return Info is not null;
-			}
-
-			M = td1_mrz_nr9chars.Match(MRZ);
-			if (M.Success)
-			{
-				Info = AssembleInfo1(M);
-				return Info is not null;
+				Match M = P.Key.Match(MRZ);
+				if (M.Success)
+				{
+					Info = P.Value(M);
+					return Info is not null;
+				}
 			}
 
 			// TODO: Checks
@@ -166,8 +149,28 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		private static readonly Regex td2_mrz_nr9charsplus = new(@"^(?'DocType'.{1,2})<(?'Issuer'\w{3})(?'PID'[^<]+(<[^<]+)*)<<(?'SID'[^<]+(<[^<]+)*)<*\n(?'Nr1'[^<]{9})<(?'Nationality'\w{3})(?'Birth'[^<]*)(?'BirthCheck'\d)(?'Gender'[MF])(?'Expires'[^<]{6})(?'ExpiryCheck'\d)(?'Nr2'[^<]*)(?'NrCheck'\d)((?'Optional'.*)(?'OptionalCheck'\d))?<*(?'OverallCheck'\d)$", RegexOptions.Multiline);
 		private static readonly Regex td2_mrz_nr9chars = new(@"^(?'DocType'.{1,2})<(?'Issuer'\w{3})(?'PID'[^<]+(<[^<]+)*)<<(?'SID'[^<]+(<[^<]+)*)<*\n(?'Nr'.{9})(?'NrCheck'\d)(?'Nationality'\w{3})(?'Birth'[^<]{6})(?'BirthCheck'\d)(?'Gender'[MF])(?'Expires'[^<]{6})(?'ExpiryCheck'\d)((?'Optional'.*)(?'OptionalCheck'\d))?<*(?'OverallCheck'\d)$", RegexOptions.Multiline);
 
+		private static readonly Regex td2_mrz_nr9charsplus_oneline = new(@"^(?'DocType'.{1,2})<(?'Issuer'\w{3})(?'PID'[^<]+(<[^<]+)*)<<(?'SID'[^<]+(<[^<]+)*)<*\n?(?'Nr1'[^<]{9})<(?'Nationality'\w{3})(?'Birth'[^<]*)(?'BirthCheck'\d)(?'Gender'[MF])(?'Expires'[^<]{6})(?'ExpiryCheck'\d)(?'Nr2'[^<]*)(?'NrCheck'\d)((?'Optional'.*)(?'OptionalCheck'\d))?<*(?'OverallCheck'\d)$", RegexOptions.Multiline);
+		private static readonly Regex td2_mrz_nr9chars_oneline = new(@"^(?'DocType'.{1,2})<(?'Issuer'\w{3})(?'PID'[^<]+(<[^<]+)*)<<(?'SID'[^<]+(<[^<]+)*)<*\n?(?'Nr'.{9})(?'NrCheck'\d)(?'Nationality'\w{3})(?'Birth'[^<]{6})(?'BirthCheck'\d)(?'Gender'[MF])(?'Expires'[^<]{6})(?'ExpiryCheck'\d)((?'Optional'.*)(?'OptionalCheck'\d))?<*(?'OverallCheck'\d)$", RegexOptions.Multiline);
+
 		// TD1, ref: ICAO 9303-5, §B: https://www.icao.int/publications/Documents/9303_p5_cons_en.pdf
 		private static readonly Regex td1_mrz_nr9charsplus = new(@"^(?'DocType'.{1,2})<(?'Issuer'\w{3})(?'Nr1'[^<]{9})<(?'Nr2'.{3})(?'NrCheck'\d)((?'Optional'.*)(?'OptionalCheck'\d))?<*\n(?'Birth'[^<]{6})(?'BirthCheck'\d)(?'Gender'[MF])(?'Expires'[^<]{6})(?'ExpiryCheck'\d)(?'Nationality'\w{3})<*(?'OverallCheck'\d)\n(?'PID'[^<]+(<[^<]+)*)<<(?'SID'[^<]+(<[^<]+)*).*$", RegexOptions.Multiline);
 		private static readonly Regex td1_mrz_nr9chars = new(@"^(?'DocType'.{1,2})<(?'Issuer'\w{3})(?'Nr'.{9})(?'NrCheck'.)((?'Optional'.*)(?'OptionalCheck'\d))?<*\n(?'Birth'[^<]{6})(?'BirthCheck'\d)(?'Gender'[MF])(?'Expires'[^<]{6})(?'ExpiryCheck'\d)(?'Nationality'\w{3})<*(?'OverallCheck'\d)\n(?'PID'[^<]+(<[^<]+)*)<<(?'SID'[^<]+(<[^<]+)*).*$", RegexOptions.Multiline);
+
+		private static readonly Regex td1_mrz_nr9charsplus_oneline = new(@"^(?'DocType'.{1,2})<(?'Issuer'\w{3})(?'Nr1'[^<]{9})<(?'Nr2'.{3})(?'NrCheck'\d)((?'Optional'.*)(?'OptionalCheck'\d))?<*\n?(?'Birth'[^<]{6})(?'BirthCheck'\d)(?'Gender'[MF])(?'Expires'[^<]{6})(?'ExpiryCheck'\d)(?'Nationality'\w{3})<*(?'OverallCheck'\d)\n?(?'PID'[^<]+(<[^<]+)*)<<(?'SID'[^<]+(<[^<]+)*).*$", RegexOptions.Multiline);
+		private static readonly Regex td1_mrz_nr9chars_oneline = new(@"^(?'DocType'.{1,2})<(?'Issuer'\w{3})(?'Nr'.{9})(?'NrCheck'.)((?'Optional'.*)(?'OptionalCheck'\d))?<*\n?(?'Birth'[^<]{6})(?'BirthCheck'\d)(?'Gender'[MF])(?'Expires'[^<]{6})(?'ExpiryCheck'\d)(?'Nationality'\w{3})<*(?'OverallCheck'\d)\n?(?'PID'[^<]+(<[^<]+)*)<<(?'SID'[^<]+(<[^<]+)*).*$", RegexOptions.Multiline);
+
+		private delegate DocumentInformation? DocumentInformationFromMatch(Match M);
+
+		private static readonly KeyValuePair<Regex, DocumentInformationFromMatch>[] orderedPatterns =
+			[
+				new KeyValuePair<Regex, DocumentInformationFromMatch>(td2_mrz_nr9charsplus, AssembleInfo2),
+				new KeyValuePair<Regex, DocumentInformationFromMatch>(td2_mrz_nr9chars, AssembleInfo1),
+				new KeyValuePair<Regex, DocumentInformationFromMatch>(td1_mrz_nr9charsplus, AssembleInfo2),
+				new KeyValuePair<Regex, DocumentInformationFromMatch>(td1_mrz_nr9chars, AssembleInfo1),
+				new KeyValuePair<Regex, DocumentInformationFromMatch>(td2_mrz_nr9charsplus_oneline, AssembleInfo2),
+				new KeyValuePair<Regex, DocumentInformationFromMatch>(td2_mrz_nr9chars_oneline, AssembleInfo1),
+				new KeyValuePair<Regex, DocumentInformationFromMatch>(td1_mrz_nr9charsplus_oneline, AssembleInfo2),
+				new KeyValuePair<Regex, DocumentInformationFromMatch>(td1_mrz_nr9chars_oneline, AssembleInfo1)
+			];
 	}
 }
