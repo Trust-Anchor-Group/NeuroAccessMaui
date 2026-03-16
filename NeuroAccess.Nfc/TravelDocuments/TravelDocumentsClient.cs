@@ -2094,111 +2094,173 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			this.appInfo = AppInfo;
 			await this.AppInfoUpdated.Raise(this, EventArgs.Empty);
 
-			/*
-			// Reading EF.SOD, §4.6.2 ICAO 9303-10
-
-			// TODO: Reading long files
-
-			Data = await this.DownloadFile(EF.SOD, "EF.SOD");
-			if (Data is null)
+			if (this.appInfo.TagList?.HasSecurityObject ?? false)
 			{
-				this.Error("Unable to download EF.SOD.");
-				return false;
+				// Reading EF.SOD, §4.6.2 ICAO 9303-10
+
+				Data = await this.DownloadFile(EF.SOD, "EF.SOD");
+				if (Data is null)
+				{
+					this.Error("Unable to download EF.SOD.");
+					return false;
+				}
+
+				if (!TryParseDataObject(Data, this, out DocumentSecurityObject? SecurityInfo))
+				{
+					this.Error("Unable to decode Document Security Object.");
+					return false;
+				}
+
+				this.securityinfo = SecurityInfo;
+				await this.SecurityInfoUpdated.Raise(this, EventArgs.Empty);
 			}
 
-			if (!TryParseDataObject(Data, this, out DocumentSecurityObject? SecurityInfo))
+			if (this.appInfo.TagList?.HasDataGroup(1) ?? false)
 			{
-				this.Error("Unable to decode Document Security Object.");
-				return false;
+				// Reading EF.DG1 (MRZ), §4.7.1 ICAO 9303-10
+
+				Data = await this.DownloadFile(EF.DG1, "EF.DG1");
+				if (Data is null)
+				{
+					this.Error("Unable to download EF.DG1.");
+					return false;
+				}
+
+				if (!TryParseDataObject(Data, this, out DataGroup1? DataGroup1) ||
+					DataGroup1.Mrz is null)
+				{
+					this.Error("Unable to decode DG1 (MRZ Information).");
+					return false;
+				}
+
+				this.mrz = DataGroup1.Mrz;
+				if (this.mrz.DocumentInformation is null)
+					this.Warning("Unable to parse MRZ information.");
+
+				await this.MrzUpdated.Raise(this, EventArgs.Empty);
 			}
 
-			this.securityinfo = SecurityInfo;
-			await this.SecurityInfoUpdated.Raise(this, EventArgs.Empty);
-			*/
-
-			// Reading EF.DG1 (MRZ), §4.7.1 ICAO 9303-10
-
-			Data = await this.DownloadFile(EF.DG1, "EF.DG1");
-			if (Data is null)
+			if (this.appInfo.TagList?.HasDataGroup(2) ?? false)
 			{
-				this.Error("Unable to download EF.DG1.");
-				return false;
+				// Reading EF.DG2 (Encoded Identification Features — Face), §4.7.2 ICAO 9303-10
+
+				Data = await this.DownloadFile(EF.DG2, "EF.DG2");
+				if (Data is null)
+				{
+					this.Error("Unable to download EF.DG2.");
+					return false;
+				}
+
+				if (!TryParseDataObject(Data, this, out DataGroup2? DataGroup2))
+				{
+					this.Error("Unable to decode DG2 (Encoded Identification Features — Face).");
+					return false;
+				}
 			}
 
-			if (!TryParseDataObject(Data, this, out DataGroup1? DataGroup1) ||
-				DataGroup1.Mrz is null)
+			if (this.appInfo.TagList?.HasDataGroup(3) ?? false)
 			{
-				this.Error("Unable to decode DG1 (MRZ Information).");
-				return false;
+				// TODO: Data Group 3 (Additional Identification Feature — Finger(s)) (In LDS1 eMRTD Application)
 			}
 
-			this.mrz = DataGroup1.Mrz;
-			if (this.mrz.DocumentInformation is null)
-				this.Warning("Unable to parse MRZ information.");
-
-			await this.MrzUpdated.Raise(this, EventArgs.Empty);
-
-			/*
-			// Reading EF.DG2 (Encoded Identification Features — Face), §4.7.2 ICAO 9303-10
-
-			Data = await this.DownloadFile(EF.DG2, "EF.DG2");
-			if (Data is null)
+			if (this.appInfo.TagList?.HasDataGroup(4) ?? false)
 			{
-				this.Error("Unable to download EF.DG2.");
-				return false;
+				// TODO: Data Group 4 (Additional Identification Feature — Iris(es)) (In LDS1 eMRTD Application)
 			}
 
-			if (!TryParseDataObject(Data, this, out DataGroup2? DataGroup2))
+			if (this.appInfo.TagList?.HasDataGroup(5) ?? false)
 			{
-				this.Error("Unable to decode DG2 (Encoded Identification Features — Face).");
-				return false;
-			}
-			*/
+				// Reading EF.DG5 (Displayed Portrait), §4.7.5 ICAO 9303-10
 
-			// TODO: Data Group 3 (Additional Identification Feature — Finger(s)) (In LDS1 eMRTD Application)
-			// TODO: Data Group 4 (Additional Identification Feature — Iris(es)) (In LDS1 eMRTD Application)
+				Data = await this.DownloadFile(EF.DG5, "EF.DG5");
+				if (Data is null)
+				{
+					this.Error("Unable to download EF.DG5.");
+					return false;
+				}
 
-			// Reading EF.DG5 (Displayed Portrait), §4.7.5 ICAO 9303-10
+				if (!TryParseDataObject(Data, this, out DataGroup5? DataGroup5))
+				{
+					this.Error("Unable to decode DG5 (Displayed Portrait).");
+					return false;
+				}
 
-			Data = await this.DownloadFile(EF.DG5, "EF.DG5");
-			if (Data is null)
-			{
-				this.Error("Unable to download EF.DG5.");
-				return false;
-			}
-
-			if (!TryParseDataObject(Data, this, out DataGroup5? DataGroup5))
-			{
-				this.Error("Unable to decode DG5 (Displayed Portrait).");
-				return false;
-			}
-
-			if ((DataGroup5?.Photos?.Length ?? 0) > 0)
-			{
-				foreach (DisplayedPortrait Photo in DataGroup5!.Photos!)
-					this.Warning(Convert.ToBase64String(Photo.Value));
+				if ((DataGroup5?.Photos?.Length ?? 0) > 0)
+				{
+					foreach (DisplayedPortrait Photo in DataGroup5!.Photos!)
+						this.Warning(Convert.ToBase64String(Photo.Value));
+				}
 			}
 
-
-			// TODO: Data Group 7 (Displayed Signature or Usual Mark) (In LDS1 eMRTD Application)
-
-			// Reading EF.DG11 (Additional Personal Detail(s)), §4.7.11 ICAO 9303-10
-
-			Data = await this.DownloadFile(EF.DG11, "EF.DG11");
-			if (Data is null)
+			if (this.appInfo.TagList?.HasDataGroup(7) ?? false)
 			{
-				this.Error("Unable to download EF.DG11.");
-				return false;
+				// TODO: Data Group 7 (Displayed Signature or Usual Mark) (In LDS1 eMRTD Application)
 			}
 
-			if (!TryParseDataObject(Data, this, out DataGroup11? DataGroup11))
+			if (this.appInfo.TagList?.HasDataGroup(8) ?? false)
 			{
-				this.Error("Unable to decode DG11 (Additional Personal Detail(s)).");
-				return false;
+				// TODO: Data Group 8 (Data Feature(s)) (In LDS1 eMRTD Application)
 			}
 
-			this.personalInformation = DataGroup11;
-			await this.PersonalInformationUpdated.Raise(this, EventArgs.Empty);
+			if (this.appInfo.TagList?.HasDataGroup(9) ?? false)
+			{
+				// TODO: Data Group 9 (Structure Feature(s)) (In LDS1 eMRTD Application)
+			}
+
+			if (this.appInfo.TagList?.HasDataGroup(10) ?? false)
+			{
+				// TODO: Data Group 10 (Substance Feature(s)) (In LDS1 eMRTD Application)
+			}
+
+			if (this.appInfo.TagList?.HasDataGroup(11) ?? false)
+			{
+				// Reading EF.DG11 (Additional Personal Detail(s)), §4.7.11 ICAO 9303-10
+
+				Data = await this.DownloadFile(EF.DG11, "EF.DG11");
+				if (Data is null)
+				{
+					this.Error("Unable to download EF.DG11.");
+					return false;
+				}
+
+				if (!TryParseDataObject(Data, this, out DataGroup11? DataGroup11))
+				{
+					this.Error("Unable to decode DG11 (Additional Personal Detail(s)).");
+					return false;
+				}
+
+				this.personalInformation = DataGroup11;
+				await this.PersonalInformationUpdated.Raise(this, EventArgs.Empty);
+			}
+
+			if (this.appInfo.TagList?.HasDataGroup(12) ?? false)
+			{
+				// TODO: Data Group 12 (Additional Document Detail(s)) (In LDS1 eMRTD Application)
+			}
+
+
+			if (this.appInfo.TagList?.HasDataGroup(13) ?? false)
+			{
+				// TODO: Data Group 13 (Optional Details(s)) (In LDS1 eMRTD Application)
+			}
+
+
+			if (this.appInfo.TagList?.HasDataGroup(14) ?? false)
+			{
+				// TODO: Data Group 14 (Security Options) (In LDS1 eMRTD Application)
+			}
+
+
+			if (this.appInfo.TagList?.HasDataGroup(15) ?? false)
+			{
+				// TODO: Data Group 15 (Active Authentication Public Key Info) (In LDS1 eMRTD Application)
+			}
+
+
+			if (this.appInfo.TagList?.HasDataGroup(16) ?? false)
+			{
+				// TODO: Data Group 16 (Person(s) to Notify) (In LDS1 eMRTD Application)
+			}
 
 			return true;
 		}

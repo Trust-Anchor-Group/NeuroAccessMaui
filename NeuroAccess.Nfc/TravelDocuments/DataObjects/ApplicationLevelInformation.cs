@@ -19,11 +19,13 @@
 		/// <param name="Value">Binary value.</param>
 		/// <param name="LdsVersion">LDS Version</param>
 		/// <param name="UnicodeVersion">Unicode Version</param>
-		public ApplicationLevelInformation(byte[] Value, double LdsVersion, double UnicodeVersion)
+		public ApplicationLevelInformation(byte[] Value, double LdsVersion, double UnicodeVersion,
+			TagList? TagList)
 			: base(Value)
 		{
 			this.LdsVersion = LdsVersion;
 			this.UnicodeVersion = UnicodeVersion;
+			this.TagList = TagList;
 		}
 
 		/// <summary>
@@ -40,6 +42,11 @@
 		/// Unicode Version
 		/// </summary>
 		public double UnicodeVersion { get; }
+
+		/// <summary>
+		/// Supported tags
+		/// </summary>
+		public TagList? TagList { get; }
 
 		/// <summary>
 		/// Creates a parsed instance of the data object.
@@ -68,7 +75,8 @@
 				}
 			}
 
-			return new ApplicationLevelInformation(Value, LdsVersion?.Version ?? 0, UnicodeVersion?.Version ?? 0);
+			return new ApplicationLevelInformation(Value, LdsVersion?.Version ?? 0,
+				UnicodeVersion?.Version ?? 0, TagList);
 		}
 	}
 }
