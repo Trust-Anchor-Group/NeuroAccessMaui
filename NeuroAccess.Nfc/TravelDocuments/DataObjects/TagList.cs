@@ -55,16 +55,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		public bool HasTag(ushort Tag) => this.tags.ContainsKey(Tag);
 
 		/// <summary>
-		/// If EF.COM is supported.
-		/// </summary>
-		public bool HasCommon => this.HasTag(0x60);
-
-		/// <summary>
-		/// If EF.SOD is supported.
-		/// </summary>
-		public bool HasSecurityObject => this.HasTag(0x77);
-
-		/// <summary>
 		/// Checks if a data group is supported.
 		/// </summary>
 		/// <param name="DataGroupNumber">Data Group number (DG1=1, ...)</param>

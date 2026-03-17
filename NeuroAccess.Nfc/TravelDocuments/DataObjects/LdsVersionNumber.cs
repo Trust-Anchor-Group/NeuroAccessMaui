@@ -50,11 +50,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		{
 			if (Value.Length == 4)
 			{
-				string MajorVersion = Encoding.ASCII.GetString(Value, 0, 2);
-				string MinorVersion = Encoding.ASCII.GetString(Value, 2, 2);
+				string MajorVersion = TrimLeadingZeroes(Encoding.ASCII.GetString(Value, 0, 2));
+				string MinorVersion = TrimLeadingZeroes(Encoding.ASCII.GetString(Value, 2, 2));
 
-				Client.Information("LDS version: " + MajorVersion.TrimStart('0') +
-					"." + MinorVersion.TrimStart('0'));
+				Client.Information("LDS version: " + MajorVersion + "." + MinorVersion);
 
 				if (double.TryParse(MajorVersion + "." + MinorVersion, out double d))
 				{

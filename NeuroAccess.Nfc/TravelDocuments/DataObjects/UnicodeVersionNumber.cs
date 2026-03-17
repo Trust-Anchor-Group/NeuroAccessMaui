@@ -57,12 +57,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		{
 			if (Value.Length == 6)
 			{
-				string MajorVersion = Encoding.ASCII.GetString(Value, 0, 2);
-				string MinorVersion = Encoding.ASCII.GetString(Value, 2, 2);
-				string ReleaseVersion = Encoding.ASCII.GetString(Value, 4, 2);
+				string MajorVersion = TrimLeadingZeroes(Encoding.ASCII.GetString(Value, 0, 2));
+				string MinorVersion = TrimLeadingZeroes(Encoding.ASCII.GetString(Value, 2, 2));
+				string ReleaseVersion = TrimLeadingZeroes(Encoding.ASCII.GetString(Value, 4, 2));
 
-				Client.Information("Unicode version: " + MajorVersion.TrimStart('0') + "." +
-					MinorVersion.TrimStart('0') + "." + ReleaseVersion.TrimStart('0'));
+				Client.Information("Unicode version: " + MajorVersion + "." + MinorVersion +
+					"." + ReleaseVersion);
 
 				if (double.TryParse(MajorVersion + "." + MinorVersion, out double d) &&
 					int.TryParse(ReleaseVersion, out int i))

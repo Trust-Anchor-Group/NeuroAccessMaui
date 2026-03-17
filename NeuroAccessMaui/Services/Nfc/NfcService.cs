@@ -99,6 +99,7 @@ namespace NeuroAccessMaui.Services.Nfc
 								{
 									// TODO: Forward MRZ information to UI.
 									// TODO: Compare with OCR MRZ to ensure consistency.
+									// TODO: Check ExpiryDate to ensure passport is not expired.
 									return Task.CompletedTask;
 								};
 

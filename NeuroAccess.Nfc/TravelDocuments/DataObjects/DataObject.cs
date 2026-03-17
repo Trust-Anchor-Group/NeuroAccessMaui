@@ -27,5 +27,19 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// <returns>If value could be parsed.</returns>
 		public abstract bool TryParse(byte[] Value, TravelDocumentsClient Client,
 			[NotNullWhen(true)] out IDataObject? Parsed);
+
+		/// <summary>
+		/// Trims leading zeroes, but leaves at least a single zero to avoid the string becoming empty.
+		/// </summary>
+		/// <param name="s">String to be trimmed.</param>
+		/// <returns>Trimmed string.</returns>
+		protected static string TrimLeadingZeroes(string s)
+		{
+			s = s.TrimStart('0');
+			if (string.IsNullOrEmpty(s))
+				s = "0";
+
+			return s;
+		}
 	}
 }

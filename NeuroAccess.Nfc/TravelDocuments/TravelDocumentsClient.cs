@@ -4,18 +4,21 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using NeuroAccess.Nfc.TravelDocuments.DataObjects;
 using NeuroAccess.Nfc.TravelDocuments.Events;
 using NeuroAccess.Nfc.TravelDocuments.PACE;
+using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Content;
 using Waher.Events;
 using Waher.Networking;
 using Waher.Networking.Sniffers;
 using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
+using Waher.Script.Units.DerivedQuantities;
 using Waher.Security;
 using Waher.Security.EllipticCurves;
 
@@ -1134,41 +1137,35 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			ChunkedList<string> OidsFound = [];
 			IPaceProtocol? Best = null;
-			IPaceProtocol? Current;
 
 			foreach (object Item in SecurityInfos)
 			{
-				if (Item is not Array SecurityInfo ||
-					SecurityInfo.Length == 0 ||
-					SecurityInfo.GetValue(0) is not string Oid)
+				if (Item is IPaceProtocol Current)
 				{
-					continue;
+					OidsFound.Add(Current.Oid);
+
+					if (this.HasSniffers)
+						this.Information("OID " + Current.Oid + " (" + Current.GetType().Name.Replace('_', '-') + ") supported.");
+
+					if (Best is null ||
+						Current.SecurityStrength > Best.SecurityStrength ||
+						(Current.SecurityStrength == Best.SecurityStrength &&
+						Current.ChipAuthenticationMapping && !Best.ChipAuthenticationMapping))
+					{
+						Best = Current;
+					}
 				}
-
-				OidsFound.Add(Oid);
-
-				Current = Types.FindBest<IPaceProtocol, string>(Oid);
-				if (Current is null)
+				else if (Item is Array SecurityInfo &&
+					SecurityInfo.Length > 0 &&
+					SecurityInfo.GetValue(0) is string Oid)
 				{
+					OidsFound.Add(Oid);
+
 					if (this.HasSniffers)
 						this.Information("OID " + Oid + " lacks implemented support.");
-
-					continue;
 				}
-
-				if (this.HasSniffers)
-					this.Information("OID " + Oid + " (" + Current.GetType().Name.Replace('_', '-') + ") supported.");
-
-				if (!Current.Configure(SecurityInfo))
+				else
 					continue;
-
-				if (Best is null ||
-					Current.SecurityStrength > Best.SecurityStrength ||
-					(Current.SecurityStrength == Best.SecurityStrength &&
-					Current.ChipAuthenticationMapping && !Best.ChipAuthenticationMapping))
-				{
-					Best = Current;
-				}
 			}
 
 			if (Best is null && OidsFound.HasFirstItem)
@@ -1383,107 +1380,167 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			Asn1Tag Tag = Reader.PeekTag();
 
-			switch (Tag.TagValue)
+			if (Tag.TagClass == TagClass.Universal)
 			{
-				case (int)UniversalTagNumber.EndOfContents:
+				switch (Tag.TagValue)
+				{
+					case (int)UniversalTagNumber.EndOfContents:
+						Value = null;
+						return false;
+
+					case (int)UniversalTagNumber.Boolean:
+						Value = Reader.ReadBoolean();
+						return true;
+
+					case (int)UniversalTagNumber.Integer:
+					case (int)UniversalTagNumber.Enumerated:
+						Value = Reader.ReadInteger();
+						return true;
+
+					case (int)UniversalTagNumber.BitString:
+						byte[] Bin = Reader.ReadBitString(out int BitCount);
+						BitArray Bits = new(Bin)
+						{
+							Length = BitCount
+						};
+						Value = Bits;
+						return true;
+
+					case (int)UniversalTagNumber.OctetString:
+						Bin = Reader.ReadOctetString();
+
+						try
+						{
+							if (TryDecodeDER(Bin, out object? Embedded))
+								Value = Embedded;
+							else
+								Value = Bin;
+						}
+						catch (Exception)
+						{
+							Value = Bin;
+						}
+
+						return true;
+
+					case (int)UniversalTagNumber.Null:
+						Reader.ReadNull();
+						Value = null;
+						return true;
+
+					case (int)UniversalTagNumber.ObjectIdentifier:
+						string Oid = Reader.ReadObjectIdentifier();
+
+						ISecurityObject SecurityObject = Types.FindBest<ISecurityObject, string>(Oid);
+						if (SecurityObject is null)
+							Value = Oid;
+						else
+							Value = SecurityObject;
+
+						return true;
+
+					case (int)UniversalTagNumber.ObjectDescriptor:  // Obsolete
+					case (int)UniversalTagNumber.UTF8String:
+					case (int)UniversalTagNumber.NumericString:
+					case (int)UniversalTagNumber.PrintableString:
+					case (int)UniversalTagNumber.TeletexString:     // Same as UniversalTagNumber.T61String:
+					case (int)UniversalTagNumber.VideotexString:
+					case (int)UniversalTagNumber.IA5String:
+					case (int)UniversalTagNumber.GraphicString:
+					case (int)UniversalTagNumber.VisibleString:     // Same as UniversalTagNumber.ISO646String:
+					case (int)UniversalTagNumber.GeneralString:
+					case (int)UniversalTagNumber.UniversalString:
+					case (int)UniversalTagNumber.UnrestrictedCharacterString:
+					case (int)UniversalTagNumber.BMPString:
+						Value = Reader.ReadCharacterString((UniversalTagNumber)Tag.TagValue);
+						return true;
+
+					case (int)UniversalTagNumber.External:          // Same as UniversalTagNumber.InstanceOf:
+					case (int)UniversalTagNumber.Set:               // Same as UniversalTagNumber.SetOf:
+					case (int)UniversalTagNumber.Embedded:
+						AsnReader Inner = Reader.ReadSetOf();
+						ChunkedList<object?> Elements = [];
+
+						while (TryDecodeDERNext(Inner, out object? Element))
+							Elements.Add(Element);
+
+						Value = Elements.ToArray();
+						return true;
+
+					case (int)UniversalTagNumber.Real:
+					case (int)UniversalTagNumber.RelativeObjectIdentifier:
+					case (int)UniversalTagNumber.Time:
+					case (int)UniversalTagNumber.Date:
+					case (int)UniversalTagNumber.TimeOfDay:
+					case (int)UniversalTagNumber.DateTime:
+					case (int)UniversalTagNumber.Duration:
+					case (int)UniversalTagNumber.ObjectIdentifierIRI:
+					case (int)UniversalTagNumber.RelativeObjectIdentifierIRI:
+						Value = Reader.ReadEncodedValue();
+						return true;
+
+					case (int)UniversalTagNumber.Sequence:          // Same as UniversalTagNumber.SequenceOf:
+						Inner = Reader.ReadSequence();
+
+						if (!TryDecodeDERNext(Inner, out object? FirstElement))
+						{
+							Value = Array.Empty<object?>();
+							return true;
+						}
+
+						Elements = [FirstElement];
+
+						while (TryDecodeDERNext(Inner, out object? Element))
+							Elements.Add(Element);
+
+						object?[] Elements2 = [.. Elements];
+
+						if (FirstElement is ISecurityObject SecurityObject2 &&
+							SecurityObject2.Configure(Elements2))
+						{
+							Value = SecurityObject2;
+							return true;
+						}
+						else
+						{
+							Value = Elements2;
+							return true;
+						}
+
+					case (int)UniversalTagNumber.UtcTime:
+						Value = Reader.ReadUtcTime();
+						return true;
+
+					case (int)UniversalTagNumber.GeneralizedTime:
+						Value = Reader.ReadGeneralizedTime();
+						return true;
+
+					default:
+						Value = null;
+						return false;
+				}
+			}
+			else if (Tag.TagClass == TagClass.ContextSpecific)
+			{
+				AsnReader Inner = Reader.ReadSequence(Tag);
+
+				if (TryDecodeDERNext(Inner, out object? Element))
+				{
+					Value = Element;
+					return true;
+				}
+				else
+				{
 					Value = null;
 					return false;
-
-				case (int)UniversalTagNumber.Boolean:
-					Value = Reader.ReadBoolean();
-					return true;
-
-				case (int)UniversalTagNumber.Integer:
-				case (int)UniversalTagNumber.Enumerated:
-					Value = Reader.ReadInteger();
-					return true;
-
-				case (int)UniversalTagNumber.BitString:
-					byte[] Bin = Reader.ReadBitString(out int BitCount);
-					BitArray Bits = new(Bin)
-					{
-						Length = BitCount
-					};
-					Value = Bits;
-					return true;
-
-				case (int)UniversalTagNumber.OctetString:
-					Value = Reader.ReadOctetString();
-					return true;
-
-				case (int)UniversalTagNumber.Null:
-					Reader.ReadNull();
-					Value = null;
-					return true;
-
-				case (int)UniversalTagNumber.ObjectIdentifier:
-					Value = Reader.ReadObjectIdentifier();
-					return true;
-
-				case (int)UniversalTagNumber.ObjectDescriptor:  // Obsolete
-				case (int)UniversalTagNumber.UTF8String:
-				case (int)UniversalTagNumber.NumericString:
-				case (int)UniversalTagNumber.PrintableString:
-				case (int)UniversalTagNumber.TeletexString:     // Same as UniversalTagNumber.T61String:
-				case (int)UniversalTagNumber.VideotexString:
-				case (int)UniversalTagNumber.IA5String:
-				case (int)UniversalTagNumber.GraphicString:
-				case (int)UniversalTagNumber.VisibleString:     // Same as UniversalTagNumber.ISO646String:
-				case (int)UniversalTagNumber.GeneralString:
-				case (int)UniversalTagNumber.UniversalString:
-				case (int)UniversalTagNumber.UnrestrictedCharacterString:
-				case (int)UniversalTagNumber.BMPString:
-					Value = Reader.ReadCharacterString((UniversalTagNumber)Tag.TagValue);
-					return true;
-
-				case (int)UniversalTagNumber.External:          // Same as UniversalTagNumber.InstanceOf:
-				case (int)UniversalTagNumber.Set:               // Same as UniversalTagNumber.SetOf:
-				case (int)UniversalTagNumber.Embedded:
-					AsnReader Inner = Reader.ReadSetOf();
-					ChunkedList<object?> Elements = [];
-
-					while (TryDecodeDERNext(Inner, out object? Element))
-						Elements.Add(Element);
-
-					Value = Elements.ToArray();
-					return true;
-
-				case (int)UniversalTagNumber.Real:
-				case (int)UniversalTagNumber.RelativeObjectIdentifier:
-				case (int)UniversalTagNumber.Time:
-				case (int)UniversalTagNumber.Date:
-				case (int)UniversalTagNumber.TimeOfDay:
-				case (int)UniversalTagNumber.DateTime:
-				case (int)UniversalTagNumber.Duration:
-				case (int)UniversalTagNumber.ObjectIdentifierIRI:
-				case (int)UniversalTagNumber.RelativeObjectIdentifierIRI:
-					Value = Reader.ReadEncodedValue();
-					return true;
-
-				case (int)UniversalTagNumber.Sequence:          // Same as UniversalTagNumber.SequenceOf:
-					Inner = Reader.ReadSequence();
-					Elements = [];
-
-					while (TryDecodeDERNext(Inner, out object? Element))
-						Elements.Add(Element);
-
-					Value = Elements.ToArray();
-					return true;
-
-				case (int)UniversalTagNumber.UtcTime:
-					Value = Reader.ReadUtcTime();
-					return true;
-
-				case (int)UniversalTagNumber.GeneralizedTime:
-					Value = Reader.ReadGeneralizedTime();
-					return true;
-
-				default:
-					Value = null;
-					return false;
+				}
+			}
+			else
+			{
+				Value = null;
+				return false;
 			}
 		}
-
 
 		/// <summary>
 		/// Get PACE Nonce
@@ -2140,30 +2197,26 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			this.appInfo = AppInfo;
 			await this.AppInfoUpdated.Raise(this, EventArgs.Empty);
 
-			if (this.appInfo.TagList?.HasSecurityObject ?? false)
+			// Reading EF.SOD, §4.6.2 ICAO 9303-10
+
+			Data = await this.DownloadFile(EF.SOD, "EF.SOD");
+			if (Data is null)
 			{
-				// Reading EF.SOD, §4.6.2 ICAO 9303-10
-
-				this.Information("EF.SOD supported.");
-
-				Data = await this.DownloadFile(EF.SOD, "EF.SOD");
-				if (Data is null)
-				{
-					this.Error("Unable to download EF.SOD.");
-					return false;
-				}
-
-				if (!TryParseDataObject(Data, this, out DocumentSecurityObject? SecurityInfo))
-				{
-					this.Error("Unable to decode Document Security Object.");
-					return false;
-				}
-
-				this.securityinfo = SecurityInfo;
-				await this.SecurityInfoUpdated.Raise(this, EventArgs.Empty);
-
-				// TODO: Validate chip certificate to ensure valid issuer.
+				this.Error("Unable to download EF.SOD.");
+				return false;
 			}
+
+			if (!TryParseDataObject(Data, this, out DocumentSecurityObject? SecurityInfo))
+			{
+				this.Error("Unable to decode Document Security Object.");
+				return false;
+			}
+
+			this.securityinfo = SecurityInfo;
+			await this.SecurityInfoUpdated.Raise(this, EventArgs.Empty);
+
+			// TODO: Validate chip certificate to ensure valid issuer.
+			// TODO: Validate signatures of all data group files.
 
 			if (this.appInfo.TagList?.HasDataGroup(1) ?? false)
 			{
@@ -2241,7 +2294,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				}
 				catch (Exception ex)
 				{
-					this.Error(ex.Message);	// Access to DG3 might be restricted. Just log an error.
+					this.Error(ex.Message); // Access to DG3 might be restricted. Just log an error.
 				}
 			}
 
@@ -2326,21 +2379,21 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			if (this.appInfo.TagList?.HasDataGroup(8) ?? false)
 			{
-				this.Information("EF.DG8 (Data Feature(s)) supported.");
+				this.Warning("EF.DG8 (Data Feature(s)) supported but not implemented.");
 
 				// TODO: Data Group 8 (Data Feature(s)) (In LDS1 eMRTD Application)
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(9) ?? false)
 			{
-				this.Information("EF.DG9 (Structure Feature(s)) supported.");
+				this.Warning("EF.DG9 (Structure Feature(s)) supported but not implemented.");
 
 				// TODO: Data Group 9 (Structure Feature(s)) (In LDS1 eMRTD Application)
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(10) ?? false)
 			{
-				this.Information("EF.DG10 (Substance Feature(s)) supported.");
+				this.Warning("EF.DG10 (Substance Feature(s)) supported but not implemented.");
 
 				// TODO: Data Group 10 (Substance Feature(s)) (In LDS1 eMRTD Application)
 			}
@@ -2370,39 +2423,35 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			if (this.appInfo.TagList?.HasDataGroup(12) ?? false)
 			{
-				this.Information("EF.DG12 (Additional Document Detail(s)) supported.");
+				this.Warning("EF.DG12 (Additional Document Detail(s)) supported but not implemented.");
 
 				// TODO: Data Group 12 (Additional Document Detail(s)) (In LDS1 eMRTD Application)
 			}
 
-
 			if (this.appInfo.TagList?.HasDataGroup(13) ?? false)
 			{
-				this.Information("EF.DG13 (Optional Details(s)) supported.");
+				this.Warning("EF.DG13 (Optional Details(s)) supported but not implemented.");
 
 				// TODO: Data Group 13 (Optional Details(s)) (In LDS1 eMRTD Application)
 			}
 
-
 			if (this.appInfo.TagList?.HasDataGroup(14) ?? false)
 			{
-				this.Information("EF.DG14 (Security Options) supported.");
+				this.Warning("EF.DG14 (Security Options) supported.");
 
 				// TODO: Data Group 14 (Security Options) (In LDS1 eMRTD Application)
 			}
 
-
 			if (this.appInfo.TagList?.HasDataGroup(15) ?? false)
 			{
-				this.Information("EF.DG15 (Active Authentication Public Key Info) supported.");
+				this.Warning("EF.DG15 (Active Authentication Public Key Info) supported but not implemented.");
 
 				// TODO: Data Group 15 (Active Authentication Public Key Info) (In LDS1 eMRTD Application)
 			}
 
-
 			if (this.appInfo.TagList?.HasDataGroup(16) ?? false)
 			{
-				this.Information("EF.DG16 (Person(s) to Notify) supported.");
+				this.Warning("EF.DG16 (Person(s) to Notify) supported but not implemented.");
 
 				// TODO: Data Group 16 (Person(s) to Notify) (In LDS1 eMRTD Application)
 			}

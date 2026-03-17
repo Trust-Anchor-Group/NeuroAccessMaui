@@ -2,6 +2,7 @@
 using NeuroAccess.Nfc.TravelDocuments;
 using NeuroAccess.Nfc.TravelDocuments.PACE;
 using NeuroAccess.Nfc.TravelDocuments.PACE.Id_PACE_ECDH_GM;
+using Waher.Content;
 using Waher.Runtime.Inventory;
 using Waher.Script.Constants;
 using Waher.Security;
@@ -17,7 +18,8 @@ namespace NeuroAccess.Nfc.Test
 		{
 			Types.Initialize(
 				typeof(PaceTests).Assembly,
-				typeof(PaceProtocol).Assembly);
+				typeof(PaceProtocol).Assembly,
+				typeof(JSON).Assembly);
 		}
 
 		// Testing PACE - Generic Mapping, in accordance with ICAO Doc 9303
