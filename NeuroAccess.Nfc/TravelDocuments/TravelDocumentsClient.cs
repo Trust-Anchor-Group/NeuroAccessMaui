@@ -32,6 +32,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		private DocumentSecurityObject? securityinfo;
 		private MrzDataObject? mrz;
 		private BiometricInformationTemplate[]? biometricEncodingFace;
+		private BiometricInformationTemplate[]? biometricEncodingFingers;
+		private BiometricInformationTemplate[]? biometricEncodingIrises;
+		private DisplayedSignatures? displayedSignatures;
 		private AdditionalPersonalDetails? personalInformation;
 		private readonly IIsoDepInterface tagInterface;
 		private readonly DocumentInformation documentInformation;
@@ -43,6 +46,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		private byte[]? sendSequenceCounter = null;
 		private byte[]? zeroIv = null;
 		private bool encrypted = false;
+		private bool enhancedSecurity = false;
 		private bool disposed = false;
 
 		/// <summary>
@@ -128,6 +132,36 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// Event raised when <see cref="BiometricEncodingFace"/> is updated.
 		/// </summary>
 		public event EventHandlerAsync? BiometricEncodingFaceUpdated;
+
+		/// <summary>
+		/// Biometric Encoding of Fingers in DG3, if available.
+		/// </summary>
+		public BiometricInformationTemplate[]? BiometricEncodingFingers => this.biometricEncodingFingers;
+
+		/// <summary>
+		/// Event raised when <see cref="BiometricEncodingFingers"/> is updated.
+		/// </summary>
+		public event EventHandlerAsync? BiometricEncodingFingersUpdated;
+
+		/// <summary>
+		/// Biometric Encoding of Irises in DG4, if available.
+		/// </summary>
+		public BiometricInformationTemplate[]? BiometricEncodingIrises => this.biometricEncodingIrises;
+
+		/// <summary>
+		/// Event raised when <see cref="BiometricEncodingIrises"/> is updated.
+		/// </summary>
+		public event EventHandlerAsync? BiometricEncodingIrisesUpdated;
+
+		/// <summary>
+		/// Displayed Signatures from DG7, if available.
+		/// </summary>
+		public DisplayedSignatures? DisplayedSignatures => this.displayedSignatures;
+
+		/// <summary>
+		/// Event raised when <see cref="DisplayedSignatures"/> is updated.
+		/// </summary>
+		public event EventHandlerAsync? DisplayedSignaturesUpdated;
 
 		/// <summary>
 		/// Additional Personal Information from DG11, if available.
@@ -1163,10 +1197,10 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>If successful.</returns>
 		private async Task<bool> InitializePACE()
 		{
-			await this.SetState(TravelDocumentsState.SelectingCipher);
+			await this.SetState(TravelDocumentsState.SelectingCipher, this.protocol!.GetType().Name);
 
 			if (this.HasSniffers)
-				this.Information("MSE:Set AT(" + this.protocol!.Oid + ",MRZ)");
+				this.Information("MSE:Set AT(" + this.protocol.Oid + ",MRZ)");
 
 			string[] Parts = this.protocol!.Oid.Split('.');
 			int i, c = Parts.Length - 1;
@@ -2038,6 +2072,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				this.Information("Authentication successful.");
 
 				this.encrypted = true;
+				this.enhancedSecurity = false;
 				this.sendSequenceCounter = new byte[this.protocol.BlockLength];
 
 				return true;
@@ -2170,7 +2205,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return false;
 				}
 
-				if (!TryParseDataObject(Data, this, out BiometricEncoding? BiometricEncoding))
+				if (!TryParseDataObject(Data, this, out BiometricEncodingFace? BiometricEncoding))
 				{
 					this.Error("Unable to decode Biometric Enciding in DG2 (Encoded Identification Features — Face).");
 					return false;
@@ -2180,18 +2215,64 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				await this.BiometricEncodingFaceUpdated.Raise(this, EventArgs.Empty);
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(3) ?? false)
+			if (this.enhancedSecurity && (this.appInfo.TagList?.HasDataGroup(3) ?? false))
 			{
-				this.Information("EF.DG3 (Additional Identification Feature — Finger(s)) supported.");
+				try
+				{
+					// Reading EF.DG3 (Additional Identification Feature — Finger(s)), §4.7.3 ICAO 9303-10
 
-				// TODO: Data Group 3 (Additional Identification Feature — Finger(s)) (In LDS1 eMRTD Application)
+					this.Information("EF.DG3 (Additional Identification Feature — Finger(s)) supported.");
+
+					Data = await this.DownloadFile(EF.DG3, "EF.DG3");
+					if (Data is null)
+					{
+						this.Error("Unable to download EF.DG3.");
+						return false;
+					}
+
+					if (!TryParseDataObject(Data, this, out BiometricEncodingFingers? BiometricEncoding))
+					{
+						this.Error("Unable to decode Biometric Enciding in DG3 (Additional Identification Feature — Finger(s)).");
+						return false;
+					}
+
+					this.biometricEncodingFingers = BiometricEncoding.Templates?.Templates;
+					await this.BiometricEncodingFingersUpdated.Raise(this, EventArgs.Empty);
+				}
+				catch (Exception ex)
+				{
+					this.Error(ex.Message);	// Access to DG3 might be restricted. Just log an error.
+				}
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(4) ?? false)
+			if (this.enhancedSecurity && (this.appInfo.TagList?.HasDataGroup(4) ?? false))
 			{
-				this.Information("EF.DG4 (Additional Identification Feature — Iris(es)) supported.");
+				try
+				{
+					// Reading EF.DG4 (Additional Identification Feature — Finger(s)), §4.7.3 ICAO 9303-10
 
-				// TODO: Data Group 4 (Additional Identification Feature — Iris(es)) (In LDS1 eMRTD Application)
+					this.Information("EF.DG4 (Additional Identification Feature — Iris(es)) supported.");
+
+					Data = await this.DownloadFile(EF.DG4, "EF.DG4");
+					if (Data is null)
+					{
+						this.Error("Unable to download EF.DG4.");
+						return false;
+					}
+
+					if (!TryParseDataObject(Data, this, out BiometricEncodingIrises? BiometricEncoding))
+					{
+						this.Error("Unable to decode Biometric Enciding in DG4 (Additional Identification Feature — Iris(es)).");
+						return false;
+					}
+
+					this.biometricEncodingIrises = BiometricEncoding.Templates?.Templates;
+					await this.BiometricEncodingIrisesUpdated.Raise(this, EventArgs.Empty);
+				}
+				catch (Exception ex)
+				{
+					this.Error(ex.Message); // Access to DG3 might be restricted. Just log an error.
+				}
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(5) ?? false)
@@ -2222,9 +2303,25 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			if (this.appInfo.TagList?.HasDataGroup(7) ?? false)
 			{
+				// Reading EF.DG7 (Displayed Signature or Usual Mark), §4.7.2 ICAO 9303-10
+
 				this.Information("EF.DG7 (Displayed Signature or Usual Mark) supported.");
 
-				// TODO: Data Group 7 (Displayed Signature or Usual Mark) (In LDS1 eMRTD Application)
+				Data = await this.DownloadFile(EF.DG7, "EF.DG7");
+				if (Data is null)
+				{
+					this.Error("Unable to download EF.DG7.");
+					return false;
+				}
+
+				if (!TryParseDataObject(Data, this, out DisplayedSignatures? DisplayedSignatures))
+				{
+					this.Error("Unable to decode Displayed Signatures in DG7 (Displayed Signature or Usual Mark).");
+					return false;
+				}
+
+				this.displayedSignatures = DisplayedSignatures;
+				await this.DisplayedSignaturesUpdated.Raise(this, EventArgs.Empty);
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(8) ?? false)

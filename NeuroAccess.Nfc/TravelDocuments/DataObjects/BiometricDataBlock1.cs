@@ -7,13 +7,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 	/// <summary>
 	/// Biometric Data Block, encoded using ISO/IEC 19794 series first edition 
 	/// </summary>
-	public class BiometricDataBlock1 : BiometricDataBlock2
+	public class BiometricDataBlock1 : BiometricDataBlock
 	{
 		/// <summary>
 		/// Biometric Data Block, encoded using ISO/IEC 19794 series first edition 
 		/// </summary>
 		public BiometricDataBlock1()
-			: base([])
+			: base([], null)
 		{
 		}
 
@@ -21,21 +21,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// Biometric Data Block, encoded using ISO/IEC 19794 series first edition 
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
+		/// <param name="Record">ISO 19794-5 Biometric Data Interchange Record</param>
 		public BiometricDataBlock1(byte[] Value, BiometricDataInterchangeRecord? Record)
-			: base(Value)
+			: base(Value, Record)
 		{
-			this.Record = Record;
 		}
 
 		/// <summary>
 		/// Tag value.
 		/// </summary>
 		public override ushort Tag => 0x5f2e;
-
-		/// <summary>
-		/// ISO 19794-5 Biomatric Data Interchange Record
-		/// </summary>
-		public BiometricDataInterchangeRecord? Record { get; }
 
 		/// <summary>
 		/// Tries to parse a binary representation of the data object.

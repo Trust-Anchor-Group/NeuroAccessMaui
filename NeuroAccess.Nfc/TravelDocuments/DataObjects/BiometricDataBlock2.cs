@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using NeuroAccess.Nfc.TravelDocuments.ISO19794;
 
 namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
@@ -12,7 +13,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// Biometric Data Block, encoded using ISO/IEC 39794 series 
 		/// </summary>
 		public BiometricDataBlock2()
-			: base([])
+			: base([], null)
 		{
 		}
 
@@ -20,8 +21,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// Biometric Data Block, encoded using ISO/IEC 39794 series 
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
-		public BiometricDataBlock2(byte[] Value)
-			: base(Value)
+		/// <param name="Record">ISO 39794-5 Biometric Data Interchange Record</param>
+		public BiometricDataBlock2(byte[] Value, BiometricDataInterchangeRecord? Record)
+			: base(Value, Record)
 		{
 		}
 
@@ -54,7 +56,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 					Convert.ToBase64String(Value, Base64FormattingOptions.InsertLineBreaks));
 
 				// TODO: Parse
-				Parsed = new BiometricDataBlock2(Value);
+				Parsed = new BiometricDataBlock2(Value, null);
 				return true;
 			}
 			else

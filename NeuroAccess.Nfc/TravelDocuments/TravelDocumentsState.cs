@@ -39,7 +39,8 @@
 		FindingCipher,
 
 		/// <summary>
-		/// Selecting cipher in chip.
+		/// Selecting cipher in chip. Associated data will contain a <see cref="String"/> with the
+		/// name of the cipher being selected.
 		/// </summary>
 		SelectingCipher,
 

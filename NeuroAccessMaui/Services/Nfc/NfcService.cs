@@ -1,11 +1,13 @@
-﻿using NeuroAccess.Nfc;
-using NeuroAccess.Nfc.TravelDocuments;
+﻿using System.Globalization;
+using NeuroAccess.Nfc;
 using NeuroAccess.Nfc.Records;
-using NeuroAccessMaui.UI.Pages;
+using NeuroAccess.Nfc.TravelDocuments;
+using NeuroAccess.Nfc.TravelDocuments.DataObjects;
+using NeuroAccess.Nfc.TravelDocuments.ISO19794;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.UI;
-using System.Globalization;
+using NeuroAccessMaui.UI.Pages;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Security;
@@ -67,6 +69,8 @@ namespace NeuroAccessMaui.Services.Nfc
 
 							try
 							{
+								Client.Information("Starting readout.");
+
 								Client.StateChanged += (_, e) =>
 								{
 									// TODO: Forward state-information to UI.
@@ -98,6 +102,78 @@ namespace NeuroAccessMaui.Services.Nfc
 									return Task.CompletedTask;
 								};
 
+								Client.BiometricEncodingFaceUpdated += (_, e) =>
+								{
+									// TODO: Remove. Now being output to get binaries for JPEG 2000 decoding.
+									if (Client.BiometricEncodingFace is not null)
+									{
+										Representation? Face = Client.BiometricEncodingFace[0].BiometricDataBlock?.Record?.Representations[0];
+
+										if (Face is not null)
+										{
+											Client.Warning("Face Image (type: " + Face.ImageDataType.ToString() + "):\r\n\r\n" +
+												Convert.ToBase64String(Face.ImageData, Base64FormattingOptions.InsertLineBreaks));
+										}
+									}
+
+									// TODO: Forward Face Biometric information to UI.
+									return Task.CompletedTask;
+								};
+
+								Client.BiometricEncodingFingersUpdated += (_, e) =>
+								{
+									// TODO: Remove. Now being output to get binaries for JPEG 2000 decoding.
+									if (Client.BiometricEncodingFingers is not null)
+									{
+										Representation? Fingers = Client.BiometricEncodingFingers[0].BiometricDataBlock?.Record?.Representations[0];
+
+										if (Fingers is not null)
+										{
+											Client.Warning("Fingers Image (type: " + Fingers.ImageDataType.ToString() + "):\r\n\r\n" +
+												Convert.ToBase64String(Fingers.ImageData, Base64FormattingOptions.InsertLineBreaks));
+										}
+									}
+
+									// TODO: Forward Fingers Biometric information to UI.
+									return Task.CompletedTask;
+								};
+
+								Client.BiometricEncodingIrisesUpdated += (_, e) =>
+								{
+									// TODO: Remove. Now being output to get binaries for JPEG 2000 decoding.
+									if (Client.BiometricEncodingIrises is not null)
+									{
+										Representation? Irises = Client.BiometricEncodingIrises[0].BiometricDataBlock?.Record?.Representations[0];
+
+										if (Irises is not null)
+										{
+											Client.Warning("Irises Image (type: " + Irises.ImageDataType.ToString() + "):\r\n\r\n" +
+												Convert.ToBase64String(Irises.ImageData, Base64FormattingOptions.InsertLineBreaks));
+										}
+									}
+
+									// TODO: Forward Irises Biometric information to UI.
+									return Task.CompletedTask;
+								};
+
+								Client.DisplayedSignaturesUpdated += (_, e) =>
+								{
+									// TODO: Remove. Now being output to get binaries for JPEG 2000 decoding.
+									if (Client.DisplayedSignatures?.Signatures is not null)
+									{
+										DisplayedSignature? Signature = Client.DisplayedSignatures?.Signatures[0];
+
+										if (Signature is not null)
+										{
+											Client.Warning("Signature Image (type: JPEG or JPEG2000):\r\n\r\n" +
+												Convert.ToBase64String(Signature.ImageData, Base64FormattingOptions.InsertLineBreaks));
+										}
+									}
+
+									// TODO: Forward Signature information to UI.
+									return Task.CompletedTask;
+								};
+
 								Client.PersonalInformationUpdated += (_, e) =>
 								{
 									// TODO: Forward Personal Information to UI.
@@ -109,6 +185,8 @@ namespace NeuroAccessMaui.Services.Nfc
 									// TODO: Forward failure to UI.
 									return;
 								}
+
+								Client.Information("Readout completed.");
 							}
 							catch (Exception ex)
 							{

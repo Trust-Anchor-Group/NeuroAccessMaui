@@ -17,8 +17,7 @@
 		/// Machine Readable Zone Information in DG1. Reference: §4.7.1, EF.DG1, ICAO Doc 9303-10, Table 39.
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
-		/// <param name="LdsVersion">LDS Version</param>
-		/// <param name="UnicodeVersion">Unicode Version</param>
+		/// <param name="Mrz">Parsed MRZ Information.</param>
 		public MachineReadableZoneInformation(byte[] Value, MrzDataObject? Mrz)
 			: base(Value)
 		{

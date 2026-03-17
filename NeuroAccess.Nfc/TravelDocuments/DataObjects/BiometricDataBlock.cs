@@ -1,4 +1,6 @@
-﻿namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
+﻿using NeuroAccess.Nfc.TravelDocuments.ISO19794;
+
+namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
 	/// <summary>
 	/// Abstract base class for biometric Data Blocks
@@ -17,9 +19,16 @@
 		/// Abstract base class for biometric Data Blocks
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
-		public BiometricDataBlock(byte[] Value)
+		/// <param name="Record">Biometric Data Interchange Record</param>
+		public BiometricDataBlock(byte[] Value, BiometricDataInterchangeRecord? Record)
 			: base(Value)
 		{
+			this.Record = Record;
 		}
+
+		/// <summary>
+		/// Biomatric Data Interchange Record
+		/// </summary>
+		public BiometricDataInterchangeRecord? Record { get; }
 	}
 }

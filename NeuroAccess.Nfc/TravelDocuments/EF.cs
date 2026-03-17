@@ -77,6 +77,11 @@
 		public const ushort DG5 = 0x0105;
 
 		/// <summary>
+		/// Data Group 7 (Displayed Signature or Usual Mark) (In LDS1 eMRTD Application)
+		/// </summary>
+		public const ushort DG7 = 0x0107;
+
+		/// <summary>
 		/// Data Group 11 (Additional Personal Detail(s)) (In LDS1 eMRTD Application)
 		/// </summary>
 		public const ushort DG11 = 0x010b;

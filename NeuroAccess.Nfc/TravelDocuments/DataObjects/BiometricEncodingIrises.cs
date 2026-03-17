@@ -1,27 +1,24 @@
-﻿using Waher.Runtime.Collections;
-
-namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
+﻿namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
 	/// <summary>
-	/// Biometric Encoding. Reference: §4.7.2, EF.COM, ICAO Doc 9303-10, Table 43.
+	/// Biometric Encoding of DG4. Reference: §4.7.4, EF.DG4, ICAO Doc 9303-10, Table 53.
 	/// </summary>
-	public class BiometricEncoding : NestedDataObject
+	public class BiometricEncodingIrises : NestedDataObject
 	{
 		/// <summary>
-		/// Biometric Encoding. Reference: §4.7.2, EF.COM, ICAO Doc 9303-10, Table 43.
+		/// Biometric Encoding of DG4. Reference: §4.7.4, EF.DG4, ICAO Doc 9303-10, Table 53.
 		/// </summary>
-		public BiometricEncoding()
+		public BiometricEncodingIrises()
 			: base([])
 		{
 		}
 
 		/// <summary>
-		/// Biometric Encoding. Reference: §4.7.2, EF.COM, ICAO Doc 9303-10, Table 43.
+		/// Biometric Encoding of DG4. Reference: §4.7.4, EF.DG4, ICAO Doc 9303-10, Table 53.
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
-		/// <param name="LdsVersion">LDS Version</param>
-		/// <param name="UnicodeVersion">Unicode Version</param>
-		public BiometricEncoding(byte[] Value, BiometricInformationTemplates? Templates)
+		/// <param name="Templates">Biometric information templates.</param>
+		public BiometricEncodingIrises(byte[] Value, BiometricInformationTemplates? Templates)
 			: base(Value)
 		{
 			this.Templates = Templates;
@@ -30,7 +27,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// <summary>
 		/// Tag value.
 		/// </summary>
-		public override ushort Tag => 0x75;
+		public override ushort Tag => 0x76;
 
 		/// <summary>
 		/// Biometric information templates.
@@ -53,7 +50,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 					BiometricInformationTemplates = BiometricInformationTemplates2;
 			}
 
-			return new BiometricEncoding(Value, BiometricInformationTemplates);
+			return new BiometricEncodingIrises(Value, BiometricInformationTemplates);
 		}
 	}
 }
