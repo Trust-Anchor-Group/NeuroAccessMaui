@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Runtime.Inventory;
 using Waher.Security;
 
@@ -11,15 +12,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 	/// <summary>
 	/// Abstract base class for PACE protocols.
 	/// </summary>
-	public abstract class PaceProtocol() : IPaceProtocol
+	public abstract class PaceProtocol() : SecurityObject, IPaceProtocol
 	{
 		private BigInteger version;
 		private BigInteger? parameterId;
-
-		/// <summary>
-		/// OID identifying the PACE protocol.
-		/// </summary>
-		public abstract string Oid { get; }
 
 		/// <summary>
 		/// Security strength mapped as a grade.
@@ -42,26 +38,26 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		public BigInteger? ParameterId => this.parameterId;
 
 		/// <summary>
+		/// Bits of security provided by the protocol.
+		/// </summary>
+		public abstract int Bits { get; }
+
+		/// <summary>
 		/// If the interface understands objects such as Object.
 		/// </summary>
 		/// <param name="Object">OID</param>
 		/// <returns>How well objects of this type are supported.</returns>
-		public Grade Supports(string Object)
+		public override Grade Supports(string Object)
 		{
 			return Object == this.Oid ? this.SecurityStrength : Grade.NotAtAll;
 		}
-
-		/// <summary>
-		/// Bits of security provided by the protocol.
-		/// </summary>
-		public abstract int Bits { get; }
 
 		/// <summary>
 		/// If the protocol could be configured by the security information provided.
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
 		/// <returns>If the protocol could be configured, given the security information.</returns>
-		public virtual bool Configure(Array SecurityInfo)
+		public override bool Configure(Array SecurityInfo)
 		{
 			if (SecurityInfo.Length < 2)
 				return false;
