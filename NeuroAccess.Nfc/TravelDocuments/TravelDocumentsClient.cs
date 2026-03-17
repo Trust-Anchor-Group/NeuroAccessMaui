@@ -31,7 +31,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		private ApplicationLevelInformation? appInfo;
 		private DocumentSecurityObject? securityinfo;
 		private MrzDataObject? mrz;
-		private DataGroup11? personalInformation;
+		private BiometricInformationTemplate[]? biometricEncodingFace;
+		private AdditionalPersonalDetails? personalInformation;
 		private readonly IIsoDepInterface tagInterface;
 		private readonly DocumentInformation documentInformation;
 		private TravelDocumentsState state;
@@ -109,7 +110,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		public event EventHandlerAsync? SecurityInfoUpdated;
 
 		/// <summary>
-		/// MRZ information, if available.
+		/// MRZ information from DG1, if available.
 		/// </summary>
 		public MrzDataObject? Mrz => this.mrz;
 
@@ -119,9 +120,19 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		public event EventHandlerAsync? MrzUpdated;
 
 		/// <summary>
-		/// MRZ information, if available.
+		/// Biometric Encoding of Face in DG2, if available.
 		/// </summary>
-		public DataGroup11? PersonalInformation => this.personalInformation;
+		public BiometricInformationTemplate[]? BiometricEncodingFace => this.biometricEncodingFace;
+
+		/// <summary>
+		/// Event raised when <see cref="BiometricEncodingFace"/> is updated.
+		/// </summary>
+		public event EventHandlerAsync? BiometricEncodingFaceUpdated;
+
+		/// <summary>
+		/// Additional Personal Information from DG11, if available.
+		/// </summary>
+		public AdditionalPersonalDetails? PersonalInformation => this.personalInformation;
 
 		/// <summary>
 		/// Event raised when <see cref="PersonalInformation"/> is updated.
@@ -2098,6 +2109,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			{
 				// Reading EF.SOD, §4.6.2 ICAO 9303-10
 
+				this.Information("EF.SOD supported.");
+
 				Data = await this.DownloadFile(EF.SOD, "EF.SOD");
 				if (Data is null)
 				{
@@ -2113,11 +2126,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				this.securityinfo = SecurityInfo;
 				await this.SecurityInfoUpdated.Raise(this, EventArgs.Empty);
+
+				// TODO: Validate chip certificate to ensure valid issuer.
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(1) ?? false)
 			{
 				// Reading EF.DG1 (MRZ), §4.7.1 ICAO 9303-10
+
+				this.Information("EF.DG1 (MRZ) supported.");
 
 				Data = await this.DownloadFile(EF.DG1, "EF.DG1");
 				if (Data is null)
@@ -2126,7 +2143,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return false;
 				}
 
-				if (!TryParseDataObject(Data, this, out DataGroup1? DataGroup1) ||
+				if (!TryParseDataObject(Data, this, out MachineReadableZoneInformation? DataGroup1) ||
 					DataGroup1.Mrz is null)
 				{
 					this.Error("Unable to decode DG1 (MRZ Information).");
@@ -2144,6 +2161,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			{
 				// Reading EF.DG2 (Encoded Identification Features — Face), §4.7.2 ICAO 9303-10
 
+				this.Information("EF.DG2 (Encoded Identification Features — Face) supported.");
+
 				Data = await this.DownloadFile(EF.DG2, "EF.DG2");
 				if (Data is null)
 				{
@@ -2151,26 +2170,35 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return false;
 				}
 
-				if (!TryParseDataObject(Data, this, out DataGroup2? DataGroup2))
+				if (!TryParseDataObject(Data, this, out BiometricEncoding? BiometricEncoding))
 				{
-					this.Error("Unable to decode DG2 (Encoded Identification Features — Face).");
+					this.Error("Unable to decode Biometric Enciding in DG2 (Encoded Identification Features — Face).");
 					return false;
 				}
+
+				this.biometricEncodingFace = BiometricEncoding.Templates?.Templates;
+				await this.BiometricEncodingFaceUpdated.Raise(this, EventArgs.Empty);
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(3) ?? false)
 			{
+				this.Information("EF.DG3 (Additional Identification Feature — Finger(s)) supported.");
+
 				// TODO: Data Group 3 (Additional Identification Feature — Finger(s)) (In LDS1 eMRTD Application)
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(4) ?? false)
 			{
+				this.Information("EF.DG4 (Additional Identification Feature — Iris(es)) supported.");
+
 				// TODO: Data Group 4 (Additional Identification Feature — Iris(es)) (In LDS1 eMRTD Application)
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(5) ?? false)
 			{
 				// Reading EF.DG5 (Displayed Portrait), §4.7.5 ICAO 9303-10
+
+				this.Information("EF.DG5 (Displayed Portrait) supported.");
 
 				Data = await this.DownloadFile(EF.DG5, "EF.DG5");
 				if (Data is null)
@@ -2179,7 +2207,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return false;
 				}
 
-				if (!TryParseDataObject(Data, this, out DataGroup5? DataGroup5))
+				if (!TryParseDataObject(Data, this, out DisplayedPortraits? DataGroup5))
 				{
 					this.Error("Unable to decode DG5 (Displayed Portrait).");
 					return false;
@@ -2194,27 +2222,37 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			if (this.appInfo.TagList?.HasDataGroup(7) ?? false)
 			{
+				this.Information("EF.DG7 (Displayed Signature or Usual Mark) supported.");
+
 				// TODO: Data Group 7 (Displayed Signature or Usual Mark) (In LDS1 eMRTD Application)
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(8) ?? false)
 			{
+				this.Information("EF.DG8 (Data Feature(s)) supported.");
+
 				// TODO: Data Group 8 (Data Feature(s)) (In LDS1 eMRTD Application)
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(9) ?? false)
 			{
+				this.Information("EF.DG9 (Structure Feature(s)) supported.");
+
 				// TODO: Data Group 9 (Structure Feature(s)) (In LDS1 eMRTD Application)
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(10) ?? false)
 			{
+				this.Information("EF.DG10 (Substance Feature(s)) supported.");
+
 				// TODO: Data Group 10 (Substance Feature(s)) (In LDS1 eMRTD Application)
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(11) ?? false)
 			{
 				// Reading EF.DG11 (Additional Personal Detail(s)), §4.7.11 ICAO 9303-10
+
+				this.Information("EF.DG11 (Additional Personal Detail(s)) supported.");
 
 				Data = await this.DownloadFile(EF.DG11, "EF.DG11");
 				if (Data is null)
@@ -2223,42 +2261,52 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return false;
 				}
 
-				if (!TryParseDataObject(Data, this, out DataGroup11? DataGroup11))
+				if (!TryParseDataObject(Data, this, out AdditionalPersonalDetails? AdditionalPersonalDetails))
 				{
 					this.Error("Unable to decode DG11 (Additional Personal Detail(s)).");
 					return false;
 				}
 
-				this.personalInformation = DataGroup11;
+				this.personalInformation = AdditionalPersonalDetails;
 				await this.PersonalInformationUpdated.Raise(this, EventArgs.Empty);
 			}
 
 			if (this.appInfo.TagList?.HasDataGroup(12) ?? false)
 			{
+				this.Information("EF.DG12 (Additional Document Detail(s)) supported.");
+
 				// TODO: Data Group 12 (Additional Document Detail(s)) (In LDS1 eMRTD Application)
 			}
 
 
 			if (this.appInfo.TagList?.HasDataGroup(13) ?? false)
 			{
+				this.Information("EF.DG13 (Optional Details(s)) supported.");
+
 				// TODO: Data Group 13 (Optional Details(s)) (In LDS1 eMRTD Application)
 			}
 
 
 			if (this.appInfo.TagList?.HasDataGroup(14) ?? false)
 			{
+				this.Information("EF.DG14 (Security Options) supported.");
+
 				// TODO: Data Group 14 (Security Options) (In LDS1 eMRTD Application)
 			}
 
 
 			if (this.appInfo.TagList?.HasDataGroup(15) ?? false)
 			{
+				this.Information("EF.DG15 (Active Authentication Public Key Info) supported.");
+
 				// TODO: Data Group 15 (Active Authentication Public Key Info) (In LDS1 eMRTD Application)
 			}
 
 
 			if (this.appInfo.TagList?.HasDataGroup(16) ?? false)
 			{
+				this.Information("EF.DG16 (Person(s) to Notify) supported.");
+
 				// TODO: Data Group 16 (Person(s) to Notify) (In LDS1 eMRTD Application)
 			}
 

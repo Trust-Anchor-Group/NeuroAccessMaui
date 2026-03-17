@@ -3,25 +3,25 @@
 namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
 	/// <summary>
-	/// Data Group 5. Reference: §4.7.5, EF.DG5, ICAO Doc 9303-10, Table 58.
+	/// Displayed Portraits in DG5. Reference: §4.7.5, EF.DG5, ICAO Doc 9303-10, Table 58.
 	/// </summary>
-	public class DataGroup5 : NestedDataObject
+	public class DisplayedPortraits : NestedDataObject
 	{
 		/// <summary>
-		/// Data Group 5. Reference: §4.7.5, EF.DG5, ICAO Doc 9303-10, Table 58.
+		/// Displayed Portraits in DG5. Reference: §4.7.5, EF.DG5, ICAO Doc 9303-10, Table 58.
 		/// </summary>
-		public DataGroup5()
+		public DisplayedPortraits()
 			: base([])
 		{
 		}
 
 		/// <summary>
-		/// Data Group 5. Reference: §4.7.5, EF.DG5, ICAO Doc 9303-10, Table 58.
+		/// Displayed Portraits in DG5. Reference: §4.7.5, EF.DG5, ICAO Doc 9303-10, Table 58.
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
 		/// <param name="InstanceCount">Instance count.</param>
 		/// <param name="Photos">Photos.</param>
-		public DataGroup5(byte[] Value, int InstanceCount, DisplayedPortrait[] Photos)
+		public DisplayedPortraits(byte[] Value, int InstanceCount, DisplayedPortrait[] Photos)
 			: base(Value)
 		{
 			this.InstanceCount = InstanceCount;
@@ -41,7 +41,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// <summary>
 		/// Photo
 		/// </summary>
-		public DisplayedPortrait[] Photos { get; }
+		public DisplayedPortrait[]? Photos { get; }
 
 		/// <summary>
 		/// Creates a parsed instance of the data object.
@@ -67,7 +67,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 				}
 			}
 
-			return new DataGroup5(Value, Count, [.. Photos]);
+			return new DisplayedPortraits(Value, Count, [.. Photos]);
 		}
 	}
 }

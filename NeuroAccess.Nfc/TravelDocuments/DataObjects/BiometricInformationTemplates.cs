@@ -42,7 +42,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// <summary>
 		/// Biometric information templates
 		/// </summary>
-		public BiometricInformationTemplate[] Templates { get; }
+		public BiometricInformationTemplate[]? Templates { get; }
 
 		/// <summary>
 		/// Creates a parsed instance of the data object.

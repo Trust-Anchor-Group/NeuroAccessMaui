@@ -1,25 +1,25 @@
 ﻿namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
 	/// <summary>
-	/// Data Group 1. Reference: §4.7.1, EF.DG1, ICAO Doc 9303-10, Table 39.
+	/// Machine Readable Zone Information in DG1. Reference: §4.7.1, EF.DG1, ICAO Doc 9303-10, Table 39.
 	/// </summary>
-	public class DataGroup1 : NestedDataObject
+	public class MachineReadableZoneInformation : NestedDataObject
 	{
 		/// <summary>
-		/// Data Group 1. Reference: §4.7.1, EF.DG1, ICAO Doc 9303-10, Table 39.
+		/// Machine Readable Zone Information in DG1. Reference: §4.7.1, EF.DG1, ICAO Doc 9303-10, Table 39.
 		/// </summary>
-		public DataGroup1()
+		public MachineReadableZoneInformation()
 			: base([])
 		{
 		}
 
 		/// <summary>
-		/// Data Group 1. Reference: §4.7.1, EF.DG1, ICAO Doc 9303-10, Table 39.
+		/// Machine Readable Zone Information in DG1. Reference: §4.7.1, EF.DG1, ICAO Doc 9303-10, Table 39.
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
 		/// <param name="LdsVersion">LDS Version</param>
 		/// <param name="UnicodeVersion">Unicode Version</param>
-		public DataGroup1(byte[] Value, MrzDataObject? Mrz)
+		public MachineReadableZoneInformation(byte[] Value, MrzDataObject? Mrz)
 			: base(Value)
 		{
 			this.Mrz = Mrz;
@@ -56,7 +56,7 @@
 				}
 			}
 
-			return new DataGroup1(Value, Mrz);
+			return new MachineReadableZoneInformation(Value, Mrz);
 		}
 	}
 }

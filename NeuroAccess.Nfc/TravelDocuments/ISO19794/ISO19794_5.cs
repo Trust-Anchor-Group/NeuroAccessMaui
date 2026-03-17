@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Waher.Runtime.Collections;
 using Waher.Runtime.IO;
 using Waher.Script.Exceptions;
 
@@ -70,6 +71,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.ISO19794
 
 			// Representations
 
+			ChunkedList<Representation> Representations = [];
+
 			for (int Representation = 0; Representation < NrRepresentations; Representation++)
 			{
 				long RepresentationStart = Data.Position;
@@ -94,11 +97,24 @@ namespace NeuroAccess.Nfc.TravelDocuments.ISO19794
 				if (!Data.TryRead(out ushort NrLandmarkPoints))
 					return false;
 
-				if (!Data.TryRead(out byte Gender) || (Gender > 2 && Gender < 0xff) ||
-					!Data.TryRead(out byte EyeColour) ||
-					!Data.TryRead(out byte HairColour) ||
-					!Data.TryRead(out byte SubjectHeight) ||
-					!Data.TryRead(3, out uint PropertyMask) ||
+				if (!Data.TryRead(out byte GenderUntyped) || (GenderUntyped > 2 && GenderUntyped < 0xff) ||
+					!Data.TryRead(out byte EyeColourUntyped) || EyeColourUntyped > 7 ||
+					!Data.TryRead(out byte HairColourUntyped))
+				{
+					return false;
+				}
+
+				Gender Gender = (Gender)GenderUntyped;
+				EyeColour EyeColour = (EyeColour)EyeColourUntyped;
+				HairColour HairColour = (HairColour)HairColourUntyped;
+
+				if (Version >= 3)
+				{
+					if (!Data.TryRead(out byte SubjectHeight))
+						return false;
+				}
+
+				if (!Data.TryRead(3, out uint PropertyMask) ||
 					!Data.TryRead(out ushort ExpressionMask) ||
 					!Data.TryRead(3, out uint PoseAngle) ||
 					!Data.TryRead(3, out uint PoseAngleUncertainty))
@@ -110,13 +126,19 @@ namespace NeuroAccess.Nfc.TravelDocuments.ISO19794
 					return false;               // TODO: Parse landmark points
 
 
-				if (!Data.TryRead(out byte FaceImageType) ||
-					!Data.TryRead(out byte ImageDataType) ||
+				if (!Data.TryRead(out byte FaceImageTypeRaw) || FaceImageTypeRaw > 3 ||
+					!Data.TryRead(out byte ImageDataTypeRaw) || ImageDataTypeRaw > 3 ||
 					!Data.TryRead(out ushort Width) ||
 					!Data.TryRead(out ushort Height))
 				{
 					return false;
 				}
+
+				FaceImageType FaceImageType = (FaceImageType)FaceImageTypeRaw;
+				ImageDataType ImageDataType = (ImageDataType)ImageDataTypeRaw;
+
+				if (Version < 3 && ImageDataType == ImageDataType.Jpeg)
+					ImageDataType = ImageDataType.Jpeg2000;
 
 				if (Version >= 3)
 				{
@@ -130,7 +152,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.ISO19794
 
 				if (!Data.TryRead(out byte ImageColourSpace))
 					return false;
-
 
 				if (Version < 3)
 				{
@@ -148,9 +169,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.ISO19794
 
 				if (!Data.TryRead(BytesLeft, out byte[] ImageData))
 					return false;
+
+				Representations.Add(new RepresentationFace(FaceImageType, ImageDataType,
+					Width, Height, ImageData, Gender, EyeColour, HairColour));
 			}
 
-			Record = new BiometricDataInterchangeRecord();
+			Record = new BiometricDataInterchangeRecord([.. Representations]);
+
 			return true;
 		}
 

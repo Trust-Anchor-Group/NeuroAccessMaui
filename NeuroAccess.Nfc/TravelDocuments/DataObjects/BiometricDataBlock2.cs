@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
@@ -39,9 +40,28 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		public override bool TryParse(byte[] Value, TravelDocumentsClient Client,
 			[NotNullWhen(true)] out IDataObject? Parsed)
 		{
-			// TODO: Parse
-			Parsed = new BiometricDataBlock2(Value);
-			return true;
+			if (TravelDocumentsClient.TryParseDataObjects(Value, Client, out IDataObject[]? Inner))
+			{
+				BiometricHeaderTemplate? Header = null;
+
+				foreach (IDataObject Object in Inner)
+				{
+					if (Object is BiometricHeaderTemplate Header2)
+						Header = Header2;
+				}
+
+				Client.Warning("Unable to parse ISO 39794-5 Biomatric Data Interchange Record:\r\n\r\n" +
+					Convert.ToBase64String(Value, Base64FormattingOptions.InsertLineBreaks));
+
+				// TODO: Parse
+				Parsed = new BiometricDataBlock2(Value);
+				return true;
+			}
+			else
+			{
+				Parsed = null;
+				return false;
+			}
 		}
 	}
 }

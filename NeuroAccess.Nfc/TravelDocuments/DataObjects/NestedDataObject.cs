@@ -44,7 +44,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 				Parsed = null;
 				return false;
 			}
-
 		}
 
 		/// <summary>
