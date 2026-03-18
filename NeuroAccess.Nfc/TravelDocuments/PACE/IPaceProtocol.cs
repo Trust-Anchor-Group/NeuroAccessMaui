@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Runtime.Inventory;
 using Waher.Security;

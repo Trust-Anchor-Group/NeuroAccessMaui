@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -18,7 +17,6 @@ using Waher.Networking;
 using Waher.Networking.Sniffers;
 using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
-using Waher.Script.Units.DerivedQuantities;
 using Waher.Security;
 using Waher.Security.EllipticCurves;
 
@@ -1132,13 +1130,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			 * }
 			*/
 
-			if (CardAccess is not Array SecurityInfos)
+			if (CardAccess is not Vector SecurityInfos)
 				return false;
 
 			ChunkedList<string> OidsFound = [];
 			IPaceProtocol? Best = null;
 
-			foreach (object Item in SecurityInfos)
+			foreach (object Item in SecurityInfos.Elements)
 			{
 				if (Item is IPaceProtocol Current)
 				{
@@ -1155,9 +1153,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						Best = Current;
 					}
 				}
-				else if (Item is Array SecurityInfo &&
-					SecurityInfo.Length > 0 &&
-					SecurityInfo.GetValue(0) is string Oid)
+				else if (Item is Vector SecurityInfo &&
+					SecurityInfo.Elements.Length > 0 &&
+					SecurityInfo.Elements.GetValue(0) is string Oid)
 				{
 					OidsFound.Add(Oid);
 
@@ -1455,18 +1453,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						Value = Reader.ReadCharacterString((UniversalTagNumber)Tag.TagValue);
 						return true;
 
-					case (int)UniversalTagNumber.External:          // Same as UniversalTagNumber.InstanceOf:
-					case (int)UniversalTagNumber.Set:               // Same as UniversalTagNumber.SetOf:
-					case (int)UniversalTagNumber.Embedded:
-						AsnReader Inner = Reader.ReadSetOf();
-						ChunkedList<object?> Elements = [];
-
-						while (TryDecodeDERNext(Inner, out object? Element))
-							Elements.Add(Element);
-
-						Value = Elements.ToArray();
-						return true;
-
 					case (int)UniversalTagNumber.Real:
 					case (int)UniversalTagNumber.RelativeObjectIdentifier:
 					case (int)UniversalTagNumber.Time:
@@ -1480,7 +1466,17 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						return true;
 
 					case (int)UniversalTagNumber.Sequence:          // Same as UniversalTagNumber.SequenceOf:
-						Inner = Reader.ReadSequence();
+					case (int)UniversalTagNumber.External:          // Same as UniversalTagNumber.InstanceOf:
+					case (int)UniversalTagNumber.Set:               // Same as UniversalTagNumber.SetOf:
+					case (int)UniversalTagNumber.Embedded:
+
+						ReadOnlyMemory<byte> Section = Reader.ReadEncodedValue();
+						AsnReader Inner = new(Section, Reader.RuleSet);
+
+						if (Tag.TagValue == (int)UniversalTagNumber.Sequence)
+							Inner = Inner.ReadSequence();
+						else
+							Inner = Inner.ReadSetOf();
 
 						if (!TryDecodeDERNext(Inner, out object? FirstElement))
 						{
@@ -1488,24 +1484,38 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							return true;
 						}
 
-						Elements = [FirstElement];
+						if (!TryDecodeDERNext(Inner, out object? Element))
+						{
+							if (Tag.TagValue == (int)UniversalTagNumber.Sequence)
+								Value = new Sequence(new object?[] { FirstElement }, Section.ToArray());
+							else
+								Value = new Set(new object?[] { FirstElement }, Section.ToArray());
 
-						while (TryDecodeDERNext(Inner, out object? Element))
+							return true;
+						}
+
+						ChunkedList<object?> Elements = [FirstElement, Element];
+
+						while (TryDecodeDERNext(Inner, out Element))
 							Elements.Add(Element);
 
 						object?[] Elements2 = [.. Elements];
 
-						if (FirstElement is ISecurityObject SecurityObject2 &&
-							SecurityObject2.Configure(Elements2))
+						if (FirstElement is ISecurityObject SecurityObject2)
 						{
-							Value = SecurityObject2;
-							return true;
+							if (SecurityObject2.Configure(Elements2))
+							{
+								Value = SecurityObject2;
+								return true;
+							}
 						}
+
+						if (Tag.TagValue == (int)UniversalTagNumber.Sequence)
+							Value = new Sequence(Elements2, Section.ToArray());
 						else
-						{
-							Value = Elements2;
-							return true;
-						}
+							Value = new Set(Elements2, Section.ToArray());
+
+						return true;
 
 					case (int)UniversalTagNumber.UtcTime:
 						Value = Reader.ReadUtcTime();

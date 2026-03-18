@@ -48,20 +48,6 @@ namespace NeuroAccess.Nfc.Test
 			byte[] Bin = Decode(CardAccess, IsBase64);
 			Assert.IsTrue(TravelDocumentsClient.TryDecodeDER(Bin, out object? Value));
 			Assert.IsNotNull(Value);
-
-			Array? SecurityInfos = Value as Array;
-			Assert.IsNotNull(SecurityInfos);
-
-			foreach (object Element in SecurityInfos)
-			{
-				Array? SecurityInfo = Element as Array;
-				Assert.IsNotNull(SecurityInfo);
-
-				foreach (object Element2 in SecurityInfo)
-					Console.Out.WriteLine(Element2.ToString());
-
-				Console.Out.WriteLine();
-			}
 		}
 
 		private static byte[] Decode(string s, bool IsBase64)
@@ -78,23 +64,7 @@ namespace NeuroAccess.Nfc.Test
 			Assert.IsTrue(TravelDocumentsClient.TryDecodeDER(Bin, out object? Value));
 			Assert.IsNotNull(Value);
 
-			Array? SecurityInfo = Value as Array;
-			Assert.IsNotNull(SecurityInfo);
-			Assert.HasCount(3, SecurityInfo);
-
-			foreach (object Element2 in SecurityInfo)
-				Console.Out.WriteLine(Element2.ToString());
-
-			string? Oid = SecurityInfo.GetValue(0) as string;
-			Assert.IsNotNull(Oid);
-			Assert.IsNotEmpty(Oid);
-
-			IPaceProtocol? Protocol = Types.FindBest<IPaceProtocol, string>(Oid);
-			Assert.IsNotNull(Protocol);
-
-			Assert.IsTrue(Protocol.Configure(SecurityInfo));
-
-			PaceEcdhProtocol? EecProtocol = Protocol as PaceEcdhProtocol;
+			PaceEcdhProtocol? EecProtocol = (PaceEcdhProtocol)Value!;
 			Assert.IsNotNull(EecProtocol);
 
 			Console.Out.WriteLine(EecProtocol.GetType().Name);
@@ -117,11 +87,7 @@ namespace NeuroAccess.Nfc.Test
 
 			byte[] Bin = Decode(CardAccess, IsBase64);
 			Assert.IsTrue(TravelDocumentsClient.TryDecodeDER(Bin, out object? Value));
-			Array? SecurityInfo = Value as Array;
-			string? Oid = SecurityInfo!.GetValue(0) as string;
-			IPaceProtocol? Protocol = Types.FindBest<IPaceProtocol, string>(Oid!);
-			Assert.IsTrue(Protocol!.Configure(SecurityInfo));
-			PaceEcdhProtocol? EecProtocol = (PaceEcdhProtocol)Protocol;
+			PaceEcdhProtocol? EecProtocol = (PaceEcdhProtocol)Value!;
 
 			byte[] z = Decode(EncryptedNonce, IsBase64);
 			byte[] s = EecProtocol.DecryptNonce(Info!, z);
@@ -187,11 +153,8 @@ namespace NeuroAccess.Nfc.Test
 
 			byte[] Bin = Decode(CardAccess, IsBase64);
 			Assert.IsTrue(TravelDocumentsClient.TryDecodeDER(Bin, out object? Value));
-			Array? SecurityInfo = (Array)Value!;
-			string? Oid = (string)SecurityInfo.GetValue(0)!;
-			PaceEcdhProtocol? EecProtocol = (PaceEcdhProtocol)Types.FindBest<IPaceProtocol, string>(Oid);
+			PaceEcdhProtocol? EecProtocol = (PaceEcdhProtocol)Value!;
 			Assert.AreEqual(AlgorithmType, EecProtocol.GetType());
-			Assert.IsTrue(EecProtocol!.Configure(SecurityInfo));
 
 			// Encrypted Nonce
 
@@ -286,8 +249,8 @@ namespace NeuroAccess.Nfc.Test
 
 			// Associated Data
 
-			byte[] AD_IFD = PaceProtocol.CreateAssociatedData(Oid, RemotePublicEphemeralKey);
-			byte[] AD_IC = PaceProtocol.CreateAssociatedData(Oid, LocalPublicEphemeralKey);
+			byte[] AD_IFD = PaceProtocol.CreateAssociatedData(EecProtocol.Oid, RemotePublicEphemeralKey);
+			byte[] AD_IC = PaceProtocol.CreateAssociatedData(EecProtocol.Oid, LocalPublicEphemeralKey);
 
 			Assert.AreEqual(InputDataTerminal.Replace(" ", string.Empty),
 				Hashes.BinaryToString(AD_IFD).ToUpperInvariant());
