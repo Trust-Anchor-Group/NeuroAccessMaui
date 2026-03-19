@@ -1,5 +1,9 @@
+using System.Security.Cryptography;
+using System.Security.Cryptography.Pkcs;
 using NeuroAccess.Nfc.TravelDocuments;
+using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Content;
+using Waher.Runtime.Inventory;
 
 namespace NeuroAccess.Nfc.Test
 {
@@ -13,10 +17,27 @@ namespace NeuroAccess.Nfc.Test
 		public void Test_01_Parse_LDS_v1_8(string Base64)
 		{
 			byte[] Bin = Convert.FromBase64String(Base64);
-			Assert.IsTrue(TravelDocumentsClient.TryDecodeDER(Bin, out object? Inner));
-			Assert.IsNotNull(Inner);
 
-			Console.Out.WriteLine(JSON.Encode(Inner, true));
+			SignedCms SignedData = new();
+			SignedData.Decode(Bin);
+
+			TravelDocumentsClient.TryDecodeDER(SignedData.ContentInfo.Content, out object? Content);
+			Vector? ContentVector = Content as Vector;
+			Assert.IsNotNull(ContentVector);
+
+			ISecurityObject SecurityObject = Types.FindBest<ISecurityObject, string>(SignedData.ContentInfo.ContentType.Value!);
+			Assert.IsTrue(SecurityObject.Configure(ContentVector.Elements));
+
+			Console.Out.WriteLine(JSON.Encode(SecurityObject, true));
+			Console.Out.WriteLine();
+			Console.Out.WriteLine();
+			Console.Out.WriteLine();
+			Console.Out.WriteLine(JSON.Encode(SignedData, true));
+
+			//Assert.IsTrue(TravelDocumentsClient.TryDecodeDER(Bin, out object? Inner));
+			//Assert.IsNotNull(Inner);
+			//
+			//Console.Out.WriteLine(JSON.Encode(Inner, true));
 		}
 	}
 }

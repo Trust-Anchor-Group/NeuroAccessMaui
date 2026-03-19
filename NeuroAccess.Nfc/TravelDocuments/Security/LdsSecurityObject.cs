@@ -30,26 +30,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		/// <returns>If the object can be configured, given the security information.</returns>
 		public override bool Configure(Array SecurityInfo)
 		{
-			if (SecurityInfo is null || SecurityInfo.Length < 2)
+			if (SecurityInfo.Length < 3)
 				return false;
 
-			if (SecurityInfo.GetValue(1) is not ContextSpecific Properties ||
-				Properties.Elements.Length < 1 ||
-				Properties.Elements.GetValue(0) is not Vector Properties2)
-			{
-				return false;
-			}
-
-			if (Properties2.Elements.Length < 3)
+			if (SecurityInfo.GetValue(0) is not BigInteger Version)
 				return false;
 
-			if (Properties2.Elements.GetValue(0) is not BigInteger Version)
+			if (SecurityInfo.GetValue(1) is not Vector HashAlgorithms)
 				return false;
 
-			if (Properties2.Elements.GetValue(1) is not Vector HashAlgorithms)
-				return false;
-
-			if (Properties2.Elements.GetValue(2) is not Vector DataGroupHashValues)
+			if (SecurityInfo.GetValue(2) is not Vector DataGroupHashValues)
 				return false;
 
 			this.Version = (int)Version;

@@ -14,7 +14,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Formats.Asn1" Version="10.0.2" />
+    <PackageReference Include="System.Formats.Asn1" Version="10.0.5" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.5" />
     <PackageReference Include="Waher.Content" Version="3.4.6" />
 	  <PackageReference Include="Waher.Networking" Version="4.6.4" />
 	  <PackageReference Include="Waher.Security" Version="1.2.0" />
