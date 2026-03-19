@@ -1831,8 +1831,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// Authenticates the client with the travel document chip using the document information
 		/// provided in the constructor.
 		/// </summary>
-		/// <returns>If authentication was successful.</returns>
-		public async Task<bool> Authenticate()
+		/// <returns>Authentication result.</returns>
+		public async Task<AuthenticateResult> Authenticate()
 		{
 			// §4.2 1. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
@@ -1843,7 +1843,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				await this.TryFindPaceProtocol(CardAccess))
 			{
 				if (this.encrypted)
-					return false;   // TODO: Renegotiate session keys, see §9.8.2, ICAO 9303-11.
+					return AuthenticateResult.AlreadyEncrypted;   // TODO: Renegotiate session keys, see §9.8.2, ICAO 9303-11.
 
 				// PACE
 				// §4.2 3. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
@@ -1854,7 +1854,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (!await this.InitializePACE())
 				{
 					this.Error("Unable to initialize PACE protocol.");
-					return false;
+					return AuthenticateResult.UnableToInitializePace;
 				}
 				else if (this.protocol is PaceEcdhProtocol EecProtocol)
 					this.Information("PACE protocol initialized (" + EecProtocol.Curve?.CurveName + ").");
@@ -1864,7 +1864,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (!await this.protocol!.Authenticate(this))
 				{
 					this.Error("Authentication unsuccessful.");
-					return false;
+					return AuthenticateResult.UnableToAuthenticatePace;
 				}
 			}
 			else
@@ -1881,16 +1881,16 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (Challenge is null)
 				{
 					this.Error("Unable to get BAC challenge.");
-					return false;
+					return AuthenticateResult.UnableToGetBacChallenge;
 				}
 
 				byte[] ChallengeResponse = CalcChallengeResponse3DES(this.documentInformation, Challenge);
 				byte[]? Response = await this.ExternalBacAuthenticate(ChallengeResponse);
 
-				return false;   // TODO: Implement/Test BAC
+				return AuthenticateResult.BacNotImplemented;   // TODO: Implement/Test BAC
 			}
 
-			return true;
+			return AuthenticateResult.Success;
 		}
 
 		/// <summary>
@@ -2203,13 +2203,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <summary>
 		/// Reads the travel document.
 		/// </summary>
-		/// <returns>If able to read the travel document.</returns>
-		public async Task<bool> ReadTravelDocument()
+		/// <returns>Result of procedure.</returns>
+		public async Task<ReadTravelDocumentResult> ReadTravelDocument()
 		{
 			if (!await this.SelectApplication(Applications.DF1))
 			{
 				this.Error("Unable to select the LDS1 eMRTD application.");
-				return false;
+				return ReadTravelDocumentResult.Lds1ApplicationNotFound;
 			}
 
 			// Reading EF.COM
@@ -2220,13 +2220,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			if (Data is null)
 			{
 				this.Error("Unable to download EF.COM.");
-				return false;
+				return ReadTravelDocumentResult.UnableToReadEfCom;
 			}
 
 			if (!TryParseDataObject(Data, this, out ApplicationLevelInformation? AppInfo))
 			{
 				this.Error("Unable to parse application level information.");
-				return false;
+				return ReadTravelDocumentResult.UnableToParseEfCom;
 			}
 
 			this.appInfo = AppInfo;
@@ -2238,13 +2238,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			if (Data is null)
 			{
 				this.Error("Unable to download EF.SOD.");
-				return false;
+				return ReadTravelDocumentResult.UnableToReadEfSod;
 			}
 
 			if (!TryParseDataObject(Data, this, out DocumentSecurityObject? SecurityInfo))
 			{
 				this.Error("Unable to decode Document Security Object.");
-				return false;
+				return ReadTravelDocumentResult.UnableToParseEfSod;
 			}
 
 			this.securityinfo = SecurityInfo;
@@ -2263,14 +2263,14 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (Data is null)
 				{
 					this.Error("Unable to download EF.DG1.");
-					return false;
+					return ReadTravelDocumentResult.UnableToReadEfDg;
 				}
 
 				if (!TryParseDataObject(Data, this, out MachineReadableZoneInformation? DataGroup1) ||
 					DataGroup1.Mrz is null)
 				{
 					this.Error("Unable to decode DG1 (MRZ Information).");
-					return false;
+					return ReadTravelDocumentResult.UnableToParseEfDg;
 				}
 
 				this.mrz = DataGroup1.Mrz;
@@ -2290,13 +2290,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (Data is null)
 				{
 					this.Error("Unable to download EF.DG2.");
-					return false;
+					return ReadTravelDocumentResult.UnableToReadEfDg;
 				}
 
 				if (!TryParseDataObject(Data, this, out BiometricEncodingFace? BiometricEncoding))
 				{
 					this.Error("Unable to decode Biometric Enciding in DG2 (Encoded Identification Features — Face).");
-					return false;
+					return ReadTravelDocumentResult.UnableToParseEfDg;
 				}
 
 				this.biometricEncodingFace = BiometricEncoding.Templates?.Templates;
@@ -2315,13 +2315,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					if (Data is null)
 					{
 						this.Error("Unable to download EF.DG3.");
-						return false;
+						return ReadTravelDocumentResult.UnableToReadEfDg;
 					}
 
 					if (!TryParseDataObject(Data, this, out BiometricEncodingFingers? BiometricEncoding))
 					{
 						this.Error("Unable to decode Biometric Enciding in DG3 (Additional Identification Feature — Finger(s)).");
-						return false;
+						return ReadTravelDocumentResult.UnableToParseEfDg;
 					}
 
 					this.biometricEncodingFingers = BiometricEncoding.Templates?.Templates;
@@ -2345,13 +2345,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					if (Data is null)
 					{
 						this.Error("Unable to download EF.DG4.");
-						return false;
+						return ReadTravelDocumentResult.UnableToReadEfDg;
 					}
 
 					if (!TryParseDataObject(Data, this, out BiometricEncodingIrises? BiometricEncoding))
 					{
 						this.Error("Unable to decode Biometric Enciding in DG4 (Additional Identification Feature — Iris(es)).");
-						return false;
+						return ReadTravelDocumentResult.UnableToParseEfDg;
 					}
 
 					this.biometricEncodingIrises = BiometricEncoding.Templates?.Templates;
@@ -2373,13 +2373,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (Data is null)
 				{
 					this.Error("Unable to download EF.DG5.");
-					return false;
+					return ReadTravelDocumentResult.UnableToReadEfDg;
 				}
 
 				if (!TryParseDataObject(Data, this, out DisplayedPortraits? DataGroup5))
 				{
 					this.Error("Unable to decode DG5 (Displayed Portrait).");
-					return false;
+					return ReadTravelDocumentResult.UnableToParseEfDg;
 				}
 
 				if ((DataGroup5?.Photos?.Length ?? 0) > 0)
@@ -2399,13 +2399,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (Data is null)
 				{
 					this.Error("Unable to download EF.DG7.");
-					return false;
+					return ReadTravelDocumentResult.UnableToReadEfDg;
 				}
 
 				if (!TryParseDataObject(Data, this, out DisplayedSignatures? DisplayedSignatures))
 				{
 					this.Error("Unable to decode Displayed Signatures in DG7 (Displayed Signature or Usual Mark).");
-					return false;
+					return ReadTravelDocumentResult.UnableToParseEfDg;
 				}
 
 				this.displayedSignatures = DisplayedSignatures;
@@ -2443,13 +2443,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (Data is null)
 				{
 					this.Error("Unable to download EF.DG11.");
-					return false;
+					return ReadTravelDocumentResult.UnableToReadEfDg;
 				}
 
 				if (!TryParseDataObject(Data, this, out AdditionalPersonalDetails? AdditionalPersonalDetails))
 				{
 					this.Error("Unable to decode DG11 (Additional Personal Detail(s)).");
-					return false;
+					return ReadTravelDocumentResult.UnableToParseEfDg;
 				}
 
 				this.personalInformation = AdditionalPersonalDetails;
@@ -2491,7 +2491,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				// TODO: Data Group 16 (Person(s) to Notify) (In LDS1 eMRTD Application)
 			}
 
-			return true;
+			return ReadTravelDocumentResult.Success;
 		}
 
 		/// <summary>

@@ -77,10 +77,32 @@ namespace NeuroAccessMaui.Services.Nfc
 									return Task.CompletedTask;
 								};
 
-								if (!await Client.Authenticate())
+								switch (await Client.Authenticate())
 								{
-									// TODO: Forward failure to UI.
-									return;
+									case AuthenticateResult.Success:
+										// Authentication successful.
+										break;
+
+									case AuthenticateResult.AlreadyEncrypted:
+										// Already authenticated with the document.
+
+									case AuthenticateResult.UnableToInitializePace:
+										// Unable to initialize PACE.
+										// (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+
+									case AuthenticateResult.UnableToAuthenticatePace:
+										// Unable to authenticate using the selected PACE protocol.
+										// (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+
+									case AuthenticateResult.UnableToGetBacChallenge:
+										// Unable to get BAC challenge. (Probably not a valid/working travel document.)
+
+									case AuthenticateResult.BacNotImplemented:
+										// Old Travel Document requiring BAC, which is not supported.
+
+									default:
+										// TODO: Forward failure to UI.
+										return;
 								}
 
 								Client.AppInfoUpdated += (_, e) =>
@@ -181,10 +203,38 @@ namespace NeuroAccessMaui.Services.Nfc
 									return Task.CompletedTask;
 								};
 
-								if (!await Client.ReadTravelDocument())
+								switch (await Client.ReadTravelDocument())
 								{
-									// TODO: Forward failure to UI.
-									return;
+									case ReadTravelDocumentResult.Success:
+										// Readout successful.
+										break;
+
+									case ReadTravelDocumentResult.Lds1ApplicationNotFound:
+										// LDS1 eMRTD application was not found on chip. (Not an electronic passport.)
+
+									case ReadTravelDocumentResult.UnableToReadEfCom:
+										// Unable to read EF.COM. (Try again.)
+
+									case ReadTravelDocumentResult.UnableToParseEfCom:
+										// Unable to parse EF.COM. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+										// EF.COM used to identify services available on the chip.
+
+									case ReadTravelDocumentResult.UnableToReadEfSod:
+										// Unable to read EF.SOD. (Try again.)
+
+									case ReadTravelDocumentResult.UnableToParseEfSod:
+										// Unable to parse EF.SOD. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+										// EF.SOD used to identify issuers of documents.
+
+									case ReadTravelDocumentResult.UnableToReadEfDg:
+										// Unable to read EF.DGx. (Try again.)
+
+									case ReadTravelDocumentResult.UnableToParseEfDg:
+										// Unable to parse EF.DGx. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+										// TODO: Forward failure to UI.
+
+									default:
+										return;
 								}
 
 								Client.Information("Readout completed.");
