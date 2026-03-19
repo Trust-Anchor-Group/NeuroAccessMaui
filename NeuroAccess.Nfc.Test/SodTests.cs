@@ -1,5 +1,7 @@
+using System.Security.AccessControl;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
+using System.Security.Cryptography.X509Certificates;
 using NeuroAccess.Nfc.TravelDocuments;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Content;
@@ -33,6 +35,8 @@ namespace NeuroAccess.Nfc.Test
 			Console.Out.WriteLine();
 			Console.Out.WriteLine();
 			Console.Out.WriteLine(JSON.Encode(SignedData, true));
+
+			SignedData.CheckSignature(true);
 		}
 	}
 }

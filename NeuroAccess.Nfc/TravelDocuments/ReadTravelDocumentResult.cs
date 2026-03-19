@@ -52,5 +52,16 @@
 		/// (Data has been corrupted, either in transit or on the passport.)
 		/// </summary>
 		DgHashDigestInvalid,
+
+		/// <summary>
+		/// No certificates to validate available in EF.SOD.
+		/// (Not a valid Travel Document)
+		/// </summary>
+		NoCertificates,
+
+		/// <summary>
+		/// Certificate provided in EF.SOD is not a valid certificate.
+		/// </summary>
+		InvalidCertificate
 	}
 }

@@ -237,6 +237,10 @@ namespace NeuroAccessMaui.Services.Nfc
 										// Hash Digest as reported by EF.SOD does not match the has digest of the data group read.
 										// (Data has been corrupted, either in transit or on the passport.)
 
+									case ReadTravelDocumentResult.NoCertificates:
+										// No certificates to validate available in EF.SOD.
+										// (Not a valid Travel Document)
+
 									default:
 										return;
 								}

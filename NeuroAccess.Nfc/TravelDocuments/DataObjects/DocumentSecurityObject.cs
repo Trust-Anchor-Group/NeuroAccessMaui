@@ -67,6 +67,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 					SignedCms SignedData = new();
 					SignedData.Decode(Value);
 
+					SignedData.CheckSignature(true);
+
 					byte[]? Content = SignedData.ContentInfo?.Content;
 					string? ContentOid = SignedData.ContentInfo?.ContentType?.Value;
 					if (Content is null || string.IsNullOrEmpty(ContentOid))

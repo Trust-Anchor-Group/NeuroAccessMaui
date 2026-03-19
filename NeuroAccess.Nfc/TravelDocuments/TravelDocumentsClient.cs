@@ -6,6 +6,7 @@ using System.Formats.Asn1;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using NeuroAccess.Nfc.TravelDocuments.DataObjects;
 using NeuroAccess.Nfc.TravelDocuments.Events;
@@ -2222,6 +2223,24 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				this.Error("Unable to decode Document Security Object.");
 				return ReadTravelDocumentResult.UnableToParseEfSod;
 			}
+
+			if ((SecurityInfo.SignedData?.Certificates?.Count ?? 0) == 0)
+			{
+				this.Error("No certificates available in EF.SOD.");
+				return ReadTravelDocumentResult.NoCertificates;
+			}
+
+			//foreach (X509Certificate2 Certificate in SecurityInfo.SignedData!.Certificates)
+			//{
+			//	if (!Certificate.Verify())
+			//	{
+			//		this.Error("Invalid certificate provided.");
+			//		this.Warning("Invalid certificate:\r\n\r\n" +
+			//			Convert.ToBase64String(Certificate.RawData, Base64FormattingOptions.InsertLineBreaks));
+			//
+			//		return ReadTravelDocumentResult.InvalidCertificate;
+			//	}
+			//}
 
 			this.securityinfo = SecurityInfo;
 			await this.SecurityInfoUpdated.Raise(this, EventArgs.Empty);
