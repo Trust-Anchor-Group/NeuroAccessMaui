@@ -45,6 +45,12 @@
 		/// <summary>
 		/// Unable to parse EF.DGx. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
 		/// </summary>
-		UnableToParseEfDg
+		UnableToParseEfDg,
+
+		/// <summary>
+		/// Hash Digest as reported by EF.SOD does not match the has digest of the data group read.
+		/// (Data has been corrupted, either in transit or on the passport.)
+		/// </summary>
+		DgHashDigestInvalid,
 	}
 }

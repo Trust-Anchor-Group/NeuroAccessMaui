@@ -33,11 +33,6 @@ namespace NeuroAccess.Nfc.Test
 			Console.Out.WriteLine();
 			Console.Out.WriteLine();
 			Console.Out.WriteLine(JSON.Encode(SignedData, true));
-
-			//Assert.IsTrue(TravelDocumentsClient.TryDecodeDER(Bin, out object? Inner));
-			//Assert.IsNotNull(Inner);
-			//
-			//Console.Out.WriteLine(JSON.Encode(Inner, true));
 		}
 	}
 }

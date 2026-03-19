@@ -2266,6 +2266,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return ReadTravelDocumentResult.UnableToReadEfDg;
 				}
 
+				if (!this.ValidateDataGroupData(1, Data))
+					return ReadTravelDocumentResult.DgHashDigestInvalid;
+
 				if (!TryParseDataObject(Data, this, out MachineReadableZoneInformation? DataGroup1) ||
 					DataGroup1.Mrz is null)
 				{
@@ -2293,6 +2296,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return ReadTravelDocumentResult.UnableToReadEfDg;
 				}
 
+				if (!this.ValidateDataGroupData(2, Data))
+					return ReadTravelDocumentResult.DgHashDigestInvalid;
+
 				if (!TryParseDataObject(Data, this, out BiometricEncodingFace? BiometricEncoding))
 				{
 					this.Error("Unable to decode Biometric Enciding in DG2 (Encoded Identification Features — Face).");
@@ -2317,6 +2323,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						this.Error("Unable to download EF.DG3.");
 						return ReadTravelDocumentResult.UnableToReadEfDg;
 					}
+
+					if (!this.ValidateDataGroupData(3, Data))
+						return ReadTravelDocumentResult.DgHashDigestInvalid;
 
 					if (!TryParseDataObject(Data, this, out BiometricEncodingFingers? BiometricEncoding))
 					{
@@ -2348,6 +2357,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						return ReadTravelDocumentResult.UnableToReadEfDg;
 					}
 
+					if (!this.ValidateDataGroupData(4, Data))
+						return ReadTravelDocumentResult.DgHashDigestInvalid;
+
 					if (!TryParseDataObject(Data, this, out BiometricEncodingIrises? BiometricEncoding))
 					{
 						this.Error("Unable to decode Biometric Enciding in DG4 (Additional Identification Feature — Iris(es)).");
@@ -2376,6 +2388,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return ReadTravelDocumentResult.UnableToReadEfDg;
 				}
 
+				if (!this.ValidateDataGroupData(5, Data))
+					return ReadTravelDocumentResult.DgHashDigestInvalid;
+
 				if (!TryParseDataObject(Data, this, out DisplayedPortraits? DataGroup5))
 				{
 					this.Error("Unable to decode DG5 (Displayed Portrait).");
@@ -2401,6 +2416,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					this.Error("Unable to download EF.DG7.");
 					return ReadTravelDocumentResult.UnableToReadEfDg;
 				}
+
+				if (!this.ValidateDataGroupData(7, Data))
+					return ReadTravelDocumentResult.DgHashDigestInvalid;
 
 				if (!TryParseDataObject(Data, this, out DisplayedSignatures? DisplayedSignatures))
 				{
@@ -2445,6 +2463,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					this.Error("Unable to download EF.DG11.");
 					return ReadTravelDocumentResult.UnableToReadEfDg;
 				}
+
+				if (!this.ValidateDataGroupData(11, Data))
+					return ReadTravelDocumentResult.DgHashDigestInvalid;
 
 				if (!TryParseDataObject(Data, this, out AdditionalPersonalDetails? AdditionalPersonalDetails))
 				{
@@ -2492,6 +2513,27 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			}
 
 			return ReadTravelDocumentResult.Success;
+		}
+
+		private bool ValidateDataGroupData(int Nr, byte[] Data)
+		{
+			this.Information("Validating data with EF.SOD");
+
+			if (this.securityinfo is null)
+			{
+				this.Error("EF.SOD not read.");
+				return false;
+			}
+			else if (this.securityinfo.ValidateDataGroup(Nr, Data))
+			{
+				this.Information("Data valid in accordance to Hash Digest in EF.SOD.");
+				return true;
+			}
+			else
+			{
+				this.Error("Invalid data. Hash Digest of data does not match Hash Digest in EF.SOD.");
+				return false;
+			}
 		}
 
 		/// <summary>

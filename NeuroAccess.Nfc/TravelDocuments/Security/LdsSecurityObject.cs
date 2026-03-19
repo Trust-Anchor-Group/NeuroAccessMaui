@@ -36,7 +36,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 			if (SecurityInfo.GetValue(0) is not BigInteger Version)
 				return false;
 
-			if (SecurityInfo.GetValue(1) is not Vector HashAlgorithms)
+			if (SecurityInfo.GetValue(1) is not Vector HashFunctions)
 				return false;
 
 			if (SecurityInfo.GetValue(2) is not Vector DataGroupHashValues)
@@ -44,15 +44,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 
 			this.Version = (int)Version;
 
-			ChunkedList<HashFunction> HashAlgorithms2 = [];
+			ChunkedList<HashFunction> HashFunctions2 = [];
 			Dictionary<int, byte[]> DataGroupHashValues2 = [];
 
-			foreach (object Item in HashAlgorithms.Elements)
+			foreach (object Item in HashFunctions.Elements)
 			{
 				if (Item is null || Item is not HashFunction HashFunction)
 					return false;
 
-				HashAlgorithms2.Add(HashFunction);
+				HashFunctions2.Add(HashFunction);
 			}
 
 			foreach (object Item in DataGroupHashValues.Elements)
@@ -70,7 +70,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 				DataGroupHashValues2[(int)DataGroup] = Digest;
 			}
 
-			this.HashAlgorithms = [.. HashAlgorithms2];
+			this.HashFunctions = [.. HashFunctions2];
 			this.DataGroupHashValues = DataGroupHashValues2;
 
 			return true;
@@ -82,9 +82,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		public int Version { get; private set; }
 
 		/// <summary>
-		/// Hash Algorithm used
+		/// Hash Functions used
 		/// </summary>
-		public HashFunction[]? HashAlgorithms { get; private set; }
+		public HashFunction[]? HashFunctions { get; private set; }
 
 		/// <summary>
 		/// Data Group Hash Values.

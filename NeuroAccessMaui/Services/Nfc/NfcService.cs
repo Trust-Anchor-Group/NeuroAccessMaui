@@ -233,6 +233,10 @@ namespace NeuroAccessMaui.Services.Nfc
 										// Unable to parse EF.DGx. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
 										// TODO: Forward failure to UI.
 
+									case ReadTravelDocumentResult.DgHashDigestInvalid:
+										// Hash Digest as reported by EF.SOD does not match the has digest of the data group read.
+										// (Data has been corrupted, either in transit or on the passport.)
+
 									default:
 										return;
 								}

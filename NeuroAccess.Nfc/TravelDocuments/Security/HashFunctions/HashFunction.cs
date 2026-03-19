@@ -22,5 +22,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions
 		{
 			return this.GetType().Name;
 		}
+
+		/// <summary>
+		/// Computes a Hash Digest from binary data.
+		/// </summary>
+		/// <param name="Data">Binary data.</param>
+		/// <returns>Hash Digest of binary data.</returns>
+		public abstract byte[] ComputeHash(byte[] Data);
 	}
 }
