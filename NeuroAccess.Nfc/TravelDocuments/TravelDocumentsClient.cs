@@ -2177,30 +2177,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		}
 
 		/// <summary>
-		/// Reads the EF.DIR file to view what applications are available.
-		/// </summary>
-		/// <returns></returns>
-		public async Task GetDirectory()
-		{
-			// Optional: Read EF.DIR	§4.2 2. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
-
-			try
-			{
-				byte[]? Data = await this.DownloadFile(EF.DIR, "EF.DIR");
-				if (Data is null)
-					return;
-
-				// Note: EF.DIR not required to be available in passports.
-
-				// TODO: Parse applications.
-			}
-			catch (Exception ex)
-			{
-				this.Exception(ex);
-			}
-		}
-
-		/// <summary>
 		/// Reads the travel document.
 		/// </summary>
 		/// <returns>Result of procedure.</returns>
@@ -2251,7 +2227,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			await this.SecurityInfoUpdated.Raise(this, EventArgs.Empty);
 
 			// TODO: Validate chip certificate to ensure valid issuer.
-			// TODO: Validate signatures of all data group files.
 
 			if (this.appInfo.TagList?.HasDataGroup(1) ?? false)
 			{
