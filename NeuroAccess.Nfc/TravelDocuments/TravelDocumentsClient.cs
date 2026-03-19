@@ -1476,7 +1476,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						if (Tag.TagValue == (int)UniversalTagNumber.Sequence)
 							Inner = Inner.ReadSequence();
 						else
-							Inner = Inner.ReadSetOf();
+							Inner = Inner.ReadSetOf(Tag);
 
 						if (!TryDecodeDERNext(Inner, out object? FirstElement))
 						{
@@ -1532,18 +1532,43 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			}
 			else if (Tag.TagClass == TagClass.ContextSpecific)
 			{
-				AsnReader Inner = Reader.ReadSequence(Tag);
+				ReadOnlyMemory<byte> Section = Reader.ReadEncodedValue();
+				AsnReader Inner = new(Section, Reader.RuleSet);
 
-				if (TryDecodeDERNext(Inner, out object? Element))
+				Inner = Inner.ReadSequence(Tag);
+
+				if (!TryDecodeDERNext(Inner, out object? FirstElement))
 				{
-					Value = Element;
+					Value = Array.Empty<object?>();
 					return true;
 				}
-				else
+
+				if (!TryDecodeDERNext(Inner, out object? Element))
 				{
-					Value = null;
-					return false;
+					Value = new ContextSpecific(Tag.TagValue, new object?[] { FirstElement }, Section.ToArray());
+					return true;
 				}
+
+				ChunkedList<object?> Elements = [FirstElement, Element];
+
+				while (TryDecodeDERNext(Inner, out Element))
+					Elements.Add(Element);
+
+				object?[] Elements2 = [.. Elements];
+
+				if (FirstElement is ISecurityObject SecurityObject2)
+				{
+					if (SecurityObject2.Configure(Elements2))
+					{
+						Value = new ContextSpecific(Tag.TagValue,
+							new object[] { SecurityObject2 }, Section.ToArray());
+
+						return true;
+					}
+				}
+
+				Value = new ContextSpecific(Tag.TagValue, Elements2, Section.ToArray());
+				return true;
 			}
 			else
 			{

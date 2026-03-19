@@ -33,19 +33,23 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 			if (SecurityInfo is null || SecurityInfo.Length < 2)
 				return false;
 
-			if (SecurityInfo.GetValue(1) is not Vector Properties)
+			if (SecurityInfo.GetValue(1) is not ContextSpecific Properties ||
+				Properties.Elements.Length < 1 ||
+				Properties.Elements.GetValue(0) is not Vector Properties2)
+			{
+				return false;
+			}
+
+			if (Properties2.Elements.Length < 3)
 				return false;
 
-			if (Properties.Elements.Length < 3)
+			if (Properties2.Elements.GetValue(0) is not BigInteger Version)
 				return false;
 
-			if (Properties.Elements.GetValue(0) is not BigInteger Version)
+			if (Properties2.Elements.GetValue(1) is not Vector HashAlgorithms)
 				return false;
 
-			if (Properties.Elements.GetValue(1) is not Vector HashAlgorithms)
-				return false;
-
-			if (Properties.Elements.GetValue(2) is not Vector DataGroupHashValues)
+			if (Properties2.Elements.GetValue(2) is not Vector DataGroupHashValues)
 				return false;
 
 			this.Version = (int)Version;

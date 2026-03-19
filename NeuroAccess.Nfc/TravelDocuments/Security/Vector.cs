@@ -5,14 +5,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 	/// <summary>
 	/// Abstract base class for arrays of security objects.
 	/// </summary>
-	/// <param name="SecurityInfo">Security information.</param>
+	/// <param name="Elements">Elements in sequence.</param>
 	/// <param name="SubSection">Binary subsection encompassing the data.</param>
-	public abstract class Vector(Array SecurityInfo, byte[] SubSection)
+	public abstract class Vector(Array Elements, byte[] SubSection)
 	{
 		/// <summary>
 		/// Binary Value.
 		/// </summary>
-		public Array Elements { get; } = SecurityInfo;
+		public Array Elements { get; } = Elements;
 
 		/// <summary>
 		/// Subsection

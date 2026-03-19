@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
+using Waher.Runtime.Collections;
+using Waher.Runtime.IO;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security
 {
@@ -27,15 +30,27 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		/// <returns>If the object can be configured, given the security information.</returns>
 		public override bool Configure(Array SecurityInfo)
 		{
+			/* §3.11.4, ICAO 9303-10, EF.CardSecurity
+			 * 
+			 *	SignedData ::= SEQUENCE{  
+			 *		version CMSVersion,  
+			 *		digestAlgorithms DigestAlgorithmIdentifiers, 
+			 *		encapContentInfo EncapsulatedContentInfo,  
+			 *		certificates [0] IMPLICIT CertificateSet OPTIONAL,  
+			 *		crls [1] IMPLICIT RevocationInfoChoices OPTIONAL, 
+			 *		signerInfos SignerInfos  
+			 *	}			 
+			 */
+
 			if (SecurityInfo is null ||
 				SecurityInfo.Length < 2 ||
-				SecurityInfo.GetValue(1) is not Vector Properties ||
-				Properties.Elements.Length < 5 ||
-				Properties.Elements.GetValue(0) is not BigInteger Version ||
-				Properties.Elements.GetValue(1) is not Vector DigestAlgorithms ||
-				Properties.Elements.GetValue(2) is not LdsSecurityObject EncapsulatedContentInformation ||
-				Properties.Elements.GetValue(3) is not Vector Certificates ||
-				Properties.Elements.GetValue(4) is not Vector SignerInformations)
+				SecurityInfo.GetValue(1) is not ContextSpecific Properties ||
+				Properties.Elements.Length < 1 ||
+				Properties.Elements.GetValue(0) is not Vector Properties2 ||
+				Properties2.Elements.Length < 3 ||
+				Properties2.Elements.GetValue(0) is not BigInteger Version ||
+				Properties2.Elements.GetValue(1) is not Vector DigestAlgorithms ||
+				Properties2.Elements.GetValue(2) is not LdsSecurityObject EncapsulatedContentInformation)
 			{
 				return false;
 			}
@@ -43,8 +58,39 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 			this.Version = (int)Version;
 			this.DigestAlgorithms = DigestAlgorithms.Elements;
 			this.EncapsulatedContentInformation = EncapsulatedContentInformation;
-			this.Certificates = Certificates.Elements;
-			this.SignerInformations = SignerInformations.Elements;
+
+			if (Properties2.Elements.Length >= 3)
+			{
+				if (Properties2.Elements.GetValue(3) is not Vector Certificates)
+					return false;
+
+				// Ref: CertificateSet in RFC 5652.
+
+				ChunkedList<X509Certificate2> Certificates2 = [];
+
+				foreach (object Element in Certificates.Elements)
+				{
+					if (Element is Vector ElementVector)
+					{
+						X509Certificate2 Certificate = new(ElementVector.SubSection);
+						Certificates2.Add(Certificate);
+					}
+				}
+
+				this.Certificates = [.. Certificates2];
+			}
+			else
+				this.Certificates = null;
+
+			if (Properties2.Elements.Length >= 4)
+			{
+				if (Properties2.Elements.GetValue(4) is not Vector SignerInformations)
+					return false;
+
+				this.SignerInformations = SignerInformations.Elements;
+			}
+			else
+				this.SignerInformations = null;
 
 			return true;
 		}
@@ -67,7 +113,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		/// <summary>
 		/// Certificates
 		/// </summary>
-		public Array? Certificates { get; private set; }
+		public X509Certificate2[]? Certificates { get; private set; }
 
 		/// <summary>
 		/// Signer Informations
