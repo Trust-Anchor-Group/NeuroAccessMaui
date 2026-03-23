@@ -6,6 +6,7 @@ using System.Formats.Asn1;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -1370,10 +1371,16 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		public static bool TryDecodeDER(byte[] Data, out object? Value)
 		{
 			AsnReader Reader = new(Data, AsnEncodingRules.DER);
-			return TryDecodeDERNext(Reader, out Value);
+			return TryDecodeAsn1(Reader, out Value);
 		}
 
-		private static bool TryDecodeDERNext(AsnReader Reader, out object? Value)
+		/// <summary>
+		/// Decodes the next ASN.1-encoded object.
+		/// </summary>
+		/// <param name="Reader">ASN.1 reader</param>
+		/// <param name="Value">Decoded object.</param>
+		/// <returns>If successful.</returns>
+		public static bool TryDecodeAsn1(AsnReader Reader, out object? Value)
 		{
 			if (!Reader.HasData)
 			{
@@ -1401,16 +1408,11 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						return true;
 
 					case (int)UniversalTagNumber.BitString:
-						byte[] Bin = Reader.ReadBitString(out int BitCount);
-						BitArray Bits = new(Bin)
-						{
-							Length = BitCount
-						};
-						Value = Bits;
+						Value = Reader.ReadBitString(out _);
 						return true;
 
 					case (int)UniversalTagNumber.OctetString:
-						Bin = Reader.ReadOctetString();
+						byte[] Bin = Reader.ReadOctetString();
 
 						try
 						{
@@ -1483,13 +1485,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						else
 							Inner = Inner.ReadSetOf(Tag);
 
-						if (!TryDecodeDERNext(Inner, out object? FirstElement))
+						if (!TryDecodeAsn1(Inner, out object? FirstElement))
 						{
 							Value = Array.Empty<object?>();
 							return true;
 						}
 
-						if (!TryDecodeDERNext(Inner, out object? Element))
+						if (!TryDecodeAsn1(Inner, out object? Element))
 						{
 							if (Tag.TagValue == (int)UniversalTagNumber.Sequence)
 								Value = new Sequence(new object?[] { FirstElement }, Section.ToArray());
@@ -1501,7 +1503,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 						ChunkedList<object?> Elements = [FirstElement, Element];
 
-						while (TryDecodeDERNext(Inner, out Element))
+						while (TryDecodeAsn1(Inner, out Element))
 							Elements.Add(Element);
 
 						object?[] Elements2 = [.. Elements];
@@ -1547,13 +1549,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					{
 						Inner = Inner.ReadSequence(Tag);
 
-						if (!TryDecodeDERNext(Inner, out object? FirstElement))
+						if (!TryDecodeAsn1(Inner, out object? FirstElement))
 						{
 							Value = Array.Empty<object?>();
 							return true;
 						}
 
-						if (!TryDecodeDERNext(Inner, out object? Element))
+						if (!TryDecodeAsn1(Inner, out object? Element))
 						{
 							Value = new ContextSpecific(Tag.TagValue, new object?[] { FirstElement }, Section.ToArray());
 							return true;
@@ -1561,7 +1563,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 						ChunkedList<object?> Elements = [FirstElement, Element];
 
-						while (TryDecodeDERNext(Inner, out Element))
+						while (TryDecodeAsn1(Inner, out Element))
 							Elements.Add(Element);
 
 						object?[] Elements2 = [.. Elements];
@@ -2268,7 +2270,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					this.Error("Invalid certificate provided.");
 					this.Warning("Invalid certificate:\r\n\r\n" +
 						Convert.ToBase64String(Certificate.RawData, Base64FormattingOptions.InsertLineBreaks));
-			
+
 					return ReadTravelDocumentResult.InvalidCertificate;
 				}
 
@@ -2721,21 +2723,94 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		}
 
 		/// <summary>
-		/// Gets the Authority Key Identifier from a certificate, if available. This is used to determine
-		/// the trust chain of the document's chip certificate, which is used to verify the authenticity of
-		/// the document.
+		/// Gets the Authority Key Identifier from a certificate, with associated country code, if
+		/// available. This is used to determine /// the trust chain of the document's chip certificate,
+		/// which is used to verify the authenticity of the document.
 		/// </summary>
 		/// <param name="Certificate">Certificate</param>
-		/// <returns></returns>
-		public static byte[]? GetAuthorityKeyIdentifier(X509Certificate2 Certificate)
+		/// <returns>Country code and authority key identifier, if found.</returns>
+		public static KeyValuePair<string?, byte[]?> GetAuthorityKeyIdentifier(X509Certificate2 Certificate)
 		{
-			foreach (X509Extension Extension in Certificate.Extensions)
+			string s = Certificate.Issuer;
+			int i = s.IndexOf("C=", StringComparison.OrdinalIgnoreCase);
+
+			if (i >= 0)
 			{
-				if (Extension is X509AuthorityKeyIdentifierExtension AuthorityKeyIdentifier)
-					return AuthorityKeyIdentifier.KeyIdentifier?.ToArray();
+				int j = s.IndexOfAny([',', ' '], i + 2);
+
+				if (j >= i + 2)
+				{
+					string CountryCode = s[(i + 2)..j].Trim();
+
+					foreach (X509Extension Extension in Certificate.Extensions)
+					{
+						if (Extension is X509AuthorityKeyIdentifierExtension AuthorityKeyIdentifier)
+						{
+							return new KeyValuePair<string?, byte[]?>(CountryCode,
+								AuthorityKeyIdentifier.KeyIdentifier?.ToArray());
+						}
+					}
+				}
 			}
 
-			return null;
+			return new KeyValuePair<string?, byte[]?>(null, null);
+		}
+
+		/// <summary>
+		/// Gets the Revocation List URL from the certificate.
+		/// </summary>
+		/// <param name="Certificate">Certificate</param>
+		/// <returns>URL to Revocation List, if found.</returns>
+		public static string[] GetRevocationListUrls(X509Certificate2 Certificate)
+		{
+			ChunkedList<string> Urls = [];
+
+			foreach (X509Extension Extension in Certificate.Extensions)
+			{
+				if (Extension.Oid?.Value != "2.5.29.31" ||
+					!TryDecodeDER(Extension.RawData, out object? Parsed) ||
+					Parsed is not Vector DistributionPoints)
+				{
+					continue;
+				}
+
+				foreach (object Element in DistributionPoints.Elements)
+				{
+					if (Element is not Vector DistributionPoint)
+						continue;
+
+					foreach (object Element2 in DistributionPoint.Elements)
+					{
+						if (Element2 is not Vector DistributionPointName)
+							continue;
+
+						foreach (object Element3 in DistributionPointName.Elements)
+						{
+							if (Element3 is not Vector FullName)
+								continue;
+
+							foreach (object Element4 in FullName.Elements)
+							{
+								if (Element4 is not byte[] GeneralName ||
+									GeneralName.Length == 0 ||
+									GeneralName[0] != 0x86)
+								{
+									continue;
+								}
+
+								GeneralName[0] = (byte)UniversalTagNumber.IA5String;
+								AsnReader Reader = new(GeneralName, AsnEncodingRules.DER);
+								string Url = Reader.ReadCharacterString((UniversalTagNumber)GeneralName[0]);
+
+								Urls.Add(Url);
+							}
+						}
+					}
+				}
+
+			}
+
+			return [.. Urls];
 		}
 	}
 }
