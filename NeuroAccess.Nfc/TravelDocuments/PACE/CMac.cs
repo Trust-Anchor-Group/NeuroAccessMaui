@@ -7,7 +7,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 	/// Implements the CMAC algorithm, as defined in NIST SP 800-38B, revision 2016. Ref:
 	/// https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38b.pdf
 	/// </summary>
-	public class CMac : IDisposable
+	public sealed class CMac : IDisposable
 	{
 		private readonly SymmetricAlgorithm cipher;
 		private readonly byte[] key;

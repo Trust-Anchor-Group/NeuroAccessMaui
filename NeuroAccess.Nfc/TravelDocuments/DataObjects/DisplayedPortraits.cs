@@ -1,4 +1,5 @@
-﻿using Waher.Runtime.Collections;
+﻿using System.Globalization;
+using Waher.Runtime.Collections;
 
 namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
@@ -62,7 +63,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 					Photos.Add(Photo);
 				else
 				{
-					Client.Warning("Unknown DG5 tag: " + Object.Tag.ToString("X4"));
+					Client.Warning("Unknown DG5 tag: " + Object.Tag.ToString("X4", CultureInfo.InvariantCulture));
 					break;
 				}
 			}

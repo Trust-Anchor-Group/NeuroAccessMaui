@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -27,7 +28,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	/// Travel Documents Client, implementing ICAO 9303 to communicate with machine-readable
 	/// travel documents, such as passports, visas, and identity cards.
 	/// </summary>
-	public class TravelDocumentsClient : CommunicationLayer, IDisposable
+	public sealed class TravelDocumentsClient : CommunicationLayer, IDisposable
 	{
 		private static readonly Dictionary<ushort, IDataObject> dataObjects = GetDataObjects();
 		private ApplicationLevelInformation? appInfo;
@@ -264,7 +265,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			await this.SetState(TravelDocumentsState.SelectingFile, FileId);
 
 			if (this.HasSniffers)
-				this.Information("SelectFile(" + FileId.ToString("X4") + ")");
+				this.Information("SelectFile(" + FileId.ToString("X4", CultureInfo.InvariantCulture) + ")");
 
 			byte[] Command =
 			[
@@ -552,7 +553,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						break;
 
 					default:
-						this.Error("Unexpected DO block: " + Response[i - 1].ToString("X2"));
+						this.Error("Unexpected DO block: " + Response[i - 1].ToString("X2", CultureInfo.InvariantCulture));
 						return Response;
 				}
 			}
@@ -669,7 +670,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return true;
 
 				case Iso7816StatusCategory.DataStillAvailable:
-					this.Information(SW2.ToString() + " bytes still available");
+					this.Information(SW2.ToString(CultureInfo.InvariantCulture) + " bytes still available");
 					return true;
 
 				case Iso7816StatusCategory.WarningUnchanged:
@@ -680,7 +681,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							break;
 
 						default:
-							this.Warning("Warning " + SW2.ToString("X2") + " triggered by card. State unchanged.");
+							this.Warning("Warning " + SW2.ToString("X2", CultureInfo.InvariantCulture) + " triggered by card. State unchanged.");
 							break;
 
 						case 0x81:
@@ -717,7 +718,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							break;
 
 						default:
-							this.Warning("Warning " + SW2.ToString("X2") + " triggered by card. State changed.");
+							this.Warning("Warning " + SW2.ToString("X2", CultureInfo.InvariantCulture) + " triggered by card. State changed.");
 							break;
 
 						case 0x81:
@@ -734,7 +735,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							break;
 
 						default:
-							this.Error("Error " + SW2.ToString("X2") + " triggered by card. State unchanged.");
+							this.Error("Error " + SW2.ToString("X2", CultureInfo.InvariantCulture) + " triggered by card. State unchanged.");
 							break;
 
 						case 0x01:
@@ -751,7 +752,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							break;
 
 						default:
-							this.Error("Error " + SW2.ToString("X2") + " triggered by card. State changed.");
+							this.Error("Error " + SW2.ToString("X2", CultureInfo.InvariantCulture) + " triggered by card. State changed.");
 							break;
 
 						case 0x81:
@@ -776,7 +777,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							break;
 
 						default:
-							this.Error("Function Not Supported " + SW2.ToString("X2") + " triggered by card.");
+							this.Error("Function Not Supported " + SW2.ToString("X2", CultureInfo.InvariantCulture) + " triggered by card.");
 							break;
 
 						case 0x81:
@@ -805,7 +806,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							break;
 
 						default:
-							this.Error("Not Allowed " + SW2.ToString("X2") + " triggered by card.");
+							this.Error("Not Allowed " + SW2.ToString("X2", CultureInfo.InvariantCulture) + " triggered by card.");
 							break;
 
 						case 0x81:
@@ -850,7 +851,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							break;
 
 						default:
-							this.Error("Wrong Parameters " + SW2.ToString("X2") + " triggered by card.");
+							this.Error("Wrong Parameters " + SW2.ToString("X2", CultureInfo.InvariantCulture) + " triggered by card.");
 							break;
 
 						case 0x80:
@@ -900,12 +901,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return false;
 
 				case Iso7816StatusCategory.WrongLeField:
-					this.Error("Le field incorrect. Should be " + SW2.ToString("X2"));
+					this.Error("Le field incorrect. Should be " + SW2.ToString("X2", CultureInfo.InvariantCulture));
 					return false;
 
 				default:
-					this.Error("Unexpected response received. SW1=" + SW1.ToString("X2") +
-						", SW2=" + SW2.ToString("X2"));
+					this.Error("Unexpected response received. SW1=" + SW1.ToString("X2", CultureInfo.InvariantCulture) +
+						", SW2=" + SW2.ToString("X2", CultureInfo.InvariantCulture));
 					return false;
 			}
 		}
@@ -931,7 +932,10 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			await this.SetState(TravelDocumentsState.ReadingBinary, Offset);
 
 			if (this.HasSniffers)
-				this.Information("ReadBinary(" + Offset.ToString() + "," + NrBytes.ToString() + ")");
+			{
+				this.Information("ReadBinary(" + Offset.ToString(CultureInfo.InvariantCulture) + "," +
+					NrBytes.ToString(CultureInfo.InvariantCulture) + ")");
+			}
 
 			byte[] Command;
 
@@ -1041,7 +1045,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				{
 					ExpectedLength = GetExpectedLength(P.Key);
 					if (ExpectedLength.HasValue)
-						this.Information("Expected length of file: " + ExpectedLength.Value.ToString());
+						this.Information("Expected length of file: " + ExpectedLength.Value.ToString(CultureInfo.InvariantCulture));
 				}
 
 				if (!P.Value && !ExpectedLength.HasValue)
@@ -1265,7 +1269,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <param name="Info">Document Information</param>
 		public static byte[] PACE_K(DocumentInformation Info)
 		{
-			byte[] Data = InternetContent.ISO_8859_1.GetBytes(Info.MRZ_Information);
+			byte[] Data = InternetContent.ISO_8859_1.GetBytes(Info.MRZ_Information!);
 			return Hashes.ComputeSHA1Hash(Data);
 		}
 
@@ -1329,7 +1333,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <param name="Info">Document Information</param>
 		public static byte[] BAC_KSeed(DocumentInformation Info)
 		{
-			byte[] Data = InternetContent.ISO_8859_1.GetBytes(Info.MRZ_Information);
+			byte[] Data = InternetContent.ISO_8859_1.GetBytes(Info.MRZ_Information!);
 			byte[] H = Hashes.ComputeSHA1Hash(Data);
 			Array.Resize(ref H, 16);
 			return H;
@@ -1980,7 +1984,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 					using (ICryptoTransform FinalDecryptor = Cipher.CreateDecryptor(Kb, new byte[8]))
 					{
-						H = FinalDecryptor.TransformFinalBlock(H, 0, 8);
+						H = FinalDecryptor.TransformFinalBlock(H!, 0, 8);
 					}
 
 					H = Encryptor2.TransformFinalBlock(H, 0, 8);
@@ -2676,13 +2680,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						Found.Add(ParsedObject);
 					else
 					{
-						Client.Warning("Unable to parse data object with tag: " + Tag.ToString("X4"));
+						Client.Warning("Unable to parse data object with tag: " + Tag.ToString("X4", CultureInfo.InvariantCulture));
 						Found.Add(new BinaryDataObject(Tag, Value));
 					}
 				}
 				else
 				{
-					Client.Warning("Unknown application level information tag: " + Tag.ToString("X4"));
+					Client.Warning("Unknown application level information tag: " + Tag.ToString("X4", CultureInfo.InvariantCulture));
 					Found.Add(new BinaryDataObject(Tag, Value));
 				}
 			}
@@ -2714,6 +2718,24 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			}
 
 			return Result;
+		}
+
+		/// <summary>
+		/// Gets the Authority Key Identifier from a certificate, if available. This is used to determine
+		/// the trust chain of the document's chip certificate, which is used to verify the authenticity of
+		/// the document.
+		/// </summary>
+		/// <param name="Certificate">Certificate</param>
+		/// <returns></returns>
+		public static byte[]? GetAuthorityKeyIdentifier(X509Certificate2 Certificate)
+		{
+			foreach (X509Extension Extension in Certificate.Extensions)
+			{
+				if (Extension is X509AuthorityKeyIdentifierExtension AuthorityKeyIdentifier)
+					return AuthorityKeyIdentifier.KeyIdentifier?.ToArray();
+			}
+
+			return null;
 		}
 	}
 }

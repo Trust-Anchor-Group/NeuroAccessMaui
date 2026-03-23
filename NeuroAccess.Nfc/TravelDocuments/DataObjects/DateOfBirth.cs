@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
@@ -45,9 +46,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// <returns>New instance of string-valued data object.</returns>
 		public override StringObject Create(byte[] Value, string StringValue)
 		{
-			int Year = int.Parse(StringValue.Substring(0, 4));
-			int Month = int.Parse(StringValue.Substring(4, 2));
-			int Day = int.Parse(StringValue.Substring(6, 2));
+			int Year = int.Parse(StringValue.Substring(0, 4), CultureInfo.InvariantCulture);
+			int Month = int.Parse(StringValue.Substring(4, 2), CultureInfo.InvariantCulture);
+			int Day = int.Parse(StringValue.Substring(6, 2), CultureInfo.InvariantCulture);
 
 			return new DateOfBirth(Value, StringValue, new DateTime(Year, Month, Day));
 		}

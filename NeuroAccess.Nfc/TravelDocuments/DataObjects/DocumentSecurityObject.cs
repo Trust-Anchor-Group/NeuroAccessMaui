@@ -111,7 +111,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// <returns>If the data is valid in accordance with the signatures available.</returns>
 		public bool ValidateDataGroup(int Nr, byte[] DataRead)
 		{
-			if (!(this.LdsSecurityObject?.DataGroupHashValues?.TryGetValue(Nr, out byte[] ExpectedDigest) ?? false))
+			if (!(this.LdsSecurityObject?.DataGroupHashValues?.TryGetValue(Nr, out byte[]? ExpectedDigest) ?? false))
 				return false;
 
 			HashFunction[]? HashFunctions = this.LdsSecurityObject!.HashFunctions;

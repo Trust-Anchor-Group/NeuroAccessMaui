@@ -1,4 +1,6 @@
-﻿namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
+﻿using System.Globalization;
+
+namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
 	/// <summary>
 	/// Machine Readable Zone Information in DG1. Reference: §4.7.1, EF.DG1, ICAO Doc 9303-10, Table 39.
@@ -50,7 +52,7 @@
 					Mrz = Mrz2;
 				else
 				{
-					Client.Warning("Unknown DG1 tag: " + SubGroup.Tag.ToString("X4"));
+					Client.Warning("Unknown DG1 tag: " + SubGroup.Tag.ToString("X4", CultureInfo.InvariantCulture));
 					break;
 				}
 			}

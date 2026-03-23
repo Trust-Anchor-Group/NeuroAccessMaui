@@ -1,4 +1,6 @@
-﻿namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
+﻿using System.Globalization;
+
+namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
 	/// <summary>
 	/// Application-Level Information. Reference: §4.6.1, EF.COM, ICAO Doc 9303-10, Table 35.
@@ -70,7 +72,7 @@
 					TagList = TagList2;
 				else
 				{
-					Client.Warning("Unknown application level information tag: " + SubGroup.Tag.ToString("X4"));
+					Client.Warning("Unknown application level information tag: " + SubGroup.Tag.ToString("X4", CultureInfo.InvariantCulture));
 					break;
 				}
 			}
