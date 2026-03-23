@@ -1534,42 +1534,59 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			else if (Tag.TagClass == TagClass.ContextSpecific)
 			{
 				ReadOnlyMemory<byte> Section = Reader.ReadEncodedValue();
-				AsnReader Inner = new(Section, Reader.RuleSet);
 
-				Inner = Inner.ReadSequence(Tag);
-
-				if (!TryDecodeDERNext(Inner, out object? FirstElement))
+				if (Tag.IsConstructed)
 				{
-					Value = Array.Empty<object?>();
-					return true;
-				}
+					AsnReader Inner = new(Section, Reader.RuleSet);
 
-				if (!TryDecodeDERNext(Inner, out object? Element))
-				{
-					Value = new ContextSpecific(Tag.TagValue, new object?[] { FirstElement }, Section.ToArray());
-					return true;
-				}
-
-				ChunkedList<object?> Elements = [FirstElement, Element];
-
-				while (TryDecodeDERNext(Inner, out Element))
-					Elements.Add(Element);
-
-				object?[] Elements2 = [.. Elements];
-
-				if (FirstElement is ISecurityObject SecurityObject2)
-				{
-					if (SecurityObject2.Configure(Elements2))
+					try
 					{
-						Value = new ContextSpecific(Tag.TagValue,
-							new object[] { SecurityObject2 }, Section.ToArray());
+						Inner = Inner.ReadSequence(Tag);
 
+						if (!TryDecodeDERNext(Inner, out object? FirstElement))
+						{
+							Value = Array.Empty<object?>();
+							return true;
+						}
+
+						if (!TryDecodeDERNext(Inner, out object? Element))
+						{
+							Value = new ContextSpecific(Tag.TagValue, new object?[] { FirstElement }, Section.ToArray());
+							return true;
+						}
+
+						ChunkedList<object?> Elements = [FirstElement, Element];
+
+						while (TryDecodeDERNext(Inner, out Element))
+							Elements.Add(Element);
+
+						object?[] Elements2 = [.. Elements];
+
+						if (FirstElement is ISecurityObject SecurityObject2)
+						{
+							if (SecurityObject2.Configure(Elements2))
+							{
+								Value = new ContextSpecific(Tag.TagValue,
+									new object[] { SecurityObject2 }, Section.ToArray());
+
+								return true;
+							}
+						}
+
+						Value = new ContextSpecific(Tag.TagValue, Elements2, Section.ToArray());
+						return true;
+					}
+					catch (Exception)
+					{
+						Value = Section.ToArray();
 						return true;
 					}
 				}
-
-				Value = new ContextSpecific(Tag.TagValue, Elements2, Section.ToArray());
-				return true;
+				else
+				{
+					Value = Section.ToArray();
+					return true;
+				}
 			}
 			else
 			{
@@ -2230,17 +2247,29 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				return ReadTravelDocumentResult.NoCertificates;
 			}
 
-			//foreach (X509Certificate2 Certificate in SecurityInfo.SignedData!.Certificates)
-			//{
-			//	if (!Certificate.Verify())
-			//	{
-			//		this.Error("Invalid certificate provided.");
-			//		this.Warning("Invalid certificate:\r\n\r\n" +
-			//			Convert.ToBase64String(Certificate.RawData, Base64FormattingOptions.InsertLineBreaks));
-			//
-			//		return ReadTravelDocumentResult.InvalidCertificate;
-			//	}
-			//}
+			if (SecurityInfo.SignedData!.Certificates.Count > 1)
+			{
+				this.Error("Multiple certificates available in EF.SOD.");
+				return ReadTravelDocumentResult.MultipleCertificates;
+			}
+
+			foreach (X509Certificate2 Certificate in SecurityInfo.SignedData!.Certificates)
+			{
+				X509Chain Chain = new();
+				Chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck; // or Online
+				Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
+
+				if (!Chain.Build(Certificate))
+				{
+					this.Error("Invalid certificate provided.");
+					this.Warning("Invalid certificate:\r\n\r\n" +
+						Convert.ToBase64String(Certificate.RawData, Base64FormattingOptions.InsertLineBreaks));
+			
+					return ReadTravelDocumentResult.InvalidCertificate;
+				}
+
+				// TODO: Check CA against known list of issuers.
+			}
 
 			this.securityinfo = SecurityInfo;
 			await this.SecurityInfoUpdated.Raise(this, EventArgs.Empty);

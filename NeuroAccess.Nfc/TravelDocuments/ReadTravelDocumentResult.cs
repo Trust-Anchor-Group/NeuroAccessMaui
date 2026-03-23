@@ -60,6 +60,12 @@
 		NoCertificates,
 
 		/// <summary>
+		/// Multiple certificates to validate available in EF.SOD were provided. Only one allowed.
+		/// (Not a valid Travel Document)
+		/// </summary>
+		MultipleCertificates,
+
+		/// <summary>
 		/// Certificate provided in EF.SOD is not a valid certificate.
 		/// </summary>
 		InvalidCertificate
