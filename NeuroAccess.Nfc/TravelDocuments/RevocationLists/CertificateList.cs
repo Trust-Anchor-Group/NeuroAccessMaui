@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Formats.Asn1;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using NeuroAccess.Nfc.TravelDocuments.Security;
+using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
+using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 {
@@ -13,12 +15,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		/// <summary>
 		/// Certificate List, as defined in RFC 5280, §5.1
 		/// </summary>
+		/// <param name="Asn1Vector">ASN.1 decoded vector.</param>
 		/// <param name="ToBeSignedCertificateList">List of certificates that is signed.</param>
 		/// <param name="SignatureAlgorithm">Algorithm used to sign the certificate list.</param>
 		/// <param name="Signature">Digital signature.</param>
-		private CertificateList(ToBeSignedCertificateList ToBeSignedCertificateList,
-			Vector SignatureAlgorithm, byte[] Signature)
+		private CertificateList(Vector Asn1Vector, ToBeSignedCertificateList ToBeSignedCertificateList,
+			ISignatureAlgorithm SignatureAlgorithm, byte[] Signature)
 		{
+			this.Asn1Vector = Asn1Vector;
 			this.ToBeSignedCertificateList = ToBeSignedCertificateList;
 			this.SignatureAlgorithm = SignatureAlgorithm;
 			this.Signature = Signature;
@@ -44,13 +48,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			if (Crl.Elements.GetValue(1) is not Vector AlgorithmIdentifier)
 				return false;
 
+			ISignatureAlgorithm? SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
+			if (SignatureAlgorithm is null)
+				return false;
+
 			if (Crl.Elements.GetValue(2) is not byte[] Signature)
 				return false;
 
 			if (!ToBeSignedCertificateList.TryParse(TbsCertList, out ToBeSignedCertificateList? ToBeSigned))
 				return false;
 
-			Parsed = new CertificateList(ToBeSigned, AlgorithmIdentifier, Signature);
+			Parsed = new CertificateList(Crl, ToBeSigned, SignatureAlgorithm, Signature);
 
 			return true;
 		}
@@ -63,12 +71,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		/// <summary>
 		/// Algorithm used to sign the certificate list.
 		/// </summary>
-		public Vector SignatureAlgorithm { get; }
+		public ISignatureAlgorithm SignatureAlgorithm { get; }
 
 		/// <summary>
 		/// Digital signature.
 		/// </summary>
 		public byte[] Signature { get; }
+
+		/// <summary>
+		/// ASN.1 decoded vector
+		/// </summary>
+		public Vector Asn1Vector { get; }
 
 		/// <summary>
 		/// Checks if a certificate has been revoked.
@@ -79,6 +92,47 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		public bool HasBeenRevoked(X509Certificate2 Certificate, out RevokedReason Reason)
 		{
 			return this.ToBeSignedCertificateList.HasBeenRevoked(Certificate, out Reason);
+		}
+
+		/// <summary>
+		/// Verifies the signature of the CRL
+		/// </summary>
+		/// <param name="CountryCode">Country Code of issuer</param>
+		/// <returns>If the signature is valid.</returns>
+		public Task<bool> VerifySignature(string CountryCode)
+		{
+			return this.VerifySignature(CountryCode, null);
+		}
+
+		/// <summary>
+		/// Verifies the signature of the CRL
+		/// </summary>
+		/// <param name="CountryCode">Country Code of issuer</param>
+		/// <param name="Client">Optional client reference.</param>
+		/// <returns>If the signature is valid.</returns>
+		public async Task<bool> VerifySignature(string CountryCode, ICommunicationLayer? Client)
+		{
+			if (this.Signature is null)
+			{
+				Client?.Error("No signature in CRL.");
+				return false;
+			}
+
+			if (this.ToBeSignedCertificateList?.AuthorityKeyIdentifier is null)
+			{
+				Client?.Error("No AKI in CRL.");
+				return false;
+			}
+
+			X509Certificate2? SignerCertificate = await CertificateStore.TryLoadCertificate(
+				"id.tagroot.io", CountryCode, this.ToBeSignedCertificateList.AuthorityKeyIdentifier,
+				Client);
+
+			if (SignerCertificate is null)
+				return false;
+
+			return this.SignatureAlgorithm.VerifySignature(this.ToBeSignedCertificateList.Binary,
+				this.Signature, SignerCertificate);
 		}
 
 	}

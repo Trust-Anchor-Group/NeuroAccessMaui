@@ -112,6 +112,12 @@ namespace NeuroAccess.Nfc.Test
 					CertificateList? RevokedCertificates = await CertificateStore.TryLoadCrl(CrlUrl);
 					Assert.IsNotNull(RevokedCertificates);
 
+					Console.Out.WriteLine(CrlUrl);
+					Console.Out.WriteLine(new string('=', 80));
+					Console.Out.WriteLine(JSON.Encode(RevokedCertificates.Asn1Vector, true));
+
+					Assert.IsTrue(await RevokedCertificates.VerifySignature(CountryCode!));
+
 					if (RevokedCertificates.HasBeenRevoked(Certificate, out RevokedReason Reason))
 						Assert.Fail("Certificate " + Certificate.SerialNumber + " has been revoked: " + Reason.ToString());
 

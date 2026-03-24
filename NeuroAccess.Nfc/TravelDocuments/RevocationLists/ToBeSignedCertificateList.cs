@@ -1,4 +1,5 @@
 ﻿using NeuroAccess.Nfc.TravelDocuments.Security;
+using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -19,14 +20,23 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		/// <summary>
 		/// Certificate List, without signature, as defined in RFC 5280, §5.1
 		/// </summary>
-		private ToBeSignedCertificateList(byte[] Binary, int? Version, Vector AlgorithmIdentifier,
+		/// <param name="Binary">Binary representation of list to be signed.</param>
+		/// <param name="Version">Version of representation.</param>
+		/// <param name="SignatureAlgorithm">Signature algirithm used.</param>
+		/// <param name="Issuer">Information about Issuer.</param>
+		/// <param name="ThisUpdate">Timestamp of this update.</param>
+		/// <param name="NextUpdate">Timestamp of next update, if known.</param>
+		/// <param name="RevokedCertificates">List of revoked certificates.</param>
+		/// <param name="AuthorityKeyIdentifier"></param>Authority Key Identifier, if known.</param>
+		/// <param name="Extensions">Extensions, if any.</param>
+		private ToBeSignedCertificateList(byte[] Binary, int? Version, ISignatureAlgorithm SignatureAlgorithm,
 			Vector Issuer, DateTimeOffset ThisUpdate, DateTimeOffset NextUpdate,
 			RevokedCertificate[] RevokedCertificates, byte[]? AuthorityKeyIdentifier,
 			Vector? Extensions)
 		{
 			this.Binary = Binary;
 			this.Version = Version;
-			this.AlgorithmIdentifier = AlgorithmIdentifier;
+			this.SignatureAlgorithm = SignatureAlgorithm;
 			this.Issuer = Issuer;
 			this.ThisUpdate = ThisUpdate;
 			this.NextUpdate = NextUpdate;
@@ -75,6 +85,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			}
 
 			if (i >= c || TbsCertList.Elements.GetValue(i++) is not Vector AlgorithmIdentifier)
+				return false;
+
+			ISignatureAlgorithm? SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
+			if (SignatureAlgorithm is null)
 				return false;
 
 			if (i >= c || TbsCertList.Elements.GetValue(i++) is not Vector Issuer)
@@ -196,7 +210,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			if (i < c)
 				return false;
 
-			Parsed = new ToBeSignedCertificateList(TbsCertList.SubSection, Version, AlgorithmIdentifier,
+			Parsed = new ToBeSignedCertificateList(TbsCertList.SubSection, Version, SignatureAlgorithm,
 				Issuer, ThisUpdate, NextUpdate, [.. RevokedCertificates2], AuthorityKeyIdentifier,
 				ListExtensions);
 
@@ -214,9 +228,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		public int? Version { get; }
 
 		/// <summary>
-		/// Algorithm identifier.
+		/// Signature algorithm.
 		/// </summary>
-		public Vector AlgorithmIdentifier { get; }
+		public ISignatureAlgorithm SignatureAlgorithm { get; }
 
 		/// <summary>
 		/// Issuer
