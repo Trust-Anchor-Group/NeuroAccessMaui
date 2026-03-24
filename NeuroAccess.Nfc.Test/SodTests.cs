@@ -3,6 +3,7 @@ using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using NeuroAccess.Nfc.TravelDocuments;
+using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Content;
 using Waher.Runtime.Collections;
@@ -68,9 +69,12 @@ namespace NeuroAccess.Nfc.Test
 				Dictionary<string, bool> Processed = [];
 				ChunkedList<X509Certificate2> Certificates = [];
 				KeyValuePair<string?, byte[]?> P = TravelDocumentsClient.GetAuthorityKeyIdentifier(Certificate);
+				Dictionary<string, bool> CrlUrls = [];
 				string? CountryCode = P.Key;
 				byte[]? IssuerKeyReference = P.Value;
 
+				// Authority Key Identifier (AKI) extension required by ICAO.
+				Assert.IsNotNull(CountryCode);
 				if (string.IsNullOrEmpty(CountryCode) || IssuerKeyReference is null)
 					Assert.Fail("No Authority Key Identifier found in certificate.");
 
@@ -83,6 +87,8 @@ namespace NeuroAccess.Nfc.Test
 					if (Processed.ContainsKey(Uri))
 						break;
 
+					// AKI needs to point to a certificate published by the ICAO
+
 					ContentResponse Response = await InternetContent.GetAsync(new Uri(Uri));
 					Response.AssertOk();
 
@@ -91,33 +97,47 @@ namespace NeuroAccess.Nfc.Test
 					X509Certificate2 IssuerCertificate = X509CertificateLoader.LoadCertificate(Response.Encoded);
 					Certificates.Insert(0, IssuerCertificate);
 
+					// Make sure to use Certificate Revocation Lists (CRLs) from ICAO approved certificates.
+
+					foreach (string CrlUrl in TravelDocumentsClient.GetRevocationListUrls(IssuerCertificate))
+						CrlUrls[CrlUrl] = true;
+
 					P = TravelDocumentsClient.GetAuthorityKeyIdentifier(IssuerCertificate);
 					CountryCode = P.Key;
 					IssuerKeyReference = P.Value;
 				}
 
-				string[] CrlUrls = TravelDocumentsClient.GetRevocationListUrls(Certificate);
-				Assert.IsGreaterThan(0, CrlUrls.Length);
+				foreach (string CrlUrl in TravelDocumentsClient.GetRevocationListUrls(Certificate))
+					CrlUrls[CrlUrl] = true;
 
-				foreach (string CrlUrl in CrlUrls)
+				Assert.IsGreaterThan(0, CrlUrls.Count);
+
+				foreach (string CrlUrl in CrlUrls.Keys)
 				{
-					if (Processed.ContainsKey(CrlUrl))
-						continue;
-
 					ContentResponse Response = await InternetContent.GetAsync(new Uri(CrlUrl));
 					Response.AssertOk();
 
-					Processed[CrlUrl] = true;
+					CertificateList? RevokedCertificates = Response.Decoded as CertificateList;
+					Assert.IsNotNull(RevokedCertificates);
 
 					Console.Out.WriteLine(CrlUrl);
 					Console.Out.WriteLine(new string('=', 80));
 					Console.Out.WriteLine(JSON.Encode(Response.Decoded, true));
+
+					if (RevokedCertificates.HasBeenRevoked(Certificate, out RevokedReason Reason))
+						Assert.Fail("Certificate " + Certificate.SerialNumber + " has been revoked: " + Reason.ToString());
+
+					foreach (X509Certificate2 Certificate2 in Certificates)
+					{
+						if (RevokedCertificates.HasBeenRevoked(Certificate2, out Reason))
+							Assert.Fail("Certificate " + Certificate2.SerialNumber + " has been revoked: " + Reason.ToString());
+					}
 				}
 
 				X509Chain Chain = X509Chain.Create();
 				bool First = true;
 
-				Chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;		// Why does this not work with online?
+				Chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;       // Custom Revocation List check performed earlier
 				Chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
 				Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
 				Chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;

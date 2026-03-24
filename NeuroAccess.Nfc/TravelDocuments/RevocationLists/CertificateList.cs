@@ -1,6 +1,7 @@
-﻿using NeuroAccess.Nfc.TravelDocuments.Security;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
+using System.Security.Cryptography.X509Certificates;
+using NeuroAccess.Nfc.TravelDocuments.Security;
 
 namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 {
@@ -68,5 +69,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		/// Digital signature.
 		/// </summary>
 		public byte[] Signature { get; }
+
+		/// <summary>
+		/// Checks if a certificate has been revoked.
+		/// </summary>
+		/// <param name="Certificate">Certificate</param>
+		/// <param name="Reason">Reason for the certificate being revoked.</param>
+		/// <returns>If the certificate has been revoked.</returns>
+		public bool HasBeenRevoked(X509Certificate2 Certificate, out RevokedReason Reason)
+		{
+			return this.ToBeSignedCertificateList.HasBeenRevoked(Certificate, out Reason);
+		}
+
 	}
 }

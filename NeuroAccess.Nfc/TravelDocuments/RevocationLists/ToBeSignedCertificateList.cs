@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Formats.Asn1;
+using System.Globalization;
+using System.Security.Cryptography.X509Certificates;
 using NeuroAccess.Nfc.TravelDocuments.Security;
+using Waher.Runtime.Collections;
 
 namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 {
@@ -9,12 +14,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 	/// </summary>
 	public class ToBeSignedCertificateList
 	{
+		private readonly Dictionary<string, RevokedReason> revokedReasons = [];
+
 		/// <summary>
 		/// Certificate List, without signature, as defined in RFC 5280, §5.1
 		/// </summary>
 		private ToBeSignedCertificateList(byte[] Binary, int? Version, Vector AlgorithmIdentifier,
 			Vector Issuer, DateTimeOffset ThisUpdate, DateTimeOffset NextUpdate,
-			Vector RevokedCertificates, Vector? Extensions)
+			RevokedCertificate[] RevokedCertificates, Vector? Extensions)
 		{
 			this.Binary = Binary;
 			this.Version = Version;
@@ -24,6 +31,21 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			this.NextUpdate = NextUpdate;
 			this.RevokedCertificates = RevokedCertificates;
 			this.Extensions = Extensions;
+
+			foreach (RevokedCertificate RevokedCertificate in RevokedCertificates)
+			{
+				string SerialNumber = RevokedCertificate.SerialNumber.ToString("X", CultureInfo.InvariantCulture);
+
+				if (RevokedCertificate.Reason.HasValue)
+				{
+					if (RevokedCertificate.Reason.Value == RevokedReason.RemoveFromCRL)
+						this.revokedReasons.Remove(SerialNumber);
+					else
+						this.revokedReasons[SerialNumber] = RevokedCertificate.Reason.Value;
+				}
+				else
+					this.revokedReasons[SerialNumber] = RevokedReason.Unspecified;
+			}
 		}
 
 		/// <summary>
@@ -67,21 +89,71 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			if (i >= c || TbsCertList.Elements.GetValue(i++) is not Vector RevokedCertificates)
 				return false;
 
-			Vector? Extensions;
+			ChunkedList<RevokedCertificate> RevokedCertificates2 = [];
 
-			if (i < c && TbsCertList.Elements.GetValue(i) is Vector Extensions2)
+			foreach (object? Item in RevokedCertificates.Elements)
+			{
+				if (Item is not Vector RevokedCertificate)
+					return false;
+
+				int d = RevokedCertificate.Elements.Length;
+
+				if (d < 2)
+					return false;
+
+				if (RevokedCertificate.Elements.GetValue(0) is not System.Numerics.BigInteger SerialNumber)
+					return false;
+
+				if (RevokedCertificate.Elements.GetValue(1) is not DateTimeOffset Timestamp)
+					return false;
+
+				Vector? RevokedCertificateExtensions = null;
+				RevokedReason? Reason = null;
+
+				if (d > 2 && RevokedCertificate.Elements.GetValue(2) is Vector RevokedCertificateExtensions2)
+				{
+					RevokedCertificateExtensions = RevokedCertificateExtensions2;
+
+					foreach (object? Extension in RevokedCertificateExtensions2.Elements)
+					{
+						if (Extension is Vector ExtensionSequence &&
+							ExtensionSequence.Elements.Length >= 2 &&
+							ExtensionSequence.Elements.GetValue(0) is string ExtensionOid &&
+							ExtensionOid == "2.5.29.21" &&
+							ExtensionSequence.Elements.GetValue(1) is byte[] ExtensionBin &&
+							ExtensionBin.Length > 0)
+						{
+							ExtensionBin[0] = (byte)UniversalTagNumber.Integer;
+
+							if (TravelDocumentsClient.TryDecodeDER(ExtensionBin, out object? ParsedExtension) &&
+								ParsedExtension is System.Numerics.BigInteger ReasonCode &&
+								ReasonCode >= int.MinValue &&
+								ReasonCode <= int.MaxValue)
+							{
+								Reason = (RevokedReason)(int)ReasonCode;
+							}
+						}
+					}
+				}
+
+				RevokedCertificates2.Add(new RevokedCertificate(SerialNumber, Timestamp, RevokedCertificateExtensions, Reason));
+			}
+
+			Vector? ListExtensions;
+
+			if (i < c && TbsCertList.Elements.GetValue(i) is Vector ListExtensions2)
 			{
 				i++;
-				Extensions = Extensions2;
+				ListExtensions = ListExtensions2;
 			}
 			else
-				Extensions = null;
+				ListExtensions = null;
 
 			if (i < c)
 				return false;
 
 			Parsed = new ToBeSignedCertificateList(TbsCertList.SubSection, Version, AlgorithmIdentifier,
-				Issuer, ThisUpdate, NextUpdate, RevokedCertificates, Extensions);
+				Issuer, ThisUpdate, NextUpdate, [.. RevokedCertificates2], ListExtensions);
 
 			return true;
 		}
@@ -119,11 +191,22 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		/// <summary>
 		/// List of revoked certificates.
 		/// </summary>
-		public Vector RevokedCertificates { get; }
+		public RevokedCertificate[] RevokedCertificates { get; }
 
 		/// <summary>
 		/// Extensions
 		/// </summary>
 		public Vector? Extensions { get; }
+
+		/// <summary>
+		/// Checks if a certificate has been revoked.
+		/// </summary>
+		/// <param name="Certificate">Certificate</param>
+		/// <param name="Reason">Reason for the certificate being revoked.</param>
+		/// <returns>If the certificate has been revoked.</returns>
+		public bool HasBeenRevoked(X509Certificate2 Certificate, out RevokedReason Reason)
+		{
+			return this.revokedReasons.TryGetValue(Certificate.SerialNumber, out Reason);
+		}
 	}
 }
