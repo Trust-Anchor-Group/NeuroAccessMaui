@@ -1,5 +1,7 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 {
@@ -14,15 +16,28 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// <param name="Data">Data being signed.</param>
 		/// <param name="Signature">Digital signature.</param>
 		/// <param name="Certificate">Certificate of the signing body.</param>
+		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
-		public override bool VerifySignature(byte[] Data, byte[] Signature, X509Certificate2 Certificate)
+		public override bool VerifySignature(byte[] Data, byte[] Signature, X509Certificate2 Certificate,
+			ICommunicationLayer? Client)
 		{
 			using ECDsa? Ecdsa = Certificate.GetECDsaPublicKey();
 
 			if (Ecdsa is null)
 				return false;
 
-			return Ecdsa.VerifyData(Data, Signature, this.HashAlgorithmName, DSASignatureFormat.Rfc3279DerSequence);
+			bool Result = Ecdsa.VerifyData(Data, Signature, this.HashAlgorithmName, DSASignatureFormat.Rfc3279DerSequence);
+
+			//if (!Result && (Client?.HasSniffers ?? false))
+			{
+				Client?.Warning("Type: " + this.GetType().FullName);
+				Client?.Warning("Public Key: " + Convert.ToBase64String(Ecdsa.ExportSubjectPublicKeyInfo()));
+				Client?.Warning("Signature: " + Convert.ToBase64String(Signature));
+				Client?.Warning("Data: " + Convert.ToBase64String(Data));
+				Client?.Warning("Valid: " + Result.ToString());
+			}
+
+			return Result;
 		}
 
 		/// <summary>

@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading.Tasks;
 using NeuroAccess.Nfc.TravelDocuments.DataObjects;
 using NeuroAccess.Nfc.TravelDocuments.Events;
 using NeuroAccess.Nfc.TravelDocuments.PACE;
+using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Content;
 using Waher.Events;
@@ -2203,8 +2203,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <summary>
 		/// Reads the travel document.
 		/// </summary>
+		/// <param name="IdDomain">Domain name of Neuron hosting ICAO certificates.</param>
 		/// <returns>Result of procedure.</returns>
-		public async Task<ReadTravelDocumentResult> ReadTravelDocument()
+		public async Task<ReadTravelDocumentResult> ReadTravelDocument(string IdDomain)
 		{
 			if (!await this.SelectApplication(Applications.DF1))
 			{
@@ -2259,28 +2260,141 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				return ReadTravelDocumentResult.MultipleCertificates;
 			}
 
+			// Validating chip certificate to ensure valid issuer.
+
+			this.Information("Validating certificate.");
+			await this.SetState(TravelDocumentsState.ValidatingCertificate);
+
 			foreach (X509Certificate2 Certificate in SecurityInfo.SignedData!.Certificates)
 			{
-				X509Chain Chain = new();
-				Chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck; // or Online
-				Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
+				ChunkedList<X509Certificate2> Certificates = [];
+				KeyValuePair<string?, byte[]?> P = GetAuthorityKeyIdentifier(Certificate);
+				Dictionary<string, bool> CrlUrls = [];
+				Dictionary<string, bool> Processed = [];
+				string? CountryCode = P.Key;
+				byte[]? IssuerKeyReference = P.Value;
 
-				if (!Chain.Build(Certificate))
+				if (string.IsNullOrEmpty(CountryCode) || IssuerKeyReference is null)
 				{
-					this.Error("Invalid certificate provided.");
-					this.Warning("Invalid certificate:\r\n\r\n" +
-						Convert.ToBase64String(Certificate.RawData, Base64FormattingOptions.InsertLineBreaks));
-
+					this.Error("Required Authority Key Identifier not found in certificate.");
 					return ReadTravelDocumentResult.InvalidCertificate;
 				}
 
-				// TODO: Check CA against known list of issuers.
+				while (!string.IsNullOrEmpty(CountryCode) && IssuerKeyReference is not null)
+				{
+					string Key = Convert.ToBase64String(IssuerKeyReference);
+					if (Processed.ContainsKey(Key))
+						break;
+
+					Processed[Key] = true;
+
+					this.Information("Retrieving issuer certificate: " + Hashes.BinaryToString(IssuerKeyReference));
+
+					X509Certificate2? IssuerCertificate = await CertificateStore.TryLoadCertificate(
+						 IdDomain, CountryCode, IssuerKeyReference, this);
+
+					if (IssuerCertificate is null)
+					{
+						this.Error("Issuer certificate not found.");
+						return ReadTravelDocumentResult.InvalidCertificate;
+					}
+
+					Certificates.Insert(0, IssuerCertificate);
+
+					// Make sure to use Certificate Revocation Lists (CRLs) from ICAO approved certificates.
+
+					foreach (string CrlUrl in GetRevocationListUrls(IssuerCertificate))
+						CrlUrls[CrlUrl] = true;
+
+					P = GetAuthorityKeyIdentifier(IssuerCertificate);
+					CountryCode = P.Key;
+					IssuerKeyReference = P.Value;
+				}
+
+				foreach (string CrlUrl in GetRevocationListUrls(Certificate))
+					CrlUrls[CrlUrl] = true;
+
+				if (CrlUrls.Count == 0)
+				{
+					this.Error("No approved CRLs found.");
+					return ReadTravelDocumentResult.InvalidCertificate;
+				}
+
+				foreach (string CrlUrl in CrlUrls.Keys)
+				{
+					this.Information("Retrieving CRL: " + CrlUrl);
+
+					CertificateList? RevokedCertificates = await CertificateStore.TryLoadCrl(CrlUrl, this);
+					if (RevokedCertificates is null)
+					{
+						this.Error("Unable to load CRL.");
+						return ReadTravelDocumentResult.InvalidCertificate;
+					}
+
+					this.Information("Verifying CRL signature.");
+
+					if (!await RevokedCertificates.VerifySignature(IdDomain, CountryCode!, this))
+					{
+						this.Error("CRL Signature invalid.");
+						return ReadTravelDocumentResult.InvalidCertificate;
+					}
+
+					this.Information("Checking if certificates are revoked.");
+
+					if (RevokedCertificates.HasBeenRevoked(Certificate, out RevokedReason Reason))
+					{
+						this.Error("Certificate " + Certificate.SerialNumber + " has been revoked: " + Reason.ToString());
+						return ReadTravelDocumentResult.InvalidCertificate;
+					}
+
+					foreach (X509Certificate2 Certificate2 in Certificates)
+					{
+						if (RevokedCertificates.HasBeenRevoked(Certificate2, out Reason))
+						{
+							this.Error("Certificate " + Certificate2.SerialNumber + " has been revoked: " + Reason.ToString());
+							return ReadTravelDocumentResult.InvalidCertificate;
+						}
+					}
+				}
+
+				this.Information("Verifying certificate chain.");
+
+				X509Chain Chain = X509Chain.Create();
+				bool First = true;
+
+				Chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;       // Custom Revocation List check performed earlier. Built-in verificationand revocation check provided by OS will fail.
+				Chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
+				Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
+				Chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
+				Chain.ChainPolicy.UrlRetrievalTimeout = TimeSpan.FromSeconds(30);
+
+				foreach (X509Certificate2 Certificate2 in Certificates)
+				{
+					if (First)
+					{
+						Chain.ChainPolicy.CustomTrustStore.Add(Certificate2);
+						First = false;
+					}
+					else
+						Chain.ChainPolicy.ExtraStore.Add(Certificate2);
+				}
+
+				if (!Chain.Build(Certificate))
+				{
+					StringBuilder sb = new();
+
+					sb.AppendLine("Validation failed: ");
+
+					foreach (X509ChainStatus Status in Chain.ChainStatus)
+						sb.AppendLine(Status.StatusInformation);
+
+					this.Error(sb.ToString());
+					return ReadTravelDocumentResult.InvalidCertificate;
+				}
 			}
 
 			this.securityinfo = SecurityInfo;
 			await this.SecurityInfoUpdated.Raise(this, EventArgs.Empty);
-
-			// TODO: Validate chip certificate to ensure valid issuer.
 
 			if (this.appInfo.TagList?.HasDataGroup(1) ?? false)
 			{
@@ -2540,6 +2654,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				// TODO: Data Group 16 (Person(s) to Notify) (In LDS1 eMRTD Application)
 			}
+
+			await this.SetState(TravelDocumentsState.Idle);
 
 			return ReadTravelDocumentResult.Success;
 		}

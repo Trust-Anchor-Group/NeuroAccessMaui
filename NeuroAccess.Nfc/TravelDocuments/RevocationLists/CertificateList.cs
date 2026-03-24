@@ -97,20 +97,23 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		/// <summary>
 		/// Verifies the signature of the CRL
 		/// </summary>
+		/// <param name="IdDomain">Domain name of Neuron hosting ICAO certificates.</param>
 		/// <param name="CountryCode">Country Code of issuer</param>
 		/// <returns>If the signature is valid.</returns>
-		public Task<bool> VerifySignature(string CountryCode)
+		public Task<bool> VerifySignature(string IdDomain, string CountryCode)
 		{
-			return this.VerifySignature(CountryCode, null);
+			return this.VerifySignature(IdDomain, CountryCode, null);
 		}
 
 		/// <summary>
 		/// Verifies the signature of the CRL
 		/// </summary>
+		/// <param name="IdDomain">Domain name of Neuron hosting ICAO certificates.</param>
 		/// <param name="CountryCode">Country Code of issuer</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the signature is valid.</returns>
-		public async Task<bool> VerifySignature(string CountryCode, ICommunicationLayer? Client)
+		public async Task<bool> VerifySignature(string IdDomain, string CountryCode,
+			ICommunicationLayer? Client)
 		{
 			if (this.Signature is null)
 			{
@@ -125,14 +128,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			}
 
 			X509Certificate2? SignerCertificate = await CertificateStore.TryLoadCertificate(
-				"id.tagroot.io", CountryCode, this.ToBeSignedCertificateList.AuthorityKeyIdentifier,
+				IdDomain, CountryCode, this.ToBeSignedCertificateList.AuthorityKeyIdentifier,
 				Client);
 
 			if (SignerCertificate is null)
 				return false;
 
 			return this.SignatureAlgorithm.VerifySignature(this.ToBeSignedCertificateList.Binary,
-				this.Signature, SignerCertificate);
+				this.Signature, SignerCertificate, Client);
 		}
 
 	}

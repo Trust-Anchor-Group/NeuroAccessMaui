@@ -84,6 +84,16 @@
 		/// Completed the downloading of a file. Associated data will contain a <see cref="string"/> value
 		/// referencing the file that was downloaded.
 		/// </summary>
-		DownloadedFile
+		DownloadedFile,
+
+		/// <summary>
+		/// Starts the validation of the a certificate.
+		/// </summary>
+		ValidatingCertificate,
+
+		/// <summary>
+		/// Readout complete, waiting for next action.
+		/// </summary>
+		Idle
 	}
 }

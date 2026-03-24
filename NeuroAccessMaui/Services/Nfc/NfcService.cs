@@ -203,7 +203,7 @@ namespace NeuroAccessMaui.Services.Nfc
 									return Task.CompletedTask;
 								};
 
-								switch (await Client.ReadTravelDocument())
+								switch (await Client.ReadTravelDocument(Constants.Domains.IdDomain))
 								{
 									case ReadTravelDocumentResult.Success:
 										// Readout successful.
