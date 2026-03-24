@@ -10,6 +10,10 @@
     <PackageReference Include="MSTest" Version="4.0.1" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.5" />
     <PackageReference Include="Waher.Content" Version="3.4.6" />
+    <PackageReference Include="Waher.Persistence" Version="1.18.1" />
+    <PackageReference Include="Waher.Persistence.Files" Version="1.18.1" />
+    <PackageReference Include="Waher.Persistence.Serialization.Compiled" Version="1.11.1" />
+    <PackageReference Include="Waher.Runtime.Settings" Version="1.2.1" />
   </ItemGroup>
 
   <ItemGroup>

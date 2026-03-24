@@ -1,10 +1,10 @@
-﻿using System;
+﻿using NeuroAccess.Nfc.TravelDocuments.Security;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
-using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Runtime.Collections;
 
 namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
@@ -21,7 +21,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		/// </summary>
 		private ToBeSignedCertificateList(byte[] Binary, int? Version, Vector AlgorithmIdentifier,
 			Vector Issuer, DateTimeOffset ThisUpdate, DateTimeOffset NextUpdate,
-			RevokedCertificate[] RevokedCertificates, Vector? Extensions)
+			RevokedCertificate[] RevokedCertificates, byte[]? AuthorityKeyIdentifier,
+			Vector? Extensions)
 		{
 			this.Binary = Binary;
 			this.Version = Version;
@@ -30,6 +31,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			this.ThisUpdate = ThisUpdate;
 			this.NextUpdate = NextUpdate;
 			this.RevokedCertificates = RevokedCertificates;
+			this.AuthorityKeyIdentifier = AuthorityKeyIdentifier;
 			this.Extensions = Extensions;
 
 			foreach (RevokedCertificate RevokedCertificate in RevokedCertificates)
@@ -140,11 +142,53 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			}
 
 			Vector? ListExtensions;
+			byte[]? AuthorityKeyIdentifier = null;
 
 			if (i < c && TbsCertList.Elements.GetValue(i) is Vector ListExtensions2)
 			{
 				i++;
 				ListExtensions = ListExtensions2;
+
+				foreach (object? Extension in ListExtensions2.Elements)
+				{
+					if (Extension is not Vector ExtensionSequence)
+						continue;
+
+					if (ExtensionSequence.Elements.Length < 2)
+						continue;
+
+					if (ExtensionSequence.Elements.GetValue(0) is not Vector ListExtensions3)
+						continue;
+
+					if (ListExtensions3.Elements.Length < 2)
+						continue;
+
+					if (ListExtensions3.Elements.GetValue(0) is not string ExtensionOid)
+						continue;
+
+					if (ExtensionOid != "2.5.29.35")
+						continue;
+
+					if (ListExtensions3.Elements.GetValue(1) is not Vector ExtensionValue)
+						continue;
+
+					if (ExtensionValue.Elements.Length == 0)
+						continue;
+
+					if (ExtensionValue.Elements.GetValue(0) is not byte[] ImplicitValue)
+						continue;
+
+					ImplicitValue[0] = (byte)UniversalTagNumber.OctetString;
+
+					if (!TravelDocumentsClient.TryDecodeDER(ImplicitValue, out object? ParsedExtension))
+						continue;
+
+					if (ParsedExtension is not byte[] Aki)
+						continue;
+
+					AuthorityKeyIdentifier = Aki;
+					break;
+				}
 			}
 			else
 				ListExtensions = null;
@@ -153,7 +197,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				return false;
 
 			Parsed = new ToBeSignedCertificateList(TbsCertList.SubSection, Version, AlgorithmIdentifier,
-				Issuer, ThisUpdate, NextUpdate, [.. RevokedCertificates2], ListExtensions);
+				Issuer, ThisUpdate, NextUpdate, [.. RevokedCertificates2], AuthorityKeyIdentifier,
+				ListExtensions);
 
 			return true;
 		}
@@ -192,6 +237,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		/// List of revoked certificates.
 		/// </summary>
 		public RevokedCertificate[] RevokedCertificates { get; }
+
+		/// <summary>
+		/// Authority Key Identifier
+		/// </summary>
+		public byte[]? AuthorityKeyIdentifier { get; }
 
 		/// <summary>
 		/// Extensions

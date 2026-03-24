@@ -66,10 +66,10 @@ namespace NeuroAccess.Nfc.Test
 
 			foreach (X509Certificate2 Certificate in SignedData.Certificates)
 			{
-				Dictionary<string, bool> Processed = [];
 				ChunkedList<X509Certificate2> Certificates = [];
 				KeyValuePair<string?, byte[]?> P = TravelDocumentsClient.GetAuthorityKeyIdentifier(Certificate);
 				Dictionary<string, bool> CrlUrls = [];
+				Dictionary<string, bool> Processed = [];
 				string? CountryCode = P.Key;
 				byte[]? IssuerKeyReference = P.Value;
 
@@ -80,21 +80,16 @@ namespace NeuroAccess.Nfc.Test
 
 				while (!string.IsNullOrEmpty(CountryCode) && IssuerKeyReference is not null)
 				{
-					string Uri = "https://id.tagroot.io/IcaoPki/" + CountryCode +
-						"/" + Hashes.BinaryToString(IssuerKeyReference).ToUpper(CultureInfo.InvariantCulture) +
-						".cer";
-
-					if (Processed.ContainsKey(Uri))
+					string Key = Convert.ToBase64String(IssuerKeyReference);
+					if (Processed.ContainsKey(Key))
 						break;
 
-					// AKI needs to point to a certificate published by the ICAO
+					Processed[Key] = true;
 
-					ContentResponse Response = await InternetContent.GetAsync(new Uri(Uri));
-					Response.AssertOk();
+					X509Certificate2? IssuerCertificate = await CertificateStore.TryLoadCertificate(
+						"id.tagroot.io", CountryCode, IssuerKeyReference);
+					Assert.IsNotNull(IssuerCertificate, "Issuer certificate not found.");
 
-					Processed[Uri] = true;
-
-					X509Certificate2 IssuerCertificate = X509CertificateLoader.LoadCertificate(Response.Encoded);
 					Certificates.Insert(0, IssuerCertificate);
 
 					// Make sure to use Certificate Revocation Lists (CRLs) from ICAO approved certificates.
@@ -114,15 +109,8 @@ namespace NeuroAccess.Nfc.Test
 
 				foreach (string CrlUrl in CrlUrls.Keys)
 				{
-					ContentResponse Response = await InternetContent.GetAsync(new Uri(CrlUrl));
-					Response.AssertOk();
-
-					CertificateList? RevokedCertificates = Response.Decoded as CertificateList;
+					CertificateList? RevokedCertificates = await CertificateStore.TryLoadCrl(CrlUrl);
 					Assert.IsNotNull(RevokedCertificates);
-
-					Console.Out.WriteLine(CrlUrl);
-					Console.Out.WriteLine(new string('=', 80));
-					Console.Out.WriteLine(JSON.Encode(Response.Decoded, true));
 
 					if (RevokedCertificates.HasBeenRevoked(Certificate, out RevokedReason Reason))
 						Assert.Fail("Certificate " + Certificate.SerialNumber + " has been revoked: " + Reason.ToString());

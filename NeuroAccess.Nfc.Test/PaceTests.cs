@@ -1,10 +1,13 @@
-﻿using System.Globalization;
+﻿using System.Text;
 using NeuroAccess.Nfc.TravelDocuments;
 using NeuroAccess.Nfc.TravelDocuments.PACE;
 using NeuroAccess.Nfc.TravelDocuments.PACE.Id_PACE_ECDH_GM;
 using Waher.Content;
+using Waher.Persistence;
+using Waher.Persistence.Files;
+using Waher.Persistence.Serialization;
 using Waher.Runtime.Inventory;
-using Waher.Script.Constants;
+using Waher.Runtime.Settings;
 using Waher.Security;
 using Waher.Security.EllipticCurves;
 
@@ -13,13 +16,36 @@ namespace NeuroAccess.Nfc.Test
 	[TestClass]
 	public class PaceTests
 	{
+		private static FilesProvider? filesProvider;
+
 		[AssemblyInitialize]
-		public static void AssemblyInit(TestContext _)
+		public static async Task AssemblyInit(TestContext _)
 		{
 			Types.Initialize(
 				typeof(PaceTests).Assembly,
 				typeof(PaceProtocol).Assembly,
-				typeof(JSON).Assembly);
+				typeof(JSON).Assembly,
+				typeof(Database).Assembly,
+				typeof(FilesProvider).Assembly,
+				typeof(ObjectSerializer).Assembly,
+				typeof(RuntimeSettings).Assembly);
+
+			filesProvider = await FilesProvider.CreateAsync("Data", "Default", 8192, 10000, 8192, Encoding.UTF8, 10000, true);
+			Database.Register(filesProvider);
+
+			await Types.StartAllModules(10000);
+		}
+
+		[AssemblyCleanup]
+		public static async Task AssemblyCleanup()
+		{
+			await Types.StopAllModules();
+
+			if (filesProvider is not null)
+			{
+				await filesProvider.DisposeAsync();
+				filesProvider = null;
+			}
 		}
 
 		// Testing PACE - Generic Mapping, in accordance with ICAO Doc 9303
