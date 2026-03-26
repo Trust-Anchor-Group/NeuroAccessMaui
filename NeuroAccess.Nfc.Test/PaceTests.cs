@@ -28,7 +28,9 @@ namespace NeuroAccess.Nfc.Test
 				typeof(Database).Assembly,
 				typeof(FilesProvider).Assembly,
 				typeof(ObjectSerializer).Assembly,
-				typeof(RuntimeSettings).Assembly);
+				typeof(RuntimeSettings).Assembly,
+				typeof(ISignatureAlgorithm).Assembly,
+				typeof(EllipticCurve).Assembly);
 
 			filesProvider = await FilesProvider.CreateAsync("Data", "Default", 8192, 10000, 8192, Encoding.UTF8, 10000, true);
 			Database.Register(filesProvider);
