@@ -75,8 +75,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			// The Ecdsa.VerifyData() method works differently on different operating systems,
 			// for some ICAO certificates, even if input is binary exactly the same. This might (?)
-			// be caused by imperfect signature and/or coordinate encodings, where Windows is more
-			// tolerant than Android, for example, or support for different curves (?). By providing
+			// be caused by support for different curves on different platforms, for instance the
+			// Brainpool curves used in some passports (for instance Swedish passports). By providing
 			// a complete platform-independent managed implementation, validation becomes portable.
 
 			PrimeFieldCurve? Selected = null;
