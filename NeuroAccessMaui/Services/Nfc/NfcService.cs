@@ -241,6 +241,14 @@ namespace NeuroAccessMaui.Services.Nfc
 										// No certificates to validate available in EF.SOD.
 										// (Not a valid Travel Document)
 
+									case ReadTravelDocumentResult.MultipleCertificates:
+										// Multiple certificates to validate available in EF.SOD were provided. Only one allowed.
+										// (Not a valid Travel Document)
+
+									case ReadTravelDocumentResult.InvalidCertificate:
+										// Certificate provided in EF.SOD is not a valid certificate.
+										// (Not a valid Travel Document)
+
 									default:
 										return;
 								}
