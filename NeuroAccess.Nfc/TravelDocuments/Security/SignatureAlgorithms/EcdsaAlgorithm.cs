@@ -63,7 +63,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			System.Numerics.BigInteger CertPubX = EllipticCurve.ToInt(Parameters.Q.X, true);
 			System.Numerics.BigInteger CertPubY = EllipticCurve.ToInt(Parameters.Q.Y, true);
 
-			if (!TravelDocumentsClient.TryDecodeDER(Signature, out object? Obj) ||
+			if (!ASN1.TryDecodeDER(Client, Signature, out object? Obj) ||
 				Obj is not Vector SignatureVector ||
 				SignatureVector.Length != 2 ||
 				SignatureVector[0] is not System.Numerics.BigInteger R ||

@@ -141,7 +141,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 						{
 							ExtensionBin[0] = (byte)UniversalTagNumber.Integer;
 
-							if (TravelDocumentsClient.TryDecodeDER(ExtensionBin, out object? ParsedExtension) &&
+							if (ASN1.TryDecodeDER(ExtensionBin, out object? ParsedExtension) &&
 								ParsedExtension is System.Numerics.BigInteger ReasonCode &&
 								ReasonCode >= int.MinValue &&
 								ReasonCode <= int.MaxValue)
@@ -194,7 +194,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 
 					ImplicitValue[0] = (byte)UniversalTagNumber.OctetString;
 
-					if (!TravelDocumentsClient.TryDecodeDER(ImplicitValue, out object? ParsedExtension))
+					if (!ASN1.TryDecodeDER(ImplicitValue, out object? ParsedExtension))
 						continue;
 
 					if (ParsedExtension is not byte[] Aki)

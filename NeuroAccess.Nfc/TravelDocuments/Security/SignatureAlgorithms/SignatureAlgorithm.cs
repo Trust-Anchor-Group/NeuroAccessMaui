@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
@@ -77,5 +78,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		public abstract bool VerifySignature(byte[] Data, byte[] Signature, X509Certificate2 Certificate,
 			ICommunicationLayer? Client);
 
+		/// <inheritdoc/>
+		public override string ToString()
+		{
+			return this.GetType().Name;
+		}
 	}
 }

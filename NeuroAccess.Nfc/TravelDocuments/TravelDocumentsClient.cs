@@ -1365,247 +1365,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		}
 
 		/// <summary>
-		/// Decodes a DER-encoded object.
-		/// </summary>
-		/// <param name="Data">Binary data</param>
-		/// <param name="Value">Decoded object.</param>
-		/// <returns>If successful.</returns>
-		public static bool TryDecodeDER(byte[] Data, out object? Value)
-		{
-			AsnReader Reader = new(Data, AsnEncodingRules.DER);
-			return TryDecodeAsn1(Reader, out Value);
-		}
-
-		/// <summary>
-		/// Decodes the next ASN.1-encoded object.
-		/// </summary>
-		/// <param name="Reader">ASN.1 reader</param>
-		/// <param name="Value">Decoded object.</param>
-		/// <returns>If successful.</returns>
-		public static bool TryDecodeAsn1(AsnReader Reader, out object? Value)
-		{
-			if (!Reader.HasData)
-			{
-				Value = null;
-				return false;
-			}
-
-			Asn1Tag Tag = Reader.PeekTag();
-
-			if (Tag.TagClass == TagClass.Universal)
-			{
-				switch (Tag.TagValue)
-				{
-					case (int)UniversalTagNumber.EndOfContents:
-						Value = null;
-						return false;
-
-					case (int)UniversalTagNumber.Boolean:
-						Value = Reader.ReadBoolean();
-						return true;
-
-					case (int)UniversalTagNumber.Integer:
-					case (int)UniversalTagNumber.Enumerated:
-						Value = Reader.ReadInteger();
-						return true;
-
-					case (int)UniversalTagNumber.BitString:
-						Value = Reader.ReadBitString(out _);
-						return true;
-
-					case (int)UniversalTagNumber.OctetString:
-						byte[] Bin = Reader.ReadOctetString();
-
-						try
-						{
-							if (TryDecodeDER(Bin, out object? Embedded))
-								Value = Embedded;
-							else
-								Value = Bin;
-						}
-						catch (Exception)
-						{
-							Value = Bin;
-						}
-
-						return true;
-
-					case (int)UniversalTagNumber.Null:
-						Reader.ReadNull();
-						Value = null;
-						return true;
-
-					case (int)UniversalTagNumber.ObjectIdentifier:
-						string Oid = Reader.ReadObjectIdentifier();
-
-						ISecurityObject SecurityObject = Types.FindBest<ISecurityObject, string>(Oid);
-						if (SecurityObject is null)
-							Value = Oid;
-						else
-							Value = SecurityObject;
-
-						return true;
-
-					case (int)UniversalTagNumber.ObjectDescriptor:  // Obsolete
-					case (int)UniversalTagNumber.UTF8String:
-					case (int)UniversalTagNumber.NumericString:
-					case (int)UniversalTagNumber.PrintableString:
-					case (int)UniversalTagNumber.TeletexString:     // Same as UniversalTagNumber.T61String:
-					case (int)UniversalTagNumber.VideotexString:
-					case (int)UniversalTagNumber.IA5String:
-					case (int)UniversalTagNumber.GraphicString:
-					case (int)UniversalTagNumber.VisibleString:     // Same as UniversalTagNumber.ISO646String:
-					case (int)UniversalTagNumber.GeneralString:
-					case (int)UniversalTagNumber.UniversalString:
-					case (int)UniversalTagNumber.UnrestrictedCharacterString:
-					case (int)UniversalTagNumber.BMPString:
-						Value = Reader.ReadCharacterString((UniversalTagNumber)Tag.TagValue);
-						return true;
-
-					case (int)UniversalTagNumber.Real:
-					case (int)UniversalTagNumber.RelativeObjectIdentifier:
-					case (int)UniversalTagNumber.Time:
-					case (int)UniversalTagNumber.Date:
-					case (int)UniversalTagNumber.TimeOfDay:
-					case (int)UniversalTagNumber.DateTime:
-					case (int)UniversalTagNumber.Duration:
-					case (int)UniversalTagNumber.ObjectIdentifierIRI:
-					case (int)UniversalTagNumber.RelativeObjectIdentifierIRI:
-						Value = Reader.ReadEncodedValue();
-						return true;
-
-					case (int)UniversalTagNumber.Sequence:          // Same as UniversalTagNumber.SequenceOf:
-					case (int)UniversalTagNumber.External:          // Same as UniversalTagNumber.InstanceOf:
-					case (int)UniversalTagNumber.Set:               // Same as UniversalTagNumber.SetOf:
-					case (int)UniversalTagNumber.Embedded:
-
-						ReadOnlyMemory<byte> Section = Reader.ReadEncodedValue();
-						AsnReader Inner = new(Section, Reader.RuleSet);
-
-						if (Tag.TagValue == (int)UniversalTagNumber.Sequence)
-							Inner = Inner.ReadSequence();
-						else
-							Inner = Inner.ReadSetOf(Tag);
-
-						if (!TryDecodeAsn1(Inner, out object? FirstElement))
-						{
-							Value = Array.Empty<object?>();
-							return true;
-						}
-
-						if (!TryDecodeAsn1(Inner, out object? Element))
-						{
-							if (Tag.TagValue == (int)UniversalTagNumber.Sequence)
-								Value = new Sequence(new object?[] { FirstElement }, Section.ToArray());
-							else
-								Value = new Set(new object?[] { FirstElement }, Section.ToArray());
-
-							return true;
-						}
-
-						ChunkedList<object?> Elements = [FirstElement, Element];
-
-						while (TryDecodeAsn1(Inner, out Element))
-							Elements.Add(Element);
-
-						object?[] Elements2 = [.. Elements];
-						byte[] SubSection = Section.ToArray();
-
-						if (FirstElement is ISecurityObject SecurityObject2)
-						{
-							if (SecurityObject2.Configure(new Vector(Elements2, SubSection)))
-							{
-								Value = SecurityObject2;
-								return true;
-							}
-						}
-
-						if (Tag.TagValue == (int)UniversalTagNumber.Sequence)
-							Value = new Sequence(Elements2, SubSection);
-						else
-							Value = new Set(Elements2, SubSection);
-
-						return true;
-
-					case (int)UniversalTagNumber.UtcTime:
-						Value = Reader.ReadUtcTime();
-						return true;
-
-					case (int)UniversalTagNumber.GeneralizedTime:
-						Value = Reader.ReadGeneralizedTime();
-						return true;
-
-					default:
-						Value = null;
-						return false;
-				}
-			}
-			else if (Tag.TagClass == TagClass.ContextSpecific)
-			{
-				ReadOnlyMemory<byte> Section = Reader.ReadEncodedValue();
-
-				if (Tag.IsConstructed)
-				{
-					AsnReader Inner = new(Section, Reader.RuleSet);
-
-					try
-					{
-						Inner = Inner.ReadSequence(Tag);
-
-						if (!TryDecodeAsn1(Inner, out object? FirstElement))
-						{
-							Value = Array.Empty<object?>();
-							return true;
-						}
-
-						if (!TryDecodeAsn1(Inner, out object? Element))
-						{
-							Value = new ContextSpecific(Tag.TagValue, new object?[] { FirstElement }, Section.ToArray());
-							return true;
-						}
-
-						ChunkedList<object?> Elements = [FirstElement, Element];
-
-						while (TryDecodeAsn1(Inner, out Element))
-							Elements.Add(Element);
-
-						object?[] Elements2 = [.. Elements];
-						byte[] SubSection = Section.ToArray();
-
-						if (FirstElement is ISecurityObject SecurityObject2)
-						{
-							if (SecurityObject2.Configure(new Vector(Elements2, SubSection)))
-							{
-								Value = new ContextSpecific(Tag.TagValue,
-									new object[] { SecurityObject2 }, SubSection);
-
-								return true;
-							}
-						}
-
-						Value = new ContextSpecific(Tag.TagValue, Elements2, SubSection);
-						return true;
-					}
-					catch (Exception)
-					{
-						Value = Section.ToArray();
-						return true;
-					}
-				}
-				else
-				{
-					Value = Section.ToArray();
-					return true;
-				}
-			}
-			else
-			{
-				Value = null;
-				return false;
-			}
-		}
-
-		/// <summary>
 		/// Get PACE Nonce
 		/// </summary>
 		/// <returns>Nonce</returns>
@@ -1867,7 +1626,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			byte[]? Data = await this.DownloadFile(EF.CardAccess, "EF.CardAccess");
 
 			if (Data is not null &&
-				TryDecodeDER(Data, out object? CardAccess) &&
+				ASN1.TryDecodeDER(this, Data, out object? CardAccess) &&
 				await this.TryFindPaceProtocol(CardAccess))
 			{
 				if (this.encrypted)
@@ -2883,12 +2642,23 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>URL to Revocation List, if found.</returns>
 		public static string[] GetRevocationListUrls(X509Certificate2 Certificate)
 		{
+			return GetRevocationListUrls(null, Certificate);
+		}
+
+		/// <summary>
+		/// Gets the Revocation List URL from the certificate.
+		/// </summary>
+		/// <param name="Client">Optional client reference.</param>
+		/// <param name="Certificate">Certificate</param>
+		/// <returns>URL to Revocation List, if found.</returns>
+		public static string[] GetRevocationListUrls(ICommunicationLayer? Client, X509Certificate2 Certificate)
+		{
 			ChunkedList<string> Urls = [];
 
 			foreach (X509Extension Extension in Certificate.Extensions)
 			{
 				if (Extension.Oid?.Value != "2.5.29.31" ||
-					!TryDecodeDER(Extension.RawData, out object? Parsed) ||
+					!ASN1.TryDecodeDER(Client, Extension.RawData, out object? Parsed) ||
 					Parsed is not Vector DistributionPoints)
 				{
 					continue;

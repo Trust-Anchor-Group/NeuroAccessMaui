@@ -1,4 +1,6 @@
-﻿namespace NeuroAccess.Nfc.TravelDocuments.Security
+﻿using System.Text.RegularExpressions;
+
+namespace NeuroAccess.Nfc.TravelDocuments.Security
 {
 	/// <summary>
 	/// Abstract base class for security objects that represent named string values.
@@ -12,9 +14,17 @@
 		/// <returns>If the object can be configured, given the security information.</returns>
 		public override bool Configure(Vector SecurityInfo)
 		{
-			if (SecurityInfo.Length == 2 && SecurityInfo[1] is string Value)
+			if (SecurityInfo.Length == 2)
 			{
-				this.Value = Value;
+				object? Value = SecurityInfo[1];
+
+				if (Value is null)
+					this.Value = null;
+				else if (Value is string StringValue)
+					this.Value = StringValue;
+				else
+					return false;
+
 				return true;
 			}
 			else
@@ -24,12 +34,12 @@
 		/// <summary>
 		/// String Value.
 		/// </summary>
-		public string Value { get; private set; } = string.Empty;
+		public string? Value { get; private set; } = string.Empty;
 
 		/// <inheritdoc/>
 		public override string ToString()
 		{
-			return this.GetType().Name + ": " + this.Value;
+			return this.GetType().Name + ": " + (this.Value ?? string.Empty);
 		}
 	}
 }

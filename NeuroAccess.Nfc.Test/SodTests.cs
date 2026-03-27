@@ -35,7 +35,7 @@ namespace NeuroAccess.Nfc.Test
 			SignedCms SignedData = new();
 			SignedData.Decode(Bin);
 
-			TravelDocumentsClient.TryDecodeDER(SignedData.ContentInfo.Content, out object? Content);
+			ASN1.TryDecodeDER(SignedData.ContentInfo.Content, out object? Content);
 			Vector? ContentVector = Content as Vector;
 			Assert.IsNotNull(ContentVector);
 

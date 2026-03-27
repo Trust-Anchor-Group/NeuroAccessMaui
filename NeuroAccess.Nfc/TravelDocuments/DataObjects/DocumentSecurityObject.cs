@@ -75,10 +75,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 						return false;
 
 					ISecurityObject? SecurityObject = Types.FindBest<ISecurityObject, string>(ContentOid);
+					if (SecurityObject is null)
+					{
+						Client.Warning("OID not recognized: " + ContentOid);
+						return false;
+					}
+
 					if (SecurityObject is not LdsSecurityObject LdsSecurityObject)
 						return false;
 
-					TravelDocumentsClient.TryDecodeDER(Content, out object? ParsedContent);
+					ASN1.TryDecodeDER(Client, Content, out object? ParsedContent);
 
 					if (ParsedContent is not Vector ContentVector)
 						return false;

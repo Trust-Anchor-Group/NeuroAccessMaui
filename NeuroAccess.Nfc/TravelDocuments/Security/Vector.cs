@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices.Marshalling;
+using System.Text;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security
 {
@@ -38,6 +40,30 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 				else
 					return this.Elements.GetValue(Index);
 			}
+		}
+
+		/// <inheritdoc/>
+		public override string ToString()
+		{
+			StringBuilder sb = new();
+			bool First = true;
+
+			sb.Append(this.GetType().Name);
+			sb.Append('(');
+
+			foreach (object? Item in this.Elements)
+			{
+				if (First)
+					First = false;
+				else
+					sb.Append(',');
+
+				sb.Append(Item?.ToString() ?? "null");
+			}
+
+			sb.Append(')');
+
+			return sb.ToString();
 		}
 	}
 }

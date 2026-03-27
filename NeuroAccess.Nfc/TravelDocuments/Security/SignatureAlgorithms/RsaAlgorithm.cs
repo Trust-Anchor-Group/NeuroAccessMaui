@@ -28,7 +28,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			bool Result = Rsa.VerifyData(Data, Signature, this.HashAlgorithmName, RSASignaturePadding.Pkcs1);
 
-			//if (!Result && (Client?.HasSniffers ?? false))
+			if (!Result && (Client?.HasSniffers ?? false))
 			{
 				Client?.Warning("Type: " + this.GetType().FullName);
 				Client?.Warning("Public Key: " + Convert.ToBase64String(Rsa.ExportSubjectPublicKeyInfo()));
