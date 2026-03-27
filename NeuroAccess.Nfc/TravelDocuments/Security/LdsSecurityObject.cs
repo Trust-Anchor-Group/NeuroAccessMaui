@@ -45,7 +45,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 			ChunkedList<HashFunction> HashFunctions2 = [];
 			Dictionary<int, byte[]> DataGroupHashValues2 = [];
 
-			foreach (object Item in HashFunctions.Elements)
+			foreach (object Item in HashFunctions)
 			{
 				if (Item is null || Item is not HashFunction HashFunction)
 					return false;
@@ -53,7 +53,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 				HashFunctions2.Add(HashFunction);
 			}
 
-			foreach (object Item in DataGroupHashValues.Elements)
+			foreach (object Item in DataGroupHashValues)
 			{
 				if (Item is null ||
 					Item is not Vector ItemArray ||

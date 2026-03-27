@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Runtime.InteropServices.Marshalling;
+using System.Collections;
 using System.Text;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security
@@ -9,7 +9,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 	/// </summary>
 	/// <param name="Elements">Elements in sequence.</param>
 	/// <param name="SubSection">Binary subsection encompassing the data.</param>
-	public class Vector(Array Elements, byte[] SubSection)
+	public class Vector(Array Elements, byte[] SubSection) : IEnumerable
 	{
 		/// <summary>
 		/// Binary Value.
@@ -25,6 +25,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		/// Length of vector.
 		/// </summary>
 		public int Length => this.Elements.Length;
+
+		/// <summary>
+		/// Reference to first element in vector, or null if vector is empty.
+		/// </summary>
+		public object? FirstElement => this[0];
+
+		/// <summary>
+		/// Reference to last element in vector, or null if vector is empty.
+		/// </summary>
+		public object? LastElement => this[this.Length - 1];
 
 		/// <summary>
 		/// Gets the element at the specified zero-based index in the collection.
@@ -64,6 +74,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 			sb.Append(')');
 
 			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Gets an enumerator for the elements in the vector.
+		/// </summary>
+		/// <returns>Enumerator</returns>
+		public IEnumerator GetEnumerator()
+		{
+			return this.Elements.GetEnumerator();
 		}
 	}
 }

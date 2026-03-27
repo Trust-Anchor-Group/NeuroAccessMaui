@@ -14,16 +14,20 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		/// <returns>If the object can be configured, given the security information.</returns>
 		public override bool Configure(Vector SecurityInfo)
 		{
-			if (SecurityInfo.Length == 1 || SecurityInfo.Length == 2)
+			if (SecurityInfo.LastElement is byte[] Value)
+				this.Value = Value;
+			else if (SecurityInfo.LastElement is Vector V &&
+				V.Length == 1 &&
+				V.FirstElement is byte[] Value2)
 			{
-				if (SecurityInfo[SecurityInfo.Length] is byte[] Value)
-				{
-					this.Value = Value;
-					return true;
-				}
+				this.Value = Value2;
 			}
+			else if (SecurityInfo.FirstElement is SecurityBinary Binary)
+				this.Value = Binary.Value;
+			else
+				return false;
 
-			return false;
+			return true;
 		}
 
 		/// <summary>

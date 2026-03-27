@@ -192,6 +192,8 @@ namespace NeuroAccess.Nfc.Test
 			X509Certificate2 Cert = X509CertificateLoader.LoadCertificate(Convert.FromBase64String(CertBase64));
 
 			Assert.IsTrue(CertificateChain.VerifySignatures(Client, Root, Cert));
+
+			// TODO: Check rules in certificate extensions
 		}
 
 	}

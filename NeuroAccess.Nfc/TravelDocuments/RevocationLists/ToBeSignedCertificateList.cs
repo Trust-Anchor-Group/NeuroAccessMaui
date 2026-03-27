@@ -1,4 +1,5 @@
 ﻿using NeuroAccess.Nfc.TravelDocuments.Security;
+using NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
 using System;
 using System.Collections.Generic;
@@ -107,7 +108,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 
 			ChunkedList<RevokedCertificate> RevokedCertificates2 = [];
 
-			foreach (object? Item in RevokedCertificates.Elements)
+			foreach (object? Item in RevokedCertificates)
 			{
 				if (Item is not Vector RevokedCertificate)
 					return false;
@@ -130,7 +131,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				{
 					RevokedCertificateExtensions = RevokedCertificateExtensions2;
 
-					foreach (object? Extension in RevokedCertificateExtensions2.Elements)
+					foreach (object? Extension in RevokedCertificateExtensions2)
 					{
 						if (Extension is Vector ExtensionSequence &&
 							ExtensionSequence.Length >= 2 &&
@@ -163,44 +164,20 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				i++;
 				ListExtensions = ListExtensions2;
 
-				foreach (object? Extension in ListExtensions2.Elements)
+				foreach (object? Extension in ListExtensions2)
 				{
-					if (Extension is not Vector ExtensionSequence)
+					if (Extension is not AuthorityKeyIdentifier Aki)
 						continue;
 
-					if (ExtensionSequence.Length < 2)
+					Aki.Value[0] = (byte)UniversalTagNumber.OctetString;
+
+					if (!ASN1.TryDecodeDER(Aki.Value, out object? ParsedExtension))
 						continue;
 
-					if (ExtensionSequence[0] is not Vector ListExtensions3)
+					if (ParsedExtension is not byte[] Identifier)
 						continue;
 
-					if (ListExtensions3.Length < 2)
-						continue;
-
-					if (ListExtensions3[0] is not string ExtensionOid)
-						continue;
-
-					if (ExtensionOid != "2.5.29.35")
-						continue;
-
-					if (ListExtensions3[1] is not Vector ExtensionValue)
-						continue;
-
-					if (ExtensionValue.Length == 0)
-						continue;
-
-					if (ExtensionValue[0] is not byte[] ImplicitValue)
-						continue;
-
-					ImplicitValue[0] = (byte)UniversalTagNumber.OctetString;
-
-					if (!ASN1.TryDecodeDER(ImplicitValue, out object? ParsedExtension))
-						continue;
-
-					if (ParsedExtension is not byte[] Aki)
-						continue;
-
-					AuthorityKeyIdentifier = Aki;
+					AuthorityKeyIdentifier = Identifier;
 					break;
 				}
 			}

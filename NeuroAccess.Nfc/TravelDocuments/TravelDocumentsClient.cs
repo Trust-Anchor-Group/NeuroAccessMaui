@@ -15,6 +15,7 @@ using NeuroAccess.Nfc.TravelDocuments.Events;
 using NeuroAccess.Nfc.TravelDocuments.PACE;
 using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
 using NeuroAccess.Nfc.TravelDocuments.Security;
+using NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions;
 using Waher.Content;
 using Waher.Events;
 using Waher.Networking;
@@ -1144,7 +1145,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			ChunkedList<string> OidsFound = [];
 			IPaceProtocol? Best = null;
 
-			foreach (object Item in SecurityInfos.Elements)
+			foreach (object Item in SecurityInfos)
 			{
 				if (Item is IPaceProtocol Current)
 				{
@@ -2659,45 +2660,17 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			{
 				if (Extension.Oid?.Value != "2.5.29.31" ||
 					!ASN1.TryDecodeDER(Client, Extension.RawData, out object? Parsed) ||
-					Parsed is not Vector DistributionPoints)
+					Parsed is not Vector DistributionPointsVector)
 				{
 					continue;
 				}
 
-				foreach (object Element in DistributionPoints.Elements)
-				{
-					if (Element is not Vector DistributionPoint)
-						continue;
+				DistributionPoints DistributionPoints = new();
+				if (!DistributionPoints.Configure(DistributionPointsVector))
+					continue;
 
-					foreach (object Element2 in DistributionPoint.Elements)
-					{
-						if (Element2 is not Vector DistributionPointName)
-							continue;
-
-						foreach (object Element3 in DistributionPointName.Elements)
-						{
-							if (Element3 is not Vector FullName)
-								continue;
-
-							foreach (object Element4 in FullName.Elements)
-							{
-								if (Element4 is not byte[] GeneralName ||
-									GeneralName.Length == 0 ||
-									GeneralName[0] != 0x86)
-								{
-									continue;
-								}
-
-								GeneralName[0] = (byte)UniversalTagNumber.IA5String;
-								AsnReader Reader = new(GeneralName, AsnEncodingRules.DER);
-								string Url = Reader.ReadCharacterString((UniversalTagNumber)GeneralName[0]);
-
-								Urls.Add(Url);
-							}
-						}
-					}
-				}
-
+				foreach (DistributionPoint Point in DistributionPoints.Points)
+					Urls.Add(Point.Url);
 			}
 
 			return [.. Urls];

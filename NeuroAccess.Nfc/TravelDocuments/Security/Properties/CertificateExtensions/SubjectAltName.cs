@@ -1,0 +1,13 @@
+﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions
+{
+	/// <summary>
+	/// Subject Alternative Name
+	/// </summary>
+	public class SubjectAltName : SecurityBinary
+	{
+		/// <summary>
+		/// OID identifying the type of object.
+		/// </summary>
+		public override string Oid => "2.5.29.17";
+	}
+}
