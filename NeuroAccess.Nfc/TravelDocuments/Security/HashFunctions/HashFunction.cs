@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions
+﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions
 {
 	/// <summary>
 	/// Abstract base class for hash functions.
@@ -12,7 +10,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
 		/// <returns>If the object can be configured, given the security information.</returns>
-		public override bool Configure(Array SecurityInfo)
+		public override bool Configure(Vector SecurityInfo)
 		{
 			return true;
 		}

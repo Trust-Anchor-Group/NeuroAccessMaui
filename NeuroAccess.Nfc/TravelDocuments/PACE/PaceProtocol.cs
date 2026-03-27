@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Numerics;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using NeuroAccess.Nfc.TravelDocuments.Security;
@@ -14,8 +13,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 	/// </summary>
 	public abstract class PaceProtocol() : SecurityObject, IPaceProtocol
 	{
-		private BigInteger version;
-		private BigInteger? parameterId;
+		private System.Numerics.BigInteger version;
+		private System.Numerics.BigInteger? parameterId;
 
 		/// <summary>
 		/// Security strength mapped as a grade.
@@ -30,12 +29,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// <summary>
 		/// Required protocol version.
 		/// </summary>
-		public BigInteger Version => this.version;
+		public System.Numerics.BigInteger Version => this.version;
 
 		/// <summary>
 		/// Optional Parameter ID.
 		/// </summary>
-		public BigInteger? ParameterId => this.parameterId;
+		public System.Numerics.BigInteger? ParameterId => this.parameterId;
 
 		/// <summary>
 		/// Bits of security provided by the protocol.
@@ -57,12 +56,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
 		/// <returns>If the protocol could be configured, given the security information.</returns>
-		public override bool Configure(Array SecurityInfo)
+		public override bool Configure(Vector SecurityInfo)
 		{
 			if (SecurityInfo.Length < 2)
 				return false;
 
-			if (SecurityInfo.GetValue(1) is not BigInteger Version)
+			if (SecurityInfo[1] is not System.Numerics.BigInteger Version)
 				return false;
 
 			this.version = Version;
@@ -71,7 +70,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 				return false;
 			else if (SecurityInfo.Length == 2)
 				return true;
-			else if (SecurityInfo.GetValue(2) is not BigInteger ParameterId)
+			else if (SecurityInfo[2] is not System.Numerics.BigInteger ParameterId)
 				return false;
 			else
 			{

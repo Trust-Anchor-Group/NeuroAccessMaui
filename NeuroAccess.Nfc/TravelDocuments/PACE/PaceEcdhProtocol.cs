@@ -1,4 +1,5 @@
 ﻿using System;
+using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Runtime.Inventory;
 using Waher.Security.EllipticCurves;
 
@@ -21,7 +22,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
 		/// <returns>If the protocol could be configured, given the security information.</returns>
-		public override bool Configure(Array SecurityInfo)
+		public override bool Configure(Vector SecurityInfo)
 		{
 			if (!base.Configure(SecurityInfo))
 				return false;

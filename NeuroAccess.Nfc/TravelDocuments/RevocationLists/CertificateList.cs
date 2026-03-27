@@ -40,20 +40,20 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		{
 			Parsed = null;
 
-			if (Crl.Elements.Length != 3)
+			if (Crl.Length != 3)
 				return false;
 
-			if (Crl.Elements.GetValue(0) is not Vector TbsCertList)
+			if (Crl[0] is not Vector TbsCertList)
 				return false;
 
-			if (Crl.Elements.GetValue(1) is not Vector AlgorithmIdentifier)
+			if (Crl[1] is not Vector AlgorithmIdentifier)
 				return false;
 
 			ISignatureAlgorithm? SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
 			if (SignatureAlgorithm is null)
 				return false;
 
-			if (Crl.Elements.GetValue(2) is not byte[] Signature)
+			if (Crl[2] is not byte[] Signature)
 				return false;
 
 			if (!ToBeSignedCertificateList.TryParse(TbsCertList, out ToBeSignedCertificateList? ToBeSigned))

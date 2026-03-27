@@ -1,5 +1,4 @@
-﻿using System;
-using Waher.Security;
+﻿using Waher.Security;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security
 {
@@ -13,11 +12,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
 		/// <returns>If the object can be configured, given the security information.</returns>
-		public override bool Configure(Array SecurityInfo)
+		public override bool Configure(Vector SecurityInfo)
 		{
 			if (SecurityInfo.Length == 1 || SecurityInfo.Length == 2)
 			{
-				if (SecurityInfo.GetValue(SecurityInfo.Length - 1) is byte[] Value)
+				if (SecurityInfo[SecurityInfo.Length] is byte[] Value)
 				{
 					this.Value = Value;
 					return true;

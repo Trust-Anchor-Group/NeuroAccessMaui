@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NeuroAccess.Nfc.TravelDocuments.Security
+﻿namespace NeuroAccess.Nfc.TravelDocuments.Security
 {
 	/// <summary>
 	/// Abstract base class for security objects that represent named string values.
@@ -12,10 +10,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
 		/// <returns>If the object can be configured, given the security information.</returns>
-		public override bool Configure(Array SecurityInfo)
+		public override bool Configure(Vector SecurityInfo)
 		{
-			if (SecurityInfo.Length == 2 &&
-				SecurityInfo.GetValue(1) is string Value)
+			if (SecurityInfo.Length == 2 && SecurityInfo[1] is string Value)
 			{
 				this.Value = Value;
 				return true;

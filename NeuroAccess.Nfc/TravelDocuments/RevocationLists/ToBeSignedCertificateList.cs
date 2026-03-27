@@ -71,11 +71,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		{
 			Parsed = null;
 
-			int c = TbsCertList.Elements.Length;
+			int c = TbsCertList.Length;
 			int i = 0;
 			int? Version = null;
 
-			if (i < c && TbsCertList.Elements.GetValue(0) is System.Numerics.BigInteger V)
+			if (i < c && TbsCertList[0] is System.Numerics.BigInteger V)
 			{
 				if (V < int.MinValue || V > int.MaxValue)
 					return false;
@@ -84,25 +84,25 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				i++;
 			}
 
-			if (i >= c || TbsCertList.Elements.GetValue(i++) is not Vector AlgorithmIdentifier)
+			if (i >= c || TbsCertList[i++] is not Vector AlgorithmIdentifier)
 				return false;
 
 			ISignatureAlgorithm? SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
 			if (SignatureAlgorithm is null)
 				return false;
 
-			if (i >= c || TbsCertList.Elements.GetValue(i++) is not Vector Issuer)
+			if (i >= c || TbsCertList[i++] is not Vector Issuer)
 				return false;
 
-			if (i >= c || TbsCertList.Elements.GetValue(i++) is not DateTimeOffset ThisUpdate)
+			if (i >= c || TbsCertList[i++] is not DateTimeOffset ThisUpdate)
 				return false;
 
-			if (i < c && TbsCertList.Elements.GetValue(i) is DateTimeOffset NextUpdate)
+			if (i < c && TbsCertList[i] is DateTimeOffset NextUpdate)
 				i++;
 			else
 				NextUpdate = DateTime.MaxValue;
 
-			if (i >= c || TbsCertList.Elements.GetValue(i++) is not Vector RevokedCertificates)
+			if (i >= c || TbsCertList[i++] is not Vector RevokedCertificates)
 				return false;
 
 			ChunkedList<RevokedCertificate> RevokedCertificates2 = [];
@@ -112,31 +112,31 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				if (Item is not Vector RevokedCertificate)
 					return false;
 
-				int d = RevokedCertificate.Elements.Length;
+				int d = RevokedCertificate.Length;
 
 				if (d < 2)
 					return false;
 
-				if (RevokedCertificate.Elements.GetValue(0) is not System.Numerics.BigInteger SerialNumber)
+				if (RevokedCertificate[0] is not System.Numerics.BigInteger SerialNumber)
 					return false;
 
-				if (RevokedCertificate.Elements.GetValue(1) is not DateTimeOffset Timestamp)
+				if (RevokedCertificate[1] is not DateTimeOffset Timestamp)
 					return false;
 
 				Vector? RevokedCertificateExtensions = null;
 				RevokedReason? Reason = null;
 
-				if (d > 2 && RevokedCertificate.Elements.GetValue(2) is Vector RevokedCertificateExtensions2)
+				if (d > 2 && RevokedCertificate[2] is Vector RevokedCertificateExtensions2)
 				{
 					RevokedCertificateExtensions = RevokedCertificateExtensions2;
 
 					foreach (object? Extension in RevokedCertificateExtensions2.Elements)
 					{
 						if (Extension is Vector ExtensionSequence &&
-							ExtensionSequence.Elements.Length >= 2 &&
-							ExtensionSequence.Elements.GetValue(0) is string ExtensionOid &&
+							ExtensionSequence.Length >= 2 &&
+							ExtensionSequence[0] is string ExtensionOid &&
 							ExtensionOid == "2.5.29.21" &&
-							ExtensionSequence.Elements.GetValue(1) is byte[] ExtensionBin &&
+							ExtensionSequence[1] is byte[] ExtensionBin &&
 							ExtensionBin.Length > 0)
 						{
 							ExtensionBin[0] = (byte)UniversalTagNumber.Integer;
@@ -158,7 +158,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			Vector? ListExtensions;
 			byte[]? AuthorityKeyIdentifier = null;
 
-			if (i < c && TbsCertList.Elements.GetValue(i) is Vector ListExtensions2)
+			if (i < c && TbsCertList[i] is Vector ListExtensions2)
 			{
 				i++;
 				ListExtensions = ListExtensions2;
@@ -168,28 +168,28 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 					if (Extension is not Vector ExtensionSequence)
 						continue;
 
-					if (ExtensionSequence.Elements.Length < 2)
+					if (ExtensionSequence.Length < 2)
 						continue;
 
-					if (ExtensionSequence.Elements.GetValue(0) is not Vector ListExtensions3)
+					if (ExtensionSequence[0] is not Vector ListExtensions3)
 						continue;
 
-					if (ListExtensions3.Elements.Length < 2)
+					if (ListExtensions3.Length < 2)
 						continue;
 
-					if (ListExtensions3.Elements.GetValue(0) is not string ExtensionOid)
+					if (ListExtensions3[0] is not string ExtensionOid)
 						continue;
 
 					if (ExtensionOid != "2.5.29.35")
 						continue;
 
-					if (ListExtensions3.Elements.GetValue(1) is not Vector ExtensionValue)
+					if (ListExtensions3[1] is not Vector ExtensionValue)
 						continue;
 
-					if (ExtensionValue.Elements.Length == 0)
+					if (ExtensionValue.Length == 0)
 						continue;
 
-					if (ExtensionValue.Elements.GetValue(0) is not byte[] ImplicitValue)
+					if (ExtensionValue[0] is not byte[] ImplicitValue)
 						continue;
 
 					ImplicitValue[0] = (byte)UniversalTagNumber.OctetString;

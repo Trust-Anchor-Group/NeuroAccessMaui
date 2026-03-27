@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
+﻿using System.Collections.Generic;
 using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
 using Waher.Runtime.Collections;
 
@@ -28,18 +26,18 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
 		/// <returns>If the object can be configured, given the security information.</returns>
-		public override bool Configure(Array SecurityInfo)
+		public override bool Configure(Vector SecurityInfo)
 		{
 			if (SecurityInfo.Length < 3)
 				return false;
 
-			if (SecurityInfo.GetValue(0) is not BigInteger Version)
+			if (SecurityInfo[0] is not System.Numerics.BigInteger Version)
 				return false;
 
-			if (SecurityInfo.GetValue(1) is not Vector HashFunctions)
+			if (SecurityInfo[1] is not Vector HashFunctions)
 				return false;
 
-			if (SecurityInfo.GetValue(2) is not Vector DataGroupHashValues)
+			if (SecurityInfo[2] is not Vector DataGroupHashValues)
 				return false;
 
 			this.Version = (int)Version;
@@ -59,10 +57,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 			{
 				if (Item is null ||
 					Item is not Vector ItemArray ||
-					ItemArray.Elements.Length < 2 ||
-					ItemArray.Elements.GetValue(0) is not BigInteger DataGroup ||
+					ItemArray.Length < 2 ||
+					ItemArray[0] is not System.Numerics.BigInteger DataGroup ||
 					DataGroup < int.MinValue || DataGroup > int.MaxValue ||
-					ItemArray.Elements.GetValue(1) is not byte[] Digest)
+					ItemArray[1] is not byte[] Digest)
 				{
 					return false;
 				}

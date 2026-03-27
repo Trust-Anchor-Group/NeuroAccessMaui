@@ -65,9 +65,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			if (!TravelDocumentsClient.TryDecodeDER(Signature, out object? Obj) ||
 				Obj is not Vector SignatureVector ||
-				SignatureVector.Elements.Length != 2 ||
-				SignatureVector.Elements.GetValue(0) is not System.Numerics.BigInteger R ||
-				SignatureVector.Elements.GetValue(1) is not System.Numerics.BigInteger S)
+				SignatureVector.Length != 2 ||
+				SignatureVector[0] is not System.Numerics.BigInteger R ||
+				SignatureVector[1] is not System.Numerics.BigInteger S)
 			{
 				return false;
 			}

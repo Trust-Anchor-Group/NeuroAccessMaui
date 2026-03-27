@@ -1,5 +1,4 @@
-﻿using System;
-using Waher.Runtime.Inventory;
+﻿using Waher.Runtime.Inventory;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security
 {
@@ -18,7 +17,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
 		/// <returns>If the object can be configured, given the security information.</returns>
-		public abstract bool Configure(Array SecurityInfo);
+		public abstract bool Configure(Vector SecurityInfo);
 
 		/// <summary>
 		/// If the interface understands objects such as Object.

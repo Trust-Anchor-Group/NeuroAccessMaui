@@ -1162,8 +1162,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					}
 				}
 				else if (Item is Vector SecurityInfo &&
-					SecurityInfo.Elements.Length > 0 &&
-					SecurityInfo.Elements.GetValue(0) is string Oid)
+					SecurityInfo.Length > 0 &&
+					SecurityInfo[0] is string Oid)
 				{
 					OidsFound.Add(Oid);
 
@@ -1509,10 +1509,11 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							Elements.Add(Element);
 
 						object?[] Elements2 = [.. Elements];
+						byte[] SubSection = Section.ToArray();
 
 						if (FirstElement is ISecurityObject SecurityObject2)
 						{
-							if (SecurityObject2.Configure(Elements2))
+							if (SecurityObject2.Configure(new Vector(Elements2, SubSection)))
 							{
 								Value = SecurityObject2;
 								return true;
@@ -1520,9 +1521,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						}
 
 						if (Tag.TagValue == (int)UniversalTagNumber.Sequence)
-							Value = new Sequence(Elements2, Section.ToArray());
+							Value = new Sequence(Elements2, SubSection);
 						else
-							Value = new Set(Elements2, Section.ToArray());
+							Value = new Set(Elements2, SubSection);
 
 						return true;
 
@@ -1569,19 +1570,20 @@ namespace NeuroAccess.Nfc.TravelDocuments
 							Elements.Add(Element);
 
 						object?[] Elements2 = [.. Elements];
+						byte[] SubSection = Section.ToArray();
 
 						if (FirstElement is ISecurityObject SecurityObject2)
 						{
-							if (SecurityObject2.Configure(Elements2))
+							if (SecurityObject2.Configure(new Vector(Elements2, SubSection)))
 							{
 								Value = new ContextSpecific(Tag.TagValue,
-									new object[] { SecurityObject2 }, Section.ToArray());
+									new object[] { SecurityObject2 }, SubSection);
 
 								return true;
 							}
 						}
 
-						Value = new ContextSpecific(Tag.TagValue, Elements2, Section.ToArray());
+						Value = new ContextSpecific(Tag.TagValue, Elements2, SubSection);
 						return true;
 					}
 					catch (Exception)

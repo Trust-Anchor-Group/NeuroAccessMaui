@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Security.Cryptography.X509Certificates;
 using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
@@ -25,14 +24,34 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// <returns>Instance of signature algorithm, if found.</returns>
 		public static ISignatureAlgorithm? TryDecode(Vector AlgorithmIdentifier)
 		{
-			if (AlgorithmIdentifier.Elements.Length == 0)
-				return null;
+			return TryDecode(AlgorithmIdentifier, null);
+		}
 
-			if (AlgorithmIdentifier.Elements.GetValue(0) is not ISignatureAlgorithm Algorithm)
+		/// <summary>
+		/// Tries to decode an ASN.1-decoded algorithm identifier into an instance of the
+		/// corresponding signature algorithm.
+		/// </summary>
+		/// <param name="AlgorithmIdentifier">Algorithm identifier.</param>
+		/// <returns>Instance of signature algorithm, if found.</returns>
+		public static ISignatureAlgorithm? TryDecode(Vector AlgorithmIdentifier, ICommunicationLayer? Client)
+		{
+			if (AlgorithmIdentifier.Length == 0)
+			{
+				Client?.Error("No signature algorithm identifier provided.");
 				return null;
+			}
 
-			if (!Algorithm.Configure(AlgorithmIdentifier.Elements))
+			if (AlgorithmIdentifier[0] is not ISignatureAlgorithm Algorithm)
+			{
+				Client?.Error("Signature algorithm not supported. " + AlgorithmIdentifier[0]?.ToString());
 				return null;
+			}
+
+			if (!Algorithm.Configure(AlgorithmIdentifier))
+			{
+				Client?.Error("Unable to configure signature algorithm.");
+				return null;
+			}
 
 			return Algorithm;
 		}
@@ -42,7 +61,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
 		/// <returns>If the object can be configured, given the security information.</returns>
-		public override bool Configure(Array SecurityInfo)
+		public override bool Configure(Vector SecurityInfo)
 		{
 			return true;
 		}
