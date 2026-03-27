@@ -9,7 +9,7 @@ using Waher.Networking;
 using Waher.Runtime.Settings;
 using Waher.Security;
 
-namespace NeuroAccess.Nfc.TravelDocuments
+namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 {
 	/// <summary>
 	/// Internal store of ICAO certificates
