@@ -34,5 +34,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions
 		/// Hash Algorithm Name
 		/// </summary>
 		public abstract HashAlgorithmName Name { get; }
+
+		/// <summary>
+		/// Number of bytes used for the hash digest.
+		/// </summary>
+		public abstract int HashLength { get; }
 	}
 }

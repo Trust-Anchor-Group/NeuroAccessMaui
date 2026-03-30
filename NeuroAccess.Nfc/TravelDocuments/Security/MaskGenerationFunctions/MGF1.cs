@@ -1,4 +1,5 @@
-﻿using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
+﻿using System;
+using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions
 {
@@ -47,6 +48,43 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions
 		public override string ToString()
 		{
 			return "MGF1(" + this.hashFunction.ToString() + ")";
+		}
+
+		/// <summary>
+		/// Calcaultes a mask of a specific length, given a seed.
+		/// </summary>
+		/// <param name="Seed">Seed value.</param>
+		/// <param name="Length">Length of mask.</param>
+		/// <returns>Generated mask.</returns>
+		public override byte[] CalculateMask(byte[] Seed, int Length)
+		{
+			if (Length < 0)
+				throw new ArgumentOutOfRangeException(nameof(Length), "Length must be non-negative.");
+
+			byte[] Result = new byte[Length];
+			byte[] C = new byte[Seed.Length + 4];
+			int i = 0;
+
+			Buffer.BlockCopy(Seed, 0, C, 0, Seed.Length);
+
+			while (true)
+			{
+				byte[] T = this.hashFunction.ComputeHash(C);
+				int d = Math.Min(T.Length, Length - i);
+
+				Buffer.BlockCopy(T, 0, Result, i, d);
+				i += d;
+
+				if (i == Length)
+					return Result;
+
+				d = C.Length;
+				while (d > 0)
+				{
+					if (++C[--d] != 0)
+						break;
+				}
+			}
 		}
 	}
 }

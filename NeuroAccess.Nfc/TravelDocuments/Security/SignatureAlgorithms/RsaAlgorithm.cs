@@ -24,7 +24,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			using RSA? Rsa = Certificate.GetRSAPublicKey();
 
 			if (Rsa is null)
+			{
+				Client?.Error("Unable to get RSA public key from certificate.");
 				return false;
+			}
 
 			bool Result = Rsa.VerifyData(Data, Signature, this.HashAlgorithmName, RSASignaturePadding.Pkcs1);
 

@@ -1268,6 +1268,26 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		}
 
 		/// <summary>
+		/// Performs byte-wise XOR operation on byte arrays of equal length.
+		/// </summary>
+		/// <param name="A">Array 1</param>
+		/// <param name="B">Array 2</param>
+		/// <returns>A XOR B</returns>
+		public static byte[] XOR(byte[] A, byte[] B)
+		{
+			int i, c = A.Length;
+
+			if (B.Length != c)
+				throw new ArgumentException("Byte arrays must have the same length.");
+
+			byte[] Result = new byte[c];
+			for (i = 0; i < c; i++)
+				Result[i] = (byte)(A[i] ^ B[i]);
+
+			return Result;
+		}
+
+		/// <summary>
 		/// Seed for computing cryptographic keys (§D.2)
 		/// </summary>
 		/// <param name="Info">Document Information</param>

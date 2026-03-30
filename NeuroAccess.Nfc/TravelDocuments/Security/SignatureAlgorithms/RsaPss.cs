@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Globalization;
+using System.Numerics;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
 using NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions;
 using Waher.Networking;
+using Waher.Security.EllipticCurves;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 {
@@ -112,15 +114,19 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		public override bool VerifySignature(byte[] Data, byte[] Signature, X509Certificate2 Certificate,
 			ICommunicationLayer? Client)
 		{
-			bool Result = false;
-
 			using RSA? Rsa = Certificate.GetRSAPublicKey();
-			if (Rsa is not null)
+			if (Rsa is null)
 			{
-				Result = Rsa.VerifyData(Data, Signature, this.hashFunction.Name, RSASignaturePadding.Pss);
-
-				// This verification seems to work if the hash function = MGF1 hash function.
+				Client?.Error("Unable to get RSA public key from certificate.");
+				return false;
 			}
+
+			RSAParameters P = Rsa.ExportParameters(false);
+			BigInteger S = EllipticCurve.ToInt(Signature, true);
+			BigInteger e = EllipticCurve.ToInt(P.Exponent, true);
+			BigInteger n = EllipticCurve.ToInt(P.Modulus, true);
+
+			bool Result = Verify(this.hashFunction, this.maskGenerationFunction, n, e, Data, S, this.saltLength);
 
 			if (!Result && (Client?.HasSniffers ?? false))
 			{
@@ -136,5 +142,81 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			return Result;
 		}
+
+		/// <summary>
+		/// Verifies an RSA-PSS signature.
+		/// </summary>
+		/// <param name="H">Hash function</param>
+		/// <param name="Mgf">Mask Generation function</param>
+		/// <param name="n">Modulus</param>
+		/// <param name="e">Exponent</param>
+		/// <param name="Message">Signed message</param>
+		/// <param name="S">Signature</param>
+		/// <param name="SaltLen">Length of salt.</param>
+		/// <returns>If the signature is valid.</returns>
+		public static bool Verify(HashFunction H, MaskGenerationFunction Mgf, BigInteger n,
+			BigInteger e, byte[] Message, BigInteger S, int SaltLen)
+		{
+			// Encoded Message EM = S^e mod n
+
+			ModulusP ModN = new(n); // n not a prime, so not a Field (i.e. has zero-divisors), but addition and multiplication mod n work.
+			BigInteger EM = 1;
+
+			while (!e.IsZero)
+			{
+				if (!e.IsEven)
+					EM = ModN.Multiply(EM, S);
+
+				e >>= 1;
+				S = ModN.Multiply(S, S);
+			}
+
+			byte[] EMBin = EM.ToByteArray(true, true);
+			if (EMBin[^1] != 0xbc)
+				return false;
+
+			int HLen = H.HashLength;
+			int MaskedDBLen = EMBin.Length - 1 - HLen;
+			byte[] MaskedDB = new byte[MaskedDBLen];
+			byte[] HashDigest = new byte[HLen];
+
+			Buffer.BlockCopy(EMBin, 0, MaskedDB, 0, MaskedDBLen);
+			Buffer.BlockCopy(EMBin, MaskedDBLen, HashDigest, 0, HLen);
+
+			byte[] DBMask = Mgf.CalculateMask(HashDigest, MaskedDBLen);
+			byte[] DB = TravelDocumentsClient.XOR(MaskedDB, DBMask);
+			int i = 0;
+			int c = DB.Length;
+
+			DB[0] &= 0x7f;  // MSB can be 1, as EMBits=bitlen(n)-1
+			while (i < c && DB[i] == 0)
+				i++;
+
+			if (i >= c)
+				return false;
+
+			if (DB[i++] != 1)
+				return false;
+
+			if (c - i != SaltLen)
+				return false;
+
+			byte[] Digest = H.ComputeHash(Message);
+			byte[] H2 = new byte[8 + HLen + SaltLen];
+
+			Buffer.BlockCopy(Digest, 0, H2, 8, HLen);
+			Buffer.BlockCopy(DB, i, H2, 8 + HLen, SaltLen);
+
+			Digest = H.ComputeHash(H2);
+
+			for (i = 0; i < HLen; i++)
+			{
+				if (Digest[i] != HashDigest[i])
+					return false;
+			}
+
+			return true;
+		}
+
 	}
 }

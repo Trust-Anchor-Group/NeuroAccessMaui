@@ -28,5 +28,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions
 		/// Hash Algorithm Name
 		/// </summary>
 		public override HashAlgorithmName Name => new HashAlgorithmName("SHA3-224");
+
+		/// <summary>
+		/// Number of bytes used for the hash digest.
+		/// </summary>
+		public override int HashLength => 28;
 	}
 }

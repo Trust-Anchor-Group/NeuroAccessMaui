@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -177,7 +179,6 @@ namespace NeuroAccess.Nfc.Test
 			await Task.Delay(500, CancellationToken.None);
 		}
 
-
 		[TestMethod]
 		[DataRow(
 			"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",
@@ -194,6 +195,45 @@ namespace NeuroAccess.Nfc.Test
 			Assert.IsTrue(CertificateChain.VerifySignatures(Client, Root, Cert));
 
 			// TODO: Check rules in certificate extensions
+		}
+
+		[TestMethod]
+		public void Test_04_VerifyAllIcaoCertificates()
+		{
+			string[] FileNames = Directory.GetFiles("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki", "*.cer", SearchOption.AllDirectories);
+			Assert.IsGreaterThan(0, FileNames.Length, "ICAO Certificates project not available in sibling folder.");
+
+			ChunkedList<string> FailedCertificates = [];
+			int NrOk = 0;
+			int NrFailed = 0;
+
+			foreach (string FileName in FileNames)
+			{
+				try
+				{
+					X509Certificate2 Root = X509CertificateLoader.LoadCertificateFromFile(FileName);
+					Assert.IsTrue(CertificateChain.VerifySignatures(Root));
+					NrOk++;
+				}
+				catch (Exception)
+				{
+					NrFailed++;
+					FailedCertificates.Add(FileName);
+				}
+			}
+
+			Console.Out.WriteLine("Nr OK: " + NrOk.ToString(CultureInfo.InvariantCulture));
+			Console.Out.WriteLine("Nr Failed: " + NrFailed.ToString(CultureInfo.InvariantCulture));
+
+			if (NrFailed > 0)
+			{
+				Console.Out.WriteLine();
+
+				foreach (string s in FailedCertificates)
+					Console.Out.WriteLine(s);
+
+				Assert.Fail("Some ICAO certificates failed to verify. See output for details.");
+			}
 		}
 
 	}
