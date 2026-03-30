@@ -1,4 +1,4 @@
-﻿using Waher.Security.SHA3;
+﻿using System.Security.Cryptography;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions
 {
@@ -19,8 +19,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions
 		/// <returns>Hash Digest of binary data.</returns>
 		public override byte[] ComputeHash(byte[] Data)
 		{
-			SHA3_512 H = new();
+			Waher.Security.SHA3.SHA3_512 H = new();
 			return H.ComputeVariable(Data);
 		}
+
+		/// <summary>
+		/// Hash Algorithm Name
+		/// </summary>
+		public override HashAlgorithmName Name => HashAlgorithmName.SHA3_512;
 	}
 }

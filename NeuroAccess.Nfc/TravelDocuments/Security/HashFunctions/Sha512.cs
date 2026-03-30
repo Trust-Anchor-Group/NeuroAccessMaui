@@ -1,4 +1,5 @@
-﻿using Waher.Security;
+﻿using System.Security.Cryptography;
+using Waher.Security;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions
 {
@@ -18,5 +19,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions
 		/// <param name="Data">Binary data.</param>
 		/// <returns>Hash Digest of binary data.</returns>
 		public override byte[] ComputeHash(byte[] Data) => Hashes.ComputeSHA512Hash(Data);
+
+		/// <summary>
+		/// Hash Algorithm Name
+		/// </summary>
+		public override HashAlgorithmName Name => HashAlgorithmName.SHA512;
 	}
 }

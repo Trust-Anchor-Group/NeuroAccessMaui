@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
 using NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions;
@@ -111,7 +112,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		public override bool VerifySignature(byte[] Data, byte[] Signature, X509Certificate2 Certificate,
 			ICommunicationLayer? Client)
 		{
-			bool Result = false;	// TODO
+			bool Result = false;
+
+			using RSA? Rsa = Certificate.GetRSAPublicKey();
+			if (Rsa is not null)
+			{
+				Result = Rsa.VerifyData(Data, Signature, this.hashFunction.Name, RSASignaturePadding.Pss);
+
+				// This verification seems to work if the hash function = MGF1 hash function.
+			}
 
 			if (!Result && (Client?.HasSniffers ?? false))
 			{

@@ -1,4 +1,6 @@
-﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions
+﻿using System.Security.Cryptography;
+
+namespace NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions
 {
 	/// <summary>
 	/// Abstract base class for hash functions.
@@ -27,5 +29,10 @@
 		/// <param name="Data">Binary data.</param>
 		/// <returns>Hash Digest of binary data.</returns>
 		public abstract byte[] ComputeHash(byte[] Data);
+
+		/// <summary>
+		/// Hash Algorithm Name
+		/// </summary>
+		public abstract HashAlgorithmName Name { get; }
 	}
 }
