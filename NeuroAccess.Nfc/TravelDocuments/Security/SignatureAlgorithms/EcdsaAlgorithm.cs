@@ -256,20 +256,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 					Result = Ecdsa.VerifyData(Data, Signature, this.HashAlgorithmName, DSASignatureFormat.Rfc3279DerSequence);
 				}
 				else
-				{
-					Result = ECDSA.Verify(Data, CertPubBin, true, HashFunction,
-						Selected.OrderBytes, Selected.BigIntegerBytes, Selected.MsbOrderMask,
-						Selected, CertSignature);
-				}
+					Result = ECDSA.Verify(Data, CertPubBin, true, HashFunction, Selected, CertSignature);
 			}
 
 			if (!Result && (Client?.HasSniffers ?? false))
 			{
 				Client?.Warning("Invalid signature.\r\n\r\nAlgorithm Type: " + this.GetType().FullName +
 					"\r\nPublic Key: " + Convert.ToBase64String(Ecdsa.ExportSubjectPublicKeyInfo()) +
-				"\r\nSignature: " + Convert.ToBase64String(Signature) +
-				"\r\nData: " + Convert.ToBase64String(Data) +
-				"\r\nValid: " + Result.ToString());
+					"\r\nSignature: " + Convert.ToBase64String(Signature) +
+					"\r\nData: " + Convert.ToBase64String(Data) +
+					"\r\nValid: " + Result.ToString());
 			}
 
 			return Result;
