@@ -246,8 +246,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 					return false;
 				}
 
-				byte[] CertPubBin = Selected.Encode(CertPub, true);
-				byte[] CertSignature = Selected.Encode(new PointOnCurve(R, S), true);
 				HashFunctionArray? HashFunction = ToHashFunction(this.HashAlgorithmName);
 
 				if (HashFunction is null)
@@ -256,7 +254,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 					Result = Ecdsa.VerifyData(Data, Signature, this.HashAlgorithmName, DSASignatureFormat.Rfc3279DerSequence);
 				}
 				else
-					Result = ECDSA.Verify(Data, CertPubBin, true, HashFunction, Selected, CertSignature);
+					Result = ECDSA.Verify(Data, CertPub, HashFunction, Selected, R, S);
 			}
 
 			if (!Result && (Client?.HasSniffers ?? false))
