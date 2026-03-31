@@ -10,6 +10,7 @@ using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Content;
 using Waher.Networking;
 using Waher.Networking.Sniffers;
+using Waher.Networking.Sniffers.Model;
 using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
 using Waher.Security;
@@ -200,40 +201,209 @@ namespace NeuroAccess.Nfc.Test
 		[TestMethod]
 		public void Test_04_VerifyAllIcaoCertificates()
 		{
+			ASN1.GetOidsNotRecognized(true);    // Clears statistics.
+
 			string[] FileNames = Directory.GetFiles("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki", "*.cer", SearchOption.AllDirectories);
 			Assert.IsGreaterThan(0, FileNames.Length, "ICAO Certificates project not available in sibling folder.");
 
 			ChunkedList<string> FailedCertificates = [];
+			SortedDictionary<string, int> NrOkPerCountry = [];
+			SortedDictionary<string, int> NrFailedPerCountry = [];
+			SortedDictionary<string, int> NrCertificates = [];
+			string s;
 			int NrOk = 0;
 			int NrFailed = 0;
 
+			void Inc(SortedDictionary<string, int> List, string Key)
+			{
+				if (List.TryGetValue(Key, out int i))
+					List[Key] = i + 1;
+				else
+					List[Key] = 1;
+			}
+
 			foreach (string FileName in FileNames)
 			{
+				string CountryCode = Path.GetFileName(Path.GetDirectoryName(FileName))!;
+
+				Inc(NrCertificates, CountryCode);
+
 				try
 				{
 					X509Certificate2 Root = X509CertificateLoader.LoadCertificateFromFile(FileName);
-					Assert.IsTrue(CertificateChain.VerifySignatures(Root));
-					NrOk++;
+
+					if (CertificateChain.VerifySignatures(Root))
+					{
+						NrOk++;
+						Inc(NrOkPerCountry, CountryCode);
+					}
+					else
+					{
+						NrFailed++;
+						FailedCertificates.Add(FileName);
+						Inc(NrFailedPerCountry, CountryCode);
+					}
 				}
 				catch (Exception)
 				{
 					NrFailed++;
 					FailedCertificates.Add(FileName);
+					Inc(NrFailedPerCountry, CountryCode);
 				}
 			}
 
 			Console.Out.WriteLine("Nr OK: " + NrOk.ToString(CultureInfo.InvariantCulture));
 			Console.Out.WriteLine("Nr Failed: " + NrFailed.ToString(CultureInfo.InvariantCulture));
 
+			Console.Out.WriteLine();
+			Console.Out.WriteLine("Statistics per country:");
+			Console.Out.WriteLine();
+			Console.Out.WriteLine("| Country | Certificates |        Nr OK |    Nr Failed |");
+			Console.Out.WriteLine("|:--------|-------------:|-------------:|-------------:|");
+
+			SortedDictionary<string, int> CountriesWithErrors = [];
+			SortedDictionary<string, int> CountriesWithNoErrors = [];
+
+			foreach (KeyValuePair<string, int> P in NrCertificates)
+			{
+				Console.Out.Write("| ");
+				Console.Out.Write(P.Key);
+				Console.Out.Write(new string(' ', 8 - P.Key.Length));
+				Console.Out.Write('|');
+
+				s = P.Value.ToString(CultureInfo.InvariantCulture);
+				Console.Out.Write(new string(' ', 13 - s.Length));
+				Console.Out.Write(s);
+
+				if (NrOkPerCountry.TryGetValue(P.Key, out int i))
+					s = i.ToString(CultureInfo.InvariantCulture);
+				else
+					s = string.Empty;
+
+				Console.Out.Write(" |");
+				Console.Out.Write(new string(' ', 13 - s.Length));
+				Console.Out.Write(s);
+
+				if (NrFailedPerCountry.TryGetValue(P.Key, out i))
+				{
+					s = i.ToString(CultureInfo.InvariantCulture);
+					CountriesWithErrors[P.Key] = P.Value;
+				}
+				else
+				{
+					s = string.Empty;
+					CountriesWithNoErrors[P.Key] = P.Value;
+				}
+
+				Console.Out.Write(" |");
+				Console.Out.Write(new string(' ', 13 - s.Length));
+				Console.Out.Write(s);
+				Console.Out.WriteLine(" |");
+			}
+
+			Console.Out.WriteLine();
+			Console.Out.WriteLine("Countries with errors:");
+			Console.Out.WriteLine();
+			Console.Out.WriteLine("| Country | Certificates |        Nr OK |    Nr Failed |");
+			Console.Out.WriteLine("|:--------|-------------:|-------------:|-------------:|");
+
+			foreach (KeyValuePair<string, int> P in CountriesWithErrors)
+			{
+				Console.Out.Write("| ");
+				Console.Out.Write(P.Key);
+				Console.Out.Write(new string(' ', 8 - P.Key.Length));
+				Console.Out.Write('|');
+
+				s = P.Value.ToString(CultureInfo.InvariantCulture);
+				Console.Out.Write(new string(' ', 13 - s.Length));
+				Console.Out.Write(s);
+
+				if (NrOkPerCountry.TryGetValue(P.Key, out int i))
+					s = i.ToString(CultureInfo.InvariantCulture);
+				else
+					s = string.Empty;
+
+				Console.Out.Write(" |");
+				Console.Out.Write(new string(' ', 13 - s.Length));
+				Console.Out.Write(s);
+
+				if (NrFailedPerCountry.TryGetValue(P.Key, out i))
+					s = i.ToString(CultureInfo.InvariantCulture);
+				else
+					s = string.Empty;
+
+				Console.Out.Write(" |");
+				Console.Out.Write(new string(' ', 13 - s.Length));
+				Console.Out.Write(s);
+				Console.Out.WriteLine(" |");
+			}
+
+			Console.Out.WriteLine();
+			Console.Out.WriteLine("Countries with no errors:");
+			Console.Out.WriteLine();
+			Console.Out.WriteLine("| Country | Certificates |");
+			Console.Out.WriteLine("|:--------|-------------:|");
+
+			foreach (KeyValuePair<string, int> P in CountriesWithNoErrors)
+			{
+				Console.Out.Write("| ");
+				Console.Out.Write(P.Key);
+				Console.Out.Write(new string(' ', 8 - P.Key.Length));
+				Console.Out.Write('|');
+
+				s = P.Value.ToString(CultureInfo.InvariantCulture);
+				Console.Out.Write(new string(' ', 13 - s.Length));
+				Console.Out.Write(s);
+				Console.Out.WriteLine(" |");
+			}
+
+			KeyValuePair<string, int>[] OidsNotRecognized = ASN1.GetOidsNotRecognized(true);
+
+			Console.Out.WriteLine();
+			Console.Out.WriteLine("OIDs not recognized:");
+			Console.Out.WriteLine();
+			Console.Out.WriteLine("| OID                                    | Nr Times |");
+			Console.Out.WriteLine("|:---------------------------------------|---------:|");
+
+			foreach (KeyValuePair<string, int> P in OidsNotRecognized)
+			{
+				Console.Out.Write("| ");
+				Console.Out.Write(P.Key);
+				Console.Out.Write(new string(' ', 38 - P.Key.Length));
+				Console.Out.Write('|');
+
+				s = P.Value.ToString(CultureInfo.InvariantCulture);
+				Console.Out.Write(new string(' ', 9 - s.Length));
+				Console.Out.Write(s);
+				Console.Out.WriteLine(" |");
+			}
+
 			if (NrFailed > 0)
 			{
 				Console.Out.WriteLine();
 
-				foreach (string s in FailedCertificates)
-					Console.Out.WriteLine(s);
+				foreach (string FileName in FailedCertificates)
+					Console.Out.WriteLine(FileName);
 
 				Assert.Fail("Some ICAO certificates failed to verify. See output for details.");
 			}
+		}
+
+		[TestMethod]
+		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\01C1CA4806FA8A1DCD50AFC75E216E90479AF7C4.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AD\\031B14A8421B68EFA0BFD081C88C2B64270542A9.cer")]
+		public void Test_05_VerifySpecificIcaoCertificates(string FileName)
+		{
+			TestContextWriter SnifferWriter = new(this.TestContext!);
+			TextWriterSniffer Sniffer = new(SnifferWriter, BinaryPresentationMethod.Hexadecimal, "Unit Test Sniffer");
+			CommunicationLayer Client = new(true, Sniffer);
+
+			X509Certificate2 Root = X509CertificateLoader.LoadCertificateFromFile(FileName);
+
+			Assert.IsTrue(ASN1.TryDecodeDER(Root.RawData, out object? Content));
+			Console.Out.WriteLine(JSON.Encode(Content, true));
+
+			Assert.IsTrue(CertificateChain.VerifySignatures(Client, Root));
 		}
 
 	}

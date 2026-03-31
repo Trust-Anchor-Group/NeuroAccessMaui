@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
@@ -78,6 +79,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 					if (SecurityObject is null)
 					{
 						Client.Warning("OID not recognized: " + ContentOid);
+						ASN1.ReportOidNotRecognized(ContentOid);
 						return false;
 					}
 

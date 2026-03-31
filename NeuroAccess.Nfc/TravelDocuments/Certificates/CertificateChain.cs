@@ -45,13 +45,29 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 					Obj is not Vector CertificateVector ||
 					CertificateVector.Length != 3 ||
 					CertificateVector[0] is not Vector TbsCertificate ||
-					CertificateVector[1] is not ISignatureAlgorithm SignatureAlgorithm ||
 					CertificateVector[2] is not byte[] Signature)
 				{
 					Client?.Error("Unable to decode certificate.\r\n\r\n" +
 						Convert.ToBase64String(Certificate.RawData, Base64FormattingOptions.InsertLineBreaks));
 
 					return false;
+				}
+
+				if (CertificateVector[1] is not ISignatureAlgorithm SignatureAlgorithm)
+				{
+					if (CertificateVector[1] is Vector SignatureVector &&
+						SignatureVector.Length > 0 &&
+						SignatureVector[0] is ISignatureAlgorithm SignatureAlgorithm2)
+					{
+						SignatureAlgorithm = SignatureAlgorithm2;
+					}
+					else
+					{
+						Client?.Error("Unable to decode signature algorithm.\r\n\r\n" +
+							Convert.ToBase64String(Certificate.RawData, Base64FormattingOptions.InsertLineBreaks));
+
+						return false;
+					}
 				}
 
 				if (!SignatureAlgorithm.VerifySignature(TbsCertificate.SubSection, Signature,

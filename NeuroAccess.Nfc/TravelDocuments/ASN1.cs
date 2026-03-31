@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Formats.Asn1;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Networking;
@@ -13,6 +14,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	/// </summary>
 	public static class ASN1
 	{
+		private static readonly SortedDictionary<string, int> oidsNotRecognized = [];
+
 		/// <summary>
 		/// Decodes a DER-encoded object.
 		/// </summary>
@@ -115,6 +118,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						if (SecurityObject is null)
 						{
 							Client?.Warning("OID not recognized: " + Oid);
+							ReportOidNotRecognized(Oid);
 							Value = Oid;
 						}
 						else
@@ -278,6 +282,50 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			{
 				Value = null;
 				return false;
+			}
+		}
+
+		/// <summary>
+		/// Records an OID as not recognized.
+		/// </summary>
+		/// <param name="Oid">OID not recognized.</param>
+		/// <returns>Number of times the OID has not been recognized.</returns>
+		public static int ReportOidNotRecognized(string Oid)
+		{
+			lock (oidsNotRecognized)
+			{
+				if (!oidsNotRecognized.TryGetValue(Oid, out int i))
+				{
+					oidsNotRecognized[Oid] = 1;
+					return 1;
+				}
+				else
+				{
+					if (i < int.MaxValue)
+						oidsNotRecognized[Oid] = ++i;
+
+					return i;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets an array of OIDs that has not been recognized.
+		/// </summary>
+		/// <param name="Clear">If the statistics should be cleared after compiling the list.</param>
+		/// <returns>Array of OIDs not recognized together with the number of times each has not
+		/// been recognized.</returns>
+		public static KeyValuePair<string, int>[] GetOidsNotRecognized(bool Clear)
+		{
+			lock (oidsNotRecognized)
+			{
+				KeyValuePair<string, int>[] Result = new KeyValuePair<string, int>[oidsNotRecognized.Count];
+				oidsNotRecognized.CopyTo(Result, 0);
+
+				if (Clear)
+					oidsNotRecognized.Clear();
+
+				return Result;
 			}
 		}
 	}
