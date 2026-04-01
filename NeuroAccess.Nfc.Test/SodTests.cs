@@ -369,7 +369,11 @@ namespace NeuroAccess.Nfc.Test
 			{
 				Console.Out.Write("| ");
 				Console.Out.Write(P.Key);
-				Console.Out.Write(new string(' ', 38 - P.Key.Length));
+
+				int i = 39 - P.Key.Length;
+				if (i > 0)
+					Console.Out.Write(new string(' ', i));
+
 				Console.Out.Write('|');
 
 				s = P.Value.ToString(CultureInfo.InvariantCulture);
