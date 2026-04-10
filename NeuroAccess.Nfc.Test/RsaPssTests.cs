@@ -9,7 +9,7 @@ using Waher.Security.EllipticCurves;
 namespace NeuroAccess.Nfc.Test
 {
 	[TestClass]
-	public class RssPssTests
+	public class RsaPssTests
 	{
 		// NIST FIPS Test vectors for RSA-PSS:
 		// https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program/Digital-Signatures#rsa2vs
