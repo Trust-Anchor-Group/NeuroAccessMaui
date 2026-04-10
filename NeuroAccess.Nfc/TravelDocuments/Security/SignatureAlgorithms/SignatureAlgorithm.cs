@@ -1,5 +1,5 @@
 ﻿using System.Security.Cryptography.X509Certificates;
-using System.Text;
+using System.Threading;
 using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
@@ -9,6 +9,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 	/// </summary>
 	public abstract class SignatureAlgorithm : SecurityObject, ISignatureAlgorithm
 	{
+		private bool configured;
+
 		/// <summary>
 		/// Abstract base class for signature algorithms, as defined in RFC 5280.
 		/// </summary>
@@ -48,7 +50,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				return null;
 			}
 
-			if (!Algorithm.Configure(AlgorithmIdentifier))
+			if (!Algorithm.IsConfigured && !Algorithm.Configure(AlgorithmIdentifier))
 			{
 				Client?.Error("Unable to configure signature algorithm.");
 				return null;
@@ -58,12 +60,18 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		}
 
 		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.configured;
+
+		/// <summary>
 		/// If the object can be configured by the security information provided.
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
 		/// <returns>If the object can be configured, given the security information.</returns>
 		public override bool Configure(Vector SecurityInfo)
 		{
+			this.configured = true;
 			return true;
 		}
 

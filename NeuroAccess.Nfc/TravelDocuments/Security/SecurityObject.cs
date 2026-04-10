@@ -13,6 +13,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		public abstract string Oid { get; }
 
 		/// <summary>
+		/// Name of object.
+		/// </summary>
+		public string ObjectName => this.GetType().Name;
+
+		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public abstract bool IsConfigured { get; }
+
+		/// <summary>
 		/// If the object can be configured by the security information provided.
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>

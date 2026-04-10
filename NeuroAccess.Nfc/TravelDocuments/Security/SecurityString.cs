@@ -1,12 +1,17 @@
-﻿using System.Text.RegularExpressions;
-
-namespace NeuroAccess.Nfc.TravelDocuments.Security
+﻿namespace NeuroAccess.Nfc.TravelDocuments.Security
 {
 	/// <summary>
 	/// Abstract base class for security objects that represent named string values.
 	/// </summary>
 	public abstract class SecurityString : SecurityObject
 	{
+		protected bool configured;
+
+		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.configured;
+
 		/// <summary>
 		/// If the object can be configured by the security information provided.
 		/// </summary>
@@ -24,6 +29,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 					this.Value = StringValue;
 				else
 					return false;
+
+				this.configured = true;
 
 				return true;
 			}

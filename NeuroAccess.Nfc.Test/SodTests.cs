@@ -43,6 +43,7 @@ namespace NeuroAccess.Nfc.Test
 			Assert.IsNotNull(ContentVector);
 
 			ISecurityObject SecurityObject = Types.FindBest<ISecurityObject, string>(SignedData.ContentInfo.ContentType.Value!);
+			Assert.IsFalse(SecurityObject.IsConfigured);
 			Assert.IsTrue(SecurityObject.Configure(ContentVector));
 
 			Console.Out.WriteLine(JSON.Encode(SecurityObject, true));

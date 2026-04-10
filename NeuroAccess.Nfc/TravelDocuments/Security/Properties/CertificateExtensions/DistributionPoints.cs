@@ -7,12 +7,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensi
 	/// </summary>
 	public class DistributionPoints : SecurityObject
 	{
-		private DistributionPoint[] distributionPoints = [];
+		private DistributionPoint[]? distributionPoints;
 
 		/// <summary>
 		/// OID identifying the type of object.
 		/// </summary>
 		public override string Oid => "2.5.29.31";
+
+		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.distributionPoints is not null;
 
 		/// <summary>
 		/// If the object can be configured by the security information provided.
@@ -23,6 +28,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensi
 		{
 			if (SecurityInfo.LastElement is not Vector DistributionPoints)
 				return false;
+
+			if (DistributionPoints.Length == 1 &&
+				DistributionPoints.FirstElement is Vector v &&
+				(v.SubSection[0] & 0x80) == 0)
+			{
+				DistributionPoints = v;
+			}
 
 			ChunkedList<DistributionPoint> Points = [];
 
@@ -45,6 +57,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensi
 		/// <summary>
 		/// Distribution points.
 		/// </summary>
-		public DistributionPoint[] Points => this.distributionPoints;
+		public DistributionPoint[] Points => this.distributionPoints!;
 	}
 }

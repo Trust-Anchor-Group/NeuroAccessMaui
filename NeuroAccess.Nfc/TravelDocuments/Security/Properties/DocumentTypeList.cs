@@ -7,12 +7,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties
 	/// </summary>
 	public class DocumentTypeList : SecurityObject
 	{
-		private string[] types = [];
+		private string[]? types;
 
 		/// <summary>
 		/// OID identifying the type of object.
 		/// </summary>
 		public override string Oid => "2.23.136.1.1.6.2";
+
+		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.types is not null;
 
 		/// <summary>
 		/// If the object can be configured by the security information provided.
@@ -45,6 +50,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties
 		/// <summary>
 		/// Document types.
 		/// </summary>
-		public string[] Types => this.types;
+		public string[] Types => this.types!;
 	}
 }

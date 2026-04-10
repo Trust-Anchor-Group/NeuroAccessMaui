@@ -25,11 +25,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		private MaskGenerationFunction maskGenerationFunction = defaultMaskGenerationFunction;
 		private int saltLength = 20;
 		private int trailerField = 1;
+		private bool configured = false;
 
 		/// <summary>
 		/// OID identifying the type of object.
 		/// </summary>
 		public override string Oid => "1.2.840.113549.1.1.10";
+
+		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.configured;
 
 		/// <summary>
 		/// If the object can be configured by the security information provided.
@@ -100,6 +106,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 					}
 				}
 			}
+
+			this.configured = true;
 
 			return true;
 		}

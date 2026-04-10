@@ -7,12 +7,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.FieldTypes
 	/// </summary>
 	public class PrimeField : FieldType
 	{
-		private BigInteger prime;
+		private BigInteger? prime;
 
 		/// <summary>
 		/// OID identifying the type of object.
 		/// </summary>
 		public override string Oid => "1.2.840.10045.1.1";
+
+		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.prime is not null;
 
 		/// <summary>
 		/// If the object can be configured by the security information provided.
@@ -33,6 +38,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.FieldTypes
 		/// <summary>
 		/// Prime number used to define the prime field.
 		/// </summary>
-		public BigInteger Prime => this.prime;
+		public BigInteger Prime => this.prime!.Value;
 	}
 }

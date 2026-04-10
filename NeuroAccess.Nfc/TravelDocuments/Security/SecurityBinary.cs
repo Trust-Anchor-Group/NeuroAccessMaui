@@ -7,6 +7,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 	/// </summary>
 	public abstract class SecurityBinary : SecurityObject
 	{
+		protected byte[]? value;
+
+		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.value is not null;
+
 		/// <summary>
 		/// If the object can be configured by the security information provided.
 		/// </summary>
@@ -15,15 +22,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		public override bool Configure(Vector SecurityInfo)
 		{
 			if (SecurityInfo.LastElement is byte[] Value)
-				this.Value = Value;
+				this.value = Value;
 			else if (SecurityInfo.LastElement is Vector V &&
 				V.Length == 1 &&
 				V.FirstElement is byte[] Value2)
 			{
-				this.Value = Value2;
+				this.value = Value2;
 			}
 			else if (SecurityInfo.FirstElement is SecurityBinary Binary)
-				this.Value = Binary.Value;
+				this.value = Binary.Value;
 			else
 				return false;
 
@@ -33,12 +40,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		/// <summary>
 		/// Binary Value.
 		/// </summary>
-		public byte[] Value { get; private set; } = [];
+		public byte[] Value => this.value!;
 
 		/// <inheritdoc/>
 		public override string ToString()
 		{
-			return this.GetType().Name + ": " + Hashes.BinaryToString(this.Value, true);
+			return this.GetType().Name + ": " + Hashes.BinaryToString(this.value ?? [], true);
 		}
 	}
 }

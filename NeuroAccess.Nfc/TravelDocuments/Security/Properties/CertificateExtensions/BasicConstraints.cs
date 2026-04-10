@@ -8,11 +8,17 @@
 		private bool certificateAuthority = false;
 		private int pathLengthConstraint = int.MaxValue;
 		private KeyUsage? keyUsage = null;
+		protected bool configured;
 
 		/// <summary>
 		/// OID identifying the type of object.
 		/// </summary>
 		public override string Oid => "2.5.29.19";
+
+		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.configured;
 
 		/// <summary>
 		/// If the object can be configured by the security information provided.
@@ -47,7 +53,12 @@
 				this.pathLengthConstraint = (int)PathLengthConstraint;
 			}
 
-			return i == c;
+			if (i < c)
+				return false;
+
+			this.configured = true;
+
+			return true;
 		}
 
 		/// <summary>

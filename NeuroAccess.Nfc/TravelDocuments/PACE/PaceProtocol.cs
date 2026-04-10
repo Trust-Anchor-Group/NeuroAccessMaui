@@ -15,6 +15,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 	{
 		private System.Numerics.BigInteger version;
 		private System.Numerics.BigInteger? parameterId;
+		private bool configured;
 
 		/// <summary>
 		/// Security strength mapped as a grade.
@@ -52,6 +53,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		}
 
 		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.configured;
+
+		/// <summary>
 		/// If the protocol could be configured by the security information provided.
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
@@ -69,12 +75,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 			if (SecurityInfo.Length > 3)
 				return false;
 			else if (SecurityInfo.Length == 2)
+			{
+				this.configured = true;
 				return true;
+			}
 			else if (SecurityInfo[2] is not System.Numerics.BigInteger ParameterId)
 				return false;
 			else
 			{
 				this.parameterId = ParameterId;
+				this.configured = true;
 				return true;
 			}
 		}

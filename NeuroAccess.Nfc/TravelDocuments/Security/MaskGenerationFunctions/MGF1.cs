@@ -12,6 +12,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions
 		private static readonly HashFunction defaultHashFunction = new Sha1();
 
 		private HashFunction hashFunction = HashFunction;
+		private bool configured;
 
 		/// <summary>
 		/// Mask Generation Function MGF1, as defined in RFC 4055, using SHA-1.
@@ -27,6 +28,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions
 		public override string Oid => "1.2.840.113549.1.1.8";
 
 		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.configured;
+
+		/// <summary>
 		/// If the object can be configured by the security information provided.
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
@@ -40,6 +46,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions
 
 				this.hashFunction = HashFunction;
 			}
+
+			this.configured = true;
 
 			return true;
 		}

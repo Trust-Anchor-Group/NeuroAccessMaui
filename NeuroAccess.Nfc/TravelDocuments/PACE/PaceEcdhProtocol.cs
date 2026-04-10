@@ -18,6 +18,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		public EllipticCurve? Curve => this.curve;
 
 		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.curve is not null;
+
+		/// <summary>
 		/// If the protocol could be configured by the security information provided.
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>

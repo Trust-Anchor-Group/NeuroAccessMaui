@@ -9,6 +9,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 	/// </summary>
 	public class LdsSecurityObject : SecurityObject
 	{
+		private bool configured;
+
 		/// <summary>
 		/// LDS Security Object V1. Reference: §4.6.2.3, ICAO Doc 9303-10.
 		/// </summary>
@@ -20,6 +22,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		/// OID identifying the type of object.
 		/// </summary>
 		public override string Oid => "2.23.136.1.1.1";
+
+		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.configured;
 
 		/// <summary>
 		/// If the object can be configured by the security information provided.
@@ -70,6 +77,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 
 			this.HashFunctions = [.. HashFunctions2];
 			this.DataGroupHashValues = DataGroupHashValues2;
+			this.configured = true;
 
 			return true;
 		}

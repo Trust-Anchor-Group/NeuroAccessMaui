@@ -13,6 +13,11 @@
 		public override string Oid => "2.5.29.32";
 
 		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.certificatePolicies is not null;
+
+		/// <summary>
 		/// If the object can be configured by the security information provided.
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
@@ -22,7 +27,7 @@
 			if (SecurityInfo.LastElement is not Vector CertificatePolicies)
 				return false;
 
-			this.certificatePolicies= CertificatePolicies;
+			this.certificatePolicies = CertificatePolicies;
 
 			return true;
 		}

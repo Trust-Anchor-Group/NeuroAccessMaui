@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Formats.Asn1;
+using System.Text;
+using Waher.Content.Xml;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions
 {
@@ -9,11 +13,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensi
 	{
 		private DateTimeOffset? notBefore = null;
 		private DateTimeOffset? notAfter = null;
+		protected bool configured = false;
 
 		/// <summary>
 		/// OID identifying the type of object.
 		/// </summary>
 		public override string Oid => "2.5.29.16";
+
+		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.configured;
 
 		/// <summary>
 		/// If the object can be configured by the security information provided.
@@ -29,21 +39,68 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensi
 
 			if (c > 0)
 			{
-				if (UsagePeriod[0] is not DateTimeOffset NotBefore)
+				if (!TryParseGeneralizedTime(UsagePeriod[0], out DateTimeOffset? NotBefore))
 					return false;
 
 				this.notBefore = NotBefore;
 
 				if (c > 1)
 				{
-					if (UsagePeriod[1] is not DateTimeOffset NotAfter)
+					if (!TryParseGeneralizedTime(UsagePeriod[1], out DateTimeOffset? NotAfter))
 						return false;
 
 					this.notAfter = NotAfter;
 				}
 			}
 
+			this.configured = true;
+
 			return true;
+		}
+
+		public static bool TryParseGeneralizedTime(object? Data,
+			[NotNullWhen(true)] out DateTimeOffset? Result)
+		{
+			if (Data is DateTimeOffset Timestamp)
+			{
+				Result = Timestamp;
+				return true;
+			}
+
+			if (Data is byte[] Bin && Bin.Length > 0 && (Bin[0] & 0x80) != 0 &&
+				Bin.Length == Bin[1] + 2)
+			{
+				Bin = (byte[])Bin.Clone();
+				Bin[0] = (byte)UniversalTagNumber.IA5String;
+				AsnReader Reader = new(Bin, AsnEncodingRules.DER);
+				string s = Reader.ReadCharacterString((UniversalTagNumber)Bin[0]);
+
+				if (s.Length > 12)
+				{
+					StringBuilder sb = new();
+
+					sb.Append(s.Substring(0, 4));
+					sb.Append('-');
+					sb.Append(s.Substring(4, 2));
+					sb.Append('-');
+					sb.Append(s.Substring(6, 2));
+					sb.Append('T');
+					sb.Append(s.Substring(8, 2));
+					sb.Append(':');
+					sb.Append(s.Substring(10, 2));
+					sb.Append(':');
+					sb.Append(s.Substring(12));
+
+					if (XML.TryParse(sb.ToString(), out Timestamp))
+					{
+						Result = Timestamp;
+						return true;
+					}
+				}
+			}
+
+			Result = null;
+			return false;
 		}
 
 		/// <summary>

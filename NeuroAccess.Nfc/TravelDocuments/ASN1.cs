@@ -191,13 +191,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						object?[] Elements2 = [.. Elements];
 						byte[] SubSection = Section.ToArray();
 
-						if (FirstElement is ISecurityObject SecurityObject2)
+						if (FirstElement is ISecurityObject SecurityObject2 &&
+							!SecurityObject2.IsConfigured &&
+							SecurityObject2.Configure(new Vector(Elements2, SubSection)))
 						{
-							if (SecurityObject2.Configure(new Vector(Elements2, SubSection)))
-							{
-								Value = SecurityObject2;
-								return true;
-							}
+							Value = SecurityObject2;
+							return true;
 						}
 
 						if (Tag.TagValue == (int)UniversalTagNumber.Sequence)
@@ -252,15 +251,14 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						object?[] Elements2 = [.. Elements];
 						byte[] SubSection = Section.ToArray();
 
-						if (FirstElement is ISecurityObject SecurityObject2)
+						if (FirstElement is ISecurityObject SecurityObject2 &&
+							!SecurityObject2.IsConfigured &&
+							SecurityObject2.Configure(new Vector(Elements2, SubSection)))
 						{
-							if (SecurityObject2.Configure(new Vector(Elements2, SubSection)))
-							{
-								Value = new ContextSpecific(Tag.TagValue,
-									new object[] { SecurityObject2 }, SubSection);
+							Value = new ContextSpecific(Tag.TagValue,
+								new object[] { SecurityObject2 }, SubSection);
 
-								return true;
-							}
+							return true;
 						}
 
 						Value = new ContextSpecific(Tag.TagValue, Elements2, SubSection);
