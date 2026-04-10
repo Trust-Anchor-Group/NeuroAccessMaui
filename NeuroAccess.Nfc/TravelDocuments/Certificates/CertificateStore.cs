@@ -1,7 +1,6 @@
 ﻿using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
 using System;
 using System.Globalization;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Waher.Content;
 using Waher.Events;
@@ -28,7 +27,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		/// <param name="Country">Country</param>
 		/// <param name="KeyReference">Key reference.</param>
 		/// <returns>Certificate, if able to load it.</returns>
-		public static Task<X509Certificate2?> TryLoadCertificate(string IdDomain, string Country, byte[] KeyReference)
+		public static Task<Certificate?> TryLoadCertificate(string IdDomain, string Country, byte[] KeyReference)
 		{
 			return TryLoadCertificate(IdDomain, Country, KeyReference, null);
 		}
@@ -41,12 +40,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		/// <param name="KeyReference">Key reference.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>Certificate, if able to load it.</returns>
-		public static async Task<X509Certificate2?> TryLoadCertificate(string IdDomain, string Country, byte[] KeyReference,
+		public static async Task<Certificate?> TryLoadCertificate(string IdDomain, string Country, byte[] KeyReference,
 			ICommunicationLayer? Client)
 		{
 			Country = Country.ToUpper(CultureInfo.InvariantCulture);
 			string KeyReferenceString = Hashes.BinaryToString(KeyReference).ToUpper(CultureInfo.InvariantCulture);
-			X509Certificate2? Certificate;
 
 			string Uri = "https://" + IdDomain + "/IcaoPki/" + Country + "/" + KeyReferenceString + ".cer";
 
@@ -59,15 +57,20 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 
 			try
 			{
-				Certificate = X509CertificateLoader.LoadCertificate(Response.Encoded);
-				return Certificate;
+				if (Certificate.TryParse(Response.Encoded, out Certificate? Result))
+					return Result;
+				else
+				{
+					Client?.Error("Unable to parse certificate.");
+					return null;
+				}
 			}
 			catch (Exception ex)
 			{
 				if (Client is null)
 					Log.Exception(ex);
 				else
-					Client.Error(ex.Message);
+					Client?.Error(ex.Message);
 
 				return null;
 			}
@@ -163,7 +166,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 				if (Client is null)
 					Log.Exception(Response.Error);
 				else
-					Client.Error(Response.Error.Message);
+					Client?.Error(Response.Error.Message);
 
 				return null;
 			}

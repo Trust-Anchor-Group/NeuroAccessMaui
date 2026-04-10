@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using System.Threading;
+﻿using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
@@ -83,7 +82,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// <param name="Certificate">Certificate of the signing body.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
-		public abstract bool VerifySignature(byte[] Data, byte[] Signature, X509Certificate2 Certificate,
+		public abstract bool VerifySignature(byte[] Data, byte[] Signature, Certificate Certificate,
 			ICommunicationLayer? Client);
 
 		/// <inheritdoc/>

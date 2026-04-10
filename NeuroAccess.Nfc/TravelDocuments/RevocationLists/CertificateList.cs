@@ -1,5 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography.X509Certificates;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.Security;
@@ -30,36 +30,55 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		}
 
 		/// <summary>
-		/// Tries to parse an ASN.1-encoded Certificate List, as defined in
-		/// RFC 5280, §5.1
+		/// Tries to parse an ASN.1-encoded Certificate List, as defined in RFC 5280, §5.1.
 		/// </summary>
-		/// <param name="Crl">Decoded CRL.</param>
+		/// <param name="RawCertificateLIst">ASN.1 DER encoded certificate list.</param>
 		/// <param name="Parsed">Parsed object.</param>
 		/// <returns>If successful.</returns>
-		public static bool TryParse(Vector Crl, [NotNullWhen(true)] out CertificateList? Parsed)
+		public static bool TryParse(byte[] RawCertificateList, [NotNullWhen(true)] out CertificateList? Parsed)
 		{
 			Parsed = null;
 
-			if (Crl.Length != 3)
+			if (!ASN1.TryDecodeDer(RawCertificateList, out object? Content))
 				return false;
 
-			if (Crl[0] is not Vector TbsCertList)
+			if (Content is not Vector CertificateListVector)
 				return false;
 
-			if (Crl[1] is not Vector AlgorithmIdentifier)
+			return TryParse(CertificateListVector, out Parsed);
+		}
+
+		/// <summary>
+		/// Tries to parse an ASN.1-encoded Certificate List, as defined in
+		/// RFC 5280, §5.1
+		/// </summary>
+		/// <param name="CertificateListVector">Decoded Certificate List Vector.</param>
+		/// <param name="Parsed">Parsed object.</param>
+		/// <returns>If successful.</returns>
+		public static bool TryParse(Vector CertificateListVector, [NotNullWhen(true)] out CertificateList? Parsed)
+		{
+			Parsed = null;
+
+			if (CertificateListVector.Length != 3)
+				return false;
+
+			if (CertificateListVector[0] is not Vector TbsCertList)
+				return false;
+
+			if (CertificateListVector[1] is not Vector AlgorithmIdentifier)
 				return false;
 
 			ISignatureAlgorithm? SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
 			if (SignatureAlgorithm is null)
 				return false;
 
-			if (Crl[2] is not byte[] Signature)
+			if (CertificateListVector[2] is not byte[] Signature)
 				return false;
 
 			if (!ToBeSignedCertificateList.TryParse(TbsCertList, out ToBeSignedCertificateList? ToBeSigned))
 				return false;
 
-			Parsed = new CertificateList(Crl, ToBeSigned, SignatureAlgorithm, Signature);
+			Parsed = new CertificateList(CertificateListVector, ToBeSigned, SignatureAlgorithm, Signature);
 
 			return true;
 		}
@@ -85,12 +104,47 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		public Vector Asn1Vector { get; }
 
 		/// <summary>
+		/// Version of document.
+		/// </summary>
+		public int? Version => this.ToBeSignedCertificateList.Version;
+
+		/// <summary>
+		/// Issuer
+		/// </summary>
+		public Vector Issuer => this.ToBeSignedCertificateList.Issuer;
+
+		/// <summary>
+		/// This update
+		/// </summary>
+		public DateTimeOffset ThisUpdate => this.ToBeSignedCertificateList.ThisUpdate;
+
+		/// <summary>
+		/// Next update, or <see cref="DateTime.MaxValue"/> if not specified.
+		/// </summary>
+		public DateTimeOffset NextUpdate => this.ToBeSignedCertificateList.NextUpdate;
+
+		/// <summary>
+		/// List of revoked certificates.
+		/// </summary>
+		public RevokedCertificate[] RevokedCertificates => this.ToBeSignedCertificateList.RevokedCertificates;
+
+		/// <summary>
+		/// Authority Key Identifier
+		/// </summary>
+		public byte[]? AuthorityKeyIdentifier => this.ToBeSignedCertificateList.AuthorityKeyIdentifier;
+
+		/// <summary>
+		/// Extensions
+		/// </summary>
+		public Vector? Extensions => this.ToBeSignedCertificateList.Extensions;
+
+		/// <summary>
 		/// Checks if a certificate has been revoked.
 		/// </summary>
 		/// <param name="Certificate">Certificate</param>
 		/// <param name="Reason">Reason for the certificate being revoked.</param>
 		/// <returns>If the certificate has been revoked.</returns>
-		public bool HasBeenRevoked(X509Certificate2 Certificate, out RevokedReason Reason)
+		public bool HasBeenRevoked(Certificate Certificate, out RevokedReason Reason)
 		{
 			return this.ToBeSignedCertificateList.HasBeenRevoked(Certificate, out Reason);
 		}
@@ -122,15 +176,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				return false;
 			}
 
-			if (this.ToBeSignedCertificateList?.AuthorityKeyIdentifier is null)
+			if (this.AuthorityKeyIdentifier is null)
 			{
 				Client?.Error("No AKI in CRL.");
 				return false;
 			}
 
-			X509Certificate2? SignerCertificate = await CertificateStore.TryLoadCertificate(
-				IdDomain, CountryCode, this.ToBeSignedCertificateList.AuthorityKeyIdentifier,
-				Client);
+			Certificate? SignerCertificate = await CertificateStore.TryLoadCertificate(
+				IdDomain, CountryCode, this.AuthorityKeyIdentifier, Client);
 
 			if (SignerCertificate is null)
 				return false;

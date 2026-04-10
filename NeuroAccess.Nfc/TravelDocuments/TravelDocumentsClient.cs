@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Formats.Asn1;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -22,7 +21,6 @@ using Waher.Networking;
 using Waher.Networking.Sniffers;
 using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
-using Waher.Runtime.IO;
 using Waher.Security;
 using Waher.Security.EllipticCurves;
 
@@ -1647,7 +1645,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			byte[]? Data = await this.DownloadFile(EF.CardAccess, "EF.CardAccess");
 
 			if (Data is not null &&
-				ASN1.TryDecodeDER(this, Data, out object? CardAccess) &&
+				ASN1.TryDecodeDer(this, Data, out object? CardAccess) &&
 				await this.TryFindPaceProtocol(CardAccess))
 			{
 				if (this.encrypted)
@@ -2049,10 +2047,16 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			this.Information("Validating certificate.");
 			await this.SetState(TravelDocumentsState.ValidatingCertificate);
 
-			foreach (X509Certificate2 Certificate in SecurityInfo.SignedData!.Certificates)
+			foreach (X509Certificate2 Cert in SecurityInfo.SignedData!.Certificates)
 			{
-				ChunkedList<X509Certificate2> Certificates = [];
-				KeyValuePair<string?, byte[]?> P = GetAuthorityKeyIdentifier(Certificate);
+				if (!Certificate.TryParse(Cert.RawData, out Certificate? Cert2))
+				{
+					this.Error("Unable to parse certificate.");
+					return ReadTravelDocumentResult.InvalidCertificate;
+				}
+
+				ChunkedList<Certificate> Certificates = [];
+				KeyValuePair<string?, byte[]?> P = GetAuthorityKeyIdentifier(Cert2);
 				Dictionary<string, bool> CrlUrls = [];
 				Dictionary<string, bool> Processed = [];
 				string? CountryCode = P.Key;
@@ -2074,7 +2078,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 					this.Information("Retrieving issuer certificate: " + Hashes.BinaryToString(IssuerKeyReference));
 
-					X509Certificate2? IssuerCertificate = await CertificateStore.TryLoadCertificate(
+					Certificate? IssuerCertificate = await CertificateStore.TryLoadCertificate(
 						 IdDomain, CountryCode, IssuerKeyReference, this);
 
 					if (IssuerCertificate is null)
@@ -2095,7 +2099,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					IssuerKeyReference = P.Value;
 				}
 
-				foreach (string CrlUrl in GetRevocationListUrls(Certificate))
+				foreach (string CrlUrl in GetRevocationListUrls(Cert2))
 					CrlUrls[CrlUrl] = true;
 
 				if (CrlUrls.Count == 0)
@@ -2125,17 +2129,17 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 					this.Information("Checking if certificates are revoked.");
 
-					if (RevokedCertificates.HasBeenRevoked(Certificate, out RevokedReason Reason))
+					if (RevokedCertificates.HasBeenRevoked(Cert2, out RevokedReason Reason))
 					{
-						this.Error("Certificate " + Certificate.SerialNumber + " has been revoked: " + Reason.ToString());
+						this.Error("Certificate " + Cert2.SerialNumber.ToString("X", CultureInfo.InvariantCulture) + " has been revoked: " + Reason.ToString());
 						return ReadTravelDocumentResult.InvalidCertificate;
 					}
 
-					foreach (X509Certificate2 Certificate2 in Certificates)
+					foreach (Certificate Certificate2 in Certificates)
 					{
 						if (RevokedCertificates.HasBeenRevoked(Certificate2, out Reason))
 						{
-							this.Error("Certificate " + Certificate2.SerialNumber + " has been revoked: " + Reason.ToString());
+							this.Error("Certificate " + Certificate2.SerialNumber.ToString("X", CultureInfo.InvariantCulture) + " has been revoked: " + Reason.ToString());
 							return ReadTravelDocumentResult.InvalidCertificate;
 						}
 					}
@@ -2143,36 +2147,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				this.Information("Verifying certificate chain.");
 
-				X509Chain Chain = X509Chain.Create();
-				bool First = true;
-
-				Chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;       // Custom Revocation List check performed earlier. Built-in verificationand revocation check provided by OS will fail.
-				Chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
-				Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
-				Chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
-				Chain.ChainPolicy.UrlRetrievalTimeout = TimeSpan.FromSeconds(30);
-
-				foreach (X509Certificate2 Certificate2 in Certificates)
+				if (!CertificateChain.VerifySignatures(this, Certificates.ToArray()))
 				{
-					if (First)
-					{
-						Chain.ChainPolicy.CustomTrustStore.Add(Certificate2);
-						First = false;
-					}
-					else
-						Chain.ChainPolicy.ExtraStore.Add(Certificate2);
-				}
-
-				if (!Chain.Build(Certificate))
-				{
-					StringBuilder sb = new();
-
-					sb.AppendLine("Validation failed: ");
-
-					foreach (X509ChainStatus Status in Chain.ChainStatus)
-						sb.AppendLine(Status.StatusInformation);
-
-					this.Error(sb.ToString());
+					this.Error("Signatures in certificate chain not valid.");
 					return ReadTravelDocumentResult.InvalidCertificate;
 				}
 			}
@@ -2629,27 +2606,16 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// </summary>
 		/// <param name="Certificate">Certificate</param>
 		/// <returns>Country code and authority key identifier, if found.</returns>
-		public static KeyValuePair<string?, byte[]?> GetAuthorityKeyIdentifier(X509Certificate2 Certificate)
+		public static KeyValuePair<string?, byte[]?> GetAuthorityKeyIdentifier(Certificate Certificate)
 		{
-			string s = Certificate.Issuer;
-			int i = s.IndexOf("C=", StringComparison.OrdinalIgnoreCase);
+			string CountryCode = Certificate.Issuer.CountryName;
 
-			if (i >= 0)
+			foreach (object Extension in Certificate.Extensions?.Elements ?? Array.Empty<object>())
 			{
-				int j = s.IndexOfAny([',', ' '], i + 2);
-
-				if (j >= i + 2)
+				if (Extension is AuthorityKeyIdentifier AuthorityKeyIdentifier)
 				{
-					string CountryCode = s[(i + 2)..j].Trim();
-
-					foreach (X509Extension Extension in Certificate.Extensions)
-					{
-						if (Extension is X509AuthorityKeyIdentifierExtension AuthorityKeyIdentifier)
-						{
-							return new KeyValuePair<string?, byte[]?>(CountryCode,
-								AuthorityKeyIdentifier.KeyIdentifier?.ToArray());
-						}
-					}
+					return new KeyValuePair<string?, byte[]?>(CountryCode,
+						AuthorityKeyIdentifier.Value);
 				}
 			}
 
@@ -2661,7 +2627,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// </summary>
 		/// <param name="Certificate">Certificate</param>
 		/// <returns>URL to Revocation List, if found.</returns>
-		public static string[] GetRevocationListUrls(X509Certificate2 Certificate)
+		public static string[] GetRevocationListUrls(Certificate Certificate)
 		{
 			return GetRevocationListUrls(null, Certificate);
 		}
@@ -2672,21 +2638,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <param name="Client">Optional client reference.</param>
 		/// <param name="Certificate">Certificate</param>
 		/// <returns>URL to Revocation List, if found.</returns>
-		public static string[] GetRevocationListUrls(ICommunicationLayer? Client, X509Certificate2 Certificate)
+		public static string[] GetRevocationListUrls(ICommunicationLayer? Client, Certificate Certificate)
 		{
 			ChunkedList<string> Urls = [];
 
-			foreach (X509Extension Extension in Certificate.Extensions)
+			foreach (object Extension in Certificate.Extensions?.Elements ?? Array.Empty<object>())
 			{
-				if (Extension.Oid?.Value != "2.5.29.31" ||
-					!ASN1.TryDecodeDER(Client, Extension.RawData, out object? Parsed) ||
-					Parsed is not Vector DistributionPointsVector)
-				{
-					continue;
-				}
-
-				DistributionPoints DistributionPoints = new();
-				if (!DistributionPoints.Configure(DistributionPointsVector))
+				if (Extension is not DistributionPoints DistributionPoints)
 					continue;
 
 				foreach (DistributionPoint Point in DistributionPoints.Points)

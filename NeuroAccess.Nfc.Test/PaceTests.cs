@@ -74,7 +74,7 @@ namespace NeuroAccess.Nfc.Test
 		public void Test_02_Parse_EF_CardAccess(string CardAccess, bool IsBase64)
 		{
 			byte[] Bin = Decode(CardAccess, IsBase64);
-			Assert.IsTrue(ASN1.TryDecodeDER(Bin, out object? Value));
+			Assert.IsTrue(ASN1.TryDecodeDer(Bin, out object? Value));
 			Assert.IsNotNull(Value);
 		}
 
@@ -89,7 +89,7 @@ namespace NeuroAccess.Nfc.Test
 			Type CurveType)
 		{
 			byte[] Bin = Decode(CardAccess, IsBase64);
-			Assert.IsTrue(ASN1.TryDecodeDER(Bin, out object? Value));
+			Assert.IsTrue(ASN1.TryDecodeDer(Bin, out object? Value));
 			Assert.IsNotNull(Value);
 
 			PaceEcdhProtocol? EecProtocol = (PaceEcdhProtocol)Value!;
@@ -114,7 +114,7 @@ namespace NeuroAccess.Nfc.Test
 			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 
 			byte[] Bin = Decode(CardAccess, IsBase64);
-			Assert.IsTrue(ASN1.TryDecodeDER(Bin, out object? Value));
+			Assert.IsTrue(ASN1.TryDecodeDer(Bin, out object? Value));
 			PaceEcdhProtocol? EecProtocol = (PaceEcdhProtocol)Value!;
 
 			byte[] z = Decode(EncryptedNonce, IsBase64);
@@ -180,7 +180,7 @@ namespace NeuroAccess.Nfc.Test
 			// Elliptic Curve Parameters
 
 			byte[] Bin = Decode(CardAccess, IsBase64);
-			Assert.IsTrue(ASN1.TryDecodeDER(Bin, out object? Value));
+			Assert.IsTrue(ASN1.TryDecodeDer(Bin, out object? Value));
 			PaceEcdhProtocol? EecProtocol = (PaceEcdhProtocol)Value!;
 			Assert.AreEqual(AlgorithmType, EecProtocol.GetType());
 

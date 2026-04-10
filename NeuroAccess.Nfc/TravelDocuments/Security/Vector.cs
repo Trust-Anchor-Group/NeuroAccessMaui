@@ -61,7 +61,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 			sb.Append(this.GetType().Name);
 			sb.Append('(');
 
-			foreach (object? Item in this.Elements)
+			foreach (object? Item in this)
 			{
 				if (First)
 					First = false;

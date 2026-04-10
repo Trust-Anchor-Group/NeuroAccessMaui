@@ -106,7 +106,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		/// <returns>Decoded object.</returns>
 		public Task<ContentResponse> DecodeAsync(string ContentType, byte[] Data, Encoding Encoding, KeyValuePair<string, string>[] Fields, Uri BaseUri, ICodecProgress Progress)
 		{
-			if (!ASN1.TryDecodeDER(Data, out object? Decoded) ||
+			if (!ASN1.TryDecodeDer(Data, out object? Decoded) ||
 				Decoded is not Vector Crl ||
 				!CertificateList.TryParse(Crl, out CertificateList? Parsed))
 			{

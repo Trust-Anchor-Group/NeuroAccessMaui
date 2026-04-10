@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -10,7 +9,6 @@ using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Content;
 using Waher.Networking;
 using Waher.Networking.Sniffers;
-using Waher.Networking.Sniffers.Model;
 using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
 using Waher.Security;
@@ -38,7 +36,7 @@ namespace NeuroAccess.Nfc.Test
 			SignedCms SignedData = new();
 			SignedData.Decode(Bin);
 
-			ASN1.TryDecodeDER(SignedData.ContentInfo.Content, out object? Content);
+			ASN1.TryDecodeDer(SignedData.ContentInfo.Content, out object? Content);
 			Vector? ContentVector = Content as Vector;
 			Assert.IsNotNull(ContentVector);
 
@@ -54,9 +52,10 @@ namespace NeuroAccess.Nfc.Test
 
 			SignedData.CheckSignature(true);
 
-			foreach (X509Certificate2 Certificate in SignedData.Certificates)
+			foreach (X509Certificate2 Cert in SignedData.Certificates)
 			{
-				KeyValuePair<string?, byte[]?> P = TravelDocumentsClient.GetAuthorityKeyIdentifier(Certificate);
+				Assert.IsTrue(Certificate.TryParse(Cert.RawData, out Certificate? Cert2));
+				KeyValuePair<string?, byte[]?> P = TravelDocumentsClient.GetAuthorityKeyIdentifier(Cert2);
 				string? CountryCode = P.Key;
 				byte[]? IssuerKeyReference = P.Value;
 
@@ -80,10 +79,12 @@ namespace NeuroAccess.Nfc.Test
 			SignedData.Decode(Bin);
 			SignedData.CheckSignature(true);
 
-			foreach (X509Certificate2 Certificate in SignedData.Certificates)
+			foreach (X509Certificate2 Cert in SignedData.Certificates)
 			{
-				ChunkedList<X509Certificate2> Certificates = [];
-				KeyValuePair<string?, byte[]?> P = TravelDocumentsClient.GetAuthorityKeyIdentifier(Certificate);
+				Assert.IsTrue(Certificate.TryParse(Cert.RawData, out Certificate? Cert2));
+
+				ChunkedList<Certificate> Certificates = [];
+				KeyValuePair<string?, byte[]?> P = TravelDocumentsClient.GetAuthorityKeyIdentifier(Cert2);
 				Dictionary<string, bool> CrlUrls = [];
 				Dictionary<string, bool> Processed = [];
 				string? CountryCode = P.Key;
@@ -102,7 +103,7 @@ namespace NeuroAccess.Nfc.Test
 
 					Processed[Key] = true;
 
-					X509Certificate2? IssuerCertificate = await CertificateStore.TryLoadCertificate(
+					Certificate? IssuerCertificate = await CertificateStore.TryLoadCertificate(
 						idDomain, CountryCode, IssuerKeyReference, Client);
 					Assert.IsNotNull(IssuerCertificate, "Issuer certificate not found.");
 
@@ -118,7 +119,7 @@ namespace NeuroAccess.Nfc.Test
 					IssuerKeyReference = P.Value;
 				}
 
-				foreach (string CrlUrl in TravelDocumentsClient.GetRevocationListUrls(Certificate))
+				foreach (string CrlUrl in TravelDocumentsClient.GetRevocationListUrls(Cert2))
 					CrlUrls[CrlUrl] = true;
 
 				Assert.IsGreaterThan(0, CrlUrls.Count);
@@ -134,13 +135,19 @@ namespace NeuroAccess.Nfc.Test
 
 					Assert.IsTrue(await RevokedCertificates.VerifySignature(idDomain, CountryCode!, Client));
 
-					if (RevokedCertificates.HasBeenRevoked(Certificate, out RevokedReason Reason))
-						Assert.Fail("Certificate " + Certificate.SerialNumber + " has been revoked: " + Reason.ToString());
+					if (RevokedCertificates.HasBeenRevoked(Cert2, out RevokedReason Reason))
+					{
+						Assert.Fail("Certificate " + Cert2.SerialNumber.ToString("X", CultureInfo.InvariantCulture) +
+							" has been revoked: " + Reason.ToString());
+					}
 
-					foreach (X509Certificate2 Certificate2 in Certificates)
+					foreach (Certificate Certificate2 in Certificates)
 					{
 						if (RevokedCertificates.HasBeenRevoked(Certificate2, out Reason))
-							Assert.Fail("Certificate " + Certificate2.SerialNumber + " has been revoked: " + Reason.ToString());
+						{
+							Assert.Fail("Certificate " + Certificate2.SerialNumber.ToString("X", CultureInfo.InvariantCulture) +
+								" has been revoked: " + Reason.ToString());
+						}
 					}
 				}
 
@@ -153,18 +160,20 @@ namespace NeuroAccess.Nfc.Test
 				Chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
 				Chain.ChainPolicy.UrlRetrievalTimeout = TimeSpan.FromSeconds(30);
 
-				foreach (X509Certificate2 Certificate2 in Certificates)
+				foreach (Certificate Certificate2 in Certificates)
 				{
+					X509Certificate2 Certificate2_2 = X509CertificateLoader.LoadCertificate(Certificate2.Binary);
+
 					if (First)
 					{
-						Chain.ChainPolicy.CustomTrustStore.Add(Certificate2);
+						Chain.ChainPolicy.CustomTrustStore.Add(Certificate2_2);
 						First = false;
 					}
 					else
-						Chain.ChainPolicy.ExtraStore.Add(Certificate2);
+						Chain.ChainPolicy.ExtraStore.Add(Certificate2_2);
 				}
 
-				if (!Chain.Build(Certificate))
+				if (!Chain.Build(Cert))
 				{
 					StringBuilder sb = new();
 
@@ -191,8 +200,8 @@ namespace NeuroAccess.Nfc.Test
 			TextWriterSniffer Sniffer = new(SnifferWriter, BinaryPresentationMethod.Hexadecimal, "Unit Test Sniffer");
 			CommunicationLayer Client = new(true, Sniffer);
 
-			X509Certificate2 Root = X509CertificateLoader.LoadCertificate(Convert.FromBase64String(RootBase64));
-			X509Certificate2 Cert = X509CertificateLoader.LoadCertificate(Convert.FromBase64String(CertBase64));
+			Assert.IsTrue(Certificate.TryParse(Convert.FromBase64String(RootBase64), out Certificate? Root));
+			Assert.IsTrue(Certificate.TryParse(Convert.FromBase64String(CertBase64), out Certificate? Cert));
 
 			Assert.IsTrue(CertificateChain.VerifySignatures(Client, Root, Cert));
 
@@ -215,7 +224,7 @@ namespace NeuroAccess.Nfc.Test
 			int NrOk = 0;
 			int NrFailed = 0;
 
-			void Inc(SortedDictionary<string, int> List, string Key)
+			static void Inc(SortedDictionary<string, int> List, string Key)
 			{
 				if (List.TryGetValue(Key, out int i))
 					List[Key] = i + 1;
@@ -231,9 +240,10 @@ namespace NeuroAccess.Nfc.Test
 
 				try
 				{
-					X509Certificate2 Root = X509CertificateLoader.LoadCertificateFromFile(FileName);
+					byte[] Bin = File.ReadAllBytes(FileName);
 
-					if (CertificateChain.VerifySignatures(Root))
+					if (Certificate.TryParse(Bin, out Certificate? Root) &&
+						CertificateChain.VerifySignatures(Root))
 					{
 						NrOk++;
 						Inc(NrOkPerCountry, CountryCode);
@@ -399,16 +409,15 @@ namespace NeuroAccess.Nfc.Test
 		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AD\\031B14A8421B68EFA0BFD081C88C2B64270542A9.cer")]
 		public void Test_05_VerifySpecificIcaoCertificates(string FileName)
 		{
-			TestContextWriter SnifferWriter = new(this.TestContext!);
+			TestContextWriter SnifferWriter = new(this.TestContext);
 			TextWriterSniffer Sniffer = new(SnifferWriter, BinaryPresentationMethod.Hexadecimal, "Unit Test Sniffer");
 			CommunicationLayer Client = new(true, Sniffer);
+			byte[] Raw = File.ReadAllBytes(FileName);
 
-			X509Certificate2 Root = X509CertificateLoader.LoadCertificateFromFile(FileName);
+			Assert.IsTrue(Certificate.TryParse(Raw, out Certificate? Cert));
+			Console.Out.WriteLine(JSON.Encode(Cert, true));
 
-			Assert.IsTrue(ASN1.TryDecodeDER(Root.RawData, out object? Content));
-			Console.Out.WriteLine(JSON.Encode(Content, true));
-
-			Assert.IsTrue(CertificateChain.VerifySignatures(Client, Root));
+			Assert.IsTrue(CertificateChain.VerifySignatures(Client, Cert));
 		}
 
 	}

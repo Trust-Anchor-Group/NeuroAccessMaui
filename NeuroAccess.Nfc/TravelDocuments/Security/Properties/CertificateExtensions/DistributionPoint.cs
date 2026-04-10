@@ -36,6 +36,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensi
 					return false;
 				}
 
+				GeneralName = (byte[])GeneralName.Clone();
 				GeneralName[0] = (byte)UniversalTagNumber.IA5String;
 				AsnReader Reader = new(GeneralName, AsnEncodingRules.DER);
 				string Url = Reader.ReadCharacterString((UniversalTagNumber)GeneralName[0]);

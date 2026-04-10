@@ -19,12 +19,50 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <summary>
 		/// Decodes a DER-encoded object.
 		/// </summary>
+		/// <param name="TagNumber">Try to decode the ASN.1 encoded data, as if it was made using
+		/// a specific Tag Number.</param>
 		/// <param name="Data">Binary data</param>
 		/// <param name="Value">Decoded object.</param>
 		/// <returns>If successful.</returns>
-		public static bool TryDecodeDER(byte[] Data, out object? Value)
+		public static bool TryDecodeDerAs(UniversalTagNumber TagNumber, byte[] Data, out object? Value)
 		{
-			return TryDecodeDER(null, Data, out Value);
+			return TryDecodeDerAs(null, TagNumber, Data, out Value);
+		}
+
+		/// <summary>
+		/// Decodes a DER-encoded object.
+		/// </summary>
+		/// <param name="Client">Optional client reference.</param>
+		/// <param name="TagNumber">Try to decode the ASN.1 encoded data, as if it was made using
+		/// a specific Tag Number.</param>
+		/// <param name="Data">Binary data</param>
+		/// <param name="Value">Decoded object.</param>
+		/// <returns>If successful.</returns>
+		public static bool TryDecodeDerAs(ICommunicationLayer? Client, UniversalTagNumber TagNumber,
+			byte[] Data, out object? Value)
+		{
+			if (Data.Length == 0)
+			{
+				Value = null;
+				return false;
+			}
+
+			Data = (byte[])Data.Clone();
+			Data[0] = (byte)TagNumber;
+
+			AsnReader Reader = new(Data, AsnEncodingRules.DER);
+			return TryDecodeAsn1(Client, Reader, out Value);
+		}
+
+		/// <summary>
+		/// Decodes a DER-encoded object.
+		/// </summary>
+		/// <param name="Data">Binary data</param>
+		/// <param name="Value">Decoded object.</param>
+		/// <returns>If successful.</returns>
+		public static bool TryDecodeDer(byte[] Data, out object? Value)
+		{
+			return TryDecodeDer(null, Data, out Value);
 		}
 
 		/// <summary>
@@ -34,7 +72,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <param name="Data">Binary data</param>
 		/// <param name="Value">Decoded object.</param>
 		/// <returns>If successful.</returns>
-		public static bool TryDecodeDER(ICommunicationLayer? Client, byte[] Data, out object? Value)
+		public static bool TryDecodeDer(ICommunicationLayer? Client, byte[] Data, out object? Value)
 		{
 			AsnReader Reader = new(Data, AsnEncodingRules.DER);
 			return TryDecodeAsn1(Client, Reader, out Value);
@@ -94,7 +132,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 						try
 						{
-							if (TryDecodeDER(Client, Bin, out object? Embedded))
+							if (TryDecodeDer(Client, Bin, out object? Embedded))
 								Value = Embedded;
 							else
 								Value = Bin;

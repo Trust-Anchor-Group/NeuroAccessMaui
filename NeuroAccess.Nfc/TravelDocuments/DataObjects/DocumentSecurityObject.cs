@@ -86,7 +86,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 					if (SecurityObject is not LdsSecurityObject LdsSecurityObject)
 						return false;
 
-					ASN1.TryDecodeDER(Client, Content, out object? ParsedContent);
+					ASN1.TryDecodeDer(Client, Content, out object? ParsedContent);
 
 					if (ParsedContent is not Vector ContentVector)
 						return false;

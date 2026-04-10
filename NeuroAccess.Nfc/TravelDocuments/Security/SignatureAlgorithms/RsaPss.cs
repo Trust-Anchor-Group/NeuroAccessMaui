@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using System.Numerics;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
+using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
 using NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions;
 using Waher.Networking;
@@ -119,9 +117,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// <param name="Certificate">Certificate of the signing body.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
-		public override bool VerifySignature(byte[] Data, byte[] Signature, X509Certificate2 Certificate,
+		public override bool VerifySignature(byte[] Data, byte[] Signature, Certificate Certificate,
 			ICommunicationLayer? Client)
 		{
+			return false;
+
+			/*
 			using RSA? Rsa = Certificate.GetRSAPublicKey();
 			if (Rsa is null)
 			{
@@ -148,7 +149,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				Client?.Warning("Valid: " + Result.ToString());
 			}
 
-			return Result;
+			return Result;*/
 		}
 
 		/// <summary>

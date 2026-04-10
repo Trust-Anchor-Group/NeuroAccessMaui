@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Globalization;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
+using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using Waher.Events;
 using Waher.Networking;
 using Waher.Runtime.Collections;
@@ -25,9 +24,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// <param name="Certificate">Certificate of the signing body.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
-		public override bool VerifySignature(byte[] Data, byte[] Signature, X509Certificate2 Certificate,
+		public override bool VerifySignature(byte[] Data, byte[] Signature, Certificate Certificate,
 			ICommunicationLayer? Client)
 		{
+			return false;
+
+			/*
 			using ECDsa? Ecdsa = Certificate.GetECDsaPublicKey();
 			if (Ecdsa is null)
 			{
@@ -63,7 +65,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			System.Numerics.BigInteger CertPubX = EllipticCurve.ToInt(Parameters.Q.X, true);
 			System.Numerics.BigInteger CertPubY = EllipticCurve.ToInt(Parameters.Q.Y, true);
 
-			if (!ASN1.TryDecodeDER(Client, Signature, out object? Obj) ||
+			if (!ASN1.TryDecodeDer(Client, Signature, out object? Obj) ||
 				Obj is not Vector SignatureVector ||
 				SignatureVector.Length != 2 ||
 				SignatureVector[0] is not System.Numerics.BigInteger R ||
@@ -267,6 +269,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			}
 
 			return Result;
+			*/
 		}
 
 		private static readonly EllipticCurve[] curves = GetEllipticCurves();

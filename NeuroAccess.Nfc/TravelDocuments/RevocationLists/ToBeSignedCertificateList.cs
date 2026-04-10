@@ -1,4 +1,5 @@
-﻿using NeuroAccess.Nfc.TravelDocuments.Security;
+﻿using NeuroAccess.Nfc.TravelDocuments.Certificates;
+using NeuroAccess.Nfc.TravelDocuments.Security;
 using NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
 using System;
@@ -6,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
 using System.Globalization;
-using System.Security.Cryptography.X509Certificates;
 using Waher.Runtime.Collections;
 
 namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
@@ -16,7 +16,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 	/// </summary>
 	public class ToBeSignedCertificateList
 	{
-		private readonly Dictionary<string, RevokedReason> revokedReasons = [];
+		private readonly Dictionary<System.Numerics.BigInteger, RevokedReason> revokedReasons = [];
 
 		/// <summary>
 		/// Certificate List, without signature, as defined in RFC 5280, §5.1
@@ -47,7 +47,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 
 			foreach (RevokedCertificate RevokedCertificate in RevokedCertificates)
 			{
-				string SerialNumber = RevokedCertificate.SerialNumber.ToString("X", CultureInfo.InvariantCulture);
+				System.Numerics.BigInteger SerialNumber = RevokedCertificate.SerialNumber;
 
 				if (RevokedCertificate.Reason.HasValue)
 				{
@@ -140,9 +140,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 							ExtensionSequence[1] is byte[] ExtensionBin &&
 							ExtensionBin.Length > 0)
 						{
-							ExtensionBin[0] = (byte)UniversalTagNumber.Integer;
-
-							if (ASN1.TryDecodeDER(ExtensionBin, out object? ParsedExtension) &&
+							if (ASN1.TryDecodeDerAs(UniversalTagNumber.Integer, ExtensionBin, out object? ParsedExtension) &&
 								ParsedExtension is System.Numerics.BigInteger ReasonCode &&
 								ReasonCode >= int.MinValue &&
 								ReasonCode <= int.MaxValue)
@@ -162,23 +160,23 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			if (i < c && TbsCertList[i] is Vector ListExtensions2)
 			{
 				i++;
+
+				if (ListExtensions2.Length == 1 &&
+					ListExtensions2.FirstElement is Vector ListExtensions3 &&
+					(ListExtensions2.SubSection[0] & 0x80) != 0)
+				{
+					ListExtensions2 = ListExtensions3;
+				}
+
 				ListExtensions = ListExtensions2;
 
 				foreach (object? Extension in ListExtensions2)
 				{
-					if (Extension is not AuthorityKeyIdentifier Aki)
-						continue;
-
-					Aki.Value[0] = (byte)UniversalTagNumber.OctetString;
-
-					if (!ASN1.TryDecodeDER(Aki.Value, out object? ParsedExtension))
-						continue;
-
-					if (ParsedExtension is not byte[] Identifier)
-						continue;
-
-					AuthorityKeyIdentifier = Identifier;
-					break;
+					if (Extension is AuthorityKeyIdentifier Aki)
+					{
+						AuthorityKeyIdentifier = Aki.Value;
+						break;
+					}
 				}
 			}
 			else
@@ -245,7 +243,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		/// <param name="Certificate">Certificate</param>
 		/// <param name="Reason">Reason for the certificate being revoked.</param>
 		/// <returns>If the certificate has been revoked.</returns>
-		public bool HasBeenRevoked(X509Certificate2 Certificate, out RevokedReason Reason)
+		public bool HasBeenRevoked(Certificate Certificate, out RevokedReason Reason)
 		{
 			return this.revokedReasons.TryGetValue(Certificate.SerialNumber, out Reason);
 		}
