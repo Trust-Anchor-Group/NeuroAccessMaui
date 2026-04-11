@@ -1,4 +1,5 @@
 ﻿using System;
+using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Certificates
@@ -38,24 +39,24 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 			{
 				Client?.Information("Validating certificate " + (++Index) + " signature.");
 
-				if (Cert.SignatureAlgorithm is null)
+				if (Issuer.PublicKey is null)
 				{
-					Client?.Error("Unable to decode signature algorithm.\r\n\r\n" +
+					Client?.Error("Unable to decode issuer signature algorithm and public key.\r\n\r\n" +
 						Convert.ToBase64String(Cert.Binary, Base64FormattingOptions.InsertLineBreaks));
 
 					return false;
 				}
 
-				if (!Cert.SignatureAlgorithm.IsConfigured)
+				if (Issuer.PublicKey is ISecurityObject PublicKeyObject &&
+					!PublicKeyObject.IsConfigured)
 				{
-					Client?.Error("Signature algorithm not configured properly.\r\n\r\n" +
+					Client?.Error("Issuer public key not configured properly.\r\n\r\n" +
 						Convert.ToBase64String(Cert.Binary, Base64FormattingOptions.InsertLineBreaks));
 
 					return false;
 				}
 
-				if (!Cert.SignatureAlgorithm.VerifySignature(Cert.Binary, Cert.Signature,
-					Issuer, Client))
+				if (!Issuer.PublicKey.VerifySignature(Cert.Binary, Cert.Signature, Client))
 				{
 					Client?.Error("Certificate signature not valid.\r\n\r\n" +
 						Convert.ToBase64String(Cert.Binary, Base64FormattingOptions.InsertLineBreaks));

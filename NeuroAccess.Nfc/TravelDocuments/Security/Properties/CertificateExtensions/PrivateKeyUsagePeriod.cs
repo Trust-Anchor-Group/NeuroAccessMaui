@@ -79,17 +79,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensi
 				{
 					StringBuilder sb = new();
 
-					sb.Append(s.Substring(0, 4));
+					sb.Append(s[..4]);
 					sb.Append('-');
-					sb.Append(s.Substring(4, 2));
+					sb.Append(s.AsSpan(4, 2));
 					sb.Append('-');
-					sb.Append(s.Substring(6, 2));
+					sb.Append(s.AsSpan(6, 2));
 					sb.Append('T');
-					sb.Append(s.Substring(8, 2));
+					sb.Append(s.AsSpan(8, 2));
 					sb.Append(':');
-					sb.Append(s.Substring(10, 2));
+					sb.Append(s.AsSpan(10, 2));
 					sb.Append(':');
-					sb.Append(s.Substring(12));
+					sb.Append(s[12..]);
 
 					if (XML.TryParse(sb.ToString(), out Timestamp))
 					{

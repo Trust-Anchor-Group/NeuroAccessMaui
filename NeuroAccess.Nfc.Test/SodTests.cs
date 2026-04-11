@@ -40,7 +40,7 @@ namespace NeuroAccess.Nfc.Test
 			Vector? ContentVector = Content as Vector;
 			Assert.IsNotNull(ContentVector);
 
-			ISecurityObject SecurityObject = Types.FindBest<ISecurityObject, string>(SignedData.ContentInfo.ContentType.Value!);
+			Assert.IsTrue(ASN1.TryInstantiate(SignedData.ContentInfo.ContentType.Value!, out ISecurityObject? SecurityObject));
 			Assert.IsFalse(SecurityObject.IsConfigured);
 			Assert.IsTrue(SecurityObject.Configure(ContentVector));
 
@@ -82,6 +82,9 @@ namespace NeuroAccess.Nfc.Test
 			foreach (X509Certificate2 Cert in SignedData.Certificates)
 			{
 				Assert.IsTrue(Certificate.TryParse(Cert.RawData, out Certificate? Cert2));
+
+				Console.Out.WriteLine(new string('=', 80));
+				Console.Out.WriteLine(JSON.Encode(Cert2.Asn1Vector, true));
 
 				ChunkedList<Certificate> Certificates = [];
 				KeyValuePair<string?, byte[]?> P = TravelDocumentsClient.GetAuthorityKeyIdentifier(Cert2);

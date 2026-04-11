@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
+using System.Reflection;
 using NeuroAccess.Nfc.TravelDocuments.Security;
+using Waher.Events;
 using Waher.Networking;
 using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
@@ -15,6 +18,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	public static class ASN1
 	{
 		private static readonly SortedDictionary<string, int> oidsNotRecognized = [];
+		private static Dictionary<string, ConstructorInfo>? objectConstructors = null;
 
 		/// <summary>
 		/// Decodes a DER-encoded object.
@@ -152,16 +156,14 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					case (int)UniversalTagNumber.ObjectIdentifier:
 						string Oid = Reader.ReadObjectIdentifier();
 
-						ISecurityObject SecurityObject = Types.FindBest<ISecurityObject, string>(Oid);
-						if (SecurityObject is null)
+						if (TryInstantiate(Oid, out ISecurityObject? SecurityObject))
+							Value = SecurityObject;
+						else
 						{
 							Client?.Warning("OID not recognized: " + Oid);
 							ReportOidNotRecognized(Oid);
 							Value = Oid;
 						}
-						else
-							Value = SecurityObject;
-
 						return true;
 
 					case (int)UniversalTagNumber.ObjectDescriptor:  // Obsolete
@@ -362,6 +364,51 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					oidsNotRecognized.Clear();
 
 				return Result;
+			}
+		}
+
+		/// <summary>
+		/// Tries to instantiate a new object of a given OID.
+		/// </summary>
+		/// <param name="Oid">OID of object type.</param>
+		/// <param name="Object">Newly created object, if successful.</param>
+		/// <returns>If able to create a new object instance of the given OID.</returns>
+		public static bool TryInstantiate(string Oid, [NotNullWhen(true)] out ISecurityObject? Object)
+		{
+			if (objectConstructors is null)
+			{
+				Dictionary<string, ConstructorInfo> Constructors = [];
+
+				foreach (Type T in Types.GetTypesImplementingInterface(typeof(ISecurityObject)))
+				{
+					try
+					{
+						ConstructorInfo? CI = Types.GetDefaultConstructor(T);
+						if (CI is null)
+							continue;
+
+						ISecurityObject Obj = (ISecurityObject)CI.Invoke(Types.NoParameters);
+
+						Constructors[Obj.Oid] = CI;
+					}
+					catch (Exception ex)
+					{
+						Log.Exception(ex);
+					}
+				}
+
+				objectConstructors = Constructors;
+			}
+
+			if (objectConstructors.TryGetValue(Oid, out ConstructorInfo? CI2))
+			{
+				Object = (ISecurityObject)CI2.Invoke(Types.NoParameters);
+				return true;
+			}
+			else
+			{
+				Object = null;
+				return false;
 			}
 		}
 	}

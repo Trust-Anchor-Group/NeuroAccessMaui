@@ -1,5 +1,6 @@
 ﻿using NeuroAccess.Nfc.TravelDocuments.Security;
 using NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions;
+using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -17,29 +18,31 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		/// <param name="Binary">Binary representation of certificate to be signed.</param>
 		/// <param name="Version">Version of representation.</param>
 		/// <param name="SerialNumber">Serial number</param>
-		/// <param name="SignatureAlgorithm">Signature algirithm used.</param>
+		/// <param name="IssuerSignatureAlgorithm">Issuer Signature algorithm used to sign the certificate.</param>
 		/// <param name="Issuer">Information about Issuer.</param>
 		/// <param name="NotBefore">Signatures cannot be created before this timestamp.</param>
 		/// <param name="NotAfter">Signatures cannot be created after this timestamp.</param>
 		/// <param name="Subject">Information about Subject.</param>
 		/// <param name="AuthorityKeyIdentifier">Authority Key Identifier, if known.</param>
 		/// <param name="SubjectKeyIdentifier">Subject Key Identifier, if known.</param>
+		/// <param name="CertificatePublicKey">Certificate public key, used to verify signatures issued by the certificate.</param>
 		/// <param name="Extensions">Extensions, if any.</param>
 		private ToBeSignedCertificate(byte[] Binary, int Version, System.Numerics.BigInteger SerialNumber,
-			ISignatureAlgorithm SignatureAlgorithm, Names Issuer, DateTimeOffset NotBefore,
+			ISignatureAlgorithm IssuerSignatureAlgorithm, Names Issuer, DateTimeOffset NotBefore,
 			DateTimeOffset NotAfter, Names Subject, byte[]? AuthorityKeyIdentifier,
-			byte[]? SubjectKeyIdentifier, Vector? Extensions)
+			byte[]? SubjectKeyIdentifier, IPublicKey CertificatePublicKey, Vector? Extensions)
 		{
 			this.Binary = Binary;
 			this.Version = Version;
 			this.SerialNumber = SerialNumber;
-			this.SignatureAlgorithm = SignatureAlgorithm;
+			this.IssuerSignatureAlgorithm = IssuerSignatureAlgorithm;
 			this.Issuer = Issuer;
 			this.NotBefore = NotBefore;
 			this.NotAfter = NotAfter;
 			this.Subject = Subject;
 			this.AuthorityKeyIdentifier = AuthorityKeyIdentifier;
 			this.SubjectKeyIdentifier = SubjectKeyIdentifier;
+			this.PublicKey = CertificatePublicKey;
 			this.Extensions = Extensions;
 		}
 
@@ -86,16 +89,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 
 			object? Obj = TbsCert[i++];
 
-			if (Obj is not ISignatureAlgorithm SignatureAlgorithm)
+			if (Obj is not ISignatureAlgorithm IssuerSignatureAlgorithm)
 			{
 				if (Obj is not Vector AlgorithmIdentifier)
 					return false;
 
-				ISignatureAlgorithm? SignatureAlgorithm2 = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
-				if (SignatureAlgorithm2 is null)
+				ISignatureAlgorithm? IssuerSignatureAlgorithm2 = SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
+				if (IssuerSignatureAlgorithm2 is null)
 					return false;
 
-				SignatureAlgorithm = SignatureAlgorithm2;
+				IssuerSignatureAlgorithm = IssuerSignatureAlgorithm2;
 			}
 
 			if (i >= c || TbsCert[i++] is not Vector Issuer)
@@ -115,6 +118,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 
 			if (i >= c || TbsCert[i++] is not Vector SubjectPublicKeyInfo)
 				return false;
+
+
+			if (SubjectPublicKeyInfo.Length != 2 ||
+				SubjectPublicKeyInfo.FirstElement is not IPublicKey PublicKey ||
+				!PublicKey.IsConfigured ||
+				!PublicKey.SetPublicKey(SubjectPublicKeyInfo.LastElement))
+			{
+				return false;
+			}
 
 			// TODO: Check for optional issuerUniqueID and subjectUniqueID 
 
@@ -150,8 +162,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 				return false;
 
 			Parsed = new ToBeSignedCertificate(TbsCert.SubSection, Version, SerialNumber,
-				SignatureAlgorithm, new Names(Issuer), NotBefore, NotAfter,
-				new Names(Subject), AuthorityKeyIdentifier, SubjectKeyIdentifier, ListExtensions);
+				IssuerSignatureAlgorithm, new Names(Issuer), NotBefore, NotAfter,
+				new Names(Subject), AuthorityKeyIdentifier, SubjectKeyIdentifier,
+				PublicKey, ListExtensions);
 
 			return true;
 		}
@@ -172,9 +185,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		public System.Numerics.BigInteger SerialNumber { get; }
 
 		/// <summary>
-		/// Signature algorithm.
+		/// Signature algorithm used by issuer to sign the certificate.
 		/// </summary>
-		public ISignatureAlgorithm SignatureAlgorithm { get; }
+		public ISignatureAlgorithm IssuerSignatureAlgorithm { get; }
 
 		/// <summary>
 		/// Issuer
@@ -205,6 +218,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		/// Subject Key Identifier
 		/// </summary>
 		public byte[]? SubjectKeyIdentifier { get; }
+
+		/// <summary>
+		/// Certificate public key, used to verify signatures issued by the certificate.
+		/// </summary>
+		public IPublicKey PublicKey { get; }
 
 		/// <summary>
 		/// Extensions

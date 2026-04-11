@@ -75,8 +75,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 					if (Content is null || string.IsNullOrEmpty(ContentOid))
 						return false;
 
-					ISecurityObject? SecurityObject = Types.FindBest<ISecurityObject, string>(ContentOid);
-					if (SecurityObject is null)
+					if (!ASN1.TryInstantiate(ContentOid, out ISecurityObject? SecurityObject))
 					{
 						Client.Warning("OID not recognized: " + ContentOid);
 						ASN1.ReportOidNotRecognized(ContentOid);

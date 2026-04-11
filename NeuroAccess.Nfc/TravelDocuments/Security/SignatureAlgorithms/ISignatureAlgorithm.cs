@@ -1,4 +1,6 @@
-﻿using NeuroAccess.Nfc.TravelDocuments.Certificates;
+﻿using System.Diagnostics.CodeAnalysis;
+using NeuroAccess.Nfc.TravelDocuments.Certificates;
+using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
@@ -13,10 +15,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// </summary>
 		/// <param name="Data">Data being signed.</param>
 		/// <param name="Signature">Digital signature.</param>
-		/// <param name="Certificate">Certificate of the signing body.</param>
+		/// <param name="PublicKeyKey">Public Key of the signing body.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
-		bool VerifySignature(byte[] Data, byte[] Signature, Certificate Certificate,
+		bool VerifySignature(byte[] Data, byte[] Signature, IPublicKey PublicKey,
 			ICommunicationLayer? Client);
 	}
 }

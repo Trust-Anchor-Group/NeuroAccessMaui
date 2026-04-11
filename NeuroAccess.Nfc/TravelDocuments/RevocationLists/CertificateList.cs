@@ -185,11 +185,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			Certificate? SignerCertificate = await CertificateStore.TryLoadCertificate(
 				IdDomain, CountryCode, this.AuthorityKeyIdentifier, Client);
 
-			if (SignerCertificate is null)
+			if (SignerCertificate?.PublicKey is null)
 				return false;
-
-			return this.SignatureAlgorithm.VerifySignature(this.ToBeSignedCertificateList.Binary,
-				this.Signature, SignerCertificate, Client);
+			
+			return SignerCertificate.PublicKey.VerifySignature(this.ToBeSignedCertificateList.Binary,
+				this.Signature, Client);
 		}
 
 	}

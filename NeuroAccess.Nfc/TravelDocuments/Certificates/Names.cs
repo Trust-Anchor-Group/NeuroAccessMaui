@@ -62,166 +62,161 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		/// <summary>
 		/// Aliased entry name
 		/// </summary>
-		public string AliasedEntryName => this[nameof(this.AliasedEntryName)];
+		public string AliasedEntryName => this[nameof(Security.Properties.DistinguishedNames.AliasedEntryName)];
 
 		/// <summary>
 		/// Business category
 		/// </summary>
-		public string BusinessCategory => this[nameof(this.BusinessCategory)];
+		public string BusinessCategory => this[nameof(Security.Properties.DistinguishedNames.BusinessCategory)];
 
 		/// <summary>
 		/// Common name
 		/// </summary>
-		public string CommonName => this[nameof(this.CommonName)];
+		public string CommonName => this[nameof(Security.Properties.DistinguishedNames.CommonName)];
 
 		/// <summary>
 		/// Country name
 		/// </summary>
-		public string CountryName => this[nameof(this.CountryName)];
+		public string CountryName => this[nameof(Security.Properties.DistinguishedNames.CountryName)];
 
 		/// <summary>
 		/// Description
 		/// </summary>
-		public string Description => this[nameof(this.Description)];
+		public string Description => this[nameof(Security.Properties.DistinguishedNames.Description)];
 
 		/// <summary>
 		/// Destination Indicator
 		/// </summary>
-		public string DestinationIndicator => this[nameof(this.DestinationIndicator)];
+		public string DestinationIndicator => this[nameof(Security.Properties.DistinguishedNames.DestinationIndicator)];
 
 		/// <summary>
 		/// Facsimile Telephone Number
 		/// </summary>
-		public string FacsimileTelephoneNumber => this[nameof(this.FacsimileTelephoneNumber)];
+		public string FacsimileTelephoneNumber => this[nameof(Security.Properties.DistinguishedNames.FacsimileTelephoneNumber)];
 
 		/// <summary>
 		/// International ISDN Number
 		/// </summary>
-		public string InternationalIsdnNumber => this[nameof(this.InternationalIsdnNumber)];
+		public string InternationalIsdnNumber => this[nameof(Security.Properties.DistinguishedNames.InternationalIsdnNumber)];
 
 		/// <summary>
 		/// Knowledge Information
 		/// </summary>
-		public string KnowledgeInformation => this[nameof(this.KnowledgeInformation)];
+		public string KnowledgeInformation => this[nameof(Security.Properties.DistinguishedNames.KnowledgeInformation)];
 
 		/// <summary>
 		/// Locality Name
 		/// </summary>
-		public string LocalityName => this[nameof(this.LocalityName)];
+		public string LocalityName => this[nameof(Security.Properties.DistinguishedNames.LocalityName)];
 
 		/// <summary>
 		/// Member
 		/// </summary>
-		public string Member => this[nameof(this.Member)];
+		public string Member => this[nameof(Security.Properties.DistinguishedNames.Member)];
 
 		/// <summary>
 		/// Organization Name
 		/// </summary>
-		public string OrganizationName => this[nameof(this.OrganizationName)];
+		public string OrganizationName => this[nameof(Security.Properties.DistinguishedNames.OrganizationName)];
 
 		/// <summary>
 		/// Organization Unit Name
 		///	</summary>
-		public string OrganizationUnitName => this[nameof(this.OrganizationUnitName)];
+		public string OrganizationUnitName => this[nameof(Security.Properties.DistinguishedNames.OrganizationUnitName)];
 
 		/// <summary>
 		/// Owner
 		/// </summary>
-		public string Owner => this[nameof(this.Owner)];
+		public string Owner => this[nameof(Security.Properties.DistinguishedNames.Owner)];
 
 		/// <summary>
 		/// Physical Delivery Office Name
 		/// </summary>
-		public string PhysicalDeliveryOfficeName => this[nameof(this.PhysicalDeliveryOfficeName)];
+		public string PhysicalDeliveryOfficeName => this[nameof(Security.Properties.DistinguishedNames.PhysicalDeliveryOfficeName)];
 
 		/// <summary>
 		/// Postal Address
 		/// </summary>
-		public string PostalAddress => this[nameof(this.PostalAddress)];
+		public string PostalAddress => this[nameof(Security.Properties.DistinguishedNames.PostalAddress)];
 
 		/// <summary>
 		/// Postal Code
 		/// </summary>
-		public string PostalCode => this[nameof(this.PostalCode)];
+		public string PostalCode => this[nameof(Security.Properties.DistinguishedNames.PostalCode)];
 
 		/// <summary>
 		/// Post Office Box
 		/// </summary>
-		public string PostOfficeBox => this[nameof(this.PostOfficeBox)];
+		public string PostOfficeBox => this[nameof(Security.Properties.DistinguishedNames.PostOfficeBox)];
 
 		/// <summary>
 		/// Preferred Delivery Method
 		/// </summary>
-		public string PreferredDeliveryMethod => this[nameof(this.PreferredDeliveryMethod)];
+		public string PreferredDeliveryMethod => this[nameof(Security.Properties.DistinguishedNames.PreferredDeliveryMethod)];
 
 		/// <summary>
 		/// Presentation Address
 		/// </summary>
-		public string PresentationAddress => this[nameof(this.PresentationAddress)];
+		public string PresentationAddress => this[nameof(Security.Properties.DistinguishedNames.PresentationAddress)];
 
 		/// <summary>
 		/// Registered Address
 		/// </summary>
-		public string RegisteredAddress => this[nameof(this.RegisteredAddress)];
+		public string RegisteredAddress => this[nameof(Security.Properties.DistinguishedNames.RegisteredAddress)];
 
 		/// <summary>
 		/// Search Guide
 		/// </summary>
-		public string SearchGuide => this[nameof(this.SearchGuide)];
+		public string SearchGuide => this[nameof(Security.Properties.DistinguishedNames.SearchGuide)];
 
 		/// <summary>
 		/// Serial Number
 		/// </summary>
-		public string SerialNumber => this[nameof(this.SerialNumber)];
+		public string SerialNumber => this[nameof(Security.Properties.DistinguishedNames.SerialNumber)];
 
 		/// <summary>
 		/// State or Province Name
 		/// </summary>
-		public string StateOrProvinceName => this[nameof(this.StateOrProvinceName)];
+		public string StateOrProvinceName => this[nameof(Security.Properties.DistinguishedNames.StateOrProvinceName)];
 
 		/// <summary>
 		/// Street Address
 		/// </summary>
-		public string StreetAddress => this[nameof(this.StreetAddress)];
+		public string StreetAddress => this[nameof(Security.Properties.DistinguishedNames.StreetAddress)];
 
 		/// <summary>
 		/// Supported Application Context
 		/// </summary>
-		public string SupportedApplicationContext => this[nameof(this.SupportedApplicationContext)];
+		public string SupportedApplicationContext => this[nameof(Security.Properties.DistinguishedNames.SupportedApplicationContext)];
 
 		/// <summary>
 		/// Surname
 		/// </summary>
-		public string Surname => this[nameof(this.Surname)];
+		public string Surname => this[nameof(Security.Properties.DistinguishedNames.Surname)];
 
 		/// <summary>
 		/// Telephone Number
 		/// </summary>
-		public string TelephoneNumber => this[nameof(this.TelephoneNumber)];
+		public string TelephoneNumber => this[nameof(Security.Properties.DistinguishedNames.TelephoneNumber)];
 
 		/// <summary>
 		/// Telex Number
 		/// </summary>
-		public string TelexNumber => this[nameof(this.TelexNumber)];
+		public string TelexNumber => this[nameof(Security.Properties.DistinguishedNames.TelexNumber)];
 
 		/// <summary>
 		/// Telex Terminal Identifier
 		/// </summary>
-		public string TelexTerminalIdentifier => this[nameof(this.TelexTerminalIdentifier)];
+		public string TelexTerminalIdentifier => this[nameof(Security.Properties.DistinguishedNames.TelexTerminalIdentifier)];
 
 		/// <summary>
 		/// Title
 		/// </summary>
-		public string Title => this[nameof(this.Title)];
+		public string Title => this[nameof(Security.Properties.DistinguishedNames.Title)];
 
 		/// <summary>
 		/// X.121 Address
 		/// </summary>
-		public string X121Address => this[nameof(this.X121Address)];
-
-		/// <summary>
-		/// E-Mail Address
-		/// </summary>
-		public string EMailAddress => this[nameof(this.EMailAddress)];
+		public string X121Address => this[nameof(Security.Properties.DistinguishedNames.X121Address)];
 	}
 }

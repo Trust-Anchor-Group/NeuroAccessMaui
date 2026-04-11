@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
-using System.Globalization;
 using Waher.Runtime.Collections;
 
 namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
@@ -23,7 +22,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 		/// </summary>
 		/// <param name="Binary">Binary representation of list to be signed.</param>
 		/// <param name="Version">Version of representation.</param>
-		/// <param name="SignatureAlgorithm">Signature algirithm used.</param>
+		/// <param name="SignatureAlgorithm">Signature algorithm used.</param>
 		/// <param name="Issuer">Information about Issuer.</param>
 		/// <param name="ThisUpdate">Timestamp of this update.</param>
 		/// <param name="NextUpdate">Timestamp of next update, if known.</param>

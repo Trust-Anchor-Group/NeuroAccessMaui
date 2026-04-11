@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using NeuroAccess.Nfc.TravelDocuments.Security;
+using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
 using Waher.Networking;
 
@@ -20,11 +21,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		/// <param name="SignatureAlgorithm">Algorithm used to sign the certificate.</param>
 		/// <param name="Signature">Digital signature.</param>
 		private Certificate(Vector Asn1Vector, ToBeSignedCertificate ToBeSignedCertificate,
-			ISignatureAlgorithm SignatureAlgorithm, byte[] Signature)
+			ISignatureAlgorithm IssuerSignatureAlgorithm, byte[] Signature)
 		{
 			this.Asn1Vector = Asn1Vector;
 			this.ToBeSignedCertificate = ToBeSignedCertificate;
-			this.SignatureAlgorithm = SignatureAlgorithm;
+			this.IssuerSignatureAlgorithm = IssuerSignatureAlgorithm;
 			this.Signature = Signature;
 		}
 
@@ -63,16 +64,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 			if (CertificateVector[0] is not Vector TbsCert)
 				return false;
 
-			if (CertificateVector[1] is not ISignatureAlgorithm SignatureAlgorithm)
+			if (CertificateVector[1] is not ISignatureAlgorithm IssuerSignatureAlgorithm)
 			{
 				if (CertificateVector[1] is not Vector AlgorithmIdentifier)
 					return false;
 
-				ISignatureAlgorithm? SignatureAlgorithm2 = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
-				if (SignatureAlgorithm2 is null)
+				ISignatureAlgorithm? IssuerSignatureAlgorithm2 = SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
+				if (IssuerSignatureAlgorithm2 is null)
 					return false;
 
-				SignatureAlgorithm = SignatureAlgorithm2;
+				IssuerSignatureAlgorithm = IssuerSignatureAlgorithm2;
 			}
 
 			if (CertificateVector[2] is not byte[] Signature)
@@ -81,7 +82,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 			if (!ToBeSignedCertificate.TryParse(TbsCert, out ToBeSignedCertificate? ToBeSigned))
 				return false;
 
-			Parsed = new Certificate(CertificateVector, ToBeSigned, SignatureAlgorithm, Signature);
+			Parsed = new Certificate(CertificateVector, ToBeSigned, IssuerSignatureAlgorithm, Signature);
 
 			return true;
 		}
@@ -92,9 +93,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		public ToBeSignedCertificate ToBeSignedCertificate { get; }
 
 		/// <summary>
-		/// Algorithm used to sign the certificate.
+		/// Signature algorithm used by issuer to sign the certificate.
 		/// </summary>
-		public ISignatureAlgorithm SignatureAlgorithm { get; }
+		public ISignatureAlgorithm IssuerSignatureAlgorithm { get; }
 
 		/// <summary>
 		/// Digital signature.
@@ -152,52 +153,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 		public byte[]? SubjectKeyIdentifier => this.ToBeSignedCertificate.SubjectKeyIdentifier;
 
 		/// <summary>
+		/// Certificate public key, used to verify signatures issued by the certificate.
+		/// </summary>
+		public IPublicKey PublicKey => this.ToBeSignedCertificate.PublicKey;
+
+		/// <summary>
 		/// Extensions
 		/// </summary>
 		public Vector? Extensions => this.ToBeSignedCertificate.Extensions;
-
-		/// <summary>
-		/// Verifies the signature of the CRL
-		/// </summary>
-		/// <param name="IdDomain">Domain name of Neuron hosting ICAO certificates.</param>
-		/// <param name="CountryCode">Country Code of issuer</param>
-		/// <returns>If the signature is valid.</returns>
-		public Task<bool> VerifySignature(string IdDomain, string CountryCode)
-		{
-			return this.VerifySignature(IdDomain, CountryCode, null);
-		}
-
-		/// <summary>
-		/// Verifies the signature of the CRL
-		/// </summary>
-		/// <param name="IdDomain">Domain name of Neuron hosting ICAO certificates.</param>
-		/// <param name="CountryCode">Country Code of issuer</param>
-		/// <param name="Client">Optional client reference.</param>
-		/// <returns>If the signature is valid.</returns>
-		public async Task<bool> VerifySignature(string IdDomain, string CountryCode,
-			ICommunicationLayer? Client)
-		{
-			if (this.Signature is null)
-			{
-				Client?.Error("No signature in CRL.");
-				return false;
-			}
-
-			if (this.AuthorityKeyIdentifier is null)
-			{
-				Client?.Error("No AKI in CRL.");
-				return false;
-			}
-
-			Certificate? SignerCertificate = await CertificateStore.TryLoadCertificate(
-				IdDomain, CountryCode, this.AuthorityKeyIdentifier, Client);
-
-			if (SignerCertificate is null)
-				return false;
-
-			return this.SignatureAlgorithm.VerifySignature(this.Binary, this.Signature,
-				SignerCertificate, Client);
-		}
-
 	}
 }

@@ -3,6 +3,7 @@ using System.Numerics;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
 using NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions;
+using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using Waher.Networking;
 using Waher.Security.EllipticCurves;
 
@@ -114,10 +115,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// </summary>
 		/// <param name="Data">Data being signed.</param>
 		/// <param name="Signature">Digital signature.</param>
-		/// <param name="Certificate">Certificate of the signing body.</param>
+		/// <param name="PublicKeyKey">Public Key of the signing body.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
-		public override bool VerifySignature(byte[] Data, byte[] Signature, Certificate Certificate,
+		public override bool VerifySignature(byte[] Data, byte[] Signature, IPublicKey PublicKey,
 			ICommunicationLayer? Client)
 		{
 			return false;

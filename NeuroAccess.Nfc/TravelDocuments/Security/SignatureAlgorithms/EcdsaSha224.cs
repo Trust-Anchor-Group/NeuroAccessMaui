@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Security.Cryptography;
+using Waher.Security;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 {
@@ -13,10 +13,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// </summary>
 		public override string Oid => "1.2.840.10045.4.3.1";
 
+
 		/// <summary>
 		/// Hash algorithm to use.
 		/// </summary>
-		public override HashAlgorithmName HashAlgorithmName =>
+		public override HashFunctionArray HashAlgorithm => 
 			throw new NotImplementedException("SHA-224 not implemented.");  // TODO
 	}
 }

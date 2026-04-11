@@ -30,7 +30,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	/// Travel Documents Client, implementing ICAO 9303 to communicate with machine-readable
 	/// travel documents, such as passports, visas, and identity cards.
 	/// </summary>
-	public sealed class TravelDocumentsClient : CommunicationLayer, IDisposable
+	/// <param name="TagInterface">NFC Interface</param>
+	/// <param name="DocumentInformation">Document Information parsed from the MRZ.</param>
+	/// <param name="Sniffers">Optional sniffers.</param>
+	public sealed class TravelDocumentsClient(IIsoDepInterface TagInterface,
+		DocumentInformation DocumentInformation, params ISniffer[] Sniffers)
+		: CommunicationLayer(true, Sniffers), IDisposable
 	{
 		private static readonly Dictionary<ushort, IDataObject> dataObjects = GetDataObjects();
 		private ApplicationLevelInformation? appInfo;
@@ -41,9 +46,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		private BiometricInformationTemplate[]? biometricEncodingIrises;
 		private DisplayedSignatures? displayedSignatures;
 		private AdditionalPersonalDetails? personalInformation;
-		private readonly IIsoDepInterface tagInterface;
-		private readonly DocumentInformation documentInformation;
-		private TravelDocumentsState state;
+		private readonly IIsoDepInterface tagInterface = TagInterface;
+		private readonly DocumentInformation documentInformation = DocumentInformation;
+		private TravelDocumentsState state = TravelDocumentsState.Detected;
 		private IPaceProtocol? protocol;
 		private CMac? cMac = null;
 		private byte[]? ks_Enc = null;
@@ -53,22 +58,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		private bool encrypted = false;
 		private bool enhancedSecurity = false;
 		private bool disposed = false;
-
-		/// <summary>
-		/// Travel Documents Client, implementing ICAO 9303 to communicate with machine-readable
-		/// travel documents, such as passports, visas, and identity cards.
-		/// </summary>
-		/// <param name="TagInterface">NFC Interface</param>
-		/// <param name="DocumentInformation">Document Information parsed from the MRZ.</param>
-		/// <param name="Sniffers">Optional sniffers.</param>
-		public TravelDocumentsClient(IIsoDepInterface TagInterface,
-			DocumentInformation DocumentInformation, params ISniffer[] Sniffers)
-			: base(true, Sniffers)
-		{
-			this.tagInterface = TagInterface;
-			this.documentInformation = DocumentInformation;
-			this.state = TravelDocumentsState.Detected;
-		}
 
 		/// <summary>
 		/// Disposes of the client and clears any keys.
@@ -1693,7 +1682,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				byte[] ChallengeResponse = CalcChallengeResponse3DES(this.documentInformation, Challenge);
 				byte[]? Response = await this.ExternalBacAuthenticate(ChallengeResponse);
 
-				return AuthenticateResult.BacNotImplemented;   // TODO: Implement/Test BAC
+				// TODO: Implement/Test BAC
+
+				return AuthenticateResult.BacNotImplemented;
 			}
 
 			return AuthenticateResult.Success;
@@ -2147,7 +2138,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				this.Information("Verifying certificate chain.");
 
-				if (!CertificateChain.VerifySignatures(this, Certificates.ToArray()))
+				if (!CertificateChain.VerifySignatures(this, [.. Certificates]))
 				{
 					this.Error("Signatures in certificate chain not valid.");
 					return ReadTravelDocumentResult.InvalidCertificate;
@@ -2649,6 +2640,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				foreach (DistributionPoint Point in DistributionPoints.Points)
 					Urls.Add(Point.Url);
+			}
+
+			if (Urls.Count == 0)
+			{
+				Client?.Warning("No CRL distribution points found in certificate.");
+				return [];
 			}
 
 			return [.. Urls];

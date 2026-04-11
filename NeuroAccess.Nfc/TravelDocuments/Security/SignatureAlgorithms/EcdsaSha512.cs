@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+﻿using Waher.Security;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 {
@@ -12,9 +12,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// </summary>
 		public override string Oid => "1.2.840.10045.4.3.4";
 
+
 		/// <summary>
 		/// Hash algorithm to use.
 		/// </summary>
-		public override HashAlgorithmName HashAlgorithmName => HashAlgorithmName.SHA512;
+		public override HashFunctionArray HashAlgorithm => Hashes.ComputeSHA512Hash;
 	}
 }

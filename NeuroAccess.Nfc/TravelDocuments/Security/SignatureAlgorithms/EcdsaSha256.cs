@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+﻿using Waher.Security;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 {
@@ -15,6 +15,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// <summary>
 		/// Hash algorithm to use.
 		/// </summary>
-		public override HashAlgorithmName HashAlgorithmName => HashAlgorithmName.SHA256;
+		public override HashFunctionArray HashAlgorithm => Hashes.ComputeSHA256Hash;
 	}
 }

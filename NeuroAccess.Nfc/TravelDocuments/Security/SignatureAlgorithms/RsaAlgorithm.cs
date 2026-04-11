@@ -1,6 +1,7 @@
-﻿using System.Security.Cryptography;
-using NeuroAccess.Nfc.TravelDocuments.Certificates;
+﻿using System.Numerics;
+using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using Waher.Networking;
+using Waher.Security;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 {
@@ -14,39 +15,41 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// </summary>
 		/// <param name="Data">Data being signed.</param>
 		/// <param name="Signature">Digital signature.</param>
-		/// <param name="Certificate">Certificate of the signing body.</param>
+		/// <param name="PublicKeyKey">Public Key of the signing body.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
-		public override bool VerifySignature(byte[] Data, byte[] Signature, Certificate Certificate,
+		public override bool VerifySignature(byte[] Data, byte[] Signature, IPublicKey PublicKey,
 			ICommunicationLayer? Client)
 		{
-			return false;
-			/*
-			using RSA? Rsa = Certificate.GetRSAPublicKey();
-
-			if (Rsa is null)
+			if (PublicKey is not RsaPublicKey RsaParameters)
 			{
-				Client?.Error("Unable to get RSA public key from certificate.");
+				Client?.Error("No RSA public key provided or found.");
 				return false;
 			}
 
-			bool Result = Rsa.VerifyData(Data, Signature, this.HashAlgorithmName, RSASignaturePadding.Pkcs1);
+			return VerifySignatureRsaPkcs1(Data, Signature,
+				RsaParameters.Modulus, RsaParameters.Exponent,
+				this.HashAlgorithm ?? RsaParameters.HashFunction);
+		}
 
-			if (!Result && (Client?.HasSniffers ?? false))
-			{
-				Client?.Warning("Type: " + this.GetType().FullName);
-				Client?.Warning("Public Key: " + Convert.ToBase64String(Rsa.ExportSubjectPublicKeyInfo()));
-				Client?.Warning("Signature: " + Convert.ToBase64String(Signature));
-				Client?.Warning("Data: " + Convert.ToBase64String(Data));
-				Client?.Warning("Valid: " + Result.ToString());
-			}
-
-			return Result;*/
+		/// <summary>
+		/// Verifies a digital signature, using RSA PKCS#1 v1.5.
+		/// </summary>
+		/// <param name="Data">Data being signed.</param>
+		/// <param name="Signature">Digital signature.</param>
+		/// <param name="Modulus">Modulus parameter.</param>
+		/// <param name="Exponent">Exponent parameter.</param>
+		/// <param name="HashFunction">Hash function to use, if defined.</param>
+		/// <returns>If the digital signature is correct.</returns>
+		public static bool VerifySignatureRsaPkcs1(byte[] Data, byte[] Signature, BigInteger Modulus,
+			BigInteger Exponent, HashFunctionArray? HashFunction)
+		{
+			return false;
 		}
 
 		/// <summary>
 		/// Hash algorithm to use.
 		/// </summary>
-		public abstract HashAlgorithmName HashAlgorithmName { get; }
+		public abstract HashFunctionArray HashAlgorithm { get; }
 	}
 }
