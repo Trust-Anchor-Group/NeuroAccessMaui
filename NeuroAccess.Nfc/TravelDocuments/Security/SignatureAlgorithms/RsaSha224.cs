@@ -18,6 +18,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// Hash algorithm to use.
 		/// </summary>
 		public override HashFunctionArray HashAlgorithm => 
-			throw new NotImplementedException("SHA-224 not implemented.");	// TODO
+			throw new NotImplementedException("SHA-224 not implemented.");  // TODO
+
+		/// <summary>
+		/// OID of Hash algorithm to use.
+		/// </summary>
+		public override string HashAlgorithmOid =>
+			throw new NotImplementedException("SHA-224 not implemented.");  // TODO
 	}
 }

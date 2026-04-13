@@ -118,6 +118,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		public override Waher.Security.HashFunctionArray HashAlgorithm => this.hashFunction.ComputeHash;
 
 		/// <summary>
+		/// OID of Hash algorithm to use.
+		/// </summary>
+		public override string HashAlgorithmOid => this.hashFunction.Oid;
+
+		/// <summary>
 		/// Verifies a digital signature.
 		/// </summary>
 		/// <param name="Data">Data being signed.</param>

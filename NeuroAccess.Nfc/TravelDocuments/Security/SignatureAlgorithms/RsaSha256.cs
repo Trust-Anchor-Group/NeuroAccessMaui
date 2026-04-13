@@ -17,5 +17,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// Hash algorithm to use.
 		/// </summary>
 		public override HashFunctionArray HashAlgorithm => Hashes.ComputeSHA256Hash;
+
+		/// <summary>
+		/// OID of Hash algorithm to use.
+		/// </summary>
+		public override string HashAlgorithmOid => "2.16.840.1.101.3.4.2.1";
 	}
 }
