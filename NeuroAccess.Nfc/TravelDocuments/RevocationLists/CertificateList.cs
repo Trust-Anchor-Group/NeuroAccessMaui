@@ -193,8 +193,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				return false;
 			}
 
-			if (SignerCertificate.PublicKey.VerifySignature(this.ToBeSignedCertificateList.Binary,
-				this.Signature, this.SignatureAlgorithm, Client))
+			if (this.SignatureAlgorithm.VerifySignature(this.ToBeSignedCertificateList.Binary,
+				this.Signature, SignerCertificate.PublicKey, Client))
 			{
 				return true;
 			}

@@ -192,23 +192,5 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 		/// Public Key point.
 		/// </summary>
 		public PointOnCurve PublicKey => this.publicKey!.Value;
-
-		/// <summary>
-		/// Verifies a digital signature.
-		/// </summary>
-		/// <param name="Data">Data being signed.</param>
-		/// <param name="Signature">Digital signature.</param>
-		/// <param name="SignatureAlgorithm">Algorithm used to sign the data.</param>
-		/// <param name="Client">Optional client reference.</param>
-		/// <returns>If the digital signature is correct.</returns>
-		public override bool VerifySignature(byte[] Data, byte[] Signature,
-			ISignatureAlgorithm SignatureAlgorithm, ICommunicationLayer? Client)
-		{
-			if (SignatureAlgorithm is not EcdsaAlgorithm EcdsaAlgorithm)
-				return false;
-
-			return EcdsaAlgorithm.VerifySignature(Data, Signature, this, EcdsaAlgorithm.HashAlgorithm,
-				Client);
-		}
 	}
 }

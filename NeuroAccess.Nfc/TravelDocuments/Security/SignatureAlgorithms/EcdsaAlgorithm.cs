@@ -28,24 +28,34 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		public override bool VerifySignature(byte[] Data, byte[] Signature, IPublicKey PublicKey,
 			ICommunicationLayer? Client)
 		{
-			return VerifySignature(Data, Signature, PublicKey, this.HashAlgorithm, Client);
-		}
-
-		public static bool VerifySignature(byte[] Data, byte[] Signature, IPublicKey PublicKey,
-			HashFunctionArray HashAlgorithm, ICommunicationLayer? Client)
-		{
 			if (PublicKey is not EllipticCurvePublicKey ECPublicKey)
 			{
 				Client?.Error("No ECDSA public key provided or found.");
 				return false;
 			}
 
-			System.Numerics.BigInteger Order = ECPublicKey.Order;
-			System.Numerics.BigInteger Cofactor = ECPublicKey.CoFactor;
-			System.Numerics.BigInteger A = ECPublicKey.A;
-			System.Numerics.BigInteger B = ECPublicKey.B;
-			PointOnCurve BasePoint = ECPublicKey.BasePoint;
-			PointOnCurve PublicKeyPoint = ECPublicKey.PublicKey;
+			return VerifySignature(Data, Signature, ECPublicKey, this.HashAlgorithm, Client);
+		}
+
+		/// <summary>
+		/// Verifies a digital signature using the ECDSA algorithm.
+		/// </summary>
+		/// <param name="Data">Data being signed.</param>
+		/// <param name="Signature">Digital signature.</param>
+		/// <param name="PublicKey">Elliptic Curve Public Key</param>
+		/// <param name="HashAlgorithm">Hash Algorithm to use</param>
+		/// <param name="Client">Optional client reference.</param>
+		/// <returns>If the digital signature is correct.</returns>
+		public static bool VerifySignature(byte[] Data, byte[] Signature,
+			EllipticCurvePublicKey PublicKey, HashFunctionArray HashAlgorithm,
+			ICommunicationLayer? Client)
+		{
+			System.Numerics.BigInteger Order = PublicKey.Order;
+			System.Numerics.BigInteger Cofactor = PublicKey.CoFactor;
+			System.Numerics.BigInteger A = PublicKey.A;
+			System.Numerics.BigInteger B = PublicKey.B;
+			PointOnCurve BasePoint = PublicKey.BasePoint;
+			PointOnCurve PublicKeyPoint = PublicKey.PublicKey;
 
 			if (!ASN1.TryDecodeDer(Client, Signature, out object? Obj) ||
 				Obj is not Vector SignatureVector ||
@@ -59,7 +69,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			PrimeFieldCurve? Selected = null;
 
-			if (ECPublicKey.Field is PrimeField PrimeField)
+			if (PublicKey.Field is PrimeField PrimeField)
 			{
 				System.Numerics.BigInteger Prime = PrimeField.Prime;
 
@@ -124,7 +134,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			}
 			else
 			{
-				Client?.Error("Curve field type not recognized: " + ECPublicKey.Field.GetType().FullName);
+				Client?.Error("Curve field type not recognized: " + PublicKey.Field.GetType().FullName);
 				return false;
 			}
 

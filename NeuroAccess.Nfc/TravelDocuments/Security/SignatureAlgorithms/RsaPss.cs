@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.Numerics;
-using NeuroAccess.Nfc.TravelDocuments.Certificates;
+using System.Text;
 using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
 using NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions;
 using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
@@ -15,7 +16,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 	/// https://www.rfc-editor.org/rfc/rfc4055
 	/// https://www.rfc-editor.org/rfc/rfc4056
 	/// </summary>
-	public class RsaPss : SignatureAlgorithm
+	public class RsaPss : RsaAlgorithm
 	{
 		private static readonly HashFunction defaultHashFunction = new Sha1();
 		private static readonly MGF1 defaultMaskGenerationFunction = new(defaultHashFunction);
@@ -110,6 +111,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			return true;
 		}
+
+		/// <summary>
+		/// Hash algorithm to use.
+		/// </summary>
+		public override Waher.Security.HashFunctionArray HashAlgorithm => this.hashFunction.ComputeHash;
+
 		/// <summary>
 		/// Verifies a digital signature.
 		/// </summary>
@@ -121,36 +128,46 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		public override bool VerifySignature(byte[] Data, byte[] Signature, IPublicKey PublicKey,
 			ICommunicationLayer? Client)
 		{
-			return false;
-
-			/*
-			using RSA? Rsa = Certificate.GetRSAPublicKey();
-			if (Rsa is null)
+			if (PublicKey is not RsaPublicKey RsaPublicKey)
 			{
 				Client?.Error("Unable to get RSA public key from certificate.");
 				return false;
 			}
 
-			RSAParameters P = Rsa.ExportParameters(false);
 			BigInteger S = EllipticCurve.ToInt(Signature, true);
-			BigInteger e = EllipticCurve.ToInt(P.Exponent, true);
-			BigInteger n = EllipticCurve.ToInt(P.Modulus, true);
 
-			bool Result = Verify(this.hashFunction, this.maskGenerationFunction, n, e, Data, S, this.saltLength);
+			bool Result = Verify(this.hashFunction, this.maskGenerationFunction,
+				RsaPublicKey.Modulus, RsaPublicKey.Exponent, Data, S, this.saltLength);
 
 			if (!Result && (Client?.HasSniffers ?? false))
 			{
-				Client?.Warning("Type: " + this.GetType().FullName);
-				Client?.Warning("Hash Function: " + this.hashFunction.ToString());
-				Client?.Warning("Mask Generation Function: " + this.maskGenerationFunction.ToString());
-				Client?.Warning("Salt Length: " + this.saltLength.ToString(CultureInfo.InvariantCulture));
-				Client?.Warning("Trailer Field: " + this.trailerField.ToString(CultureInfo.InvariantCulture));
-				Client?.Warning("Signature: " + Convert.ToBase64String(Signature));
-				Client?.Warning("Data: " + Convert.ToBase64String(Data));
-				Client?.Warning("Valid: " + Result.ToString());
+				StringBuilder sb = new StringBuilder();
+
+				sb.Append("Type: ");
+				sb.AppendLine(this.GetType().FullName);
+				sb.Append("Hash Function: ");
+				sb.AppendLine(this.hashFunction.ToString());
+				sb.Append("Mask Generation Function: ");
+				sb.AppendLine(this.maskGenerationFunction.ToString());
+				sb.Append("Salt Length: ");
+				sb.AppendLine(this.saltLength.ToString(CultureInfo.InvariantCulture));
+				sb.Append("Trailer Field: ");
+				sb.AppendLine(this.trailerField.ToString(CultureInfo.InvariantCulture));
+				sb.Append("Signature: ");
+				sb.AppendLine(S.ToString(CultureInfo.InvariantCulture));
+				sb.Append("Modulus: ");
+				sb.AppendLine(RsaPublicKey.Modulus.ToString(CultureInfo.InvariantCulture));
+				sb.Append("Exponent: ");
+				sb.AppendLine(RsaPublicKey.Exponent.ToString(CultureInfo.InvariantCulture));
+				sb.Append("Data: ");
+				sb.AppendLine(Convert.ToBase64String(Data));
+				sb.Append("Valid: ");
+				sb.AppendLine(Result.ToString());
+
+				Client.Warning(sb.ToString());
 			}
 
-			return Result;*/
+			return Result;
 		}
 
 		/// <summary>

@@ -1,6 +1,4 @@
 ﻿using System.Numerics;
-using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
-using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 {
@@ -47,24 +45,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 
 			this.configured = true;
 			return true;
-		}
-
-		/// <summary>
-		/// Verifies a digital signature.
-		/// </summary>
-		/// <param name="Data">Data being signed.</param>
-		/// <param name="Signature">Digital signature.</param>
-		/// <param name="SignatureAlgorithm">Algorithm used to sign the data.</param>
-		/// <param name="Client">Optional client reference.</param>
-		/// <returns>If the digital signature is correct.</returns>
-		public override bool VerifySignature(byte[] Data, byte[] Signature,
-			ISignatureAlgorithm SignatureAlgorithm, ICommunicationLayer? Client)
-		{
-			if (SignatureAlgorithm is not RsaAlgorithm RsaAlgorithm)
-				return false;
-
-			return RsaAlgorithm.VerifySignatureRsaPkcs1(Data, Signature, this.Modulus, this.Exponent,
-				RsaAlgorithm.HashAlgorithm);
 		}
 
 		/// <summary>

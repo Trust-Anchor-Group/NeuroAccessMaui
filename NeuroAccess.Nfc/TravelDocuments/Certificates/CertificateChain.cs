@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Networking;
 
@@ -37,7 +38,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 
 			foreach (Certificate Cert in Certificates)
 			{
-				Client?.Information("Validating certificate " + (++Index) + " signature.");
+				Client?.Information("Validating certificate " + (++Index) + " signature, serial number: " + Cert.SerialNumber.ToString(CultureInfo.InvariantCulture));
 
 				if (Issuer.PublicKey is null)
 				{
@@ -56,8 +57,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 					return false;
 				}
 
-				if (!Issuer.PublicKey.VerifySignature(Cert.Binary, Cert.Signature,
-					Cert.IssuerSignatureAlgorithm, Client))
+				if (!Cert.IssuerSignatureAlgorithm.VerifySignature(Cert.ToBeSignedCertificate.Binary,
+					Cert.Signature, Issuer.PublicKey, Client))
 				{
 					Client?.Error("Certificate signature not valid.\r\n\r\n" +
 						Convert.ToBase64String(Cert.Binary, Base64FormattingOptions.InsertLineBreaks));
