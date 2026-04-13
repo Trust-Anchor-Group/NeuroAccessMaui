@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Threading.Tasks;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
+using Waher.Content;
 using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
@@ -186,10 +188,41 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				IdDomain, CountryCode, this.AuthorityKeyIdentifier, Client);
 
 			if (SignerCertificate?.PublicKey is null)
+			{
+				Client?.Error("Unable to decode public key from issuer certificate.");
 				return false;
-			
-			return SignerCertificate.PublicKey.VerifySignature(this.ToBeSignedCertificateList.Binary,
-				this.Signature, Client);
+			}
+
+			if (SignerCertificate.PublicKey.VerifySignature(this.ToBeSignedCertificateList.Binary,
+				this.Signature, this.SignatureAlgorithm, Client))
+			{
+				return true;
+			}
+
+			if (Client?.HasSniffers ?? false)
+			{
+				StringBuilder sb = new();
+
+				sb.AppendLine("CRL signature verification failed.");
+				sb.AppendLine();
+				sb.AppendLine("Data to be signed:");
+				sb.AppendLine(Convert.ToBase64String(this.ToBeSignedCertificateList.Binary,
+					Base64FormattingOptions.InsertLineBreaks));
+				sb.AppendLine();
+				sb.AppendLine("Signature:");
+				sb.AppendLine(Convert.ToBase64String(this.Signature,
+					Base64FormattingOptions.InsertLineBreaks));
+				sb.AppendLine();
+				sb.AppendLine("Authority Key Identifier:");
+				sb.AppendLine(Waher.Security.Hashes.BinaryToString(this.AuthorityKeyIdentifier));
+				sb.AppendLine();
+				sb.AppendLine("Public Key to verify signature:");
+				sb.AppendLine(JSON.Encode(SignerCertificate.PublicKey, true));
+
+				Client.Warning(sb.ToString());
+			}
+
+			return false;
 		}
 
 	}

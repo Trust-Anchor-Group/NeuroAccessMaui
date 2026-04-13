@@ -28,8 +28,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			}
 
 			return VerifySignatureRsaPkcs1(Data, Signature,
-				RsaParameters.Modulus, RsaParameters.Exponent,
-				this.HashAlgorithm ?? RsaParameters.HashFunction);
+				RsaParameters.Modulus, RsaParameters.Exponent, this.HashAlgorithm);
 		}
 
 		/// <summary>

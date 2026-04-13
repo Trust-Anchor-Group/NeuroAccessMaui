@@ -56,7 +56,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 					return false;
 				}
 
-				if (!Issuer.PublicKey.VerifySignature(Cert.Binary, Cert.Signature, Client))
+				if (!Issuer.PublicKey.VerifySignature(Cert.Binary, Cert.Signature,
+					Cert.IssuerSignatureAlgorithm, Client))
 				{
 					Client?.Error("Certificate signature not valid.\r\n\r\n" +
 						Convert.ToBase64String(Cert.Binary, Base64FormattingOptions.InsertLineBreaks));

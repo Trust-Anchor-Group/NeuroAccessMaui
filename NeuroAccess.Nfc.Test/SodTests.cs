@@ -83,12 +83,17 @@ namespace NeuroAccess.Nfc.Test
 			{
 				Assert.IsTrue(Certificate.TryParse(Cert.RawData, out Certificate? Cert2));
 
+				Console.Out.WriteLine("Certificate in Signed CMS");
 				Console.Out.WriteLine(new string('=', 80));
 				Console.Out.WriteLine(JSON.Encode(Cert2.Asn1Vector, true));
 
-				ChunkedList<Certificate> Certificates = [];
-				KeyValuePair<string?, byte[]?> P = TravelDocumentsClient.GetAuthorityKeyIdentifier(Cert2);
+				ChunkedList<Certificate> Certificates = [Cert2];
 				Dictionary<string, bool> CrlUrls = [];
+
+				foreach (string CrlUrl in TravelDocumentsClient.GetRevocationListUrls(Cert2))
+					CrlUrls[CrlUrl] = true;
+
+				KeyValuePair<string?, byte[]?> P = TravelDocumentsClient.GetAuthorityKeyIdentifier(Cert2);
 				Dictionary<string, bool> Processed = [];
 				string? CountryCode = P.Key;
 				byte[]? IssuerKeyReference = P.Value;
@@ -100,9 +105,15 @@ namespace NeuroAccess.Nfc.Test
 
 				while (!string.IsNullOrEmpty(CountryCode) && IssuerKeyReference is not null)
 				{
+					Console.Out.WriteLine();
+					Console.Out.WriteLine("Issuer Key Reference: " + CountryCode + ", " + Hashes.BinaryToString(IssuerKeyReference));
+
 					string Key = Convert.ToBase64String(IssuerKeyReference);
 					if (Processed.ContainsKey(Key))
+					{
+						Console.Out.WriteLine("Already processed...");
 						break;
+					}
 
 					Processed[Key] = true;
 
@@ -111,6 +122,9 @@ namespace NeuroAccess.Nfc.Test
 					Assert.IsNotNull(IssuerCertificate, "Issuer certificate not found.");
 
 					Certificates.Insert(0, IssuerCertificate);
+
+					Console.Out.WriteLine(new string('=', 80));
+					Console.Out.WriteLine(JSON.Encode(IssuerCertificate.Asn1Vector, true));
 
 					// Make sure to use Certificate Revocation Lists (CRLs) from ICAO approved certificates.
 
@@ -122,9 +136,6 @@ namespace NeuroAccess.Nfc.Test
 					IssuerKeyReference = P.Value;
 				}
 
-				foreach (string CrlUrl in TravelDocumentsClient.GetRevocationListUrls(Cert2))
-					CrlUrls[CrlUrl] = true;
-
 				Assert.IsGreaterThan(0, CrlUrls.Count);
 
 				foreach (string CrlUrl in CrlUrls.Keys)
@@ -132,9 +143,10 @@ namespace NeuroAccess.Nfc.Test
 					CertificateList? RevokedCertificates = await CertificateStore.TryLoadCrl(CrlUrl, Client);
 					Assert.IsNotNull(RevokedCertificates);
 
-					//Console.Out.WriteLine(CrlUrl);
-					//Console.Out.WriteLine(new string('=', 80));
-					//Console.Out.WriteLine(JSON.Encode(RevokedCertificates.Asn1Vector, true));
+					Console.Out.WriteLine();
+					Console.Out.WriteLine("Checking Revocation List: " + CrlUrl);
+					Console.Out.WriteLine(new string('=', 80));
+					Console.Out.WriteLine(JSON.Encode(RevokedCertificates.Asn1Vector, true));
 
 					Assert.IsTrue(await RevokedCertificates.VerifySignature(idDomain, CountryCode!, Client));
 

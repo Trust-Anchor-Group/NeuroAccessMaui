@@ -2046,9 +2046,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return ReadTravelDocumentResult.InvalidCertificate;
 				}
 
-				ChunkedList<Certificate> Certificates = [];
-				KeyValuePair<string?, byte[]?> P = GetAuthorityKeyIdentifier(Cert2);
+				ChunkedList<Certificate> Certificates = [Cert2];
 				Dictionary<string, bool> CrlUrls = [];
+
+				foreach (string CrlUrl in GetRevocationListUrls(Cert2))
+					CrlUrls[CrlUrl] = true;
+
+				KeyValuePair<string?, byte[]?> P = GetAuthorityKeyIdentifier(Cert2);
 				Dictionary<string, bool> Processed = [];
 				string? CountryCode = P.Key;
 				byte[]? IssuerKeyReference = P.Value;
@@ -2089,9 +2093,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					CountryCode = P.Key;
 					IssuerKeyReference = P.Value;
 				}
-
-				foreach (string CrlUrl in GetRevocationListUrls(Cert2))
-					CrlUrls[CrlUrl] = true;
 
 				if (CrlUrls.Count == 0)
 				{

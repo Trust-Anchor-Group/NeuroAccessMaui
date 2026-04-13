@@ -4,7 +4,6 @@ using System.Numerics;
 using NeuroAccess.Nfc.TravelDocuments.Security.FieldTypes;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
 using Waher.Networking;
-using Waher.Security;
 using Waher.Security.EllipticCurves;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
@@ -199,14 +198,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 		/// </summary>
 		/// <param name="Data">Data being signed.</param>
 		/// <param name="Signature">Digital signature.</param>
+		/// <param name="SignatureAlgorithm">Algorithm used to sign the data.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
 		public override bool VerifySignature(byte[] Data, byte[] Signature,
-			ICommunicationLayer? Client)
+			ISignatureAlgorithm SignatureAlgorithm, ICommunicationLayer? Client)
 		{
-			// TODO: Identify correct Hash Algorithm
+			if (SignatureAlgorithm is not EcdsaAlgorithm EcdsaAlgorithm)
+				return false;
 
-			return EcdsaAlgorithm.VerifySignature(Data, Signature, this, Hashes.ComputeSHA256Hash,
+			return EcdsaAlgorithm.VerifySignature(Data, Signature, this, EcdsaAlgorithm.HashAlgorithm,
 				Client);
 		}
 	}

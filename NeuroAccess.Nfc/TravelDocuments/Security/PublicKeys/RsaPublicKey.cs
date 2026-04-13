@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
 using Waher.Networking;
-using Waher.Security;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 {
@@ -14,7 +13,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 	{
 		private BigInteger? modulus;
 		private BigInteger? exponent;
-		private HashFunctionArray? hashFunction;
 		private bool configured;
 
 		/// <summary>
@@ -38,11 +36,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 		public BigInteger Exponent => this.exponent!.Value;
 
 		/// <summary>
-		/// Hash function, if defined.
-		/// </summary>
-		public HashFunctionArray? HashFunction => this.hashFunction;
-
-		/// <summary>
 		/// If the object can be configured by the security information provided.
 		/// </summary>
 		/// <param name="SecurityInfo">Security information.</param>
@@ -61,13 +54,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 		/// </summary>
 		/// <param name="Data">Data being signed.</param>
 		/// <param name="Signature">Digital signature.</param>
-		/// <param name="Certificate">Certificate of the signing body.</param>
+		/// <param name="SignatureAlgorithm">Algorithm used to sign the data.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
-		public override bool VerifySignature(byte[] Data, byte[] Signature, ICommunicationLayer? Client)
+		public override bool VerifySignature(byte[] Data, byte[] Signature,
+			ISignatureAlgorithm SignatureAlgorithm, ICommunicationLayer? Client)
 		{
+			if (SignatureAlgorithm is not RsaAlgorithm RsaAlgorithm)
+				return false;
+
 			return RsaAlgorithm.VerifySignatureRsaPkcs1(Data, Signature, this.Modulus, this.Exponent,
-				this.hashFunction);
+				RsaAlgorithm.HashAlgorithm);
 		}
 
 		/// <summary>
