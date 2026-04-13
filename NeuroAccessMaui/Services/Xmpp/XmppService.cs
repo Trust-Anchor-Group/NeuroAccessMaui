@@ -1070,7 +1070,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			Assembly ApplicationAssembly, Func<XmppClient, Task> ConnectedFunc, ConnectOperation Operation)
 		{
 			// Use TaskCompletionSource for single completion
-			TaskCompletionSource<bool> Tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+			TaskCompletionSource<bool> Tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
 			// Flags for tracking progress and outcome
 			bool StreamNegotiation = false, StreamOpened = false, StartingEncryption = false, Authenticating = false, Registering = false, IsTimeout = false;
@@ -2262,7 +2262,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			try
 			{
-				ApplicationReview Candidate = new ApplicationReview
+				ApplicationReview Candidate = new()
 				{
 					Message = message,
 					Code = e.Code,
@@ -2272,8 +2272,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				try
 				{
 					IEnumerable<InvalidClaim> InvalidClaimsEnumerable = e.InvalidClaims as IEnumerable<InvalidClaim> ?? Array.Empty<InvalidClaim>();
-					List<string> InvalidClaimNames = new List<string>();
-					List<ApplicationReviewClaimDetail> InvalidClaimDetailList = new List<ApplicationReviewClaimDetail>();
+					List<string> InvalidClaimNames = [];
+					List<ApplicationReviewClaimDetail> InvalidClaimDetailList = [];
 
 					foreach (InvalidClaim InvalidClaim in InvalidClaimsEnumerable)
 					{
@@ -2286,7 +2286,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 						InvalidClaimNames.Add(ClaimValue);
 
-						ApplicationReviewClaimDetail Detail = new ApplicationReviewClaimDetail(
+						ApplicationReviewClaimDetail Detail = new(
 							ClaimValue,
 							InvalidClaim.Reason ?? string.Empty,
 							InvalidClaim.ReasonLanguage,
@@ -2295,8 +2295,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 						InvalidClaimDetailList.Add(Detail);
 					}
 
-					Candidate.InvalidClaims = InvalidClaimNames.Count > 0 ? InvalidClaimNames.ToArray() : Array.Empty<string>();
-					Candidate.InvalidClaimDetails = InvalidClaimDetailList.Count > 0 ? InvalidClaimDetailList.ToArray() : Array.Empty<ApplicationReviewClaimDetail>();
+					Candidate.InvalidClaims = InvalidClaimNames.Count > 0 ? [.. InvalidClaimNames] : [];
+					Candidate.InvalidClaimDetails = InvalidClaimDetailList.Count > 0 ? [.. InvalidClaimDetailList] : [];
 				}
 				catch
 				{
@@ -2306,8 +2306,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				try
 				{
 					IEnumerable<InvalidPhoto> InvalidPhotosEnumerable = e.InvalidPhotos as IEnumerable<InvalidPhoto> ?? Array.Empty<InvalidPhoto>();
-					List<string> InvalidPhotoNames = new List<string>();
-					List<ApplicationReviewPhotoDetail> InvalidPhotoDetailList = new List<ApplicationReviewPhotoDetail>();
+					List<string> InvalidPhotoNames = [];
+					List<ApplicationReviewPhotoDetail> InvalidPhotoDetailList = [];
 
 					foreach (InvalidPhoto InvalidPhoto in InvalidPhotosEnumerable)
 					{
@@ -2326,7 +2326,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 						InvalidPhotoNames.Add(DisplayName);
 
-						ApplicationReviewPhotoDetail Detail = new ApplicationReviewPhotoDetail(
+						ApplicationReviewPhotoDetail Detail = new(
 							FileName,
 							DisplayName,
 							InvalidPhoto.Reason ?? string.Empty,
@@ -2336,8 +2336,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 						InvalidPhotoDetailList.Add(Detail);
 					}
 
-					Candidate.InvalidPhotos = InvalidPhotoNames.Count > 0 ? InvalidPhotoNames.ToArray() : Array.Empty<string>();
-					Candidate.InvalidPhotoDetails = InvalidPhotoDetailList.Count > 0 ? InvalidPhotoDetailList.ToArray() : Array.Empty<ApplicationReviewPhotoDetail>();
+					Candidate.InvalidPhotos = InvalidPhotoNames.Count > 0 ? [.. InvalidPhotoNames] : [];
+					Candidate.InvalidPhotoDetails = InvalidPhotoDetailList.Count > 0 ? [.. InvalidPhotoDetailList] : [];
 				}
 				catch
 				{
@@ -2346,8 +2346,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 				try
 				{
-					IEnumerable<string> UnvalidatedClaimsEnumerable = e.UnvalidatedClaims as IEnumerable<string> ?? Array.Empty<string>();
-					List<string> UnvalidatedClaimList = new List<string>();
+					IEnumerable<string> UnvalidatedClaimsEnumerable = e.UnvalidatedClaims as IEnumerable<string> ?? [];
+					List<string> UnvalidatedClaimList = [];
 					foreach (string Claim in UnvalidatedClaimsEnumerable)
 					{
 						if (string.IsNullOrWhiteSpace(Claim))
@@ -2358,7 +2358,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							UnvalidatedClaimList.Add(TrimmedClaim);
 					}
 
-					Candidate.UnvalidatedClaims = UnvalidatedClaimList.Count > 0 ? UnvalidatedClaimList.ToArray() : Array.Empty<string>();
+					Candidate.UnvalidatedClaims = UnvalidatedClaimList.Count > 0 ? [.. UnvalidatedClaimList] : [];
 				}
 				catch
 				{
@@ -2367,8 +2367,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 				try
 				{
-					IEnumerable<string> UnvalidatedPhotosEnumerable = e.UnvalidatedPhotos as IEnumerable<string> ?? Array.Empty<string>();
-					List<string> UnvalidatedPhotoList = new List<string>();
+					IEnumerable<string> UnvalidatedPhotosEnumerable = e.UnvalidatedPhotos as IEnumerable<string> ?? [];
+					List<string> UnvalidatedPhotoList = [];
 					foreach (string Photo in UnvalidatedPhotosEnumerable)
 					{
 						if (string.IsNullOrWhiteSpace(Photo))
@@ -2379,7 +2379,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							UnvalidatedPhotoList.Add(TrimmedPhoto);
 					}
 
-					Candidate.UnvalidatedPhotos = UnvalidatedPhotoList.Count > 0 ? UnvalidatedPhotoList.ToArray() : Array.Empty<string>();
+					Candidate.UnvalidatedPhotos = UnvalidatedPhotoList.Count > 0 ? [.. UnvalidatedPhotoList] : [];
 				}
 				catch
 				{
@@ -4127,7 +4127,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Presentation = NotificationPresentation.StoreOnly
 			};
 
-			byte[] ContentToSign = e.ContentToSign ?? Array.Empty<byte>();
+			byte[] ContentToSign = e.ContentToSign ?? [];
 			string ContentToSignBase64 = Convert.ToBase64String(ContentToSign);
 			string Purpose = e.Purpose ?? string.Empty;
 			string RequestorIdentityId = e.RequestorIdentity?.Id ?? string.Empty;
@@ -5949,7 +5949,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			try
 			{
 				TaskCompletionSource<ItemsEventArgs> Tcs = new();
-				await this.PubSubClient.GetItems(NodeId, new[] { ItemId }, (s, e) => HandleResult(e, Tcs), null);
+				await this.PubSubClient.GetItems(NodeId, [ItemId], (s, e) => HandleResult(e, Tcs), null);
 				ItemsEventArgs Result = await Tcs.Task;
 				return Result.Items.FirstOrDefault();
 			}
@@ -6014,7 +6014,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 
 				ItemsEventArgs Result = await Tcs.Task;
-				PubSubItem[] Items = Result.Items ?? Array.Empty<PubSubItem>();
+				PubSubItem[] Items = Result.Items ?? [];
 				ResultPage? Page = Result.Page;
 				return new PubSubPageResult(NodeId, Items, Page);
 			}
