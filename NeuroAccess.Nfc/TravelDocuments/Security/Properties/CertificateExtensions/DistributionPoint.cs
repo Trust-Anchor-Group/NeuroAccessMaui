@@ -29,12 +29,20 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensi
 			{
 				i++;
 
-				if (DistributionPointName.FirstElement is not byte[] GeneralName ||
-					GeneralName.Length == 0 ||
-					GeneralName[0] != 0x86)
+				if (DistributionPointName.FirstElement is not byte[] GeneralName)
 				{
-					return false;
+					if (DistributionPointName.FirstElement is Vector v &&
+						v.Length == 1 &&
+						v.FirstElement is byte[] GeneralName2)
+					{
+						GeneralName = GeneralName2;
+					}
+					else
+						return false;
 				}
+
+				if (GeneralName.Length == 0 || GeneralName[0] != 0x86)
+					return false;
 
 				GeneralName = (byte[])GeneralName.Clone();
 				GeneralName[0] = (byte)UniversalTagNumber.IA5String;
