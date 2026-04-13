@@ -146,7 +146,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			if (!Result && (Client?.HasSniffers ?? false))
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 
 				sb.Append("Type: ");
 				sb.AppendLine(this.GetType().FullName);
