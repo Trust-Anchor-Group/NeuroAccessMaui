@@ -235,6 +235,7 @@ namespace NeuroAccess.Nfc.Test
 			SortedDictionary<string, int> NrOkPerCountry = [];
 			SortedDictionary<string, int> NrFailedPerCountry = [];
 			SortedDictionary<string, int> NrCertificates = [];
+			SortedDictionary<string, int> Exceptions = [];
 			string s;
 			int NrOk = 0;
 			int NrFailed = 0;
@@ -278,8 +279,9 @@ namespace NeuroAccess.Nfc.Test
 					NrOk++;
 					Inc(NrOkPerCountry, CountryCode);
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
+					Inc(Exceptions, ex.StackTrace ?? "Stack trace not available");
 					NrFailed++;
 					FailedCertificates.Add(FileName);
 					Inc(NrFailedPerCountry, CountryCode);
@@ -463,6 +465,20 @@ namespace NeuroAccess.Nfc.Test
 				Console.Out.WriteLine();
 
 				foreach (KeyValuePair<string, int> P in UnrecognizedCurvesUsed)
+				{
+					Console.Out.WriteLine();
+					Console.Out.WriteLine("Times: " + P.Value.ToString(CultureInfo.InvariantCulture));
+					Console.Out.WriteLine(P.Key);
+				}
+			}
+
+			if (Exceptions.Count > 0)
+			{
+				Console.Out.WriteLine();
+				Console.Out.WriteLine("Exceptions encountered:");
+				Console.Out.WriteLine();
+
+				foreach (KeyValuePair<string, int> P in Exceptions)
 				{
 					Console.Out.WriteLine();
 					Console.Out.WriteLine("Times: " + P.Value.ToString(CultureInfo.InvariantCulture));
