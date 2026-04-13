@@ -2592,8 +2592,30 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		}
 
 		/// <summary>
+		/// Gets the Subject Key Identifier from a certificate, with associated country code, if
+		/// available.
+		/// </summary>
+		/// <param name="Certificate">Certificate</param>
+		/// <returns>Country code and subject key identifier, if found.</returns>
+		public static KeyValuePair<string?, byte[]?> GetSubjectKeyIdentifier(Certificate Certificate)
+		{
+			string CountryCode = Certificate.Subject.CountryName;
+
+			foreach (object Extension in Certificate.Extensions?.Elements ?? Array.Empty<object>())
+			{
+				if (Extension is SubjectKeyIdentifier SubjectKeyIdentifier)
+				{
+					return new KeyValuePair<string?, byte[]?>(CountryCode,
+						SubjectKeyIdentifier.Value);
+				}
+			}
+
+			return new KeyValuePair<string?, byte[]?>(null, null);
+		}
+
+		/// <summary>
 		/// Gets the Authority Key Identifier from a certificate, with associated country code, if
-		/// available. This is used to determine /// the trust chain of the document's chip certificate,
+		/// available. This is used to determine the trust chain of the document's chip certificate,
 		/// which is used to verify the authenticity of the document.
 		/// </summary>
 		/// <param name="Certificate">Certificate</param>

@@ -224,7 +224,7 @@ namespace NeuroAccess.Nfc.Test
 		}
 
 		[TestMethod]
-		public void Test_04_VerifyAllIcaoCertificates()
+		public async Task Test_04_VerifyAllIcaoCertificates()
 		{
 			ASN1.GetOidsNotRecognized(true);    // Clears statistics.
 
@@ -257,18 +257,26 @@ namespace NeuroAccess.Nfc.Test
 				{
 					byte[] Bin = File.ReadAllBytes(FileName);
 
-					if (Certificate.TryParse(Bin, out Certificate? Root) &&
-						CertificateChain.VerifySignatures(Root))
-					{
-						NrOk++;
-						Inc(NrOkPerCountry, CountryCode);
-					}
-					else
+					if (!Certificate.TryParse(Bin, out Certificate? Cert))
 					{
 						NrFailed++;
 						FailedCertificates.Add(FileName);
 						Inc(NrFailedPerCountry, CountryCode);
+						continue;
 					}
+
+					Certificate[] Chain = await CertificateChain.GetChain(Cert, idDomain);
+
+					if (!CertificateChain.VerifySignatures(Chain))
+					{
+						NrFailed++;
+						FailedCertificates.Add(FileName);
+						Inc(NrFailedPerCountry, CountryCode);
+						continue;
+					}
+
+					NrOk++;
+					Inc(NrOkPerCountry, CountryCode);
 				}
 				catch (Exception)
 				{
@@ -420,9 +428,9 @@ namespace NeuroAccess.Nfc.Test
 		}
 
 		[TestMethod]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\01C1CA4806FA8A1DCD50AFC75E216E90479AF7C4.cer")]
-		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AD\\031B14A8421B68EFA0BFD081C88C2B64270542A9.cer")]
-		public void Test_05_VerifySpecificIcaoCertificates(string FileName)
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\01C1CA4806FA8A1DCD50AFC75E216E90479AF7C4.cer")]
+		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AD\\031B14A8421B68EFA0BFD081C88C2B64270542A9.cer")]
+		public async Task Test_05_VerifySpecificIcaoCertificates(string FileName)
 		{
 			TestContextWriter SnifferWriter = new(this.TestContext);
 			TextWriterSniffer Sniffer = new(SnifferWriter, BinaryPresentationMethod.Hexadecimal, "Unit Test Sniffer");
@@ -432,7 +440,8 @@ namespace NeuroAccess.Nfc.Test
 			Assert.IsTrue(Certificate.TryParse(Raw, out Certificate? Cert));
 			Console.Out.WriteLine(JSON.Encode(Cert, true));
 
-			Assert.IsTrue(CertificateChain.VerifySignatures(Client, Cert));
+			Certificate[] Chain = await CertificateChain.GetChain(Cert, idDomain);
+			Assert.IsTrue(CertificateChain.VerifySignatures(Client, Chain));
 		}
 
 	}
