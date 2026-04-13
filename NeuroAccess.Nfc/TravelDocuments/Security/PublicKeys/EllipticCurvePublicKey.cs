@@ -2,8 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using NeuroAccess.Nfc.TravelDocuments.Security.FieldTypes;
-using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
-using Waher.Networking;
 using Waher.Security.EllipticCurves;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys

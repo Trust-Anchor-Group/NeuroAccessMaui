@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using NeuroAccess.Nfc.TravelDocuments.Certificates;
-using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
+﻿using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
