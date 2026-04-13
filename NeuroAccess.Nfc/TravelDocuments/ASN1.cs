@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
+using System.Globalization;
 using System.Reflection;
+using System.Text;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Events;
 using Waher.Networking;
 using Waher.Runtime.Collections;
 using Waher.Runtime.Inventory;
+using Waher.Security.EllipticCurves;
 
 namespace NeuroAccess.Nfc.TravelDocuments
 {
@@ -19,6 +22,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	{
 		private static readonly SortedDictionary<string, int> oidsNotRecognized = [];
 		private static readonly SortedDictionary<string, int> ellipticCurvesUsed = [];
+		private static readonly SortedDictionary<string, int> unrecognizedCurves = [];
 		private static Dictionary<string, ConstructorInfo>? objectConstructors = null;
 
 		/// <summary>
@@ -371,24 +375,82 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <summary>
 		/// Records an Elliptic Curve has been used.
 		/// </summary>
-		/// <param name="Name">Name of the Elliptic Curve.</param>
+		/// <param name="Curve">Elliptic Curve</param>
 		/// <returns>Number of times the Elliptic Curve has been used.</returns>
-		public static int ReportEllipticCurveUse(string Name)
+		public static int ReportEllipticCurveUse(EllipticCurve Curve)
 		{
+			string Name = Curve.CurveName;
+
 			lock (ellipticCurvesUsed)
 			{
 				if (!ellipticCurvesUsed.TryGetValue(Name, out int i))
-				{
-					ellipticCurvesUsed[Name] = 1;
-					return 1;
-				}
+					ellipticCurvesUsed[Name] = i = 1;
 				else
 				{
 					if (i < int.MaxValue)
 						ellipticCurvesUsed[Name] = ++i;
-
-					return i;
 				}
+
+				if (Name == "Custom")
+				{
+					StringBuilder sb = new StringBuilder();
+
+					sb.Append("Order: ");
+					sb.AppendLine(Curve.Order.ToString(CultureInfo.InvariantCulture));
+					sb.Append("Cofactor: ");
+					sb.AppendLine(Curve.Cofactor.ToString(CultureInfo.InvariantCulture));
+					sb.Append("BasePoint.X: ");
+					sb.AppendLine(Curve.BasePoint.X.ToString(CultureInfo.InvariantCulture));
+					sb.Append("BasePoint.Y: ");
+					sb.AppendLine(Curve.BasePoint.Y.ToString(CultureInfo.InvariantCulture));
+
+					if (Curve is PrimeFieldCurve PrimeFieldCurve)
+					{
+						sb.Append("Prime: ");
+						sb.AppendLine(PrimeFieldCurve.Prime.ToString(CultureInfo.InvariantCulture));
+
+
+						if (PrimeFieldCurve is WeierstrassCurve WeierstrassCurve)
+						{
+							sb.Append("A: ");
+							sb.AppendLine(WeierstrassCurve.A.ToString(CultureInfo.InvariantCulture));
+							sb.Append("B: ");
+							sb.AppendLine(WeierstrassCurve.B.ToString(CultureInfo.InvariantCulture));
+						}
+						else if (PrimeFieldCurve is MontgomeryCurve MontgomeryCurve)
+						{
+							sb.Append("A: ");
+							sb.AppendLine(MontgomeryCurve.A.ToString(CultureInfo.InvariantCulture));
+						}
+						else if (PrimeFieldCurve is EdwardsCurve EdwardsCurve)
+						{
+							sb.Append("D: ");
+							sb.AppendLine(EdwardsCurve.D.ToString(CultureInfo.InvariantCulture));
+						}
+						else if (PrimeFieldCurve is EdwardsTwistedCurve EdwardsTwistedCurve)
+						{
+							sb.Append("D: ");
+							sb.AppendLine(EdwardsTwistedCurve.D.ToString(CultureInfo.InvariantCulture));
+						}
+						else
+						{
+							sb.Append("Type: ");
+							sb.AppendLine(Curve.GetType().FullName);
+						}
+					}
+
+					Name = sb.ToString();
+				}
+
+				if (!unrecognizedCurves.TryGetValue(Name, out int j))
+					unrecognizedCurves[Name] = 1;
+				else
+				{
+					if (j < int.MaxValue)
+						unrecognizedCurves[Name] = ++j;
+				}
+
+				return i;
 			}
 		}
 
@@ -406,6 +468,25 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				if (Clear)
 					ellipticCurvesUsed.Clear();
+
+				return Result;
+			}
+		}
+
+		/// <summary>
+		/// Gets an array of unrecognized Elliptic Curves that has been used.
+		/// </summary>
+		/// <param name="Clear">If the statistics should be cleared after compiling the list.</param>
+		/// <returns>Array of unrecognized Elliptic Curves used together with the number of times each has been used.</returns>
+		public static KeyValuePair<string, int>[] GetUnrecognizedEllipticCurvesUsed(bool Clear)
+		{
+			lock (unrecognizedCurves)
+			{
+				KeyValuePair<string, int>[] Result = new KeyValuePair<string, int>[unrecognizedCurves.Count];
+				unrecognizedCurves.CopyTo(Result, 0);
+
+				if (Clear)
+					unrecognizedCurves.Clear();
 
 				return Result;
 			}

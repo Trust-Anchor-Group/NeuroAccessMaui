@@ -428,27 +428,46 @@ namespace NeuroAccess.Nfc.Test
 
 			KeyValuePair<string, int>[] EllipticCurvesUsed = ASN1.GetEllipticCurvesUsed(true);
 
-			Console.Out.WriteLine();
-			Console.Out.WriteLine("Elliptic Curves used:");
-			Console.Out.WriteLine();
-			Console.Out.WriteLine("| Elliptic Curve                         | Nr Times |");
-			Console.Out.WriteLine("|:---------------------------------------|---------:|");
-
-			foreach (KeyValuePair<string, int> P in EllipticCurvesUsed)
+			if (EllipticCurvesUsed.Length > 0)
 			{
-				Console.Out.Write("| ");
-				Console.Out.Write(P.Key);
+				Console.Out.WriteLine();
+				Console.Out.WriteLine("Elliptic Curves used:");
+				Console.Out.WriteLine();
+				Console.Out.WriteLine("| Elliptic Curve                         | Nr Times |");
+				Console.Out.WriteLine("|:---------------------------------------|---------:|");
 
-				int i = 39 - P.Key.Length;
-				if (i > 0)
-					Console.Out.Write(new string(' ', i));
+				foreach (KeyValuePair<string, int> P in EllipticCurvesUsed)
+				{
+					Console.Out.Write("| ");
+					Console.Out.Write(P.Key);
 
-				Console.Out.Write('|');
+					int i = 39 - P.Key.Length;
+					if (i > 0)
+						Console.Out.Write(new string(' ', i));
 
-				s = P.Value.ToString(CultureInfo.InvariantCulture);
-				Console.Out.Write(new string(' ', 9 - s.Length));
-				Console.Out.Write(s);
-				Console.Out.WriteLine(" |");
+					Console.Out.Write('|');
+
+					s = P.Value.ToString(CultureInfo.InvariantCulture);
+					Console.Out.Write(new string(' ', 9 - s.Length));
+					Console.Out.Write(s);
+					Console.Out.WriteLine(" |");
+				}
+			}
+
+			KeyValuePair<string, int>[] UnrecognizedCurvesUsed = ASN1.GetUnrecognizedEllipticCurvesUsed(true);
+
+			if (UnrecognizedCurvesUsed.Length > 0)
+			{
+				Console.Out.WriteLine();
+				Console.Out.WriteLine("Unrecognized Elliptic Curves used:");
+				Console.Out.WriteLine();
+
+				foreach (KeyValuePair<string, int> P in UnrecognizedCurvesUsed)
+				{
+					Console.Out.WriteLine();
+					Console.Out.WriteLine("Times: " + P.Value.ToString(CultureInfo.InvariantCulture));
+					Console.Out.WriteLine(P.Key);
+				}
 			}
 		}
 

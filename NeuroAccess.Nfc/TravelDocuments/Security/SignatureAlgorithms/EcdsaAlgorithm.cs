@@ -75,17 +75,19 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 				foreach (EllipticCurve EC in curves)
 				{
-					if (EC is not PrimeFieldCurve PrimeFieldCurve)
-						continue;
-
-					if (PrimeFieldCurve.Prime != Prime ||
-						PrimeFieldCurve.Cofactor != Cofactor ||
-						PrimeFieldCurve.Order != Order ||
-						PrimeFieldCurve.BasePoint.X != BasePoint.X ||
-						PrimeFieldCurve.BasePoint.Y != BasePoint.Y)
+					if (EC.Order != Order ||
+						EC.Cofactor != Cofactor ||
+						EC.BasePoint.X != BasePoint.X ||
+						EC.BasePoint.Y != BasePoint.Y)
 					{
 						continue;
 					}
+
+					if (EC is not PrimeFieldCurve PrimeFieldCurve)
+						continue;
+
+					if (PrimeFieldCurve.Prime != Prime)
+						continue;
 
 					if (EC is WeierstrassCurve WeierstrassCurve)
 					{
@@ -138,7 +140,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				return false;
 			}
 
-			ASN1.ReportEllipticCurveUse(Selected.CurveName);
+			ASN1.ReportEllipticCurveUse(Selected);
 
 			Client?.Information("Curve used for signature: " + Selected.GetType().FullName);
 
