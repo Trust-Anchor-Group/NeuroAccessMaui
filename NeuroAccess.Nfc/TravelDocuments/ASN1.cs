@@ -18,6 +18,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	public static class ASN1
 	{
 		private static readonly SortedDictionary<string, int> oidsNotRecognized = [];
+		private static readonly SortedDictionary<string, int> ellipticCurvesUsed = [];
 		private static Dictionary<string, ConstructorInfo>? objectConstructors = null;
 
 		/// <summary>
@@ -362,6 +363,49 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				if (Clear)
 					oidsNotRecognized.Clear();
+
+				return Result;
+			}
+		}
+
+		/// <summary>
+		/// Records an Elliptic Curve has been used.
+		/// </summary>
+		/// <param name="Name">Name of the Elliptic Curve.</param>
+		/// <returns>Number of times the Elliptic Curve has been used.</returns>
+		public static int ReportEllipticCurveUse(string Name)
+		{
+			lock (ellipticCurvesUsed)
+			{
+				if (!ellipticCurvesUsed.TryGetValue(Name, out int i))
+				{
+					ellipticCurvesUsed[Name] = 1;
+					return 1;
+				}
+				else
+				{
+					if (i < int.MaxValue)
+						ellipticCurvesUsed[Name] = ++i;
+
+					return i;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets an array of Elliptic Curves that has been used.
+		/// </summary>
+		/// <param name="Clear">If the statistics should be cleared after compiling the list.</param>
+		/// <returns>Array of Elliptic Curves used together with the number of times each has been used.</returns>
+		public static KeyValuePair<string, int>[] GetEllipticCurvesUsed(bool Clear)
+		{
+			lock (ellipticCurvesUsed)
+			{
+				KeyValuePair<string, int>[] Result = new KeyValuePair<string, int>[ellipticCurvesUsed.Count];
+				ellipticCurvesUsed.CopyTo(Result, 0);
+
+				if (Clear)
+					ellipticCurvesUsed.Clear();
 
 				return Result;
 			}

@@ -138,6 +138,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				return false;
 			}
 
+			ASN1.ReportEllipticCurveUse(Selected.CurveName);
+
 			Client?.Information("Curve used for signature: " + Selected.GetType().FullName);
 
 			if (!Selected.IsPoint(PublicKeyPoint))

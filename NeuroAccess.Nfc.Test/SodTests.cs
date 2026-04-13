@@ -425,11 +425,37 @@ namespace NeuroAccess.Nfc.Test
 
 				Assert.Fail("Some ICAO certificates failed to verify. See output for details.");
 			}
+
+			KeyValuePair<string, int>[] EllipticCurvesUsed = ASN1.GetEllipticCurvesUsed(true);
+
+			Console.Out.WriteLine();
+			Console.Out.WriteLine("Elliptic Curves used:");
+			Console.Out.WriteLine();
+			Console.Out.WriteLine("| Elliptic Curve                         | Nr Times |");
+			Console.Out.WriteLine("|:---------------------------------------|---------:|");
+
+			foreach (KeyValuePair<string, int> P in EllipticCurvesUsed)
+			{
+				Console.Out.Write("| ");
+				Console.Out.Write(P.Key);
+
+				int i = 39 - P.Key.Length;
+				if (i > 0)
+					Console.Out.Write(new string(' ', i));
+
+				Console.Out.Write('|');
+
+				s = P.Value.ToString(CultureInfo.InvariantCulture);
+				Console.Out.Write(new string(' ', 9 - s.Length));
+				Console.Out.Write(s);
+				Console.Out.WriteLine(" |");
+			}
 		}
 
 		[TestMethod]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\01C1CA4806FA8A1DCD50AFC75E216E90479AF7C4.cer")]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AD\\031B14A8421B68EFA0BFD081C88C2B64270542A9.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\01C1CA4806FA8A1DCD50AFC75E216E90479AF7C4.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AD\\031B14A8421B68EFA0BFD081C88C2B64270542A9.cer")]
+		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\05A76DC6681AEF89920BAE83F027ED9000A57742.cer")]
 		public async Task Test_05_VerifySpecificIcaoCertificates(string FileName)
 		{
 			TestContextWriter SnifferWriter = new(this.TestContext);
@@ -438,7 +464,7 @@ namespace NeuroAccess.Nfc.Test
 			byte[] Raw = File.ReadAllBytes(FileName);
 
 			Assert.IsTrue(Certificate.TryParse(Raw, out Certificate? Cert));
-			Console.Out.WriteLine(JSON.Encode(Cert, true));
+			Console.Out.WriteLine(JSON.Encode(Cert.Asn1Vector, true));
 
 			Certificate[] Chain = await CertificateChain.GetChain(Cert, idDomain);
 			Assert.IsTrue(CertificateChain.VerifySignatures(Client, Chain));
