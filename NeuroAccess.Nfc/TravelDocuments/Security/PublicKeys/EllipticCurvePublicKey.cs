@@ -45,7 +45,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 				Version > int.MaxValue ||
 				EcParameters[1] is not FieldType Field ||
 				EcParameters[2] is not Vector Curve ||
-				Curve.Length != 2 ||
+				Curve.Length < 2 ||		// Curve may have an optional third parameter: seed, a BIT STRING, which is not use in the signature validation, but available for documentation, if available.
 				Curve[0] is not byte[] A ||
 				Curve[1] is not byte[] B ||
 				EcParameters[3] is not byte[] BasePoint ||
