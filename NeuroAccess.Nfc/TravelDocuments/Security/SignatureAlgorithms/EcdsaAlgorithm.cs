@@ -34,7 +34,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				return false;
 			}
 
-			return VerifySignature(Data, Signature, ECPublicKey, this.HashAlgorithm, Client);
+			return VerifySignature(Data, Signature, ECPublicKey, this.HashAlgorithm,
+				this.HashAlgorithmStream, Client);
 		}
 
 		/// <summary>
@@ -43,12 +44,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// <param name="Data">Data being signed.</param>
 		/// <param name="Signature">Digital signature.</param>
 		/// <param name="PublicKey">Elliptic Curve Public Key</param>
-		/// <param name="HashAlgorithm">Hash Algorithm to use</param>
+		/// <param name="HashAlgorithm">Hash algorithm to use for in-memory blocks of data.</param>
+		/// <param name="HashAlgorithmStream">Hash algorithm to use for streams of data.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
 		public static bool VerifySignature(byte[] Data, byte[] Signature,
 			EllipticCurvePublicKey PublicKey, HashFunctionArray HashAlgorithm,
-			ICommunicationLayer? Client)
+			HashFunctionStream HashAlgorithmStream, ICommunicationLayer? Client)
 		{
 			System.Numerics.BigInteger Order = PublicKey.Order;
 			System.Numerics.BigInteger Cofactor = PublicKey.CoFactor;
@@ -131,7 +133,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 						return false;
 
 					Selected = new CustomWeierstrassCurve("Custom", Prime, BasePoint, A, B,
-						Order, (int)Cofactor);
+						Order, (int)Cofactor, HashAlgorithm, HashAlgorithmStream);
+				}
+				else if (Selected.HashFunction != HashAlgorithm ||
+					Selected.HashFunctionStream != HashAlgorithmStream)
+				{
+					Client?.Warning("Elliptic Curve Hash algorithm not standard: " +
+						HashAlgorithm.Method.Name + " (instead of " +
+						Selected.HashFunction.Method.Name + ")");
+
+					Selected = new CustomWeierstrassCurve(Selected.CurveName, Prime, BasePoint, A, B,
+						Order, Selected.Cofactor, HashAlgorithm, HashAlgorithmStream);
 				}
 			}
 			else
@@ -142,7 +154,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			ASN1.ReportEllipticCurveUse(Selected);
 
-			Client?.Information("Curve used for signature: " + Selected.GetType().FullName);
+			if (Client?.HasSniffers ?? false)
+			{
+				Client?.Information("Curve used for signature: " + Selected.CurveName +
+					" (implemented by " + Selected.GetType().FullName + ")");
+			}
 
 			if (!Selected.IsPoint(PublicKeyPoint))
 			{
@@ -181,8 +197,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		}
 
 		/// <summary>
-		/// Hash algorithm to use.
+		/// Hash algorithm to use for in-memory blocks of data.
 		/// </summary>
 		public abstract HashFunctionArray HashAlgorithm { get; }
+
+		/// <summary>
+		/// Hash algorithm to use for streams of data.
+		/// </summary>
+		public abstract HashFunctionStream HashAlgorithmStream { get; }
 	}
 }

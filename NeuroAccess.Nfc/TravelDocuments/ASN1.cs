@@ -393,7 +393,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				if (Name == "Custom")
 				{
-					StringBuilder sb = new StringBuilder();
+					StringBuilder sb = new();
 
 					sb.Append("Order: ");
 					sb.AppendLine(Curve.Order.ToString(CultureInfo.InvariantCulture));

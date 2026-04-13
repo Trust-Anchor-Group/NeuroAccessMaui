@@ -12,10 +12,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// </summary>
 		public override string Oid => "1.2.840.10045.4.3.4";
 
-
 		/// <summary>
-		/// Hash algorithm to use.
+		/// Hash algorithm to use for in-memory blocks of data.
 		/// </summary>
 		public override HashFunctionArray HashAlgorithm => Hashes.ComputeSHA512Hash;
+
+		/// <summary>
+		/// Hash algorithm to use for streams of data.
+		/// </summary>
+		public override HashFunctionStream HashAlgorithmStream => Hashes.ComputeSHA512Hash;
 	}
 }
