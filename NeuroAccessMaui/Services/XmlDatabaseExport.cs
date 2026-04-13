@@ -35,10 +35,15 @@ namespace NeuroAccessMaui.Services
 		/// <summary>
 		/// Is called when export of database is started.
 		/// </summary>
+		/// <param name="Provider">Database provider being exported.</param>
 		/// <returns>If export can continue.</returns>
-		public Task<bool> StartDatabase()
+		public Task<bool> StartDatabase(IDatabaseProvider? Provider)
 		{
 			this.output.WriteStartElement("Database");
+
+			if (Provider is not null)
+				this.output.WriteAttributeString("provider", Provider.GetType().FullName);
+
 			return Task.FromResult(true);
 		}
 
