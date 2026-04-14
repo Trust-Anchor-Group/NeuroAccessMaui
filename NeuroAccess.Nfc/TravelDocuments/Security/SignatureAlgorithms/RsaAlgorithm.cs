@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Formats.Asn1;
+using System.Globalization;
 using System.Numerics;
 using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using Waher.Networking;
@@ -29,6 +30,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				Client?.Error("No RSA public key provided or found.");
 				return false;
 			}
+
+			byte[] Bin = RsaParameters.Modulus.ToByteArray();
+			int Bits = Bin.Length << 3;
+			if (Bin[0] == 0)
+				Bits -= 8;
+
+			ASN1.ReportAlgorithmUse("RSA-PKCS-" + Bits.ToString(CultureInfo.InvariantCulture));
 
 			return this.VerifySignatureRsaPkcs1(Data, Signature,
 				RsaParameters.Modulus, RsaParameters.Exponent);
@@ -75,7 +83,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			byte[] HashDigest = this.HashAlgorithm(Data);
 			AsnWriter w = new(AsnEncodingRules.DER);
-			
+
 			w.PushSequence();
 			w.PushSequence();
 			w.WriteObjectIdentifier(this.HashAlgorithmOid);

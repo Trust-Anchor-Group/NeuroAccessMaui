@@ -152,7 +152,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				return false;
 			}
 
-			ASN1.ReportEllipticCurveUse(Selected);
+			ASN1.ReportAlgorithmUse(Selected);
 
 			if (Client?.HasSniffers ?? false)
 			{

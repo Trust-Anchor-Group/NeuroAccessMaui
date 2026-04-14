@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
 using NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions;
@@ -138,6 +139,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				Client?.Error("Unable to get RSA public key from certificate.");
 				return false;
 			}
+
+			byte[] Bin = RsaPublicKey.Modulus.ToByteArray();
+			int Bits = Bin.Length << 3;
+			if (Bin[0] == 0)
+				Bits -= 8;
+
+			ASN1.ReportAlgorithmUse("RSA-PSS-" + Bits.ToString(CultureInfo.InvariantCulture));
 
 			BigInteger S = EllipticCurve.ToInt(Signature, true);
 

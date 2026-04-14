@@ -52,18 +52,24 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties
 		/// <returns>If able to parse the general name from the vector definition.</returns>
 		public static bool TryParse(Vector ParsedVector, [NotNullWhen(true)] out object? Name)
 		{
+			object? First = ParsedVector.FirstElement;
 			Name = null;
 
-			if (ParsedVector.FirstElement is not byte[] GeneralName)
+			if (First is not byte[] GeneralName)
 			{
-				if (ParsedVector.FirstElement is Vector v &&
-					v.Length == 1 &&
-					v.FirstElement is byte[] GeneralName2)
+				while (First is Vector v && v.Length == 1)
 				{
-					GeneralName = GeneralName2;
+					ParsedVector = v;
+					First = ParsedVector.FirstElement;
 				}
+
+				if (First is byte[] GeneralName2)
+					GeneralName = GeneralName2;
 				else
-					return false;
+				{
+					Name = ParsedVector;
+					return true;
+				}
 			}
 
 			if (GeneralName.Length == 0)

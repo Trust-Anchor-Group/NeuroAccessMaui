@@ -406,16 +406,6 @@ namespace NeuroAccess.Nfc.Test
 				Output.WriteLine(" |");
 			}
 
-			if (NrFailed > 0)
-			{
-				Output.WriteLine();
-
-				foreach (string FileName in FailedCertificates)
-					Output.WriteLine(FileName);
-
-				Assert.Fail("Some ICAO certificates failed to verify. See output for details.");
-			}
-
 			if (Exceptions.Count > 0)
 			{
 				Output.WriteLine();
@@ -429,11 +419,27 @@ namespace NeuroAccess.Nfc.Test
 					Output.WriteLine(P.Key);
 				}
 			}
+			else
+			{
+				Output.WriteLine();
+				Output.WriteLine("No exceptions encountered:");
+				Output.WriteLine();
+			}
+
+			if (NrFailed > 0)
+			{
+				Output.WriteLine();
+
+				foreach (string FileName in FailedCertificates)
+					Output.WriteLine(FileName);
+
+				Assert.Fail("Some ICAO certificates failed to verify. See output for details.");
+			}
 		}
 
 		private static void ExportAsn1Statistics(TextWriter Output)
 		{ 
-			KeyValuePair<string, int>[] EllipticCurvesUsed = ASN1.GetEllipticCurvesUsed(true);
+			KeyValuePair<string, int>[] AlgorithmsUsed = ASN1.GetAlgorithmsUsed(true);
 			string s;
 
 			KeyValuePair<string, int>[] OidsNotRecognized = ASN1.GetOidsNotRecognized(true);
@@ -486,15 +492,15 @@ namespace NeuroAccess.Nfc.Test
 				Output.WriteLine(" |");
 			}
 
-			if (EllipticCurvesUsed.Length > 0)
+			if (AlgorithmsUsed.Length > 0)
 			{
 				Output.WriteLine();
-				Output.WriteLine("Elliptic Curves used:");
+				Output.WriteLine("Algorithms used:");
 				Output.WriteLine();
-				Output.WriteLine("| Elliptic Curve                         | Nr Times |");
+				Output.WriteLine("| Algorithm                              | Nr Times |");
 				Output.WriteLine("|:---------------------------------------|---------:|");
 
-				foreach (KeyValuePair<string, int> P in EllipticCurvesUsed)
+				foreach (KeyValuePair<string, int> P in AlgorithmsUsed)
 				{
 					Output.Write("| ");
 					Output.Write(P.Key);
@@ -511,6 +517,12 @@ namespace NeuroAccess.Nfc.Test
 					Output.WriteLine(" |");
 				}
 			}
+			else
+			{
+				Output.WriteLine();
+				Output.WriteLine("No Elliptic Curves used.");
+				Output.WriteLine();
+			}
 
 			KeyValuePair<string, int>[] UnrecognizedCurvesUsed = ASN1.GetUnrecognizedEllipticCurvesUsed(true);
 
@@ -526,6 +538,12 @@ namespace NeuroAccess.Nfc.Test
 					Output.WriteLine("Times: " + P.Value.ToString(CultureInfo.InvariantCulture));
 					Output.WriteLine(P.Key);
 				}
+			}
+			else
+			{
+				Output.WriteLine();
+				Output.WriteLine("No unrecognized Elliptic Curves used.");
+				Output.WriteLine();
 			}
 		}
 

@@ -22,7 +22,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	{
 		private static readonly SortedDictionary<string, int> oidsNotRecognized = [];
 		private static readonly SortedDictionary<string, int> oidsNotConfigured = [];
-		private static readonly SortedDictionary<string, int> ellipticCurvesUsed = [];
+		private static readonly SortedDictionary<string, int> algorithmsUsed = [];
 		private static readonly SortedDictionary<string, int> unrecognizedCurves = [];
 		private static Dictionary<string, ConstructorInfo>? objectConstructors = null;
 
@@ -394,10 +394,20 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// </summary>
 		/// <param name="Curve">Elliptic Curve</param>
 		/// <returns>Number of times the Elliptic Curve has been used.</returns>
-		public static int ReportEllipticCurveUse(EllipticCurve Curve)
+		public static int ReportAlgorithmUse(string Name)
+		{
+			return Inc(Name, algorithmsUsed);
+		}
+
+		/// <summary>
+		/// Records an Elliptic Curve has been used.
+		/// </summary>
+		/// <param name="Curve">Elliptic Curve</param>
+		/// <returns>Number of times the Elliptic Curve has been used.</returns>
+		public static int ReportAlgorithmUse(EllipticCurve Curve)
 		{
 			string Name = Curve.CurveName;
-			int Result = Inc(Name, ellipticCurvesUsed);
+			int Result = ReportAlgorithmUse(Name);
 
 			if (Name == "Custom")
 			{
@@ -454,13 +464,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		}
 
 		/// <summary>
-		/// Gets an array of Elliptic Curves that has been used.
+		/// Gets an array of algorithms that has been used.
 		/// </summary>
 		/// <param name="Clear">If the statistics should be cleared after compiling the list.</param>
 		/// <returns>Array of Elliptic Curves used together with the number of times each has been used.</returns>
-		public static KeyValuePair<string, int>[] GetEllipticCurvesUsed(bool Clear)
+		public static KeyValuePair<string, int>[] GetAlgorithmsUsed(bool Clear)
 		{
-			return GetCounts(ellipticCurvesUsed, Clear);
+			return GetCounts(algorithmsUsed, Clear);
 		}
 
 		/// <summary>
