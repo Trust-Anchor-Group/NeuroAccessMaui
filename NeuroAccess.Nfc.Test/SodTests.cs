@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Extensions;
 using NeuroAccess.Nfc.TravelDocuments;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
@@ -282,7 +283,13 @@ namespace NeuroAccess.Nfc.Test
 				}
 				catch (Exception ex)
 				{
-					ASN1.Inc(ex.StackTrace ?? "Stack trace not available", Exceptions);
+					StringBuilder sb = new StringBuilder();
+
+					sb.AppendLine(ex.Message);
+					sb.AppendLine();
+					sb.Append(ex.StackTrace ?? "Stack trace not available");
+
+					ASN1.Inc(sb.ToString(), Exceptions);
 					NrFailed++;
 					FailedCertificates.Add(FileName);
 					ASN1.Inc(CountryCode, NrFailedPerCountry);
@@ -438,7 +445,7 @@ namespace NeuroAccess.Nfc.Test
 		}
 
 		private static void ExportAsn1Statistics(TextWriter Output)
-		{ 
+		{
 			KeyValuePair<string, int>[] AlgorithmsUsed = ASN1.GetAlgorithmsUsed(true);
 			string s;
 
@@ -548,10 +555,11 @@ namespace NeuroAccess.Nfc.Test
 		}
 
 		[TestMethod]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\01C1CA4806FA8A1DCD50AFC75E216E90479AF7C4.cer")]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AD\\031B14A8421B68EFA0BFD081C88C2B64270542A9.cer")]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\05A76DC6681AEF89920BAE83F027ED9000A57742.cer")]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\0A556519D1EFF9AD209F8A72C3E9035E87299169.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\01C1CA4806FA8A1DCD50AFC75E216E90479AF7C4.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AD\\031B14A8421B68EFA0BFD081C88C2B64270542A9.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\05A76DC6681AEF89920BAE83F027ED9000A57742.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\0A556519D1EFF9AD209F8A72C3E9035E87299169.cer")]
+		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\BA\\8F326711052AEEF40F26E408E1773406C7BE4851.cer")]
 		public async Task Test_05_VerifySpecificIcaoCertificates(string FileName)
 		{
 			TestContextWriter SnifferWriter = new(this.TestContext);
