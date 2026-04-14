@@ -10,7 +10,6 @@ using Waher.Content;
 using Waher.Networking;
 using Waher.Networking.Sniffers;
 using Waher.Runtime.Collections;
-using Waher.Runtime.Inventory;
 using Waher.Security;
 
 namespace NeuroAccess.Nfc.Test
@@ -24,6 +23,12 @@ namespace NeuroAccess.Nfc.Test
 		/// Test context
 		/// </summary>
 		public TestContext TestContext { get; set; } = null!;
+
+		[TestCleanup]
+		public void TestCleanup()
+		{
+			ExportAsn1Statistics(Console.Out);
+		}
 
 		// Testing parsing of Document Security Objects. (§4.6.2, ICAO 9303-10)
 
@@ -42,7 +47,12 @@ namespace NeuroAccess.Nfc.Test
 
 			Assert.IsTrue(ASN1.TryInstantiate(SignedData.ContentInfo.ContentType.Value!, out ISecurityObject? SecurityObject));
 			Assert.IsFalse(SecurityObject.IsConfigured);
-			Assert.IsTrue(SecurityObject.Configure(ContentVector));
+
+			if (!SecurityObject.Configure(ContentVector))
+			{
+				ASN1.ReportOidNotConfigured(SecurityObject.Oid);
+				Assert.Fail("Unable to configure object.");
+			}
 
 			Console.Out.WriteLine(JSON.Encode(SecurityObject, true));
 			Console.Out.WriteLine();
@@ -236,23 +246,14 @@ namespace NeuroAccess.Nfc.Test
 			SortedDictionary<string, int> NrFailedPerCountry = [];
 			SortedDictionary<string, int> NrCertificates = [];
 			SortedDictionary<string, int> Exceptions = [];
-			string s;
 			int NrOk = 0;
 			int NrFailed = 0;
-
-			static void Inc(SortedDictionary<string, int> List, string Key)
-			{
-				if (List.TryGetValue(Key, out int i))
-					List[Key] = i + 1;
-				else
-					List[Key] = 1;
-			}
 
 			foreach (string FileName in FileNames)
 			{
 				string CountryCode = Path.GetFileName(Path.GetDirectoryName(FileName))!;
 
-				Inc(NrCertificates, CountryCode);
+				ASN1.Inc(CountryCode, NrCertificates);
 
 				try
 				{
@@ -262,7 +263,7 @@ namespace NeuroAccess.Nfc.Test
 					{
 						NrFailed++;
 						FailedCertificates.Add(FileName);
-						Inc(NrFailedPerCountry, CountryCode);
+						ASN1.Inc(CountryCode, NrFailedPerCountry);
 						continue;
 					}
 
@@ -272,53 +273,65 @@ namespace NeuroAccess.Nfc.Test
 					{
 						NrFailed++;
 						FailedCertificates.Add(FileName);
-						Inc(NrFailedPerCountry, CountryCode);
+						ASN1.Inc(CountryCode, NrFailedPerCountry);
 						continue;
 					}
 
 					NrOk++;
-					Inc(NrOkPerCountry, CountryCode);
+					ASN1.Inc(CountryCode, NrOkPerCountry);
 				}
 				catch (Exception ex)
 				{
-					Inc(Exceptions, ex.StackTrace ?? "Stack trace not available");
+					ASN1.Inc(ex.StackTrace ?? "Stack trace not available", Exceptions);
 					NrFailed++;
 					FailedCertificates.Add(FileName);
-					Inc(NrFailedPerCountry, CountryCode);
+					ASN1.Inc(CountryCode, NrFailedPerCountry);
 				}
 			}
 
-			Console.Out.WriteLine("Nr OK: " + NrOk.ToString(CultureInfo.InvariantCulture));
-			Console.Out.WriteLine("Nr Failed: " + NrFailed.ToString(CultureInfo.InvariantCulture));
+			ExportStatistics(Console.Out, NrOk, NrFailed, NrCertificates, NrOkPerCountry,
+				NrFailedPerCountry, Exceptions, FailedCertificates);
+		}
 
-			Console.Out.WriteLine();
-			Console.Out.WriteLine("Statistics per country:");
-			Console.Out.WriteLine();
-			Console.Out.WriteLine("| Country | Certificates |        Nr OK |    Nr Failed |");
-			Console.Out.WriteLine("|:--------|-------------:|-------------:|-------------:|");
+		private static void ExportStatistics(TextWriter Output, int NrOk, int NrFailed,
+			SortedDictionary<string, int> NrCertificates,
+			SortedDictionary<string, int> NrOkPerCountry,
+			SortedDictionary<string, int> NrFailedPerCountry,
+			SortedDictionary<string, int> Exceptions,
+			ChunkedList<string> FailedCertificates)
+		{
+			Output.WriteLine("Nr OK: " + NrOk.ToString(CultureInfo.InvariantCulture));
+			Output.WriteLine("Nr Failed: " + NrFailed.ToString(CultureInfo.InvariantCulture));
+
+			Output.WriteLine();
+			Output.WriteLine("Statistics per country:");
+			Output.WriteLine();
+			Output.WriteLine("| Country | Certificates |        Nr OK |    Nr Failed |");
+			Output.WriteLine("|:--------|-------------:|-------------:|-------------:|");
 
 			SortedDictionary<string, int> CountriesWithErrors = [];
 			SortedDictionary<string, int> CountriesWithNoErrors = [];
+			string s;
 
 			foreach (KeyValuePair<string, int> P in NrCertificates)
 			{
-				Console.Out.Write("| ");
-				Console.Out.Write(P.Key);
-				Console.Out.Write(new string(' ', 8 - P.Key.Length));
-				Console.Out.Write('|');
+				Output.Write("| ");
+				Output.Write(P.Key);
+				Output.Write(new string(' ', 8 - P.Key.Length));
+				Output.Write('|');
 
 				s = P.Value.ToString(CultureInfo.InvariantCulture);
-				Console.Out.Write(new string(' ', 13 - s.Length));
-				Console.Out.Write(s);
+				Output.Write(new string(' ', 13 - s.Length));
+				Output.Write(s);
 
 				if (NrOkPerCountry.TryGetValue(P.Key, out int i))
 					s = i.ToString(CultureInfo.InvariantCulture);
 				else
 					s = string.Empty;
 
-				Console.Out.Write(" |");
-				Console.Out.Write(new string(' ', 13 - s.Length));
-				Console.Out.Write(s);
+				Output.Write(" |");
+				Output.Write(new string(' ', 13 - s.Length));
+				Output.Write(s);
 
 				if (NrFailedPerCountry.TryGetValue(P.Key, out i))
 				{
@@ -331,128 +344,171 @@ namespace NeuroAccess.Nfc.Test
 					CountriesWithNoErrors[P.Key] = P.Value;
 				}
 
-				Console.Out.Write(" |");
-				Console.Out.Write(new string(' ', 13 - s.Length));
-				Console.Out.Write(s);
-				Console.Out.WriteLine(" |");
+				Output.Write(" |");
+				Output.Write(new string(' ', 13 - s.Length));
+				Output.Write(s);
+				Output.WriteLine(" |");
 			}
 
-			Console.Out.WriteLine();
-			Console.Out.WriteLine("Countries with errors:");
-			Console.Out.WriteLine();
-			Console.Out.WriteLine("| Country | Certificates |        Nr OK |    Nr Failed |");
-			Console.Out.WriteLine("|:--------|-------------:|-------------:|-------------:|");
+			Output.WriteLine();
+			Output.WriteLine("Countries with errors:");
+			Output.WriteLine();
+			Output.WriteLine("| Country | Certificates |        Nr OK |    Nr Failed |");
+			Output.WriteLine("|:--------|-------------:|-------------:|-------------:|");
 
 			foreach (KeyValuePair<string, int> P in CountriesWithErrors)
 			{
-				Console.Out.Write("| ");
-				Console.Out.Write(P.Key);
-				Console.Out.Write(new string(' ', 8 - P.Key.Length));
-				Console.Out.Write('|');
+				Output.Write("| ");
+				Output.Write(P.Key);
+				Output.Write(new string(' ', 8 - P.Key.Length));
+				Output.Write('|');
 
 				s = P.Value.ToString(CultureInfo.InvariantCulture);
-				Console.Out.Write(new string(' ', 13 - s.Length));
-				Console.Out.Write(s);
+				Output.Write(new string(' ', 13 - s.Length));
+				Output.Write(s);
 
 				if (NrOkPerCountry.TryGetValue(P.Key, out int i))
 					s = i.ToString(CultureInfo.InvariantCulture);
 				else
 					s = string.Empty;
 
-				Console.Out.Write(" |");
-				Console.Out.Write(new string(' ', 13 - s.Length));
-				Console.Out.Write(s);
+				Output.Write(" |");
+				Output.Write(new string(' ', 13 - s.Length));
+				Output.Write(s);
 
 				if (NrFailedPerCountry.TryGetValue(P.Key, out i))
 					s = i.ToString(CultureInfo.InvariantCulture);
 				else
 					s = string.Empty;
 
-				Console.Out.Write(" |");
-				Console.Out.Write(new string(' ', 13 - s.Length));
-				Console.Out.Write(s);
-				Console.Out.WriteLine(" |");
+				Output.Write(" |");
+				Output.Write(new string(' ', 13 - s.Length));
+				Output.Write(s);
+				Output.WriteLine(" |");
 			}
 
-			Console.Out.WriteLine();
-			Console.Out.WriteLine("Countries with no errors:");
-			Console.Out.WriteLine();
-			Console.Out.WriteLine("| Country | Certificates |");
-			Console.Out.WriteLine("|:--------|-------------:|");
+			Output.WriteLine();
+			Output.WriteLine("Countries with no errors:");
+			Output.WriteLine();
+			Output.WriteLine("| Country | Certificates |");
+			Output.WriteLine("|:--------|-------------:|");
 
 			foreach (KeyValuePair<string, int> P in CountriesWithNoErrors)
 			{
-				Console.Out.Write("| ");
-				Console.Out.Write(P.Key);
-				Console.Out.Write(new string(' ', 8 - P.Key.Length));
-				Console.Out.Write('|');
+				Output.Write("| ");
+				Output.Write(P.Key);
+				Output.Write(new string(' ', 8 - P.Key.Length));
+				Output.Write('|');
 
 				s = P.Value.ToString(CultureInfo.InvariantCulture);
-				Console.Out.Write(new string(' ', 13 - s.Length));
-				Console.Out.Write(s);
-				Console.Out.WriteLine(" |");
-			}
-
-			KeyValuePair<string, int>[] OidsNotRecognized = ASN1.GetOidsNotRecognized(true);
-
-			Console.Out.WriteLine();
-			Console.Out.WriteLine("OIDs not recognized:");
-			Console.Out.WriteLine();
-			Console.Out.WriteLine("| OID                                    | Nr Times |");
-			Console.Out.WriteLine("|:---------------------------------------|---------:|");
-
-			foreach (KeyValuePair<string, int> P in OidsNotRecognized)
-			{
-				Console.Out.Write("| ");
-				Console.Out.Write(P.Key);
-
-				int i = 39 - P.Key.Length;
-				if (i > 0)
-					Console.Out.Write(new string(' ', i));
-
-				Console.Out.Write('|');
-
-				s = P.Value.ToString(CultureInfo.InvariantCulture);
-				Console.Out.Write(new string(' ', 9 - s.Length));
-				Console.Out.Write(s);
-				Console.Out.WriteLine(" |");
+				Output.Write(new string(' ', 13 - s.Length));
+				Output.Write(s);
+				Output.WriteLine(" |");
 			}
 
 			if (NrFailed > 0)
 			{
-				Console.Out.WriteLine();
+				Output.WriteLine();
 
 				foreach (string FileName in FailedCertificates)
-					Console.Out.WriteLine(FileName);
+					Output.WriteLine(FileName);
 
 				Assert.Fail("Some ICAO certificates failed to verify. See output for details.");
 			}
 
+			if (Exceptions.Count > 0)
+			{
+				Output.WriteLine();
+				Output.WriteLine("Exceptions encountered:");
+				Output.WriteLine();
+
+				foreach (KeyValuePair<string, int> P in Exceptions)
+				{
+					Output.WriteLine();
+					Output.WriteLine("Times: " + P.Value.ToString(CultureInfo.InvariantCulture));
+					Output.WriteLine(P.Key);
+				}
+			}
+		}
+
+		private static void ExportAsn1Statistics(TextWriter Output)
+		{ 
 			KeyValuePair<string, int>[] EllipticCurvesUsed = ASN1.GetEllipticCurvesUsed(true);
+			string s;
+
+			KeyValuePair<string, int>[] OidsNotRecognized = ASN1.GetOidsNotRecognized(true);
+
+			Output.WriteLine();
+			Output.WriteLine("OIDs not recognized:");
+			Output.WriteLine();
+			Output.WriteLine("| OID                                    | Nr Times |");
+			Output.WriteLine("|:---------------------------------------|---------:|");
+
+			foreach (KeyValuePair<string, int> P in OidsNotRecognized)
+			{
+				Output.Write("| ");
+				Output.Write(P.Key);
+
+				int i = 39 - P.Key.Length;
+				if (i > 0)
+					Output.Write(new string(' ', i));
+
+				Output.Write('|');
+
+				s = P.Value.ToString(CultureInfo.InvariantCulture);
+				Output.Write(new string(' ', 9 - s.Length));
+				Output.Write(s);
+				Output.WriteLine(" |");
+			}
+
+			KeyValuePair<string, int>[] OidsNotConfigured = ASN1.GetOidsNotConfigured(true);
+
+			Output.WriteLine();
+			Output.WriteLine("OIDs not configured:");
+			Output.WriteLine();
+			Output.WriteLine("| OID                                    | Nr Times |");
+			Output.WriteLine("|:---------------------------------------|---------:|");
+
+			foreach (KeyValuePair<string, int> P in OidsNotConfigured)
+			{
+				Output.Write("| ");
+				Output.Write(P.Key);
+
+				int i = 39 - P.Key.Length;
+				if (i > 0)
+					Output.Write(new string(' ', i));
+
+				Output.Write('|');
+
+				s = P.Value.ToString(CultureInfo.InvariantCulture);
+				Output.Write(new string(' ', 9 - s.Length));
+				Output.Write(s);
+				Output.WriteLine(" |");
+			}
 
 			if (EllipticCurvesUsed.Length > 0)
 			{
-				Console.Out.WriteLine();
-				Console.Out.WriteLine("Elliptic Curves used:");
-				Console.Out.WriteLine();
-				Console.Out.WriteLine("| Elliptic Curve                         | Nr Times |");
-				Console.Out.WriteLine("|:---------------------------------------|---------:|");
+				Output.WriteLine();
+				Output.WriteLine("Elliptic Curves used:");
+				Output.WriteLine();
+				Output.WriteLine("| Elliptic Curve                         | Nr Times |");
+				Output.WriteLine("|:---------------------------------------|---------:|");
 
 				foreach (KeyValuePair<string, int> P in EllipticCurvesUsed)
 				{
-					Console.Out.Write("| ");
-					Console.Out.Write(P.Key);
+					Output.Write("| ");
+					Output.Write(P.Key);
 
 					int i = 39 - P.Key.Length;
 					if (i > 0)
-						Console.Out.Write(new string(' ', i));
+						Output.Write(new string(' ', i));
 
-					Console.Out.Write('|');
+					Output.Write('|');
 
 					s = P.Value.ToString(CultureInfo.InvariantCulture);
-					Console.Out.Write(new string(' ', 9 - s.Length));
-					Console.Out.Write(s);
-					Console.Out.WriteLine(" |");
+					Output.Write(new string(' ', 9 - s.Length));
+					Output.Write(s);
+					Output.WriteLine(" |");
 				}
 			}
 
@@ -460,29 +516,15 @@ namespace NeuroAccess.Nfc.Test
 
 			if (UnrecognizedCurvesUsed.Length > 0)
 			{
-				Console.Out.WriteLine();
-				Console.Out.WriteLine("Unrecognized Elliptic Curves used:");
-				Console.Out.WriteLine();
+				Output.WriteLine();
+				Output.WriteLine("Unrecognized Elliptic Curves used:");
+				Output.WriteLine();
 
 				foreach (KeyValuePair<string, int> P in UnrecognizedCurvesUsed)
 				{
-					Console.Out.WriteLine();
-					Console.Out.WriteLine("Times: " + P.Value.ToString(CultureInfo.InvariantCulture));
-					Console.Out.WriteLine(P.Key);
-				}
-			}
-
-			if (Exceptions.Count > 0)
-			{
-				Console.Out.WriteLine();
-				Console.Out.WriteLine("Exceptions encountered:");
-				Console.Out.WriteLine();
-
-				foreach (KeyValuePair<string, int> P in Exceptions)
-				{
-					Console.Out.WriteLine();
-					Console.Out.WriteLine("Times: " + P.Value.ToString(CultureInfo.InvariantCulture));
-					Console.Out.WriteLine(P.Key);
+					Output.WriteLine();
+					Output.WriteLine("Times: " + P.Value.ToString(CultureInfo.InvariantCulture));
+					Output.WriteLine(P.Key);
 				}
 			}
 		}

@@ -1,6 +1,6 @@
 ﻿using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.Security;
-using NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions;
+using NeuroAccess.Nfc.TravelDocuments.Security.Properties.Keys;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
 using System;
 using System.Collections.Generic;
@@ -161,7 +161,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				i++;
 
 				if (ListExtensions2.Length == 1 &&
-					ListExtensions2.FirstElement is Vector ListExtensions3 &&
+					ListExtensions2.FirstElementNested is Vector ListExtensions3 &&
 					(ListExtensions2.SubSection[0] & 0x80) != 0)
 				{
 					ListExtensions2 = ListExtensions3;
@@ -173,7 +173,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				{
 					if (Extension is AuthorityKeyIdentifier Aki)
 					{
-						AuthorityKeyIdentifier = Aki.Value;
+						AuthorityKeyIdentifier = Aki.Identifier;
 						break;
 					}
 				}

@@ -90,8 +90,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 					if (ParsedContent is not Vector ContentVector)
 						return false;
 
-					if (!LdsSecurityObject.IsConfigured && !LdsSecurityObject.Configure(ContentVector))
-						return false;
+					if (!LdsSecurityObject.IsConfigured)
+					{
+						if (!LdsSecurityObject.Configure(ContentVector))
+						{
+							ASN1.ReportOidNotConfigured(LdsSecurityObject.Oid);
+							return false;
+						}
+					}
 
 					Parsed = new DocumentSecurityObject(Value, SignedData, LdsSecurityObject);
 					return true;

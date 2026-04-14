@@ -37,6 +37,53 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 		public object? LastElement => this[this.Length - 1];
 
 		/// <summary>
+		/// Reference to first element in vector, or null if vector is empty.
+		/// If the element value is an octet string (byte array), and itself ASN.1 encoded,
+		/// the decoded value is returned.
+		/// </summary>
+		public object? FirstElementNested
+		{
+			get
+			{
+				object? First = this.FirstElement;
+				if (First is not byte[] Binary)
+					return First;
+
+				if (ASN1.TryDecodeDer(Binary, out object? Decoded))
+				{
+					this.Elements.SetValue(Decoded, 0);
+					return Decoded;
+				}
+
+				return First;
+			}
+		}
+
+		/// <summary>
+		/// Reference to last element in vector, or null if vector is empty.
+		/// If the element value is an octet string (byte array), and itself ASN.1 encoded,
+		/// the decoded value is returned.
+		/// </summary>
+		public object? LastElementNested
+		{
+			get
+			{
+				object? Last = this.LastElement;
+
+				if (Last is not byte[] Binary)
+					return Last;
+
+				if (ASN1.TryDecodeDer(Binary, out object? Decoded))
+				{
+					this.Elements.SetValue(Decoded, this.Length - 1);
+					return Decoded;
+				}
+
+				return Last;
+			}
+		}
+
+		/// <summary>
 		/// Gets the element at the specified zero-based index in the collection.
 		/// </summary>
 		/// <param name="Index">The zero-based index of the element to retrieve. Must be within the valid range of the collection.</param>

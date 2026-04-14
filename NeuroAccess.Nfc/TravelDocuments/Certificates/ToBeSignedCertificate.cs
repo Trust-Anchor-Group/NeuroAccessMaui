@@ -1,5 +1,6 @@
 ﻿using NeuroAccess.Nfc.TravelDocuments.Security;
 using NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions;
+using NeuroAccess.Nfc.TravelDocuments.Security.Properties.Keys;
 using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
 using System;
@@ -107,8 +108,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 			if (i >= c ||
 				TbsCert[i++] is not Vector Validity ||
 				Validity.Length != 2 ||
-				Validity.FirstElement is not DateTimeOffset NotBefore ||
-				Validity.LastElement is not DateTimeOffset NotAfter)
+				Validity.FirstElementNested is not DateTimeOffset NotBefore ||
+				Validity.LastElementNested is not DateTimeOffset NotAfter)
 			{
 				return false;
 			}
@@ -121,7 +122,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 
 
 			if (SubjectPublicKeyInfo.Length != 2 ||
-				SubjectPublicKeyInfo.FirstElement is not IPublicKey PublicKey ||
+				SubjectPublicKeyInfo.FirstElementNested is not IPublicKey PublicKey ||
 				!PublicKey.IsConfigured ||
 				!PublicKey.SetPublicKey(SubjectPublicKeyInfo.LastElement))
 			{
@@ -139,7 +140,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 				i++;
 
 				if (ListExtensions2.Length == 1 &&
-					ListExtensions2.FirstElement is Vector ListExtensions3 &&
+					ListExtensions2.FirstElementNested is Vector ListExtensions3 &&
 					(ListExtensions2.SubSection[0] & 0x80) != 0)
 				{
 					ListExtensions2 = ListExtensions3;
@@ -150,9 +151,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 				foreach (object? Extension in ListExtensions2)
 				{
 					if (Extension is AuthorityKeyIdentifier Aki)
-						AuthorityKeyIdentifier = Aki.Value;
+						AuthorityKeyIdentifier = Aki.Identifier;
 					else if (Extension is SubjectKeyIdentifier Ski)
-						SubjectKeyIdentifier = Ski.Value;
+						SubjectKeyIdentifier = Ski.Identifier;
 				}
 			}
 			else

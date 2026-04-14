@@ -1,9 +1,9 @@
-﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions
+﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.Keys
 {
 	/// <summary>
 	/// Subject Key Identifier
 	/// </summary>
-	public class SubjectKeyIdentifier : SecurityBinary
+	public class SubjectKeyIdentifier : KeyIdentifier
 	{
 		/// <summary>
 		/// OID identifying the type of object.

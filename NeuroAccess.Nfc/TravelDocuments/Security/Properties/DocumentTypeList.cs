@@ -26,8 +26,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties
 		/// <returns>If the object can be configured, given the security information.</returns>
 		public override bool Configure(Vector SecurityInfo)
 		{
-			if (SecurityInfo.LastElement is not Vector DocumentTypeListVector ||
-				DocumentTypeListVector.LastElement is not Vector DocumentTypes)
+			if (SecurityInfo.LastElementNested is not Vector DocumentTypeListVector ||
+				DocumentTypeListVector.LastElementNested is not Vector DocumentTypes)
 			{
 				return false;
 			}

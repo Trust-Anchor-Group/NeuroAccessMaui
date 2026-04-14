@@ -1,4 +1,5 @@
-﻿using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
+﻿using System;
+using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using Waher.Networking;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
@@ -49,10 +50,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				return null;
 			}
 
-			if (!Algorithm.IsConfigured && !Algorithm.Configure(AlgorithmIdentifier))
+			if (!Algorithm.IsConfigured)
 			{
-				Client?.Error("Unable to configure signature algorithm.");
-				return null;
+				if (!Algorithm.Configure(AlgorithmIdentifier))
+				{
+					ASN1.ReportOidNotConfigured(Algorithm.Oid);
+					Client?.Error("Unable to configure signature algorithm.");
+					return null;
+				}
 			}
 
 			return Algorithm;

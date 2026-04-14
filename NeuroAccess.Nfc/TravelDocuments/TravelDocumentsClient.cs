@@ -14,6 +14,7 @@ using NeuroAccess.Nfc.TravelDocuments.PACE;
 using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions;
+using NeuroAccess.Nfc.TravelDocuments.Security.Properties.Keys;
 using Waher.Content;
 using Waher.Events;
 using Waher.Networking;
@@ -2605,7 +2606,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (Extension is SubjectKeyIdentifier SubjectKeyIdentifier)
 				{
 					return new KeyValuePair<string?, byte[]?>(CountryCode,
-						SubjectKeyIdentifier.Value);
+						SubjectKeyIdentifier.Identifier);
 				}
 			}
 
@@ -2628,7 +2629,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (Extension is AuthorityKeyIdentifier AuthorityKeyIdentifier)
 				{
 					return new KeyValuePair<string?, byte[]?>(CountryCode,
-						AuthorityKeyIdentifier.Value);
+						AuthorityKeyIdentifier.Identifier);
 				}
 			}
 

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Formats.Asn1;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions
 {
@@ -29,25 +28,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensi
 			{
 				i++;
 
-				if (DistributionPointName.FirstElement is not byte[] GeneralName)
+				if (!GeneralName.TryParse(DistributionPointName, out object? Name) ||
+					Name is not string Url)
 				{
-					if (DistributionPointName.FirstElement is Vector v &&
-						v.Length == 1 &&
-						v.FirstElement is byte[] GeneralName2)
-					{
-						GeneralName = GeneralName2;
-					}
-					else
-						return false;
-				}
-
-				if (GeneralName.Length == 0 || GeneralName[0] != 0x86)
 					return false;
-
-				GeneralName = (byte[])GeneralName.Clone();
-				GeneralName[0] = (byte)UniversalTagNumber.IA5String;
-				AsnReader Reader = new(GeneralName, AsnEncodingRules.DER);
-				string Url = Reader.ReadCharacterString((UniversalTagNumber)GeneralName[0]);
+				}
 
 				Result.url = Url;
 			}

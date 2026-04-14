@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Issuer Alternative Name
 	/// </summary>
-	public class IssuerAltName : SecurityBinary
+	public class IssuerAltName : GeneralName
 	{
 		/// <summary>
 		/// OID identifying the type of object.

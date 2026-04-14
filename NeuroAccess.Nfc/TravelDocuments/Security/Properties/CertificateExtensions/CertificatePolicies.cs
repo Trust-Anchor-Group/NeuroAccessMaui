@@ -24,7 +24,7 @@
 		/// <returns>If the object can be configured, given the security information.</returns>
 		public override bool Configure(Vector SecurityInfo)
 		{
-			if (SecurityInfo.LastElement is not Vector CertificatePolicies)
+			if (SecurityInfo.LastElementNested is not Vector CertificatePolicies)
 				return false;
 
 			this.certificatePolicies = CertificatePolicies;

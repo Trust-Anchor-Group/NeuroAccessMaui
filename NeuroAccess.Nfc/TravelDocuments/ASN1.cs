@@ -21,6 +21,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	public static class ASN1
 	{
 		private static readonly SortedDictionary<string, int> oidsNotRecognized = [];
+		private static readonly SortedDictionary<string, int> oidsNotConfigured = [];
 		private static readonly SortedDictionary<string, int> ellipticCurvesUsed = [];
 		private static readonly SortedDictionary<string, int> unrecognizedCurves = [];
 		private static Dictionary<string, ConstructorInfo>? objectConstructors = null;
@@ -146,20 +147,21 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						return true;
 
 					case (int)UniversalTagNumber.OctetString:
-						byte[] Bin = Reader.ReadOctetString();
+						//byte[] Bin = Reader.ReadOctetString();
+						//
+						//try
+						//{
+						//	if (TryDecodeDer(Client, Bin, out object? Embedded))
+						//		Value = Embedded;
+						//	else
+						//		Value = Bin;
+						//}
+						//catch (Exception)
+						//{
+						//	Value = Bin;
+						//}
 
-						try
-						{
-							if (TryDecodeDer(Client, Bin, out object? Embedded))
-								Value = Embedded;
-							else
-								Value = Bin;
-						}
-						catch (Exception)
-						{
-							Value = Bin;
-						}
-
+						Value = Reader.ReadOctetString();
 						return true;
 
 					case (int)UniversalTagNumber.Null:
@@ -246,11 +248,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						byte[] SubSection = Section.ToArray();
 
 						if (FirstElement is ISecurityObject SecurityObject2 &&
-							!SecurityObject2.IsConfigured &&
-							SecurityObject2.Configure(new Vector(Elements2, SubSection)))
+							!SecurityObject2.IsConfigured)
 						{
-							Value = SecurityObject2;
-							return true;
+							if (SecurityObject2.Configure(new Vector(Elements2, SubSection)))
+							{
+								Value = SecurityObject2;
+								return true;
+							}
+							else
+								ReportOidNotConfigured(SecurityObject2.Oid);
 						}
 
 						if (Tag.TagValue == (int)UniversalTagNumber.Sequence)
@@ -306,13 +312,17 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						byte[] SubSection = Section.ToArray();
 
 						if (FirstElement is ISecurityObject SecurityObject2 &&
-							!SecurityObject2.IsConfigured &&
-							SecurityObject2.Configure(new Vector(Elements2, SubSection)))
+							!SecurityObject2.IsConfigured)
 						{
-							Value = new ContextSpecific(Tag.TagValue,
-								new object[] { SecurityObject2 }, SubSection);
+							if (SecurityObject2.Configure(new Vector(Elements2, SubSection)))
+							{
+								Value = new ContextSpecific(Tag.TagValue,
+									new object[] { SecurityObject2 }, SubSection);
 
-							return true;
+								return true;
+							}
+							else
+								ReportOidNotConfigured(SecurityObject2.Oid);
 						}
 
 						Value = new ContextSpecific(Tag.TagValue, Elements2, SubSection);
@@ -344,21 +354,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>Number of times the OID has not been recognized.</returns>
 		public static int ReportOidNotRecognized(string Oid)
 		{
-			lock (oidsNotRecognized)
-			{
-				if (!oidsNotRecognized.TryGetValue(Oid, out int i))
-				{
-					oidsNotRecognized[Oid] = 1;
-					return 1;
-				}
-				else
-				{
-					if (i < int.MaxValue)
-						oidsNotRecognized[Oid] = ++i;
-
-					return i;
-				}
-			}
+			return Inc(Oid, oidsNotRecognized);
 		}
 
 		/// <summary>
@@ -369,16 +365,28 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// been recognized.</returns>
 		public static KeyValuePair<string, int>[] GetOidsNotRecognized(bool Clear)
 		{
-			lock (oidsNotRecognized)
-			{
-				KeyValuePair<string, int>[] Result = new KeyValuePair<string, int>[oidsNotRecognized.Count];
-				oidsNotRecognized.CopyTo(Result, 0);
+			return GetCounts(oidsNotRecognized, Clear);
+		}
 
-				if (Clear)
-					oidsNotRecognized.Clear();
+		/// <summary>
+		/// Records an OID as not configured properly.
+		/// </summary>
+		/// <param name="Oid">OID not configured.</param>
+		/// <returns>Number of times the OID has not been configured.</returns>
+		public static int ReportOidNotConfigured(string Oid)
+		{
+			return Inc(Oid, oidsNotConfigured);
+		}
 
-				return Result;
-			}
+		/// <summary>
+		/// Gets an array of OIDs that has not been configured properly.
+		/// </summary>
+		/// <param name="Clear">If the statistics should be cleared after compiling the list.</param>
+		/// <returns>Array of OIDs not configured together with the number of times each has not
+		/// been configured.</returns>
+		public static KeyValuePair<string, int>[] GetOidsNotConfigured(bool Clear)
+		{
+			return GetCounts(oidsNotConfigured, Clear);
 		}
 
 		/// <summary>
@@ -389,78 +397,60 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		public static int ReportEllipticCurveUse(EllipticCurve Curve)
 		{
 			string Name = Curve.CurveName;
+			int Result = Inc(Name, ellipticCurvesUsed);
 
-			lock (ellipticCurvesUsed)
+			if (Name == "Custom")
 			{
-				if (!ellipticCurvesUsed.TryGetValue(Name, out int i))
-					ellipticCurvesUsed[Name] = i = 1;
-				else
+				StringBuilder sb = new();
+
+				sb.Append("Order: ");
+				sb.AppendLine(Curve.Order.ToString(CultureInfo.InvariantCulture));
+				sb.Append("Cofactor: ");
+				sb.AppendLine(Curve.Cofactor.ToString(CultureInfo.InvariantCulture));
+				sb.Append("BasePoint.X: ");
+				sb.AppendLine(Curve.BasePoint.X.ToString(CultureInfo.InvariantCulture));
+				sb.Append("BasePoint.Y: ");
+				sb.AppendLine(Curve.BasePoint.Y.ToString(CultureInfo.InvariantCulture));
+
+				if (Curve is PrimeFieldCurve PrimeFieldCurve)
 				{
-					if (i < int.MaxValue)
-						ellipticCurvesUsed[Name] = ++i;
-				}
+					sb.Append("Prime: ");
+					sb.AppendLine(PrimeFieldCurve.Prime.ToString(CultureInfo.InvariantCulture));
 
-				if (Name == "Custom")
-				{
-					StringBuilder sb = new();
 
-					sb.Append("Order: ");
-					sb.AppendLine(Curve.Order.ToString(CultureInfo.InvariantCulture));
-					sb.Append("Cofactor: ");
-					sb.AppendLine(Curve.Cofactor.ToString(CultureInfo.InvariantCulture));
-					sb.Append("BasePoint.X: ");
-					sb.AppendLine(Curve.BasePoint.X.ToString(CultureInfo.InvariantCulture));
-					sb.Append("BasePoint.Y: ");
-					sb.AppendLine(Curve.BasePoint.Y.ToString(CultureInfo.InvariantCulture));
-
-					if (Curve is PrimeFieldCurve PrimeFieldCurve)
+					if (PrimeFieldCurve is WeierstrassCurve WeierstrassCurve)
 					{
-						sb.Append("Prime: ");
-						sb.AppendLine(PrimeFieldCurve.Prime.ToString(CultureInfo.InvariantCulture));
-
-
-						if (PrimeFieldCurve is WeierstrassCurve WeierstrassCurve)
-						{
-							sb.Append("A: ");
-							sb.AppendLine(WeierstrassCurve.A.ToString(CultureInfo.InvariantCulture));
-							sb.Append("B: ");
-							sb.AppendLine(WeierstrassCurve.B.ToString(CultureInfo.InvariantCulture));
-						}
-						else if (PrimeFieldCurve is MontgomeryCurve MontgomeryCurve)
-						{
-							sb.Append("A: ");
-							sb.AppendLine(MontgomeryCurve.A.ToString(CultureInfo.InvariantCulture));
-						}
-						else if (PrimeFieldCurve is EdwardsCurve EdwardsCurve)
-						{
-							sb.Append("D: ");
-							sb.AppendLine(EdwardsCurve.D.ToString(CultureInfo.InvariantCulture));
-						}
-						else if (PrimeFieldCurve is EdwardsTwistedCurve EdwardsTwistedCurve)
-						{
-							sb.Append("D: ");
-							sb.AppendLine(EdwardsTwistedCurve.D.ToString(CultureInfo.InvariantCulture));
-						}
-						else
-						{
-							sb.Append("Type: ");
-							sb.AppendLine(Curve.GetType().FullName);
-						}
+						sb.Append("A: ");
+						sb.AppendLine(WeierstrassCurve.A.ToString(CultureInfo.InvariantCulture));
+						sb.Append("B: ");
+						sb.AppendLine(WeierstrassCurve.B.ToString(CultureInfo.InvariantCulture));
 					}
-
-					Name = sb.ToString();
+					else if (PrimeFieldCurve is MontgomeryCurve MontgomeryCurve)
+					{
+						sb.Append("A: ");
+						sb.AppendLine(MontgomeryCurve.A.ToString(CultureInfo.InvariantCulture));
+					}
+					else if (PrimeFieldCurve is EdwardsCurve EdwardsCurve)
+					{
+						sb.Append("D: ");
+						sb.AppendLine(EdwardsCurve.D.ToString(CultureInfo.InvariantCulture));
+					}
+					else if (PrimeFieldCurve is EdwardsTwistedCurve EdwardsTwistedCurve)
+					{
+						sb.Append("D: ");
+						sb.AppendLine(EdwardsTwistedCurve.D.ToString(CultureInfo.InvariantCulture));
+					}
+					else
+					{
+						sb.Append("Type: ");
+						sb.AppendLine(Curve.GetType().FullName);
+					}
 				}
 
-				if (!unrecognizedCurves.TryGetValue(Name, out int j))
-					unrecognizedCurves[Name] = 1;
-				else
-				{
-					if (j < int.MaxValue)
-						unrecognizedCurves[Name] = ++j;
-				}
-
-				return i;
+				Inc(sb.ToString(), unrecognizedCurves);
 			}
+
+			return Result;
 		}
 
 		/// <summary>
@@ -470,16 +460,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>Array of Elliptic Curves used together with the number of times each has been used.</returns>
 		public static KeyValuePair<string, int>[] GetEllipticCurvesUsed(bool Clear)
 		{
-			lock (ellipticCurvesUsed)
-			{
-				KeyValuePair<string, int>[] Result = new KeyValuePair<string, int>[ellipticCurvesUsed.Count];
-				ellipticCurvesUsed.CopyTo(Result, 0);
-
-				if (Clear)
-					ellipticCurvesUsed.Clear();
-
-				return Result;
-			}
+			return GetCounts(ellipticCurvesUsed, Clear);
 		}
 
 		/// <summary>
@@ -489,13 +470,49 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// <returns>Array of unrecognized Elliptic Curves used together with the number of times each has been used.</returns>
 		public static KeyValuePair<string, int>[] GetUnrecognizedEllipticCurvesUsed(bool Clear)
 		{
-			lock (unrecognizedCurves)
+			return GetCounts(unrecognizedCurves, Clear);
+		}
+
+		/// <summary>
+		/// Increments a named counter
+		/// </summary>
+		/// <param name="Key">Counter name</param>
+		/// <param name="Counts">Dictionary of counters</param>
+		/// <returns>New count</returns>
+		public static int Inc(string Key, SortedDictionary<string, int> Counts)
+		{
+			lock (Counts)
 			{
-				KeyValuePair<string, int>[] Result = new KeyValuePair<string, int>[unrecognizedCurves.Count];
-				unrecognizedCurves.CopyTo(Result, 0);
+				if (!Counts.TryGetValue(Key, out int i))
+				{
+					Counts[Key] = 1;
+					return 1;
+				}
+				else
+				{
+					if (i < int.MaxValue)
+						Counts[Key] = ++i;
+
+					return i;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets an array of counts
+		/// </summary>
+		/// <param name="Counts">Dictionary of counters</param>
+		/// <param name="Clear">If the dictionary should be cleared after compiling the list.</param>
+		/// <returns>Array of counts</returns>
+		public static KeyValuePair<string, int>[] GetCounts(SortedDictionary<string, int> Counts, bool Clear)
+		{
+			lock (Counts)
+			{
+				KeyValuePair<string, int>[] Result = new KeyValuePair<string, int>[Counts.Count];
+				Counts.CopyTo(Result, 0);
 
 				if (Clear)
-					unrecognizedCurves.Clear();
+					Counts.Clear();
 
 				return Result;
 			}

@@ -38,7 +38,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 		public override bool Configure(Vector SecurityInfo)
 		{
 			if (SecurityInfo.Length != 2 ||
-				SecurityInfo.LastElement is not Vector EcParameters ||
+				SecurityInfo.LastElementNested is not Vector EcParameters ||
 				EcParameters.Length != 6 ||
 				EcParameters[0] is not BigInteger Version ||
 				Version < int.MinValue ||
