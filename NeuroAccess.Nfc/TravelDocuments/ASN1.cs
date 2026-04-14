@@ -84,7 +84,16 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		public static bool TryDecodeDer(ICommunicationLayer? Client, byte[] Data, out object? Value)
 		{
 			AsnReader Reader = new(Data, AsnEncodingRules.DER);
-			return TryDecodeAsn1(Client, Reader, out Value);
+			if (!TryDecodeAsn1(Client, Reader, out Value))
+				return false;
+
+			if (Reader.HasData)
+			{
+				Value = null;
+				return false;
+			}
+
+			return true;
 		}
 
 		/// <summary>

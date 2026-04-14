@@ -189,6 +189,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 		/// <summary>
 		/// Public Key point.
 		/// </summary>
-		public PointOnCurve PublicKey => this.publicKey!.Value;
+		public PointOnCurve PublicKey => this.publicKey ?? new PointOnCurve();
 	}
 }
