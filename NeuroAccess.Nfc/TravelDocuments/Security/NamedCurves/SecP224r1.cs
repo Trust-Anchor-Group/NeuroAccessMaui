@@ -3,14 +3,14 @@
 namespace NeuroAccess.Nfc.TravelDocuments.Security.NamedCurves
 {
 	/// <summary>
-	/// Named elliptic curve secp384r1 / NIST P-384 / ansip384r1
+	/// Named elliptic curve secp224r1 / NIST P-224 / ansip224r1
 	/// </summary>
-	public class AnsiP384r1 : NamedCurve
+	public class AnsiP224r1 : NamedCurve
 	{
 		/// <summary>
 		/// OID identifying the type of object.
 		/// </summary>
-		public override string Oid => "1.3.132.0.34";
+		public override string Oid => "1.3.132.0.33";
 
 		/// <summary>
 		/// Gets the Elliptic Curve associated with the named curve.
@@ -18,7 +18,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.NamedCurves
 		/// <returns>The Elliptic Curve.</returns>
 		public override EllipticCurve GetCurve()
 		{
-			return new NistP384();
+			return new NistP224();
 		}
 	}
 }
