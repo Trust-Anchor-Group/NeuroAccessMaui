@@ -65,6 +65,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties
 
 				if (First is byte[] GeneralName2)
 					GeneralName = GeneralName2;
+				else if (First is Vector v &&
+					v.Length > 0 &&
+					v.FirstElement is byte[] GeneralName3)	// First is absolute name, second a relative name
+				{
+					GeneralName = GeneralName3;
+				}
 				else
 				{
 					Name = ParsedVector;

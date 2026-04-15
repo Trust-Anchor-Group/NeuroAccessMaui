@@ -42,7 +42,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions
 			if (SecurityInfo.Length >= 2)
 			{
 				if (SecurityInfo[1] is not HashFunction HashFunction)
-					return false;
+				{
+					if (SecurityInfo[1] is Vector v &&
+						v.Length == 1 &&
+						v.FirstElement is HashFunction HashFunction2)
+					{
+						HashFunction = HashFunction2;
+					}
+					else
+						return false;
+				}
 
 				this.hashFunction = HashFunction;
 			}

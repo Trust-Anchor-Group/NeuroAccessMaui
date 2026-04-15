@@ -71,7 +71,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			PrimeFieldCurve? Selected = null;
 
-			if (PublicKey.Field is PrimeField PrimeField)
+			if (PublicKey.HasNamedCurve)
+			{
+				if (PublicKey.NamedCurve is PrimeFieldCurve PrimeFieldCurve)
+					Selected = PrimeFieldCurve;
+				else
+				{
+					Client?.Error("Named curve not supported by ECDSA: " + PublicKey.NamedCurve.CurveName);
+					return false;
+				}
+			}
+			else if (PublicKey.Field is PrimeField PrimeField)
 			{
 				System.Numerics.BigInteger Prime = PrimeField.Prime;
 

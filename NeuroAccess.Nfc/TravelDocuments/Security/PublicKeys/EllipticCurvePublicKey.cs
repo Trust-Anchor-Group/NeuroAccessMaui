@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using NeuroAccess.Nfc.TravelDocuments.Security.FieldTypes;
+using NeuroAccess.Nfc.TravelDocuments.Security.NamedCurves;
 using Waher.Security.EllipticCurves;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
@@ -24,11 +25,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 		private BigInteger coFactor;
 		private PointOnCurve basePoint;
 		private PointOnCurve? publicKey;
+		private EllipticCurve? namedCurve;
 
 		/// <summary>
 		/// If the object has been configured.
 		/// </summary>
-		public override bool IsConfigured => this.field is not null;
+		public override bool IsConfigured => this.field is not null || this.namedCurve is not null;
 
 		/// <summary>
 		/// If the object can be configured by the security information provided.
@@ -37,39 +39,48 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 		/// <returns>If the object can be configured, given the security information.</returns>
 		public override bool Configure(Vector SecurityInfo)
 		{
-			if (SecurityInfo.Length != 2 ||
-				SecurityInfo.LastElementNested is not Vector EcParameters ||
-				EcParameters.Length != 6 ||
-				EcParameters[0] is not BigInteger Version ||
-				Version < int.MinValue ||
-				Version > int.MaxValue ||
-				EcParameters[1] is not FieldType Field ||
-				EcParameters[2] is not Vector Curve ||
-				Curve.Length < 2 ||		// Curve may have an optional third parameter: seed, a BIT STRING, which is not use in the signature validation, but available for documentation, if available.
-				Curve[0] is not byte[] A ||
-				Curve[1] is not byte[] B ||
-				EcParameters[3] is not byte[] BasePoint ||
-				EcParameters[4] is not BigInteger Order ||
-				EcParameters[5] is not BigInteger h)
+			if (SecurityInfo.Length != 2)
+				return false;
+
+			object? Obj = SecurityInfo.LastElementNested;
+
+			if (Obj is Vector EcParameters &&
+				EcParameters.Length == 6 &&
+				EcParameters[0] is BigInteger Version &&
+				Version >= int.MinValue &&
+				Version <= int.MaxValue &&
+				EcParameters[1] is FieldType Field &&
+				EcParameters[2] is Vector Curve &&
+				Curve.Length >= 2 &&		// Curve may have an optional third parameter: seed, a BIT STRING, which is not use in the signature validation, but available for documentation, if available.
+				Curve[0] is byte[] A &&
+				Curve[1] is byte[] B &&
+				EcParameters[3] is byte[] BasePoint &&
+				EcParameters[4] is BigInteger Order &&
+				EcParameters[5] is BigInteger h)
 			{
-				return false;
+				if (BasePoint.Length == 0)
+					return false;
+
+				if (!TryParsePoint(BasePoint, out PointOnCurve? G))
+					return false;
+
+				this.version = (int)Version;
+				this.field = Field;
+				this.a = EllipticCurve.ToInt(A, true);
+				this.b = EllipticCurve.ToInt(B, true);
+				this.order = Order;
+				this.coFactor = h;
+				this.basePoint = G.Value;
+
+				return true;
 			}
-
-			if (BasePoint.Length == 0)
+			else if (Obj is INamedCurve NamedCurve)
+			{
+				this.namedCurve = NamedCurve.GetCurve();
+				return true;
+			}
+			else
 				return false;
-
-			if (!TryParsePoint(BasePoint, out PointOnCurve? G))
-				return false;
-
-			this.version = (int)Version;
-			this.field = Field;
-			this.a = EllipticCurve.ToInt(A, true);
-			this.b = EllipticCurve.ToInt(B, true);
-			this.order = Order;
-			this.coFactor = h;
-			this.basePoint = G.Value;
-
-			return true;
 		}
 
 		/// <summary>
@@ -150,6 +161,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 
 			return true;
 		}
+
+		/// <summary>
+		/// If the public key is based on a named curve.
+		/// </summary>
+		public bool HasNamedCurve => this.namedCurve is not null;
+
+		/// <summary>
+		/// Named curve used for the public key, if <see cref="HasNamedCurve"/> is true.
+		/// </summary>
+		public EllipticCurve NamedCurve => this.namedCurve!;
 
 		/// <summary>
 		/// Version

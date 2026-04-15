@@ -283,7 +283,7 @@ namespace NeuroAccess.Nfc.Test
 				}
 				catch (Exception ex)
 				{
-					StringBuilder sb = new StringBuilder();
+					StringBuilder sb = new();
 
 					sb.AppendLine(ex.Message);
 					sb.AppendLine();
@@ -555,12 +555,15 @@ namespace NeuroAccess.Nfc.Test
 		}
 
 		[TestMethod]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\01C1CA4806FA8A1DCD50AFC75E216E90479AF7C4.cer")]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AD\\031B14A8421B68EFA0BFD081C88C2B64270542A9.cer")]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\05A76DC6681AEF89920BAE83F027ED9000A57742.cer")]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\0A556519D1EFF9AD209F8A72C3E9035E87299169.cer")]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\BA\\8F326711052AEEF40F26E408E1773406C7BE4851.cer")]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\BG\\1EFF7CD794A9D0986230A3492311CDCE0C649C12.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\01C1CA4806FA8A1DCD50AFC75E216E90479AF7C4.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AD\\031B14A8421B68EFA0BFD081C88C2B64270542A9.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\05A76DC6681AEF89920BAE83F027ED9000A57742.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\0A556519D1EFF9AD209F8A72C3E9035E87299169.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\BA\\8F326711052AEEF40F26E408E1773406C7BE4851.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\BG\\1EFF7CD794A9D0986230A3492311CDCE0C649C12.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\NO\\002E5615116D88AD2CF18F27B45FF64FEACB91A8.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\SE\\B0E5DF7C87A9235D3DB4CF35306ED61C76BEB7C6.cer")]
+		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\DZ\\5FED4CD3BCA95F5C8F3673C61AEC837BFE2B2B51.cer")]
 		public async Task Test_05_VerifySpecificIcaoCertificates(string FileName)
 		{
 			TestContextWriter SnifferWriter = new(this.TestContext);

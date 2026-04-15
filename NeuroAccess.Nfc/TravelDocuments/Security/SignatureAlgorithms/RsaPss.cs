@@ -56,10 +56,21 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			if (c >= 1)
 			{
 				if (RsaSsaPssParameters[0] is not Vector HashVector ||
-					HashVector.Length < 1 ||
-					HashVector[0] is not HashFunction HashFunction)
+					HashVector.Length < 1)
 				{
 					return false;
+				}
+
+				if (HashVector[0] is not HashFunction HashFunction)
+				{
+					if (HashVector[0] is Vector v &&
+						v.Length == 1 &&
+						v.FirstElement is HashFunction HashFunction2)
+					{
+						HashFunction = HashFunction2;
+					}
+					else
+						return false;
 				}
 
 				this.hashFunction = HashFunction;
@@ -140,10 +151,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				return false;
 			}
 
-			byte[] Bin = RsaPublicKey.Modulus.ToByteArray();
+			byte[] Bin = RsaPublicKey.Modulus.ToByteArray(true, true);
 			int Bits = Bin.Length << 3;
-			if (Bin[0] == 0)
-				Bits -= 8;
 
 			ASN1.ReportAlgorithmUse("RSA-PSS-" + Bits.ToString(CultureInfo.InvariantCulture));
 
