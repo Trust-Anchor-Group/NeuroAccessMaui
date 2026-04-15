@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
 using NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions;
 using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
@@ -151,45 +152,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				return false;
 			}
 
-			byte[] Bin = RsaPublicKey.Modulus.ToByteArray(true, true);
-			int Bits = Bin.Length << 3;
+			int Bits = (int)RsaPublicKey.Modulus.GetBitLength();
 
 			ASN1.ReportAlgorithmUse("RSA-PSS-" + Bits.ToString(CultureInfo.InvariantCulture));
 
 			BigInteger S = EllipticCurve.ToInt(Signature, true);
 
-			bool Result = Verify(this.hashFunction, this.maskGenerationFunction,
-				RsaPublicKey.Modulus, RsaPublicKey.Exponent, Data, S, this.saltLength);
-
-			if (!Result && (Client?.HasSniffers ?? false))
-			{
-				StringBuilder sb = new();
-
-				sb.Append("Type: ");
-				sb.AppendLine(this.GetType().FullName);
-				sb.Append("Hash Function: ");
-				sb.AppendLine(this.hashFunction.ToString());
-				sb.Append("Mask Generation Function: ");
-				sb.AppendLine(this.maskGenerationFunction.ToString());
-				sb.Append("Salt Length: ");
-				sb.AppendLine(this.saltLength.ToString(CultureInfo.InvariantCulture));
-				sb.Append("Trailer Field: ");
-				sb.AppendLine(this.trailerField.ToString(CultureInfo.InvariantCulture));
-				sb.Append("Signature: ");
-				sb.AppendLine(S.ToString(CultureInfo.InvariantCulture));
-				sb.Append("Modulus: ");
-				sb.AppendLine(RsaPublicKey.Modulus.ToString(CultureInfo.InvariantCulture));
-				sb.Append("Exponent: ");
-				sb.AppendLine(RsaPublicKey.Exponent.ToString(CultureInfo.InvariantCulture));
-				sb.Append("Data: ");
-				sb.AppendLine(Convert.ToBase64String(Data));
-				sb.Append("Valid: ");
-				sb.AppendLine(Result.ToString());
-
-				Client.Warning(sb.ToString());
-			}
-
-			return Result;
+			return Verify(this.hashFunction, this.maskGenerationFunction,
+				RsaPublicKey.Modulus, RsaPublicKey.Exponent, Data, S, this.saltLength, Client);
 		}
 
 		/// <summary>
@@ -202,14 +172,36 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// <param name="Message">Signed message</param>
 		/// <param name="S">Signature</param>
 		/// <param name="SaltLen">Length of salt.</param>
+		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the signature is valid.</returns>
 		public static bool Verify(HashFunction H, MaskGenerationFunction Mgf, BigInteger n,
-			BigInteger e, byte[] Message, BigInteger S, int SaltLen)
+			BigInteger e, byte[] Message, BigInteger S, int SaltLen, ICommunicationLayer? Client)
 		{
 			// Encoded Message EM = S^e mod n
 
 			ModulusP ModN = new(n); // n not a prime, so not a Field (i.e. has zero-divisors), but addition and multiplication mod n work.
 			BigInteger EM = 1;
+			bool HasSniffer = Client?.HasSniffers ?? false;
+			StringBuilder? Msg = HasSniffer ? new StringBuilder() : null;
+
+			if (HasSniffer)
+			{
+				Msg!.AppendLine("RSS-PSS signature verification parameters:");
+				Msg.Append("n (Modulus, dec): ");
+				Msg.AppendLine(n.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("e (Exponent, dec): ");
+				Msg.AppendLine(e.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("S (Signature, dec): ");
+				Msg.AppendLine(S.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("Salt length (dec): ");
+				Msg.AppendLine(SaltLen.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("Hash function: ");
+				Msg.AppendLine(H.ToString());
+				Msg.Append("MGF function: ");
+				Msg.AppendLine(Mgf.ToString());
+				Msg.Append("Message (hex): ");
+				Msg.AppendLine(Waher.Security.Hashes.BinaryToString(Message));
+			}
 
 			while (!e.IsZero)
 			{
@@ -221,8 +213,31 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			}
 
 			byte[] EMBin = EM.ToByteArray(true, true);
+			int EMLen = (int)(n.GetBitLength() + 7) / 8;
+
+			if (EMBin.Length < EMLen)
+			{
+				byte[] EMBin2 = new byte[EMLen];
+				Buffer.BlockCopy(EMBin, 0, EMBin2, EMLen - EMBin.Length, EMBin.Length);
+				EMBin = EMBin2;
+			}
+
+			if (HasSniffer)
+			{
+				Msg!.Append("EM = S^e (hex): ");
+				Msg.AppendLine(Waher.Security.Hashes.BinaryToString(EMBin));
+			}
+
 			if (EMBin[^1] != 0xbc)
+			{
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("S^e does not end with BC. Invalid signature.");
+				}
+
 				return false;
+			}
 
 			int HLen = H.HashLength;
 			int MaskedDBLen = EMBin.Length - 1 - HLen;
@@ -232,23 +247,50 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			Buffer.BlockCopy(EMBin, 0, MaskedDB, 0, MaskedDBLen);
 			Buffer.BlockCopy(EMBin, MaskedDBLen, HashDigest, 0, HLen);
 
+			if (HasSniffer)
+			{
+				Msg!.Append("Masked DB (hex): ");
+				Msg.AppendLine(Waher.Security.Hashes.BinaryToString(MaskedDB));
+				Msg!.Append("Hash Digest 1 (hex): ");
+				Msg.AppendLine(Waher.Security.Hashes.BinaryToString(HashDigest));
+			}
+
 			byte[] DBMask = Mgf.CalculateMask(HashDigest, MaskedDBLen);
+
+			if (HasSniffer)
+			{
+				Msg!.Append("DB Mask (hex): ");
+				Msg.AppendLine(Waher.Security.Hashes.BinaryToString(DBMask));
+			}
+
 			byte[] DB = TravelDocumentsClient.XOR(MaskedDB, DBMask);
+
+			DB[0] &= 0x7f;  // MSB can be 1, as EMBits=bitlen(n)-1
+
+			if (HasSniffer)
+			{
+				Msg!.Append("DB (hex): ");
+				Msg.AppendLine(Waher.Security.Hashes.BinaryToString(DB));
+			}
+
 			int i = 0;
 			int c = DB.Length;
 
-			DB[0] &= 0x7f;  // MSB can be 1, as EMBits=bitlen(n)-1
 			while (i < c && DB[i] == 0)
 				i++;
 
-			if (i >= c)
-				return false;
+			if (i >= c ||
+				DB[i++] != 1 ||
+				c - i != SaltLen)
+			{
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("DB invalid. Invalid signature.");
+				}
 
-			if (DB[i++] != 1)
 				return false;
-
-			if (c - i != SaltLen)
-				return false;
+			}
 
 			byte[] Digest = H.ComputeHash(Message);
 			byte[] H2 = new byte[8 + HLen + SaltLen];
@@ -258,11 +300,28 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			Digest = H.ComputeHash(H2);
 
+			if (HasSniffer)
+			{
+				Msg!.Append("Hash Digest 2 (hex): ");
+				Msg.AppendLine(Waher.Security.Hashes.BinaryToString(Digest));
+			}
+
 			for (i = 0; i < HLen; i++)
 			{
 				if (Digest[i] != HashDigest[i])
+				{
+					if (HasSniffer)
+					{
+						Client!.Information(Msg!.ToString());
+						Client.Error("Hash digests do not match. Invalid signature.");
+					}
+
 					return false;
+				}
 			}
+
+			if (HasSniffer)
+				Client!.Information(Msg!.ToString());
 
 			return true;
 		}

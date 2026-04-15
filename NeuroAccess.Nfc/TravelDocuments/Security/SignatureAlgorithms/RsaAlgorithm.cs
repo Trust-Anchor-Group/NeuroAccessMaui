@@ -31,8 +31,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				return false;
 			}
 
-			byte[] Bin = RsaParameters.Modulus.ToByteArray(true, true);
-			int Bits = Bin.Length << 3;
+			int Bits = (int)RsaParameters.Modulus.GetBitLength();
 
 			ASN1.ReportAlgorithmUse("RSA-PKCS-" + Bits.ToString(CultureInfo.InvariantCulture));
 

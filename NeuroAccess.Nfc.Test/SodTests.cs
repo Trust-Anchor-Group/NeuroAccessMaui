@@ -562,8 +562,8 @@ namespace NeuroAccess.Nfc.Test
 		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\BA\\8F326711052AEEF40F26E408E1773406C7BE4851.cer")]
 		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\BG\\1EFF7CD794A9D0986230A3492311CDCE0C649C12.cer")]
 		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\NO\\002E5615116D88AD2CF18F27B45FF64FEACB91A8.cer")]
-		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\SE\\B0E5DF7C87A9235D3DB4CF35306ED61C76BEB7C6.cer")]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\DZ\\5FED4CD3BCA95F5C8F3673C61AEC837BFE2B2B51.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\DZ\\5FED4CD3BCA95F5C8F3673C61AEC837BFE2B2B51.cer")]
+		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\SE\\B0E5DF7C87A9235D3DB4CF35306ED61C76BEB7C6.cer")]
 		public async Task Test_05_VerifySpecificIcaoCertificates(string FileName)
 		{
 			TestContextWriter SnifferWriter = new(this.TestContext);
