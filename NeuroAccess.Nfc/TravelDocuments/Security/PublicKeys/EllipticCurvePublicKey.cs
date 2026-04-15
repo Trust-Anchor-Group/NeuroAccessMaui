@@ -77,6 +77,28 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 			else if (Obj is INamedCurve NamedCurve)
 			{
 				this.namedCurve = NamedCurve.GetCurve();
+
+				this.order = this.namedCurve.Order;
+				this.coFactor = this.namedCurve.Cofactor;
+				this.basePoint = this.namedCurve.BasePoint;
+
+				if (this.namedCurve is PrimeFieldCurve PrimeFieldCurve)
+				{
+					this.field = new PrimeField(PrimeFieldCurve.Prime);
+
+					if (this.namedCurve is WeierstrassCurve WeierstrassCurve)
+					{
+						this.a = WeierstrassCurve.A;
+						this.b = WeierstrassCurve.B;
+					}
+					else if (this.namedCurve is MontgomeryCurve MontgomeryCurve)
+						this.a = MontgomeryCurve.A;
+					else if (this.namedCurve is EdwardsCurve EdwardsCurve)
+						this.a = EdwardsCurve.D;
+					else if (this.namedCurve is EdwardsTwistedCurve EdwardsTwistedCurve)
+						this.a = EdwardsTwistedCurve.D;
+				}
+
 				return true;
 			}
 			else

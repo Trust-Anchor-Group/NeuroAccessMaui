@@ -10,6 +10,24 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.FieldTypes
 		private BigInteger? prime;
 
 		/// <summary>
+		/// Abstract base class for field types.
+		/// </summary>
+		public PrimeField()
+			: base()
+		{
+		}
+
+		/// <summary>
+		/// Abstract base class for field types.
+		/// </summary>
+		/// <param name="Prime">Prime number.</param>
+		public PrimeField(BigInteger Prime)
+			: base()
+		{
+			this.prime = Prime;
+		}
+
+		/// <summary>
 		/// OID identifying the type of object.
 		/// </summary>
 		public override string Oid => "1.2.840.10045.1.1";

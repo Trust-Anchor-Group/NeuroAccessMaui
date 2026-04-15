@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Reflection;
+using System.Text;
 using NeuroAccess.Nfc.TravelDocuments.Security.FieldTypes;
 using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using Waher.Events;
@@ -58,6 +59,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			System.Numerics.BigInteger B = PublicKey.B;
 			PointOnCurve BasePoint = PublicKey.BasePoint;
 			PointOnCurve PublicKeyPoint = PublicKey.PublicKey;
+			bool HasSniffer = Client?.HasSniffers ?? false;
 
 			if (!ASN1.TryDecodeDer(Client, Signature, out object? Obj) ||
 				Obj is not Vector SignatureVector ||
@@ -65,8 +67,43 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				SignatureVector[0] is not System.Numerics.BigInteger R ||
 				SignatureVector[1] is not System.Numerics.BigInteger S)
 			{
-				Client?.Error("Unable to parse signature.");
+				if (HasSniffer)
+					Client!.Error("Unable to parse signature: " + Hashes.BinaryToString(Signature));
+
 				return false;
+			}
+
+			StringBuilder? Msg = HasSniffer ? new StringBuilder() : null;
+
+			if (HasSniffer)
+			{
+				Msg!.AppendLine("ECDSA signature verification parameters:");
+				Msg.Append("A (dec): ");
+				Msg.AppendLine(A.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("B (dec): ");
+				Msg.AppendLine(B.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("Order (dec): ");
+				Msg.AppendLine(Order.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("Cofactor (dec): ");
+				Msg.AppendLine(Cofactor.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("BasePoint.X (dec): ");
+				Msg.AppendLine(BasePoint.X.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("BasePoint.Y (dec): ");
+				Msg.AppendLine(BasePoint.Y.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("PublicKey.X (dec): ");
+				Msg.AppendLine(PublicKeyPoint.X.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("PublicKey.Y (dec): ");
+				Msg.AppendLine(PublicKeyPoint.Y.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("S (Signature, hex): ");
+				Msg.AppendLine(Hashes.BinaryToString(Signature));
+				Msg.Append("R (dec): ");
+				Msg.AppendLine(R.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("S (dec): ");
+				Msg.AppendLine(S.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("Hash function: ");
+				Msg.AppendLine(HashAlgorithm.Method.Name);
+				Msg.Append("Message (hex): ");
+				Msg.AppendLine(Hashes.BinaryToString(Data));
 			}
 
 			PrimeFieldCurve? Selected = null;
@@ -77,7 +114,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 					Selected = PrimeFieldCurve;
 				else
 				{
-					Client?.Error("Named curve not supported by ECDSA: " + PublicKey.NamedCurve.CurveName);
+					if (HasSniffer)
+					{
+						Client!.Information(Msg!.ToString());
+						Client.Error("Named curve not supported by ECDSA: " + PublicKey.NamedCurve.CurveName);
+					}
+
 					return false;
 				}
 			}
@@ -130,17 +172,19 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 				if (Selected is null)
 				{
-					Client?.Warning("Elliptic Curve not recognized.\r\n\r\nA: " +
-						A.ToString(CultureInfo.InvariantCulture) +
-						",\r\nB: " + B.ToString(CultureInfo.InvariantCulture) +
-						",\r\np: " + Prime.ToString(CultureInfo.InvariantCulture) +
-						",\r\nCofactor: " + Cofactor.ToString(CultureInfo.InvariantCulture) +
-						",\r\nOrder: " + Order.ToString(CultureInfo.InvariantCulture) +
-						",\r\nG.X: " + BasePoint.X.ToString(CultureInfo.InvariantCulture) +
-						",\r\nG.Y: " + BasePoint.Y.ToString(CultureInfo.InvariantCulture));
+					if (HasSniffer)
+						Msg!.AppendLine("Elliptic Curve not recognized. A custom Weierstras curve will be used.");
 
 					if (Cofactor < int.MinValue || Cofactor > int.MaxValue)
+					{
+						if (HasSniffer)
+						{
+							Client!.Information(Msg!.ToString());
+							Client.Error("Unsupported cofactor.");
+						}
+
 						return false;
+					}
 
 					Selected = new CustomWeierstrassCurve("Custom", Prime, BasePoint, A, B,
 						Order, (int)Cofactor, HashAlgorithm, HashAlgorithmStream);
@@ -148,9 +192,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				else if (Selected.HashFunction != HashAlgorithm ||
 					Selected.HashFunctionStream != HashAlgorithmStream)
 				{
-					Client?.Warning("Elliptic Curve Hash algorithm not standard: " +
-						HashAlgorithm.Method.Name + " (instead of " +
-						Selected.HashFunction.Method.Name + ")");
+					if (HasSniffer)
+					{
+						Msg!.Append("Elliptic Curve Hash algorithm not standard: ");
+						Msg.Append(HashAlgorithm.Method.Name);
+						Msg.Append(" (instead of ");
+						Msg.Append(Selected.HashFunction.Method.Name);
+						Msg.AppendLine(")");
+					}
 
 					Selected = new CustomWeierstrassCurve(Selected.CurveName, Prime, BasePoint, A, B,
 						Order, Selected.Cofactor, HashAlgorithm, HashAlgorithmStream);
@@ -158,25 +207,52 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			}
 			else
 			{
-				Client?.Error("Curve field type not recognized: " + PublicKey.Field.GetType().FullName);
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("Curve field type not supported: " + PublicKey.Field.GetType().FullName);
+				}
+
 				return false;
 			}
 
 			ASN1.ReportAlgorithmUse(Selected);
 
-			if (Client?.HasSniffers ?? false)
+			if (HasSniffer)
 			{
-				Client?.Information("Curve used for signature: " + Selected.CurveName +
-					" (implemented by " + Selected.GetType().FullName + ")");
+				Msg!.Append("Curve used for signature: ");
+				Msg.Append(Selected.CurveName);
+				Msg.Append(" (implemented by ");
+				Msg.Append(Selected.GetType().FullName);
+				Msg.AppendLine(")");
 			}
 
 			if (!Selected.IsPoint(PublicKeyPoint))
 			{
-				Client?.Error("Public key not a point on curve.");
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("Public key not a point on curve.");
+				}
+
 				return false;
 			}
 
-			return ECDSA.Verify(Data, PublicKeyPoint, HashAlgorithm, Selected, R, S);
+			if (!ECDSA.Verify(Data, PublicKeyPoint, HashAlgorithm, Selected, R, S))
+			{
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("ECDSA validation failed.");
+				}
+
+				return false;
+			}
+
+			if (HasSniffer)
+				Client!.Information(Msg!.ToString());
+
+			return true;
 		}
 
 		private static readonly EllipticCurve[] curves = GetEllipticCurves();

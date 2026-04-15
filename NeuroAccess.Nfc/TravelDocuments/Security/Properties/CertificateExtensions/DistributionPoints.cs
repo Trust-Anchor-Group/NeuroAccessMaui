@@ -43,11 +43,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensi
 				if (Element is not Vector DistributionPointVector)
 					return false;
 
-				if (!DistributionPoint.TryCreate(DistributionPointVector, out DistributionPoint? Point))
-					return false;
-
-				Points.Add(Point);
+				if (DistributionPoint.TryCreate(DistributionPointVector, out DistributionPoint? Point))
+					Points.Add(Point);
 			}
+
+			if (!Points.HasFirstItem)
+				return false;
 
 			this.distributionPoints = [.. Points];
 

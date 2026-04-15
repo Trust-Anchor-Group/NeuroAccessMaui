@@ -2,6 +2,7 @@
 using System.Formats.Asn1;
 using System.Globalization;
 using System.Numerics;
+using System.Text;
 using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using Waher.Networking;
 using Waher.Security;
@@ -36,7 +37,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			ASN1.ReportAlgorithmUse("RSA-PKCS-" + Bits.ToString(CultureInfo.InvariantCulture));
 
 			return this.VerifySignatureRsaPkcs1(Data, Signature,
-				RsaParameters.Modulus, RsaParameters.Exponent);
+				RsaParameters.Modulus, RsaParameters.Exponent, Client);
 		}
 
 		/// <summary>
@@ -49,11 +50,26 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// <param name="HashFunction">Hash function to use, if defined.</param>
 		/// <returns>If the digital signature is correct.</returns>
 		public bool VerifySignatureRsaPkcs1(byte[] Data, byte[] Signature, BigInteger Modulus,
-			BigInteger Exponent)
+			BigInteger Exponent, ICommunicationLayer? Client)
 		{
 			BigInteger S = EllipticCurve.ToInt(Signature, true);
 			ModulusP ModN = new(Modulus);
 			BigInteger EM = 1;
+			bool HasSniffer = Client?.HasSniffers ?? false;
+			StringBuilder? Msg = HasSniffer ? new StringBuilder() : null;
+
+			if (HasSniffer)
+			{
+				Msg!.AppendLine("RSS-PKCS1 signature verification parameters:");
+				Msg.Append("n (Modulus, dec): ");
+				Msg.AppendLine(Modulus.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("e (Exponent, dec): ");
+				Msg.AppendLine(Exponent.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("S (Signature, dec): ");
+				Msg.AppendLine(S.ToString(CultureInfo.InvariantCulture));
+				Msg.Append("Message (hex): ");
+				Msg.AppendLine(Hashes.BinaryToString(Data));
+			}
 
 			while (!Exponent.IsZero)
 			{
@@ -68,7 +84,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			byte[] EncodedMessage = EM.ToByteArray(true, true);
 
 			if (EncodedMessage.Length > K)
+			{
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("Encoded message too long. Invalid signature.");
+				}
+
 				return false;
+			}
 
 			int c = EncodedMessage.Length;
 			if (c < K)
@@ -78,7 +102,20 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				EncodedMessage = Padded;
 			}
 
+			if (HasSniffer)
+			{
+				Msg!.Append("EM = S^e (hex): ");
+				Msg.AppendLine(Hashes.BinaryToString(EncodedMessage));
+			}
+
 			byte[] HashDigest = this.HashAlgorithm(Data);
+
+			if (HasSniffer)
+			{
+				Msg!.Append("Hash Digest (hex): ");
+				Msg.AppendLine(Hashes.BinaryToString(HashDigest));
+			}
+
 			AsnWriter w = new(AsnEncodingRules.DER);
 
 			w.PushSequence();
@@ -91,11 +128,33 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			byte[] DigestInfo = w.Encode();
 
+			if (HasSniffer)
+			{
+				Msg!.Append("DigestInfo (hex): ");
+				Msg.AppendLine(Hashes.BinaryToString(DigestInfo));
+			}
+
 			if (c < DigestInfo.Length + 11)
+			{
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("Encoded message & DigestInfo length mismatch. Invalid signature.");
+				}
+
 				return false;
+			}
 
 			if (EncodedMessage[0] != 0x00 || EncodedMessage[1] != 0x01)
+			{
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("Encoded message not prefixed correctly. Invalid signature.");
+				}
+
 				return false;
+			}
 
 			int Index = 2;
 
@@ -103,18 +162,45 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				Index++;
 
 			if (Index < 10 || Index >= c || EncodedMessage[Index] != 0x00)
+			{
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("Encoded message not padded correctly. Invalid signature.");
+				}
+
 				return false;
+			}
 
 			Index++;
 
 			if (c - Index + 1 != DigestInfo.Length)
+			{
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("Padding length not correct. Invalid signature.");
+				}
+
 				return false;
+			}
 
 			for (int i = 0; i < DigestInfo.Length; i++)
 			{
 				if (EncodedMessage[Index + i] != DigestInfo[i])
+				{
+					if (HasSniffer)
+					{
+						Client!.Information(Msg!.ToString());
+						Client.Error("DigestInfo not encoded correctly into encoded message. Invalid signature.");
+					}
+
 					return false;
+				}
 			}
+
+			if (HasSniffer)
+				Client!.Information(Msg!.ToString());
 
 			return true;
 		}
