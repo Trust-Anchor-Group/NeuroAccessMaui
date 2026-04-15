@@ -57,8 +57,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				return false;
 			}
 
+			byte Tag = (byte)TagNumber;
+			if (TagNumber == UniversalTagNumber.Sequence || TagNumber == UniversalTagNumber.Set)
+				Tag |= 0x20;
+
 			Data = (byte[])Data.Clone();
-			Data[0] = (byte)TagNumber;
+			Data[0] = Tag;
 
 			AsnReader Reader = new(Data, AsnEncodingRules.DER);
 			return TryDecodeAsn1(Client, Reader, out Value);
@@ -147,21 +151,25 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						return true;
 
 					case (int)UniversalTagNumber.OctetString:
-						//byte[] Bin = Reader.ReadOctetString();
-						//
-						//try
-						//{
-						//	if (TryDecodeDer(Client, Bin, out object? Embedded))
-						//		Value = Embedded;
-						//	else
-						//		Value = Bin;
-						//}
-						//catch (Exception)
-						//{
-						//	Value = Bin;
-						//}
+						byte[] Bin = Reader.ReadOctetString();
 
-						Value = Reader.ReadOctetString();
+						if (Tag.IsConstructed)
+						{
+							try
+							{
+								if (TryDecodeDer(Client, Bin, out object? Embedded))
+									Value = Embedded;
+								else
+									Value = Bin;
+							}
+							catch (Exception)
+							{
+								Value = Bin;
+							}
+						}
+						else
+							Value = Bin;
+
 						return true;
 
 					case (int)UniversalTagNumber.Null:
@@ -216,7 +224,11 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					case (int)UniversalTagNumber.Embedded:
 
 						ReadOnlyMemory<byte> Section = Reader.ReadEncodedValue();
-						AsnReader Inner = new(Section, Reader.RuleSet);
+						AsnReader Inner = new(Section, Reader.RuleSet,
+							new AsnReaderOptions()
+							{
+								SkipSetSortOrderVerification = true
+							});
 
 						if (Tag.TagValue == (int)UniversalTagNumber.Sequence)
 							Inner = Inner.ReadSequence();

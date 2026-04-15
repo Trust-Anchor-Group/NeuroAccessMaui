@@ -1,10 +1,10 @@
 ﻿using NeuroAccess.Nfc.TravelDocuments.Security;
-using NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions;
 using NeuroAccess.Nfc.TravelDocuments.Security.Properties.Keys;
 using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Formats.Asn1;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 {
@@ -134,6 +134,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 			Vector? ListExtensions;
 			byte[]? AuthorityKeyIdentifier = null;
 			byte[]? SubjectKeyIdentifier = null;
+
+			if (i < c && TbsCert[i] is byte[] ExtensionsBin)
+			{
+				if (!ASN1.TryDecodeDerAs(UniversalTagNumber.Sequence, ExtensionsBin, out object? Extensions2))
+					return false;
+
+				TbsCert.Elements.SetValue(Extensions2, i);
+			}
 
 			if (i < c && TbsCert[i] is Vector ListExtensions2)
 			{
