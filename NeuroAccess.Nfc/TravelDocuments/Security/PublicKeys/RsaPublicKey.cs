@@ -11,7 +11,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 	{
 		private BigInteger? modulus;
 		private BigInteger? exponent;
-		private bool configured;
 
 		/// <summary>
 		/// OID identifying the type of object.
@@ -21,7 +20,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 		/// <summary>
 		/// If the object has been configured.
 		/// </summary>
-		public override bool IsConfigured => this.configured;
+		/// <remarks>
+		/// The RSA public key is configured at a later stage in the process, when the
+		/// public key is set. Configuration parameters provided are therefore either missing
+		/// or only NULL, and are ignored.
+		/// </remarks>
+		public override bool IsConfigured => true;
 
 		/// <summary>
 		/// Modulus
@@ -40,10 +44,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 		/// <returns>If the object can be configured, given the security information.</returns>
 		public override bool Configure(Vector SecurityInfo)
 		{
-			// The RSA public key is configured at a later stage, when the public key is set.
-			// Parameters provided here is only NULL, and are ignored.
-
-			this.configured = true;
 			return true;
 		}
 

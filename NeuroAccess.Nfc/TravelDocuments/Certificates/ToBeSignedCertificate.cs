@@ -120,10 +120,23 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 			if (i >= c || TbsCert[i++] is not Vector SubjectPublicKeyInfo)
 				return false;
 
+			if (SubjectPublicKeyInfo.Length != 2)
+				return false;
 
-			if (SubjectPublicKeyInfo.Length != 2 ||
-				SubjectPublicKeyInfo.FirstElementNested is not IPublicKey PublicKey ||
-				!PublicKey.IsConfigured ||
+			Obj = SubjectPublicKeyInfo.FirstElementNested;
+
+			if (Obj is not IPublicKey PublicKey)
+			{
+				if (Obj is Vector v &&
+					v.FirstElement is IPublicKey PublicKey2)
+				{
+					PublicKey = PublicKey2;
+				}
+				else
+					return false;
+			}
+
+			if (!PublicKey.IsConfigured ||
 				!PublicKey.SetPublicKey(SubjectPublicKeyInfo.LastElement))
 			{
 				return false;
