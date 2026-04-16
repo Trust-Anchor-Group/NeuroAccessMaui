@@ -44,20 +44,30 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 
 			object? Obj = SecurityInfo.LastElementNested;
 
-			if (Obj is Vector EcParameters &&
-				EcParameters.Length == 6 &&
-				EcParameters[0] is BigInteger Version &&
-				Version >= int.MinValue &&
-				Version <= int.MaxValue &&
-				EcParameters[1] is FieldType Field &&
-				EcParameters[2] is Vector Curve &&
-				Curve.Length >= 2 &&		// Curve may have an optional third parameter: seed, a BIT STRING, which is not use in the signature validation, but available for documentation, if available.
-				Curve[0] is byte[] A &&
-				Curve[1] is byte[] B &&
-				EcParameters[3] is byte[] BasePoint &&
-				EcParameters[4] is BigInteger Order &&
-				EcParameters[5] is BigInteger h)
+			if (Obj is Vector EcParameters)
 			{
+				if (EcParameters.Length < 5 || EcParameters.Length > 6)
+					return false;
+
+				if (EcParameters[0] is not BigInteger Version ||
+					Version < int.MinValue ||
+					Version > int.MaxValue ||
+					EcParameters[1] is not FieldType Field ||
+					EcParameters[2] is not Vector Curve ||
+					Curve.Length < 2 ||        // Curve may have an optional third parameter: seed, a BIT STRING, which is not use in the signature validation, but available for documentation, if available.
+					Curve[0] is not byte[] A ||
+					Curve[1] is not byte[] B ||
+					EcParameters[3] is not byte[] BasePoint ||
+					EcParameters[4] is not BigInteger Order)
+				{
+					return false;
+				}
+
+				if (EcParameters.Length == 6 && EcParameters[5] is not BigInteger h)
+					return false;
+				else
+					h = 1;
+
 				if (BasePoint.Length == 0)
 					return false;
 
@@ -118,7 +128,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 				Result = null;
 				return false;
 			}
-			
+
 			switch (Data[0])
 			{
 				case 0: // Infinity

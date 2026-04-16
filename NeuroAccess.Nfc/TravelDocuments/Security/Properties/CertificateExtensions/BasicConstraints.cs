@@ -1,4 +1,6 @@
-﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions
+﻿using System;
+
+namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensions
 {
 	/// <summary>
 	/// Basic Constraints
@@ -27,38 +29,46 @@
 		/// <returns>If the object can be configured, given the security information.</returns>
 		public override bool Configure(Vector SecurityInfo)
 		{
-			if (SecurityInfo.LastElementNested is not Vector BasicConstraints)
+			if (SecurityInfo.LastElementNested is Vector BasicConstraints)
+			{
+				int c = BasicConstraints.Length;
+				int i = 0;
+
+				if (i < c && BasicConstraints[i] is KeyUsage KeyUsage)
+				{
+					i++;
+					this.keyUsage = KeyUsage;
+				}
+
+				if (i < c && BasicConstraints[i] is bool CertificateAuthority)
+				{
+					i++;
+					this.certificateAuthority = CertificateAuthority;
+				}
+
+				if (i < c && BasicConstraints[i] is System.Numerics.BigInteger PathLengthConstraint &&
+					PathLengthConstraint >= int.MinValue &&
+					PathLengthConstraint <= int.MaxValue)
+				{
+					i++;
+					this.pathLengthConstraint = (int)PathLengthConstraint;
+				}
+
+				if (i < c)
+					return false;
+
+				this.configured = true;
+
+				return true;
+			}
+			else if (SecurityInfo.LastElement is null ||
+				(SecurityInfo.LastElement is Array A && A.Length == 0))
+			{
+				this.configured = true;
+				return true;
+			}
+			else
 				return false;
-
-			int c = BasicConstraints.Length;
-			int i = 0;
-
-			if (i < c && BasicConstraints[i] is KeyUsage KeyUsage)
-			{
-				i++;
-				this.keyUsage = KeyUsage;
-			}
-
-			if (i < c && BasicConstraints[i] is bool CertificateAuthority)
-			{
-				i++;
-				this.certificateAuthority = CertificateAuthority;
-			}
-
-			if (i < c && BasicConstraints[i] is System.Numerics.BigInteger PathLengthConstraint &&
-				PathLengthConstraint >= int.MinValue &&
-				PathLengthConstraint <= int.MaxValue)
-			{
-				i++;
-				this.pathLengthConstraint = (int)PathLengthConstraint;
-			}
-
-			if (i < c)
-				return false;
-
-			this.configured = true;
-
-			return true;
 		}
 
 		/// <summary>

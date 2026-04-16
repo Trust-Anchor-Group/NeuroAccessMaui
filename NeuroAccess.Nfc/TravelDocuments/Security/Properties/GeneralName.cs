@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Formats.Asn1;
 using System.Net;
 
@@ -28,6 +29,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties
 			else if (Last is byte[] BinName)
 			{
 				this.name = BinName;
+				return true;
+			}
+			else if (Last is Array A && A.Length == 0)
+			{
+				this.name = string.Empty;
 				return true;
 			}
 			else

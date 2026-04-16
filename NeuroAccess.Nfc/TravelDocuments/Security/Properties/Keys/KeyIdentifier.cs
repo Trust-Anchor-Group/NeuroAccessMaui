@@ -1,4 +1,6 @@
-﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.Keys
+﻿using System;
+
+namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.Keys
 {
 	public abstract class KeyIdentifier : GeneralName
 	{
@@ -14,10 +16,13 @@
 			if (!base.Configure(SecurityInfo))
 				return false;
 
-			if (this.Name is not byte[] Identifier)
+			if (this.Name is byte[] Identifier)
+				this.identifier = Identifier;
+			else if (this.Name is string s && string.IsNullOrEmpty(s))
+				this.identifier = [];
+			else
 				return false;
 
-			this.identifier = Identifier;
 
 			return true;
 		}

@@ -2603,7 +2603,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			foreach (object Extension in Certificate.Extensions?.Elements ?? Array.Empty<object>())
 			{
-				if (Extension is SubjectKeyIdentifier SubjectKeyIdentifier)
+				if (Extension is SubjectKeyIdentifier SubjectKeyIdentifier &&
+					SubjectKeyIdentifier.Identifier.Length > 0)
 				{
 					return new KeyValuePair<string?, byte[]?>(CountryCode,
 						SubjectKeyIdentifier.Identifier);
@@ -2626,7 +2627,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			foreach (object Extension in Certificate.Extensions?.Elements ?? Array.Empty<object>())
 			{
-				if (Extension is AuthorityKeyIdentifier AuthorityKeyIdentifier)
+				if (Extension is AuthorityKeyIdentifier AuthorityKeyIdentifier &&
+					AuthorityKeyIdentifier.Identifier.Length > 0)
 				{
 					return new KeyValuePair<string?, byte[]?>(CountryCode,
 						AuthorityKeyIdentifier.Identifier);

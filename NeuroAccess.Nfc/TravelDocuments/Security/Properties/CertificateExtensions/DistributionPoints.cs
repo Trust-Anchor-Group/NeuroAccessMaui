@@ -26,29 +26,26 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.CertificateExtensi
 		/// <returns>If the object can be configured, given the security information.</returns>
 		public override bool Configure(Vector SecurityInfo)
 		{
-			if (SecurityInfo.LastElementNested is not Vector DistributionPoints)
-				return false;
-
-			if (DistributionPoints.Length == 1 &&
-				DistributionPoints.FirstElement is Vector v &&
-				(v.SubSection[0] & 0x80) == 0)
-			{
-				DistributionPoints = v;
-			}
-
 			ChunkedList<DistributionPoint> Points = [];
 
-			foreach (object? Element in DistributionPoints)
+			if (SecurityInfo.LastElementNested is Vector DistributionPoints)
 			{
-				if (Element is not Vector DistributionPointVector)
-					return false;
+				if (DistributionPoints.Length == 1 &&
+					DistributionPoints.FirstElement is Vector v &&
+					(v.SubSection[0] & 0x80) == 0)
+				{
+					DistributionPoints = v;
+				}
 
-				if (DistributionPoint.TryCreate(DistributionPointVector, out DistributionPoint? Point))
-					Points.Add(Point);
+				foreach (object? Element in DistributionPoints)
+				{
+					if (Element is Vector DistributionPointVector &&
+						DistributionPoint.TryCreate(DistributionPointVector, out DistributionPoint? Point))
+					{
+						Points.Add(Point);
+					}
+				}
 			}
-
-			if (!Points.HasFirstItem)
-				return false;
 
 			this.distributionPoints = [.. Points];
 
