@@ -19,7 +19,7 @@
 	  <PackageReference Include="Waher.Networking" Version="4.6.5" />
 	  <PackageReference Include="Waher.Runtime.Settings" Version="1.2.1" />
 	  <PackageReference Include="Waher.Security" Version="1.2.0" />
-	  <PackageReference Include="Waher.Security.EllipticCurves" Version="1.5.2" />
+	  <PackageReference Include="Waher.Security.EllipticCurves" Version="1.5.3" />
 	  <PackageReference Include="Waher.Security.SHA3" Version="1.2.2" />
   </ItemGroup>
 

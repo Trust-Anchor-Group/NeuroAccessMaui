@@ -138,7 +138,18 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						return false;
 
 					case (int)UniversalTagNumber.Boolean:
-						Value = Reader.ReadBoolean();
+						// Some certificates have been observed to encode Boolean values incorrectly,
+						// for instance encoding TRUE as 01 01 01 instead of 01 01 FF.
+						// Trying to read a Boolean using normal method would in these cases result in
+						// an exception.
+
+						ReadOnlyMemory<byte> Section = Reader.ReadEncodedValue();
+
+						if (Section.Length == 3)
+							Value = Section.Span[^1] != 0;
+						else
+							Value = Reader.ReadBoolean();
+
 						return true;
 
 					case (int)UniversalTagNumber.Integer:
@@ -223,7 +234,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					case (int)UniversalTagNumber.Set:               // Same as UniversalTagNumber.SetOf:
 					case (int)UniversalTagNumber.Embedded:
 
-						ReadOnlyMemory<byte> Section = Reader.ReadEncodedValue();
+						Section = Reader.ReadEncodedValue();
 						AsnReader Inner = new(Section, Reader.RuleSet,
 							new AsnReaderOptions()
 							{

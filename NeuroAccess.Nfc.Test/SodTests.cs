@@ -554,6 +554,9 @@ namespace NeuroAccess.Nfc.Test
 			}
 		}
 
+		// Note: Gambia (GM) certificate chain not completely published by ICAO.
+		// Note: One Latvia (LV) certificate has incorrect Authority Key Identifier encoded, so signature verification will fail.
+
 		[TestMethod]
 		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AE\\01C1CA4806FA8A1DCD50AFC75E216E90479AF7C4.cer")]
 		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\AD\\031B14A8421B68EFA0BFD081C88C2B64270542A9.cer")]
@@ -565,7 +568,9 @@ namespace NeuroAccess.Nfc.Test
 		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\DZ\\5FED4CD3BCA95F5C8F3673C61AEC837BFE2B2B51.cer")]
 		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\SE\\B0E5DF7C87A9235D3DB4CF35306ED61C76BEB7C6.cer")]
 		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\EE\\55ABD26F857EEE40E0614ADF983E2BB6936C55BC.cer")]
-		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\EG\\4898ECBEA905A068E997955A4AC0EE0B08771842.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\EG\\4898ECBEA905A068E997955A4AC0EE0B08771842.cer")]
+		//[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\BA\\45AD53B65AACCDADF445D55F474F8F2FF187CB67.cer")]
+		[DataRow("..\\..\\..\\..\\..\\IcaoPkiCertificates\\Root\\IcaoPki\\UA\\024435DAB4D8E9AE27E795C821ECEBE1A5F8155F.cer")]
 		public async Task Test_05_VerifySpecificIcaoCertificates(string FileName)
 		{
 			TestContextWriter SnifferWriter = new(this.TestContext);
