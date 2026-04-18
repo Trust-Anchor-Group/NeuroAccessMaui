@@ -1,4 +1,4 @@
-﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.Policies
+﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.Policies.Enterprise
 {
 	/// <summary>
 	/// Entrust version extension (entrustVersInfo).

@@ -1,4 +1,4 @@
-﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.Policies
+﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.Policies.Enterprise
 {
 	/// <summary>
 	/// ETSI NCP+ certificate policy OID.
