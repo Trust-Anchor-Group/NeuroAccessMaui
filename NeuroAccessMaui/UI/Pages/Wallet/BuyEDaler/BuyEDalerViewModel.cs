@@ -61,7 +61,7 @@ namespace NeuroAccessMaui.UI.Pages.Wallet.BuyEDaler
 		/// If <see cref="Amount"/> is OK.
 		/// </summary>
 		[ObservableProperty]
-		[NotifyPropertyChangedFor(nameof(this.AmountEntryValid))]
+		[NotifyPropertyChangedFor(nameof(AmountEntryValid))]
 		[NotifyCanExecuteChangedFor(nameof(BuyCommand))]
 		private bool amountOk;
 
