@@ -63,10 +63,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 					return false;
 				}
 
-				if (EcParameters.Length == 6 && EcParameters[5] is not BigInteger h)
-					return false;
+				BigInteger CoFactor;
+
+				if (EcParameters.Length == 6)
+				{
+					if (EcParameters[5] is BigInteger h)
+						CoFactor = h;
+					else
+						return false;
+				}
 				else
-					h = 1;
+					CoFactor = 1;
 
 				if (BasePoint.Length == 0)
 					return false;
@@ -79,7 +86,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 				this.a = EllipticCurve.ToInt(A, true);
 				this.b = EllipticCurve.ToInt(B, true);
 				this.order = Order;
-				this.coFactor = h;
+				this.coFactor = CoFactor;
 				this.basePoint = G.Value;
 
 				return true;
