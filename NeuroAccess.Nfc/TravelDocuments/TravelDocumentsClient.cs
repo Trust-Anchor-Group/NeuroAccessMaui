@@ -1203,6 +1203,22 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return false;
 			}
 
+			byte[] ParameterIdEncoding;
+
+			if (this.protocol.ParameterId.HasValue)
+			{
+				ParameterIdEncoding = this.protocol.ParameterId.Value.ToByteArray(true, true);
+
+				ParameterIdEncoding = CONCAT(
+					[
+						0x84,
+						(byte)ParameterIdEncoding.Length
+					],
+					ParameterIdEncoding);
+			}
+			else
+				ParameterIdEncoding = [];
+			
 			byte[] Command = CONCAT(
 				[
 					ISO_7816.Classes.Basic,
@@ -1219,7 +1235,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 						0x83,		// Key reference
 						0x01,		// Key reference length
 						0x01		// MRZ key reference (0x02 = CAN, 0x03 = PIN, 0x04 = PUK)
-					]
+					],
+					ParameterIdEncoding
 				]);
 
 			byte[] Response = await this.ExecuteCommand(Command);

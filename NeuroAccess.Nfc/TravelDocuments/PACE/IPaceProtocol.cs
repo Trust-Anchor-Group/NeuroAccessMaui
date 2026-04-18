@@ -21,6 +21,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		bool ChipAuthenticationMapping { get; }
 
 		/// <summary>
+		/// Required protocol version.
+		/// </summary>
+		public System.Numerics.BigInteger Version { get; }
+
+		/// <summary>
+		/// Optional Parameter ID.
+		/// </summary>
+		public System.Numerics.BigInteger? ParameterId { get; }
+
+		/// <summary>
 		/// Creates a new private and public key, used in the PACE protocol.
 		/// </summary>
 		/// <returns>Public part of the ephemeral key.</returns>
