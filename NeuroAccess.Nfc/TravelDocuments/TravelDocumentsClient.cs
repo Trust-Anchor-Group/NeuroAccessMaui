@@ -1991,6 +1991,81 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		}
 
 		/// <summary>
+		/// If Data Group 1 should be read (MRZ). Default=true
+		/// </summary>
+		public bool ReadDG1 { get; set; } = true;
+
+		/// <summary>
+		/// If Data Group 2 should be read (Encoded Identification Features — Face). Default=true
+		/// </summary>
+		public bool ReadDG2 { get; set; } = true;
+
+		/// <summary>
+		/// If Data Group 3 should be read (Additional Identification Feature — Finger(s)). Default=false
+		/// </summary>
+		public bool ReadDG3 { get; set; } = false;
+
+		/// <summary>
+		/// If Data Group 4 should be read (Additional Identification Feature — Finger(s)). Default=false
+		/// </summary>
+		public bool ReadDG4 { get; set; } = false;
+
+		/// <summary>
+		/// If Data Group 5 should be read (Displayed Portrait). Default=false
+		/// </summary>
+		public bool ReadDG5 { get; set; } = false;
+
+		/// <summary>
+		/// If Data Group 7 should be read (Displayed Signature or Usual Mark). Default=false
+		/// </summary>
+		public bool ReadDG7 { get; set; } = false;
+
+		/// <summary>
+		/// If Data Group 8 should be read (Data Feature(s)). Default=false
+		/// </summary>
+		public bool ReadDG8 { get; set; } = false;
+
+		/// <summary>
+		/// If Data Group 9 should be read (Structure Feature(s)). Default=false
+		/// </summary>
+		public bool ReadDG9 { get; set; } = false;
+
+		/// <summary>
+		/// If Data Group 10 should be read (Substance Feature(s)). Default=false
+		/// </summary>
+		public bool ReadDG10 { get; set; } = false;
+
+		/// <summary>
+		/// If Data Group 11 should be read (Additional Personal Detail(s)). Default=true
+		/// </summary>
+		public bool ReadDG11 { get; set; } = true;
+
+		/// <summary>
+		/// If Data Group 12 should be read (Additional Document Detail(s)). Default=false
+		/// </summary>
+		public bool ReadDG12 { get; set; } = false;
+
+		/// <summary>
+		/// If Data Group 13 should be read (Optional Details(s)). Default=false
+		/// </summary>
+		public bool ReadDG13 { get; set; } = false;
+
+		/// <summary>
+		/// If Data Group 14 should be read (Security Options). Default=false
+		/// </summary>
+		public bool ReadDG14 { get; set; } = false;
+
+		/// <summary>
+		/// If Data Group 15 should be read (Active Authentication Public Key Info). Default=false
+		/// </summary>
+		public bool ReadDG15 { get; set; } = false;
+
+		/// <summary>
+		/// If Data Group 16 should be read (Person(s) to Notify). Default=false
+		/// </summary>
+		public bool ReadDG16 { get; set; } = false;
+
+		/// <summary>
 		/// Reads the travel document.
 		/// </summary>
 		/// <param name="IdDomain">Domain name of Neuron hosting ICAO certificates.</param>
@@ -2167,7 +2242,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			this.securityinfo = SecurityInfo;
 			await this.SecurityInfoUpdated.Raise(this, EventArgs.Empty);
 
-			if (this.appInfo.TagList?.HasDataGroup(1) ?? false)
+			if (this.ReadDG1 && (this.appInfo.TagList?.HasDataGroup(1) ?? false))
 			{
 				// Reading EF.DG1 (MRZ), §4.7.1 ICAO 9303-10
 
@@ -2198,7 +2273,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				await this.MrzUpdated.Raise(this, EventArgs.Empty);
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(2) ?? false)
+			if (this.ReadDG2 && (this.appInfo.TagList?.HasDataGroup(2) ?? false))
 			{
 				// Reading EF.DG2 (Encoded Identification Features — Face), §4.7.2 ICAO 9303-10
 
@@ -2225,7 +2300,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				await this.BiometricEncodingFaceUpdated.Raise(this, EventArgs.Empty);
 			}
 
-			if (this.enhancedSecurity && (this.appInfo.TagList?.HasDataGroup(3) ?? false))
+			if (this.enhancedSecurity && this.ReadDG3 && (this.appInfo.TagList?.HasDataGroup(3) ?? false))
 			{
 				try
 				{
@@ -2259,7 +2334,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				}
 			}
 
-			if (this.enhancedSecurity && (this.appInfo.TagList?.HasDataGroup(4) ?? false))
+			if (this.enhancedSecurity && this.ReadDG4 && (this.appInfo.TagList?.HasDataGroup(4) ?? false))
 			{
 				try
 				{
@@ -2293,7 +2368,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				}
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(5) ?? false)
+			if (this.ReadDG5 && (this.appInfo.TagList?.HasDataGroup(5) ?? false))
 			{
 				// Reading EF.DG5 (Displayed Portrait), §4.7.5 ICAO 9303-10
 
@@ -2323,7 +2398,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				}
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(7) ?? false)
+			if (this.ReadDG7 && (this.appInfo.TagList?.HasDataGroup(7) ?? false))
 			{
 				// Reading EF.DG7 (Displayed Signature or Usual Mark), §4.7.2 ICAO 9303-10
 
@@ -2350,28 +2425,28 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				await this.DisplayedSignaturesUpdated.Raise(this, EventArgs.Empty);
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(8) ?? false)
+			if (this.ReadDG8 && (this.appInfo.TagList?.HasDataGroup(8) ?? false))
 			{
 				this.Warning("EF.DG8 (Data Feature(s)) supported but not implemented.");
 
 				// TODO: Data Group 8 (Data Feature(s)) (In LDS1 eMRTD Application)
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(9) ?? false)
+			if (this.ReadDG9 && (this.appInfo.TagList?.HasDataGroup(9) ?? false))
 			{
 				this.Warning("EF.DG9 (Structure Feature(s)) supported but not implemented.");
 
 				// TODO: Data Group 9 (Structure Feature(s)) (In LDS1 eMRTD Application)
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(10) ?? false)
+			if (this.ReadDG10 && (this.appInfo.TagList?.HasDataGroup(10) ?? false))
 			{
 				this.Warning("EF.DG10 (Substance Feature(s)) supported but not implemented.");
 
 				// TODO: Data Group 10 (Substance Feature(s)) (In LDS1 eMRTD Application)
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(11) ?? false)
+			if (this.ReadDG11 && (this.appInfo.TagList?.HasDataGroup(11) ?? false))
 			{
 				// Reading EF.DG11 (Additional Personal Detail(s)), §4.7.11 ICAO 9303-10
 
@@ -2398,35 +2473,35 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				await this.PersonalInformationUpdated.Raise(this, EventArgs.Empty);
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(12) ?? false)
+			if (this.ReadDG12 && (this.appInfo.TagList?.HasDataGroup(12) ?? false))
 			{
 				this.Warning("EF.DG12 (Additional Document Detail(s)) supported but not implemented.");
 
 				// TODO: Data Group 12 (Additional Document Detail(s)) (In LDS1 eMRTD Application)
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(13) ?? false)
+			if (this.ReadDG13 && (this.appInfo.TagList?.HasDataGroup(13) ?? false))
 			{
 				this.Warning("EF.DG13 (Optional Details(s)) supported but not implemented.");
 
 				// TODO: Data Group 13 (Optional Details(s)) (In LDS1 eMRTD Application)
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(14) ?? false)
+			if (this.ReadDG14 && (this.appInfo.TagList?.HasDataGroup(14) ?? false))
 			{
 				this.Warning("EF.DG14 (Security Options) supported.");
 
 				// TODO: Data Group 14 (Security Options) (In LDS1 eMRTD Application)
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(15) ?? false)
+			if (this.ReadDG15 && (this.appInfo.TagList?.HasDataGroup(15) ?? false))
 			{
 				this.Warning("EF.DG15 (Active Authentication Public Key Info) supported but not implemented.");
 
 				// TODO: Data Group 15 (Active Authentication Public Key Info) (In LDS1 eMRTD Application)
 			}
 
-			if (this.appInfo.TagList?.HasDataGroup(16) ?? false)
+			if (this.ReadDG16 && (this.appInfo.TagList?.HasDataGroup(16) ?? false))
 			{
 				this.Warning("EF.DG16 (Person(s) to Notify) supported but not implemented.");
 
