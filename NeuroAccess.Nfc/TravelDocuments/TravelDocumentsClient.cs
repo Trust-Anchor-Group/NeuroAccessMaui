@@ -2214,7 +2214,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				if (!TryParseDataObject(Data, this, out BiometricEncodingFace? BiometricEncoding))
 				{
-					this.Error("Unable to decode Biometric Enciding in DG2 (Encoded Identification Features — Face).");
+					this.Error("Unable to decode Biometric Encoding in DG2 (Encoded Identification Features — Face).");
 					return ReadTravelDocumentResult.UnableToParseEfDg;
 				}
 
@@ -2242,7 +2242,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 					if (!TryParseDataObject(Data, this, out BiometricEncodingFingers? BiometricEncoding))
 					{
-						this.Error("Unable to decode Biometric Enciding in DG3 (Additional Identification Feature — Finger(s)).");
+						this.Error("Unable to decode Biometric Encoding in DG3 (Additional Identification Feature — Finger(s)).");
 						return ReadTravelDocumentResult.UnableToParseEfDg;
 					}
 
@@ -2275,7 +2275,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 					if (!TryParseDataObject(Data, this, out BiometricEncodingIrises? BiometricEncoding))
 					{
-						this.Error("Unable to decode Biometric Enciding in DG4 (Additional Identification Feature — Iris(es)).");
+						this.Error("Unable to decode Biometric Encoding in DG4 (Additional Identification Feature — Iris(es)).");
 						return ReadTravelDocumentResult.UnableToParseEfDg;
 					}
 
