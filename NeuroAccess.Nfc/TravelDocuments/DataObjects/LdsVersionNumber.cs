@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text;
 using Waher.Security;
 
@@ -55,7 +56,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 
 				Client.Information("LDS version: " + MajorVersion + "." + MinorVersion);
 
-				if (double.TryParse(MajorVersion + "." + MinorVersion, out double d))
+				if (double.TryParse(MajorVersion + "." + MinorVersion,
+					NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double d))
 				{
 					Parsed = new LdsVersionNumber(Value, d);
 					return true;

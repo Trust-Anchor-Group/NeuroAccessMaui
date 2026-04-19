@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text;
 using Waher.Security;
 
@@ -64,8 +65,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 				Client.Information("Unicode version: " + MajorVersion + "." + MinorVersion +
 					"." + ReleaseVersion);
 
-				if (double.TryParse(MajorVersion + "." + MinorVersion, out double d) &&
-					int.TryParse(ReleaseVersion, out int i))
+				if (double.TryParse(MajorVersion + "." + MinorVersion,
+					NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double d) &&
+					int.TryParse(ReleaseVersion, NumberStyles.Integer, CultureInfo.InvariantCulture,
+						out int i))
 				{
 					Parsed = new UnicodeVersionNumber(Value, d, i);
 					return true;
