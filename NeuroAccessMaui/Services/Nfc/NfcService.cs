@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using System.Text;
+using System.Xml;
 using NeuroAccess.Nfc;
 using NeuroAccess.Nfc.Records;
 using NeuroAccess.Nfc.TravelDocuments;
@@ -8,6 +10,9 @@ using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.UI.Pages;
+using Waher.Content.Xml;
+using Waher.Events;
+using Waher.Networking.Sniffers;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Security;
@@ -64,8 +69,13 @@ namespace NeuroAccessMaui.Services.Nfc
 						if (!string.IsNullOrEmpty(Mrz) &&
 							MrzExtensions.ParseMrz(Mrz, out DocumentInformation? DocInfo))
 						{
-							using TravelDocumentsClient Client = new(IsoDep, DocInfo,
+							StringBuilder XmlBuilder = new();
+							XmlWriter XmlOutput = XmlWriter.Create(XmlBuilder, XML.WriterSettings(false, true));
+							XmlWriterSniffer InMemoryXmlWriterSniffer = new(XmlOutput, BinaryPresentationMethod.Base64, "NFC");
+							ISniffer[] Sniffers = new ISniffer[] { InMemoryXmlWriterSniffer }.Join(
 								ServiceRef.XmppService.RemoteSniffers);
+
+							using TravelDocumentsClient Client = new(IsoDep, DocInfo, Sniffers);
 
 							try
 							{
@@ -76,6 +86,10 @@ namespace NeuroAccessMaui.Services.Nfc
 									// TODO: Forward state-information to UI.
 									return Task.CompletedTask;
 								};
+
+								// TODO: Seed PACE authentication with ID of PREVIEW application, so that
+								// Neuron can cryptographically validate the readout is not a replay of a
+								// previous readout.
 
 								switch (await Client.Authenticate())
 								{
@@ -254,6 +268,12 @@ namespace NeuroAccessMaui.Services.Nfc
 								}
 
 								Client.Information("Readout completed.");
+
+								await InMemoryXmlWriterSniffer.FlushAsync();
+								string Xml = XmlBuilder.ToString();
+
+								// TODO: XML needs to be attached to PREVIEW ID application as an attachment
+								// named `NFC.xml` to prove that the readout was performed by this application.
 							}
 							catch (Exception ex)
 							{
