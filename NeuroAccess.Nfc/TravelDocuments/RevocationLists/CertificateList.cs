@@ -8,7 +8,6 @@ using NeuroAccess.Nfc.TravelDocuments.Security;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
 using Waher.Content;
 using Waher.Networking;
-using Waher.Security;
 
 namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 {
@@ -192,7 +191,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			if (SignerCertificate is null)
 			{
 				Client?.Error("Unable to load issuer certificate from the AKI: " +
-					Hashes.BinaryToString(this.AuthorityKeyIdentifier));
+					Waher.Security.Hashes.BinaryToString(this.AuthorityKeyIdentifier));
 				return false;
 			}
 
