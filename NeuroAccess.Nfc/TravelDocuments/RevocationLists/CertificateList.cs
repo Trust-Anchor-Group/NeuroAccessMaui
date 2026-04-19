@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
@@ -7,6 +8,7 @@ using NeuroAccess.Nfc.TravelDocuments.Security;
 using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
 using Waher.Content;
 using Waher.Networking;
+using Waher.Security;
 
 namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 {
@@ -187,9 +189,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			Certificate? SignerCertificate = await CertificateStore.TryLoadCertificate(
 				IdDomain, CountryCode, this.AuthorityKeyIdentifier, Client);
 
-			if (SignerCertificate?.PublicKey is null)
+			if (SignerCertificate is null)
 			{
-				Client?.Error("Unable to decode public key from issuer certificate.");
+				Client?.Error("Unable to load issuer certificate from the AKI: " +
+					Hashes.BinaryToString(this.AuthorityKeyIdentifier));
+				return false;
+			}
+
+			if (SignerCertificate.PublicKey is null)
+			{
+				Client?.Error("Unable to decode public key from issuer certificate.\r\n\r\n" +
+					Convert.ToBase64String(SignerCertificate.Binary, Base64FormattingOptions.InsertLineBreaks));
 				return false;
 			}
 

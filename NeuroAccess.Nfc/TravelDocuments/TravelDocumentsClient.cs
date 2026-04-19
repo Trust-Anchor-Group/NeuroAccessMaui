@@ -1218,7 +1218,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			}
 			else
 				ParameterIdEncoding = [];
-			
+
 			byte[] Command = CONCAT(
 				[
 					ISO_7816.Classes.Basic,
@@ -2034,7 +2034,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			if (!TryParseDataObject(Data, this, out DocumentSecurityObject? SecurityInfo))
 			{
-				this.Error("Unable to decode Document Security Object.");
+				this.Error("Unable to decode Document Security Object.\r\n\r\n" +
+					Convert.ToBase64String(Data, Base64FormattingOptions.InsertLineBreaks));
 				return ReadTravelDocumentResult.UnableToParseEfSod;
 			}
 
@@ -2185,7 +2186,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (!TryParseDataObject(Data, this, out MachineReadableZoneInformation? DataGroup1) ||
 					DataGroup1.Mrz is null)
 				{
-					this.Error("Unable to decode DG1 (MRZ Information).");
+					this.Error("Unable to decode DG1 (MRZ Information).\r\n\r\n" +
+						Convert.ToBase64String(Data, Base64FormattingOptions.InsertLineBreaks));
 					return ReadTravelDocumentResult.UnableToParseEfDg;
 				}
 
@@ -2214,7 +2216,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				if (!TryParseDataObject(Data, this, out BiometricEncodingFace? BiometricEncoding))
 				{
-					this.Error("Unable to decode Biometric Encoding in DG2 (Encoded Identification Features — Face).");
+					this.Error("Unable to decode Biometric Encoding in DG2 (Encoded Identification Features — Face).\r\n\r\n" +
+						Convert.ToBase64String(Data, Base64FormattingOptions.InsertLineBreaks));
 					return ReadTravelDocumentResult.UnableToParseEfDg;
 				}
 
@@ -2242,7 +2245,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 					if (!TryParseDataObject(Data, this, out BiometricEncodingFingers? BiometricEncoding))
 					{
-						this.Error("Unable to decode Biometric Encoding in DG3 (Additional Identification Feature — Finger(s)).");
+						this.Error("Unable to decode Biometric Encoding in DG3 (Additional Identification Feature — Finger(s)).\r\n\r\n" +
+							Convert.ToBase64String(Data, Base64FormattingOptions.InsertLineBreaks));
 						return ReadTravelDocumentResult.UnableToParseEfDg;
 					}
 
@@ -2275,7 +2279,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 					if (!TryParseDataObject(Data, this, out BiometricEncodingIrises? BiometricEncoding))
 					{
-						this.Error("Unable to decode Biometric Encoding in DG4 (Additional Identification Feature — Iris(es)).");
+						this.Error("Unable to decode Biometric Encoding in DG4 (Additional Identification Feature — Iris(es)).\r\n\r\n" +
+							Convert.ToBase64String(Data, Base64FormattingOptions.InsertLineBreaks));
 						return ReadTravelDocumentResult.UnableToParseEfDg;
 					}
 
@@ -2306,7 +2311,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				if (!TryParseDataObject(Data, this, out DisplayedPortraits? DataGroup5))
 				{
-					this.Error("Unable to decode DG5 (Displayed Portrait).");
+					this.Error("Unable to decode DG5 (Displayed Portrait).\r\n\r\n" +
+						Convert.ToBase64String(Data, Base64FormattingOptions.InsertLineBreaks));
 					return ReadTravelDocumentResult.UnableToParseEfDg;
 				}
 
@@ -2335,7 +2341,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				if (!TryParseDataObject(Data, this, out DisplayedSignatures? DisplayedSignatures))
 				{
-					this.Error("Unable to decode Displayed Signatures in DG7 (Displayed Signature or Usual Mark).");
+					this.Error("Unable to decode Displayed Signatures in DG7 (Displayed Signature or Usual Mark).\r\n\r\n" +
+						Convert.ToBase64String(Data, Base64FormattingOptions.InsertLineBreaks));
 					return ReadTravelDocumentResult.UnableToParseEfDg;
 				}
 
@@ -2382,7 +2389,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				if (!TryParseDataObject(Data, this, out AdditionalPersonalDetails? AdditionalPersonalDetails))
 				{
-					this.Error("Unable to decode DG11 (Additional Personal Detail(s)).");
+					this.Error("Unable to decode DG11 (Additional Personal Detail(s)).\r\n\r\n" +
+						Convert.ToBase64String(Data, Base64FormattingOptions.InsertLineBreaks));
 					return ReadTravelDocumentResult.UnableToParseEfDg;
 				}
 
