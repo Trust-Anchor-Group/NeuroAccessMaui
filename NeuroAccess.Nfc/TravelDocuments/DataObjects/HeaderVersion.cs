@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
@@ -51,7 +52,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 				int MajorVersion = Value[0];
 				int MinorVersion = Value[1];
 
-				if (double.TryParse(MajorVersion + "." + MinorVersion, out double d))
+				if (double.TryParse(MajorVersion + "." + MinorVersion,
+					NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double d))
 				{
 					Parsed = new HeaderVersion(Value, d);
 					return true;
