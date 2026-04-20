@@ -4,6 +4,7 @@ using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Content.Xml;
 using Waher.Runtime.Inventory;
 using Waher.Security.EllipticCurves;
+using Waher.Security.SHA3;
 
 namespace NeuroAccess.Nfc.TravelDocuments.PACE
 {
@@ -108,15 +109,57 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// <summary>
 		/// Creates a new ephemeral key, used in the PACE protocol.
 		/// </summary>
+		/// <param name="Seed">Optional seed value for key generation.</param>
+		/// <param name="Index">Index value for key generation.</param>
 		/// <returns>Public part of the ephemeral key.</returns>
-		public override byte[] CreateNewKey()
+		public override byte[] CreateNewKey(byte[]? Seed, ref int Index)
 		{
 			if (this.curve is null)
 				throw new NotSupportedException("EEC Curve not configured.");
 
-			this.curve.GenerateKeys();
+			if (Seed is null)
+				this.curve.GenerateKeys();
+			else
+			{
+				byte[] Secret = this.GenerateSecret(Seed, ref Index);
+				this.curve.SetPrivateKey(Secret);
+			}
 
 			return this.curve.PublicKeyBigEndian;
+		}
+
+		/// <summary>
+		/// Generates a new secret, based on the algorithm in <see cref="PrimeFieldCurve"/>, but that
+		/// can be seeded to allow for the connection with an external object.
+		/// </summary>
+		/// <param name="Seed">Optional seed value for key generation.</param>
+		/// <param name="Index">Index value for key generation.</param>
+		/// <returns>Generated secret.</returns>
+		public byte[] GenerateSecret(byte[]? Seed, ref int Index)
+		{
+			if (Seed is null)
+				return this.curve!.GenerateSecret();
+
+			SHAKE256 H = new(this.curve!.BigIntegerBytes);
+			byte[] B = new byte[this.curve!.BigIntegerBytes];
+			System.Numerics.BigInteger D;
+			System.Numerics.BigInteger? Order;
+
+			if (this.curve is PrimeFieldCurve PrimeFieldCurve)
+				Order = PrimeFieldCurve.Order;
+			else
+				Order = null;
+
+			do
+			{
+				B = H.ComputeVariable(TravelDocumentsClient.CONCAT(Seed, BitConverter.GetBytes(Index++)));
+				B[this.curve.BigIntegerBytes - 1] &= this.curve.MsbOrderMask;
+
+				D = EllipticCurve.ToInt(B);
+			}
+			while (D.IsZero || (Order.HasValue && D >= Order));
+
+			return B;
 		}
 
 		/// <summary>

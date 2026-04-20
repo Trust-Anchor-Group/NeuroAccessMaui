@@ -12,8 +12,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// <summary>
 		/// Creates a new ephemeral key, used in the PACE protocol.
 		/// </summary>
+		/// <param name="Seed">Optional seed value for key generation.</param>
+		/// <param name="Index">Index value for key generation.</param>
 		/// <returns>Public part of the ephemeral key.</returns>
-		public override byte[] CreateNewKey()
+		public override byte[] CreateNewKey(byte[]? Seed, ref int Index)
 		{
 			throw new NotImplementedException("DH not implemented.");  // TODO
 		}

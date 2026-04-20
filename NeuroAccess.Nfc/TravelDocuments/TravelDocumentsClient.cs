@@ -51,6 +51,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		private AdditionalPersonalDetails? personalInformation;
 		private readonly IIsoDepInterface tagInterface = TagInterface;
 		private readonly DocumentInformation documentInformation = DocumentInformation;
+		private readonly byte[]? localKeySeed = LocalKeySeed;
 		private TravelDocumentsState state = TravelDocumentsState.Detected;
 		private IPaceProtocol? protocol;
 		private CMac? cMac = null;
@@ -1846,7 +1847,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				// Main keys
 
 				byte[] LocalPublicKey;
+				int KeyIndex = 0;
+
 				IsoDepReplay? Replay = this.tagInterface as IsoDepReplay;
+
+				// Creates a public key in big-endian format.
+				LocalPublicKey = this.protocol.CreateNewKey(this.localKeySeed, ref KeyIndex);
 
 				if (Replay is not null)
 				{
@@ -1854,14 +1860,20 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					XmlDocument Doc = new();
 					Doc.LoadXml(LocalPrivateKey);
 
-					LocalPublicKey = this.protocol.ImportKey(Doc);
+					byte[] LocalPublicKey2 = this.protocol.ImportKey(Doc);
 
-					Curve = EcdhProtocol!.Curve;
+					Curve = EcdhProtocol.Curve;
 					if (Curve is null)
 						return false;
+
+					if (this.localKeySeed is null)
+						LocalPublicKey = LocalPublicKey2;
+					else if (Convert.ToBase64String(LocalPublicKey) != Convert.ToBase64String(LocalPublicKey2))
+					{
+						this.Error("Local public key mismatch.");
+						return false;
+					}
 				}
-				else
-					LocalPublicKey = this.protocol.CreateNewKey();    // Creates a public key in big-endian format.
 
 				this.Information("Local public key: " + Hashes.BinaryToString(LocalPublicKey));
 				this.Information("Local private key: " + Curve.Export());
@@ -1895,7 +1907,6 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				this.Information("Generator Ĝ: " + Hashes.BinaryToString(Generator));
 
-
 				// Ephemeral keys
 
 				byte[] LocalEphemeralPrivateKey;
@@ -1904,9 +1915,20 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				{
 					string EphemeralKey = Replay.GetInfo("Local ephemeral private key:", this);
 					LocalEphemeralPrivateKey = Hashes.StringToBinary(EphemeralKey);
+
+					if (this.localKeySeed is not null)
+					{
+						byte[] LocalEphemeralPrivateKey2 = EcdhProtocol.GenerateSecret(this.localKeySeed, ref KeyIndex);
+
+						if (Convert.ToBase64String(LocalEphemeralPrivateKey) != Convert.ToBase64String(LocalEphemeralPrivateKey2))
+						{
+							this.Error("Local ephemeral private key mismatch.");
+							return false;
+						}
+					}
 				}
 				else
-					LocalEphemeralPrivateKey = Curve.GenerateSecret();
+					LocalEphemeralPrivateKey = EcdhProtocol.GenerateSecret(this.localKeySeed, ref KeyIndex);
 
 				this.Information("Local ephemeral private key: " + Hashes.BinaryToString(LocalEphemeralPrivateKey));
 
