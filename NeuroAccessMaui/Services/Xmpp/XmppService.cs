@@ -2,7 +2,7 @@
 #define DEBUG_XMPP_LOCAL
 //#define DEBUG_LOG_REMOTE
 //#define DEBUG_DB_REMOTE
-//#define DEBUG_NFC_REMOTE
+#define DEBUG_NFC_REMOTE
 
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -127,7 +127,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private string? token = null;
 		private DateTime tokenCreated = DateTime.MinValue;
 #if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
-		private const string debugRecipient = "";     // TODO: Set JID of recipient of debug messages.
+		private const string debugRecipient = "admin@waher.se";     // TODO: Set JID of recipient of debug messages.
 #endif
 #if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
 		private RemoteSniffer? debugSniffer = null;
