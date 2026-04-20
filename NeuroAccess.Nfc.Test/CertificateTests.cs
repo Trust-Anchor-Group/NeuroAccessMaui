@@ -2,7 +2,6 @@ using System.Globalization;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Extensions;
 using NeuroAccess.Nfc.TravelDocuments;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
@@ -18,7 +17,10 @@ namespace NeuroAccess.Nfc.Test
 	[TestClass]
 	public class CertificateTests
 	{
-		private const string idDomain = "id.tagroot.io";
+		/// <summary>
+		/// Onboarding neuron
+		/// </summary>
+		public const string IdDomain = "id.tagroot.io";
 
 		/// <summary>
 		/// Test context
@@ -129,7 +131,7 @@ namespace NeuroAccess.Nfc.Test
 					Processed[Key] = true;
 
 					Certificate? IssuerCertificate = await CertificateStore.TryLoadCertificate(
-						idDomain, CountryCode, IssuerKeyReference, Client);
+						IdDomain, CountryCode, IssuerKeyReference, Client);
 					Assert.IsNotNull(IssuerCertificate, "Issuer certificate not found.");
 
 					Certificates.Insert(0, IssuerCertificate);
@@ -159,7 +161,7 @@ namespace NeuroAccess.Nfc.Test
 					Console.Out.WriteLine(new string('=', 80));
 					Console.Out.WriteLine(JSON.Encode(RevokedCertificates.Asn1Vector, true));
 
-					Assert.IsTrue(await RevokedCertificates.VerifySignature(idDomain, CountryCode!, Client));
+					Assert.IsTrue(await RevokedCertificates.VerifySignature(IdDomain, CountryCode!, Client));
 
 					if (RevokedCertificates.HasBeenRevoked(Cert2, out RevokedReason Reason))
 					{
@@ -268,7 +270,7 @@ namespace NeuroAccess.Nfc.Test
 						continue;
 					}
 
-					Certificate[] Chain = await CertificateChain.GetChain(Cert, idDomain);
+					Certificate[] Chain = await CertificateChain.GetChain(Cert, IdDomain);
 
 					if (!CertificateChain.VerifySignatures(Chain))
 					{
@@ -581,7 +583,7 @@ namespace NeuroAccess.Nfc.Test
 			Assert.IsTrue(Certificate.TryParse(Raw, out Certificate? Cert));
 			Console.Out.WriteLine(JSON.Encode(Cert.Asn1Vector, true));
 
-			Certificate[] Chain = await CertificateChain.GetChain(Cert, idDomain);
+			Certificate[] Chain = await CertificateChain.GetChain(Cert, IdDomain);
 			Assert.IsTrue(CertificateChain.VerifySignatures(Client, Chain));
 		}
 
