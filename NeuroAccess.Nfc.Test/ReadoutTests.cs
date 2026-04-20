@@ -25,7 +25,7 @@ namespace NeuroAccess.Nfc.Test
 
 			IsoDepReplay Replay = new(FileName);
 
-			TestContextWriter SnifferWriter = new(this.TestContext!);
+			TestContextWriter SnifferWriter = new(this.TestContext);
 			TextWriterSniffer Sniffer = new(SnifferWriter, BinaryPresentationMethod.Hexadecimal, "Unit Test Sniffer");
 
 			using TravelDocumentsClient Client = new(Replay, Replay.DocumentInfo, null, Sniffer);
