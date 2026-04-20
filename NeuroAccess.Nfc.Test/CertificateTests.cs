@@ -16,7 +16,7 @@ using Waher.Security;
 namespace NeuroAccess.Nfc.Test
 {
 	[TestClass]
-	public class SodTests
+	public class CertificateTests
 	{
 		private const string idDomain = "id.tagroot.io";
 
