@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Xml;
 using NeuroAccess.Nfc;
@@ -13,6 +14,7 @@ using NeuroAccessMaui.UI.Pages;
 using Waher.Content.Xml;
 using Waher.Events;
 using Waher.Networking.Sniffers;
+using Waher.Networking.Sniffers.Model;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Security;
@@ -75,6 +77,9 @@ namespace NeuroAccessMaui.Services.Nfc
 							ISniffer[] Sniffers = new ISniffer[] { InMemoryXmlWriterSniffer }.Join(
 								ServiceRef.XmppService.RemoteSniffers);
 
+							XmlOutput.WriteStartDocument();
+							XmlOutput.WriteStartElement("SnifferOutput", "http://waher.se/Schema/SnifferOutput.xsd");
+
 							using TravelDocumentsClient Client = new(IsoDep, DocInfo, Sniffers);
 
 							try
@@ -98,21 +103,21 @@ namespace NeuroAccessMaui.Services.Nfc
 										break;
 
 									case AuthenticateResult.AlreadyEncrypted:
-										// Already authenticated with the document.
+									// Already authenticated with the document.
 
 									case AuthenticateResult.UnableToInitializePace:
-										// Unable to initialize PACE.
-										// (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+									// Unable to initialize PACE.
+									// (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
 
 									case AuthenticateResult.UnableToAuthenticatePace:
-										// Unable to authenticate using the selected PACE protocol.
-										// (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+									// Unable to authenticate using the selected PACE protocol.
+									// (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
 
 									case AuthenticateResult.UnableToGetBacChallenge:
-										// Unable to get BAC challenge. (Probably not a valid/working travel document.)
+									// Unable to get BAC challenge. (Probably not a valid/working travel document.)
 
 									case AuthenticateResult.BacNotImplemented:
-										// Old Travel Document requiring BAC, which is not supported.
+									// Old Travel Document requiring BAC, which is not supported.
 
 									default:
 										// TODO: Forward failure to UI.
@@ -224,44 +229,44 @@ namespace NeuroAccessMaui.Services.Nfc
 										break;
 
 									case ReadTravelDocumentResult.Lds1ApplicationNotFound:
-										// LDS1 eMRTD application was not found on chip. (Not an electronic passport.)
+									// LDS1 eMRTD application was not found on chip. (Not an electronic passport.)
 
 									case ReadTravelDocumentResult.UnableToReadEfCom:
-										// Unable to read EF.COM. (Try again.)
+									// Unable to read EF.COM. (Try again.)
 
 									case ReadTravelDocumentResult.UnableToParseEfCom:
-										// Unable to parse EF.COM. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
-										// EF.COM used to identify services available on the chip.
+									// Unable to parse EF.COM. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+									// EF.COM used to identify services available on the chip.
 
 									case ReadTravelDocumentResult.UnableToReadEfSod:
-										// Unable to read EF.SOD. (Try again.)
+									// Unable to read EF.SOD. (Try again.)
 
 									case ReadTravelDocumentResult.UnableToParseEfSod:
-										// Unable to parse EF.SOD. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
-										// EF.SOD used to identify issuers of documents.
+									// Unable to parse EF.SOD. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+									// EF.SOD used to identify issuers of documents.
 
 									case ReadTravelDocumentResult.UnableToReadEfDg:
-										// Unable to read EF.DGx. (Try again.)
+									// Unable to read EF.DGx. (Try again.)
 
 									case ReadTravelDocumentResult.UnableToParseEfDg:
-										// Unable to parse EF.DGx. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
-										// TODO: Forward failure to UI.
+									// Unable to parse EF.DGx. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+									// TODO: Forward failure to UI.
 
 									case ReadTravelDocumentResult.DgHashDigestInvalid:
-										// Hash Digest as reported by EF.SOD does not match the has digest of the data group read.
-										// (Data has been corrupted, either in transit or on the passport.)
+									// Hash Digest as reported by EF.SOD does not match the has digest of the data group read.
+									// (Data has been corrupted, either in transit or on the passport.)
 
 									case ReadTravelDocumentResult.NoCertificates:
-										// No certificates to validate available in EF.SOD.
-										// (Not a valid Travel Document)
+									// No certificates to validate available in EF.SOD.
+									// (Not a valid Travel Document)
 
 									case ReadTravelDocumentResult.MultipleCertificates:
-										// Multiple certificates to validate available in EF.SOD were provided. Only one allowed.
-										// (Not a valid Travel Document)
+									// Multiple certificates to validate available in EF.SOD were provided. Only one allowed.
+									// (Not a valid Travel Document)
 
 									case ReadTravelDocumentResult.InvalidCertificate:
-										// Certificate provided in EF.SOD is not a valid certificate.
-										// (Not a valid Travel Document)
+									// Certificate provided in EF.SOD is not a valid certificate.
+									// (Not a valid Travel Document)
 
 									default:
 										return;
@@ -270,6 +275,11 @@ namespace NeuroAccessMaui.Services.Nfc
 								Client.Information("Readout completed.");
 
 								await InMemoryXmlWriterSniffer.FlushAsync();
+
+								XmlOutput.WriteEndElement();
+								XmlOutput.WriteEndDocument();
+								XmlOutput.Flush();
+
 								string Xml = XmlBuilder.ToString();
 
 								// TODO: XML needs to be attached to PREVIEW ID application as an attachment
