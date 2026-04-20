@@ -28,7 +28,7 @@ namespace NeuroAccess.Nfc.Test
 			TestContextWriter SnifferWriter = new(this.TestContext!);
 			TextWriterSniffer Sniffer = new(SnifferWriter, BinaryPresentationMethod.Hexadecimal, "Unit Test Sniffer");
 
-			using TravelDocumentsClient Client = new(Replay, Replay.DocumentInfo, Sniffer);
+			using TravelDocumentsClient Client = new(Replay, Replay.DocumentInfo, null, Sniffer);
 
 			Client.Information("Starting readout.");
 

@@ -82,7 +82,12 @@ namespace NeuroAccessMaui.Services.Nfc
 
 							InMemoryXmlWriterSniffer.Information(Mrz);
 
-							using TravelDocumentsClient Client = new(IsoDep, DocInfo, Sniffers);
+							// TODO: LocalKeySeed argument must be set to the byte array of the UTF-8
+							// encodig of the PREVIEW application ID, to which the NFC.xml file will be
+							// attached, so that Neuron can cryptographically validate the readout is
+							// made just for this application, and not a replay of a previous readout.
+
+							using TravelDocumentsClient Client = new(IsoDep, DocInfo, null, Sniffers);
 
 							try
 							{

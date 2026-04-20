@@ -33,9 +33,11 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	/// </summary>
 	/// <param name="TagInterface">NFC Interface</param>
 	/// <param name="DocumentInformation">Document Information parsed from the MRZ.</param>
+	/// <param name="LocalKeySeed">Local Key Seed value, permitting the association of the interaction
+	/// with an external object.</param>
 	/// <param name="Sniffers">Optional sniffers.</param>
 	public sealed class TravelDocumentsClient(IIsoDepInterface TagInterface,
-		DocumentInformation DocumentInformation, params ISniffer[] Sniffers)
+		DocumentInformation DocumentInformation, byte[]? LocalKeySeed, params ISniffer[] Sniffers)
 		: CommunicationLayer(true, Sniffers), IDisposable
 	{
 		private static readonly Dictionary<ushort, IDataObject> dataObjects = GetDataObjects();
