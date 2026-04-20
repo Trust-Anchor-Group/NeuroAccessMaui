@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccess.Nfc.TravelDocuments.PACE.Id_PACE_DH_IM
@@ -34,6 +35,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE.Id_PACE_DH_IM
 		/// </summary>
 		/// <returns>Public part of the ephemeral key.</returns>
 		public override byte[] CreateNewKey()
+		{
+			throw new NotImplementedException("3DES not implemented.");  // TODO
+		}
+
+		/// <summary>
+		/// Imports the private key and public key from a previous export.
+		/// </summary>
+		/// <returns>Public part of imported ephemeral key.</returns>
+		public override byte[] ImportKey(XmlDocument Xml)
 		{
 			throw new NotImplementedException("3DES not implemented.");  // TODO
 		}

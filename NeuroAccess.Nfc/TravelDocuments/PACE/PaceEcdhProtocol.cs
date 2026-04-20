@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Xml;
 using NeuroAccess.Nfc.TravelDocuments.Security;
+using Waher.Content.Xml;
 using Waher.Runtime.Inventory;
 using Waher.Security.EllipticCurves;
 
@@ -113,6 +115,34 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 				throw new NotSupportedException("EEC Curve not configured.");
 
 			this.curve.GenerateKeys();
+
+			return this.curve.PublicKeyBigEndian;
+		}
+
+		/// <summary>
+		/// Imports the private key and public key from a previous export.
+		/// </summary>
+		/// <returns>Public part of imported ephemeral key.</returns>
+		public override byte[] ImportKey(XmlDocument Xml)
+		{
+			if (this.curve is null)
+				throw new NotSupportedException("EEC Curve not configured.");
+
+			if (Xml?.DocumentElement is null)
+				throw new ArgumentNullException(nameof(Xml), "Missing XML.");
+
+			if (Xml.DocumentElement.Name != "EllipticCurve" ||
+				Xml.DocumentElement.NamespaceURI != "http://waher.se/Schema/EllipticCurves.xsd")
+			{
+				throw new ArgumentException("Not an Elliptic Curve export XML document.", nameof(Xml));
+			}
+
+			if (XML.Attribute(Xml.DocumentElement, "type") != this.curve.GetType().FullName)
+				throw new ArgumentException("Exported curve type does not match current curve.", nameof(Xml));
+
+			byte[] Secret = Convert.FromBase64String(XML.Attribute(Xml.DocumentElement, "d"));
+
+			this.curve.SetPrivateKey(Secret);
 
 			return this.curve.PublicKeyBigEndian;
 		}

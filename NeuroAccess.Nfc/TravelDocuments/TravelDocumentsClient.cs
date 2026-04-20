@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using System.Xml;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.DataObjects;
 using NeuroAccess.Nfc.TravelDocuments.Events;
@@ -1842,7 +1843,23 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				// Main keys
 
-				byte[] LocalPublicKey = this.protocol.CreateNewKey();    // Creates a public key in big-endian format.
+				byte[] LocalPublicKey;
+				IsoDepReplay? Replay = this.tagInterface as IsoDepReplay;
+
+				if (Replay is not null)
+				{
+					string LocalPrivateKey = Replay.GetInfo("Local private key:", this);
+					XmlDocument Doc = new();
+					Doc.LoadXml(LocalPrivateKey);
+
+					LocalPublicKey = this.protocol.ImportKey(Doc);
+
+					Curve = EcdhProtocol!.Curve;
+					if (Curve is null)
+						return false;
+				}
+				else
+					LocalPublicKey = this.protocol.CreateNewKey();    // Creates a public key in big-endian format.
 
 				this.Information("Local public key: " + Hashes.BinaryToString(LocalPublicKey));
 				this.Information("Local private key: " + Curve.Export());
@@ -1879,7 +1896,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				// Ephemeral keys
 
-				byte[] LocalEphemeralPrivateKey = Curve.GenerateSecret();
+				byte[] LocalEphemeralPrivateKey;
+
+				if (Replay is not null)
+				{
+					string EphemeralKey = Replay.GetInfo("Local ephemeral private key:", this);
+					LocalEphemeralPrivateKey = Hashes.StringToBinary(EphemeralKey);
+				}
+				else
+					LocalEphemeralPrivateKey = Curve.GenerateSecret();
 
 				this.Information("Local ephemeral private key: " + Hashes.BinaryToString(LocalEphemeralPrivateKey));
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccess.Nfc.TravelDocuments.PACE
@@ -22,6 +23,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// </summary>
 		/// <param name="PrivateKey">Private key.</param>
 		public void SetPrivateKey(byte[] PrivateKey)
+		{
+			throw new NotImplementedException("DH not implemented.");  // TODO
+		}
+
+		/// <summary>
+		/// Imports the private key and public key from a previous export.
+		/// </summary>
+		/// <returns>Public part of imported ephemeral key.</returns>
+		public override byte[] ImportKey(XmlDocument Xml)
 		{
 			throw new NotImplementedException("DH not implemented.");  // TODO
 		}

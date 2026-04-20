@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -40,7 +41,7 @@ namespace NeuroAccess.Nfc
 		public IsoDepReplay(XmlDocument ReplayXml)
 		{
 			if (ReplayXml?.DocumentElement is null)
-				throw new ArgumentException("Missing XML.", nameof(ReplayXml));
+				throw new ArgumentNullException(nameof(ReplayXml), "Missing XML.");
 
 			if (ReplayXml.DocumentElement.Name != "SnifferOutput" ||
 				ReplayXml.DocumentElement.NamespaceURI != "http://waher.se/Schema/SnifferOutput.xsd")
@@ -166,7 +167,27 @@ namespace NeuroAccess.Nfc
 			}
 
 			this.eof = true;
-			throw Error("End of replay reached.", CommunicationLayer);
+			throw Error("Command not found in replay.", CommunicationLayer);
+		}
+
+		public string GetInfo(string Prefix, ICommunicationLayer CommunicationLayer)
+		{
+			if (this.eof)
+				throw Error("End of replay reached.", CommunicationLayer);
+
+			while (this.replayEnumerator.MoveNext())
+			{
+				if (this.replayEnumerator.Current is XmlElement E &&
+					E.LocalName == "Info")
+				{
+					string Info = GetRows(E, true);
+
+					if (Info.StartsWith(Prefix, StringComparison.InvariantCultureIgnoreCase))
+						return Info[Prefix.Length..].Trim();
+				}
+			}
+
+			throw Error("Information not found: " + Prefix, CommunicationLayer);
 		}
 
 		private static byte[] GetBin(XmlElement E)

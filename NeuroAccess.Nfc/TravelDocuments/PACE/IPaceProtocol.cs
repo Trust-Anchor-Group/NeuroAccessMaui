@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Xml;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Runtime.Inventory;
 using Waher.Security;
@@ -35,6 +36,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 		/// </summary>
 		/// <returns>Public part of the ephemeral key.</returns>
 		byte[] CreateNewKey();
+
+		/// <summary>
+		/// Imports the private key and public key from a previous export.
+		/// </summary>
+		/// <returns>Public part of imported ephemeral key.</returns>
+		byte[] ImportKey(XmlDocument Xml);
 
 		/// <summary>
 		/// Creates an ephemeral key using the same algorithm, cipher and configuration.
