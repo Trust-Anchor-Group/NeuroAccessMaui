@@ -80,6 +80,8 @@ namespace NeuroAccessMaui.Services.Nfc
 							XmlOutput.WriteStartDocument();
 							XmlOutput.WriteStartElement("SnifferOutput", "http://waher.se/Schema/SnifferOutput.xsd");
 
+							InMemoryXmlWriterSniffer.Information(Mrz);
+
 							using TravelDocumentsClient Client = new(IsoDep, DocInfo, Sniffers);
 
 							try
