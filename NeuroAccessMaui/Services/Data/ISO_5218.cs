@@ -41,7 +41,7 @@ namespace NeuroAccessMaui.Services.Data
 		{
 			if (genderByLetter is null)
 			{
-				Dictionary<string, ISO_5218_Gender> Temp = [];
+				Dictionary<string, ISO_5218_Gender> Temp = new(StringComparer.InvariantCultureIgnoreCase);
 
 				foreach (ISO_5218_Gender Rec in Genders)
 					Temp[Rec.Letter] = Rec;
