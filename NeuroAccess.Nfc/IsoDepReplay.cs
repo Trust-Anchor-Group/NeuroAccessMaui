@@ -190,21 +190,37 @@ namespace NeuroAccess.Nfc
 			throw Error("Information not found: " + Prefix, CommunicationLayer);
 		}
 
-		private static byte[] GetBin(XmlElement E)
+		/// <summary>
+		/// Gets BASE64-encoded binary data from a sniffer event.
+		/// </summary>
+		/// <param name="Event">Sniffer event.</param>
+		/// <returns>Binary data.</returns>
+		public static byte[] GetBin(XmlElement Event)
 		{
-			return Convert.FromBase64String(GetRows(E, false));
+			return Convert.FromBase64String(GetRows(Event, false));
 		}
 
-		private static string GetRows(XmlElement E)
+		/// <summary>
+		/// Gets text data from a sniffer event.
+		/// </summary>
+		/// <param name="Event">Sniffer event.</param>
+		/// <returns>Text data.</returns>
+		public static string GetRows(XmlElement Event)
 		{
-			return GetRows(E, true);
+			return GetRows(Event, true);
 		}
 
-		private static string GetRows(XmlElement E, bool MultiRow)
+		/// <summary>
+		/// Gets text data from a sniffer event.
+		/// </summary>
+		/// <param name="Event">Sniffer event.</param>
+		/// <param name="MultiRow">If text data retains line breaks if multiple rows are reported.</param>
+		/// <returns>Text data.</returns>
+		public static string GetRows(XmlElement Event, bool MultiRow)
 		{
 			StringBuilder sb = new();
 
-			foreach (XmlNode N in E.ChildNodes)
+			foreach (XmlNode N in Event.ChildNodes)
 			{
 				if (N is XmlElement E2 && E2.LocalName == "Row")
 				{
