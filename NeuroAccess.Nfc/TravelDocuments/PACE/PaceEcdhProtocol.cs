@@ -140,7 +140,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.PACE
 			if (Seed is null)
 				return this.curve!.GenerateSecret();
 
-			SHAKE256 H = new(this.curve!.BigIntegerBytes);
+			int DigestSizeBits = checked(this.curve!.BigIntegerBytes * 8);
+			SHAKE256 H = new(DigestSizeBits);
 			byte[] B = new byte[this.curve!.BigIntegerBytes];
 			System.Numerics.BigInteger D;
 			System.Numerics.BigInteger? Order;
