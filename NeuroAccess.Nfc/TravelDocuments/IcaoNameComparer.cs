@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace Paiwise.ShuftiPro
+namespace NeuroAccess.Nfc.TravelDocuments
 {
     public static class IcaoNameComparer
     {
