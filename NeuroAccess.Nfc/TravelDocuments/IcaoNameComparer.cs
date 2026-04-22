@@ -34,7 +34,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
             '<', '-', '\'', '’', '.', ',', '/', '\\', '_', '·'
         };
 
-        internal static bool AreNamesSimilar(string s1, string s2)
+        public static bool AreNamesSimilar(string s1, string s2)
         {
             if (s1 is null || s2 is null)
                 return string.Compare(s1, s2, true) == 0;
@@ -195,7 +195,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
             if (char.IsLetterOrDigit(ch))
             {
                 string s = ch.ToString();
-                string stripped = ShuftiProClient.RemoveDiacritics(s).Normalize(NormalizationForm.FormC).ToUpperInvariant();
+                string stripped = RemoveDiacritics(s).Normalize(NormalizationForm.FormC).ToUpperInvariant();
                 if (!string.IsNullOrEmpty(stripped) && IsAsciiLettersDigitsOrX(stripped))
                 {
                     fallback = stripped;
@@ -213,7 +213,34 @@ namespace NeuroAccess.Nfc.TravelDocuments
             return false;
         }
 
-        private static bool IsAsciiLettersDigitsOrX(string s)
+		/// <summary>
+		/// Removes diacritics from a string.
+		/// </summary>
+		/// <param name="s">String</param>
+		/// <returns>String with diacritics removed</returns>
+		public static string RemoveDiacritics(string s)
+		{
+			string FormD = s.Normalize(NormalizationForm.FormD);    // Diacritics become special characters
+			StringBuilder sb = new StringBuilder();
+
+			foreach (char ch in FormD)
+			{
+				UnicodeCategory Category = CharUnicodeInfo.GetUnicodeCategory(ch);
+				if (Category != UnicodeCategory.NonSpacingMark)
+				{
+					switch (ch)
+					{
+						case 'Đ': sb.Append('D'); break;
+						case 'đ': sb.Append('d'); break;
+						default: sb.Append(ch); break;
+					}
+				}
+			}
+
+			return sb.ToString().Normalize(NormalizationForm.FormC);
+		}
+
+		private static bool IsAsciiLettersDigitsOrX(string s)
         {
             foreach (char ch in s)
             {
