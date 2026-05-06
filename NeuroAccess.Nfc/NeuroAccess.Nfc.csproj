@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.7" />
-    <PackageReference Include="Waher.Content" Version="3.4.9" />
+    <PackageReference Include="Waher.Content" Version="3.4.10" />
 	  <PackageReference Include="Waher.Networking" Version="4.6.5" />
 	  <PackageReference Include="Waher.Runtime.Settings" Version="1.2.1" />
 	  <PackageReference Include="Waher.Security" Version="1.2.0" />
