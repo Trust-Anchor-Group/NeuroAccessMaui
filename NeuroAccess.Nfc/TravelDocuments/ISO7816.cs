@@ -1,4 +1,4 @@
-﻿namespace NeuroAccess.Nfc.TravelDocuments
+namespace NeuroAccess.Nfc.TravelDocuments
 {
 	/// <summary>
 	/// First byte of a status word.
@@ -127,6 +127,7 @@
 			public const byte Select = 0xA4;
 			public const byte ReadBinary = 0xB0;
 			public const byte ReadRecord = 0xB2;
+			public const byte GetResponse = 0xC0;
 			public const byte GetData = 0xCA;
 			public const byte PutData = 0xDA;
 			public const byte UpdateBinary = 0xD6;

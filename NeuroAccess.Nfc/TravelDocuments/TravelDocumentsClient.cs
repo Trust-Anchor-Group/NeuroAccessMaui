@@ -210,7 +210,10 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				ISO_7816.Classes.Basic,
 				ISO_7816.Instructions.Select,
 				0x00,	// P1 (Select master)
-				0x0c	// P2 (No File Control Information returned)
+				0x0c,	// P2 (No File Control Information returned)
+				0x02,	// Length of data
+				0x3f,
+				0x00
 			];
 
 			byte[] Response = await this.ExecuteCommand(Command);
@@ -280,6 +283,12 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 		private async Task<byte[]> ExecuteCommand(byte[] Command)
 		{
+			byte[] Response = await this.ExecuteCommandSingle(Command);
+			return await this.GetRemainingResponseData(Response);
+		}
+
+		private async Task<byte[]> ExecuteCommandSingle(byte[] Command)
+		{
 			if (!this.encrypted)
 				return await this.tagInterface.ExecuteCommand(Command, this);
 
@@ -295,8 +304,22 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			byte INS = Command[1];
 			byte P1 = Command[2];
 			byte P2 = Command[3];
-			byte Lc = Command[4];
-			byte Le = Lc + 5 < Command.Length ? Command[Lc + 5] : (byte)0;
+			byte Lc;
+			byte Le;
+
+			if (Command.Length == 5)
+			{
+				Lc = 0;
+				Le = Command[4];
+			}
+			else
+			{
+				Lc = Command[4];
+				if (5 + Lc > Command.Length)
+					throw new ArgumentException("Command data length exceeds command length.", nameof(Command));
+
+				Le = Lc + 5 < Command.Length ? Command[Lc + 5] : (byte)0;
+			}
 
 			byte[] Header =
 			[
@@ -604,6 +627,32 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			if (this.HasSniffers)
 				this.Information("Decrypted response: " + Hashes.BinaryToString(Response));
+
+			return Response;
+		}
+
+		private async Task<byte[]> GetRemainingResponseData(byte[] Response)
+		{
+			while (Response.Length >= 2 &&
+				Response[^2] == (byte)Iso7816StatusCategory.DataStillAvailable)
+			{
+				byte Le = Response[^1];
+				byte[] GetResponseCommand =
+				[
+					ISO_7816.Classes.Basic,
+					ISO_7816.Instructions.GetResponse,
+					0x00,
+					0x00,
+					Le
+				];
+
+				byte[] NextResponse = await this.ExecuteCommandSingle(GetResponseCommand);
+				byte[] CombinedResponse = new byte[Response.Length + NextResponse.Length - 2];
+
+				Buffer.BlockCopy(Response, 0, CombinedResponse, 0, Response.Length - 2);
+				Buffer.BlockCopy(NextResponse, 0, CombinedResponse, Response.Length - 2, NextResponse.Length);
+				Response = CombinedResponse;
+			}
 
 			return Response;
 		}
@@ -990,7 +1039,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					c >= 2 &&
 					Response[^2] == (byte)Iso7816StatusCategory.WrongLeField)
 				{
-					Command[4] = Response[^1];
+					Command[^1] = Response[^1];
 					Response = await this.ExecuteCommand(Command);
 
 					if (!this.CheckResponse(Response))
@@ -1000,7 +1049,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return new KeyValuePair<byte[]?, bool>(null, false);
 			}
 
-			bool More = Response[^1] == (byte)Iso7816StatusCategory.DataStillAvailable;
+			c = Response.Length;
+			bool More = Response[^2] == (byte)Iso7816StatusCategory.DataStillAvailable;
 			byte[] Data = new byte[c - 2];
 			Buffer.BlockCopy(Response, 0, Data, 0, c - 2);
 
@@ -1119,14 +1169,14 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 			/*
 			 * Contents of EF.CardAccess:
-			 * 
-			 * SecurityInfos ::= SET of SecurityInfo 
-			 * 
-			 * SecurityInfo ::= SEQUENCE 
+			 *
+			 * SecurityInfos ::= SET of SecurityInfo
+			 *
+			 * SecurityInfo ::= SEQUENCE
 			 * {
-			 *		protocol		OBJECT IDENTIFIER, 
-			 *		requiredData	ANY DEFINED BY protocol, 
-			 *		optionalData	ANY DEFINED BY protocol OPTIONAL 
+			 *		protocol		OBJECT IDENTIFIER,
+			 *		requiredData	ANY DEFINED BY protocol,
+			 *		optionalData	ANY DEFINED BY protocol OPTIONAL
 			 * }
 			*/
 
@@ -1469,7 +1519,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				EncodePublicKey(LocalPublicEphemeralKey),
 				"Get Remote Ephemeral Public Key",
 				false,  // More commands in chain expected
-				0x83,   // Terminal's Ephemeral Public Key 
+				0x83,   // Terminal's Ephemeral Public Key
 				0x84));  // Chip's Ephemeral Public Key
 		}
 
@@ -1652,7 +1702,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		{
 			// §4.2 1. https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
-			byte[]? Data = await this.DownloadFile(EF.CardAccess, "EF.CardAccess");
+			byte[]? Data = await this.TryDownloadCardAccessForAuthentication();
 
 			if (Data is not null &&
 				ASN1.TryDecodeDer(this, Data, out object? CardAccess) &&
@@ -1709,6 +1759,26 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			}
 
 			return AuthenticateResult.Success;
+		}
+
+		private async Task<byte[]?> TryDownloadCardAccessForAuthentication()
+		{
+			byte[]? Data = await this.DownloadFile(EF.CardAccess, "EF.CardAccess");
+			if (Data is not null)
+				return Data;
+
+			if (this.encrypted)
+				return Data;
+
+			this.Information("Retrying EF.CardAccess after explicit master file selection.");
+			if (!await this.SelectMaster())
+			{
+				this.Error("Unable to select the master file before reading EF.CardAccess.");
+				return Data;
+			}
+
+			Data = await this.DownloadFile(EF.CardAccess, "EF.CardAccess");
+			return Data;
 		}
 
 		/// <summary>
