@@ -46,7 +46,7 @@ namespace NeuroAccess.Nfc.Test
 		{
 			// Example from §D.2, Example 2, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
-			string Mrz = "I<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<\nL898902C<3UTO6908061F9406236<<<<<<<8";
+			string Mrz = "I<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<\nL898902C<3UTO6908061F9406236<<<<<<<2";
 			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 			Assert.AreEqual("I", Info!.DocumentType);
 			Assert.AreEqual("UTO", Info.IssuingState);
@@ -114,7 +114,7 @@ namespace NeuroAccess.Nfc.Test
 		{
 			// Example from §D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
-			string Mrz = "I<UTOL898902C<3<<<<<<<<<<<<<<<\n6908061F9406236UTO<<<<<<<<<<<1\nERIKSSON<<ANNA<MARIA<<<<<<<<<<";
+			string Mrz = "I<UTOL898902C<3<<<<<<<<<<<<<<<\n6908061F9406236UTO<<<<<<<<<<<2\nERIKSSON<<ANNA<MARIA<<<<<<<<<<";
 			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
 			Assert.AreEqual("I", Info!.DocumentType);
 			Assert.AreEqual("UTO", Info.IssuingState);
