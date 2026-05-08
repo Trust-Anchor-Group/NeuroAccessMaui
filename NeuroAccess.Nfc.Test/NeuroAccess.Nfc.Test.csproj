@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="MSTest" Version="4.2.1" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.7" />
-    <PackageReference Include="Waher.Content" Version="3.4.9" />
+    <PackageReference Include="Waher.Content" Version="3.4.10" />
     <PackageReference Include="Waher.Persistence" Version="1.19.0" />
     <PackageReference Include="Waher.Persistence.Files" Version="1.20.0" />
     <PackageReference Include="Waher.Persistence.Serialization.Compiled" Version="1.12.0" />

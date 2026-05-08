@@ -283,7 +283,7 @@
 
 		<PackageReference Include="EDaler" Version="3.1.3" />
 		<PackageReference Include="NeuroFeatures" Version="2.2.0" />
-		<PackageReference Include="Waher.Content" Version="3.4.9" />
+		<PackageReference Include="Waher.Content" Version="3.4.10" />
 		<PackageReference Include="Waher.Content.Images" Version="3.1.0" />
 		<PackageReference Include="Waher.Content.Markdown" Version="6.3.0" />
 		<PackageReference Include="Waher.Content.QR" Version="2.1.3" />
@@ -299,18 +299,18 @@
 		<PackageReference Include="Waher.Networking.UPnP" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP" Version="4.2.9" />
 		<PackageReference Include="Waher.Networking.XMPP.Avatar" Version="3.1.2" />
-		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="4.3.0" />
+		<PackageReference Include="Waher.Networking.XMPP.Concentrator" Version="4.4.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Contracts" Version="4.9.11" />
 		<PackageReference Include="Waher.Networking.XMPP.Control" Version="4.1.2" />
 		<PackageReference Include="Waher.Networking.XMPP.Geo" Version="1.0.1" />
-		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.2.10" />
+		<PackageReference Include="Waher.Networking.XMPP.HTTPX" Version="4.3.0" />
 		<PackageReference Include="Waher.Networking.XMPP.Mail" Version="3.1.0" />
 		<PackageReference Include="Waher.Networking.XMPP.P2P" Version="4.2.6" />
 		<PackageReference Include="Waher.Networking.XMPP.PEP" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Provisioning" Version="4.2.1" />
 		<PackageReference Include="Waher.Networking.XMPP.PubSub" Version="3.1.1" />
 		<PackageReference Include="Waher.Networking.XMPP.Push" Version="3.1.2" />
-		<PackageReference Include="Waher.Networking.XMPP.Sensor" Version="4.1.4" />
+		<PackageReference Include="Waher.Networking.XMPP.Sensor" Version="4.1.5" />
 		<PackageReference Include="Waher.Persistence" Version="1.19.0" />
 		<PackageReference Include="Waher.Persistence.FilesLW" Version="1.20.0" />
 		<PackageReference Include="Waher.Persistence.XmlLedger" Version="1.3.0" />
@@ -328,7 +328,7 @@
 		<PackageReference Include="Waher.Script.Persistence" Version="2.13.0" />
 		<PackageReference Include="Waher.Security" Version="1.2.0" />
 		<PackageReference Include="Waher.Security.JWS" Version="1.1.4" />
-		<PackageReference Include="Waher.Security.JWT" Version="1.5.5" />
+		<PackageReference Include="Waher.Security.JWT" Version="1.6.0" />
 		<!--
 		<ProjectReference Include="..\..\iotbroker\Waher.Networking.XMPP.EDaler\Waher.Networking.XMPP.EDaler.csproj" />
 		<ProjectReference Include="..\..\iotbroker\Waher.Networking.XMPP.NeuroFeatures\Waher.Networking.XMPP.NeuroFeatures.csproj" />
