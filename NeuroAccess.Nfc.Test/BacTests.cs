@@ -8,12 +8,12 @@ namespace NeuroAccess.Nfc.Test
 	public class BacTests
 	{
 		// Testing parsing of Machine-Readable string on identity documents, in accordance with ICAO Doc 9303
-		// Reference tests: §D, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+		// Reference tests: Appendix D, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 		[TestMethod]
 		public void Test_01_Parse_MRZ_TD2_9charsplus()
 		{
-			// Example from §D.2, Example 1, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+			// Example from Appendix D.2, Example 1, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 			string Mrz = "I<UTOSTEVENSON<<PETER<JOHN<<<<<<<<<<\nD23145890<UTO3407127M95071227349<<<8";
 			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
@@ -44,7 +44,7 @@ namespace NeuroAccess.Nfc.Test
 		[TestMethod]
 		public void Test_02_Parse_MRZ_TD2_9chars()
 		{
-			// Example from §D.2, Example 2, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+			// Example from Appendix D.2, Example 2, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 			string Mrz = "I<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<\nL898902C<3UTO6908061F9406236<<<<<<<2";
 			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
@@ -62,8 +62,8 @@ namespace NeuroAccess.Nfc.Test
 			Assert.AreEqual("940623", Info.ExpiryDate);
 			Assert.AreEqual("L898902C<369080619406236", Info.MRZ_Information);
 
-			// Example from §D.1, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
-			// Example from §D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+			// Example from Appendix D.1, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+			// Example from Appendix D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 			string KSeed = Hashes.BinaryToString(TravelDocumentsClient.BAC_KSeed(Info));
 			Console.Out.WriteLine("KSeed: " + KSeed);
@@ -81,7 +81,7 @@ namespace NeuroAccess.Nfc.Test
 		[TestMethod]
 		public void Test_03_Parse_MRZ_TD1_9charsplus()
 		{
-			// Example from §D.2, Example 3, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+			// Example from Appendix D.2, Example 3, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 			string Mrz = "I<UTOD23145890<7349<<<<<<<<<<<\n3407127M9507122UTO<<<<<<<<<<<2\nSTEVENSON<<PETER<JOHN<<<<<<<<<";
 			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
@@ -112,7 +112,7 @@ namespace NeuroAccess.Nfc.Test
 		[TestMethod]
 		public void Test_04_Parse_MRZ_TD1_9chars()
 		{
-			// Example from §D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+			// Example from Appendix D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 			string Mrz = "I<UTOL898902C<3<<<<<<<<<<<<<<<\n6908061F9406236UTO<<<<<<<<<<<2\nERIKSSON<<ANNA<MARIA<<<<<<<<<<";
 			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out DocumentInformation? Info));
@@ -146,7 +146,7 @@ namespace NeuroAccess.Nfc.Test
 		[TestMethod]
 		public void Test_05_Parse_MRZ()
 		{
-			// §3.1, ICAO 9303-3, https://www.icao.int/publications/Documents/9303_p3_cons_en.pdf
+			// Section 3.1, ICAO 9303-3, https://www.icao.int/publications/Documents/9303_p3_cons_en.pdf
 
 			string Mrz = "P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<\nL898902C36UTO7408122F1204159ZE184226B<<<<<10";
 			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out _));
@@ -155,7 +155,7 @@ namespace NeuroAccess.Nfc.Test
 		[TestMethod]
 		public void Test_06_Parse_MRZ()
 		{
-			// §B, ICAO 9303-5, https://www.icao.int/publications/Documents/9303_p5_cons_en.pdf
+			// Appendix B, ICAO 9303-5, https://www.icao.int/publications/Documents/9303_p5_cons_en.pdf
 
 			string Mrz = "I<UTOD231458907<<<<<<<<<<<<<<<\n7408122F1204159UTO<<<<<<<<<<<6\nERIKSSON<<ANNA<MARIA<<<<<<<<<<";
 			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out _));
@@ -164,17 +164,91 @@ namespace NeuroAccess.Nfc.Test
 		[TestMethod]
 		public void Test_07_Parse_MRZ()
 		{
-			// §B, ICAO 9303-6, https://www.icao.int/publications/Documents/9303_p6_cons_en.pdf
+			// Appendix B, ICAO 9303-6, https://www.icao.int/publications/Documents/9303_p6_cons_en.pdf
 
 			string Mrz = "I<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<\nD231458907UTO7408122F1204159<<<<<<<6";
 			Assert.IsTrue(MrzExtensions.ParseMrz(Mrz, out _));
 		}
 
 		[TestMethod]
-		public void Test_08_BAC_ChallengeResponse()
+		public void Test_08_Validate_MRZ_TD3_CheckDigits()
 		{
-			// Example from §D.3, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
-			// Example from §D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+			// Section 3.1, ICAO 9303-3, https://www.icao.int/publications/Documents/9303_p3_cons_en.pdf
+
+			string Mrz = "P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<\nL898902C36UTO7408122F1204159ZE184226B<<<<<10";
+			MrzValidationResult Result = MrzValidator.Validate(Mrz);
+
+			Assert.IsTrue(Result.IsParsed);
+			Assert.AreEqual(MrzLayout.Td3, Result.Layout);
+			Assert.IsTrue(Result.DocumentNumberCheckPassed);
+			Assert.IsTrue(Result.DateOfBirthCheckPassed);
+			Assert.IsTrue(Result.ExpiryCheckPassed);
+			Assert.IsTrue(Result.CompositeCheckPassed);
+			Assert.AreEqual(4, Result.RequiredCheckCount);
+			Assert.AreEqual(4, Result.PassedRequiredCheckCount);
+		}
+
+		[TestMethod]
+		public void Test_09_Validate_MRZ_TD1_CheckDigits()
+		{
+			// Example from Appendix D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+
+			string Mrz = "I<UTOL898902C<3<<<<<<<<<<<<<<<\n6908061F9406236UTO<<<<<<<<<<<2\nERIKSSON<<ANNA<MARIA<<<<<<<<<<";
+			MrzValidationResult Result = MrzValidator.Validate(Mrz);
+
+			Assert.IsTrue(Result.IsParsed);
+			Assert.AreEqual(MrzLayout.Td1, Result.Layout);
+			Assert.IsTrue(Result.DocumentNumberCheckPassed);
+			Assert.IsTrue(Result.DateOfBirthCheckPassed);
+			Assert.IsTrue(Result.ExpiryCheckPassed);
+			Assert.IsTrue(Result.CompositeCheckPassed);
+			Assert.AreEqual(4, Result.RequiredCheckCount);
+			Assert.AreEqual(4, Result.PassedRequiredCheckCount);
+		}
+
+		[TestMethod]
+		public void Test_10_Validate_MRZ_TD2_Rejects_Bad_Composite_Check()
+		{
+			// Valid base example from Appendix D.2, Example 2:
+			// https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+
+			string Mrz = "I<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<\nL898902C<3UTO6908061F9406236<<<<<<<1";
+			MrzValidationResult Result = MrzValidator.Validate(Mrz);
+
+			Assert.IsFalse(Result.IsParsed);
+			Assert.AreEqual(MrzLayout.Td2, Result.Layout);
+			Assert.IsTrue(Result.DocumentNumberCheckPassed);
+			Assert.IsTrue(Result.DateOfBirthCheckPassed);
+			Assert.IsTrue(Result.ExpiryCheckPassed);
+			Assert.IsFalse(Result.CompositeCheckPassed);
+			Assert.AreEqual(4, Result.RequiredCheckCount);
+			Assert.AreEqual(3, Result.PassedRequiredCheckCount);
+		}
+
+		[TestMethod]
+		public void Test_11_Validate_MRZ_TD3_Rejects_Bad_Document_Number_Check()
+		{
+			// Valid base example from Section 3.1, ICAO 9303-3:
+			// https://www.icao.int/publications/Documents/9303_p3_cons_en.pdf
+
+			string Mrz = "P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<\nL898902C37UTO7408122F1204159ZE184226B<<<<<10";
+			MrzValidationResult Result = MrzValidator.Validate(Mrz);
+
+			Assert.IsFalse(Result.IsParsed);
+			Assert.AreEqual(MrzLayout.Td3, Result.Layout);
+			Assert.IsFalse(Result.DocumentNumberCheckPassed);
+			Assert.IsTrue(Result.DateOfBirthCheckPassed);
+			Assert.IsTrue(Result.ExpiryCheckPassed);
+			Assert.IsFalse(Result.CompositeCheckPassed);
+			Assert.AreEqual(4, Result.RequiredCheckCount);
+			Assert.AreEqual(2, Result.PassedRequiredCheckCount);
+		}
+
+		[TestMethod]
+		public void Test_12_BAC_ChallengeResponse()
+		{
+			// Example from Appendix D.3, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
+			// Example from Appendix D.2, Example 4, https://www2023.icao.int/publications/Documents/9303_p11_cons_en.pdf
 
 			byte[] Challenge = Hashes.StringToBinary("4608F91988702212");
 			byte[] Rnd1 = Hashes.StringToBinary("781723860C06C226");
@@ -189,7 +263,7 @@ namespace NeuroAccess.Nfc.Test
 		}
 
 		[TestMethod]
-		public void Test_09_BAC_ChallengeResponse()
+		public void Test_13_BAC_ChallengeResponse()
 		{
 			// Ref: https://sourceforge.net/p/jmrtd/discussion/580232/thread/1131f402/
 
