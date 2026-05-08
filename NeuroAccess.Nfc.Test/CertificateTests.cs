@@ -7,6 +7,7 @@ using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.RevocationLists;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using Waher.Content;
+using Waher.Content.Getters;
 using Waher.Networking;
 using Waher.Networking.Sniffers;
 using Waher.Runtime.Collections;
@@ -587,5 +588,18 @@ namespace NeuroAccess.Nfc.Test
 			Assert.IsTrue(CertificateChain.VerifySignatures(Client, Chain));
 		}
 
+		[TestMethod]
+		public async Task Test_06_VerifyAllIcaoCertificates_HTTPS_Enforced()
+		{
+			WebGetter.EnforceHttps = true;
+			try
+			{
+				await this.Test_04_VerifyAllIcaoCertificates();
+			}
+			finally
+			{
+				WebGetter.EnforceHttps = false;
+			}
+		}
 	}
 }
