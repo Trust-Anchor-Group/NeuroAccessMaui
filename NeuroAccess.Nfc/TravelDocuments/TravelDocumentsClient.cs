@@ -38,7 +38,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	/// <param name="Sniffers">Optional sniffers.</param>
 	public sealed class TravelDocumentsClient(IIsoDepInterface TagInterface,
 		DocumentInformation DocumentInformation, byte[]? LocalKeySeed, params ISniffer[] Sniffers)
-		: CommunicationLayer(true, Sniffers), IDisposable
+		: CommunicationLayer(false, Sniffers), IDisposable
 	{
 		private static readonly Dictionary<ushort, IDataObject> dataObjects = GetDataObjects();
 		private ApplicationLevelInformation? appInfo;
