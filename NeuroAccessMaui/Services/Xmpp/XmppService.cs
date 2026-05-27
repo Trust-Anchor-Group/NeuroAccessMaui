@@ -907,60 +907,62 @@ namespace NeuroAccessMaui.Services.Xmpp
 							this.xmppClient?.PasswordHash ?? string.Empty,
 							this.xmppClient?.PasswordHashMethod ?? string.Empty);
 					}
-					if (ServiceRef.TagProfile.NeedsUpdating() && await this.DiscoverServices())
+					if (ServiceRef.TagProfile.NeedsUpdating())
+						await this.DiscoverServices();
+
+					if (this.contractsClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
 					{
-						if (this.contractsClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.LegalJid))
+						this.contractsClient = new ContractsClient(this.xmppClient, ServiceRef.TagProfile.LegalJid);
+						this.RegisterContractsEventHandlers();
+
+						if (!await this.contractsClient.LoadKeys(false))
 						{
-							this.contractsClient = new ContractsClient(this.xmppClient, ServiceRef.TagProfile.LegalJid);
-							this.RegisterContractsEventHandlers();
-
-							if (!await this.contractsClient.LoadKeys(false))
-							{
-								this.contractsClient.Dispose();
-								this.contractsClient = null;
-							}
-						}
-
-						if (this.fileUploadClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
-							this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
-
-						if (this.thingRegistryClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.RegistryJid))
-							this.thingRegistryClient = new ThingRegistryClient(this.xmppClient, ServiceRef.TagProfile.RegistryJid);
-
-						if (this.provisioningClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.RegistryJid))
-						{
-							this.provisioningClient = new ProvisioningClient(this.xmppClient, ServiceRef.TagProfile.ProvisioningJid)
-							{
-								ManagePresenceSubscriptionRequests = false
-							};
-
-							this.provisioningClient.CanControlQuestion += this.ProvisioningClient_CanControlQuestion;
-							this.provisioningClient.CanReadQuestion += this.ProvisioningClient_CanReadQuestion;
-							this.provisioningClient.IsFriendQuestion += this.ProvisioningClient_IsFriendQuestion;
-						}
-
-						if (this.eDalerClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.EDalerJid))
-						{
-							this.eDalerClient = new EDalerClient(this.xmppClient, this.contractsClient, ServiceRef.TagProfile.EDalerJid);
-							this.RegisterEDalerEventHandlers(this.eDalerClient);
-						}
-
-						if (this.neuroFeaturesClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.NeuroFeaturesJid))
-						{
-							this.neuroFeaturesClient = new NeuroFeaturesClient(this.xmppClient, this.contractsClient, ServiceRef.TagProfile.NeuroFeaturesJid);
-							this.RegisterNeuroFeatureEventHandlers(this.neuroFeaturesClient);
-						}
-
-						if (this.pushNotificationClient is null && ServiceRef.TagProfile.SupportsPushNotification)
-							this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
-
-						if (this.pepClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
-						{
-							this.pepClient = new PepClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
-							this.ReregisterPepEventHandlers(this.pepClient);
-							//this.RegisterPubSubEventHandlers(this.pubSubClient);
+							this.contractsClient.Dispose();
+							this.contractsClient = null;
 						}
 					}
+
+					if (this.fileUploadClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.HttpFileUploadJid) && (ServiceRef.TagProfile.HttpFileUploadMaxSize > 0))
+						this.fileUploadClient = new HttpFileUploadClient(this.xmppClient, ServiceRef.TagProfile.HttpFileUploadJid, ServiceRef.TagProfile.HttpFileUploadMaxSize);
+
+					if (this.thingRegistryClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.RegistryJid))
+						this.thingRegistryClient = new ThingRegistryClient(this.xmppClient, ServiceRef.TagProfile.RegistryJid);
+
+					if (this.provisioningClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.RegistryJid))
+					{
+						this.provisioningClient = new ProvisioningClient(this.xmppClient, ServiceRef.TagProfile.ProvisioningJid)
+						{
+							ManagePresenceSubscriptionRequests = false
+						};
+
+						this.provisioningClient.CanControlQuestion += this.ProvisioningClient_CanControlQuestion;
+						this.provisioningClient.CanReadQuestion += this.ProvisioningClient_CanReadQuestion;
+						this.provisioningClient.IsFriendQuestion += this.ProvisioningClient_IsFriendQuestion;
+					}
+
+					if (this.eDalerClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.EDalerJid))
+					{
+						this.eDalerClient = new EDalerClient(this.xmppClient, this.contractsClient, ServiceRef.TagProfile.EDalerJid);
+						this.RegisterEDalerEventHandlers(this.eDalerClient);
+					}
+
+					if (this.neuroFeaturesClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.NeuroFeaturesJid))
+					{
+						this.neuroFeaturesClient = new NeuroFeaturesClient(this.xmppClient, this.contractsClient, ServiceRef.TagProfile.NeuroFeaturesJid);
+						this.RegisterNeuroFeatureEventHandlers(this.neuroFeaturesClient);
+					}
+
+					if (this.pushNotificationClient is null && ServiceRef.TagProfile.SupportsPushNotification)
+						this.pushNotificationClient = new PushNotificationClient(this.xmppClient);
+
+					if (this.pepClient is null && !string.IsNullOrWhiteSpace(ServiceRef.TagProfile.PubSubJid))
+					{
+						this.pepClient = new PepClient(this.xmppClient, ServiceRef.TagProfile.PubSubJid);
+						this.ReregisterPepEventHandlers(this.pepClient);
+						//this.RegisterPubSubEventHandlers(this.pubSubClient);
+					}
+
+					await this.RefreshPendingIdentityApplicationsAsync();
 
 					// Check is xmpp password needs updating.
 					if (ServiceRef.TagProfile.GetXmppPasswordNeedsUpdating())
@@ -3200,6 +3202,108 @@ namespace NeuroAccessMaui.Services.Xmpp
 		}
 
 		/// <summary>
+		/// Refreshes locally persisted pending identity applications from the legal service.
+		/// </summary>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		private async Task RefreshPendingIdentityApplicationsAsync()
+		{
+			if (this.contractsClient is null)
+				return;
+
+			IEnumerable<KycReference> References;
+
+			try
+			{
+				References = await Database.Find<KycReference>();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return;
+			}
+
+			HashSet<string> RefreshedIdentityIds = new(StringComparer.OrdinalIgnoreCase);
+			foreach (KycReference Reference in References
+				.Where(Candidate =>
+					!string.IsNullOrEmpty(Candidate.CreatedIdentityId) &&
+					(Candidate.CreatedIdentityState is null || Candidate.CreatedIdentityState == IdentityState.Created))
+				.OrderByDescending(Candidate => Candidate.UpdatedUtc))
+			{
+				string IdentityId = Reference.CreatedIdentityId!;
+				if (!RefreshedIdentityIds.Add(IdentityId))
+					continue;
+
+				LegalIdentity Identity;
+
+				try
+				{
+					Identity = await this.contractsClient.GetLegalIdentityAsync(IdentityId);
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex);
+					continue;
+				}
+
+				bool StateChanged = Reference.CreatedIdentityState != Identity.State;
+				if (StateChanged || Reference.CreatedIdentityState is null)
+				{
+					try
+					{
+						await ServiceRef.KycService.UpdateSubmissionStateAsync(Reference, Identity);
+					}
+					catch (Exception Ex)
+					{
+						ServiceRef.LogService.LogException(Ex);
+					}
+				}
+
+				await this.RefreshIdentityApplicationProfileAsync(Identity);
+
+				if (StateChanged && ServiceRef.NavigationService.CurrentPage is ApplicationsPage AppPage &&
+					AppPage.BindingContext is ApplicationsViewModel Model)
+				{
+					MainThread.BeginInvokeOnMainThread(Model.Loader.Reload);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Updates the profile identity application cache from a refreshed legal identity.
+		/// </summary>
+		/// <param name="Identity">The refreshed legal identity.</param>
+		/// <returns>A task representing the asynchronous operation.</returns>
+		private static async Task RefreshIdentityApplicationProfileAsync(LegalIdentity Identity)
+		{
+			LegalIdentity? CurrentApplication = ServiceRef.TagProfile.IdentityApplication;
+
+			if (Identity.IsApproved())
+			{
+				if (ServiceRef.TagProfile.LegalIdentity is null ||
+					ServiceRef.TagProfile.LegalIdentity.Id != Identity.Id)
+				{
+					await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
+				}
+
+				if (CurrentApplication is not null && CurrentApplication.Id == Identity.Id)
+					await ServiceRef.TagProfile.SetIdentityApplication(null, false);
+
+				return;
+			}
+
+			if (Identity.IsDiscarded())
+			{
+				if (CurrentApplication is not null && CurrentApplication.Id == Identity.Id)
+					await ServiceRef.TagProfile.SetIdentityApplication(null, false);
+
+				return;
+			}
+
+			if (CurrentApplication is null || CurrentApplication.Id == Identity.Id)
+				await ServiceRef.TagProfile.SetIdentityApplication(Identity, false);
+		}
+
+		/// <summary>
 		/// Checks if a legal identity is in the contacts list.
 		/// </summary>
 		/// <param name="legalIdentityId">The id of the legal identity to retrieve.</param>
@@ -3301,12 +3405,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			{
 				KycReference? Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), e.Identity.Id));
 				if (Ref is not null)
-				{
-					Ref.UpdatedUtc = DateTime.UtcNow;
-					Ref.CreatedIdentityState = e.Identity.State;
-					await Database.Update(Ref);
-					await Database.Provider.Flush();
-				}
+					await ServiceRef.KycService.UpdateSubmissionStateAsync(Ref, e.Identity);
 
 				if (ServiceRef.NavigationService.CurrentPage is ApplicationsPage AppPage)
 				{
