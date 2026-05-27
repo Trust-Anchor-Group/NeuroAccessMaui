@@ -372,6 +372,7 @@ namespace NeuroAccessMaui.Links
 							{
 								ServiceRef.TagProfile.SetAccount(AccountName, client.PasswordHash, client.PasswordHashMethod);
 								SelectedId = string.Empty;
+								ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
 							}
 
 							if (!string.IsNullOrEmpty(Pin))

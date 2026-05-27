@@ -233,6 +233,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding
                                 ServiceRef.LogService.LogInformational("No identity selected; storing account only.");
                                 ServiceRef.TagProfile.SetAccount(accountName, client.PasswordHash, client.PasswordHashMethod);
                                 SelectedId = string.Empty;
+                                ServiceRef.TagProfile.SetXmppPasswordNeedsUpdating(true);
                             }
 
                             if (!string.IsNullOrEmpty(pin))
