@@ -1,0 +1,13 @@
+ICAO Part 3 Matrix Notice
+=========================
+
+matrix.xml is a compact test matrix generated from a local XML extraction of:
+
+RF Protocol and Application Test Standard for eMRTD - Part 3: Tests for
+Application Protocol and Logical Data Structure
+
+Source version/date: 3.2, October 17, 2025.
+
+The XML matrix is a convenience artifact for automated regression coverage. It
+does not replace the normative ICAO document, and it intentionally excludes the
+full PDF text and raw extracted blocks.

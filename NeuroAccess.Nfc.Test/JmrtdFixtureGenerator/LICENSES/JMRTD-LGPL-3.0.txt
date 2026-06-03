@@ -1,0 +1,8 @@
+JMRTD is licensed under the GNU Lesser General Public License, version 3 or
+later.
+
+The generator restores JMRTD from Maven Central for manual fixture generation
+only. No JMRTD jars or source files are committed in this repository.
+
+License text: https://www.gnu.org/licenses/lgpl-3.0.txt
+Project: https://jmrtd.org/

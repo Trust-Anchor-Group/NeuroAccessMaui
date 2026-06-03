@@ -75,6 +75,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 				return false;
 			}
 
+			if (Modulus <= BigInteger.Zero ||
+				Exponent <= BigInteger.Zero)
+			{
+				return false;
+			}
+
 			this.modulus = Modulus;
 			this.exponent = Exponent;
 

@@ -1,0 +1,19 @@
+ICAO ISO/IEC 39794-5 eMRTD Application Profile Test Data
+
+This directory contains DG2 silver dataset files downloaded from:
+https://github.com/ICAO-TRIP-ISO-WG3/39794-5-AP
+
+Files:
+- DG2 Silver Dataset (Mandatory Fields Only).dat
+  SHA-256: EA2E4070B6DF3DBF777A872B8A4DC9C573CBB6987D165A3D3AE2C626D620D68F
+- DG2 Silver Dataset (All Fields).dat
+  SHA-256: 0B63E9FE8DDE699D3BE7EEBEED754D722E4E73670039ED5237C293D56BC70034
+- ASN1/ID-ICAO-ISO-IEC-39794-1-ed-1-v1.asn
+  SHA-256: 931F80D7E1B47FC68917B8233F1B71B549B6F95A922B6AA7702BB084D1D76623
+- ASN1/ID-ICAO-ISO-IEC-39794-5-ed-1-v1.asn
+  SHA-256: 30CAEF3CB56A5097776261443103031291C895DD1D14CF89F6B11D0FF4A0E798
+
+The ASN.1 schema files are included to retain the upstream schema notices,
+conditions, and disclaimers from the ICAO/ISO/IEC profile material used when
+developing the ISO/IEC 39794 parser and tests. See the vendored ASN.1 files for
+the complete notice text.

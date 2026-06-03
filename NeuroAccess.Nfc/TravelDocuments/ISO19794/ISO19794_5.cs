@@ -137,8 +137,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.ISO19794
 				FaceImageType FaceImageType = (FaceImageType)FaceImageTypeRaw;
 				ImageDataType ImageDataType = (ImageDataType)ImageDataTypeRaw;
 
-				if (Version < 3 && ImageDataType == ImageDataType.Jpeg)
-					ImageDataType = ImageDataType.Jpeg2000;
+				if (Version < 3)
+				{
+					ImageDataType = ImageDataTypeRaw switch
+					{
+						0 => ImageDataType.Jpeg,
+						1 => ImageDataType.Jpeg2000,
+						_ => ImageDataType
+					};
+				}
 
 				if (Version >= 3)
 				{

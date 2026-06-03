@@ -1,0 +1,47 @@
+{
+  "generator": "JmrtdFixtureGenerator",
+  "generatorVersion": "1.0.0",
+  "generatorSourceSha256": "c16ea428091d29aeb4680567efae5a6898565a52b028690e12f48113a5058fac",
+  "jmrtdVersion": "0.8.6",
+  "synthetic": true,
+  "dg2Encoding": "ISO19794",
+  "imageDataType": "JPEG",
+  "ldsVersion": "1.8",
+  "sodDigestAlgorithm": "SHA-256",
+  "sodSignatureAlgorithm": "SHA256withRSA",
+  "signerKeyEncoding": "RSA-2048",
+  "documentNumber": "NA256764",
+  "primaryIdentifier": "SPECIMEN",
+  "secondaryIdentifier": "ALICE",
+  "birthDate": "1990-01-01",
+  "expiryDate": "2035-01-01",
+  "nationality": "UTO",
+  "gender": "F",
+  "expectedFaceWidth": 320,
+  "expectedFaceHeight": 240,
+  "mrz": "P<UTOSPECIMEN<<ALICE<<<<<<<<<<<<<<<<<<<<<<<<\\nNA256764<7UTO9001011F3501014<<<<<<<<<<<<<<<2\\n",
+  "expectedDataGroups": [1, 2],
+  "presenceOnlySyntheticFiles": [],
+  "files": {
+    "EF.DG1.bin": {
+      "length": 93,
+      "sha256": "e20b6b93f779ce1b75a96a769d15f5b6f6162da5d3d90172029b87cd19a5ad8c"
+    },
+    "EF.DG2.bin": {
+      "length": 99,
+      "sha256": "e576a8d2d181b617b506fa225de6dc2b8d416c079ff25330dce96497f405e34d"
+    },
+    "EF.COM.bin": {
+      "length": 22,
+      "sha256": "5b7e896e25253a56198188253434c781436caa97dbe72db332c274081f50fabe"
+    },
+    "EF.SOD.bin": {
+      "length": 1355,
+      "sha256": "e255bbe2553710a2c0e9cf92d57a9ec34f344c729856891ad616f392aa38b535"
+    }
+  },
+  "sodDataGroupHashes": {
+    "DG1": "e20b6b93f779ce1b75a96a769d15f5b6f6162da5d3d90172029b87cd19a5ad8c",
+    "DG2": "e576a8d2d181b617b506fa225de6dc2b8d416c079ff25330dce96497f405e34d"
+  }
+}

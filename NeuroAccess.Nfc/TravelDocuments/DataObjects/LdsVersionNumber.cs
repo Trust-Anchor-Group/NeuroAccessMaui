@@ -23,10 +23,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
 		/// <param name="Version">Version number.</param>
-		public LdsVersionNumber(byte[] Value, double Version)
+		/// <param name="MajorVersion">Major version number.</param>
+		/// <param name="MinorVersion">Minor version number.</param>
+		public LdsVersionNumber(byte[] Value, double Version, int MajorVersion, int MinorVersion)
 			: base(Value)
 		{
 			this.Version = Version;
+			this.MajorVersion = MajorVersion;
+			this.MinorVersion = MinorVersion;
 		}
 
 		/// <summary>
@@ -40,6 +44,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		public double Version { get; }
 
 		/// <summary>
+		/// Major version number.
+		/// </summary>
+		public int MajorVersion { get; }
+
+		/// <summary>
+		/// Minor version number.
+		/// </summary>
+		public int MinorVersion { get; }
+
+		/// <summary>
 		/// Tries to parse a binary representation of the data object.
 		/// </summary>
 		/// <param name="Value">Binary representation</param>
@@ -51,15 +65,17 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		{
 			if (Value.Length == 4)
 			{
-				string MajorVersion = TrimLeadingZeroes(Encoding.ASCII.GetString(Value, 0, 2));
-				string MinorVersion = TrimLeadingZeroes(Encoding.ASCII.GetString(Value, 2, 2));
+				string MajorVersionText = TrimLeadingZeroes(Encoding.ASCII.GetString(Value, 0, 2));
+				string MinorVersionText = TrimLeadingZeroes(Encoding.ASCII.GetString(Value, 2, 2));
 
-				Client.Information("LDS version: " + MajorVersion + "." + MinorVersion);
+				Client.Information("LDS version: " + MajorVersionText + "." + MinorVersionText);
 
-				if (double.TryParse(MajorVersion + "." + MinorVersion,
-					NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double d))
+				if (double.TryParse(MajorVersionText + "." + MinorVersionText,
+					NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double Version) &&
+					int.TryParse(MajorVersionText, NumberStyles.Integer, CultureInfo.InvariantCulture, out int MajorVersion) &&
+					int.TryParse(MinorVersionText, NumberStyles.Integer, CultureInfo.InvariantCulture, out int MinorVersion))
 				{
-					Parsed = new LdsVersionNumber(Value, d);
+					Parsed = new LdsVersionNumber(Value, Version, MajorVersion, MinorVersion);
 					return true;
 				}
 			}
