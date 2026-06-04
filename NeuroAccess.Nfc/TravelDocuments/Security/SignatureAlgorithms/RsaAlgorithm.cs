@@ -20,7 +20,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// </summary>
 		/// <param name="Data">Data being signed.</param>
 		/// <param name="Signature">Digital signature.</param>
-		/// <param name="PublicKeyKey">Public Key of the signing body.</param>
+		/// <param name="PublicKey">Public Key of the signing body.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
 		public override bool VerifySignature(byte[] Data, byte[] Signature, IPublicKey PublicKey,
