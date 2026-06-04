@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using NeuroAccess.Nfc.TravelDocuments.Security.FieldTypes;
@@ -49,13 +50,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 				if (EcParameters.Length < 5 || EcParameters.Length > 6)
 					return false;
 
-				if (EcParameters[0] is not BigInteger Version ||
+				if (EcParameters.FirstElement is not BigInteger Version ||
 					Version < int.MinValue ||
 					Version > int.MaxValue ||
 					EcParameters[1] is not FieldType Field ||
 					EcParameters[2] is not Vector Curve ||
 					Curve.Length < 2 ||        // Curve may have an optional third parameter: seed, a BIT STRING, which is not use in the signature validation, but available for documentation, if available.
-					Curve[0] is not byte[] A ||
+					Curve.FirstElement is not byte[] A ||
 					Curve[1] is not byte[] B ||
 					EcParameters[3] is not byte[] BasePoint ||
 					EcParameters[4] is not BigInteger Order)
@@ -250,5 +251,26 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 		/// Public Key point.
 		/// </summary>
 		public PointOnCurve PublicKey => this.publicKey ?? new PointOnCurve();
+
+		/// <summary>
+		/// Gets parsed parameters from the public key definition, if available.
+		/// </summary>
+		/// <param name="Parameters">Dictionary to receive parsed parameters.</param>
+		public override void GetParsedParameters(Dictionary<string, object?> Parameters)
+		{
+			if (this.namedCurve is not null)
+				Parameters["NamedCurve"] = this.namedCurve.GetType().FullName;
+
+			this.field?.GetParsedParameters(Parameters);
+
+			Parameters["A"] = this.a;
+			Parameters["B"] = this.b;
+			Parameters["Order"] = this.order;
+			Parameters["CoFactor"] = this.coFactor;
+			Parameters["G.X"] = this.basePoint.X;
+			Parameters["G.Y"] = this.basePoint.Y;
+			Parameters["X"] = this.publicKey?.X;
+			Parameters["Y"] = this.publicKey?.Y;
+		}
 	}
 }

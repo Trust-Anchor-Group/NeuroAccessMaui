@@ -44,7 +44,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				return null;
 			}
 
-			if (AlgorithmIdentifier[0] is not ISignatureAlgorithm Algorithm)
+			if (AlgorithmIdentifier.FirstElement is not ISignatureAlgorithm Algorithm)
 			{
 				Client?.Error("Signature algorithm not supported. " + AlgorithmIdentifier[0]?.ToString());
 				return null;

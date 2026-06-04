@@ -65,7 +65,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			if (CertificateListVector.Length != 3)
 				return false;
 
-			if (CertificateListVector[0] is not Vector TbsCertList)
+			if (CertificateListVector.FirstElement is not Vector TbsCertList)
 				return false;
 
 			if (CertificateListVector[1] is not Vector AlgorithmIdentifier)

@@ -63,9 +63,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 
 			if (i < c)
 			{
-				if (TbsCert[0] is not System.Numerics.BigInteger V)
+				if (TbsCert.FirstElement is not System.Numerics.BigInteger V)
 				{
-					if (TbsCert[0] is not Vector VersionVector ||
+					if (TbsCert.FirstElement is not Vector VersionVector ||
 						VersionVector.Length != 1 ||
 						VersionVector.FirstElement is not System.Numerics.BigInteger V2)
 					{

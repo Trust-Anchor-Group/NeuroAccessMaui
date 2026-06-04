@@ -1,5 +1,4 @@
-﻿using NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms;
-using Waher.Networking;
+﻿using System.Collections.Generic;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 {
@@ -14,5 +13,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 		/// <param name="PublicKey">Security information used to set the public key.</param>
 		/// <returns>If successful in setting the public key.</returns>
 		bool SetPublicKey(object? PublicKey);
+
+		/// <summary>
+		/// Gets parsed parameters from the public key definition, if available.
+		/// </summary>
+		/// <param name="Parameters">Dictionary to receive parsed parameters.</param>
+		public abstract void GetParsedParameters(Dictionary<string, object?> Parameters);
 	}
 }

@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 {
@@ -69,7 +70,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 			}
 
 			if (RsaParameters.Length != 2 ||
-				RsaParameters[0] is not BigInteger Modulus ||
+				RsaParameters.FirstElement is not BigInteger Modulus ||
 				RsaParameters[1] is not BigInteger Exponent)
 			{
 				return false;
@@ -79,6 +80,16 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys
 			this.exponent = Exponent;
 
 			return true;
+		}
+
+		/// <summary>
+		/// Gets parsed parameters from the public key definition, if available.
+		/// </summary>
+		/// <param name="Parameters">Dictionary to receive parsed parameters.</param>
+		public override void GetParsedParameters(Dictionary<string, object?> Parameters)
+		{
+			Parameters["Modulus"] = this.modulus;
+			Parameters["Exponent"] = this.exponent;
 		}
 	}
 }

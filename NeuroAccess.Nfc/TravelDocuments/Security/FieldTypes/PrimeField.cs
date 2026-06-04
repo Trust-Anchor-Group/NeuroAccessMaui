@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 namespace NeuroAccess.Nfc.TravelDocuments.Security.FieldTypes
 {
@@ -57,5 +58,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.FieldTypes
 		/// Prime number used to define the prime field.
 		/// </summary>
 		public BigInteger Prime => this.prime!.Value;
+
+		/// <summary>
+		/// Gets parsed parameters from the field type definition, if available.
+		/// </summary>
+		/// <param name="Parameters">Dictionary to receive parsed parameters.</param>
+		public override void GetParsedParameters(Dictionary<string, object?> Parameters)
+		{
+			Parameters["p"] = this.prime;
+		}
 	}
 }

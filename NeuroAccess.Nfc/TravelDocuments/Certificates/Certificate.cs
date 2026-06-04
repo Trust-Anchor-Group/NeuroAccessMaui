@@ -59,7 +59,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Certificates
 			if (CertificateVector.Length != 3)
 				return false;
 
-			if (CertificateVector[0] is not Vector TbsCert)
+			if (CertificateVector.FirstElement is not Vector TbsCert)
 				return false;
 
 			if (CertificateVector[1] is not ISignatureAlgorithm IssuerSignatureAlgorithm)

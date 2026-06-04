@@ -75,7 +75,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 			int i = 0;
 			int? Version = null;
 
-			if (i < c && TbsCertList[0] is System.Numerics.BigInteger V)
+			if (i < c && TbsCertList.FirstElement is System.Numerics.BigInteger V)
 			{
 				if (V < int.MinValue || V > int.MaxValue)
 					return false;
@@ -117,7 +117,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 				if (d < 2)
 					return false;
 
-				if (RevokedCertificate[0] is not System.Numerics.BigInteger SerialNumber)
+				if (RevokedCertificate.FirstElement is not System.Numerics.BigInteger SerialNumber)
 					return false;
 
 				if (RevokedCertificate[1] is not DateTimeOffset Timestamp)
@@ -134,7 +134,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.RevocationLists
 					{
 						if (Extension is Vector ExtensionSequence &&
 							ExtensionSequence.Length >= 2 &&
-							ExtensionSequence[0] is string ExtensionOid &&
+							ExtensionSequence.FirstElement is string ExtensionOid &&
 							ExtensionOid == "2.5.29.21" &&
 							ExtensionSequence[1] is byte[] ExtensionBin &&
 							ExtensionBin.Length > 0)

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Numerics;
-using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json.Serialization;
 using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
 using NeuroAccess.Nfc.TravelDocuments.Security.MaskGenerationFunctions;
 using NeuroAccess.Nfc.TravelDocuments.Security.PublicKeys;
@@ -56,15 +54,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			if (c >= 1)
 			{
-				if (RsaSsaPssParameters[0] is not Vector HashVector ||
+				if (RsaSsaPssParameters.FirstElement is not Vector HashVector ||
 					HashVector.Length < 1)
 				{
 					return false;
 				}
 
-				if (HashVector[0] is not HashFunction HashFunction)
+				if (HashVector.FirstElement is not HashFunction HashFunction)
 				{
-					if (HashVector[0] is Vector v &&
+					if (HashVector.FirstElement is Vector v &&
 						v.Length == 1 &&
 						v.FirstElement is HashFunction HashFunction2)
 					{
@@ -80,7 +78,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				{
 					if (RsaSsaPssParameters[1] is not Vector MaskGenerationFunctionVector ||
 						MaskGenerationFunctionVector.Length < 1 ||
-						MaskGenerationFunctionVector[0] is not MaskGenerationFunction MaskGenerationFunction)
+						MaskGenerationFunctionVector.FirstElement is not MaskGenerationFunction MaskGenerationFunction)
 					{
 						return false;
 					}
@@ -92,7 +90,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				{
 					if (RsaSsaPssParameters[2] is not Vector SaltLengthVector ||
 						SaltLengthVector.Length < 1 ||
-						SaltLengthVector[0] is not System.Numerics.BigInteger SaltLength ||
+						SaltLengthVector.FirstElement is not BigInteger SaltLength ||
 						SaltLength < int.MinValue ||
 						SaltLength > int.MaxValue)
 					{
@@ -105,7 +103,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 					{
 						if (RsaSsaPssParameters[3] is not Vector TrailerFieldVector ||
 							TrailerFieldVector.Length < 1 ||
-							TrailerFieldVector[0] is not System.Numerics.BigInteger TrailerField ||
+							TrailerFieldVector.FirstElement is not BigInteger TrailerField ||
 							TrailerField < int.MinValue ||
 							TrailerField > int.MaxValue)
 						{

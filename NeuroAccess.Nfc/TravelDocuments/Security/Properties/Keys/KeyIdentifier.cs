@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.Keys
+﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.Keys
 {
 	public abstract class KeyIdentifier : GeneralName
 	{

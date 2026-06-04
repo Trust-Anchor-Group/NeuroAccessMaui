@@ -38,7 +38,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 			if (SecurityInfo.Length < 3)
 				return false;
 
-			if (SecurityInfo[0] is not System.Numerics.BigInteger Version)
+			if (SecurityInfo.FirstElement is not System.Numerics.BigInteger Version)
 				return false;
 
 			if (SecurityInfo[1] is not Vector HashFunctions)
@@ -65,7 +65,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security
 				if (Item is null ||
 					Item is not Vector ItemArray ||
 					ItemArray.Length < 2 ||
-					ItemArray[0] is not System.Numerics.BigInteger DataGroup ||
+					ItemArray.FirstElement is not System.Numerics.BigInteger DataGroup ||
 					DataGroup < int.MinValue || DataGroup > int.MaxValue ||
 					ItemArray[1] is not byte[] Digest)
 				{

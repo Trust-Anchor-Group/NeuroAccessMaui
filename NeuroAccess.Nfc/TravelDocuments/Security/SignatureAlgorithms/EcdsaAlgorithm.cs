@@ -64,7 +64,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 			if (!ASN1.TryDecodeDer(Client, Signature, out object? Obj) ||
 				Obj is not Vector SignatureVector ||
 				SignatureVector.Length != 2 ||
-				SignatureVector[0] is not System.Numerics.BigInteger R ||
+				SignatureVector.FirstElement is not System.Numerics.BigInteger R ||
 				SignatureVector[1] is not System.Numerics.BigInteger S)
 			{
 				if (HasSniffer)
