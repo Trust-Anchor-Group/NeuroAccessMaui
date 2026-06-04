@@ -61,7 +61,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		{
 			Parsed = null;
 
-			if ((Client.AppInfo?.LdsVersion ?? 0) >= 1.8)
+			if (Client.AppInfo?.HasAtLeastLdsVersion(1, 8) ?? false)
 			{
 				try
 				{
@@ -77,7 +77,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 
 					// First use platform/OS-independent signature validation implementation.
 
-					if (SignedData.CheckSignature(false, Client))	// No need to validate certificate at this point, as it is validated when the certificate chain is validated.
+					if (SignedData.CheckSignature(false, Client))   // No need to validate certificate at this point, as it is validated when the certificate chain is validated.
 					{
 						Content = SignedData.Data.EncapsulatedContent;
 						ContentOid = SignedData.Data.EncapsulatedContentOid;

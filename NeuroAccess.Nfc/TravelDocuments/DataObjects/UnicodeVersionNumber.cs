@@ -22,12 +22,15 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// Unicode Version Number
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
-		/// <param name="Version">Version number.</param>
+		/// <param name="MajorVersion">Major version number.</param>
+		/// <param name="MinorVersion">Minor version number.</param>
 		/// <param name="Release">Release</param>
-		public UnicodeVersionNumber(byte[] Value, double Version, int Release)
+		public UnicodeVersionNumber(byte[] Value, int MajorVersion, int MinorVersion,
+			int Release)
 			: base(Value)
 		{
-			this.Version = Version;
+			this.MajorVersion = MajorVersion;
+			this.MinorVersion = MinorVersion;
 			this.Release = Release;
 		}
 
@@ -37,9 +40,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		public override ushort Tag => 0x5f36;
 
 		/// <summary>
-		/// Parsed version number.
+		/// Parsed major version number.
 		/// </summary>
-		public double Version { get; }
+		public int MajorVersion { get; }
+
+		/// <summary>
+		/// Parsed minor version number.
+		/// </summary>
+		public int MinorVersion { get; }
 
 		/// <summary>
 		/// Release number.
@@ -65,12 +73,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 				Client.Information("Unicode version: " + MajorVersion + "." + MinorVersion +
 					"." + ReleaseVersion);
 
-				if (double.TryParse(MajorVersion + "." + MinorVersion,
-					NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double d) &&
-					int.TryParse(ReleaseVersion, NumberStyles.Integer, CultureInfo.InvariantCulture,
-						out int i))
+				if (int.TryParse(MajorVersion, out int MajorVersionInt) &&
+					int.TryParse(MinorVersion, out int MinorVersionInt) &&
+					int.TryParse(ReleaseVersion, out int ReleaseVersionInt))
 				{
-					Parsed = new UnicodeVersionNumber(Value, d, i);
+					Parsed = new UnicodeVersionNumber(Value, MajorVersionInt, MinorVersionInt, ReleaseVersionInt);
 					return true;
 				}
 			}

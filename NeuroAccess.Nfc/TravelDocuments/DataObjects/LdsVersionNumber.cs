@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Text;
 using Waher.Security;
 
@@ -22,11 +21,13 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// LDS Version Number
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
-		/// <param name="Version">Version number.</param>
-		public LdsVersionNumber(byte[] Value, double Version)
+		/// <param name="MajorVersion">Major version number.</param>
+		/// <param name="MinorVersion">Minor version number.</param>
+		public LdsVersionNumber(byte[] Value, int MajorVersion, int MinorVersion)
 			: base(Value)
 		{
-			this.Version = Version;
+			this.MajorVersion = MajorVersion;
+			this.MinorVersion = MinorVersion;
 		}
 
 		/// <summary>
@@ -35,9 +36,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		public override ushort Tag => 0x5f01;
 
 		/// <summary>
-		/// Parsed version number.
+		/// Parsed major version number.
 		/// </summary>
-		public double Version { get; }
+		public int MajorVersion { get; }
+
+		/// <summary>
+		/// Parsed minor version number.
+		/// </summary>
+		public int MinorVersion { get; }
 
 		/// <summary>
 		/// Tries to parse a binary representation of the data object.
@@ -56,10 +62,10 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 
 				Client.Information("LDS version: " + MajorVersion + "." + MinorVersion);
 
-				if (double.TryParse(MajorVersion + "." + MinorVersion,
-					NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double d))
+				if (int.TryParse(MajorVersion, out int MajorVersionInt) &&
+					int.TryParse(MinorVersion, out int MinorVersionInt))
 				{
-					Parsed = new LdsVersionNumber(Value, d);
+					Parsed = new LdsVersionNumber(Value, MajorVersionInt, MinorVersionInt);
 					return true;
 				}
 			}

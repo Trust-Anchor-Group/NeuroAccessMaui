@@ -19,14 +19,19 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// Application-Level Information. Reference: §4.6.1, EF.COM, ICAO Doc 9303-10, Table 35.
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
-		/// <param name="LdsVersion">LDS Version</param>
-		/// <param name="UnicodeVersion">Unicode Version</param>
-		public ApplicationLevelInformation(byte[] Value, double LdsVersion, double UnicodeVersion,
+		/// <param name="LdsMajorVersion">LDS Major Version</param>
+		/// <param name="LdsMinorVersion">LDS Minor Version</param>
+		/// <param name="UnicodeMajorVersion">Unicode Major Version</param>
+		/// <param name="UnicodeMinorVersion">Unicode Minor Version</param>
+		public ApplicationLevelInformation(byte[] Value, int LdsMajorVersion,
+			int LdsMinorVersion, int UnicodeMajorVersion, int UnicodeMinorVersion,
 			TagList? TagList)
 			: base(Value)
 		{
-			this.LdsVersion = LdsVersion;
-			this.UnicodeVersion = UnicodeVersion;
+			this.LdsMajorVersion = LdsMajorVersion;
+			this.LdsMinorVersion = LdsMinorVersion;
+			this.UnicodeMajorVersion = UnicodeMajorVersion;
+			this.UnicodeMinorVersion = UnicodeMinorVersion;
 			this.TagList = TagList;
 		}
 
@@ -36,14 +41,24 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		public override ushort Tag => 0x60;
 
 		/// <summary>
-		/// LDS Version
+		/// LDS Major Version
 		/// </summary>
-		public double LdsVersion { get; }
+		public int LdsMajorVersion { get; }
 
 		/// <summary>
-		/// Unicode Version
+		/// LDS Minor Version
 		/// </summary>
-		public double UnicodeVersion { get; }
+		public int LdsMinorVersion { get; }
+
+		/// <summary>
+		/// Unicode Major Version
+		/// </summary>
+		public int UnicodeMajorVersion { get; }
+
+		/// <summary>
+		/// Unicode Minor Version
+		/// </summary>
+		public int UnicodeMinorVersion { get; }
 
 		/// <summary>
 		/// Supported tags
@@ -77,8 +92,22 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 				}
 			}
 
-			return new ApplicationLevelInformation(Value, LdsVersion?.Version ?? 0,
-				UnicodeVersion?.Version ?? 0, TagList);
+			return new ApplicationLevelInformation(Value, LdsVersion?.MajorVersion ?? 0,
+				LdsVersion?.MinorVersion ?? 0, UnicodeVersion?.MajorVersion ?? 0,
+				UnicodeVersion?.MinorVersion ?? 0, TagList);
+		}
+
+		/// <summary>
+		/// Checks that the LDS version is at least the specified version.
+		/// </summary>
+		/// <param name="Major">Major version number.</param>
+		/// <param name="Minor">Minor version number.</param>
+		/// <returns>True if the LDS version is at least the specified version,
+		/// otherwise false.</returns>
+		public bool HasAtLeastLdsVersion(int Major, int Minor)
+		{
+			return this.LdsMajorVersion > Major ||
+				(this.LdsMajorVersion == Major && this.LdsMinorVersion >= Minor);
 		}
 	}
 }
