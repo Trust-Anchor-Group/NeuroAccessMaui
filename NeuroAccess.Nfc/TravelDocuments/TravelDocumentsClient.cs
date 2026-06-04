@@ -1205,7 +1205,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				}
 				else if (Item is Vector SecurityInfo &&
 					SecurityInfo.Length > 0 &&
-					SecurityInfo[0] is string Oid)
+					SecurityInfo.FirstElement is string Oid)
 				{
 					OidsFound.Add(Oid);
 
@@ -2233,13 +2233,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				return ReadTravelDocumentResult.UnableToParseEfSod;
 			}
 
-			if ((SecurityInfo.SignedData?.Certificates?.Count ?? 0) == 0)
+			if ((SecurityInfo.SignedData?.Certificates?.Length ?? 0) == 0)
 			{
 				this.Error("No certificates available in EF.SOD.");
 				return ReadTravelDocumentResult.NoCertificates;
 			}
 
-			if (SecurityInfo.SignedData!.Certificates.Count > 1)
+			if (SecurityInfo.SignedData!.Certificates.Length > 1)
 			{
 				this.Error("Multiple certificates available in EF.SOD.");
 				return ReadTravelDocumentResult.MultipleCertificates;
@@ -2250,21 +2250,15 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			this.Information("Validating certificate.");
 			await this.SetState(TravelDocumentsState.ValidatingCertificate);
 
-			foreach (X509Certificate2 Cert in SecurityInfo.SignedData!.Certificates)
+			foreach (Certificate Cert in SecurityInfo.SignedData!.Certificates)
 			{
-				if (!Certificate.TryParse(Cert.RawData, out Certificate? Cert2))
-				{
-					this.Error("Unable to parse certificate.");
-					return ReadTravelDocumentResult.InvalidCertificate;
-				}
-
-				ChunkedList<Certificate> Certificates = [Cert2];
+				ChunkedList<Certificate> Certificates = [Cert];
 				Dictionary<string, bool> CrlUrls = [];
 
-				foreach (string CrlUrl in GetRevocationListUrls(Cert2))
+				foreach (string CrlUrl in GetRevocationListUrls(Cert))
 					CrlUrls[CrlUrl] = true;
 
-				KeyValuePair<string?, byte[]?> P = GetAuthorityKeyIdentifier(Cert2);
+				KeyValuePair<string?, byte[]?> P = GetAuthorityKeyIdentifier(Cert);
 				Dictionary<string, bool> Processed = [];
 				string? CountryCode = P.Key;
 				byte[]? IssuerKeyReference = P.Value;
@@ -2333,9 +2327,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 					this.Information("Checking if certificates are revoked.");
 
-					if (RevokedCertificates.HasBeenRevoked(Cert2, out RevokedReason Reason))
+					if (RevokedCertificates.HasBeenRevoked(Cert, out RevokedReason Reason))
 					{
-						this.Error("Certificate " + Cert2.SerialNumber.ToString("X", CultureInfo.InvariantCulture) + " has been revoked: " + Reason.ToString());
+						this.Error("Certificate " + Cert.SerialNumber.ToString("X", CultureInfo.InvariantCulture) + " has been revoked: " + Reason.ToString());
 						return ReadTravelDocumentResult.InvalidCertificate;
 					}
 

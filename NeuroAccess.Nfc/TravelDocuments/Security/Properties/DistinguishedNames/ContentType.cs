@@ -1,16 +1,14 @@
-﻿namespace NeuroAccess.Nfc.TravelDocuments.Security
+﻿namespace NeuroAccess.Nfc.TravelDocuments.Security.Properties.DistinguishedNames
 {
 	/// <summary>
-	/// Abstract base class for security objects that represent named string values.
+	/// EMail Address
 	/// </summary>
-	public abstract class SecurityString : SecurityObject
+	public class ContentType : SecurityString
 	{
-		protected bool configured;
-
 		/// <summary>
-		/// If the object has been configured.
+		/// OID identifying the type of object.
 		/// </summary>
-		public override bool IsConfigured => this.configured;
+		public override string Oid => "1.2.840.113549.1.9.3";
 
 		/// <summary>
 		/// If the object can be configured by the security information provided.
@@ -25,8 +23,19 @@
 
 				if (Value is null)
 					this.Value = null;
+				else if (Value is ISecurityObject SecurityObject)
+					this.Value = SecurityObject.Oid;
 				else if (Value is string StringValue)
 					this.Value = StringValue;
+				else if (Value is Vector v && v.Length == 1)
+				{
+					if (v.FirstElement is ISecurityObject SecurityObject2)
+						this.Value = SecurityObject2.Oid;
+					else if (v.FirstElement is string StringValu2)
+						this.Value = StringValu2;
+					else
+						return false;
+				}
 				else
 					return false;
 
@@ -36,17 +45,6 @@
 			}
 			else
 				return false;
-		}
-
-		/// <summary>
-		/// String Value.
-		/// </summary>
-		public string? Value { get; protected set; } = string.Empty;
-
-		/// <inheritdoc/>
-		public override string ToString()
-		{
-			return this.GetType().Name + ": " + (this.Value ?? string.Empty);
 		}
 	}
 }

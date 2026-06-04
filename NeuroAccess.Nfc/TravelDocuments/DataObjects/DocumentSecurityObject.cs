@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 using NeuroAccess.Nfc.TravelDocuments.Security;
 using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
-using Waher.Runtime.Inventory;
+using NeuroAccess.Nfc.TravelDocuments.SignedMessages;
+using Waher.Events;
 
 namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
@@ -25,9 +25,9 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// Document Security Object. Reference: §4.6.2, EF.SOD, ICAO Doc 9303-10, Table 36.
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
-		/// <param name="SignedData">Parsed content.</param>
+		/// <param name="SignedData">Signed content.</param>
 		/// <param name="LdsSecurityObject">LDS Security Object.</param>
-		public DocumentSecurityObject(byte[] Value, SignedCms? SignedData, LdsSecurityObject LdsSecurityObject)
+		public DocumentSecurityObject(byte[] Value, SignedData? SignedData, LdsSecurityObject LdsSecurityObject)
 			: base(Value)
 		{
 			this.SignedData = SignedData;
@@ -42,7 +42,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// <summary>
 		/// Signed data.
 		/// </summary>
-		public SignedCms? SignedData { get; }
+		public SignedData? SignedData { get; }
 
 		/// <summary>
 		/// >LDS Security Object.
@@ -65,13 +65,52 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 			{
 				try
 				{
-					SignedCms SignedData = new();
-					SignedData.Decode(Value);
+					if (!SignedMessage.TryParse(Value, out SignedMessage? SignedData))
+					{
+						Client.Warning("Could not parse Signed CMS:\r\n\r\n " +
+							Convert.ToBase64String(Value, Base64FormattingOptions.InsertLineBreaks));
+						return false;
+					}
 
-					SignedData.CheckSignature(true);
+					byte[]? Content;
+					string? ContentOid;
 
-					byte[]? Content = SignedData.ContentInfo?.Content;
-					string? ContentOid = SignedData.ContentInfo?.ContentType?.Value;
+					// First use platform/OS-independent signature validation implementation.
+
+					if (SignedData.CheckSignature(false, Client))	// No need to validate certificate at this point, as it is validated when the certificate chain is validated.
+					{
+						Content = SignedData.Data.EncapsulatedContent;
+						ContentOid = SignedData.Data.EncapsulatedContentOid;
+					}
+					else
+					{
+						// If platform/OS-independent signature validation fails
+						// (implemetation error?), double-check with platform/OS-dependent
+						// signature validation.
+
+						try
+						{
+							SignedCms SignedDataX = new();  // Backup, in case of implementation error in SignedMessage.
+							SignedDataX.Decode(Value);
+
+							SignedDataX.CheckSignature(true);
+
+							Content = SignedDataX.ContentInfo?.Content;
+							ContentOid = SignedDataX.ContentInfo?.ContentType?.Value;
+
+							Log.Debug("Platform/OS-independent signature validation failed, but Platform/OS-dependent signature validation successful. Check communication logs for more details.");
+
+							Client.Warning("Platform/OS-independent signature validation failed, but Platform/OS-dependent signature validation successful:\r\n\r\n " +
+								Convert.ToBase64String(Value, Base64FormattingOptions.InsertLineBreaks));
+						}
+						catch (Exception)
+						{
+							Client.Warning("Could not validate signatures in Signed CMS:\r\n\r\n " +
+								Convert.ToBase64String(Value, Base64FormattingOptions.InsertLineBreaks));
+							return false;
+						}
+					}
+
 					if (Content is null || string.IsNullOrEmpty(ContentOid))
 						return false;
 
@@ -99,7 +138,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 						}
 					}
 
-					Parsed = new DocumentSecurityObject(Value, SignedData, LdsSecurityObject);
+					Parsed = new DocumentSecurityObject(Value, SignedData.Data, LdsSecurityObject);
 					return true;
 				}
 				catch (Exception ex)
