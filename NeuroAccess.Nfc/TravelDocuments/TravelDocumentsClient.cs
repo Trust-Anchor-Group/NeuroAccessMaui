@@ -1279,7 +1279,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					ISO_7816.Instructions.MessageSecurityEnvironment,
 					0xC1,			// P1 - Set
 					0xA4,			// P2 - PACE
-					(byte)(5 + c),	// Le
+					(byte)(5 + c + ParameterIdEncoding.Length),	// Lc
 					0x80,			// Algorithm reference
 					(byte)c			// OID Length (excluding first zero)
 				],
