@@ -1,0 +1,121 @@
+{
+  "generator": "JmrtdFixtureGenerator",
+  "generatorVersion": "1.0.0",
+  "generatorSourceSha256": "c16ea428091d29aeb4680567efae5a6898565a52b028690e12f48113a5058fac",
+  "jmrtdVersion": "0.8.6",
+  "synthetic": true,
+  "dg2Encoding": "ISO19794",
+  "imageDataType": "JPEG",
+  "ldsVersion": "1.8",
+  "sodDigestAlgorithm": "SHA-256",
+  "sodSignatureAlgorithm": "SHA256withRSA",
+  "signerKeyEncoding": "RSA-2048",
+  "documentNumber": "NA945708",
+  "primaryIdentifier": "SPECIMEN",
+  "secondaryIdentifier": "ALICE",
+  "birthDate": "1990-01-01",
+  "expiryDate": "2035-01-01",
+  "nationality": "UTO",
+  "gender": "F",
+  "expectedFaceWidth": 320,
+  "expectedFaceHeight": 240,
+  "mrz": "P<UTOSPECIMEN<<ALICE<<<<<<<<<<<<<<<<<<<<<<<<\\nNA945708<4UTO9001011F3501014<<<<<<<<<<<<<<<8\\n",
+  "expectedDataGroups": [1, 2, 11, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16],
+  "presenceOnlySyntheticFiles": ["EF.DG6.bin", "EF.DG8.bin", "EF.DG9.bin", "EF.DG10.bin", "EF.DG13.bin", "EF.DG16.bin", "EF.DIR.bin"],
+  "files": {
+    "EF.DG1.bin": {
+      "length": 93,
+      "sha256": "e68e209f17af4dec10cddfc7845c47e3adf22166faafd837bdb6ff26fbc3c540"
+    },
+    "EF.DG2.bin": {
+      "length": 99,
+      "sha256": "e576a8d2d181b617b506fa225de6dc2b8d416c079ff25330dce96497f405e34d"
+    },
+    "EF.DG11.bin": {
+      "length": 122,
+      "sha256": "4d8a5313e9616d8d789775eea266233cea677c2028c483630a81bc045769c31d"
+    },
+    "EF.DG3.bin": {
+      "length": 99,
+      "sha256": "19e12ad87eb4d25c707a4923203c3773d22a3e67b5b77b2b0df30779a4b4b423"
+    },
+    "EF.DG4.bin": {
+      "length": 112,
+      "sha256": "7bd29378e3279ab5454df6350fe27022a94d1236e645f61c3dbab3fe6cdb7cd8"
+    },
+    "EF.DG5.bin": {
+      "length": 31,
+      "sha256": "88092805721b8f80f0098b7e309b96c59944ab098d05f47827da8d1d492522c3"
+    },
+    "EF.DG6.bin": {
+      "length": 2,
+      "sha256": "887a0529fd9d76eb33c0ec808c05daaf32fa9f5e21e4c32224fb4bfaaa0af385"
+    },
+    "EF.DG7.bin": {
+      "length": 31,
+      "sha256": "0269d3c2446e86b401182536c549b9435b864cb2502206bec7508b09285abc51"
+    },
+    "EF.DG8.bin": {
+      "length": 2,
+      "sha256": "9617c7ca1b32da77dfd71daf35e6077ecb6b29c2a286ac9845ebcc10621c3108"
+    },
+    "EF.DG9.bin": {
+      "length": 2,
+      "sha256": "e8902c7331527e223bf3d97d077ed97fcd7ac3d38f289b5b3ba4d97ea510db05"
+    },
+    "EF.DG10.bin": {
+      "length": 2,
+      "sha256": "91046df2aa008410555df240b14243aa348b37cd16582c9d8a80ca305afccab2"
+    },
+    "EF.DG12.bin": {
+      "length": 172,
+      "sha256": "2b19cb462851df0c2a0d94bc51ef860466115e67e1976827223d3001cd107451"
+    },
+    "EF.DG13.bin": {
+      "length": 2,
+      "sha256": "187355b101e4d1f66c7948f93d109b63e1e0e5ec14eba8043e6428aff3a3e4ca"
+    },
+    "EF.DG14.bin": {
+      "length": 4,
+      "sha256": "c3ad8412f2daef87cbca10588ae943b6bb7fdaf426b9e146009339b3e51db4c3"
+    },
+    "EF.DG15.bin": {
+      "length": 298,
+      "sha256": "54cbfa20f04ad75d705231dc6b045a8f7d0eda035c3b1779fc7d92fd77a8766b"
+    },
+    "EF.DG16.bin": {
+      "length": 2,
+      "sha256": "882a20e6379eb83aecb916f4b9ea79c1e6c08a0d80f6ad1dc9a9421758246001"
+    },
+    "EF.DIR.bin": {
+      "length": 2,
+      "sha256": "ffe9aaeaa2a2d5048174df0b80599ef0197ec024c4b051bc9860cff58ef7f9f3"
+    },
+    "EF.COM.bin": {
+      "length": 36,
+      "sha256": "c2bcff63cd405a7190eb32915c7ffbd663b6559590de0e6fd68328d8abe10aa0"
+    },
+    "EF.SOD.bin": {
+      "length": 1911,
+      "sha256": "31209e9334efe9c8bbb477371dc822626ccc413caf7eb91a802da0e49ee630db"
+    }
+  },
+  "sodDataGroupHashes": {
+    "DG1": "e68e209f17af4dec10cddfc7845c47e3adf22166faafd837bdb6ff26fbc3c540",
+    "DG2": "e576a8d2d181b617b506fa225de6dc2b8d416c079ff25330dce96497f405e34d",
+    "DG11": "4d8a5313e9616d8d789775eea266233cea677c2028c483630a81bc045769c31d",
+    "DG3": "19e12ad87eb4d25c707a4923203c3773d22a3e67b5b77b2b0df30779a4b4b423",
+    "DG4": "7bd29378e3279ab5454df6350fe27022a94d1236e645f61c3dbab3fe6cdb7cd8",
+    "DG5": "88092805721b8f80f0098b7e309b96c59944ab098d05f47827da8d1d492522c3",
+    "DG6": "887a0529fd9d76eb33c0ec808c05daaf32fa9f5e21e4c32224fb4bfaaa0af385",
+    "DG7": "0269d3c2446e86b401182536c549b9435b864cb2502206bec7508b09285abc51",
+    "DG8": "9617c7ca1b32da77dfd71daf35e6077ecb6b29c2a286ac9845ebcc10621c3108",
+    "DG9": "e8902c7331527e223bf3d97d077ed97fcd7ac3d38f289b5b3ba4d97ea510db05",
+    "DG10": "91046df2aa008410555df240b14243aa348b37cd16582c9d8a80ca305afccab2",
+    "DG12": "2b19cb462851df0c2a0d94bc51ef860466115e67e1976827223d3001cd107451",
+    "DG13": "187355b101e4d1f66c7948f93d109b63e1e0e5ec14eba8043e6428aff3a3e4ca",
+    "DG14": "c3ad8412f2daef87cbca10588ae943b6bb7fdaf426b9e146009339b3e51db4c3",
+    "DG15": "54cbfa20f04ad75d705231dc6b045a8f7d0eda035c3b1779fc7d92fd77a8766b",
+    "DG16": "882a20e6379eb83aecb916f4b9ea79c1e6c08a0d80f6ad1dc9a9421758246001"
+  }
+}

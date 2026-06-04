@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="icaoPart3Matrix">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="cases">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="case" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="purpose" type="xs:string" />
+                    <xs:element name="profileTokens">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="token" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="preconditions">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="precondition" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="targetFiles">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="targetFile" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="name" type="xs:string" use="required" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="steps">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="step" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="apdus">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="apdu" minOccurs="0" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                          <xs:simpleContent>
+                                            <xs:extension base="xs:string">
+                                              <xs:attribute name="action" type="xs:string" use="required" />
+                                              <xs:attribute name="protected" type="xs:boolean" use="required" />
+                                              <xs:attribute name="template" type="xs:boolean" use="required" />
+                                            </xs:extension>
+                                          </xs:simpleContent>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="expected">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="swAny">
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="sw" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="responseDataEmpty" type="xs:boolean" use="optional" />
+                                    <xs:attribute name="dataPrefix" type="xs:string" use="optional" />
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                              <xs:attribute name="number" type="xs:int" use="required" />
+                              <xs:attribute name="targetFile" type="xs:string" use="optional" />
+                              <xs:attribute name="targetFileId" type="xs:string" use="optional" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="id" type="xs:string" use="required" />
+                  <xs:attribute name="category" type="xs:string" use="required" />
+                  <xs:attribute name="section" type="xs:string" use="required" />
+                  <xs:attribute name="requiresSecureMessaging" type="xs:boolean" use="required" />
+                  <xs:attribute name="requiresRuntimeApduGeneration" type="xs:boolean" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="document" type="xs:string" use="required" />
+      <xs:attribute name="version" type="xs:string" use="required" />
+      <xs:attribute name="date" type="xs:date" use="required" />
+      <xs:attribute name="caseCount" type="xs:int" use="required" />
+      <xs:attribute name="structuredApduCount" type="xs:int" use="required" />
+      <xs:attribute name="indexSha256" type="xs:string" use="required" />
+      <xs:attribute name="vocabularySha256" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -14,16 +14,18 @@ namespace NeuroAccess.Nfc.Test
 		public TestContext TestContext { get; set; } = null!;
 
 		[TestMethod]
-		[DataRow("C:\\Temp\\NFC.xml")]
+		[DataRow("NFC.xml")]
 		public async Task Test_01_TravelDocumentReadout(string FileName)
 		{
-			if (!File.Exists(FileName))
+			string FilePath = GetSensitiveDataPath(FileName);
+
+			if (!File.Exists(FilePath))
 			{
-				Assert.Inconclusive("NFC replay file not found.");
+				Assert.Inconclusive("NFC replay file not found in SensitiveData.");
 				return;
 			}
 
-			IsoDepReplay Replay = new(FileName);
+			IsoDepReplay Replay = new(FilePath);
 
 			TestContextWriter SnifferWriter = new(this.TestContext);
 			TextWriterSniffer Sniffer = new(SnifferWriter, BinaryPresentationMethod.Hexadecimal, "Unit Test Sniffer");
@@ -90,6 +92,29 @@ namespace NeuroAccess.Nfc.Test
 			Assert.IsTrue(SecurityInfoRead);
 			Assert.IsTrue(MrzRead);
 			Assert.IsTrue(FaceRead);
+		}
+
+		private static string GetSensitiveDataPath(string FileName)
+		{
+			string Candidate = Path.Combine(AppContext.BaseDirectory, "SensitiveData", FileName);
+			if (File.Exists(Candidate))
+				return Candidate;
+
+			string CurrentDirectory = AppContext.BaseDirectory;
+			while (!string.IsNullOrEmpty(CurrentDirectory))
+			{
+				Candidate = Path.Combine(CurrentDirectory, "SensitiveData", FileName);
+				if (File.Exists(Candidate))
+					return Candidate;
+
+				DirectoryInfo? Parent = Directory.GetParent(CurrentDirectory);
+				if (Parent is null)
+					break;
+
+				CurrentDirectory = Parent.FullName;
+			}
+
+			return Path.Combine("SensitiveData", FileName);
 		}
 	}
 }

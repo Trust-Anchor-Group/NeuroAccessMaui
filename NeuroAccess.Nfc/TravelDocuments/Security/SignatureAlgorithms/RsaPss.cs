@@ -46,83 +46,153 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// <returns>If the object can be configured, given the security information.</returns>
 		public override bool Configure(Vector SecurityInfo)
 		{
-			if (SecurityInfo.Length < 2 ||
-				SecurityInfo[1] is not Vector RsaSsaPssParameters)
+			if (SecurityInfo.Length < 2)
+			{
+				this.configured = true;
+				return true;
+			}
+
+			if (SecurityInfo[1] is not Vector RsaSsaPssParameters)
 			{
 				return false;
 			}
 
 			int c = RsaSsaPssParameters.Length;
 
-			if (c >= 1)
+			for (int i = 0; i < c; i++)
 			{
-				if (RsaSsaPssParameters[0] is not Vector HashVector ||
-					HashVector.Length < 1)
+				object? Parameter = RsaSsaPssParameters[i];
+
+				if (Parameter is ContextSpecific TaggedParameter)
 				{
-					return false;
+					switch (TaggedParameter.Tag)
+					{
+						case 0:
+							if (!TryGetHashFunction(TaggedParameter, out HashFunction HashFunction))
+								return false;
+
+							this.hashFunction = HashFunction;
+							break;
+
+						case 1:
+							if (!TryGetMaskGenerationFunction(TaggedParameter, out MaskGenerationFunction MaskGenerationFunction))
+								return false;
+
+							this.maskGenerationFunction = MaskGenerationFunction;
+							break;
+
+						case 2:
+							if (!TryGetInteger(TaggedParameter, out int SaltLength))
+								return false;
+
+							this.saltLength = SaltLength;
+							break;
+
+						case 3:
+							if (!TryGetInteger(TaggedParameter, out int TrailerField))
+								return false;
+
+							this.trailerField = TrailerField;
+							break;
+
+						default:
+							return false;
+					}
+
+					continue;
 				}
 
-				if (HashVector[0] is not HashFunction HashFunction)
+				if (i == 0)
 				{
-					if (HashVector[0] is Vector v &&
-						v.Length == 1 &&
-						v.FirstElement is HashFunction HashFunction2)
-					{
-						HashFunction = HashFunction2;
-					}
-					else
+					if (!TryGetHashFunction(Parameter, out HashFunction HashFunction))
 						return false;
+
+					this.hashFunction = HashFunction;
 				}
-
-				this.hashFunction = HashFunction;
-
-				if (c >= 2)
+				else if (i == 1)
 				{
-					if (RsaSsaPssParameters[1] is not Vector MaskGenerationFunctionVector ||
-						MaskGenerationFunctionVector.Length < 1 ||
-						MaskGenerationFunctionVector[0] is not MaskGenerationFunction MaskGenerationFunction)
-					{
+					if (!TryGetMaskGenerationFunction(Parameter, out MaskGenerationFunction MaskGenerationFunction))
 						return false;
-					}
 
 					this.maskGenerationFunction = MaskGenerationFunction;
 				}
-
-				if (c >= 3)
+				else if (i == 2)
 				{
-					if (RsaSsaPssParameters[2] is not Vector SaltLengthVector ||
-						SaltLengthVector.Length < 1 ||
-						SaltLengthVector[0] is not System.Numerics.BigInteger SaltLength ||
-						SaltLength < int.MinValue ||
-						SaltLength > int.MaxValue)
-					{
+					if (!TryGetInteger(Parameter, out int SaltLength))
 						return false;
-					}
 
-					this.saltLength = (int)SaltLength;
-
-					if (c >= 4)
-					{
-						if (RsaSsaPssParameters[3] is not Vector TrailerFieldVector ||
-							TrailerFieldVector.Length < 1 ||
-							TrailerFieldVector[0] is not System.Numerics.BigInteger TrailerField ||
-							TrailerField < int.MinValue ||
-							TrailerField > int.MaxValue)
-						{
-							return false;
-						}
-
-						this.trailerField = (int)TrailerField;
-
-						if (c > 4)
-							return false;
-					}
+					this.saltLength = SaltLength;
 				}
+				else if (i == 3)
+				{
+					if (!TryGetInteger(Parameter, out int TrailerField))
+						return false;
+
+					this.trailerField = TrailerField;
+				}
+				else
+					return false;
 			}
 
 			this.configured = true;
 
 			return true;
+		}
+
+		private static bool TryGetHashFunction(object? Value, out HashFunction HashFunction)
+		{
+			if (Value is HashFunction HashFunction2)
+			{
+				HashFunction = HashFunction2;
+				return true;
+			}
+
+			if (Value is Vector HashVector &&
+				HashVector.Length >= 1)
+			{
+				return TryGetHashFunction(HashVector[0], out HashFunction);
+			}
+
+			HashFunction = defaultHashFunction;
+			return false;
+		}
+
+		private static bool TryGetMaskGenerationFunction(object? Value, out MaskGenerationFunction MaskGenerationFunction)
+		{
+			if (Value is MaskGenerationFunction MaskGenerationFunction2)
+			{
+				MaskGenerationFunction = MaskGenerationFunction2;
+				return true;
+			}
+
+			if (Value is Vector MaskGenerationFunctionVector &&
+				MaskGenerationFunctionVector.Length >= 1)
+			{
+				return TryGetMaskGenerationFunction(MaskGenerationFunctionVector[0], out MaskGenerationFunction);
+			}
+
+			MaskGenerationFunction = defaultMaskGenerationFunction;
+			return false;
+		}
+
+		private static bool TryGetInteger(object? Value, out int Integer)
+		{
+			if (Value is Vector IntegerVector &&
+				IntegerVector.Length >= 1)
+			{
+				Value = IntegerVector[0];
+			}
+
+			if (Value is BigInteger BigIntegerValue &&
+				BigIntegerValue >= int.MinValue &&
+				BigIntegerValue <= int.MaxValue)
+			{
+				Integer = (int)BigIntegerValue;
+				return true;
+			}
+
+			Integer = 0;
+			return false;
 		}
 
 		/// <summary>
@@ -140,7 +210,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// </summary>
 		/// <param name="Data">Data being signed.</param>
 		/// <param name="Signature">Digital signature.</param>
-		/// <param name="PublicKeyKey">Public Key of the signing body.</param>
+		/// <param name="PublicKey">Public Key of the signing body.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
 		public override bool VerifySignature(byte[] Data, byte[] Signature, IPublicKey PublicKey,
@@ -179,8 +249,6 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		{
 			// Encoded Message EM = S^e mod n
 
-			ModulusP ModN = new(n); // n not a prime, so not a Field (i.e. has zero-divisors), but addition and multiplication mod n work.
-			BigInteger EM = 1;
 			bool HasSniffer = Client?.HasSniffers ?? false;
 			StringBuilder? Msg = HasSniffer ? new StringBuilder() : null;
 
@@ -203,15 +271,42 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				Msg.AppendLine(Waher.Security.Hashes.BinaryToString(Message));
 			}
 
-			while (!e.IsZero)
+			if (n <= BigInteger.Zero ||
+				e <= BigInteger.Zero)
 			{
-				if (!e.IsEven)
-					EM = ModN.Multiply(EM, S);
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("Invalid RSA public key parameters.");
+				}
 
-				e >>= 1;
-				S = ModN.Multiply(S, S);
+				return false;
 			}
 
+			if (S < BigInteger.Zero ||
+				S >= n)
+			{
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("RSA signature representative out of range.");
+				}
+
+				return false;
+			}
+
+			if (SaltLen < 0)
+			{
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("Invalid RSA-PSS salt length.");
+				}
+
+				return false;
+			}
+
+			BigInteger EM = BigInteger.ModPow(S, e, n);
 			byte[] EMBin = EM.ToByteArray(true, true);
 			int EMLen = (int)(n.GetBitLength() + 7) / 8;
 
@@ -241,6 +336,18 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 
 			int HLen = H.HashLength;
 			int MaskedDBLen = EMBin.Length - 1 - HLen;
+
+			if (MaskedDBLen <= 0)
+			{
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("Encoded RSA-PSS message too short.");
+				}
+
+				return false;
+			}
+
 			byte[] MaskedDB = new byte[MaskedDBLen];
 			byte[] HashDigest = new byte[HLen];
 

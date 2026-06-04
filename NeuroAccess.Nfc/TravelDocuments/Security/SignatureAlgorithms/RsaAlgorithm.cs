@@ -20,7 +20,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// </summary>
 		/// <param name="Data">Data being signed.</param>
 		/// <param name="Signature">Digital signature.</param>
-		/// <param name="PublicKeyKey">Public Key of the signing body.</param>
+		/// <param name="PublicKey">Public Key of the signing body.</param>
 		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
 		public override bool VerifySignature(byte[] Data, byte[] Signature, IPublicKey PublicKey,
@@ -47,14 +47,12 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 		/// <param name="Signature">Digital signature.</param>
 		/// <param name="Modulus">Modulus parameter.</param>
 		/// <param name="Exponent">Exponent parameter.</param>
-		/// <param name="HashFunction">Hash function to use, if defined.</param>
+		/// <param name="Client">Optional client reference.</param>
 		/// <returns>If the digital signature is correct.</returns>
 		public bool VerifySignatureRsaPkcs1(byte[] Data, byte[] Signature, BigInteger Modulus,
 			BigInteger Exponent, ICommunicationLayer? Client)
 		{
 			BigInteger S = EllipticCurve.ToInt(Signature, true);
-			ModulusP ModN = new(Modulus);
-			BigInteger EM = 1;
 			bool HasSniffer = Client?.HasSniffers ?? false;
 			StringBuilder? Msg = HasSniffer ? new StringBuilder() : null;
 
@@ -71,16 +69,32 @@ namespace NeuroAccess.Nfc.TravelDocuments.Security.SignatureAlgorithms
 				Msg.AppendLine(Hashes.BinaryToString(Data));
 			}
 
-			while (!Exponent.IsZero)
+			if (Modulus <= BigInteger.Zero ||
+				Exponent <= BigInteger.Zero)
 			{
-				if (!Exponent.IsEven)
-					EM = ModN.Multiply(EM, S);
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("Invalid RSA public key parameters.");
+				}
 
-				Exponent >>= 1;
-				S = ModN.Multiply(S, S);
+				return false;
+			}
+
+			if (S < BigInteger.Zero ||
+				S >= Modulus)
+			{
+				if (HasSniffer)
+				{
+					Client!.Information(Msg!.ToString());
+					Client.Error("RSA signature representative out of range.");
+				}
+
+				return false;
 			}
 
 			int K = Modulus.GetByteCount(true);
+			BigInteger EM = BigInteger.ModPow(S, Exponent, Modulus);
 			byte[] EncodedMessage = EM.ToByteArray(true, true);
 
 			if (EncodedMessage.Length > K)

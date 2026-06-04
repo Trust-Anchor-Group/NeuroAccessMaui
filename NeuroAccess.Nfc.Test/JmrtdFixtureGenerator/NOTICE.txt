@@ -1,0 +1,11 @@
+JMRTD Fixture Generator Notice
+==============================
+
+This helper project references JMRTD from Maven Central for manual, opt-in test
+fixture generation only. JMRTD is not an application runtime dependency and its
+jars are not committed to this repository.
+
+JMRTD source: https://jmrtd.org/
+JMRTD license: GNU Lesser General Public License, version 3 or later.
+
+The generated fixtures contain synthetic holder data only.

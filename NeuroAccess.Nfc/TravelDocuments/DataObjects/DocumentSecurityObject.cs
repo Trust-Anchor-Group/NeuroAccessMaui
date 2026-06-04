@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
+using NeuroAccess.Nfc.TravelDocuments.Certificates;
 using NeuroAccess.Nfc.TravelDocuments.Security;
+using NeuroAccess.Nfc.TravelDocuments.Security.Cms;
 using NeuroAccess.Nfc.TravelDocuments.Security.HashFunctions;
-using Waher.Runtime.Inventory;
 
 namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 {
@@ -13,6 +13,8 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 	/// </summary>
 	public class DocumentSecurityObject : DataObject
 	{
+		private const string LdsSecurityObjectOid = "2.23.136.1.1.1";
+
 		/// <summary>
 		/// Document Security Object. Reference: §4.6.2, EF.SOD, ICAO Doc 9303-10, Table 36.
 		/// </summary>
@@ -26,11 +28,14 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// </summary>
 		/// <param name="Value">Binary value.</param>
 		/// <param name="SignedData">Parsed content.</param>
+		/// <param name="CmsSignedData">Parsed CMS signed data.</param>
 		/// <param name="LdsSecurityObject">LDS Security Object.</param>
-		public DocumentSecurityObject(byte[] Value, SignedCms? SignedData, LdsSecurityObject LdsSecurityObject)
+		public DocumentSecurityObject(byte[] Value, SignedCms? SignedData, CmsSignedData CmsSignedData,
+			LdsSecurityObject LdsSecurityObject)
 			: base(Value)
 		{
 			this.SignedData = SignedData;
+			this.CmsSignedData = CmsSignedData;
 			this.LdsSecurityObject = LdsSecurityObject;
 		}
 
@@ -43,6 +48,31 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		/// Signed data.
 		/// </summary>
 		public SignedCms? SignedData { get; }
+
+		/// <summary>
+		/// CMS signed data parsed with the repo-owned verifier.
+		/// </summary>
+		public CmsSignedData? CmsSignedData { get; }
+
+		/// <summary>
+		/// Certificates embedded in the CMS signed data.
+		/// </summary>
+		public Certificate[] Certificates => this.CmsSignedData?.Certificates ?? [];
+
+		/// <summary>
+		/// Number of signer information entries.
+		/// </summary>
+		public int SignerCount => this.CmsSignedData?.SignerInfos.Length ?? 0;
+
+		/// <summary>
+		/// Number of embedded certificates.
+		/// </summary>
+		public int CertificateCount => this.Certificates.Length;
+
+		/// <summary>
+		/// If the EF.SOD CMS signature has been verified.
+		/// </summary>
+		public bool SignatureVerified => this.CmsSignedData?.SignatureVerified ?? false;
 
 		/// <summary>
 		/// >LDS Security Object.
@@ -61,31 +91,29 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 		{
 			Parsed = null;
 
-			if ((Client.AppInfo?.LdsVersion ?? 0) >= 1.8)
+			if (Client.AppInfo?.IsLdsVersionAtLeast(1, 8) ?? false)
 			{
 				try
 				{
-					SignedCms SignedData = new();
-					SignedData.Decode(Value);
+					SignedCms? SignedData = TryDecodeSignedCms(Value);
 
-					SignedData.CheckSignature(true);
-
-					byte[]? Content = SignedData.ContentInfo?.Content;
-					string? ContentOid = SignedData.ContentInfo?.ContentType?.Value;
-					if (Content is null || string.IsNullOrEmpty(ContentOid))
-						return false;
-
-					if (!ASN1.TryInstantiate(ContentOid, out ISecurityObject? SecurityObject))
+					if (!CmsSignedData.TryParse(Value, LdsSecurityObjectOid, Client,
+						out CmsSignedData? ParsedCmsSignedData))
 					{
-						Client.Warning("OID not recognized: " + ContentOid);
-						ASN1.ReportOidNotRecognized(ContentOid);
+						return false;
+					}
+
+					if (!ASN1.TryInstantiate(ParsedCmsSignedData.ContentType, out ISecurityObject? SecurityObject))
+					{
+						Client.Warning("OID not recognized: " + ParsedCmsSignedData.ContentType);
+						ASN1.ReportOidNotRecognized(ParsedCmsSignedData.ContentType);
 						return false;
 					}
 
 					if (SecurityObject is not LdsSecurityObject LdsSecurityObject)
 						return false;
 
-					ASN1.TryDecodeDer(Client, Content, out object? ParsedContent);
+					ASN1.TryDecodeDer(Client, ParsedCmsSignedData.EncapsulatedContent, out object? ParsedContent);
 
 					if (ParsedContent is not Vector ContentVector)
 						return false;
@@ -99,7 +127,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 						}
 					}
 
-					Parsed = new DocumentSecurityObject(Value, SignedData, LdsSecurityObject);
+					Parsed = new DocumentSecurityObject(Value, SignedData, ParsedCmsSignedData, LdsSecurityObject);
 					return true;
 				}
 				catch (Exception ex)
@@ -113,6 +141,20 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 				// TODO: LDS version < 1.8 support
 
 				return false;
+			}
+		}
+
+		private static SignedCms? TryDecodeSignedCms(byte[] Value)
+		{
+			try
+			{
+				SignedCms SignedData = new();
+				SignedData.Decode(Value);
+				return SignedData;
+			}
+			catch (Exception)
+			{
+				return null;
 			}
 		}
 

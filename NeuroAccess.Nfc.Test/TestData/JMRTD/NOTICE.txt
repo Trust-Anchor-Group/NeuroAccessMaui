@@ -1,0 +1,13 @@
+JMRTD Fixture Notice
+====================
+
+The fixture files in this directory are synthetic test documents generated with JMRTD.
+They contain fake holder data only and must not be treated as real identity documents.
+
+Generator: NeuroAccess.Nfc.Test/JmrtdFixtureGenerator
+JMRTD version: 0.8.6
+JMRTD source: https://jmrtd.org/
+JMRTD license: GNU Lesser General Public License, version 3 or later.
+
+These generated LDS files are used as offline parser and APDU-download fixtures.
+JMRTD jars and third-party dependencies are intentionally not committed here.

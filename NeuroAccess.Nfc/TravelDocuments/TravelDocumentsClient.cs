@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Xml;
 using NeuroAccess.Nfc.TravelDocuments.Certificates;
@@ -38,7 +37,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 	/// <param name="Sniffers">Optional sniffers.</param>
 	public sealed class TravelDocumentsClient(IIsoDepInterface TagInterface,
 		DocumentInformation DocumentInformation, byte[]? LocalKeySeed, params ISniffer[] Sniffers)
-		: CommunicationLayer(false, Sniffers), IDisposable
+		: CommunicationLayer(true, Sniffers), IDisposable
 	{
 		private static readonly Dictionary<ushort, IDataObject> dataObjects = GetDataObjects();
 		private ApplicationLevelInformation? appInfo;
@@ -1073,13 +1072,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				return null;
 
 			using MemoryStream File = new();
-			ushort Offset = 0;
+			uint Offset = 0;
 			int? ExpectedLength = null;
-			int BytesDownloaded = 0;
+			long BytesDownloaded = 0;
 
 			while (!ExpectedLength.HasValue || BytesDownloaded < ExpectedLength.Value)
 			{
-				KeyValuePair<byte[]?, bool> P = await this.ReadBinary(Offset);
+				KeyValuePair<byte[]?, bool> P = await this.ReadBinary(Offset, 0);
 				if (P.Key is null)
 					return null;
 
@@ -1088,7 +1087,9 @@ namespace NeuroAccess.Nfc.TravelDocuments
 
 				if (!ExpectedLength.HasValue)
 				{
-					ExpectedLength = GetExpectedLength(P.Key);
+					if (!TryGetExpectedLength(P.Key, out ExpectedLength))
+						return null;
+
 					if (ExpectedLength.HasValue)
 						this.Information("Expected length of file: " + ExpectedLength.Value.ToString(CultureInfo.InvariantCulture));
 				}
@@ -1099,63 +1100,57 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return File.ToArray();
 				}
 
-				ushort Offset2 = (ushort)(Offset + P.Key.Length);
-				if (Offset2 < Offset)
+				if (P.Key.Length == 0)
 					return null;
 
-				Offset = Offset2;
+				uint Increment = (uint)P.Key.Length;
+				if (Offset > uint.MaxValue - Increment)
+					return null;
+
+				Offset += Increment;
 			}
 
 			await this.SetState(TravelDocumentsState.DownloadedFile, FileName);
 			return File.ToArray();
 		}
 
-		private static int? GetExpectedLength(byte[] Bin)
+		private static bool TryGetExpectedLength(byte[] Bin, out int? ExpectedLength)
 		{
+			ExpectedLength = null;
+
 			if (Bin is null)
-				return null;
+				return true;
 
 			int i = 0;
 			int c = Bin.Length;
-			byte b;
 
 			if (c == 0)
-				return null;
+				return true;
 
-			b = Bin[i++];
+			byte b = Bin[i++];
 			if ((b & 0x1f) == 0x1f)
-				i++;
-
-			if (i >= c)
-				return null;
-
-			b = Bin[i++];
-
-			switch (b)
 			{
-				case 0x81:
+				do
+				{
 					if (i >= c)
-						return null;
+						return true;
 
-					c = Bin[i++];
-					break;
-
-				case 0x82:
-					if (i + 1 >= c)
-						return null;
-
-					c = Bin[i++];
-					c <<= 8;
-					c |= Bin[i++];
-
-					break;
-
-				default:
-					c = b & 0x7f;
-					break;
+					b = Bin[i++];
+				}
+				while ((b & 0x80) != 0);
 			}
 
-			return c + i;
+			if (i >= c)
+				return true;
+
+			if (!TryReadBerLength(Bin, ref i, c, out int Length))
+				return false;
+
+			if (Length > int.MaxValue - i)
+				return false;
+
+			ExpectedLength = Length + i;
+			return true;
 		}
 
 		/// <summary>
@@ -2233,13 +2228,13 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				return ReadTravelDocumentResult.UnableToParseEfSod;
 			}
 
-			if ((SecurityInfo.SignedData?.Certificates?.Count ?? 0) == 0)
+			if (SecurityInfo.CertificateCount == 0)
 			{
 				this.Error("No certificates available in EF.SOD.");
 				return ReadTravelDocumentResult.NoCertificates;
 			}
 
-			if (SecurityInfo.SignedData!.Certificates.Count > 1)
+			if (SecurityInfo.CertificateCount > 1)
 			{
 				this.Error("Multiple certificates available in EF.SOD.");
 				return ReadTravelDocumentResult.MultipleCertificates;
@@ -2250,14 +2245,8 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			this.Information("Validating certificate.");
 			await this.SetState(TravelDocumentsState.ValidatingCertificate);
 
-			foreach (X509Certificate2 Cert in SecurityInfo.SignedData!.Certificates)
+			foreach (Certificate Cert2 in SecurityInfo.Certificates)
 			{
-				if (!Certificate.TryParse(Cert.RawData, out Certificate? Cert2))
-				{
-					this.Error("Unable to parse certificate.");
-					return ReadTravelDocumentResult.InvalidCertificate;
-				}
-
 				ChunkedList<Certificate> Certificates = [Cert2];
 				Dictionary<string, bool> CrlUrls = [];
 
@@ -2696,7 +2685,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			int i = 0;
 			int c = Data.Length;
 			ushort Tag;
-			ushort Len;
+			int Len;
 			byte[] Value;
 
 			while (i < c)
@@ -2729,32 +2718,10 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				if (i == c)
 					return false;
 
-				Len = Data[i++];
+				if (!TryReadBerLength(Data, ref i, c, Client, out Len))
+					return false;
 
-				switch (Len)
-				{
-					case 0x81:
-						if (i == c)
-							return false;
-
-						Len = Data[i++];
-						break;
-
-					case 0x82:
-						if (i + 1 >= c)
-							return false;
-
-						Len = Data[i++];
-						Len <<= 8;
-						Len |= Data[i++];
-						break;
-
-					default:
-						Len &= 0x7f;
-						break;
-				}
-
-				if (i + Len > c)
+				if (Len > c - i)
 					return false;
 
 				Value = new byte[Len];
@@ -2782,6 +2749,51 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			}
 
 			DataObjects = [.. Found];
+
+			return true;
+		}
+
+		private static bool TryReadBerLength(byte[] Data, ref int Offset, int EndOffset, out int Length)
+		{
+			return TryReadBerLength(Data, ref Offset, EndOffset, null, out Length);
+		}
+
+		private static bool TryReadBerLength(byte[] Data, ref int Offset, int EndOffset,
+			TravelDocumentsClient? Client, out int Length)
+		{
+			Length = 0;
+
+			if (Offset >= EndOffset)
+				return false;
+
+			byte LengthByte = Data[Offset++];
+			if ((LengthByte & 0x80) == 0)
+			{
+				Length = LengthByte;
+				return true;
+			}
+
+			int LengthBytes = LengthByte & 0x7f;
+			if (LengthBytes == 0)
+			{
+				Client?.Warning("Indefinite BER-TLV lengths are not supported.");
+				return false;
+			}
+
+			if (LengthBytes > EndOffset - Offset)
+				return false;
+
+			for (int i = 0; i < LengthBytes; i++)
+			{
+				byte Value = Data[Offset++];
+				if (Length > ((int.MaxValue - Value) >> 8))
+				{
+					Client?.Warning("BER-TLV length exceeds the supported maximum.");
+					return false;
+				}
+
+				Length = (Length << 8) | Value;
+			}
 
 			return true;
 		}
