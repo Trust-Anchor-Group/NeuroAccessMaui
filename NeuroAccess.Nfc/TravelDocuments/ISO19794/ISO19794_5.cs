@@ -4,7 +4,6 @@ using System.IO;
 using System.Text;
 using Waher.Runtime.Collections;
 using Waher.Runtime.IO;
-using Waher.Script.Exceptions;
 
 namespace NeuroAccess.Nfc.TravelDocuments.ISO19794
 {
@@ -137,8 +136,11 @@ namespace NeuroAccess.Nfc.TravelDocuments.ISO19794
 				FaceImageType FaceImageType = (FaceImageType)FaceImageTypeRaw;
 				ImageDataType ImageDataType = (ImageDataType)ImageDataTypeRaw;
 
-				if (Version < 3 && ImageDataType == ImageDataType.Jpeg)
-					ImageDataType = ImageDataType.Jpeg2000;
+				if (Version < 3 && ImageDataTypeRaw < 2)
+				{
+					ImageDataTypeRaw++;
+					ImageDataType = (ImageDataType)ImageDataTypeRaw;
+				}
 
 				if (Version >= 3)
 				{
