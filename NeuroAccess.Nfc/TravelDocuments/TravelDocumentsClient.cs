@@ -959,7 +959,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 		/// Reads binary information from the currently selected file.
 		/// </summary>
 		/// <returns>Read data, or null if an error occurred.</returns>
-		public Task<KeyValuePair<byte[]?, bool>> ReadBinary(ushort Offset)
+		public Task<KeyValuePair<byte[]?, bool>> ReadBinary(uint Offset)
 		{
 			return this.ReadBinary(Offset, 0);
 		}
@@ -1073,7 +1073,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 				return null;
 
 			using MemoryStream File = new();
-			ushort Offset = 0;
+			uint Offset = 0;
 			int? ExpectedLength = null;
 			int BytesDownloaded = 0;
 
@@ -1099,11 +1099,7 @@ namespace NeuroAccess.Nfc.TravelDocuments
 					return File.ToArray();
 				}
 
-				ushort Offset2 = (ushort)(Offset + P.Key.Length);
-				if (Offset2 < Offset)
-					return null;
-
-				Offset = Offset2;
+				Offset += (uint)P.Key.Length;
 			}
 
 			await this.SetState(TravelDocumentsState.DownloadedFile, FileName);
@@ -1115,47 +1111,57 @@ namespace NeuroAccess.Nfc.TravelDocuments
 			if (Bin is null)
 				return null;
 
-			int i = 0;
-			int c = Bin.Length;
+			uint i = 0;
+			uint c = (uint)Bin.Length;
 			byte b;
 
 			if (c == 0)
-				return null;
+				return 0;
 
 			b = Bin[i++];
 			if ((b & 0x1f) == 0x1f)
-				i++;
+			{
+				do
+				{
+					if (i >= c)
+						return null;
+
+					b = Bin[i++];
+				}
+				while ((b & 0x80) != 0);
+			}
 
 			if (i >= c)
 				return null;
 
 			b = Bin[i++];
 
-			switch (b)
+			if (b < 0x80)
+				return (int)(i + b);
+
+			b -= 0x80;
+
+			if (b > 4)
+				return null;    // Length too long to be valid.
+
+			if (i + b > c)
+				return null;    // Length exceeds available data.
+
+			uint Length = 0;
+
+			while (b > 0)
 			{
-				case 0x81:
-					if (i >= c)
-						return null;
-
-					c = Bin[i++];
-					break;
-
-				case 0x82:
-					if (i + 1 >= c)
-						return null;
-
-					c = Bin[i++];
-					c <<= 8;
-					c |= Bin[i++];
-
-					break;
-
-				default:
-					c = b & 0x7f;
-					break;
+				Length <<= 8;
+				Length |= Bin[i++];
+				b--;
 			}
 
-			return c + i;
+			Length += i;
+
+			if (Length > int.MaxValue)
+				return null;    // Length too long to be valid.
+
+			return (int)Length;
 		}
 
 		/// <summary>
