@@ -1835,8 +1835,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 			string Subject, string Language, string ThreadId, string ParentThreadId, EventHandlerAsync<DeliveryEventArgs>? DeliveryCallback, object? State)
 		{
 			this.XmppClient.SendMessage(QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
-			//this.ContractsClient.LocalE2eEndpoint.SendMessage(this.XmppClient, E2ETransmission.NormalIfNotE2E,
-			//	QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
 			//TODO: ENABLE E2E
 		}
 
