@@ -3160,16 +3160,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			foreach (LegalIdentityAttachment Attachment in Attachments)
 			{
-				HttpFileUploadEventArgs e2 = await ServiceRef.XmppService.RequestUploadSlotAsync(
-					Path.GetFileName(Attachment.FileName!)!, Attachment.ContentType!, Attachment.ContentLength);
-
-				if (!e2.Ok)
-					throw e2.StanzaError ?? new Exception(e2.ErrorText);
-
-				await e2.PUT(Attachment.Data, Attachment.ContentType, (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
-				byte[] Signature = await this.ContractsClient.SignAsync(Attachment.Data, SignWith.CurrentKeys);
-
-				Identity = await this.ContractsClient.AddLegalIdAttachmentAsync(Identity.Id, e2.GetUrl.Replace("10.0.2.2", "localhost"), Signature);
+				Identity = await this.ContractsClient.UploadLegalIdAttachmentAsync(Identity.Id,
+					Path.GetFileName(Attachment.FileName), Attachment.Data, Attachment.ContentType);
 			}
 
 			await this.ContractsClient.ReadyForApprovalAsync(Identity.Id);
@@ -3564,7 +3556,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private void RegisterContractsEventHandlers()
 		{
-			this.ContractsClient.EnableE2eEncryption(true, false);
+			this.ContractsClient.EnableE2eEncryption();
 
 			this.ContractsClient.IdentityUpdated += this.ContractsClient_IdentityUpdated;
 			this.ContractsClient.PetitionForIdentityReceived += this.ContractsClient_PetitionForIdentityReceived;
