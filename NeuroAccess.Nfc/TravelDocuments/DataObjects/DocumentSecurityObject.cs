@@ -100,7 +100,7 @@ namespace NeuroAccess.Nfc.TravelDocuments.DataObjects
 
 							Log.Debug("Platform/OS-independent signature validation failed, but Platform/OS-dependent signature validation successful. Check communication logs for more details.");
 
-							Client.Warning("Platform/OS-independent signature validation failed, but Platform/OS-dependent signature validation successful:\r\n\r\n " +
+							Client.Warning("Platform/OS-independent signature validation failed, but Platform/OS-dependent signature validation successful:\r\n\r\n" +
 								Convert.ToBase64String(Value, Base64FormattingOptions.InsertLineBreaks));
 						}
 						catch (Exception)
