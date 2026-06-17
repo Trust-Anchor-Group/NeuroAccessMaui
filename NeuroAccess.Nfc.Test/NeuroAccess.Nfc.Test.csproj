@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Sensitive\NFC EF_SOD problem.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Sensitive\NFC EF_SOD problem.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MSTest" Version="4.2.1" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.9" />
     <PackageReference Include="Waher.Content" Version="3.6.1" />

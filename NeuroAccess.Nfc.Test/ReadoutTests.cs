@@ -1,6 +1,8 @@
 ﻿using NeuroAccess.Nfc.TravelDocuments;
 using NeuroAccess.Nfc.TravelDocuments.ISO19794;
+using NeuroAccess.Nfc.TravelDocuments.SignedMessages;
 using Waher.Events;
+using Waher.Networking;
 using Waher.Networking.Sniffers;
 
 namespace NeuroAccess.Nfc.Test
@@ -90,6 +92,23 @@ namespace NeuroAccess.Nfc.Test
 			Assert.IsTrue(SecurityInfoRead);
 			Assert.IsTrue(MrzRead);
 			Assert.IsTrue(FaceRead);
+		}
+
+		[TestMethod]
+		[DataRow("Sensitive\\NFC EF_SOD problem.txt")]
+		public async Task Test_02_EF_SOD_Parsing(string FileName)
+		{
+			string Base64 = File.ReadAllText(FileName);
+			byte[] EfSod = Convert.FromBase64String(Base64);
+
+			Assert.IsTrue(SignedMessage.TryParse(EfSod, out SignedMessage? SignedData));
+			Assert.IsNotNull(SignedData);
+
+			CommunicationLayer ComLayer = new(false, new TextWriterSniffer(
+				new TestContextWriter(this.TestContext), BinaryPresentationMethod.Hexadecimal,
+				"Sniffer"));
+
+			Assert.IsTrue(SignedData.CheckSignature(false, ComLayer));
 		}
 	}
 }

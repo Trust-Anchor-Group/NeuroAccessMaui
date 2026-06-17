@@ -16,6 +16,10 @@
 # Mono auto generated files
 mono_crash.*
 
+# Sensitive information
+
+Sensitive/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

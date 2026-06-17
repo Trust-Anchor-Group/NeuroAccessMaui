@@ -165,12 +165,24 @@ namespace NeuroAccess.Nfc.TravelDocuments.SignedMessages
 				i++;
 			}
 
-			if (i >= c || SignerInfoVector[i++] is not Vector AlgorithmIdentifier)
+			if (i >= c)
 				return false;
 
-			ISignatureAlgorithm? SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
+			ISignatureAlgorithm? SignatureAlgorithm = SignerInfoVector[i] as ISignatureAlgorithm;
+
 			if (SignatureAlgorithm is null)
-				return false;
+			{
+				if (SignerInfoVector[i] is Vector AlgorithmIdentifier)
+				{
+					SignatureAlgorithm = Security.SignatureAlgorithms.SignatureAlgorithm.TryDecode(AlgorithmIdentifier);
+					if (SignatureAlgorithm is null)
+						return false;
+				}
+				else
+					return false;
+			}
+
+			i++;
 
 			if (i >= c)
 				return false;
