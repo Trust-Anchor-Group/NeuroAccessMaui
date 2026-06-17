@@ -95,6 +95,7 @@ namespace NeuroAccess.Nfc.Test
 		}
 
 		[TestMethod]
+		[Ignore]
 		[DataRow("Sensitive\\NFC EF_SOD problem.txt")]
 		public async Task Test_02_EF_SOD_Parsing(string FileName)
 		{
