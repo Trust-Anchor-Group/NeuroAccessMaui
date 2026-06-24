@@ -2116,7 +2116,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 						{
 							try
 							{
-								Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), AppId.Id));
+								Ref = await ServiceRef.KycService.FindReferenceByIdentityIdAsync(AppId.Id);
 							}
 							catch (Exception Ex2)
 							{
@@ -2129,18 +2129,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 							try
 							{
 								List<KycReference> All = [.. await Database.Find<KycReference>()];
-								if (AppId is not null)
-								{
-									Ref = All.FirstOrDefault(r => string.Equals(r.CreatedIdentityId, AppId.Id, StringComparison.OrdinalIgnoreCase));
-								}
-
 								Ref ??= All
-									.Where(r => r.CreatedIdentityState == IdentityState.Created && !string.IsNullOrEmpty(r.CreatedIdentityId))
+									.Where(r => r.GetEffectiveApplicationIdentityState() == IdentityState.Created && !string.IsNullOrEmpty(r.GetActiveApplicationIdentityId()))
 									.OrderByDescending(r => r.UpdatedUtc)
 									.FirstOrDefault();
 
 								Ref ??= All
-									.Where(r => !string.IsNullOrEmpty(r.CreatedIdentityId))
+									.Where(r => !string.IsNullOrEmpty(r.GetActiveApplicationIdentityId()))
 									.OrderByDescending(r => r.UpdatedUtc)
 									.FirstOrDefault();
 							}
@@ -3226,11 +3221,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 			HashSet<string> RefreshedIdentityIds = new(StringComparer.OrdinalIgnoreCase);
 			foreach (KycReference Reference in References
 				.Where(Candidate =>
-					!string.IsNullOrEmpty(Candidate.CreatedIdentityId) &&
-					(Candidate.CreatedIdentityState is null || Candidate.CreatedIdentityState == IdentityState.Created))
+					!string.IsNullOrEmpty(Candidate.GetActiveApplicationIdentityId()) &&
+					(Candidate.GetEffectiveApplicationIdentityState() is null || Candidate.GetEffectiveApplicationIdentityState() == IdentityState.Created))
 				.OrderByDescending(Candidate => Candidate.UpdatedUtc))
 			{
-				string IdentityId = Reference.CreatedIdentityId!;
+				string IdentityId = Reference.GetActiveApplicationIdentityId()!;
 				if (!RefreshedIdentityIds.Add(IdentityId))
 					continue;
 
@@ -3246,8 +3241,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 					continue;
 				}
 
-				bool StateChanged = Reference.CreatedIdentityState != Identity.State;
-				if (StateChanged || Reference.CreatedIdentityState is null)
+				bool StateChanged = Reference.GetEffectiveApplicationIdentityState() != Identity.State;
+				if (StateChanged || Reference.GetEffectiveApplicationIdentityState() is null)
 				{
 					try
 					{
@@ -3404,7 +3399,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			try
 			{
-				KycReference? Ref = await Database.FindFirstIgnoreRest<KycReference>(new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), e.Identity.Id));
+				KycReference? Ref = await ServiceRef.KycService.FindReferenceByIdentityIdAsync(e.Identity.Id);
+
 				if (Ref is not null)
 					await ServiceRef.KycService.UpdateSubmissionStateAsync(Ref, e.Identity);
 

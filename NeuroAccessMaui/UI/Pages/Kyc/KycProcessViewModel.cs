@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -40,6 +41,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 	/// </summary>
 	public partial class KycProcessViewModel : BaseViewModel, IDisposable, IKeyboardInsetAware
 	{
+		private const string nfcReadoutFileName = "NFC.xml";
+		private const string nfcReadoutContentType = "application/xml";
 		private readonly IKycService kycService = ServiceRef.KycService;
 		private bool disposedValue; // Disposal flag
 		private readonly KycProcessNavigationArgs? navigationArguments;
@@ -97,6 +100,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private bool hasPersonalInformation;
 		[ObservableProperty] private bool hasAddressInformation;
 		[ObservableProperty] private bool hasAttachments;
+		[ObservableProperty] private string nfcEvidenceStatusText = string.Empty;
+		[ObservableProperty] private bool hasNfcReadout;
 		[ObservableProperty] private bool hasCompanyInformation;
 		[ObservableProperty] private bool hasCompanyAddress;
 		[ObservableProperty] private bool hasCompanyRepresentative;
@@ -126,8 +131,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			(this.kycReference?.ApplicationReview?.UnvalidatedPhotos?.Length ?? 0) > 0;
 
 		public bool HasInvalidatedItems => this.InvalidatedItems.Count > 0;
-		public bool ShouldShowUnvalidatedBanner => this.HasUnvalidatedItems && this.InvalidatedItems.Count == 0 && this.kycReference?.CreatedIdentityState == IdentityState.Created;
-		public bool ShouldShowRejectionBanner => ((!string.IsNullOrEmpty(this.kycReference?.ApplicationReview?.Code)) && this.kycReference?.ApplicationReview?.Code != "ManualReview") || this.kycReference?.CreatedIdentityState == IdentityState.Rejected;
+		public bool ShouldShowUnvalidatedBanner => this.HasUnvalidatedItems && this.InvalidatedItems.Count == 0 && this.kycReference?.GetEffectiveApplicationIdentityState() == IdentityState.Created;
+		public bool ShouldShowRejectionBanner => ((!string.IsNullOrEmpty(this.kycReference?.ApplicationReview?.Code)) && this.kycReference?.ApplicationReview?.Code != "ManualReview") || this.kycReference?.GetEffectiveApplicationIdentityState() == IdentityState.Rejected;
 
 		private void SetEditingFromSummary(bool value)
 		{
@@ -298,7 +303,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			this.process = await this.kycReference.ToProcess(Lang);
-			this.applicationId = this.kycReference.CreatedIdentityId;
+			this.applicationId = this.kycReference.GetActiveApplicationIdentityId();
 			this.OnPropertyChanged(nameof(this.Pages));
 			if (this.process is null)
 			{
@@ -308,8 +313,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 			this.process.Initialize();
 
-			bool Pending = this.kycReference.CreatedIdentityState == IdentityState.Created && !string.IsNullOrEmpty(this.kycReference.CreatedIdentityId);
-			bool Rejected = this.kycReference.CreatedIdentityState == IdentityState.Rejected && !string.IsNullOrEmpty(this.kycReference.CreatedIdentityId);
+			string? ActiveApplicationIdentityId = this.kycReference.GetActiveApplicationIdentityId();
+			IdentityState? EffectiveApplicationState = this.kycReference.GetEffectiveApplicationIdentityState();
+			bool Pending = EffectiveApplicationState == IdentityState.Created && !string.IsNullOrEmpty(ActiveApplicationIdentityId);
+			bool Rejected = EffectiveApplicationState == IdentityState.Rejected && !string.IsNullOrEmpty(ActiveApplicationIdentityId);
 			this.applicationSent = Pending;
 			this.ApplicationSentPublic = Pending;
 			if (!Pending && !Rejected)
@@ -913,6 +920,38 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return await this.kycService.GetFirstInvalidVisiblePageIndexAsync(this.process);
 		}
 
+		private void AddNfcReadoutAttachment()
+		{
+			if (this.kycReference is null ||
+				this.attachments is null ||
+				string.IsNullOrWhiteSpace(this.kycReference.NfcReadoutXml))
+			{
+				return;
+			}
+
+			byte[] Data = Encoding.UTF8.GetBytes(this.kycReference.NfcReadoutXml);
+			LegalIdentityAttachment? Existing = this.attachments.FirstOrDefault(Attachment =>
+				string.Equals(Attachment.FileName, nfcReadoutFileName, StringComparison.OrdinalIgnoreCase));
+			if (Existing is not null)
+			{
+				Existing.ContentType = nfcReadoutContentType;
+				Existing.Data = Data;
+				Existing.ContentLength = Data.Length;
+				return;
+			}
+
+			this.attachments.Add(new LegalIdentityAttachment(nfcReadoutFileName, nfcReadoutContentType, Data));
+		}
+
+		[RelayCommand]
+		private async Task OpenTravelDocumentAsync()
+		{
+			if (this.kycReference is null)
+				return;
+
+			await ServiceRef.NavigationService.GoToAsync(nameof(KycTravelDocumentPage), new KycProcessNavigationArgs(this.kycReference));
+		}
+
 		[RelayCommand]
 		private async Task ExecuteApplyAsync()
 		{
@@ -935,6 +974,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				{
 					ServiceRef.LogService.LogWarning("Error checking for existing identity private key, genereting new keys...: " + Ex.Message);
 				}
+				this.AddNfcReadoutAttachment();
 				(bool Succeeded, LegalIdentity? Added) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.AddLegalIdentity(this.mappedValues.ToArray(), !HasIdWithKey, this.attachments.ToArray()));
 				if (Succeeded && Added is not null)
 				{
@@ -1006,7 +1046,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				this.ApplicationSentPublic = ServiceRef.TagProfile.IdentityApplication is not null;
 				this.NrReviews = ServiceRef.TagProfile.NrReviews;
-				if (this.kycReference is not null && this.kycReference.CreatedIdentityId == E.Identity.Id)
+				if (this.kycReference is not null && this.kycReference.MatchesIdentityId(E.Identity.Id))
 				{
 					try { await this.kycService.UpdateSubmissionStateAsync(this.kycReference, E.Identity); } catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
 					if (E.Identity.State == IdentityState.Approved)
@@ -1160,9 +1200,22 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.HasPersonalInformation = this.PersonalInformationSummary.Count > 0;
 			this.HasAddressInformation = this.AddressInformationSummary.Count > 0;
 			this.HasAttachments = this.AttachmentInformationSummary.Count > 0;
+			this.HasNfcReadout = !string.IsNullOrWhiteSpace(this.kycReference?.NfcReadoutXml);
+			this.NfcEvidenceStatusText = this.ResolveNfcEvidenceStatusText();
 			this.HasCompanyInformation = this.CompanyInformationSummary.Count > 0;
 			this.HasCompanyAddress = this.CompanyAddressSummary.Count > 0;
 			this.HasCompanyRepresentative = this.CompanyRepresentativeSummary.Count > 0;
+		}
+
+		private string ResolveNfcEvidenceStatusText()
+		{
+			if (!string.IsNullOrWhiteSpace(this.kycReference?.NfcReadoutXml))
+				return ServiceRef.Localizer["KycTravelDocumentSummaryReadoutReady"];
+
+			if (!string.IsNullOrWhiteSpace(this.kycReference?.TravelDocumentMrz))
+				return ServiceRef.Localizer["KycTravelDocumentSummaryMrzReady"];
+
+			return ServiceRef.Localizer["KycTravelDocumentSummaryMissing"];
 		}
 
 		private KycProcessState BuildProcessState()

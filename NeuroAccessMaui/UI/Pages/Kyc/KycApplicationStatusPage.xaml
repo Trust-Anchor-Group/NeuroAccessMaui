@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Kyc.KycApplicationStatusPage"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
+					  x:DataType="viewmodel:KycApplicationStatusViewModel"
+					  ui:SafeArea.Mode="TopAndBottom">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+		  Margin="16,8,16,0"
+		  RowDefinitions="Auto,*">
+		<controls:Background />
+
+		<Grid ColumnDefinitions="Auto,*,Auto">
+			<controls:SvgButton Command="{Binding GoBackCommand}"
+								SvgSource="close.svg"
+								Style="{DynamicResource IconButton}"
+								HorizontalOptions="Start"
+								Grid.Column="0" />
+
+			<Label Grid.Column="2"
+				   Style="{DynamicResource PageTitleLabel}"
+				   Text="{l:Localize IdentityApplication}"
+				   HorizontalOptions="End" />
+		</Grid>
+
+		<ScrollView Grid.Row="1">
+			<VerticalStackLayout Spacing="16"
+								 Padding="0,16,0,16">
+				<Border Style="{DynamicResource BorderSet}"
+						Padding="16"
+						Margin="0">
+					<VerticalStackLayout Spacing="14">
+						<Border Background="{DynamicResource TnPInfobgWL}"
+								Stroke="Transparent"
+								StrokeShape="RoundRectangle 12"
+								Padding="10,6"
+								HorizontalOptions="Start">
+							<Border.Triggers>
+								<DataTrigger TargetType="Border"
+											 Binding="{Binding IsRejected}"
+											 Value="True">
+									<Setter Property="Background"
+											Value="{DynamicResource TnPDangerbgWL}" />
+								</DataTrigger>
+								<DataTrigger TargetType="Border"
+											 Binding="{Binding IsFinalizing}"
+											 Value="True">
+									<Setter Property="Background"
+											Value="{DynamicResource TnPWarningbgWL}" />
+								</DataTrigger>
+							</Border.Triggers>
+							<Label Text="{Binding StageText}"
+								   FontSize="14"
+								   FontFamily="SpaceGroteskBold"
+								   TextColor="{DynamicResource TnPInfoContentWL}">
+								<Label.Triggers>
+									<DataTrigger TargetType="Label"
+												 Binding="{Binding IsRejected}"
+												 Value="True">
+										<Setter Property="TextColor"
+												Value="{DynamicResource TnPDangerContentWL}" />
+									</DataTrigger>
+									<DataTrigger TargetType="Label"
+												 Binding="{Binding IsFinalizing}"
+												 Value="True">
+										<Setter Property="TextColor"
+												Value="{DynamicResource TnPWarningContentWL}" />
+									</DataTrigger>
+								</Label.Triggers>
+							</Label>
+						</Border>
+
+						<Label Text="{Binding TitleText}"
+							   Style="{DynamicResource PageTitleLabel}"
+							   FontSize="28"
+							   LineBreakMode="WordWrap" />
+
+						<Label Text="{Binding DescriptionText}"
+							   Style="{DynamicResource InfoLabel}"
+							   LineBreakMode="WordWrap" />
+
+						<Label Text="{Binding UpdatedText}"
+							   Style="{DynamicResource InfoLabel}"
+							   TextColor="{DynamicResource ContentSecondaryWL}"
+							   LineBreakMode="WordWrap" />
+					</VerticalStackLayout>
+				</Border>
+
+				<Border Style="{DynamicResource BorderSet}"
+						Padding="16"
+						Margin="0">
+					<VerticalStackLayout Spacing="10">
+						<Label Text="{l:Localize CurrentApplication}"
+							   Style="{DynamicResource InfoLabel}"
+							   FontFamily="SpaceGroteskBold"
+							   LineBreakMode="WordWrap" />
+						<Label Text="{Binding DetailText}"
+							   Style="{DynamicResource InfoLabel}"
+							   LineBreakMode="WordWrap" />
+					</VerticalStackLayout>
+				</Border>
+
+				<VerticalStackLayout Spacing="8">
+					<controls:TextButton Style="{DynamicResource FilledTextButton}"
+										 LabelData="{Binding PrimaryActionText}"
+										 Command="{Binding PrimaryActionCommand}" />
+					<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
+										 LabelData="{Binding SecondaryActionText}"
+										 Command="{Binding SecondaryActionCommand}" />
+				</VerticalStackLayout>
+			</VerticalStackLayout>
+		</ScrollView>
+	</Grid>
+</base:BaseContentPage>

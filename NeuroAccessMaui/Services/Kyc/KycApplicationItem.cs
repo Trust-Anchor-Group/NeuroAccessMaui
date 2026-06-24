@@ -12,28 +12,28 @@ namespace NeuroAccessMaui.Services.Kyc
 	/// </summary>
 	public sealed class KycApplicationItem
 	{
-		private const string XmlLanguageNamespace = "http://www.w3.org/XML/1998/namespace";
+		private const string xmlLanguageNamespace = "http://www.w3.org/XML/1998/namespace";
 		private readonly IReadOnlyDictionary<string, string> localizedNames;
 		private readonly string? primaryDisplayName;
 
 		private KycApplicationItem(
-			string nodeId,
-			string itemId,
-			string processXml,
-			string? serviceAddress,
-			string? publisher,
-			DateTime? published,
-			IReadOnlyDictionary<string, string> localizedNames,
-			string? primaryDisplayName)
+			string NodeId,
+			string ItemId,
+			string ProcessXml,
+			string? ServiceAddress,
+			string? Publisher,
+			DateTime? Published,
+			IReadOnlyDictionary<string, string> LocalizedNames,
+			string? PrimaryDisplayName)
 		{
-			this.NodeId = nodeId;
-			this.ItemId = itemId;
-			this.ProcessXml = processXml;
-			this.ServiceAddress = serviceAddress;
-			this.Publisher = publisher;
-			this.Published = published;
-			this.localizedNames = localizedNames;
-			this.primaryDisplayName = primaryDisplayName;
+			this.NodeId = NodeId;
+			this.ItemId = ItemId;
+			this.ProcessXml = ProcessXml;
+			this.ServiceAddress = ServiceAddress;
+			this.Publisher = Publisher;
+			this.Published = Published;
+			this.localizedNames = LocalizedNames;
+			this.primaryDisplayName = PrimaryDisplayName;
 		}
 
 		/// <summary>
@@ -109,47 +109,47 @@ namespace NeuroAccessMaui.Services.Kyc
 			if (string.IsNullOrWhiteSpace(ItemId))
 				return false;
 
-				XmlElement? Payload = Item.Item;
-				if (Payload is null)
-				{
-					string? PayloadXml = Item.Payload;
-					if (string.IsNullOrWhiteSpace(PayloadXml))
-						return false;
-
-					try
-					{
-						XmlDocument Document = new XmlDocument();
-						Document.LoadXml(PayloadXml);
-						Payload = Document.DocumentElement;
-					}
-					catch (XmlException)
-					{
-						return false;
-					}
-				}
-
-					if (Payload is null)
-						return false;
-
-					XmlElement? PayloadElement = NormalizePayload(Payload);
-					if (PayloadElement is null)
-						return false;
-
-					string ProcessXml = PayloadElement.OuterXml;
-				if (string.IsNullOrWhiteSpace(ProcessXml))
+			XmlElement? Payload = Item.Item;
+			if (Payload is null)
+			{
+				string? PayloadXml = Item.Payload;
+				if (string.IsNullOrWhiteSpace(PayloadXml))
 					return false;
 
-				Dictionary<string, string> NamesDictionary = ExtractLocalizedNames(PayloadElement, out string? PrimaryName);
-				ReadOnlyDictionary<string, string> Names = new ReadOnlyDictionary<string, string>(NamesDictionary);
+				try
+				{
+					XmlDocument Document = new XmlDocument();
+					Document.LoadXml(PayloadXml);
+					Payload = Document.DocumentElement;
+				}
+				catch (XmlException)
+				{
+					return false;
+				}
+			}
+
+			if (Payload is null)
+				return false;
+
+			XmlElement? PayloadElement = NormalizePayload(Payload);
+			if (PayloadElement is null)
+				return false;
+
+			string ProcessXml = PayloadElement.OuterXml;
+			if (string.IsNullOrWhiteSpace(ProcessXml))
+				return false;
+
+			Dictionary<string, string> NamesDictionary = ExtractLocalizedNames(PayloadElement, out string? PrimaryName);
+			ReadOnlyDictionary<string, string> Names = new ReadOnlyDictionary<string, string>(NamesDictionary);
 
 			string NodeId = Item.Node ?? string.Empty;
 			string? ServiceAddress = Item.ServiceAddress;
 			string? Publisher = Item.Publisher;
 			DateTime? Published = null;
 
-				Application = new KycApplicationItem(NodeId, ItemId, ProcessXml, ServiceAddress, Publisher, Published, Names, PrimaryName);
-				return true;
-			}
+			Application = new KycApplicationItem(NodeId, ItemId, ProcessXml, ServiceAddress, Publisher, Published, Names, PrimaryName);
+			return true;
+		}
 
 		/// <summary>
 		/// Converts a collection of PubSub items to KYC application descriptors.
@@ -206,10 +206,10 @@ namespace NeuroAccessMaui.Services.Kyc
 			return Payload;
 		}
 
-		private static Dictionary<string, string> ExtractLocalizedNames(XmlElement Payload, out string? primaryName)
+		private static Dictionary<string, string> ExtractLocalizedNames(XmlElement Payload, out string? PrimaryName)
 		{
 			Dictionary<string, string> Names = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-			primaryName = null;
+			PrimaryName = null;
 			XmlElement? NameElement = SelectChild(Payload, "Name");
 			if (NameElement is null)
 				return Names;
@@ -222,7 +222,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				if (!string.Equals(TextElement.LocalName, "Text", StringComparison.Ordinal))
 					continue;
 
-				string Language = TextElement.GetAttribute("lang", XmlLanguageNamespace);
+				string Language = TextElement.GetAttribute("lang", xmlLanguageNamespace);
 				if (string.IsNullOrWhiteSpace(Language))
 					Language = "und";
 
@@ -231,8 +231,8 @@ namespace NeuroAccessMaui.Services.Kyc
 					continue;
 
 				Names[Language] = Value.Trim();
-				if (primaryName is null)
-					primaryName = Value.Trim();
+				if (PrimaryName is null)
+					PrimaryName = Value.Trim();
 			}
 
 			return Names;

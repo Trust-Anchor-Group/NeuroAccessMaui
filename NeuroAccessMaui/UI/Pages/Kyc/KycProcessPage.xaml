@@ -795,6 +795,29 @@
 													<VerticalStackLayout BindableLayout.ItemsSource="{Binding AttachmentInformationSummary}"
 															             BindableLayout.ItemTemplate="{StaticResource SummaryDisplayTemplate}"
 																		 Spacing="8"/>
+													<Border Background="{DynamicResource TnPInfobgWL}"
+															Stroke="Transparent"
+															StrokeShape="RoundRectangle 12"
+															Padding="{DynamicResource SmallMargins}">
+														<Border.Triggers>
+															<DataTrigger TargetType="Border"
+																		 Binding="{Binding HasNfcReadout}"
+																		 Value="True">
+																<Setter Property="Background"
+																		Value="{DynamicResource TnPSuccessbgWL}" />
+															</DataTrigger>
+														</Border.Triggers>
+														<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+															<Label Text="{l:Localize KycTravelDocumentSummaryTitle}"
+																   Style="{DynamicResource FieldTitleLabel}" />
+															<Label Text="{Binding NfcEvidenceStatusText}"
+																   Style="{DynamicResource InfoLabel}"
+																   LineBreakMode="WordWrap" />
+															<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+																				 LabelData="{l:Localize KycTravelDocumentOpenButton}"
+																				 Command="{Binding OpenTravelDocumentCommand}" />
+														</VerticalStackLayout>
+													</Border>
 												</VerticalStackLayout>
 											</Border>
 										</VerticalStackLayout>

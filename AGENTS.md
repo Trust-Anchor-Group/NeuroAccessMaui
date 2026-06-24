@@ -49,7 +49,10 @@ public async Task LoadUserAsync(string userId) { ... }
   - Properties
   - **Local variables**
   - Arguments
-- Use **camelCase** for private fields (without an underscore prefix).  
+- Use **camelCase** for all private fields (without an underscore prefix), including:
+  - Private instance fields
+  - `private const` fields
+  - `private static readonly` fields
 - Only use **camelCase** for local variables in specific short-term cases, such as loop counters or mathematical variables (`x`, `y`, `z`, `i`, `j`, etc).  
 
 #### Typing
@@ -80,6 +83,11 @@ KycReference Reference = new KycReference();
 string UserName = "Alice";
 int Index = 0;
 
+// Correct (private fields, including const and static readonly):
+private const string defaultEndpoint = "https://api.example.com";
+private static readonly TimeSpan requestTimeout = TimeSpan.FromSeconds(30);
+private string currentUser;
+
 // Allowed (short loop/mathematical):
 for (int i = 0; i < 10; i++) { ... }
 double x = 1.0, y = 2.0;
@@ -87,6 +95,8 @@ double x = 1.0, y = 2.0;
 // Not allowed:
 // var reference = new KycReference();
 // string userName = "Alice";
+// private const string DefaultEndpoint = "...";
+// private static readonly TimeSpan RequestTimeout = ...;
 ```
 
 ---
@@ -101,6 +111,7 @@ double x = 1.0, y = 2.0;
   - Use `MainThread.BeginInvokeOnMainThread()` or `Dispatcher.Dispatch()` for UI changes.  
 - ViewModels should inherit from a shared **BaseViewModel** for consistency.  
 - Avoid inline event handlers in XAML; use Commands and Bindings instead.  
+- **Animation exception:** purely visual animations may be implemented in code-behind when needed for reliability or simplicity, as long as business logic and state remain in the ViewModel.  
 - Ensure all user-facing text supports localization.  
 
 ---
@@ -135,13 +146,58 @@ double x = 1.0, y = 2.0;
 - Code must remain **testable** — logic should be modular, dependency-injected, and avoid static coupling.  
 - Avoid dependencies that make testing difficult (e.g., static singletons or global state).  
 
----
+#### Test Project & Framework
 
-### Building and Running
+- **Framework**: MSTest (via `MSTest` NuGet package).  
+- **Test projects**: `NeuroAccess.Nfc.Test` and `NeuroAccessMaui.Test`.  
+- **Target framework**: `net10.0` (plain .NET — no MAUI TFMs).  
+- Test projects include source files under test via `<Compile Include="..." Link="..." />` when the source has no MAUI platform dependencies.
 
-- **Do not build automatically.**  
-  AI agents or tools must **not trigger builds** unless explicitly requested by the user or a CI/CD pipeline.  
-- Builds and deployments should only be executed when explicitly initiated by a developer or automation process.  
+#### Test Naming Convention
+
+All test methods follow the **`Test_N_Description`** pattern:
+
+- `N` is a two-digit sequential number within the test class (e.g., `01`, `02`, `03`).  
+- `Description` is a concise PascalCase summary of what is being tested.  
+- If tests need to be inserted between existing numbers, use a letter suffix: `Test_03a_...`, `Test_03b_...`.  
+- The `[TestMethod]` attribute is required. The method must be `public void` or `public async Task`.  
+
+**Examples:**
+
+```csharp
+[TestMethod]
+public void Test_01_BuildStableKeyName_DatabaseKey_NormalizesPath() { ... }
+
+[TestMethod]
+public void Test_02_WriteSameValue_IdempotentSuccess() { ... }
+
+[TestMethod]
+public void Test_02a_WriteSameValue_MultipleTimesStillIdempotent() { ... }
+```
+
+#### Test Class Naming
+
+- Test classes end with `Tests` (e.g., `KeyNameHelperTests`, `BacTests`).  
+- One test class per logical area or component being tested.  
+- Use `[TestClass]` attribute.
+
+#### Mocks
+
+- Mock implementations live in a `Mocks/` subfolder within the test project.  
+- Name mocks with a `Mock` prefix (e.g., `MockKeychainOperations`).  
+- Mocks should be dictionary-backed or simple in-memory implementations — avoid mocking frameworks unless complexity demands it.
+
+#### Helper Classes
+
+- Do NOT create separate helper classes (e.g., in a `Helpers/` folder) for test utilities.  
+- Instead, keep helper methods as `private static` methods within the test class that uses them.  
+- If multiple test classes need the same logic, duplicate it — test readability and locality are more important than DRY in tests.
+
+#### Comments
+
+- Do NOT reference requirement IDs, task IDs, or spec document numbers in code comments (e.g., `Validates: Requirements 1.2, 1.3`).  
+- Spec documents are only relevant during implementation and have no meaning to future readers.  
+- Comments should describe *what* and *why* in terms a developer can understand without external documents.
 
 ---
 

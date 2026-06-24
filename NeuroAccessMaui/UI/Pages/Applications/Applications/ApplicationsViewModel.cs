@@ -46,13 +46,32 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 	/// </summary>
 	public partial class ApplicationsViewModel : XmppViewModel
 	{
-		private const int AvailableTemplatesPageSize = 10; // Unified page size for available applications pagination
-		public ObservableCollection<KycReference> Applications { get; } = new();
-		public ObservableCollection<KycApplicationTemplate> AvailableApplications { get; } = new();
+		private const int availableTemplatesPageSize = 10; // Unified page size for available applications pagination
 		private KycApplicationPage? availableApplicationsPage;
 
+		/// <summary>
+		/// Gets the locally persisted KYC application references displayed on the page.
+		/// </summary>
+		public ObservableCollection<KycReference> Applications { get; } = new ObservableCollection<KycReference>();
+
+		/// <summary>
+		/// Gets the available KYC application templates the user can start.
+		/// </summary>
+		public ObservableCollection<KycApplicationTemplate> AvailableApplications { get; } = new ObservableCollection<KycApplicationTemplate>();
+
+		/// <summary>
+		/// Gets the light theme banner image URI.
+		/// </summary>
 		public string BannerUriLight => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallLight);
+
+		/// <summary>
+		/// Gets the dark theme banner image URI.
+		/// </summary>
 		public string BannerUriDark => ServiceRef.ThemeService.GetImageUri(Constants.Branding.BannerSmallDark);
+
+		/// <summary>
+		/// Gets the banner image URI for the current application theme.
+		/// </summary>
 		public string BannerUri =>
 			Application.Current?.UserAppTheme switch
 			{
@@ -67,23 +86,55 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		[ObservableProperty]
 		private bool hasMoreAvailableTemplates;
 
+		/// <summary>
+		/// Gets a value indicating whether there is a current KYC application.
+		/// </summary>
 		public bool HasCurrentApplication => this.CurrentApplication is not null;
 
+		/// <summary>
+		/// Gets a value indicating whether another page of application templates can be loaded.
+		/// </summary>
 		public bool CanLoadMoreAvailableApplications => this.CanExecuteCommands && this.HasMoreAvailableTemplates;
 
-		// Expose loader state if you want to bind spinners/errors in XAML
+		/// <summary>
+		/// Gets the loader for locally persisted applications.
+		/// </summary>
 		public ObservableTask<int> Loader { get; init; }
+
+		/// <summary>
+		/// Gets the loader for available remote or fallback application templates.
+		/// </summary>
 		public ObservableTask<int> AvailableLoader { get; init; }
+
+		/// <summary>
+		/// Gets a value indicating whether local application loading is running.
+		/// </summary>
 		public bool IsLoading => this.Loader.IsRunning;
+
+		/// <summary>
+		/// Gets the local application loading error message, if any.
+		/// </summary>
 		public string? LoadError => this.Loader.ErrorMessage;
 
+		/// <summary>
+		/// Gets a value indicating whether locally persisted applications are available.
+		/// </summary>
 		public bool HasApplications => this.Applications.Count > 0; // legacy, not used by current UI
 
+		/// <summary>
+		/// Gets a value indicating whether current application progress should be shown.
+		/// </summary>
 		public bool ShowProgressBar => this.CurrentApplication is not null
-									&& (this.CurrentApplication.CreatedIdentityState is null
-									|| this.CurrentApplication.CreatedIdentityState == IdentityState.Created);
+									&& (this.CurrentApplication.GetEffectiveApplicationIdentityState() is null
+									|| this.CurrentApplication.GetEffectiveApplicationIdentityState() == IdentityState.Created);
 
-		partial void OnHasMoreAvailableTemplatesChanged(bool value)
+		partial void OnCurrentApplicationChanged(KycReference? Value)
+		{
+			this.OnPropertyChanged(nameof(this.HasCurrentApplication));
+			this.OnPropertyChanged(nameof(this.ShowProgressBar));
+		}
+
+		partial void OnHasMoreAvailableTemplatesChanged(bool Value)
 		{
 			this.LoadMoreAvailableApplicationsCommand.NotifyCanExecuteChanged();
 		}
@@ -231,7 +282,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		#region Commands
 
 		[RelayCommand(CanExecute = nameof(CanExecuteCommands))]
-		private async Task CreateNewApplication(KycApplicationTemplate? template)
+		private async Task CreateNewApplication(KycApplicationTemplate? Template)
 		{
 			try
 			{
@@ -241,6 +292,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				{
 					try
 					{
+						bool RemoveApplicationAttachments = true;
 						if (this.CurrentApplication.Fields is not null)
 						{
 							PreviousFields = this.CurrentApplication.Fields
@@ -248,9 +300,10 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 								.ToArray();
 						}
 
-						if (!string.IsNullOrEmpty(this.CurrentApplication.CreatedIdentityId))
+						string? ActiveApplicationIdentityId = this.CurrentApplication.GetActiveApplicationIdentityId();
+						if (!string.IsNullOrEmpty(ActiveApplicationIdentityId))
 						{
-							LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(this.CurrentApplication.CreatedIdentityId);
+							LegalIdentity Identity = await ServiceRef.XmppService.GetLegalIdentity(ActiveApplicationIdentityId);
 							if (Identity.State == IdentityState.Created)
 							{
 								IAuthenticationService Auth = ServiceRef.Provider.GetRequiredService<IAuthenticationService>();
@@ -260,9 +313,20 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 								await ServiceRef.XmppService.ObsoleteLegalIdentity(Identity.Id);
 							}
+							else if (Identity.IsApproved())
+							{
+								LegalIdentity? CurrentLegalIdentity = ServiceRef.TagProfile.LegalIdentity;
+								if (CurrentLegalIdentity is null ||
+									!string.Equals(CurrentLegalIdentity.Id, Identity.Id, StringComparison.OrdinalIgnoreCase))
+								{
+									await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
+								}
+
+								RemoveApplicationAttachments = false;
+							}
 						}
 
-						await ServiceRef.TagProfile.SetIdentityApplication(null, true);
+						await ServiceRef.TagProfile.SetIdentityApplication(null, RemoveApplicationAttachments);
 						await Database.Delete(this.CurrentApplication);
 						await Database.Provider.Flush();
 					}
@@ -295,7 +359,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				}
 
 				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
-				KycApplicationTemplate? TemplateToUse = template ?? this.AvailableApplications.FirstOrDefault();
+				KycApplicationTemplate? TemplateToUse = Template ?? this.AvailableApplications.FirstOrDefault();
 				KycReference Ref = await ServiceRef.KycService.LoadKycReferenceAsync(Language, TemplateToUse);
 
 				await ServiceRef.KycService.PrepareReferenceForNewApplicationAsync(Ref, Language, PreviousFields);
@@ -322,7 +386,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 				string After = this.availableApplicationsPage.NextAfter;
-				KycApplicationPage Page = await ServiceRef.KycService.LoadKycApplicationsPageAsync(After, null, null, AvailableTemplatesPageSize, Language).ConfigureAwait(false);
+				KycApplicationPage Page = await ServiceRef.KycService.LoadKycApplicationsPageAsync(After, null, null, availableTemplatesPageSize, Language).ConfigureAwait(false);
 
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
@@ -335,7 +399,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 					this.availableApplicationsPage = Page;
 					// Only allow more if we received a full page, the page indicates more, and it's not fallback.
-					this.HasMoreAvailableTemplates = !Page.UsedFallback && Page.Templates.Count == AvailableTemplatesPageSize && Page.HasMoreAfter;
+					this.HasMoreAvailableTemplates = !Page.UsedFallback && Page.Templates.Count == availableTemplatesPageSize && Page.HasMoreAfter;
 				});
 			}
 			catch (Exception Ex)
@@ -372,18 +436,32 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				if (Item is null)
 					return;
 
-				if (Item.CreatedIdentityState is not null)
+				IdentityState? EffectiveApplicationState = Item.GetEffectiveApplicationIdentityState();
+				if (EffectiveApplicationState is not null)
 				{
-					IdentityState? State = Item.CreatedIdentityState;
+					IdentityState? State = EffectiveApplicationState;
 					if (State == IdentityState.Approved)
 					{
-						LegalIdentity? Identity = await ServiceRef.XmppService.GetLegalIdentity(Item.CreatedIdentityId);
-						// Preview in review/approved identity
+						string? ActiveApplicationIdentityId = Item.GetActiveApplicationIdentityId();
+						if (string.IsNullOrEmpty(ActiveApplicationIdentityId))
+						{
+							await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
+							return;
+						}
+
+						LegalIdentity? Identity = await ServiceRef.XmppService.GetLegalIdentity(ActiveApplicationIdentityId);
 						await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
+					}
+					else if (State == IdentityState.Created ||
+						State == IdentityState.Rejected ||
+						State == IdentityState.Obsoleted ||
+						State == IdentityState.Compromised)
+					{
+						await ServiceRef.NavigationService.GoToAsync(nameof(KycApplicationStatusPage), new KycProcessNavigationArgs(Item));
 					}
 					else
 					{
-						// Rejected or other states: allow editing in KYC
+						// Unknown states: allow editing in KYC.
 						await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
 					}
 				}
@@ -410,19 +488,19 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 		[RelayCommand]
 		private void CancelLoading() => this.Loader.Cancel();
 
-		private static bool TemplatesEqual(KycApplicationTemplate first, KycApplicationTemplate second)
+		private static bool TemplatesEqual(KycApplicationTemplate First, KycApplicationTemplate Second)
 		{
-			string? firstId = first.Source?.ItemId;
-			string? secondId = second.Source?.ItemId;
+			string? FirstId = First.Source?.ItemId;
+			string? SecondId = Second.Source?.ItemId;
 
-			if (!string.IsNullOrEmpty(firstId) && !string.IsNullOrEmpty(secondId))
-				return string.Equals(firstId, secondId, System.StringComparison.Ordinal);
+			if (!string.IsNullOrEmpty(FirstId) && !string.IsNullOrEmpty(SecondId))
+				return string.Equals(FirstId, SecondId, System.StringComparison.Ordinal);
 
-			if (first.Source is null && second.Source is null &&
-				!string.IsNullOrEmpty(first.Reference.KycXml) &&
-				!string.IsNullOrEmpty(second.Reference.KycXml))
+			if (First.Source is null && Second.Source is null &&
+				!string.IsNullOrEmpty(First.Reference.KycXml) &&
+				!string.IsNullOrEmpty(Second.Reference.KycXml))
 			{
-				return string.Equals(first.Reference.KycXml, second.Reference.KycXml, System.StringComparison.Ordinal);
+				return string.Equals(First.Reference.KycXml, Second.Reference.KycXml, System.StringComparison.Ordinal);
 			}
 
 			return false;
@@ -485,7 +563,6 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				// Final notify
 				await MainThread.InvokeOnMainThreadAsync(() =>
 				{
-					this.OnPropertyChanged(nameof(this.HasCurrentApplication));
 					this.OnPropertyChanged(nameof(this.HasApplications));
 					// If you want command states to react to loading completion:
 					this.NotifyCommandsCanExecuteChanged();
@@ -515,7 +592,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 				string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 				Ct.ThrowIfCancellationRequested();
-				KycApplicationPage Page = await ServiceRef.KycService.LoadKycApplicationsPageAsync(null, null, 0, AvailableTemplatesPageSize, Language, Ct).ConfigureAwait(false);
+				KycApplicationPage Page = await ServiceRef.KycService.LoadKycApplicationsPageAsync(null, null, 0, availableTemplatesPageSize, Language, Ct).ConfigureAwait(false);
 
 				Ct.ThrowIfCancellationRequested();
 
@@ -526,7 +603,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 						this.AvailableApplications.Add(Template);
 					this.availableApplicationsPage = Page;
 					// Only show Load More if full page, remote (not fallback), and server hints more.
-					this.HasMoreAvailableTemplates = !Page.UsedFallback && Page.Templates.Count == AvailableTemplatesPageSize && Page.HasMoreAfter;
+					this.HasMoreAvailableTemplates = !Page.UsedFallback && Page.Templates.Count == availableTemplatesPageSize && Page.HasMoreAfter;
 				});
 
 				Progress.Report(100);

@@ -14,6 +14,7 @@ using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
 using NeuroAccessMaui.Services.Intents;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Localization;
 using NeuroAccessMaui.Services.Network;
@@ -56,6 +57,7 @@ namespace NeuroAccessMaui.Services
 		private static IContractOrchestratorService? contractOrchestratorService;
 		private static IThingRegistryOrchestratorService? thingRegistryOrchestratorService;
 		private static INeuroWalletOrchestratorService? neuroWalletOrchestratorService;
+		private static IIdentityApplicationGateService? identityApplicationGateService;
 		private static IAttachmentCacheService? attachmentCacheService;
 		private static ICryptoService? cryptoService;
 		private static ISettingsService? settingsService;
@@ -96,6 +98,7 @@ namespace NeuroAccessMaui.Services
 			contractOrchestratorService = null;
 			thingRegistryOrchestratorService = null;
 			neuroWalletOrchestratorService = null;
+			identityApplicationGateService = null;
 			attachmentCacheService = null;
 			cryptoService = null;
 			settingsService = null;
@@ -264,6 +267,18 @@ namespace NeuroAccessMaui.Services
 			{
 				neuroWalletOrchestratorService ??= Provider.GetRequiredService<INeuroWalletOrchestratorService>();
 				return neuroWalletOrchestratorService;
+			}
+		}
+
+		/// <summary>
+		/// Identity application gate service.
+		/// </summary>
+		public static IIdentityApplicationGateService IdentityApplicationGateService
+		{
+			get
+			{
+				identityApplicationGateService ??= Provider.GetRequiredService<IIdentityApplicationGateService>();
+				return identityApplicationGateService;
 			}
 		}
 

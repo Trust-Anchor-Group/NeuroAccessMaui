@@ -618,7 +618,9 @@ namespace NeuroAccessMaui
 
 			// Applications:
 			Routing.RegisterRoute(nameof(ApplicationsPage), typeof(ApplicationsPage));
+			Routing.RegisterRoute(nameof(KycApplicationStatusPage), typeof(KycApplicationStatusPage));
 			Routing.RegisterRoute(nameof(KycProcessPage), typeof(KycProcessPage));
+			Routing.RegisterRoute(nameof(KycTravelDocumentPage), typeof(KycTravelDocumentPage));
 
 			// Contacts
 			Routing.RegisterRoute(nameof(ChatPage), typeof(ChatPage));

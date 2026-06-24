@@ -21,6 +21,7 @@ using NeuroAccessMaui.UI.MVVM.Building;
 using NeuroAccessMaui.UI.MVVM.Policies;
 using Waher.Runtime.Inventory;
 using Waher.Persistence;
+using Waher.Persistence.Filters;
 using SkiaSharp;
 using Waher.Networking.XMPP.Contracts;
 using System.Diagnostics;
@@ -40,8 +41,8 @@ namespace NeuroAccessMaui.Services.Kyc
 	public class KycService : IKycService, IDisposable
 	{
 		private static readonly string backupKyc = "TestKYCNeuro.xml";
-		private const string KycTemplateNodeId = "NeuroAccessKyc";
-		private const int DefaultTemplatePageSize = 20;
+		private const string kycTemplateNodeId = "NeuroAccessKyc";
+		private const int defaultTemplatePageSize = 20;
 
 		private readonly System.Collections.Concurrent.ConcurrentDictionary<string, AsyncLock> referenceLocks = new();
 		private readonly Channel<string> autosaveChannel;
@@ -119,6 +120,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// Optionally localizes the friendly name using the provided language.
 		/// </summary>
 		/// <param name="Lang">Optional language code for process localization.</param>
+		/// <param name="Template">Optional KYC application template to apply to the reference.</param>
 		/// <returns>The loaded reference.</returns>
 		public async Task<KycReference> LoadKycReferenceAsync(string? Lang = null, KycApplicationTemplate? Template = null)
 		{
@@ -228,6 +230,41 @@ namespace NeuroAccessMaui.Services.Kyc
 			}
 		}
 
+		/// <inheritdoc/>
+		public async Task<KycReference?> FindReferenceByIdentityIdAsync(string? IdentityId)
+		{
+			if (string.IsNullOrWhiteSpace(IdentityId))
+				return null;
+
+			string NormalizedIdentityId = IdentityId.Trim();
+
+			try
+			{
+				KycReference? LegacyMatch = await Database.FindFirstIgnoreRest<KycReference>(
+					new FilterFieldEqualTo(nameof(KycReference.CreatedIdentityId), NormalizedIdentityId)).ConfigureAwait(false);
+				if (LegacyMatch is not null)
+					return LegacyMatch;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+			}
+
+			try
+			{
+				IEnumerable<KycReference> References = await Database.Find<KycReference>().ConfigureAwait(false);
+				return References
+					.Where(Reference => Reference.MatchesIdentityId(NormalizedIdentityId))
+					.OrderByDescending(Reference => Reference.UpdatedUtc)
+					.FirstOrDefault();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				return null;
+			}
+		}
+
 		/// <summary>
 		/// Loads available KYC references from the provider; falls back to local bundled test definition.
 		/// Always returns a list (empty on failure).
@@ -254,7 +291,7 @@ namespace NeuroAccessMaui.Services.Kyc
 
 		public async Task<KycApplicationPage> LoadKycApplicationsPageAsync(string? After = null, string? Before = null, int? Index = null, int? Max = null, string? Lang = null, CancellationToken CancellationToken = default)
 		{
-			int PageSize = Max.HasValue && Max.Value > 0 ? Max.Value : DefaultTemplatePageSize;
+			int PageSize = Max.HasValue && Max.Value > 0 ? Max.Value : defaultTemplatePageSize;
 			string Domain = ServiceRef.TagProfile.Domain ?? string.Empty;
 			string? ServiceAddress = ServiceRef.TagProfile.PubSubJid;
 
@@ -262,10 +299,10 @@ namespace NeuroAccessMaui.Services.Kyc
 
 			try
 			{
-				PubSubPageResult? PageResult = await ServiceRef.XmppService.GetItemsPageAsync(KycTemplateNodeId, ServiceAddress, After, Before, Index, PageSize).ConfigureAwait(false);
+				PubSubPageResult? PageResult = await ServiceRef.XmppService.GetItemsPageAsync(kycTemplateNodeId, ServiceAddress, After, Before, Index, PageSize).ConfigureAwait(false);
 				if (PageResult is null && !string.IsNullOrWhiteSpace(ServiceAddress))
 				{
-					PageResult = await ServiceRef.XmppService.GetItemsPageAsync(KycTemplateNodeId, null, After, Before, Index, PageSize).ConfigureAwait(false);
+					PageResult = await ServiceRef.XmppService.GetItemsPageAsync(kycTemplateNodeId, null, After, Before, Index, PageSize).ConfigureAwait(false);
 				}
 				if (PageResult is null)
 				{
@@ -349,11 +386,11 @@ namespace NeuroAccessMaui.Services.Kyc
 
 			CancellationToken.ThrowIfCancellationRequested();
 			KycProcess Process = await KycProcessParser.LoadProcessAsync(Xml, Lang).ConfigureAwait(false);
-				string? FriendlyName = Process.Name?.PrimaryText;
-				if (string.IsNullOrWhiteSpace(FriendlyName) && Application is not null)
-					FriendlyName = Application.PrimaryDisplayName ?? Application.DisplayName;
-				if (string.IsNullOrWhiteSpace(FriendlyName) && Application is not null)
-					FriendlyName = Application.ItemId;
+			string? FriendlyName = Process.Name?.PrimaryText;
+			if (string.IsNullOrWhiteSpace(FriendlyName) && Application is not null)
+				FriendlyName = Application.PrimaryDisplayName ?? Application.DisplayName;
+			if (string.IsNullOrWhiteSpace(FriendlyName) && Application is not null)
+				FriendlyName = Application.ItemId;
 			if (string.IsNullOrWhiteSpace(FriendlyName))
 				FriendlyName = "KYC Application";
 
@@ -387,7 +424,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		{
 			CancellationToken.ThrowIfCancellationRequested();
 			using Stream Stream = await FileSystem.OpenAppPackageFileAsync(backupKyc);
-			using StreamReader Reader = new(Stream);
+			using StreamReader Reader = new StreamReader(Stream);
 			string Xml = await Reader.ReadToEndAsync(CancellationToken).ConfigureAwait(false);
 			return Xml;
 		}
@@ -438,9 +475,9 @@ namespace NeuroAccessMaui.Services.Kyc
 				Process = await KycProcessParser.LoadProcessAsync(Xml, Lang).ConfigureAwait(false);
 
 			Reference.SetProcess(Process, Xml, DateTime.UtcNow, DateTime.UtcNow);
-				string? FriendlyName = Process.Name?.PrimaryText ?? Template.Reference.FriendlyName;
-				if (!string.IsNullOrWhiteSpace(FriendlyName))
-					Reference.FriendlyName = FriendlyName;
+			string? FriendlyName = Process.Name?.PrimaryText ?? Template.Reference.FriendlyName;
+			if (!string.IsNullOrWhiteSpace(FriendlyName))
+				Reference.FriendlyName = FriendlyName;
 		}
 
 		private async Task ApplyBundledTemplateAsync(KycReference Reference, string? Lang)
@@ -601,6 +638,11 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				Reference.CreatedIdentityId = Identity.Id;
 				Reference.CreatedIdentityState = Identity.State;
+				Reference.FinalIdentityId = Identity.Id;
+				Reference.FinalIdentityState = Identity.State;
+				Reference.IdentityStage = Identity.State == IdentityState.Approved
+					? KycIdentityApplicationStage.Completed
+					: KycIdentityApplicationStage.FinalPendingApproval;
 				Reference.ApplicationReview = null;
 				Reference.RejectionMessage = null;
 				Reference.RejectionCode = null;
@@ -629,6 +671,20 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				Reference.CreatedIdentityId = Identity.Id;
 				Reference.CreatedIdentityState = Identity.State;
+				if (Reference.IsPreviewIdentity(Identity.Id))
+				{
+					Reference.PreviewIdentityState = Identity.State;
+					if (Identity.State == IdentityState.Approved)
+						Reference.IdentityStage = KycIdentityApplicationStage.FinalizationInProgress;
+				}
+				else
+				{
+					Reference.FinalIdentityId = Identity.Id;
+					Reference.FinalIdentityState = Identity.State;
+					Reference.IdentityStage = Identity.State == IdentityState.Approved
+						? KycIdentityApplicationStage.Completed
+						: KycIdentityApplicationStage.FinalPendingApproval;
+				}
 				Reference.Version++;
 				Reference.UpdatedUtc = DateTime.UtcNow;
 				await SaveReferenceAsync(Reference);
@@ -647,6 +703,16 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				Reference.CreatedIdentityId = null;
 				Reference.CreatedIdentityState = null;
+				Reference.ReservedPreviewIdentityId = null;
+				Reference.PreviewIdentityId = null;
+				Reference.PreviewIdentityState = null;
+				Reference.FinalIdentityId = null;
+				Reference.FinalIdentityState = null;
+				Reference.IdentityStage = KycIdentityApplicationStage.None;
+				Reference.TravelDocumentMrz = null;
+				Reference.TravelDocumentMrzUpdatedUtc = null;
+				Reference.NfcReadoutXml = null;
+				Reference.NfcReadoutUpdatedUtc = null;
 				Reference.Version++;
 				Reference.UpdatedUtc = DateTime.UtcNow;
 				await SaveReferenceAsync(Reference);
@@ -703,6 +769,16 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.InvalidPhotoDetails = null;
 				Reference.CreatedIdentityId = null;
 				Reference.CreatedIdentityState = null;
+				Reference.ReservedPreviewIdentityId = null;
+				Reference.PreviewIdentityId = null;
+				Reference.PreviewIdentityState = null;
+				Reference.FinalIdentityId = null;
+				Reference.FinalIdentityState = null;
+				Reference.IdentityStage = KycIdentityApplicationStage.None;
+				Reference.TravelDocumentMrz = null;
+				Reference.TravelDocumentMrzUpdatedUtc = null;
+				Reference.NfcReadoutXml = null;
+				Reference.NfcReadoutUpdatedUtc = null;
 				if (SeedFields is not null && SeedFields.Count > 0)
 					Reference.Fields = SeedFields.Select(Field => new KycFieldValue(Field.FieldId, Field.Value)).ToArray();
 				else

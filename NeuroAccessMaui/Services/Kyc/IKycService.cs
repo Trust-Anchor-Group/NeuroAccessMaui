@@ -24,6 +24,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// Loads (or creates) the persisted KYC reference and ensures process XML is available.
 		/// </summary>
 		/// <param name="Lang">Optional language code.</param>
+		/// <param name="Template">Optional KYC application template to apply to the reference.</param>
 		Task<KycReference> LoadKycReferenceAsync(string? Lang = null, KycApplicationTemplate? Template = null);
 
 		/// <summary>
@@ -31,6 +32,13 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// </summary>
 		/// <param name="Reference">Reference to persist.</param>
 		Task SaveKycReferenceAsync(KycReference Reference);
+
+		/// <summary>
+		/// Finds the latest KYC reference that tracks a reserved preview, preview, final, or legacy identity identifier.
+		/// </summary>
+		/// <param name="IdentityId">The identity identifier to match.</param>
+		/// <returns>The matching KYC reference, or null if no match is found.</returns>
+		Task<KycReference?> FindReferenceByIdentityIdAsync(string? IdentityId);
 
 		/// <summary>
 		/// Loads available KYC processes from server, falling back to bundled test KYC.

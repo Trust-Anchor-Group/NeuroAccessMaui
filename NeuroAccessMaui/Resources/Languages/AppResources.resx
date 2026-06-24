@@ -3138,6 +3138,84 @@
   <data name="KycReviewAvailableMainPage" xml:space="preserve">
     <value>Some submitted details could not be verified. Tap to review.</value>
   </data>
+  <data name="KycTravelDocumentTitle" xml:space="preserve">
+    <value>Travel document NFC</value>
+  </data>
+  <data name="KycTravelDocumentSummaryTitle" xml:space="preserve">
+    <value>Document chip readout</value>
+  </data>
+  <data name="KycTravelDocumentSummaryMissing" xml:space="preserve">
+    <value>Add MRZ details to include an NFC chip readout with this application.</value>
+  </data>
+  <data name="KycTravelDocumentSummaryMrzReady" xml:space="preserve">
+    <value>MRZ saved. Tap the document with your phone to read the chip before applying.</value>
+  </data>
+  <data name="KycTravelDocumentSummaryReadoutReady" xml:space="preserve">
+    <value>NFC chip readout is ready and will be attached to this application.</value>
+  </data>
+  <data name="KycTravelDocumentOpenButton" xml:space="preserve">
+    <value>Add document NFC</value>
+  </data>
+  <data name="KycTravelDocumentDescription" xml:space="preserve">
+    <value>Enter the MRZ from your passport or ID card, then tap the document with your phone. The chip readout is attached as NFC.xml when you apply.</value>
+  </data>
+  <data name="KycTravelDocumentMrzLabel" xml:space="preserve">
+    <value>MRZ</value>
+  </data>
+  <data name="KycTravelDocumentMrzPlaceholder" xml:space="preserve">
+    <value>Paste the MRZ lines from your document</value>
+  </data>
+  <data name="KycTravelDocumentSaveButton" xml:space="preserve">
+    <value>Save MRZ</value>
+  </data>
+  <data name="KycTravelDocumentStartNfcButton" xml:space="preserve">
+    <value>Start NFC readout</value>
+  </data>
+  <data name="KycTravelDocumentSaved" xml:space="preserve">
+    <value>MRZ saved. You can now tap the document chip with your phone.</value>
+  </data>
+  <data name="KycTravelDocumentInvalidMrz" xml:space="preserve">
+    <value>The MRZ could not be validated. Check the document number, birth date, expiry date, and check digits.</value>
+  </data>
+  <data name="KycTravelDocumentReadoutReady" xml:space="preserve">
+    <value>NFC readout is already ready for this application.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReady" xml:space="preserve">
+    <value>Hold the travel document near your phone to read the chip.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReading" xml:space="preserve">
+    <value>Reading the document chip. Keep the document still.</value>
+  </data>
+  <data name="KycTravelDocumentNfcSuccess" xml:space="preserve">
+    <value>NFC chip readout saved and ready to attach to this application.</value>
+  </data>
+  <data name="KycTravelDocumentNfcUnavailable" xml:space="preserve">
+    <value>NFC readout is not available on this device or app configuration.</value>
+  </data>
+  <data name="KycTravelDocumentNfcCancelled" xml:space="preserve">
+    <value>NFC readout was cancelled.</value>
+  </data>
+  <data name="KycTravelDocumentNfcTimedOut" xml:space="preserve">
+    <value>NFC readout timed out. Start again and hold the document near your phone.</value>
+  </data>
+  <data name="KycTravelDocumentNfcMultipleTags" xml:space="preserve">
+    <value>More than one NFC tag was detected. Move other cards away and try again.</value>
+  </data>
+  <data name="KycTravelDocumentNfcUnsupportedTag" xml:space="preserve">
+    <value>The detected NFC tag is not a supported travel-document chip.</value>
+  </data>
+  <data name="KycTravelDocumentNfcConnectionLost" xml:space="preserve">
+    <value>The NFC connection was lost. Keep the document still and try again.</value>
+  </data>
+  <data name="KycTravelDocumentNfcAuthenticationFailed" xml:space="preserve">
+    <value>The chip could not be authenticated with the saved MRZ. Check the MRZ and try again.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReadFailed" xml:space="preserve">
+    <value>The chip authenticated, but the document data could not be read. Try again.</value>
+  </data>
+  <data name="KycTravelDocumentNfcFailed" xml:space="preserve">
+    <value>NFC readout failed. Check the MRZ and try again.</value>
+  </data>
   <data name="AddToBalance" xml:space="preserve">
     <value>Add to balance</value>
   </data>

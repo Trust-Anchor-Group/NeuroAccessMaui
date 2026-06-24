@@ -7,6 +7,7 @@ using NeuroAccessMaui.Services.Contracts;
 using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
 using NeuroAccessMaui.Services.Intents;
+using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Notification;
@@ -15,6 +16,7 @@ using NeuroAccessMaui.Services.Settings;
 using NeuroAccessMaui.Services.Storage;
 using NeuroAccessMaui.Services.Tag;
 using NeuroAccessMaui.Services.Theme;
+using NeuroAccessMaui.Services.TravelDocuments;
 using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Toasts;
 using NeuroAccessMaui.Animations;
@@ -92,6 +94,11 @@ using NeuroAccessMaui.UI.Pages.Wallet.TransactionHistory;
 using NeuroAccessMaui.UI.Popups.OnboardingHelp;
 using NeuroAccessMaui.UI.Pages.Utility;
 using NeuroAccessMaui.UI.Pages.Wallet.EmbeddedLayout;
+#if ANDROID
+using NeuroAccessMaui.AndroidPlatform.Nfc;
+#elif IOS
+using NeuroAccessMaui.Platforms.iOS.Nfc;
+#endif
 
 namespace NeuroAccessMaui.UI
 {
@@ -136,7 +143,21 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<IAttachmentCacheService>((_) => Types.InstantiateDefault<IAttachmentCacheService>(false));
 			Builder.Services.AddSingleton<IInternetCacheService>((_) => Types.InstantiateDefault<IInternetCacheService>(false));
 			Builder.Services.AddSingleton<IContractOrchestratorService>((_) => Types.InstantiateDefault<IContractOrchestratorService>(false));
+			Builder.Services.AddSingleton<IIdentityApplicationGateService>((_) => Types.InstantiateDefault<IIdentityApplicationGateService>(false));
+			Builder.Services.AddSingleton<IKycService>((_) => Types.InstantiateDefault<IKycService>(false));
+			Builder.Services.AddSingleton<ITravelDocumentEvidenceService>((_) => Types.InstantiateDefault<ITravelDocumentEvidenceService>(false));
+			Builder.Services.AddSingleton<ITravelDocumentReadoutService>((_) => Types.InstantiateDefault<ITravelDocumentReadoutService>(false));
 			Builder.Services.AddSingleton<INfcService>((_) => Types.InstantiateDefault<INfcService>(false));
+			Builder.Services.AddSingleton<INfcIsoDepSessionService>((_) =>
+			{
+#if ANDROID
+				return new AndroidNfcIsoDepSessionService();
+#elif IOS
+				return new IosNfcIsoDepSessionService();
+#else
+				return new DefaultNfcIsoDepSessionService();
+#endif
+			});
 			Builder.Services.AddSingleton<INotificationService>((_) => Types.InstantiateDefault<INotificationService>(false));
 			Builder.Services.AddSingleton<IIntentService>((_) => Types.InstantiateDefault<IIntentService>(false));
 			Builder.Services.AddSingleton<IXmlSchemaValidationService>((_) => Types.InstantiateDefault<IXmlSchemaValidationService>(false));
@@ -166,7 +187,9 @@ namespace NeuroAccessMaui.UI
 		{
 			// Applications
 			Builder.Services.AddTransient<ApplicationsPage, ApplicationsViewModel>();
+			Builder.Services.AddTransient<KycApplicationStatusPage, KycApplicationStatusViewModel>();
 			Builder.Services.AddTransient<KycProcessPage, KycProcessViewModel>();
+			Builder.Services.AddTransient<KycTravelDocumentPage, KycTravelDocumentViewModel>();
 
 			// Contacts
 			Builder.Services.AddTransient<ChatPage, ChatViewModel>();
