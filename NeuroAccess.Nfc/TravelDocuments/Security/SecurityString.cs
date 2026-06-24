@@ -1,0 +1,52 @@
+﻿namespace NeuroAccess.Nfc.TravelDocuments.Security
+{
+	/// <summary>
+	/// Abstract base class for security objects that represent named string values.
+	/// </summary>
+	public abstract class SecurityString : SecurityObject
+	{
+		protected bool configured;
+
+		/// <summary>
+		/// If the object has been configured.
+		/// </summary>
+		public override bool IsConfigured => this.configured;
+
+		/// <summary>
+		/// If the object can be configured by the security information provided.
+		/// </summary>
+		/// <param name="SecurityInfo">Security information.</param>
+		/// <returns>If the object can be configured, given the security information.</returns>
+		public override bool Configure(Vector SecurityInfo)
+		{
+			if (SecurityInfo.Length == 2)
+			{
+				object? Value = SecurityInfo[1];
+
+				if (Value is null)
+					this.Value = null;
+				else if (Value is string StringValue)
+					this.Value = StringValue;
+				else
+					return false;
+
+				this.configured = true;
+
+				return true;
+			}
+			else
+				return false;
+		}
+
+		/// <summary>
+		/// String Value.
+		/// </summary>
+		public string? Value { get; protected set; } = string.Empty;
+
+		/// <inheritdoc/>
+		public override string ToString()
+		{
+			return this.GetType().Name + ": " + (this.Value ?? string.Empty);
+		}
+	}
+}

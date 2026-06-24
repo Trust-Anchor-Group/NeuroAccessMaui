@@ -2,6 +2,7 @@
 #define DEBUG_XMPP_LOCAL
 //#define DEBUG_LOG_REMOTE
 //#define DEBUG_DB_REMOTE
+//#define DEBUG_NFC_REMOTE
 
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -120,15 +121,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 		private string? passwordHashMethod;
 		private bool xmppConnected = false;
 		private DateTime xmppLastStateChange = DateTime.MinValue;
-		private readonly InMemorySniffer? sniffer = new(250);
+		private readonly InMemorySniffer? sniffer = new(250, "Connection In-memory sniffer.");
 		private bool isCreatingClient;
 		private EventFilter? xmppFilteredEventSink;
 		private string? token = null;
 		private DateTime tokenCreated = DateTime.MinValue;
-#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE
+#if DEBUG_XMPP_REMOTE || DEBUG_LOG_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
 		private const string debugRecipient = "";     // TODO: Set JID of recipient of debug messages.
 #endif
-#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
 		private RemoteSniffer? debugSniffer = null;
 #endif
 #if DEBUG_LOG_REMOTE
@@ -205,7 +206,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					if (!string.IsNullOrEmpty(debugRecipient))
 					{
 #endif
-#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
 						this.debugSniffer = new RemoteSniffer(debugRecipient, DateTime.MaxValue, this.xmppClient, this.xmppClient,
 							ConcentratorServer.NamespaceConcentratorCurrent);
 #endif
@@ -531,7 +532,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.abuseClient?.Dispose();
 			this.abuseClient = null;
 
-#if DEBUG_DB_REMOTE
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
 			this.debugSniffer = null;
 #endif
 #if DEBUG_LOG_REMOTE
@@ -555,6 +556,22 @@ namespace NeuroAccessMaui.Services.Xmpp
 				this.xmppClient.State == XmppState.Offline ||
 				this.xmppClient.State == XmppState.Error ||
 				(this.xmppClient.State != XmppState.Connected && (DateTime.Now - this.xmppLastStateChange).TotalSeconds >= 10);
+		}
+
+		public ISniffer[] RemoteSniffers
+		{
+			get
+			{
+#if DEBUG_XMPP_REMOTE || DEBUG_DB_REMOTE || DEBUG_NFC_REMOTE
+				if (this.debugSniffer is null)
+					return [];
+				else
+					return [this.debugSniffer];
+
+#else
+				return [];
+#endif
+			}
 		}
 
 		private bool XmppParametersCurrent()
@@ -704,7 +721,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			this.isDisposed = true;
 		}
 		*/
-		#endregion
+#endregion
 
 		#region Lifecycle
 
@@ -1055,7 +1072,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			Assembly ApplicationAssembly, Func<XmppClient, Task> ConnectedFunc, ConnectOperation Operation)
 		{
 			// Use TaskCompletionSource for single completion
-			TaskCompletionSource<bool> Tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+			TaskCompletionSource<bool> Tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
 			// Flags for tracking progress and outcome
 			bool StreamNegotiation = false, StreamOpened = false, StartingEncryption = false, Authenticating = false, Registering = false, IsTimeout = false;
@@ -1820,8 +1837,6 @@ namespace NeuroAccessMaui.Services.Xmpp
 			string Subject, string Language, string ThreadId, string ParentThreadId, EventHandlerAsync<DeliveryEventArgs>? DeliveryCallback, object? State)
 		{
 			this.XmppClient.SendMessage(QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
-			//this.ContractsClient.LocalE2eEndpoint.SendMessage(this.XmppClient, E2ETransmission.NormalIfNotE2E,
-			//	QoS, Type, Id, To, CustomXml, Body, Subject, Language, ThreadId, ParentThreadId, DeliveryCallback, State);
 			//TODO: ENABLE E2E
 		}
 
@@ -2113,27 +2128,21 @@ namespace NeuroAccessMaui.Services.Xmpp
 						{
 							try
 							{
-								List<KycReference> All = new List<KycReference>(await Database.Find<KycReference>());
+								List<KycReference> All = [.. await Database.Find<KycReference>()];
 								if (AppId is not null)
 								{
 									Ref = All.FirstOrDefault(r => string.Equals(r.CreatedIdentityId, AppId.Id, StringComparison.OrdinalIgnoreCase));
 								}
 
-								if (Ref is null)
-								{
-									Ref = All
-										.Where(r => r.CreatedIdentityState == IdentityState.Created && !string.IsNullOrEmpty(r.CreatedIdentityId))
-										.OrderByDescending(r => r.UpdatedUtc)
-										.FirstOrDefault();
-								}
+								Ref ??= All
+									.Where(r => r.CreatedIdentityState == IdentityState.Created && !string.IsNullOrEmpty(r.CreatedIdentityId))
+									.OrderByDescending(r => r.UpdatedUtc)
+									.FirstOrDefault();
 
-								if (Ref is null)
-								{
-									Ref = All
-										.Where(r => !string.IsNullOrEmpty(r.CreatedIdentityId))
-										.OrderByDescending(r => r.UpdatedUtc)
-										.FirstOrDefault();
-								}
+								Ref ??= All
+									.Where(r => !string.IsNullOrEmpty(r.CreatedIdentityId))
+									.OrderByDescending(r => r.UpdatedUtc)
+									.FirstOrDefault();
 							}
 							catch (Exception Ex3)
 							{
@@ -2253,7 +2262,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		{
 			try
 			{
-				ApplicationReview Candidate = new ApplicationReview
+				ApplicationReview Candidate = new()
 				{
 					Message = message,
 					Code = e.Code,
@@ -2263,8 +2272,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				try
 				{
 					IEnumerable<InvalidClaim> InvalidClaimsEnumerable = e.InvalidClaims as IEnumerable<InvalidClaim> ?? Array.Empty<InvalidClaim>();
-					List<string> InvalidClaimNames = new List<string>();
-					List<ApplicationReviewClaimDetail> InvalidClaimDetailList = new List<ApplicationReviewClaimDetail>();
+					List<string> InvalidClaimNames = [];
+					List<ApplicationReviewClaimDetail> InvalidClaimDetailList = [];
 
 					foreach (InvalidClaim InvalidClaim in InvalidClaimsEnumerable)
 					{
@@ -2277,7 +2286,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 						InvalidClaimNames.Add(ClaimValue);
 
-						ApplicationReviewClaimDetail Detail = new ApplicationReviewClaimDetail(
+						ApplicationReviewClaimDetail Detail = new(
 							ClaimValue,
 							InvalidClaim.Reason ?? string.Empty,
 							InvalidClaim.ReasonLanguage,
@@ -2286,8 +2295,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 						InvalidClaimDetailList.Add(Detail);
 					}
 
-					Candidate.InvalidClaims = InvalidClaimNames.Count > 0 ? InvalidClaimNames.ToArray() : Array.Empty<string>();
-					Candidate.InvalidClaimDetails = InvalidClaimDetailList.Count > 0 ? InvalidClaimDetailList.ToArray() : Array.Empty<ApplicationReviewClaimDetail>();
+					Candidate.InvalidClaims = InvalidClaimNames.Count > 0 ? [.. InvalidClaimNames] : [];
+					Candidate.InvalidClaimDetails = InvalidClaimDetailList.Count > 0 ? [.. InvalidClaimDetailList] : [];
 				}
 				catch
 				{
@@ -2297,8 +2306,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 				try
 				{
 					IEnumerable<InvalidPhoto> InvalidPhotosEnumerable = e.InvalidPhotos as IEnumerable<InvalidPhoto> ?? Array.Empty<InvalidPhoto>();
-					List<string> InvalidPhotoNames = new List<string>();
-					List<ApplicationReviewPhotoDetail> InvalidPhotoDetailList = new List<ApplicationReviewPhotoDetail>();
+					List<string> InvalidPhotoNames = [];
+					List<ApplicationReviewPhotoDetail> InvalidPhotoDetailList = [];
 
 					foreach (InvalidPhoto InvalidPhoto in InvalidPhotosEnumerable)
 					{
@@ -2317,7 +2326,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 						InvalidPhotoNames.Add(DisplayName);
 
-						ApplicationReviewPhotoDetail Detail = new ApplicationReviewPhotoDetail(
+						ApplicationReviewPhotoDetail Detail = new(
 							FileName,
 							DisplayName,
 							InvalidPhoto.Reason ?? string.Empty,
@@ -2327,8 +2336,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 						InvalidPhotoDetailList.Add(Detail);
 					}
 
-					Candidate.InvalidPhotos = InvalidPhotoNames.Count > 0 ? InvalidPhotoNames.ToArray() : Array.Empty<string>();
-					Candidate.InvalidPhotoDetails = InvalidPhotoDetailList.Count > 0 ? InvalidPhotoDetailList.ToArray() : Array.Empty<ApplicationReviewPhotoDetail>();
+					Candidate.InvalidPhotos = InvalidPhotoNames.Count > 0 ? [.. InvalidPhotoNames] : [];
+					Candidate.InvalidPhotoDetails = InvalidPhotoDetailList.Count > 0 ? [.. InvalidPhotoDetailList] : [];
 				}
 				catch
 				{
@@ -2337,8 +2346,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 				try
 				{
-					IEnumerable<string> UnvalidatedClaimsEnumerable = e.UnvalidatedClaims as IEnumerable<string> ?? Array.Empty<string>();
-					List<string> UnvalidatedClaimList = new List<string>();
+					IEnumerable<string> UnvalidatedClaimsEnumerable = e.UnvalidatedClaims as IEnumerable<string> ?? [];
+					List<string> UnvalidatedClaimList = [];
 					foreach (string Claim in UnvalidatedClaimsEnumerable)
 					{
 						if (string.IsNullOrWhiteSpace(Claim))
@@ -2349,7 +2358,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							UnvalidatedClaimList.Add(TrimmedClaim);
 					}
 
-					Candidate.UnvalidatedClaims = UnvalidatedClaimList.Count > 0 ? UnvalidatedClaimList.ToArray() : Array.Empty<string>();
+					Candidate.UnvalidatedClaims = UnvalidatedClaimList.Count > 0 ? [.. UnvalidatedClaimList] : [];
 				}
 				catch
 				{
@@ -2358,8 +2367,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 				try
 				{
-					IEnumerable<string> UnvalidatedPhotosEnumerable = e.UnvalidatedPhotos as IEnumerable<string> ?? Array.Empty<string>();
-					List<string> UnvalidatedPhotoList = new List<string>();
+					IEnumerable<string> UnvalidatedPhotosEnumerable = e.UnvalidatedPhotos as IEnumerable<string> ?? [];
+					List<string> UnvalidatedPhotoList = [];
 					foreach (string Photo in UnvalidatedPhotosEnumerable)
 					{
 						if (string.IsNullOrWhiteSpace(Photo))
@@ -2370,7 +2379,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 							UnvalidatedPhotoList.Add(TrimmedPhoto);
 					}
 
-					Candidate.UnvalidatedPhotos = UnvalidatedPhotoList.Count > 0 ? UnvalidatedPhotoList.ToArray() : Array.Empty<string>();
+					Candidate.UnvalidatedPhotos = UnvalidatedPhotoList.Count > 0 ? [.. UnvalidatedPhotoList] : [];
 				}
 				catch
 				{
@@ -3153,16 +3162,8 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			foreach (LegalIdentityAttachment Attachment in Attachments)
 			{
-				HttpFileUploadEventArgs e2 = await ServiceRef.XmppService.RequestUploadSlotAsync(
-					Path.GetFileName(Attachment.FileName!)!, Attachment.ContentType!, Attachment.ContentLength);
-
-				if (!e2.Ok)
-					throw e2.StanzaError ?? new Exception(e2.ErrorText);
-
-				await e2.PUT(Attachment.Data, Attachment.ContentType, (int)Constants.Timeouts.UploadFile.TotalMilliseconds);
-				byte[] Signature = await this.ContractsClient.SignAsync(Attachment.Data, SignWith.CurrentKeys);
-
-				Identity = await this.ContractsClient.AddLegalIdAttachmentAsync(Identity.Id, e2.GetUrl.Replace("10.0.2.2", "localhost"), Signature);
+				Identity = await this.ContractsClient.UploadLegalIdAttachmentAsync(Identity.Id,
+					Path.GetFileName(Attachment.FileName), Attachment.Data, Attachment.ContentType);
 			}
 
 			await this.ContractsClient.ReadyForApprovalAsync(Identity.Id);
@@ -3193,7 +3194,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <returns>Legal identity object</returns>
 		public async Task<LegalIdentity> GetLegalIdentity(CaseInsensitiveString legalIdentityId)
 		{
-			ContactInfo Info = await ContactInfo.FindByLegalId(legalIdentityId);
+			ContactInfo? Info = await ContactInfo.FindByLegalId(legalIdentityId);
 
 			if (Info is not null && Info.LegalIdentity is not null)
 				return Info.LegalIdentity;
@@ -3654,7 +3655,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private void RegisterContractsEventHandlers()
 		{
-			this.ContractsClient.EnableE2eEncryption(true, false);
+			this.ContractsClient.EnableE2eEncryption();
 
 			this.ContractsClient.IdentityUpdated += this.ContractsClient_IdentityUpdated;
 			this.ContractsClient.PetitionForIdentityReceived += this.ContractsClient_PetitionForIdentityReceived;
@@ -4215,7 +4216,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				Presentation = NotificationPresentation.StoreOnly
 			};
 
-			byte[] ContentToSign = e.ContentToSign ?? Array.Empty<byte>();
+			byte[] ContentToSign = e.ContentToSign ?? [];
 			string ContentToSignBase64 = Convert.ToBase64String(ContentToSign);
 			string Purpose = e.Purpose ?? string.Empty;
 			string RequestorIdentityId = e.RequestorIdentity?.Id ?? string.Empty;
@@ -6037,7 +6038,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 			try
 			{
 				TaskCompletionSource<ItemsEventArgs> Tcs = new();
-				await this.PubSubClient.GetItems(NodeId, new[] { ItemId }, (s, e) => HandleResult(e, Tcs), null);
+				await this.PubSubClient.GetItems(NodeId, [ItemId], (s, e) => HandleResult(e, Tcs), null);
 				ItemsEventArgs Result = await Tcs.Task;
 				return Result.Items.FirstOrDefault();
 			}
@@ -6102,7 +6103,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 				}
 
 				ItemsEventArgs Result = await Tcs.Task;
-				PubSubItem[] Items = Result.Items ?? Array.Empty<PubSubItem>();
+				PubSubItem[] Items = Result.Items ?? [];
 				ResultPage? Page = Result.Page;
 				return new PubSubPageResult(NodeId, Items, Page);
 			}

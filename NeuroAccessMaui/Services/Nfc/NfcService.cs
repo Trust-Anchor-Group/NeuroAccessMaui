@@ -1,14 +1,23 @@
-﻿using NeuroAccess.Nfc;
-using NeuroAccess.Nfc.Extensions;
+﻿using System.Globalization;
+using System.Runtime.ExceptionServices;
+using System.Text;
+using System.Xml;
+using NeuroAccess.Nfc;
 using NeuroAccess.Nfc.Records;
-using NeuroAccessMaui.UI.Pages;
+using NeuroAccess.Nfc.TravelDocuments;
+using NeuroAccess.Nfc.TravelDocuments.DataObjects;
+using NeuroAccess.Nfc.TravelDocuments.ISO19794;
 using NeuroAccessMaui.Resources.Languages;
+using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.UI;
+using NeuroAccessMaui.UI.Pages;
+using Waher.Content.Xml;
+using Waher.Events;
+using Waher.Networking.Sniffers;
+using Waher.Networking.Sniffers.Model;
 using Waher.Runtime.Inventory;
 using Waher.Runtime.Settings;
 using Waher.Security;
-using System.Globalization;
-using NeuroAccessMaui.Services.Authentication;
 
 namespace NeuroAccessMaui.Services.Nfc
 {
@@ -55,20 +64,243 @@ namespace NeuroAccessMaui.Services.Nfc
 					{
 						// ISO 14443-4
 
+						IsoDep.SetTimeout(300000);   // Electronic documents may introduce latency to stall spamming. Max timeout = 5 minutes.
+
 						string Mrz = await RuntimeSettings.GetAsync("NFC.LastMrz", string.Empty);
 
 						if (!string.IsNullOrEmpty(Mrz) &&
-							BasicAccessControl.ParseMrz(Mrz, out DocumentInformation? DocInfo))
+							MrzExtensions.ParseMrz(Mrz, out DocumentInformation? DocInfo))
 						{
-							// §4.3, §D.3, https://www.icao.int/publications/Documents/9303_p11_cons_en.pdf
+							StringBuilder XmlBuilder = new();
+							XmlWriter XmlOutput = XmlWriter.Create(XmlBuilder, XML.WriterSettings(false, true));
+							XmlWriterSniffer InMemoryXmlWriterSniffer = new(XmlOutput, BinaryPresentationMethod.Base64, "NFC");
+							ISniffer[] Sniffers = new ISniffer[] { InMemoryXmlWriterSniffer }.Join(
+								ServiceRef.XmppService.RemoteSniffers);
 
-							byte[]? Challenge = await IsoDep.GetChallenge();
-							if (Challenge is not null && DocInfo is not null)
+							XmlOutput.WriteStartDocument();
+							XmlOutput.WriteStartElement("SnifferOutput", "http://waher.se/Schema/SnifferOutput.xsd");
+
+							InMemoryXmlWriterSniffer.Information(Mrz);
+
+							// TODO: LocalKeySeed argument must be set to the byte array of the UTF-8
+							// encodig of the PREVIEW application ID (same value that goes into the PREVIEW
+							// claim), to which the NFC.xml file will be attached, so that Neuron can
+							// cryptographically validate the readout is made just for this application,
+							// and not a replay of a previous readout.
+
+							using TravelDocumentsClient Client = new(IsoDep, DocInfo, null, Sniffers);
+
+							try
 							{
-								byte[] ChallengeResponse = DocInfo.CalcChallengeResponse(Challenge);
-								byte[]? Response = await IsoDep.ExternalAuthenticate(ChallengeResponse);
+								Client.Information("Starting readout.");
 
-								// TODO
+								Client.StateChanged += (_, e) =>
+								{
+									// TODO: Forward state-information to UI.
+									return Task.CompletedTask;
+								};
+
+								// TODO: Seed PACE authentication with ID of PREVIEW application, so that
+								// Neuron can cryptographically validate the readout is not a replay of a
+								// previous readout.
+
+								switch (await Client.Authenticate())
+								{
+									case AuthenticateResult.Success:
+										// Authentication successful.
+										break;
+
+									case AuthenticateResult.AlreadyEncrypted:
+									// Already authenticated with the document.
+
+									case AuthenticateResult.UnableToInitializePace:
+									// Unable to initialize PACE.
+									// (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+
+									case AuthenticateResult.UnableToAuthenticatePace:
+									// Unable to authenticate using the selected PACE protocol.
+									// (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+
+									case AuthenticateResult.UnableToGetBacChallenge:
+									// Unable to get BAC challenge. (Probably not a valid/working travel document.)
+
+									case AuthenticateResult.BacNotImplemented:
+									// Old Travel Document requiring BAC, which is not supported.
+
+									default:
+										// TODO: Forward failure to UI.
+										return;
+								}
+
+								Client.AppInfoUpdated += (_, e) =>
+								{
+									// TODO: Forward Application-level information to UI.
+									return Task.CompletedTask;
+								};
+
+								Client.SecurityInfoUpdated += (_, e) =>
+								{
+									// TODO: Forward Security information to UI.
+									return Task.CompletedTask;
+								};
+
+								Client.MrzUpdated += (_, e) =>
+								{
+									// TODO: Forward MRZ information to UI.
+									// TODO: Compare with OCR MRZ to ensure consistency.
+									// TODO: Check ExpiryDate to ensure passport is not expired.
+									return Task.CompletedTask;
+								};
+
+								Client.BiometricEncodingFaceUpdated += (_, e) =>
+								{
+									// TODO: Remove. Now being output to get binaries for JPEG 2000 decoding.
+									if (Client.BiometricEncodingFace is not null)
+									{
+										Representation? Face = Client.BiometricEncodingFace[0].BiometricDataBlock?.Record?.Representations[0];
+
+										if (Face is not null)
+										{
+											Client.Warning("Face Image (type: " + Face.ImageDataType.ToString() + "):\r\n\r\n" +
+												Convert.ToBase64String(Face.ImageData, Base64FormattingOptions.InsertLineBreaks));
+										}
+									}
+
+									// TODO: Forward Face Biometric information to UI.
+									return Task.CompletedTask;
+								};
+
+								Client.BiometricEncodingFingersUpdated += (_, e) =>
+								{
+									// TODO: Remove. Now being output to get binaries for JPEG 2000 decoding.
+									if (Client.BiometricEncodingFingers is not null)
+									{
+										Representation? Fingers = Client.BiometricEncodingFingers[0].BiometricDataBlock?.Record?.Representations[0];
+
+										if (Fingers is not null)
+										{
+											Client.Warning("Fingers Image (type: " + Fingers.ImageDataType.ToString() + "):\r\n\r\n" +
+												Convert.ToBase64String(Fingers.ImageData, Base64FormattingOptions.InsertLineBreaks));
+										}
+									}
+
+									// TODO: Forward Fingers Biometric information to UI.
+									return Task.CompletedTask;
+								};
+
+								Client.BiometricEncodingIrisesUpdated += (_, e) =>
+								{
+									// TODO: Remove. Now being output to get binaries for JPEG 2000 decoding.
+									if (Client.BiometricEncodingIrises is not null)
+									{
+										Representation? Irises = Client.BiometricEncodingIrises[0].BiometricDataBlock?.Record?.Representations[0];
+
+										if (Irises is not null)
+										{
+											Client.Warning("Irises Image (type: " + Irises.ImageDataType.ToString() + "):\r\n\r\n" +
+												Convert.ToBase64String(Irises.ImageData, Base64FormattingOptions.InsertLineBreaks));
+										}
+									}
+
+									// TODO: Forward Irises Biometric information to UI.
+									return Task.CompletedTask;
+								};
+
+								Client.DisplayedSignaturesUpdated += (_, e) =>
+								{
+									// TODO: Remove. Now being output to get binaries for JPEG 2000 decoding.
+									if (Client.DisplayedSignatures?.Signatures is not null)
+									{
+										DisplayedSignature? Signature = Client.DisplayedSignatures?.Signatures[0];
+
+										if (Signature is not null)
+										{
+											Client.Warning("Signature Image (type: JPEG or JPEG2000):\r\n\r\n" +
+												Convert.ToBase64String(Signature.ImageData, Base64FormattingOptions.InsertLineBreaks));
+										}
+									}
+
+									// TODO: Forward Signature information to UI.
+									return Task.CompletedTask;
+								};
+
+								Client.PersonalInformationUpdated += (_, e) =>
+								{
+									// TODO: Forward Personal Information to UI.
+									return Task.CompletedTask;
+								};
+
+								switch (await Client.ReadTravelDocument(Constants.Domains.IdDomain))
+								{
+									case ReadTravelDocumentResult.Success:
+										// Readout successful.
+										break;
+
+									case ReadTravelDocumentResult.Lds1ApplicationNotFound:
+									// LDS1 eMRTD application was not found on chip. (Not an electronic passport.)
+
+									case ReadTravelDocumentResult.UnableToReadEfCom:
+									// Unable to read EF.COM. (Try again.)
+
+									case ReadTravelDocumentResult.UnableToParseEfCom:
+									// Unable to parse EF.COM. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+									// EF.COM used to identify services available on the chip.
+
+									case ReadTravelDocumentResult.UnableToReadEfSod:
+									// Unable to read EF.SOD. (Try again.)
+
+									case ReadTravelDocumentResult.UnableToParseEfSod:
+									// Unable to parse EF.SOD. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+									// EF.SOD used to identify issuers of documents.
+
+									case ReadTravelDocumentResult.UnableToReadEfDg:
+									// Unable to read EF.DGx. (Try again.)
+
+									case ReadTravelDocumentResult.UnableToParseEfDg:
+									// Unable to parse EF.DGx. (Incompatibility, missing support; suggest sending log to support for troubleshooting if problem persists.)
+									// TODO: Forward failure to UI.
+
+									case ReadTravelDocumentResult.DgHashDigestInvalid:
+									// Hash Digest as reported by EF.SOD does not match the has digest of the data group read.
+									// (Data has been corrupted, either in transit or on the passport.)
+
+									case ReadTravelDocumentResult.NoCertificates:
+									// No certificates to validate available in EF.SOD.
+									// (Not a valid Travel Document)
+
+									case ReadTravelDocumentResult.MultipleCertificates:
+									// Multiple certificates to validate available in EF.SOD were provided. Only one allowed.
+									// (Not a valid Travel Document)
+
+									case ReadTravelDocumentResult.InvalidCertificate:
+									// Certificate provided in EF.SOD is not a valid certificate.
+									// (Not a valid Travel Document)
+
+									default:
+										return;
+								}
+
+								Client.Information("Readout completed.");
+
+								await InMemoryXmlWriterSniffer.FlushAsync();
+
+								XmlOutput.WriteEndElement();
+								XmlOutput.WriteEndDocument();
+								XmlOutput.Flush();
+
+								string Xml = XmlBuilder.ToString();
+
+								// TODO: XML needs to be attached to PREVIEW ID application as an attachment
+								// named `NFC.xml` to prove that the readout was performed by this application.
+							}
+							catch (Exception ex)
+							{
+								// TODO: Forward error to UI.
+								Client.Exception(ex);
+							}
+							finally
+							{
+								IsoDep.CloseIfOpen();
 							}
 						}
 					}

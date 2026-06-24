@@ -1,0 +1,188 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="TestData\0_id-esp.png" />
+    <None Remove="TestData\0_pass-lva.jpg" />
+    <None Remove="TestData\100_id-che.jpg" />
+    <None Remove="TestData\100_id-mac.jpg" />
+    <None Remove="TestData\100_id-rou.jpg" />
+    <None Remove="TestData\100_id-si.jpg" />
+    <None Remove="TestData\100_id-usa.jpg" />
+    <None Remove="TestData\100_pass-bdr.jpg" />
+    <None Remove="TestData\100_pass-chn.jpg" />
+    <None Remove="TestData\100_pass-cze.jpg" />
+    <None Remove="TestData\100_pass-cze2.jpg" />
+    <None Remove="TestData\100_pass-fin.png" />
+    <None Remove="TestData\100_pass-hrv.jpg" />
+    <None Remove="TestData\100_pass-isl.png" />
+    <None Remove="TestData\100_pass-ltu.jpg" />
+    <None Remove="TestData\100_pass-lux.jpg" />
+    <None Remove="TestData\100_pass-polx.jpg" />
+    <None Remove="TestData\100_pass-uto.jpg" />
+    <None Remove="TestData\100_pass2-uto.jpg" />
+    <None Remove="TestData\100_visa-polx.jpg" />
+    <None Remove="TestData\100_visa-usa.jpg" />
+    <None Remove="TestData\24_pass-egy.jpg" />
+    <None Remove="TestData\25_pass-uto.jpg" />
+    <None Remove="TestData\27_pass-gbr.jpg" />
+    <None Remove="TestData\33_id-usa.jpg" />
+    <None Remove="TestData\43_pass-fra.jpg" />
+    <None Remove="TestData\43_pass-twn.jpg" />
+    <None Remove="TestData\53_id-d.jpg" />
+    <None Remove="TestData\62_pass-aus.png" />
+    <None Remove="TestData\62_pass-pol.png" />
+    <None Remove="TestData\77_card-cmw.png" />
+    <None Remove="TestData\79_pass-can.jpg" />
+    <None Remove="TestData\79_pass-hun.png" />
+    <None Remove="TestData\98_pass-nld.jpg" />
+    <None Remove="TestData\Blue.png" />
+    <None Remove="TestData\Green.png" />
+    <None Remove="TestData\mrz_original.jpg" />
+    <None Remove="TestData\README.md" />
+    <None Remove="TestData\Red.png" />
+    <None Remove="TestData\Semitransparent.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="TestData\0_id-esp.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\0_pass-lva.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_id-che.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_id-mac.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_id-rou.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_id-si.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_id-usa.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_pass-bdr.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_pass-chn.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_pass-cze.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_pass-cze2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_pass-fin.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_pass-hrv.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_pass-isl.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_pass-ltu.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_pass-lux.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_pass-polx.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_pass-uto.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_pass2-uto.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_visa-polx.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\100_visa-usa.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\24_pass-egy.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\25_pass-uto.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\27_pass-gbr.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\33_id-usa.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\43_pass-fra.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\43_pass-twn.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\53_id-d.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\62_pass-aus.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\62_pass-pol.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\77_card-cmw.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\79_pass-can.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\79_pass-hun.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\98_pass-nld.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Blue.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Green.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\mrz_original.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Red.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Semitransparent.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MSTest" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+</Project>

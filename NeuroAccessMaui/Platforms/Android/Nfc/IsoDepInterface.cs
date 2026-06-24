@@ -1,6 +1,7 @@
 ﻿using Android.Nfc;
 using Android.Nfc.Tech;
 using NeuroAccess.Nfc;
+using Waher.Networking;
 
 namespace NeuroAccessMaui.AndroidPlatform.Nfc
 {
@@ -31,13 +32,35 @@ namespace NeuroAccessMaui.AndroidPlatform.Nfc
 		}
 
 		/// <summary>
+		/// Sets communication timeout.
+		/// </summary>
+		/// <param name="Timeout">Timeout, in milliseconds.</param>
+		public void SetTimeout(int Timeout)
+		{
+			this.isoDep.SetTimeout(Timeout);
+		}
+
+		/// <summary>
 		/// Executes an ISO 14443-4 command on the tag.
 		/// </summary>
 		/// <param name="Command">Command</param>
+		/// <param name="CommunicationLayer">Communication Layer</param>
 		/// <returns>Response</returns>
-		public async Task<byte[]> ExecuteCommand(byte[] Command)
+		public async Task<byte[]> ExecuteCommand(byte[] Command, ICommunicationLayer CommunicationLayer)
 		{
-			return await this.isoDep.TransceiveAsync(Command) ?? throw UnableToReadDataFromDevice();
+			CommunicationLayer.TransmitBinary(false, Command);
+
+			byte[]? Response = await this.isoDep.TransceiveAsync(Command);
+
+			if (Response is null)
+			{
+				CommunicationLayer.Error("No response returned.");
+				throw UnableToReadDataFromDevice();
+			}
+
+			CommunicationLayer.ReceiveBinary(false, Response);
+
+			return Response;
 		}
 	}
 }

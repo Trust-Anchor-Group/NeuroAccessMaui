@@ -430,7 +430,7 @@ namespace NeuroAccessMaui.UI.Pages.Things.CanRead
 		/// <summary>
 		/// The command to bind to for rejecting the request
 		/// </summary>
-		[RelayCommand(CanExecute = nameof(this.IsConnected))]
+		[RelayCommand(CanExecute = nameof(IsConnected))]
 		private void Reject()
 		{
 			this.Respond(false);

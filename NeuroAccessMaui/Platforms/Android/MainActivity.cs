@@ -1,6 +1,3 @@
-using System.Runtime.Versioning;
-using System.Text;
-using System.Text.Json;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -15,19 +12,28 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Notification;
-using Plugin.Firebase.CloudMessaging;
 using NeuroAccessMaui.Services.Push;
+using Plugin.Firebase.CloudMessaging;
+using System.Runtime.Versioning;
+using System.Text;
+using System.Text.Json;
 
 namespace NeuroAccessMaui
 {
 	[Activity(Exported = true, Theme = "@style/Maui.SplashTheme", MainLauncher = true, Name = "com.tag.NeuroAccess.MainActivity",
 		ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize | ConfigChanges.Density | ConfigChanges.Locale,
 		ScreenOrientation = ScreenOrientation.Portrait, LaunchMode = LaunchMode.SingleTop)]
-	[IntentFilter([NfcAdapter.ActionNdefDiscovered],
-			Categories = [Intent.CategoryDefault], DataMimeType = "*/*")]
-	[IntentFilter([Intent.ActionView],
-			Categories = [Intent.CategoryDefault, Intent.CategoryBrowsable],
-			DataSchemes = ["iotid", "iotdisco", "iotsc", "tagsign", "obinfo", "edaler", "nfeat", "xmpp", "aes256", "neuroaccess"])]
+	[IntentFilter(
+		[
+			NfcAdapter.ActionNdefDiscovered],
+			Categories = [Intent.CategoryDefault], DataMimeType = "*/*")
+		]
+	[IntentFilter(
+		[
+			Intent.ActionView
+		],
+		Categories = [Intent.CategoryDefault, Intent.CategoryBrowsable],
+		DataSchemes = ["iotid", "iotdisco", "iotsc", "tagsign", "obinfo", "edaler", "nfeat", "xmpp", "aes256", "neuroaccess"])]
 	[IntentFilter(
 		[
 			nameof(NotificationAction.OpenChat),
@@ -44,9 +50,7 @@ namespace NeuroAccessMaui
 		private void CreateNotificationChannelsIfNeeded()
 		{
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.O && OperatingSystem.IsAndroidVersionAtLeast(26))
-			{
 				this.CreateNotificationChannels();
-			}
 		}
 
 		[SupportedOSPlatform("android26.0")]
@@ -182,16 +186,16 @@ namespace NeuroAccessMaui
 						try
 						{
 							NotificationIntent? parsed = JsonSerializer.Deserialize<NotificationIntent>(payload);
-								if (parsed is not null)
-								{
-									parsed.Presentation = this.ResolvePresentation(intent.Extras, parsed.Presentation);
-									await NotificationService.AddAsync(parsed, NotificationSource.Push, payload, CancellationToken.None);
-									string id = NotificationService.ComputeId(parsed, NotificationSource.Push);
-									await NotificationService.ConsumeAsync(id, CancellationToken.None);
-									return;
-								}
+							if (parsed is not null)
+							{
+								parsed.Presentation = this.ResolvePresentation(intent.Extras, parsed.Presentation);
+								await NotificationService.AddAsync(parsed, NotificationSource.Push, payload, CancellationToken.None);
+								string id = NotificationService.ComputeId(parsed, NotificationSource.Push);
+								await NotificationService.ConsumeAsync(id, CancellationToken.None);
+								return;
 							}
-							catch (Exception ex)
+						}
+						catch (Exception ex)
 						{
 							ServiceRef.LogService.LogException(ex);
 						}
@@ -213,26 +217,26 @@ namespace NeuroAccessMaui
 				// Handle data-only push when app is background/terminated: render notification.
 				else if (intent.Extras is not null && intent.Extras.ContainsKey("gcm.notification.body"))
 				{
-					string? body = intent.Extras.GetString("gcm.notification.body");
-					string? title = intent.Extras.GetString("gcm.notification.title");
-					string channel = intent.Extras.GetString("channelId") ?? Constants.PushChannels.Messages;
+					string? Body = intent.Extras.GetString("gcm.notification.body");
+					string? Title = intent.Extras.GetString("gcm.notification.title");
+					string Channel = intent.Extras.GetString("channelId") ?? Constants.PushChannels.Messages;
 
-						NotificationIntent fallback = new()
-						{
-							Title = title ?? string.Empty,
-							Body = body,
-							Channel = channel,
-							Presentation = this.ResolvePresentation(intent.Extras, NotificationPresentation.RenderAndStore)
-						};
+					NotificationIntent Fallback = new()
+					{
+						Title = Title ?? string.Empty,
+						Body = Body,
+						Channel = Channel,
+						Presentation = this.ResolvePresentation(intent.Extras, NotificationPresentation.RenderAndStore)
+					};
 
-						string raw = intent.Extras.ToString() ?? string.Empty;
-						await NotificationService.AddAsync(fallback, NotificationSource.Push, raw, CancellationToken.None);
-						return;
-					}
+					string Raw = intent.Extras.ToString() ?? string.Empty;
+					await NotificationService.AddAsync(Fallback, NotificationSource.Push, Raw, CancellationToken.None);
+					return;
+				}
 				// Handle NFC intents.
 				else if (intent.Action == NfcAdapter.ActionTagDiscovered ||
-							intent.Action == NfcAdapter.ActionNdefDiscovered ||
-							intent.Action == NfcAdapter.ActionTechDiscovered)
+					intent.Action == NfcAdapter.ActionNdefDiscovered ||
+					intent.Action == NfcAdapter.ActionTechDiscovered)
 				{
 					Tag? Tag = null;
 					if (OperatingSystem.IsAndroidVersionAtLeast(33))
@@ -250,7 +254,7 @@ namespace NeuroAccessMaui
 					if (TechList is null)
 						return;
 
-					List<INfcInterface> Interfaces = new List<INfcInterface>();
+					List<INfcInterface> Interfaces = [];
 
 					foreach (string Tech in TechList)
 					{
@@ -326,7 +330,8 @@ namespace NeuroAccessMaui
 						Payload = NfcTag
 					};
 				}
-				if(AppIntent is null)
+
+				if (AppIntent is null)
 					return;
 
 				if (Defer)

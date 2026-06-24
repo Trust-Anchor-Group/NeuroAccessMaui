@@ -70,7 +70,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		[ObservableProperty]
 		private string securityText = ServiceRef.Localizer[nameof(AppResources.PasswordWeakSecurity)];
 
-		[NotifyPropertyChangedFor(nameof(this.IsAlphanumericKeyboardPreferred))]
+		[NotifyPropertyChangedFor(nameof(IsAlphanumericKeyboardPreferred))]
 		[ObservableProperty]
 		private Keyboard keyboardType = Keyboard.Numeric;
 
@@ -178,7 +178,7 @@ namespace NeuroAccessMaui.UI.Pages.Onboarding.ViewModels
 		};
 
 		[ObservableProperty]
-		[NotifyCanExecuteChangedFor(nameof(this.ContinueCommand))]
+		[NotifyCanExecuteChangedFor(nameof(ContinueCommand))]
 		private bool canContinue; // Backing for command can-execute
 
 		private void UpdateCanContinue()

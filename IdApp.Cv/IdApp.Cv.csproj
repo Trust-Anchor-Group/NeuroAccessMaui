@@ -5,8 +5,8 @@
     <Authors>Peter Waher</Authors>
     <Company>Trust Anchor Group AB</Company>
     <Product>IdApp</Product>
-    <Description>Computer Vision Layer for the TAG ID App</Description>
-    <Copyright>Copyright © Trust Anchor Group 2022-2024. All rights reserved.</Copyright>
+    <Description>Computer Vision Layer for the TAG Neuro-Access App</Description>
+    <Copyright>Copyright © Trust Anchor Group 2022-2026. All rights reserved.</Copyright>
     <RepositoryUrl>https://github.com/Trust-Anchor-Group/IdApp</RepositoryUrl>
     <NeutralLanguage>English</NeutralLanguage>
     <AssemblyVersion>1.0.0</AssemblyVersion>
@@ -18,8 +18,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SkiaSharp" Version="3.119.1" />
-    <PackageReference Include="Waher.Script" Version="2.13.5" />
+    <PackageReference Include="SkiaSharp" Version="3.119.2" />
+    <PackageReference Include="Waher.Script" Version="2.14.1" />
   </ItemGroup>
 
 </Project>

@@ -1,18 +1,19 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using System.Xml;
 using EDaler;
 using EDaler.Events;
 using EDaler.Uris;
 using NeuroAccessMaui.Services.Push;
 using NeuroAccessMaui.Services.Wallet;
+using NeuroAccessMaui.UI.Pages.Onboarding;
 using NeuroFeatures;
 using NeuroFeatures.EventArguments;
 using NeuroFeatures.Events;
-using System.Data;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using System.Xml;
 using Waher.Content;
 using Waher.Events;
 using Waher.Networking;
+using Waher.Networking.Sniffers;
 using Waher.Networking.XMPP;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Networking.XMPP.Contracts.EventArguments;
@@ -23,8 +24,8 @@ using Waher.Networking.XMPP.PEP.Events;
 using Waher.Networking.XMPP.Provisioning;
 using Waher.Networking.XMPP.Provisioning.Events;
 using Waher.Networking.XMPP.Provisioning.SearchOperators;
-using Waher.Networking.XMPP.PubSub.Events;
 using Waher.Networking.XMPP.PubSub;
+using Waher.Networking.XMPP.PubSub.Events;
 using Waher.Networking.XMPP.Push;
 using Waher.Networking.XMPP.Sensor;
 using Waher.Networking.XMPP.ServiceDiscovery;
@@ -33,7 +34,6 @@ using Waher.Runtime.Inventory;
 using Waher.Runtime.Temporary;
 using Waher.Things;
 using Waher.Things.SensorData;
-using NeuroAccessMaui.UI.Pages.Onboarding;
 
 namespace NeuroAccessMaui.Services.Xmpp
 {
@@ -1812,6 +1812,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 		/// <summary>Raised when your affiliation status changes on a node.</summary>
 		event EventHandlerAsync<AffiliationNotificationEventArgs> AffiliationNotification;
 		*/
+		#endregion
+
+		#region Debugging
+
+		/// <summary>
+		/// Any remote sniffers used for remote debugging.
+		/// </summary>
+		ISniffer[] RemoteSniffers { get; }
+
 		#endregion
 	}
 }

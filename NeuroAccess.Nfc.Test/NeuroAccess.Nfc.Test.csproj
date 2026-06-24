@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Sensitive\NFC EF_SOD problem.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Sensitive\NFC EF_SOD problem.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MSTest" Version="4.2.1" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.9" />
+    <PackageReference Include="Waher.Content" Version="3.6.1" />
+    <PackageReference Include="Waher.Persistence" Version="2.0.1" />
+    <PackageReference Include="Waher.Persistence.Files" Version="2.0.0" />
+    <PackageReference Include="Waher.Persistence.Serialization.Compiled" Version="1.13.0" />
+    <PackageReference Include="Waher.Runtime.Settings" Version="1.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NeuroAccess.Nfc\NeuroAccess.Nfc.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+</Project>

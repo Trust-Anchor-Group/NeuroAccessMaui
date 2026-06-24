@@ -112,6 +112,9 @@ using Waher.Security.JWT;
 using Waher.Security.LoginMonitor;
 using Waher.Things;
 using Waher.Layout;
+using NeuroAccess.Nfc.TravelDocuments.PACE;
+using Waher.Security;
+using Waher.Security.EllipticCurves;
 
 namespace NeuroAccessMaui
 {
@@ -543,7 +546,10 @@ namespace NeuroAccessMaui
                         typeof(XmppServerlessMessaging).Assembly,
                         typeof(HttpxClient).Assembly,
 						typeof(Waher.Script.Persistence.SQL.Select).Assembly,
-						typeof(Waher.Layout.Layout2D.Layout2DDocument).Assembly);
+						typeof(Waher.Layout.Layout2D.Layout2DDocument).Assembly,
+						typeof(IPaceProtocol).Assembly,
+						typeof(ISignatureAlgorithm).Assembly,
+						typeof(EllipticCurve).Assembly);
                 }
 
                 // Register exceptions as alerts.

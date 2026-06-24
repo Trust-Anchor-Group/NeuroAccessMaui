@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Waher.Networking;
 
 namespace NeuroAccess.Nfc
 {
@@ -18,10 +19,17 @@ namespace NeuroAccess.Nfc
 		Task<byte[]> GetHistoricalBytes();
 
 		/// <summary>
+		/// Sets communication timeout.
+		/// </summary>
+		/// <param name="Timeout">Timeout, in milliseconds.</param>
+		void SetTimeout(int Timeout);
+
+		/// <summary>
 		/// Executes an ISO 14443-4 command on the tag.
 		/// </summary>
 		/// <param name="Command">Command</param>
+		/// <param name="CommunicationLayer">Communication Layer</param>
 		/// <returns>Response</returns>
-		Task<byte[]> ExecuteCommand(byte[] Command);
+		Task<byte[]> ExecuteCommand(byte[] Command, ICommunicationLayer CommunicationLayer);
 	}
 }

@@ -337,7 +337,7 @@ namespace NeuroAccessMaui.Services.Data
 			new ISO_3166_Country("Sweden", "SE", "SWE", 752, "46"),
 			new ISO_3166_Country("Switzerland", "CH", "CHE", 756, "41"),
 			new ISO_3166_Country("Syrian Arab Republic", "SY", "SYR", 760, "963"),
-			new ISO_3166_Country("Taiwan, Province of China[a]", "TW", "TWN", 158, "886"),
+			new ISO_3166_Country("Taiwan", "TW", "TWN", 158, "886"),
 			new ISO_3166_Country("Tajikistan", "TJ", "TJK", 762, "992"),
 			new ISO_3166_Country("Tanzania, United Republic of", "TZ", "TZA", 834, "255"),
 			new ISO_3166_Country("Thailand", "TH", "THA", 764, "66"),
