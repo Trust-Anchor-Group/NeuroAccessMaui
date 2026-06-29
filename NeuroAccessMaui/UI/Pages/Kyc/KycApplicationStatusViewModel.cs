@@ -123,6 +123,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private async Task OpenApprovedIdentityAsync()
 		{
 			LegalIdentity? Identity = ServiceRef.TagProfile.LegalIdentity;
+			if (Identity?.State == IdentityState.Approved)
+			{
+				await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(Identity));
+				return;
+			}
+
 			string? ActiveIdentityId = this.status?.ActiveIdentityId ?? this.reference?.GetActiveApplicationIdentityId();
 
 			if (!string.IsNullOrWhiteSpace(ActiveIdentityId) &&
@@ -198,9 +204,13 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (Status.IsFinalizing)
 			{
 				this.TitleText = ServiceRef.Localizer[nameof(AppResources.IdentityApplication)];
-				this.DescriptionText = ServiceRef.Localizer[nameof(AppResources.KycManualReviewInfo)];
-				this.StageText = ServiceRef.Localizer[nameof(AppResources.InProgress)];
-				this.DetailText = ServiceRef.Localizer[nameof(AppResources.KycPendingManualReviewHint)];
+				this.DescriptionText = Status.Kind == KycApplicationStatusKind.FinalizationInProgress
+					? ServiceRef.Localizer[nameof(AppResources.BeforeFinalizingSummary)]
+					: ServiceRef.Localizer[nameof(AppResources.KycManualReviewInfo)];
+				this.StageText = this.ResolveStageText(Status);
+				this.DetailText = Status.Kind == KycApplicationStatusKind.FinalizationInProgress
+					? ServiceRef.Localizer[nameof(AppResources.BeforeFinalizingSummary)]
+					: ServiceRef.Localizer[nameof(AppResources.KycPendingManualReviewHint)];
 				this.PrimaryActionText = ServiceRef.Localizer[nameof(AppResources.Open)];
 				return;
 			}
@@ -215,11 +225,29 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 
-			this.TitleText = ServiceRef.Localizer[nameof(AppResources.IdentityReviewRequest)];
-			this.DescriptionText = ServiceRef.Localizer[nameof(AppResources.KycPendingManualReviewHint)];
-			this.StageText = ServiceRef.Localizer[nameof(AppResources.InProgress)];
-			this.DetailText = ServiceRef.Localizer[nameof(AppResources.KycManualReviewInfo)];
+			this.TitleText = Status.Kind == KycApplicationStatusKind.ReservedPreview
+				? ServiceRef.Localizer[nameof(AppResources.IdentityApplication)]
+				: ServiceRef.Localizer[nameof(AppResources.IdentityReviewRequest)];
+			this.DescriptionText = Status.Kind == KycApplicationStatusKind.ReservedPreview
+				? ServiceRef.Localizer[nameof(AppResources.BeforeFinalizingSummary)]
+				: ServiceRef.Localizer[nameof(AppResources.KycPendingManualReviewHint)];
+			this.StageText = this.ResolveStageText(Status);
+			this.DetailText = Status.Kind == KycApplicationStatusKind.ReservedPreview
+				? ServiceRef.Localizer[nameof(AppResources.BeforeFinalizingSummary)]
+				: ServiceRef.Localizer[nameof(AppResources.KycManualReviewInfo)];
 			this.PrimaryActionText = ServiceRef.Localizer[nameof(AppResources.Open)];
+		}
+
+		private string ResolveStageText(KycApplicationStatus Status)
+		{
+			return Status.Kind switch
+			{
+				KycApplicationStatusKind.ReservedPreview => ServiceRef.Localizer[nameof(AppResources.ReservedNoColon)],
+				KycApplicationStatusKind.PreviewRejected => ServiceRef.Localizer[nameof(AppResources.Rejected)],
+				KycApplicationStatusKind.Rejected => ServiceRef.Localizer[nameof(AppResources.Rejected)],
+				KycApplicationStatusKind.Approved => ServiceRef.Localizer[nameof(AppResources.Approved)],
+				_ => ServiceRef.Localizer[nameof(AppResources.InProgress)]
+			};
 		}
 
 		private string FormatUpdatedText(DateTime? UpdatedUtc)

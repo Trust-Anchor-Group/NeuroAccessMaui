@@ -317,7 +317,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 							{
 								LegalIdentity? CurrentLegalIdentity = ServiceRef.TagProfile.LegalIdentity;
 								if (CurrentLegalIdentity is null ||
-									!string.Equals(CurrentLegalIdentity.Id, Identity.Id, StringComparison.OrdinalIgnoreCase))
+									!CurrentLegalIdentity.IsApproved() ||
+									string.Equals(CurrentLegalIdentity.Id, Identity.Id, StringComparison.OrdinalIgnoreCase))
 								{
 									await ServiceRef.TagProfile.SetLegalIdentity(Identity, true);
 								}
@@ -364,7 +365,7 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 				await ServiceRef.KycService.PrepareReferenceForNewApplicationAsync(Ref, Language, PreviousFields);
 
-				await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Ref));
+				await this.OpenKycEntryAsync(Ref, Language, true);
 			}
 			catch (Exception Ex)
 			{
@@ -442,6 +443,13 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 					IdentityState? State = EffectiveApplicationState;
 					if (State == IdentityState.Approved)
 					{
+						LegalIdentity? CurrentLegalIdentity = ServiceRef.TagProfile.LegalIdentity;
+						if (CurrentLegalIdentity?.IsApproved() == true)
+						{
+							await ServiceRef.NavigationService.GoToAsync(nameof(ViewIdentityPage), new ViewIdentityNavigationArgs(CurrentLegalIdentity));
+							return;
+						}
+
 						string? ActiveApplicationIdentityId = Item.GetActiveApplicationIdentityId();
 						if (string.IsNullOrEmpty(ActiveApplicationIdentityId))
 						{
@@ -468,7 +476,8 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 				else
 				{
 					// Open KYC process to resume
-					await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Item));
+					string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+					await this.OpenKycEntryAsync(Item, Language, false);
 				}
 			}
 			catch (Exception Ex)
@@ -487,6 +496,37 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 		[RelayCommand]
 		private void CancelLoading() => this.Loader.Cancel();
+
+		private async Task OpenKycEntryAsync(KycReference Reference, string Language, bool PreferDocumentChip)
+		{
+			if (await this.ShouldOpenDocumentChipFirstAsync(Reference, Language, PreferDocumentChip))
+			{
+				await ServiceRef.NavigationService.GoToAsync(nameof(KycTravelDocumentPage), new KycProcessNavigationArgs(Reference));
+				return;
+			}
+
+			await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Reference));
+		}
+
+		private async Task<bool> ShouldOpenDocumentChipFirstAsync(KycReference Reference, string Language, bool PreferDocumentChip)
+		{
+			KycProcess? Process = await Reference.GetProcess(Language);
+			bool HasNfcPolicy = Process?.EvidencePolicy?.TravelDocument?.Nfc?.Enabled == true;
+			if (!HasNfcPolicy)
+				return false;
+
+			if (!string.IsNullOrWhiteSpace(Reference.TravelDocumentMrz) ||
+				!string.IsNullOrWhiteSpace(Reference.NfcReadoutXml))
+			{
+				return false;
+			}
+
+			if (PreferDocumentChip)
+				return true;
+
+			return Reference.Fields is null ||
+				!Reference.Fields.Any(Field => !string.IsNullOrWhiteSpace(Field.Value));
+		}
 
 		private static bool TemplatesEqual(KycApplicationTemplate First, KycApplicationTemplate Second)
 		{

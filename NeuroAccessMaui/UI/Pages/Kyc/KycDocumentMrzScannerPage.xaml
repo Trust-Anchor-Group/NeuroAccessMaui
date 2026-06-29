@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage
+	x:Class="NeuroAccessMaui.UI.Pages.Kyc.KycDocumentMrzScannerPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+	xmlns:camera="clr-namespace:NeuroAccessMaui.Camera;assembly=NeuroAccessMaui.Camera"
+	xmlns:ext="clr-namespace:NeuroAccessMaui.MarkupExtensions"
+	xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+	xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Kyc"
+	x:DataType="viewmodel:KycDocumentMrzScannerViewModel"
+	BackgroundColor="Black"
+	ui:SafeArea.Mode="Ignore">
+	<Grid RowDefinitions="Auto,*,Auto"
+		  BackgroundColor="Black">
+		<camera:CameraView x:Name="CameraView"
+						   Grid.RowSpan="3"
+						   HorizontalOptions="Fill"
+						   VerticalOptions="Fill" />
+
+		<Grid Grid.Row="0"
+			  Margin="{ext:SafeInsets Type=Top}"
+			  Padding="16,12,16,0"
+			  RowDefinitions="Auto">
+			<Grid ColumnDefinitions="96,*,96"
+				  ColumnSpacing="8"
+				  MinimumHeightRequest="44">
+				<Border Grid.Column="0"
+						Padding="14,8"
+						BackgroundColor="#66000000"
+						Stroke="#55FFFFFF"
+						StrokeThickness="1"
+						StrokeShape="RoundRectangle 18"
+						MinimumHeightRequest="40"
+						MinimumWidthRequest="72"
+						HorizontalOptions="Start"
+						VerticalOptions="Center">
+					<Border.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding CancelCommand}" />
+					</Border.GestureRecognizers>
+					<Label Text="{Binding BackActionText}"
+						   FontFamily="SpaceGroteskBold"
+						   FontSize="14"
+						   TextColor="White"
+						   MaxLines="1"
+						   LineBreakMode="TailTruncation"
+						   VerticalTextAlignment="Center" />
+				</Border>
+
+				<Label Grid.Column="1"
+					   Text="{Binding ScannerTitleText}"
+					   HorizontalTextAlignment="Center"
+					   VerticalTextAlignment="Center"
+					   FontSize="20"
+					   FontFamily="SpaceGroteskBold"
+					   TextColor="White"
+					   MaxLines="1"
+					   LineBreakMode="TailTruncation" />
+			</Grid>
+		</Grid>
+
+		<Grid Grid.RowSpan="3"
+			  InputTransparent="True">
+			<GraphicsView x:Name="DocumentOutlineView"
+						  HorizontalOptions="Fill"
+						  VerticalOptions="Fill" />
+		</Grid>
+
+		<Border Grid.RowSpan="3"
+				Margin="0,0,18,220"
+				Padding="12"
+				BackgroundColor="#CC1E1712"
+				Stroke="#66FFFFFF"
+				StrokeThickness="1"
+				StrokeShape="RoundRectangle 18"
+				HorizontalOptions="End"
+				VerticalOptions="End"
+				IsVisible="{Binding IsDebugArtifactShareVisible}">
+			<Border.GestureRecognizers>
+				<TapGestureRecognizer Command="{Binding ShareDebugArtifactsCommand}" />
+			</Border.GestureRecognizers>
+			<Label Text="ZIP"
+				   FontFamily="SpaceGroteskBold"
+				   FontSize="12"
+				   TextColor="#FFF7ED"
+				   HorizontalTextAlignment="Center"
+				   VerticalTextAlignment="Center" />
+		</Border>
+
+		<Border Grid.RowSpan="3"
+				Margin="0,0,18,274"
+				Padding="12"
+				BackgroundColor="#CC1E1712"
+				Stroke="#66FFFFFF"
+				StrokeThickness="1"
+				StrokeShape="RoundRectangle 18"
+				HorizontalOptions="End"
+				VerticalOptions="End"
+				IsVisible="{Binding IsDebugArtifactShareVisible}">
+			<Border.GestureRecognizers>
+				<TapGestureRecognizer Command="{Binding SharePreviewDiagnosticsCommand}" />
+			</Border.GestureRecognizers>
+			<Label Text="PREV"
+				   FontFamily="SpaceGroteskBold"
+				   FontSize="11"
+				   TextColor="#FFF7ED"
+				   HorizontalTextAlignment="Center"
+				   VerticalTextAlignment="Center" />
+		</Border>
+
+		<Border Grid.RowSpan="3"
+				Padding="18,16"
+				Margin="16,0,16,104"
+				BackgroundColor="{Binding HintBackgroundColor}"
+				Stroke="{Binding HintStrokeColor}"
+				StrokeThickness="1"
+				StrokeShape="RoundRectangle 18"
+				VerticalOptions="End">
+			<Grid ColumnDefinitions="4,*,Auto"
+				  ColumnSpacing="14">
+				<BoxView Grid.Column="0"
+						 WidthRequest="4"
+						 BackgroundColor="{Binding HintAccentColor}"
+						 CornerRadius="2"
+						 VerticalOptions="Fill" />
+				<VerticalStackLayout Grid.Column="1"
+									 Spacing="6">
+					<Label Text="{Binding StatusText}"
+						   FontSize="20"
+						   FontFamily="SpaceGroteskBold"
+						   TextColor="White"
+						   MaxLines="2"
+						   LineBreakMode="WordWrap" />
+					<Label Text="{Binding DetailText}"
+						   FontSize="14"
+						   TextColor="{Binding HintDetailTextColor}"
+						   MaxLines="3"
+						   LineBreakMode="WordWrap" />
+				</VerticalStackLayout>
+				<ActivityIndicator Grid.Column="2"
+								   WidthRequest="24"
+								   HeightRequest="24"
+								   Color="{Binding HintAccentColor}"
+								   IsVisible="{Binding IsHintProgressVisible}"
+								   IsRunning="{Binding IsHintProgressVisible}"
+								   VerticalOptions="Center" />
+			</Grid>
+		</Border>
+
+		<Grid Grid.RowSpan="3"
+			  BackgroundColor="#99000000"
+			  IsVisible="{Binding IsValidationOverlayVisible}">
+			<Border Margin="24"
+					Padding="22,20"
+					BackgroundColor="#FA1E1712"
+					Stroke="#99F87171"
+					StrokeThickness="1"
+					StrokeShape="RoundRectangle 18"
+					HorizontalOptions="Fill"
+					VerticalOptions="Center">
+				<VerticalStackLayout Spacing="18">
+					<VerticalStackLayout Spacing="8">
+						<BoxView HeightRequest="4"
+								 BackgroundColor="#F87171"
+								 CornerRadius="2"
+								 HorizontalOptions="Fill" />
+						<Label Text="{Binding ValidationOverlayTitle}"
+							   FontSize="24"
+							   FontFamily="SpaceGroteskBold"
+							   TextColor="White"
+							   HorizontalTextAlignment="Center"
+							   MaxLines="2"
+							   LineBreakMode="WordWrap" />
+						<Label Text="{Binding ValidationOverlayDetail}"
+							   FontSize="15"
+							   TextColor="#FFE4E6"
+							   HorizontalTextAlignment="Center"
+							   MaxLines="4"
+							   LineBreakMode="WordWrap" />
+					</VerticalStackLayout>
+					<Grid RowDefinitions="Auto,Auto"
+						  RowSpacing="10">
+						<Button Grid.Row="0"
+								Text="{Binding ValidationOverlayPrimaryActionText}"
+								Command="{Binding DismissValidationOverlayCommand}"
+								BackgroundColor="#F87171"
+								TextColor="#1E1712"
+								FontFamily="SpaceGroteskBold"
+								CornerRadius="12"
+								HeightRequest="48" />
+						<Button Grid.Row="1"
+								Text="{Binding ValidationOverlaySecondaryActionText}"
+								Command="{Binding CancelCommand}"
+								BackgroundColor="Transparent"
+								BorderColor="#66FFFFFF"
+								BorderWidth="1"
+								TextColor="White"
+								FontFamily="SpaceGroteskBold"
+								CornerRadius="12"
+								HeightRequest="48" />
+					</Grid>
+				</VerticalStackLayout>
+			</Border>
+		</Grid>
+	</Grid>
+</base:BaseContentPage>

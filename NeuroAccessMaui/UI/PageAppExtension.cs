@@ -8,6 +8,8 @@ using NeuroAccessMaui.Services.Crypto;
 using NeuroAccessMaui.Services.EventLog;
 using NeuroAccessMaui.Services.Intents;
 using NeuroAccessMaui.Services.Identity;
+using NeuroAccessMaui.Services.Kyc;
+using NeuroAccessMaui.Services.Kyc.Actions;
 using NeuroAccessMaui.Services.Network;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.Notification;
@@ -145,6 +147,10 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddSingleton<IContractOrchestratorService>((_) => Types.InstantiateDefault<IContractOrchestratorService>(false));
 			Builder.Services.AddSingleton<IIdentityApplicationGateService>((_) => Types.InstantiateDefault<IIdentityApplicationGateService>(false));
 			Builder.Services.AddSingleton<IKycService>((_) => Types.InstantiateDefault<IKycService>(false));
+			Builder.Services.AddSingleton<KycEvidenceValidationService>();
+			Builder.Services.AddSingleton<IKycPreviewPromotionService>((_) => Types.InstantiateDefault<IKycPreviewPromotionService>(false));
+			Builder.Services.AddSingleton<IKycPageAction, TravelDocumentNfcAction>();
+			Builder.Services.AddSingleton<KycActionRegistry>();
 			Builder.Services.AddSingleton<ITravelDocumentEvidenceService>((_) => Types.InstantiateDefault<ITravelDocumentEvidenceService>(false));
 			Builder.Services.AddSingleton<ITravelDocumentReadoutService>((_) => Types.InstantiateDefault<ITravelDocumentReadoutService>(false));
 			Builder.Services.AddSingleton<INfcService>((_) => Types.InstantiateDefault<INfcService>(false));
@@ -189,6 +195,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<ApplicationsPage, ApplicationsViewModel>();
 			Builder.Services.AddTransient<KycApplicationStatusPage, KycApplicationStatusViewModel>();
 			Builder.Services.AddTransient<KycProcessPage, KycProcessViewModel>();
+			Builder.Services.AddTransient<KycDocumentMrzScannerPage>();
 			Builder.Services.AddTransient<KycTravelDocumentPage, KycTravelDocumentViewModel>();
 
 			// Contacts

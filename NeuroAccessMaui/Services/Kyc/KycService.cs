@@ -40,7 +40,10 @@ namespace NeuroAccessMaui.Services.Kyc
 	[Singleton]
 	public class KycService : IKycService, IDisposable
 	{
-		private static readonly string backupKyc = "TestKYCNeuro.xml";
+		private static readonly string[] fallbackKycTemplateFiles = new string[]
+		{
+			"PersonalId.xml"
+		};
 		private const string kycTemplateNodeId = "NeuroAccessKyc";
 		private const int defaultTemplatePageSize = 20;
 
@@ -401,29 +404,32 @@ namespace NeuroAccessMaui.Services.Kyc
 		private async Task<IReadOnlyList<KycApplicationTemplate>> LoadFallbackTemplatesAsync(string? Lang, CancellationToken CancellationToken)
 		{
 			List<KycApplicationTemplate> Templates = new List<KycApplicationTemplate>();
-			try
+			foreach (string FileName in fallbackKycTemplateFiles)
 			{
-				string Xml = await this.LoadBundledKycXmlAsync(CancellationToken).ConfigureAwait(false);
-				KycApplicationTemplate? Template = await this.CreateTemplateAsync(null, Xml, "fallback", Lang, CancellationToken).ConfigureAwait(false);
-				if (Template is not null)
-					Templates.Add(Template);
-			}
-			catch (OperationCanceledException)
-			{
-				throw;
-			}
-			catch (Exception Ex)
-			{
-				ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				try
+				{
+					string Xml = await this.LoadBundledKycXmlAsync(FileName, CancellationToken).ConfigureAwait(false);
+					KycApplicationTemplate? Template = await this.CreateTemplateAsync(null, Xml, "fallback", Lang, CancellationToken).ConfigureAwait(false);
+					if (Template is not null)
+						Templates.Add(Template);
+				}
+				catch (OperationCanceledException)
+				{
+					throw;
+				}
+				catch (Exception Ex)
+				{
+					ServiceRef.LogService.LogException(Ex, this.GetClassAndMethod(MethodBase.GetCurrentMethod()));
+				}
 			}
 
 			return Templates;
 		}
 
-		private async Task<string> LoadBundledKycXmlAsync(CancellationToken CancellationToken)
+		private async Task<string> LoadBundledKycXmlAsync(string FileName, CancellationToken CancellationToken)
 		{
 			CancellationToken.ThrowIfCancellationRequested();
-			using Stream Stream = await FileSystem.OpenAppPackageFileAsync(backupKyc);
+			using Stream Stream = await FileSystem.OpenAppPackageFileAsync(FileName);
 			using StreamReader Reader = new StreamReader(Stream);
 			string Xml = await Reader.ReadToEndAsync(CancellationToken).ConfigureAwait(false);
 			return Xml;
@@ -482,7 +488,7 @@ namespace NeuroAccessMaui.Services.Kyc
 
 		private async Task ApplyBundledTemplateAsync(KycReference Reference, string? Lang)
 		{
-			string Xml = await this.LoadBundledKycXmlAsync(default).ConfigureAwait(false);
+			string Xml = await this.LoadBundledKycXmlAsync(fallbackKycTemplateFiles[0], default).ConfigureAwait(false);
 			KycProcess Process = await KycProcessParser.LoadProcessAsync(Xml, Lang).ConfigureAwait(false);
 			Reference.SetProcess(Process, Xml, DateTime.UtcNow, DateTime.UtcNow);
 			string? FriendlyName = Process.Name?.Text;
@@ -643,6 +649,99 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.IdentityStage = Identity.State == IdentityState.Approved
 					? KycIdentityApplicationStage.Completed
 					: KycIdentityApplicationStage.FinalPendingApproval;
+				Reference.ApplicationReview = null;
+				Reference.RejectionMessage = null;
+				Reference.RejectionCode = null;
+				Reference.InvalidClaims = null;
+				Reference.InvalidPhotos = null;
+				Reference.InvalidClaimDetails = null;
+				Reference.InvalidPhotoDetails = null;
+				Reference.Version++;
+				Reference.UpdatedUtc = DateTime.UtcNow;
+				await SaveReferenceAsync(Reference);
+			}
+		}
+
+		/// <summary>
+		/// Records submission data for the preview identity and persists the reference.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Submitted preview identity.</param>
+		public async Task ApplyPreviewSubmissionAsync(KycReference Reference, LegalIdentity Identity)
+		{
+			if (Reference is null || Identity is null)
+				return;
+
+			AsyncLock Lock = this.GetLockFor(Reference);
+			await using (await Lock.LockAsync().ConfigureAwait(false))
+			{
+				Reference.ReservedPreviewIdentityId = null;
+				Reference.PreviewIdentityId = Identity.Id;
+				Reference.PreviewIdentityState = Identity.State;
+				Reference.FinalIdentityId = null;
+				Reference.FinalIdentityState = null;
+				Reference.IdentityStage = KycIdentityApplicationStage.PreviewPendingReview;
+				Reference.CreatedIdentityId = Identity.Id;
+				Reference.CreatedIdentityState = Identity.State;
+				Reference.ApplicationReview = null;
+				Reference.RejectionMessage = null;
+				Reference.RejectionCode = null;
+				Reference.InvalidClaims = null;
+				Reference.InvalidPhotos = null;
+				Reference.InvalidClaimDetails = null;
+				Reference.InvalidPhotoDetails = null;
+				Reference.Version++;
+				Reference.UpdatedUtc = DateTime.UtcNow;
+				await SaveReferenceAsync(Reference);
+			}
+		}
+
+		/// <summary>
+		/// Marks the approved preview identity and records that final identity creation is underway.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Approved preview identity.</param>
+		public async Task MarkPreviewApprovedForFinalizationAsync(KycReference Reference, LegalIdentity Identity)
+		{
+			if (Reference is null || Identity is null)
+				return;
+
+			AsyncLock Lock = this.GetLockFor(Reference);
+			await using (await Lock.LockAsync().ConfigureAwait(false))
+			{
+				Reference.ReservedPreviewIdentityId = null;
+				Reference.PreviewIdentityId ??= Identity.Id;
+				Reference.PreviewIdentityState = Identity.State;
+				Reference.IdentityStage = KycIdentityApplicationStage.FinalizationInProgress;
+				Reference.CreatedIdentityId = Reference.PreviewIdentityId;
+				Reference.CreatedIdentityState = IdentityState.Created;
+				Reference.Version++;
+				Reference.UpdatedUtc = DateTime.UtcNow;
+				await SaveReferenceAsync(Reference);
+			}
+		}
+
+		/// <summary>
+		/// Records submission data for the final identity and persists the reference.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Submitted final identity.</param>
+		public async Task ApplyFinalSubmissionAsync(KycReference Reference, LegalIdentity Identity)
+		{
+			if (Reference is null || Identity is null)
+				return;
+
+			AsyncLock Lock = this.GetLockFor(Reference);
+			await using (await Lock.LockAsync().ConfigureAwait(false))
+			{
+				Reference.ReservedPreviewIdentityId = null;
+				Reference.FinalIdentityId = Identity.Id;
+				Reference.FinalIdentityState = Identity.State;
+				Reference.IdentityStage = Identity.State == IdentityState.Approved
+					? KycIdentityApplicationStage.Completed
+					: KycIdentityApplicationStage.FinalPendingApproval;
+				Reference.CreatedIdentityId = Identity.Id;
+				Reference.CreatedIdentityState = Identity.State;
 				Reference.ApplicationReview = null;
 				Reference.RejectionMessage = null;
 				Reference.RejectionCode = null;
@@ -822,6 +921,14 @@ namespace NeuroAccessMaui.Services.Kyc
 				Reference.ObjectId,
 				Reference.Version,
 				Fields,
+				Reference.CreatedIdentityId,
+				Reference.CreatedIdentityState,
+				Reference.ReservedPreviewIdentityId,
+				Reference.PreviewIdentityId,
+				Reference.PreviewIdentityState,
+				Reference.FinalIdentityId,
+				Reference.FinalIdentityState,
+				Reference.IdentityStage,
 				Progress,
 				LastVisitedPageId,
 				Mode,
@@ -892,6 +999,14 @@ namespace NeuroAccessMaui.Services.Kyc
 
 					if (Reference.Fields != Snapshot.Fields)
 						Reference.Fields = Snapshot.Fields;
+					Reference.CreatedIdentityId = Snapshot.CreatedIdentityId;
+					Reference.CreatedIdentityState = Snapshot.CreatedIdentityState;
+					Reference.ReservedPreviewIdentityId = Snapshot.ReservedPreviewIdentityId;
+					Reference.PreviewIdentityId = Snapshot.PreviewIdentityId;
+					Reference.PreviewIdentityState = Snapshot.PreviewIdentityState;
+					Reference.FinalIdentityId = Snapshot.FinalIdentityId;
+					Reference.FinalIdentityState = Snapshot.FinalIdentityState;
+					Reference.IdentityStage = Snapshot.IdentityStage;
 					Reference.Progress = Snapshot.Progress;
 					Reference.LastVisitedPageId = Snapshot.LastVisitedPageId;
 					Reference.LastVisitedMode = Snapshot.LastVisitedMode;

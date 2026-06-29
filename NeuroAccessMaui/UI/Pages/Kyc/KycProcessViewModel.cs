@@ -14,6 +14,7 @@ using NeuroAccessMaui.Services;
 using NeuroAccessMaui.Services.Data;
 using NeuroAccessMaui.Services.Identity;
 using NeuroAccessMaui.Services.Kyc;
+using NeuroAccessMaui.Services.Kyc.Actions;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.Services.Kyc.Domain;
@@ -41,9 +42,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 	/// </summary>
 	public partial class KycProcessViewModel : BaseViewModel, IDisposable, IKeyboardInsetAware
 	{
-		private const string nfcReadoutFileName = "NFC.xml";
-		private const string nfcReadoutContentType = "application/xml";
 		private readonly IKycService kycService = ServiceRef.KycService;
+		private readonly KycActionRegistry actionRegistry = ServiceRef.Provider.GetRequiredService<KycActionRegistry>();
+		private readonly KycEvidenceValidationService evidenceValidationService = ServiceRef.Provider.GetRequiredService<KycEvidenceValidationService>();
+		private readonly KycContentPolicyService contentPolicyService = new KycContentPolicyService();
 		private bool disposedValue; // Disposal flag
 		private readonly KycProcessNavigationArgs? navigationArguments;
 		private KycProcess? process;
@@ -54,6 +56,8 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private string? applicationId;
 		private readonly ReentrancyGuard navigationGuard = new();
 		private readonly ReentrancyGuard applyGuard = new();
+		private IKycPageAction? currentPageAction;
+		private int currentPageActionRefreshVersion;
 
 		private List<Property> mappedValues;
 		private List<LegalIdentityAttachment> attachments;
@@ -83,6 +87,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private ReadOnlyObservableCollection<KycSection>? currentPageSections;
 		[ObservableProperty] private bool hasSections;
 		[ObservableProperty] private string nextButtonText = "Next";
+		[ObservableProperty] private bool hasCurrentPageAction;
+		[ObservableProperty] private bool currentPageActionIsEnabled;
+		[ObservableProperty] private bool currentPageActionIsBusy;
+		[ObservableProperty] private string currentPageActionTitle = string.Empty;
+		[ObservableProperty] private string currentPageActionDescription = string.Empty;
+		[ObservableProperty] private string currentPageActionStatusText = string.Empty;
+		[ObservableProperty] private string currentPageActionPrimaryText = string.Empty;
+		[ObservableProperty] private string currentPageActionWarningText = string.Empty;
+		[ObservableProperty] private string currentPageActionErrorText = string.Empty;
+		[ObservableProperty] private bool hasCurrentPageActionTitle;
+		[ObservableProperty] private bool hasCurrentPageActionDescription;
+		[ObservableProperty] private bool hasCurrentPageActionStatusText;
+		[ObservableProperty] private bool hasCurrentPageActionPrimaryText;
+		[ObservableProperty] private bool hasCurrentPageActionWarningText;
+		[ObservableProperty] private bool hasCurrentPageActionErrorText;
 
 		[ObservableProperty] private ObservableCollection<DisplayQuad> personalInformationSummary;
 		[ObservableProperty] private ObservableCollection<DisplayQuad> addressInformationSummary;
@@ -525,6 +544,130 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.NextCommand.NotifyCanExecuteChanged();
 		}
 
+		private void ScheduleCurrentPageActionRefresh(KycPage Page)
+		{
+			int Version = ++this.currentPageActionRefreshVersion;
+			_ = this.RefreshCurrentPageActionAsync(Page, Version);
+		}
+
+		private async Task RefreshCurrentPageActionAsync(KycPage Page, int Version)
+		{
+			try
+			{
+				IKycPageAction? Action = this.actionRegistry.Resolve(Page.Metadata?.ActionName);
+				if (Action is null || this.kycReference is null || this.process is null)
+				{
+					await MainThread.InvokeOnMainThreadAsync(() => this.ApplyCurrentPageActionState(null, null, Version));
+					return;
+				}
+
+				KycPageActionContext Context = new KycPageActionContext(
+					this.kycReference,
+					this.process,
+					Page,
+					this.kycService,
+					ServiceRef.NavigationService,
+					CancellationToken.None);
+				KycPageActionState State = await Action.GetStateAsync(Context).ConfigureAwait(false);
+
+				await MainThread.InvokeOnMainThreadAsync(() => this.ApplyCurrentPageActionState(Action, State, Version));
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				await MainThread.InvokeOnMainThreadAsync(() => this.ApplyCurrentPageActionState(null, null, Version));
+			}
+		}
+
+		private void ApplyCurrentPageActionState(IKycPageAction? Action, KycPageActionState? State, int Version)
+		{
+			if (Version != this.currentPageActionRefreshVersion)
+			{
+				return;
+			}
+
+			this.currentPageAction = Action;
+
+			if (Action is null || State is null || !State.IsVisible)
+			{
+				this.HasCurrentPageAction = false;
+				this.CurrentPageActionIsEnabled = false;
+				this.CurrentPageActionIsBusy = false;
+				this.CurrentPageActionTitle = string.Empty;
+				this.CurrentPageActionDescription = string.Empty;
+				this.CurrentPageActionStatusText = string.Empty;
+				this.CurrentPageActionPrimaryText = string.Empty;
+				this.CurrentPageActionWarningText = string.Empty;
+				this.CurrentPageActionErrorText = string.Empty;
+				this.HasCurrentPageActionTitle = false;
+				this.HasCurrentPageActionDescription = false;
+				this.HasCurrentPageActionStatusText = false;
+				this.HasCurrentPageActionPrimaryText = false;
+				this.HasCurrentPageActionWarningText = false;
+				this.HasCurrentPageActionErrorText = false;
+				this.ExecuteCurrentPageActionCommand.NotifyCanExecuteChanged();
+				return;
+			}
+
+			this.HasCurrentPageAction = true;
+			this.CurrentPageActionIsEnabled = State.IsEnabled && !State.IsBusy;
+			this.CurrentPageActionIsBusy = State.IsBusy;
+			this.CurrentPageActionTitle = State.Title ?? string.Empty;
+			this.CurrentPageActionDescription = State.Description ?? string.Empty;
+			this.CurrentPageActionStatusText = State.StatusText ?? string.Empty;
+			this.CurrentPageActionPrimaryText = State.PrimaryButtonText ?? string.Empty;
+			this.CurrentPageActionWarningText = State.WarningText ?? string.Empty;
+			this.CurrentPageActionErrorText = State.ErrorText ?? string.Empty;
+			this.HasCurrentPageActionTitle = !string.IsNullOrWhiteSpace(this.CurrentPageActionTitle);
+			this.HasCurrentPageActionDescription = !string.IsNullOrWhiteSpace(this.CurrentPageActionDescription);
+			this.HasCurrentPageActionStatusText = !string.IsNullOrWhiteSpace(this.CurrentPageActionStatusText);
+			this.HasCurrentPageActionPrimaryText = !string.IsNullOrWhiteSpace(this.CurrentPageActionPrimaryText);
+			this.HasCurrentPageActionWarningText = !string.IsNullOrWhiteSpace(this.CurrentPageActionWarningText);
+			this.HasCurrentPageActionErrorText = !string.IsNullOrWhiteSpace(this.CurrentPageActionErrorText);
+			this.ExecuteCurrentPageActionCommand.NotifyCanExecuteChanged();
+		}
+
+		private bool CanExecuteCurrentPageAction()
+		{
+			return this.currentPageAction is not null &&
+				this.CurrentPageActionIsEnabled &&
+				!this.CurrentPageActionIsBusy;
+		}
+
+		[RelayCommand(CanExecute = nameof(CanExecuteCurrentPageAction))]
+		private async Task ExecuteCurrentPageActionAsync()
+		{
+			IKycPageAction? Action = this.currentPageAction;
+			KycPage? Page = this.CurrentPage;
+
+			if (Action is null || this.kycReference is null || this.process is null || Page is null)
+			{
+				return;
+			}
+
+			this.CurrentPageActionIsBusy = true;
+			this.CurrentPageActionIsEnabled = false;
+			this.ExecuteCurrentPageActionCommand.NotifyCanExecuteChanged();
+
+			try
+			{
+				KycPageActionContext Context = new KycPageActionContext(
+					this.kycReference,
+					this.process,
+					Page,
+					this.kycService,
+					ServiceRef.NavigationService,
+					CancellationToken.None);
+				await Action.ExecuteAsync(Context);
+			}
+			finally
+			{
+				this.CurrentPageActionIsBusy = false;
+				this.CurrentPageActionIsEnabled = true;
+				this.ExecuteCurrentPageActionCommand.NotifyCanExecuteChanged();
+			}
+		}
+
 		partial void OnPeerReviewChanged(bool value)
 		{
 			this.OnPropertyChanged(nameof(this.FeaturedPeerReviewers));
@@ -653,6 +796,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.HasSections = this.CurrentPageSections is not null && this.CurrentPageSections.Count > 0;
 			if (!this.IsInSummary && this.kycReference is not null && this.process is not null && pageChanged)
 				_ = this.kycService.ScheduleSnapshotAsync(this.kycReference, this.process, this.navigation, this.Progress, Page.Id);
+			this.ScheduleCurrentPageActionRefresh(Page);
 			this.OnPropertyChanged(nameof(this.Progress));
 			this.NextCommand.NotifyCanExecuteChanged();
 		}
@@ -923,24 +1067,32 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private void AddNfcReadoutAttachment()
 		{
 			if (this.kycReference is null ||
+				this.process is null ||
 				this.attachments is null ||
 				string.IsNullOrWhiteSpace(this.kycReference.NfcReadoutXml))
 			{
 				return;
 			}
 
+			KycNfcEvidencePolicy NfcPolicy = this.process.EvidencePolicy.TravelDocument.Nfc;
+			string AttachmentName = string.IsNullOrWhiteSpace(NfcPolicy.AttachmentName)
+				? KycNfcEvidencePolicy.DefaultAttachmentName
+				: NfcPolicy.AttachmentName;
+			string ContentType = string.IsNullOrWhiteSpace(NfcPolicy.ContentType)
+				? KycNfcEvidencePolicy.DefaultContentType
+				: NfcPolicy.ContentType;
 			byte[] Data = Encoding.UTF8.GetBytes(this.kycReference.NfcReadoutXml);
 			LegalIdentityAttachment? Existing = this.attachments.FirstOrDefault(Attachment =>
-				string.Equals(Attachment.FileName, nfcReadoutFileName, StringComparison.OrdinalIgnoreCase));
+				string.Equals(Attachment.FileName, AttachmentName, StringComparison.OrdinalIgnoreCase));
 			if (Existing is not null)
 			{
-				Existing.ContentType = nfcReadoutContentType;
+				Existing.ContentType = ContentType;
 				Existing.Data = Data;
 				Existing.ContentLength = Data.Length;
 				return;
 			}
 
-			this.attachments.Add(new LegalIdentityAttachment(nfcReadoutFileName, nfcReadoutContentType, Data));
+			this.attachments.Add(new LegalIdentityAttachment(AttachmentName, ContentType, Data));
 		}
 
 		[RelayCommand]
@@ -958,6 +1110,24 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.applicationSent) return;
 			if (!await this.applyGuard.RunIfNotBusy(async () =>
 			{
+				if (this.process is null || this.kycReference is null)
+				{
+					return;
+				}
+
+				KycEvidenceValidationResult EvidenceValidation = this.evidenceValidationService.Validate(this.process, this.kycReference);
+				if (!EvidenceValidation.CanSubmit)
+				{
+					string Title = EvidenceValidation.TitleResourceKey is null
+						? ServiceRef.Localizer[nameof(AppResources.ErrorTitle)]
+						: ServiceRef.Localizer[EvidenceValidation.TitleResourceKey];
+					string Message = EvidenceValidation.MessageResourceKey is null
+						? ServiceRef.Localizer[nameof(AppResources.ServiceUnavailable)]
+						: ServiceRef.Localizer[EvidenceValidation.MessageResourceKey];
+					await ServiceRef.UiService.DisplayAlert(Title, Message, ServiceRef.Localizer[nameof(AppResources.Ok)]);
+					return;
+				}
+
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.AreYouSureYouWantToSendThisIdApplication)]))
 					return;
 
@@ -975,14 +1145,26 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					ServiceRef.LogService.LogWarning("Error checking for existing identity private key, genereting new keys...: " + Ex.Message);
 				}
 				this.AddNfcReadoutAttachment();
-				(bool Succeeded, LegalIdentity? Added) = await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.AddLegalIdentity(this.mappedValues.ToArray(), !HasIdWithKey, this.attachments.ToArray()));
+				KycApplicationContentSet SubmissionContent = this.contentPolicyService.BuildFirstApplicationContent(
+					this.process.ApplicationPolicy,
+					this.mappedValues,
+					this.attachments);
+				(bool Succeeded, LegalIdentity? Added) = this.process.ApplicationPolicy.Mode == KycApplicationMode.Preview
+					? await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.AddPreviewLegalIdentity(SubmissionContent.Properties.ToArray(), !HasIdWithKey, SubmissionContent.Attachments.ToArray()))
+					: await ServiceRef.NetworkService.TryRequest(() => ServiceRef.XmppService.AddLegalIdentity(SubmissionContent.Properties.ToArray(), !HasIdWithKey, SubmissionContent.Attachments.ToArray()));
 				if (Succeeded && Added is not null)
 				{
 					await ServiceRef.TagProfile.SetIdentityApplication(Added, true);
 					this.applicationSent = true;
 					if (this.kycReference is not null)
 					{
-						try { await this.kycService.ApplySubmissionAsync(this.kycReference, Added); }
+						try
+						{
+							if (this.process.ApplicationPolicy.Mode == KycApplicationMode.Preview)
+								await this.kycService.ApplyPreviewSubmissionAsync(this.kycReference, Added);
+							else
+								await this.kycService.ApplySubmissionAsync(this.kycReference, Added);
+						}
 						catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
 					}
 					this.ErrorDescription = null;

@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using NeuroAccess.Nfc;
 using NeuroAccess.Nfc.Records;
+using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services.Authentication;
 using NeuroAccessMaui.Services.TravelDocuments;
 using NeuroAccessMaui.Services.UI;
@@ -229,7 +230,6 @@ namespace NeuroAccessMaui.Services.Nfc
 						Items.RemoveAt(2);
 
 					Ok = await Callback([.. Items]);
-
 					if (!Ok)
 					{
 						Items.RemoveAt(0);

@@ -3585,4 +3585,85 @@
   <data name="ShowAccount" xml:space="preserve">
     <value>Visa konto</value>
   </data>
+  <data name="KycTravelDocumentTitle" xml:space="preserve">
+    <value>Personligt ID</value>
+  </data>
+  <data name="KycTravelDocumentHeroTitle" xml:space="preserve">
+    <value>Verifiera med passet</value>
+  </data>
+  <data name="KycTravelDocumentHeroDescription" xml:space="preserve">
+    <value>Skanna passet och håll det sedan mot telefonen. Vi använder chippet för att fylla i det vi kan och bifoga avläsningen till ansökan.</value>
+  </data>
+  <data name="KycTravelDocumentNoTypingHint" xml:space="preserve">
+    <value>Du behöver inte skriva in uppgifterna efter en lyckad chipavläsning. Du kan fortfarande granska formuläret innan du ansöker.</value>
+  </data>
+  <data name="KycTravelDocumentPrimaryScanButton" xml:space="preserve">
+    <value>Starta guidad skanning</value>
+  </data>
+  <data name="KycTravelDocumentNfcStepTitle" xml:space="preserve">
+    <value>Håll passet stilla</value>
+  </data>
+  <data name="KycTravelDocumentNfcStepDescription" xml:space="preserve">
+    <value>Håll dokumentet stilla mot baksidan av telefonen tills avläsningen är klar.</value>
+  </data>
+  <data name="KycTravelDocumentRetryNfcButton" xml:space="preserve">
+    <value>Försök läsa chip igen</value>
+  </data>
+  <data name="KycTravelDocumentContinueButton" xml:space="preserve">
+    <value>Fortsätt</value>
+  </data>
+  <data name="KycTravelDocumentManualFallbackButton" xml:space="preserve">
+    <value>Fortsätt med formuläret</value>
+  </data>
+  <data name="KycTravelDocumentSuccessTitle" xml:space="preserve">
+    <value>Passchippet verifierat</value>
+  </data>
+  <data name="KycTravelDocumentSuccessDescription" xml:space="preserve">
+    <value>Chipavläsningen är sparad för den här ansökan. Fortsätt för att granska uppgifterna innan du ansöker.</value>
+  </data>
+  <data name="KycTravelDocumentSaved" xml:space="preserve">
+    <value>MRZ sparad. Du kan nu hålla dokumentets chip mot telefonen.</value>
+  </data>
+  <data name="KycTravelDocumentInvalidMrz" xml:space="preserve">
+    <value>MRZ kunde inte valideras. Kontrollera dokumentnummer, födelsedatum, utgångsdatum och kontrollsiffror.</value>
+  </data>
+  <data name="KycTravelDocumentReadoutReady" xml:space="preserve">
+    <value>Chipavläsningen är redan klar för den här ansökan.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReady" xml:space="preserve">
+    <value>Håll resehandlingen nära telefonen för att läsa chippet.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReading" xml:space="preserve">
+    <value>Läser dokumentets chip. Håll dokumentet stilla.</value>
+  </data>
+  <data name="KycTravelDocumentNfcSuccess" xml:space="preserve">
+    <value>Chipavläsningen är sparad och redo att bifogas till ansökan.</value>
+  </data>
+  <data name="KycTravelDocumentNfcUnavailable" xml:space="preserve">
+    <value>Chipavläsning är inte tillgänglig på den här enheten eller i appens konfiguration.</value>
+  </data>
+  <data name="KycTravelDocumentNfcCancelled" xml:space="preserve">
+    <value>Chipavläsningen avbröts.</value>
+  </data>
+  <data name="KycTravelDocumentNfcTimedOut" xml:space="preserve">
+    <value>Chipavläsningen tog för lång tid. Starta igen och håll dokumentet nära telefonen.</value>
+  </data>
+  <data name="KycTravelDocumentNfcMultipleTags" xml:space="preserve">
+    <value>Flera NFC-taggar hittades. Flytta bort andra kort och försök igen.</value>
+  </data>
+  <data name="KycTravelDocumentNfcUnsupportedTag" xml:space="preserve">
+    <value>Den NFC-tagg som hittades är inte ett resehandlingschip som stöds.</value>
+  </data>
+  <data name="KycTravelDocumentNfcConnectionLost" xml:space="preserve">
+    <value>NFC-anslutningen bröts. Håll dokumentet stilla och försök igen.</value>
+  </data>
+  <data name="KycTravelDocumentNfcAuthenticationFailed" xml:space="preserve">
+    <value>Chippet kunde inte autentiseras med sparad MRZ. Kontrollera skanningen och försök igen.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReadFailed" xml:space="preserve">
+    <value>Chippet autentiserades, men dokumentdata kunde inte läsas. Försök igen.</value>
+  </data>
+  <data name="KycTravelDocumentNfcFailed" xml:space="preserve">
+    <value>Chipavläsningen misslyckades. Kontrollera skanningen och försök igen.</value>
+  </data>
 </root>

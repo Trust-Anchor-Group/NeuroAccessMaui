@@ -451,6 +451,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				KycIdentityApplicationStage.FinalPendingApproval => this.FinalIdentityState ?? IdentityState.Created,
 				KycIdentityApplicationStage.Completed => this.FinalIdentityState ?? IdentityState.Approved,
 				KycIdentityApplicationStage.PreviewPendingReview => this.PreviewIdentityState ?? this.CreatedIdentityState,
+				KycIdentityApplicationStage.None when this.IsReservedPreviewIdentity(this.CreatedIdentityId) => this.FinalIdentityState ?? this.PreviewIdentityState,
 				_ => this.FinalIdentityState ?? this.PreviewIdentityState ?? this.CreatedIdentityState
 			};
 		}

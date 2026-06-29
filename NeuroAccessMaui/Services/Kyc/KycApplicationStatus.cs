@@ -1,5 +1,6 @@
 using System;
 using NeuroAccessMaui.Extensions;
+using NeuroAccessMaui.Services.Identity;
 using Waher.Networking.XMPP.Contracts;
 
 namespace NeuroAccessMaui.Services.Kyc
@@ -25,9 +26,29 @@ namespace NeuroAccessMaui.Services.Kyc
 		PendingReview,
 
 		/// <summary>
+		/// A preview identity has been submitted and is awaiting review.
+		/// </summary>
+		PreviewPendingReview,
+
+		/// <summary>
+		/// A preview identity was rejected before final promotion.
+		/// </summary>
+		PreviewRejected,
+
+		/// <summary>
 		/// The application is creating or waiting for the final approved identity.
 		/// </summary>
 		Finalizing,
+
+		/// <summary>
+		/// The approved preview identity is ready for final identity creation.
+		/// </summary>
+		FinalizationInProgress,
+
+		/// <summary>
+		/// The final identity has been submitted and is awaiting approval.
+		/// </summary>
+		FinalPendingApproval,
 
 		/// <summary>
 		/// The application completed with an approved identity.
@@ -78,17 +99,22 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <summary>
 		/// Gets a value indicating whether the application is waiting for review or approval.
 		/// </summary>
-		public bool IsPending => this.Kind == KycApplicationStatusKind.PendingReview;
+		public bool IsPending => this.Kind is KycApplicationStatusKind.PendingReview or
+			KycApplicationStatusKind.PreviewPendingReview or
+			KycApplicationStatusKind.FinalPendingApproval;
 
 		/// <summary>
 		/// Gets a value indicating whether final identity creation or approval is in progress.
 		/// </summary>
-		public bool IsFinalizing => this.Kind == KycApplicationStatusKind.Finalizing;
+		public bool IsFinalizing => this.Kind is KycApplicationStatusKind.Finalizing or
+			KycApplicationStatusKind.FinalizationInProgress or
+			KycApplicationStatusKind.FinalPendingApproval;
 
 		/// <summary>
 		/// Gets a value indicating whether the application has an invalid terminal outcome.
 		/// </summary>
-		public bool IsRejectedOrInvalid => this.Kind is KycApplicationStatusKind.Rejected or
+		public bool IsRejectedOrInvalid => this.Kind is KycApplicationStatusKind.PreviewRejected or
+			KycApplicationStatusKind.Rejected or
 			KycApplicationStatusKind.Obsoleted or
 			KycApplicationStatusKind.Compromised;
 
@@ -115,12 +141,25 @@ namespace NeuroAccessMaui.Services.Kyc
 			LegalIdentity? LegalIdentity,
 			LegalIdentity? IdentityApplication)
 		{
-			IdentityState? EffectiveApplicationState = Reference?.GetEffectiveApplicationIdentityState() ?? IdentityApplication?.State;
-			string? ActiveIdentityId = Reference?.GetActiveApplicationIdentityId() ?? IdentityApplication?.Id;
+			bool IsUnsubmittedReservedPreviewApplication =
+				Reference?.IsUnsubmittedReservedPreviewIdentity(IdentityApplication?.Id) == true;
+			IdentityState? EffectiveApplicationState = Reference?.GetEffectiveApplicationIdentityState() ??
+				(IsUnsubmittedReservedPreviewApplication ? null : IdentityApplication?.State);
+			if ((EffectiveApplicationState == IdentityState.Created || EffectiveApplicationState is null) &&
+				IsTerminalApplicationReview(Reference?.ApplicationReview))
+			{
+				EffectiveApplicationState = IdentityState.Rejected;
+			}
+
+			KycApplicationStatusKind Kind = ResolveKind(Reference, LegalIdentity, EffectiveApplicationState);
+			string? ActiveIdentityId = Kind == KycApplicationStatusKind.Approved && LegalIdentity?.IsApproved() == true
+				? LegalIdentity.Id
+				: Reference?.GetActiveApplicationIdentityId() ??
+				(IsUnsubmittedReservedPreviewApplication ? null : IdentityApplication?.Id);
 
 			return new KycApplicationStatus
 			{
-				Kind = ResolveKind(Reference, LegalIdentity, EffectiveApplicationState),
+				Kind = Kind,
 				ActiveIdentityId = ActiveIdentityId,
 				ServerState = EffectiveApplicationState
 			};
@@ -137,6 +176,22 @@ namespace NeuroAccessMaui.Services.Kyc
 			if (LegalIdentity is not null && LegalIdentity.State == IdentityState.Obsoleted)
 				return KycApplicationStatusKind.Obsoleted;
 
+			if (LegalIdentity?.State == IdentityState.Approved && LegalIdentity.To < DateTime.Now)
+				return KycApplicationStatusKind.Expired;
+
+			if (LegalIdentity?.IsApproved() == true)
+				return KycApplicationStatusKind.Approved;
+
+			if (Reference is not null &&
+				(Reference.IdentityStage == KycIdentityApplicationStage.ReservedPreview ||
+				Reference.IdentityStage == KycIdentityApplicationStage.None) &&
+				!string.IsNullOrWhiteSpace(Reference.ReservedPreviewIdentityId) &&
+				string.IsNullOrWhiteSpace(Reference.PreviewIdentityId) &&
+				string.IsNullOrWhiteSpace(Reference.FinalIdentityId))
+			{
+				return KycApplicationStatusKind.ReservedPreview;
+			}
+
 			if (Reference is not null)
 			{
 				switch (Reference.IdentityStage)
@@ -145,22 +200,38 @@ namespace NeuroAccessMaui.Services.Kyc
 						return KycApplicationStatusKind.ReservedPreview;
 
 					case KycIdentityApplicationStage.FinalizationInProgress:
+						return EffectiveApplicationState switch
+						{
+							IdentityState.Rejected => KycApplicationStatusKind.Rejected,
+							IdentityState.Compromised => KycApplicationStatusKind.Compromised,
+							IdentityState.Obsoleted => KycApplicationStatusKind.Obsoleted,
+							_ => KycApplicationStatusKind.FinalizationInProgress
+						};
+
 					case KycIdentityApplicationStage.FinalPendingApproval:
-						return ResolveSubmittedKind(EffectiveApplicationState, KycApplicationStatusKind.Finalizing);
+						return EffectiveApplicationState switch
+						{
+							IdentityState.Approved => KycApplicationStatusKind.Approved,
+							IdentityState.Rejected => KycApplicationStatusKind.Rejected,
+							IdentityState.Compromised => KycApplicationStatusKind.Compromised,
+							IdentityState.Obsoleted => KycApplicationStatusKind.Obsoleted,
+							_ => KycApplicationStatusKind.FinalPendingApproval
+						};
 
 					case KycIdentityApplicationStage.Completed:
 						return KycApplicationStatusKind.Approved;
 
 					case KycIdentityApplicationStage.PreviewPendingReview:
-						return ResolveSubmittedKind(EffectiveApplicationState, KycApplicationStatusKind.PendingReview);
+						return EffectiveApplicationState switch
+						{
+							IdentityState.Approved => KycApplicationStatusKind.FinalizationInProgress,
+							IdentityState.Rejected => KycApplicationStatusKind.PreviewRejected,
+							IdentityState.Compromised => KycApplicationStatusKind.Compromised,
+							IdentityState.Obsoleted => KycApplicationStatusKind.Obsoleted,
+							_ => KycApplicationStatusKind.PreviewPendingReview
+						};
 				}
 			}
-
-			if (LegalIdentity?.State == IdentityState.Approved && LegalIdentity.To < DateTime.Now)
-				return KycApplicationStatusKind.Expired;
-
-			if (LegalIdentity?.IsApproved() == true)
-				return KycApplicationStatusKind.Approved;
 
 			return ResolveSubmittedKind(EffectiveApplicationState, KycApplicationStatusKind.None);
 		}
@@ -176,6 +247,13 @@ namespace NeuroAccessMaui.Services.Kyc
 				IdentityState.Compromised => KycApplicationStatusKind.Compromised,
 				_ => DefaultKind
 			};
+		}
+
+		private static bool IsTerminalApplicationReview(ApplicationReview? Review)
+		{
+			return Review is not null &&
+				!string.IsNullOrWhiteSpace(Review.Code) &&
+				!string.Equals(Review.Code, "ManualReview", StringComparison.OrdinalIgnoreCase);
 		}
 	}
 }

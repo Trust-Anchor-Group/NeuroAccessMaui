@@ -3128,6 +3128,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 		}
 
 		/// <summary>
+		/// Adds a preview legal identity.
+		/// </summary>
+		/// <param name="Props">The array holding all the values needed.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Legal Identity</returns>
+		public async Task<LegalIdentity> AddPreviewLegalIdentity(Property[] Props, bool GenerateNewKeys,
+			params LegalIdentityAttachment[] Attachments)
+		{
+			return await this.AddLegalIdentityInternalAsync(Props, GenerateNewKeys, true, Attachments);
+		}
+
+		/// <summary>
 		/// Adds a legal identity.
 		/// </summary>
 		/// <param name="Model">The model holding all the values needed.</param>
@@ -3150,10 +3163,16 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<LegalIdentity> AddLegalIdentity(Property[] Props, bool GenerateNewKeys,
 			params LegalIdentityAttachment[] Attachments)
 		{
+			return await this.AddLegalIdentityInternalAsync(Props, GenerateNewKeys, false, Attachments);
+		}
+
+		private async Task<LegalIdentity> AddLegalIdentityInternalAsync(Property[] Props, bool GenerateNewKeys, bool Preview,
+			params LegalIdentityAttachment[] Attachments)
+		{
 			if (GenerateNewKeys)
 				await this.GenerateNewKeys();
 
-			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Props);
+			LegalIdentity Identity = await this.ContractsClient.ApplyAsync(Props, Preview);
 
 			foreach (LegalIdentityAttachment Attachment in Attachments)
 			{
@@ -3254,7 +3273,7 @@ namespace NeuroAccessMaui.Services.Xmpp
 					}
 				}
 
-				await this.RefreshIdentityApplicationProfileAsync(Identity);
+				await RefreshIdentityApplicationProfileAsync(Identity);
 
 				if (StateChanged && ServiceRef.NavigationService.CurrentPage is ApplicationsPage AppPage &&
 					AppPage.BindingContext is ApplicationsViewModel Model)

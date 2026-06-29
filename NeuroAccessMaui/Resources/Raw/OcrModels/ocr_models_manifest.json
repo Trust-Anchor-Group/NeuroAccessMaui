@@ -1,0 +1,42 @@
+{
+  "mrzScannerDetection": {
+    "file": "mrzscanner_detection_20250222_fp32.onnx",
+    "sourceProject": "DocsaidLab/MRZScanner",
+    "sourceUrl": "https://github.com/DocsaidLab/MRZScanner",
+    "sourceModelConfig": "20250222",
+    "sourceFileId": "1D--D7glsse51oIdcyerZoYs88iokOmqU",
+    "license": "Apache-2.0",
+    "sha256": "0786844728d828dc68c19b844aa87e2b29fdba3a587468f2863824d116ffc269",
+    "inputWidth": 256,
+    "inputHeight": 256,
+    "preprocessing": {
+      "pad": "square-zero",
+      "normalization": "rgb-float-divide-by-255"
+    },
+    "postprocessing": {
+      "output": "mrz-region-heatmap",
+      "threshold": 0.5,
+      "polygon": "largest-component-min-area-rectangle"
+    }
+  },
+  "mrzScannerRecognition": {
+    "file": "mrzscanner_recognition_20250221_fp32.onnx",
+    "sourceProject": "DocsaidLab/MRZScanner",
+    "sourceUrl": "https://github.com/DocsaidLab/MRZScanner",
+    "sourceModelConfig": "20250221",
+    "sourceFileId": "16t-kYHoBnI72MWDMCQ0K8GEyb90Tx2Rp",
+    "license": "Apache-2.0",
+    "sha256": "07cef987fc1852aac12f18e1269fbaf1e2644579ca5743061d6f9cec7bef77c0",
+    "inputWidth": 640,
+    "inputHeight": 64,
+    "charset": "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<",
+    "preprocessing": {
+      "normalization": "rgb-float-divide-by-255"
+    }
+  },
+  "onnxRuntime": {
+    "package": "Microsoft.ML.OnnxRuntime",
+    "license": "MIT",
+    "sourceUrl": "https://github.com/microsoft/onnxruntime"
+  }
+}

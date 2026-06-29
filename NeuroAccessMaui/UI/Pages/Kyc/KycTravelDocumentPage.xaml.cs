@@ -1,7 +1,7 @@
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
 	/// <summary>
-	/// Page for entering travel-document MRZ evidence used by the KYC NFC readout path.
+	/// Page for guided travel-document MRZ and NFC evidence capture.
 	/// </summary>
 	public partial class KycTravelDocumentPage : BaseContentPage
 	{

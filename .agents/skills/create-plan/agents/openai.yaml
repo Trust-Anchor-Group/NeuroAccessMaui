@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Plan"
+  short_description: "Draft requirements, design, and tasks"
+  default_prompt: "Use $create-plan to create a plan for this feature."

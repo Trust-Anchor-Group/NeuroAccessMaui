@@ -847,6 +847,39 @@
 										   Text="{Binding CurrentPageDescription}"
 										   Margin="0,0,0,16" />
 
+									<Border Style="{DynamicResource BorderSet}"
+											Margin="0,8,0,16"
+											IsVisible="{Binding HasCurrentPageAction}">
+										<VerticalStackLayout Spacing="{DynamicResource SmallSpacing}">
+											<Label Text="{Binding CurrentPageActionTitle}"
+												   Style="{DynamicResource FieldTitleLabel}"
+												   IsVisible="{Binding HasCurrentPageActionTitle}" />
+											<Label Text="{Binding CurrentPageActionDescription}"
+												   Style="{DynamicResource InfoLabel}"
+												   LineBreakMode="WordWrap"
+												   IsVisible="{Binding HasCurrentPageActionDescription}" />
+											<Label Text="{Binding CurrentPageActionStatusText}"
+												   Style="{DynamicResource InfoLabel}"
+												   LineBreakMode="WordWrap"
+												   IsVisible="{Binding HasCurrentPageActionStatusText}" />
+											<Label Text="{Binding CurrentPageActionWarningText}"
+												   Style="{DynamicResource InfoLabel}"
+												   TextColor="{DynamicResource TnPWarningContentWL}"
+												   LineBreakMode="WordWrap"
+												   IsVisible="{Binding HasCurrentPageActionWarningText}" />
+											<Label Text="{Binding CurrentPageActionErrorText}"
+												   Style="{DynamicResource InfoLabel}"
+												   TextColor="{DynamicResource TnPDangerContentWL}"
+												   LineBreakMode="WordWrap"
+												   IsVisible="{Binding HasCurrentPageActionErrorText}" />
+											<controls:TextButton Style="{DynamicResource TransparentTextButton}"
+																 LabelData="{Binding CurrentPageActionPrimaryText}"
+																 Command="{Binding ExecuteCurrentPageActionCommand}"
+																 IsEnabled="{Binding CurrentPageActionIsEnabled}"
+																 IsVisible="{Binding HasCurrentPageActionPrimaryText}" />
+										</VerticalStackLayout>
+									</Border>
+
 									<!-- Direct fields -->
 									<VerticalStackLayout IsVisible="{Binding CurrentPage.VisibleFields.Count, Converter={converters:GreaterThanZero}}"
 														 BindableLayout.ItemsSource="{Binding CurrentPage.VisibleFields}"

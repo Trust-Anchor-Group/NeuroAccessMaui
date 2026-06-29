@@ -10,78 +10,273 @@
 					  x:DataType="viewmodel:KycTravelDocumentViewModel"
 					  ui:KeyboardInsets.Mode="Automatic"
 					  ui:SafeArea.Mode="TopAndBottom">
-	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
-		  Margin="16,8,16,0"
-		  RowDefinitions="Auto,*">
-		<controls:Background />
+	<VisualElement.Resources>
+		<Style x:Key="GuidePanel"
+			   TargetType="Border"
+			   BasedOn="{StaticResource BorderSet}">
+			<Setter Property="BackgroundColor"
+					Value="{DynamicResource SurfaceElevation2WL}" />
+			<Setter Property="Stroke"
+					Value="{DynamicResource TnPNeutralv300bgWL}" />
+			<Setter Property="StrokeThickness"
+					Value="1" />
+			<Setter Property="StrokeShape"
+					Value="RoundRectangle 8" />
+			<Setter Property="Padding"
+					Value="18" />
+		</Style>
+	</VisualElement.Resources>
 
-		<Grid ColumnDefinitions="Auto,*,Auto">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+		  RowDefinitions="Auto,*,Auto">
+		<controls:Background Grid.RowSpan="3" />
+
+		<Grid Padding="16,8"
+			  ColumnDefinitions="44,*"
+			  ColumnSpacing="12">
 			<controls:SvgButton Command="{Binding ReturnToApplicationCommand}"
 								SvgSource="close.svg"
 								Style="{DynamicResource IconButton}"
+								WidthRequest="44"
+								HeightRequest="44"
 								HorizontalOptions="Start"
-								Grid.Column="0" />
+								VerticalOptions="Center" />
 
-			<Label Grid.Column="2"
+			<Label Grid.Column="1"
 				   Style="{DynamicResource PageTitleLabel}"
 				   Text="{l:Localize KycTravelDocumentTitle}"
-				   HorizontalOptions="End" />
+				   FontSize="21"
+				   HorizontalOptions="End"
+				   VerticalOptions="Center"
+				   LineBreakMode="TailTruncation" />
 		</Grid>
 
-		<ScrollView Grid.Row="1">
-			<VerticalStackLayout Spacing="16"
-								 Padding="0,16,0,16">
-				<Border Style="{DynamicResource BorderSet}"
-						Padding="16"
-						Margin="0">
-					<VerticalStackLayout Spacing="14">
-						<Label Text="{l:Localize KycTravelDocumentSummaryTitle}"
-							   Style="{DynamicResource PageTitleLabel}"
-							   FontSize="28"
-							   LineBreakMode="WordWrap" />
-						<Label Text="{l:Localize KycTravelDocumentDescription}"
-							   Style="{DynamicResource InfoLabel}"
-							   LineBreakMode="WordWrap" />
+		<ScrollView Grid.Row="1"
+					VerticalScrollBarVisibility="Never">
+			<Grid Padding="18,10,18,12"
+				  MaximumWidthRequest="620"
+				  HorizontalOptions="Center"
+				  VerticalOptions="Center">
+				<VerticalStackLayout Spacing="18">
+					<VerticalStackLayout Spacing="16"
+										 IsVisible="{Binding ShowIntro}">
+						<Grid HeightRequest="188">
+							<Border WidthRequest="172"
+									HeightRequest="118"
+									StrokeShape="RoundRectangle 8"
+									BackgroundColor="{AppThemeBinding Light=#F5F8FA, Dark=#1C262C}"
+									Stroke="{DynamicResource TnPNeutralv300bgWL}"
+									StrokeThickness="1"
+									HorizontalOptions="Center"
+									VerticalOptions="Center"
+									Rotation="-5" />
+							<Border WidthRequest="172"
+									HeightRequest="118"
+									StrokeShape="RoundRectangle 8"
+									BackgroundColor="{DynamicResource SurfaceElevation2WL}"
+									Stroke="{DynamicResource ContentAccessWL}"
+									StrokeThickness="1"
+									HorizontalOptions="Center"
+									VerticalOptions="Center">
+								<Grid>
+									<controls:SvgView Source="id_icon.svg"
+													  WidthRequest="88"
+													  HeightRequest="88"
+													  TintColor="{DynamicResource ContentPrimaryWL}"
+													  HorizontalOptions="Center"
+													  VerticalOptions="Center" />
+								</Grid>
+							</Border>
+							<Border WidthRequest="72"
+									HeightRequest="72"
+									StrokeShape="RoundRectangle 36"
+									BackgroundColor="{DynamicResource ContentAccessWL}"
+									StrokeThickness="0"
+									HorizontalOptions="Center"
+									VerticalOptions="Center"
+									TranslationX="92"
+									TranslationY="48">
+								<controls:SvgView Source="nfc.svg"
+												  WidthRequest="38"
+												  HeightRequest="38"
+												  TintColor="{DynamicResource SurfaceBackgroundWL}"
+												  HorizontalOptions="Center"
+												  VerticalOptions="Center" />
+							</Border>
+						</Grid>
+
+						<VerticalStackLayout Spacing="8">
+							<Label Text="{l:Localize KycTravelDocumentHeroTitle}"
+								   Style="{DynamicResource PageTitleLabel}"
+								   FontSize="31"
+								   HorizontalTextAlignment="Center"
+								   LineBreakMode="WordWrap" />
+							<Label Text="{l:Localize KycTravelDocumentHeroDescription}"
+								   Style="{DynamicResource InfoLabel}"
+								   HorizontalTextAlignment="Center"
+								   LineBreakMode="WordWrap" />
+						</VerticalStackLayout>
+
+						<Border Style="{StaticResource GuidePanel}">
+							<Grid ColumnDefinitions="Auto,*"
+								  ColumnSpacing="12">
+								<Path Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
+									  Fill="{DynamicResource TnPSuccessContentWL}"
+									  WidthRequest="22"
+									  HeightRequest="22"
+									  Aspect="Uniform"
+									  VerticalOptions="Start" />
+								<Label Grid.Column="1"
+									   Text="{l:Localize KycTravelDocumentNoTypingHint}"
+									   Style="{DynamicResource InfoLabel}"
+									   LineBreakMode="WordWrap" />
+							</Grid>
+						</Border>
 					</VerticalStackLayout>
-				</Border>
 
-				<Border Style="{DynamicResource BorderSet}"
-						Padding="16"
-						Margin="0"
-						IsVisible="{Binding HasStatusText}">
-					<Label Text="{Binding StatusText}"
-						   Style="{DynamicResource InfoLabel}"
-						   LineBreakMode="WordWrap" />
-				</Border>
+					<VerticalStackLayout Spacing="16"
+										 IsVisible="{Binding ShowNfcStep}">
+						<Grid HeightRequest="208">
+							<Border WidthRequest="188"
+									HeightRequest="128"
+									StrokeShape="RoundRectangle 8"
+									BackgroundColor="{DynamicResource SurfaceElevation2WL}"
+									Stroke="{DynamicResource TnPNeutralv300bgWL}"
+									StrokeThickness="1"
+									HorizontalOptions="Center"
+									VerticalOptions="Center"
+									TranslationX="-22" />
+							<controls:SvgView Source="id_icon.svg"
+											  WidthRequest="112"
+											  HeightRequest="112"
+											  TintColor="{DynamicResource ContentPrimaryWL}"
+											  HorizontalOptions="Center"
+											  VerticalOptions="Center"
+											  TranslationX="-22" />
+							<Border WidthRequest="82"
+									HeightRequest="82"
+									StrokeShape="RoundRectangle 41"
+									BackgroundColor="{DynamicResource ContentAccessWL}"
+									StrokeThickness="0"
+									HorizontalOptions="Center"
+									VerticalOptions="Center"
+									TranslationX="92"
+									TranslationY="50">
+								<controls:SvgView Source="nfc.svg"
+												  WidthRequest="42"
+												  HeightRequest="42"
+												  TintColor="{DynamicResource SurfaceBackgroundWL}"
+												  HorizontalOptions="Center"
+												  VerticalOptions="Center" />
+							</Border>
+						</Grid>
 
-				<Border Style="{DynamicResource BorderSet}"
-						Padding="16"
-						Margin="0">
-					<VerticalStackLayout Spacing="10">
-						<Label Text="{l:Localize KycTravelDocumentMrzLabel}"
-							   Style="{DynamicResource FieldTitleLabel}" />
-						<Editor Text="{Binding MrzText, Mode=TwoWay}"
-								Placeholder="{l:Localize KycTravelDocumentMrzPlaceholder}"
-								AutoSize="TextChanges"
-								MinimumHeightRequest="120"
-								Keyboard="Plain"
-								TextColor="{DynamicResource InputFieldsContentPrimary}"
-								BackgroundColor="{DynamicResource SurfaceBackgroundWL}" />
+						<VerticalStackLayout Spacing="8">
+							<Label Text="{l:Localize KycTravelDocumentNfcStepTitle}"
+								   Style="{DynamicResource PageTitleLabel}"
+								   FontSize="29"
+								   HorizontalTextAlignment="Center"
+								   LineBreakMode="WordWrap" />
+							<Label Text="{l:Localize KycTravelDocumentNfcStepDescription}"
+								   Style="{DynamicResource InfoLabel}"
+								   HorizontalTextAlignment="Center"
+								   LineBreakMode="WordWrap" />
+						</VerticalStackLayout>
 					</VerticalStackLayout>
-				</Border>
 
-				<VerticalStackLayout Spacing="8">
-					<controls:TextButton Style="{DynamicResource FilledTextButton}"
-										 LabelData="{l:Localize KycTravelDocumentSaveButton}"
-										 Command="{Binding SaveMrzCommand}" />
-					<controls:TextButton Style="{DynamicResource FilledTextButton}"
-										 LabelData="{l:Localize KycTravelDocumentStartNfcButton}"
-										 Command="{Binding StartNfcReadoutCommand}" />
-					<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
-										 LabelData="{l:Localize Kyc_Return}"
-										 Command="{Binding ReturnToApplicationCommand}" />
+					<VerticalStackLayout Spacing="16"
+										 IsVisible="{Binding ShowSuccess}">
+						<Border WidthRequest="104"
+								HeightRequest="104"
+								StrokeShape="RoundRectangle 52"
+								BackgroundColor="{AppThemeBinding Light=#DFF7EE, Dark=#183C33}"
+								StrokeThickness="0"
+								HorizontalOptions="Center">
+							<Path Data="{x:Static ui:Geometries.SuccessCheckmarkPath}"
+								  Fill="{DynamicResource TnPSuccessContentWL}"
+								  WidthRequest="48"
+								  HeightRequest="48"
+								  Aspect="Uniform"
+								  HorizontalOptions="Center"
+								  VerticalOptions="Center" />
+						</Border>
+
+						<VerticalStackLayout Spacing="8">
+							<Label Text="{l:Localize KycTravelDocumentSuccessTitle}"
+								   Style="{DynamicResource PageTitleLabel}"
+								   FontSize="29"
+								   HorizontalTextAlignment="Center"
+								   LineBreakMode="WordWrap" />
+							<Label Text="{l:Localize KycTravelDocumentSuccessDescription}"
+								   Style="{DynamicResource InfoLabel}"
+								   HorizontalTextAlignment="Center"
+								   LineBreakMode="WordWrap" />
+						</VerticalStackLayout>
+					</VerticalStackLayout>
+
+					<Border Style="{StaticResource GuidePanel}"
+							IsVisible="{Binding ShowStatusPanel}">
+						<Border.Triggers>
+							<DataTrigger TargetType="Border"
+										 Binding="{Binding HasErrorState}"
+										 Value="True">
+								<Setter Property="BackgroundColor"
+										Value="{DynamicResource TnPWarningbgWL}" />
+								<Setter Property="Stroke"
+										Value="{DynamicResource TnPWarningContentWL}" />
+							</DataTrigger>
+						</Border.Triggers>
+
+						<Grid ColumnDefinitions="Auto,*"
+							  ColumnSpacing="12">
+							<ActivityIndicator IsRunning="{Binding IsNfcBusy}"
+											   IsVisible="{Binding IsNfcBusy}"
+											   WidthRequest="28"
+											   HeightRequest="28"
+											   Color="{DynamicResource ContentAccessWL}"
+											   VerticalOptions="Center" />
+							<Path Data="{x:Static ui:Geometries.ErrorPath}"
+								  Fill="{DynamicResource TnPWarningContentWL}"
+								  WidthRequest="24"
+								  HeightRequest="24"
+								  Aspect="Uniform"
+								  IsVisible="{Binding HasErrorState}"
+								  VerticalOptions="Center" />
+							<Label Grid.Column="1"
+								   Text="{Binding StatusText}"
+								   Style="{DynamicResource InfoLabel}"
+								   LineBreakMode="WordWrap"
+								   VerticalOptions="Center" />
+						</Grid>
+					</Border>
 				</VerticalStackLayout>
-			</VerticalStackLayout>
+			</Grid>
 		</ScrollView>
+
+		<Border Grid.Row="2"
+				StrokeThickness="0"
+				Padding="18,12,18,18"
+				BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+			<VerticalStackLayout Spacing="8"
+								 MaximumWidthRequest="620"
+								 HorizontalOptions="Center">
+				<controls:TextButton Style="{DynamicResource FilledTextButton}"
+									 LabelData="{l:Localize KycTravelDocumentPrimaryScanButton}"
+									 Command="{Binding ScanMrzCommand}"
+									 IsVisible="{Binding ShowIntro}" />
+				<controls:TextButton Style="{DynamicResource FilledTextButton}"
+									 LabelData="{l:Localize KycTravelDocumentRetryNfcButton}"
+									 Command="{Binding StartNfcReadoutCommand}"
+									 IsVisible="{Binding ShowNfcRetryAction}" />
+				<controls:TextButton Style="{DynamicResource FilledTextButton}"
+									 LabelData="{l:Localize KycTravelDocumentContinueButton}"
+									 Command="{Binding ReturnToApplicationCommand}"
+									 IsVisible="{Binding ShowSuccess}" />
+				<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
+									 LabelData="{l:Localize KycTravelDocumentManualFallbackButton}"
+									 Command="{Binding ReturnToApplicationCommand}"
+									 IsVisible="{Binding ShowManualFallback}" />
+			</VerticalStackLayout>
+		</Border>
 	</Grid>
 </base:BaseContentPage>

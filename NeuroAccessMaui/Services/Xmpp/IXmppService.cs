@@ -541,6 +541,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 		Task<IdApplicationAttributesEventArgs> GetIdApplicationAttributes();
 
 		/// <summary>
+		/// Adds a preview legal identity.
+		/// </summary>
+		/// <param name="Props">The array holding all the values needed.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Legal Identity</returns>
+		Task<LegalIdentity> AddPreviewLegalIdentity(Property[] Props, bool GenerateNewKeys, params LegalIdentityAttachment[] Attachments);
+
+		/// <summary>
 		/// Adds a legal identity.
 		/// </summary>
 		/// <param name="Model">The model holding all the values needed.</param>

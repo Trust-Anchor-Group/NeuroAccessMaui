@@ -94,6 +94,27 @@ namespace NeuroAccessMaui.Services.Kyc
 		Task ApplySubmissionAsync(KycReference Reference, LegalIdentity Identity);
 
 		/// <summary>
+		/// Persists submission details after a preview application is sent.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Submitted preview identity.</param>
+		Task ApplyPreviewSubmissionAsync(KycReference Reference, LegalIdentity Identity);
+
+		/// <summary>
+		/// Marks an approved preview identity as ready for finalization.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Approved preview identity.</param>
+		Task MarkPreviewApprovedForFinalizationAsync(KycReference Reference, LegalIdentity Identity);
+
+		/// <summary>
+		/// Persists submission details after a final promoted application is sent.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Submitted final identity.</param>
+		Task ApplyFinalSubmissionAsync(KycReference Reference, LegalIdentity Identity);
+
+		/// <summary>
 		/// Updates stored submission state without clearing any existing application review.
 		/// </summary>
 		/// <param name="Reference">Reference to update.</param>

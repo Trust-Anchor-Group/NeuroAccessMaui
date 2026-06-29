@@ -33,6 +33,8 @@ namespace NeuroAccessMaui.Services.Kyc
             if (Doc.Root is not null)
             {
                 Process.Name = ParseLocalizedText(Doc.Root.Element("Name"));
+				Process.ApplicationPolicy = ParseApplicationPolicy(Doc.Root.Element("IdentityApplication"));
+				Process.EvidencePolicy = ParseEvidencePolicy(Doc.Root.Element("Evidence"));
             }
 
             foreach (XElement PageEl in Doc.Root?.Elements("Page") ?? Enumerable.Empty<XElement>())
@@ -42,7 +44,8 @@ namespace NeuroAccessMaui.Services.Kyc
 					Id = (string?)PageEl.Attribute("id") ?? string.Empty,
 					Title = ParseLocalizedText(PageEl.Element("Title")),
 					Description = ParseLocalizedText(PageEl.Element("Description")),
-					Condition = ParseCondition(PageEl.Element("Condition"))
+					Condition = ParseCondition(PageEl.Element("Condition")),
+					Metadata = ParsePageMetadata(PageEl.Element("Metadata"))
 				};
 
                 // Fields (direct under Page) - owner process passed early to allow metadata logic to use it
@@ -76,6 +79,212 @@ namespace NeuroAccessMaui.Services.Kyc
 			Process.Initialize();
 
 			return Task.FromResult(Process);
+		}
+
+		private static KycApplicationPolicy ParseApplicationPolicy(XElement? IdentityApplicationEl)
+		{
+			KycApplicationPolicy Policy = new KycApplicationPolicy();
+
+			if (IdentityApplicationEl is null)
+			{
+				return Policy;
+			}
+
+			Policy.Mode = ParseApplicationMode(IdentityApplicationEl.Element("Mode")?.Value);
+			Policy.Content = ParseContentPolicy(IdentityApplicationEl.Element("Content"));
+
+			return Policy;
+		}
+
+		private static KycApplicationMode ParseApplicationMode(string? ModeText)
+		{
+			string Mode = ModeText?.Trim() ?? string.Empty;
+
+			if (string.IsNullOrEmpty(Mode))
+			{
+				return KycApplicationMode.Direct;
+			}
+
+			if (Enum.TryParse(Mode, true, out KycApplicationMode ParsedMode) &&
+				Enum.IsDefined(typeof(KycApplicationMode), ParsedMode))
+			{
+				return ParsedMode;
+			}
+
+			throw new FormatException($"Unsupported identity application mode '{Mode}'. Supported modes are Direct and Preview.");
+		}
+
+		private static KycContentPolicy ParseContentPolicy(XElement? ContentEl)
+		{
+			KycContentPolicy Policy = new KycContentPolicy();
+
+			if (ContentEl is null)
+			{
+				return Policy;
+			}
+
+			foreach (XElement ContentChild in ContentEl.Elements())
+			{
+				switch (ContentChild.Name.LocalName)
+				{
+					case "Include":
+						AddRequiredStringAttribute(Policy.IncludePropertyKeys, ContentChild, "key");
+						break;
+
+					case "Keep":
+						AddRequiredStringAttribute(Policy.KeepPropertyKeys, ContentChild, "key");
+						break;
+
+					case "IncludeAttachment":
+						AddAttachmentRouting(Policy.IncludeAttachmentNames, Policy.IncludeAttachmentTags, ContentChild);
+						break;
+
+					case "KeepAttachment":
+						AddAttachmentRouting(Policy.KeepAttachmentNames, Policy.KeepAttachmentTags, ContentChild);
+						break;
+
+					default:
+						throw new FormatException($"Unsupported identity application content element '{ContentChild.Name.LocalName}'.");
+				}
+			}
+
+			return Policy;
+		}
+
+		private static KycEvidencePolicy ParseEvidencePolicy(XElement? EvidenceEl)
+		{
+			KycEvidencePolicy Policy = new KycEvidencePolicy();
+
+			if (EvidenceEl is null)
+			{
+				return Policy;
+			}
+
+			XElement? TravelDocumentEl = EvidenceEl.Element("TravelDocument");
+			if (TravelDocumentEl is null)
+			{
+				return Policy;
+			}
+
+			Policy.TravelDocument.Required = ReadBooleanAttribute(TravelDocumentEl, "required", false);
+
+			XElement? NfcEl = TravelDocumentEl.Element("Nfc");
+			if (NfcEl is not null)
+			{
+				Policy.TravelDocument.Nfc.Enabled = ReadBooleanAttribute(NfcEl, "enabled", false);
+				Policy.TravelDocument.Nfc.Required = ReadBooleanAttribute(NfcEl, "required", false);
+				Policy.TravelDocument.Nfc.AttachmentName = ReadStringAttribute(NfcEl, "attachmentName") ?? KycNfcEvidencePolicy.DefaultAttachmentName;
+				Policy.TravelDocument.Nfc.ContentType = ReadStringAttribute(NfcEl, "contentType") ?? KycNfcEvidencePolicy.DefaultContentType;
+			}
+
+			return Policy;
+		}
+
+		private static void AddRequiredStringAttribute(Collection<string> Values, XElement Element, string AttributeName)
+		{
+			string? Value = ReadStringAttribute(Element, AttributeName);
+
+			if (Value is null)
+			{
+				throw new FormatException($"Identity application content element '{Element.Name.LocalName}' requires a non-empty '{AttributeName}' attribute.");
+			}
+
+			AddDistinctValue(Values, Value);
+		}
+
+		private static void AddAttachmentRouting(Collection<string> Names, Collection<string> Tags, XElement Element)
+		{
+			string? Name = ReadStringAttribute(Element, "name");
+			string? Tag = ReadStringAttribute(Element, "tag");
+
+			if (Name is null && Tag is null)
+			{
+				throw new FormatException($"Identity application attachment content element '{Element.Name.LocalName}' requires a non-empty 'name' or 'tag' attribute.");
+			}
+
+			if (Name is not null)
+			{
+				AddDistinctValue(Names, Name);
+			}
+
+			if (Tag is not null)
+			{
+				AddDistinctValue(Tags, Tag);
+			}
+		}
+
+		private static void AddDistinctValue(Collection<string> Values, string Value)
+		{
+			if (!Values.Any(Item => string.Equals(Item, Value, StringComparison.OrdinalIgnoreCase)))
+			{
+				Values.Add(Value);
+			}
+		}
+
+		private static bool ReadBooleanAttribute(XElement Element, string AttributeName, bool DefaultValue)
+		{
+			string? Value = ReadStringAttribute(Element, AttributeName);
+
+			if (Value is null)
+			{
+				return DefaultValue;
+			}
+
+			if (bool.TryParse(Value, out bool ParsedValue))
+			{
+				return ParsedValue;
+			}
+
+			if (Value == "1")
+			{
+				return true;
+			}
+
+			if (Value == "0")
+			{
+				return false;
+			}
+
+			throw new FormatException($"Attribute '{AttributeName}' on '{Element.Name.LocalName}' must be true or false.");
+		}
+
+		private static string? ReadStringAttribute(XElement Element, string AttributeName)
+		{
+			string? Value = (string?)Element.Attribute(AttributeName);
+
+			return string.IsNullOrWhiteSpace(Value) ? null : Value.Trim();
+		}
+
+		private static KycPageMetadata? ParsePageMetadata(XElement? MetadataEl)
+		{
+			if (MetadataEl is null)
+			{
+				return null;
+			}
+
+			KycPageMetadata Metadata = new KycPageMetadata
+			{
+				ActionName = ReadElementValue(MetadataEl.Element("Action"))
+			};
+
+			foreach (XElement RequiredEvidenceEl in MetadataEl.Elements("RequiredEvidence"))
+			{
+				string? RequiredEvidence = ReadElementValue(RequiredEvidenceEl);
+
+				if (RequiredEvidence is not null)
+				{
+					AddDistinctValue(Metadata.RequiredEvidenceKeys, RequiredEvidence);
+				}
+			}
+
+			return Metadata;
+		}
+
+		private static string? ReadElementValue(XElement? Element)
+		{
+			string? Value = Element?.Value;
+
+			return string.IsNullOrWhiteSpace(Value) ? null : Value.Trim();
 		}
 
 		/// <summary>

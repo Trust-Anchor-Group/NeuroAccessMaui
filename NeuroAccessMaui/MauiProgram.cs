@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Handlers.Items;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.LifecycleEvents;
+using NeuroAccessMaui.OCR;
 using NeuroAccessMaui.UI;
 using NeuroAccessMaui.Resources.Languages;
 using NeuroAccessMaui.Services;
@@ -63,6 +64,7 @@ namespace NeuroAccessMaui
 				#endif
 				handlers.AddHandler<AutoHeightSKCanvasView, SKCanvasViewHandler>();
 				handlers.AddHandler(typeof(AspectRatioLayout), typeof(LayoutHandler));
+				handlers.AddHandler<NeuroAccessMaui.Camera.CameraView, NeuroAccessMaui.Camera.CameraViewHandler>();
 			});
 
 			Builder.ConfigureLifecycleEvents(lifecycle =>
@@ -130,6 +132,7 @@ namespace NeuroAccessMaui
 #endif
 
 			Builder.RegisterTypes();
+			Builder.RegisterOcrServices();
 			Builder.RegisterPages();
 
 			instance = Builder.Build();

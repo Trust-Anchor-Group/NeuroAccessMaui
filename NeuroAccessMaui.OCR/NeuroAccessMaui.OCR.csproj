@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UseMaui>true</UseMaui>
+    <RootNamespace>NeuroAccessMaui.OCR</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <Authors>Trust Anchor Group AB</Authors>
+    <Company>Trust Anchor Group AB</Company>
+    <Product>NeuroAccessMaui.OCR</Product>
+    <Description>Production OCR contracts and orchestration for NeuroAccess identity flows.</Description>
+    <Copyright>Copyright (c) Trust Anchor Group 2026. All rights reserved.</Copyright>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+    <TargetFrameworks>net10.0;net10.0-ios;net10.0-android</TargetFrameworks>
+  </PropertyGroup>
+  <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('windows'))">
+    <TargetFrameworks>net10.0;net10.0-ios;net10.0-android;net10.0-windows10.0.19041.0</TargetFrameworks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>NeuroAccessMaui.OCR.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IdApp.Cv\IdApp.Cv.csproj" />
+    <ProjectReference Include="..\NeuroAccess.Nfc\NeuroAccess.Nfc.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <PackageReference Include="Microsoft.ML.OnnxRuntime.Managed" Version="1.26.0" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'android'">
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.26.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.10" />
+  </ItemGroup>
+</Project>

@@ -46,6 +46,11 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		public KycCondition? Condition { get; set; }
 
 		/// <summary>
+		/// Gets or sets optional metadata for built-in page behavior.
+		/// </summary>
+		public KycPageMetadata? Metadata { get; set; }
+
+		/// <summary>
 		/// Gets all fields directly contained in the page (excluding sections).
 		/// </summary>
 		public ObservableCollection<ObservableKycField> AllFields { get; } = new();
