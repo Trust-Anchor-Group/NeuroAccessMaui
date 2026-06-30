@@ -558,6 +558,14 @@ namespace NeuroAccessMaui.Services.Xmpp
 		Task<LegalIdentity> ApplyPreviewLegalIdentity(Property[] Props, bool GenerateNewKeys);
 
 		/// <summary>
+		/// Uploads attachments to an existing legal identity without marking it ready for approval.
+		/// </summary>
+		/// <param name="legalIdentityId">The legal identity identifier.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>The legal identity after attachments have been uploaded.</returns>
+		Task<LegalIdentity> UploadLegalIdentityAttachments(CaseInsensitiveString legalIdentityId, params LegalIdentityAttachment[] Attachments);
+
+		/// <summary>
 		/// Uploads attachments for a preview legal identity and marks it ready for approval.
 		/// </summary>
 		/// <param name="legalIdentityId">The preview legal identity identifier.</param>

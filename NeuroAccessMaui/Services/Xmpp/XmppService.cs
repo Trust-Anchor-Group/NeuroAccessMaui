@@ -3156,12 +3156,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 		}
 
 		/// <summary>
-		/// Uploads attachments for a preview legal identity and marks it ready for approval.
+		/// Uploads attachments to an existing legal identity without marking it ready for approval.
 		/// </summary>
-		/// <param name="legalIdentityId">The preview legal identity identifier.</param>
+		/// <param name="legalIdentityId">The legal identity identifier.</param>
 		/// <param name="Attachments">The physical attachments to upload.</param>
-		/// <returns>Submitted preview legal identity.</returns>
-		public async Task<LegalIdentity> CompletePreviewLegalIdentity(CaseInsensitiveString legalIdentityId,
+		/// <returns>The legal identity after attachments have been uploaded.</returns>
+		public async Task<LegalIdentity> UploadLegalIdentityAttachments(CaseInsensitiveString legalIdentityId,
 			params LegalIdentityAttachment[] Attachments)
 		{
 			LegalIdentity Identity = await this.ContractsClient.GetLegalIdentityAsync(legalIdentityId);
@@ -3171,6 +3171,19 @@ namespace NeuroAccessMaui.Services.Xmpp
 					Path.GetFileName(Attachment.FileName), Attachment.Data, Attachment.ContentType);
 			}
 
+			return Identity;
+		}
+
+		/// <summary>
+		/// Uploads attachments for a preview legal identity and marks it ready for approval.
+		/// </summary>
+		/// <param name="legalIdentityId">The preview legal identity identifier.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Submitted preview legal identity.</returns>
+		public async Task<LegalIdentity> CompletePreviewLegalIdentity(CaseInsensitiveString legalIdentityId,
+			params LegalIdentityAttachment[] Attachments)
+		{
+			LegalIdentity Identity = await this.UploadLegalIdentityAttachments(legalIdentityId, Attachments);
 			await this.ContractsClient.ReadyForApprovalAsync(Identity.Id);
 
 			return Identity;

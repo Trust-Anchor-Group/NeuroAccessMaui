@@ -758,6 +758,43 @@ namespace NeuroAccessMaui.Services.Kyc
 		}
 
 		/// <summary>
+		/// Clears a reserved preview identity without changing captured evidence or user-entered fields.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="ReservedPreviewIdentityId">Reserved preview identity identifier to forget.</param>
+		public async Task ForgetReservedPreviewIdentityAsync(KycReference Reference, string ReservedPreviewIdentityId)
+		{
+			if (Reference is null || string.IsNullOrWhiteSpace(ReservedPreviewIdentityId))
+				return;
+
+			AsyncLock Lock = this.GetLockFor(Reference);
+			await using (await Lock.LockAsync().ConfigureAwait(false))
+			{
+				string NormalizedIdentityId = ReservedPreviewIdentityId.Trim();
+				if (!Reference.IsReservedPreviewIdentity(NormalizedIdentityId))
+					return;
+
+				bool CreatedIdentityMatchesReservation =
+					!string.IsNullOrWhiteSpace(Reference.CreatedIdentityId) &&
+					string.Equals(Reference.CreatedIdentityId, NormalizedIdentityId, StringComparison.OrdinalIgnoreCase);
+
+				Reference.ReservedPreviewIdentityId = null;
+				if (CreatedIdentityMatchesReservation)
+				{
+					Reference.CreatedIdentityId = null;
+					Reference.CreatedIdentityState = null;
+				}
+
+				if (Reference.IdentityStage == KycIdentityApplicationStage.ReservedPreview)
+					Reference.IdentityStage = KycIdentityApplicationStage.None;
+
+				Reference.Version++;
+				Reference.UpdatedUtc = DateTime.UtcNow;
+				await SaveReferenceAsync(Reference);
+			}
+		}
+
+		/// <summary>
 		/// Marks the approved preview identity and records that final identity creation is underway.
 		/// </summary>
 		/// <param name="Reference">Reference to update.</param>

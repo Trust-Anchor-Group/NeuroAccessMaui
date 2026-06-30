@@ -116,6 +116,13 @@ namespace NeuroAccessMaui.Services.Kyc
 		Task SetReservedPreviewIdentityAsync(KycReference Reference, LegalIdentity Identity);
 
 		/// <summary>
+		/// Clears a reserved preview identity without changing captured evidence or user-entered fields.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="ReservedPreviewIdentityId">Reserved preview identity identifier to forget.</param>
+		Task ForgetReservedPreviewIdentityAsync(KycReference Reference, string ReservedPreviewIdentityId);
+
+		/// <summary>
 		/// Marks an approved preview identity as ready for finalization.
 		/// </summary>
 		/// <param name="Reference">Reference to update.</param>

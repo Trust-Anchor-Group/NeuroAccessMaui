@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Globalization;
+using System.Text;
 using Microsoft.Maui.ApplicationModel;
 using NeuroAccess.Nfc;
 using NeuroAccess.Nfc.TravelDocuments;
@@ -553,12 +554,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					new KeyValuePair<string, object?>("XmlLength", Result.Xml?.Length ?? 0));
 
 				if (Result.IsSuccess &&
+					!string.IsNullOrWhiteSpace(Result.Xml) &&
 					await this.SaveReadoutXmlAsync(Result.Xml, ReadCancellationToken))
 				{
 					await this.SetStatusAsync("KycTravelDocumentNfcSuccess", false, false, true, KycTravelDocumentFlowState.Success);
 				}
 				else
 				{
+					await this.UploadFailedReservedPreviewReadoutAsync(Result);
 					await this.SetStatusAsync(this.ResolveReadoutFailureResourceKey(Result.Status), false, true, false, KycTravelDocumentFlowState.Error);
 				}
 			}
@@ -592,6 +595,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				new KeyValuePair<string, object?>("FailureCode", Failure.FailureCode.ToString()));
 
 			await this.SetStatusAsync(this.ResolveNfcFailureResourceKey(Failure), false, true, false, KycTravelDocumentFlowState.Error);
+			await this.ForgetReservedPreviewIdentityAsync("NfcSessionFailureReservationForgotten");
 
 			if (this.activeSessionId == SessionId)
 				this.activeSessionId = null;
@@ -772,6 +776,74 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			return await this.evidenceService.SaveReadoutXmlAsync(Xml, CancellationToken);
+		}
+
+		private async Task UploadFailedReservedPreviewReadoutAsync(TravelDocumentReadoutResult Result)
+		{
+			if (this.reference is null ||
+				string.IsNullOrWhiteSpace(Result.Xml))
+			{
+				return;
+			}
+
+			string ReservedPreviewIdentityId = this.reference.ReservedPreviewIdentityId?.Trim() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(ReservedPreviewIdentityId))
+				return;
+
+			KycNfcEvidencePolicy NfcPolicy = await this.ResolveNfcEvidencePolicyAsync().ConfigureAwait(false);
+			string AttachmentName = string.IsNullOrWhiteSpace(NfcPolicy.AttachmentName)
+				? KycNfcEvidencePolicy.DefaultAttachmentName
+				: NfcPolicy.AttachmentName;
+			string ContentType = string.IsNullOrWhiteSpace(NfcPolicy.ContentType)
+				? KycNfcEvidencePolicy.DefaultContentType
+				: NfcPolicy.ContentType;
+			byte[] Data = Encoding.UTF8.GetBytes(Result.Xml);
+			LegalIdentityAttachment Attachment = new LegalIdentityAttachment(AttachmentName, ContentType, Data);
+
+			(bool Uploaded, LegalIdentity? Identity) = await ServiceRef.NetworkService.TryRequest(
+				() => ServiceRef.XmppService.UploadLegalIdentityAttachments(ReservedPreviewIdentityId, Attachment));
+
+			this.LogFlowEvent(
+				"FailedPreviewReadoutUploaded",
+				new KeyValuePair<string, object?>("Uploaded", Uploaded),
+				new KeyValuePair<string, object?>("HasIdentity", Identity is not null),
+				new KeyValuePair<string, object?>("Status", Result.Status.ToString()),
+				new KeyValuePair<string, object?>("XmlLength", Result.Xml.Length),
+				new KeyValuePair<string, object?>("AttachmentName", AttachmentName));
+
+			await this.ForgetReservedPreviewIdentityAsync("FailedPreviewReadoutReservationForgotten").ConfigureAwait(false);
+		}
+
+		private async Task<KycNfcEvidencePolicy> ResolveNfcEvidencePolicyAsync()
+		{
+			if (this.reference is null)
+				return new KycNfcEvidencePolicy();
+
+			try
+			{
+				KycProcess? Process = await this.reference.ToProcess(CultureInfo.CurrentUICulture.TwoLetterISOLanguageName).ConfigureAwait(false);
+				return Process?.EvidencePolicy.TravelDocument.Nfc ?? new KycNfcEvidencePolicy();
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex);
+				return new KycNfcEvidencePolicy();
+			}
+		}
+
+		private async Task ForgetReservedPreviewIdentityAsync(string EventName)
+		{
+			if (this.reference is null)
+				return;
+
+			string ReservedPreviewIdentityId = this.reference.ReservedPreviewIdentityId?.Trim() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(ReservedPreviewIdentityId))
+				return;
+
+			await ServiceRef.KycService.ForgetReservedPreviewIdentityAsync(this.reference, ReservedPreviewIdentityId).ConfigureAwait(false);
+			this.LogFlowEvent(
+				EventName,
+				new KeyValuePair<string, object?>("HasReservedPreviewIdentityId", true));
 		}
 
 		private async Task SaveReferenceEvidenceAsync(string? MrzText, string? ReadoutXml, DocumentInformation? DocumentInformation = null)
