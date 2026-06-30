@@ -18,6 +18,7 @@ using NeuroAccessMaui.Services.Kyc.Actions;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Kyc.ViewModels;
 using NeuroAccessMaui.Services.Kyc.Domain;
+using NeuroAccessMaui.Services.UI;
 using NeuroAccessMaui.Services.UI.Photos;
 using NeuroAccessMaui.UI.MVVM;
 using NeuroAccessMaui.UI.MVVM.Building;
@@ -31,6 +32,7 @@ using IServiceProvider = Waher.Networking.XMPP.Contracts.IServiceProvider;
 using NeuroAccessMaui.UI.Pages.Wallet.ServiceProviders;
 using NeuroAccessMaui.UI.Pages.Identity.ViewIdentity;
 using NeuroAccessMaui.UI.MVVM.Reentrancy;
+using NeuroAccessMaui.UI.Pages.Applications.Applications;
 using NeuroAccessMaui.UI.Pages.Applications.ApplyId;
 using NeuroAccessMaui.UI; // For IKeyboardInsetAware
 using NeuroAccessMaui.Services.Authentication;
@@ -58,6 +60,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private readonly ReentrancyGuard applyGuard = new();
 		private IKycPageAction? currentPageAction;
 		private int currentPageActionRefreshVersion;
+		private static readonly HashSet<string> manualDocumentAttachmentTags = new(StringComparer.OrdinalIgnoreCase)
+		{
+			"Passport",
+			"IdCardFront",
+			"IdCardBack",
+			"DriverLicenseFront",
+			"DriverLicenseBack"
+		};
 
 		private List<Property> mappedValues;
 		private List<LegalIdentityAttachment> attachments;
@@ -120,7 +130,24 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[ObservableProperty] private bool hasAddressInformation;
 		[ObservableProperty] private bool hasAttachments;
 		[ObservableProperty] private string nfcEvidenceStatusText = string.Empty;
-		[ObservableProperty] private bool hasNfcReadout;
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanOpenTravelDocumentFromSummary))]
+		[NotifyPropertyChangedFor(nameof(ShowTravelDocumentSummary))]
+		private bool hasNfcReadout;
+		[ObservableProperty]
+		[NotifyPropertyChangedFor(nameof(CanOpenTravelDocumentFromSummary))]
+		[NotifyPropertyChangedFor(nameof(ShowTravelDocumentSummary))]
+		private bool hasManualDocumentEvidence;
+
+		/// <summary>
+		/// Gets a value indicating whether the summary should offer the document-chip flow.
+		/// </summary>
+		public bool CanOpenTravelDocumentFromSummary => !this.HasNfcReadout && !this.HasManualDocumentEvidence;
+
+		/// <summary>
+		/// Gets a value indicating whether the summary should show document-chip status or actions.
+		/// </summary>
+		public bool ShowTravelDocumentSummary => this.HasNfcReadout || this.CanOpenTravelDocumentFromSummary;
 		[ObservableProperty] private bool hasCompanyInformation;
 		[ObservableProperty] private bool hasCompanyAddress;
 		[ObservableProperty] private bool hasCompanyRepresentative;
@@ -323,7 +350,6 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 
 			this.process = await this.kycReference.ToProcess(Lang);
-			this.applicationId = this.kycReference.GetActiveApplicationIdentityId();
 			this.OnPropertyChanged(nameof(this.Pages));
 			if (this.process is null)
 			{
@@ -333,6 +359,10 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			}
 			this.process.Initialize();
 			this.RefreshDerivedEvidenceState();
+			bool ForceFormResume = this.navigationArguments?.ForceFormResume == true;
+			if (this.navigationArguments?.AbandonTravelDocumentAttempt == true)
+				await this.AbandonTravelDocumentAttemptAsync();
+			this.applicationId = this.kycReference.GetActiveApplicationIdentityId();
 
 			string? ActiveApplicationIdentityId = this.kycReference.GetActiveApplicationIdentityId();
 			IdentityState? EffectiveApplicationState = this.kycReference.GetEffectiveApplicationIdentityState();
@@ -389,7 +419,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				}
 			}
 
-			bool LastWasSummary = string.Equals(this.kycReference.LastVisitedMode, "Summary", StringComparison.OrdinalIgnoreCase);
+			bool LastWasSummary =
+				!ForceFormResume &&
+				string.Equals(this.kycReference.LastVisitedMode, "Summary", StringComparison.OrdinalIgnoreCase);
 
 			if (LastWasSummary)
 			{
@@ -483,6 +515,27 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.NextButtonText = ServiceRef.Localizer["Kyc_Apply"].Value;
 			}
 			this.IsLoading = false;
+		}
+
+		private async Task AbandonTravelDocumentAttemptAsync()
+		{
+			if (this.kycReference is null)
+				return;
+
+			string ReservedPreviewIdentityId = this.kycReference.ReservedPreviewIdentityId?.Trim() ?? string.Empty;
+			if (!string.IsNullOrWhiteSpace(ReservedPreviewIdentityId))
+				await this.kycService.ForgetReservedPreviewIdentityAsync(this.kycReference, ReservedPreviewIdentityId);
+
+			this.kycReference.TravelDocumentMrz = null;
+			this.kycReference.TravelDocumentMrzUpdatedUtc = null;
+			this.kycReference.NfcReadoutXml = null;
+			this.kycReference.NfcReadoutUpdatedUtc = null;
+			this.kycReference.LastVisitedMode = "Form";
+			this.kycReference.LastVisitedPageId = null;
+			this.kycReference.Version++;
+			this.kycReference.UpdatedUtc = DateTime.UtcNow;
+			await this.kycService.SaveKycReferenceAsync(this.kycReference);
+			this.RefreshDerivedEvidenceState();
 		}
 
 		private int GetFirstVisibleIndex()
@@ -1078,9 +1131,28 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			{
 				if (!await AreYouSure(ServiceRef.Localizer[nameof(AppResources.Kyc_Exit)]))
 					return;
+
+				await base.GoBack();
+				return;
 			}
 
-			await base.GoBack();
+			await this.ReturnToApplicationsAsync();
+		}
+
+		private async Task ReturnToApplicationsAsync()
+		{
+			await ServiceRef.NavigationService.PopToRootAsync();
+
+			if (ServiceRef.NavigationService.CurrentPage is not ApplicationsPage)
+			{
+				if (ServiceRef.NavigationService.CurrentPage is KycProcessPage or KycTravelDocumentPage or KycApplicationStatusPage)
+				{
+					await ServiceRef.NavigationService.SetRootAsync(nameof(ApplicationsPage));
+					return;
+				}
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
+			}
 		}
 
 		private async Task<bool> ValidateCurrentPageAsync()
@@ -1142,6 +1214,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private async Task OpenTravelDocumentAsync()
 		{
 			if (this.kycReference is null)
+				return;
+
+			if (this.HasNfcReadout || !string.IsNullOrWhiteSpace(this.kycReference.NfcReadoutXml))
 				return;
 
 			if (!ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported)
@@ -1382,7 +1457,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					try { await this.kycService.UpdateSubmissionStateAsync(this.kycReference, E.Identity); } catch (Exception Ex) { ServiceRef.LogService.LogException(Ex); }
 					if (E.Identity.State == IdentityState.Approved)
 					{
-						await base.GoBack();
+						await this.ReturnToApplicationsAsync();
+						return;
+					}
+					else if (E.Identity.State == IdentityState.Created &&
+						this.kycReference.IsFinalIdentity(E.Identity.Id) &&
+						!string.IsNullOrWhiteSpace(this.kycReference.PreviewIdentityId))
+					{
+						await this.ReturnToApplicationsAsync();
 						return;
 					}
 					else if (E.Identity.State == IdentityState.Rejected || E.Identity.State == IdentityState.Obsoleted || E.Identity.State == IdentityState.Compromised)
@@ -1466,7 +1548,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				ServiceProviderWithLegalId[] LocalPeerReview = this.peerReviewServices ?? Array.Empty<ServiceProviderWithLegalId>();
 				List<ServiceProviderWithLegalId> List = [.. LocalPeerReview, new RequestFromPeer()];
 				ServiceProvidersNavigationArgs NavigationArgs = new(List.ToArray(), ServiceRef.Localizer[nameof(AppResources.RequestReview)], ServiceRef.Localizer[nameof(AppResources.SelectServiceProviderPeerReview)]);
-				await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), NavigationArgs, Services.UI.BackMethod.Pop);
+				await ServiceRef.NavigationService.GoToAsync(nameof(ServiceProvidersPage), NavigationArgs, BackMethod.Pop);
 				if (NavigationArgs.ServiceProvider is not null)
 				{
 					IServiceProvider? ServiceProvider = await NavigationArgs.ServiceProvider.Task;
@@ -1533,10 +1615,27 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			this.HasAddressInformation = this.AddressInformationSummary.Count > 0;
 			this.HasAttachments = this.AttachmentInformationSummary.Count > 0;
 			this.HasNfcReadout = !string.IsNullOrWhiteSpace(this.kycReference?.NfcReadoutXml);
+			this.HasManualDocumentEvidence = this.HasPreparedManualDocumentEvidence();
 			this.NfcEvidenceStatusText = this.ResolveNfcEvidenceStatusText();
 			this.HasCompanyInformation = this.CompanyInformationSummary.Count > 0;
 			this.HasCompanyAddress = this.CompanyAddressSummary.Count > 0;
 			this.HasCompanyRepresentative = this.CompanyRepresentativeSummary.Count > 0;
+		}
+
+		private bool HasPreparedManualDocumentEvidence()
+		{
+			if (this.attachments is null)
+				return false;
+
+			foreach (LegalIdentityAttachment Attachment in this.attachments)
+			{
+				string FileName = Attachment.FileName?.Trim() ?? string.Empty;
+				string FileStem = Path.GetFileNameWithoutExtension(FileName) ?? FileName;
+				if (manualDocumentAttachmentTags.Contains(FileStem))
+					return true;
+			}
+
+			return false;
 		}
 
 		private string ResolveNfcEvidenceStatusText()

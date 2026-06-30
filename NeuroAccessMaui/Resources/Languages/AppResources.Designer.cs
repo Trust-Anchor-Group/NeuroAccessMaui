@@ -4345,6 +4345,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Center your face in the frame.
+        /// </summary>
+        public static string KycProfilePhotoCameraGuidance {
+            get {
+                return ResourceManager.GetString("KycProfilePhotoCameraGuidance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resubmit without pending fields.
         /// </summary>
         public static string KycReapplyWithoutPendingButton {
@@ -4435,7 +4444,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can find it on passports, ID cards, and residence permits with a chip..
+        ///   Looks up a localized string similar to This symbol means the document has a chip..
         /// </summary>
         public static string KycTravelDocumentEligibilityChipSymbol {
             get {
@@ -4597,6 +4606,15 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Preparing secure verification. Keep this screen open..
+        /// </summary>
+        public static string KycTravelDocumentNfcPreparing {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcPreparing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The chip authenticated, but the document data could not be read. Try again..
         /// </summary>
         public static string KycTravelDocumentNfcReadFailed {
@@ -4615,7 +4633,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keep the phone and document still while the secure connection reads and verifies the chip data..
+        ///   Looks up a localized string similar to Reading and verifying the document chip..
         /// </summary>
         public static string KycTravelDocumentNfcReadingDescription {
             get {
@@ -4624,7 +4642,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reading the chip.
+        ///   Looks up a localized string similar to Hold still.
         /// </summary>
         public static string KycTravelDocumentNfcReadingTitle {
             get {
@@ -4642,7 +4660,16 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hold the document still against the back of your phone. Try the cover, card surface, or the area near the chip symbol..
+        ///   Looks up a localized string similar to Secure verification could not be prepared. Try again, rescan the document, or continue manually..
+        /// </summary>
+        public static string KycTravelDocumentNfcReservationFailed {
+            get {
+                return ResourceManager.GetString("KycTravelDocumentNfcReservationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move the document slowly until the chip is found..
         /// </summary>
         public static string KycTravelDocumentNfcStepDescription {
             get {
@@ -4651,7 +4678,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Read the document chip.
+        ///   Looks up a localized string similar to Hold it to your phone.
         /// </summary>
         public static string KycTravelDocumentNfcStepTitle {
             get {
@@ -4777,7 +4804,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chip readout progress.
+        ///   Looks up a localized string similar to Reading document.
         /// </summary>
         public static string KycTravelDocumentProgressTitle {
             get {
@@ -4930,7 +4957,7 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I&apos;m not sure.
+        ///   Looks up a localized string similar to No.
         /// </summary>
         public static string KycTravelDocumentUnsureButton {
             get {

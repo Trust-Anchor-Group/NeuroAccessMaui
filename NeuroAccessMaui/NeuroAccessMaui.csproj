@@ -56,7 +56,7 @@
 
 	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('windows'))">
 		<!-- On Windows build Android + Windows (WinUI) -->
-		<TargetFrameworks>net10.0-windows10.0.19041.0;net10.0-android</TargetFrameworks>
+		<TargetFrameworks>net10.0-windows10.0.19041.0;net10.0-android;net10.0-ios</TargetFrameworks>
 
 		<WindowsPackageType>None</WindowsPackageType>
 
@@ -67,6 +67,8 @@
 		<MtouchLink>SdkOnly</MtouchLink>
 		<NoSymbolStrip>True</NoSymbolStrip>
 		<MtouchExtraArgs>--optimize:-static-block-to-delegate-lookup</MtouchExtraArgs>
+		<CodesignKey>Apple Development: Created via API (WWA749CLK2)</CodesignKey>
+		<CodesignProvision>VS: com.trustanchorgroup.NeuroAccess Development</CodesignProvision>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
 		<TrimmerRootAssembly Include="CommunityToolkit.Maui" RootMode="All" />

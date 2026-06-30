@@ -7,10 +7,13 @@ using NeuroAccess.Nfc;
 using NeuroAccess.Nfc.TravelDocuments;
 using NeuroAccessMaui.OCR.Models;
 using NeuroAccessMaui.Services;
+using NeuroAccessMaui.Services.Data;
+using NeuroAccessMaui.Services.Data.PersonalNumbers;
 using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.TravelDocuments;
+using NeuroAccessMaui.Services.UI;
 using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
 
@@ -164,6 +167,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// Gets or sets a value indicating whether the current status represents a recoverable error.
 		/// </summary>
 		[NotifyPropertyChangedFor(nameof(ShowStatusPanel))]
+		[NotifyPropertyChangedFor(nameof(ShowNfcProgress))]
 		[NotifyPropertyChangedFor(nameof(ShowRescanAction))]
 		[NotifyPropertyChangedFor(nameof(NfcProgressDetectChipState))]
 		[NotifyPropertyChangedFor(nameof(NfcProgressSecureConnectionState))]
@@ -218,12 +222,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <summary>
 		/// Gets a value indicating whether NFC progress should be shown.
 		/// </summary>
-		public bool ShowNfcProgress => this.ShowNfcStep || this.ShowSuccess;
+		public bool ShowNfcProgress => this.ShowNfcStep && !this.HasErrorState;
 
 		/// <summary>
 		/// Gets a value indicating whether the status panel should be visible.
 		/// </summary>
-		public bool ShowStatusPanel => this.HasStatusText && (!this.ShowIntro || this.HasErrorState) && !this.ShowSuccess;
+		public bool ShowStatusPanel => this.HasStatusText && this.HasErrorState && !this.ShowSuccess;
 
 		/// <summary>
 		/// Gets a value indicating whether a retry action for NFC should be shown.
@@ -233,7 +237,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <summary>
 		/// Gets a value indicating whether the manual fallback action should be shown.
 		/// </summary>
-		public bool ShowManualFallback => !this.HasReadout && !this.IsNfcBusy;
+		public bool ShowManualFallback => !this.ShowIntro && !this.HasReadout && !this.IsNfcBusy;
 
 		/// <summary>
 		/// Gets a value indicating whether the user can rescan the document after a recoverable NFC error.
@@ -483,7 +487,14 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			KycReference? Reference = this.reference;
 			if (Reference is not null)
-				await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Reference));
+			{
+				bool HasCompletedReadout = !string.IsNullOrWhiteSpace(Reference.NfcReadoutXml) || this.HasReadout;
+				await ServiceRef.NavigationService.GoToAsync(nameof(KycProcessPage), new KycProcessNavigationArgs(Reference)
+				{
+					ForceFormResume = !HasCompletedReadout,
+					AbandonTravelDocumentAttempt = !HasCompletedReadout
+				}, BackMethod.CurrentPage);
+			}
 			else
 				await ServiceRef.NavigationService.GoBackAsync();
 		}
@@ -880,12 +891,22 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.reference is null)
 				return;
 
+			string CountryCode = ResolveIssuingCountryCode(DocumentInformation);
 			Dictionary<string, string> Values = new Dictionary<string, string>(StringComparer.Ordinal)
 			{
 				["firstNames"] = JoinNameParts(DocumentInformation.SecondaryIdentifier),
-				["lastNames"] = JoinNameParts(DocumentInformation.PrimaryIdentifier),
-				["country"] = ResolveCountryCode(DocumentInformation)
+				["lastNames"] = JoinNameParts(DocumentInformation.PrimaryIdentifier)
 			};
+
+			if (!string.IsNullOrWhiteSpace(CountryCode))
+				Values["country"] = CountryCode;
+
+			if (TryResolveGenderCode(DocumentInformation.Gender, out string GenderCode))
+				Values["gender"] = GenderCode;
+
+			string PersonalNumber = await ResolvePersonalNumberAsync(DocumentInformation, CountryCode);
+			if (!string.IsNullOrWhiteSpace(PersonalNumber))
+				Values["personalNumber"] = PersonalNumber;
 
 			if (TryParseMrzBirthDate(DocumentInformation.DateOfBirth, out string DateOfBirth))
 				Values["dob"] = DateOfBirth;
@@ -1090,13 +1111,53 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			return string.Join(" ", Parts ?? Array.Empty<string>()).Trim();
 		}
 
-		private static string ResolveCountryCode(DocumentInformation DocumentInformation)
+		private static string ResolveIssuingCountryCode(DocumentInformation DocumentInformation)
 		{
-			string CountryCode = DocumentInformation.Nationality?.Trim() ?? string.Empty;
-			if (string.IsNullOrWhiteSpace(CountryCode))
-				CountryCode = DocumentInformation.IssuingState?.Trim() ?? string.Empty;
+			return ResolveAlpha2CountryCode(DocumentInformation.IssuingState);
+		}
 
-			return CountryCode.ToUpperInvariant();
+		private static string ResolveAlpha2CountryCode(string? CountryCode)
+		{
+			string Normalized = CountryCode?.Replace("<", string.Empty).Trim().ToUpperInvariant() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(Normalized))
+				return string.Empty;
+
+			if (ISO_3166_1.TryGetCountryByCode(Normalized, out ISO_3166_Country? Country))
+				return Country.Alpha2;
+
+			Country = ISO_3166_1.Countries.FirstOrDefault(Item =>
+				string.Equals(Item.Alpha3, Normalized, StringComparison.OrdinalIgnoreCase));
+			if (Country is not null)
+				return Country.Alpha2;
+
+			return string.Empty;
+		}
+
+		private static bool TryResolveGenderCode(string? Gender, out string GenderCode)
+		{
+			GenderCode = Gender?.Trim().ToUpperInvariant() ?? string.Empty;
+			if ((string.Equals(GenderCode, "M", StringComparison.Ordinal) ||
+				string.Equals(GenderCode, "F", StringComparison.Ordinal)) &&
+				ISO_5218.LetterToGender(GenderCode, out _))
+			{
+				return true;
+			}
+
+			GenderCode = string.Empty;
+			return false;
+		}
+
+		private static async Task<string> ResolvePersonalNumberAsync(DocumentInformation DocumentInformation, string CountryCode)
+		{
+			string Candidate = DocumentInformation.OptionalData?.Replace("<", string.Empty).Trim() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(Candidate) || string.IsNullOrWhiteSpace(CountryCode))
+				return string.Empty;
+
+			NumberInformation NumberInformation = await PersonalNumberSchemes.Validate(CountryCode, Candidate);
+			if (NumberInformation.IsValid == true && !string.IsNullOrWhiteSpace(NumberInformation.PersonalNumber))
+				return NumberInformation.PersonalNumber.Trim();
+
+			return string.Empty;
 		}
 
 		private static bool TryParseMrzBirthDate(string? Value, out string DateOfBirth)

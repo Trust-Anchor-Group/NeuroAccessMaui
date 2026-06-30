@@ -196,6 +196,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<KycApplicationStatusPage, KycApplicationStatusViewModel>();
 			Builder.Services.AddTransient<KycProcessPage, KycProcessViewModel>();
 			Builder.Services.AddTransient<KycDocumentMrzScannerPage>();
+			Builder.Services.AddTransient<KycProfilePhotoCameraPage>();
 			Builder.Services.AddTransient<KycTravelDocumentPage, KycTravelDocumentViewModel>();
 
 			// Contacts

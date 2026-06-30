@@ -100,7 +100,7 @@
     <xs:attribute name="enabled" type="xs:boolean" use="optional" default="false"/>
     <xs:attribute name="required" type="xs:boolean" use="optional" default="false"/>
     <xs:attribute name="attachmentName" type="xs:string" use="optional" default="NFC.xml"/>
-    <xs:attribute name="contentType" type="xs:string" use="optional" default="application/xml"/>
+    <xs:attribute name="contentType" type="xs:string" use="optional" default="text/xml"/>
   </xs:complexType>
 
   <!-- Individual page definition -->

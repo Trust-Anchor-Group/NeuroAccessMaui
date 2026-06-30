@@ -152,7 +152,11 @@ namespace NeuroAccessMaui.Services.Kyc
 			}
 
 			KycApplicationStatusKind Kind = ResolveKind(Reference, LegalIdentity, EffectiveApplicationState);
-			string? ActiveIdentityId = Kind == KycApplicationStatusKind.Approved && LegalIdentity?.IsApproved() == true
+			bool LegalIdentityIsFinalApprovedIdentity = LegalIdentity?.IsApproved() == true &&
+				(Reference is null ||
+				Reference.IsFinalIdentity(LegalIdentity.Id) ||
+				(!Reference.IsPreviewIdentity(LegalIdentity.Id) && Reference.MatchesIdentityId(LegalIdentity.Id)));
+			string? ActiveIdentityId = Kind == KycApplicationStatusKind.Approved && LegalIdentityIsFinalApprovedIdentity
 				? LegalIdentity.Id
 				: Reference?.GetActiveApplicationIdentityId() ??
 				(IsUnsubmittedReservedPreviewApplication ? null : IdentityApplication?.Id);
@@ -170,16 +174,25 @@ namespace NeuroAccessMaui.Services.Kyc
 			LegalIdentity? LegalIdentity,
 			IdentityState? EffectiveApplicationState)
 		{
-			if (LegalIdentity is not null && LegalIdentity.State == IdentityState.Compromised)
+			bool LegalIdentityBelongsToReference = Reference is null ||
+				Reference.MatchesIdentityId(LegalIdentity?.Id);
+			bool LegalIdentityIsPreviewForReference = LegalIdentityBelongsToReference &&
+				Reference?.IsPreviewIdentity(LegalIdentity?.Id) == true &&
+				Reference?.IsFinalIdentity(LegalIdentity?.Id) != true;
+			LegalIdentity? EffectiveLegalIdentity = LegalIdentityBelongsToReference && !LegalIdentityIsPreviewForReference
+				? LegalIdentity
+				: null;
+
+			if (EffectiveLegalIdentity is not null && EffectiveLegalIdentity.State == IdentityState.Compromised)
 				return KycApplicationStatusKind.Compromised;
 
-			if (LegalIdentity is not null && LegalIdentity.State == IdentityState.Obsoleted)
+			if (EffectiveLegalIdentity is not null && EffectiveLegalIdentity.State == IdentityState.Obsoleted)
 				return KycApplicationStatusKind.Obsoleted;
 
-			if (LegalIdentity?.State == IdentityState.Approved && LegalIdentity.To < DateTime.Now)
+			if (EffectiveLegalIdentity?.State == IdentityState.Approved && EffectiveLegalIdentity.To < DateTime.Now)
 				return KycApplicationStatusKind.Expired;
 
-			if (LegalIdentity?.IsApproved() == true)
+			if (EffectiveLegalIdentity?.IsApproved() == true)
 				return KycApplicationStatusKind.Approved;
 
 			if (Reference is not null &&

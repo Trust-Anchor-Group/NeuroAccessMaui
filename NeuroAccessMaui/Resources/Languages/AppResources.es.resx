@@ -1014,6 +1014,9 @@
   <data name="TakePhotoOfYourself" xml:space="preserve">
     <value>Hazte una foto</value>
   </data>
+  <data name="KycProfilePhotoCameraGuidance" xml:space="preserve">
+    <value>Centra tu rostro en el marco. Toma la foto sin editarla.</value>
+  </data>
   <data name="PhotoIsTooLarge" xml:space="preserve">
     <value>La foto es demasiado grande</value>
   </data>
@@ -3616,7 +3619,7 @@
     <value>¿Lo ves en tu documento?</value>
   </data>
   <data name="KycTravelDocumentEligibilityChipSymbol" xml:space="preserve">
-    <value>Puede aparecer en pasaportes, documentos de identidad y permisos de residencia con chip.</value>
+    <value>Este símbolo significa que el documento tiene chip.</value>
   </data>
   <data name="KycTravelDocumentEligibilityNfcPhone" xml:space="preserve">
     <value>Usa un teléfono con NFC activado.</value>
@@ -3631,7 +3634,7 @@
     <value>Sí, escanear documento</value>
   </data>
   <data name="KycTravelDocumentUnsureButton" xml:space="preserve">
-    <value>No estoy seguro</value>
+    <value>No</value>
   </data>
   <data name="KycTravelDocumentMrzStepTitle" xml:space="preserve">
     <value>Escanea las líneas legibles por máquina</value>
@@ -3643,19 +3646,19 @@
     <value>Datos del documento guardados. También completamos los campos coincidentes de la solicitud cuando fue posible.</value>
   </data>
   <data name="KycTravelDocumentNfcStepTitle" xml:space="preserve">
-    <value>Leer el chip del documento</value>
+    <value>Acércalo al teléfono</value>
   </data>
   <data name="KycTravelDocumentNfcStepDescription" xml:space="preserve">
-    <value>Mantén el documento quieto contra la parte trasera del teléfono. Prueba la portada, la superficie de la tarjeta o la zona cercana al símbolo del chip.</value>
+    <value>Mueve el documento lentamente hasta que se encuentre el chip.</value>
   </data>
   <data name="KycTravelDocumentNfcReadingTitle" xml:space="preserve">
-    <value>Leyendo el chip</value>
+    <value>Manténlo quieto</value>
   </data>
   <data name="KycTravelDocumentNfcReadingDescription" xml:space="preserve">
-    <value>Mantén el teléfono y el documento quietos mientras la conexión segura lee y verifica los datos del chip.</value>
+    <value>Leyendo y verificando el chip del documento.</value>
   </data>
   <data name="KycTravelDocumentProgressTitle" xml:space="preserve">
-    <value>Progreso de lectura del chip</value>
+    <value>Leyendo documento</value>
   </data>
   <data name="KycTravelDocumentProgressDetectChip" xml:space="preserve">
     <value>Detectar chip</value>

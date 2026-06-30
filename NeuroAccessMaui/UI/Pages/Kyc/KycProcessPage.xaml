@@ -798,7 +798,8 @@
 													<Border Background="{DynamicResource TnPInfobgWL}"
 															Stroke="Transparent"
 															StrokeShape="RoundRectangle 12"
-															Padding="{DynamicResource SmallMargins}">
+															Padding="{DynamicResource SmallMargins}"
+															IsVisible="{Binding ShowTravelDocumentSummary}">
 														<Border.Triggers>
 															<DataTrigger TargetType="Border"
 																		 Binding="{Binding HasNfcReadout}"
@@ -815,7 +816,8 @@
 																   LineBreakMode="WordWrap" />
 															<controls:TextButton Style="{DynamicResource TransparentTextButton}"
 																				 LabelData="{l:Localize KycTravelDocumentOpenButton}"
-																				 Command="{Binding OpenTravelDocumentCommand}" />
+																				 Command="{Binding OpenTravelDocumentCommand}"
+																				 IsVisible="{Binding CanOpenTravelDocumentFromSummary}" />
 														</VerticalStackLayout>
 													</Border>
 												</VerticalStackLayout>

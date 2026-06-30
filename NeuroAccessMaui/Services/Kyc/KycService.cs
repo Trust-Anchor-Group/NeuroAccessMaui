@@ -877,8 +877,11 @@ namespace NeuroAccessMaui.Services.Kyc
 				else if (Reference.IsPreviewIdentity(Identity.Id))
 				{
 					Reference.PreviewIdentityState = Identity.State;
-					if (Identity.State == IdentityState.Approved)
+					if (Identity.State == IdentityState.Approved &&
+						string.IsNullOrWhiteSpace(Reference.FinalIdentityId))
+					{
 						Reference.IdentityStage = KycIdentityApplicationStage.FinalizationInProgress;
+					}
 				}
 				else
 				{
@@ -1287,7 +1290,11 @@ namespace NeuroAccessMaui.Services.Kyc
 				return false;
 			if (!string.IsNullOrEmpty(Field.StringValue) && Field is ObservableImageField ImageField)
 			{
-				byte[]? Data = ImageField.StringValue is null ? null : this.CompressImage(this.Base64ToStream(ImageField.StringValue));
+				byte[]? Data = ImageField.StringValue is null
+					? null
+					: ImageField.PreserveOriginalCapture
+						? Convert.FromBase64String(ImageField.StringValue)
+						: this.CompressImage(this.Base64ToStream(ImageField.StringValue));
 				if (Data is not null)
 					List.Add(new LegalIdentityAttachment(ImageField.Mappings.First().Key + ".jpg", Constants.MimeTypes.Jpeg, Data));
 				return true;

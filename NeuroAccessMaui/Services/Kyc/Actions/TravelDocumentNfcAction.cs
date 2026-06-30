@@ -24,7 +24,8 @@ namespace NeuroAccessMaui.Services.Kyc.Actions
 		/// <inheritdoc/>
 		public Task<KycPageActionState> GetStateAsync(KycPageActionContext Context)
 		{
-			if (!ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported)
+			if (!ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported
+				|| !string.IsNullOrWhiteSpace(Context.Reference.NfcReadoutXml))
 			{
 				return Task.FromResult(new KycPageActionState
 				{

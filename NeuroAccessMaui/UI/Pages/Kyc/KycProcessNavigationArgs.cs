@@ -28,6 +28,16 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// Gets the KYC reference to load.
 		/// </summary>
 		public KycReference? Reference { get; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the KYC flow should resume in form mode, ignoring a saved summary state.
+		/// </summary>
+		public bool ForceFormResume { get; init; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether an incomplete travel-document chip attempt should be abandoned.
+		/// </summary>
+		public bool AbandonTravelDocumentAttempt { get; init; }
 	}
 }
 

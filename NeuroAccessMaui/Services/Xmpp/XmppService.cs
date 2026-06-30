@@ -2232,11 +2232,15 @@ namespace NeuroAccessMaui.Services.Xmpp
 			// BankIdRFA22: Unknown error. Please try again.
 			Message = Message.Trim();
 
-			bool ShouldShowAlert = Review is null ||
-				(Review.InvalidClaims.Length == 0 &&
-				Review.InvalidPhotos.Length == 0 &&
-				Review.UnvalidatedClaims.Length == 0 &&
-				Review.UnvalidatedPhotos.Length == 0);
+			bool HasReviewFindings = Review is not null &&
+				(Review.InvalidClaims.Length > 0 ||
+				Review.InvalidPhotos.Length > 0 ||
+				Review.UnvalidatedClaims.Length > 0 ||
+				Review.UnvalidatedPhotos.Length > 0);
+			bool IsReviewOnlyDiagnostic = Review is not null &&
+				!HasReviewFindings &&
+				string.IsNullOrWhiteSpace(Review.Code);
+			bool ShouldShowAlert = Review is null || (!HasReviewFindings && !IsReviewOnlyDiagnostic);
 
 			if (ShouldShowAlert)
 			{
@@ -3322,7 +3326,9 @@ namespace NeuroAccessMaui.Services.Xmpp
 					}
 				}
 
-				await RefreshIdentityApplicationProfileAsync(Identity);
+				KycPreviewPromotionResult? PromotionResult = await TryPromoteApprovedPreviewAsync(Reference, Identity);
+				if (PromotionResult is null)
+					await RefreshIdentityApplicationProfileAsync(Identity);
 
 				if (StateChanged && ServiceRef.NavigationService.CurrentPage is ApplicationsPage AppPage &&
 					AppPage.BindingContext is ApplicationsViewModel Model)
@@ -3365,6 +3371,36 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			if (CurrentApplication is null || CurrentApplication.Id == Identity.Id)
 				await ServiceRef.TagProfile.SetIdentityApplication(Identity, false);
+		}
+
+		private static async Task<KycPreviewPromotionResult?> TryPromoteApprovedPreviewAsync(KycReference? Reference, LegalIdentity Identity)
+		{
+			if (Reference is null ||
+				Identity is null ||
+				!Identity.IsApproved() ||
+				!Reference.IsPreviewIdentity(Identity.Id))
+			{
+				return null;
+			}
+
+			try
+			{
+				IKycPreviewPromotionService PromotionService = ServiceRef.Provider.GetRequiredService<IKycPreviewPromotionService>();
+				KycPreviewPromotionResult Result = await PromotionService.HandleApprovedPreviewIdentityAsync(Reference, Identity);
+				if (!Result.Succeeded)
+				{
+					ServiceRef.LogService.LogWarning(
+						"Approved preview identity was not promoted.",
+						new KeyValuePair<string, object?>("Reason", Result.Reason));
+				}
+
+				return Result;
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(Ex, new KeyValuePair<string, object?>("Operation", "KYC.PreviewPromotion"));
+				return KycPreviewPromotionResult.NoChange("PromotionFailed");
+			}
 		}
 
 		/// <summary>
@@ -3465,12 +3501,17 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 		private async Task ContractsClient_IdentityUpdated(object? Sender, LegalIdentityEventArgs e)
 		{
+			KycReference? Ref = null;
+			KycPreviewPromotionResult? PreviewPromotionResult = null;
+
 			try
 			{
-				KycReference? Ref = await ServiceRef.KycService.FindReferenceByIdentityIdAsync(e.Identity.Id);
+				Ref = await ServiceRef.KycService.FindReferenceByIdentityIdAsync(e.Identity.Id);
 
 				if (Ref is not null)
 					await ServiceRef.KycService.UpdateSubmissionStateAsync(Ref, e.Identity);
+
+				PreviewPromotionResult = await TryPromoteApprovedPreviewAsync(Ref, e.Identity);
 
 				if (ServiceRef.NavigationService.CurrentPage is ApplicationsPage AppPage)
 				{
@@ -3485,6 +3526,13 @@ namespace NeuroAccessMaui.Services.Xmpp
 
 			try
 			{
+				if (PreviewPromotionResult is not null)
+				{
+					await this.IdentityApplicationChanged.Raise(this, e);
+
+					return;
+				}
+
 				if (ServiceRef.TagProfile.LegalIdentity is not null && ServiceRef.TagProfile.LegalIdentity.Id == e.Identity.Id)
 				{
 					if (ServiceRef.TagProfile.LegalIdentity.Created > e.Identity.Created)

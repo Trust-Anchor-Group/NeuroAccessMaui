@@ -1023,6 +1023,9 @@
   <data name="TakePhotoOfYourself" xml:space="preserve">
     <value>Take a Photo of yourself</value>
   </data>
+  <data name="KycProfilePhotoCameraGuidance" xml:space="preserve">
+    <value>Center your face in the frame</value>
+  </data>
   <data name="PhotoIsTooLarge" xml:space="preserve">
     <value>Photo is too large</value>
   </data>
@@ -3169,7 +3172,7 @@
     <value>Do you see it on your document?</value>
   </data>
   <data name="KycTravelDocumentEligibilityChipSymbol" xml:space="preserve">
-    <value>You can find it on passports, ID cards, and residence permits with a chip.</value>
+    <value>This symbol means the document has a chip.</value>
   </data>
   <data name="KycTravelDocumentEligibilityNfcPhone" xml:space="preserve">
     <value>Use a phone with NFC enabled.</value>
@@ -3184,7 +3187,7 @@
     <value>Yes, scan document</value>
   </data>
   <data name="KycTravelDocumentUnsureButton" xml:space="preserve">
-    <value>I'm not sure</value>
+    <value>No</value>
   </data>
   <data name="KycTravelDocumentMrzStepTitle" xml:space="preserve">
     <value>Scan the machine-readable lines</value>
@@ -3196,19 +3199,19 @@
     <value>MRZ captured. We also filled in matching application fields from the document where possible.</value>
   </data>
   <data name="KycTravelDocumentNfcStepTitle" xml:space="preserve">
-    <value>Read the document chip</value>
+    <value>Hold it to your phone</value>
   </data>
   <data name="KycTravelDocumentNfcStepDescription" xml:space="preserve">
-    <value>Hold the document still against the back of your phone. Try the cover, card surface, or the area near the chip symbol.</value>
+    <value>Move the document slowly until the chip is found.</value>
   </data>
   <data name="KycTravelDocumentNfcReadingTitle" xml:space="preserve">
-    <value>Reading the chip</value>
+    <value>Hold still</value>
   </data>
   <data name="KycTravelDocumentNfcReadingDescription" xml:space="preserve">
-    <value>Keep the phone and document still while the secure connection reads and verifies the chip data.</value>
+    <value>Reading and verifying the document chip.</value>
   </data>
   <data name="KycTravelDocumentProgressTitle" xml:space="preserve">
-    <value>Chip readout progress</value>
+    <value>Reading document</value>
   </data>
   <data name="KycTravelDocumentProgressDetectChip" xml:space="preserve">
     <value>Detect chip</value>

@@ -1014,6 +1014,9 @@
   <data name="TakePhotoOfYourself" xml:space="preserve">
     <value>Ta ett foto av dig själv</value>
   </data>
+  <data name="KycProfilePhotoCameraGuidance" xml:space="preserve">
+    <value>Centrera ansiktet i bilden. Ta fotot utan att redigera det.</value>
+  </data>
   <data name="PhotoIsTooLarge" xml:space="preserve">
     <value>Bilden är för stor</value>
   </data>
@@ -3616,7 +3619,7 @@
     <value>Ser du den på ditt dokument?</value>
   </data>
   <data name="KycTravelDocumentEligibilityChipSymbol" xml:space="preserve">
-    <value>Den finns på pass, ID-kort och uppehållstillstånd med chip.</value>
+    <value>Symbolen betyder att dokumentet har ett chip.</value>
   </data>
   <data name="KycTravelDocumentEligibilityNfcPhone" xml:space="preserve">
     <value>Använd en telefon med NFC aktiverat.</value>
@@ -3631,7 +3634,7 @@
     <value>Ja, skanna dokument</value>
   </data>
   <data name="KycTravelDocumentUnsureButton" xml:space="preserve">
-    <value>Jag är inte säker</value>
+    <value>Nej</value>
   </data>
   <data name="KycTravelDocumentMrzStepTitle" xml:space="preserve">
     <value>Skanna de maskinläsbara raderna</value>
@@ -3643,19 +3646,19 @@
     <value>Dokumentuppgifter sparade. Vi fyllde också i matchande ansökningsfält från dokumentet där det var möjligt.</value>
   </data>
   <data name="KycTravelDocumentNfcStepTitle" xml:space="preserve">
-    <value>Läs dokumentets chip</value>
+    <value>Håll det mot telefonen</value>
   </data>
   <data name="KycTravelDocumentNfcStepDescription" xml:space="preserve">
-    <value>Håll dokumentet stilla mot baksidan av telefonen. Prova omslaget, kortytan eller området nära chipsymbolen.</value>
+    <value>Flytta dokumentet långsamt tills chippet hittas.</value>
   </data>
   <data name="KycTravelDocumentNfcReadingTitle" xml:space="preserve">
-    <value>Läser chippet</value>
+    <value>Håll stilla</value>
   </data>
   <data name="KycTravelDocumentNfcReadingDescription" xml:space="preserve">
-    <value>Håll telefonen och dokumentet stilla medan den säkra anslutningen läser och verifierar chipdata.</value>
+    <value>Läser och verifierar dokumentets chip.</value>
   </data>
   <data name="KycTravelDocumentProgressTitle" xml:space="preserve">
-    <value>Chipavläsningens steg</value>
+    <value>Läser dokument</value>
   </data>
   <data name="KycTravelDocumentProgressDetectChip" xml:space="preserve">
     <value>Hitta chip</value>

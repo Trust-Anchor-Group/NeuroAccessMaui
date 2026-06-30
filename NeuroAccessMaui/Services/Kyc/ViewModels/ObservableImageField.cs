@@ -9,6 +9,7 @@ using Microsoft.Maui.Controls;
 using CommunityToolkit.Mvvm.Input;
 using NeuroAccessMaui.Services.Kyc.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
+using NeuroAccessMaui.UI.Pages.Kyc;
 
 namespace NeuroAccessMaui.Services.Kyc.ViewModels
 {
@@ -56,6 +57,21 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
             }
         }
 
+		/// <summary>
+		/// Gets a value indicating whether this image field must use the app-owned camera flow.
+		/// </summary>
+		public bool CameraOnly => this.GetBooleanMetadataValue("CameraOnly") ?? false;
+
+		/// <summary>
+		/// Gets a value indicating whether the captured image bytes should be attached without recompression.
+		/// </summary>
+		public bool PreserveOriginalCapture => this.GetBooleanMetadataValue("PreserveOriginalCapture") ?? this.CameraOnly || this.ShouldCrop == false;
+
+		/// <summary>
+		/// Gets a value indicating whether the field should use the image cropper before storing its value.
+		/// </summary>
+		public bool ShouldUseCropper => !this.CameraOnly && !this.PreserveOriginalCapture && this.ShouldCrop != false;
+
 		[ObservableProperty]
         private ImageSource? imageSource;
 
@@ -65,6 +81,9 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 		[RelayCommand]
         private async Task PickPhoto()
         {
+			if (this.CameraOnly)
+				return;
+
             try
             {
                 FileResult? FileResult = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions()
@@ -78,16 +97,21 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
                 Stream FileStream = await FileResult.OpenReadAsync();
                 byte[] InputBin = await ToByteArrayAsync(FileStream) ?? throw new Exception("Failed to read photo stream");
 
-                TaskCompletionSource<byte[]?> Tcs = new();
-                await ServiceRef.NavigationService.GoToAsync(
-                    nameof(ImageCroppingPage),
-                    new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs)
-                );
+				if (this.ShouldUseCropper)
+				{
+					TaskCompletionSource<byte[]?> Tcs = new();
+					await ServiceRef.NavigationService.GoToAsync(
+						nameof(ImageCroppingPage),
+						new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs)
+					);
 
-                byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
-                this.RawValue = Convert.ToBase64String(OutputBin);
-
-				this.ImageSource = ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(this.RawValue as string ?? string.Empty)));
+					byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
+					this.SetImageValue(OutputBin);
+				}
+				else
+				{
+					this.SetImageValue(InputBin);
+				}
             }
             catch (Exception Ex)
             {
@@ -106,26 +130,45 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
 
             try
             {
-                FileResult? FileResult = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
-                {
-                    Title = ServiceRef.Localizer[nameof(AppResources.TakePhotoOfYourself)]
-                });
+				if (this.CameraOnly || this.PreserveOriginalCapture || this.ShouldCrop == false)
+				{
+					TaskCompletionSource<byte[]?> Tcs = new();
+					await ServiceRef.NavigationService.GoToAsync(nameof(KycProfilePhotoCameraPage), new KycProfilePhotoCameraNavigationArgs
+					{
+						CompletionSource = Tcs
+					});
 
-                if (FileResult is null)
-                    return;
+					byte[]? CapturedBytes = await Tcs.Task;
+					if (CapturedBytes is null)
+						return;
 
-                Stream FileStream = await FileResult.OpenReadAsync();
+					this.SetImageValue(CapturedBytes);
+					return;
+				}
 
-                byte[] InputBin = await ToByteArrayAsync(FileStream) ?? throw new Exception("Failed to read photo stream");
+				FileResult? FileResult = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions()
+				{
+					Title = ServiceRef.Localizer[nameof(AppResources.TakePhotoOfYourself)]
+				});
 
-                TaskCompletionSource<byte[]?> Tcs = new();
-                await ServiceRef.NavigationService.GoToAsync(nameof(ImageCroppingPage), new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs));
+				if (FileResult is null)
+					return;
 
-                byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
+				Stream FileStream = await FileResult.OpenReadAsync();
+				byte[] InputBin = await ToByteArrayAsync(FileStream) ?? throw new Exception("Failed to read photo stream");
 
-                this.RawValue = Convert.ToBase64String(OutputBin);
+				if (this.ShouldUseCropper)
+				{
+					TaskCompletionSource<byte[]?> Tcs = new();
+					await ServiceRef.NavigationService.GoToAsync(nameof(ImageCroppingPage), new ImageCroppingNavigationArgs(ImageSource.FromStream(() => new MemoryStream(InputBin)), Tcs));
 
-                this.ImageSource = ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(this.RawValue as string ?? string.Empty)));
+					byte[] OutputBin = await Tcs.Task ?? throw new Exception("Failed to crop photo");
+					this.SetImageValue(OutputBin);
+				}
+				else
+				{
+					this.SetImageValue(InputBin);
+				}
             }
             catch (Exception Ex)
             {
@@ -135,6 +178,32 @@ namespace NeuroAccessMaui.Services.Kyc.ViewModels
                     ServiceRef.Localizer[nameof(AppResources.FailedToLoadPhoto)]);
             }
         }
+
+		private void SetImageValue(byte[] ImageBytes)
+		{
+			this.RawValue = Convert.ToBase64String(ImageBytes);
+			this.ImageSource = ImageSource.FromStream(() => new MemoryStream(ImageBytes));
+		}
+
+		private bool? GetBooleanMetadataValue(string Key)
+		{
+			if (!this.Metadata.TryGetValue(Key, out object? Value))
+			{
+				return null;
+			}
+
+			if (Value is bool BoolValue)
+			{
+				return BoolValue;
+			}
+
+			if (Value is string StringValue && bool.TryParse(StringValue, out bool ParsedBool))
+			{
+				return ParsedBool;
+			}
+
+			return null;
+		}
 
         private static async Task<byte[]?> ToByteArrayAsync(System.IO.Stream stream)
         {

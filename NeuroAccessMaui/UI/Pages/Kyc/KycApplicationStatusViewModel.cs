@@ -117,7 +117,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
+			await this.ReturnToApplicationsAsync();
 		}
 
 		private async Task OpenApprovedIdentityAsync()
@@ -150,13 +150,29 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 			}
 
-			await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
+			await this.ReturnToApplicationsAsync();
 		}
 
 		[RelayCommand]
 		private async Task SecondaryAction()
 		{
-			await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
+			await this.ReturnToApplicationsAsync();
+		}
+
+		private async Task ReturnToApplicationsAsync()
+		{
+			await ServiceRef.NavigationService.PopToRootAsync();
+
+			if (ServiceRef.NavigationService.CurrentPage is not ApplicationsPage)
+			{
+				if (ServiceRef.NavigationService.CurrentPage is KycProcessPage or KycTravelDocumentPage or KycApplicationStatusPage)
+				{
+					await ServiceRef.NavigationService.SetRootAsync(nameof(ApplicationsPage));
+					return;
+				}
+
+				await ServiceRef.NavigationService.GoToAsync(nameof(ApplicationsPage));
+			}
 		}
 
 		private async Task LoadAsync()

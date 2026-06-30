@@ -40,7 +40,7 @@ namespace NeuroAccessMaui.Services.Kyc.Models
 		/// <summary>
 		/// Gets the default NFC evidence content type.
 		/// </summary>
-		public const string DefaultContentType = "application/xml";
+		public const string DefaultContentType = "text/xml";
 
 		/// <summary>
 		/// Gets or sets a value indicating whether NFC evidence is enabled.

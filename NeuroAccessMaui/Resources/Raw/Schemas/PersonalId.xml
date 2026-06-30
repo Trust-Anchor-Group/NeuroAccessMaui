@@ -23,12 +23,17 @@
 			<Keep key="COUNTRY" />
 			<Keep key="GENDER" />
 			<IncludeAttachment name="NFC.xml" />
+			<IncludeAttachment tag="Passport" />
+			<IncludeAttachment tag="IdCardFront" />
+			<IncludeAttachment tag="IdCardBack" />
+			<IncludeAttachment tag="DriverLicenseFront" />
+			<IncludeAttachment tag="DriverLicenseBack" />
 			<KeepAttachment tag="ProfilePhoto" />
 		</Content>
 	</IdentityApplication>
 	<Evidence>
 		<TravelDocument required="false">
-			<Nfc enabled="true" required="false" attachmentName="NFC.xml" contentType="application/xml" />
+			<Nfc enabled="true" required="false" attachmentName="NFC.xml" contentType="text/xml" />
 		</TravelDocument>
 	</Evidence>
 	<Page id="personalInfo">
@@ -834,6 +839,9 @@
 				<TargetHeight>800</TargetHeight>
 				<MinDpi>150</MinDpi>
 				<AllowUpload>false</AllowUpload>
+				<CameraOnly>true</CameraOnly>
+				<ShouldCrop>false</ShouldCrop>
+				<PreserveOriginalCapture>true</PreserveOriginalCapture>
 			</Metadata>
 			<Mapping key="ProfilePhoto" />
 		</Field>
