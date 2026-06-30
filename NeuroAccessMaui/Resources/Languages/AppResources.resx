@@ -3145,7 +3145,7 @@
     <value>Document chip readout</value>
   </data>
   <data name="KycTravelDocumentSummaryMissing" xml:space="preserve">
-    <value>Add MRZ details to include an NFC chip readout with this application.</value>
+    <value>Scan a compatible travel document to include a secure chip readout with this application.</value>
   </data>
   <data name="KycTravelDocumentSummaryMrzReady" xml:space="preserve">
     <value>MRZ saved. Tap the document with your phone to read the chip before applying.</value>
@@ -3154,52 +3154,103 @@
     <value>NFC chip readout is ready and will be attached to this application.</value>
   </data>
   <data name="KycTravelDocumentOpenButton" xml:space="preserve">
-    <value>Use passport chip</value>
+    <value>Use document chip</value>
   </data>
   <data name="KycTravelDocumentDescription" xml:space="preserve">
-    <value>Enter the MRZ from your passport or ID card, then tap the document with your phone. The chip readout is attached as NFC.xml when you apply.</value>
+    <value>Scan the machine-readable lines on your travel document, then hold the document against your phone to read the chip. The secure readout is attached as NFC.xml when you apply.</value>
   </data>
   <data name="KycTravelDocumentHeroTitle" xml:space="preserve">
-    <value>Verify with your passport</value>
+    <value>Look for this symbol</value>
   </data>
   <data name="KycTravelDocumentHeroDescription" xml:space="preserve">
-    <value>Scan your passport, then hold it against your phone. We use the chip to fill what we can and attach the readout to your application.</value>
+    <value>It may be on the front, back, or inside cover.</value>
+  </data>
+  <data name="KycTravelDocumentEligibilityTitle" xml:space="preserve">
+    <value>Do you see it on your document?</value>
+  </data>
+  <data name="KycTravelDocumentEligibilityChipSymbol" xml:space="preserve">
+    <value>You can find it on passports, ID cards, and residence permits with a chip.</value>
+  </data>
+  <data name="KycTravelDocumentEligibilityNfcPhone" xml:space="preserve">
+    <value>Use a phone with NFC enabled.</value>
+  </data>
+  <data name="KycTravelDocumentEligibilityMrzLines" xml:space="preserve">
+    <value>The document should have machine-readable lines or text that the camera can scan.</value>
   </data>
   <data name="KycTravelDocumentNoTypingHint" xml:space="preserve">
-    <value>No typing is needed after a successful chip read. You can still review the form before applying.</value>
+    <value>No compatible chip document? Continue manually and complete the same application form.</value>
   </data>
   <data name="KycTravelDocumentPrimaryScanButton" xml:space="preserve">
-    <value>Start guided scan</value>
+    <value>Yes, scan document</value>
+  </data>
+  <data name="KycTravelDocumentUnsureButton" xml:space="preserve">
+    <value>I'm not sure</value>
   </data>
   <data name="KycTravelDocumentMrzStepTitle" xml:space="preserve">
     <value>Scan the machine-readable lines</value>
   </data>
   <data name="KycTravelDocumentMrzStepDescription" xml:space="preserve">
-    <value>Open the camera and place the two passport lines inside the guide. We use them to unlock the chip readout.</value>
+    <value>Open the camera and place the machine-readable lines inside the guide. We use them to unlock the chip readout.</value>
   </data>
   <data name="KycTravelDocumentMrzStepReadyDescription" xml:space="preserve">
     <value>MRZ captured. We also filled in matching application fields from the document where possible.</value>
   </data>
   <data name="KycTravelDocumentNfcStepTitle" xml:space="preserve">
-    <value>Hold the passport still</value>
+    <value>Read the document chip</value>
   </data>
   <data name="KycTravelDocumentNfcStepDescription" xml:space="preserve">
-    <value>Keep the document still against the back of your phone until the readout finishes.</value>
+    <value>Hold the document still against the back of your phone. Try the cover, card surface, or the area near the chip symbol.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReadingTitle" xml:space="preserve">
+    <value>Reading the chip</value>
+  </data>
+  <data name="KycTravelDocumentNfcReadingDescription" xml:space="preserve">
+    <value>Keep the phone and document still while the secure connection reads and verifies the chip data.</value>
+  </data>
+  <data name="KycTravelDocumentProgressTitle" xml:space="preserve">
+    <value>Chip readout progress</value>
+  </data>
+  <data name="KycTravelDocumentProgressDetectChip" xml:space="preserve">
+    <value>Detect chip</value>
+  </data>
+  <data name="KycTravelDocumentProgressSecureConnection" xml:space="preserve">
+    <value>Secure connection</value>
+  </data>
+  <data name="KycTravelDocumentProgressReadData" xml:space="preserve">
+    <value>Read data</value>
+  </data>
+  <data name="KycTravelDocumentProgressVerifyDocument" xml:space="preserve">
+    <value>Verify document</value>
+  </data>
+  <data name="KycTravelDocumentProgressWaiting" xml:space="preserve">
+    <value>Waiting</value>
+  </data>
+  <data name="KycTravelDocumentProgressInProgress" xml:space="preserve">
+    <value>In progress</value>
+  </data>
+  <data name="KycTravelDocumentProgressDone" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="KycTravelDocumentProgressNeedsAttention" xml:space="preserve">
+    <value>Needs attention</value>
   </data>
   <data name="KycTravelDocumentRetryNfcButton" xml:space="preserve">
-    <value>Try chip read again</value>
+    <value>Read chip</value>
+  </data>
+  <data name="KycTravelDocumentRescanButton" xml:space="preserve">
+    <value>Scan document again</value>
   </data>
   <data name="KycTravelDocumentContinueButton" xml:space="preserve">
     <value>Continue</value>
   </data>
   <data name="KycTravelDocumentSuccessTitle" xml:space="preserve">
-    <value>Passport chip verified</value>
+    <value>Document chip read</value>
   </data>
   <data name="KycTravelDocumentSuccessDescription" xml:space="preserve">
     <value>The chip readout is saved for this application. Continue to review the details before applying.</value>
   </data>
   <data name="KycTravelDocumentManualFallbackButton" xml:space="preserve">
-    <value>Continue with the form</value>
+    <value>Use another method</value>
   </data>
   <data name="KycTravelDocumentMrzLabel" xml:space="preserve">
     <value>MRZ</value>
@@ -3217,7 +3268,7 @@
     <value>Start NFC readout</value>
   </data>
   <data name="KycTravelDocumentSaved" xml:space="preserve">
-    <value>MRZ saved. You can now tap the document chip with your phone.</value>
+    <value>Document details saved. Now hold the document chip against your phone.</value>
   </data>
   <data name="KycTravelDocumentInvalidMrz" xml:space="preserve">
     <value>The MRZ could not be validated. Check the document number, birth date, expiry date, and check digits.</value>
@@ -3226,7 +3277,10 @@
     <value>NFC readout is already ready for this application.</value>
   </data>
   <data name="KycTravelDocumentNfcReady" xml:space="preserve">
-    <value>Hold the travel document near your phone to read the chip.</value>
+    <value>Ready to read. Hold the travel document near your phone and keep it still.</value>
+  </data>
+  <data name="KycTravelDocumentNfcPreparing" xml:space="preserve">
+    <value>Preparing secure verification. Keep this screen open.</value>
   </data>
   <data name="KycTravelDocumentNfcReading" xml:space="preserve">
     <value>Reading the document chip. Keep the document still.</value>
@@ -3235,7 +3289,10 @@
     <value>NFC chip readout saved and ready to attach to this application.</value>
   </data>
   <data name="KycTravelDocumentNfcUnavailable" xml:space="preserve">
-    <value>NFC readout is not available on this device or app configuration.</value>
+    <value>Chip reading is not available on this device or app configuration. You can continue manually instead.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReservationFailed" xml:space="preserve">
+    <value>Secure verification could not be prepared. Try again, rescan the document, or continue manually.</value>
   </data>
   <data name="KycTravelDocumentNfcCancelled" xml:space="preserve">
     <value>NFC readout was cancelled.</value>

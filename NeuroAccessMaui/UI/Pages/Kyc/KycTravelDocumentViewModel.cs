@@ -10,14 +10,56 @@ using NeuroAccessMaui.Services.Kyc;
 using NeuroAccessMaui.Services.Kyc.Models;
 using NeuroAccessMaui.Services.Nfc;
 using NeuroAccessMaui.Services.TravelDocuments;
+using Waher.Networking.XMPP.Contracts;
 using Waher.Runtime.Inventory;
 
 namespace NeuroAccessMaui.UI.Pages.Kyc
 {
 	/// <summary>
+	/// Identifies the current step in the guided travel-document evidence flow.
+	/// </summary>
+	public enum KycTravelDocumentFlowState
+	{
+		/// <summary>
+		/// The user is viewing the document-chip introduction.
+		/// </summary>
+		Intro,
+
+		/// <summary>
+		/// The MRZ scanner is being opened or awaited.
+		/// </summary>
+		MrzCapture,
+
+		/// <summary>
+		/// MRZ evidence has been captured and saved.
+		/// </summary>
+		MrzCaptured,
+
+		/// <summary>
+		/// The NFC session is ready and waiting for chip placement.
+		/// </summary>
+		NfcReady,
+
+		/// <summary>
+		/// The document chip is being read.
+		/// </summary>
+		NfcReading,
+
+		/// <summary>
+		/// NFC readout has been saved and is ready for review.
+		/// </summary>
+		Success,
+
+		/// <summary>
+		/// The current flow step has a recoverable error.
+		/// </summary>
+		Error
+	}
+
+	/// <summary>
 	/// View model for guided travel-document MRZ and NFC evidence capture.
 	/// </summary>
-	public partial class KycTravelDocumentViewModel : BaseViewModel
+	public partial class KycTravelDocumentViewModel : BaseViewModel, IDisposable
 	{
 		private readonly ITravelDocumentEvidenceService evidenceService = ServiceRef.Provider.GetRequiredService<ITravelDocumentEvidenceService>();
 		private readonly INfcIsoDepSessionService nfcIsoDepSessionService = ServiceRef.Provider.GetRequiredService<INfcIsoDepSessionService>();
@@ -25,6 +67,32 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		private readonly KycProcessNavigationArgs? navigationArguments;
 		private KycReference? reference;
 		private Guid? activeSessionId;
+		private CancellationTokenSource? activeSessionCancellationTokenSource;
+		private bool disposedValue;
+
+		/// <summary>
+		/// Gets or sets the current guided travel-document flow state.
+		/// </summary>
+		[NotifyPropertyChangedFor(nameof(CanStartNfc))]
+		[NotifyPropertyChangedFor(nameof(ShowNfcPlacementPanel))]
+		[NotifyPropertyChangedFor(nameof(ShowIntro))]
+		[NotifyPropertyChangedFor(nameof(ShowNfcStep))]
+		[NotifyPropertyChangedFor(nameof(ShowSuccess))]
+		[NotifyPropertyChangedFor(nameof(ShowNfcRetryAction))]
+		[NotifyPropertyChangedFor(nameof(ShowManualFallback))]
+		[NotifyPropertyChangedFor(nameof(ShowStatusPanel))]
+		[NotifyPropertyChangedFor(nameof(ShowNfcProgress))]
+		[NotifyPropertyChangedFor(nameof(ShowNfcWaitingIndicator))]
+		[NotifyPropertyChangedFor(nameof(ShowNfcReadingIndicator))]
+		[NotifyPropertyChangedFor(nameof(ShowRescanAction))]
+		[NotifyPropertyChangedFor(nameof(NfcStepTitle))]
+		[NotifyPropertyChangedFor(nameof(NfcStepDescription))]
+		[NotifyPropertyChangedFor(nameof(NfcProgressDetectChipState))]
+		[NotifyPropertyChangedFor(nameof(NfcProgressSecureConnectionState))]
+		[NotifyPropertyChangedFor(nameof(NfcProgressReadDataState))]
+		[NotifyPropertyChangedFor(nameof(NfcProgressVerifyDocumentState))]
+		[ObservableProperty]
+		private KycTravelDocumentFlowState flowState = KycTravelDocumentFlowState.Intro;
 
 		/// <summary>
 		/// Gets or sets the MRZ text entered for the current KYC application.
@@ -37,6 +105,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[NotifyPropertyChangedFor(nameof(ShowNfcRetryAction))]
 		[NotifyPropertyChangedFor(nameof(ShowManualFallback))]
 		[NotifyPropertyChangedFor(nameof(ShowStatusPanel))]
+		[NotifyPropertyChangedFor(nameof(ShowRescanAction))]
 		[NotifyPropertyChangedFor(nameof(MrzStepDescription))]
 		[ObservableProperty]
 		private string mrzText = string.Empty;
@@ -64,6 +133,9 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[NotifyPropertyChangedFor(nameof(ShowNfcRetryAction))]
 		[NotifyPropertyChangedFor(nameof(ShowManualFallback))]
 		[NotifyPropertyChangedFor(nameof(ShowStatusPanel))]
+		[NotifyPropertyChangedFor(nameof(ShowNfcWaitingIndicator))]
+		[NotifyPropertyChangedFor(nameof(ShowNfcReadingIndicator))]
+		[NotifyPropertyChangedFor(nameof(ShowRescanAction))]
 		[ObservableProperty]
 		private bool isNfcBusy;
 
@@ -78,6 +150,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		[NotifyPropertyChangedFor(nameof(ShowNfcRetryAction))]
 		[NotifyPropertyChangedFor(nameof(ShowManualFallback))]
 		[NotifyPropertyChangedFor(nameof(ShowStatusPanel))]
+		[NotifyPropertyChangedFor(nameof(ShowNfcProgress))]
+		[NotifyPropertyChangedFor(nameof(ShowRescanAction))]
+		[NotifyPropertyChangedFor(nameof(NfcProgressDetectChipState))]
+		[NotifyPropertyChangedFor(nameof(NfcProgressSecureConnectionState))]
+		[NotifyPropertyChangedFor(nameof(NfcProgressReadDataState))]
+		[NotifyPropertyChangedFor(nameof(NfcProgressVerifyDocumentState))]
 		[ObservableProperty]
 		private bool hasReadout;
 
@@ -85,6 +163,11 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// Gets or sets a value indicating whether the current status represents a recoverable error.
 		/// </summary>
 		[NotifyPropertyChangedFor(nameof(ShowStatusPanel))]
+		[NotifyPropertyChangedFor(nameof(ShowRescanAction))]
+		[NotifyPropertyChangedFor(nameof(NfcProgressDetectChipState))]
+		[NotifyPropertyChangedFor(nameof(NfcProgressSecureConnectionState))]
+		[NotifyPropertyChangedFor(nameof(NfcProgressReadDataState))]
+		[NotifyPropertyChangedFor(nameof(NfcProgressVerifyDocumentState))]
 		[ObservableProperty]
 		private bool hasErrorState;
 
@@ -101,22 +184,40 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <summary>
 		/// Gets a value indicating whether the NFC placement illustration should be shown.
 		/// </summary>
-		public bool ShowNfcPlacementPanel => this.HasMrz || this.IsNfcBusy || this.HasReadout;
+		public bool ShowNfcPlacementPanel =>
+			this.FlowState == KycTravelDocumentFlowState.MrzCaptured ||
+			this.FlowState == KycTravelDocumentFlowState.NfcReady ||
+			this.FlowState == KycTravelDocumentFlowState.NfcReading ||
+			this.ShowSuccess;
 
 		/// <summary>
 		/// Gets a value indicating whether the introductory chip-first guide should be shown.
 		/// </summary>
-		public bool ShowIntro => !this.HasMrz && !this.IsNfcBusy && !this.HasReadout;
+		public bool ShowIntro =>
+			this.FlowState == KycTravelDocumentFlowState.Intro ||
+			this.FlowState == KycTravelDocumentFlowState.MrzCapture ||
+			(this.FlowState == KycTravelDocumentFlowState.Error && !this.HasMrz);
 
 		/// <summary>
 		/// Gets a value indicating whether the NFC placement step should be shown.
 		/// </summary>
-		public bool ShowNfcStep => this.HasMrz && !this.HasReadout;
+		public bool ShowNfcStep =>
+			this.FlowState == KycTravelDocumentFlowState.MrzCaptured ||
+			this.FlowState == KycTravelDocumentFlowState.NfcReady ||
+			this.FlowState == KycTravelDocumentFlowState.NfcReading ||
+			(this.FlowState == KycTravelDocumentFlowState.Error && this.HasMrz);
 
 		/// <summary>
 		/// Gets a value indicating whether the readout success state should be shown.
 		/// </summary>
-		public bool ShowSuccess => this.HasReadout;
+		public bool ShowSuccess =>
+			this.FlowState == KycTravelDocumentFlowState.Success ||
+			this.HasReadout;
+
+		/// <summary>
+		/// Gets a value indicating whether NFC progress should be shown.
+		/// </summary>
+		public bool ShowNfcProgress => this.ShowNfcStep || this.ShowSuccess;
 
 		/// <summary>
 		/// Gets a value indicating whether the status panel should be visible.
@@ -134,11 +235,60 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		public bool ShowManualFallback => !this.HasReadout && !this.IsNfcBusy;
 
 		/// <summary>
+		/// Gets a value indicating whether the user can rescan the document after a recoverable NFC error.
+		/// </summary>
+		public bool ShowRescanAction => this.HasMrz && this.HasErrorState && !this.IsNfcBusy && !this.HasReadout;
+
+		/// <summary>
+		/// Gets a value indicating whether the NFC session is waiting for chip placement.
+		/// </summary>
+		public bool ShowNfcWaitingIndicator => this.FlowState == KycTravelDocumentFlowState.NfcReady && this.IsNfcBusy;
+
+		/// <summary>
+		/// Gets a value indicating whether the NFC chip is actively being read.
+		/// </summary>
+		public bool ShowNfcReadingIndicator => this.FlowState == KycTravelDocumentFlowState.NfcReading && this.IsNfcBusy;
+
+		/// <summary>
 		/// Gets the current MRZ step description.
 		/// </summary>
 		public string MrzStepDescription => this.HasMrz
 			? ServiceRef.Localizer["KycTravelDocumentMrzStepReadyDescription"]
 			: ServiceRef.Localizer["KycTravelDocumentMrzStepDescription"];
+
+		/// <summary>
+		/// Gets the current NFC step title.
+		/// </summary>
+		public string NfcStepTitle => this.FlowState == KycTravelDocumentFlowState.NfcReading
+			? ServiceRef.Localizer["KycTravelDocumentNfcReadingTitle"]
+			: ServiceRef.Localizer["KycTravelDocumentNfcStepTitle"];
+
+		/// <summary>
+		/// Gets the current NFC step description.
+		/// </summary>
+		public string NfcStepDescription => this.FlowState == KycTravelDocumentFlowState.NfcReading
+			? ServiceRef.Localizer["KycTravelDocumentNfcReadingDescription"]
+			: ServiceRef.Localizer["KycTravelDocumentNfcStepDescription"];
+
+		/// <summary>
+		/// Gets the progress state for detecting the chip.
+		/// </summary>
+		public string NfcProgressDetectChipState => this.ResolveProgressStateText(0);
+
+		/// <summary>
+		/// Gets the progress state for securing the chip connection.
+		/// </summary>
+		public string NfcProgressSecureConnectionState => this.ResolveProgressStateText(1);
+
+		/// <summary>
+		/// Gets the progress state for reading document data.
+		/// </summary>
+		public string NfcProgressReadDataState => this.ResolveProgressStateText(2);
+
+		/// <summary>
+		/// Gets the progress state for verifying the readout.
+		/// </summary>
+		public string NfcProgressVerifyDocumentState => this.ResolveProgressStateText(3);
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KycTravelDocumentViewModel"/> class.
@@ -154,19 +304,53 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			await base.OnAppearingAsync();
 			this.reference = this.navigationArguments?.Reference ?? this.reference;
-			this.MrzText = this.reference?.TravelDocumentMrz ?? string.Empty;
+			this.LogFlowEvent(
+				"Appearing",
+				new KeyValuePair<string, object?>("NfcSupported", this.nfcIsoDepSessionService.IsPlatformSupported));
+			if (!this.nfcIsoDepSessionService.IsPlatformSupported)
+			{
+				await this.ReturnToApplicationAsync();
+				return;
+			}
+
+			string SavedMrz = this.reference?.TravelDocumentMrz ?? string.Empty;
+			bool HasInsufficientSavedMrz = !string.IsNullOrWhiteSpace(SavedMrz) &&
+				!KycReference.IsFullTravelDocumentMrz(SavedMrz);
+			this.MrzText = HasInsufficientSavedMrz ? string.Empty : SavedMrz;
 			this.HasReadout = !string.IsNullOrWhiteSpace(this.reference?.NfcReadoutXml);
-			this.StatusText = this.ResolveInitialStatusText();
+			this.FlowState = this.ResolveInitialFlowState(HasInsufficientSavedMrz);
+			this.StatusText = this.ResolveInitialStatusText(HasInsufficientSavedMrz);
 			this.HasStatusText = !string.IsNullOrWhiteSpace(this.StatusText);
-			this.HasErrorState = false;
+			this.HasErrorState = HasInsufficientSavedMrz && !this.HasReadout;
+			this.LogFlowEvent("AppearingStateResolved");
+		}
+
+		/// <inheritdoc/>
+		public override async Task OnDisappearingAsync()
+		{
+			await this.StopActiveNfcSessionAsync();
+			await base.OnDisappearingAsync();
+		}
+
+		/// <inheritdoc/>
+		public override async Task OnDisposeAsync()
+		{
+			await this.StopActiveNfcSessionAsync();
+			this.Dispose(true);
+			await base.OnDisposeAsync();
 		}
 
 		[RelayCommand]
 		private async Task ScanMrzAsync()
 		{
 			if (this.IsNfcBusy)
+			{
+				this.LogFlowEvent("ScanMrzIgnoredNfcBusy");
 				return;
+			}
 
+			this.FlowState = KycTravelDocumentFlowState.MrzCapture;
+			this.LogFlowEvent("ScanMrzStarting");
 			TaskCompletionSource<TravelDocumentMrzResult?> CompletionSource = new TaskCompletionSource<TravelDocumentMrzResult?>(
 				TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -178,50 +362,117 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					PreferredDocumentKind = OcrDocumentKindHint.Passport
 				});
 
+			this.LogFlowEvent("ScanMrzAwaitingResult");
 			TravelDocumentMrzResult? Result = await CompletionSource.Task;
-			string? ScannedMrz = Result?.Document?.MRZ_Information;
-			if (string.IsNullOrWhiteSpace(ScannedMrz))
+			string ScannedMrz = Result?.NormalizedMrzText ?? string.Empty;
+			this.LogFlowEvent(
+				"ScanMrzResultReceived",
+				new KeyValuePair<string, object?>("ResultIsNull", Result is null),
+				new KeyValuePair<string, object?>("IsSuccessful", Result?.IsSuccessful),
+				new KeyValuePair<string, object?>("HasMrzText", !string.IsNullOrWhiteSpace(ScannedMrz)),
+				new KeyValuePair<string, object?>("NormalizedMrzLength", ScannedMrz.Length),
+				new KeyValuePair<string, object?>("ChipAccessMrzLength", Result?.Document?.MRZ_Information?.Length ?? 0),
+				new KeyValuePair<string, object?>("DocumentType", Result?.Document?.DocumentType ?? string.Empty));
+			if (Result is null ||
+				!Result.IsSuccessful ||
+				string.IsNullOrWhiteSpace(ScannedMrz))
 			{
-				await this.SetStatusAsync("KycTravelDocumentInvalidMrz", false);
+				this.LogFlowEvent("ScanMrzRejectedEmptyMrz");
+				await this.SetStatusAsync("KycTravelDocumentInvalidMrz", false, true, false, KycTravelDocumentFlowState.Error);
 				return;
 			}
 
 			this.MrzText = ScannedMrz.Trim();
-			TravelDocumentMrzEvidence? Evidence = await this.TryCreateMrzEvidenceAsync(CancellationToken.None);
+			TravelDocumentMrzEvidence? Evidence = await this.TryCreateMrzEvidenceAsync(Result, CancellationToken.None);
 			if (Evidence is null)
 			{
-				await this.SetStatusAsync("KycTravelDocumentInvalidMrz", false);
+				this.LogFlowEvent("ScanMrzEvidenceCreationFailed");
+				await this.SetStatusAsync("KycTravelDocumentInvalidMrz", false, true, false, KycTravelDocumentFlowState.Error);
 				return;
 			}
 
-			await this.SetStatusAsync("KycTravelDocumentSaved", false);
-			await this.StartNfcReadoutAsync();
+			this.LogFlowEvent(
+				"ScanMrzEvidenceReady",
+				new KeyValuePair<string, object?>("EvidenceMrzLength", Evidence.MrzText.Length),
+				new KeyValuePair<string, object?>("HasApplicationIdentityId", !string.IsNullOrWhiteSpace(Evidence.ApplicationIdentityId)));
+			await this.SetStatusAsync("KycTravelDocumentSaved", false, false, false, KycTravelDocumentFlowState.MrzCaptured);
+			await this.StartNfcReadoutFromEvidenceAsync(Evidence);
 		}
 
 		[RelayCommand]
 		private async Task StartNfcReadoutAsync()
 		{
-			if (this.IsNfcBusy)
-				return;
+			await this.StartNfcReadoutFromEvidenceAsync(null);
+		}
 
-			TravelDocumentMrzEvidence? Evidence = await this.TryCreateMrzEvidenceAsync(CancellationToken.None);
+		private async Task StartNfcReadoutFromEvidenceAsync(TravelDocumentMrzEvidence? AvailableEvidence)
+		{
+			if (this.IsNfcBusy || this.HasReadout)
+			{
+				this.LogFlowEvent(
+					"StartNfcIgnored",
+					new KeyValuePair<string, object?>("IsNfcBusy", this.IsNfcBusy),
+					new KeyValuePair<string, object?>("HasReadout", this.HasReadout));
+				return;
+			}
+
+			if (!this.nfcIsoDepSessionService.IsPlatformSupported)
+			{
+				this.LogFlowEvent("StartNfcUnsupported");
+				await this.ReturnToApplicationAsync();
+				return;
+			}
+
+			await this.StopActiveNfcSessionAsync();
+
+			TravelDocumentMrzEvidence? Evidence = AvailableEvidence ?? await this.TryCreateMrzEvidenceAsync(CancellationToken.None);
 			if (Evidence is null)
 			{
-				await this.SetStatusAsync("KycTravelDocumentInvalidMrz", false);
+				this.LogFlowEvent("StartNfcEvidenceMissing");
+				await this.SetStatusAsync("KycTravelDocumentInvalidMrz", false, true, false, KycTravelDocumentFlowState.Error);
+				return;
+			}
+
+			await this.SetStatusAsync("KycTravelDocumentNfcPreparing", true, false, false, KycTravelDocumentFlowState.MrzCaptured);
+			Evidence = await this.BindReservedPreviewIdentityAsync(Evidence, CancellationToken.None);
+			if (Evidence is null || string.IsNullOrWhiteSpace(Evidence.ApplicationIdentityId))
+			{
+				this.LogFlowEvent("StartNfcReservationMissing");
+				await this.SetStatusAsync("KycTravelDocumentNfcReservationFailed", false, true, false, KycTravelDocumentFlowState.Error);
 				return;
 			}
 
 			Guid SessionId = Guid.NewGuid();
 			this.activeSessionId = SessionId;
-			await this.SetStatusAsync("KycTravelDocumentNfcReady", true);
+			this.activeSessionCancellationTokenSource = new CancellationTokenSource();
+			this.LogFlowEvent(
+				"StartNfcSessionStarting",
+				new KeyValuePair<string, object?>("SessionId", SessionId),
+				new KeyValuePair<string, object?>("EvidenceMrzLength", Evidence.MrzText.Length),
+				new KeyValuePair<string, object?>("HasApplicationIdentityId", !string.IsNullOrWhiteSpace(Evidence.ApplicationIdentityId)));
+			await this.SetStatusAsync("KycTravelDocumentNfcReady", true, false, false, KycTravelDocumentFlowState.NfcReady);
 
-			await this.nfcIsoDepSessionService.StartSessionAsync(
-				SessionId,
-				(IsoDepInterface, CancellationToken) => this.ReadTravelDocumentAsync(SessionId, Evidence, IsoDepInterface, CancellationToken),
-				(Failure, CancellationToken) => this.HandleNfcFailureAsync(SessionId, Failure, CancellationToken),
-				NfcIsoDepPollingPreference.Auto,
-				ServiceRef.Localizer["KycTravelDocumentNfcReady"],
-				CancellationToken.None);
+			try
+			{
+				await this.nfcIsoDepSessionService.StartSessionAsync(
+					SessionId,
+					(IsoDepInterface, CancellationToken) => this.ReadTravelDocumentAsync(SessionId, Evidence, IsoDepInterface, CancellationToken),
+					(Failure, CancellationToken) => this.HandleNfcFailureAsync(SessionId, Failure, CancellationToken),
+					NfcIsoDepPollingPreference.Auto,
+					ServiceRef.Localizer["KycTravelDocumentNfcReady"],
+					CancellationToken.None);
+				this.LogFlowEvent(
+					"StartNfcSessionStarted",
+					new KeyValuePair<string, object?>("SessionId", SessionId));
+			}
+			catch (Exception Ex)
+			{
+				this.LogFlowEvent(
+					"StartNfcSessionFailed",
+					new KeyValuePair<string, object?>("SessionId", SessionId),
+					new KeyValuePair<string, object?>("ExceptionType", Ex.GetType().Name));
+				throw;
+			}
 		}
 
 		[RelayCommand]
@@ -242,11 +493,40 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			IIsoDepInterface IsoDepInterface,
 			CancellationToken CancellationToken)
 		{
+			if (!this.IsActiveSession(SessionId))
+			{
+				this.LogFlowEvent(
+					"ReadNfcIgnoredInactiveSession",
+					new KeyValuePair<string, object?>("SessionId", SessionId));
+				return;
+			}
+
+			this.LogFlowEvent(
+				"ReadNfcStarted",
+				new KeyValuePair<string, object?>("SessionId", SessionId),
+				new KeyValuePair<string, object?>("HasApplicationIdentityId", !string.IsNullOrWhiteSpace(Evidence.ApplicationIdentityId)));
+
+			if (string.IsNullOrWhiteSpace(Evidence.ApplicationIdentityId))
+			{
+				this.LogFlowEvent(
+					"ReadNfcRejectedMissingApplicationIdentityId",
+					new KeyValuePair<string, object?>("SessionId", SessionId));
+				await this.SetStatusAsync("KycTravelDocumentNfcReservationFailed", false, true, false, KycTravelDocumentFlowState.Error);
+				await this.CompleteNfcSessionAsync(SessionId);
+				return;
+			}
+
+			CancellationTokenSource? ActiveCancellationTokenSource = this.activeSessionCancellationTokenSource;
+			using CancellationTokenSource LinkedCancellationTokenSource = ActiveCancellationTokenSource is null
+				? CancellationTokenSource.CreateLinkedTokenSource(CancellationToken)
+				: CancellationTokenSource.CreateLinkedTokenSource(CancellationToken, ActiveCancellationTokenSource.Token);
+			CancellationToken ReadCancellationToken = LinkedCancellationTokenSource.Token;
+
 			await this.nfcIsoDepSessionService.UpdateSessionAlertAsync(
 				SessionId,
 				ServiceRef.Localizer["KycTravelDocumentNfcReading"],
-				CancellationToken);
-			await this.SetStatusAsync("KycTravelDocumentNfcReading", true);
+				ReadCancellationToken);
+			await this.SetStatusAsync("KycTravelDocumentNfcReading", true, false, false, KycTravelDocumentFlowState.NfcReading);
 
 			try
 			{
@@ -254,17 +534,36 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 					Evidence.DocumentInformation,
 					Evidence.MrzText,
 					Evidence.ApplicationIdentityId);
-				TravelDocumentReadoutResult Result = await this.readoutService.ReadAsync(IsoDepInterface, Request, CancellationToken);
+				TravelDocumentReadoutResult Result = await this.readoutService.ReadAsync(IsoDepInterface, Request, ReadCancellationToken);
+
+				if (!this.IsActiveSession(SessionId))
+				{
+					this.LogFlowEvent(
+						"ReadNfcResultIgnoredInactiveSession",
+						new KeyValuePair<string, object?>("SessionId", SessionId),
+						new KeyValuePair<string, object?>("Status", Result.Status.ToString()));
+					return;
+				}
+
+				this.LogFlowEvent(
+					"ReadNfcResultReceived",
+					new KeyValuePair<string, object?>("SessionId", SessionId),
+					new KeyValuePair<string, object?>("Status", Result.Status.ToString()),
+					new KeyValuePair<string, object?>("IsSuccess", Result.IsSuccess),
+					new KeyValuePair<string, object?>("XmlLength", Result.Xml?.Length ?? 0));
 
 				if (Result.IsSuccess &&
-					await this.SaveReadoutXmlAsync(Result.Xml, CancellationToken))
+					await this.SaveReadoutXmlAsync(Result.Xml, ReadCancellationToken))
 				{
-					await this.SetStatusAsync("KycTravelDocumentNfcSuccess", false, false, true);
+					await this.SetStatusAsync("KycTravelDocumentNfcSuccess", false, false, true, KycTravelDocumentFlowState.Success);
 				}
 				else
 				{
-					await this.SetStatusAsync(this.ResolveReadoutFailureResourceKey(Result.Status), false, true);
+					await this.SetStatusAsync(this.ResolveReadoutFailureResourceKey(Result.Status), false, true, false, KycTravelDocumentFlowState.Error);
 				}
+			}
+			catch (OperationCanceledException) when (ReadCancellationToken.IsCancellationRequested)
+			{
 			}
 			finally
 			{
@@ -278,11 +577,26 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			CancellationToken CancellationToken)
 		{
 			CancellationToken.ThrowIfCancellationRequested();
-			await this.SetStatusAsync(this.ResolveNfcFailureResourceKey(Failure), false, true);
+			if (!this.IsActiveSession(SessionId))
+			{
+				this.LogFlowEvent(
+					"NfcFailureIgnoredInactiveSession",
+					new KeyValuePair<string, object?>("SessionId", SessionId),
+					new KeyValuePair<string, object?>("FailureCode", Failure.FailureCode.ToString()));
+				return;
+			}
+
+			this.LogFlowEvent(
+				"NfcFailureReceived",
+				new KeyValuePair<string, object?>("SessionId", SessionId),
+				new KeyValuePair<string, object?>("FailureCode", Failure.FailureCode.ToString()));
+
+			await this.SetStatusAsync(this.ResolveNfcFailureResourceKey(Failure), false, true, false, KycTravelDocumentFlowState.Error);
 
 			if (this.activeSessionId == SessionId)
 				this.activeSessionId = null;
 
+			this.CancelAndDisposeActiveSessionCancellation();
 			await this.nfcIsoDepSessionService.StopSessionAsync(SessionId, CancellationToken.None);
 		}
 
@@ -291,6 +605,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			if (this.activeSessionId == SessionId)
 				this.activeSessionId = null;
 
+			this.CancelAndDisposeActiveSessionCancellation();
 			await this.nfcIsoDepSessionService.StopSessionAsync(SessionId, CancellationToken.None);
 			await MainThread.InvokeOnMainThreadAsync(() => this.IsNfcBusy = false);
 		}
@@ -300,6 +615,7 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			CancellationToken.ThrowIfCancellationRequested();
 			string NormalizedMrz = this.MrzText?.Trim() ?? string.Empty;
 			if (string.IsNullOrWhiteSpace(NormalizedMrz) ||
+				!KycReference.IsFullTravelDocumentMrz(NormalizedMrz) ||
 				!MrzExtensions.ParseMrz(NormalizedMrz, out DocumentInformation? DocumentInformation))
 			{
 				return null;
@@ -318,6 +634,129 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return null;
 
 			return await this.evidenceService.TryLoadMrzAsync(CancellationToken);
+		}
+
+		private async Task<TravelDocumentMrzEvidence?> TryCreateMrzEvidenceAsync(
+			TravelDocumentMrzResult Result,
+			CancellationToken CancellationToken)
+		{
+			CancellationToken.ThrowIfCancellationRequested();
+			string NormalizedMrz = Result.NormalizedMrzText;
+			DocumentInformation? DocumentInformation = Result.Document;
+			if (string.IsNullOrWhiteSpace(NormalizedMrz) ||
+				!KycReference.IsFullTravelDocumentMrz(NormalizedMrz) ||
+				DocumentInformation is null)
+			{
+				return null;
+			}
+
+			this.MrzText = NormalizedMrz;
+			if (this.reference is not null)
+			{
+				await this.SaveReferenceEvidenceAsync(NormalizedMrz, null, DocumentInformation);
+				return new TravelDocumentMrzEvidence(
+					NormalizedMrz,
+					DocumentInformation,
+					this.reference.ReservedPreviewIdentityId ?? this.reference.PreviewIdentityId ?? this.reference.GetActiveApplicationIdentityId());
+			}
+
+			if (!await this.evidenceService.SaveMrzAsync(NormalizedMrz, CancellationToken))
+				return null;
+
+			return new TravelDocumentMrzEvidence(NormalizedMrz, DocumentInformation, null);
+		}
+
+		private async Task<TravelDocumentMrzEvidence?> BindReservedPreviewIdentityAsync(
+			TravelDocumentMrzEvidence Evidence,
+			CancellationToken CancellationToken)
+		{
+			CancellationToken.ThrowIfCancellationRequested();
+			if (this.reference is null)
+				return string.IsNullOrWhiteSpace(Evidence.ApplicationIdentityId) ? null : Evidence;
+
+			LegalIdentity? ExistingIdentity = await this.TryLoadUsableReservedPreviewIdentityAsync(this.reference, CancellationToken);
+			if (ExistingIdentity is not null)
+			{
+				return new TravelDocumentMrzEvidence(
+					Evidence.MrzText,
+					Evidence.DocumentInformation,
+					ExistingIdentity.Id);
+			}
+
+			IReadOnlyList<Property> ReservationProperties = await ServiceRef.KycService
+				.PreparePreviewReservationPropertiesAsync(this.reference, CancellationToken)
+				.ConfigureAwait(false);
+			bool GenerateNewKeys = !await this.HasCurrentIdentityPrivateKeyAsync().ConfigureAwait(false);
+			(bool Succeeded, LegalIdentity? ReservedIdentity) = await ServiceRef.NetworkService.TryRequest(
+				() => ServiceRef.XmppService.ApplyPreviewLegalIdentity(ReservationProperties.ToArray(), GenerateNewKeys));
+
+			this.LogFlowEvent(
+				"PreviewReservationCreated",
+				new KeyValuePair<string, object?>("Succeeded", Succeeded),
+				new KeyValuePair<string, object?>("HasReservedIdentity", ReservedIdentity is not null),
+				new KeyValuePair<string, object?>("GeneratedNewKeys", GenerateNewKeys),
+				new KeyValuePair<string, object?>("PropertyCount", ReservationProperties.Count));
+
+			if (!Succeeded || ReservedIdentity is null || string.IsNullOrWhiteSpace(ReservedIdentity.Id))
+				return null;
+
+			await ServiceRef.KycService.SetReservedPreviewIdentityAsync(this.reference, ReservedIdentity).ConfigureAwait(false);
+			return new TravelDocumentMrzEvidence(
+				Evidence.MrzText,
+				Evidence.DocumentInformation,
+				ReservedIdentity.Id);
+		}
+
+		private async Task<LegalIdentity?> TryLoadUsableReservedPreviewIdentityAsync(
+			KycReference Reference,
+			CancellationToken CancellationToken)
+		{
+			CancellationToken.ThrowIfCancellationRequested();
+			string ReservedPreviewIdentityId = Reference.ReservedPreviewIdentityId?.Trim() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(ReservedPreviewIdentityId))
+				return null;
+
+			(bool Succeeded, LegalIdentity? Identity) = await ServiceRef.NetworkService.TryRequest(
+				() => ServiceRef.XmppService.GetLegalIdentity(ReservedPreviewIdentityId));
+			bool HasPrivateKey = Identity is not null && await this.HasPrivateKeyAsync(Identity.Id).ConfigureAwait(false);
+			this.LogFlowEvent(
+				"PreviewReservationReuseChecked",
+				new KeyValuePair<string, object?>("Succeeded", Succeeded),
+				new KeyValuePair<string, object?>("HasIdentity", Identity is not null),
+				new KeyValuePair<string, object?>("HasPrivateKey", HasPrivateKey));
+
+			if (!Succeeded || Identity is null || !HasPrivateKey)
+				return null;
+
+			await ServiceRef.KycService.SetReservedPreviewIdentityAsync(Reference, Identity).ConfigureAwait(false);
+			return Identity;
+		}
+
+		private async Task<bool> HasCurrentIdentityPrivateKeyAsync()
+		{
+			string IdentityId = ServiceRef.TagProfile.LegalIdentity?.Id?.Trim() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(IdentityId))
+				return false;
+
+			return await this.HasPrivateKeyAsync(IdentityId).ConfigureAwait(false);
+		}
+
+		private async Task<bool> HasPrivateKeyAsync(string? IdentityId)
+		{
+			if (string.IsNullOrWhiteSpace(IdentityId))
+				return false;
+
+			try
+			{
+				return await ServiceRef.XmppService.HasPrivateKey(IdentityId.Trim()).ConfigureAwait(false);
+			}
+			catch (Exception Ex)
+			{
+				ServiceRef.LogService.LogException(
+					Ex,
+					new KeyValuePair<string, object?>("Operation", "KYC.PreviewReservationPrivateKeyCheck"));
+				return false;
+			}
 		}
 
 		private async Task<bool> SaveReadoutXmlAsync(string Xml, CancellationToken CancellationToken)
@@ -356,6 +795,12 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				await this.SeedReferenceFieldsFromMrzAsync(DocumentInformation);
 
 			await ServiceRef.KycService.SaveKycReferenceAsync(this.reference);
+			this.LogFlowEvent(
+				"ReferenceEvidenceSaved",
+				new KeyValuePair<string, object?>("SavedMrz", !string.IsNullOrWhiteSpace(MrzText)),
+				new KeyValuePair<string, object?>("SavedReadout", !string.IsNullOrWhiteSpace(ReadoutXml)),
+				new KeyValuePair<string, object?>("ReferenceHasFullMrz", this.reference.HasFullTravelDocumentMrz),
+				new KeyValuePair<string, object?>("ReferenceHasReadout", !string.IsNullOrWhiteSpace(this.reference.NfcReadoutXml)));
 		}
 
 		private async Task SeedReferenceFieldsFromMrzAsync(DocumentInformation DocumentInformation)
@@ -398,11 +843,17 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				return;
 
 			this.activeSessionId = null;
+			this.CancelAndDisposeActiveSessionCancellation();
 			await this.nfcIsoDepSessionService.StopSessionAsync(SessionId.Value, CancellationToken.None);
 			await MainThread.InvokeOnMainThreadAsync(() => this.IsNfcBusy = false);
 		}
 
-		private Task SetStatusAsync(string ResourceKey, bool IsBusy, bool IsError = false, bool ReadoutAvailable = false)
+		private Task SetStatusAsync(
+			string ResourceKey,
+			bool IsBusy,
+			bool IsError = false,
+			bool ReadoutAvailable = false,
+			KycTravelDocumentFlowState? FlowState = null)
 		{
 			string Message = ServiceRef.Localizer[ResourceKey];
 			return MainThread.InvokeOnMainThreadAsync(() =>
@@ -413,7 +864,113 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 				this.HasErrorState = IsError;
 				if (ReadoutAvailable)
 					this.HasReadout = true;
+
+				if (FlowState.HasValue)
+					this.FlowState = FlowState.Value;
+
+				this.LogFlowEvent(
+					"StatusSet",
+					new KeyValuePair<string, object?>("ResourceKey", ResourceKey),
+					new KeyValuePair<string, object?>("IsBusy", IsBusy),
+					new KeyValuePair<string, object?>("IsError", IsError),
+					new KeyValuePair<string, object?>("ReadoutAvailable", ReadoutAvailable));
 			});
+		}
+
+		private void LogFlowEvent(string EventName, params KeyValuePair<string, object?>[] Tags)
+		{
+			List<KeyValuePair<string, object?>> AllTags = new List<KeyValuePair<string, object?>>
+			{
+				new KeyValuePair<string, object?>("Event", EventName),
+				new KeyValuePair<string, object?>("FlowState", this.FlowState.ToString()),
+				new KeyValuePair<string, object?>("HasMrz", this.HasMrz),
+				new KeyValuePair<string, object?>("HasReferenceFullMrz", this.reference?.HasFullTravelDocumentMrz == true),
+				new KeyValuePair<string, object?>("HasReadout", this.HasReadout),
+				new KeyValuePair<string, object?>("HasReferenceReadout", !string.IsNullOrWhiteSpace(this.reference?.NfcReadoutXml)),
+				new KeyValuePair<string, object?>("IsNfcBusy", this.IsNfcBusy),
+				new KeyValuePair<string, object?>("ActiveSessionId", this.activeSessionId)
+			};
+			AllTags.AddRange(Tags);
+			ServiceRef.LogService.LogInformational("KYC travel document flow", AllTags.ToArray());
+		}
+
+		private KycTravelDocumentFlowState ResolveInitialFlowState(bool HasInsufficientSavedMrz)
+		{
+			if (!string.IsNullOrWhiteSpace(this.reference?.NfcReadoutXml))
+				return KycTravelDocumentFlowState.Success;
+
+			if (HasInsufficientSavedMrz)
+				return KycTravelDocumentFlowState.Error;
+
+			if (this.reference?.HasFullTravelDocumentMrz == true)
+				return KycTravelDocumentFlowState.NfcReady;
+
+			return KycTravelDocumentFlowState.Intro;
+		}
+
+		private bool IsActiveSession(Guid SessionId)
+		{
+			return this.activeSessionId == SessionId && !this.HasReadout && this.FlowState != KycTravelDocumentFlowState.Success;
+		}
+
+		private void CancelAndDisposeActiveSessionCancellation()
+		{
+			CancellationTokenSource? CancellationTokenSource = this.activeSessionCancellationTokenSource;
+			this.activeSessionCancellationTokenSource = null;
+			if (CancellationTokenSource is null)
+				return;
+
+			try
+			{
+				CancellationTokenSource.Cancel();
+			}
+			catch (ObjectDisposedException)
+			{
+			}
+			finally
+			{
+				CancellationTokenSource.Dispose();
+			}
+		}
+
+		/// <summary>
+		/// Releases resources used by the view model.
+		/// </summary>
+		/// <param name="Disposing">True when called from <see cref="Dispose()"/>.</param>
+		protected virtual void Dispose(bool Disposing)
+		{
+			if (this.disposedValue)
+				return;
+
+			if (Disposing)
+				this.CancelAndDisposeActiveSessionCancellation();
+
+			this.disposedValue = true;
+		}
+
+		/// <summary>
+		/// Releases resources used by the view model.
+		/// </summary>
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		private string ResolveProgressStateText(int StepIndex)
+		{
+			if (this.FlowState == KycTravelDocumentFlowState.Success || this.HasReadout)
+				return ServiceRef.Localizer["KycTravelDocumentProgressDone"];
+
+			if (this.FlowState == KycTravelDocumentFlowState.Error || this.HasErrorState)
+				return ServiceRef.Localizer["KycTravelDocumentProgressNeedsAttention"];
+
+			if (this.FlowState == KycTravelDocumentFlowState.NfcReading)
+				return StepIndex == 0
+					? ServiceRef.Localizer["KycTravelDocumentProgressDone"]
+					: ServiceRef.Localizer["KycTravelDocumentProgressInProgress"];
+
+			return ServiceRef.Localizer["KycTravelDocumentProgressWaiting"];
 		}
 
 		private string ResolveReadoutFailureResourceKey(TravelDocumentReadoutStatus Status)
@@ -442,12 +999,15 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 			};
 		}
 
-		private string ResolveInitialStatusText()
+		private string ResolveInitialStatusText(bool HasInsufficientSavedMrz)
 		{
 			if (!string.IsNullOrWhiteSpace(this.reference?.NfcReadoutXml))
 				return ServiceRef.Localizer["KycTravelDocumentReadoutReady"];
 
-			if (!string.IsNullOrWhiteSpace(this.reference?.TravelDocumentMrz))
+			if (HasInsufficientSavedMrz)
+				return ServiceRef.Localizer["KycTravelDocumentInvalidMrz"];
+
+			if (this.reference?.HasFullTravelDocumentMrz == true)
 				return ServiceRef.Localizer["KycTravelDocumentSummaryMrzReady"];
 
 			return string.Empty;

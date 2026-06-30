@@ -63,6 +63,11 @@ namespace NeuroAccessMaui.Services.Kyc
 		private ApplicationReview? applicationReview;
 
 		/// <summary>
+		/// Gets the derived process value key that indicates whether travel-document NFC evidence is complete.
+		/// </summary>
+		public const string TravelDocumentNfcCompletedEvidenceFieldId = "evidence.travelDocument.nfc.completed";
+
+		/// <summary>
 		/// Object ID
 		/// </summary>
 		[ObjectId]
@@ -160,6 +165,12 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// </summary>
 		[DefaultValueNull]
 		public string? TravelDocumentMrz { get; set; }
+
+		/// <summary>
+		/// Gets a value indicating whether the stored travel-document MRZ has a full MRZ shape.
+		/// </summary>
+		[IgnoreMember]
+		public bool HasFullTravelDocumentMrz => KycReference.IsFullTravelDocumentMrz(this.TravelDocumentMrz);
 
 		/// <summary>
 		/// Gets or sets when the latest travel-document MRZ was captured.
@@ -282,7 +293,12 @@ namespace NeuroAccessMaui.Services.Kyc
 				if (this.Fields is not null)
 				{
 					foreach (KycFieldValue Field in this.Fields)
+					{
+						if (KycReference.IsDerivedProcessValue(Field.FieldId))
+							continue;
+
 						this.process.Values[Field.FieldId] = Field.Value;
+					}
 
 					foreach (KycPage Page in this.process.Pages)
 					{
@@ -294,6 +310,13 @@ namespace NeuroAccessMaui.Services.Kyc
 								this.ApplyFieldValue(Field);
 					}
 				}
+			}
+
+			this.ApplyEvidenceStateToProcess(this.process);
+			if (this.process is not null)
+			{
+				foreach (KycPage Page in this.process.Pages)
+					Page.UpdateVisibilities(this.process.Values);
 			}
 
 			return this.process;
@@ -323,7 +346,7 @@ namespace NeuroAccessMaui.Services.Kyc
 			this.CreatedUtc = Created;
 			this.UpdatedUtc = Updated;
 			this.FetchedUtc = DateTime.UtcNow;
-			this.Fields = Process.Values.Select(Pair => new KycFieldValue(Pair.Key, Pair.Value)).ToArray();
+			this.Fields = KycReference.CreatePersistentFields(Process);
 		}
 
 		/// <summary>
@@ -472,7 +495,7 @@ namespace NeuroAccessMaui.Services.Kyc
 				CreatedUtc = DateTime.UtcNow,
 				UpdatedUtc = DateTime.UtcNow,
 				FetchedUtc = DateTime.UtcNow,
-				Fields = Process.Values.Select(P => new KycFieldValue(P.Key, P.Value)).ToArray(),
+				Fields = KycReference.CreatePersistentFields(Process),
 				FriendlyName = FriendlyName ?? string.Empty
 			};
 			return Reference;
@@ -490,11 +513,21 @@ namespace NeuroAccessMaui.Services.Kyc
 		{
 			KycProcess? Proc = await this.GetProcess(Lang).ConfigureAwait(false);
 
-			if (Proc is null || this.Fields is null)
+			if (Proc is null)
 				return;
 
-			foreach (KycFieldValue Field in this.Fields)
-				Proc.Values[Field.FieldId] = Field.Value;
+			if (this.Fields is not null)
+			{
+				foreach (KycFieldValue Field in this.Fields)
+				{
+					if (KycReference.IsDerivedProcessValue(Field.FieldId))
+						continue;
+
+					Proc.Values[Field.FieldId] = Field.Value;
+				}
+			}
+
+			this.ApplyEvidenceStateToProcess(Proc);
 
 			foreach (KycPage Page in Proc.Pages)
 			{
@@ -517,6 +550,61 @@ namespace NeuroAccessMaui.Services.Kyc
 		public async Task<KycProcess?> ToProcess(string? Lang = null)
 		{
 			return await this.GetProcess(Lang);
+		}
+
+		/// <summary>
+		/// Applies derived evidence values to a process without persisting them as user-entered fields.
+		/// </summary>
+		/// <param name="Process">The process to update.</param>
+		public void ApplyEvidenceStateToProcess(KycProcess? Process)
+		{
+			if (Process is null)
+				return;
+
+			Process.Values[KycReference.TravelDocumentNfcCompletedEvidenceFieldId] =
+				string.IsNullOrWhiteSpace(this.NfcReadoutXml) ? "false" : "true";
+		}
+
+		/// <summary>
+		/// Determines whether a process value is derived from reference evidence rather than entered by the user.
+		/// </summary>
+		/// <param name="FieldId">The process value key.</param>
+		/// <returns><c>true</c> if the key identifies derived evidence state; otherwise, <c>false</c>.</returns>
+		public static bool IsDerivedProcessValue(string? FieldId)
+		{
+			return string.Equals(FieldId, KycReference.TravelDocumentNfcCompletedEvidenceFieldId, StringComparison.OrdinalIgnoreCase);
+		}
+
+		/// <summary>
+		/// Creates the persisted field snapshot for a process, excluding derived evidence state.
+		/// </summary>
+		/// <param name="Process">The process containing current values.</param>
+		/// <returns>The field values that should be stored with the reference.</returns>
+		public static KycFieldValue[] CreatePersistentFields(KycProcess Process)
+		{
+			return [.. Process.Values
+				.Where(Pair => !KycReference.IsDerivedProcessValue(Pair.Key))
+				.Select(Pair => new KycFieldValue(Pair.Key, Pair.Value))];
+		}
+
+		/// <summary>
+		/// Determines if a travel-document MRZ value has the shape of a full printed MRZ.
+		/// </summary>
+		/// <param name="MrzText">The MRZ text to inspect.</param>
+		/// <returns>True if the value has a full printed MRZ shape; otherwise false.</returns>
+		public static bool IsFullTravelDocumentMrz(string? MrzText)
+		{
+			string Normalized = MrzText?.Trim() ?? string.Empty;
+			if (string.IsNullOrWhiteSpace(Normalized))
+				return false;
+
+			string Compact = new string(
+				Normalized
+					.Where(Character => Character != '\r' && Character != '\n' && !char.IsWhiteSpace(Character))
+					.ToArray());
+			return Compact.Length == 72 ||
+				Compact.Length == 88 ||
+				Compact.Length == 90;
 		}
 
 		private void TryMigrateLegacyReview()

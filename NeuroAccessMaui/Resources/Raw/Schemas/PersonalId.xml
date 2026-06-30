@@ -23,6 +23,7 @@
 			<Keep key="COUNTRY" />
 			<Keep key="GENDER" />
 			<IncludeAttachment name="NFC.xml" />
+			<KeepAttachment tag="ProfilePhoto" />
 		</Content>
 	</IdentityApplication>
 	<Evidence>
@@ -51,6 +52,13 @@
 			<Text lang="fi">Anna henkilötietosi täsmälleen kuten ne ovat virallisissa asiakirjoissasi.</Text>
 			<Text lang="fr">Veuillez saisir vos informations personnelles telles qu’elles apparaissent sur vos documents officiels.</Text>
 		</Description>
+		<Field id="evidence.travelDocument.nfc.completed" type="text">
+			<Default>false</Default>
+			<Condition>
+				<FieldRef>evidence.travelDocument.nfc.completed</FieldRef>
+				<Equals>visible</Equals>
+			</Condition>
+		</Field>
 		<Field id="firstNames" type="text" required="true">
 			<Label>
 				<Text lang="en">First name</Text>
@@ -244,6 +252,10 @@
 			<Text lang="fi">Valitse ja lataa henkilöllisyystodistus, jonka haluat toimittaa.</Text>
 			<Text lang="fr">Sélectionnez et téléversez le document d’identité que vous souhaitez fournir.</Text>
 		</Description>
+		<Condition>
+			<FieldRef>evidence.travelDocument.nfc.completed</FieldRef>
+			<Equals>false</Equals>
+		</Condition>
 		<Section>
 			<Label>
 				<Text lang="en">Document Type Selection</Text>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.IO;
 using System.Reflection;
@@ -586,6 +587,32 @@ namespace NeuroAccessMaui.Services.Kyc
 		}
 
 		/// <summary>
+		/// Prepares the minimal preview identity properties used to reserve an identity before NFC readout.
+		/// </summary>
+		/// <param name="Reference">Reference containing the active KYC process and field values.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		/// <returns>Preview reservation properties.</returns>
+		public async Task<IReadOnlyList<Property>> PreparePreviewReservationPropertiesAsync(KycReference Reference, CancellationToken CancellationToken)
+		{
+			if (Reference is null)
+				return Array.Empty<Property>();
+
+			string Language = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+			KycProcess? Process = await Reference.GetProcess(Language).ConfigureAwait(false);
+			if (Process is null)
+				return Array.Empty<Property>();
+
+			Reference.ApplyEvidenceStateToProcess(Process);
+			(IReadOnlyList<Property> Properties, _) = await this.PreparePropertiesAndAttachmentsAsync(Process, CancellationToken).ConfigureAwait(false);
+			List<Property> Result = Properties.ToList();
+			KycService.AddApplicationRequiredProperties(Process, Result);
+
+			KycOrderingComparer Comparer = KycOrderingComparer.Create(Process);
+			Result.Sort(Comparer.PropertyComparer);
+			return Result;
+		}
+
+		/// <summary>
 		/// Captures a snapshot and schedules an asynchronous persistence operation (coalescing by reference).
 		/// </summary>
 		public Task ScheduleSnapshotAsync(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
@@ -697,6 +724,40 @@ namespace NeuroAccessMaui.Services.Kyc
 		}
 
 		/// <summary>
+		/// Persists a preview identity that has been reserved but not submitted for review.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Reserved preview identity.</param>
+		public async Task SetReservedPreviewIdentityAsync(KycReference Reference, LegalIdentity Identity)
+		{
+			if (Reference is null || Identity is null || string.IsNullOrWhiteSpace(Identity.Id))
+				return;
+
+			AsyncLock Lock = this.GetLockFor(Reference);
+			await using (await Lock.LockAsync().ConfigureAwait(false))
+			{
+				Reference.ReservedPreviewIdentityId = Identity.Id;
+				Reference.PreviewIdentityId = null;
+				Reference.PreviewIdentityState = null;
+				Reference.FinalIdentityId = null;
+				Reference.FinalIdentityState = null;
+				Reference.IdentityStage = KycIdentityApplicationStage.ReservedPreview;
+				Reference.CreatedIdentityId = Identity.Id;
+				Reference.CreatedIdentityState = Identity.State;
+				Reference.ApplicationReview = null;
+				Reference.RejectionMessage = null;
+				Reference.RejectionCode = null;
+				Reference.InvalidClaims = null;
+				Reference.InvalidPhotos = null;
+				Reference.InvalidClaimDetails = null;
+				Reference.InvalidPhotoDetails = null;
+				Reference.Version++;
+				Reference.UpdatedUtc = DateTime.UtcNow;
+				await SaveReferenceAsync(Reference);
+			}
+		}
+
+		/// <summary>
 		/// Marks the approved preview identity and records that final identity creation is underway.
 		/// </summary>
 		/// <param name="Reference">Reference to update.</param>
@@ -770,7 +831,13 @@ namespace NeuroAccessMaui.Services.Kyc
 			{
 				Reference.CreatedIdentityId = Identity.Id;
 				Reference.CreatedIdentityState = Identity.State;
-				if (Reference.IsPreviewIdentity(Identity.Id))
+				if (Reference.IsReservedPreviewIdentity(Identity.Id) && !Reference.IsPreviewIdentity(Identity.Id))
+				{
+					Reference.IdentityStage = KycIdentityApplicationStage.ReservedPreview;
+					Reference.FinalIdentityId = null;
+					Reference.FinalIdentityState = null;
+				}
+				else if (Reference.IsPreviewIdentity(Identity.Id))
 				{
 					Reference.PreviewIdentityState = Identity.State;
 					if (Identity.State == IdentityState.Approved)
@@ -906,7 +973,7 @@ namespace NeuroAccessMaui.Services.Kyc
 		private static KycReferenceSnapshot CreateSnapshot(KycReference Reference, KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId)
 		{
 			Reference.Version++;
-			KycFieldValue[] Fields = [.. Process.Values.Select(Pair => new KycFieldValue(Pair.Key, Pair.Value))];
+			KycFieldValue[] Fields = KycReference.CreatePersistentFields(Process);
 			string? LastVisitedPageId = ResolveLastVisitedPageId(Reference, Process, Navigation, CurrentPageId);
 			string Mode = ResolveMode(Navigation);
 			DateTime Now = DateTime.UtcNow;
@@ -1152,6 +1219,29 @@ namespace NeuroAccessMaui.Services.Kyc
 					Result.Add(new Property(Map.Key, Current));
 			}
 			return Result;
+		}
+
+		private static void AddApplicationRequiredProperties(KycProcess Process, List<Property> Properties)
+		{
+			string Jid = ServiceRef.TagProfile.LegalIdentity?.Properties.FirstOrDefault(Property => Property.Name == Constants.XmppProperties.Jid)?.Value ??
+				ServiceRef.XmppService.BareJid ??
+				string.Empty;
+			string Phone = ServiceRef.TagProfile.LegalIdentity?.Properties.FirstOrDefault(Property => Property.Name == Constants.XmppProperties.Phone)?.Value ??
+				ServiceRef.TagProfile.PhoneNumber ??
+				string.Empty;
+			string Email = ServiceRef.TagProfile.LegalIdentity?.Properties.FirstOrDefault(Property => Property.Name == Constants.XmppProperties.EMail)?.Value ??
+				ServiceRef.TagProfile.EMail ??
+				string.Empty;
+
+			Properties.Add(new Property(Constants.XmppProperties.DeviceId, ServiceRef.PlatformSpecific.GetDeviceId()));
+			if (!Process.HasMapping(Constants.XmppProperties.Jid))
+				Properties.Add(new Property(Constants.XmppProperties.Jid, Jid));
+			if (!Process.HasMapping(Constants.XmppProperties.Phone))
+				Properties.Add(new Property(Constants.XmppProperties.Phone, Phone));
+			if (!Process.HasMapping(Constants.XmppProperties.EMail))
+				Properties.Add(new Property(Constants.XmppProperties.EMail, Email));
+			if (!Process.HasMapping(Constants.XmppProperties.Country) && !string.IsNullOrEmpty(ServiceRef.TagProfile.SelectedCountry))
+				Properties.Add(new Property(Constants.XmppProperties.Country, ServiceRef.TagProfile.SelectedCountry));
 		}
 
 		private bool CheckAndHandleFile(KycProcess Process, ObservableKycField Field, List<LegalIdentityAttachment> List)

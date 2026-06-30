@@ -32,8 +32,15 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 		public DocumentInformation? Document { get; }
 
 		/// <summary>
+		/// Gets the full normalized MRZ text recognized by OCR.
+		/// </summary>
+		public string NormalizedMrzText => this.OcrResult.Mrz?.NormalizedText?.Trim() ?? string.Empty;
+
+		/// <summary>
 		/// Gets a value indicating whether the MRZ result is valid for NFC handoff.
 		/// </summary>
-		public bool IsSuccessful => this.Document?.MRZ_Information is not null;
+		public bool IsSuccessful =>
+			!string.IsNullOrWhiteSpace(this.NormalizedMrzText) &&
+			this.Document?.MRZ_Information is not null;
 	}
 }

@@ -519,10 +519,21 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		{
 			if (this.pendingSuccessfulResult is null)
 			{
+				this.LogScannerEvent(
+					"CompletePendingSuccessfulResultSkipped",
+					new KeyValuePair<string, object?>("HasCompletionSource", this.navigationArgs?.CompletionSource is not null));
 				return;
 			}
 
-			this.navigationArgs?.CompletionSource?.TrySetResult(this.pendingSuccessfulResult);
+			bool Completed = this.navigationArgs?.CompletionSource?.TrySetResult(this.pendingSuccessfulResult) ?? false;
+			this.LogScannerEvent(
+				"CompletePendingSuccessfulResult",
+				new KeyValuePair<string, object?>("Completed", Completed),
+				new KeyValuePair<string, object?>("HasCompletionSource", this.navigationArgs?.CompletionSource is not null),
+				new KeyValuePair<string, object?>("IsSuccessful", this.pendingSuccessfulResult.IsSuccessful),
+				new KeyValuePair<string, object?>("NormalizedMrzLength", this.pendingSuccessfulResult.NormalizedMrzText.Length),
+				new KeyValuePair<string, object?>("ChipAccessMrzLength", this.pendingSuccessfulResult.Document?.MRZ_Information?.Length ?? 0),
+				new KeyValuePair<string, object?>("DocumentType", this.pendingSuccessfulResult.Document?.DocumentType ?? string.Empty));
 			this.pendingSuccessfulResult = null;
 		}
 
@@ -693,7 +704,29 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 
 			this.resultReturned = true;
 			this.pendingSuccessfulResult = DocumentResult;
+			this.LogScannerEvent(
+				"AcceptedMrzResult",
+				new KeyValuePair<string, object?>("IsSuccessful", DocumentResult.IsSuccessful),
+				new KeyValuePair<string, object?>("HasCompletionSource", this.navigationArgs?.CompletionSource is not null),
+				new KeyValuePair<string, object?>("NormalizedMrzLength", DocumentResult.NormalizedMrzText.Length),
+				new KeyValuePair<string, object?>("ChipAccessMrzLength", DocumentResult.Document?.MRZ_Information?.Length ?? 0),
+				new KeyValuePair<string, object?>("DocumentType", DocumentResult.Document?.DocumentType ?? string.Empty));
+			this.CompletePendingSuccessfulResult();
+			this.LogScannerEvent("NavigateBackAfterAcceptedMrz");
 			await MainThread.InvokeOnMainThreadAsync(async () => await ServiceRef.NavigationService.GoBackAsync());
+		}
+
+		private void LogScannerEvent(string EventName, params KeyValuePair<string, object?>[] Tags)
+		{
+			List<KeyValuePair<string, object?>> AllTags = new List<KeyValuePair<string, object?>>
+			{
+				new KeyValuePair<string, object?>("Event", EventName),
+				new KeyValuePair<string, object?>("ResultReturned", this.resultReturned),
+				new KeyValuePair<string, object?>("HasPendingSuccessfulResult", this.pendingSuccessfulResult is not null),
+				new KeyValuePair<string, object?>("HasNavigationArgs", this.navigationArgs is not null)
+			};
+			AllTags.AddRange(Tags);
+			ServiceRef.LogService.LogInformational("KYC MRZ scanner flow", AllTags.ToArray());
 		}
 
 #if DEBUG && OCR_DEBUG_ARTIFACTS_NATIVE_SHARE

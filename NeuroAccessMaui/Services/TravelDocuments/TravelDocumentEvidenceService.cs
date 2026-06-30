@@ -94,6 +94,7 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 			CancellationToken.ThrowIfCancellationRequested();
 			string NormalizedMrz = MrzText?.Trim() ?? string.Empty;
 			if (string.IsNullOrWhiteSpace(NormalizedMrz) ||
+				!KycReference.IsFullTravelDocumentMrz(NormalizedMrz) ||
 				!MrzExtensions.ParseMrz(NormalizedMrz, out _))
 			{
 				return false;
@@ -122,6 +123,7 @@ namespace NeuroAccessMaui.Services.TravelDocuments
 
 			CancellationToken.ThrowIfCancellationRequested();
 			if (string.IsNullOrWhiteSpace(MrzText) ||
+				!KycReference.IsFullTravelDocumentMrz(MrzText) ||
 				!MrzExtensions.ParseMrz(MrzText, out DocumentInformation? DocumentInformation))
 			{
 				return null;

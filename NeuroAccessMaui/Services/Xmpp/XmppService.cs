@@ -3137,7 +3137,43 @@ namespace NeuroAccessMaui.Services.Xmpp
 		public async Task<LegalIdentity> AddPreviewLegalIdentity(Property[] Props, bool GenerateNewKeys,
 			params LegalIdentityAttachment[] Attachments)
 		{
-			return await this.AddLegalIdentityInternalAsync(Props, GenerateNewKeys, true, Attachments);
+			LegalIdentity Identity = await this.ApplyPreviewLegalIdentity(Props, GenerateNewKeys);
+			return await this.CompletePreviewLegalIdentity(Identity.Id, Attachments);
+		}
+
+		/// <summary>
+		/// Applies a preview legal identity without uploading attachments or marking it ready for approval.
+		/// </summary>
+		/// <param name="Props">The array holding all values needed for the preview identity.</param>
+		/// <param name="GenerateNewKeys">If new keys should be generated.</param>
+		/// <returns>Reserved preview legal identity.</returns>
+		public async Task<LegalIdentity> ApplyPreviewLegalIdentity(Property[] Props, bool GenerateNewKeys)
+		{
+			if (GenerateNewKeys)
+				await this.GenerateNewKeys();
+
+			return await this.ContractsClient.ApplyAsync(Props, true);
+		}
+
+		/// <summary>
+		/// Uploads attachments for a preview legal identity and marks it ready for approval.
+		/// </summary>
+		/// <param name="legalIdentityId">The preview legal identity identifier.</param>
+		/// <param name="Attachments">The physical attachments to upload.</param>
+		/// <returns>Submitted preview legal identity.</returns>
+		public async Task<LegalIdentity> CompletePreviewLegalIdentity(CaseInsensitiveString legalIdentityId,
+			params LegalIdentityAttachment[] Attachments)
+		{
+			LegalIdentity Identity = await this.ContractsClient.GetLegalIdentityAsync(legalIdentityId);
+			foreach (LegalIdentityAttachment Attachment in Attachments)
+			{
+				Identity = await this.ContractsClient.UploadLegalIdAttachmentAsync(Identity.Id,
+					Path.GetFileName(Attachment.FileName), Attachment.Data, Attachment.ContentType);
+			}
+
+			await this.ContractsClient.ReadyForApprovalAsync(Identity.Id);
+
+			return Identity;
 		}
 
 		/// <summary>

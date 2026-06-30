@@ -37,6 +37,12 @@ namespace NeuroAccessMaui.Services.Nfc
 			if (Evidence is null)
 				return;
 
+			if (string.IsNullOrWhiteSpace(Evidence.ApplicationIdentityId))
+			{
+				ServiceRef.LogService.LogWarning("Travel document NFC readout skipped because no application identity seed is available.");
+				return;
+			}
+
 			TravelDocumentReadoutRequest Request = new TravelDocumentReadoutRequest(
 				Evidence.DocumentInformation,
 				Evidence.MrzText,

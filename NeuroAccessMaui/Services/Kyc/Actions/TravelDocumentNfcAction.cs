@@ -24,6 +24,14 @@ namespace NeuroAccessMaui.Services.Kyc.Actions
 		/// <inheritdoc/>
 		public Task<KycPageActionState> GetStateAsync(KycPageActionContext Context)
 		{
+			if (!ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported)
+			{
+				return Task.FromResult(new KycPageActionState
+				{
+					IsVisible = false
+				});
+			}
+
 			KycPageActionState State = new KycPageActionState
 			{
 				Title = ServiceRef.Localizer[nameof(AppResources.KycTravelDocumentSummaryTitle)],
@@ -39,6 +47,10 @@ namespace NeuroAccessMaui.Services.Kyc.Actions
 		public async Task ExecuteAsync(KycPageActionContext Context)
 		{
 			Context.CancellationToken.ThrowIfCancellationRequested();
+			if (!ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported)
+			{
+				return;
+			}
 
 			await Context.NavigationService.GoToAsync(
 				nameof(KycTravelDocumentPage),
@@ -52,7 +64,7 @@ namespace NeuroAccessMaui.Services.Kyc.Actions
 				return ServiceRef.Localizer[nameof(AppResources.KycTravelDocumentSummaryReadoutReady)];
 			}
 
-			if (!string.IsNullOrWhiteSpace(Context.Reference.TravelDocumentMrz))
+			if (Context.Reference.HasFullTravelDocumentMrz)
 			{
 				return ServiceRef.Localizer[nameof(AppResources.KycTravelDocumentSummaryMrzReady)];
 			}

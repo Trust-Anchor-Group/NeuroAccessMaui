@@ -3588,41 +3588,119 @@
   <data name="KycTravelDocumentTitle" xml:space="preserve">
     <value>Personligt ID</value>
   </data>
+  <data name="KycTravelDocumentSummaryTitle" xml:space="preserve">
+    <value>Dokumentchipavläsning</value>
+  </data>
+  <data name="KycTravelDocumentSummaryMissing" xml:space="preserve">
+    <value>Skanna en kompatibel resehandling för att bifoga en säker chipavläsning till ansökan.</value>
+  </data>
+  <data name="KycTravelDocumentSummaryMrzReady" xml:space="preserve">
+    <value>Dokumentuppgifter sparade. Håll dokumentet mot telefonen för att läsa chippet innan du ansöker.</value>
+  </data>
+  <data name="KycTravelDocumentSummaryReadoutReady" xml:space="preserve">
+    <value>Chipavläsningen är klar och bifogas till den här ansökan.</value>
+  </data>
+  <data name="KycTravelDocumentOpenButton" xml:space="preserve">
+    <value>Använd dokumentchip</value>
+  </data>
+  <data name="KycTravelDocumentDescription" xml:space="preserve">
+    <value>Skanna de maskinläsbara raderna på resehandlingen och håll sedan dokumentet mot telefonen för att läsa chippet. Den säkra avläsningen bifogas som NFC.xml när du ansöker.</value>
+  </data>
   <data name="KycTravelDocumentHeroTitle" xml:space="preserve">
-    <value>Verifiera med passet</value>
+    <value>Leta efter den här symbolen</value>
   </data>
   <data name="KycTravelDocumentHeroDescription" xml:space="preserve">
-    <value>Skanna passet och håll det sedan mot telefonen. Vi använder chippet för att fylla i det vi kan och bifoga avläsningen till ansökan.</value>
+    <value>Den kan finnas på framsidan, baksidan eller insidan av omslaget.</value>
+  </data>
+  <data name="KycTravelDocumentEligibilityTitle" xml:space="preserve">
+    <value>Ser du den på ditt dokument?</value>
+  </data>
+  <data name="KycTravelDocumentEligibilityChipSymbol" xml:space="preserve">
+    <value>Den finns på pass, ID-kort och uppehållstillstånd med chip.</value>
+  </data>
+  <data name="KycTravelDocumentEligibilityNfcPhone" xml:space="preserve">
+    <value>Använd en telefon med NFC aktiverat.</value>
+  </data>
+  <data name="KycTravelDocumentEligibilityMrzLines" xml:space="preserve">
+    <value>Dokumentet bör ha maskinläsbara rader eller text som kameran kan skanna.</value>
   </data>
   <data name="KycTravelDocumentNoTypingHint" xml:space="preserve">
-    <value>Du behöver inte skriva in uppgifterna efter en lyckad chipavläsning. Du kan fortfarande granska formuläret innan du ansöker.</value>
+    <value>Har du inget kompatibelt chipdokument? Fortsätt manuellt och fyll i samma ansökningsformulär.</value>
   </data>
   <data name="KycTravelDocumentPrimaryScanButton" xml:space="preserve">
-    <value>Starta guidad skanning</value>
+    <value>Ja, skanna dokument</value>
+  </data>
+  <data name="KycTravelDocumentUnsureButton" xml:space="preserve">
+    <value>Jag är inte säker</value>
+  </data>
+  <data name="KycTravelDocumentMrzStepTitle" xml:space="preserve">
+    <value>Skanna de maskinläsbara raderna</value>
+  </data>
+  <data name="KycTravelDocumentMrzStepDescription" xml:space="preserve">
+    <value>Öppna kameran och placera de maskinläsbara raderna i guiden. Vi använder dem för att låsa upp chipavläsningen.</value>
+  </data>
+  <data name="KycTravelDocumentMrzStepReadyDescription" xml:space="preserve">
+    <value>Dokumentuppgifter sparade. Vi fyllde också i matchande ansökningsfält från dokumentet där det var möjligt.</value>
   </data>
   <data name="KycTravelDocumentNfcStepTitle" xml:space="preserve">
-    <value>Håll passet stilla</value>
+    <value>Läs dokumentets chip</value>
   </data>
   <data name="KycTravelDocumentNfcStepDescription" xml:space="preserve">
-    <value>Håll dokumentet stilla mot baksidan av telefonen tills avläsningen är klar.</value>
+    <value>Håll dokumentet stilla mot baksidan av telefonen. Prova omslaget, kortytan eller området nära chipsymbolen.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReadingTitle" xml:space="preserve">
+    <value>Läser chippet</value>
+  </data>
+  <data name="KycTravelDocumentNfcReadingDescription" xml:space="preserve">
+    <value>Håll telefonen och dokumentet stilla medan den säkra anslutningen läser och verifierar chipdata.</value>
+  </data>
+  <data name="KycTravelDocumentProgressTitle" xml:space="preserve">
+    <value>Chipavläsningens steg</value>
+  </data>
+  <data name="KycTravelDocumentProgressDetectChip" xml:space="preserve">
+    <value>Hitta chip</value>
+  </data>
+  <data name="KycTravelDocumentProgressSecureConnection" xml:space="preserve">
+    <value>Säker anslutning</value>
+  </data>
+  <data name="KycTravelDocumentProgressReadData" xml:space="preserve">
+    <value>Läs data</value>
+  </data>
+  <data name="KycTravelDocumentProgressVerifyDocument" xml:space="preserve">
+    <value>Verifiera dokument</value>
+  </data>
+  <data name="KycTravelDocumentProgressWaiting" xml:space="preserve">
+    <value>Väntar</value>
+  </data>
+  <data name="KycTravelDocumentProgressInProgress" xml:space="preserve">
+    <value>Pågår</value>
+  </data>
+  <data name="KycTravelDocumentProgressDone" xml:space="preserve">
+    <value>Klart</value>
+  </data>
+  <data name="KycTravelDocumentProgressNeedsAttention" xml:space="preserve">
+    <value>Kräver åtgärd</value>
   </data>
   <data name="KycTravelDocumentRetryNfcButton" xml:space="preserve">
-    <value>Försök läsa chip igen</value>
+    <value>Läs chip</value>
+  </data>
+  <data name="KycTravelDocumentRescanButton" xml:space="preserve">
+    <value>Skanna dokument igen</value>
   </data>
   <data name="KycTravelDocumentContinueButton" xml:space="preserve">
     <value>Fortsätt</value>
   </data>
   <data name="KycTravelDocumentManualFallbackButton" xml:space="preserve">
-    <value>Fortsätt med formuläret</value>
+    <value>Använd annan metod</value>
   </data>
   <data name="KycTravelDocumentSuccessTitle" xml:space="preserve">
-    <value>Passchippet verifierat</value>
+    <value>Dokumentchip läst</value>
   </data>
   <data name="KycTravelDocumentSuccessDescription" xml:space="preserve">
     <value>Chipavläsningen är sparad för den här ansökan. Fortsätt för att granska uppgifterna innan du ansöker.</value>
   </data>
   <data name="KycTravelDocumentSaved" xml:space="preserve">
-    <value>MRZ sparad. Du kan nu hålla dokumentets chip mot telefonen.</value>
+    <value>Dokumentuppgifter sparade. Håll nu dokumentets chip mot telefonen.</value>
   </data>
   <data name="KycTravelDocumentInvalidMrz" xml:space="preserve">
     <value>MRZ kunde inte valideras. Kontrollera dokumentnummer, födelsedatum, utgångsdatum och kontrollsiffror.</value>
@@ -3631,7 +3709,10 @@
     <value>Chipavläsningen är redan klar för den här ansökan.</value>
   </data>
   <data name="KycTravelDocumentNfcReady" xml:space="preserve">
-    <value>Håll resehandlingen nära telefonen för att läsa chippet.</value>
+    <value>Redo att läsa. Håll resehandlingen nära telefonen och håll den stilla.</value>
+  </data>
+  <data name="KycTravelDocumentNfcPreparing" xml:space="preserve">
+    <value>Förbereder säker verifiering. Håll den här skärmen öppen.</value>
   </data>
   <data name="KycTravelDocumentNfcReading" xml:space="preserve">
     <value>Läser dokumentets chip. Håll dokumentet stilla.</value>
@@ -3640,7 +3721,10 @@
     <value>Chipavläsningen är sparad och redo att bifogas till ansökan.</value>
   </data>
   <data name="KycTravelDocumentNfcUnavailable" xml:space="preserve">
-    <value>Chipavläsning är inte tillgänglig på den här enheten eller i appens konfiguration.</value>
+    <value>Chipavläsning är inte tillgänglig på den här enheten eller i appens konfiguration. Du kan fortsätta manuellt i stället.</value>
+  </data>
+  <data name="KycTravelDocumentNfcReservationFailed" xml:space="preserve">
+    <value>Säker verifiering kunde inte förberedas. Försök igen, skanna dokumentet på nytt eller fortsätt manuellt.</value>
   </data>
   <data name="KycTravelDocumentNfcCancelled" xml:space="preserve">
     <value>Chipavläsningen avbröts.</value>

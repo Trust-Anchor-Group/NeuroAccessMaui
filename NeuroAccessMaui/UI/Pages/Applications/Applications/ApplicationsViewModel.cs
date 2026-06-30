@@ -510,12 +510,17 @@ namespace NeuroAccessMaui.UI.Pages.Applications.Applications
 
 		private async Task<bool> ShouldOpenDocumentChipFirstAsync(KycReference Reference, string Language, bool PreferDocumentChip)
 		{
+			if (!ServiceRef.Provider.GetRequiredService<NeuroAccessMaui.Services.Nfc.INfcIsoDepSessionService>().IsPlatformSupported)
+			{
+				return false;
+			}
+
 			KycProcess? Process = await Reference.GetProcess(Language);
 			bool HasNfcPolicy = Process?.EvidencePolicy?.TravelDocument?.Nfc?.Enabled == true;
 			if (!HasNfcPolicy)
 				return false;
 
-			if (!string.IsNullOrWhiteSpace(Reference.TravelDocumentMrz) ||
+			if (Reference.HasFullTravelDocumentMrz ||
 				!string.IsNullOrWhiteSpace(Reference.NfcReadoutXml))
 			{
 				return false;

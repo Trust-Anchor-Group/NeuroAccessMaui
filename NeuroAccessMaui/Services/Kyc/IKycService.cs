@@ -79,6 +79,14 @@ namespace NeuroAccessMaui.Services.Kyc
 		Task<(IReadOnlyList<Property> Properties, IReadOnlyList<LegalIdentityAttachment> Attachments)> PreparePropertiesAndAttachmentsAsync(Kyc.Models.KycProcess Process, CancellationToken CancellationToken);
 
 		/// <summary>
+		/// Prepares the minimal preview identity properties used to reserve an identity before NFC readout.
+		/// </summary>
+		/// <param name="Reference">Reference containing the active KYC process and field values.</param>
+		/// <param name="CancellationToken">Cancellation token.</param>
+		/// <returns>Preview reservation properties.</returns>
+		Task<IReadOnlyList<Property>> PreparePreviewReservationPropertiesAsync(KycReference Reference, CancellationToken CancellationToken);
+
+		/// <summary>
 		/// Updates snapshot information and schedules an autosave.
 		/// </summary>
 		Task ScheduleSnapshotAsync(KycReference Reference, Kyc.Models.KycProcess Process, KycNavigationSnapshot Navigation, double Progress, string? CurrentPageId);
@@ -99,6 +107,13 @@ namespace NeuroAccessMaui.Services.Kyc
 		/// <param name="Reference">Reference to update.</param>
 		/// <param name="Identity">Submitted preview identity.</param>
 		Task ApplyPreviewSubmissionAsync(KycReference Reference, LegalIdentity Identity);
+
+		/// <summary>
+		/// Persists a preview identity that has been reserved but not submitted for review.
+		/// </summary>
+		/// <param name="Reference">Reference to update.</param>
+		/// <param name="Identity">Reserved preview identity.</param>
+		Task SetReservedPreviewIdentityAsync(KycReference Reference, LegalIdentity Identity);
 
 		/// <summary>
 		/// Marks an approved preview identity as ready for finalization.
