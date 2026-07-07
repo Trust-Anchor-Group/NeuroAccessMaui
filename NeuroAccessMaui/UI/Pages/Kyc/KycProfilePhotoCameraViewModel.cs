@@ -137,15 +137,29 @@ namespace NeuroAccessMaui.UI.Pages.Kyc
 		/// <inheritdoc/>
 		public void Dispose()
 		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		/// <summary>
+		/// Releases the resources used by the <see cref="KycProfilePhotoCameraViewModel"/>.
+		/// </summary>
+		/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources;
+		/// <c>false</c> to release only unmanaged resources.</param>
+		protected virtual void Dispose(bool disposing)
+		{
 			if (this.isDisposed)
 			{
 				return;
 			}
 
+			if (disposing)
+			{
+				this.CompleteWithoutResult();
+				this.DisposePreviewCancellation();
+			}
+
 			this.isDisposed = true;
-			this.CompleteWithoutResult();
-			this.DisposePreviewCancellation();
-			GC.SuppressFinalize(this);
 		}
 
 		/// <summary>
