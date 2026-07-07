@@ -198,7 +198,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 
 		public string ShowIdButtonText => this.HasPersonalIdentity ? ServiceRef.Localizer[nameof(AppResources.ShowIDShort)] : ServiceRef.Localizer[nameof(AppResources.ShowAccount)];
 
-		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedPersonalInformation() ?? false;
+		public bool HasPersonalIdentity => ServiceRef.TagProfile.LegalIdentity?.HasApprovedName() ?? false;
 		public bool HasPendingIdentity => this.latestIdentityDecision?.Route == IdentityApplicationRoute.ApplicationPending;
 
 		public bool ShowInfoBubble => this.ShowApplyIdBox || this.ShowPendingIdBox || this.ShowRejectedIdBox;
