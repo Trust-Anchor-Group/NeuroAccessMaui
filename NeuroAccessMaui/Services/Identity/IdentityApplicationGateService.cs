@@ -99,7 +99,7 @@ namespace NeuroAccessMaui.Services.Identity
 				};
 			}
 
-			if (ApprovedIdentity?.IsApproved() == true)
+			if (ApprovedIdentity?.HasApprovedName() == true)
 			{
 				return new IdentityApplicationGateDecision
 				{
