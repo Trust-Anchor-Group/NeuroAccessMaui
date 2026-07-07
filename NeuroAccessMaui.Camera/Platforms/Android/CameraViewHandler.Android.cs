@@ -636,6 +636,11 @@ namespace NeuroAccessMaui.Camera
 						}
 
 						byte[] Bytes = File.ReadAllBytes(Path);
+						long OriginalLength = Bytes.LongLength;
+						Bytes = TrimJpegPadding(Bytes);
+						if (Bytes.LongLength != OriginalLength)
+							LogDebug($"Capture trimmed trailing padding. Platform=Android, Source=CameraX.ImageCapture, OriginalBytes={OriginalLength}, TrimmedBytes={Bytes.LongLength}");
+
 						LogDebug($"Capture succeeded. Platform=Android, Source=CameraX.ImageCapture, OutputBytes={Bytes.LongLength}");
 						this.completionSource.TrySetResult(Bytes);
 					}
@@ -654,6 +659,41 @@ namespace NeuroAccessMaui.Camera
 						{
 						}
 					}
+				}
+
+				/// <summary>
+				/// Trims trailing bytes that some Android CameraX/HAL implementations write after the
+				/// JPEG End-Of-Image (EOI) marker (0xFF 0xD9). Without trimming, the captured payload
+				/// contains valid JPEG data followed by up to several megabytes of null padding, which
+				/// bloats attachment uploads with base64 'A' characters representing zero bytes.
+				/// </summary>
+				private static byte[] TrimJpegPadding(byte[] Bytes)
+				{
+					if (Bytes is null || Bytes.LongLength < 4)
+						return Bytes ?? System.Array.Empty<byte>();
+
+					// Only trim payloads that begin with the JPEG Start-Of-Image marker (0xFF 0xD8).
+					if (Bytes[0] != 0xFF || Bytes[1] != 0xD8)
+						return Bytes;
+
+					// Scan backwards from the end for the EOI marker (0xFF 0xD9). Trailing padding
+					// is nearly always zero bytes, so this loop typically returns immediately once
+					// the padding block is skipped.
+					for (long i = Bytes.LongLength - 2; i >= 2; i--)
+					{
+						if (Bytes[i] == 0xFF && Bytes[i + 1] == 0xD9)
+						{
+							long TrimmedLength = i + 2;
+							if (TrimmedLength == Bytes.LongLength)
+								return Bytes;
+
+							byte[] Trimmed = new byte[TrimmedLength];
+							System.Buffer.BlockCopy(Bytes, 0, Trimmed, 0, (int)TrimmedLength);
+							return Trimmed;
+						}
+					}
+
+					return Bytes;
 				}
 			}
 		}

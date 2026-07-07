@@ -250,7 +250,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 					this.xmppClient.DefaultRetryTimeout = 30000;
 					this.xmppClient.DefaultNrRetries = 0;
 					this.xmppClient.RequestRosterOnStartup = false;
-					this.xmppClient.TrustServer = !IsIpAddress;
+#if DEBUG
+					this.xmppClient.TrustServer = IsIpAddress;
+#else
+					this.xmppClient.TrustServer = false;
+#endif
 					this.xmppClient.AllowCramMD5 = false;
 					this.xmppClient.AllowDigestMD5 = false;
 					this.xmppClient.AllowPlain = false;
@@ -1172,7 +1176,11 @@ namespace NeuroAccessMaui.Services.Xmpp
 						Client.AllowRegistration();
 				}
 
-				Client.TrustServer = !IsIpAddress;
+#if DEBUG
+				Client.TrustServer = IsIpAddress;
+#else
+					Client.TrustServer = false;
+#endif
 				Client.AllowCramMD5 = false;
 				Client.AllowDigestMD5 = false;
 				Client.AllowPlain = false;
@@ -1211,6 +1219,12 @@ namespace NeuroAccessMaui.Services.Xmpp
 					TrySetResult(false); // Attempt to signal timeout if not already completed
 					Succeeded = false;
 				}
+
+#if !DEBUG
+				// Only connect if encryption is enabled, otherwise fail
+				// May give strange behaviour if encryption is not enabled, but hackers dont get to have a nice app.
+				Succeeded &= StartingEncryption;
+#endif
 
 				// Call ConnectedFunc if successful
 				if (Succeeded && ConnectedFunc is not null)

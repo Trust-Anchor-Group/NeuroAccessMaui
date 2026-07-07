@@ -143,16 +143,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 				e.PropertyName == nameof(ITagProfile.IdentityApplication) ||
 				e.PropertyName == nameof(ITagProfile.LegalIdentity))
 			{
-				MainThread.BeginInvokeOnMainThread(() =>
-				{
-					this.OnPropertyChanged(nameof(this.HasPersonalIdentity));
-					this.OnPropertyChanged(nameof(this.HasPendingIdentity));
-					this.OnPropertyChanged(nameof(this.ShowApplyIdBox));
-					this.OnPropertyChanged(nameof(this.ShowPendingIdBox));
-					this.OnPropertyChanged(nameof(this.ShowRejectedIdBox));
-					this.OnPropertyChanged(nameof(this.ShowInfoBubble));
-					this.OnPropertyChanged(nameof(this.ShowIdButtonText));
-				});
+				Task.Run(this.LoadLatestIdentityDecisionAsync);
 			}
 		}
 
@@ -169,7 +160,7 @@ namespace NeuroAccessMaui.UI.Pages.Main
 		public override async Task OnInitializeAsync()
 		{
 			await base.OnInitializeAsync();
-
+			await this.LoadLatestIdentityDecisionAsync();
 			await this.OnIsConnectedChanged(); // Call this method in case the connection state has already changed before the view model was initialized.
 		}
 
