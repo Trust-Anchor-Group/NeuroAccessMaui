@@ -416,6 +416,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="UI\Pages\Main\NfcTester\NfcTesterPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="UI\Popups\FilterContractsPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -10,6 +10,8 @@ For non-trivial work, follow the plan workflow in `AGENTS.md`:
 4. One-task-at-a-time implementation
 5. Explicit verification
 
+When asked to build, check, or fix runtime issues, actually run the requested validation tools rather than only describing intended actions.
+
 Do not build, run, add tests, add dependencies, or expand scope unless the user explicitly requests it or an approved plan task authorizes it.
 
 Repo-local Codex skills live under `.agents/skills/`:

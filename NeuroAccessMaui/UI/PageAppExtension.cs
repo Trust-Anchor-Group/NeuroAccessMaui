@@ -44,6 +44,7 @@ using NeuroAccessMaui.UI.Pages.Main.QR;
 using NeuroAccessMaui.UI.Pages.Main.Settings;
 using NeuroAccessMaui.UI.Pages.Main.VerifyCode;
 using NeuroAccessMaui.UI.Pages.Main.XmppForm;
+using NeuroAccessMaui.UI.Pages.Main.NfcTester;
 using NeuroAccessMaui.UI.Pages.Notifications;
 using NeuroAccessMaui.UI.Pages.Onboarding;
 using NeuroAccessMaui.UI.Pages.Onboarding.Views;
@@ -224,6 +225,7 @@ namespace NeuroAccessMaui.UI
 			Builder.Services.AddTransient<VerifyCodePage, VerifyCodeViewModel>();
 			Builder.Services.AddTransient<XmppFormPage, XmppViewModel>();
 			Builder.Services.AddTransient<AppsPage, AppsViewModel>();
+			Builder.Services.AddTransient<NfcTesterPage, NfcTesterViewModel>();
 			// Startup page
 			Builder.Services.AddTransient<LoadingPage>();
 

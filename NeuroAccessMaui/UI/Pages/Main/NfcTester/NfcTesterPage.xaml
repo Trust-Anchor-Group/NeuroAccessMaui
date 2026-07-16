@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<base:BaseContentPage x:Class="NeuroAccessMaui.UI.Pages.Main.NfcTester.NfcTesterPage"
+					  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+					  xmlns:base="clr-namespace:NeuroAccessMaui.UI.Pages"
+					  xmlns:controls="clr-namespace:NeuroAccessMaui.UI.Controls"
+					  xmlns:l="clr-namespace:NeuroAccessMaui.Services.Localization"
+					  xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+					  xmlns:ui="clr-namespace:NeuroAccessMaui.UI"
+					  xmlns:viewmodel="clr-namespace:NeuroAccessMaui.UI.Pages.Main.NfcTester"
+					  x:DataType="viewmodel:NfcTesterViewModel"
+					  ui:KeyboardInsets.Mode="Automatic"
+					  ui:SafeArea.Mode="TopAndBottom">
+	<Grid BackgroundColor="{DynamicResource SurfaceBackgroundWL}"
+		  RowDefinitions="Auto,*,Auto">
+		<controls:Background Grid.RowSpan="3" />
+
+		<Grid Padding="16,8"
+			  ColumnDefinitions="44,*"
+			  ColumnSpacing="12">
+			<controls:SvgButton Command="{Binding GoBackCommand}"
+							SvgSource="close.svg"
+							Style="{DynamicResource IconButton}"
+							SemanticProperties.Description="{l:Localize Close}"
+							WidthRequest="44"
+							HeightRequest="44"
+							HorizontalOptions="Start"
+							VerticalOptions="Center" />
+			<Label Grid.Column="1"
+				   Style="{DynamicResource PageTitleLabel}"
+				   Text="{l:Localize NfcTesterTitle}"
+				   HorizontalOptions="End"
+				   VerticalOptions="Center"
+				   LineBreakMode="TailTruncation" />
+		</Grid>
+
+		<ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
+			<VerticalStackLayout Padding="18,12"
+							 MaximumWidthRequest="720"
+							 HorizontalOptions="Center"
+							 Spacing="16">
+				<VerticalStackLayout IsVisible="{Binding ShowIntro}" Spacing="16">
+					<Border WidthRequest="148"
+							HeightRequest="148"
+							StrokeShape="RoundRectangle 32"
+							BackgroundColor="{DynamicResource SurfaceElevation2WL}"
+							Stroke="{DynamicResource ContentAccessWL}"
+							StrokeThickness="2"
+							HorizontalOptions="Center">
+						<controls:SvgView Source="icao_chip.svg"
+									  WidthRequest="96"
+									  HeightRequest="96"
+									  TintColor="{DynamicResource ContentPrimaryWL}"
+									  HorizontalOptions="Center"
+									  VerticalOptions="Center" />
+					</Border>
+					<Label Text="{l:Localize NfcTesterTitle}"
+						   Style="{DynamicResource PageTitleLabel}"
+						   FontSize="29"
+						   HorizontalTextAlignment="Center"
+						   LineBreakMode="WordWrap" />
+					<Label Text="{l:Localize NfcTesterDescription}"
+						   Style="{DynamicResource InfoLabel}"
+						   HorizontalTextAlignment="Center"
+						   LineBreakMode="WordWrap" />
+				</VerticalStackLayout>
+
+				<VerticalStackLayout IsVisible="{Binding ShowNfcProgress}" Spacing="16">
+					<controls:SvgView Source="nfc.svg"
+								  WidthRequest="112"
+								  HeightRequest="112"
+								  TintColor="{DynamicResource ContentAccessWL}"
+								  HorizontalOptions="Center" />
+					<ActivityIndicator IsRunning="{Binding IsNfcBusy}"
+								   Color="{DynamicResource ContentAccessWL}"
+								   WidthRequest="40"
+								   HeightRequest="40" />
+					<Label Text="{Binding StatusText}"
+						   Style="{DynamicResource SectionTitleLabel}"
+						   HorizontalTextAlignment="Center"
+						   LineBreakMode="WordWrap" />
+				</VerticalStackLayout>
+
+				<VerticalStackLayout IsVisible="{Binding ShowResult}" Spacing="14">
+					<Border Style="{DynamicResource BorderSet}">
+						<Label Text="{Binding StatusText}"
+							   Style="{DynamicResource SectionTitleLabel}"
+							   HorizontalTextAlignment="Center"
+							   LineBreakMode="WordWrap" />
+					</Border>
+
+					<Border Style="{DynamicResource BorderSet}">
+						<VerticalStackLayout Spacing="12">
+							<Label Text="{l:Localize NfcTesterResultsTitle}"
+								   Style="{DynamicResource SectionTitleLabel}" />
+							<Label Text="{l:Localize NfcTesterNoReadableData}"
+								   Style="{DynamicResource InfoLabel}"
+								   IsVisible="{Binding HasResultItems, Converter={mct:InvertedBoolConverter}}" />
+							<VerticalStackLayout BindableLayout.ItemsSource="{Binding ResultItems}" Spacing="10">
+								<BindableLayout.ItemTemplate>
+									<DataTemplate x:DataType="viewmodel:NfcTesterResultItem">
+										<Grid RowDefinitions="Auto,Auto" RowSpacing="2">
+											<Label Text="{Binding Label}"
+												   Style="{DynamicResource InfoLabel}"
+												   FontAttributes="Bold"
+												   IsVisible="{Binding Label, Converter={mct:IsStringNotNullOrEmptyConverter}}"
+												   SemanticProperties.Description="{Binding Label}" />
+											<Label Grid.Row="1"
+												   Text="{Binding Value}"
+												   Style="{DynamicResource InfoLabel}"
+												   LineBreakMode="WordWrap"
+												   SemanticProperties.Description="{Binding Value}" />
+										</Grid>
+									</DataTemplate>
+								</BindableLayout.ItemTemplate>
+							</VerticalStackLayout>
+						</VerticalStackLayout>
+					</Border>
+
+					<Border Style="{DynamicResource BorderSet}" IsVisible="{Binding HasRawXml}">
+						<VerticalStackLayout Spacing="10">
+							<Label Text="{l:Localize NfcTesterShareWarning}"
+								   Style="{DynamicResource InfoLabel}"
+								   LineBreakMode="WordWrap" />
+							<controls:TextButton Style="{DynamicResource FilledTextButton}"
+										 LabelData="{l:Localize NfcTesterShareButton}"
+										 Command="{Binding ShareXmlCommand}"
+										 SemanticProperties.Description="{l:Localize NfcTesterShareButton}" />
+						</VerticalStackLayout>
+					</Border>
+				</VerticalStackLayout>
+			</VerticalStackLayout>
+		</ScrollView>
+
+		<Border Grid.Row="2"
+				StrokeThickness="0"
+				Padding="18,12,18,18"
+				BackgroundColor="{DynamicResource SurfaceBackgroundWL}">
+			<VerticalStackLayout MaximumWidthRequest="720"
+							 HorizontalOptions="Center"
+							 Spacing="8">
+				<controls:TextButton Style="{DynamicResource FilledTextButton}"
+								 LabelData="{l:Localize NfcTesterScanButton}"
+								 Command="{Binding ScanDocumentCommand}"
+								 IsVisible="{Binding ShowIntro}" />
+				<controls:TextButton Style="{DynamicResource FilledTextButton}"
+								 LabelData="{l:Localize NfcTesterNewTestButton}"
+								 Command="{Binding NewTestCommand}"
+								 IsVisible="{Binding ShowResult}" />
+				<controls:TextButton Style="{DynamicResource OutlinedTextButton}"
+								 LabelData="{l:Localize NfcTesterReadAgainButton}"
+								 Command="{Binding StartNfcReadoutCommand}"
+								 IsVisible="{Binding ShowResult}" />
+			</VerticalStackLayout>
+		</Border>
+	</Grid>
+</base:BaseContentPage>

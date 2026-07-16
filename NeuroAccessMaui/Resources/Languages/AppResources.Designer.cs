@@ -5569,6 +5569,384 @@ namespace NeuroAccessMaui.Resources.Languages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NFC tester.
+        /// </summary>
+        public static string NfcTesterAppName {
+            get {
+                return ResourceManager.GetString("NfcTesterAppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custody information.
+        /// </summary>
+        public static string NfcTesterCustodyInformation {
+            get {
+                return ResourceManager.GetString("NfcTesterCustodyInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date of birth.
+        /// </summary>
+        public static string NfcTesterDateOfBirth {
+            get {
+                return ResourceManager.GetString("NfcTesterDateOfBirth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan a passport or identity document to test its chip. This does not apply for or update an identity..
+        /// </summary>
+        public static string NfcTesterDescription {
+            get {
+                return ResourceManager.GetString("NfcTesterDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document number.
+        /// </summary>
+        public static string NfcTesterDocumentNumber {
+            get {
+                return ResourceManager.GetString("NfcTesterDocumentNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document type.
+        /// </summary>
+        public static string NfcTesterDocumentType {
+            get {
+                return ResourceManager.GetString("NfcTesterDocumentType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expiry date.
+        /// </summary>
+        public static string NfcTesterExpiryDate {
+            get {
+                return ResourceManager.GetString("NfcTesterExpiryDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First names.
+        /// </summary>
+        public static string NfcTesterFirstNames {
+            get {
+                return ResourceManager.GetString("NfcTesterFirstNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full name.
+        /// </summary>
+        public static string NfcTesterFullName {
+            get {
+                return ResourceManager.GetString("NfcTesterFullName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gender.
+        /// </summary>
+        public static string NfcTesterGender {
+            get {
+                return ResourceManager.GetString("NfcTesterGender", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide raw XML.
+        /// </summary>
+        public static string NfcTesterHideRawXml {
+            get {
+                return ResourceManager.GetString("NfcTesterHideRawXml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Issuing state.
+        /// </summary>
+        public static string NfcTesterIssuingState {
+            get {
+                return ResourceManager.GetString("NfcTesterIssuingState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last names.
+        /// </summary>
+        public static string NfcTesterLastNames {
+            get {
+                return ResourceManager.GetString("NfcTesterLastNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nationality.
+        /// </summary>
+        public static string NfcTesterNationality {
+            get {
+                return ResourceManager.GetString("NfcTesterNationality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start a new test.
+        /// </summary>
+        public static string NfcTesterNewTestButton {
+            get {
+                return ResourceManager.GetString("NfcTesterNewTestButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No human-readable document data was returned..
+        /// </summary>
+        public static string NfcTesterNoReadableData {
+            get {
+                return ResourceManager.GetString("NfcTesterNoReadableData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optional data.
+        /// </summary>
+        public static string NfcTesterOptionalData {
+            get {
+                return ResourceManager.GetString("NfcTesterOptionalData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other names.
+        /// </summary>
+        public static string NfcTesterOtherNames {
+            get {
+                return ResourceManager.GetString("NfcTesterOtherNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other numbers.
+        /// </summary>
+        public static string NfcTesterOtherNumbers {
+            get {
+                return ResourceManager.GetString("NfcTesterOtherNumbers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The readout did not complete, but available diagnostic data is shown below..
+        /// </summary>
+        public static string NfcTesterPartialResult {
+            get {
+                return ResourceManager.GetString("NfcTesterPartialResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Permanent address.
+        /// </summary>
+        public static string NfcTesterPermanentAddress {
+            get {
+                return ResourceManager.GetString("NfcTesterPermanentAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal number.
+        /// </summary>
+        public static string NfcTesterPersonalNumber {
+            get {
+                return ResourceManager.GetString("NfcTesterPersonalNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal summary.
+        /// </summary>
+        public static string NfcTesterPersonalSummary {
+            get {
+                return ResourceManager.GetString("NfcTesterPersonalSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        public static string NfcTesterPersonalTitle {
+            get {
+                return ResourceManager.GetString("NfcTesterPersonalTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Place of birth.
+        /// </summary>
+        public static string NfcTesterPlaceOfBirth {
+            get {
+                return ResourceManager.GetString("NfcTesterPlaceOfBirth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profession.
+        /// </summary>
+        public static string NfcTesterProfession {
+            get {
+                return ResourceManager.GetString("NfcTesterProfession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Raw NFC XML.
+        /// </summary>
+        public static string NfcTesterRawXmlTitle {
+            get {
+                return ResourceManager.GetString("NfcTesterRawXmlTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try NFC again.
+        /// </summary>
+        public static string NfcTesterReadAgainButton {
+            get {
+                return ResourceManager.GetString("NfcTesterReadAgainButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading the document chip. Keep the document still..
+        /// </summary>
+        public static string NfcTesterReading {
+            get {
+                return ResourceManager.GetString("NfcTesterReading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hold the document near your phone and keep it still..
+        /// </summary>
+        public static string NfcTesterReady {
+            get {
+                return ResourceManager.GetString("NfcTesterReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data found.
+        /// </summary>
+        public static string NfcTesterResultsTitle {
+            get {
+                return ResourceManager.GetString("NfcTesterResultsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan document.
+        /// </summary>
+        public static string NfcTesterScanButton {
+            get {
+                return ResourceManager.GetString("NfcTesterScanButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share NFC.xml.
+        /// </summary>
+        public static string NfcTesterShareButton {
+            get {
+                return ResourceManager.GetString("NfcTesterShareButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share.
+        /// </summary>
+        public static string NfcTesterShareConfirmButton {
+            get {
+                return ResourceManager.GetString("NfcTesterShareConfirmButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share sensitive NFC data?.
+        /// </summary>
+        public static string NfcTesterShareConfirmTitle {
+            get {
+                return ResourceManager.GetString("NfcTesterShareConfirmTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC.xml could not be shared. Try again..
+        /// </summary>
+        public static string NfcTesterShareFailed {
+            get {
+                return ResourceManager.GetString("NfcTesterShareFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC.xml can contain sensitive personal and protocol data. Share it only with someone you trust..
+        /// </summary>
+        public static string NfcTesterShareWarning {
+            get {
+                return ResourceManager.GetString("NfcTesterShareWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show raw XML.
+        /// </summary>
+        public static string NfcTesterShowRawXml {
+            get {
+                return ResourceManager.GetString("NfcTesterShowRawXml", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The NFC readout completed successfully..
+        /// </summary>
+        public static string NfcTesterSuccess {
+            get {
+                return ResourceManager.GetString("NfcTesterSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telephone.
+        /// </summary>
+        public static string NfcTesterTelephone {
+            get {
+                return ResourceManager.GetString("NfcTesterTelephone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test document NFC.
+        /// </summary>
+        public static string NfcTesterTitle {
+            get {
+                return ResourceManager.GetString("NfcTesterTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NFC document scanning is not available on this device or app configuration..
+        /// </summary>
+        public static string NfcTesterUnavailable {
+            get {
+                return ResourceManager.GetString("NfcTesterUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nickname.
         /// </summary>
         public static string Nickname {
